@@ -1,0 +1,8 @@
+
+<%= form_tag '/auth/identity/register' do |f| %>
+  <h1>Create an Account</h1>
+  Username <%= text_field_tag :username %><br/>
+  Password <%= password_field_tag :password %><br/>
+  Password again <%= password_field_tag :password_confirmation %><br/>
+  <%= submit_tag %>
+<% end %>
