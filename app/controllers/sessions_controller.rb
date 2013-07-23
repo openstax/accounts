@@ -4,17 +4,13 @@ class SessionsController < ApplicationController
   end
 
   def create
-    # user = User.from_omniauth(env["omniauth.auth"])
-
-
     auth = request.env['omniauth.auth']
+
+    logger.debug(auth.to_yaml)
  
     # Find an authentication or create an authentication
-    @authentication = Authentication.find_with_omniauth(auth)
-    if @authentication.nil?
-      # If no authentication was found, create a brand new one here
-      @authentication = Authentication.create_with_omniauth(auth)
-    end
+    @authentication = Authentication.find_with_omniauth(auth) ||
+                      Authentication.create_with_omniauth(auth)
  
     if signed_in?
       if @authentication.user == current_user
@@ -48,7 +44,8 @@ class SessionsController < ApplicationController
         #   # # So we just load it up
         # else
           # otherwise we have to create a user with the auth hash
-          u = User.create_with_omniauth(auth)
+          # u = User.create_with_omniauth(auth)
+          u = CreateUserFromOmniauth.new.exec(auth)
           # NOTE: we will handle the different types of data we get back
           # from providers at the model level in create_with_omniauth
         # end
