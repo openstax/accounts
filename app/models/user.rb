@@ -5,4 +5,8 @@ class User < ActiveRecord::Base
 
   attr_accessible :username
 
+  def is_administrator?
+    is_administrator
+  end
+
 end

@@ -5,17 +5,12 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    # raise "Please configure doorkeeper resource_owner_authenticator block located in #{__FILE__}"
-    # Put your resource owner authentication logic here.
-    current_user || warden.authenticate!(:scope => :user)
-    # Example implementation:
-    #   User.find_by_id(session[:user_id]) || redirect_to(new_user_session_url)
+    current_user || redirect_to(login_url)
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
   admin_authenticator do
-    # Put your admin authentication logic here.
-    current_user && current_user.is_administrator? || warden.authenticate!(:scope => :user)
+    (current_user && current_user.is_administrator?) || redirect_to(login_url)
   end
 
   # Authorization Code expiration time (default 10 minutes).

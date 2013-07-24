@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130722200704) do
+ActiveRecord::Schema.define(:version => 20130724194627) do
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
@@ -69,15 +69,16 @@ ActiveRecord::Schema.define(:version => 20130722200704) do
   add_index "oauth_applications", ["uid"], :name => "index_oauth_applications_on_uid", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "username",            :default => "", :null => false
+    t.string   "username",            :default => "",    :null => false
     t.datetime "remember_created_at"
     t.integer  "sign_in_count",       :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
+    t.boolean  "is_administrator",    :default => false
   end
 
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true
