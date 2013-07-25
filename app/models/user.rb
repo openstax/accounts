@@ -9,4 +9,8 @@ class User < ActiveRecord::Base
     is_administrator
   end
 
+  def is_anonymous?
+    false
+  end
+
 end

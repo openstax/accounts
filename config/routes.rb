@@ -1,8 +1,15 @@
 Services::Application.routes.draw do
-  # devise_for :users
-
+  
   use_doorkeeper
 
+  apipie
+
+  namespace :api do
+    namespace :v1 do
+      get '/me' => 'credentials#me'
+    end
+  end
+  
   match 'test', to: 'test#index'
 
   match '/auth/:provider/callback', to: 'sessions#create' #omniauth route
@@ -13,4 +20,5 @@ Services::Application.routes.draw do
   match '/logout', to: 'sessions#destroy'
 
   root :to => "static_page#home"
+  
 end

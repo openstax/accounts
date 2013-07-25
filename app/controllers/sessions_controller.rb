@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
     auth = request.env['omniauth.auth']
     logger.debug(auth.to_yaml)
     self.current_user = ProcessOmniauthAuthentication.exec(auth, current_user)
-    redirect_to(session.delete(:return_to) || root_url)
+    redirect_to session.delete(:return_to) || root_url
   end
 
   def destroy

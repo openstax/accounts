@@ -18,6 +18,12 @@ gem 'openstax_utilities', '~> 0.0.6'
 
 gem 'jquery-rails'
 
+# API documentation
+gem 'apipie-rails'
+gem 'maruku'
+
+gem 'jbuilder'
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'

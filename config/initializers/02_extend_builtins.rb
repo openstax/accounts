@@ -18,7 +18,7 @@ class ActionController::Base
 
     if user.nil?
       session[:user_id] = nil
-      cookies.delete[:secure_user_id]
+      cookies.delete(:secure_user_id)
     else
       session[:user_id] = user.id
       cookies.signed[:secure_user_id] = {secure: true, value: "secure#{user.id}"}
