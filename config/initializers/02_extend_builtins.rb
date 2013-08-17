@@ -9,10 +9,6 @@ class ActionController::Base
     end
   end
  
-  def signed_in?
-    !!current_user
-  end
- 
   def current_user=(user)
     @current_user = user
 
@@ -23,6 +19,18 @@ class ActionController::Base
       session[:user_id] = user.id
       cookies.signed[:secure_user_id] = {secure: true, value: "secure#{user.id}"}
     end
+  end
+
+  def sign_in(user)
+    self.current_user = user
+  end
+
+  def sign_out!
+    self.current_user = nil
+  end
+
+  def signed_in?
+    !!current_user
   end
 
 end

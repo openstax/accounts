@@ -3,11 +3,11 @@ class Authentication < ActiveRecord::Base
 
   belongs_to :user
 
-  def self.find_with_omniauth(auth)
-  	where{provider == auth['provider']}.where{uid == auth['uid']}.first
+  def self.find(provider, uid)
+    where{provider == provider}.where{uid == uid}.first
   end
 
-  def self.create_with_omniauth(auth)
-  	create(uid: auth['uid'], provider: auth['provider'])
+  def self.find!(provider, uid)
+    find(provider, uid) || create(uid: uid, provider: provider)
   end
 end

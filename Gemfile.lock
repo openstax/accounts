@@ -1,3 +1,10 @@
+PATH
+  remote: /Users/jps/dev/openstax_utilities
+  specs:
+    openstax_utilities (0.0.7.alpha)
+      attribeautiful (~> 0.0.7)
+      rails (>= 3.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -100,9 +107,6 @@ GEM
     omniauth-oauth2 (1.1.1)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
-    openstax_utilities (0.0.6)
-      attribeautiful (~> 0.0.7)
-      rails (>= 3.1)
     polyamorous (0.6.3)
       activerecord (>= 3.0)
     polyglot (0.3.3)
@@ -182,7 +186,7 @@ DEPENDENCIES
   omniauth
   omniauth-facebook
   omniauth-identity
-  openstax_utilities (~> 0.0.6)
+  openstax_utilities!
   quiet_assets
   rails (= 3.2.13)
   sass-rails (~> 3.2.3)

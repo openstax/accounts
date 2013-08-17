@@ -14,7 +14,7 @@ gem 'omniauth-facebook'
 gem 'squeel'
 gem 'quiet_assets'
 
-gem 'openstax_utilities', '~> 0.0.6'
+gem 'openstax_utilities', path: '/Users/jps/dev/openstax_utilities' #'~> 0.0.6'
 
 gem 'jquery-rails'
 
