@@ -1,7 +1,7 @@
 
 class DestroyUser
 
-  include Feature
+  include Algorithm
 
   def exec(user)
     return if user.nil?

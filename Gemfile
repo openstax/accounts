@@ -5,7 +5,6 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'rails', '3.2.13'
 
 gem 'doorkeeper', '~> 0.6.7'
-# gem 'devise'
 
 gem 'omniauth'
 gem 'omniauth-identity'
@@ -35,6 +34,8 @@ group :development, :test do
   gem 'debugger'
   gem 'sqlite3'
   gem 'thin'
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
 end
 
 group :production do

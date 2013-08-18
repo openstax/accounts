@@ -2,7 +2,7 @@
 
 class FinishUserCreation
 
-  include Feature
+  include Algorithm
 
   def exec(user)
     return if user.person.present?

@@ -2,7 +2,9 @@
 
 class HandleOmniauthAuthentication 
 
-  include Feature
+  include Algorithm
+
+protected
 
   # user_state has methods 
   #   sign_in(user)
@@ -10,23 +12,20 @@ class HandleOmniauthAuthentication
   #   signed_in?
   #   current_user
   #
-  def initialize(auth_data, user_state)
+  def exec(auth_data, user_state)
+
     @auth_data = auth_data
     @user_state = user_state
-  end
 
-protected
-
-  def exec
 
     # Find a matching Authentication or create one if none exists
-    authentication = Authentication.find!(@auth_data['provider'], 
-                                          @auth_data['provider_uid'])
+    authentication = Authentication.by_provider_and_uid!(@auth_data['provider'], 
+                                                         @auth_data['provider_uid'])
     authentication_user = authentication.user
 
     if authentication_user.nil?
       # check for existing users matching auth_data emails
-      matching_users = UsersWithEmails.all(auth_data.emails)
+      matching_users = UsersWithEmails.all(@auth_data['emails'])
 
       case matching_users.size
       when 0
@@ -50,14 +49,14 @@ protected
           sign_in(authentication_user)
         else
           if current_user.id == authentication_user.id
-            # return to app
+            return :return_to_app
           else
-            # choose which to login as
+            return :ask_which_account
           end 
         end
       else
         sign_in(authentication_user)
-        # return to app
+        return :return_to_app
       end
       
     else
@@ -66,15 +65,15 @@ protected
         run(TransferAuthentications, authentication, current_user)
 
         if current_user_is_temp?
-          # ask if new or returning
+          return :ask_new_or_returning
         else
-          # return to app
+          return :return_to_app
         end
       else
         new_user = run(CreateUser)
         run(TransferAuthentications, authentication, new_user)
         sign_in(new_user)
-        # ask if new or returning
+        return :ask_new_or_returning
       end
 
     end 
@@ -96,7 +95,7 @@ protected
     @user_state.signed_in?
   end
 
-  def sign_in?(user)
+  def sign_in(user)
     @user_state.sign_in(user)
   end
 

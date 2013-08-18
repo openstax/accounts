@@ -1,7 +1,7 @@
 
 class TransferAuthentications
 
-  include Feature
+  include Algorithm
 
   def exec(authentications, target_user)
     authentications = [authentications] if !(authentications.is_a? Array)

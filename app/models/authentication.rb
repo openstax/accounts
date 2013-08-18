@@ -3,11 +3,11 @@ class Authentication < ActiveRecord::Base
 
   belongs_to :user
 
-  def self.find(provider, uid)
-    where{provider == provider}.where{uid == uid}.first
+  def self.by_provider_and_uid(provider, uid)
+    where(provider: provider).where(uid: uid).first
   end
 
-  def self.find!(provider, uid)
-    find(provider, uid) || create(uid: uid, provider: provider)
+  def self.by_provider_and_uid!(provider, uid)
+    by_provider_and_uid(provider, uid) || create(uid: uid, provider: provider)
   end
 end

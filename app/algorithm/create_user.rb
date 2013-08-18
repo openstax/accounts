@@ -1,7 +1,7 @@
 
 class CreateUser
 
-  include Feature
+  include Algorithm
 
   def exec
     User.create()

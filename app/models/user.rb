@@ -1,7 +1,8 @@
 class User < ActiveRecord::Base
-  # devise :omniauthable, :rememberable, :trackable
 
+  belongs_to :person
   has_many :authentications
+  has_many :contact_infos
 
   attr_accessible :username
 

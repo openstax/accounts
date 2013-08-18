@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130724194627) do
+ActiveRecord::Schema.define(:version => 20130817011735) do
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
@@ -22,6 +22,19 @@ ActiveRecord::Schema.define(:version => 20130724194627) do
   end
 
   add_index "authentications", ["user_id", "provider"], :name => "index_authentications_on_user_id_scoped", :unique => true
+
+  create_table "contact_infos", :force => true do |t|
+    t.string   "type"
+    t.string   "value"
+    t.boolean  "verified"
+    t.string   "confirmation_code"
+    t.integer  "user_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  add_index "contact_infos", ["user_id"], :name => "index_contact_infos_on_user_id"
+  add_index "contact_infos", ["value", "user_id", "type"], :name => "index_contact_infos_on_value_user_id_type", :unique => true
 
   create_table "identities", :force => true do |t|
     t.string   "password_digest"
@@ -68,17 +81,17 @@ ActiveRecord::Schema.define(:version => 20130724194627) do
 
   add_index "oauth_applications", ["uid"], :name => "index_oauth_applications_on_uid", :unique => true
 
+  create_table "people", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "users", :force => true do |t|
-    t.string   "username",            :default => "",    :null => false
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",       :default => 0
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
-    t.boolean  "is_administrator",    :default => false
+    t.string   "username",         :default => "",    :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
+    t.boolean  "is_administrator", :default => false
+    t.integer  "person_id"
   end
 
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true
