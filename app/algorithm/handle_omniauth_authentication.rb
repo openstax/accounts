@@ -19,13 +19,13 @@ protected
 
 
     # Find a matching Authentication or create one if none exists
-    authentication = Authentication.by_provider_and_uid!(@auth_data['provider'], 
-                                                         @auth_data['provider_uid'])
+    authentication = Authentication.by_provider_and_uid!(@auth_data[:provider], 
+                                                         @auth_data[:provider_uid])
     authentication_user = authentication.user
 
     if authentication_user.nil?
       # check for existing users matching auth_data emails
-      matching_users = UsersWithEmails.all(@auth_data['emails'])
+      matching_users = UsersWithEmails.all(@auth_data[:emails])
 
       case matching_users.size
       when 0

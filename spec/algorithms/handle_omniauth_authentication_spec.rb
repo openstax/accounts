@@ -17,7 +17,7 @@ describe HandleOmniauthAuthentication do
       linked_authentications = user_state.current_user.authentications
       expect(linked_authentications.size).to eq 1
       expect(linked_authentications.first.provider).to eq 'dummy'
-      expect(linked_authentications.first.uid).to eq 1
+      expect(linked_authentications.first.uid).to eq "1"
     
     end
   end

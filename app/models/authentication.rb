@@ -4,10 +4,10 @@ class Authentication < ActiveRecord::Base
   belongs_to :user
 
   def self.by_provider_and_uid(provider, uid)
-    where(provider: provider).where(uid: uid).first
+    where(provider: provider).where(uid: uid.to_s).first
   end
 
   def self.by_provider_and_uid!(provider, uid)
-    by_provider_and_uid(provider, uid) || create(uid: uid, provider: provider)
+    by_provider_and_uid(provider, uid) || create(uid: uid.to_s, provider: provider)
   end
 end
