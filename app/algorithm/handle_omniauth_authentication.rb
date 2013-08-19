@@ -16,7 +16,7 @@ protected
 
     @auth_data = auth_data
     @user_state = user_state
-
+# debugger
 
     # Find a matching Authentication or create one if none exists
     authentication = Authentication.by_provider_and_uid!(@auth_data[:provider], 
@@ -47,6 +47,7 @@ protected
           run(DestroyUser, current_user)
           sign_out!
           sign_in(authentication_user)
+          return :return_to_app
         else
           if current_user.id == authentication_user.id
             return :return_to_app
