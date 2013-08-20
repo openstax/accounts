@@ -2,18 +2,22 @@
 
 class CreateUserFromOmniauth
 
+  include Algorithm
+
+protected
+
   def exec(auth)
-    case auth.provider
+    case auth[:provider]
     when "facebook"
       create_from_facebook_auth(auth)
     when "identity"
       create_from_identity_auth(auth)
+    when "twitter"
+      create_from_twitter_auth(auth)
     else
-      raise IllegalArgument, "unknown auth provider: #{auth.provider}"
+      raise IllegalArgument, "unknown auth provider: #{auth[:provider]}"
     end
   end
-
-protected
 
   def create_from_identity_auth(auth)
     User.create! do |user|
@@ -23,7 +27,13 @@ protected
 
   def create_from_facebook_auth(auth)
     User.create! do |user|
-      user.username = auth['info']['nickname']
+      user.username = auth[:info][:nickname]
+    end
+  end
+
+  def create_from_twitter_auth(auth)
+    User.create! do |user|
+      user.username = auth[:info][:nickname]
     end
   end
 

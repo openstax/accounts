@@ -7,7 +7,7 @@ describe HandleOmniauthAuthentication do
   context "when not signed in and no existing auth" do
     it "makes new user and prompts new or returning" do
 
-      auth_data = {provider: 'dummy', provider_uid: 1, emails: []}
+      auth_data = {provider: 'identity', provider_uid: 1, emails: []}
       next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
       expect(next_action).to eq(:ask_new_or_returning)
 
@@ -16,7 +16,7 @@ describe HandleOmniauthAuthentication do
       
       linked_authentications = user_state.current_user.authentications
       expect(linked_authentications.size).to eq 1
-      expect(linked_authentications.first.provider).to eq 'dummy'
+      expect(linked_authentications.first.provider).to eq 'identity'
       expect(linked_authentications.first.uid).to eq "1"
     
     end

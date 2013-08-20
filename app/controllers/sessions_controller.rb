@@ -7,8 +7,7 @@ class SessionsController < ApplicationController
     logger.debug('in new')
   end
 
-  # rename 'authenticated'
-  def create
+  def authenticated
     auth = request.env['omniauth.auth']
     logger.debug(auth.to_yaml)
     # TODO if new user, before set current_user, ask if have logged in before so can reuse existing user
@@ -56,6 +55,7 @@ class SessionsController < ApplicationController
 protected
 
   def return_to_app
+    logger.debug("in return to app #{session[:return_to]}")
     FinishUserCreation.call(current_user)
     redirect_to session.delete(:return_to) || root_url
   end

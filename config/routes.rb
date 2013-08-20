@@ -12,12 +12,16 @@ Services::Application.routes.draw do
   
   match 'test', to: 'test#index'
 
-  match '/auth/:provider/callback', to: 'sessions#create' #omniauth route
+  match '/auth/:provider/callback', to: 'sessions#authenticated' #omniauth route
   match '/signup', to: 'identities#new'
   
   match '/login', to: 'sessions#new'
   match "/auth/failure", to: "sessions#failure"
   match '/logout', to: 'sessions#destroy'
+
+  match '/i_am_new', to: 'sessions#i_am_new'
+  match '/i_am_returning', to: 'sessions#i_am_returning'
+
 
   root :to => "static_page#home"
   

@@ -1,4 +1,3 @@
-
 class ActionController::Base
   # References:
   #   http://railscasts.com/episodes/356-dangers-of-session-hijacking

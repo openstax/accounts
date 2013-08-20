@@ -1,0 +1,26 @@
+
+
+------------------
+* we want to prevent folks from calling myModel.destroy
+because we want them to be using algorithms to do it
+figure out a way to hook into activerecord so that this
+happens automatically, that is, if someone calls 
+myModel.destroy the algorithm DestroyModel is called.
+
+idea: subclass ActiveRecord::Base with "Model"
+make Model put in a BeforeDestroy or something
+that takes control.  Would need to be able to nest
+this destroy algorithm into any algorithms up the
+call chain.  Hack would be to use a global top 
+level algorithm variable -- if set, attach to it
+
+also, ponder what happens with dependent destroy stuff
+if a model is destroyed from an algorithm its dependent
+destroys will not be destroyed via their destroy algorithm
+------------------
+throw validation errors in DestroyUser
+------------------
+Currently usernames are required to be unique
+but it will happen that folks (or omniauth user
+create algs) will choose the same ones -- fail
+gracefully

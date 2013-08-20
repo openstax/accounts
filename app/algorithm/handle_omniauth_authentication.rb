@@ -19,7 +19,7 @@ protected
 
     # Find a matching Authentication or create one if none exists
     authentication = Authentication.by_provider_and_uid!(@auth_data[:provider], 
-                                                         @auth_data[:provider_uid])
+                                                         @auth_data[:uid])
     authentication_user = authentication.user
 
     if authentication_user.nil?
@@ -32,7 +32,8 @@ protected
         authentication_user = matching_users.first
         run(TransferAuthentications, authentication, authentication_user)  
       else
-        raise NotYetImplemented
+        # For the moment don't do anything.  Could try to let the user choose
+        # one of these other users to attach to, but that's 
       end
     end
 
@@ -71,7 +72,7 @@ protected
           return :return_to_app
         end
       else
-        new_user = run(CreateUser)
+        new_user = run(CreateUserFromOmniauth, auth_data)
         run(TransferAuthentications, authentication, new_user)
         sign_in(new_user)
         return :ask_new_or_returning

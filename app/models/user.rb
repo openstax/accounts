@@ -1,8 +1,8 @@
 class User < ActiveRecord::Base
 
   belongs_to :person
-  has_many :authentications
-  has_many :contact_infos
+  has_many :authentications, :dependent => :destroy
+  has_many :contact_infos, :dependent => :destroy
 
   attr_accessible :username
 

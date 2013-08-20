@@ -9,6 +9,7 @@ gem 'doorkeeper', '~> 0.6.7'
 gem 'omniauth'
 gem 'omniauth-identity'
 gem 'omniauth-facebook'
+gem 'omniauth-twitter'
 
 gem 'squeel'
 gem 'quiet_assets'
