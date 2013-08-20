@@ -160,7 +160,32 @@ describe HandleOmniauthAuthentication do
 
   end
 
+  context "when auth not linked to user but matches email of 1 user" do
+    let!(:authentication) { FactoryGirl.create(:authentication) }
+    let!(:user) { FactoryGirl.create(:user_with_emails, emails_count: 2) }
+    let!(:auth_data) {{provider: authentication.provider, 
+                       provider_uid: authentication.uid,
+                       emails: [user.contact_infos.first.value, "blah@blah.com"]}}
 
+    it "should link that auth to that user" do
+      HandleOmniauthAuthentication.call(auth_data, user_state)
+      expect(authentication.reload.user).to eq user
+    end
+  end
+
+  context "when auth not linked to user but matches emails of 2 users" do
+    # pending("Not worrying about this case for a while")
+
+    # let!(:authentication) { FactoryGirl.create(:authentication) }
+    # let!(:user1) { FactoryGirl.create(:user_with_emails, emails_count: 1) }
+    # let!(:user2) { FactoryGirl.create(:user_with_emails, emails_count: 1) }
+    # let!(:auth_data) {{provider: authentication.provider, 
+    #                    provider_uid: authentication.uid,
+    #                    emails: [user1.contact_infos.first.value, user2.contact_infos.first.value]}}
+
+    # it "should do something reasonable" do
+    # end
+  end
 
   # when new authentication email matches existing user
 
