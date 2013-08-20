@@ -16,7 +16,6 @@ protected
 
     @auth_data = auth_data
     @user_state = user_state
-# debugger
 
     # Find a matching Authentication or create one if none exists
     authentication = Authentication.by_provider_and_uid!(@auth_data[:provider], 
@@ -40,13 +39,14 @@ protected
     if authentication_user.present?
 
       if signed_in?
-        if current_user_is_temp?
-          # move temp user auths to authentication user, destroy and
-          # sign out the temp user, then sign in the authentication user        
-          run(TransferAuthentications, current_user.authentications, authentication_user)  
-          run(DestroyUser, current_user)
-          sign_out!
-          sign_in(authentication_user)
+        if is_temp?(authentication_user) && is_temp?(current_user)
+          first_user_lives_second_user_dies(current_user, authentication_user)
+          return :ask_new_or_returning
+        elsif is_temp?(authentication_user)
+          first_user_lives_second_user_dies(current_user, authentication_user)
+          return :return_to_app
+        elsif is_temp?(current_user)
+          first_user_lives_second_user_dies(authentication_user, current_user)
           return :return_to_app
         else
           if current_user.id == authentication_user.id
@@ -65,7 +65,7 @@ protected
       if signed_in?
         run(TransferAuthentications, authentication, current_user)
 
-        if current_user_is_temp?
+        if is_temp?(current_user)
           return :ask_new_or_returning
         else
           return :return_to_app
@@ -106,6 +106,24 @@ protected
 
   def current_user_is_temp?
     current_person.nil?
+  end
+
+  def is_temp?(user)
+    user.person.nil?
+  end
+
+  # Moves authentications from dying to living user & destroys dying user
+  # if those users are different.  If the living user isn't signed in, sign
+  # it in
+  def first_user_lives_second_user_dies(living_user, dying_user)
+    if living_user != dying_user
+      run(TransferAuthentications, dying_user.authentications, living_user)  
+      run(DestroyUser, dying_user)
+    end
+    if current_user != living_user
+      sign_out!
+      sign_in(living_user)
+    end
   end
 
 end
