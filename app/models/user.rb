@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   has_many :authentications, :dependent => :destroy
   has_many :contact_infos, :dependent => :destroy
 
+  delegate_to_algorithm :destroy
+
   attr_accessible :username
 
   def is_administrator?

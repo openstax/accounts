@@ -1,5 +1,5 @@
 
-
+OSC EPUB!
 ------------------
 * we want to prevent folks from calling myModel.destroy
 because we want them to be using algorithms to do it
@@ -20,7 +20,11 @@ destroys will not be destroyed via their destroy algorithm
 ------------------
 throw validation errors in DestroyUser
 ------------------
-Currently usernames are required to be unique
-but it will happen that folks (or omniauth user
-create algs) will choose the same ones -- fail
-gracefully
+-------------
+maybe user needs a state instead of temp == person.nil?
+might need state for other screens during sign up process
+user then like a state machine, can exist in certain non final
+states and have validations that deal with that
+------
+clean out algorithms folder (rules, etc)
+------

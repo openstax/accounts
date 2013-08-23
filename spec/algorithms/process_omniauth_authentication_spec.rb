@@ -1,14 +1,15 @@
 require 'spec_helper'
 
-describe HandleOmniauthAuthentication do
+
+describe ProcessOmniauthAuthentication do
   
   let(:user_state) { MockUserState.new }
 
   context "when not signed in and no existing auth" do
     it "makes new user and prompts new or returning" do
 
-      auth_data = {provider: 'identity', provider_uid: 1, emails: []}
-      next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
+      auth_data = {provider: 'identity', uid: 1, emails: []}
+      next_action = ProcessOmniauthAuthentication.call(auth_data, user_state)
       expect(next_action).to eq(:ask_new_or_returning)
 
       expect(user_state.current_user).not_to be_nil
@@ -24,10 +25,10 @@ describe HandleOmniauthAuthentication do
 
   context "when not signed in auth exists" do
     it "logs in the user and returns to app" do
-      authentication = FactoryGirl.create(:authentication_with_user)
-      auth_data = {provider: authentication.provider, provider_uid: authentication.uid}
+      authentication = FactoryGirl.create(:authentication, user: FactoryGirl.create(:user_with_person))
+      auth_data = {provider: authentication.provider, uid: authentication.uid}
 
-      next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
+      next_action = ProcessOmniauthAuthentication.call(auth_data, user_state)
       
       expect(next_action).to eq(:return_to_app)
       expect(user_state.current_user).to eq authentication.user
@@ -44,8 +45,8 @@ describe HandleOmniauthAuthentication do
     context "when auth linked to signed in user" do
       let(:authentication) { FactoryGirl.create(:authentication, user: signed_in_user) }
       it "maintains signed in user and returns to app" do
-        auth_data = {provider: authentication.provider, provider_uid: authentication.uid}
-        next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
+        auth_data = {provider: authentication.provider, uid: authentication.uid}
+        next_action = ProcessOmniauthAuthentication.call(auth_data, user_state)
         expect(next_action).to eq(:return_to_app)
         expect(user_state.current_user).to eq signed_in_user
       end
@@ -54,10 +55,10 @@ describe HandleOmniauthAuthentication do
     context "when auth not linked to a user" do
       let(:authentication) { FactoryGirl.create(:authentication) }
       it "adds the auth to the signed in user and returns to app" do
-        auth_data = {provider: authentication.provider, provider_uid: authentication.uid}
+        auth_data = {provider: authentication.provider, uid: authentication.uid}
         next_action = nil
         expect{
-          next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
+          next_action = ProcessOmniauthAuthentication.call(auth_data, user_state)
         }.to change{signed_in_user.authentications.count}.by 1
         expect(next_action).to eq(:return_to_app)
         expect(user_state.current_user).to eq signed_in_user
@@ -67,10 +68,10 @@ describe HandleOmniauthAuthentication do
     context "when auth linked to a temp user other than that signed in" do
       let(:other_temp_user) { FactoryGirl.create(:user) }
       let(:authentication) { FactoryGirl.create(:authentication, user: other_temp_user) }
-      let(:auth_data) {{provider: authentication.provider, provider_uid: authentication.uid}}
+      let(:auth_data) {{provider: authentication.provider, uid: authentication.uid}}
 
       it "transfers temp user auths to signed in user, destroys temp user, returns to app" do
-        next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
+        next_action = ProcessOmniauthAuthentication.call(auth_data, user_state)
         expect(authentication.reload.user).to eq signed_in_user
         expect(next_action).to eq :return_to_app
         expect(User.exists?(other_temp_user.id)).to be_false
@@ -82,8 +83,8 @@ describe HandleOmniauthAuthentication do
       let(:authentication) { FactoryGirl.create(:authentication, user: other_user) }
 
       it "leaves signed in user alone and asks which account to use" do
-        auth_data = {provider: authentication.provider, provider_uid: authentication.uid}
-        next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
+        auth_data = {provider: authentication.provider, uid: authentication.uid}
+        next_action = ProcessOmniauthAuthentication.call(auth_data, user_state)
         expect(next_action).to eq :ask_which_account
         expect(authentication.user).to eq other_user
         expect(user_state.current_user).to eq signed_in_user
@@ -102,10 +103,10 @@ describe HandleOmniauthAuthentication do
     # Readding an existing auth to a temp user
     context "when auth linked to signed in user" do
       let(:authentication) { FactoryGirl.create(:authentication, user: signed_in_user) }
-      let(:auth_data) {{provider: authentication.provider, provider_uid: authentication.uid}}
+      let(:auth_data) {{provider: authentication.provider, uid: authentication.uid}}
 
       it "should maintain signed in user and prompt new or returning" do
-        next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
+        next_action = ProcessOmniauthAuthentication.call(auth_data, user_state)
         expect(next_action).to eq :ask_new_or_returning
         expect(user_state.current_user).to eq signed_in_user
         expect(authentication.reload.user).to eq signed_in_user
@@ -114,10 +115,10 @@ describe HandleOmniauthAuthentication do
 
     context "when auth not linked to a user" do
       let(:authentication) { FactoryGirl.create(:authentication) }
-      let(:auth_data) {{provider: authentication.provider, provider_uid: authentication.uid}}
+      let(:auth_data) {{provider: authentication.provider, uid: authentication.uid}}
 
       it "should add auth to the signed in user and prompt new or returning" do
-        next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
+        next_action = ProcessOmniauthAuthentication.call(auth_data, user_state)
         expect(next_action).to eq :ask_new_or_returning
         expect(user_state.current_user).to eq signed_in_user
         expect(authentication.reload.user).to eq signed_in_user
@@ -128,11 +129,11 @@ describe HandleOmniauthAuthentication do
       let!(:other_temp_user) { FactoryGirl.create(:user) }
       let!(:authentication) { FactoryGirl.create(:authentication, user: other_temp_user) }
       let!(:other_authentication) { FactoryGirl.create(:authentication, user: other_temp_user) }
-      let!(:auth_data) {{provider: authentication.provider, provider_uid: authentication.uid}}
+      let!(:auth_data) {{provider: authentication.provider, uid: authentication.uid}}
 
       # weird edge case? not on flow chart
       it "transfers temp user auths to signed in user, destroys other temp user, prompts new or returning" do
-        next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
+        next_action = ProcessOmniauthAuthentication.call(auth_data, user_state)
         expect(next_action).to eq :ask_new_or_returning
         expect(user_state.current_user).to eq signed_in_user
         expect(authentication.reload.user).to eq signed_in_user
@@ -145,10 +146,10 @@ describe HandleOmniauthAuthentication do
       let!(:other_user) { FactoryGirl.create(:user_with_person) }
       let!(:authentication) { FactoryGirl.create(:authentication, user: other_user) }
       let!(:other_authentication) { FactoryGirl.create(:authentication, user: other_user) }
-      let!(:auth_data) {{provider: authentication.provider, provider_uid: authentication.uid}}
+      let!(:auth_data) {{provider: authentication.provider, uid: authentication.uid}}
 
       it "transfers auths to other user, destroys signed in user, signs in other user, returns to app" do
-        next_action = HandleOmniauthAuthentication.call(auth_data, user_state)
+        next_action = ProcessOmniauthAuthentication.call(auth_data, user_state)
         expect(next_action).to eq :return_to_app
         expect(user_state.current_user).to eq other_user
         expect(authentication.reload.user).to eq other_user
@@ -164,11 +165,12 @@ describe HandleOmniauthAuthentication do
     let!(:authentication) { FactoryGirl.create(:authentication) }
     let!(:user) { FactoryGirl.create(:user_with_emails, emails_count: 2) }
     let!(:auth_data) {{provider: authentication.provider, 
-                       provider_uid: authentication.uid,
+                       uid: authentication.uid,
                        emails: [user.contact_infos.first.value, "blah@blah.com"]}}
 
     it "should link that auth to that user" do
-      HandleOmniauthAuthentication.call(auth_data, user_state)
+      # debugger
+      ProcessOmniauthAuthentication.call(auth_data, user_state)
       expect(authentication.reload.user).to eq user
     end
   end
@@ -180,7 +182,7 @@ describe HandleOmniauthAuthentication do
     # let!(:user1) { FactoryGirl.create(:user_with_emails, emails_count: 1) }
     # let!(:user2) { FactoryGirl.create(:user_with_emails, emails_count: 1) }
     # let!(:auth_data) {{provider: authentication.provider, 
-    #                    provider_uid: authentication.uid,
+    #                    uid: authentication.uid,
     #                    emails: [user1.contact_infos.first.value, user2.contact_infos.first.value]}}
 
     # it "should do something reasonable" do

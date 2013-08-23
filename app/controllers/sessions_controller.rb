@@ -3,17 +3,16 @@
 
 class SessionsController < ApplicationController
 
-  def new
-    logger.debug('in new')
-  end
+  # Put some of this in an authentications controller?
+
+  def new; end
 
   def authenticated
     auth = request.env['omniauth.auth']
     logger.debug(auth.to_yaml)
-    # TODO if new user, before set current_user, ask if have logged in before so can reuse existing user
-    # self.current_user = ProcessOmniauthAuthentication.exec(auth, current_user)
 
-    next_action = HandleOmniauthAuthentication.call(auth, self)
+    # should break out return_to_apps that are really finish creation (fill in profile)
+    next_action = ProcessOmniauthAuthentication.call(auth, self)
 
     case next_action
     when :return_to_app
@@ -27,20 +26,22 @@ class SessionsController < ApplicationController
     end    
   end
 
-  def ask_new_or_returning
+  def ask_new_or_returning; end
 
+  def ask_which_account; end
+
+  def finish_registration
+    # if user profile info good to go, change in user and return_to_app!
+    # otherwise render register with error messages
+
+    handle_with(Handlers::UpdateUser, 
+                params: params['user'],
+                success: lambda { return_to_app! },
+                failure: lambda { render :register })
   end
 
-  def ask_which_account
+  def register
 
-  end
-
-  def i_am_new
-    return_to_app
-  end
-
-  def i_am_returning
-    render :new
   end
 
   def destroy
@@ -54,8 +55,13 @@ class SessionsController < ApplicationController
 
 protected
 
+  # def return_to_app
+  #   current_user.is_temp? ?   # really should not return :return_to_app, but :register_user instead
+  #     redirect_to(sessions_register_path) :
+  #     return_to_app!
+  # end
+
   def return_to_app
-    logger.debug("in return to app #{session[:return_to]}")
     FinishUserCreation.call(current_user)
     redirect_to session.delete(:return_to) || root_url
   end

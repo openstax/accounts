@@ -19,7 +19,9 @@ Services::Application.routes.draw do
   match "/auth/failure", to: "sessions#failure"
   match '/logout', to: 'sessions#destroy'
 
-  match '/i_am_new', to: 'sessions#i_am_new'
+  
+  get 'sessions/register'
+  put 'sessions/finish_registration'
   match '/i_am_returning', to: 'sessions#i_am_returning'
 
 

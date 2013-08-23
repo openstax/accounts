@@ -1,6 +1,6 @@
 
 
-class HandleOmniauthAuthentication 
+class ProcessOmniauthAuthentication 
 
   include Algorithm
 
@@ -58,19 +58,14 @@ protected
         end
       else
         sign_in(authentication_user)
-        return :return_to_app
+        return (is_temp?(authentication_user) ? :ask_new_or_returning : :return_to_app)
       end
       
     else
 
       if signed_in?
         run(TransferAuthentications, authentication, current_user)
-
-        if is_temp?(current_user)
-          return :ask_new_or_returning
-        else
-          return :return_to_app
-        end
+        return (is_temp?(current_user) ? :ask_new_or_returning : :return_to_app)
       else
         new_user = run(CreateUserFromOmniauth, auth_data)
         run(TransferAuthentications, authentication, new_user)

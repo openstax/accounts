@@ -1,0 +1,10 @@
+register.html.erb
+
+<p>show user edit form, button = "Register!"</p>
+
+
+<%= render 'users/form', 
+           user: current_user, 
+           url: {controller: 'sessions', 
+                 action: 'finish_registration'},
+           button_text: "Register" %>
