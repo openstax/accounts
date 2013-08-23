@@ -54,6 +54,9 @@ end
 # 
 # Arguments:
 #   method: a symbol for the instance method to delegate, e.g. :destroy
+#   options: a hash of options including...
+#      :algorithm_klass => The class of the algorithm to delegate to; if not 
+#        given, 
 ActiveRecord::Base.define_singleton_method(:delegate_to_algorithm) do |method, options={}|
   algorithm_klass = options[:algorithm_klass]
 
