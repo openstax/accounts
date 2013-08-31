@@ -17,26 +17,6 @@ module Algorithm
     def call(*args, &block)
       new.call(*args, &block)
     end
-
-    # def override(klass_and_method, options={})
-    #   # self is the algorithm to call
-    #   klass, method = klass_and_method.split('#')
-
-    #   klass = Kernel.const_get(klass)
-    #   method = method.to_sym
-
-    #   algorithm_klass = self
-
-    #   klass.instance_eval do 
-    #     define_method method do
-    #       # self here is User
-    #       debugger
-    #       algorithm_klass.call(klass)
-    #       puts 'in fake destroy'
-    #     end
-    #   end
-    #   puts method
-    # end
   end
 
 protected

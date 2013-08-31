@@ -1,5 +1,3 @@
-
-OSC EPUB!
 ------------------
 * we want to prevent folks from calling myModel.destroy
 because we want them to be using algorithms to do it
@@ -18,13 +16,28 @@ also, ponder what happens with dependent destroy stuff
 if a model is destroyed from an algorithm its dependent
 destroys will not be destroyed via their destroy algorithm
 ------------------
+Destroy algorithms -- return type should somehow mate with what User.destroy gives? 
+maybe delegate_to_algorithm can do that?  or it can know to hand off to a 
+delegate_destroy_to_algorithm which returns true/false and sets errors?
+maybe we don't want model errors at all. hmmm
+------------------
+  # does this constrain what this alg can return? (match destroy return)
+  # how to connect into containing algorith transaction? -- single threaded can probably do with global store
+  # do we disable all of the model's before_destroy and similar?
+
+  # could say delegate destroy in activerecord::base, have that delegate
+  #   to a dynamically created class figured out from the delegated method
+  #   and target class -- actually could use our own fancy_delegate method
+  #   that would search out the appropriate Algorithm
+  #     delegate_to_algorithm :destroy -- if have unconventional algorithm ********* do this
+  #     name, let coder specify
+  #     we'd need this code to be loaded before the models were loaded I think
+
+------------------
 throw validation errors in DestroyUser
 ------------------
--------------
 maybe user needs a state instead of temp == person.nil?
 might need state for other screens during sign up process
 user then like a state machine, can exist in certain non final
 states and have validations that deal with that
-------
-clean out algorithms folder (rules, etc)
 ------

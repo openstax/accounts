@@ -34,22 +34,8 @@ class ActionController::Base
 
 end
 
-# override User#destroy
-  # does this constrain what this alg can return? (match destroy return)
-  # how to connect into containing algorith transaction? -- single threaded can probably do with global store
-  # will need to alias original destroy method so we can call it internally
-  # do we disable all of the model's before_destroy and similar?
-  # how do we call the override method in time for a user.destroy call? have
-  #   to do it in User right? -- use delegate?
-  #   or have to put it in something loaded in initializers
-  # could say delegate destroy in activerecord::base, have that delegate
-  #   to a dynamically created class figured out from the delegated method
-  #   and target class -- actually could use our own fancy_delegate method
-  #   that would search out the appropriate Algorithm
-  #     delegate_to_algorithm :destroy -- if have unconventional algorithm ********* do this
-  #     name, let coder specify
-  #     we'd need this code to be loaded before the models were loaded I think
-
+# ActiveRecord::Base.delegate_to_algorithm
+#
 # Let active records delegate certain (likely non-trivial) actions to algoritms
 # 
 # Arguments:
