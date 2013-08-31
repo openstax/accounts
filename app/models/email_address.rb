@@ -1,0 +1,5 @@
+
+
+class EmailAddress < ContactInfo
+
+end

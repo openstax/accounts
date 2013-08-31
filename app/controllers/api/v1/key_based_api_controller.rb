@@ -14,6 +14,8 @@ module Api
           !@current_application.nil?
         end
       end
+
+    end
    
   end
 end

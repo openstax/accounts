@@ -1,7 +1,10 @@
 class User < ActiveRecord::Base
-  # devise :omniauthable, :rememberable, :trackable
 
-  has_many :authentications
+  belongs_to :person
+  has_many :authentications, :dependent => :destroy
+  has_many :contact_infos, :dependent => :destroy
+
+  delegate_to_algorithm :destroy
 
   attr_accessible :username
 

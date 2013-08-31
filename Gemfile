@@ -5,16 +5,16 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 gem 'rails', '3.2.13'
 
 gem 'doorkeeper', '~> 0.6.7'
-# gem 'devise'
 
 gem 'omniauth'
 gem 'omniauth-identity'
 gem 'omniauth-facebook'
+gem 'omniauth-twitter'
 
 gem 'squeel'
 gem 'quiet_assets'
 
-gem 'openstax_utilities', '~> 0.0.6'
+gem 'openstax_utilities', path: '/Users/jps/dev/openstax_utilities' #'~> 0.0.6'
 
 gem 'jquery-rails'
 
@@ -23,6 +23,8 @@ gem 'apipie-rails'
 gem 'maruku'
 
 gem 'jbuilder'
+
+gem 'babbler'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
@@ -35,6 +37,8 @@ group :development, :test do
   gem 'debugger'
   gem 'sqlite3'
   gem 'thin'
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
 end
 
 group :production do

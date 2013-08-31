@@ -1,0 +1,11 @@
+<% 
+  form_options = {}
+  form_options[:url] = url if local_assigns.has_key?(:url)
+%>
+
+<%= form_for user, form_options do |f| %>
+  <%= f.hidden_field :user_id, value: user.id %>
+  Username: <%= f.text_field :username %>
+
+  <%= f.submit button_text || "Submit" %>
+<% end %>

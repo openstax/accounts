@@ -15,7 +15,7 @@ Doorkeeper.configure do
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
   admin_authenticator do
-    (current_user && current_user.is_administrator?) || redirect_to(login_url)
+    (current_user && current_user.is_administrator? || Rails.env.development?) || redirect_to(login_url)
   end
 
   # Authorization Code expiration time (default 10 minutes).
@@ -61,7 +61,11 @@ Doorkeeper.configure do
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
   # For example if dealing with trusted a application.
-  # skip_authorization do |resource_owner, client|
-  #   client.superapp? or resource_owner.admin?
-  # end
+  skip_authorization do |resource_owner, client|
+    client.application.trusted
+  end
 end
+
+# Added some fields to Doorkeeper
+
+Doorkeeper::Application.attr_accessible :trusted
