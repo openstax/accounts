@@ -5,7 +5,7 @@
 #
 # All input handlers must:
 #   1) live in the "Handlers" namespace 
-#   2) include this module ("include Handler")
+#   2) include this module ("include Handlers::Base")
 #   3) implement the 'exec' method
 #   4) implement the 'authorized?' method
 #
