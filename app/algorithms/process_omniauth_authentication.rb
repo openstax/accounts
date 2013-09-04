@@ -85,7 +85,7 @@ protected
   end
 
   def current_person
-    current_user.present? ? current_user.person : nil
+    current_user.is_anonymous? ? nil : current_user.person
   end
 
   def signed_in?

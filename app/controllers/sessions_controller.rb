@@ -36,16 +36,15 @@ class SessionsController < ApplicationController
 
     handle_with(Handlers::UpdateUser, 
                 params: params['user'],
-                success: lambda { return_to_app! },
+                success: lambda { return_to_app },
                 failure: lambda { render :register })
   end
 
   def register
-
   end
 
   def destroy
-    self.current_user = nil
+    sign_out!
     redirect_to root_path, notice: "Signed out!"
   end
 
