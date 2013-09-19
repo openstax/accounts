@@ -15,6 +15,7 @@ gem 'squeel'
 gem 'quiet_assets'
 
 gem 'openstax_utilities', '~> 0.0.7'
+gem 'lev', path: '/Users/jps/dev/lev' #'~> 0.0.2'
 
 gem 'jquery-rails'
 

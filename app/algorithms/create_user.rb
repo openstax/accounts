@@ -2,7 +2,7 @@
 # Not called directly by users, so should just work (don't get validation errors)
 class CreateUser
 
-  include Algorithm
+  include Lev::Algorithm
 
 protected
 

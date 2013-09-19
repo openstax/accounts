@@ -19,7 +19,7 @@ module Services
     config.autoload_paths += %W(
                                 #{config.root}/app/algorithms 
                                 #{config.root}/app/queries
-                                #{config.root}/app
+                                #{config.root}/app/handlers
                                 )
 
     # Only load the plugins named here, in the order given (default is alphabetical).

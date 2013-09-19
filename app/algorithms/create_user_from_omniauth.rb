@@ -2,7 +2,7 @@
 
 class CreateUserFromOmniauth
 
-  include Algorithm
+  include Lev::Algorithm
 
 protected
 

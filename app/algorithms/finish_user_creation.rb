@@ -2,7 +2,9 @@
 
 class FinishUserCreation
 
-  include Algorithm
+  include Lev::Algorithm
+
+protected
 
   def exec(user)
     return if user.person.present?

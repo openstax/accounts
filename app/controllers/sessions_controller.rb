@@ -8,22 +8,16 @@ class SessionsController < ApplicationController
   def new; end
 
   def authenticated
-    auth = request.env['omniauth.auth']
-    logger.debug(auth.to_yaml)
-
-    # should break out return_to_apps that are really finish creation (fill in profile)
-    next_action = ProcessOmniauthAuthentication.call(auth, self)
-
-    case next_action
-    when :return_to_app
-      return_to_app
-    when :ask_new_or_returning
-      render :ask_new_or_returning
-    when :ask_which_account
-      render :ask_which_account
-    else
-      raise IllegalState
-    end    
+    handle_with(SessionsAuthenticated,
+                user_state: self,
+                complete: lambda {
+                  case @results[:next_action]
+                  when :return_to_app         then return_to_app
+                  when :ask_new_or_returning  then render :ask_new_or_returning
+                  when :ask_which_account     then render :ask_which_account
+                  else                             raise IllegalState
+                  end    
+                })
   end
 
   def ask_new_or_returning; end

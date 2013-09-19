@@ -1,8 +1,10 @@
 
 
-class Handlers::UpdateUser
+# needs to be named something else and taken out of the Handlers namespace
 
-  include Handlers::Base
+class UpdateUser
+
+  include Lev::Handler
 
 protected
 

@@ -1,3 +1,11 @@
+PATH
+  remote: /Users/jps/dev/lev
+  specs:
+    lev (0.0.3.alpha)
+      active_attr
+      transaction_isolation
+      transaction_retry
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -14,6 +22,9 @@ GEM
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
       sprockets (~> 2.2.1)
+    active_attr (0.8.2)
+      activemodel (>= 3.0.2, < 4.1)
+      activesupport (>= 3.0.2, < 4.1)
     activemodel (3.2.13)
       activesupport (= 3.2.13)
       builder (~> 3.0.0)
@@ -183,6 +194,11 @@ GEM
       rack (>= 1.0.0)
     thor (0.18.1)
     tilt (1.4.1)
+    transaction_isolation (1.0.3)
+      activerecord (>= 3.0.11)
+    transaction_retry (1.0.2)
+      activerecord (>= 3.0.11)
+      transaction_isolation (>= 1.0.2)
     treetop (1.4.14)
       polyglot
       polyglot (>= 0.3.1)
@@ -203,6 +219,7 @@ DEPENDENCIES
   factory_girl_rails
   jbuilder
   jquery-rails
+  lev!
   maruku
   omniauth
   omniauth-facebook

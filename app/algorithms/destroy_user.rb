@@ -1,7 +1,7 @@
 
 class DestroyUser
 
-  include Algorithm
+  include Lev::Algorithm
 
 protected
 

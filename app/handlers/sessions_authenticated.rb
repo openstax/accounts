@@ -1,21 +1,36 @@
 
+# Handles omniauth authentication data.
+#
+# Callers must supply:
+#   1) a request with an 'omniauth.auth' env that contains values for these keys:
+#        :provider --> the Oauth provider
+#        :uid --> the ID of the user from the Oauth provider
+#   2) a 'user_state' object which has the following methods:
+#        sign_in(user)
+#        sign_out!
+#        signed_in?
+#        current_user
+#
+# In the results object, this handler will return a :next_action, which will
+# be one of: :return_to_app, :ask_which_account, :ask_new_or_returning
+#
+#
+class SessionsAuthenticated 
 
-class ProcessOmniauthAuthentication 
-
-  include Algorithm
+  include Lev::Handler
 
 protected
 
-  # user_state has methods 
-  #   sign_in(user)
-  #   sign_out!
-  #   signed_in?
-  #   current_user
-  #
-  def exec(auth_data, user_state)
+  def setup
+    @auth_data = request.env['omniauth.auth']
+    @user_state = options[:user_state]
+  end
 
-    @auth_data = auth_data
-    @user_state = user_state
+  def authorized?
+    true
+  end
+
+  def exec
 
     # Find a matching Authentication or create one if none exists
     authentication = Authentication.by_provider_and_uid!(@auth_data[:provider], 
@@ -42,39 +57,38 @@ protected
       if signed_in?
         if is_temp?(authentication_user) && is_temp?(current_user)
           first_user_lives_second_user_dies(current_user, authentication_user)
-          return :ask_new_or_returning
+          results[:next_action] = :ask_new_or_returning
         elsif is_temp?(authentication_user)
           first_user_lives_second_user_dies(current_user, authentication_user)
-          return :return_to_app
+          results[:next_action] = :return_to_app
         elsif is_temp?(current_user)
           first_user_lives_second_user_dies(authentication_user, current_user)
-          return :return_to_app
+          results[:next_action] = :return_to_app
         else
           if current_user.id == authentication_user.id
-            return :return_to_app
+            results[:next_action] = :return_to_app
           else
-            return :ask_which_account
+            results[:next_action] = :ask_which_account
           end 
         end
       else
         sign_in(authentication_user)
-        return (is_temp?(authentication_user) ? :ask_new_or_returning : :return_to_app)
+        results[:next_action] = (is_temp?(authentication_user) ? :ask_new_or_returning : :return_to_app)
       end
       
     else
 
       if signed_in?
         run(TransferAuthentications, authentication, current_user)
-        return (is_temp?(current_user) ? :ask_new_or_returning : :return_to_app)
+        results[:next_action] = (is_temp?(current_user) ? :ask_new_or_returning : :return_to_app)
       else
-        new_user = run(CreateUserFromOmniauth, auth_data)
+        new_user = run(CreateUserFromOmniauth, @auth_data)
         run(TransferAuthentications, authentication, new_user)
         sign_in(new_user)
-        return :ask_new_or_returning
+        results[:next_action] = :ask_new_or_returning
       end
 
     end 
-
 
   end
 
