@@ -1,22 +1,38 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Services</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
 
-<% if signed_in? %>
-  Welcome, <%= current_user.username %>&nbsp;&nbsp;&nbsp;<%= link_to 'Sign out', logout_path %>
-<% else %>
-  <%= link_to 'Sign Up', signup_path %> or <%= link_to "Sign in", login_path %>
-<% end %>
+  <head>
 
-<hr/>
+    <% if @redirect_url %>
+      <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
+    <% end %>
 
-<%= yield %>
+    <%= stylesheet_link_tag     "application" %>
+    <%= javascript_include_tag  "application" %>
 
-</body>
+    <title><%= @page_title + ' - ' if !@page_title.nil? %><%= SITE_NAME %></title>  
+
+  </head>
+
+  <body>
+
+    <%= render :partial => "layouts/application_js_hooks" %>
+
+    <div id="application-container">
+
+      <%= render :partial => "layouts/application_header" %>
+
+      <%= render :partial => "layouts/application_body" %>
+
+      <%= render :partial => "layouts/application_footer" %>
+
+    </div>
+
+  <%= yield :javascript %>
+
+  </body>
+
 </html>
+
+
+

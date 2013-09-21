@@ -14,10 +14,12 @@ gem 'omniauth-twitter'
 gem 'squeel'
 gem 'quiet_assets'
 
-gem 'openstax_utilities', '~> 0.0.7'
-gem 'lev', '~> 0.0.3'
+# gem 'openstax_utilities', '~> 0.0.7'
+gem 'openstax_utilities', path: '/Users/jps/dev/openstax_utilities'
+gem 'lev', path: '/Users/jps/dev/lev' #'~> 0.0.3'
 
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 
 # API documentation
 gem 'apipie-rails'
@@ -30,6 +32,7 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1'
   gem 'therubyracer', :platforms => :ruby
   gem 'uglifier', '>= 1.0.3'
+  gem 'bootstrap-sass', '~> 2.3.1.0'
 end
 
 group :development, :test do

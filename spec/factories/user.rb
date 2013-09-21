@@ -8,6 +8,7 @@ FactoryGirl.define do
 
     factory :user_with_person do
       person
+      is_temp false
     end
 
     factory :user_with_emails do

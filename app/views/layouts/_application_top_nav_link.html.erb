@@ -1,0 +1,12 @@
+<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<% target_image ||= '' %>
+
+<%= link_to target_path do %>
+  <span id="<%= target_id %>" class="top-nav-link <%= yield target_current_symbol %>">
+    <%= target_text.html_safe %>
+    <%= target_image %>
+    <em></em>
+  </span>
+<% end %>

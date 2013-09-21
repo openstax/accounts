@@ -1,4 +1,9 @@
 /*
+ * Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+ * License version 3 or later.  See the COPYRIGHT file for details.
+ */
+
+/*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
  *
@@ -9,5 +14,7 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require jquery-ui
+ *= require main
  *= require_tree .
  */

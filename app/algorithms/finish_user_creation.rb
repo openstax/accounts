@@ -7,10 +7,13 @@ class FinishUserCreation
 protected
 
   def exec(user)
-    return if user.person.present?
+    return if !user.is_temp
 
     person = Person.create
-    user.update_attribute(:person_id, person.id)
+    user.save do |uu|
+      uu.person_id = person.id
+      uu.is_temp = false
+    end
   end
 
 end

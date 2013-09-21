@@ -18,12 +18,12 @@ class ActionController::Base
  
   def current_user=(user)
     @current_user = user || AnonymousUser.instance
-    if user.is_anonymous?
+    if @current_user.is_anonymous?
       session[:user_id] = nil
       cookies.delete(:secure_user_id)
     else
-      session[:user_id] = user.id
-      cookies.signed[:secure_user_id] = {secure: true, value: "secure#{user.id}"}
+      session[:user_id] = @current_user.id
+      cookies.signed[:secure_user_id] = {secure: true, value: "secure#{@current_user.id}"}
     end
     @current_user
   end

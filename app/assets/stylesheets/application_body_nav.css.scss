@@ -1,0 +1,21 @@
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// License version 3 or later.  See the COPYRIGHT file for details.
+
+@import "common";
+
+#application-body-nav {
+  position: relative;
+
+  $body_width: 700px;
+  $nav_width:  $application_master_width - $body_width;
+
+  #application-body-nav-body {
+    float:   left;
+    width: $body_width;
+  }
+
+  #application-body-nav-nav {
+    float:   right;
+    width: $nav_width;
+  }
+}

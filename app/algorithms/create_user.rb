@@ -16,6 +16,7 @@ protected
 
     User.create! do |user|
       user.username = username
+      user.is_temp = true  # all users start as temp
     end
   end
 

@@ -3,12 +3,6 @@ require 'spec_helper'
 
 describe SessionsAuthenticated do
   
-  # def fake_request(provider, uid, emails)
-  #   mock("request")
-  #     .stub!(:env)
-  #     .and_return({'omniauth.auth' => {provider: provider, uid: uid, emails: emails}})
-  # end 
-
   let(:user_state) { MockUserState.new }
 
   context "when not signed in and no existing auth" do
@@ -23,6 +17,7 @@ describe SessionsAuthenticated do
 
       expect(user_state.current_user).not_to be_nil
       expect(user_state.current_user.person).to be_nil
+      expect(user_state.current_user.is_temp).to be_true
       
       linked_authentications = user_state.current_user.authentications
       expect(linked_authentications.size).to eq 1
@@ -35,7 +30,6 @@ describe SessionsAuthenticated do
   context "when not signed in auth exists" do
     it "logs in the user and returns to app" do
       authentication = FactoryGirl.create(:authentication, user: FactoryGirl.create(:user_with_person))
-
       results, errors = SessionsAuthenticated.handle(
         user_state: user_state,
         request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])

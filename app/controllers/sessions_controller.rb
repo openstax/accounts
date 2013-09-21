@@ -5,7 +5,9 @@ class SessionsController < ApplicationController
 
   # Put some of this in an authentications controller?
 
-  def new; end
+  def new
+    @application = Doorkeeper::Application.where(uid: params[:client_id]).first
+  end
 
   def authenticated
     handle_with(SessionsAuthenticated,
@@ -47,12 +49,6 @@ class SessionsController < ApplicationController
   end
 
 protected
-
-  # def return_to_app
-  #   current_user.is_temp? ?   # really should not return :return_to_app, but :register_user instead
-  #     redirect_to(sessions_register_path) :
-  #     return_to_app!
-  # end
 
   def return_to_app
     FinishUserCreation.call(current_user)

@@ -3,6 +3,8 @@ class ApplicationController < ActionController::Base
 
   include Lev::HandleWith
 
+  layout 'application_body_only'
+
 protected
 
   # These methods are defined in the base class via the 02... initializer

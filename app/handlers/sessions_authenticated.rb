@@ -55,13 +55,13 @@ protected
     if authentication_user.present?
 
       if signed_in?
-        if is_temp?(authentication_user) && is_temp?(current_user)
+        if authentication_user.is_temp && current_user.is_temp
           first_user_lives_second_user_dies(current_user, authentication_user)
           results[:next_action] = :ask_new_or_returning
-        elsif is_temp?(authentication_user)
+        elsif authentication_user.is_temp
           first_user_lives_second_user_dies(current_user, authentication_user)
           results[:next_action] = :return_to_app
-        elsif is_temp?(current_user)
+        elsif current_user.is_temp
           first_user_lives_second_user_dies(authentication_user, current_user)
           results[:next_action] = :return_to_app
         else
@@ -73,14 +73,14 @@ protected
         end
       else
         sign_in(authentication_user)
-        results[:next_action] = (is_temp?(authentication_user) ? :ask_new_or_returning : :return_to_app)
+        results[:next_action] = (authentication_user.is_temp ? :ask_new_or_returning : :return_to_app)
       end
       
     else
 
       if signed_in?
         run(TransferAuthentications, authentication, current_user)
-        results[:next_action] = (is_temp?(current_user) ? :ask_new_or_returning : :return_to_app)
+        results[:next_action] = (current_user.is_temp ? :ask_new_or_returning : :return_to_app)
       else
         new_user = run(CreateUserFromOmniauth, @auth_data)
         run(TransferAuthentications, authentication, new_user)
@@ -98,10 +98,6 @@ protected
     @user_state.current_user
   end
 
-  def current_person
-    current_user.is_anonymous? ? nil : current_user.person
-  end
-
   def signed_in?
     @user_state.signed_in?
   end
@@ -112,14 +108,6 @@ protected
 
   def sign_out!
     @user_state.sign_out!
-  end
-
-  def current_user_is_temp?
-    current_person.nil?
-  end
-
-  def is_temp?(user)
-    user.person.nil?
   end
 
   # Moves authentications from dying to living user & destroys dying user

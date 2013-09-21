@@ -1,0 +1,23 @@
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// License version 3 or later.  See the COPYRIGHT file for details.
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// The following help to make the OS colors available to Javascript (they
+// are used in invisible elements that jQuery can read)
+
+@import "common";
+
+.os_green  { background-color: $os_green;  }
+.os_orange { background-color: $os_orange; }
+.os_gray   { background-color: $os_gray;   }
+.os_yellow { background-color: $os_yellow; }
+.os_blue   { background-color: $os_blue;   }
+
+.os_dark_orange  { background-color: $os_dark_orange;  }
+.ost_light_beige { background-color: $ost_light_beige; }
+
+.white { background-color: white; }
+
+//
+////////////////////////////////////////////////////////////////////////////////

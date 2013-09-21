@@ -1,2 +1,41 @@
-    <%= link_to "Sign in with Twitter", "/auth/twitter" %>
-    <%= link_to "Sign in with Facebook", "/auth/facebook" %>
+<style type='text/css'>
+  #top-nav-account { display: none;}
+</style>
+
+<%= page_heading("Sign in 
+     #{'to ' + @application.name if @application} 
+     with your one OpenStax account!".html_safe) %>
+
+<div id="login-options">
+  <%= link_to "/auth/facebook", {class: 'login-button'} do %>
+    <%= image_tag "fb_64.png" -%>
+  <% end %>
+  <%= link_to "/auth/twitter", {class: 'login-button'} do %>
+    <%= image_tag "twitter_64.png" -%>
+  <% end %>
+  <%= link_to "/auth/google", {class: 'login-button'} do %>
+    <%= image_tag "g+64.png" -%>
+  <% end %>
+
+  <div id="or-bar">
+    <div id="or-text">OR</div>
+  </div>
+
+  <div id="password-login">
+    <form method='post' action='/auth/identity/callback'>
+      <label for='auth_key'>Username</label><input type='text' id='auth_key' name='auth_key'/>
+      <label for='password'>Password</label><input type='password' id='password' name='password'/>
+      <% if false %><p align='center'><a href='/auth/identity/register'>Create an Identity</a></p><% end %>
+      <br/><button >Sign in</button>      
+    </form>
+</div>
+</div>
+
+
+<div id="login-explanation">
+  <p>Use the buttons at the right to sign in using your Facebook, Twitter, or Google account.</p>
+  <p>Prefer to use a plain old username and password?  You can do that too.</p>
+</div>
+
+
+    

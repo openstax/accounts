@@ -8,7 +8,7 @@ Doorkeeper.configure do
     unless signed_in?
       # before redirect to the login page, save where we should return to
       session[:return_to] = request.fullpath
-      redirect_to(login_url)
+      redirect_to(login_url(client_id: params[:client_id]))
     end
     current_user
   end

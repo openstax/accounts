@@ -24,6 +24,7 @@ Services::Application.routes.draw do
   put 'sessions/finish_registration'
   match '/i_am_returning', to: 'sessions#i_am_returning'
 
+  match 'copyright', :to => 'static_page#copyright'
 
   root :to => "static_page#home"
   

@@ -1,0 +1,19 @@
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// License version 3 or later.  See the COPYRIGHT file for details.
+
+@import "common";
+
+#application-home-page-background-image {
+  height:         558px;
+  padding:        0px 0px;
+  margin: -$application_body_topbottom_margin (-$application_body_leftright_margin) (-$application_body_topbottom_margin - 15px);
+
+  background: image-url("peeps_in_brain_v3-01.png") no-repeat transparent;
+}
+
+#application-home-page-welcome-image {
+  clear:        both;
+  float:        right; 
+  margin-right: $application_edge_distance;
+  margin-top:   180px;
+}

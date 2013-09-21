@@ -1,21 +1,4 @@
 ------------------
-* we want to prevent folks from calling myModel.destroy
-because we want them to be using algorithms to do it
-figure out a way to hook into activerecord so that this
-happens automatically, that is, if someone calls 
-myModel.destroy the algorithm DestroyModel is called.
-
-idea: subclass ActiveRecord::Base with "Model"
-make Model put in a BeforeDestroy or something
-that takes control.  Would need to be able to nest
-this destroy algorithm into any algorithms up the
-call chain.  Hack would be to use a global top 
-level algorithm variable -- if set, attach to it
-
-also, ponder what happens with dependent destroy stuff
-if a model is destroyed from an algorithm its dependent
-destroys will not be destroyed via their destroy algorithm
-------------------
 Destroy algorithms -- return type should somehow mate with what User.destroy gives? 
 maybe delegate_to_algorithm can do that?  or it can know to hand off to a 
 delegate_destroy_to_algorithm which returns true/false and sets errors?
@@ -33,11 +16,14 @@ maybe we don't want model errors at all. hmmm
   #     name, let coder specify
   #     we'd need this code to be loaded before the models were loaded I think
 
-------------------
-throw validation errors in DestroyUser
+
 ------------------
 maybe user needs a state instead of temp == person.nil?
 might need state for other screens during sign up process
 user then like a state machine, can exist in certain non final
 states and have validations that deal with that
 ------
+each doorkeeper application should have an uploaded logo that we
+can show on the login page
+-----------
+

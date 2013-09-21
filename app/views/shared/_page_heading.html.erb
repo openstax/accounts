@@ -1,0 +1,12 @@
+<%# Copyright 2011-2012 Rice University. Licensed under the Affero General Public 
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<% sub_heading_text ||= "" %>
+
+<div id="page-heading">
+  <%= heading_text %>
+  <% if !sub_heading_text.blank? %>
+    <div id="page-sub-heading">[<%= sub_heading_text %>]</div>
+  <% end %>
+</div>
+<div style="clear:both"></div>

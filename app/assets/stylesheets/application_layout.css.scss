@@ -1,0 +1,39 @@
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// License version 3 or later.  See the COPYRIGHT file for details.
+
+@import "common";
+
+body { 
+  background-color: $application_background_color;
+  color:            $os_gray;
+  margin-top:       0px;
+}
+
+body, p, ol, ul, td, a {
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size:   13px;
+}
+
+#application-container {
+  width: $application_master_width;
+
+  margin: 0px auto;
+
+  font-weight: normal;
+  font-color:  black;
+}
+
+#page-heading {
+  padding: 10px 0 7px;
+  font-size:  16px;
+  font-weight:  700;
+  font-style: normal;
+  color: $os_gray;
+  float: left;
+}
+
+#page-sub-heading {
+  font-size: 14px;
+  margin-top:3px;
+  font-style: italic;
+}

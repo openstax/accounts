@@ -1,0 +1,19 @@
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// License version 3 or later.  See the COPYRIGHT file for details.
+
+$os_green:  rgb(118, 177, 67); //#77AF42; //#76b143; 
+$os_orange: #F47641; //#f37643;
+$os_gray:   #5F6163; //#5e6062;
+$os_yellow: #F4D019; //#f5d10e;
+$os_blue:   #233066; //#00246a;
+
+$os_dark_orange:  darken($os_orange,10%);
+$os_dark_gray:    darken($os_gray,20%);
+
+$ost_light_beige:   #f7f3f1;
+$ost_hot_blue:      #43bff9;
+$ost_account_gray:  #9d9d9d;
+
+$application_background_color: white;
+
+$application_footer_background_color: #7d7d7d;
