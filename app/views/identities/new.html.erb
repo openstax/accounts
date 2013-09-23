@@ -1,8 +1,12 @@
+<%= page_heading 'Register with a username and password' %>
 
-<%= form_tag '/auth/identity/register' do |f| %>
-  <h1>Create an Account</h1>
-  Username <%= text_field_tag :username %><br/>
-  Password <%= password_field_tag :password %><br/>
-  Password again <%= password_field_tag :password_confirmation %><br/>
-  <%= submit_tag %>
+<%= lev_form_for :register, url: '/auth/identity/register' do |f| %>
+
+  <%= standard_field form: f, name: :username, type: :text_field, label: "Username" %>
+  <%= standard_field form: f, name: :first_name, type: :text_field, label: "First Name" %>
+  <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name" %>
+  <%= standard_field form: f, name: :password, type: :password_field, label: "Password" %>
+  <%= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Password Again" %>
+
+  <%= submit_tag "Register" %>
 <% end %>

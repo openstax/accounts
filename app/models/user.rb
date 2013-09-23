@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   has_many :authentications, :dependent => :destroy
   has_many :contact_infos, :dependent => :destroy
 
+  validates :username, presence: true, uniqueness: true
+
   delegate_to_algorithm :destroy
 
   attr_accessible :username

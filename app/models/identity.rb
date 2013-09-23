@@ -1,3 +1,4 @@
 class Identity < OmniAuth::Identity::Models::ActiveRecord
-  attr_accessible :password_digest, :password, :password_confirmation
+  belongs_to :user
+  attr_accessible :password_digest, :password, :password_confirmation, :user_id
 end

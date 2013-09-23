@@ -1,0 +1,6 @@
+<% alert_messages = [] %>
+<% handler_errors.each do |error| %>
+  <% alert_messages.push error.translate %>
+<% end %>
+
+<%= alert_tag(alert_messages) %>

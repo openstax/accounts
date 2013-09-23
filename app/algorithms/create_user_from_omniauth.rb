@@ -20,15 +20,15 @@ protected
   end
 
   def create_from_identity_auth(auth)
-    run(CreateUser, username: SecureRandom.hex(10))
+    run(CreateUser, username: SecureRandom.hex(10), ensure_no_errors: true)
   end
 
   def create_from_facebook_auth(auth)
-    run(CreateUser, username: auth[:info][:nickname])
+    run(CreateUser, username: auth[:info][:nickname], ensure_no_errors: true)
   end
 
   def create_from_twitter_auth(auth)
-    run(CreateUser, username: auth[:info][:nickname])
+    run(CreateUser, username: auth[:info][:nickname], ensure_no_errors: true)
   end
 
 end

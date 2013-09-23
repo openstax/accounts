@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130920173118) do
+ActiveRecord::Schema.define(:version => 20130921194259) do
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
@@ -40,7 +40,10 @@ ActiveRecord::Schema.define(:version => 20130920173118) do
     t.string   "password_digest"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.integer  "user_id",         :null => false
   end
+
+  add_index "identities", ["user_id"], :name => "index_identities_on_user_id"
 
   create_table "oauth_access_grants", :force => true do |t|
     t.integer  "resource_owner_id", :null => false
@@ -93,7 +96,9 @@ ActiveRecord::Schema.define(:version => 20130920173118) do
     t.datetime "updated_at",                          :null => false
     t.boolean  "is_administrator", :default => false
     t.integer  "person_id"
-    t.boolean  "is_temp",          :default => true
+    t.boolean  "is_temp"
+    t.string   "first_name"
+    t.string   "last_name"
   end
 
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true

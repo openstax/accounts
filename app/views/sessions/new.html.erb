@@ -25,8 +25,10 @@
     <form method='post' action='/auth/identity/callback'>
       <label for='auth_key'>Username</label><input type='text' id='auth_key' name='auth_key'/>
       <label for='password'>Password</label><input type='password' id='password' name='password'/>
-      <% if false %><p align='center'><a href='/auth/identity/register'>Create an Identity</a></p><% end %>
-      <br/><button >Sign in</button>      
+      <div class='password-actions'>
+        <button>Sign in</button>
+        <span class='sign-up'><%= link_to "Sign Up", signup_path %></span>
+      </div>
     </form>
 </div>
 </div>
