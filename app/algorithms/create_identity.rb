@@ -1,0 +1,21 @@
+
+# Creates an identity with the supplied parameters.
+#
+#
+class CreateIdentity
+
+  include Lev::Routine
+
+protected
+
+  def exec(inputs={})
+    results[:identity] = Identity.create do |identity|
+      identity.password = inputs[:password]
+      identity.password_confirmation = inputs[:password_confirmation]
+      identity.user_id = inputs[:user_id]
+    end
+
+    transfer_errors_from(results[:identity])
+  end
+
+end

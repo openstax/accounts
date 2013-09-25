@@ -9,7 +9,7 @@
 #
 class CreateUser
 
-  include Lev::Algorithm
+  include Lev::Routine
 
 protected
 
@@ -23,12 +23,14 @@ protected
       end
     end
 
-    User.create! do |user|
+    results[:user] = User.create do |user|
       user.username = username
       user.first_name = inputs[:first_name]
       user.last_name = inputs[:last_name]
       user.is_temp = true  # all users start as temp
     end
+
+    transfer_errors_from(results[:user])
   end
 
 end

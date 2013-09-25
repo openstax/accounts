@@ -18,39 +18,32 @@ class IdentitiesRegister
     # validates :password_confirmation, presence: true
   end
 
-  uses_routine CreateUser
+  uses_routine CreateUser,
+               translation: { scope: :register }
+
+  uses_routine CreateIdentity,
+               translation: { scope: :register }
 
 protected
 
   def authorized?; true; end
 
-  def exec
-    user = run(CreateUser, register_params.as_hash([:first_name, :last_name, :username]))
-
-    # user = User.create do |user|
-    #   user.first_name = register_params.first_name
-    #   user.last_name = register_params.last_name
-    #   user.username = register_params.username
-    # end
-  
-    transfer_errors_from(user, :register)
-
-    return if errors.any?
-
-    identity = Identity.create do |identity|
-      identity.password = register_params.password
-      identity.password_confirmation = register_params.password_confirmation
-      identity.user_id = user.id
+  def handle
+    run(CreateUser, 
+        first_name: register_params.first_name,
+        last_name:  register_params.last_name,
+        username:   register_params.username
+    ).tap do |outcome|
+      results[:user] = outcome.results[:user]
     end
 
-    transfer_errors_from(identity, :register)
-
-    results[:user] = user
-    results[:identity] = identity
-  end
-
-  def default_transaction_isolation
-    Lev::TransactionIsolation.mysql_default
+    run(CreateIdentity, 
+        password:              register_params.password,
+        password_confirmation: register_params.password_confirmation,
+        user_id:               results[:user].id
+    ).tap do |outcome|
+      results[:identity] = outcome.results[:identity]
+    end
   end
 
 end

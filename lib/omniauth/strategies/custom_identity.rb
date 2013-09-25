@@ -54,13 +54,13 @@ module OmniAuth
       end
 
       def registration_phase
-        @results, @errors = IdentitiesRegister.handle({ params: request })
+        @handler_outcome = IdentitiesRegister.handle({ params: request })
 
-        if @errors.empty?
+        if @handler_outcome.errors.empty?
           env['PATH_INFO'] = callback_path
           callback_phase
         else
-          env['errors'] = @errors
+          env['errors'] = @handler_outcome.errors
           registration_form
         end
       end

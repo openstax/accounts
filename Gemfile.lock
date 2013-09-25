@@ -2,7 +2,10 @@ PATH
   remote: /Users/jps/dev/lev
   specs:
     lev (0.0.4.alpha)
+      actionpack (>= 3.0)
       active_attr
+      activemodel (>= 3.0)
+      activerecord (>= 3.0)
       transaction_isolation
       transaction_retry
 
