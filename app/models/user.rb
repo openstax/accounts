@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
   validates :username, presence: true, uniqueness: true
 
-  delegate_to_algorithm :destroy
+  delegate_to_routine :destroy
 
   attr_accessible :username
 

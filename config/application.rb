@@ -17,7 +17,7 @@ module Services
 
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(
-                                #{config.root}/app/algorithms 
+                                #{config.root}/app/routines 
                                 #{config.root}/app/queries
                                 #{config.root}/app/handlers
                                 )

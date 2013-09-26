@@ -1,7 +1,7 @@
 
 # Creates a user with the supplied parameters.
 #
-# If the :username is blank or if :ensure_no_errors is true, the algorithm
+# If the :username is blank or if :ensure_no_errors is true, the routine
 # will make sure that the username is available.  
 #
 # If :ensure_no_errors is not set, the returned user object may have errors
