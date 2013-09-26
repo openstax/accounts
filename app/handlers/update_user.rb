@@ -16,7 +16,7 @@ protected
     caller.is_administrator? || caller == @form_user
   end
 
-  def exec
+  def handle
     @form_user.update_attributes(username: params['username'])
     
     # do stuff

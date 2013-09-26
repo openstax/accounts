@@ -2,7 +2,7 @@
 
 class FinishUserCreation
 
-  include Lev::Algorithm
+  include Lev::Routine
 
 protected
 

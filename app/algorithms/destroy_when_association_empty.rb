@@ -1,7 +1,7 @@
 
 class DestroyWhenAssociationEmpty
 
-  include Lev::Algorithm
+  include Lev::Routine
 
 protected
 

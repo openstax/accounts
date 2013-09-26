@@ -1,7 +1,7 @@
 
 class TransferAuthentications
 
-  include Lev::Algorithm
+  include Lev::Routine
 
 protected
 

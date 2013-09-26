@@ -30,7 +30,7 @@ protected
     true
   end
 
-  def exec
+  def handle
 
     # Find a matching Authentication or create one if none exists
     authentication = Authentication.by_provider_and_uid!(@auth_data[:provider], 
@@ -82,8 +82,8 @@ protected
         run(TransferAuthentications, authentication, current_user)
         results[:next_action] = (current_user.is_temp ? :ask_new_or_returning : :return_to_app)
       else
-        new_user = run(CreateUserFromOmniauth, @auth_data)
-        run(TransferAuthentications, authentication, new_user)
+        outcome = run(CreateUserFromOmniauth, @auth_data)
+        run(TransferAuthentications, authentication, outcome.results[:user])
         sign_in(new_user)
         results[:next_action] = :ask_new_or_returning
       end

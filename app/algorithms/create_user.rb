@@ -23,14 +23,14 @@ protected
       end
     end
 
-    results[:user] = User.create do |user|
+    outputs[:user] = User.create do |user|
       user.username = username
       user.first_name = inputs[:first_name]
       user.last_name = inputs[:last_name]
       user.is_temp = true  # all users start as temp
     end
 
-    transfer_errors_from(results[:user])
+    transfer_errors_from(outputs[:user], {type: :verbatim})
   end
 
 end

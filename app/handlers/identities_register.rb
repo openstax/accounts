@@ -19,10 +19,11 @@ class IdentitiesRegister
   end
 
   uses_routine CreateUser,
-               translation: { scope: :register }
+               translations: { inputs: {scope: :register} }
 
   uses_routine CreateIdentity,
-               translation: { scope: :register }
+               translations: { inputs:  {scope: :register}, 
+                               outputs: {verbatim: true}  }
 
 protected
 
@@ -33,17 +34,13 @@ protected
         first_name: register_params.first_name,
         last_name:  register_params.last_name,
         username:   register_params.username
-    ).tap do |outcome|
-      results[:user] = outcome.results[:user]
-    end
+    )
 
     run(CreateIdentity, 
         password:              register_params.password,
         password_confirmation: register_params.password_confirmation,
-        user_id:               results[:user].id
-    ).tap do |outcome|
-      results[:identity] = outcome.results[:identity]
-    end
+        user_id:               outputs[[:create_user, :user]].id
+    )
   end
 
 end

@@ -2,7 +2,10 @@
 
 class CreateUserFromOmniauth
 
-  include Lev::Algorithm
+  include Lev::Routine
+
+  uses_routine CreateUser,
+               translations: { outputs: {type: :verbatim} }
 
 protected
 

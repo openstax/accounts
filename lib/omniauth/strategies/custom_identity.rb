@@ -9,8 +9,8 @@ module OmniAuth
       # option :on_registration, nil
       # option :on_failed_registration, nil
       option :locate_conditions, lambda { |req|
-        user = User.where(username: req.params['auth_key'])
-        {user_id: (user.empty? ? nil : user.id)}
+        user = User.where(username: req.params['auth_key']).first
+        {user_id: (user.nil? ? nil : user.id)}
       }
       option :name, "identity"
 
@@ -57,6 +57,7 @@ module OmniAuth
         @handler_outcome = IdentitiesRegister.handle({ params: request })
 
         if @handler_outcome.errors.empty?
+          @identity = @handler_outcome.results[:identity]
           env['PATH_INFO'] = callback_path
           callback_phase
         else
