@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :user do
     username { SecureRandom.hex(3) }
+    is_temp true
 
     trait :admin do
       is_administrator true

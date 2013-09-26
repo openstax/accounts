@@ -11,7 +11,7 @@
 #        signed_in?
 #        current_user
 #
-# In the results object, this handler will return a :next_action, which will
+# In the result object, this handler will return a :next_action, which will
 # be one of: :return_to_app, :ask_which_account, :ask_new_or_returning
 #
 #
@@ -57,35 +57,36 @@ protected
       if signed_in?
         if authentication_user.is_temp && current_user.is_temp
           first_user_lives_second_user_dies(current_user, authentication_user)
-          results[:next_action] = :ask_new_or_returning
+          outputs[:next_action] = :ask_new_or_returning
         elsif authentication_user.is_temp
           first_user_lives_second_user_dies(current_user, authentication_user)
-          results[:next_action] = :return_to_app
+          outputs[:next_action] = :return_to_app
         elsif current_user.is_temp
           first_user_lives_second_user_dies(authentication_user, current_user)
-          results[:next_action] = :return_to_app
+          outputs[:next_action] = :return_to_app
         else
           if current_user.id == authentication_user.id
-            results[:next_action] = :return_to_app
+            outputs[:next_action] = :return_to_app
           else
-            results[:next_action] = :ask_which_account
+            outputs[:next_action] = :ask_which_account
           end 
         end
       else
         sign_in(authentication_user)
-        results[:next_action] = (authentication_user.is_temp ? :ask_new_or_returning : :return_to_app)
+        outputs[:next_action] = (authentication_user.is_temp ? :ask_new_or_returning : :return_to_app)
       end
       
     else
 
       if signed_in?
         run(TransferAuthentications, authentication, current_user)
-        results[:next_action] = (current_user.is_temp ? :ask_new_or_returning : :return_to_app)
+        outputs[:next_action] = (current_user.is_temp ? :ask_new_or_returning : :return_to_app)
       else
         outcome = run(CreateUserFromOmniauth, @auth_data)
-        run(TransferAuthentications, authentication, outcome.results[:user])
+        new_user = outcome.outputs[:user]
+        run(TransferAuthentications, authentication, new_user)
         sign_in(new_user)
-        results[:next_action] = :ask_new_or_returning
+        outputs[:next_action] = :ask_new_or_returning
       end
 
     end 

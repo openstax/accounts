@@ -8,12 +8,12 @@ describe SessionsAuthenticated do
   context "when not signed in and no existing auth" do
     it "makes new user and prompts new or returning" do
 
-      results, errors = SessionsAuthenticated.handle(
+      result = SessionsAuthenticated.handle(
         user_state: user_state,
         request: MockOmniauthRequest.new('identity', 1, [])
       )
       
-      expect(results[:next_action]).to eq(:ask_new_or_returning)
+      expect(result.outputs[:next_action]).to eq(:ask_new_or_returning)
 
       expect(user_state.current_user).not_to be_nil
       expect(user_state.current_user.person).to be_nil
@@ -30,12 +30,12 @@ describe SessionsAuthenticated do
   context "when not signed in auth exists" do
     it "logs in the user and returns to app" do
       authentication = FactoryGirl.create(:authentication, user: FactoryGirl.create(:user_with_person))
-      results, errors = SessionsAuthenticated.handle(
+      result = SessionsAuthenticated.handle(
         user_state: user_state,
         request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
       )
       
-      expect(results[:next_action]).to eq(:return_to_app)
+      expect(result.outputs[:next_action]).to eq(:return_to_app)
       expect(user_state.current_user).to eq authentication.user
     end
   end
@@ -51,12 +51,12 @@ describe SessionsAuthenticated do
       let(:authentication) { FactoryGirl.create(:authentication, user: signed_in_user) }
 
       it "maintains signed in user and returns to app" do
-        results, errors = SessionsAuthenticated.handle(
+        result = SessionsAuthenticated.handle(
           user_state: user_state,
           request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
         )
 
-        expect(results[:next_action]).to eq(:return_to_app)
+        expect(result.outputs[:next_action]).to eq(:return_to_app)
         expect(user_state.current_user).to eq signed_in_user
       end
     end
@@ -67,14 +67,14 @@ describe SessionsAuthenticated do
       it "adds the auth to the signed in user and returns to app" do
 
         auth_data = {provider: authentication.provider, uid: authentication.uid}
-        results = nil
+        result = nil
         expect{
-          results, errors = SessionsAuthenticated.handle(
+          result = SessionsAuthenticated.handle(
             user_state: user_state,
             request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
           )
         }.to change{signed_in_user.authentications.count}.by 1
-        expect(results[:next_action]).to eq(:return_to_app)
+        expect(result.outputs[:next_action]).to eq(:return_to_app)
         expect(user_state.current_user).to eq signed_in_user
       end
     end
@@ -84,12 +84,12 @@ describe SessionsAuthenticated do
       let(:authentication) { FactoryGirl.create(:authentication, user: other_temp_user) }
 
       it "transfers temp user auths to signed in user, destroys temp user, returns to app" do
-        results, errors = SessionsAuthenticated.handle(
+        result = SessionsAuthenticated.handle(
           user_state: user_state,
           request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
         )        
         expect(authentication.reload.user).to eq signed_in_user
-        expect(results[:next_action]).to eq :return_to_app
+        expect(result.outputs[:next_action]).to eq :return_to_app
         expect(User.exists?(other_temp_user.id)).to be_false
       end
     end
@@ -99,12 +99,12 @@ describe SessionsAuthenticated do
       let(:authentication) { FactoryGirl.create(:authentication, user: other_user) }
 
       it "leaves signed in user alone and asks which account to use" do
-        results, errors = SessionsAuthenticated.handle(
+        result = SessionsAuthenticated.handle(
           user_state: user_state,
           request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
         )
 
-        expect(results[:next_action]).to eq :ask_which_account
+        expect(result.outputs[:next_action]).to eq :ask_which_account
         expect(authentication.user).to eq other_user
         expect(user_state.current_user).to eq signed_in_user
       end
@@ -124,12 +124,12 @@ describe SessionsAuthenticated do
       let(:authentication) { FactoryGirl.create(:authentication, user: signed_in_user) }
 
       it "should maintain signed in user and prompt new or returning" do
-        results, errors = SessionsAuthenticated.handle(
+        result = SessionsAuthenticated.handle(
           user_state: user_state,
           request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
         )
 
-        expect(results[:next_action]).to eq :ask_new_or_returning
+        expect(result.outputs[:next_action]).to eq :ask_new_or_returning
         expect(user_state.current_user).to eq signed_in_user
         expect(authentication.reload.user).to eq signed_in_user
       end
@@ -139,12 +139,12 @@ describe SessionsAuthenticated do
       let(:authentication) { FactoryGirl.create(:authentication) }
 
       it "should add auth to the signed in user and prompt new or returning" do
-        results, errors = SessionsAuthenticated.handle(
+        result = SessionsAuthenticated.handle(
           user_state: user_state,
           request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
         )
 
-        expect(results[:next_action]).to eq :ask_new_or_returning
+        expect(result.outputs[:next_action]).to eq :ask_new_or_returning
         expect(user_state.current_user).to eq signed_in_user
         expect(authentication.reload.user).to eq signed_in_user
       end
@@ -157,12 +157,12 @@ describe SessionsAuthenticated do
 
       # weird edge case? not on flow chart
       it "transfers temp user auths to signed in user, destroys other temp user, prompts new or returning" do
-        results, errors = SessionsAuthenticated.handle(
+        result = SessionsAuthenticated.handle(
           user_state: user_state,
           request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
         )
         
-        expect(results[:next_action]).to eq :ask_new_or_returning
+        expect(result.outputs[:next_action]).to eq :ask_new_or_returning
         expect(user_state.current_user).to eq signed_in_user
         expect(authentication.reload.user).to eq signed_in_user
         expect(other_authentication.reload.user).to eq signed_in_user
@@ -176,12 +176,12 @@ describe SessionsAuthenticated do
       let!(:other_authentication) { FactoryGirl.create(:authentication, user: other_user) }
 
       it "transfers auths to other user, destroys signed in user, signs in other user, returns to app" do
-        results, errors = SessionsAuthenticated.handle(
+        result = SessionsAuthenticated.handle(
           user_state: user_state,
           request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
         )
 
-        expect(results[:next_action]).to eq :return_to_app
+        expect(result.outputs[:next_action]).to eq :return_to_app
         expect(user_state.current_user).to eq other_user
         expect(authentication.reload.user).to eq other_user
         expect(other_authentication.reload.user).to eq other_user
@@ -200,7 +200,7 @@ describe SessionsAuthenticated do
                        emails: [user.contact_infos.first.value, "blah@blah.com"]}}
 
     it "should link that auth to that user" do
-      results, errors = SessionsAuthenticated.handle(
+      result = SessionsAuthenticated.handle(
           user_state: user_state,
           request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [
                                            user.contact_infos.first.value, "blah@blah.com"])
