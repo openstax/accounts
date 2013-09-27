@@ -17,6 +17,7 @@ protected
   end
 
   def handle
+
     @form_user.update_attributes(username: params['username'])
     
     # do stuff

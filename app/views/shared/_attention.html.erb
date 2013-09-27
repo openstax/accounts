@@ -3,4 +3,6 @@
   <% alert_messages.push error.translate %>
 <% end %>
 
+<% alert_messages.push(flash[:alert]) if flash[:alert] %>
+
 <%= alert_tag(alert_messages) %>

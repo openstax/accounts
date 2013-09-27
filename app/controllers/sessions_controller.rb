@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
     handle_with(SessionsAuthenticated,
                 user_state: self,
                 complete: lambda {
-                  case @results[:next_action]
+                  case @handler_result.outputs[:next_action]
                   when :return_to_app         then return_to_app
                   when :ask_new_or_returning  then render :ask_new_or_returning
                   when :ask_which_account     then render :ask_which_account
@@ -30,7 +30,7 @@ class SessionsController < ApplicationController
     # if user profile info good to go, change in user and return_to_app!
     # otherwise render register with error messages
 
-    handle_with(Handlers::UpdateUser, 
+    handle_with(UpdateUser, 
                 params: params['user'],
                 success: lambda { return_to_app },
                 failure: lambda { render :register })

@@ -1,5 +1,3 @@
-
-
 class FinishUserCreation
 
   include Lev::Routine
@@ -10,10 +8,14 @@ protected
     return if !user.is_temp
 
     person = Person.create
-    user.save do |uu|
-      uu.person_id = person.id
-      uu.is_temp = false
-    end
+
+    transfer_errors_from(person, {type: :verbatim})
+
+    user.person_id = person.id
+    user.is_temp   = false
+    user.save
+
+    transfer_errors_from(user, {type: :verbatim})
   end
 
 end

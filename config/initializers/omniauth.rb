@@ -36,7 +36,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   #            {user_id: (user.empty? ? nil : user.id)}
   #          }
 
-  provider :custom_identity #, 
+  
            # on_failed_registration: lambda { |env|      
            #   IdentitiesController.action(:new).call(env)  
            # },
@@ -47,6 +47,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 
   provider :facebook, SECRET_SETTINGS[:facebook_app_id], SECRET_SETTINGS[:facebook_app_secret]
   provider :twitter, SECRET_SETTINGS[:twitter_consumer_key], SECRET_SETTINGS[:twitter_consumer_secret]
+  provider :custom_identity, fields: [] #, 
 end
 
 OmniAuth.config.logger = Rails.logger

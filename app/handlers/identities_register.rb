@@ -3,31 +3,25 @@ class IdentitiesRegister
 
   paramify :register do
     attribute :username, type: String
-    # validates :username, presence: true
-
     attribute :first_name, type: String
-    # validates :first_name, presence: true
-
     attribute :last_name, type: String
-    # validates :last_name, presence: true
-
     attribute :password, type: String
-    # validates :password, presence: true
-
     attribute :password_confirmation, type: String
-    # validates :password_confirmation, presence: true
   end
 
   uses_routine CreateUser,
-               translations: { inputs: {scope: :register} }
+               translations: { inputs: {scope: :register},
+                               outputs: {type: :verbatim} }
 
   uses_routine CreateIdentity,
                translations: { inputs:  {scope: :register}, 
-                               outputs: {verbatim: true}  }
+                               outputs: {type: :verbatim}  }
 
 protected
 
-  def authorized?; true; end
+  def authorized?;
+    caller.is_anonymous?
+  end
 
   def handle
     run(CreateUser, 
@@ -39,8 +33,14 @@ protected
     run(CreateIdentity, 
         password:              register_params.password,
         password_confirmation: register_params.password_confirmation,
-        user_id:               outputs[[:create_user, :user]].id
+        user_id:               outputs[:user].id
     )
+
+    authentication = Authentication.create(uid: outputs[:identity].id.to_s,
+                                           provider: 'identity',
+                                           user_id: outputs[:user].id)
+
+    transfer_errors_from(authentication, {type: :verbatim})
   end
 
 end

@@ -26,4 +26,5 @@ states and have validations that deal with that
 each doorkeeper application should have an uploaded logo that we
 can show on the login page
 -----------
-
+If you are signed in and go to identity register again, freaks out with DB constraint
+exception -- should stop this before that point

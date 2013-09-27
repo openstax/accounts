@@ -31,7 +31,6 @@ protected
   end
 
   def handle
-
     # Find a matching Authentication or create one if none exists
     authentication = Authentication.by_provider_and_uid!(@auth_data[:provider], 
                                                          @auth_data[:uid])

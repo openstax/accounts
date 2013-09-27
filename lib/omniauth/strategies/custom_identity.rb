@@ -4,32 +4,30 @@ module OmniAuth
     class CustomIdentity
       include OmniAuth::Strategy
 
+      #
+      # Since this strategy is controller-like but from Rack, let's add
+      # some current_user methods (for which we also need cookies)
+      #
+
+      include SignInState
+
+      def cookies
+        @cookies ||= ActionDispatch::Request.new(env).cookie_jar
+      end
+
+      #
+      # Strategy stuff
+      #
+
       option :fields, [:username, :first_name, :last_name]
-      # option :on_login, nil
-      # option :on_registration, nil
-      # option :on_failed_registration, nil
       option :locate_conditions, lambda { |req|
         user = User.where(username: req.params['auth_key']).first
         {user_id: (user.nil? ? nil : user.id)}
       }
       option :name, "identity"
 
-
-
       def request_phase
         SessionsController.action(:new).call(env)        
-        # if options[:on_login]
-        #   options[:on_login].call(self.env)
-        # else
-        #   OmniAuth::Form.build(
-        #     :title => (options[:title] || "Identity Verification"),
-        #     :url => callback_path
-        #   ) do |f|
-        #     f.text_field 'Login', 'auth_key'
-        #     f.password_field 'Password', 'password'
-        #     f.html "<p align='center'><a href='#{registration_path}'>Create an Identity</a></p>"
-        #   end.to_response
-        # end
       end
 
       def callback_phase
@@ -40,7 +38,8 @@ module OmniAuth
       def other_phase
         if on_registration_path?
           if request.get?
-            registration_form
+            # Normal identity shows registration form, but we don't want that
+            raise ActionController::RoutingError.new('Not Found')
           elsif request.post?
             registration_phase
           end
@@ -54,14 +53,15 @@ module OmniAuth
       end
 
       def registration_phase
-        @handler_outcome = IdentitiesRegister.handle({ params: request })
+        @handler_result = IdentitiesRegister.handle(params: request,
+                                                    caller: current_user)
 
-        if @handler_outcome.errors.empty?
-          @identity = @handler_outcome.results[:identity]
+        if @handler_result.errors.empty?
+          @identity = @handler_result.outputs[:identity]
           env['PATH_INFO'] = callback_path
           callback_phase
         else
-          env['errors'] = @handler_outcome.errors
+          env['errors'] = @handler_result.errors
           registration_form
         end
       end
