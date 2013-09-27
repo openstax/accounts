@@ -18,8 +18,8 @@ protected
 
     if username.nil? || inputs[:ensure_no_errors]
       loop do 
+        break if !username.nil? && User.where(username: username).none?
         username = "#{inputs[:username] || 'user'}#{rand(1000000)}"
-        break if User.where(username: username).none?
       end
     end
 

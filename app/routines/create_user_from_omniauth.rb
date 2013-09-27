@@ -34,7 +34,7 @@ protected
   end
 
   def normalize_username(username)
-    username.gsub(DISCARDED_USERNAME_CHAR_REGEX,'').downcase.slice(0..49)
+    username.gsub(User::USERNAME_DISCARDED_CHAR_REGEX,'').downcase.slice(0..User::USERNAME_MAX_LENGTH-1)
   end
 
 end

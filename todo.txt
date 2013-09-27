@@ -17,14 +17,16 @@ maybe we don't want model errors at all. hmmm
   #     we'd need this code to be loaded before the models were loaded I think
 
 
-------------------
-maybe user needs a state instead of temp == person.nil?
-might need state for other screens during sign up process
-user then like a state machine, can exist in certain non final
-states and have validations that deal with that
 ------
 each doorkeeper application should have an uploaded logo that we
 can show on the login page
 -----------
 If you are signed in and go to identity register again, freaks out with DB constraint
 exception -- should stop this before that point
+-----
+how to keep user name, etc, in sync.  Other sites can register an API call when 
+registering as OS applications (then we push the data out).
+When other apps do a sign in, they can check for updates
+----
+probably can't use gravatar for avatars since there are security risks (unless we 
+let people opt-in)
