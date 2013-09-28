@@ -22,6 +22,7 @@
 function refresh_buttons() {
    $('input:submit').button();
    $('button').button();
+   $('a.button').button();
    $(".show_button").button({icons: {primary: "ui-icon-search"}, text: false });
    $(".edit_button").button({icons: {primary: "ui-icon-pencil"}, text: false });
    $(".trash_button").button({icons: {primary: "ui-icon-trash"}, text: false });

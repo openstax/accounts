@@ -27,5 +27,9 @@ Services::Application.routes.draw do
   match 'copyright', :to => 'static_page#copyright'
 
   root :to => "static_page#home"
-  
+
+
+  if Rails.env.development?
+    get 'sessions/ask_new_or_returning'
+  end  
 end

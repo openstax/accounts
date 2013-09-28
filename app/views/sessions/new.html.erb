@@ -8,13 +8,13 @@
 
 <div id="login-options">
   <%= link_to "/auth/facebook", {class: 'login-button'} do %>
-    <%= image_tag "fb_64.png" -%>
+    <%= image_tag "fb_64.png", title: "Sign in using your Facebook account" -%>
   <% end %>
   <%= link_to "/auth/twitter", {class: 'login-button'} do %>
-    <%= image_tag "twitter_64.png" -%>
+    <%= image_tag "twitter_64.png", title: "Sign in using your Twitter account" -%>
   <% end %>
   <%= link_to "/auth/google", {class: 'login-button'} do %>
-    <%= image_tag "g+64.png" -%>
+    <%= image_tag "g+64.png", title: "Sign in using your Google account" -%>
   <% end %>
 
   <div id="or-bar">

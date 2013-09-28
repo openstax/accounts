@@ -2,9 +2,15 @@
 
 <%= lev_form_for :register, url: '/auth/identity/register' do |f| %>
 
+<p>You'll get a chance to edit your account details in just a second.  For now, just choose a <%= 'username and ' if !signed_in? %> password.</p>
+
+<% if !signed_in? %>
   <%= standard_field form: f, name: :username, type: :text_field, label: "Username" %>
-  <%= standard_field form: f, name: :first_name, type: :text_field, label: "First Name" %>
-  <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name" %>
+<% end %>
+  
+  <%#= standard_field form: f, name: :first_name, type: :text_field, label: "First Name" %>
+  <%#= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name" %>
+
   <%= standard_field form: f, name: :password, type: :password_field, label: "Password" %>
   <%= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Password Again" %>
 

@@ -45,7 +45,8 @@ class SessionsController < ApplicationController
   end
 
   def failure
-    render "new", alert: "Authentication failed, please try again."
+    flash[:alert] = "Incorrect username or password, please try again."
+    render "new"
   end
 
 protected

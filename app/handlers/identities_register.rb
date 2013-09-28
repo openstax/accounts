@@ -10,8 +10,7 @@ class IdentitiesRegister
   end
 
   uses_routine CreateUser,
-               translations: { inputs: {scope: :register},
-                               outputs: {type: :verbatim} }
+               translations: { inputs: {scope: :register} }
 
   uses_routine CreateIdentity,
                translations: { inputs:  {scope: :register}, 
@@ -20,25 +19,30 @@ class IdentitiesRegister
 protected
 
   def authorized?;
-    caller.is_anonymous?
+    caller.is_anonymous? || caller.authentications.none?{|auth| auth.provider == 'identity'}
   end
 
   def handle
-    run(CreateUser, 
-        first_name: register_params.first_name,
-        last_name:  register_params.last_name,
-        username:   register_params.username
-    )
+    user = caller
+
+    if user.is_anonymous?
+      run(CreateUser, 
+          # first_name: register_params.first_name,
+          # last_name:  register_params.last_name,
+          username:   register_params.username
+      )
+      user = outputs[[:create_user, :user]]
+    end
 
     run(CreateIdentity, 
         password:              register_params.password,
         password_confirmation: register_params.password_confirmation,
-        user_id:               outputs[:user].id
+        user_id:               user.id
     )
 
     authentication = Authentication.create(uid: outputs[:identity].id.to_s,
                                            provider: 'identity',
-                                           user_id: outputs[:user].id)
+                                           user_id: user.id)
 
     transfer_errors_from(authentication, {type: :verbatim})
   end

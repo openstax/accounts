@@ -1,7 +1,19 @@
-ask_new_or_returning.html.erb
+<%#= page_heading "Haven't seen you before &mdash; are you new to OpenStax?".html_safe %>
 
-Welcome! We can't find an existing OpenStax account for you.  Have you created an account before?
+<% authentications = current_user.authentications %>
 
-<%= link_to "Yes, I should already have an account -- let's find it!", login_path %>
+<%= page_heading "Great, you are signed in but we #{'(still)' if authentications.size > 1} haven't seen you before.".html_safe %>
 
-<%= link_to "No, I'm brand new -- please make my new account!", sessions_register_path %>
+<div style="width: 250px; float: right">
+  <%= link_to "I think I already have an<br/>account &mdash; let's find it!".html_safe, 
+              login_path, class: 'button', style: 'margin-bottom: 28px; width: 230px' %>
+
+  <%= link_to "I have not made an<br/>OpenStax account before.".html_safe, 
+              sessions_register_path, class: 'button', style: 'width: 230px' %>
+</div>
+
+<div style="width: 550px">
+  <p>You can sign in to your OpenStax account in several different ways.</p>
+  <p>So far the account you're currently signed in to is linked to <%= authentications_list(authentications) %>. Have you by chance already created an OpenStax account using <%= remaining_authentications_list(authentications) %>?</p>
+  
+</div>
