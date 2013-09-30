@@ -55,3 +55,16 @@ $login-options-width: 300px;
 
   }
 }
+
+#signup-alternatives {
+  float:right; 
+  width: 350px; 
+  background-color: #efefef; 
+  border: 1px solid black; 
+  padding: 10px 20px 20px 20px;
+  margin-top: 50px;
+
+  .login-button {
+    padding: 10px;
+  }
+}

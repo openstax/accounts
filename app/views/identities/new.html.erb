@@ -1,8 +1,24 @@
 <%= page_heading 'Register with a username and password' %>
 
+
+<div id="signup-alternatives">
+  <p><b>Save yourself the hassle</b> of remembering yet another password &mdash; register using your Facebook, Twitter, or Google account.</p>
+  <center>
+    <%= link_to "/auth/facebook", {class: 'login-button'} do %>
+      <%= image_tag "fb_64.png", title: "Sign in using your Facebook account" -%>
+    <% end %>
+    <%= link_to "/auth/twitter", {class: 'login-button'} do %>
+      <%= image_tag "twitter_64.png", title: "Sign in using your Twitter account" -%>
+    <% end %>
+    <%= link_to "/auth/google", {class: 'login-button'} do %>
+      <%= image_tag "g+64.png", title: "Sign in using your Google account" -%>
+    <% end %>
+  </center>
+</div>
+
 <%= lev_form_for :register, url: '/auth/identity/register' do |f| %>
 
-<p>You'll get a chance to edit your account details in just a second.  For now, just choose a <%= 'username and ' if !signed_in? %> password.</p>
+<p>Please choose a <%= 'username and ' if !signed_in? %> password.</p>
 
 <% if !signed_in? %>
   <%= standard_field form: f, name: :username, type: :text_field, label: "Username" %>

@@ -1,7 +1,7 @@
 PATH
   remote: /Users/jps/dev/lev
   specs:
-    lev (0.0.4.alpha)
+    lev (1.0.1.alpha)
       actionpack (>= 3.0)
       active_attr
       activemodel (>= 3.0)

@@ -20,7 +20,6 @@ protected
 
     transfer_errors_from(email_address, {scope: :email_address})
 
-    run(SendConfirmationEmail, email_address)
-
+    run(SendConfirmationEmail, email_address) unless errors?
   end
 end
