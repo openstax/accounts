@@ -3,6 +3,8 @@
 
 class SessionsController < ApplicationController
 
+  skip_before_filter :authenticate_user!, only: [:new, :authenticated, :failure]
+
   # Put some of this in an authentications controller?
 
   def new
@@ -30,13 +32,13 @@ class SessionsController < ApplicationController
     # if user profile info good to go, change in user and return_to_app!
     # otherwise render register with error messages
 
-    handle_with(UpdateUser, 
-                params: params['user'],
+    handle_with(SessionsFinishRegistration, 
                 success: lambda { return_to_app },
                 failure: lambda { render :register })
   end
 
   def register
+    # raise SecurityTransgression unless current_user.is_temp
   end
 
   def destroy

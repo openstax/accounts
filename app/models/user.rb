@@ -27,6 +27,14 @@ class User < ActiveRecord::Base
     false
   end
 
+  def full_name
+    first_name || last_name ? "#{first_name} #{last_name}" : username
+  end
+
+  def casual_name
+    first_name || username
+  end
+
 protected
 
   def normalize_username

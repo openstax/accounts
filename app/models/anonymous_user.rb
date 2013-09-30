@@ -21,4 +21,12 @@ class AnonymousUser
     'anonymous'
   end
 
+  def full_name
+    "Anonymous User"
+  end
+
+  def casual_name
+    full_name
+  end
+
 end

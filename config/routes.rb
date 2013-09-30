@@ -9,9 +9,9 @@ Services::Application.routes.draw do
       get '/me' => 'credentials#me'
     end
   end
-  
-  match 'test', to: 'test#index'
 
+  get "do/confirm_email"
+  
   match '/auth/:provider/callback', to: 'sessions#authenticated' #omniauth route
   match '/signup', to: 'identities#new'
   
@@ -27,7 +27,6 @@ Services::Application.routes.draw do
   match 'copyright', :to => 'static_page#copyright'
 
   root :to => "static_page#home"
-
 
   if Rails.env.development?
     get 'sessions/ask_new_or_returning'

@@ -1,13 +1,30 @@
 <% 
   form_options = {}
   form_options[:url] = url if local_assigns.has_key?(:url)
+  
 %>
 
+<% if false %>
 <p><b>Add in first and last name, emails, etc</b></p>
 
 <%= form_for user, form_options do |f| %>
   <%= f.hidden_field :user_id, value: user.id %>
   Username: <%= f.text_field :username %>
+
+  <%= f.submit button_text || "Submit" %>
+<% end %>
+
+
+<%= lev_form_for :register, form_options do |f| %>
+
+  <%= f.labeled_field name: :username, type: :text_field, label: "Username" %>
+  <%= f.labeled_field name: :first_name, type: :text_field, label: "First Name" %>
+  <%= f.labeled_field name: :last_name, type: :text_field, label: "Last Name" %>
+
+
+
+  <%#= standard_field form: f, name: :password, type: :password_field, label: "Password" %>
+  <%#= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Password Again" %>
 
   <%= f.submit button_text || "Submit" %>
 <% end %>

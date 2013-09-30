@@ -6,3 +6,8 @@
 <% alert_messages.push(flash[:alert]) if flash[:alert] %>
 
 <%= alert_tag(alert_messages) %>
+
+<% notice_messages = [] %>
+<% notice_messages.push(flash[:notice]) if flash[:notice] %>
+
+<%= notice_tag(notice_messages) %>

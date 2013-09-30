@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130921194259) do
+ActiveRecord::Schema.define(:version => 20130930165839) do
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
@@ -29,12 +29,29 @@ ActiveRecord::Schema.define(:version => 20130921194259) do
     t.boolean  "verified"
     t.string   "confirmation_code"
     t.integer  "user_id"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
+    t.datetime "confirmation_sent_at"
   end
 
   add_index "contact_infos", ["user_id"], :name => "index_contact_infos_on_user_id"
   add_index "contact_infos", ["value", "user_id", "type"], :name => "index_contact_infos_on_value_user_id_type", :unique => true
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0, :null => false
+    t.integer  "attempts",   :default => 0, :null => false
+    t.text     "handler",                   :null => false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "identities", :force => true do |t|
     t.string   "password_digest"

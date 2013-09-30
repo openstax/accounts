@@ -19,6 +19,11 @@ class SessionsAuthenticated
 
   include Lev::Handler
 
+  uses_routine TransferAuthentications
+  uses_routine CreateUserFromOmniauth
+  uses_routine DestroyUser
+  uses_routine TransferOmniauthInformation
+
 protected
 
   def setup
@@ -31,9 +36,15 @@ protected
   end
 
   def handle
-    # Find a matching Authentication or create one if none exists
-    authentication = Authentication.by_provider_and_uid!(@auth_data[:provider], 
-                                                         @auth_data[:uid])
+    # Get an authentication object for the incoming data, tracking if we have
+    # the object didn't yet exist and we had to create it.
+
+    authentication_data = { provider: @auth_data[:provider], uid: @auth_data[:uid]}
+    authentication = Authentication.where(authentication_data).first
+    
+    this_authentication_is_new = authentication.nil?
+    authentication = Authentication.create(authentication_data) if this_authentication_is_new
+
     authentication_user = authentication.user
 
     if authentication_user.nil?
@@ -89,6 +100,10 @@ protected
       end
 
     end 
+
+    if this_authentication_is_new
+      run(TransferOmniauthInformation, @auth_data, current_user)
+    end
 
   end
 
