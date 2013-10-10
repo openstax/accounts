@@ -20,8 +20,9 @@ Services::Application.routes.draw do
   match '/logout', to: 'sessions#destroy'
 
   
-  get 'sessions/register'
-  put 'sessions/finish_registration'
+  # get 'sessions/register'
+  get 'sessions/return_to_app'
+  # put 'sessions/finish_registration'
   match '/i_am_returning', to: 'sessions#i_am_returning'
 
   match 'copyright', :to => 'static_page#copyright'

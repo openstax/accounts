@@ -14,9 +14,8 @@ gem 'omniauth-twitter'
 gem 'squeel'
 gem 'quiet_assets'
 
-# gem 'openstax_utilities', '~> 0.0.7'
-gem 'openstax_utilities', path: '/Users/jps/dev/openstax_utilities'
-gem 'lev', path: '/Users/jps/dev/lev' #'~> 0.0.3'
+gem 'openstax_utilities',  '1.0.1' 
+gem 'lev', '~> 2.0.2'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'

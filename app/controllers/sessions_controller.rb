@@ -28,18 +28,26 @@ class SessionsController < ApplicationController
 
   def ask_which_account; end
 
-  def finish_registration
-    # if user profile info good to go, change in user and return_to_app!
-    # otherwise render register with error messages
+  # def finish_registration
+  #   # if user profile info good to go, change in user and return_to_app!
+  #   # otherwise render register with error messages
 
-    handle_with(SessionsFinishRegistration, 
-                success: lambda { return_to_app },
-                failure: lambda { render :register })
+  #   return_to_app
+
+  #   # handle_with(SessionsFinishRegistration, 
+  #   #             success: lambda { return_to_app },
+  #   #             failure: lambda { render :register })
+  # end
+
+  # def register
+  #   # raise SecurityTransgression unless current_user.is_temp
+  # end
+
+  def return_to_app
+    FinishUserCreation.call(current_user)
+    redirect_to session.delete(:return_to) || root_url
   end
 
-  def register
-    # raise SecurityTransgression unless current_user.is_temp
-  end
 
   def destroy
     sign_out!
@@ -53,9 +61,5 @@ class SessionsController < ApplicationController
 
 protected
 
-  def return_to_app
-    FinishUserCreation.call(current_user)
-    redirect_to session.delete(:return_to) || root_url
-  end
-
+  
 end
