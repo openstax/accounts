@@ -4,6 +4,7 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :facebook, SECRET_SETTINGS[:facebook_app_id], SECRET_SETTINGS[:facebook_app_secret]
   provider :twitter, SECRET_SETTINGS[:twitter_consumer_key], SECRET_SETTINGS[:twitter_consumer_secret]
+  provider :google_oauth2, SECRET_SETTINGS[:google_client_id], SECRET_SETTINGS[:google_client_secret]
   provider :custom_identity
 end
 
