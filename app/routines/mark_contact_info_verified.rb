@@ -10,7 +10,7 @@ protected
       verified: true,
     )
 
-    transfer_errors_from(contact_info, {scope: :verbatim})
+    transfer_errors_from(contact_info, {type: :verbatim})
   end
 
 end
