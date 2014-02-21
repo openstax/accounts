@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  USERNAME_DISCARDED_CHAR_REGEX = /\.\'\-/
+  USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
   USERNAME_MAX_LENGTH = 50
 
   belongs_to :person
