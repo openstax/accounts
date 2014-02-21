@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130930165839) do
+ActiveRecord::Schema.define(:version => 20130930174024) do
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(:version => 20130930165839) do
     t.datetime "confirmation_sent_at"
   end
 
+  add_index "contact_infos", ["confirmation_code"], :name => "index_contact_infos_on_confirmation_code", :unique => true
   add_index "contact_infos", ["user_id"], :name => "index_contact_infos_on_user_id"
   add_index "contact_infos", ["value", "user_id", "type"], :name => "index_contact_infos_on_value_user_id_type", :unique => true
 
