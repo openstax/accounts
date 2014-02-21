@@ -7,10 +7,14 @@ describe SessionsAuthenticated do
 
   context "when not signed in and no existing auth" do
     it "makes new user and prompts new or returning" do
+      # user signs up: create user, identity and authentication
+      identity = FactoryGirl.create(:identity)
+      FactoryGirl.create(:authentication, user: identity.user,
+                         uid: identity.id.to_s, provider: 'identity')
 
       result = SessionsAuthenticated.handle(
         user_state: user_state,
-        request: MockOmniauthRequest.new('identity', 1, [])
+        request: MockOmniauthRequest.new('identity', identity.user.id, [])
       )
       
       expect(result.outputs[:next_action]).to eq(:ask_new_or_returning)
@@ -22,7 +26,7 @@ describe SessionsAuthenticated do
       linked_authentications = user_state.current_user.authentications
       expect(linked_authentications.size).to eq 1
       expect(linked_authentications.first.provider).to eq 'identity'
-      expect(linked_authentications.first.uid).to eq "1"      
+      expect(linked_authentications.first.uid).to eq "1"
 
     end
   end

@@ -13,7 +13,8 @@ describe IdentitiesRegister do
             password: 'pass', 
             password_confirmation: 'word'
           }
-        }
+        },
+        caller: AnonymousUser.instance,
       )
     }}
 
