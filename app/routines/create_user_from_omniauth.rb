@@ -18,6 +18,8 @@ protected
       raise Unexpected
     when "twitter"
       create_from_twitter_auth(auth)
+    when "google_oauth2"
+      create_from_google_auth(auth)
     else
       raise IllegalArgument, "unknown auth provider: #{auth[:provider]}"
     end
@@ -30,6 +32,11 @@ protected
 
   def create_from_twitter_auth(auth)
     run(CreateUser, username: normalize_username(auth[:info][:nickname]), 
+                    ensure_no_errors: true)
+  end
+
+  def create_from_google_auth(auth)
+    run(CreateUser, username: normalize_username(auth[:info][:name]),
                     ensure_no_errors: true)
   end
 

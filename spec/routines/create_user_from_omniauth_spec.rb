@@ -63,4 +63,25 @@ describe CreateUserFromOmniauth do
     end
   end
 
+  context 'when auth provider is google' do
+    it 'normalizes usernames' do
+      auth = {
+        provider: 'google_oauth2',
+        info: {
+          name: nickname,
+        },
+      }
+
+      expect_any_instance_of(CreateUserFromOmniauth).to receive(:run) do |create_user, args|
+        @normalized_nickname = args.delete(:username)
+        expect(create_user).to eq(CreateUser)
+        expect(args).to eq({ ensure_no_errors: true })
+      end
+
+      CreateUserFromOmniauth.call(auth)
+      user = User.new(username: @normalized_nickname)
+      expect(user).to be_valid
+    end
+  end
+
 end

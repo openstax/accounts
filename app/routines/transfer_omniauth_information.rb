@@ -13,6 +13,8 @@ protected
              raise Unexpected
            when "twitter"
              TwitterOmniauthData.new(auth_data)
+           when "google_oauth2"
+             GoogleOmniauthData.new(auth_data)
            else
              raise IllegalArgument, "unknown auth provider: #{auth[:provider]}"
            end

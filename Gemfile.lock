@@ -122,6 +122,9 @@ GEM
       rack
     omniauth-facebook (1.4.1)
       omniauth-oauth2 (~> 1.1.0)
+    omniauth-google-oauth2 (0.2.2)
+      omniauth (~> 1.0)
+      omniauth-oauth2
     omniauth-identity (1.1.1)
       bcrypt-ruby (~> 3.0)
       omniauth (~> 1.0)
@@ -236,6 +239,7 @@ DEPENDENCIES
   maruku
   omniauth
   omniauth-facebook
+  omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
   openstax_utilities (= 1.0.1)
