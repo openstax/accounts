@@ -1,10 +1,13 @@
 language: ruby
 rvm:
   - "1.9.3-p392"
+before_install:
+  - wget 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2'
+  - tar xf phantomjs-1.9.7-linux-x86_64.tar.bz2
 install:
   - bundle install --without production
   - bundle exec rake db:setup
 script:
-  - bundle exec rake
+  - PATH=$PATH:phantomjs-1.9.7-linux-x86_64/bin bundle exec rake
 notifications:
   email: false
