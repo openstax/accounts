@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'bcrypt-ruby', '~> 3.0.0'
 
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.17'
 
 gem 'doorkeeper', '~> 0.6.7'
 
@@ -38,16 +38,15 @@ group :assets do
 end
 
 group :development, :test do
-  gem 'debugger'
   gem 'sqlite3'
+  gem 'debugger'
   gem 'thin'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
 end
 
 group :production do
-
+  gem 'mysql2', '~> 0.3.11'
+  gem 'unicorn'
+  gem 'lograge', git: 'https://github.com/jpslav/lograge.git' # 'git@github.com:jpslav/lograge.git'
 end
-
-# gem 'jbuilder'
-# gem 'unicorn'

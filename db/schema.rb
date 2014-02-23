@@ -114,7 +114,7 @@ ActiveRecord::Schema.define(:version => 20130930174024) do
     t.datetime "updated_at",                          :null => false
     t.boolean  "is_administrator", :default => false
     t.integer  "person_id"
-    t.boolean  "is_temp"
+    t.boolean  "is_temp",          :default => true
     t.string   "first_name"
     t.string   "last_name"
   end
