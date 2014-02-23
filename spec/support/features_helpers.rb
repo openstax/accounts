@@ -25,3 +25,8 @@ def create_new_application
   check 'Trusted?'
   click_button 'Submit'
 end
+
+def create_email_address_for user, email_address, confirmation_code
+  FactoryGirl.create(:email_address, user: user, value: email_address,
+                     confirmation_code: confirmation_code)
+end
