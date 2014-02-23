@@ -29,8 +29,6 @@ gem 'jbuilder'
 
 gem 'delayed_job_active_record'
 
-gem 'sqlite3'
-
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
@@ -40,6 +38,7 @@ group :assets do
 end
 
 group :development, :test do
+  gem 'sqlite3'
   gem 'debugger'
   gem 'thin'
   gem 'rspec-rails'
