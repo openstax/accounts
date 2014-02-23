@@ -60,7 +60,7 @@ module ApplicationHelper
     options[:options] ||= {}
 
     content_tag :div, class: 'form-field' do
-      (content_tag :label, class: 'form-label' do
+      (content_tag :label, class: 'form-label', for: "#{options[:form].object_name}_#{options[:name]}" do
               options[:label]
       end) + 
       (content_tag :div, class: 'form-input' do
