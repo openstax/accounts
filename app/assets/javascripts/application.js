@@ -27,7 +27,6 @@ function refresh_buttons() {
    $(".edit_button").button({icons: {primary: "ui-icon-pencil"}, text: false });
    $(".trash_button").button({icons: {primary: "ui-icon-trash"}, text: false });
    $(".calendar_button").button({icons: {primary: "ui-icon-calendar"}, text: false });
-   refresh_datetime_pickers();
 }
 
 $(document).ready(function() {
