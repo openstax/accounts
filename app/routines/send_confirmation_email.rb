@@ -10,7 +10,8 @@ protected
 
     ConfirmationMailer.instructions(email_address).deliver
 
-    email_address.update_attributes(confirmation_sent_at: Time.now)
+    email_address.confirmation_sent_at = Time.now
+    email_address.save
   end
 
 end
