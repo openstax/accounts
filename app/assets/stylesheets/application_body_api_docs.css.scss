@@ -5,17 +5,55 @@
 
 #application-body-api-docs {
 
+  ul, ol {
+    margin-left: 25px;
+  }
+
+  blockquote p {
+    font-size: 12px;
+  }
+
+.breadcrumb {
+    padding: 0 0 10px 0;
+    margin: 0;
+    background-color: transparent;
+    float:right;
+    text-align: right;
+    width: 100%;
+  }
+
+  ul.breadcrumb {
+
+    // undoes the "/" provided by apipie's default CSS
+    li + li:before {
+      content: none;
+      padding: 0;
+    }
+  }
+
+  h1.page-header {
+    font-size: 22px;
+    line-height: 24px;
+    margin-bottom: 12px;
+  }
+
+  h2.schema {
+    clear: both;
+  }
+
   .page-header {
+    clear:both;
     h1 {
       font-size: 20px;
       line-height: 24px;
-      clear:both;
+      
 
       small {
         float: left;
         margin-top:20px;
         font-size: 16px;
         line-height: 22px;
+        margin-bottom: 15px;
       }
     }    
 
@@ -23,12 +61,7 @@
     border-bottom: none;
   }
 
-  .breadcrumb {
-    padding: 0;
-    margin: 0;
-    background-color: transparent;
-    float:right;
-  }
+  
 
   #description-create {
     p {
@@ -40,13 +73,17 @@
     font-size: 14px;
   }
 
-  h2 {
+  h2, h2 a {
     font-size: 16px;
     line-height: 26px;
 
     small {
       font-size: 14px;
     }
+  }
+
+  div p {
+    clear: both;
   }
 
   // position: relative;

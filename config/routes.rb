@@ -1,12 +1,14 @@
-Services::Application.routes.draw do
+Accounts::Application.routes.draw do
   
   use_doorkeeper
 
   apipie
 
-  namespace :api do
-    namespace :v1 do
+  namespace :api, defaults: {format: 'json'} do
+    scope module: :v1, constraints: ApiConstraints.new(version: 1) do
       get '/me' => 'credentials#me'
+
+      resources :users, only: [:show]
     end
   end
 
@@ -20,11 +22,10 @@ Services::Application.routes.draw do
   match '/logout', to: 'sessions#destroy'
 
   
-  # get 'sessions/register'
   get 'sessions/return_to_app'
-  # put 'sessions/finish_registration'
   match '/i_am_returning', to: 'sessions#i_am_returning'
 
+  get 'api', to: 'static_page#api'
   match 'copyright', :to => 'static_page#copyright'
 
   root :to => "static_page#home"

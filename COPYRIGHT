@@ -1,4 +1,4 @@
-OpenStax Services is Copyright Rice University, 2011-2013.
+OpenStax Accounts is Copyright Rice University, 2011-2013.
 
 Programmatic source files herein are licensed under the Affero General Public License 
 version 3 (the text of which can be found in the file GNU-AGPL-3.0 or online at 
@@ -10,12 +10,12 @@ distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; withou
 even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
 See the aforementioned license for more details.
 
-Components of OpenStax Services, including Rails and JQuery, are
+Components of OpenStax Accounts, including Rails and JQuery, are
 licensed under the MIT/X11 license. All unmodified files from these and other 
 sources retain their original copyright and license notices: see the relevant 
 individual files.
 
 All non-programmatic portions of this site, including but not limited to logos,
 images, videos, marketing materials, and text copy, are Copyright Rice University, 
-All Rights Reserved.  Derivations of OpenStax Services may not use these materials
+All Rights Reserved.  Derivations of OpenStax Accounts may not use these materials
 without permission from Rice University.

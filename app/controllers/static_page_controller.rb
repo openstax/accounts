@@ -1,5 +1,5 @@
 class StaticPageController < ApplicationController
-  skip_before_filter :authenticate_user!, only: [:home, :copyright]
+  skip_before_filter :authenticate_user!, only: [:home, :copyright, :api]
 
   layout :resolve_layout
 
