@@ -1,5 +1,8 @@
 # OpenStax Accounts
 
+[![Code Climate](https://codeclimate.com/github/openstax/accounts.png)](https://codeclimate.com/github/openstax/accounts)
+[![Build Status](https://travis-ci.org/openstax/accounts.png?branch=master)](https://travis-ci.org/openstax/accounts)
+
 OpenStax Accounts is a centralized provider of account-related services for OpenStax products, including:
 
 * User authentication
