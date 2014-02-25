@@ -7,7 +7,6 @@ Apipie.configure do |config|
   config.layout                  = 'application_body_api_docs'
   config.markup                  = Apipie::Markup::Markdown.new
   config.namespaced_resources    = false
-  config.reload_controllers      = true
 
   # Ok this is one of the uglier things I have ever done in code.  To get Apipie to 
   # render nicely inside the layout specified above, it needs to know about some helper
@@ -38,7 +37,8 @@ Apipie.configure do |config|
   # should be set after the first call.
   #
   # The real solution is to fork Apipie and get it to support helper_method set in 
-  # config.  Maybe we'll do that.
+  # config.  Maybe we'll do that.  I added an issue on Apipie to get the ball rolling:
+  # https://github.com/Apipie/apipie-rails/issues/210
   #
   config.authenticate = Proc.new {
     return if self._helper_methods.include?(:current_user)
