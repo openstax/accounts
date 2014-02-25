@@ -1,4 +1,4 @@
-Services::Application.routes.draw do
+Accounts::Application.routes.draw do
   
   use_doorkeeper
 
