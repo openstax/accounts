@@ -3,6 +3,7 @@ require File.expand_path('../application', __FILE__)
 
 require "sign_in_state"
 require "omniauth/strategies/custom_identity"
+require "api_constraints"
 
 SITE_NAME = "OpenStax Services"
 TEAM_NAME = "OpenStax" # used when talking about our team
