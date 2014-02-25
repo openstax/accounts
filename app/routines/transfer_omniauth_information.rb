@@ -16,7 +16,7 @@ protected
            when "google_oauth2"
              GoogleOmniauthData.new(auth_data)
            else
-             raise IllegalArgument, "unknown auth provider: #{auth[:provider]}"
+             raise IllegalArgument, "unknown auth provider: #{auth_data[:provider]}"
            end
 
     info.emails.each do |email|
