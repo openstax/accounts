@@ -24,5 +24,10 @@ describe Identity do
       expect(@plone.authenticate 'pass').to be_false
     end
 
+    it 'returns false if ssha password digest is invalid' do
+      @plone.update_attribute :password_digest, '{SSHA}%3D'
+      expect(@plone.authenticate 'password').to be_false
+    end
+
   end
 end
