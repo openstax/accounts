@@ -5,7 +5,7 @@ module Api
       respond_to :json
 
       def current_user
-        @current_user ||= ApiUser.new(doorkeeper_token, lamda { super })
+        @current_api_user ||= ApiUser.new(doorkeeper_token, lambda { super })
       end
          
     end

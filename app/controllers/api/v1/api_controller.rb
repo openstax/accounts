@@ -2,12 +2,14 @@ module Api
   module V1
     class ApiController < ApplicationController           
       
+      skip_before_filter :authenticate_user!
       respond_to :json
       rescue_from Exception, :with => :rescue_from_exception
       
     protected
 
       def rescue_from_exception(exception)
+        debugger
         # See https://github.com/rack/rack/blob/master/lib/rack/utils.rb#L453 for error names/symbols
         error = :internal_server_error
     

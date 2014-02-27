@@ -15,7 +15,7 @@ describe UsersController, :type => :api, :version => :v1 do
                                               application: application, 
                                               resource_owner_id: user.id }
 
-    it "should work :-)" do
+    it "should GET a User " do
       # debugger
       # Rails.logger.debug 'hi'
       # api_request :get, 'api/users/1'  # can access self.class.metadata[:version] in here
@@ -24,6 +24,9 @@ describe UsersController, :type => :api, :version => :v1 do
       # let a FactoryGirl Doorkeeper::Application
       # api_get '/api/users/1', token
       api_get :show, token, {id: 1}
+      expect(response.code).to eq('200')
+      debugger
+      debugger
 
       # api_request :get, 
     end
