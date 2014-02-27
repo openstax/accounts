@@ -52,7 +52,6 @@ module ApplicationHelper
 
   def standard_field(options={})
 
-    raise IllegalArgument, "Must specify a :label" if !options[:label] 
     raise IllegalArgument, "Must specify a :type" if !options[:type] 
     raise IllegalArgument, "Must specify a :form" if !options[:form] 
     raise IllegalArgument, "Must specify a :name" if !options[:name] 
@@ -60,19 +59,26 @@ module ApplicationHelper
     options[:options] ||= {}
 
     content_tag :div, class: 'form-field' do
-      (content_tag :label, class: 'form-label', for: "#{options[:form].object_name}_#{options[:name]}" do
-              options[:label]
-      end) + 
-      (content_tag :div, class: 'form-input' do
+      output = []
+      if options[:label]
+        output << content_tag(:label, class: 'form-label',
+                              for: "#{options[:form].object_name}_#{options[:name]}") do
+                  options[:label]
+                end
+      end
+      output << content_tag(:div, class: 'form-input') do
         case options[:type] 
         when :text_field
           options[:form].text_field(options[:name], options[:options])
         when :password_field
           options[:form].password_field(options[:name], options[:options])
+        when :hidden_field
+          options[:form].hidden_field(options[:name], options[:options])
         else
           raise IllegalArgument, "Unknown field type #{options[:type]}"
         end
-      end)
+      end
+      output.reduce(:+)
     end
   end
 end

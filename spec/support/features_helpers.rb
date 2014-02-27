@@ -36,3 +36,18 @@ def create_email_address_for user, email_address, confirmation_code
   FactoryGirl.create(:email_address, user: user, value: email_address,
                      confirmation_code: confirmation_code)
 end
+
+def generate_reset_code_for(username)
+  user = User.find_by_username(username)
+  identity = user.identity
+  identity.generate_reset_code
+  identity.reset_code
+end
+
+def generate_expired_reset_code_for(username)
+  one_year_ago = 1.year.ago
+  DateTime.stub(:now).and_return(one_year_ago)
+  reset_code = generate_reset_code_for username
+  DateTime.unstub(:now)
+  reset_code
+end

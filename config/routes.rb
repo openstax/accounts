@@ -41,7 +41,9 @@ Accounts::Application.routes.draw do
   end
 
   get "do/confirm_email"
-  
+
+  match 'do/reset_password'
+
   match '/auth/:provider/callback', to: 'sessions#authenticated' #omniauth route
   match '/signup', to: 'identities#new'
   
