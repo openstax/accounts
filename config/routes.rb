@@ -50,7 +50,8 @@ Accounts::Application.routes.draw do
   match '/login', to: 'sessions#new'
   match "/auth/failure", to: "sessions#failure"
   match '/logout', to: 'sessions#destroy'
-  
+  match '/forgot_password', to: 'identities#forgot_password'
+
   get 'sessions/return_to_app'
   match '/i_am_returning', to: 'sessions#i_am_returning'
 
