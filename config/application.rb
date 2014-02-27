@@ -20,6 +20,7 @@ module Accounts
                                 #{config.root}/app/routines 
                                 #{config.root}/app/queries
                                 #{config.root}/app/handlers
+                                #{config.root}/app/representers
                                 )
 
     # Only load the plugins named here, in the order given (default is alphabetical).
