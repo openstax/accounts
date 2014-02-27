@@ -14,7 +14,6 @@
 class ApiUser
 
   def initialize(doorkeeper_token, non_doorkeeper_user_proc)
-    debugger
     # If we have a doorkeeper_token, derive the Application and User
     # from it.  If not, we're in case #1 above and the User should be 
     # retrieved from the alternative proc provided in arguments and 

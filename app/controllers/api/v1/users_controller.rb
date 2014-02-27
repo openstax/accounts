@@ -1,9 +1,10 @@
 class Api::V1::UsersController < Api::V1::OauthBasedApiController
 
-  # include OSU::Roar
+  include OSU::Roar
   
+  before_filter :debug
 
-  # doorkeeper_for :all
+  doorkeeper_for :all
 
   # resource_description do
   #   api_versions "v1"
@@ -19,7 +20,6 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
     
   EOS
   def show
-    debugger
     head :ok
     # debugger
     # rest_get(User, params[:id])
@@ -29,5 +29,9 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
 
   end
 
+  def debug
+    debugger
+    debugger
+  end
 
 end

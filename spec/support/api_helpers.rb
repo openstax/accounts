@@ -1,27 +1,39 @@
-require 'rack/test'
+# Helpful documentation:
+#  https://github.com/rails/rails/blob/master/actionpack/lib/action_controller/test_case.rb
+#
 
-# RSpec.configure do |conf|
-#   conf.include Rack::Test::Methods
-# end
+require 'rack/test'
 
 def api_get(path, doorkeeper_token, params={}, env={}, &block)
   api_request(:get, path, doorkeeper_token, params, env, &block)
 end
 
+def api_put(path, doorkeeper_token, params={}, env={}, &block)
+  api_request(:put, path, doorkeeper_token, params, env, &block)
+end
+
+def api_post(path, doorkeeper_token, params={}, env={}, &block)
+  api_request(:post, path, doorkeeper_token, params, env, &block)
+end
+
+def api_delete(path, doorkeeper_token, params={}, env={}, &block)
+  api_request(:delete, path, doorkeeper_token, params, env, &block)
+end
+
 def api_request(type, path, doorkeeper_token, params={}, env={}, &block)
-  env['HTTP_AUTHORIZATION'] = "Bearer #{doorkeeper_token.token}"
+  request.env['HTTP_AUTHORIZATION'] = "Bearer #{doorkeeper_token.token}"
 
   version_string = self.class.metadata[:version].try(:to_s)
   raise ArgumentError, "Top-level 'describe' metadata must include a value for ':version'" if version_string.nil?
-  env['HTTP_ACCEPT'] = "application/vnd.accounts.openstax.#{version_string}"
+  request.env['HTTP_ACCEPT'] = "application/vnd.accounts.openstax.#{version_string}"
 
   params[:format] = 'json'
 
-  # prepend "api" to path if not there
-  # path = "/#{path}" if !path.starts_with?("/")
-  # path = "/api#{path}" if !path.starts_with?("/api/")
-
-  # debugger
+  if path.is_a? String
+    # prepend "api" to path if not there
+    path = "/#{path}" if !path.starts_with?("/")
+    path = "/api#{path}" if !path.starts_with?("/api/")
+  end
 
   case type
   when :get

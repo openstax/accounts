@@ -9,7 +9,6 @@ module Api
     protected
 
       def rescue_from_exception(exception)
-        debugger
         # See https://github.com/rack/rack/blob/master/lib/rack/utils.rb#L453 for error names/symbols
         error = :internal_server_error
     
