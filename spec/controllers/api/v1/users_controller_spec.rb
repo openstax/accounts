@@ -11,8 +11,6 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                                               resource_owner_id: user.id }
 
     it "should GET a User " do
-      debugger
-      request.env['BLAH'] = 'JP'
       api_get :show, token, {id: 1}
       expect(response.code).to eq('200')
     end

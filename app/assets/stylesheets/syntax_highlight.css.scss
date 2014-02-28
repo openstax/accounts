@@ -1,0 +1,13 @@
+@import "common";
+
+pre.code, pre.prettyprint {
+  outline: 1px solid #ccc; 
+  padding: 5px; 
+  margin: 5px; 
+
+  .string { color: $os_green; }
+  .number { color: $os_dark_orange; }
+  .boolean { color: blue; }
+  .null { color: purple; }
+  .key { color: $os_orange; }
+}
