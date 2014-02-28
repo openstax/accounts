@@ -69,3 +69,13 @@ end
 # Added some fields to Doorkeeper
 
 Doorkeeper::Application.attr_accessible :trusted
+
+Doorkeeper::Application.class_eval do 
+  def is_human?
+    false
+  end
+
+  def is_application?
+    true
+  end
+end

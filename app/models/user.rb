@@ -27,9 +27,12 @@ class User < ActiveRecord::Base
     false
   end
 
-  # Human API users can be specified or unspecified
-  def is_specified?
+  def is_human?
     true
+  end
+
+  def is_application?
+    false
   end
 
   def full_name

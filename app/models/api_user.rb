@@ -59,33 +59,33 @@ class ApiUser
   # Access Control Helpers #
   ##########################
 
-  def can_do?(method, resource)
+  def can_do?(action, resource)
     # If there is a human user, it should always take precedence when 
     # testing for access.
 
-    human_user ?
-      resource.can_be_read_by?(human_user) :
-      resource.can_be_read_by?(application)
+    AccessPolicy.action_allowed?(action, 
+                                 human_user ? human_user : application, 
+                                 resource)
   end
 
   def can_read?(resource)
-    can_do?(:can_read?, resource)
+    can_do?(:read, resource)
   end
   
   def can_create?(resource)
-    can_do?(:can_create?, resource)
+    can_do?(:create, resource)
   end
   
   def can_update?(resource)
-    can_do?(:can_update?, resource)
+    can_do?(:update, resource)
   end
     
   def can_destroy?(resource)
-    can_do?(:can_destroy?, resource)
+    can_do?(:destroy, resource)
   end
 
   def can_sort?(resource)
-    can_do?(:can_sort?, resource)
+    can_do?(:sort, resource)
   end
 
 end
