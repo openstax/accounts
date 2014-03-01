@@ -108,15 +108,18 @@ Schema  {##{SecureRandom.hex(4)} .schema}
       def rescue_from_exception(exception)
         # See https://github.com/rack/rack/blob/master/lib/rack/utils.rb#L453 for error names/symbols
         error = :internal_server_error
+        send_email = true
     
         case exception
         when SecurityTransgression
           error = :forbidden
+          send_email = false
         when ActiveRecord::RecordNotFound, 
              ActionController::RoutingError,
              ActionController::UnknownController,
              AbstractController::ActionNotFound
           error = :not_found
+          send_email = false
         end
 
         ExceptionNotifier::Notifier.exception_notification(
