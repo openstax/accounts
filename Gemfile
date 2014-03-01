@@ -15,8 +15,8 @@ gem 'omniauth-google-oauth2'
 gem 'squeel'
 gem 'quiet_assets'
 
-gem 'openstax_utilities',  path: '/Users/jps/dev/openstax_utilities'  #'1.0.1' 
-gem 'lev', '~> 2.0.2'
+gem 'openstax_utilities', '~> 1.3.0' 
+gem 'lev', '~> 2.0.4'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
