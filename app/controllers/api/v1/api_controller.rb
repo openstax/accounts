@@ -122,11 +122,11 @@ Schema  {##{SecureRandom.hex(4)} .schema}
           send_email = false
         end
 
-        ExceptionNotifier::Notifier.exception_notification(
-          request.env,
+        ExceptionNotification.notify_exception(
           exception,
-          :data => {:message => "An exception occurred"}
-        ).deliver if send_email
+          env: request.env,
+          data: { message: "An exception occurred" }
+        ) if send_email
 
         Rails.logger.debug("An exception occurred: #{exception.inspect}") if Rails.env.development?
 

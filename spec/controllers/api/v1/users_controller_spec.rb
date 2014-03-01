@@ -59,7 +59,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
         username: user_1.username,
         first_name: user_1.first_name,
         last_name: user_1.last_name,
-        full_name: user_1.full_name
+        full_name: user_1.full_name,
+        title: user_1.title
       }.to_json
 
       expect(response.body).to eq(expected_response)

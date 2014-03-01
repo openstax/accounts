@@ -28,5 +28,10 @@ module Api::V1
              writeable: true,
              render_nil: true
 
+    property :title,
+             type: String, 
+             writeable: true,
+             render_nil: true
+
   end
 end
