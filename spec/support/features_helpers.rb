@@ -6,6 +6,12 @@ def create_user username, password='password'
   return user
 end
 
+def create_user_with_plone_password
+  user = create_user 'plone_user'
+  # update user's password digest to be "password" using the plone hashing algorithm
+  user.identity.update_attribute(:password_digest, '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B')
+end
+
 def create_admin_user
   user = create_user 'admin'
   user.is_administrator = true
