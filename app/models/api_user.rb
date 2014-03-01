@@ -47,14 +47,6 @@ class ApiUser
     @user ||= @user_proc.call
   end
 
-  def is_administrator?
-    human_user && human_user.is_administrator?
-  end
-
-  def is_anonymous?
-    human_user && human_user.is_anonymous?
-  end
-
   ##########################
   # Access Control Helpers #
   ##########################
