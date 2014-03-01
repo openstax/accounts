@@ -1,0 +1,15 @@
+<ul class="normal">
+  <li><%= link_to "Run cron tasks", admin_cron_path, :method => :put, :test => "run_cron_tasks" %></li>
+  <li>Raise an Exception:
+    <ul class="normal">
+      <li><%= link_to "SecurityTransgression",                admin_raise_security_transgression_path %></li>
+      <li><%= link_to "ActiveRecord::RecordNotFound",         admin_raise_record_not_found_path %></li>
+      <li><%= link_to "ActionController::RoutingError",       admin_raise_routing_error_path %></li>
+      <li><%= link_to "ActionController::UnknownController",  admin_raise_unknown_controller_path %></li>
+      <li><%= link_to "ActionController::UnknownAction",      admin_raise_unknown_action_path %></li>
+      <li><%= link_to "ActionView::MissingTemplate",          admin_raise_missing_template_path %></li>
+      <li><%= link_to "NotYetImplemented",                    admin_raise_not_yet_implemented_path %></li>
+      <li><%= link_to "IllegalArgument",                      admin_raise_illegal_argument_path %></li>
+    </ul>
+  </li>
+</ul>

@@ -17,9 +17,11 @@ module Accounts
 
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(
+                                #{config.root}/app/access_policies 
                                 #{config.root}/app/routines 
                                 #{config.root}/app/queries
                                 #{config.root}/app/handlers
+                                #{config.root}/app/representers
                                 )
 
     # Only load the plugins named here, in the order given (default is alphabetical).

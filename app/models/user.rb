@@ -27,12 +27,56 @@ class User < ActiveRecord::Base
     false
   end
 
-  def full_name
-    first_name || last_name ? "#{first_name} #{last_name}" : username
+  def is_human?
+    true
+  end
+
+  def is_application?
+    false
+  end
+
+  def name
+    full_name || (first_name || last_name ? "#{first_name} #{last_name}" : username)
   end
 
   def casual_name
     first_name || username
+  end
+
+  def can_be_read_by?(user)
+    raise NotYetImplemented
+  end
+
+  def can_be_updated_by?(user)
+    raise NotYetImplemented
+  end
+
+  def can_be_destroyed_by?(user)
+    raise NotYetImplemented
+  end
+
+  ##########################
+  # Access Control Helpers #
+  ##########################
+
+  def can_read?(resource)
+    resource.can_be_read_by?(self)
+  end
+  
+  def can_create?(resource)
+    resource.can_be_created_by?(self)
+  end
+  
+  def can_update?(resource)
+    resource.can_be_updated_by?(self)
+  end
+    
+  def can_destroy?(resource)
+    resource.can_be_destroyed_by?(self)
+  end
+
+  def can_sort?(resource)
+    resource.can_be_sorted_by?(self)
   end
 
 protected

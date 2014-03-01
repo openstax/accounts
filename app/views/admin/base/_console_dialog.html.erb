@@ -1,0 +1,31 @@
+
+<%= osu.block_to_partial 'shared/modal',
+                         html_id: 'admin_console_dialog',
+                         width: '900px',
+                         height: '500px' do %>
+
+  <div class="modal-header" style="border-bottom: none">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <ul class="nav nav-tabs tight-bottom">
+      <li class="active"><a href="#misc-tab" data-toggle="tab">Misc</a></li>
+      <li><a href="#users-tab" data-toggle="tab">Users</a></li>
+    </ul>
+  </div>
+
+  <div class="modal-body">
+
+    <div id="dialog-local-alerts"></div>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="misc-tab">
+        <%= render 'misc' %>
+      </div>
+
+      <div class="tab-pane" id="users-tab">
+        <%= render 'users' %>
+      </div>
+    </div>
+    
+  </div>
+
+<% end %>

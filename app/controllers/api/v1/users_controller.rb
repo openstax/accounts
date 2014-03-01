@@ -1,5 +1,7 @@
 class Api::V1::UsersController < Api::V1::OauthBasedApiController
 
+  include OSU::Roar
+
   doorkeeper_for :all
 
   resource_description do
@@ -12,9 +14,14 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
 
   api :GET, '/users/:id', 'Gets the specified User'
   description <<-EOS
+    #{json_schema(Api::V1::UserRepresenter, include: :readable)}            
   EOS
-  def get
-    # raise SecurityTransgression if current_user.is_anonymous?
+  def show
+    rest_get(User, params[:id])
+  end
+
+  def search
+
   end
 
 end

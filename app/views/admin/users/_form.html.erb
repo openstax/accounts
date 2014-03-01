@@ -1,0 +1,31 @@
+<%# Copyright 2011-2012 Rice University. Licensed under the Affero General Public 
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<%= form_for([:admin, @user]) do |f| %>
+  <%= render "shared/error_messages", :target => @user %> 
+
+  <table class="left_heading left_heading_offset">
+     <tr>
+        <th>Name</th>
+        <td><%= @user.name %></td>
+     </tr>
+     <tr>
+        <th>Email</th>
+        <td><%= @user.email %></td>
+     </tr>
+     <tr>
+        <th>Administrator?</th>
+        <td><%= f.check_box :is_admin %></td>
+     </tr>
+     <tr>
+        <th>Disable Account?</th>
+        <td><%= check_box_tag "user[disable]", "1", @user.is_disabled? %></td>
+     </tr>
+  </table>
+  
+  <p>
+     
+  <div class="actions">
+    <%= f.submit :class => submit_classes %>
+  </div>
+<% end %>

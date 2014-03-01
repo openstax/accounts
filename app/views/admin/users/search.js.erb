@@ -1,0 +1,23 @@
+<%= unless_errors alerts_html_id: 'dialog-local-alerts' do %>
+  <% contents = osu.action_list(             
+       records: @handler_result.outputs[:users],
+       list: {
+         headings: ['Username', 'First Name', 'Last Name', ''],
+         widths: ['25%', '25%', '25%', '25%'],
+         data_procs:
+           [
+             Proc.new { |user| user.username },
+             Proc.new { |user| user.first_name || '---' },
+             Proc.new { |user| user.last_name || '---' },
+             Proc.new { |user| 
+              link_to 'Sign in as', 
+                      become_user_path(user), 
+                      method: :post 
+             }
+           ]
+       }
+     )
+  %>
+
+  $("#search-results-list").html("<%= j(contents) %>");  
+<% end %>

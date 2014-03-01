@@ -1,0 +1,22 @@
+<div id="upper-corner-console">
+
+  <% if current_user.is_administrator? %>
+    <%= link_to "Admin Console", main_app.admin_path, remote: true %><br/>
+  <% end %>
+
+  <% if !Rails.env.production? %>
+    Current user: <%= current_user.username %><br/>
+    <%= link_to "Dev Console", main_app.dev_path, :remote => true %><br/>
+  <% end %>
+
+  <% clock_is_normally_enabled = @clock_enabled && signed_in? %>
+  <% clock_is_enabled = clock_is_normally_enabled || !Rails.env.production? %>
+
+  <% if clock_is_enabled %>
+    <span id="clock" class="<%= 'highlight' if !clock_is_normally_enabled %>">
+      <% time = Time.zone.now %>
+      <%= osu.standard_time(time) %><br/>(on last refresh)
+    </span>
+  <% end %>
+
+</div>

@@ -14,6 +14,7 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require_bootstrap
  *= require jquery-ui
  *= require main
  *= require_tree .
