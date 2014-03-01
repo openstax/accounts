@@ -17,7 +17,6 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}            
   EOS
   def show
-    debugger
     rest_get(User, params[:id])
   end
 

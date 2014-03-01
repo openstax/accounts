@@ -7,7 +7,7 @@ class UserAccessPolicy
              (requestor.id == user.id && [:read, :update].include?(action))
     else
       # Currently only give trusted applications access, and that access is complete
-      return requestor.is_trusted
+      return requestor.trusted
     end
   end
 

@@ -2,6 +2,8 @@ module Api
   module V1
     class ApiController < ApplicationController           
       
+      include Roar::Rails::ControllerAdditions
+
       skip_before_filter :authenticate_user!
       respond_to :json
       rescue_from Exception, :with => :rescue_from_exception

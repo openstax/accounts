@@ -35,8 +35,8 @@ class User < ActiveRecord::Base
     false
   end
 
-  def full_name
-    first_name || last_name ? "#{first_name} #{last_name}" : username
+  def name
+    full_name || (first_name || last_name ? "#{first_name} #{last_name}" : username)
   end
 
   def casual_name

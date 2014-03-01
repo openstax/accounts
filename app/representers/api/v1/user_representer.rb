@@ -15,15 +15,18 @@ module Api::V1
 
     property :first_name,
              type: String,
-             writeable: true
+             writeable: true,
+             render_nil: true
 
     property :last_name,
              type: String,
-             writeable: true
+             writeable: true,
+             render_nil: true
 
     property :full_name,
              type: String,
-             writeable: true
+             writeable: true,
+             render_nil: true
 
   end
 end
