@@ -1,0 +1,13 @@
+<%# Copyright 2011-2012 Rice University. Licensed under the Affero General Public 
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<div id="upperCornerLinks">
+   <%= link_to 'Show', admin_user_path(@user) %> |
+   <%= link_to 'Back', admin_users_path %>   
+</div>
+
+<%= page_heading 'User Detail' %>
+
+<%= render 'form' %>
+
+Updating the information above will send the changes to the user. [TODO]

@@ -119,6 +119,14 @@ Schema  {##{SecureRandom.hex(4)} .schema}
           error = :not_found
         end
 
+        ExceptionNotifier::Notifier.exception_notification(
+          request.env,
+          exception,
+          :data => {:message => "An exception occurred"}
+        ).deliver if send_email
+
+        Rails.logger.debug("An exception occurred: #{exception.inspect}") if Rails.env.development?
+
         head error
       end
 

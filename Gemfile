@@ -33,12 +33,15 @@ gem 'delayed_job_active_record'
 gem 'representable', git: 'git://github.com/jpslav/representable.git', ref: '0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457'
 gem 'roar-rails'
 
+gem 'exception_notification'
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'therubyracer', :platforms => :ruby
   gem 'uglifier', '>= 1.0.3'
-  gem 'bootstrap-sass', '~> 2.3.1.0'
+  gem 'bootstrap-sass', '~> 3.1.1'
+  gem 'compass-rails'
 end
 
 group :development, :test do

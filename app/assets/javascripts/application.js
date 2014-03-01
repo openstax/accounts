@@ -14,10 +14,7 @@
 //= require jquery_ujs
 //= require jquery.ui.all
 //= require_tree .
-// Loads Bootstrap javascripts for accordions; note loading everything breaks other existing CSS/JS
-//= require bootstrap-transition
-//= require bootstrap-collapse
-
+//= require bootstrap
 
 function refresh_buttons() {
    $('input:submit').button();

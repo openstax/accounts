@@ -1,0 +1,30 @@
+@mixin section-block-base($heading_font_size:16px, $heading_color:black, $body_indent:0px, $body_top_margin:8px) {
+  margin:  10px 0px;
+
+  .section-block-heading {
+
+    color:     $heading_color;
+    font-size: $heading_font_size;
+
+    a { 
+      font-size: $heading_font_size; 
+    }
+  }
+
+  .section-block-body {
+    margin:  $body_top_margin 0px 0px;
+    padding: 0px 0px 0px $body_indent;
+  }
+}
+
+.section-block-section {
+  @include section-block-base(14px, black, 10px);
+}
+
+.section-block-section.nesting-2 {
+  @include section-block-base(12px);
+
+  .section-block-heading {
+    font-style: italic;
+  }
+}

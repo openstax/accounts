@@ -1,0 +1,6 @@
+<%= unless_errors alerts_html_id: 'dialog-local-alerts' do %>
+  <% add_local_success_alert  now: true, content: "Created user '#{@handler_result.outputs.user.username}'" %>
+  <%= js_refresh_alerts alerts_html_id: 'dialog-local-alerts' %>
+  
+  $('#create-user-form')[0].reset();
+<% end %>

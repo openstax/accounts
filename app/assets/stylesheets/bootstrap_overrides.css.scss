@@ -1,0 +1,44 @@
+@import 'common';
+@import 'bootstrap';
+
+
+select, input[type='text'], input[type='search'] {
+  @extend .form-control;
+}
+
+.modal-backdrop {
+  opacity: 0.6;
+}
+
+.modal-footer {
+  background-color: white;
+  border-top: none;
+}
+
+.modal-header {
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    font-style: normal;
+    color: $os_gray;
+  }
+}
+
+.nav.tight-bottom {
+  margin-bottom: 0px;
+}
+
+button.standard, input[type='submit'].standard {
+  @extend .btn;
+  @extend .btn-primary;
+  @include border-radius(0px);
+  &:hover, &:focus {
+    color: white;
+  }
+}
+
+.btn {
+  &:hover, &:focus {
+    color: white;
+  } 
+}

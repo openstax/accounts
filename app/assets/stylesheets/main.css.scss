@@ -3,10 +3,16 @@
 
 @import "common";
 
-// Put bootstrap overrides up here
-
-@import "bootstrap";
-
 table.std-list-1 {
   @include std-table-list-1;
+}
+
+#upper-corner-console {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  #clock.highlight {
+    color: #ff00ff;
+  }
 }

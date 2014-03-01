@@ -1,0 +1,51 @@
+<%= osu.section_block "Create a new user" do %>
+
+  <div style="width: 500px">
+    <%= lev_form_for :create, url: dev_users_create_path, remote: true, 
+                     html: {id: 'create-user-form', class: 'form-horizontal'} do |f| %>
+
+      <div class='form-group'>
+        <label class='col-sm-3 control-label'>First name</label>
+        <div class='col-sm-9'>
+          <%= f.text_field :first_name, class: 'form-control' %>
+        </div>
+      </div>
+      <div class='form-group'>
+        <label class='col-sm-3 control-label'>Last name</label>
+        <div class='col-sm-9'>
+          <%= f.text_field :last_name, class: 'form-control' %>
+        </div>
+      </div>
+      <div class='form-group'>
+        <label class='col-sm-3 control-label'>Username</label>
+        <div class='col-sm-9'>
+          <%= f.text_field :username, class: 'form-control' %>
+        </div>
+      </div>
+      <div class='form-group'>
+          <label class='col-sm-3 control-label'>Admin?</label>
+          <div class=' col-sm-9'>
+
+              <%= f.check_box :is_admin %>
+
+          </div>
+      </div>
+      <div class='form-group'>
+        <div class='col-sm-offset-3 col-sm-9'>
+          <%= f.submit 'Register' %>
+        </div>
+      </div>
+
+    <% end %>
+  </div>
+
+<% end %>
+
+<%= osu.section_block "Generate new users" do %>
+    <%= lev_form_for :generate, url: dev_users_generate_path, remote: true,
+                     html: {id: 'generate-users-form', class: 'form-inline'} do |f| %>
+                     
+      Generate <%= f.text_field :count, style: 'width:30px' %> user(s) 
+      <%= f.submit 'Do it now!' %>
+    <% end %>
+<% end %>
