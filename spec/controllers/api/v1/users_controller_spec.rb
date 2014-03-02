@@ -7,12 +7,17 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
     let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
     let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }
     let!(:user_1)          { FactoryGirl.create :user }
-    let!(:user_2)          { FactoryGirl.create :user }
+    let!(:user_2)          { FactoryGirl.create :user_with_emails, first_name: 'Bob', last_name: 'Jones' }
     let!(:admin_user)      { FactoryGirl.create :user, :admin }
 
     let!(:user_1_token)    { FactoryGirl.create :doorkeeper_access_token, 
                                                 application: untrusted_application, 
                                                 resource_owner_id: user_1.id }
+
+    let!(:user_2_token)    { FactoryGirl.create :doorkeeper_access_token, 
+                                                application: untrusted_application, 
+                                                resource_owner_id: user_2.id }
+
 
     let!(:admin_token)       { FactoryGirl.create :doorkeeper_access_token, 
                                                   application: untrusted_application, 
@@ -51,16 +56,27 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       expect(response.code).to eq('403')
     end
 
-    it "should return a properly formatted JSON response" do
+    it "should return a properly formatted JSON response for low-info user" do
       api_get :show, user_1_token, {id: user_1.id}
       
       expected_response = {
         id: user_1.id,
         username: user_1.username,
-        first_name: user_1.first_name,
-        last_name: user_1.last_name,
-        full_name: user_1.full_name,
-        title: user_1.title
+        contact_infos: []
+      }.to_json
+
+      expect(response.body).to eq(expected_response)
+    end
+
+    it "should return a properly formatted JSON response for user with name and contact infos" do
+      api_get :show, user_2_token, {id: user_2.id}
+      
+      expected_response = {
+        id: user_2.id,
+        username: user_2.username,
+        first_name: user_2.first_name,
+        last_name: user_2.last_name,
+        contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
       }.to_json
 
       expect(response.body).to eq(expected_response)

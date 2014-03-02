@@ -6,14 +6,33 @@ protected
 
   NAME_DISCARDED_CHAR_REGEX = /[^A-Za-z ']/
 
-  # TODO Use options to limit what can be searched for (e.g. users can't search by email) 
-  # and what can be returned (e.g. Users can't see email addresses)
+  # TODO increase the security of this search algorithm:
+  # 
+  #   For certain users we might want to restrict the fields that can be searched 
+  #   as well as the fields that are returned.  For example, we probably don't want 
+  #   to return email address information to an OpenStax SPA in a client's browser, 
+  #   but we'd be ok returning email addresses directly to an OpenStax server.
+  #
+  #   I favor an approach where no permissions are granted by default -- where the
+  #   requesting code has to explicitly say that the search routine can search by
+  #   such and such fields and return such and such other fields.  That way it protects
+  #   us from accidentally using more fields than we should.
+  #
+  #   For restriction what fields we return we can use a "select" clause on our query.
+  #   This works for fields in User, but what about restricting access to associated
+  #   ContactInfos?  Ideally we'd be able to prevent other code from being able to send
+  #   this info back to the requestor.  Maybe this logic has to go outside of this class
+  #   (like in the API representer or view code).
+  #
+  #   We should prohibit Users from searching by username or name if they don't provide
+  #   enough characters (so as to discourage them from querying all Users or from 
+  #   querying all Users whose username starts with 'a', then 'b', then 'c' and so on)
 
   def exec(query, options={}, type=:any)
     users = User.scoped
 
     # Return all results if no search terms
-    outputs[:users] = users and return if query.blank?
+    # outputs[:users] = users and return if query.blank?
     
     KeywordSearch.search(query) do |with|
 
@@ -50,11 +69,35 @@ protected
 
     end
 
+    # If the query didn't result in any restrictions, either because it was blank
+    # or didn't have a keyword from above with appropriate values, then return no
+    # results.
+    users = User.where('0=1') if User.scoped == users
+
+    if options[:page] && options[:per_page]
+      users = users.limit(options[:per_page]).offset(options[:per_page]*options[:page])
+    end
+
     outputs[:users] = users
   end
 
   def prep_names(names)
     names.collect{|name| name.gsub(NAME_DISCARDED_CHAR_REGEX, '').downcase + '%'}
   end
+
+  # class Options
+  #   def initialize(hash)
+  #   end
+
+  #   def can_search?(field)
+
+  #   end
+
+  #   def can_return?(field)
+
+  #   end
+  # end
+
+
 
 end

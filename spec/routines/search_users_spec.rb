@@ -46,4 +46,14 @@ describe SearchUsers do
     expect(outcome).to eq []
   end
 
+  it "should not return any results if the query is empty" do
+    outcome = SearchUsers.call("").outputs.users.all
+    expect(outcome).to eq []
+  end
+
+  it "should not return any results if there is no usable part of the query" do
+    outcome = SearchUsers.call("blah:foo").outputs.users.all
+    expect(outcome).to eq []
+  end
+
 end

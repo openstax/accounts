@@ -10,28 +10,31 @@ module Api::V1
              }
 
     property :username,
-             type: String,
-             writeable: true
+             type: String
 
     property :first_name,
              type: String,
-             writeable: true,
-             render_nil: true
+             writeable: true
 
     property :last_name,
              type: String,
-             writeable: true,
-             render_nil: true
+             writeable: true
 
     property :full_name,
              type: String,
-             writeable: true,
-             render_nil: true
+             writeable: true
 
     property :title,
              type: String, 
-             writeable: true,
-             render_nil: true
+             writeable: true
+
+    collection :contact_infos, 
+               class: ContactInfo, 
+               decorator: ContactInfoRepresenter, 
+               parse_strategy: :sync,
+               schema_info: {
+                 minItems: 0
+               }
 
   end
 end
