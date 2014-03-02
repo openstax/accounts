@@ -1,3 +1,19 @@
+
+# Routine for searching for users
+# 
+# Caller provides a query and some options.  The query follows the rules of
+# https://github.com/bruce/keyword_search, e.g.:
+#
+#   "username:jps,richb" --> returns the "jps" and "richb" users
+#   "name:John" --> returns Users with first, last, or full name starting with "John"
+#
+# Query terms can be combined, e.g. "username:jp first_name:john"
+#
+# There are currently two options to control query pagination:
+#
+#   :per_page -- the number of results to return (max)
+#   :page     -- the page to return
+
 class SearchUsers
 
   lev_routine transaction: :no_transaction
@@ -26,13 +42,11 @@ protected
   #
   #   We should prohibit Users from searching by username or name if they don't provide
   #   enough characters (so as to discourage them from querying all Users or from 
-  #   querying all Users whose username starts with 'a', then 'b', then 'c' and so on)
+  #   querying all Users whose username starts with 'a', then 'b', then 'c' and so on).
+  #   What to do if a first name is "V" or "JP" -- hard to make this restriction here.
 
   def exec(query, options={}, type=:any)
     users = User.scoped
-
-    # Return all results if no search terms
-    # outputs[:users] = users and return if query.blank?
     
     KeywordSearch.search(query) do |with|
 
@@ -56,6 +70,12 @@ protected
         users = users.where{lower(full_name).like_any my{prep_names(full_names)}}
       end
 
+      with.keyword :name do |names|
+        users = users.where{lower(full_name).like_any my{prep_names(full_names)} |
+                            lower(last_name).like_any my{prep_names(last_names)} |
+                            lower(first_name).like_any my{prep_names(first_names)}}
+      end
+
       with.keyword :id do |ids|
         users = users.where{id.in ids}
       end
@@ -72,7 +92,10 @@ protected
     # If the query didn't result in any restrictions, either because it was blank
     # or didn't have a keyword from above with appropriate values, then return no
     # results.
+
     users = User.where('0=1') if User.scoped == users
+
+    # Pagination
 
     if options[:page] && options[:per_page]
       users = users.limit(options[:per_page]).offset(options[:per_page]*options[:page])
@@ -81,23 +104,23 @@ protected
     outputs[:users] = users
   end
 
+  # Through out funky characters, downcase, and put a wildcard at the end.
   def prep_names(names)
     names.collect{|name| name.gsub(NAME_DISCARDED_CHAR_REGEX, '').downcase + '%'}
   end
 
+  # Musings on convenience methods for pulling the fields we can search or return
+  # out of the options hash passed to `exec`.
+  #
   # class Options
   #   def initialize(hash)
   #   end
-
+  #
   #   def can_search?(field)
-
   #   end
-
+  #
   #   def can_return?(field)
-
   #   end
   # end
-
-
 
 end
