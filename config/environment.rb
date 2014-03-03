@@ -5,6 +5,7 @@ require "sign_in_state"
 require "omniauth/strategies/custom_identity"
 require "api_constraints"
 
+DEV_HOST = "localhost:#{DEV_PORT}"
 SITE_NAME = "OpenStax Accounts"
 TEAM_NAME = "OpenStax" # used when talking about our team
 COPYRIGHT_HOLDER = "Rice University"
