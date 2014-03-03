@@ -11,8 +11,8 @@
 #
 # There are currently two options to control query pagination:
 #
-#   :per_page -- the number of results to return (max)
-#   :page     -- the page to return
+#   :per_page -- the max number of results to return (default: 20)
+#   :page     -- the zero-indexed page to return (default: 0)
 
 class SearchUsers
 
@@ -44,6 +44,12 @@ protected
   #   enough characters (so as to discourage them from querying all Users or from 
   #   querying all Users whose username starts with 'a', then 'b', then 'c' and so on).
   #   What to do if a first name is "V" or "JP" -- hard to make this restriction here.
+  #   Another option might be to limit the number of results for less priviledged 
+  #   requestors so they can't query the whole User table.
+  #
+  #   Maybe we also want to have a default per_page value?  Also, different allowed
+  #   max per_page values for different levels of user (e.g. applications can do whatever,
+  #   non-admin Users can only get 20 at a time, etc.)
 
   def exec(query, options={}, type=:any)
     users = User.scoped
@@ -71,9 +77,10 @@ protected
       end
 
       with.keyword :name do |names|
-        users = users.where{lower(full_name).like_any my{prep_names(full_names)} |
-                            lower(last_name).like_any my{prep_names(last_names)} |
-                            lower(first_name).like_any my{prep_names(first_names)}}
+        names = prep_names(names)
+        users = users.where{ (lower(full_name).like_any names)  | 
+                             (lower(last_name).like_any names)  |
+                             (lower(first_name).like_any names) }
       end
 
       with.keyword :id do |ids|
@@ -95,13 +102,18 @@ protected
 
     users = User.where('0=1') if User.scoped == users
 
-    # Pagination
+    # Pagination -- this is where we could modify the incoming values for page
+    # and per_page, depending on options
 
-    if options[:page] && options[:per_page]
-      users = users.limit(options[:per_page]).offset(options[:per_page]*options[:page])
-    end
+    page = options[:page] || 0
+    per_page = options[:per_page] || 20
+
+    users = users.limit(per_page).offset(per_page*page)
 
     outputs[:users] = users
+    outputs[:per_page] = per_page
+    outputs[:page] = page
+    outputs[:num_matching_users] = users.except(:offset, :limit, :order).count
   end
 
   # Through out funky characters, downcase, and put a wildcard at the end.

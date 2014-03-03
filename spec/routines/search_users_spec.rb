@@ -9,6 +9,7 @@ describe SearchUsers do
   let!(:user_2)          { FactoryGirl.create :user,
                                               first_name: 'Mary',
                                               last_name: 'Mighty',
+                                              full_name: 'Mary Mighty',
                                               username: 'mary' }
   let!(:user_3)          { FactoryGirl.create :user, 
                                               first_name: 'John',
@@ -32,6 +33,11 @@ describe SearchUsers do
   it "should match based on one first name" do
     outcome = SearchUsers.call('first_name:"John"').outputs.users.all
     expect(outcome).to eq [user_1, user_3]
+  end
+
+  it "should match based on one full name" do
+    outcome = SearchUsers.call('full_name:"Mary Mighty"').outputs.users.all
+    expect(outcome).to eq [user_2]
   end
 
   it "should match based on an exact email address" do
