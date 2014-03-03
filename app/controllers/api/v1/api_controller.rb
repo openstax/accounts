@@ -108,28 +108,30 @@ Schema  {##{SecureRandom.hex(4)} .schema}
       def rescue_from_exception(exception)
         # See https://github.com/rack/rack/blob/master/lib/rack/utils.rb#L453 for error names/symbols
         error = :internal_server_error
-        send_email = true
+        notify = true
     
         case exception
         when SecurityTransgression
           error = :forbidden
-          send_email = false
+          notify = false
         when ActiveRecord::RecordNotFound, 
              ActionController::RoutingError,
              ActionController::UnknownController,
              AbstractController::ActionNotFound
           error = :not_found
-          send_email = false
+          notify = false
         end
 
-        ExceptionNotification.notify_exception(
-          exception,
-          env: request.env,
-          data: { message: "An exception occurred" }
-        ) if send_email
+        if notify
+          ExceptionNotifier.notify_exception(
+            exception,
+            env: request.env,
+            data: { message: "An exception occurred" }
+          )
 
-        Rails.logger.debug("An exception occurred: #{exception.inspect}") if Rails.env.development?
-
+          Rails.logger.error("An exception occurred: #{exception.message}\n\n#{exception.backtrace.join("\n")}") \
+        end
+        
         head error
       end
 
