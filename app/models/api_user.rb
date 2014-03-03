@@ -52,12 +52,7 @@ class ApiUser
   ##########################
 
   def can_do?(action, resource)
-    # If there is a human user, it should always take precedence when 
-    # testing for access.
-
-    AccessPolicy.action_allowed?(action, 
-                                 human_user ? human_user : application, 
-                                 resource)
+    AccessPolicy.action_allowed?(action, self, resource)
   end
 
   def can_read?(resource)
