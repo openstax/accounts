@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140226125407) do
+ActiveRecord::Schema.define(:version => 20140302002134) do
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
@@ -26,11 +26,11 @@ ActiveRecord::Schema.define(:version => 20140226125407) do
   create_table "contact_infos", :force => true do |t|
     t.string   "type"
     t.string   "value"
-    t.boolean  "verified"
+    t.boolean  "verified",             :default => false
     t.string   "confirmation_code"
     t.integer  "user_id"
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
     t.datetime "confirmation_sent_at"
   end
 
@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(:version => 20140226125407) do
     t.string   "first_name"
     t.string   "last_name"
     t.string   "full_name"
+    t.string   "title"
   end
 
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true

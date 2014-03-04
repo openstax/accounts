@@ -35,6 +35,8 @@ gem 'roar-rails'
 
 gem 'exception_notification'
 
+gem "keyword_search", "~> 1.5.0"
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
