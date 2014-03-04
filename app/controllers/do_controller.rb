@@ -13,8 +13,16 @@ class DoController < ApplicationController
 
   def reset_password
     handle_with(ResetPassword,
-                complete: lambda {
-                  render :reset_password, status: @handler_result.errors.any? ? 400 : 200
+                success: lambda {
+                  return_to = session.delete(:return_to)
+                  if return_to.present?
+                    redirect_to return_to
+                  else
+                    render :reset_password, status: 200
+                  end
+                },
+                failure: lambda {
+                  render :reset_password, status: 400
                 })
   end
 
