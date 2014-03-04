@@ -131,7 +131,7 @@ GEM
     jwt (0.1.8)
       multi_json (>= 1.5)
     kgio (2.9.2)
-    lev (2.0.4)
+    lev (2.0.5)
       actionpack (>= 3.0)
       active_attr
       activemodel (>= 3.0)

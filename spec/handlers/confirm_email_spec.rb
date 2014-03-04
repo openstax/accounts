@@ -4,6 +4,7 @@ describe ConfirmEmail do
   let(:email) { FactoryGirl.create :email_address, confirmation_code: '01234' }
 
   it 'returns error if no confirmation code is given' do
+    FactoryGirl.create :email_address
     params = {}
     ConfirmEmail.any_instance.stub(:params).and_return(params)
     expect_any_instance_of(ConfirmEmail).not_to receive(:run)

@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 describe SendConfirmationEmail do
-  let(:create_email) { FactoryGirl.create(:email_address) }
+  let(:email) { FactoryGirl.create(:email_address) }
 
   context 'when email address is already verified' do
     it 'does not send confirmation email' do
-      email = create_email
       email.verified = true
       email.save
       expect_any_instance_of(ConfirmationMailer).not_to receive(:instructions)
@@ -19,7 +18,6 @@ describe SendConfirmationEmail do
 
   context 'when email address is not verified' do
     it 'sends a confirmation email' do
-      email = create_email
       email.confirmation_code = '1111'
       email.save
       expect_any_instance_of(ConfirmationMailer).to receive(:instructions)
@@ -33,7 +31,6 @@ describe SendConfirmationEmail do
     end
 
     it 'errors with no confirmation code' do
-      email = create_email
       email.save
       expect_any_instance_of(ConfirmationMailer).not_to receive(:instructions)
 

@@ -18,6 +18,13 @@ def create_admin_user
   user.save
 end
 
+def create_nonlocal_user(username)
+  auth_data = {info: {nickname: username}, provider: 'facebook'}
+  result = CreateUserFromOmniauth.call(auth_data)
+  raise "create_nonlocal_user for #{username} failed" if result.errors.any?
+  User.find_by_username(username)
+end
+
 def login_as username, password='password'
   fill_in 'Username', with: username
   fill_in 'Password', with: password
@@ -32,7 +39,34 @@ def create_new_application
   click_button 'Submit'
 end
 
-def create_email_address_for user, email_address, confirmation_code
+def create_email_address_for(user, email_address, confirmation_code=nil)
   FactoryGirl.create(:email_address, user: user, value: email_address,
                      confirmation_code: confirmation_code)
+end
+
+def generate_reset_code_for(username)
+  user = User.find_by_username(username)
+  identity = user.identity
+  identity.generate_reset_code
+  identity.reset_code
+end
+
+def generate_expired_reset_code_for(username)
+  one_year_ago = 1.year.ago
+  DateTime.stub(:now).and_return(one_year_ago)
+  reset_code = generate_reset_code_for username
+  DateTime.unstub(:now)
+  reset_code
+end
+
+def password_reset_email_sent?(user)
+  user_emails = user.contact_infos.email_addresses.verified
+  mail = ActionMailer::Base.deliveries.last
+  expect(mail.to.length).to eq(1)
+  expect(user_emails.collect {|e| e.value}).to include(mail.to[0])
+  expect(mail.from).to eq(['noreply@openstax.org'])
+  expect(mail.subject).to eq('[OpenStax] Reset your password')
+  expect(mail.body.encoded).to include("Hi #{user.username},")
+  @reset_link = "/do/reset_password?code=#{user.identity.reset_code}"
+  expect(mail.body.encoded).to include("http://nohost#{@reset_link}")
 end

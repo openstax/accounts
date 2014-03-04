@@ -8,4 +8,5 @@ class ContactInfo < ActiveRecord::Base
             uniqueness: {scope: [:user_id, :type]}
 
   scope :email_addresses, where(type: 'EmailAddress')
+  scope :verified, where(verified: true)
 end

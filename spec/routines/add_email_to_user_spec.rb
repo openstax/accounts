@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 describe AddEmailToUser do
-  let(:create_user) { FactoryGirl.create :user }
+  let(:user) { FactoryGirl.create :user }
 
   context 'when email address is already verified' do
     it 'does not send a confirmation email' do
-      user = create_user
       expect_any_instance_of(AddEmailToUser).not_to receive(:run)
       expect(EmailAddress.find_by_value('user@example.com')).to be_nil
 
@@ -21,7 +20,6 @@ describe AddEmailToUser do
 
   context 'when email address has not been verified' do
     it 'sends a confirmation email' do
-      user = create_user
       expect_any_instance_of(AddEmailToUser).to receive(:run)
       expect(EmailAddress.find_by_value('user@example.com')).to be_nil
 
@@ -37,7 +35,6 @@ describe AddEmailToUser do
 
   context 'when email address is not valid' do
     it 'does not send a confirmation email and does not store the email address' do
-      user = create_user
       expect_any_instance_of(AddEmailToUser).not_to receive(:run)
       expect(EmailAddress.find_by_value('example.com')).to be_nil
 
