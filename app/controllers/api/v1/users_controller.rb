@@ -12,6 +12,10 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
     EOS
   end
 
+  ###############################################################
+  # show
+  ###############################################################
+
   api :GET, '/users/:id', 'Gets the specified User'
   description <<-EOS
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}            
@@ -19,6 +23,26 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
   def show
     rest_get(User, params[:id])
   end
+
+  ###############################################################
+  # update
+  ###############################################################
+
+  api :PUT, '/users/:id', 'Updates the specified User'
+  description <<-EOS
+    Lets a caller update a User record.  Note that contained properties (e.g.
+    ContactInfos) can be read but cannot be updated through this method.  To
+    update these nested properties use their REST API methods.
+
+    #{json_schema(Api::V1::UserRepresenter, include: [:writeable])}            
+  EOS
+  def update
+    rest_update(User, params[:id])
+  end
+
+  ###############################################################
+  # search
+  ###############################################################
 
   api :GET, '/users/search', 'Return a set of Users matching query terms'
   description <<-EOS
@@ -33,7 +57,7 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
 
     #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}            
   EOS
-  # example "#{Rails.application.routes.url_helpers.search_api_users_url}/?q=username:bob%20name=Jones"
+  example "#{Rails.application.routes.url_helpers.search_api_users_url}/?q=username:bob%20name=Jones" if !Rails.env.test?
   param :q, String, required: true, desc: <<-EOS
     The search query string, built up as a space-separated collection of
     search conditions on different fields.  Each condition is formatted as

@@ -36,7 +36,7 @@ Accounts::Application.routes.draw do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do
       get '/me' => 'credentials#me'
 
-      resources :users, only: [:show] do
+      resources :users, only: [:show, :update] do
         get 'search', on: :collection
       end
     end

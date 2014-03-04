@@ -31,7 +31,7 @@ module Api::V1
     collection :contact_infos, 
                class: ContactInfo, 
                decorator: ContactInfoRepresenter, 
-               parse_strategy: :sync,
+               writeable: false,
                schema_info: {
                  minItems: 0
                }

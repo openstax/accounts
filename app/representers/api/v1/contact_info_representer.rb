@@ -18,7 +18,7 @@ module Api::V1
              writeable: true
 
     property :verified,
-             writeable: true
+             writeable: false
 
   end
 end

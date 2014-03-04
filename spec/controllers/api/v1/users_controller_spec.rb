@@ -29,35 +29,35 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                                                 application: trusted_application, 
                                                 resource_owner_id: nil }
 
-  describe "GET" do
+  describe "show" do
 
     it "should let User get his own User" do
-      api_get :show, user_1_token, {id: user_1.id}
+      api_get :show, user_1_token, parameters: {id: user_1.id}
       expect(response.code).to eq('200')
     end
 
     it "should not let User get another User" do
-      api_get :show, user_1_token, {id: user_2.id}
+      api_get :show, user_1_token, parameters: {id: user_2.id}
       expect(response.code).to eq('403')
     end
 
     it "should let an admin get another User" do
-      api_get :show, admin_token, {id: user_2.id}
+      api_get :show, admin_token, parameters: {id: user_2.id}
       expect(response.code).to eq('200')
     end
 
     it "should let a trusted application get a User" do
-      api_get :show, trusted_application_token, {id: admin_user.id}
+      api_get :show, trusted_application_token, parameters: {id: admin_user.id}
       expect(response.code).to eq('200')
     end
 
     it "should not let an untrusted application get a User" do
-      api_get :show, untrusted_application_token, {id: user_1.id}
+      api_get :show, untrusted_application_token, parameters: {id: user_1.id}
       expect(response.code).to eq('403')
     end
 
     it "should return a properly formatted JSON response for low-info user" do
-      api_get :show, user_1_token, {id: user_1.id}
+      api_get :show, user_1_token, parameters: {id: user_1.id}
       
       expected_response = {
         id: user_1.id,
@@ -69,7 +69,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
     end
 
     it "should return a properly formatted JSON response for user with name and contact infos" do
-      api_get :show, user_2_token, {id: user_2.id}
+      api_get :show, user_2_token, parameters: {id: user_2.id}
       
       expected_response = {
         id: user_2.id,
@@ -84,10 +84,60 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
   end
 
+  describe "update" do
+    it "should let User update his own User" do
+      api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, 
+                                     parameters: {id: user_2.id}
+      expect(response.code).to eq('204')
+      user_2.reload
+      expect(user_2.first_name).to eq 'Jerry'
+      expect(user_2.last_name).to eq 'Mouse'
+    end
+
+    it "should not let a user update another user" do
+      api_put :update, user_1_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, 
+                                     parameters: {id: user_2.id}
+      expect(response.code).to eq('403')
+      user_2.reload
+      expect(user_2.first_name).to eq 'Bob'
+      expect(user_2.last_name).to eq 'Michaels'
+    end
+
+    it "should let a trusted app update a user" do
+      api_put :update, trusted_application_token, 
+                       raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, 
+                       parameters: {id: user_2.id}
+      expect(response.code).to eq('204')
+      user_2.reload
+      expect(user_2.first_name).to eq 'Jerry'
+      expect(user_2.last_name).to eq 'Mouse'
+    end
+
+    it "should not let a user's contact info be modified through the users API", focus: true do
+      original_contact_infos = user_2.contact_infos
+      api_put :update, trusted_application_token, 
+                       raw_post_data: {
+                         first_name: "Jerry", 
+                         last_name: "Mouse", 
+                         contact_infos: [
+                           {
+                             id: user_2.contact_infos.first.id,
+                             value: "howdy@doody.com"
+                           }
+                         ]                         
+                       }, 
+                       parameters: {id: user_2.id}
+      expect(response.code).to eq('204')
+      user_2.reload
+      expect(user_2.contact_infos).to eq original_contact_infos
+    end
+
+  end
+
   describe "search" do
 
     it "returns a single result well" do
-      api_get :search, trusted_application_token, {q: 'first_name:bob, last_name:Michaels'}
+      api_get :search, trusted_application_token, parameters: {q: 'first_name:bob, last_name:Michaels'}
       expect(response.code).to eq('200')
 
       expected_response = {
@@ -119,7 +169,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
     }
 
     it "should return the 2nd page when requested" do
-      api_get :search, trusted_application_token, {q: 'username:billy', page: 1, per_page: 10}
+      api_get :search, trusted_application_token, parameters: {q: 'username:billy', page: 1, per_page: 10}
 
       outcome = JSON.parse(response.body)
 
@@ -129,10 +179,15 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       expect(outcome["users"][9]["username"]).to eq "billy_19"
     end
 
-    it "should return the incomplete 3rd page when requested" do
-      # outcome = SearchUsers.call("username:billy", page: 2).outputs.users.all
-      # expect(outcome.length).to eq 6
-      # expect(outcome[5]).to eq User.where{username.eq "billy_45"}.first
+    it "should return the incomplete 5th page when requested" do
+      api_get :search, trusted_application_token, parameters: {q: 'username:billy', page: 4, per_page: 10}
+
+      outcome = JSON.parse(response.body)
+
+      expect(outcome["num_matching_users"]).to eq 46
+      expect(outcome["users"].length).to eq 6
+      expect(outcome["users"][0]["username"]).to eq "billy_40"
+      expect(outcome["users"][5]["username"]).to eq "billy_45"
     end
 
     let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
@@ -140,7 +195,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
     let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
 
     it "should allow sort by multiple fields in different directions" do
-      api_get :search, trusted_application_token, {q: 'username:foo', order_by: "first_name, last_name DESC"}
+      api_get :search, trusted_application_token, parameters: {q: 'username:foo', order_by: "first_name, last_name DESC"}
 
       outcome = JSON.parse(response.body)
 
