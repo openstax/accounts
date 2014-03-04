@@ -140,6 +140,20 @@ describe DoController do
         expect(identity.authenticate('password')).to be_false
         expect(identity.authenticate('password!')).to be_true
       end
+
+      it 'redirects to return_to if it is set' do
+        DoController.any_instance.stub(:session).and_return(
+          {return_to: 'http://www.example.com/'})
+        post('reset_password', code: identity.reset_code,
+             reset_password: { password: 'password!', password_confirmation: 'password!'})
+
+        expect(response.code).to eq('302')
+        expect(response.header['Location']).to eq('http://www.example.com/')
+
+        identity.reload
+        expect(identity.authenticate('password')).to be_false
+        expect(identity.authenticate('password!')).to be_true
+      end
     end
   end
 

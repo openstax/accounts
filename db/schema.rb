@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140302002134) do
+ActiveRecord::Schema.define(:version => 20140303204534) do
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(:version => 20140302002134) do
     t.integer  "user_id",               :null => false
     t.string   "reset_code"
     t.datetime "reset_code_expires_at"
+    t.datetime "password_expires_at"
   end
 
   add_index "identities", ["user_id"], :name => "index_identities_on_user_id"

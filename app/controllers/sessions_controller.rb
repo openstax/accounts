@@ -45,7 +45,14 @@ class SessionsController < ApplicationController
 
   def return_to_app
     FinishUserCreation.call(current_user)
-    redirect_to session.delete(:return_to) || root_url
+    if current_user.try(:identity).try(:should_reset_password?)
+      identity = current_user.identity
+      flash[:alert] = 'Your password has expired.  Please enter a new password.'
+      identity.generate_reset_code
+      redirect_to do_reset_password_path(code: identity.reset_code)
+    else
+      redirect_to session.delete(:return_to) || root_url
+    end
   end
 
 

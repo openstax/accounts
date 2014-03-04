@@ -108,4 +108,24 @@ describe Identity do
       expect(identity.reset_code_expires_at).not_to be_nil
     end
   end
+
+  context 'password expiration' do
+    let(:identity) { FactoryGirl.create :identity }
+    it 'is automatically set when password is changed' do
+      expect(identity.password_expires_at).to be_nil
+
+      stub_const('Identity::DEFAULT_PASSWORD_EXPIRATION_PERIOD', 1.year)
+      one_year_later = DateTime.now + 1.year
+
+      identity.password = '1234567890'
+      identity.save
+      identity.reload
+
+      expect(identity.password_expires_at).to be_within(1.hour).of(one_year_later)
+      expect(identity.should_reset_password?).to be_false
+
+      DateTime.stub(:now).and_return(one_year_later + 1.day)
+      expect(identity.should_reset_password?).to be_true
+    end
+  end
 end

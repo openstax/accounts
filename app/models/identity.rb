@@ -1,12 +1,15 @@
 class Identity < OmniAuth::Identity::Models::ActiveRecord
   belongs_to :user
   
-  validates :password, presence: true, 
+  validates :password, unless: :password_not_required?,
+                       presence: true,
                        length: {minimum: 8, maximum: 40}
 
   attr_accessible :password_digest, :password, :password_confirmation, :user_id
+  before_save :update_password_expires_at, if: :password_changed?
 
-  DEFAULT_RESET_CODE_EXPIRATION_PERIOD = 2.days
+  DEFAULT_RESET_CODE_EXPIRATION_PERIOD = Rails.configuration.accounts.default_reset_code_expiration_period
+  DEFAULT_PASSWORD_EXPIRATION_PERIOD = Rails.configuration.accounts.default_password_expiration_period
 
   def authenticate unencrypted_password
     if is_password_digest_ssha?
@@ -35,7 +38,29 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
     end
   end
 
-  protected
+  def should_reset_password?
+    self.password_expires_at && self.password_expires_at < DateTime.now
+  end
+
+protected
+
+  def password_changed?
+    self.changed.include?('password_digest')
+  end
+
+  def update_password_expires_at
+    if DEFAULT_PASSWORD_EXPIRATION_PERIOD.nil?
+      self.password_expires_at = nil
+    else
+      self.password_expires_at = DateTime.now + DEFAULT_PASSWORD_EXPIRATION_PERIOD
+    end
+    true
+  end
+
+  def password_not_required?
+    ['password_expires_at'] == self.changed
+  end
+
   def reset_code=(code)
     update_column :reset_code, code
   end
