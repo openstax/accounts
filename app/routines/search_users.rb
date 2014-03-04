@@ -21,6 +21,9 @@ class SearchUsers
 protected
 
   NAME_DISCARDED_CHAR_REGEX = /[^A-Za-z ']/
+  SORTABLE_FIELDS = ['username', 'first_name', 'last_name', 'id']
+  SORT_ASCENDING = 'ASC'
+  SORT_DESCENDING = 'DESC'
 
   # TODO increase the security of this search algorithm:
   # 
@@ -110,9 +113,41 @@ protected
 
     users = users.limit(per_page).offset(per_page*page)
 
+    #
+    # Ordering
+    #
+
+    # Parse the input
+    order_bys = (options[:order_by] || 'username').split(',').collect{|ob| ob.strip.split(' ')}
+
+    # Toss out bad input, provide default direction
+    order_bys = order_bys.collect do |order_by|
+      field, direction = order_by
+      next if !SORTABLE_FIELDS.include?(field)
+      direction ||= SORT_ASCENDING
+      next if direction != SORT_ASCENDING && direction != SORT_DESCENDING
+      [field, direction]
+    end
+
+    order_bys.compact!
+
+    # Use a default sort if none provided
+    order_bys = ['username', SORT_ASCENDING] if order_bys.empty?
+
+    # Convert to query style
+    order_bys = order_bys.collect{|order_by| "#{order_by[0]} #{order_by[1]}"}
+
+    # Make the ordering call
+    order_bys.each do |order_by|
+      users = users.order(order_by)
+    end
+
+    # Translate to routine outputs
+
     outputs[:users] = users
     outputs[:per_page] = per_page
     outputs[:page] = page
+    outputs[:order_by] = order_bys.join(', ') # convert back to one string
     outputs[:num_matching_users] = users.except(:offset, :limit, :order).count
   end
 

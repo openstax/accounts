@@ -32,7 +32,7 @@ describe SearchUsers do
 
   it "should match based on one first name" do
     outcome = SearchUsers.call('first_name:"John"').outputs.users.all
-    expect(outcome).to eq [user_1, user_3]
+    expect(outcome).to eq [user_3, user_1]
   end
 
   it "should match based on one full name" do
@@ -60,6 +60,55 @@ describe SearchUsers do
   it "should not return any results if there is no usable part of the query" do
     outcome = SearchUsers.call("blah:foo").outputs.users.all
     expect(outcome).to eq []
+  end
+
+  context "pagination and sorting" do
+
+    let!(:billy_users) {
+      (0..45).to_a.collect{|ii|
+        FactoryGirl.create :user, 
+                           first_name: "Billy#{ii.to_s.rjust(2, '0')}",
+                           last_name: "Bob_#{(45-ii).to_s.rjust(2,'0')}",
+                           username: "billy_#{ii.to_s.rjust(2, '0')}"
+      }
+    }
+
+    it "should return the first page of values by default in default order" do
+      outcome = SearchUsers.call("username:billy").outputs.users.all
+      expect(outcome.length).to eq 20
+      expect(outcome[0]).to eq User.where{username.eq "billy_00"}.first
+      expect(outcome[19]).to eq User.where{username.eq "billy_19"}.first
+    end
+
+    it "should return the 2nd page when requested" do
+      outcome = SearchUsers.call("username:billy", page: 1).outputs.users.all
+      expect(outcome.length).to eq 20
+      expect(outcome[0]).to eq User.where{username.eq "billy_20"}.first
+      expect(outcome[19]).to eq User.where{username.eq "billy_39"}.first
+    end
+
+    it "should return the incomplete 3rd page when requested" do
+      outcome = SearchUsers.call("username:billy", page: 2).outputs.users.all
+      expect(outcome.length).to eq 6
+      expect(outcome[5]).to eq User.where{username.eq "billy_45"}.first
+    end
+
+  end
+
+  context "sorting" do
+
+    let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
+    let!(:bob_jones) { FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
+    let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
+
+    it "should allow sort by multiple fields in different directions" do
+      outcome = SearchUsers.call("username:foo", order_by: "first_name, last_name DESC").outputs.users.all
+      expect(outcome).to eq [bob_jones, bob_brown, tim_jones]
+
+      outcome = SearchUsers.call("username:foo", order_by: "first_name, last_name ASC").outputs.users.all
+      expect(outcome).to eq [bob_brown, bob_jones, tim_jones]
+    end
+
   end
 
 end

@@ -23,6 +23,14 @@ module Api::V1
                description: "The number of results per page"
              }
 
+    property :order_by,
+             type: String,
+             writeable: false,
+             schema_info: {
+               description: "The ordering info, which may be different than what was requested if the request" + 
+                            "was missing defaults or had bad settings."
+             }
+
 
     collection :users,
                class: User,

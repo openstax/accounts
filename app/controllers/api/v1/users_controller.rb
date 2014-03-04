@@ -33,7 +33,7 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
 
     #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}            
   EOS
-  #example "#{Rails.application.routes.url_helpers.search_api_users_url}/?q=username:bob%20name=Jones"
+  # example "#{Rails.application.routes.url_helpers.search_api_users_url}/?q=username:bob%20name=Jones"
   param :q, String, required: true, desc: <<-EOS
     The search query string, built up as a space-separated collection of
     search conditions on different fields.  Each condition is formatted as
@@ -67,10 +67,23 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
   param :per_page, Integer, desc: <<-EOS
     The number of users to retrieve on the chosen page. (default: 20)
   EOS
+  param :order_by, String, desc: <<-EOS
+    A string that indicates how to sort the results of the query.  The string
+    is a comma-separated list of fields with an optional sort direction.  The
+    sort will be performed in the order the fields are given.  
+    The fields can be one of #{Api::V1::SearchUsers::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
+    Sort directions can either be `ASC` for 
+    an ascending sort, or `DESC` for a
+    descending sort.  If not provided an ascending sort is assumed. Sort directions
+    should be separated from the fields by a space. (default: `username ASC`)
+
+    Example:
+
+    `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending 
+  EOS
   def search
     AccessPolicy.require_action_allowed!(:search, current_user, User)
-    
-    outputs = SearchUsers.call(params[:q], params.slice(:page, :per_page)).outputs
+    outputs = SearchUsers.call(params[:q], params.slice(:page, :per_page, :order_by)).outputs
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
   end
 
