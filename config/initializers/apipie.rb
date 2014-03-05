@@ -38,6 +38,7 @@ Apipie.configure do |config|
   config.layout                  = 'application_body_api_docs'
   config.markup                  = MarkdownWrapper.new
   config.namespaced_resources    = false
+  config.default_version         = 'v1'
   config.app_info =              <<-eos
     Access to the API requires either a valid ID and secret key combination or having a user
     that is logged in to the system (TODO: UPDATE THIS)

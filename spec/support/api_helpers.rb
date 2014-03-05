@@ -22,11 +22,11 @@ def api_put(action, doorkeeper_token, args={})
 end
 
 def api_post(action, doorkeeper_token, args={})
-  api_request(:post, action, doorkeeper_token, args={})
+  api_request(:post, action, doorkeeper_token, args)
 end
 
 def api_delete(action, doorkeeper_token, args={})
-  api_request(:delete, action, doorkeeper_token, args={})
+  api_request(:delete, action, doorkeeper_token, args)
 end
 
 def api_patch(action, doorkeeper_token, args={}) 
