@@ -33,7 +33,9 @@ Accounts::Application.routes.draw do
   end
 
   namespace :api, defaults: {format: 'json'} do
-    scope module: :v1, constraints: ApiConstraints.new(version: 1) do
+    # ApiConstraints.default should be set to true for the latest version,
+    # all other versions should not have default set to true
+    scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
       get '/me' => 'credentials#me'
 
       resources :users, only: [:show, :update] do
