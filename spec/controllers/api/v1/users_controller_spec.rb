@@ -84,6 +84,27 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
   end
 
+  describe "me", focus: true do
+
+    it "should return a properly formatted JSON response for low-info user" do
+      api_get :me, user_1_token, parameters: {id: user_1.id}
+      
+      expected_response = {
+        id: user_1.id,
+        username: user_1.username,
+        contact_infos: []
+      }.to_json
+
+      expect(response.body).to eq(expected_response)
+    end
+
+    it "should not let a trusted application call me" do
+      api_get :me, trusted_application_token, parameters: {id: user_1.id}
+      expect(response.status).to eq(403)
+    end
+
+  end
+
   describe "update" do
     it "should let User update his own User" do
       api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, 

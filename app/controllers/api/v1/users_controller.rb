@@ -13,6 +13,23 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
   end
 
   ###############################################################
+  # me
+  ###############################################################
+
+  api :GET, '/users/me', 'Gets the current user\'s User data'
+  description <<-EOS
+    Returns the current user's User data.  If there is no current
+    user (e.g. if this is an application-to-application call) an
+    error will be raised.
+
+    #{json_schema(Api::V1::UserRepresenter, include: :readable)}            
+  EOS
+  def me
+    raise SecurityTransgression unless current_user.human_user && !current_user.human_user.is_anonymous?
+    respond_with current_user.human_user
+  end
+
+  ###############################################################
   # show
   ###############################################################
 

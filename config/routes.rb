@@ -38,6 +38,7 @@ Accounts::Application.routes.draw do
 
       resources :users, only: [:show, :update] do
         get 'search', on: :collection
+        get 'me', on: :collection
         resources :contact_infos, shallow: true, only: :create
       end
 
