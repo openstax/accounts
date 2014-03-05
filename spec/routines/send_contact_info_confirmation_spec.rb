@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SendConfirmationEmail do
+describe SendContactInfoConfirmation do
   let(:email) { FactoryGirl.create(:email_address) }
 
   context 'when email address is already verified' do
@@ -9,7 +9,7 @@ describe SendConfirmationEmail do
       email.save
       expect_any_instance_of(ConfirmationMailer).not_to receive(:instructions)
 
-      result = SendConfirmationEmail.call(email)
+      result = SendContactInfoConfirmation.call(email)
       expect(result.errors).not_to be_present
       refetched_email = EmailAddress.find(email.id)
       expect(refetched_email.confirmation_sent_at).to be_nil
@@ -24,7 +24,7 @@ describe SendConfirmationEmail do
       now = Time.parse('2014-02-24 10:00')
       Time.stub(:now).and_return(now)
 
-      result = SendConfirmationEmail.call(email)
+      result = SendContactInfoConfirmation.call(email)
       expect(result.errors).not_to be_present
       refetched_email = EmailAddress.find(email.id)
       expect(refetched_email.confirmation_sent_at.utc).to eq(now.utc)
@@ -34,7 +34,7 @@ describe SendConfirmationEmail do
       email.save
       expect_any_instance_of(ConfirmationMailer).not_to receive(:instructions)
 
-      result = SendConfirmationEmail.call(email)
+      result = SendContactInfoConfirmation.call(email)
       expect(result.errors).to be_present
     end
   end

@@ -36,8 +36,14 @@ Accounts::Application.routes.draw do
     scope module: :v1, constraints: ApiConstraints.new(version: 1) do
       get '/me' => 'credentials#me'
 
-      resources :users, only: [:show] do
+      resources :users, only: [:show, :update] do
         get 'search', on: :collection
+        get 'me', on: :collection
+        resources :contact_infos, shallow: true, only: :create
+      end
+
+      resources :contact_infos, only: [:show, :destroy] do
+        put 'resend_confirmation', on: :member
       end
     end
   end
