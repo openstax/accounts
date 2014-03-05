@@ -49,7 +49,7 @@ GEM
     activesupport (3.2.17)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
-    apipie-rails (0.0.24)
+    apipie-rails (0.1.0)
       rails (>= 3.0.10)
     arel (3.0.3)
     attribeautiful (0.0.7)
@@ -180,7 +180,7 @@ GEM
     omniauth-twitter (1.0.0)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
-    openstax_utilities (1.3.0)
+    openstax_utilities (2.0.0)
       attribeautiful (~> 0.0.7)
       rails (>= 3.1)
     poltergeist (1.5.0)
@@ -290,7 +290,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  apipie-rails
+  apipie-rails (~> 0.1.0)
   bcrypt-ruby (~> 3.0.0)
   bootstrap-sass (~> 3.1.1)
   capybara
@@ -314,7 +314,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_utilities (~> 1.3.0)
+  openstax_utilities (~> 2.0.0)
   poltergeist
   quiet_assets
   rails (= 3.2.17)

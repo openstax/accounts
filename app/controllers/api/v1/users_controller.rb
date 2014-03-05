@@ -21,7 +21,7 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}            
   EOS
   def show
-    rest_get(User, params[:id])
+    standard_read(User, params[:id])
   end
 
   ###############################################################
@@ -37,7 +37,7 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
     #{json_schema(Api::V1::UserRepresenter, include: [:writeable])}            
   EOS
   def update
-    rest_update(User, params[:id])
+    standard_update(User, params[:id])
   end
 
   ###############################################################

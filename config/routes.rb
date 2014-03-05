@@ -38,6 +38,11 @@ Accounts::Application.routes.draw do
 
       resources :users, only: [:show, :update] do
         get 'search', on: :collection
+        resources :contact_infos, shallow: true, only: :create
+      end
+
+      resources :contact_infos, only: [:show, :destroy] do
+        put 'resend_confirmation', on: :member
       end
     end
   end
