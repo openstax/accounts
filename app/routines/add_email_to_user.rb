@@ -3,7 +3,7 @@ class AddEmailToUser
 
   include Lev::Routine
 
-  uses_routine SendConfirmationEmail
+  uses_routine SendContactInfoConfirmation
 
 protected
 
@@ -20,6 +20,6 @@ protected
 
     transfer_errors_from(email_address, {scope: :email_address})
 
-    run(SendConfirmationEmail, email_address) unless errors? || options[:already_verified]
+    run(SendContactInfoConfirmation, email_address) unless errors? || options[:already_verified]
   end
 end
