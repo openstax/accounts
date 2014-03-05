@@ -85,7 +85,7 @@ describe Api::V1::ContactInfosController, :type => :api, :version => :v1 do
   end
 
   describe "resend_confirmation" do
-    it "should let a user resend confirmation", focus: true do
+    it "should let a user resend confirmation" do
       AddEmailToUser.call('blah@example.com', user_1)
       contact_info = user_1.contact_infos.first
       expect(contact_info.verified).to be_false

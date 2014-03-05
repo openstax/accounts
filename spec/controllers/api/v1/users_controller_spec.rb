@@ -84,7 +84,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
   end
 
-  describe "me", focus: true do
+  describe "me" do
 
     it "should return a properly formatted JSON response for low-info user" do
       api_get :me, user_1_token, parameters: {id: user_1.id}
@@ -134,7 +134,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       expect(user_2.last_name).to eq 'Mouse'
     end
 
-    it "should not let a user's contact info be modified through the users API", focus: true do
+    it "should not let a user's contact info be modified through the users API" do
       original_contact_infos = user_2.contact_infos
       api_put :update, trusted_application_token, 
                        raw_post_data: {
