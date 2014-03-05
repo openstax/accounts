@@ -40,8 +40,8 @@ Apipie.configure do |config|
   config.namespaced_resources    = false
   config.default_version         = 'v1'
   config.app_info =              <<-eos
-    Access to the API requires either a valid ID and secret key combination or having a user
-    that is logged in to the system (TODO: UPDATE THIS)
+    Access to the API must be achieved through an OAuth flow or by having a user
+    that is logged in to the system (with a session, etc).
 
     When communicating with the API, developers must set a header in the HTTP request to specify
     which version of the API they want to use:
@@ -60,7 +60,10 @@ Apipie.configure do |config|
     </table>
 
     Many of the API specifications provide a related JSON schema.  These schemas are based on the 
-    standard being defined at [http://json-schema.org/](http://json-schema.org/).
+    standard being defined at [http://json-schema.org/](http://json-schema.org/).  A lot of these
+    times these schemas aren't overly specific to the actions they are listed under, e.g. they 
+    always say that an `id` is required but that isn't the case when new data is being posted to
+    a `create` call.
   eos
   # Ok this is one of the uglier things I have ever done in code.  To get Apipie to 
   # render nicely inside the layout specified above, it needs to know about some helper
