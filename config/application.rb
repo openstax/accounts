@@ -70,6 +70,11 @@ module Accounts
     config.accounts.default_reset_code_expiration_period = 2.days
     # configure how long a password is valid for
     config.accounts.default_password_expiration_period = nil
+
+    config.to_prepare do
+      Doorkeeper::ApplicationController.layout "application_body_only"
+      Doorkeeper::ApplicationController.helper_method :current_user, :current_user=, :signed_in?, :sign_in, :sign_out!
+    end
   end
 end
 

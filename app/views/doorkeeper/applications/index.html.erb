@@ -1,11 +1,9 @@
 <div class="span16">
-  <header class="page-header">
-    <h2>Your applications</h2>
-  </header>
+  <%= page_heading "OAuth Applications" %>
+  
+  <p><%= link_to 'New Application', new_oauth_application_path, style: 'float:right' %></p>
 
-  <p><%= link_to 'New Application', new_oauth_application_path %></p>
-
-  <table class="zebra-striped">
+  <table class="std-list-1">
     <thead>
       <tr>
         <th>Name</th>
