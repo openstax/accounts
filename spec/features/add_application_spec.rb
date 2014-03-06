@@ -12,7 +12,7 @@ feature 'Add application to accounts', js: true do
     login_as 'admin'
     expect(page).to have_content('Welcome, admin')
     visit '/oauth/applications'
-    expect(page).to have_content('OAuth2 Provider')
+    expect(page).to have_content('OAuth Applications')
     create_new_application
     expect(page).to have_content('Application created.')
     expect(page).to have_content('Application: example')
