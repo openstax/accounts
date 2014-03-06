@@ -16,8 +16,15 @@ describe SearchUsers do
                                               last_name: 'Stead',
                                               username: 'jstead' }
 
+  let!(:user_4)          { FactoryGirl.create :user_with_emails, 
+                                              first_name: 'Bob',
+                                              last_name: 'JST',
+                                              username: 'bigbear' }
+
   before(:each) do
     MarkContactInfoVerified.call(user_1.contact_infos.email_addresses.first)
+    MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.first)
+    user_4.contact_infos.email_addresses.first.update_attribute(:value, 'jstoly292929@hotmail.com')
   end
 
   it "should match based on username" do
@@ -60,6 +67,16 @@ describe SearchUsers do
   it "should not return any results if there is no usable part of the query" do
     outcome = SearchUsers.call("blah:foo").outputs.users.all
     expect(outcome).to eq []
+  end
+
+  it "should match any fields when no prefix given" do
+    outcome = SearchUsers.call("jst").outputs.users.all
+    expect(outcome).to eq [user_4, user_3, user_1]
+  end
+
+  it "should match any fields when no prefix given and intersect when prefix given" do
+    outcome = SearchUsers.call("jst username:jst").outputs.users.all
+    expect(outcome).to eq [user_3, user_1]
   end
 
   context "pagination and sorting" do
