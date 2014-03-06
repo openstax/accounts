@@ -70,3 +70,28 @@ def password_reset_email_sent?(user)
   @reset_link = "/do/reset_password?code=#{user.identity.reset_code}"
   expect(mail.body.encoded).to include("http://nohost#{@reset_link}")
 end
+
+def create_application
+  @app = FactoryGirl.create(:doorkeeper_application, :trusted,
+                           redirect_uri: 'http://www.example.com/callback')
+  token = FactoryGirl.create(:doorkeeper_access_token,
+                             application: @app, resource_owner_id: nil)
+  @app
+end
+
+def with_forgery_protection
+  begin
+    ActionController::Base.any_instance.stub(:allow_forgery_protection).and_return(true)
+    yield if block_given?
+  ensure
+    ActionController::Base.any_instance.unstub(:allow_forgery_protection)
+  end
+end
+
+def visit_authorize_uri
+  visit "/oauth/authorize?redirect_uri=#{@app.redirect_uri}&response_type=code&client_id=#{@app.uid}"
+end
+
+def app_callback_url
+  /^#{@app.redirect_uri}\?code=.+$/
+end

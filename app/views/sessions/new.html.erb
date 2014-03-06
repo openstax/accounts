@@ -22,7 +22,7 @@
   </div>
 
   <div id="password-login">
-    <form method='post' action='/auth/identity/callback'>
+    <%= form_tag '/auth/identity/callback' do %>
       <label for='auth_key'>Username</label><input type='text' id='auth_key' name='auth_key'/>
       <label for='password'>Password</label><input type='password' id='password' name='password'/>
       <div class='password-actions'>
@@ -32,8 +32,8 @@
       <div class="password-actions">
         <span><%= link_to 'Forgot password?', forgot_password_path %></span>
       </div>
-    </form>
-</div>
+    <% end %>
+  </div>
 </div>
 
 
