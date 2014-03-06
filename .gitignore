@@ -37,3 +37,5 @@ notes
 Berksfile.lock
 
 .vagrant_setup.json
+
+doc/apidoc*
