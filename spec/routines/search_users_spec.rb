@@ -79,6 +79,16 @@ describe SearchUsers do
     expect(outcome).to eq [user_3, user_1]
   end
 
+  it "shouldn't allow users to add their own wildcards" do
+    outcome = SearchUsers.call("username:'%ar'").outputs.users.all
+    expect(outcome).to eq []
+  end
+
+  it "should gather space-separated unprefixed search terms" do
+    outcome = SearchUsers.call("john mighty").outputs.users.all
+    expect(outcome).to eq [user_3, user_1, user_2]
+  end
+
   context "pagination and sorting" do
 
     let!(:billy_users) {

@@ -158,7 +158,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
   describe "search" do
 
     it "returns a single result well" do
-      api_get :search, trusted_application_token, parameters: {q: 'first_name:bob, last_name:Michaels'}
+      api_get :search, trusted_application_token, parameters: {q: 'first_name:bob last_name:Michaels'}
       expect(response.code).to eq('200')
 
       expected_response = {

@@ -20,7 +20,6 @@ class SearchUsers
 
 protected
 
-  NAME_DISCARDED_CHAR_REGEX = /[^A-Za-z ']/
   SORTABLE_FIELDS = ['username', 'first_name', 'last_name', 'id']
   SORT_ASCENDING = 'ASC'
   SORT_DESCENDING = 'DESC'
@@ -171,9 +170,9 @@ protected
     outputs[:num_matching_users] = users.except(:offset, :limit, :order).count
   end
 
-  # Through out funky characters, downcase, and put a wildcard at the end.
+  # Downcase, and put a wildcard at the end.  For the moment don't exclude characters
   def prep_names(names)
-    names.collect{|name| name.gsub(NAME_DISCARDED_CHAR_REGEX, '').downcase + '%'}
+    names.collect{|name| name.downcase + '%'}
   end
 
   def prep_usernames(usernames)
