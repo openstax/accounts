@@ -85,22 +85,27 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
     When a field is listed as using wildcard matching, it means that any fields
     that start with a comma-separated-value will be matched.
 
-    * `username` &ndash; Matches users' usernames.  Any characters not allowed in valid 
-                 usernames will be discarded. (uses wildcard matching)
-    * `first_name` &ndash; Matches users' first names. Any characters matching `/[^A-Za-z ']/` 
-                   will be discarded. (uses wildcard matching)
-    * `last_name` &ndash; Matches users' last names. Any characters matching `/[^A-Za-z ']/` 
-                  will be discarded. (uses wildcard matching)
-    * `name` &ndash; Matches users' first, last, or full names. Any characters matching `/[^A-Za-z ']/` 
-             will be discarded. (uses wildcard matching)
+    * `username` &ndash; Matches users' usernames.  Any characters matching 
+                 `#{ERB::Util.html_escape (User::USERNAME_DISCARDED_CHAR_REGEX.inspect)}`
+                 will be discarded. (uses wildcard matching)
+    * `first_name` &ndash; Matches users' first names, case insensitive. (uses wildcard matching)
+    * `last_name` &ndash; Matches users' last names, case insensitive. (uses wildcard matching)
+    * `name` &ndash; Matches users' first, last, or full names, case insenstive. (uses wildcard matching)
     * `id` &ndash; Matches users' IDs exactly.
     * `email` &ndash; Matches users' emails exactly.
+
+    You can also add search terms without prefixes, separated by spaces.  These terms 
+    will be searched for in all of the prefix categories.  Any matching users will be 
+    returned.  When combined with prefixed search terms, the final results will contain
+    users matching any of the non-prefixed terms and all of the prefixed terms.
 
     Examples:
 
     `username:ric` &ndash; returns 'richb' and 'ricardo' users.
 
     `username:ric name:"Van Buren"` &ndash; returns the 'Ricardo Van Buren' user.
+
+    `ric` &ndash; returns 'richb', 'ricardo', and 'Jimmy Rich' users.
   EOS
   param :page, Integer, desc: <<-EOS
     Specifies the page of results to retrieve, zero-indexed. (default: 0)

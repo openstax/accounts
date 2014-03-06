@@ -20,7 +20,6 @@ class SearchUsers
 
 protected
 
-  NAME_DISCARDED_CHAR_REGEX = /[^A-Za-z ']/
   SORTABLE_FIELDS = ['username', 'first_name', 'last_name', 'id']
   SORT_ASCENDING = 'ASC'
   SORT_DESCENDING = 'DESC'
@@ -59,12 +58,10 @@ protected
     
     KeywordSearch.search(query) do |with|
 
-      with.keyword :username do |usernames|
-        usernames = usernames.collect do |username| 
-          username.gsub(User::USERNAME_DISCARDED_CHAR_REGEX,'').downcase + '%'
-        end
+      with.default_keyword :any
 
-        users = users.where{username.like_any usernames}
+      with.keyword :username do |usernames|
+        users = users.where{username.like_any my{prep_usernames(usernames)}}
       end
 
       with.keyword :first_name do |first_names|
@@ -95,6 +92,24 @@ protected
                      .where{{contact_infos: sift(:email_addresses)}}
                      .where{{contact_infos: sift(:verified)}}
                      .where{contact_infos.value.in emails}
+      end
+
+      # Rerun the queries above for 'any' terms (which are ones without a
+      # prefix).  
+
+      with.keyword :any do |terms|
+        names = prep_names(terms)
+
+        users = users.joins{contact_infos.outer}
+                     .where{
+                              (         username.like_any  my{prep_usernames(terms)}) |
+                              (lower(first_name).like_any  names)                     |
+                              (lower(last_name).like_any   names)                     |
+                              (lower(full_name).like_any   names)                     |
+                              (id.in                       terms)                     |
+                              ( (contact_infos.value.in      terms) & 
+                                (contact_infos.verified.eq   true) )
+                           }
       end
 
     end
@@ -142,6 +157,10 @@ protected
       users = users.order(order_by)
     end
 
+    # Make sure we don't have duplicates (can happen with the joins)
+
+    users = users.uniq
+
     # Translate to routine outputs
 
     outputs[:users] = users
@@ -151,9 +170,13 @@ protected
     outputs[:num_matching_users] = users.except(:offset, :limit, :order).count
   end
 
-  # Through out funky characters, downcase, and put a wildcard at the end.
+  # Downcase, and put a wildcard at the end.  For the moment don't exclude characters
   def prep_names(names)
-    names.collect{|name| name.gsub(NAME_DISCARDED_CHAR_REGEX, '').downcase + '%'}
+    names.collect{|name| name.downcase + '%'}
+  end
+
+  def prep_usernames(usernames)
+    usernames.collect{|username| username.gsub(User::USERNAME_DISCARDED_CHAR_REGEX,'').downcase + '%'}
   end
 
   # Musings on convenience methods for pulling the fields we can search or return
