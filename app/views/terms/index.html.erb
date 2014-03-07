@@ -1,0 +1,11 @@
+<%# Copyright 2011-2012 Rice University. Licensed under the Affero General Public 
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<%= page_heading "Site Terms & Policies" %>
+
+<% contract_links = @contracts.collect do |contract|
+     link_to contract.title, show_terms_path(contract), remote: true
+   end %>
+
+
+<p>Your use of <%= SITE_NAME %> is governed by two agreements, the <%= contract_links[0] %> and the <%= contract_links[1] %>.  Please familiarize yourself with their contents.  If you do not agree with their conditions, please refrain from using this site.</p>

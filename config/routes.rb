@@ -4,6 +4,8 @@ Accounts::Application.routes.draw do
 
   apipie
 
+  mount FinePrint::Engine => "/admin/fine_print"
+
   namespace 'dev' do
     get "/", to: 'base#index'
 
@@ -64,6 +66,13 @@ Accounts::Application.routes.draw do
 
   get 'sessions/return_to_app'
   match '/i_am_returning', to: 'sessions#i_am_returning'
+
+  match 'users/register', to: 'users#register'
+
+  get "terms/:id/show", to: "terms#show", as: "show_terms"
+  get "terms/pose", to: "terms#pose", as: "pose_terms"
+  post "terms/agree", to: "terms#agree", as: "agree_to_terms"
+
 
   get 'api', to: 'static_page#api'
   match 'copyright', :to => 'static_page#copyright'

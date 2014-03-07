@@ -1,0 +1,15 @@
+<%= osu.block_to_partial 'shared/modal',
+                         html_id: 'terms_dialog',
+                         width: '600px',
+                         height: '400px' do %>
+
+  <div class="modal-header" style="border-bottom: none">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3><%= @contract.title %></h3>
+  </div>
+
+  <div class="modal-body">
+    <%= @contract.content.html_safe %>    
+  </div>
+
+<% end %>

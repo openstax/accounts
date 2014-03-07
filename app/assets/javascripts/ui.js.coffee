@@ -29,7 +29,7 @@ Ui = do () ->
 
   enableOnChecked: (targetSelector, sourceSelector) ->
     $(document).ready =>
-      @disableButton(targetSelector)
+      @disableButton(targetSelector) if !$(sourceSelector).is(':checked')
 
     $(sourceSelector).on 'click', =>
       if $(sourceSelector).is(':checked')

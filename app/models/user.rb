@@ -36,7 +36,19 @@ class User < ActiveRecord::Base
   end
 
   def name
-    full_name || (first_name || last_name ? "#{first_name} #{last_name}" : username)
+    full_name || derived_full_name || username
+  end
+
+  def guessed_full_name
+    first_name && last_name ? "#{first_name} #{last_name}" : nil
+  end
+
+  def guessed_first_name
+    full_name ? full_name.split("\s")[0] : nil
+  end
+
+  def guessed_last_name
+    full_name ? full_name.split("\s").drop(1).join(' ') : nil
   end
 
   def casual_name
