@@ -5,6 +5,9 @@ class ApplicationController < ActionController::Base
 
   before_filter :authenticate_user!
 
+  fine_print_get_signatures :general_terms_of_use,
+                            :privacy_policy
+
   layout 'application_body_only'
 
 protected

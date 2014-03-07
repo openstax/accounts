@@ -5,6 +5,13 @@ class SessionsController < ApplicationController
 
   skip_before_filter :authenticate_user!, only: [:new, :authenticated, :failure]
 
+  fine_print_skip_signatures :general_terms_of_use,
+                             :privacy_policy,
+                             only: [:new, :authenticated, :failure]
+
+  prepend_before_filter :check_registered, only: [:return_to_app]
+  prepend_before_filter :check_password_not_expired, only: [:return_to_app]
+
   # Put some of this in an authentications controller?
 
   def new
@@ -16,45 +23,30 @@ class SessionsController < ApplicationController
                 user_state: self,
                 complete: lambda {
                   case @handler_result.outputs[:next_action]
-                  when :return_to_app         then return_to_app
-                  when :ask_new_or_returning  then render :ask_new_or_returning
-                  when :ask_which_account     then render :ask_which_account
+                  when :return_to_app         then redirect_to sessions_return_to_app_path   
+                  when :ask_new_or_returning  then render :ask_new_or_returning              
+                  when :ask_which_account     then render :ask_which_account   
                   else                             raise IllegalState
                   end    
                 })
   end
 
-  def ask_new_or_returning; end
+  def check_registered
+    redirect_to users_register_path if current_user.is_temp
+  end
 
-  def ask_which_account; end
-
-  # def finish_registration
-  #   # if user profile info good to go, change in user and return_to_app!
-  #   # otherwise render register with error messages
-
-  #   return_to_app
-
-  #   # handle_with(SessionsFinishRegistration, 
-  #   #             success: lambda { return_to_app },
-  #   #             failure: lambda { render :register })
-  # end
-
-  # def register
-  #   # raise SecurityTransgression unless current_user.is_temp
-  # end
-
-  def return_to_app
-    FinishUserCreation.call(current_user)
+  def check_password_not_expired
     if current_user.try(:identity).try(:should_reset_password?)
       identity = current_user.identity
       flash[:alert] = 'Your password has expired.  Please enter a new password.'
       identity.generate_reset_code
       redirect_to do_reset_password_path(code: identity.reset_code)
-    else
-      redirect_to session.delete(:return_to) || root_url
     end
   end
 
+  def return_to_app
+    redirect_to session.delete(:return_to) || root_url
+  end
 
   def destroy
     sign_out!

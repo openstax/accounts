@@ -1,0 +1,32 @@
+<%= page_heading @contract.title %>
+
+<div class="not-full-width">
+
+  <% if FinePrint.signed_any_contract_version?(current_user, @contract) %>
+    <p>There have been changes to the <%= @contract.title %>.  Please review them and then click "I agree" at the bottom of this page to continue.</p>
+  <% else %>
+    <p>To continue, please review and agree to the following site terms by clicking "I agree" at the bottom of this page.</p>
+  <% end %>
+
+  <div class="well">
+    <%= simple_format(@contract.content) %>
+  </div>
+
+  <%= lev_form_for :agreement, url: agree_to_terms_path, method: :post do |f| %>
+    <div class="checkbox">
+      <label>
+        <%= f.check_box :i_agree %> I have read the terms listed above and I agree to be bound by their terms
+      </label>
+    </div>
+    
+    <%= f.hidden_field :contract_id, value: @contract.id %>
+    <%= f.submit "Agree", id: "agreement_submit" %>
+  <% end %>
+
+</div>
+
+<% content_for :javascript do %>
+  <script type="text/javascript">
+    Accounts.Ui.enableOnChecked('#agreement_submit', '#agreement_i_agree');
+  </script>
+<% end %>

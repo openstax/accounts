@@ -5,6 +5,10 @@ module Api
       include Roar::Rails::ControllerAdditions
 
       skip_before_filter :authenticate_user!
+
+      fine_print_skip_signatures :general_terms_of_use,
+                                 :privacy_policy
+
       respond_to :json
       rescue_from Exception, :with => :rescue_from_exception
 
