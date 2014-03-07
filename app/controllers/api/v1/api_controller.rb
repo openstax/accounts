@@ -12,6 +12,17 @@ module Api
       respond_to :json
       rescue_from Exception, :with => :rescue_from_exception
 
+      def self.api_example(options={})
+        return if Rails.env.test?
+        raise IllegalArgument, "must supply a :url parameter" if !options[:url_base]
+
+        url_base = options[:url_base].is_a?(Symbol) ?
+                     UrlGenerator.new.send(options[:url_base], protocol: 'https') :
+                     options[:url_base].to_s
+        
+        "#{url_base}/#{options[:url_end] || ''}"
+      end
+
       #
       # There is a method and supporting code here for generating JSON schemas 
       # from Representers; one day we'll put these in a library or somewhere 
