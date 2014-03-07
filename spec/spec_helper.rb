@@ -5,6 +5,9 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'capybara/poltergeist'
 
+# load seed data
+load "#{Rails.root}/db/seeds.rb"
+
 Capybara.javascript_driver = :poltergeist
 
 # Requires supporting ruby files with custom matchers and macros, etc,
