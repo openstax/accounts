@@ -7,32 +7,32 @@ feature 'User resets password', js: true do
   end
 
   scenario 'using a link without a code' do
-    visit '/do/reset_password'
+    visit '/reset_password'
     expect(page).to have_content('Reset password link is invalid')
     expect(page).not_to have_content('Password Again')
   end
 
   scenario 'using a link with an invalid code' do
-    visit '/do/reset_password?code=1234'
+    visit '/reset_password?code=1234'
     expect(page).to have_content('Reset password link is invalid')
     expect(page).not_to have_content('Password Again')
   end
 
   scenario 'using a link with an expired code' do
     @reset_code = generate_expired_reset_code_for 'user'
-    visit "/do/reset_password?code=#{@reset_code}"
+    visit "/reset_password?code=#{@reset_code}"
     expect(page).to have_content('Reset password link has expired')
     expect(page).not_to have_content('Password Again')
   end
 
   scenario 'using a link with a valid code' do
-    visit "/do/reset_password?code=#{@reset_code}"
+    visit "/reset_password?code=#{@reset_code}"
     expect(page).not_to have_content('Reset password link is invalid')
     expect(page).to have_content('Password Again')
   end
 
   scenario 'with a blank password' do
-    visit "/do/reset_password?code=#{@reset_code}"
+    visit "/reset_password?code=#{@reset_code}"
     expect(page).not_to have_content('Reset password link is invalid')
     expect(page).to have_content('Password Again')
     click_button 'Set Password'
@@ -40,7 +40,7 @@ feature 'User resets password', js: true do
   end
 
   scenario 'password is too short' do
-    visit "/do/reset_password?code=#{@reset_code}"
+    visit "/reset_password?code=#{@reset_code}"
     expect(page).not_to have_content('Reset password link is invalid')
     expect(page).to have_content('Password Again')
     fill_in 'Password', with: 'pass'
@@ -50,7 +50,7 @@ feature 'User resets password', js: true do
   end
 
   scenario "password and password confirmation don't match" do
-    visit "/do/reset_password?code=#{@reset_code}"
+    visit "/reset_password?code=#{@reset_code}"
     expect(page).not_to have_content('Reset password link is invalid')
     expect(page).to have_content('Password Again')
     fill_in 'Password', with: 'password!'
@@ -60,7 +60,7 @@ feature 'User resets password', js: true do
   end
 
   scenario 'successful' do
-    visit "/do/reset_password?code=#{@reset_code}"
+    visit "/reset_password?code=#{@reset_code}"
     expect(page).not_to have_content('Reset password link is invalid')
     expect(page).to have_content('Password Again')
     fill_in 'Password', with: '1234abcd'
@@ -83,7 +83,7 @@ feature 'User resets password', js: true do
     click_link 'Sign out'
 
     # check that the reset password link cannot be reused again
-    visit "/do/reset_password?code=#{@reset_code}"
+    visit "/reset_password?code=#{@reset_code}"
     expect(page).to have_content('Reset password link is invalid')
   end
 end

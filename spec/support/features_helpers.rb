@@ -67,7 +67,7 @@ def password_reset_email_sent?(user)
   expect(mail.from).to eq(['noreply@openstax.org'])
   expect(mail.subject).to eq('[OpenStax] Reset your password')
   expect(mail.body.encoded).to include("Hi #{user.username},")
-  @reset_link = "/do/reset_password?code=#{user.identity.reset_code}"
+  @reset_link = "/reset_password?code=#{user.identity.reset_code}"
   expect(mail.body.encoded).to include("http://nohost#{@reset_link}")
 end
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ResetPassword do
+describe IdentitiesResetPassword do
   let!(:identity) {
     i = FactoryGirl.create :identity, password: 'password'
     i.generate_reset_code
@@ -8,21 +8,21 @@ describe ResetPassword do
   }
 
   before :each do
-    ResetPassword.any_instance.stub(:params) { @params }
+    IdentitiesResetPassword.any_instance.stub(:params) { @params }
   end
 
   context 'all request' do
     before :each do
-      ResetPassword.any_instance.stub_chain(:request, :post?) { @is_post }
+      IdentitiesResetPassword.any_instance.stub_chain(:request, :post?) { @is_post }
     end
 
     it 'returns error if no reset code is given' do
       @params = {}
       [true, false].each do |is_post|
         @is_post = is_post
-        result = ResetPassword.handle
+        result = IdentitiesResetPassword.handle
         expect(result.errors).to be_present
-        expect_any_instance_of(ResetPassword).not_to receive(:run) if not is_post
+        expect_any_instance_of(IdentitiesResetPassword).not_to receive(:run) if not is_post
       end
     end
 
@@ -30,9 +30,9 @@ describe ResetPassword do
       @params = {code: 'random'}
       [true, false].each do |is_post|
         @is_post = is_post
-        result = ResetPassword.handle
+        result = IdentitiesResetPassword.handle
         expect(result.errors).to be_present
-        expect_any_instance_of(ResetPassword).not_to receive(:run) if not is_post
+        expect_any_instance_of(IdentitiesResetPassword).not_to receive(:run) if not is_post
       end
     end
 
@@ -40,21 +40,21 @@ describe ResetPassword do
       @params = {code: identity.reset_code}
       [true, false].each do |is_post|
         @is_post = is_post
-        result = ResetPassword.handle
+        result = IdentitiesResetPassword.handle
         expect(result.errors).not_to be_present if not is_post
-        expect_any_instance_of(ResetPassword).not_to receive(:run) if not is_post
+        expect_any_instance_of(IdentitiesResetPassword).not_to receive(:run) if not is_post
       end
     end
   end
 
   context 'POST request' do
     before :each do
-      ResetPassword.any_instance.stub_chain(:request, :post?).and_return(true)
+      IdentitiesResetPassword.any_instance.stub_chain(:request, :post?).and_return(true)
     end
 
     it 'returns error if no password is given' do
       @params = {code: identity.reset_code}
-      result = ResetPassword.handle
+      result = IdentitiesResetPassword.handle
       expect(result.errors).to be_present
       identity.reload
       expect(identity.authenticate('password')).to be_true
@@ -66,7 +66,7 @@ describe ResetPassword do
         code: identity.reset_code,
         reset_password: {password: 'pass', password_confirmation: 'pass'}
       }
-      result = ResetPassword.handle
+      result = IdentitiesResetPassword.handle
       expect(result.errors).to be_present
       identity.reload
       expect(identity.authenticate('password')).to be_true
@@ -79,7 +79,7 @@ describe ResetPassword do
         code: identity.reset_code,
         reset_password: {password: 'password', password_confirmation: 'passwordd'}
       }
-      result = ResetPassword.handle
+      result = IdentitiesResetPassword.handle
       expect(result.errors).to be_present
       identity.reload
       expect(identity.authenticate('password')).to be_true
@@ -91,7 +91,7 @@ describe ResetPassword do
         code: identity.reset_code,
         reset_password: {password: 'asdfghjk', password_confirmation: 'asdfghjk'}
       }
-      result = ResetPassword.handle
+      result = IdentitiesResetPassword.handle
       expect(result.errors).not_to be_present
       identity.reload
       expect(identity.authenticate('password')).to be_false

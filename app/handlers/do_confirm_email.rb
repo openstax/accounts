@@ -1,4 +1,4 @@
-class ConfirmEmail
+class DoConfirmEmail
 
   include Lev::Handler
   uses_routine MarkContactInfoVerified

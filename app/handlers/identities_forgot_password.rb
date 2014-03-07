@@ -1,4 +1,4 @@
-class ForgotPassword
+class IdentitiesForgotPassword
 
   include Lev::Handler
 
