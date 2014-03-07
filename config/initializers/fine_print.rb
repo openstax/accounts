@@ -19,7 +19,9 @@ FinePrint.configure do |config|
   # to any page, so it's up to the developer to make sure that unsigned users can't access
   # pages that require a contract signature to use.
   # Default: lambda { |user| user }
-  config.can_sign_contracts_proc = lambda { |user| !user.is_anonymous? }
+  config.can_sign_contracts_proc = lambda { |user| 
+    (user.is_a? ApiUser) ? false : (user.is_human? && !user.is_anonymous?)
+  }
 
   # Path to redirect users to when an error occurs (e.g. permission denied on admin pages).
   # Default: '/'
