@@ -72,6 +72,7 @@ Accounts::Application.routes.draw do
   get "terms/:id/show", to: "terms#show", as: "show_terms"
   get "terms/pose", to: "terms#pose", as: "pose_terms"
   post "terms/agree", to: "terms#agree", as: "agree_to_terms"
+  get "terms", to: "terms#index"
 
 
   get 'api', to: 'static_page#api'
