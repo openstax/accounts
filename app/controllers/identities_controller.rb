@@ -1,6 +1,6 @@
 class IdentitiesController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:new, :forgot_password]
+  skip_before_filter :authenticate_user!, only: [:new, :forgot_password, :reset_password]
 
   fine_print_skip_signatures :general_terms_of_use,
                              :privacy_policy,
@@ -25,6 +25,21 @@ class IdentitiesController < ApplicationController
                     render :forgot_password, status: errors ? 400 : 200
                   })
     end
+  end
+
+  def reset_password
+    handle_with(ResetPassword,
+                success: lambda {
+                  return_to = session.delete(:return_to)
+                  if return_to.present?
+                    redirect_to return_to
+                  else
+                    render :reset_password, status: 200
+                  end
+                },
+                failure: lambda {
+                  render :reset_password, status: 400
+                })
   end
 
 end

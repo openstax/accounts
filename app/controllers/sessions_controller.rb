@@ -40,7 +40,7 @@ class SessionsController < ApplicationController
       identity = current_user.identity
       flash[:alert] = 'Your password has expired.  Please enter a new password.'
       identity.generate_reset_code
-      redirect_to do_reset_password_path(code: identity.reset_code)
+      redirect_to reset_password_path(code: identity.reset_code)
     end
   end
 
