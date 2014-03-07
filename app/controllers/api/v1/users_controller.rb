@@ -74,7 +74,7 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
 
     #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}            
   EOS
-  example "#{Rails.application.routes.url_helpers.search_api_users_url}/?q=username:bob%20name=Jones" if !Rails.env.test?
+  example "#{api_example(url_base: :search_api_users_url, url_end: '?q=username:bob%20name=Jones')}"
   param :q, String, required: true, desc: <<-EOS
     The search query string, built up as a space-separated collection of
     search conditions on different fields.  Each condition is formatted as
