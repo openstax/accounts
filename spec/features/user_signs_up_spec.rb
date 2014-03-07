@@ -17,6 +17,12 @@ feature 'User signs up as a local user', js: true do
     click_link 'I have not made'
     expect(page).to have_content('Welcome, testuser')
 
+    expect(page).to have_content('Complete your profile information')
+    fill_in 'First Name', with: 'Test'
+    fill_in 'Last Name', with: 'User'
+    find(:css, '#register_i_agree').set(true)
+    click_button 'Register'
+
     click_link 'Sign out'
     expect(page).to have_content('Signed out!')
     expect(page).not_to have_content('Welcome, testuser')
