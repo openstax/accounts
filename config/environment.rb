@@ -4,7 +4,6 @@ require File.expand_path('../application', __FILE__)
 require "sign_in_state"
 require "omniauth/strategies/custom_identity"
 require "api_constraints"
-require "url_generator"
 
 DEV_HOST = "localhost:#{DEV_PORT}"
 SITE_NAME = "OpenStax Accounts"
