@@ -1,4 +1,4 @@
-class ResetPassword
+class IdentitiesResetPassword
 
   include Lev::Handler
 

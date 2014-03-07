@@ -16,7 +16,7 @@ class IdentitiesController < ApplicationController
 
   def forgot_password
     if request.post?
-      handle_with(ForgotPassword,
+      handle_with(IdentitiesForgotPassword,
                   success: lambda {
                     redirect_to root_path, notice: 'Password reset instructions sent to your email address!'
                   },
@@ -28,7 +28,7 @@ class IdentitiesController < ApplicationController
   end
 
   def reset_password
-    handle_with(ResetPassword,
+    handle_with(IdentitiesResetPassword,
                 success: lambda {
                   return_to = session.delete(:return_to)
                   if return_to.present?

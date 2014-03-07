@@ -9,7 +9,7 @@ class DoController < ApplicationController
                              only: [:confirm_email, :reset_password]
 
   def confirm_email
-    handle_with(ConfirmEmail,
+    handle_with(DoConfirmEmail,
                 complete: lambda {
                   render :confirm_email, status: @handler_result.errors.any? ? 400 : 200
                 })
