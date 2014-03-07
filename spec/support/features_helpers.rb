@@ -1,6 +1,6 @@
-def create_user username, password='password'
+def create_user(username, password='password')
   return if User.find_by_username(username).present?
-  user = FactoryGirl.create :user_with_person, username: username
+  user = FactoryGirl.create :user_with_person, :terms_agreed, username: username
   identity = FactoryGirl.create :identity, user: user, password: password
   FactoryGirl.create :authentication, provider: 'identity', uid: identity.id.to_s, user: user
   return user

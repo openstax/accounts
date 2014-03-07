@@ -12,6 +12,14 @@ FactoryGirl.define do
       is_temp false
     end
 
+    trait :terms_agreed do
+      after(:create) do |user, evaluator|
+        FinePrint::Contract.all.each do |contract|
+          FinePrint.sign_contract(user, contract)
+        end
+      end
+    end
+
     factory :user_with_emails do
       ignore do
         emails_count 2
