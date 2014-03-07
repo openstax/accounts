@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   end
 
   def name
-    full_name || derived_full_name || username
+    full_name || guessed_full_name || username
   end
 
   def guessed_full_name
