@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::Base
+  protect_beta username: SECRET_SETTINGS[:beta_username], 
+               password: SECRET_SETTINGS[:beta_password]
+
   protect_from_forgery
 
   include Lev::HandleWith
