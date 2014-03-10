@@ -23,6 +23,7 @@
       </div>
     </div>
 
+    <% if @user.is_administrator? %>
     <div class="clearfix">
       <%= f.label :trusted? %>
       <div class="input">
@@ -30,6 +31,7 @@
         <%= errors_for application, :trusted %>
       </div>
     </div>
+    <% end %>
 
     <div class="clearfix"></div>
 
