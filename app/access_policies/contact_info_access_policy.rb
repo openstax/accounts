@@ -12,6 +12,3 @@ class ContactInfoAccessPolicy
   end
 
 end
-
-AccessPolicy.register(ContactInfo, ContactInfoAccessPolicy)
-AccessPolicy.register(EmailAddress, ContactInfoAccessPolicy)
