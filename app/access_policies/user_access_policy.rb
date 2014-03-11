@@ -12,5 +12,3 @@ class UserAccessPolicy
   end
 
 end
-
-AccessPolicy.register(User, UserAccessPolicy)
