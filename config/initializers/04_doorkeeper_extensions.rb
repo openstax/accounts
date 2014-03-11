@@ -1,7 +1,5 @@
 # Add some fields to Doorkeeper Application
 Doorkeeper::Application.class_eval do
-  attr_accessible :trusted
-
   def is_human?
     false
   end

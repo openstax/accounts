@@ -31,11 +31,11 @@ def login_as username, password='password'
   click_button 'Sign in'
 end
 
-def create_new_application
+def create_new_application(trusted = false)
   click_link 'New Application'
   fill_in 'Name', with: 'example'
   fill_in 'Redirect uri', with: 'http://localhost/'
-  check 'Trusted?'
+  check 'Trusted?' if trusted
   click_button 'Submit'
 end
 

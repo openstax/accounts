@@ -70,6 +70,9 @@ module Accounts
     config.accounts.default_reset_code_expiration_period = 2.days
     # configure how long a password is valid for
     config.accounts.default_password_expiration_period = nil
+
+    # Suppress a warning
+    config.i18n.enforce_available_locales = true
     
     config.to_prepare do
       Doorkeeper::ApplicationController.layout "application_body_only"
