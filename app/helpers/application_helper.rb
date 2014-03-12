@@ -1,5 +1,5 @@
 module ApplicationHelper
-    def alert_tag(messages)
+  def alert_tag(messages)
     attention_tag(messages, :alert)
   end
 

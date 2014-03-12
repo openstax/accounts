@@ -10,7 +10,7 @@ class AccessPolicy
   end
 
   def self.read_allowed?(requestor, resource)
-    action_allowed(:read, requestor, resource)
+    action_allowed?(:read, requestor, resource)
   end
 
   def self.require_action_allowed!(action, requestor, resource)
@@ -28,7 +28,7 @@ class AccessPolicy
     end
 
     resource_class = resource.is_a?(Class) ? resource : resource.class
-    policy_class = instance.resource_policy_map[resource_class]
+    policy_class = instance.resource_policy_map[resource_class.to_s]
 
     # If there is no policy registered, we by default deny access
     return false if policy_class.nil?
@@ -37,7 +37,9 @@ class AccessPolicy
   end
 
   def self.register(resource_class, policy_class)
-    self.instance.resource_policy_map[resource_class] = policy_class
+    # Use Strings to prevent SecurityTransgressions when controllers are reloaded
+    # (after every modification in the developer environment)
+    self.instance.resource_policy_map[resource_class.to_s] = policy_class
   end
 
 end

@@ -15,7 +15,7 @@ gem 'omniauth-google-oauth2'
 gem 'squeel'
 gem 'quiet_assets'
 
-gem 'openstax_utilities', '~> 2.0.0' 
+gem 'openstax_utilities', '~> 2.0.0'
 gem 'lev', '~> 2.0.4'
 
 gem 'jquery-rails'
@@ -37,7 +37,7 @@ gem 'exception_notification'
 
 gem "keyword_search", "~> 1.5.0"
 
-gem 'fine_print', '~> 1.3.0'
+gem 'fine_print', '~> 1.4.1'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'

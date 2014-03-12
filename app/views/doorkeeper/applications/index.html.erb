@@ -17,8 +17,10 @@
         <tr id="application_<%= application.id %>">
           <td><%= link_to application.name, [:oauth, application] %></td>
           <td><%= application.redirect_uri %></td>
-          <td><%= link_to 'Edit', edit_oauth_application_path(application) %></td>
-          <td><%= link_to 'Destroy', [:oauth, application], :data => { :confirm => 'Are you sure?' }, :method => :delete %></td>
+          <td><%= link_to('Edit', edit_oauth_application_path(application)) \
+            if AccessPolicy.action_allowed?(:update, @user, application) %></td>
+          <td><%= link_to('Remove', [:oauth, application], :data => { :confirm => 'Are you sure?' }, :method => :delete) \
+            if AccessPolicy.action_allowed?(:destroy, @user, application) %></td>
         </tr>
       <% end %>
     </tbody>

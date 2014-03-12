@@ -124,8 +124,11 @@ ActiveRecord::Schema.define(:version => 20140307234043) do
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
     t.boolean  "trusted",      :default => false
+    t.integer  "owner_id"
+    t.string   "owner_type"
   end
 
+  add_index "oauth_applications", ["owner_id", "owner_type"], :name => "index_oauth_applications_on_owner_id_and_owner_type"
   add_index "oauth_applications", ["uid"], :name => "index_oauth_applications_on_uid", :unique => true
 
   create_table "people", :force => true do |t|

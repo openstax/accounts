@@ -40,5 +40,8 @@ module SignInState
     !current_user.is_anonymous?
   end
 
+  def authenticate_user!
+    redirect_to login_path, notice: "Please log in." unless signed_in?
+  end
 
 end

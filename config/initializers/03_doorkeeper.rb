@@ -15,7 +15,7 @@ Doorkeeper.configure do
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
   admin_authenticator do
-    (current_user.is_administrator? || Rails.env.development?) || redirect_to(login_url)
+    current_user.is_administrator? || redirect_to(login_url)
   end
 
   # Authorization Code expiration time (default 10 minutes).
@@ -32,7 +32,7 @@ Doorkeeper.configure do
   # Optional parameter :confirmation => true (default false) if you want to enforce ownership of
   # a registered application
   # Note: you must also run the rails g doorkeeper:application_owner generator to provide the necessary support
-  # enable_application_owner :confirmation => false
+  enable_application_owner :confirmation => true
 
   # Define access token scopes for your provider
   # For more information go to https://github.com/applicake/doorkeeper/wiki/Using-Scopes
@@ -63,19 +63,5 @@ Doorkeeper.configure do
   # For example if dealing with trusted a application.
   skip_authorization do |resource_owner, client|
     client.application.trusted
-  end
-end
-
-# Added some fields to Doorkeeper
-
-Doorkeeper::Application.attr_accessible :trusted
-
-Doorkeeper::Application.class_eval do 
-  def is_human?
-    false
-  end
-
-  def is_application?
-    true
   end
 end
