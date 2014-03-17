@@ -22,6 +22,10 @@ class User < ActiveRecord::Base
 
   attr_accessible :username
 
+  attr_readonly :uuid
+
+  before_create :generate_uuid
+
   def is_anonymous?
     false
   end
@@ -94,6 +98,10 @@ protected
 
   def normalize_username
     self.username = username.gsub(USERNAME_DISCARDED_CHAR_REGEX, '').downcase
+  end
+
+  def generate_uuid
+    self.uuid ||= SecureRandom.uuid
   end
 
 end
