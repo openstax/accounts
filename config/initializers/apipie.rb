@@ -39,6 +39,7 @@ Apipie.configure do |config|
   config.markup                  = MarkdownWrapper.new
   config.namespaced_resources    = false
   config.default_version         = 'v1'
+  config.link_extension          = ''
   config.app_info =              <<-eos
     Access to the API must be achieved through an OAuth flow or by having a user
     that is logged in to the system (with a session, etc).
