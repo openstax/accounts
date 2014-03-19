@@ -39,23 +39,24 @@ class User < ActiveRecord::Base
   end
 
   def name
-    full_name || guessed_full_name || username
+    result = full_name.present? ? full_name : guessed_full_name || username
+    title.present? ? "#{title} #{result}" : result
   end
 
   def guessed_full_name
-    first_name && last_name ? "#{first_name} #{last_name}" : nil
+    first_name.present? && last_name.present? ? "#{first_name} #{last_name}" : nil
   end
 
   def guessed_first_name
-    full_name ? full_name.split("\s")[0] : nil
+    full_name.present? ? full_name.split("\s")[0] : nil
   end
 
   def guessed_last_name
-    full_name ? full_name.split("\s").drop(1).join(' ') : nil
+    full_name.present? ? full_name.split("\s").drop(1).join(' ') : nil
   end
 
   def casual_name
-    first_name || username
+    first_name.present? ? first_name : username
   end
 
   def can_be_read_by?(user)
