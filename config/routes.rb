@@ -76,6 +76,7 @@ Accounts::Application.routes.draw do
   post "terms/agree", to: "terms#agree", as: "agree_to_terms"
   get "terms", to: "terms#index"
 
+  get 'status', to: 'utility#status'
 
   get 'api', to: 'static_page#api'
   match 'copyright', :to => 'static_page#copyright'
