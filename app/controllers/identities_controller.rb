@@ -28,8 +28,12 @@ class IdentitiesController < ApplicationController
   end
 
   def reset_password
+    if !current_user.is_anonymous? && current_user.identity.should_reset_password?
+      flash[:alert] = 'Your password has expired.  Please enter a new password.'
+    end
     handle_with(IdentitiesResetPassword,
                 success: lambda {
+                  return if !request.post?
                   return_to = session.delete(:return_to)
                   if return_to.present?
                     redirect_to return_to
