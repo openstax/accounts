@@ -30,7 +30,7 @@ gem 'jbuilder'
 gem 'delayed_job_active_record'
 
 # see https://groups.google.com/d/msg/roar-talk/KI-a5t02huc/RKwkcZ5SzOEJ
-gem 'representable', git: 'git://github.com/jpslav/representable.git', ref: '0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457'
+gem 'representable', :git => 'git://github.com/jpslav/representable.git', :ref => '0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457'
 gem 'roar-rails'
 
 gem 'exception_notification'
@@ -61,5 +61,5 @@ end
 group :production do
   gem 'mysql2', '~> 0.3.11'
   gem 'unicorn'
-  gem 'lograge', git: 'https://github.com/jpslav/lograge.git' # 'git@github.com:jpslav/lograge.git'
+  gem 'lograge', :git => 'https://github.com/jpslav/lograge.git' # 'git@github.com:jpslav/lograge.git'
 end

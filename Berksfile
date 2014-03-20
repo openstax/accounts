@@ -1,9 +1,10 @@
 # Add AWS OpsWorks cookbooks
 
 %w(apache2 rails deploy packages gem_support opsworks_initial_setup 
-   ssh_users mysql ebs opsworks_ganglia scm_helper nginx).each do |cookbook_name|
+   ssh_users mysql ebs opsworks_ganglia scm_helper nginx ruby_enterprise
+   ).each do |cookbook_name|
 
-  cookbook cookbook_name, git: "https://github.com/aws/opsworks-cookbooks.git", rel: cookbook_name
+  cookbook cookbook_name, git: "https://github.com/aws/opsworks-cookbooks.git", rel: cookbook_name, branch: 'release-chef-0.9'
 
 end
 
@@ -16,7 +17,7 @@ end
 #   https://github.com/aws/opsworks-cookbooks/pull/32
 #   https://github.com/aws/opsworks-cookbooks/pull/33
 
-%w(dependencies opsworks_commons ruby opsworks_rubygems opsworks_bundler ssh_host_keys agent_version).each do |cookbook_name|
+%w(dependencies opsworks_commons ruby opsworks_rubygems opsworks_bundler ssh_host_keys agent_version opsworks_stack_state_sync).each do |cookbook_name|
   cookbook cookbook_name, git: "https://github.com/openstax/opsworks-cookbooks.git", rel: cookbook_name
 end
 
