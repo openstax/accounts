@@ -11,12 +11,12 @@
       <%= image_tag "twitter_64.png", title: "Sign in using your Twitter account" -%>
     <% end %>
     <%= link_to "/auth/google_oauth2", {class: 'login-button'} do %>
-      <%= image_tag "g+64.png", title: "Sign in using your Google account" -%>
+      <%= image_tag "g_64.png", title: "Sign in using your Google account" -%>
     <% end %>
   </center>
 </div>
 
-<%= lev_form_for :register, url: '/auth/identity/register' do |f| %>
+<%= lev_form_for :register, url: '/auth/identity/register', html: {id: 'identity-register'} do |f| %>
 
 <p>Please choose a <%= 'username and ' if !signed_in? %> password.</p>
 
@@ -30,5 +30,5 @@
   <%= standard_field form: f, name: :password, type: :password_field, label: "Password" %>
   <%= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Password Again" %>
 
-  <%= submit_tag "Register" %>
+  <%= submit_tag "Register", class: 'standard' %>
 <% end %>

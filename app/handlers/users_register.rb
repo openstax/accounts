@@ -36,8 +36,8 @@ protected
 
     transfer_errors_from(caller, {type: :verbatim}, true)
 
-    run(AgreeToTerms, register_params.contract_1_id, caller)
-    run(AgreeToTerms, register_params.contract_2_id, caller)
+    run(AgreeToTerms, register_params.contract_1_id, caller, no_error_if_already_signed: true)
+    run(AgreeToTerms, register_params.contract_2_id, caller, no_error_if_already_signed: true)
 
     run(FinishUserCreation, caller)
   end

@@ -1,6 +1,6 @@
 <%= page_heading 'Complete your profile information to create your account' %>
 
-<%= lev_form_for :register, url: users_register_path, method: :put do |f| %>
+<%= lev_form_for :register, url: users_register_path, method: :put, html: {id: 'profile-form'} do |f| %>
 
   <%= standard_field form: f, name: :username, type: :text_field, label: "Username", 
                      options: {value: current_user.username} %>
@@ -22,14 +22,14 @@
   
   <div class="checkbox">
     <label>
-      <%= f.check_box :i_agree %> I have read the <%= contract_links[0] %> and the <%= contract_links[1] %> and I agree to be bound by their terms.  <i>Note that other OpenStax sites may have terms of their own.</i>
+      <%= f.check_box :i_agree %> I have read the <%= contract_links[0] %> and the <%= contract_links[1] %> and I agree to be bound by their terms. <br/> <i>Note that other OpenStax sites may have terms of their own.</i>
     </label>
   </div>
     
   <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
   <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
   
-  <%= f.submit "Register", id: "register_submit" %>
+  <%= f.submit "Register", id: "register_submit", class: 'standard' %>
   
 <% end %>
 

@@ -1,6 +1,7 @@
 
 
 #login-explanation {
+  padding-top: 20px;
   width: 400px;
 }
 
@@ -39,16 +40,17 @@ $login-options-width: 300px;
     margin-top: 25px;
     text-align: left;
     input[type='text'], input[type='password'] {
-      width: 226px;
+      width: 236px;
+      margin-bottom: 7px;
     }
     input[type='submit'] {
       float: right;
     }
     .password-actions {
-      margin-top: 7px;
+      margin-top: 17px;
       .sign-up {
         float:right;
-        margin-right: 33px;
+        margin-right: 35px;
         margin-top: 7px;
       }      
     }
@@ -67,4 +69,39 @@ $login-options-width: 300px;
   .login-button {
     padding: 10px;
   }
+}
+
+#identity-register {
+  width: 350px;
+
+  input[type='submit'] {
+    margin-top: 10px;
+  }
+}
+
+
+.new-or-returning-buttons {
+
+  width: 270px; 
+  float: right; 
+  padding-top:10px;
+
+  .or-bar {
+    margin-bottom: 35px;
+    margin-top: 10px;
+    position: relative;
+    width: 270px;
+    border-bottom: 1px solid #dddddd;
+
+    .or-text {
+        position: absolute;
+        top:-10px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        margin-left: 106px;
+        padding: 0 14px;
+        background: white;
+        font-weight: bold;
+      }      
+  }  
 }

@@ -2,7 +2,7 @@
 @import 'bootstrap';
 
 
-select, input[type='text'], input[type='search'] {
+select, input[type='text'], input[type='search'], input[type='password'] {
   @extend .form-control;
 }
 
