@@ -3,11 +3,12 @@
 
 class SessionsController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:new, :authenticated, :failure]
+  skip_before_filter :authenticate_user!, only: [:new, :authenticated,
+                                                 :failure, :destroy]
 
   fine_print_skip_signatures :general_terms_of_use,
                              :privacy_policy,
-                             only: [:new, :authenticated, :failure]
+                             only: [:new, :authenticated, :failure, :destroy]
 
   prepend_before_filter :check_registered, only: [:return_to_app]
   prepend_before_filter :check_password_not_expired, only: [:return_to_app]
