@@ -16,3 +16,20 @@ table.std-list-1 {
     color: #ff00ff;
   }
 }
+
+.form-field {
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+
+.ui-state-error, .ui-state-highlight {
+  p {
+    margin: 13px 0px;
+  }
+}
+
+#profile-form {
+  input[type='text'] {
+    width: 300px;
+  }
+}

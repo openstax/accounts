@@ -16,7 +16,7 @@ module ApplicationHelper
     
     content_tag :div, :class => "ui-widget #{classes}" do
       content_tag :div, :class => "#{div_class} ui-corner-all", 
-                        :style => "margin: 10px 0px; padding: 0 .7em;" do
+                        :style => "margin: 10px 0px -5px; padding: 0 .7em;" do
         content_tag :p do
           content_tag(:span, "", :class => "ui-icon #{icon_class}",
                              :style => "float:left; margin-right: .3em;") +

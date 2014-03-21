@@ -2,18 +2,27 @@
 
 <% authentications = current_user.authentications %>
 
-<%= page_heading "Great, you are signed in but we #{'(still)' if authentications.size > 1} haven't seen you before.".html_safe %>
+<%= page_heading "Great, you are signed in, but we #{'(still)' if authentications.size > 1} haven't seen you before.".html_safe %>
 
-<div style="width: 250px; float: right">
-  <%= link_to "I think I already have an<br/>account &mdash; let's find it!".html_safe, 
-              login_path, class: 'button', style: 'margin-bottom: 28px; width: 230px' %>
+<div class='new-or-returning-buttons'>
+  <%= link_to "I think I already have an account".html_safe, 
+              login_path, class: 'btn btn-primary', style: 'margin-bottom: 28px; width: 270px' %>
 
-  <%= link_to "I have not made an<br/>OpenStax account before.".html_safe, 
-              sessions_return_to_app_path, class: 'button', style: 'width: 230px' %>
+  <div class="or-bar">
+    <div class="or-text">OR</div>
+  </div>
+
+
+  <%= link_to "I am a brand new user".html_safe, 
+              sessions_return_to_app_path, class: 'btn btn-primary', style: 'width: 270px' %>              
 </div>
 
-<div style="width: 550px">
-  <p>You can sign in to your OpenStax account in several different ways.</p>
-  <p>So far the account you're currently signed in to is linked to <%= authentications_list(authentications) %>. Have you by chance already created an OpenStax account using <%= remaining_authentications_list(authentications) %>?</p>
-  
+<div style="width: 500px; padding-top:10px">
+
+  <p>So far the account you're currently signed in to is linked to <%= authentications_list(authentications) %>.</p>
+
+  <p>If you think you've created an account before using <%= remaining_authentications_list(authentications) %>, click the top button to find that account.</p>
+
+  <p>Otherwise click the bottom button to finish creating your new account.</p>
+
 </div>

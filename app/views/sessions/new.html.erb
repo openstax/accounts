@@ -14,7 +14,7 @@
     <%= image_tag "twitter_64.png", title: "Sign in using your Twitter account" -%>
   <% end %>
   <%= link_to "/auth/google_oauth2", {class: 'login-button'} do %>
-    <%= image_tag "g+64.png", title: "Sign in using your Google account" -%>
+    <%= image_tag "g_64.png", title: "Sign in using your Google account" -%>
   <% end %>
 
   <div id="or-bar">
@@ -26,7 +26,7 @@
       <label for='auth_key'>Username</label><input type='text' id='auth_key' name='auth_key'/>
       <label for='password'>Password</label><input type='password' id='password' name='password'/>
       <div class='password-actions'>
-        <button>Sign in</button>
+        <button class='standard'>Sign in</button>
         <% unless session[:from_cnx] %>
           <span class='sign-up'><%= link_to "Sign up", signup_path %></span>
         <% end %>
