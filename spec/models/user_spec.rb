@@ -24,4 +24,31 @@ describe User do
     end
   end
 
+  it 'returns a name' do
+    user = FactoryGirl.create :user, username: 'username', full_name: ''
+    expect(user.name).to eq('username')
+
+    user.first_name = 'User'
+    expect(user.name).to eq('username')
+
+    user.last_name = 'One'
+    expect(user.name).to eq('User One')
+
+    user.full_name = 'User Fullname'
+    expect(user.name).to eq('User Fullname')
+
+    user.title = 'Miss'
+    expect(user.name).to eq('Miss User Fullname')
+  end
+
+  it 'returns a casual name' do
+    user = FactoryGirl.create :user, username: 'username', first_name: ''
+    expect(user.casual_name).to eq('username')
+
+    user.first_name = 'First'
+    user.last_name = 'Last'
+    user.full_name = 'Full Name'
+    expect(user.casual_name).to eq('First')
+  end
+
 end

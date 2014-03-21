@@ -38,7 +38,6 @@ class SessionsController < ApplicationController
   def check_password_not_expired
     if current_user.try(:identity).try(:should_reset_password?)
       identity = current_user.identity
-      flash[:alert] = 'Your password has expired.  Please enter a new password.'
       identity.generate_reset_code
       redirect_to reset_password_path(code: identity.reset_code)
     end

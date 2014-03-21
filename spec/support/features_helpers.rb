@@ -1,9 +1,17 @@
+require 'import_users'
+
 def create_user(username, password='password')
   return if User.find_by_username(username).present?
   user = FactoryGirl.create :user_with_person, :terms_agreed, username: username
   identity = FactoryGirl.create :identity, user: user, password: password
   FactoryGirl.create :authentication, provider: 'identity', uid: identity.id.to_s, user: user
   return user
+end
+
+def imported_user username
+  ImportUsers.new('some.csv').create_user(
+    username, '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', '', '', 'Full
+    Name', 'user@example.com')
 end
 
 def create_user_with_plone_password
