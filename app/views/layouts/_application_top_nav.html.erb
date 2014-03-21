@@ -12,7 +12,10 @@
       <% if signed_in? %>
         Welcome, <%= current_user.username %>&nbsp;&nbsp;&nbsp;<%= link_to 'Sign out', logout_path %>
       <% else %>
-        <%= link_to 'Sign Up', signup_path %> or <%= link_to "Sign in", login_path %>
+        <% unless session[:from_cnx] %>
+          <%= link_to 'Sign up', signup_path %> or
+        <% end %>
+          <%= link_to "Sign in", login_path %>
       <% end %>
     </div>
 

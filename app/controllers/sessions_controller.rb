@@ -16,6 +16,8 @@ class SessionsController < ApplicationController
   # Put some of this in an authentications controller?
 
   def new
+    referer = request.referer
+    session[:from_cnx] = (referer =~ /cnx\.org/) unless referer.blank?
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
   end
 
