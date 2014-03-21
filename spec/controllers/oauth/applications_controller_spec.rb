@@ -4,13 +4,50 @@ module Oauth
 
   describe ApplicationsController do
 
-    let!(:admin) { FactoryGirl.create :user, :admin }
-    let!(:user) { FactoryGirl.create :user }
+    let!(:admin) { FactoryGirl.create :user, :terms_agreed, :admin }
+    let!(:user) { FactoryGirl.create :user, :terms_agreed }
+    let!(:user2) { FactoryGirl.create :user }
 
     let!(:trusted_application_admin) { FactoryGirl.create :doorkeeper_application, :trusted, owner: admin }
     let!(:untrusted_application_admin) { FactoryGirl.create :doorkeeper_application, owner: admin }
     let!(:trusted_application_user) { FactoryGirl.create :doorkeeper_application, :trusted, owner: user }
     let!(:untrusted_application_user) { FactoryGirl.create :doorkeeper_application, owner: user }
+    let!(:trusted_application_user2) { FactoryGirl.create :doorkeeper_application, :trusted, owner: user2 }
+    let!(:untrusted_application_user2) { FactoryGirl.create :doorkeeper_application, owner: user2 }
+
+
+    it "should redirect users that haven't signed contracts" do
+      controller.current_user = user2
+      get :index
+      expect(response.code).to eq('302')
+      expect(assigns :applications).to be_nil
+
+      get :show, id: untrusted_application_user2.id
+      expect(response.code).to eq('302')
+      expect(assigns :application).to be_nil
+
+      get :new
+      expect(response.code).to eq('302')
+      expect(assigns :application).to be_nil
+
+      post :create, :application => {name: 'Some app',
+                                     redirect_uri: 'http://www.example.com',
+                                     trusted: true}
+      expect(response.code).to eq('302')
+      expect(assigns :application).to be_nil
+
+      get :edit, id: untrusted_application_user2.id
+      expect(response.code).to eq('302')
+      expect(assigns :application).to be_nil
+
+      post :update, id: untrusted_application_user2.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
+      expect(response.code).to eq('302')
+      expect(assigns :application).to be_nil
+
+      delete :destroy, id: untrusted_application_user2.id
+      expect(response.code).to eq('302')
+      expect(assigns :application).to be_nil
+    end
 
     it "should let a user get the list of his applications" do
       controller.current_user = user
@@ -18,6 +55,8 @@ module Oauth
       expect(response.code).to eq('200')
       expect(assigns :applications).to include(untrusted_application_user)
       expect(assigns :applications).to include(trusted_application_user)
+      expect(assigns :applications).not_to include(untrusted_application_user2)
+      expect(assigns :applications).not_to include(trusted_application_user2)
       expect(assigns :applications).not_to include(untrusted_application_admin)
       expect(assigns :applications).not_to include(trusted_application_admin)
     end
@@ -28,6 +67,8 @@ module Oauth
       expect(response.code).to eq('200')
       expect(assigns :applications).to include(untrusted_application_user)
       expect(assigns :applications).to include(trusted_application_user)
+      expect(assigns :applications).to include(untrusted_application_user2)
+      expect(assigns :applications).to include(trusted_application_user2)
       expect(assigns :applications).to include(untrusted_application_admin)
       expect(assigns :applications).to include(trusted_application_admin)
     end
