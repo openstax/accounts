@@ -5,7 +5,7 @@
 <%= page_heading("Sign in 
      #{'to ' + @application.name if @application} 
      with your one OpenStax account!".html_safe) %>
-<%= request.referer %>
+
 <div id="login-options">
   <%= link_to "/auth/facebook", {class: 'login-button'} do %>
     <%= image_tag "fb_64.png", title: "Sign in using your Facebook account" -%>
@@ -28,7 +28,7 @@
       <div class='password-actions'>
         <button>Sign in</button>
         <% unless session[:from_cnx] %>
-        <span class='sign-up'><%= link_to "Sign Up", signup_path %></span>
+          <span class='sign-up'><%= link_to "Sign Up", signup_path %></span>
         <% end %>
       </div>
       <div class="password-actions">
@@ -42,9 +42,9 @@
 <div id="login-explanation">
   <p>Use the buttons at the right to sign in using your Facebook, Twitter, or Google account.</p>
   <% if session[:from_cnx] %>
-  <p>If you have a legacy Connexions account, you can enter your username and password instead.</p>
+    <p>If you have a legacy Connexions account, you can enter your username and password instead.</p>
   <% else %>
-  <p>Prefer to use a plain old username and password?  You can do that too.</p>
+    <p>Prefer to use a plain old username and password?  You can do that too.</p>
   <% end %>
 </div>
 
