@@ -44,4 +44,8 @@ module SignInState
     redirect_to login_path, notice: "Please log in." unless signed_in?
   end
 
+  def authenticate_admin!
+    redirect_to login_path, notice: "Please log in." unless current_user.is_administrator?
+  end
+
 end
