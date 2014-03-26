@@ -1,0 +1,30 @@
+<%
+  page = @handler_result.outputs[:page]
+  num_users = @handler_result.outputs[:num_matching_users]
+  per_page = @handler_result.outputs[:per_page]
+  pages = (num_users * 1.0 / per_page).ceil 
+%>
+
+<div id='search-results-pagination'>
+  <%= pluralize(num_users, 'user') %> found. 
+
+  <% if pages > 0 %>
+    Page: 
+
+    <% 
+      linked_page_numbers = [page+1]
+      linked_page_numbers.push(1)
+      linked_page_numbers.push(pages)
+      linked_page_numbers.push(page+1-1, page+1-2, page+1+1, page+1+2)
+      linked_page_numbers.reject!{|pp| pp < 1 || pp > pages}
+      linked_page_numbers.uniq!
+      linked_page_numbers.sort!
+    %>
+
+    <% linked_page_numbers.each do |lpn| %>
+      <%= link_to_unless lpn == page + 1,
+                         lpn, 
+                         search_admin_users_path(search: {terms: @handler_result.outputs[:query], page: lpn-1, per_page: per_page}), remote: true %>
+    <% end %>
+  <% end %>
+</div>
