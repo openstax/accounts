@@ -20,6 +20,8 @@
 #top-nav-account {
   padding-top:20px;
   float: right;
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size: 13px;
 }
 
 #top-nav-logo-link  {
@@ -72,7 +74,7 @@
     padding-right: 9px;
 
     font-size:   10px;
-    font-family: arial, helvetica, sans-serif;
+    // font-family: arial, helvetica, sans-serif;
     line-height: $application_top_nav_height;
 
     &:hover {
