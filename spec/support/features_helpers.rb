@@ -26,8 +26,14 @@ def create_admin_user
   user.save
 end
 
-def create_nonlocal_user(username)
-  auth_data = {info: {nickname: username}, provider: 'facebook'}
+def create_nonlocal_user(username, provider='facebook')
+  auth_data = 
+    case provider
+    when 'facebook' then {info: {nickname: username}, provider: 'facebook'}
+    when 'google' then {info: {nickname: username}, provider: 'google'}
+    when 'twitter' then {info: {nickname: username}, provider: 'twitter'}
+    end
+
   result = CreateUserFromOmniauth.call(auth_data)
   raise "create_nonlocal_user for #{username} failed" if result.errors.any?
   User.find_by_username(username)
@@ -102,4 +108,28 @@ end
 
 def app_callback_url
   /^#{@app.redirect_uri}\?code=.+$/
+end
+
+
+
+def click_omniauth_link(provider, options={})
+  options[:nickname] ||= 'jimbo'
+  options[:uid] ||= '1337'
+  options[:link_id] ||= "#{provider}-login-button"
+
+  begin
+    OmniAuth.config.test_mode = true
+
+    OmniAuth.config.mock_auth[provider.to_sym] = OmniAuth::AuthHash.new({
+      uid: options[:uid],
+      provider: provider,
+      info: {
+        nickname: options[:nickname]
+      }
+    })
+
+    click_link options[:link_id]
+  ensure
+    OmniAuth.config.test_mode = false
+  end
 end

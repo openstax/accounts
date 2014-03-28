@@ -111,4 +111,43 @@ feature 'User logs in as a local user', js: true do
     end
   end
 
+  scenario 'keeps trying to find existing account when signing in' do
+    create_user 'jimbo'
+
+    user = User.where{username == 'jimbo'}.first
+    i = FactoryGirl.create :identity, user: user, password: 'password'
+
+    visit '/'
+    expect(page).to have_content('Sign up or Sign in')
+    click_link 'Sign in'
+    expect(page).to have_content("Sign in with your one OpenStax account!")
+
+    click_omniauth_link('twitter')
+
+    expect(page).to have_content('Nice to meet you,')
+    expect(page).to have_no_link('twitter-login-button')
+
+    click_omniauth_link('google_oauth2')
+
+    expect(page).to have_content('Nice to meet you (again),')
+    expect(page).to have_no_link('twitter-login-button')
+    expect(page).to have_no_link('google_oauth2-login-button')
+
+    click_omniauth_link('facebook')
+
+    expect(page).to have_content('Nice to meet you (again),')
+    expect(page).to have_no_link('twitter-login-button')
+    expect(page).to have_no_link('google_oauth2-login-button')
+    expect(page).to have_no_link('facebook-login-button')
+    expect(page).to have_no_content('left-or-block')
+
+    fill_in 'Username', with: 'jimbo'
+    fill_in 'Password', with: 'password'
+
+    click_button 'Sign in'
+
+    expect(page).to have_no_content('Nice to meet')
+    expect(page).to have_no_content('Sign in with your one')
+  end
+
 end

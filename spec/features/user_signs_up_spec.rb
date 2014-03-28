@@ -14,7 +14,7 @@ feature 'User signs up as a local user', js: true do
     click_button 'Register'
     expect(page).to have_content('Welcome, testuser')
 
-    click_link 'I am a brand new'
+    click_link 'Finish setting up my account'
     expect(page).to have_content('Welcome, testuser')
 
     expect(page).to have_content('Complete your profile information')
@@ -89,3 +89,6 @@ feature 'User signs up as a local user', js: true do
     expect(page).not_to have_content('Welcome, testuser')
   end
 end
+
+
+
