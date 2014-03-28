@@ -33,3 +33,12 @@ table.std-list-1 {
     width: 300px;
   }
 }
+
+#search-results-list {
+  @include std-table-list-1;
+  margin-top: 17px;
+
+  #search-results-pagination {
+    float: right;
+  }
+}

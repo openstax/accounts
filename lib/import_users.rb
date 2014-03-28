@@ -25,7 +25,6 @@ class ImportUsers
         puts "Imported #{$. - 1} users..."
       end
     end
-    puts "Imported #{$. - 1} users"
 
     headers = [:row_number, :old_username, :new_username, :errors]
     CSV.open('import_users_results.csv', 'wb', headers: headers, write_headers: true) do |csv|

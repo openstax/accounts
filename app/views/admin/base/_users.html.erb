@@ -3,12 +3,11 @@
 <%= lev_form_for :search, 
                  url: (override_search_path ||= search_admin_users_path), 
                  remote: true,
+                 method: :get,
                  html: {class: 'form-inline'} do |f| %>
 
   Search for 
-  <%= f.search_field :search_terms, style: 'width:300px;', class: 'form-control' %> 
-  in         
-  <%= f.select :search_type, ['Any', 'Name', 'Username'], {}, {class: 'form-control', style: 'width: 150px'} %>
+  <%= f.search_field :terms, style: 'width:500px;', class: 'form-control' %> 
 
   <%= f.submit 'Search', class: 'btn btn-primary' %>
 

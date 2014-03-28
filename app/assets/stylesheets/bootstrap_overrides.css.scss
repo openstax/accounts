@@ -28,7 +28,7 @@ select, input[type='text'], input[type='search'], input[type='password'] {
   margin-bottom: 0px;
 }
 
-button.standard, input[type='submit'].standard {
+a.standard, button.standard, input[type='submit'].standard {
   @extend .btn;
   @extend .btn-primary;
   @include border-radius(0px);

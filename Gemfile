@@ -63,3 +63,5 @@ group :production do
   gem 'unicorn'
   gem 'lograge', :git => 'https://github.com/jpslav/lograge.git' # 'git@github.com:jpslav/lograge.git'
 end
+
+gem "codeclimate-test-reporter", group: :test, require: nil

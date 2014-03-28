@@ -6,6 +6,9 @@ module Admin
     
     before_filter :authenticate_admin!
     
+    fine_print_skip_signatures :general_terms_of_use,
+                               :privacy_policy
+    
     def cron
       Ost::Cron::execute_cron_jobs
       flash[:notice] = "Ran cron tasks"

@@ -26,6 +26,8 @@ class User < ActiveRecord::Base
 
   before_create :generate_uuid
 
+  before_create :make_first_user_an_admin
+
   def is_anonymous?
     false
   end
@@ -103,6 +105,10 @@ protected
 
   def generate_uuid
     self.uuid ||= SecureRandom.uuid
+  end
+
+  def make_first_user_an_admin
+    self.is_administrator = true if User.count == 0
   end
 
 end

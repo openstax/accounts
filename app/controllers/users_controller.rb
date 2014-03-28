@@ -1,8 +1,10 @@
 class UsersController < ApplicationController
 
+  skip_before_filter :authenticate_user!, only: [:become]
+
   fine_print_skip_signatures :general_terms_of_use,
                              :privacy_policy,
-                             only: [:register]
+                             only: [:register, :become]
 
   def register
     if request.put?
@@ -13,6 +15,12 @@ class UsersController < ApplicationController
                     render :register, status: errors ? 400 : 200
                   })
     end
+  end
+
+  def become
+    raise SecurityTransgression unless !Rails.env.production? || current_user.is_admin?
+    sign_in(User.find(params[:id]))
+    redirect_to request.referrer
   end
 
 end

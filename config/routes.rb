@@ -32,7 +32,7 @@ Accounts::Application.routes.draw do
     get "raise_illegal_argument",       to: 'base#raise_illegal_argument'
 
     resources :users, only: [:show, :update, :edit] do
-      post 'search', on: :collection
+      get 'search', on: :collection
     end
   end
 
@@ -70,6 +70,7 @@ Accounts::Application.routes.draw do
   match '/i_am_returning', to: 'sessions#i_am_returning'
 
   match 'users/register', to: 'users#register'
+  post 'users/:id/become', to: 'users#become', as: 'become_user'
 
   get "terms/:id/show", to: "terms#show", as: "show_terms"
   get "terms/pose", to: "terms#pose", as: "pose_terms"

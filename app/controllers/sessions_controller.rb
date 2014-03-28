@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
 
   fine_print_skip_signatures :general_terms_of_use,
                              :privacy_policy,
-                             only: [:new, :authenticated, :failure, :destroy]
+                             only: [:new, :authenticated, :failure, :destroy, :ask_new_or_returning]
 
   prepend_before_filter :check_registered, only: [:return_to_app]
   prepend_before_filter :check_password_not_expired, only: [:return_to_app]

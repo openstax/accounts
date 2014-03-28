@@ -6,37 +6,7 @@
      #{'to ' + @application.name if @application} 
      with your one OpenStax account!".html_safe) %>
 
-<div id="login-options">
-  <%= link_to "/auth/facebook", {class: 'login-button'} do %>
-    <%= image_tag "fb_64.png", title: "Sign in using your Facebook account" -%>
-  <% end %>
-  <%= link_to "/auth/twitter", {class: 'login-button'} do %>
-    <%= image_tag "twitter_64.png", title: "Sign in using your Twitter account" -%>
-  <% end %>
-  <%= link_to "/auth/google_oauth2", {class: 'login-button'} do %>
-    <%= image_tag "g_64.png", title: "Sign in using your Google account" -%>
-  <% end %>
-
-  <div id="or-bar">
-    <div id="or-text">OR</div>
-  </div>
-
-  <div id="password-login">
-    <%= form_tag '/auth/identity/callback' do %>
-      <label for='auth_key'>Username</label><input type='text' id='auth_key' name='auth_key'/>
-      <label for='password'>Password</label><input type='password' id='password' name='password'/>
-      <div class='password-actions'>
-        <button class='standard'>Sign in</button>
-        <% unless session[:from_cnx] %>
-          <span class='sign-up'><%= link_to "Sign up", signup_path %></span>
-        <% end %>
-      </div>
-      <div class="password-actions">
-        <span><%= link_to 'Forgot password?', forgot_password_path %></span>
-      </div>
-    <% end %>
-  </div>
-</div>
+<%= render 'sessions/login', hide_sign_up: session[:from_cnx] %>
 
 
 <div id="login-explanation">

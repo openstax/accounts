@@ -53,7 +53,7 @@ protected
   #   max per_page values for different levels of user (e.g. applications can do whatever,
   #   non-admin Users can only get 20 at a time, etc.)
 
-  def exec(query, options={}, type=:any)
+  def exec(query, options={})
     users = User.scoped
     
     KeywordSearch.search(query) do |with|
@@ -164,6 +164,7 @@ protected
     # Translate to routine outputs
 
     outputs[:users] = users
+    outputs[:query] = query
     outputs[:per_page] = per_page
     outputs[:page] = page
     outputs[:order_by] = order_bys.join(', ') # convert back to one string
