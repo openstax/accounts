@@ -1,5 +1,5 @@
 Accounts::Application.routes.draw do
-  
+
   use_doorkeeper do
     controllers :applications => 'oauth/applications'
   end
@@ -46,6 +46,8 @@ Accounts::Application.routes.draw do
         get 'search', on: :collection
         get 'me', on: :collection
         resources :contact_infos, shallow: true, only: :create
+        resources :application_users,
+                  only: [:show, :create, :update, :destroy], shallow: true
       end
 
       resources :contact_infos, only: [:show, :destroy] do

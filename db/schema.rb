@@ -11,7 +11,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140317153739) do
+ActiveRecord::Schema.define(:version => 20140408205455) do
+
+  create_table "application_users", :force => true do |t|
+    t.integer  "application_id"
+    t.integer  "user_id"
+    t.integer  "default_contact_info_id"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
+  end
+
+  add_index "application_users", ["application_id"], :name => "index_application_users_on_application_id"
+  add_index "application_users", ["user_id", "application_id"], :name => "index_application_users_on_user_id_and_application_id"
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"

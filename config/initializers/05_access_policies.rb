@@ -1,4 +1,5 @@
 AccessPolicy.register(User, UserAccessPolicy)
 AccessPolicy.register(ContactInfo, ContactInfoAccessPolicy)
 AccessPolicy.register(EmailAddress, ContactInfoAccessPolicy)
+AccessPolicy.register(ApplicationUser, ApplicationUserAccessPolicy)
 AccessPolicy.register(Doorkeeper::Application, Doorkeeper::ApplicationAccessPolicy)
