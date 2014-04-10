@@ -26,17 +26,17 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     resource_owner_id: nil }
 
   describe "create" do
-    it "should let an app create an application_user" do
+    it "should let an app create an application_user for a user" do
       expect {
-        api_post :create, trusted_application_token, parameters: { user_id: user_1.id }
-      }.to change{user_1.application_users(true).count}.from(1).to(2)
+        api_post :create, user_2_token
+      }.to change{user_2.application_users(true).count}.from(0).to(1)
       expect(response.code).to eq('201')
     end
     
-    it "should not let a user create an application_user" do
+    it "should not let an app create an application_user by itself" do
       expect {
-        api_post :create, user_1_token, parameters: { user_id: user_1.id }
-      }.to_not change{user_1.application_users(true).count}
+        api_post :create, untrusted_application_token
+      }.not_to change{untrusted_application.application_users(true).count}
       expect(response.code).to eq('403')
     end
   end
