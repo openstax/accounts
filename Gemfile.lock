@@ -8,6 +8,15 @@ GIT
       nokogiri
 
 GIT
+  remote: https://github.com/Dantemss/openstax_utilities.git
+  revision: 169d4797ea9b575d8cfd02e82c2711898f1b5c4e
+  ref: 169d4797ea9b575d8cfd02e82c2711898f1b5c4e
+  specs:
+    openstax_utilities (2.1.1.alpha)
+      attribeautiful (>= 0.0.7)
+      rails (>= 3.1)
+
+GIT
   remote: https://github.com/jpslav/lograge.git
   revision: 9847241bad86abe7e3c4869df5e41549238fc3b1
   specs:
@@ -187,9 +196,13 @@ GEM
     omniauth-twitter (1.0.0)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
-    openstax_utilities (2.0.0)
-      attribeautiful (~> 0.0.7)
+    openstax_api (0.2.0)
+      doorkeeper (>= 0.5)
+      exception_notification (>= 4.0)
+      openstax_utilities (>= 1.0.1)
       rails (>= 3.1)
+      roar (>= 0.12.1)
+      roar-rails (>= 0.1.2)
     poltergeist (1.5.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -328,7 +341,8 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_utilities (~> 2.0.0)
+  openstax_api (~> 0.2.0)
+  openstax_utilities!
   poltergeist
   quiet_assets
   rails (= 3.2.17)

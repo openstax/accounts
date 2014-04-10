@@ -17,7 +17,7 @@ module Oauth
     def create
       @application = Doorkeeper::Application.new(application_params)
       @application.owner = @user
-      AccessPolicy.require_action_allowed!(:create, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
       @application.trusted = params[:application][:trusted] if @user.is_administrator?
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
@@ -27,19 +27,19 @@ module Oauth
         render :new
       end
     end
-    
+
     def show
-      AccessPolicy.require_action_allowed!(:read, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:read, @user, @application)
       super
     end
 
     def edit
-      AccessPolicy.require_action_allowed!(:update, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
       super
     end
 
     def update
-      AccessPolicy.require_action_allowed!(:update, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
       if @application.update_attributes(application_params)
         @application.update_attribute(:trusted, params[:application][:trusted]) if @user.is_administrator?
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash, :applications, :update])
@@ -50,7 +50,7 @@ module Oauth
     end
 
     def destroy
-      AccessPolicy.require_action_allowed!(:destroy, @user, @application)
+      OSU::AccessPolicy.require_action_allowed!(:destroy, @user, @application)
       super
     end
 

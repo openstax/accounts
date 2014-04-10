@@ -15,7 +15,10 @@ gem 'omniauth-google-oauth2'
 gem 'squeel'
 gem 'quiet_assets'
 
-gem 'openstax_utilities', '~> 2.0.0'
+gem 'openstax_utilities', :git => 'https://github.com/Dantemss/openstax_utilities.git',
+                          :ref => '169d4797ea9b575d8cfd02e82c2711898f1b5c4e'
+
+gem 'openstax_api', '~> 0.2.0'
 gem 'lev', '~> 2.0.4'
 
 gem 'jquery-rails'
