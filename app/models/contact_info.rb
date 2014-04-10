@@ -1,6 +1,8 @@
 class ContactInfo < ActiveRecord::Base
   belongs_to :user
 
+  has_many :application_users, foreign_key: :default_contact_info_id
+
   attr_accessible :confirmation_code, :type, :user_id, :value, :verified
 
   validates :value, 

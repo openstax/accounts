@@ -22,7 +22,8 @@ ActiveRecord::Schema.define(:version => 20140408205455) do
   end
 
   add_index "application_users", ["application_id"], :name => "index_application_users_on_application_id"
-  add_index "application_users", ["user_id", "application_id"], :name => "index_application_users_on_user_id_and_application_id"
+  add_index "application_users", ["default_contact_info_id"], :name => "index_application_users_on_default_contact_info_id"
+  add_index "application_users", ["user_id", "application_id"], :name => "index_application_users_on_user_id_and_application_id", :unique => true
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
