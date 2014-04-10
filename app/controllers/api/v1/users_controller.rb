@@ -1,6 +1,4 @@
-class Api::V1::UsersController < Api::V1::OauthBasedApiController
-
-  include OSU::Roar
+class Api::V1::UsersController < OpenStax::Api::V1::OauthBasedApiController
 
   doorkeeper_for :all
 
@@ -129,7 +127,7 @@ class Api::V1::UsersController < Api::V1::OauthBasedApiController
     `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending 
   EOS
   def search
-    AccessPolicy.require_action_allowed!(:search, current_user, User)
+    OSU::AccessPolicy.require_action_allowed!(:search, current_user, User)
     outputs = SearchUsers.call(params[:q], params.slice(:page, :per_page, :order_by)).outputs
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
   end

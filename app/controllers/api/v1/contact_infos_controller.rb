@@ -1,6 +1,4 @@
-class Api::V1::ContactInfosController < Api::V1::OauthBasedApiController
-
-  include OSU::Roar
+class Api::V1::ContactInfosController < OpenStax::Api::V1::OauthBasedApiController
 
   doorkeeper_for :all
 
@@ -57,7 +55,7 @@ class Api::V1::ContactInfosController < Api::V1::OauthBasedApiController
   api :PUT, '/contact_infos/:id/resend_confirmation', 'Restart the contact info confirmation process'
   def resend_confirmation
     contact_info = ContactInfo.find(params[:id])
-    AccessPolicy.require_action_allowed!(:resend_confirmation, current_user, contact_info)
+    OSU::AccessPolicy.require_action_allowed!(:resend_confirmation, current_user, contact_info)
     SendContactInfoConfirmation.call(contact_info)
     head :no_content
   end
