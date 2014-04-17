@@ -42,7 +42,8 @@ def api_request(type, action, doorkeeper_token, args={})
 
   # Add the doorkeeper token info
 
-  request.env['HTTP_AUTHORIZATION'] = "Bearer #{doorkeeper_token.token}"
+  request.env['HTTP_AUTHORIZATION'] = "Bearer #{doorkeeper_token.token}" \
+    if doorkeeper_token
 
   # Select the version of the API based on the spec metadata
 

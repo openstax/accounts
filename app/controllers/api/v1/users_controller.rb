@@ -126,7 +126,9 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
   EOS
   def search
     OSU::AccessPolicy.require_action_allowed!(:search, current_user, User)
-    outputs = SearchUsers.call(params[:q], params.slice(:page, :per_page, :order_by)).outputs
+    options = params.slice(:page, :per_page, :order_by)
+    options[:application_id] = current_user.application.try(:id)
+    outputs = SearchUsers.call(params[:q], options).outputs
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
   end
 
