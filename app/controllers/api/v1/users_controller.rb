@@ -1,6 +1,4 @@
-class Api::V1::UsersController < OpenStax::Api::V1::OauthBasedApiController
-
-  doorkeeper_for :all
+class Api::V1::UsersController < OpenStax::Api::V1::ApiController
 
   resource_description do
     api_versions "v1"
