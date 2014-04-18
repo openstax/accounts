@@ -14,8 +14,8 @@
 ActiveRecord::Schema.define(:version => 20140408205455) do
 
   create_table "application_users", :force => true do |t|
-    t.integer  "application_id"
-    t.integer  "user_id"
+    t.integer  "application_id",          :null => false
+    t.integer  "user_id",                 :null => false
     t.integer  "default_contact_info_id"
     t.datetime "created_at",              :null => false
     t.datetime "updated_at",              :null => false

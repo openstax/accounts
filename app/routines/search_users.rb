@@ -54,7 +54,9 @@ protected
   #   non-admin Users can only get 20 at a time, etc.)
 
   def exec(query, options={})
-    users = User.scoped
+    application_id = options[:application_id]
+    users = application_id.nil? ? User.scoped :
+            Doorkeeper::Application.find(application_id).users
     
     KeywordSearch.search(query) do |with|
 

@@ -4,7 +4,7 @@ class UserAccessPolicy
   def self.action_allowed?(action, requestor, user)
     if requestor.is_human?
       return requestor.is_administrator? || 
-             (requestor.id == user.id && [:read, :update].include?(action))
+             ([:read, :update].include?(action) && requestor.id == user.id)
     else
       # Currently only give trusted applications access, and that access is complete
       return requestor.trusted
