@@ -16,17 +16,6 @@ GIT
       activesupport (>= 3)
       railties (>= 3)
 
-PATH
-  remote: ../openstax_api
-  specs:
-    openstax_api (1.0.0)
-      doorkeeper (>= 0.5)
-      exception_notification (>= 4.0)
-      openstax_utilities (>= 1.0.1)
-      rails (>= 3.1)
-      roar (>= 0.12.1)
-      roar-rails (>= 0.1.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -197,6 +186,13 @@ GEM
     omniauth-twitter (1.0.0)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
+    openstax_api (1.0.1)
+      doorkeeper (>= 0.5)
+      exception_notification (>= 4.0)
+      openstax_utilities (>= 1.0.1)
+      rails (>= 3.1)
+      roar (>= 0.12.1)
+      roar-rails (>= 0.1.2)
     openstax_utilities (2.2.1)
       attribeautiful (>= 0.0.7)
       rails (>= 3.1)
@@ -337,7 +333,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api!
+  openstax_api (~> 1.0.1)
   openstax_utilities (~> 2.2.1)
   poltergeist
   quiet_assets
