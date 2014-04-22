@@ -14,23 +14,23 @@ Apipie.configure do |config|
   config.app_info =              <<-eos
     Access to the API must be achieved through an OAuth flow or by having a user
     that is logged in to the system (with a session, etc).
-    
+
     When communicating with the API, developers must set a header in the HTTP request to specify
     which version of the API they want to use:
-    
+
     <table class='std-list-1' style='width: 80%; margin: 15px auto'>
-    <tr>
-    <th>Header Name</th>
-    <th>Value</th>
-    <th>Version Accessed</th>
-    </tr>
-    <tr>
-    <td><code>'Accept'</code></td>
-    <td><code>'application/vnd.accounts.openstax.v1'</code></td>
-    <td>v1</td>
-    </tr>
+      <tr>
+        <th>Header Name</th>
+        <th>Value</th>
+        <th>Version Accessed</th>
+      </tr>
+      <tr>
+        <td><code>'Accept'</code></td>
+        <td><code>'application/vnd.accounts.openstax.v1'</code></td>
+        <td>v1</td>
+      </tr>
     </table>
-    
+
     Many of the API specifications provide a related JSON schema.  These schemas are based on the
     standard being defined at [http://json-schema.org/](http://json-schema.org/).  A lot of these
     times these schemas aren't overly specific to the actions they are listed under, e.g. they
