@@ -4,8 +4,6 @@ Accounts::Application.routes.draw do
     controllers :applications => 'oauth/applications'
   end
 
-  apipie
-
   mount FinePrint::Engine => "/admin/fine_print"
 
   namespace 'dev' do
@@ -36,24 +34,24 @@ Accounts::Application.routes.draw do
     end
   end
 
-  namespace :api, defaults: {format: 'json'} do
-    # ApiConstraints.default should be set to true for the latest version,
-    # all other versions should not have default set to true
-    scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
-      get '/me' => 'credentials#me'
+  apipie
 
-      resources :users, only: [:show, :update] do
-        get 'search', on: :collection
-        get 'me', on: :collection
-        resources :contact_infos, shallow: true, only: :create
-      end
+  get 'api', to: 'static_page#api'
 
-      resources :contact_infos, only: [:show, :destroy] do
-        put 'resend_confirmation', on: :member
-      end
+  api :v1, :default => true do
+    get '/me' => 'credentials#me'
 
-      resources :application_users, only: [:show, :create, :update, :destroy]
+    resources :users, only: [:show, :update] do
+      get 'search', on: :collection
+      get 'me', on: :collection
+      resources :contact_infos, shallow: true, only: :create
     end
+
+    resources :contact_infos, only: [:show, :destroy] do
+      put 'resend_confirmation', on: :member
+    end
+
+    resources :application_users, only: [:show, :create, :update, :destroy]
   end
 
   get "do/confirm_email"
@@ -81,7 +79,6 @@ Accounts::Application.routes.draw do
 
   get 'status', to: 'utility#status'
 
-  get 'api', to: 'static_page#api'
   match 'copyright', :to => 'static_page#copyright'
 
   root :to => "static_page#home"
