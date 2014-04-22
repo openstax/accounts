@@ -29,6 +29,56 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                                                 application: trusted_application, 
                                                 resource_owner_id: nil }
 
+  describe "index" do
+
+    it "should return no results for an app without users" do
+      api_get :index, trusted_application_token
+
+      expected_response = [].to_json
+
+      expect(response.body).to eq(expected_response)
+    end
+
+    it "should return properly formatted JSON responses" do
+      app_user = ApplicationUser.new
+      app_user.application = trusted_application
+      app_user.user = user_1
+      app_user.save!
+
+      api_get :index, trusted_application_token
+
+      expected_response = [{
+        id: user_1.id,
+        username: user_1.username,
+        contact_infos: []
+      }].to_json
+
+      expect(response.body).to eq(expected_response)
+
+      api_get :index, trusted_application_token, parameters: {last_updated_at: user_1.updated_at.to_i}
+
+      expected_response = [{
+        id: user_1.id,
+        username: user_1.username,
+        contact_infos: []
+      }].to_json
+
+      expect(response.body).to eq(expected_response)
+
+      api_get :index, trusted_application_token, parameters: {last_updated_at: (user_1.updated_at + 3.seconds).to_i}
+
+      expected_response = [].to_json
+
+      expect(response.body).to eq(expected_response)
+    end
+
+    it "should not let a user call index through an app" do
+      api_get :index, user_1_token
+      expect(response.status).to eq(403)
+    end
+
+  end
+
   describe "show" do
 
     it "should let User get his own User" do
