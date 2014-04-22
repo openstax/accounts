@@ -7,6 +7,8 @@ class MarkdownWrapper
 
 protected
 
+  # Removes all leading whitespace until it finds
+  # the first line with no leading whitespace
   def fix_indent(text)
     split_text = text.split(/^([^\s])/, 2)
     return '' if split_text.empty?
