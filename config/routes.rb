@@ -41,7 +41,7 @@ Accounts::Application.routes.draw do
   api :v1, :default => true do
     get '/me' => 'credentials#me'
 
-    resources :users, only: [:show, :update] do
+    resources :users, only: [:index, :show, :update] do
       get 'search', on: :collection
       get 'me', on: :collection
       resources :contact_infos, shallow: true, only: :create

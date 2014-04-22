@@ -17,14 +17,19 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
     Returns the User data for all users that use the current app.
 
     If the last_updated_at param is specified, returns only those
-    users that were updated since then.
+    users that were updated since then. The value of last_updated_at
+    should be equal to the unix timestamp of the highest value of
+    updated_at among all users returned in the previous call to this API.
+
+    * `last_updated_at` &ndash; The unix timestamp of the highest value
+      of updated_at among all users returned in the previous call to this API.
 
     #{json_schema(Api::V1::UsersRepresenter, include: :readable)}
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:index, current_user, User)
-    users = ListUsers.call(current_user.application, params[:last_updated_at])
-    respond_with users, represent_with: Api::V1::UsersRepresenter
+    outputs = ListUsers.call(current_user.application, params[:last_updated_at]).outputs
+    respond_with outputs[:users], represent_with: Api::V1::UsersRepresenter
   end
 
   ###############################################################
