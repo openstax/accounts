@@ -9,6 +9,25 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
   end
 
   ###############################################################
+  # index
+  ###############################################################
+
+  api :GET, '/users', 'Gets all users\' User data (for the current app)'
+  description <<-EOS
+    Returns the User data for all users that use the current app.
+
+    If the last_updated_at param is specified, returns only those
+    users that were updated since then.
+
+    #{json_schema(Api::V1::UsersRepresenter, include: :readable)}
+  EOS
+  def index
+    OSU::AccessPolicy.require_action_allowed!(:index, current_user, User)
+    users = ListUsers.call(current_user.application, params[:last_updated_at])
+    respond_with users, represent_with: Api::V1::UsersRepresenter
+  end
+
+  ###############################################################
   # me
   ###############################################################
 
