@@ -23,7 +23,7 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 # API documentation
-gem 'apipie-rails', '~> 0.1.1'
+gem 'apipie-rails', '~> 0.1.2'
 gem 'maruku'
 
 gem 'jbuilder'

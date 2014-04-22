@@ -72,6 +72,7 @@ module Accounts
       Doorkeeper::ApplicationController.layout "application_body_only"
       Doorkeeper::ApplicationController.helper_method :current_user,
         :current_user=, :signed_in?, :sign_in, :sign_out!
+      Apipie::ApipiesController.helper_method :current_user, :current_user=, :signed_in?, :sign_in, :sign_out!
     end
   end
 end
