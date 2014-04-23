@@ -49,7 +49,7 @@ GEM
     activesupport (3.2.17)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
-    apipie-rails (0.1.1)
+    apipie-rails (0.1.3)
       json
       rails (>= 3.0.10)
     arel (3.0.3)
@@ -151,8 +151,7 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    maruku (0.6.1)
-      syntax (>= 1.0.0)
+    maruku (0.7.1)
     mime-types (1.25.1)
     mini_portile (0.5.2)
     multi_json (1.8.4)
@@ -187,7 +186,7 @@ GEM
     omniauth-twitter (1.0.0)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
-    openstax_api (1.0.0)
+    openstax_api (1.0.1)
       doorkeeper (>= 0.5)
       exception_notification (>= 4.0)
       openstax_utilities (>= 1.0.1)
@@ -273,7 +272,6 @@ GEM
       activerecord (>= 3.0)
       activesupport (>= 3.0)
       polyamorous (~> 0.6.0)
-    syntax (1.0.0)
     test_xml (0.1.6)
       nokogiri (>= 1.3.2)
     therubyracer (0.11.4)
@@ -309,7 +307,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  apipie-rails (~> 0.1.1)
+  apipie-rails (~> 0.1.2)
   bcrypt-ruby (~> 3.0.0)
   bootstrap-sass (~> 3.1.1)
   capybara
@@ -335,7 +333,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api (~> 1.0.0)
+  openstax_api (~> 1.0.1)
   openstax_utilities (~> 2.2.1)
   poltergeist
   quiet_assets

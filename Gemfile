@@ -16,14 +16,14 @@ gem 'squeel'
 gem 'quiet_assets'
 
 gem 'openstax_utilities', '~> 2.2.1'
-gem 'openstax_api', '~> 1.0.0'
+gem 'openstax_api', '~> 1.0.1'
 gem 'lev', '~> 2.0.4'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 # API documentation
-gem 'apipie-rails', '~> 0.1.1'
+gem 'apipie-rails', '~> 0.1.2'
 gem 'maruku'
 
 gem 'jbuilder'
