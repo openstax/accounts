@@ -1,5 +1,5 @@
 class ContactInfo < ActiveRecord::Base
-  belongs_to :user
+  belongs_to :user, touch: true
 
   has_many :application_users, foreign_key: :default_contact_info_id
 
