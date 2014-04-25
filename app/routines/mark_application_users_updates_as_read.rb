@@ -22,7 +22,8 @@ protected
     ApplicationUser.where{id.in ids}.each do |app_user|
       raise SecurityTransgression if app_user.application != application
       last_unread_count = application_users[app_user.id]
-      app_user.unread_updates -= last_unread_count
+      new_unread_count = app_user.unread_updates - last_unread_count
+      app_user.unread_updates = [new_unread_count, 0].max
       app_user.save!
     end
     outputs[:status] = :ok

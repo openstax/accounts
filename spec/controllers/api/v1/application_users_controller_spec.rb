@@ -343,13 +343,41 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       expect(response.body).to eq(expected_response)
 
-      api_get :updated, untrusted_application_token
+      user_2.first_name = 'Bob'
+      user_2.save!
 
-      expect(response.body).to eq(expected_response)
+      expect(app_user.reload.unread_updates).to eq 2
 
       api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id => 1}}
 
       expect(response.status).to eq(200)
+
+      expect(app_user.reload.unread_updates).to eq 1
+
+      api_get :updated, untrusted_application_token
+
+      expected_response = [{
+        id: app_user.id,
+        application_id: untrusted_application.id,
+        user: {
+          id: user_2.id,
+          username: user_2.username,
+          first_name: user_2.first_name,
+          last_name: user_2.last_name,
+          contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+        },
+        unread_updates: 1
+      }].to_json
+
+      expect(response.body).to eq(expected_response)
+
+      expect(app_user.reload.unread_updates).to eq 1
+
+      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id => 1}}
+
+      expect(response.status).to eq(200)
+
+      expect(app_user.reload.unread_updates).to eq 0
 
       api_get :updated, untrusted_application_token
       expected_response = [].to_json
