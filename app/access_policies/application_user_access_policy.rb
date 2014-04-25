@@ -11,7 +11,7 @@ class ApplicationUserAccessPolicy
              ([:create].include?(action) &&
                requestor == application_user.user)
     else
-      return [:index, :updated].include?(action)
+      return [:index, :updates, :updated].include?(action)
     end
   end
 

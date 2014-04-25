@@ -309,10 +309,10 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 #     end
 #   end
 
-  describe "updated" do
+  describe "updates" do
 
     it "should return no results for an app without updated users" do
-      api_get :updated, untrusted_application_token
+      api_get :updates, untrusted_application_token
 
       expected_response = [].to_json
 
@@ -326,7 +326,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       expect(app_user.unread_updates).to eq 1
 
-      api_get :updated, untrusted_application_token
+      api_get :updates, untrusted_application_token
 
       expected_response = [{
         id: app_user.id,
@@ -340,6 +340,10 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
         },
         unread_updates: 1
       }].to_json
+
+      expect(response.body).to eq(expected_response)
+
+      api_get :updates, untrusted_application_token
 
       expect(response.body).to eq(expected_response)
 
@@ -348,13 +352,27 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       expect(app_user.reload.unread_updates).to eq 2
 
-      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id => 1}}
+      api_get :updates, untrusted_application_token
 
-      expect(response.status).to eq(200)
+      expected_response = [{
+        id: app_user.id,
+        application_id: untrusted_application.id,
+        user: {
+          id: user_2.id,
+          username: user_2.username,
+          first_name: user_2.first_name,
+          last_name: user_2.last_name,
+          contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+        },
+        unread_updates: 2
+      }].to_json
 
-      expect(app_user.reload.unread_updates).to eq 1
+      expect(response.body).to eq(expected_response)
 
-      api_get :updated, untrusted_application_token
+      app_user.unread_updates = 1
+      app_user.save!
+
+      api_get :updates, untrusted_application_token
 
       expected_response = [{
         id: app_user.id,
@@ -371,18 +389,57 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       expect(response.body).to eq(expected_response)
 
-      expect(app_user.reload.unread_updates).to eq 1
+      app_user.unread_updates = 0
+      app_user.save!
+
+      api_get :updates, untrusted_application_token
+      expected_response = [].to_json
+
+      expect(response.body).to eq(expected_response)
+    end
+
+    it "should not let a user call it through an app" do
+      api_get :updates, user_1_token
+      expect(response.status).to eq(403)
+    end
+
+  end
+
+  describe "updated" do
+    it "should return properly formatted JSON responses" do
+      user_2.first_name = 'Bo'
+      user_2.save!
+      app_user = user_2.application_users.first
+
+      expect(app_user.unread_updates).to eq 1
+
+      user_2.first_name = 'Bob'
+      user_2.save!
+
+      expect(app_user.reload.unread_updates).to eq 2
+
+      user_2.first_name = 'Bo'
+      user_2.save!
+
+      expect(app_user.reload.unread_updates).to eq 3
+
+      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id => 1}}
+
+      expect(response.status).to eq(200)
+
+      expect(app_user.reload.unread_updates).to eq 2
+
+      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id => 2}}
+
+      expect(response.status).to eq(200)
+
+      expect(app_user.reload.unread_updates).to eq 0
 
       api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id => 1}}
 
       expect(response.status).to eq(200)
 
       expect(app_user.reload.unread_updates).to eq 0
-
-      api_get :updated, untrusted_application_token
-      expected_response = [].to_json
-
-      expect(response.body).to eq(expected_response)
     end
 
     it "should not let an app mark another app's updates as read" do
@@ -392,7 +449,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
 
     it "should not let a user call it through an app" do
-      api_get :updated, user_1_token
+      api_get :updates, user_1_token
       expect(response.status).to eq(403)
       api_put :updated, user_1_token
       expect(response.status).to eq(403)

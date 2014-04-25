@@ -49,7 +49,7 @@ Accounts::Application.routes.draw do
 
     resources :application_users, only: [:index, :create] do
       collection do
-        get 'updated'
+        get 'updates'
         put 'updated'
       end
     end

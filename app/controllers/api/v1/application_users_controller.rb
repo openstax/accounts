@@ -149,37 +149,57 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
 #end
 
   ###############################################################
-  # updated
+  # updates
   ###############################################################
 
-  api :GET, '/application_users/updated',
+  api :GET, '/application_users/updates',
             'Gets all unread updates for ApplicationUsers that use the current app'
-  api :PUT, '/application_users/updated',
-            'Marks ApplicationUser updates as "read"'
   description <<-EOS
-    GET:
     Returns the ApplicationUser data for Users that use the current application and
     have unread updates for the current app.
 
-    PUT:
+    #{json_schema(Api::V1::ApplicationUsersRepresenter, include: :readable)}
+  EOS
+  def updates
+    OSU::AccessPolicy.require_action_allowed!(:updates, current_user, ApplicationUser)
+    outputs = GetUpdatedApplicationUsers.call(current_user.application).outputs
+    respond_with outputs[:application_users], represent_with: Api::V1::ApplicationUsersRepresenter
+  end
+
+  ###############################################################
+  # updated
+  ###############################################################
+
+  api :PUT, '/application_users/updated',
+            'Marks ApplicationUser updates as "read"'
+  description <<-EOS
     Marks ApplicationUser updates as read for the current app.
 
     * `application_users` &ndash; Hash containing info about the ApplicationUsers whose updates were read.
-                          Keys are ApplicationUser id's. Values are the values of "unread_updates"
-                          last received for that specific ApplicationUser.
+                          Keys are ApplicationUser ID's. Values are integers, containing the value of
+                          "unread_updates" that you last received for each specific ApplicationUser.
 
-    #{json_schema(Api::V1::ApplicationUsersRepresenter, include: :readable)}
+    Examples:
+
+    Assume your app called `updates` and got an ApplicationUser with id: 42 and unread_updates: 2
+
+    `application_users = {42: 2}` &ndash; this is the correct call to `updated`, and marks the
+                                  ApplicationUser updates as `read` by setting unread_updates to 0.
+
+    Assume your app called `updates` and got an ApplicationUser with id: 13 and unread_updates: 1
+
+    After you called the API and received your response, the user updated their profile in Accounts,
+    setting unread_updates to 2.
+
+    `application_users = {13: 1}` &ndash; will decrease unread_updates by 1, setting it to 1.
+                                  The user will be sent again the next time you call `updates`,
+                                  so you won't miss the updated information.
   EOS
   def updated
     OSU::AccessPolicy.require_action_allowed!(:updated, current_user, ApplicationUser)
-    if request.get?
-      outputs = GetUpdatedApplicationUsers.call(current_user.application).outputs
-      respond_with outputs[:application_users], represent_with: Api::V1::ApplicationUsersRepresenter
-    elsif request.put?
-      outputs = MarkApplicationUsersUpdatesAsRead.call(current_user.application,
+    outputs = MarkApplicationUsersUpdatesAsRead.call(current_user.application,
                                                        params[:application_users]).outputs
-      head outputs[:status]
-    end
+    head outputs[:status]
   end
 
 end
