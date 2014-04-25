@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   belongs_to :person
   has_many :authentications, :dependent => :destroy
   has_many :application_users, :dependent => :destroy
-  has_many :contact_infos, :dependent => :destroy
+  has_many :contact_infos, :dependent => :destroy, :inverse_of => :user
   has_many :oauth_applications, class_name: 'Doorkeeper::Application',
                                 as: :owner,
                                 dependent: :destroy
@@ -28,6 +28,8 @@ class User < ActiveRecord::Base
   before_create :generate_uuid
 
   before_create :make_first_user_an_admin
+
+  before_save :add_unread_update
 
   def is_anonymous?
     false
@@ -60,6 +62,11 @@ class User < ActiveRecord::Base
 
   def casual_name
     first_name.present? ? first_name : username
+  end
+
+  def add_unread_update
+    # Returns false if the update fails (aborting the save transaction)
+    AddUnreadUpdateForUser.call(self).outputs[:status] == :ok
   end
 
   def can_be_read_by?(user)

@@ -12,6 +12,7 @@ FactoryGirl.define do
                                     :first_name => first_name,
                                     :last_name => last_name,
                                     :full_name => full_name) }
+    unread_updates 0
 
     factory :application_user_with_emails do
       ignore do

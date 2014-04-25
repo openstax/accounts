@@ -27,6 +27,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
   before(:each) do
     FactoryGirl.create :application_user, user: user_2,
                        application: untrusted_application
+    user_2.reload
   end
 
   describe "index" do
@@ -59,7 +60,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
               first_name: user_2.first_name,
               last_name: user_2.last_name,
               contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
-            }
+            },
+            unread_updates: 0
           }
         ]
       }.to_json
@@ -172,7 +174,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
               first_name: user_2.first_name,
               last_name: user_2.last_name,
               contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
-            }
+            },
+            unread_updates: 0
           }
         ]
       }.to_json
@@ -308,8 +311,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
   describe "updated" do
 
-    it "should return no results for an app without users" do
-      api_get :updated_after, trusted_application_token
+    it "should return no results for an app without updated users" do
+      api_get :updated, untrusted_application_token
 
       expected_response = [].to_json
 
@@ -317,47 +320,53 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
 
     it "should return properly formatted JSON responses" do
-      app_user = FactoryGirl.create :application_user,
-                                    application: trusted_application,
-                                    user: user_1
+      user_2.first_name = 'Bo'
+      user_2.save!
+      app_user = user_2.application_users.first
 
-      api_get :updated_after, trusted_application_token
+      expect(app_user.unread_updates).to eq 1
+
+      api_get :updated, untrusted_application_token
 
       expected_response = [{
         id: app_user.id,
-        application_id: trusted_application.id,
+        application_id: untrusted_application.id,
         user: {
-          id: user_1.id,
-          username: user_1.username,
-          contact_infos: []
-        }
+          id: user_2.id,
+          username: user_2.username,
+          first_name: user_2.first_name,
+          last_name: user_2.last_name,
+          contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+        },
+        unread_updates: 1
       }].to_json
 
       expect(response.body).to eq(expected_response)
 
-      api_get :updated_after, trusted_application_token, parameters: {time: (user_1.updated_at - 1.second).to_f}
-
-      expected_response = [{
-        id: app_user.id,
-        application_id: trusted_application.id,
-        user: {
-          id: user_1.id,
-          username: user_1.username,
-          contact_infos: []
-        }
-      }].to_json
+      api_get :updated, untrusted_application_token
 
       expect(response.body).to eq(expected_response)
 
-      api_get :updated_after, trusted_application_token, parameters: {time: user_1.updated_at.to_f}
+      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id => 1}}
 
+      expect(response.status).to eq(200)
+
+      api_get :updated, untrusted_application_token
       expected_response = [].to_json
 
       expect(response.body).to eq(expected_response)
     end
 
-    it "should not let a user call index through an app" do
-      api_get :updated_after, user_1_token
+    it "should not let an app mark another app's updates as read" do
+      app_user = user_2.application_users.first
+      api_put :updated, trusted_application_token, parameters: {application_users: {app_user.id => 1}}
+      expect(response.status).to eq(403)
+    end
+
+    it "should not let a user call it through an app" do
+      api_get :updated, user_1_token
+      expect(response.status).to eq(403)
+      api_put :updated, user_1_token
       expect(response.status).to eq(403)
     end
 

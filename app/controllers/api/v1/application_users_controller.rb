@@ -154,29 +154,31 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
 
   api :GET, '/application_users/updated',
             'Gets all unread updates for ApplicationUsers that use the current app'
-  description <<-EOS
-    Returns the ApplicationUser data for Users that use the current application and
-    have unread updates for the current app.
-
-    #{json_schema(Api::V1::ApplicationUsersRepresenter, include: :readable)}
-  EOS
-
   api :PUT, '/application_users/updated',
             'Marks ApplicationUser updates as "read"'
   description <<-EOS
+    GET:
+    Returns the ApplicationUser data for Users that use the current application and
+    have unread updates for the current app.
+
+    PUT:
     Marks ApplicationUser updates as read for the current app.
 
     * `application_users` &ndash; Hash containing info about the ApplicationUsers whose updates were read.
-                          Keys are ApplicationUser id's. Values are the "unread count" last received for
-                          that specific ApplicationUser.
+                          Keys are ApplicationUser id's. Values are the values of "unread_updates"
+                          last received for that specific ApplicationUser.
+
+    #{json_schema(Api::V1::ApplicationUsersRepresenter, include: :readable)}
+  EOS
   def updated
     OSU::AccessPolicy.require_action_allowed!(:updated, current_user, ApplicationUser)
     if request.get?
-      outputs = ApplicationUsersUpdated.call(current_user.application).outputs
+      outputs = GetUpdatedApplicationUsers.call(current_user.application).outputs
       respond_with outputs[:application_users], represent_with: Api::V1::ApplicationUsersRepresenter
     elsif request.put?
-      outputs = MarkApplicationUsersAsRead.call(params[:application_users]).outputs
-      respond_with outputs[:response]
+      outputs = MarkApplicationUsersUpdatesAsRead.call(current_user.application,
+                                                       params[:application_users]).outputs
+      head outputs[:status]
     end
   end
 

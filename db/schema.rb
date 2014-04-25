@@ -11,18 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140408205455) do
+ActiveRecord::Schema.define(:version => 20140425143754) do
 
   create_table "application_users", :force => true do |t|
-    t.integer  "application_id",          :null => false
-    t.integer  "user_id",                 :null => false
+    t.integer  "application_id",                         :null => false
+    t.integer  "user_id",                                :null => false
     t.integer  "default_contact_info_id"
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
+    t.integer  "unread_updates",          :default => 1, :null => false
   end
 
   add_index "application_users", ["application_id"], :name => "index_application_users_on_application_id"
   add_index "application_users", ["default_contact_info_id"], :name => "index_application_users_on_default_contact_info_id"
+  add_index "application_users", ["unread_updates"], :name => "index_application_users_on_unread_updates"
   add_index "application_users", ["user_id", "application_id"], :name => "index_application_users_on_user_id_and_application_id", :unique => true
 
   create_table "authentications", :force => true do |t|

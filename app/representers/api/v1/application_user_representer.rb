@@ -27,6 +27,14 @@ module Api::V1
                description: "The User associated with this ApplicationUser"
              }
 
+    property :unread_updates,
+             type: Integer,
+             writeable: false,
+             schema_info: {
+               required: true,
+               description: "The number of updates the associated user has received since the application pulled updates from Accounts"
+             }
+
     property :default_contact_info_id,
              type: Integer,
              writeable: true,
