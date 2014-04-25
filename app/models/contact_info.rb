@@ -19,7 +19,6 @@ class ContactInfo < ActiveRecord::Base
   before_save :add_unread_update
 
   def add_unread_update
-    u = user || User.find(user_id)
-    u.add_unread_update
+    user.add_unread_update
   end
 end
