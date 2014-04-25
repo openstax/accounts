@@ -10,7 +10,6 @@ Accounts::Application.routes.draw do
     get "/", to: 'base#index'
 
     namespace 'users' do
-      post 'search'
       post 'create'
       post 'generate'
     end
@@ -29,9 +28,7 @@ Accounts::Application.routes.draw do
     get "raise_not_yet_implemented",    to: 'base#raise_not_yet_implemented'
     get "raise_illegal_argument",       to: 'base#raise_illegal_argument'
 
-    resources :users, only: [:show, :update, :edit] do
-      get 'search', on: :collection
-    end
+    resources :users, only: [:index, :show, :update, :edit]
   end
 
   apipie
@@ -41,8 +38,7 @@ Accounts::Application.routes.draw do
   api :v1, :default => true do
     get '/me' => 'credentials#me'
 
-    resources :users, only: [:index, :show, :update] do
-      get 'search', on: :collection
+    resources :users, only: [:show, :update] do
       get 'me', on: :collection
       resources :contact_infos, shallow: true, only: :create
     end
@@ -51,7 +47,12 @@ Accounts::Application.routes.draw do
       put 'resend_confirmation', on: :member
     end
 
-    resources :application_users, only: [:show, :create, :update, :destroy]
+    resources :application_users, only: [:index, :create] do
+      collection do
+        get 'updated'
+        put 'updated'
+      end
+    end
   end
 
   get "do/confirm_email"

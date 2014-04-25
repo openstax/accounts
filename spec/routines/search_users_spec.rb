@@ -59,14 +59,11 @@ describe SearchUsers do
     expect(outcome).to eq []
   end
 
-  it "should not return any results if the query is empty" do
+  it "should return all results if the query is empty" do
     outcome = SearchUsers.call("").outputs.users.all
-    expect(outcome).to eq []
-  end
-
-  it "should not return any results if there is no usable part of the query" do
-    outcome = SearchUsers.call("blah:foo").outputs.users.all
-    expect(outcome).to eq []
+    [user_4, user_3, user_1, user_2].each do |user|
+      expect(outcome).to include(user)
+    end
   end
 
   it "should match any fields when no prefix given" do

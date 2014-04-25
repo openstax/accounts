@@ -8,7 +8,7 @@ module Admin
       attribute :page, type: Integer
     end
 
-    uses_routine SearchUsers, 
+    uses_routine SearchUsers,
                  as: :search_users,
                  translations: { outputs: {type: :verbatim} }
 

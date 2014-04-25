@@ -3,8 +3,8 @@ module Admin
 
     before_filter :get_user, only: [:show, :edit, :update, :destroy]
 
-    def search
-      handle_with(Admin::UsersSearch,
+    def index
+      handle_with(UsersSearch,
                   complete: lambda { render 'search' })
     end
 
@@ -18,7 +18,7 @@ module Admin
       end
     end
 
-    def destroy      
+    def destroy
       @user.destroy
       redirect_to users_url
     end

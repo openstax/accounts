@@ -2,16 +2,16 @@ class ApplicationUserAccessPolicy
   # Contains all the rules for which requestors can do what with which ApplicationUser objects.
 
   def self.action_allowed?(action, requestor, application_user)
-    # Human users take precedence in AccessPolicy,
-    # so the create check has to be done elsewhere
-    # Currently relying on the ApplicationUser's validations
     if requestor.is_human?
+      # Don't have access to the calling application (if any) in this case,
+      # so we can only check the human user
+      # A human user with a nil application will cause a validation error in
+      # ApplicationUser
       return requestor.is_administrator? ||
-        (requestor == application_user.user &&
-        [:read, :create, :update, :destroy].include?(action))
+             ([:create].include?(action) &&
+               requestor == application_user.user)
     else
-      return (requestor == application_user.application &&
-        [:read, :update, :destroy].include?(action))
+      return [:index, :updated].include?(action)
     end
   end
 
