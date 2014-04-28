@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
 
   def add_unread_update
     # Returns false if the update fails (aborting the save transaction)
-    AddUnreadUpdateForUser.call(self).outputs[:status] == :ok
+    AddUnreadUpdateForUser.call(self).errors.none?
   end
 
   def can_be_read_by?(user)

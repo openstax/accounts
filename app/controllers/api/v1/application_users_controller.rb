@@ -197,9 +197,9 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   EOS
   def updated
     OSU::AccessPolicy.require_action_allowed!(:updated, current_user, ApplicationUser)
-    outputs = MarkApplicationUsersUpdatesAsRead.call(current_user.application,
-                                                       params[:application_users]).outputs
-    head outputs[:status]
+    errors = MarkApplicationUsersUpdatesAsRead.call(current_user.application,
+                                                    params[:application_users]).errors
+    head (errors.any? ? :internal_server_error : :ok)
   end
 
 end

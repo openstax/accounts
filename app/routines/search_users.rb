@@ -117,16 +117,10 @@ protected
 
     end
 
-    # If the query didn't result in any restrictions, either because it was blank
-    # or didn't have a keyword from above with appropriate values, then return no
-    # results.
-
     # TODO: Instead of this, limit the maximum number of users we can return
-    #       Also, make it configurable
     # users = User.where('0=1') if User.scoped == users
 
-    # Pagination -- this is where we could modify the incoming values for page
-    # and per_page, depending on options
+    # Pagination
 
     page = options[:page] || 0
     per_page = options[:per_page] || 20

@@ -11,7 +11,6 @@ class MarkApplicationUsersUpdatesAsRead
 protected
 
   def exec(application, application_users)
-    outputs[:status] = :internal_server_error
     return if application.nil? || application_users.nil?
     # TODO: We can optimize the following queries...
     # But let's not do premature optimization.
@@ -24,9 +23,9 @@ protected
       last_unread_count = application_users[app_user.id]
       new_unread_count = app_user.unread_updates - last_unread_count
       app_user.unread_updates = [new_unread_count, 0].max
-      app_user.save!
+      app_user.save
+      fatal_error(code: :record_invalid) if app_user.errors.any?
     end
-    outputs[:status] = :ok
   end
 
 end

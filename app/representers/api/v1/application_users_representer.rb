@@ -4,6 +4,6 @@ module Api::V1
   module ApplicationUsersRepresenter
     include Representable::JSON::Collection
 
-    items extend: ApplicationUserRepresenter, class: ApplicationUser
+    items class: ApplicationUser, decorator: ApplicationUserRepresenter
   end
 end
