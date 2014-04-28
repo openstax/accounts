@@ -6,26 +6,42 @@ module Api::V1
              type: Integer,
              writeable: false,
              schema_info: {
-               required: true
+               required: true,
+               description: "The primary key of this ApplicationUser"
              }
 
     property :application_id,
              type: Integer,
              writeable: false,
              schema_info: {
-               required: true
+               required: true,
+               description: "The id of the Application associated with this ApplicationUser"
              }
 
-    property :user_id,
+    property :user,
+             class: User,
+             decorator: UserRepresenter,
+             writeable: false,
+             schema_info: {
+               required: true,
+               description: "The User associated with this ApplicationUser"
+             }
+
+    property :unread_updates,
              type: Integer,
              writeable: false,
              schema_info: {
-               required: true
+               required: true,
+               description: "The number of updates the associated user has received since the application pulled updates from Accounts"
              }
 
     property :default_contact_info_id,
              type: Integer,
-             writeable: true
+             writeable: true,
+             schema_info: {
+               required: true,
+               description: "The associated user's default contact info id"
+             }
 
   end
 end

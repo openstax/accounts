@@ -1,4 +1,3 @@
-
 # Routine for searching for users
 # 
 # Caller provides a query and some options.  The query follows the rules of
@@ -13,6 +12,10 @@
 #
 #   :per_page -- the max number of results to return (default: 20)
 #   :page     -- the zero-indexed page to return (default: 0)
+#
+# There is also one option to define the application to be used in the search:
+#
+#   :no_count -- if true, don't return the matching users count
 
 class SearchUsers
 
@@ -54,9 +57,7 @@ protected
   #   non-admin Users can only get 20 at a time, etc.)
 
   def exec(query, options={})
-    application_id = options[:application_id]
-    users = application_id.nil? ? User.scoped :
-            Doorkeeper::Application.find(application_id).users
+    users = User.scoped
     
     KeywordSearch.search(query) do |with|
 
@@ -116,14 +117,10 @@ protected
 
     end
 
-    # If the query didn't result in any restrictions, either because it was blank
-    # or didn't have a keyword from above with appropriate values, then return no
-    # results.
+    # TODO: Instead of this, limit the maximum number of users we can return
+    # users = User.where('0=1') if User.scoped == users
 
-    users = User.where('0=1') if User.scoped == users
-
-    # Pagination -- this is where we could modify the incoming values for page
-    # and per_page, depending on options
+    # Pagination
 
     page = options[:page] || 0
     per_page = options[:per_page] || 20
@@ -170,7 +167,8 @@ protected
     outputs[:per_page] = per_page
     outputs[:page] = page
     outputs[:order_by] = order_bys.join(', ') # convert back to one string
-    outputs[:num_matching_users] = users.except(:offset, :limit, :order).count
+    outputs[:num_matching_users] = users.except(:offset, :limit, :order).count \
+      unless options[:no_count]
   end
 
   # Downcase, and put a wildcard at the end.  For the moment don't exclude characters
@@ -181,19 +179,5 @@ protected
   def prep_usernames(usernames)
     usernames.collect{|username| username.gsub(User::USERNAME_DISCARDED_CHAR_REGEX,'').downcase + '%'}
   end
-
-  # Musings on convenience methods for pulling the fields we can search or return
-  # out of the options hash passed to `exec`.
-  #
-  # class Options
-  #   def initialize(hash)
-  #   end
-  #
-  #   def can_search?(field)
-  #   end
-  #
-  #   def can_return?(field)
-  #   end
-  # end
 
 end

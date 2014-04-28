@@ -1,0 +1,20 @@
+<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<div <%= alert_class_attr(alert) %> <%= alert_data_attr(alert) %> >
+
+  <% unless alert_no_dismiss?(alert) %>
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <% end %>
+
+  <% if alert_intro?(alert) %>
+    <span class="alert-intro">
+      <strong><%= alert_intro(alert) %></strong>
+    </span>
+  <% end %>
+
+  <span class="alert-content">
+    <%= alert_content(alert) %>
+  </span>
+
+</div>

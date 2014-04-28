@@ -6,7 +6,8 @@ module Api::V1
              type: Integer,
              writeable: false,
              schema_info: {
-               description: "The number of users that match the query, can be more than the number returned"
+               description: "The number of Users that match the " +
+                 "query, can be more than the number returned"
              }
 
     property :page,
@@ -27,16 +28,16 @@ module Api::V1
              type: String,
              writeable: false,
              schema_info: {
-               description: "The ordering info, which may be different than what was requested if the request" + 
-                            "was missing defaults or had bad settings."
+               description: "The ordering info, which may be different than " +
+                 "what was requested if the request was missing defaults or " +
+                 "had bad settings."
              }
-
 
     collection :users,
                class: User,
                decorator: UserRepresenter,
                schema_info: {
-                 description: "The users matching the query or a subset thereof when paginating",
+                 description: "The Users associated with the matching the query or a subset thereof when paginating",
                  minItems: 0
                }
 

@@ -6,7 +6,7 @@ describe DoController do
     render_views
 
     before :each do
-      @email = EmailAddress.create(confirmation_code: '1234', verified: false, value: 'user@example.com')
+      @email = FactoryGirl.create(:email_address, confirmation_code: '1234', verified: false, value: 'user@example.com')
     end
 
     it "returns error if no code given" do
