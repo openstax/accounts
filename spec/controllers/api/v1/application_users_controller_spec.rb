@@ -423,21 +423,21 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       expect(app_user.reload.unread_updates).to eq 3
 
-      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id => 1}}
+      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id.to_s => "1"}}
 
-      expect(response.status).to eq(200)
+      expect(response.status).to eq(204)
 
       expect(app_user.reload.unread_updates).to eq 2
 
-      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id => 2}}
+      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id.to_s => "2"}}
 
-      expect(response.status).to eq(200)
+      expect(response.status).to eq(204)
 
       expect(app_user.reload.unread_updates).to eq 0
 
-      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id => 1}}
+      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id.to_s => "1"}}
 
-      expect(response.status).to eq(200)
+      expect(response.status).to eq(204)
 
       expect(app_user.reload.unread_updates).to eq 0
     end

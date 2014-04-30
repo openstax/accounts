@@ -199,7 +199,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:updated, current_user, ApplicationUser)
     errors = MarkApplicationUsersUpdatesAsRead.call(current_user.application,
                                                     params[:application_users]).errors
-    head (errors.any? ? :internal_server_error : :ok)
+    head (errors.any? ? :internal_server_error : :no_content)
   end
 
 end
