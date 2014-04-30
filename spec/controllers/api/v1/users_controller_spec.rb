@@ -31,33 +31,30 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
   describe "show" do
 
-    it "should let User get his own User" do
-      api_get :show, user_1_token, parameters: {id: user_1.id}
+    it "should let a User get his info" do
+      api_get :show, user_1_token
       expect(response.code).to eq('200')
     end
-
-    it "should not let User get another User" do
-      api_get :show, user_1_token, parameters: {id: user_2.id}
-      expect(response.code).to eq('403')
+    
+    it "should not let id be specified" do
+      api_get :show, user_1_token, parameters: {id: admin_user.id}
+      
+      expected_response = {
+        id: user_1.id,
+        username: user_1.username,
+        contact_infos: []
+      }.to_json
+      
+      expect(response.body).to eq(expected_response)
     end
 
-    it "should let an admin get another User" do
-      api_get :show, admin_token, parameters: {id: user_2.id}
-      expect(response.code).to eq('200')
-    end
-
-    it "should let a trusted application get a User" do
+    it "should not let an application get a User without a token" do
       api_get :show, trusted_application_token, parameters: {id: admin_user.id}
-      expect(response.code).to eq('200')
-    end
-
-    it "should not let an untrusted application get a User" do
-      api_get :show, untrusted_application_token, parameters: {id: user_1.id}
       expect(response.code).to eq('403')
     end
 
     it "should return a properly formatted JSON response for low-info user" do
-      api_get :show, user_1_token, parameters: {id: user_1.id}
+      api_get :show, user_1_token
       
       expected_response = {
         id: user_1.id,
@@ -69,7 +66,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
     end
 
     it "should return a properly formatted JSON response for user with name and contact infos" do
-      api_get :show, user_2_token, parameters: {id: user_2.id}
+      api_get :show, user_2_token
       
       expected_response = {
         id: user_2.id,
@@ -84,59 +81,34 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
   end
 
-  describe "me" do
-
-    it "should return a properly formatted JSON response for low-info user" do
-      api_get :me, user_1_token, parameters: {id: user_1.id}
-      
-      expected_response = {
-        id: user_1.id,
-        username: user_1.username,
-        contact_infos: []
-      }.to_json
-
-      expect(response.body).to eq(expected_response)
-    end
-
-    it "should not let a trusted application call me" do
-      api_get :me, trusted_application_token, parameters: {id: user_1.id}
-      expect(response.status).to eq(403)
-    end
-
-  end
-
   describe "update" do
     it "should let User update his own User" do
-      api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, 
-                                     parameters: {id: user_2.id}
+      api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}
       expect(response.code).to eq('204')
       user_2.reload
       expect(user_2.first_name).to eq 'Jerry'
       expect(user_2.last_name).to eq 'Mouse'
     end
 
-    it "should not let a user update another user" do
-      api_put :update, user_1_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, 
-                                     parameters: {id: user_2.id}
+    it "should not let id be specified" do
+      api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, parameters: {id: admin_user.id}
+      expect(response.code).to eq('204')
+      user_2.reload
+      admin_user.reload
+      expect(user_2.first_name).to eq 'Jerry'
+      expect(user_2.last_name).to eq 'Mouse'
+      expect(admin_user.first_name).not_to eq 'Jerry'
+      expect(admin_user.last_name).not_to eq 'Mouse'
+    end
+
+    it "should not let an application update a User without a token" do
+      api_put :update, trusted_application_token, parameters: {id: admin_user.id}
       expect(response.code).to eq('403')
-      user_2.reload
-      expect(user_2.first_name).to eq 'Bob'
-      expect(user_2.last_name).to eq 'Michaels'
-    end
-
-    it "should let a trusted app update a user" do
-      api_put :update, trusted_application_token, 
-                       raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, 
-                       parameters: {id: user_2.id}
-      expect(response.code).to eq('204')
-      user_2.reload
-      expect(user_2.first_name).to eq 'Jerry'
-      expect(user_2.last_name).to eq 'Mouse'
     end
 
     it "should not let a user's contact info be modified through the users API" do
       original_contact_infos = user_2.contact_infos
-      api_put :update, trusted_application_token, 
+      api_put :update, user_2_token,
                        raw_post_data: {
                          first_name: "Jerry", 
                          last_name: "Mouse", 
@@ -146,8 +118,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                              value: "howdy@doody.com"
                            }
                          ]                         
-                       }, 
-                       parameters: {id: user_2.id}
+                       }
       expect(response.code).to eq('204')
       user_2.reload
       expect(user_2.contact_infos).to eq original_contact_infos
