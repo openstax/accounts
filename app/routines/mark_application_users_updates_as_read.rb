@@ -1,7 +1,8 @@
 # Routine for marking all given application users' updates as read
 #
-# Caller provides the current application, plus a hash where the keys are
-# ApplicationUser ID's and the values are the last seen value of unread_updates
+# Caller provides the current application, plus a hash where the keys Strings
+# containing ApplicationUser ID's and the values are Strings containing the last
+# seen value of unread_updates.
 
 class MarkApplicationUsersUpdatesAsRead
 
@@ -20,7 +21,7 @@ protected
     ids = application_users.keys
     ApplicationUser.where{id.in ids}.each do |app_user|
       raise SecurityTransgression if app_user.application != application
-      last_unread_count = application_users[app_user.id]
+      last_unread_count = application_users[app_user.id.to_s].to_i
       new_unread_count = app_user.unread_updates - last_unread_count
       app_user.unread_updates = [new_unread_count, 0].max
       app_user.save
