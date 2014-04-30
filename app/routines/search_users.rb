@@ -117,9 +117,6 @@ protected
 
     end
 
-    # TODO: Instead of this, limit the maximum number of users we can return
-    # users = User.where('0=1') if User.scoped == users
-
     # Pagination
 
     page = options[:page] || 0
