@@ -71,12 +71,12 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     The number of ApplicationUsers to retrieve on the chosen page. (default: 20)
   EOS
   param :order_by, String, desc: <<-EOS
-    A string that indicates how to sort the results of the query.  The string
-    is a comma-separated list of fields with an optional sort direction.  The
-    sort will be performed in the order the fields are given.  
+    A string that indicates how to sort the results of the query. The string
+    is a comma-separated list of fields with an optional sort direction. The
+    sort will be performed in the order the fields are given.
     The fields can be one of #{Api::V1::SearchApplicationUsers::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
     Sort directions can either be `ASC` for an ascending sort, or `DESC` for a
-    descending sort.  If not provided, an ascending sort is assumed. Sort directions
+    descending sort. If not provided, an ascending sort is assumed. Sort directions
     should be separated from the fields by a space. (default: `username ASC`)
 
     Example:
