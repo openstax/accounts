@@ -35,35 +35,6 @@ protected
   SORT_ASCENDING = 'ASC'
   SORT_DESCENDING = 'DESC'
 
-  # TODO increase the security of this search algorithm:
-  # 
-  #   For certain users we might want to restrict the fields that can be searched 
-  #   as well as the fields that are returned.  For example, we probably don't want 
-  #   to return email address information to an OpenStax SPA in a client's browser, 
-  #   but we'd be ok returning email addresses directly to an OpenStax server.
-  #
-  #   I favor an approach where no permissions are granted by default -- where the
-  #   requesting code has to explicitly say that the search routine can search by
-  #   such and such fields and return such and such other fields.  That way it protects
-  #   us from accidentally using more fields than we should.
-  #
-  #   For restriction what fields we return we can use a "select" clause on our query.
-  #   This works for fields in User, but what about restricting access to associated
-  #   ContactInfos?  Ideally we'd be able to prevent other code from being able to send
-  #   this info back to the requestor.  Maybe this logic has to go outside of this class
-  #   (like in the API representer or view code).
-  #
-  #   We should prohibit Users from searching by username or name if they don't provide
-  #   enough characters (so as to discourage them from querying all Users or from 
-  #   querying all Users whose username starts with 'a', then 'b', then 'c' and so on).
-  #   What to do if a first name is "V" or "JP" -- hard to make this restriction here.
-  #   Another option might be to limit the number of results for less priviledged 
-  #   requestors so they can't query the whole User table.
-  #
-  #   Maybe we also want to have a default per_page value?  Also, different allowed
-  #   max per_page values for different levels of user (e.g. applications can do whatever,
-  #   non-admin Users can only get 20 at a time, etc.)
-
   def exec(query, options={})
     users = User.scoped
     
