@@ -1,19 +1,27 @@
 # Routine for searching for users
-# 
+#
 # Caller provides a query and some options.  The query follows the rules of
-# https://github.com/bruce/keyword_search, e.g.:
+# https://github.com/bruce/keyword_search , e.g.:
 #
 #   "username:jps,richb" --> returns the "jps" and "richb" users
-#   "name:John" --> returns Users with first, last, or full name starting with "John"
+#   "name:John" --> returns Users with first, last, or full name
+#                   starting with "John"
 #
 # Query terms can be combined, e.g. "username:jp first_name:john"
 #
 # There are currently two options to control query pagination:
 #
-#   :per_page -- the max number of results to return (default: 20)
+#   :per_page -- the max number of results to return per page (default: 20)
 #   :page     -- the zero-indexed page to return (default: 0)
 #
-# There is also one option to define the application to be used in the search:
+# There is also an option to control the ordering:
+#
+#   :order_by -- array containing a field names and sort orders
+#                (default: ['username', SORT_ASCENDING])
+#
+# Finally, you can also tell the routine not to count the matching users.
+# This will save you a database query if you intend to further modify the
+# ActiveRecord::Relation returned
 #
 #   :no_count -- if true, don't return the matching users count
 
