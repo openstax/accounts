@@ -4,12 +4,21 @@ class Api::V1::ContactInfosController < OpenStax::Api::V1::ApiController
     api_versions "v1"
     short_description 'Represents a piece of contact information.'
     description <<-EOS
-      All actions in this controller require that the ContactInfo in question belong to the current user, who is determined from the Oauth token.
+      All actions in this controller require that the ContactInfo in
+      question belong to the current user, who is determined from the
+      Oauth token.
 
       ContactInfos belong to users.
       They represent email addresses, phone numbers, etc.
 
-      ContactInfos contain only 1 String field: value.
+      ContactInfos contain 2 String fields: type and value.
+
+      Type specifies the kind of contact info, e.g. 'EmailAddress'.
+      Value is the actual contact information, e.g. 'user@example.com'
+
+      ContactInfos also contain a boolean field: verified.
+      This field records whether or not this piece of contact info
+      has been verified, e.g. by sending a verification email.
     EOS
   end
 
