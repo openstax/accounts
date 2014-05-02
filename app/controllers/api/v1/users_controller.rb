@@ -25,7 +25,7 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
   description <<-EOS
     Returns the current user's data.
 
-    #{json_schema(Api::V1::UserRepresenter, include: :readable)}            
+    #{json_schema(Api::V1::UserRepresenter, include: :readable)}
   EOS
   def show
     OSU::AccessPolicy.require_action_allowed!(:read, current_user,
@@ -45,7 +45,7 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
     but cannot be updated through this method. To update these
     nested properties, use their REST API methods.
 
-    #{json_schema(Api::V1::UserRepresenter, include: [:writeable])}            
+    #{json_schema(Api::V1::UserRepresenter, include: [:writeable])}
   EOS
   def update
     raise SecurityTransgression unless current_user.human_user

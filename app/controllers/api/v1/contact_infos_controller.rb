@@ -21,7 +21,7 @@ class Api::V1::ContactInfosController < OpenStax::Api::V1::ApiController
   description <<-EOS
     Shows the specified ContactInfo.
 
-    #{json_schema(Api::V1::ContactInfoRepresenter, include: :readable)}            
+    #{json_schema(Api::V1::ContactInfoRepresenter, include: :readable)}
   EOS
   def show
     standard_read(ContactInfo, params[:id])
@@ -37,7 +37,7 @@ class Api::V1::ContactInfosController < OpenStax::Api::V1::ApiController
     The verification process will be started when this call
     successfully completes.
 
-    #{json_schema(Api::V1::ContactInfoRepresenter, include: [:writeable])}            
+    #{json_schema(Api::V1::ContactInfoRepresenter, include: [:writeable])}
   EOS
   def create
     standard_nested_create(ContactInfo, :user, current_user.human_user.id)
