@@ -12,9 +12,8 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
       Some additional user information can be found in associations, such as
       email addresses in ContactInfos and the password hash in Identity.
 
-      Users have the following attributes:
-      String: username, first_name, last_name, full_name, title
-      Boolean: is_administrator
+      Users have the following String attributes:
+      username, first_name, last_name, full_name, title
     EOS
   end
 
