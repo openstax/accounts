@@ -40,9 +40,9 @@ describe Api::V1::ContactInfosController, :type => :api, :version => :v1 do
       expect(user_1.contact_infos.first.verified).to be_false
     end
 
-    it "should let a trusted app create a contact info for a user" do
+    it "should let an app create a contact info for a user" do
       expect {
-        api_post :create, trusted_application_token, raw_post_data: new_email, parameters: { user_id: user_1.id }
+        api_post :create, user_1_token, raw_post_data: new_email
       }.to change{user_1.contact_infos(true).count}.from(0).to(1)
     end
 

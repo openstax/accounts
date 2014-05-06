@@ -4,10 +4,15 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     api_versions "v1"
     short_description 'Records which users interact with which applications, as well the users'' preferences for each app.'
     description <<-EOS
-      ApplicationUser records which users have interacted in the past with what OpenStax Accounts applications.
-      This information is used to push updates to the user's info to all applications that know that user.
-      User preferences for each app are also recorded in ApplicationUser.
-      Current preferences include default_contact_info_id, the id of the user's default contact info object to be used for that particular application.'
+      All actions in this controller operate only on ApplicationUsers that
+      belong to the current application, as determined from the Oauth token.
+
+      ApplicationUser records which users have registered for which OpenStax Accounts applications.
+      This information is used to filter search results and control application access to user information.
+
+      User preferences for each app that are used by Accounts are also recorded in ApplicationUser.
+      Current preferences include default_contact_info_id, the id of the user's default
+      contact info object to be used for each particular application.'
     EOS
   end
 
@@ -15,7 +20,8 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   # index
   ###############################################################
 
-  api :GET, '/application_users', 'Return a set of ApplicationUsers matching query terms'
+  api :GET, '/application_users',
+            'Returns a set of ApplicationUsers matching query terms'
   description <<-EOS
     Accepts a query string along with options and returns a JSON representation
     of the matching ApplicationUsers.  Some User data may be filtered out depending on the
@@ -41,7 +47,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
                  will be discarded. (uses wildcard matching)
     * `first_name` &ndash; Matches Users' first names, case insensitive. (uses wildcard matching)
     * `last_name` &ndash; Matches Users' last names, case insensitive. (uses wildcard matching)
-    * `name` &ndash; Matches Users' first, last, or full names, case insenstive. (uses wildcard matching)
+    * `name` &ndash; Matches Users' first, last, or full names, case insensitive. (uses wildcard matching)
     * `id` &ndash; Matches Users' IDs exactly.
     * `email` &ndash; Matches Users' emails exactly.
 
@@ -65,12 +71,12 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     The number of ApplicationUsers to retrieve on the chosen page. (default: 20)
   EOS
   param :order_by, String, desc: <<-EOS
-    A string that indicates how to sort the results of the query.  The string
-    is a comma-separated list of fields with an optional sort direction.  The
-    sort will be performed in the order the fields are given.  
+    A string that indicates how to sort the results of the query. The string
+    is a comma-separated list of fields with an optional sort direction. The
+    sort will be performed in the order the fields are given.
     The fields can be one of #{Api::V1::SearchApplicationUsers::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
     Sort directions can either be `ASC` for an ascending sort, or `DESC` for a
-    descending sort.  If not provided, an ascending sort is assumed. Sort directions
+    descending sort. If not provided, an ascending sort is assumed. Sort directions
     should be separated from the fields by a space. (default: `username ASC`)
 
     Example:
@@ -103,9 +109,10 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   # create
   ###############################################################
 
-  api :POST, '/application_users/', 'Creates an ApplicationUser based on the OAuth access token.'
+  api :POST, '/application_users/',
+             'Registers the current user as a user of the current application.'
   description <<-EOS
-    Can only be called by an Application representing a User.
+    Can only be called by an application using an access token for a user.
     The Application and User in question are determined from the OAuth access token.
     Creates an ApplicationUser for the given Application/User pair.
 
@@ -153,10 +160,10 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   ###############################################################
 
   api :GET, '/application_users/updates',
-            'Gets all unread updates for ApplicationUsers that use the current app'
+            'Gets all ApplicationUsers with unread updates for the current app.'
   description <<-EOS
-    Returns the ApplicationUser data for Users that use the current application and
-    have unread updates for the current app.
+    Can only be called by an application through the client credentials flow.
+    Returns all ApplicationUsers for the current application that have unread updates.
 
     #{json_schema(Api::V1::ApplicationUsersRepresenter, include: :readable)}
   EOS
@@ -173,7 +180,8 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   api :PUT, '/application_users/updated',
             'Marks ApplicationUser updates as "read"'
   description <<-EOS
-    Marks ApplicationUser updates as read for the current app.
+    Can only be called by an application through the client credentials flow.
+    Marks ApplicationUser updates as read for the current application.
 
     * `application_users` &ndash; Hash containing info about the ApplicationUsers whose updates were read.
                           Keys are ApplicationUser ID's. Values are integers, containing the value of

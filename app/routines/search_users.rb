@@ -1,19 +1,27 @@
 # Routine for searching for users
-# 
+#
 # Caller provides a query and some options.  The query follows the rules of
-# https://github.com/bruce/keyword_search, e.g.:
+# https://github.com/bruce/keyword_search , e.g.:
 #
 #   "username:jps,richb" --> returns the "jps" and "richb" users
-#   "name:John" --> returns Users with first, last, or full name starting with "John"
+#   "name:John" --> returns Users with first, last, or full name
+#                   starting with "John"
 #
 # Query terms can be combined, e.g. "username:jp first_name:john"
 #
 # There are currently two options to control query pagination:
 #
-#   :per_page -- the max number of results to return (default: 20)
+#   :per_page -- the max number of results to return per page (default: 20)
 #   :page     -- the zero-indexed page to return (default: 0)
 #
-# There is also one option to define the application to be used in the search:
+# There is also an option to control the ordering:
+#
+#   :order_by -- comma-separated list of fields to sort by, with an optional
+#                space-separated sort direction (default: "username ASC")
+#
+# Finally, you can also tell the routine not to count the matching users.
+# This will save you a database query if you intend to further modify the
+# ActiveRecord::Relation returned
 #
 #   :no_count -- if true, don't return the matching users count
 
@@ -26,35 +34,6 @@ protected
   SORTABLE_FIELDS = ['username', 'first_name', 'last_name', 'id']
   SORT_ASCENDING = 'ASC'
   SORT_DESCENDING = 'DESC'
-
-  # TODO increase the security of this search algorithm:
-  # 
-  #   For certain users we might want to restrict the fields that can be searched 
-  #   as well as the fields that are returned.  For example, we probably don't want 
-  #   to return email address information to an OpenStax SPA in a client's browser, 
-  #   but we'd be ok returning email addresses directly to an OpenStax server.
-  #
-  #   I favor an approach where no permissions are granted by default -- where the
-  #   requesting code has to explicitly say that the search routine can search by
-  #   such and such fields and return such and such other fields.  That way it protects
-  #   us from accidentally using more fields than we should.
-  #
-  #   For restriction what fields we return we can use a "select" clause on our query.
-  #   This works for fields in User, but what about restricting access to associated
-  #   ContactInfos?  Ideally we'd be able to prevent other code from being able to send
-  #   this info back to the requestor.  Maybe this logic has to go outside of this class
-  #   (like in the API representer or view code).
-  #
-  #   We should prohibit Users from searching by username or name if they don't provide
-  #   enough characters (so as to discourage them from querying all Users or from 
-  #   querying all Users whose username starts with 'a', then 'b', then 'c' and so on).
-  #   What to do if a first name is "V" or "JP" -- hard to make this restriction here.
-  #   Another option might be to limit the number of results for less priviledged 
-  #   requestors so they can't query the whole User table.
-  #
-  #   Maybe we also want to have a default per_page value?  Also, different allowed
-  #   max per_page values for different levels of user (e.g. applications can do whatever,
-  #   non-admin Users can only get 20 at a time, etc.)
 
   def exec(query, options={})
     users = User.scoped
@@ -116,9 +95,6 @@ protected
       end
 
     end
-
-    # TODO: Instead of this, limit the maximum number of users we can return
-    # users = User.where('0=1') if User.scoped == users
 
     # Pagination
 

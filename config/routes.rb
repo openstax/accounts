@@ -36,14 +36,9 @@ Accounts::Application.routes.draw do
   get 'api', to: 'static_page#api'
 
   api :v1, :default => true do
-    get '/me' => 'credentials#me'
+    resource :user, only: [:show, :update]
 
-    resources :users, only: [:show, :update] do
-      get 'me', on: :collection
-      resources :contact_infos, shallow: true, only: :create
-    end
-
-    resources :contact_infos, only: [:show, :destroy] do
+    resources :contact_infos, only: [:show, :create, :destroy] do
       put 'resend_confirmation', on: :member
     end
 
