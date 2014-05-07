@@ -29,6 +29,68 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                                                 application: trusted_application, 
                                                 resource_owner_id: nil }
 
+
+  let!(:billy_users) {
+    (0..45).to_a.collect{|ii|
+      FactoryGirl.create :user,
+                         first_name: "Billy#{ii.to_s.rjust(2, '0')}",
+                         last_name: "Fred_#{(45-ii).to_s.rjust(2,'0')}",
+                         username: "billy_#{ii.to_s.rjust(2, '0')}"
+    }
+  }
+
+  let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
+  let!(:bob_jones) { FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
+  let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
+
+  describe "index" do
+
+    it "returns a single result well" do
+      api_get :index, trusted_application_token, parameters: {q: 'first_name:bob last_name:Michaels'}
+      expect(response.code).to eq('200')
+
+      expected_response = {
+        num_matching_users: 1,
+        page: 0,
+        per_page: 20,
+        order_by: 'username ASC',
+        users: [
+          {
+            id: user_2.id,
+            username: user_2.username,
+            first_name: user_2.first_name,
+            last_name: user_2.last_name
+          }
+        ]
+      }.to_json
+
+      expect(response.body).to eq(expected_response)
+    end
+
+    it "should allow sort by multiple fields in different directions" do
+      api_get :index, trusted_application_token, parameters: {q: 'username:foo', order_by: "first_name, last_name DESC"}
+
+      outcome = JSON.parse(response.body)
+
+      expect(outcome["users"].length).to eq 3
+      expect(outcome["users"][0]["username"]).to eq "foo_bj"
+      expect(outcome["users"][1]["username"]).to eq "foo_bb"
+      expect(outcome["users"][2]["username"]).to eq "foo_tj"
+      expect(outcome["order_by"]).to eq "first_name ASC, last_name DESC"
+    end
+
+    it "should return no results if the maximum number of results is exceeded" do
+      api_get :index, trusted_application_token, parameters: {q: ''}
+      expect(response.code).to eq('200')
+
+      outcome = JSON.parse(response.body)
+
+      expect(outcome["users"].length).to eq 0
+      expect(outcome["num_matching_users"]).to eq 56
+    end
+
+  end
+
   describe "show" do
 
     it "should let a User get his info" do
@@ -41,8 +103,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       
       expected_response = {
         id: user_1.id,
-        username: user_1.username,
-        contact_infos: []
+        username: user_1.username
       }.to_json
       
       expect(response.body).to eq(expected_response)
@@ -58,22 +119,20 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       
       expected_response = {
         id: user_1.id,
-        username: user_1.username,
-        contact_infos: []
+        username: user_1.username
       }.to_json
 
       expect(response.body).to eq(expected_response)
     end
 
-    it "should return a properly formatted JSON response for user with name and contact infos" do
+    it "should return a properly formatted JSON response for user with name" do
       api_get :show, user_2_token
       
       expected_response = {
         id: user_2.id,
         username: user_2.username,
         first_name: user_2.first_name,
-        last_name: user_2.last_name,
-        contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+        last_name: user_2.last_name
       }.to_json
 
       expect(response.body).to eq(expected_response)

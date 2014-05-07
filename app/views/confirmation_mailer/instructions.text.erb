@@ -2,6 +2,6 @@ Hi <%= @email_address.user.casual_name %>,
 
 Someone just added '<%= @email_address.value %>' to an OpenStax account.  If this was you, please follow the link below to confirm that you own this account.
 
-<%= do_confirm_email_url(code: @email_address.confirmation_code) %>
+<%= confirm_email_url(code: @email_address.confirmation_code) %>
 
 <%= render :partial => 'shared/email_closing' %>

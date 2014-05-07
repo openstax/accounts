@@ -16,7 +16,7 @@ gem 'squeel'
 gem 'quiet_assets'
 
 gem 'openstax_utilities', '~> 2.2.1'
-gem 'openstax_api', '~> 1.0.1'
+gem 'openstax_api', '~> 1.0.4'
 gem 'lev', '~> 2.0.4'
 
 gem 'jquery-rails'

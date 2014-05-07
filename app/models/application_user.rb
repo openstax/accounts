@@ -1,6 +1,7 @@
 class ApplicationUser < ActiveRecord::Base
-  belongs_to :application, class_name: 'Doorkeeper::Application'
-  belongs_to :user
+  belongs_to :application, class_name: 'Doorkeeper::Application',
+                           inverse_of: :application_users
+  belongs_to :user, inverse_of: :application_users
   belongs_to :default_contact_info, class_name: 'ContactInfo'
   
   attr_accessible :default_contact_info

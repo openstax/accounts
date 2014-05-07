@@ -46,8 +46,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
-            last_name: user_2.last_name,
-            contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+            last_name: user_2.last_name
           }
         ],
         application_users: [
@@ -58,8 +57,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
               id: user_2.id,
               username: user_2.username,
               first_name: user_2.first_name,
-              last_name: user_2.last_name,
-              contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+              last_name: user_2.last_name
             },
             unread_updates: 0
           }
@@ -160,8 +158,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
-            last_name: user_2.last_name,
-            contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+            last_name: user_2.last_name
           }
         ],
         application_users: [
@@ -172,8 +169,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
               id: user_2.id,
               username: user_2.username,
               first_name: user_2.first_name,
-              last_name: user_2.last_name,
-              contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+              last_name: user_2.last_name
             },
             unread_updates: 0
           }
@@ -183,22 +179,6 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       expect(response.body).to eq(expected_response)
     end
 
-  end
-
-  describe "create" do
-    it "should let an app create an application_user for a user" do
-      expect {
-        api_post :create, user_1_token
-      }.to change{user_1.application_users(true).count}.from(0).to(1)
-      expect(response.code).to eq('201')
-    end
-    
-    it "should not let an app create an application_user by itself" do
-      expect {
-        api_post :create, untrusted_application_token
-      }.not_to change{untrusted_application.application_users(true).count}
-      expect(response.code).to eq('403')
-    end
   end
 
 #   describe "show" do
@@ -335,8 +315,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
           id: user_2.id,
           username: user_2.username,
           first_name: user_2.first_name,
-          last_name: user_2.last_name,
-          contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+          last_name: user_2.last_name
         },
         unread_updates: 1
       }].to_json
@@ -361,8 +340,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
           id: user_2.id,
           username: user_2.username,
           first_name: user_2.first_name,
-          last_name: user_2.last_name,
-          contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+          last_name: user_2.last_name
         },
         unread_updates: 2
       }].to_json
@@ -382,7 +360,6 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
           username: user_2.username,
           first_name: user_2.first_name,
           last_name: user_2.last_name,
-          contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
         },
         unread_updates: 1
       }].to_json

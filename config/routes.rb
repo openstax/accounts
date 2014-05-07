@@ -1,13 +1,15 @@
 Accounts::Application.routes.draw do
 
+  root :to => 'static_pages#home'
+
   use_doorkeeper do
     controllers :applications => 'oauth/applications'
   end
 
-  mount FinePrint::Engine => "/admin/fine_print"
+  mount FinePrint::Engine => '/admin/fine_print'
 
   namespace 'dev' do
-    get "/", to: 'base#index'
+    get '/', to: 'base#index'
 
     namespace 'users' do
       post 'create'
@@ -18,68 +20,89 @@ Accounts::Application.routes.draw do
   namespace 'admin' do
     get '/', to: 'base#index'
 
-    put "cron",                         to: 'base#cron', :as => "cron"
-    get "raise_security_transgression", to: 'base#raise_security_transgression'
-    get "raise_record_not_found",       to: 'base#raise_record_not_found'
-    get "raise_routing_error",          to: 'base#raise_routing_error'
-    get "raise_unknown_controller",     to: 'base#raise_unknown_controller'
-    get "raise_unknown_action",         to: 'base#raise_unknown_action'
-    get "raise_missing_template",       to: 'base#raise_missing_template'
-    get "raise_not_yet_implemented",    to: 'base#raise_not_yet_implemented'
-    get "raise_illegal_argument",       to: 'base#raise_illegal_argument'
+    put 'cron',                         to: 'base#cron', :as => 'cron'
+    get 'raise_security_transgression', to: 'base#raise_security_transgression'
+    get 'raise_record_not_found',       to: 'base#raise_record_not_found'
+    get 'raise_routing_error',          to: 'base#raise_routing_error'
+    get 'raise_unknown_controller',     to: 'base#raise_unknown_controller'
+    get 'raise_unknown_action',         to: 'base#raise_unknown_action'
+    get 'raise_missing_template',       to: 'base#raise_missing_template'
+    get 'raise_not_yet_implemented',    to: 'base#raise_not_yet_implemented'
+    get 'raise_illegal_argument',       to: 'base#raise_illegal_argument'
 
-    resources :users, only: [:index, :show, :update, :edit]
+    resources :users, only: [:index, :show, :update, :edit] do
+      post 'become', on: :member
+    end
   end
 
   apipie
 
-  get 'api', to: 'static_page#api'
-
   api :v1, :default => true do
+    resources :users, only: [:index]
+
     resource :user, only: [:show, :update]
 
     resources :contact_infos, only: [:show, :create, :destroy] do
       put 'resend_confirmation', on: :member
     end
 
-    resources :application_users, only: [:index, :create] do
+    resources :application_users, only: [:index] do
       collection do
         get 'updates'
         put 'updated'
       end
     end
+
+    # resource :application_user, only: [:show, :update, :destroy]
   end
 
-  get "do/confirm_email"
+  # Resources
 
-  match '/auth/:provider/callback', to: 'sessions#authenticated' #omniauth route
-  match '/signup', to: 'identities#new'
-  
-  match '/login', to: 'sessions#new'
-  match "/auth/failure", to: "sessions#failure"
-  match '/logout', to: 'sessions#destroy'
-  match '/forgot_password', to: 'identities#forgot_password'
-  match '/reset_password', to: 'identities#reset_password'
+  resources :terms, only: [:index, :show] do
+    collection do
+      get 'pose'
+      post 'agree', as: 'agree_to'
+    end
+  end
 
+  # Singular routes
 
-  get 'sessions/return_to_app'
-  match '/i_am_returning', to: 'sessions#i_am_returning'
+  resource :session, only: [], path: '', as: '' do
+    get 'callback', path: 'auth/:provider/callback'
+    post 'callback', path: 'auth/:provider/callback'
+    get 'failure', path: 'auth/failure'
 
-  match 'users/register', to: 'users#register'
-  post 'users/:id/become', to: 'users#become', as: 'become_user'
+    get 'login', to: :new
+    get 'logout', to: :destroy
+    get 'return_to_app'
+    get 'i_am_returning'
 
-  get "terms/:id/show", to: "terms#show", as: "show_terms"
-  get "terms/pose", to: "terms#pose", as: "pose_terms"
-  post "terms/agree", to: "terms#agree", as: "agree_to_terms"
-  get "terms", to: "terms#index"
+    if Rails.env.development?
+      get 'ask_new_or_returning'
+    end
+  end
 
-  get 'status', to: 'utility#status'
+  resource :user, only: [], path: '', as: '' do
+    get 'register'
+    put 'register'
+  end
 
-  match 'copyright', :to => 'static_page#copyright'
+  resource :identity, only: [], path: '', as: '' do
+    get 'signup', to: :new
+    get 'forgot_password'
+    post 'forgot_password'
+    get 'reset_password'
+    post 'reset_password'
+  end
 
-  root :to => "static_page#home"
+  resource :contact_info, only: [], path: '', as: '' do
+    get 'confirm_email'
+  end
 
-  if Rails.env.development?
-    get 'sessions/ask_new_or_returning'
-  end  
+  resource :static_page, only: [], path: '', as: '' do
+    get 'api'
+    get 'copyright'
+    get 'status'
+  end
+
 end

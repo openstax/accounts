@@ -89,7 +89,7 @@ describe SearchUsers do
   context "pagination and sorting" do
 
     let!(:billy_users) {
-      (0..45).to_a.collect{|ii|
+      (0..8).to_a.collect{|ii|
         FactoryGirl.create :user, 
                            first_name: "Billy#{ii.to_s.rjust(2, '0')}",
                            last_name: "Bob_#{(45-ii).to_s.rjust(2,'0')}",
@@ -98,23 +98,18 @@ describe SearchUsers do
     }
 
     it "should return the first page of values by default in default order" do
-      outcome = SearchUsers.call("username:billy").outputs.users.all
-      expect(outcome.length).to eq 20
+      outcome = SearchUsers.call("username:billy", per_page: 5).outputs.users.all
+      expect(outcome.length).to eq 5
       expect(outcome[0]).to eq User.where{username.eq "billy_00"}.first
-      expect(outcome[19]).to eq User.where{username.eq "billy_19"}.first
+      expect(outcome[4]).to eq User.where{username.eq "billy_04"}.first
     end
 
-    it "should return the 2nd page when requested" do
-      outcome = SearchUsers.call("username:billy", page: 1).outputs.users.all
-      expect(outcome.length).to eq 20
-      expect(outcome[0]).to eq User.where{username.eq "billy_20"}.first
-      expect(outcome[19]).to eq User.where{username.eq "billy_39"}.first
-    end
-
-    it "should return the incomplete 3rd page when requested" do
-      outcome = SearchUsers.call("username:billy", page: 2).outputs.users.all
-      expect(outcome.length).to eq 6
-      expect(outcome[5]).to eq User.where{username.eq "billy_45"}.first
+    it "should return the incomplete 2nd page when requested" do
+      outcome = SearchUsers.call("username:billy", page: 1,
+                                                   per_page: 5).outputs.users.all
+      expect(outcome.length).to eq 4
+      expect(outcome[0]).to eq User.where{username.eq "billy_05"}.first
+      expect(outcome[3]).to eq User.where{username.eq "billy_08"}.first
     end
 
   end

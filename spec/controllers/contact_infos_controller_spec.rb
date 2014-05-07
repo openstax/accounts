@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DoController do
+describe ContactInfosController do
 
   describe "GET 'confirm_email'" do
     render_views

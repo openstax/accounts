@@ -1,4 +1,5 @@
 class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
+  #before_filter :get_app_user, :only => [:show, :update, :destroy]
   
   resource_description do
     api_versions "v1"
@@ -25,13 +26,13 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   description <<-EOS
     Accepts a query string along with options and returns a JSON representation
     of the matching ApplicationUsers.  Some User data may be filtered out depending on the
-    caller's status and priviledges in the system.  The schema for the returned
+    caller's status and priviledges in the system. The schema for the returned
     JSON result is shown below.
 
     #{json_schema(Api::V1::ApplicationUserSearchRepresenter, include: :readable)}
   EOS
   # Using route helpers doesn't work in test or production, probably has to do with initialization order
-  example "#{api_example(url_base: 'https://accounts.openstax.org/api/application_users/search', url_end: '?q=username:bob%20name=Jones')}"
+  example "#{api_example(url_base: 'https://accounts.openstax.org/api/application_users', url_end: '?q=username:bob%20name=Jones')}"
   param :q, String, required: true, desc: <<-EOS
     The search query string, built up as a space-separated collection of
     search conditions on different fields.  Each condition is formatted as
@@ -94,65 +95,43 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   # show
   ###############################################################
 
-# TODO: Get application and user from token, like create
-#api :GET, '/application_users/:id', 'Gets the specified ApplicationUser.'
+#api :GET, '/application_user', 'Gets the ApplicationUser for the current user and current app.'
 #description <<-EOS
-#  Gets an ApplicationUser by id.
+#  Can only be called by an application using an access token for a user.
+#  Gets the ApplicationUser for the current user and current app.
 
 #  #{json_schema(Api::V1::ApplicationUserRepresenter, include: :readable)}
 #EOS
 #def show
-#  standard_read(ApplicationUser, params[:id])
+#  standard_read(ApplicationUser, app_user.id)
 #end
-
-  ###############################################################
-  # create
-  ###############################################################
-
-  api :POST, '/application_users/',
-             'Registers the current user as a user of the current application.'
-  description <<-EOS
-    Can only be called by an application using an access token for a user.
-    The Application and User in question are determined from the OAuth access token.
-    Creates an ApplicationUser for the given Application/User pair.
-
-    #{json_schema(Api::V1::ApplicationUserRepresenter, include: [:writeable])}
-  EOS
-  def create
-    # The AccessPolicy cannot enforce that the application is not nil,
-    # but the validation in ApplicationUser should handle this case.
-    standard_create(ApplicationUser) do |app_user|
-      app_user.application = current_user.application
-      app_user.user = current_user.human_user
-    end
-  end
 
   ###############################################################
   # update
   ###############################################################
 
-# TODO: Get application and user from token, like create
-#api :PUT, '/application_users/:id', 'Updates the specified ApplicationUser.'
+#api :PUT, '/application_user', 'Updates the ApplicationUser for the current user and current app.'
 #description <<-EOS
-#  Updates the specified ApplicationUser.
+#  Can only be called by an application using an access token for a user.
+#  Updates the ApplicationUser for the current user and current app.
 
 #  #{json_schema(Api::V1::ApplicationUserRepresenter, include: [:writeable])}
 #EOS
 #def update
-#  standard_update(ApplicationUser, params[:id])
+#  standard_update(ApplicationUser, app_user.id)
 #end
 
   ###############################################################
   # destroy
   ###############################################################
 
-# TODO: Get application and user from token, like create
-#api :DELETE, '/application_users/:id', 'Deletes the specified ApplicationUser.'
+#api :DELETE, '/application_user', 'Deletes the ApplicationUser for the current user and current app.'
 #description <<-EOS
-#  Deletes the specified ApplicationUser.
+#  Can only be called by an application using an access token for a user.
+#  Deletes the ApplicationUser for the current user and current app.
 #EOS
 #def destroy
-#  standard_destroy(ApplicationUser, params[:id])
+#  standard_destroy(ApplicationUser, app_user.id)
 #end
 
   ###############################################################
@@ -208,6 +187,14 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     errors = MarkApplicationUsersUpdatesAsRead.call(current_user.application,
                                                     params[:application_users]).errors
     head (errors.any? ? :internal_server_error : :no_content)
+  end
+
+  protected
+
+  def get_app_user
+    @app_user = current_user.human_user.application_users.where(
+                  :application_id => current_user.application.id
+                ).first
   end
 
 end

@@ -24,6 +24,7 @@
 # ActiveRecord::Relation returned
 #
 #   :no_count -- if true, don't return the matching users count
+#                will also not limit the query by number of users
 
 class SearchUsers
 
@@ -34,6 +35,7 @@ protected
   SORTABLE_FIELDS = ['username', 'first_name', 'last_name', 'id']
   SORT_ASCENDING = 'ASC'
   SORT_DESCENDING = 'DESC'
+  MAX_MATCHING_USERS = 10
 
   def exec(query, options={})
     users = User.scoped
@@ -143,8 +145,15 @@ protected
     outputs[:per_page] = per_page
     outputs[:page] = page
     outputs[:order_by] = order_bys.join(', ') # convert back to one string
-    outputs[:num_matching_users] = users.except(:offset, :limit, :order).count \
-      unless options[:no_count]
+
+    return if options[:no_count]
+
+    outputs[:num_matching_users] = users.except(:offset, :limit, :order).count
+
+    # Return no results if query exceeds maximum allowed number of matches
+    outputs[:users] = User.where('0=1') \
+      if outputs[:num_matching_users] > MAX_MATCHING_USERS
+
   end
 
   # Downcase, and put a wildcard at the end.  For the moment don't exclude characters
