@@ -1,5 +1,5 @@
 class Identity < OmniAuth::Identity::Models::ActiveRecord
-  belongs_to :user
+  belongs_to :user, inverse_of: :identity
   
   validates :password, unless: :password_not_required?,
                        presence: true,
