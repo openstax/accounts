@@ -5,13 +5,14 @@ class FindOrCreateApplicationUser
 
 protected
 
-  def exec(application, user)
-    app_user = application.application_users.where(:user_id => user.id).first
+  def exec(application_id, user_id)
+    app_user = ApplicationUser.where(:application_id => application_id,
+                                     :user_id => user_id).first
     return app_user if app_user
 
     app_user = ApplicationUser.new
-    app_user.application = application
-    app_user.user = user
+    app_user.application_id = application_id
+    app_user.user_id = user_id
     app_user.save!
     app_user
   end

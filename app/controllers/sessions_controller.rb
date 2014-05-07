@@ -13,7 +13,6 @@ class SessionsController < ApplicationController
 
   prepend_before_filter :check_registered, only: [:return_to_app]
   prepend_before_filter :check_password_not_expired, only: [:return_to_app]
-  before_filter :find_or_create_application_user, only: [:return_to_app]
 
   # Put some of this in an authentications controller?
 
@@ -63,13 +62,6 @@ class SessionsController < ApplicationController
       identity.generate_reset_code
       redirect_to reset_password_path(code: identity.reset_code)
     end
-  end
-
-  def find_or_create_application_user
-    app = Doorkeeper::Application.where(uid: session[:application_id]).first
-    return unless app
-
-    FindOrCreateApplicationUser.call(app, current_user)
   end
 
 end
