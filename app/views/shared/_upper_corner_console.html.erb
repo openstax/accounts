@@ -1,10 +1,10 @@
 <div id="upper-corner-console">
 
-  <% if Rails.env.production? %>
-    <%= link_to "Admin Console", main_app.admin_path, remote: true %><br/>
-  <% else %>
+  <% if !Rails.env.production? %>
     Current user: <%= current_user.username %><br/>
     <%= link_to "Dev Console", main_app.admin_path, remote: true %><br/>
+  <% elsif current_user.is_administrator? %>
+    <%= link_to "Admin Console", main_app.admin_path, remote: true %><br/>
   <% end %>
 
   <% clock_is_normally_enabled = @clock_enabled && signed_in? %>
