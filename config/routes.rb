@@ -7,8 +7,6 @@ Accounts::Application.routes.draw do
   mount FinePrint::Engine => "/admin/fine_print"
 
   namespace 'dev' do
-    get "/", to: 'base#index'
-
     namespace 'users' do
       post 'create'
       post 'generate'

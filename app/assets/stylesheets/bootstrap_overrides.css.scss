@@ -42,3 +42,11 @@ a.standard, button.standard, input[type='submit'].standard {
     color: white;
   } 
 }
+
+.dev a {
+  color: $os_orange !important;
+}
+
+.dev a:hover {
+  color: $os_dark_orange !important;
+}
