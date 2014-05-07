@@ -8,7 +8,8 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
       All actions in this controller operate only on ApplicationUsers that
       belong to the current application, as determined from the Oauth token.
 
-      ApplicationUser records which users have registered for which OpenStax Accounts applications.
+      ApplicationUsers are automatically created when an app obtains an access token of any kind for a specific user.
+      They record which users have registered for which OpenStax Accounts applications.
       This information is used to filter search results and control application access to user information.
 
       User preferences for each app that are used by Accounts are also recorded in ApplicationUser.
@@ -35,11 +36,11 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   example "#{api_example(url_base: 'https://accounts.openstax.org/api/application_users', url_end: '?q=username:bob%20name=Jones')}"
   param :q, String, required: true, desc: <<-EOS
     The search query string, built up as a space-separated collection of
-    search conditions on different fields.  Each condition is formatted as
-    "field_name:comma-separated-values".  The resulting list of ApplicationUsers will
-    have Users that match all of the conditions (boolean 'and').  Each condition will produce
+    search conditions on different fields. Each condition is formatted as
+    "field_name:comma-separated-values". The resulting list of ApplicationUsers will
+    have Users that match all of the conditions (boolean 'and'). Each condition will produce
     a list of ApplicationUsers whose Users must match any of the comma-separated-values
-    (boolean 'or').  The fields_names and their characteristics are given below.
+    (boolean 'or'). The fields_names and their characteristics are given below.
     When a field is listed as using wildcard matching, it means that any fields
     that start with a comma-separated-value will be matched.
 
@@ -52,8 +53,8 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     * `id` &ndash; Matches Users' IDs exactly.
     * `email` &ndash; Matches Users' emails exactly.
 
-    You can also add search terms without prefixes, separated by spaces.  These terms  will be searched for
-    in all of the prefix categories.  Any ApplicationUsers with matching Users will be returned.
+    You can also add search terms without prefixes, separated by spaces. These terms  will be searched for
+    in all of the prefix categories. Any ApplicationUsers with matching Users will be returned.
     When combined with prefixed search terms, the final results will contain Users matching any of
     the non-prefixed terms and all of the prefixed terms.
 
@@ -143,6 +144,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   description <<-EOS
     Can only be called by an application through the client credentials flow.
     Returns all ApplicationUsers for the current application that have unread updates.
+    Useful for caching User information.
 
     #{json_schema(Api::V1::ApplicationUsersRepresenter, include: :readable)}
   EOS
@@ -161,6 +163,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   description <<-EOS
     Can only be called by an application through the client credentials flow.
     Marks ApplicationUser updates as read for the current application.
+    Useful for caching User information.
 
     * `application_users` &ndash; Hash containing info about the ApplicationUsers whose updates were read.
                           Keys are ApplicationUser ID's. Values are integers, containing the value of

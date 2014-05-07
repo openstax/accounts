@@ -25,9 +25,10 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
             'Returns a set of Users matching query terms'
   description <<-EOS
     Accepts a query string along with options and returns a JSON representation
-    of the matching Users.  Some User data may be filtered out depending on the
-    caller's status and priviledges in the system. The schema for the returned
-    JSON result is shown below.
+    of the matching Users. The maximum number of results is limited to
+    #{SearchUsers::MAX_MATCHING_USERS}. If this number is exceeded, an empty
+    result set will be returned, although the API will still indicate the number
+    of matching users. The schema for the returned JSON result is shown below.
 
     #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}
   EOS
@@ -36,10 +37,10 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
   param :q, String, required: true, desc: <<-EOS
     The search query string, built up as a space-separated collection of
     search conditions on different fields.  Each condition is formatted as
-    "field_name:comma-separated-values".  The resulting list of ApplicationUsers will
-    have Users that match all of the conditions (boolean 'and').  Each condition will produce
-    a list of ApplicationUsers whose Users must match any of the comma-separated-values
-    (boolean 'or').  The fields_names and their characteristics are given below.
+    "field_name:comma-separated-values".  The resulting list of Users will
+    match all of the conditions (boolean 'and').  Each condition will produce
+    a list of that must match any of the comma-separated-values (boolean 'or').
+    The fields_names and their characteristics are given below.
     When a field is listed as using wildcard matching, it means that any fields
     that start with a comma-separated-value will be matched.
 
@@ -52,10 +53,11 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
     * `id` &ndash; Matches Users' IDs exactly.
     * `email` &ndash; Matches Users' emails exactly.
 
-    You can also add search terms without prefixes, separated by spaces.  These terms  will be searched for
-    in all of the prefix categories.  Any ApplicationUsers with matching Users will be returned.
-    When combined with prefixed search terms, the final results will contain Users matching any of
-    the non-prefixed terms and all of the prefixed terms.
+    You can also add search terms without prefixes, separated by spaces.
+    These terms  will be searched for in all of the prefix categories.
+    Any matching Users will be returned.
+    When combined with prefixed search terms, the final result will contain
+    Users matching any of the non-prefixed terms and all of the prefixed terms.
 
     Examples:
 

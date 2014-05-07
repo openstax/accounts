@@ -20,8 +20,30 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     application: trusted_application,
     resource_owner_id: nil }
 
+  let!(:billy_users) {
+    (0..45).to_a.collect{|ii|
+      user = FactoryGirl.create :user,
+                                first_name: "Billy#{ii.to_s.rjust(2, '0')}",
+                                last_name: "Fred_#{(45-ii).to_s.rjust(2,'0')}",
+                                username: "billy_#{ii.to_s.rjust(2, '0')}"
+      FactoryGirl.create :application_user, user: user,
+                                            application: untrusted_application,
+                                            unread_updates: 0
+    }
+  }
+
+  let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
+  let!(:bob_jones) { FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
+  let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
+
   before(:each) do
     user_2.reload
+
+    [bob_brown, bob_jones, tim_jones].each do |user|
+      FactoryGirl.create :application_user, user: user,
+                         application: untrusted_application,
+                         unread_updates: 0
+    end
   end
 
   describe "index" do
@@ -61,17 +83,6 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       expect(response.body).to eq(expected_response)
     end
 
-    let!(:billy_users) {
-      (0..45).to_a.collect{|ii|
-        user = FactoryGirl.create :user,
-                                  first_name: "Billy#{ii.to_s.rjust(2, '0')}",
-                                  last_name: "Fred_#{(45-ii).to_s.rjust(2,'0')}",
-                                  username: "billy_#{ii.to_s.rjust(2, '0')}"
-        FactoryGirl.create :application_user, user: user,
-                                              application: untrusted_application
-      }
-    }
-
     it "should return the 2nd page when requested" do
       api_get :index, untrusted_application_token, parameters: {q: 'username:billy', page: 1, per_page: 10}
       expect(response.code).to eq('200')
@@ -94,17 +105,6 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       expect(outcome["application_users"].length).to eq 6
       expect(outcome["application_users"][0]["user"]["username"]).to eq "billy_40"
       expect(outcome["application_users"][5]["user"]["username"]).to eq "billy_45"
-    end
-
-    let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
-    let!(:bob_jones) { FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
-    let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
-
-    before(:each) do
-      [bob_brown, bob_jones, tim_jones].each do |user|
-        FactoryGirl.create :application_user, user: user,
-                           application: untrusted_application
-      end
     end
 
     it "should allow sort by multiple fields in different directions" do
@@ -165,7 +165,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
               first_name: user_2.first_name,
               last_name: user_2.last_name
             },
-            unread_updates: 0
+            unread_updates: 1
           }
         ]
       }.to_json
