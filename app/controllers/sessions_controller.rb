@@ -3,8 +3,7 @@
 
 class SessionsController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:new, :callback,
-                                                 :failure, :destroy]
+  skip_before_filter :authenticate_user!, only: [:new, :callback, :failure]
 
   fine_print_skip_signatures :general_terms_of_use,
                              :privacy_policy,

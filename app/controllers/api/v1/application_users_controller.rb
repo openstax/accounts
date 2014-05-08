@@ -9,7 +9,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
       belong to the current application, as determined from the Oauth token.
 
       ApplicationUsers are automatically created when an app obtains an access token of any kind for a specific user.
-      They record which users have registered for which OpenStax Accounts applications.
+      They record which users have authorized (via Oauth) which OpenStax Accounts applications.
       This information is used to filter search results and control application access to user information.
 
       User preferences for each app that are used by Accounts are also recorded in ApplicationUser.
@@ -76,7 +76,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     A string that indicates how to sort the results of the query. The string
     is a comma-separated list of fields with an optional sort direction. The
     sort will be performed in the order the fields are given.
-    The fields can be one of #{Api::V1::SearchApplicationUsers::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
+    The fields can be one of #{SearchUsers::SORTABLE_FIELDS.collect{|sf| "`"+sf+"`"}.join(', ')}.
     Sort directions can either be `ASC` for an ascending sort, or `DESC` for a
     descending sort. If not provided, an ascending sort is assumed. Sort directions
     should be separated from the fields by a space. (default: `username ASC`)

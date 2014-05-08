@@ -51,8 +51,6 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
       expected_response = {
         num_matching_users: 1,
-        page: 0,
-        per_page: 20,
         order_by: 'username ASC',
         users: [
           {
@@ -116,7 +114,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
     it "should return a properly formatted JSON response for low-info user" do
       api_get :show, user_1_token
-      
+
       expected_response = {
         id: user_1.id,
         username: user_1.username
@@ -127,7 +125,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
     it "should return a properly formatted JSON response for user with name" do
       api_get :show, user_2_token
-      
+
       expected_response = {
         id: user_2.id,
         username: user_2.username,

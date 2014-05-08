@@ -16,7 +16,7 @@
                  FinePrint.get_contract(:privacy_policy)]
 
     contract_links = contracts.collect do |contract|
-      link_to contract.title, terms_path(contract), remote: true
+      link_to contract.title, term_path(contract), remote: true
     end 
   %>
   

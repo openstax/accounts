@@ -1,15 +1,15 @@
 class ContactInfosController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:confirm_email]
+  skip_before_filter :authenticate_user!, only: [:confirm]
 
   fine_print_skip_signatures :general_terms_of_use,
                              :privacy_policy,
-                             only: [:confirm_email]
+                             only: [:confirm]
 
-  def confirm_email
-    handle_with(EmailConfirm,
+  def confirm
+    handle_with(ContactInfosConfirm,
                 complete: lambda {
-                  render :confirm_email, status: @handler_result.errors.any? ? 400 : 200
+                  render :confirm, status: @handler_result.errors.any? ? 400 : 200
                 })
   end
 

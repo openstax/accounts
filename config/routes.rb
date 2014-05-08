@@ -96,7 +96,7 @@ Accounts::Application.routes.draw do
   end
 
   resource :contact_info, only: [], path: '', as: '' do
-    get 'confirm_email'
+    get 'confirm'
   end
 
   resource :static_page, only: [], path: '', as: '' do

@@ -9,22 +9,21 @@
 #
 # Query terms can be combined, e.g. "username:jp first_name:john"
 #
-# There are currently two options to control query pagination:
+# By default, the query will return an empty result set if the number of
+# results exceeds MAX_MATCHING_USERS
 #
-#   :per_page -- the max number of results to return per page (default: 20)
-#   :page     -- the zero-indexed page to return (default: 0)
-#
-# There is also an option to control the ordering:
+# There is an option to control the ordering:
 #
 #   :order_by -- comma-separated list of fields to sort by, with an optional
 #                space-separated sort direction (default: "username ASC")
 #
-# Finally, you can also tell the routine not to count the matching users.
-# This will save you a database query if you intend to further modify the
-# ActiveRecord::Relation returned
+# You can also tell the routine to return all matching users
 #
-#   :no_count -- if true, don't return the matching users count
-#                will also not limit the query by number of users
+#   :return_all -- if true, this routine will not limit the query, will not count
+#                  the number of results and will apply pagination;
+#                  all matching users will be returned
+#
+# The `users` output is an ActiveRecord relation
 
 class SearchUsers
 
@@ -38,6 +37,7 @@ protected
   MAX_MATCHING_USERS = 10
 
   def exec(query, options={})
+
     users = User.scoped
     
     KeywordSearch.search(query) do |with|
@@ -98,16 +98,11 @@ protected
 
     end
 
-    # Pagination
+    # Select only distinct records
 
-    page = options[:page] || 0
-    per_page = options[:per_page] || 20
+    users = users.uniq
 
-    users = users.limit(per_page).offset(per_page*page)
-
-    #
     # Ordering
-    #
 
     # Parse the input
     order_bys = (options[:order_by] || 'username').split(',').collect{|ob| ob.strip.split(' ')}
@@ -129,30 +124,28 @@ protected
     # Convert to query style
     order_bys = order_bys.collect{|order_by| "#{order_by[0]} #{order_by[1]}"}
 
-    # Make the ordering call
     order_bys.each do |order_by|
       users = users.order(order_by)
     end
 
-    # Make sure we don't have duplicates (can happen with the joins)
-
-    users = users.uniq
-
     # Translate to routine outputs
 
-    outputs[:users] = users
     outputs[:query] = query
-    outputs[:per_page] = per_page
-    outputs[:page] = page
     outputs[:order_by] = order_bys.join(', ') # convert back to one string
 
-    return if options[:no_count]
+    if options[:return_all]
+      outputs[:users] = users
+      return
+    end
 
-    outputs[:num_matching_users] = users.except(:offset, :limit, :order).count
+    # Count results
 
-    # Return no results if query exceeds maximum allowed number of matches
-    outputs[:users] = User.where('0=1') \
-      if outputs[:num_matching_users] > MAX_MATCHING_USERS
+    outputs[:num_matching_users] = users.count
+
+    # Return no results if maximum number of results is exceeded
+
+    outputs[:users] = (outputs[:num_matching_users] > MAX_MATCHING_USERS) ?
+                        User.where('0=1') : users
 
   end
 

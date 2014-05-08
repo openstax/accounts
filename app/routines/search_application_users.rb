@@ -14,36 +14,42 @@
 #
 #   :per_page -- the max number of results to return (default: 20)
 #   :page     -- the zero-indexed page to return (default: 0)
+#
+# Unlike the User version, the `users` and `application_users` outputs
+# for this routine are arrays, not ActiveRecord relations
 
 class SearchApplicationUsers
   
   lev_routine transaction: :no_transaction
 
-  uses_routine SearchUsers,
+  uses_routine ::SearchUsers,
                as: :search_users,
                translations: { outputs: {type: :verbatim} }
 
   protected
-  
-  SORTABLE_FIELDS = ['username', 'first_name', 'last_name', 'id']
-  SORT_ASCENDING = 'ASC'
-  SORT_DESCENDING = 'DESC'
 
   def exec(application, query, options={})
     return if application.nil?
 
-    options = options.merge({:no_count => true})
+    options = options.merge({:return_all => true})
     run(:search_users, query, options)
 
-    page = outputs[:page]
-    per_page = outputs[:per_page]
-    outputs[:users] = outputs[:users].joins(:application_users)
-                                     .where(:application_users => {:application_id => application.id})
-    users = outputs[:users].limit(nil).offset(nil)
-    app_users = ApplicationUser.where{id.in users.select(:application_users => :id)}
+    per_page = options[:per_page] || 20
+    page = options[:page] || 0
 
-    outputs[:num_matching_users] = users.count
-    outputs[:application_users] = app_users.limit(per_page).offset(per_page*page)
+    users = outputs[:users].joins(:application_users)
+                           .where(:application_users => {
+                                    :application_id => application.id})
+                           .includes(:application_users)
+    num_matching_users = users.count
+    users = users.limit(per_page).offset(per_page*page).to_a
+    application_users = users.collect{|u| u.application_users}.flatten
+
+    outputs[:num_matching_users] = num_matching_users
+    outputs[:per_page] = per_page
+    outputs[:page] = page
+    outputs[:users] = users
+    outputs[:application_users] = application_users
   end
 
 end

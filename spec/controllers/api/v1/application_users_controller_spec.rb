@@ -113,9 +113,14 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       outcome = JSON.parse(response.body)
 
+      expect(outcome["users"].length).to eq 3
+      expect(outcome["users"][0]["username"]).to eq "foo_bj"
+      expect(outcome["users"][1]["username"]).to eq "foo_bb"
+      expect(outcome["users"][2]["username"]).to eq "foo_tj"
+
       expect(outcome["application_users"].length).to eq 3
-      expect(outcome["application_users"][0]["user"]["username"]).to eq "foo_bb"
-      expect(outcome["application_users"][1]["user"]["username"]).to eq "foo_bj"
+      expect(outcome["application_users"][0]["user"]["username"]).to eq "foo_bj"
+      expect(outcome["application_users"][1]["user"]["username"]).to eq "foo_bb"
       expect(outcome["application_users"][2]["user"]["username"]).to eq "foo_tj"
       expect(outcome["order_by"]).to eq "first_name ASC, last_name DESC"
     end
