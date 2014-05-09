@@ -204,6 +204,7 @@ GEM
     polyamorous (0.6.3)
       activerecord (>= 3.0)
     polyglot (0.3.4)
+    public_suffix (1.4.2)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.4.5)
@@ -336,6 +337,7 @@ DEPENDENCIES
   openstax_api (~> 1.0.4)
   openstax_utilities (~> 2.2.1)
   poltergeist
+  public_suffix
   quiet_assets
   rails (= 3.2.17)
   representable!

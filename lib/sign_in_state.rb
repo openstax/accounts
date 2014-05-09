@@ -41,21 +41,13 @@ module SignInState
   end
 
   def authenticate_user!
-    if !signed_in?
-      session[SessionsController.return_url_param] = current_url
-      redirect_to login_path(params.slice(:client_id)), notice: "Please log in."
-    else
-      session.delete(SessionsController.return_url_param)
-    end
+    redirect_to login_path(params.slice(:client_id).merge(SessionsController.return_url_key => current_url)),
+                notice: "Please log in." unless signed_in?
   end
 
   def authenticate_admin!
-    if !current_user.is_administrator?
-      session[SessionsController.return_url_param] = current_url
-      redirect_to login_path(params.slice(:client_id)), notice: "Please log in."
-    else
-      session.delete(SessionsController.return_url_param)
-    end
+    redirect_to login_path(params.slice(:client_id).merge(SessionsController.return_url_key => current_url)),
+                notice: "Please log in." unless current_user.is_administrator?
   end
 
 end

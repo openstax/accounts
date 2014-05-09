@@ -3,7 +3,7 @@
 
 class SessionsController < ApplicationController
 
-  include Interceptor
+  interceptor
 
   skip_before_filter :authenticate_user!, only: [:new, :callback,
                                                  :failure, :destroy]
@@ -33,7 +33,7 @@ class SessionsController < ApplicationController
 
   def destroy
     sign_out!
-    redirect_to request.referer || root_url, notice: "Signed out!"
+    redirect_back notice: "Signed out!"
   end
 
   def ask_new_or_returning
@@ -47,6 +47,11 @@ class SessionsController < ApplicationController
     flash.now[:alert] = params[:message] == 'invalid_credentials' ?
                           'Incorrect username or password' : params[:message]
     render 'new'
+  end
+
+  # Override for backwards compatibility, as apps can call login/logout directly
+  def self.return_url_key
+    :return_to
   end
 
 end

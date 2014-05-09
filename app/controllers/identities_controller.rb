@@ -1,6 +1,6 @@
 class IdentitiesController < ApplicationController
 
-  include Interceptor
+  interceptor
 
   intercept_block = lambda {
     next unless current_user.identity.try(:should_reset_password?)
@@ -42,17 +42,13 @@ class IdentitiesController < ApplicationController
 
   def reset_password
     if !current_user.is_anonymous? && current_user.identity.should_reset_password?
-      flash[:alert] = 'Your password has expired.  Please enter a new password.'
+      flash[:alert] = 'Your password has expired. Please enter a new password.'
     end
     handle_with(IdentitiesResetPassword,
                 success: lambda {
                   return if !request.post?
-                  return_to = session.delete(:return_to)
-                  if return_to.present?
-                    redirect_to return_to
-                  else
-                    render :reset_password, status: 200
-                  end
+                  sign_in @handler_result.outputs[:identity].user
+                  redirect_back notice: 'Your password has been reset successfully! You have been signed in automatically.'
                 },
                 failure: lambda {
                   render :reset_password, status: 400

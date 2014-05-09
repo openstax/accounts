@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  include Interceptor
+  interceptor
 
   intercept_block = lambda { register_path if current_user.is_temp? }
 
@@ -14,7 +14,7 @@ class UsersController < ApplicationController
   def register
     if request.put?
       handle_with(UsersRegister,
-                  success: lambda { redirect_to return_from_registration },
+                  success: lambda { redirect_back },
                   failure: lambda {
                     errors = @handler_result.errors.any?
                     render :register, status: errors ? 400 : 200
