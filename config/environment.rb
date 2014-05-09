@@ -2,6 +2,7 @@
 require File.expand_path('../application', __FILE__)
 
 require "sign_in_state"
+require "interceptor"
 require "omniauth/strategies/custom_identity"
 
 DEV_HOST = "localhost:#{DEV_PORT}"

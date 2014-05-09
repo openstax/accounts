@@ -1,5 +1,17 @@
 class IdentitiesController < ApplicationController
 
+  include Interceptor
+
+  intercept_block = lambda {
+    next unless current_user.identity.try(:should_reset_password?)
+    identity = current_user.identity
+    identity.generate_reset_code
+    reset_password_path(code: identity.reset_code)
+  }
+
+  #intercept ::ApplicationController, &intercept_block
+  intercept Doorkeeper::AuthorizationsController, &intercept_block
+
   skip_before_filter :authenticate_user!, only: [:new, :forgot_password,
                                                        :reset_password]
 

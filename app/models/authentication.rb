@@ -3,6 +3,8 @@ class Authentication < ActiveRecord::Base
 
   belongs_to :user
 
+  validates_uniqueness_of :uid, scope: :provider
+
   def self.by_provider_and_uid(provider, uid)
     where(provider: provider).where(uid: uid.to_s).first
   end

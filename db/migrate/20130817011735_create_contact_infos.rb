@@ -6,10 +6,10 @@ class CreateContactInfos < ActiveRecord::Migration
       t.boolean :verified
       t.string :confirmation_code
       t.integer :user_id
-
+      
       t.timestamps
     end
-
+    
     add_index :contact_infos, :user_id, :name => "index_contact_infos_on_user_id"
     add_index :contact_infos, [:value, :user_id, :type], :name => "index_contact_infos_on_value_user_id_type", :unique => true
   end

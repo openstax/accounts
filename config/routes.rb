@@ -66,6 +66,7 @@ Accounts::Application.routes.draw do
   end
 
   # Singular routes
+  # Only for routes with unique names
 
   resource :session, only: [], path: '', as: '' do
     get 'callback', path: 'auth/:provider/callback'
@@ -74,7 +75,6 @@ Accounts::Application.routes.draw do
 
     get 'login', to: :new
     get 'logout', to: :destroy
-    get 'return_to_app'
     get 'i_am_returning'
 
     if Rails.env.development?

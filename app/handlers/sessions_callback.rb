@@ -1,21 +1,28 @@
 
-# Handles omniauth authentication data.
+# Handles the omniauth callback.
 #
 # Callers must supply:
 #   1) a request with an 'omniauth.auth' env that contains values for these keys:
 #        :provider --> the Oauth provider
 #        :uid --> the ID of the user from the Oauth provider
+#
 #   2) a 'user_state' object which has the following methods:
 #        sign_in(user)
 #        sign_out!
 #        signed_in?
 #        current_user
 #
-# In the result object, this handler will return a :next_action, which will
-# be one of: :return_to_app, :ask_which_account, :ask_new_or_returning
+# In the result object, this handler will return a :status, which will be:
 #
+# RETURNING, if the user is a returning user
+# NEW if the user has not registered yet
+# MULTIPLE if the user has multiple accounts with the same email address
 #
-class SessionsAuthenticated 
+class SessionsCallback
+
+  RETURNING_USER = 0
+  NEW_USER = 1
+  MULTIPLE_USERS = 2
 
   include Lev::Handler
 
@@ -39,26 +46,30 @@ protected
     # Get an authentication object for the incoming data, tracking if we have
     # the object didn't yet exist and we had to create it.
 
-    authentication_data = { provider: @auth_data[:provider], uid: @auth_data[:uid]}
+    authentication_data = { provider: @auth_data[:provider],
+                            uid: @auth_data[:uid]}
     authentication = Authentication.where(authentication_data).first
-    
+
     this_authentication_is_new = authentication.nil?
     authentication = Authentication.create(authentication_data) if this_authentication_is_new
 
     authentication_user = authentication.user
 
     if authentication_user.nil?
-      # check for existing users matching auth_data emails
+      # Check for existing users matching auth_data emails
+      # Note: we trust that Google/FB will only give us verified emails.
+      #   true for FB (their API only returns verified emails)
+      #   true for Google (omniauth strategy checks that the emails are verified)
       matching_users = UsersWithEmails.all(@auth_data[:emails])
 
       case matching_users.size
       when 0
       when 1
         authentication_user = matching_users.first
-        run(TransferAuthentications, authentication, authentication_user)  
+        run(TransferAuthentications, authentication, authentication_user)
       else
         # For the moment don't do anything.  Could try to let the user choose
-        # one of these other users to attach to, but that's 
+        # one of these other users to attach to.
       end
     end
 
@@ -67,43 +78,45 @@ protected
       if signed_in?
         if authentication_user.is_temp && current_user.is_temp
           first_user_lives_second_user_dies(current_user, authentication_user)
-          outputs[:next_action] = :ask_new_or_returning
+          status = NEW_USER
         elsif authentication_user.is_temp
           first_user_lives_second_user_dies(current_user, authentication_user)
-          outputs[:next_action] = :return_to_app
+          status = RETURNING_USER
         elsif current_user.is_temp
           first_user_lives_second_user_dies(authentication_user, current_user)
-          outputs[:next_action] = :return_to_app
+          status = RETURNING_USER
         else
           if current_user.id == authentication_user.id
-            outputs[:next_action] = :return_to_app
+            status = RETURNING_USER
           else
-            outputs[:next_action] = :ask_which_account
+            status = MULTIPLE_USERS
           end 
         end
       else
         sign_in(authentication_user)
-        outputs[:next_action] = (authentication_user.is_temp ? :ask_new_or_returning : :return_to_app)
+        status = (authentication_user.is_temp ? NEW_USER : RETURNING_USER)
       end
       
     else
 
       if signed_in?
         run(TransferAuthentications, authentication, current_user)
-        outputs[:next_action] = (current_user.is_temp ? :ask_new_or_returning : :return_to_app)
+        status = (current_user.is_temp ? NEW_USER : RETURNING_USER)
       else
         outcome = run(CreateUserFromOmniauth, @auth_data)
         new_user = outcome.outputs[:user]
         run(TransferAuthentications, authentication, new_user)
         sign_in(new_user)
-        outputs[:next_action] = :ask_new_or_returning
+        status = NEW_USER
       end
 
-    end 
+    end
 
     if this_authentication_is_new
       run(TransferOmniauthInformation, @auth_data, current_user)
     end
+
+    outputs[:status] = status
 
   end
 
