@@ -103,7 +103,7 @@ describe IdentitiesController do
       it 'changes password if everything validates' do
         post('reset_password', code: identity.reset_code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
-        expect(response).to be_successful
+        expect(response).to redirect_to(root_url)
         expect(response.body).not_to include('Reset password link is invalid')
         expect(response.body).to include('Your password has been reset successfully!')
         expect(response.body).not_to include('Set Password')
@@ -112,9 +112,9 @@ describe IdentitiesController do
         expect(identity.authenticate('password!')).to be_true
       end
 
-      it 'redirects to return_to if it is set' do
+      it 'redirects to identities_password_reset_intercepted_url if it is set' do
         IdentitiesController.any_instance.stub(:session).and_return(
-          {return_to: 'http://www.example.com/'})
+          {identities_password_reset_intercepted_url: 'http://www.example.com/'})
         post('reset_password', code: identity.reset_code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
 

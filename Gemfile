@@ -40,10 +40,10 @@ gem "keyword_search", "~> 1.5.0"
 
 gem 'fine_print', '~> 1.4.1'
 
-gem 'public_suffix'
+gem 'action_interceptor', :path => '../action_interceptor'
 
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
+  gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'therubyracer', :platforms => :ruby
   gem 'uglifier', '>= 1.0.3'

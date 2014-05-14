@@ -75,6 +75,7 @@ feature 'User logs in as a local user', js: true do
       fill_in 'Password Again', with: 'Passw0rd!'
       click_button 'Set Password'
 
+puts page.body
       expect(page.current_url).to match(app_callback_url)
     end
   end

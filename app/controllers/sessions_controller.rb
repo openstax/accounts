@@ -3,10 +3,15 @@
 
 class SessionsController < ApplicationController
 
-  interceptor
+  acts_as_interceptor
+
+  add_interceptor(:authentication, :intercepted_url_key => :return_to)
 
   skip_before_filter :authenticate_user!, only: [:new, :callback,
                                                  :failure, :destroy]
+
+  skip_intercept_with IdentitiesController, :password_reset
+  skip_intercept_with UsersController, :registration
 
   fine_print_skip_signatures :general_terms_of_use,
                              :privacy_policy,
@@ -23,7 +28,8 @@ class SessionsController < ApplicationController
     handle_with(SessionsCallback, user_state: self,
       complete: lambda {
         case @handler_result.outputs[:status]
-        when SessionsCallback::RETURNING_USER then redirect_back
+        when SessionsCallback::RETURNING_USER
+          redirect_from :authentication
         when SessionsCallback::NEW_USER       then render :ask_new_or_returning
         when SessionsCallback::MULTIPLE_USERS then render :ask_which_account
         else                                  raise IllegalState
@@ -33,7 +39,7 @@ class SessionsController < ApplicationController
 
   def destroy
     sign_out!
-    redirect_back notice: "Signed out!"
+    redirect_from :authentication, notice: "Signed out!"
   end
 
   def ask_new_or_returning
@@ -47,11 +53,6 @@ class SessionsController < ApplicationController
     flash.now[:alert] = params[:message] == 'invalid_credentials' ?
                           'Incorrect username or password' : params[:message]
     render 'new'
-  end
-
-  # Override for backwards compatibility, as apps can call login/logout directly
-  def self.return_url_key
-    :return_to
   end
 
 end

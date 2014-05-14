@@ -16,3 +16,8 @@ Doorkeeper::AccessToken.class_eval do
     FindOrCreateApplicationUser.call(application_id, resource_owner_id)
   end
 end
+
+ActiveSupport.on_load :doorkeeper_application_controller do
+  intercept_with UsersController, :registration
+  intercept_with IdentitiesController, :password_reset
+end

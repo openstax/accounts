@@ -8,6 +8,9 @@ class ApplicationController < ActionController::Base
 
   before_filter :authenticate_user!
 
+  intercept_with UsersController, :registration
+  intercept_with IdentitiesController, :password_reset
+
   fine_print_get_signatures :general_terms_of_use,
                             :privacy_policy
 
