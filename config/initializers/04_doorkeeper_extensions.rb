@@ -17,7 +17,8 @@ Doorkeeper::AccessToken.class_eval do
   end
 end
 
-ActiveSupport.on_load :doorkeeper_application_controller do
-  intercept_with UsersController, :registration
-  intercept_with IdentitiesController, :password_reset
+ActiveSupport.on_load :action_controller do
+  interception :registration, :expired_password
+
+  fine_print_get_signatures :general_terms_of_use, :privacy_policy
 end

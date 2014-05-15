@@ -41,13 +41,20 @@ module SignInState
   end
 
   def authenticate_user!
-    redirect_to login_path(params.slice(:client_id).merge(:return_to => current_url)),
-                notice: "Please log in." unless signed_in?
+    interception_exec do
+      redirect_to login_path(params.slice(:client_id)),
+                  notice: "Please log in." unless signed_in?
+    end
   end
 
   def authenticate_admin!
-    redirect_to login_path(params.slice(:client_id).merge(:return_to => current_url)),
-                notice: "Please log in." unless current_user.is_administrator?
+    interception_exec do
+      redirect_to login_path(params.slice(:client_id)),
+                  notice: "Please log in." unless current_user.is_administrator?
+    end
   end
+
+  # Doorkeeper controllers define authenticate_admin!, so we need another name
+  alias_method :admin_authentication!, :authenticate_admin!
 
 end

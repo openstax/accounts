@@ -112,9 +112,9 @@ describe IdentitiesController do
         expect(identity.authenticate('password!')).to be_true
       end
 
-      it 'redirects to identities_password_reset_intercepted_url if it is set' do
+      it 'redirects to return_to if it is set' do
         IdentitiesController.any_instance.stub(:session).and_return(
-          {identities_password_reset_intercepted_url: 'http://www.example.com/'})
+          {return_to: 'http://www.example.com/'})
         post('reset_password', code: identity.reset_code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
 

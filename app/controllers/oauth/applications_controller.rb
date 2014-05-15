@@ -1,11 +1,5 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
-    skip_before_filter :authenticate_admin!
-    before_filter :authenticate_user!
-
-    fine_print_get_signatures :general_terms_of_use,
-                              :privacy_policy
-
     before_filter :get_user
     before_filter :get_application, :only => [:show, :edit, :update, :destroy]
 

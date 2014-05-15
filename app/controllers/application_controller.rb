@@ -7,12 +7,9 @@ class ApplicationController < ActionController::Base
   include Lev::HandleWith
 
   before_filter :authenticate_user!
+  interception :registration, :expired_password
 
-  intercept_with UsersController, :registration
-  intercept_with IdentitiesController, :password_reset
-
-  fine_print_get_signatures :general_terms_of_use,
-                            :privacy_policy
+  fine_print_get_signatures :general_terms_of_use, :privacy_policy
 
   layout 'application_body_only'
 
