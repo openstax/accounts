@@ -14,15 +14,11 @@
 #
 # In the result object, this handler will return a :status, which will be:
 #
-# RETURNING, if the user is a returning user
-# NEW if the user has not registered yet
-# MULTIPLE if the user has multiple accounts with the same email address
+# :returning_user, if the user is a returning user
+# :new_user if the user has not registered yet
+# :multiple_accounts if the user has 2+ accounts with the same email address
 #
 class SessionsCallback
-
-  RETURNING_USER = 0
-  NEW_USER = 1
-  MULTIPLE_USERS = 2
 
   include Lev::Handler
 
@@ -57,9 +53,11 @@ protected
 
     if authentication_user.nil?
       # Check for existing users matching auth_data emails
-      # Note: we trust that Google/FB will only give us verified emails.
-      #   true for FB (their API only returns verified emails)
+      # Note: we trust that Google/FB/Twitter omniauth strategies
+      #       will only give us verified emails.
       #   true for Google (omniauth strategy checks that the emails are verified)
+      #   true for FB (their API only returns verified emails)
+      #   true for Twitter (they don't return any emails)
       matching_users = UsersWithEmails.all(@auth_data[:emails])
 
       case matching_users.size
@@ -78,36 +76,36 @@ protected
       if signed_in?
         if authentication_user.is_temp && current_user.is_temp
           first_user_lives_second_user_dies(current_user, authentication_user)
-          status = NEW_USER
+          status = :new_user
         elsif authentication_user.is_temp
           first_user_lives_second_user_dies(current_user, authentication_user)
-          status = RETURNING_USER
+          status = :returning_user
         elsif current_user.is_temp
           first_user_lives_second_user_dies(authentication_user, current_user)
-          status = RETURNING_USER
+          status = :returning_user
         else
           if current_user.id == authentication_user.id
-            status = RETURNING_USER
+            status = :returning_user
           else
-            status = MULTIPLE_USERS
-          end 
+          status = :multiple_accounts
+          end
         end
       else
         sign_in(authentication_user)
-        status = (authentication_user.is_temp ? NEW_USER : RETURNING_USER)
+        status = (authentication_user.is_temp ? :new_user : :returning_user)
       end
       
     else
 
       if signed_in?
         run(TransferAuthentications, authentication, current_user)
-        status = (current_user.is_temp ? NEW_USER : RETURNING_USER)
+        status = (current_user.is_temp ? :new_user : :returning_user)
       else
         outcome = run(CreateUserFromOmniauth, @auth_data)
         new_user = outcome.outputs[:user]
         run(TransferAuthentications, authentication, new_user)
         sign_in(new_user)
-        status = NEW_USER
+        status = :new_user
       end
 
     end

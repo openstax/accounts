@@ -29,8 +29,7 @@ protected
       fatal_error(code: 'No verified email addresses found for this user',
                   offending_inputs: [:email_address])
     end
-    user.identity.generate_reset_code
     ResetPasswordMailer.reset_password(email_addresses.first,
-                                       user.identity.reset_code).deliver
+                                       user.identity.generate_reset_code).deliver
   end
 end

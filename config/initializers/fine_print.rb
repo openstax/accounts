@@ -6,13 +6,14 @@ FinePrint.configure do |config|
   # Proc called with a controller as argument.
   # Returns the current user.
   # Default: lambda { |controller| controller.current_user }
-  config.current_user_proc = lambda { |controller| controller.current_user }
+  config.current_user_proc = lambda { |c| c.respond_to?(:current_human_user) ? \
+                                          c.current_human_user : c.current_user }
 
   # Proc called with a user as argument.
   # Returns true iif the user is an admin.
   # Admins can create and edit agreements and terminate accepted agreements.
   # Default: lambda { |user| false } (no admins)
-  config.user_admin_proc = lambda { |user| user.is_administrator? }
+  config.user_admin_proc = lambda { |user| user && user.is_administrator? }
 
   # Proc called with a user as argument
   # Returns true iif the argument the user is allowed to sign a contract.
@@ -22,7 +23,7 @@ FinePrint.configure do |config|
   # redirect the user, so it's up to the developer to make sure that unsigned users
   # can't access pages that should require a signed contract to use.
   # Default: lambda { |user| !!user }
-  config.user_can_sign_proc = lambda { |user| !user.is_anonymous? }
+  config.user_can_sign_proc = lambda { |user| user && !user.is_anonymous? }
 
 
 

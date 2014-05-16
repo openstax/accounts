@@ -6,11 +6,17 @@ Doorkeeper.configure do
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
     authenticate_user!
+    current_user
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
+
+  # We allow all users of Accounts to manage applications
+  # We subclassed Doorkeeper::ApplicationsController to provide better
+  # control over access to the Doorkeeper::Application pages
   admin_authenticator do
-    admin_authentication!
+    authenticate_user!
+    current_user
   end
 
   # Authorization Code expiration time (default 10 minutes).

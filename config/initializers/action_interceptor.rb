@@ -18,13 +18,27 @@ ActionInterceptor.configure do
   #
   #          (Conditionally redirects to :my_action in UsersController)
   interceptor :registration do
-    redirect_to register_path if current_user.is_temp?
+    user = (request.format == :json) ? current_human_user : current_user
+    return unless user.try(:is_temp?)
+
+    respond_to do |format|
+      format.html { redirect_to register_path }
+      format.json { head(:forbidden) }
+    end
   end
 
   interceptor :expired_password do
-    return unless current_user.identity.try(:should_reset_password?)
-    identity = current_user.identity
-    identity.generate_reset_code
-    redirect_to reset_password_path(code: identity.reset_code)
+    user = (request.format == :json) ? current_human_user : current_user
+    identity = user.try(:identity)
+    return unless identity.try(:should_reset_password?)
+
+    code_hash = {code: identity.generate_reset_code}
+
+    respond_to do |format|
+      format.html { redirect_to reset_password_path(code_hash) }
+      # If we do this check (we probably should), then clients of the API
+      # must handle this response and redirect the user appropriately.
+      format.json { render :json => {expired_password: code_hash}.to_json }
+    end
   end
 end

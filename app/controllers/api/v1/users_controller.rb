@@ -87,7 +87,7 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
     `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending 
   EOS
   def index
-    OSU::AccessPolicy.require_action_allowed!(:index, current_user, User)
+    OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, User)
     options = params.slice(:page, :per_page, :order_by)
     outputs = SearchUsers.call(params[:q], options).outputs
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
@@ -104,9 +104,9 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}
   EOS
   def show
-    OSU::AccessPolicy.require_action_allowed!(:read, current_user,
-                                              current_user.human_user)
-    respond_with current_user.human_user
+    OSU::AccessPolicy.require_action_allowed!(:read, current_api_user,
+                                              current_human_user)
+    respond_with current_human_user
   end
 
   ###############################################################
@@ -124,8 +124,8 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::UserRepresenter, include: [:writeable])}
   EOS
   def update
-    raise SecurityTransgression unless current_user.human_user
-    standard_update(User, current_user.human_user.id)
+    raise SecurityTransgression unless current_human_user
+    standard_update(User, current_human_user.id)
   end
 
 end

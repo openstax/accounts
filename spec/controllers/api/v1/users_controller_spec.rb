@@ -4,11 +4,11 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
   let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
   let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }
-  let!(:user_1)          { FactoryGirl.create :user }
-  let!(:user_2)          { FactoryGirl.create :user_with_emails, first_name: 'Bob', last_name: 'Michaels' }
-  let!(:admin_user)      { FactoryGirl.create :user, :admin }
+  let!(:user_1)          { FactoryGirl.create :user, :terms_agreed }
+  let!(:user_2)          { FactoryGirl.create :user_with_emails, :terms_agreed, first_name: 'Bob', last_name: 'Michaels' }
+  let!(:admin_user)      { FactoryGirl.create :user, :terms_agreed, :admin }
 
-  let!(:user_1_token)    { FactoryGirl.create :doorkeeper_access_token, 
+  let!(:user_1_token)    { FactoryGirl.create :doorkeeper_access_token,
                                               application: untrusted_application, 
                                               resource_owner_id: user_1.id }
 
@@ -108,8 +108,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
     end
 
     it "should not let an application get a User without a token" do
-      api_get :show, trusted_application_token, parameters: {id: admin_user.id}
-      expect(response.code).to eq('403')
+      expect {api_get :show, trusted_application_token, parameters: {id: admin_user.id}}.to raise_error(SecurityTransgression)
     end
 
     it "should return a properly formatted JSON response for low-info user" do
@@ -159,8 +158,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
     end
 
     it "should not let an application update a User without a token" do
-      api_put :update, trusted_application_token, parameters: {id: admin_user.id}
-      expect(response.code).to eq('403')
+      expect{api_put :update, trusted_application_token, parameters: {id: admin_user.id}}.to raise_error(SecurityTransgression)
     end
 
     it "should not let a user's contact info be modified through the users API" do

@@ -17,7 +17,7 @@ module Oauth
 
 
     it "should redirect users that haven't signed contracts" do
-      controller.current_user = user2
+      controller.sign_in user2
       get :index
       expect(response.code).to eq('302')
       expect(assigns :applications).to be_nil
@@ -50,7 +50,7 @@ module Oauth
     end
 
     it "should let a user get the list of his applications" do
-      controller.current_user = user
+      controller.sign_in user
       get :index
       expect(response.code).to eq('200')
       expect(assigns :applications).to include(untrusted_application_user)
@@ -62,7 +62,7 @@ module Oauth
     end
 
     it "should let an admin get the list of all applications" do
-      controller.current_user = admin
+      controller.sign_in admin
       get :index
       expect(response.code).to eq('200')
       expect(assigns :applications).to include(untrusted_application_user)
@@ -74,7 +74,7 @@ module Oauth
     end
 
     it "should let a user get his own application" do
-      controller.current_user = user
+      controller.sign_in user
       get :show, id: untrusted_application_user.id
       expect(response.code).to eq('200')
       expect(assigns(:application).name).to eq(untrusted_application_user.name)
@@ -83,12 +83,12 @@ module Oauth
     end
 
     it "should not let a user get someone else's application" do
-      controller.current_user = user
+      controller.sign_in user
       expect{get :show, id: untrusted_application_admin.id}.to raise_error(SecurityTransgression)
     end
 
     it "should let an admin get someone else's application" do
-      controller.current_user = admin
+      controller.sign_in admin
       get :show, id: untrusted_application_user.id
       expect(response.code).to eq('200')
       expect(assigns(:application).name).to eq(untrusted_application_user.name)
@@ -97,13 +97,13 @@ module Oauth
     end
 
     it "should let a user get new" do
-      controller.current_user = user
+      controller.sign_in user
       get :new
       expect(response.code).to eq('200')
     end
 
     it "should let a user create an untrusted application" do
-      controller.current_user = user
+      controller.sign_in user
       post :create, :application => {name: 'Some app',
                                      redirect_uri: 'http://www.example.com',
                                      trusted: true}
@@ -114,7 +114,7 @@ module Oauth
     end
 
     it "should let an admin create a trusted application" do
-      controller.current_user = admin
+      controller.sign_in admin
       post :create, :application => {name: 'Some app',
                                      redirect_uri: 'http://www.example.com',
                                      trusted: true}
@@ -125,7 +125,7 @@ module Oauth
     end
 
     it "should let an admin create a trusted application" do
-      controller.current_user = admin
+      controller.sign_in admin
       post :create, :application => {name: 'Some app',
                                      redirect_uri: 'http://www.example.com',
                                      trusted: true}
@@ -136,7 +136,7 @@ module Oauth
     end
 
     it "should let a user edit his own application" do
-      controller.current_user = user
+      controller.sign_in user
       get :edit, id: untrusted_application_user.id
       expect(response.code).to eq('200')
       expect(assigns(:application).name).to eq(untrusted_application_user.name)
@@ -145,12 +145,12 @@ module Oauth
     end
 
     it "should not let a user edit someone else's application" do
-      controller.current_user = user
+      controller.sign_in user
       expect{get :edit, id: untrusted_application_admin.id}.to raise_error(SecurityTransgression)
     end
 
     it "should let an admin edit someone else's application" do
-      controller.current_user = admin
+      controller.sign_in admin
       get :edit, id: untrusted_application_user.id
       expect(response.code).to eq('200')
       expect(assigns(:application).name).to eq(untrusted_application_user.name)
@@ -159,7 +159,7 @@ module Oauth
     end
 
     it "should let a user update his own untrusted application" do
-      controller.current_user = user
+      controller.sign_in user
       post :update, id: untrusted_application_user.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
       expect(response.code).to eq('302')
       expect(assigns(:application).name).to eq('Some other name')
@@ -168,12 +168,12 @@ module Oauth
     end
 
     it "should not let a user update someone else's application" do
-      controller.current_user = user
+      controller.sign_in user
       expect{post :update, id: untrusted_application_admin.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}}.to raise_error(SecurityTransgression)
     end
 
     it "should let an admin update someone else's application" do
-      controller.current_user = admin
+      controller.sign_in admin
       post :update, id: untrusted_application_user.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
       expect(response.code).to eq('302')
       expect(assigns(:application).name).to eq('Some other name')
@@ -182,19 +182,19 @@ module Oauth
     end
 
     it "should let a user destroy his own application" do
-      controller.current_user = user
+      controller.sign_in user
       delete :destroy, id: untrusted_application_user.id
       expect(response.code).to eq('302')
       expect(assigns(:application).destroyed?).to eq(true)
     end
 
     it "should not let a user destroy someone else's application" do
-      controller.current_user = user
+      controller.sign_in user
       expect{delete :destroy, id: untrusted_application_admin.id}.to raise_error(SecurityTransgression)
     end
 
     it "should let an admin destroy someone else's application" do
-      controller.current_user = admin
+      controller.sign_in admin
       delete :destroy, id: untrusted_application_user.id
       expect(response.code).to eq('302')
       expect(assigns(:application).destroyed?).to eq(true)

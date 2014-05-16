@@ -423,8 +423,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
     it "should not let an app mark another app's updates as read" do
       app_user = user_2.application_users.first
-      api_put :updated, trusted_application_token, parameters: {application_users: {app_user.id => 1}}
-      expect(response.status).to eq(403)
+      expect{api_put :updated, trusted_application_token, parameters: {application_users: {app_user.id => 1}}}.to(
+          raise_error(SecurityTransgression))
     end
 
     it "should not let a user call it through an app" do

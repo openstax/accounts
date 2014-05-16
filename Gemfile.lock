@@ -16,16 +16,12 @@ GIT
       activesupport (>= 3)
       railties (>= 3)
 
-PATH
-  remote: ../action_interceptor
-  specs:
-    action_interceptor (0.0.1)
-      public_suffix (>= 0.9.1)
-      rails (>= 3.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
+    action_interceptor (0.0.3)
+      public_suffix (>= 0.9.1)
+      rails (>= 3.1)
     actionmailer (3.2.17)
       actionpack (= 3.2.17)
       mail (~> 2.5.4)
@@ -193,7 +189,7 @@ GEM
     omniauth-twitter (1.0.0)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
-    openstax_api (1.0.4)
+    openstax_api (2.0.0)
       doorkeeper (>= 0.5)
       exception_notification (>= 4.0)
       openstax_utilities (>= 1.0.1)
@@ -315,7 +311,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  action_interceptor!
+  action_interceptor (~> 0.0.3)
   apipie-rails (~> 0.1.2)
   bcrypt-ruby (~> 3.0.0)
   bootstrap-sass (~> 3.1.1)
@@ -342,7 +338,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api (~> 1.0.4)
+  openstax_api (~> 2.0.0)
   openstax_utilities (~> 2.2.1)
   poltergeist
   quiet_assets

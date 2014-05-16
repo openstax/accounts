@@ -16,9 +16,3 @@ Doorkeeper::AccessToken.class_eval do
     FindOrCreateApplicationUser.call(application_id, resource_owner_id)
   end
 end
-
-ActiveSupport.on_load :action_controller do
-  interception :registration, :expired_password
-
-  fine_print_get_signatures :general_terms_of_use, :privacy_policy
-end

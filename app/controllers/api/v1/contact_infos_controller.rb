@@ -40,7 +40,7 @@ class Api::V1::ContactInfosController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::ContactInfoRepresenter, include: [:writeable])}
   EOS
   def create
-    standard_nested_create(ContactInfo, :user, current_user.human_user.id)
+    standard_nested_create(ContactInfo, :user, current_human_user.id)
   end
 
   ###############################################################
@@ -65,7 +65,7 @@ class Api::V1::ContactInfosController < OpenStax::Api::V1::ApiController
   EOS
   def resend_confirmation
     contact_info = ContactInfo.find(params[:id])
-    OSU::AccessPolicy.require_action_allowed!(:resend_confirmation, current_user, contact_info)
+    OSU::AccessPolicy.require_action_allowed!(:resend_confirmation, current_api_user, contact_info)
     SendContactInfoConfirmation.call(contact_info)
     head :no_content
   end

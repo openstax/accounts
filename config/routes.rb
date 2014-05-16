@@ -11,7 +11,7 @@ Accounts::Application.routes.draw do
   namespace 'dev' do
     get '/', to: 'base#index'
 
-    namespace 'users' do
+    resources :users, only: [] do
       post 'create'
       post 'generate'
     end

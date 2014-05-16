@@ -4,8 +4,9 @@ describe Api::V1::ContactInfosController, :type => :api, :version => :v1 do
 
   let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
   let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }
-  let!(:user_1)          { FactoryGirl.create :user }
-  let!(:user_2)          { FactoryGirl.create :user_with_emails, first_name: 'Bob', last_name: 'Michaels' }
+  let!(:user_1)          { FactoryGirl.create :user, :terms_agreed }
+  let!(:user_2)          { FactoryGirl.create :user_with_emails, :terms_agreed,
+                             first_name: 'Bob', last_name: 'Michaels' }
 
   let!(:user_1_token)    { FactoryGirl.create :doorkeeper_access_token, 
                                               application: untrusted_application, 
@@ -79,8 +80,8 @@ describe Api::V1::ContactInfosController, :type => :api, :version => :v1 do
 
     it "should not let an untrusted application get contact info" do
       info = user_2.contact_infos.first
-      api_get :show, untrusted_application_token, parameters: { id: info.id }
-      expect(response.code).to eq('403')
+      expect{api_get :show, untrusted_application_token, parameters: {
+        id: info.id }}.to raise_error(SecurityTransgression)
     end
   end
 

@@ -86,9 +86,9 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending 
   EOS
   def index
-    OSU::AccessPolicy.require_action_allowed!(:index, current_user, ApplicationUser)
+    OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, ApplicationUser)
     options = params.slice(:page, :per_page, :order_by)
-    outputs = SearchApplicationUsers.call(current_user.application, params[:q], options).outputs
+    outputs = SearchApplicationUsers.call(current_application, params[:q], options).outputs
     respond_with outputs, represent_with: Api::V1::ApplicationUserSearchRepresenter
   end
 
@@ -149,8 +149,8 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::ApplicationUsersRepresenter, include: :readable)}
   EOS
   def updates
-    OSU::AccessPolicy.require_action_allowed!(:updates, current_user, ApplicationUser)
-    outputs = GetUpdatedApplicationUsers.call(current_user.application).outputs
+    OSU::AccessPolicy.require_action_allowed!(:updates, current_api_user, ApplicationUser)
+    outputs = GetUpdatedApplicationUsers.call(current_application).outputs
     respond_with outputs[:application_users], represent_with: Api::V1::ApplicationUsersRepresenter
   end
 
@@ -186,8 +186,8 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
                                   so you won't miss the updated information.
   EOS
   def updated
-    OSU::AccessPolicy.require_action_allowed!(:updated, current_user, ApplicationUser)
-    errors = MarkApplicationUsersUpdatesAsRead.call(current_user.application,
+    OSU::AccessPolicy.require_action_allowed!(:updated, current_api_user, ApplicationUser)
+    errors = MarkApplicationUsersUpdatesAsRead.call(current_application,
                                                     params[:application_users]).errors
     head (errors.any? ? :internal_server_error : :no_content)
   end
@@ -195,8 +195,8 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   protected
 
   def get_app_user
-    @app_user = current_user.human_user.application_users.where(
-                  :application_id => current_user.application.id
+    @app_user = current_human_user.application_users.where(
+                  :application_id => current_application.id
                 ).first
   end
 

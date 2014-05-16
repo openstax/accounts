@@ -26,7 +26,7 @@ protected
     user = caller
 
     if user.is_anonymous?
-      run(CreateUser, 
+      run(CreateUser,
           # first_name: register_params.first_name,
           # last_name:  register_params.last_name,
           username:   register_params.username

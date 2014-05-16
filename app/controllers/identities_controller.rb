@@ -22,9 +22,9 @@ class IdentitiesController < ApplicationController
   def forgot_password
     if request.post?
       handle_with(IdentitiesForgotPassword,
-                  success: lambda {
+                  success: lambda { without_interceptor {
                     redirect_to root_path, notice: 'Password reset instructions sent to your email address!'
-                  },
+                  }},
                   failure: lambda {
                     errors = @handler_result.errors.any?
                     render :forgot_password, status: errors ? 400 : 200

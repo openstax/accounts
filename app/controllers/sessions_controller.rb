@@ -25,17 +25,26 @@ class SessionsController < ApplicationController
     handle_with(SessionsCallback, user_state: self,
       complete: lambda {
         case @handler_result.outputs[:status]
-        when SessionsCallback::RETURNING_USER then redirect_back
-        when SessionsCallback::NEW_USER       then render :ask_new_or_returning
-        when SessionsCallback::MULTIPLE_USERS then render :ask_which_account
-        else                                  raise IllegalState
+        when :returning_user    then redirect_back
+        when :new_user          then render :ask_new_or_returning
+        when :multiple_accounts then render :ask_which_account
+        else                    raise IllegalState
         end
       })
   end
 
   def destroy
     sign_out!
-    redirect_back notice: "Signed out!"
+
+    # Hack to find root of referer
+    # This will be a problem if we have to redirect back to apps
+    # that are not at the root of their host after logout
+    # TODO: Replace with signed or registered return urls
+    #       Need to provide web views to sign or register those urls
+    uri = URI(request.referer)
+    url = "#{uri.scheme}://#{uri.host}:#{uri.port}/"
+
+    without_interceptor { redirect_to url, notice: "Signed out!" }
   end
 
   def ask_new_or_returning

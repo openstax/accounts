@@ -26,6 +26,7 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
     else
       self.reset_code_expires_at = nil
     end
+    self.reset_code
   end
 
   def use_reset_code(code)

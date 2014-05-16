@@ -75,7 +75,6 @@ feature 'User logs in as a local user', js: true do
       fill_in 'Password Again', with: 'Passw0rd!'
       click_button 'Set Password'
 
-puts page.body
       expect(page.current_url).to match(app_callback_url)
     end
   end
@@ -93,6 +92,12 @@ puts page.body
       click_button 'Sign in'
 
       expect(page).to have_content('Welcome, imported_user')
+      expect(page).to have_content('Alert: Your password has expired')
+
+      fill_in 'Password', with: 'Passw0rd!'
+      fill_in 'Password Again', with: 'Passw0rd!'
+      click_button 'Set Password'
+
       expect(page).to have_content('Terms of Use')
 
       find(:css, '#agreement_i_agree').set(true)
@@ -101,12 +106,6 @@ puts page.body
       expect(page).to have_content('Privacy Policy')
       find(:css, '#agreement_i_agree').set(true)
       click_button 'Agree'
-
-      expect(page).to have_content('Alert: Your password has expired')
-
-      fill_in 'Password', with: 'Passw0rd!'
-      fill_in 'Password Again', with: 'Passw0rd!'
-      click_button 'Set Password'
 
       expect(page.current_url).to match(app_callback_url)
     end
