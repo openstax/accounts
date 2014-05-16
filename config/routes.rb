@@ -9,11 +9,8 @@ Accounts::Application.routes.draw do
   mount FinePrint::Engine => '/admin/fine_print'
 
   namespace 'dev' do
-    get '/', to: 'base#index'
-
-    resources :users, only: [] do
-      post 'create'
-      post 'generate'
+    resources :users, only: [:create] do
+      post 'generate', on: :collection
     end
   end
 
