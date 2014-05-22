@@ -1,0 +1,3 @@
+class MessageBody < OpenStruct
+
+end

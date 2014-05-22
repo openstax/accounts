@@ -15,14 +15,14 @@ module Api::V1
              writeable: false,
              schema_info: {
                required: true,
-               description: "The id of the Application that sent this Message"
+               description: "The ID of the Application that sent this Message; This is filled in automatically based on the Oauth token"
              }
 
     property :user_id,
              type: Integer,
              writeable: true,
              schema_info: {
-               description: "If set, it means the Application sent this Message on behalf of this User"
+               description: "If set, this message is on behalf of the user with the given ID; Otherwise, it is on behalf of the application"
              }
 
     property :send_externally_now,
@@ -36,19 +36,38 @@ module Api::V1
              writeable: true,
              schema_info: {
                required: true,
-               description: "A list of User ID's or email addresses for the Message's 'To' field"
+               description: "A list of strings containing either User ID's or email addresses for the Message's 'to' field",
+               items: {
+                 oneOf: [
+                   { type: 'integer' },
+                   { type: 'string' }
+                 ]
+               },
+               minItems: 1
              }
 
     collection :cc,
              writeable: true,
              schema_info: {
-               description: "A list of User ID's or email addresses for the Message's 'Cc' field"
+               description: "A list of strings containing either User ID's or email addresses for the Message's 'cc' field",
+               items: {
+                 oneOf: [
+                   { type: 'integer' },
+                   { type: 'string' }
+                 ]
+               }
              }
 
     collection :bcc,
              writeable: true,
              schema_info: {
-               description: "A list of User ID's or email addresses for the Message's 'Bcc' field"
+               description: "A list of strings containing either User ID's or email addresses for the Message's 'bcc' field",
+               items: {
+                 oneOf: [
+                   { type: 'integer' },
+                   { type: 'string' }
+                 ]
+               }
              }
 
     property :subject,
@@ -56,17 +75,17 @@ module Api::V1
              writeable: true,
              schema_info: {
                required: true,
-               description: "A string for the subject field"
+               description: "This string is appended to the subject_prefix to form the message's subject field"
              }
 
     property :subject_prefix,
              type: String,
              writeable: true,
              schema_info: {
-               description: "Override the configured subject prefix for this Application\nThe Application's prefix is prepended to the subject string when messages are sent"
+               description: "This string is prepended to the subject to form the message's subject field; the prefix is configured in Accounts, so it should only be specified manually if you need to override it for a particular message"
              }
 
-    nested :body do
+    nested :body, schema_info: { required: true, minProperties: 1 } do
 
       property :html,
                type: String,
@@ -86,7 +105,7 @@ module Api::V1
                type: String,
                writeable: true,
                schema_info: {
-                 description: "A short summary of the message's body in plain text format for SMS messages"
+                 description: "A short summary of the message's body in plain text format for SMS messages; SMS messages are limited to 160 characters, but you should limit this to 140 characters if you plan to reuse the message on Twitter"
                }
 
     end

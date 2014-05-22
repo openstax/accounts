@@ -37,7 +37,7 @@ module Api::V1
                class: User,
                decorator: UserRepresenter,
                schema_info: {
-                 description: "The Users associated with the matching the query or a subset thereof when paginating",
+                 description: "The Users matching the query or a subset thereof when paginating",
                  minItems: 0
                }
 

@@ -22,10 +22,12 @@ class Api::V1::MessagesController < OpenStax::Api::V1::ApiController
   # index
   ###############################################################
 
-  # api :GET, '/contact_infos', 'Gets messages matching the search criteria.'
+  # api :GET, '/messages', 'Gets messages matching the search criteria.'
   # description <<-EOS
-  #   
-
+  #   Accepts a query string along with options and returns a JSON
+  # representation of the matching Messages. The schema for the returned JSON
+  # result is shown below.
+  #
   #   {json_schema(Api::V1::MessageSearchRepresenter, include: :readable)}
   # EOS
   # def index
@@ -35,14 +37,21 @@ class Api::V1::MessagesController < OpenStax::Api::V1::ApiController
   # create
   ###############################################################
 
-  api :POST, '/messages/', 'Creates and sends a new Message.'
+  api :POST, '/messages', 'Creates and sends a new Message.'
   description <<-EOS
     Creates and sends a new Message to the given users.
+    Can only be called by a trusted application, using a token
+    obtained via the Client Credentials Oauth flow.
+    Returns a JSON representation of the sent message.
 
     #{json_schema(Api::V1::MessageRepresenter, include: [:writeable])}
   EOS
   def create
-    standard_nested_create(Message, :application, current_application.id)
+    app = current_application
+    msg = CreateMessage.call(app, params[:to], params[:subject],
+                             params[:body], params).outputs[:message]
+    msg.deliver
+    respond_with msg
   end
 
 end

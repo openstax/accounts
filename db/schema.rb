@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140425143754) do
+ActiveRecord::Schema.define(:version => 20140519190523) do
 
   create_table "application_users", :force => true do |t|
     t.integer  "application_id",                         :null => false
@@ -131,15 +131,17 @@ ActiveRecord::Schema.define(:version => 20140425143754) do
   add_index "oauth_access_tokens", ["token"], :name => "index_oauth_access_tokens_on_token", :unique => true
 
   create_table "oauth_applications", :force => true do |t|
-    t.string   "name",                            :null => false
-    t.string   "uid",                             :null => false
-    t.string   "secret",                          :null => false
-    t.string   "redirect_uri",                    :null => false
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
-    t.boolean  "trusted",      :default => false
+    t.string   "name",                                    :null => false
+    t.string   "uid",                                     :null => false
+    t.string   "secret",                                  :null => false
+    t.string   "redirect_uri",                            :null => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
+    t.boolean  "trusted",              :default => false
     t.integer  "owner_id"
     t.string   "owner_type"
+    t.string   "email_from_address",   :default => "",    :null => false
+    t.string   "email_subject_prefix", :default => "",    :null => false
   end
 
   add_index "oauth_applications", ["owner_id", "owner_type"], :name => "index_oauth_applications_on_owner_id_and_owner_type"
