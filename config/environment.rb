@@ -2,8 +2,9 @@
 require File.expand_path('../application', __FILE__)
 
 require "sign_in_state"
+require "secret_settings"
+require "extend_builtins"
 require "omniauth/strategies/custom_identity"
-require "openstax_utilities"
 
 DEV_HOST = "localhost:#{DEV_PORT}"
 SITE_NAME = "OpenStax Accounts"

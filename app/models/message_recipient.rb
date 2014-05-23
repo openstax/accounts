@@ -1,3 +1,0 @@
-class MessageRecipient < OpenStruct
-
-end

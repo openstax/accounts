@@ -4,13 +4,19 @@ class User < ActiveRecord::Base
   USERNAME_MAX_LENGTH = 50
 
   belongs_to :person
+
+  has_one :identity, :dependent => :destroy
+
   has_many :authentications, :dependent => :destroy
   has_many :application_users, :dependent => :destroy, inverse_of: :user
   has_many :contact_infos, :dependent => :destroy, inverse_of: :user
   has_many :oauth_applications, class_name: 'Doorkeeper::Application',
                                 as: :owner,
                                 dependent: :destroy
-  has_one :identity, :dependent => :destroy
+
+  has_many :message_contact_infos, through: :contact_infos
+  has_many :received_messages, through: :message_contact_infos, source: :message
+  has_many :sent_messages, class_name: 'Message', foreign_key: :sender_id
 
   before_validation :normalize_username
 

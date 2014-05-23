@@ -1,27 +1,32 @@
-class Message < OpenStruct
-  # This will become an ActiveRecord model once we start saving messages
+class Message < ActiveRecord::Base
+  belongs_to :application, class_name: 'Doorkeeper::Application',
+                           inverse_of: :messages
+  belongs_to :sender, class_name: 'User', inverse_of: :sent_messages
+
+  has_one :body, class_name: 'MessageBody', inverse_of: :message
+
+  has_many :message_contact_infos, inverse_of: :message
+  has_many :destinations, through: :message_contact_infos,
+                                   source: :contact_info
+  has_many :recipients, through: :destinations, source: :user
+
+  before_save :deliver
+
+  #validates :body, presence: true
+
+  #validates :application, presence: true
+  #validates :from, presence: true
+  #validates :to, presence: true
+  #validates :subject, presence: true
+  #validates :subject_prefix, presence: true
+
+  attr_accessible :user_id, :to, :cc, :bcc, :subject, :subject_prefix
 
   def subject_string
     "#{subject_prefix || ''} #{subject}".strip
   end
 
   def deliver
-    msg = self
-    Mail.deliver do
-      from msg.from
-      to msg.to
-      cc msg.cc
-      bcc msg.bcc
-      subject msg.subject_string
-
-      html_part do
-        content_type 'text/html; charset=UTF-8'
-        body msg.body.html
-      end
-
-      text_part do
-        body msg.body.text
-      end
-    end
+    SendMessage.call(self)
   end
 end

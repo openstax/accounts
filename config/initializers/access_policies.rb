@@ -1,3 +1,5 @@
+require 'doorkeeper/models/active_record/application'
+
 OSU::AccessPolicy.register(User, UserAccessPolicy)
 OSU::AccessPolicy.register(ContactInfo, ContactInfoAccessPolicy)
 OSU::AccessPolicy.register(EmailAddress, ContactInfoAccessPolicy)

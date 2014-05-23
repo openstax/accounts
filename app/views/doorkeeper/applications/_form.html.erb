@@ -25,6 +25,22 @@
 
     <% if @user.is_administrator? %>
     <div class="clearfix">
+      <%= f.label :email_from_address %>
+      <div class="input">
+        <%= f.text_field :email_from_address %>
+        <%= errors_for application, :email_from_address %>
+      </div>
+    </div>
+
+    <div class="clearfix">
+      <%= f.label :email_subject_prefix %>
+      <div class="input">
+        <%= f.text_field :email_subject_prefix %>
+        <%= errors_for application, :email_subject_prefix %>
+      </div>
+    </div>
+
+    <div class="clearfix">
       <%= f.label :trusted? %>
       <div class="input">
         <%= f.check_box :trusted %>

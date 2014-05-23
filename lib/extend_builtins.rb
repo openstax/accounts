@@ -1,3 +1,5 @@
+require 'secret_settings'
+
 ActionController::Base.class_exec do
   include SignInState
 
@@ -43,4 +45,3 @@ ActionController::Base.class_exec do
     head error
   end
 end
-

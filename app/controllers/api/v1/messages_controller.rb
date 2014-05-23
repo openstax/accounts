@@ -48,9 +48,17 @@ class Api::V1::MessagesController < OpenStax::Api::V1::ApiController
   EOS
   def create
     app = current_application
-    msg = CreateMessage.call(app, params[:to], params[:subject],
-                             params[:body], params).outputs[:message]
-    msg.deliver
+
+app = Doorkeeper::Application.last
+    params[:subject_prefix] ||= app.email_subject_prefix
+    msg = Message.new(params.slice(:user_id, :send_externally_now, :to, :cc,
+                                   :bcc, :subject, :subject_prefix))
+    msg.body = MessageBody.new(params[:body].slice(:html, :text, :short_text))
+    msg.application = app
+    msg.from = app.email_from_address
+    #OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, msg)
+    msg.save!
+
     respond_with msg
   end
 

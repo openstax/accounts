@@ -1,3 +1,16 @@
-class MessageBody < OpenStruct
+class MessageBody < ActiveRecord::Base
+  belongs_to :message, inverse_of: :body
 
+  #validates :message, presence: true, uniqueness: true
+  #validate :not_empty
+
+  attr_accessible :html, :text, :short_text
+
+  protected
+
+  def not_empty
+    return unless [html, text, short_text].all?{|f| f.blank?}
+    errors.add(:base, 'cannot be blank')
+    false
+  end
 end

@@ -9,10 +9,9 @@ module Oauth
     end
 
     def create
-      @application = Doorkeeper::Application.new(application_params)
+      @application = Doorkeeper::Application.new(application_params(@user))
       @application.owner = @user
       OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
-      @application.trusted = params[:application][:trusted] if @user.is_administrator?
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :create])
@@ -34,9 +33,9 @@ module Oauth
 
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      if @application.update_attributes(application_params)
-        @application.update_attribute(:trusted, params[:application][:trusted]) if @user.is_administrator?
-        flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash, :applications, :update])
+      if @application.update_attributes(application_params(@user))
+        flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
+                                                    :applications, :update])
         respond_with [:oauth, @application]
       else
         render :edit
@@ -59,12 +58,27 @@ module Oauth
     end
 
     private
+
+    def application_params(user)
+      user.is_administrator? ? \
+        user_params.merge(admin_params) : user_params
+    end
     
-    def application_params
+    def user_params
       if params.respond_to?(:permit)
         params.require(:application).permit(:name, :redirect_uri)
       else
         params[:application].slice(:name, :redirect_uri) rescue nil
+      end
+    end
+
+    def admin_params
+      if params.respond_to?(:permit)
+        params.require(:application).permit(:trusted,
+          :email_from_address, :email_subject_prefix)
+      else
+        params[:application].slice(:trusted,
+          :email_from_address, :email_subject_prefix) rescue nil
       end
     end
   end
