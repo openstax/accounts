@@ -14,9 +14,9 @@ class User < ActiveRecord::Base
                                 as: :owner,
                                 dependent: :destroy
 
-  has_many :message_contact_infos, through: :contact_infos
-  has_many :received_messages, through: :message_contact_infos, source: :message
-  has_many :sent_messages, class_name: 'Message', foreign_key: :sender_id
+  has_many :message_recipients, inverse_of: :user, :dependent => :destroy
+  has_many :received_messages, through: :message_recipients, source: :message
+  has_many :sent_messages, class_name: 'Message'
 
   before_validation :normalize_username
 

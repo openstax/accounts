@@ -32,19 +32,28 @@ module Api::V1
                description: "Whether to force this Message to be emailed or texted immediately, or allow it to wait for a digest, depending on the recipients' preferences"
              }
 
-    property :from,
-             type: String,
-             writeable: false,
+    property :to,
+             decorator: MessageRecipientsRepresenter,
+             writeable: true,
              schema_info: {
                required: true,
-               description: "The Message's 'from' field"
+               minItems: 1,
+               description: "The Message's 'to' field"
              }
 
-    address_array :to, required: true, minProperties: 1
+    property :cc,
+             decorator: MessageRecipientsRepresenter,
+             writeable: true,
+             schema_info: {
+               description: "The Message's 'cc' field"
+             }
 
-    address_array :cc
-
-    address_array :bcc
+    property :bcc,
+             decorator: MessageRecipientsRepresenter,
+             writeable: true,
+             schema_info: {
+               description: "The Message's 'bcc' field"
+             }
 
     property :subject,
              type: String,
@@ -61,64 +70,14 @@ module Api::V1
                description: "This string is prepended to the subject to form the message's subject field; the prefix is configured in Accounts, so it should only be specified manually if you need to override it for a particular message"
              }
 
-    nested :body, schema_info: { required: true, minProperties: 1 } do
-
-      property :html,
-               type: String,
-               writeable: true,
-               schema_info: {
-                 description: "The message's body in HTML format for emails and the Accounts inbox"
-               }
-
-      property :text,
-               type: String,
-               writeable: true,
-               schema_info: {
-                 description: "The message's body in plain text format for emails"
-               }
-
-      property :short_text,
-               type: String,
-               writeable: true,
-               schema_info: {
-                 description: "A short summary of the message's body in plain text format for SMS messages; SMS messages are limited to 160 characters, but you should limit this to 140 characters if you plan to reuse the message on Twitter"
-               }
-
-      end
-
-    protected
-
-    # A way to specify definitions in our Schema Printer would be great
-    def address_array(field_name, schema_info = {})
-      nested field_name, schema_info do
-        collection :literals,
-                   writeable: true,
-                   schema_info: {
-                     description: "An array of literal address strings for the #{field_name.to_s} field",
-                     items: {
-                       { type: 'string' }
-                     }
-                   }
-
-        collection :user_ids,
-                   writeable: true,
-                   schema_info: {
-                     description: "An array of user ID's for the #{field_name.to_s} field",
-                     items: {
-                       { type: 'integer' }
-                     }
-                   }
-
-        collection :group_ids,
-                   writeable: true,
-                   schema_info: {
-                     description: "An array of group ID's for the #{field_name.to_s} field",
-                     items: {
-                       { type: 'integer' }
-                     }
-                   }
-      end
-    end
+    property :body,
+             class: MessageBody,
+             decorator: MessageBodyRepresenter,
+             writeable: true,
+             schema_info: {
+               required: true,
+               minProperties: 1,
+               description: "The Message's body" }
 
   end
 end

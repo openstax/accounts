@@ -1,8 +1,9 @@
 class MessageBody < ActiveRecord::Base
   belongs_to :message, inverse_of: :body
 
-  #validates :message, presence: true, uniqueness: true
-  #validate :not_empty
+  validates_presence_of :message
+  #validates_uniqueness_of :message, if: :message_id
+  validate :not_empty
 
   attr_accessible :html, :text, :short_text
 

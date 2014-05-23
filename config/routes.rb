@@ -52,9 +52,7 @@ Accounts::Application.routes.draw do
 
     # resource :application_user, only: [:show, :update, :destroy]
 
-    resources :messages, only: [:create] do
-      get 'c', to: :create, on: :collection
-    end
+    resources :messages, only: [:create]
   end
 
   # Resources

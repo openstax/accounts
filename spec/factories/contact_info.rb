@@ -4,4 +4,3 @@ FactoryGirl.define do
     value 'Something'
   end
 end
-
