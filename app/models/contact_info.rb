@@ -16,6 +16,8 @@ class ContactInfo < ActiveRecord::Base
   scope :verified, where(verified: true)
   sifter :verified do verified.eq true end
 
+  scope :with_users, lambda { includes(:user) }
+
   before_save :add_unread_update
 
   def add_unread_update

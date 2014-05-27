@@ -58,7 +58,8 @@ protected
       #   true for Google (omniauth strategy checks that the emails are verified)
       #   true for FB (their API only returns verified emails)
       #   true for Twitter (they don't return any emails)
-      matching_users = UsersWithEmails.all(@auth_data[:emails])
+      matching_users = EmailAddress.verified.where(:value => @auth_data[:emails])
+                                   .with_users.collect{|e| e.user}
 
       case matching_users.size
       when 0

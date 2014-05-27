@@ -205,6 +205,12 @@ describe SessionsCallback do
                        uid: authentication.uid,
                        emails: [user.contact_infos.first.value, "blah@blah.com"]}}
 
+    before(:each) do
+      ci = user.contact_infos.first
+      ci.verified = true
+      ci.save!
+    end
+
     it "should link that auth to that user" do
       result = SessionsCallback.handle(
           user_state: user_state,
