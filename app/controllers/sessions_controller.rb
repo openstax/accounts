@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
 
   skip_before_filter :authenticate_user!,
                      only: [:new, :callback, :failure, :destroy]
-  skip_interception :expired_password, :registration,
+  skip_interceptor :expired_password, :registration,
                     only: [:new, :callback, :failure, :destroy]
 
   fine_print_skip_signatures :general_terms_of_use,

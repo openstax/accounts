@@ -4,8 +4,8 @@ class IdentitiesController < ApplicationController
 
   skip_before_filter :authenticate_user!,
                      only: [:new, :forgot_password, :reset_password]
-  skip_interception :expired_password, :registration,
-                    only: [:new, :forgot_password, :reset_password]
+  skip_interceptor :expired_password, :registration,
+                     only: [:new, :forgot_password, :reset_password]
 
   fine_print_skip_signatures :general_terms_of_use,
                              :privacy_policy,
