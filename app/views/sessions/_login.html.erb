@@ -1,5 +1,5 @@
 <%
-  hide_sign_up ||= false
+  hide_signup ||= false
   has_facebook ||= false
   has_google ||= false
   has_twitter ||= false
@@ -50,7 +50,7 @@
         <label for='password'>Password</label><input type='password' id='password' name='password'/>
         <div class='password-actions'>
           <button class='standard'>Sign in</button>
-          <% unless hide_sign_up %>
+          <% unless hide_signup %>
             <span class='sign-up'><%= link_to "Sign up", signup_path %></span>
           <% end %>
         </div>

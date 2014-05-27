@@ -100,4 +100,5 @@ module ApplicationHelper
       output.reduce(:+)
     end
   end
+
 end

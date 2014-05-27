@@ -5,8 +5,8 @@ class User < ActiveRecord::Base
 
   belongs_to :person
   has_many :authentications, :dependent => :destroy
-  has_many :application_users, :dependent => :destroy
-  has_many :contact_infos, :dependent => :destroy, :inverse_of => :user
+  has_many :application_users, :dependent => :destroy, inverse_of: :user
+  has_many :contact_infos, :dependent => :destroy, inverse_of: :user
   has_many :oauth_applications, class_name: 'Doorkeeper::Application',
                                 as: :owner,
                                 dependent: :destroy

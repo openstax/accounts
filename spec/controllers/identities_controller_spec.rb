@@ -103,10 +103,10 @@ describe IdentitiesController do
       it 'changes password if everything validates' do
         post('reset_password', code: identity.reset_code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
-        expect(response).to be_successful
-        expect(response.body).not_to include('Reset password link is invalid')
-        expect(response.body).to include('Your password has been reset successfully!')
-        expect(response.body).not_to include('Set Password')
+        url = controller.without_interceptor { root_url }
+        expect(response).to redirect_to(url)
+        expect(flash[:alert]).to be_blank
+        expect(flash[:notice]).to include('Your password has been reset successfully! You have been signed in automatically.')
         identity.reload
         expect(identity.authenticate('password')).to be_false
         expect(identity.authenticate('password!')).to be_true

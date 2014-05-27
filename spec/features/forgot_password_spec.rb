@@ -51,11 +51,6 @@ feature 'User forgot password', js: true do
     fill_in 'Password Again', with: 'Pazzw0rd!'
     click_button 'Set Password'
     expect(page.text).to include('Your password has been reset successfully!')
-
-    click_link 'Sign in'
-    fill_in 'Username', with: 'user1'
-    fill_in 'Password', with: 'Pazzw0rd!'
-    click_button 'Sign in'
-    expect(page.text).to include('Welcome, user1')
+    expect(page.text).to include('You have been signed in automatically.')
   end
 end

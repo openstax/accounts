@@ -28,13 +28,13 @@ module Api::V1
              type: String, 
              writeable: true
 
-    collection :contact_infos, 
-               class: ContactInfo, 
-               decorator: ContactInfoRepresenter, 
-               writeable: false,
-               schema_info: {
-                 minItems: 0
-               }
+#    collection :contact_infos,
+#               class: ContactInfo,
+#               decorator: ContactInfoRepresenter,
+#               writeable: false,
+#               schema_info: {
+#                 minItems: 0
+#               }
 
   end
 end

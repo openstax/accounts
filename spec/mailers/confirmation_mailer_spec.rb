@@ -15,7 +15,7 @@ describe ConfirmationMailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to include('Hi user1')
-      expect(mail.body.encoded).to include('http://nohost/do/confirm_email?code=1234')
+      expect(mail.body.encoded).to include('http://nohost/confirm?code=1234')
     end
   end
 
@@ -30,7 +30,7 @@ describe ConfirmationMailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to include('Hi user1')
-      expect(mail.body.encoded).to include('http://nohost/do/confirm_email?code=1234')
+      expect(mail.body.encoded).to include('http://nohost/confirm?code=1234')
     end
   end
 

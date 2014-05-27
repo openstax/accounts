@@ -9,10 +9,6 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
                                               first_name: 'Bob',
                                               last_name: 'Michaels' }
 
-  let!(:user_1_token)    { FactoryGirl.create :doorkeeper_access_token,
-    application: untrusted_application,
-    resource_owner_id: user_1.id }
-
   let!(:user_2_token)    { FactoryGirl.create :doorkeeper_access_token,
     application: untrusted_application,
     resource_owner_id: user_2.id }
@@ -24,10 +20,30 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     application: trusted_application,
     resource_owner_id: nil }
 
+  let!(:billy_users) {
+    (0..45).to_a.collect{|ii|
+      user = FactoryGirl.create :user,
+                                first_name: "Billy#{ii.to_s.rjust(2, '0')}",
+                                last_name: "Fred_#{(45-ii).to_s.rjust(2,'0')}",
+                                username: "billy_#{ii.to_s.rjust(2, '0')}"
+      FactoryGirl.create :application_user, user: user,
+                                            application: untrusted_application,
+                                            unread_updates: 0
+    }
+  }
+
+  let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
+  let!(:bob_jones) { FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
+  let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
+
   before(:each) do
-    FactoryGirl.create :application_user, user: user_2,
-                       application: untrusted_application
     user_2.reload
+
+    [bob_brown, bob_jones, tim_jones].each do |user|
+      FactoryGirl.create :application_user, user: user,
+                         application: untrusted_application,
+                         unread_updates: 0
+    end
   end
 
   describe "index" do
@@ -46,8 +62,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
-            last_name: user_2.last_name,
-            contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+            last_name: user_2.last_name
           }
         ],
         application_users: [
@@ -58,27 +73,15 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
               id: user_2.id,
               username: user_2.username,
               first_name: user_2.first_name,
-              last_name: user_2.last_name,
-              contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+              last_name: user_2.last_name
             },
-            unread_updates: 0
+            unread_updates: 1
           }
         ]
       }.to_json
 
       expect(response.body).to eq(expected_response)
     end
-
-    let!(:billy_users) {
-      (0..45).to_a.collect{|ii|
-        user = FactoryGirl.create :user,
-                                  first_name: "Billy#{ii.to_s.rjust(2, '0')}",
-                                  last_name: "Fred_#{(45-ii).to_s.rjust(2,'0')}",
-                                  username: "billy_#{ii.to_s.rjust(2, '0')}"
-        FactoryGirl.create :application_user, user: user,
-                                              application: untrusted_application
-      }
-    }
 
     it "should return the 2nd page when requested" do
       api_get :index, untrusted_application_token, parameters: {q: 'username:billy', page: 1, per_page: 10}
@@ -104,26 +107,20 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       expect(outcome["application_users"][5]["user"]["username"]).to eq "billy_45"
     end
 
-    let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
-    let!(:bob_jones) { FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
-    let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
-
-    before(:each) do
-      [bob_brown, bob_jones, tim_jones].each do |user|
-        FactoryGirl.create :application_user, user: user,
-                           application: untrusted_application
-      end
-    end
-
     it "should allow sort by multiple fields in different directions" do
       api_get :index, untrusted_application_token, parameters: {q: 'username:foo', order_by: "first_name, last_name DESC"}
       expect(response.code).to eq('200')
 
       outcome = JSON.parse(response.body)
 
+      expect(outcome["users"].length).to eq 3
+      expect(outcome["users"][0]["username"]).to eq "foo_bj"
+      expect(outcome["users"][1]["username"]).to eq "foo_bb"
+      expect(outcome["users"][2]["username"]).to eq "foo_tj"
+
       expect(outcome["application_users"].length).to eq 3
-      expect(outcome["application_users"][0]["user"]["username"]).to eq "foo_bb"
-      expect(outcome["application_users"][1]["user"]["username"]).to eq "foo_bj"
+      expect(outcome["application_users"][0]["user"]["username"]).to eq "foo_bj"
+      expect(outcome["application_users"][1]["user"]["username"]).to eq "foo_bb"
       expect(outcome["application_users"][2]["user"]["username"]).to eq "foo_tj"
       expect(outcome["order_by"]).to eq "first_name ASC, last_name DESC"
     end
@@ -160,8 +157,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
-            last_name: user_2.last_name,
-            contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+            last_name: user_2.last_name
           }
         ],
         application_users: [
@@ -172,10 +168,9 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
               id: user_2.id,
               username: user_2.username,
               first_name: user_2.first_name,
-              last_name: user_2.last_name,
-              contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+              last_name: user_2.last_name
             },
-            unread_updates: 0
+            unread_updates: 1
           }
         ]
       }.to_json
@@ -183,22 +178,6 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       expect(response.body).to eq(expected_response)
     end
 
-  end
-
-  describe "create" do
-    it "should let an app create an application_user for a user" do
-      expect {
-        api_post :create, user_1_token
-      }.to change{user_1.application_users(true).count}.from(0).to(1)
-      expect(response.code).to eq('201')
-    end
-    
-    it "should not let an app create an application_user by itself" do
-      expect {
-        api_post :create, untrusted_application_token
-      }.not_to change{untrusted_application.application_users(true).count}
-      expect(response.code).to eq('403')
-    end
   end
 
 #   describe "show" do
@@ -209,7 +188,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 #     end
 # 
 #     it "should let a user get his application_user" do
-#       api_get :show, user_1_token, parameters: { id: app_user.id }
+#       api_get :show, user_2_token, parameters: { id: app_user.id }
 #       expect(response.code).to eq('200')
 #       expect(response.body).to eq({id: app_user.id, application_id: app_user.application_id, user_id: user_1.id}.to_json)
 #     end
@@ -240,7 +219,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 #     it "should let a user update his application_user" do
 #       info = FactoryGirl.create :contact_info, user: user_1
 # 
-#       api_put :update, user_1_token,
+#       api_put :update, user_2_token,
 #               raw_post_data: {default_contact_info_id: info.id},
 #               parameters: {id: app_user.id}
 #       expect(response.code).to eq('204')
@@ -283,7 +262,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 # 
 #     it "should let a user delete his application_user" do
 #       expect {
-#         api_delete :destroy, user_1_token,
+#         api_delete :destroy, user_2_token,
 #         parameters: { id: app_user.id }
 #       }.to change{user_1.application_users(true).count}.from(1).to(0)
 #       
@@ -312,6 +291,10 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
   describe "updates" do
 
     it "should return no results for an app without updated users" do
+      app_user = user_2.application_users.first
+      app_user.unread_updates = 0
+      app_user.save!
+
       api_get :updates, untrusted_application_token
 
       expected_response = [].to_json
@@ -320,34 +303,10 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
 
     it "should return properly formatted JSON responses" do
-      user_2.first_name = 'Bo'
-      user_2.save!
       app_user = user_2.application_users.first
-
       expect(app_user.unread_updates).to eq 1
 
-      api_get :updates, untrusted_application_token
-
-      expected_response = [{
-        id: app_user.id,
-        application_id: untrusted_application.id,
-        user: {
-          id: user_2.id,
-          username: user_2.username,
-          first_name: user_2.first_name,
-          last_name: user_2.last_name,
-          contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
-        },
-        unread_updates: 1
-      }].to_json
-
-      expect(response.body).to eq(expected_response)
-
-      api_get :updates, untrusted_application_token
-
-      expect(response.body).to eq(expected_response)
-
-      user_2.first_name = 'Bob'
+      user_2.first_name = 'Bo'
       user_2.save!
 
       expect(app_user.reload.unread_updates).to eq 2
@@ -361,15 +320,39 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
           id: user_2.id,
           username: user_2.username,
           first_name: user_2.first_name,
-          last_name: user_2.last_name,
-          contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
+          last_name: user_2.last_name
         },
         unread_updates: 2
       }].to_json
 
       expect(response.body).to eq(expected_response)
 
-      app_user.unread_updates = 1
+      api_get :updates, untrusted_application_token
+
+      expect(response.body).to eq(expected_response)
+
+      user_2.first_name = 'Bob'
+      user_2.save!
+
+      expect(app_user.reload.unread_updates).to eq 3
+
+      api_get :updates, untrusted_application_token
+
+      expected_response = [{
+        id: app_user.id,
+        application_id: untrusted_application.id,
+        user: {
+          id: user_2.id,
+          username: user_2.username,
+          first_name: user_2.first_name,
+          last_name: user_2.last_name
+        },
+        unread_updates: 3
+      }].to_json
+
+      expect(response.body).to eq(expected_response)
+
+      app_user.unread_updates = 2
       app_user.save!
 
       api_get :updates, untrusted_application_token
@@ -382,9 +365,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
           username: user_2.username,
           first_name: user_2.first_name,
           last_name: user_2.last_name,
-          contact_infos: user_2.contact_infos.collect{|ci| {id: ci.id, type: ci.type, value: ci.value, verified: ci.verified}}
         },
-        unread_updates: 1
+        unread_updates: 2
       }].to_json
 
       expect(response.body).to eq(expected_response)
@@ -399,7 +381,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
 
     it "should not let a user call it through an app" do
-      api_get :updates, user_1_token
+      api_get :updates, user_2_token
       expect(response.status).to eq(403)
     end
 
@@ -407,18 +389,15 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
   describe "updated" do
     it "should return properly formatted JSON responses" do
-      user_2.first_name = 'Bo'
-      user_2.save!
       app_user = user_2.application_users.first
-
       expect(app_user.unread_updates).to eq 1
 
-      user_2.first_name = 'Bob'
+      user_2.first_name = 'Bo'
       user_2.save!
 
       expect(app_user.reload.unread_updates).to eq 2
 
-      user_2.first_name = 'Bo'
+      user_2.first_name = 'Bob'
       user_2.save!
 
       expect(app_user.reload.unread_updates).to eq 3
@@ -444,14 +423,14 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
     it "should not let an app mark another app's updates as read" do
       app_user = user_2.application_users.first
-      api_put :updated, trusted_application_token, parameters: {application_users: {app_user.id => 1}}
-      expect(response.status).to eq(403)
+      expect{api_put :updated, trusted_application_token, parameters: {application_users: {app_user.id => 1}}}.to(
+          raise_error(SecurityTransgression))
     end
 
     it "should not let a user call it through an app" do
-      api_get :updates, user_1_token
+      api_get :updates, user_2_token
       expect(response.status).to eq(403)
-      api_put :updated, user_1_token
+      api_put :updated, user_2_token
       expect(response.status).to eq(403)
     end
 

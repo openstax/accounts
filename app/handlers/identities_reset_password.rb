@@ -26,5 +26,7 @@ protected
           params[:reset_password].try(:[], :password_confirmation))
       identity.use_reset_code params[:code] if errors.empty?
     end
+
+    outputs[:identity] = identity
   end
 end

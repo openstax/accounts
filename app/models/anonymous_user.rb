@@ -27,6 +27,14 @@ class AnonymousUser
     []
   end
 
+  def identity
+    nil
+  end
+
+  def is_temp?
+    false
+  end
+
   # Necessary if an anonymous user ever runs into an Exception
   # or else the developer email doesn't work
   def username

@@ -74,6 +74,5 @@ def api_request(type, action, doorkeeper_token, args={})
   end
 
   # Delegate the work to the normal HTTP request helpers
-  
   self.send(type, action, args[:parameters], args[:session], args[:flash])
 end

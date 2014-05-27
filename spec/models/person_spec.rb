@@ -5,8 +5,8 @@ describe Person do
   context 'deletion' do
     before :each do
       @person = FactoryGirl.create :person
-      @user1 = FactoryGirl.create :user, person: @person
-      @user2 = FactoryGirl.create :user, person: @person
+      @user1 = FactoryGirl.create :temp_user, person: @person
+      @user2 = FactoryGirl.create :temp_user, person: @person
     end
 
     it 'does not delete the person when deleting a user' do

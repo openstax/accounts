@@ -66,10 +66,12 @@ feature 'User resets password', js: true do
     fill_in 'Password', with: '1234abcd'
     fill_in 'Password Again', with: '1234abcd'
     click_button 'Set Password'
-    expect(page).to have_content('Your password has been reset successfully!')
+    expect(page).to have_content('Your password has been reset successfully! You have been signed in automatically.')
+
+    click_link 'Sign out'
 
     # try logging in with the old password
-    click_link 'sign in'
+    click_link 'Sign in'
     fill_in 'Username', with: 'user'
     fill_in 'Password', with: 'password'
     click_button 'Sign in'

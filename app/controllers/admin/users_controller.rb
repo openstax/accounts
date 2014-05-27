@@ -1,7 +1,7 @@
 module Admin
   class UsersController < BaseController
 
-    before_filter :get_user, only: [:show, :edit, :update, :destroy]
+    before_filter :get_user, only: [:show, :edit, :update, :destroy, :become]
 
     def index
       handle_with(UsersSearch,
@@ -21,6 +21,11 @@ module Admin
     def destroy
       @user.destroy
       redirect_to users_url
+    end
+
+    def become
+      sign_in(@user)
+      redirect_to request.referrer
     end
 
   protected

@@ -1,10 +1,15 @@
 class IdentitiesController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:new, :forgot_password, :reset_password]
+  acts_as_interceptor
+
+  skip_before_filter :authenticate_user!,
+                     only: [:new, :forgot_password, :reset_password]
+  skip_interception :expired_password, :registration,
+                    only: [:new, :forgot_password, :reset_password]
 
   fine_print_skip_signatures :general_terms_of_use,
                              :privacy_policy,
-                             only: [:new, :forgot_password]
+                             only: [:new, :forgot_password, :reset_password]
 
   def new
     @errors ||= env['errors']
@@ -17,9 +22,9 @@ class IdentitiesController < ApplicationController
   def forgot_password
     if request.post?
       handle_with(IdentitiesForgotPassword,
-                  success: lambda {
+                  success: lambda { without_interceptor {
                     redirect_to root_path, notice: 'Password reset instructions sent to your email address!'
-                  },
+                  }},
                   failure: lambda {
                     errors = @handler_result.errors.any?
                     render :forgot_password, status: errors ? 400 : 200
@@ -29,17 +34,13 @@ class IdentitiesController < ApplicationController
 
   def reset_password
     if !current_user.is_anonymous? && current_user.identity.should_reset_password?
-      flash[:alert] = 'Your password has expired.  Please enter a new password.'
+      flash[:alert] = 'Your password has expired. Please enter a new password.'
     end
     handle_with(IdentitiesResetPassword,
                 success: lambda {
                   return if !request.post?
-                  return_to = session.delete(:return_to)
-                  if return_to.present?
-                    redirect_to return_to
-                  else
-                    render :reset_password, status: 200
-                  end
+                  sign_in @handler_result.outputs[:identity].user
+                  redirect_back notice: 'Your password has been reset successfully! You have been signed in automatically.'
                 },
                 failure: lambda {
                   render :reset_password, status: 400

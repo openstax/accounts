@@ -16,7 +16,7 @@
           Proc.new { |user| user.last_name || '---' },
           Proc.new { |user| 
             link_to 'Sign in as', 
-                    become_user_path(user), 
+                    become_admin_user_path(user),
                     method: :post 
           }
         ]

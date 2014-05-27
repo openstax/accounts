@@ -8,13 +8,15 @@ class ContactInfo < ActiveRecord::Base
   validates :user, presence: true
   validates :value,
             presence: true,
-            uniqueness: {scope: [:user_id, :type]}
+            uniqueness: {scope: [:type]}
 
   scope :email_addresses, where(type: 'EmailAddress')
   sifter :email_addresses do type.eq 'EmailAddress' end
 
   scope :verified, where(verified: true)
   sifter :verified do verified.eq true end
+
+  scope :with_users, lambda { includes(:user) }
 
   before_save :add_unread_update
 

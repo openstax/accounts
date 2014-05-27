@@ -1,6 +1,6 @@
 <%= page_heading 'Complete your profile information to create your account' %>
 
-<%= lev_form_for :register, url: users_register_path, method: :put, html: {id: 'profile-form'} do |f| %>
+<%= lev_form_for :register, url: register_path, method: :put, html: {id: 'profile-form'} do |f| %>
 
   <%= standard_field form: f, name: :username, type: :text_field, label: "Username", 
                      options: {value: current_user.username} %>
@@ -16,7 +16,7 @@
                  FinePrint.get_contract(:privacy_policy)]
 
     contract_links = contracts.collect do |contract|
-      link_to contract.title, show_terms_path(contract), remote: true
+      link_to contract.title, term_path(contract), remote: true
     end 
   %>
   

@@ -1,7 +1,7 @@
 FactoryGirl.define do
 
   factory :identity do
-    user
+    association :user, :factory => :temp_user
     password { SecureRandom.hex(8) }
   end
 
