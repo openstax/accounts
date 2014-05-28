@@ -74,7 +74,6 @@ module Oauth
     def admin_params
       return {} if params[:application].nil?
       params[:application].slice(:trusted, :email_from_address)
-      end
     end
   end
 end
