@@ -10,8 +10,6 @@ class Message < ActiveRecord::Base
   has_many :recipient_contact_infos, through: :message_recipients,
                                      source: :contact_info
 
-  before_save :deliver
-
   validates :body, presence: true
 
   validates :application, presence: true
@@ -48,15 +46,5 @@ class Message < ActiveRecord::Base
 
   def subject_string
     @subject_string ||= "#{subject_prefix || ''} #{subject}".strip
-  end
-
-  def add_recipients(type, recipients)
-    AddMessageRecipients.call(self, type, recipients)
-  end
-
-  def deliver
-    return if SendMessage.call(self).outputs[:delivered]
-    errors.add(:base, 'Could not deliver message')
-    false
   end
 end
