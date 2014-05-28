@@ -49,8 +49,13 @@ class Api::V1::MessagesController < OpenStax::Api::V1::ApiController
   EOS
   def create
     handle_with(MessageCreate, caller: current_api_user,
-               success: lambda { respond_with @handler_result.outputs[:message] },
-               failure: lambda { head :unprocessable_entity })
+                success: lambda {
+                           respond_with @handler_result.outputs[:message]
+                         },
+                failure: lambda {
+                  render json: {errors: @handler_result.errors},
+                  status: :unprocessable_entity
+                })
   end
 
 end
