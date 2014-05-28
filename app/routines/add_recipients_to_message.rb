@@ -1,5 +1,5 @@
 # Associates a Message with a list of recipients
-class AddMessageRecipients
+class AddRecipientsToMessage
 
   lev_routine
 

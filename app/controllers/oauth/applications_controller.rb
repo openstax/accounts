@@ -59,26 +59,21 @@ module Oauth
 
     private
 
+    # We control which attributes of Doorkeeper::Applications can be updated
+    # here, since they differ for normal users and administrators
     def application_params(user)
       user.is_administrator? ? \
         user_params.merge(admin_params) : user_params
     end
     
     def user_params
-      if params.respond_to?(:permit)
-        params.require(:application).permit(:name, :redirect_uri)
-      else
-        params[:application].slice(:name, :redirect_uri) rescue nil
-      end
+      return {} if params[:application].nil?
+      params[:application].slice(:name, :redirect_uri, :email_subject_prefix)
     end
 
     def admin_params
-      if params.respond_to?(:permit)
-        params.require(:application).permit(:trusted,
-          :email_from_address, :email_subject_prefix)
-      else
-        params[:application].slice(:trusted,
-          :email_from_address, :email_subject_prefix) rescue nil
+      return {} if params[:application].nil?
+      params[:application].slice(:trusted, :email_from_address)
       end
     end
   end

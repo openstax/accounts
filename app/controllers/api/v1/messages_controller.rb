@@ -1,4 +1,5 @@
 class Api::V1::MessagesController < OpenStax::Api::V1::ApiController
+  include Lev::HandleWith
 
   resource_description do
     api_versions "v1"
@@ -47,23 +48,9 @@ class Api::V1::MessagesController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::MessageRepresenter, include: [:writeable])}
   EOS
   def create
-    app = current_application
-
-    params[:subject_prefix] ||= app.email_subject_prefix
-
-    msg = Message.new(params.slice(:user_id, :send_externally_now, :subject, :subject_prefix))
-    msg.application = app
-    msg.add_recipients(:to, params[:to].slice(:literals, :user_ids, :group_ids))
-    msg.add_recipients(:cc, params[:cc].slice(:literals, :user_ids,
-                                              :group_ids)) if params[:cc]
-    msg.add_recipients(:bcc, params[:bcc].slice(:literals, :user_ids,
-                                                :group_ids)) if params[:bcc]
-    msg.body = MessageBody.new(params[:body].slice(:html, :text, :short_text))
-
-    OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, msg)
-    msg.save!
-
-    respond_with msg
+    handle_with(MessageCreate, caller: current_api_user,
+               success: lambda { respond_with @handler_result.outputs[:message] },
+               failure: lambda { head :unprocessable_entity })
   end
 
 end

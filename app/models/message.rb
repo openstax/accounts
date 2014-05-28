@@ -32,7 +32,7 @@ class Message < ActiveRecord::Base
         if mr.user_id
           out[:user_ids] << mr.user_id
         else
-          out[:literals] << mr.contact_info.value
+          out[:literals] << mr.value
         end
       end
       out.delete(:literals) if out[:literals].blank?
