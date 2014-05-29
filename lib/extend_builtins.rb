@@ -1,5 +1,3 @@
-require 'secret_settings'
-
 ActionController::Base.class_exec do
   include SignInState
 
