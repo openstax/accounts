@@ -7,7 +7,8 @@ class SendMessage
 protected
 
   def exec(msg)
-    outputs[:delivered] = Mail.deliver do
+    fatal_error(code: :not_sent, message: 'Message could not be sent') \
+      unless Mail.deliver do
       from msg.from_address
       to msg.to_addresses
       cc msg.cc_addresses

@@ -39,11 +39,10 @@ protected
     msg.save
 
     # Abort the routine if the message didn't save
-    transfer_errors_from(msg, {type: :verbatim}, true) unless msg.valid?
+    transfer_errors_from(msg, {type: :verbatim}, true)
 
-    # Rollback the transaction if the message wasn't sent
-    fatal_error(code: :not_sent, message: 'Message could not be sent') \
-      unless run(:send_message, msg).outputs[:delivered]
+    # Send the message or rollback the transaction if it wasn't sent
+    run(:send_message, msg)
   end
 
 end
