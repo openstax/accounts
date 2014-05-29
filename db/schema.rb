@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(:version => 20140522212048) do
     t.integer  "message_id",                         :null => false
     t.integer  "contact_info_id"
     t.integer  "user_id"
-    t.string   "type",                               :null => false
+    t.string   "recipient_type",                     :null => false
     t.boolean  "read",            :default => false, :null => false
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false

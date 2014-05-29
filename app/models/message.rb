@@ -25,21 +25,22 @@ class Message < ActiveRecord::Base
 
   [:to, :cc, :bcc].each do |dest|
     define_method dest do
-      out = {literals: [], user_ids: []}
-      message_recipients.select{|mr| mr.type == dest.to_s}.each do |mr|
+      out = {'literals' => [], 'user_ids' => []}
+      message_recipients.select{|mr| mr.recipient_type == dest.to_s}
+                        .each do |mr|
         if mr.user_id
-          out[:user_ids] << mr.user_id
+          out['user_ids'] << mr.user_id
         else
-          out[:literals] << mr.value
+          out['literals'] << mr.value
         end
       end
-      out.delete(:literals) if out[:literals].blank?
-      out.delete(:user_ids) if out[:user_ids].blank?
+      out.delete('literals') if out['literals'].blank?
+      out.delete('user_ids') if out['user_ids'].blank?
       out.blank? ? nil : out
     end
 
     define_method "#{dest}_addresses" do
-      message_recipients.select{|mr| mr.type == dest.to_s}
+      message_recipients.select{|mr| mr.recipient_type == dest.to_s}
                         .collect{|mr| mr.value}.join(', ')
     end
   end

@@ -11,7 +11,7 @@ class MessageBody < ActiveRecord::Base
 
   def not_empty
     return unless [html, text, short_text].all?{|f| f.blank?}
-    errors.add(:base, 'cannot be blank')
+    errors.add(:base, "can't be blank")
     false
   end
 end

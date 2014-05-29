@@ -58,13 +58,6 @@ module Oauth
     end
 
     private
-
-    # We control which attributes of Doorkeeper::Applications can be updated
-    # here, since they differ for normal users and administrators
-    def application_params(user)
-      user.is_administrator? ? \
-        user_params.merge(admin_params) : user_params
-    end
     
     def user_params
       return {} if params[:application].nil?
@@ -74,6 +67,13 @@ module Oauth
     def admin_params
       return {} if params[:application].nil?
       params[:application].slice(:trusted, :email_from_address)
+    end
+
+    # We control which attributes of Doorkeeper::Applications can be updated
+    # here, since they differ for normal users and administrators
+    def application_params(user)
+      user.is_administrator? ? \
+        user_params.merge(admin_params) : user_params
     end
   end
 end

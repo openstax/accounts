@@ -50,7 +50,8 @@ class Api::V1::MessagesController < OpenStax::Api::V1::ApiController
   def create
     handle_with(MessageCreate, caller: current_api_user,
                 success: lambda {
-                           respond_with @handler_result.outputs[:message]
+                           respond_with @handler_result.outputs[:message],
+                                        status: :created
                          },
                 failure: lambda {
                   render json: {errors: @handler_result.errors},

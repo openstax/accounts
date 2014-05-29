@@ -41,7 +41,7 @@ protected
     cis.each do |ci|
       next if ci.blank?
       mr = MessageRecipient.new(:message => msg, :contact_info => ci,
-                                :user => ci.user, :type => type.to_s)
+                                :user => ci.user, :recipient_type => type.to_s)
       msg.message_recipients.push mr
     end
   end

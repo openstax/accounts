@@ -14,8 +14,9 @@ protected
 
   def handle
     fatal_error(code: :invalid_params, message: 'Invalid params') \
-      unless params[:to].is_a?(Hash) && params[:subject].is_a?(String) && \
-             params[:body].is_a?(Hash) && !params[:body].empty?
+      unless params[:to].is_a?(Hash) && !params[:to].empty? && \
+        params[:subject].is_a?(String) && params[:body].is_a?(Hash) && \
+        !params[:body].empty?
 
     app = caller.application
     params[:subject_prefix] ||= app.email_subject_prefix

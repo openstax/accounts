@@ -4,7 +4,7 @@ class CreateMessageRecipients < ActiveRecord::Migration
       t.integer :message_id, null: false
       t.integer :contact_info_id
       t.integer :user_id
-      t.string :type, null: false
+      t.string :recipient_type, null: false
       t.boolean :read, null: false, default: false
 
       t.timestamps
