@@ -2,6 +2,7 @@ class ContactInfo < ActiveRecord::Base
   belongs_to :user, inverse_of: :contact_infos
 
   has_many :application_users, foreign_key: :default_contact_info_id
+  has_many :message_recipients, inverse_of: :contact_info
 
   attr_accessible :confirmation_code, :type, :user_id, :value, :verified
 

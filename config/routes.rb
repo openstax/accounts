@@ -51,6 +51,8 @@ Accounts::Application.routes.draw do
     end
 
     # resource :application_user, only: [:show, :update, :destroy]
+
+    resources :messages, only: [:create]
   end
 
   # Resources

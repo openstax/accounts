@@ -6,7 +6,7 @@ ActionController::Base.class_exec do
   protect_beta username: SECRET_SETTINGS[:beta_username], 
                password: SECRET_SETTINGS[:beta_password]
 
-  interception :registration, :expired_password
+  interceptor :registration, :expired_password
   fine_print_get_signatures :general_terms_of_use, :privacy_policy
 
   helper_method :current_user, :signed_in?
@@ -43,4 +43,3 @@ ActionController::Base.class_exec do
     head error
   end
 end
-

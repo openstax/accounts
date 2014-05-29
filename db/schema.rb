@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140425143754) do
+ActiveRecord::Schema.define(:version => 20140522212048) do
 
   create_table "application_users", :force => true do |t|
     t.integer  "application_id",                         :null => false
@@ -102,6 +102,44 @@ ActiveRecord::Schema.define(:version => 20140425143754) do
 
   add_index "identities", ["user_id"], :name => "index_identities_on_user_id"
 
+  create_table "message_bodies", :force => true do |t|
+    t.integer  "message_id",                 :null => false
+    t.text     "html",       :default => "", :null => false
+    t.text     "text",       :default => "", :null => false
+    t.string   "short_text", :default => "", :null => false
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
+  add_index "message_bodies", ["message_id"], :name => "index_message_bodies_on_message_id", :unique => true
+
+  create_table "message_recipients", :force => true do |t|
+    t.integer  "message_id",                         :null => false
+    t.integer  "contact_info_id"
+    t.integer  "user_id"
+    t.string   "recipient_type",                     :null => false
+    t.boolean  "read",            :default => false, :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
+  end
+
+  add_index "message_recipients", ["contact_info_id", "message_id"], :name => "index_message_recipients_on_contact_info_id_and_message_id", :unique => true
+  add_index "message_recipients", ["message_id", "user_id"], :name => "index_message_recipients_on_message_id_and_user_id", :unique => true
+  add_index "message_recipients", ["user_id", "read"], :name => "index_message_recipients_on_user_id_and_read"
+
+  create_table "messages", :force => true do |t|
+    t.integer  "application_id",                         :null => false
+    t.integer  "user_id"
+    t.boolean  "send_externally_now", :default => false, :null => false
+    t.text     "subject",                                :null => false
+    t.string   "subject_prefix",      :default => "",    :null => false
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
+  end
+
+  add_index "messages", ["application_id", "user_id"], :name => "index_messages_on_application_id_and_user_id"
+  add_index "messages", ["user_id"], :name => "index_messages_on_user_id"
+
   create_table "oauth_access_grants", :force => true do |t|
     t.integer  "resource_owner_id", :null => false
     t.integer  "application_id",    :null => false
@@ -131,15 +169,17 @@ ActiveRecord::Schema.define(:version => 20140425143754) do
   add_index "oauth_access_tokens", ["token"], :name => "index_oauth_access_tokens_on_token", :unique => true
 
   create_table "oauth_applications", :force => true do |t|
-    t.string   "name",                            :null => false
-    t.string   "uid",                             :null => false
-    t.string   "secret",                          :null => false
-    t.string   "redirect_uri",                    :null => false
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
-    t.boolean  "trusted",      :default => false
+    t.string   "name",                                    :null => false
+    t.string   "uid",                                     :null => false
+    t.string   "secret",                                  :null => false
+    t.string   "redirect_uri",                            :null => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
+    t.boolean  "trusted",              :default => false
     t.integer  "owner_id"
     t.string   "owner_type"
+    t.string   "email_from_address",   :default => "",    :null => false
+    t.string   "email_subject_prefix", :default => "",    :null => false
   end
 
   add_index "oauth_applications", ["owner_id", "owner_type"], :name => "index_oauth_applications_on_owner_id_and_owner_type"

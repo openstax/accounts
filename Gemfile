@@ -16,7 +16,7 @@ gem 'squeel'
 gem 'quiet_assets'
 
 gem 'openstax_utilities', '~> 2.2.1'
-gem 'openstax_api', '~> 2.0.0'
+gem 'openstax_api', '~> 2.1.0'
 gem 'lev', '~> 2.0.4'
 
 gem 'jquery-rails'
@@ -30,8 +30,7 @@ gem 'jbuilder'
 
 gem 'delayed_job_active_record'
 
-# see https://groups.google.com/d/msg/roar-talk/KI-a5t02huc/RKwkcZ5SzOEJ
-gem 'representable', :git => 'git://github.com/jpslav/representable.git', :ref => '0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457'
+gem 'representable', '~> 1.8.2'
 gem 'roar-rails'
 
 gem 'exception_notification'
@@ -40,7 +39,7 @@ gem "keyword_search", '~> 1.5.0'
 
 gem 'fine_print', '~> 1.4.1'
 
-gem 'action_interceptor', '~> 0.0.3'
+gem 'action_interceptor', '~> 0.1.0'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'

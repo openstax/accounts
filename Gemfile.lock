@@ -1,13 +1,4 @@
 GIT
-  remote: git://github.com/jpslav/representable.git
-  revision: 0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457
-  ref: 0b8ba7a2e7a6ce0bc404fe5af9ead26295db1457
-  specs:
-    representable (1.7.5)
-      multi_json
-      nokogiri
-
-GIT
   remote: https://github.com/jpslav/lograge.git
   revision: 9847241bad86abe7e3c4869df5e41549238fc3b1
   specs:
@@ -19,8 +10,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    action_interceptor (0.0.3)
-      public_suffix (>= 0.9.1)
+    action_interceptor (0.1.0)
       rails (>= 3.1)
     actionmailer (3.2.17)
       actionpack (= 3.2.17)
@@ -159,7 +149,7 @@ GEM
     mini_portile (0.5.2)
     multi_json (1.8.4)
     multipart-post (1.2.0)
-    mysql2 (0.3.15)
+    mysql2 (0.3.16)
     nokogiri (1.6.1)
       mini_portile (~> 0.5.0)
     oauth (0.4.7)
@@ -189,11 +179,12 @@ GEM
     omniauth-twitter (1.0.0)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
-    openstax_api (2.0.0)
+    openstax_api (2.1.0)
       doorkeeper (>= 0.5)
       exception_notification (>= 4.0)
       openstax_utilities (>= 1.0.1)
       rails (>= 3.1)
+      representable (>= 1.8)
       roar (>= 0.12.1)
       roar-rails (>= 0.1.2)
     openstax_utilities (2.2.1)
@@ -207,7 +198,6 @@ GEM
     polyamorous (0.6.3)
       activerecord (>= 3.0)
     polyglot (0.3.4)
-    public_suffix (1.4.2)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.4.5)
@@ -237,6 +227,10 @@ GEM
     rdoc (3.12.2)
       json (~> 1.4)
     ref (1.0.5)
+    representable (1.8.2)
+      multi_json
+      nokogiri
+      uber
     roar (0.12.2)
       representable (>= 1.6.0)
     roar-rails (0.1.4)
@@ -296,10 +290,11 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.38)
+    uber (0.0.6)
     uglifier (2.1.2)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
-    unicorn (4.8.2)
+    unicorn (4.8.3)
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
@@ -311,7 +306,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  action_interceptor (~> 0.0.3)
+  action_interceptor (~> 0.1.0)
   apipie-rails (~> 0.1.2)
   bcrypt-ruby (~> 3.0.0)
   bootstrap-sass (~> 3.1.1)
@@ -338,12 +333,12 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api (~> 2.0.0)
+  openstax_api (~> 2.1.0)
   openstax_utilities (~> 2.2.1)
   poltergeist
   quiet_assets
   rails (= 3.2.17)
-  representable!
+  representable (~> 1.8.2)
   roar-rails
   rspec-rails
   sass-rails (~> 3.2.6)
