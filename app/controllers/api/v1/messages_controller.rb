@@ -48,7 +48,7 @@ class Api::V1::MessagesController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::MessageRepresenter, include: [:writeable])}
   EOS
   def create
-    handle_with(MessageCreate, caller: current_api_user,
+    handle_with(MessagesCreate, caller: current_api_user,
                 success: lambda {
                            respond_with @handler_result.outputs[:message],
                                         status: :created

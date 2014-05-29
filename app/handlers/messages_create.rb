@@ -1,5 +1,5 @@
 # Creates and sends a Message
-class MessageCreate
+class MessagesCreate
 
   include Lev::Handler
 

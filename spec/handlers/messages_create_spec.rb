@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MessageCreate do
+describe MessagesCreate do
 
   let!(:trusted_application)   {
     FactoryGirl.create :doorkeeper_application, :trusted,
@@ -57,27 +57,27 @@ describe MessageCreate do
 
       c = Message.count
 
-      expect(MessageCreate.handle(params: invalid_params_1,
+      expect(MessagesCreate.handle(params: invalid_params_1,
                      caller: api_user).errors).not_to be_empty
 
       expect(Message.count).to eq(c)
 
-      expect(MessageCreate.handle(params: invalid_params_2,
+      expect(MessagesCreate.handle(params: invalid_params_2,
                      caller: api_user).errors).not_to be_empty
 
       expect(Message.count).to eq(c)
 
-      expect(MessageCreate.handle(params: invalid_params_3,
+      expect(MessagesCreate.handle(params: invalid_params_3,
                      caller: api_user).errors).not_to be_empty
 
       expect(Message.count).to eq(c)
 
-      expect(MessageCreate.handle(params: invalid_params_4,
+      expect(MessagesCreate.handle(params: invalid_params_4,
                      caller: api_user).errors).not_to be_empty
 
       expect(Message.count).to eq(c)
 
-      expect(MessageCreate.handle(params: invalid_params_5,
+      expect(MessagesCreate.handle(params: invalid_params_5,
                      caller: api_user).errors).not_to be_empty
 
       expect(Message.count).to eq(c)
@@ -107,7 +107,7 @@ describe MessageCreate do
 
       c = Message.count
 
-      msg = MessageCreate.handle(params: message_params,
+      msg = MessagesCreate.handle(params: message_params,
               caller: api_user).outputs[:message]
 
       expect(Api::V1::MessageRepresenter.new(msg).to_hash).to(
