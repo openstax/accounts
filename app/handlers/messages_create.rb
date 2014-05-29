@@ -35,12 +35,15 @@ protected
 
     msg.body = MessageBody.new(params[:body].slice(:html, :text, :short_text))
 
+    # Save the message
+    msg.save
+
+    # Abort the routine if the message didn't save
     transfer_errors_from(msg, {type: :verbatim}, true) unless msg.valid?
 
+    # Rollback the transaction if the message wasn't sent
     fatal_error(code: :not_sent, message: 'Message could not be sent') \
       unless run(:send_message, msg).outputs[:delivered]
-
-    msg.save!
   end
 
 end
