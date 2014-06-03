@@ -3,8 +3,10 @@ ActionController::Base.class_exec do
 
   protect_from_forgery
 
-  protect_beta username: SECRET_SETTINGS[:beta_username], 
-               password: SECRET_SETTINGS[:beta_password]
+  if SECRET_SETTINGS[:beta_protection] != false
+    protect_beta username: SECRET_SETTINGS[:beta_username], 
+                 password: SECRET_SETTINGS[:beta_password]
+  end
 
   interceptor :registration, :expired_password
   fine_print_get_signatures :general_terms_of_use, :privacy_policy
