@@ -103,7 +103,7 @@ describe IdentitiesController do
       it 'changes password if everything validates' do
         post('reset_password', code: identity.reset_code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
-        url = controller.without_interceptor { root_url }
+        url = controller.send(:without_interceptor) { root_url }
         expect(response).to redirect_to(url)
         expect(flash[:alert]).to be_blank
         expect(flash[:notice]).to include('Your password has been reset successfully! You have been signed in automatically.')
