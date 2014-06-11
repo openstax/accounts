@@ -8,7 +8,7 @@ module Api::V1
                schema_info: {
                  description: "A literal address string",
                  items: {
-                  type: String
+                  type: "string"
                  }
                }
 
@@ -18,7 +18,7 @@ module Api::V1
                schema_info: {
                  description: "A user ID",
                  items: {
-                  type: Integer
+                  type: "integer"
                  }
                }
 
@@ -28,7 +28,7 @@ module Api::V1
                schema_info: {
                  description: "A group ID",
                  items: {
-                  type: Integer
+                  type: "integer"
                  }
                }
 
