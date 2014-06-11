@@ -26,9 +26,9 @@ module Api::V1
              }
 
     property :send_externally_now,
-             type: TrueClass,
              writeable: true,
              schema_info: {
+               type: "boolean",
                description: "Whether to force this Message to be emailed or texted immediately, or allow it to wait for a digest, depending on the recipients' preferences"
              }
 
