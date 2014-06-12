@@ -1,23 +1,42 @@
 class GroupUser < ActiveRecord::Base
   #sortable :user_id
 
-  belongs_to :user_group, :inverse_of => :group_users
-  belongs_to :user, :inverse_of => :group_users
+  # Access Levels
+  # Higher levels include all the levels below
+  # So an owner is always a manager, etc
+  OWNER = 2
+  MANAGER = 1
+  MEMBER = 0
 
-  attr_accessible :is_manager, :is_owner
+  belongs_to :user_group, inverse_of: :group_users
+  belongs_to :user, inverse_of: :group_users
 
-  after_update :group_checks
-  after_destroy :group_checks
+  attr_accessible :access_level
+
+  after_update :group_maintenance
+  after_destroy :group_maintenance
 
   validates_presence_of :user, :user_group
-  validates_uniqueness_of :user_id, :scope => :user_group_id
+  validates_uniqueness_of :user, scope: :user_group
 
-  scope :managers, where(:is_manager => true)
-  scope :owners, where(:is_owner => true)
+  scope :owners, lambda {where{access_level.gt_eq OWNER}}
+  scope :managers, lambda {where{access_level.gt_eq MANAGER}}
+
+  def is_owner?
+    access_level >= OWNER
+  end
+
+  def is_manager?
+    access_level >= MANAGER
+  end
+
+  def access_level_string
+    ['none', 'member', 'manager', 'owner'][access_level + 1]
+  end
 
   protected
 
-  def group_checks
-    group.consistency_checks
+  def group_maintenance
+    group.maintenance
   end
 end

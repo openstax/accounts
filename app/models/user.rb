@@ -8,18 +8,16 @@ class User < ActiveRecord::Base
   has_one :identity, dependent: :destroy, inverse_of: :user
 
   has_many :authentications, dependent: :destroy, inverse_of: :user
-  has_many :application_users, :dependent => :destroy, inverse_of: :user
-  has_many :contact_infos, :dependent => :destroy, inverse_of: :user
-  has_many :oauth_applications, class_name: 'Doorkeeper::Application',
-                                as: :owner,
-                                dependent: :destroy
+  has_many :application_users, dependent: :destroy, inverse_of: :user
+  has_many :contact_infos, dependent: :destroy, inverse_of: :user
 
   has_many :message_recipients, inverse_of: :user, :dependent => :destroy
   has_many :received_messages, through: :message_recipients, source: :message
   has_many :sent_messages, class_name: 'Message'
 
-  has_many :group_users, :dependent => :destroy, :inverse_of => :user
-  has_many :groups, :through => :group_users
+  has_many :group_users, dependent: :destroy, inverse_of: :user
+  has_many :groups, through: :group_users
+  has_many :oauth_applications, through: :groups
 
   before_validation :normalize_username
 

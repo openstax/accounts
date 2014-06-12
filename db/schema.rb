@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140522212048) do
+ActiveRecord::Schema.define(:version => 20140612162717) do
 
   create_table "application_users", :force => true do |t|
     t.integer  "application_id",                         :null => false
@@ -89,6 +89,25 @@ ActiveRecord::Schema.define(:version => 20140522212048) do
 
   add_index "fine_print_signatures", ["contract_id"], :name => "index_fine_print_signatures_on_contract_id"
   add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], :name => "index_fine_print_s_on_u_id_and_u_type_and_c_id", :unique => true
+
+  create_table "group_users", :force => true do |t|
+    t.integer  "group_id",                    :null => false
+    t.integer  "user_id",                     :null => false
+    t.integer  "access_level", :default => 0, :null => false
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+  end
+
+  add_index "group_users", ["group_id"], :name => "index_group_users_on_group_id"
+  add_index "group_users", ["user_id", "group_id"], :name => "index_group_users_on_user_id_and_group_id", :unique => true
+
+  create_table "groups", :force => true do |t|
+    t.string   "name",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "groups", ["name"], :name => "index_groups_on_name", :unique => true
 
   create_table "identities", :force => true do |t|
     t.string   "password_digest"
