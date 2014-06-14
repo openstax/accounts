@@ -5,10 +5,18 @@ module Doorkeeper
     def self.action_allowed?(action, requestor, application)
       # Deny access for apps without an Oauth token
       return false unless requestor.is_human?
-      [:read, :create, :update, :destroy].include?(action) && \
+
+      case action
+      when :read, :update, :destroy
         (application.owner == requestor || \
-        (application.owner.respond_to?(:has_user?) && \
-        application.owner.has_user?(requestor)) || requestor.is_administrator?)
+          (application.owner.is_a?(Group) && \
+          application.owner.has_member?(requestor)) || \
+          requestor.is_administrator?)
+      when :create
+        !application.persisted? && !requestor.is_anonymous?
+      else
+        false
+      end
     end
 
   end

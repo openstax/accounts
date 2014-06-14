@@ -8,7 +8,7 @@ class GroupUser < ActiveRecord::Base
   MANAGER = 1
   MEMBER = 0
 
-  belongs_to :user_group, inverse_of: :group_users
+  belongs_to :group, inverse_of: :group_users
   belongs_to :user, inverse_of: :group_users
 
   attr_accessible :access_level
@@ -16,8 +16,8 @@ class GroupUser < ActiveRecord::Base
   after_update :group_maintenance
   after_destroy :group_maintenance
 
-  validates_presence_of :user, :user_group
-  validates_uniqueness_of :user, scope: :user_group
+  validates :user, :group, presence: true
+  validates_uniqueness_of :user_id, scope: :group_id, if: :group_id
 
   scope :owners, lambda {where{access_level.gt_eq OWNER}}
   scope :managers, lambda {where{access_level.gt_eq MANAGER}}

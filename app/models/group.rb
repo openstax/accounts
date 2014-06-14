@@ -6,12 +6,10 @@ class Group < ActiveRecord::Base
                                 as: :owner,
                                 dependent: :destroy
 
-  accepts_nested_attributes_for :group_users, allow_destroy: true
+  attr_accessible :name
 
-  attr_accessible :name, :group_users_attributes
-
-  validates_presence_of :name
-  validates_uniqueness_of :name, allow_nil: true
+  validates :name, uniqueness: true, allow_nil: true
+  validates :group_users, presence: true
 
   scope :visible_for, lambda { |user|
     return none if user.nil?
@@ -38,6 +36,7 @@ class Group < ActiveRecord::Base
   def has_member?(user)
     !group_user_for(user).nil?
   end
+  alias_method :has_user?, :has_member?
 
   def has_manager?(user)
     gu = group_user_for(user)

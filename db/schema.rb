@@ -102,7 +102,7 @@ ActiveRecord::Schema.define(:version => 20140612162717) do
   add_index "group_users", ["user_id", "group_id"], :name => "index_group_users_on_user_id_and_group_id", :unique => true
 
   create_table "groups", :force => true do |t|
-    t.string   "name",       :null => false
+    t.string   "name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
