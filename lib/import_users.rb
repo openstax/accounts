@@ -46,18 +46,21 @@ class ImportUsers
     @user.last_name = last_name
     @user.full_name = full_name
     @user.save!
-    # Create a random password for validation
-    identity = @user.create_identity!(password: SecureRandom.hex(8))
-    # Import password hash which overwrites the password from previous step
+
+    identity = @user.build_identity
+    # Import password hash
     identity.update_attribute(:password_digest, password_digest)
     # User has to reset their password
     identity.password_expires_at = 1.day.ago
-    identity.save!
+    # Skip password validation
+    identity.save!(validate: false)
+
     # User is using the omniauth identity authentication
     @user.authentications.create!(
       provider: 'identity',
       uid: identity.id.to_s,
     )
+
     # Imported email addresses are verified
     EmailAddress.create!(
       user_id: @user.id,
