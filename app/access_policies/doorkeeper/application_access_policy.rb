@@ -8,10 +8,8 @@ module Doorkeeper
 
       case action
       when :read, :update, :destroy
-        (application.owner == requestor || \
-          (application.owner.is_a?(Group) && \
-          application.owner.has_member?(requestor)) || \
-          requestor.is_administrator?)
+        application.owner.has_member?(requestor) || \
+          requestor.is_administrator?
       when :create
         !application.persisted? && !requestor.is_anonymous?
       else
