@@ -9,7 +9,7 @@ class GroupAccessPolicy
       group.has_user?(requestor)
     when :create
       !group.persisted? && !requestor.is_anonymous?
-    when :update, :destroy
+    when :update
       group.has_owner?(requestor)
     else
       false

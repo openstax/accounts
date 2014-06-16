@@ -6,6 +6,7 @@ module Api::V1
              writeable: true,
              type: String,
              schema_info: {
+               required: true,
                description: "The group's name"
              }
 

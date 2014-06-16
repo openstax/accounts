@@ -14,11 +14,11 @@ module Api::V1
              writable: true,
              schema_info: {
                required: true,
-               description: "The assciated user's ID"
+               description: "The associated user's ID"
              }
 
     property :access_level,
-             type: String,
+             type: Integer,
              schema_info: {
                required: true,
                description: "Determines the user's permissions within this group"

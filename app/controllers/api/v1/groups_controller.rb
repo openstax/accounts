@@ -11,6 +11,9 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
       Owners can manage all users and their permissions,
       as well as rename the group.
 
+      Although groups are created by users through applications, they do not
+      belong to any specific application. As such:
+
       Applications acting on behalf of users have the same permissions
       as the user they are acting for.
 
@@ -20,28 +23,14 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
   end
 
   ###############################################################
-  # index
-  ###############################################################
-
-  api :GET, '/groups', 'Lists the Groups the current user is a member of.'
-  description <<-EOS
-    Shows a list of Groups the current user is a member of.
-
-    #{json_schema(Api::V1::GroupsRepresenter, include: :readable)}
-  EOS
-  def index
-  end
-
-  ###############################################################
   # show
   ###############################################################
 
   api :GET, '/groups/:id', 'Gets the specified Group.'
   description <<-EOS
-    Shows the specified Group.
+    Shows the specified Group, including name and a list of members.
 
-    At least one of the Group members must have given
-    the current application read permissions.
+    Requires member access level.
 
     #{json_schema(Api::V1::GroupRepresenter, include: :readable)}
   EOS
@@ -58,10 +47,14 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
     Creates a new Group and sets the current user as the first
     member and owner.
 
-    #{json_schema(Api::V1::GroupRepresenter, include: [:writeable])}
+    Grants the current user owner access level to the new group.
+
+    #{json_schema(Api::V1::GroupRepresenter, include: :writeable)}
   EOS
   def create
-    standard_nested_create(Group, :user, current_human_user.id)
+    standard_create(Group) do |group|
+      group.add_user(current_human_user, GroupUser::OWNER)
+    end
   end
 
   ###############################################################
@@ -71,8 +64,11 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
   api :PUT, '/groups/:id', 'Updates the properties of a Group.'
   description <<-EOS
     Updates the properties of a Group.
+    Currently can only be used to rename the group.
 
-    Currently this can only be used to rename the Group.
+    Requires owner access level.
+
+    #{json_schema(Api::V1::GroupRepresenter, include: :writeable)}
   EOS
   def update
     standard_update(Group, params[:id])

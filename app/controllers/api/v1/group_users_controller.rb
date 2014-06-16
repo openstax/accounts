@@ -13,31 +13,31 @@ class Api::V1::GroupUsersController < OpenStax::Api::V1::ApiController
   end
 
   ###############################################################
-  # show
+  # index
   ###############################################################
 
-  api :GET, '/groups/:id/group_user', 'Shows the GroupUser for the current user and the given Group.'
+  api :GET, '/group_users', 'Lists the Group memberships for the current user.'
   description <<-EOS
-    Shows the GroupUser for the current user and the given Group.
+    Shows the list of GroupUsers for the current user, that is,
+    the list of Groups that the current user is a member of.
 
-    #{json_schema(Api::V1::GroupUserRepresenter, include: :readable)}
+    #{json_schema(Api::V1::GroupUsersRepresenter, include: :readable)}
   EOS
-  def show
-    GroupUser.where(:user_id => current_human_user.id,
-                    :group_id => params[:id]).first
+  def index
+    respond_with GroupUser.where(:user_id => current_human_user.id)
   end
 
   ###############################################################
   # create
   ###############################################################
 
-  api :POST, '/groups/:id/group_users', 'Adds a given User to the given Group.'
+  api :POST, '/group_users', 'Adds a given user to the given Group.'
   description <<-EOS
-    Adds a given User to the given Group.
+    Adds a given user to the given Group.
 
-    The current user must be a Group manager or higher.
+    Requires manager access level.
 
-    #{json_schema(Api::V1::GroupUserRepresenter, include: [:writeable])}
+    #{json_schema(Api::V1::GroupUserRepresenter, include: :writeable)}
   EOS
   def create
     standard_nested_create(GroupUser, :group, params[:id])
@@ -49,9 +49,11 @@ class Api::V1::GroupUsersController < OpenStax::Api::V1::ApiController
 
   api :PUT, '/group_users/:id', 'Updates the access level of a GroupUser.'
   description <<-EOS
-    Updates the access level of a GroupUser.
+    Updates the access level of a user associated with the given GroupUser.
 
-    Only group owners can use this API endpoint.
+    Requires owner access level.
+
+    #{json_schema(Api::V1::GroupUserRepresenter, include: :writeable)}
   EOS
   def update
     standard_update(GroupUser, params[:id])
@@ -61,12 +63,12 @@ class Api::V1::GroupUsersController < OpenStax::Api::V1::ApiController
   # destroy
   ###############################################################
 
-  api :DELETE, '/group_users/:id', 'Deletes a GroupUser, removing its User from the Group.'
+  api :DELETE, '/group_users/:id', 'Deletes a GroupUser, removing its associated user from the Group.'
   description <<-EOS
-    Deletes a GroupUser, removing its User from the Group.
+    Deletes a GroupUser, removing its associated user from the Group.
 
-    The current user must be a manager or higher to remove normal users.
-    Only group owners can remove managers or higher.
+    Requires manager access level to remove normal users.
+    Requires owner access level to remove managers or higher.
   EOS
   def destroy
     standard_destroy(GroupUser, params[:id])
