@@ -11,7 +11,7 @@ class Group < ActiveRecord::Base
   validates :name, uniqueness: true, allow_nil: true
   validates :group_users, presence: true
 
-  after_save :maintenance
+  after_create :maintenance
 
   def group_user_for(user)
     group_users.where(:user_id => user.try(:id)).first
@@ -41,17 +41,20 @@ class Group < ActiveRecord::Base
   end
 
   def maintenance
-    return if !persisted? || destroyed?
+    remaining_users = group_users(true)
 
     # Destroy group if everyone left
-    return destroy if group_users.empty?
+    return destroy if remaining_users.empty?
+
+    remaining_managers = remaining_users.select{|gu| gu.access_level >= GroupUser::MANAGER}
+    remaining_owners = remaining_users.select{|gu| gu.access_level >= GroupUser::OWNER}
 
     # Promote some user to owner if all owners left
-    if group_users.managers.first.nil?
-      group_users.first.update_attribute(:access_level, GroupUser::OWNER)
-    elsif group_users.owners.first.nil?
-      group_users.managers.first.update_attribute(:access_level,
-                                                  GroupUser::OWNER)
+    if remaining_managers.empty?
+      remaining_users.first.update_attribute(:access_level, GroupUser::OWNER)
+    elsif remaining_owners.empty?
+      remaining_managers.first.update_attribute(:access_level,
+                                                GroupUser::OWNER)
     end
   end
 end

@@ -25,6 +25,8 @@ describe Group do
       group.add_user(user_1)
 
       expect(group).to be_valid
+      group.save!
+      group.reload
 
       expect(group.has_member?(user_1)).to eq(true)
       expect(group.has_manager?(user_1)).to eq(true)
@@ -35,6 +37,7 @@ describe Group do
       expect(group.has_owner?(user_2)).to eq(false)
 
       group.add_user(user_2)
+      group.reload
 
       expect(group.has_member?(user_2)).to eq(true)
       expect(group.has_manager?(user_2)).to eq(false)
@@ -44,7 +47,8 @@ describe Group do
       expect(group.has_manager?(user_3)).to eq(false)
       expect(group.has_owner?(user_3)).to eq(false)
 
-      group.add_user(user_3, UserGroup::MANAGER)
+      group.add_user(user_3, GroupUser::MANAGER)
+      group.reload
 
       expect(group.has_member?(user_3)).to eq(true)
       expect(group.has_manager?(user_3)).to eq(true)
@@ -82,8 +86,8 @@ describe Group do
       group.add_user(user_3, GroupUser::MANAGER)
       expect(group.group_users.last.access_level).to eq(GroupUser::MANAGER)
       group.group_users.first.destroy
-      expect(group.group_users.last.access_level).to eq(GroupUser::OWNER)
       expect(group.group_users.first.access_level).to eq(GroupUser::MEMBER)
+      expect(group.group_users.last.access_level).to eq(GroupUser::OWNER)
     end
   end
 

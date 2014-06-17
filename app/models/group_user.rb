@@ -4,9 +4,9 @@ class GroupUser < ActiveRecord::Base
   # Access Levels
   # Higher levels include all the levels below
   # So an owner is always a manager, etc
-  OWNER = 200
-  MANAGER = 150
-  MEMBER = 50
+  OWNER = 300
+  MANAGER = 200
+  MEMBER = 100
 
   belongs_to :group, inverse_of: :group_users
   belongs_to :user, inverse_of: :group_users
