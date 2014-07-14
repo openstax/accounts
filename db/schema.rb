@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140614000953) do
+ActiveRecord::Schema.define(:version => 20140714222129) do
 
   create_table "application_users", :force => true do |t|
     t.integer  "application_id",                         :null => false
@@ -89,6 +89,25 @@ ActiveRecord::Schema.define(:version => 20140614000953) do
 
   add_index "fine_print_signatures", ["contract_id"], :name => "index_fine_print_signatures_on_contract_id"
   add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], :name => "index_fine_print_s_on_u_id_and_u_type_and_c_id", :unique => true
+
+  create_table "group_supergroup_permissions", :force => true do |t|
+    t.integer  "group_supergroup_id", :null => false
+    t.string   "permission",          :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  add_index "group_supergroup_permissions", ["group_supergroup_id", "permission"], :name => "index_gsp_on_gs_id_and_p", :unique => true
+
+  create_table "group_supergroups", :force => true do |t|
+    t.integer  "group_id",      :null => false
+    t.integer  "supergroup_id", :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "group_supergroups", ["group_id", "supergroup_id"], :name => "index_group_supergroups_on_group_id_and_supergroup_id", :unique => true
+  add_index "group_supergroups", ["supergroup_id"], :name => "index_group_supergroups_on_supergroup_id"
 
   create_table "group_users", :force => true do |t|
     t.integer  "group_id",                    :null => false
@@ -208,6 +227,15 @@ ActiveRecord::Schema.define(:version => 20140614000953) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "supergroups", :force => true do |t|
+    t.string   "name",           :null => false
+    t.integer  "application_id", :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "supergroups", ["application_id"], :name => "index_supergroups_on_application_id"
 
   create_table "users", :force => true do |t|
     t.string   "username",         :default => "",    :null => false

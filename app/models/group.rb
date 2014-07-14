@@ -1,4 +1,6 @@
 class Group < ActiveRecord::Base
+  belongs_to :supergroup, inverse_of: :groups
+
   has_many :group_users, dependent: :destroy, inverse_of: :group
   has_many :users, through: :group_users
 
@@ -53,8 +55,7 @@ class Group < ActiveRecord::Base
     if remaining_managers.empty?
       remaining_users.first.update_attribute(:access_level, GroupUser::OWNER)
     elsif remaining_owners.empty?
-      remaining_managers.first.update_attribute(:access_level,
-                                                GroupUser::OWNER)
+      remaining_managers.first.update_attribute(:access_level, GroupUser::OWNER)
     end
   end
 end

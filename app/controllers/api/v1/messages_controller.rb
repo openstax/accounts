@@ -16,6 +16,9 @@ class Api::V1::MessagesController < OpenStax::Api::V1::ApiController
       send_externally_now, from, to, cc, bcc, subject, subject_prefix, body
       The body has the following fields:
       html, text, short_text
+
+      Unlike other API endpoints, this one uses the encoded form format
+      instead of the JSON format
     EOS
   end
 
