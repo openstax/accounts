@@ -7,9 +7,15 @@ class GroupUserAccessPolicy
     case action
     when :index
       true
-    when :create, :destroy
+    when :create
       group = group_user.group
-      group.owner == requestor || group.group_sharing_for(requestor).try(:can_edit)
+      group.owner == requestor || group.group_sharing_for(requestor).try(:can_edit) ||\
+        (group.owner.nil? && group.has_member?(requestor))
+    when :destroy
+      group = group_user.group
+      group_user.user == requestor || group.owner == requestor ||\
+        group.group_sharing_for(requestor).try(:can_edit) ||\
+        (group.owner.nil? && group.has_member?(requestor))
     else
       false
     end

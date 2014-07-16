@@ -7,8 +7,13 @@ class GroupSharingAccessPolicy
     case action
     when :index
       true
-    when :create, :update, :destroy
+    when :create, :update
       group_sharing.group.owner == requestor
+    when :destroy
+      group_sharing.group.owner == requestor ||\
+        group_sharing.shared_with == requestor ||\
+        (group_sharing.shared_with.is_a?(Group) &&\
+        group_sharing.shared_with.owner == requestor)
     else
       false
     end

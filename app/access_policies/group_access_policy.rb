@@ -8,12 +8,11 @@ class GroupAccessPolicy
     when :read
       group.visibility == 'public' ||\
         (group.visibility == 'members' && group.has_member?(requestor)) ||\
-        group.owner == requestor || group.group_sharing_for(requestor) ||\
-        requestor.is_administrator?
+        group.owner == requestor || group.group_sharing_for(requestor)
     when :create
       !group.persisted? && !requestor.is_anonymous? && group.owner == requestor
     when :update, :destroy
-      group.owner == requestor || requestor.is_administrator?
+      group.owner == requestor
     else
       false
     end
