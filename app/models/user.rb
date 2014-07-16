@@ -19,6 +19,9 @@ class User < ActiveRecord::Base
   has_many :groups, through: :group_users
   has_many :oauth_applications, through: :groups
 
+  has_many :owned_groups, class_name: 'Group',
+           foreign_key: :owner_id, inverse_of: :owner
+
   before_validation :normalize_username
 
   validates :username, presence: true, 

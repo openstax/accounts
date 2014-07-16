@@ -6,11 +6,14 @@ class GroupAccessPolicy
     return false unless requestor.is_human?
     case action
     when :read
-      group.has_user?(requestor)
+      group.visibility == 'public' ||\
+        (group.visibility == 'members' && group.has_member?(requestor)) ||\
+        group.owner == requestor || group.group_sharing_for(requestor) ||\
+        requestor.is_administrator?
     when :create
-      !group.persisted? && !requestor.is_anonymous?
-    when :update
-      group.has_owner?(requestor)
+      !group.persisted? && !requestor.is_anonymous? && group.owner == requestor
+    when :update, :destroy
+      group.owner == requestor || requestor.is_administrator?
     else
       false
     end

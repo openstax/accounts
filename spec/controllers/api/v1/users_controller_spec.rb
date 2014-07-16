@@ -84,7 +84,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       outcome = JSON.parse(response.body)
 
       expect(outcome["users"].length).to eq 0
-      expect(outcome["num_matching_users"]).to eq 56
+      expect(outcome["num_matching_users"]).not_to eq 0
     end
 
   end

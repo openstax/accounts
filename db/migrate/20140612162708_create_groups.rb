@@ -1,13 +1,15 @@
 class CreateGroups < ActiveRecord::Migration
   def change
     create_table :groups do |t|
-      t.string :name, null: false
-      t.references :owner, polymorphic: true, null: false
+      t.string :name
+      t.string :visibility, null: false, default: 'private'
+      t.references :owner
 
       t.timestamps
     end
 
-    add_index :groups, [:owner_id, :owner_type, :name], unique: true
-    add_index :groups, :name
+    add_index :groups, :name, unique: true
+    add_index :groups, :visibility
+    add_index :groups, :owner_id
   end
 end

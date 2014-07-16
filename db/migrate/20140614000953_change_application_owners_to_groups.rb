@@ -3,9 +3,12 @@ class ChangeApplicationOwnersToGroups < ActiveRecord::Migration
     Doorkeeper::Application.all.each do |app|
       user = app.owner
       next if user.is_a? Group
-      app.owner = Group.new
-      app.owner.add_user(user)
-      app.owner.save!
+      g = Group.new
+      g.name = "#{app.name} Owners"
+      g.owner = g
+      g.add_user(user)
+      g.save!
+      app.owner = g
       app.save!
     end
   end

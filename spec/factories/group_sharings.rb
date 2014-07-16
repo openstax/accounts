@@ -1,9 +1,8 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :group_supergroup_permission do
-    group nil
-    supergroup nil
-    permission "MyString"
+  factory :group_sharing do
+    group
+    association :shared_with, factory: :user
   end
 end
