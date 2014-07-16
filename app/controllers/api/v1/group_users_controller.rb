@@ -6,9 +6,8 @@ class Api::V1::GroupUsersController < OpenStax::Api::V1::ApiController
     description <<-EOS
       GroupUsers represent members of a Group.
 
-      Group managers can add and remove members.
-
-      Owners can add and remove anyone and promote members.
+      Group owners and anyone with whom the group is shared with edit permission
+      can add and remove members.
     EOS
   end
 
@@ -31,32 +30,16 @@ class Api::V1::GroupUsersController < OpenStax::Api::V1::ApiController
   # create
   ###############################################################
 
-  api :POST, '/group_users', 'Adds a given user to the given Group.'
+  api :POST, '/groups/:id/group_users', 'Adds a given user to the given Group.'
   description <<-EOS
     Adds a given user to the given Group.
 
-    Requires manager access level.
+    The current user must own the group or have it shared with them with edit permission.
 
     #{json_schema(Api::V1::GroupUserRepresenter, include: :writeable)}
   EOS
   def create
     standard_nested_create(GroupUser, :group, params[:id])
-  end
-
-  ###############################################################
-  # update
-  ###############################################################
-
-  api :PUT, '/group_users/:id', 'Updates the access level of a GroupUser.'
-  description <<-EOS
-    Updates the access level of a user associated with the given GroupUser.
-
-    Requires owner access level.
-
-    #{json_schema(Api::V1::GroupUserRepresenter, include: :writeable)}
-  EOS
-  def update
-    standard_update(GroupUser, params[:id])
   end
 
   ###############################################################
@@ -67,8 +50,8 @@ class Api::V1::GroupUsersController < OpenStax::Api::V1::ApiController
   description <<-EOS
     Deletes a GroupUser, removing its associated user from the Group.
 
-    Requires manager access level to remove normal users.
-    Requires owner access level to remove managers or higher.
+    The current user must either own the group, have the group shared with them
+    with edit permission, or be the user the group_user refers to.
   EOS
   def destroy
     standard_destroy(GroupUser, params[:id])

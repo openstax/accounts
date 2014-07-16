@@ -20,7 +20,7 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
 
   api :GET, '/groups/:id', 'Gets the specified Group.'
   description <<-EOS
-    Shows the specified Group, including name and a list of members.
+    Shows the specified Group, including name, a list of members and a list of sharings.
 
     Required permission depends on the group's visibility setting.
 

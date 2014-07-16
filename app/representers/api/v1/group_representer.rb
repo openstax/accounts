@@ -3,7 +3,6 @@ module Api::V1
     include Representable::JSON::Hash
 
     property :name,
-             writeable: true,
              type: String,
              schema_info: {
                required: true,
@@ -13,10 +12,17 @@ module Api::V1
     collection :group_users,
                class: GroupUser,
                decorator: GroupUserRepresenter,
+               writeable: false,
                schema_info: {
-                 required: true,
-                 description: "The members of this group",
-                 minItems: 1
+                 description: "The members of this group"
+               }
+
+    collection :group_sharings,
+               class: GroupSharing,
+               decorator: GroupSharingRepresenter,
+               writeable: false,
+               schema_info: {
+                 description: "The sharings for this group"
                }
 
   end

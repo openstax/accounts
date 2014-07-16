@@ -10,8 +10,11 @@ describe Group do
   
   context 'validation' do
     it 'must have a unique name, if present' do
+      group_1.name = nil
+      group_1.save!
       group_1.name = 'MyGroup'
       group_1.save!
+
       group_2 = FactoryGirl.build(:group, name: group_1.name)
       expect(group_2).not_to be_valid
       expect(group_2.errors.messages[:name]).to eq(["has already been taken"])
