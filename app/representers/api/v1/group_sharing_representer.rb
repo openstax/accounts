@@ -1,10 +1,11 @@
 module Api::V1
   class GroupSharingRepresenter < Roar::Decorator
-    include Representable::JSON::Hash
+    include Roar::Representer::JSON
 
     property :group_id,
              type: Integer,
              writeable: false,
+             readable: false,
              schema_info: {
                description: "The shared group's ID"
              }

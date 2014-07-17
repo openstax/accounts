@@ -5,8 +5,6 @@ class GroupUserAccessPolicy
     # Deny access to applications without human users
     return false unless requestor.is_human?
     case action
-    when :index
-      true
     when :create
       group = group_user.group
       group.owner == requestor || group.group_sharing_for(requestor).try(:can_edit) ||\

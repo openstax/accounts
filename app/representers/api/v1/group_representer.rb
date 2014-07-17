@@ -1,12 +1,19 @@
 module Api::V1
   class GroupRepresenter < Roar::Decorator
-    include Representable::JSON::Hash
+    include Roar::Representer::JSON
 
     property :name,
              type: String,
              schema_info: {
                required: true,
                description: "The group's name"
+             }
+
+    property :visibility,
+             type: String,
+             schema_info: {
+               required: true,
+               description: "The group's visibility setting"
              }
 
     collection :group_users,

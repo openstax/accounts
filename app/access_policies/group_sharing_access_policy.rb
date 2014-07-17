@@ -5,8 +5,6 @@ class GroupSharingAccessPolicy
     # Deny access to applications without human users
     return false unless requestor.is_human?
     case action
-    when :index
-      true
     when :create, :update
       group_sharing.group.owner == requestor
     when :destroy

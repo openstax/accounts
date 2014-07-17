@@ -1,9 +1,9 @@
 require 'representable/json/collection'
 
 module Api::V1
-  module GroupUsersRepresenter
+  module GroupsRepresenter
     include Representable::JSON::Collection
 
-    items class: GroupUser, decorator: GroupUserRepresenter
+    items class: Group, decorator: GroupRepresenter
   end
 end

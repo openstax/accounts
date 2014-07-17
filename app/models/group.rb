@@ -14,6 +14,21 @@ class Group < ActiveRecord::Base
 
   validates_uniqueness_of :name, allow_nil: true
 
+  scope :visible_for, lambda { |user|
+    uid = user.id
+    gids = user.group_users.pluck(:group_id)
+    gt = Group.arel_table
+    gut = GroupUser.arel_table
+    gst = GroupSharing.arel_table
+    includes(:group_users).includes(:group_sharings).where(
+      gt[:visibility].eq('public').or(
+      gt[:owner_id].eq(uid)).or(
+      gut[:user_id].eq(uid)).or(
+      gst[:shared_with_id].eq(uid).and(gst[:shared_with_type].eq('User'))).or(
+      gst[:shared_with_id].in(gids).and(gst[:shared_with_type].eq('Group')))
+    )
+  }
+
   def add_user(user)
     # TODO: make routine?
     users = user.is_a?(Array) ? user : [user]

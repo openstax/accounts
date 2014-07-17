@@ -15,6 +15,20 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
   end
 
   ###############################################################
+  # index
+  ###############################################################
+
+  api :GET, '/groups', 'Lists the Group memberships for the current user.'
+  description <<-EOS
+    Shows the list of Groups that the current user is a member of.
+
+    #{json_schema(Api::V1::GroupRepresenter, include: :readable)}
+  EOS
+  def index
+    respond_with Group.visible_for(current_human_user)
+  end
+
+  ###############################################################
   # show
   ###############################################################
 
@@ -34,7 +48,7 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
   # create
   ###############################################################
 
-  api :POST, '/groups/', 'Creates a new Group.'
+  api :POST, '/groups', 'Creates a new Group.'
   description <<-EOS
     Creates a new Group and sets the current user as the owner.
 

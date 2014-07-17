@@ -12,21 +12,6 @@ class Api::V1::GroupUsersController < OpenStax::Api::V1::ApiController
   end
 
   ###############################################################
-  # index
-  ###############################################################
-
-  api :GET, '/group_users', 'Lists the Group memberships for the current user.'
-  description <<-EOS
-    Shows the list of GroupUsers for the current user, that is,
-    the list of Groups that the current user is a member of.
-
-    #{json_schema(Api::V1::GroupUsersRepresenter, include: :readable)}
-  EOS
-  def index
-    respond_with GroupUser.where(:user_id => current_human_user.id)
-  end
-
-  ###############################################################
   # create
   ###############################################################
 

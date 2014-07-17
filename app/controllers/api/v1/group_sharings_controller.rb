@@ -11,21 +11,6 @@ class Api::V1::GroupSharingsController < OpenStax::Api::V1::ApiController
   end
 
   ###############################################################
-  # index
-  ###############################################################
-
-  api :GET, '/group_sharings', 'Lists the Group sharings for the current user.'
-  description <<-EOS
-    Shows the list of GroupSharings for the current user, that is,
-    the list of Groups shared with the current user.
-
-    #{json_schema(Api::V1::GroupSharingsRepresenter, include: :readable)}
-  EOS
-  def index
-    respond_with GroupSharing.visible_for(current_human_user)
-  end
-
-  ###############################################################
   # create
   ###############################################################
 
@@ -39,6 +24,22 @@ class Api::V1::GroupSharingsController < OpenStax::Api::V1::ApiController
   EOS
   def create
     standard_nested_create(GroupSharing, :group, params[:id])
+  end
+
+  ###############################################################
+  # update
+  ###############################################################
+
+  api :PUT, '/group_sharings/:id', 'Updates the properties of a GroupSharing.'
+  description <<-EOS
+    Updates the properties of a GroupSharing.
+
+    Requires the current user to be an owner of the associated group.
+
+    #{json_schema(Api::V1::GroupSharingRepresenter, include: :writeable)}
+  EOS
+  def update
+    standard_update(GroupSharing, params[:id])
   end
 
   ###############################################################
