@@ -127,6 +127,64 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
   end
 
   context 'show' do
+    it 'must always show public groups' do
+      api_get :show, nil, parameters: {id: group_3.id}
+
+      expect(response.code).to eq('200')
+      expected_response = {
+        'name' => 'Group 3',
+        'is_public' => true,
+        'members' => []
+      }
+      expect(JSON.parse(response.body)).to eq(expected_response)
+    end
+
+    it 'must not show a private group without a token' do
+      expect{api_get :show, nil, parameters: {id: group_1.id}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+    end
+
+    it 'must not show a private group to an app without a user token' do
+      expect{api_get :show, untrusted_application_token, parameters: {id: group_1.id}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+    end
+
+    it 'must not show a private group to an unauthorized user' do
+      expect{api_get :show, user_1_token, parameters: {id: group_1.id}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+    end
+
+    it 'must show private groups to authorized users' do
+      group_1.add_user(user_1)
+      api_get :show, user_1_token, parameters: {id: group_1.id}
+
+      expect(response.code).to eq('200')
+      expected_response = {
+        'name' => 'Group 1',
+        'is_public' => false,
+        'members' => [
+          {'id' => user_1.id, 'username' => user_1.username}
+        ]
+      }
+      expect(JSON.parse(response.body)).to eq(expected_response)
+
+      group_2.add_permitted_group(group_1)
+      api_get :show, user_1_token, parameters: {id: group_2.id}
+
+      expect(response.code).to eq('200')
+      expected_response = {
+        'name' => 'Group 2',
+        'is_public' => false,
+        'members' => []
+      }
+      expect(JSON.parse(response.body)).to eq(expected_response)
+    end
   end
 
   context 'create' do

@@ -5,6 +5,7 @@ class GroupMemberAccessPolicy
     # Deny access to applications without human users
     return false unless requestor.is_human?
     group = group_user.group
+
     case action
     when :create
       (group.has_role?(requestor, :manager) &&\

@@ -20,6 +20,8 @@ class Group < ActiveRecord::Base
   validates_uniqueness_of :name, allow_nil: true
 
   scope :visible_for, lambda { |user|
+    return where(is_public: true) unless user.is_a? User
+    
     uid = user.id
     gids = user.group_users.pluck(:group_id)
     gt = Group.arel_table
@@ -42,6 +44,10 @@ class Group < ActiveRecord::Base
       gu.save if persisted?
       group_users << gu if gu.valid?
     end
+  end
+
+  def add_member(user)
+    add_user(user, :member)
   end
 
   def add_permitted_group(group, role = :viewer)
@@ -72,6 +78,10 @@ class Group < ActiveRecord::Base
     else
       false
     end
+  end
+
+  def has_member?(obj)
+    has_role?(obj, :member)
   end
 
 end
