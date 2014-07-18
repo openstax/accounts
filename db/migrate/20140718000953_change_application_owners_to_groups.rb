@@ -5,8 +5,8 @@ class ChangeApplicationOwnersToGroups < ActiveRecord::Migration
       next if user.is_a? Group
       g = Group.new
       g.name = "#{app.name} Owners"
-      g.owner = g
-      g.add_user(user)
+      g.add_user(user, :member)
+      g.add_user(user, :owner)
       g.save!
       app.owner = g
       app.save!

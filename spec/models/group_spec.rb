@@ -26,38 +26,36 @@ describe Group do
 
   it 'can have members added' do
     expect(group_1).to be_valid
-    expect(group_1.has_member?(user_1)).to eq(false)
+    expect(group_1.has_role?(user_1, :member)).to eq(false)
 
     group_1.add_user(user_1)
     group_1.save!
     group_1.reload
 
-    expect(group_1.has_member?(user_1)).to eq(true)
-    expect(group_1.has_member?(user_2)).to eq(false)
+    expect(group_1.has_role?(user_1, :member)).to eq(true)
+    expect(group_1.has_role?(user_2, :member)).to eq(false)
 
     group_1.add_user(user_2)
     group_1.reload
 
-    expect(group_1.has_member?(user_2)).to eq(true)
+    expect(group_1.has_role?(user_2, :member)).to eq(true)
   end
 
-  it 'can be shared' do
+  it 'can have groups added' do
     expect(group_1).to be_valid
-    expect(group_1.group_sharing_for(user_1)).to be_nil
+    expect(group_1.has_role?(group_2, :viewer)).to eq(false)
 
-    group_1.share_with(user_1)
+    group_1.add_permitted_group(group_2)
     group_1.save!
     group_1.reload
 
-    expect(group_1.group_sharing_for(user_1)).not_to be_nil
-    expect(group_1.group_sharing_for(user_1).can_edit).to eq(false)
-    expect(group_1.group_sharing_for(group_2)).to be_nil
+    expect(group_1.has_role?(group_2, :viewer)).to eq(true)
+    expect(group_1.has_role?(group_1, :viewer)).to eq(false)
 
-    group_1.share_with(group_2, true)
+    group_1.add_permitted_group(group_1)
     group_1.reload
 
-    expect(group_1.group_sharing_for(group_2)).not_to be_nil
-    expect(group_1.group_sharing_for(group_2).can_edit).to eq(true)
+    expect(group_1.has_role?(group_1, :viewer)).to eq(true)
   end
 
 end

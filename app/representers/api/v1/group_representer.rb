@@ -9,27 +9,19 @@ module Api::V1
                description: "The group's name"
              }
 
-    property :visibility,
-             type: String,
+    property :is_public,
+             writeable: true,
              schema_info: {
-               required: true,
+               type: "boolean",
                description: "The group's visibility setting"
              }
 
-    collection :group_users,
-               class: GroupUser,
-               decorator: GroupUserRepresenter,
+    collection :members,
+               class: User,
+               decorator: UserRepresenter,
                writeable: false,
                schema_info: {
                  description: "The members of this group"
-               }
-
-    collection :group_sharings,
-               class: GroupSharing,
-               decorator: GroupSharingRepresenter,
-               writeable: false,
-               schema_info: {
-                 description: "The sharings for this group"
                }
 
   end

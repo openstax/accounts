@@ -4,9 +4,15 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
     api_versions "v1"
     short_description 'A group of users of OpenStax.'
     description <<-EOS
-      Groups have an owner, a name, a visibility setting and a collection of users.
+      Groups have an owner, a name, a visibility setting (is_public)
+      and a collection of users.
 
       Owners can manage group members, rename and delete the group.
+
+      Managers can manage group members.
+
+      Members and Viewers can view private groups.
+      Members are also listed as being in the group.
 
       Although groups are created by users through applications, they do not
       belong to any specific application. As such, applications acting on behalf of
@@ -18,9 +24,10 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
   # index
   ###############################################################
 
-  api :GET, '/groups', 'Lists the Group memberships for the current user.'
+  api :GET, '/groups', 'Lists the visible Groups for the current user.'
   description <<-EOS
-    Shows the list of Groups that the current user is a member of.
+    Shows the list of visible Groups for the current user.
+    These groups can be reused by this user in any OpenStax application.
 
     #{json_schema(Api::V1::GroupRepresenter, include: :readable)}
   EOS
@@ -34,9 +41,9 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
 
   api :GET, '/groups/:id', 'Gets the specified Group.'
   description <<-EOS
-    Shows the specified Group, including name, a list of members and a list of sharings.
+    Shows the specified Group, including name and list of members.
 
-    Required permission depends on the group's visibility setting.
+    Required permission depends on the group's is_public setting.
 
     #{json_schema(Api::V1::GroupRepresenter, include: :readable)}
   EOS
@@ -50,13 +57,13 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
 
   api :POST, '/groups', 'Creates a new Group.'
   description <<-EOS
-    Creates a new Group and sets the current user as the owner.
+    Creates a new Group and sets the current user as an owner.
 
     #{json_schema(Api::V1::GroupRepresenter, include: :writeable)}
   EOS
   def create
     standard_create(Group) do |group|
-      group.owner = current_human_user
+      group.add_user(current_human_user, :owner)
     end
   end
 

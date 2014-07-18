@@ -5,7 +5,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
   let!(:group_1) { FactoryGirl.create :group, name: 'Group 1', users_count: 0 }
   let!(:group_2) { FactoryGirl.create :group, name: 'Group 2', users_count: 0 }
   let!(:group_3) { FactoryGirl.create :group, name: 'Group 3', users_count: 0,
-                                              visibility: 'public' }
+                                              is_public: true }
 
   let!(:user_1)       { FactoryGirl.create :user, :terms_agreed }
   let!(:user_2)       { FactoryGirl.create :user, :terms_agreed }
@@ -33,9 +33,8 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expect(response.code).to eq('200')
       expected_response = [{
         'name' => 'Group 3',
-        'visibility' => 'public',
-        'group_users' => [],
-        'group_sharings' => []
+        'is_public' => true,
+        'members' => []
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -47,129 +46,80 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expect(response.code).to eq('200')
       expected_response = [{
         'name' => 'Group 1',
-        'visibility' => 'private',
-        'group_users' => [
-          {'user_id' => user_1.id}
-        ],
-        'group_sharings' => []
-      },
-      {
-        'name' => 'Group 3',
-        'visibility' => 'public',
-        'group_users' => [],
-        'group_sharings' => []
-      }]
-
-      expect(JSON.parse(response.body)).to eq(expected_response)
-
-      group_2.share_with(user_1)
-
-      api_get :index, user_1_token
-
-      expect(response.code).to eq('200')
-      expected_response = [{
-        'name' => 'Group 1',
-        'visibility' => 'private',
-        'group_users' => [
-          {'user_id' => user_1.id}
-        ],
-        'group_sharings' => []
-      },
-      {
-        'name' => 'Group 2',
-        'visibility' => 'private',
-        'group_users' => [],
-        'group_sharings' => [
-          {'shared_with_id' => user_1.id, 'shared_with_type' => 'User'}
+        'is_public' => false,
+        'members' => [
+          {'id' => user_1.id, 'username' => user_1.username}
         ]
       },
       {
         'name' => 'Group 3',
-        'visibility' => 'public',
-        'group_users' => [],
-        'group_sharings' => []
+        'is_public' => true,
+        'members' => []
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
 
-      group_2.group_sharings.first.destroy
+      group_2.add_permitted_group(group_1)
 
       api_get :index, user_1_token
 
       expect(response.code).to eq('200')
       expected_response = [{
         'name' => 'Group 1',
-        'visibility' => 'private',
-        'group_users' => [
-          {'user_id' => user_1.id}
-        ],
-        'group_sharings' => []
-      },
-      {
-        'name' => 'Group 3',
-        'visibility' => 'public',
-        'group_users' => [],
-        'group_sharings' => []
-      }]
-
-      group_2.share_with(group_1)
-
-      api_get :index, user_1_token
-
-      expect(response.code).to eq('200')
-      expected_response = [{
-        'name' => 'Group 1',
-        'visibility' => 'private',
-        'group_users' => [
-          {'user_id' => user_1.id}
-        ],
-        'group_sharings' => []
-      },
-      {
-        'name' => 'Group 2',
-        'visibility' => 'private',
-        'group_users' => [],
-        'group_sharings' => [
-          {'shared_with_id' => group_1.id, 'shared_with_type' => 'Group'}
+        'is_public' => false,
+        'members' => [
+          {'id' => user_1.id, 'username' => user_1.username}
         ]
       },
       {
+        'name' => 'Group 2',
+        'is_public' => false,
+        'members' => []
+      },
+      {
         'name' => 'Group 3',
-        'visibility' => 'public',
-        'group_users' => [],
-        'group_sharings' => []
+        'is_public' => true,
+        'members' => []
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
 
-      group_2.add_user(user_2)
+      group_2.permitted_group_groups.first.destroy
 
       api_get :index, user_1_token
 
       expect(response.code).to eq('200')
       expected_response = [{
         'name' => 'Group 1',
-        'visibility' => 'private',
-        'group_users' => [
-          {'user_id' => user_1.id}
-        ],
-        'group_sharings' => []
-      },
-      {
-        'name' => 'Group 2',
-        'visibility' => 'private',
-        'group_users' => [
-          {'user_id' => user_2.id}
-        ],
-        'group_sharings' => [
-          {'shared_with_id' => group_1.id, 'shared_with_type' => 'Group'}
+        'is_public' => false,
+        'members' => [
+          {'id' => user_1.id, 'username' => user_1.username}
         ]
       },
       {
         'name' => 'Group 3',
-        'visibility' => 'public',
-        'group_users' => [],
-        'group_sharings' => []
+        'is_public' => true,
+        'members' => []
+      }]
+
+      group_3.add_user(user_2)
+
+      api_get :index, user_1_token
+
+      expect(response.code).to eq('200')
+      expected_response = [{
+        'name' => 'Group 1',
+        'is_public' => false,
+        'members' => [
+          {'id' => user_1.id, 'username' => user_1.username}
+        ]
+      },
+      {
+        'name' => 'Group 3',
+        'is_public' => true,
+        'members' => [
+          {'id' => user_2.id, 'username' => user_2.username}
+        ]
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)

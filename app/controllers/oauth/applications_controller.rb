@@ -11,7 +11,8 @@ module Oauth
     def create
       @application = Doorkeeper::Application.new(application_params(@user))
       @application.owner = Group.new
-      @application.owner.add_user(current_user)
+      @application.owner.add_user(current_user, :member)
+      @application.owner.add_user(current_user, :owner)
       OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,

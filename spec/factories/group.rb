@@ -2,7 +2,6 @@ FactoryGirl.define do
 
   factory :group do
     name nil
-    association :owner, factory: :user
 
     ignore do
       users_count 1
