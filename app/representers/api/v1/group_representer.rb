@@ -16,13 +16,55 @@ module Api::V1
                description: "The group's visibility setting"
              }
 
-    collection :members,
-               class: User,
-               decorator: UserRepresenter,
-               writeable: false,
-               schema_info: {
-                 description: "The members of this group"
-               }
+    nested :members, schema_info: { description: "The members of this group" } do
+      collection :member_users,
+                 as: :users,
+                 class: User,
+                 decorator: UserRepresenter,
+                 writeable: false
+    end        
+
+    nested :owners, schema_info: { description: "The owners of this group" } do
+      collection :owner_users,
+                 as: :users,
+                 class: User,
+                 decorator: UserRepresenter,
+                 writeable: false
+
+      collection :owner_group_groups,
+                 as: :groups,
+                 class: GroupGroup,
+                 decorator: GroupGroupRepresenter,
+                 writeable: false
+    end
+
+    nested :managers, schema_info: { description: "The managers of this group" } do
+      collection :manager_users,
+                 as: :users,
+                 class: User,
+                 decorator: UserRepresenter,
+                 writeable: false
+
+      collection :manager_group_groups,
+                 as: :groups,
+                 class: GroupGroup,
+                 decorator: GroupGroupRepresenter,
+                 writeable: false
+    end
+
+    nested :viewers, schema_info: { description: "The viewers of this group" } do
+      collection :viewer_users,
+                 as: :users,
+                 class: User,
+                 decorator: UserRepresenter,
+                 writeable: false
+
+      collection :viewer_group_groups,
+                 as: :groups,
+                 class: GroupGroup,
+                 decorator: GroupGroupRepresenter,
+                 writeable: false
+    end
 
   end
 end

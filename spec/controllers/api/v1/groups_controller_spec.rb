@@ -34,7 +34,10 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expected_response = [{
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => []
+        'members' => {'users' => []},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -47,14 +50,20 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expected_response = [{
         'name' => 'Group 1',
         'is_public' => false,
-        'members' => [
+        'members' => {'users' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ]
+        ]},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       },
       {
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => []
+        'members' => {'users' => []},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -67,19 +76,32 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expected_response = [{
         'name' => 'Group 1',
         'is_public' => false,
-        'members' => [
+        'members' => {'users' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ]
+        ]},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       },
       {
         'name' => 'Group 2',
         'is_public' => false,
-        'members' => []
+        'members' => {'users' => []},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => [
+          {'name' => 'Group 1', 'users' => [
+            {'id' => user_1.id, 'username' => user_1.username}
+          ]}
+        ]}
       },
       {
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => []
+        'members' => {'users' => []},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -92,14 +114,20 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expected_response = [{
         'name' => 'Group 1',
         'is_public' => false,
-        'members' => [
+        'members' => {'users' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ]
+        ]},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       },
       {
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => []
+        'members' => {'users' => []},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       }]
 
       group_3.add_user(user_2)
@@ -110,16 +138,22 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expected_response = [{
         'name' => 'Group 1',
         'is_public' => false,
-        'members' => [
+        'members' => {'users' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ]
+        ]},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       },
       {
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => [
+        'members' => {'users' => [
           {'id' => user_2.id, 'username' => user_2.username}
-        ]
+        ]},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -134,7 +168,10 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expected_response = {
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => []
+        'members' => {'users' => []},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       }
       expect(JSON.parse(response.body)).to eq(expected_response)
     end
@@ -168,9 +205,12 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expected_response = {
         'name' => 'Group 1',
         'is_public' => false,
-        'members' => [
+        'members' => {'users' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ]
+        ]},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
       }
       expect(JSON.parse(response.body)).to eq(expected_response)
 
@@ -181,13 +221,50 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expected_response = {
         'name' => 'Group 2',
         'is_public' => false,
-        'members' => []
+        'members' => {'users' => []},
+        'owners' => {'users' => [], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => [
+          {'name' => 'Group 1', 'users' => [
+            {'id' => user_1.id, 'username' => user_1.username}
+          ]}
+        ]}
       }
       expect(JSON.parse(response.body)).to eq(expected_response)
     end
   end
 
   context 'create' do
+    it 'must not create a group without a token' do
+      expect{api_post :create, nil}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+    end
+
+    it 'must not create a group for an app without a user token' do
+      expect{api_post :create, untrusted_application_token}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+    end
+
+    it 'must create groups for users' do
+      api_post :create, user_1_token, raw_post_data: {name: 'MyGroup'}
+
+      expect(response.code).to eq('201')
+      expected_response = {
+        'name' => 'MyGroup',
+        'is_public' => false,
+        'members' => {'users' => []},
+        'owners' => {'users' => [
+          {'id' => user_1.id, 'username' => user_1.username}
+        ], 'groups' => []},
+        'managers' => {'users' => [], 'groups' => []},
+        'viewers' => {'users' => [], 'groups' => []}
+      }
+      expect(JSON.parse(response.body)).to eq(expected_response)
+    end
   end
 
   context 'update' do

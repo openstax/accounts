@@ -3,9 +3,6 @@ class Group < ActiveRecord::Base
   has_many :group_users, dependent: :destroy, inverse_of: :group
   has_many :users, through: :group_users
 
-  has_many :group_members, class_name: 'GroupUser', conditions: { role: 'member' }
-  has_many :members, through: :group_members, source: :user
-
   has_many :permitter_group_groups, dependent: :destroy, class_name: 'GroupGroup',
            foreign_key: :permitted_group_id, inverse_of: :permitted_group
   has_many :permitter_groups, through: :permitter_group_groups
@@ -16,6 +13,30 @@ class Group < ActiveRecord::Base
 
   has_many :oauth_applications, as: :owner, inverse_of: :owner,
            class_name: 'Doorkeeper::Application'
+
+  has_many :member_group_users, class_name: 'GroupUser', conditions: { role: 'member' }
+  has_many :member_users, through: :member_group_users, source: :user
+
+  has_many :owner_group_users, class_name: 'GroupUser', conditions: { role: 'owner' }
+  has_many :owner_users, through: :owner_group_users, source: :user
+
+  has_many :manager_group_users, class_name: 'GroupUser', conditions: { role: 'manager' }
+  has_many :manager_users, through: :manager_group_users, source: :user
+
+  has_many :viewer_group_users, class_name: 'GroupUser', conditions: { role: 'viewer' }
+  has_many :viewer_users, through: :viewer_group_users, source: :user
+
+  has_many :owner_group_groups, class_name: 'GroupGroup',
+           foreign_key: :permitter_group_id, conditions: { role: 'owner' }
+  has_many :owner_groups, through: :owner_group_groups, source: :permitted_group
+
+  has_many :manager_group_groups, class_name: 'GroupGroup',
+           foreign_key: :permitter_group_id, conditions: { role: 'manager' }
+  has_many :manager_groups, through: :manager_group_groups, source: :permitted_group
+
+  has_many :viewer_group_groups, class_name: 'GroupGroup',
+           foreign_key: :permitter_group_id, conditions: { role: 'viewer' }
+  has_many :viewer_groups, through: :viewer_group_groups, source: :permitted_group
 
   validates_uniqueness_of :name, allow_nil: true
 
@@ -35,15 +56,13 @@ class Group < ActiveRecord::Base
   }
 
   def add_user(user, role = :member)
-    users = user.is_a?(Array) ? user : [user]
-    users.each do |user|
-      gu = GroupUser.new
-      gu.group = self
-      gu.user = user
-      gu.role = role
-      gu.save if persisted?
-      group_users << gu if gu.valid?
-    end
+    return unless user.is_a? User
+    gu = GroupUser.new
+    gu.group = self
+    gu.user = user
+    gu.role = role
+    gu.save if persisted?
+    group_users << gu if gu.valid?
   end
 
   def add_member(user)
@@ -51,17 +70,15 @@ class Group < ActiveRecord::Base
   end
 
   def add_permitted_group(group, role = :viewer)
-    groups = group.is_a?(Array) ? group : [group]
-    groups.each do |group|
-      gg = GroupGroup.new
-      gg.permitter_group = self
-      gg.permitted_group = group
-      gg.role = role
-      return false unless gg.valid?
-      gg.save if persisted?
-      self.permitted_group_groups << gg
-      group.permitter_group_groups << gg
-    end
+    return unless group.is_a? Group
+    gg = GroupGroup.new
+    gg.permitter_group = self
+    gg.permitted_group = group
+    gg.role = role
+    return false unless gg.valid?
+    gg.save if persisted?
+    self.permitted_group_groups << gg
+    group.permitter_group_groups << gg
   end
 
   def has_role?(obj, role = nil)

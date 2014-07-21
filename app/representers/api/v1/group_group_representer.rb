@@ -2,30 +2,30 @@ module Api::V1
   class GroupGroupRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
-    property :permitter_group,
-             class: Group,
-             decorator: GroupRepresenter,
-             writeable: false,
-             readable: false,
-             schema_info: {
-               description: "The permitter group"
-             }
-
-    property :permitted_group,
-             class: Group,
-             decorator: GroupRepresenter,
-             writeable: false,
-             readable: false,
-             schema_info: {
-               description: "The permitted group"
-             }
-
-    property :role,
+    property :name,
              type: String,
+             writeable: false,
+             exec_context: :decorator,
              schema_info: {
-               required: true,
-               description: "The role that the permitted group has within the permitter group"
+               description: "The associated group's name"
              }
+
+    collection :users,
+               class: User,
+               decorator: UserRepresenter,
+               writeable: false,
+               exec_context: :decorator,
+               schema_info: {
+                 description: "The members of the associated group"
+               }
+
+    def name
+      represented.permitted_group.name
+    end
+
+    def users
+      represented.permitted_group.member_users
+    end
 
   end
 end
