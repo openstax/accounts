@@ -230,6 +230,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
           ]}
         ]}
       }
+
       expect(JSON.parse(response.body)).to eq(expected_response)
     end
   end
@@ -268,9 +269,142 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
   end
 
   context 'update' do
+    it 'must not update a group without a token' do
+      expect{api_put :update, nil,
+                     parameters: {id: group_3.id},
+                     raw_post_data: {name: 'MyGroup'}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+      expect(group_3.reload.name).to eq('Group 3')
+    end
+
+    it 'must not update a group for an app without a user token' do
+      expect{api_put :update, untrusted_application_token,
+                     parameters: {id: group_3.id},
+                     raw_post_data: {name: 'MyGroup'}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+      expect(group_3.reload.name).to eq('Group 3')
+    end
+
+    it 'must not update a group for an unauthorized user' do
+      expect{api_put :update, user_1_token,
+                     parameters: {id: group_3.id},
+                     raw_post_data: {name: 'MyGroup'}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+      expect(group_3.reload.name).to eq('Group 3')
+
+      group_3.add_user(user_1)
+
+      expect{api_put :update, user_1_token,
+                     parameters: {id: group_3.id},
+                     raw_post_data: {name: 'MyGroup'}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+      expect(group_3.reload.name).to eq('Group 3')
+
+      group_3.add_user(user_1, :manager)
+
+      expect{api_put :update, user_1_token,
+                     parameters: {id: group_3.id},
+                     raw_post_data: {name: 'MyGroup'}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+      expect(group_3.reload.name).to eq('Group 3')
+    end
+
+    it 'must update groups for authorized users' do
+      group_3.add_user(user_1, :owner)
+      api_put :update, user_1_token,
+              parameters: {id: group_3.id},
+              raw_post_data: {name: 'MyGroup'}
+
+      expect(response.code).to eq('204')
+      expect(response.body).to be_blank
+      expect(group_3.reload.name).to eq('MyGroup')
+
+      group_1.add_user(user_1)
+      group_2.add_permitted_group(group_1, :owner)
+      api_put :update, user_1_token,
+              parameters: {id: group_2.id},
+              raw_post_data: {name: 'MyGroup2'}
+
+      expect(response.code).to eq('204')
+      expect(response.body).to be_blank
+      expect(group_2.reload.name).to eq('MyGroup2')
+    end
   end
 
   context 'destroy' do
+    it 'must not destroy a group without a token' do
+      expect{api_delete :destroy, nil,
+                        parameters: {id: group_3.id}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+      expect(Group.where(id: group_3.id).first).not_to be_nil
+    end
+
+    it 'must not destroy a group for an app without a user token' do
+      expect{api_delete :destroy, untrusted_application_token,
+                        parameters: {id: group_3.id}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+      expect(Group.where(id: group_3.id).first).not_to be_nil
+    end
+
+    it 'must not destroy a group for an unauthorized user' do
+      expect{api_delete :destroy, user_1_token,
+                        parameters: {id: group_3.id}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+      expect(Group.where(id: group_3.id).first).not_to be_nil
+
+      group_3.add_user(user_1)
+
+      expect{api_delete :destroy, user_1_token,
+                        parameters: {id: group_3.id}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+      expect(Group.where(id: group_3.id).first).not_to be_nil
+
+      group_3.add_user(user_1, :manager)
+
+      expect{api_delete :destroy, user_1_token,
+                        parameters: {id: group_3.id}}.to(
+        raise_error(SecurityTransgression))
+
+      expect(response.body).to be_empty
+      expect(Group.where(id: group_3.id).first).not_to be_nil
+    end
+
+    it 'must destroy groups for authorized users' do
+      group_3.add_user(user_1, :owner)
+      api_delete :destroy, user_1_token,
+                 parameters: {id: group_3.id}
+
+      expect(response.code).to eq('204')
+      expect(response.body).to be_blank
+      expect(Group.where(id: group_3.id).first).to be_nil
+
+      group_1.add_user(user_1)
+      group_2.add_permitted_group(group_1, :owner)
+      api_delete :destroy, user_1_token,
+                 parameters: {id: group_2.id}
+
+      expect(response.code).to eq('204')
+      expect(response.body).to be_blank
+      expect(Group.where(id: group_2.id).first).to be_nil
+    end
   end
 
 end
