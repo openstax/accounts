@@ -29,7 +29,7 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
     Shows the list of visible Groups for the current user.
     These groups can be reused by this user in any OpenStax application.
 
-    #{json_schema(Api::V1::GroupRepresenter, include: :readable)}
+    #{json_schema(Api::V1::GroupsRepresenter, include: :readable)}
   EOS
   def index
     respond_with Group.visible_for(current_human_user)

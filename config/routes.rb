@@ -55,10 +55,12 @@ Accounts::Application.routes.draw do
     resources :messages, only: [:create]
 
     resources :groups, only: [:index, :show, :create, :update, :destroy] do
-      resources :group_users, only: [:index, :create, :destroy], shallow: true
+      resources :group_users, only: [:create]
 
       resources :group_groups, only: [:create, :destroy], shallow: true
     end
+
+    resources :group_users, only: [:index, :destroy]
   end
 
   # Resources

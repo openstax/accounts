@@ -14,14 +14,15 @@ class Api::V1::GroupUsersController < OpenStax::Api::V1::ApiController
   # index
   ###############################################################
 
-  api :GET, '/groups', 'Lists the group memberships for the current user.'
+  api :GET, '/group_users', 'Lists the group memberships for the current user.'
   description <<-EOS
     Shows the group memberships for the current user, with added role information.
 
-    #{json_schema(Api::V1::GroupUserRepresenter, include: :readable)}
+    #{json_schema(Api::V1::GroupUsersRepresenter, include: :readable)}
   EOS
   def index
-    respond_with ''
+    OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, GroupUser)
+    respond_with current_human_user.group_users
   end
 
   ###############################################################
@@ -39,7 +40,7 @@ class Api::V1::GroupUsersController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::GroupUserRepresenter, include: :writeable)}
   EOS
   def create
-    standard_nested_create(GroupUser, :group, params[:id])
+    standard_nested_create(GroupUser, :group, params[:group_id])
   end
 
   ###############################################################

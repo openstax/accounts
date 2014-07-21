@@ -9,7 +9,6 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
 
   let!(:user_1)       { FactoryGirl.create :user, :terms_agreed }
   let!(:user_2)       { FactoryGirl.create :user, :terms_agreed }
-  let!(:user_3)       { FactoryGirl.create :user, :terms_agreed }
 
   let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
 
@@ -19,9 +18,6 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
   let!(:user_2_token) { FactoryGirl.create :doorkeeper_access_token,
                         application: untrusted_application,
                         resource_owner_id: user_2.id }
-  let!(:user_3_token) { FactoryGirl.create :doorkeeper_access_token,
-                        application: untrusted_application,
-                        resource_owner_id: user_3.id }
   let!(:untrusted_application_token) { FactoryGirl.create :doorkeeper_access_token,
                                        application: untrusted_application,
                                        resource_owner_id: nil }
