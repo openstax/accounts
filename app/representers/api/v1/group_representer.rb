@@ -31,10 +31,10 @@ module Api::V1
                  decorator: UserRepresenter,
                  writeable: false
 
-      collection :owner_group_groups,
+      collection :owner_groups,
                  as: :groups,
-                 class: GroupGroup,
-                 decorator: GroupGroupRepresenter,
+                 class: Group,
+                 decorator: SimpleGroupRepresenter,
                  writeable: false
     end
 
@@ -45,10 +45,10 @@ module Api::V1
                  decorator: UserRepresenter,
                  writeable: false
 
-      collection :manager_group_groups,
+      collection :manager_groups,
                  as: :groups,
-                 class: GroupGroup,
-                 decorator: GroupGroupRepresenter,
+                 class: Group,
+                 decorator: SimpleGroupRepresenter,
                  writeable: false
     end
 
@@ -59,10 +59,10 @@ module Api::V1
                  decorator: UserRepresenter,
                  writeable: false
 
-      collection :viewer_group_groups,
+      collection :viewer_groups,
                  as: :groups,
-                 class: GroupGroup,
-                 decorator: GroupGroupRepresenter,
+                 class: Group,
+                 decorator: SimpleGroupRepresenter,
                  writeable: false
     end
 

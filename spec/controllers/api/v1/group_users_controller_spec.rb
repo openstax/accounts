@@ -142,21 +142,25 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
 
   context 'create' do
     it 'must not create a group_user without a token' do
-      expect{api_post :create, nil, parameters: {group_id: group_3.id}}.to(
+      expect{api_post :create, nil, parameters: {group_id: group_3.id},
+                      raw_post_data: {user_id: user_2.id, role: :member}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
     end
 
     it 'must not create a group_user for an app without a user token' do
-      expect{api_post :create, untrusted_application_token, parameters: {group_id: group_3.id}}.to(
+      expect{api_post :create, untrusted_application_token,
+                      parameters: {group_id: group_3.id},
+                      raw_post_data: {user_id: user_2.id, role: :member}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
     end
 
     it 'must not create a group_user for an unauthorized user' do
-      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id}}.to(
+      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id},
+                      raw_post_data: {user_id: user_2.id, role: :member}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -164,7 +168,8 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
       group_3.add_user(user_1)
       controller.current_human_user.reload
 
-      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id}}.to(
+      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id},
+                      raw_post_data: {user_id: user_2.id, role: :member}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -172,7 +177,8 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
       group_3.add_user(user_1, :viewer)
       controller.current_human_user.reload
 
-      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id}}.to(
+      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id},
+                      raw_post_data: {user_id: user_2.id, role: :member}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -220,10 +226,6 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
   end
 
   context 'destroy' do
-    before (:each) do
-
-    end
-
     it 'must not destroy a group_user without a token' do
       expect{api_delete :destroy, nil,
                         parameters: {id: group_user_1.id}}.to(

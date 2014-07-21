@@ -29,7 +29,9 @@ class Api::V1::GroupGroupsController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::GroupGroupRepresenter, include: :writeable)}
   EOS
   def create
-    standard_nested_create(GroupGroup, :group, params[:id])
+    standard_create(GroupGroup) do |group_group|
+      group_group.permitter_group_id = params[:group_id]
+    end
   end
 
   ###############################################################
