@@ -50,8 +50,6 @@ Accounts::Application.routes.draw do
       end
     end
 
-    # resource :application_user, only: [:show, :update, :destroy]
-
     resources :messages, only: [:create]
 
     resources :groups, only: [:index, :show, :create, :update, :destroy] do
