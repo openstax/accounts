@@ -69,14 +69,30 @@ class Group < ActiveRecord::Base
     gids_array
   end
 
+  def member_user_ids
+    GroupMember.where(group_id: member_group_ids).collect{|gm| gm.user_id}
+  end
+
+  def member_users
+    User.joins(:group_members).where(group_id: member_group_ids).uniq
+  end
+
   def member_group_hash
-    Hash[GroupNesting.where(container_group_id: member_group_ids)
-                     .collect{|gn| [gn.container_group_id, gn.member_group_id]}]
+    h = Hash.new
+    GroupNesting.where(container_group_id: member_group_ids).each do |gn|
+      h[gn.container_group_id] ||= []
+      h[gn.container_group_id] << gn.member_group_id
+    end
+    h
   end
 
   def member_user_hash
-    Hash[GroupMember.where(group_id: member_group_ids)
-                    .collect{|gm| [gm.group_id, gm.user_id]}]
+    h = Hash.new
+    GroupMember.where(group_id: member_group_ids).each do |gm|
+      h[gm.group_id] ||= []
+      h[gm.group_id] << gm.user_id
+    end
+    h
   end
 
   def has_member?(obj)
