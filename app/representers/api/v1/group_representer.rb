@@ -16,55 +16,22 @@ module Api::V1
                description: "The group's visibility setting"
              }
 
-    nested :members, schema_info: { description: "The members of this group" } do
-      collection :member_users,
-                 as: :users,
-                 class: User,
-                 decorator: UserRepresenter,
-                 writeable: false
-    end        
+    collection :group_staffs,
+               as: :staff,
+               class: GroupStaff,
+               decorator: GroupStaffRepresenter,
+               writeable: false,
+               schema_info: { description: "The staff of this group" }
 
-    nested :owners, schema_info: { description: "The owners of this group" } do
-      collection :owner_users,
-                 as: :users,
-                 class: User,
-                 decorator: UserRepresenter,
-                 writeable: false
+    collection :member_group_hash,
+               type: Hash,
+               writeable: false,
+               schema_info: { description: "A hash representation of the group nesting by ID" }
 
-      collection :owner_groups,
-                 as: :groups,
-                 class: Group,
-                 decorator: SimpleGroupRepresenter,
-                 writeable: false
-    end
-
-    nested :managers, schema_info: { description: "The managers of this group" } do
-      collection :manager_users,
-                 as: :users,
-                 class: User,
-                 decorator: UserRepresenter,
-                 writeable: false
-
-      collection :manager_groups,
-                 as: :groups,
-                 class: Group,
-                 decorator: SimpleGroupRepresenter,
-                 writeable: false
-    end
-
-    nested :viewers, schema_info: { description: "The viewers of this group" } do
-      collection :viewer_users,
-                 as: :users,
-                 class: User,
-                 decorator: UserRepresenter,
-                 writeable: false
-
-      collection :viewer_groups,
-                 as: :groups,
-                 class: Group,
-                 decorator: SimpleGroupRepresenter,
-                 writeable: false
-    end
+    collection :member_user_hash,
+               type: Hash,
+               writeable: false,
+               schema_info: { description: "A hash that maps group ID's to member user ID's" }
 
   end
 end

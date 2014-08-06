@@ -1,5 +1,5 @@
 module Api::V1
-  class GroupUserRepresenter < Roar::Decorator
+  class GroupMemberRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
     property :group,
@@ -10,18 +10,12 @@ module Api::V1
                description: "The associated group"
              }
 
-    property :user_id,
-             type: Integer,
+    property :user,
+             class: User,
+             decorator: UserRepresenter,
              schema_info: {
                required: true,
-               description: "The associated user's ID"
-             }
-
-    property :role,
-             type: String,
-             schema_info: {
-               required: true,
-               description: "The associated user's role within the group"
+               description: "The member user"
              }
 
   end

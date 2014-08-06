@@ -3,8 +3,11 @@ class Group < ActiveRecord::Base
   serialize :cached_container_group_ids
   serialize :cached_member_group_ids
 
+  has_many :group_staffs, dependent: :destroy, inverse_of: :group
+  has_many :staffs, through: :group_staffs, source: :user
+
   has_many :group_members, dependent: :destroy, inverse_of: :group
-  has_many :members, through: :group_members, source: :users
+  has_many :members, through: :group_members, source: :user
 
   has_many :container_group_nestings, dependent: :destroy, class_name: 'GroupNesting',
            foreign_key: :member_group_id, inverse_of: :member_group
@@ -66,8 +69,14 @@ class Group < ActiveRecord::Base
     gids_array
   end
 
-  def member_user_ids
-    GroupMember.where(group_id: member_group_ids).pluck(:user_id)
+  def member_group_hash
+    Hash[GroupNesting.where(container_group_id: member_group_ids)
+                     .collect{|gn| [gn.container_group_id, gn.member_group_id]}]
+  end
+
+  def member_user_hash
+    Hash[GroupMember.where(group_id: member_group_ids)
+                    .collect{|gm| [gm.group_id, gm.user_id]}]
   end
 
   def has_member?(obj)
