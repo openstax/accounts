@@ -1,0 +1,24 @@
+class GroupMemberAccessPolicy
+  # Contains all the rules for who can do what with which GroupMember objects.
+
+  def self.action_allowed?(action, requestor, group_member)
+    # Deny access to applications without human users
+    return false if !requestor.is_human? || requestor.is_anonymous?
+    group = group_member.group
+
+    case action
+    when :index
+      true
+    when :create
+      group.has_staff?(requestor, :owner) ||\
+        group.has_staff?(requestor, :manager)
+    when :destroy
+      group_member.user == requestor ||\
+        group.has_staff?(requestor, :owner) ||\
+        group.has_staff?(requestor, :manager)
+    else
+      false
+    end
+  end
+
+end

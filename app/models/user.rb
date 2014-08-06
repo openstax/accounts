@@ -15,12 +15,12 @@ class User < ActiveRecord::Base
   has_many :received_messages, through: :message_recipients, source: :message
   has_many :sent_messages, class_name: 'Message'
 
-  has_many :group_users, dependent: :destroy, inverse_of: :user
-  has_many :groups, through: :group_users
-  has_many :oauth_applications, through: :groups
+  has_many :group_members, dependent: :destroy, inverse_of: :user
+  has_many :member_groups, through: :group_members, source: :group
+  has_many :oauth_applications, through: :member_groups
 
-  has_many :owned_groups, class_name: 'Group',
-           foreign_key: :owner_id, inverse_of: :owner
+  has_many :group_staffs, dependent: :destroy, inverse_of: :user
+  has_many :staff_groups, through: :group_staffs, source: :group
 
   before_validation :normalize_username
 

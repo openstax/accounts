@@ -4,11 +4,11 @@ class GroupAccessPolicy
   def self.action_allowed?(action, requestor, group)
     case action
     when :read
-      group.is_public || group.has_role?(requestor)
+      group.is_public || group.has_member?(requestor) || group.has_staff?(requestor)
     when :create
       !group.persisted? && requestor.is_a?(User)
     when :update, :destroy
-      group.has_role?(requestor, :owner)
+      group.has_staff?(requestor, :owner)
     else
       false
     end

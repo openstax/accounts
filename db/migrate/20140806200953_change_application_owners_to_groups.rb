@@ -5,8 +5,8 @@ class ChangeApplicationOwnersToGroups < ActiveRecord::Migration
       next if user.is_a? Group
       g = Group.new
       g.name = "#{app.name} Owners"
-      g.add_user(user, :member)
-      g.add_user(user, :owner)
+      g.add_member(user)
+      g.add_staff(user, :owner)
       g.save!
       app.owner = g
       app.save!
@@ -17,7 +17,7 @@ class ChangeApplicationOwnersToGroups < ActiveRecord::Migration
     Doorkeeper::Application.all.each do |app|
       group = app.owner
       next if group.is_a? User
-      app.owner = group.group_users.owners.first.user
+      app.owner = group.group_staffs.owners.first.user
       app.save!
       group.destroy
     end

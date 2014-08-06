@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140718000953) do
+ActiveRecord::Schema.define(:version => 20140806200953) do
 
   create_table "application_users", :force => true do |t|
     t.integer  "application_id",                         :null => false
@@ -90,37 +90,47 @@ ActiveRecord::Schema.define(:version => 20140718000953) do
   add_index "fine_print_signatures", ["contract_id"], :name => "index_fine_print_signatures_on_contract_id"
   add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], :name => "index_fine_print_s_on_u_id_and_u_type_and_c_id", :unique => true
 
-  create_table "group_groups", :force => true do |t|
-    t.integer  "permitter_group_id", :null => false
-    t.integer  "permitted_group_id", :null => false
-    t.string   "role",               :null => false
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
-  end
-
-  add_index "group_groups", ["permitted_group_id", "permitter_group_id", "role"], :name => "index_group_groups_on_pg_id_and_pg_id_and_r", :unique => true
-  add_index "group_groups", ["permitter_group_id", "role"], :name => "index_group_groups_on_permitter_group_id_and_role"
-
-  create_table "group_users", :force => true do |t|
+  create_table "group_members", :force => true do |t|
     t.integer  "group_id",   :null => false
     t.integer  "user_id",    :null => false
-    t.string   "role",       :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
 
-  add_index "group_users", ["group_id", "role"], :name => "index_group_users_on_group_id_and_role"
-  add_index "group_users", ["user_id", "group_id", "role"], :name => "index_group_users_on_user_id_and_group_id_and_role", :unique => true
+  add_index "group_members", ["group_id", "user_id"], :name => "index_group_members_on_group_id_and_user_id", :unique => true
+  add_index "group_members", ["user_id"], :name => "index_group_members_on_user_id"
+
+  create_table "group_nestings", :force => true do |t|
+    t.integer  "container_group_id", :null => false
+    t.integer  "member_group_id",    :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  add_index "group_nestings", ["container_group_id", "member_group_id"], :name => "index_group_nestings_on_container_group_id_and_member_group_id", :unique => true
+  add_index "group_nestings", ["member_group_id"], :name => "index_group_nestings_on_member_group_id"
+
+  create_table "group_staffs", :force => true do |t|
+    t.integer  "group_id",                         :null => false
+    t.integer  "user_id",                          :null => false
+    t.string   "role",       :default => "viewer", :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+  end
+
+  add_index "group_staffs", ["group_id", "user_id", "role"], :name => "index_group_staffs_on_group_id_and_user_id_and_role", :unique => true
+  add_index "group_staffs", ["user_id"], :name => "index_group_staffs_on_user_id"
 
   create_table "groups", :force => true do |t|
+    t.boolean  "is_public",                  :default => false, :null => false
     t.string   "name"
-    t.boolean  "is_public",  :default => false, :null => false
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.text     "cached_container_group_ids"
+    t.text     "cached_member_group_ids"
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
   end
 
   add_index "groups", ["is_public"], :name => "index_groups_on_is_public"
-  add_index "groups", ["name"], :name => "index_groups_on_name", :unique => true
 
   create_table "identities", :force => true do |t|
     t.string   "password_digest"

@@ -1,104 +1,123 @@
 class Group < ActiveRecord::Base
 
-  has_many :group_users, dependent: :destroy, inverse_of: :group
-  has_many :users, through: :group_users
+  serialize :cached_container_group_ids
+  serialize :cached_member_group_ids
 
-  has_many :permitter_group_groups, dependent: :destroy, class_name: 'GroupGroup',
-           foreign_key: :permitted_group_id, inverse_of: :permitted_group
-  has_many :permitter_groups, through: :permitter_group_groups
+  has_many :group_members, dependent: :destroy, inverse_of: :group
+  has_many :members, through: :group_members, source: :users
 
-  has_many :permitted_group_groups, dependent: :destroy, class_name: 'GroupGroup',
-           foreign_key: :permitter_group_id, inverse_of: :permitter_group
-  has_many :permitted_groups, through: :permitted_group_groups
+  has_many :container_group_nestings, dependent: :destroy, class_name: 'GroupNesting',
+           foreign_key: :member_group_id, inverse_of: :member_group
+  has_many :container_groups, through: :container_group_nestings
 
-  has_many :oauth_applications, as: :owner, inverse_of: :owner,
-           class_name: 'Doorkeeper::Application'
+  has_many :member_group_nestings, dependent: :destroy, class_name: 'GroupNesting',
+           foreign_key: :container_group_id, inverse_of: :container_group
+  has_many :member_groups, through: :member_group_nestings
 
-  has_many :member_group_users, class_name: 'GroupUser', conditions: { role: 'member' }
-  has_many :member_users, through: :member_group_users, source: :user
-
-  has_many :owner_group_users, class_name: 'GroupUser', conditions: { role: 'owner' }
-  has_many :owner_users, through: :owner_group_users, source: :user
-
-  has_many :manager_group_users, class_name: 'GroupUser', conditions: { role: 'manager' }
-  has_many :manager_users, through: :manager_group_users, source: :user
-
-  has_many :viewer_group_users, class_name: 'GroupUser', conditions: { role: 'viewer' }
-  has_many :viewer_users, through: :viewer_group_users, source: :user
-
-  has_many :owner_group_groups, class_name: 'GroupGroup',
-           foreign_key: :permitter_group_id, conditions: { role: 'owner' }
-  has_many :owner_groups, through: :owner_group_groups, source: :permitted_group
-
-  has_many :manager_group_groups, class_name: 'GroupGroup',
-           foreign_key: :permitter_group_id, conditions: { role: 'manager' }
-  has_many :manager_groups, through: :manager_group_groups, source: :permitted_group
-
-  has_many :viewer_group_groups, class_name: 'GroupGroup',
-           foreign_key: :permitter_group_id, conditions: { role: 'viewer' }
-  has_many :viewer_groups, through: :viewer_group_groups, source: :permitted_group
+  has_many :oauth_applications, as: :owner, class_name: 'Doorkeeper::Application'
 
   validates_uniqueness_of :name, allow_nil: true
 
   scope :visible_for, lambda { |user|
     return where(is_public: true) unless user.is_a? User
-    
-    uid = user.id
-    gids = user.group_users.pluck(:group_id)
+
+    m_gids = user.member_groups.collect{ |g| g.parent_group_ids }.flatten
+    s_gids = user.group_staffs.collect{ |gs| gs.group_id }
+    gids = (m_gids + s_gids).uniq
+
     gt = Group.arel_table
-    gut = GroupUser.arel_table
-    ggt = GroupGroup.arel_table
-    includes(:group_users).includes(:permitted_group_groups).where(
-      gt[:is_public].eq(true).or(
-      gut[:user_id].eq(uid)).or(
-      ggt[:permitted_group_id].in(gids))
-    )
+    gt[:is_public].eq(true).or(
+    gt[:id].in(gids))
   }
 
-  def add_user(user, role = :member)
-    return unless user.is_a? User
-    gu = GroupUser.new
-    gu.group = self
-    gu.user = user
-    gu.role = role
-    gu.save if persisted?
-    group_users << gu if gu.valid?
+  def container_group_ids
+    return cached_container_group_ids if cached_container_group_ids.is_a? Array
+    gids_array = [id]
+    gids_set = Set.new gids_array
+    loop do
+      gids_array = gids_set.to_a
+      new_gids = GroupNesting.where{container_group_id.not_in gids_array}
+                             .where(member_group_id: gids_array)
+                             .pluck(:container_group_id)
+      break if new_gids.empty?
+      cached_gids = Group.where(id: new_gids).pluck(:cached_container_group_ids)
+                         .flatten.compact
+      gids_set.merge new_gids + cached_gids
+    end
+    update_attribute(:cached_container_group_ids, gids_array)
+    gids_array
   end
 
-  def add_member(user)
-    add_user(user, :member)
+  def member_group_ids
+    return cached_member_group_ids if cached_member_group_ids.is_a? Array
+    gids_array = [id]
+    gids_set = Set.new gids_array
+    loop do
+      gids_array = gids_set.to_a
+      new_gids = GroupNesting.where{member_group_id.not_in gids_array}
+                             .where(container_group_id: gids_array)
+                             .pluck(:member_group_id)
+      break if new_gids.empty?
+      cached_gids = Group.where(id: new_gids).pluck(:cached_member_group_ids)
+                         .flatten.compact
+      gids_set.merge new_gids + cached_gids
+    end
+    update_attribute(:cached_member_group_ids, gids_array)
+    gids_array
   end
 
-  def add_permitted_group(group, role = :viewer)
-    return unless group.is_a? Group
-    gg = GroupGroup.new
-    gg.permitter_group = self
-    gg.permitted_group = group
-    gg.role = role
-    return false unless gg.valid?
-    gg.save if persisted?
-    self.permitted_group_groups << gg
-    group.permitter_group_groups << gg
+  def member_user_ids
+    GroupMember.where(group_id: member_group_ids).pluck(:user_id)
   end
 
-  def has_role?(obj, role = nil)
-    role_options = (role ? {role: role.to_s} : {})
+  def has_member?(obj)
     case obj
     when User
-      return true if group_users.where(role_options.merge({user_id: obj.id})).first
-      gids = obj.group_users.members.pluck(:group_id)
-      return true if permitted_group_groups.where(
-                       role_options.merge({permitted_group_id: gids})).first
-      false
+      member_user_ids.include?(obj.id)
     when Group
-      !!permitted_group_groups.where(role_options.merge({permitted_group_id: obj.id})).first
+      member_group_ids.include?(obj.id)
     else
       false
     end
   end
 
-  def has_member?(obj)
-    has_role?(obj, :member)
+  def has_staff?(user, role = nil)
+    return false unless user.is_a? User
+    role_options = (role ? {role: role.to_s} : {})
+    !group_staffs.where(role_options.merge({user_id: user.id})).first.nil?
+  end
+
+  def add_member(obj)
+    case obj
+    when User
+      gm = GroupMember.new
+      gm.group = self
+      gm.user = obj
+      return false unless gm.valid?
+      gm.save if persisted?
+      group_members << gm
+      obj.group_members << gm
+    when Group
+      gn = GroupNesting.new
+      gn.container_group = self
+      gn.member_group = obj
+      return false unless gn.valid?
+      gn.save if persisted?
+      member_group_nestings << gn
+      obj.container_group_nestings << gn
+    else
+      return false
+    end
+  end
+
+  def add_staff(user, role = :viewer)
+    return false unless user.is_a? User
+    gs = GroupStaff.new
+    gs.group = self
+    gs.user = user
+    gs.role = role
+    gs.save if persisted?
+    group_staffs << gs if gs.valid?
   end
 
 end
