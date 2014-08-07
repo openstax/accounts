@@ -9,40 +9,38 @@ class Group < ActiveRecord::Base
   has_many :group_members, dependent: :destroy, inverse_of: :group
   has_many :members, through: :group_members, source: :user
 
-  has_one :container_group, class_name: 'Group', inverse_of: :member_groups
+  belongs_to :container_group, class_name: 'Group', inverse_of: :member_groups
   has_many :member_groups, class_name: 'Group',
            foreign_key: 'container_group_id', inverse_of: :container_group
 
   has_many :oauth_applications, as: :owner, class_name: 'Doorkeeper::Application'
 
-  validate :no_loops, if: :container_group_changed?
+  validate :no_loops, if: :container_group_id_changed?
   validates_uniqueness_of :name, allow_nil: true
 
-  before_save :invalidate_cached_group_ids, if: :container_group_changed?
+  before_save :invalidate_cached_group_ids, if: :container_group_id_changed?
 
   scope :visible_for, lambda { |user|
-    return where(is_public: true) unless user.is_a? User
+    next where(is_public: true) unless user.is_a? User
 
-    m_gids = user.member_groups.collect{ |g| g.container_group_ids }.flatten
-    o_gids = user.group_owners.collect{ |go| go.group_id }
-    gids = (m_gids + o_gids).uniq
-
-    gt = Group.arel_table
-    gt[:is_public].eq(true).or(
-    gt[:id].in(gids))
+    user_id = user.id
+    joins{group_members.outer}.joins{group_owners.outer}
+    .where{(is_public.eq true) |\
+           (group_members.user_id.eq my{user_id}) |\
+           (group_owners.user_id.eq my{user_id})}
   }
 
   def container_group_ids
     return cached_container_group_ids if cached_container_group_ids.is_a? Array
     gids = [id] + (container_group.try(:container_group_ids) || [])
-    update_attribute(:cached_container_group_ids, gids)
+    update_attribute(:cached_container_group_ids, gids) if persisted?
     gids
   end
 
   def member_group_ids
     return cached_member_group_ids if cached_member_group_ids.is_a? Array
-    gids = [id] + child_groups.collect{|g| g.member_group_ids}.flatten
-    update_attribute(:cached_member_group_ids, gids)
+    gids = [id] + member_groups.collect{|g| g.member_group_ids}.flatten
+    update_attribute(:cached_member_group_ids, gids) if persisted?
     gids
   end
 
@@ -94,13 +92,13 @@ class Group < ActiveRecord::Base
   protected
 
   def no_loops
-    return if !member_group_ids.include?(container_group_id)
+    return if container_group != self && !member_group_ids.include?(container_group_id)
     errors.add(:container_group, 'would create a loop')
     false
   end
 
   def invalidate_cached_group_ids
-    old_group = container_group_was
+    old_group = Group.where(id: container_group_id_was).first
     new_group = container_group
     Group.where(id: (old_group.try(:container_group_ids) || []) +\
                     (new_group.try(:container_group_ids) || []))
