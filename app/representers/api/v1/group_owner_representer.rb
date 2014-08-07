@@ -1,21 +1,21 @@
 module Api::V1
-  class GroupNestingRepresenter < Roar::Decorator
+  class GroupOwnerRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
-    property :container_group,
+    property :group,
              class: Group,
              decorator: GroupRepresenter,
              writeable: false,
              schema_info: {
-               description: "The container group"
+               description: "The associated group"
              }
 
-    property :member_group,
-             class: Group,
-             decorator: GroupRepresenter,
+    property :user,
+             class: User,
+             decorator: UserRepresenter,
              schema_info: {
                required: true,
-               description: "The member group"
+               description: "The associated owner"
              }
 
   end

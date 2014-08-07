@@ -16,22 +16,26 @@ module Api::V1
                description: "The group's visibility setting"
              }
 
-    collection :group_staffs,
-               as: :staff,
-               class: GroupStaff,
-               decorator: GroupStaffRepresenter,
+    collection :group_owners,
+               as: :owners,
+               class: GroupOwner,
+               decorator: GroupOwnerRepresenter,
                writeable: false,
-               schema_info: { description: "The staff of this group" }
+               schema_info: { description: "The owners of this group" }
 
-    collection :member_group_hash,
-               type: Hash,
+    collection :group_members,
+               as: :members,
+               class: GroupMember,
+               decorator: GroupMemberRepresenter,
                writeable: false,
-               schema_info: { description: "A hash representation of the group nesting by ID" }
+               schema_info: { description: "The members of this group" }
 
-    collection :member_user_hash,
-               type: Hash,
+    collection :member_groups,
+               as: :groups,
+               class: Group,
+               decorator: GroupRepresenter,
                writeable: false,
-               schema_info: { description: "A hash that maps group ID's to member user ID's" }
+               schema_info: { description: "The groups nested within this group" }
 
   end
 end

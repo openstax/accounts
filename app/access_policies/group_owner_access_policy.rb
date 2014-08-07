@@ -1,10 +1,10 @@
-class GroupMemberAccessPolicy
-  # Contains all the rules for who can do what with which GroupMember objects.
+class GroupOwnerAccessPolicy
+  # Contains all the rules for who can do what with which GroupOwner objects.
 
-  def self.action_allowed?(action, requestor, group_member)
+  def self.action_allowed?(action, requestor, group_owner)
     # Deny access to applications without human users
     return false if !requestor.is_human? || requestor.is_anonymous?
-    group = group_member.group
+    group = group_owner.group
 
     case action
     when :index
@@ -12,7 +12,7 @@ class GroupMemberAccessPolicy
     when :create
       group.has_owner?(requestor)
     when :destroy
-      group_member.user == requestor || group.has_owner?(requestor)
+      group_owner.user == requestor || group.has_owner?(requestor)
     else
       false
     end

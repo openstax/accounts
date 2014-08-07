@@ -5,14 +5,11 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
     short_description 'A group of users of OpenStax.'
     description <<-EOS
       Groups have an owner, a name, a visibility setting (is_public)
-      and a collection of users.
+      and a collection of members and nested groups.
 
-      Owners can manage group members, rename and delete the group.
+      Owners can manage group members, nest, rename and delete the group.
 
-      Managers can manage group members.
-
-      Members and Viewers can view private groups.
-      Members are also listed as being in the group.
+      Members can view private groups and are listed as being in the group.
 
       Although groups are created by users through applications, they do not
       belong to any specific application. As such, applications acting on behalf of
@@ -27,7 +24,9 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
   api :GET, '/groups', 'Lists the visible Groups for the current user.'
   description <<-EOS
     Shows the list of visible Groups for the current user.
-    These groups can be reused by this user in any OpenStax application.
+
+    This includes groups owned by the current user, as well as
+    groups the current user is a member of.
 
     #{json_schema(Api::V1::GroupsRepresenter, include: :readable)}
   EOS
@@ -41,9 +40,11 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
 
   api :GET, '/groups/:id', 'Gets the specified Group.'
   description <<-EOS
-    Shows the specified Group, including name and list of members.
+    Shows the specified Group, including name, visibility setting,
+    list of members and list of nested groups.
 
-    Required permission depends on the group's is_public setting.
+    Anyone can see public groups, but only owners and members
+    can see private groups.
 
     #{json_schema(Api::V1::GroupRepresenter, include: :readable)}
   EOS
@@ -63,7 +64,7 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
   EOS
   def create
     standard_create(Group) do |group|
-      group.add_user(current_human_user, :owner)
+      group.add_owner(current_human_user)
     end
   end
 
@@ -73,7 +74,7 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
 
   api :PUT, '/groups/:id', 'Updates the properties of a Group.'
   description <<-EOS
-    Updates the properties of a Group.
+    Updates the properties of the specified Group.
 
     Requires the current user to be an owner of the group.
 
@@ -89,7 +90,7 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
 
   api :DELETE, '/groups/:id', 'Deletes the specified group.'
   description <<-EOS
-    Deletes a Group.
+    Deletes the specified Group.
 
     Requires the current user to be an owner of the group.
   EOS

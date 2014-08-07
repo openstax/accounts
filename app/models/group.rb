@@ -3,30 +3,29 @@ class Group < ActiveRecord::Base
   serialize :cached_container_group_ids
   serialize :cached_member_group_ids
 
-  has_many :group_staffs, dependent: :destroy, inverse_of: :group
-  has_many :staffs, through: :group_staffs, source: :user
+  has_many :group_owners, dependent: :destroy, inverse_of: :group
+  has_many :owners, through: :group_owners, source: :user
 
   has_many :group_members, dependent: :destroy, inverse_of: :group
   has_many :members, through: :group_members, source: :user
 
-  has_many :container_group_nestings, dependent: :destroy, class_name: 'GroupNesting',
-           foreign_key: :member_group_id, inverse_of: :member_group
-  has_many :container_groups, through: :container_group_nestings
-
-  has_many :member_group_nestings, dependent: :destroy, class_name: 'GroupNesting',
-           foreign_key: :container_group_id, inverse_of: :container_group
-  has_many :member_groups, through: :member_group_nestings
+  has_one :container_group, class_name: 'Group', inverse_of: :member_groups
+  has_many :member_groups, class_name: 'Group',
+           foreign_key: 'container_group_id', inverse_of: :container_group
 
   has_many :oauth_applications, as: :owner, class_name: 'Doorkeeper::Application'
 
+  validate :no_loops, if: :container_group_changed?
   validates_uniqueness_of :name, allow_nil: true
+
+  before_save :invalidate_cached_group_ids, if: :container_group_changed?
 
   scope :visible_for, lambda { |user|
     return where(is_public: true) unless user.is_a? User
 
-    m_gids = user.member_groups.collect{ |g| g.parent_group_ids }.flatten
-    s_gids = user.group_staffs.collect{ |gs| gs.group_id }
-    gids = (m_gids + s_gids).uniq
+    m_gids = user.member_groups.collect{ |g| g.container_group_ids }.flatten
+    o_gids = user.group_owners.collect{ |go| go.group_id }
+    gids = (m_gids + o_gids).uniq
 
     gt = Group.arel_table
     gt[:is_public].eq(true).or(
@@ -35,70 +34,22 @@ class Group < ActiveRecord::Base
 
   def container_group_ids
     return cached_container_group_ids if cached_container_group_ids.is_a? Array
-    gids_array = [id]
-    gids_set = Set.new gids_array
-    loop do
-      gids_array = gids_set.to_a
-      new_gids = GroupNesting.where{container_group_id.not_in gids_array}
-                             .where(member_group_id: gids_array)
-                             .pluck(:container_group_id)
-      break if new_gids.empty?
-      cached_gids = Group.where(id: new_gids).pluck(:cached_container_group_ids)
-                         .flatten.compact
-      gids_set.merge new_gids + cached_gids
-    end
-    update_attribute(:cached_container_group_ids, gids_array)
-    gids_array
+    gids = [id] + (container_group.try(:container_group_ids) || [])
+    update_attribute(:cached_container_group_ids, gids)
+    gids
   end
 
   def member_group_ids
     return cached_member_group_ids if cached_member_group_ids.is_a? Array
-    gids_array = [id]
-    gids_set = Set.new gids_array
-    loop do
-      gids_array = gids_set.to_a
-      new_gids = GroupNesting.where{member_group_id.not_in gids_array}
-                             .where(container_group_id: gids_array)
-                             .pluck(:member_group_id)
-      break if new_gids.empty?
-      cached_gids = Group.where(id: new_gids).pluck(:cached_member_group_ids)
-                         .flatten.compact
-      gids_set.merge new_gids + cached_gids
-    end
-    update_attribute(:cached_member_group_ids, gids_array)
-    gids_array
-  end
-
-  def member_user_ids
-    GroupMember.where(group_id: member_group_ids).collect{|gm| gm.user_id}
-  end
-
-  def member_users
-    User.joins(:group_members).where(group_id: member_group_ids).uniq
-  end
-
-  def member_group_hash
-    h = Hash.new
-    GroupNesting.where(container_group_id: member_group_ids).each do |gn|
-      h[gn.container_group_id] ||= []
-      h[gn.container_group_id] << gn.member_group_id
-    end
-    h
-  end
-
-  def member_user_hash
-    h = Hash.new
-    GroupMember.where(group_id: member_group_ids).each do |gm|
-      h[gm.group_id] ||= []
-      h[gm.group_id] << gm.user_id
-    end
-    h
+    gids = [id] + child_groups.collect{|g| g.member_group_ids}.flatten
+    update_attribute(:cached_member_group_ids, gids)
+    gids
   end
 
   def has_member?(obj)
     case obj
     when User
-      member_user_ids.include?(obj.id)
+      !GroupMember.where(group_id: member_group_ids, user_id: obj.id).first.nil?
     when Group
       member_group_ids.include?(obj.id)
     else
@@ -106,10 +57,9 @@ class Group < ActiveRecord::Base
     end
   end
 
-  def has_staff?(user, role = nil)
+  def has_owner?(user)
     return false unless user.is_a? User
-    role_options = (role ? {role: role.to_s} : {})
-    !group_staffs.where(role_options.merge({user_id: user.id})).first.nil?
+    !group_owners.where(user_id: user.id).first.nil?
   end
 
   def add_member(obj)
@@ -123,26 +73,39 @@ class Group < ActiveRecord::Base
       group_members << gm
       obj.group_members << gm
     when Group
-      gn = GroupNesting.new
-      gn.container_group = self
-      gn.member_group = obj
-      return false unless gn.valid?
-      gn.save if persisted?
-      member_group_nestings << gn
-      obj.container_group_nestings << gn
+      obj.container_group = self
+      return false unless obj.valid?
+      obj.save if persisted?
+      child_groups << obj
     else
       return false
     end
   end
 
-  def add_staff(user, role = :viewer)
+  def add_owner(user)
     return false unless user.is_a? User
-    gs = GroupStaff.new
-    gs.group = self
-    gs.user = user
-    gs.role = role
-    gs.save if persisted?
-    group_staffs << gs if gs.valid?
+    go = GroupOwner.new
+    go.group = self
+    go.user = user
+    go.save if persisted?
+    group_owners << go if go.valid?
+  end
+
+  protected
+
+  def no_loops
+    return if !member_group_ids.include?(container_group_id)
+    errors.add(:container_group, 'would create a loop')
+    false
+  end
+
+  def invalidate_cached_group_ids
+    old_group = container_group_was
+    new_group = container_group
+    Group.where(id: (old_group.try(:container_group_ids) || []) +\
+                    (new_group.try(:container_group_ids) || []))
+         .update_all(cached_member_group_ids: nil)
+    Group.where(id: member_group_ids).update_all(cached_container_group_ids: nil)
   end
 
 end

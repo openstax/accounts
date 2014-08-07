@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140806200953) do
+ActiveRecord::Schema.define(:version => 20140716192707) do
 
   create_table "application_users", :force => true do |t|
     t.integer  "application_id",                         :null => false
@@ -100,28 +100,18 @@ ActiveRecord::Schema.define(:version => 20140806200953) do
   add_index "group_members", ["group_id", "user_id"], :name => "index_group_members_on_group_id_and_user_id", :unique => true
   add_index "group_members", ["user_id"], :name => "index_group_members_on_user_id"
 
-  create_table "group_nestings", :force => true do |t|
-    t.integer  "container_group_id", :null => false
-    t.integer  "member_group_id",    :null => false
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+  create_table "group_owners", :force => true do |t|
+    t.integer  "group_id",   :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
-  add_index "group_nestings", ["container_group_id", "member_group_id"], :name => "index_group_nestings_on_container_group_id_and_member_group_id", :unique => true
-  add_index "group_nestings", ["member_group_id"], :name => "index_group_nestings_on_member_group_id"
-
-  create_table "group_staffs", :force => true do |t|
-    t.integer  "group_id",                         :null => false
-    t.integer  "user_id",                          :null => false
-    t.string   "role",       :default => "viewer", :null => false
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
-  end
-
-  add_index "group_staffs", ["group_id", "user_id", "role"], :name => "index_group_staffs_on_group_id_and_user_id_and_role", :unique => true
-  add_index "group_staffs", ["user_id"], :name => "index_group_staffs_on_user_id"
+  add_index "group_owners", ["group_id", "user_id"], :name => "index_group_owners_on_group_id_and_user_id", :unique => true
+  add_index "group_owners", ["user_id"], :name => "index_group_owners_on_user_id"
 
   create_table "groups", :force => true do |t|
+    t.integer  "container_group_id"
     t.boolean  "is_public",                  :default => false, :null => false
     t.string   "name"
     t.text     "cached_container_group_ids"
@@ -130,6 +120,7 @@ ActiveRecord::Schema.define(:version => 20140806200953) do
     t.datetime "updated_at",                                    :null => false
   end
 
+  add_index "groups", ["container_group_id"], :name => "index_groups_on_container_group_id"
   add_index "groups", ["is_public"], :name => "index_groups_on_is_public"
 
   create_table "identities", :force => true do |t|
