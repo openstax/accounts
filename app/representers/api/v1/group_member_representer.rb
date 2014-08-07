@@ -6,6 +6,7 @@ module Api::V1
              class: Group,
              decorator: GroupRepresenter,
              writeable: false,
+             readable: false,
              schema_info: {
                description: "The associated group"
              }

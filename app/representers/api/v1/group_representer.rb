@@ -2,8 +2,17 @@ module Api::V1
   class GroupRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
+    property :container_group_id,
+             type: Integer,
+             writeable: true,
+             schema_info: {
+               required: true,
+               description: "The ID of the group that contains this group"
+             }
+
     property :name,
              type: String,
+             writeable: true,
              schema_info: {
                required: true,
                description: "The group's name"
