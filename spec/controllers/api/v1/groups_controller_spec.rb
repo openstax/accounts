@@ -57,7 +57,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
 
       expect(JSON.parse(response.body)).to eq(expected_response)
 
-      group_2.add_member(group_3)
+      FactoryGirl.create(:group_nesting, container_group: group_2, member_group: group_3)
       group_2.reload
       group_3.reload
 
@@ -84,7 +84,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       group_3.save!
       group_2.reload
       group_3.reload
-      group_3.add_member(group_2)
+      FactoryGirl.create(:group_nesting, container_group: group_3, member_group: group_2)
       group_2.reload
       group_3.reload
 
@@ -257,7 +257,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       }
       expect(JSON.parse(response.body)).to eq(expected_response)
 
-      group_1.add_member(group_2)
+      FactoryGirl.create(:group_nesting, container_group: group_1, member_group: group_2)
       GroupMember.last.destroy
       group_1.add_owner(user_1)
       api_get :show, user_1_token, parameters: {id: group_1.id}
@@ -353,7 +353,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expect(response.body).to be_empty
       expect(group_3.reload.name).to eq('Group 3')
 
-      group_3.add_member(group_2)
+      FactoryGirl.create(:group_nesting, container_group: group_3, member_group: group_2)
       group_2.add_owner(user_1)
 
       expect{api_put :update, user_1_token,
@@ -413,7 +413,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       expect(response.body).to be_empty
       expect(Group.where(id: group_3.id).first).not_to be_nil
 
-      group_3.add_member(group_2)
+      FactoryGirl.create(:group_nesting, container_group: group_3, member_group: group_2)
       group_2.add_owner(user_1)
 
       expect{api_delete :destroy, user_1_token,

@@ -5,8 +5,8 @@ describe Group do
   let!(:user_1) { FactoryGirl.create(:user) }
   let!(:user_2) { FactoryGirl.create(:user) }
 
-  let!(:group_1) { FactoryGirl.build(:group) }
-  let!(:group_2) { FactoryGirl.build(:group) }
+  let!(:group_1) { FactoryGirl.create(:group) }
+  let!(:group_2) { FactoryGirl.create(:group) }
   
   context 'validation' do
     it 'must have a unique name, if present' do
@@ -21,38 +21,6 @@ describe Group do
 
       group_3.name = nil
       expect(group_3).to be_valid
-    end
-
-    it 'cannot be nested in loops' do
-      group_1.container_group = group_1
-      expect(group_1).not_to be_valid
-      expect(group_1.errors.messages[:container_group]).to eq(["would create a loop"])
-
-      group_1.container_group = nil
-      group_1.save!
-      group_2.save!
-
-      group_1.container_group = group_1
-      expect(group_1).not_to be_valid
-      expect(group_1.errors.messages[:container_group]).to eq(["would create a loop"])
-
-      group_1.reload
-      group_2.container_group = group_1
-      group_2.save!
-
-      group_1.container_group = group_2
-      expect(group_1).not_to be_valid
-      expect(group_1.errors.messages[:container_group]).to eq(["would create a loop"])
-
-      group_1.reload
-
-      group_3 = FactoryGirl.create(:group)
-      group_1.container_group = group_3
-      group_1.save!
-
-      group_3.container_group = group_2
-      expect(group_3).not_to be_valid
-      expect(group_3.errors.messages[:container_group]).to eq(["would create a loop"])
     end
   end
 
@@ -72,18 +40,15 @@ describe Group do
     expect(group_1.has_member?(user_2)).to eq(true)
   end
 
-  it 'can have nested groups' do
+  it 'can find members in nested groups' do
     group_2.add_member(user_2)
-    expect(group_1.has_member?(group_2)).to eq(false)
     expect(group_1.has_member?(user_1)).to eq(false)
     expect(group_1.has_member?(user_2)).to eq(false)
     expect(group_2.has_member?(user_2)).to eq(true)
 
-    group_1.add_member(group_2)
-    group_1.save!
+    FactoryGirl.create(:group_nesting, container_group: group_1, member_group: group_2)
     group_1.reload
 
-    expect(group_1.has_member?(group_2)).to eq(true)
     expect(group_1.has_member?(user_1)).to eq(false)
     expect(group_1.has_member?(user_2)).to eq(true)
 

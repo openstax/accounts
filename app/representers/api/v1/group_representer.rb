@@ -3,8 +3,9 @@ module Api::V1
     include Roar::Representer::JSON
 
     property :container_group_id,
+             exec_context: :decorator,
              type: Integer,
-             writeable: true,
+             writeable: false,
              schema_info: {
                required: true,
                description: "The ID of the group that contains this group"
@@ -43,6 +44,10 @@ module Api::V1
                decorator: GroupRepresenter,
                writeable: false,
                schema_info: { description: "The groups nested within this group" }
+
+    def container_group_id
+      represented.container_group_nesting.try(:container_group_id)
+    end
 
   end
 end

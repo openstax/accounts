@@ -100,6 +100,16 @@ ActiveRecord::Schema.define(:version => 20140716192707) do
   add_index "group_members", ["group_id", "user_id"], :name => "index_group_members_on_group_id_and_user_id", :unique => true
   add_index "group_members", ["user_id"], :name => "index_group_members_on_user_id"
 
+  create_table "group_nestings", :force => true do |t|
+    t.integer  "member_group_id",    :null => false
+    t.integer  "container_group_id", :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  add_index "group_nestings", ["container_group_id"], :name => "index_group_nestings_on_container_group_id"
+  add_index "group_nestings", ["member_group_id"], :name => "index_group_nestings_on_member_group_id", :unique => true
+
   create_table "group_owners", :force => true do |t|
     t.integer  "group_id",   :null => false
     t.integer  "user_id",    :null => false
@@ -111,16 +121,14 @@ ActiveRecord::Schema.define(:version => 20140716192707) do
   add_index "group_owners", ["user_id"], :name => "index_group_owners_on_user_id"
 
   create_table "groups", :force => true do |t|
-    t.integer  "container_group_id"
     t.boolean  "is_public",                  :default => false, :null => false
     t.string   "name"
-    t.text     "cached_container_group_ids"
-    t.text     "cached_member_group_ids"
+    t.text     "cached_subtree_group_ids"
+    t.text     "cached_supertree_group_ids"
     t.datetime "created_at",                                    :null => false
     t.datetime "updated_at",                                    :null => false
   end
 
-  add_index "groups", ["container_group_id"], :name => "index_groups_on_container_group_id"
   add_index "groups", ["is_public"], :name => "index_groups_on_is_public"
 
   create_table "identities", :force => true do |t|

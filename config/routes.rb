@@ -55,6 +55,8 @@ Accounts::Application.routes.draw do
     resources :groups, only: [:index, :show, :create, :update, :destroy] do
       resources :group_members, only: [:create]
       resources :group_owners, only: [:create]
+
+      resources :group_nestings, only: [:create, :destroy], shallow: true
     end
 
     resources :group_members, only: [:index, :destroy]

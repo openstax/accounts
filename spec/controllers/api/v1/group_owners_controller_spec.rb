@@ -68,7 +68,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
 
       expect(JSON.parse(response.body)).to eq(expected_response)
 
-      group_1.add_member(group_2)
+      FactoryGirl.create(:group_nesting, container_group: group_1, member_group: group_2)
       controller.current_human_user.reload
 
       api_get :index, user_1_token
