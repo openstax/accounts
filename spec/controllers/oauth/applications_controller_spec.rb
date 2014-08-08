@@ -16,12 +16,12 @@ module Oauth
     let!(:untrusted_application_user2) { FactoryGirl.create :doorkeeper_application }
 
     before(:each) do
-      trusted_application_admin.owner.add_user(admin)
-      untrusted_application_admin.owner.add_user(admin)
-      trusted_application_user.owner.add_user(user)
-      untrusted_application_user.owner.add_user(user)
-      trusted_application_user2.owner.add_user(user2)
-      untrusted_application_user2.owner.add_user(user2)
+      trusted_application_admin.owner.add_member(admin)
+      untrusted_application_admin.owner.add_member(admin)
+      trusted_application_user.owner.add_member(user)
+      untrusted_application_user.owner.add_member(user)
+      trusted_application_user2.owner.add_member(user2)
+      untrusted_application_user2.owner.add_member(user2)
     end
 
     it "should redirect users that haven't signed contracts" do

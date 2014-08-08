@@ -15,7 +15,7 @@ class Group < ActiveRecord::Base
 
   has_many :oauth_applications, as: :owner, class_name: 'Doorkeeper::Application'
 
-  validate :no_loops, if: :container_group_id_changed?
+  validate :no_loops
   validates_uniqueness_of :name, allow_nil: true
 
   before_save :invalidate_cached_group_ids, if: :container_group_id_changed?
@@ -23,24 +23,31 @@ class Group < ActiveRecord::Base
   scope :visible_for, lambda { |user|
     next where(is_public: true) unless user.is_a? User
 
-    user_id = user.id
-    joins{group_members.outer}.joins{group_owners.outer}
-    .where{(is_public.eq true) |\
-           (group_members.user_id.eq my{user_id}) |\
-           (group_owners.user_id.eq my{user_id})}
+    includes(:group_members).includes(:group_owners)
+    .where{((is_public.eq true) |\
+             (group_members.user_id.eq my{user.id}) |\
+             (group_owners.user_id.eq my{user.id}))}
   }
 
+  def self.visible_trees_for(user)
+    visible_groups = visible_for(user).to_a
+    tree_ids = visible_groups.collect{|g| g.member_group_ids - [g.id]}.flatten
+    visible_groups.select{|g| !tree_ids.include?(g.id)}
+  end
+
   def container_group_ids
+    return [] unless persisted?
     return cached_container_group_ids if cached_container_group_ids.is_a? Array
     gids = [id] + (container_group.try(:container_group_ids) || [])
-    update_attribute(:cached_container_group_ids, gids) if persisted?
+    update_attribute(:cached_container_group_ids, gids)
     gids
   end
 
   def member_group_ids
+    return [] unless persisted?
     return cached_member_group_ids if cached_member_group_ids.is_a? Array
     gids = [id] + member_groups.collect{|g| g.member_group_ids}.flatten
-    update_attribute(:cached_member_group_ids, gids) if persisted?
+    update_attribute(:cached_member_group_ids, gids)
     gids
   end
 
@@ -74,7 +81,7 @@ class Group < ActiveRecord::Base
       obj.container_group = self
       return false unless obj.valid?
       obj.save if persisted?
-      child_groups << obj
+      member_groups << obj
     else
       return false
     end

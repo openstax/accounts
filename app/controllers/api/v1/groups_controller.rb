@@ -26,12 +26,12 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
     Shows the list of visible Groups for the current user.
 
     This includes groups owned by the current user, as well as
-    groups the current user is a member of.
+    groups the current user is a member of and public groups.
 
     #{json_schema(Api::V1::GroupsRepresenter, include: :readable)}
   EOS
   def index
-    respond_with Group.visible_for(current_human_user)
+    respond_with Group.visible_trees_for(current_human_user)
   end
 
   ###############################################################

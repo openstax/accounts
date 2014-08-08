@@ -25,17 +25,15 @@ module Api::V1
                description: "The group's visibility setting"
              }
 
-    collection :group_owners,
-               as: :owners,
-               class: GroupOwner,
-               decorator: GroupOwnerRepresenter,
+    collection :owners,
+               class: User,
+               decorator: UserRepresenter,
                writeable: false,
                schema_info: { description: "The owners of this group" }
 
-    collection :group_members,
-               as: :members,
-               class: GroupMember,
-               decorator: GroupMemberRepresenter,
+    collection :members,
+               class: User,
+               decorator: UserRepresenter,
                writeable: false,
                schema_info: { description: "The members of this group" }
 

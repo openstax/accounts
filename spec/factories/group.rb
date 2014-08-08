@@ -2,14 +2,20 @@ FactoryGirl.define do
 
   factory :group do
     name nil
+    is_public false
 
     ignore do
-      users_count 1
+      members_count 1
+      owners_count 1
     end
 
     after(:build) do |group, evaluator|
-      evaluator.users_count.times do
-        group.group_users << FactoryGirl.build(:group_user, group: group)
+      evaluator.members_count.times do
+        group.group_members << FactoryGirl.build(:group_member, group: group)
+      end
+
+      evaluator.owners_count.times do
+        group.group_owners << FactoryGirl.build(:group_owner, group: group)
       end
     end
   end

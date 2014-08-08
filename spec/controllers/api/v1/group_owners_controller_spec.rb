@@ -1,17 +1,17 @@
 require "spec_helper"
 
-describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
+describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
 
-  let!(:group_1) { FactoryGirl.create :group, name: 'Group 1', users_count: 0 }
-  let!(:group_2) { FactoryGirl.create :group, name: 'Group 2', users_count: 0 }
-  let!(:group_3) { FactoryGirl.create :group, name: 'Group 3', users_count: 0,
+  let!(:group_1) { FactoryGirl.create :group, name: 'Group 1', members_count: 0 }
+  let!(:group_2) { FactoryGirl.create :group, name: 'Group 2', members_count: 0 }
+  let!(:group_3) { FactoryGirl.create :group, name: 'Group 3', members_count: 0,
                                               is_public: true }
 
   let!(:user_1)       { FactoryGirl.create :user, :terms_agreed }
   let!(:user_2)       { FactoryGirl.create :user, :terms_agreed }
 
   let!(:group_user_1) { FactoryGirl.create :group_user, group: group_2,
-                                           user: user_2, role: 'manager' }
+                                                        user: user_2 }
 
   let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
 
@@ -26,21 +26,21 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
                                        resource_owner_id: nil }
 
   context 'index' do
-    it 'must not list group memberships without a token' do
+    it 'must not list group ownerships without a token' do
       expect{api_get :index, nil}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
     end
 
-    it 'must not list group memberships for an app without a user token' do
+    it 'must not list group ownerships for an app without a user token' do
       expect{api_get :index, untrusted_application_token}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
     end
 
-    it 'must list all group memberships for human users' do
+    it 'must list all group ownerships for human users' do
       api_get :index, user_1_token
 
       expect(response.code).to eq('200')
@@ -141,7 +141,7 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
   end
 
   context 'create' do
-    it 'must not create a group_user without a token' do
+    it 'must not create a group_owner without a token' do
       expect{api_post :create, nil, parameters: {group_id: group_3.id},
                       raw_post_data: {user_id: user_2.id, role: :member}}.to(
         raise_error(SecurityTransgression))
@@ -149,7 +149,7 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
       expect(response.body).to be_empty
     end
 
-    it 'must not create a group_user for an app without a user token' do
+    it 'must not create a group_owner for an app without a user token' do
       expect{api_post :create, untrusted_application_token,
                       parameters: {group_id: group_3.id},
                       raw_post_data: {user_id: user_2.id, role: :member}}.to(
@@ -158,7 +158,7 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
       expect(response.body).to be_empty
     end
 
-    it 'must not create a group_user for an unauthorized user' do
+    it 'must not create a group_owner for an unauthorized user' do
       expect{api_post :create, user_1_token, parameters: {group_id: group_3.id},
                       raw_post_data: {user_id: user_2.id, role: :member}}.to(
         raise_error(SecurityTransgression))
@@ -184,7 +184,7 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
       expect(response.body).to be_empty
     end
 
-    it 'must create group_users for authorized users' do
+    it 'must create group_owners for authorized users' do
       group_3.add_user(user_1, :manager)
       api_post :create, user_1_token, parameters: {group_id: group_3.id},
                raw_post_data: {user_id: user_2.id, role: :member}
@@ -226,7 +226,7 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
   end
 
   context 'destroy' do
-    it 'must not destroy a group_user without a token' do
+    it 'must not destroy a group_owner without a token' do
       expect{api_delete :destroy, nil,
                         parameters: {id: group_user_1.id}}.to(
         raise_error(SecurityTransgression))
@@ -235,7 +235,7 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
       expect(GroupUser.where(id: group_user_1.id).first).not_to be_nil
     end
 
-    it 'must not destroy a group for an app without a user token' do
+    it 'must not destroy a group_owner for an app without a user token' do
       expect{api_delete :destroy, untrusted_application_token,
                         parameters: {id: group_user_1.id}}.to(
         raise_error(SecurityTransgression))
@@ -244,7 +244,7 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
       expect(GroupUser.where(id: group_user_1.id).first).not_to be_nil
     end
 
-    it 'must not destroy a group for an unauthorized user' do
+    it 'must not destroy a group_owner for an unauthorized user' do
       expect{api_delete :destroy, user_1_token,
                         parameters: {id: group_user_1.id}}.to(
         raise_error(SecurityTransgression))
@@ -280,7 +280,7 @@ describe Api::V1::GroupUsersController, :type => :api, :version => :v1 do
       expect(GroupUser.where(id: group_user_1.id).first).not_to be_nil
     end
 
-    it 'must destroy group_users for authorized users' do
+    it 'must destroy group_owners for authorized users' do
       group_2.add_user(user_1)
       group_user_2 = GroupUser.last
       api_delete :destroy, user_2_token,
