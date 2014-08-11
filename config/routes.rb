@@ -50,6 +50,13 @@ Accounts::Application.routes.draw do
       end
     end
 
+    resources :application_groups, only: [] do
+      collection do
+        get 'updates'
+        put 'updated'
+      end
+    end
+
     resources :messages, only: [:create]
 
     resources :groups, only: [:index, :show, :create, :update, :destroy] do

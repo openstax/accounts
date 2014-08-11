@@ -19,7 +19,11 @@ class Group < ActiveRecord::Base
 
   has_many :oauth_applications, as: :owner, class_name: 'Doorkeeper::Application'
 
+  has_many :application_groups, dependent: :destroy, inverse_of: :group
+
   validates_uniqueness_of :name, allow_nil: true
+
+  before_save :add_unread_update
 
   scope :visible_for, lambda { |user|
     next where(is_public: true) unless user.is_a? User
@@ -84,6 +88,11 @@ class Group < ActiveRecord::Base
                         .first.try(:supertree_group_ids) || [])
     update_attribute(:cached_supertree_group_ids, gids)
     gids
+  end
+
+  def add_unread_update
+    # Returns false if the update fails (aborting the save transaction)
+    AddUnreadUpdateForGroup.call(self).errors.none?
   end
 
   def invalidate_cached_supertrees
