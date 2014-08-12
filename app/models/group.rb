@@ -9,11 +9,13 @@ class Group < ActiveRecord::Base
   has_many :group_members, dependent: :destroy, inverse_of: :group
   has_many :members, through: :group_members, source: :user
 
-  has_one :container_group_nesting, class_name: 'GroupNesting',
+  has_one :container_group_nesting, dependent: :destroy,
+          class_name: 'GroupNesting',
           foreign_key: :member_group_id, inverse_of: :member_group
   has_one :container_group, through: :container_group_nesting
 
-  has_many :member_group_nestings, class_name: 'GroupNesting',
+  has_many :member_group_nestings, dependent: :destroy,
+           class_name: 'GroupNesting',
            foreign_key: :container_group_id, inverse_of: :container_group
   has_many :member_groups, through: :member_group_nestings
 
