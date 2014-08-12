@@ -15,13 +15,14 @@ class GetUpdatedApplicationGroups
   def exec(application)
     return if application.nil?
 
-    visible_group_ids = Group.joins(:owners => :application_users)
-      .joins(:members => :application_users)
+    visible_group_ids = Group
+      .includes(:owners => :application_users)
+      .includes(:members => :application_users)
       .where{(is_public.eq true) |\
              (owners.application_users.application_id.eq my{application.id}) |\
              (members.application_users.application_id.eq my{application.id})}
       .collect{|g| g.subtree_group_ids}.flatten.uniq
-    application_groups = FindOrCreateApplicationGroups.call(application_id, visible_group_ids)
+    application_groups = FindOrCreateApplicationGroups.call(application.id, visible_group_ids)
                                                       .outputs.application_groups
     outputs[:application_groups] = application_groups.select{|ag| ag.unread_updates > 0}
   end

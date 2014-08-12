@@ -7,9 +7,11 @@ class FindOrCreateApplicationGroups
 
   def exec(application_id, group_ids)
     application_groups = ApplicationGroup.where(application_id: application_id,
-                                                group_id: group_ids).to_a
+                                                group_id: group_ids)
+                                         .includes(:group).to_a
     ag_group_ids = application_groups.collect{|ag| ag.group_id}
 
+    # There might be a way to make this more efficient
     group_ids.each do |group_id|
       unless ag_group_ids.include?(group_id)
         application_group = ApplicationGroup.create do |app_group|
@@ -21,7 +23,10 @@ class FindOrCreateApplicationGroups
       end
     end
 
-    outputs[:application_groups] = application_groups
+    children_node_ids = application_groups.collect{|ag|
+                          ag.group.subtree_group_ids - [ag.group.id]}.flatten
+    outputs[:application_groups] = application_groups.select{|ag|
+                                     !children_node_ids.include?(ag.group.id)}
   end
 
 end

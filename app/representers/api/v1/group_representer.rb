@@ -2,6 +2,13 @@ module Api::V1
   class GroupRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
+    property :id, 
+             type: Integer,
+             writeable: false,
+             schema_info: {
+               required: true
+             }
+
     property :container_group_id,
              exec_context: :decorator,
              type: Integer,

@@ -14,8 +14,12 @@ class MarkApplicationGroupsUpdatesAsRead
   def exec(application, application_groups)
     return if application.nil? || application_groups.nil?
 
-    sql_query = application_groups.collect{|au| "WHEN #{au['id']} THEN (CASE WHEN unread_updates > #{au['read_updates']} THEN unread_updates - #{au['read_updates']} ELSE 0 END)"}.join('\n')
-    ApplicationGroup.update_all("unread_updates = CASE id #{sql_query} END;")
+    sanitized_sql_query = application_groups.collect do |ag|
+      ActiveRecord::Base.send(:sanitize_sql_array,
+        ["WHEN ? THEN (CASE WHEN unread_updates > ? THEN unread_updates - ? ELSE 0 END)",
+          ag['id'], ag['read_updates'], ag['read_updates']])
+    end.join('\n')
+    application.application_groups.update_all("unread_updates = CASE id #{sanitized_sql_query} ELSE unread_updates END")
   end
 
 end

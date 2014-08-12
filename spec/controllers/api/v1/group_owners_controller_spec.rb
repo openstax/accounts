@@ -57,6 +57,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
 
       expect(response.code).to eq('200')
       expected_response = [{'group' => {
+        'id' => group_1.id,
         'name' => 'Group 1',
         'is_public' => false,
         'owners' => [
@@ -75,6 +76,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
 
       expect(response.code).to eq('200')
       expected_response = [{'group' => {
+        'id' => group_1.id,
         'name' => 'Group 1',
         'is_public' => false,
         'owners' => [
@@ -83,6 +85,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
         'members' => [],
         'groups' => [
           {
+            'id' => group_2.id,
             'container_group_id' => group_1.id,
             'name' => 'Group 2',
             'is_public' => false,
@@ -104,6 +107,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
 
       expect(response.code).to eq('200')
       expected_response = [{'group' => {
+        'id' => group_1.id,
         'name' => 'Group 1',
         'is_public' => false,
         'owners' => [
@@ -112,6 +116,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
         'members' => [],
         'groups' => [
           {
+            'id' => group_2.id,
             'container_group_id' => group_1.id,
             'name' => 'Group 2',
             'is_public' => false,
@@ -125,6 +130,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
         ]
       }, 'user' => {'id' => user_1.id, 'username' => user_1.username}},
       {'group' => {
+        'id' => group_2.id,
         'container_group_id' => group_1.id,
         'name' => 'Group 2',
         'is_public' => false,
@@ -145,6 +151,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
 
       expect(response.code).to eq('200')
       expected_response = [{'group' => {
+        'id' => group_1.id,
         'name' => 'Group 1',
         'is_public' => false,
         'owners' => [
@@ -153,6 +160,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
         'members' => [],
         'groups' => [
           {
+            'id' => group_2.id,
             'container_group_id' => group_1.id,
             'name' => 'Group 2',
             'is_public' => false,
@@ -166,6 +174,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
         ]
       }, 'user' => {'id' => user_1.id, 'username' => user_1.username}},
       {'group' => {
+        'id' => group_2.id,
         'container_group_id' => group_1.id,
         'name' => 'Group 2',
         'is_public' => false,
@@ -177,6 +186,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
         'groups' => []
       }, 'user' => {'id' => user_1.id, 'username' => user_1.username}},
       {'group' => {
+        'id' => group_3.id,
         'name' => 'Group 3',
         'is_public' => true,
         'owners' => [
@@ -232,6 +242,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
 
       expect(response.code).to eq('201')
       expected_response = {'group' => {
+        'id' => group_3.id,
         'name' => 'Group 3',
         'is_public' => true,
         'owners' => [
@@ -249,6 +260,7 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
 
       expect(response.code).to eq('201')
       expected_response = {'group' => {
+        'id' => group_1.id,
         'name' => 'Group 1',
         'is_public' => false,
         'owners' => [

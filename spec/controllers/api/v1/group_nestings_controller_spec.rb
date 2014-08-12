@@ -80,6 +80,7 @@ describe Api::V1::GroupNestingsController, :type => :api, :version => :v1 do
 
       expect(response.code).to eq('201')
       expected_response = {'container_group' => {
+        'id' => group_3.id,
         'name' => 'Group 3',
         'is_public' => true,
         'owners' => [
@@ -88,6 +89,7 @@ describe Api::V1::GroupNestingsController, :type => :api, :version => :v1 do
         'members' => [],
         'groups' => [
           {
+            'id' => group_1.id,
             'container_group_id' => group_3.id,
             'name' => 'Group 1',
             'is_public' => false,
@@ -97,6 +99,7 @@ describe Api::V1::GroupNestingsController, :type => :api, :version => :v1 do
             'members' => [],
             'groups' => [
               {
+                'id' => group_2.id,
                 'container_group_id' => group_1.id,
                 'name' => 'Group 2',
                 'is_public' => false,
@@ -108,6 +111,7 @@ describe Api::V1::GroupNestingsController, :type => :api, :version => :v1 do
             ]
           }]
       }, 'member_group' => {
+        'id' => group_1.id,
         'container_group_id' => group_3.id,
         'name' => 'Group 1',
         'is_public' => false,
@@ -117,6 +121,7 @@ describe Api::V1::GroupNestingsController, :type => :api, :version => :v1 do
         'members' => [],
         'groups' => [
           {
+            'id' => group_2.id,
             'container_group_id' => group_1.id,
             'name' => 'Group 2',
             'is_public' => false,

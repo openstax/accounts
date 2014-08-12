@@ -182,7 +182,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   def updated
     OSU::AccessPolicy.require_action_allowed!(:updated, current_api_user, ApplicationUser)
     errors = MarkApplicationUsersUpdatesAsRead.call(current_application,
-                                                    JSON.parse(request.body)).errors
+               ActiveSupport::JSON.decode(request.body)).errors
     head (errors.any? ? :internal_server_error : :no_content)
   end
 
