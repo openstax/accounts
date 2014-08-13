@@ -388,7 +388,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
   end
 
   describe "updated" do
-    it "should return properly formatted JSON responses" do
+    it "should properly change unread_updates" do
       app_user = user_2.application_users.first
       expect(app_user.unread_updates).to eq 1
 
@@ -402,19 +402,27 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       expect(app_user.reload.unread_updates).to eq 3
 
-      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id.to_s => "1"}}
+      user_2.first_name = 'B'
+      user_2.save!
+
+      expect(app_user.reload.unread_updates).to eq 4
+
+      api_put :updated, untrusted_application_token, raw_post_data: [
+        {id: app_user.id, read_updates: 2}].to_json
 
       expect(response.status).to eq(204)
 
       expect(app_user.reload.unread_updates).to eq 2
 
-      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id.to_s => "2"}}
+      api_put :updated, untrusted_application_token, raw_post_data: [
+        {id: app_user.id, read_updates: 1}].to_json
 
       expect(response.status).to eq(204)
 
-      expect(app_user.reload.unread_updates).to eq 0
+      expect(app_user.reload.unread_updates).to eq 1
 
-      api_put :updated, untrusted_application_token, parameters: {application_users: {app_user.id.to_s => "1"}}
+      api_put :updated, untrusted_application_token, raw_post_data: [
+        {id: app_user.id, read_updates: 2}].to_json
 
       expect(response.status).to eq(204)
 
@@ -423,8 +431,13 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
     it "should not let an app mark another app's updates as read" do
       app_user = user_2.application_users.first
-      expect{api_put :updated, trusted_application_token, parameters: {application_users: {app_user.id => 1}}}.to(
-          raise_error(SecurityTransgression))
+
+      expect(app_user.reload.unread_updates).to eq 1
+
+      api_put :updated, trusted_application_token, raw_post_data: [
+        {id: app_user.id, read_updates: 1}].to_json
+
+      expect(app_user.reload.unread_updates).to eq 1
     end
 
     it "should not let a user call it through an app" do

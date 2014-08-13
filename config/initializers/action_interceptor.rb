@@ -32,7 +32,7 @@ ActionInterceptor.configure do
     identity = user.try(:identity)
     return unless identity.try(:should_reset_password?)
 
-    code_hash = {code: identity.generate_reset_code}
+    code_hash = {code: identity.generate_reset_code!}
 
     respond_to do |format|
       format.html { redirect_to reset_password_path(code_hash) }

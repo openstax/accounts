@@ -42,6 +42,7 @@ feature 'User forgot password', js: true do
     fill_in 'Username', with: 'user1'
     click_button 'Submit'
     expect(page.text).to include('Password reset instructions sent')
+    @user.identity.reload
     password_reset_email_sent? @user
 
     visit @reset_link

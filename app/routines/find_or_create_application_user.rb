@@ -3,7 +3,7 @@ class FindOrCreateApplicationUser
 
   lev_routine
 
-protected
+  protected
 
   def exec(application_id, user_id)
     application_user = ApplicationUser.where(:application_id => application_id,

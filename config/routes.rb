@@ -50,9 +50,23 @@ Accounts::Application.routes.draw do
       end
     end
 
-    # resource :application_user, only: [:show, :update, :destroy]
+    resources :application_groups, only: [] do
+      collection do
+        get 'updates'
+        put 'updated'
+      end
+    end
 
     resources :messages, only: [:create]
+
+    resources :groups, only: [:index, :show, :create, :update, :destroy] do
+      resources :group_members, only: [:create, :destroy], as: 'members'
+      resources :group_owners, only: [:create, :destroy], as: 'owners'
+      resources :group_nestings, only: [:create, :destroy], as: 'nestings'
+    end
+
+    resources :group_members, only: [:index], as: 'memberships'
+    resources :group_owners, only: [:index], as: 'ownerships'
   end
 
   # Resources

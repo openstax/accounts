@@ -3,7 +3,7 @@ require 'spec_helper'
 describe IdentitiesResetPassword do
   let!(:identity) {
     i = FactoryGirl.create :identity, password: 'password'
-    i.generate_reset_code
+    i.generate_reset_code!
     i
   }
 

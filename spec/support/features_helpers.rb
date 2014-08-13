@@ -61,7 +61,7 @@ end
 def generate_reset_code_for(username)
   user = User.find_by_username(username)
   identity = user.identity
-  identity.generate_reset_code
+  identity.generate_reset_code!
   identity.reset_code
 end
 

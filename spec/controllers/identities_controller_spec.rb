@@ -8,7 +8,7 @@ describe IdentitiesController do
     let!(:user) { FactoryGirl.create :user, username: 'user_one' }
     let!(:identity) {
       i = FactoryGirl.create :identity, user: user, password: 'password'
-      i.generate_reset_code
+      i.generate_reset_code!
       i
     }
 

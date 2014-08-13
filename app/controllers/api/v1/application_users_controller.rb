@@ -165,30 +165,24 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     Marks ApplicationUser updates as read for the current application.
     Useful for caching User information.
 
-    * `application_users` &ndash; Hash containing info about the ApplicationUsers whose updates were read.
-                          Keys are ApplicationUser ID's. Values are integers, containing the value of
-                          "unread_updates" that you last received for each specific ApplicationUser.
+    * `application_users` &ndash; Array containing info about the ApplicationUsers whose updates were read. The "id" and "read_updates" fields are mandatory. "read_updates" should contain the last value for "unread_updates" received by the app.
 
     Examples:
 
     Assume your app called `updates` and got an ApplicationUser with id: 42 and unread_updates: 2
 
-    `application_users = {42: 2}` &ndash; this is the correct call to `updated`, and marks the
-                                  ApplicationUser updates as `read` by setting unread_updates to 0.
+    `application_users = {id: 42, read_updates: 2}` &ndash; this is the correct call to `updated`, and marks the ApplicationUser updates as `read` by setting unread_updates to 0.
 
     Assume your app called `updates` and got an ApplicationUser with id: 13 and unread_updates: 1
 
-    After you called the API and received your response, the user updated their profile in Accounts,
-    setting unread_updates to 2.
+    After you called the API and received your response, the user updated their profile in Accounts, setting unread_updates to 2.
 
-    `application_users = {13: 1}` &ndash; will decrease unread_updates by 1, setting it to 1.
-                                  The user will be sent again the next time you call `updates`,
-                                  so you won't miss the updated information.
+    `application_users = {id: 13, read_updates: 1}` &ndash; will decrease unread_updates by 1, setting it to 1. The user will be sent again the next time you call `updates`, so you won't miss the updated information.
   EOS
   def updated
     OSU::AccessPolicy.require_action_allowed!(:updated, current_api_user, ApplicationUser)
     errors = MarkApplicationUsersUpdatesAsRead.call(current_application,
-                                                    params[:application_users]).errors
+               ActiveSupport::JSON.decode(request.body)).errors
     head (errors.any? ? :internal_server_error : :no_content)
   end
 

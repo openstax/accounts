@@ -3,20 +3,25 @@ class User < ActiveRecord::Base
   USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
   USERNAME_MAX_LENGTH = 50
 
-  belongs_to :person
+  belongs_to :person, inverse_of: :users
 
-  has_one :identity, :dependent => :destroy
+  has_one :identity, dependent: :destroy, inverse_of: :user
 
-  has_many :authentications, :dependent => :destroy
-  has_many :application_users, :dependent => :destroy, inverse_of: :user
-  has_many :contact_infos, :dependent => :destroy, inverse_of: :user
-  has_many :oauth_applications, class_name: 'Doorkeeper::Application',
-                                as: :owner,
-                                dependent: :destroy
+  has_many :authentications, dependent: :destroy, inverse_of: :user
+  has_many :application_users, dependent: :destroy, inverse_of: :user
+  has_many :contact_infos, dependent: :destroy, inverse_of: :user
 
   has_many :message_recipients, inverse_of: :user, :dependent => :destroy
   has_many :received_messages, through: :message_recipients, source: :message
   has_many :sent_messages, class_name: 'Message'
+
+  has_many :group_owners, dependent: :destroy, inverse_of: :user
+  has_many :owned_groups, through: :group_owners, source: :group
+
+  has_many :group_members, dependent: :destroy, inverse_of: :user
+  has_many :member_groups, through: :group_members, source: :group
+
+  has_many :oauth_applications, through: :member_groups
 
   before_validation :normalize_username
 
@@ -122,6 +127,7 @@ protected
   end
 
   def make_first_user_an_admin
+    return if Rails.env.production?
     self.is_administrator = true if User.count == 0
   end
 

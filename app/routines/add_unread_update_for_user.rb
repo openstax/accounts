@@ -7,18 +7,12 @@ class AddUnreadUpdateForUser
   # This transaction needs :repeatable_read to prevent missed updates
   lev_routine transaction: :repeatable_read
 
-protected
+  protected
 
   def exec(user)
     return if user.nil?
-    # TODO: We can optimize the following query...
-    # But let's not do premature optimization.
-    # Maybe try an update_all with https://gist.github.com/nertzy/664645
-    user.application_users.each do |app_user|
-      app_user.unread_updates += 1
-      app_user.save
-      fatal_error(code: :record_invalid) if app_user.errors.any?
-    end
+
+    user.application_users.update_all('unread_updates = unread_updates + 1')
   end
 
 end
