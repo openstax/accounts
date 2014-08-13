@@ -3,7 +3,9 @@ class GroupNestingAccessPolicy
 
   def self.action_allowed?(action, requestor, group_nesting)
     # Deny access to applications without human users
-    return false if !requestor.is_human? || requestor.is_anonymous?
+    return false if !requestor.is_human? || requestor.is_anonymous? ||\
+                    group_nesting.container_group.nil? ||\
+                    group_nesting.member_group.nil?
 
     case action
     when :create

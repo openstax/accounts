@@ -9,15 +9,6 @@ module Api::V1
                required: true
              }
 
-    property :container_group_id,
-             exec_context: :decorator,
-             type: Integer,
-             writeable: false,
-             schema_info: {
-               required: true,
-               description: "The ID of the group that contains this group"
-             }
-
     property :name,
              type: String,
              writeable: true,
@@ -45,16 +36,12 @@ module Api::V1
                writeable: false,
                schema_info: { description: "The members of this group" }
 
-    collection :member_groups,
-               as: :groups,
-               class: Group,
-               decorator: GroupRepresenter,
+    collection :member_group_nestings,
+               as: :nestings,
+               class: GroupNesting,
+               decorator: GroupNestingRepresenter,
                writeable: false,
                schema_info: { description: "The groups nested within this group" }
-
-    def container_group_id
-      represented.container_group_nesting.try(:container_group_id)
-    end
 
   end
 end

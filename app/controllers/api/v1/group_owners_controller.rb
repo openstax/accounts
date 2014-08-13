@@ -14,7 +14,7 @@ class Api::V1::GroupOwnersController < OpenStax::Api::V1::ApiController
   # index
   ###############################################################
 
-  api :GET, '/group_owners', 'Lists the groups that the current user owns.'
+  api :GET, '/ownerships', 'Lists the groups that the current user owns.'
   description <<-EOS
     Lists the groups that the current user owns.
 
@@ -29,30 +29,47 @@ class Api::V1::GroupOwnersController < OpenStax::Api::V1::ApiController
   # create
   ###############################################################
 
-  api :POST, '/groups/:group_id/group_owners', 'Makes the given user an owner of the given Group.'
+  api :POST, '/groups/:group_id/owners/:user_id',
+             'Makes the given user an owner of the given Group.'
   description <<-EOS
     Makes the given user an owner of the given group.
 
     The current user must be a current owner of the group.
-
-    #{json_schema(Api::V1::GroupOwnerRepresenter, include: :writeable)}
   EOS
   def create
-    standard_nested_create(GroupOwner, :group, params[:group_id])
+    go = GroupOwner.new
+    go.group_id = params[:group_id]
+    go.user_id = params[:id]
+    OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, go)
+
+    if go.save
+      respond_with go, status: :created
+    else
+      render json: go.errors, status: :unprocessable_entity
+    end
   end
 
   ###############################################################
   # destroy
   ###############################################################
 
-  api :DELETE, '/group_owners/:id', 'Deletes a GroupOwner, removing the user from the Group\'s list of owners.'
+  api :DELETE, '/groups/:group_id/owners/:user_id',
+               'Deletes a GroupOwner, removing the user from the Group\'s list of owners.'
   description <<-EOS
     Deletes a GroupOwner, removing the associated user from the Group\'s list of owners.
 
     The current user must be an owner of the group.
   EOS
   def destroy
-    standard_destroy(GroupOwner, params[:id])
+    go = GroupOwner.where(group_id: params[:group_id],
+                          user_id: params[:id]).first
+    OSU::AccessPolicy.require_action_allowed!(:destroy, current_api_user, go)
+
+    if go.destroy
+      head :no_content
+    else
+      render json: go.errors, status: :unprocessable_entity
+    end
   end
 
 end

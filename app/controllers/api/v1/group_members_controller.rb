@@ -12,7 +12,7 @@ class Api::V1::GroupMembersController < OpenStax::Api::V1::ApiController
   # index
   ###############################################################
 
-  api :GET, '/group_members', 'Lists the group memberships for the current user.'
+  api :GET, '/memberships', 'Lists the group memberships for the current user.'
   description <<-EOS
     Shows the group memberships for the current user.
 
@@ -27,30 +27,47 @@ class Api::V1::GroupMembersController < OpenStax::Api::V1::ApiController
   # create
   ###############################################################
 
-  api :POST, '/groups/:group_id/group_members', 'Adds a given user as a member of the given Group.'
+  api :POST, '/groups/:group_id/members/:user_id',
+             'Adds a given user as a member of the given Group.'
   description <<-EOS
     Adds a given user as a member of the given Group.
 
     The current user must be an owner of the group.
-
-    #{json_schema(Api::V1::GroupMemberRepresenter, include: :writeable)}
   EOS
   def create
-    standard_nested_create(GroupMember, :group, params[:group_id])
+    gm = GroupMember.new
+    gm.group_id = params[:group_id]
+    gm.user_id = params[:id]
+    OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, gm)
+
+    if gm.save
+      respond_with gm, status: :created
+    else
+      render json: gm.errors, status: :unprocessable_entity
+    end
   end
 
   ###############################################################
   # destroy
   ###############################################################
 
-  api :DELETE, '/group_members/:id', 'Deletes a GroupMember, removing the associated user from the Group.'
+  api :DELETE, '/groups/:group_id/members/:user_id',
+               'Deletes a GroupMember, removing the associated user from the Group.'
   description <<-EOS
     Deletes a GroupMember, removing the associated user from the Group.
 
     The current user must be an owner of the group.
   EOS
   def destroy
-    standard_destroy(GroupMember, params[:id])
+    gm = GroupMember.where(group_id: params[:group_id],
+                           user_id: params[:id]).first
+    OSU::AccessPolicy.require_action_allowed!(:destroy, current_api_user, gm)
+
+    if gm.destroy
+      head :no_content
+    else
+      render json: gm.errors, status: :unprocessable_entity
+    end
   end
 
 end

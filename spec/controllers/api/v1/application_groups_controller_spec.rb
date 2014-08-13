@@ -109,7 +109,7 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
           is_public: true,
           owners: [],
           members: [],
-          groups: []
+          nestings: []
         },
         unread_updates: 3
       }].to_json
@@ -133,6 +133,8 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
 
       expect(application_group_1.reload.unread_updates).to eq 5
 
+      application_group_2 = ApplicationGroup.last
+
       expected_response = [{
         id: application_group_1.id,
         application_id: untrusted_application.id,
@@ -142,26 +144,35 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
           is_public: true,
           owners: [],
           members: [],
-          groups: [
+          nestings: [
             {
-              id: group_2.id,
               container_group_id: group_1.id,
-              is_public: false,
-              owners: [
-                {id: user_1.id, username: user_1.username}
-              ],
-              members: [],
-              groups: []
+              member_group_id: group_2.id
             }
           ]
         },
         unread_updates: 5
+      },
+      {
+        id: application_group_2.id,
+        application_id: untrusted_application.id,
+        group: {
+          id: group_2.id,
+          is_public: false,
+          owners: [
+            {id: user_1.id, username: user_1.username}
+          ],
+          members: [],
+          nestings: []
+        }, unread_updates: 1
       }].to_json
 
       expect(response.body).to eq(expected_response)
 
-      application_group_1.unread_updates = 0
+      application_group_1.reload.unread_updates = 0
       application_group_1.save!
+      application_group_2.reload.unread_updates = 0
+      application_group_2.save!
 
       api_get :updates, untrusted_application_token
       expected_response = [].to_json

@@ -33,7 +33,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'id' => group_3.id,
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => [], 'owners' => [], 'groups' => []
+        'members' => [], 'owners' => [], 'nestings' => []
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -49,13 +49,13 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'is_public' => false,
         'members' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ], 'owners' => [], 'groups' => []
+        ], 'owners' => [], 'nestings' => []
       },
       {
         'id' => group_3.id,
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => [], 'owners' => [], 'groups' => []
+        'members' => [], 'owners' => [], 'nestings' => []
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -73,14 +73,13 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'is_public' => false,
         'members' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ], 'owners' => [], 'groups' => []
+        ], 'owners' => [], 'nestings' => []
       },
       {
         'id' => group_3.id,
-        'container_group_id' => group_2.id,
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => [], 'owners' => [], 'groups' => []
+        'members' => [], 'owners' => [], 'nestings' => []
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -89,6 +88,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
       group_3.save!
       group_2.reload
       group_3.reload
+
       FactoryGirl.create(:group_nesting, container_group: group_3, member_group: group_2)
       group_2.reload
       group_3.reload
@@ -103,19 +103,16 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'members' => [
           {'id' => user_1.id, 'username' => user_1.username}
         ],
-        'owners' => [], 'groups' => []
+        'owners' => [], 'nestings' => []
       },
       {
         'id' => group_3.id,
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => [], 'owners' => [], 'groups' => [
+        'members' => [], 'owners' => [], 'nestings' => [
           {
-            'id' => group_2.id,
-            'container_group_id' => group_3.id, 
-            'name' => 'Group 2',
-            'is_public' => false,
-            'members' => [], 'owners' => [], 'groups' => []
+            'container_group_id' => group_3.id,
+            'member_group_id' => group_2.id
           }
         ]
       }]
@@ -133,7 +130,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'is_public' => false,
         'members' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ], 'owners' => [], 'groups' => []
+        ], 'owners' => [], 'nestings' => []
       },
       {
         'id' => group_3.id,
@@ -141,13 +138,10 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'is_public' => true,
         'members' => [
           {'id' => user_2.id, 'username' => user_2.username}
-        ], 'owners' => [], 'groups' => [
+        ], 'owners' => [], 'nestings' => [
           {
-            'id' => group_2.id,
-            'container_group_id' => group_3.id, 
-            'name' => 'Group 2',
-            'is_public' => false,
-            'members' => [], 'owners' => [], 'groups' => []
+            'container_group_id' => group_3.id,
+            'member_group_id' => group_2.id
           }
         ]
       }]
@@ -165,7 +159,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'is_public' => false,
         'members' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ], 'owners' => [], 'groups' => []
+        ], 'owners' => [], 'nestings' => []
       },
       {
         'id' => group_3.id,
@@ -173,15 +167,11 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'is_public' => true,
         'members' => [
           {'id' => user_2.id, 'username' => user_2.username}
-        ], 'owners' => [], 'groups' => [
+        ], 'owners' => [], 'nestings' => [
           {
-            'id' => group_2.id,
+
             'container_group_id' => group_3.id, 
-            'name' => 'Group 2',
-            'is_public' => false,
-            'members' => [
-              {'id' => user_1.id, 'username' => user_1.username}
-            ], 'owners' => [], 'groups' => []
+            'member_group_id' => group_2.id
           }
         ]
       }]
@@ -202,7 +192,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'is_public' => false,
         'members' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ], 'owners' => [], 'groups' => []
+        ], 'owners' => [], 'nestings' => []
       },
       {
         'id' => group_2.id,
@@ -210,7 +200,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'is_public' => false,
         'members' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ], 'owners' => [], 'groups' => []
+        ], 'owners' => [], 'nestings' => []
       },
       {
         'id' => group_3.id,
@@ -218,7 +208,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'is_public' => true,
         'members' => [
           {'id' => user_2.id, 'username' => user_2.username}
-        ], 'owners' => [], 'groups' => []
+        ], 'owners' => [], 'nestings' => []
       }]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -234,7 +224,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'id' => group_3.id,
         'name' => 'Group 3',
         'is_public' => true,
-        'members' => [], 'owners' => [], 'groups' => []
+        'members' => [], 'owners' => [], 'nestings' => []
       }
       expect(JSON.parse(response.body)).to eq(expected_response)
     end
@@ -272,7 +262,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'members' => [
           {'id' => user_1.id, 'username' => user_1.username}
         ],
-        'owners' => [], 'groups' => []
+        'owners' => [], 'nestings' => []
       }
       expect(JSON.parse(response.body)).to eq(expected_response)
 
@@ -288,13 +278,10 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'is_public' => false,
         'members' => [], 'owners' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ], 'groups' => [
+        ], 'nestings' => [
           {
-            'id' => group_2.id,
             'container_group_id' => group_1.id,
-            'name' => 'Group 2',
-            'is_public' => false,
-            'members' => [], 'owners' => [], 'groups' => []
+            'member_group_id' => group_2.id
           }
         ]
       }
@@ -329,7 +316,7 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
         'members' => [],
         'owners' => [
           {'id' => user_1.id, 'username' => user_1.username}
-        ], 'groups' => []
+        ], 'nestings' => []
       }
       expect(JSON.parse(response.body)).to eq(expected_response)
     end

@@ -23,10 +23,7 @@ class FindOrCreateApplicationGroups
       end
     end
 
-    children_node_ids = application_groups.collect{|ag|
-                          ag.group.subtree_group_ids - [ag.group.id]}.flatten
-    outputs[:application_groups] = application_groups.select{|ag|
-                                     !children_node_ids.include?(ag.group.id)}
+    outputs[:application_groups] = application_groups
   end
 
 end

@@ -56,16 +56,17 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
       api_get :index, user_1_token
 
       expect(response.code).to eq('200')
-      expected_response = [{'group' => {
-        'id' => group_1.id,
-        'name' => 'Group 1',
-        'is_public' => false,
-        'owners' => [],
-        'members' => [
-          {'id' => user_1.id, 'username' => user_1.username}
-        ],
-        'groups' => []
-      }, 'user' => {'id' => user_1.id, 'username' => user_1.username}}]
+      expected_response = [{'user_id' => user_1.id,
+        'group' => {
+          'id' => group_1.id,
+          'name' => 'Group 1',
+          'is_public' => false,
+          'owners' => [],
+          'members' => [
+            {'id' => user_1.id, 'username' => user_1.username}
+          ],
+          'nestings' => []
+        }}]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
 
@@ -75,28 +76,22 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
       api_get :index, user_1_token
 
       expect(response.code).to eq('200')
-      expected_response = [{'group' => {
-        'id' => group_1.id,
-        'name' => 'Group 1',
-        'is_public' => false,
-        'owners' => [],
-        'members' => [
-          {'id' => user_1.id, 'username' => user_1.username}
-        ],
-        'groups' => [
-          {
-            'id' => group_2.id,
-            'container_group_id' => group_1.id,
-            'name' => 'Group 2',
-            'is_public' => false,
-            'owners' => [],
-            'members' => [
-              {'id' => user_2.id, 'username' => user_2.username}
-            ],
-            'groups' => []
-          }
-        ]
-      }, 'user' => {'id' => user_1.id, 'username' => user_1.username}}]
+      expected_response = [{'user_id' => user_1.id,
+        'group' => {
+          'id' => group_1.id,
+          'name' => 'Group 1',
+          'is_public' => false,
+          'owners' => [],
+          'members' => [
+            {'id' => user_1.id, 'username' => user_1.username}
+          ],
+          'nestings' => [
+            {
+              'container_group_id' => group_1.id,
+              'member_group_id' => group_2.id,
+            }
+          ]
+        }}]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
 
@@ -106,41 +101,34 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
       api_get :index, user_1_token
 
       expect(response.code).to eq('200')
-      expected_response = [{'group' => {
-        'id' => group_1.id,
-        'name' => 'Group 1',
-        'is_public' => false,
-        'owners' => [],
-        'members' => [
-          {'id' => user_1.id, 'username' => user_1.username}
-        ],
-        'groups' => [
-          {
-            'id' => group_2.id,
-            'container_group_id' => group_1.id,
-            'name' => 'Group 2',
-            'is_public' => false,
-            'owners' => [],
-            'members' => [
-              {'id' => user_1.id, 'username' => user_1.username},
-              {'id' => user_2.id, 'username' => user_2.username}
-            ],
-            'groups' => []
-          }
-        ]
-      }, 'user' => {'id' => user_1.id, 'username' => user_1.username}},
-      {'group' => {
-        'id' => group_2.id,
-        'container_group_id' => group_1.id,
-        'name' => 'Group 2',
-        'is_public' => false,
-        'owners' => [],
-        'members' => [
-          {'id' => user_1.id, 'username' => user_1.username},
-          {'id' => user_2.id, 'username' => user_2.username}
-        ],
-        'groups' => []
-      }, 'user' => {'id' => user_1.id, 'username' => user_1.username}}]
+      expected_response = [{'user_id' => user_1.id,
+        'group' => {
+          'id' => group_1.id,
+          'name' => 'Group 1',
+          'is_public' => false,
+          'owners' => [],
+          'members' => [
+            {'id' => user_1.id, 'username' => user_1.username}
+          ],
+          'nestings' => [
+            {
+              'container_group_id' => group_1.id,
+              'member_group_id' => group_2.id,
+            }
+          ]
+        }},
+        {'user_id' => user_1.id,
+         'group' => {
+           'id' => group_2.id,
+           'name' => 'Group 2',
+           'is_public' => false,
+           'owners' => [],
+           'members' => [
+             {'id' => user_1.id, 'username' => user_1.username},
+             {'id' => user_2.id, 'username' => user_2.username}
+           ],
+           'nestings' => []
+        }}]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
 
@@ -150,51 +138,45 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
       api_get :index, user_1_token
 
       expect(response.code).to eq('200')
-      expected_response = [{'group' => {
-        'id' => group_1.id,
-        'name' => 'Group 1',
-        'is_public' => false,
-        'owners' => [],
-        'members' => [
-          {'id' => user_1.id, 'username' => user_1.username}
-        ],
-        'groups' => [
-          {
-            'id' => group_2.id,
-            'container_group_id' => group_1.id,
-            'name' => 'Group 2',
-            'is_public' => false,
-            'owners' => [],
-            'members' => [
-              {'id' => user_1.id, 'username' => user_1.username},
-              {'id' => user_2.id, 'username' => user_2.username}
-            ],
-            'groups' => []
-          }
-        ]
-      }, 'user' => {'id' => user_1.id, 'username' => user_1.username}},
-      {'group' => {
-        'id' => group_2.id,
-        'container_group_id' => group_1.id,
-        'name' => 'Group 2',
-        'is_public' => false,
-        'owners' => [],
-        'members' => [
-          {'id' => user_1.id, 'username' => user_1.username},
-          {'id' => user_2.id, 'username' => user_2.username}
-        ],
-        'groups' => []
-      }, 'user' => {'id' => user_1.id, 'username' => user_1.username}},
-      {'group' => {
-        'id' => group_3.id,
-        'name' => 'Group 3',
-        'is_public' => true,
-        'owners' => [],
-        'members' => [
-          {'id' => user_1.id, 'username' => user_1.username}
-        ],
-        'groups' => []
-      }, 'user' => {'id' => user_1.id, 'username' => user_1.username}}]
+      expected_response = [{'user_id' => user_1.id,
+        'group' => {
+          'id' => group_1.id,
+          'name' => 'Group 1',
+          'is_public' => false,
+          'owners' => [],
+          'members' => [
+            {'id' => user_1.id, 'username' => user_1.username}
+          ],
+          'nestings' => [
+            {
+              'container_group_id' => group_1.id,
+              'member_group_id' => group_2.id,
+            }
+          ]
+        }},
+        {'user_id' => user_1.id,
+         'group' => {
+           'id' => group_2.id,
+           'name' => 'Group 2',
+           'is_public' => false,
+           'owners' => [],
+           'members' => [
+             {'id' => user_1.id, 'username' => user_1.username},
+             {'id' => user_2.id, 'username' => user_2.username}
+           ],
+           'nestings' => []
+        }},
+        {'user_id' => user_1.id,
+         'group' => {
+         'id' => group_3.id,
+         'name' => 'Group 3',
+         'is_public' => true,
+         'owners' => [],
+         'members' => [
+           {'id' => user_1.id, 'username' => user_1.username}
+         ],
+         'nestings' => []
+        }}]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
     end
@@ -202,8 +184,8 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
 
   context 'create' do
     it 'must not create a group_member without a token' do
-      expect{api_post :create, nil, parameters: {group_id: group_3.id},
-                      raw_post_data: {user_id: user_2.id}}.to(
+      expect{api_post :create, nil, parameters: {group_id: group_3.id,
+                                                 id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -211,16 +193,16 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
 
     it 'must not create a group_member for an app without a user token' do
       expect{api_post :create, untrusted_application_token,
-                      parameters: {group_id: group_3.id},
-                      raw_post_data: {user_id: user_2.id}}.to(
+                      parameters: {group_id: group_3.id,
+                                   id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
     end
 
     it 'must not create a group_member for an unauthorized user' do
-      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id},
-                      raw_post_data: {user_id: user_2.id}}.to(
+      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id,
+                                                         id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -228,8 +210,8 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
       group_3.add_member(user_1)
       controller.current_human_user.reload
 
-      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id},
-                      raw_post_data: {user_id: user_2.id}}.to(
+      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id,
+                                                          id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -237,41 +219,43 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
 
     it 'must create group_members for authorized users' do
       group_3.add_owner(user_1)
-      api_post :create, user_1_token, parameters: {group_id: group_3.id},
-               raw_post_data: {user_id: user_2.id}
+      api_post :create, user_1_token, parameters: {group_id: group_3.id,
+                                                   id: user_2.id}
 
       expect(response.code).to eq('201')
-      expected_response = {'group' => {
-        'id' => group_3.id,
-        'name' => 'Group 3',
-        'is_public' => true,
-        'owners' => [
-          {'id' => user_1.id, 'username' => user_1.username}
-        ],
-        'members' => [
-          {'id' => user_2.id, 'username' => user_2.username}
-        ],
-        'groups' => []
-      }, 'user' => {'id' => user_2.id, 'username' => user_2.username}}
+      expected_response = {'user_id' => user_2.id,
+        'group' => {
+          'id' => group_3.id,
+          'name' => 'Group 3',
+          'is_public' => true,
+          'owners' => [
+            {'id' => user_1.id, 'username' => user_1.username}
+          ],
+          'members' => [
+            {'id' => user_2.id, 'username' => user_2.username}
+          ],
+          'nestings' => []
+        }}
       expect(JSON.parse(response.body)).to eq(expected_response)
 
       group_1.add_owner(user_1)
-      api_post :create, user_1_token, parameters: {group_id: group_1.id},
-               raw_post_data: {user_id: user_1.id}
+      api_post :create, user_1_token, parameters: {group_id: group_1.id,
+                                                   id: user_1.id}
 
       expect(response.code).to eq('201')
-      expected_response = {'group' => {
-        'id' => group_1.id,
-        'name' => 'Group 1',
-        'is_public' => false,
-        'owners' => [
-          {'id' => user_1.id, 'username' => user_1.username}
-        ],
-        'members' => [
-          {'id' => user_1.id, 'username' => user_1.username}
-        ],
-        'groups' => []
-      }, 'user' => {'id' => user_1.id, 'username' => user_1.username}}
+      expected_response = {'user_id' => user_1.id,
+        'group' => {
+          'id' => group_1.id,
+          'name' => 'Group 1',
+          'is_public' => false,
+          'owners' => [
+            {'id' => user_1.id, 'username' => user_1.username}
+          ],
+          'members' => [
+            {'id' => user_1.id, 'username' => user_1.username}
+          ],
+          'nestings' => []
+        }}
       expect(JSON.parse(response.body)).to eq(expected_response)
     end
   end
@@ -279,7 +263,8 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
   context 'destroy' do
     it 'must not destroy a group_member without a token' do
       expect{api_delete :destroy, nil,
-                        parameters: {id: group_member_1.id}}.to(
+                        parameters: {group_id: group_2.id,
+                                     id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -288,7 +273,8 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
 
     it 'must not destroy a group_member for an app without a user token' do
       expect{api_delete :destroy, untrusted_application_token,
-                        parameters: {id: group_member_1.id}}.to(
+                        parameters: {group_id: group_2.id,
+                                     id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -297,7 +283,8 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
 
     it 'must not destroy a group_member for an unauthorized user' do
       expect{api_delete :destroy, user_1_token,
-                        parameters: {id: group_member_1.id}}.to(
+                        parameters: {group_id: group_2.id,
+                                     id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -306,7 +293,8 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
       group_2.add_member(user_1)
 
       expect{api_delete :destroy, user_1_token,
-                        parameters: {id: group_member_1.id}}.to(
+                        parameters: {group_id: group_2.id,
+                                     id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -317,7 +305,8 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
       group_2.add_member(user_1)
       group_member_2 = GroupMember.last
       api_delete :destroy, user_1_token,
-                 parameters: {id: group_member_2.id}
+                 parameters: {group_id: group_2.id,
+                              id: user_1.id}
 
       expect(response.code).to eq('204')
       expect(response.body).to be_blank
@@ -325,7 +314,8 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
 
       group_2.add_owner(user_1)
       api_delete :destroy, user_1_token,
-                 parameters: {id: group_member_1.id}
+                 parameters: {group_id: group_2.id,
+                              id: user_2.id}
 
       expect(response.code).to eq('204')
       expect(response.body).to be_blank
