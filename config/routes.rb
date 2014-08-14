@@ -60,13 +60,13 @@ Accounts::Application.routes.draw do
     resources :messages, only: [:create]
 
     resources :groups, only: [:index, :show, :create, :update, :destroy] do
-      resources :group_members, only: [:create, :destroy], as: 'members'
-      resources :group_owners, only: [:create, :destroy], as: 'owners'
-      resources :group_nestings, only: [:create, :destroy], as: 'nestings'
+      resources :group_members, only: [:create, :destroy], path: 'members'
+      resources :group_owners, only: [:create, :destroy], path: 'owners'
+      resources :group_nestings, only: [:create, :destroy], path: 'nestings'
     end
 
-    resources :group_members, only: [:index], as: 'memberships'
-    resources :group_owners, only: [:index], as: 'ownerships'
+    resources :group_members, only: [:index], path: 'memberships'
+    resources :group_owners, only: [:index], path: 'ownerships'
   end
 
   # Resources
