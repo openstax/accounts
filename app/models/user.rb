@@ -80,18 +80,6 @@ class User < ActiveRecord::Base
     AddUnreadUpdateForUser.call(self).errors.none?
   end
 
-  def can_be_read_by?(user)
-    raise NotYetImplemented
-  end
-
-  def can_be_updated_by?(user)
-    raise NotYetImplemented
-  end
-
-  def can_be_destroyed_by?(user)
-    raise NotYetImplemented
-  end
-
   ##########################
   # Access Control Helpers #
   ##########################
