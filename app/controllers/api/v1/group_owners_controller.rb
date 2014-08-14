@@ -39,7 +39,7 @@ class Api::V1::GroupOwnersController < OpenStax::Api::V1::ApiController
   def create
     go = GroupOwner.new
     go.group_id = params[:group_id]
-    go.user_id = params[:id]
+    go.user_id = params[:user_id]
     OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, go)
 
     if go.save
@@ -62,7 +62,7 @@ class Api::V1::GroupOwnersController < OpenStax::Api::V1::ApiController
   EOS
   def destroy
     go = GroupOwner.where(group_id: params[:group_id],
-                          user_id: params[:id]).first
+                          user_id: params[:user_id]).first
     OSU::AccessPolicy.require_action_allowed!(:destroy, current_api_user, go)
 
     if go.destroy

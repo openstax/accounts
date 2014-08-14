@@ -185,7 +185,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
   context 'create' do
     it 'must not create a group_member without a token' do
       expect{api_post :create, nil, parameters: {group_id: group_3.id,
-                                                 id: user_2.id}}.to(
+                                                 user_id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -194,7 +194,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
     it 'must not create a group_member for an app without a user token' do
       expect{api_post :create, untrusted_application_token,
                       parameters: {group_id: group_3.id,
-                                   id: user_2.id}}.to(
+                                   user_id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -202,7 +202,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
 
     it 'must not create a group_member for an unauthorized user' do
       expect{api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                         id: user_2.id}}.to(
+                                                         user_id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -211,7 +211,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
       controller.current_human_user.reload
 
       expect{api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                          id: user_2.id}}.to(
+                                                          user_id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -220,7 +220,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
     it 'must create group_members for authorized users' do
       group_3.add_owner(user_1)
       api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                   id: user_2.id}
+                                                   user_id: user_2.id}
 
       expect(response.code).to eq('201')
       expected_response = {'user_id' => user_2.id,
@@ -240,7 +240,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
 
       group_1.add_owner(user_1)
       api_post :create, user_1_token, parameters: {group_id: group_1.id,
-                                                   id: user_1.id}
+                                                   user_id: user_1.id}
 
       expect(response.code).to eq('201')
       expected_response = {'user_id' => user_1.id,
@@ -264,7 +264,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
     it 'must not destroy a group_member without a token' do
       expect{api_delete :destroy, nil,
                         parameters: {group_id: group_2.id,
-                                     id: user_2.id}}.to(
+                                     user_id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -274,7 +274,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
     it 'must not destroy a group_member for an app without a user token' do
       expect{api_delete :destroy, untrusted_application_token,
                         parameters: {group_id: group_2.id,
-                                     id: user_2.id}}.to(
+                                     user_id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -284,7 +284,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
     it 'must not destroy a group_member for an unauthorized user' do
       expect{api_delete :destroy, user_1_token,
                         parameters: {group_id: group_2.id,
-                                     id: user_2.id}}.to(
+                                     user_id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -294,7 +294,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
 
       expect{api_delete :destroy, user_1_token,
                         parameters: {group_id: group_2.id,
-                                     id: user_2.id}}.to(
+                                     user_id: user_2.id}}.to(
         raise_error(SecurityTransgression))
 
       expect(response.body).to be_empty
@@ -306,7 +306,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
       group_member_2 = GroupMember.last
       api_delete :destroy, user_1_token,
                  parameters: {group_id: group_2.id,
-                              id: user_1.id}
+                              user_id: user_1.id}
 
       expect(response.code).to eq('204')
       expect(response.body).to be_blank
@@ -315,7 +315,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
       group_2.add_owner(user_1)
       api_delete :destroy, user_1_token,
                  parameters: {group_id: group_2.id,
-                              id: user_2.id}
+                              user_id: user_2.id}
 
       expect(response.code).to eq('204')
       expect(response.body).to be_blank

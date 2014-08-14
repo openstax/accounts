@@ -60,9 +60,14 @@ Accounts::Application.routes.draw do
     resources :messages, only: [:create]
 
     resources :groups, only: [:index, :show, :create, :update, :destroy] do
-      resources :group_members, only: [:create, :destroy], path: 'members'
-      resources :group_owners, only: [:create, :destroy], path: 'owners'
-      resources :group_nestings, only: [:create, :destroy], path: 'nestings'
+      post '/members/:user_id', to: 'group_members#create'
+      delete '/members/:user_id', to: 'group_members#destroy'
+
+      post '/owners/:user_id', to: 'group_owners#create'
+      delete '/owners/:user_id', to: 'group_owners#destroy'
+
+      post '/nestings/:member_group_id', to: 'group_nestings#create'
+      delete '/nestings/:member_group_id', to: 'group_nestings#destroy'
     end
 
     resources :group_members, only: [:index], path: 'memberships'

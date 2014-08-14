@@ -22,7 +22,7 @@ class Api::V1::GroupNestingsController < OpenStax::Api::V1::ApiController
   def create
     gn = GroupNesting.new
     gn.container_group_id = params[:group_id]
-    gn.member_group_id = params[:id]
+    gn.member_group_id = params[:member_group_id]
     OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, gn)
 
     if gn.save
@@ -45,7 +45,7 @@ class Api::V1::GroupNestingsController < OpenStax::Api::V1::ApiController
   EOS
   def destroy
     gn = GroupNesting.where(container_group_id: params[:group_id],
-                            member_group_id: params[:id]).first
+                            member_group_id: params[:member_group_id]).first
     OSU::AccessPolicy.require_action_allowed!(:destroy, current_api_user, gn)
 
     if gn.destroy

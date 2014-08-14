@@ -37,7 +37,7 @@ class Api::V1::GroupMembersController < OpenStax::Api::V1::ApiController
   def create
     gm = GroupMember.new
     gm.group_id = params[:group_id]
-    gm.user_id = params[:id]
+    gm.user_id = params[:user_id]
     OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, gm)
 
     if gm.save
@@ -60,7 +60,7 @@ class Api::V1::GroupMembersController < OpenStax::Api::V1::ApiController
   EOS
   def destroy
     gm = GroupMember.where(group_id: params[:group_id],
-                           user_id: params[:id]).first
+                           user_id: params[:user_id]).first
     OSU::AccessPolicy.require_action_allowed!(:destroy, current_api_user, gm)
 
     if gm.destroy
