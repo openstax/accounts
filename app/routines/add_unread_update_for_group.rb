@@ -12,8 +12,7 @@ class AddUnreadUpdateForGroup
   def exec(group)
     return if group.nil?
 
-    ApplicationGroup.where(group_id: group.supertree_group_ids)
-                    .update_all('unread_updates = unread_updates + 1')
+    group.application_groups.update_all('unread_updates = unread_updates + 1')
   end
 
 end

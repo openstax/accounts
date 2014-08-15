@@ -57,15 +57,6 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
 
       api_get :updates, untrusted_application_token
 
-      expect(application_group_1.reload.unread_updates).to eq 1
-
-      application_group_1.reload.unread_updates = 0
-      application_group_1.save!
-
-      expect(application_group_1.reload.unread_updates).to eq 0
-
-      api_get :updates, untrusted_application_token
-
       expect(application_group_1.reload.unread_updates).to eq 0
 
       expected_response = [].to_json
@@ -98,7 +89,7 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
 
       api_get :updates, untrusted_application_token
 
-      expect(application_group_1.reload.unread_updates).to eq 3
+      expect(application_group_1.reload.unread_updates).to eq 2
 
       expected_response = [{
         id: application_group_1.id,
@@ -109,9 +100,12 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
           is_public: true,
           owners: [],
           members: [],
-          nestings: []
+          nestings: [],
+          supertree_group_ids: [group_1.id],
+          subtree_group_ids: [group_1.id],
+          subtree_member_ids: []
         },
-        unread_updates: 3
+        unread_updates: 2
       }].to_json
 
       expect(response.body).to eq(expected_response)
@@ -123,15 +117,15 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
       FactoryGirl.create :group_nesting, container_group: group_1,
                                          member_group: group_2
 
-      expect(application_group_1.reload.unread_updates).to eq 4
+      expect(application_group_1.reload.unread_updates).to eq 3
 
       group_2.add_owner(user_1)
 
-      expect(application_group_1.reload.unread_updates).to eq 4
+      expect(application_group_1.reload.unread_updates).to eq 3
 
       api_get :updates, untrusted_application_token
 
-      expect(application_group_1.reload.unread_updates).to eq 5
+      expect(application_group_1.reload.unread_updates).to eq 3
 
       application_group_2 = ApplicationGroup.last
 
@@ -149,9 +143,12 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
               container_group_id: group_1.id,
               member_group_id: group_2.id
             }
-          ]
+          ],
+          supertree_group_ids: [group_1.id],
+          subtree_group_ids: [group_1.id, group_2.id],
+          subtree_member_ids: []
         },
-        unread_updates: 5
+        unread_updates: 3
       },
       {
         id: application_group_2.id,
@@ -163,7 +160,10 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
             {id: user_1.id, username: user_1.username}
           ],
           members: [],
-          nestings: []
+          nestings: [],
+          supertree_group_ids: [group_2.id, group_1.id],
+          subtree_group_ids: [group_2.id],
+          subtree_member_ids: []
         }, unread_updates: 1
       }].to_json
 

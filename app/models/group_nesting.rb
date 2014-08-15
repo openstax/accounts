@@ -7,14 +7,10 @@ class GroupNesting < ActiveRecord::Base
   validates_uniqueness_of :member_group_id
   validate :no_loops, on: :create
 
-  before_create :invalidate_cached_trees, :add_unread_update
-  before_destroy :invalidate_cached_trees, :add_unread_update
+  before_create :update_group_caches
+  before_destroy :update_group_caches
 
   protected
-
-  def add_unread_update
-    container_group.add_unread_update
-  end
 
   def no_loops
     return if member_group.nil? ||\
@@ -23,9 +19,9 @@ class GroupNesting < ActiveRecord::Base
     false
   end
 
-  def invalidate_cached_trees
-    container_group.invalidate_cached_subtrees
-    member_group.invalidate_cached_supertrees
+  def update_group_caches
+    # Returns false if the update fails (aborting the save transaction)
+    UpdateGroupCaches.call(self).errors.none?
   end
 
 end

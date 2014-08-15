@@ -1,7 +1,7 @@
 class Group < ActiveRecord::Base
 
-  serialize :cached_subtree_group_ids
   serialize :cached_supertree_group_ids
+  serialize :cached_subtree_group_ids
 
   has_many :group_owners, dependent: :destroy, inverse_of: :group
   has_many :owners, through: :group_owners, source: :user
@@ -36,15 +36,14 @@ class Group < ActiveRecord::Base
              (group_owners.user_id.eq my{user.id}))}
   }
 
-  def self.visible_trees_for(user)
-    visible_groups = visible_for(user).to_a
-    children_node_ids = visible_groups.collect{|g| g.subtree_group_ids - [g.id]}.flatten
-    visible_groups.select{|g| !children_node_ids.include?(g.id)}
-  end
-
   def has_owner?(user)
     return false unless user.is_a? User
     !group_owners.where(user_id: user.id).first.nil?
+  end
+
+  def has_direct_member?(user)
+    return false unless user.is_a? User
+    !group_members.where(user_id: user.id).first.nil?
   end
 
   def has_member?(user)
@@ -72,37 +71,37 @@ class Group < ActiveRecord::Base
     group_members << gm
   end
 
-  def subtree_group_ids
-    return cached_subtree_group_ids unless cached_subtree_group_ids.nil?
-    return [] unless persisted?
-    gids = [id] + Group.includes(:container_group_nesting)
-                       .where(container_group_nesting: {container_group_id: id})
-                       .collect{|g| g.subtree_group_ids}.flatten
-    update_attribute(:cached_subtree_group_ids, gids)
-    gids
-  end
-
   def supertree_group_ids
     return cached_supertree_group_ids unless cached_supertree_group_ids.nil?
     return [] unless persisted?
+    reload
+
     gids = [id] + (Group.includes(:member_group_nestings)
                         .where(member_group_nestings: {member_group_id: id})
                         .first.try(:supertree_group_ids) || [])
-    update_attribute(:cached_supertree_group_ids, gids)
-    gids
+    update_column(:cached_supertree_group_ids, gids.to_yaml)
+    self.cached_supertree_group_ids = gids
+  end
+
+  def subtree_group_ids
+    return cached_subtree_group_ids unless cached_subtree_group_ids.nil?
+    return [] unless persisted?
+    reload
+
+    gids = [id] + Group.includes(:container_group_nesting)
+                       .where(container_group_nesting: {container_group_id: id})
+                       .collect{|g| g.subtree_group_ids}.flatten
+    update_column(:cached_subtree_group_ids, gids.to_yaml)
+    self.cached_subtree_group_ids = gids
+  end
+
+  def subtree_member_ids
+    GroupMember.where(group_id: subtree_group_ids).uniq.pluck(:user_id)
   end
 
   def add_unread_update
     # Returns false if the update fails (aborting the save transaction)
     AddUnreadUpdateForGroup.call(self).errors.none?
-  end
-
-  def invalidate_cached_supertrees
-    Group.where(id: subtree_group_ids).update_all(cached_supertree_group_ids: nil)
-  end
-
-  def invalidate_cached_subtrees
-    Group.where(id: supertree_group_ids).update_all(cached_subtree_group_ids: nil)
   end
 
 end

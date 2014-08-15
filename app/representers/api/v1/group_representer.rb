@@ -34,14 +34,35 @@ module Api::V1
                class: User,
                decorator: UserRepresenter,
                writeable: false,
-               schema_info: { description: "The members of this group" }
+               schema_info: { description: "The direct members of this group" }
 
     collection :member_group_nestings,
                as: :nestings,
                class: GroupNesting,
                decorator: GroupNestingRepresenter,
                writeable: false,
-               schema_info: { description: "The groups nested within this group" }
+               schema_info: { description: "The groups directly nested within this group" }
+
+    property :supertree_group_ids,
+             type: Array,
+             schema_info: {
+               items: "integer",
+               description: "The ID's of all groups that should be updated if this group is changed; For caching purposes"
+             }
+
+    property :subtree_group_ids,
+             type: Array,
+             schema_info: {
+               items: "integer",
+               description: "The ID's of all groups nested in this group's subtree, including this one; For caching purposes"
+             }
+
+    property :subtree_member_ids,
+             type: Array,
+             schema_info: {
+               items: "integer",
+               description: "The ID's of all members of groups nested in this group's subtree, including this one; For membership checking purposes"
+             }
 
   end
 end

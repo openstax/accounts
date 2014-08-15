@@ -65,7 +65,10 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
           'members' => [
             {'id' => user_1.id, 'username' => user_1.username}
           ],
-          'nestings' => []
+          'nestings' => [],
+          'supertree_group_ids' => [group_1.id],
+          'subtree_group_ids' => [group_1.id],
+          'subtree_member_ids' => [user_1.id]
         }}]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -90,7 +93,10 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
               'container_group_id' => group_1.id,
               'member_group_id' => group_2.id,
             }
-          ]
+          ],
+          'supertree_group_ids' => [group_1.id],
+          'subtree_group_ids' => [group_1.id, group_2.id],
+          'subtree_member_ids' => [user_1.id, user_2.id]
         }}]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -115,7 +121,10 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
               'container_group_id' => group_1.id,
               'member_group_id' => group_2.id,
             }
-          ]
+          ],
+          'supertree_group_ids' => [group_1.id],
+          'subtree_group_ids' => [group_1.id, group_2.id],
+          'subtree_member_ids' => [user_1.id, user_2.id]
         }},
         {'user_id' => user_1.id,
          'group' => {
@@ -127,7 +136,10 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
              {'id' => user_1.id, 'username' => user_1.username},
              {'id' => user_2.id, 'username' => user_2.username}
            ],
-           'nestings' => []
+           'nestings' => [],
+           'supertree_group_ids' => [group_2.id, group_1.id],
+           'subtree_group_ids' => [group_2.id],
+           'subtree_member_ids' => [user_1.id, user_2.id]
         }}]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -152,7 +164,10 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
               'container_group_id' => group_1.id,
               'member_group_id' => group_2.id,
             }
-          ]
+          ],
+          'supertree_group_ids' => [group_1.id],
+          'subtree_group_ids' => [group_1.id, group_2.id],
+          'subtree_member_ids' => [user_1.id, user_2.id]
         }},
         {'user_id' => user_1.id,
          'group' => {
@@ -164,7 +179,10 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
              {'id' => user_1.id, 'username' => user_1.username},
              {'id' => user_2.id, 'username' => user_2.username}
            ],
-           'nestings' => []
+           'nestings' => [],
+           'supertree_group_ids' => [group_2.id, group_1.id],
+           'subtree_group_ids' => [group_2.id],
+           'subtree_member_ids' => [user_1.id, user_2.id]
         }},
         {'user_id' => user_1.id,
          'group' => {
@@ -175,7 +193,10 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
          'members' => [
            {'id' => user_1.id, 'username' => user_1.username}
          ],
-         'nestings' => []
+         'nestings' => [],
+         'supertree_group_ids' => [group_3.id],
+         'subtree_group_ids' => [group_3.id],
+         'subtree_member_ids' => [user_1.id]
         }}]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
@@ -234,7 +255,10 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
           'members' => [
             {'id' => user_2.id, 'username' => user_2.username}
           ],
-          'nestings' => []
+          'nestings' => [],
+          'supertree_group_ids' => [group_3.id],
+          'subtree_group_ids' => [group_3.id],
+          'subtree_member_ids' => [user_2.id]
         }}
       expect(JSON.parse(response.body)).to eq(expected_response)
 
@@ -254,7 +278,10 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
           'members' => [
             {'id' => user_1.id, 'username' => user_1.username}
           ],
-          'nestings' => []
+          'nestings' => [],
+          'supertree_group_ids' => [group_1.id],
+          'subtree_group_ids' => [group_1.id],
+          'subtree_member_ids' => [user_1.id]
         }}
       expect(JSON.parse(response.body)).to eq(expected_response)
     end
