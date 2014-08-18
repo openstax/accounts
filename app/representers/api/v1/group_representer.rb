@@ -11,28 +11,28 @@ module Api::V1
 
     property :name,
              type: String,
-             writeable: true,
              schema_info: {
                required: true,
                description: "The group's name"
              }
 
     property :is_public,
-             writeable: true,
              schema_info: {
                type: "boolean",
                description: "The group's visibility setting"
              }
 
-    collection :owners,
-               class: User,
-               decorator: UserRepresenter,
+    collection :group_owners,
+               as: :owners,
+               class: GroupOwner,
+               decorator: GroupUserRepresenter,
                writeable: false,
                schema_info: { description: "The owners of this group" }
 
-    collection :members,
-               class: User,
-               decorator: UserRepresenter,
+    collection :group_members,
+               as: :members,
+               class: GroupMember,
+               decorator: GroupUserRepresenter,
                writeable: false,
                schema_info: { description: "The direct members of this group" }
 
@@ -59,6 +59,7 @@ module Api::V1
 
     property :subtree_member_ids,
              type: Array,
+             writeable: false,
              schema_info: {
                items: "integer",
                description: "The ID's of all members of groups nested in this group's subtree, including this one; For membership checking purposes"

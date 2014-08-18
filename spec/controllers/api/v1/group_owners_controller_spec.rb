@@ -62,7 +62,8 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
           'name' => 'Group 1',
           'is_public' => false,
           'owners' => [
-            {'id' => user_1.id, 'username' => user_1.username}
+            {'group_id' => group_1.id,
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'members' => [],
           'nestings' => [],
@@ -85,7 +86,8 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
           'name' => 'Group 1',
           'is_public' => false,
           'owners' => [
-            {'id' => user_1.id, 'username' => user_1.username}
+            {'group_id' => group_1.id,
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'members' => [],
           'nestings' => [
@@ -113,7 +115,8 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
           'name' => 'Group 1',
           'is_public' => false,
           'owners' => [
-            {'id' => user_1.id, 'username' => user_1.username}
+            {'group_id' => group_1.id,
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'members' => [],
           'nestings' => [
@@ -132,8 +135,10 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
            'name' => 'Group 2',
            'is_public' => false,
            'owners' => [
-             {'id' => user_1.id, 'username' => user_1.username},
-             {'id' => user_2.id, 'username' => user_2.username}
+             {'group_id' => group_2.id,
+              'user' => {'id' => user_1.id, 'username' => user_1.username}},
+             {'group_id' => group_2.id,
+              'user' => {'id' => user_2.id, 'username' => user_2.username}}
            ],
            'members' => [],
            'nestings' => [],
@@ -156,7 +161,8 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
           'name' => 'Group 1',
           'is_public' => false,
           'owners' => [
-            {'id' => user_1.id, 'username' => user_1.username}
+            {'group_id' => group_1.id,
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'members' => [],
           'nestings' => [
@@ -175,8 +181,10 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
            'name' => 'Group 2',
            'is_public' => false,
            'owners' => [
-             {'id' => user_1.id, 'username' => user_1.username},
-             {'id' => user_2.id, 'username' => user_2.username}
+             {'group_id' => group_2.id,
+              'user' => {'id' => user_1.id, 'username' => user_1.username}},
+             {'group_id' => group_2.id,
+              'user' => {'id' => user_2.id, 'username' => user_2.username}}
            ],
            'members' => [],
            'nestings' => [],
@@ -190,7 +198,8 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
            'name' => 'Group 3',
            'is_public' => true,
            'owners' => [
-             {'id' => user_1.id, 'username' => user_1.username}
+             {'group_id' => group_3.id,
+              'user' => {'id' => user_1.id, 'username' => user_1.username}}
            ],
            'members' => [],
            'nestings' => [],
@@ -250,8 +259,10 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
           'name' => 'Group 3',
           'is_public' => true,
           'owners' => [
-            {'id' => user_1.id, 'username' => user_1.username},
-            {'id' => user_2.id, 'username' => user_2.username}
+            {'group_id' => group_3.id,
+             'user' => {'id' => user_1.id, 'username' => user_1.username}},
+            {'group_id' => group_3.id,
+             'user' => {'id' => user_2.id, 'username' => user_2.username}}
           ],
           'members' => [],
           'nestings' => [],
@@ -272,8 +283,10 @@ describe Api::V1::GroupOwnersController, :type => :api, :version => :v1 do
           'name' => 'Group 1',
           'is_public' => false,
           'owners' => [
-            {'id' => user_1.id, 'username' => user_1.username},
-            {'id' => user_2.id, 'username' => user_2.username}
+            {'group_id' => group_1.id,
+             'user' => {'id' => user_1.id, 'username' => user_1.username}},
+            {'group_id' => group_1.id,
+             'user' => {'id' => user_2.id, 'username' => user_2.username}}
           ],
           'members' => [],
           'nestings' => [],
