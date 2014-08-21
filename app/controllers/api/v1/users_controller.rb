@@ -44,9 +44,7 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
     When a field is listed as using wildcard matching, it means that any fields
     that start with a comma-separated-value will be matched.
 
-    * `username` &ndash; Matches Users' usernames.  Any characters matching
-                 `#{ERB::Util.html_escape (User::USERNAME_DISCARDED_CHAR_REGEX.inspect)}`
-                 will be discarded. (uses wildcard matching)
+    * `username` &ndash; Matches usernames. (uses wildcard matching)
     * `first_name` &ndash; Matches Users' first names, case insensitive. (uses wildcard matching)
     * `last_name` &ndash; Matches Users' last names, case insensitive. (uses wildcard matching)
     * `name` &ndash; Matches Users' first, last, or full names, case insensitive. (uses wildcard matching)

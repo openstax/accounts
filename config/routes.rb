@@ -17,7 +17,7 @@ Accounts::Application.routes.draw do
   namespace 'admin' do
     get '/', to: 'base#index'
 
-    put 'cron',                         to: 'base#cron', :as => 'cron'
+    put 'cron',                         to: 'base#cron'
     get 'raise_security_transgression', to: 'base#raise_security_transgression'
     get 'raise_record_not_found',       to: 'base#raise_record_not_found'
     get 'raise_routing_error',          to: 'base#raise_routing_error'
