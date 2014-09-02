@@ -12,6 +12,12 @@ OpenStax Accounts is a centralized provider of account-related services for Open
 
 It uses OAuth mechanisms and API keys to provide these services to OpenStax products and their users.
 
+Accounts requires the repeatable read isolation level to work properly. If using PostgreSQL, add the following to your `postgresql.conf`:
+
+```
+default_transaction_isolation = 'repeatable read'
+```
+
 ## Development Setup
 
 In development, Accounts can be run as a normal Rails app on your machine, or you can run it in a Vagrant virtual machine that mimics our production setup.
