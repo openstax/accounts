@@ -125,7 +125,10 @@ protected
     order_bys = order_bys.collect{|order_by| "#{order_by[0]} #{order_by[1]}"}
 
     order_bys.each do |order_by|
-      users = users.order(order_by)
+      # postgres requires the "users." bit to make it table_name.column_name
+      # otherwise the statement is considered invalid because the order by
+      # clause is not in the select clause
+      users = users.order("users.#{order_by}")
     end
 
     # Translate to routine outputs
