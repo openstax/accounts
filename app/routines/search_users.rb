@@ -45,7 +45,7 @@ protected
       with.default_keyword :any
 
       with.keyword :username do |usernames|
-        users = users.where{username.like_any my{prep_usernames(usernames)}}
+        users = users.where{username.like_any my{prep_names(usernames)}}
       end
 
       with.keyword :first_name do |first_names|
@@ -86,7 +86,7 @@ protected
 
         users = users.joins{contact_infos.outer}
                      .where{
-                              (         username.like_any  my{prep_usernames(terms)}) |
+                              (         username.like_any  my{prep_names(terms)}) |
                               (lower(first_name).like_any  names)                     |
                               (lower(last_name).like_any   names)                     |
                               (lower(full_name).like_any   names)                     |
@@ -148,17 +148,13 @@ protected
     # Return no results if maximum number of results is exceeded
 
     outputs[:users] = (outputs[:num_matching_users] > MAX_MATCHING_USERS) ?
-                        User.where('0=1') : users
+                        User.none : users
 
   end
 
-  # Downcase, and put a wildcard at the end.  For the moment don't exclude characters
+  # Downcase, remove any wildcards and put a wildcard at the end.
   def prep_names(names)
-    names.collect{|name| name.downcase + '%'}
-  end
-
-  def prep_usernames(usernames)
-    usernames.collect{|username| username.gsub(User::USERNAME_DISCARDED_CHAR_REGEX,'').downcase + '%'}
+    names.collect{|name| "#{name.downcase.gsub('%', '')}%"}
   end
 
 end

@@ -1,15 +1,22 @@
 # OpenStax Accounts
 
-[![Code Climate](https://codeclimate.com/github/openstax/accounts.png)](https://codeclimate.com/github/openstax/accounts)
 [![Build Status](https://travis-ci.org/openstax/accounts.png?branch=master)](https://travis-ci.org/openstax/accounts)
+[![Code Climate](https://codeclimate.com/github/openstax/accounts.png)](https://codeclimate.com/github/openstax/accounts)
 
 OpenStax Accounts is a centralized provider of account-related services for OpenStax products, including:
 
 * User authentication
 * User profile data
 * User messaging and notifications
+* User groups
 
 It uses OAuth mechanisms and API keys to provide these services to OpenStax products and their users.
+
+Accounts requires the repeatable read isolation level to work properly. If using PostgreSQL, add the following to your `postgresql.conf`:
+
+```
+default_transaction_isolation = 'repeatable read'
+```
 
 ## Development Setup
 

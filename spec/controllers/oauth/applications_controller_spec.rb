@@ -8,13 +8,21 @@ module Oauth
     let!(:user) { FactoryGirl.create :user, :terms_agreed }
     let!(:user2) { FactoryGirl.create :user }
 
-    let!(:trusted_application_admin) { FactoryGirl.create :doorkeeper_application, :trusted, owner: admin }
-    let!(:untrusted_application_admin) { FactoryGirl.create :doorkeeper_application, owner: admin }
-    let!(:trusted_application_user) { FactoryGirl.create :doorkeeper_application, :trusted, owner: user }
-    let!(:untrusted_application_user) { FactoryGirl.create :doorkeeper_application, owner: user }
-    let!(:trusted_application_user2) { FactoryGirl.create :doorkeeper_application, :trusted, owner: user2 }
-    let!(:untrusted_application_user2) { FactoryGirl.create :doorkeeper_application, owner: user2 }
+    let!(:trusted_application_admin) { FactoryGirl.create :doorkeeper_application, :trusted }
+    let!(:untrusted_application_admin) { FactoryGirl.create :doorkeeper_application }
+    let!(:trusted_application_user) { FactoryGirl.create :doorkeeper_application, :trusted }
+    let!(:untrusted_application_user) { FactoryGirl.create :doorkeeper_application }
+    let!(:trusted_application_user2) { FactoryGirl.create :doorkeeper_application, :trusted }
+    let!(:untrusted_application_user2) { FactoryGirl.create :doorkeeper_application }
 
+    before(:each) do
+      trusted_application_admin.owner.add_member(admin)
+      untrusted_application_admin.owner.add_member(admin)
+      trusted_application_user.owner.add_member(user)
+      untrusted_application_user.owner.add_member(user)
+      trusted_application_user2.owner.add_member(user2)
+      untrusted_application_user2.owner.add_member(user2)
+    end
 
     it "should redirect users that haven't signed contracts" do
       controller.sign_in user2

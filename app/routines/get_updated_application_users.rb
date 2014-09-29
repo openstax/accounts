@@ -10,11 +10,12 @@ class GetUpdatedApplicationUsers
   # (true by default for MySQL, false by default for PostgreSQL)
   lev_routine transaction: :repeatable_read
 
-protected
+  protected
 
   def exec(application)
     return if application.nil?
-    outputs[:application_users] = application.application_users.where{unread_updates > 0}
+    outputs[:application_users] = application.application_users
+                                             .where{unread_updates.not_eq 0}
   end
 
 end

@@ -179,7 +179,7 @@ GEM
     omniauth-twitter (1.0.0)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
-    openstax_api (2.1.1)
+    openstax_api (2.2.4)
       doorkeeper (>= 0.5)
       exception_notification (>= 4.0)
       openstax_utilities (>= 1.0.1)
@@ -334,7 +334,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api (~> 2.1.1)
+  openstax_api (~> 2.2.4)
   openstax_utilities (~> 2.2.1)
   pg
   poltergeist

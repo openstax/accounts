@@ -11,7 +11,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140522212048) do
+ActiveRecord::Schema.define(:version => 20140811202025) do
+
+  create_table "application_groups", :force => true do |t|
+    t.integer  "application_id",                :null => false
+    t.integer  "group_id",                      :null => false
+    t.integer  "unread_updates", :default => 1, :null => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
+
+  add_index "application_groups", ["application_id", "unread_updates"], :name => "index_application_groups_on_application_id_and_unread_updates"
+  add_index "application_groups", ["group_id", "application_id"], :name => "index_application_groups_on_group_id_and_application_id", :unique => true
+  add_index "application_groups", ["group_id", "unread_updates"], :name => "index_application_groups_on_group_id_and_unread_updates"
 
   create_table "application_users", :force => true do |t|
     t.integer  "application_id",                         :null => false
@@ -22,10 +34,11 @@ ActiveRecord::Schema.define(:version => 20140522212048) do
     t.integer  "unread_updates",          :default => 1, :null => false
   end
 
+  add_index "application_users", ["application_id", "unread_updates"], :name => "index_application_users_on_application_id_and_unread_updates"
   add_index "application_users", ["application_id"], :name => "index_application_users_on_application_id"
   add_index "application_users", ["default_contact_info_id"], :name => "index_application_users_on_default_contact_info_id"
-  add_index "application_users", ["unread_updates"], :name => "index_application_users_on_unread_updates"
   add_index "application_users", ["user_id", "application_id"], :name => "index_application_users_on_user_id_and_application_id", :unique => true
+  add_index "application_users", ["user_id", "unread_updates"], :name => "index_application_users_on_user_id_and_unread_updates"
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
@@ -89,6 +102,47 @@ ActiveRecord::Schema.define(:version => 20140522212048) do
 
   add_index "fine_print_signatures", ["contract_id"], :name => "index_fine_print_signatures_on_contract_id"
   add_index "fine_print_signatures", ["user_id", "user_type", "contract_id"], :name => "index_fine_print_s_on_u_id_and_u_type_and_c_id", :unique => true
+
+  create_table "group_members", :force => true do |t|
+    t.integer  "group_id",   :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "group_members", ["group_id", "user_id"], :name => "index_group_members_on_group_id_and_user_id", :unique => true
+  add_index "group_members", ["user_id"], :name => "index_group_members_on_user_id"
+
+  create_table "group_nestings", :force => true do |t|
+    t.integer  "member_group_id",    :null => false
+    t.integer  "container_group_id", :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  add_index "group_nestings", ["container_group_id"], :name => "index_group_nestings_on_container_group_id"
+  add_index "group_nestings", ["member_group_id"], :name => "index_group_nestings_on_member_group_id", :unique => true
+
+  create_table "group_owners", :force => true do |t|
+    t.integer  "group_id",   :null => false
+    t.integer  "user_id",    :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "group_owners", ["group_id", "user_id"], :name => "index_group_owners_on_group_id_and_user_id", :unique => true
+  add_index "group_owners", ["user_id"], :name => "index_group_owners_on_user_id"
+
+  create_table "groups", :force => true do |t|
+    t.boolean  "is_public",                  :default => false, :null => false
+    t.string   "name"
+    t.text     "cached_subtree_group_ids"
+    t.text     "cached_supertree_group_ids"
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
+  end
+
+  add_index "groups", ["is_public"], :name => "index_groups_on_is_public"
 
   create_table "identities", :force => true do |t|
     t.string   "password_digest"

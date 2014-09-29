@@ -17,7 +17,7 @@ Accounts::Application.routes.draw do
   namespace 'admin' do
     get '/', to: 'base#index'
 
-    put 'cron',                         to: 'base#cron', :as => 'cron'
+    put 'cron',                         to: 'base#cron'
     get 'raise_security_transgression', to: 'base#raise_security_transgression'
     get 'raise_record_not_found',       to: 'base#raise_record_not_found'
     get 'raise_routing_error',          to: 'base#raise_routing_error'
@@ -50,9 +50,28 @@ Accounts::Application.routes.draw do
       end
     end
 
-    # resource :application_user, only: [:show, :update, :destroy]
+    resources :application_groups, only: [] do
+      collection do
+        get 'updates'
+        put 'updated'
+      end
+    end
 
     resources :messages, only: [:create]
+
+    resources :groups, only: [:index, :show, :create, :update, :destroy] do
+      post '/members/:user_id', to: 'group_members#create'
+      delete '/members/:user_id', to: 'group_members#destroy'
+
+      post '/owners/:user_id', to: 'group_owners#create'
+      delete '/owners/:user_id', to: 'group_owners#destroy'
+
+      post '/nestings/:member_group_id', to: 'group_nestings#create'
+      delete '/nestings/:member_group_id', to: 'group_nestings#destroy'
+    end
+
+    resources :group_members, only: [:index], path: 'memberships'
+    resources :group_owners, only: [:index], path: 'ownerships'
   end
 
   # Resources

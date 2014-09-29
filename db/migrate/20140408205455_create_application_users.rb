@@ -1,9 +1,9 @@
 class CreateApplicationUsers < ActiveRecord::Migration
   def change
     create_table :application_users do |t|
-      t.integer :application_id, null: false
-      t.integer :user_id, null: false
-      t.integer :default_contact_info_id
+      t.references :application, null: false
+      t.references :user, null: false
+      t.references :default_contact_info
 
       t.timestamps
     end

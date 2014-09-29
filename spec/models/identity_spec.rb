@@ -31,6 +31,67 @@ describe Identity do
 
   end
 
+  context 'setting the password' do
+    let(:identity) { FactoryGirl.create :identity, password: 'qwertyui' }
+
+    it "sets user's password" do
+      expect(identity.authenticate('qwertyui')).to be_true
+      expect(identity.authenticate('password')).to be_false
+
+      result = identity.set_password!('password', 'password')
+
+      expect(result).to eq(true)
+      expect(identity.errors).not_to be_present
+      identity.reload
+      expect(identity.authenticate('qwertyui')).to be_false
+      expect(identity.authenticate('password')).to be_true
+    end
+
+    it 'resets the reset_code' do
+      expect(identity.reset_code).to be_nil
+      code = identity.generate_reset_code!
+      expect(code).not_to be_nil
+      identity.reload
+
+      expect(identity.reset_code).to eq(code)
+      expect(identity.reset_code_expires_at).not_to be_nil
+
+      result = identity.set_password!('password', 'password')
+
+      expect(result).to eq(true)
+      expect(identity.errors).not_to be_present
+      identity.reload
+
+      expect(identity.reset_code).to be_nil
+      expect(identity.reset_code_expires_at).to be_nil
+    end
+
+    it 'returns errors if password is too short' do
+      expect(identity.authenticate('qwertyui')).to be_true
+
+      result = identity.set_password!('pass', 'pass')
+
+      expect(result).to eq(false)
+      expect(identity.errors).to be_present
+      identity.reload
+      expect(identity.authenticate('qwertyui')).to be_true
+      expect(identity.authenticate('pass')).to be_false
+    end
+
+    it 'returns errors if password confirmation is different from password' do
+      expect(identity.authenticate('qwertyui')).to be_true
+      expect(identity.authenticate('password')).to be_false
+
+      result = identity.set_password!('password', 'passwordd')
+
+      expect(result).to eq(false)
+      expect(identity.errors).to be_present
+      identity.reload
+      expect(identity.authenticate('qwertyui')).to be_true
+      expect(identity.authenticate('password')).to be_false
+    end
+  end
+
   context 'reset password code' do
     let(:identity) { FactoryGirl.create :identity }
 
@@ -50,7 +111,7 @@ describe Identity do
 
     it 'generates a reset_code' do
       expect(identity.reset_code).to be_nil
-      identity.generate_reset_code
+      identity.generate_reset_code!
       identity.reload
 
       expect(identity.reset_code).not_to be_nil
@@ -59,53 +120,34 @@ describe Identity do
 
     it 'generates a reset_code that does not expire' do
       expect(identity.reset_code).to be_nil
-      identity.generate_reset_code nil
+      identity.generate_reset_code! nil
       identity.reload
 
       expect(identity.reset_code).not_to be_nil
       expect(identity.reset_code_expires_at).to be_nil
     end
 
-    it 'resets the reset_code' do
+    it 'does not validate the reset_code if code does not match' do
       expect(identity.reset_code).to be_nil
-      identity.generate_reset_code
+      identity.generate_reset_code!
       identity.reload
 
       expect(identity.reset_code).not_to be_nil
-      result = identity.use_reset_code(identity.reset_code)
-      expect(result).to be_true
-      identity.reload
-      expect(identity.reset_code).to be_nil
-      expect(identity.reset_code_expires_at).to be_nil
-    end
-
-    it 'does not reset the reset_code if code does not match' do
-      expect(identity.reset_code).to be_nil
-      identity.generate_reset_code
-      identity.reload
-
-      expect(identity.reset_code).not_to be_nil
-      result = identity.use_reset_code('random code')
+      result = identity.reset_code_valid?('random code')
       expect(result).to be_false
-      identity.reload
-      expect(identity.reset_code).not_to be_nil
-      expect(identity.reset_code_expires_at).not_to be_nil
     end
 
-    it 'does not reset the reset_code if reset_code has expired' do
+    it 'does not validate the reset_code if reset_code has expired' do
       expect(identity.reset_code).to be_nil
       one_year_ago = 1.year.ago
       DateTime.stub(:now).and_return(one_year_ago)
-      identity.generate_reset_code
+      identity.generate_reset_code!
       identity.reload
 
       expect(identity.reset_code).not_to be_nil
       DateTime.unstub(:now)
-      result = identity.use_reset_code(identity.reset_code)
+      result = identity.reset_code_valid?(identity.reset_code)
       expect(result).to be_false
-      identity.reload
-      expect(identity.reset_code).not_to be_nil
-      expect(identity.reset_code_expires_at).not_to be_nil
     end
   end
 
@@ -118,7 +160,8 @@ describe Identity do
       one_year_later = DateTime.now + 1.year
 
       identity.password = '1234567890'
-      identity.save
+      identity.password_confirmation = identity.password
+      identity.save!
       identity.reload
 
       expect(identity.password_expires_at).to be_within(1.hour).of(one_year_later)
