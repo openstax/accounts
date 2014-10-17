@@ -39,7 +39,7 @@ gem "keyword_search", '~> 1.5.0'
 
 gem 'fine_print', '~> 1.4.1'
 
-gem 'action_interceptor', '~> 0.2.4'
+gem 'action_interceptor', '~> 0.4.2'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'

@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
 
   delegate_to_routine :destroy
 
-  attr_accessible :username
+  attr_accessible :username, :first_name, :last_name, :full_name, :title
 
   attr_readonly :uuid
 

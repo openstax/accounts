@@ -17,7 +17,7 @@ class UsersRegister
   uses_routine AgreeToTerms
   uses_routine FinishUserCreation
 
-protected
+  protected
 
   def authorized?
     true

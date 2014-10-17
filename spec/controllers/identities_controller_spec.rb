@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe IdentitiesController do
+describe IdentitiesController, type: :controller do
 
   describe 'reset_password' do
     render_views
@@ -112,9 +112,22 @@ describe IdentitiesController do
         expect(identity.authenticate('password!')).to be_true
       end
 
-      it 'redirects to return_to if it is set' do
-        IdentitiesController.any_instance.stub(:session).and_return(
-          {return_to: 'http://www.example.com/'})
+      it 'redirects to return_to if it is encrypted and signed in url' do
+        post('reset_password', code: identity.reset_code,
+             reset_password: { password: 'password!', password_confirmation: 'password!'},
+             return_to: ActionInterceptor::Encryptor.encrypt_and_sign(
+                          'http://www.example.com/'))
+
+        expect(response.code).to eq('302')
+        expect(response.header['Location']).to eq('http://www.example.com/')
+
+        identity.reload
+        expect(identity.authenticate('password')).to be_false
+        expect(identity.authenticate('password!')).to be_true
+      end
+
+      it 'redirects to return_to if it is set in session' do
+        session[:return_to] = 'http://www.example.com/'
         post('reset_password', code: identity.reset_code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
 

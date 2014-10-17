@@ -8,6 +8,19 @@ class UsersController < ApplicationController
                              :privacy_policy,
                              only: [:register]
 
+  def show
+    render :edit
+  end
+
+  def update
+    handle_with(UsersUpdate,
+                success: lambda { redirect_back },
+                failure: lambda {
+                  errors = @handler_result.errors.any?
+                  render :edit, status: errors ? 400 : 200
+                })
+  end
+
   def register
     if request.put?
       handle_with(UsersRegister,

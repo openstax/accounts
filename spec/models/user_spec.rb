@@ -11,9 +11,9 @@ describe User do
     it 'cannot be updated' do
       user = FactoryGirl.create :user
       old_uuid = user.uuid
-      user.update_attributes(username: 'newuser')
+      user.update_attributes(first_name: 'New')
       user.reload
-      expect(user.username).to eq('newuser')
+      expect(user.first_name).to eq('New')
       expect(user.uuid).to eq(old_uuid)
 
       new_uuid = SecureRandom.uuid

@@ -1,30 +1,34 @@
-<% 
-  form_options = {}
-  form_options[:url] = url if local_assigns.has_key?(:url)
+<%= lev_form_for :user, url: user_path, method: :put, html: {id: 'profile-form'} do |f| %>
+
+  <div class="row">
+    <div class="col-md-6">
+      <%= standard_field form: f, name: :username, type: :text_field, label: "Username", 
+                         options: {value: current_user.username} %>
+
+      <%= standard_field form: f, name: :first_name, type: :text_field, label: "First Name",
+                         options: {value: current_user.first_name || current_user.guessed_first_name} %>
+      <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name",
+                         options: {value: current_user.last_name || current_user.guessed_last_name} %>
+      <%= standard_field form: f, name: :full_name, type: :text_field, label: "Full Name",
+                         options: {value: current_user.full_name || current_user.guessed_full_name} %>
+      <%= standard_field form: f, name: :title, type: :text_field, label: "Title",
+                         options: {value: current_user.title || ''} %>
+    </div>
+
+    <% unless current_user.identity.nil? %>
+    <div class="col-md-6">
+      <%= standard_field form: f, name: :current_password,
+                         type: :password_field, label: "Current Password" %>
+
+      <%= standard_field form: f, name: :password,
+                         type: :password_field, label: "New Password" %>
+
+      <%= standard_field form: f, name: :password_confirmation,
+                         type: :password_field, label: "New Password Confirmation" %>
+    </div>
+    <% end %>
+  </div>
+
+  <%= f.submit "Update profile", id: "update_submit", class: 'standard' %>
   
-%>
-
-<% if false %>
-<p><b>Add in first and last name, emails, etc</b></p>
-
-<%= form_for user, form_options do |f| %>
-  <%= f.hidden_field :user_id, value: user.id %>
-  Username: <%= f.text_field :username %>
-
-  <%= f.submit button_text || "Submit" %>
-<% end %>
-
-
-<%= lev_form_for :register, form_options do |f| %>
-
-  <%= f.labeled_field name: :username, type: :text_field, label: "Username" %>
-  <%= f.labeled_field name: :first_name, type: :text_field, label: "First Name" %>
-  <%= f.labeled_field name: :last_name, type: :text_field, label: "Last Name" %>
-
-
-
-  <%#= standard_field form: f, name: :password, type: :password_field, label: "Password" %>
-  <%#= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Password Again" %>
-
-  <%= f.submit button_text || "Submit" %>
 <% end %>
