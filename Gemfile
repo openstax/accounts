@@ -58,10 +58,10 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'capybara'
   gem 'poltergeist'
+  gem 'coveralls', require: false
 end
 
 group :production do
-  gem 'mysql2', '~> 0.3.11'
   gem 'pg'
   gem 'unicorn'
   gem 'lograge', :git => 'https://github.com/jpslav/lograge.git' # 'git@github.com:jpslav/lograge.git'
