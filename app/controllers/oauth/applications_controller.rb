@@ -8,6 +8,11 @@ module Oauth
                                                 @user.oauth_applications
     end
 
+    def new
+      super
+      OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
+    end
+
     def create
       @application = Doorkeeper::Application.new(application_params(@user))
       @application.owner = Group.new
