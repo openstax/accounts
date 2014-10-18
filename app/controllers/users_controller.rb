@@ -9,6 +9,7 @@ class UsersController < ApplicationController
                              only: [:register]
 
   def show
+    OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
     render :edit
   end
 

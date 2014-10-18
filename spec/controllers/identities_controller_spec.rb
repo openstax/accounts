@@ -67,8 +67,7 @@ describe IdentitiesController, type: :controller do
 
       it 'returns error if password is empty' do
         post('reset_password', code: identity.reset_code,
-             :'reset_password[password]' => '',
-             :'reset_password[password_confirmation]' => '')
+             reset_password: { password: '', password_confirmation: ''})
         expect(response.code).to eq('400')
         expect(response.body).not_to include('Reset password link is invalid')
         expect(response.body).to include("Password can't be blank")
@@ -79,8 +78,7 @@ describe IdentitiesController, type: :controller do
 
       it 'returns error if password is too short' do
         post('reset_password', code: identity.reset_code,
-             :'reset_password[password]' => 'pass',
-             :'reset_password[password_confirmation]' => 'pass')
+             reset_password: { password: 'pass', password_confirmation: 'pass'})
         expect(response.code).to eq('400')
         expect(response.body).not_to include('Reset password link is invalid')
         expect(response.body).to include('Password is too short')

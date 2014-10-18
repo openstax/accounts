@@ -16,6 +16,7 @@ class UsersUpdate
   protected
 
   def authorized?
+    OSU::AccessPolicy.require_action_allowed!(:update, caller, caller)
     true
   end
 
@@ -27,7 +28,7 @@ class UsersUpdate
     unless caller.identity.nil? || (user_params.current_password.blank? && \
          user_params.password.blank? && user_params.password_confirmation.blank?)
       fatal_error(code: :wrong_password,
-                  message: 'The password provided did not match our records.') \
+                  message: 'The password provided did not match our records') \
         unless caller.identity.authenticate user_params.current_password
 
       caller.identity.update_attributes(identity_attributes)

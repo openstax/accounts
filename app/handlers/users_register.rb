@@ -20,6 +20,7 @@ class UsersRegister
   protected
 
   def authorized?
+    OSU::AccessPolicy.require_action_allowed!(:register, caller, caller)
     true
   end
 

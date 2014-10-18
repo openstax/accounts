@@ -29,6 +29,9 @@ config/deploy_settings.yml
 cucumber_rerun.txt
 rspec.failures
 
+Ignore Coveralls reports
+coverage/*
+
 .vagrant*
 brakeman.html
 
