@@ -1,33 +1,22 @@
 <%= lev_form_for :user, url: user_path, method: :put, html: {id: 'profile-form'} do |f| %>
 
-  <div class="row">
-    <div class="col-md-6">
-      <%= standard_field form: f, name: :username, type: :text_field, label: "Username", 
-                         options: {value: current_user.username} %>
+  <%= standard_field form: f, name: :first_name, type: :text_field, label: "First Name",
+                     options: {value: current_user.first_name || current_user.guessed_first_name} %>
+  <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name",
+                     options: {value: current_user.last_name || current_user.guessed_last_name} %>
+  <%= standard_field form: f, name: :title, type: :text_field, label: "Title",
+                     options: {value: current_user.title || ''} %>
 
-      <%= standard_field form: f, name: :first_name, type: :text_field, label: "First Name",
-                         options: {value: current_user.first_name || current_user.guessed_first_name} %>
-      <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name",
-                         options: {value: current_user.last_name || current_user.guessed_last_name} %>
-      <%= standard_field form: f, name: :full_name, type: :text_field, label: "Full Name",
-                         options: {value: current_user.full_name || current_user.guessed_full_name} %>
-      <%= standard_field form: f, name: :title, type: :text_field, label: "Title",
-                         options: {value: current_user.title || ''} %>
-    </div>
+  <% unless current_user.identity.nil? %>
+  <%= standard_field form: f, name: :current_password,
+                     type: :password_field, label: "Current Password" %>
 
-    <% unless current_user.identity.nil? %>
-    <div class="col-md-6">
-      <%= standard_field form: f, name: :current_password,
-                         type: :password_field, label: "Current Password" %>
+  <%= standard_field form: f, name: :password,
+                     type: :password_field, label: "New Password" %>
 
-      <%= standard_field form: f, name: :password,
-                         type: :password_field, label: "New Password" %>
-
-      <%= standard_field form: f, name: :password_confirmation,
-                         type: :password_field, label: "New Password Confirmation" %>
-    </div>
-    <% end %>
-  </div>
+  <%= standard_field form: f, name: :password_confirmation,
+                     type: :password_field, label: "New Password Confirmation" %>
+  <% end %>
 
   <%= f.submit "Update Profile", id: "update_submit", class: 'standard' %>
   

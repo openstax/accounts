@@ -19,6 +19,15 @@ class IdentitiesController < ApplicationController
     end
   end
 
+  def update
+    handle_with(IdentitiesUpdate,
+                success: lambda { redirect_back },
+                failure: lambda {
+                  errors = @handler_result.errors.any?
+                  render 'users/edit', status: errors ? 400 : 200
+                })
+  end
+
   def forgot_password
     if request.post?
       handle_with(IdentitiesForgotPassword,

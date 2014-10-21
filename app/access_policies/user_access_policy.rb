@@ -6,7 +6,7 @@ class UserAccessPolicy
     return false if !requestor.is_application? && requestor.is_anonymous?
 
     case action
-    when :index
+    when :search
       requestor.is_application? || !requestor.is_temp? # Non-temp
     when :read, :update
       requestor.is_human? && !requestor.is_temp? && \
