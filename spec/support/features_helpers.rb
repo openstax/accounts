@@ -9,7 +9,7 @@ def create_user(username, password='password')
 end
 
 def imported_user username
-  ImportUsers.new('some.csv').create_user(
+  ImportUsers.new('some.csv', nil).create_user(
     username, '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', '', '', 'Full
     Name', 'user@example.com')
 end

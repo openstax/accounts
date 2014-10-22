@@ -1,8 +1,9 @@
 require 'csv'
 
 class ImportUsers
-  def initialize(csv_file)
+  def initialize(csv_file, app_id)
     @csv_file = csv_file
+    @app_id = app_id
   end
 
   def read
@@ -16,6 +17,7 @@ class ImportUsers
         create_user(username, row['password_digest'],
                     row['title'], row['first_name'], row['last_name'],
                     row['full_name'], row['email_address'])
+        FindOrCreateApplicationUser.call(@app_id, @user.id) unless @app_id.nil?
       rescue ActiveRecord::RecordInvalid => e
         model_name = e.record.class.name
         result[username].update({error: "#{model_name} #{e.inspect}"})
