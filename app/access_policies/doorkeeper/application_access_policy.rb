@@ -7,11 +7,11 @@ module Doorkeeper
       return false unless requestor.is_human?
 
       case action
-      when :read, :update, :destroy
+      when :read, :update
         application.owner.has_member?(requestor) ||\
           requestor.is_administrator?
-      when :create
-        !application.persisted? && !requestor.is_anonymous?
+      when :create, :destroy
+        requestor.is_administrator?
       else
         false
       end

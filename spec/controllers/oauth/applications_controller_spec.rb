@@ -92,7 +92,8 @@ module Oauth
 
     it "should not let a user get someone else's application" do
       controller.sign_in user
-      expect{get :show, id: untrusted_application_admin.id}.to raise_error(SecurityTransgression)
+      expect{get :show, id: untrusted_application_admin.id}.to(
+        raise_error(SecurityTransgression))
     end
 
     it "should let an admin get someone else's application" do
@@ -104,35 +105,26 @@ module Oauth
       expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
     end
 
-    it "should let a user get new" do
+    it "should not let a user get new" do
       controller.sign_in user
+      expect{ get :new }.to raise_error(SecurityTransgression)
+    end
+
+    it "should let an admin get new" do
+      controller.sign_in admin
       get :new
       expect(response.code).to eq('200')
     end
 
-    it "should let a user create an untrusted application" do
+    it "should not let a user create an application" do
       controller.sign_in user
-      post :create, :application => {name: 'Some app',
-                                     redirect_uri: 'http://www.example.com',
-                                     trusted: true}
-      expect(response.code).to eq('302')
-      expect(assigns(:application).name).to eq('Some app')
-      expect(assigns(:application).redirect_uri).to eq('http://www.example.com')
-      expect(assigns(:application).trusted).to eq(false)
+      expect{ post :create, :application => {
+                name: 'Some app',
+                redirect_uri: 'http://www.example.com',
+                trusted: true} }.to raise_error(SecurityTransgression)
     end
 
-    it "should let an admin create a trusted application" do
-      controller.sign_in admin
-      post :create, :application => {name: 'Some app',
-                                     redirect_uri: 'http://www.example.com',
-                                     trusted: true}
-      expect(response.code).to eq('302')
-      expect(assigns(:application).name).to eq('Some app')
-      expect(assigns(:application).redirect_uri).to eq('http://www.example.com')
-      expect(assigns(:application).trusted).to eq(true)
-    end
-
-    it "should let an admin create a trusted application" do
+    it "should let an admin create an application" do
       controller.sign_in admin
       post :create, :application => {name: 'Some app',
                                      redirect_uri: 'http://www.example.com',
@@ -154,7 +146,8 @@ module Oauth
 
     it "should not let a user edit someone else's application" do
       controller.sign_in user
-      expect{get :edit, id: untrusted_application_admin.id}.to raise_error(SecurityTransgression)
+      expect{get :edit, id: untrusted_application_admin.id}.to(
+        raise_error(SecurityTransgression))
     end
 
     it "should let an admin edit someone else's application" do
@@ -189,19 +182,13 @@ module Oauth
       expect(assigns(:application).trusted).to eq(true)
     end
 
-    it "should let a user destroy his own application" do
+    it "should not let a user destroy an application" do
       controller.sign_in user
-      delete :destroy, id: untrusted_application_user.id
-      expect(response.code).to eq('302')
-      expect(assigns(:application).destroyed?).to eq(true)
+      expect{delete :destroy, id: untrusted_application_user.id}.to(
+        raise_error(SecurityTransgression))
     end
 
-    it "should not let a user destroy someone else's application" do
-      controller.sign_in user
-      expect{delete :destroy, id: untrusted_application_admin.id}.to raise_error(SecurityTransgression)
-    end
-
-    it "should let an admin destroy someone else's application" do
+    it "should let an admin destroy an application" do
       controller.sign_in admin
       delete :destroy, id: untrusted_application_user.id
       expect(response.code).to eq('302')
