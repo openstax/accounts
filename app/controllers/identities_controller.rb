@@ -21,11 +21,8 @@ class IdentitiesController < ApplicationController
 
   def update
     handle_with(IdentitiesUpdate,
-                success: lambda { redirect_back },
-                failure: lambda {
-                  errors = @handler_result.errors.any?
-                  render 'users/edit', status: errors ? 400 : 200
-                })
+                success: lambda { redirect_to edit_user_path, notice: 'Password changed' },
+                failure: lambda { render 'users/edit', status: 400 })
   end
 
   def forgot_password

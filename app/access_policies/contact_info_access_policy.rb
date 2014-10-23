@@ -5,8 +5,12 @@ class ContactInfoAccessPolicy
     # Apps or anonymous cannot access this API
     return false if !requestor.is_human? || requestor.is_anonymous?
 
-    [:read, :create, :destroy, :resend_confirmation].include?(action) && \
+    case action
+    when :read, :create, :destroy, :resend_confirmation
       requestor.id == contact_info.user_id
+    when :confirm
+      true
+    end
   end
 
 end

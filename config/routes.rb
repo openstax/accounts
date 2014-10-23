@@ -17,12 +17,14 @@ Accounts::Application.routes.draw do
     end
   end
 
-  resource :user, only: [:show, :update]
+  resource :user, path_names: { edit: 'profile' },
+                  only: [:edit, :update]
   scope controller: 'users' do
     get 'register'
     put 'register'
   end
 
+  resource :identity, only: :update
   scope controller: 'identities' do
     get 'signup', action: :new
     get 'forgot_password'
@@ -31,15 +33,18 @@ Accounts::Application.routes.draw do
     post 'reset_password'
   end
 
+  resources :contact_infos, only: [:create, :destroy] do
+    put 'resend_confirmation', on: :member
+  end
+  scope controller: 'contact_infos' do
+    get 'confirm'
+  end
+
   resources :terms, only: [:index, :show] do
     collection do
       get 'pose'
       post 'agree', as: 'agree_to'
     end
-  end
-
-  scope controller: 'contact_infos' do
-    get 'confirm'
   end
 
   scope controller: 'static_pages' do
@@ -54,10 +59,6 @@ Accounts::Application.routes.draw do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update]
-
-    resources :contact_infos, only: [:show, :create, :destroy] do
-      put 'resend_confirmation', on: :member
-    end
 
     resources :application_users, only: [:index] do
       collection do

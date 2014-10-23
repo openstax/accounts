@@ -1,23 +1,38 @@
-<%= lev_form_for :user, url: user_path, method: :put, html: {id: 'profile-form'} do |f| %>
+<% # Clients of this partial must supply the following variables:
+   # user
+%>
 
-  <%= standard_field form: f, name: :first_name, type: :text_field, label: "First Name",
-                     options: {value: current_user.first_name || current_user.guessed_first_name} %>
-  <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name",
-                     options: {value: current_user.last_name || current_user.guessed_last_name} %>
-  <%= standard_field form: f, name: :title, type: :text_field, label: "Title",
-                     options: {value: current_user.title || ''} %>
+<%= form_for user, url: user_path, html: {class: 'form-horizontal'} do |f| %>
+  <div class="row">
+    <span class="col-sm-1">
+      <%= f.label :title, "Title" %>
+    </span>
 
-  <% unless current_user.identity.nil? %>
-  <%= standard_field form: f, name: :current_password,
-                     type: :password_field, label: "Current Password" %>
+    <span class="col-sm-4">
+      <%= f.label :first_name, "First Name" %>
+    </span>
 
-  <%= standard_field form: f, name: :password,
-                     type: :password_field, label: "New Password" %>
+    <span class="col-sm-4">
+      <%= f.label :last_name, "Last Name" %>
+    </span>
+  </div>
+  <div class="row">
+    <span class="col-sm-1">
+      <%= f.text_field :title %>
+    </span>
 
-  <%= standard_field form: f, name: :password_confirmation,
-                     type: :password_field, label: "New Password Confirmation" %>
-  <% end %>
+    <span class="col-sm-4">
+      <%= f.text_field :first_name, value: user.first_name || \
+                                           user.guessed_first_name %>
+    </span>
 
-  <%= f.submit "Update Profile", id: "update_submit", class: 'standard' %>
-  
+    <span class="col-sm-4">
+      <%= f.text_field :last_name, value: user.last_name || \
+                                          user.guessed_last_name %>
+    </span>
+
+    <span class="col-sm-3">
+      <%= f.submit "Update Profile", class: 'standard' %>
+    </span>
+  </div>
 <% end %>

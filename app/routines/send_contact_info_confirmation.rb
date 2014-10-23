@@ -7,7 +7,7 @@ protected
   def exec(contact_info)
     return if contact_info.verified
 
-    fatal_error(code: :no_confirmation_code, data: contact_info) if contact_info.confirmation_code.blank?
+    contact_info.update_attribute(:confirmation_code, SecureRandom.hex(32))
 
     case contact_info.type
     when 'EmailAddress'
