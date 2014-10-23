@@ -22,7 +22,7 @@ describe ImportUsers do
   end
 
   it 'raises exception if the csv file does not exist' do
-    importer = ImportUsers.new("#{@file.path}something")
+    importer = ImportUsers.new("#{@file.path}something", nil)
     expect { importer.read }.to raise_error(Errno::ENOENT)
   end
 
@@ -34,7 +34,7 @@ describe ImportUsers do
       csv << [3, '', '']
     end
 
-    ImportUsers.new(@file.path).read
+    ImportUsers.new(@file.path, nil).read
 
     result = CSV.read('import_users_results.csv', headers: true)
     expect(result.length).to eq(3)
@@ -69,5 +69,18 @@ describe ImportUsers do
     expect(result[2]['old_username']).to be_empty
     expect(result[2]['new_username']).to be_empty
     expect(result[2]['errors']).to include('Username is invalid')
+  end
+
+  it 'creates users from a csv file and links them to an application' do
+    headers = [:row_number, :username, :password_digest, :title, :first_name, :last_name, :full_name, :email_address]
+    CSV.open(@file.path, 'wb', headers: headers, write_headers: true) do |csv|
+      csv << [1, 'appuser1', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', '', 'App', 'User', 'App User', 'appuser1@example.com']
+    end
+
+    app = FactoryGirl.create(:doorkeeper_application)
+
+    ImportUsers.new(@file.path, app.id).read
+    expect(app.users).to eq([User.last])
+
   end
 end
