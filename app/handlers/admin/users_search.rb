@@ -12,7 +12,7 @@ module Admin
                  as: :search_users,
                  translations: { outputs: {type: :verbatim} }
 
-  protected
+    protected
 
     def authorized?
       !Rails.env.production? || caller.is_admin?

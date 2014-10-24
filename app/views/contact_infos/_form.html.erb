@@ -1,0 +1,25 @@
+<% # Clients of this partial must supply the following variables:
+   # type
+   humanized_name = type.underscore.humanize
+%>
+
+<%= lev_form_for :contact_info, url: contact_infos_path,
+                                html: {class: 'form-horizontal'} do |f| %>
+  <%= f.hidden_field :type, value: type %>
+  <div class="row">
+    <span class="col-sm-9">
+      <%= f.label :value, humanized_name %>
+    </span>
+  </div>
+
+  <div class="row">
+    <span class="col-sm-9">
+      <%= f.text_field :value %>
+    </span>
+
+    <span class="col-sm-3">
+      <%= f.submit "Add #{humanized_name}",
+                   class: 'standard' %>
+    </span>
+  </div>
+<% end %>

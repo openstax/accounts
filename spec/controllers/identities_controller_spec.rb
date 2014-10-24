@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe IdentitiesController do
+describe IdentitiesController, type: :controller do
 
   describe 'reset_password' do
     render_views
@@ -12,7 +12,22 @@ describe IdentitiesController do
       i
     }
 
-    describe 'GET' do
+    context 'PUT update' do
+      it "updates the user's password" do
+        expect(!!identity.authenticate('password')).to eq true
+        expect(!!identity.authenticate('new_password')).to eq false
+
+        controller.sign_in user
+        put 'update', identity: {current_password: 'password',
+                                 password: 'new_password',
+                                 password_confirmation: 'new_password'}
+        expect(response.status).to eq 302
+        expect(!!identity.reload.authenticate('password')).to eq true
+        expect(!!identity.authenticate('new_password')).to eq false
+      end
+    end
+
+    context 'GET reset_password' do
       it 'returns error if no code given' do
         get 'reset_password'
         expect(response.code).to eq('400')
@@ -46,7 +61,7 @@ describe IdentitiesController do
       end
     end
 
-    describe 'POST' do
+    context 'POST reset_password' do
       it 'returns error if no code given' do
         post 'reset_password'
         expect(response.code).to eq('400')
@@ -67,8 +82,7 @@ describe IdentitiesController do
 
       it 'returns error if password is empty' do
         post('reset_password', code: identity.reset_code,
-             :'reset_password[password]' => '',
-             :'reset_password[password_confirmation]' => '')
+             reset_password: { password: '', password_confirmation: ''})
         expect(response.code).to eq('400')
         expect(response.body).not_to include('Reset password link is invalid')
         expect(response.body).to include("Password can't be blank")
@@ -79,8 +93,7 @@ describe IdentitiesController do
 
       it 'returns error if password is too short' do
         post('reset_password', code: identity.reset_code,
-             :'reset_password[password]' => 'pass',
-             :'reset_password[password_confirmation]' => 'pass')
+             reset_password: { password: 'pass', password_confirmation: 'pass'})
         expect(response.code).to eq('400')
         expect(response.body).not_to include('Reset password link is invalid')
         expect(response.body).to include('Password is too short')
@@ -112,9 +125,22 @@ describe IdentitiesController do
         expect(identity.authenticate('password!')).to be_true
       end
 
-      it 'redirects to return_to if it is set' do
-        IdentitiesController.any_instance.stub(:session).and_return(
-          {return_to: 'http://www.example.com/'})
+      it 'redirects to return_to if it is encrypted and signed in url' do
+        post('reset_password', code: identity.reset_code,
+             reset_password: { password: 'password!', password_confirmation: 'password!'},
+             return_to: ActionInterceptor::Encryptor.encrypt_and_sign(
+                          'http://www.example.com/'))
+
+        expect(response.code).to eq('302')
+        expect(response.header['Location']).to eq('http://www.example.com/')
+
+        identity.reload
+        expect(identity.authenticate('password')).to be_false
+        expect(identity.authenticate('password!')).to be_true
+      end
+
+      it 'redirects to return_to if it is set in session' do
+        session[:interceptor] = {return_to: 'http://www.example.com/'}
         post('reset_password', code: identity.reset_code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
 

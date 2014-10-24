@@ -1,25 +1,20 @@
-
 class AddEmailToUser
 
-  include Lev::Routine
+  lev_routine
 
-  uses_routine SendContactInfoConfirmation
+  uses_routine SendContactInfoConfirmation,
+               as: :send_confirmation
 
-protected
+  protected
 
   def exec(email_address_text, user, options={})
+    email_address = EmailAddress.new(value: email_address_text)
+    email_address.user = user
+    email_address.verified = options[:already_verified] || false
+    email_address.save
 
-    options[:already_verified] ||=false
+    transfer_errors_from(email_address, {scope: :email_address}, true)
 
-    email_address = EmailAddress.create(
-      value: email_address_text,
-      user_id: user.id,
-      verified: options[:already_verified],
-      confirmation_code: options[:already_verified] ? nil : SecureRandom.hex(10)
-    )
-
-    transfer_errors_from(email_address, {scope: :email_address})
-
-    run(SendContactInfoConfirmation, email_address) unless errors? || options[:already_verified]
+    run(:send_confirmation, email_address)
   end
 end

@@ -1,30 +1,38 @@
-<% 
-  form_options = {}
-  form_options[:url] = url if local_assigns.has_key?(:url)
-  
+<% # Clients of this partial must supply the following variables:
+   # user
 %>
 
-<% if false %>
-<p><b>Add in first and last name, emails, etc</b></p>
+<%= form_for user, url: profile_path, html: {class: 'form-horizontal'} do |f| %>
+  <div class="row">
+    <span class="col-sm-1">
+      <%= f.label :title, "Title" %>
+    </span>
 
-<%= form_for user, form_options do |f| %>
-  <%= f.hidden_field :user_id, value: user.id %>
-  Username: <%= f.text_field :username %>
+    <span class="col-sm-4">
+      <%= f.label :first_name, "First Name" %>
+    </span>
 
-  <%= f.submit button_text || "Submit" %>
-<% end %>
+    <span class="col-sm-4">
+      <%= f.label :last_name, "Last Name" %>
+    </span>
+  </div>
+  <div class="row">
+    <span class="col-sm-1">
+      <%= f.text_field :title %>
+    </span>
 
+    <span class="col-sm-4">
+      <%= f.text_field :first_name, value: user.first_name || \
+                                           user.guessed_first_name %>
+    </span>
 
-<%= lev_form_for :register, form_options do |f| %>
+    <span class="col-sm-4">
+      <%= f.text_field :last_name, value: user.last_name || \
+                                          user.guessed_last_name %>
+    </span>
 
-  <%= f.labeled_field name: :username, type: :text_field, label: "Username" %>
-  <%= f.labeled_field name: :first_name, type: :text_field, label: "First Name" %>
-  <%= f.labeled_field name: :last_name, type: :text_field, label: "Last Name" %>
-
-
-
-  <%#= standard_field form: f, name: :password, type: :password_field, label: "Password" %>
-  <%#= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Password Again" %>
-
-  <%= f.submit button_text || "Submit" %>
+    <span class="col-sm-3">
+      <%= f.submit "Update Profile", class: 'standard' %>
+    </span>
+  </div>
 <% end %>

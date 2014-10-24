@@ -1,8 +1,8 @@
 class IdentitiesResetPassword
 
-  include Lev::Handler
+  lev_handler
 
-protected
+  protected
 
   def authorized?
     true

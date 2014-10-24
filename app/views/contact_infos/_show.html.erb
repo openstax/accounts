@@ -1,0 +1,18 @@
+<% # Clients of this partial must supply the following variable:
+   # contact_info (subclass of ContactInfo)
+   humanized_name = contact_info.type.underscore.humanize
+%>
+
+<tr>
+  <td><%= contact_info.value %></td>
+  <td><%= contact_info.verified ? 'Verified' : 'Unverified' %></td>
+  <td><%= button_to "Resend Confirmation",
+                    resend_confirmation_contact_info_path(contact_info),
+                    method: :put,
+                    class: "standard" unless contact_info.verified %></td>
+  <td><%= button_to "Delete",
+                    contact_info_path(contact_info),
+                    method: :delete,
+                    confirm: "Are you sure you want to delete \"#{contact_info.value}?\"",
+                    class: "standard" %></td>
+</tr>

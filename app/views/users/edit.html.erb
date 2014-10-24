@@ -1,0 +1,14 @@
+<h2>Your Name</h2>
+<%= render partial: 'users/form', locals: {user: current_user} %>
+
+<% unless current_user.identity.nil? %>
+  <h2>Change Your Password</h2>
+  <%= render partial: 'identities/form',
+             locals: { identity: current_user.identity } %>
+<% end %>
+
+<h2>Your Email addresses</h2>
+<%= render partial: 'contact_infos/email_addresses', locals: {
+             email_addresses: current_user.email_addresses } %>
+
+<%= without_interceptor { link_to 'Back', intercepted_url } %>

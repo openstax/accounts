@@ -1,14 +1,13 @@
 class MarkContactInfoVerified
 
-  include Lev::Routine
+  lev_routine
 
-protected
+  protected
 
   def exec(contact_info)
-    contact_info.update_attributes(
-      confirmation_code: nil,
-      verified: true,
-    )
+    contact_info.confirmation_code = nil
+    contact_info.verified = true
+    contact_info.save
 
     transfer_errors_from(contact_info, {type: :verbatim})
   end

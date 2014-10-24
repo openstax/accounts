@@ -40,7 +40,13 @@ a.standard, button.standard, input[type='submit'].standard {
 .btn {
   &:hover, &:focus {
     color: white;
-  } 
+  }
+}
+
+.btn-link {
+  &:hover, &:focus {
+    color: $os_blue;
+  }
 }
 
 .dev a {
@@ -49,4 +55,8 @@ a.standard, button.standard, input[type='submit'].standard {
 
 .dev a:hover {
   color: $os_dark_orange !important;
+}
+
+.table.vertical-middle td{
+  vertical-align: middle;
 }

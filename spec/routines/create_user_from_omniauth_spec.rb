@@ -37,7 +37,8 @@ describe CreateUserFromOmniauth do
       end
 
       CreateUserFromOmniauth.call(auth)
-      user = User.new(username: @normalized_nickname)
+      user = User.new
+      user.username = @normalized_nickname
       expect(user).to be_valid
     end
   end
@@ -58,7 +59,8 @@ describe CreateUserFromOmniauth do
       end
 
       CreateUserFromOmniauth.call(auth)
-      user = User.new(username: @normalized_nickname)
+      user = User.new
+      user.username = @normalized_nickname
       expect(user).to be_valid
     end
   end
@@ -79,7 +81,8 @@ describe CreateUserFromOmniauth do
       end
 
       CreateUserFromOmniauth.call(auth)
-      user = User.new(username: @normalized_nickname)
+      user = User.new
+      user.username = @normalized_nickname
       expect(user).to be_valid
     end
   end

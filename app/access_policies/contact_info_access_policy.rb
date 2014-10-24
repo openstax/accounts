@@ -1,11 +1,16 @@
 class ContactInfoAccessPolicy
-  # Contains all the rules for which requestors can do what with which User objects.
+  # Contains all the rules for which requestors can do what with which ContactInfo objects.
 
   def self.action_allowed?(action, requestor, contact_info)
-    # Deny access for apps without an OAuth token
-    return false unless requestor.is_human?
-    [:read, :create, :destroy, :resend_confirmation].include?(action) && \
-      requestor.id == contact_info.user_id
+    # Applications cannot access this API
+    return false if requestor.is_application?
+
+    case action
+    when :read, :create, :destroy, :resend_confirmation
+      !requestor.is_anonymous? && requestor.id == contact_info.user_id
+    when :confirm
+      true
+    end
   end
 
 end

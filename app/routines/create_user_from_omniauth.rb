@@ -1,13 +1,11 @@
-
-
 class CreateUserFromOmniauth
 
-  include Lev::Routine
+  lev_routine
 
   uses_routine CreateUser,
                translations: { outputs: {type: :verbatim} }
 
-protected
+  protected
 
   def exec(auth)
     case auth[:provider]

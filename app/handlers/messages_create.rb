@@ -1,12 +1,12 @@
 # Creates and sends a Message
 class MessagesCreate
 
-  include Lev::Handler
+  lev_handler
 
   uses_routine AddRecipientsToMessage, as: :add_recipients_to_message
   uses_routine SendMessage, as: :send_message
 
-protected
+  protected
 
   def authorized?
     OSU::AccessPolicy.action_allowed?(:create, caller, Message)

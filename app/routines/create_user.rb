@@ -1,4 +1,3 @@
-
 # Creates a user with the supplied parameters.
 #
 # If the :username is blank or if :ensure_no_errors is true, the routine
@@ -9,9 +8,9 @@
 #
 class CreateUser
 
-  include Lev::Routine
+  lev_routine
 
-protected
+  protected
 
   def exec(inputs={})
     username = inputs[:username]

@@ -1,0 +1,13 @@
+<% # Clients of this partial must supply the following variables:
+   # email_addresses
+%>
+
+<table class="table table-hover vertical-middle">
+  <% email_addresses.each do |ea| %>
+    <%= render partial: 'contact_infos/show',
+               locals: { contact_info: ea } %>
+  <% end %>
+</table>
+
+<%= render partial: 'contact_infos/form',
+           locals: {type: 'EmailAddress'} %>

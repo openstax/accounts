@@ -1,6 +1,6 @@
 class UsersRegister
 
-  include Lev::Handler
+  lev_handler
 
   paramify :register do
     attribute :i_agree, type: boolean
@@ -17,10 +17,10 @@ class UsersRegister
   uses_routine AgreeToTerms
   uses_routine FinishUserCreation
 
-protected
+  protected
 
   def authorized?
-    true
+    OSU::AccessPolicy.action_allowed?(:register, caller, caller)
   end
 
   def handle

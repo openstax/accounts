@@ -20,14 +20,14 @@
 #
 class SessionsCallback
 
-  include Lev::Handler
+  lev_handler
 
   uses_routine TransferAuthentications
   uses_routine CreateUserFromOmniauth
   uses_routine DestroyUser
   uses_routine TransferOmniauthInformation
 
-protected
+  protected
 
   def setup
     @auth_data = request.env['omniauth.auth']

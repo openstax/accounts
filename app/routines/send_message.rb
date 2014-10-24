@@ -4,7 +4,7 @@ class SendMessage
   # This is already called from within the save transaction
   lev_routine transaction: :no_transaction
 
-protected
+  protected
 
   def exec(msg)
     fatal_error(code: :not_sent, message: 'Message could not be sent') \

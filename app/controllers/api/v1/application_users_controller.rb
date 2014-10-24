@@ -84,7 +84,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending 
   EOS
   def index
-    OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, ApplicationUser)
+    OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, ApplicationUser)
     options = params.slice(:page, :per_page, :order_by)
     outputs = SearchApplicationUsers.call(current_application, params[:q], options).outputs
     respond_with outputs, represent_with: Api::V1::ApplicationUserSearchRepresenter

@@ -41,7 +41,8 @@ class ImportUsers
 
   def create_user(username, password_digest, title, first_name, last_name, full_name, email_address)
     person = Person.create!
-    @user = User.new(username: username)
+    @user = User.new
+    @user.username = username
     @user.is_temp = false
     @user.title = title
     @user.first_name = first_name
@@ -64,10 +65,9 @@ class ImportUsers
     )
 
     # Imported email addresses are verified
-    EmailAddress.create!(
-      user_id: @user.id,
-      value: email_address,
-      verified: true,
-    )
+    ea = EmailAddress.new(value: email_address)
+    ea.user = @user
+    ea.verified = true
+    ea.save!
   end
 end
