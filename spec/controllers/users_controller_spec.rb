@@ -5,20 +5,20 @@ RSpec.describe UsersController, type: :controller do
   let!(:user) { FactoryGirl.create :user, :terms_agreed }
   let!(:temp_user) { FactoryGirl.create :temp_user }
 
-  context 'GET show' do
+  context 'GET edit' do
     it 'renders the edit profile page' do
       controller.sign_in user
-      get 'show'
+      get 'edit'
       expect(response.status).to eq 200
     end
   end
 
   context 'PUT update' do
-    it 'updates the user' do
+    it "updates the user's profile" do
       controller.sign_in user
-      put 'update', user: {username: "my_new_username"}
+      put 'update', user: {first_name: "MyNewName"}
       expect(response.status).to eq 302
-      expect(user.reload.username).to eq "my_new_username"
+      expect(user.reload.first_name).to eq "MyNewName"
     end
   end
 

@@ -1,4 +1,4 @@
-require "rails_helper"
+require "spec_helper"
 
 RSpec.describe IdentitiesController, :type => :routing do
   describe "routing" do

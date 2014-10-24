@@ -1,5 +1,6 @@
 module Dev
   class UsersCreate
+
     lev_handler
 
     paramify :create do
@@ -16,7 +17,7 @@ module Dev
                  translations: { inputs: { scope: :create },
                                  outputs: { type: :verbatim } }
 
-  protected
+    protected
 
     def authorized?
       !Rails.env.production?

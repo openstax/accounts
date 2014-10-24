@@ -30,10 +30,9 @@ module Admin
                  as: :search_users,
                  translations: { outputs: {type: :verbatim} }
 
-  protected
+    protected
 
     def exec(query, options={})
-
       options = options.merge({:return_all => true})
       run(:search_users, query, options)
 
@@ -45,7 +44,6 @@ module Admin
       outputs[:per_page] = per_page
       outputs[:page] = page
       outputs[:users] = users.limit(per_page).offset(per_page*page)
-
     end
 
   end

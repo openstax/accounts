@@ -1,8 +1,8 @@
 class MarkContactInfoVerified
 
-  include Lev::Routine
+  lev_routine
 
-protected
+  protected
 
   def exec(contact_info)
     contact_info.confirmation_code = nil

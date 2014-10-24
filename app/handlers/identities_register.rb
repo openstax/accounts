@@ -1,5 +1,6 @@
 class IdentitiesRegister
-  include Lev::Handler
+
+  lev_handler
 
   paramify :register do
     attribute :username, type: String
@@ -16,7 +17,7 @@ class IdentitiesRegister
                translations: { inputs:  {scope: :register}, 
                                outputs: {type: :verbatim}  }
 
-protected
+  protected
 
   def authorized?;
     caller.is_anonymous? || caller.authentications.none?{|auth| auth.provider == 'identity'}

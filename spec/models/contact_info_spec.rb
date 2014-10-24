@@ -10,6 +10,21 @@ describe ContactInfo do
     end
   end
 
+  context 'to_subclass' do
+    let!(:user) { FactoryGirl.create(:user) }
+
+    it 'returns self as a subclass' do
+      info = ContactInfo.new(type: 'EmailAddress', value: 'invalid')
+      info.user = user
+      expect(info).to be_valid
+      ea = info.to_subclass
+      expect(ea).to be_a EmailAddress
+      expect(ea).not_to be_valid
+      ea.value = "user@example.com"
+      expect(ea).to be_valid
+    end
+  end
+
   context 'user emails' do
     let!(:user1) { FactoryGirl.create(:user_with_emails, emails_count: 2) }
     let!(:user2) { FactoryGirl.create(:user_with_emails, emails_count: 2) }

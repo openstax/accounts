@@ -6,7 +6,7 @@ describe ApplicationUser do
     it 'requires default_contact_info to belong to the user' do
       application_user = FactoryGirl.create :application_user
       expect(application_user).to be_valid
-      contact_info = FactoryGirl.create :contact_info
+      contact_info = FactoryGirl.create :email_address
       application_user.default_contact_info = contact_info
       expect(application_user).not_to be_valid
       expect(application_user.errors.messages[:default_contact_info]).to eq(['must belong to the given user.'])

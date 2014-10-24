@@ -12,7 +12,22 @@ describe IdentitiesController, type: :controller do
       i
     }
 
-    describe 'GET' do
+    context 'PUT update' do
+      it "updates the user's password" do
+        expect(!!identity.authenticate('password')).to eq true
+        expect(!!identity.authenticate('new_password')).to eq false
+
+        controller.sign_in user
+        put 'update', identity: {current_password: 'password',
+                                 password: 'new_password',
+                                 password_confirmation: 'new_password'}
+        expect(response.status).to eq 302
+        expect(!!identity.reload.authenticate('password')).to eq true
+        expect(!!identity.authenticate('new_password')).to eq false
+      end
+    end
+
+    context 'GET reset_password' do
       it 'returns error if no code given' do
         get 'reset_password'
         expect(response.code).to eq('400')
@@ -46,7 +61,7 @@ describe IdentitiesController, type: :controller do
       end
     end
 
-    describe 'POST' do
+    context 'POST reset_password' do
       it 'returns error if no code given' do
         post 'reset_password'
         expect(response.code).to eq('400')
@@ -125,7 +140,7 @@ describe IdentitiesController, type: :controller do
       end
 
       it 'redirects to return_to if it is set in session' do
-        session[:return_to] = 'http://www.example.com/'
+        session[:interceptor] = {return_to: 'http://www.example.com/'}
         post('reset_password', code: identity.reset_code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
 

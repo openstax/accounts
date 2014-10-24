@@ -1,4 +1,5 @@
 class TermsAgree
+
   lev_handler
 
   paramify :agreement do
@@ -9,7 +10,7 @@ class TermsAgree
 
   uses_routine AgreeToTerms
 
-protected
+  protected
 
   def authorized?
     true

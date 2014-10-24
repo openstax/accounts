@@ -1,12 +1,11 @@
-
 # Creates an identity with the supplied parameters.
 #
 #
 class CreateIdentity
 
-  include Lev::Routine
+  lev_routine
 
-protected
+  protected
 
   def exec(inputs={})
     outputs[:identity] = Identity.create do |identity|

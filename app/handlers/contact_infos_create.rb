@@ -1,6 +1,7 @@
 class ContactInfosCreate
 
-  include Lev::Handler
+  lev_handler
+
   uses_routine SendContactInfoConfirmation
 
   paramify :contact_info do
@@ -11,14 +12,9 @@ class ContactInfosCreate
   protected
 
   def setup
-    type = contact_info_params.type
-    fatal_error(code: :invalid_type,
-                message: "#{type} is not a valid Contact Info type",
-                offending_inputs: :type) \
-      unless ContactInfo::VALID_TYPES.include?(type)
-
-    @contact_info = type.constantize.new(contact_info_params.as_hash :value)
+    @contact_info = ContactInfo.new(contact_info_params.as_hash(:type, :value))
     @contact_info.user = caller
+    @contact_info = @contact_info.to_subclass
   end
 
   def authorized?
@@ -27,9 +23,10 @@ class ContactInfosCreate
 
   def handle
     @contact_info.save
+    transfer_errors_from(@contact_info, {scope: :contact_info}, true)
+
     run(SendContactInfoConfirmation, @contact_info)
     outputs[:contact_info] = @contact_info
-    transfer_errors_from(outputs[:contact_info], {type: :verbatim})
   end
 
 end

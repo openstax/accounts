@@ -1,12 +1,16 @@
 class ContactInfosResendConfirmation
 
-  include Lev::Handler
+  lev_handler
+
   uses_routine SendContactInfoConfirmation
 
-protected
+  protected
+
+  def setup
+    @contact_info = ContactInfo.find(params[:id])
+  end
 
   def authorized?
-    @contact_info = ContactInfo.find(params[:id])
     OSU::AccessPolicy.action_allowed?(:resend_confirmation,
                                       caller, @contact_info)
   end

@@ -2,7 +2,8 @@ require "spec_helper"
 
 describe ConfirmationMailer do
   let(:user) { FactoryGirl.create :user }
-  let(:email) { EmailAddress.create(value: 'to@example.org', user_id: user.id, confirmation_code: '1234') }
+  let(:email) { FactoryGirl.create :email_address, value: 'to@example.org',
+                                   user_id: user.id, confirmation_code: '1234' }
 
   describe "reminder" do
     let(:mail) { ConfirmationMailer.reminder email }

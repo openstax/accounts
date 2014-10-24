@@ -3,7 +3,7 @@ class AddRecipientsToMessage
 
   lev_routine
 
-protected
+  protected
 
   def exec(msg, type, dest)
     app = msg.application

@@ -2,7 +2,30 @@ require 'spec_helper'
 
 describe ContactInfosController do
 
-  describe "GET 'confirm'" do
+  let!(:user)         { FactoryGirl.create :user, :terms_agreed }
+  let!(:contact_info) { FactoryGirl.build :email_address, user: user }
+
+  context 'POST create' do
+    it 'creates a new ContactInfo' do
+      controller.sign_in user
+      expect { post 'create',
+               contact_info: contact_info.attributes }.to(
+        change{ContactInfo.count}.by(1))
+      expect(response.status).to eq 302
+    end
+  end
+
+  context 'DELETE destroy' do
+    it "deletes the given ContactInfo" do
+      contact_info.save!
+      controller.sign_in user
+      expect { delete 'destroy', id: contact_info.id }.to(
+        change{ContactInfo.count}.by(-1))
+      expect(response.status).to eq 302
+    end
+  end
+
+  context "GET 'confirm'" do
     render_views
 
     before :each do

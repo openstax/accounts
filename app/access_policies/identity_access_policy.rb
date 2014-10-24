@@ -8,8 +8,9 @@ class IdentityAccessPolicy
     case action
     when :new, :forgot_password, :reset_password # Anyone
       true
-    when :update
-      !requestor.is_anonymous? # Non-anonymous
+    when :update # Self only
+      !requestor.is_anonymous? && \
+        (identity.user == requestor)
     end
   end
 end

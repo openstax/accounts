@@ -1,9 +1,10 @@
 class TransferOmniauthInformation
 
-  include Lev::Routine
+  lev_routine
+
   uses_routine AddEmailToUser
 
-protected
+  protected
 
   def exec(auth_data, user)
     info = case auth_data[:provider]

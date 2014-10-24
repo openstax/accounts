@@ -1,18 +1,14 @@
-require "rails_helper"
+require "spec_helper"
 
 RSpec.describe UsersController, :type => :routing do
   describe "routing" do
 
-    it "routes to #search" do
-      expect(get("/users")).to route_to("users#search")
-    end
-
     it "routes to #edit" do
-      expect(get("/user/profile")).to route_to("users#edit")
+      expect(get("/profile")).to route_to("users#edit")
     end
 
     it "routes to #update" do
-      expect(put("/user")).to route_to("users#update")
+      expect(put("/profile")).to route_to("users#update")
     end
 
     # it "routes to #destroy" do

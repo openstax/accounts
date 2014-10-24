@@ -29,7 +29,7 @@ class SearchUsers
 
   lev_routine transaction: :no_transaction
 
-protected
+  protected
 
   SORTABLE_FIELDS = ['username', 'first_name', 'last_name', 'id']
   SORT_ASCENDING = 'ASC'

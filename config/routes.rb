@@ -8,8 +8,8 @@ Accounts::Application.routes.draw do
     post 'callback', path: 'auth/:provider/callback'
     get 'failure', path: 'auth/failure'
 
-    get 'login', to: :new
-    get 'logout', to: :destroy
+    get 'login', action: :new
+    get 'logout', action: :destroy
     get 'i_am_returning'
 
     if Rails.env.development?
@@ -17,9 +17,9 @@ Accounts::Application.routes.draw do
     end
   end
 
-  resource :user, path_names: { edit: 'profile' },
-                  only: [:edit, :update]
   scope controller: 'users' do
+    get 'profile', action: :edit
+    put 'profile', action: :update
     get 'register'
     put 'register'
   end

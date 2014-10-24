@@ -1,5 +1,6 @@
 module Dev
   class CreateUser
+
     lev_routine
 
     protected

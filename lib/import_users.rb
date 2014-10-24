@@ -63,10 +63,9 @@ class ImportUsers
     )
 
     # Imported email addresses are verified
-    EmailAddress.create!(
-      user_id: @user.id,
-      value: email_address,
-      verified: true,
-    )
+    ea = EmailAddress.new(value: email_address)
+    ea.user = @user
+    ea.verified = true
+    ea.save!
   end
 end

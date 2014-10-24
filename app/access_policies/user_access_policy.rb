@@ -3,7 +3,7 @@ class UserAccessPolicy
 
   def self.action_allowed?(action, requestor, user)
     # Anonymous cannot access this API
-    return false if !requestor.is_application? && requestor.is_anonymous?
+    return false if requestor.is_human? && requestor.is_anonymous?
 
     case action
     when :search

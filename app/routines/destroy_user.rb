@@ -1,11 +1,11 @@
 
 class DestroyUser
 
-  include Lev::Routine
+  lev_routine
 
   uses_routine DestroyWhenAssociationEmpty
 
-protected
+  protected
 
   def exec(user)
     return if user.nil?

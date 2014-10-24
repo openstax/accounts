@@ -1,9 +1,10 @@
 class ContactInfosConfirm
 
-  include Lev::Handler
+  lev_handler
+
   uses_routine MarkContactInfoVerified
 
-protected
+  protected
 
   def authorized?
     true

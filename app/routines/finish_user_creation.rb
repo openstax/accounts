@@ -1,8 +1,8 @@
 class FinishUserCreation
 
-  include Lev::Routine
+  lev_routine
 
-protected
+  protected
 
   def exec(user)
     return if !user.is_temp

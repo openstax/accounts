@@ -1,12 +1,12 @@
 module Dev
   class DestroyUsers
 
-    include Lev::Routine
+    lev_routine
 
     uses_routine DestroyUser,
                  ignored_errors: [:cannot_destroy_non_temp_user]
 
-  protected
+    protected
 
     def exec(users)
       users = users.all if users.is_a? ActiveRecord::Relation

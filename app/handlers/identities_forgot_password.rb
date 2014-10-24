@@ -1,13 +1,13 @@
 class IdentitiesForgotPassword
 
-  include Lev::Handler
+  lev_handler
 
   paramify :forgot_password do
     attribute :username, type: String
     validates :username, presence: true
   end
 
-protected
+  protected
 
   def authorized?
     true

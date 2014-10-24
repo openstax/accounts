@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  acts_as_interceptor
+  acts_as_interceptor skip_session: true
 
   skip_interceptor :registration, only: [:register]
 
@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   def update
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
     if current_user.update_attributes(user_params)
-      redirect_to edit_user_path, notice: 'Profile updated'
+      redirect_to profile_path, notice: 'Profile updated'
     else
       flash.now[:alert] ||= []
       current_user.errors.full_messages.each do |msg|

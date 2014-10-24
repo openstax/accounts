@@ -1,6 +1,6 @@
 class UsersRegister
 
-  include Lev::Handler
+  lev_handler
 
   paramify :register do
     attribute :i_agree, type: boolean
@@ -20,8 +20,7 @@ class UsersRegister
   protected
 
   def authorized?
-    OSU::AccessPolicy.require_action_allowed!(:register, caller, caller)
-    true
+    OSU::AccessPolicy.action_allowed?(:register, caller, caller)
   end
 
   def handle

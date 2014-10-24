@@ -1,9 +1,8 @@
-
 class DestroyWhenAssociationEmpty
 
-  include Lev::Routine
+  lev_routine
 
-protected
+  protected
 
   def exec(record, association)
     return if record.nil?
