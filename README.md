@@ -27,20 +27,21 @@ In development, Accounts can be run as a normal Rails app on your machine, or yo
 
 To start running Accounts in a development environment, clone the repository, then
 
-```
-bundle install --without production
+```sh
+$ bundle install --without production
 ```
 
-Just like with any Rails app, you then need to migrate the database. 
+Just like with any Rails app, you then need to migrate the database and then seed it with some default records. 
 
-```
-rake db:migrate
+```sh
+$ rake db:migrate
+$ rake db:seed
 ```
 
 When you run
 
-```
-rails server
+```sh
+$ rails server
 ```
 
 Accounts will start up on port 2999, i.e. http://localhost:2999.
@@ -65,3 +66,4 @@ Vagrant here has been extended with plugins to include commands that mirror serv
 * ````vagrant shutdown```` runs OpsWorks' ````shutdown```` behavior.
 
 To get going, run ````vagrant up```` followed by ````vagrant deploy````.  This will put your Vagrant VM in a running state with OpenStax Accounts being served at https://localhost:8081.  Note that http://localhost:8080 serves the non-SSL interface, but if you go there you'll see an error due to the fact that we're explicitly setting the URL port.  Accounts forces SSL connections, and in so doing it tries to redirect http requests to https://localhost:8080, not 8081.
+
