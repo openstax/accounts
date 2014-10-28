@@ -25,26 +25,28 @@ In development, Accounts can be run as a normal Rails app on your machine, or yo
 
 ### Running as a normal Rails app on your machine
 
-To start running Accounts in a development environment, clone the repository, then
+First, ensure you have ruby 1.9.3-p547 installed. You should use either rbenv or RVM to manage your ruby versions.
+
+To start running Accounts in a development environment, clone the repository, then run:
 
 ```sh
 $ bundle install --without production
 ```
 
-Just like with any Rails app, you then need to migrate the database and then seed it with some default records:
+Just like with any Rails app, you need to migrate the database and then seed it with some default records:
 
 ```sh
 $ rake db:migrate
 $ rake db:seed
 ```
 
-When you run
+Then you can run:
 
 ```sh
 $ rails server
 ```
 
-Accounts will start up on port 2999, i.e. http://localhost:2999.
+which will start Accounts up on port 2999, i.e. http://localhost:2999.
 
 ### Running in a Vagrant virtual machine
 
