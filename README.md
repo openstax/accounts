@@ -31,7 +31,7 @@ To start running Accounts in a development environment, clone the repository, th
 $ bundle install --without production
 ```
 
-Just like with any Rails app, you then need to migrate the database and then seed it with some default records. 
+Just like with any Rails app, you then need to migrate the database and then seed it with some default records:
 
 ```sh
 $ rake db:migrate
