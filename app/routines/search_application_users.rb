@@ -34,13 +34,13 @@ class SearchApplicationUsers
     options = options.merge({:return_all => true})
     run(:search_users, query, options)
 
-    per_page = options[:per_page] || 20
-    page = options[:page] || 0
+    per_page = Integer(options[:per_page]) rescue 20
+    page = Integer(options[:page]) rescue 0
 
-    users = outputs[:users].joins(:application_users)
+    users = outputs[:users].includes(:application_users)
+                           .joins(:application_users)
                            .where(:application_users => {
                                     :application_id => application.id})
-                           .includes(:application_users)
     num_matching_users = users.count
     users = users.limit(per_page).offset(per_page*page).to_a
     application_users = users.collect{|u| u.application_users}.flatten

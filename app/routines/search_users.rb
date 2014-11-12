@@ -19,8 +19,8 @@
 #
 # You can also tell the routine to return all matching users
 #
-#   :return_all -- if true, this routine will not limit the query, will not count
-#                  the number of results and will apply pagination;
+#   :return_all -- if true, this routine will not limit the query
+#                  and will not count the number of results;
 #                  all matching users will be returned
 #
 # The `users` output is an ActiveRecord relation
