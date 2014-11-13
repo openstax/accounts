@@ -73,12 +73,13 @@ describe SearchUsers do
     email = ea.value
     ea.is_searchable = false
     ea.save!
-
     outcome = SearchUsers.call("email:#{email}").outputs.users.to_a
     expect(outcome).to eq []
 
     ea.is_searchable = true
     ea.save!
+    outcome = SearchUsers.call("email:#{email}").outputs.users.to_a
+    expect(outcome).to eq [user_1]
   end
 
   it "should return no results if the limit is exceeded" do
