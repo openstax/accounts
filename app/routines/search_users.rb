@@ -73,8 +73,9 @@ class SearchUsers
 
       with.keyword :email do |emails|
         users = users.joins{contact_infos}
-                     .where{{contact_infos: sift(:email_addresses)}}
-                     .where{{contact_infos: sift(:verified)}}
+                     .where(contact_infos: {type: 'EmailAddress',
+                                            verified: true,
+                                            is_searchable: true})
                      .where{contact_infos.value.in emails}
       end
 
@@ -84,16 +85,16 @@ class SearchUsers
       with.keyword :any do |terms|
         names = prep_names(terms)
 
-        users = users.joins{contact_infos.outer}
-                     .where{
-                              (         username.like_any  my{prep_names(terms)}) |
-                              (lower(first_name).like_any  names)                     |
-                              (lower(last_name).like_any   names)                     |
-                              (lower(full_name).like_any   names)                     |
-                              (id.in                       terms)                     |
-                              ( (contact_infos.value.in      terms) & 
-                                (contact_infos.verified.eq   true) )
-                           }
+        users = users.joins{contact_infos.outer}.where{
+                  (                   username.like_any names)           | \
+                  (          lower(first_name).like_any names)           | \
+                  (           lower(last_name).like_any names)           | \
+                  (           lower(full_name).like_any names)           | \
+                  (                         id.in       terms)           | \
+                  ((       contact_infos.value.in       terms)           & \
+                  (         contact_infos.type.eq       'EmailAddress')  & \
+                  (     contact_infos.verified.eq       true)            & \
+                  (contact_infos.is_searchable.eq       true))}
       end
 
     end

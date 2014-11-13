@@ -8,6 +8,12 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
   let!(:user_2)          { FactoryGirl.create :user_with_emails,
                                               first_name: 'Bob',
                                               last_name: 'Michaels' }
+  let!(:public_email)    { FactoryGirl.create(
+                             :email_address,
+                             user: user_2,
+                             value: 'public@email.com',
+                             public_value: 'p...@email.com'
+                           )}
 
   let!(:user_2_token)    { FactoryGirl.create :doorkeeper_access_token,
     application: untrusted_application,
@@ -62,7 +68,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
-            last_name: user_2.last_name
+            last_name: user_2.last_name,
+            public_contact_infos: ['p...@email.com']
           }
         ],
         application_users: [
@@ -73,7 +80,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
               id: user_2.id,
               username: user_2.username,
               first_name: user_2.first_name,
-              last_name: user_2.last_name
+              last_name: user_2.last_name,
+              public_contact_infos: ['p...@email.com']
             },
             unread_updates: 1
           }
@@ -157,7 +165,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
-            last_name: user_2.last_name
+            last_name: user_2.last_name,
+            public_contact_infos: ['p...@email.com']
           }
         ],
         application_users: [
@@ -168,7 +177,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
               id: user_2.id,
               username: user_2.username,
               first_name: user_2.first_name,
-              last_name: user_2.last_name
+              last_name: user_2.last_name,
+              public_contact_infos: ['p...@email.com']
             },
             unread_updates: 1
           }
@@ -320,7 +330,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
           id: user_2.id,
           username: user_2.username,
           first_name: user_2.first_name,
-          last_name: user_2.last_name
+          last_name: user_2.last_name,
+          public_contact_infos: ['p...@email.com']
         },
         unread_updates: 2
       }].to_json
@@ -345,7 +356,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
           id: user_2.id,
           username: user_2.username,
           first_name: user_2.first_name,
-          last_name: user_2.last_name
+          last_name: user_2.last_name,
+          public_contact_infos: ['p...@email.com']
         },
         unread_updates: 3
       }].to_json
@@ -365,6 +377,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
           username: user_2.username,
           first_name: user_2.first_name,
           last_name: user_2.last_name,
+          public_contact_infos: ['p...@email.com']
         },
         unread_updates: 2
       }].to_json

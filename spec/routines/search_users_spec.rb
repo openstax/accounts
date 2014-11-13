@@ -68,6 +68,19 @@ describe SearchUsers do
     expect(outcome).to eq []
   end
 
+  it "should not match unsearchable email addresses" do
+    ea = user_1.contact_infos.email_addresses.first
+    email = ea.value
+    ea.is_searchable = false
+    ea.save!
+
+    outcome = SearchUsers.call("email:#{email}").outputs.users.to_a
+    expect(outcome).to eq []
+
+    ea.is_searchable = true
+    ea.save!
+  end
+
   it "should return no results if the limit is exceeded" do
     outcome = SearchUsers.call("").outputs.users.to_a
     expect(outcome).to be_empty

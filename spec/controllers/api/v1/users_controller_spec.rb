@@ -57,7 +57,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
-            last_name: user_2.last_name
+            last_name: user_2.last_name,
+            public_contact_infos: []
           }
         ]
       }.to_json
@@ -101,7 +102,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       
       expected_response = {
         id: user_1.id,
-        username: user_1.username
+        username: user_1.username,
+        public_contact_infos: []
       }.to_json
       
       expect(response.body).to eq(expected_response)
@@ -116,7 +118,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
       expected_response = {
         id: user_1.id,
-        username: user_1.username
+        username: user_1.username,
+        public_contact_infos: []
       }.to_json
 
       expect(response.body).to eq(expected_response)
@@ -129,7 +132,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
         id: user_2.id,
         username: user_2.username,
         first_name: user_2.first_name,
-        last_name: user_2.last_name
+        last_name: user_2.last_name,
+        public_contact_infos: []
       }.to_json
 
       expect(response.body).to eq(expected_response)
@@ -172,7 +176,13 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                              id: user_2.contact_infos.first.id,
                              value: "howdy@doody.com"
                            }
-                         ]                         
+                         ],
+                         public_contact_infos: [
+                           {
+                             id: user_2.contact_infos.first.id,
+                             value: "howdy@doody.com"
+                           }
+                         ]
                        }
       expect(response.code).to eq('204')
       user_2.reload

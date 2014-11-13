@@ -28,13 +28,11 @@ module Api::V1
              type: String, 
              writeable: true
 
-#    collection :contact_infos,
-#               class: ContactInfo,
-#               decorator: ContactInfoRepresenter,
-#               writeable: false,
-#               schema_info: {
-#                 minItems: 0
-#               }
+    collection :public_contact_infos,
+               type: String,
+               writeable: false,
+               getter: lambda { |*| contact_infos.public.to_a.collect{ |ci|
+                                      ci.public_value} }
 
   end
 end
