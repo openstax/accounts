@@ -8,6 +8,8 @@ class ContactInfosController < ApplicationController
                              :privacy_policy,
                              only: [:confirm]
 
+  before_filter :set_contact_info, only: [:update, :destroy]
+
   def create
     handle_with(ContactInfosCreate,
                 success: lambda {
@@ -17,9 +19,18 @@ class ContactInfosController < ApplicationController
                 failure: lambda { render 'users/edit', status: 400 })
   end
 
+  def update
+    OSU::AccessPolicy.require_action_allowed!(:update, current_user,
+                                              @contact_info)
+    @contact_info.update_attribute(:is_searchable,
+                                   !@contact_info.is_searchable)
+    redirect_to profile_path,
+                notice: "#{@contact_info.type.underscore.humanize} updated"
+  end
+
   def destroy
-    @contact_info = ContactInfo.find(params[:id])
-    OSU::AccessPolicy.require_action_allowed!(:destroy, current_user, @contact_info)
+    OSU::AccessPolicy.require_action_allowed!(:destroy, current_user,
+                                              @contact_info)
     @contact_info.destroy
     redirect_to profile_path,
                 notice: "#{@contact_info.type.underscore.humanize} deleted"
@@ -38,6 +49,12 @@ class ContactInfosController < ApplicationController
                 complete: lambda { without_interceptor {
                   render :confirm, status: @handler_result.errors.any? ? 400 : 200
                 } })
+  end
+
+  protected
+
+  def set_contact_info
+    @contact_info = ContactInfo.find(params[:id])
   end
 
 end

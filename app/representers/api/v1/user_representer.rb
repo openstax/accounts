@@ -28,11 +28,5 @@ module Api::V1
              type: String, 
              writeable: true
 
-    collection :public_contact_infos,
-               type: String,
-               writeable: false,
-               getter: lambda { |*| contact_infos.public.to_a.collect{ |ci|
-                                      ci.public_value} }
-
   end
 end

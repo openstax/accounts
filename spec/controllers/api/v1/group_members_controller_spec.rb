@@ -64,8 +64,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
           'owners' => [],
           'members' => [
             {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username,
-                        'public_contact_infos' => []}}
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'nestings' => [],
           'supertree_group_ids' => [group_1.id],
@@ -89,8 +88,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
           'owners' => [],
           'members' => [
             {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username,
-                        'public_contact_infos' => []}}
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'nestings' => [
             {
@@ -119,8 +117,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
           'owners' => [],
           'members' => [
             {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username,
-                        'public_contact_infos' => []}}
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'nestings' => [
             {
@@ -140,11 +137,9 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
            'owners' => [],
            'members' => [
              {'group_id' => group_2.id,
-              'user' => {'id' => user_1.id, 'username' => user_1.username,
-                         'public_contact_infos' => []}},
+              'user' => {'id' => user_1.id, 'username' => user_1.username}},
              {'group_id' => group_2.id,
-              'user' => {'id' => user_2.id, 'username' => user_2.username,
-                         'public_contact_infos' => []}}
+              'user' => {'id' => user_2.id, 'username' => user_2.username}}
            ],
            'nestings' => [],
            'supertree_group_ids' => [group_2.id, group_1.id],
@@ -168,8 +163,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
           'owners' => [],
           'members' => [
             {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username,
-                        'public_contact_infos' => []}}
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'nestings' => [
             {
@@ -189,11 +183,9 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
            'owners' => [],
            'members' => [
              {'group_id' => group_2.id,
-              'user' => {'id' => user_1.id, 'username' => user_1.username,
-                         'public_contact_infos' => []}},
+              'user' => {'id' => user_1.id, 'username' => user_1.username}},
              {'group_id' => group_2.id,
-              'user' => {'id' => user_2.id, 'username' => user_2.username,
-                         'public_contact_infos' => []}}
+              'user' => {'id' => user_2.id, 'username' => user_2.username}}
            ],
            'nestings' => [],
            'supertree_group_ids' => [group_2.id, group_1.id],
@@ -208,8 +200,7 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
          'owners' => [],
          'members' => [
            {'group_id' => group_3.id,
-            'user' => {'id' => user_1.id, 'username' => user_1.username,
-                       'public_contact_infos' => []}}
+            'user' => {'id' => user_1.id, 'username' => user_1.username}}
          ],
          'nestings' => [],
          'supertree_group_ids' => [group_3.id],
@@ -269,13 +260,11 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
           'is_public' => true,
           'owners' => [
             {'group_id' => group_3.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username,
-                        'public_contact_infos' => []}}
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'members' => [
             {'group_id' => group_3.id,
-             'user' => {'id' => user_2.id, 'username' => user_2.username,
-                        'public_contact_infos' => []}}
+             'user' => {'id' => user_2.id, 'username' => user_2.username}}
           ],
           'nestings' => [],
           'supertree_group_ids' => [group_3.id],
@@ -296,13 +285,11 @@ describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
           'is_public' => false,
           'owners' => [
             {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username,
-                        'public_contact_infos' => []}}
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'members' => [
             {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username,
-                        'public_contact_infos' => []}}
+             'user' => {'id' => user_1.id, 'username' => user_1.username}}
           ],
           'nestings' => [],
           'supertree_group_ids' => [group_1.id],

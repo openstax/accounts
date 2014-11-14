@@ -60,7 +60,6 @@ ActiveRecord::Schema.define(:version => 20141112205405) do
     t.datetime "updated_at",                              :null => false
     t.datetime "confirmation_sent_at"
     t.boolean  "is_searchable",        :default => false
-    t.string   "public_value"
   end
 
   add_index "contact_infos", ["confirmation_code"], :name => "index_contact_infos_on_confirmation_code", :unique => true

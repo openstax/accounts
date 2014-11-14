@@ -5,6 +5,9 @@
 
 <tr>
   <td><%= contact_info.value %></td>
+  <td><%= contact_info.is_searchable ? 'Searchable' : 'Not searchable' %></td>
+  <td><%= button_to 'Toggle', contact_info_path(contact_info),
+                    method: :put, class: "standard" %></td>
   <td><%= contact_info.verified ? 'Verified' : 'Unverified' %></td>
   <td><%= button_to "Resend Confirmation",
                     resend_confirmation_contact_info_path(contact_info),

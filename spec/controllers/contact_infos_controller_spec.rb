@@ -15,6 +15,22 @@ describe ContactInfosController do
     end
   end
 
+  context 'PUT update' do
+    it 'toggles is_searchable' do
+      contact_info.save!
+      controller.sign_in user
+      expect(contact_info.is_searchable).to eq true
+
+      put 'update', id: contact_info.id
+      expect(response.status).to eq 302
+      expect(contact_info.reload.is_searchable).to eq false
+
+      put 'update', id: contact_info.id
+      expect(response.status).to eq 302
+      expect(contact_info.reload.is_searchable).to eq true
+    end
+  end
+
   context 'DELETE destroy' do
     it "deletes the given ContactInfo" do
       contact_info.save!

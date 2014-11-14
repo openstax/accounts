@@ -33,7 +33,7 @@ Accounts::Application.routes.draw do
     post 'reset_password'
   end
 
-  resources :contact_infos, only: [:create, :destroy] do
+  resources :contact_infos, only: [:create, :update, :destroy] do
     put 'resend_confirmation', on: :member
   end
   scope controller: 'contact_infos' do
