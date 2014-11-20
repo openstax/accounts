@@ -84,7 +84,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
 
     it "should return the 2nd page when requested" do
-      api_get :index, untrusted_application_token, parameters: {q: 'username:billy', page: 1, per_page: 10}
+      api_get :index, untrusted_application_token, parameters: {q: 'username:billy', page: '1', per_page: '10'}
       expect(response.code).to eq('200')
 
       outcome = JSON.parse(response.body)
@@ -96,7 +96,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
 
     it "should return the incomplete 5th page when requested" do
-      api_get :index, untrusted_application_token, parameters: {q: 'username:billy', page: 4, per_page: 10}
+      api_get :index, untrusted_application_token, parameters: {q: 'username:billy', page: '4', per_page: '10'}
       expect(response.code).to eq('200')
 
       outcome = JSON.parse(response.body)

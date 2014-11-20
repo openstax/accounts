@@ -65,12 +65,6 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
 
     `ric` &ndash; returns ApplicationUsers for 'richb', 'ricardo', and 'Jimmy Rich' Users.
   EOS
-  param :page, Integer, desc: <<-EOS
-    Specifies the page of results to retrieve, zero-indexed. (default: 0)
-  EOS
-  param :per_page, Integer, desc: <<-EOS
-    The number of ApplicationUsers to retrieve on the chosen page. (default: 20)
-  EOS
   param :order_by, String, desc: <<-EOS
     A string that indicates how to sort the results of the query. The string
     is a comma-separated list of fields with an optional sort direction. The
@@ -86,7 +80,7 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
-    options = params.slice(:page, :per_page, :order_by)
+    options = params.slice(:order_by)
     outputs = SearchUsers.call(params[:q], options).outputs
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
   end

@@ -64,10 +64,10 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
 
     `ric` &ndash; returns ApplicationUsers for 'richb', 'ricardo', and 'Jimmy Rich' Users.
   EOS
-  param :page, Integer, desc: <<-EOS
+  param :page, :number, desc: <<-EOS
     Specifies the page of results to retrieve, zero-indexed. (default: 0)
   EOS
-  param :per_page, Integer, desc: <<-EOS
+  param :per_page, :number, desc: <<-EOS
     The number of ApplicationUsers to retrieve on the chosen page. (default: 20)
   EOS
   param :order_by, String, desc: <<-EOS
