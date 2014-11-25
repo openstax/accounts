@@ -8,7 +8,7 @@ class ContactInfosController < ApplicationController
                              :privacy_policy,
                              only: [:confirm]
 
-  before_filter :set_contact_info, only: [:update, :destroy]
+  before_filter :get_contact_info, only: [:destroy, :toggle_is_searchable]
 
   def create
     handle_with(ContactInfosCreate,
@@ -19,21 +19,21 @@ class ContactInfosController < ApplicationController
                 failure: lambda { render 'users/edit', status: 400 })
   end
 
-  def update
-    OSU::AccessPolicy.require_action_allowed!(:update, current_user,
-                                              @contact_info)
-    @contact_info.update_attribute(:is_searchable,
-                                   !@contact_info.is_searchable)
-    redirect_to profile_path,
-                notice: "#{@contact_info.type.underscore.humanize} updated"
-  end
-
   def destroy
     OSU::AccessPolicy.require_action_allowed!(:destroy, current_user,
                                               @contact_info)
     @contact_info.destroy
     redirect_to profile_path,
                 notice: "#{@contact_info.type.underscore.humanize} deleted"
+  end
+
+  def toggle_is_searchable
+    OSU::AccessPolicy.require_action_allowed!(:toggle_is_searchable,
+                                              current_user, @contact_info)
+    @contact_info.update_attribute(:is_searchable,
+                                   !@contact_info.is_searchable)
+    redirect_to profile_path,
+                notice: "Search settings updated"
   end
 
   def resend_confirmation
@@ -53,7 +53,7 @@ class ContactInfosController < ApplicationController
 
   protected
 
-  def set_contact_info
+  def get_contact_info
     @contact_info = ContactInfo.find(params[:id])
   end
 

@@ -10,7 +10,7 @@ class IdentityAccessPolicy
       true
     when :update # Self only
       !requestor.is_anonymous? && \
-        (identity.user == requestor)
+      (identity.user == requestor)
     end
   end
 end

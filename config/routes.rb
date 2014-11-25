@@ -33,8 +33,11 @@ Accounts::Application.routes.draw do
     post 'reset_password'
   end
 
-  resources :contact_infos, only: [:create, :update, :destroy] do
-    put 'resend_confirmation', on: :member
+  resources :contact_infos, only: [:create, :destroy] do
+    member do
+      put 'toggle_is_searchable'
+      put 'resend_confirmation'
+    end
   end
   scope controller: 'contact_infos' do
     get 'confirm'

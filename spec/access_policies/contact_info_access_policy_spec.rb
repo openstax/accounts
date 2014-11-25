@@ -9,9 +9,10 @@ RSpec.describe ContactInfoAccessPolicy do
   let!(:admin)        { FactoryGirl.create :user, :admin }
   let!(:app)          { FactoryGirl.create :doorkeeper_application }
 
-  context 'read, create, update, destroy, resend_confirmation' do
+  context 'read, create, destroy, toggle_is_searchable, resend_confirmation' do
     it 'cannot be accessed by applications or unauthorized users' do
-      [:read, :create, :update, :destroy, :resend_confirmation].each do |act|
+      [:read, :create, :update,
+       :toggle_is_searchable, :resend_confirmation].each do |act|
         expect(OSU::AccessPolicy.action_allowed?(act, app,
                                                  contact_info)).to eq false
         expect(OSU::AccessPolicy.action_allowed?(act, anon,
@@ -26,7 +27,8 @@ RSpec.describe ContactInfoAccessPolicy do
     end
 
     it "can be accessed by the contact info's owner" do
-      [:read, :create, :update, :destroy, :resend_confirmation].each do |act|
+      [:read, :create, :destroy,
+       :toggle_is_searchable, :resend_confirmation].each do |act|
         expect(OSU::AccessPolicy.action_allowed?(act, contact_info.user,
                                                  contact_info)).to eq true
       end
