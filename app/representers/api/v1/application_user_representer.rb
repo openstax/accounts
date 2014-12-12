@@ -10,14 +10,6 @@ module Api::V1
                description: "The primary key of this ApplicationUser"
              }
 
-    property :application_id,
-             type: Integer,
-             writeable: false,
-             schema_info: {
-               required: true,
-               description: "The id of the Application associated with this ApplicationUser"
-             }
-
     property :user,
              class: User,
              decorator: UserRepresenter,

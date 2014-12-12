@@ -93,7 +93,6 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
 
       expected_response = [{
         id: application_group_1.id,
-        application_id: untrusted_application.id,
         group: {
           id: group_1.id,
           name: 'G',
@@ -131,7 +130,6 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
 
       expected_response = [{
         id: application_group_1.id,
-        application_id: untrusted_application.id,
         group: {
           id: group_1.id,
           name: 'G',
@@ -152,7 +150,6 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
       },
       {
         id: application_group_2.id,
-        application_id: untrusted_application.id,
         group: {
           id: group_2.id,
           is_public: false,

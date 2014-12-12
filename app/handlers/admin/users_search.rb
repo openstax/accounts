@@ -19,7 +19,10 @@ module Admin
     end
 
     def handle
-      run(:search_users, search_params.terms, page: search_params.page || 0)
+      outputs[:query] = search_params.terms
+      outputs[:page] = search_params.page || 0
+      outputs[:per_page] = 20
+      run(:search_users, outputs[:query], page: outputs[:page])
     end
 
   end

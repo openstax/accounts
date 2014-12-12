@@ -26,11 +26,12 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
             'Returns a set of ApplicationUsers matching query terms'
   description <<-EOS
     Accepts a query string along with options and returns a JSON representation
-    of the matching ApplicationUsers.  Some User data may be filtered out depending on the
-    caller's status and priviledges in the system. The schema for the returned
-    JSON result is shown below.
+    of the matching ApplicationUsers.
+    Some User data may be filtered out depending on the
+    caller's status and priviledges in the system.
+    The schema for the returned JSON result is shown below.
 
-    #{json_schema(Api::V1::ApplicationUserSearchRepresenter, include: :readable)}
+    #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}
   EOS
   # Using route helpers doesn't work in test or production, probably has to do with initialization order
   example "#{api_example(url_base: 'https://accounts.openstax.org/api/application_users', url_end: '?q=username:bob%20name=Jones')}"
@@ -87,7 +88,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, ApplicationUser)
     options = params.slice(:page, :per_page, :order_by)
     outputs = SearchApplicationUsers.call(current_application, params[:q], options).outputs
-    respond_with outputs, represent_with: Api::V1::ApplicationUserSearchRepresenter
+    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
   end
 
   ###############################################################
@@ -149,7 +150,8 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   def updates
     OSU::AccessPolicy.require_action_allowed!(:updates, current_api_user, ApplicationUser)
     outputs = GetUpdatedApplicationUsers.call(current_application).outputs
-    respond_with outputs[:application_users], represent_with: Api::V1::ApplicationUsersRepresenter
+    respond_with outputs[:application_users],
+                 represent_with: Api::V1::ApplicationUsersRepresenter
   end
 
   ###############################################################

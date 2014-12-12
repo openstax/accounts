@@ -30,7 +30,7 @@ gem 'jbuilder'
 
 gem 'delayed_job_active_record'
 
-gem 'representable', '~> 1.8.2'
+gem 'representable', '~> 2.1'
 gem 'roar-rails'
 
 gem 'exception_notification'
