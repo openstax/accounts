@@ -41,6 +41,8 @@ gem 'fine_print', '~> 1.4.1'
 
 gem 'action_interceptor', '~> 0.5.1'
 
+gem 'schema_plus', '~> 1.7.1'
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.1'
