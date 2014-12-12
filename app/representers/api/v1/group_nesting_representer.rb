@@ -4,6 +4,8 @@ module Api::V1
 
     property :container_group_id,
              type: Integer,
+             readable: true,
+             writeable: true,
              schema_info: {
                required: true,
                description: "The container group's ID"
@@ -11,6 +13,8 @@ module Api::V1
 
     property :member_group_id,
              type: Integer,
+             readable: true,
+             writeable: true,
              schema_info: {
                required: true,
                description: "The member group's ID"

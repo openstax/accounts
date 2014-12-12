@@ -4,6 +4,7 @@ module Api::V1
 
     property :id, 
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
@@ -13,6 +14,7 @@ module Api::V1
     property :user,
              class: User,
              decorator: UserRepresenter,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
@@ -21,6 +23,7 @@ module Api::V1
 
     property :unread_updates,
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
@@ -29,6 +32,7 @@ module Api::V1
 
     property :default_contact_info_id,
              type: Integer,
+             readable: true,
              writeable: true,
              schema_info: {
                required: true,

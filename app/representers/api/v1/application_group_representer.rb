@@ -4,6 +4,7 @@ module Api::V1
 
     property :id, 
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
@@ -13,6 +14,7 @@ module Api::V1
     property :group,
              class: Group,
              decorator: GroupRepresenter,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
@@ -21,6 +23,7 @@ module Api::V1
 
     property :unread_updates,
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,

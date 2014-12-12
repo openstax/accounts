@@ -4,6 +4,8 @@ module Api::V1
 
     property :user_id,
              type: Integer,
+             readable: true,
+             writeable: true,
              schema_info: {
                required: true,
                description: "The owner user's ID"
@@ -12,6 +14,7 @@ module Api::V1
     property :group,
              class: Group,
              decorator: GroupRepresenter,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
