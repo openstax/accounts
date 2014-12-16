@@ -1,8 +1,8 @@
 <%
+  num_users = @handler_result.outputs[:total_count]
   page = @handler_result.outputs[:page]
-  num_users = @handler_result.outputs[:num_matching_users]
   per_page = @handler_result.outputs[:per_page]
-  pages = (num_users * 1.0 / per_page).ceil 
+  pages = (num_users * 1.0 / per_page).ceil
 %>
 
 <div id='search-results-pagination'>

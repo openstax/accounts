@@ -53,29 +53,13 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       expect(response.code).to eq('200')
 
       expected_response = {
-        num_matching_users: 1,
-        page: 0,
-        per_page: 20,
-        order_by: 'username ASC',
-        users: [
+        total_count: 1,
+        items: [
           {
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
             last_name: user_2.last_name
-          }
-        ],
-        application_users: [
-          {
-            id: user_2.application_users.first.id,
-            application_id: untrusted_application.id,
-            user: {
-              id: user_2.id,
-              username: user_2.username,
-              first_name: user_2.first_name,
-              last_name: user_2.last_name
-            },
-            unread_updates: 1
           }
         ]
       }.to_json
@@ -89,10 +73,10 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       outcome = JSON.parse(response.body)
 
-      expect(outcome["num_matching_users"]).to eq 46
-      expect(outcome["application_users"].length).to eq 10
-      expect(outcome["application_users"][0]["user"]["username"]).to eq "billy_10"
-      expect(outcome["application_users"][9]["user"]["username"]).to eq "billy_19"
+      expect(outcome["total_count"]).to eq 46
+      expect(outcome["items"].length).to eq 10
+      expect(outcome["items"][0]["username"]).to eq "billy_10"
+      expect(outcome["items"][9]["username"]).to eq "billy_19"
     end
 
     it "should return the incomplete 5th page when requested" do
@@ -101,10 +85,10 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       outcome = JSON.parse(response.body)
 
-      expect(outcome["num_matching_users"]).to eq 46
-      expect(outcome["application_users"].length).to eq 6
-      expect(outcome["application_users"][0]["user"]["username"]).to eq "billy_40"
-      expect(outcome["application_users"][5]["user"]["username"]).to eq "billy_45"
+      expect(outcome["total_count"]).to eq 46
+      expect(outcome["items"].length).to eq 6
+      expect(outcome["items"][0]["username"]).to eq "billy_40"
+      expect(outcome["items"][5]["username"]).to eq "billy_45"
     end
 
     it "should allow sort by multiple fields in different directions" do
@@ -113,16 +97,15 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       outcome = JSON.parse(response.body)
 
-      expect(outcome["users"].length).to eq 3
-      expect(outcome["users"][0]["username"]).to eq "foo_bj"
-      expect(outcome["users"][1]["username"]).to eq "foo_bb"
-      expect(outcome["users"][2]["username"]).to eq "foo_tj"
+      expect(outcome["items"].length).to eq 3
+      expect(outcome["items"][0]["username"]).to eq "foo_bj"
+      expect(outcome["items"][1]["username"]).to eq "foo_bb"
+      expect(outcome["items"][2]["username"]).to eq "foo_tj"
 
-      expect(outcome["application_users"].length).to eq 3
-      expect(outcome["application_users"][0]["user"]["username"]).to eq "foo_bj"
-      expect(outcome["application_users"][1]["user"]["username"]).to eq "foo_bb"
-      expect(outcome["application_users"][2]["user"]["username"]).to eq "foo_tj"
-      expect(outcome["order_by"]).to eq "first_name ASC, last_name DESC"
+      expect(outcome["items"].length).to eq 3
+      expect(outcome["items"][0]["username"]).to eq "foo_bj"
+      expect(outcome["items"][1]["username"]).to eq "foo_bb"
+      expect(outcome["items"][2]["username"]).to eq "foo_tj"
     end
 
     it "should return only users that use an app" do
@@ -130,12 +113,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       expect(response.code).to eq('200')
 
       expected_response = {
-        num_matching_users: 0,
-        page: 0,
-        per_page: 20,
-        order_by: 'username ASC',
-        users: [],
-        application_users: []
+        total_count: 0,
+        items: []
       }.to_json
 
       expect(response.body).to eq(expected_response)
@@ -148,29 +127,13 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       expect(response.code).to eq('200')
 
       expected_response = {
-        num_matching_users: 1,
-        page: 0,
-        per_page: 20,
-        order_by: 'username ASC',
-        users: [
+        total_count: 1,
+        items: [
           {
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
             last_name: user_2.last_name
-          }
-        ],
-        application_users: [
-          {
-            id: trusted_app_user.id,
-            application_id: trusted_application.id,
-            user: {
-              id: user_2.id,
-              username: user_2.username,
-              first_name: user_2.first_name,
-              last_name: user_2.last_name
-            },
-            unread_updates: 1
           }
         ]
       }.to_json
@@ -207,7 +170,6 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       expected_response = [{
         id: app_user.id,
-        application_id: untrusted_application.id,
         user: {
           id: user_2.id,
           username: user_2.username,
@@ -232,7 +194,6 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       expected_response = [{
         id: app_user.id,
-        application_id: untrusted_application.id,
         user: {
           id: user_2.id,
           username: user_2.username,
@@ -251,7 +212,6 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
       expected_response = [{
         id: app_user.id,
-        application_id: untrusted_application.id,
         user: {
           id: user_2.id,
           username: user_2.username,

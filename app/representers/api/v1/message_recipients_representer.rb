@@ -3,30 +3,33 @@ module Api::V1
     include Representable::JSON::Hash
 
       property :literals,
-               writeable: true,
                type: Array,
+               readable: true,
+               writeable: true,
                schema_info: {
-                 description: "A literal address string",
+                 description: "An array of literal address string",
                  items: {
                   type: "string"
                  }
                }
 
       property :user_ids,
-               writeable: true,
                type: Array,
+               readable: true,
+               writeable: true,
                schema_info: {
-                 description: "A user ID",
+                 description: "An array of user ID's",
                  items: {
                   type: "integer"
                  }
                }
 
       property :group_ids,
-               writeable: true,
                type: Array,
+               readable: true,
+               writeable: true,
                schema_info: {
-                 description: "A group ID",
+                 description: "An array of group ID's",
                  items: {
                   type: "integer"
                  }

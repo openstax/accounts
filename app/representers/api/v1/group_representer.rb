@@ -4,6 +4,7 @@ module Api::V1
 
     property :id, 
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true
@@ -11,12 +12,16 @@ module Api::V1
 
     property :name,
              type: String,
+             readable: true,
+             writeable: true,
              schema_info: {
                required: true,
                description: "The group's name"
              }
 
     property :is_public,
+             readable: true,
+             writeable: true,
              schema_info: {
                type: "boolean",
                description: "The group's visibility setting"
@@ -26,6 +31,7 @@ module Api::V1
                as: :owners,
                class: GroupOwner,
                decorator: GroupUserRepresenter,
+               readable: true,
                writeable: false,
                schema_info: { description: "The owners of this group" }
 
@@ -33,6 +39,7 @@ module Api::V1
                as: :members,
                class: GroupMember,
                decorator: GroupUserRepresenter,
+               readable: true,
                writeable: false,
                schema_info: { description: "The direct members of this group" }
 
@@ -40,11 +47,14 @@ module Api::V1
                as: :nestings,
                class: GroupNesting,
                decorator: GroupNestingRepresenter,
+               readable: true,
                writeable: false,
                schema_info: { description: "The groups directly nested within this group" }
 
     property :supertree_group_ids,
              type: Array,
+             readable: true,
+             writeable: false,
              schema_info: {
                items: "integer",
                description: "The ID's of all groups that should be updated if this group is changed; For caching purposes"
@@ -52,6 +62,8 @@ module Api::V1
 
     property :subtree_group_ids,
              type: Array,
+             readable: true,
+             writeable: false,
              schema_info: {
                items: "integer",
                description: "The ID's of all groups nested in this group's subtree, including this one; For caching purposes"
@@ -59,6 +71,7 @@ module Api::V1
 
     property :subtree_member_ids,
              type: Array,
+             readable: true,
              writeable: false,
              schema_info: {
                items: "integer",

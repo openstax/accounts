@@ -23,8 +23,7 @@ class SearchApplicationUsers
   lev_routine transaction: :no_transaction
 
   uses_routine ::SearchUsers,
-               as: :search_users,
-               translations: { outputs: {type: :verbatim} }
+               as: :search_users
 
   protected
 
@@ -32,24 +31,18 @@ class SearchApplicationUsers
     return if application.nil?
 
     options = options.merge({:return_all => true})
-    run(:search_users, query, options)
+    users = run(:search_users, query, options).outputs[:items]
 
     per_page = Integer(options[:per_page]) rescue 20
     page = Integer(options[:page]) rescue 0
 
-    users = outputs[:users].includes(:application_users)
-                           .joins(:application_users)
-                           .where(:application_users => {
-                                    :application_id => application.id})
-    num_matching_users = users.count
-    users = users.limit(per_page).offset(per_page*page).to_a
-    application_users = users.collect{|u| u.application_users}.flatten
+    users = users.includes(:application_users)
+                 .joins(:application_users)
+                 .where(:application_users => {
+                          :application_id => application.id})
+    users = users.limit(per_page).offset(per_page*page)
 
-    outputs[:num_matching_users] = num_matching_users
-    outputs[:per_page] = per_page
-    outputs[:page] = page
-    outputs[:users] = users
-    outputs[:application_users] = application_users
+    outputs[:items] = users
   end
 
 end

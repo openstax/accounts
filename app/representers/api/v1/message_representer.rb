@@ -4,6 +4,7 @@ module Api::V1
 
     property :id, 
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
@@ -12,6 +13,7 @@ module Api::V1
 
     property :application_id,
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
@@ -20,12 +22,14 @@ module Api::V1
 
     property :user_id,
              type: Integer,
+             readable: true,
              writeable: true,
              schema_info: {
                description: "If set, this message is on behalf of the user with the given ID; Otherwise, it is on behalf of the application"
              }
 
     property :send_externally_now,
+             readable: true,
              writeable: true,
              schema_info: {
                type: "boolean",
@@ -34,6 +38,7 @@ module Api::V1
 
     property :to,
              decorator: MessageRecipientsRepresenter,
+             readable: true,
              writeable: true,
              schema_info: {
                required: true,
@@ -43,6 +48,7 @@ module Api::V1
 
     property :cc,
              decorator: MessageRecipientsRepresenter,
+             readable: true,
              writeable: true,
              schema_info: {
                description: "The Message's 'cc' field"
@@ -50,6 +56,7 @@ module Api::V1
 
     property :bcc,
              decorator: MessageRecipientsRepresenter,
+             readable: true,
              writeable: true,
              schema_info: {
                description: "The Message's 'bcc' field"
@@ -57,6 +64,7 @@ module Api::V1
 
     property :subject,
              type: String,
+             readable: true,
              writeable: true,
              schema_info: {
                required: true,
@@ -65,6 +73,7 @@ module Api::V1
 
     property :subject_prefix,
              type: String,
+             readable: true,
              writeable: true,
              schema_info: {
                description: "This string is prepended to the subject to form the message's subject field; the prefix is configured in Accounts, so it should only be specified manually if you need to override it for a particular message"
@@ -73,6 +82,7 @@ module Api::V1
     property :body,
              class: MessageBody,
              decorator: MessageBodyRepresenter,
+             readable: true,
              writeable: true,
              schema_info: {
                required: true,

@@ -4,28 +4,35 @@ module Api::V1
 
     property :id, 
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true
              }
 
     property :username,
-             type: String
+             type: String,
+             readable: true,
+             writeable: true
 
     property :first_name,
              type: String,
+             readable: true,
              writeable: true
 
     property :last_name,
              type: String,
+             readable: true,
              writeable: true
 
     property :full_name,
              type: String,
+             readable: true,
              writeable: true
 
     property :title,
-             type: String, 
+             type: String,
+             readable: true,
              writeable: true
 
   end

@@ -30,7 +30,7 @@ gem 'jbuilder'
 
 gem 'delayed_job_active_record'
 
-gem 'representable', '~> 1.8.2'
+gem 'representable', '~> 2.1.3'
 gem 'roar-rails'
 
 gem 'exception_notification'
@@ -40,6 +40,8 @@ gem "keyword_search", '~> 1.5.0'
 gem 'fine_print', '~> 1.4.1'
 
 gem 'action_interceptor', '~> 0.5.1'
+
+gem 'schema_plus', '~> 1.7.1'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'

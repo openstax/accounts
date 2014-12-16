@@ -132,23 +132,18 @@ class SearchUsers
       users = users.order("users.#{order_by}")
     end
 
-    # Translate to routine outputs
-
-    outputs[:query] = query
-    outputs[:order_by] = order_bys.join(', ') # convert back to one string
-
     if options[:return_all]
-      outputs[:users] = users
+      outputs[:items] = users
       return
     end
 
     # Count results
 
-    outputs[:num_matching_users] = users.count
+    outputs[:total_count] = users.count
 
     # Return no results if maximum number of results is exceeded
 
-    outputs[:users] = (outputs[:num_matching_users] > MAX_MATCHING_USERS) ?
+    outputs[:items] = (outputs[:total_count] > MAX_MATCHING_USERS) ?
                         User.none : users
 
   end

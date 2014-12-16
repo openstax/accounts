@@ -4,23 +4,17 @@ module Api::V1
 
     property :id, 
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
                description: "The primary key of this ApplicationGroup"
              }
 
-    property :application_id,
-             type: Integer,
-             writeable: false,
-             schema_info: {
-               required: true,
-               description: "The id of the Application associated with this ApplicationGroup"
-             }
-
     property :group,
              class: Group,
              decorator: GroupRepresenter,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
@@ -29,6 +23,7 @@ module Api::V1
 
     property :unread_updates,
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,

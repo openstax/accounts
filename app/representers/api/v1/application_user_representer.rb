@@ -4,23 +4,17 @@ module Api::V1
 
     property :id, 
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
                description: "The primary key of this ApplicationUser"
              }
 
-    property :application_id,
-             type: Integer,
-             writeable: false,
-             schema_info: {
-               required: true,
-               description: "The id of the Application associated with this ApplicationUser"
-             }
-
     property :user,
              class: User,
              decorator: UserRepresenter,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
@@ -29,6 +23,7 @@ module Api::V1
 
     property :unread_updates,
              type: Integer,
+             readable: true,
              writeable: false,
              schema_info: {
                required: true,
@@ -37,6 +32,7 @@ module Api::V1
 
     property :default_contact_info_id,
              type: Integer,
+             readable: true,
              writeable: true,
              schema_info: {
                required: true,

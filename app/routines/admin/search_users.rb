@@ -39,11 +39,9 @@ module Admin
       per_page = options[:per_page] || 20
       page = options[:page] || 0
 
-      users = outputs[:users]
-      outputs[:num_matching_users] = users.count
-      outputs[:per_page] = per_page
-      outputs[:page] = page
-      outputs[:users] = users.limit(per_page).offset(per_page*page)
+      users = outputs[:items]
+      outputs[:total_count] = users.count
+      outputs[:items] = users.limit(per_page).offset(per_page*page)
     end
 
   end

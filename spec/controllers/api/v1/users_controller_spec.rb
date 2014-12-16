@@ -50,9 +50,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       expect(response.code).to eq('200')
 
       expected_response = {
-        num_matching_users: 1,
-        order_by: 'username ASC',
-        users: [
+        total_count: 1,
+        items: [
           {
             id: user_2.id,
             username: user_2.username,
@@ -70,11 +69,10 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
       outcome = JSON.parse(response.body)
 
-      expect(outcome["users"].length).to eq 3
-      expect(outcome["users"][0]["username"]).to eq "foo_bj"
-      expect(outcome["users"][1]["username"]).to eq "foo_bb"
-      expect(outcome["users"][2]["username"]).to eq "foo_tj"
-      expect(outcome["order_by"]).to eq "first_name ASC, last_name DESC"
+      expect(outcome["items"].length).to eq 3
+      expect(outcome["items"][0]["username"]).to eq "foo_bj"
+      expect(outcome["items"][1]["username"]).to eq "foo_bb"
+      expect(outcome["items"][2]["username"]).to eq "foo_tj"
     end
 
     it "should return no results if the maximum number of results is exceeded" do
@@ -83,8 +81,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
       outcome = JSON.parse(response.body)
 
-      expect(outcome["users"].length).to eq 0
-      expect(outcome["num_matching_users"]).not_to eq 0
+      expect(outcome["items"].length).to eq 0
+      expect(outcome["total_count"]).not_to eq 0
     end
 
   end
