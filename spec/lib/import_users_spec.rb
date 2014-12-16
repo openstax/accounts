@@ -68,7 +68,7 @@ describe ImportUsers do
     expect(result[2]['row_number']).to eq('3')
     expect(result[2]['old_username']).to be_empty
     expect(result[2]['new_username']).to be_empty
-    expect(result[2]['errors']).to include('Username is invalid')
+    expect(result[2]['errors']).not_to be_empty
   end
 
   it 'creates users from a csv file and links them to an application' do

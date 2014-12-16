@@ -243,6 +243,7 @@ ActiveRecord::Schema.define(:version => 20141212204821) do
     t.index ["full_name"], :name => "index_users_on_full_name"
     t.index ["last_name"], :name => "index_users_on_last_name"
     t.index ["username"], :name => "index_users_on_username", :unique => true
+    t.index ["username"], :name => "index_users_on_username_case_insensitive"
     t.index ["uuid"], :name => "index_users_on_uuid", :unique => true
   end
 

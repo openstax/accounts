@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
                        uniqueness: { case_sensitive: false },
                        length: {minimum: 3, maximum: USERNAME_MAX_LENGTH}, 
                        format: { with: /^[A-Za-z\d_]+$/ }
+  validates :username, uniqueness: true, on: :create
 
   delegate_to_routine :destroy
 

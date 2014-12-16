@@ -48,7 +48,7 @@ class ImportUsers
     @user.first_name = first_name
     @user.last_name = last_name
     @user.full_name = full_name
-    @user.save!
+    @user.save!(:validate => false)
 
     identity = @user.build_identity
     # Import password hash
