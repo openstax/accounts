@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
 
   has_many :oauth_applications, through: :member_groups
 
-  before_validation :normalize_username
+  before_validation :sanitize_username
 
   validates :username, presence: true, 
                        uniqueness: { case_sensitive: false },
@@ -113,8 +113,8 @@ class User < ActiveRecord::Base
 
 protected
 
-  def normalize_username
-    self.username = username.gsub(USERNAME_DISCARDED_CHAR_REGEX, '').downcase
+  def sanitize_username
+    self.username = username.gsub(USERNAME_DISCARDED_CHAR_REGEX, '')
   end
 
   def generate_uuid
