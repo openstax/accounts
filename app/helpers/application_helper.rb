@@ -1,5 +1,7 @@
 module ApplicationHelper
 
+  include AlertHelper
+
   def unless_errors(options={}, &block)
     errors = @handler_result.errors.each do |error|
       add_local_error_alert now: true, content: error.translate

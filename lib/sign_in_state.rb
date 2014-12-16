@@ -42,14 +42,14 @@ module SignInState
 
   def authenticate_user!
     with_interceptor do
-      redirect_to login_path(params.slice(:client_id)),
+      redirect_to main_app.login_path(params.slice(:client_id)),
                   notice: "Please log in." unless signed_in?
     end
   end
 
   def authenticate_admin!
     with_interceptor do
-      redirect_to login_path(params.slice(:client_id)),
+      redirect_to main_app.login_path(params.slice(:client_id)),
                   notice: "Please log in." unless current_user.is_administrator?
     end
   end

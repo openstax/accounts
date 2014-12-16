@@ -5,7 +5,7 @@ class MarkdownWrapper
     Maruku.new(fix_indent(text)).to_html
   end
 
-protected
+  protected
 
   # Removes all leading whitespace until it finds
   # the first line with no leading whitespace

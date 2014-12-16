@@ -67,16 +67,5 @@ module Accounts
 
     # Suppress a warning
     config.i18n.enforce_available_locales = true
-
-    config.after_initialize do
-      require 'doorkeeper_extensions'
-    end
-
-    config.to_prepare do
-      Doorkeeper::ApplicationController.layout "application_body_only"
-      Doorkeeper::ApplicationController.helper_method :current_user,
-        :current_user=, :signed_in?, :sign_in, :sign_out!
-      Apipie::ApipiesController.helper_method :current_user, :current_user=, :signed_in?, :sign_in, :sign_out!
-    end
   end
 end

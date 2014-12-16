@@ -1,5 +1,4 @@
-require 'doorkeeper/models/application'
-require 'doorkeeper/models/access_token'
+require_relative 'doorkeeper'
 
 Doorkeeper::Application.class_eval do
   attr_accessible :trusted, :email_from_address, :email_subject_prefix
@@ -25,5 +24,3 @@ Doorkeeper::AccessToken.class_eval do
     FindOrCreateApplicationUser.call(application_id, resource_owner_id)
   end
 end
-
-OSU::AccessPolicy.register(Doorkeeper::Application, Doorkeeper::ApplicationAccessPolicy)

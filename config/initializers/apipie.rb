@@ -1,5 +1,3 @@
-require 'markdown_wrapper'
-
 Apipie.configure do |config|
   config.app_name                = "#{SITE_NAME} API"
   config.api_base_url            = "/api"

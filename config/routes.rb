@@ -51,7 +51,6 @@ Accounts::Application.routes.draw do
   end
 
   scope controller: 'static_pages' do
-    get 'api'
     get 'copyright'
     get 'status'
   end

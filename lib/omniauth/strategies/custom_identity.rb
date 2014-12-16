@@ -1,3 +1,5 @@
+require 'sign_in_state'
+
 module OmniAuth
   module Strategies
     # This class is a tweaked version of the OmniAuth-Identity strategy
