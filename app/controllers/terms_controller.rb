@@ -4,7 +4,7 @@ class TermsController < ApplicationController
   skip_interceptor :registration, only: [:index, :show]
 
   fine_print_skip_signatures :general_terms_of_use,
-                             :privacy_policy, only: [:index, :show]
+                             :privacy_policy
 
   before_filter :get_contract, only: [:show]
 
