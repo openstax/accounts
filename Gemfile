@@ -64,7 +64,7 @@ end
 group :production do
   gem 'pg'
   gem 'unicorn'
-  gem 'lograge', :git => 'https://github.com/jpslav/lograge.git' # 'git@github.com:jpslav/lograge.git'
+  gem 'lograge'
 end
 
 gem "codeclimate-test-reporter", group: :test, require: nil
