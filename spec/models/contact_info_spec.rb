@@ -3,10 +3,24 @@ require 'spec_helper'
 describe ContactInfo do
 
   context 'validation' do
-    it 'does not accept empty value' do
-      info = ContactInfo.create
+    it 'does not accept empty value or type' do
+      info = ContactInfo.new
       expect(info).not_to be_valid
       expect(info.errors.messages[:value]).to eq(["can't be blank"])
+      expect(info.errors.messages[:type]).to eq(
+        ["can't be blank", "is not included in the list"])
+    end
+
+    it 'does not accept invalid types' do
+      info = ContactInfo.new(type: 'User')
+      expect(info).not_to be_valid
+      expect(info.errors.messages[:type]).to eq(
+        ["is not included in the list"])
+    end
+
+    it 'defaults to not searchable' do
+      info = ContactInfo.new(type: 'EmailAddress', value: 'my@email.com')
+      expect(info.is_searchable).to eq false
     end
   end
 

@@ -172,7 +172,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                              id: user_2.contact_infos.first.id,
                              value: "howdy@doody.com"
                            }
-                         ]                         
+                         ]
                        }
       expect(response.code).to eq('204')
       user_2.reload

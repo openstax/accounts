@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140811202025) do
+ActiveRecord::Schema.define(:version => 20141112205405) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(:version => 20140811202025) do
     t.datetime "created_at",                              :null => false
     t.datetime "updated_at",                              :null => false
     t.datetime "confirmation_sent_at"
+    t.boolean  "is_searchable",        :default => false
   end
 
   add_index "contact_infos", ["confirmation_code"], :name => "index_contact_infos_on_confirmation_code", :unique => true

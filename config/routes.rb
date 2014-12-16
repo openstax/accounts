@@ -34,7 +34,10 @@ Accounts::Application.routes.draw do
   end
 
   resources :contact_infos, only: [:create, :destroy] do
-    put 'resend_confirmation', on: :member
+    member do
+      put 'toggle_is_searchable'
+      put 'resend_confirmation'
+    end
   end
   scope controller: 'contact_infos' do
     get 'confirm'
