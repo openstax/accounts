@@ -26,20 +26,23 @@ describe CreateUserFromOmniauth do
       auth = {
         provider: 'facebook',
         info: {
-          nickname: nickname,
+          nickname: nil,
+          name: "Billy O\'Connor"
         },
       }
 
       expect_any_instance_of(CreateUserFromOmniauth).to receive(:run) do |create_user, args|
         @normalized_nickname = args.delete(:username)
         expect(create_user).to eq(CreateUser)
-        expect(args).to eq({ first_name: nil, last_name: nil, full_name: nil, ensure_no_errors: true })
+        expect(args).to eq({ first_name: nil, last_name: nil, full_name: "Billy O\'Connor", ensure_no_errors: true })
       end
 
       CreateUserFromOmniauth.call(auth)
       user = User.new
       user.username = @normalized_nickname
       expect(user).to be_valid
+
+      expect(@normalized_nickname).to eq "billyoconnor"
     end
   end
 
