@@ -29,7 +29,7 @@ end
 def create_nonlocal_user(username, provider='facebook')
   auth_data = 
     case provider
-    when 'facebook' then {info: {nickname: username}, provider: 'facebook'}
+    when 'facebook' then {info: {name: username}, provider: 'facebook'}  # FB dropped nickname
     when 'google' then {info: {nickname: username}, provider: 'google'}
     when 'twitter' then {info: {nickname: username}, provider: 'twitter'}
     end
