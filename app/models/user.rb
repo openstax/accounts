@@ -26,11 +26,13 @@ class User < ActiveRecord::Base
 
   before_validation :sanitize_username
 
-  validates :username, presence: true, 
-                       uniqueness: { case_sensitive: false },
-                       length: {minimum: 3, maximum: USERNAME_MAX_LENGTH}, 
+  validates :username, presence: true,
+                       uniqueness: { case_sensitive: true },
+                       length: {minimum: 3, maximum: USERNAME_MAX_LENGTH},
                        format: { with: /^[A-Za-z\d_]+$/ }
-  validates :username, uniqueness: true, on: :create
+
+  validates :username, uniqueness: { case_sensitive: false },
+                       if: :username_changed?
 
   delegate_to_routine :destroy
 
@@ -111,7 +113,7 @@ class User < ActiveRecord::Base
     resource.can_be_sorted_by?(self)
   end
 
-protected
+  protected
 
   def sanitize_username
     self.username = username.gsub(USERNAME_DISCARDED_CHAR_REGEX, '')
