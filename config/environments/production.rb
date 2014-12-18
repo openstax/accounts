@@ -52,7 +52,7 @@ Accounts::Application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.delivery_method = :ses
-  config.action_mailer.default_url_options = { :protocol => 'https', :host => 'accounts.openstax.org' }
+  config.action_mailer.default_url_options = { :protocol => 'https', :host => DEPLOY_SETTINGS[:host] }
 
   # Enable threaded mode
   # config.threadsafe!
@@ -72,7 +72,7 @@ Accounts::Application.configure do
     :email => {
       :email_prefix => "[Accounts Exception] ",
       :sender_address => %{"OpenStax Accounts" <noreply@openstax.org>},
-      :exception_recipients => %w{dev@accounts.openstax.org}
+      :exception_recipients => DEPLOY_SETTINGS[:exception_recipients].split(/\s+/)
     }
 
   # Lograge configuration (one-line logs in production)

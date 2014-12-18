@@ -43,6 +43,8 @@ gem 'action_interceptor', '~> 0.5.1'
 
 gem 'schema_plus', '~> 1.7.1'
 
+gem 'aws-ses', '~> 0.6.0', :require => 'aws/ses'
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.1'
@@ -67,7 +69,6 @@ group :production do
   gem 'pg'
   gem 'unicorn'
   gem 'lograge'
-  gem 'aws-ses', '~> 0.6.0', :require => 'aws/ses'
 end
 
 gem "codeclimate-test-reporter", group: :test, require: nil
