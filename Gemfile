@@ -67,6 +67,7 @@ group :production do
   gem 'pg'
   gem 'unicorn'
   gem 'lograge'
+  gem 'aws-ses', '~> 0.6.0', :require => 'aws/ses'
 end
 
 gem "codeclimate-test-reporter", group: :test, require: nil
