@@ -2,7 +2,7 @@
 require File.expand_path('../application', __FILE__)
 
 require "sign_in_state"
-require "secret_settings"
+require "settings"
 require "extend_builtins"
 require "omniauth/strategies/custom_identity"
 
