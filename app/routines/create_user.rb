@@ -8,6 +8,8 @@
 #
 class CreateUser
 
+  ATTEMPTS = 10
+
   lev_routine
 
   protected
@@ -16,8 +18,9 @@ class CreateUser
     username = inputs[:username]
 
     if username.nil? || inputs[:ensure_no_errors]
-      loop do 
-        break if !username.nil? && User.where(username: username).none?
+      # If the number of attempts is exceeded, the user creation will fail
+      for i in 1..ATTEMPTS do
+        break if !username.blank? && User.where(username: username).none?
         username = "#{inputs[:username] || 'user'}#{rand(1000000)}"
       end
     end
