@@ -10,12 +10,12 @@
 
     <div id="top-nav-account">
       <% if signed_in? %>
-        Welcome, <%= current_user.username %>&nbsp;&nbsp;&nbsp;<%= link_to 'Sign out', logout_path %>
+        Welcome, <%= current_user.username %>&nbsp;&nbsp;&nbsp;<%= link_to 'Sign out', main_app.logout_path %>
       <% else %>
         <% unless session[:from_cnx] %>
-          <%= link_to 'Sign up', signup_path %> or
+          <%= link_to 'Sign up', main_app.signup_path %> or
         <% end %>
-          <%= link_to "Sign in", login_path %>
+          <%= link_to "Sign in", main_app.login_path %>
       <% end %>
     </div>
 
@@ -33,7 +33,7 @@
           <%= render "layouts/application_top_nav_link", 
                      target_text:            "API",
                      target_id:              "top-nav-api-link",
-                     target_path:            api_path,
+                     target_path:            main_app.api_path,
                      target_current_symbol:  :top_nav_api_current %>
         </li>
         <li>

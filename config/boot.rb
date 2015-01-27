@@ -8,6 +8,7 @@ require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
 require 'rails/commands/server'
 
 DEV_PORT = 2999
+DEV_HOST = "localhost:#{DEV_PORT}"
 
 module Rails
   class Server
