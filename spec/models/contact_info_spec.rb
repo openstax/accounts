@@ -40,28 +40,21 @@ describe ContactInfo do
   end
 
   context 'user emails' do
-    let!(:user1) { FactoryGirl.create(:user_with_emails, emails_count: 2) }
-    let!(:user2) { FactoryGirl.create(:user_with_emails, emails_count: 2) }
 
-    it "finds one user when there is one match" do
-      users = EmailAddress.where(:value => user1.contact_infos.first.value)
-                          .with_users.collect{|e| e.user}
-      expect(users.first).to eq user1
+    let!(:email1) { FactoryGirl.build(:email_address,
+                                      value: 'my@email.com') }
+    let!(:email2) { FactoryGirl.build(:email_address,
+                                      value: 'my@email.com') }
+
+    it 'does not allow the same user to have a repeated email address' do
+      email1.save!
+      expect(email2).to be_valid
+
+      email2.user = email1.user
+      expect(email2).not_to be_valid
+      expect(email2.errors.types[:value]).to include(:taken)
     end
 
-    it "finds two user when there are two matches" do
-      users = EmailAddress.where(:value => [user1, user2].collect{
-                                             |u| u.contact_infos.first.value})
-                          .with_users.collect{|e| e.user}
-      expect(users).to include user1
-      expect(users).to include user2
-    end
-
-    it "finds nothing when there isn't a match" do
-      users = EmailAddress.where(:value => ['no@match.com'])
-                          .with_users.collect{|e| e.user}
-      expect(users).to eq []
-    end
   end
 
 end
