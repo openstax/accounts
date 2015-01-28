@@ -49,7 +49,7 @@ describe ImportUsers do
     expect(user1.casual_name).to eq('User')
     expect(user1.name).to eq('Dr User One')
     expect(user1.identity.authenticate('password')).to be_true
-    expect(user1.identity.should_reset_password?).to be_true
+    expect(user1.identity.password_expired?).to be_true
     expect(user1.contact_infos.email_addresses.length).to eq(1)
     email = user1.contact_infos.email_addresses[0]
     expect(email.value).to eq('user1@example.com')

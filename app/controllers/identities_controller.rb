@@ -39,13 +39,13 @@ class IdentitiesController < ApplicationController
   end
 
   def reset_password
-    if !current_user.is_anonymous? && current_user.identity.should_reset_password?
+    if !current_user.is_anonymous? && current_user.identity.password_expired?
       flash[:alert] = 'Your password has expired. Please enter a new password.'
     end
     handle_with(IdentitiesResetPassword,
                 success: lambda {
                   return if !request.post?
-                  sign_in @handler_result.outputs[:identity].user
+                  sign_in! @handler_result.outputs[:identity].user
                   redirect_back notice: 'Your password has been reset successfully! You have been signed in automatically.'
                 },
                 failure: lambda {

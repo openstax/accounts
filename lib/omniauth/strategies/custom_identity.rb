@@ -23,7 +23,7 @@ module OmniAuth
       option :locate_conditions, lambda { |req|
         auth_key = req.params['auth_key']
         user = User.where(username: auth_key).first ||
-               EmailAddress.where(value: auth_key).first.try(:user)
+               ContactInfo.where(value: auth_key).first.try(:user)
         {user_id: (user.nil? ? nil : user.id)}
       }
       option :name, "identity"

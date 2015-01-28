@@ -7,7 +7,7 @@
 #        :uid --> the ID of the user from the Oauth provider
 #
 #   2) a 'user_state' object which has the following methods:
-#        sign_in(user)
+#        sign_in!(user)
 #        sign_out!
 #        signed_in?
 #        current_user
@@ -23,14 +23,14 @@ class SessionsCallback
   lev_handler
 
   uses_routine TransferAuthentications
-  uses_routine CreateUserFromOmniauth
+  uses_routine CreateUserFromOmniauthData
+  uses_routine AddEmailFromOmniauthData
   uses_routine DestroyUser
-  uses_routine TransferOmniauthInformation
 
   protected
 
   def setup
-    @auth_data = request.env['omniauth.auth']
+    @data = OmniauthData.new(request.env['omniauth.auth'])
     @user_state = options[:user_state]
   end
 
@@ -39,11 +39,11 @@ class SessionsCallback
   end
 
   def handle
-    # Get an authentication object for the incoming data, tracking if we have
+    # Get an authentication object for the incoming data, tracking if
     # the object didn't yet exist and we had to create it.
 
-    authentication_data = { provider: @auth_data[:provider],
-                            uid: @auth_data[:uid]}
+    authentication_data = { provider: @data.provider,
+                            uid: @data.uid }
     authentication = Authentication.where(authentication_data).first
 
     this_authentication_is_new = authentication.nil?
@@ -58,8 +58,8 @@ class SessionsCallback
       #   true for Google (omniauth strategy checks that the emails are verified)
       #   true for FB (their API only returns verified emails)
       #   true for Twitter (they don't return any emails)
-      matching_users = EmailAddress.verified.where(:value => @auth_data[:emails])
-                                   .with_users.collect{|e| e.user}
+      matching_users = EmailAddress.where(:value => @data.email)
+                                   .verified.with_users.collect{|e| e.user}
 
       case matching_users.size
       when 0
@@ -92,7 +92,7 @@ class SessionsCallback
           end
         end
       else
-        sign_in(authentication_user)
+        sign_in!(authentication_user)
         status = (authentication_user.is_temp ? :new_user : :returning_user)
       end
       
@@ -102,24 +102,24 @@ class SessionsCallback
         run(TransferAuthentications, authentication, current_user)
         status = (current_user.is_temp ? :new_user : :returning_user)
       else
-        outcome = run(CreateUserFromOmniauth, @auth_data)
+        outcome = run(CreateUserFromOmniauthData, @data)
         new_user = outcome.outputs[:user]
         run(TransferAuthentications, authentication, new_user)
-        sign_in(new_user)
+        sign_in!(new_user)
         status = :new_user
       end
 
     end
 
     if this_authentication_is_new
-      run(TransferOmniauthInformation, @auth_data, current_user)
+      run(AddEmailFromOmniauthData, @data, current_user)
     end
 
     outputs[:status] = status
 
   end
 
-protected
+  protected
 
   def current_user
     @user_state.current_user
@@ -129,8 +129,8 @@ protected
     @user_state.signed_in?
   end
 
-  def sign_in(user)
-    @user_state.sign_in(user)
+  def sign_in!(user)
+    @user_state.sign_in!(user)
   end
 
   def sign_out!
@@ -147,7 +147,7 @@ protected
     end
     if current_user != living_user
       sign_out!
-      sign_in(living_user)
+      sign_in!(living_user)
     end
   end
 

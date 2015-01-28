@@ -7,7 +7,7 @@ describe ContactInfosController do
 
   context 'POST create' do
     it 'creates a new ContactInfo' do
-      controller.sign_in user
+      controller.sign_in! user
       expect { post 'create',
                contact_info: contact_info.attributes }.to(
         change{ContactInfo.count}.by(1))
@@ -18,7 +18,7 @@ describe ContactInfosController do
   context 'PUT toggle_is_searchable' do
     it 'toggles is_searchable' do
       contact_info.save!
-      controller.sign_in user
+      controller.sign_in! user
       expect(contact_info.is_searchable).to eq true
 
       put 'toggle_is_searchable', id: contact_info.id
@@ -34,7 +34,7 @@ describe ContactInfosController do
   context 'DELETE destroy' do
     it "deletes the given ContactInfo" do
       contact_info.save!
-      controller.sign_in user
+      controller.sign_in! user
       expect { delete 'destroy', id: contact_info.id }.to(
         change{ContactInfo.count}.by(-1))
       expect(response.status).to eq 302

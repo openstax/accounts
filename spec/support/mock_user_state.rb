@@ -1,7 +1,7 @@
 
 class MockUserState
 
-  def sign_in(user)
+  def sign_in!(user)
     self.the_current_user = user
   end
 
@@ -17,7 +17,7 @@ class MockUserState
     self.the_current_user
   end
 
-protected
+  protected
 
   attr_accessor :the_current_user
 

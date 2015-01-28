@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
   validates :username, presence: true,
                        uniqueness: { case_sensitive: true },
                        length: {minimum: 3, maximum: USERNAME_MAX_LENGTH},
-                       format: { with: /^[A-Za-z\d_]+$/ }
+                       format: { with: /\A[A-Za-z\d_]+\z/ }
 
   validates :username, uniqueness: { case_sensitive: false },
                        if: :username_changed?
@@ -117,6 +117,7 @@ class User < ActiveRecord::Base
 
   def sanitize_username
     self.username = username.gsub(USERNAME_DISCARDED_CHAR_REGEX, '')
+                            .slice(0..USERNAME_MAX_LENGTH - 1)
   end
 
   def generate_uuid

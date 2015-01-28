@@ -16,7 +16,7 @@ describe SessionsCallback do
 
       result = SessionsCallback.handle(
         user_state: user_state,
-        request: MockOmniauthRequest.new('identity', identity.user.id, [])
+        request: MockOmniauthRequest.new('identity', identity.user.id, {})
       )
       
       expect(result.outputs[:status]).to eq :new_user
@@ -38,7 +38,9 @@ describe SessionsCallback do
       authentication = FactoryGirl.create(:authentication, user: FactoryGirl.create(:user))
       result = SessionsCallback.handle(
         user_state: user_state,
-        request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
+        request: MockOmniauthRequest.new(authentication.provider,
+                                         authentication.uid,
+                                         {})
       )
       
       expect(result.outputs[:status]).to eq :returning_user
@@ -51,15 +53,18 @@ describe SessionsCallback do
     let(:other_user) { FactoryGirl.create(:user)}
     let(:other_temp_user) { FactoryGirl.create(:temp_user) }
 
-    before { user_state.sign_in(signed_in_user) }
+    before { user_state.sign_in!(signed_in_user) }
 
     context "when auth linked to signed in user" do
-      let(:authentication) { FactoryGirl.create(:authentication, user: signed_in_user) }
+      let(:authentication) { FactoryGirl.create(:authentication,
+                                                user: signed_in_user) }
 
       it "maintains signed in user and returns to app" do
         result = SessionsCallback.handle(
           user_state: user_state,
-          request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
+          request: MockOmniauthRequest.new(authentication.provider,
+                                           authentication.uid,
+                                           {})
         )
 
         expect(result.outputs[:status]).to eq :returning_user
@@ -77,7 +82,9 @@ describe SessionsCallback do
         expect{
           result = SessionsCallback.handle(
             user_state: user_state,
-            request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
+            request: MockOmniauthRequest.new(authentication.provider,
+                                             authentication.uid,
+                                             {})
           )
         }.to change{signed_in_user.authentications.count}.by 1
         expect(result.outputs[:status]).to eq :returning_user
@@ -87,12 +94,15 @@ describe SessionsCallback do
 
     context "when auth linked to a temp user other than that signed in" do
       let(:other_temp_user) { FactoryGirl.create(:temp_user) }
-      let(:authentication) { FactoryGirl.create(:authentication, user: other_temp_user) }
+      let(:authentication) { FactoryGirl.create(:authentication,
+                                                user: other_temp_user) }
 
       it "transfers temp user auths to signed in user, destroys temp user, returns to app" do
         result = SessionsCallback.handle(
           user_state: user_state,
-          request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
+          request: MockOmniauthRequest.new(authentication.provider,
+                                           authentication.uid,
+                                           {})
         )        
         expect(authentication.reload.user).to eq signed_in_user
         expect(result.outputs[:status]).to eq :returning_user
@@ -107,7 +117,9 @@ describe SessionsCallback do
       it "leaves signed in user alone and asks which account to use" do
         result = SessionsCallback.handle(
           user_state: user_state,
-          request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
+          request: MockOmniauthRequest.new(authentication.provider,
+                                           authentication.uid,
+                                           {})
         )
 
         expect(result.outputs[:status]).to eq :multiple_accounts
@@ -123,16 +135,20 @@ describe SessionsCallback do
     let(:other_user) { FactoryGirl.create(:user)}
     let(:other_temp_user) { FactoryGirl.create(:temp_user) }
 
-    before { user_state.sign_in(signed_in_user) }
+    before { user_state.sign_in!(signed_in_user) }
 
     # Readding an existing auth to a temp user
     context "when auth linked to signed in user" do
-      let(:authentication) { FactoryGirl.create(:authentication, user: signed_in_user) }
+      let(:authentication) { FactoryGirl.create(:authentication,
+                                                provider: 'facebook',
+                                                user: signed_in_user) }
 
       it "should maintain signed in user and prompt new or returning" do
         result = SessionsCallback.handle(
           user_state: user_state,
-          request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
+          request: MockOmniauthRequest.new(authentication.provider,
+                                           authentication.uid,
+                                           {})
         )
 
         expect(result.outputs[:status]).to eq :new_user
@@ -147,7 +163,9 @@ describe SessionsCallback do
       it "should add auth to the signed in user and prompt new or returning" do
         result = SessionsCallback.handle(
           user_state: user_state,
-          request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
+          request: MockOmniauthRequest.new(authentication.provider,
+                                           authentication.uid,
+                                           {})
         )
 
         expect(result.outputs[:status]).to eq :new_user
@@ -158,14 +176,20 @@ describe SessionsCallback do
 
     context "when auth linked to a temp user other than that signed in" do
       let!(:other_temp_user) { FactoryGirl.create(:temp_user) }
-      let!(:authentication) { FactoryGirl.create(:authentication, user: other_temp_user) }
-      let!(:other_authentication) { FactoryGirl.create(:authentication, user: other_temp_user) }
+      let!(:authentication) { FactoryGirl.create(:authentication,
+                                                 provider: 'twitter',
+                                                 user: other_temp_user) }
+      let!(:other_authentication) { FactoryGirl.create(:authentication,
+                                                       provider: 'google',
+                                                       user: other_temp_user) }
 
       # weird edge case? not on flow chart
       it "transfers temp user auths to signed in user, destroys other temp user, prompts new or returning" do
         result = SessionsCallback.handle(
           user_state: user_state,
-          request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
+          request: MockOmniauthRequest.new(authentication.provider,
+                                           authentication.uid,
+                                           {})
         )
         
         expect(result.outputs[:status]).to eq :new_user
@@ -178,13 +202,19 @@ describe SessionsCallback do
 
     context "when auth linked to a non-temp user other than that signed in" do
       let!(:other_user) { FactoryGirl.create(:user) }
-      let!(:authentication) { FactoryGirl.create(:authentication, user: other_user) }
-      let!(:other_authentication) { FactoryGirl.create(:authentication, user: other_user) }
+      let!(:authentication) { FactoryGirl.create(:authentication,
+                                                 provider: 'twitter',
+                                                 user: other_user) }
+      let!(:other_authentication) { FactoryGirl.create(:authentication,
+                                                       provider: 'google',
+                                                       user: other_user) }
 
       it "transfers auths to other user, destroys signed in user, signs in other user, returns to app" do
         result = SessionsCallback.handle(
           user_state: user_state,
-          request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [])
+          request: MockOmniauthRequest.new(authentication.provider,
+                                           authentication.uid,
+                                           {})
         )
 
         expect(result.outputs[:status]).to eq :returning_user
@@ -201,9 +231,9 @@ describe SessionsCallback do
   context "when auth not linked to user but matches email of 1 user" do
     let!(:authentication) { FactoryGirl.create(:authentication) }
     let!(:user) { FactoryGirl.create(:user_with_emails, emails_count: 2) }
-    let!(:auth_data) {{provider: authentication.provider, 
-                       uid: authentication.uid,
-                       emails: [user.contact_infos.first.value, "blah@blah.com"]}}
+    let!(:auth_data) { { provider: authentication.provider, 
+                         uid: authentication.uid,
+                         info: { email: user.contact_infos.first.value } } }
 
     before(:each) do
       ci = user.contact_infos.first
@@ -214,8 +244,11 @@ describe SessionsCallback do
     it "should link that auth to that user" do
       result = SessionsCallback.handle(
           user_state: user_state,
-          request: MockOmniauthRequest.new(authentication.provider, authentication.uid, [
-                                           user.contact_infos.first.value, "blah@blah.com"])
+          request: MockOmniauthRequest.new(
+            authentication.provider,
+            authentication.uid,
+            { email: user.contact_infos.first.value }
+          )
       )
       expect(authentication.reload.user).to eq user
     end
