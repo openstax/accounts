@@ -231,6 +231,7 @@ ActiveRecord::Schema.define(:version => 20150128173719) do
     t.datetime "expires_at"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+    t.index ["code"], :name => "index_reset_codes_on_code", :unique => true
     t.index ["identity_id"], :name => "index_reset_codes_on_identity_id", :unique => true
   end
 

@@ -9,5 +9,6 @@ class CreateResetCodes < ActiveRecord::Migration
     end
 
     add_index :reset_codes, :identity_id, unique: true
+    add_index :reset_codes, :code, unique: true
   end
 end
