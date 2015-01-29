@@ -61,7 +61,7 @@ describe Identity do
       identity.save!
       identity.reload
 
-      expect(identity.reset_code).to be_nil
+      expect(identity.reset_code.expired?).to eq true
     end
 
     it 'returns errors if password is too short' do

@@ -5,7 +5,9 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
 
   belongs_to :user, inverse_of: :identity
 
-  has_one :reset_code, dependent: :destroy, inverse_of: :identity
+  has_one :reset_code, dependent: :destroy,
+                       inverse_of: :identity,
+                       autosave: true
 
   attr_accessible :password, :password_confirmation
 
@@ -41,14 +43,9 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
       expiration_period.nil? ? nil : DateTime.now + expiration_period
 
     # Invalidate reset code if it exists
-    reset_code.try(:destroy)
+    reset_code.try(:expire)
 
     nil
-  end
-
-  # Expires the password
-  def expire_password
-    self.password_expires_at = DateTime.now
   end
 
   protected

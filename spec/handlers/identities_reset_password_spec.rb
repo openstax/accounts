@@ -59,7 +59,7 @@ describe IdentitiesResetPassword do
       expect(result.errors).to be_present
       identity.reload
       expect(identity.authenticate('password')).to be_true
-      expect(identity.reset_code).not_to be_nil
+      expect(identity.reset_code.expired?).to eq false
     end
 
     it 'returns error if password is too short' do
@@ -72,7 +72,7 @@ describe IdentitiesResetPassword do
       identity.reload
       expect(identity.authenticate('password')).to be_true
       expect(identity.authenticate('pass')).to be_false
-      expect(identity.reset_code).not_to be_nil
+      expect(identity.reset_code.expired?).to eq false
     end
 
     it "returns error if password and password confirmation don't match" do
@@ -84,7 +84,7 @@ describe IdentitiesResetPassword do
       expect(result.errors).to be_present
       identity.reload
       expect(identity.authenticate('password')).to be_true
-      expect(identity.reset_code).not_to be_nil
+      expect(identity.reset_code.expired?).to eq false
     end
 
     it 'changes password if everything validates' do
@@ -98,7 +98,7 @@ describe IdentitiesResetPassword do
       identity.reload
       expect(identity.authenticate('password')).to be_false
       expect(identity.authenticate('asdfghjk')).to be_true
-      expect(identity.reset_code).to be_nil
+      expect(identity.reset_code.expired?).to eq true
     end
 
   end

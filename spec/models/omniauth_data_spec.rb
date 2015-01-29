@@ -30,7 +30,7 @@ describe OmniauthData do
         location: 'Munich, Germany',
         name: 'User N. One',
         nickname: 'user1',
-        urls: {Facebook: 'https://www.facebook.com/cw0418'},
+        urls: {Facebook: 'https://www.facebook.com/user.one'},
         verified: true
       }
       data = OmniauthData.new(auth_hash)
@@ -79,7 +79,7 @@ describe OmniauthData do
         name: 'User N. One',
         nickname: 'user1',
         urls: {
-          Twitter: 'https://twitter.com/karenc4',
+          Twitter: 'https://twitter.com/XYZ',
           Website: 'http://example.com',
         },
       }

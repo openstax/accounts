@@ -1,3 +1,6 @@
+# This routine should only be used with persisted identities
+# If not yet persisted, the identity will be saved by Rails
+# when the PasswordResetCode is saved
 class GenerateResetCode
 
   lev_routine

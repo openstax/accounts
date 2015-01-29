@@ -15,6 +15,10 @@ class ResetCode < ActiveRecord::Base
                                                DateTime.now + expiration_period
   end
 
+  def expire
+    self.expires_at = DateTime.now
+  end
+
   # Returns true if the code is present in the DB and hasn't expired
   def expired?
     !expires_at.nil? && expires_at <= DateTime.now
