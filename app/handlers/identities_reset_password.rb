@@ -9,12 +9,12 @@ class IdentitiesResetPassword
   end
 
   def handle
-    rc = ResetCode.where(code: params[:code]).first
-    identity = rc.try(:identity)
+    prc = PasswordResetCode.where(code: params[:code]).first
+    identity = prc.try(:identity)
     fatal_error(message: 'Reset password link is invalid', code: :invalid_code,
                 offending_inputs: [:code]) if identity.nil?
     fatal_error(message: 'Reset password link has expired',
-                code: :expired_code, offending_inputs: [:code]) if rc.expired?
+                code: :expired_code, offending_inputs: [:code]) if prc.expired?
 
     if request.post?
       identity.set_password(params[:reset_password].try(:[], :password),

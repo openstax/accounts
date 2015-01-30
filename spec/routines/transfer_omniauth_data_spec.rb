@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AddEmailFromOmniauthData do
+describe TransferOmniauthData do
 
   context 'when auth provider is facebook' do
     it 'stores user information' do
@@ -37,7 +37,7 @@ describe AddEmailFromOmniauthData do
       data = OmniauthData.new(auth_hash)
 
       user = FactoryGirl.create :user
-      AddEmailFromOmniauthData.call(data, user)
+      TransferOmniauthData.call(data, user)
       expect(user.contact_infos.length).to eq(1)
       expect(user.contact_infos[0].type).to eq('EmailAddress')
       expect(user.contact_infos[0].value).to eq('user@example.com')
@@ -84,7 +84,7 @@ describe AddEmailFromOmniauthData do
         },
       }
       data = OmniauthData.new(auth_hash)
-      AddEmailFromOmniauthData.call(data, user)
+      TransferOmniauthData.call(data, user)
       expect(user.contact_infos).to be_empty
     end
   end
@@ -118,7 +118,7 @@ describe AddEmailFromOmniauthData do
         urls: { Google: 'https://plus.google.com/1234567890' },
       }
       data = OmniauthData.new(auth_hash)
-      AddEmailFromOmniauthData.call(data, user)
+      TransferOmniauthData.call(data, user)
       expect(user.contact_infos.length).to eq(1)
       expect(user.contact_infos[0].type).to eq('EmailAddress')
       expect(user.contact_infos[0].value).to eq('user@example.com')
@@ -132,7 +132,7 @@ describe AddEmailFromOmniauthData do
       auth_hash = OmniAuth::AuthHash.new provider: 'identity', uid: '12345'
       data = OmniauthData.new(auth_hash)
       expect {
-        AddEmailFromOmniauthData.call data, user
+        TransferOmniauthData.call data, user
       }.to raise_error(Unexpected)
     end
   end

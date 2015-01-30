@@ -1,4 +1,4 @@
-class AddEmailFromOmniauthData
+class TransferOmniauthData
 
   lev_routine
 

@@ -220,19 +220,19 @@ ActiveRecord::Schema.define(:version => 20150128173719) do
     t.index ["uid"], :name => "index_oauth_applications_on_uid", :unique => true
   end
 
-  create_table "people", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  create_table "reset_codes", :force => true do |t|
+  create_table "password_reset_codes", :force => true do |t|
     t.integer  "identity_id", :null => false
     t.string   "code",        :null => false
     t.datetime "expires_at"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
-    t.index ["code"], :name => "index_reset_codes_on_code", :unique => true
-    t.index ["identity_id"], :name => "index_reset_codes_on_identity_id", :unique => true
+    t.index ["code"], :name => "index_password_reset_codes_on_code", :unique => true
+    t.index ["identity_id"], :name => "index_password_reset_codes_on_identity_id", :unique => true
+  end
+
+  create_table "people", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "users", :force => true do |t|

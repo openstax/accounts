@@ -1,9 +1,9 @@
-class ResetCode < ActiveRecord::Base
+class PasswordResetCode < ActiveRecord::Base
 
   DEFAULT_EXPIRATION_PERIOD = \
     Rails.configuration.accounts.default_reset_code_expiration_period
 
-  belongs_to :identity, inverse_of: :reset_code
+  belongs_to :identity, inverse_of: :password_reset_code
 
   validates :identity, presence: true
   validates :identity_id, uniqueness: true

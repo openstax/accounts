@@ -2,7 +2,7 @@ class IdentitiesForgotPassword
 
   lev_handler
 
-  uses_routine GenerateResetCode, as: :generate_reset_code
+  uses_routine GeneratePasswordResetCode
 
   paramify :forgot_password do
     attribute :username, type: String
@@ -31,7 +31,7 @@ class IdentitiesForgotPassword
       fatal_error(code: 'No verified email addresses found for this user',
                   offending_inputs: [:email_address])
     end
-    code = run(:generate_reset_code, user.identity).outputs[:code]
+    code = run(GeneratePasswordResetCode, user.identity).outputs[:code]
     ResetPasswordMailer.reset_password(email_addresses.first, code).deliver
   end
 end

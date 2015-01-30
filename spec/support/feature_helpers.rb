@@ -61,7 +61,7 @@ end
 
 def generate_reset_code_for(username)
   user = User.find_by_username(username)
-  GenerateResetCode.call(user.identity).outputs[:code]
+  GeneratePasswordResetCode.call(user.identity).outputs[:code]
 end
 
 def generate_expired_reset_code_for(username)
@@ -74,13 +74,14 @@ end
 
 def password_reset_email_sent?(user)
   user_emails = user.contact_infos.email_addresses.verified
+  code = user.identity.password_reset_code.code
   mail = ActionMailer::Base.deliveries.last
   expect(mail.to.length).to eq(1)
   expect(user_emails.collect {|e| e.value}).to include(mail.to[0])
   expect(mail.from).to eq(['noreply@openstax.org'])
   expect(mail.subject).to eq('[OpenStax] Reset your password')
   expect(mail.body.encoded).to include("Hi #{user.username},")
-  @reset_link = "/reset_password?code=#{user.identity.reset_code.code}"
+  @reset_link = "/reset_password?code=#{code}"
   expect(mail.body.encoded).to include("http://nohost#{@reset_link}")
 end
 

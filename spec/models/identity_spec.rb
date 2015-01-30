@@ -46,22 +46,22 @@ describe Identity do
       expect(identity.authenticate('password')).to be_true
     end
 
-    it 'resets the reset_code' do
-      expect(identity.reset_code).to be_nil
-      code = GenerateResetCode.call(identity).outputs[:code]
+    it 'resets the password_reset_code' do
+      expect(identity.password_reset_code).to be_nil
+      code = GeneratePasswordResetCode.call(identity).outputs[:code]
       expect(code).not_to be_nil
       identity.save!
       identity.reload
 
-      expect(identity.reset_code.code).to eq(code)
-      expect(identity.reset_code.expires_at).not_to be_nil
+      expect(identity.password_reset_code.code).to eq(code)
+      expect(identity.password_reset_code.expires_at).not_to be_nil
 
       identity.set_password('password', 'password')
 
       identity.save!
       identity.reload
 
-      expect(identity.reset_code.expired?).to eq true
+      expect(identity.password_reset_code.expired?).to eq true
     end
 
     it 'returns errors if password is too short' do

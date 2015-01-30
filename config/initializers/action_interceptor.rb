@@ -61,7 +61,7 @@ ActionInterceptor.configure do
     identity = user.try(:identity)
     return unless identity.try(:password_expired?)
 
-    code = GenerateResetCode.call(identity).outputs[:code]
+    code = GeneratePasswordResetCode.call(identity).outputs[:code]
     code_hash = { code: code }
 
     respond_to do |format|

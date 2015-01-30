@@ -24,7 +24,7 @@ class SessionsCallback
 
   uses_routine TransferAuthentications
   uses_routine CreateUserFromOmniauthData
-  uses_routine AddEmailFromOmniauthData
+  uses_routine TransferOmniauthData
   uses_routine DestroyUser
 
   protected
@@ -112,7 +112,7 @@ class SessionsCallback
     end
 
     if this_authentication_is_new
-      run(AddEmailFromOmniauthData, @data, current_user)
+      run(TransferOmniauthData, @data, current_user)
     end
 
     outputs[:status] = status

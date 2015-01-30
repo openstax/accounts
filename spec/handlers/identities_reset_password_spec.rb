@@ -4,7 +4,7 @@ describe IdentitiesResetPassword do
   let!(:identity) {
     i = FactoryGirl.create :identity, password: 'password'
     i.save!
-    GenerateResetCode.call(i)
+    GeneratePasswordResetCode.call(i)
     i
   }
 
@@ -38,7 +38,7 @@ describe IdentitiesResetPassword do
     end
 
     it 'returns success if reset code is found' do
-      @params = {code: identity.reset_code.code}
+      @params = {code: identity.password_reset_code.code}
       [true, false].each do |is_post|
         @is_post = is_post
         result = IdentitiesResetPassword.handle
@@ -54,17 +54,17 @@ describe IdentitiesResetPassword do
     end
 
     it 'returns error if no password is given' do
-      @params = {code: identity.reset_code.code}
+      @params = {code: identity.password_reset_code.code}
       result = IdentitiesResetPassword.handle
       expect(result.errors).to be_present
       identity.reload
       expect(identity.authenticate('password')).to be_true
-      expect(identity.reset_code.expired?).to eq false
+      expect(identity.password_reset_code.expired?).to eq false
     end
 
     it 'returns error if password is too short' do
       @params = {
-        code: identity.reset_code.code,
+        code: identity.password_reset_code.code,
         reset_password: {password: 'pass', password_confirmation: 'pass'}
       }
       result = IdentitiesResetPassword.handle
@@ -72,24 +72,24 @@ describe IdentitiesResetPassword do
       identity.reload
       expect(identity.authenticate('password')).to be_true
       expect(identity.authenticate('pass')).to be_false
-      expect(identity.reset_code.expired?).to eq false
+      expect(identity.password_reset_code.expired?).to eq false
     end
 
     it "returns error if password and password confirmation don't match" do
       @params = {
-        code: identity.reset_code.code,
+        code: identity.password_reset_code.code,
         reset_password: {password: 'password', password_confirmation: 'passwordd'}
       }
       result = IdentitiesResetPassword.handle
       expect(result.errors).to be_present
       identity.reload
       expect(identity.authenticate('password')).to be_true
-      expect(identity.reset_code.expired?).to eq false
+      expect(identity.password_reset_code.expired?).to eq false
     end
 
     it 'changes password if everything validates' do
       @params = {
-        code: identity.reset_code.code,
+        code: identity.password_reset_code.code,
         reset_password: {password: 'asdfghjk',
                          password_confirmation: 'asdfghjk'}
       }
@@ -98,7 +98,7 @@ describe IdentitiesResetPassword do
       identity.reload
       expect(identity.authenticate('password')).to be_false
       expect(identity.authenticate('asdfghjk')).to be_true
-      expect(identity.reset_code.expired?).to eq true
+      expect(identity.password_reset_code.expired?).to eq true
     end
 
   end
