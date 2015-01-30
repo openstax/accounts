@@ -2,6 +2,8 @@ class IdentitiesResetPassword
 
   lev_handler
 
+  uses_routine SetPassword, translations: { outputs: { type: :verbatim } }
+
   protected
 
   def authorized?
@@ -17,12 +19,12 @@ class IdentitiesResetPassword
                 code: :expired_code, offending_inputs: [:code]) if prc.expired?
 
     if request.post?
-      identity.set_password(params[:reset_password].try(:[], :password),
-        params[:reset_password].try(:[], :password_confirmation))
-      identity.save
-      transfer_errors_from(identity, {type: :verbatim})
+      run(SetPassword,
+          identity,
+          params[:reset_password].try(:[], :password),
+          params[:reset_password].try(:[], :password_confirmation))
+    else
+      outputs[:identity] = identity
     end
-
-    outputs[:identity] = identity
   end
 end

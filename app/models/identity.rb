@@ -31,23 +31,6 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
     !password_expires_at.nil? && password_expires_at <= DateTime.now
   end
 
-  # Sets the password and the password expiration date; Returns nil
-  def set_password(password,
-                   password_confirmation = nil,
-                   expiration_period = DEFAULT_PASSWORD_EXPIRATION_PERIOD)
-    self.password = password
-    self.password_confirmation = password_confirmation
-
-    # Reset the expiration period
-    self.password_expires_at = \
-      expiration_period.nil? ? nil : DateTime.now + expiration_period
-
-    # Invalidate reset code if it exists
-    password_reset_code.try(:expire)
-
-    nil
-  end
-
   protected
 
   # Support for legacy CNX passwords
