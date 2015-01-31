@@ -86,6 +86,6 @@ feature 'User resets password', js: true do
 
     # check that the reset password link cannot be reused again
     visit "/reset_password?code=#{@reset_code}"
-    expect(page).to have_content('Reset password link is invalid')
+    expect(page).to have_content('Reset password link has expired')
   end
 end

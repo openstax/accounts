@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TransferOmniauthInformation do
+describe OmniauthData do
   context 'when auth provider is facebook' do
     it 'stores user information' do
       auth_hash = OmniAuth::AuthHash.new provider: 'facebook', uid: '1234567890'
@@ -15,7 +15,7 @@ describe TransferOmniauthInformation do
           link: 'https://www.facebook/user.one',
           locale: 'en_US',
           location: {id: '116045151742300', name: 'Munich, Germany'},
-          name: 'Karen Chan',
+          name: 'User N. One',
           timezone: 1,
           updated_time: '2013-07-28T18:22:46+0000',
           username: 'user1',
@@ -28,26 +28,20 @@ describe TransferOmniauthInformation do
         image: 'http://graph.facebook.com/1234567890/picture?type=square',
         last_name: 'One',
         location: 'Munich, Germany',
-        name: 'User One',
+        name: 'User N. One',
         nickname: 'user1',
-        urls: {Facebook: 'https://www.facebook.com/cw0418'},
+        urls: {Facebook: 'https://www.facebook.com/user.one'},
         verified: true
       }
+      data = OmniauthData.new(auth_hash)
 
-      user = FactoryGirl.create :user
-      TransferOmniauthInformation.call(auth_hash, user)
-      expect(user.contact_infos.length).to eq(1)
-      expect(user.contact_infos[0].type).to eq('EmailAddress')
-      expect(user.contact_infos[0].value).to eq('user@example.com')
-      expect(user.contact_infos[0].verified).to be_true
-    end
-  end
-
-  context 'when auth provider is identity' do
-    it 'raises error because we should not get here' do
-      user = FactoryGirl.create :user
-      auth_hash = OmniAuth::AuthHash.new provider: 'identity', uid: '12345'
-      expect { TransferOmniauthInformation.call auth_hash, user }.to raise_error(Unexpected)
+      expect(data.provider).to eq 'facebook'
+      expect(data.uid).to eq '1234567890'
+      expect(data.name).to eq 'User N. One'
+      expect(data.nickname).to eq 'user1'
+      expect(data.first_name).to eq 'User'
+      expect(data.last_name).to eq 'One'
+      expect(data.email).to eq 'user@example.com'
     end
   end
 
@@ -71,7 +65,7 @@ describe TransferOmniauthInformation do
           id_str: '12345678',
           lang: 'en',
           location: 'Munich, Germany',
-          name: 'User One',
+          name: 'User N. One',
           notifications: false,
           profile_image_url: 'http://pbs.twimg.com/profile_images/12345678/me.jpg',
           profile_image_url_https: 'https://pbs.twimg.com/profile_images/12345678/me.jpg',
@@ -82,15 +76,22 @@ describe TransferOmniauthInformation do
         description: 'User one profile description text',
         image: 'http://pbs.twimg.com/profile_images/12345678/me.jpg',
         location: 'Munich, Germany',
-        name: 'User One',
+        name: 'User N. One',
         nickname: 'user1',
         urls: {
-          Twitter: 'https://twitter.com/karenc4',
+          Twitter: 'https://twitter.com/XYZ',
           Website: 'http://example.com',
         },
       }
-      TransferOmniauthInformation.call(auth_hash, user)
-      expect(user.contact_infos).to be_empty
+      data = OmniauthData.new(auth_hash)
+
+      expect(data.provider).to eq 'twitter'
+      expect(data.uid).to eq '12345678'
+      expect(data.name).to eq 'User N. One'
+      expect(data.nickname).to eq 'user1'
+      expect(data.first_name).to eq nil
+      expect(data.last_name).to eq nil
+      expect(data.email).to eq nil
     end
   end
 
@@ -109,7 +110,7 @@ describe TransferOmniauthInformation do
           id: '1234567890',
           link: 'https://plus.google.com/1234567890',
           locale: 'en',
-          name: 'User One',
+          name: 'User N. One',
           picture: 'https://lh5.googleusercontent.com/xxxxxx/yyyyy/photo.jpg',
           verified_email: true,
         },
@@ -119,22 +120,36 @@ describe TransferOmniauthInformation do
         first_name: 'User',
         image: 'https://lh5.googleusercontent.com/xxxxxx/yyyyy/photo.jpg',
         last_name: 'One',
-        name: 'User One',
+        name: 'User N. One',
         urls: { Google: 'https://plus.google.com/1234567890' },
       }
-      TransferOmniauthInformation.call(auth_hash, user)
-      expect(user.contact_infos.length).to eq(1)
-      expect(user.contact_infos[0].type).to eq('EmailAddress')
-      expect(user.contact_infos[0].value).to eq('user@example.com')
-      expect(user.contact_infos[0].verified).to be_true
+      data = OmniauthData.new(auth_hash)
+
+      expect(data.provider).to eq 'google_oauth2'
+      expect(data.uid).to eq '12345678901234567890'
+      expect(data.name).to eq 'User N. One'
+      expect(data.nickname).to eq 'User N. One'
+      expect(data.first_name).to eq 'User'
+      expect(data.last_name).to eq 'One'
+      expect(data.email).to eq 'user@example.com'
+    end
+  end
+
+  context 'when auth provider is identity' do
+    it 'does not error out' do
+      auth = { provider: 'identity' }
+      expect {
+        data = OmniauthData.new(auth)
+      }.not_to raise_error
     end
   end
 
   context 'when auth provider is unknown' do
-    it 'raises error' do
-      user = FactoryGirl.create :user
-      auth_hash = OmniAuth::AuthHash.new provider: 'me', uid: '12345'
-      expect { TransferOmniauthInformation.call auth_hash, user }.to raise_error(IllegalArgument)
+    it 'raises an error' do
+      auth = {}
+      expect {
+        data = OmniauthData.new(auth)
+      }.to raise_error(IllegalArgument)
     end
   end
 end

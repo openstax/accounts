@@ -12,7 +12,7 @@ class ContactInfo < ActiveRecord::Base
   validates :type, presence: true, inclusion: { in: VALID_TYPES }
   validates :value,
             presence: true,
-            uniqueness: {scope: [:type]}
+            uniqueness: {scope: [:user_id, :type]}
 
   scope :email_addresses, where(type: 'EmailAddress')
   sifter :email_addresses do type.eq 'EmailAddress' end

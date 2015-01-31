@@ -7,7 +7,7 @@ RSpec.describe UsersController, type: :controller do
 
   context 'GET edit' do
     it 'renders the edit profile page' do
-      controller.sign_in user
+      controller.sign_in! user
       get 'edit'
       expect(response.status).to eq 200
     end
@@ -15,7 +15,7 @@ RSpec.describe UsersController, type: :controller do
 
   context 'PUT update' do
     it "updates the user's profile" do
-      controller.sign_in user
+      controller.sign_in! user
       put 'update', user: {first_name: "MyNewName"}
       expect(response.status).to eq 302
       expect(user.reload.first_name).to eq "MyNewName"
@@ -24,7 +24,7 @@ RSpec.describe UsersController, type: :controller do
 
   context 'GET register' do
     it 'renders the registration page' do
-      controller.sign_in temp_user
+      controller.sign_in! temp_user
       get 'register'
       expect(response.status).to eq 200
     end
@@ -36,7 +36,7 @@ RSpec.describe UsersController, type: :controller do
       contract_1 = FinePrint::Contract.first
       contract_2 = FinePrint::Contract.last
 
-      controller.sign_in temp_user
+      controller.sign_in! temp_user
       put 'register', register: {i_agree: true,
                                  username: "my_username",
                                  contract_1_id: contract_1.id,

@@ -5,6 +5,8 @@ ActionController::Base.class_exec do
 
   helper OSU::OsuHelper, ApplicationHelper
 
+  helper_method :current_user, :signed_in?
+
   if SECRET_SETTINGS[:beta_protection] != false
     protect_beta username: SECRET_SETTINGS[:beta_username], 
                  password: SECRET_SETTINGS[:beta_password]
@@ -15,8 +17,6 @@ ActionController::Base.class_exec do
   fine_print_get_signatures :general_terms_of_use, :privacy_policy
 
   before_filter :authenticate_user!
-
-  helper_method :current_user, :signed_in?
 
   rescue_from Exception, :with => :rescue_from_exception
 

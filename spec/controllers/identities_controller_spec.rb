@@ -8,7 +8,8 @@ describe IdentitiesController, type: :controller do
     let!(:user) { FactoryGirl.create :user, username: 'user_one' }
     let!(:identity) {
       i = FactoryGirl.create :identity, user: user, password: 'password'
-      i.generate_reset_code!
+      i.save!
+      GeneratePasswordResetCode.call(i)
       i
     }
 
@@ -17,7 +18,7 @@ describe IdentitiesController, type: :controller do
         expect(!!identity.authenticate('password')).to eq true
         expect(!!identity.authenticate('new_password')).to eq false
 
-        controller.sign_in user
+        controller.sign_in! user
         put 'update', identity: {current_password: 'password',
                                  password: 'new_password',
                                  password_confirmation: 'new_password'}
@@ -45,7 +46,7 @@ describe IdentitiesController, type: :controller do
       it 'returns error if code has expired' do
         one_year_later = DateTime.now + 1.year
         DateTime.stub(:now).and_return(one_year_later)
-        get 'reset_password', code: identity.reset_code
+        get 'reset_password', code: identity.password_reset_code.code
         DateTime.unstub(:now)
 
         expect(response.code).to eq('400')
@@ -54,7 +55,7 @@ describe IdentitiesController, type: :controller do
       end
 
       it 'shows reset password form if code matches' do
-        get 'reset_password', code: identity.reset_code
+        get 'reset_password', code: identity.password_reset_code.code
         expect(response).to be_successful
         expect(response.body).not_to include('Reset password link is invalid')
         expect(response.body).to include('Set Password')
@@ -81,7 +82,7 @@ describe IdentitiesController, type: :controller do
       end
 
       it 'returns error if password is empty' do
-        post('reset_password', code: identity.reset_code,
+        post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: '', password_confirmation: ''})
         expect(response.code).to eq('400')
         expect(response.body).not_to include('Reset password link is invalid')
@@ -92,7 +93,7 @@ describe IdentitiesController, type: :controller do
       end
 
       it 'returns error if password is too short' do
-        post('reset_password', code: identity.reset_code,
+        post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: 'pass', password_confirmation: 'pass'})
         expect(response.code).to eq('400')
         expect(response.body).not_to include('Reset password link is invalid')
@@ -103,7 +104,7 @@ describe IdentitiesController, type: :controller do
       end
 
       it "returns error if password and password confirmation don't match" do
-        post('reset_password', code: identity.reset_code,
+        post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: 'password', password_confirmation: 'passwordd'})
         expect(response.code).to eq('400')
         expect(response.body).not_to include('Reset password link is invalid')
@@ -114,7 +115,7 @@ describe IdentitiesController, type: :controller do
       end
 
       it 'changes password if everything validates' do
-        post('reset_password', code: identity.reset_code,
+        post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
         url = controller.send(:without_interceptor) { root_url }
         expect(response).to redirect_to(url)
@@ -126,7 +127,7 @@ describe IdentitiesController, type: :controller do
       end
 
       it 'redirects to return_to if it is encrypted and signed in url' do
-        post('reset_password', code: identity.reset_code,
+        post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: 'password!', password_confirmation: 'password!'},
              return_to: ActionInterceptor::Encryptor.encrypt_and_sign(
                           'http://www.example.com/'))
@@ -141,7 +142,7 @@ describe IdentitiesController, type: :controller do
 
       it 'redirects to return_to if it is set in session' do
         session[:interceptor] = {return_to: 'http://www.example.com/'}
-        post('reset_password', code: identity.reset_code,
+        post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
 
         expect(response.code).to eq('302')

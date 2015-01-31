@@ -59,15 +59,16 @@ ActionInterceptor.configure do
   interceptor :expired_password do
     user = (request.format == :json) ? current_human_user : current_user
     identity = user.try(:identity)
-    return unless identity.try(:should_reset_password?)
+    return unless identity.try(:password_expired?)
 
-    code_hash = {code: identity.generate_reset_code!}
+    code = GeneratePasswordResetCode.call(identity).outputs[:code]
+    code_hash = { code: code }
 
     respond_to do |format|
       format.html { redirect_to reset_password_path(code_hash) }
       # If we do this check (we probably should), then clients of the API
       # must handle this response and redirect the user appropriately.
-      format.json { render :json => {expired_password: code_hash}.to_json }
+      format.json { render :json => { expired_password: code_hash }.to_json }
     end
   end
 end

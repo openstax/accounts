@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141212204821) do
+ActiveRecord::Schema.define(:version => 20150128173719) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -136,11 +136,9 @@ ActiveRecord::Schema.define(:version => 20141212204821) do
 
   create_table "identities", :force => true do |t|
     t.string   "password_digest"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
-    t.integer  "user_id",               :null => false
-    t.string   "reset_code"
-    t.datetime "reset_code_expires_at"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "user_id",             :null => false
     t.datetime "password_expires_at"
     t.index ["user_id"], :name => "index_identities_on_user_id"
   end
@@ -220,6 +218,16 @@ ActiveRecord::Schema.define(:version => 20141212204821) do
     t.string   "email_subject_prefix", :default => "",    :null => false
     t.index ["owner_id", "owner_type"], :name => "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], :name => "index_oauth_applications_on_uid", :unique => true
+  end
+
+  create_table "password_reset_codes", :force => true do |t|
+    t.integer  "identity_id", :null => false
+    t.string   "code",        :null => false
+    t.datetime "expires_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.index ["code"], :name => "index_password_reset_codes_on_code", :unique => true
+    t.index ["identity_id"], :name => "index_password_reset_codes_on_identity_id", :unique => true
   end
 
   create_table "people", :force => true do |t|

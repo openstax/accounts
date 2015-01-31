@@ -2,6 +2,8 @@ class IdentitiesResetPassword
 
   lev_handler
 
+  uses_routine SetPassword, translations: { outputs: { type: :verbatim } }
+
   protected
 
   def authorized?
@@ -9,21 +11,20 @@ class IdentitiesResetPassword
   end
 
   def handle
-    fatal_error(message: 'Reset password link is invalid', code: :invalid_code,
-                offending_inputs: [:code]) if params[:code].nil?
-    identity = Identity.where(reset_code: params[:code]).first
+    prc = PasswordResetCode.where(code: params[:code]).first
+    identity = prc.try(:identity)
     fatal_error(message: 'Reset password link is invalid', code: :invalid_code,
                 offending_inputs: [:code]) if identity.nil?
     fatal_error(message: 'Reset password link has expired',
-                code: :expired_code, offending_inputs: [:code]) \
-      unless identity.reset_code_valid? params[:code]
+                code: :expired_code, offending_inputs: [:code]) if prc.expired?
 
     if request.post?
-      identity.set_password!(params[:reset_password].try(:[], :password),
-        params[:reset_password].try(:[], :password_confirmation))
-      transfer_errors_from(identity, {type: :verbatim})
+      run(SetPassword,
+          identity,
+          params[:reset_password].try(:[], :password),
+          params[:reset_password].try(:[], :password_confirmation))
+    else
+      outputs[:identity] = identity
     end
-
-    outputs[:identity] = identity
   end
 end

@@ -52,9 +52,9 @@ class ImportUsers
 
     identity = @user.build_identity
     # Import password hash
-    identity.update_attribute(:password_digest, password_digest)
+    identity.password_digest = password_digest
     # User has to reset their password
-    identity.password_expires_at = 1.day.ago
+    identity.password_expires_at = DateTime.now
     # Skip password validation
     identity.save!(validate: false)
 

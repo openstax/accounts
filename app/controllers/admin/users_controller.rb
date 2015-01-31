@@ -24,7 +24,7 @@ module Admin
     end
 
     def become
-      sign_in(@user)
+      sign_in!(@user)
       redirect_to request.referrer
     end
 
