@@ -10,7 +10,7 @@ class TransferOmniauthData
     # This routine is not called for identity, so error out
     raise Unexpected if data.provider == 'identity'
 
-    run(AddEmailToUser, data.email, user, {already_verified: true}) \
+    run(AddEmailToUser, data.email, user, {already_verified: true})
   end
 
 end
