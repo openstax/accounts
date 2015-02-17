@@ -15,7 +15,7 @@ module Admin
     protected
 
     def authorized?
-      !Rails.env.production? || caller.is_admin?
+      !Rails.env.production? || caller.is_administrator?
     end
 
     def handle

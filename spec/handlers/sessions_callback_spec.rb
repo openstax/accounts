@@ -36,11 +36,9 @@ describe SessionsCallback do
 
       context "with an email that matches existing emails" do
         context "for one user" do
-          let!(:authentication) { FactoryGirl.create(:authentication) }
+          let!(:authentication) { FactoryGirl.build(:authentication,
+                                                    provider: 'facebook') }
           let!(:user) { FactoryGirl.create(:user_with_emails, emails_count: 2) }
-          let!(:auth_data) { { provider: authentication.provider, 
-                               uid: authentication.uid,
-                               info: { email: user.contact_infos.first.value } } }
 
           before(:each) do
             ci = user.contact_infos.first
@@ -49,15 +47,19 @@ describe SessionsCallback do
           end
 
           it "should link new auth to the existing user" do
-            result = SessionsCallback.handle(
+            result = nil
+            expect{
+              result = SessionsCallback.handle(
                 user_state: user_state,
                 request: MockOmniauthRequest.new(
                   authentication.provider,
                   authentication.uid,
                   { email: user.contact_infos.first.value }
                 )
-            )
-            expect(authentication.reload.user).to eq user
+              )
+            }.to change{user.authentications.count}.by 1
+            expect(result.outputs[:status]).to eq :returning_user
+            expect(user_state.current_user).to eq user
           end
         end
 

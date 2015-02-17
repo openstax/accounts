@@ -11,7 +11,8 @@ class TransferOmniauthData
     raise Unexpected if data.provider == 'identity'
 
     run(AddEmailToUser, data.email, user, {already_verified: true}) \
-      unless data.email.blank?
+      unless data.email.blank? || \
+             user.email_addresses.where(value: data.email).exists?
   end
 
 end
