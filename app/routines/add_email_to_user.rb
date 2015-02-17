@@ -27,6 +27,7 @@ class AddEmailToUser
     email_address.save
     transfer_errors_from(email_address, { scope: :email_address }, true)
 
-    run(SendContactInfoConfirmation, email_address)
+    # The confirmation info won't be sent if already verified
+    run(SendContactInfoConfirmation, email_address) unless errors?
   end
 end
