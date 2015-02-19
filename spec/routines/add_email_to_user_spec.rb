@@ -25,6 +25,19 @@ describe AddEmailToUser do
       expect(email.verified).to be_false
       expect(email.confirmation_code).not_to be_nil
     end
+
+    it 'can verify an existing unverified email' do
+      AddEmailToUser.call('user@example.com', user, already_verified: false)
+      expect(user.email_addresses.first.verified).to be_false
+      AddEmailToUser.call('user@example.com', user, already_verified: true)
+      expect(user.email_addresses.first.verified).to be_true
+    end
+
+    it 'does not die when email already exists' do
+      AddEmailToUser.call('user@example.com', user, already_verified: true)
+      result = AddEmailToUser.call('user@example.com', user, already_verified: true)
+      expect(result.errors.none?).to be_true
+    end
   end
 
   context 'when email address is not valid' do
