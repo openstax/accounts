@@ -20,6 +20,20 @@ RSpec.describe UsersController, type: :controller do
       expect(response.status).to eq 302
       expect(user.reload.first_name).to eq "MyNewName"
     end
+
+    it "updates the user's profile for all fields" do
+      controller.sign_in! user
+      put 'update', user: {title: 'Dr',
+                           first_name: 'NewFirst',
+                           last_name: 'NewLast',
+                           suffix: 'NewSuffix'}
+      expect(response.status).to eq 302
+      user.reload
+      expect(user.title).to eq 'Dr'
+      expect(user.first_name).to eq 'NewFirst'
+      expect(user.last_name).to eq 'NewLast'
+      expect(user.suffix).to eq 'NewSuffix'
+    end
   end
 
   context 'GET register' do
