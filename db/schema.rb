@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150128173719) do
+ActiveRecord::Schema.define(:version => 20150220133624) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -247,6 +247,7 @@ ActiveRecord::Schema.define(:version => 20150128173719) do
     t.string   "full_name"
     t.string   "title"
     t.string   "uuid"
+    t.string   "suffix"
     t.index ["first_name"], :name => "index_users_on_first_name"
     t.index ["full_name"], :name => "index_users_on_full_name"
     t.index ["last_name"], :name => "index_users_on_last_name"
