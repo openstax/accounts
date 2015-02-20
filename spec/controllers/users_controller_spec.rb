@@ -33,6 +33,7 @@ RSpec.describe UsersController, type: :controller do
       expect(user.first_name).to eq 'NewFirst'
       expect(user.last_name).to eq 'NewLast'
       expect(user.suffix).to eq 'NewSuffix'
+      expect(user.full_name).to eq 'NewFirst NewLast NewSuffix'
     end
   end
 

@@ -69,7 +69,8 @@ class User < ActiveRecord::Base
   end
 
   def guessed_full_name
-    first_name.present? && last_name.present? ? "#{first_name} #{last_name}" : nil
+    name = first_name.present? && last_name.present? ? "#{first_name} #{last_name}" : nil
+    suffix.present? ? "#{name} #{suffix}" : name
   end
 
   def guessed_first_name

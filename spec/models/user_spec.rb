@@ -98,6 +98,11 @@ describe User do
 
     user.title = 'Miss'
     expect(user.name).to eq('Miss User Fullname')
+
+    user.title = 'Dr'
+    user.full_name = ''
+    user.suffix = 'Second'
+    expect(user.name).to eq('Dr User One Second')
   end
 
   it 'returns a casual name' do
