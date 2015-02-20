@@ -47,6 +47,29 @@ RSpec.describe UsersController, type: :controller do
       expect(FinePrint.signed_contract?(temp_user, contract_1)).to eq true
       expect(FinePrint.signed_contract?(temp_user, contract_2)).to eq true
     end
+
+    it 'registers the user with all the details' do
+      expect(temp_user.is_temp?).to eq true
+      contract_1 = FinePrint::Contract.first
+      contract_2 = FinePrint::Contract.last
+
+      controller.sign_in! temp_user
+      put 'register', register: {i_agree: true,
+                                 username: "my_username",
+                                 first_name: 'First',
+                                 last_name: 'Last',
+                                 suffix: 'Junior',
+                                 contract_1_id: contract_1.id,
+                                 contract_2_id: contract_2.id}
+      expect(response.status).to eq 302
+      expect(temp_user.reload.is_temp?).to eq false
+      expect(temp_user.username).to eq "my_username"
+      expect(temp_user.first_name).to eq 'First'
+      expect(temp_user.last_name).to eq 'Last'
+      expect(temp_user.suffix).to eq 'Junior'
+      expect(FinePrint.signed_contract?(temp_user, contract_1)).to eq true
+      expect(FinePrint.signed_contract?(temp_user, contract_2)).to eq true
+    end
   end
 
 end
