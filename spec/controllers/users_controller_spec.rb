@@ -70,6 +70,7 @@ RSpec.describe UsersController, type: :controller do
 
       controller.sign_in! temp_user
       put 'register', register: {i_agree: true,
+                                 title: 'Dr',
                                  username: "my_username",
                                  first_name: 'First',
                                  last_name: 'Last',
@@ -79,6 +80,7 @@ RSpec.describe UsersController, type: :controller do
       expect(response.status).to eq 302
       expect(temp_user.reload.is_temp?).to eq false
       expect(temp_user.username).to eq "my_username"
+      expect(temp_user.title).to eq 'Dr'
       expect(temp_user.first_name).to eq 'First'
       expect(temp_user.last_name).to eq 'Last'
       expect(temp_user.suffix).to eq 'Junior'
