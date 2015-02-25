@@ -40,53 +40,40 @@ class SearchUsers
   SORT_DESCENDING = 'DESC'
   MAX_MATCHING_USERS = 10
 
-  def matches(field)
-    debugger
-    field.like_any
-  end
-
   def exec(query, options={})
 
     users = User.scoped
 
     KeywordSearch.search(query) do |with|
 
-      match_method = options[:exact] ? :any : :like_any
-
-      compose_clause = if options[:exact]
-                         lambda{ |q,field,names| q.lower(field).any prep_names(names) }
-                       else
-                         lambda{ |q,field,names| q.lower(field).like_any prep_names(names) }
-                       end
+      # a builder for constructing a query clause that runs
+      # either a any_like or just an any query
+      query_multiple = create_multiple_query_clause(options)
 
       with.keyword :first_name do |first_names|
-         users = users.where{
-           lower(first_name).send(match_method, my{prep_names(first_names)})
-         }
+         users = users.where{ |q| query_multiple[q, :first_name, first_names] }
       end
 
       with.default_keyword :any
       with.keyword :username do |usernames|
-        users = users.where{ | q | compose_clause[q, q.username, usernames] }
+        users = users.where{ | q | query_multiple[q, :username, usernames] }
       end
 
       with.keyword :last_name do |last_names|
-        users = users.where{lower(last_name).method(match_method).call my{prep_names(last_names)}}
+        users = users.where{ |q| query_multiple[q, :last_name, last_names] }
       end
 
       with.keyword :full_name do |full_names|
-        users = users.where{
-          options[:exact] ?
-            lower(full_name).any( my{prep_names(full_names)} ) :
-            lower(full_name).like_any( my{prep_names(full_names)} )
-        }
+        users = users.where{ |q| query_multiple[q, :full_name, full_names] }
       end
 
       with.keyword :name do |names|
         names = prep_names(names)
-        users = users.where{ (lower(full_name).like_any names)  |
-                             (lower(last_name).like_any names)  |
-                             (lower(first_name).like_any names) }
+        users = users.where{ |q|
+          query_multiple[q, :full_name, names]    |
+            query_multiple[q, :first_name, names] |
+            query_multiple[q, :last_name, names]
+        }
       end
 
       with.keyword :id do |ids|
@@ -105,7 +92,7 @@ class SearchUsers
       # prefix).
 
       with.keyword :any do |terms|
-        names = prep_names(terms)
+        names = prep_names(terms,options)
 
         users = users.joins{contact_infos.outer}.where{
                   (                   username.like_any names)           | \
@@ -122,7 +109,6 @@ class SearchUsers
     end
 
     # Select only distinct records
-
     users = users.uniq
 
     # Ordering
@@ -160,19 +146,29 @@ class SearchUsers
     end
 
     # Count results
-
     outputs[:total_count] = users.count
 
     # Return no results if maximum number of results is exceeded
-
     outputs[:items] = (outputs[:total_count] > MAX_MATCHING_USERS) ?
                         User.none : users
 
   end
 
+  # Return a lambda that will be used to construct a query that
+  # matches a field against multiple values.
+  # Wildcard searching via :like_any is performed unless options[:exact] is given
+  # called with the sqeel context, the field name, and the array of names to match
+  def create_multiple_query_clause(options)
+    if options[:exact]
+      lambda{ |q,field,names| q.lower(field).eq_any prep_names(names,options) }
+    else
+      lambda{ |q,field,names| q.lower(field).like_any prep_names(names,options) }
+    end
+  end
+
   # Downcase, remove any wildcards and put a wildcard at the end.
   def prep_names(names, options={})
-    names.collect{|name| name.delete("%") + ( options[:exact] ? "" : "%" ) }
+    names.collect{|name| name.delete("%").downcase + ( options[:exact] ? "" : "%" ) }
   end
 
 end
