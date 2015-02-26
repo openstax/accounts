@@ -38,11 +38,33 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
   before(:each) do
     user_2.reload
-
     [bob_brown, bob_jones, tim_jones].each do |user|
       FactoryGirl.create :application_user, user: user,
                          application: untrusted_application,
                          unread_updates: 0
+    end
+  end
+
+  describe "username returns" do
+    it "a single result when username matches" do
+      api_get :username, untrusted_application_token, parameters: { username: 'foo_bb' }
+      expect(response.code).to eq('200')
+      expected_response = [{
+        id: bob_brown.application_users.first.id,
+        user: {
+          id: bob_brown.id,
+          username: bob_brown.username,
+          first_name: bob_brown.first_name,
+          last_name: bob_brown.last_name
+        }, unread_updates: 0
+      }].to_json
+      expect(response.body).to eq(expected_response)
+    end
+    it "an empty result when not found" do
+      api_get :username, untrusted_application_token, parameters: { username: 'foo' }
+      expect(response.code).to eq('200')
+      expected_response = [].to_json
+      expect(response.body).to eq(expected_response)
     end
   end
 
