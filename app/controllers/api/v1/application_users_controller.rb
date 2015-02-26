@@ -112,10 +112,9 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}
   EOS
   def username
-    OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, ApplicationUser)
+    OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, ApplicationUser)
     username = params[:username]
-    # N.B. references{:user} must be added to the query when/if upgraded to Rails4
-    respond_with ApplicationUser.includes{user}.where{user.username.eq username},
+    respond_with ApplicationUser.includes(:user).joins(:user).where{user.username.eq username},
                  represent_with: Api::V1::ApplicationUsersRepresenter
   end
 
