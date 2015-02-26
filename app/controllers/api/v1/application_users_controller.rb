@@ -1,6 +1,6 @@
 class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   #before_filter :get_app_user, :only => [:show, :update, :destroy]
-  
+
   resource_description do
     api_versions "v1"
     short_description 'Records which users interact with which applications, as well the users'' preferences for each app.'
@@ -82,7 +82,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
 
     Example:
 
-    `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending 
+    `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, ApplicationUser)
@@ -133,6 +133,32 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
 #def destroy
 #  standard_destroy(ApplicationUser, app_user.id)
 #end
+
+  ###############################################################
+  # username
+  ###############################################################
+
+  api :GET, '/application_users/username/:username',
+            'Gets a single User with the specified username.'
+  description <<-EOS
+      All users of OpenStax have an associated User object.  This endpoint
+      allows querying additional data on a user when all that is known is the
+      User's username.
+
+      Admins (for Accounts only) are identified by the is_administrator boolean.
+      Some additional user information can be found in associations, such as
+      email addresses in ContactInfos and the password hash in Identity.
+
+      Users have the following String attributes:
+      username, first_name, last_name, full_name, title
+
+    #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}
+  EOS
+  def username
+    OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
+    outputs = SearchUsers.call("username:#{params[:username]}", {exact: true}).outputs
+    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
+  end
 
   ###############################################################
   # updates

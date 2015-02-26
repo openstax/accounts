@@ -46,6 +46,25 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
   end
 
+  describe "username" do
+    it "returns a single result" do
+      api_get :username, trusted_application_token, parameters: { username: 'foo_bb' }
+      expect(response.code).to eq('200')
+      expected_response = {
+        total_count: 1,
+        items: [
+          {
+            id: bob_brown.id,
+            username: bob_brown.username,
+            first_name: bob_brown.first_name,
+            last_name: bob_brown.last_name
+          }
+        ]
+      }.to_json
+      expect(response.body).to eq(expected_response)
+    end
+  end
+
   describe "index" do
 
     it "returns a single result well" do
