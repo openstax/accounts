@@ -5,8 +5,8 @@ class ApplicationUserAccessPolicy
     # Human users are not allowed
     return false if requestor.is_human?
 
-    # Apps can only call search, updates and updated
-    return [:search, :updates, :updated].include?(action)
+    # Apps can only call read, search, updates and updated
+    return [:read, :search, :updates, :updated].include?(action)
   end
 
 end
