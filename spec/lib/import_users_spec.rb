@@ -44,6 +44,7 @@ describe ImportUsers do
     expect(user1.title).to eq('Dr')
     expect(user1.casual_name).to eq('User')
     expect(user1.name).to eq('Dr User One')
+    expect(user1.state).to eq("active")
     expect(user1.identity.authenticate('password')).to be_true
     expect(user1.identity.password_expired?).to be_true
     expect(user1.contact_infos.email_addresses.length).to eq(1)

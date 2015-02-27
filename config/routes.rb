@@ -60,7 +60,9 @@ Accounts::Application.routes.draw do
   api :v1, :default => true do
     resources :users, only: [:index]
 
-    resource :user, only: [:show, :update]
+    resource :user, only: [:show, :update] do
+      post 'pending/:email',  action: 'pending'
+    end
 
     resources :application_users, only: [:index] do
       collection do

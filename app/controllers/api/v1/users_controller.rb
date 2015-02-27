@@ -76,7 +76,7 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     Example:
 
-    `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending 
+    `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
@@ -118,6 +118,24 @@ class Api::V1::UsersController < Api::V1::ApiController
   def update
     raise SecurityTransgression unless current_human_user
     standard_update(User.find(current_human_user.id))
+  end
+
+  ###############################################################
+  # find_pending
+  ###############################################################
+
+  api :POST, '/pending/:email', 'Finds or creates a pending user by email address.'
+  description <<-EOS
+    Creates a pending user with the given ID.  Only the user's id is returned.
+
+    #{json_schema(Api::V1::PendingUserRepresenter, include: :readable)}
+  EOS
+
+  def pending
+    OSU::AccessPolicy.require_action_allowed!(:pending, current_api_user,
+                                              current_human_user)
+    outputs = FindOrCreatePendingUser.call(params[:email]).outputs
+    respond_with outputs[:user], represent_with: Api::V1::PendingUserRepresenter
   end
 
 end

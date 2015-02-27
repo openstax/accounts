@@ -2,15 +2,14 @@ FactoryGirl.define do
   factory :user do
     username { SecureRandom.hex(3) }
     person
-    is_temp false
-
+    state 'active' # otherwise the default from DB will be to 'temp'
     trait :admin do
       is_administrator true
     end
 
     factory :temp_user do
       person nil
-      is_temp true
+      state 'temp'
     end
 
     trait :terms_agreed do
@@ -32,11 +31,11 @@ FactoryGirl.define do
       # end
 
       after(:build) do |user, evaluator|
-        evaluator.emails_count.times do 
+        evaluator.emails_count.times do
           user.contact_infos << FactoryGirl.build(:email_address)
         end
       end
     end
   end
-  
+
 end

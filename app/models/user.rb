@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
 
   USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
   USERNAME_MAX_LENGTH = 50
+  VALID_STATES = ['temp', 'pending', 'active']
 
   belongs_to :person, inverse_of: :users
 
@@ -33,6 +34,9 @@ class User < ActiveRecord::Base
   validates :username, uniqueness: { case_sensitive: false },
                        if: :username_changed?
 
+  validates :state, inclusion: { in: VALID_STATES,
+                                 message: "must be one of #{VALID_STATES.join(',')}" }
+
   delegate_to_routine :destroy
 
   attr_accessible :title, :first_name, :last_name, :full_name, :suffix
@@ -60,6 +64,31 @@ class User < ActiveRecord::Base
 
   def is_application?
     false
+  end
+
+  # State helpers.
+  #
+  # A User model begins life in the "temp" state, and can then be claimed by another user
+  # who originated from an OAuth login. Upon it being claimed it will be removed and it's
+  # data merged with the claimant.
+  #
+  # A User can also be created by a one of the consumer applications as a stand-in
+  # for a person who has not yet (or may never) created an account.  In this case
+  # the User model will be in the "pending" state.  When the User does signup, they
+  # can claim their pending account and have all the permissions and tasks that's
+  # been assigned to it available to them.
+  #
+  # Once a User model is in use, the state will be "active"
+  def is_active?
+    'active' == state
+  end
+
+  def is_temp?
+    'temp' == state
+  end
+
+  def is_pending?
+    'pending' == state
   end
 
   def name
@@ -96,15 +125,15 @@ class User < ActiveRecord::Base
   def can_read?(resource)
     resource.can_be_read_by?(self)
   end
-  
+
   def can_create?(resource)
     resource.can_be_created_by?(self)
   end
-  
+
   def can_update?(resource)
     resource.can_be_updated_by?(self)
   end
-    
+
   def can_destroy?(resource)
     resource.can_be_destroyed_by?(self)
   end

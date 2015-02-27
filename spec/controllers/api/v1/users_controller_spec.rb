@@ -9,24 +9,24 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
   let!(:admin_user)      { FactoryGirl.create :user, :terms_agreed, :admin }
 
   let!(:user_1_token)    { FactoryGirl.create :doorkeeper_access_token,
-                                              application: untrusted_application, 
+                                              application: untrusted_application,
                                               resource_owner_id: user_1.id }
 
-  let!(:user_2_token)    { FactoryGirl.create :doorkeeper_access_token, 
-                                              application: untrusted_application, 
+  let!(:user_2_token)    { FactoryGirl.create :doorkeeper_access_token,
+                                              application: untrusted_application,
                                               resource_owner_id: user_2.id }
 
 
-  let!(:admin_token)       { FactoryGirl.create :doorkeeper_access_token, 
-                                                application: untrusted_application, 
+  let!(:admin_token)       { FactoryGirl.create :doorkeeper_access_token,
+                                                application: untrusted_application,
                                                 resource_owner_id: admin_user.id }
 
-  let!(:untrusted_application_token) { FactoryGirl.create :doorkeeper_access_token, 
-                                                application: untrusted_application, 
+  let!(:untrusted_application_token) { FactoryGirl.create :doorkeeper_access_token,
+                                                application: untrusted_application,
                                                 resource_owner_id: nil }
 
-  let!(:trusted_application_token) { FactoryGirl.create :doorkeeper_access_token, 
-                                                application: trusted_application, 
+  let!(:trusted_application_token) { FactoryGirl.create :doorkeeper_access_token,
+                                                application: trusted_application,
                                                 resource_owner_id: nil }
 
 
@@ -93,15 +93,15 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       api_get :show, user_1_token
       expect(response.code).to eq('200')
     end
-    
+
     it "should not let id be specified" do
       api_get :show, user_1_token, parameters: {id: admin_user.id}
-      
+
       expected_response = {
         id: user_1.id,
         username: user_1.username
       }.to_json
-      
+
       expect(response.body).to eq(expected_response)
     end
 
@@ -163,8 +163,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       original_contact_infos = user_2.reload.contact_infos
       api_put :update, user_2_token,
                        raw_post_data: {
-                         first_name: "Jerry", 
-                         last_name: "Mouse", 
+                         first_name: "Jerry",
+                         last_name: "Mouse",
                          contact_infos: [
                            {
                              id: user_2.contact_infos.first.id,
@@ -179,4 +179,20 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
   end
 
+  describe "pending" do
+    it "should create a new pending user" do
+      expect{
+        api_post :pending, user_2_token, parameters: {email: 'a-new-email@test.com'}
+      }.to change{User.count}.by(1)
+      expect(response.code).to eq('200')
+      new_user_id = User.order(:id).last.id
+      expect(response.body).to eq({id: new_user_id}.to_json)
+    end
+    it "should return only an id for an existing pending user" do
+      api_post :pending, user_2_token, parameters: {email: user_2.contact_infos.first.value}
+      expect(response.code).to eq('200')
+      expect(response.body).to eq({id: user_2.id}.to_json)
+    end
+
+  end
 end

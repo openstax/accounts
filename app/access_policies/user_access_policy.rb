@@ -7,13 +7,15 @@ class UserAccessPolicy
 
     case action
     when :search
-      requestor.is_application? || !requestor.is_temp? # Non-temp
+      requestor.is_application? || requestor.is_active? # Non temp or pending
     when :read, :update
-      requestor.is_human? && !requestor.is_temp? && \
+      requestor.is_human? && requestor.is_active? && \
       (requestor == user || requestor.is_administrator?) # Self or admin
     when :register
       requestor.is_human? && requestor.is_temp? && \
       requestor == user # Temp users only
+    when :pending
+      requestor.is_application? || requestor.is_active?
     end
   end
 end
