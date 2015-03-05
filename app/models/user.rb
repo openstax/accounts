@@ -24,12 +24,11 @@ class User < ActiveRecord::Base
 
   has_many :oauth_applications, through: :member_groups
 
-  before_validation :sanitize_username
-
   validates :username, presence: true,
                        uniqueness: { case_sensitive: true },
-                       length: {minimum: 3, maximum: USERNAME_MAX_LENGTH},
-                       format: { with: /\A[A-Za-z\d_]+\z/ }
+                       length: { minimum: 3, maximum: USERNAME_MAX_LENGTH },
+                       format: { with: /\A[A-Za-z\d_]+\z/,
+                                 message: "Usernames can only contain letters, numbers, and underscores." } 
 
   validates :username, uniqueness: { case_sensitive: false },
                        if: :username_changed?
@@ -114,11 +113,6 @@ class User < ActiveRecord::Base
   end
 
   protected
-
-  def sanitize_username
-    self.username = username.gsub(USERNAME_DISCARDED_CHAR_REGEX, '')
-                            .slice(0..USERNAME_MAX_LENGTH - 1)
-  end
 
   def generate_uuid
     self.uuid ||= SecureRandom.uuid
