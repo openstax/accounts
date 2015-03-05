@@ -21,9 +21,6 @@ describe CreateUserFromOmniauthData do
 
       CreateUserFromOmniauthData.call(data)
       expect(@username).to eq nickname
-      user = User.new
-      user.username = @username
-      expect(user).to be_valid
     end
   end
 
@@ -45,9 +42,6 @@ describe CreateUserFromOmniauthData do
 
       CreateUserFromOmniauthData.call(data)
       expect(@username).to eq nickname
-      user = User.new
-      user.username = @username
-      expect(user).to be_valid
     end
   end
 
@@ -71,10 +65,6 @@ describe CreateUserFromOmniauthData do
 
       CreateUserFromOmniauthData.call(data)
       expect(@username).to eq "Billy O\'Connor"
-      user = User.new
-      user.username = @username
-      expect(user).to be_valid
-      expect(user.username).to eq "BillyOConnor"
     end
   end
 
