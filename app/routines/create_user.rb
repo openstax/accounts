@@ -21,7 +21,7 @@ class CreateUser
 
       # If the number of attempts is exceeded, the user creation will fail
       for i in 1..USERNAME_ATTEMPTS do
-        break if User.where(username: username).none?
+        break if User.where('LOWER(username) = ?', username).none?
         username = get_valid_username(options[:username])
         username = randomify_username(username)
       end
@@ -46,7 +46,7 @@ class CreateUser
     # Go ahead and sanitize the username knowing that User.create will
     # expect it to adhere to certain rules on length and content.
     base = base.gsub(User::USERNAME_DISCARDED_CHAR_REGEX, '')
-               .slice(0..User::USERNAME_MAX_LENGTH - 1)
+               .slice(0..User::USERNAME_MAX_LENGTH - 1).downcase
   end
 
   def randomify_username(base)
