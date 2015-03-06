@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150128173719) do
+ActiveRecord::Schema.define(:version => 20150303204158) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(:version => 20150128173719) do
     t.string   "uid"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
-    t.index ["user_id", "provider"], :name => "index_authentications_on_user_id_scoped", :unique => true
+    t.index ["user_id", "provider"], :name => "index_authentications_on_user_id_scoped"
   end
 
   create_table "contact_infos", :force => true do |t|
