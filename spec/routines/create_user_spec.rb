@@ -25,11 +25,11 @@ describe CreateUser do
       expect(outcome.errors).to be_empty  
     end
 
-    it "succeeds when a username without spaces is already taken" do
-      FactoryGirl.create(:user, username: "userone")
+    it "succeeds when the sanitized downcased username is already taken" do
+      FactoryGirl.create(:user, username: "Userone")
       outcome = nil
       expect {
-        outcome = CreateUser.call(username: "user one", ensure_no_errors: true)
+        outcome = CreateUser.call(username: "User One", ensure_no_errors: true)
       }.to change{User.count}.by 1
       expect(outcome.errors).to be_empty
     end
