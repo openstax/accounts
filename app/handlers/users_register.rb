@@ -5,8 +5,10 @@ class UsersRegister
   paramify :register do
     attribute :i_agree, type: boolean
     attribute :username, type: String
+    attribute :title, type: String
     attribute :first_name, type: String
     attribute :last_name, type: String
+    attribute :suffix, type: String
     attribute :full_name, type: String
     attribute :contract_1_id, type: Integer
     validates :contract_1_id, presence: true
@@ -29,8 +31,10 @@ class UsersRegister
     end
 
     caller.username = register_params.username
+    caller.title = register_params.title if !register_params.title.blank?
     caller.first_name = register_params.first_name if !register_params.first_name.blank?
     caller.last_name = register_params.last_name if !register_params.last_name.blank?
+    caller.suffix = register_params.suffix if !register_params.suffix.blank?
     caller.full_name = register_params.full_name if !register_params.full_name.blank?
     caller.save
 

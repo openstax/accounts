@@ -41,8 +41,8 @@ class UsersController < ApplicationController
   def user_params
     up = params[:user]
     return {} unless up.is_a? Hash
-    up = up.slice(:title, :first_name, :last_name)
-    up[:full_name] = "#{up[:first_name]} #{up[:last_name]}"
+    up = up.slice(:title, :first_name, :last_name, :suffix)
+    up[:full_name] = "#{up[:first_name]} #{up[:last_name]} #{up[:suffix]}"
     up
   end
 

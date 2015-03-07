@@ -8,12 +8,16 @@
       <%= f.label :title, "Title" %>
     </span>
 
-    <span class="col-sm-4">
+    <span class="col-sm-3">
       <%= f.label :first_name, "First Name" %>
     </span>
 
-    <span class="col-sm-4">
+    <span class="col-sm-3">
       <%= f.label :last_name, "Last Name" %>
+    </span>
+
+    <span class="col-sm-2">
+      <%= f.label :suffix, 'Suffix' %>
     </span>
   </div>
   <div class="row">
@@ -21,16 +25,19 @@
       <%= f.text_field :title %>
     </span>
 
-    <span class="col-sm-4">
+    <span class="col-sm-3">
       <%= f.text_field :first_name, value: user.first_name || \
                                            user.guessed_first_name %>
     </span>
 
-    <span class="col-sm-4">
+    <span class="col-sm-3">
       <%= f.text_field :last_name, value: user.last_name || \
                                           user.guessed_last_name %>
     </span>
 
+    <span class="col-sm-2">
+      <%= f.text_field :suffix, value: user.suffix %>
+    </span>
     <span class="col-sm-3">
       <%= f.submit "Update Profile", class: 'standard' %>
     </span>
