@@ -59,7 +59,7 @@ class ImportUsers
     person = Person.create!
     @user = User.new
     @user.username = username
-    @user.state = 'active'
+    @user.state = 'activated'
     @user.title = title
     @user.first_name = first_name
     @user.last_name = last_name
