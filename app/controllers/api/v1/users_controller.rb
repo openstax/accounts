@@ -121,21 +121,23 @@ class Api::V1::UsersController < Api::V1::ApiController
   end
 
   ###############################################################
-  # find_pending
+  # find_unclaimed
   ###############################################################
 
-  api :POST, '/pending/:email', 'Finds or creates a pending user by email address.'
+  api :POST, '/unclaimed/:email', 'Finds or creates a user by email address.'
   description <<-EOS
-    Creates a pending user with the given ID.  Only the user's id is returned.
+    Finds or creates a user with the given email. The user will be created
+    with it's state set to "unclaimed" meaning that it is a place-holder for
+    an user who has not yet completed the sign up process.
 
-    #{json_schema(Api::V1::PendingUserRepresenter, include: :readable)}
+    #{json_schema(Api::V1::UnclaimedUserRepresenter, include: :readable)}
   EOS
 
-  def pending
-    OSU::AccessPolicy.require_action_allowed!(:pending, current_api_user,
+  def unclaimed
+    OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user,
                                               current_human_user)
-    outputs = FindOrCreatePendingUser.call(params[:email]).outputs
-    respond_with outputs[:user], represent_with: Api::V1::PendingUserRepresenter
+    outputs = FindOrCreateUnclaimedUser.call(params[:email]).outputs
+    respond_with outputs[:user], represent_with: Api::V1::UnclaimedUserRepresenter
   end
 
 end

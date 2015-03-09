@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
 
   USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
   USERNAME_MAX_LENGTH = 50
-  VALID_STATES = ['temp', 'pending', 'active']
+  VALID_STATES = ['temp', 'unclaimed', 'activated']
 
   belongs_to :person, inverse_of: :users
 
@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
                        if: :username_changed?
 
   validates :state, inclusion: { in: VALID_STATES,
-                                 message: "must be one of #{VALID_STATES.join(',')}" }
+                                message: "must be one of #{VALID_STATES.join(',')}" }
 
   delegate_to_routine :destroy
 
@@ -74,21 +74,17 @@ class User < ActiveRecord::Base
   #
   # A User can also be created by a one of the consumer applications as a stand-in
   # for a person who has not yet (or may never) created an account.  In this case
-  # the User model will be in the "pending" state.  When the User does signup, they
-  # can claim their pending account and have all the permissions and tasks that's
-  # been assigned to it available to them.
+  # the User model will be in the "unclaimed" state.  When the User does signup, they
+  # can claim the account and recieve all the permissions and tasks
+  # that were assigned to it in the interm.
   #
-  # Once a User model is in use, the state will be "active"
-  def is_active?
-    'active' == state
+  # Once a User model is cleared for use, the state is set to "activated"
+  def is_activated?
+    'activated' == state
   end
 
   def is_temp?
     'temp' == state
-  end
-
-  def is_pending?
-    'pending' == state
   end
 
   def name

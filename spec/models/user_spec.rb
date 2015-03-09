@@ -124,8 +124,8 @@ describe User do
 
     it "can be set to active" do
       user = FactoryGirl.create(:user)
-      user.state = 'active'
-      expect(user.save!).to be_true
+      user.state = 'activated'
+      expect(user.save).to be_true
       expect(user.reload.is_temp?).to be_false
     end
 
@@ -133,9 +133,9 @@ describe User do
       user = FactoryGirl.create(:user)
       user.state = 'temp'
       expect(user.is_temp?).to    be_true
-      expect(user.is_pending?).to be_false
-      user.state = 'pending'
-      expect(user.is_pending?).to be_true
+      expect(user.is_activated?).to be_false
+      user.state = 'activated'
+      expect(user.is_activated?).to be_true
       expect(user.is_temp?).to    be_false
     end
 

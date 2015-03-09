@@ -179,17 +179,17 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
   end
 
-  describe "pending" do
-    it "should create a new pending user" do
+  describe "unclaimed" do
+    it "should create a new user" do
       expect{
-        api_post :pending, user_2_token, parameters: {email: 'a-new-email@test.com'}
+        api_post :unclaimed, user_2_token, parameters: {email: 'a-new-email@test.com'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('200')
       new_user_id = User.order(:id).last.id
       expect(response.body).to eq({id: new_user_id}.to_json)
     end
-    it "should return only an id for an existing pending user" do
-      api_post :pending, user_2_token, parameters: {email: user_2.contact_infos.first.value}
+    it "should return only an id for an existing user" do
+      api_post :unclaimed, user_2_token, parameters: {email: user_2.contact_infos.first.value}
       expect(response.code).to eq('200')
       expect(response.body).to eq({id: user_2.id}.to_json)
     end

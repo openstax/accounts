@@ -87,6 +87,19 @@ RSpec.describe UsersController, type: :controller do
       expect(FinePrint.signed_contract?(temp_user, contract_1)).to eq true
       expect(FinePrint.signed_contract?(temp_user, contract_2)).to eq true
     end
+
+    it "claims an unclaimed account" do
+      user = FactoryGirl.create :user, state: 'unclaimed'
+      expect(user.state).to eq 'unclaimed'
+      controller.sign_in! user
+      contract_1 = FinePrint::Contract.first
+      contract_2 = FinePrint::Contract.last
+      put 'register', register: {i_agree: true,
+                                 username: "my_username",
+                                 contract_1_id: contract_1.id,
+                                 contract_2_id: contract_2.id}
+      expect(user.reload.state).to eq 'activated'
+    end
   end
 
 end

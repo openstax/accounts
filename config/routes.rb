@@ -61,7 +61,7 @@ Accounts::Application.routes.draw do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update] do
-      post 'pending/:email',  action: 'pending'
+      post 'unclaimed/:email',  action: 'unclaimed'
     end
 
     resources :application_users, only: [:index] do
