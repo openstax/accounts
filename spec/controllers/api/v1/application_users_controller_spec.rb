@@ -45,9 +45,9 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
   end
 
-  describe "username returns" do
+  describe "find by username returns" do
     it "a single result when username matches" do
-      api_get :username, untrusted_application_token, parameters: { username: 'foo_bb' }
+      api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo_bb' }
       expect(response.code).to eq('200')
       expected_response = [{
         id: bob_brown.application_users.first.id,
@@ -60,12 +60,17 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       }].to_json
       expect(response.body).to eq(expected_response)
     end
-    it "an empty result when not found" do
-      api_get :username, untrusted_application_token, parameters: { username: 'foo' }
-      expect(response.code).to eq('200')
-      expected_response = [].to_json
-      expect(response.body).to eq(expected_response)
+    it "raises not found when when not found" do
+      expect {
+        api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo' }
+      }.to raise_error(ActiveRecord::RecordNotFound)
     end
+    it "only finds users belonging to the requesting application" do
+      expect {
+        api_get :find_by_username, trusted_application_token, parameters: { username: 'billy_20' }
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
   end
 
   describe "index" do

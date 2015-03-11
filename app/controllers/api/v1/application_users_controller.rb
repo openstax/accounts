@@ -92,30 +92,21 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   end
 
   ###############################################################
-  # username
+  # find_by_username
   ###############################################################
 
   api :GET, '/application_users/username/:username',
-      'Gets a single User with the specified username.'
+      'Gets a single ApplicationUser with the specified username.'
   description <<-EOS
-      All users of OpenStax have an associated User object.  This endpoint
-      allows querying additional data on a user when all that is known is the
-      User's username.
-
-      Admins (for Accounts only) are identified by the is_administrator boolean.
-      Some additional user information can be found in associations, such as
-      email addresses in ContactInfos and the password hash in Identity.
-
-      Users have the following String attributes:
-      username, first_name, last_name, full_name, title
-
     #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}
   EOS
-  def username
-    OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, ApplicationUser)
-    username = params[:username]
-    respond_with ApplicationUser.includes(:user).joins(:user).where{user.username.eq username},
-                 represent_with: Api::V1::ApplicationUsersRepresenter
+  def find_by_username
+    application_user = ApplicationUser.includes(:user).joins(:user).where({
+      :user           => { :username => params[:username] },
+      :application_id => current_api_user.application.id
+    }).first!
+    OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, application_user)
+    respond_with [application_user], represent_with: Api::V1::ApplicationUsersRepresenter
   end
 
   ###############################################################

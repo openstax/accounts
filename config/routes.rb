@@ -64,7 +64,7 @@ Accounts::Application.routes.draw do
 
     resources :application_users, only: [:index] do
       collection do
-        get 'username/:username', action: 'username'
+        get 'find/username/:username', action: 'find_by_username'
         get 'updates'
         put 'updated'
       end
