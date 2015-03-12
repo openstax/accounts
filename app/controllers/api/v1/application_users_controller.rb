@@ -95,10 +95,10 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   # find_by_username
   ###############################################################
 
-  api :GET, '/application_users/username/:username',
+  api :GET, '/application_users/find/username/:username',
       'Gets a single ApplicationUser with the specified username.'
   description <<-EOS
-    #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}
+    #{json_schema(Api::V1::ApplicationUserRepresenter, include: :readable)}
   EOS
   def find_by_username
     application_user = ApplicationUser.includes(:user).joins(:user).where({
@@ -106,7 +106,7 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
       :application_id => current_api_user.application.id
     }).first!
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, application_user)
-    respond_with [application_user], represent_with: Api::V1::ApplicationUsersRepresenter
+    respond_with application_user, represent_with: Api::V1::ApplicationUserRepresenter
   end
 
   ###############################################################
