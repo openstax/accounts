@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(:version => 20150303204158) do
     t.string   "uid"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
-    t.index ["user_id", "provider"], :name => "index_authentications_on_user_id_scoped"
+    t.index ["user_id", "provider", "uid"], :name => "index_authentications_on_provider_uid_scoped"
   end
 
   create_table "contact_infos", :force => true do |t|
