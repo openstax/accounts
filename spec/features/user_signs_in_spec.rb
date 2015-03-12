@@ -122,24 +122,18 @@ feature 'User logs in as a local user', js: true do
     click_link 'Sign in'
     expect(page).to have_content("Sign in with your one OpenStax account!")
 
+    expect(page).to have_css("a[id='twitter-login-button'] img[title='Sign in using your Twitter account']")
     click_omniauth_link('twitter')
-
     expect(page).to have_content('Nice to meet you,')
-    expect(page).to have_no_link('twitter-login-button')
+    expect(page).to have_css("a.adding[id='twitter-login-button'] img[title='Sign in with a different Twitter account']")
 
+    expect(page).to have_css("a[id='google_oauth2-login-button'] img[title='Sign in using your Google account']")
     click_omniauth_link('google_oauth2')
+    expect(page).to have_css("a.adding[id='google_oauth2-login-button'] img[title='Sign in with a different Google account']")
 
-    expect(page).to have_content('Nice to meet you (again),')
-    expect(page).to have_no_link('twitter-login-button')
-    expect(page).to have_no_link('google_oauth2-login-button')
-
+    expect(page).to have_css("a[id='facebook-login-button'] img[title='Sign in using your Facebook account']")
     click_omniauth_link('facebook')
-
-    expect(page).to have_content('Nice to meet you (again),')
-    expect(page).to have_no_link('twitter-login-button')
-    expect(page).to have_no_link('google_oauth2-login-button')
-    expect(page).to have_no_link('facebook-login-button')
-    expect(page).to have_no_content('left-or-block')
+    expect(page).to have_css("a.adding[id='facebook-login-button'] img[title='Sign in with a different Facebook account']")
 
     fill_in 'Username', with: 'jimbo'
     fill_in 'Password', with: 'password'

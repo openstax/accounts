@@ -1,49 +1,27 @@
 <%
-  hide_signup ||= false
-  has_facebook ||= false
-  has_google ||= false
-  has_twitter ||= false
+  hide_signup  ||= false
   has_password ||= false
 %>
 
 <div class="login-options">
 
   <%
-    has_facebook = current_user.authentications.one?{|auth| auth.provider == 'facebook'}
-    has_google   = current_user.authentications.one?{|auth| auth.provider == 'google_oauth2'}
-    has_twitter  = current_user.authentications.one?{|auth| auth.provider == 'twitter'}
     has_password = current_user.authentications.one?{|auth| auth.provider == 'identity'}
-
-    has_all_social = has_facebook && has_google && has_twitter
   %>
 
-  <% unless has_all_social %>
-    <% unless has_facebook %>
-      <%= link_to "/auth/facebook", {class: 'login-button', id: 'facebook-login-button'} do %>
-        <%= image_tag "fb_64.png", title: "Sign in using your Facebook account" -%>
-      <% end %>
-    <% end %>
+  <%= oauth_login_link( "facebook", icon: 'fb_64.png' ) %>
 
-    <% unless has_twitter %>
-      <%= link_to "/auth/twitter", {class: 'login-button', id: 'twitter-login-button'} do %>
-        <%= image_tag "twitter_64.png", title: "Sign in using your Twitter account" -%>
-      <% end %>
-    <% end %>
+  <%= oauth_login_link( "twitter", icon: 'twitter_64.png' ) %>
 
-    <% unless has_google %>
-      <%= link_to "/auth/google_oauth2", {class: 'login-button', id: 'google_oauth2-login-button'} do %>
-        <%= image_tag "g_64.png", title: "Sign in using your Google account" -%>
-      <% end %>
-    <% end %>
-  <% end %>
+  <%= oauth_login_link( "google_oauth2", title: "Google", icon: 'g_64.png' ) %>
 
-  <% unless has_all_social || has_password %>
+
+
+  <% unless has_password %>
     <div class="or-bar">
       <div class="or-text">OR</div>
     </div>
-  <% end %>
 
-  <% unless has_password %>
     <div class="password-login">
       <%= form_tag '/auth/identity/callback' do %>
         <label for='auth_key'>Username</label><input type='text' id='auth_key' name='auth_key'/>
@@ -61,9 +39,4 @@
     </div>
   <% end %>
 
-  <% if has_all_social && has_password %>
-    <div class='no-more-login-options'>
-      There are no more login options available!
-    </div>
-  <% end %>
 </div>

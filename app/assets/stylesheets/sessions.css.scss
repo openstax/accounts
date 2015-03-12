@@ -13,12 +13,27 @@ $login-options-width: 300px;
   float: right;
   text-align: center;
 
-  .no-more-login-options {
-    font-style: italic;
-  }
-
   .login-button {
-    padding: 10px;
+      padding: 10px;
+      position: relative;
+      &.adding {
+          img {
+
+          }
+          &:before{
+              content: "+";
+              display: block;
+              border: 1px solid grey;
+              width: 25px;
+              height: 25px;
+              position: absolute;
+              bottom: 23px;
+              right: 10px;
+              background: darkblue;
+              border-bottom-left-radius: 5px;
+              opacity: 0.6;
+          }
+      }
   }
 
   .or-bar {
@@ -177,10 +192,6 @@ $login-options-width: 300px;
     }
 
     .login-options {
-      .no-more-login-options {
-        margin-top: 150px;
-      }
-      
       .or-text {
         background-color: whitesmoke;
       }
