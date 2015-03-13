@@ -3,11 +3,11 @@ require 'spec_helper'
 describe MergeUnclaimedUsers do
 
   context 'given an unclaimed account' do
-    let(:unclaimed_user) { u = FactoryGirl.create :user, state: 'unclaimed'
+    let!(:unclaimed_user) { u = FactoryGirl.create :user, state: 'unclaimed'
       AddEmailToUser.call('unclaimeduser@example.com', u)
       u
     }
-    let(:matching_user){ u = FactoryGirl.create(:user)
+    let!(:matching_user){ u = FactoryGirl.create(:user)
       AddEmailToUser.call('unclaimeduser@example.com', u)
       u
     }
