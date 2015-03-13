@@ -6,7 +6,7 @@ before_install:
   - tar xf phantomjs-1.9.7-linux-x86_64.tar.bz2
   - export PATH=$PATH:phantomjs-1.9.7-linux-x86_64/bin/
 install:
-  - bundle install --without production
+  - bundle install --without production --retry=6
   - bundle exec rake db:setup
 script:
   - bundle exec rake
