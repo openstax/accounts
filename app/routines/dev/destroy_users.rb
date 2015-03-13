@@ -4,7 +4,7 @@ module Dev
     lev_routine
 
     uses_routine DestroyUser,
-                 ignored_errors: [:cannot_destroy_non_temp_user]
+                 ignored_errors: [:cannot_destroy_activated_user]
 
     protected
 

@@ -12,7 +12,7 @@ class DestroyUser
     # Make sure object up to date, esp before dependent destroy stuff kicks in
     user.reload
 
-    fatal_error(code: :cannot_destroy_non_temp_user, data: user) if !user.is_temp?
+    fatal_error(code: :cannot_destroy_activated_user, data: user) if user.is_activated?
 
     user.destroy_original
     run(DestroyWhenAssociationEmpty, user.person, :users)
