@@ -121,4 +121,7 @@ Accounts::Application.routes.draw do
     end
   end
 
+  # Any other routes are handled here
+  match '*path', to: 'application#routing_error'
+
 end

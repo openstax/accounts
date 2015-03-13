@@ -14,7 +14,7 @@ feature 'Show error pages', js: true do
 
   scenario 'for not found 404' do
     with_error_pages do
-      visit '/admin/raise_exception/routing_error'
+      visit '/blah'
       expect(page.status_code).to eq(404)
       expect(page).to have_content('404 Not Found')
       visit '/api/raise_exception/routing_error'
