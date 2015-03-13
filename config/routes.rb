@@ -104,14 +104,7 @@ Accounts::Application.routes.draw do
     get '/', to: 'base#index'
 
     put 'cron',                         to: 'base#cron'
-    get 'raise_security_transgression', to: 'base#raise_security_transgression'
-    get 'raise_record_not_found',       to: 'base#raise_record_not_found'
-    get 'raise_routing_error',          to: 'base#raise_routing_error'
-    get 'raise_unknown_controller',     to: 'base#raise_unknown_controller'
-    get 'raise_unknown_action',         to: 'base#raise_unknown_action'
-    get 'raise_missing_template',       to: 'base#raise_missing_template'
-    get 'raise_not_yet_implemented',    to: 'base#raise_not_yet_implemented'
-    get 'raise_illegal_argument',       to: 'base#raise_illegal_argument'
+    get 'raise_exception/:type',        to: 'base#raise_exception', as: 'raise_exception'
 
     resources :users, only: [:index, :show, :update, :edit] do
       post 'become', on: :member
