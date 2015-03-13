@@ -49,6 +49,7 @@ ActionController::Base.class_exec do
     raise exception if Rails.application.config.consider_all_requests_local
     respond_to do |type|
       type.html { render template: "errors/#{status}", status: status }
+      type.json { render json: { error: error, status: status }, status: status }
       type.all { render nothing: true, status: status }
     end
   end
