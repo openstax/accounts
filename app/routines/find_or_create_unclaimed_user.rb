@@ -8,17 +8,18 @@ class FindOrCreateUnclaimedUser
 
   lev_routine
 
-  uses_routine CreateUser,
-               translations: { outputs: { type: :verbatim } }
+  uses_routine CreateUser, translations: { outputs: { type: :verbatim } }
+  uses_routine AddEmailToUser
 
   protected
 
   def exec(email)
-    existing = ContactInfo.email_addresses.with_users.where( value: email ).first
+    existing = EmailAddress.with_users.where(value: email).first
     if existing
       outputs[:user] = existing.user
     else
       run(CreateUser, state: 'unclaimed', ensure_no_errors: true)
+      run(AddEmailToUser, email, outputs[:user])
     end
   end
 

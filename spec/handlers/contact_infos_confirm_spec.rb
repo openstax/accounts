@@ -23,7 +23,7 @@ describe ContactInfosConfirm do
   it 'marks email address as verified if confirmation code matches' do
     params = { code: email.confirmation_code }
     ContactInfosConfirm.any_instance.stub(:params).and_return(params)
-    expect_any_instance_of(ContactInfosConfirm).to receive(:run)
+    expect_any_instance_of(ContactInfosConfirm).to receive(:run).at_least(:once)
     result = ContactInfosConfirm.handle
     expect(result.errors).not_to be_present
   end
