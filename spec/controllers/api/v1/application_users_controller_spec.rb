@@ -38,12 +38,42 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
 
   before(:each) do
     user_2.reload
-
     [bob_brown, bob_jones, tim_jones].each do |user|
       FactoryGirl.create :application_user, user: user,
                          application: untrusted_application,
                          unread_updates: 0
     end
+  end
+
+  describe "find by username returns" do
+    it "a single result when username matches" do
+      api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo_bb' }
+      expect(response.code).to eq('200')
+      expected_response = {
+        id: bob_brown.application_users.first.id,
+        user: {
+          id: bob_brown.id,
+          username: bob_brown.username,
+          first_name: bob_brown.first_name,
+          last_name: bob_brown.last_name
+        }, unread_updates: 0
+      }.to_json
+      expect(response.body).to eq(expected_response)
+    end
+    it "raises not found when when not found" do
+      expect {
+        api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo' }
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+    it "only finds users belonging to the requesting application" do
+      # bob_brown is not a member of the "trusted_application"
+      expect( bob_brown.application_users.where( application_id: trusted_application.id ) ).to be_empty
+      # therefore no results will be returned
+      expect {
+        api_get :find_by_username, trusted_application_token, parameters: { username: bob_brown.username }
+      }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
   end
 
   describe "index" do

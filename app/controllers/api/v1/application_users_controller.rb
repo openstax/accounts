@@ -1,6 +1,6 @@
 class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
   #before_filter :get_app_user, :only => [:show, :update, :destroy]
-  
+
   resource_description do
     api_versions "v1"
     short_description 'Records which users interact with which applications, as well the users'' preferences for each app.'
@@ -82,13 +82,31 @@ class Api::V1::ApplicationUsersController < OpenStax::Api::V1::ApiController
 
     Example:
 
-    `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending 
+    `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, ApplicationUser)
     options = params.slice(:page, :per_page, :order_by)
     outputs = SearchApplicationUsers.call(current_application, params[:q], options).outputs
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
+  end
+
+  ###############################################################
+  # find_by_username
+  ###############################################################
+
+  api :GET, '/application_users/find/username/:username',
+      'Gets a single ApplicationUser with the specified username.'
+  description <<-EOS
+    #{json_schema(Api::V1::ApplicationUserRepresenter, include: :readable)}
+  EOS
+  def find_by_username
+    application_user = ApplicationUser.includes(:user).joins(:user).where({
+      :user           => { :username => params[:username] },
+      :application_id => current_api_user.application.id
+    }).first!
+    OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, application_user)
+    respond_with application_user, represent_with: Api::V1::ApplicationUserRepresenter
   end
 
   ###############################################################
