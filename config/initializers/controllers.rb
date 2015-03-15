@@ -24,16 +24,16 @@ ActionController::Base.class_exec do
 
   def rescue_from_exception(exception)
     # See https://github.com/rack/rack/blob/master/lib/rack/utils.rb#L453 for error names/symbols
-    error, notify = case exception
+    error, status, notify = case exception
     when SecurityTransgression
-      [:forbidden, false]
+      [:forbidden, 403, false]
     when ActiveRecord::RecordNotFound, 
          ActionController::RoutingError,
          ActionController::UnknownController,
          AbstractController::ActionNotFound
-      [:not_found, false]
+      [:not_found, 404, false]
     else
-      [:internal_server_error, true]
+      [:internal_server_error, 500, true]
     end
 
     if notify
@@ -47,7 +47,11 @@ ActionController::Base.class_exec do
     end
 
     raise exception if Rails.application.config.consider_all_requests_local
-    head error
+    respond_to do |type|
+      type.html { render template: "errors/#{status}", status: status }
+      type.json { render json: { error: error, status: status }, status: status }
+      type.all { render nothing: true, status: status }
+    end
   end
 end
 

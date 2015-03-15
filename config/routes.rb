@@ -92,6 +92,10 @@ Accounts::Application.routes.draw do
 
     resources :group_members, only: [:index], path: 'memberships'
     resources :group_owners, only: [:index], path: 'ownerships'
+
+    if !Rails.env.production?
+      get 'raise_exception/:type', to: 'dev#raise_exception'
+    end
   end
 
   use_doorkeeper do
@@ -104,14 +108,7 @@ Accounts::Application.routes.draw do
     get '/', to: 'base#index'
 
     put 'cron',                         to: 'base#cron'
-    get 'raise_security_transgression', to: 'base#raise_security_transgression'
-    get 'raise_record_not_found',       to: 'base#raise_record_not_found'
-    get 'raise_routing_error',          to: 'base#raise_routing_error'
-    get 'raise_unknown_controller',     to: 'base#raise_unknown_controller'
-    get 'raise_unknown_action',         to: 'base#raise_unknown_action'
-    get 'raise_missing_template',       to: 'base#raise_missing_template'
-    get 'raise_not_yet_implemented',    to: 'base#raise_not_yet_implemented'
-    get 'raise_illegal_argument',       to: 'base#raise_illegal_argument'
+    get 'raise_exception/:type',        to: 'base#raise_exception', as: 'raise_exception'
 
     resources :users, only: [:index, :show, :update, :edit] do
       post 'become', on: :member
@@ -123,5 +120,8 @@ Accounts::Application.routes.draw do
       post 'generate', on: :collection
     end
   end
+
+  # Any other routes are handled here
+  match '*path', to: 'application#routing_error'
 
 end

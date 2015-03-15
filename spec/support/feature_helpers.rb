@@ -110,7 +110,14 @@ def app_callback_url
   /^#{@app.redirect_uri}\?code=.+$/
 end
 
-
+def with_error_pages
+  begin
+    Rails.application.config.consider_all_requests_local = false
+    yield if block_given?
+  ensure
+    Rails.application.config.consider_all_requests_local = true
+  end
+end
 
 def click_omniauth_link(provider, options={})
   options[:nickname] ||= 'jimbo'
