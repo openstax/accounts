@@ -1,12 +1,8 @@
-PATH
-  remote: ../action_interceptor
-  specs:
-    action_interceptor (1.0.0)
-      rails (>= 3.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
+    action_interceptor (1.0.0)
+      rails (>= 3.1)
     actionmailer (3.2.17)
       actionpack (= 3.2.17)
       mail (~> 2.5.4)
@@ -329,7 +325,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  action_interceptor!
+  action_interceptor (~> 1.0.0)
   apipie-rails (~> 0.1.2)
   aws-ses (~> 0.6.0)
   bcrypt-ruby (~> 3.0.0)
