@@ -12,6 +12,7 @@ class SessionsController < ApplicationController
                                     :destroy, :ask_new_or_returning]
 
   def new
+    store_fallback
     referer = request.referer
     session[:from_cnx] = (referer =~ /cnx\.org/) unless referer.blank?
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first

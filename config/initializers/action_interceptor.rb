@@ -7,7 +7,7 @@ ActionInterceptor.configure do |config|
   # in order until one of them returns a non-blank string.
   # Available strategies: :session, :referer
   # Default: [ :session, :referer ]
-  config.default_strategies = [ :session, :referer ]
+  config.default_strategies = [ :session ]
 
   # default_url
   # Type: String
