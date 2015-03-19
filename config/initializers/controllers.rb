@@ -39,7 +39,7 @@ ActionController::Base.class_exec do
 
     code = GeneratePasswordResetCode.call(identity).outputs[:code]
     code_hash = { code: code }
-    store_url
+    store_url key: :password_return_to
 
     respond_to do |format|
       format.html { redirect_to reset_password_path(code_hash) }

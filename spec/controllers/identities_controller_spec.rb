@@ -125,8 +125,8 @@ describe IdentitiesController, type: :controller do
         expect(identity.authenticate('password!')).to be_true
       end
 
-      it 'redirects to return_to if it is set in session' do
-        session[:return_to] = 'http://www.example.com/'
+      it 'redirects to password_return_to if it is set in session' do
+        session[:password_return_to] = 'http://www.example.com/'
         post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
 
