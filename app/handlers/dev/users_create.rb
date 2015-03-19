@@ -17,6 +17,10 @@ module Dev
                  translations: { inputs: { scope: :create },
                                  outputs: { type: :verbatim } }
 
+    uses_routine CreateIdentity,
+                 translations: { inputs: { scope: :create },
+                                 outputs: { type: :verbatim } }
+
     protected
 
     def authorized?
@@ -26,6 +30,14 @@ module Dev
     def handle
       run(:create_user, create_params.as_hash(:first_name, :last_name, :username))
       outputs[:user].update_attribute(:is_administrator, create_params.is_admin)
+      user = outputs[:user]
+      run(CreateIdentity, user_id: user.id, password: 'password', password_confirmation: 'password')
+      authentication = Authentication.create(uid: outputs[:identity].id.to_s,
+                                             provider: 'identity',
+                                             user_id: user.id)
+      FinePrint::Contract.all.each do |contract|
+        FinePrint.sign_contract(user, contract)
+      end
     end
 
   end 
