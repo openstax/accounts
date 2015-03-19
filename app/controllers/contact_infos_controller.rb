@@ -1,7 +1,5 @@
 class ContactInfosController < ApplicationController
 
-  acts_as_interceptor
-
   skip_before_filter :authenticate_user!, only: [:confirm]
 
   fine_print_skip_signatures :general_terms_of_use,
@@ -46,9 +44,9 @@ class ContactInfosController < ApplicationController
 
   def confirm
     handle_with(ContactInfosConfirm,
-                complete: lambda { without_interceptor {
+                complete: lambda {
                   render :confirm, status: @handler_result.errors.any? ? 400 : 200
-                } })
+                })
   end
 
   protected

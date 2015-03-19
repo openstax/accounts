@@ -12,15 +12,42 @@ ActionController::Base.class_exec do
                  password: SECRET_SETTINGS[:beta_password]
   end
 
-  interceptor :registration, :expired_password
+  before_filter :authenticate_user!, :registration, :expired_password
 
   fine_print_get_signatures :general_terms_of_use, :privacy_policy
 
-  before_filter :authenticate_user!
-
   rescue_from Exception, :with => :rescue_from_exception
 
+
   protected
+
+  def registration
+    user = (request.format == :json) ? current_human_user : current_user
+    return unless user.try(:is_temp?)
+    store_url key: :registration_return_to
+
+    respond_to do |format|
+      format.html { redirect_to register_path }
+      format.json { head(:forbidden) }
+    end
+  end
+
+  def expired_password
+    user = (request.format == :json) ? current_human_user : current_user
+    identity = user.try(:identity)
+    return unless identity.try(:password_expired?)
+
+    code = GeneratePasswordResetCode.call(identity).outputs[:code]
+    code_hash = { code: code }
+    store_url
+
+    respond_to do |format|
+      format.html { redirect_to reset_password_path(code_hash) }
+      # If we do this check (we probably should), then clients of the API
+      # must handle this response and redirect the user appropriately.
+      format.json { render :json => { expired_password: code_hash }.to_json }
+    end
+  end
 
   def rescue_from_exception(exception)
     # See https://github.com/rack/rack/blob/master/lib/rack/utils.rb#L453 for error names/symbols

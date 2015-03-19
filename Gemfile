@@ -39,7 +39,7 @@ gem "keyword_search", '~> 1.5.0'
 
 gem 'fine_print', '~> 1.4.1'
 
-gem 'action_interceptor', '~> 0.5.1'
+gem 'action_interceptor', path: '../action_interceptor'
 
 gem 'schema_plus', '~> 1.7.1'
 

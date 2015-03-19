@@ -3,12 +3,8 @@
 
 class SessionsController < ApplicationController
 
-  acts_as_interceptor
-
-  skip_before_filter :authenticate_user!,
+  skip_before_filter :authenticate_user!, :expired_password, :registration,
                      only: [:new, :callback, :failure, :destroy]
-  skip_interceptor :expired_password, :registration,
-                    only: [:new, :callback, :failure, :destroy]
 
   fine_print_skip_signatures :general_terms_of_use,
                              :privacy_policy,
@@ -44,7 +40,7 @@ class SessionsController < ApplicationController
     uri = URI(request.referer)
     url = "#{uri.scheme}://#{uri.host}:#{uri.port}/"
 
-    without_interceptor { redirect_to url, notice: "Signed out!" }
+    redirect_to url, notice: "Signed out!"
   end
 
   def ask_new_or_returning
