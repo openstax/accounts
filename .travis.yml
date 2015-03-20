@@ -1,4 +1,8 @@
+sudo: false
 language: ruby
+cache: bundler
+addons:
+  postgresql: "9.3"
 rvm:
   - "1.9.3-p547"
 before_install:
@@ -6,8 +10,9 @@ before_install:
   - tar xf phantomjs-1.9.7-linux-x86_64.tar.bz2
   - export PATH=$PATH:phantomjs-1.9.7-linux-x86_64/bin/
 install:
-  - bundle install --without production --retry=6
+  - bundle install
   - bundle exec rake db:setup
+bundler_args: --without-production --retry=6
 script:
   - bundle exec rake
 notifications:
