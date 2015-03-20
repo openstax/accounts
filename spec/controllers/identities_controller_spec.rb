@@ -117,8 +117,7 @@ describe IdentitiesController, type: :controller do
       it 'changes password if everything validates' do
         post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
-        url = controller.send(:without_interceptor) { root_url }
-        expect(response).to redirect_to(url)
+        expect(response).to redirect_to(root_url)
         expect(flash[:alert]).to be_blank
         expect(flash[:notice]).to include('Your password has been reset successfully! You have been signed in automatically.')
         identity.reload
@@ -126,22 +125,8 @@ describe IdentitiesController, type: :controller do
         expect(identity.authenticate('password!')).to be_true
       end
 
-      it 'redirects to return_to if it is encrypted and signed in url' do
-        post('reset_password', code: identity.password_reset_code.code,
-             reset_password: { password: 'password!', password_confirmation: 'password!'},
-             return_to: ActionInterceptor::Encryptor.encrypt_and_sign(
-                          'http://www.example.com/'))
-
-        expect(response.code).to eq('302')
-        expect(response.header['Location']).to eq('http://www.example.com/')
-
-        identity.reload
-        expect(identity.authenticate('password')).to be_false
-        expect(identity.authenticate('password!')).to be_true
-      end
-
-      it 'redirects to return_to if it is set in session' do
-        session[:interceptor] = {return_to: 'http://www.example.com/'}
+      it 'redirects to password_return_to if it is set in session' do
+        session[:password_return_to] = 'http://www.example.com/'
         post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: 'password!', password_confirmation: 'password!'})
 

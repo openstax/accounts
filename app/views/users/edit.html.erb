@@ -11,4 +11,4 @@
 <%= render partial: 'contact_infos/email_addresses', locals: {
              email_addresses: current_user.email_addresses } %>
 
-<%= without_interceptor { link_to 'Back', intercepted_url } %>
+<%= link_to 'Back', :back %>
