@@ -29,7 +29,7 @@ class ImportUsers
     end
 
     headers = [:row_number, :old_username, :new_username, :errors]
-    CSV.open('import_users_results.csv', 'wb', headers: headers, write_headers: true) do |csv|
+    CSV.open("import_users_results.#{Time.now.utc.iso8601}.csv", 'wb', headers: headers, write_headers: true) do |csv|
       result.each do |old_username, value|
         row_number = value[:row_number]
         user = value[:user] || ''
