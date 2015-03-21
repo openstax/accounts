@@ -55,8 +55,7 @@ describe Api::V1::MessagesController, :type => :api, :version => :v1 do
     }
 
     let!(:expected_response) {
-      { 'id' => (Message.last.try(:id) || 0) + 1,
-        'application_id' => trusted_application.id,
+      { 'application_id' => trusted_application.id,
         'user_id' => user_1.id,
         'send_externally_now' => true,
         'to' => {'user_ids' => [user_2.id, user_3.id, user_4.id, user_5.id]},
@@ -92,7 +91,7 @@ describe Api::V1::MessagesController, :type => :api, :version => :v1 do
       expect(response.code).to eq('201')
 
       outcome = JSON.parse(response.body)
-      expect(outcome).to eq(expected_response)
+      expect(outcome.except('id')).to eq(expected_response)
 
       expect(Mail::TestMailer.deliveries.length).to eq(1)
     end
