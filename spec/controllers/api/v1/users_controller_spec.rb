@@ -160,7 +160,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
     end
 
     it "should not let a user's contact info be modified through the users API" do
-      original_contact_infos = user_2.contact_infos
+      original_contact_infos = user_2.reload.contact_infos
       api_put :update, user_2_token,
                        raw_post_data: {
                          first_name: "Jerry", 

@@ -77,17 +77,17 @@ describe Message do
       expect(message.from_address).to(
         eq(message.application.email_from_address))
 
-      expect(message.to_addresses).to(
-        eq([user_2, user_3].collect{|u| u.contact_infos.first.value}
-                           .join(', ')))
+      [user_2, user_3].each do |user|
+        expect(message.to_addresses).to include(user.contact_infos.first.value)
+      end
 
-      expect(message.cc_addresses).to(
-        eq([user_4, user_5].collect{|u| u.contact_infos.first.value}
-                           .join(', ')))
+      [user_4, user_5].each do |user|
+        expect(message.cc_addresses).to include(user.contact_infos.first.value)
+      end
 
-      expect(message.bcc_addresses).to(
-        eq([user_6, user_7].collect{|u| u.contact_infos.first.value}
-                           .join(', ')))
+      [user_6, user_7].each do |user|
+        expect(message.bcc_addresses).to include(user.contact_infos.first.value)
+      end
     end
 
     it "returns the to, cc and bcc arrays" do

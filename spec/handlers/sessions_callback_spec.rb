@@ -10,15 +10,16 @@ describe SessionsCallback do
         # Identity and authentication already exist,
         # as they were created during the OAuth request phase
         let!(:identity)       { FactoryGirl.create(:identity) }
-        let!(:authentication) { FactoryGirl.create(:authentication,
-                                                   user: identity.user,
-                                                   uid: identity.id.to_s,
-                                                   provider: 'identity') }
+        let!(:authentication) {
+          FactoryGirl.create(:authentication, user: identity.user,
+                                              uid: identity.uid,
+                                              provider: 'identity')
+        }
 
         it "makes new user and prompts new or returning" do
           result = SessionsCallback.handle(
             user_state: user_state,
-            request: MockOmniauthRequest.new('identity', identity.user.id, {})
+            request: MockOmniauthRequest.new('identity', identity.uid, {})
           )
           
           expect(result.outputs[:status]).to eq :new_user
@@ -30,14 +31,15 @@ describe SessionsCallback do
           linked_authentications = user_state.current_user.authentications
           expect(linked_authentications.size).to eq 1
           expect(linked_authentications.first.provider).to eq 'identity'
-          expect(linked_authentications.first.uid).to eq "1"
+          expect(linked_authentications.first.uid).to eq identity.uid
         end
       end
 
       context "with an email that matches existing emails" do
         context "for one user" do
-          let!(:authentication) { FactoryGirl.build(:authentication,
-                                                    provider: 'facebook') }
+          let!(:authentication) { FactoryGirl.create(:authentication,
+                                                     user: nil,
+                                                     provider: 'facebook') }
           let!(:user) { FactoryGirl.create(:user_with_emails, emails_count: 2) }
 
           before(:each) do
@@ -71,7 +73,7 @@ describe SessionsCallback do
     end
 
     context "existing authorization" do
-      let!(:authentication) { FactoryGirl.create(:authentication_with_user) }
+      let!(:authentication) { FactoryGirl.create(:authentication) }
 
       it "logs in the user and returns to app" do
         result = SessionsCallback.handle(
@@ -96,7 +98,7 @@ describe SessionsCallback do
       let(:other_temp_user) { FactoryGirl.create(:temp_user) }
 
       context "new authorization" do
-        let!(:authentication) { FactoryGirl.create(:authentication) }
+        let!(:authentication) { FactoryGirl.create(:authentication, user: nil) }
 
         context "with no email or with an email not in the database" do
           it "adds auth to the signed in user and prompt new or returning" do
@@ -217,7 +219,9 @@ describe SessionsCallback do
       context "new authorization" do
 
         context "with no email or with an email not in the database" do
-          let!(:authentication) { FactoryGirl.create(:authentication) }
+          let!(:authentication) {
+            FactoryGirl.create(:authentication, user: nil)
+          }
 
           it "adds the auth to the signed in user and returns to app" do
             auth_data = {provider: authentication.provider,

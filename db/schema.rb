@@ -248,11 +248,11 @@ ActiveRecord::Schema.define(:version => 20150220133624) do
     t.string   "title"
     t.string   "uuid"
     t.string   "suffix"
-    t.index ["first_name"], :name => "index_users_on_first_name"
-    t.index ["full_name"], :name => "index_users_on_full_name"
-    t.index ["last_name"], :name => "index_users_on_last_name"
+    t.index ["first_name"], :name => "index_users_on_first_name", :case_sensitive => false
+    t.index ["full_name"], :name => "index_users_on_full_name", :case_sensitive => false
+    t.index ["last_name"], :name => "index_users_on_last_name", :case_sensitive => false
     t.index ["username"], :name => "index_users_on_username", :unique => true
-    t.index ["username"], :name => "index_users_on_username_case_insensitive"
+    t.index ["username"], :name => "index_users_on_username_case_insensitive", :case_sensitive => false
     t.index ["uuid"], :name => "index_users_on_uuid", :unique => true
   end
 

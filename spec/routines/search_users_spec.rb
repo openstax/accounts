@@ -34,6 +34,7 @@ describe SearchUsers do
     MarkContactInfoVerified.call(user_1.contact_infos.email_addresses.first)
     MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.first)
     user_4.contact_infos.email_addresses.first.update_attribute(:value, 'jstoly292929@hotmail.com')
+    user_1.reload
   end
 
   it "should match based on username" do

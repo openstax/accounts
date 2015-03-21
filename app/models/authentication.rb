@@ -3,5 +3,6 @@ class Authentication < ActiveRecord::Base
 
   belongs_to :user, inverse_of: :authentications
 
-  validates_uniqueness_of :uid, scope: :provider
+  validates :provider, presence: true
+  validates :uid, presence: true, uniqueness: { scope: :provider }
 end

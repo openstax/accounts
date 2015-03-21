@@ -88,8 +88,7 @@ describe MessagesCreate do
 
   context 'valid params' do
     let!(:expected_response) {
-      { 'id' => (Message.last.try(:id) || 0) + 1,
-        'application_id' => trusted_application.id,
+      { 'application_id' => trusted_application.id,
         'user_id' => user_1.id,
         'send_externally_now' => true,
         'to' => {'user_ids' => [user_2.id, user_3.id, user_4.id, user_5.id]},
@@ -110,8 +109,9 @@ describe MessagesCreate do
       msg = MessagesCreate.handle(params: message_params,
               caller: api_user).outputs[:message]
 
-      expect(Api::V1::MessageRepresenter.new(msg).to_hash).to(
-        eq(expected_response))
+      expect(Api::V1::MessageRepresenter.new(msg).to_hash.except('id')).to(
+        eq(expected_response)
+      )
 
       expect(Message.count).to eq(c + 1)
 

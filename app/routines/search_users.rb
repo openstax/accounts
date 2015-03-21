@@ -45,7 +45,7 @@ class SearchUsers
       with.default_keyword :any
 
       with.keyword :username do |usernames|
-        users = users.where{username.like_any my{prep_names(usernames)}}
+        users = users.where{lower(username).like_any my{prep_names(usernames)}}
       end
 
       with.keyword :first_name do |first_names|

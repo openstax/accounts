@@ -112,10 +112,8 @@ feature 'User logs in as a local user', js: true do
   end
 
   scenario 'keeps trying to find existing account when signing in' do
-    create_user 'jimbo'
-
-    user = User.where{username == 'jimbo'}.first
-    i = FactoryGirl.create :identity, user: user, password: 'password'
+    user = create_user('jimbo')
+    i = user.identity
 
     visit '/'
     expect(page).to have_content('Sign up or Sign in')

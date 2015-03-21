@@ -43,7 +43,7 @@ class SessionsCallback
     # the object didn't yet exist and we had to create it.
 
     authentication_data = { provider: @data.provider,
-                            uid: @data.uid }
+                            uid: @data.uid.to_s }
     authentication = Authentication.where(authentication_data).first
 
     this_authentication_is_new = authentication.nil?
