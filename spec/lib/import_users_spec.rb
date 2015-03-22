@@ -5,12 +5,6 @@ require 'spec_helper'
 require 'import_users'
 
 describe ImportUsers do
-  before :all do
-    if File.exists?('import_users_results.csv')
-      raise "import_users_results.csv is going to be overwritten by tests"
-    end
-  end
-
   before :each do
     @file = Tempfile.new('users.csv')
     @file.close
@@ -18,7 +12,7 @@ describe ImportUsers do
 
   after :each do
     @file.unlink
-    File.unlink('import_users_results.csv') rescue nil
+    File.unlink("import_users_results.#{@timestamp}.csv") rescue nil
   end
 
   it 'raises exception if the csv file does not exist' do
@@ -34,15 +28,17 @@ describe ImportUsers do
       csv << [3, '', '']
     end
 
+    @timestamp = '2015-03-20T14:58:17Z'
+    Time.stub(:now).and_return(Time.parse(@timestamp))
     ImportUsers.new(@file.path, nil).read
 
-    result = CSV.read('import_users_results.csv', headers: true)
+    result = CSV.read("import_users_results.#{@timestamp}.csv", headers: true)
     expect(result.length).to eq(3)
 
     expect(result[0]['row_number']).to eq('1')
     expect(result[0]['old_username']).to eq('user1')
     expect(result[0]['new_username']).to eq('user1')
-    expect(result[0]['errors']).to be_empty
+    expect(result[0]['errors']).to be_nil
 
     user1 = User.find_by_username('user1')
     expect(user1.title).to eq('Dr')
@@ -68,7 +64,7 @@ describe ImportUsers do
     expect(result[2]['row_number']).to eq('3')
     expect(result[2]['old_username']).to be_empty
     expect(result[2]['new_username']).to be_empty
-    expect(result[2]['errors']).not_to be_empty
+    expect(result[2]['errors']).not_to be_nil
   end
 
   it 'creates users from a csv file and links them to an application' do
