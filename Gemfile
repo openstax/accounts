@@ -22,6 +22,8 @@ gem 'lev', '~> 2.0.4'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
+gem 'smarter_csv'
+
 # API documentation
 gem 'apipie-rails', '~> 0.1.2'
 gem 'maruku'
