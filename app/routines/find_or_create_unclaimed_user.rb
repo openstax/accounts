@@ -16,7 +16,11 @@ class FindOrCreateUnclaimedUser
   def exec(email)
     existing = EmailAddress.with_users.where(value: email).first
     if existing
-      outputs[:user] = existing.user
+      if 'unclaimed' == existing.user.state
+        outputs[:user] = existing.user
+      else
+        fatal_error(code: :account_already_claimed, message: "Account has already been claimed")
+      end
     else
       run(CreateUser, state: 'unclaimed', ensure_no_errors: true)
       run(AddEmailToUser, email, outputs[:user])

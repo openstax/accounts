@@ -61,7 +61,7 @@ Accounts::Application.routes.draw do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update] do
-      post 'unclaimed/:email',  action: 'unclaimed'
+      post '/create/email/:email',  action: 'create_unclaimed_by_email'
     end
 
     resources :application_users, only: [:index] do

@@ -121,23 +121,28 @@ class Api::V1::UsersController < Api::V1::ApiController
   end
 
   ###############################################################
-  # find_unclaimed
+  # create_unclaimed_by_email
   ###############################################################
 
-  api :POST, '/unclaimed/:email', 'Finds or creates a user by email address.'
+  api :POST, '/create/email/:email', 'Finds a user a user by email address.'
   description <<-EOS
-    Finds or creates a user with the given email. The user will be created
+    Creates a new user a user with the given email. If The user will be created
     with it's state set to "unclaimed" meaning that it is a place-holder for
     an user who has not yet completed the sign up process.
 
+    If the email is already in use by an unclaimed user, the user's ID is returned
     #{json_schema(Api::V1::UnclaimedUserRepresenter, include: :readable)}
   EOS
 
-  def unclaimed
+  def create_unclaimed_by_email
     OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user,
                                               current_human_user)
-    outputs = FindOrCreateUnclaimedUser.call(params[:email]).outputs
-    respond_with outputs[:user], represent_with: Api::V1::UnclaimedUserRepresenter
+    result = FindOrCreateUnclaimedUser.call(params[:email])
+    if result.errors.any?
+      render json: { errors: result.errors }, status: :unprocessable_entity
+    else
+      respond_with result.outputs[:user], represent_with: Api::V1::UnclaimedUserRepresenter
+    end
   end
 
 end

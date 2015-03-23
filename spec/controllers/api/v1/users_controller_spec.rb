@@ -6,6 +6,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
   let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }
   let!(:user_1)          { FactoryGirl.create :user, :terms_agreed }
   let!(:user_2)          { FactoryGirl.create :user_with_emails, :terms_agreed, first_name: 'Bob', last_name: 'Michaels' }
+  let!(:unclaimed_user)  { FactoryGirl.create :user_with_emails, state:'unclaimed' }
   let!(:admin_user)      { FactoryGirl.create :user, :terms_agreed, :admin }
 
   let!(:user_1_token)    { FactoryGirl.create :doorkeeper_access_token,
@@ -179,19 +180,28 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
   end
 
-  describe "unclaimed" do
+  describe "create/email" do
     it "should create a new user" do
       expect{
-        api_post :unclaimed, user_2_token, parameters: {email: 'a-new-email@test.com'}
+        api_post :create_unclaimed_by_email, user_2_token,
+                 parameters: {email: 'a-new-email@test.com'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('200')
       new_user_id = User.order(:id).last.id
       expect(response.body).to eq({id: new_user_id}.to_json)
     end
-    it "should return only an id for an existing user" do
-      api_post :unclaimed, user_2_token, parameters: {email: user_2.contact_infos.first.value}
-      expect(response.code).to eq('200')
-      expect(response.body).to eq({id: user_2.id}.to_json)
+
+    it "should return only an id for an existing unclaimed user" do
+      api_post :create_unclaimed_by_email, user_2_token,
+               parameters: {email: unclaimed_user.contact_infos.first.value}
+      expect(response.body).to eq({id: unclaimed_user.id}.to_json)
+    end
+
+    it "should return an error a claimed user" do
+      api_post :create_unclaimed_by_email,
+               user_2_token, parameters: {email: user_2.contact_infos.first.value}
+      expect(response.code).to eq('422')
+      expect(JSON.parse(response.body)['errors'].first).to include({"code"=>"account_already_claimed"})
     end
 
   end
