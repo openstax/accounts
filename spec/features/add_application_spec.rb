@@ -16,7 +16,7 @@ feature 'Add application to accounts', js: true do
     create_new_application(true)
     expect(page).to have_content('Application created.')
     expect(page).to have_content('Application: example')
-    expect(page).to have_content('Callback url: http://localhost/')
+    expect(page).to have_content('Callback urls: http://localhost/')
     expect(page.text).to match(/Application Id: [a-z0-9]+/)
     expect(page.text).to match(/Secret: [a-z0-9]+/)
     expect(page).to have_content('Trusted? Yes')
@@ -32,7 +32,7 @@ feature 'Add application to accounts', js: true do
     create_new_application
     expect(page).to have_content('Application created.')
     expect(page).to have_content('Application: example')
-    expect(page).to have_content('Callback url: http://localhost/')
+    expect(page).to have_content('Callback urls: http://localhost/')
     expect(page.text).to match(/Application Id: [a-z0-9]+/)
     expect(page.text).to match(/Secret: [a-z0-9]+/)
     expect(page).to have_content('Trusted? No')

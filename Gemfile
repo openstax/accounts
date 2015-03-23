@@ -4,7 +4,7 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 
 gem 'rails', '3.2.17'
 
-gem 'doorkeeper', '~> 0.6.7'
+gem 'doorkeeper', '~> 1.4.2'
 
 gem 'omniauth'
 gem 'omniauth-identity'
