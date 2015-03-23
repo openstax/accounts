@@ -1,4 +1,5 @@
-require 'csv'
+require 'csv'  # for writing the results csv file
+require 'smarter_csv'  # for more efficient reading of csv files
 
 class ImportUsers
   # Number of objects to create before creating a new transaction
@@ -17,28 +18,22 @@ class ImportUsers
     CSV.open("import_users_results.#{Time.now.utc.iso8601}.csv", 'wb',
              headers: output_headers, write_headers: true) do |csv|
 
-      csv_file_length = CSV.read(@csv_file, headers: true).length
-      i = 0
-
-      begin
+      chunk_index = 0
+      SmarterCSV.process(@csv_file, chunk_size: OBJECTS_PER_TRANSACTION) do |chunk|
         ActiveRecord::Base.transaction do
-          CSV.foreach(@csv_file, headers: true) do |row|
-            # line number is $. - 1 because there's a header line in the csv
-            # file (line_num starts at 1)
-            line_num = $. - 1
-
-            # skip all the lines that don't belong to the current transaction
-            next if (line_num - 1) / OBJECTS_PER_TRANSACTION != i
+          chunk.each_with_index do |row, index|
+            # line_num starts from 1
+            line_num = chunk_index * OBJECTS_PER_TRANSACTION + index + 1;
 
             # create the user for each line in the input csv file
             @user = nil
             username = nil
             error = nil
             begin
-              username = row['username']
-              create_user(username, row['password_digest'],
-                          row['title'], row['first_name'], row['last_name'],
-                          row['full_name'], row['email_address'])
+              username = row[:username] || ''
+              create_user(username, row[:password_digest],
+                          row[:title], row[:first_name], row[:last_name],
+                          row[:full_name], row[:email_address])
               FindOrCreateApplicationUser.call(@app_id, @user.id) unless @app_id.nil?
             rescue ActiveRecord::RecordInvalid => e
               model_name = e.record.class.name
@@ -52,16 +47,11 @@ class ImportUsers
             end
 
             # output result
-            csv << [row['row_number'], username, @user.try(:username), error]
+            csv << [row[:row_number], username, @user.try(:username), error]
           end
-
-          # one transaction finished
-          i += 1
         end
-
-      # the import is done if we're looking for lines beyond the end of the
-      # csv file
-      end while OBJECTS_PER_TRANSACTION * i < csv_file_length
+        chunk_index += 1
+      end
     end
   end
 
