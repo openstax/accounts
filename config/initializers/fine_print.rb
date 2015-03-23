@@ -1,44 +1,62 @@
 # Change the settings below to suit your needs
 # All options are initially set to their default values
 FinePrint.configure do |config|
+
   # Engine Configuration
+  # Must be set in an initializer
 
-  # Proc called with a controller as argument.
+  # Layout to be used for FinePrint's controllers
+  # Default: 'application'
+  config.layout = 'application'
+
+  # Array of custom helpers for FinePrint's controllers
+  # Default: [] (no custom helpers)
+  config.helpers = []
+
+  # Proc called with a controller as self.
   # Returns the current user.
-  # Default: lambda { |controller| controller.current_user }
-  config.current_user_proc = lambda { |c| c.respond_to?(:current_human_user) ? \
-                                          c.current_human_user : c.current_user }
+  # Default: lambda { current_user }
+  config.current_user_proc = lambda { respond_to?(:current_human_user) ? \
+                                      current_human_user : current_user }
 
-  # Proc called with a user as argument.
-  # Returns true iif the user is an admin.
-  # Admins can create and edit agreements and terminate accepted agreements.
-  # Default: lambda { |user| false } (no admins)
-  config.user_admin_proc = lambda { |user| user && user.is_administrator? }
+  # Proc called with a user as argument and a controller as self.
+  # This proc is called when a user tries to access FinePrint's controllers.
+  # Should raise and exception, render or redirect unless the user can manage contracts.
+  # Contract managers can create and edit agreements and terminate accepted agreements.
+  # The default renders 403 Forbidden for all users.
+  # Note: Proc must account for nil users, if current_user_proc returns nil.
+  # Default: lambda { |user| false || head(:forbidden) }
+  config.authenticate_manager_proc = lambda { |user| !user.nil? && \
+                                                     user.is_administrator? || \
+                                                     head(:forbidden) }
 
-  # Proc called with a user as argument
-  # Returns true iif the argument the user is allowed to sign a contract.
-  # In many systems, a non-logged-in user is represented by nil.
-  # However, some systems use something like an AnonymousUser class to represent this state.
-  # If this proc returns false, FinePrint will not ask for signatures and will not
-  # redirect the user, so it's up to the developer to make sure that unsigned users
-  # can't access pages that should require a signed contract to use.
-  # Default: lambda { |user| !!user }
-  config.user_can_sign_proc = lambda { |user| user && !user.is_anonymous? }
+  # Proc called with a user as argument and a controller as self.
+  # This proc is called to check that the given user is allowed to sign contracts.
+  # Should raise and exception, render or redirect unless the user can sign contracts.
+  # You might want to redirect users to a login page if they are not signed in.
+  # The default renders 401 Unauthorized for nil users.
+  # Default: lambda { |user| !user.nil? || head(:unauthorized) }
+  config.authenticate_user_proc = lambda { |user|
+    (!user.nil? && !user.is_anonymous?) || redirect_to(login_path)
+  }
 
+  # Controller Configuration
+  # Can be set either in an initializer or passed as options to `fine_print_require`
 
+  # Proc called with a user and an array of contract ids as arguments and a controller as self.
+  # This proc is called when a user tries to access a resource protected by FinePrint,
+  # but has not signed all the required contracts.
+  # Should raise and exception, render or redirect the user.
+  # The `contract_ids` variable contains the contract ids that need to be signed.
+  # The default redirects users to FinePrint's contract signing views.
+  # The `fine_print_return` method can be used to return from a redirect made here.
+  # Default: lambda { |user, contract_ids|
+  #            redirect_to(fine_print.new_contract_signature_path(
+  #              :contract_id => contract_ids.first
+  #            ))
+  #          }
+  config.redirect_to_contracts_proc = lambda { |user, contract_ids|
+    redirect_to main_app.pose_terms_path(terms: contract_ids)
+  }
 
-  # Contract Configuration
-
-  # What to call the contract names param, passed when the user is redirected
-  # This is visible to the user in the Url
-  # Default: 'contracts'
-  config.contract_param_name = 'terms'
-
-  # Path to redirect users to when they need to agree to contract(s).
-  # A list of contract names that must be agreed to will be available in the `contract_param_name` parameter.
-  # Your code doesn't have to deal with all of them at once, e.g. you can get
-  # the user to agree to the first one and then they'll just eventually be
-  # redirected back to this page with the remaining contract names.
-  # Default: '/'
-  config.contract_redirect_path = '/terms/pose'
 end

@@ -39,7 +39,7 @@ gem 'exception_notification'
 
 gem "keyword_search", '~> 1.5.0'
 
-gem 'fine_print', '~> 1.4.1'
+gem 'fine_print', path: '../fine_print'
 
 gem 'action_interceptor', '~> 1.0.0'
 
