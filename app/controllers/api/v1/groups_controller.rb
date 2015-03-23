@@ -1,4 +1,4 @@
-class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
+class Api::V1::GroupsController < Api::V1::ApiController
 
   resource_description do
     api_versions "v1"
@@ -49,7 +49,7 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::GroupRepresenter, include: :readable)}
   EOS
   def show
-    standard_read(Group, params[:id])
+    standard_read(Group.find(params[:id]))
   end
 
   ###############################################################
@@ -63,7 +63,7 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::GroupRepresenter, include: :writeable)}
   EOS
   def create
-    standard_create(Group) do |group|
+    standard_create(Group.new) do |group|
       group.add_owner(current_human_user)
     end
   end
@@ -81,7 +81,7 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
     #{json_schema(Api::V1::GroupRepresenter, include: :writeable)}
   EOS
   def update
-    standard_update(Group, params[:id])
+    standard_update(Group.find(params[:id]))
   end
 
   ###############################################################
@@ -95,7 +95,7 @@ class Api::V1::GroupsController < OpenStax::Api::V1::ApiController
     Requires the current user to be an owner of the group.
   EOS
   def destroy
-    standard_destroy(Group, params[:id])
+    standard_destroy(Group.find(params[:id]))
   end
 
 end

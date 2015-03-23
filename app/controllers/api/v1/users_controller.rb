@@ -1,4 +1,4 @@
-class Api::V1::UsersController < OpenStax::Api::V1::ApiController
+class Api::V1::UsersController < Api::V1::ApiController
 
   resource_description do
     api_versions "v1"
@@ -117,7 +117,7 @@ class Api::V1::UsersController < OpenStax::Api::V1::ApiController
   EOS
   def update
     raise SecurityTransgression unless current_human_user
-    standard_update(User, current_human_user.id)
+    standard_update(User.find(current_human_user.id))
   end
 
 end

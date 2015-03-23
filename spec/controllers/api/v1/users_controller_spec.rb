@@ -138,7 +138,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
   describe "update" do
     it "should let User update his own User" do
       api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}
-      expect(response.code).to eq('204')
+      expect(response.code).to eq('200')
       user_2.reload
       expect(user_2.first_name).to eq 'Jerry'
       expect(user_2.last_name).to eq 'Mouse'
@@ -146,7 +146,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
     it "should not let id be specified" do
       api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, parameters: {id: admin_user.id}
-      expect(response.code).to eq('204')
+      expect(response.code).to eq('200')
       user_2.reload
       admin_user.reload
       expect(user_2.first_name).to eq 'Jerry'
@@ -172,7 +172,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                            }
                          ]
                        }
-      expect(response.code).to eq('204')
+      expect(response.code).to eq('200')
       user_2.reload
       expect(user_2.contact_infos).to eq original_contact_infos
     end

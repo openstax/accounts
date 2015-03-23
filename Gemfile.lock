@@ -37,9 +37,6 @@ GEM
       json
       rails (>= 3.0.10)
     arel (3.0.3)
-    attribeautiful (0.0.7)
-      activesupport (~> 3.0)
-      eager_beaver (~> 0.0.4)
     aws-ses (0.6.0)
       builder
       mail (> 2.2.5)
@@ -92,10 +89,10 @@ GEM
       activerecord (>= 3.0, < 4.1)
       delayed_job (>= 3.0, < 4.1)
     diff-lcs (1.2.4)
+    diffy (3.0.7)
     docile (1.1.3)
     doorkeeper (0.6.7)
       railties (~> 3.1)
-    eager_beaver (0.0.4)
     erubis (2.7.0)
     eventmachine (1.0.3)
     exception_notification (4.0.1)
@@ -116,7 +113,6 @@ GEM
     fssm (0.2.10)
     hashie (3.3.2)
     hike (1.2.3)
-    hooks (0.3.3)
     i18n (0.6.11)
     jbuilder (1.4.2)
       activesupport (>= 3.0.0)
@@ -186,16 +182,19 @@ GEM
     omniauth-twitter (1.0.0)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
-    openstax_api (2.2.4)
-      doorkeeper (>= 0.5)
+    openstax_api (5.0.1)
+      doorkeeper (>= 0.5, < 2.0)
       exception_notification (>= 4.0)
-      openstax_utilities (>= 1.0.1)
+      lev (>= 1.0.0)
+      openstax_utilities (>= 4.2.0)
       rails (>= 3.1)
       representable (>= 1.8)
-      roar (>= 0.12.1)
+      responders
+      roar (>= 0.12.1, < 1.0)
       roar-rails (>= 0.1.2)
-    openstax_utilities (2.2.1)
-      attribeautiful (>= 0.0.7)
+    openstax_utilities (4.2.0)
+      keyword_search
+      lev
       rails (>= 3.1)
     pg (0.17.1)
     poltergeist (1.5.0)
@@ -239,17 +238,19 @@ GEM
       multi_json
       nokogiri
       uber (~> 0.0.7)
+    responders (1.1.2)
+      railties (>= 3.2, < 4.2)
     rest-client (1.7.2)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     roar (0.12.2)
       representable (>= 1.6.0)
-    roar-rails (0.1.4)
+    roar-rails (0.1.6)
       actionpack
-      hooks
       railties (>= 3.0.0)
       roar (>= 0.11.13)
       test_xml (>= 0.1.6)
+      uber
     rspec-core (2.14.5)
     rspec-expectations (2.14.2)
       diff-lcs (>= 1.1.3, < 2.0)
@@ -287,7 +288,8 @@ GEM
       polyamorous (~> 0.6.0)
     term-ansicolor (1.3.0)
       tins (~> 1.0)
-    test_xml (0.1.6)
+    test_xml (0.1.7)
+      diffy (~> 3.0)
       nokogiri (>= 1.3.2)
     therubyracer (0.12.1)
       libv8 (~> 3.16.14.0)
@@ -354,8 +356,8 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api (~> 2.2.4)
-  openstax_utilities (~> 2.2.1)
+  openstax_api
+  openstax_utilities
   pg
   poltergeist
   quiet_assets
