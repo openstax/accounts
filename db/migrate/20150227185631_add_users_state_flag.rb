@@ -1,6 +1,7 @@
 class AddUsersStateFlag < ActiveRecord::Migration
   def up
-    add_column :users, :state, :string, default: 'temp'
+
+    add_column :users, :state, :string, null: false, default: 'temp'
     execute "update users set state='temp' where is_temp='t'"
     execute "update users set state='activated' where is_temp='f'"
     remove_column :users, :is_temp
