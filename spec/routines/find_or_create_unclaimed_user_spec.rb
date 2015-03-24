@@ -31,11 +31,37 @@ describe FindOrCreateUnclaimedUser do
 
   context "given a username" do
 
-    context "of existing user" do
+    context "of existing unclaimed user" do
 
       it "returns that user" do
         found = FindOrCreateUnclaimedUser.call(username: user.username).outputs.user
         expect(found).to eq(user)
+      end
+
+      context "and a password" do
+
+        it "sets the password" do
+          found = FindOrCreateUnclaimedUser.call(
+            username: user.username, password:"apassword",
+            password_confirmation: "apassword"
+          ).outputs.user
+          expect(found.identity.authenticate('apassword')).to be_true
+        end
+      end
+
+    end
+
+    context "of existing user" do
+
+      it "does not set the password" do
+        user = FactoryGirl.create :user
+        expect(user.identity).to be_nil
+        found = FindOrCreateUnclaimedUser.call(
+            username: user.username, password:"apassword",
+            password_confirmation: "apassword"
+        ).outputs.user
+        expect(found).to be_nil
+        expect(user.reload.identity).to be_nil
       end
 
     end
@@ -44,12 +70,24 @@ describe FindOrCreateUnclaimedUser do
 
       it "creates a new user with that username" do
         expect {
-          newuser = FindOrCreateUnclaimedUser.call(
+          new_user=FindOrCreateUnclaimedUser.call(
             username: "bobsmith", email:"anunusedemail@example.com"
           ).outputs.user
-          expect(newuser.username).to eq("bobsmith")
-          expect(newuser.contact_infos.first.value).to eq("anunusedemail@example.com")
+          expect(new_user.username).to eq("bobsmith")
+          expect(new_user.contact_infos.first.value).to eq("anunusedemail@example.com")
         }.to change(User,:count).by(1)
+      end
+
+      context "and a password" do
+
+        it "sets the password" do
+          new_user=FindOrCreateUnclaimedUser.call(
+            password:'password', password_confirmation: 'password', username: "bobsmith",
+            email:"anunusedemail@example.com"
+          ).outputs.user
+          expect(new_user.identity.authenticate('password')).to be_true
+        end
+
       end
 
     end
@@ -65,4 +103,5 @@ describe FindOrCreateUnclaimedUser do
     end
 
   end
+
 end

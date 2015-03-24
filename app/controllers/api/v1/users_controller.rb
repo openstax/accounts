@@ -140,13 +140,17 @@ class Api::V1::UsersController < Api::V1::ApiController
         desc: "Email address to search by or assign to newly created user"
   param :username, String, required: false,
         desc: "Username to search by or assign to newly created user"
+  param :password, String, required: false,
+        desc: "Password to set for user, username must also be given"
+  param :password_confirmation, String, required: false,
+        desc: "Confirmation password to use for user, username must also be given"
   error 409, "Email has already been claimed"
 
   def find_or_create
     OSU::AccessPolicy.require_action_allowed!(:unclaimed,
                                               current_api_user, current_human_user)
     result = FindOrCreateUnclaimedUser.call(
-      params.slice(:email, :username, :password)
+      params.slice(:email, :username, :password, :password_confirmation)
     )
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
