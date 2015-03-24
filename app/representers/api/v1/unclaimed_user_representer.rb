@@ -5,9 +5,7 @@ module Api::V1
     property :id,
              type: Integer,
              readable: true,
-             writeable: false,
-             schema_info: {
-               required: true
-             }
+             writeable: false
+
   end
 end

@@ -180,10 +180,10 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
   end
 
-  describe "create/email" do
+  describe "find or create" do
     it "should create a new user" do
       expect{
-        api_post :create_unclaimed_by_email, user_2_token,
+        api_post :find_or_create, user_2_token,
                  parameters: {email: 'a-new-email@test.com'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('200')
@@ -192,15 +192,15 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
     end
 
     it "should return only an id for an existing unclaimed user" do
-      api_post :create_unclaimed_by_email, user_2_token,
+      api_post :find_or_create, user_2_token,
                parameters: {email: unclaimed_user.contact_infos.first.value}
       expect(response.body).to eq({id: unclaimed_user.id}.to_json)
     end
 
     it "should return an error a claimed user" do
-      api_post :create_unclaimed_by_email,
+      api_post :find_or_create,
                user_2_token, parameters: {email: user_2.contact_infos.first.value}
-      expect(response.code).to eq('422')
+      expect(response.code).to eq('409')
       expect(JSON.parse(response.body)['errors'].first).to include({"code"=>"account_already_claimed"})
     end
 

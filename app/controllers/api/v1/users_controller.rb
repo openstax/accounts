@@ -121,25 +121,35 @@ class Api::V1::UsersController < Api::V1::ApiController
   end
 
   ###############################################################
-  # create_unclaimed_by_email
+  # find_or_create
   ###############################################################
 
-  api :POST, '/create/email/:email', 'Finds a user a user by email address.'
+  api :POST, '/find-or-create', 'Finds or Creates a pending user a user.'
   description <<-EOS
-    Creates a new user a user with the given email. If The user will be created
-    with it's state set to "unclaimed" meaning that it is a place-holder for
+    Either finds or creates a new user a user. The new user will be created
+    with the state set to "unclaimed" meaning that it is a place-holder for
     an user who has not yet completed the sign up process.
 
-    If the email is already in use by an unclaimed user, the user's ID is returned
+    An email address must be supplied, and an optional username may be as well.
+
+    If the username or email is already in use by an unclaimed user,
+    a user will not be created and the existing the user's ID is returned
     #{json_schema(Api::V1::UnclaimedUserRepresenter, include: :readable)}
   EOS
+  param :email, String, required: false,
+        desc: "Email address to search by or assign to newly created user"
+  param :username, String, required: false,
+        desc: "Username to search by or assign to newly created user"
+  error 409, "Email has already been claimed"
 
-  def create_unclaimed_by_email
-    OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user,
-                                              current_human_user)
-    result = FindOrCreateUnclaimedUser.call(params[:email])
+  def find_or_create
+    OSU::AccessPolicy.require_action_allowed!(:unclaimed,
+                                              current_api_user, current_human_user)
+    result = FindOrCreateUnclaimedUser.call(
+      params.slice(:email, :username, :password)
+    )
     if result.errors.any?
-      render json: { errors: result.errors }, status: :unprocessable_entity
+      render json: { errors: result.errors }, status: :conflict
     else
       respond_with result.outputs[:user], represent_with: Api::V1::UnclaimedUserRepresenter
     end
