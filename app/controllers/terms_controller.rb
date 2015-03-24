@@ -18,7 +18,13 @@ class TermsController < ApplicationController
 
   def show
     # Hide old agreements (should never get them)
-    raise ActiveRecord::RecordNotFound if !@contract.is_latest? && !current_user.is_administrator?
+    raise ActiveRecord::RecordNotFound \
+      if !@contract.is_latest? && !current_user.is_administrator?
+
+    # Prevent routing error email when accessing this route for HTML format
+    respond_to do |format|
+      format.js
+    end
   end
 
   def pose
