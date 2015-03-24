@@ -42,10 +42,10 @@ describe FindOrCreateUnclaimedUser do
 
         it "sets the password" do
           found = FindOrCreateUnclaimedUser.call(
-            username: user.username, password:"apassword",
-            password_confirmation: "apassword"
+            username: user.username, password:"apassword123",
+            password_confirmation: "apassword123"
           ).outputs.user
-          expect(found.identity.authenticate('apassword')).to be_true
+          expect(found.identity.authenticate('apassword123')).to be_true
         end
       end
 
@@ -57,8 +57,8 @@ describe FindOrCreateUnclaimedUser do
         user = FactoryGirl.create :user
         expect(user.identity).to be_nil
         found = FindOrCreateUnclaimedUser.call(
-            username: user.username, password:"apassword",
-            password_confirmation: "apassword"
+            username: user.username, password:"apassword123",
+            password_confirmation: "apassword123"
         ).outputs.user
         expect(found).to be_nil
         expect(user.reload.identity).to be_nil
@@ -82,10 +82,10 @@ describe FindOrCreateUnclaimedUser do
 
         it "sets the password" do
           new_user=FindOrCreateUnclaimedUser.call(
-            password:'password', password_confirmation: 'password', username: "bobsmith",
+            password:'password123', password_confirmation: 'password123', username: "bobsmith",
             email:"anunusedemail@example.com"
           ).outputs.user
-          expect(new_user.identity.authenticate('password')).to be_true
+          expect(new_user.identity.authenticate('password123')).to be_true
         end
 
       end

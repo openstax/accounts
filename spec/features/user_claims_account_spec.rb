@@ -3,7 +3,10 @@ require 'spec_helper'
 feature 'User claims an unclaimed account', js: true do
 
   scenario 'a new user signs up and completes profile when an account is waiting', js: true do
-    unclaimed_user = FindOrCreateUnclaimedUser.call(email:'unclaimeduser@example.com').outputs[:user]
+    unclaimed_user = FindOrCreateUnclaimedUser.call(
+      email:'unclaimeduser@example.com', username: 'therulerofallthings',
+      password: "apassword", password_confirmation: "apassword"
+    ).outputs[:user]
     visit '/'
     click_link 'Sign up'
     fill_in 'Username', with: 'unclaimedtestuser'

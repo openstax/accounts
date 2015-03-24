@@ -44,12 +44,16 @@ class FindOrCreateUnclaimedUser
 
   def set_or_create_password(user, options)
     if user.identity
-      run(SetPassword, user.identity, options[:password], options[:confirm_password])
+      run(SetPassword, user.identity, options[:password],
+          options[:confirm_password], 0 # expire immediately
+         )
     else
-      run(CreateIdentity, {
-            user_id: user.id, password: options[:password],
-            password_confirmation: options[:password_confirmation]
-          }).outputs.identity
+      identity = run(CreateIdentity, {
+                       user_id: user.id, password: options[:password],
+                       password_confirmation: options[:password_confirmation]
+                     }).outputs.identity
+      identity.password_expires_at = DateTime.now
+      identity.save!
       user.reload # is needed in order to notice the newly created identity
     end
   end
