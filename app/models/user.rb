@@ -125,15 +125,15 @@ class User < ActiveRecord::Base
   def can_read?(resource)
     resource.can_be_read_by?(self)
   end
-
+  
   def can_create?(resource)
     resource.can_be_created_by?(self)
   end
-
+  
   def can_update?(resource)
     resource.can_be_updated_by?(self)
   end
-
+  
   def can_destroy?(resource)
     resource.can_be_destroyed_by?(self)
   end

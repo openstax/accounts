@@ -76,7 +76,7 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     Example:
 
-    `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending 
+    `last_name, username DESC` &ndash; sorts by last name ascending, then by username descending
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)

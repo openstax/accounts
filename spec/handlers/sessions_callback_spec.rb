@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SessionsCallback do
-
+  
   let(:user_state) { MockUserState.new }
 
   context "not previously signed in" do
@@ -21,13 +21,13 @@ describe SessionsCallback do
             user_state: user_state,
             request: MockOmniauthRequest.new('identity', identity.uid, {})
           )
-
+          
           expect(result.outputs[:status]).to eq :new_user
 
           expect(user_state.current_user).not_to be_nil
           expect(user_state.current_user.person).to be_nil
           expect(user_state.current_user.is_temp?).to be_true
-
+          
           linked_authentications = user_state.current_user.authentications
           expect(linked_authentications.size).to eq 1
           expect(linked_authentications.first.provider).to eq 'identity'
@@ -82,7 +82,7 @@ describe SessionsCallback do
                                            authentication.uid,
                                            {})
         )
-
+        
         expect(result.outputs[:status]).to eq :returning_user
         expect(user_state.current_user).to eq authentication.user
       end
@@ -170,7 +170,7 @@ describe SessionsCallback do
                                                  authentication.uid,
                                                  {})
               )
-
+              
               expect(result.outputs[:status]).to eq :new_user
               expect(user_state.current_user).to eq signed_in_user
               expect(authentication.reload.user).to eq signed_in_user
@@ -284,7 +284,7 @@ describe SessionsCallback do
                 request: MockOmniauthRequest.new(authentication.provider,
                                                  authentication.uid,
                                                  {})
-              )
+              )        
               expect(authentication.reload.user).to eq signed_in_user
               expect(result.outputs[:status]).to eq :returning_user
               expect(User.exists?(other_temp_user.id)).to be_false
