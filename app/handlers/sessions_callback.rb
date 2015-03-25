@@ -25,6 +25,7 @@ class SessionsCallback
   uses_routine CreateUserFromOmniauthData
   uses_routine TransferOmniauthData
   uses_routine DestroyUser
+  uses_routine ActivateUnclaimedUser
 
   protected
 
@@ -94,7 +95,7 @@ class SessionsCallback
         sign_in!(authentication_user)
         status = (authentication_user.is_temp? ? :new_user : :returning_user)
       end
-
+      
     else
 
       if signed_in?
@@ -129,6 +130,9 @@ class SessionsCallback
   end
 
   def sign_in!(user)
+    if user.is_unclaimed?
+      run(ActivateUnclaimedUser, user)
+    end
     @user_state.sign_in!(user)
   end
 
@@ -141,7 +145,7 @@ class SessionsCallback
   # it in
   def first_user_lives_second_user_dies(living_user, dying_user)
     if living_user != dying_user
-      run(TransferAuthentications, dying_user.authentications, living_user)
+      run(TransferAuthentications, dying_user.authentications, living_user)  
       run(DestroyUser, dying_user)
     end
     if current_user != living_user

@@ -54,6 +54,9 @@ class FindOrCreateUnclaimedUser
                      }).outputs.identity
       identity.password_expires_at = DateTime.now
       identity.save!
+      user.authentications.create!(
+        provider: 'identity', uid: identity.id.to_s,
+      )
       user.reload # is needed in order to notice the newly created identity
     end
   end

@@ -87,6 +87,10 @@ class User < ActiveRecord::Base
     'temp' == state
   end
 
+  def is_unclaimed?
+    'unclaimed' == state
+  end
+
   def name
     result = full_name.present? ? full_name : guessed_full_name || username
     title.present? ? "#{title} #{result}" : result
