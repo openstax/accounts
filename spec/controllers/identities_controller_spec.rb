@@ -5,7 +5,7 @@ describe IdentitiesController, type: :controller do
   describe 'reset_password' do
     render_views
 
-    let!(:user) { FactoryGirl.create :user, username: 'user_one' }
+    let!(:user) { FactoryGirl.create :user, :terms_agreed, username: 'user_one' }
     let!(:identity) {
       i = FactoryGirl.create :identity, user: user, password: 'password'
       i.save!
@@ -23,8 +23,8 @@ describe IdentitiesController, type: :controller do
                                  password: 'new_password',
                                  password_confirmation: 'new_password'}
         expect(response.status).to eq 302
-        expect(!!identity.reload.authenticate('password')).to eq true
-        expect(!!identity.authenticate('new_password')).to eq false
+        expect(!!identity.reload.authenticate('password')).to eq false
+        expect(!!identity.authenticate('new_password')).to eq true
       end
     end
 

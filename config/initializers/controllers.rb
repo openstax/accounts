@@ -18,7 +18,6 @@ ActionController::Base.class_exec do
 
   rescue_from Exception, :with => :rescue_from_exception
 
-
   protected
 
   def registration
