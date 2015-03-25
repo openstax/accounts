@@ -30,12 +30,10 @@ module Oauth
 
     def show
       OSU::AccessPolicy.require_action_allowed!(:read, @user, @application)
-      super
     end
 
     def edit
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      super
     end
 
     def update

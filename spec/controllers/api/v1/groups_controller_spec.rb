@@ -424,8 +424,8 @@ describe Api::V1::GroupsController, :type => :api, :version => :v1 do
               parameters: {id: group_3.id},
               raw_post_data: {name: 'MyGroup'}
 
-      expect(response.code).to eq('204')
-      expect(response.body).to be_blank
+      expect(response.code).to eq('200')
+      expect(response.body).not_to be_blank
       expect(group_3.reload.name).to eq('MyGroup')
     end
   end

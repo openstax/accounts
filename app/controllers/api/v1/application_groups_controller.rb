@@ -1,4 +1,4 @@
-class Api::V1::ApplicationGroupsController < OpenStax::Api::V1::ApiController
+class Api::V1::ApplicationGroupsController < Api::V1::ApiController
   resource_description do
     api_versions "v1"
     short_description 'Records which applications interact with which groups.'

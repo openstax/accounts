@@ -1,4 +1,4 @@
-class Api::V1::GroupOwnersController < OpenStax::Api::V1::ApiController
+class Api::V1::GroupOwnersController < Api::V1::ApiController
 
   resource_description do
     api_versions "v1"

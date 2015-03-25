@@ -1,7 +1,6 @@
 # The rake tasks in this module are used to manage trusted OpenStax
 # oauth applications.  Currently, Exercises, Tutor, Exchange and
 # Biglearn oauth applications are managed by these tasks.
-require 'doorkeeper/models/active_record/application'
 
 namespace :accounts do
   namespace :ost do
@@ -19,6 +18,8 @@ namespace :accounts do
     # to that group.  Once the user and the group are setup, it
     # creates each of the applications declared above.
     task :create_apps, [:app_domain_suffix, :admin_password] => :environment do |t, args|
+      require 'doorkeeper/models/active_record/application'
+
       ActiveRecord::Base.transaction do
         begin
           # Get the application url suffix if provided
@@ -72,6 +73,8 @@ namespace :accounts do
     # applications.  For each application found, it returns the
     # application id and secret as a JSON object list.
     task :get_app_info => :environment do
+      require 'doorkeeper/models/active_record/application'
+
       apps = Doorkeeper::Application.where(:name => app_data.map { |app| app[:name] })
       apps = apps.map { |app|  {:name => app.name,
                                 :id => app.uid,

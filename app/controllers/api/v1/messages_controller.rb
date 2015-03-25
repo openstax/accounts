@@ -1,4 +1,4 @@
-class Api::V1::MessagesController < OpenStax::Api::V1::ApiController
+class Api::V1::MessagesController < Api::V1::ApiController
   include Lev::HandleWith
 
   resource_description do

@@ -4,7 +4,7 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 
 gem 'rails', '3.2.17'
 
-gem 'doorkeeper', '~> 0.6.7'
+gem 'doorkeeper', '~> 1.4.2'
 
 gem 'omniauth'
 gem 'omniauth-identity'
@@ -15,8 +15,8 @@ gem 'omniauth-google-oauth2'
 gem 'squeel'
 gem 'quiet_assets'
 
-gem 'openstax_utilities', '~> 2.2.1'
-gem 'openstax_api', '~> 2.2.4'
+gem 'openstax_utilities'
+gem 'openstax_api'
 gem 'lev', '~> 2.0.4'
 
 gem 'jquery-rails'

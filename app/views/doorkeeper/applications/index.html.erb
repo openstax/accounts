@@ -1,29 +1,32 @@
-<div class="span16">
-  <%= page_heading "OAuth Applications" %>
-  
-  <p><%= link_to 'New Application', new_oauth_application_path, style: 'float:right' %></p>
-
-  <table class="std-list-1">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Callback url</th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @applications.each do |application| %>
-        <tr id="application_<%= application.id %>">
-          <td><%= link_to application.name, [:oauth, application] %></td>
-          <td><%= application.redirect_uri %></td>
-          <td><%= link_to('Edit', edit_oauth_application_path(application)) \
-            if OSU::AccessPolicy.action_allowed?(:update, @user, application) %></td>
-          <td><%= link_to('Remove', [:oauth, application], :data => { :confirm => 'Are you sure?' }, :method => :delete) \
-            if OSU::AccessPolicy.action_allowed?(:destroy, @user, application) %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-
+<div class="page-header">
+  <h1>OAuth Applications</h1>
 </div>
+  
+<p><%= link_to 'New Application', new_oauth_application_path, style: 'float:right' %></p>
+
+<table class="table table-striped std-list-1">
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Callback urls</th>
+    <th></th>
+    <th></th>
+  </tr>
+</thead>
+<tbody>
+  <% @applications.each do |application| %>
+    <tr id="application_<%= application.id %>">
+      <td><%= link_to application.name, [:oauth, application] %></td>
+      <td>
+        <% application.redirect_uri.split.each do |uri| %>
+          <div><%= uri %></div>
+        <% end %>
+      </td>
+      <td><%= link_to('Edit', edit_oauth_application_path(application), class: 'btn btn-link') \
+        if OSU::AccessPolicy.action_allowed?(:update, @user, application) %></td>
+      <td><%= render('delete_form', application: application) \
+        if OSU::AccessPolicy.action_allowed?(:destroy, @user, application) %></td>
+    </tr>
+  <% end %>
+</tbody>
+</table>
