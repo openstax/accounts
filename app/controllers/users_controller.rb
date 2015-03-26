@@ -2,9 +2,8 @@ class UsersController < ApplicationController
 
   skip_before_filter :registration, only: [:register]
 
-  fine_print_skip_signatures :general_terms_of_use,
-                             :privacy_policy,
-                             only: [:register]
+  fine_print_skip :general_terms_of_use, :privacy_policy,
+                  only: [:register]
 
   def edit
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)

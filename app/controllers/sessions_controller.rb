@@ -6,10 +6,9 @@ class SessionsController < ApplicationController
   skip_before_filter :authenticate_user!, :expired_password, :registration,
                      only: [:new, :callback, :failure, :destroy]
 
-  fine_print_skip_signatures :general_terms_of_use,
-                             :privacy_policy,
-                             only: [:new, :callback, :failure,
-                                    :destroy, :ask_new_or_returning]
+  fine_print_skip :general_terms_of_use, :privacy_policy,
+                  only: [:new, :callback, :failure,
+                         :destroy, :ask_new_or_returning]
 
   def new
     store_fallback

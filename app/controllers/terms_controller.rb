@@ -1,8 +1,7 @@
 class TermsController < ApplicationController
   skip_before_filter :authenticate_user!, :registration, only: [:index, :show]
 
-  fine_print_skip_signatures :general_terms_of_use,
-                             :privacy_policy
+  fine_print_skip :general_terms_of_use, :privacy_policy
 
   before_filter :get_contract, only: [:show]
 

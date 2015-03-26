@@ -3,9 +3,8 @@ class IdentitiesController < ApplicationController
   skip_before_filter :authenticate_user!, :expired_password, :registration,
                      only: [:new, :forgot_password, :reset_password]
 
-  fine_print_skip_signatures :general_terms_of_use,
-                             :privacy_policy,
-                             only: [:new, :forgot_password, :reset_password]
+  fine_print_skip :general_terms_of_use, :privacy_policy,
+                  only: [:new, :forgot_password, :reset_password]
 
   def new
     @errors ||= env['errors']
