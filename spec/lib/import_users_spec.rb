@@ -8,6 +8,9 @@ describe ImportUsers do
   before :each do
     @file = Tempfile.new('users.csv')
     @file.close
+
+    @timestamp = '2015-03-20T14:58:17Z'
+    Time.stub(:now).and_return(Time.parse(@timestamp))
   end
 
   after :each do
@@ -28,10 +31,7 @@ describe ImportUsers do
       csv << [3, '', '']
     end
 
-    @timestamp = '2015-03-20T14:58:17Z'
-    Time.stub(:now).and_return(Time.parse(@timestamp))
     ImportUsers.new(@file.path, nil).read
-
     result = CSV.read("import_users_results.#{@timestamp}.csv", headers: true)
     expect(result.length).to eq(3)
 
