@@ -3,7 +3,7 @@ class StaticPagesController < ApplicationController
                      only: [:api, :copyright, :home, :status]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:api, :copyright, :home, :status]
+                  only: [:api, :copyright, :status]
 
   skip_protect_beta :only => [:status]
 
