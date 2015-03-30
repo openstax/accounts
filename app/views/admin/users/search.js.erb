@@ -4,11 +4,11 @@
   <% 
   users = @handler_result.outputs[:items]
 
-  contents = osu.action_list(             
+  contents = osu.action_list(
     records: users,
     list: {
-      headings: ['Username', 'First Name', 'Last Name', ''],
-      widths: ['25%', '25%', '25%', '25%'],
+      headings: ['Username', 'First Name', 'Last Name', '', 'Is Admin?'],
+      widths: ['20%', '20%', '20%', '20%', '20%'],
       data_procs:
         [
           Proc.new { |user| user.username },
@@ -18,7 +18,18 @@
             link_to 'Sign in as', 
                     become_admin_user_path(user),
                     method: :post 
-          }
+          },
+          Proc.new { |user|
+            if user.is_administrator
+              'Yes'
+            else
+              link_to 'Make them admin',
+                      make_admin_admin_user_path(user),
+                      method: :post,
+                      remote: true,
+                      class: 'make-admin'
+            end
+          },
         ]
     }
   ) %>
@@ -26,4 +37,6 @@
   
   $("#search-results-list").html("<%= j(contents) %>");  
   $('#search-results-list').prepend("<%= j(render 'admin/users/search_pagination') %>");
+  // reload the users table after clicking on the make admin link
+  $('.make-admin').bind('ajax:complete', function() { $('.tab-pane.active form').submit(); });
 <% end %>
