@@ -18,73 +18,61 @@ class FindOrCreateUnclaimedUser
   protected
 
   def exec(options)
-    user = nil
-
-    if options[:username]
-      user = find_or_create_by_username(options)
-    elsif options[:email]
-      user = find_or_create_by_email(options)
-    else
-      fatal_error(code: :invalid_input, message: "Must provide either email or username")
-      return
+    unless options[:email] || options[:username]
+      fatal_error(code: :invalid_input, message: "Must provide email or username")
     end
 
-    if 'unclaimed' == user.state
-      # If a username and password was given, set the unclaimed user's identity
-      if options[:username] && options[:password]
-        set_or_create_password(user, options)
-      end
-      outputs[:user] = user
-    else
+    user = find_user(options)
+
+    # Never operate on or disclose info of of already claimed users
+    if user && !user.is_unclaimed?
       fatal_error(code: :account_already_claimed, message: "Account has already been claimed")
-      return
     end
+
+    # output either the found unclaimed user or a freshly created one
+    outputs[:user] = user || create_user(options)
   end
 
+  def create_user(options)
+    user = run(CreateUser,
+               state: 'unclaimed', username: options[:username],
+               ensure_no_errors: true).outputs.user
 
-  def set_or_create_password(user, options)
-    if user.identity
-      run(SetPassword, user.identity, options[:password],
-          options[:confirm_password], 0 # expire immediately
-         )
-    else
+    # routine is smart and gracefully handles case of missing options[:email]
+    run(AddEmailToUser, options[:email], user)
+
+    if options[:password]
       identity = run(CreateIdentity, {
                        user_id: user.id, password: options[:password],
                        password_confirmation: options[:password_confirmation]
                      }).outputs.identity
+      # set the identity's password as expired, as soon as the user logs in
+      # they'll be prompted to reset it
       identity.password_expires_at = DateTime.now
       identity.save!
       user.authentications.create!(
         provider: 'identity', uid: identity.id.to_s,
       )
-      user.reload # is needed in order to notice the newly created identity
     end
+    return user
+
   end
 
-  def find_or_create_by_email(options)
-    email = EmailAddress.with_users.where(value: options[:email]).first
-    if email
-      return email.user
-    else
-      user = run(CreateUser,
-                 state: 'unclaimed', username: options[:username],
-                 ensure_no_errors: true).outputs.user
-      run(AddEmailToUser, options[:email], user)
-      return user
+  # Attempt to find a user by either the username or email address
+  def find_user(options)
+    user = nil
+    if options[:username]
+      user = User.where(username: options[:username]).first
     end
-  end
-
-  def find_or_create_by_username(options)
-    user = User.where( username: options[:username] ).first
-    if user.nil?
-      user = run(CreateUser,
-                 state: 'unclaimed', username: options[:username],
-                 ensure_no_errors: true).outputs.user
-      if options[:email]
-        run(AddEmailToUser, options[:email], user)
+    if !user && options[:email]
+      email = EmailAddress.with_users.where(value: options[:email]).first
+      if email
+        user = email.user
       end
     end
     return user
   end
+
+
 
 end

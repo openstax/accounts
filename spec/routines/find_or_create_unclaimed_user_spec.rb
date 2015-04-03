@@ -4,7 +4,7 @@ describe FindOrCreateUnclaimedUser do
 
   let(:user) { FactoryGirl.create :user, state: 'unclaimed' }
 
-  context "Given an eamil" do
+  context "Given an email" do
 
     context "of existing user" do
 
@@ -48,28 +48,13 @@ describe FindOrCreateUnclaimedUser do
 
       context "and a password" do
 
-        it "sets the password" do
+        it "does not set the password" do
           found = FindOrCreateUnclaimedUser.call(
             username: user.username, password:"apassword123",
             password_confirmation: "apassword123"
           ).outputs.user
-          expect(found.identity.authenticate('apassword123')).to be_true
+          expect(found.identity).to be_nil
         end
-      end
-
-    end
-
-    context "of existing user" do
-
-      it "does not set the password" do
-        user = FactoryGirl.create :user
-        expect(user.identity).to be_nil
-        found = FindOrCreateUnclaimedUser.call(
-            username: user.username, password:"apassword123",
-            password_confirmation: "apassword123"
-        ).outputs.user
-        expect(found).to be_nil
-        expect(user.reload.identity).to be_nil
       end
 
     end
@@ -93,7 +78,7 @@ describe FindOrCreateUnclaimedUser do
             password:'password123', password_confirmation: 'password123', username: "bobsmith",
             email:"anunusedemail@example.com"
           ).outputs.user
-          expect(new_user.identity.authenticate('password123')).to be_true
+          expect(new_user.reload.identity.authenticate('password123')).to be_true
         end
 
       end
