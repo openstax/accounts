@@ -124,34 +124,37 @@ class Api::V1::UsersController < Api::V1::ApiController
   # find_or_create
   ###############################################################
 
-  api :POST, '/find-or-create', 'Finds or Creates a pending user a user.'
+  api :POST, '/find-or-create', 'Finds or Creates a user account.'
   description <<-EOS
-    Either finds or creates a new user a user. The new user will be created
-    with the state set to "unclaimed" meaning that it is a place-holder for
+    Either finds or creates a new user. If a new user is created, its
+    state will be "unclaimed" meaning it is a place-holder account for
     an user who has not yet completed the sign up process.
 
-    An email address must be supplied, and an optional username may be as well.
+    An email address or username must be supplied.
 
     If the username or email is already in use by an unclaimed user,
-    a user will not be created and the existing the user's ID is returned
-    #{json_schema(Api::V1::UnclaimedUserRepresenter, include: :readable)}
+    a user will not be created and only the existing the user's ID is returned.
+
+    If the username or email is already in use by an existing account,
+    no action taken will be taken and an error code 'account_already_claimed' is returned
+
+    If an account is created with only an email and no username, it cannot be logged
+    into directly.  It will merged with the user's account when they complete the
+    standard sign up process using a matching email address.
+
+    If an account is created with a username and password, it may be signed into and used
+    immediately once the user agress to the Terms and Conditions.
+
+    #{json_schema(Api::V1::UnclaimedUserRepresenter, include: [:readable, :writable])}
   EOS
-  param :email, String, required: false,
-        desc: "Email address to search by or assign to newly created user"
-  param :username, String, required: false,
-        desc: "Username to search by or assign to newly created user"
-  param :password, String, required: false,
-        desc: "Password to set for user, username must also be given"
-  param :password_confirmation, String, required: false,
-        desc: "Confirmation password to use for user, username must also be given"
-  error 409, "Email has already been claimed"
 
   def find_or_create
     OSU::AccessPolicy.require_action_allowed!(:unclaimed,
                                               current_api_user, current_human_user)
-    result = FindOrCreateUnclaimedUser.call(
-      params.slice(:email, :username, :password, :password_confirmation)
-    )
+    # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
+    # Substitue a Hashie::Mash to read the JSON encoded body
+    payload = consume!(Hashie::Mash.new, represent_with: Api::V1::UnclaimedUserRepresenter)
+    result = FindOrCreateUnclaimedUser.call(payload)
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
