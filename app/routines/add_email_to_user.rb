@@ -27,7 +27,12 @@ class AddEmailToUser
     email_address.save
     transfer_errors_from(email_address, { scope: :email_address }, true)
 
-    # The confirmation info won't be sent if already verified
-    run(SendContactInfoConfirmation, email_address)
+    # Unclaimed accounts only receive a welcome email
+    if user.is_unclaimed?
+      UnclaimedUserMailer.welcome(email_address).deliver
+    else
+      # Others need to be confirmed. The confirmation info won't be sent if already verified
+      run(SendContactInfoConfirmation, email_address)
+    end
   end
 end

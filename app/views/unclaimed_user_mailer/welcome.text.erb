@@ -1,0 +1,9 @@
+Hi <%= @email_address.value %>,
+
+Someone has invited your email address ('<%= @email_address.value %>') to join OpenStax.
+
+Please click the link below to complete the sign up process.
+
+<%= @can_log_in ? login_url : signup_url %>
+
+<%= render :partial => 'shared/email_closing' %>

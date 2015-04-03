@@ -25,6 +25,14 @@ describe FindOrCreateUnclaimedUser do
         }.to change(User,:count).by(1)
       end
 
+      it "sends an invitation email" do
+          expect {
+            FindOrCreateUnclaimedUser.call(email:"anunusedemail@example.com").outputs.user
+            email = ActionMailer::Base.deliveries.last
+            expect(email.subject).to match('You have been invited to join OpenStax')
+          }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
     end
 
   end
