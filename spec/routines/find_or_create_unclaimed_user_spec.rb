@@ -9,9 +9,10 @@ describe FindOrCreateUnclaimedUser do
     context "of existing user" do
 
       it "returns the existing user" do
+        newuser = FactoryGirl.create :user
         AddEmailToUser.call("unclaimeduser@example.com", user, already_verified: true)
         found = FindOrCreateUnclaimedUser.call(email:"unclaimeduser@example.com").outputs.user
-        expect(found).to eq(user)
+        expect(found).to eq(newuser)
       end
 
     end
@@ -63,7 +64,7 @@ describe FindOrCreateUnclaimedUser do
 
       it "creates a new user with that username" do
         expect {
-          new_user=FindOrCreateUnclaimedUser.call(
+          new_user = FindOrCreateUnclaimedUser.call(
             username: "bobsmith", email:"anunusedemail@example.com"
           ).outputs.user
           expect(new_user.username).to eq("bobsmith")
@@ -74,7 +75,7 @@ describe FindOrCreateUnclaimedUser do
       context "and a password" do
 
         it "sets the password" do
-          new_user=FindOrCreateUnclaimedUser.call(
+          new_user = FindOrCreateUnclaimedUser.call(
             password:'password123', password_confirmation: 'password123', username: "bobsmith",
             email:"anunusedemail@example.com"
           ).outputs.user

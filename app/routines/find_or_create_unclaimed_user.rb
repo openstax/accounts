@@ -24,11 +24,6 @@ class FindOrCreateUnclaimedUser
 
     user = find_user(options)
 
-    # Never operate on or disclose info of of already claimed users
-    if user && !user.is_unclaimed?
-      fatal_error(code: :account_already_claimed, message: "Account has already been claimed")
-    end
-
     # output either the found unclaimed user or a freshly created one
     outputs[:user] = user || create_user(options)
   end
