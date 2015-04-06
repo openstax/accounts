@@ -9,10 +9,9 @@ describe FindOrCreateUnclaimedUser do
     context "of existing user" do
 
       it "returns the existing user" do
-        newuser = FactoryGirl.create :user
-        AddEmailToUser.call("unclaimeduser@example.com", user, already_verified: true)
-        found = FindOrCreateUnclaimedUser.call(email:"unclaimeduser@example.com").outputs.user
-        expect(found).to eq(newuser)
+        user = FactoryGirl.create :user_with_emails, emails_count: 1
+        found = FindOrCreateUnclaimedUser.call(email:user.contact_infos.first.value).outputs.user
+        expect(found).to eq(user)
       end
 
     end

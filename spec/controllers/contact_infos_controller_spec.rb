@@ -69,4 +69,29 @@ describe ContactInfosController do
       expect(EmailAddress.find_by_value(@email.value).verified).to be_true
     end
   end
+
+  context "GET 'confirm/unclaimed'" do
+    render_views
+    let(:user){ FactoryGirl.create :user_with_emails, state: 'unclaimed', emails_count: 1 }
+
+    let(:email){
+      FactoryGirl.create(:email_address, user: user,
+                        confirmation_code: '1234', verified: false, value: 'user@example.com' )
+    }
+
+    it "returns error if no code given" do
+      get 'confirm_unclaimed'
+      expect(response.code).to eq('400')
+      expect(response.body).to include("we couldn't find any pending invitations")
+    end
+
+    it "returns success if code matches" do
+      get 'confirm_unclaimed', :code => email.confirmation_code
+      expect(response).to be_success
+      expect(response.body).to include('Thanks for validating your OpenStax invitation')
+      expect(EmailAddress.find_by_value(email.value).verified).to be_true
+    end
+
+  end
+
 end

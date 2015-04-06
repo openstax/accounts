@@ -2,25 +2,22 @@ require "spec_helper"
 
 describe UnclaimedUserMailer do
   let(:user) { FactoryGirl.create :user_with_emails, emails_count:1, state: 'unclaimed' }
-
+  let(:contact_info){ user.contact_infos.first }
   let(:mail) { UnclaimedUserMailer.welcome user.contact_infos.first }
 
   describe "welcome" do
 
-    it "delivers" do
+    it "sets headers properly" do
+      expect(mail.to).to eq([contact_info.value])
       expect(mail.subject).to eq("[OpenStax] You have been invited to join OpenStax")
     end
 
-    it "sets the link to signup when it the user doensn't have an identity" do
-      expect(mail.body).to include(signup_url)
+    it "sets the link with the confirmation code" do
+      expect(mail.body.encoded).to include(
+        confirm_unclaimed_url(code: contact_info.confirmation_code)
+      )
     end
 
-    context "an user with an identity" do
-      before{ FactoryGirl.create :identity, user: user }
-      it "sets the link to login" do
-        expect(mail.body).to include(login_url)
-      end
-    end
 
   end
 
