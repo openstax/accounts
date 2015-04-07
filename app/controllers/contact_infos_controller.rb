@@ -1,9 +1,9 @@
 class ContactInfosController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:confirm]
+  skip_before_filter :authenticate_user!, only: [:confirm, :confirm_unclaimed]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:confirm]
-
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:confirm, :confirm_unclaimed]
+  
   before_filter :get_contact_info, only: [:destroy, :toggle_is_searchable]
 
   def create
@@ -38,6 +38,14 @@ class ContactInfosController < ApplicationController
                   redirect_to profile_path,
                     notice: "A confirmation message has been sent to \"#{
                               @handler_result.outputs[:contact_info].value}\"" })
+  end
+
+
+  def confirm_unclaimed
+    handle_with(ConfirmUnclaimedAccount,
+                complete: lambda {
+                  render :confirm_unclaimed, status: @handler_result.errors.any? ? 400 : 200
+                })
   end
 
   def confirm

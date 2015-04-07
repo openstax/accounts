@@ -41,6 +41,7 @@ Accounts::Application.routes.draw do
   end
   scope controller: 'contact_infos' do
     get 'confirm'
+    get 'confirm/unclaimed', action: :confirm_unclaimed
   end
 
   resources :terms, only: [:index, :show] do
@@ -60,7 +61,9 @@ Accounts::Application.routes.draw do
   api :v1, :default => true do
     resources :users, only: [:index]
 
-    resource :user, only: [:show, :update]
+    resource :user, only: [:show, :update] do
+      post '/find-or-create',    action: 'find_or_create'
+    end
 
     resources :application_users, only: [:index] do
       collection do

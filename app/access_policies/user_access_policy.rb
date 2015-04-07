@@ -7,13 +7,15 @@ class UserAccessPolicy
 
     case action
     when :search
-      requestor.is_application? || !requestor.is_temp? # Non-temp
+      requestor.is_application? || requestor.is_activated?
     when :read, :update
-      requestor.is_human? && !requestor.is_temp? && \
+      requestor.is_human? && requestor.is_activated? && \
       (requestor == user || requestor.is_administrator?) # Self or admin
     when :register
-      requestor.is_human? && requestor.is_temp? && \
-      requestor == user # Temp users only
+      requestor.is_human? && !requestor.is_activated? && \
+      requestor == user # Temp or unclaimed users only
+    when :unclaimed # find-or-create accounts that are a stand-in for a person who's not yet signed up
+      requestor.is_application? || requestor.is_activated?
     end
   end
 end

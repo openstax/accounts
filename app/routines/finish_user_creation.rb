@@ -5,14 +5,14 @@ class FinishUserCreation
   protected
 
   def exec(user)
-    return if !user.is_temp
+    return if user.is_activated?
 
     person = Person.create
 
     transfer_errors_from(person, {type: :verbatim})
 
     user.person_id = person.id
-    user.is_temp   = false
+    user.state     = 'activated'
     user.save
 
     transfer_errors_from(user, {type: :verbatim})

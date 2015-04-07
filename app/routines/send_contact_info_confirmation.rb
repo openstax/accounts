@@ -11,11 +11,15 @@ class SendContactInfoConfirmation
 
     case contact_info.type
     when 'EmailAddress'
-      ConfirmationMailer.instructions(contact_info).deliver  
+      if contact_info.user.is_unclaimed?
+        UnclaimedUserMailer.welcome(contact_info).deliver
+      else
+        ConfirmationMailer.instructions(contact_info).deliver
+      end
     else
       fatal_error(code: :not_yet_implemented, data: contact_info)
     end
-    
+
     contact_info.confirmation_sent_at = Time.now
     contact_info.save
 

@@ -26,7 +26,7 @@ describe SessionsCallback do
 
           expect(user_state.current_user).not_to be_nil
           expect(user_state.current_user.person).to be_nil
-          expect(user_state.current_user.is_temp).to be_true
+          expect(user_state.current_user.is_temp?).to be_true
           
           linked_authentications = user_state.current_user.authentications
           expect(linked_authentications.size).to eq 1

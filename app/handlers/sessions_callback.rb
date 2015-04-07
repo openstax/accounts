@@ -1,4 +1,3 @@
-
 # Handles the omniauth callback.
 #
 # Callers must supply:
@@ -26,6 +25,7 @@ class SessionsCallback
   uses_routine CreateUserFromOmniauthData
   uses_routine TransferOmniauthData
   uses_routine DestroyUser
+  uses_routine ActivateUnclaimedUser
 
   protected
 
@@ -75,13 +75,13 @@ class SessionsCallback
     if authentication_user.present?
 
       if signed_in?
-        if authentication_user.is_temp && current_user.is_temp
+        if authentication_user.is_temp? && current_user.is_temp?
           first_user_lives_second_user_dies(current_user, authentication_user)
           status = :new_user
-        elsif authentication_user.is_temp
+        elsif authentication_user.is_temp?
           first_user_lives_second_user_dies(current_user, authentication_user)
           status = :returning_user
-        elsif current_user.is_temp
+        elsif current_user.is_temp?
           first_user_lives_second_user_dies(authentication_user, current_user)
           status = :returning_user
         else
@@ -93,14 +93,14 @@ class SessionsCallback
         end
       else
         sign_in!(authentication_user)
-        status = (authentication_user.is_temp ? :new_user : :returning_user)
+        status = (authentication_user.is_temp? ? :new_user : :returning_user)
       end
       
     else
 
       if signed_in?
         run(TransferAuthentications, authentication, current_user)
-        status = (current_user.is_temp ? :new_user : :returning_user)
+        status = (current_user.is_temp? ? :new_user : :returning_user)
       else
         outcome = run(CreateUserFromOmniauthData, @data)
         new_user = outcome.outputs[:user]
@@ -130,6 +130,9 @@ class SessionsCallback
   end
 
   def sign_in!(user)
+    if user.is_unclaimed?
+      run(ActivateUnclaimedUser, user)
+    end
     @user_state.sign_in!(user)
   end
 
