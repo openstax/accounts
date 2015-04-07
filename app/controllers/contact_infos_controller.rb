@@ -2,10 +2,8 @@ class ContactInfosController < ApplicationController
 
   skip_before_filter :authenticate_user!, only: [:confirm, :confirm_unclaimed]
 
-  fine_print_skip_signatures :general_terms_of_use,
-                             :privacy_policy,
-                             only: [:confirm, :confirm_unclaimed]
-
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:confirm, :confirm_unclaimed]
+  
   before_filter :get_contact_info, only: [:destroy, :toggle_is_searchable]
 
   def create

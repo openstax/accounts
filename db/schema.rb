@@ -247,7 +247,7 @@ ActiveRecord::Schema.define(:version => 20150323113650) do
     t.string   "title"
     t.string   "uuid"
     t.string   "suffix"
-    t.string   "state",            :default => "temp"
+    t.string   "state",            :default => "temp", :null => false
     t.index ["first_name"], :name => "index_users_on_first_name"
     t.index ["full_name"], :name => "index_users_on_full_name"
     t.index ["last_name"], :name => "index_users_on_last_name"
