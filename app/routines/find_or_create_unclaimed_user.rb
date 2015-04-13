@@ -38,8 +38,9 @@ class FindOrCreateUnclaimedUser
 
     if options[:password]
       identity = run(CreateIdentity, {
-                       user_id: user.id, password: options[:password],
-                       password_confirmation: options[:password_confirmation]
+                       user_id: user.id,
+                       password: options[:password],
+                       password_confirmation: options[:password]
                      }).outputs.identity
       # set the identity's password as expired, as soon as the user logs in
       # they'll be prompted to reset it
@@ -49,8 +50,8 @@ class FindOrCreateUnclaimedUser
         provider: 'identity', uid: identity.id.to_s,
       )
     end
-    return user
 
+    user
   end
 
   # Attempt to find a user by either the username or email address
@@ -65,7 +66,7 @@ class FindOrCreateUnclaimedUser
         user = email.user
       end
     end
-    return user
+    user
   end
 
 
