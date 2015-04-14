@@ -14,8 +14,10 @@ class UserAccessPolicy
     when :register
       requestor.is_human? && !requestor.is_activated? && \
       requestor == user # Temp or unclaimed users only
-    when :unclaimed # find-or-create accounts that are a stand-in for a person who's not yet signed up
-      requestor.is_application? || requestor.is_activated?
+    when :unclaimed
+      # find-or-create accounts that are a stand-in for a person who's not yet signed up
+      # only applications can access this via client credentials
+      requestor.is_application?
     end
   end
 end

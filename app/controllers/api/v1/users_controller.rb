@@ -124,7 +124,7 @@ class Api::V1::UsersController < Api::V1::ApiController
   # find_or_create
   ###############################################################
 
-  api :POST, '/find-or-create', 'Finds or Creates a user account.'
+  api :POST, '/user/find-or-create', 'Finds or Creates a user account.'
   description <<-EOS
     Either finds or creates a new user. If a new user is created, its
     state will be "unclaimed" meaning it is a place-holder account for
@@ -149,8 +149,7 @@ class Api::V1::UsersController < Api::V1::ApiController
   EOS
 
   def find_or_create
-    OSU::AccessPolicy.require_action_allowed!(:unclaimed,
-                                              current_api_user, current_human_user)
+    OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user, User)
     # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
     # Substitue a Hashie::Mash to read the JSON encoded body
     payload = consume!(Hashie::Mash.new, represent_with: Api::V1::UnclaimedUserRepresenter)

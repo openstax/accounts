@@ -181,9 +181,10 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
   end
 
   describe "find or create" do
-    it "should create a new user" do
+    it "should create a new user for an app" do
       expect{
-        api_post :find_or_create, user_2_token,
+        api_post :find_or_create,
+                 trusted_application_token,
                  raw_post_data: {email: 'a-new-email@test.com'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('200')
@@ -191,16 +192,37 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       expect(response.body).to eq({id: new_user_id}.to_json)
     end
 
+    it "should not create a new user for anonymous" do
+      user_count = User.count
+      expect{
+        api_post :find_or_create,
+                 nil,
+                 raw_post_data: {email: 'a-new-email@test.com'}
+      }.to raise_error(SecurityTransgression)
+      expect(User.count).to eq user_count
+    end
+
+    it "should not create a new user for another user" do
+      user_count = User.count
+      expect{
+        api_post :find_or_create,
+                 user_2_token,
+                 raw_post_data: {email: 'a-new-email@test.com'}
+      }.to raise_error(SecurityTransgression)
+      expect(User.count).to eq user_count
+    end
+
     context "should return only an id for an user" do
       it "does so for unclaimed users" do
-        api_post :find_or_create, user_2_token,
+        api_post :find_or_create, trusted_application_token,
                  raw_post_data: {email: unclaimed_user.contact_infos.first.value}
         expect(response.code).to eq('200')
         expect(response.body).to eq({id: unclaimed_user.id}.to_json)
       end
       it "does so for claimed users" do
         api_post :find_or_create,
-                 user_2_token, raw_post_data: {email: user_2.contact_infos.first.value}
+                 trusted_application_token,
+                 raw_post_data: {email: user_2.contact_infos.first.value}
         expect(response.code).to eq('200')
         expect(response.body).to eq({id: user_2.id}.to_json)
       end
