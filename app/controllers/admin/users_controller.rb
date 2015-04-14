@@ -1,7 +1,7 @@
 module Admin
   class UsersController < BaseController
 
-    before_filter :get_user, only: [:show, :edit, :update, :destroy, :become]
+    before_filter :get_user, only: [:show, :edit, :update, :destroy, :become, :make_admin]
 
     def index
       handle_with(UsersSearch,
@@ -26,6 +26,14 @@ module Admin
     def become
       sign_in!(@user)
       redirect_to request.referrer
+    end
+
+    def make_admin
+      if @user.update_attribute(:is_administrator, true)
+        redirect_to request.referrer, notice: 'User successfully updated.'
+      else
+        redirect_to request.referrer, alert: 'Unable to update user.'
+      end
     end
 
   protected
