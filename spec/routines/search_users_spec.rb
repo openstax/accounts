@@ -31,9 +31,9 @@ describe SearchUsers do
   }
 
   before(:each) do
-    MarkContactInfoVerified.call(user_1.contact_infos.email_addresses.first)
-    MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.first)
-    user_4.contact_infos.email_addresses.first.update_attribute(:value, 'jstoly292929@hotmail.com')
+    MarkContactInfoVerified.call(user_1.contact_infos.email_addresses.order(:value).first)
+    MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.order(:value).first)
+    user_4.contact_infos.email_addresses.order(:value).first.update_attribute(:value, 'jstoly292929@hotmail.com')
     user_1.reload
   end
 
@@ -58,19 +58,19 @@ describe SearchUsers do
   end
 
   it "should match based on an exact email address" do
-    email = user_1.contact_infos.email_addresses.first.value
+    email = user_1.contact_infos.email_addresses.order(:value).first.value
     outcome = SearchUsers.call("email:#{email}").outputs.items.to_a
     expect(outcome).to eq [user_1]
   end
 
   it "should not match based on an incomplete email address" do
-    email = user_1.contact_infos.email_addresses.first.value.split('@').first
+    email = user_1.contact_infos.email_addresses.order(:value).first.value.split('@').first
     outcome = SearchUsers.call("email:#{email}").outputs.items.to_a
     expect(outcome).to eq []
   end
 
   it "should not match unsearchable email addresses" do
-    ea = user_1.contact_infos.email_addresses.first
+    ea = user_1.contact_infos.email_addresses.order(:value).first
     email = ea.value
     ea.is_searchable = false
     ea.save!
