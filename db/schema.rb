@@ -205,17 +205,17 @@ ActiveRecord::Schema.define(:version => 20150323113650) do
   end
 
   create_table "oauth_applications", :force => true do |t|
-    t.string   "name",                                                   :null => false
-    t.string   "uid",                                                    :null => false
-    t.string   "secret",                                                 :null => false
-    t.text     "redirect_uri",         :limit => 255,                    :null => false
-    t.datetime "created_at",                                             :null => false
-    t.datetime "updated_at",                                             :null => false
-    t.boolean  "trusted",                             :default => false
+    t.string   "name",                                    :null => false
+    t.string   "uid",                                     :null => false
+    t.string   "secret",                                  :null => false
+    t.text     "redirect_uri",                            :null => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
+    t.boolean  "trusted",              :default => false
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "email_from_address",                  :default => "",    :null => false
-    t.string   "email_subject_prefix",                :default => "",    :null => false
+    t.string   "email_from_address",   :default => "",    :null => false
+    t.string   "email_subject_prefix", :default => "",    :null => false
     t.index ["owner_id", "owner_type"], :name => "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], :name => "index_oauth_applications_on_uid", :unique => true
   end
@@ -248,11 +248,11 @@ ActiveRecord::Schema.define(:version => 20150323113650) do
     t.string   "uuid"
     t.string   "suffix"
     t.string   "state",            :default => "temp", :null => false
-    t.index ["first_name"], :name => "index_users_on_first_name"
-    t.index ["full_name"], :name => "index_users_on_full_name"
-    t.index ["last_name"], :name => "index_users_on_last_name"
+    t.index ["first_name"], :name => "index_users_on_first_name", :case_sensitive => false
+    t.index ["full_name"], :name => "index_users_on_full_name", :case_sensitive => false
+    t.index ["last_name"], :name => "index_users_on_last_name", :case_sensitive => false
     t.index ["username"], :name => "index_users_on_username", :unique => true
-    t.index ["username"], :name => "index_users_on_username_case_insensitive"
+    t.index ["username"], :name => "index_users_on_username_case_insensitive", :case_sensitive => false
     t.index ["uuid"], :name => "index_users_on_uuid", :unique => true
   end
 

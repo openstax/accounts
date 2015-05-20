@@ -47,6 +47,8 @@ gem 'schema_plus', '~> 1.7.1'
 
 gem 'aws-ses', '~> 0.6.0', :require => 'aws/ses'
 
+gem 'pg'
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.1'
@@ -57,7 +59,6 @@ group :assets do
 end
 
 group :development, :test do
-  gem 'sqlite3'
   gem 'debugger'
   gem 'thin'
   gem 'rspec-rails'
@@ -68,7 +69,6 @@ group :development, :test do
 end
 
 group :production do
-  gem 'pg'
   gem 'unicorn'
   gem 'lograge'
 end

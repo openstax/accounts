@@ -1,22 +1,18 @@
-# SQLite version 3.x
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem 'sqlite3'
+default: &default
+  adapter: postgresql
+  username: <%= ENV['OXA_DB_USER'] || 'ox_accounts' %>
+  password: <%= ENV['OXA_DB_PASS'] || 'ox_accounts' %>
+
 development:
-  adapter: sqlite3
-  database: db/development.sqlite3
-  pool: 5
-  timeout: 5000
+  <<: *default
+  database: <%= ENV['OXA_DEV_DB'] || 'ox_accounts_dev' %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  adapter: sqlite3
-  database: db/test.sqlite3
-  pool: 5
-  timeout: 5000
+  <<: *default
+  database: <%= ENV['OXA_TEST_DB'] || 'ox_accounts_test' %>
 
 production:
   adapter: postgresql
