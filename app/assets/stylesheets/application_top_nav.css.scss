@@ -1,4 +1,4 @@
-// Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+// Copyright 2011-2013 Rice University. Licensed under the Affero General Public
 // License version 3 or later.  See the COPYRIGHT file for details.
 
 @import "common";
@@ -25,9 +25,9 @@
 }
 
 #top-nav-logo-link  {
-  background: image-url("accounts_horiz_v1.png") no-repeat transparent;
-  $image_height:  38px;
-  $image_width:  310px;
+  background: image-url("accounts_horiz_v2.png") no-repeat transparent;
+  $image_height:  37px;
+  $image_width:  161px;
 
   float:      left;
   height:     $image_height;
@@ -67,7 +67,7 @@
   .top-nav-link {
     float: left;
 
-    display:  inline; 
+    display:  inline;
     position: relative;
 
     padding-left:  9px;
