@@ -11,6 +11,36 @@ namespace :accounts do
                 {:name => "OpenStax BigLearn", :prefix => "biglearn"}]
     desc "Manage applications for exercises, exchange, tutor and biglearn"
 
+    # Task specifically to create an administrative user and/or set the
+    # password for said user. This task accepts to arguments, the username
+    # and optionally a password. If the password is not supplied, the
+    # username will be used for the password.
+    task :create_admin, [:username, :password] => :environment do |t, args|
+      ActiveRecord::Base.transaction do
+        begin
+          username = args[:username]
+          password = args[:password] || args[:username]
+          admin_group = Group.find_or_create_by_name('ost_app_admin_group')
+          user = User.find_or_create_by_username(username)
+          identity = Identity.find_or_create_by_user_id(user.id) do |identity|
+            identity.password = password
+            identity.password_confirmation = password
+            identity.save!
+          end
+          user.is_administrator = true
+          admin_group.add_owner(user)
+          auth = Authentication.find_or_create_by_uid(user.identity.id.to_s) do |auth|
+            auth.provider = 'identity'
+            auth.user_id = user.id
+            auth.save!
+          end
+        rescue Exception => e
+          puts e
+          raise ActiveRecord::Rollback
+        end
+      end
+    end
+
     # This task creates applications based on the given parameters.
     # This task creates an user with the username `ost_app_admin` with
     # the given password if one is not found already.  It also creates
