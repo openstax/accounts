@@ -7,18 +7,13 @@
   contents = osu.action_list(
     records: users,
     list: {
-      headings: ['Username', 'First Name', 'Last Name', '', 'Is Admin?'],
+      headings: ['Username', 'First Name', 'Last Name', 'Is Admin?', ''],
       widths: ['20%', '20%', '20%', '20%', '20%'],
       data_procs:
         [
           Proc.new { |user| user.username },
           Proc.new { |user| user.first_name || '---' },
           Proc.new { |user| user.last_name || '---' },
-          Proc.new { |user| 
-            link_to 'Sign in as', 
-                    become_admin_user_path(user),
-                    method: :post 
-          },
           Proc.new { |user|
             if user.is_administrator
               'Yes'
@@ -30,6 +25,11 @@
                       class: 'make-admin'
             end
           },
+          Proc.new { |user|
+            link_to 'Sign in as',
+                    become_admin_user_path(user),
+                    method: :post
+          }
         ]
     }
   ) %>
