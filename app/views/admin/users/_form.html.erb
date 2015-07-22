@@ -10,22 +10,26 @@
         <td><%= @user.name %></td>
      </tr>
      <tr>
-        <th>Email</th>
-        <td><%= @user.email %></td>
+        <th>Email Addresses</th>
+        <td>
+        <% @user.email_addresses.each do |email| %>
+          <div><%= email.value %></div>
+        <% end %>
+        </td>
      </tr>
      <tr>
         <th>Administrator?</th>
-        <td><%= f.check_box :is_admin %></td>
+        <td><%= f.check_box :is_administrator %></td>
      </tr>
      <tr>
         <th>Disable Account?</th>
-        <td><%= check_box_tag "user[disable]", "1", @user.is_disabled? %></td>
+        <td><%= check_box_tag "user[disable]", "1", !@user.is_activated? %></td>
      </tr>
   </table>
   
   <p>
      
   <div class="actions">
-    <%= f.submit :class => submit_classes %>
+    <%= f.submit %>
   </div>
 <% end %>
