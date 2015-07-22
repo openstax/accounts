@@ -1,0 +1,110 @@
+# https://en.wikipedia.org/wiki/List_of_Hanna-Barbera_characters
+#
+# users:
+#   <username>:
+#     is_administrator
+#     first_name
+#     last_name
+#     full_name
+#     title
+#     suffix
+# groups:
+#   <groupname>:
+#     owners: []
+#     members: []
+
+users:
+  whanna:
+    is_administrator: true
+    first_name: William
+    last_name: Hanna
+  jbarbera:
+    is_administrator: true
+    first_name: Joseph
+    last_name: Barbera
+  yogi:
+    first_name: Yogi
+    last_name: Bear
+    full_name: Yogi Bear
+  booboo:
+    first_name: Boo Boo
+    last_name: Bear
+  ranger_smith:
+    last_name: Smith
+    full_name: Ranger Smith
+  huckleberry:
+    first_name: Huckleberry
+    last_name: Hound
+  ppitstop:
+    first_name: Penelope
+    last_name: Pitstop
+  dastardly:
+    first_name: Dick
+    last_name: Dastardly
+  muttley:
+    first_name: Muttley
+    full_name: Muttley Dastardly
+  squirrel:
+    full_name: Secret Squirrel
+  mole:
+    full_name: Morocco Mole
+  scooby:
+    first_name: Scoobert
+    last_name: Doo
+    full_name: Scoobert "Scooby" Doo
+  scrappy:
+    full_name: Scrappy-Doo
+  shaggy:
+    fullname: Norville "Shaggy" Rogers
+  velma:
+    first_name: Velma
+    last_name: Dinkley
+  daphne:
+    first_name: Daphne
+    last_name: Blake
+  freddie:
+    first_name: Fred
+    last_name: Jones
+    full_name: Fred "Freddie" Jones
+  fred:
+    first_name: Fred
+    last_name: Flintstone
+  wilma:
+    first_name: Wilma
+    last_name: Flinstone
+    full_name: Wilma Slaghoople Flinstone
+  pebbles:
+    first_name: Pebbles
+    last_name: Flinstone
+  barney:
+    first_name: Barney
+    last_name: Rubble
+  betty:
+    first_name: Betty
+    last_name: Rubble
+    full_name: Betty McBrickner Rubble
+  bammbamm:
+    first_name: Bamm Bamm
+    last_name: Rubble
+  gazoo:
+    full_name: The Great Gazoo
+  birdman:
+    first_name: Harvey
+    last_name: Birdman
+    suffix: Attorney at Law
+groups:
+  JellyStone:
+    owners: [ranger_smith]
+    members: [yogi, booboo, huckleberry]
+  WackyRacers:
+    owners: [whanna, jbarbera]
+    members: [ppitstop, dastardly, muttley]
+  Secret:
+    owners: [whanna, jbarbera]
+    members: [squirrel, mole]
+  MysteryInc:
+    owners: [whanna, jbarbera]
+    members: [scooby, scrappy, shaggy, velma, daphne, freddie]
+  StoneAge:
+    owners: [whanna, jbarbera, gazoo]
+    members: [fred, wilma, pebbles, barney, betty, bammbamm, gazoo]
