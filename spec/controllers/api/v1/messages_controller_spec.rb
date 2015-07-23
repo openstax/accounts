@@ -71,14 +71,17 @@ describe Api::V1::MessagesController, :type => :api, :version => :v1 do
     it "does not allow users or untrusted applications to send messages" do
       Mail::TestMailer.deliveries.clear
 
-      api_post :create, user_1_untrusted_token, parameters: message_params
-      expect(response.code).to eq('403')
+      expect{
+        api_post :create, user_1_untrusted_token, parameters: message_params
+      }.to raise_error(Lev::SecurityTransgression)
 
-      api_post :create, user_1_trusted_token, parameters: message_params
-      expect(response.code).to eq('403')
+      expect{
+        api_post :create, user_1_trusted_token, parameters: message_params
+      }.to raise_error(Lev::SecurityTransgression)
 
-      api_post :create, untrusted_application_token, parameters: message_params
-      expect(response.code).to eq('403')
+      expect{
+        api_post :create, untrusted_application_token, parameters: message_params
+      }.to raise_error(Lev::SecurityTransgression)
 
       expect(Mail::TestMailer.deliveries).to be_empty
     end
