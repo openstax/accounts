@@ -1,6 +1,14 @@
 <%# Copyright 2011-2012 Rice University. Licensed under the Affero General Public 
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
+<% content_for :javascript do %>
+  <script type="text/javascript">
+    $('.verify-email').bind('ajax:complete', function(evt, xhr, status) {
+      $(this).replaceWith(xhr.responseText);
+    });
+  </script>
+<% end %>
+
 <%= form_for([:admin, @user]) do |f| %>
   <%= render "shared/error_messages", :target => @user %> 
 
@@ -13,7 +21,16 @@
     <%= f.label :existing_email_addresses %>
     <ul>
     <% @user.email_addresses.each do |email| %>
-      <li><%= email.value %></li>
+      <li>
+      <%= email.value %>
+      <% if email.verified %>
+        (Verified)
+      <% else %>
+        <%= link_to 'Mark this email address as verified', admin_verify_contact_info_path(email),
+                    remote: true, method: :post, class: 'btn btn-default btn-xs verify-email'
+        %>
+      <% end %>
+      </li>
     <% end %>
     </ul>
   </div>
