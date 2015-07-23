@@ -10,7 +10,7 @@ module Admin
 
     def update
       respond_to do |format|
-        if add_email_to_user && update_user
+        if change_user_password && add_email_to_user && update_user
           format.html { redirect_to edit_admin_user_path(@user),
                         notice: 'User profile was successfully updated.' }
         else
@@ -47,6 +47,16 @@ module Admin
       result = AddEmailToUser.call(params[:user][:email_address], @user)
       return true unless result.errors.any?
       flash[:alert] = "Failed to add new email address: #{result.errors.collect(&:translate)}"
+      return false
+    end
+
+    def change_user_password
+      return true if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+
+      @user.identity.password = params[:user][:password]
+      @user.identity.password_confirmation = params[:user][:password_confirmation]
+      return true if @user.identity.save
+      flash[:alert] = "Failed to change password: #{@user.identity.errors.full_messages}"
       return false
     end
 

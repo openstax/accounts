@@ -32,6 +32,18 @@
     <%= f.text_field :full_name, value: params[:user].nil? ? @user.full_name : params[:user][:full_name] %>
   </div>
 
+  <% unless @user.identity.nil? %>
+    <div class="form-group">
+      <%= f.label :password %>
+      <%= password_field_tag 'user[password]' %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password_confirmation %>
+      <%= password_field_tag 'user[password_confirmation]' %>
+    </div>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :existing_email_addresses %>
     <ul>
