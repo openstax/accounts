@@ -6,7 +6,7 @@ namespace :accounts do
   namespace :ost do
     # These are the apps that we want to create
     app_data = [{:name => "OpenStax Exercises", :prefix => "exercises"},
-                {:name => "OpenStax Tutor", :prefix => "tutor"},
+                {:name => "OpenStax Tutor", :prefix => "tutor", skip_terms: true},
                 {:name => "OpenStax Exchange", :prefix => "exchange"},
                 {:name => "OpenStax BigLearn", :prefix => "biglearn"}]
     desc "Manage applications for exercises, exchange, tutor and biglearn"
@@ -58,6 +58,7 @@ namespace :accounts do
               application.trusted = true
               application.email_from_address = "noreply@#{app[:prefix]}.openstax.org"
               application.email_subject_prefix = "[#{app[:name]}]"
+              application.skip_terms = app[:skip_terms] || false
               application.save!
               puts "Created #{app[:name]} with return url @ #{url}"
             end

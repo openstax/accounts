@@ -25,6 +25,7 @@ class UsersController < ApplicationController
   def register
     if request.put?
       handle_with(UsersRegister,
+                  contracts_required: !contracts_not_required,
                   success: lambda {
                     redirect_back key: :registration_return_to
                   },
@@ -33,7 +34,7 @@ class UsersController < ApplicationController
                     render :register, status: errors ? 400 : 200
                   })
     else
-      store_fallback key: :registration_return_to 
+      store_fallback key: :registration_return_to
     end
   end
 

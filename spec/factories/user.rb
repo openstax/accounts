@@ -12,6 +12,8 @@ FactoryGirl.define do
       state 'temp'
     end
 
+    trait :terms_not_agreed do; end
+
     trait :terms_agreed do
       after(:create) do |user, evaluator|
         FinePrint::Contract.all.each do |contract|

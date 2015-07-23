@@ -8,17 +8,34 @@ ActionController::Base.class_exec do
   helper_method :current_user, :signed_in?
 
   if SECRET_SETTINGS[:beta_protection] != false
-    protect_beta username: SECRET_SETTINGS[:beta_username], 
+    protect_beta username: SECRET_SETTINGS[:beta_username],
                  password: SECRET_SETTINGS[:beta_password]
   end
 
   before_filter :authenticate_user!, :registration, :expired_password
 
-  fine_print_require :general_terms_of_use, :privacy_policy
+  fine_print_require :general_terms_of_use, :privacy_policy, unless: :contracts_not_required
 
   rescue_from Exception, :with => :rescue_from_exception
 
   protected
+
+  def contracts_not_required
+    @contracts_not_required ||=
+      # Skip for API calls
+      (request.format == :json) ||
+      # Anonymous users can't sign contracts
+      current_user.is_anonymous? ||
+      # Skip if just arrived from an application that says skip
+      Doorkeeper::Application.where(uid: params[:client_id] || session[:client_id])
+                             .first
+                             .try(:skip_terms?) ||
+      # Skip if all of user's applications say skip
+      (
+        current_user.applications.any? &&
+        current_user.applications.all?{|app| app.skip_terms? }
+      )
+  end
 
   def registration
     user = (request.format == :json) ? current_human_user : current_user
@@ -53,7 +70,7 @@ ActionController::Base.class_exec do
     error, status, notify = case exception
     when SecurityTransgression
       [:forbidden, 403, false]
-    when ActiveRecord::RecordNotFound, 
+    when ActiveRecord::RecordNotFound,
          ActionController::RoutingError,
          ActionController::UnknownController,
          AbstractController::ActionNotFound

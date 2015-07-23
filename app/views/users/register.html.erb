@@ -2,7 +2,7 @@
 
 <%= lev_form_for :register, url: register_path, method: :put, html: {id: 'profile-form'} do |f| %>
 
-  <%= standard_field form: f, name: :username, type: :text_field, label: "Username", 
+  <%= standard_field form: f, name: :username, type: :text_field, label: "Username",
                      options: {value: current_user.username} %>
   <%= standard_field form: f, name: :title, type: :text_field, label: "Title",
                      options: {value: current_user.title} %>
@@ -15,28 +15,32 @@
   <%= standard_field form: f, name: :full_name, type: :text_field, label: "Full Name",
                      options: {value: current_user.full_name || current_user.guessed_full_name} %>
 
-  <% 
-    contracts = [FinePrint.get_contract(:general_terms_of_use),
-                 FinePrint.get_contract(:privacy_policy)]
+  <% unless @contracts_not_required %>
+    <%
+      contracts = [FinePrint.get_contract(:general_terms_of_use),
+                   FinePrint.get_contract(:privacy_policy)]
 
-    contract_links = contracts.collect do |contract|
-      link_to contract.title, term_path(contract), remote: true
-    end 
-  %>
-  
-  <div class="checkbox">
-    <label>
-      <%= f.check_box :i_agree %> I have read the <%= contract_links[0] %> and the <%= contract_links[1] %> and I agree to be bound by their terms. <br/> <i>Note that other OpenStax sites may have terms of their own.</i>
-    </label>
-  </div>
-    
-  <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
-  <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
-  
+      contract_links = contracts.collect do |contract|
+        link_to contract.title, term_path(contract), remote: true
+      end
+    %>
+
+    <div class="checkbox">
+      <label>
+        <%= f.check_box :i_agree %> I have read the <%= contract_links[0] %> and the <%= contract_links[1] %> and I agree to be bound by their terms. <br/> <i>Note that other OpenStax sites may have terms of their own.</i>
+      </label>
+    </div>
+
+    <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
+    <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
+  <% end %>
+
   <%= f.submit "Register", id: "register_submit", class: 'standard' %>
-  
+
 <% end %>
 
-<script type="text/javascript">
-  Accounts.Ui.enableOnChecked('#register_submit', '#register_i_agree');
-</script>
+<% unless @contracts_not_required %>
+  <script type="text/javascript">
+    Accounts.Ui.enableOnChecked('#register_submit', '#register_i_agree');
+  </script>
+<% end %>

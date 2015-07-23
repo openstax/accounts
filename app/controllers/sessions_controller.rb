@@ -14,6 +14,7 @@ class SessionsController < ApplicationController
     store_fallback
     referer = request.referer
     session[:from_cnx] = (referer =~ /cnx\.org/) unless referer.blank?
+    session[:client_id] = params[:client_id]
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
   end
 
