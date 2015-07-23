@@ -40,11 +40,6 @@
     <%= f.check_box :is_administrator %>
   </div>
 
-  <div class="checkbox">
-    <%= f.label :disable, 'Disabled Account?' %>
-    <%= check_box_tag 'user[disable]', !@user.is_activated? %>
-  </div>
-
   <div class="actions">
     <%= f.submit 'Save', class: 'btn btn-default' %>
   </div>
