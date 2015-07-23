@@ -21,7 +21,7 @@ ActionController::Base.class_exec do
   protected
 
   def contracts_not_required
-    @contracts_not_required ||=
+    @contracts_not_required =
       # Skip for API calls
       (request.format == :json) ||
       # Anonymous users can't sign contracts
