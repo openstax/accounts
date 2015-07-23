@@ -118,6 +118,9 @@ Accounts::Application.routes.draw do
       post 'become', on: :member
       post 'make_admin', on: :member
     end
+
+    post :verify_contact_info, path: '/contact_infos/:id/verify',
+         controller: :contact_infos, action: :verify
   end
 
   namespace 'dev' do
