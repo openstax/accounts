@@ -18,6 +18,21 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :first_name %>
+    <%= f.text_field :first_name, value: params[:user].nil? ? @user.first_name : params[:user][:first_name] %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :last_name %>
+    <%= f.text_field :last_name, value: params[:user].nil? ? @user.last_name : params[:user][:last_name] %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :full_name %>
+    <%= f.text_field :full_name, value: params[:user].nil? ? @user.full_name : params[:user][:full_name] %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :existing_email_addresses %>
     <ul>
     <% @user.email_addresses.each do |email| %>
@@ -33,6 +48,9 @@
       </li>
     <% end %>
     </ul>
+
+    <%= f.label :email_address, 'New email address' %>
+    <%= text_field_tag 'user[email_address]', params[:user].try(:[], :email_address) %>
   </div>
 
   <div class="checkbox">
