@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
 
   has_many :authentications, dependent: :destroy, inverse_of: :user
   has_many :application_users, dependent: :destroy, inverse_of: :user
+  has_many :applications, through: :application_users
   has_many :contact_infos, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, inverse_of: :user
 
@@ -29,7 +30,7 @@ class User < ActiveRecord::Base
                        uniqueness: { case_sensitive: true },
                        length: { minimum: 3, maximum: USERNAME_MAX_LENGTH },
                        format: { with: /\A[A-Za-z\d_]+\z/,
-                                 message: "Usernames can only contain letters, numbers, and underscores." } 
+                                 message: "Usernames can only contain letters, numbers, and underscores." }
 
   validates :username, uniqueness: { case_sensitive: false },
                        if: :username_changed?
@@ -125,15 +126,15 @@ class User < ActiveRecord::Base
   def can_read?(resource)
     resource.can_be_read_by?(self)
   end
-  
+
   def can_create?(resource)
     resource.can_be_created_by?(self)
   end
-  
+
   def can_update?(resource)
     resource.can_be_updated_by?(self)
   end
-  
+
   def can_destroy?(resource)
     resource.can_be_destroyed_by?(self)
   end

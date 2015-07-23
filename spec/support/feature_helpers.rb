@@ -1,8 +1,13 @@
 require 'import_users'
 
-def create_user(username, password='password')
+def create_user(username, password='password', terms_agreed=nil)
+  terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
+                          :terms_agreed :
+                          :terms_not_agreed
+
   return if User.find_by_username(username).present?
-  user = FactoryGirl.create :user, :terms_agreed, username: username
+
+  user = FactoryGirl.create :user, terms_agreed_option, username: username
   identity = FactoryGirl.create :identity, user: user, password: password
   authentication = FactoryGirl.create :authentication, user: user,
                                                        provider: 'identity',
@@ -29,7 +34,7 @@ def create_admin_user
 end
 
 def create_nonlocal_user(username, provider='facebook')
-  auth_data = 
+  auth_data =
     case provider
     when 'facebook' then {info: {name: username}, provider: 'facebook'}  # FB dropped nickname
     when 'google' then {info: {nickname: username}, provider: 'google'}
@@ -104,8 +109,8 @@ def with_forgery_protection
   end
 end
 
-def visit_authorize_uri
-  visit "/oauth/authorize?redirect_uri=#{@app.redirect_uri}&response_type=code&client_id=#{@app.uid}"
+def visit_authorize_uri(app=@app)
+  visit "/oauth/authorize?redirect_uri=#{app.redirect_uri}&response_type=code&client_id=#{app.uid}"
 end
 
 def app_callback_url
@@ -141,4 +146,11 @@ def click_omniauth_link(provider, options={})
   ensure
     OmniAuth.config.test_mode = false
   end
+end
+
+def make_new_contract_version(contract = FinePrint::Contract.first)
+  new_contract_version = contract.new_version
+  raise "New contract version didn't save" unless new_contract_version.save
+  new_contract_version.publish
+  raise "New contract version didn't publish" unless new_contract_version.version == 2
 end

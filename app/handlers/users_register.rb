@@ -11,9 +11,7 @@ class UsersRegister
     attribute :suffix, type: String
     attribute :full_name, type: String
     attribute :contract_1_id, type: Integer
-    validates :contract_1_id, presence: true
     attribute :contract_2_id, type: Integer
-    validates :contract_2_id, presence: true
   end
 
   uses_routine AgreeToTerms
@@ -26,8 +24,8 @@ class UsersRegister
   end
 
   def handle
-    if !register_params.i_agree
-      fatal_error(code: :did_not_agree, message: 'You must agree to the terms to register') 
+    if options[:contracts_required] && !register_params.i_agree
+      fatal_error(code: :did_not_agree, message: 'You must agree to the terms to register')
     end
 
     caller.username = register_params.username
@@ -40,8 +38,10 @@ class UsersRegister
 
     transfer_errors_from(caller, {type: :verbatim}, true)
 
-    run(AgreeToTerms, register_params.contract_1_id, caller, no_error_if_already_signed: true)
-    run(AgreeToTerms, register_params.contract_2_id, caller, no_error_if_already_signed: true)
+    if options[:contracts_required]
+      run(AgreeToTerms, register_params.contract_1_id, caller, no_error_if_already_signed: true)
+      run(AgreeToTerms, register_params.contract_2_id, caller, no_error_if_already_signed: true)
+    end
 
     run(FinishUserCreation, caller)
   end

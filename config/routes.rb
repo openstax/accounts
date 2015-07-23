@@ -11,6 +11,7 @@ Accounts::Application.routes.draw do
     get 'login', action: :new
     get 'logout', action: :destroy
     get 'i_am_returning'
+    get 'returning_user'
 
     if Rails.env.development?
       get 'ask_new_or_returning'

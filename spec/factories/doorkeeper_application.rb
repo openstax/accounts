@@ -5,6 +5,8 @@ FactoryGirl.define do
     association :owner, factory: :group
     email_from_address 'app@app.com'
     email_subject_prefix '[Application]'
+    skip_terms false
+    uid { SecureRandom.hex(8) }
 
     trait :trusted do
       trusted true

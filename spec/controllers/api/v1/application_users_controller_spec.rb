@@ -263,8 +263,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
 
     it "should not let a user call it through an app" do
-      api_get :updates, user_2_token
-      expect(response.status).to eq(403)
+      expect{api_get :updates, user_2_token}.to raise_error(SecurityTransgression)
     end
 
   end
@@ -323,10 +322,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
 
     it "should not let a user call it through an app" do
-      api_get :updates, user_2_token
-      expect(response.status).to eq(403)
-      api_put :updated, user_2_token
-      expect(response.status).to eq(403)
+      expect{api_get :updates, user_2_token}.to raise_error(SecurityTransgression)
+      expect{api_put :updated, user_2_token}.to raise_error(SecurityTransgression)
     end
 
   end
