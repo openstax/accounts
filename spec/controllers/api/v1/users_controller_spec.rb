@@ -192,6 +192,24 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       expect(response.body).to eq({id: new_user_id}.to_json)
     end
 
+    it 'creates a new user with first name, last name and full name if given' do
+      expect {
+        api_post :find_or_create,
+                 trusted_application_token,
+                 raw_post_data: {
+                   email: 'a-new-email@test.com',
+                   first_name: 'Sarah',
+                   last_name: 'Test',
+                   full_name: 'Sarah M. Test'
+                 }
+      }.to change { User.count }.by(1)
+      expect(response.code).to eq('200')
+      new_user = User.find(JSON.parse(response.body)['id'])
+      expect(new_user.first_name).to eq 'Sarah'
+      expect(new_user.last_name).to eq 'Test'
+      expect(new_user.full_name).to eq 'Sarah M. Test'
+    end
+
     it "should not create a new user for anonymous" do
       user_count = User.count
       expect{

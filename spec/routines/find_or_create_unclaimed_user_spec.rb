@@ -71,6 +71,19 @@ describe FindOrCreateUnclaimedUser do
         }.to change(User,:count).by(1)
       end
 
+      it 'sets the first name, last name and full name if given' do
+        expect {
+          new_user = FindOrCreateUnclaimedUser.call(
+            username: 'bobsmith', email: 'anunusedemail@example.com',
+            first_name: 'Bob', last_name: 'Smith', full_name: 'Bob Smith'
+          ).outputs.user
+          expect(new_user.username).to eq('bobsmith')
+          expect(new_user.first_name).to eq('Bob')
+          expect(new_user.last_name).to eq('Smith')
+          expect(new_user.full_name).to eq('Bob Smith')
+        }.to change { User.count }.by(1)
+      end
+
       context "and a password" do
 
         it "sets the password" do
