@@ -16,6 +16,7 @@ class StaticPagesController < ApplicationController
   end
 
   def home
+    redirect_to(signed_in? ? profile_path : login_path)
   end
 
   # Used by AWS (and others) to make sure the site is still up.

@@ -1,5 +1,5 @@
 module Api::V1
-  class UnclaimedUserRepresenter < Roar::Decorator
+  class FindOrCreateUserRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
     property :id,
