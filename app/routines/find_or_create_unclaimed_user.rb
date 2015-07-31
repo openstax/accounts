@@ -31,6 +31,8 @@ class FindOrCreateUnclaimedUser
   def create_user(options)
     user = run(CreateUser,
                state: 'unclaimed', username: options[:username],
+               first_name: options[:first_name],
+               last_name: options[:last_name], full_name: options[:full_name],
                ensure_no_errors: true).outputs.user
 
     # routine is smart and gracefully handles case of missing options[:email]
