@@ -1,6 +1,6 @@
 <%= page_heading("Your Account") %>
 
-<% @active_tab ||= :name %>
+<% @active_tab ||= params[:active_tab].try(:to_sym) || :name %>
 
 <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 30px">
   <li role="presentation" <% if @active_tab == :name %>class="active"<% end %>><a href="#name" aria-controls="name" role="tab" data-toggle="tab">Profile Settings</a></li>
