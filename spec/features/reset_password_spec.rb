@@ -71,7 +71,6 @@ feature 'User resets password', js: true do
     click_link 'Sign out'
 
     # try logging in with the old password
-    click_link 'Sign in'
     fill_in 'Username', with: 'user'
     fill_in 'Password', with: 'password'
     click_button 'Sign in'

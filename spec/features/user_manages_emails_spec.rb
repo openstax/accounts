@@ -10,7 +10,8 @@ feature 'User manages emails' do
     expect(page).to have_content('Welcome, user')
 
     visit '/profile'
-    expect(page).to have_content('Your Email addresses')
+    expect(page).to have_content('Manage Email Addresses')
+    click_link 'Manage Email Addresses'
   end
 
   context 'create' do

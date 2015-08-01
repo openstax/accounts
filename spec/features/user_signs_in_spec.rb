@@ -111,13 +111,22 @@ feature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'keeps trying to find existing account when signing in' do
+  scenario 'redirect home page visitors' do
     user = create_user('jimbo')
-    i = user.identity
 
     visit '/'
-    expect(page).to have_content('Sign up or Sign in')
-    click_link 'Sign in'
+    expect(page).to have_content('Sign in with your one OpenStax account')
+
+    login_as 'jimbo', 'password'
+
+    visit '/'
+    expect(page).to have_content('Your Account')
+  end
+
+  scenario 'keeps trying to find existing account when signing in' do
+    create_user('jimbo')
+
+    visit '/login'
     expect(page).to have_content("Sign in with your one OpenStax account!")
 
     click_omniauth_link('twitter')

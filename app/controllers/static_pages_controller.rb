@@ -1,5 +1,5 @@
 class StaticPagesController < ApplicationController
-  skip_before_filter :authenticate_user!,
+  skip_before_filter :authenticate_user!, :registration,
                      only: [:api, :copyright, :home, :status]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
@@ -16,7 +16,14 @@ class StaticPagesController < ApplicationController
   end
 
   def home
-    redirect_to(signed_in? ? profile_path : login_path)
+    flash.keep # keep notices and errors through to the redirects below
+
+    if signed_in?
+      redirect_to profile_path
+    else
+      store_url # needed for happy login flow, authenticate_user! does it too
+      redirect_to login_path
+    end
   end
 
   # Used by AWS (and others) to make sure the site is still up.

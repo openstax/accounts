@@ -1,30 +1,32 @@
 <%= page_heading("Your Account") %>
 
+<% @active_tab ||= :name %>
+
 <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 30px">
-  <li role="presentation" class="active"><a href="#name" aria-controls="name" role="tab" data-toggle="tab">Profile Settings</a></li>
+  <li role="presentation" <% if @active_tab == :name %>class="active"<% end %>><a href="#name" aria-controls="name" role="tab" data-toggle="tab">Profile Settings</a></li>
 
   <% unless current_user.identity.nil? %>
-  <li role="presentation"><a href="#password" aria-controls="password" role="tab" data-toggle="tab">Change Your Password</a></li>
+  <li role="presentation" <% if @active_tab == :password %>class="active"<% end %>><a href="#password" aria-controls="password" role="tab" data-toggle="tab">Change Your Password</a></li>
   <% end %>
 
-  <li role="presentation"><a href="#email" aria-controls="email" role="tab" data-toggle="tab">Manage Email Addresses</a></li>
+  <li role="presentation" <% if @active_tab == :email %>class="active"<% end %>><a href="#email" aria-controls="email" role="tab" data-toggle="tab">Manage Email Addresses</a></li>
 </ul>
 
 <!-- Tab panes -->
 <div class="tab-content" style="margin-bottom: 30px; padding: 5px;">
 
-  <div role="tabpanel" class="tab-pane active" id="name">
+  <div role="tabpanel" class="tab-pane <% if @active_tab == :name %>active<% end %>" id="name">
     <%= render partial: 'users/form', locals: {user: current_user} %>
   </div>
 
 <% unless current_user.identity.nil? %>
-  <div role="tabpanel" class="tab-pane" id="password">
+  <div role="tabpanel" class="tab-pane <% if @active_tab == :password %>active<% end %>" id="password">
     <%= render partial: 'identities/form',
                locals: { identity: current_user.identity } %>
   </div>
 <% end %>
 
-  <div role="tabpanel" class="tab-pane" id="email">
+  <div role="tabpanel" class="tab-pane <% if @active_tab == :email %>active<% end %>" id="email">
     <%= render partial: 'contact_infos/email_addresses', locals: {
                email_addresses: current_user.email_addresses } %>
   </div>

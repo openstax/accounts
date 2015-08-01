@@ -8,10 +8,11 @@ feature 'User updates profile' do
     expect(page).to have_content('Welcome, user')
 
     visit '/profile'
-    expect(page).to have_content('Your Name')
+    expect(page).to have_content('Your Account')
   end
 
   scenario 'success', js: true do
+    click_link 'Profile Settings'
     fill_in 'First Name', with: 'testuser'
     click_button 'Update Profile'
     expect(page).to have_content('Profile updated')
