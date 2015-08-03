@@ -59,7 +59,9 @@
         (Verified)
       <% else %>
         <%= link_to 'Mark this email address as verified', admin_verify_contact_info_path(email),
-                    remote: true, method: :post, class: 'btn btn-default btn-xs verify-email'
+                    remote: true, method: :post,
+                    class: 'btn btn-default btn-xs verify-email',
+                    confirm: "Are you sure you want to mark \"#{email.value}\" as verified?"
         %>
       <% end %>
       </li>
