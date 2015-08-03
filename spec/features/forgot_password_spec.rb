@@ -8,7 +8,7 @@ feature 'User forgot password', js: true do
     @email.save!
 
     visit '/'
-    click_link 'Sign in'
+    click_button 'Sign in'
     click_link 'Forgot password?'
   end
 

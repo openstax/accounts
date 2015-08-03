@@ -59,11 +59,11 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     Examples:
 
-    `username:ric` &ndash; returns ApplicationUsers for 'richb' and 'ricardo' Users.
+    `username:ric` &ndash; returns Users for 'richb' and 'ricardo' Users.
 
-    `username:ric name:"Van Buren"` &ndash; returns the ApplicationUsers for the 'Ricardo Van Buren' User.
+    `username:ric name:"Van Buren"` &ndash; returns the Users for the 'Ricardo Van Buren' User.
 
-    `ric` &ndash; returns ApplicationUsers for 'richb', 'ricardo', and 'Jimmy Rich' Users.
+    `ric` &ndash; returns Users for 'richb', 'ricardo', and 'Jimmy Rich' Users.
   EOS
   param :order_by, String, desc: <<-EOS
     A string that indicates how to sort the results of the query. The string
@@ -132,11 +132,8 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     An email address or username must be supplied.
 
-    If the username or email is already in use by an unclaimed user,
-    a user will not be created and only the existing the user's ID is returned.
-
-    If the username or email is already in use by an existing account,
-    no action taken will be taken and an error code 'account_already_claimed' is returned
+    If the username or email is already in use, that existing user's ID
+    will be returned.
 
     If an account is created with only an email and no username, it cannot be logged
     into directly.  It will merged with the user's account when they complete the
@@ -145,19 +142,19 @@ class Api::V1::UsersController < Api::V1::ApiController
     If an account is created with a username and password, it may be signed into and used
     immediately once the user agress to the Terms and Conditions.
 
-    #{json_schema(Api::V1::UnclaimedUserRepresenter, include: [:readable, :writable])}
+    #{json_schema(Api::V1::FindOrCreateUserRepresenter, include: [:readable, :writable])}
   EOS
 
   def find_or_create
     OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user, User)
     # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
     # Substitue a Hashie::Mash to read the JSON encoded body
-    payload = consume!(Hashie::Mash.new, represent_with: Api::V1::UnclaimedUserRepresenter)
+    payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindOrCreateUserRepresenter)
     result = FindOrCreateUnclaimedUser.call(payload)
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
-      respond_with result.outputs[:user], represent_with: Api::V1::UnclaimedUserRepresenter
+      respond_with result.outputs[:user], represent_with: Api::V1::FindOrCreateUserRepresenter
     end
   end
 

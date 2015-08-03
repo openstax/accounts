@@ -15,16 +15,17 @@ feature 'User updates password' do
 
     scenario 'password form is invisible', js: true do
       visit '/profile'
-      expect(page).to have_content('Your Name')
-      expect(page).not_to have_content('New Password')
+      expect(page).to have_content('First Name')
+      expect(page).not_to have_content('Change Your Password')
     end
   end
 
   context 'with local password' do
     before(:each) do
       visit '/profile'
-      expect(page).to have_content('Your Name')
-      expect(page).to have_content('New Password')
+      click_link 'Change Your Password'
+      expect(page).to have_content('Current Password')
+      expect(page).to have_content('Change Your Password')
     end
 
     scenario 'success', js: true do

@@ -1,14 +1,33 @@
-<h2>Your Name</h2>
-<%= render partial: 'users/form', locals: {user: current_user} %>
+<%= page_heading("Your Account") %>
+
+<% @active_tab ||= params[:active_tab].try(:to_sym) || :name %>
+
+<ul class="nav nav-tabs" role="tablist" style="margin-bottom: 30px">
+  <li role="presentation" <% if @active_tab == :name %>class="active"<% end %>><a href="#name" aria-controls="name" role="tab" data-toggle="tab">Profile Settings</a></li>
+
+  <% unless current_user.identity.nil? %>
+  <li role="presentation" <% if @active_tab == :password %>class="active"<% end %>><a href="#password" aria-controls="password" role="tab" data-toggle="tab">Change Your Password</a></li>
+  <% end %>
+
+  <li role="presentation" <% if @active_tab == :email %>class="active"<% end %>><a href="#email" aria-controls="email" role="tab" data-toggle="tab">Manage Email Addresses</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content" style="margin-bottom: 30px; padding: 5px;">
+
+  <div role="tabpanel" class="tab-pane <% if @active_tab == :name %>active<% end %>" id="name">
+    <%= render partial: 'users/form', locals: {user: current_user} %>
+  </div>
 
 <% unless current_user.identity.nil? %>
-  <h2>Change Your Password</h2>
-  <%= render partial: 'identities/form',
-             locals: { identity: current_user.identity } %>
+  <div role="tabpanel" class="tab-pane <% if @active_tab == :password %>active<% end %>" id="password">
+    <%= render partial: 'identities/form',
+               locals: { identity: current_user.identity } %>
+  </div>
 <% end %>
 
-<h2>Your Email addresses</h2>
-<%= render partial: 'contact_infos/email_addresses', locals: {
-             email_addresses: current_user.email_addresses } %>
-
-<%= link_to 'Back', :back %>
+  <div role="tabpanel" class="tab-pane <% if @active_tab == :email %>active<% end %>" id="email">
+    <%= render partial: 'contact_infos/email_addresses', locals: {
+               email_addresses: current_user.email_addresses } %>
+  </div>
+</div>
