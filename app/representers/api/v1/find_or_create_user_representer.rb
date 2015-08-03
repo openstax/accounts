@@ -42,5 +42,32 @@ module Api::V1
                required: true,
                description: "Password to set for user, must match 'password'"
              }
+
+    property :first_name,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               required: false,
+               description: 'First name to assign to newly created user'
+             }
+
+    property :last_name,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               required: false,
+               description: 'Last name to assign to newly created user'
+             }
+
+    property :full_name,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               required: false,
+               description: 'Full name to assign to newly created user'
+             }
   end
 end
