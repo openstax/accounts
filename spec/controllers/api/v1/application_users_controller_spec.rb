@@ -45,8 +45,8 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
     end
   end
 
-  describe "find by username returns" do
-    it "a single result when username matches" do
+  describe "find by username" do
+    it "returns a single result when username matches" do
       api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo_bb' }
       expect(response.code).to eq('200')
       expected_response = {
@@ -60,11 +60,19 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       }.to_json
       expect(response.body).to eq(expected_response)
     end
+
     it "raises not found when when not found" do
       expect {
         api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo' }
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
+
+    it "raises SecurityTransgression when called by anonymous" do
+      expect {
+        api_get :find_by_username, nil, parameters: { username: 'foo' }
+      }.to raise_error(SecurityTransgression)
+    end
+
     it "only finds users belonging to the requesting application" do
       # bob_brown is not a member of the "trusted_application"
       expect( bob_brown.application_users.where( application_id: trusted_application.id ) ).to be_empty
@@ -73,7 +81,6 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
         api_get :find_by_username, trusted_application_token, parameters: { username: bob_brown.username }
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
-
   end
 
   describe "index" do
