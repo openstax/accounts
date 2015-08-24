@@ -10,7 +10,7 @@
 
     <div id="top-nav-account">
       <% if signed_in? %>
-        Welcome, <%= link_to current_user.username, profile_path %>&nbsp;&nbsp;&nbsp;<%= link_to 'Sign out', main_app.logout_path %>
+        Welcome, <%= link_to current_user.username, main_app.profile_path %>&nbsp;&nbsp;&nbsp;<%= link_to 'Sign out', main_app.logout_path %>
       <% else %>
         <% unless session[:from_cnx] %>
           <%= link_to 'Sign up', main_app.signup_path %> or
