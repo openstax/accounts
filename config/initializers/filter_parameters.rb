@@ -33,7 +33,8 @@ non_string_filters = filter_parameters - string_filters
 # Implement a filter proc that filters out JSON parameters and include existing
 # string filters
 json_key_filters = [:password]
-filter = JsonAndStringParameterFilter.new(string_filters, json_key_filters)
+value_filters = [Proc.new { |value| value =~ /^[^@]+@[^.]+\..+/ }]
+filter = JsonAndStringParameterFilter.new(string_filters, json_key_filters, value_filters)
 
 Rails.application.config.filter_parameters = [Proc.new do |k, v|
   filter.run(k, v)
