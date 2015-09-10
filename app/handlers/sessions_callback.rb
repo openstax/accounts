@@ -88,7 +88,7 @@ class SessionsCallback
           if current_user.id == authentication_user.id
             status = :returning_user
           else
-          status = :multiple_accounts
+            status = :multiple_accounts
           end
         end
       else

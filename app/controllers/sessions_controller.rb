@@ -7,25 +7,43 @@ class SessionsController < ApplicationController
                      only: [:new, :callback, :failure, :destroy]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :callback, :failure,
-                         :destroy, :ask_new_or_returning]
+                  only: [:new, :callback, :failure, :destroy, :ask_new_or_returning]
 
   def new
-    store_fallback
+    # If the user is already logged in, send them back to where they came from
+    redirect_to :back if signed_in?
+
+    get_authorization_url
+    options = @authorization_url.nil? ? {} : { url: @authorization_url }
+    # If no url to redirect back to, store the fallback url (the referer)
+    # Handles the case where the user got sent straight to the login page
+    store_fallback(options)
+
+    # Hack to figure out if the user came from CNX to hide the login
+    # In the future, use the client_id and some boolean flag in the client app
     referer = request.referer
     session[:from_cnx] = (referer =~ /cnx\.org/) unless referer.blank?
+
     session[:client_id] = params[:client_id]
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
   end
 
   def callback
+    get_authorization_url
+    # If we have a client_id but no url to redirect back to,
+    # store the fallback url (the authorization page)
+    # However, do not store the referrer if the client_id is not present
+    store_fallback(url: @authorization_url) unless @authorization_url.nil?
+
     handle_with(SessionsCallback, user_state: self,
       complete: lambda {
+        # Since the multiple_accounts flow is not yet implemented,
+        # pretend the user is returning instead
         case @handler_result.outputs[:status]
-        when :returning_user    then redirect_to action: :returning_user
-        when :new_user          then render :ask_new_or_returning
-        when :multiple_accounts then render :ask_which_account
-        else                    raise IllegalState
+        when :returning_user, :multiple_accounts then redirect_to action: :returning_user
+        when :new_user                           then render :ask_new_or_returning
+        # when :multiple_accounts                  then render :ask_which_account
+        else                                     raise IllegalState
         end
       })
   end
@@ -70,6 +88,19 @@ class SessionsController < ApplicationController
                           'Incorrect username or password' : \
                           params[:message]
     render 'new'
+  end
+
+  protected
+
+  def get_authorization_url
+    client_id = params[:client_id] || session[:client_id]
+    client_app = Doorkeeper::Application.where(uid: client_id).first
+    return if client_app.nil?
+
+    redirect_uri = client_app.redirect_uri.lines.first.chomp
+    @authorization_url = oauth_authorization_url(client_id: client_id,
+                                                 redirect_uri: redirect_uri,
+                                                 response_type: 'code')
   end
 
 end
