@@ -101,9 +101,10 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     #{json_schema(Api::V1::ApplicationUserRepresenter, include: :readable)}
   EOS
   def find_by_username
+    raise SecurityTransgression if current_application.nil?
     application_user = ApplicationUser.includes(:user).joins(:user).where({
       :user           => { :username => params[:username] },
-      :application_id => current_api_user.application.id
+      :application_id => current_application.id
     }).first!
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, application_user)
     respond_with application_user, represent_with: Api::V1::ApplicationUserRepresenter
@@ -204,12 +205,13 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     head (errors.any? ? :internal_server_error : :no_content)
   end
 
-  protected
+  # protected
 
-  def get_app_user
-    @app_user = current_human_user.application_users.where(
-                  :application_id => current_application.id
-                ).first
-  end
+  # def get_app_user
+  #   raise SecurityTransgression
+  #   @app_user = current_human_user.application_users.where(
+  #                 :application_id => current_application.id
+  #               ).first
+  # end
 
 end
