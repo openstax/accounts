@@ -2,8 +2,7 @@ class UsersController < ApplicationController
 
   skip_before_filter :registration, only: [:register]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:register]
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:register]
 
   def edit
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
@@ -12,7 +11,7 @@ class UsersController < ApplicationController
   def update
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
     if current_user.update_attributes(user_params)
-      redirect_to profile_path, notice: 'Profile updated'
+      redirect_to profile_path, notice: 'Your profile has been updated. These changes may take a few minutes to propagate to the entire site.'
     else
       flash.now[:alert] ||= []
       current_user.errors.full_messages.each do |msg|
