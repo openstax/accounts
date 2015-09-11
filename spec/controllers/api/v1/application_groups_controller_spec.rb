@@ -203,21 +203,21 @@ describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
       expect(application_group_1.reload.unread_updates).to eq 4
 
       api_put :updated, untrusted_application_token, raw_post_data: [
-        {id: application_group_1.id, read_updates: 2}].to_json
+        {group_id: group_1.id, read_updates: 2}].to_json
 
       expect(response.status).to eq(204)
 
-      expect(application_group_1.reload.unread_updates).to eq 2
+      expect(application_group_1.reload.unread_updates).to eq 4
 
       api_put :updated, untrusted_application_token, raw_post_data: [
-        {id: application_group_1.id, read_updates: 1}].to_json
+        {group_id: group_1.id, read_updates: 1}].to_json
 
       expect(response.status).to eq(204)
 
-      expect(application_group_1.reload.unread_updates).to eq 1
+      expect(application_group_1.reload.unread_updates).to eq 4
 
       api_put :updated, untrusted_application_token, raw_post_data: [
-        {id: application_group_1.id, read_updates: 2}].to_json
+        {group_id: group_1.id, read_updates: 4}].to_json
 
       expect(response.status).to eq(204)
 

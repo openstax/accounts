@@ -54,11 +54,11 @@ class Api::V1::ApplicationGroupsController < Api::V1::ApiController
 
     After you called the API and received your response, the group had a member added, setting unread_updates to 2.
 
-    `application_groups = {id: 13, read_updates: 1}` &ndash; will decrease unread_updates by 1, setting it to 1. The group will be sent again the next time you call `updates`, so you won't miss the updated information.
+    `application_groups = {id: 13, read_updates: 1}` &ndash; will not affect the record. The group will be sent again the next time you call `updates`, so you won't miss the updated information.
   EOS
   def updated
     OSU::AccessPolicy.require_action_allowed!(:updated, current_api_user, ApplicationGroup)
-    errors = MarkApplicationGroupsUpdatesAsRead.call(current_application,
+    errors = MarkApplicationGroupUpdatesAsRead.call(current_application,
                ActiveSupport::JSON.decode(request.body)).errors
     head (errors.any? ? :internal_server_error : :no_content)
   end
