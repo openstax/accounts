@@ -61,7 +61,7 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       expect(response.body).to eq(expected_response)
     end
 
-    it "raises not found when when not found" do
+    it "raises not found when not found" do
       expect {
         api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo' }
       }.to raise_error(ActiveRecord::RecordNotFound)
@@ -296,21 +296,21 @@ describe Api::V1::ApplicationUsersController, :type => :api, :version => :v1 do
       expect(app_user.reload.unread_updates).to eq 4
 
       api_put :updated, untrusted_application_token, raw_post_data: [
-        {id: app_user.id, read_updates: 2}].to_json
+        {user_id: user_2.id, read_updates: 2}].to_json
 
       expect(response.status).to eq(204)
 
-      expect(app_user.reload.unread_updates).to eq 2
+      expect(app_user.reload.unread_updates).to eq 4
 
       api_put :updated, untrusted_application_token, raw_post_data: [
-        {id: app_user.id, read_updates: 1}].to_json
+        {user_id: user_2.id, read_updates: 1}].to_json
 
       expect(response.status).to eq(204)
 
-      expect(app_user.reload.unread_updates).to eq 1
+      expect(app_user.reload.unread_updates).to eq 4
 
       api_put :updated, untrusted_application_token, raw_post_data: [
-        {id: app_user.id, read_updates: 2}].to_json
+        {user_id: user_2.id, read_updates: 4}].to_json
 
       expect(response.status).to eq(204)
 
