@@ -16,7 +16,7 @@ module SignInState
 
     @current_user
   end
- 
+
   def sign_in!(user)
     @current_user = user || AnonymousUser.instance
     if @current_user.is_anonymous?
@@ -42,16 +42,14 @@ module SignInState
   def authenticate_user!
     unless signed_in?
       store_url
-      redirect_to main_app.login_path(params.slice(:client_id)),
-                  notice: "Please log in." 
+      redirect_to main_app.login_path(params.slice(:client_id))
     end
   end
 
   def authenticate_admin!
     unless current_user.is_administrator?
       store_url
-      redirect_to main_app.login_path(params.slice(:client_id)),
-                  notice: "Please log in."
+      redirect_to main_app.login_path(params.slice(:client_id))
     end
   end
 
