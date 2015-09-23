@@ -15,7 +15,7 @@ feature 'User updates profile' do
     click_link 'Profile Settings'
     fill_in 'First Name', with: 'testuser'
     click_button 'Update Profile'
-    expect(page).to have_content('Profile updated')
+    expect(page).to have_content('Your profile has been updated')
     expect(User.find_by_username('user').first_name).to eq 'testuser'
   end
 end
