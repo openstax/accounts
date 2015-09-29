@@ -11,8 +11,7 @@ class ContactInfosResendConfirmation
   end
 
   def authorized?
-    OSU::AccessPolicy.action_allowed?(:resend_confirmation,
-                                      caller, @contact_info)
+    OSU::AccessPolicy.action_allowed?(:resend_confirmation, caller, @contact_info)
   end
 
   def handle
