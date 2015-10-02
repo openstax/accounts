@@ -10,14 +10,15 @@ class SessionsController < ApplicationController
                   only: [:new, :callback, :failure, :destroy, :ask_new_or_returning]
 
   def new
-    # If the user is already logged in, send them back to where they came from
-    redirect_to :back if signed_in?
-
     get_authorization_url
     options = @authorization_url.nil? ? {} : { url: @authorization_url }
-    # If no url to redirect back to, store the fallback url (the referer)
+    # If no url to redirect back to, store the fallback url (the authorization url or the referer)
     # Handles the case where the user got sent straight to the login page
     store_fallback(options)
+
+    # If the user is already logged in, this means they got linked to the login page somehow
+    # Attempt to redirect to the fallback url stored above
+    redirect_back if signed_in?
 
     # Hack to figure out if the user came from CNX to hide the login
     # In the future, use the client_id and some boolean flag in the client app
@@ -33,6 +34,8 @@ class SessionsController < ApplicationController
     # If we have a client_id but no url to redirect back to,
     # store the fallback url (the authorization page)
     # However, do not store the referrer if the client_id is not present
+    # The referrer in this case is most likely the login page
+    # and we don't want to send users back there
     store_fallback(url: @authorization_url) unless @authorization_url.nil?
 
     handle_with(SessionsCallback, user_state: self,
