@@ -68,13 +68,6 @@ Accounts::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
-  config.middleware.use ExceptionNotification::Rack,
-    :email => {
-      :email_prefix => "[Accounts Exception] ",
-      :sender_address => %{"OpenStax Accounts" <noreply@openstax.org>},
-      :exception_recipients => DEPLOY_SETTINGS[:exception_recipients].split(/\s+/)
-    }
-
   # Lograge configuration (one-line logs in production)
   
   config.lograge.enabled = true
