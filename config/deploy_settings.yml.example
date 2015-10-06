@@ -3,5 +3,5 @@ aws_ses_endpoint_server: 'email.us-east-1.amazonaws.com'
 exceptions:
   raise: false
   contact_name: 'OpenStax Accounts'
-  sender: '"OpenStax Accounts" <noreply@openstax.org>'
-  recipients: <%= ['accounts-notifications@openstax.org'] %>
+  sender: '"Sender" <sender@example.org>'
+  recipients: <%= ['recipients@example.org'] %>
