@@ -1,3 +1,2 @@
 host: 'accounts.openstax.org'
 aws_ses_endpoint_server: 'email.us-east-1.amazonaws.com'
-exception_recipients: 'bobby@example.com jimmy@example.com'

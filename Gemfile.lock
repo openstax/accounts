@@ -95,7 +95,7 @@ GEM
       railties (>= 3.1)
     erubis (2.7.0)
     eventmachine (1.0.3)
-    exception_notification (4.0.1)
+    exception_notification (4.1.1)
       actionmailer (>= 3.0.4)
       activesupport (>= 3.0.4)
     execjs (1.4.0)
@@ -195,6 +195,9 @@ GEM
       responders
       roar (>= 0.12.1, < 1.0)
       roar-rails (>= 0.1.2)
+    openstax_rescue_from (1.3.0)
+      exception_notification (>= 4.1, < 5.0)
+      rails (>= 3.1, < 5.0)
     openstax_utilities (4.2.0)
       keyword_search
       lev
@@ -343,7 +346,6 @@ DEPENDENCIES
   debugger
   delayed_job_active_record
   doorkeeper (~> 1.4.2)
-  exception_notification
   factory_girl_rails
   fine_print (~> 3.0.0)
   jbuilder
@@ -359,6 +361,7 @@ DEPENDENCIES
   omniauth-identity
   omniauth-twitter
   openstax_api
+  openstax_rescue_from (~> 1.3.0)
   openstax_utilities
   pg
   poltergeist
@@ -375,3 +378,6 @@ DEPENDENCIES
   thin
   uglifier (>= 1.0.3)
   unicorn
+
+BUNDLED WITH
+   1.10.6

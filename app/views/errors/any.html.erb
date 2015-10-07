@@ -1,0 +1,5 @@
+<% content_for :application_body do %>
+  <h3 class='rescue-from'><%= @message %></h3>
+
+  <p class='rescue-from'>We're sorry this <%= @code %> error occurred. If you need help, please contact <%= openstax_rescue_from_contact_info %><%= " and reference error #{@error_id}" if @error_id && @did_notify %>.</p>
+<% end %>
