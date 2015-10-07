@@ -6,6 +6,7 @@ addons:
 rvm:
   - "1.9.3-p547"
 before_install:
+  - cp config/secret_settings.yml.example config/secret_settings.yml
   - wget 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2'
   - tar xf phantomjs-1.9.7-linux-x86_64.tar.bz2
   - export PATH=$PATH:phantomjs-1.9.7-linux-x86_64/bin/
