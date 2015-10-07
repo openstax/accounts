@@ -35,7 +35,7 @@ gem 'delayed_job_active_record'
 gem 'representable', '~> 2.1.3'
 gem 'roar-rails'
 
-gem 'openstax_rescue_from', '~> 1.2.0'
+gem 'openstax_rescue_from', '~> 1.3.0'
 
 gem "keyword_search", '~> 1.5.0'
 
