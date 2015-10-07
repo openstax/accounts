@@ -4,8 +4,8 @@ OpenStax::RescueFrom.configure do |config|
   config.raise_exceptions = Rails.application.config.consider_all_requests_local
 
   config.app_name = 'Accounts'
-  config.app_env = ENV['APP_ENV']
-  config.contact_name = DEPLOY_SETTINGS[:exceptions]['contact_name']
+  config.app_env = SECRET_SETTINGS[:environment_name]
+  config.contact_name = SECRET_SETTINGS[:exceptions]['contact_name']
 
   # config.notifier = ExceptionNotifier
 
@@ -13,8 +13,8 @@ OpenStax::RescueFrom.configure do |config|
   # config.html_error_template_layout_name = 'application'
 
   # config.email_prefix = "[#{app_name}] (#{app_env}) "
-  config.sender_address = DEPLOY_SETTINGS[:exceptions]['sender']
-  config.exception_recipients = DEPLOY_SETTINGS[:exceptions]['recipients']
+  config.sender_address = SECRET_SETTINGS[:exceptions]['sender']
+  config.exception_recipients = SECRET_SETTINGS[:exceptions]['recipients']
 end
 
 OpenStax::Api::V1::ApiController.class_eval do
