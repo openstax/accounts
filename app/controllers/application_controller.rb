@@ -1,6 +1,4 @@
 class ApplicationController < ActionController::Base
-  use_openstax_exception_rescue
-
   include Lev::HandleWith
 
   respond_to :html

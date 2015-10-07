@@ -1,4 +1,6 @@
 ActionController::Base.class_exec do
+  use_openstax_exception_rescue
+
   include SignInState
 
   protect_from_forgery

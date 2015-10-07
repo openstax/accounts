@@ -5,7 +5,7 @@ OpenStax::RescueFrom.configure do |config|
 
   config.app_name = 'Accounts'
   config.app_env = SECRET_SETTINGS[:environment_name]
-  config.contact_name = SECRET_SETTINGS[:exceptions]['contact_name']
+  config.contact_name = SECRET_SETTINGS[:exception]['contact_name']
 
   # config.notifier = ExceptionNotifier
 
@@ -13,10 +13,6 @@ OpenStax::RescueFrom.configure do |config|
   # config.html_error_template_layout_name = 'application'
 
   # config.email_prefix = "[#{app_name}] (#{app_env}) "
-  config.sender_address = SECRET_SETTINGS[:exceptions]['sender']
-  config.exception_recipients = SECRET_SETTINGS[:exceptions]['recipients']
-end
-
-OpenStax::Api::V1::ApiController.class_eval do
-  use_openstax_exception_rescue
+  config.sender_address = SECRET_SETTINGS[:exception]['sender']
+  config.exception_recipients = SECRET_SETTINGS[:exception]['recipients']
 end
