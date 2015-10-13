@@ -20,10 +20,8 @@ Accounts::Application.routes.draw do
 
   resources 'remote', only: [] do
     collection do
-      get 'test'
+      get 'v1'
       get 'iframe'
-      get 'login'
-      match "*path", to: "remote#cors_preflight_check", :constraints => { :method => "OPTIONS" }
     end
   end
 
