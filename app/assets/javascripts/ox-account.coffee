@@ -1,19 +1,15 @@
 ##= require jquery
 ##= require_self
-
-
-window.OxAccount = {
-
-  $: jQuery.noConflict()
-
-}
+##= require_tree ./accounts
+##= require bootstrap/modal
 
 # setup a tiny pubsub that piggybacks onto jQuery's event system
 PUBSUB = jQuery({})
-for method in ['on', 'off', 'trigger']
+
+window.OxAccount = {
+  $: jQuery
+}
+
+forward = (method) ->
   OxAccount[method] = -> PUBSUB[method].apply(PUBSUB, arguments)
-
-# boot up
-OxAccount.$(document).ready ->
-
-  debugger
+forward(method) for method in ['on', 'off', 'trigger']
