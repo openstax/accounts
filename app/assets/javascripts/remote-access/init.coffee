@@ -1,10 +1,4 @@
 OxAccount.init = ->
-  OxAccount.$('script').each  ->
-    matchesSelf = @src.match(/(.*)\/assets\/remote-access.js/)
-    if matchesSelf
-      window.OxAccount.HOST = matchesSelf[ matchesSelf.length-1 ]
-  unless OxAccount.HOST and console.warn
-    console.warn("Unable to find loading script tag, cannot detect host")
 
   # Are we being loaded inside a popup window in response to a social login?
   if window.opener?.OxAccount

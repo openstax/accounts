@@ -21,7 +21,7 @@ OxAccount.Modal =  {
 
   display: (page) ->
     OxAccount.Remote.nextPage = page
-    src = OxAccount.HOST + '/remote/iframe?parent=' + encodeURI(window.location.href)
+    src = OxAccount.serverAddress() + '/remote/iframe?parent=' + encodeURI(window.location.href)
     OxAccount.$(document.body).append(@html(src))
     $('#OxAccountModal').modal()
     $('#myModal').on('hidden.bs.modal', -> OxAccount.proxy = null )
