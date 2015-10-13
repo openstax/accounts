@@ -1,7 +1,7 @@
 ##= require jquery
-##= require_self
-##= require_tree ./accounts
 ##= require bootstrap/modal
+##= require_self
+##= require_tree .
 
 # setup a tiny pubsub that piggybacks onto jQuery's event system
 PUBSUB = jQuery({})

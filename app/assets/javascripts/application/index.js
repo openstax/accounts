@@ -16,7 +16,7 @@
 //= require ./do
 //= require ./jquery_extensions
 //= require ./ui
-//= require ./ox-account
+//= require ./iframe-access-helpers
 //= require bootstrap
 //= require_self
 

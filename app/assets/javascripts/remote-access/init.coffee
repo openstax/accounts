@@ -1,9 +1,8 @@
 OxAccount.init = ->
   OxAccount.$('script').each  ->
-    matchesSelf = @src.match(/(.*)\/assets\/ox-account.js/)
+    matchesSelf = @src.match(/(.*)\/assets\/remote-access.js/)
     if matchesSelf
       window.OxAccount.HOST = matchesSelf[ matchesSelf.length-1 ]
-
   unless OxAccount.HOST and console.warn
     console.warn("Unable to find loading script tag, cannot detect host")
 
