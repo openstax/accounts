@@ -4,8 +4,8 @@ OxAccount.init = ->
     if matchesSelf
       window.OxAccount.HOST = matchesSelf[ matchesSelf.length-1 ]
 
-  unless OxAccount.HOST
-    throw new Error("Unable to find loading script tag, cannot detect host")
+  unless OxAccount.HOST and console.warn
+    console.warn("Unable to find loading script tag, cannot detect host")
 
   # Are we being loaded inside a popup window in response to a social login?
   if window.opener?.OxAccount
