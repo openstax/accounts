@@ -5,7 +5,8 @@ class ApplicationController < ActionController::Base
 
   layout 'application_body_only'
 
-  skip_before_filter :authenticate_user!, only: [:routing_error]
+  # skip all filters defined so far
+  skip_filter *_process_action_callbacks.map(&:filter), only: [:routing_error]
 
   def routing_error
     raise ActionController::RoutingError.new(params[:path])
