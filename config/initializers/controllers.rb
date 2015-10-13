@@ -38,31 +38,24 @@ ActionController::Base.class_exec do
   end
 
   def registration
-    user = (request.format == :json) ? current_human_user : current_user
-    return unless user.try(:is_temp?)
-    store_url key: :registration_return_to
+    return true if request.format != :html
 
-    respond_to do |format|
-      format.html { redirect_to register_path }
-      format.json { head(:forbidden) }
-    end
+    return unless current_user.is_temp?
+    store_url key: :registration_return_to
+    redirect_to register_path
   end
 
   def expired_password
-    user = (request.format == :json) ? current_human_user : current_user
-    identity = user.try(:identity)
+    return true if request.format != :html
+
+    identity = current_user.identity
     return unless identity.try(:password_expired?)
 
     code = GeneratePasswordResetCode.call(identity).outputs[:code]
     code_hash = { code: code }
     store_url key: :password_return_to
 
-    respond_to do |format|
-      format.html { redirect_to reset_password_path(code_hash) }
-      # If we do this check (we probably should), then clients of the API
-      # must handle this response and redirect the user appropriately.
-      format.json { render :json => { expired_password: code_hash }.to_json }
-    end
+    redirect_to reset_password_path(code_hash)
   end
 end
 
