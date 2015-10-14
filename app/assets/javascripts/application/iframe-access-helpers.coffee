@@ -4,6 +4,22 @@ relayWindowSize = ->
     pageResize: { width: win.width(), height: win.height() }
   )
 
+openSocial = (ev) ->
+  btn = ev.target
+  url = @href
+  width  = 350
+  height = 250
+  left = (screen.width/2)-(width/2)
+  top  = (screen.height/2)-(height/2)
+
+  separator = if url.indexOf('?') is -1 then '?' else '&'
+  url += (separator + 'display=popup')
+
+  window.open(url, @id, "menubar=no,toolbar=no,status=no,width="+width+
+    ",height="+height+",toolbar=no,left="+left+",top="+top)
+  OxAccount.trigger('social-login:start')
+  ev.preventDefault()
+
 
 $(document).ready ->
   return if window is window.top # don't do anything if not inside an iframe
@@ -13,7 +29,7 @@ $(document).ready ->
   $(document.body).addClass('iframe')
   # Intercept login button clicks to open in window
   for btn in $('.login-button')
-    btn.addEventListener('click', @openSocial)
+    btn.addEventListener('click', openSocial)
 
   # notify the parent iframe of our size now and whenever it's changed
   $(window).resize( relayWindowSize )
