@@ -2,7 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <%= javascript_include_tag  "remote-access" %>
-    <script>OxAccount.parentLocation='<%= params[:parent] %>'</script>
+    <script>
+      OxAccount.parentLocation='<%= @iframe_parent %>';
+    </script>
     <style type="text/css">
         html, body { margin: 0; padding: 0; height: 100%; }
         iframe {
