@@ -46,10 +46,8 @@ openSocial = (ev) ->
 
 
 $(document).ready ->
-  console.log 'loaded: ', window.location
-  #  if window.opener?.parent
   # Are we being loaded inside a popup window in response to a social login?
-  window.opener?.parent?.OxAccount.Host._externalWindowCompleted(window)
+  window.opener?.parent?.OxAccount?.Host.socialLoginComplete(window)
 
   return unless isIframed() # don't do anything if not inside an iframe
 

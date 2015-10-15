@@ -7,7 +7,6 @@ PAGES = {
 }
 
 setUrl = (url) ->
-  console.log "Setting url: #{url}"
   frame = OxAccount.$('#content')
   frame.attr(src: url) unless frame.attr('src') is url
 
@@ -27,7 +26,6 @@ OxAccount.Host = {
     OxAccount.proxy = new Porthole.WindowProxy(OxAccount.parentLocation)
     # Register an event handler to receive messages
     OxAccount.proxy.addEventListener( (msg)->
-      console.log msg.data
       OxAccount.Host[name](args) for name, args of msg.data
     )
 

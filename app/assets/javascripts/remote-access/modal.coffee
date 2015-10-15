@@ -49,7 +49,6 @@ OxAccount.Modal =  {
 
     OxAccount.proxy = new Porthole.WindowProxy(src, "OxAccountIframe")
     OxAccount.proxy.addEventListener( (msg) ->
-      console.log msg.data
       OxAccount.Remote[name](args) for name, args of msg.data
     )
     return promise
