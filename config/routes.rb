@@ -20,7 +20,6 @@ Accounts::Application.routes.draw do
 
   resources 'remote', only: [] do
     collection do
-      get 'v1'
       get 'iframe'
     end
   end

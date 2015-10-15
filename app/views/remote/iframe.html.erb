@@ -1,10 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <%= javascript_include_tag  "remote-access" %>
     <script>
-      OxAccount.parentLocation='<%= @iframe_parent %>';
+      window.OX_BOOTSTRAP_INFO = {
+         parentLocation: '<%= @iframe_parent %>',
+         user: <%=raw current_user.is_anonymous? ? false : Api::V1::UserRepresenter.new(current_user).to_json %>
+      };
     </script>
+    <%= javascript_include_tag  "remote-access" %>
     <style type="text/css">
         html, body { margin: 0; padding: 0; height: 100%; }
         iframe {

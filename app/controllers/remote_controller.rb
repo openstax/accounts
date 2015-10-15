@@ -33,5 +33,4 @@ class RemoteController < ApplicationController
   end
 
 
-
 end

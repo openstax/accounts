@@ -1,45 +1,48 @@
+# Methods defined here are executed in the context host side of the iframe
+#
+# The pages listed here may be loaded at their given urls
+PAGES = {
+  login: '/login'
+  profile: '/profile'
+}
+
+setUrl = (url) ->
+  console.log "Setting url: #{url}"
+  frame = OxAccount.$('#content')
+  frame.attr(src: url) unless frame.attr('src') is url
+
+
 OxAccount.Host = {
 
   loadPage: (page) ->
-    frame = document.getElementById('content')
-    if page is "profile"
-      OxAccount.$(frame).attr(src: "/profile")
+    return unless PAGES[page]
+    setUrl(PAGES[page])
+
+  displayLogin: (url) ->
+    setUrl(url)
 
   init: ->
-    # outer iframe that doesn't change
+    OxAccount.parentLocation = window.OX_BOOTSTRAP_INFO.parentLocation
 
-    if window.location.pathname is "/remote/iframe"
-      @initOuter()
-    else
-      @initWebsite()
-
-
-  onPageLoad: (page) ->
-    OxAccount.proxy.post(pageLoad: page)
-
-  initOuter: ->
-    return unless OxAccount.parentLocation
     OxAccount.proxy = new Porthole.WindowProxy(OxAccount.parentLocation)
     # Register an event handler to receive messages
     OxAccount.proxy.addEventListener( (msg)->
+      console.log msg.data
       OxAccount.Host[name](args) for name, args of msg.data
     )
+
+    if window.OX_BOOTSTRAP_INFO.user
+      OxAccount.proxy.post(setUser: window.OX_BOOTSTRAP_INFO.user)
+
     OxAccount.proxy.post(iFrameReady: true)
 
   onPageLoad: (page) ->
     OxAccount.proxy.post(pageLoad: page)
 
-  initOuter: ->
-    # The remote code is written to not depend on global jQuery, no reason to pollute
-    OxAccount.$ = jQuery.noConflict()
-
-
-
   # callback called when a social login completes
-  _externalWindowCompleted: (extWindow) ->
-    OxAccount.trigger('social-login:complete')
+  socialLoginComplete: (extWindow, payload) ->
+    OxAccount.proxy.post(socialLoginComplete: payload.user)
     extWindow.close()
-    # WHAT TO DO NOW?
-    window.location.reload()
+
 
 }
