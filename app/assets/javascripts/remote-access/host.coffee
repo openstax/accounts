@@ -26,7 +26,12 @@ OxAccount.Host = {
     OxAccount.proxy = new Porthole.WindowProxy(OxAccount.parentLocation)
     # Register an event handler to receive messages
     OxAccount.proxy.addEventListener( (msg)->
-      OxAccount.Host[name](args) for name, args of msg.data
+      for name, args of msg.data
+        if ! OxAccount.Host[name]
+          obj = {}
+          obj[name] = args
+          OxAccount.proxy.post(obj)
+        OxAccount.Host[name](args)
     )
 
     if window.OX_BOOTSTRAP_INFO.user
