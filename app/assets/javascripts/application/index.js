@@ -13,8 +13,12 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.ui.all
-//= require_tree .
+//= require ./do
+//= require ./jquery_extensions
+//= require ./ui
+//= require ./iframe-access-helpers
 //= require bootstrap
+//= require_self
 
 function refresh_buttons() {
    $('input:submit').button();
@@ -29,6 +33,3 @@ function refresh_buttons() {
 $(document).ready(function() {
   refresh_buttons();
 });
-
-
-

@@ -18,6 +18,12 @@ Accounts::Application.routes.draw do
     end
   end
 
+  resources 'remote', only: [] do
+    collection do
+      get 'iframe'
+    end
+  end
+
   scope controller: 'users' do
     get 'profile', action: :edit
     put 'profile', action: :update
