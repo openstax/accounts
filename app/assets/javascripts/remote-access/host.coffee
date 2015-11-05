@@ -27,11 +27,12 @@ OxAccount.Host = {
     # Register an event handler to receive messages
     OxAccount.proxy.addEventListener( (msg)->
       for name, args of msg.data
-        if ! OxAccount.Host[name]
+        if OxAccount.Host[name]
+          OxAccount.Host[name](args)
+        else
           obj = {}
           obj[name] = args
           OxAccount.proxy.post(obj)
-        OxAccount.Host[name](args)
     )
 
     if window.OX_BOOTSTRAP_INFO.user
