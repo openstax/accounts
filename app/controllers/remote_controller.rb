@@ -8,11 +8,18 @@ class RemoteController < ApplicationController
 
   layout false
 
+  # contains a bare-bones HTML file with iframe
   def iframe
-    render :layout=>false
   end
 
-  # The first step in commencing a login
+  # The first step in commencing a login.
+  # Counter-intuitively, the iframe is opened at accounts so that it can
+  # communicate between pages due to matching same-origin policy.
+  # Then when the parent signals to start loggigng in,
+  # it redirects to the client site so it can start the oauth request.
+  #   The client site will then redirect back with oauth request params.
+  # Login then comences. Once it completes, we once again redirect back
+  # to the client site where it can relay tokens or whatever
   def start_login
     # store the url that we are going to redirect to
     # This way we can redirect back to it once login is complete
@@ -21,7 +28,7 @@ class RemoteController < ApplicationController
     redirect_to params[:start]
   end
 
-  # view contains html/javascript to deliver the results
+  # view contains html/javascript to redirect to client url
   def finish_login
     # clear iframe flag in case the user loads via a regular window later
     session.delete(:from_iframe)
@@ -32,7 +39,8 @@ class RemoteController < ApplicationController
 
   def validate_iframe_parent
     @iframe_parent = params[:parent]
-    unless SECRET_SETTINGS[:valid_iframe_origins].any?{|origin| @iframe_parent =~ /^#{origin}/ }
+    valid_origins = SECRET_SETTINGS[:valid_iframe_origins] || []
+    unless valid_origins.any?{|origin| @iframe_parent =~ /^#{origin}/ }
       raise SecurityError.new("#{@iframe_parent} is not allowed to iframe content")
     end
   end
