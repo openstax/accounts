@@ -1,6 +1,12 @@
+## This file is loaded by accounts as part of it's standard JS build
+# it watches for page load and applies special handlers if
+# it detects it's loaded inside an iframe.
+
+## Sends a messaage back to the listening page using postMessage
 sendMsg = (msg) ->
   window.parent.OxAccount.proxy.post(msg)
 
+# Relays the size of the current page so the iframe can resize itself if needed
 relayWindowSize = ->
   win = $(window)
   doc = $(document)
@@ -10,22 +16,26 @@ relayWindowSize = ->
       height: Math.max(doc.height(), win.height())
     }
 
+# Certain pages have a heading that looks funny when iframed
+# We hide it and send it's text to the iframe so it can display it instead
 relayHeading = ->
   heading = $('#page-heading')
   return unless heading.length
   sendMsg(setTitle: heading.text())
   heading.hide()
 
-
+# Check for if running inside iframe
 isIframed = ->
   try # IE can block access to window.top
     return window.self != window.top
   catch
     return true # iframed if accessing window.top threw exception
 
+# The social login buttons (twitter, fb, google)
+# cannot be loaded inside of an iframe.
+# We break out of the frame and display them in a popup window.
 openSocial = (ev) ->
-  #sendMsg(openSocialLogin: @href)
-  #ev.preventDefault()
+
   url = @href
   btn = ev.target
 
@@ -34,21 +44,16 @@ openSocial = (ev) ->
   left = (screen.width/2)-(width/2)
   top  = (screen.height/2)-(height/2)
 
-
   separator = if url.indexOf('?') is -1 then '?' else '&'
   url += (separator + 'display=popup')
 
-
   window.open(url, @id, "menubar=no,toolbar=no,status=no,width="+width+
     ",height="+height+",toolbar=no,left="+left+",top="+top)
-  window.parent.OxAccount.trigger('social-login:start')
+
+  window.parent.OxAccount.proxy.post({startSocialLogin: @href})
   ev.preventDefault()
 
-
 $(document).ready ->
-  # Are we being loaded inside a popup window in response to a social login?
-  window.opener?.parent?.OxAccount?.Host.socialLoginComplete(window)
-
   return unless isIframed() # don't do anything if not inside an iframe
 
   relayHeading()
