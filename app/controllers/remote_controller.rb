@@ -9,7 +9,6 @@ class RemoteController < ApplicationController
   layout false
 
   def iframe
-    session[:from_iframe] = true
     render :layout=>false
   end
 
@@ -17,12 +16,15 @@ class RemoteController < ApplicationController
   def start_login
     # store the url that we are going to redirect to
     # This way we can redirect back to it once login is complete
+    session[:from_iframe] = true
     store_url(url: params[:start])
     redirect_to params[:start]
   end
 
   # view contains html/javascript to deliver the results
   def finish_login
+    # clear iframe flag in case the user loads via a regular window later
+    session.delete(:from_iframe)
     @return_to_url = stored_url
   end
 
