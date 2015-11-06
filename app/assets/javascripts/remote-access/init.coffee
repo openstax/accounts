@@ -5,11 +5,7 @@ $(document).ready ->
   OxAccount.proxy = new Porthole.WindowProxy(OxAccount.parentLocation)
   # Register an event handler to receive messages
   OxAccount.proxy.addEventListener( (msg)->
-    for name, args of msg.data
-      if OxAccount.Api[name]
-        OxAccount.Api[name](args)
-      else
-        console.warn?("Method #{name} was called but it's not defined by API")
+    OxAccount.Api[name]?(args) for name, args of msg.data
   )
 
   if window.OX_BOOTSTRAP_INFO.user
