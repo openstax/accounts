@@ -18,6 +18,13 @@ Accounts::Application.routes.draw do
     end
   end
 
+  # routes for access via an iframe
+  scope 'remote', controller: 'remote' do
+    get 'iframe'
+    get 'start_login'
+    get 'finish_login', as: 'iframe_after_login'
+  end
+
   scope controller: 'users' do
     get 'profile', action: :edit
     put 'profile', action: :update

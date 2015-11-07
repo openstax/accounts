@@ -82,7 +82,12 @@ class SessionsController < ApplicationController
   # This is an official action instead of just doing `redirect_back` in callback
   # handler so that fine_print can check to see if terms need to be signed.
   def returning_user
-    redirect_back
+    # Did session originate from an iframe login?
+    if session[:from_iframe]
+      redirect_to iframe_after_login_path
+    else
+      redirect_back
+    end
   end
 
   # Omniauth failure endpoint
