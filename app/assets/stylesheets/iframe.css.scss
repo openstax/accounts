@@ -17,41 +17,14 @@ body.iframe {
     padding: 0;
   }
 
-  .login-options {
-    width: 100%;
-    float: none;
-  }
-
-  #login-explanation {
-    padding: 0;
-    width: 100%;
-  }
-  // login page
-  .login-options {
-    .or-bar {
-      width: 100%;
-      .or-text {
-        display: inline;
-        margin-left: auto;
-        margin-rigth: auto;
-      }
-    }
-    .password-login {
-      input[type='text'], input[type='password'] {
-        width: 100%;
-      }
-      .password-actions .sign-up {
-        float: inherit;
-        margin-left: 35px;
-      }
-    }
-
-  }
-
   //signup page
   #signup-alternatives {
     float: inherit;
     width: 80%;
+    margin: 0 auto 20px auto;
+  }
+  #identity-register {
+    float: inherit;
     margin: 0 auto 20px auto;
   }
 }

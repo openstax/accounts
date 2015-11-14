@@ -41,7 +41,7 @@ class RemoteController < ApplicationController
     @iframe_parent = params[:parent]
     valid_origins = SECRET_SETTINGS[:valid_iframe_origins] || []
     unless valid_origins.any?{|origin| @iframe_parent =~ /^#{origin}/ }
-      raise SecurityError.new("#{@iframe_parent} is not allowed to iframe content")
+      raise SecurityTransgression.new("#{@iframe_parent} is not allowed to iframe content")
     end
   end
 
