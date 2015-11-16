@@ -52,6 +52,9 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    if session[:from_iframe]
+      url = iframe_start_login_path(start: stored_url)
+    end
     session[ActionInterceptor.config.default_key] = nil
     session[:registration_return_to] = nil
     session[:client_id] = nil
@@ -63,7 +66,7 @@ class SessionsController < ApplicationController
     # that are not at the root of their host after logout
     # TODO: Replace with signed or registered return urls
     #       Need to provide web views to sign or register those urls
-    url = begin
+    url ||= begin
       uri = URI(request.referer)
       "#{uri.scheme}://#{uri.host}:#{uri.port}/"
     rescue # in case the referer is bad (see #179)
