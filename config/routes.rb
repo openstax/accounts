@@ -21,7 +21,8 @@ Accounts::Application.routes.draw do
   # routes for access via an iframe
   scope 'remote', controller: 'remote' do
     get 'iframe'
-    get 'start_login'
+    get 'start_login', as: 'iframe_start_login'
+    get 'start_logout'
     get 'finish_login', as: 'iframe_after_login'
   end
 
