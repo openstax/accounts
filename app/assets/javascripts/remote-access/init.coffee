@@ -8,7 +8,4 @@ $(document).ready ->
     OxAccount.Api[name]?(args) for name, args of msg.data
   )
 
-  if window.OX_BOOTSTRAP_INFO.user
-    OxAccount.proxy.post(setUser: window.OX_BOOTSTRAP_INFO.user)
-
   OxAccount.proxy.post(iFrameReady: true)
