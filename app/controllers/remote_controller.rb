@@ -21,11 +21,15 @@ class RemoteController < ApplicationController
   # Login then comences. Once it completes, we once again redirect back
   # to the client site where it can relay tokens or whatever
   def start_login
-    # store the url that we are going to redirect to
-    # This way we can redirect back to it once login is complete
-    session[:from_iframe] = true
-    store_url(url: params[:start])
+    store_iframe_session
     redirect_to params[:start]
+  end
+
+  # Logout works like logging in except the account is first logged out
+  # The login page is then displayed and the flow is identical to login
+  def start_logout
+    store_iframe_session
+    redirect_to logout_url
   end
 
   # view contains html/javascript to redirect to client url
@@ -36,6 +40,13 @@ class RemoteController < ApplicationController
   end
 
   private
+
+  # store the url that we are going to redirect to
+  # This way we can redirect back to it once login is complete
+  def store_iframe_session
+    session[:from_iframe] = true
+    store_url(url: params[:start])
+  end
 
   def validate_iframe_parent
     @iframe_parent = params[:parent]

@@ -4,8 +4,7 @@
     <title></title>
     <script>
       window.OX_BOOTSTRAP_INFO = {
-         parentLocation: '<%= @iframe_parent %>',
-         user: <%=raw current_user.is_anonymous? ? false : Api::V1::UserRepresenter.new(current_user).to_json %>
+         parentLocation: '<%= @iframe_parent %>'
       };
     </script>
     <%= javascript_include_tag  "remote-access" %>

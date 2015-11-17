@@ -13,8 +13,8 @@ feature 'Login inside an iframe', js: true do
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
       click_button 'Sign in'
-      user_id = page.evaluate_script("window.OX_BOOTSTRAP_INFO.user.id")
-      expect(user_id).to equal(user.id)
+      parent = page.evaluate_script("window.OX_BOOTSTRAP_INFO.parentLocation")
+      expect(parent).to eq('https://openstax.org') # default
     end
   end
 
