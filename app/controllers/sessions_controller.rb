@@ -61,14 +61,16 @@ class SessionsController < ApplicationController
 
     sign_out!
 
-    # Hack to find root of referer
+    # Hack to find root of referer; also send back any query parameters on the logout
+    # request (a way for the logging out application to communicate state back to itself)
     # This will be a problem if we have to redirect back to apps
     # that are not at the root of their host after logout
     # TODO: Replace with signed or registered return urls
     #       Need to provide web views to sign or register those urls
     url ||= begin
-      uri = URI(request.referer)
-      "#{uri.scheme}://#{uri.host}:#{uri.port}/"
+      referrer_uri = URI(request.referer)
+      request_uri = URI(request.url)
+      "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
     rescue # in case the referer is bad (see #179)
       root_url
     end
