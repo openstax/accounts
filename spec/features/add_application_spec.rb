@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Add application to accounts', js: true do
   scenario 'without logging in' do
     visit '/oauth/applications'
-    expect(page).to have_content('Sign in with your one OpenStax account!')
+    expect(page).to have_content('Sign in to your one OpenStax account!')
   end
 
   scenario 'as an admin user' do

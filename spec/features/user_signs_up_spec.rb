@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'User signs up as a local user', js: true do
   scenario 'success' do
     visit '/'
-    expect(page).to have_content('Sign in with your one OpenStax account!')
+    expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
     expect(page).to have_content('Register with a username and password')
     expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
@@ -26,12 +26,12 @@ feature 'User signs up as a local user', js: true do
     click_link 'Sign out'
     expect(page).to have_content('Signed out!')
     expect(page).not_to have_content('Welcome, testuser')
-    expect(page).to have_content('Sign in with your one OpenStax account!')
+    expect(page).to have_content('Sign in to your one OpenStax account!')
   end
 
   scenario 'with incorrect password confirmation', js: true do
     visit '/'
-    expect(page).to have_content('Sign in with your one OpenStax account!')
+    expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
     expect(page).to have_content('Register with a username and password')
     expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
@@ -46,7 +46,7 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'with empty username', js: true do
     visit '/'
-    expect(page).to have_content('Sign in with your one OpenStax account!')
+    expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
     expect(page).to have_content('Register with a username and password')
     expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
@@ -61,7 +61,7 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'with empty password', js: true do
     visit '/'
-    expect(page).to have_content('Sign in with your one OpenStax account!')
+    expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
     expect(page).to have_content('Register with a username and password')
     expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
@@ -76,7 +76,7 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'with short password', js: true do
     visit '/'
-    expect(page).to have_content('Sign in with your one OpenStax account!')
+    expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
     expect(page).to have_content('Register with a username and password')
     expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
