@@ -2,9 +2,7 @@
   #top-nav-account { display: none;}
 </style>
 
-<%= page_heading("Sign in 
-     #{'to ' + @application.name if @application} 
-     with your one OpenStax account!".html_safe) %>
+<%= page_heading("Sign in to your one OpenStax account!".html_safe) %>
 
 <%= render 'sessions/login', hide_signup: session[:from_cnx] %>
 
