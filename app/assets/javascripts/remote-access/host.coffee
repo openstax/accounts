@@ -7,6 +7,11 @@ OxAccount.Host = {
   loginComplete: (back) ->
     @setUrl(back)
 
+  # we could inspect the url in order to suss out the best action
+  # but the sessions controller will also do it for us
+  completeRegistration: (url) ->
+    @setUrl('/ask_new_or_returning')
+
   setUrl: (url) ->
     $('#content').attr(src: url)
 
