@@ -3,6 +3,8 @@ class RemoteController < ApplicationController
   skip_before_filter :authenticate_user!, only: [:iframe, :start_login]
   skip_before_filter :registration,       only: [:iframe]
   skip_before_filter :expired_password,   only: [:iframe]
+  fine_print_skip :general_terms_of_use, :privacy_policy,
+                  only: [:iframe]
 
   before_filter :validate_iframe_parent, :only=>:iframe
 
