@@ -27,4 +27,14 @@ body.iframe {
     float: inherit;
     margin: 0 auto 20px auto;
   }
+
+  // Page that asks if account is new after a third party login
+  .new-or-returning {
+    .new-or-returning-option {
+      width: inherit;
+    }
+    .middle-space {
+      margin-left: 20px;
+    }
+  }
 }

@@ -54,6 +54,13 @@ openSocial = (ev) ->
   ev.preventDefault()
 
 $(document).ready ->
+  if window.opener
+    # if we're inside a popup window, it's because a social login
+    # has completed and we're attempting to get more info from the user
+    # in order to complete the profile
+    window.opener.parent?.OxAccount?.Host.completeRegistration(window.location.pathname)
+    window.close()
+    return
   return unless isIframed() # don't do anything if not inside an iframe
 
   relayHeading()
