@@ -5,9 +5,10 @@ feature 'User signs up as a local user', js: true do
     visit '/'
     expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
-    expect(page).to have_content('Register with a username and password')
+    expect(page).to have_content('Sign up')
     expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
 
+    fill_in 'Email Address', with: 'testuser@example.com'
     fill_in 'Username', with: 'testuser'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
@@ -33,9 +34,10 @@ feature 'User signs up as a local user', js: true do
     visit '/'
     expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
-    expect(page).to have_content('Register with a username and password')
+    expect(page).to have_content('Sign up')
     expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
 
+    fill_in 'Email Address', with: 'testuser@example.com'
     fill_in 'Username', with: 'testuser'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'pass'
@@ -48,9 +50,10 @@ feature 'User signs up as a local user', js: true do
     visit '/'
     expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
-    expect(page).to have_content('Register with a username and password')
+    expect(page).to have_content('Sign up')
     expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
 
+    fill_in 'Email Address', with: 'testuser@example.com'
     fill_in 'Username', with: ''
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
@@ -63,9 +66,10 @@ feature 'User signs up as a local user', js: true do
     visit '/'
     expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
-    expect(page).to have_content('Register with a username and password')
+    expect(page).to have_content('Sign up')
     expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
 
+    fill_in 'Email Address', with: 'testuser@example.com'
     fill_in 'Username', with: 'testuser'
     fill_in 'Password', with: ''
     fill_in 'Password Again', with: ''
@@ -78,14 +82,31 @@ feature 'User signs up as a local user', js: true do
     visit '/'
     expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
-    expect(page).to have_content('Register with a username and password')
+    expect(page).to have_content('Sign up')
     expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
 
+    fill_in 'Email Address', with: 'testuser@example.com'
     fill_in 'Username', with: 'testuser'
     fill_in 'Password', with: 'pass'
     fill_in 'Password Again', with: 'pass'
     click_button 'Register'
     expect(page).to have_content("Password is too short (minimum is 8 characters)")
+    expect(page).not_to have_content('Welcome, testuser')
+  end
+
+  scenario 'with empty email address', js: true do
+    visit '/'
+    expect(page).to have_content('Sign in to your one OpenStax account!')
+    click_link 'Sign up'
+    expect(page).to have_content('Sign up')
+    expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
+
+    fill_in 'Email Address', with: ''
+    fill_in 'Username', with: 'testuser'
+    fill_in 'Password', with: 'password'
+    fill_in 'Password Again', with: 'password'
+    click_button 'Register'
+    expect(page).to have_content("Email can't be blank")
     expect(page).not_to have_content('Welcome, testuser')
   end
 end

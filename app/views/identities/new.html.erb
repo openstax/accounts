@@ -1,4 +1,4 @@
-<%= page_heading 'Register with a username and password' %>
+<%= page_heading 'Sign up' %>
 
 
 <div id="signup-alternatives">
@@ -18,7 +18,13 @@
 
 <%= lev_form_for :register, url: '/auth/identity/register', html: {id: 'identity-register'} do |f| %>
 
-<p>Please choose a <%= 'username and ' if !signed_in? %> password.</p>
+<% if signed_in? %>
+  <p>Please choose a password.</p>
+<% else %>
+  <p>When you create an OpenStax account, we'll send a verification link to the email address you use to create the account. If you don't verify your address, you may not be able to access certain OpenStax features.</p>
+<% end %>
+
+  <%= standard_field form: f, name: :email, type: :email_field, label: 'Email Address' %>
 
 <% if !signed_in? %>
   <%= standard_field form: f, name: :username, type: :text_field, label: "Username" %>

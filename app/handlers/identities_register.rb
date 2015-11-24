@@ -3,6 +3,8 @@ class IdentitiesRegister
   lev_handler
 
   paramify :register do
+    attribute :email, type: String
+    validates :email, presence: true
     attribute :username, type: String
     attribute :first_name, type: String
     attribute :last_name, type: String
@@ -16,6 +18,9 @@ class IdentitiesRegister
   uses_routine CreateIdentity,
                translations: { inputs:  {scope: :register}, 
                                outputs: {type: :verbatim}  }
+
+  uses_routine AddEmailToUser,
+               translations: { inputs: {scope: :register} }
 
   protected
 
@@ -34,6 +39,8 @@ class IdentitiesRegister
       )
       user = outputs[[:create_user, :user]]
     end
+
+    run(AddEmailToUser, register_params.email, user)
 
     run(CreateIdentity, 
         password:              register_params.password,

@@ -11,6 +11,7 @@ feature 'Skipped terms are respected', js: true do
     visit_authorize_uri(@app_without_skip) # simulate arriving from an app
     click_on 'Sign up'
 
+    fill_in 'Email Address', with: 'bob@example.com'
     fill_in 'Username', with: 'bob'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
@@ -45,6 +46,7 @@ feature 'Skipped terms are respected', js: true do
     visit_authorize_uri(@app_with_skip)
     click_on 'Sign up'
 
+    fill_in 'Email Address', with: 'bobby@example.com'
     fill_in 'Username', with: 'bobby'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
@@ -78,6 +80,7 @@ feature 'Skipped terms are respected', js: true do
     visit '/'
     click_on 'Sign up'
 
+    fill_in 'Email Address', with: 'bobby@example.com'
     fill_in 'Username', with: 'bobby'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'

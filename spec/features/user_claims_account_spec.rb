@@ -9,6 +9,7 @@ feature 'User claims an unclaimed account', js: true do
     ).outputs[:user]
     visit '/'
     click_link 'Sign up'
+    fill_in 'Email Address', with: 'unclaimedtestuser@example.com'
     fill_in 'Username', with: 'unclaimedtestuser'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'

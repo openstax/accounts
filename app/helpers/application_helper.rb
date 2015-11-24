@@ -95,6 +95,8 @@ module ApplicationHelper
           options[:form].password_field(options[:name], options[:options])
         when :hidden_field
           options[:form].hidden_field(options[:name], options[:options])
+        when :email_field
+          options[:form].email_field(options[:name], options[:options])
         else
           raise IllegalArgument, "Unknown field type #{options[:type]}"
         end
