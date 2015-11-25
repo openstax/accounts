@@ -4,7 +4,7 @@
 
 <%= page_heading("Sign in to your one OpenStax account!".html_safe) %>
 
-<%= render 'sessions/login', hide_signup: session[:from_cnx] %>
+<%= render 'sessions/login', hide_signup: (session[:from_cnx] && !session[:from_iframe]) %>
 
 
 <div id="login-explanation">
