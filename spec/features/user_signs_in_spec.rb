@@ -131,18 +131,18 @@ feature 'User logs in as a local user', js: true do
 
     click_omniauth_link('twitter')
 
-    expect(page).to have_content('Nice to meet you,')
+    expect(page).to have_content('Merge Logins')
     expect(page).to have_no_link('twitter-login-button')
 
     click_omniauth_link('google_oauth2')
 
-    expect(page).to have_content('Nice to meet you (again),')
+    expect(page).to have_content('Merge Logins')
     expect(page).to have_no_link('twitter-login-button')
     expect(page).to have_no_link('google_oauth2-login-button')
 
     click_omniauth_link('facebook')
 
-    expect(page).to have_content('Nice to meet you (again),')
+    expect(page).to have_content('Merge Logins')
     expect(page).to have_no_link('twitter-login-button')
     expect(page).to have_no_link('google_oauth2-login-button')
     expect(page).to have_no_link('facebook-login-button')
@@ -153,7 +153,7 @@ feature 'User logs in as a local user', js: true do
 
     click_button 'Sign in'
 
-    expect(page).to have_no_content('Nice to meet')
+    expect(page).to have_no_content('Merge Logins')
     expect(page).to have_no_content('Sign in to your one')
   end
 

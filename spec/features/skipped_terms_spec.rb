@@ -17,7 +17,7 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Password Again', with: 'password'
     click_on 'Register'
 
-    click_on 'Finish setting up my account'
+    click_on 'Continue'
 
     # No skipping
     expect(page).to have_content('I have read')
@@ -52,7 +52,7 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Password Again', with: 'password'
     click_on 'Register'
 
-    click_on 'Finish setting up my account'
+    click_on 'Continue'
 
     # Skipped!
     expect(page).to_not have_content('I have read')
@@ -86,7 +86,7 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Password Again', with: 'password'
     click_on 'Register'
 
-    click_on 'Finish setting up my account'
+    click_on 'Continue'
 
     # Gotta sign
     expect(page).to have_content('I have read')

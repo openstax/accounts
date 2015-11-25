@@ -1,12 +1,12 @@
 <% authentications = current_user.authentications %>
 
-<%= page_heading "Nice to meet you#{' (again)' if authentications.size > 1 }, #{current_user.username}"  %>
+<%= page_heading 'Merge Logins'  %>
 
+<% if false %>
 <p>Is this your first time making an OpenStax account? If so, choose the option on the right to complete your registration.</p>
 
 <p>If you think you have an existing OpenStax account using a different login, sign in on the left using that login so we can find the existing account and connect all of your logins to it.</p>
 
-<% if false %>
 <p>Do you have another OpenStax account using a different login?</p>
 
 <p>If so,
@@ -22,21 +22,22 @@ profile.</p>
 
 <div class='new-or-returning'>
 
-  <div class='new-or-returning-option right' style='text-align: center'>
+  <div class='new-or-returning-option left'>
     <div class='situation'>
-      I'm a brand new user
+      If this is your first time logging in to OpenStax, continue setting up your account.
     </div>
     <div class='well'>
-    <%= link_to "Finish setting up my account".html_safe, 
+    <%= link_to "Continue".html_safe,
                 stored_url, class: 'standard' %>
     </div>
 
   </div>
 
-  <div class='new-or-returning-option left' style='display:inline-block; text-align:center'>
+  <div class='new-or-returning-option right' style='display:inline-block'>
     <div class='situation'>
-      I think I already have an account<br/>
-      using a different login
+      If you've previously logged into OpenStax using one of the social network logins, we already have an account for you.<br />
+      <br />
+      Sign in using the same social network you used before.  We'll find your existing account and connect all of your logins for you.
     </div>
 
     <div class='well'>
