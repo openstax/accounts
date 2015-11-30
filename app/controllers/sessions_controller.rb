@@ -98,7 +98,7 @@ class SessionsController < ApplicationController
   # Omniauth failure endpoint
   def failure
     flash.now[:alert] = params[:message] == 'invalid_credentials' ? \
-                          'Incorrect username or password' : \
+                          'Incorrect username, email, or password' : \
                           params[:message]
     render 'new'
   end
