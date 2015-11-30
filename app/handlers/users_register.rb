@@ -7,7 +7,9 @@ class UsersRegister
     attribute :username, type: String
     attribute :title, type: String
     attribute :first_name, type: String
+    validates :first_name, presence: true
     attribute :last_name, type: String
+    validates :last_name, presence: true
     attribute :suffix, type: String
     attribute :full_name, type: String
     attribute :contract_1_id, type: Integer
@@ -30,8 +32,8 @@ class UsersRegister
 
     caller.username = register_params.username
     caller.title = register_params.title if !register_params.title.blank?
-    caller.first_name = register_params.first_name if !register_params.first_name.blank?
-    caller.last_name = register_params.last_name if !register_params.last_name.blank?
+    caller.first_name = register_params.first_name
+    caller.last_name = register_params.last_name
     caller.suffix = register_params.suffix if !register_params.suffix.blank?
     caller.full_name = register_params.full_name if !register_params.full_name.blank?
     caller.save

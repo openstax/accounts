@@ -24,6 +24,12 @@ feature 'User signs up as a local user', js: true do
     visit '/'
 
     expect(page).to have_content('Complete your profile information')
+    find(:css, '#register_i_agree').set(true)
+    click_button 'Register'
+
+    expect(page).to have_content("First name can't be blank")
+    expect(page).to have_content("Last name can't be blank")
+
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
     find(:css, '#register_i_agree').set(true)

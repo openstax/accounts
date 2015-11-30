@@ -1,14 +1,16 @@
 <%= page_heading 'Complete your profile information to create your account' %>
 
+<p>* indicates required field.</p>
+
 <%= lev_form_for :register, url: register_path, method: :put, html: {id: 'profile-form'} do |f| %>
 
-  <%= standard_field form: f, name: :username, type: :text_field, label: "Username",
+  <%= standard_field form: f, name: :username, type: :text_field, label: "Username *",
                      options: {value: current_user.username} %>
   <%= standard_field form: f, name: :title, type: :text_field, label: "Title",
                      options: {value: current_user.title} %>
-  <%= standard_field form: f, name: :first_name, type: :text_field, label: "First Name",
+  <%= standard_field form: f, name: :first_name, type: :text_field, label: "First Name *",
                      options: {value: current_user.first_name || current_user.guessed_first_name} %>
-  <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name",
+  <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name *",
                      options: {value: current_user.last_name || current_user.guessed_last_name} %>
   <%= standard_field form: f, name: :suffix, type: :text_field, label: "Suffix",
                      options: {value: current_user.suffix} %>
