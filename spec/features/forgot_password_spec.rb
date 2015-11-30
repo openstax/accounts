@@ -14,7 +14,7 @@ feature 'User forgot password', js: true do
 
   scenario 'username is not given' do
     click_button 'Submit'
-    expect(page.text).to include("Username can't be blank")
+    expect(page.text).to include("Username or email can't be blank")
   end
 
   scenario 'username not found' do
@@ -40,6 +40,23 @@ feature 'User forgot password', js: true do
 
   scenario 'user gets a password reset email' do
     fill_in 'Username', with: 'user1'
+    click_button 'Submit'
+    expect(page.text).to include('Password reset instructions sent')
+    @user.identity.reload
+    password_reset_email_sent? @user
+
+    visit @reset_link
+    expect(page.text).to include('Reset Password')
+    expect(page.text).not_to include('Reset password link is invalid')
+    fill_in 'Password', with: 'Pazzw0rd!'
+    fill_in 'Password Again', with: 'Pazzw0rd!'
+    click_button 'Set Password'
+    expect(page.text).to include('Your password has been reset successfully!')
+    expect(page.text).to include('You have been signed in automatically.')
+  end
+
+  scenario 'user enters an email address' do
+    fill_in 'Username / Email', with: @email.value
     click_button 'Submit'
     expect(page.text).to include('Password reset instructions sent')
     @user.identity.reload
