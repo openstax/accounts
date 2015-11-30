@@ -1,6 +1,6 @@
 class ContactInfosController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:confirm, :confirm_unclaimed]
+  skip_before_filter :authenticate_user!, :registration, only: [:confirm, :confirm_unclaimed]
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:confirm, :confirm_unclaimed]
 

@@ -1,0 +1,5 @@
+<%= page_heading 'Verification sent' %>
+
+<p>A verification email has been sent to <%= current_user.email_addresses.first.try(:value) %>.  If you don't see the message in your inbox, check your junk or spam folder.</p>
+
+<p>Once you have verified your email address, click <a href="<%= stored_url %>">here</a> to continue.</p>

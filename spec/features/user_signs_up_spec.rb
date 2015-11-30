@@ -16,7 +16,12 @@ feature 'User signs up as a local user', js: true do
     expect(page).to have_content('Welcome, testuser')
 
     click_link 'Continue'
-    expect(page).to have_content('Welcome, testuser')
+    expect(page).to have_content('A verification email has been sent')
+
+    visit confirm_path(code: EmailAddress.last.confirmation_code)
+    expect(page).to have_content('Success!')
+
+    visit '/'
 
     expect(page).to have_content('Complete your profile information')
     fill_in 'First Name', with: 'Test'
