@@ -3,6 +3,19 @@
 #login-explanation {
   padding-top: 20px;
   width: 400px;
+
+  #logout-reminder {
+    margin-top: 90px;
+    border: 1px solid #cccccc;
+    background-color: #eeeeee;
+
+    p {
+      font-style: italic;
+      padding: 15px;
+      margin: 0;
+      text-align: center;
+    }
+  }
 }
 
 $login-options-width: 300px;
@@ -36,7 +49,7 @@ $login-options-width: 300px;
         padding: 0 14px;
         background: white;
         font-weight: bold;
-      }      
+      }
   }
 
   .password-login {
@@ -56,17 +69,17 @@ $login-options-width: 300px;
         float:right;
         margin-right: 35px;
         margin-top: 7px;
-      }      
+      }
     }
 
   }
 }
 
 #signup-alternatives {
-  float:right; 
-  width: 350px; 
-  background-color: #efefef; 
-  border: 1px solid black; 
+  float:right;
+  width: 350px;
+  background-color: #efefef;
+  border: 1px solid black;
   padding: 10px 20px 20px 20px;
   margin-top: 50px;
 
@@ -86,8 +99,8 @@ $login-options-width: 300px;
 
 .new-or-returning-buttons {
 
-  width: 270px; 
-  float: right; 
+  width: 270px;
+  float: right;
   padding-top:10px;
 
   .or-bar {
@@ -106,8 +119,8 @@ $login-options-width: 300px;
         padding: 0 14px;
         background: white;
         font-weight: bold;
-      }      
-  }  
+      }
+  }
 }
 
 
@@ -134,8 +147,8 @@ $login-options-width: 300px;
         padding: 14px 14px;
         background: white;
         font-weight: bold;
-      }      
-    }  
+      }
+    }
   }
 
   .new-or-returning-option {
@@ -153,7 +166,7 @@ $login-options-width: 300px;
     }
 
     &.right {
-      float: right; 
+      float: right;
 
       a {
         margin-top: 165px;
@@ -172,7 +185,7 @@ $login-options-width: 300px;
       .no-more-login-options {
         margin-top: 150px;
       }
-      
+
       .or-text {
         background-color: whitesmoke;
       }
