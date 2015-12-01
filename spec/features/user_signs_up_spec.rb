@@ -147,7 +147,26 @@ feature 'User signs up as a local user', js: true do
     click_link 'Continue'
     expect(page).to have_content('A verification email has been sent')
   end
+
+  scenario 'resend confirmation email' do
+    visit '/'
+    expect(page).to have_content('Sign in to your one OpenStax account!')
+    click_link 'Sign up'
+    expect(page).to have_content('Sign up')
+    expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
+
+    fill_in 'Email Address', with: 'testuser@example.com'
+    fill_in 'Username', with: 'testuser'
+    fill_in 'Password', with: 'password'
+    fill_in 'Password Again', with: 'password'
+    click_button 'Register'
+    expect(page).to have_content('Welcome, testuser')
+
+    click_link 'Continue'
+    expect(page).to have_content('A verification email has been sent')
+
+    click_on 'Resend Confirmation'
+
+    expect(page).to have_content('A confirmation message has been sent to "testuser@example.com"')
+  end
 end
-
-
-
