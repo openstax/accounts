@@ -56,7 +56,15 @@ class ContactInfosController < ApplicationController
   def confirm
     handle_with(ContactInfosConfirm,
                 complete: lambda {
-                  render :confirm, status: @handler_result.errors.any? ? 400 : 200
+                  user = @handler_result.outputs.contact_info.try(:user)
+                  if @handler_result.errors.any?
+                    render :confirm, status: 400
+                  elsif user.try(:is_temp?) && user.try(:registration_redirect_url).present?
+                    redirect_to user.registration_redirect_url,
+                                notice: 'Thanks for adding your email address.'
+                  else
+                    render :confirm, status: 200
+                  end
                 })
   end
 

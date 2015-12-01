@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150722224253) do
+ActiveRecord::Schema.define(:version => 20151202132845) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -237,10 +237,10 @@ ActiveRecord::Schema.define(:version => 20150722224253) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "username",         :default => "",     :null => false
-    t.datetime "created_at",                           :null => false
-    t.datetime "updated_at",                           :null => false
-    t.boolean  "is_administrator", :default => false
+    t.string   "username",                  :default => "",     :null => false
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
+    t.boolean  "is_administrator",          :default => false
     t.integer  "person_id"
     t.string   "first_name"
     t.string   "last_name"
@@ -248,7 +248,8 @@ ActiveRecord::Schema.define(:version => 20150722224253) do
     t.string   "title"
     t.string   "uuid"
     t.string   "suffix"
-    t.string   "state",            :default => "temp", :null => false
+    t.string   "state",                     :default => "temp", :null => false
+    t.text     "registration_redirect_url"
     t.index ["first_name"], :name => "index_users_on_first_name", :case_sensitive => false
     t.index ["full_name"], :name => "index_users_on_full_name", :case_sensitive => false
     t.index ["last_name"], :name => "index_users_on_last_name", :case_sensitive => false
