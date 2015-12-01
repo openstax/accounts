@@ -5,8 +5,8 @@ class IdentitiesForgotPassword
   uses_routine GeneratePasswordResetCode
 
   paramify :forgot_password do
-    attribute :username, type: String
-    validates :username, presence: true
+    attribute :username_or_email, type: String
+    validates :username_or_email, presence: true
   end
 
   protected
@@ -16,8 +16,9 @@ class IdentitiesForgotPassword
   end
 
   def handle
-    username = forgot_password_params.username
-    user = User.find_by_username(username)
+    username_or_email = forgot_password_params.username_or_email
+    user = User.find_by_username(username_or_email) ||
+           ContactInfo.find_by_value(username_or_email).try(:user)
     if user.nil?
       fatal_error(code: 'Username not found',
                   offending_inputs: [:username])

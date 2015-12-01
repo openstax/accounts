@@ -74,7 +74,7 @@ feature 'User resets password', js: true do
     fill_in 'Username', with: 'user'
     fill_in 'Password', with: 'password'
     click_button 'Sign in'
-    expect(page).to have_content('Incorrect username or password')
+    expect(page).to have_content('Incorrect username, email, or password')
 
     # try logging in with the new password
     fill_in 'Username', with: 'user'

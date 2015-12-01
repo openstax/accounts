@@ -1,8 +1,10 @@
 class ContactInfosController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:confirm, :confirm_unclaimed]
+  skip_before_filter :authenticate_user!, :registration, only: [:confirm, :confirm_unclaimed,
+                                                                :resend_confirmation]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:confirm, :confirm_unclaimed]
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:confirm, :confirm_unclaimed,
+                                                                 :resend_confirmation]
 
   before_filter :get_contact_info, only: [:destroy, :toggle_is_searchable]
 
@@ -36,7 +38,9 @@ class ContactInfosController < ApplicationController
   def resend_confirmation
     handle_with(ContactInfosResendConfirmation,
                 complete: lambda {
-                  redirect_to profile_path(active_tab: :email),
+                  path = current_user.is_email_pending? ? verification_sent_path :
+                                                          profile_path(active_tab: :email)
+                  redirect_to path,
                     notice: "A confirmation message has been sent to \"#{
                               @handler_result.outputs[:contact_info].value}\"" })
   end

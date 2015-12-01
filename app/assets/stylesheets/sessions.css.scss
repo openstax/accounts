@@ -142,27 +142,18 @@ $login-options-width: 300px;
     width: 40%;
 
     .situation {
-      font-size: 16px;
-      font-weight: bold;
-      height: 60px;
+      height: auto;
       color: $os_gray;
-      margin-top:10px;
+      margin-top: 30px;
       margin-bottom: 20px;
     }
 
     &.left {
       float: left;
-      .situation {
-        padding-top: 10px;  
-      }
     }
 
     &.right {
       float: right; 
-
-      .situation {
-        padding-top: 20px;  
-      }
 
       a {
         margin-top: 165px;
@@ -173,7 +164,8 @@ $login-options-width: 300px;
     }
 
     .well {
-      height: 415px;
+      height: auto;
+      text-align: center;
     }
 
     .login-options {

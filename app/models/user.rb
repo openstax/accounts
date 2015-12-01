@@ -92,6 +92,10 @@ class User < ActiveRecord::Base
     'unclaimed' == state
   end
 
+  def is_email_pending?
+    !email_addresses.any?(&:verified)
+  end
+
   def name
     result = full_name.present? ? full_name : guessed_full_name || username
     title.present? ? "#{title} #{result}" : result

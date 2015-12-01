@@ -53,6 +53,8 @@ RSpec.describe UsersController, type: :controller do
 
       controller.sign_in! temp_user
       put 'register', register: {i_agree: true,
+                                 first_name: 'My',
+                                 last_name: 'Username',
                                  username: "my_username",
                                  contract_1_id: contract_1.id,
                                  contract_2_id: contract_2.id}
@@ -95,6 +97,8 @@ RSpec.describe UsersController, type: :controller do
       contract_1 = FinePrint::Contract.first
       contract_2 = FinePrint::Contract.last
       put 'register', register: {i_agree: true,
+                                 first_name: 'My',
+                                 last_name: 'Username',
                                  username: "my_username",
                                  contract_1_id: contract_1.id,
                                  contract_2_id: contract_2.id}

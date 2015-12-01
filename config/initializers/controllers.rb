@@ -42,7 +42,7 @@ ActionController::Base.class_exec do
 
     return unless current_user.is_temp?
     store_url key: :registration_return_to
-    redirect_to register_path
+    redirect_to(current_user.is_email_pending? ? verification_sent_path : register_path)
   end
 
   def expired_password

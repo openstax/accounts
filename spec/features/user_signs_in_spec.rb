@@ -12,7 +12,7 @@ feature 'User logs in as a local user', js: true do
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username or password')
+      expect(page).to have_content('Incorrect username, email, or password')
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
@@ -31,7 +31,7 @@ feature 'User logs in as a local user', js: true do
       fill_in 'Username', with: 'plone_user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username or password')
+      expect(page).to have_content('Incorrect username, email, or password')
 
       fill_in 'Username', with: 'plone_user'
       fill_in 'Password', with: 'password'
@@ -49,7 +49,7 @@ feature 'User logs in as a local user', js: true do
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username or password')
+      expect(page).to have_content('Incorrect username, email, or password')
     end
   end
 
@@ -131,18 +131,18 @@ feature 'User logs in as a local user', js: true do
 
     click_omniauth_link('twitter')
 
-    expect(page).to have_content('Nice to meet you,')
+    expect(page).to have_content('Merge Logins')
     expect(page).to have_no_link('twitter-login-button')
 
     click_omniauth_link('google_oauth2')
 
-    expect(page).to have_content('Nice to meet you (again),')
+    expect(page).to have_content('Merge Logins')
     expect(page).to have_no_link('twitter-login-button')
     expect(page).to have_no_link('google_oauth2-login-button')
 
     click_omniauth_link('facebook')
 
-    expect(page).to have_content('Nice to meet you (again),')
+    expect(page).to have_content('Merge Logins')
     expect(page).to have_no_link('twitter-login-button')
     expect(page).to have_no_link('google_oauth2-login-button')
     expect(page).to have_no_link('facebook-login-button')
@@ -153,7 +153,7 @@ feature 'User logs in as a local user', js: true do
 
     click_button 'Sign in'
 
-    expect(page).to have_no_content('Nice to meet')
+    expect(page).to have_no_content('Merge Logins')
     expect(page).to have_no_content('Sign in to your one')
   end
 
@@ -178,5 +178,25 @@ feature 'User logs in as a local user', js: true do
       expect(new_user.reload.state).to eq("activated")
     end
 
+  end
+
+  scenario 'with an email address and password' do
+    with_forgery_protection do
+      create_application
+      user = create_user 'user'
+      create_email_address_for user, 'user@example.com'
+      visit_authorize_uri
+      expect(page).to have_content("Sign in to your one OpenStax account!")
+
+      fill_in 'Username', with: 'user'
+      fill_in 'Password', with: 'pass'
+      click_button 'Sign in'
+      expect(page).to have_content('Incorrect username, email, or password')
+
+      fill_in 'Username / Email', with: 'user@example.com'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+      expect(page.current_url).to match(app_callback_url)
+    end
   end
 end
