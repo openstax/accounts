@@ -120,6 +120,33 @@ feature 'User signs up as a local user', js: true do
     expect(page).to have_content("Email can't be blank")
     expect(page).not_to have_content('Welcome, testuser')
   end
+
+  scenario 'without confirming email' do
+    visit '/'
+    expect(page).to have_content('Sign in to your one OpenStax account!')
+    click_link 'Sign up'
+    expect(page).to have_content('Sign up')
+    expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
+
+    fill_in 'Email Address', with: 'testuser@example.com'
+    fill_in 'Username', with: 'testuser'
+    fill_in 'Password', with: 'password'
+    fill_in 'Password Again', with: 'password'
+    click_button 'Register'
+    expect(page).to have_content('Welcome, testuser')
+
+    click_link 'Continue'
+    expect(page).to have_content('A verification email has been sent')
+
+    click_link 'Sign out'
+    fill_in 'Username / Email', with: 'testuser'
+    fill_in 'Password', with: 'password'
+    click_button 'Sign in'
+
+    expect(page).to have_content('Welcome, testuser')
+    click_link 'Continue'
+    expect(page).to have_content('A verification email has been sent')
+  end
 end
 
 
