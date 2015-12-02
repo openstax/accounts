@@ -43,7 +43,13 @@ ActionController::Base.class_exec do
     return unless current_user.is_temp?
     store_url key: :registration_return_to
     flash.keep
-    redirect_to(current_user.is_email_pending? ? verification_sent_path : register_path)
+    if current_user.email_addresses.empty?
+      redirect_to ask_for_email_path
+    elsif !current_user.email_addresses.any?(&:verified)
+      redirect_to verification_sent_path
+    else
+      redirect_to register_path
+    end
   end
 
   def expired_password

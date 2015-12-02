@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
 
-  skip_before_filter :registration, only: [:register]
+  skip_before_filter :registration, only: [:register, :ask_for_email]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:register]
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:register, :ask_for_email]
 
   def edit
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
@@ -34,6 +34,20 @@ class UsersController < ApplicationController
                   })
     else
       store_fallback key: :registration_return_to
+    end
+  end
+
+  def ask_for_email
+    if request.put?
+      handle_with(ContactInfosCreate,
+                  success: lambda {
+                    current_user.registration_redirect_url = stored_url
+                    current_user.save
+                    redirect_to :verification_sent
+                  },
+                  failure: lambda {
+                    render :ask_for_email, status: 400
+                  })
     end
   end
 

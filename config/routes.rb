@@ -31,6 +31,8 @@ Accounts::Application.routes.draw do
     put 'profile', action: :update
     get 'register'
     put 'register'
+    get 'ask_for_email'
+    put 'ask_for_email'
   end
 
   resource :identity, only: :update
