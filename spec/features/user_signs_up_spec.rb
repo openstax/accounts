@@ -169,6 +169,7 @@ feature 'User signs up as a local user', js: true do
 
     click_on 'Resend Verification'
 
+    expect(page).to have_content('Already verified your email address?')
     expect(page).to have_content('A verification message has been sent to "testuser@example.com"')
   end
 end

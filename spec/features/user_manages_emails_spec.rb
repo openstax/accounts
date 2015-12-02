@@ -18,6 +18,7 @@ feature 'User manages emails' do
     scenario 'success', js: true do
       fill_in 'Email address', with: 'user@mysite.com'
       click_button 'Add Email address'
+      expect(page).to have_content('Change Your Password')
       expect(page).to have_content(
         'A verification message has been sent to "user@mysite.com"')
       expect(page).to have_content('user@mysite.com')

@@ -38,9 +38,7 @@ class ContactInfosController < ApplicationController
   def resend_confirmation
     handle_with(ContactInfosResendConfirmation,
                 complete: lambda {
-                  path = current_user.is_email_pending? ? verification_sent_path :
-                                                          profile_path(active_tab: :email)
-                  redirect_to path,
+                  redirect_to :back,
                     notice: "A verification message has been sent to \"#{
                               @handler_result.outputs[:contact_info].value}\"" })
   end
