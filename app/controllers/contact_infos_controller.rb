@@ -12,7 +12,7 @@ class ContactInfosController < ApplicationController
     handle_with(ContactInfosCreate,
                 success: lambda {
                   redirect_to profile_path(active_tab: :email),
-                    notice: "A confirmation message has been sent to \"#{
+                    notice: "A verification message has been sent to \"#{
                               @handler_result.outputs[:contact_info].value}\"" },
                 failure: lambda { @active_tab = :email; render 'users/edit', status: 400 })
   end
@@ -41,7 +41,7 @@ class ContactInfosController < ApplicationController
                   path = current_user.is_email_pending? ? verification_sent_path :
                                                           profile_path(active_tab: :email)
                   redirect_to path,
-                    notice: "A confirmation message has been sent to \"#{
+                    notice: "A verification message has been sent to \"#{
                               @handler_result.outputs[:contact_info].value}\"" })
   end
 

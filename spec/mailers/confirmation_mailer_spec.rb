@@ -9,7 +9,7 @@ describe ConfirmationMailer do
     let(:mail) { ConfirmationMailer.reminder email }
 
     it "renders the headers" do
-      expect(mail.subject).to eq("[OpenStax] Reminder: please confirm this email address")
+      expect(mail.subject).to eq("[OpenStax] Reminder: please verify this email address")
       expect(mail.to).to eq(["to@example.org"])
       expect(mail.from).to eq(["noreply@openstax.org"])
     end
@@ -24,7 +24,7 @@ describe ConfirmationMailer do
     let(:mail) { ConfirmationMailer.instructions email }
 
     it "renders the headers" do
-      expect(mail.subject).to eq("[OpenStax] Please confirm this email address")
+      expect(mail.subject).to eq("[OpenStax] Please verify this email address")
       expect(mail.to).to eq(["to@example.org"])
       expect(mail.from).to eq(["noreply@openstax.org"])
     end

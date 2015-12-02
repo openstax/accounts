@@ -167,8 +167,8 @@ feature 'User signs up as a local user', js: true do
     click_link 'Continue'
     expect(page).to have_content('A verification email has been sent')
 
-    click_on 'Resend Confirmation'
+    click_on 'Resend Verification'
 
-    expect(page).to have_content('A confirmation message has been sent to "testuser@example.com"')
+    expect(page).to have_content('A verification message has been sent to "testuser@example.com"')
   end
 end

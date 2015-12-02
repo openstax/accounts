@@ -13,11 +13,11 @@ feature 'Confirm email address', js: true do
 
   scenario 'without a confirmation code' do
     visit '/confirm'
-    expect(page).to have_content("Sorry, we couldn't verify an email using the confirmation code you provided.")
+    expect(page).to have_content("Sorry, we couldn't verify an email using the verification code you provided.")
   end
 
   scenario 'with unmatched confirmation code' do
     visit '/confirm?code=1234'
-    expect(page).to have_content("Sorry, we couldn't verify an email using the confirmation code you provided.")
+    expect(page).to have_content("Sorry, we couldn't verify an email using the verification code you provided.")
   end
 end
