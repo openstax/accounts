@@ -30,7 +30,6 @@ class RemoteController < ApplicationController
   # Logout works like logging in except the account is first logged out
   # The login page is then displayed and the flow is identical to login
   def start_logout
-    store_iframe_session
     redirect_to logout_url
   end
 
