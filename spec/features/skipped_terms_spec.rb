@@ -21,7 +21,7 @@ feature 'Skipped terms are respected', js: true do
     expect(page).to have_content('A verification email has been sent')
 
     MarkContactInfoVerified.call(EmailAddress.order(:id).last)
-    click_on 'here'
+    click_on 'Continue'
 
     # No skipping
     expect(page).to have_content('I have read')
@@ -60,7 +60,7 @@ feature 'Skipped terms are respected', js: true do
     expect(page).to have_content('A verification email has been sent')
 
     MarkContactInfoVerified.call(EmailAddress.order(:id).last)
-    click_on 'here'
+    click_on 'Continue'
 
     # Skipped!
     expect(page).to_not have_content('I have read')
@@ -98,7 +98,7 @@ feature 'Skipped terms are respected', js: true do
     expect(page).to have_content('A verification email has been sent')
 
     MarkContactInfoVerified.call(EmailAddress.order(:id).last)
-    click_on 'here'
+    click_on 'Continue'
 
     # Gotta sign
     expect(page).to have_content('I have read')

@@ -36,5 +36,7 @@
   <%= standard_field form: f, name: :password, type: :password_field, label: "Password" %>
   <%= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Password Again" %>
 
+  <%= hidden_field_tag :stored_url, stored_url %>
+
   <%= submit_tag "Register", class: 'standard' %>
 <% end %>

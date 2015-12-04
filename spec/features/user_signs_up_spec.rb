@@ -2,7 +2,9 @@ require 'spec_helper'
 
 feature 'User signs up as a local user', js: true do
   scenario 'success' do
-    visit '/'
+    create_application
+    visit_authorize_uri
+
     expect(page).to have_content('Sign in to your one OpenStax account!')
     click_link 'Sign up'
     expect(page).to have_content('Sign up')
@@ -18,11 +20,8 @@ feature 'User signs up as a local user', js: true do
     click_link 'Continue'
     expect(page).to have_content('A verification email has been sent')
 
-    visit confirm_path(code: EmailAddress.last.confirmation_code)
-    expect(page).to have_content('Success!')
-
-    visit '/'
-
+    visit link_in_last_email
+    expect(page).to have_content('Thanks for adding your email address.')
     expect(page).to have_content('Complete your profile information')
     find(:css, '#register_i_agree').set(true)
     click_button 'Register'
@@ -35,6 +34,9 @@ feature 'User signs up as a local user', js: true do
     find(:css, '#register_i_agree').set(true)
     click_button 'Register'
 
+    expect(page.current_url).to match(app_callback_url)
+
+    visit '/'
     click_link 'Sign out'
     expect(page).to have_content('Signed out!')
     expect(page).not_to have_content('Welcome, testuser')
@@ -165,8 +167,42 @@ feature 'User signs up as a local user', js: true do
     click_link 'Continue'
     expect(page).to have_content('A verification email has been sent')
 
-    click_on 'Resend Confirmation'
+    click_on 'Resend Verification'
 
-    expect(page).to have_content('A confirmation message has been sent to "testuser@example.com"')
+    expect(page).to have_content('Already verified your email address?')
+    expect(page).to have_content('A verification message has been sent to "testuser@example.com"')
+  end
+
+  scenario 'without any email addresses' do
+    create_application
+    user = create_user 'user'
+    # set the user state to "temp" so we can test registration
+    user.state = 'temp'
+    user.save!
+
+    visit_authorize_uri
+    expect(page).to have_content('Sign in to your one OpenStax account!')
+
+    fill_in 'Username', with: 'user'
+    fill_in 'Password', with: 'password'
+    click_button 'Sign in'
+
+    expect(page).to have_content('Merge Logins')
+    click_on 'Continue'
+
+    expect(page).to have_content('Give us an email address')
+    fill_in 'Email Address', with: 'user@example.org'
+    click_on 'Submit'
+
+    expect(page).to have_content('Verification sent')
+    visit link_in_last_email
+
+    expect(page).to have_content('Complete your profile information')
+    fill_in 'First Name', with: 'First'
+    fill_in 'Last Name', with: 'Last'
+    find(:css, '#register_i_agree').set(true)
+    click_button 'Register'
+
+    expect(page.current_url).to match(app_callback_url)
   end
 end

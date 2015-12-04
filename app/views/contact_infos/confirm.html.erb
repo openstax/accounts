@@ -1,6 +1,6 @@
 <%= page_heading "Email Verification" %>
 <% if @handler_result.errors.any? %>
-  <p>Sorry, we couldn't verify an email using the confirmation code you provided.  If you typed it in manually, please check for errors.  If you're still having trouble, you might try to send the confirmation email again.</p>
+  <p>Sorry, we couldn't verify an email using the verification code you provided.  If you typed it in manually, please check for errors.  If you're still having trouble, please visit your profile page to resend the verification email.</p>
 <% else %>
   <p>Success! Thanks for adding your email address.</p>
 <% end %>

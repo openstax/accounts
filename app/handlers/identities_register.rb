@@ -41,6 +41,10 @@ class IdentitiesRegister
     end
 
     run(AddEmailToUser, register_params.email, user)
+    if params[:stored_url].present?
+      user.registration_redirect_url = params[:stored_url]
+      user.save
+    end
 
     run(CreateIdentity, 
         password:              register_params.password,

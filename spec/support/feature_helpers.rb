@@ -92,6 +92,11 @@ def password_reset_email_sent?(user)
   expect(mail.body.encoded).to include("http://nohost#{@reset_link}")
 end
 
+def link_in_last_email
+  mail = ActionMailer::Base.deliveries.last
+  /http:\/\/[^\/]*(\/[^\s]*)/.match(mail.body.encoded)[1]
+end
+
 def create_application
   @app = FactoryGirl.create(:doorkeeper_application, :trusted,
                            redirect_uri: 'http://www.example.com/callback')

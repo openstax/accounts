@@ -20,10 +20,10 @@
       <td colspan="2"><%= yn(@user.is_administrator?) %></td>
    </tr>
    <tr>
-      <th>Confirmed?</th>
+      <th>Verified?</th>
       <td><%= yn(true) %></td>
       <td><% if false %>
-      <%= button_to 'Confirm', user_confirm_path(@user), :class => "button_link" %>
+      <%= button_to 'Verify', user_confirm_path(@user), :class => "button_link" %>
       <% end %></td>
    </tr>
    <tr>
