@@ -2,21 +2,21 @@
   #top-nav-account { display: none;}
 </style>
 
-<%= page_heading("Sign in to your one OpenStax account!".html_safe) %>
+<%= page_heading (t :".page_heading") %>
 
 <%= render 'sessions/login', hide_signup: (session[:from_cnx] && !session[:from_iframe]) %>
 
 
 <div id="login-explanation">
-  <p>Use the buttons at the right to sign in using your Facebook, Twitter, or Google account.</p>
+  <p><%= t :".sign_in_using_social_media" %></p>
   <% if session[:from_cnx] %>
-    <p>If you have a legacy Connexions account, you can enter your username and password instead.</p>
+    <p><%= t :".have_legacy_connexions_account" %></p>
   <% else %>
-    <p>Prefer to use a plain old username and password?  You can do that too.</p>
+    <p><%= t :".prefer_username_and_password" %></p>
   <% end %>
 
   <div id="logout-reminder">
-    <p>Don't forget Internet 101: if you're on a public computer, be sure to log out when you're done!</p>
+    <p><%= t :".logout_reminder" %></p>
   </div>
 </div>
 

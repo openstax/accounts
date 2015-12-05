@@ -1,4 +1,19 @@
 en:
+  sessions:
+    new:
+      page_heading: Sign in to your one OpenStax account!
+      sign_in_using_social_media: |
+        Use the buttons at the right to sign in using your Facebook, Twitter, or
+        Google account.
+      have_legacy_connexions_account: |
+        If you have a legacy Connexions account, you can enter your username
+        and password instead.
+      prefer_username_and_password: |
+        Prefer to use a plain old username and password? You can do that too.
+      logout_reminder: |
+        Don't forget Internet 101: if you're on a public computer, be sure to
+        log out when you're done!
+
   terms:
     index:
       page_heading: Site Terms & Policies
