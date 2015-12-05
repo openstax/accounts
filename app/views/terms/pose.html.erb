@@ -3,9 +3,9 @@
 <div class="not-full-width">
 
   <% if FinePrint.signed_any_version_of_contract?(current_user, @contract) %>
-    <p>There have been changes to the <%= @contract.title %>.  Please review them and then click "I agree" at the bottom of this page to continue.</p>
+    <p><%= t :".contracts_changed_notice", contract_title: @contract.title %></p>
   <% else %>
-    <p>To continue, please review and agree to the following site terms by clicking "I agree" at the bottom of this page.</p>
+    <p><%= t :".contract_acceptance_required" %></p>
   <% end %>
 
   <div class="well">
@@ -15,12 +15,12 @@
   <%= lev_form_for :agreement, url: agree_to_terms_path, method: :post do |f| %>
     <div class="checkbox">
       <label>
-        <%= f.check_box :i_agree %> I have read the terms listed above and I agree to be bound by their terms
+        <%= f.check_box :i_agree %> <%= t :".i_have_read_and_agree" %>
       </label>
     </div>
-    
+
     <%= f.hidden_field :contract_id, value: @contract.id %>
-    <%= f.submit "Agree", id: "agreement_submit" %>
+    <%= f.submit (t :".agree"), id: "agreement_submit" %>
   <% end %>
 
 </div>

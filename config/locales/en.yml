@@ -1,4 +1,17 @@
 en:
+  terms:
+    pose:
+      contracts_changed_notice: |
+        There have been changes to the %{contract_title}. Please review them and
+        then click "I agree" at the bottom of this page to continue.
+      contract_acceptance_required: |
+        To continue, please review and agree to the following site terms by
+        clicking "I agree" at the bottom of this page.
+      i_have_read_and_agree: |
+        I have read the terms listed above and I agree to be bound by their
+        temrs
+      agree: Agree
+
   users:
     form:
       title: Title
