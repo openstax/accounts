@@ -190,7 +190,7 @@ feature 'User signs up as a local user', js: true do
     expect(page).to have_content('Merge Logins')
     click_on 'Continue'
 
-    expect(page).to have_content('Give us an email address')
+    expect(page).to have_content('Please add an email address to your account.')
     fill_in 'Email Address', with: 'user@example.org'
     click_on 'Submit'
 
