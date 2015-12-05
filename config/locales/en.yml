@@ -1,5 +1,13 @@
 en:
   terms:
+    index:
+      page_heading: Site Terms & Policies
+      notice_html: |
+        Your use of %{site_name} is governed by two agreements, the
+        %{terms_of_use} and the %{privacy_policy}. Please familiarize yourself
+        with their contents. If you do not agree with their conditions, please
+        refrain from using this site.
+
     pose:
       contracts_changed_notice: |
         There have been changes to the %{contract_title}. Please review them and
