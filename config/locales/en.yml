@@ -14,6 +14,16 @@ en:
         Don't forget Internet 101: if you're on a public computer, be sure to
         log out when you're done!
 
+  static_pages:
+    verification_sent:
+      page_heading: Verification sent
+      a_verification_has_been_sent: |
+        A verification email has been sent to %{address}. If you don't see the
+        message in your inbox, check your junk or spam folders.
+      resend_verification: Resend Verifiation
+      click_to_continue_html: |
+        Already verified your email address? <a href="%{url}">Continue</a>.
+
   terms:
     index:
       page_heading: Site Terms & Policies
