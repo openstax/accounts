@@ -1,5 +1,12 @@
 en:
   users:
+    form:
+      title: Title
+      first_name: First Name
+      last_name: Last Name
+      suffix: Suffix
+      update_profile: Update Profile
+
     edit:
       page_heading: Your Account
       profile_settings: Profile Settings
