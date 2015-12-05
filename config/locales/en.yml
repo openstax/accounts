@@ -1,5 +1,11 @@
 en:
   users:
+    edit:
+      page_heading: Your Account
+      profile_settings: Profile Settings
+      change_password: Change Your Password
+      manage_addresses: Manage Email Addresses
+
     register:
       page_heading: Complete your profile information to create your account
       required_field: "* indicates required field."
