@@ -1,5 +1,17 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
-  hello: "Hello world"
+  users:
+    register:
+      page_heading: Complete your profile information to create your account
+      required_field: "* indicates required field."
+      username: Username *
+      title: Title
+      first_name: First Name *
+      last_name: Last Name *
+      suffix: Suffix
+      full_name: Full Name
+      agreement_html: |
+        I have read the %{terms_of_use} and the %{privacy_policy} and I agree to
+        be bound by their terms.
+      notice: |
+        Note that other OpenStax sites may have terms of their own.
+      register: Register
