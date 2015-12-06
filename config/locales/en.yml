@@ -1,5 +1,17 @@
 en:
   sessions:
+    login:
+      facebook_title: Sign in using your Facebook account
+      twitter_title: Sign in using your Twitter account
+      google_title: Sign in using your Google account
+      separator_or: OR
+      username_or_email: Username / Email
+      password: Password
+      sign_in: Sign in
+      sign_up: Sign up
+      forgot_password: Forgot password?
+      no_more_login_options: There are no more login options available!
+
     ask_new_or_returning:
       page_heading: Merge Logins
       first_time_logging_html: |
