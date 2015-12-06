@@ -1,5 +1,17 @@
 en:
   controllers:
+    identities:
+      already_have_username_and_password: |
+        You already have a simple username and password on your account!
+      password_changed: Password changed
+      password_reset_instructions_sent: |
+        Password reset instructions sent to your email address!
+      password_expired: |
+        Your password has expired. Please enter a new password.
+      password_reset_successfully: |
+        Your password has been reset successfully! You have been signed in
+        automatically.
+
     sessions:
       signed_out: Signed out!
       invalid_credentials: Incorrect username, email, or password
