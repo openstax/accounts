@@ -1,5 +1,16 @@
 en:
   contact_infos:
+    show:
+      searchable: searchable
+      not_searchable: Not searchable
+      toggle_searchable: Toggle
+      verified: Verified
+      unverified: Unverified
+      resend_verification: Resend Verification
+      delete: Delete
+      confirm_delete: |
+        Are you sure you want to delete "%{email}"?
+
     confirm:
       page_heading: Email Verification
       verification_code_not_found: |
