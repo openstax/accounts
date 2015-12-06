@@ -1,4 +1,11 @@
 en:
+  identities:
+    reset_password:
+      page_heading: Reset Password
+      password: Password
+      password_again: Password Again
+      set_password: Set Password
+
   layouts:
     application_footer:
       terms_of_use: Terms of Use
