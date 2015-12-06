@@ -1,5 +1,10 @@
 en:
   handlers:
+    identities_forgot_password:
+      username_not_found: Username not found
+      unable_to_reset_password: Unable to reset password for this user
+      no_verified_emails: No verified email addresses found for this user
+
     identities_reset_password:
       reset_link_is_invalid: Reset password link is invalid
       reset_link_expired: Reset password link has expired
