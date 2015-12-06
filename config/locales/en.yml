@@ -1,5 +1,10 @@
 en:
   identities:
+    forgot_password:
+      page_heading: Forgot Password?
+      username_or_email: Username / Email
+      submit: Submit
+
     new:
       page_heading: Sign up
 
