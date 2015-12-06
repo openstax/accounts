@@ -1,4 +1,12 @@
 en:
+  helpers:
+    alert:
+      please_enable_javascript:
+        intro: Hey!
+        content: |
+          Please enable JavaScript in your browser! Many %{site_name} pages
+          will not work properly without it.
+
   routines:
     find_or_create_unclaimed_users:
       must_provide_email_or_username: Must provide email or username
