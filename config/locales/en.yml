@@ -1,5 +1,14 @@
 en:
   contact_infos:
+    confirm:
+      page_heading: Email Verification
+      verification_code_not_found: |
+        Sorry, we couldn't verify an email using the verification code you
+        provided. If you typed it in manually, please check for errors. If
+        you're still having trouble, please visit your profile page to resend
+        the verification email.
+      success: Success! Thanks for adding your email address.
+
     contirm_unclaimed:
       page_heading: Invite Verification
       verification_code_not_found: |

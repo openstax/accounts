@@ -1,6 +1,6 @@
-<%= page_heading "Email Verification" %>
+<%= page_heading (t :".page_heading") %>
 <% if @handler_result.errors.any? %>
-  <p>Sorry, we couldn't verify an email using the verification code you provided.  If you typed it in manually, please check for errors.  If you're still having trouble, please visit your profile page to resend the verification email.</p>
+  <p><%= t :".verification_code_not_found" %></p>
 <% else %>
-  <p>Success! Thanks for adding your email address.</p>
+  <p><%= t :".success" %></p>
 <% end %>
