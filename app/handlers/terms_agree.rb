@@ -21,7 +21,7 @@ class TermsAgree
     # also gives the user a shortcut for agreeing to common site terms.
 
     if !agreement_params.i_agree
-      fatal_error(code: :did_not_agree, message: 'You must agree to the terms to register') 
+      fatal_error(code: :did_not_agree, message: (I18n.t :"handlers.terms_agree.you_must_agree_to_the_terms"))
     end
 
     run(AgreeToTerms, agreement_params.contract_id, caller)

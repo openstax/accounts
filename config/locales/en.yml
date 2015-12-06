@@ -1,5 +1,9 @@
 en:
   handlers:
+    terms_agree:
+      you_must_agree_to_the_terms: |
+        You must agree to the terms to register
+
     users_register:
       you_must_agree_to_the_terms: |
         You must agree to the terms to register
