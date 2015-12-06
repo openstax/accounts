@@ -1,4 +1,13 @@
 en:
+  errors:
+    any:
+      appology_message_html: |
+        We're sorry this %{code} error occured. If you need help, please contact
+        %{contact_info}.
+      appology_message_long_html: |
+        We're sorry this %{code} error occured. If you need help, please contact
+        %{contact_info} and reference error %{error_id}.
+
   identities:
     form:
       current_password: Current Password
