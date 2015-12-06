@@ -1,4 +1,21 @@
 en:
+  contact_infos:
+    contirm_unclaimed:
+      page_heading: Invite Verification
+      verification_code_not_found: |
+        Sorry, we couldn't find any pending invitations using the verification
+        code you provided. If you typed it in manually, please check for errors.
+        If you're still having trouble, you might ask whoever setup your account
+        to try again.
+      thanks_for_validating: Thanks for validating your OpenStax invitation.
+      you_can_now_sign_in_html: |
+        You can now %{sign_in} to your new account.
+      sign_in: sign in
+      please_sign_up_html: |
+        Please %{sign_up} for an account using email %{email} address in order
+        to complete the process.
+      sign_up: sign up
+
   errors:
     any:
       appology_message_html: |
