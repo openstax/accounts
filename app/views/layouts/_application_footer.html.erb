@@ -1,4 +1,4 @@
-<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
 <div id="application-footer-frame">
@@ -12,8 +12,8 @@
 
     <div id="footer-copyright">
       <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
-      <%= link_to "Terms of Use", main_app.terms_path %> |
-      <%= link_to "Contact Us",   "#" %>
+      <%= link_to (t :".terms_of_use"), main_app.terms_path %> |
+      <%= link_to (t :".contact_us"),   "#" %>
       <br/>
     </div>
 

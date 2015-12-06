@@ -1,5 +1,9 @@
 en:
   layouts:
+    application_footer:
+      terms_of_use: Terms of Use
+      contact_us: Contact Us
+
     application_header:
       please_enable_javascript: |
         Please enable JavaScript in your browser! Many %{site_name} pages will
