@@ -1,6 +1,6 @@
 <% # Clients of this partial must supply the following variables:
-   # type
-   humanized_name = type.underscore.humanize
+   # type, name
+   # where name is localisation key for type name
 %>
 
 <%= lev_form_for :contact_info, url: contact_infos_path,
@@ -8,7 +8,7 @@
   <%= f.hidden_field :type, value: type %>
   <div class="row">
     <span class="col-sm-9">
-      <%= f.label :value, humanized_name %>
+      <%= f.label :value, (t name) %>
     </span>
   </div>
 
@@ -18,7 +18,7 @@
     </span>
 
     <span class="col-sm-3">
-      <%= f.submit "Add #{humanized_name}",
+      <%= f.submit (t :".add", name: (t name)),
                    class: 'standard' %>
     </span>
   </div>

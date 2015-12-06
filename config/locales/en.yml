@@ -1,5 +1,9 @@
 en:
   contact_infos:
+    form:
+      add: Add %{name}
+      email_address: email address
+
     show:
       searchable: searchable
       not_searchable: Not searchable
