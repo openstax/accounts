@@ -75,7 +75,7 @@ class SessionsController < ApplicationController
       root_url
     end
 
-    redirect_to url, notice: "Signed out!"
+    redirect_to url, notice: (I18n.t :"controllers.sessions.signed_out")
   end
 
   def ask_new_or_returning
@@ -98,7 +98,7 @@ class SessionsController < ApplicationController
   # Omniauth failure endpoint
   def failure
     flash.now[:alert] = params[:message] == 'invalid_credentials' ? \
-                          'Incorrect username, email, or password' : \
+                          (I18n.t :"controllers.sessions.invalid_credentials") : \
                           params[:message]
     render 'new'
   end
