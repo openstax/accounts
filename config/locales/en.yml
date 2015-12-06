@@ -1,5 +1,15 @@
 en:
   controllers:
+    contact_infos:
+      types:
+        EmailAddress: email address
+
+      contact_info_deleted: "%{contact_info} deleted"
+      search_settings_updated: Search settings updated
+      verification_sent: |
+        A verification message has been sent to "%{address}"
+      thanks_for_adding_address: Thanks for adding your email address.
+
     identities:
       already_have_username_and_password: |
         You already have a simple username and password on your account!

@@ -12,8 +12,8 @@ class ContactInfosController < ApplicationController
     handle_with(ContactInfosCreate,
                 success: lambda {
                   redirect_to profile_path(active_tab: :email),
-                    notice: "A verification message has been sent to \"#{
-                              @handler_result.outputs[:contact_info].value}\"" },
+                    notice: (I18n.t :"controllers.contact_infos.verification_sent",
+                                    address: @handler_result.outputs[:contact_info].value)},
                 failure: lambda { @active_tab = :email; render 'users/edit', status: 400 })
   end
 
@@ -22,7 +22,8 @@ class ContactInfosController < ApplicationController
                                               @contact_info)
     @contact_info.destroy
     redirect_to profile_path(active_tab: :email),
-                notice: "#{@contact_info.type.underscore.humanize} deleted"
+                notice: (I18n.t :"controllers.contact_infos.contact_info_deleted",
+                                contact_info: (I18n.t @contact_info.type, scope: :"controllers.contact_infos.types"))
   end
 
   def toggle_is_searchable
@@ -32,15 +33,15 @@ class ContactInfosController < ApplicationController
                                    !@contact_info.is_searchable)
 
     redirect_to profile_path(active_tab: :email),
-                notice: "Search settings updated"
+                notice: (I18n.t :"controllers.contact_infos.search_settings_updated")
   end
 
   def resend_confirmation
     handle_with(ContactInfosResendConfirmation,
                 complete: lambda {
                   redirect_to :back,
-                    notice: "A verification message has been sent to \"#{
-                              @handler_result.outputs[:contact_info].value}\"" })
+                    notice: (I18n.t :"controllers.contact_infos.verification_sent",
+                                    address: @handler_result.outputs[:contact_info].value) })
   end
 
 
@@ -59,7 +60,7 @@ class ContactInfosController < ApplicationController
                     render :confirm, status: 400
                   elsif user.try(:is_temp?) && user.try(:registration_redirect_url).present?
                     redirect_to user.registration_redirect_url,
-                                notice: 'Thanks for adding your email address.'
+                                notice: (I18n.t :"controllers.contact_infos.thanks_for_adding_address")
                   else
                     render :confirm, status: 200
                   end
