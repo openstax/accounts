@@ -1,5 +1,9 @@
 en:
   controllers:
+    terms:
+      temporarily_unavailable: |
+        The terms are temporarily unavailable. Check back soon.
+
     users:
       profile_updated: |
         Your profile has been updated. These changes may take a few minutes to
