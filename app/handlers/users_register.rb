@@ -27,7 +27,7 @@ class UsersRegister
 
   def handle
     if options[:contracts_required] && !register_params.i_agree
-      fatal_error(code: :did_not_agree, message: 'You must agree to the terms to register')
+      fatal_error(code: :did_not_agree, message: (I18n.t :"handlers.users_register.you_must_agree_to_the_terms"))
     end
 
     caller.username = register_params.username
