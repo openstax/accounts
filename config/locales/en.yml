@@ -1,5 +1,9 @@
 en:
   handlers:
+    identities_update:
+      invalid_password_provided: |
+        The password provided did not match our records
+
     terms_agree:
       you_must_agree_to_the_terms: |
         You must agree to the terms to register

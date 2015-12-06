@@ -20,7 +20,7 @@ class IdentitiesUpdate
 
   def handle
     fatal_error(code: :wrong_password,
-                message: 'The password provided did not match our records',
+                message: (I18n.t :"handlers.identities_update.invalid_password_provided"),
                 offending_inputs: :current_password) \
       unless @identity.authenticate identity_params.current_password
 
