@@ -1,17 +1,17 @@
-<%= page_heading 'Sign up' %>
+<%= page_heading (t :".page_heading") %>
 
 
 <div id="signup-alternatives">
-  <p><b>Save yourself the hassle</b> of remembering yet another password &mdash; register using your Facebook, Twitter, or Google account.</p>
+  <p><%= t :".suggest_using_social_media_login_html" %></p>
   <center>
     <%= link_to "/auth/facebook", {class: 'login-button'} do %>
-      <%= image_tag "fb_64.png", title: "Sign in using your Facebook account" -%>
+      <%= image_tag "fb_64.png", title: (t :".facebook_title") -%>
     <% end %>
     <%= link_to "/auth/twitter", {class: 'login-button'} do %>
-      <%= image_tag "twitter_64.png", title: "Sign in using your Twitter account" -%>
+      <%= image_tag "twitter_64.png", title: (t :".twitter_title") -%>
     <% end %>
     <%= link_to "/auth/google_oauth2", {class: 'login-button'} do %>
-      <%= image_tag "g_64.png", title: "Sign in using your Google account" -%>
+      <%= image_tag "g_64.png", title: (t :".google_title") -%>
     <% end %>
   </center>
 </div>
@@ -19,24 +19,24 @@
 <%= lev_form_for :register, url: '/auth/identity/register', html: {id: 'identity-register'} do |f| %>
 
 <% if signed_in? %>
-  <p>Please choose a password.</p>
+  <p><%= t :".choose_a_password" %></p>
 <% else %>
-  <p>When you create an OpenStax account, we'll send a verification link to the email address you use to create the account. If you don't verify your address, you may not be able to access certain OpenStax features.</p>
+  <p><%= t :".email_verification_notice" %></p>
 <% end %>
 
-  <%= standard_field form: f, name: :email, type: :email_field, label: 'Email Address' %>
+  <%= standard_field form: f, name: :email, type: :email_field, label: (t :".email_address") %>
 
 <% if !signed_in? %>
-  <%= standard_field form: f, name: :username, type: :text_field, label: "Username" %>
+  <%= standard_field form: f, name: :username, type: :text_field, label: (t :".username") %>
 <% end %>
-  
+
   <%#= standard_field form: f, name: :first_name, type: :text_field, label: "First Name" %>
   <%#= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name" %>
 
-  <%= standard_field form: f, name: :password, type: :password_field, label: "Password" %>
-  <%= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Password Again" %>
+  <%= standard_field form: f, name: :password, type: :password_field, label: (t :".password") %>
+  <%= standard_field form: f, name: :password_confirmation, type: :password_field, label: (t :".password_again") %>
 
   <%= hidden_field_tag :stored_url, stored_url %>
 
-  <%= submit_tag "Register", class: 'standard' %>
+  <%= submit_tag (t :".register"), class: 'standard' %>
 <% end %>

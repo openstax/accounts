@@ -1,5 +1,25 @@
 en:
   identities:
+    new:
+      page_heading: Sign up
+
+      facebook_title: Sign in using your Facebook account
+      twitter_title: Sign in using your Twitter account
+      google_title: Sign in using your Google account
+      suggest_using_social_media_login_html: |
+        <b>Save yourself the hassle</b> of remembering yet another password
+        &mdash; register using your Facebook, Twitter, or Google account.
+      choose_a_password: Please choose a password.
+      email_verification_notice: |
+        When you create an OpenStax account, we'll send a verification link to
+        the email address you use to create the account. If you don't verify
+        your address, you may not be able to access certain OpenStax features.
+      email_address: Email Address
+      username: Username
+      password: Password
+      password_again: Password again
+      register: Register
+
     reset_password:
       page_heading: Reset Password
       password: Password
