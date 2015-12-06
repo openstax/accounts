@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   def update
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
     if current_user.update_attributes(user_params)
-      redirect_to profile_path, notice: 'Your profile has been updated. These changes may take a few minutes to propagate to the entire site.'
+      redirect_to profile_path, notice: (I18n.t :"controllers.users.profile_updated")
     else
       flash.now[:alert] ||= []
       current_user.errors.full_messages.each do |msg|

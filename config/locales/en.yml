@@ -1,4 +1,10 @@
 en:
+  controllers:
+    users:
+      profile_updated: |
+        Your profile has been updated. These changes may take a few minutes to
+        propagate to the entire site.
+
   handlers:
     identities_forgot_password:
       username_not_found: Username not found
