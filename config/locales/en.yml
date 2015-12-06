@@ -1,4 +1,8 @@
 en:
+  routines:
+    find_or_create_unclaimed_users:
+      must_provide_email_or_username: Must provide email or username
+
   contact_infos:
     form:
       add: Add %{name}
