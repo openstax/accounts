@@ -1,4 +1,16 @@
 en:
+  layouts:
+    application_top_nav:
+      welcome_html: |
+        Welcome, %{user}&nbsp;&nbsp;&nbsp;%{sign_out}
+      sign_up_or_in_html: |
+        %{sign_up} or %{sign_in}
+      only_sign_in: Sign in
+
+      sign_out: Sign out
+      sign_in: Sign in
+      sign_up: Sign up
+
   sessions:
     login:
       facebook_title: Sign in using your Facebook account
