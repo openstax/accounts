@@ -227,6 +227,21 @@ en:
         log out when you're done!
 
   static_pages:
+    copyright:
+      page_heading: Copyright and Licensing Details
+      content_copyright_notice_html: |
+        All content on this web site is either Copyright %{copyright_holder} or
+        %{copyright_holder} has permission for use from the copyright holders.
+      opensource_notice_html: |
+        The source code for %{site_name} is open source. For copyright and
+        licensing details, see the relevant files at
+        <a href="https://github.com/openstax/accounts">https://github.com/openstax/accounts</a>.
+      other_copyright_notice_html: |
+        All other content/information/imagery on this site (including but not
+        limited to logos, taglines, images, text copy, web site design, etc;
+        excluding user information and content licensed from other entities) is
+        Copyright %{copyright_holder} All Rights Reserved.
+
     verification_sent:
       page_heading: Verification sent
       a_verification_has_been_sent: |
