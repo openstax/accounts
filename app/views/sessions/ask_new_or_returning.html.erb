@@ -1,6 +1,6 @@
 <% authentications = current_user.authentications %>
 
-<%= page_heading 'Merge Logins'  %>
+<%= page_heading (t :".page_heading") %>
 
 <% if false %>
 <p>Is this your first time making an OpenStax account? If so, choose the option on the right to complete your registration.</p>
@@ -24,10 +24,10 @@ profile.</p>
 
   <div class='new-or-returning-option left'>
     <div class='situation'>
-      If this is your first time logging in to OpenStax, continue setting up your account.
+      <%= t :".first_time_logging_html" %>
     </div>
     <div class='well'>
-    <%= link_to "Continue".html_safe,
+    <%= link_to (t :".continue"),
                 stored_url, class: 'standard' %>
     </div>
 
@@ -35,9 +35,7 @@ profile.</p>
 
   <div class='new-or-returning-option right' style='display:inline-block'>
     <div class='situation'>
-      If you've previously logged into OpenStax using one of the social network logins, we already have an account for you.<br />
-      <br />
-      Sign in using the same social network you used before.  We'll find your existing account and connect all of your logins for you.
+      <%= t :".logged_before_html" %>
     </div>
 
     <div class='well'>
@@ -48,10 +46,10 @@ profile.</p>
 
   <div class='middle-space' style='display:inline-block'>
     <div class="or-bar" id='left-or-block'>
-      <div class="or-text">OR</div>
+      <div class="or-text"><%= t :".separator_or" %></div>
     </div>
   </div>
 
 </div>
 
-<center>We have already linked your account to <%= authentications_list(authentications) %>.</center>
+<center><%= t :".account_linked_to", list: (authentications_list authentications, :"sessions.ask_new_or_returning") %></center>

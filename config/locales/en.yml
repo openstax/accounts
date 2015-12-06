@@ -1,5 +1,26 @@
 en:
   sessions:
+    ask_new_or_returning:
+      page_heading: Merge Logins
+      first_time_logging_html: |
+        If this is your first time logging in to OpenStax, continue setting up
+        your account.
+      continue: Continue
+      logged_before_html: |
+        If you've previously logged into OpenStax using one of the social
+        network logins, we already have an account for you.
+        <br/>
+        Sign in using the same social network you used before. We'll find your
+        existing account and connect all of you logins for you.
+      separator_or: OR
+      account_linked_to: |
+        We have already linked your account to %{list}.
+
+      facebook: Facebook
+      twitter: Twitter
+      google: Google
+      simple_password: a simple password
+
     new:
       page_heading: Sign in to your one OpenStax account!
       sign_in_using_social_media: |
