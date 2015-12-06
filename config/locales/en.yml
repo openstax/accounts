@@ -1,5 +1,10 @@
 en:
   layouts:
+    application_header:
+      please_enable_javascript: |
+        Please enable JavaScript in your browser! Many %{site_name} pages will
+        not work properly without it.
+
     application_top_nav:
       welcome_html: |
         Welcome, %{user}&nbsp;&nbsp;&nbsp;%{sign_out}
