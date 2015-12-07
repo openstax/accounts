@@ -16,3 +16,9 @@ OpenStax::RescueFrom.configure do |config|
   config.sender_address = SECRET_SETTINGS[:exception]['sender']
   config.exception_recipients = SECRET_SETTINGS[:exception]['recipients']
 end
+
+OpenStax::RescueFrom.register_exception(
+  'Lev::SecurityTransgression',
+  notify: false,
+  status: :forbidden
+)
