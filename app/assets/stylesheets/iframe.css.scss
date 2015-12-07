@@ -28,13 +28,36 @@ body.iframe {
     margin: 0 auto 20px auto;
   }
 
+  .new-login {
+    display: flex;
+    justify-content: space-around;
+    .login-explanation { order: 1; }
+    .login-options{ order: 2; }
+  }
+
+
   // Page that asks if account is new after a third party login
   .new-or-returning {
-    .new-or-returning-option {
-      width: inherit;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .left { order: 1; }
     .middle-space {
-      margin-left: 20px;
+      order: 2;
+      display: flex !important; // inline-block is set as style attribute
+      flex-direction: column;
+      align-self: stretch;
+      margin: 0;
+      .or-bar {
+        height: inherit;
+        flex: 1;
+        margin: 0;
+        .or-text {
+          left: -25px;
+          top: 50%;
+        }
+      }
     }
+    .right { order: 3; }
   }
 }
