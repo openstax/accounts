@@ -4,34 +4,26 @@
 
 <%= form_for identity, url: identity_path,
              html: {class: 'form-horizontal'} do |f| %>
-  <div class="row">
-    <span class="col-sm-3">
-      <%= f.label :current_password, "Current Password" %>
-    </span>
+<div class="row">
 
-    <span class="col-sm-3">
-      <%= f.label :password, "New Password" %>
-    </span>
-
-    <span class="col-sm-3">
-      <%= f.label :password_confirmation, "New Password Confirmation" %>
-    </span>
+  <div class="col-sm-3">
+    <%= f.label :current_password, "Current Password" %>
+    <%= f.password_field :current_password %>
   </div>
-  <div class="row">
-    <span class="col-sm-3">
-      <%= f.password_field :current_password %>
-    </span>
 
-    <span class="col-sm-3">
-      <%= f.password_field :password %>
-    </span>
-
-    <span class="col-sm-3">
-      <%= f.password_field :password_confirmation %>
-    </span>
-
-    <span class="col-sm-3">
-      <%= f.submit "Change Password", class: 'standard' %>
-    </span>
+  <div class="col-sm-3">
+    <%= f.label :password, "New Password" %>
+    <%= f.password_field :password %>
   </div>
+
+  <div class="col-sm-3 nowrap">
+    <%= f.label :password_confirmation, "New Password Confirmation" %>
+    <%= f.password_field :password_confirmation %>
+  </div>
+
+  <div class="horizontal-submit col-sm-3">
+    <%= f.submit "Change Password", class: 'standard' %>
+  </div>
+
+</div>
 <% end %>

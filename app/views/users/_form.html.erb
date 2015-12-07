@@ -2,44 +2,34 @@
    # user
 %>
 
-<%= form_for user, url: profile_path, html: {class: 'form-horizontal'} do |f| %>
+<%= form_for user, url: profile_path, html: {class: 'form-horizontal profile-edit'} do |f| %>
   <div class="row">
-    <span class="col-sm-1">
+
+    <div class="col-sm-1">
       <%= f.label :title, "Title" %>
-    </span>
-
-    <span class="col-sm-3">
-      <%= f.label :first_name, "First Name" %>
-    </span>
-
-    <span class="col-sm-3">
-      <%= f.label :last_name, "Last Name" %>
-    </span>
-
-    <span class="col-sm-2">
-      <%= f.label :suffix, 'Suffix' %>
-    </span>
-  </div>
-  <div class="row">
-    <span class="col-sm-1">
       <%= f.text_field :title %>
-    </span>
+    </div>
 
-    <span class="col-sm-3">
+    <div class="col-sm-3">
+      <%= f.label :first_name, "First Name" %>
       <%= f.text_field :first_name, value: user.first_name || \
-                                           user.guessed_first_name %>
-    </span>
+          user.guessed_first_name %>
+    </div>
 
-    <span class="col-sm-3">
+    <div class="col-sm-3">
+      <%= f.label :last_name, "Last Name" %>
       <%= f.text_field :last_name, value: user.last_name || \
-                                          user.guessed_last_name %>
-    </span>
+          user.guessed_last_name %>
+    </div>
 
-    <span class="col-sm-2">
+    <div class="col-sm-2">
+      <%= f.label :suffix, 'Suffix' %>
       <%= f.text_field :suffix, value: user.suffix %>
-    </span>
-    <span class="col-sm-3">
+    </div>
+
+    <div class="horizontal-submit col-sm-3">
       <%= f.submit "Update Profile", class: 'standard' %>
-    </span>
+    </div>
+
   </div>
 <% end %>
