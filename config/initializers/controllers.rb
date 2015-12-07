@@ -43,12 +43,10 @@ ActionController::Base.class_exec do
     return unless current_user.is_temp?
     store_url key: :registration_return_to
     flash.keep
-    if current_user.email_addresses.empty?
-      redirect_to ask_for_email_path
-    elsif !current_user.email_addresses.any?(&:verified)
-      redirect_to verification_sent_path
-    else
+    if current_user.email_addresses.empty? || current_user.email_addresses.any?(&:verified)
       redirect_to register_path
+    else
+      redirect_to verification_sent_path
     end
   end
 

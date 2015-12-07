@@ -174,6 +174,7 @@ feature 'User signs up as a local user', js: true do
   end
 
   scenario 'without any email addresses' do
+    # this is a test for twitter users who have no email addresses
     create_application
     user = create_user 'user'
     # set the user state to "temp" so we can test registration
@@ -189,13 +190,6 @@ feature 'User signs up as a local user', js: true do
 
     expect(page).to have_content('Merge Logins')
     click_on 'Continue'
-
-    expect(page).to have_content('Please add an email address to your account.')
-    fill_in 'Email Address', with: 'user@example.org'
-    click_on 'Submit'
-
-    expect(page).to have_content('Verification sent')
-    visit link_in_last_email
 
     expect(page).to have_content('Complete your profile information')
     fill_in 'First Name', with: 'First'
