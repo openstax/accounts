@@ -125,7 +125,7 @@ pl:
 
   identities:
     form:
-      current_pasword: Aktualne hasło
+      current_password: Aktualne hasło
       new_password: Nowe hasło
       new_password_confirmation: Powtórz nowe hasło
       change_password: Zmień hasło
