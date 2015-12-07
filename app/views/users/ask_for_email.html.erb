@@ -1,7 +1,7 @@
-<%= page_heading 'Give us an email address' %>
+<%= page_heading (t :".page_heading") %>
 
 <%= lev_form_for :contact_info, method: :put do |f| %>
-  <%= standard_field form: f, name: :value, type: :email_field, label: 'Email Address' %>
+  <%= standard_field form: f, name: :value, type: :email_field, label: (t :".email_address") %>
   <%= f.hidden_field :type, value: 'EmailAddress' %>
-  <%= submit_tag 'Submit', class: 'standard' %>
+  <%= submit_tag (t :".submit"), class: 'standard' %>
 <% end %>

@@ -280,6 +280,11 @@ en:
       suffix: Suffix
       update_profile: Update Profile
 
+    ask_for_email:
+      page_heading: Give us an email address
+      email_address: Email Addresses
+      submit: Submit
+
     edit:
       page_heading: Your Account
       profile_settings: Profile Settings
