@@ -22,7 +22,7 @@ feature 'User claims an unclaimed account', js: true do
     expect(page).to have_content('A verification email has been sent')
 
     MarkContactInfoVerified.call(new_user.email_addresses.first)
-    click_link 'Continue'
+    click_on 'Continue'
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'

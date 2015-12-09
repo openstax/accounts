@@ -2,12 +2,14 @@
 
 <p>A verification email has been sent to <%= current_user.email_addresses.first.try(:value) %>.  If you don't see the message in your inbox, check your junk or spam folder.</p>
 
-<p><%= button_to 'Resend Verification',
-                 resend_confirmation_contact_info_path(current_user.email_addresses.first),
-                 method: :put,
-                 class: 'standard' %></p>
+<p><%= link_to 'Resend Verification',
+               resend_confirmation_contact_info_path(current_user.email_addresses.first),
+               method: :put %></p>
 
 <br />
 <br />
 <br />
-<p>Already verified your email address? <a href="<%= stored_url %>">Continue</a>.</p>
+<p>Return to this page after you've verified your email address to continue your registration.</p>
+<p><%= button_to 'Continue',
+                 stored_url,
+                 class: 'standard' %></p>
