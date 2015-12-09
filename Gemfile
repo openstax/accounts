@@ -49,6 +49,9 @@ gem 'aws-ses', '~> 0.6.0', :require => 'aws/ses'
 
 gem 'pg'
 
+# Add P3P headers for IE
+gem 'p3p'
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.1'
