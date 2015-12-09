@@ -9,10 +9,12 @@ class ConfirmUnclaimedAccount
   end
 
   def handle
-    fatal_error(code: :no_contact_info_for_code) if params[:code].nil?
+    fatal_error(code: :no_contact_info_for_code,
+                message: 'Unable to verify email address') if params[:code].nil?
     contact_info = ContactInfo.where(confirmation_code: params[:code]).first
-    fatal_error(code: :no_contact_info_for_code) if contact_info.nil? ||
-                                                    !contact_info.user.is_unclaimed?
+    fatal_error(code: :no_contact_info_for_code,
+                message: 'Unable to verify email address') \
+                if contact_info.nil? || !contact_info.user.is_unclaimed?
     outputs[:email_address] = contact_info.value
     if contact_info.user.identity.present?
       outputs[:can_log_in] = true
