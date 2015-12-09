@@ -20,8 +20,10 @@ feature 'User signs up as a local user', js: true do
     click_link 'Continue'
     expect(page).to have_content('A verification email has been sent')
 
-    visit link_in_last_email
-    expect(page).to have_content('Thanks for adding your email address.')
+    user = User.find_by_username('testuser')
+    MarkContactInfoVerified.call(user.email_addresses.last)
+
+    click_on 'Continue'
     expect(page).to have_content('Complete your profile information')
     find(:css, '#register_i_agree').set(true)
     click_button 'Register'

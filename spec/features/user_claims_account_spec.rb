@@ -32,7 +32,7 @@ feature 'User claims an unclaimed account', js: true do
     expect{
       create_email_address_for new_user, "unclaimeduser@example.com", '4242'
       visit '/confirm?code=4242'
-      expect(page).to have_content('Email Verification Success!')
+      expect(page).to have_content('Thank you for verifying your email address')
     }.to change(User, :count).by(-1)
     expect{
         unclaimed_user.reload
