@@ -169,10 +169,22 @@ feature 'User signs up as a local user', js: true do
     click_link 'Continue'
     expect(page).to have_content('A verification email has been sent')
 
-    click_on 'Resend Verification'
+    expect {
+      click_on 'Resend Verification'
 
-    expect(page).to have_content("Return to this page after you've verified")
-    expect(page).to have_content('A verification message has been sent to "testuser@example.com"')
+      expect(page).to have_content("Return to this page after you've verified")
+      expect(page).to have_content('A verification message has been sent to "testuser@example.com"')
+    }.to change { ActionMailer::Base.deliveries.count }.by(1)
+
+    # if email is already verified, redirect to next page
+    user = User.find_by_username('testuser')
+    MarkContactInfoVerified.call(user.email_addresses.last)
+
+    expect {
+      click_on 'Resend Verification'
+      expect(page).to have_content('Your email address is already verified')
+      expect(page).to have_content('Complete your profile information')
+    }.to_not change { ActionMailer::Base.deliveries.count }
   end
 
   scenario 'without any email addresses' do
