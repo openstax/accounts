@@ -60,5 +60,15 @@ body.iframe {
       }
     }
     .right { order: 3; }
+
+    .login-options{
+      width: 100%;
+      display: flex;
+      flex-flow: row wrap;
+      a {
+        margin-top: 0;
+        width: initial;
+      }
+    }
   }
 }
