@@ -38,9 +38,22 @@ class ContactInfosController < ApplicationController
   def resend_confirmation
     handle_with(ContactInfosResendConfirmation,
                 complete: lambda {
-                  redirect_to :back,
-                    notice: "A verification message has been sent to \"#{
-                              @handler_result.outputs[:contact_info].value}\"" })
+                  path = :back
+                  contact_info = @handler_result.outputs[:contact_info]
+
+                  if contact_info.verified
+                    msg = 'Your email address is already verified'
+                    user = contact_info.user
+                    path = user.registration_redirect_url \
+                      if user.is_temp? && user.registration_redirect_url
+                  else
+                    msg = "A verification message has been sent to \"#{
+                           contact_info.value}\""
+                  end
+
+                  redirect_to path,
+                              notice: msg
+                })
   end
 
 
@@ -54,15 +67,7 @@ class ContactInfosController < ApplicationController
   def confirm
     handle_with(ContactInfosConfirm,
                 complete: lambda {
-                  user = @handler_result.outputs.contact_info.try(:user)
-                  if @handler_result.errors.any?
-                    render :confirm, status: 400
-                  elsif user.try(:is_temp?) && user.try(:registration_redirect_url).present?
-                    redirect_to user.registration_redirect_url,
-                                notice: 'Thanks for adding your email address.'
-                  else
-                    render :confirm, status: 200
-                  end
+                  render :confirm, status: @handler_result.errors.any? ? 400 : 200
                 })
   end
 

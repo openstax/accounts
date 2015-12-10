@@ -12,9 +12,11 @@ class ContactInfosConfirm
   end
 
   def handle
-    fatal_error(code: :no_contact_info_for_code) if params[:code].nil?
+    fatal_error(code: :no_contact_info_for_code,
+                message: 'Unable to verify email address') if params[:code].nil?
     contact_info = ContactInfo.where(confirmation_code: params[:code]).first
-    fatal_error(code: :no_contact_info_for_code) if contact_info.nil?
+    fatal_error(code: :no_contact_info_for_code,
+                message: 'Unable to verify email address') if contact_info.nil?
     outputs[:contact_info] = contact_info
     run(MergeUnclaimedUsers, contact_info)
     run(MarkContactInfoVerified, contact_info)
