@@ -1,15 +1,26 @@
-<%= page_heading 'Verification sent' %>
+<%= page_heading 'Check your inbox to verify your email address.' %>
 
-<p>A verification email has been sent to <%= current_user.email_addresses.first.try(:value) %>.  If you don't see the message in your inbox, check your junk or spam folder.</p>
+<style type='text/css'>
+  ol li { margin: 10px 0; }
+  input[type='submit'] { margin: 10px 0 30px 40px; }
+</style>
 
-<p><%= link_to 'Resend Verification',
-               resend_confirmation_contact_info_path(current_user.email_addresses.first),
-               method: :put %></p>
+<% flash[:alert] = "We haven't seen that you clicked the verification link.  Please try again." \
+    if request.referrer == request.original_url %>
 
-<br />
-<br />
-<br />
-<p>Return to this page after you've verified your email address to continue your registration.</p>
-<p><%= button_to 'Continue',
+<ol>
+  <li>Find the email we sent to <%= current_user.email_addresses.first.try(:value) %>.</li>
+  <li>Click the link in it.</li>
+  <li>Return here and click the button below.</li>
+</ol>
+
+<p><%= button_to 'I clicked the link in the verification email',
                  stored_url,
                  class: 'standard' %></p>
+
+<p style="margin: 80px 0 0 0">
+  Can't find the email?  Try checking your junk of spam folder, or
+  <%= link_to 'click here to <b>resend</b> the verification email'.html_safe,
+               resend_confirmation_contact_info_path(current_user.email_addresses.first),
+               method: :put %>.
+</p>
