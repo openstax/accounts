@@ -18,10 +18,10 @@ feature 'Skipped terms are respected', js: true do
     click_on 'Register'
 
     click_on 'Continue'
-    expect(page).to have_content('A verification email has been sent')
+    expect(page).to have_content('Check your inbox to verify your email address')
 
     MarkContactInfoVerified.call(EmailAddress.order(:id).last)
-    click_on 'Continue'
+    click_on 'I clicked the link in the verification email'
 
     # No skipping
     expect(page).to have_content('I have read')
@@ -57,10 +57,10 @@ feature 'Skipped terms are respected', js: true do
     click_on 'Register'
 
     click_on 'Continue'
-    expect(page).to have_content('A verification email has been sent')
+    expect(page).to have_content('Check your inbox to verify your email address')
 
     MarkContactInfoVerified.call(EmailAddress.order(:id).last)
-    click_on 'Continue'
+    click_on 'I clicked the link in the verification email'
 
     # Skipped!
     expect(page).to_not have_content('I have read')
@@ -95,10 +95,10 @@ feature 'Skipped terms are respected', js: true do
     click_on 'Register'
 
     click_on 'Continue'
-    expect(page).to have_content('A verification email has been sent')
+    expect(page).to have_content('Check your inbox to verify your email address')
 
     MarkContactInfoVerified.call(EmailAddress.order(:id).last)
-    click_on 'Continue'
+    click_on 'I clicked the link in the verification email'
 
     # Gotta sign
     expect(page).to have_content('I have read')

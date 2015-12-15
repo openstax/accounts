@@ -18,12 +18,12 @@ feature 'User signs up as a local user', js: true do
     expect(page).to have_content('Welcome, testuser')
 
     click_link 'Continue'
-    expect(page).to have_content('A verification email has been sent')
+    expect(page).to have_content('Check your inbox to verify your email address')
 
     user = User.find_by_username('testuser')
     MarkContactInfoVerified.call(user.email_addresses.last)
 
-    click_on 'Continue'
+    click_on 'I clicked the link in the verification email'
     expect(page).to have_content('Complete your profile information')
     find(:css, '#register_i_agree').set(true)
     click_button 'Register'
@@ -140,7 +140,7 @@ feature 'User signs up as a local user', js: true do
     expect(page).to have_content('Welcome, testuser')
 
     click_link 'Continue'
-    expect(page).to have_content('A verification email has been sent')
+    expect(page).to have_content('Check your inbox to verify your email address')
 
     click_link 'Sign out'
     fill_in 'Username / Email', with: 'testuser'
@@ -149,7 +149,7 @@ feature 'User signs up as a local user', js: true do
 
     expect(page).to have_content('Welcome, testuser')
     click_link 'Continue'
-    expect(page).to have_content('A verification email has been sent')
+    expect(page).to have_content('Check your inbox to verify your email address')
   end
 
   scenario 'resend confirmation email' do
@@ -167,12 +167,12 @@ feature 'User signs up as a local user', js: true do
     expect(page).to have_content('Welcome, testuser')
 
     click_link 'Continue'
-    expect(page).to have_content('A verification email has been sent')
+    expect(page).to have_content('Check your inbox to verify your email address')
 
     expect {
-      click_on 'Resend Verification'
+      click_on 'click here to resend'
 
-      expect(page).to have_content("Return to this page after you've verified")
+      expect(page).to have_content("Return here and click the button below")
       expect(page).to have_content('A verification message has been sent to "testuser@example.com"')
     }.to change { ActionMailer::Base.deliveries.count }.by(1)
 
@@ -181,7 +181,7 @@ feature 'User signs up as a local user', js: true do
     MarkContactInfoVerified.call(user.email_addresses.last)
 
     expect {
-      click_on 'Resend Verification'
+      click_on 'click here to resend'
       expect(page).to have_content('Your email address is already verified')
       expect(page).to have_content('Complete your profile information')
     }.to_not change { ActionMailer::Base.deliveries.count }

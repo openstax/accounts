@@ -43,7 +43,7 @@ feature 'Confirm email address', js: true do
     fill_in 'Email Address', with: 'user2@example.com'
     click_on 'Submit'
 
-    expect(page).to have_content('A verification email has been sent')
+    expect(page).to have_content('Check your inbox to verify your email address')
 
     visit link_in_last_email
     expect(page).to have_content(
