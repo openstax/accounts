@@ -19,10 +19,10 @@ feature 'User claims an unclaimed account', js: true do
     expect(new_user).to_not be_nil
 
     click_link 'Continue'
-    expect(page).to have_content('A verification email has been sent')
+    expect(page).to have_content('Check your inbox to verify your email address')
 
     MarkContactInfoVerified.call(new_user.email_addresses.first)
-    click_on 'Continue'
+    click_on 'I clicked the link in the verification email'
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
