@@ -59,6 +59,7 @@ $(document).ready ->
     window.opener.parent?.OxAccount?.Host.completeRegistration(window.location.pathname)
     window.close()
     return
+
   return unless isIframed() # don't do anything if not inside an iframe
 
   relayHeading()

@@ -1,7 +1,7 @@
 body.iframe {
 
   #application-container {
-    width: 100%;
+    width: calc(100% - 40px); // a bit of space for scrollbars (which should never appear)
     min-width: inherit;
   }
 
