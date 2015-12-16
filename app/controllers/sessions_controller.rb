@@ -52,8 +52,8 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    if session[:from_iframe]
-      url = iframe_start_login_path(start: stored_url)
+    if params[:parent]
+      url = iframe_after_logout_url(parent: params[:parent])
     end
     session[ActionInterceptor.config.default_key] = nil
     session[:registration_return_to] = nil
@@ -87,12 +87,7 @@ class SessionsController < ApplicationController
   # This is an official action instead of just doing `redirect_back` in callback
   # handler so that fine_print can check to see if terms need to be signed.
   def returning_user
-    # Did session originate from an iframe login?
-    if session[:from_iframe]
-      redirect_to iframe_after_login_path
-    else
-      redirect_back
-    end
+    redirect_back
   end
 
   # Omniauth failure endpoint

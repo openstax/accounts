@@ -4,7 +4,8 @@
 
 <%= page_heading("Sign in to your one OpenStax account!".html_safe) %>
 <div class="new-login">
-  <%= render 'sessions/login', hide_signup: (session[:from_cnx] && !session[:from_iframe]) %>
+
+  <%= render 'sessions/login', hide_signup: session[:from_cnx] %>
 
   <div id="login-explanation">
     <p>Use the buttons at the right to sign in using your Facebook, Twitter, or Google account.</p>

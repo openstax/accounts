@@ -31,43 +31,20 @@ isIframed = ->
   catch
     return true # iframed if accessing window.top threw exception
 
-# The social login buttons (twitter, fb, google)
-# cannot be loaded inside of an iframe.
-# We break out of the frame and display them in a popup window.
-openSocial = (ev) ->
-
-  url = @href
-  btn = ev.target
-
-  width  = 350
-  height = 250
-  left = (screen.width/2)-(width/2)
-  top  = (screen.height/2)-(height/2)
-
-  separator = if url.indexOf('?') is -1 then '?' else '&'
-  url += (separator + 'display=popup')
-
-  window.open(url, @id, "menubar=no,toolbar=no,status=no,width="+width+
-    ",height="+height+",toolbar=no,left="+left+",top="+top)
-
-  window.parent.OxAccount.proxy.post({startSocialLogin: @href})
-  ev.preventDefault()
 
 $(document).ready ->
-  if window.opener and window.location.pathname.match(/^\/auth\//)
-    # we're inside a popup window that's being displayed when a social login has completed
-    window.opener.parent?.OxAccount?.Host.completeRegistration(window.location.pathname)
-    window.close()
-    return
-  return unless isIframed() # don't do anything if not inside an iframe
+
+  return unless isIframed()
+
+  # In the future we may also apply the styles to the popup login
+  # the below clause will that window
+  # or (window.opener and window.name is 'oxlogin')
+
+  # we're being loaded inside an iframe or a popup
+  # Set a css class to adjusted to fit a narrow screen
+  $(document.body).addClass('condensed iframe')
 
   relayHeading()
-
-  # we're loading a page from the "normal" website inside the iframe
-  # Set a css class so styles can be adjusted
-  $(document.body).addClass('iframe')
-  # Intercept login button clicks to open in window
-  $('.login-button').on('click', openSocial)
 
   # notify the parent iframe of our size now and whenever it's changed
   $(window).resize( relayWindowSize )

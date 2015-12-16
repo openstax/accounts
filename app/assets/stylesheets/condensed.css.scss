@@ -1,44 +1,46 @@
-body.iframe {
+body.condensed {
 
   #application-container {
-    width: 100%;
-    min-width: inherit;
+    max-width: 960px;
+    width: inherit;
+    padding-left: 30px;
+    padding-right: 30px;
   }
 
-  #upper-corner-console,
-  #top-nav-frame {
-    display: none;
+  &.iframe {
+    #application-container {
+      width: calc(100% - 40px); // a bit of space for scrollbars (which should never appear)
+      min-width: inherit;
+    }
+
+    #upper-corner-console,
+    #top-nav-frame {
+      display: none;
+    }
+    #page-heading {
+      padding: 0;
+    }
+
   }
 
   #application-body {
     margin: 5px;
     min-height: 250px;
   }
-  #page-heading {
-    padding: 0;
-  }
-
-  //signup page
-  #signup-alternatives {
-    float: inherit;
-    width: 80%;
-    margin: 0 auto 20px auto;
-  }
-  #identity-register, #ask-for-email {
-    float: inherit;
-    margin: 0 auto 20px auto;
-  }
 
   .new-login {
     display: flex;
     justify-content: space-around;
-    .login-explanation { order: 1; }
-    .login-options{ order: 2; }
+    .login-options {
+      order: 2;
+    }
+    .login-explanation {
+      order: 1;
+    }
   }
 
-
   // Page that asks if account is new after a third party login
-  .new-or-returning {
+  .signup, .new-or-returning {
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -61,7 +63,7 @@ body.iframe {
     }
     .right { order: 3; }
 
-    .login-options{
+    .login-options {
       width: 100%;
       display: flex;
       flex-flow: row wrap;
@@ -69,6 +71,15 @@ body.iframe {
         margin-top: 0;
         width: initial;
       }
+    }
+  }
+  .signup #signup-alternatives {
+    order: 1;
+    align-self: flex-start;
+    margin-left: 20px;
+    .login-button {
+      padding: 0;
+      width: initial;
     }
   }
 }
