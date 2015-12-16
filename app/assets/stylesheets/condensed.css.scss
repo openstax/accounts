@@ -1,5 +1,12 @@
 body.condensed {
 
+  #application-container {
+    max-width: 960px;
+    width: inherit;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
   &.iframe {
     #application-container {
       width: calc(100% - 40px); // a bit of space for scrollbars (which should never appear)
@@ -10,16 +17,27 @@ body.condensed {
     #top-nav-frame {
       display: none;
     }
+    #page-heading {
+      padding: 0;
+    }
+
   }
 
   #application-body {
     margin: 5px;
     min-height: 250px;
   }
-  #page-heading {
-    padding: 0;
-  }
 
+  .new-login {
+    display: flex;
+    justify-content: space-around;
+    .login-options {
+      order: 2;
+    }
+    .login-explanation {
+      order: 1;
+    }
+  }
 
   // Page that asks if account is new after a third party login
   .signup, .new-or-returning {
@@ -45,7 +63,7 @@ body.condensed {
     }
     .right { order: 3; }
 
-    .login-options{
+    .login-options {
       width: 100%;
       display: flex;
       flex-flow: row wrap;
@@ -54,9 +72,14 @@ body.condensed {
         width: initial;
       }
     }
-    .signup #signup-alternatives {
-      order: 2;
-      align-self: flex-start;
+  }
+  .signup #signup-alternatives {
+    order: 1;
+    align-self: flex-start;
+    margin-left: 20px;
+    .login-button {
+      padding: 0;
+      width: initial;
     }
   }
 }
