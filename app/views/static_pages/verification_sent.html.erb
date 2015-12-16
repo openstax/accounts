@@ -5,7 +5,7 @@
   input[type='submit'] { margin: 10px 0 30px 40px; }
 </style>
 
-<% flash[:alert] = "We haven't seen that you clicked the verification link.  Please try again." \
+<% flash.now[:alert] = "We haven't seen that you clicked the verification link.  Please try again." \
     if request.referrer == request.original_url %>
 
 <ol>
