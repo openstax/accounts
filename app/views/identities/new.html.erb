@@ -1,5 +1,6 @@
 <%= page_heading 'Sign up' %>
 
+<div class="signup">
 
 <div id="signup-alternatives">
   <p><b>Save yourself the hassle</b> of remembering yet another password &mdash; register using your Facebook, Twitter, or Google account.</p>
@@ -29,7 +30,7 @@
 <% if !signed_in? %>
   <%= standard_field form: f, name: :username, type: :text_field, label: "Username" %>
 <% end %>
-  
+
   <%#= standard_field form: f, name: :first_name, type: :text_field, label: "First Name" %>
   <%#= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name" %>
 
@@ -40,3 +41,5 @@
 
   <%= submit_tag "Register", class: 'standard' %>
 <% end %>
+
+</div>

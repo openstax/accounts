@@ -20,27 +20,9 @@ body.condensed {
     padding: 0;
   }
 
-  //signup page
-  #signup-alternatives {
-    float: inherit;
-    width: 80%;
-    margin: 0 auto 20px auto;
-  }
-  #identity-register, #ask-for-email {
-    float: inherit;
-    margin: 0 auto 20px auto;
-  }
-
-  .new-login {
-    display: flex;
-    justify-content: space-around;
-    .login-explanation { order: 1; }
-    .login-options{ order: 2; }
-  }
-
 
   // Page that asks if account is new after a third party login
-  .new-or-returning {
+  .signup, .new-or-returning {
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -71,6 +53,10 @@ body.condensed {
         margin-top: 0;
         width: initial;
       }
+    }
+    .signup #signup-alternatives {
+      order: 2;
+      align-self: flex-start;
     }
   }
 }
