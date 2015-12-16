@@ -34,14 +34,15 @@ isIframed = ->
 
 $(document).ready ->
 
-  if isIframed() or (window.opener and window.name is 'oxlogin')
-    # we're being loaded inside an iframe or a popup
-    # Set a css class to adjusted to fit a narrow screen
-    $(document.body).addClass('condensed')
-
   return unless isIframed()
-  # certain elements are hidden on the iframe
-  $(document.body).addClass('iframe')
+
+  # In the future we may also apply the styles to the popup login
+  # the below clause will that window
+  # or (window.opener and window.name is 'oxlogin')
+
+  # we're being loaded inside an iframe or a popup
+  # Set a css class to adjusted to fit a narrow screen
+  $(document.body).addClass('condensed iframe')
 
   relayHeading()
 
