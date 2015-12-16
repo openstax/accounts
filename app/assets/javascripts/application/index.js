@@ -15,7 +15,7 @@
 //= require jquery.ui.all
 //= require ./jquery_extensions
 //= require ./ui
-//= require ./iframe-access-helpers
+//= require ./remote-access-helpers
 //= require bootstrap
 //= require_self
 

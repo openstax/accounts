@@ -54,21 +54,17 @@ openSocial = (ev) ->
   ev.preventDefault()
 
 $(document).ready ->
-  if window.opener and window.location.pathname.match(/^\/auth\//)
-    # we're inside a popup window that's being displayed when a social login has completed
-    window.opener.parent?.OxAccount?.Host.completeRegistration(window.location.pathname)
-    window.close()
-    return
 
-  return unless isIframed() # don't do anything if not inside an iframe
+  if isIframed() or (window.opener and window.name is 'oxlogin')
+    # we're being loaded inside an iframe or a popup
+    # Set a css class to adjusted to fit a narrow screen
+    $(document.body).addClass('condensed')
+
+  return unless isIframed()
+  # certain elements are hidden on the iframe
+  $(document.body).addClass('iframe')
 
   relayHeading()
-
-  # we're loading a page from the "normal" website inside the iframe
-  # Set a css class so styles can be adjusted
-  $(document.body).addClass('iframe')
-  # Intercept login button clicks to open in window
-  $('.login-button').on('click', openSocial)
 
   # notify the parent iframe of our size now and whenever it's changed
   $(window).resize( relayWindowSize )

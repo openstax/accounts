@@ -1,13 +1,15 @@
-body.iframe {
+body.condensed {
 
-  #application-container {
-    width: calc(100% - 40px); // a bit of space for scrollbars (which should never appear)
-    min-width: inherit;
-  }
+  &.iframe {
+    #application-container {
+      width: calc(100% - 40px); // a bit of space for scrollbars (which should never appear)
+      min-width: inherit;
+    }
 
-  #upper-corner-console,
-  #top-nav-frame {
-    display: none;
+    #upper-corner-console,
+    #top-nav-frame {
+      display: none;
+    }
   }
 
   #application-body {
