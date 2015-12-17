@@ -1,5 +1,8 @@
 class StaticPagesController < ApplicationController
-  skip_before_filter :authenticate_user!, :registration,
+  skip_before_filter :authenticate_user!,
+                     only: [:api, :copyright, :home, :status]
+
+  skip_before_filter :registration,
                      only: [:api, :copyright, :home, :status, :verification_sent]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
