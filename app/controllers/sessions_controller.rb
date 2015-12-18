@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
     # Hack to figure out if the user came from CNX to hide the login
     # In the future, use the client_id and some boolean flag in the client app
     referer = request.referer
-    session[:from_cnx] = (referer =~ /cnx\.org/) unless referer.blank?
+#    session[:from_cnx] = (referer =~ /cnx\.org/) unless referer.blank?
 
     session[:client_id] = params[:client_id]
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
