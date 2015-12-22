@@ -3,7 +3,7 @@ require 'rake'
 
 describe 'accounts:create_admin rake task' do
   before :all do
-    Accounts::Application.load_tasks
+    Rake::Task['accounts:create_admin'] rescue Accounts::Application.load_tasks
   end
 
   before :each do
