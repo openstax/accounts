@@ -31,3 +31,7 @@
                email_addresses: current_user.email_addresses } %>
   </div>
 </div>
+
+<% if controller.request.env["HTTP_REFERER"].present? %>
+  <%= link_to 'Back', :back %>
+<% end %>
