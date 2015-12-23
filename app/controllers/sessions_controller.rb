@@ -55,7 +55,6 @@ class SessionsController < ApplicationController
       url = iframe_after_logout_url(parent: params[:parent])
     end
     session[ActionInterceptor.config.default_key] = nil
-    session[:registration_return_to] = nil
     session[:client_id] = nil
 
     sign_out!

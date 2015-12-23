@@ -9,7 +9,7 @@ class UserAccessPolicy
     when :search
       requestor.is_application? || requestor.is_activated?
     when :read, :update
-      requestor.is_human? && requestor.is_activated? && \
+      requestor.is_human? && \
       (requestor == user || requestor.is_administrator?) # Self or admin
     when :register
       requestor.is_human? && !requestor.is_activated? && \

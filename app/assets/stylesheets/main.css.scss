@@ -46,3 +46,8 @@ table.std-list-1 {
 // adds top margin to the submit so that
 .horizontal-submit input { margin-top: 25px; }
 form .nowrap label { white-space: nowrap; }
+
+input.finish-sign-up {
+  float: right;
+  clear: both;
+}

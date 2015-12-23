@@ -31,6 +31,7 @@ Accounts::Application.routes.draw do
     put 'register'
     get 'ask_for_email'
     put 'ask_for_email'
+    put 'i_clicked_verification_link'
   end
 
   resource :identity, only: :update
