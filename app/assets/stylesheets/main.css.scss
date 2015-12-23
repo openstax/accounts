@@ -50,4 +50,15 @@ form .nowrap label { white-space: nowrap; }
 input.finish-sign-up {
   float: right;
   clear: both;
+  margin-top: 6px;
+}
+
+.your-account {
+  tr.contact-info:first-child td {
+    border-top: none;
+  }
+
+  .add-email-address {
+    margin-top: 30px;
+  }
 }

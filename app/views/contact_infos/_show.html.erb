@@ -3,20 +3,24 @@
    humanized_name = contact_info.type.underscore.humanize
 %>
 
-<tr>
+<tr class='contact-info'>
   <td><%= contact_info.value %></td>
-  <td><%= contact_info.is_searchable ? 'Searchable' : 'Not searchable' %></td>
-  <td><%= button_to 'Toggle',
+  <td><%= contact_info.is_searchable ? 'Searchable' : 'Not Searchable' %> (<%= link_to 'Change',
                     toggle_is_searchable_contact_info_path(contact_info),
-                    method: :put, class: "standard" %></td>
-  <td><%= contact_info.verified ? 'Verified' : 'Unverified' %></td>
-  <td><%= button_to "Resend Verification",
-                    resend_confirmation_contact_info_path(contact_info),
-                    method: :put,
-                    class: "standard" unless contact_info.verified %></td>
-  <td><%= button_to "Delete",
+                    method: :put %>)</td>
+
+  <td>
+    <% if contact_info.verified %>
+      Verified
+    <% else %>
+      <%= link_to "Click to verify",
+                  resend_confirmation_contact_info_path(contact_info),
+                  method: :put %>
+    <% end %>
+  </td>
+
+  <td><%= link_to "Delete",
                     contact_info_path(contact_info),
                     method: :delete,
-                    confirm: "Are you sure you want to delete \"#{contact_info.value}?\"",
-                    class: "standard" %></td>
+                    confirm: "Are you sure you want to delete \"#{contact_info.value}?\"" %></td>
 </tr>

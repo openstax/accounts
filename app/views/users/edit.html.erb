@@ -1,10 +1,14 @@
 <%= page_heading("Your Account") %>
 
+<div class="your-account">
+
 <% default_tab = :name %>
 
 <% if !current_user.is_activated? %>
-  <%= link_to 'Finish Sign Up', register_path, class: 'btn btn-primary' %>
-  <%#= button_to('Finish Sign Up', register_path, :class => "standard finish-sign-up") %>
+  <%#= link_to 'Finish Sign Up', register_path, class: 'btn btn-primary' %>
+  <% content_for :above_page_heading do %>
+    <%= button_to('Finish Sign Up!', register_path, method: :get, :class => "standard finish-sign-up") %>
+  <% end %>
   <% default_tab = :email %>
 <% end %>
 
@@ -38,4 +42,6 @@
     <%= render partial: 'contact_infos/email_addresses', locals: {
                email_addresses: current_user.email_addresses } %>
   </div>
+</div>
+
 </div>
