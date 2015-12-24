@@ -4,7 +4,7 @@ class RegistrationController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   def complete
-    if !current_user.is_temp?
+    if current_user.is_activated?
       redirect_back
     elsif current_user.has_emails_but_none_verified?
       redirect_to registration_verification_pending_path

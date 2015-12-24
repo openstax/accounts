@@ -24,20 +24,20 @@ RSpec.describe UserAccessPolicy do
   context 'read, update' do
     it 'cannot be accessed by anonymous, temp users or apps' do
       expect(OSU::AccessPolicy.action_allowed?(:read, anon, anon)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:read, temp, temp)).to eq false
       expect(OSU::AccessPolicy.action_allowed?(:read, app, user)).to eq false
 
       expect(OSU::AccessPolicy.action_allowed?(:update, anon, anon)).to eq false
-      expect(OSU::AccessPolicy.action_allowed?(:update, temp, temp)).to eq false
       expect(OSU::AccessPolicy.action_allowed?(:update, app, user)).to eq false
     end
 
-    it 'can be accessed by non-temp users' do
+    it 'can be accessed by human users, temp or not' do
       expect(OSU::AccessPolicy.action_allowed?(:read, user, user)).to eq true
       expect(OSU::AccessPolicy.action_allowed?(:read, admin, admin)).to eq true
+      expect(OSU::AccessPolicy.action_allowed?(:read, temp, temp)).to eq true
 
       expect(OSU::AccessPolicy.action_allowed?(:update, user, user)).to eq true
       expect(OSU::AccessPolicy.action_allowed?(:update, admin, admin)).to eq true
+      expect(OSU::AccessPolicy.action_allowed?(:update, temp, temp)).to eq true
     end
 
     it 'cannot access other users unless admin' do
