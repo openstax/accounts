@@ -24,6 +24,8 @@ class UsersController < ApplicationController
   end
 
   def ask_for_email
+    # FWIW, when this code is this resurrected, the registration_redirect_url
+    # may not be what we need.
     if request.put?
       handle_with(ContactInfosCreate,
                   success: lambda {
