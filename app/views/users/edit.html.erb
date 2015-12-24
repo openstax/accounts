@@ -5,9 +5,8 @@
 <% default_tab = :name %>
 
 <% if !current_user.is_activated? %>
-  <%#= link_to 'Finish Sign Up', register_path, class: 'btn btn-primary' %>
   <% content_for :above_page_heading do %>
-    <%= button_to('Finish Sign Up!', register_path, method: :get, :class => "standard finish-sign-up") %>
+    <%= button_to('Finish Sign Up!', registration_complete_path, method: :get, :class => "standard finish-sign-up") %>
   <% end %>
   <% default_tab = :email %>
 <% end %>

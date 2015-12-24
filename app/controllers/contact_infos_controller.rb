@@ -43,24 +43,16 @@ class ContactInfosController < ApplicationController
   def resend_confirmation
     handle_with(ContactInfosResendConfirmation,
                 complete: lambda {
-                  path = :back
                   contact_info = @handler_result.outputs[:contact_info]
 
-                  if contact_info.verified
-                    msg = 'Your email address is already verified'
-                    user = contact_info.user
-                    path = user.registration_redirect_url \
-                      if user.is_temp? && user.registration_redirect_url
-                  else
-                    msg = "A verification message has been sent to \"#{
-                           contact_info.value}\""
-                  end
+                  msg = contact_info.verified ?
+                        'Your email address is already verified' :
+                        "A verification message has been sent to \"#{contact_info.value}\""
 
-                  redirect_to path,
+                  redirect_to :back,
                               notice: msg
                 })
   end
-
 
   def confirm_unclaimed
     handle_with(ConfirmUnclaimedAccount,

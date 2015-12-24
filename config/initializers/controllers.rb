@@ -40,7 +40,7 @@ ActionController::Base.class_exec do
   def registration
     return true if request.format != :html
     return unless current_user.is_temp?
-    redirect_to register_path
+    redirect_to registration_complete_path
   end
 
   def expired_password

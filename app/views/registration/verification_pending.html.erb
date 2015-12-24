@@ -5,9 +5,6 @@
   input[type='submit'] { margin: 10px 0 30px 40px; }
 </style>
 
-<%# flash.now[:alert] = "We haven't seen that you clicked the verification link.  Please try again." \
-    if params[:c] == "1" %>
-
 <% emails = current_user.email_addresses.collect(&:value) %>
 
 <ol>
@@ -19,7 +16,7 @@
 </ol>
 
 <%= button_to 'I clicked the link in the verification email',
-              i_clicked_verification_link_path,
+              registration_i_verified_path,
               method: :put, class: 'standard' %>
 
 <p style="margin: 80px 0 0 0; width: 90%">
