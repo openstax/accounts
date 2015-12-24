@@ -16,8 +16,8 @@ feature 'User manages emails' do
 
   context 'create' do
     scenario 'success', js: true do
-      fill_in 'Email address', with: 'user@mysite.com'
-      click_button 'Add Email address'
+      fill_in 'Add an email address', with: 'user@mysite.com'
+      click_button 'Add'
       expect(page).to have_content('Change Your Password')
       expect(page).to have_content(
         'A verification message has been sent to "user@mysite.com"')
@@ -25,28 +25,28 @@ feature 'User manages emails' do
     end
 
     scenario 'with empty value', js: true do
-      fill_in 'Email address', with: ''
-      click_button 'Add Email address'
+      fill_in 'Add an email address', with: ''
+      click_button 'Add'
       expect(page).to have_content("Value can't be blank")
     end
 
     scenario 'with invalid value', js: true do
-      fill_in 'Email address', with: 'user'
-      click_button 'Add Email address'
+      fill_in 'Add an email address', with: 'user'
+      click_button 'Add'
       expect(page).to have_content('Value is invalid')
     end
   end
 
   context 'destroy' do
     scenario 'success', js: true do
-      click_button 'Delete'
+      click_link 'Delete'
       expect(page).to have_content('Email address deleted')
     end
   end
 
   context 'resend_confirmation' do
     scenario 'success', js: true do
-      click_button 'Resend Verification'
+      click_link 'Click to verify'
       expect(page).to have_content('A verification message has been sent to "')
     end
   end
