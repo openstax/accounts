@@ -22,7 +22,7 @@ RSpec.describe UserAccessPolicy do
   end
 
   context 'read, update' do
-    it 'cannot be accessed by anonymous, temp users or apps' do
+    it 'cannot be accessed by anonymous users or apps' do
       expect(OSU::AccessPolicy.action_allowed?(:read, anon, anon)).to eq false
       expect(OSU::AccessPolicy.action_allowed?(:read, app, user)).to eq false
 
