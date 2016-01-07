@@ -1,8 +1,10 @@
 class UsersController < ApplicationController
 
-  skip_before_filter :registration, only: [:register, :ask_for_email]
+  skip_before_filter :registration,
+                     only: [:ask_for_email, :edit, :update]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:register, :ask_for_email]
+  fine_print_skip :general_terms_of_use, :privacy_policy,
+                  only: [:ask_for_email, :edit, :update]
 
   def edit
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
@@ -21,29 +23,15 @@ class UsersController < ApplicationController
     end
   end
 
-  def register
-    if request.put?
-      handle_with(UsersRegister,
-                  contracts_required: !contracts_not_required,
-                  success: lambda {
-                    redirect_back key: :registration_return_to
-                  },
-                  failure: lambda {
-                    errors = @handler_result.errors.any?
-                    render :register, status: errors ? 400 : 200
-                  })
-    else
-      store_fallback key: :registration_return_to
-    end
-  end
-
   def ask_for_email
+    # FWIW, when this code is this resurrected, the registration_redirect_url
+    # may not be what we need.
     if request.put?
       handle_with(ContactInfosCreate,
                   success: lambda {
                     current_user.registration_redirect_url = stored_url
                     current_user.save
-                    redirect_to :verification_sent
+                    redirect_to registration_verification_pending_path
                   },
                   failure: lambda {
                     render :ask_for_email, status: 400

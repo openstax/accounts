@@ -119,6 +119,10 @@ class User < ActiveRecord::Base
     AddUnreadUpdateForUser.call(self).errors.none?
   end
 
+  def has_emails_but_none_verified?
+    email_addresses.any? && email_addresses.none?(&:verified)
+  end
+
   ##########################
   # Access Control Helpers #
   ##########################
