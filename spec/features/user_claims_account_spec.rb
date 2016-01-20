@@ -19,15 +19,12 @@ feature 'User claims an unclaimed account', js: true do
     expect(new_user).to_not be_nil
 
     click_link 'Continue'
-    expect(page).to have_content('Check your inbox to verify your email address')
-
-    MarkContactInfoVerified.call(new_user.email_addresses.first)
-    click_on 'I clicked the link in the verification email'
+    expect(page).to have_content('Complete your profile information to create your account')
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
     find(:css, '#register_i_agree').set(true)
-    click_button 'Continue'
+    click_button 'Register'
 
     expect{
       create_email_address_for new_user, "unclaimeduser@example.com", '4242'
