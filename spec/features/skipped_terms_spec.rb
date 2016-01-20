@@ -15,7 +15,7 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Username', with: 'bob'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
-    click_on 'Register'
+    click_on 'Continue'
 
     click_on 'Continue'
     expect(page).to have_content('Check your inbox to verify your email address')
@@ -67,7 +67,7 @@ feature 'Skipped terms are respected', js: true do
 
     fill_in 'First Name', with: 'Bobby'
     fill_in 'Last Name', with: 'Kennedy'
-    click_on 'Register'
+    click_on 'Continue'
 
     click_on 'Sign out'
 
@@ -92,7 +92,7 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Username', with: 'bobby'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
-    click_on 'Register'
+    click_on 'Continue'
 
     click_on 'Continue'
     expect(page).to have_content('Check your inbox to verify your email address')
@@ -106,7 +106,7 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'First Name', with: 'Bobby'
     fill_in 'Last Name', with: 'Kennedy'
     check 'register_i_agree'
-    click_on 'Register'
+    click_on 'Continue'
 
     click_on 'Sign out'
 
