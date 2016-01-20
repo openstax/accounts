@@ -43,7 +43,7 @@ class UsersController < ApplicationController
                   success: lambda {
                     current_user.registration_redirect_url = stored_url
                     current_user.save
-                    redirect_to :verification_sent
+                    redirect_to :register
                   },
                   failure: lambda {
                     render :ask_for_email, status: 400
