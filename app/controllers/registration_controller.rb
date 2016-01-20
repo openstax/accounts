@@ -3,11 +3,10 @@ class RegistrationController < ApplicationController
   skip_before_filter :registration
   fine_print_skip :general_terms_of_use, :privacy_policy
 
+  # Note: this is where email verification used to hook into the login flow.
   def complete
     if current_user.is_activated?
       redirect_back
-    elsif current_user.has_emails_but_none_verified?
-      redirect_to registration_verification_pending_path
     elsif request.put?
       handle_with(UsersRegister,
                   contracts_required: !contracts_not_required,
