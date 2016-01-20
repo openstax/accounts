@@ -13,16 +13,13 @@ feature 'User claims an unclaimed account', js: true do
     fill_in 'Username', with: 'unclaimedtestuser'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
-    click_button 'Register'
+    click_button 'Continue'
 
     new_user = User.find_by_username('unclaimedtestuser')
     expect(new_user).to_not be_nil
 
     click_link 'Continue'
-    expect(page).to have_content('Check your inbox to verify your email address')
-
-    MarkContactInfoVerified.call(new_user.email_addresses.first)
-    click_on 'I clicked the link in the verification email'
+    expect(page).to have_content('Complete your profile information to create your account')
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'

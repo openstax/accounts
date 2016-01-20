@@ -15,13 +15,10 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Username', with: 'bob'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
-    click_on 'Register'
+    click_on 'Continue'
 
     click_on 'Continue'
-    expect(page).to have_content('Check your inbox to verify your email address')
-
-    MarkContactInfoVerified.call(EmailAddress.order(:id).last)
-    click_on 'I clicked the link in the verification email'
+    expect(page).to have_content('Complete your profile information to create your account')
 
     # No skipping
     expect(page).to have_content('I have read')
@@ -54,13 +51,10 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Username', with: 'bobby'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
-    click_on 'Register'
 
     click_on 'Continue'
-    expect(page).to have_content('Check your inbox to verify your email address')
-
-    MarkContactInfoVerified.call(EmailAddress.order(:id).last)
-    click_on 'I clicked the link in the verification email'
+    expect(page).to have_content('Merge Logins')
+    click_on 'Continue'
 
     # Skipped!
     expect(page).to_not have_content('I have read')
@@ -92,13 +86,10 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Username', with: 'bobby'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
-    click_on 'Register'
 
     click_on 'Continue'
-    expect(page).to have_content('Check your inbox to verify your email address')
-
-    MarkContactInfoVerified.call(EmailAddress.order(:id).last)
-    click_on 'I clicked the link in the verification email'
+    expect(page).to have_content('Merge Logins')
+    click_on 'Continue'
 
     # Gotta sign
     expect(page).to have_content('I have read')
