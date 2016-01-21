@@ -17,7 +17,7 @@ gem 'quiet_assets'
 
 gem 'openstax_utilities'
 gem 'openstax_api'
-gem 'lev', '~> 2.0.4'
+gem 'lev', '~> 2.0.6'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
