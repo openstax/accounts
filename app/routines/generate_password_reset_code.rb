@@ -3,12 +3,14 @@
 # when the PasswordResetCode is saved
 class GeneratePasswordResetCode
 
-  lev_routine
+  # This routine is serializable because it contains
+  # a find_or_create for identity.password_reset_code
+  # We could get rid of this by merging the identity and password_reset_code tables
+  lev_routine transaction: :serializable
 
   protected
 
-  def exec(identity,
-           expiration_period = PasswordResetCode::DEFAULT_EXPIRATION_PERIOD)
+  def exec(identity, expiration_period = PasswordResetCode::DEFAULT_EXPIRATION_PERIOD)
     identity.password_reset_code ||= identity.build_password_reset_code
     prc = identity.password_reset_code
     prc.generate(expiration_period)
