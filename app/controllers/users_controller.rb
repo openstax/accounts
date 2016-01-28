@@ -1,10 +1,8 @@
 class UsersController < ApplicationController
 
-  skip_before_filter :registration,
-                     only: [:ask_for_email, :edit, :update]
+  skip_before_filter :registration, only: [:edit, :update, :ask_for_email]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:ask_for_email, :edit, :update]
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:edit, :update, :ask_for_email]
 
   def edit
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)

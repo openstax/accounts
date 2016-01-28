@@ -123,6 +123,41 @@ feature 'User logs in as a local user', js: true do
     expect(page).to have_content('Your Account')
   end
 
+  scenario 'and gets asked to reset password and accept terms on home page' do
+    imported_user 'imported_user'
+
+    with_forgery_protection do
+      create_application
+      visit '/'
+      expect(page).not_to have_content('Sign in to your one OpenStax account')
+
+      visit '/login'
+      expect(page).to have_content('Sign in to your one OpenStax account')
+
+      fill_in 'Username', with: 'imported_user'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+
+      expect(page).to have_content('Welcome, imported_user')
+      expect(page).to have_content('Alert: Your password has expired')
+
+      fill_in 'Password', with: 'Passw0rd!'
+      fill_in 'Password Again', with: 'Passw0rd!'
+      click_button 'Set Password'
+
+      expect(page).to have_content('Terms of Use')
+
+      find(:css, '#agreement_i_agree').set(true)
+      click_button 'Agree'
+
+      expect(page).to have_content('Privacy Policy')
+      find(:css, '#agreement_i_agree').set(true)
+      click_button 'Agree'
+
+      expect(current_path).to eq root_path
+    end
+  end
+
   scenario 'keeps trying to find existing account when signing in' do
     create_user('jimbo')
 
