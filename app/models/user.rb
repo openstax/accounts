@@ -27,7 +27,6 @@ class User < ActiveRecord::Base
   has_many :oauth_applications, through: :member_groups
 
   validates :username, presence: true,
-                       uniqueness: { case_sensitive: true },
                        length: { minimum: 3, maximum: USERNAME_MAX_LENGTH },
                        format: { with: /\A[A-Za-z\d_]+\z/,
                                  message: "Usernames can only contain letters, numbers, and underscores." }

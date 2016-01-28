@@ -29,11 +29,12 @@ describe ImportUsers do
       csv << [1, 'user1', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', 'User', 'One', 'User One', 'user1@example.com']
       csv << [2, 'user2', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Professor', '', '', 'ユーザー', 'user2']
       csv << [3, '', '']
+      csv << [4, 'User1', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', 'Different', 'User1', 'Different User1', 'different.user1@example.com']
     end
 
     ImportUsers.new(@file.path, nil).read
     result = CSV.read("import_users_results.#{@timestamp}.csv", headers: true)
-    expect(result.length).to eq(3)
+    expect(result.length).to eq(4)
 
     expect(result[0]['row_number']).to eq('1')
     expect(result[0]['old_username']).to eq('user1')
@@ -66,6 +67,18 @@ describe ImportUsers do
     expect(result[2]['old_username']).to be_empty
     expect(result[2]['new_username']).to be_empty
     expect(result[2]['errors']).not_to be_nil
+
+    user3 = User.find_by_username('User1')
+    expect(user3.title).to eq('Dr')
+    expect(user3.casual_name).to eq('Different')
+    expect(user3.name).to eq('Dr Different User1')
+    expect(user3.state).to eq('activated')
+    expect(user3.identity.authenticate('password')).to be_true
+    expect(user3.identity.password_expired?).to be_true
+    expect(user3.contact_infos.email_addresses.length).to eq(1)
+    email = user3.contact_infos.email_addresses[0]
+    expect(email.value).to eq('different.user1@example.com')
+    expect(email.verified).to be_true
   end
 
   it 'creates users from a csv file and links them to an application' do

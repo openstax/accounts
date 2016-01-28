@@ -104,6 +104,22 @@ feature 'User signs up as a local user', js: true do
     expect(page).not_to have_content('Welcome, testuser')
   end
 
+  scenario 'with a username already taken' do
+    create_user 'testuser'
+    visit '/'
+    expect(page).to have_content('Sign in to your one OpenStax account!')
+    click_link 'Sign up'
+    expect(page).to have_content('Sign up')
+    expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
+
+    fill_in 'Email Address', with: 'testuser@example.com'
+    fill_in 'Username', with: 'testuser'
+    fill_in 'Password', with: 'password'
+    fill_in 'Password Again', with: 'password'
+    click_button 'Continue'
+    expect(page).to have_content('Username has already been taken', count: 1)
+  end
+
   scenario 'with empty email address', js: true do
     visit '/'
     expect(page).to have_content('Sign in to your one OpenStax account!')
