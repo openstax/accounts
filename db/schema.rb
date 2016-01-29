@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151202132845) do
+ActiveRecord::Schema.define(:version => 20160129192919) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -88,11 +88,12 @@ ActiveRecord::Schema.define(:version => 20151202132845) do
   end
 
   create_table "fine_print_signatures", :force => true do |t|
-    t.integer  "contract_id", :null => false
-    t.integer  "user_id",     :null => false
-    t.string   "user_type",   :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.integer  "contract_id",                    :null => false
+    t.integer  "user_id",                        :null => false
+    t.string   "user_type",                      :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+    t.boolean  "is_implicit", :default => false, :null => false
     t.index ["contract_id"], :name => "index_fine_print_signatures_on_contract_id"
     t.index ["user_id", "user_type", "contract_id"], :name => "index_fine_print_s_on_u_id_and_u_type_and_c_id", :unique => true
   end
