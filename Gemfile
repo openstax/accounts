@@ -39,7 +39,7 @@ gem 'openstax_rescue_from', '~> 1.5.0'
 
 gem "keyword_search", '~> 1.5.0'
 
-gem 'fine_print', '~> 3.0.0'
+gem 'fine_print', '~> 3.1.0'
 
 gem 'action_interceptor', '~> 1.0.0'
 
