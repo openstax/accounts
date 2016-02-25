@@ -35,7 +35,7 @@ feature 'User forgot password', js: true do
     @email.save
     fill_in 'Username', with: 'user1'
     click_button 'Submit'
-    expect(page.text).to include('No verified email addresses found for this user')
+    expect(page.text).to include('Password reset instructions sent to your email address!')
   end
 
   scenario 'user gets a password reset email' do
