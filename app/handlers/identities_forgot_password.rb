@@ -27,9 +27,9 @@ class IdentitiesForgotPassword
       fatal_error(code: 'Unable to reset password for this user',
                   offending_inputs: [:identity])
     end
-    email_addresses = user.contact_infos.email_addresses.verified
+    email_addresses = user.contact_infos.email_addresses
     if email_addresses.empty?
-      fatal_error(code: 'No verified email addresses found for this user',
+      fatal_error(code: 'No email addresses found for this user',
                   offending_inputs: [:email_address])
     end
     code = run(GeneratePasswordResetCode, user.identity).outputs[:code]
