@@ -21,18 +21,21 @@ Accounts::Application.routes.draw do
   # routes for access via an iframe
   scope 'remote', controller: 'remote' do
     get 'iframe'
-    get 'start_login', as: 'iframe_start_login'
-    get 'start_logout'
-    get 'finish_login', as: 'iframe_after_login'
+    get 'notify_logout', as: 'iframe_after_logout'
   end
 
   scope controller: 'users' do
     get 'profile', action: :edit
     put 'profile', action: :update
-    get 'register'
-    put 'register'
     get 'ask_for_email'
     put 'ask_for_email'
+  end
+
+  namespace 'registration' do
+    get 'complete'
+    put 'complete'
+    get 'verification_pending'
+    put 'i_verified'
   end
 
   resource :identity, only: :update
@@ -65,7 +68,6 @@ Accounts::Application.routes.draw do
   scope controller: 'static_pages' do
     get 'copyright'
     get 'status'
-    get 'verification_sent'
   end
 
   apipie

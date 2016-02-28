@@ -15,13 +15,10 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Username', with: 'bob'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
-    click_on 'Register'
+    click_on 'Continue'
 
     click_on 'Continue'
-    expect(page).to have_content('A verification email has been sent')
-
-    MarkContactInfoVerified.call(EmailAddress.order(:id).last)
-    click_on 'Continue'
+    expect(page).to have_content('Complete your profile information to create your account')
 
     # No skipping
     expect(page).to have_content('I have read')
@@ -54,12 +51,9 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Username', with: 'bobby'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
-    click_on 'Register'
 
     click_on 'Continue'
-    expect(page).to have_content('A verification email has been sent')
-
-    MarkContactInfoVerified.call(EmailAddress.order(:id).last)
+    expect(page).to have_content('Merge Logins')
     click_on 'Continue'
 
     # Skipped!
@@ -92,12 +86,9 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Username', with: 'bobby'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
-    click_on 'Register'
 
     click_on 'Continue'
-    expect(page).to have_content('A verification email has been sent')
-
-    MarkContactInfoVerified.call(EmailAddress.order(:id).last)
+    expect(page).to have_content('Merge Logins')
     click_on 'Continue'
 
     # Gotta sign

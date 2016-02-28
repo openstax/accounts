@@ -58,14 +58,16 @@ describe ContactInfosController do
     it "returns error if code doesn't match" do
       get 'confirm', :code => 'abcd'
       expect(response.code).to eq('400')
-      expect(response.body).to include("Sorry, we couldn't verify an email using the verification code you provided.")
+      expect(response.body).to include("Unable to verify email address") # header
+      expect(response.body).to include("Sorry, we couldn't verify an email using the verification code you provided.") # body
       expect(EmailAddress.find_by_value(@email.value).verified).to be_false
     end
 
     it "returns success if code matches" do
       get 'confirm', :code => @email.confirmation_code
       expect(response).to be_success
-      expect(response.body).to include('Success! Thanks for adding your email address.')
+      expect(response.body).to include("Thank you for verifying your email address.") # header
+      expect(response.body).to include('Success! Thanks for adding your email address.') # body
       expect(EmailAddress.find_by_value(@email.value).verified).to be_true
     end
   end

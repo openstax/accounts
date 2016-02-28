@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <script>
+      window.parent.postMessage( JSON.stringify({'data': {'logoutComplete': true}}), '<%= @iframe_parent %>' );
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

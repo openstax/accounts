@@ -12,7 +12,7 @@
       <% if signed_in? %>
         <%= t :".welcome_html", user: (link_to current_user.username, main_app.profile_path), sign_out: (link_to (t :".sign_out"), main_app.logout_path) %>
       <% else %>
-        <% unless session[:from_cnx] %>
+        <% unless current_page?(main_app.signup_path) %>
           <%= t :".sign_up_or_in_html", sign_up: (link_to (t :".sign_up"), main_app.signup_path), sign_in: (link_to (t :".sign_in"), main_app.login_path) %>
         <% else %>
           <%= link_to (t :".only_sign_in"), main_app.login_path %>

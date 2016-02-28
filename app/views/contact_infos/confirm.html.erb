@@ -1,6 +1,10 @@
-<%= page_heading (t :".page_heading") %>
+<%= page_heading @handler_result.errors.any? ? (t :".page_heading_erros") : (t :".page_heading_success") %>
 <% if @handler_result.errors.any? %>
   <p><%= t :".verification_code_not_found" %></p>
 <% else %>
-  <p><%= t :".success" %></p>
+  <% if @handler_result.outputs.contact_info.try(:user).try(:is_temp?) %>
+    <p><%= t :".close_tab_and_continue_registration" %></p>
+  <% else %>
+    <p><%= t :".success" %></p>
+  <% end %>
 <% end %>

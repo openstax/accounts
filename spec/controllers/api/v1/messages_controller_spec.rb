@@ -83,10 +83,8 @@ describe Api::V1::MessagesController, :type => :api, :version => :v1 do
         api_post :create, untrusted_application_token, parameters: message_params
       }.to raise_error(Lev::SecurityTransgression)
 
-      # The only email is the exception email
-      expect(Mail::TestMailer.deliveries.size).to eq(3)
-      mail_tos = Mail::TestMailer.deliveries.flat_map(&:to)
-      expect(mail_tos.uniq).to eq([SECRET_SETTINGS[:exception]['recipients']])
+      # These exceptions are no longer "notified" out
+      expect(Mail::TestMailer.deliveries.size).to eq(0)
     end
 
     it "creates and sends messages for trusted applications" do

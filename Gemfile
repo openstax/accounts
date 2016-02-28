@@ -17,7 +17,7 @@ gem 'quiet_assets'
 
 gem 'openstax_utilities'
 gem 'openstax_api'
-gem 'lev', '~> 2.0.4'
+gem 'lev', '~> 2.0.6'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -39,7 +39,7 @@ gem 'openstax_rescue_from', '~> 1.5.0'
 
 gem "keyword_search", '~> 1.5.0'
 
-gem 'fine_print', '~> 3.0.0'
+gem 'fine_print', '~> 3.1.0'
 
 gem 'action_interceptor', '~> 1.0.0'
 
@@ -48,6 +48,9 @@ gem 'schema_plus', '~> 1.7.1'
 gem 'aws-ses', '~> 0.6.0', :require => 'aws/ses'
 
 gem 'pg'
+
+# Add P3P headers for IE
+gem 'p3p'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'

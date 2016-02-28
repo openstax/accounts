@@ -1,10 +1,15 @@
 class ContactInfosController < ApplicationController
 
-  skip_before_filter :authenticate_user!, :registration, only: [:confirm, :confirm_unclaimed,
-                                                                :resend_confirmation]
+  skip_before_filter :authenticate_user!,
+                     only: [:confirm, :confirm_unclaimed, :resend_confirmation]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:confirm, :confirm_unclaimed,
-                                                                 :resend_confirmation]
+  skip_before_filter :registration,
+                     only: [:create, :destroy, :toggle_is_searchable, :confirm,
+                            :confirm_unclaimed, :resend_confirmation]
+
+  fine_print_skip :general_terms_of_use, :privacy_policy,
+                  only: [:create, :destroy, :toggle_is_searchable, :confirm,
+                         :confirm_unclaimed, :resend_confirmation]
 
   before_filter :get_contact_info, only: [:destroy, :toggle_is_searchable]
 
@@ -39,11 +44,16 @@ class ContactInfosController < ApplicationController
   def resend_confirmation
     handle_with(ContactInfosResendConfirmation,
                 complete: lambda {
-                  redirect_to :back,
-                    notice: (I18n.t :"controllers.contact_infos.verification_sent",
-                                    address: @handler_result.outputs[:contact_info].value) })
-  end
+                  contact_info = @handler_result.outputs[:contact_info]
 
+                  msg = contact_info.verified ?
+                        (I18n.t :"controllers.contact_infos.already_verified") :
+                        (I18n.t :"controllers.contact_infos.verification_sent", address: contact_info.value)
+
+                  redirect_to :back,
+                              notice: msg
+                })
+  end
 
   def confirm_unclaimed
     handle_with(ConfirmUnclaimedAccount,
@@ -55,15 +65,7 @@ class ContactInfosController < ApplicationController
   def confirm
     handle_with(ContactInfosConfirm,
                 complete: lambda {
-                  user = @handler_result.outputs.contact_info.try(:user)
-                  if @handler_result.errors.any?
-                    render :confirm, status: 400
-                  elsif user.try(:is_temp?) && user.try(:registration_redirect_url).present?
-                    redirect_to user.registration_redirect_url,
-                                notice: (I18n.t :"controllers.contact_infos.thanks_for_adding_address")
-                  else
-                    render :confirm, status: 200
-                  end
+                  render :confirm, status: @handler_result.errors.any? ? 400 : 200
                 })
   end
 

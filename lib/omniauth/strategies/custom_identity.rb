@@ -29,7 +29,7 @@ module OmniAuth
       option :name, "identity"
 
       def request_phase
-        SessionsController.action(:new).call(env)        
+        SessionsController.action(:new).call(env)
       end
 
       def callback_phase

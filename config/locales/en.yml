@@ -6,9 +6,9 @@ en:
 
       contact_info_deleted: "%{contact_info} deleted"
       search_settings_updated: Search settings updated
+      already_verified: Your email address is already verified
       verification_sent: |
         A verification message has been sent to "%{address}"
-      thanks_for_adding_address: Thanks for adding your email address.
 
     identities:
       already_have_username_and_password: |
@@ -21,6 +21,11 @@ en:
       password_reset_successfully: |
         Your password has been reset successfully! You have been signed in
         automatically.
+
+    registration:
+      has_emails_but_none_verified_alert: |
+        We haven't seen that you clicked the verification link. Please try
+        again.
 
     sessions:
       signed_out: Signed out!
@@ -36,10 +41,16 @@ en:
         propagate to the entire site.
 
   handlers:
+    confirm_unclaimed_account:
+      unable_to_verify_address: Unable to verify email address
+
+    contact_infos_confirm:
+      unable_to_verify_address: Unable to verify email address
+
     identities_forgot_password:
       username_not_found: Username not found
       unable_to_reset_password: Unable to reset password for this user
-      no_verified_emails: No verified email addresses found for this user
+      no_email_addresses_found: No email addresses found for this user
 
     identities_reset_password:
       reset_link_is_invalid: Reset password link is invalid
@@ -71,27 +82,31 @@ en:
 
   contact_infos:
     form:
-      add: Add %{name}
-      email_address: email address
+      add_email_address: Add an email address
+      add: Add
 
     show:
-      searchable: searchable
-      not_searchable: Not searchable
-      toggle_searchable: Toggle
+      searchable: Searchable
+      not_searchable: Not Searchable
+      change_searchable: Change
       verified: Verified
-      unverified: Unverified
-      resend_verification: Resend Verification
+      click_to_verify: Click to verify
       delete: Delete
       confirm_delete: |
         Are you sure you want to delete "%{email}"?
 
     confirm:
       page_heading: Email Verification
+      page_heading_errors: Unable to verify email address
+      page_heading_success: Thank you for verifying your email address.
       verification_code_not_found: |
         Sorry, we couldn't verify an email using the verification code you
         provided. If you typed it in manually, please check for errors. If
         you're still having trouble, please visit your profile page to resend
         the verification email.
+      close_tab_and_continue_registration: |
+        Please close this tab and continue your registration process in
+        OpenStax.
       success: Success! Thanks for adding your email address.
 
     contirm_unclaimed:
@@ -125,6 +140,9 @@ en:
       new_password: New Password
       new_password_confirmation: New Password Confirmation
       change_password: Change Password
+      not_yet_activated_notice: |
+        These options will be available after you have clicked the button in the
+        upper right to finish sign up.
 
     forgot_password:
       page_heading: Forgot Password?
@@ -149,7 +167,7 @@ en:
       username: Username
       password: Password
       password_again: Password again
-      register: Register
+      continue: Continue
 
     reset_password:
       page_heading: Reset Password
@@ -279,19 +297,27 @@ en:
       last_name: Last Name
       suffix: Suffix
       update_profile: Update Profile
+      not_yet_activated_notice: |
+        These options will be available after you have clicked the button in the
+        upper right to finish sign up.
 
     ask_for_email:
-      page_heading: Give us an email address
+      page_heading: Please add an email address to your account.
+      email_importance_notice: |
+        Having an email address on your account is important should you ever
+        need to reset your password.
       email_address: Email Addresses
       submit: Submit
 
     edit:
       page_heading: Your Account
+      finish_sign_up: Finish Sign Up!
       profile_settings: Profile Settings
       change_password: Change Your Password
       manage_addresses: Manage Email Addresses
 
-    register:
+  registration:
+    complete:
       page_heading: Complete your profile information to create your account
       required_field: "* indicates required field."
       username: Username *

@@ -1,5 +1,6 @@
 <%= page_heading (t :".page_heading") %>
 
+<div class="signup">
 
 <div id="signup-alternatives">
   <p><%= t :".suggest_using_social_media_login_html" %></p>
@@ -38,5 +39,7 @@
 
   <%= hidden_field_tag :stored_url, stored_url %>
 
-  <%= submit_tag (t :".register"), class: 'standard' %>
+  <%= submit_tag (t :".continue"), class: 'standard' %>
 <% end %>
+
+</div>

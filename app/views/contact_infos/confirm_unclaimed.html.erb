@@ -9,7 +9,7 @@
   <% if @handler_result.outputs.can_log_in %>
     <%= t :".you_can_now_sign_in_html", sign_in: (link_to (t :".sign_in"), login_url) %>
   <% else %>
-    <%= t :".please_sign_up_html", sign_up: (link_to (t :".sign_up"), register_url), email: @handler_result.outputs.email_address %>
+    <%= t :".please_sign_up_html", sign_up: (link_to (t :".sign_up"), registration_complete_url), email: @handler_result.outputs.email_address %>
   <% end %>
 </p>
 <% end %>

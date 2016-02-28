@@ -22,22 +22,15 @@ describe RemoteController do
 
   end
 
-  context 'logging in via external site' do
+  context 'logging out via external site' do
     render_views
 
-    it 'redirects to external site to start a login' do
-      url = 'http://an-external-url.test/'
-      get :start_login, start: url
-      expect(session[:from_iframe]).to eq(true)
-      expect(response).to redirect_to(url)
+    it 'notifies parent on logout' do
+      url = SECRET_SETTINGS[:valid_iframe_origins].last
+      get :notify_logout, parent: url
+      expect(response.body).to match(/window.parent.postMessage.*logoutComplete/)
     end
 
-    it 'sends results back to external when login finishes' do
-      controller.sign_in! user
-      get :finish_login, {}, {from_iframe: true}
-      expect(session[:from_iframe]).to be_nil
-      expect(response.body).to match("target.OxAccount.Host.loginComplete")
-    end
   end
 
 end

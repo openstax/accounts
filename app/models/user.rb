@@ -27,7 +27,6 @@ class User < ActiveRecord::Base
   has_many :oauth_applications, through: :member_groups
 
   validates :username, presence: true,
-                       uniqueness: { case_sensitive: true },
                        length: { minimum: 3, maximum: USERNAME_MAX_LENGTH },
                        format: { with: /\A[A-Za-z\d_]+\z/,
                                  message: "Usernames can only contain letters, numbers, and underscores." }
@@ -117,6 +116,10 @@ class User < ActiveRecord::Base
   def add_unread_update
     # Returns false if the update fails (aborting the save transaction)
     AddUnreadUpdateForUser.call(self).errors.none?
+  end
+
+  def has_emails_but_none_verified?
+    email_addresses.any? && email_addresses.none?(&:verified)
   end
 
   ##########################

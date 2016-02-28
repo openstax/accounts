@@ -1,8 +1,19 @@
 <%= page_heading (t :".page_heading") %>
 
-<% @active_tab ||= params[:active_tab].try(:to_sym) || :name %>
+<div class="your-account">
 
-<ul class="nav nav-tabs" role="tablist" style="margin-bottom: 30px">
+<% default_tab = :name %>
+
+<% if !current_user.is_activated? %>
+  <% content_for :above_page_heading do %>
+    <%= button_to((t :".finish_sign_up"), registration_complete_path, method: :get, :class => "standard finish-sign-up") %>
+  <% end %>
+  <% default_tab = :email %>
+<% end %>
+
+<% @active_tab ||= params[:active_tab].try(:to_sym) || default_tab %>
+
+<ul class="nav nav-tabs" role="tablist" style="margin-bottom: 30px; clear: both;">
   <li role="presentation" <% if @active_tab == :name %>class="active"<% end %>><a href="#name" aria-controls="name" role="tab" data-toggle="tab"><%= t :".profile_settings" %></a></li>
 
   <% unless current_user.identity.nil? %>
@@ -30,4 +41,6 @@
     <%= render partial: 'contact_infos/email_addresses', locals: {
                email_addresses: current_user.email_addresses } %>
   </div>
+</div>
+
 </div>

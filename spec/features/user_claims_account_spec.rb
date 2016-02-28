@@ -13,16 +13,13 @@ feature 'User claims an unclaimed account', js: true do
     fill_in 'Username', with: 'unclaimedtestuser'
     fill_in 'Password', with: 'password'
     fill_in 'Password Again', with: 'password'
-    click_button 'Register'
+    click_button 'Continue'
 
     new_user = User.find_by_username('unclaimedtestuser')
     expect(new_user).to_not be_nil
 
     click_link 'Continue'
-    expect(page).to have_content('A verification email has been sent')
-
-    MarkContactInfoVerified.call(new_user.email_addresses.first)
-    click_link 'Continue'
+    expect(page).to have_content('Complete your profile information to create your account')
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
@@ -32,7 +29,7 @@ feature 'User claims an unclaimed account', js: true do
     expect{
       create_email_address_for new_user, "unclaimeduser@example.com", '4242'
       visit '/confirm?code=4242'
-      expect(page).to have_content('Email Verification Success!')
+      expect(page).to have_content('Thank you for verifying your email address')
     }.to change(User, :count).by(-1)
     expect{
         unclaimed_user.reload

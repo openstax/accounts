@@ -23,7 +23,6 @@ class SessionsController < ApplicationController
     # Hack to figure out if the user came from CNX to hide the login
     # In the future, use the client_id and some boolean flag in the client app
     referer = request.referer
-    session[:from_cnx] = (referer =~ /cnx\.org/) unless referer.blank?
 
     session[:client_id] = params[:client_id]
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
@@ -52,11 +51,10 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    if session[:from_iframe]
-      url = iframe_start_login_path(start: stored_url)
+    if params[:parent]
+      url = iframe_after_logout_url(parent: params[:parent])
     end
     session[ActionInterceptor.config.default_key] = nil
-    session[:registration_return_to] = nil
     session[:client_id] = nil
 
     sign_out!
@@ -87,12 +85,7 @@ class SessionsController < ApplicationController
   # This is an official action instead of just doing `redirect_back` in callback
   # handler so that fine_print can check to see if terms need to be signed.
   def returning_user
-    # Did session originate from an iframe login?
-    if session[:from_iframe]
-      redirect_to iframe_after_login_path
-    else
-      redirect_back
-    end
+    redirect_back
   end
 
   # Omniauth failure endpoint

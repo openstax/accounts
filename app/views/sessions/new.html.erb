@@ -3,20 +3,20 @@
 </style>
 
 <%= page_heading (t :".page_heading") %>
+<div class="new-login">
 
-<%= render 'sessions/login', hide_signup: (session[:from_cnx] && !session[:from_iframe]) %>
+  <%= render 'sessions/login' %>
 
+  <div id="login-explanation">
+    <p><%= t :".sign_in_using_social_media" %></p>
+    <% if session[:from_cnx] %>
+      <p><%= t :".have_legacy_connexions_account" %></p>
+    <% else %>
+      <p><%= t :".prefer_username_and_password" %></p>
+    <% end %>
 
-<div id="login-explanation">
-  <p><%= t :".sign_in_using_social_media" %></p>
-  <% if session[:from_cnx] %>
-    <p><%= t :".have_legacy_connexions_account" %></p>
-  <% else %>
-    <p><%= t :".prefer_username_and_password" %></p>
-  <% end %>
-
-  <div id="logout-reminder">
-    <p><%= t :".logout_reminder" %></p>
+    <div id="logout-reminder">
+      <p><%= t :".logout_reminder" %></p>
+    </div>
   </div>
 </div>
-

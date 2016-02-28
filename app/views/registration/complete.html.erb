@@ -2,7 +2,7 @@
 
 <p><%= t :".required_field" %></p>
 
-<%= lev_form_for :register, url: register_path, method: :put, html: {id: 'profile-form'} do |f| %>
+<%= lev_form_for :register, url: registration_complete_path, method: :put, html: {id: 'profile-form'} do |f| %>
 
   <%= standard_field form: f, name: :username, type: :text_field, label: (t :".username"),
                      options: {value: current_user.username} %>

@@ -27,9 +27,9 @@ class IdentitiesForgotPassword
       fatal_error(code: (I18n.t :"handlers.identities_forgot_password.unable_to_reset_password"),
                   offending_inputs: [:identity])
     end
-    email_addresses = user.contact_infos.email_addresses.verified
+    email_addresses = user.contact_infos.email_addresses
     if email_addresses.empty?
-      fatal_error(code: (I18n.t :"handlers.identities_forgot_password.no_verified_emails"),
+      fatal_error(code: (I18n.t :"handlers.identities_forgot_password.no_email_addresses_found"),
                   offending_inputs: [:email_address])
     end
     code = run(GeneratePasswordResetCode, user.identity).outputs[:code]

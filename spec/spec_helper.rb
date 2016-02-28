@@ -68,3 +68,20 @@ class ActiveRecord::Base
 end
 
 ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
+
+# For rspec < 3.0 which doesn't have the output matcher
+# See http://stackoverflow.com/questions/16507067/testing-stdout-output-in-rspec
+
+require 'stringio'
+
+def capture_output(&blk)
+  old_stdout = $stdout
+  old_stderr = $stderr
+  $stdout = fake_stdout = StringIO.new
+  $stderr = fake_stderr = StringIO.new
+  blk.call
+  [fake_stdout.string, fake_stderr.string]
+ensure
+  $stdout = old_stdout
+  $stderr = old_stderr
+end

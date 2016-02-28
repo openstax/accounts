@@ -46,7 +46,7 @@
   <% unless has_password %>
     <div class="password-login">
       <%= form_tag '/auth/identity/callback' do %>
-        <label for='auth_key'><%= t :".username_or_email" %></label><input type='text' id='auth_key' name='auth_key'/>
+        <label for='auth_key'><%= t :".username_or_email" %></label><input type='text' id='auth_key' name='auth_key' autocapitalize="off" autocorrect="off"/>
         <label for='password'><%= t :".password" %></label><input type='password' id='password' name='password'/>
         <div class='password-actions'>
           <button class='standard'><%= t :".sign_in" %></button>
