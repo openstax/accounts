@@ -33,6 +33,11 @@ module I18n
   # would return "noun_a, noun_b or noun_c" in :en locale and
   # "rzeczonik_a, rzeczownik_b lub rzeczonik_c" in :pl locale.
   #
+  # Optionally, one can use expand: option to control whether the items should
+  # be expanded or not. Thus, with expand: false, the following becomes correct
+  #
+  #   I18n.enumerate kind, ["not a translation key", ...], expand: false
+  #
   # Since grammatical form of enumeration will often depend on kind of elements
   # enumerated and reason for enumerating them a description of this intent
   # is required to be specified via the kind parameter. Valid values are
@@ -45,6 +50,11 @@ module I18n
     if not [:all, :any, :one].include? kind
       raise ArgumentError.new "kind must be one of: :all, :any or :one"
     end
+
+    if options.fetch :expand, true
+      list.map! {|key| I18n.translate key, options }
+    end
+
     return Enumerators.get(locale).enumerate kind, list, options
   end
 
@@ -59,6 +69,8 @@ module I18n
   #     # optionally additional methods used by enumerate
   #   end
   #
+  # The enumerate method is passed a list of already expanded items; it should
+  # not attempt to expand them.
   def self.define_enumerator language, &block
     enumerator = Module.new
     enumerator.instance_eval &block
