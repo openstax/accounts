@@ -332,3 +332,23 @@ en:
       notice: |
         Note that other OpenStax sites may have terms of their own.
       register: Register
+
+    verification_pending:
+      page_heading: Check your inbox to verify your email address.
+      find_email_sent:
+        one: Find the email we sent to %{addresses}.
+        other: Find one of the emails we sent to %{addresses}.
+      click_link:
+        one: Click the link in that email.
+        other: Click the link in one of those emails.
+      return_and_click: Return here and click the button below.
+      i_clicked_verification_link: I clicked the link in the verification email
+      email_link_single_html: click here to <b>resend</b> the verification email
+      email_link_multiple_html: "%{email}"
+      resend_verification_html:
+        one: |
+          Can't find the email? Try checking your junk or spam folder, or
+          %{link}.
+        other: |
+          Can't find the email? Try checking your junk or spam folder, or click
+          %{links} to resend those verification emails.
