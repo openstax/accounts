@@ -30,7 +30,7 @@ class RegistrationController < ApplicationController
   def i_verified
     if current_user.has_emails_but_none_verified?
       redirect_to registration_verification_pending_path,
-                  alert: "We haven't seen that you clicked the verification link.  Please try again."
+                  alert: (I18n.t :".has_emails_but_none_verified_alert")
     else
       redirect_to registration_complete_path
     end
