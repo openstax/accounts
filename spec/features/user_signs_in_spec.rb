@@ -199,4 +199,40 @@ feature 'User logs in as a local user', js: true do
       expect(page.current_url).to match(app_callback_url)
     end
   end
+
+  scenario 'bad merge' do
+    with_forgery_protection do
+      visit '/login'
+      expect(page).to have_content("Sign in to your one OpenStax account!")
+
+      # Teacher uses Facebook
+      # dup is used so that we can fill in the form in the login page again without reloading it
+      # (back button/multiple tabs)
+      dup.send :click_omniauth_link, 'facebook', nickname: 'mteacher'
+      expect(page).to have_content('Welcome, mteacher')
+
+      # Teacher finishes their account creation
+      teacher = User.find_by_username('mteacher')
+      FinishUserCreation.call(teacher)
+
+      # Student creates an account but does not finish the registration process
+      student = create_user('mstudent', 'password', false)
+      student.update_attribute(:state, 'temp')
+
+      # Teacher clicks "back" and tries to login as a student to help them set up their account
+      fill_in 'Username / Email', with: 'mstudent'
+      fill_in 'Password', with: 'password'
+
+      # Bad merge expected (this would also call TransferAuthentications etc)
+      expect_any_instance_of(SessionsCallback).to(
+        receive(:first_user_lives_second_user_dies) do |living_user, dying_user|
+          expect(living_user).to eq teacher
+          expect(dying_user).to eq student
+        end
+      )
+
+      # Trigger the bad merge
+      click_button 'Sign in'
+    end
+  end
 end

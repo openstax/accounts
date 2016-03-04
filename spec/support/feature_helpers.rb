@@ -44,7 +44,7 @@ def create_nonlocal_user(username, provider='facebook')
 
   result = CreateUserFromOmniauthData.call(data)
   raise "create_nonlocal_user for #{username} failed" if result.errors.any?
-  User.find_by_username(username)
+  result.outputs.user.reload
 end
 
 def login_as username, password='password'
