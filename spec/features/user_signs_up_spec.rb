@@ -136,6 +136,22 @@ feature 'User signs up as a local user', js: true do
     expect(page).not_to have_content('Welcome, testuser')
   end
 
+  scenario 'with an invalid email address' do
+    visit '/'
+    expect(page).to have_content('Sign in to your one OpenStax account!')
+    click_link 'Sign up'
+    expect(page).to have_content('Sign up')
+    expect(page).to have_content('register using your Facebook, Twitter, or Google account.')
+
+    fill_in 'Email Address', with: 'testuser@ex ample.org'
+    fill_in 'Username', with: 'testuser'
+    fill_in 'Password', with: 'password'
+    fill_in 'Password Again', with: 'password'
+    click_button 'Continue'
+    expect(page).to have_content('Value "testuser@ex ample.org" is not a valid email address')
+    expect(page).not_to have_content('Welcome, testuser')
+  end
+
   scenario 'without any email addresses' do
     # this is a test for twitter users who have no email addresses
     create_application

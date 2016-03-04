@@ -33,7 +33,7 @@ feature 'User manages emails' do
     scenario 'with invalid value', js: true do
       fill_in 'Add an email address', with: 'user'
       click_button 'Add'
-      expect(page).to have_content('Value is invalid')
+      expect(page).to have_content('Value "user" is not a valid email address')
     end
   end
 
