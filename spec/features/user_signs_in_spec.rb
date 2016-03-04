@@ -129,9 +129,6 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit '/'
-      expect(page).not_to have_content('Sign in to your one OpenStax account')
-
-      visit '/login'
       expect(page).to have_content('Sign in to your one OpenStax account')
 
       fill_in 'Username', with: 'imported_user'
@@ -154,7 +151,7 @@ feature 'User logs in as a local user', js: true do
       find(:css, '#agreement_i_agree').set(true)
       click_button 'Agree'
 
-      expect(current_path).to eq root_path
+      expect(current_path).to eq profile_path
     end
   end
 
