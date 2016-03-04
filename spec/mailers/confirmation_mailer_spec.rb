@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe ConfirmationMailer do
-  let(:user) { FactoryGirl.create :user }
+  let(:user) { FactoryGirl.create :user, full_name: 'John Doe, Jr.' }
   let(:email) { FactoryGirl.create :email_address, value: 'to@example.org',
                                    user_id: user.id, confirmation_code: '1234' }
 
@@ -10,7 +10,7 @@ describe ConfirmationMailer do
 
     it "renders the headers" do
       expect(mail.subject).to eq("[OpenStax] Reminder: please verify this email address")
-      expect(mail.to).to eq(["to@example.org"])
+      expect(mail.header['to'].to_s).to eq('"John Doe, Jr." <to@example.org>')
       expect(mail.from).to eq(["noreply@openstax.org"])
     end
 
@@ -25,7 +25,7 @@ describe ConfirmationMailer do
 
     it "renders the headers" do
       expect(mail.subject).to eq("[OpenStax] Please verify this email address")
-      expect(mail.to).to eq(["to@example.org"])
+      expect(mail.header['to'].to_s).to eq('"John Doe, Jr." <to@example.org>')
       expect(mail.from).to eq(["noreply@openstax.org"])
     end
 
