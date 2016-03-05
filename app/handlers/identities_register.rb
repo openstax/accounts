@@ -24,8 +24,8 @@ class IdentitiesRegister
 
   protected
 
-  def authorized?;
-    caller.is_anonymous? || caller.authentications.none?{|auth| auth.provider == 'identity'}
+  def authorized?
+    true
   end
 
   def handle
