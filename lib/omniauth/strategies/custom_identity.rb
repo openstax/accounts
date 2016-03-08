@@ -58,9 +58,12 @@ module OmniAuth
         @handler_result = IdentitiesRegister.handle(params: request,
                                                     caller: current_user)
 
-        if @handler_result.errors.empty?
+        error_codes = @handler_result.errors.map(&:code)
+
+        if error_codes.empty? || error_codes == [:already_has_identity]
           @identity = @handler_result.outputs[:identity]
           env['PATH_INFO'] = callback_path
+          env['errors'] = @handler_result.errors
           callback_phase
         else
           env['errors'] = @handler_result.errors

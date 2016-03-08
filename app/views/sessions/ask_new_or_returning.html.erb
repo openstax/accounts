@@ -1,5 +1,12 @@
 <% authentications = current_user.authentications %>
 
+<% if request.env['errors'].any?{|error| error.code == :already_has_identity} %>
+  <% flash[:alert] = "It looks like you submitted the form on the last page twice.  We are " \
+                     "still using the values from your first submission.  If you want to " \
+                     "change your email address or password, you can do so on the account " \
+                     "profile page after registration is complete."  %>
+<% end %>
+
 <%= page_heading 'Merge Logins'  %>
 
 <% if false %>
