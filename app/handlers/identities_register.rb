@@ -32,7 +32,7 @@ class IdentitiesRegister
     user = caller
 
     if user.identity
-      outputs[:identity] = user.identity
+      outputs[:identity] = user.identity # let the sign up flow continue
       fatal_error(code: :already_has_identity)
     end
 
