@@ -24,12 +24,17 @@ class IdentitiesRegister
 
   protected
 
-  def authorized?;
-    caller.is_anonymous? || caller.authentications.none?{|auth| auth.provider == 'identity'}
+  def authorized?
+    true
   end
 
   def handle
     user = caller
+
+    if user.identity
+      outputs[:identity] = user.identity # let the sign up flow continue
+      fatal_error(code: :already_has_identity)
+    end
 
     if user.is_anonymous?
       run(CreateUser,
