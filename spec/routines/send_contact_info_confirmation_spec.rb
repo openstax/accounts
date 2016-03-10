@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe SendContactInfoConfirmation do
   let(:email) { FactoryGirl.create(:email_address) }

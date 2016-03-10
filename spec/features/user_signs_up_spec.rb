@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 feature 'User signs up as a local user', js: true do
   scenario 'success' do

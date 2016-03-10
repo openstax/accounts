@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'rake'
 
 describe 'accounts:oauth_apps rake tasks' do

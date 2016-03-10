@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe IdentitiesResetPassword do
   let!(:identity) {
@@ -14,7 +14,7 @@ describe IdentitiesResetPassword do
 
   context 'all request' do
     before :each do
-      IdentitiesResetPassword.any_instance.stub_chain(:request, :post?) { @is_post }
+      allow_any_instance_of(IdentitiesResetPassword).to receive_message_chain(:request, :post?) { @is_post }
     end
 
     it 'returns error if no reset code is given' do
@@ -50,7 +50,7 @@ describe IdentitiesResetPassword do
 
   context 'POST request' do
     before :each do
-      IdentitiesResetPassword.any_instance.stub_chain(:request, :post?).and_return(true)
+      allow_any_instance_of(IdentitiesResetPassword).to receive_message_chain(:request, :post?).and_return(true)
     end
 
     it 'returns error if no password is given' do

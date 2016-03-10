@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-require 'spec_helper'
+require 'rails_helper'
 require 'json_and_string_parameter_filter'
 
 RSpec.describe JsonAndStringParameterFilter do

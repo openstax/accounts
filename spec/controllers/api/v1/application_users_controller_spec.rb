@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'rails_helper'
 
 describe Api::V1::ApplicationUsersController, type: :controller, api: true, version: :v1 do
 

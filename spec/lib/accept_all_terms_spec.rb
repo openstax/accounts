@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'accept_all_terms'
 
 describe AcceptAllTerms do

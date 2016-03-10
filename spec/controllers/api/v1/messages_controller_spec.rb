@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'rails_helper'
 
 describe Api::V1::MessagesController, type: :controller, api: true, version: :v1 do
 

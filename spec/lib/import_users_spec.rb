@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'csv'
 
-require 'spec_helper'
+require 'rails_helper'
 require 'import_users'
 
 describe ImportUsers do

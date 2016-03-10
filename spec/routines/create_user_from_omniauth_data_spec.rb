@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe CreateUserFromOmniauthData do
   let(:nickname) { 'first name+_middle_.last~name_' + 'a' * 100 }

@@ -67,7 +67,7 @@ end
 group :development, :test do
   gem 'byebug'
   gem 'thin'
-  gem 'rspec-rails', '~> 2.99.0'
+  gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails'
   gem 'capybara'
   gem 'poltergeist'
