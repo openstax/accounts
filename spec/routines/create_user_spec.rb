@@ -10,7 +10,7 @@ describe CreateUser do
       expect {
         outcome = CreateUser.call(username: "bubba", ensure_no_errors: false)
       }.to change{User.count}.by 0
-      expect(outcome.errors.has_offending_input?(:username)).to be_true
+      expect(outcome.errors.has_offending_input?(:username)).to be_truthy
     end
 
   end

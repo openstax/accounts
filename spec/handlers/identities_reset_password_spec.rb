@@ -9,7 +9,7 @@ describe IdentitiesResetPassword do
   }
 
   before :each do
-    IdentitiesResetPassword.any_instance.stub(:params) { @params }
+    allow_any_instance_of(IdentitiesResetPassword).to receive(:params) { @params }
   end
 
   context 'all request' do
@@ -58,7 +58,7 @@ describe IdentitiesResetPassword do
       result = IdentitiesResetPassword.handle
       expect(result.errors).to be_present
       identity.reload
-      expect(identity.authenticate('password')).to be_true
+      expect(identity.authenticate('password')).to be_truthy
       expect(identity.password_reset_code.expired?).to eq false
     end
 
@@ -70,8 +70,8 @@ describe IdentitiesResetPassword do
       result = IdentitiesResetPassword.handle
       expect(result.errors).to be_present
       identity.reload
-      expect(identity.authenticate('password')).to be_true
-      expect(identity.authenticate('pass')).to be_false
+      expect(identity.authenticate('password')).to be_truthy
+      expect(identity.authenticate('pass')).to be_falsey
       expect(identity.password_reset_code.expired?).to eq false
     end
 
@@ -83,7 +83,7 @@ describe IdentitiesResetPassword do
       result = IdentitiesResetPassword.handle
       expect(result.errors).to be_present
       identity.reload
-      expect(identity.authenticate('password')).to be_true
+      expect(identity.authenticate('password')).to be_truthy
       expect(identity.password_reset_code.expired?).to eq false
     end
 
@@ -96,8 +96,8 @@ describe IdentitiesResetPassword do
       result = IdentitiesResetPassword.handle
       expect(result.errors).not_to be_present
       identity.reload
-      expect(identity.authenticate('password')).to be_false
-      expect(identity.authenticate('asdfghjk')).to be_true
+      expect(identity.authenticate('password')).to be_falsey
+      expect(identity.authenticate('asdfghjk')).to be_truthy
       expect(identity.password_reset_code.expired?).to eq true
     end
 

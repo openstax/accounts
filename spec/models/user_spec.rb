@@ -119,30 +119,30 @@ describe User do
   context "state" do
     it "defaults to temp" do
       expect(User.new.state ).to eq("temp")
-      expect(User.new.is_temp? ).to be_true
+      expect(User.new.is_temp? ).to be_truthy
     end
 
     it "can be set to active" do
       user = FactoryGirl.create(:user)
       user.state = 'activated'
-      expect(user.save).to be_true
-      expect(user.reload.is_temp?).to be_false
+      expect(user.save).to be_truthy
+      expect(user.reload.is_temp?).to be_falsey
     end
 
     it "relays it's value to helper methods" do
       user = FactoryGirl.create(:user)
       user.state = 'temp'
-      expect(user.is_temp?).to    be_true
-      expect(user.is_activated?).to be_false
+      expect(user.is_temp?).to    be_truthy
+      expect(user.is_activated?).to be_falsey
       user.state = 'activated'
-      expect(user.is_activated?).to be_true
-      expect(user.is_temp?).to    be_false
+      expect(user.is_activated?).to be_truthy
+      expect(user.is_temp?).to    be_falsey
     end
 
     it "disallows invalid values" do
       user = FactoryGirl.create(:user)
       user.state = 'a-crazy-invalid-value'
-      expect(user.save).to be_false
+      expect(user.save).to be_falsey
       expect(user.errors[:state]).not_to be_empty
     end
   end

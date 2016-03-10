@@ -13,7 +13,7 @@ describe CreateUserFromOmniauthData do
       }
       data = OmniauthData.new(auth)
 
-      expect_any_instance_of(CreateUserFromOmniauthData).to receive(:run) do |create_user, args|
+      expect_any_instance_of(CreateUserFromOmniauthData).to receive(:run) do |instance, create_user, args|
         @username = args[:username]
         expect(create_user).to eq(CreateUser)
         expect(args).to include({ ensure_no_errors: true })
@@ -34,7 +34,7 @@ describe CreateUserFromOmniauthData do
       }
       data = OmniauthData.new(auth)
 
-      expect_any_instance_of(CreateUserFromOmniauthData).to receive(:run) do |create_user, args|
+      expect_any_instance_of(CreateUserFromOmniauthData).to receive(:run) do |instance, create_user, args|
         @username = args[:username]
         expect(create_user).to eq(CreateUser)
         expect(args).to include({ ensure_no_errors: true })
@@ -56,7 +56,7 @@ describe CreateUserFromOmniauthData do
       }
       data = OmniauthData.new(auth)
 
-      expect_any_instance_of(CreateUserFromOmniauthData).to receive(:run) do |create_user, args|
+      expect_any_instance_of(CreateUserFromOmniauthData).to receive(:run) do |instance, create_user, args|
         @username = args[:username]
         expect(create_user).to eq(CreateUser)
         expect(args).to include({ full_name: "Billy O\'Connor",

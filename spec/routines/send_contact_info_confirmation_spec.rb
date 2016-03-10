@@ -20,7 +20,7 @@ describe SendContactInfoConfirmation do
     it 'sends a confirmation email' do
       expect_any_instance_of(ConfirmationMailer).to receive(:instructions)
       now = Time.parse('2014-02-24 10:00')
-      Time.stub(:now).and_return(now)
+      allow(Time).to receive(:now).and_return(now)
 
       result = SendContactInfoConfirmation.call(email)
       expect(result.errors).not_to be_present

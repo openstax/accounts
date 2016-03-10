@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ContactInfosController do
+describe ContactInfosController, type: :controller do
 
   let!(:user)         { FactoryGirl.create :user, :terms_agreed }
   let!(:contact_info) { FactoryGirl.build :email_address, user: user }
@@ -52,7 +52,7 @@ describe ContactInfosController do
       get 'confirm'
       expect(response.code).to eq('400')
       expect(response.body).to include("Sorry, we couldn't verify an email using the verification code you provided.")
-      expect(EmailAddress.find_by_value(@email.value).verified).to be_false
+      expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
     end
 
     it "returns error if code doesn't match" do
@@ -60,7 +60,7 @@ describe ContactInfosController do
       expect(response.code).to eq('400')
       expect(response.body).to include("Unable to verify email address") # header
       expect(response.body).to include("Sorry, we couldn't verify an email using the verification code you provided.") # body
-      expect(EmailAddress.find_by_value(@email.value).verified).to be_false
+      expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
     end
 
     it "returns success if code matches" do
@@ -68,7 +68,7 @@ describe ContactInfosController do
       expect(response).to be_success
       expect(response.body).to include("Thank you for verifying your email address.") # header
       expect(response.body).to include('Success! Thanks for adding your email address.') # body
-      expect(EmailAddress.find_by_value(@email.value).verified).to be_true
+      expect(EmailAddress.find_by_value(@email.value).verified).to be_truthy
     end
   end
 
@@ -91,7 +91,7 @@ describe ContactInfosController do
       get 'confirm_unclaimed', :code => email.confirmation_code
       expect(response).to be_success
       expect(response.body).to include('Thanks for validating your OpenStax invitation')
-      expect(EmailAddress.find_by_value(email.value).verified).to be_true
+      expect(EmailAddress.find_by_value(email.value).verified).to be_truthy
     end
 
   end

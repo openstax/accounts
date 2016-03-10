@@ -43,10 +43,10 @@ describe PasswordResetCode do
     expect(password_reset_code.expired?).to eq false
 
     one_year_ago = 1.year.ago
-    DateTime.stub(:now).and_return(one_year_ago)
+    allow(DateTime).to receive(:now).and_return(one_year_ago)
     password_reset_code.generate
     password_reset_code.save!
-    DateTime.unstub(:now)
+    allow(DateTime).to receive(:now).and_call_original
 
     expect(password_reset_code.code).not_to be_nil
     expect(password_reset_code.expired?).to eq true

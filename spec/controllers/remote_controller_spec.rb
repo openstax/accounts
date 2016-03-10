@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RemoteController do
+describe RemoteController, type: :controller do
 
   let(:user)         { FactoryGirl.create :user, :terms_agreed }
 

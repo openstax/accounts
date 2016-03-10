@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Api::V1::GroupMembersController, :type => :api, :version => :v1 do
+describe Api::V1::GroupMembersController, type: :controller, api: true, version: :v1 do
 
   let!(:group_1) { FactoryGirl.create :group, name: 'Group 1',
                                       members_count: 0, owners_count: 0 }

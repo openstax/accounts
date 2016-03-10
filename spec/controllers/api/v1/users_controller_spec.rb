@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Api::V1::UsersController, :type => :api, :version => :v1 do
+describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
   let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
   let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }

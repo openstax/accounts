@@ -41,7 +41,7 @@ describe TransferOmniauthData do
       expect(user.contact_infos.length).to eq(1)
       expect(user.contact_infos[0].type).to eq('EmailAddress')
       expect(user.contact_infos[0].value).to eq('user@example.com')
-      expect(user.contact_infos[0].verified).to be_true
+      expect(user.contact_infos[0].verified).to be_truthy
     end
   end
 
@@ -122,7 +122,7 @@ describe TransferOmniauthData do
       expect(user.contact_infos.length).to eq(1)
       expect(user.contact_infos[0].type).to eq('EmailAddress')
       expect(user.contact_infos[0].value).to eq('user@example.com')
-      expect(user.contact_infos[0].verified).to be_true
+      expect(user.contact_infos[0].verified).to be_truthy
     end
   end
 

@@ -26,7 +26,7 @@ describe SessionsCallback do
 
           expect(user_state.current_user).not_to be_nil
           expect(user_state.current_user.person).to be_nil
-          expect(user_state.current_user.is_temp?).to be_true
+          expect(user_state.current_user.is_temp?).to be_truthy
           
           linked_authentications = user_state.current_user.authentications
           expect(linked_authentications.size).to eq 1
@@ -175,7 +175,7 @@ describe SessionsCallback do
               expect(user_state.current_user).to eq signed_in_user
               expect(authentication.reload.user).to eq signed_in_user
               expect(other_authentication.reload.user).to eq signed_in_user
-              expect(User.exists?(other_temp_user.id)).to be_false
+              expect(User.exists?(other_temp_user.id)).to be_falsey
             end
           end
 
@@ -204,7 +204,7 @@ describe SessionsCallback do
               expect(user_state.current_user).to eq other_user
               expect(authentication.reload.user).to eq other_user
               expect(other_authentication.reload.user).to eq other_user
-              expect(User.exists?(signed_in_user.id)).to be_false
+              expect(User.exists?(signed_in_user.id)).to be_falsey
             end
           end
         end
@@ -287,7 +287,7 @@ describe SessionsCallback do
               )        
               expect(authentication.reload.user).to eq signed_in_user
               expect(result.outputs[:status]).to eq :returning_user
-              expect(User.exists?(other_temp_user.id)).to be_false
+              expect(User.exists?(other_temp_user.id)).to be_falsey
             end
           end
 

@@ -12,7 +12,7 @@ describe AddEmailToUser do
       email = EmailAddress.find_by_value('user@example.com')
       expect(email).not_to be_nil
       expect(email.user).to eq(user)
-      expect(email.verified).to be_true
+      expect(email.verified).to be_truthy
       expect(email.confirmation_code).to be_nil
 
       expect(EmailAddress.find_by_value('user2@example.com')).to be_nil
@@ -22,21 +22,21 @@ describe AddEmailToUser do
       email = EmailAddress.find_by_value('user2@example.com')
       expect(email).not_to be_nil
       expect(email.user).to eq(user)
-      expect(email.verified).to be_false
+      expect(email.verified).to be_falsey
       expect(email.confirmation_code).not_to be_nil
     end
 
     it 'can verify an existing unverified email' do
       AddEmailToUser.call('user@example.com', user, already_verified: false)
-      expect(user.email_addresses.first.verified).to be_false
+      expect(user.email_addresses.first.verified).to be_falsey
       AddEmailToUser.call('user@example.com', user, already_verified: true)
-      expect(user.email_addresses.first.verified).to be_true
+      expect(user.email_addresses.first.verified).to be_truthy
     end
 
     it 'does not die when email already exists' do
       AddEmailToUser.call('user@example.com', user, already_verified: true)
       result = AddEmailToUser.call('user@example.com', user, already_verified: true)
-      expect(result.errors.none?).to be_true
+      expect(result.errors.none?).to be_truthy
     end
   end
 

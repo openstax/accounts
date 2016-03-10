@@ -91,7 +91,7 @@ describe FindOrCreateUnclaimedUser do
             password:'password123', password_confirmation: 'password123', username: "bobsmith",
             email:"anunusedemail@example.com"
           ).outputs.user
-          expect(new_user.reload.identity.authenticate('password123')).to be_true
+          expect(new_user.reload.identity.authenticate('password123')).to be_truthy
         end
 
       end
