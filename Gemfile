@@ -52,9 +52,6 @@ gem 'pg'
 # Add P3P headers for IE
 gem 'p3p'
 
-# Limit until rspec updated (otherwise get `last_comment` errors)
-gem 'rake', '~> 10.4'
-
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.1'
