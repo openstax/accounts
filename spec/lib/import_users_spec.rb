@@ -10,7 +10,8 @@ describe ImportUsers do
     @file.close
 
     @timestamp = '2015-03-20T14:58:17Z'
-    Time.stub(:now).and_return(Time.parse(@timestamp))
+    timestamp_time = Time.parse(@timestamp)
+    Time.stub(:now).and_return(timestamp_time)
   end
 
   after :each do
