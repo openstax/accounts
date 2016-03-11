@@ -63,6 +63,6 @@ Rails.application.config.to_prepare do
   # and remove it from ApplicationController
   [Doorkeeper::ApplicationController,
    FinePrint::ApplicationController].each do |klass|
-    klass.layout 'application_body_only'
+    klass.layout 'application'
   end
 end

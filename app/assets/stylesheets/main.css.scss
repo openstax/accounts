@@ -1,64 +1,54 @@
-// Copyright 2011-2013 Rice University. Licensed under the Affero General Public
-// License version 3 or later.  See the COPYRIGHT file for details.
+// // Copyright 2011-2013 Rice University. Licensed under the Affero General Public
+// // License version 3 or later.  See the COPYRIGHT file for details.
 
-@import "common";
+// @import "common";
 
-table.std-list-1 {
-  @include std-table-list-1;
-}
+// table.std-list-1 {
+//   @include std-table-list-1;
+// }
 
-#upper-corner-console {
-  position: absolute;
-  top: 0;
-  left: 0;
+// .form-field {
+//   padding-top: 5px;
+//   padding-bottom: 10px;
+// }
 
-  #clock.highlight {
-    color: #ff00ff;
-  }
-}
+// .ui-state-error, .ui-state-highlight {
+//   p {
+//     margin: 13px 0px;
+//   }
+// }
 
-.form-field {
-  padding-top: 5px;
-  padding-bottom: 10px;
-}
+// #profile-form {
+//   input[type='text'], input[type='password'] {
+//     width: 300px;
+//   }
+// }
 
-.ui-state-error, .ui-state-highlight {
-  p {
-    margin: 13px 0px;
-  }
-}
+// #search-results-list {
+//   @include std-table-list-1;
+//   margin-top: 17px;
 
-#profile-form {
-  input[type='text'], input[type='password'] {
-    width: 300px;
-  }
-}
+//   #search-results-pagination {
+//     float: right;
+//   }
+// }
 
-#search-results-list {
-  @include std-table-list-1;
-  margin-top: 17px;
+// // adds top margin to the submit so that
+// .horizontal-submit input { margin-top: 25px; }
+// form .nowrap label { white-space: nowrap; }
 
-  #search-results-pagination {
-    float: right;
-  }
-}
+// input.finish-sign-up {
+//   float: right;
+//   clear: both;
+//   margin-top: 6px;
+// }
 
-// adds top margin to the submit so that
-.horizontal-submit input { margin-top: 25px; }
-form .nowrap label { white-space: nowrap; }
+// .your-account {
+//   tr.contact-info:first-child td {
+//     border-top: none;
+//   }
 
-input.finish-sign-up {
-  float: right;
-  clear: both;
-  margin-top: 6px;
-}
-
-.your-account {
-  tr.contact-info:first-child td {
-    border-top: none;
-  }
-
-  .add-email-address {
-    margin-top: 30px;
-  }
-}
+//   .add-email-address {
+//     margin-top: 30px;
+//   }
+// }

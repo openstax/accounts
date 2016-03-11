@@ -109,6 +109,8 @@ GEM
       rails (>= 3.1)
       responders
       squeel
+    font-awesome-rails (4.5.0.1)
+      railties (>= 3.2, < 5.1)
     fssm (0.2.10)
     hashie (3.4.3)
     hike (1.2.3)
@@ -117,12 +119,9 @@ GEM
       activesupport (>= 3.0.0)
       multi_json (>= 1.2.0)
     journey (1.0.4)
-    jquery-rails (3.0.4)
+    jquery-rails (3.1.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
-    jquery-ui-rails (4.0.4)
-      jquery-rails
-      railties (>= 3.1.0)
     json (1.8.3)
     jwt (1.2.0)
     keyword_search (1.5.0)
@@ -355,9 +354,9 @@ DEPENDENCIES
   doorkeeper (~> 1.4.2)
   factory_girl_rails
   fine_print (~> 3.1.0)
+  font-awesome-rails
   jbuilder
   jquery-rails
-  jquery-ui-rails
   keyword_search (~> 1.5.0)
   lev (~> 2.0.6)
   lograge

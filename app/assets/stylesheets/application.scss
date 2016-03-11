@@ -1,0 +1,20 @@
+/*
+ * Copyright 2011-2013 Rice University. Licensed under the Affero General Public
+ * License version 3 or later.  See the COPYRIGHT file for details.
+ */
+
+@import "common";
+@import "bootstrap";
+@import "application_layout";
+@import "font-awesome";
+@import "bootstrap-social";
+@import "login";
+
+/* Set a max-width, maintaining responsiveness */
+
+.container,
+.navbar-static-top .container,
+.navbar-fixed-top .container,
+.navbar-fixed-bottom .container {
+    max-width: $application_master_width;
+}

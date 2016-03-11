@@ -12,20 +12,13 @@ body {
 body, p, ol, ul, td, a {
   font-family: verdana, arial, helvetica, sans-serif;
   font-size:   13px;
-}
-
-#application-container {
-  width: $application_master_width;
-
-  margin: 0px auto;
-
   font-weight: normal;
   font-color:  black;
 }
 
 #page-heading {
-  padding: 10px 0 12px;
-  font-size:  22px;
+  padding: 10px 0 18px;
+  font-size:  20px;
   font-weight:  700;
   font-style: normal;
   color: $os_gray;
@@ -36,4 +29,90 @@ body, p, ol, ul, td, a {
   font-size: 14px;
   margin-top:3px;
   font-style: italic;
+}
+
+.container .row {
+  padding-left: $application_edge_distance;
+  padding-right: $application_edge_distance;
+}
+
+#application-header {
+  border-bottom: 1px solid $os_gray;
+
+  #top-nav-frame {
+    height: $application_top_nav_height;
+    background-color: $application_background_color;
+  }
+
+  #top-nav-logo  {
+    background: image-url("accounts_horiz_v2.png") no-repeat transparent;
+    $image_height:  37px;
+    $image_width:  161px;
+
+    float:      left;
+    height:     $image_height;
+    width:      $image_width;
+    margin-top: ($application_top_nav_height - $image_height)/2;
+    margin-bottom: 10px;
+  }
+
+  #sign-in-options {
+    $line_height: 18px;
+    line-height: $line_height;
+    margin-top: ($application_top_nav_height - $line_height)/2;
+
+    span {
+      float: right;
+    }
+  }
+}
+
+#application-body {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+#application-footer {
+  clear: both;
+
+  height: $application_footer_height;
+  background-color: #ffffff;
+  border-top: 1px solid $os_gray;
+
+  color:            $os_gray;
+  font-size:        10px;
+  font-family:      verdana, arial, helvetica, sans-serif;
+  line-height:      14px;
+
+  a {
+    font-size:        10px;
+    text-decoration:  none;
+    color:            $os_gray;
+
+    &:hover {
+      color: $ost_hot_blue;
+    }
+  }
+
+  #footer-copyright {
+    padding-top: 31px;
+  }
+
+  #footer-rice-logo-image {
+    padding-top:  21px;
+    float:        right;
+    @media(max-width: 767px) {
+      float: left;
+    }
+  }
+}
+
+#upper-corner-console {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  #clock.highlight {
+    color: #ff00ff;
+  }
 }

@@ -11,25 +11,25 @@
     <%= javascript_include_tag  "application" %>
     <%= csrf_meta_tags %>
 
-    <title><%= @page_title + ' - ' if !@page_title.nil? %><%= SITE_NAME %></title>
+    <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
 
   </head>
 
   <body>
 
-    <%= render :partial => "layouts/application_js_hooks" %>
+    <%= render partial: "layouts/application_js_hooks" %>
 
     <%= render "shared/upper_corner_console" %>
 
-    <div id="application-container">
+    <div id="application-container" class="container">
 
-      <%= render :partial => "layouts/application_header" %>
+      <%= render partial: "layouts/application_header" %>
 
-      <%= render 'shared/attention' %>
+      <%= render partial: "layouts/attention" %>
 
-      <%= render :partial => "layouts/application_body" %>
+      <%= render partial: "layouts/application_body" %>
 
-      <%= render :partial => "layouts/application_footer" %>
+      <%= render partial: "layouts/application_footer" %>
 
     </div>
 
