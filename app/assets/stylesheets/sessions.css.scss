@@ -1,196 +1,196 @@
-@import "common";
+// @import "common";
 
-#login-explanation {
-  padding-top: 20px;
-  width: 400px;
+// #login-explanation {
+//   padding-top: 20px;
+//   width: 400px;
 
-  #logout-reminder {
-    margin-top: 90px;
-    border: 1px solid #cccccc;
-    background-color: #eeeeee;
+//   #logout-reminder {
+//     margin-top: 90px;
+//     border: 1px solid #cccccc;
+//     background-color: #eeeeee;
 
-    p {
-      font-style: italic;
-      padding: 15px;
-      margin: 0;
-      text-align: center;
-    }
-  }
-}
+//     p {
+//       font-style: italic;
+//       padding: 15px;
+//       margin: 0;
+//       text-align: center;
+//     }
+//   }
+// }
 
-$login-options-width: 300px;
+// $login-options-width: 300px;
 
-.login-options {
-  padding:20px 0 30px 0;
-  width: $login-options-width;
-  float: right;
-  text-align: center;
+// .login-options {
+//   padding:20px 0 30px 0;
+//   width: $login-options-width;
+//   float: right;
+//   text-align: center;
 
-  .no-more-login-options {
-    font-style: italic;
-  }
+//   .no-more-login-options {
+//     font-style: italic;
+//   }
 
-  .login-button {
-    padding: 10px;
-  }
+//   .login-button {
+//     padding: 10px;
+//   }
 
-  .or-bar {
-    margin-top: 35px;
-    position: relative;
-    width: $login-options-width;
-    border-bottom: 1px solid #dddddd;
+//   .or-bar {
+//     margin-top: 35px;
+//     position: relative;
+//     width: $login-options-width;
+//     border-bottom: 1px solid #dddddd;
 
-    .or-text {
-        position: absolute;
-        top:-10px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        margin-left: 126px;
-        padding: 0 14px;
-        background: white;
-        font-weight: bold;
-      }
-  }
+//     .or-text {
+//         position: absolute;
+//         top:-10px;
+//         margin-top: 0px;
+//         margin-bottom: 0px;
+//         margin-left: 126px;
+//         padding: 0 14px;
+//         background: white;
+//         font-weight: bold;
+//       }
+//   }
 
-  .password-login {
-    margin-left: 30px;
-    margin-top: 25px;
-    text-align: left;
-    input[type='text'], input[type='password'] {
-      width: 236px;
-      margin-bottom: 7px;
-    }
-    input[type='submit'] {
-      float: right;
-    }
-    .password-actions {
-      margin-top: 17px;
-      .sign-up {
-        float:right;
-        margin-right: 35px;
-        margin-top: 7px;
-      }
-    }
+//   // .password-login {
+//   //   margin-left: 30px;
+//   //   margin-top: 25px;
+//   //   text-align: left;
+//   //   input[type='text'], input[type='password'] {
+//   //     width: 236px;
+//   //     margin-bottom: 7px;
+//   //   }
+//   //   input[type='submit'] {
+//   //     float: right;
+//   //   }
+//   //   .password-actions {
+//   //     margin-top: 17px;
+//   //     .sign-up {
+//   //       float:right;
+//   //       margin-right: 35px;
+//   //       margin-top: 7px;
+//   //     }
+//   //   }
 
-  }
-}
+//   // }
+// }
 
-#signup-alternatives {
-  float:right;
-  width: 350px;
-  background-color: #efefef;
-  border: 1px solid black;
-  padding: 10px 20px 20px 20px;
-  margin-top: 50px;
+// #signup-alternatives {
+//   float:right;
+//   width: 350px;
+//   background-color: #efefef;
+//   border: 1px solid black;
+//   padding: 10px 20px 20px 20px;
+//   margin-top: 50px;
 
-  .login-button {
-    padding: 10px;
-  }
-}
+//   .login-button {
+//     padding: 10px;
+//   }
+// }
 
-#identity-register, #ask-for-email {
-  width: 350px;
+// #identity-register, #ask-for-email {
+//   width: 350px;
 
-  input[type='submit'] {
-    margin-top: 10px;
-  }
-}
-
-
-.new-or-returning-buttons {
-
-  width: 270px;
-  float: right;
-  padding-top:10px;
-
-  .or-bar {
-    margin-bottom: 35px;
-    margin-top: 10px;
-    position: relative;
-    width: 270px;
-    border-bottom: 1px solid #dddddd;
-
-    .or-text {
-        position: absolute;
-        top:-10px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        margin-left: 106px;
-        padding: 0 14px;
-        background: white;
-        font-weight: bold;
-      }
-  }
-}
+//   input[type='submit'] {
+//     margin-top: 10px;
+//   }
+// }
 
 
-.new-or-returning {
+// .new-or-returning-buttons {
 
-  .middle-space {
-    margin-left: 82px;
+//   width: 270px;
+//   float: right;
+//   padding-top:10px;
 
-    .or-bar {
-      margin-bottom: 35px;
-      margin-top: 29px;
-      margin-left: 50%;
-      position: relative;
-      height: 470px;
-      border-left: 1px solid #dddddd;
+//   .or-bar {
+//     margin-bottom: 35px;
+//     margin-top: 10px;
+//     position: relative;
+//     width: 270px;
+//     border-bottom: 1px solid #dddddd;
 
-      .or-text {
-        position: absolute;
-        left:-24px;
-        top: 200px;
-        margin-top: 0px;
-        margin-bottom: 0px;
-        margin-left: -50%;
-        padding: 14px 14px;
-        background: white;
-        font-weight: bold;
-      }
-    }
-  }
+//     .or-text {
+//         position: absolute;
+//         top:-10px;
+//         margin-top: 0px;
+//         margin-bottom: 0px;
+//         margin-left: 106px;
+//         padding: 0 14px;
+//         background: white;
+//         font-weight: bold;
+//       }
+//   }
+// }
 
-  .new-or-returning-option {
-    width: 40%;
 
-    .situation {
-      height: auto;
-      color: $os_gray;
-      margin-top: 30px;
-      margin-bottom: 20px;
-    }
+// .new-or-returning {
 
-    &.left {
-      float: left;
-    }
+//   .middle-space {
+//     margin-left: 82px;
 
-    &.right {
-      float: right;
+//     .or-bar {
+//       margin-bottom: 35px;
+//       margin-top: 29px;
+//       margin-left: 50%;
+//       position: relative;
+//       height: 470px;
+//       border-left: 1px solid #dddddd;
 
-      a {
-        margin-top: 165px;
-        width: 240px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-    }
+//       .or-text {
+//         position: absolute;
+//         left:-24px;
+//         top: 200px;
+//         margin-top: 0px;
+//         margin-bottom: 0px;
+//         margin-left: -50%;
+//         padding: 14px 14px;
+//         background: white;
+//         font-weight: bold;
+//       }
+//     }
+//   }
 
-    .well {
-      height: auto;
-      text-align: center;
-    }
+//   .new-or-returning-option {
+//     width: 40%;
 
-    .login-options {
-      .no-more-login-options {
-        margin-top: 150px;
-      }
+//     .situation {
+//       height: auto;
+//       color: $os_gray;
+//       margin-top: 30px;
+//       margin-bottom: 20px;
+//     }
 
-      .or-text {
-        background-color: whitesmoke;
-      }
-    }
-  }
+//     &.left {
+//       float: left;
+//     }
 
-}
+//     &.right {
+//       float: right;
+
+//       a {
+//         margin-top: 165px;
+//         width: 240px;
+//         margin-left: auto;
+//         margin-right: auto;
+//       }
+//     }
+
+//     .well {
+//       height: auto;
+//       text-align: center;
+//     }
+
+//     .login-options {
+//       .no-more-login-options {
+//         margin-top: 150px;
+//       }
+
+//       .or-text {
+//         background-color: whitesmoke;
+//       }
+//     }
+//   }
+
+// }
 
