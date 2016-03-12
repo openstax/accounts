@@ -38,6 +38,12 @@ Accounts::Application.routes.draw do
     put 'i_verified'
   end
 
+  namespace 'signup' do
+    get 'password'
+    get 'social'
+    post 'social'
+  end
+
   resource :identity, only: :update
   scope controller: 'identities' do
     get 'signup', action: :new
