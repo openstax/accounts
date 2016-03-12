@@ -4,6 +4,7 @@ require File.expand_path('../application', __FILE__)
 require 'markdown_wrapper'
 require 'settings'
 require 'sign_in_state'
+require 'contracts_not_required'
 require 'omniauth/strategies/custom_identity'
 
 SITE_NAME = 'OpenStax Accounts'

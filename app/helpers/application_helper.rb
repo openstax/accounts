@@ -32,9 +32,9 @@ module ApplicationHelper
     return if messages.blank? || messages.empty?
     messages = [messages].flatten
 
-    div_class = type == :alert ? "alert-danger" : "alert-info"
+    alert_class = type == :alert ? "alert-danger" : "alert-info"
 
-    content_tag :div, class: div_class, role: "alert" do
+    content_tag :div, class: "alert #{alert_class}", role: "alert" do
       (type == :alert ? content_tag(:strong, "Alert: ") : "") +
       (messages.size == 1 ?
        messages.first :
@@ -69,16 +69,19 @@ module ApplicationHelper
     raise IllegalArgument, "Must specify a :name" if !options[:name]
 
     options[:options] ||= {}
+    hide = options[:options].delete(:hide)
 
-    content_tag :div, class: 'form-field' do
+    options[:options][:class] = "#{options[:options][:class]} form-control".strip
+    options[:options][:style] = [options[:options][:style], (hide ? 'display: none' : '')].compact.join('; ')
+
+    content_tag :div, class: 'form-group' do
       output = []
       if options[:label]
-        output << content_tag(:label, class: 'form-label',
-                              for: "#{options[:form].object_name}_#{options[:name]}") do
-                  options[:label]
-                end
+        output << content_tag(:label, for: "#{options[:form].object_name}_#{options[:name]}", style: "#{hide ? 'display:none' : ''}") do
+                    options[:label]
+                  end
       end
-      output << content_tag(:div, class: 'form-input') do
+      output <<
         case options[:type]
         when :text_field
           options[:form].text_field(options[:name], options[:options])
@@ -91,7 +94,7 @@ module ApplicationHelper
         else
           raise IllegalArgument, "Unknown field type #{options[:type]}"
         end
-      end
+
       output.reduce(:+)
     end
   end

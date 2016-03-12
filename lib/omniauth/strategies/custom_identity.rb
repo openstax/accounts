@@ -10,6 +10,7 @@ module OmniAuth
       #
 
       include SignInState
+      include ContractsNotRequired
 
       def cookies
         @cookies ||= ActionDispatch::Request.new(env).cookie_jar
@@ -50,13 +51,14 @@ module OmniAuth
         end
       end
 
-      def registration_form
-        IdentitiesController.action(:new).call(env)
-      end
-
       def registration_phase
-        @handler_result = IdentitiesRegister.handle(params: request,
-                                                    caller: current_user)
+        @handler_result = UsersRegister.handle(params: request,
+                                               caller: current_user,
+                                               contracts_required: !contracts_not_required(client_id: request['client_id']))
+
+
+        # @handler_result = IdentitiesRegister.handle(params: request,
+        #                                             caller: current_user)
 
         error_codes = @handler_result.errors.map(&:code)
 
@@ -69,6 +71,10 @@ module OmniAuth
           env['errors'] = @handler_result.errors
           registration_form
         end
+      end
+
+      def registration_form
+        IdentitiesController.action(:new).call(env)
       end
 
       uid{ identity.uid }
