@@ -12,23 +12,22 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery.ui.all
+//= require bootstrap
 //= require ./jquery_extensions
 //= require ./ui
 //= require ./remote-access-helpers
-//= require bootstrap
 //= require_self
 
-function refresh_buttons() {
-   $('input:submit').button();
-   $('button').button();
-   $('a.button').button();
-   $(".show_button").button({icons: {primary: "ui-icon-search"}, text: false });
-   $(".edit_button").button({icons: {primary: "ui-icon-pencil"}, text: false });
-   $(".trash_button").button({icons: {primary: "ui-icon-trash"}, text: false });
-   $(".calendar_button").button({icons: {primary: "ui-icon-calendar"}, text: false });
-}
+// function refresh_buttons() {
+//    $('input:submit').button();
+//    $('button').button();
+//    $('a.button').button();
+//    $(".show_button").button({icons: {primary: "ui-icon-search"}, text: false });
+//    $(".edit_button").button({icons: {primary: "ui-icon-pencil"}, text: false });
+//    $(".trash_button").button({icons: {primary: "ui-icon-trash"}, text: false });
+//    $(".calendar_button").button({icons: {primary: "ui-icon-calendar"}, text: false });
+// }
 
-$(document).ready(function() {
-  refresh_buttons();
-});
+// $(document).ready(function() {
+//   refresh_buttons();
+// });

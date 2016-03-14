@@ -1,46 +1,94 @@
+<% @parent_col_id = "profile" %>
+
+<%= content_for :javascript do %>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $(".hoverable").hover(function () {
+        $(this).toggleClass("hover");
+      });
+
+      $(document).ready(function() {
+        $('#enable-other-sign-in').click(function(e) {
+          e.preventDefault();
+          $('.row.other-sign-in').show();
+          $(this).hide();
+        });
+      });
+    });</script>
+<% end %>
+
 <%= page_heading("Your Account") %>
 
-<div class="your-account">
-
-<% default_tab = :name %>
-
-<% if !current_user.is_activated? %>
-  <% content_for :above_page_heading do %>
-    <%= button_to('Finish Sign Up!', registration_complete_path, method: :get, :class => "standard finish-sign-up") %>
-  <% end %>
-  <% default_tab = :email %>
-<% end %>
-
-<% @active_tab ||= params[:active_tab].try(:to_sym) || default_tab %>
-
-<ul class="nav nav-tabs" role="tablist" style="margin-bottom: 30px; clear: both;">
-  <li role="presentation" <% if @active_tab == :name %>class="active"<% end %>><a href="#name" aria-controls="name" role="tab" data-toggle="tab">Profile Settings</a></li>
-
-  <% unless current_user.identity.nil? %>
-  <li role="presentation" <% if @active_tab == :password %>class="active"<% end %>><a href="#password" aria-controls="password" role="tab" data-toggle="tab">Change Your Password</a></li>
-  <% end %>
-
-  <li role="presentation" <% if @active_tab == :email %>class="active"<% end %>><a href="#email" aria-controls="email" role="tab" data-toggle="tab">Manage Email Addresses</a></li>
-</ul>
-
-<!-- Tab panes -->
-<div class="tab-content" style="margin-bottom: 30px; padding: 5px;">
-
-  <div role="tabpanel" class="tab-pane <% if @active_tab == :name %>active<% end %>" id="name">
-    <%= render partial: 'users/form', locals: {user: current_user} %>
+<div class="row name">
+  <div class="col-sm-2 category">
+    Name
   </div>
-
-<% unless current_user.identity.nil? %>
-  <div role="tabpanel" class="tab-pane <% if @active_tab == :password %>active<% end %>" id="password">
-    <%= render partial: 'identities/form',
-               locals: { identity: current_user.identity } %>
-  </div>
-<% end %>
-
-  <div role="tabpanel" class="tab-pane <% if @active_tab == :email %>active<% end %>" id="email">
-    <%= render partial: 'contact_infos/email_addresses', locals: {
-               email_addresses: current_user.email_addresses } %>
+  <div class="col-sm-10 info hoverable">
+    <%= current_user.full_name || current_user.guessed_full_name %>
+    <span class="mod-holder"><span class="glyphicon glyphicon-pencil mod"></span></span>
   </div>
 </div>
 
+<div class="row">
+  <div class="col-sm-2 category">
+    Username
+  </div>
+  <div class="col-sm-10 info hoverable">
+    <%= current_user.username %>
+    <span class="mod-holder"><span class="glyphicon glyphicon-pencil mod"></span></span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-2 category">
+    Emails
+  </div>
+  <div class="col-sm-10 info hoverable">
+    <% current_user.email_addresses.each do |email| %>
+      <div class="email">
+        <%= email.value %>
+        <span class="mod-holder"><span class="glyphicon glyphicon-trash mod"></span></span>
+        <div class="properties">
+          <%# TODO add a property row with 'Verify this address now!' link if unverified %>
+          Searchable <input type="checkbox">
+        </div>
+
+      </div>
+    <% end %>
+    <div><%= link_to "Add an email" %></div>
+  </div>
+</div>
+
+<%
+  all_providers = %w(facebook google twitter identity)
+
+  # The `all providers &` enforces a standard sort order
+  current_providers = all_providers & current_user.authentications.collect(&:provider)
+  other_providers   = all_providers - current_providers
+%>
+
+<div class="row">
+  <div class="col-sm-2 category">
+    How you<br class="wide"/> sign in
+  </div>
+  <div class="col-sm-10 info">
+    <% current_providers.each do |provider| %>
+      <%= way_to_login(provider: provider, has_authentication: true) %>
+    <% end %>
+
+    <% if other_providers.any? %>
+      <div><%= link_to "Enable other sign in options",nil ,id: 'enable-other-sign-in' %></div>
+    <% end %>
+  </div>
+</div>
+
+<div class="row other-sign-in">
+  <div class="col-sm-2 category">
+    Other sign in<br class="wide"/> options
+  </div>
+  <div class="col-sm-10 info">
+    <% other_providers.each do |provider| %>
+      <%= way_to_login(provider: provider, has_authentication: false) %>
+    <% end %>
+  </div>
 </div>

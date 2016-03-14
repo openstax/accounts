@@ -39,6 +39,41 @@ class SessionsCallback
   end
 
   def handle
+
+    authentication_data = { provider: @data.provider,
+                            uid: @data.uid.to_s }
+    authentication = Authentication.where(authentication_data).first
+
+    this_authentication_is_new = authentication.nil?
+    authentication = Authentication.create(authentication_data) if this_authentication_is_new
+
+    authentication_user = authentication.user
+
+    if signed_in?
+      # This is from adding authentications on the profile screen
+      raise NotYetImplemented
+      # TODO This code probably looks like:
+      #   run(TransferAuthentications, authentication, current_user)
+      #   status = :authentication_added
+    else
+      if this_authentication_is_new
+        outcome = run(CreateUserFromOmniauthData, @data)
+        new_user = outcome.outputs[:user]
+        run(TransferAuthentications, authentication, new_user)
+        run(TransferOmniauthData, @data, new_user)
+        sign_in!(new_user)
+        status = :new_social_user
+      else
+        sign_in!(authentication_user)
+        status = :returning_user
+      end
+    end
+
+    outputs[:status] = status
+    return
+
+    ################
+
     # Get an authentication object for the incoming data, tracking if
     # the object didn't yet exist and we had to create it.
 
@@ -95,7 +130,7 @@ class SessionsCallback
         sign_in!(authentication_user)
         status = (authentication_user.is_temp? ? :new_user : :returning_user)
       end
-      
+
     else
 
       if signed_in?
@@ -111,9 +146,6 @@ class SessionsCallback
 
     end
 
-    if this_authentication_is_new
-      run(TransferOmniauthData, @data, current_user)
-    end
 
     outputs[:status] = status
 
@@ -145,7 +177,7 @@ class SessionsCallback
   # it in
   def first_user_lives_second_user_dies(living_user, dying_user)
     if living_user != dying_user
-      run(TransferAuthentications, dying_user.authentications, living_user)  
+      run(TransferAuthentications, dying_user.authentications, living_user)
       run(DestroyUser, dying_user)
     end
     if current_user != living_user

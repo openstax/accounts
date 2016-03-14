@@ -7,7 +7,7 @@ class StaticPagesController < ApplicationController
 
   skip_protect_beta only: [:status]
 
-  layout :resolve_layout
+  layout 'application'
 
   def api
   end
@@ -31,9 +31,4 @@ class StaticPagesController < ApplicationController
     head :ok
   end
 
-protected
-
-  def resolve_layout
-    'home' == action_name ? 'application_home_page' : 'application_body_only'
-  end
 end

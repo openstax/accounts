@@ -5,8 +5,6 @@ class TermsController < ApplicationController
 
   before_filter :get_contract, only: [:show]
 
-  layout "layouts/application_body_only"
-
   def index
     @contracts = [FinePrint.get_contract(:general_terms_of_use),
                   FinePrint.get_contract(:privacy_policy)].compact

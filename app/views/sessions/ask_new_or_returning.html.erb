@@ -1,3 +1,7 @@
+<% if false %>
+
+<%# TODO delete this page %>
+
 <% authentications = current_user.authentications %>
 
 <% if (request.env['errors'] || []).any?{|error| error.code == :already_has_identity} %>
@@ -62,3 +66,5 @@ profile.</p>
 </div>
 
 <center>We have already linked your account to <%= authentications_list(authentications) %>.</center>
+
+<% end %>

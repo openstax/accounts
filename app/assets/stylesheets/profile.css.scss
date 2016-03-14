@@ -1,0 +1,107 @@
+#profile {
+
+  .container, .row, .col-sm-3, .col-sm-6, .col-sm-9 {
+    /*border: 1px solid red;*/
+  }
+
+  > .row {
+    margin-bottom: 40px;
+  }
+
+  .row.name {
+    margin-top: 20px;
+  }
+
+  .category {
+    text-align: right;
+    font-weight: bold;
+    color: lighten($os_gray, 30%);
+
+    @media(max-width: 767px) {
+      text-align: left;
+      margin-bottom: 15px;
+      color: $os_gray;
+
+      br.wide {
+        display: none;
+      }
+    }
+  }
+
+  .info {
+    @media(max-width: 767px) {
+      margin-left: 15px;
+    }
+  }
+
+  .info .mod-holder {
+    width: 20px;
+    display: inline-block;
+    margin-left:15px;
+  }
+
+  .info .mod {
+    color: #aaa;
+    display: inline;
+    padding-right: 5px;
+  }
+
+  .hoverable.hover .mod {
+    color: gray;
+  }
+
+  $facebook_color: #3b5998;
+  $twitter_color: #55acee;
+  $google_color: #dd4b39;
+
+  .facebook-bkg {
+    color: $facebook_color;
+    &.dim { color: lighten($facebook_color, 30%) }
+  }
+
+  .google-bkg {
+    color: $google_color;
+    &.dim { color: lighten($google_color, 30%) }
+  }
+
+  .twitter-bkg {
+    color: $twitter_color;
+    &.dim { color: lighten($twitter_color, 20%) }
+  }
+
+  .identity-bkg {
+    color: black;
+    &.dim { color: lighten(black, 60%) }
+  }
+
+  .dim {
+    color: lighten(black, 60%);
+  }
+
+  .authentication {
+    margin-bottom: 6px;
+
+    .fa-stack {
+      left: -3px;
+    }
+  }
+
+  .email {
+    margin-bottom: 8px;
+    .properties {
+      margin-left: 20px;
+      font-style: italic;
+      font-size: 11px;
+      input[type='checkbox'] {
+        margin-left: 6px;
+      }
+    }
+  }
+
+  .row.other-sign-in {
+    display: none;
+  }
+
+}
+
+

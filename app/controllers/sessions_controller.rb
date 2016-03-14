@@ -42,9 +42,9 @@ class SessionsController < ApplicationController
         # Since the multiple_accounts flow is not yet implemented,
         # pretend the user is returning instead
         case @handler_result.outputs[:status]
-        when :returning_user, :multiple_accounts then redirect_to action: :returning_user
-        when :new_user                           then render :ask_new_or_returning
-        # when :multiple_accounts                  then render :ask_which_account
+        when :returning_user  then redirect_to action: :returning_user
+        when :new_social_user then redirect_to controller: :signup, action: :social
+        # TODO when :authentication_added then redirect_to the profile page
         else                                     raise IllegalState
         end
       })
