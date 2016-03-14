@@ -38,11 +38,7 @@ class SessionsCallback
     true
   end
 
-  # def incoming_authentication
-
-  # end
-
-  def handle; debugger
+  def handle
 
     authentication_data = { provider: @data.provider,
                             uid: @data.uid.to_s }
