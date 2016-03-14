@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe IdentitiesController, type: :controller do
 
@@ -45,9 +45,9 @@ describe IdentitiesController, type: :controller do
 
       it 'returns error if code has expired' do
         one_year_later = DateTime.now + 1.year
-        DateTime.stub(:now).and_return(one_year_later)
+        allow(DateTime).to receive(:now).and_return(one_year_later)
         get 'reset_password', code: identity.password_reset_code.code
-        DateTime.unstub(:now)
+        allow(DateTime).to receive(:now).and_call_original
 
         expect(response.code).to eq('400')
         expect(response.body).to include('Reset password link has expired')
@@ -69,7 +69,7 @@ describe IdentitiesController, type: :controller do
         expect(response.body).to include('Reset password link is invalid')
         expect(response.body).not_to include('Set Password')
         identity.reload
-        expect(identity.authenticate('password')).to be_true
+        expect(identity.authenticate('password')).to be_truthy
       end
 
       it "returns error if code doesn't match" do
@@ -78,7 +78,7 @@ describe IdentitiesController, type: :controller do
         expect(response.body).to include('Reset password link is invalid')
         expect(response.body).not_to include('Set Password')
         identity.reload
-        expect(identity.authenticate('password')).to be_true
+        expect(identity.authenticate('password')).to be_truthy
       end
 
       it 'returns error if password is empty' do
@@ -89,7 +89,7 @@ describe IdentitiesController, type: :controller do
         expect(response.body).to include("Password can't be blank")
         expect(response.body).to include('Set Password')
         identity.reload
-        expect(identity.authenticate('password')).to be_true
+        expect(identity.authenticate('password')).to be_truthy
       end
 
       it 'returns error if password is too short' do
@@ -100,7 +100,7 @@ describe IdentitiesController, type: :controller do
         expect(response.body).to include('Password is too short')
         expect(response.body).to include('Set Password')
         identity.reload
-        expect(identity.authenticate('password')).to be_true
+        expect(identity.authenticate('password')).to be_truthy
       end
 
       it "returns error if password and password confirmation don't match" do
@@ -111,7 +111,7 @@ describe IdentitiesController, type: :controller do
         expect(response.body).to include("Password doesn&#x27;t match confirmation")
         expect(response.body).to include('Set Password')
         identity.reload
-        expect(identity.authenticate('password')).to be_true
+        expect(identity.authenticate('password')).to be_truthy
       end
 
       it 'changes password if everything validates' do
@@ -121,8 +121,8 @@ describe IdentitiesController, type: :controller do
         expect(flash[:alert]).to be_blank
         expect(flash[:notice]).to include('Your password has been reset successfully! You have been signed in automatically.')
         identity.reload
-        expect(identity.authenticate('password')).to be_false
-        expect(identity.authenticate('password!')).to be_true
+        expect(identity.authenticate('password')).to be_falsey
+        expect(identity.authenticate('password!')).to be_truthy
       end
 
       it 'redirects to password_return_to if it is set in session' do
@@ -134,8 +134,8 @@ describe IdentitiesController, type: :controller do
         expect(response.header['Location']).to eq('http://www.example.com/')
 
         identity.reload
-        expect(identity.authenticate('password')).to be_false
-        expect(identity.authenticate('password!')).to be_true
+        expect(identity.authenticate('password')).to be_falsey
+        expect(identity.authenticate('password!')).to be_truthy
       end
     end
   end

@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Authentication do
-  
+
   let!(:authentication) { FactoryGirl.create(:authentication) }
 
   context "when an authentication exists" do

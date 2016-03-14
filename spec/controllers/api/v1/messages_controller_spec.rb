@@ -1,6 +1,6 @@
-require "spec_helper"
+require 'rails_helper'
 
-describe Api::V1::MessagesController, :type => :api, :version => :v1 do
+describe Api::V1::MessagesController, type: :controller, api: true, version: :v1 do
 
   let!(:untrusted_application) {
     FactoryGirl.create :doorkeeper_application,

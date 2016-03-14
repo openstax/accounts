@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'bcrypt-ruby', '~> 3.0.0'
 
-gem 'rails', '3.2.17'
+gem 'rails', '3.2.22'
 
 gem 'doorkeeper', '~> 1.4.2'
 
@@ -62,13 +62,14 @@ group :assets do
 end
 
 group :development, :test do
-  gem 'debugger'
+  gem 'byebug'
   gem 'thin'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails'
   gem 'capybara'
   gem 'poltergeist'
   gem 'coveralls', require: false
+  gem 'test-unit' # because rspec told me so
 end
 
 group :production do

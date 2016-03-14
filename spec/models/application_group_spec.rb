@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe ApplicationGroup do
-  
+
   context 'validation' do
     it 'requires application and group' do
       application_group = FactoryGirl.build :application_group

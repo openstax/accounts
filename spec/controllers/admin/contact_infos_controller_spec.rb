@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-RSpec.describe Admin::ContactInfosController do
+RSpec.describe Admin::ContactInfosController, type: :controller do
   let!(:user) { FactoryGirl.create :user_with_emails }
 
   it 'marks contact info as verified' do

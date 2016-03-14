@@ -73,9 +73,9 @@ end
 
 def generate_expired_reset_code_for(username)
   one_year_ago = 1.year.ago
-  DateTime.stub(:now).and_return(one_year_ago)
+  allow(DateTime).to receive(:now).and_return(one_year_ago)
   reset_code = generate_reset_code_for username
-  DateTime.unstub(:now)
+  allow(DateTime).to receive(:now).and_call_original
   reset_code
 end
 
@@ -107,10 +107,10 @@ end
 
 def with_forgery_protection
   begin
-    ActionController::Base.any_instance.stub(:allow_forgery_protection).and_return(true)
+    allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
     yield if block_given?
   ensure
-    ActionController::Base.any_instance.unstub(:allow_forgery_protection)
+    allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_call_original
   end
 end
 

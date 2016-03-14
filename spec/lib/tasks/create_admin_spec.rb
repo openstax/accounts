@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'rake'
 
 describe 'accounts:create_admin rake task' do

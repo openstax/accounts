@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe OmniauthData do
   context 'when auth provider is facebook' do

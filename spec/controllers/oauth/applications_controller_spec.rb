@@ -1,8 +1,8 @@
-require "spec_helper"
+require 'rails_helper'
 
 module Oauth
 
-  describe ApplicationsController do
+  describe ApplicationsController, type: :controller do
 
     let!(:admin) { FactoryGirl.create :user, :terms_agreed, :admin }
     let!(:user) { FactoryGirl.create :user, :terms_agreed }

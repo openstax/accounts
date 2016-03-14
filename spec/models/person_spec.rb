@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Person do
 
@@ -12,17 +12,17 @@ describe Person do
     it 'does not delete the person when deleting a user' do
       @user1.destroy
 
-      expect(Person.exists? @person.id).to be_true
-      expect(User.exists? @user1.id).to be_false
-      expect(User.exists? @user2.id).to be_true
+      expect(Person.exists? @person.id).to be_truthy
+      expect(User.exists? @user1.id).to be_falsey
+      expect(User.exists? @user2.id).to be_truthy
     end
 
     it 'does delete all the users when deleting a person' do
       @person.destroy
 
-      expect(Person.exists? @person.id).to be_false
-      expect(User.exists? @user1.id).to be_false
-      expect(User.exists? @user2.id).to be_false
+      expect(Person.exists? @person.id).to be_falsey
+      expect(User.exists? @user1.id).to be_falsey
+      expect(User.exists? @user2.id).to be_falsey
     end
   end
 

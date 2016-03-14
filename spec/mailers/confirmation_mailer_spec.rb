@@ -1,6 +1,6 @@
-require "spec_helper"
+require 'rails_helper'
 
-describe ConfirmationMailer do
+describe ConfirmationMailer, type: :mailer do
   let(:user) { FactoryGirl.create :user, full_name: 'John Doe, Jr.' }
   let(:email) { FactoryGirl.create :email_address, value: 'to@example.org',
                                    user_id: user.id, confirmation_code: '1234' }

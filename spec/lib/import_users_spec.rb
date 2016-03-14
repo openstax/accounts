@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'csv'
 
-require 'spec_helper'
+require 'rails_helper'
 require 'import_users'
 
 describe ImportUsers do
@@ -10,7 +10,8 @@ describe ImportUsers do
     @file.close
 
     @timestamp = '2015-03-20T14:58:17Z'
-    Time.stub(:now).and_return(Time.parse(@timestamp))
+    timestamp_time = Time.parse(@timestamp)
+    allow(Time).to receive(:now).and_return(timestamp_time)
   end
 
   after :each do
@@ -46,12 +47,12 @@ describe ImportUsers do
     expect(user1.casual_name).to eq('User')
     expect(user1.name).to eq('Dr User One')
     expect(user1.state).to eq("activated")
-    expect(user1.identity.authenticate('password')).to be_true
-    expect(user1.identity.password_expired?).to be_true
+    expect(user1.identity.authenticate('password')).to be_truthy
+    expect(user1.identity.password_expired?).to be_truthy
     expect(user1.contact_infos.email_addresses.length).to eq(1)
     email = user1.contact_infos.email_addresses[0]
     expect(email.value).to eq('user1@example.com')
-    expect(email.verified).to be_true
+    expect(email.verified).to be_truthy
 
     expect(result[1]['row_number']).to eq('2')
     expect(result[1]['old_username']).to eq('user2')
@@ -73,12 +74,12 @@ describe ImportUsers do
     expect(user3.casual_name).to eq('Different')
     expect(user3.name).to eq('Dr Different User1')
     expect(user3.state).to eq('activated')
-    expect(user3.identity.authenticate('password')).to be_true
-    expect(user3.identity.password_expired?).to be_true
+    expect(user3.identity.authenticate('password')).to be_truthy
+    expect(user3.identity.password_expired?).to be_truthy
     expect(user3.contact_infos.email_addresses.length).to eq(1)
     email = user3.contact_infos.email_addresses[0]
     expect(email.value).to eq('different.user1@example.com')
-    expect(email.verified).to be_true
+    expect(email.verified).to be_truthy
   end
 
   it 'creates users from a csv file and links them to an application' do

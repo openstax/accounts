@@ -1,8 +1,8 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe SearchUsers do
-  
-  let!(:user_1)          { FactoryGirl.create :user_with_emails, 
+
+  let!(:user_1)          { FactoryGirl.create :user_with_emails,
                                               first_name: 'John',
                                               last_name: 'Stravinsky',
                                               username: 'jstrav' }
@@ -11,19 +11,19 @@ describe SearchUsers do
                                               last_name: 'Mighty',
                                               full_name: 'Mary Mighty',
                                               username: 'mary' }
-  let!(:user_3)          { FactoryGirl.create :user, 
+  let!(:user_3)          { FactoryGirl.create :user,
                                               first_name: 'John',
                                               last_name: 'Stead',
                                               username: 'jstead' }
 
-  let!(:user_4)          { FactoryGirl.create :user_with_emails, 
+  let!(:user_4)          { FactoryGirl.create :user_with_emails,
                                               first_name: 'Bob',
                                               last_name: 'JST',
                                               username: 'bigbear' }
 
   let!(:billy_users) {
     (0..8).to_a.collect{|ii|
-      FactoryGirl.create :user, 
+      FactoryGirl.create :user,
                          first_name: "Billy#{ii.to_s.rjust(2, '0')}",
                          last_name: "Bob_#{(45-ii).to_s.rjust(2,'0')}",
                          username: "billy_#{ii.to_s.rjust(2, '0')}"

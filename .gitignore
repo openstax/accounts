@@ -42,3 +42,5 @@ Berksfile.lock
 .vagrant_setup.json
 
 doc/apidoc*
+
+.byebug_history

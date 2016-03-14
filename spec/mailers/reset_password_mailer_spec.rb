@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe ResetPasswordMailer do
+describe ResetPasswordMailer, type: :mailer do
   describe 'reset_password' do
     before :each do
       @user = FactoryGirl.create :user, username: 'user1', full_name: 'John Doe, Jr.'

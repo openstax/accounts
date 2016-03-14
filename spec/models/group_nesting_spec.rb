@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe GroupNesting do
 
@@ -8,7 +8,7 @@ describe GroupNesting do
 
   let!(:group_nesting_1) { FactoryGirl.build(:group_nesting) }
   let!(:group_nesting_2) { FactoryGirl.build(:group_nesting) }
-  
+
   context 'validation' do
     it 'must have a unique member_group' do
       group_nesting_1.save!

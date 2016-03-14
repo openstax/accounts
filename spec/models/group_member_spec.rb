@@ -1,8 +1,8 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe GroupMember do
   let!(:group_member) { FactoryGirl.build(:group_member) }
-  
+
   context 'validation' do
     it 'must have a valid group' do
       group_member.group = nil

@@ -1,8 +1,8 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe SearchApplicationUsers do
   let!(:application) { FactoryGirl.create :doorkeeper_application }
-  
+
   let!(:user_1) { FactoryGirl.create :user_with_emails,
                                      first_name: 'John',
                                      last_name: 'Stravinsky',
