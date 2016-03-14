@@ -36,7 +36,7 @@ class UsersRegister
     OSU::AccessPolicy.action_allowed?(:register, caller, caller)
   end
 
-  def handle; debugger
+  def handle
     if options[:contracts_required] && !register_params.i_agree
       fatal_error(code: :did_not_agree, message: 'You must agree to the terms to create your account.')
     end
