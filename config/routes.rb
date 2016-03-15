@@ -29,6 +29,8 @@ Accounts::Application.routes.draw do
     put 'profile', action: :update
     get 'ask_for_email'
     put 'ask_for_email'
+    get 'login_help'
+    post 'login_help'
   end
 
   namespace 'registration' do
@@ -47,8 +49,6 @@ Accounts::Application.routes.draw do
   resource :identity, only: :update
   scope controller: 'identities' do
     get 'signup', action: :new
-    get 'login_help'
-    post 'login_help'
     get 'reset_password'
     post 'reset_password'
   end

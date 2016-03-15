@@ -1,8 +1,13 @@
 class UsersController < ApplicationController
 
-  skip_before_filter :registration, only: [:edit, :update, :ask_for_email]
+  skip_before_filter :registration, only: [:edit, :update, :ask_for_email,
+                                           :login_help]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:edit, :update, :ask_for_email]
+  skip_before_filter :authenticate_user!, :expired_password,
+                     only: [:login_help]
+
+  fine_print_skip :general_terms_of_use, :privacy_policy,
+                  only: [:edit, :update, :ask_for_email, :login_help]
 
   def edit
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
@@ -33,6 +38,19 @@ class UsersController < ApplicationController
                   },
                   failure: lambda {
                     render :ask_for_email, status: 400
+                  })
+    end
+  end
+
+  def login_help
+    if request.post?
+      handle_with(UsersLoginHelp,
+                  success: lambda {
+                    redirect_to root_path, notice: 'Password reset instructions sent to your email address!'
+                  },
+                  failure: lambda {
+                    errors = @handler_result.errors.any?
+                    render :login_help, status: errors ? 400 : 200
                   })
     end
   end
