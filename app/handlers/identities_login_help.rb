@@ -1,10 +1,10 @@
-class IdentitiesForgotPassword
+class IdentitiesLoginHelp
 
   lev_handler
 
   uses_routine GeneratePasswordResetCode
 
-  paramify :forgot_password do
+  paramify :login_help do
     attribute :username_or_email, type: String
     validates :username_or_email, presence: true
   end
@@ -16,7 +16,7 @@ class IdentitiesForgotPassword
   end
 
   def handle
-    username_or_email = forgot_password_params.username_or_email
+    username_or_email = login_help_params.username_or_email
     user = User.find_by_username(username_or_email) ||
            ContactInfo.find_by_value(username_or_email).try(:user)
     if user.nil?
