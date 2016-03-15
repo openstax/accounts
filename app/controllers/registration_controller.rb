@@ -9,7 +9,7 @@ class RegistrationController < ApplicationController
   #   if current_user.is_activated?
   #     redirect_back
   #   elsif request.put?
-  #     handle_with(UsersRegister,
+  #     handle_with(SignupProcess,
   #                 contracts_required: !contracts_not_required,
   #                 success: lambda {
   #                   redirect_back

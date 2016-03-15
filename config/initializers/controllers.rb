@@ -24,28 +24,11 @@ ActionController::Base.class_exec do
   protected
 
   def disable_fine_print
-    current_user.is_anonymous? ||
-    contracts_not_required(client_id: params[:client_id] || session[:client_id])
+    contracts_not_required(client_id: params[:client_id] || session[:client_id]) ||
+    current_user.is_anonymous?
   end
 
   include ContractsNotRequired
-
-  # def contracts_not_required
-  #   @contracts_not_required =
-  #     # Skip for API calls
-  #     (request.format == :json) ||
-  #     # Anonymous users can't sign contracts
-  #     current_user.is_anonymous? ||
-  #     # Skip if just arrived from an application that says skip
-  #     Doorkeeper::Application.where(uid: params[:client_id] || session[:client_id])
-  #                            .first
-  #                            .try(:skip_terms?) ||
-  #     # Skip if all of user's applications say skip
-  #     (
-  #       current_user.applications.any? &&
-  #       current_user.applications.all?{|app| app.skip_terms? }
-  #     )
-  # end
 
   # def registration
   #   return true if request.format != :html

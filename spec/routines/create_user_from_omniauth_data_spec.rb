@@ -12,7 +12,9 @@ describe CreateUserFromOmniauthData do
         },
       }
       data = OmniauthData.new(auth)
-
+# TODO this expectations (and two below) are failing b/c CreateUserFromOmniauthData now
+# receives two different run calls, 2nd explodes can't we test this another way?  Test
+# that CreateUser receives what we expect?
       expect_any_instance_of(CreateUserFromOmniauthData).to receive(:run) do |instance, create_user, args|
         @username = args[:username]
         expect(create_user).to eq(CreateUser)

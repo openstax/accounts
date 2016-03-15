@@ -52,7 +52,7 @@ module OmniAuth
       end
 
       def registration_phase
-        @handler_result = UsersRegister.handle(params: request,
+        @handler_result = SignupProcess.handle(params: request,
                                                caller: current_user,
                                                contracts_required: !contracts_not_required(client_id: request['client_id']))
 

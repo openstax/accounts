@@ -14,9 +14,9 @@ module ContractsNotRequired
   end
 
   def json_request?
-    request.is_a?(Rack::Request) ?
-      json_rack_request? :
-      json_action_controller_request?
+    action_controller? ?
+      json_action_controller_request? :
+      json_rack_request?
   end
 
   def json_rack_request?
@@ -25,6 +25,10 @@ module ContractsNotRequired
 
   def json_action_controller_request?
     request.format == :json
+  end
+
+  def action_controller?
+    request.respond_to?(:format)
   end
 
   def arriving_from_app_that_skips_terms?(client_id)

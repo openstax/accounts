@@ -11,7 +11,7 @@ class SignupController < ApplicationController
 
   def social
     if request.post?
-      handle_with(UsersRegister,
+      handle_with(SignupProcess,
                   contracts_required: !contracts_not_required,
                   success: lambda {
                     redirect_back

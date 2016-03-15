@@ -7,7 +7,7 @@ feature 'User logs in as a local user', js: true do
       create_application
       create_user 'user'
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect(page).to have_content("Sign in with your one OpenStax account!")
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'pass'
@@ -27,7 +27,7 @@ feature 'User logs in as a local user', js: true do
       create_user_with_plone_password
       visit_authorize_uri
 
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect(page).to have_content("Sign in with your one OpenStax account!")
       fill_in 'Username', with: 'plone_user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
@@ -44,7 +44,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect(page).to have_content("Sign in with your one OpenStax account!")
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
@@ -62,7 +62,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect(page).to have_content("Sign in with your one OpenStax account!")
 
       fill_in 'Username', with: 'expired_password'
       fill_in 'Password', with: 'password'
@@ -85,7 +85,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect(page).to have_content("Sign in with your one OpenStax account!")
 
       fill_in 'Username', with: 'imported_user'
       fill_in 'Password', with: 'password'
@@ -115,7 +115,7 @@ feature 'User logs in as a local user', js: true do
     user = create_user('jimbo')
 
     visit '/'
-    expect(page).to have_content('Sign in to your one OpenStax account')
+    expect(page).to have_content('Sign in with your one OpenStax account')
 
     login_as 'jimbo', 'password'
 
@@ -129,7 +129,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit '/'
-      expect(page).to have_content('Sign in to your one OpenStax account')
+      expect(page).to have_content('Sign in with your one OpenStax account')
 
       fill_in 'Username', with: 'imported_user'
       fill_in 'Password', with: 'password'
@@ -159,7 +159,7 @@ feature 'User logs in as a local user', js: true do
     create_user('jimbo')
 
     visit '/login'
-    expect(page).to have_content("Sign in to your one OpenStax account!")
+    expect(page).to have_content("Sign in with your one OpenStax account!")
 
     click_omniauth_link('twitter')
 
@@ -186,7 +186,7 @@ feature 'User logs in as a local user', js: true do
     click_button 'Sign in'
 
     expect(page).to have_no_content('Merge Logins')
-    expect(page).to have_no_content('Sign in to your one')
+    expect(page).to have_no_content('Sign in with your one')
   end
 
   scenario 'a user signs into an account that has been created by an admin for them', js: true do
@@ -200,7 +200,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect(page).to have_content("Sign in with your one OpenStax account!")
 
       fill_in 'Username', with: 'therulerofallthings'
       fill_in 'Password', with: 'apassword'
@@ -218,14 +218,14 @@ feature 'User logs in as a local user', js: true do
       user = create_user 'user'
       create_email_address_for user, 'user@example.com'
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect(page).to have_content("Sign in with your one OpenStax account!")
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
       expect(page).to have_content('Incorrect username, email, or password')
 
-      fill_in 'Username / Email', with: 'user@example.com'
+      fill_in 'Username or Email', with: 'user@example.com'
       fill_in 'Password', with: 'password'
       click_button 'Sign in'
       expect(page.current_url).to match(app_callback_url)

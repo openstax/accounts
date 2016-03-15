@@ -1,4 +1,4 @@
-class UsersRegister
+class SignupProcess
 
   lev_handler
 

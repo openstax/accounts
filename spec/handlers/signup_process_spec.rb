@@ -1,10 +1,13 @@
 require 'rails_helper'
 
-describe IdentitiesRegister do
+# TODO add specs for missing, but required, params
+# TODO add in UsersRegister specs -- oops maybe are none?  then add specs to test rest of SignupProcess
+
+describe SignupProcess do
 
   context "when user info ok but passwords don't match" do
     let (:identities_register_call) { -> {
-      IdentitiesRegister.handle(
+      SignupProcess.handle(
         params: {
           register: {
             username: 'joebob',
@@ -12,7 +15,7 @@ describe IdentitiesRegister do
             last_name: 'bob',
             password: 'pass',
             password_confirmation: 'word',
-            email: 'joebob@example.com'
+            email_address: 'joebob@example.com'
           }
         },
         caller: AnonymousUser.instance,
@@ -36,7 +39,7 @@ describe IdentitiesRegister do
 
   context "when the user already has a password" do
     before(:each) do
-      expect(IdentitiesRegister.handle(
+      expect(SignupProcess.handle(
         params: {
           register: {
             username: 'joebob',
@@ -44,7 +47,7 @@ describe IdentitiesRegister do
             last_name: 'bob',
             password: 'password',
             password_confirmation: 'password',
-            email: 'joebob@example.com'
+            email_address: 'joebob@example.com'
           }
         },
         caller: AnonymousUser.instance
@@ -52,7 +55,7 @@ describe IdentitiesRegister do
     end
 
     it "has errors for [:register, :username] if not logged in" do
-      outcome = IdentitiesRegister.handle(
+      outcome = SignupProcess.handle(
         params: {
           register: {
             username: 'joebob',
@@ -60,7 +63,7 @@ describe IdentitiesRegister do
             last_name: 'bob',
             password: 'password',
             password_confirmation: 'password',
-            email: 'joebob@example.com'
+            email_address: 'joebob@example.com'
           }
         },
         caller: AnonymousUser.instance
@@ -70,20 +73,21 @@ describe IdentitiesRegister do
     end
 
     it "has errors for [:register, :user_id] if logged in" do
-      outcome = IdentitiesRegister.handle(
-        params: {
-          register: {
-            username: 'joebob',
-            first_name: 'joe',
-            last_name: 'bob',
-            password: 'password',
-            password_confirmation: 'password',
-            email: 'joebob@example.com'
-          }
-        },
-        caller: User.find_by_username('joebob')
-      )
-      expect(outcome.errors.map(&:code)).to eq [:already_has_identity]
+      expect {
+        SignupProcess.handle(
+          params: {
+            register: {
+              username: 'joebob',
+              first_name: 'joe',
+              last_name: 'bob',
+              password: 'password',
+              password_confirmation: 'password',
+              email_address: 'joebob@example.com'
+            }
+          },
+          caller: User.find_by_username('joebob')
+        )
+      }.to raise_error(Lev::SecurityTransgression)
     end
   end
 
