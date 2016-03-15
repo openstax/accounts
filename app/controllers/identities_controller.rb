@@ -1,10 +1,10 @@
 class IdentitiesController < ApplicationController
 
   skip_before_filter :authenticate_user!, :expired_password, :registration,
-                     only: [:new, :forgot_password, :reset_password]
+                     only: [:new, :login_help, :reset_password]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :forgot_password, :reset_password]
+                  only: [:new, :login_help, :reset_password]
 
   def new
     @errors ||= env['errors']
@@ -23,15 +23,15 @@ class IdentitiesController < ApplicationController
                 failure: lambda { render 'users/edit', status: 400 })
   end
 
-  def forgot_password
+  def login_help
     if request.post?
-      handle_with(IdentitiesForgotPassword,
+      handle_with(IdentitiesLoginHelp,
                   success: lambda {
                     redirect_to root_path, notice: 'Password reset instructions sent to your email address!'
                   },
                   failure: lambda {
                     errors = @handler_result.errors.any?
-                    render :forgot_password, status: errors ? 400 : 200
+                    render :login_help, status: errors ? 400 : 200
                   })
     end
   end

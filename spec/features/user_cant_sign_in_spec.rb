@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User forgot password', js: true do
+feature "User can't sign in", js: true do
   background do
     @user = create_user 'user1'
     @email = create_email_address_for @user, 'user@example.com'
