@@ -8,6 +8,23 @@ RSpec.describe UserAccessPolicy do
   let!(:admin)     { FactoryGirl.create :user, :admin }
   let!(:app)       { FactoryGirl.create :doorkeeper_application }
 
+  context 'login_help' do
+    it 'cannot be accessed by applications' do
+      [:login_help].each do |action|
+        expect(OSU::AccessPolicy.action_allowed?(action, app, User)).to eq false
+      end
+    end
+
+    it 'can be accessed by human users' do
+      [:login_help].each do |action|
+        expect(OSU::AccessPolicy.action_allowed?(action, anon, User)).to eq true
+        expect(OSU::AccessPolicy.action_allowed?(action, temp, User)).to eq true
+        expect(OSU::AccessPolicy.action_allowed?(action, user, User)).to eq true
+        expect(OSU::AccessPolicy.action_allowed?(action, admin, User)).to eq true
+      end
+    end
+  end
+
   context 'search' do
     it 'cannot be accessed by anonymous or temp users' do
       expect(OSU::AccessPolicy.action_allowed?(:search, anon, User)).to eq false
