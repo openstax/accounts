@@ -7,7 +7,7 @@
 </p>
 <p>
   <% if @handler_result.outputs.can_log_in %>
-    You can now <%= link_to("sign in", login_url) %> to your new account.
+    You can now <%= link_to("sign in", signin_url) %> to your new account.
   <% else %>
     Please <%= link_to('sign up',registration_complete_url) %> for a account using email <%= @handler_result.outputs.email_address %> address in order to complete the process.
   <% end %>

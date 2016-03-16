@@ -47,7 +47,7 @@ def create_nonlocal_user(username, provider='facebook')
   User.find_by_username(username)
 end
 
-def login_as username, password='password'
+def signin_as username, password='password'
   fill_in 'Username', with: username
   fill_in 'Password', with: password
   click_button 'Sign in'

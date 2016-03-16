@@ -8,8 +8,8 @@ feature 'Add application to accounts', js: true do
 
   scenario 'as an admin user' do
     create_admin_user
-    visit '/login'
-    login_as 'admin'
+    visit '/signin'
+    signin_as 'admin'
     expect(page).to have_content('Welcome, admin')
     visit '/oauth/applications'
     expect(page).to have_content('OAuth Applications')
@@ -24,8 +24,8 @@ feature 'Add application to accounts', js: true do
 
   scenario 'as a normal local user' do
     create_user 'user'
-    visit '/login'
-    login_as 'user'
+    visit '/signin'
+    signin_as 'user'
     expect(page).to have_content('Welcome, user')
     visit '/oauth/applications'
     expect(page).to have_content('OAuth Applications')

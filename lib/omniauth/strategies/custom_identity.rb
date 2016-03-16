@@ -74,7 +74,7 @@ module OmniAuth
       end
 
       def registration_form
-        IdentitiesController.action(:new).call(env)
+        SignupController.action(:password).call(env)
       end
 
       uid{ identity.uid }

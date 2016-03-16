@@ -10,12 +10,9 @@
   <div id="sign-in-options" class="col-sm-8">
     <span>
       <% if signed_in? %>
-        Welcome, <%= link_to current_user.username, main_app.profile_path %>&nbsp;&nbsp;&nbsp;<%= link_to 'Sign out', main_app.logout_path %>
+        Welcome, <%= link_to current_user.username, main_app.profile_path %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to 'Sign out', main_app.signout_path %>
       <% else %>
-        <% unless current_page?(main_app.signup_path) %>
-          <%= link_to 'Sign up', main_app.signup_path %> or
-        <% end %>
-          <%= link_to "Sign in", main_app.login_path %>
+        <%= link_to "Sign in", main_app.signin_path %>
       <% end %>
     </span>
   </div>

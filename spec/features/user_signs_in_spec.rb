@@ -117,7 +117,7 @@ feature 'User logs in as a local user', js: true do
     visit '/'
     expect(page).to have_content('Sign in with your one OpenStax account')
 
-    login_as 'jimbo', 'password'
+    signin_as 'jimbo', 'password'
 
     visit '/'
     expect(page).to have_content('Your Account')
@@ -153,40 +153,6 @@ feature 'User logs in as a local user', js: true do
 
       expect(current_path).to eq profile_path
     end
-  end
-
-  scenario 'keeps trying to find existing account when signing in' do
-    create_user('jimbo')
-
-    visit '/login'
-    expect(page).to have_content("Sign in with your one OpenStax account!")
-
-    click_omniauth_link('twitter')
-
-    expect(page).to have_content('Merge Logins')
-    expect(page).to have_no_link('twitter-login-button')
-
-    click_omniauth_link('google_oauth2')
-
-    expect(page).to have_content('Merge Logins')
-    expect(page).to have_no_link('twitter-login-button')
-    expect(page).to have_no_link('google_oauth2-login-button')
-
-    click_omniauth_link('facebook')
-
-    expect(page).to have_content('Merge Logins')
-    expect(page).to have_no_link('twitter-login-button')
-    expect(page).to have_no_link('google_oauth2-login-button')
-    expect(page).to have_no_link('facebook-login-button')
-    expect(page).to have_no_content('left-or-block')
-
-    fill_in 'Username', with: 'jimbo'
-    fill_in 'Password', with: 'password'
-
-    click_button 'Sign in'
-
-    expect(page).to have_no_content('Merge Logins')
-    expect(page).to have_no_content('Sign in with your one')
   end
 
   scenario 'a user signs into an account that has been created by an admin for them', js: true do

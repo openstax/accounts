@@ -1,0 +1,5 @@
+<%= page_heading "Can't sign in?" %>
+<%= lev_form_for :help, url: '' do |f| %>
+  <%= standard_field form: f, name: :username_or_email, type: :text_field, label: 'Username or Email' %>
+  <%= submit_tag 'Submit' %>
+<% end %>

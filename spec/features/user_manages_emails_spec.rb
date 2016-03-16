@@ -5,8 +5,8 @@ feature 'User manages emails' do
     user = create_user('user')
     create_email_address_for(user, 'user@unverified.com',
                              confirmation_code: SecureRandom.hex(32))
-    visit '/login'
-    login_as 'user'
+    visit '/signin'
+    signin_as 'user'
     expect(page).to have_content('Welcome, user')
 
     visit '/profile'
