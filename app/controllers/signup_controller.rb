@@ -8,6 +8,7 @@ class SignupController < ApplicationController
   def password
     @errors ||= env['errors']
 
+    # TODO make sure the code below is tested (was in IdentitiesController previously)
     if !current_user.is_anonymous? && current_user.authentications.any?{|auth| auth.provider == 'identity'}
       redirect_to root_path, alert: "You already have a simple username and password on your account!"
     else
