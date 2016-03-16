@@ -7,7 +7,7 @@ feature 'Login inside an iframe', js: true do
     user = create_user 'user'
     origin = SECRET_SETTINGS[:valid_iframe_origins].last
     visit "/remote/iframe?parent=#{origin}"
-    loaded = page.evaluate_script("OxAccount.Host.setUrl('/login')")
+    loaded = page.evaluate_script("OxAccount.Host.setUrl('/signin')")
     within_frame 'content' do
       expect(page).to have_content("Sign in Sign up Can't sign in")
       fill_in 'Username', with: 'user'

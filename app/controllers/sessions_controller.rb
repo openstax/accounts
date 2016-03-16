@@ -4,10 +4,10 @@
 class SessionsController < ApplicationController
 
   skip_before_filter :authenticate_user!, :expired_password, :registration,
-                     only: [:new, :callback, :failure, :destroy]
+                     only: [:new, :callback, :failure, :destroy, :help]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :callback, :failure, :destroy, :ask_new_or_returning]
+                  only: [:new, :callback, :failure, :destroy, :help]
 
   def new
     get_authorization_url
@@ -76,10 +76,17 @@ class SessionsController < ApplicationController
     redirect_to url, notice: "Signed out!"
   end
 
-  def ask_new_or_returning
-  end
-
-  def i_am_returning
+  def help
+    if request.post?
+      handle_with(SessionsHelp,
+                  success: lambda {
+                    redirect_to root_path, notice: 'Password reset instructions sent to your email address!'
+                  },
+                  failure: lambda {
+                    errors = @handler_result.errors.any?
+                    render :help, status: errors ? 400 : 200
+                  })
+    end
   end
 
   # This is an official action instead of just doing `redirect_back` in callback

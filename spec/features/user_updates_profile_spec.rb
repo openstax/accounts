@@ -3,8 +3,8 @@ require 'rails_helper'
 feature 'User updates profile' do
   before(:each) do
     create_user('user')
-    visit '/login'
-    login_as 'user'
+    visit '/signin'
+    signin_as 'user'
     expect(page).to have_content('Welcome, user')
 
     visit '/profile'

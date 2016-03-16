@@ -8,9 +8,13 @@ Accounts::Application.routes.draw do
     post 'callback', path: 'auth/:provider/callback'
     get 'failure', path: 'auth/failure'
 
-    get 'login', action: :new
-    get 'logout', action: :destroy
-    get 'i_am_returning'
+    get 'signin', action: :new
+    get 'signout', action: :destroy
+
+    get 'help', path: '/signin/help', as: :signin_help
+    post 'help', path: '/signin/help', as: :signin_help
+
+    # get 'i_am_returning'
     get 'returning_user'
 
     if Rails.env.development?
@@ -29,8 +33,8 @@ Accounts::Application.routes.draw do
     put 'profile', action: :update
     get 'ask_for_email'
     put 'ask_for_email'
-    get 'login_help'
-    post 'login_help'
+    # get 'signin_help'
+    # post 'signin_help'
   end
 
   namespace 'registration' do

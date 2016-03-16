@@ -17,14 +17,14 @@ feature "User can't sign in", js: true do
   end
 
   scenario 'username not found' do
-    fill_in 'Username', with: 'aaaaa'
+    fill_in 'Username or Email', with: 'aaaaa'
     click_button 'Submit'
     expect(page.text).to include('Username not found')
   end
 
   scenario 'user is not a local user' do
     create_nonlocal_user 'not_local'
-    fill_in 'Username', with: 'not_local'
+    fill_in 'Username or Email', with: 'not_local'
     click_button 'Submit'
     expect(page.text).to include('Unable to reset password for this user')
   end
@@ -32,13 +32,13 @@ feature "User can't sign in", js: true do
   scenario 'user does not have any verified email addresses' do
     @email.verified = false
     @email.save
-    fill_in 'Username', with: 'user1'
+    fill_in 'Username or Email', with: 'user1'
     click_button 'Submit'
     expect(page.text).to include('Password reset instructions sent to your email address!')
   end
 
   scenario 'user gets a password reset email' do
-    fill_in 'Username', with: 'user1'
+    fill_in 'Username or Email', with: 'user1'
     click_button 'Submit'
     expect(page.text).to include('Password reset instructions sent')
     @user.identity.reload
@@ -55,7 +55,7 @@ feature "User can't sign in", js: true do
   end
 
   scenario 'user enters an email address' do
-    fill_in 'Username / Email', with: @email.value
+    fill_in 'Username or Email', with: @email.value
     click_button 'Submit'
     expect(page.text).to include('Password reset instructions sent')
     @user.identity.reload

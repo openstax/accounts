@@ -3,8 +3,6 @@ class UserAccessPolicy
 
   def self.action_allowed?(action, requestor, user)
     case action
-    when :login_help # Anyone
-      !requestor.is_application?
     when :search
       requestor.is_application? || requestor.is_activated?
     when :read, :update
