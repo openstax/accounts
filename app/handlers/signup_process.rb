@@ -75,6 +75,8 @@ class SignupProcess
             user_id:               user.id
         )
 
+        # TODO can we not make the authentication here and then have it happen in
+        # SessionsCallback where other Authentications are made?
         authentication = Authentication.create(uid: outputs[:identity].id.to_s,
                                                provider: 'identity',
                                                user_id: user.id)

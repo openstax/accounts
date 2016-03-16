@@ -40,13 +40,19 @@ class SessionsCallback
 
   def handle
 
+    # TODO change custom identity to let the Authentication be created here (Identity still needs to be created elsewhere)
+    # that way all authentications will be treated the same.  (??)
+
     authentication_data = { provider: @data.provider,
                             uid: @data.uid.to_s }
     authentication = Authentication.where(authentication_data).first
 
-    this_authentication_is_new = authentication.nil?
-    authentication = Authentication.create(authentication_data) if this_authentication_is_new
+    # this_authentication_is_new = authentication.nil?
+    # authentication = Authentication.create(authentication_data) if this_authentication_is_new
 
+    # TODO switch to authentication = Authentication.find_or_create_by
+
+    authentication ||= Authentication.create(authentication_data)
     authentication_user = authentication.user
 
     if signed_in?
@@ -55,18 +61,39 @@ class SessionsCallback
       # TODO This code probably looks like:
       #   run(TransferAuthentications, authentication, current_user)
       #   status = :authentication_added
+    elsif authentication_user.present?
+      sign_in!(authentication_user)
+      status = :returning_or_new_password_user
     else
-      if this_authentication_is_new
-        outcome = run(CreateUserFromOmniauthData, @data)
-        new_user = outcome.outputs[:user]
-        run(TransferAuthentications, authentication, new_user)
-        run(TransferOmniauthData, @data, new_user)
-        sign_in!(new_user)
-        status = :new_social_user
+      # No authentication user, so need to attach this authentication to a new
+      # user or an existing, matching user
+
+      # TODO make matching_users a private method called `users_matching_oauth_data` with lazy caching
+      # Check for existing users matching auth_data emails
+      # Note: we trust that Google/FB/Twitter omniauth strategies
+      #       will only give us verified emails.
+      #   true for Google (omniauth strategy checks that the emails are verified)
+      #   true for FB (their API only returns verified emails)
+      #   true for Twitter (they don't return any emails)
+      matching_users = EmailAddress.where(:value => @data.email)
+                                   .verified.with_users.collect{|e| e.user}
+
+      if matching_users.size == 1
+        authentication_user = matching_users.first
+        run(TransferAuthentications, authentication, authentication_user)
+        status = :transferred_authentication
       else
-        sign_in!(authentication_user)
-        status = :returning_user
+        outcome = run(CreateUserFromOmniauthData, @data)
+        authentication_user = outcome.outputs[:user]
+        run(TransferAuthentications, authentication, authentication_user)
+        run(TransferOmniauthData, @data, authentication_user)
+        # TODO if move Auth creation out of SignupProcess, this status= line becomes
+        #   status = authentication.provider == 'identity' ? :new_password_user : :new_social_user
+        # and the :returning_or_new_password_user above becomes :returning_user only
+        status = :new_social_user
       end
+
+      sign_in!(authentication_user)
     end
 
     outputs[:status] = status

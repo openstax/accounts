@@ -50,6 +50,12 @@ class SessionsController < ApplicationController
       })
   end
 
+  # This is an official action instead of just doing `redirect_back` in callback
+  # handler so that fine_print can check to see if terms need to be signed.
+  def returning_user
+    redirect_back
+  end
+
   def destroy
     if params[:parent]
       url = iframe_after_logout_url(parent: params[:parent])
@@ -79,7 +85,7 @@ class SessionsController < ApplicationController
   def help
     if request.post?
       handle_with(SessionsHelp,
-                  success: lambda {
+                  success: lambda { # TODO change the notice to be less about "passwords"
                     redirect_to root_path, notice: 'Password reset instructions sent to your email address!'
                   },
                   failure: lambda {
@@ -87,12 +93,6 @@ class SessionsController < ApplicationController
                     render :help, status: errors ? 400 : 200
                   })
     end
-  end
-
-  # This is an official action instead of just doing `redirect_back` in callback
-  # handler so that fine_print can check to see if terms need to be signed.
-  def returning_user
-    redirect_back
   end
 
   # Omniauth failure endpoint
