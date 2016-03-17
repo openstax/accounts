@@ -1,6 +1,6 @@
 # Creates a user with the supplied parameters.
 #
-# If :ensure_no_errors is true, the routine will make sure that the 
+# If :ensure_no_errors is true, the routine will make sure that the
 # username is available (blank/nil usernames are allowed in this case)
 #
 # If :ensure_no_errors is not set, the returned user object may have errors
@@ -33,6 +33,7 @@ class CreateUser
       user.last_name = options[:last_name]
       user.full_name = options[:full_name]
       user.title = options[:title]
+      user.suffix = options[:suffix]
       user.state = options[:state] || 'temp'  # all users default to starting as temp.
     end
 

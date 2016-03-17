@@ -20,7 +20,7 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Username', with: 'bob'
     fill_in 'Password *', with: 'password'
     fill_in 'Confirm Password', with: 'password'
-    check 'register_i_agree'
+    check 'signup_i_agree'
     click_on 'Register'
 
     click_on 'Sign out'
@@ -83,7 +83,7 @@ feature 'Skipped terms are respected', js: true do
     fill_in 'Username', with: 'bob'
     fill_in 'Password *', with: 'password'
     fill_in 'Confirm Password', with: 'password'
-    check 'register_i_agree'
+    check 'signup_i_agree'
     click_on 'Register'
 
     click_on 'Sign out'

@@ -1,6 +1,6 @@
 
 
-<%= lev_form_for :register, url: url, html: {id: 'identity-register'} do |f| %>
+<%= lev_form_for :signup, url: url, html: {id: 'signup'} do |f| %>
 
   <div class="signup row">
 
@@ -56,7 +56,7 @@
 
 <% unless @contracts_not_required %>
   <script type="text/javascript">
-    Accounts.Ui.enableOnChecked('#register_submit', '#register_i_agree');
+    Accounts.Ui.enableOnChecked('#register_submit', '#signup_i_agree');
   </script>
 <% end %>
 

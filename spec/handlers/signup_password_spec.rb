@@ -6,10 +6,10 @@ require 'rails_helper'
 describe SignupPassword do
 
   context "when user info ok but passwords don't match" do
-    let (:identities_register_call) { -> {
+    let (:the_call) { -> {
       described_class.handle(
         params: {
-          register: {
+          signup: {
             username: 'joebob',
             first_name: 'joe',
             last_name: 'bob',
@@ -23,16 +23,16 @@ describe SignupPassword do
     }}
 
     it "doesn't create the user" do
-      expect(identities_register_call).not_to change(User, :count)
+      expect(the_call).not_to change(User, :count)
     end
 
     it "doesn't create the identity" do
-      expect(identities_register_call).not_to change(Identity, :count)
+      expect(the_call).not_to change(Identity, :count)
     end
 
-    it "has errors for [:register, :password]" do
-      outcome = identities_register_call.call
-      expect(outcome.errors).to have_offending_input(:register)
+    it "has errors for [:signup, :password]" do
+      outcome = the_call.call
+      expect(outcome.errors).to have_offending_input(:signup)
       expect(outcome.errors).to have_offending_input(:password)
     end
   end
@@ -41,7 +41,7 @@ describe SignupPassword do
     before(:each) do
       expect(described_class.handle(
         params: {
-          register: {
+          signup: {
             username: 'joebob',
             first_name: 'joe',
             last_name: 'bob',
@@ -54,10 +54,10 @@ describe SignupPassword do
       ).errors).to be_empty
     end
 
-    it "has errors for [:register, :username] if not logged in" do
+    it "has errors for [:signup, :username] if not logged in" do
       outcome = described_class.handle(
         params: {
-          register: {
+          signup: {
             username: 'joebob',
             first_name: 'joe',
             last_name: 'bob',
@@ -68,15 +68,15 @@ describe SignupPassword do
         },
         caller: AnonymousUser.instance
       )
-      expect(outcome.errors).to have_offending_input(:register)
+      expect(outcome.errors).to have_offending_input(:signup)
       expect(outcome.errors).to have_offending_input(:username)
     end
 
-    it "has errors for [:register, :user_id] if logged in" do
+    it "has errors for [:signup, :user_id] if logged in" do
       expect {
         described_class.handle(
           params: {
-            register: {
+            signup: {
               username: 'joebob',
               first_name: 'joe',
               last_name: 'bob',
