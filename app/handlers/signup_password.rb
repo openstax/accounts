@@ -1,4 +1,4 @@
-class SignupProcess
+class SignupPassword
 
   lev_handler
 
@@ -36,20 +36,20 @@ class SignupProcess
   end
 
   def handle
-    user = caller
+    # user = caller
 
-    if (options[:is_password_signup] ^ !user.is_anonymous?)
-      fatal_error(code: :inconsistent_state)
-    end
+    # if (options[:is_password_signup] ^ !user.is_anonymous?)
+    #   fatal_error(code: :inconsistent_state)
+    # end
 
     if options[:contracts_required] && !register_params.i_agree
       fatal_error(code: :did_not_agree, message: 'You must agree to the terms to create your account.')
     end
 
-    if options[:is_password_signup]
+    # if options[:is_password_signup]
       run(CreateUser, username: register_params.username)
       user = outputs[[:create_user, :user]]
-    end
+    # end
 
     user.username = register_params.username
     user.title = register_params.title if !register_params.title.blank?
@@ -64,7 +64,7 @@ class SignupProcess
     # If this is a password signup, create the Identity record.  Don't create
     # an authentication yet, that is the job for SessionsCallback.
 
-    if options[:is_password_signup]
+    # if options[:is_password_signup]
       if register_params.password.blank? || register_params.password_confirmation.blank?
         fatal_error(code: :passwords_missing, message: "You must choose a password and confirm it to create your account.")
       else
@@ -74,7 +74,7 @@ class SignupProcess
             user_id:               user.id
         )
       end
-    end
+    # end
 
     # Doesn't hurt to readd the email if already verified by social login
     run(AddEmailToUser, register_params.email_address, user)
@@ -86,14 +86,14 @@ class SignupProcess
       run(AgreeToTerms, register_params.contract_2_id, user, no_error_if_already_signed: true)
     end
 
-    attach_user_to_person
+    # attach_user_to_person
   end
 
-  def attach_user_to_person
-    person = Person.create!
-    user.person_id = person.id
-    user.save
+  # def attach_user_to_person
+  #   person = Person.create!
+  #   user.person_id = person.id
+  #   user.save
 
-    transfer_errors_from(user, {type: :verbatim})
-  end
+  #   transfer_errors_from(user, {type: :verbatim})
+  # end
 end

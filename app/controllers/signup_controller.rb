@@ -18,9 +18,8 @@ class SignupController < ApplicationController
 
   def social
     if request.post?
-      handle_with(SignupProcess,
+      handle_with(SignupSocial,
                   contracts_required: !contracts_not_required,
-                  is_password_signup: false,
                   success: lambda {
                     redirect_back
                   },

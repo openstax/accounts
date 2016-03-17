@@ -31,6 +31,7 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'with incorrect password confirmation', js: true do
     visit '/'
+    click_link 'Create password account'
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
@@ -150,31 +151,29 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'without any email addresses' do
     # this is a test for twitter users who have no email addresses
-    create_application
-    user = create_user 'user'
-    # set the user state to "temp" so we can test registration
-    user.state = 'temp'
-    user.save!
 
-    # TODO: ^^^ is the "temp" state still useful? seems maybe so for social logins
-    # that haven't gone through the create your account page?
+    # Some shenanigans to fake social sign up
+    user = create_user 'bob'
+    user.first_name = "Bob"
+    user.last_name = "Henry"
+    user.save
 
-    visit_authorize_uri
-    expect(page).to have_content('Sign in with your one OpenStax account!')
+    authentication = FactoryGirl.create(:authentication,
+                                        user: user,
+                                        provider: 'facebook')
 
-    fill_in 'Username', with: 'user'
-    fill_in 'Password', with: 'password'
-    click_button 'Sign in'
+    visit '/'
+    signin_as 'bob'
 
-    expect(page).to have_content('Merge Logins')
-    click_on 'Continue'
+    visit '/signup/social'
 
-    expect(page).to have_content('Complete your profile information')
-    fill_in 'First Name', with: 'First'
-    fill_in 'Last Name', with: 'Last'
+    allow(OSU::AccessPolicy).to receive(:action_allowed?).and_return(true)
+
+
     find(:css, '#register_i_agree').set(true)
     click_button 'Register'
 
-    expect(page.current_url).to match(app_callback_url)
+    expect(page).not_to have_content("Alert: Email address can't be blank")
+    expect(page).to have_content("Your Account")
   end
 end

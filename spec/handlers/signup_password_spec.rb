@@ -3,11 +3,11 @@ require 'rails_helper'
 # TODO add specs for missing, but required, params
 # TODO add in UsersRegister specs -- oops maybe are none?  then add specs to test rest of SignupProcess
 
-describe SignupProcess do
+describe SignupPassword do
 
   context "when user info ok but passwords don't match" do
     let (:identities_register_call) { -> {
-      SignupProcess.handle(
+      described_class.handle(
         params: {
           register: {
             username: 'joebob',
@@ -39,7 +39,7 @@ describe SignupProcess do
 
   context "when the user already has a password" do
     before(:each) do
-      expect(SignupProcess.handle(
+      expect(described_class.handle(
         params: {
           register: {
             username: 'joebob',
@@ -55,7 +55,7 @@ describe SignupProcess do
     end
 
     it "has errors for [:register, :username] if not logged in" do
-      outcome = SignupProcess.handle(
+      outcome = described_class.handle(
         params: {
           register: {
             username: 'joebob',
@@ -74,7 +74,7 @@ describe SignupProcess do
 
     it "has errors for [:register, :user_id] if logged in" do
       expect {
-        SignupProcess.handle(
+        described_class.handle(
           params: {
             register: {
               username: 'joebob',
