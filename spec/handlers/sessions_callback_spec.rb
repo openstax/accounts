@@ -7,14 +7,8 @@ describe SessionsCallback do
   context "not previously signed in" do
     context "new authorization" do
       context "with no email or with an email not in the database" do
-        # Identity and authentication already exist,
-        # as they were created during the OAuth request phase
+        # Identity already exists (was created during the OAuth request phase)
         let!(:identity)       { FactoryGirl.create(:identity) }
-        let!(:authentication) {
-          FactoryGirl.create(:authentication, user: identity.user,
-                                              uid: identity.uid,
-                                              provider: 'identity')
-        }
 
         it "makes new user and prompts new or returning" do
           result = SessionsCallback.handle(
@@ -22,7 +16,7 @@ describe SessionsCallback do
             request: MockOmniauthRequest.new('identity', identity.uid, {})
           )
 
-          expect(result.outputs[:status]).to eq :returning_or_new_password_user
+          expect(result.outputs[:status]).to eq :new_password_user
 
           expect(user_state.current_user).not_to be_nil
           expect(user_state.current_user.person).to be_nil
@@ -83,7 +77,7 @@ describe SessionsCallback do
                                            {})
         )
 
-        expect(result.outputs[:status]).to eq :returning_or_new_password_user
+        expect(result.outputs[:status]).to eq :returning_user
         expect(user_state.current_user).to eq authentication.user
       end
     end

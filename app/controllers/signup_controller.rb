@@ -20,6 +20,7 @@ class SignupController < ApplicationController
     if request.post?
       handle_with(SignupProcess,
                   contracts_required: !contracts_not_required,
+                  is_password_signup: false,
                   success: lambda {
                     redirect_back
                   },

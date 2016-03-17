@@ -25,28 +25,4 @@ feature 'Confirm email address', js: true do
     expect(page).to have_content('Alert: Unable to verify email address')
     expect(page).to have_content("Sorry, we couldn't verify an email using the verification code you provided.")
   end
-
-  scenario 'successfully during registration' do
-    # set the user state to "temp" so we can test registration
-    user = create_user 'user2'
-    user.state = 'temp'
-    user.save
-
-    visit '/'
-    fill_in 'Username', with: 'user2'
-    fill_in 'Password', with: 'password'
-    click_on 'Sign in'
-
-    # this page is not being used in the current registration workflow
-    # but the code is there in case we want to use it
-    visit '/ask_for_email'
-    fill_in 'Email Address', with: 'user2@example.com'
-    click_on 'Submit'
-
-    expect(page).to have_content('Check your inbox to verify your email address')
-
-    visit link_in_last_email
-    expect(page).to have_content(
-      'Please close this tab and continue your registration process in OpenStax')
-  end
 end
