@@ -15,7 +15,7 @@ feature 'User signs up as a local user', js: true do
     fill_in 'Username', with: 'testuser'
     fill_in 'Password *', with: 'password'
     fill_in 'Confirm Password', with: 'password'
-    find(:css, '#register_i_agree').set(true)
+    find(:css, '#signup_i_agree').set(true)
     click_button 'Register'
 
     expect(page).not_to have_content('Alert')
@@ -39,7 +39,7 @@ feature 'User signs up as a local user', js: true do
     fill_in 'Username', with: 'testuser'
     fill_in 'Password *', with: 'password'
     fill_in 'Confirm Password', with: 'pass'
-    find(:css, '#register_i_agree').set(true)
+    find(:css, '#signup_i_agree').set(true)
     click_button 'Register'
 
     expect(page).to have_content("Alert: Password doesn't match confirmation")
@@ -56,7 +56,7 @@ feature 'User signs up as a local user', js: true do
     fill_in 'Username', with: ''
     fill_in 'Password *', with: 'password'
     fill_in 'Confirm Password', with: 'password'
-    find(:css, '#register_i_agree').set(true)
+    find(:css, '#signup_i_agree').set(true)
     click_button 'Register'
 
     expect(page).to have_content("Alert: Username can't be blank")
@@ -73,10 +73,10 @@ feature 'User signs up as a local user', js: true do
     fill_in 'Username', with: 'testuser'
     fill_in 'Password *', with: ''
     fill_in 'Confirm Password', with: ''
-    find(:css, '#register_i_agree').set(true)
+    find(:css, '#signup_i_agree').set(true)
     click_button 'Register'
 
-    expect(page).to have_content("Alert: You must choose a password and confirm it to create your account")
+    expect(page).to have_content("Alert: Password can't be blank Password confirmation can't be blank")
     expect(page).not_to have_content('Sign out')
   end
 
@@ -90,7 +90,7 @@ feature 'User signs up as a local user', js: true do
     fill_in 'Username', with: 'testuser'
     fill_in 'Password *', with: 'pass'
     fill_in 'Confirm Password', with: 'pass'
-    find(:css, '#register_i_agree').set(true)
+    find(:css, '#signup_i_agree').set(true)
     click_button 'Register'
 
     expect(page).to have_content("Password is too short (minimum is 8 characters)")
@@ -108,7 +108,7 @@ feature 'User signs up as a local user', js: true do
     fill_in 'Username', with: 'testuser'
     fill_in 'Password *', with: 'password'
     fill_in 'Confirm Password', with: 'password'
-    find(:css, '#register_i_agree').set(true)
+    find(:css, '#signup_i_agree').set(true)
     click_button 'Register'
 
     expect(page).to have_content('Username has already been taken', count: 1)
@@ -125,7 +125,7 @@ feature 'User signs up as a local user', js: true do
     fill_in 'Username', with: 'testuser'
     fill_in 'Password *', with: 'password'
     fill_in 'Confirm Password', with: 'password'
-    find(:css, '#register_i_agree').set(true)
+    find(:css, '#signup_i_agree').set(true)
     click_button 'Register'
 
     expect(page).to have_content("Alert: Email address can't be blank")
@@ -142,7 +142,7 @@ feature 'User signs up as a local user', js: true do
     fill_in 'Username', with: 'testuser'
     fill_in 'Password *', with: 'password'
     fill_in 'Confirm Password', with: 'password'
-    find(:css, '#register_i_agree').set(true)
+    find(:css, '#signup_i_agree').set(true)
     click_button 'Register'
 
     expect(page).to have_content('Value "testuser@ex ample.org" is not a valid email address')
@@ -170,7 +170,7 @@ feature 'User signs up as a local user', js: true do
     allow(OSU::AccessPolicy).to receive(:action_allowed?).and_return(true)
 
 
-    find(:css, '#register_i_agree').set(true)
+    find(:css, '#signup_i_agree').set(true)
     click_button 'Register'
 
     expect(page).not_to have_content("Alert: Email address can't be blank")

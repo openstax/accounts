@@ -2,7 +2,7 @@ class SignupSocial
 
   lev_handler
 
-  paramify :register do
+  paramify :signup do
     attribute :i_agree, type: boolean
     attribute :username, type: String
     validates :username, presence: true
@@ -27,33 +27,24 @@ class SignupSocial
   def handle
     user = caller
 
-    if options[:contracts_required] && !register_params.i_agree
+    if options[:contracts_required] && !signup_params.i_agree
       fatal_error(code: :did_not_agree, message: 'You must agree to the terms to create your account.')
     end
 
-    user.username = register_params.username
-    user.title = register_params.title if !register_params.title.blank?
-    user.first_name = register_params.first_name
-    user.last_name = register_params.last_name
-    user.suffix = register_params.suffix if !register_params.suffix.blank?
-    user.state = 'activated'
+    user.username = signup_params.username
+    user.title = signup_params.title if !signup_params.title.blank?
+    user.first_name = signup_params.first_name
+    user.last_name = signup_params.last_name
+    user.suffix = signup_params.suffix if !signup_params.suffix.blank?
+    user.state = 'activated'  # TODO should state already be activated?
     user.save
 
     transfer_errors_from(user, {type: :verbatim}, true)
 
     if options[:contracts_required]
-      run(AgreeToTerms, register_params.contract_1_id, user, no_error_if_already_signed: true)
-      run(AgreeToTerms, register_params.contract_2_id, user, no_error_if_already_signed: true)
+      run(AgreeToTerms, signup_params.contract_1_id, user, no_error_if_already_signed: true)
+      run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
     end
-
-    # attach_user_to_person
   end
 
-  # def attach_user_to_person
-  #   person = Person.create!
-  #   user.person_id = person.id
-  #   user.save
-
-  #   transfer_errors_from(user, {type: :verbatim})
-  # end
 end
