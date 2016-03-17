@@ -4,8 +4,6 @@ class User < ActiveRecord::Base
   USERNAME_MAX_LENGTH = 50
   VALID_STATES = ['temp', 'unclaimed', 'activated']
 
-  belongs_to :person, inverse_of: :users
-
   has_one :identity, dependent: :destroy, inverse_of: :user
 
   has_many :authentications, dependent: :destroy, inverse_of: :user

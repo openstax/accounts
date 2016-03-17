@@ -37,13 +37,6 @@ Accounts::Application.routes.draw do
     put 'profile', action: :update
   end
 
-  namespace 'registration' do
-    get 'complete'
-    put 'complete'
-    get 'verification_pending'
-    put 'i_verified'
-  end
-
   namespace 'signup' do
     get 'password'
     get 'social'

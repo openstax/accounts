@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160317013518) do
+ActiveRecord::Schema.define(:version => 20160317061009) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -232,17 +232,11 @@ ActiveRecord::Schema.define(:version => 20160317013518) do
     t.index ["identity_id"], :name => "index_password_reset_codes_on_identity_id", :unique => true
   end
 
-  create_table "people", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
   create_table "users", :force => true do |t|
     t.string   "username",         :default => "",     :null => false
     t.datetime "created_at",                           :null => false
     t.datetime "updated_at",                           :null => false
     t.boolean  "is_administrator", :default => false
-    t.integer  "person_id"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "full_name"

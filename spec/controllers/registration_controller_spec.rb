@@ -1,8 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe RegistrationController, type: :controller do
+RSpec.describe 'RegistrationController', type: :controller do
 
   let!(:temp_user) { FactoryGirl.create :temp_user }
+
+  # TODO find a new home for relevant pieces of below
 
   xcontext 'GET complete' do
     it 'renders the registration page' do
