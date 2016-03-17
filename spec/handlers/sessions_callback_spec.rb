@@ -19,7 +19,6 @@ describe SessionsCallback do
           expect(result.outputs[:status]).to eq :new_password_user
 
           expect(user_state.current_user).not_to be_nil
-          expect(user_state.current_user.person).to be_nil
           expect(user_state.current_user.is_temp?).to be_truthy
 
           linked_authentications = user_state.current_user.authentications

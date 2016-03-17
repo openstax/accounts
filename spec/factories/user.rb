@@ -1,14 +1,12 @@
 FactoryGirl.define do
   factory :user do
     username { SecureRandom.hex(3) }
-    person
     state 'activated' # otherwise the default from DB will be to 'temp'
     trait :admin do
       is_administrator true
     end
 
     factory :temp_user do
-      person nil
       state 'temp'
     end
 

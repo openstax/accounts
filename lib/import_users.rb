@@ -56,7 +56,6 @@ class ImportUsers
   end
 
   def create_user(username, password_digest, title, first_name, last_name, full_name, email_address)
-    person = Person.create!
     @user = User.new
     @user.username = username
     @user.state = 'activated'
