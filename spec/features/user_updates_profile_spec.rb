@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User updates profile' do
+xfeature 'User updates profile' do
   before(:each) do
     create_user('user')
     visit '/signin'

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User updates password' do
+xfeature 'User updates password' do
   before(:each) do
     create_user('user')
     visit '/signin'

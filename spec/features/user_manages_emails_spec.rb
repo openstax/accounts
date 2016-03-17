@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User manages emails' do
+xfeature 'User manages emails' do
   before(:each) do
     user = create_user('user')
     create_email_address_for(user, 'user@unverified.com',

@@ -9,7 +9,7 @@ feature 'Login inside an iframe', js: true do
     visit "/remote/iframe?parent=#{origin}"
     loaded = page.evaluate_script("OxAccount.Host.setUrl('/signin')")
     within_frame 'content' do
-      expect(page).to have_content("Sign in Sign up Can't sign in")
+      expect(page).to have_content("Sign in with Facebook")
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
       click_button 'Sign in'

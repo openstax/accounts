@@ -64,7 +64,7 @@ class SessionsCallback
       elsif users_matching_oauth_data.size == 1
         authentication_user = users_matching_oauth_data.first
         status = :transferred_authentication
-      else; debugger
+      else
         outcome = run(CreateUserFromOmniauthData, @data)
         authentication_user = outcome.outputs[:user]
         run(TransferOmniauthData, @data, authentication_user)
