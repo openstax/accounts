@@ -52,9 +52,12 @@ module OmniAuth
       end
 
       def registration_phase
-        @handler_result = SignupPassword.handle(params: request,
-                                                caller: current_user,
-                                                contracts_required: !contracts_not_required(client_id: request['client_id']))
+        @handler_result =
+          SignupPassword.handle(
+            params: request,
+            caller: current_user,
+            contracts_required: !contracts_not_required(client_id: request['client_id'] || session['client_id'])
+          )
 
 
         # @handler_result = IdentitiesRegister.handle(params: request,
