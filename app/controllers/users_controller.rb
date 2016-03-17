@@ -1,9 +1,8 @@
 class UsersController < ApplicationController
 
-  skip_before_filter :registration, only: [:edit, :update, :ask_for_email]
+  skip_before_filter :registration, only: [:edit, :update]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:edit, :update, :ask_for_email]
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:edit, :update]
 
   def edit
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
@@ -19,22 +18,6 @@ class UsersController < ApplicationController
         flash.now[:alert] << msg
       end
       render :edit, status: 400
-    end
-  end
-
-  def ask_for_email
-    # FWIW, when this code is this resurrected, the registration_redirect_url
-    # may not be what we need.
-    if request.put?
-      handle_with(ContactInfosCreate,
-                  success: lambda {
-                    current_user.registration_redirect_url = stored_url
-                    current_user.save
-                    redirect_to registration_verification_pending_path
-                  },
-                  failure: lambda {
-                    render :ask_for_email, status: 400
-                  })
     end
   end
 

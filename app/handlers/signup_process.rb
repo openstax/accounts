@@ -28,7 +28,6 @@ class SignupProcess
   uses_routine AddEmailToUser,
                translations: { inputs: {scope: :register} }
   uses_routine AgreeToTerms
-  uses_routine FinishUserCreation
 
   protected
 
@@ -37,19 +36,17 @@ class SignupProcess
   end
 
   def handle
+    user = caller
+
+    if (options[:is_password_signup] ^ !user.is_anonymous?)
+      fatal_error(code: :inconsistent_state)
+    end
+
     if options[:contracts_required] && !register_params.i_agree
       fatal_error(code: :did_not_agree, message: 'You must agree to the terms to create your account.')
     end
 
-    user = caller
-
-    # TODO just added this recently still need it?
-    # if user.identity
-    #   outputs[:identity] = user.identity # let the sign up flow continue
-    #   fatal_error(code: :already_has_identity)
-    # end
-
-    if user.is_anonymous?
+    if options[:is_password_signup]
       run(CreateUser, username: register_params.username)
       user = outputs[[:create_user, :user]]
     end
@@ -59,40 +56,28 @@ class SignupProcess
     user.first_name = register_params.first_name
     user.last_name = register_params.last_name
     user.suffix = register_params.suffix if !register_params.suffix.blank?
+    user.state = 'activated'
     user.save
 
     transfer_errors_from(user, {type: :verbatim}, true)
 
-    # If the user doesn't have any authentications, then password information
-    # should be available and we should make an identity authentication
+    # If this is a password signup, create the Identity record.  Don't create
+    # an authentication yet, that is the job for SessionsCallback.
 
-    if user.authentications.none?
-      # TODO turn this block into a private method `attach_password_authentication` or something
-      if register_params.password.present? && register_params.password_confirmation.present?
+    if options[:is_password_signup]
+      if register_params.password.blank? || register_params.password_confirmation.blank?
+        fatal_error(code: :passwords_missing, message: "You must choose a password and confirm it to create your account.")
+      else
         run(CreateIdentity,
             password:              register_params.password,
             password_confirmation: register_params.password_confirmation,
             user_id:               user.id
         )
-
-        # TODO can we not make the authentication here and then have it happen in
-        # SessionsCallback where other Authentications are made?
-        authentication = Authentication.create(uid: outputs[:identity].id.to_s,
-                                               provider: 'identity',
-                                               user_id: user.id)
-
-        transfer_errors_from(authentication, {type: :verbatim}, true)
-      else
-        fatal_error(code: :passwords_missing, message: "You must choose a password and confirm it to create your account.")
       end
     end
 
+    # Doesn't hurt to readd the email if already verified by social login
     run(AddEmailToUser, register_params.email_address, user)
-
-    if params[:stored_url].present?  # TODO not needed???
-      user.registration_redirect_url = params[:stored_url]
-      user.save
-    end
 
     transfer_errors_from(user, {type: :verbatim}, true)
 
@@ -101,6 +86,14 @@ class SignupProcess
       run(AgreeToTerms, register_params.contract_2_id, user, no_error_if_already_signed: true)
     end
 
-    run(FinishUserCreation, user)  # TODO turn this into a private method if not used elsewhere
+    attach_user_to_person
+  end
+
+  def attach_user_to_person
+    person = Person.create!
+    user.person_id = person.id
+    user.save
+
+    transfer_errors_from(user, {type: :verbatim})
   end
 end

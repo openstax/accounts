@@ -11,10 +11,14 @@ Accounts::Application.routes.draw do
     get 'signin', action: :new
     get 'signout', action: :destroy
 
+    # Maintain these deprecated routes for a while until client code learns to
+    # use /signin and /signout
+    get 'login', action: :new
+    get 'logout', action: :destroy
+
     get 'help', path: '/signin/help', as: :signin_help
     post 'help', path: '/signin/help', as: :signin_help
 
-    # get 'i_am_returning'
     get 'returning_user'
 
     if Rails.env.development?
@@ -31,10 +35,6 @@ Accounts::Application.routes.draw do
   scope controller: 'users' do
     get 'profile', action: :edit
     put 'profile', action: :update
-    get 'ask_for_email'
-    put 'ask_for_email'
-    # get 'signin_help'
-    # post 'signin_help'
   end
 
   namespace 'registration' do
