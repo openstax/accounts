@@ -1,3 +1,5 @@
+// Modified from /vendor/packages/x-editable/address.js
+
 (function ($) {
   "use strict";
 

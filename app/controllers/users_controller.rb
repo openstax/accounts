@@ -13,18 +13,15 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if current_user.update_attributes(user_params)
-        # debugger
-        # format.json { head :ok }
-        format.json { render json: {full_name: current_user.guessed_full_name}, status: :ok}
-        # format.json { respond_with_bip(current_user) }
-        # redirect_to profile_path, notice: 'Your profile has been updated. These changes may take a few minutes to propagate to the entire site.'
+        format.json {
+          render json: { full_name: current_user.guessed_full_name },
+                 status: :ok
+        }
       else
-        # format.json { respond_with_bip(current_user) }
-        # flash.now[:alert] ||= []
-        # current_user.errors.full_messages.each do |msg|
-        #   flash.now[:alert] << msg
-        # end
-        # render :edit, status: 400
+        format.json {
+          render json: current_user.errors.full_messages.first,
+                 status: :unprocessable_entity
+        }
       end
     end
   end
@@ -35,10 +32,6 @@ class UsersController < ApplicationController
     up = params[:value].is_a?(Hash) ?
            params[:value] :
            {params[:name] => params[:value]}
-    # return {} unless up.is_a? Hash
-    # up = up.slice(:title, :first_name, :last_name, :suffix)
-    # up[:full_name] = "#{up[:first_name]} #{up[:last_name]} #{up[:suffix]}"
-    # up
   end
 
 end

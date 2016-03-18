@@ -1,10 +1,7 @@
 <% @parent_col_id = "profile" %>
 
 <% content_for :head do %>
-  <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.js"></script>
   <%= javascript_include_tag  "profile" %>
-  <%# TODO can put x-editable into profile dir and manifest %>
 <% end %>
 
 <%= content_for :javascript do %>
@@ -49,7 +46,6 @@
   </div>
   <div class="col-sm-10 info hoverable">
     <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.guessed_full_name %></a>
-    <span class="mod-holder"><span class="glyphicon glyphicon-pencil mod"></span></span>
   </div>
 </div>
 
