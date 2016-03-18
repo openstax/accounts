@@ -45,7 +45,6 @@ Accounts::Application.routes.draw do
 
   resource :identity, only: :update
   scope controller: 'identities' do
-    get 'signup', action: :new
     get 'reset_password'
     post 'reset_password'
   end

@@ -15,7 +15,7 @@ feature 'User claims an unclaimed account', js: true do
     fill_in 'Confirm Password *', with: 'password'
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
-    find(:css, '#signup_i_agree').set(true)
+    check 'signup_i_agree'
     click_button 'Register'
 
     new_user = User.find_by_username('unclaimedtestuser')

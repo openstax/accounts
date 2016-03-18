@@ -11,8 +11,10 @@
     <%= javascript_include_tag  "application" %>
     <%= csrf_meta_tags %>
 
-    <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
+    <%= yield :head if content_for?(:head) %>
 
+    <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
 
   <body>
