@@ -9,7 +9,7 @@ describe ResetPasswordMailer, type: :mailer do
     end
 
     it 'renders the headers' do
-      expect(@mail.subject).to eq('[OpenStax] Reset your password')
+      expect(@mail.subject).to eq('[OpenStax] Instructions for signing in to your OpenStax account')
       expect(@mail.header['to'].to_s).to eq("\"John Doe, Jr.\" <#{@email.value}>")
       expect(@mail.from).to eq(['noreply@openstax.org'])
     end
