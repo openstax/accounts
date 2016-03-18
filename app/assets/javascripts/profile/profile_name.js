@@ -65,10 +65,10 @@
   });
 
   ProfileName.defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults, {
-    tpl: '<div class="editable-profile-name"><label><span>Title: </span><input type="text" name="title" class="input-small form-control" placeholder="Title"></label></div>'+
-         '<div class="editable-profile-name"><label><span>First Name: </span><input type="text" name="first_name" class="input-small"></label></div>'+
-         '<div class="editable-profile-name"><label><span>Last Name: </span><input type="text" name="last_name" class="input-mini"></label></div>' +
-         '<div class="editable-profile-name"><label><span>Suffix: </span><input type="text" name="suffix" class="input-mini"></label></div>',
+    tpl: '<div><input type="text" name="title" class="form-control input-sm" placeholder="Title"></div>'+
+         '<div><input type="text" name="first_name" class="form-control input-sm" placeholder="First name"></div>'+
+         '<div><input type="text" name="last_name" class="form-control input-sm" placeholder="Last name"></div>' +
+         '<div><input type="text" name="suffix" class="form-control input-sm" placeholder="Suffix"></div>',
 
     inputclass: ''
   });
