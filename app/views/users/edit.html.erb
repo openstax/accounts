@@ -1,5 +1,12 @@
 <% @parent_col_id = "profile" %>
 
+<% content_for :head do %>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.js"></script>
+  <%= javascript_include_tag  "profile" %>
+  <%# TODO can put x-editable into profile dir and manifest %>
+<% end %>
+
 <%= content_for :javascript do %>
   <script type="text/javascript">
     $(document).ready(function() {
@@ -7,12 +14,29 @@
         $(this).toggleClass("hover");
       });
 
-      $(document).ready(function() {
-        $('#enable-other-sign-in').click(function(e) {
-          e.preventDefault();
-          $('.row.other-sign-in').show();
-          $(this).hide();
-        });
+      $('#enable-other-sign-in').click(function(e) {
+        e.preventDefault();
+        $('.row.other-sign-in').show();
+        $(this).hide();
+      });
+
+      $.fn.editable.defaults.mode = 'inline';
+      $.fn.editable.defaults.send = "always";
+      $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+      $.fn.editable.defaults.url = "<%= profile_path %>";
+
+      $('#username').editable();
+
+      $('#name').editable({
+        value: {
+          title: "<%= current_user.title %>",
+          first_name: "<%= current_user.first_name %>",
+          last_name: "<%= current_user.last_name %>",
+          suffix: "<%= current_user.suffix %>"
+        },
+        success: function(response, newValue) {
+          $(this).html(response.full_name);
+        }
       });
     });</script>
 <% end %>
@@ -24,7 +48,7 @@
     Name
   </div>
   <div class="col-sm-10 info hoverable">
-    <%= current_user.full_name || current_user.guessed_full_name %>
+    <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.guessed_full_name %></a>
     <span class="mod-holder"><span class="glyphicon glyphicon-pencil mod"></span></span>
   </div>
 </div>
@@ -34,8 +58,7 @@
     Username
   </div>
   <div class="col-sm-10 info hoverable">
-    <%= current_user.username %>
-    <span class="mod-holder"><span class="glyphicon glyphicon-pencil mod"></span></span>
+    <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
   </div>
 </div>
 

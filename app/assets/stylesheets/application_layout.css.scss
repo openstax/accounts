@@ -121,3 +121,8 @@ body, p, ol, ul, td, a {
   margin-bottom: -10px;
   margin-top: 20px;
 }
+
+@-ms-viewport{
+  width: device-width;
+}
+

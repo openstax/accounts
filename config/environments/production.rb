@@ -46,7 +46,7 @@ Accounts::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Assets that are precompiled
-  config.assets.precompile += %w( application.js remote-access.js )
+  config.assets.precompile += %w( application.js remote-access.js profile.js )
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
