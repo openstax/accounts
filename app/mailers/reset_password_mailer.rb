@@ -4,7 +4,7 @@ class ResetPasswordMailer < SiteMailer
     @email_address = email_address
     @reset_password_code = reset_password_code
     mail to: "\"#{email_address.user.full_name}\" <#{email_address.value}>",
-         subject: "Reset your password"
+         subject: "Instructions for signing in to your OpenStax account"
   end
 
 end
