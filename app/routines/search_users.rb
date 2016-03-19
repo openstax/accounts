@@ -55,9 +55,16 @@ class SearchUsers
         users = users.where{lower(last_name).like_any my{prep_names(last_names)}}
       end
 
-      with.keyword :name do |names|
+      with.keyword :full_name do |names|
         names = prep_names(names)
         users = users.where{ (lower(first_name).op('||', ' ').op('||', lower(last_name)).like_any names) }
+      end
+
+      with.keyword :name do |names|
+        names = prep_names(names)
+        users = users.where{ (lower(first_name).op('||', ' ').op('||', lower(last_name)).like_any names) |
+                             (lower(first_name).like_any names) |
+                             (lower(last_name).like_any names) }
       end
 
       with.keyword :id do |ids|
