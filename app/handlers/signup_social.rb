@@ -11,12 +11,14 @@ class SignupSocial
     validates :first_name, presence: true
     attribute :last_name, type: String
     validates :last_name, presence: true
+    attribute :email_address, type: String
     attribute :suffix, type: String
     attribute :contract_1_id, type: Integer
     attribute :contract_2_id, type: Integer
   end
 
   uses_routine AgreeToTerms
+  uses_routine AddEmailToUser
 
   protected
 
@@ -29,6 +31,15 @@ class SignupSocial
 
     if options[:contracts_required] && !signup_params.i_agree
       fatal_error(code: :did_not_agree, message: 'You must agree to the terms to create your account.')
+    end
+
+    if user.email_addresses.empty?
+      if signup_params.email_address.blank?
+        fatal_error(code: :email_address_required,
+                    message: 'You must provide an email address to create your account.')
+      else
+        run(AddEmailToUser, signup_params.email_address, user)
+      end
     end
 
     user.username = signup_params.username
