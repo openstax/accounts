@@ -160,7 +160,7 @@ feature 'User signs up as a local user', js: true do
 
     authentication = FactoryGirl.create(:authentication,
                                         user: user,
-                                        provider: 'facebook')
+                                        provider: 'twitter')
 
     visit '/'
     signin_as 'bob'
@@ -169,11 +169,16 @@ feature 'User signs up as a local user', js: true do
 
     allow(OSU::AccessPolicy).to receive(:action_allowed?).and_return(true)
 
-
     find(:css, '#signup_i_agree').set(true)
     click_button 'Register'
 
-    expect(page).not_to have_content("Alert: Email address can't be blank")
+    expect(page).to have_content("Alert: You must provide an email address to create your account.")
+    expect(page).to_not have_content("Your Account")
+
+    fill_in 'Email Address', with: 'bob@example.org'
+    click_button 'Register'
+
+    expect(page).to_not have_content("Alert: You must provide an email address to create your account.")
     expect(page).to have_content("Your Account")
   end
 end
