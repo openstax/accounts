@@ -49,7 +49,7 @@ class AnonymousUser
     'anonymous'
   end
 
-  def guessed_full_name
+  def full_name
     "Anonymous User"
   end
 
@@ -73,7 +73,7 @@ class AnonymousUser
   end
 
   def casual_name
-    guessed_full_name
+    full_name
   end
 
 end

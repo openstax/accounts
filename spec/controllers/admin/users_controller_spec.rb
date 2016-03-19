@@ -18,7 +18,7 @@ RSpec.describe Admin::UsersController, type: :controller do
       user.reload
       expect(user.first_name).to eq 'Malik'
       expect(user.last_name).to eq 'Kristensen'
-      expect(user.guessed_full_name).to eq 'Malik Kristensen'
+      expect(user.full_name).to eq 'Malik Kristensen'
       expect(user.email_addresses.first.value).to eq 'malik@example.org'
       expect(user.is_administrator).to be true
       expect(user.identity.authenticate('si4eeSai')).to eq user.identity
