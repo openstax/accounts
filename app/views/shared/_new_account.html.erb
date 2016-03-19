@@ -5,6 +5,7 @@
     <div class="col-sm-6">
       <% user = signed_in? ? current_user : OpenStruct.new %>
       <% is_social_signup = signed_in? %>
+      <% email = user.email_addresses.try(:first).try(:value) %>
 
       <%= standard_field form: f, name: :title, type: :text_field, label: "Title",
                          options: {value: user.title, hide: true} %>
@@ -15,7 +16,7 @@
       <%= standard_field form: f, name: :suffix, type: :text_field, label: "Suffix",
                          options: {value: user.suffix, hide: true} %>
       <%= standard_field form: f, name: :email_address, type: :text_field, label: "Email Address *",
-                         options: {value: user.email_addresses.try(:first).try(:value)} %>
+                         options: {value: email, disabled: email.present?} %>
       <%= standard_field form: f, name: :username, type: :text_field, label: "Username *",
                          options: {value: user.username} %>
 
