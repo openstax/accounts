@@ -10,7 +10,6 @@ describe SearchApplicationUsers do
   let!(:user_2) { FactoryGirl.create :user,
                                      first_name: 'Mary',
                                      last_name: 'Mighty',
-                                     full_name: 'Mary Mighty',
                                      username: 'mary' }
   let!(:user_3) { FactoryGirl.create :user,
                                      first_name: 'John',
@@ -53,7 +52,7 @@ describe SearchApplicationUsers do
   end
 
   it "should match based on one full name" do
-    outcome = SearchApplicationUsers.call(application, 'full_name:"Mary Mighty"').outputs.items.to_a
+    outcome = SearchApplicationUsers.call(application, 'name:"Mary Mighty"').outputs.items.to_a
     expect(outcome).to eq [user_2]
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160317061009) do
+ActiveRecord::Schema.define(:version => 20160319003444) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -239,13 +239,11 @@ ActiveRecord::Schema.define(:version => 20160317061009) do
     t.boolean  "is_administrator", :default => false
     t.string   "first_name"
     t.string   "last_name"
-    t.string   "full_name"
     t.string   "title"
     t.string   "uuid"
     t.string   "suffix"
     t.string   "state",            :default => "temp", :null => false
     t.index ["first_name"], :name => "index_users_on_first_name", :case_sensitive => false
-    t.index ["full_name"], :name => "index_users_on_full_name", :case_sensitive => false
     t.index ["last_name"], :name => "index_users_on_last_name", :case_sensitive => false
     t.index ["username"], :name => "index_users_on_username", :unique => true
     t.index ["username"], :name => "index_users_on_username_case_insensitive", :case_sensitive => false

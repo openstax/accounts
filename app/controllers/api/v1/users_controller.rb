@@ -13,7 +13,7 @@ class Api::V1::UsersController < Api::V1::ApiController
       email addresses in ContactInfos and the password hash in Identity.
 
       Users have the following String attributes:
-      username, first_name, last_name, full_name, title
+      username, first_name, last_name, title, suffix
     EOS
   end
 

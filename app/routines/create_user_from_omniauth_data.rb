@@ -16,7 +16,6 @@ class CreateUserFromOmniauthData
                     first_name: data.first_name,
                     last_name: data.last_name,
                     full_name: data.name,
-                    email: data.email,  # TODO this is not used! Change CreateUser to use named arguments and remove this
                     ensure_no_errors: true)
 
     # TODO change routines that just take an (options={}) argument so we can

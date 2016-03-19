@@ -24,6 +24,8 @@ class User < ActiveRecord::Base
 
   has_many :oauth_applications, through: :member_groups
 
+  before_validation :strip_names
+
   validates :username, presence: true,
                        length: { minimum: 3, maximum: USERNAME_MAX_LENGTH },
                        format: { with: /\A[A-Za-z\d_]+\z/,
@@ -35,9 +37,11 @@ class User < ActiveRecord::Base
   validates :state, inclusion: { in: VALID_STATES,
                                 message: "must be one of #{VALID_STATES.join(',')}" }
 
+  validate :name_part_required_for_suffix_or_title
+
   delegate_to_routine :destroy
 
-  attr_accessible :title, :first_name, :last_name, :full_name, :suffix, :username
+  attr_accessible :title, :first_name, :last_name, :suffix, :username
 
   attr_readonly :uuid
 
@@ -90,13 +94,12 @@ class User < ActiveRecord::Base
   end
 
   def name
-    result = full_name.present? ? full_name : guessed_full_name || username
-    title.present? ? "#{title} #{result}" : result
+    guessed_full_name.present? ? guessed_full_name : username
   end
 
   def guessed_full_name
-    name = first_name.present? && last_name.present? ? "#{first_name} #{last_name}" : nil
-    suffix.present? ? "#{name} #{suffix}" : name
+    guess = "#{title} #{first_name} #{last_name} #{suffix}".gsub(/\s+/,' ').strip
+    guess.blank? ? nil : guess
   end
 
   def guessed_first_name
@@ -153,6 +156,33 @@ class User < ActiveRecord::Base
   def make_first_user_an_admin
     return if Rails.env.production?
     self.is_administrator = true if User.count == 0
+  end
+
+  def name_part_required_for_suffix_or_title
+    has_name_parts = first_name.present? || last_name.present?
+
+    if !has_name_parts
+      if title.present?
+        errors.add(:base, "A first or last name is required if a title is provided")
+        return false
+      end
+
+      if suffix.present?
+        errors.add(:base, "A first or last name is required if a suffix is provided")
+        false
+      end
+    end
+
+    true
+  end
+
+  def strip_names
+    self.title      = self.title.try(:strip)
+    self.first_name = self.first_name.try(:strip)
+    self.last_name  = self.last_name.try(:strip)
+    self.suffix     = self.suffix.try(:strip)
+    self.username   = self.username.try(:strip)
+    true
   end
 
 end

@@ -32,7 +32,7 @@
           suffix: "<%= current_user.suffix %>"
         },
         success: function(response, newValue) {
-          $(this).html(response.full_name);
+          $(this).html(response.guessed_full_name);
         }
       });
     });</script>

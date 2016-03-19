@@ -2,7 +2,7 @@ module Api::V1
   class UserRepresenter < Roar::Decorator
     include Roar::Representer::JSON
 
-    property :id, 
+    property :id,
              type: Integer,
              readable: true,
              writeable: false,
@@ -27,8 +27,9 @@ module Api::V1
 
     property :full_name,
              type: String,
+             getter: ->(*) { guessed_full_name }, # TODO change to full_name later
              readable: true,
-             writeable: true
+             writeable: false
 
     property :title,
              type: String,
