@@ -32,7 +32,7 @@
           suffix: "<%= current_user.suffix %>"
         },
         success: function(response, newValue) {
-          $(this).html(response.guessed_full_name);
+          $(this).html(response.full_name);
         }
       });
     });</script>
@@ -45,7 +45,7 @@
     Name
   </div>
   <div class="col-sm-10 info hoverable">
-    <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.guessed_full_name %></a>
+    <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></a>
   </div>
 </div>
 

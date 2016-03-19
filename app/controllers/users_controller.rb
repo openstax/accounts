@@ -14,7 +14,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if current_user.update_attributes(user_params)
         format.json {
-          render json: { full_name: current_user.guessed_full_name },
+          render json: { full_name: current_user.full_name },
                  status: :ok
         }
       else

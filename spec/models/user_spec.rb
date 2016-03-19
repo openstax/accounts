@@ -27,25 +27,25 @@ describe User do
     expect(user.username).to eq "user"
   end
 
-  context 'guessed_full_name' do
+  context 'full_name' do
     it 'puts all the pieces together' do
       user = FactoryGirl.create :user, title: "Mr.", first_name: "Bob", last_name: "Jones", suffix: "Sr."
-      expect(user.guessed_full_name).to eq "Mr. Bob Jones Sr."
+      expect(user.full_name).to eq "Mr. Bob Jones Sr."
     end
 
     it 'includes the title if present' do
       user = FactoryGirl.create :user, title: "Mr.", first_name: "Bob"
-      expect(user.guessed_full_name).to eq "Mr. Bob"
+      expect(user.full_name).to eq "Mr. Bob"
     end
 
     it 'includes the suffix if present' do
       user = FactoryGirl.create :user, suffix: "Jr.", first_name: "Bob"
-      expect(user.guessed_full_name).to eq "Bob Jr."
+      expect(user.full_name).to eq "Bob Jr."
     end
 
     it 'does not have extra spaces in middle if missing first name' do
       user = FactoryGirl.create :user, title: "Professor", last_name: "Einstein"
-      expect(user.guessed_full_name).to eq "Professor Einstein"
+      expect(user.full_name).to eq "Professor Einstein"
     end
   end
 

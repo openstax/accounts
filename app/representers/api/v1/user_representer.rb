@@ -27,7 +27,6 @@ module Api::V1
 
     property :full_name,
              type: String,
-             getter: ->(*) { guessed_full_name }, # TODO change to full_name later
              readable: true,
              writeable: false
 

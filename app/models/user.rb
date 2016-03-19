@@ -94,10 +94,10 @@ class User < ActiveRecord::Base
   end
 
   def name
-    guessed_full_name.present? ? guessed_full_name : username
+    full_name.present? ? full_name : username
   end
 
-  def guessed_full_name
+  def full_name
     guess = "#{title} #{first_name} #{last_name} #{suffix}".gsub(/\s+/,' ').strip
     guess.blank? ? nil : guess
   end

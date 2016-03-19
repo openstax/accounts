@@ -80,7 +80,7 @@ describe FindOrCreateUnclaimedUser do
           expect(new_user.username).to eq('bobsmith')
           expect(new_user.first_name).to eq('Bob')
           expect(new_user.last_name).to eq('Smith')
-          expect(new_user.guessed_full_name).to eq('Bob Smith')
+          expect(new_user.full_name).to eq('Bob Smith')
         }.to change { User.count }.by(1)
       end
 
@@ -93,7 +93,7 @@ describe FindOrCreateUnclaimedUser do
           expect(new_user.username).to eq('bobsmith')
           expect(new_user.first_name).to eq('Frank')
           expect(new_user.last_name).to eq('Franky')
-          expect(new_user.guessed_full_name).to eq('Frank Franky')
+          expect(new_user.full_name).to eq('Frank Franky')
         }.to change { User.count }.by(1)
       end
 

@@ -58,7 +58,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
             username: user_2.username,
             first_name: user_2.first_name,
             last_name: user_2.last_name,
-            full_name: user_2.guessed_full_name
+            full_name: user_2.full_name
           }
         ]
       }.to_json
@@ -130,7 +130,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         username: user_2.username,
         first_name: user_2.first_name,
         last_name: user_2.last_name,
-        full_name: user_2.guessed_full_name
+        full_name: user_2.full_name
       }.to_json
 
       expect(response.body).to eq(expected_response)
@@ -208,7 +208,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       new_user = User.find(JSON.parse(response.body)['id'])
       expect(new_user.first_name).to eq 'Sarah'
       expect(new_user.last_name).to eq 'Test'
-      expect(new_user.guessed_full_name).to eq 'Sarah Test'
+      expect(new_user.full_name).to eq 'Sarah Test'
     end
 
     it "should not create a new user for anonymous" do
