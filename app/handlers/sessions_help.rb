@@ -33,6 +33,6 @@ class SessionsHelp
                   offending_inputs: [:email_address])
     end
     code = run(GeneratePasswordResetCode, user.identity).outputs[:code]
-    ResetPasswordMailer.reset_password(email_addresses.first, code).deliver
+    SignInHelpMailer.sign_in_help(email_addresses.first, code).deliver
   end
 end

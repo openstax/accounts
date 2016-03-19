@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-describe ResetPasswordMailer, type: :mailer do
+describe SignInHelpMailer, type: :mailer do
   describe 'reset_password' do
     before :each do
       @user = FactoryGirl.create :user, username: 'user1', full_name: 'John Doe, Jr.'
       @email = FactoryGirl.create :email_address, user: @user
-      @mail = ResetPasswordMailer.reset_password @email, '1234'
+      @mail = SignInHelpMailer.sign_in_help @email, '1234'
     end
 
     it 'renders the headers' do
-      expect(@mail.subject).to eq('[OpenStax] Reset your password')
+      expect(@mail.subject).to eq('[OpenStax] Instructions for signing in to your OpenStax account')
       expect(@mail.header['to'].to_s).to eq("\"John Doe, Jr.\" <#{@email.value}>")
       expect(@mail.from).to eq(['noreply@openstax.org'])
     end
