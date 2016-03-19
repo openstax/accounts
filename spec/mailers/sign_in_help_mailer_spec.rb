@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-describe ResetPasswordMailer, type: :mailer do
+describe SignInHelpMailer, type: :mailer do
   describe 'reset_password' do
     before :each do
       @user = FactoryGirl.create :user, username: 'user1', full_name: 'John Doe, Jr.'
       @email = FactoryGirl.create :email_address, user: @user
-      @mail = ResetPasswordMailer.reset_password @email, '1234'
+      @mail = SignInHelpMailer.sign_in_help @email, '1234'
     end
 
     it 'renders the headers' do
