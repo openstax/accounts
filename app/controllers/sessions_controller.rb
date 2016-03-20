@@ -87,8 +87,9 @@ class SessionsController < ApplicationController
   def help
     if request.post?
       handle_with(SessionsHelp,
-                  success: lambda { # TODO change the notice to be less about "passwords"
-                    redirect_to root_path, notice: 'Password reset instructions sent to your email address!'
+                  success: lambda {
+                    redirect_to root_path,
+                                notice: 'Instructions for signing in to your OpenStax account sent to your email address.'
                   },
                   failure: lambda {
                     errors = @handler_result.errors.any?
