@@ -23,16 +23,13 @@ class SessionsHelp
       fatal_error(code: 'Username not found',
                   offending_inputs: [:username])
     end
-    if user.identity.nil?
-      fatal_error(code: 'Unable to reset password for this user',
-                  offending_inputs: [:identity])
-    end
     email_addresses = user.contact_infos.email_addresses
     if email_addresses.empty?
       fatal_error(code: 'No email addresses found for this user',
                   offending_inputs: [:email_address])
     end
-    code = run(GeneratePasswordResetCode, user.identity).outputs[:code]
+    code = run(GeneratePasswordResetCode, user.identity).outputs[:code] \
+      unless user.identity.nil?
     SignInHelpMailer.sign_in_help(email_addresses.first, code).deliver
   end
 end

@@ -43,7 +43,10 @@ def create_nonlocal_user(username, provider='facebook')
 
   result = CreateUserFromOmniauthData.call(data)
   raise "create_nonlocal_user for #{username} failed" if result.errors.any?
-  User.find_by_username(username)
+  user = User.find_by_username(username)
+  email = create_email_address_for(user, "#{username}@example.org")
+  MarkContactInfoVerified.call(email)
+  user
 end
 
 def signin_as username, password='password'
@@ -78,17 +81,24 @@ def generate_expired_reset_code_for(username)
   reset_code
 end
 
-def password_reset_email_sent?(user)
+def sign_in_help_email_sent?(user)
   user_emails = user.contact_infos.email_addresses.verified
-  code = user.identity.password_reset_code.code
   mail = ActionMailer::Base.deliveries.last
   expect(mail.to.length).to eq(1)
   expect(user_emails.collect {|e| e.value}).to include(mail.to[0])
   expect(mail.from).to eq(['noreply@openstax.org'])
   expect(mail.subject).to eq('[OpenStax] Instructions for signing in to your OpenStax account')
   expect(mail.body.encoded).to include("Hi #{user.username},")
-  @reset_link = "/reset_password?code=#{code}"
-  expect(mail.body.encoded).to include("http://nohost#{@reset_link}")
+  unless user.identity.nil?
+    code = user.identity.password_reset_code.code
+    @reset_link = "/reset_password?code=#{code}"
+    expect(mail.body.encoded).to include("http://nohost#{@reset_link}")
+  end
+  social_auths = user.authentications.reject { |a| a.provider == 'identity' }
+  social_auths.each do |social_auth|
+    expect(mail.body.encoded).to include("Sign in with #{social_auth.provider.capitalize}")
+    expect(mail.body.encoded).to include("http://nohost/auth/#{social_auth.provider}")
+  end
 end
 
 def link_in_last_email
