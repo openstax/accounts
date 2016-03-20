@@ -4,6 +4,8 @@ describe SignInHelpMailer, type: :mailer do
   describe 'reset_password' do
     before :each do
       @user = FactoryGirl.create :user, username: 'user1', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
+      FactoryGirl.create :authentication, provider: 'identity', user: @user
+      FactoryGirl.create :identity, user: @user
       @email = FactoryGirl.create :email_address, user: @user
       @mail = SignInHelpMailer.sign_in_help @email, '1234'
     end

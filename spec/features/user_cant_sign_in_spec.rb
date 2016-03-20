@@ -23,10 +23,11 @@ feature "User can't sign in", js: true do
   end
 
   scenario 'user is not a local user' do
-    create_nonlocal_user 'not_local'
+    user = create_nonlocal_user 'not_local'
     fill_in 'Username or Email', with: 'not_local'
     click_button 'Submit'
-    expect(page.text).to include('Unable to reset password for this user')
+    expect(page.text).to include('Instructions for signing in to your OpenStax account sent')
+    sign_in_help_email_sent? user
   end
 
   scenario 'user does not have any verified email addresses' do
@@ -42,7 +43,7 @@ feature "User can't sign in", js: true do
     click_button 'Submit'
     expect(page.text).to include('Instructions for signing in to your OpenStax account sent')
     @user.identity.reload
-    password_reset_email_sent? @user
+    sign_in_help_email_sent? @user
 
     visit @reset_link
     expect(page.text).to include('Reset Password')
@@ -59,7 +60,7 @@ feature "User can't sign in", js: true do
     click_button 'Submit'
     expect(page.text).to include('Instructions for signing in to your OpenStax account sent')
     @user.identity.reload
-    password_reset_email_sent? @user
+    sign_in_help_email_sent? @user
 
     visit @reset_link
     expect(page.text).to include('Reset Password')
