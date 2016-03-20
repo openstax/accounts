@@ -34,13 +34,13 @@ feature "User can't sign in", js: true do
     @email.save
     fill_in 'Username or Email', with: 'user1'
     click_button 'Submit'
-    expect(page.text).to include('Password reset instructions sent to your email address!')
+    expect(page.text).to include('Instructions for signing in to your OpenStax account sent')
   end
 
   scenario 'user gets a password reset email' do
     fill_in 'Username or Email', with: 'user1'
     click_button 'Submit'
-    expect(page.text).to include('Password reset instructions sent')
+    expect(page.text).to include('Instructions for signing in to your OpenStax account sent')
     @user.identity.reload
     password_reset_email_sent? @user
 
@@ -57,7 +57,7 @@ feature "User can't sign in", js: true do
   scenario 'user enters an email address' do
     fill_in 'Username or Email', with: @email.value
     click_button 'Submit'
-    expect(page.text).to include('Password reset instructions sent')
+    expect(page.text).to include('Instructions for signing in to your OpenStax account sent')
     @user.identity.reload
     password_reset_email_sent? @user
 
