@@ -39,5 +39,20 @@ module ProfileHelper
     "<div class='authentication hoverable'>#{snippet}</div>".html_safe
   end
 
+  def email_entry(value:, id:, is_verified:, is_searchable:)
+    (
+      <<-SNIPPET
+        <div class="email">
+          #{value}
+          <span class="mod-holder"><span class="glyphicon glyphicon-trash mod"></span></span>
+          <div class="properties">
+            #{#TODO add a property row with 'Verify this address now!' link if unverified
+            }
+            <input type="checkbox"> Searchable
+          </div>
+        </div>
+      SNIPPET
+    ).html_safe
+  end
 
 end

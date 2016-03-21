@@ -16,10 +16,20 @@ class ContactInfosController < ApplicationController
   def create
     handle_with(ContactInfosCreate,
                 success: lambda {
-                  redirect_to profile_path(active_tab: :email),
-                    notice: "A verification message has been sent to \"#{
-                              @handler_result.outputs[:contact_info].value}\"" },
-                failure: lambda { @active_tab = :email; render 'users/edit', status: 400 })
+                  contact_info = @handler_result.outputs.contact_info
+                  render json: {
+                    contact_info: {
+                      type: contact_info.type,
+                      value: contact_info.value,
+                      is_verified: contact_info.verified,
+                      is_searchable: contact_info.is_searchable
+                    }
+                  },
+                  status: :ok
+                },
+                failure: lambda {
+                  render json: @handler_result.errors.first.translate, status: :unprocessable_entity
+                })
   end
 
   def destroy

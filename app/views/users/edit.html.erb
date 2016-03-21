@@ -63,18 +63,13 @@
     Emails
   </div>
   <div class="col-sm-10 info hoverable">
+    <div id="email-template" style="display:none">
+      <%= email_entry(value: "EMAIL_VALUE", id: "EMAIL_ID", is_verified: "IS_VERIFIED", is_searchable: "IS_SEARCHABLE") %>
+    </div>
     <% current_user.email_addresses.each do |email| %>
-      <div class="email">
-        <%= email.value %>
-        <span class="mod-holder"><span class="glyphicon glyphicon-trash mod"></span></span>
-        <div class="properties">
-          <%# TODO add a property row with 'Verify this address now!' link if unverified %>
-          Searchable <input type="checkbox">
-        </div>
-
-      </div>
+      <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
     <% end %>
-    <%= link_to "Add an email" %>
+    <%= link_to "Add an email", '#', {id: 'add-an-email'} %>
   </div>
 </div>
 
