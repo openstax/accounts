@@ -22,14 +22,14 @@ module OmniAuth
 
       option :fields, [:username, :first_name, :last_name]
       option :locate_conditions, lambda { |req|
-        auth_key = req.params['auth_key']
+        auth_key = req.params['auth_key'].try(:strip)
         user = User.where(username: auth_key).first ||
                ContactInfo.where(value: auth_key).first.try(:user)
         {user_id: (user.nil? ? nil : user.id)}
       }
       option :name, "identity"
 
-      def request_phase
+      def request_phase # TODO is this used?
         SessionsController.action(:new).call(env)
       end
 

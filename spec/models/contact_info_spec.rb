@@ -3,6 +3,12 @@ require 'rails_helper'
 describe ContactInfo do
 
   context 'validation' do
+    it 'strips values before validation' do
+      info = ContactInfo.new(type: 'EmailAddress', value: ' bob@example.com ')
+      info.valid?
+      expect(info.value).to eq 'bob@example.com'
+    end
+
     it 'does not accept empty value or type' do
       info = ContactInfo.new
       expect(info).not_to be_valid

@@ -197,4 +197,35 @@ feature 'User logs in as a local user', js: true do
       expect(page.current_url).to match(app_callback_url)
     end
   end
+
+  scenario 'with an unstripped username' do
+    with_forgery_protection do
+      user = create_user 'user'
+      create_email_address_for user, 'user@example.com'
+
+      visit '/'
+
+      fill_in 'Username', with: ' user '
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+
+      expect(page).to have_content('Welcome, user')
+    end
+  end
+
+  scenario 'with an unstripped email' do
+    with_forgery_protection do
+      user = create_user 'user'
+      create_email_address_for user, 'user@example.com'
+
+      visit '/'
+
+      fill_in 'Username', with: ' user@example.com '
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+
+      expect(page).to have_content('Welcome, user')
+    end
+  end
+
 end
