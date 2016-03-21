@@ -16,7 +16,7 @@ class SessionsHelp
   end
 
   def handle
-    username_or_email = help_params.username_or_email
+    username_or_email = help_params.username_or_email.strip
     user = User.find_by_username(username_or_email) ||
            ContactInfo.find_by_value(username_or_email).try(:user)
     if user.nil?
