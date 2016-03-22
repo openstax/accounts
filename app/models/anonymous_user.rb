@@ -39,6 +39,10 @@ class AnonymousUser
     false
   end
 
+  def is_new_social?
+    false
+  end
+
   def applications
     []
   end

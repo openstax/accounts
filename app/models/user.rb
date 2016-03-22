@@ -2,7 +2,12 @@ class User < ActiveRecord::Base
 
   USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
   USERNAME_MAX_LENGTH = 50
-  VALID_STATES = ['temp', 'unclaimed', 'activated']
+  VALID_STATES = [
+    'temp', # deprecated but still could exist for old accounts
+    'new_social',
+    'unclaimed',
+    'activated'
+  ]
 
   has_one :identity, dependent: :destroy, inverse_of: :user
 
@@ -91,6 +96,10 @@ class User < ActiveRecord::Base
 
   def is_unclaimed?
     'unclaimed' == state
+  end
+
+  def is_new_social?
+    'new_social' == state
   end
 
   def name

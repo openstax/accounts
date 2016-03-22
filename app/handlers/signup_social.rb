@@ -47,7 +47,7 @@ class SignupSocial
     user.first_name = signup_params.first_name
     user.last_name = signup_params.last_name
     user.suffix = signup_params.suffix if !signup_params.suffix.blank?
-    user.state = 'activated'  # TODO should state already be activated?
+    user.state = 'activated' # was 'new_social'
     user.save
 
     transfer_errors_from(user, {type: :verbatim}, true)

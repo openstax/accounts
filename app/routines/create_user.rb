@@ -14,7 +14,7 @@ class CreateUser
   protected
 
   def exec(username:, title: nil, first_name: nil, last_name: nil,
-           suffix: nil, full_name: nil, state: nil, ensure_no_errors: false)
+           suffix: nil, full_name: nil, state:, ensure_no_errors: false)
 
     original_username = username
 
@@ -35,7 +35,7 @@ class CreateUser
       user.last_name = last_name.present? ? last_name : guessed_last_name(full_name)
       user.title = title
       user.suffix = suffix
-      user.state = state || 'temp'  # all users default to starting as temp.
+      user.state = state
     end
 
     transfer_errors_from(outputs[:user], {type: :verbatim})
