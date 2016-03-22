@@ -5,8 +5,8 @@ feature 'User signs up as a local user', js: true do
     create_application
     visit_authorize_uri
 
-    expect(page).to have_content('Sign in with your one OpenStax account!')
-    click_link 'Create password account'
+    expect_sign_in_page
+    click_password_sign_up
     expect(page).to have_content('Create your account')
 
     fill_in 'First Name', with: 'Test'
@@ -26,12 +26,12 @@ feature 'User signs up as a local user', js: true do
     click_link 'Sign out'
     expect(page).to have_content('Signed out!')
     expect(page).not_to have_content('Welcome, testuser')
-    expect(page).to have_content('Sign in with your one OpenStax account!')
+    expect_sign_in_page
   end
 
   scenario 'with incorrect password confirmation', js: true do
     visit '/'
-    click_link 'Create password account'
+    click_password_sign_up
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
@@ -48,7 +48,7 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'with empty username', js: true do
     visit '/'
-    click_link 'Create password account'
+    click_password_sign_up
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
@@ -65,7 +65,7 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'with empty password', js: true do
     visit '/'
-    click_link 'Create password account'
+    click_password_sign_up
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
@@ -82,7 +82,7 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'with short password', js: true do
     visit '/'
-    click_link 'Create password account'
+    click_password_sign_up
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
@@ -100,7 +100,7 @@ feature 'User signs up as a local user', js: true do
   scenario 'with a username already taken' do
     create_user 'testuser'
     visit '/'
-    click_link 'Create password account'
+    click_password_sign_up
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
@@ -117,7 +117,7 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'with empty email address', js: true do
     visit '/'
-    click_link 'Create password account'
+    click_password_sign_up
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'
@@ -134,7 +134,7 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'with an invalid email address' do
     visit '/'
-    click_link 'Create password account'
+    click_password_sign_up
 
     fill_in 'First Name', with: 'Test'
     fill_in 'Last Name', with: 'User'

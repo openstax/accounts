@@ -8,7 +8,7 @@ feature 'User claims an unclaimed account', js: true do
       password: "apassword", password_confirmation: "apassword"
     ).outputs[:user]
     visit '/'
-    click_link 'Create password account'
+    click_password_sign_up
     fill_in 'Email Address', with: 'unclaimedtestuser@example.com'
     fill_in 'Username', with: 'unclaimedtestuser'
     fill_in 'Password *', with: 'password'

@@ -7,7 +7,7 @@ feature 'User logs in as a local user', js: true do
       create_application
       create_user 'user'
       visit_authorize_uri
-      expect(page).to have_content("Sign in with your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'pass'
@@ -27,7 +27,7 @@ feature 'User logs in as a local user', js: true do
       create_user_with_plone_password
       visit_authorize_uri
 
-      expect(page).to have_content("Sign in with your one OpenStax account!")
+      expect_sign_in_page
       fill_in 'Username', with: 'plone_user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
@@ -44,7 +44,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in with your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
@@ -62,7 +62,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in with your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'expired_password'
       fill_in 'Password', with: 'password'
@@ -85,7 +85,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in with your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'imported_user'
       fill_in 'Password', with: 'password'
@@ -101,11 +101,11 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content('Terms of Use')
 
       find(:css, '#agreement_i_agree').set(true)
-      click_button 'Agree'
+      click_button 'I agree'
 
       expect(page).to have_content('Privacy Policy')
       find(:css, '#agreement_i_agree').set(true)
-      click_button 'Agree'
+      click_button 'I agree'
 
       expect(page.current_url).to match(app_callback_url)
     end
@@ -115,7 +115,7 @@ feature 'User logs in as a local user', js: true do
     user = create_user('jimbo')
 
     visit '/'
-    expect(page).to have_content('Sign in with your one OpenStax account')
+    expect_sign_in_page
 
     signin_as 'jimbo', 'password'
 
@@ -129,7 +129,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit '/'
-      expect(page).to have_content('Sign in with your one OpenStax account')
+      expect_sign_in_page
 
       fill_in 'Username', with: 'imported_user'
       fill_in 'Password', with: 'password'
@@ -145,11 +145,11 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content('Terms of Use')
 
       find(:css, '#agreement_i_agree').set(true)
-      click_button 'Agree'
+      click_button 'I agree'
 
       expect(page).to have_content('Privacy Policy')
       find(:css, '#agreement_i_agree').set(true)
-      click_button 'Agree'
+      click_button 'I agree'
 
       expect(current_path).to eq profile_path
     end
@@ -166,7 +166,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in with your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'therulerofallthings'
       fill_in 'Password', with: 'apassword'
@@ -184,7 +184,7 @@ feature 'User logs in as a local user', js: true do
       user = create_user 'user'
       create_email_address_for user, 'user@example.com'
       visit_authorize_uri
-      expect(page).to have_content("Sign in with your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'pass'
