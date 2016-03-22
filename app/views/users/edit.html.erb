@@ -66,7 +66,7 @@
     <div id="email-template" style="display:none">
       <%= email_entry(value: "EMAIL_VALUE", id: "EMAIL_ID", is_verified: "IS_VERIFIED", is_searchable: "IS_SEARCHABLE") %>
     </div>
-    <% current_user.email_addresses.each do |email| %>
+    <% current_user.email_addresses.order(:created_at).each do |email| %>
       <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
     <% end %>
     <%= link_to "Add an email", '#', {id: 'add-an-email'} %>

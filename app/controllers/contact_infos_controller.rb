@@ -4,14 +4,14 @@ class ContactInfosController < ApplicationController
                      only: [:confirm, :confirm_unclaimed, :resend_confirmation]
 
   skip_before_filter :registration,
-                     only: [:create, :destroy, :toggle_is_searchable, :confirm,
+                     only: [:create, :destroy, :is_searchable, :confirm,
                             :confirm_unclaimed, :resend_confirmation]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:create, :destroy, :toggle_is_searchable, :confirm,
+                  only: [:create, :destroy, :is_searchable, :confirm,
                          :confirm_unclaimed, :resend_confirmation]
 
-  before_filter :get_contact_info, only: [:destroy, :toggle_is_searchable]
+  before_filter :get_contact_info, only: [:destroy, :is_searchable]
 
   def create
     handle_with(ContactInfosCreate,
@@ -19,6 +19,7 @@ class ContactInfosController < ApplicationController
                   contact_info = @handler_result.outputs.contact_info
                   render json: {
                     contact_info: {
+                      id: contact_info.id,
                       type: contact_info.type,
                       value: contact_info.value,
                       is_verified: contact_info.verified,
@@ -40,14 +41,12 @@ class ContactInfosController < ApplicationController
                 notice: "#{@contact_info.type.underscore.humanize} deleted"
   end
 
-  def toggle_is_searchable
+  def is_searchable
     OSU::AccessPolicy.require_action_allowed!(:toggle_is_searchable,
                                               current_user, @contact_info)
-    @contact_info.update_attribute(:is_searchable,
-                                   !@contact_info.is_searchable)
+    @contact_info.update_attribute(:is_searchable, params[:is_searchable])
 
-    redirect_to profile_path(active_tab: :email),
-                notice: "Search settings updated"
+    render json: {is_searchable: @contact_info.is_searchable}, status: :ok
   end
 
   def resend_confirmation

@@ -48,7 +48,8 @@ module ProfileHelper
           <div class="properties">
             #{#TODO add a property row with 'Verify this address now!' link if unverified
             }
-            <input type="checkbox"> Searchable
+            <input type="checkbox" data-id="#{id}" #{'checked="IS_SEARCHABLE"' if is_searchable}> Searchable
+            <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="Check the Searchable box if you want other OpenStax users to find you using this email address."></i>
           </div>
         </div>
       SNIPPET

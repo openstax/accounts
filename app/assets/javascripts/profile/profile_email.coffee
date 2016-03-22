@@ -3,6 +3,8 @@
 
 $(document).ready ->
 
+  $('[data-toggle="tooltip"]').tooltip()
+
   $('#add-an-email').click ->
 
     $(this).before """
@@ -30,7 +32,6 @@ $(document).ready ->
     $(this).hide()
 
 
-
   $(document).on 'submit', '.new-email form', (e) ->
 
     e.preventDefault()
@@ -53,11 +54,26 @@ $(document).ready ->
         console.log data
         container.remove()
         template = $('#email-template').html()
+
         template = template.replace("EMAIL_VALUE", data.contact_info.value)
+        template = template.replace("EMAIL_ID", data.contact_info.id)
+        template = template.replace('checked="IS_SEARCHABLE"', (if data.contact_info.is_searchable then 'checked="checked"' else '') )
+
         $('.email:last').after template
+        $('.email:last [data-toggle="tooltip"]').tooltip()
         $('#add-an-email').show()
       error: (data) ->
         loading.hide()
         form.show()
         error_block.html data.responseText
         error_block.css("display", "block")
+
+  $(document).on 'click', 'input[type=checkbox]', (e) ->
+    checkbox = $(this)
+    $.ajax
+      type: "POST"
+      url: "/contact_infos/#{checkbox.data('id')}/is_searchable"
+      data: $.param({'is_searchable': checkbox.is(':checked'), '_method': 'PUT'})
+      success: (data) ->
+        checkbox.attr('checked', data.is_searchable) # to guarantee we stay in sync
+
