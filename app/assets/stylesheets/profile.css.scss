@@ -64,7 +64,7 @@
     }
   }
 
-  .email {
+  .email-entry {
     margin-bottom: 8px;
     .properties {
       margin-left: 20px;
@@ -74,11 +74,15 @@
         margin-left: 6px;
       }
     }
+    &.new {
+      .properties, .mod-holder { display: none; }
+    }
+    .alert {margin: 0};
   }
 
-  .new-email {
-    margin-bottom: 8px;
-  }
+  /* .new-email { */
+  /*   margin-bottom: 8px; */
+  /* } */
 
   #add-an-email {
     display: block;
@@ -90,5 +94,3 @@
 
 
 }
-
-
