@@ -1,22 +1,21 @@
 <%
   html_id ||= 'dialog'
-  width ||= '800px'
   height ||= '500px'
 %>
 
-<div id="<%= html_id %>" 
+<div id="<%= html_id %>"
      class="modal"
-     tabindex="-1" 
-     role="dialog" 
-     aria-labelledby="not-labelled" 
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="not-labelled"
      aria-hidden="true">
 
-  <div class="modal-dialog" style="width: <%= width %>">
+  <div class="modal-dialog">
     <div class="modal-content" style="min-height: <%= height %>">
 
       <%= body %>
 
     </div>
   </div>
-  
+
 </div>
