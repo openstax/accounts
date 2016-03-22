@@ -1,0 +1,50 @@
+#sign-up {
+  .password-managed {
+    margin-top: 25px;
+    margin-bottom: 15px;
+
+    .message, .icon {
+      text-align: center;
+    }
+
+    .icon {
+      margin-top: 10px;
+    }
+
+    .message {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  }
+
+  .side-notice {
+    margin-top: 30px;
+
+    @media(min-width: 768px) {
+      width: 70%;
+      float: right;
+      .already-have-account {
+        margin-top: 110px;
+      }
+      .verify-email {
+        margin-top: 140px;
+      }
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    a {
+      display: block;
+      margin-top: 8px;
+    }
+  }
+
+  #create_account_submit {
+    margin-top: 10px;
+  }
+}

@@ -1,10 +1,13 @@
+<% @parent_col_id = "sign-up" %>
+
+<% is_social_signup = signed_in? %>
+
 <%= lev_form_for :signup, url: url, html: {id: 'signup'} do |f| %>
 
   <div class="signup row">
 
     <div class="col-sm-6">
       <% user = signed_in? ? current_user : OpenStruct.new %>
-      <% is_social_signup = signed_in? %>
       <% email = user.email_addresses.try(:first).try(:value) %>
 
       <%= standard_field form: f, name: :title, type: :text_field, label: "Title",
@@ -22,13 +25,42 @@
 
       <% if is_social_signup %>
         <% provider = user.authentications.first.provider %>
-        <% # TODO add provider logo, like on profile page %>
-        <b>Password managed by <%= provider.capitalize %></b>
+        <div class="password-managed">
+          <div class="icon">
+            <div class="fa-stack fa-lg">
+              <i class="fa fa-square fa-stack-2x <%= provider %>-bkg"></i>
+              <i class="fa fa-<%= provider %> fa-stack-1x fa-inverse"></i>
+            </div>
+          </div>
+          <div class="message">Password managed by <%= provider.capitalize %></div>
+        </div>
       <% else %>
         <%= standard_field form: f, name: :password, type: :password_field, label: "Password *" %>
         <%= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Confirm Password *" %>
       <% end %>
     </div>
+
+
+    <div class="col-sm-6">
+      <div class="side-notice">
+      <% if is_social_signup %>
+        <div class="already-have-account well">
+          <span class="title">Wait a second!</span>
+
+          I might already have an account.
+
+          <%= link_to "Take me back to the sign in page.", signout_path %>
+        </div>
+      <% else %>
+        <div class="verify-email well">
+          <span class="title">Please verify your email!</span>
+
+          You'll receive a verification email shortly.  Please take a moment and verify your email address.
+        </div>
+      <% end %>
+      </div>
+    </div>
+
 
     <div class="col-xs-12">
       <% unless @contracts_not_required %>
@@ -53,7 +85,7 @@
         <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
       <% end %>
 
-      <%= f.submit "Register", id: "register_submit", class: 'btn btn-primary' %>
+      <%= f.submit "Create Account", id: "create_account_submit", class: 'btn btn-primary' %>
     </div>
 
   </div>
@@ -62,6 +94,6 @@
 
 <% unless @contracts_not_required %>
   <script type="text/javascript">
-    Accounts.Ui.enableOnChecked('#register_submit', '#signup_i_agree');
+    Accounts.Ui.enableOnChecked('#create_account_submit', '#signup_i_agree');
   </script>
 <% end %>

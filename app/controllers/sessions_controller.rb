@@ -81,7 +81,7 @@ class SessionsController < ApplicationController
       root_url
     end
 
-    redirect_to url, notice: "Signed out!"
+    redirect_to url
   end
 
   def help
