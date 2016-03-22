@@ -1,4 +1,13 @@
 //= require bootstrap-editable
-//= require ./profile_name
-//= require ./profile_email
+//= require ../vendor/underscore
+//= require ./namespace
+//= require ./name
+//= require ./email
+//= require_self
 
+
+$(document).ready(function(){
+  $.each(['Name','Email'], function(i, obj){
+    if (OX.Profile[obj].initialize){ OX.Profile[obj].initialize(); }
+  });
+});

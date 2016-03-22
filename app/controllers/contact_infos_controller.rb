@@ -36,8 +36,7 @@ class ContactInfosController < ApplicationController
     OSU::AccessPolicy.require_action_allowed!(:destroy, current_user,
                                               @contact_info)
     @contact_info.destroy
-    redirect_to profile_path(active_tab: :email),
-                notice: "#{@contact_info.type.underscore.humanize} deleted"
+    head :ok
   end
 
   def set_searchable
