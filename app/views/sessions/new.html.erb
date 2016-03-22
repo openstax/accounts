@@ -2,7 +2,7 @@
 
 <% @parent_col_id = "login" %> <%# TODO change this to "signin" and in CSS %>
 
-<%= page_heading "Sign in with your one OpenStax account!" %>
+<%= page_heading "Sign in to OpenStax", sub_heading_text: "Access your College, Tutor, and Concept Coach accounts" %>
 
 <div id="options" class="row">
 
@@ -47,7 +47,7 @@
         <div class='password-actions'>
           <button type="submit" class="btn btn-primary">Sign in</button>
 
-          <span class='sign-up'><%= link_to "Create password account", signup_password_path %></span>
+          <span class='sign-up'><%= link_to "Sign up", signup_password_path %></span>
         </div>
 
       <% end %>
@@ -65,6 +65,6 @@
 <div id="reminders" class="row">
   <div class="col-xs-12">
     <p><i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social network without your permission.</p>
-    <p><i>Be happy.</i>  If you're on a public computer, <b style="white-space:nowrap">be sure to log out</b> when you're done!</p>
+    <p>If you're on a public computer, <b style="white-space:nowrap">be sure to sign out out</b> when you're done!</p>
   </div>
 </div>
