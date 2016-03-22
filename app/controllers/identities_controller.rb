@@ -1,6 +1,6 @@
 class IdentitiesController < ApplicationController
 
-  skip_before_filter :authenticate_user!, :expired_password, :registration,
+  skip_before_filter :authenticate_user!, :expired_password, :finish_sign_up,
                      only: [:new, :reset_password]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,

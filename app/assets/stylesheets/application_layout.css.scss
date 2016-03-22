@@ -33,8 +33,10 @@ body, p, ol, ul, td, a {
 }
 
 .container .row {
-  padding-left: $application_edge_distance;
-  padding-right: $application_edge_distance;
+  @media(min-width: 400px) {
+    padding-left: $application_edge_distance;
+    padding-right: $application_edge_distance;
+  }
 }
 
 #application-header {

@@ -173,4 +173,28 @@ feature 'User signs up as a local user', js: true do
     expect(page).to have_content("Your Account")
   end
 
+  scenario 'not fully signed up social user goes elsewhere' do
+    # Some shenanigans to fake social sign up
+    user = create_user 'bob'
+    user.first_name = "Bob"
+    user.last_name = "Henry"
+    user.state = 'new_social'
+    user.save
+
+    authentication = FactoryGirl.create(:authentication,
+                                        user: user,
+                                        provider: 'twitter')
+
+    visit '/'
+    signin_as 'bob'
+
+    ['/profile', '/signin'].each do |path|
+      visit path
+      expect_social_sign_up_page
+    end
+
+    visit '/signout'
+    expect_sign_in_page
+  end
+
 end

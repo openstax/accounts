@@ -3,8 +3,10 @@
 
 class SessionsController < ApplicationController
 
-  skip_before_filter :authenticate_user!, :expired_password, :registration,
+  skip_before_filter :authenticate_user!, :expired_password,
                      only: [:new, :callback, :failure, :destroy, :help]
+
+  skip_before_filter :finish_sign_up, only: [:destroy]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:new, :callback, :failure, :destroy, :help]

@@ -60,6 +60,9 @@
       <% end %>
       </div>
     </div>
+  </div>
+
+  <div class="signup row">
 
 
     <div class="col-xs-12">
@@ -84,8 +87,19 @@
         <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
         <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
       <% end %>
+    </div>
+  </div>
 
-      <%= f.submit "Create Account", id: "create_account_submit", class: 'btn btn-primary' %>
+  <div class="signup row">
+
+    <div class="col-sm-6 buttons">
+
+
+      <div>
+        <%= f.submit "Create Account", id: "create_account_submit", class: 'btn btn-primary' %>
+        <%= link_to "Cancel", (is_social_signup ? signout_path : root_path), class: 'btn btn-default pull-right' %>
+      </div>
+
     </div>
 
   </div>
