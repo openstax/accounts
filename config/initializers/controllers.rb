@@ -16,7 +16,7 @@ ActionController::Base.class_exec do
 
 
   before_filter :authenticate_user!
-  # before_filter :registration
+  before_filter :finish_sign_up
   before_filter :expired_password
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
@@ -30,11 +30,11 @@ ActionController::Base.class_exec do
 
   include ContractsNotRequired
 
-  # def registration
-  #   return true if request.format != :html
-  #   return unless current_user.is_temp?
-  #   redirect_to registration_complete_path
-  # end
+  def finish_sign_up
+    return true if request.format != :html
+    return unless current_user.is_new_social?
+    redirect_to signup_social_path
+  end
 
   def expired_password
     return true if request.format != :html
