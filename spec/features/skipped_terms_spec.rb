@@ -9,7 +9,7 @@ feature 'Skipped terms are respected', js: true do
 
   scenario 'when signing up/in under one application WITHOUT skip' do
     visit_authorize_uri(@app_without_skip) # simulate arriving from an app
-    click_on 'Create password account'
+    click_password_sign_up
 
     # No skipping
     expect(page).to have_content('I have read')
@@ -41,7 +41,7 @@ feature 'Skipped terms are respected', js: true do
   scenario 'when signing up in under one application WITH skip' do
     visit_authorize_uri(@app_with_skip)
 
-    click_on 'Create password account'
+    click_password_sign_up
 
     # Skipping
     expect(page).not_to have_content('I have read')
@@ -72,7 +72,7 @@ feature 'Skipped terms are respected', js: true do
   scenario 'no skipping when signing up/in without a particular application' do
     visit '/'
 
-    click_on 'Create password account'
+    click_password_sign_up
 
     # No skipping
     expect(page).to have_content('I have read')

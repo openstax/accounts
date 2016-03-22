@@ -168,3 +168,11 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
   new_contract_version.publish
   raise "New contract version didn't publish" unless new_contract_version.version == 2
 end
+
+def click_password_sign_up
+  click_on 'Sign up'
+end
+
+def expect_sign_in_page
+  expect(page).to have_content('Sign in to OpenStax Access your')
+end

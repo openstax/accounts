@@ -1,7 +1,5 @@
 <%= page_heading @contract.title %>
 
-<div class="not-full-width">
-
   <% if FinePrint.signed_any_version_of_contract?(current_user, @contract) %>
     <p>There have been changes to the <%= @contract.title %>.  Please review them and then click "I agree" at the bottom of this page to continue.</p>
   <% else %>
@@ -18,12 +16,10 @@
         <%= f.check_box :i_agree %> I have read the terms listed above and I agree to be bound by their terms
       </label>
     </div>
-    
-    <%= f.hidden_field :contract_id, value: @contract.id %>
-    <%= f.submit "Agree", id: "agreement_submit" %>
-  <% end %>
 
-</div>
+    <%= f.hidden_field :contract_id, value: @contract.id %>
+    <%= f.submit "I agree", id: "agreement_submit", class: 'btn btn-primary' %>
+  <% end %>
 
 <% content_for :javascript do %>
   <script type="text/javascript">
