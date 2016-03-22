@@ -94,4 +94,14 @@ describe ImportUsers do
     expect(app.users).to eq([User.last])
 
   end
+
+  it 'generates username for users without a username' do
+    headers = [:first_name, :last_name, :email_address, :password_digest]
+    CSV.open(@file.path, 'wb', headers: headers, write_headers: true) do |csv|
+      csv << ['kailey', 'goodwin', 'kailey1.goodwin6df7ddb56e031@example.com', '$2a$10$njQnMVY4SIm3R3kN0qhXhezM6sw8sSe.r3L0FRhege8/AZwVfrgvy']
+    end
+
+    ImportUsers.new(@file.path, nil).read
+    expect(User.order(:id).last.username).to eq('kailey_goodwin')
+  end
 end

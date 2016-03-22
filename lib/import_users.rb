@@ -10,16 +10,18 @@ class ImportUsers
   def initialize(csv_file, app_id)
     @csv_file = csv_file
     @app_id = app_id
+    @usernames = []
   end
 
   def read
     # Output results to import_users_results.{timestamp}.csv
-    output_headers = [:row_number, :old_username, :new_username, :errors]
+    output_headers = [:row_number, :email_address, :old_username, :new_username, :errors]
     CSV.open("import_users_results.#{Time.now.utc.iso8601}.csv", 'wb',
              headers: output_headers, write_headers: true) do |csv|
 
       chunk_index = 0
       SmarterCSV.process(@csv_file, chunk_size: OBJECTS_PER_TRANSACTION) do |chunk|
+        @usernames = []
         ActiveRecord::Base.transaction do
           chunk.each_with_index do |row, index|
             # line_num starts from 1
@@ -47,7 +49,7 @@ class ImportUsers
             end
 
             # output result
-            csv << [row[:row_number], username, @user.try(:username), error]
+            csv << [row[:row_number], row[:email_address], username, @user.try(:username), error]
           end
         end
         chunk_index += 1
@@ -56,7 +58,13 @@ class ImportUsers
   end
 
   def create_user(username, password_digest, title, first_name, last_name, full_name, email_address)
-    person = Person.create!
+    # Check whether the user is already in the database
+    ea = EmailAddress.find_by_value(email_address)
+    @user = ea.try(:user)
+    return unless @user.nil?
+
+    username = generate_username(first_name, last_name, email_address) unless username.present?
+    @usernames << username
     @user = User.new
     @user.username = username
     @user.state = 'activated'
@@ -85,5 +93,25 @@ class ImportUsers
     ea.user = @user
     ea.verified = true
     ea.save!
+  end
+
+  def generate_username(first_name, last_name, email)
+    # Use first name and last name as the basis for generating username
+    base = "#{first_name} #{last_name}".strip
+    # If name is empty, use the email address name
+    base = ("#{email}".split('@')[0] || '').strip unless base.present?
+    # Remove all non alphanumeric and replace spaces with underscores
+    base = base.gsub(/[^A-Za-z0-9_ ]/, ' ').gsub(/ +/, '_')
+
+    username = base.downcase
+    tries = 0
+    # users may not be committed to the database yet, so also check the
+    # usernames used in this chunk
+    while User.where(username: username).present? || @usernames.include?(username)
+      username = "#{base}#{rand(10000)}".downcase
+      tries += 1
+      raise "unable to generate username: #{first_name} #{last_name}" if tries > 10
+    end
+    username
   end
 end
