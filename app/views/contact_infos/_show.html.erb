@@ -1,3 +1,7 @@
+<% if false %>
+
+<%# OLD code %>
+
 <% # Clients of this partial must supply the following variable:
    # contact_info (subclass of ContactInfo)
    humanized_name = contact_info.type.underscore.humanize
@@ -24,3 +28,6 @@
                     method: :delete,
                     confirm: "Are you sure you want to delete \"#{contact_info.value}?\"" %></td>
 </tr>
+
+
+<% end %>

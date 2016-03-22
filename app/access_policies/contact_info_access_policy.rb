@@ -3,7 +3,7 @@ class ContactInfoAccessPolicy
 
   def self.action_allowed?(action, requestor, contact_info)
     case action
-    when :read, :create, :destroy, :toggle_is_searchable, :resend_confirmation
+    when :read, :create, :destroy, :set_searchable, :resend_confirmation
       !requestor.is_application? && \
       !requestor.is_anonymous? && \
       requestor == contact_info.user

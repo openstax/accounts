@@ -72,7 +72,7 @@ $(document).ready ->
     checkbox = $(this)
     $.ajax
       type: "POST"
-      url: "/contact_infos/#{checkbox.data('id')}/is_searchable"
+      url: "/contact_infos/#{checkbox.data('id')}/set_searchable"
       data: $.param({'is_searchable': checkbox.is(':checked'), '_method': 'PUT'})
       success: (data) ->
         checkbox.attr('checked', data.is_searchable) # to guarantee we stay in sync

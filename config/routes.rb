@@ -51,7 +51,7 @@ Accounts::Application.routes.draw do
 
   resources :contact_infos, only: [:create, :destroy] do
     member do
-      put 'is_searchable'
+      put 'set_searchable'
       put 'resend_confirmation'
     end
   end

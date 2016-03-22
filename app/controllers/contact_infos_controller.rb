@@ -4,14 +4,14 @@ class ContactInfosController < ApplicationController
                      only: [:confirm, :confirm_unclaimed, :resend_confirmation]
 
   skip_before_filter :registration,
-                     only: [:create, :destroy, :is_searchable, :confirm,
+                     only: [:create, :destroy, :set_searchable, :confirm,
                             :confirm_unclaimed, :resend_confirmation]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:create, :destroy, :is_searchable, :confirm,
+                  only: [:create, :destroy, :set_searchable, :confirm,
                          :confirm_unclaimed, :resend_confirmation]
 
-  before_filter :get_contact_info, only: [:destroy, :is_searchable]
+  before_filter :get_contact_info, only: [:destroy, :set_searchable]
 
   def create
     handle_with(ContactInfosCreate,
@@ -41,8 +41,8 @@ class ContactInfosController < ApplicationController
                 notice: "#{@contact_info.type.underscore.humanize} deleted"
   end
 
-  def is_searchable
-    OSU::AccessPolicy.require_action_allowed!(:toggle_is_searchable,
+  def set_searchable
+    OSU::AccessPolicy.require_action_allowed!(:set_searchable,
                                               current_user, @contact_info)
     @contact_info.update_attribute(:is_searchable, params[:is_searchable])
 

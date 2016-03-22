@@ -11,22 +11,22 @@ describe ContactInfosController, type: :controller do
       expect { post 'create',
                contact_info: contact_info.attributes }.to(
         change{ContactInfo.count}.by(1))
-      expect(response.status).to eq 302
+      expect(response.status).to eq 200
     end
   end
 
-  context 'PUT toggle_is_searchable' do
-    it 'toggles is_searchable' do
+  context 'PUT set_searchable' do
+    it 'changes is_searchable' do
       contact_info.save!
       controller.sign_in! user
       expect(contact_info.is_searchable).to eq true
 
-      put 'toggle_is_searchable', id: contact_info.id
-      expect(response.status).to eq 302
+      put 'set_searchable', id: contact_info.id, is_searchable: false
+      expect(response.status).to eq 200
       expect(contact_info.reload.is_searchable).to eq false
 
-      put 'toggle_is_searchable', id: contact_info.id
-      expect(response.status).to eq 302
+      put 'set_searchable', id: contact_info.id, is_searchable: true
+      expect(response.status).to eq 200
       expect(contact_info.reload.is_searchable).to eq true
     end
   end
