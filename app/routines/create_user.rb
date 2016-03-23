@@ -23,7 +23,7 @@ class CreateUser
 
       # If the number of attempts is exceeded, the user creation will fail
       for i in 1..USERNAME_ATTEMPTS do
-        break if User.where('LOWER(username) = ?', username).none?  # TODO squeel this
+        break if User.where('LOWER(username) = ?', username).none?
         username = get_valid_username(original_username)
         username = randomify_username(username)
       end
