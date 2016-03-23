@@ -84,7 +84,10 @@
       .properties, .mod-holder { display: none; }
     }
     .alert { margin: 0 };
-    .delete { cursor: pointer; }
+    .delete {
+      cursor: pointer;
+      &:hover:before { color: black; }
+    }
   }
 
   #add-an-email {
