@@ -40,16 +40,21 @@ module ProfileHelper
   end
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
+    verify_link = is_verified ? '' : link_to('[Verify]', resend_confirmation_contact_info_path(id), class: 'verify')
     (
       <<-SNIPPET
         <div class="email-entry" data-id="#{id}">
-          <span class="email">#{value}</span>
-          <span class="mod-holder"><span class="glyphicon glyphicon-trash mod delete"></span></span>
+          <span class="email">
+            #{value}
+          </span>
+          #{verify_link}
+          <span class="mod-holder">
+            <span class="glyphicon glyphicon-trash mod delete"></span>
+          </span>
           <div class="properties">
-            #{#TODO add a property row with 'Verify this address now!' link if unverified
-            }
-            <input type="checkbox" #{'checked="IS_SEARCHABLE"' if is_searchable}> Searchable
+            <input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> Searchable
             <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="Check the Searchable box if you want other OpenStax users to find you using this email address."></i>
+
           </div>
           <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
         </div>

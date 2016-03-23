@@ -5,18 +5,27 @@ BASE_URL = "/contact_infos"
 class Email
 
   constructor: (@el) ->
-    _.bindAll(@, 'saveSearchable', 'confirmDelete', 'delete', 'displayError', 'toggleSpinner')
+    _.bindAll(@, _.functions(@)...)
     this.$el = $(el)
     @id = this.$el.attr('data-id')
     this.$el.find('.delete').click(@confirmDelete)
-    this.$el.find('input[type=checkbox]').change(@saveSearchable)
-    window.foo = @
+    this.$el.find('.searchable').change(@saveSearchable)
+    this.$el.find('.verify').click(@sendVerification)
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)
 
   url: (action) ->
     "#{BASE_URL}/#{@id}" + ( if action then "/#{action}" else '' )
+
+  sendVerification: (ev) ->
+    ev.preventDefault()
+    $.ajax({type: "PUT", url: @url('resend_confirmation')})
+      .success( (resp) =>
+        @displayMessage(resp.message, type: 'success')
+      )
+      .error(@displayMessage)
+
 
   saveSearchable: (ev) ->
     @toggleSpinner(true)
@@ -26,7 +35,7 @@ class Email
       .success( (resp) => @set(resp) )
       .error( (resp) =>
         ev.target.checked = not ev.target.checked
-        @displayError(resp)
+        @displayMessage(resp)
       ).complete( =>
         ev.target.disabled = false
         @toggleSpinner(false)
@@ -37,22 +46,22 @@ class Email
       @id = contact.id
       this.$el.attr('data-id', contact.id)
     if contact.is_searchable?
-      this.$el.find('input[type=checkbox]').prop('checked', contact.is_searchable)
+      this.$el.find('.searchable').prop('checked', contact.is_searchable)
 
-
-  displayError: (resp) ->
+  displayMessage: (resp, options = {}) ->
+    type = options.type or 'danger'
     error = this.$el.find('.alert')
     unless error.length
-      error = this.$el.prepend('''
-        <div class="alert alert-danger alert-dismissible" role="alert">
+      error = this.$el.prepend("""
+        <div class="alert alert-#{type} alert-dismissible" role="alert">
            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
              <span aria-hidden="true">&times;</span>
           </button>
           <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
           <span class="msg"></span>
         </div>
-      ''')
-    error.show().find(".msg").text(resp.statusText)
+      """)
+    error.show().find(".msg").text(if _.isObject(resp) then resp.statusText else resp)
 
   confirmDelete: (ev) ->
     [title, message] = if this.$el.siblings('.email-entry').length is 0 # we're the only one
@@ -72,7 +81,7 @@ class Email
     @toggleSpinner(true)
     $.ajax(type: "DELETE", url: @url())
       .success( => @$el.remove() )
-      .error(@displayError)
+      .error(@displayMessage)
       .complete(@toggleSpinner)
 
 OX.Profile.Email = {
