@@ -88,7 +88,6 @@ OX.Profile.Email = {
 
   initialize: ->
     $('.email-entry').each ->
-      console.log this
       new Email(this)
     @addEmail = $('#add-an-email').click( => @onAddEmail() )
 
