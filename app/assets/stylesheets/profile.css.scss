@@ -77,7 +77,8 @@
     &.new {
       .properties, .mod-holder { display: none; }
     }
-    .alert {margin: 0};
+    .alert { margin: 0 };
+    .delete { cursor: pointer; }
   }
 
   /* .new-email { */
