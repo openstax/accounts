@@ -10,7 +10,7 @@
   <div class="col-sm-2 category">
     Name
   </div>
-  <div class="col-sm-10 info hoverable">
+  <div class="col-sm-10 info">
     <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></a>
   </div>
 </div>
@@ -19,7 +19,7 @@
   <div class="col-sm-2 category">
     Username
   </div>
-  <div class="col-sm-10 info hoverable">
+  <div class="col-sm-10 info">
     <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
   </div>
 </div>
@@ -28,7 +28,7 @@
   <div class="col-sm-2 category">
     Emails
   </div>
-  <div class="col-sm-10 info hoverable">
+  <div class="col-sm-10 info">
     <div id="email-template" style="display:none">
       <%= email_entry(value: "", id: "", is_verified: "", is_searchable: "") %>
     </div>
@@ -76,9 +76,6 @@
 
 <%= content_for :javascript do %>
 <script type="text/javascript">
-$(".hoverable").hover(function () {
-  $(this).toggleClass("hover");
-});
 
 $('#enable-other-sign-in').click(function(e) {
   e.preventDefault();
