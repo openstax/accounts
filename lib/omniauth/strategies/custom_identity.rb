@@ -1,6 +1,14 @@
 module OmniAuth
   module Strategies
     # This class is a tweaked version of the OmniAuth-Identity strategy
+    #
+    # Notes:
+    #   We could have implemented a `request_phase` method that displayed
+    #   a signup form (e.g. by delegating to `SessionsController.action(:new).call(env)`),
+    #   but instead we bypassed that step and just have our form post to
+    #   `/auth/identity/signup`
+    #
+    #
     class CustomIdentity
       include OmniAuth::Strategy
 
@@ -29,9 +37,8 @@ module OmniAuth
       }
       option :name, "identity"
 
-      def request_phase # TODO is this used?
-        SessionsController.action(:new).call(env)
-      end
+      uid { identity.uid }
+      info { identity.info }
 
       def callback_phase
         return fail!(:invalid_credentials) unless identity
@@ -39,56 +46,49 @@ module OmniAuth
       end
 
       def other_phase
-        if on_registration_path?
+        if on_signup_path?
           if request.get?
-            # Normal identity shows registration form, but we don't want that
+            # Normal identity shows sign up form, but we don't want that
             raise ActionController::RoutingError.new('Not Found')
           elsif request.post?
-            registration_phase
+            handle_signup
           end
         else
           call_app!
         end
       end
 
-      def registration_phase
+      def handle_signup
         @handler_result =
           SignupPassword.handle(
             params: request,
             caller: current_user,
-            contracts_required: !contracts_not_required(client_id: request['client_id'] || session['client_id'])
+            contracts_required: !contracts_not_required(client_id: request['client_id'] ||
+                                                        session['client_id'])
           )
 
-
-        # @handler_result = IdentitiesRegister.handle(params: request,
-        #                                             caller: current_user)
-
         error_codes = @handler_result.errors.map(&:code)
+        env['errors'] = @handler_result.errors
 
         if error_codes.empty? || error_codes == [:already_has_identity]
           @identity = @handler_result.outputs[:identity]
           env['PATH_INFO'] = callback_path
-          env['errors'] = @handler_result.errors
           callback_phase
         else
-          env['errors'] = @handler_result.errors
-          registration_form
+          show_signup_form
         end
       end
 
-      def registration_form
+      def show_signup_form
         SignupController.action(:password).call(env)
       end
 
-      uid{ identity.uid }
-      info{ identity.info }
-
-      def registration_path
-        options[:registration_path] || "#{path_prefix}/#{name}/register"
+      def signup_path
+        options[:signup_path] || "#{path_prefix}/#{name}/signup"
       end
 
-      def on_registration_path?
-        on_path?(registration_path)
+      def on_signup_path?
+        on_path?(signup_path)
       end
 
       def identity
