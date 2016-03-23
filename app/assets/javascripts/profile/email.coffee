@@ -5,10 +5,10 @@ BASE_URL = "/contact_infos"
 class Email
 
   constructor: (@el) ->
-    _.bindAll(@, 'saveSearchable', 'destroy', 'displayError', 'toggleSpinner')
+    _.bindAll(@, 'saveSearchable', 'confirmDelete', 'delete', 'displayError', 'toggleSpinner')
     this.$el = $(el)
     @id = this.$el.attr('data-id')
-    this.$el.find('.delete').click(@destroy)
+    this.$el.find('.delete').click(@confirmDelete)
     this.$el.find('input[type=checkbox]').change(@saveSearchable)
     window.foo = @
 
@@ -41,7 +41,21 @@ class Email
       ''')
     error.show().find(".msg").text(resp.statusText)
 
-  destroy: ->
+  confirmDelete: (ev) ->
+    [title, message] = if this.$el.siblings('.email-entry').length is 0 # we're the only one
+      ["Are you sure?",
+      "If you do not have at least one email address on file, we'll be unable to send you account resets"]
+    else
+      [false, "Are you sure you want to remove this email address from your account?"]
+    new OX.ConfirmationPopover(
+      title: title
+      message: message
+      target: ev.target
+      placement: 'top'
+      onConfirm: @delete
+    )
+
+  delete: ->
     @toggleSpinner(true)
     $.ajax(type: "DELETE", url: @url())
       .success( => @$el.remove() )
