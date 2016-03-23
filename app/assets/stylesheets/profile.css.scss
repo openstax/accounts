@@ -66,6 +66,12 @@
 
   .email-entry {
     margin-bottom: 8px;
+    position: relative;
+    .spinner {
+      position: absolute;
+      left: -20px;
+      top: 15px;
+    }
     .properties {
       margin-left: 20px;
       font-style: italic;

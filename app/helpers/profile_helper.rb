@@ -51,7 +51,7 @@ module ProfileHelper
             <input type="checkbox" #{'checked="IS_SEARCHABLE"' if is_searchable}> Searchable
             <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="Check the Searchable box if you want other OpenStax users to find you using this email address."></i>
           </div>
-          <i class="spinner fa fa-spinner fa-spin fa-3x" style="display:none"></i>
+          <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
         </div>
       SNIPPET
     ).html_safe
