@@ -31,13 +31,11 @@ $.extend(OX.Profile.Name.prototype, {
     str
 
   value2input: (value) ->
-    if !value
-      return
+    return unless value
     this.$input.filter('[name="title"]').val value.title
     this.$input.filter('[name="first_name"]').val value.first_name
     this.$input.filter('[name="last_name"]').val value.last_name
     this.$input.filter('[name="suffix"]').val value.suffix
-    return
 
   input2value: ->
     {
@@ -49,12 +47,9 @@ $.extend(OX.Profile.Name.prototype, {
 
   activate: ->
     this.$input.filter('[name="first_name"]').focus()
-    return
 
   autosubmit: ->
     this.$input.keydown (e) ->
-      if e.which == 13
-        $(this).closest('form').submit()
-      return
-    return
+      $(this).closest('form').submit() if e.which is 13
+
 })

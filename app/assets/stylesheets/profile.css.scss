@@ -1,6 +1,7 @@
 @import "bootstrap-editable";
 
 #profile {
+  .alert { margin: 0 };
 
   .container, .row, .col-sm-3, .col-sm-6, .col-sm-9 {
     /*border: 1px solid red;*/
@@ -48,8 +49,12 @@
     padding-right: 5px;
   }
 
-  .hoverable.hover .mod {
+  .mod {
     color: gray;
+    cursor: pointer;
+    &:hover {
+      color: black;
+    }
   }
 
   .dim {
@@ -83,17 +88,23 @@
     &.new {
       .properties, .mod-holder { display: none; }
     }
-    .alert { margin: 0 };
-    .delete {
-      cursor: pointer;
-      &:hover:before { color: black; }
-    }
   }
 
   #add-an-email {
     display: block;
   }
-
+  .authentication.identity {
+    &.editing {
+      .mod-holder { display: none; }
+    }
+    .editable-input {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    .editable-buttons { float: right; }
+    label { display: block; }
+  }
   .row.other-sign-in {
     display: none;
   }
