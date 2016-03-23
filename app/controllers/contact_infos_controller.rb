@@ -56,8 +56,7 @@ class ContactInfosController < ApplicationController
                         'Your email address is already verified' :
                         "A verification message has been sent to \"#{contact_info.value}\""
 
-                  redirect_to :back,
-                              notice: msg
+                      render json: {message: msg, is_verified: contact_info.verified}, status: :ok
                 })
   end
 
