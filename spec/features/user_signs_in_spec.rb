@@ -12,7 +12,7 @@ feature 'User logs in as a local user', js: true do
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username, email, or password')
+      expect(page).to have_content('The password you provided is incorrect.')
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
@@ -31,7 +31,7 @@ feature 'User logs in as a local user', js: true do
       fill_in 'Username', with: 'plone_user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username, email, or password')
+      expect(page).to have_content('The password you provided is incorrect.')
 
       fill_in 'Username', with: 'plone_user'
       fill_in 'Password', with: 'password'
@@ -49,7 +49,7 @@ feature 'User logs in as a local user', js: true do
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username, email, or password')
+      expect(page).to have_content('We have no account')
     end
   end
 
@@ -189,7 +189,7 @@ feature 'User logs in as a local user', js: true do
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username, email, or password')
+      expect(page).to have_content('The password you provided is incorrect')
 
       fill_in 'Username or Email', with: 'user@example.com'
       fill_in 'Password', with: 'password'

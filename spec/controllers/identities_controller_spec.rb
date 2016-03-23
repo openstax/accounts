@@ -108,7 +108,7 @@ describe IdentitiesController, type: :controller do
              reset_password: { password: 'password', password_confirmation: 'passwordd'})
         expect(response.code).to eq('400')
         expect(response.body).not_to include('Reset password link is invalid')
-        expect(response.body).to include("Password doesn&#x27;t match confirmation")
+        expect(response.body).to include("Password doesn't match confirmation")
         expect(response.body).to include('Set Password')
         identity.reload
         expect(identity.authenticate('password')).to be_truthy

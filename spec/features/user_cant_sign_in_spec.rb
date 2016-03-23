@@ -19,15 +19,22 @@ feature "User can't sign in", js: true do
   scenario 'username not found' do
     fill_in 'Username or Email', with: 'aaaaa'
     click_button 'Submit'
-    expect(page.text).to include('Username not found')
+    expect(page.text).to include('We did not find an account with the username or email')
   end
 
   scenario 'user is not a local user' do
     user = create_nonlocal_user 'not_local'
     fill_in 'Username or Email', with: 'not_local'
     click_button 'Submit'
-    expect(page.text).to include('Instructions for signing in to your OpenStax account sent')
+    expect(page.text).to include('Instructions for accessing your OpenStax account have been emailed to you.')
     sign_in_help_email_sent? user
+  end
+
+  scenario 'user does not have any verified email addresses' do
+    @email.destroy
+    fill_in 'Username or Email', with: 'user1'
+    click_button 'Submit'
+    expect(page.text).to include("doesn't have any email addresses")
   end
 
   scenario 'user does not have any verified email addresses' do
@@ -35,13 +42,13 @@ feature "User can't sign in", js: true do
     @email.save
     fill_in 'Username or Email', with: 'user1'
     click_button 'Submit'
-    expect(page.text).to include('Instructions for signing in to your OpenStax account sent')
+    expect(page.text).to include('Instructions for accessing your OpenStax account have been emailed to you.')
   end
 
   scenario 'user gets a password reset email' do
     fill_in 'Username or Email', with: 'user1'
     click_button 'Submit'
-    expect(page.text).to include('Instructions for signing in to your OpenStax account sent')
+    expect(page.text).to include('Instructions for accessing your OpenStax account have been emailed to you.')
     @user.identity.reload
     sign_in_help_email_sent? @user
 
@@ -58,7 +65,7 @@ feature "User can't sign in", js: true do
   scenario 'user enters an email address' do
     fill_in 'Username or Email', with: @email.value
     click_button 'Submit'
-    expect(page.text).to include('Instructions for signing in to your OpenStax account sent')
+    expect(page.text).to include('Instructions for accessing your OpenStax account have been emailed to you.')
     @user.identity.reload
     sign_in_help_email_sent? @user
 

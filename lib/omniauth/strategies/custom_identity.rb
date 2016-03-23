@@ -41,8 +41,15 @@ module OmniAuth
       info { identity.info }
 
       def callback_phase
-        return fail!(:invalid_credentials) unless identity
-        super
+        if identity
+          super
+        else
+          if locate_conditions[:user_id].nil?
+            return fail!(:cannot_find_user)
+          else
+            return fail!(:bad_password)
+          end
+        end
       end
 
       def other_phase
@@ -92,13 +99,12 @@ module OmniAuth
       end
 
       def identity
-        if options.locate_conditions.is_a? Proc
-          conditions = instance_exec(request, &options.locate_conditions)
-          conditions.to_hash
-        else
-          conditions = options.locate_conditions.to_hash
-        end
-        @identity ||= model.authenticate(conditions, request['password'] )
+        @identity ||= model.authenticate(locate_conditions, request['password'] )
+      end
+
+      def locate_conditions
+        conditions = instance_exec(request, &options.locate_conditions)
+        conditions.to_hash
       end
 
       def model
