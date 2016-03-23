@@ -90,7 +90,7 @@ class SessionsController < ApplicationController
       handle_with(SessionsHelp,
                   success: lambda {
                     redirect_to root_path,
-                                notice: 'Instructions for signing in to your OpenStax account sent to your email address.'
+                                notice: 'Instructions for accessing your OpenStax account have been emailed to you.'
                   },
                   failure: lambda {
                     errors = @handler_result.errors.any?
