@@ -52,6 +52,11 @@ ActionController::Base.class_exec do
   def set_last_signin_provider(provider)
     cookies.signed[:last_signin_provider] = provider
   end
+
+  def last_signin_provider
+    cookies.signed[:last_signin_provider]
+  end
+
 end
 
 # Layout is not inheritable in Rails 3.2
