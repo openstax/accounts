@@ -48,7 +48,8 @@ body, p, ol, ul, td, a {
   }
 
   #top-nav-logo  {
-    background: image-url("accounts_horiz_v2.png") no-repeat transparent;
+    // background: image-url("accounts_horiz_v2.png") no-repeat transparent;
+    background: image-url("openstax-logo.svg") no-repeat transparent;
     $image_height:  37px;
     $image_width:  161px;
 
