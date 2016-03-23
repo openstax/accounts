@@ -1,4 +1,4 @@
-#login {
+#signin {
 
   $social_button_width: 240px;
 
@@ -105,16 +105,39 @@
     }
   }
 
-  .last-login {
-    .check {
-      font-size: 35px;
-      height: 35px;
-    }
-    color: #F27649;
-    height: 50px;
-    margin-top: -50px;
-    margin-left: -80px;
-    font-size: 10px;
+ .last-signin-symbol {
+    font-size: 50px;
+    color: #76b143;
+    font-family: helvetica, verdana, arial, sans-serif;
   }
+
+  #last-signin-explanation {
+    font-style: italic;
+    font-size: 13px;
+    color: lighten($os_gray, 30%);
+    margin-top: 30px;
+    @media(max-width: 399px) {
+      padding: 0 40px;
+    }
+
+    .last-signin-symbol {
+      margin-top: -15px;
+      position: absolute;
+      margin-left: -30px;
+    }
+  }
+
+  .last-signin {
+    margin-top: -46px;
+    margin-left: -26px;
+    position: absolute;
+
+    &.identity {
+      margin-top: -57px;
+      margin-left: -24px;
+    }
+  }
+
 }
+
 
