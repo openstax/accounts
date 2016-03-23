@@ -106,6 +106,7 @@
   }
 
  .last-signin-symbol {
+    font-style: normal;
     font-size: 50px;
     color: #76b143;
     font-family: helvetica, verdana, arial, sans-serif;
@@ -116,6 +117,15 @@
     font-size: 13px;
     color: lighten($os_gray, 30%);
     margin-top: 30px;
+
+    @media(max-width: 767px) {
+      div.content {
+        @include button-form-group;
+        width: $social_button_width - 20px;
+        margin-bottom: 8px;
+      }
+    }
+
     @media(max-width: 399px) {
       padding: 0 40px;
     }
@@ -123,7 +133,7 @@
     .last-signin-symbol {
       margin-top: -15px;
       position: absolute;
-      margin-left: -30px;
+      margin-left: -10px;
     }
   }
 
