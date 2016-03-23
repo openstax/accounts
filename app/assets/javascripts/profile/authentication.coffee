@@ -3,17 +3,9 @@ class PasswordInputs
   @defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults,
     inputclass: ''
     tpl: '''
-       <label>Current Password:
-         <input type="password" name="current_password" class="form-control input-sm" placeholder="Password">
-       </label>
-       <label>
-         New Password:
-         <input type="password" name="password" class="form-control input-sm" placeholder="Password">
-      </label>
-       <label>Confirm Password:
-         <input type="password" name="password_confirmation"
-            class="form-control input-sm" placeholder="Password Confirmation">
-      </label>
+      <input type="password" name="current_password" class="form-control input-sm" placeholder="Current Password">
+      <input type="password" name="password" class="form-control input-sm" placeholder="Password">
+      <input type="password" name="password_confirmation" class="form-control input-sm" placeholder="Password Confirmation">
     '''
   )
 
@@ -25,7 +17,7 @@ $.fn.editableutils.inherit(PasswordInputs, $.fn.editabletypes.abstractinput)
 $.extend(PasswordInputs.prototype, {
 
   activate: ->
-    this.$input.filter('[name="password"]').focus()
+    this.$input.filter('[name="current_password"]').focus()
 
   autosubmit: ->
     this.$input.keydown (e) ->
