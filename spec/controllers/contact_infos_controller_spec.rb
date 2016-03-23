@@ -37,7 +37,7 @@ describe ContactInfosController, type: :controller do
       controller.sign_in! user
       expect { delete 'destroy', id: contact_info.id }.to(
         change{ContactInfo.count}.by(-1))
-      expect(response.status).to eq 302
+      expect(response.status).to eq 200
     end
   end
 
