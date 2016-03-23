@@ -19,8 +19,10 @@ class IdentitiesController < ApplicationController
   def update
     @active_tab = :password
     handle_with(IdentitiesUpdate,
-                success: lambda { redirect_to profile_path, notice: 'Password changed' },
-                failure: lambda { render 'users/edit', status: 400 })
+                success: lambda { render status: :accepted, text: 'Password changed' },
+                failure: lambda {
+                  render status: 400, text: @handler_result.outputs[:identity].errors.full_messages.join('; ')
+                })
   end
 
   def reset_password
