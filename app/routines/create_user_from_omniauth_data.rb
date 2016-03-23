@@ -19,9 +19,6 @@ class CreateUserFromOmniauthData
                     ensure_no_errors: true,
                     state: 'new_social')
 
-    # TODO change routines that just take an (options={}) argument so we can
-    # move toward more explicit / less error-prone routines.
-
     run(TransferOmniauthData, data, outputs.user)
   end
 

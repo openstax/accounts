@@ -11,6 +11,8 @@ class SessionsController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:new, :callback, :failure, :destroy, :help]
 
+  helper_method :last_signin_provider
+
   def new
     get_authorization_url
     options = @authorization_url.nil? ? {} : { url: @authorization_url }

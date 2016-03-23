@@ -12,21 +12,21 @@
       <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook', id: 'facebook-login-button' do %>
         <span class="fa fa-facebook"></span> Sign in with Facebook
       <% end %>
-      <% if cookies.signed[:last_signin_provider] == 'facebook' %>
+      <% if last_signin_provider == 'facebook' %>
         <div class="last-login"><span class="check">&#x2714;</span>Last login</div>
       <% end %>
 
       <%= link_to "/auth/google", class: 'btn btn-block btn-social btn-google', id: 'google-login-button' do %>
         <span class="fa fa-google"></span> Sign in with Google
       <% end %>
-      <% if cookies.signed[:last_signin_provider] == 'google' %>
+      <% if last_signin_provider == 'google' %>
         <div class="last-login"><span class="check">&#x2714;</span>Last login</div>
       <% end %>
 
       <%= link_to "/auth/twitter", class: 'btn btn-block btn-social btn-twitter', id: 'twitter-login-button' do %>
         <span class="fa fa-twitter"></span> Sign in with Twitter
       <% end %>
-      <% if cookies.signed[:last_signin_provider] == 'twitter' %>
+      <% if last_signin_provider == 'twitter' %>
         <div class="last-login"><span class="check">&#x2714;</span>Last login</div>
       <% end %>
     </div>
