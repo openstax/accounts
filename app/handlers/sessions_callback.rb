@@ -76,6 +76,7 @@ class SessionsCallback
     end
 
     outputs[:status] = status
+    outputs[:authentication] = authentication
   end
 
   protected

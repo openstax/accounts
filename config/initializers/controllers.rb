@@ -48,6 +48,10 @@ ActionController::Base.class_exec do
 
     redirect_to reset_password_path(code_hash)
   end
+
+  def set_last_signin_provider(provider)
+    cookies.signed[:last_signin_provider] = provider
+  end
 end
 
 # Layout is not inheritable in Rails 3.2

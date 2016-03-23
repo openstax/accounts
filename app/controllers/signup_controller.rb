@@ -22,6 +22,7 @@ class SignupController < ApplicationController
       handle_with(SignupSocial,
                   contracts_required: !contracts_not_required,
                   success: lambda {
+                    set_last_signin_provider(current_user.authentications.first.provider)
                     redirect_back
                   },
                   failure: lambda {
