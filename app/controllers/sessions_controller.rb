@@ -39,6 +39,7 @@ class SessionsController < ApplicationController
       complete: lambda {
         case @handler_result.outputs[:status]
         when :returning_user, :new_password_user, :transferred_authentication
+          set_last_signin_provider(@handler_result.outputs[:authentication].provider)
           redirect_to action: :returning_user
         when :new_social_user
           redirect_to signup_social_path
