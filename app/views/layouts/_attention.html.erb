@@ -8,6 +8,8 @@
 <% notice_messages = [] %>
 <% notice_messages.push(flash[:notice]) if flash[:notice] %>
 
+<% alert_messages = alert_messages.collect{|msg| msg.gsub("contact support", mail_to("info@openstax.org", "contact support")).html_safe} %>
+
 <div class="row">
   <div class="col-xs-12">
     <noscript>
