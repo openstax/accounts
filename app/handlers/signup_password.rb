@@ -34,7 +34,7 @@ class SignupPassword
   protected
 
   def authorized?
-    OSU::AccessPolicy.action_allowed?(:register, caller, caller)
+    OSU::AccessPolicy.action_allowed?(:signup, caller, caller)
   end
 
   def handle

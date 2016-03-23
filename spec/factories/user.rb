@@ -10,6 +10,10 @@ FactoryGirl.define do
       state 'temp'
     end
 
+    factory :new_social_user do
+      state 'new_social'
+    end
+
     trait :terms_not_agreed do; end
 
     trait :terms_agreed do
