@@ -28,7 +28,7 @@ class Email
       ).complete(@toggleSpinner)
 
   displayError: (resp) ->
-    error = this.$el.find('.error')
+    error = this.$el.find('.alert')
     unless error.length
       error = this.$el.prepend('''
         <div class="alert alert-danger alert-dismissible" role="alert">
