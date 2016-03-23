@@ -11,4 +11,5 @@ $(document).ready(function(){
   $.each(['Name','Email'], function(i, obj){
     if (OX.Profile[obj].initialize){ OX.Profile[obj].initialize(); }
   });
+  $('[data-toggle="tooltip"]').tooltip()
 });
