@@ -59,7 +59,7 @@ class ImportUsers
 
   def create_user(username, password_digest, title, first_name, last_name, full_name, email_address)
     # Check whether the user is already in the database
-    ea = EmailAddress.find_by_value(email_address)
+    ea = EmailAddress.verified.where(value: email_address).first
     @user = ea.try(:user)
     return unless @user.nil?
 
