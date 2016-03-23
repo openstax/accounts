@@ -16,9 +16,9 @@ module ProfileHelper
       end
 
     change_icons = [
-      ('glyphicon-pencil'  if has_authentication && edit_possible),
-      ('glyphicon-trash' if has_authentication && trash_possible),
-      ('glyphicon-plus'  if !has_authentication)
+      ('glyphicon-pencil edit'  if has_authentication && edit_possible),
+      ('glyphicon-trash delete' if has_authentication && trash_possible),
+      ('glyphicon-plus add'  if !has_authentication)
     ].compact
 
     icon_tags = change_icons.collect do |change_icon|
@@ -30,13 +30,13 @@ module ProfileHelper
         <i class="fa fa-square fa-stack-2x #{provider}-bkg#{' dim' if !has_authentication}"></i>
         <i class="fa fa-#{icon_class} fa-stack-1x fa-inverse"></i>
       </span>
-      <span class="#{'dim' if !has_authentication}">#{display_name}</span>
+      <span class="name #{'dim' if !has_authentication}">#{display_name}</span>
       <span class="mod-holder">
         #{icon_tags}
       </span>
     SNIPPET
 
-    "<div class='authentication hoverable'>#{snippet}</div>".html_safe
+    "<div class='authentication hoverable #{provider}'>#{snippet}</div>".html_safe
   end
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
