@@ -22,10 +22,20 @@ class Email
     @toggleSpinner(true)
     data = {is_searchable: ev.target.checked}
     $.ajax({type: "PUT", url: @url('set_searchable'), data})
-      .error( (resp) =>
+      .success( (resp) =>
+        @set(resp)
+      ).error( (resp) =>
         ev.target.checked = !ev.target.checked
         @displayError(resp)
       ).complete(@toggleSpinner)
+
+  set: (contact) ->
+    if contact.id?
+      @id = contact.id
+      this.$el.attr('data-id', contact.id)
+    if contact.is_searchable?
+      this.$el.find('input[type=checkbox]').prop('checked', contact.is_searchable)
+
 
   displayError: (resp) ->
     error = this.$el.find('.alert')
@@ -87,13 +97,13 @@ OX.Profile.Email = {
       @addEmail.show()
       email.remove() unless reason is 'save'
     ).on('save', (e, params)->
-      email.attr('data-id', params.response.contact_info.id)
       email.removeClass('new')
       # editable removes the parent element unless it's inside a defer ?
       _.defer ->
         input.editable('destroy')
         input.text(params.response.contact_info.value)
-      new Email(email)
+      email = new Email(email)
+      email.set(params.response.contact_info)
     )
     # no idea why the defer is needed, but it fails (silently!) without it
     _.defer -> input.editable('show')
