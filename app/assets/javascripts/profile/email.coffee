@@ -97,8 +97,7 @@ OX.Profile.Email = {
     @addEmail.hide()
 
     input.editable(
-      url: '/contact_infos'
-      mode: 'inline'
+      url: BASE_URL
       params: (params) ->
         'contact_info[type]': 'EmailAddress'
         'contact_info[value]': params.value
