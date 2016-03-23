@@ -10,7 +10,7 @@ class UserAccessPolicy
       requestor.is_human? &&
       !requestor.is_anonymous? &&
       (requestor == user || requestor.is_administrator?)
-    when :register
+    when :signup
       requestor.is_human? &&
       (requestor.is_anonymous? || !requestor.is_activated?) &&
       requestor == user # Temp or unclaimed users only
