@@ -20,13 +20,17 @@ class Email
 
   saveSearchable: (ev) ->
     @toggleSpinner(true)
+    ev.target.disabled = true
     data = {is_searchable: ev.target.checked}
     $.ajax({type: "PUT", url: @url('set_searchable'), data})
       .success( (resp) => @set(resp) )
       .error( (resp) =>
         ev.target.checked = not ev.target.checked
         @displayError(resp)
-      ).complete(@toggleSpinner)
+      ).complete( =>
+        ev.target.disabled = false
+        @toggleSpinner(false)
+      )
 
   set: (contact) ->
     if contact.id?
