@@ -3,7 +3,6 @@ class PasswordInputs
   @defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults,
     inputclass: ''
     tpl: '''
-      <input type="password" name="current_password" class="form-control input-sm" placeholder="Current Password">
       <input type="password" name="password" class="form-control input-sm" placeholder="Password">
       <input type="password" name="password_confirmation" class="form-control input-sm" placeholder="Password Confirmation">
     '''
@@ -15,9 +14,8 @@ class PasswordInputs
 $.fn.editabletypes.oxpassword = PasswordInputs
 $.fn.editableutils.inherit(PasswordInputs, $.fn.editabletypes.abstractinput)
 $.extend(PasswordInputs.prototype, {
-
   activate: ->
-    this.$input.filter('[name="current_password"]').focus()
+    this.$input.filter('[name="password"]').focus()
 
   autosubmit: ->
     this.$input.keydown (e) ->
@@ -25,7 +23,8 @@ $.extend(PasswordInputs.prototype, {
 
   input2value: ->
     values = {}
-    this.$input.find('input').each( (i, el) ->
+    this.$input.each( (i, el) ->
+      return unless el.type is 'password'
       el = $(el)
       values[el.attr('name')] = el.val()
     )
@@ -48,8 +47,10 @@ OX.Profile.Authentication = {
       params: (params) -> {identity: params.value}
     ).on('hidden', (e, reason) ->
       input.editable('destroy')
+      input.attr('style', '') # editable calls hide() which sets 'display:block'
       input.text('Simple Password')
       identity.removeClass('editing')
+
     ).on('save', (e, params) ->
       OX.displayAlert(type: 'success', message: params.response, icon: 'thumbs-up', parentEl: input.closest('.row'))
     )

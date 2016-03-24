@@ -19,11 +19,6 @@ class IdentitiesUpdate
   end
 
   def handle
-    fatal_error(code: :wrong_password,
-                message: 'The password provided did not match our records',
-                offending_inputs: :current_password) \
-      unless @identity.authenticate identity_params.current_password
-
     identity_attributes = identity_params.as_hash(:password,
                                                   :password_confirmation)
     @identity.update_attributes(identity_attributes)
