@@ -93,25 +93,56 @@
   #add-an-email {
     display: block;
   }
-  .authentication[data-provider=identity] {
-    &.editing {
-      display: flex;
-      .mod-holder { display: none; }
+
+
+  .authentication {
+    .mod-holder {
+      span { margin-left: 8px; }
+      .edit { display: none; }
     }
-    .editable-input {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
+
+    &[data-provider=identity] {
+      &.editing {
+        display: flex;
+        .mod-holder { display: none; }
+      }
+      .editable-input {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+      .form-group > div {
+        display: flex;
+        flex-direction: row;
+      }
+      .editable-buttons {
+        display: inline;
+      }
+
+      .mod-holder {
+        .edit   { display: inline; }
+      }
     }
-    .form-group > div {
-      display: flex;
-      flex-direction: row;
-    }
-    .editable-buttons {
-      display: inline;
-    }
-    label { display: block; }
   }
+
+  .enabled-providers {
+    .mod-holder .add { display: none; }
+    .authentication {
+      &:only-child {
+        .mod-holder .delete{ display: none; }
+      }
+    }
+  }
+
+  .other-sign-in {
+    .authentication {
+      .mod-holder {
+        .edit   { display: none; }
+        .delete { display: none; }
+      }
+    }
+  }
+
   .row.other-sign-in {
     display: none;
   }

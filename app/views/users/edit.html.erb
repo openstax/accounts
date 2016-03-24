@@ -55,11 +55,11 @@
     <% current_providers.each do |provider| %>
       <%= way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
     <% end %>
-
-    <% if other_providers.any? %>
-      <div><%= link_to "Enable other sign in options",nil ,id: 'enable-other-sign-in' %></div>
-    <% end %>
   </div>
+  <% if other_providers.any? %>
+  <div class="col-sm-offset-2"><%= link_to "Enable other sign in options",nil ,id: 'enable-other-sign-in' %></div>
+  <% end %>
+
 </div>
 
 <div class="row other-sign-in">
