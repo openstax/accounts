@@ -32,9 +32,18 @@ $.extend(PasswordInputs.prototype, {
 
 })
 
-OX.Profile.Authentication = {
 
-  initialize: ->
+class Identity
+
+  constructor: (@el) ->
+    _.bindAll(@, _.functions(@)...)
+
+  delete: ->
+
+class Password extends Identity
+
+  constructor: (@el) ->
+    super
     $('.authentication.identity .edit').click @editPassword
 
   editPassword: ->
@@ -57,4 +66,12 @@ OX.Profile.Authentication = {
     # no idea why the defer is needed, but it fails (silently!) without it
     _.defer -> input.editable('show')
 
+
+OX.Profile.Authentication = {
+
+  initialize: ->
+    $('.authentication').each (i, el) ->
+      el = $(el)
+      klass = if el.hasClass('identity') then Password else Identity
+      new klass(el)
 }
