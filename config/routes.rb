@@ -70,6 +70,7 @@ Accounts::Application.routes.draw do
   scope controller: 'static_pages' do
     get 'copyright'
     get 'status'
+    get 'api'
   end
 
   apipie

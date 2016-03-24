@@ -1,20 +1,10 @@
 class IdentitiesController < ApplicationController
 
   skip_before_filter :authenticate_user!, :expired_password, :finish_sign_up,
-                     only: [:new, :reset_password]
+                     only: [:reset_password]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :reset_password]
-
-  def new
-    @errors ||= env['errors']
-
-    if !current_user.is_anonymous? && current_user.authentications.any?{|auth| auth.provider == 'identity'}
-      redirect_to root_path, alert: "You already have a simple username and password on your account!"
-    else
-      store_fallback
-    end
-  end
+                  only: [:reset_password]
 
   def update
     handle_with(IdentitiesUpdate,

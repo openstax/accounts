@@ -40,7 +40,7 @@ module ProfileHelper
   end
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
-    verify_link = is_verified ? '' : link_to('[Verify]', resend_confirmation_contact_info_path(id), class: 'verify')
+    verify_link = is_verified ? '' : link_to('Click to verify', resend_confirmation_contact_info_path(id), class: 'verify')
     (
       <<-SNIPPET
         <div class="email-entry" data-id="#{id}">
