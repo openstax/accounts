@@ -9,23 +9,15 @@ module ProfileHelper
       has_authentication = user_authentications.any?{|auth| auth.provider == provider}
     end
 
-    icon_class, display_name, edit_possible =
+    icon_class, display_name =
       case provider
-      when 'identity' then ['key', 'Password', true]
-      else [provider, provider.capitalize, false]
+      when 'identity' then ['key', 'Password']
+      else [ provider, provider.capitalize ]
       end
 
-    trash_possible = has_authentication && current_providers.many?
-
-    change_icons = [
-      ('glyphicon-pencil edit'  if has_authentication && edit_possible),
-      ('glyphicon-trash delete' if has_authentication && trash_possible),
-      ('glyphicon-plus add'  if !has_authentication)
-    ].compact
-
-    icon_tags = change_icons.collect do |change_icon|
-      "<span class='glyphicon #{change_icon} mod'></span>"
-    end.join("")
+    icons = [
+      'glyphicon-pencil edit', 'glyphicon-trash delete', 'glyphicon-plus add',
+    ]
 
     snippet = <<-SNIPPET
       <span class="fa-stack fa-lg">
@@ -34,7 +26,7 @@ module ProfileHelper
       </span>
       <span class="name">#{display_name}</span>
       <span class="mod-holder">
-        #{icon_tags}
+      #{icons.map{|icon| "<span class='glyphicon #{icon} mod'></span>"}.join}
       </span>
     SNIPPET
 

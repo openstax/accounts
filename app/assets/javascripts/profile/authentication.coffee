@@ -84,6 +84,8 @@ class Password extends Identity
     # no idea why the defer is needed, but it fails (silently!) without it
     _.defer -> input.editable('show')
 
+  add: ->
+
 
 SPECIAL_TYPES =
   identity: Password
