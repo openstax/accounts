@@ -31,4 +31,13 @@ class IdentitiesController < ApplicationController
                 })
   end
 
+
+  def destroy
+    handle_with(AuthenticationDelete,
+                success: lambda { render status: :ok, text: "#{params[:provider].titleize} removed" },
+                failure: lambda {
+                  render status: 400, text: @handler_result.errors.map(&:message).to_sentence
+                })
+  end
+
 end

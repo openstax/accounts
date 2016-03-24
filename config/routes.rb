@@ -45,6 +45,7 @@ Accounts::Application.routes.draw do
 
   resource :identity, only: :update
   scope controller: 'identities' do
+    delete 'identity/:provider', action: :destroy
     get 'reset_password'
     post 'reset_password'
   end
