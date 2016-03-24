@@ -12,21 +12,31 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  xcontext 'PUT update' do
+  context 'PUT update' do
     it "updates the user's profile" do
       controller.sign_in! user
-      put 'update', user: {first_name: "MyNewName"}
-      expect(response.status).to eq 302
-      expect(user.reload.first_name).to eq "MyNewName"
+      put 'update', {
+        name: 'username',
+        value: 'newusername',
+        format: 'json'
+      }
+      expect(response.status).to eq 200
+      expect(user.reload.username).to eq "newusername"
     end
 
     it "updates the user's profile for all fields" do
       controller.sign_in! user
-      put 'update', user: {title: 'Dr',
-                           first_name: 'NewFirst',
-                           last_name: 'NewLast',
-                           suffix: 'NewSuffix'}
-      expect(response.status).to eq 302
+      put 'update', {
+        name: 'name',
+        value: {
+          title: 'Dr',
+          first_name: 'NewFirst',
+          last_name: 'NewLast',
+          suffix: 'NewSuffix'
+        },
+        format: 'json'
+      }
+      expect(response.status).to eq 200
       user.reload
       expect(user.title).to eq 'Dr'
       expect(user.first_name).to eq 'NewFirst'
