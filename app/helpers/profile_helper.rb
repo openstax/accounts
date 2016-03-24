@@ -11,7 +11,7 @@ module ProfileHelper
 
     icon_class, display_name, edit_possible, trash_possible =
       case provider
-      when 'identity' then ['key', 'Simple Password', true, true]
+      when 'identity' then ['key', 'Password', true, true]
       else [provider, provider.capitalize, false, true]
       end
 
