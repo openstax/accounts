@@ -1,9 +1,0 @@
-<%= page_heading 'Please add an email address to your account.' %>
-
-<p>Having an email address on your account is important should you ever need to reset your password.</p>
-
-<%= lev_form_for :contact_info, method: :put, html: {class: 'form-horizontal', id: 'ask-for-email'} do |f| %>
-  <%= standard_field form: f, name: :value, type: :email_field, label: 'Email Address' %>
-  <%= f.hidden_field :type, value: 'EmailAddress' %>
-  <%= submit_tag 'Submit', class: 'standard' %>
-<% end %>

@@ -1,10 +1,7 @@
-<%= page_heading @handler_result.errors.any? ? "Unable to verify email address" : "Thank you for verifying your email address."%>
+<%= page_heading @handler_result.errors.any? ? "We were unable to verify your email address" : "Thank you for verifying your email address"%>
+
 <% if @handler_result.errors.any? %>
-  <p>Sorry, we couldn't verify an email using the verification code you provided.  If you typed it in manually, please check for errors.  If you're still having trouble, please visit your profile page to resend the verification email.</p>
+  <p>Sorry, we couldn't verify your email using the verification code you provided.  If you typed it in manually, please check for errors.  If you're still having trouble, please visit your profile page to resend the verification email.</p>
 <% else %>
-  <% if @handler_result.outputs.contact_info.try(:user).try(:is_temp?) %>
-    <p>Please close this tab and continue your registration process in OpenStax.</p>
-  <% else %>
-    <p>Success! Thanks for adding your email address.</p>
-  <% end %>
+  <p>Success! Thanks for adding your email address.</p>
 <% end %>
