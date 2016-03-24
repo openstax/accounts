@@ -7,7 +7,7 @@ describe SignInHelpMailer, type: :mailer do
       FactoryGirl.create :authentication, provider: 'identity', user: @user
       FactoryGirl.create :identity, user: @user
       @email = FactoryGirl.create :email_address, user: @user
-      @mail = SignInHelpMailer.sign_in_help @email, '1234'
+      @mail = SignInHelpMailer.sign_in_help user: @user, email_address: @email.value, reset_password_code: '1234'
     end
 
     it 'renders the headers' do
