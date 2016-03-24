@@ -46,13 +46,23 @@ class Identity
 
   delete: ->
     $.ajax({type: "DELETE", url: "/identity/#{@getType()}"})
-      .success( (resp) =>
-        @$el.hide('fast', =>
-          $('.other-sign-in .providers').append(@$el)
-          @$el.show()
-        )
-      )
+      .success( @moveToDisabledSection )
       .error(OX.displayAlert)
+
+  isEnabled: ->
+    this.$el.closest('.enabled-providers').length isnt 0
+
+  moveToEabledSection: ->
+    @$el.hide('fast', =>
+      $('.enabled-providers .providers').append(@$el)
+      @$el.show()
+    )
+
+  moveToDisabledSection: ->
+    @$el.hide('fast', =>
+      $('.other-sign-in .providers').append(@$el)
+      @$el.show()
+    )
 
   add: ->
     # TODO: figure out a way for the BE to pass the url
@@ -78,13 +88,18 @@ class Password extends Identity
       input.text('Password')
       identity.removeClass('editing')
 
-    ).on('save', (e, params) ->
-      OX.displayAlert(type: 'success', message: params.response, icon: 'thumbs-up', parentEl: input.closest('.row'))
+    ).on('save', (e, params) =>
+      if @isEnabled()
+        OX.displayAlert(type: 'success', message: params.response, icon: 'thumbs-up', parentEl: input.closest('.row'))
+      else
+        @moveToEabledSection()
     )
     # no idea why the defer is needed, but it fails (silently!) without it
     _.defer -> input.editable('show')
 
+  # password identity works by setting the password
   add: ->
+    @editPassword()
 
 
 SPECIAL_TYPES =
