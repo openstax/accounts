@@ -78,4 +78,47 @@ feature "User can't sign in", js: true do
     expect(page.text).to include('Your password has been reset successfully!')
     expect(page.text).to include('You are now signed in.')
   end
+
+  scenario 'user has multiple email addresses' do
+    user = FactoryGirl.create :user, username: 'user2', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
+    FactoryGirl.create :authentication, provider: 'identity', user: user
+    FactoryGirl.create :identity, user: user
+
+    email_1 = FactoryGirl.create :email_address, user: user
+    email_2 = FactoryGirl.create :email_address, user: user
+
+    fill_in 'Username or Email', with: user.username
+    click_button 'Submit'
+
+    open_email(email_1.value)
+    expect(current_email).to have_content('to all of the addresses')
+
+    open_email(email_2.value)
+    expect(current_email).to have_content('to all of the addresses')
+  end
+
+  scenario 'submitted email addresses matches multiple users' do
+    user_a = FactoryGirl.create :user, username: 'user_a', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
+    FactoryGirl.create :authentication, provider: 'identity', user: user_a
+    FactoryGirl.create :identity, user: user_a
+    email_a = FactoryGirl.create :email_address, user: user_a
+
+    user_b = FactoryGirl.create :user, username: 'user_b', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
+    FactoryGirl.create :authentication, provider: 'identity', user: user_b
+    FactoryGirl.create :identity, user: user_b
+    FactoryGirl.create :email_address, user: user_b, value: email_a.value
+
+    fill_in 'Username or Email', with: email_a.value
+    click_button 'Submit'
+
+    open_email(email_a.value)
+
+    expect(all_emails.length).to eq 2
+
+    expect(all_emails.first).to have_content('to multiple accounts')
+    expect(all_emails.first).to have_content(user_a.username)
+
+    expect(all_emails.last).to have_content('to multiple accounts')
+    expect(all_emails.last).to have_content(user_b.username)
+  end
 end
