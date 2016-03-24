@@ -18,6 +18,12 @@ describe Authentication do
             .not_to change{Authentication.count}
       expect(value).to eq authentication
     end
+
+    it "cannot be created again with the same provider and UID" do
+      new_authentication = Authentication.create(provider: authentication.provider,
+                                                 uid: authentication.uid)
+      expect(new_authentication).not_to be_valid
+    end
   end
 
   context "when an authentication doesn't exist" do
@@ -35,5 +41,18 @@ describe Authentication do
       expect(value.uid).to eq "42"
     end
   end
+
+  context "when authentications are being deleted" do
+    it "isn't deletable when it is the user's last" do
+      expect{authentication.destroy}.to change{Authentication.count}.by(0)
+      expect(authentication.errors).not_to be_empty
+    end
+
+    it "is deleted when it isn't the user's last" do
+      FactoryGirl.create(:authentication, user: authentication.user)
+      expect{authentication.destroy}.to change{Authentication.count}.by(-1)
+    end
+  end
+
 
 end
