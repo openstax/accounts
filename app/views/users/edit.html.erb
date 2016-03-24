@@ -77,12 +77,6 @@
 <%= content_for :javascript do %>
 <script type="text/javascript">
 
-$('#enable-other-sign-in').click(function(e) {
-  e.preventDefault();
-  $(this).hide();
-  $('.row.other-sign-in').slideToggle();
-});
-
 $.fn.editable.defaults.mode = 'inline';
 $.fn.editable.defaults.send = "always";
 $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
