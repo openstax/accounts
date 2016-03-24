@@ -17,11 +17,10 @@ class IdentitiesController < ApplicationController
   end
 
   def update
-    @active_tab = :password
     handle_with(IdentitiesUpdate,
                 success: lambda { render status: :accepted, text: 'Password changed' },
                 failure: lambda {
-                  render status: 400, text: @handler_result.outputs[:identity].errors.full_messages.join('; ')
+                  render status: 400, text: @handler_result.errors.map(&:message).to_sentence
                 })
   end
 
