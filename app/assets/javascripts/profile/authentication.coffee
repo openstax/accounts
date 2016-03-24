@@ -37,17 +37,26 @@ class Identity
 
   constructor: (@el) ->
     _.bindAll(@, _.functions(@)...)
+    this.$el = $(el)
+    this.$el.find('.delete').click(@delete)
+    this.$el.find('.add').click(@add)
+
+  getType: ->
+    this.$el.data('provider')
 
   delete: ->
+
+  add: ->
+    window.location.href = "/auth/#{@getType()}"
 
 class Password extends Identity
 
   constructor: (@el) ->
     super
-    $('.authentication.identity .edit').click @editPassword
+    this.$el.find('.edit').click @editPassword
 
   editPassword: ->
-    identity = $('.authentication.identity').addClass('editing')
+    identity = this.$el.addClass('editing')
     input = identity.find('.name')
     input.text('')
     input.editable(
@@ -67,11 +76,14 @@ class Password extends Identity
     _.defer -> input.editable('show')
 
 
+SPECIAL_TYPES =
+  identity: Password
+
 OX.Profile.Authentication = {
 
   initialize: ->
     $('.authentication').each (i, el) ->
-      el = $(el)
-      klass = if el.hasClass('identity') then Password else Identity
+      console.log $(el).data('provider')
+      klass = SPECIAL_TYPES[$(el).data('provider')] or Identity
       new klass(el)
 }
