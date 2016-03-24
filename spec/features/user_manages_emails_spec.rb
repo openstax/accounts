@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-xfeature 'User manages emails' do
+feature 'User manages emails', js: true do
   before(:each) do
     user = create_user('user')
     create_email_address_for(user, 'user@unverified.com',
@@ -10,42 +10,54 @@ xfeature 'User manages emails' do
     expect(page).to have_content('Welcome, user')
 
     visit '/profile'
-    expect(page).to have_content('Manage Email Addresses')
-    click_link 'Manage Email Addresses'
+    expect(page).to have_content('Emails')
   end
 
   context 'create' do
-    scenario 'success', js: true do
-      fill_in 'Add an email address', with: 'user@mysite.com'
-      click_button 'Add'
-      expect(page).to have_content('Change Your Password')
-      expect(page).to have_content(
-        'A verification message has been sent to "user@mysite.com"')
+    scenario 'success' do
+      click_link 'Add an email'
+      within(:css, '.email-entry.new') {
+        find('input').set('user@mysite.com')
+        find('.glyphicon-ok').click
+      }
+      expect(page).to have_content('Click to verify')
       expect(page).to have_content('user@mysite.com')
     end
 
-    scenario 'with empty value', js: true do
-      fill_in 'Add an email address', with: ''
-      click_button 'Add'
-      expect(page).to have_content("Value can't be blank")
+    scenario 'with empty value' do
+      click_link 'Add an email'
+      within(:css, '.email-entry.new') {
+        find('input').set('')
+        find('.glyphicon-ok').click
+      }
+      # input just disappears
+      expect(page).to_not have_css('.email-entry.new input')
     end
 
-    scenario 'with invalid value', js: true do
-      fill_in 'Add an email address', with: 'user'
-      click_button 'Add'
+    scenario 'with invalid value' do
+      click_link 'Add an email'
+      within(:css, '.email-entry.new') {
+        find('input').set('user')
+        find('.glyphicon-ok').click
+      }
       expect(page).to have_content('Value "user" is not a valid email address')
     end
   end
 
   context 'destroy' do
-    scenario 'success', js: true do
-      click_link 'Delete'
-      expect(page).to have_content('Email address deleted')
+    scenario 'success' do
+      within(:css, '.email-entry') {
+        find('.glyphicon-trash').click
+      }
+      within(:css, '.popover-content') {
+        find('.confirm-dialog-btn-confirm').click
+      }
+      expect(page).to_not have_content('user@unverified.com')
     end
   end
 
   context 'resend_confirmation' do
-    scenario 'success', js: true do
+    scenario 'success' do
       click_link 'Click to verify'
       expect(page).to have_content('A verification message has been sent to "')
     end
