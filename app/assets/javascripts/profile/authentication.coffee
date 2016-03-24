@@ -45,8 +45,17 @@ class Identity
     this.$el.data('provider')
 
   delete: ->
+    $.ajax({type: "DELETE", url: "/identity/#{@getType()}"})
+      .success( (resp) =>
+        @$el.hide('fast', =>
+          $('.other-sign-in .providers').append(@$el)
+          @$el.show()
+        )
+      )
+      .error(OX.displayAlert)
 
   add: ->
+    # TODO: figure out a way for the BE to pass the url
     window.location.href = "/auth/#{@getType()}"
 
 class Password extends Identity
@@ -83,7 +92,6 @@ OX.Profile.Authentication = {
 
   initialize: ->
     $('.authentication').each (i, el) ->
-      console.log $(el).data('provider')
       klass = SPECIAL_TYPES[$(el).data('provider')] or Identity
       new klass(el)
 }

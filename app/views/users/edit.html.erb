@@ -47,11 +47,11 @@
   other_providers   = all_providers - current_providers
 %>
 
-<div class="row">
+<div class="row enabled-providers">
   <div class="col-sm-2 category">
     How you<br class="wide"/> sign in
   </div>
-  <div class="col-sm-10 info">
+  <div class="col-sm-10 providers">
     <% current_providers.each do |provider| %>
       <%= way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
     <% end %>
@@ -66,7 +66,7 @@
   <div class="col-sm-2 category">
     Other sign in<br class="wide"/> options
   </div>
-  <div class="col-sm-10 info">
+  <div class="col-sm-10 providers">
     <% other_providers.each do |provider| %>
       <%= way_to_login(provider: provider, has_authentication: false, current_providers: current_providers) %>
     <% end %>
