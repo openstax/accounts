@@ -61,6 +61,8 @@ gem 'bootstrap-sass', '~> 3.1.1'
 gem 'compass-rails'
 gem "font-awesome-rails"
 
+gem 'premailer-rails'
+
 group :development, :test do
   gem 'byebug'
   gem 'thin'

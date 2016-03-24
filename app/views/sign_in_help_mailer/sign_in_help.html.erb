@@ -1,0 +1,25 @@
+<p>Hi <%= @user.casual_name %>,</p>
+
+<p>Someone just reported that they can't sign in to your OpenStax account.  If this wasn't you, please ignore this message.</p>
+
+<% if @user.identity.present? %>
+  <p>You can sign in to your account with a password.  To reset your password, please follow this link:</p>
+
+  <p><%= link_to "Reset your password", reset_password_url(code: @reset_password_code) %></p>
+<% else %>
+  <p>Your account does not use a password to sign in.</p>
+<% end %>
+
+<% social_auths = @user.authentications.reject { |a| a.provider == 'identity' } %>
+
+<% if social_auths.present? %>
+  <p>You can <%= 'also ' if @user.identity.present? %>sign in with <%= authentications_list(@user.authentications) %>:</p>
+
+  <ul>
+    <% social_auths.each do |social_auth| %>
+      <li><%= link_to "Sign in with #{social_auth.provider.capitalize}", "#{root_url}auth/#{social_auth.provider}" %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= render :partial => 'shared/email_closing' %>
