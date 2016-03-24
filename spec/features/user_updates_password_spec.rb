@@ -19,51 +19,67 @@ feature 'User updates password', js: true do
     scenario 'password form is invisible', js: true do
       visit '/profile'
       expect(page).to have_content('How you sign in')
-      expect(page).to have_css('.facebook')
-      expect(page).to_not have_css('.identity')
+      expect(page).to have_css('[data-provider=facebook]')
+      expect(page).to_not have_css('[data-provider=identity]')
     end
+
+    scenario 'password is enabled after being invisible', js: true do
+      visit '/profile'
+      find('#enable-other-sign-in').click
+      sleep 1 # wait for slide-down effect to complete
+      find('[data-provider=identity] .add').click
+      within(:css, '[data-provider=identity]') {
+        fill_in 'password', with: 'new_password'
+        fill_in 'password_confirmation', with: 'new_password'
+        find('.editable-submit').click
+      }
+      expect(page).to have_content('How you sign in')
+      expect(page).to have_css('[data-provider=facebook]')
+      expect(page).to have_css('[data-provider=identity]')
+    end
+
   end
 
   context 'with local password' do
     before(:each) do
       visit '/profile'
-      within(:css, '.identity') {
-        find('.glyphicon-pencil').click
+      within(:css, '[data-provider=identity]') {
+        find('.edit').click
       }
     end
 
     scenario 'success', js: true do
-      within(:css, '.identity') {
+      within(:css, '[data-provider=identity]') {
         fill_in 'password', with: 'new_password'
         fill_in 'password_confirmation', with: 'new_password'
-        find('.glyphicon-ok').click
+        find('.editable-submit').click
       }
       expect(page).to have_content('Password changed')
     end
 
     scenario 'with password confirmation empty or incorrect' do
-      within(:css, '.identity') {
+      within(:css, '[data-provider=identity]') {
         fill_in 'password', with: 'new_password'
         fill_in 'password_confirmation', with: ''
-        find('.glyphicon-ok').click
+        find('.editable-submit').click
       }
       expect(page).to have_content("doesn't match confirmation and can't be blank")
       expect(page).not_to have_content('Password changed')
 
-      within(:css, '.identity') {
+      within(:css, '[data-provider=identity]') {
         fill_in 'password', with: 'new_password'
         fill_in 'password_confirmation', with: 'new_apswords'
-        find('.glyphicon-ok').click
+        find('.editable-submit').click
       }
       expect(page).to have_content("doesn't match confirmation")
       expect(page).not_to have_content('Password changed')
     end
 
     scenario 'with new password too short' do
-      within(:css, '.identity') {
+      within(:css, '[data-provider=identity]') {
         fill_in 'password', with: 'pass'
         fill_in 'password_confirmation', with: 'pass'
-        find('.glyphicon-ok').click
+        find('.editable-submit').click
       }
       expect(page).to have_content('is too short (minimum is 8 characters)')
       expect(page).not_to have_content('Password changed')
