@@ -98,6 +98,8 @@ feature "User can't sign in", js: true do
   end
 
   scenario 'submitted email addresses matches multiple users' do
+    clear_emails
+
     user_a = FactoryGirl.create :user, username: 'user_a', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
     FactoryGirl.create :authentication, provider: 'identity', user: user_a
     FactoryGirl.create :identity, user: user_a
