@@ -1,6 +1,20 @@
 <p>Hi <%= @user.casual_name %>,</p>
 
-<p>Someone just reported that they can't sign in to your OpenStax account.  If this wasn't you, please ignore this message.</p>
+<p>Someone just reported that they can't sign in to your OpenStax account.
+   If this wasn't you, please ignore this message.</p>
+
+<% if @multiple_users %>
+  <p>We are sending an email like this to multiple accounts that all share the email address
+     submitted through our account recovery page. This email is specifically for the account
+     with username '<b><%= @user.username %></b>'.</p>
+<% end %>
+
+<% if @multiple_emails_per_user %>
+  <p>We are sending an email like this to all of the addresses attached to the account with
+     the username submitted through account recovery page, so you will likely be getting this
+     email more than once.  They all contain equivalent information, so you may ignore all
+     but one.</p>
+<% end %>
 
 <% if @user.identity.present? %>
   <p>You can sign in to your account with a password.  To reset your password, please follow this link:</p>

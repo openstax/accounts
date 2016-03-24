@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe SignInHelpMailer, type: :mailer do
-  describe 'reset_password' do
+  describe 'basic features' do
     before :each do
       @user = FactoryGirl.create :user, username: 'user1', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
       FactoryGirl.create :authentication, provider: 'identity', user: @user

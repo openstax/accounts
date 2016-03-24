@@ -144,7 +144,6 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     #{json_schema(Api::V1::FindOrCreateUserRepresenter, include: [:readable, :writable])}
   EOS
-
   def find_or_create
     OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user, User)
     # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have

@@ -9,6 +9,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'capybara/poltergeist'
+require 'capybara/email/rspec'
 require 'mail'
 
 Mail.defaults { delivery_method :test }
