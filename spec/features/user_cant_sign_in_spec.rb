@@ -56,7 +56,7 @@ feature "User can't sign in", js: true do
     expect(page.text).to include('Reset Password')
     expect(page.text).not_to include('Reset password link is invalid')
     fill_in 'Password', with: 'Pazzw0rd!'
-    fill_in 'Password Again', with: 'Pazzw0rd!'
+    fill_in 'Confirm Password', with: 'Pazzw0rd!'
     click_button 'Set Password'
     expect(page.text).to include('Your password has been reset successfully!')
     expect(page.text).to include('You are now signed in.')
@@ -73,7 +73,7 @@ feature "User can't sign in", js: true do
     expect(page.text).to include('Reset Password')
     expect(page.text).not_to include('Reset password link is invalid')
     fill_in 'Password', with: 'Pazzw0rd!'
-    fill_in 'Password Again', with: 'Pazzw0rd!'
+    fill_in 'Confirm Password', with: 'Pazzw0rd!'
     click_button 'Set Password'
     expect(page.text).to include('Your password has been reset successfully!')
     expect(page.text).to include('You are now signed in.')
