@@ -111,4 +111,11 @@ OX.Profile.Authentication = {
     $('.authentication').each (i, el) ->
       klass = SPECIAL_TYPES[$(el).data('provider')] or Identity
       new klass(el)
+
+    $('#enable-other-sign-in').click (e) ->
+      e.preventDefault()
+      $(this).hide()
+      $('.row.other-sign-in').slideToggle()
+
+
 }
