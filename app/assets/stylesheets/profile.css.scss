@@ -93,7 +93,7 @@
   #add-an-email {
     display: block;
   }
-  .authentication.identity {
+  .authentication[data-provider=identity] {
     &.editing {
       display: flex;
       .mod-holder { display: none; }

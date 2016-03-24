@@ -53,7 +53,7 @@
   </div>
   <div class="col-sm-10 info">
     <% current_providers.each do |provider| %>
-      <%= way_to_login(provider: provider, has_authentication: true) %>
+      <%= way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
     <% end %>
 
     <% if other_providers.any? %>
@@ -68,7 +68,7 @@
   </div>
   <div class="col-sm-10 info">
     <% other_providers.each do |provider| %>
-      <%= way_to_login(provider: provider, has_authentication: false) %>
+      <%= way_to_login(provider: provider, has_authentication: false, current_providers: current_providers) %>
     <% end %>
   </div>
 </div>
