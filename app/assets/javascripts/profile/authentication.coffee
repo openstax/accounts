@@ -4,7 +4,7 @@ class PasswordInputs
     inputclass: ''
     tpl: '''
       <input type="password" name="password" class="form-control input-sm" placeholder="Password">
-      <input type="password" name="password_confirmation" class="form-control input-sm" placeholder="Password Confirmation">
+      <input type="password" name="password_confirmation" class="form-control input-sm" placeholder="Confirm Password">
     '''
   )
 
