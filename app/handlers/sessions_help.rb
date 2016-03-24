@@ -60,7 +60,7 @@ class SessionsHelp
 
     return nil if user.nil?
 
-    email_addresses = user.contact_infos.email_addresses.map(&:value)
+    email_addresses = user.contact_infos.email_addresses.pluck(:value)
 
     if email_addresses.empty?
       fatal_error(code: :no_email_addresses,
@@ -77,7 +77,7 @@ class SessionsHelp
   end
 
   def matching_users_by_email(email)
-    users = ContactInfo.where(value: email).all.collect(&:user)
+    users = User.joins{contact_infos}.where{contact_infos.value == email}.all
 
     return nil if users.none?
 
