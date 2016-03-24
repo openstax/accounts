@@ -19,8 +19,7 @@ describe IdentitiesController, type: :controller do
         expect(!!identity.authenticate('new_password')).to eq false
 
         controller.sign_in! user
-        put 'update', identity: {current_password: 'password',
-                                 password: 'new_password',
+        put 'update', identity: {password: 'new_password',
                                  password_confirmation: 'new_password'}
         expect(response.status).to eq 202
         expect(!!identity.reload.authenticate('password')).to eq false
