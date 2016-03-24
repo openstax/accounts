@@ -48,7 +48,7 @@ OX.Profile.Authentication = {
     ).on('hidden', (e, reason) ->
       input.editable('destroy')
       input.attr('style', '') # editable calls hide() which sets 'display:block'
-      input.text('Simple Password')
+      input.text('Password')
       identity.removeClass('editing')
 
     ).on('save', (e, params) ->
