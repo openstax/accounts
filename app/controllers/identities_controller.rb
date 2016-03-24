@@ -34,7 +34,7 @@ class IdentitiesController < ApplicationController
                   return if !request.post?
                   sign_in! @handler_result.outputs[:identity].user
                   redirect_back key: :password_return_to,
-                                notice: 'Your password has been reset successfully! You have been signed in automatically.'
+                                notice: 'Your password has been reset successfully! You are now signed in.'
                 },
                 failure: lambda {
                   render :reset_password, status: 400

@@ -118,7 +118,7 @@ describe IdentitiesController, type: :controller do
              reset_password: { password: 'password!', password_confirmation: 'password!'})
         expect(response).to redirect_to(root_url)
         expect(flash[:alert]).to be_blank
-        expect(flash[:notice]).to include('Your password has been reset successfully! You have been signed in automatically.')
+        expect(flash[:notice]).to include('Your password has been reset successfully! You are now signed in.')
         identity.reload
         expect(identity.authenticate('password')).to be_falsey
         expect(identity.authenticate('password!')).to be_truthy
