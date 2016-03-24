@@ -11,7 +11,7 @@
   <div id="session-info" class="col-sm-8">
     <span>
       <% if signed_in? %>
-        Welcome, <%= link_to current_user.username, main_app.profile_path %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to 'Sign out', main_app.signout_path %>
+        Welcome, <%= link_to current_user.username, main_app.profile_path, class: 'username' %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to 'Sign out', main_app.signout_path %>
       <% else %>
         <%= link_to "Sign in", main_app.signin_path %>
       <% end %>

@@ -88,7 +88,11 @@ $.fn.editable.defaults.send = "always";
 $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
 $.fn.editable.defaults.url = "<%= profile_path %>";
 
-$('#username').editable();
+$('#username').editable({
+  success: function(response, newValue) {
+    $('#session-info .username').text(newValue);
+  }
+});
 
 $('#name').editable({
   value: {
