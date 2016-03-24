@@ -1,8 +1,8 @@
-# Copyright 2011-2012 Rice University. Licensed under the Affero General Public 
+# Copyright 2011-2012 Rice University. Licensed under the Affero General Public
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 class SiteMailer < ActionMailer::Base
-  helper :application
+  helper :application, :sessions
 
   default :from => "noreply@openstax.org"
 

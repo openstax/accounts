@@ -1,0 +1,7 @@
+<p>Hi <%= @email_address.user.casual_name %>,</p>
+
+<p>Someone just added '<%= @email_address.value %>' to an OpenStax account.  If this was you, please follow the link below to verify that you own this account.</p>
+
+<p><%= confirm_url(code: @email_address.confirmation_code) %></p>
+
+<%= render :partial => 'shared/email_closing' %>

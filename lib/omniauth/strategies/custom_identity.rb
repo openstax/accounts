@@ -74,10 +74,9 @@ module OmniAuth
                                                         session['client_id'])
           )
 
-        error_codes = @handler_result.errors.map(&:code)
         env['errors'] = @handler_result.errors
 
-        if error_codes.empty? || error_codes == [:already_has_identity]
+        if @handler_result.errors.none?
           @identity = @handler_result.outputs[:identity]
           env['PATH_INFO'] = callback_path
           callback_phase
