@@ -59,7 +59,7 @@ feature "User can't sign in", js: true do
     fill_in 'Password Again', with: 'Pazzw0rd!'
     click_button 'Set Password'
     expect(page.text).to include('Your password has been reset successfully!')
-    expect(page.text).to include('You have been signed in automatically.')
+    expect(page.text).to include('You are now signed in.')
   end
 
   scenario 'user enters an email address' do
@@ -76,6 +76,6 @@ feature "User can't sign in", js: true do
     fill_in 'Password Again', with: 'Pazzw0rd!'
     click_button 'Set Password'
     expect(page.text).to include('Your password has been reset successfully!')
-    expect(page.text).to include('You have been signed in automatically.')
+    expect(page.text).to include('You are now signed in.')
   end
 end
