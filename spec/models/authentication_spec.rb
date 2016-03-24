@@ -49,7 +49,7 @@ describe Authentication do
     end
 
     it "is deleted when it isn't the user's last" do
-      FactoryGirl.create(:authentication, user: authentication.user)
+      FactoryGirl.create(:authentication, user: authentication.user, provider: 'blah')
       expect{authentication.destroy}.to change{Authentication.count}.by(-1)
     end
   end
