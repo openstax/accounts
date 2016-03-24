@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-xfeature 'User updates profile' do
+feature 'User updates profile' do
   before(:each) do
     create_user('user')
     visit '/signin'
@@ -12,10 +12,9 @@ xfeature 'User updates profile' do
   end
 
   scenario 'success', js: true do
-    click_link 'Profile Settings'
-    fill_in 'First Name', with: 'testuser'
-    click_button 'Update Profile'
-    expect(page).to have_content('Your profile has been updated')
-    expect(User.find_by_username('user').first_name).to eq 'testuser'
+    find('#name').click
+    fill_in 'first_name', with: 'testuser'
+    find('.glyphicon-ok').click
+    expect(page).to have_link('testuser')
   end
 end
