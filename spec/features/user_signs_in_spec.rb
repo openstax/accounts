@@ -72,7 +72,7 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content('Alert: Your password has expired')
 
       fill_in 'Password', with: 'Passw0rd!'
-      fill_in 'Password Again', with: 'Passw0rd!'
+      fill_in 'Confirm Password', with: 'Passw0rd!'
       click_button 'Set Password'
 
       expect(page.current_url).to match(app_callback_url)
@@ -95,7 +95,7 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content('Alert: Your password has expired')
 
       fill_in 'Password', with: 'Passw0rd!'
-      fill_in 'Password Again', with: 'Passw0rd!'
+      fill_in 'Confirm Password', with: 'Passw0rd!'
       click_button 'Set Password'
 
       expect(page).to have_content('Terms of Use')
@@ -139,7 +139,7 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content('Alert: Your password has expired')
 
       fill_in 'Password', with: 'Passw0rd!'
-      fill_in 'Password Again', with: 'Passw0rd!'
+      fill_in 'Confirm Password', with: 'Passw0rd!'
       click_button 'Set Password'
 
       expect(page).to have_content('Terms of Use')
