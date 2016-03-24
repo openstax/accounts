@@ -103,7 +103,7 @@
 
     &[data-provider=identity] {
       &.editing {
-        display: flex;
+        display: flex !important; // override 'block' display set by $.show()
         .mod-holder { display: none; }
       }
       .editable-input {
