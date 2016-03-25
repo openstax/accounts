@@ -26,9 +26,9 @@ class Email
     ev.preventDefault()
     $.ajax({type: "PUT", url: @url('resend_confirmation')})
       .success( (resp) =>
-        OX.displayAlert(message: resp.message, type: 'success', parentEl: @$el)
+        OX.Alert.display(message: resp.message, type: 'success', parentEl: @$el)
       )
-      .error(OX.displayAlert.insideElement(@$el))
+      .error(OX.Alert.displayInsideElement(@$el))
 
   saveSearchable: (ev) ->
     @toggleSpinner(true)
@@ -38,7 +38,7 @@ class Email
       .success( (resp) => @set(resp) )
       .error( (e) =>
         ev.target.checked = not ev.target.checked
-        OX.displayAlert(_.extend(e, parentEl: @$el))
+        OX.Alert.display(_.extend(e, parentEl: @$el))
       ).complete( =>
         ev.target.disabled = false
         @toggleSpinner(false)
@@ -69,7 +69,7 @@ class Email
     @toggleSpinner(true)
     $.ajax(type: "DELETE", url: @url())
       .success( => @$el.remove() )
-      .error(OX.displayAlert.insideElement(@$el))
+      .error(OX.Alert.displayInsideElement(@$el))
       .complete(@toggleSpinner)
 
 OX.Profile.Email = {

@@ -56,7 +56,7 @@ class Identity
   delete: ->
     $.ajax({type: "DELETE", url: "/identity/#{@getType()}"})
       .success( @moveToDisabledSection )
-      .error(OX.displayAlert)
+      .error(OX.Alert.display)
 
   isEnabled: ->
     this.$el.closest('.enabled-providers').length isnt 0
@@ -99,7 +99,7 @@ class Password extends Identity
 
     ).on('save', (e, params) =>
       if @isEnabled()
-        OX.displayAlert(type: 'success', message: params.response, icon: 'thumbs-up', parentEl: input.parent())
+        OX.Alert.display(type: 'success', message: params.response, icon: 'thumbs-up', parentEl: input.parent())
       else
         @moveToEabledSection()
     )
