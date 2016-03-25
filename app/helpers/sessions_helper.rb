@@ -16,7 +16,7 @@ module SessionsHelper
     list.push('Facebook')          if providers.include?('facebook')
     list.push('Twitter')           if providers.include?('twitter')
     list.push('Google')            if providers.include?('google_oauth2')
-    list.push('a simple password') if providers.include?('identity')
+    list.push('a password')        if providers.include?('identity')
 
     if list.size >= 2
       list[list.size-1] = "#{conjunction} " + list[list.size-1]
