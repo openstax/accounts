@@ -47,8 +47,13 @@ class SessionsCallback
 
     if signed_in?
       # This is from adding authentications on the profile screen
-      run(TransferAuthentications, authentication, current_user)
-      status = :authentication_added
+
+      if authentication_user
+        status = :authentication_taken
+      else
+        run(TransferAuthentications, authentication, current_user)
+        status = :authentication_added
+      end
 
     elsif authentication_user.present?
       sign_in!(authentication_user)
