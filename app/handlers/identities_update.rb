@@ -19,11 +19,8 @@ class IdentitiesUpdate
   end
 
   def handle
-    identity_attributes = identity_params.as_hash(:password,
-                                                  :password_confirmation)
-
-    @identity.update_attributes(identity_attributes)
-
+    @identity.set(identity_params.as_hash(:password, :password_confirmation))
+    @identity.save!
     # If the user does not have an authentication for an identity then we create once
     unless caller.authentications.where(provider: 'identity').any?
       caller.authentications.create!(provider: 'identity', uid: @identity.id.to_s)
