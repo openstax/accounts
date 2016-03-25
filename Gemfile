@@ -52,6 +52,8 @@ gem 'pg'
 # Add P3P headers for IE
 gem 'p3p'
 
+gem 'test-unit' # because rspec told me so
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.1'
@@ -69,7 +71,6 @@ group :development, :test do
   gem 'capybara'
   gem 'poltergeist'
   gem 'coveralls', require: false
-  gem 'test-unit' # because rspec told me so
 end
 
 group :production do
