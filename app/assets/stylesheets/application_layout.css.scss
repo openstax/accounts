@@ -2,6 +2,7 @@
 // License version 3 or later.  See the COPYRIGHT file for details.
 
 @import "common";
+@import "mixins/flexbox";
 
 body {
   background-color: $application_background_color;
@@ -41,7 +42,7 @@ body, p, ol, ul, td, a {
 
 #application-header {
   border-bottom: 1px solid $os_gray;
-
+  padding: 0 8px;
   #top-nav-frame {
     height: $application_top_nav_height;
     background-color: $application_background_color;
@@ -60,13 +61,27 @@ body, p, ol, ul, td, a {
     margin-bottom: 10px;
   }
 
-  #session-info {
-    $line_height: 18px;
-    line-height: $line_height;
-    margin-top: ($application_top_nav_height - $line_height)/2;
+  @include flexbox;
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-items(center);
+  max-width: $container-desktop;
+  @media (max-width: $screen-sm-max) {
+    max-width: $screen-sm;
+  }
+  margin: auto;
 
-    span {
-      float: right;
+  #session-info {
+    @include flexbox;
+    @include flex-direction(column);
+    @include flex-wrap(wrap);
+    @include justify-content(flex-end);
+    @include align-items(flex-end);
+    text-align: right;
+    @media(min-width: $container-sm) {
+      @include justify-content(space-between);
+      @include flex-direction(row);
+      width: 250px;
     }
   }
 }
@@ -129,4 +144,3 @@ body, p, ol, ul, td, a {
 @-ms-viewport{
   width: device-width;
 }
-
