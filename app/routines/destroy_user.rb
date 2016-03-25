@@ -2,8 +2,6 @@ class DestroyUser
 
   lev_routine
 
-  uses_routine DestroyWhenAssociationEmpty
-
   protected
 
   def exec(user)
