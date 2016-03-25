@@ -19,3 +19,7 @@ OX.displayAlert = (options) ->
   )
 
   alert
+
+OX.displayAlert.insideElement = (element) ->
+  # Return a function that will display the alert inside the given element
+  (options) -> OX.displayAlert(_.extend(options, parentEl: element))
