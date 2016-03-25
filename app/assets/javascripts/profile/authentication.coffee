@@ -38,8 +38,17 @@ class Identity
   constructor: (@el) ->
     _.bindAll(@, _.functions(@)...)
     this.$el = $(el)
-    this.$el.find('.delete').click(@delete)
+    this.$el.find('.delete').click(@confirmDelete)
     this.$el.find('.add').click(@add)
+
+  confirmDelete: (ev) ->
+    new OX.ConfirmationPopover(
+      title: false
+      message: "Are you you want to remove sign in?"
+      target: ev.target
+      placement: 'top'
+      onConfirm: @delete
+    )
 
   getType: ->
     this.$el.data('provider')
