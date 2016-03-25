@@ -1,5 +1,5 @@
 <%# A way to turn off the corner console during development %>
-<% if SECRET_SETTINGS[:enable_corner_console] %>
+<% unless SECRET_SETTINGS[:disable_corner_console] %>
 
   <div id="upper-corner-console">
 
