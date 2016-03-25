@@ -18,6 +18,7 @@
 # :new_social_user              if the user is signing up and just authenticated socially
 # :transferred_authentication   if the user signed up and we can find an existing user to add the auth to
 # :authentication_added         if the user is adding an authentication from the profile page
+# :no_action                    if the user is adding an authentication from the profile page that is already linked to them
 #
 class SessionsCallback
 
@@ -26,7 +27,6 @@ class SessionsCallback
   uses_routine TransferAuthentications
   uses_routine CreateUserFromOmniauthData
   uses_routine TransferOmniauthData
-  uses_routine DestroyUser
   uses_routine ActivateUnclaimedUser
 
   protected
@@ -45,10 +45,13 @@ class SessionsCallback
       Authentication.find_or_create_by_provider_and_uid(@data.provider, @data.uid.to_s)
     authentication_user = authentication.user
 
-    if signed_in?
+    if signed_in? && authentication_user == current_user
+      status = :no_action
+
+    elsif signed_in?
       # This is from adding authentications on the profile screen
 
-      if authentication_user
+      if authentication_user && authentication_user.is_activated?
         status = :authentication_taken
       else
         run(TransferAuthentications, authentication, current_user)
