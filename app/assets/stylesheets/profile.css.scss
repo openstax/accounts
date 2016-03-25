@@ -88,6 +88,16 @@
     &.new {
       .verify, .properties, .mod-holder { display: none; }
     }
+    &.controls-hidden {
+      .email {
+        color: $link-color;
+        cursor: pointer;
+        text-decoration: none;
+        border-bottom: dashed 1px #0088cc;
+        &:hover{ text-decoration: none; }
+      }
+      .properties, .mod-holder { display: none; }
+    }
   }
 
   #add-an-email {

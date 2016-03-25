@@ -11,6 +11,10 @@ class Email
     this.$el.find('.delete').click(@confirmDelete)
     this.$el.find('.searchable').change(@saveSearchable)
     this.$el.find('.verify').click(@sendVerification)
+    this.$el.find('.email').click(@revealControls)
+
+  revealControls: ->
+    this.$el.removeClass('controls-hidden')
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)

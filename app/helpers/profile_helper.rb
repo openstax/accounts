@@ -37,10 +37,8 @@ module ProfileHelper
     verify_link = is_verified ? '' : link_to('Click to verify', resend_confirmation_contact_info_path(id), class: 'verify')
     (
       <<-SNIPPET
-        <div class="email-entry" data-id="#{id}">
-          <span class="email">
-            #{value}
-          </span>
+        <div class="email-entry controls-hidden" data-id="#{id}">
+          <span class="email">#{value}</span>
           #{verify_link}
           <span class="mod-holder">
             <span class="glyphicon glyphicon-trash mod delete"></span>
