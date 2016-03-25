@@ -90,7 +90,7 @@ class Password extends Identity
 
     ).on('save', (e, params) =>
       if @isEnabled()
-        OX.displayAlert(type: 'success', message: params.response, icon: 'thumbs-up', parentEl: input.closest('.row'))
+        OX.displayAlert(type: 'success', message: params.response, icon: 'thumbs-up', parentEl: input.parent())
       else
         @moveToEabledSection()
     )
