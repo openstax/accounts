@@ -72,12 +72,12 @@ module ApplicationHelper
     hide = options[:options].delete(:hide)
 
     options[:options][:class] = "#{options[:options][:class]} form-control".strip
-    options[:options][:style] = [options[:options][:style], (hide ? 'display: none' : '')].compact.join('; ')
+    options[:options][:style] = [options[:options][:style]].compact.join('; ')
 
-    content_tag :div, class: 'form-group' do
+    content_tag :div, class: 'form-group', style: "#{'display: none' if hide}" do
       output = []
       if options[:label]
-        output << content_tag(:label, for: "#{options[:form].object_name}_#{options[:name]}", style: "#{hide ? 'display:none' : ''}") do
+        output << content_tag(:label, for: "#{options[:form].object_name}_#{options[:name]}") do
                     options[:label]
                   end
       end

@@ -16,6 +16,7 @@
                          options: {value: user.first_name || user.guessed_first_name} %>
       <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name *",
                          options: {value: user.last_name || user.guessed_last_name} %>
+      <%= link_to "Show title and suffix", "#", id: 'show-more-fields' %>
       <%= standard_field form: f, name: :suffix, type: :text_field, label: "Suffix",
                          options: {value: user.suffix, hide: true} %>
       <%= standard_field form: f, name: :email_address, type: :text_field, label: "Email Address *",
@@ -109,5 +110,12 @@
 <% unless @contracts_not_required %>
   <script type="text/javascript">
     Accounts.Ui.enableOnChecked('#create_account_submit', '#signup_i_agree');
+    $(document).ready(function() {
+      $('#show-more-fields').click(function(e) {
+        e.preventDefault();
+        $(this).hide();
+        $('#signup_title, #signup_suffix').parent().show();
+      })
+    });
   </script>
 <% end %>
