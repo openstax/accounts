@@ -27,7 +27,7 @@
 <% social_auths = @user.authentications.reject { |a| a.provider == 'identity' } %>
 
 <% if social_auths.present? %>
-  <p>You can <%= 'also ' if @user.identity.present? %>sign in with <%= authentications_list(@user.authentications) %>:</p>
+  <p>You can <%= 'also ' if @user.identity.present? %>sign in with <%= authentications_list(social_auths) %>:</p>
 
   <ul>
     <% social_auths.each do |social_auth| %>
