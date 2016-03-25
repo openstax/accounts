@@ -9,7 +9,7 @@ feature 'Confirm email address', js: true do
   scenario 'successfully' do
     visit '/confirm?code=1111'
     expect(page).to have_content('Thank you for verifying your email address')
-    expect(page).to have_content('Thanks for adding your email address.')
+    expect(page).to have_content('Your email address is now verified')
   end
 
   scenario 'without a confirmation code' do

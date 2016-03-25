@@ -67,7 +67,7 @@ describe ContactInfosController, type: :controller do
       get 'confirm', :code => @email.confirmation_code
       expect(response).to be_success
       expect(response.body).to include("Thank you for verifying your email address") # header
-      expect(response.body).to include('Success! Thanks for adding your email address.') # body
+      expect(response.body).to include('Your email address is now verified') # body
       expect(EmailAddress.find_by_value(@email.value).verified).to be_truthy
     end
   end
