@@ -26,9 +26,9 @@ class Email
     ev.preventDefault()
     $.ajax({type: "PUT", url: @url('resend_confirmation')})
       .success( (resp) =>
-        @displayMessage(resp.message, type: 'success')
+        OX.displayAlert(message: resp.message, type: 'success', parentEl: @$el)
       )
-      .error(@displayMessage)
+      .error((e) => OX.displayAlert(_.extend(e, parentEl: @$el)))
 
 
   saveSearchable: (ev) ->
@@ -37,9 +37,9 @@ class Email
     data = {is_searchable: ev.target.checked}
     $.ajax({type: "PUT", url: @url('set_searchable'), data})
       .success( (resp) => @set(resp) )
-      .error( (resp) =>
+      .error( (e) =>
         ev.target.checked = not ev.target.checked
-        @displayMessage(resp)
+        OX.displayAlert(_.extend(e, parentEl: @$el))
       ).complete( =>
         ev.target.disabled = false
         @toggleSpinner(false)
@@ -51,21 +51,6 @@ class Email
       this.$el.attr('data-id', contact.id)
     if contact.is_searchable?
       this.$el.find('.searchable').prop('checked', contact.is_searchable)
-
-  displayMessage: (resp, options = {}) ->
-    type = options.type or 'danger'
-    error = this.$el.find('.alert')
-    unless error.length
-      error = this.$el.prepend("""
-        <div class="alert alert-#{type} alert-dismissible" role="alert">
-           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-             <span aria-hidden="true">&times;</span>
-          </button>
-          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-          <span class="msg"></span>
-        </div>
-      """)
-    error.show().find(".msg").text(if _.isObject(resp) then resp.statusText else resp)
 
   confirmDelete: (ev) ->
     [title, message] = if this.$el.siblings('.email-entry').length is 0 # we're the only one
@@ -85,7 +70,7 @@ class Email
     @toggleSpinner(true)
     $.ajax(type: "DELETE", url: @url())
       .success( => @$el.remove() )
-      .error(@displayMessage)
+      .error((e) => OX.displayAlert(_.extend(e, parentEl: @$el)))
       .complete(@toggleSpinner)
 
 OX.Profile.Email = {
