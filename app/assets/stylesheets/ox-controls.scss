@@ -1,0 +1,9 @@
+@import "mixins/flexbox";
+
+.ox-alert {
+  @include flexbox;
+  @include flex-direction(row);
+  @include align-items(baseline);
+  .glyphicon { margin-right: 0.5rem; }
+  .msg{ @include flex(1); }
+}

@@ -5,12 +5,12 @@ OX.displayAlert = (options) ->
   type = options.type or 'danger'
   unless alert.length
     alert = parent.prepend("""
-      <div class="alert alert-#{type} alert-dismissible" role="alert">
-         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-        </button>
+      <div class="ox-alert alert alert-#{type} alert-dismissible" role="alert">
         <span class="glyphicon glyphicon-#{icon}" aria-hidden="true"></span>
         <span class="msg"></span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          &times;
+       </button>
       </div>
     """)
 
