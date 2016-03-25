@@ -87,6 +87,7 @@ class Password extends Identity
     identity = this.$el.addClass('editing')
     input = identity.find('.name')
     input.text('')
+    OX.Alert.hideAll()
     input.editable(
       type: 'oxpassword'
       url: '/identity'
