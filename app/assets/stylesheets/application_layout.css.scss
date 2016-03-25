@@ -81,7 +81,7 @@ body, p, ol, ul, td, a {
     @media(min-width: $container-sm) {
       @include justify-content(space-between);
       @include flex-direction(row);
-      width: 250px;
+      span:last-child { margin-left: 30px; }
     }
   }
 }
