@@ -69,6 +69,11 @@ body, p, ol, ul, td, a {
   @media (max-width: $screen-sm-max) {
     max-width: $screen-sm;
   }
+  @media(min-width: 400px) {
+    padding-left: $application_edge_distance;
+    padding-right: $application_edge_distance;
+  }
+
   margin: auto;
 
   #session-info {
