@@ -42,7 +42,9 @@ body, p, ol, ul, td, a {
 
 #application-header {
   border-bottom: 1px solid $os_gray;
-  padding: 0 8px;
+  padding-left: $application_edge_distance * 1.5;
+  padding-right: $application_edge_distance * 1.5;
+
   #top-nav-frame {
     height: $application_top_nav_height;
     background-color: $application_background_color;
@@ -66,15 +68,12 @@ body, p, ol, ul, td, a {
   @include justify-content(space-between);
   @include align-items(center);
   max-width: $container-desktop;
-  @media (max-width: $screen-sm-max) {
-    max-width: $screen-sm;
-  }
-  @media(min-width: 400px) {
-    padding-left: $application_edge_distance;
-    padding-right: $application_edge_distance;
-  }
 
   margin: auto;
+  @media (max-width: $screen-sm-max) {
+    // calculate the width of content inside a row (what the footer uses)
+    max-width: $screen-sm-min - ($padding-large-vertical * 2);
+  }
 
   #session-info {
     @include flexbox;
