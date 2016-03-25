@@ -47,7 +47,8 @@ feature 'User manages emails', js: true do
   context 'destroy' do
     scenario 'success' do
       within(:css, '.email-entry') {
-        find('.glyphicon-trash').click
+        find('.email').click
+        find('.delete').click
       }
       within(:css, '.popover-content') {
         find('.confirm-dialog-btn-confirm').click
