@@ -121,6 +121,10 @@
       &.editing {
         display: flex !important; // override 'block' display set by $.show()
         .mod-holder { display: none; }
+        @media(max-width: 450px) {
+          .icon{ display: none; }
+        }
+
       }
       .editable-input {
         display: flex;

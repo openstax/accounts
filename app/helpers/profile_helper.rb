@@ -20,7 +20,7 @@ module ProfileHelper
     ]
 
     snippet = <<-SNIPPET
-      <span class="fa-stack fa-lg">
+      <span class="icon fa-stack fa-lg">
         <i class="fa fa-square fa-stack-2x #{provider}-bkg"></i>
         <i class="fa fa-#{icon_class} fa-stack-1x fa-inverse"></i>
       </span>
