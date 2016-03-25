@@ -46,7 +46,11 @@ class SessionsController < ApplicationController
         when :new_social_user
           redirect_to signup_social_path
         when :authentication_added
-          redirect_to profile_path
+          redirect_to profile_path, notice: "Your new sign in option has been added!"
+        when :authentication_taken
+          redirect_to profile_path, alert: "That sign in option is already used by someone " \
+                                           "else.  If that someone is you, remove it from " \
+                                           "your other account and try again."
         else
           raise IllegalState
         end

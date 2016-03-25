@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
   validates :username, presence: true,
                        length: { minimum: 3, maximum: USERNAME_MAX_LENGTH },
                        format: { with: /\A[A-Za-z\d_]+\z/,
-                                 message: "Usernames can only contain letters, numbers, and underscores." }
+                                 message: "can only contain letters, numbers, and underscores." }
 
   validates :username, uniqueness: { case_sensitive: false },
                        if: :username_changed?
