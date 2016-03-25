@@ -173,6 +173,23 @@ feature 'User signs up as a local user', js: true do
     expect(page).to have_content("Your Account")
   end
 
+  scenario 'when already has password' do
+    visit '/'
+    click_password_sign_up
+
+    fill_in 'First Name', with: 'Test'
+    fill_in 'Last Name', with: 'User'
+    fill_in 'Email Address', with: 'testuser@example.com'
+    fill_in 'Username', with: 'testuser'
+    fill_in 'Password *', with: 'password'
+    fill_in 'Confirm Password', with: 'password'
+    agree_and_click_create
+
+    visit '/signup/password'
+    expect(page).to have_content("You already have a username and password")
+    expect(page).to have_content("Your Account")
+  end
+
   scenario 'not fully signed up social user goes elsewhere' do
     # Some shenanigans to fake social sign up
     user = create_user 'bob'
