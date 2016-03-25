@@ -28,8 +28,7 @@ class Email
       .success( (resp) =>
         OX.displayAlert(message: resp.message, type: 'success', parentEl: @$el)
       )
-      .error((e) => OX.displayAlert(_.extend(e, parentEl: @$el)))
-
+      .error(OX.displayAlert.insideElement(@$el))
 
   saveSearchable: (ev) ->
     @toggleSpinner(true)
@@ -70,7 +69,7 @@ class Email
     @toggleSpinner(true)
     $.ajax(type: "DELETE", url: @url())
       .success( => @$el.remove() )
-      .error((e) => OX.displayAlert(_.extend(e, parentEl: @$el)))
+      .error(OX.displayAlert.insideElement(@$el))
       .complete(@toggleSpinner)
 
 OX.Profile.Email = {
