@@ -19,14 +19,17 @@ class IdentitiesUpdate
   end
 
   def handle
-    @identity.set(identity_params.as_hash(:password, :password_confirmation))
-    @identity.save!
+    @identity.password = identity_params.password
+    @identity.password_confirmation = identity_params.password_confirmation
+    @identity.save
+
+    transfer_errors_from(@identity, {scope: :identity}, true)
+
     # If the user does not have an authentication for an identity then we create once
     unless caller.authentications.where(provider: 'identity').any?
       caller.authentications.create!(provider: 'identity', uid: @identity.id.to_s)
     end
 
     outputs[:identity] = @identity
-    transfer_errors_from(@identity, {scope: :identity})
   end
 end
