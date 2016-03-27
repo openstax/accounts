@@ -22,6 +22,7 @@ class IdentitiesUpdate
     @identity.password = identity_params.password
     @identity.password_confirmation = identity_params.password_confirmation
     @identity.save
+    outputs[:identity] = @identity
 
     transfer_errors_from(@identity, {scope: :identity}, true)
 
@@ -30,6 +31,5 @@ class IdentitiesUpdate
       caller.authentications.create!(provider: 'identity', uid: @identity.id.to_s)
     end
 
-    outputs[:identity] = @identity
   end
 end
