@@ -123,4 +123,38 @@ feature "User can't sign in", js: true do
     expect(all_emails.last).to have_content('to multiple accounts')
     expect(all_emails.last).to have_content(user_b.username)
   end
+
+  scenario 'user enters an email address with leading and trailing whitespace' do
+    fill_in 'Username or Email', with: "     #{@email.value}   "
+    click_button 'Submit'
+    expect(page.text).to include('Instructions for accessing your OpenStax account have been emailed to you.')
+    @user.identity.reload
+    sign_in_help_email_sent? @user
+
+    visit @reset_link
+    expect(page.text).to include('Reset Password')
+    expect(page.text).not_to include('Reset password link is invalid')
+    fill_in 'Password', with: 'Pazzw0rd!'
+    fill_in 'Confirm Password', with: 'Pazzw0rd!'
+    click_button 'Set Password'
+    expect(page.text).to include('Your password has been reset successfully!')
+    expect(page.text).to include('You are now signed in.')
+  end
+
+  scenario 'user enters a username with leading or trailing whitespace' do
+    fill_in 'Username or Email', with: "     #{@user.username}   "
+    click_button 'Submit'
+    expect(page.text).to include('Instructions for accessing your OpenStax account have been emailed to you.')
+    @user.identity.reload
+    sign_in_help_email_sent? @user
+
+    visit @reset_link
+    expect(page.text).to include('Reset Password')
+    expect(page.text).not_to include('Reset password link is invalid')
+    fill_in 'Password', with: 'Pazzw0rd!'
+    fill_in 'Confirm Password', with: 'Pazzw0rd!'
+    click_button 'Set Password'
+    expect(page.text).to include('Your password has been reset successfully!')
+    expect(page.text).to include('You are now signed in.')
+  end
 end
