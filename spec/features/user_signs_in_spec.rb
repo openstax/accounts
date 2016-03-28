@@ -218,6 +218,31 @@ feature 'User logs in as a local user', js: true do
     end
   end
 
+  scenario 'with an email address linked to several user accounts' do
+    with_forgery_protection do
+      create_application
+
+      # two users with the same email address, both verified
+      user = create_user 'user'
+      create_email_address_for(user, 'user@example.com')
+      another_user = create_user 'another_user'
+      create_email_address_for(another_user, 'user@example.com')
+
+      visit_authorize_uri
+      expect_sign_in_page
+
+      fill_in 'Username or Email', with: 'user@example.com'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+      expect(page).to have_content('We found several accounts with your email address.  Please sign in using your username.')
+
+      fill_in 'Username', with: 'user'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+      expect(page.current_url).to match(app_callback_url)
+    end
+  end
+
   scenario 'with an unstripped username' do
     with_forgery_protection do
       user = create_user 'user'

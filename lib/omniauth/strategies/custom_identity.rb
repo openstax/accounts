@@ -31,9 +31,11 @@ module OmniAuth
       option :fields, [:username, :first_name, :last_name]
       option :locate_conditions, lambda { |req|
         auth_key = req.params['auth_key'].try(:strip)
-        user = User.where(username: auth_key).first ||
-               ContactInfo.verified.where(value: auth_key).first.try(:user)
-        {user_id: (user.nil? ? nil : user.id)}
+        contacts = ContactInfo.verified.where(value: auth_key)
+        users = [User.where(username: auth_key).first ||
+                 contacts.collect(&:user)].flatten
+        {user_id: (users.size == 1 ? users.first.id : nil),
+         users_returned: users.size}
       }
       option :name, "identity"
 
@@ -44,8 +46,10 @@ module OmniAuth
         if identity
           super
         else
-          if locate_conditions[:user_id].nil?
+          if locate_conditions[:users_returned] == 0
             return fail!(:cannot_find_user)
+          elsif locate_conditions[:users_returned] > 1
+            return fail!(:multiple_users)
           else
             return fail!(:bad_password)
           end
@@ -98,7 +102,7 @@ module OmniAuth
       end
 
       def identity
-        @identity ||= model.authenticate(locate_conditions, request['password'] )
+        @identity ||= model.authenticate(locate_conditions.keep_if { |k, v| k == :user_id }, request['password'] )
       end
 
       def locate_conditions
