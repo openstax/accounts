@@ -65,7 +65,8 @@ end
 
 def create_email_address_for(user, email_address, confirmation_code=nil)
   FactoryGirl.create(:email_address, user: user, value: email_address,
-                     confirmation_code: confirmation_code)
+                     confirmation_code: confirmation_code,
+                     verified: confirmation_code.nil?)
 end
 
 def generate_reset_code_for(username)

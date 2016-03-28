@@ -108,7 +108,8 @@ class SessionsController < ApplicationController
     flash.now[:alert] =
       case params[:message]
       when 'cannot_find_user'
-        "We have no account for the username or email you provided."
+        "We have no account for the username or email you provided.  " \
+        "Email addresses must be verified in our system to use them during sign in."
       when 'bad_password'
         "The password you provided is incorrect."
       else

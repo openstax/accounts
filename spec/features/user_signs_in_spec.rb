@@ -198,6 +198,26 @@ feature 'User logs in as a local user', js: true do
     end
   end
 
+  scenario 'with an unverified email address and password' do
+    with_forgery_protection do
+      create_application
+      user = create_user 'user'
+      create_email_address_for user, 'user@example.com', confirmation_code: 'unverified'
+      visit_authorize_uri
+      expect_sign_in_page
+
+      fill_in 'Username or Email', with: 'user@example.com'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+      expect(page).to have_content('We have no account for the username or email you provided.  Email addresses must be verified in our system to use them during sign in.')
+
+      fill_in 'Username', with: 'user'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+      expect(page.current_url).to match(app_callback_url)
+    end
+  end
+
   scenario 'with an unstripped username' do
     with_forgery_protection do
       user = create_user 'user'
