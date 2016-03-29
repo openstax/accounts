@@ -55,6 +55,7 @@ class SessionsCallback
         status = :authentication_taken
       else
         run(TransferAuthentications, authentication, current_user)
+        run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
         status = :authentication_added
       end
 
