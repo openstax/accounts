@@ -154,6 +154,34 @@ describe SessionsCallback do
           end
         end
 
+        context "with new email" do
+          it 'adds auth and email to the signed in user' do
+            authentication.provider = 'facebook'
+            authentication.save!
+            signed_in_user.first_name = 'First'
+            signed_in_user.last_name = 'Last'
+            signed_in_user.save!
+
+            result = SessionsCallback.handle(
+              user_state: user_state,
+              request: MockOmniauthRequest.new(authentication.provider,
+                                               authentication.uid,
+                                               { email: 'user@facebook.com',
+                                                 first_name: 'User',
+                                                 last_name: 'One' })
+            )
+            signed_in_user.reload
+
+            expect(result.outputs[:status]).to eq(:authentication_added)
+            expect(user_state.current_user).to eq(signed_in_user)
+            expect(signed_in_user.first_name).to eq('First')
+            expect(signed_in_user.last_name).to eq('Last')
+            email = EmailAddress.find_by_value('user@facebook.com')
+            expect(email.user).to eq(signed_in_user)
+            expect(email.verified).to be true
+          end
+        end
+
         context 'that belongs to another user' do
           before :each do
             authentication.user = other_user
