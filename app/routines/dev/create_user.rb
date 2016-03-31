@@ -20,7 +20,6 @@ module Dev
         user.first_name = inputs[:first_name]
         user.last_name = inputs[:last_name]
         user.username = username
-        user.is_temp = false
       end
 
       transfer_errors_from(outputs[:user], {type: :verbatim})
