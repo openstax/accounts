@@ -11,8 +11,8 @@ class Authentication < ActiveRecord::Base
   protected
 
   def check_not_last
-    errors.add(:base, "Cannot delete a user's last authentication") \
-      if user.authentications.size == 1
+    errors.add(:base, "Cannot delete an authenticated user's last authentication") \
+      if user.authentications.size == 1 && user.is_activated?
     errors.none?
   end
 end
