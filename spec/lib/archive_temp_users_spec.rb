@@ -42,39 +42,35 @@ describe ArchiveTempUsers do
 
   let(:user_w_facebook) {
     user = FactoryGirl.create(:temp_user, username: 'facebook_user')
-    FactoryGirl.create(:authentication, provider: 'facebook', user: user)
+    FactoryGirl.create(:authentication, provider: 'facebook', user: user, uid: "zuckerberg")
     user
   }
 
   let(:user_w_identity) {
     user = FactoryGirl.create(:temp_user, username: 'identity_user')
-    FactoryGirl.create(:authentication, provider: 'identity', user: user)
-    FactoryGirl.create(:identity, user: user)
+    @identity = FactoryGirl.create(:identity, user: user)
+    FactoryGirl.create(:authentication, provider: 'identity', user: user, uid: @identity.id)
     user
   }
 
   it 'warns if temp users have applications' do
     user_with_app
-    expect {
-      ArchiveTempUsers.run
-    }.to output(/are linked to an application/).to_stderr
+    _, stderr = capture_output { ArchiveTempUsers.run }
+    expect(stderr).to match(/are linked to an application/)
     expect(User.exists?(user_with_app.id)).to be true
   end
 
   it 'warns if temp users have messages' do
     user_with_messages
-    expect {
-      ArchiveTempUsers.run
-    }.to output(/have received messages.*\n.*have sent messages/).to_stderr
-    expect(User.exists?(user_with_messages.id)).to be true
+    _, stderr = capture_output { ArchiveTempUsers.run }
+    expect(stderr).to match(/have received messages.*\n.*have sent messages/)
     expect(user_with_messages.reload.email_addresses).to_not be_empty
   end
 
   it 'warns if temp users have groups' do
     user_with_groups
-    expect {
-      ArchiveTempUsers.run
-    }.to output(/are group owners.*\n.*are group members/).to_stderr
+    _, stderr = capture_output { ArchiveTempUsers.run }
+    expect(stderr).to match(/are group owners.*\n.*are group members/)
     expect(User.exists?(user_with_groups.id)).to be true
   end
 
@@ -105,10 +101,10 @@ describe ArchiveTempUsers do
     authentications = result.select { |a| a['id'] == user_w_facebook.id }.first['authentications']
     expect(authentications.length).to eq(1)
     expect(authentications.first['provider']).to eq('facebook')
-    expect(authentications.first['uid']).to eq(user_w_facebook.authentications.first.uid)
+    expect(authentications.first['uid']).to eq("zuckerberg")
 
     identity = result.select { |a| a['id'] == user_w_identity.id }.first['identity']
-    expect(identity['password_digest']).to eq(user_w_identity.identity.password_digest)
+    expect(identity['password_digest']).to eq(@identity.password_digest)
 
     expect(User.exists?(user_w_no_auths.id)).to be false
     expect(User.exists?(user_w_facebook.id)).to be false
