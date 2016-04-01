@@ -79,9 +79,8 @@ describe ArchiveTempUsers do
 
     filename = "archived_temp_users.#{@timestamp}.json"
 
-    expect {
-      ArchiveTempUsers.run
-    }.to output("Output in #{filename}\n").to_stdout
+    out, err = capture_output { ArchiveTempUsers.run }
+    expect(out).to match(/Output in #{filename}\n/)
 
     output_text = File.read(filename)
     result = JSON.parse(output_text)
