@@ -122,9 +122,11 @@ def capture_output(&blk)
   old_stderr = $stderr
   $stdout = fake_stdout = StringIO.new
   $stderr = fake_stderr = StringIO.new
-  blk.call
+  begin
+    blk.call
+  ensure
+    $stdout = old_stdout
+    $stderr = old_stderr
+  end
   [fake_stdout.string, fake_stderr.string]
-ensure
-  $stdout = old_stdout
-  $stderr = old_stderr
 end

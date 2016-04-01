@@ -12,6 +12,7 @@ module ProfileHelper
     icon_class, display_name =
       case provider
       when 'identity' then ['key', 'Password']
+      when 'google_oauth2' then ['google', 'Google']
       else [ provider, provider.capitalize ]
       end
 

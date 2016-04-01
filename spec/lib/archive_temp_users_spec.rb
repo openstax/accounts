@@ -12,13 +12,13 @@ describe ArchiveTempUsers do
     File.unlink("archived_temp_users.#{@timestamp}.json") rescue nil
   end
 
-  let(:user_with_app) {
+  let!(:user_with_app) {
     user = FactoryGirl.create(:temp_user)
     FactoryGirl.create(:application_user, user: user)
     user
   }
 
-  let(:user_with_messages) {
+  let!(:user_with_messages) {
     user = FactoryGirl.create(:temp_user)
     FactoryGirl.create(:message, user: user)
     email = FactoryGirl.create(:email_address, user: user)
@@ -26,27 +26,27 @@ describe ArchiveTempUsers do
     user
   }
 
-  let(:user_with_groups) {
+  let!(:user_with_groups) {
     user = FactoryGirl.create(:temp_user)
     FactoryGirl.create(:group_member, user: user)
     FactoryGirl.create(:group_owner, user: user)
     user
   }
 
-  let(:user_w_no_auths) {
+  let!(:user_w_no_auths) {
     user = FactoryGirl.create(:temp_user)
     FactoryGirl.create(:email_address, value: 'temp@example.org', user: user, verified: true)
     FactoryGirl.create(:email_address, value: 'user@example.org', user: user, verified: false)
     user
   }
 
-  let(:user_w_facebook) {
+  let!(:user_w_facebook) {
     user = FactoryGirl.create(:temp_user, username: 'facebook_user')
     FactoryGirl.create(:authentication, provider: 'facebook', user: user, uid: "zuckerberg")
     user
   }
 
-  let(:user_w_identity) {
+  let!(:user_w_identity) {
     user = FactoryGirl.create(:temp_user, username: 'identity_user')
     @identity = FactoryGirl.create(:identity, user: user)
     FactoryGirl.create(:authentication, provider: 'identity', user: user, uid: @identity.id)
@@ -55,22 +55,22 @@ describe ArchiveTempUsers do
 
   it 'warns if temp users have applications' do
     user_with_app
-    _, stderr = capture_output { ArchiveTempUsers.run }
-    expect(stderr).to match(/are linked to an application/)
+    _, err = capture_output { ArchiveTempUsers.run }
+    expect(err).to match(/are linked to an application/)
     expect(User.exists?(user_with_app.id)).to be true
   end
 
   it 'warns if temp users have messages' do
     user_with_messages
-    _, stderr = capture_output { ArchiveTempUsers.run }
-    expect(stderr).to match(/have received messages.*\n.*have sent messages/)
+    _, err = capture_output { ArchiveTempUsers.run }
+    expect(err).to match(/have received messages.*\n.*have sent messages/)
     expect(user_with_messages.reload.email_addresses).to_not be_empty
   end
 
   it 'warns if temp users have groups' do
     user_with_groups
-    _, stderr = capture_output { ArchiveTempUsers.run }
-    expect(stderr).to match(/are group owners.*\n.*are group members/)
+    _, err = capture_output { ArchiveTempUsers.run }
+    expect(err).to match(/are group owners.*\n.*are group members/)
     expect(User.exists?(user_with_groups.id)).to be true
   end
 
