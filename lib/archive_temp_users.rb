@@ -7,31 +7,31 @@ class ArchiveTempUsers
 
     app_users = temp_users.select(:id).joins(:application_users) \
                           .uniq.collect(&:id)
-    warn("These temp users are linked to an application: #{app_users.inspect}") \
+    $stderr.puts("These temp users are linked to an application: #{app_users.inspect}") \
       unless app_users.empty?
     exclude_user_ids += app_users
 
     received_messages = temp_users.select(:id).joins(:received_messages) \
                                   .uniq.collect(&:id)
-    warn("These temp users have received messages: #{received_messages.inspect}") \
+    $stderr.puts("These temp users have received messages: #{received_messages.inspect}") \
       unless received_messages.empty?
     exclude_user_ids += received_messages
 
     sent_messages = temp_users.select(:id).joins(:sent_messages) \
                               .uniq.collect(&:id)
-    warn("These temp users have sent messages: #{sent_messages.inspect}") \
+    $stderr.puts("These temp users have sent messages: #{sent_messages.inspect}") \
       unless sent_messages.empty?
     exclude_user_ids += sent_messages
 
     group_owners = temp_users.select(:id).joins(:group_owners) \
                              .uniq.collect(&:id)
-    warn("These temp users are group owners: #{group_owners.inspect}") \
+    $stderr.puts("These temp users are group owners: #{group_owners.inspect}") \
       unless group_owners.empty?
     exclude_user_ids += group_owners
 
     group_members = temp_users.select(:id).joins(:group_members) \
                               .uniq.collect(&:id)
-    warn("These temp users are group members: #{group_members.inspect}") \
+    $stderr.puts("These temp users are group members: #{group_members.inspect}") \
       unless group_members.empty?
     exclude_user_ids += group_members
 

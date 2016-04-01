@@ -31,7 +31,7 @@
 
   <ul>
     <% social_auths.each do |social_auth| %>
-      <li><%= link_to "Sign in with #{social_auth.provider.capitalize}", "#{root_url}auth/#{social_auth.provider}" %></li>
+      <li><%= link_to "Sign in with #{social_auth.display_name}", "#{root_url}auth/#{social_auth.provider}" %></li>
     <% end %>
   </ul>
 <% end %>

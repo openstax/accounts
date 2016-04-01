@@ -79,6 +79,17 @@ feature "User can't sign in", js: true do
     expect(page.text).to include('You are now signed in.')
   end
 
+  scenario 'user has google auth' do
+    user = FactoryGirl.create :user, username: 'user2', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
+    FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+    email_1 = FactoryGirl.create :email_address, user: user
+
+    fill_in 'Username or Email', with: user.username
+    click_button 'Submit'
+
+    sign_in_help_email_sent? user
+  end
+
   scenario 'user has multiple email addresses' do
     user = FactoryGirl.create :user, username: 'user2', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
     FactoryGirl.create :authentication, provider: 'identity', user: user
