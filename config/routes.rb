@@ -8,9 +8,17 @@ Accounts::Application.routes.draw do
     post 'callback', path: 'auth/:provider/callback'
     get 'failure', path: 'auth/failure'
 
+    get 'signin', action: :new
+    get 'signout', action: :destroy
+
+    # Maintain these deprecated routes for a while until client code learns to
+    # use /signin and /signout
     get 'login', action: :new
     get 'logout', action: :destroy
-    get 'i_am_returning'
+
+    get 'help', path: '/signin/help', as: :signin_help
+    post 'help', path: '/signin/help', as: :signin_help
+
     get 'returning_user'
 
     if Rails.env.development?
@@ -27,29 +35,24 @@ Accounts::Application.routes.draw do
   scope controller: 'users' do
     get 'profile', action: :edit
     put 'profile', action: :update
-    get 'ask_for_email'
-    put 'ask_for_email'
   end
 
-  namespace 'registration' do
-    get 'complete'
-    put 'complete'
-    get 'verification_pending'
-    put 'i_verified'
+  namespace 'signup' do
+    get 'password'
+    get 'social'
+    post 'social'
   end
 
   resource :identity, only: :update
   scope controller: 'identities' do
-    get 'signup', action: :new
-    get 'forgot_password'
-    post 'forgot_password'
+    delete 'identity/:provider', action: :destroy
     get 'reset_password'
     post 'reset_password'
   end
 
   resources :contact_infos, only: [:create, :destroy] do
     member do
-      put 'toggle_is_searchable'
+      put 'set_searchable'
       put 'resend_confirmation'
     end
   end
@@ -68,6 +71,7 @@ Accounts::Application.routes.draw do
   scope controller: 'static_pages' do
     get 'copyright'
     get 'status'
+    get 'api'
   end
 
   apipie

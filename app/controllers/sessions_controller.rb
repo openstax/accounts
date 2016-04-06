@@ -3,11 +3,15 @@
 
 class SessionsController < ApplicationController
 
-  skip_before_filter :authenticate_user!, :expired_password, :registration,
-                     only: [:new, :callback, :failure, :destroy]
+  skip_before_filter :authenticate_user!, :expired_password,
+                     only: [:new, :callback, :failure, :destroy, :help]
+
+  skip_before_filter :finish_sign_up, only: [:destroy]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :callback, :failure, :destroy, :ask_new_or_returning]
+                  only: [:new, :callback, :failure, :destroy, :help]
+
+  helper_method :last_signin_provider
 
   def new
     get_authorization_url
@@ -19,10 +23,6 @@ class SessionsController < ApplicationController
     # If the user is already logged in, this means they got linked to the login page somehow
     # Attempt to redirect to the fallback url stored above
     redirect_back if signed_in?
-
-    # Hack to figure out if the user came from CNX to hide the login
-    # In the future, use the client_id and some boolean flag in the client app
-    referer = request.referer
 
     session[:client_id] = params[:client_id]
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
@@ -39,15 +39,28 @@ class SessionsController < ApplicationController
 
     handle_with(SessionsCallback, user_state: self,
       complete: lambda {
-        # Since the multiple_accounts flow is not yet implemented,
-        # pretend the user is returning instead
         case @handler_result.outputs[:status]
-        when :returning_user, :multiple_accounts then redirect_to action: :returning_user
-        when :new_user                           then render :ask_new_or_returning
-        # when :multiple_accounts                  then render :ask_which_account
-        else                                     raise IllegalState
+        when :returning_user, :new_password_user, :transferred_authentication
+          set_last_signin_provider(@handler_result.outputs[:authentication].provider)
+          redirect_to action: :returning_user
+        when :new_social_user
+          redirect_to signup_social_path
+        when :authentication_added
+          redirect_to profile_path, notice: "Your new sign in option has been added!"
+        when :authentication_taken
+          redirect_to profile_path, alert: "That sign in option is already used by someone " \
+                                           "else.  If that someone is you, remove it from " \
+                                           "your other account and try again."
+        else
+          raise IllegalState
         end
       })
+  end
+
+  # This is an official action instead of just doing `redirect_back` in callback
+  # handler so that fine_print can check to see if terms need to be signed.
+  def returning_user
+    redirect_back
   end
 
   def destroy
@@ -73,26 +86,37 @@ class SessionsController < ApplicationController
       root_url
     end
 
-    redirect_to url, notice: "Signed out!"
+    redirect_to url
   end
 
-  def ask_new_or_returning
-  end
-
-  def i_am_returning
-  end
-
-  # This is an official action instead of just doing `redirect_back` in callback
-  # handler so that fine_print can check to see if terms need to be signed.
-  def returning_user
-    redirect_back
+  def help
+    if request.post?
+      handle_with(SessionsHelp,
+                  success: lambda {
+                    redirect_to root_path,
+                                notice: 'Instructions for accessing your OpenStax account have been emailed to you.'
+                  },
+                  failure: lambda {
+                    errors = @handler_result.errors.any?
+                    render :help, status: errors ? 400 : 200
+                  })
+    end
   end
 
   # Omniauth failure endpoint
   def failure
-    flash.now[:alert] = params[:message] == 'invalid_credentials' ? \
-                          'Incorrect username, email, or password' : \
-                          params[:message]
+    flash.now[:alert] =
+      case params[:message]
+      when 'cannot_find_user'
+        "We have no account for the username or email you provided.  " \
+        "Email addresses must be verified in our system to use them during sign in."
+      when 'multiple_users'
+        "We found several accounts with your email address.  Please sign in using your username."
+      when 'bad_password'
+        "The password you provided is incorrect."
+      else
+        params[:message]
+      end
     render 'new'
   end
 

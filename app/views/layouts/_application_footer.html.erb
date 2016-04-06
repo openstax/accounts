@@ -1,21 +1,17 @@
-<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
-<div id="application-footer-frame">
-  <div id="application-footer-content">
+<div id="application-footer" class="row">
 
-    <div id="footer-rice-logo">
-      <%= link_to "http://www.rice.edu" do %>
-        <%= image_tag 'rice_logo_4.png', id: "footer-rice-logo-image" %>
-      <% end %>
-    </div>
-
-    <div id="footer-copyright">
-      <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
-      <%= link_to "Terms of Use", main_app.terms_path %> |
-      <%= link_to "Contact Us",   "#" %>
-      <br/>
-    </div>
-
+  <div id="footer-copyright" class="col-sm-9">
+    <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
+    <%= link_to "Terms&nbsp;of&nbsp;Use".html_safe, main_app.terms_path %>
   </div>
+
+  <div id="footer-rice-logo" class="col-sm-3">
+    <%= link_to "http://www.rice.edu" do %>
+      <%= image_tag 'rice_logo_4.png', id: "footer-rice-logo-image" %>
+    <% end %>
+  </div>
+
 </div>

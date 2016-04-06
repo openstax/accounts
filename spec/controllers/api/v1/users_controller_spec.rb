@@ -57,7 +57,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
-            last_name: user_2.last_name
+            last_name: user_2.last_name,
+            full_name: user_2.full_name
           }
         ]
       }.to_json
@@ -128,7 +129,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         id: user_2.id,
         username: user_2.username,
         first_name: user_2.first_name,
-        last_name: user_2.last_name
+        last_name: user_2.last_name,
+        full_name: user_2.full_name
       }.to_json
 
       expect(response.body).to eq(expected_response)
@@ -199,15 +201,14 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
                  raw_post_data: {
                    email: 'a-new-email@test.com',
                    first_name: 'Sarah',
-                   last_name: 'Test',
-                   full_name: 'Sarah M. Test'
+                   last_name: 'Test'
                  }
       }.to change { User.count }.by(1)
       expect(response.code).to eq('200')
       new_user = User.find(JSON.parse(response.body)['id'])
       expect(new_user.first_name).to eq 'Sarah'
       expect(new_user.last_name).to eq 'Test'
-      expect(new_user.full_name).to eq 'Sarah M. Test'
+      expect(new_user.full_name).to eq 'Sarah Test'
     end
 
     it "should not create a new user for anonymous" do

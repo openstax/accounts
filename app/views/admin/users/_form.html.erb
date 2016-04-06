@@ -1,16 +1,15 @@
-<%# Copyright 2011-2012 Rice University. Licensed under the Affero General Public 
+<%# Copyright 2011-2012 Rice University. Licensed under the Affero General Public
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
 <% content_for :javascript do %>
   <script type="text/javascript">
     $('.verify-email').bind('ajax:complete', function(evt, xhr, status) {
       $(this).replaceWith(xhr.responseText);
-    });
-  </script>
+    });</script>
 <% end %>
 
 <%= form_for([:admin, @user]) do |f| %>
-  <%= render "shared/error_messages", :target => @user %> 
+  <%= render "shared/error_messages", :target => @user %>
 
   <div class="form-group">
     <%= f.label :username %>
@@ -30,11 +29,6 @@
   <div class="form-group">
     <%= f.label :last_name %>
     <%= f.text_field :last_name, value: params[:user].nil? ? @user.last_name : params[:user][:last_name] %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :full_name %>
-    <%= f.text_field :full_name, value: params[:user].nil? ? @user.full_name : params[:user][:full_name] %>
   </div>
 
   <% unless @user.identity.nil? %>

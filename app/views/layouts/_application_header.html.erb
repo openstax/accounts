@@ -1,16 +1,27 @@
-<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+<%# Copyright 2011-2013 Rice University. Licensed under the Affero General Public
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
 <div id="application-header">
 
+  <div>
+    <a href="<%= root_path %>" id="top-nav-logo"></a>
+  </div>
 
-
-  <%= render :partial => "layouts/application_top_nav" %>
-
-
-
-  <noscript>
-    <%= attention_tag(["Please enable JavaScript in your browser! Many #{SITE_NAME} pages will not work properly without it."], :alert, "js_not_enabled_alert") %>
-  </noscript>
+  <% unless @hide_session_info %>
+  <div id="session-info">
+  <% if signed_in? %>
+    <span>
+      Welcome, <%= link_to current_user.username, main_app.profile_path, class: 'username' %>
+    </span>
+    <span>
+      <%= link_to 'Sign out', main_app.signout_path %>
+    </span>
+  <% else %>
+    <span>
+      <%= link_to "Sign in", main_app.signin_path %>
+    </span>
+  <% end %>
+  </div>
+  <% end %>
 
 </div>

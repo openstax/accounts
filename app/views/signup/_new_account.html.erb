@@ -1,0 +1,121 @@
+<% @parent_col_id = "sign-up" %>
+
+<% is_social_signup = signed_in? %>
+
+<%= lev_form_for :signup, url: url, html: {id: 'signup'} do |f| %>
+
+  <div class="signup row">
+
+    <div class="col-sm-6">
+      <% user = signed_in? ? current_user : OpenStruct.new %>
+      <% email = user.email_addresses.try(:first).try(:value) %>
+
+      <%= standard_field form: f, name: :title, type: :text_field, label: "Title",
+                         options: {value: user.title, hide: true} %>
+      <%= standard_field form: f, name: :first_name, type: :text_field, label: "First Name *",
+                         options: {value: user.first_name || user.guessed_first_name} %>
+      <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name *",
+                         options: {value: user.last_name || user.guessed_last_name} %>
+      <%= link_to "Show title and suffix", "#", id: 'show-more-fields' %>
+      <%= standard_field form: f, name: :suffix, type: :text_field, label: "Suffix",
+                         options: {value: user.suffix, hide: true} %>
+      <%= standard_field form: f, name: :email_address, type: :text_field, label: "Email Address *",
+                         options: {value: email, disabled: email.present?} %>
+      <%= standard_field form: f, name: :username, type: :text_field, label: "Username *",
+                         options: {value: user.username} %>
+
+      <% if is_social_signup %>
+        <% provider = user.authentications.first.provider %>
+        <div class="password-managed">
+          <div class="icon">
+            <div class="fa-stack fa-lg">
+              <i class="fa fa-square fa-stack-2x <%= provider %>-bkg"></i>
+              <i class="fa fa-<%= provider %> fa-stack-1x fa-inverse"></i>
+            </div>
+          </div>
+          <div class="message">Password managed by <%= provider.capitalize %></div>
+        </div>
+      <% else %>
+        <%= standard_field form: f, name: :password, type: :password_field, label: "Password *" %>
+        <%= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Confirm Password *" %>
+      <% end %>
+    </div>
+
+
+    <div class="col-sm-6">
+      <div class="side-notice">
+      <% if is_social_signup %>
+        <div class="already-have-account well">
+          <span class="title">Wait a second!</span>
+
+          I might already have an account.
+
+          <%= link_to "Take me back to the sign in page.", signout_path %>
+        </div>
+      <% else %>
+        <div class="verify-email well">
+          <span class="title">Please verify your email!</span>
+
+          You'll receive a verification email shortly.  Please take a moment and verify your email address.
+        </div>
+      <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="signup row">
+
+
+    <div class="col-xs-12">
+      <% unless @contracts_not_required %>
+        <%
+          contracts = [FinePrint.get_contract(:general_terms_of_use),
+                       FinePrint.get_contract(:privacy_policy)]
+
+          contract_links = contracts.collect do |contract|
+            link_to contract.title, term_path(contract), remote: true
+          end
+        %>
+
+        <div class="checkbox">
+          <label>
+            <%= f.check_box :i_agree %> I have read the <%= contract_links[0] %> and the
+            <%= contract_links[1] %> and I agree to be bound by their terms.<br/>
+            <i>Note that other OpenStax sites may have terms of their own.</i>
+          </label>
+        </div>
+
+        <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
+        <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="signup row">
+
+    <div class="col-sm-6 buttons">
+
+
+      <div>
+        <%= f.submit "Create Account", id: "create_account_submit", class: 'btn btn-primary' %>
+        <%= link_to "Cancel", (is_social_signup ? signout_path : root_path), class: 'btn btn-default pull-right' %>
+      </div>
+
+    </div>
+
+  </div>
+
+<% end %>
+
+<% unless @contracts_not_required %>
+  <script type="text/javascript">
+    Accounts.Ui.enableOnChecked('#create_account_submit', '#signup_i_agree');
+    $(document).ready(function() {
+      $('#show-more-fields').click(function(e) {
+        e.preventDefault();
+        $(this).hide();
+        $('#signup_title, #signup_suffix').parent().show();
+      })
+    });
+  </script>
+<% end %>

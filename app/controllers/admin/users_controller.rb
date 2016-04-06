@@ -63,7 +63,7 @@ module Admin
     def update_user
       @user.is_administrator = params[:user][:is_administrator]
 
-      user_params = params[:user].slice(:first_name, :last_name, :full_name)
+      user_params = params[:user].slice(:first_name, :last_name)
       @user.update_attributes(user_params)
     end
   end

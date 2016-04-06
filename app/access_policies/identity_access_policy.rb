@@ -6,7 +6,7 @@ class IdentityAccessPolicy
     return false if requestor.is_application?
 
     case action
-    when :new, :forgot_password, :reset_password # Anyone
+    when :new, :reset_password # Anyone
       true
     when :update # Self only
       !requestor.is_anonymous? && \

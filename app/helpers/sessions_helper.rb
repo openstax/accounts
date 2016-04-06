@@ -16,12 +16,22 @@ module SessionsHelper
     list.push('Facebook')          if providers.include?('facebook')
     list.push('Twitter')           if providers.include?('twitter')
     list.push('Google')            if providers.include?('google_oauth2')
-    list.push('a simple password') if providers.include?('identity')
-    
+    list.push('a password')        if providers.include?('identity')
+
     if list.size >= 2
       list[list.size-1] = "#{conjunction} " + list[list.size-1]
     end
-    
+
     list.size >= 3 ? list.join(', ') : list.join(' ')
+  end
+
+  def last_signin_mark(provider)
+    (
+      <<-SNIPPET
+        <div class="last-signin #{provider}" style="#{'display:none' unless provider == 'force' || last_signin_provider == provider}">
+          <span class="last-signin-symbol">*</span>
+        </div>
+      SNIPPET
+    ).html_safe
   end
 end

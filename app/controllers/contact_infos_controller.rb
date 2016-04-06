@@ -3,41 +3,48 @@ class ContactInfosController < ApplicationController
   skip_before_filter :authenticate_user!,
                      only: [:confirm, :confirm_unclaimed, :resend_confirmation]
 
-  skip_before_filter :registration,
-                     only: [:create, :destroy, :toggle_is_searchable, :confirm,
-                            :confirm_unclaimed, :resend_confirmation]
+  skip_before_filter :finish_sign_up,
+                     only: [:confirm_unclaimed] # TODO still need this skip?
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:create, :destroy, :toggle_is_searchable, :confirm,
+                  only: [:create, :destroy, :set_searchable, :confirm,
                          :confirm_unclaimed, :resend_confirmation]
 
-  before_filter :get_contact_info, only: [:destroy, :toggle_is_searchable]
+  before_filter :get_contact_info, only: [:destroy, :set_searchable]
 
   def create
     handle_with(ContactInfosCreate,
                 success: lambda {
-                  redirect_to profile_path(active_tab: :email),
-                    notice: "A verification message has been sent to \"#{
-                              @handler_result.outputs[:contact_info].value}\"" },
-                failure: lambda { @active_tab = :email; render 'users/edit', status: 400 })
+                  contact_info = @handler_result.outputs.contact_info
+                  render json: {
+                    contact_info: {
+                      id: contact_info.id,
+                      type: contact_info.type,
+                      value: contact_info.value,
+                      is_verified: contact_info.verified,
+                      is_searchable: contact_info.is_searchable
+                    }
+                  },
+                  status: :ok
+                },
+                failure: lambda {
+                  render json: @handler_result.errors.first.translate, status: :unprocessable_entity
+                })
   end
 
   def destroy
     OSU::AccessPolicy.require_action_allowed!(:destroy, current_user,
                                               @contact_info)
     @contact_info.destroy
-    redirect_to profile_path(active_tab: :email),
-                notice: "#{@contact_info.type.underscore.humanize} deleted"
+    head :ok
   end
 
-  def toggle_is_searchable
-    OSU::AccessPolicy.require_action_allowed!(:toggle_is_searchable,
+  def set_searchable
+    OSU::AccessPolicy.require_action_allowed!(:set_searchable,
                                               current_user, @contact_info)
-    @contact_info.update_attribute(:is_searchable,
-                                   !@contact_info.is_searchable)
+    @contact_info.update_attribute(:is_searchable, params[:is_searchable])
 
-    redirect_to profile_path(active_tab: :email),
-                notice: "Search settings updated"
+    render json: {is_searchable: @contact_info.is_searchable}, status: :ok
   end
 
   def resend_confirmation
@@ -49,8 +56,7 @@ class ContactInfosController < ApplicationController
                         'Your email address is already verified' :
                         "A verification message has been sent to \"#{contact_info.value}\""
 
-                  redirect_to :back,
-                              notice: msg
+                      render json: {message: msg, is_verified: contact_info.verified}, status: :ok
                 })
   end
 

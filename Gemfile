@@ -20,7 +20,6 @@ gem 'openstax_api'
 gem 'lev', '~> 2.0.6'
 
 gem 'jquery-rails'
-gem 'jquery-ui-rails'
 
 gem 'smarter_csv'
 
@@ -54,14 +53,15 @@ gem 'p3p'
 
 gem 'test-unit' # because rspec told me so
 
-group :assets do
-  gem 'sass-rails',   '~> 3.2.6'
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'therubyracer', :platforms => :ruby
-  gem 'uglifier', '>= 1.0.3'
-  gem 'bootstrap-sass', '~> 3.1.1'
-  gem 'compass-rails'
-end
+gem 'coffee-rails', '~> 3.2.1'
+gem 'therubyracer', :platforms => :ruby
+gem 'uglifier', '>= 1.0.3'
+gem 'sass-rails',   '~> 3.2.6'
+gem 'bootstrap-sass', '~> 3.1.1'
+gem 'compass-rails'
+gem "font-awesome-rails"
+
+gem 'premailer-rails'
 
 group :development, :test do
   gem 'byebug'
@@ -69,6 +69,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails'
   gem 'capybara'
+  gem 'capybara-email'
   gem 'poltergeist'
   gem 'coveralls', require: false
 end

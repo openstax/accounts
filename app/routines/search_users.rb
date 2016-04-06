@@ -4,8 +4,7 @@
 # https://github.com/bruce/keyword_search , e.g.:
 #
 #   "username:jps,richb" --> returns the "jps" and "richb" users
-#   "name:John" --> returns Users with first, last, or full name
-#                   starting with "John"
+#   "name:John" --> returns Users with first or last starting with "John"
 #
 # Query terms can be combined, e.g. "username:jp first_name:john"
 #
@@ -39,7 +38,7 @@ class SearchUsers
   def exec(query, options={})
 
     users = User.scoped
-    
+
     KeywordSearch.search(query) do |with|
 
       with.default_keyword :any
@@ -56,15 +55,16 @@ class SearchUsers
         users = users.where{lower(last_name).like_any my{prep_names(last_names)}}
       end
 
-      with.keyword :full_name do |full_names|
-        users = users.where{lower(full_name).like_any my{prep_names(full_names)}}
+      with.keyword :full_name do |names|
+        names = prep_names(names)
+        users = users.where{ (lower(first_name).op('||', ' ').op('||', lower(last_name)).like_any names) }
       end
 
       with.keyword :name do |names|
         names = prep_names(names)
-        users = users.where{ (lower(full_name).like_any names)  | 
-                             (lower(last_name).like_any names)  |
-                             (lower(first_name).like_any names) }
+        users = users.where{ (lower(first_name).op('||', ' ').op('||', lower(last_name)).like_any names) |
+                             (lower(first_name).like_any names) |
+                             (lower(last_name).like_any names) }
       end
 
       with.keyword :id do |ids|
@@ -80,21 +80,23 @@ class SearchUsers
       end
 
       # Rerun the queries above for 'any' terms (which are ones without a
-      # prefix).  
+      # prefix).
 
       with.keyword :any do |terms|
         names = prep_names(terms)
 
         users = users.joins{contact_infos.outer}.where{
-                  (                   username.like_any names)           | \
-                  (          lower(first_name).like_any names)           | \
-                  (           lower(last_name).like_any names)           | \
-                  (           lower(full_name).like_any names)           | \
-                  (                         id.in       terms)           | \
-                  ((       contact_infos.value.in       terms)           & \
-                  (         contact_infos.type.eq       'EmailAddress')  & \
-                  (     contact_infos.verified.eq       true)            & \
-                  (contact_infos.is_searchable.eq       true))}
+                  (                     username.like_any names)           | \
+                  (            lower(first_name).like_any names)           | \
+                  (             lower(last_name).like_any names)           | \
+                  (lower(first_name)
+                     .op('||', ' ')
+                     .op('||', lower(last_name)).like_any names)           | \
+                  (                           id.in       terms)           | \
+                  ((         contact_infos.value.in       terms)           & \
+                  (           contact_infos.type.eq       'EmailAddress')  & \
+                  (       contact_infos.verified.eq       true)            & \
+                  (  contact_infos.is_searchable.eq       true))}
       end
 
     end

@@ -19,10 +19,9 @@ describe IdentitiesController, type: :controller do
         expect(!!identity.authenticate('new_password')).to eq false
 
         controller.sign_in! user
-        put 'update', identity: {current_password: 'password',
-                                 password: 'new_password',
+        put 'update', identity: {password: 'new_password',
                                  password_confirmation: 'new_password'}
-        expect(response.status).to eq 302
+        expect(response.status).to eq 202
         expect(!!identity.reload.authenticate('password')).to eq false
         expect(!!identity.authenticate('new_password')).to eq true
       end
@@ -108,7 +107,7 @@ describe IdentitiesController, type: :controller do
              reset_password: { password: 'password', password_confirmation: 'passwordd'})
         expect(response.code).to eq('400')
         expect(response.body).not_to include('Reset password link is invalid')
-        expect(response.body).to include("Password doesn&#x27;t match confirmation")
+        expect(response.body).to include("Password doesn't match confirmation")
         expect(response.body).to include('Set Password')
         identity.reload
         expect(identity.authenticate('password')).to be_truthy
@@ -119,7 +118,7 @@ describe IdentitiesController, type: :controller do
              reset_password: { password: 'password!', password_confirmation: 'password!'})
         expect(response).to redirect_to(root_url)
         expect(flash[:alert]).to be_blank
-        expect(flash[:notice]).to include('Your password has been reset successfully! You have been signed in automatically.')
+        expect(flash[:notice]).to include('Your password has been reset successfully! You are now signed in.')
         identity.reload
         expect(identity.authenticate('password')).to be_falsey
         expect(identity.authenticate('password!')).to be_truthy

@@ -25,12 +25,12 @@ describe ImportUsers do
   end
 
   it 'creates users from a csv file' do
-    headers = [:row_number, :username, :password_digest, :title, :first_name, :last_name, :full_name, :email_address]
+    headers = [:row_number, :username, :password_digest, :title, :first_name, :last_name, :email_address]
     CSV.open(@file.path, 'wb', headers: headers, write_headers: true) do |csv|
-      csv << [1, 'user1', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', 'User', 'One', 'User One', 'user1@example.com']
-      csv << [2, 'user2', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Professor', '', '', 'ユーザー', 'user2']
+      csv << [1, 'user1', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', 'User', 'One', 'user1@example.com']
+      csv << [2, 'user2', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Professor', '', 'ユーザー', 'user2']
       csv << [3, '', '']
-      csv << [4, 'User1', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', 'Different', 'User1', 'Different User1', 'different.user1@example.com']
+      csv << [4, 'User1', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', 'Different', 'User1', 'different.user1@example.com']
     end
 
     ImportUsers.new(@file.path, nil).read
@@ -83,9 +83,9 @@ describe ImportUsers do
   end
 
   it 'creates users from a csv file and links them to an application' do
-    headers = [:row_number, :username, :password_digest, :title, :first_name, :last_name, :full_name, :email_address]
+    headers = [:row_number, :username, :password_digest, :title, :first_name, :last_name, :email_address]
     CSV.open(@file.path, 'wb', headers: headers, write_headers: true) do |csv|
-      csv << [1, 'appuser1', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', '', 'App', 'User', 'App User', 'appuser1@example.com']
+      csv << [1, 'appuser1', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', '', 'App', 'User', 'appuser1@example.com']
     end
 
     app = FactoryGirl.create(:doorkeeper_application)

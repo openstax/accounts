@@ -1,0 +1,153 @@
+#signin {
+
+  $social_button_width: 240px;
+
+  @mixin button-form-group {
+    width: $social_button_width;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #options {
+
+    margin-top: 20px;
+
+    $or_color: lighten($os_gray, 40%);
+
+    .button-form-group {
+      @include button-form-group;
+    }
+
+    #social-login {
+      a.btn-social {
+        margin-top: 13px;
+      }
+    }
+
+    .btn-social {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 50px;
+
+      > :first-child {
+        padding-top: 4px;
+        width: 40px;
+        padding-left: 2px;
+      }
+    }
+
+    #vertical-or {
+      color: $or_color;
+      float: left;
+      margin-left: -25px;
+      margin-top: 74px;
+      background-color: white;
+      height: 29px;
+      line-height: 28px;
+    }
+
+    #horizontal-or-bar {
+      @include button-form-group;
+      border-bottom: 1px solid $or_color;
+      margin-bottom: 30px;
+      text-align: center;
+      color: $or_color;
+      margin-top: 5px;
+
+      span {
+        position: relative;
+        background-color: white;
+        display: inline-block;
+        width: 40px;
+        top: 15px;
+        line-height: 30px;
+      }
+    }
+
+    @media(min-width: 768px) {
+       #password-login {
+          border-left: 1px solid $or_color;
+       }
+    }
+
+    .sign-up {
+      float: right;
+      width: 130px;
+      display: inline-block;
+      text-align: right;
+      margin-top: 8px;
+    }
+
+  }
+
+  #cant-sign-in {
+    padding-top: 30px;
+  }
+
+  #reminders {
+    margin-top: 30px;
+
+    text-align: center;
+
+    p {
+      font-size: 10px;
+      color: lighten($os_gray, 30%);
+      margin-bottom: 4px;
+    }
+
+    @media(max-width: 767px) {
+      p {
+        @include button-form-group;
+        width: $social_button_width + 10px;
+        margin-bottom: 8px;
+      }
+    }
+  }
+
+ .last-signin-symbol {
+    font-style: normal;
+    font-size: 50px;
+    color: #76b143;
+    font-family: helvetica, verdana, arial, sans-serif;
+  }
+
+  #last-signin-explanation {
+    font-style: italic;
+    font-size: 13px;
+    color: lighten($os_gray, 30%);
+    margin-top: 30px;
+
+    @media(max-width: 767px) {
+      div.content {
+        @include button-form-group;
+        width: $social_button_width - 20px;
+        margin-bottom: 8px;
+      }
+    }
+
+    @media(max-width: 399px) {
+      padding: 0 40px;
+    }
+
+    .last-signin-symbol {
+      margin-top: -15px;
+      position: absolute;
+      margin-left: -10px;
+    }
+  }
+
+  .last-signin {
+    margin-top: -46px;
+    margin-left: -26px;
+    position: absolute;
+
+    &.identity {
+      margin-top: -57px;
+      margin-left: -24px;
+    }
+  }
+
+}
+
+

@@ -35,7 +35,7 @@ class ImportUsers
               username = row[:username] || ''
               create_user(username, row[:password_digest],
                           row[:title], row[:first_name], row[:last_name],
-                          row[:full_name], row[:email_address])
+                          row[:email_address])
               FindOrCreateApplicationUser.call(@app_id, @user.id) unless @app_id.nil?
             rescue ActiveRecord::RecordInvalid => e
               model_name = e.record.class.name
@@ -57,7 +57,7 @@ class ImportUsers
     end
   end
 
-  def create_user(username, password_digest, title, first_name, last_name, full_name, email_address)
+  def create_user(username, password_digest, title, first_name, last_name, email_address)
     # Check whether the user is already in the database
     ea = EmailAddress.verified.where(value: email_address).first
     @user = ea.try(:user)
@@ -71,7 +71,6 @@ class ImportUsers
     @user.title = title
     @user.first_name = first_name
     @user.last_name = last_name
-    @user.full_name = full_name
     @user.save!(:validate => false)
 
     identity = @user.build_identity

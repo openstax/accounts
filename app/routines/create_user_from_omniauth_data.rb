@@ -4,6 +4,7 @@ class CreateUserFromOmniauthData
 
   uses_routine CreateUser,
                translations: { outputs: { type: :verbatim } }
+  uses_routine TransferOmniauthData
 
   protected
 
@@ -15,8 +16,10 @@ class CreateUserFromOmniauthData
                     first_name: data.first_name,
                     last_name: data.last_name,
                     full_name: data.name,
-                    email: data.email,
-                    ensure_no_errors: true)
+                    ensure_no_errors: true,
+                    state: 'new_social')
+
+    run(TransferOmniauthData, data, outputs.user)
   end
 
 end

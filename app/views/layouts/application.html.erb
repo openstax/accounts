@@ -7,29 +7,33 @@
       <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
     <% end %>
 
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
     <%= stylesheet_link_tag     "application" %>
     <%= javascript_include_tag  "application" %>
     <%= csrf_meta_tags %>
 
-    <title><%= @page_title + ' - ' if !@page_title.nil? %><%= SITE_NAME %></title>
+    <%= yield :head if content_for?(:head) %>
 
+    <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
 
   <body>
 
-    <%= render :partial => "layouts/application_js_hooks" %>
-
+    <%= render partial: "layouts/application_js_hooks" %>
     <%= render "shared/upper_corner_console" %>
+    <%= render partial: "layouts/application_header" %>
 
-    <div id="application-container">
+    <div id="application-container" class="container">
 
-      <%= render :partial => "layouts/application_header" %>
 
-      <%= render 'shared/attention' %>
+      <%= render partial: "layouts/attention" %>
 
-      <%= render :partial => "layouts/application_body" %>
+      <%= render partial: "layouts/application_body" %>
 
-      <%= render :partial => "layouts/application_footer" %>
+      <%= render partial: "layouts/application_footer" %>
 
     </div>
 
@@ -38,6 +42,3 @@
   </body>
 
 </html>
-
-
-

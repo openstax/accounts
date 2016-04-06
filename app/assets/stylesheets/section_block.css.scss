@@ -1,3 +1,5 @@
+// May no longer be used, but might be overrides from openstax_utilities <%= section blocks
+
 @mixin section-block-base($heading_font_size:16px, $heading_color:black, $body_indent:0px, $body_top_margin:8px) {
   margin:  10px 0px;
 
@@ -6,8 +8,8 @@
     color:     $heading_color;
     font-size: $heading_font_size;
 
-    a { 
-      font-size: $heading_font_size; 
+    a {
+      font-size: $heading_font_size;
     }
   }
 

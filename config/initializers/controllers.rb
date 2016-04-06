@@ -14,33 +14,26 @@ ActionController::Base.class_exec do
                  password: SECRET_SETTINGS[:beta_password]
   end
 
-  before_filter :authenticate_user!, :registration, :expired_password
 
-  fine_print_require :general_terms_of_use, :privacy_policy, unless: :contracts_not_required
+  before_filter :authenticate_user!
+  before_filter :finish_sign_up
+  before_filter :expired_password
+
+  fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
   protected
 
-  def contracts_not_required
-    @contracts_not_required =
-      # Skip for API calls
-      (request.format == :json) ||
-      # Anonymous users can't sign contracts
-      current_user.is_anonymous? ||
-      # Skip if just arrived from an application that says skip
-      Doorkeeper::Application.where(uid: params[:client_id] || session[:client_id])
-                             .first
-                             .try(:skip_terms?) ||
-      # Skip if all of user's applications say skip
-      (
-        current_user.applications.any? &&
-        current_user.applications.all?{|app| app.skip_terms? }
-      )
+  def disable_fine_print
+    contracts_not_required(client_id: params[:client_id] || session[:client_id]) ||
+    current_user.is_anonymous?
   end
 
-  def registration
+  include ContractsNotRequired
+
+  def finish_sign_up
     return true if request.format != :html
-    return unless current_user.is_temp?
-    redirect_to registration_complete_path
+    return unless current_user.is_new_social?
+    redirect_to signup_social_path
   end
 
   def expired_password
@@ -55,6 +48,15 @@ ActionController::Base.class_exec do
 
     redirect_to reset_password_path(code_hash)
   end
+
+  def set_last_signin_provider(provider)
+    cookies.signed[:last_signin_provider] = provider
+  end
+
+  def last_signin_provider
+    cookies.signed[:last_signin_provider]
+  end
+
 end
 
 # Layout is not inheritable in Rails 3.2
@@ -63,6 +65,6 @@ Rails.application.config.to_prepare do
   # and remove it from ApplicationController
   [Doorkeeper::ApplicationController,
    FinePrint::ApplicationController].each do |klass|
-    klass.layout 'application_body_only'
+    klass.layout 'application'
   end
 end

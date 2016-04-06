@@ -17,11 +17,10 @@ class TermsAgree
   end
 
   def handle
-    # In addition to doing whatever is needed to register a user, this page / handler
-    # also gives the user a shortcut for agreeing to common site terms.
-
     if !agreement_params.i_agree
-      fatal_error(code: :did_not_agree, message: 'You must agree to the terms to register') 
+      fatal_error(code: :did_not_agree,
+                  message: 'You must agree to the terms to continue.  If you have ' \
+                           'questions, please contact support.')
     end
 
     run(AgreeToTerms, agreement_params.contract_id, caller)

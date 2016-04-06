@@ -1,6 +1,14 @@
 module OmniAuth
   module Strategies
     # This class is a tweaked version of the OmniAuth-Identity strategy
+    #
+    # Notes:
+    #   We could have implemented a `request_phase` method that displayed
+    #   a signup form (e.g. by delegating to `SessionsController.action(:new).call(env)`),
+    #   but instead we bypassed that step and just have our form post to
+    #   `/auth/identity/signup`
+    #
+    #
     class CustomIdentity
       include OmniAuth::Strategy
 
@@ -10,6 +18,7 @@ module OmniAuth
       #
 
       include SignInState
+      include ContractsNotRequired
 
       def cookies
         @cookies ||= ActionDispatch::Request.new(env).cookie_jar
@@ -21,75 +30,84 @@ module OmniAuth
 
       option :fields, [:username, :first_name, :last_name]
       option :locate_conditions, lambda { |req|
-        auth_key = req.params['auth_key']
-        user = User.where(username: auth_key).first ||
-               ContactInfo.where(value: auth_key).first.try(:user)
-        {user_id: (user.nil? ? nil : user.id)}
+        auth_key = req.params['auth_key'].try(:strip)
+        contacts = ContactInfo.verified.where(value: auth_key)
+        users = [User.where(username: auth_key).first ||
+                 contacts.collect(&:user)].flatten
+        {user_id: (users.size == 1 ? users.first.id : nil),
+         users_returned: users.size}
       }
       option :name, "identity"
 
-      def request_phase
-        SessionsController.action(:new).call(env)
-      end
+      uid { identity.uid }
+      info { identity.info }
 
       def callback_phase
-        return fail!(:invalid_credentials) unless identity
-        super
+        if identity
+          super
+        else
+          if locate_conditions[:users_returned] == 0
+            return fail!(:cannot_find_user)
+          elsif locate_conditions[:users_returned] > 1
+            return fail!(:multiple_users)
+          else
+            return fail!(:bad_password)
+          end
+        end
       end
 
       def other_phase
-        if on_registration_path?
+        if on_signup_path?
           if request.get?
-            # Normal identity shows registration form, but we don't want that
+            # Normal identity shows sign up form, but we don't want that
             raise ActionController::RoutingError.new('Not Found')
           elsif request.post?
-            registration_phase
+            handle_signup
           end
         else
           call_app!
         end
       end
 
-      def registration_form
-        IdentitiesController.action(:new).call(env)
-      end
+      def handle_signup
+        @handler_result =
+          SignupPassword.handle(
+            params: request,
+            caller: current_user,
+            contracts_required: !contracts_not_required(client_id: request['client_id'] ||
+                                                        session['client_id'])
+          )
 
-      def registration_phase
-        @handler_result = IdentitiesRegister.handle(params: request,
-                                                    caller: current_user)
+        env['errors'] = @handler_result.errors
 
-        error_codes = @handler_result.errors.map(&:code)
-
-        if error_codes.empty? || error_codes == [:already_has_identity]
+        if @handler_result.errors.none?
           @identity = @handler_result.outputs[:identity]
           env['PATH_INFO'] = callback_path
-          env['errors'] = @handler_result.errors
           callback_phase
         else
-          env['errors'] = @handler_result.errors
-          registration_form
+          show_signup_form
         end
       end
 
-      uid{ identity.uid }
-      info{ identity.info }
-
-      def registration_path
-        options[:registration_path] || "#{path_prefix}/#{name}/register"
+      def show_signup_form
+        SignupController.action(:password).call(env)
       end
 
-      def on_registration_path?
-        on_path?(registration_path)
+      def signup_path
+        options[:signup_path] || "#{path_prefix}/#{name}/signup"
+      end
+
+      def on_signup_path?
+        on_path?(signup_path)
       end
 
       def identity
-        if options.locate_conditions.is_a? Proc
-          conditions = instance_exec(request, &options.locate_conditions)
-          conditions.to_hash
-        else
-          conditions = options.locate_conditions.to_hash
-        end
-        @identity ||= model.authenticate(conditions, request['password'] )
+        @identity ||= model.authenticate(locate_conditions.keep_if { |k, v| k == :user_id }, request['password'] )
+      end
+
+      def locate_conditions
+        conditions = instance_exec(request, &options.locate_conditions)
+        conditions.to_hash
       end
 
       def model

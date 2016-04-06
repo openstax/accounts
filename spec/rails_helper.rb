@@ -9,6 +9,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'capybara/poltergeist'
+require 'capybara/email/rspec'
 require 'mail'
 
 Mail.defaults { delivery_method :test }
@@ -22,6 +23,19 @@ Capybara.javascript_driver = :poltergeist
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
+# don't exit process until all ajax requests are complete
+module WaitForAjax
+  def wait_for_ajax
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until finished_all_ajax_requests?
+    end
+  end
+
+  def finished_all_ajax_requests?
+    page.evaluate_script('jQuery.active').zero?
+  end
+end
+
 RSpec.configure do |config|
   # ## Mock Framework
   #
@@ -30,6 +44,8 @@ RSpec.configure do |config|
   # config.mock_with :mocha
   # config.mock_with :flexmock
   # config.mock_with :rr
+
+  config.include WaitForAjax, type: :feature
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"

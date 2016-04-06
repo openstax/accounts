@@ -9,15 +9,15 @@ RSpec.describe IdentityAccessPolicy do
   let!(:admin)     { FactoryGirl.create :user, :admin }
   let!(:app)       { FactoryGirl.create :doorkeeper_application }
 
-  context 'new, forgot_password, reset_password' do
+  context 'new, reset_password' do
     it 'cannot be accessed by applications' do
-      [:new, :forgot_password, :reset_password].each do |action|
+      [:new, :reset_password].each do |action|
         expect(OSU::AccessPolicy.action_allowed?(action, app, identity)).to eq false
       end
     end
 
     it 'can be accessed by human users' do
-      [:new, :forgot_password, :reset_password].each do |action|
+      [:new, :reset_password].each do |action|
         expect(OSU::AccessPolicy.action_allowed?(action, anon, identity)).to eq true
         expect(OSU::AccessPolicy.action_allowed?(action, temp, identity)).to eq true
         expect(OSU::AccessPolicy.action_allowed?(action, user, identity)).to eq true

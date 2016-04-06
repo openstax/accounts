@@ -9,32 +9,32 @@ feature 'User resets password', js: true do
   scenario 'using a link without a code' do
     visit '/reset_password'
     expect(page).to have_content('Reset password link is invalid')
-    expect(page).not_to have_content('Password Again')
+    expect_not_reset_password_page
   end
 
   scenario 'using a link with an invalid code' do
     visit '/reset_password?code=1234'
     expect(page).to have_content('Reset password link is invalid')
-    expect(page).not_to have_content('Password Again')
+    expect_not_reset_password_page
   end
 
   scenario 'using a link with an expired code' do
     @reset_code = generate_expired_reset_code_for 'user'
     visit "/reset_password?code=#{@reset_code}"
     expect(page).to have_content('Reset password link has expired')
-    expect(page).not_to have_content('Password Again')
+    expect_not_reset_password_page
   end
 
   scenario 'using a link with a valid code' do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).not_to have_content('Reset password link is invalid')
-    expect(page).to have_content('Password Again')
+    expect_reset_password_page
   end
 
   scenario 'with a blank password' do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).not_to have_content('Reset password link is invalid')
-    expect(page).to have_content('Password Again')
+    expect_reset_password_page
     click_button 'Set Password'
     expect(page).to have_content("Password can't be blank")
   end
@@ -42,9 +42,9 @@ feature 'User resets password', js: true do
   scenario 'password is too short' do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).not_to have_content('Reset password link is invalid')
-    expect(page).to have_content('Password Again')
+    expect_reset_password_page
     fill_in 'Password', with: 'pass'
-    fill_in 'Password Again', with: 'pass'
+    fill_in 'Confirm Password', with: 'pass'
     click_button 'Set Password'
     expect(page).to have_content('Password is too short')
   end
@@ -52,9 +52,9 @@ feature 'User resets password', js: true do
   scenario "password and password confirmation don't match" do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).not_to have_content('Reset password link is invalid')
-    expect(page).to have_content('Password Again')
+    expect_reset_password_page
     fill_in 'Password', with: 'password!'
-    fill_in 'Password Again', with: 'password!!'
+    fill_in 'Confirm Password', with: 'password!!'
     click_button 'Set Password'
     expect(page).to have_content("Password doesn't match confirmation")
   end
@@ -62,11 +62,11 @@ feature 'User resets password', js: true do
   scenario 'successful' do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).not_to have_content('Reset password link is invalid')
-    expect(page).to have_content('Password Again')
+    expect_reset_password_page
     fill_in 'Password', with: '1234abcd'
-    fill_in 'Password Again', with: '1234abcd'
+    fill_in 'Confirm Password', with: '1234abcd'
     click_button 'Set Password'
-    expect(page).to have_content('Your password has been reset successfully! You have been signed in automatically.')
+    expect(page).to have_content('Your password has been reset successfully! You are now signed in.')
 
     click_link 'Sign out'
 
@@ -74,7 +74,7 @@ feature 'User resets password', js: true do
     fill_in 'Username', with: 'user'
     fill_in 'Password', with: 'password'
     click_button 'Sign in'
-    expect(page).to have_content('Incorrect username, email, or password')
+    expect(page).to have_content('The password you provided is incorrect')
 
     # try logging in with the new password
     fill_in 'Username', with: 'user'
@@ -87,4 +87,13 @@ feature 'User resets password', js: true do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).to have_content('Reset password link has expired')
   end
+
+  def expect_reset_password_page
+    expect(page).to have_content('Confirm Password')
+  end
+
+  def expect_not_reset_password_page
+    expect(page).not_to have_content('Confirm Password')
+  end
+
 end

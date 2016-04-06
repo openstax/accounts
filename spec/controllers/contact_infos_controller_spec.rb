@@ -11,22 +11,22 @@ describe ContactInfosController, type: :controller do
       expect { post 'create',
                contact_info: contact_info.attributes }.to(
         change{ContactInfo.count}.by(1))
-      expect(response.status).to eq 302
+      expect(response.status).to eq 200
     end
   end
 
-  context 'PUT toggle_is_searchable' do
-    it 'toggles is_searchable' do
+  context 'PUT set_searchable' do
+    it 'changes is_searchable' do
       contact_info.save!
       controller.sign_in! user
       expect(contact_info.is_searchable).to eq true
 
-      put 'toggle_is_searchable', id: contact_info.id
-      expect(response.status).to eq 302
+      put 'set_searchable', id: contact_info.id, is_searchable: false
+      expect(response.status).to eq 200
       expect(contact_info.reload.is_searchable).to eq false
 
-      put 'toggle_is_searchable', id: contact_info.id
-      expect(response.status).to eq 302
+      put 'set_searchable', id: contact_info.id, is_searchable: true
+      expect(response.status).to eq 200
       expect(contact_info.reload.is_searchable).to eq true
     end
   end
@@ -37,7 +37,7 @@ describe ContactInfosController, type: :controller do
       controller.sign_in! user
       expect { delete 'destroy', id: contact_info.id }.to(
         change{ContactInfo.count}.by(-1))
-      expect(response.status).to eq 302
+      expect(response.status).to eq 200
     end
   end
 
@@ -51,7 +51,7 @@ describe ContactInfosController, type: :controller do
     it "returns error if no code given" do
       get 'confirm'
       expect(response.code).to eq('400')
-      expect(response.body).to include("Sorry, we couldn't verify an email using the verification code you provided.")
+      expect(response.body).to include("Sorry, we couldn't verify your email using the verification code you provided.")
       expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
     end
 
@@ -59,15 +59,15 @@ describe ContactInfosController, type: :controller do
       get 'confirm', :code => 'abcd'
       expect(response.code).to eq('400')
       expect(response.body).to include("Unable to verify email address") # header
-      expect(response.body).to include("Sorry, we couldn't verify an email using the verification code you provided.") # body
+      expect(response.body).to include("Sorry, we couldn't verify your email using the verification code you provided.") # body
       expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
     end
 
     it "returns success if code matches" do
       get 'confirm', :code => @email.confirmation_code
       expect(response).to be_success
-      expect(response.body).to include("Thank you for verifying your email address.") # header
-      expect(response.body).to include('Success! Thanks for adding your email address.') # body
+      expect(response.body).to include("Thank you for verifying your email address") # header
+      expect(response.body).to include('Your email address is now verified') # body
       expect(EmailAddress.find_by_value(@email.value).verified).to be_truthy
     end
   end
