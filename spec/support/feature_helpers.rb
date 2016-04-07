@@ -175,7 +175,7 @@ def click_password_sign_up
 end
 
 def expect_sign_in_page
-  expect(page).to have_content('Sign in to OpenStax Access your')
+  expect(page).to have_content('Sign in to OpenStax Access all')
 end
 
 def expect_social_sign_up_page
