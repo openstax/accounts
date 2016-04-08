@@ -43,6 +43,8 @@ class SessionsController < ApplicationController
         when :returning_user, :new_password_user, :transferred_authentication
           set_last_signin_provider(@handler_result.outputs[:authentication].provider)
           redirect_to action: :returning_user
+        when :no_action
+          redirect_to action: :returning_user
         when :new_social_user
           redirect_to signup_social_path
         when :authentication_added
