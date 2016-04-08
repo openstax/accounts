@@ -25,15 +25,18 @@
                          options: {value: user.username} %>
 
       <% if is_social_signup %>
-        <% provider = user.authentications.first.provider %>
+        <% authentication = user.authentications.first %>
+        <% provider = authentication.provider %>
+        <% icon_class = provider == 'google_oauth2' ? 'google' : provider %>
+
         <div class="password-managed">
           <div class="icon">
             <div class="fa-stack fa-lg">
               <i class="fa fa-square fa-stack-2x <%= provider %>-bkg"></i>
-              <i class="fa fa-<%= provider %> fa-stack-1x fa-inverse"></i>
+              <i class="fa fa-<%= icon_class %> fa-stack-1x fa-inverse"></i>
             </div>
           </div>
-          <div class="message">Password managed by <%= provider.capitalize %></div>
+          <div class="message">Password managed by <%= authentication.display_name %></div>
         </div>
       <% else %>
         <%= standard_field form: f, name: :password, type: :password_field, label: "Password *" %>
