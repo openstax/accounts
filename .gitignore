@@ -27,7 +27,7 @@ config/deploy_settings.yml
 
 # Ignore Cucumber and RSpec failure information
 cucumber_rerun.txt
-rspec.failures
+.rspec_last_failures
 
 Ignore Coveralls reports
 coverage/*
