@@ -38,6 +38,7 @@ Accounts::Application.routes.draw do
   end
 
   namespace 'signup' do
+    get '/', action: :index
     get 'password'
     get 'social'
     post 'social'

@@ -1,4 +1,6 @@
-#signin {
+.btn-identity       { @include btn-social(#666666); }
+
+#signin, #signup {
 
   $social_button_width: 240px;
 
@@ -79,6 +81,28 @@
       margin-top: 8px;
     }
 
+  }
+
+  #social-signup-message {
+    margin-top:82px;
+
+    .the-message {
+      width: 280px;
+    }
+
+    @media(max-width: 767px) {
+      margin-top: 70px;
+
+      p {
+        @include button-form-group;
+        width: $social_button_width + 10px;
+        margin-bottom: 8px;
+
+        &.dont-want-to-remember {
+          display: none;
+        }
+      }
+    }
   }
 
   #cant-sign-in {

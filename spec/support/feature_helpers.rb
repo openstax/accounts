@@ -172,6 +172,7 @@ end
 
 def click_password_sign_up
   click_on 'Sign up'
+  click_on 'Sign up with a password'
 end
 
 def expect_sign_in_page
