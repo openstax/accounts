@@ -15,9 +15,17 @@ class IdentitiesController < ApplicationController
   end
 
   def reset_password
-    if !current_user.is_anonymous? && current_user.identity.password_expired?
-      store_fallback key: :password_return_to
-      flash[:alert] = 'Your password has expired. Please enter a new password.'
+    if !current_user.is_anonymous?
+      if current_user.identity.nil?
+        flash[:alert] = "You cannot reset your password because your account does not have a password."
+        redirect_to profile_path
+        return
+      end
+
+      if current_user.identity.password_expired?
+        store_fallback key: :password_return_to
+        flash[:alert] = 'Your password has expired. Please enter a new password.'
+      end
     end
     handle_with(IdentitiesResetPassword,
                 success: lambda {

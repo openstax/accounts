@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'User resets password', js: true do
   background do
-    create_user 'user'
+    @user = create_user 'user'
     @reset_code = generate_reset_code_for 'user'
   end
 
@@ -86,6 +86,18 @@ feature 'User resets password', js: true do
     # check that the reset password link cannot be reused again
     visit "/reset_password?code=#{@reset_code}"
     expect(page).to have_content('Reset password link has expired')
+  end
+
+  scenario 'without identity' do
+    visit '/signin'
+    fill_in 'Username', with: 'user'
+    fill_in 'Password', with: 'password'
+    click_button 'Sign in'
+    @user.identity.destroy
+    visit '/reset_password'
+    expect(page).to have_content('Your Account')
+    expect(page).to have_content('does not have a password')
+    expect_not_reset_password_page
   end
 
   def expect_reset_password_page
