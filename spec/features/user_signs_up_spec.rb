@@ -28,6 +28,19 @@ feature 'User signs up as a local user', js: true do
     expect_sign_in_page
   end
 
+  scenario 'sign up chooser page' do
+    create_application
+    visit_authorize_uri
+
+    expect_sign_in_page
+    click_link 'Sign up'
+    expect(page).to have_content('Sign up with OpenStax')
+    expect(page).to have_content('Facebook')
+    expect(page).to have_content('Google')
+    expect(page).to have_content('Twitter')
+    expect(page).to have_content('a password')
+  end
+
   scenario 'with incorrect password confirmation', js: true do
     visit '/'
     click_password_sign_up
