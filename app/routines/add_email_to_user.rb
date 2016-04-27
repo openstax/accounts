@@ -29,5 +29,7 @@ class AddEmailToUser
 
     # The confirmation info won't be sent if already verified
     run(SendContactInfoConfirmation, email_address)
+
+    outputs.email = email_address
   end
 end

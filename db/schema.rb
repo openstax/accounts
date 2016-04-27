@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160319003444) do
+ActiveRecord::Schema.define(:version => 20160427052709) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -57,7 +57,9 @@ ActiveRecord::Schema.define(:version => 20160319003444) do
     t.datetime "updated_at",                              :null => false
     t.datetime "confirmation_sent_at"
     t.boolean  "is_searchable",        :default => false
+    t.string   "confirmation_pin"
     t.index ["confirmation_code"], :name => "index_contact_infos_on_confirmation_code", :unique => true
+    t.index ["confirmation_pin"], :name => "index_contact_infos_on_confirmation_pin"
     t.index ["user_id"], :name => "index_contact_infos_on_user_id"
     t.index ["value", "user_id", "type"], :name => "index_contact_infos_on_value_user_id_type", :unique => true
   end
@@ -230,6 +232,15 @@ ActiveRecord::Schema.define(:version => 20160319003444) do
     t.datetime "updated_at",  :null => false
     t.index ["code"], :name => "index_password_reset_codes_on_code", :unique => true
     t.index ["identity_id"], :name => "index_password_reset_codes_on_identity_id", :unique => true
+  end
+
+  create_table "sequential_failures", :force => true do |t|
+    t.integer  "kind",                      :null => false
+    t.string   "reference",                 :null => false
+    t.integer  "length",     :default => 0
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.index ["kind", "reference"], :name => "index_sequential_failures_on_kind_and_reference", :unique => true
   end
 
   create_table "users", :force => true do |t|

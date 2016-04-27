@@ -8,6 +8,7 @@ class SendContactInfoConfirmation
     return if contact_info.verified
 
     contact_info.confirmation_code = SecureRandom.hex(32)
+    contact_info.confirmation_pin = SecureRandom.random_number(1000000).to_s.rjust(6,"0")
 
     case contact_info.type
     when 'EmailAddress'

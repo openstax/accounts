@@ -35,5 +35,9 @@ module Api::V1
              readable: true,
              writeable: true
 
+    collection :contact_infos,
+               if: ->(args) { args[:render_contact_infos] },
+               decorator: ContactInfoRepresenter
+
   end
 end

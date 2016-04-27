@@ -115,6 +115,13 @@ Accounts::Application.routes.draw do
     resources :group_members, only: [:index], path: 'memberships'
     resources :group_owners, only: [:index], path: 'ownerships'
 
+    resources :contact_infos, only: [] do
+      member do
+        put 'resend_confirmation'
+        put 'confirm_by_pin'
+      end
+    end
+
     if !Rails.env.production?
       get 'raise_exception/:type', to: 'dev#raise_exception'
     end

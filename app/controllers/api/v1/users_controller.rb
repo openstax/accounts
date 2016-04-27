@@ -98,7 +98,9 @@ class Api::V1::UsersController < Api::V1::ApiController
   def show
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user,
                                               current_human_user)
-    respond_with current_human_user
+    respond_with current_human_user,
+                 represent_with: Api::V1::UserRepresenter,
+                 render_contact_infos: true
   end
 
   ###############################################################

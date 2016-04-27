@@ -26,6 +26,9 @@ class ContactInfo < ActiveRecord::Base
 
   before_save :add_unread_update
 
+  def confirmed;  verified;  end
+  def confirmed?; verified?; end
+
   def to_subclass
     return self unless valid?
     becomes(type.constantize)
