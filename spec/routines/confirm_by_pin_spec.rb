@@ -59,8 +59,23 @@ describe ConfirmByPin do
       ).to have_routine_error(:no_pin_confirmation_attempts_remaining)
     end
 
-    xit 'can succeed after contact info value confirmed by code' do
+    it 'can succeed after other contact info with same value is confirmed (would be by code)' do
+      other_user = FactoryGirl.create(:user)
+      AddEmailToUser.call("bob@example.com", other_user)
+      other_contact_info = other_user.contact_infos.first
 
+      expect(
+        described_class.call(contact_info: contact_info, pin: contact_info.confirmation_pin)
+      ).to have_routine_error(:no_pin_confirmation_attempts_remaining)
+
+      expect(
+        described_class.call(contact_info: other_contact_info, pin: other_contact_info.confirmation_pin)
+      ).to have_routine_error(:no_pin_confirmation_attempts_remaining)
+
+      ConfirmContactInfo.call(contact_info)
+
+      described_class.call(contact_info: other_contact_info, pin: other_contact_info.confirmation_pin)
+      expect(other_contact_info.reload).to be_confirmed
     end
   end
 
