@@ -3,7 +3,7 @@
 <p>Someone is trying to add '<%= @email_address.value %>' to an OpenStax account.  If this wasn't you, please disregard this message.</p>
 
 <% if @show_pin %>
-  <p>Enter your 6-digit verification code in the prompt on the OpenStax site you are using to verify your email address:</p>
+  <p>Enter your 6-digit code in the verification code field in your browser to verify your email address:</p>
 
   <p>Your code: <b><%= @email_address.confirmation_pin %></b></p>
 
