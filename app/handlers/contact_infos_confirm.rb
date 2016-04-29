@@ -2,7 +2,9 @@ class ContactInfosConfirm
 
   lev_handler
 
-  uses_routine ConfirmContactInfo
+  uses_routine ConfirmByCode,
+               translations: { outputs: { type: :verbatim },
+                               inputs: { type: :verbatim } }
 
   protected
 
@@ -11,14 +13,7 @@ class ContactInfosConfirm
   end
 
   def handle
-    fatal_error(code: :no_contact_info_for_code,
-                message: 'Unable to verify email address') if params[:code].nil?
-    contact_info = ContactInfo.where(confirmation_code: params[:code]).first
-    fatal_error(code: :no_contact_info_for_code,
-                message: 'Unable to verify email address') if contact_info.nil?
-    outputs[:contact_info] = contact_info
-
-    run(ConfirmContactInfo, contact_info)
+    run(ConfirmByCode, params[:code])
   end
 
 end

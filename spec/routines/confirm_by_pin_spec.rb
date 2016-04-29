@@ -72,7 +72,7 @@ describe ConfirmByPin do
         described_class.call(contact_info: other_contact_info, pin: other_contact_info.confirmation_pin)
       ).to have_routine_error(:no_pin_confirmation_attempts_remaining)
 
-      ConfirmContactInfo.call(contact_info)
+      ConfirmByCode.call(contact_info.confirmation_code)
 
       described_class.call(contact_info: other_contact_info, pin: other_contact_info.confirmation_pin)
       expect(other_contact_info.reload).to be_confirmed
