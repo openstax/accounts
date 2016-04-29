@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/openstax/openstax_api.git
-  revision: 48d045f99f9518d46b6f09ba7348d725a6959502
+  revision: 3ceda5366f66560a3dd93fb24cc2b93e11411f93
   branch: fix/rails-3.2
   specs:
     openstax_api (6.1.4)
