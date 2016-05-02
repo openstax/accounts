@@ -58,7 +58,7 @@ end
 def create_new_application(trusted = false)
   click_link 'New Application'
   fill_in 'Name', with: 'example'
-  fill_in 'Callback urls', with: 'http://localhost/'
+  fill_in 'Callback urls', with: 'https://localhost/'
   check 'Trusted?' if trusted
   click_button 'Submit'
 end
