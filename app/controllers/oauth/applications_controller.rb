@@ -23,7 +23,7 @@ module Oauth
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :create])
-        redirect_to action: :index
+        render :show
       else
         render :new
       end
