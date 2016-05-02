@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/openstax/openstax_api.git
-  revision: 3ceda5366f66560a3dd93fb24cc2b93e11411f93
+  revision: 3154d9481c7307f3816de1cdb81d2b1fe76e3e0b
   branch: fix/rails-3.2
   specs:
     openstax_api (6.1.4)
@@ -118,8 +118,8 @@ GEM
     diff-lcs (1.2.5)
     diffy (3.1.0)
     docile (1.1.5)
-    doorkeeper (2.0.1)
-      railties (>= 3.1)
+    doorkeeper (2.2.0)
+      railties (>= 3.2)
     erubis (2.7.0)
     eventmachine (1.2.0.1)
     exception_notification (4.1.1)
@@ -381,7 +381,7 @@ DEPENDENCIES
   compass-rails
   coveralls
   delayed_job_active_record
-  doorkeeper (= 2.0.1)
+  doorkeeper (= 2.2)
   factory_girl_rails
   fine_print (~> 3.1.0)
   font-awesome-rails
