@@ -37,7 +37,7 @@ class Identity
 
   constructor: (@el) ->
     _.bindAll(@, _.functions(@)...)
-    this.$el = $(el)
+    this.$el = $(@el)
     this.$el.find('.delete').click(@confirmDelete)
     this.$el.find('.add').click(@add)
 
