@@ -2,6 +2,7 @@ module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
     before_filter :get_user
     before_filter :get_application, :only => [:show, :edit, :update, :destroy]
+    respond_to :html
 
     def index
       @applications = @user.is_administrator? ? Doorkeeper::Application.all :
@@ -22,7 +23,7 @@ module Oauth
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :create])
-        respond_with [:oauth, @application], location: nil
+        redirect_to action: :index
       else
         render :new
       end
