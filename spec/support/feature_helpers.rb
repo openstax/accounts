@@ -109,9 +109,9 @@ end
 
 def create_application
   @app = FactoryGirl.create(:doorkeeper_application, :trusted,
-                           redirect_uri: 'http://www.example.com/callback')
-  token = FactoryGirl.create(:doorkeeper_access_token,
-                             application: @app, resource_owner_id: nil)
+                           redirect_uri: 'https://www.example.com/callback')
+  FactoryGirl.create(:doorkeeper_access_token,
+                     application: @app, resource_owner_id: nil)
   @app
 end
 
