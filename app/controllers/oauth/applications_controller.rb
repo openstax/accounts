@@ -42,7 +42,7 @@ module Oauth
       if @application.update_attributes(application_params(@user))
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :update])
-        respond_with [:oauth, @application], location: nil
+        redirect_to action: :index
       else
         render :edit
       end
