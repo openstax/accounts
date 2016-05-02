@@ -129,7 +129,7 @@ module Oauth
       post :create, :application => {name: 'Some app',
                                      redirect_uri: 'https://www.example.com',
                                      trusted: true}
-      expect(response.code).to eq('302')
+      expect(response.code).to eq('200')
       expect(assigns(:application).name).to eq('Some app')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
       expect(assigns(:application).trusted).to eq(true)
