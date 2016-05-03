@@ -18,7 +18,7 @@ describe 'accounts:oauth_apps rake tasks' do
     it 'creates an oauth application' do
       stub_const('ENV', ENV.to_hash.merge(
         'APP_NAME' => 'new app',
-        'REDIRECT_URI' => 'http://localhost:4000/,http://localhost:8000',
+        'REDIRECT_URI' => 'https://localhost:4000/,https://localhost:8000',
         'USERNAME' => admin.username,
         'EMAIL_FROM_ADDRESS' => 'new-app@example.org',
         'EMAIL_SUBJECT_PREFIX' => '[new-app]',
@@ -33,7 +33,7 @@ describe 'accounts:oauth_apps rake tasks' do
       new_app = Doorkeeper::Application.order(:id).last
       expect(new_app.name).to eq('new app')
       expect(new_app.redirect_uri).to eq(
-        "http://localhost:4000/\r\nhttp://localhost:8000")
+        "https://localhost:4000/\r\nhttps://localhost:8000")
       expect(new_app.owner.has_owner? admin).to be true
       expect(new_app.email_from_address).to eq('new-app@example.org')
       expect(new_app.email_subject_prefix).to eq('[new-app]')
@@ -43,7 +43,7 @@ describe 'accounts:oauth_apps rake tasks' do
     it 'creates an untrusted oauth application' do
       stub_const('ENV', ENV.to_hash.merge(
         'APP_NAME' => 'new app',
-        'REDIRECT_URI' => 'http://localhost:4000/,http://localhost:8000',
+        'REDIRECT_URI' => 'https://localhost:4000/,https://localhost:8000',
         'USERNAME' => admin.username,
         'EMAIL_FROM_ADDRESS' => 'new-app@example.org',
         'EMAIL_SUBJECT_PREFIX' => '[new-app]',
@@ -58,7 +58,7 @@ describe 'accounts:oauth_apps rake tasks' do
       new_app = Doorkeeper::Application.order(:id).last
       expect(new_app.name).to eq('new app')
       expect(new_app.redirect_uri).to eq(
-        "http://localhost:4000/\r\nhttp://localhost:8000")
+        "https://localhost:4000/\r\nhttps://localhost:8000")
       expect(new_app.owner.has_owner? admin).to be true
       expect(new_app.email_from_address).to eq('new-app@example.org')
       expect(new_app.email_subject_prefix).to eq('[new-app]')
@@ -67,7 +67,7 @@ describe 'accounts:oauth_apps rake tasks' do
 
     it 'raises an error if APP_NAME is missing' do
       stub_const('ENV', ENV.to_hash.merge(
-        'REDIRECT_URI' => 'http://localhost:4000/,http://localhost:8000',
+        'REDIRECT_URI' => 'https://localhost:4000/,https://localhost:8000',
         'USERNAME' => admin.username,
         'EMAIL_FROM_ADDRESS' => 'new-app@example.org',
         'EMAIL_SUBJECT_PREFIX' => '[new-app]'
@@ -92,7 +92,7 @@ describe 'accounts:oauth_apps rake tasks' do
     it 'raises an error if USERNAME is missing' do
       stub_const('ENV', ENV.to_hash.merge(
         'APP_NAME' => 'new app',
-        'REDIRECT_URI' => 'http://localhost:4000/,http://localhost:8000',
+        'REDIRECT_URI' => 'https://localhost:4000/,https://localhost:8000',
         'EMAIL_FROM_ADDRESS' => 'new-app@example.org',
         'EMAIL_SUBJECT_PREFIX' => '[new-app]'
       ))
@@ -105,7 +105,7 @@ describe 'accounts:oauth_apps rake tasks' do
       stub_const('ENV', ENV.to_hash.merge(
         'USERNAME' => 'random',
         'APP_NAME' => 'new app',
-        'REDIRECT_URI' => 'http://localhost:4000/,http://localhost:8000',
+        'REDIRECT_URI' => 'https://localhost:4000/,https://localhost:8000',
         'EMAIL_FROM_ADDRESS' => 'new-app@example.org',
         'EMAIL_SUBJECT_PREFIX' => '[new-app]'
       ))
@@ -118,7 +118,7 @@ describe 'accounts:oauth_apps rake tasks' do
       stub_const('ENV', ENV.to_hash.merge(
         'USERNAME' => admin.username,
         'APP_NAME' => app.name,
-        'REDIRECT_URI' => 'http://localhost:4000/,http://localhost:8000',
+        'REDIRECT_URI' => 'https://localhost:4000/,https://localhost:8000',
         'EMAIL_FROM_ADDRESS' => 'new-app@example.org',
         'EMAIL_SUBJECT_PREFIX' => '[new-app]'
       ))
@@ -133,7 +133,7 @@ describe 'accounts:oauth_apps rake tasks' do
       expect(updated_app.owner).to_not eq(app.owner)
       expect(updated_app.owner.has_owner? admin).to be true
       expect(updated_app.redirect_uri).to eq(
-        "http://localhost:4000/\r\nhttp://localhost:8000")
+        "https://localhost:4000/\r\nhttps://localhost:8000")
       expect(updated_app.email_from_address).to eq('new-app@example.org')
       expect(updated_app.email_subject_prefix).to eq('[new-app]')
     end
@@ -161,7 +161,7 @@ describe 'accounts:oauth_apps rake tasks' do
     it 'updates just the redirect uri' do
       stub_const('ENV', ENV.to_hash.merge(
         'APP_NAME' => app.name,
-        'REDIRECT_URI' => 'http://localhost:4000/,http://localhost:8000',
+        'REDIRECT_URI' => 'https://localhost:4000/,https://localhost:8000',
       ))
       stdout, stderr = capture_output do
         Rake::Task['accounts:oauth_apps:update'].invoke
@@ -173,7 +173,7 @@ describe 'accounts:oauth_apps rake tasks' do
       expect(updated_app.secret).to eq(app.secret)
       expect(updated_app.owner).to eq(app.owner)
       expect(updated_app.redirect_uri).to eq(
-        "http://localhost:4000/\r\nhttp://localhost:8000")
+        "https://localhost:4000/\r\nhttps://localhost:8000")
       expect(updated_app.email_from_address).to eq(app.email_from_address)
       expect(updated_app.email_subject_prefix).to eq(app.email_subject_prefix)
     end

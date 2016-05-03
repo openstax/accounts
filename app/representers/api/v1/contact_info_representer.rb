@@ -1,6 +1,6 @@
 module Api::V1
   class ContactInfoRepresenter < Roar::Decorator
-    include Roar::Representer::JSON
+    include Roar::JSON
 
     property :id,
              type: Integer,

@@ -225,7 +225,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
                  trusted_application_token,
                  raw_post_data: {email: 'a-new-email@test.com'}
       }.to change{User.count}.by(1)
-      expect(response.code).to eq('200')
+      expect(response.code).to eq('201')
       new_user_id = User.order(:id).last.id
       expect(response.body).to eq({id: new_user_id}.to_json)
     end
@@ -240,7 +240,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
                    last_name: 'Test'
                  }
       }.to change { User.count }.by(1)
-      expect(response.code).to eq('200')
+      expect(response.code).to eq('201')
       new_user = User.find(JSON.parse(response.body)['id'])
       expect(new_user.first_name).to eq 'Sarah'
       expect(new_user.last_name).to eq 'Test'
@@ -271,14 +271,14 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       it "does so for unclaimed users" do
         api_post :find_or_create, trusted_application_token,
                  raw_post_data: {email: unclaimed_user.contact_infos.first.value}
-        expect(response.code).to eq('200')
+        expect(response.code).to eq('201')
         expect(response.body).to eq({id: unclaimed_user.id}.to_json)
       end
       it "does so for claimed users" do
         api_post :find_or_create,
                  trusted_application_token,
                  raw_post_data: {email: user_2.contact_infos.first.value}
-        expect(response.code).to eq('200')
+        expect(response.code).to eq('201')
         expect(response.body).to eq({id: user_2.id}.to_json)
       end
     end

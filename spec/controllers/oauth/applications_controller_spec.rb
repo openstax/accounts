@@ -127,11 +127,11 @@ module Oauth
     it "should let an admin create an application" do
       controller.sign_in! admin
       post :create, :application => {name: 'Some app',
-                                     redirect_uri: 'http://www.example.com',
+                                     redirect_uri: 'https://www.example.com',
                                      trusted: true}
-      expect(response.code).to eq('302')
+      expect(response.code).to eq('200')
       expect(assigns(:application).name).to eq('Some app')
-      expect(assigns(:application).redirect_uri).to eq('http://www.example.com')
+      expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
       expect(assigns(:application).trusted).to eq(true)
     end
 
@@ -162,7 +162,7 @@ module Oauth
     it "should let a user update his own untrusted application" do
       controller.sign_in! user
       post :update, id: untrusted_application_user.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
-      expect(response.code).to eq('302')
+      expect(response.code).to eq('200')
       expect(assigns(:application).name).to eq('Some other name')
       expect(assigns(:application).redirect_uri).to eq('http://www.example.net')
       expect(assigns(:application).trusted).to eq(false)
@@ -176,7 +176,7 @@ module Oauth
     it "should let an admin update someone else's application" do
       controller.sign_in! admin
       post :update, id: untrusted_application_user.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
-      expect(response.code).to eq('302')
+      expect(response.code).to eq('200')
       expect(assigns(:application).name).to eq('Some other name')
       expect(assigns(:application).redirect_uri).to eq('http://www.example.net')
       expect(assigns(:application).trusted).to eq(true)

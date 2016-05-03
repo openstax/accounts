@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160427052709) do
+ActiveRecord::Schema.define(:version => 20160428194353) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -220,6 +220,7 @@ ActiveRecord::Schema.define(:version => 20160427052709) do
     t.string   "email_from_address",   :default => "",    :null => false
     t.string   "email_subject_prefix", :default => "",    :null => false
     t.boolean  "skip_terms",           :default => false, :null => false
+    t.string   "scopes",               :default => "",    :null => false
     t.index ["owner_id", "owner_type"], :name => "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], :name => "index_oauth_applications_on_uid", :unique => true
   end
