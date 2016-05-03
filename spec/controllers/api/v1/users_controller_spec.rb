@@ -101,7 +101,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
       expected_response = {
         id: user_1.id,
-        username: user_1.username
+        username: user_1.username,
+        contact_infos: []
       }.to_json
 
       expect(response.body).to eq(expected_response)
@@ -116,7 +117,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
       expected_response = {
         id: user_1.id,
-        username: user_1.username
+        username: user_1.username,
+        contact_infos: []
       }.to_json
 
       expect(response.body).to eq(expected_response)
@@ -125,15 +127,49 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
     it "should return a properly formatted JSON response for user with name" do
       api_get :show, user_2_token
 
-      expected_response = {
+      expect(response.body_as_hash).to include(
         id: user_2.id,
         username: user_2.username,
         first_name: user_2.first_name,
         last_name: user_2.last_name,
-        full_name: user_2.full_name
-      }.to_json
+        full_name: user_2.full_name,
+        contact_infos: [be_kind_of(Hash), be_kind_of(Hash)]
+      )
+    end
 
-      expect(response.body).to eq(expected_response)
+    it 'should include contact infos' do
+      unconfirmed_email = AddEmailToUser.call("unconfirmed@example.com", user_1).outputs.email
+
+      confirmed_email = AddEmailToUser.call("confirmed@example.com", user_1).outputs.email
+      ConfirmContactInfo.call(confirmed_email)
+
+      over_pinned_email = AddEmailToUser.call("over_pinned@example.com", user_1).outputs.email
+      ConfirmByPin::MAX_PIN_FAILURES.times { ConfirmByPin.call(contact_info: over_pinned_email, pin: "whatever") }
+
+      api_get :show, user_1_token
+
+      expect(response.body_as_hash[:contact_infos]).to match a_collection_containing_exactly(
+        {
+          id: unconfirmed_email.id,
+          type: "EmailAddress",
+          value: "unconfirmed@example.com",
+          is_verified: false,
+          num_pin_verification_attempts_remaining: 5
+        },
+        {
+          id: confirmed_email.id,
+          type: "EmailAddress",
+          value: "confirmed@example.com",
+          is_verified: true
+        },
+        {
+          id: over_pinned_email.id,
+          type: "EmailAddress",
+          value: "over_pinned@example.com",
+          is_verified: false,
+          num_pin_verification_attempts_remaining: 0
+        }
+      )
     end
 
   end

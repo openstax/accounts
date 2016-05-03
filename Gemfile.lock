@@ -16,9 +16,9 @@ GEM
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
       sprockets (~> 2.2.1)
-    active_attr (0.8.5)
-      activemodel (>= 3.0.2, < 5.0)
-      activesupport (>= 3.0.2, < 5.0)
+    active_attr (0.9.0)
+      activemodel (>= 3.0.2, < 5.1)
+      activesupport (>= 3.0.2, < 5.1)
     activemodel (3.2.22)
       activesupport (= 3.2.22)
       builder (~> 3.0.0)
@@ -47,7 +47,7 @@ GEM
     bootstrap-sass (3.1.1.0)
       sass (~> 3.2)
     builder (3.0.4)
-    byebug (8.2.2)
+    byebug (8.2.5)
     capybara (2.6.2)
       addressable
       mime-types (>= 1.16)
@@ -132,7 +132,7 @@ GEM
     jwt (1.2.0)
     keyword_search (1.5.0)
     kgio (2.9.2)
-    lev (2.0.6)
+    lev (2.2.1)
       actionpack (>= 3.0)
       active_attr
       activemodel (>= 3.0)
@@ -151,7 +151,7 @@ GEM
     maruku (0.7.1)
     mime-types (1.25.1)
     mini_portile2 (2.0.0)
-    multi_json (1.11.2)
+    multi_json (1.11.3)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     netrc (0.8.0)
@@ -292,6 +292,8 @@ GEM
     schema_plus (1.7.1)
       activerecord (>= 3.2)
       valuable
+    shoulda-matchers (2.8.0)
+      activesupport (>= 3.0.0)
     simplecov (0.11.2)
       docile (~> 1.1.0)
       json (~> 1.8)
@@ -332,7 +334,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.46)
+    tzinfo (0.3.49)
     uber (0.0.15)
     uglifier (2.1.2)
       execjs (>= 0.3.0)
@@ -371,7 +373,7 @@ DEPENDENCIES
   jbuilder
   jquery-rails
   keyword_search (~> 1.5.0)
-  lev (~> 2.0.6)
+  lev (~> 2.2.0)
   lograge
   maruku
   omniauth
@@ -393,6 +395,7 @@ DEPENDENCIES
   rspec-rails (~> 3.0)
   sass-rails (~> 3.2.6)
   schema_plus (~> 1.7.1)
+  shoulda-matchers
   smarter_csv
   squeel
   test-unit

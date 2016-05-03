@@ -27,6 +27,7 @@ describe SendContactInfoConfirmation do
       refetched_email = EmailAddress.find(email.id)
       expect(refetched_email.confirmation_sent_at.utc).to eq(now.utc)
       expect(refetched_email.confirmation_code).not_to be_blank
+      expect(refetched_email.confirmation_pin).not_to be_blank
     end
   end
 

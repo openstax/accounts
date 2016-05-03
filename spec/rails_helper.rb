@@ -12,6 +12,8 @@ require 'capybara/poltergeist'
 require 'capybara/email/rspec'
 require 'mail'
 
+require 'shoulda/matchers'
+
 Mail.defaults { delivery_method :test }
 
 # load seed data
@@ -71,6 +73,50 @@ RSpec.configure do |config|
   #     end
   # or set:
   #   config.infer_spec_type_from_file_location!
+end
+
+# Adds a convenience method to get interpret the body as JSON and convert to a hash;
+# works for both request and controller specs
+class ActionDispatch::TestResponse
+  def body_as_hash
+    @body_as_hash_cache ||= JSON.parse(body, symbolize_names: true)
+  end
+end
+
+RSpec::Matchers.define :have_routine_error do |error_code|
+  include RSpec::Matchers::Composable
+
+  match do |actual|
+    actual.errors.any?{|error| error.code == error_code}
+  end
+
+  failure_message do |actual|
+    "expected that #{actual} would have error :#{error_code.to_s}"
+  end
+end
+
+RSpec::Matchers.define :have_api_error_code do |error_code|
+  include RSpec::Matchers::Composable
+
+  match do |actual|
+    actual.body_as_hash[:errors].any?{|error| error[:code] == error_code}
+  end
+
+  failure_message do |actual|
+    "expected that response would have error '#{error_code.to_s}' but had #{actual.body_as_hash[:errors].map{|error| error[:code]}}"
+  end
+end
+
+RSpec::Matchers.define :have_api_error_status do |error_status|
+  include RSpec::Matchers::Composable
+
+  match do |actual|
+    actual.body_as_hash[:status] == error_status.to_i
+  end
+
+  failure_message do |actual|
+    "expected that response would have status '#{error_status}' but had #{actual.body_as_hash[:status]}"
+  end
 end
 
 # monkey patching ActiveRecord::Base to use the same transaction for all threads

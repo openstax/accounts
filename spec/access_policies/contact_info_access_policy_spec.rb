@@ -35,19 +35,4 @@ RSpec.describe ContactInfoAccessPolicy do
     end
   end
 
-  context 'confirm' do
-    it 'can be accessed by anyone' do
-      expect(OSU::AccessPolicy.action_allowed?(:confirm, anon,
-                                               contact_info)).to eq true
-      expect(OSU::AccessPolicy.action_allowed?(:confirm, app,
-                                               contact_info)).to eq true
-      expect(OSU::AccessPolicy.action_allowed?(:confirm, temp,
-                                               contact_info)).to eq true
-      expect(OSU::AccessPolicy.action_allowed?(:confirm, user,
-                                               contact_info)).to eq true
-      expect(OSU::AccessPolicy.action_allowed?(:confirm, admin,
-                                               contact_info)).to eq true
-    end
-  end
-
 end

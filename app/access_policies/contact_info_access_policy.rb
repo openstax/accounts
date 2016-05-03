@@ -7,8 +7,8 @@ class ContactInfoAccessPolicy
       !requestor.is_application? && \
       !requestor.is_anonymous? && \
       requestor == contact_info.user
-    when :confirm
-      true
+    when :confirm_by_pin
+      requestor.is_human? && requestor == contact_info.user
     else
       false
     end
