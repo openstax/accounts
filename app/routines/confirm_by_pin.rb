@@ -23,11 +23,8 @@ class ConfirmByPin
       fatal_error(code: :no_pin_confirmation_attempts_remaining)
     else
       if contact_info.confirmation_pin == pin
-        after_transaction do
-          sequential_failure.reset!
-        end
-
         run(ConfirmContactInfo, contact_info)
+        sequential_failure.reset!
       else
         after_transaction do
           sequential_failure.increment!
