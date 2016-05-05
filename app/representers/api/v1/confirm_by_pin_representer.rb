@@ -1,6 +1,6 @@
 module Api::V1
   class ConfirmByPinRepresenter < Roar::Decorator
-    include Roar::Representer::JSON
+    include Roar::JSON
 
     property :pin,
              type: String,

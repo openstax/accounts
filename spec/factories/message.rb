@@ -6,7 +6,7 @@ FactoryGirl.define do
     subject 'Hello World!'
     subject_prefix '[Testing]'
 
-    ignore do
+    transient do
       recipients_count 1
     end
 

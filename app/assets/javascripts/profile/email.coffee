@@ -6,7 +6,7 @@ class Email
 
   constructor: (@el) ->
     _.bindAll(@, _.functions(@)...)
-    this.$el = $(el)
+    this.$el = $(@el)
     @id = this.$el.attr('data-id')
     this.$el.find('.delete').click(@confirmDelete)
     this.$el.find('.searchable').change(@saveSearchable)

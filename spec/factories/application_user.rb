@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :application_user do
-    ignore do
+    transient do
       username { SecureRandom.hex(3) }
       first_name nil
       last_name nil
@@ -13,7 +13,7 @@ FactoryGirl.define do
     unread_updates 1
 
     factory :application_user_with_emails do
-      ignore do
+      transient do
         username { SecureRandom.hex(3) }
         first_name nil
         last_name nil

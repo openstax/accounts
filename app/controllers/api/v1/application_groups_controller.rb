@@ -28,7 +28,7 @@ class Api::V1::ApplicationGroupsController < Api::V1::ApiController
   def updates
     OSU::AccessPolicy.require_action_allowed!(:updates, current_api_user, ApplicationGroup)
     outputs = GetUpdatedApplicationGroups.call(current_application).outputs
-    respond_with outputs[:application_groups], represent_with: Api::V1::ApplicationGroupsRepresenter
+    respond_with outputs[:application_groups], represent_with: Api::V1::ApplicationGroupsRepresenter, location: nil
   end
 
   ###############################################################

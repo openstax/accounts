@@ -26,7 +26,7 @@ class Api::V1::GroupNestingsController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, gn)
 
     if gn.save
-      respond_with gn, status: :created
+      respond_with gn, status: :created, location: nil
     else
       render json: gn.errors, status: :unprocessable_entity
     end

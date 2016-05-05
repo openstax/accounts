@@ -20,7 +20,7 @@ class Api::V1::GroupMembersController < Api::V1::ApiController
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, GroupMember)
-    respond_with current_human_user.group_members
+    respond_with current_human_user.group_members, location: nil
   end
 
   ###############################################################
@@ -41,7 +41,7 @@ class Api::V1::GroupMembersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, gm)
 
     if gm.save
-      respond_with gm, status: :created
+      respond_with gm, status: :created, location: nil
     else
       render json: gm.errors, status: :unprocessable_entity
     end

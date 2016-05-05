@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :application_group do
 
-    ignore do
+    transient do
       name { SecureRandom.hex(3) }
       is_public false
     end

@@ -58,7 +58,7 @@ end
 def create_new_application(trusted = false)
   click_link 'New Application'
   fill_in 'Name', with: 'example'
-  fill_in 'Callback urls', with: 'http://localhost/'
+  fill_in 'Callback urls', with: 'https://localhost/'
   check 'Trusted?' if trusted
   click_button 'Submit'
 end
@@ -109,9 +109,9 @@ end
 
 def create_application
   @app = FactoryGirl.create(:doorkeeper_application, :trusted,
-                           redirect_uri: 'http://www.example.com/callback')
-  token = FactoryGirl.create(:doorkeeper_access_token,
-                             application: @app, resource_owner_id: nil)
+                           redirect_uri: 'https://www.example.com/callback')
+  FactoryGirl.create(:doorkeeper_access_token,
+                     application: @app, resource_owner_id: nil)
   @app
 end
 

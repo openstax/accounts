@@ -88,7 +88,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, ApplicationUser)
     options = params.slice(:page, :per_page, :order_by)
     outputs = SearchApplicationUsers.call(current_application, params[:q], options).outputs
-    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
+    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter, location: nil
   end
 
   ###############################################################
@@ -107,7 +107,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
       :application_id => current_application.id
     }).first!
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, application_user)
-    respond_with application_user, represent_with: Api::V1::ApplicationUserRepresenter
+    respond_with application_user, represent_with: Api::V1::ApplicationUserRepresenter, location: nil
   end
 
   ###############################################################
@@ -170,7 +170,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:updates, current_api_user, ApplicationUser)
     outputs = GetUpdatedApplicationUsers.call(current_application).outputs
     respond_with outputs[:application_users],
-                 represent_with: Api::V1::ApplicationUsersRepresenter
+                 represent_with: Api::V1::ApplicationUsersRepresenter, location: nil
   end
 
   ###############################################################

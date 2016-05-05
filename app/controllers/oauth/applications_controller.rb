@@ -2,6 +2,7 @@ module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
     before_filter :get_user
     before_filter :get_application, :only => [:show, :edit, :update, :destroy]
+    respond_to :html
 
     def index
       @applications = @user.is_administrator? ? Doorkeeper::Application.all :
@@ -22,7 +23,7 @@ module Oauth
       if @application.save
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :create])
-        respond_with [:oauth, @application]
+        render :show
       else
         render :new
       end
@@ -41,7 +42,7 @@ module Oauth
       if @application.update_attributes(application_params(@user))
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :update])
-        respond_with [:oauth, @application]
+        redirect_to action: :index
       else
         render :edit
       end
@@ -57,13 +58,13 @@ module Oauth
     def get_user
       @user = current_user
     end
-    
+
     def get_application
       @application = Doorkeeper::Application.find(params[:id])
     end
 
     private
-    
+
     def user_params
       return {} if params[:application].nil?
       params[:application].slice(:name, :redirect_uri, :email_subject_prefix)

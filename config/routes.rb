@@ -1,4 +1,5 @@
 Accounts::Application.routes.draw do
+  mount OpenStax::Api::Engine, at: '/'
 
   # More often used routes should appear first
   root :to => 'static_pages#home'
