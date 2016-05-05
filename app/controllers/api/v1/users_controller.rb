@@ -155,7 +155,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
-      respond_with result.outputs[:user], location: nil, represent_with: Api::V1::FindOrCreateUserRepresenter, location: nil
+      respond_with result.outputs[:user], represent_with: Api::V1::FindOrCreateUserRepresenter, location: nil
     end
   end
 

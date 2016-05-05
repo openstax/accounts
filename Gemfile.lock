@@ -1,19 +1,3 @@
-GIT
-  remote: git://github.com/openstax/openstax_api.git
-  revision: 27568f312d796ef730f777bbf604db1c6d4a94c6
-  branch: fix/rails-3.2
-  specs:
-    openstax_api (6.1.4)
-      doorkeeper (>= 2.0)
-      exception_notification (>= 4.0)
-      lev (>= 1.0.0)
-      openstax_utilities (>= 4.2.0)
-      rails (>= 3.1)
-      representable (>= 2.0, < 2.3)
-      responders
-      roar (>= 1.0)
-      roar-rails (>= 1.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -175,7 +159,6 @@ GEM
       treetop (~> 1.4.8)
     maruku (0.7.2)
     mime-types (1.25.1)
-    mime-types-data (3.2016.0221)
     mini_portile2 (2.0.0)
     multi_json (1.11.3)
     multi_xml (0.5.5)
@@ -211,6 +194,16 @@ GEM
     omniauth-twitter (1.2.1)
       json (~> 1.3)
       omniauth-oauth (~> 1.1)
+    openstax_api (6.1.4)
+      doorkeeper (>= 2.0)
+      exception_notification (>= 4.0)
+      lev (>= 1.0.0)
+      openstax_utilities (>= 4.2.0)
+      rails (>= 3.1)
+      representable (>= 2.0, < 2.3)
+      responders
+      roar (>= 1.0)
+      roar-rails (>= 1.0)
     openstax_rescue_from (1.5.0)
       exception_notification (>= 4.1, < 5.0)
       rails (>= 3.1, < 5.0)
@@ -397,7 +390,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api!
+  openstax_api (= 6.1.4)
   openstax_rescue_from (~> 1.5.0)
   openstax_utilities
   p3p

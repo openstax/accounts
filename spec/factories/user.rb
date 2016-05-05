@@ -25,7 +25,7 @@ FactoryGirl.define do
     end
 
     factory :user_with_emails do
-      ignore do
+      transient do
         emails_count 2
       end
 

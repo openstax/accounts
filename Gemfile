@@ -16,8 +16,7 @@ gem 'squeel'
 gem 'quiet_assets'
 
 gem 'openstax_utilities'
-# gem 'openstax_api', '6.1.3'
-gem 'openstax_api', github: 'openstax/openstax_api', branch: 'fix/rails-3.2'
+gem 'openstax_api', '6.1.4'
 
 gem 'lev', '~> 2.2.0'
 
