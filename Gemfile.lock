@@ -160,7 +160,7 @@ GEM
     maruku (0.7.2)
     mime-types (1.25.1)
     mini_portile2 (2.0.0)
-    multi_json (1.11.3)
+    multi_json (1.12.0)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     nokogiri (1.6.7.2)
@@ -194,7 +194,7 @@ GEM
     omniauth-twitter (1.2.1)
       json (~> 1.3)
       omniauth-oauth (~> 1.1)
-    openstax_api (6.1.4)
+    openstax_api (6.1.5)
       doorkeeper (>= 2.0)
       exception_notification (>= 4.0)
       lev (>= 1.0.0)
@@ -390,7 +390,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api (= 6.1.4)
+  openstax_api (= 6.1.5)
   openstax_rescue_from (~> 1.5.0)
   openstax_utilities
   p3p

@@ -16,7 +16,8 @@ gem 'squeel'
 gem 'quiet_assets'
 
 gem 'openstax_utilities'
-gem 'openstax_api', '6.1.4'
+gem 'openstax_api', '6.1.5'
+
 
 gem 'lev', '~> 2.2.0'
 
