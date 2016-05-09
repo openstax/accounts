@@ -18,7 +18,6 @@ gem 'quiet_assets'
 gem 'openstax_utilities'
 gem 'openstax_api', '6.1.5'
 
-
 gem 'lev', '~> 2.2.0'
 
 gem 'jquery-rails'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160428194353) do
+ActiveRecord::Schema.define(:version => 20160509181733) do
 
   create_table "application_groups", :force => true do |t|
     t.integer  "application_id",                :null => false
@@ -233,6 +233,20 @@ ActiveRecord::Schema.define(:version => 20160428194353) do
     t.datetime "updated_at",  :null => false
     t.index ["code"], :name => "index_password_reset_codes_on_code", :unique => true
     t.index ["identity_id"], :name => "index_password_reset_codes_on_identity_id", :unique => true
+  end
+
+  create_table "security_logs", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "application_id"
+    t.string   "remote_ip",                        :null => false
+    t.integer  "event_type",                       :null => false
+    t.text     "event_data",     :default => "{}", :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.index ["application_id", "created_at"], :name => "index_security_logs_on_application_id_and_created_at"
+    t.index ["created_at", "event_type"], :name => "index_security_logs_on_created_at_and_event_type"
+    t.index ["remote_ip", "created_at"], :name => "index_security_logs_on_remote_ip_and_created_at"
+    t.index ["user_id", "created_at"], :name => "index_security_logs_on_user_id_and_created_at"
   end
 
   create_table "sequential_failures", :force => true do |t|

@@ -29,6 +29,8 @@ class User < ActiveRecord::Base
 
   has_many :oauth_applications, through: :member_groups
 
+  has_many :security_logs
+
   before_validation :strip_names
 
   validates :username, presence: true,
