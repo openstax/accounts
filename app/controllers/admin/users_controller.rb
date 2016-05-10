@@ -1,7 +1,7 @@
 module Admin
   class UsersController < BaseController
 
-    before_filter :get_user, only: [:show, :edit, :update, :destroy, :become, :make_admin]
+    before_filter :get_user, only: [:edit, :update, :destroy, :become, :make_admin]
 
     def index
       security_log :users_searched_by_admin, search: params[:search]
@@ -10,7 +10,7 @@ module Admin
 
     def update
       security_log :user_updated_by_admin, user_id: params[:id],
-                                           user_params: request.filtered_parameters[:user]
+                                           user_params: request.filtered_parameters['user']
 
       respond_to do |format|
         if change_user_password && add_email_to_user && update_user

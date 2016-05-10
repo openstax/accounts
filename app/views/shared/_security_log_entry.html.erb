@@ -1,0 +1,21 @@
+<%# Copyright 2016 Rice University. Licensed under the Affero General Public
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<% show_user = true if show_user.nil?
+   user_link_proc ||= nil
+   application = security_log_entry.application %>
+
+<tr>
+  <td class="text-nowrap"><%= security_log_entry.id %></td>
+  <td class="text-nowrap"><%= security_log_entry.created_at.to_formatted_s(:short) %></td>
+  <% if show_user %>
+  <% user = security_log_entry.user
+     username = user.nil? ? (application.nil? ? 'Anonymous' : 'Application') : user.username %>
+  <td class="text-nowrap"><%= (user.nil? || user_link_proc.nil?) ?
+                                username : link_to(username, user_link_proc.call(user)) %></td>
+  <% end %>
+  <td class="text-nowrap"><%= application.try(:name) || 'Accounts' %></td>
+  <td class="text-nowrap"><%= security_log_entry.remote_ip %></td>
+  <td class="text-nowrap"><%= security_log_entry.event_type.to_s.humanize %></td>
+  <td><%= security_log_entry.event_data %></td>
+</tr>

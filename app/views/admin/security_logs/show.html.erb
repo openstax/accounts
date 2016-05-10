@@ -1,0 +1,21 @@
+<%# Copyright 2016 Rice University. Licensed under the Affero General Public
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<h4>Security Log</h4>
+
+<%= lev_form_for :search,
+                 url: admin_security_log_path,
+                 method: :get,
+                 html: {class: 'form-inline'} do |f| %>
+
+  Search for
+
+  <%= f.search_field :query, style: 'width:500px;', class: 'form-control' %>
+
+  <%= f.submit 'Search', class: 'btn btn-primary' %>
+
+<% end %>
+
+<%= render partial: "shared/security_log",
+           locals: { security_log: @security_log,
+                     user_link_proc: ->(user) { admin_user_path(user) } } %>

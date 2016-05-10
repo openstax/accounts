@@ -42,7 +42,7 @@ class User < ActiveRecord::Base
                        if: :username_changed?
 
   validates :state, inclusion: { in: VALID_STATES,
-                                message: "must be one of #{VALID_STATES.join(',')}" }
+                                 message: "must be one of #{VALID_STATES.join(',')}" }
 
   validate :name_part_required_for_suffix_or_title
 

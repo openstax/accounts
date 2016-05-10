@@ -1,0 +1,29 @@
+<%# Copyright 2016 Rice University. Licensed under the Affero General Public
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<% show_user = true if show_user.nil?
+   user_link_proc ||= nil %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Time</th>
+      <% if show_user %>
+      <th>User</th>
+      <% end %>
+      <th>App</th>
+      <th>IP</th>
+      <th>Type</th>
+      <th>Data</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% security_log.each do |log_entry| %>
+    <%= render partial: "shared/security_log_entry", locals: { security_log_entry: log_entry,
+                                                               show_user: show_user,
+                                                               user_link_proc: user_link_proc } %>
+    <% end %>
+  </tbody>
+</table>
