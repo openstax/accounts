@@ -37,7 +37,9 @@ class SessionsController < ApplicationController
     # and we don't want to send users back there
     store_fallback(url: @authorization_url) unless @authorization_url.nil?
 
-    handle_with(SessionsCallback, user_state: self,
+    handle_with(
+      SessionsCallback,
+      user_state: self,
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]
 
@@ -70,7 +72,7 @@ class SessionsController < ApplicationController
           raise IllegalState
         end
       end
-    end
+    )
   end
 
   # This is an official action instead of just doing `redirect_back` in callback

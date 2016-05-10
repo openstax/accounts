@@ -10,7 +10,7 @@ module Admin
 
     def update
       security_log :user_updated_by_admin, user_id: params[:id],
-                                           user_params: request.filtered_params[:user]
+                                           user_params: request.filtered_parameters[:user]
 
       respond_to do |format|
         if change_user_password && add_email_to_user && update_user

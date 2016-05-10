@@ -21,7 +21,7 @@ RSpec.describe ApplicationController, type: :controller do
     context 'non-api controller' do
       context 'anonymous user' do
         it 'does not set the user or application fields' do
-          expect{ controller.send :security_log, :unspecified }.to change{ SecurityLog.count }.by(1)
+          expect{ controller.send :security_log, :unknown }.to change{ SecurityLog.count }.by(1)
           security_log = SecurityLog.first
           expect(security_log.user).to be_nil
           expect(security_log.application).to be_nil
@@ -32,7 +32,7 @@ RSpec.describe ApplicationController, type: :controller do
         before{ controller.sign_in! user }
 
         it 'sets the user field but not the application field' do
-          expect{ controller.send :security_log, :unspecified }.to change{ SecurityLog.count }.by(1)
+          expect{ controller.send :security_log, :unknown }.to change{ SecurityLog.count }.by(1)
           security_log = SecurityLog.first
           expect(security_log.user).to eq user
           expect(security_log.application).to be_nil
@@ -51,7 +51,7 @@ RSpec.describe ApplicationController, type: :controller do
         before{ controller.current_api_user = anonymous_api_user }
 
         it 'does not set the user or application fields' do
-          expect{ controller.send :security_log, :unspecified }.to change{ SecurityLog.count }.by(1)
+          expect{ controller.send :security_log, :unknown }.to change{ SecurityLog.count }.by(1)
           security_log = SecurityLog.first
           expect(security_log.user).to be_nil
           expect(security_log.application).to be_nil
@@ -62,7 +62,7 @@ RSpec.describe ApplicationController, type: :controller do
         before{ controller.current_api_user = user_api_user }
 
         it 'sets the user field but not the application field' do
-          expect{ controller.send :security_log, :unspecified }.to change{ SecurityLog.count }.by(1)
+          expect{ controller.send :security_log, :unknown }.to change{ SecurityLog.count }.by(1)
           security_log = SecurityLog.first
           expect(security_log.user).to eq user
           expect(security_log.application).to be_nil
@@ -73,7 +73,7 @@ RSpec.describe ApplicationController, type: :controller do
         before{ controller.current_api_user = app_api_user }
 
         it 'sets the application field but not the user field' do
-          expect{ controller.send :security_log, :unspecified }.to change{ SecurityLog.count }.by(1)
+          expect{ controller.send :security_log, :unknown }.to change{ SecurityLog.count }.by(1)
           security_log = SecurityLog.first
           expect(security_log.user).to be_nil
           expect(security_log.application).to eq application
@@ -84,7 +84,7 @@ RSpec.describe ApplicationController, type: :controller do
         before{ controller.current_api_user = app_and_user_api_user }
 
         it 'sets both user and application fields' do
-          expect{ controller.send :security_log, :unspecified }.to change{ SecurityLog.count }.by(1)
+          expect{ controller.send :security_log, :unknown }.to change{ SecurityLog.count }.by(1)
           security_log = SecurityLog.first
           expect(security_log.user).to eq user
           expect(security_log.application).to eq application
