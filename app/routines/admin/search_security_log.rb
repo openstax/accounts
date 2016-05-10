@@ -50,7 +50,7 @@ module Admin
     def exec(params = {}, options = {})
 
       params[:ob] ||= { created_at: :desc }
-      relation = SecurityLog.preloaded.reorder(nil)
+      relation = SecurityLog.joins{[user.outer, application.outer]}.preloaded.reorder(nil)
 
       run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|
 
@@ -68,19 +68,19 @@ module Admin
           has_anonymous = sanitized_names.any? do |name|
             'anonymous'.include?(name.downcase.gsub('%', ''))
           end
-
-          if has_anonymous
-            @items = @items.joins{user.outer}.where{ (        user.id.eq       nil            ) |
-                                                     (        user.id.in       sanitized_ids  ) |
-                                                     (  user.username.like_any sanitized_names) |
-                                                     (user.first_name.like_any sanitized_names) |
-                                                     ( user.last_name.like_any sanitized_names) }
-          else
-            @items = @items.joins(:user).where{ (        user.id.in       sanitized_ids  ) |
-                                                (  user.username.like_any sanitized_names) |
-                                                (user.first_name.like_any sanitized_names) |
-                                                ( user.last_name.like_any sanitized_names) }
+          has_application = sanitized_names.any? do |name|
+            'application'.include?(name.downcase.gsub('%', ''))
           end
+
+          @items = @items.where{
+            query = (        user.id.in       sanitized_ids  ) |
+                    (  user.username.like_any sanitized_names) |
+                    (user.first_name.like_any sanitized_names) |
+                    ( user.last_name.like_any sanitized_names)
+            query = query | ((user.id.eq nil) & (application.id.eq     nil)) if has_anonymous
+            query = query | ((user.id.eq nil) & (application.id.not_eq nil)) if has_application
+            query
+          }
         end
 
         with.keyword :app do |apps|
@@ -90,16 +90,12 @@ module Admin
             'openstax accounts'.include?(name.downcase.gsub('%', ''))
           end
 
-          if has_accounts
-            @items = @items.joins{ application.outer }
-                           .where{ (  application.id.eq       nil            ) |
-                                   (  application.id.in       sanitized_ids  ) |
-                                   (application.name.like_any sanitized_names) }
-          else
-            @items = @items.joins(:application)
-                           .where{ (  application.id.in       sanitized_ids  ) |
-                                   (application.name.like_any sanitized_names) }
-          end
+          @items = @items.where{
+            query = (  application.id.in       sanitized_ids  ) |
+                    (application.name.like_any sanitized_names)
+            query = query | (application.id.eq nil) if has_accounts
+            query
+          }
         end
 
         with.keyword :ip do |ips|
@@ -124,12 +120,15 @@ module Admin
           has_anonymous = sanitized_names.any? do |name|
             'anonymous'.include?(name.downcase.gsub('%', ''))
           end
+          has_application = sanitized_names.any? do |name|
+            'application'.include?(name.downcase.gsub('%', ''))
+          end
 
           has_accounts = sanitized_names.any? do |name|
             'openstax accounts'.include?(name.downcase.gsub('%', ''))
           end
 
-          @items = @items.joins{[user.outer, application.outer]}.where{
+          @items = @items.where{
             query = (              id.in       terms                ) |
                     (         user.id.in       terms                ) |
                     (  application.id.in       terms                ) |
@@ -139,8 +138,9 @@ module Admin
                     (application.name.like_any sanitized_names      ) |
                     (       remote_ip.like_any sanitized_names      ) |
                     (      event_type.in       sanitized_event_types)
-            query = query | (user.id == nil) if has_anonymous
-            query = query | (application.id == nil) if has_accounts
+            query = query | ((user.id.eq nil) & (application.id.eq     nil)) if has_anonymous
+            query = query | ((user.id.eq nil) & (application.id.not_eq nil)) if has_application
+            query = query | (application.id.eq nil)                          if has_accounts
             query
           }
         end

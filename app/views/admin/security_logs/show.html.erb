@@ -16,6 +16,8 @@
 
 <% end %>
 
-<%= render partial: "shared/security_log",
-           locals: { security_log: @security_log,
-                     user_link_proc: ->(user) { admin_user_path(user) } } %>
+<%= render partial: "shared/security_log", locals: { security_log: @security_log } %>
+
+<div class="digg_pagination">
+  <%= will_paginate @security_log %>
+</div>

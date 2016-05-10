@@ -22,7 +22,7 @@ module Admin
     def handle
       outputs[:query] = search_params.query
       outputs[:page] = search_params.page || 0
-      outputs[:per_page] = search_params.per_page || 50
+      outputs[:per_page] = search_params.per_page || 20
       run(:search_log, outputs[:query], page: outputs[:page], per_page: outputs[:per_page])
     end
 

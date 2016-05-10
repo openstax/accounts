@@ -63,6 +63,8 @@ gem "font-awesome-rails"
 
 gem 'premailer-rails'
 
+gem 'will_paginate'
+
 group :development, :test do
   gem 'byebug'
   gem 'thin'

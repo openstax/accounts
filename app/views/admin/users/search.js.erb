@@ -11,7 +11,10 @@
       widths: ['20%', '20%', '20%', '20%', '20%'],
       data_procs:
         [
-          Proc.new { |user| user.username },
+          Proc.new do |user|
+            security_log_params = { query: "user:\"#{user.username}\"" }
+            link_to user.username, admin_security_log_path(search: security_log_params)
+          end,
           Proc.new { |user| user.first_name || '---' },
           Proc.new { |user| user.last_name || '---' },
           Proc.new { |user|
@@ -32,9 +35,7 @@
             edit_link = link_to 'Edit',
                                 edit_admin_user_path(user),
                                 target: '_blank'
-            search_params = { query: "user:\"#{user.username}\"" }
-            security_log_link = link_to 'Log', admin_security_log_path(search: search_params)
-            "#{sign_in_link} | #{edit_link} | #{security_log_link}".html_safe
+            "#{sign_in_link} | #{edit_link}".html_safe
           }
         ]
     }
