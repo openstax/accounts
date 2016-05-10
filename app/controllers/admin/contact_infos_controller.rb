@@ -7,6 +7,7 @@ module Admin
       if result.errors.any?
         return render text: '(Unable to verify)'
       else
+        security_log :contact_info_verified_by_admin, contact_info_id: params[:id]
         return render text: '(Verified)'
       end
     end

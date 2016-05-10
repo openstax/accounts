@@ -119,6 +119,8 @@ class Api::V1::UsersController < Api::V1::ApiController
   EOS
   def update
     raise SecurityTransgression unless current_human_user
+    security_log :user_updated, user_params: JSON.parse(request.body.read)
+    request.body.rewind
     standard_update(User.find(current_human_user.id))
   end
 

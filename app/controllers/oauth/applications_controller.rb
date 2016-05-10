@@ -21,6 +21,7 @@ module Oauth
       @application.owner.add_owner(current_user)
       OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
       if @application.save
+        security_log :application_created, application_id: @application.id
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :create])
         render :show
@@ -40,6 +41,7 @@ module Oauth
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
       if @application.update_attributes(application_params(@user))
+        security_log :application_updated, application_id: @application.id
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :update])
         redirect_to action: :index
@@ -50,6 +52,7 @@ module Oauth
 
     def destroy
       OSU::AccessPolicy.require_action_allowed!(:destroy, @user, @application)
+      security_log :application_deleted, application_id: @application.id
       super
     end
 

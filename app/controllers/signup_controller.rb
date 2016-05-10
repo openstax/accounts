@@ -10,6 +10,7 @@ class SignupController < ApplicationController
     @errors ||= env['errors']
 
     if !current_user.is_anonymous? && current_user.authentications.any?{|auth| auth.provider == 'identity'}
+      security_log :sign_up_failed
       redirect_to root_path, alert: "You already have a username and password on your account!"
     else
       store_fallback
@@ -20,14 +21,15 @@ class SignupController < ApplicationController
     if request.post?
       handle_with(SignupSocial,
                   contracts_required: !contracts_not_required,
-                  success: lambda {
+                  success: lambda do
                     set_last_signin_provider(current_user.authentications.first.provider)
+                    security_log :sign_up_successful
                     redirect_back
-                  },
-                  failure: lambda {
-                    errors = @handler_result.errors.any?
-                    render :social, status: errors ? 400 : 200
-                  })
+                  end,
+                  failure: lambda do
+                    security_log :sign_up_failed
+                    render :social, status: 400
+                  end)
     end
   end
 
