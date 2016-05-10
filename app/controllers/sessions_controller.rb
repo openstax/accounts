@@ -62,7 +62,9 @@ class SessionsController < ApplicationController
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to signup_social_path
         when :authentication_added
-          security_log :authentication_created, authentication_id: authentication.id
+          security_log :authentication_created, authentication_id: authentication.id,
+                                                authentication_provider: authentication.provider,
+                                                authentication_uid: authentication.uid
           redirect_to profile_path, notice: "Your new sign in option has been added!"
         when :authentication_taken
           redirect_to profile_path, alert: "That sign in option is already used by someone " \

@@ -13,6 +13,7 @@ class CreateSecurityLogs < ActiveRecord::Migration
     add_index :security_logs, [:user_id,        :created_at]
     add_index :security_logs, [:application_id, :created_at]
     add_index :security_logs, [:remote_ip,      :created_at]
-    add_index :security_logs, [:created_at,     :event_type]
+    add_index :security_logs, [:event_type,     :created_at]
+    add_index :security_logs, :created_at
   end
 end

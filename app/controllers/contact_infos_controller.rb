@@ -14,7 +14,9 @@ class ContactInfosController < ApplicationController
     handle_with(ContactInfosCreate,
                 success: lambda do
                   contact_info = @handler_result.outputs.contact_info
-                  security_log :contact_info_created, contact_info_id: contact_info.id
+                  security_log :contact_info_created, contact_info_id: contact_info.id,
+                                                      contact_info_type: contact_info.type,
+                                                      contact_info_value: contact_info.value
                   render json: {
                     contact_info: {
                       id: contact_info.id,
@@ -33,7 +35,9 @@ class ContactInfosController < ApplicationController
 
   def destroy
     OSU::AccessPolicy.require_action_allowed!(:destroy, current_user, @contact_info)
-    security_log :contact_info_deleted, contact_info_id: params[:id]
+    security_log :contact_info_deleted, contact_info_id: params[:id],
+                                        contact_info_type: @contact_info.type,
+                                        contact_info_value: @contact_info.value
     @contact_info.destroy
     head :ok
   end
@@ -41,6 +45,8 @@ class ContactInfosController < ApplicationController
   def set_searchable
     OSU::AccessPolicy.require_action_allowed!(:set_searchable, current_user, @contact_info)
     security_log :contact_info_updated, contact_info_id: params[:id],
+                                        contact_info_type: @contact_info.type,
+                                        contact_info_value: @contact_info.value,
                                         contact_info_is_searchable: params[:is_searchable]
     @contact_info.update_attribute(:is_searchable, params[:is_searchable])
 
@@ -51,28 +57,37 @@ class ContactInfosController < ApplicationController
     handle_with(ContactInfosResendConfirmation,
                 complete: lambda do
                   contact_info = @handler_result.outputs[:contact_info]
-                  security_log :contact_info_confirmation_resent, contact_info_id: contact_info.id
 
-                  msg = contact_info.verified ?
-                        'Your email address is already verified' :
-                        "A verification message has been sent to \"#{contact_info.value}\""
+                  if contact_info.verified
+                    msg = 'Your email address is already verified'
+                  else
+                    msg = "A verification message has been sent to \"#{contact_info.value}\""
+                    security_log :contact_info_confirmation_resent,
+                                 contact_info_id: contact_info.id,
+                                 contact_info_type: contact_info.type,
+                                 contact_info_value: contact_info.value
+                  end
 
-                      render json: {message: msg, is_verified: contact_info.verified}, status: :ok
+                  render json: {message: msg, is_verified: contact_info.verified}, status: :ok
                 end)
   end
 
   def confirm_unclaimed
     handle_with(ConfirmUnclaimedAccount,
                 complete: lambda do
+                  contact_info = @handler_result.outputs.contact_info
+
                   if @handler_result.errors.any?
-                    event_type = :contact_info_confirmation_failed
+                    contact_info_event_type = :contact_info_confirmation_by_code_failed
                     status = 400
                   else
-                    event_type = :contact_info_confirmed
+                    contact_info_event_type = :contact_info_confirmed_by_code
                     status = 200
+                    security_log :user_claimed, user_id: contact_info.user.id
                   end
-                  security_log event_type,
-                               contact_info_id: @handler_result.outputs.contact_info.try(:id)
+                  security_log contact_info_event_type, contact_info_id: contact_info.try(:id),
+                                                        contact_info_type: contact_info.try(:type),
+                                                        contact_info_value: contact_info.try(:value)
                   render :confirm_unclaimed, status: status
                 end)
   end
@@ -80,15 +95,19 @@ class ContactInfosController < ApplicationController
   def confirm
     handle_with(ContactInfosConfirm,
                 complete: lambda do
+                  contact_info = @handler_result.outputs.contact_info
+
                   if @handler_result.errors.any?
-                    event_type = :contact_info_confirmation_failed
+                    event_type = :contact_info_confirmation_by_code_failed
                     status = 400
                   else
-                    event_type = :contact_info_confirmed
+                    event_type = :contact_info_confirmed_by_code
                     status = 200
                   end
-                  security_log event_type,
-                               contact_info_id: @handler_result.outputs.contact_info.try(:id)
+
+                  security_log event_type, contact_info_id: contact_info.try(:id),
+                                           contact_info_type: contact_info.try(:type),
+                                           contact_info_value: contact_info.try(:value)
                   render :confirm, status: status
                 end)
   end

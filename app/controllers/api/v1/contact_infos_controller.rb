@@ -28,7 +28,9 @@ class Api::V1::ContactInfosController < Api::V1::ApiController
     if @contact_info.confirmed?
       render_api_errors(:already_confirmed)
     else
-      security_log :contact_info_confirmation_resent, contact_info_id: params[:id]
+      security_log :contact_info_confirmation_resent, contact_info_id: params[:id],
+                                                      contact_info_type: @contact_info.type,
+                                                      contact_info_value: @contact_info.value
       SendContactInfoConfirmation.call(@contact_info)
       head :no_content
     end
@@ -62,10 +64,15 @@ class Api::V1::ContactInfosController < Api::V1::ApiController
       outputs = ConfirmByPin.call(contact_info: @contact_info, pin: payload.pin)
 
       if outputs.errors.none?
-        security_log :contact_info_confirmed, contact_info_id: params[:id]
+        security_log :contact_info_confirmed_by_pin, contact_info_id: params[:id],
+                                                     contact_info_type: @contact_info.type,
+                                                     contact_info_value: @contact_info.value
         head :no_content
       else
-        security_log :contact_info_confirmation_failed, contact_info_id: params[:id]
+        security_log :contact_info_confirmation_by_pin_failed,
+                     contact_info_id: params[:id],
+                     contact_info_type: @contact_info.type,
+                     contact_info_value: @contact_info.value
         render_api_errors(outputs.errors)
       end
     end

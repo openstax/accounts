@@ -9,11 +9,18 @@ module Admin
     end
 
     def update
-      security_log :user_updated_by_admin, user_id: params[:id],
-                                           user_params: request.filtered_parameters['user']
+      was_administrator = @user.is_administrator
 
       respond_to do |format|
         if change_user_password && add_email_to_user && update_user
+          security_log :user_updated_by_admin, user_id: params[:id], username: @user.username,
+                                               user_params: request.filtered_parameters['user']
+
+          security_log :admin_created, user_id: params[:id], username: @user.username \
+            if @user.is_administrator && !was_administrator
+          security_log :admin_deleted, user_id: params[:id], username: @user.username \
+            if !@user.is_administrator && was_administrator
+
           format.html { redirect_to edit_admin_user_path(@user),
                         notice: 'User profile was successfully updated.' }
         else
@@ -23,20 +30,20 @@ module Admin
     end
 
     def destroy
-      security_log :user_deleted_by_admin, user_id: params[:id]
+      security_log :user_deleted_by_admin, user_id: params[:id], username: @user.username
       @user.destroy
       redirect_to users_url
     end
 
     def become
-      security_log :admin_became_user, user_id: params[:id]
+      security_log :admin_became_user, user_id: params[:id], username: @user.username
       sign_in!(@user)
       redirect_to request.referrer
     end
 
     def make_admin
       if @user.update_attribute(:is_administrator, true)
-        security_log :admin_created, user_id: params[:id]
+        security_log :admin_created, user_id: params[:id], username: @user.username
         redirect_to request.referrer, notice: 'User successfully updated.'
       else
         redirect_to request.referrer, alert: 'Unable to update user.'

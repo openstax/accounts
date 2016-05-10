@@ -51,8 +51,11 @@ class IdentitiesController < ApplicationController
   def destroy
     handle_with(AuthenticationDelete,
                 success: lambda do
+                  authentication = @handler_result.outputs.authentication
                   security_log :authentication_deleted,
-                               authentication_id: @handler_result.outputs.authentication.id
+                               authentication_id: authentication.id,
+                               authentication_provider: authentication.provider,
+                               authentication_uid: authentication.uid
                   render status: :ok, text: "#{params[:provider].titleize} removed"
                 end,
                 failure: lambda do

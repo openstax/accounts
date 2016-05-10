@@ -244,7 +244,8 @@ ActiveRecord::Schema.define(:version => 20160509181733) do
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
     t.index ["application_id", "created_at"], :name => "index_security_logs_on_application_id_and_created_at"
-    t.index ["created_at", "event_type"], :name => "index_security_logs_on_created_at_and_event_type"
+    t.index ["created_at"], :name => "index_security_logs_on_created_at"
+    t.index ["event_type", "created_at"], :name => "index_security_logs_on_event_type_and_created_at"
     t.index ["remote_ip", "created_at"], :name => "index_security_logs_on_remote_ip_and_created_at"
     t.index ["user_id", "created_at"], :name => "index_security_logs_on_user_id_and_created_at"
   end
