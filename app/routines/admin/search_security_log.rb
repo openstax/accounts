@@ -3,10 +3,16 @@
 # Caller provides a query and some options.  The query follows the rules of
 # https://github.com/bruce/keyword_search , e.g.:
 #
-#   "user:jps,richb" --> returns the security log for the "jps" and "richb" users
-#   "application:Tutor" --> returns the security log for the Tutor application
+#   id:42                --> returns the security log with id 42
+#   user:jps,richb       --> returns the security log for requests by the "jps" and "richb" users
+#   app:"OpenStax Tutor" --> returns the security log for requests by the OpenStax Tutor application
+#   ip:127.0.0.1         --> returns the security log for requests from 127.0.0.1
+#   type:admin           --> returns security logs related to admin privileges
+#   time:"this week"     --> returns security logs for this week
+#   admin                --> returns admin security logs, plus security logs for anyone named admin
 #
-# Query terms can be combined, e.g. "user:jp application:tutor"
+# Query terms can be combined, e.g.: user:jps app:tutor
+# Spaces combine terms with AND; Commas combine terms with OR (same prefix only)
 #
 # There are currently two options to control query pagination:
 #
@@ -16,7 +22,7 @@
 # There is also an option to control the ordering:
 #
 #   :order_by -- comma-separated list of fields to sort by, with an optional
-#                space-separated sort direction (default: "username ASC")
+#                space-separated sort direction (default: "created_at DESC")
 #
 # The `items` output is an ActiveRecord relation
 

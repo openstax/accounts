@@ -8,11 +8,22 @@
                  method: :get,
                  html: {class: 'form-inline'} do |f| %>
 
-  Search for
+  <div class="row">
+    <span class="col-sm-1"><%= f.label :query, 'Search for' %></span>
 
-  <%= f.search_field :query, style: 'width:500px;', class: 'form-control' %>
+    <span class="col-sm-10">
+      <%= f.search_field :query, style: 'width: 100%', class: 'form-control' %>
+    </span>
 
-  <%= f.submit 'Search', class: 'btn btn-primary' %>
+    <span class="col-sm-1"><%= f.submit 'Search', class: 'btn btn-primary' %></span>
+  </div>
+  <div class="row">
+    <span class="col-sm-1"></span>
+
+    <span class="col-sm-10">
+      <small class="text-muted">Example: user:anon,admin time:"this week"</small>
+    </span>
+  </div>
 
 <% end %>
 
