@@ -71,8 +71,13 @@ describe Admin::SearchSecurityLog, type: :routine do
     expect(items).to eq [type_sl]
   end
 
+  it "matches based on time" do
+    items = described_class.call(query: "time:\"last hour\"").outputs.items.to_a
+    expect(items).to eq [type_sl, ip_sl, app_and_user_sl, app_sl, user_sl, anon_sl]
+  end
+
   it "matches any fields when no prefix given" do
-    items = described_class.call(query: "\"168.0.1\" \"admin\"").outputs.items.to_a
+    items = described_class.call(query: "\"168.0.1,admin\"").outputs.items.to_a
     expect(items).to eq [type_sl, ip_sl]
   end
 

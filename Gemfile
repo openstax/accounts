@@ -65,6 +65,8 @@ gem 'premailer-rails'
 
 gem 'will_paginate'
 
+gem 'chronic'
+
 group :development, :test do
   gem 'byebug'
   gem 'thin'

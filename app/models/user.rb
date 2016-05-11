@@ -58,7 +58,7 @@ class User < ActiveRecord::Base
 
   before_save :add_unread_update
 
-  # Can remove this method definition when we upgrade to Rails 4
+  # Remove this method definition when we upgrade to Rails 4
   def self.none
     where('0=1')
   end
