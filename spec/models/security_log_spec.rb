@@ -1,10 +1,27 @@
 require 'rails_helper'
 
 RSpec.describe SecurityLog, type: :model do
+  subject(:security_log) { FactoryGirl.create :security_log }
+
   it { is_expected.to belong_to :user }
   it { is_expected.to belong_to :application }
 
   it { is_expected.to validate_presence_of :remote_ip }
   it { is_expected.to validate_presence_of :event_type }
   it { is_expected.to validate_presence_of :event_data }
+
+  it 'cannot be updated' do
+    expect{security_log.save}.to raise_error ActiveRecord::ReadOnlyRecord
+    expect{security_log.save!}.to raise_error ActiveRecord::ReadOnlyRecord
+    expect{security_log.update_attribute :event_type, :admin_created}.to(
+      raise_error ActiveRecord::ReadOnlyRecord
+    )
+    expect{security_log.update_attributes event_type: :admin_created}.to(
+      raise_error ActiveRecord::ReadOnlyRecord
+    )
+  end
+
+  it 'cannot be destroyed' do
+    expect{security_log.destroy}.to raise_error ActiveRecord::ReadOnlyRecord
+  end
 end

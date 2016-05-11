@@ -242,7 +242,6 @@ ActiveRecord::Schema.define(:version => 20160509181733) do
     t.integer  "event_type",                       :null => false
     t.text     "event_data",     :default => "{}", :null => false
     t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
     t.index ["application_id", "created_at"], :name => "index_security_logs_on_application_id_and_created_at"
     t.index ["created_at"], :name => "index_security_logs_on_created_at"
     t.index ["event_type", "created_at"], :name => "index_security_logs_on_event_type_and_created_at"

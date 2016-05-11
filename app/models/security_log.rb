@@ -19,9 +19,16 @@ class SecurityLog < ActiveRecord::Base
 
   validates :remote_ip, :event_type, :event_data, presence: true
 
+  before_destroy { raise ActiveRecord::ReadOnlyRecord }
+
   attr_accessible :user, :application, :remote_ip, :event_type, :event_data
 
   scope :preloaded, ->{ preload(:user, :application) }
 
   default_scope { order(arel_table[:created_at].desc) }
+
+  # http://stackoverflow.com/a/3342915
+  def readonly?
+    !new_record?
+  end
 end
