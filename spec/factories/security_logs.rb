@@ -4,6 +4,6 @@ FactoryGirl.define do
     application nil
     remote_ip '127.0.0.1'
     event_type :unknown
-    event_data { {} }
+    event_data '{}'
   end
 end

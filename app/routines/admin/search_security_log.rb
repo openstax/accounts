@@ -101,11 +101,11 @@ module Admin
         with.keyword :ip do |ips|
           sanitized_ips = to_string_array(ips, prepend_wildcard: true, append_wildcard: true)
 
-          @items = @items.where(remote_ip: sanitized_ips)
+          @items = @items.where{remote_ip.like_any sanitized_ips}
         end
 
         with.keyword :type do |types|
-          event_type_strings = to_string_array(event_types)
+          event_type_strings = to_string_array(types)
           sanitized_event_types = Admin::SearchSecurityLog.sanitize_event_types(event_type_strings)
 
           @items = @items.where(event_type: sanitized_event_types)
