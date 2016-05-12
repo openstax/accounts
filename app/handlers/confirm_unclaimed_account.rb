@@ -21,6 +21,7 @@ class ConfirmUnclaimedAccount
       run(ActivateUnclaimedUser, contact_info.user)
     end
     run(MarkContactInfoVerified, contact_info)
+    outputs[:contact_info] = contact_info
   end
 
 end

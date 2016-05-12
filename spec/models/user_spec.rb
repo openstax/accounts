@@ -2,6 +2,8 @@ require 'rails_helper'
 
 describe User do
 
+  it { is_expected.to have_many :security_logs }
+
   it 'requires at least a first or last name if a title is set' do
     user = User.new(title: "Hi")
     expect(user).not_to be_valid

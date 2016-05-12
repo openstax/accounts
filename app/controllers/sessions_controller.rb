@@ -37,17 +37,34 @@ class SessionsController < ApplicationController
     # and we don't want to send users back there
     store_fallback(url: @authorization_url) unless @authorization_url.nil?
 
-    handle_with(SessionsCallback, user_state: self,
-      complete: lambda {
+    handle_with(
+      SessionsCallback,
+      user_state: self,
+      complete: lambda do
+        authentication = @handler_result.outputs[:authentication]
+
         case @handler_result.outputs[:status]
-        when :returning_user, :new_password_user, :transferred_authentication
-          set_last_signin_provider(@handler_result.outputs[:authentication].provider)
+        when :returning_user
+          set_last_signin_provider(authentication.provider)
+          security_log :sign_in_successful, authentication_id: authentication.id
+          redirect_to action: :returning_user
+        when :new_password_user
+          set_last_signin_provider(authentication.provider)
+          security_log :sign_up_successful, authentication_id: authentication.id
+          redirect_to action: :returning_user
+        when :transferred_authentication
+          set_last_signin_provider(authentication.provider)
+          security_log :authentication_transferred, authentication_id: authentication.id
           redirect_to action: :returning_user
         when :no_action
           redirect_to action: :returning_user
         when :new_social_user
+          security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to signup_social_path
         when :authentication_added
+          security_log :authentication_created, authentication_id: authentication.id,
+                                                authentication_provider: authentication.provider,
+                                                authentication_uid: authentication.uid
           redirect_to profile_path, notice: "Your new sign in option has been added!"
         when :authentication_taken
           redirect_to profile_path, alert: "That sign in option is already used by someone " \
@@ -56,7 +73,8 @@ class SessionsController < ApplicationController
         else
           raise IllegalState
         end
-      })
+      end
+    )
   end
 
   # This is an official action instead of just doing `redirect_back` in callback
@@ -66,6 +84,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    security_log :sign_out
     if params[:parent]
       url = iframe_after_logout_url(parent: params[:parent])
     end
@@ -94,19 +113,21 @@ class SessionsController < ApplicationController
   def help
     if request.post?
       handle_with(SessionsHelp,
-                  success: lambda {
+                  success: lambda do
+                    security_log :help_requested
                     redirect_to root_path,
                                 notice: 'Instructions for accessing your OpenStax account have been emailed to you.'
-                  },
-                  failure: lambda {
-                    errors = @handler_result.errors.any?
-                    render :help, status: errors ? 400 : 200
-                  })
+                  end,
+                  failure: lambda do
+                    security_log :help_request_failed, username_or_email: params[:username_or_email]
+                    render :help, status: 400
+                  end)
     end
   end
 
   # Omniauth failure endpoint
   def failure
+    security_log :sign_in_failed, reason: params[:message]
     flash.now[:alert] =
       case params[:message]
       when 'cannot_find_user'

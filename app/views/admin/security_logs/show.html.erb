@@ -1,0 +1,34 @@
+<%# Copyright 2016 Rice University. Licensed under the Affero General Public
+    License version 3 or later.  See the COPYRIGHT file for details. %>
+
+<h4>Security Log</h4>
+
+<%= lev_form_for :search,
+                 url: admin_security_log_path,
+                 method: :get,
+                 html: {class: 'form-inline'} do |f| %>
+
+  <div class="row">
+    <span class="col-sm-1"><%= f.label :query, 'Search for' %></span>
+
+    <span class="col-sm-10">
+      <%= f.search_field :query, style: 'width: 100%', class: 'form-control' %>
+    </span>
+
+    <span class="col-sm-1"><%= f.submit 'Search', class: 'btn btn-primary' %></span>
+  </div>
+  <div class="row">
+    <span class="col-sm-1"></span>
+
+    <span class="col-sm-10">
+      <small class="text-muted">Example: user:anon,admin time:"this week"</small>
+    </span>
+  </div>
+
+<% end %>
+
+<%= render partial: "shared/security_log", locals: { security_log: @security_log } %>
+
+<div class="digg_pagination">
+  <%= will_paginate @security_log %>
+</div>

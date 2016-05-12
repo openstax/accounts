@@ -23,6 +23,25 @@ ActionController::Base.class_exec do
 
   protected
 
+  def security_log(event_type, event_data = {})
+    if respond_to?(:current_api_user)
+      api_user = current_api_user
+      user = api_user.human_user
+      application = api_user.application
+    else
+      user = current_user
+      application = nil
+    end
+
+    SecurityLog.create!(
+      user: user.try(:is_anonymous?) ? nil : user,
+      application: application,
+      remote_ip: request.remote_ip,
+      event_type: event_type,
+      event_data: event_data.to_json
+    )
+  end
+
   def disable_fine_print
     contracts_not_required(client_id: params[:client_id] || session[:client_id]) ||
     current_user.is_anonymous?

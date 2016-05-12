@@ -90,7 +90,7 @@ describe ArchiveTempUsers do
     expect(result.collect { |a| a['username'] }.sort!).to eq(users.collect(&:username).sort!)
 
     email_addresses = result.select { |a| a['id'] == user_w_no_auths.id }.first['contact_infos']
-    email_addresses.sort { |a, b| a['value'] <=> b['value'] }
+    email_addresses.sort! { |a, b| a['value'] <=> b['value'] }
     expect(email_addresses.length).to eq(2)
     expect(email_addresses.first['value']).to eq('temp@example.org')
     expect(email_addresses.first['verified']).to be true

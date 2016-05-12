@@ -29,8 +29,7 @@ class TermsController < ApplicationController
   end
 
   def agree
-    handle_with(TermsAgree,
-                complete: lambda { fine_print_return })
+    handle_with(TermsAgree, complete: lambda { fine_print_return })
   end
 
   protected

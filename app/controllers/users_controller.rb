@@ -11,14 +11,14 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if current_user.update_attributes(user_params)
+        security_log :user_updated, user_params: user_params
+
         format.json {
-          render json: { full_name: current_user.full_name },
-                 status: :ok
+          render json: { full_name: current_user.full_name }, status: :ok
         }
       else
         format.json {
-          render json: current_user.errors.full_messages.first,
-                 status: :unprocessable_entity
+          render json: current_user.errors.full_messages.first, status: :unprocessable_entity
         }
       end
     end
@@ -27,9 +27,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    up = params[:value].is_a?(Hash) ?
-           params[:value] :
-           {params[:name] => params[:value]}
+    params[:value].is_a?(Hash) ? params[:value] : {params[:name] => params[:value]}
   end
 
 end

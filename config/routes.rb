@@ -78,7 +78,7 @@ Accounts::Application.routes.draw do
 
   apipie
 
-  api :v1, :default => true do
+  api :v1, default: true do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update] do
@@ -140,10 +140,12 @@ Accounts::Application.routes.draw do
     put 'cron',                         to: 'base#cron'
     get 'raise_exception/:type',        to: 'base#raise_exception', as: 'raise_exception'
 
-    resources :users, only: [:index, :show, :update, :edit] do
+    resources :users, only: [:index, :update, :edit] do
       post 'become', on: :member
       post 'make_admin', on: :member
     end
+
+    resource :security_log, only: [:show]
 
     post :verify_contact_info, path: '/contact_infos/:id/verify',
          controller: :contact_infos, action: :verify

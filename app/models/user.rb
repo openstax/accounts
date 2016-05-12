@@ -29,6 +29,8 @@ class User < ActiveRecord::Base
 
   has_many :oauth_applications, through: :member_groups
 
+  has_many :security_logs
+
   before_validation :strip_names
 
   validates :username, presence: true,
@@ -40,7 +42,7 @@ class User < ActiveRecord::Base
                        if: :username_changed?
 
   validates :state, inclusion: { in: VALID_STATES,
-                                message: "must be one of #{VALID_STATES.join(',')}" }
+                                 message: "must be one of #{VALID_STATES.join(',')}" }
 
   validate :name_part_required_for_suffix_or_title
 
@@ -56,7 +58,7 @@ class User < ActiveRecord::Base
 
   before_save :add_unread_update
 
-  # Can remove this method definition when we upgrade to Rails 4
+  # Remove this method definition when we upgrade to Rails 4
   def self.none
     where('0=1')
   end

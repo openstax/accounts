@@ -1,7 +1,7 @@
 
 
 <%= unless_errors alerts_html_id: 'dialog-local-alerts' do %>
-  <% 
+  <%
   users = @handler_result.outputs[:items]
 
   contents = osu.action_list(
@@ -11,7 +11,10 @@
       widths: ['20%', '20%', '20%', '20%', '20%'],
       data_procs:
         [
-          Proc.new { |user| user.username },
+          Proc.new do |user|
+            security_log_params = { query: "user:\"#{user.username}\"" }
+            link_to user.username, admin_security_log_path(search: security_log_params)
+          end,
           Proc.new { |user| user.first_name || '---' },
           Proc.new { |user| user.last_name || '---' },
           Proc.new { |user|
@@ -38,8 +41,8 @@
     }
   ) %>
 
-  
-  $("#search-results-list").html("<%= j(contents) %>");  
+
+  $("#search-results-list").html("<%= j(contents) %>");
   $('#search-results-list').prepend("<%= j(render 'admin/users/search_pagination') %>");
   // reload the users table after clicking on the make admin link
   $('.make-admin').bind('ajax:complete', function() { $('.tab-pane.active form').submit(); });
