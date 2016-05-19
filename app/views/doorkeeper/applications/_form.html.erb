@@ -1,5 +1,8 @@
+<% form_url = @application.persisted? ? oauth_application_path(@application) :
+                                        oauth_applications_path %>
+
 <%= form_for(@application,
-    as: :application, url: :oauth_applications,
+    as: :application, url: form_url,
     html: {class: 'form-horizontal', role: 'form'}) do |f| %>
 
   <% if @application.errors.any? %>
