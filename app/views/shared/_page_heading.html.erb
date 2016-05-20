@@ -3,7 +3,7 @@
 
 <% sub_heading_text ||= "" %>
 
-<div id="page-heading">
+<div id="page-heading" class="row <%= 'text-center centered' if center %>">
   <%= heading_text %>
   <% if !sub_heading_text.blank? %>
     <div id="page-sub-heading"><%= sub_heading_text %></div>
