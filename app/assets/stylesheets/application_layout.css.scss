@@ -25,6 +25,12 @@ body, p, ol, ul, td, a {
   font-style: normal;
   color: $os_gray;
   float: left;
+  width: 100%;
+  margin-left: 0px;
+
+  .centered {
+    margin: 0 auto;
+  }
 }
 
 #page-sub-heading {

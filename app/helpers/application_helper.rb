@@ -48,6 +48,7 @@ module ApplicationHelper
     options[:title_text] ||= heading_text + (options[:sub_heading_text].blank? ?
                                              "" :
                                              " [#{options[:sub_heading_text]}]")
+    options[:center] ||= false
 
     @page_title = options[:title_text]
     @page_title.sub!(SITE_NAME,"").strip! if @page_title.include?(SITE_NAME) && options[:take_out_site_name]
@@ -57,7 +58,8 @@ module ApplicationHelper
     content_for :page_heading do
       render(:partial => 'shared/page_heading',
              :locals => {:heading_text => heading_text,
-                         :sub_heading_text => options[:sub_heading_text]})
+                         :sub_heading_text => options[:sub_heading_text],
+                         :center => options[:center]})
     end
 
   end
