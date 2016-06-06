@@ -120,10 +120,10 @@ class SessionsCallback
     #   true for FB (their API only returns verified emails)
     #   true for Twitter (they don't return any emails)
 
-    @users_matching_oauth_data ||= EmailAddress.where(:value => @data.email)
+    @users_matching_oauth_data ||= EmailAddress.where(value: @data.email)
                                                .verified
                                                .with_users
-                                               .collect{|e| e.user}
+                                               .map(&:user)
   end
 
 end
