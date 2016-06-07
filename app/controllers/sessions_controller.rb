@@ -71,7 +71,7 @@ class SessionsController < ApplicationController
                                            "else.  If that someone is you, remove it from " \
                                            "your other account and try again."
         else
-          raise IllegalState
+          raise IllegalState, "SessionsCallback errors: #{@handler_result.errors.join('; ')}; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect}"
         end
       end
     )
