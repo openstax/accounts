@@ -72,7 +72,7 @@ describe Admin::SearchSecurityLog, type: :routine do
   end
 
   it "matches based on time" do
-    items = described_class.call(query: "time:\"last hour\"").outputs.items.to_a
+    items = described_class.call(query: "time:\"today\"").outputs.items.to_a
     expect(items).to eq [type_sl, ip_sl, app_and_user_sl, app_sl, user_sl, anon_sl]
   end
 
