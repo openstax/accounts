@@ -3,14 +3,14 @@ require 'rails_helper'
 describe Admin::SearchSecurityLog, type: :routine do
 
   let!(:user)            { FactoryGirl.create :user, first_name: 'Test', last_name: 'User' }
-  let!(:app)             { FactoryGirl.create :doorkeeper_application }
+  let!(:app)             { FactoryGirl.create :doorkeeper_application, name: 'Some Test App' }
 
   let!(:anon_sl)         { FactoryGirl.create :security_log, user: nil }
   let!(:user_sl)         { FactoryGirl.create :security_log, user: user }
   let!(:app_sl)          { FactoryGirl.create :security_log, user: nil, application: app }
   let!(:app_and_user_sl) { FactoryGirl.create :security_log, user: user, application: app }
 
-  let!(:another_app)     { FactoryGirl.create :doorkeeper_application }
+  let!(:another_app)     { FactoryGirl.create :doorkeeper_application, name: 'Another Test App' }
   let!(:ip_sl)           { FactoryGirl.create :security_log, application: another_app,
                                                              remote_ip: '192.168.0.1' }
   let!(:type_sl)         { FactoryGirl.create :security_log, application: another_app,

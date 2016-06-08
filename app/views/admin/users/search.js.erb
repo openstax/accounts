@@ -7,27 +7,18 @@
   contents = osu.action_list(
     records: users,
     list: {
-      headings: ['Username', 'First Name', 'Last Name', 'Is Admin?', 'Actions'],
-      widths: ['20%', '20%', '20%', '20%', '20%'],
+      headings: ['ID', 'Username', 'First Name', 'Last Name', 'Is Admin?', 'Actions'],
+      widths: ['10%', '20%', '20%', '20%', '10%', '20%'],
       data_procs:
         [
+          Proc.new { |user| user.id.to_s },
           Proc.new do |user|
             security_log_params = { query: "user:\"#{user.username}\"" }
             link_to user.username, admin_security_log_path(search: security_log_params)
           end,
           Proc.new { |user| user.first_name || '---' },
           Proc.new { |user| user.last_name || '---' },
-          Proc.new { |user|
-            if user.is_administrator
-              'Yes'
-            else
-              link_to 'Make them admin',
-                      make_admin_admin_user_path(user),
-                      method: :post,
-                      remote: true,
-                      class: 'make-admin'
-            end
-          },
+          Proc.new { |user| user.is_administrator ? 'Yes' : 'No' },
           Proc.new { |user|
             sign_in_link = link_to 'Sign in as',
                                    become_admin_user_path(user),
