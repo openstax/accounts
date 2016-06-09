@@ -56,9 +56,9 @@ module Admin
       expect(outcome).to eq [user_1]
     end
 
-    it "should not match based on an incomplete email address" do
+    it "should match based on an incomplete email address with a wildcard" do
       email = user_1.contact_infos.email_addresses.order(:value).first.value.split('@').first
-      outcome = SearchUsers.call("email:#{email}").outputs.items.to_a
+      outcome = SearchUsers.call("email:#{email}%").outputs.items.to_a
       expect(outcome).to eq []
     end
 
