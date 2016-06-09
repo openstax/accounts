@@ -1,7 +1,7 @@
 module Admin
   class UsersController < BaseController
 
-    before_filter :get_user, only: [:edit, :update, :destroy, :become, :make_admin]
+    before_filter :get_user, only: [:edit, :update, :destroy, :become]
 
     def index
       security_log :users_searched_by_admin, search: params[:search]
@@ -41,16 +41,7 @@ module Admin
       redirect_to request.referrer
     end
 
-    def make_admin
-      if @user.update_attribute(:is_administrator, true)
-        security_log :admin_created, user_id: params[:id], username: @user.username
-        redirect_to request.referrer, notice: 'User successfully updated.'
-      else
-        redirect_to request.referrer, alert: 'Unable to update user.'
-      end
-    end
-
-  protected
+    protected
 
     def get_user
       @user = User.find(params[:id])

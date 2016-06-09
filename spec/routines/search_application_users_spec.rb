@@ -137,8 +137,7 @@ describe SearchApplicationUsers do
 
     before(:each) do
       [bob_brown, bob_jones, tim_jones].each do |user|
-        FactoryGirl.create :application_user, application: application,
-                                              user: user
+        FactoryGirl.create :application_user, application: application, user: user
       end
     end
 

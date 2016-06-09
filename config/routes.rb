@@ -142,7 +142,6 @@ Accounts::Application.routes.draw do
 
     resources :users, only: [:index, :update, :edit] do
       post 'become', on: :member
-      post 'make_admin', on: :member
     end
 
     resource :security_log, only: [:show]

@@ -22,12 +22,9 @@ module Admin
                                                 username: 'bigbear' }
 
     before(:each) do
-      MarkContactInfoVerified.call(user_1.contact_infos.email_addresses.order(:value).first)
-      MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.order(:value).first)
       user_4.contact_infos.email_addresses.order(:value).first.update_attribute(
         :value, 'jstoly292929@hotmail.com'
       )
-      user_1.reload
     end
 
     it "should match based on username" do
@@ -35,9 +32,9 @@ module Admin
       expect(outcome).to eq [user_1]
     end
 
-    it "should ignore leading wildcards on username searches" do
-      outcome = SearchUsers.call('username:%rav').outputs.items.to_a
-      expect(outcome).to eq []
+    it "should prepend leading wildcards on username searches" do
+      outcome = SearchUsers.call('username:rav').outputs.items.to_a
+      expect(outcome).to eq [user_1]
     end
 
     it "should match based on one first name" do
@@ -50,16 +47,10 @@ module Admin
       expect(outcome).to eq [user_2]
     end
 
-    it "should match based on an exact email address" do
-      email = user_1.contact_infos.email_addresses.order(:value).first.value
-      outcome = SearchUsers.call("email:#{email}").outputs.items.to_a
-      expect(outcome).to eq [user_1]
-    end
-
-    it "should not match based on an incomplete email address" do
+    it "should match based on a partial email address" do
       email = user_1.contact_infos.email_addresses.order(:value).first.value.split('@').first
       outcome = SearchUsers.call("email:#{email}").outputs.items.to_a
-      expect(outcome).to eq []
+      expect(outcome).to eq [user_1]
     end
 
     it "should return all results if the query is empty" do
@@ -80,7 +71,7 @@ module Admin
     end
 
     it "shouldn't allow users to add their own wildcards" do
-      outcome = SearchUsers.call("username:'%ar'").outputs.items.to_a
+      outcome = SearchUsers.call("username:'e%r'").outputs.items.to_a
       expect(outcome).to eq []
     end
 

@@ -44,59 +44,80 @@ class SearchUsers
       with.default_keyword :any
 
       with.keyword :username do |usernames|
-        users = users.where{lower(username).like_any my{prep_names(usernames)}}
+        sanitized_names = sanitize_strings(usernames, append_wildcard: true,
+                                                      prepend_wildcard: options[:admin])
+
+        users = users.where{ username.like_any sanitized_names }
       end
 
       with.keyword :first_name do |first_names|
-        users = users.where{lower(first_name).like_any my{prep_names(first_names)}}
+        sanitized_names = sanitize_strings(first_names, append_wildcard: true,
+                                                        prepend_wildcard: options[:admin])
+
+        users = users.where{ first_name.like_any sanitized_names }
       end
 
       with.keyword :last_name do |last_names|
-        users = users.where{lower(last_name).like_any my{prep_names(last_names)}}
+        sanitized_names = sanitize_strings(last_names, append_wildcard: true,
+                                                       prepend_wildcard: options[:admin])
+
+        users = users.where{ last_name.like_any sanitized_names }
       end
 
-      with.keyword :full_name do |names|
-        names = prep_names(names)
-        users = users.where{ (lower(first_name).op('||', ' ').op('||', lower(last_name)).like_any names) }
+      with.keyword :full_name do |full_names|
+        sanitized_names = sanitize_strings(full_names, append_wildcard: true,
+                                                       prepend_wildcard: options[:admin])
+
+        users = users.where{ first_name.op('||', ' ').op('||', last_name).like_any sanitized_names }
       end
 
       with.keyword :name do |names|
-        names = prep_names(names)
-        users = users.where{ (lower(first_name).op('||', ' ').op('||', lower(last_name)).like_any names) |
-                             (lower(first_name).like_any names) |
-                             (lower(last_name).like_any names) }
+        sanitized_names = sanitize_strings(names, append_wildcard: true,
+                                                  prepend_wildcard: options[:admin])
+
+        users = users.where do
+          first_name.op('||', ' ').op('||', last_name).like_any(sanitized_names) |
+                                            first_name.like_any(sanitized_names) |
+                                             last_name.like_any(sanitized_names)
+        end
       end
 
       with.keyword :id do |ids|
-        users = users.where{id.in ids}
+        users = users.where(id: ids)
       end
 
       with.keyword :email do |emails|
-        users = users.joins{contact_infos}
-                     .where(contact_infos: {type: 'EmailAddress',
+        sanitized_emails = sanitize_strings(emails, append_wildcard: options[:admin],
+                                                    prepend_wildcard: options[:admin])
+
+        users = users.joins(:contact_infos).where{contact_infos.value.like_any sanitized_emails}
+        users = users.where(contact_infos: {type: 'EmailAddress',
                                             verified: true,
-                                            is_searchable: true})
-                     .where{contact_infos.value.in emails}
+                                            is_searchable: true}) unless options[:admin]
       end
 
       # Rerun the queries above for 'any' terms (which are ones without a
       # prefix).
 
       with.keyword :any do |terms|
-        names = prep_names(terms)
+        sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin],
+                                                  prepend_wildcard: options[:admin])
+        sanitized_names = sanitize_strings(terms, append_wildcard: true,
+                                                  prepend_wildcard: options[:admin])
 
-        users = users.joins{contact_infos.outer}.where{
-                  (                     username.like_any names)           | \
-                  (            lower(first_name).like_any names)           | \
-                  (             lower(last_name).like_any names)           | \
-                  (lower(first_name)
-                     .op('||', ' ')
-                     .op('||', lower(last_name)).like_any names)           | \
-                  (                           id.in       terms)           | \
-                  ((         contact_infos.value.in       terms)           & \
-                  (           contact_infos.type.eq       'EmailAddress')  & \
-                  (       contact_infos.verified.eq       true)            & \
-                  (  contact_infos.is_searchable.eq       true))}
+        users = users.joins{contact_infos.outer}.where do
+          contact_infos_query = contact_infos.value.like_any sanitized_terms
+          contact_infos_query &= (contact_infos.type.eq('EmailAddress') &
+                                  contact_infos.verified.eq(true) &
+                                  contact_infos.is_searchable.eq(true)) unless options[:admin]
+
+                                              username.like_any(sanitized_names) |
+                                            first_name.like_any(sanitized_names) |
+                                             last_name.like_any(sanitized_names) |
+          first_name.op('||', ' ').op('||', last_name).like_any(sanitized_names) |
+                                                                    id.in(terms) |
+                                                             contact_infos_query
+        end
       end
 
     end
@@ -108,10 +129,10 @@ class SearchUsers
     # Ordering
 
     # Parse the input
-    order_bys = (options[:order_by] || 'username').split(',').collect{|ob| ob.strip.split(' ')}
+    order_bys = (options[:order_by] || 'username').split(',').map{ |ob| ob.strip.split(' ') }
 
     # Toss out bad input, provide default direction
-    order_bys = order_bys.collect do |order_by|
+    order_bys = order_bys.map do |order_by|
       field, direction = order_by
       next if !SORTABLE_FIELDS.include?(field)
       direction ||= SORT_ASCENDING
@@ -125,7 +146,7 @@ class SearchUsers
     order_bys = ['username', SORT_ASCENDING] if order_bys.empty?
 
     # Convert to query style
-    order_bys = order_bys.collect{|order_by| "#{order_by[0]} #{order_by[1]}"}
+    order_bys = order_bys.map{|order_by| "#{order_by[0]} #{order_by[1]}"}
 
     order_bys.each do |order_by|
       # postgres requires the "users." bit to make it table_name.column_name
@@ -145,14 +166,16 @@ class SearchUsers
 
     # Return no results if maximum number of results is exceeded
 
-    outputs[:items] = (outputs[:total_count] > MAX_MATCHING_USERS) ?
-                        User.none : users
+    outputs[:items] = (outputs[:total_count] > MAX_MATCHING_USERS) ? User.none : users
 
   end
 
   # Downcase, remove any wildcards and put a wildcard at the end.
-  def prep_names(names)
-    names.collect{|name| "#{name.downcase.gsub('%', '')}%"}
+  def sanitize_strings(strings, append_wildcard: false, prepend_wildcard: false)
+    sanitized_strings = strings.map{ |string| string.downcase.gsub('%', '') }
+    sanitized_strings = sanitized_strings.map{ |string| "#{string}%" } if append_wildcard
+    sanitized_strings = sanitized_strings.map{ |string| "%#{string}" } if prepend_wildcard
+    sanitized_strings
   end
 
 end
