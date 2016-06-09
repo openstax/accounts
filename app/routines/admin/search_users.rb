@@ -33,7 +33,10 @@ module Admin
     protected
 
     def exec(query, options={})
-      options = options.merge({:return_all => true})
+      options = options.merge({ return_all: true,
+                                contact_infos_criteria: { type: 'EmailAddress' },
+                                prep_emails_proc: ->(emails) { emails } })
+
       run(:search_users, query, options)
 
       per_page = options[:per_page] || 20

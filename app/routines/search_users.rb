@@ -37,6 +37,8 @@ class SearchUsers
 
   def exec(query, options={})
 
+    @options = options
+
     users = User.scoped
 
     KeywordSearch.search(query) do |with|
@@ -71,12 +73,15 @@ class SearchUsers
         users = users.where{id.in ids}
       end
 
-      with.keyword :email do |emails|
-        users = users.joins{contact_infos}
-                     .where(contact_infos: {type: 'EmailAddress',
+      options[:contact_infos_criteria] ||= {type: 'EmailAddress',
                                             verified: true,
-                                            is_searchable: true})
-                     .where{contact_infos.value.in emails}
+                                            is_searchable: true}
+
+      with.keyword :email do |emails|
+        emails = options[:prep_emails_proc].call(emails)
+        users = users.joins{contact_infos}
+                     .where(contact_infos: options[:contact_infos_criteria])
+                     .where{lower(contact_infos.value).like_any my{prep_emails(emails)}}
       end
 
       # Rerun the queries above for 'any' terms (which are ones without a
@@ -84,6 +89,7 @@ class SearchUsers
 
       with.keyword :any do |terms|
         names = prep_names(terms)
+        emails = prep_emails(terms)
 
         users = users.joins{contact_infos.outer}.where{
                   (                     username.like_any names)           | \
@@ -93,9 +99,9 @@ class SearchUsers
                      .op('||', ' ')
                      .op('||', lower(last_name)).like_any names)           | \
                   (                           id.in       terms)           | \
-                  ((         contact_infos.value.in       terms)           & \
+                  ((         contact_infos.value.in       emails)          & \
                   (           contact_infos.type.eq       'EmailAddress')  & \
-                  (       contact_infos.verified.eq       true)            & \
+                  (       contact_infos.verified.eq       true)            & \  # TODO use criteria and http://stackoverflow.com/a/14144250
                   (  contact_infos.is_searchable.eq       true))}
       end
 
@@ -153,6 +159,12 @@ class SearchUsers
   # Downcase, remove any wildcards and put a wildcard at the end.
   def prep_names(names)
     names.collect{|name| "#{name.downcase.gsub('%', '')}%"}
+  end
+
+  # By default, disallow wildcard search
+  def prep_emails(emails)
+    @options[:prep_emails_proc] ||= ->(emails) { emails.map{|email| email.gsub('%','')} }
+    @options[:prep_emails_proc].call(emails)
   end
 
 end
