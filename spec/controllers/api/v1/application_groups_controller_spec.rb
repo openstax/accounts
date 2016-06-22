@@ -1,6 +1,6 @@
-require "spec_helper"
+require 'rails_helper'
 
-describe Api::V1::ApplicationGroupsController, :type => :api, :version => :v1 do
+describe Api::V1::ApplicationGroupsController, type: :controller, api: true, version: :v1 do
 
   let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
   let!(:trusted_application)   { FactoryGirl.create :doorkeeper_application, :trusted }

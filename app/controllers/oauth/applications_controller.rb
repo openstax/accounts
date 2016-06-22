@@ -2,6 +2,7 @@ module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
     before_filter :get_user
     before_filter :get_application, :only => [:show, :edit, :update, :destroy]
+    respond_to :html
 
     def index
       @applications = @user.is_administrator? ? Doorkeeper::Application.all :
@@ -20,9 +21,11 @@ module Oauth
       @application.owner.add_owner(current_user)
       OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
       if @application.save
+        security_log :application_created, application_id: @application.id,
+                                           application_name: @application.name
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :create])
-        respond_with [:oauth, @application]
+        render :show
       else
         render :new
       end
@@ -38,10 +41,13 @@ module Oauth
 
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      if @application.update_attributes(application_params(@user))
+      app_params = application_params(@user)
+      if @application.update_attributes(app_params)
+        security_log :application_updated, application_id: @application.id,
+                                           application_params: app_params
         flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
                                                     :applications, :update])
-        respond_with [:oauth, @application]
+        redirect_to action: :index
       else
         render :edit
       end
@@ -49,6 +55,8 @@ module Oauth
 
     def destroy
       OSU::AccessPolicy.require_action_allowed!(:destroy, @user, @application)
+      security_log :application_deleted, application_id: @application.id,
+                                         application_name: @application.name
       super
     end
 
@@ -57,13 +65,13 @@ module Oauth
     def get_user
       @user = current_user
     end
-    
+
     def get_application
       @application = Doorkeeper::Application.find(params[:id])
     end
 
     private
-    
+
     def user_params
       return {} if params[:application].nil?
       params[:application].slice(:name, :redirect_uri, :email_subject_prefix)

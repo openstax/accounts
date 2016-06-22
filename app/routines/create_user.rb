@@ -1,6 +1,6 @@
 # Creates a user with the supplied parameters.
 #
-# If :ensure_no_errors is true, the routine will make sure that the 
+# If :ensure_no_errors is true, the routine will make sure that the
 # username is available (blank/nil usernames are allowed in this case)
 #
 # If :ensure_no_errors is not set, the returned user object may have errors
@@ -13,27 +13,29 @@ class CreateUser
 
   protected
 
-  def exec(options = {})
-    username = options[:username]
+  def exec(username:, title: nil, first_name: nil, last_name: nil,
+           suffix: nil, full_name: nil, state:, ensure_no_errors: false)
 
-    if options[:ensure_no_errors]
-      username = get_valid_username(options[:username])
+    original_username = username
+
+    if ensure_no_errors
+      username = get_valid_username(original_username)
 
       # If the number of attempts is exceeded, the user creation will fail
       for i in 1..USERNAME_ATTEMPTS do
         break if User.where('LOWER(username) = ?', username).none?
-        username = get_valid_username(options[:username])
+        username = get_valid_username(original_username)
         username = randomify_username(username)
       end
     end
 
     outputs[:user] = User.create do |user|
       user.username = username
-      user.first_name = options[:first_name]
-      user.last_name = options[:last_name]
-      user.full_name = options[:full_name]
-      user.title = options[:title]
-      user.state = options[:state] || 'temp'  # all users default to starting as temp.
+      user.first_name = first_name.present? ? first_name : guessed_first_name(full_name)
+      user.last_name = last_name.present? ? last_name : guessed_last_name(full_name)
+      user.title = title
+      user.suffix = suffix
+      user.state = state
     end
 
     transfer_errors_from(outputs[:user], {type: :verbatim})
@@ -53,4 +55,15 @@ class CreateUser
     base = 'user' if base.blank?
     "#{base}#{rand(1000000)}"
   end
+
+  def guessed_first_name(full_name)
+    return nil if full_name.blank?
+    full_name.split("\s")[0]
+  end
+
+  def guessed_last_name(full_name)
+    return nil if full_name.blank?
+    full_name.split("\s").drop(1).join(' ')
+  end
+
 end

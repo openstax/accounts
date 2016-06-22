@@ -1,6 +1,6 @@
 module Api::V1
   class FindOrCreateUserRepresenter < Roar::Decorator
-    include Roar::Representer::JSON
+    include ::Roar::JSON
 
     property :id,
              type: Integer,
@@ -67,7 +67,7 @@ module Api::V1
              writeable: true,
              schema_info: {
                required: false,
-               description: 'Full name to assign to newly created user'
+               description: 'Full name to assign to newly created user, used for first and last name if they are missing'
              }
   end
 end

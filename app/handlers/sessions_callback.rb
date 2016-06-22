@@ -13,9 +13,12 @@
 #
 # In the result object, this handler will return a :status, which will be:
 #
-# :returning_user, if the user is a returning user
-# :new_user if the user has not registered yet
-# :multiple_accounts if the user has 2+ accounts with the same email address
+# :returning_user               if the user is a returning user
+# :new_password_user            if the user just signed up as a password user
+# :new_social_user              if the user is signing up and just authenticated socially
+# :transferred_authentication   if the user signed up and we can find an existing user to add the auth to
+# :authentication_added         if the user is adding an authentication from the profile page
+# :no_action                    if the user is adding an authentication from the profile page that is already linked to them
 #
 class SessionsCallback
 
@@ -24,7 +27,6 @@ class SessionsCallback
   uses_routine TransferAuthentications
   uses_routine CreateUserFromOmniauthData
   uses_routine TransferOmniauthData
-  uses_routine DestroyUser
   uses_routine ActivateUnclaimedUser
 
   protected
@@ -39,84 +41,51 @@ class SessionsCallback
   end
 
   def handle
-    # Get an authentication object for the incoming data, tracking if
-    # the object didn't yet exist and we had to create it.
-
-    authentication_data = { provider: @data.provider,
-                            uid: @data.uid.to_s }
-    authentication = Authentication.where(authentication_data).first
-
-    this_authentication_is_new = authentication.nil?
-    authentication = Authentication.create(authentication_data) if this_authentication_is_new
-
+    authentication =
+      Authentication.find_or_create_by_provider_and_uid(@data.provider, @data.uid.to_s)
     authentication_user = authentication.user
 
-    if authentication_user.nil?
-      # Check for existing users matching auth_data emails
-      # Note: we trust that Google/FB/Twitter omniauth strategies
-      #       will only give us verified emails.
-      #   true for Google (omniauth strategy checks that the emails are verified)
-      #   true for FB (their API only returns verified emails)
-      #   true for Twitter (they don't return any emails)
-      matching_users = EmailAddress.where(:value => @data.email)
-                                   .verified.with_users.collect{|e| e.user}
+    if signed_in? && authentication_user == current_user
+      status = :no_action
 
-      case matching_users.size
-      when 0
-      when 1
-        authentication_user = matching_users.first
-        run(TransferAuthentications, authentication, authentication_user)
+    elsif signed_in?
+      # This is from adding authentications on the profile screen
+
+      if authentication_user && authentication_user.is_activated?
+        status = :authentication_taken
       else
-        # For the moment don't do anything.  Could try to let the user choose
-        # one of these other users to attach to.
-      end
-    end
-
-    if authentication_user.present?
-
-      if signed_in?
-        if authentication_user.is_temp? && current_user.is_temp?
-          first_user_lives_second_user_dies(current_user, authentication_user)
-          status = :new_user
-        elsif authentication_user.is_temp?
-          first_user_lives_second_user_dies(current_user, authentication_user)
-          status = :returning_user
-        elsif current_user.is_temp?
-          first_user_lives_second_user_dies(authentication_user, current_user)
-          status = :returning_user
-        else
-          if current_user.id == authentication_user.id
-            status = :returning_user
-          else
-            status = :multiple_accounts
-          end
-        end
-      else
-        sign_in!(authentication_user)
-        status = (authentication_user.is_temp? ? :new_user : :returning_user)
-      end
-      
-    else
-
-      if signed_in?
         run(TransferAuthentications, authentication, current_user)
-        status = (current_user.is_temp? ? :new_user : :returning_user)
+        run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
+        status = :authentication_added
+      end
+
+    elsif authentication_user.present?
+      sign_in!(authentication_user)
+      status = :returning_user
+
+    else
+      # No authentication user, so we need to find or create a user to attach to
+
+      if authentication.provider == 'identity'
+        identity = Identity.find(authentication.uid)
+        authentication_user = identity.user
+        status = :new_password_user
+      elsif users_matching_oauth_data.size == 1
+        authentication_user = users_matching_oauth_data.first
+        status = :transferred_authentication
       else
         outcome = run(CreateUserFromOmniauthData, @data)
-        new_user = outcome.outputs[:user]
-        run(TransferAuthentications, authentication, new_user)
-        sign_in!(new_user)
-        status = :new_user
+        authentication_user = outcome.outputs[:user]
+        run(TransferOmniauthData, @data, authentication_user)
+        status = :new_social_user
       end
 
-    end
-
-    if this_authentication_is_new
-      run(TransferOmniauthData, @data, current_user)
+      run(TransferAuthentications, authentication, authentication_user)
+      sign_in!(authentication_user)
     end
 
     outputs[:status] = status
-
+    outputs[:authentication] = authentication
   end
 
   protected
@@ -140,18 +109,21 @@ class SessionsCallback
     @user_state.sign_out!
   end
 
-  # Moves authentications from dying to living user & destroys dying user
-  # if those users are different.  If the living user isn't signed in, sign
-  # it in
-  def first_user_lives_second_user_dies(living_user, dying_user)
-    if living_user != dying_user
-      run(TransferAuthentications, dying_user.authentications, living_user)  
-      run(DestroyUser, dying_user)
-    end
-    if current_user != living_user
-      sign_out!
-      sign_in!(living_user)
-    end
+  def users_matching_oauth_data
+    # We find potential matching users by comparing their email addresses to
+    # what comes back in the OAuth data.
+    #
+    # Note: we trust that Google/FB/Twitter omniauth strategies
+    #       will only give us verified emails.
+    #
+    #   true for Google (omniauth strategy checks that the emails are verified)
+    #   true for FB (their API only returns verified emails)
+    #   true for Twitter (they don't return any emails)
+
+    @users_matching_oauth_data ||= EmailAddress.where(value: @data.email)
+                                               .verified
+                                               .with_users
+                                               .map(&:user)
   end
 
 end

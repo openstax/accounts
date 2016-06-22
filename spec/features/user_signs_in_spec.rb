@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 feature 'User logs in as a local user', js: true do
 
@@ -7,12 +7,12 @@ feature 'User logs in as a local user', js: true do
       create_application
       create_user 'user'
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username, email, or password')
+      expect(page).to have_content('The password you provided is incorrect.')
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
@@ -27,11 +27,11 @@ feature 'User logs in as a local user', js: true do
       create_user_with_plone_password
       visit_authorize_uri
 
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect_sign_in_page
       fill_in 'Username', with: 'plone_user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username, email, or password')
+      expect(page).to have_content('The password you provided is incorrect.')
 
       fill_in 'Username', with: 'plone_user'
       fill_in 'Password', with: 'password'
@@ -44,12 +44,12 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username, email, or password')
+      expect(page).to have_content('We have no account')
     end
   end
 
@@ -62,7 +62,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'expired_password'
       fill_in 'Password', with: 'password'
@@ -72,7 +72,7 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content('Alert: Your password has expired')
 
       fill_in 'Password', with: 'Passw0rd!'
-      fill_in 'Password Again', with: 'Passw0rd!'
+      fill_in 'Confirm Password', with: 'Passw0rd!'
       click_button 'Set Password'
 
       expect(page.current_url).to match(app_callback_url)
@@ -85,7 +85,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'imported_user'
       fill_in 'Password', with: 'password'
@@ -95,17 +95,17 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content('Alert: Your password has expired')
 
       fill_in 'Password', with: 'Passw0rd!'
-      fill_in 'Password Again', with: 'Passw0rd!'
+      fill_in 'Confirm Password', with: 'Passw0rd!'
       click_button 'Set Password'
 
       expect(page).to have_content('Terms of Use')
 
       find(:css, '#agreement_i_agree').set(true)
-      click_button 'Agree'
+      click_button 'I agree'
 
       expect(page).to have_content('Privacy Policy')
       find(:css, '#agreement_i_agree').set(true)
-      click_button 'Agree'
+      click_button 'I agree'
 
       expect(page.current_url).to match(app_callback_url)
     end
@@ -115,46 +115,44 @@ feature 'User logs in as a local user', js: true do
     user = create_user('jimbo')
 
     visit '/'
-    expect(page).to have_content('Sign in to your one OpenStax account')
+    expect_sign_in_page
 
-    login_as 'jimbo', 'password'
+    signin_as 'jimbo', 'password'
 
     visit '/'
     expect(page).to have_content('Your Account')
   end
 
-  scenario 'keeps trying to find existing account when signing in' do
-    create_user('jimbo')
+  scenario 'and gets asked to reset password and accept terms on home page' do
+    imported_user 'imported_user'
 
-    visit '/login'
-    expect(page).to have_content("Sign in to your one OpenStax account!")
+    with_forgery_protection do
+      create_application
+      visit '/'
+      expect_sign_in_page
 
-    click_omniauth_link('twitter')
+      fill_in 'Username', with: 'imported_user'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
 
-    expect(page).to have_content('Merge Logins')
-    expect(page).to have_no_link('twitter-login-button')
+      expect(page).to have_content('Welcome, imported_user')
+      expect(page).to have_content('Alert: Your password has expired')
 
-    click_omniauth_link('google_oauth2')
+      fill_in 'Password', with: 'Passw0rd!'
+      fill_in 'Confirm Password', with: 'Passw0rd!'
+      click_button 'Set Password'
 
-    expect(page).to have_content('Merge Logins')
-    expect(page).to have_no_link('twitter-login-button')
-    expect(page).to have_no_link('google_oauth2-login-button')
+      expect(page).to have_content('Terms of Use')
 
-    click_omniauth_link('facebook')
+      find(:css, '#agreement_i_agree').set(true)
+      click_button 'I agree'
 
-    expect(page).to have_content('Merge Logins')
-    expect(page).to have_no_link('twitter-login-button')
-    expect(page).to have_no_link('google_oauth2-login-button')
-    expect(page).to have_no_link('facebook-login-button')
-    expect(page).to have_no_content('left-or-block')
+      expect(page).to have_content('Privacy Policy')
+      find(:css, '#agreement_i_agree').set(true)
+      click_button 'I agree'
 
-    fill_in 'Username', with: 'jimbo'
-    fill_in 'Password', with: 'password'
-
-    click_button 'Sign in'
-
-    expect(page).to have_no_content('Merge Logins')
-    expect(page).to have_no_content('Sign in to your one')
+      expect(current_path).to eq profile_path
+    end
   end
 
   scenario 'a user signs into an account that has been created by an admin for them', js: true do
@@ -168,7 +166,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'therulerofallthings'
       fill_in 'Password', with: 'apassword'
@@ -186,17 +184,93 @@ feature 'User logs in as a local user', js: true do
       user = create_user 'user'
       create_email_address_for user, 'user@example.com'
       visit_authorize_uri
-      expect(page).to have_content("Sign in to your one OpenStax account!")
+      expect_sign_in_page
 
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'pass'
       click_button 'Sign in'
-      expect(page).to have_content('Incorrect username, email, or password')
+      expect(page).to have_content('The password you provided is incorrect')
 
-      fill_in 'Username / Email', with: 'user@example.com'
+      fill_in 'Username or Email', with: 'user@example.com'
       fill_in 'Password', with: 'password'
       click_button 'Sign in'
       expect(page.current_url).to match(app_callback_url)
     end
   end
+
+  scenario 'with an unverified email address and password' do
+    with_forgery_protection do
+      create_application
+      user = create_user 'user'
+      create_email_address_for user, 'user@example.com', confirmation_code: 'unverified'
+      visit_authorize_uri
+      expect_sign_in_page
+
+      fill_in 'Username or Email', with: 'user@example.com'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+      expect(page).to have_content('We have no account for the username or email you provided.  Email addresses must be verified in our system to use them during sign in.')
+
+      fill_in 'Username', with: 'user'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+      expect(page.current_url).to match(app_callback_url)
+    end
+  end
+
+  scenario 'with an email address linked to several user accounts' do
+    with_forgery_protection do
+      create_application
+
+      # two users with the same email address, both verified
+      user = create_user 'user'
+      create_email_address_for(user, 'user@example.com')
+      another_user = create_user 'another_user'
+      create_email_address_for(another_user, 'user@example.com')
+
+      visit_authorize_uri
+      expect_sign_in_page
+
+      fill_in 'Username or Email', with: 'user@example.com'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+      expect(page).to have_content('We found several accounts with your email address.  Please sign in using your username.')
+
+      fill_in 'Username', with: 'user'
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+      expect(page.current_url).to match(app_callback_url)
+    end
+  end
+
+  scenario 'with an unstripped username' do
+    with_forgery_protection do
+      user = create_user 'user'
+      create_email_address_for user, 'user@example.com'
+
+      visit '/'
+
+      fill_in 'Username', with: ' user '
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+
+      expect(page).to have_content('Welcome, user')
+    end
+  end
+
+  scenario 'with an unstripped email' do
+    with_forgery_protection do
+      user = create_user 'user'
+      create_email_address_for user, 'user@example.com'
+
+      visit '/'
+
+      fill_in 'Username', with: ' user@example.com '
+      fill_in 'Password', with: 'password'
+      click_button 'Sign in'
+
+      expect(page).to have_content('Welcome, user')
+    end
+  end
+
 end

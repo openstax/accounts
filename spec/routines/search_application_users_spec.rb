@@ -1,8 +1,8 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe SearchApplicationUsers do
   let!(:application) { FactoryGirl.create :doorkeeper_application }
-  
+
   let!(:user_1) { FactoryGirl.create :user_with_emails,
                                      first_name: 'John',
                                      last_name: 'Stravinsky',
@@ -10,7 +10,6 @@ describe SearchApplicationUsers do
   let!(:user_2) { FactoryGirl.create :user,
                                      first_name: 'Mary',
                                      last_name: 'Mighty',
-                                     full_name: 'Mary Mighty',
                                      username: 'mary' }
   let!(:user_3) { FactoryGirl.create :user,
                                      first_name: 'John',
@@ -53,7 +52,7 @@ describe SearchApplicationUsers do
   end
 
   it "should match based on one full name" do
-    outcome = SearchApplicationUsers.call(application, 'full_name:"Mary Mighty"').outputs.items.to_a
+    outcome = SearchApplicationUsers.call(application, 'name:"Mary Mighty"').outputs.items.to_a
     expect(outcome).to eq [user_2]
   end
 
@@ -138,8 +137,7 @@ describe SearchApplicationUsers do
 
     before(:each) do
       [bob_brown, bob_jones, tim_jones].each do |user|
-        FactoryGirl.create :application_user, application: application,
-                                              user: user
+        FactoryGirl.create :application_user, application: application, user: user
       end
     end
 

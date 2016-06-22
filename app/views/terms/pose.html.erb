@@ -1,7 +1,5 @@
 <%= page_heading @contract.title %>
 
-<div class="not-full-width">
-
   <% if FinePrint.signed_any_version_of_contract?(current_user, @contract) %>
     <p><%= t :".contracts_changed_notice", contract_title: @contract.title %></p>
   <% else %>
@@ -15,15 +13,13 @@
   <%= lev_form_for :agreement, url: agree_to_terms_path, method: :post do |f| %>
     <div class="checkbox">
       <label>
-        <%= f.check_box :i_agree %> <%= t :".i_have_read_and_agree" %>
+        <%= f.check_box :i_agree %> <%= t :".have_read_terms_and_agree" %>
       </label>
     </div>
 
     <%= f.hidden_field :contract_id, value: @contract.id %>
-    <%= f.submit (t :".agree"), id: "agreement_submit" %>
+    <%= f.submit (t :".agree"), id: "agreement_submit", class: 'btn btn-primary' %>
   <% end %>
-
-</div>
 
 <% content_for :javascript do %>
   <script type="text/javascript">

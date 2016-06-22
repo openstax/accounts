@@ -1,6 +1,6 @@
-require "spec_helper"
+require 'rails_helper'
 
-describe Api::V1::UsersController, :type => :api, :version => :v1 do
+describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
   let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
   let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }
@@ -57,7 +57,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
             id: user_2.id,
             username: user_2.username,
             first_name: user_2.first_name,
-            last_name: user_2.last_name
+            last_name: user_2.last_name,
+            full_name: user_2.full_name
           }
         ]
       }.to_json
@@ -100,7 +101,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
       expected_response = {
         id: user_1.id,
-        username: user_1.username
+        username: user_1.username,
+        contact_infos: []
       }.to_json
 
       expect(response.body).to eq(expected_response)
@@ -115,7 +117,8 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
 
       expected_response = {
         id: user_1.id,
-        username: user_1.username
+        username: user_1.username,
+        contact_infos: []
       }.to_json
 
       expect(response.body).to eq(expected_response)
@@ -124,14 +127,49 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
     it "should return a properly formatted JSON response for user with name" do
       api_get :show, user_2_token
 
-      expected_response = {
+      expect(response.body_as_hash).to include(
         id: user_2.id,
         username: user_2.username,
         first_name: user_2.first_name,
-        last_name: user_2.last_name
-      }.to_json
+        last_name: user_2.last_name,
+        full_name: user_2.full_name,
+        contact_infos: [be_kind_of(Hash), be_kind_of(Hash)]
+      )
+    end
 
-      expect(response.body).to eq(expected_response)
+    it 'should include contact infos' do
+      unconfirmed_email = AddEmailToUser.call("unconfirmed@example.com", user_1).outputs.email
+
+      confirmed_email = AddEmailToUser.call("confirmed@example.com", user_1).outputs.email
+      ConfirmContactInfo.call(confirmed_email)
+
+      over_pinned_email = AddEmailToUser.call("over_pinned@example.com", user_1).outputs.email
+      ConfirmByPin::MAX_PIN_FAILURES.times { ConfirmByPin.call(contact_info: over_pinned_email, pin: "whatever") }
+
+      api_get :show, user_1_token
+
+      expect(response.body_as_hash[:contact_infos]).to match a_collection_containing_exactly(
+        {
+          id: unconfirmed_email.id,
+          type: "EmailAddress",
+          value: "unconfirmed@example.com",
+          is_verified: false,
+          num_pin_verification_attempts_remaining: 5
+        },
+        {
+          id: confirmed_email.id,
+          type: "EmailAddress",
+          value: "confirmed@example.com",
+          is_verified: true
+        },
+        {
+          id: over_pinned_email.id,
+          type: "EmailAddress",
+          value: "over_pinned@example.com",
+          is_verified: false,
+          num_pin_verification_attempts_remaining: 0
+        }
+      )
     end
 
   end
@@ -187,7 +225,7 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                  trusted_application_token,
                  raw_post_data: {email: 'a-new-email@test.com'}
       }.to change{User.count}.by(1)
-      expect(response.code).to eq('200')
+      expect(response.code).to eq('201')
       new_user_id = User.order(:id).last.id
       expect(response.body).to eq({id: new_user_id}.to_json)
     end
@@ -199,15 +237,14 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
                  raw_post_data: {
                    email: 'a-new-email@test.com',
                    first_name: 'Sarah',
-                   last_name: 'Test',
-                   full_name: 'Sarah M. Test'
+                   last_name: 'Test'
                  }
       }.to change { User.count }.by(1)
-      expect(response.code).to eq('200')
+      expect(response.code).to eq('201')
       new_user = User.find(JSON.parse(response.body)['id'])
       expect(new_user.first_name).to eq 'Sarah'
       expect(new_user.last_name).to eq 'Test'
-      expect(new_user.full_name).to eq 'Sarah M. Test'
+      expect(new_user.full_name).to eq 'Sarah Test'
     end
 
     it "should not create a new user for anonymous" do
@@ -234,14 +271,14 @@ describe Api::V1::UsersController, :type => :api, :version => :v1 do
       it "does so for unclaimed users" do
         api_post :find_or_create, trusted_application_token,
                  raw_post_data: {email: unclaimed_user.contact_infos.first.value}
-        expect(response.code).to eq('200')
+        expect(response.code).to eq('201')
         expect(response.body).to eq({id: unclaimed_user.id}.to_json)
       end
       it "does so for claimed users" do
         api_post :find_or_create,
                  trusted_application_token,
                  raw_post_data: {email: user_2.contact_infos.first.value}
-        expect(response.code).to eq('200')
+        expect(response.code).to eq('201')
         expect(response.body).to eq({id: user_2.id}.to_json)
       end
     end

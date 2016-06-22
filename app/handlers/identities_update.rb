@@ -11,7 +11,7 @@ class IdentitiesUpdate
   protected
 
   def setup
-    @identity = caller.identity
+    @identity = caller.identity || caller.build_identity
   end
 
   def authorized?
@@ -19,15 +19,17 @@ class IdentitiesUpdate
   end
 
   def handle
-    fatal_error(code: :wrong_password,
-                message: (I18n.t :"handlers.identities_update.invalid_password_provided"),
-                offending_inputs: :current_password) \
-      unless @identity.authenticate identity_params.current_password
-
-    identity_attributes = identity_params.as_hash(:password,
-                                                  :password_confirmation)
-    @identity.update_attributes(identity_attributes)
+    @identity.password = identity_params.password
+    @identity.password_confirmation = identity_params.password_confirmation
+    @identity.save
     outputs[:identity] = @identity
-    transfer_errors_from(@identity, {scope: :identity})
+
+    transfer_errors_from(@identity, {scope: :identity}, true)
+
+    # If the user does not have an authentication for an identity then we create once
+    unless caller.authentications.where(provider: 'identity').any?
+      caller.authentications.create!(provider: 'identity', uid: @identity.id.to_s)
+    end
+
   end
 end

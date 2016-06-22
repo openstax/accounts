@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe FindOrCreateUnclaimedUser do
 
@@ -71,16 +71,29 @@ describe FindOrCreateUnclaimedUser do
         }.to change(User,:count).by(1)
       end
 
-      it 'sets the first name, last name and full name if given' do
+      it 'sets the first name, last name if given, ignoring full name' do
         expect {
           new_user = FindOrCreateUnclaimedUser.call(
             username: 'bobsmith', email: 'anunusedemail@example.com',
-            first_name: 'Bob', last_name: 'Smith', full_name: 'Bob Smith'
+            first_name: 'Bob', last_name: 'Smith', full_name: 'Frank Franky'
           ).outputs.user
           expect(new_user.username).to eq('bobsmith')
           expect(new_user.first_name).to eq('Bob')
           expect(new_user.last_name).to eq('Smith')
           expect(new_user.full_name).to eq('Bob Smith')
+        }.to change { User.count }.by(1)
+      end
+
+      it 'assumes the first name & last name if not given and full name present' do
+        expect {
+          new_user = FindOrCreateUnclaimedUser.call(
+            username: 'bobsmith', email: 'anunusedemail@example.com',
+            full_name: 'Frank Franky'
+          ).outputs.user
+          expect(new_user.username).to eq('bobsmith')
+          expect(new_user.first_name).to eq('Frank')
+          expect(new_user.last_name).to eq('Franky')
+          expect(new_user.full_name).to eq('Frank Franky')
         }.to change { User.count }.by(1)
       end
 
@@ -91,7 +104,7 @@ describe FindOrCreateUnclaimedUser do
             password:'password123', password_confirmation: 'password123', username: "bobsmith",
             email:"anunusedemail@example.com"
           ).outputs.user
-          expect(new_user.reload.identity.authenticate('password123')).to be_true
+          expect(new_user.reload.identity.authenticate('password123')).to be_truthy
         end
 
       end

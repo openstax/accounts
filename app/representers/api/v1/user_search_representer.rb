@@ -1,6 +1,8 @@
+require "roar/json"
+
 module Api::V1
   class UserSearchRepresenter < OpenStax::Api::V1::AbstractSearchRepresenter
-    include Roar::Representer::JSON
+    include ::Roar::JSON
 
     property :total_count,
              inherit: true,

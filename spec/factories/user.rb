@@ -1,15 +1,17 @@
 FactoryGirl.define do
   factory :user do
     username { SecureRandom.hex(3) }
-    person
     state 'activated' # otherwise the default from DB will be to 'temp'
     trait :admin do
       is_administrator true
     end
 
     factory :temp_user do
-      person nil
       state 'temp'
+    end
+
+    factory :new_social_user do
+      state 'new_social'
     end
 
     trait :terms_not_agreed do; end
@@ -23,7 +25,7 @@ FactoryGirl.define do
     end
 
     factory :user_with_emails do
-      ignore do
+      transient do
         emails_count 2
       end
 

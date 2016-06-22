@@ -31,7 +31,7 @@ class Api::V1::GroupsController < Api::V1::ApiController
     #{json_schema(Api::V1::GroupsRepresenter, include: :readable)}
   EOS
   def index
-    respond_with Group.visible_for(current_human_user)
+    respond_with Group.visible_for(current_human_user), location: nil
   end
 
   ###############################################################

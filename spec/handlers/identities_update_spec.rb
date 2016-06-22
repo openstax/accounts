@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe IdentitiesUpdate do
 
@@ -6,29 +6,6 @@ describe IdentitiesUpdate do
   let!(:user)     { identity.user }
 
   context 'wrong params' do
-    it "does not update the user's password if the current password is blank" do
-      result = IdentitiesUpdate.call(caller: user, params: {
-                 identity: {password: 'new_password',
-                            password_confirmation: 'new_password'}})
-
-      id = result.outputs[:identity]
-      errors = result.errors
-      expect(id).to be_nil
-      expect(errors.has_offending_input?(:current_password)).to eq true
-    end
-
-    it "does not update the user's password if the current password is wrong" do
-      result = IdentitiesUpdate.call(caller: user, params: {
-                 identity: {current_password: 'apswords',
-                            password: 'new_password',
-                            password_confirmation: 'new_password'}})
-
-      id = result.outputs[:identity]
-      errors = result.errors
-      expect(id).to be_nil
-      expect(errors.has_offending_input?(:current_password)).to eq true
-    end
-
     it "does not update the user's password if the new password is too short" do
       result = IdentitiesUpdate.call(caller: user, params: {
                  identity: {current_password: 'password',

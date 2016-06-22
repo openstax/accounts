@@ -3,11 +3,15 @@
 
 class SessionsController < ApplicationController
 
-  skip_before_filter :authenticate_user!, :expired_password, :registration,
-                     only: [:new, :callback, :failure, :destroy]
+  skip_before_filter :authenticate_user!, :expired_password,
+                     only: [:new, :callback, :failure, :destroy, :help]
+
+  skip_before_filter :finish_sign_up, only: [:destroy]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :callback, :failure, :destroy, :ask_new_or_returning]
+                  only: [:new, :callback, :failure, :destroy, :help]
+
+  helper_method :last_signin_provider
 
   def new
     get_authorization_url
@@ -19,10 +23,6 @@ class SessionsController < ApplicationController
     # If the user is already logged in, this means they got linked to the login page somehow
     # Attempt to redirect to the fallback url stored above
     redirect_back if signed_in?
-
-    # Hack to figure out if the user came from CNX to hide the login
-    # In the future, use the client_id and some boolean flag in the client app
-    referer = request.referer
 
     session[:client_id] = params[:client_id]
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
@@ -37,20 +37,52 @@ class SessionsController < ApplicationController
     # and we don't want to send users back there
     store_fallback(url: @authorization_url) unless @authorization_url.nil?
 
-    handle_with(SessionsCallback, user_state: self,
-      complete: lambda {
-        # Since the multiple_accounts flow is not yet implemented,
-        # pretend the user is returning instead
+    handle_with(
+      SessionsCallback,
+      user_state: self,
+      complete: lambda do
+        authentication = @handler_result.outputs[:authentication]
+
         case @handler_result.outputs[:status]
-        when :returning_user, :multiple_accounts then redirect_to action: :returning_user
-        when :new_user                           then render :ask_new_or_returning
-        # when :multiple_accounts                  then render :ask_which_account
-        else                                     raise IllegalState
+        when :returning_user
+          set_last_signin_provider(authentication.provider)
+          security_log :sign_in_successful, authentication_id: authentication.id
+          redirect_to action: :returning_user
+        when :new_password_user
+          set_last_signin_provider(authentication.provider)
+          security_log :sign_up_successful, authentication_id: authentication.id
+          redirect_to action: :returning_user
+        when :transferred_authentication
+          set_last_signin_provider(authentication.provider)
+          security_log :authentication_transferred, authentication_id: authentication.id
+          redirect_to action: :returning_user
+        when :no_action
+          redirect_to action: :returning_user
+        when :new_social_user
+          security_log :sign_in_successful, authentication_id: authentication.id
+          redirect_to signup_social_path
+        when :authentication_added
+          security_log :authentication_created, authentication_id: authentication.id,
+                                                authentication_provider: authentication.provider,
+                                                authentication_uid: authentication.uid
+          redirect_to profile_path, notice: (I18n.t :"controllers.sessions.new_sign_in_option_added")
+        when :authentication_taken
+          redirect_to profile_path, alert: (I18n.t :"controllers.sessions.sign_in_option_already_used")
+        else
+          raise IllegalState, "SessionsCallback errors: #{@handler_result.errors.map(&:code).join(', ')}; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect}"
         end
-      })
+      end
+    )
+  end
+
+  # This is an official action instead of just doing `redirect_back` in callback
+  # handler so that fine_print can check to see if terms need to be signed.
+  def returning_user
+    redirect_back
   end
 
   def destroy
+    security_log :sign_out
     if params[:parent]
       url = iframe_after_logout_url(parent: params[:parent])
     end
@@ -73,26 +105,38 @@ class SessionsController < ApplicationController
       root_url
     end
 
-    redirect_to url, notice: (I18n.t :"controllers.sessions.signed_out")
+    redirect_to url
   end
 
-  def ask_new_or_returning
-  end
-
-  def i_am_returning
-  end
-
-  # This is an official action instead of just doing `redirect_back` in callback
-  # handler so that fine_print can check to see if terms need to be signed.
-  def returning_user
-    redirect_back
+  def help
+    if request.post?
+      handle_with(SessionsHelp,
+                  success: lambda do
+                    security_log :help_requested
+                    redirect_to root_path,
+                                notice: (I18n.t :"controllers.sessions.accessing_instructions_emailed")
+                  end,
+                  failure: lambda do
+                    security_log :help_request_failed, username_or_email: params[:username_or_email]
+                    render :help, status: 400
+                  end)
+    end
   end
 
   # Omniauth failure endpoint
   def failure
-    flash.now[:alert] = params[:message] == 'invalid_credentials' ? \
-                          (I18n.t :"controllers.sessions.invalid_credentials") : \
-                          params[:message]
+    security_log :sign_in_failed, reason: params[:message]
+    flash.now[:alert] =
+      case params[:message]
+      when 'cannot_find_user'
+        I18n.t :"controllers.sessions.no_account_for_username_or_email"
+      when 'multiple_users'
+        I18n.t :"controllers.sessions.several_accounts_for_one_email"
+      when 'bad_password'
+        I18n.t :"controllers.sessions.incorrect_password"
+      else
+        params[:message]
+      end
     render 'new'
   end
 

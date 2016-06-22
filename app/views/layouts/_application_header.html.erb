@@ -3,14 +3,29 @@
 
 <div id="application-header">
 
+  <div>
+    <a href="<%= root_path %>" id="top-nav-logo"></a>
+  </div>
 
-
-  <%= render :partial => "layouts/application_top_nav" %>
-
-
-
-  <noscript>
-    <%= attention_tag([(t :".please_enable_javascript")], :alert, "js_not_enabled_alert") %>
-  </noscript>
+  <% unless @hide_session_info %>
+  <div id="session-info">
+  <% if signed_in? %>
+    <span>
+      <%= t :".welcome_html",
+            username: (link_to current_user.username,
+                               main_app.profile_path,
+                               class: 'username')
+          %>
+    </span>
+    <span>
+      <%= link_to (t :".sign_out"), main_app.signout_path %>
+    </span>
+  <% else %>
+    <span>
+      <%= link_to (t :".sign_in"), main_app.signin_path %>
+    </span>
+  <% end %>
+  </div>
+  <% end %>
 
 </div>

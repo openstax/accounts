@@ -1,16 +1,13 @@
 class StaticPagesController < ApplicationController
-  skip_before_filter :authenticate_user!,
-                     only: [:api, :copyright, :home, :status]
+  skip_before_filter :authenticate_user!, only: [:api, :copyright, :home, :status]
 
-  skip_before_filter :registration,
-                     only: [:api, :copyright, :home, :status]
+  skip_before_filter :finish_sign_up, only: [:api, :copyright, :status]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:api, :copyright, :home, :status]
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:api, :copyright, :status]
 
-  skip_protect_beta :only => [:status]
+  skip_protect_beta only: [:status]
 
-  layout :resolve_layout
+  layout 'application'
 
   def api
   end
@@ -25,7 +22,7 @@ class StaticPagesController < ApplicationController
       redirect_to profile_path
     else
       store_url # needed for happy login flow, authenticate_user! does it too
-      redirect_to login_path
+      redirect_to signin_path
     end
   end
 
@@ -34,9 +31,4 @@ class StaticPagesController < ApplicationController
     head :ok
   end
 
-protected
-
-  def resolve_layout
-    'home' == action_name ? 'application_home_page' : 'application_body_only'
-  end
 end

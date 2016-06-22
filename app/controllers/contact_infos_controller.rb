@@ -1,72 +1,116 @@
 class ContactInfosController < ApplicationController
 
-  skip_before_filter :authenticate_user!,
-                     only: [:confirm, :confirm_unclaimed, :resend_confirmation]
+  skip_before_filter :authenticate_user!, only: [:confirm, :confirm_unclaimed, :resend_confirmation]
 
-  skip_before_filter :registration,
-                     only: [:create, :destroy, :toggle_is_searchable, :confirm,
-                            :confirm_unclaimed, :resend_confirmation]
+  skip_before_filter :finish_sign_up, only: [:confirm_unclaimed] # TODO still need this skip?
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:create, :destroy, :toggle_is_searchable, :confirm,
+                  only: [:create, :destroy, :set_searchable, :confirm,
                          :confirm_unclaimed, :resend_confirmation]
 
-  before_filter :get_contact_info, only: [:destroy, :toggle_is_searchable]
+  before_filter :get_contact_info, only: [:destroy, :set_searchable]
 
   def create
     handle_with(ContactInfosCreate,
-                success: lambda {
-                  redirect_to profile_path(active_tab: :email),
-                    notice: (I18n.t :"controllers.contact_infos.verification_sent",
-                                    address: @handler_result.outputs[:contact_info].value)},
-                failure: lambda { @active_tab = :email; render 'users/edit', status: 400 })
+                success: lambda do
+                  contact_info = @handler_result.outputs.contact_info
+                  security_log :contact_info_created, contact_info_id: contact_info.id,
+                                                      contact_info_type: contact_info.type,
+                                                      contact_info_value: contact_info.value
+                  render json: {
+                    contact_info: {
+                      id: contact_info.id,
+                      type: contact_info.type,
+                      value: contact_info.value,
+                      is_verified: contact_info.verified,
+                      is_searchable: contact_info.is_searchable
+                    }
+                  },
+                  status: :ok
+                end,
+                failure: lambda do
+                  render json: @handler_result.errors.first.translate, status: :unprocessable_entity
+                end)
   end
 
   def destroy
-    OSU::AccessPolicy.require_action_allowed!(:destroy, current_user,
-                                              @contact_info)
+    OSU::AccessPolicy.require_action_allowed!(:destroy, current_user, @contact_info)
+    security_log :contact_info_deleted, contact_info_id: params[:id],
+                                        contact_info_type: @contact_info.type,
+                                        contact_info_value: @contact_info.value
     @contact_info.destroy
-    redirect_to profile_path(active_tab: :email),
-                notice: (I18n.t :"controllers.contact_infos.contact_info_deleted",
-                                contact_info: (I18n.t @contact_info.type, scope: :"controllers.contact_infos.types"))
+    head :ok
   end
 
-  def toggle_is_searchable
-    OSU::AccessPolicy.require_action_allowed!(:toggle_is_searchable,
-                                              current_user, @contact_info)
-    @contact_info.update_attribute(:is_searchable,
-                                   !@contact_info.is_searchable)
+  def set_searchable
+    OSU::AccessPolicy.require_action_allowed!(:set_searchable, current_user, @contact_info)
+    security_log :contact_info_updated, contact_info_id: params[:id],
+                                        contact_info_type: @contact_info.type,
+                                        contact_info_value: @contact_info.value,
+                                        contact_info_is_searchable: params[:is_searchable]
+    @contact_info.update_attribute(:is_searchable, params[:is_searchable])
 
-    redirect_to profile_path(active_tab: :email),
-                notice: (I18n.t :"controllers.contact_infos.search_settings_updated")
+    render json: {is_searchable: @contact_info.is_searchable}, status: :ok
   end
 
   def resend_confirmation
     handle_with(ContactInfosResendConfirmation,
-                complete: lambda {
+                complete: lambda do
                   contact_info = @handler_result.outputs[:contact_info]
 
-                  msg = contact_info.verified ?
-                        (I18n.t :"controllers.contact_infos.already_verified") :
-                        (I18n.t :"controllers.contact_infos.verification_sent", address: contact_info.value)
+                  if contact_info.verified
+                    msg = I18n.t :"controllers.contact_infos.already_verified"
+                  else
+                    msg = I18n.t :"controllers.contact_infos.verification_sent",
+                                 address: contact_infos.value
+                    security_log :contact_info_confirmation_resent,
+                                 contact_info_id: contact_info.id,
+                                 contact_info_type: contact_info.type,
+                                 contact_info_value: contact_info.value
+                  end
 
-                  redirect_to :back,
-                              notice: msg
-                })
+                  render json: {message: msg, is_verified: contact_info.verified}, status: :ok
+                end)
   end
 
   def confirm_unclaimed
     handle_with(ConfirmUnclaimedAccount,
-                complete: lambda {
-                  render :confirm_unclaimed, status: @handler_result.errors.any? ? 400 : 200
-                })
+                complete: lambda do
+                  contact_info = @handler_result.outputs.contact_info
+
+                  if @handler_result.errors.any?
+                    contact_info_event_type = :contact_info_confirmation_by_code_failed
+                    status = 400
+                  else
+                    contact_info_event_type = :contact_info_confirmed_by_code
+                    status = 200
+                    security_log :user_claimed, user_id: contact_info.user.id
+                  end
+                  security_log contact_info_event_type, contact_info_id: contact_info.try(:id),
+                                                        contact_info_type: contact_info.try(:type),
+                                                        contact_info_value: contact_info.try(:value)
+                  render :confirm_unclaimed, status: status
+                end)
   end
 
   def confirm
     handle_with(ContactInfosConfirm,
-                complete: lambda {
-                  render :confirm, status: @handler_result.errors.any? ? 400 : 200
-                })
+                complete: lambda do
+                  contact_info = @handler_result.outputs.contact_info
+
+                  if @handler_result.errors.any?
+                    event_type = :contact_info_confirmation_by_code_failed
+                    status = 400
+                  else
+                    event_type = :contact_info_confirmed_by_code
+                    status = 200
+                  end
+
+                  security_log event_type, contact_info_id: contact_info.try(:id),
+                                           contact_info_type: contact_info.try(:type),
+                                           contact_info_value: contact_info.try(:value)
+                  render :confirm, status: status
+                end)
   end
 
   protected

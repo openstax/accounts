@@ -1,0 +1,174 @@
+@import "bootstrap-editable";
+
+#profile {
+  .alert { margin: 10px; }
+
+  .container, .row, .col-sm-3, .col-sm-6, .col-sm-9 {
+    /*border: 1px solid red;*/
+  }
+
+  > .row {
+    margin-bottom: 40px;
+  }
+
+  .row.name {
+    margin-top: 20px;
+  }
+
+  .category {
+    text-align: right;
+    font-weight: bold;
+    color: lighten($os_gray, 30%);
+
+    @media(max-width: 767px) {
+      text-align: left;
+      margin-bottom: 15px;
+      color: $os_gray;
+
+      br.wide {
+        display: none;
+      }
+    }
+  }
+
+  .info {
+    @media(max-width: 767px) {
+      margin-left: 15px;
+    }
+  }
+
+  .info .mod-holder {
+    width: 20px;
+    display: inline-block;
+    margin-left:15px;
+  }
+
+  .info .mod {
+    color: #aaa;
+    display: inline;
+    padding-right: 5px;
+  }
+
+  .mod {
+    color: gray;
+    cursor: pointer;
+    &:hover {
+      color: black;
+    }
+  }
+
+  .dim {
+    color: lighten(black, 60%);
+  }
+
+  .authentication {
+    margin-bottom: 6px;
+
+    .fa-stack {
+      left: -3px;
+    }
+  }
+
+  .email-entry {
+    &:first-child {
+      .alert { margin-top: 0; }
+    }
+    .alert {
+      margin-left: 0px;
+      margin-right: 0px;
+    }
+    margin-bottom: 8px;
+    position: relative;
+    .spinner {
+      position: absolute;
+      left: -20px;
+      top: 15px;
+    }
+    .properties {
+      margin-left: 20px;
+      font-style: italic;
+      font-size: 11px;
+      input[type='checkbox'] {
+        margin-left: 6px;
+      }
+    }
+    .verify { margin-left: 20px; }
+    &.new {
+      .verify, .properties, .mod-holder { display: none; }
+    }
+    &.controls-hidden {
+      .email {
+        color: $link-color;
+        cursor: pointer;
+        text-decoration: none;
+        border-bottom: dashed 1px #0088cc;
+        &:hover{ text-decoration: none; }
+      }
+      .properties, .mod-holder { display: none; }
+    }
+  }
+
+  #add-an-email {
+    margin-top: 10px;
+    display: block;
+  }
+
+
+  .authentication {
+    .mod-holder {
+      > span { margin-left: 8px; }
+      .edit { display: none; }
+    }
+
+    &[data-provider=identity] {
+      &.editing {
+        display: flex !important; // override 'block' display set by $.show()
+        .mod-holder { display: none; }
+        @media(max-width: 450px) {
+          .icon{ display: none; }
+        }
+
+      }
+      .editable-input {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+      .form-group > div {
+        display: flex;
+        flex-direction: row;
+      }
+      .editable-buttons {
+        display: inline;
+      }
+
+      .mod-holder {
+        .edit   { display: inline; }
+      }
+    }
+  }
+
+  .enabled-providers {
+    .mod-holder .add { display: none; }
+    .authentication {
+      &:only-child {
+        .mod-holder .delete{ display: none; }
+      }
+    }
+  }
+
+  .other-sign-in {
+    .authentication {
+      .mod-holder {
+        .edit   { display: none; }
+        .delete { display: none; }
+      }
+    }
+  }
+
+  .row.other-sign-in {
+    display: none;
+  }
+
+
+}

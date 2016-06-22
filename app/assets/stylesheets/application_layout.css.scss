@@ -2,6 +2,8 @@
 // License version 3 or later.  See the COPYRIGHT file for details.
 
 @import "common";
+@import "mixins/flexbox";
+
 
 body {
   background-color: $application_background_color;
@@ -12,28 +14,144 @@ body {
 body, p, ol, ul, td, a {
   font-family: verdana, arial, helvetica, sans-serif;
   font-size:   13px;
-}
-
-#application-container {
-  width: $application_master_width;
-
-  margin: 0px auto;
-
   font-weight: normal;
   font-color:  black;
 }
 
 #page-heading {
-  padding: 10px 0 12px;
-  font-size:  22px;
+  padding: 10px 0 18px;
+  font-size:  20px;
   font-weight:  700;
   font-style: normal;
   color: $os_gray;
   float: left;
+  width: 100%;
+  margin-left: 0px;
+
+  .centered {
+    margin: 0 auto;
+  }
 }
 
 #page-sub-heading {
   font-size: 14px;
-  margin-top:3px;
+  margin-top: 10px;
   font-style: italic;
+  font-weight: normal;
+}
+
+.container .row {
+  @media(min-width: 400px) {
+    padding-left: $application_edge_distance;
+    padding-right: $application_edge_distance;
+  }
+}
+
+#application-header {
+  border-bottom: 1px solid $os_gray;
+  padding-left: $application_edge_distance * 1.5;
+  padding-right: $application_edge_distance * 1.5;
+
+  #top-nav-frame {
+    height: $application_top_nav_height;
+    background-color: $application_background_color;
+  }
+
+  #top-nav-logo  {
+    // background: image-url("accounts_horiz_v2.png") no-repeat transparent;
+    background: image-url("openstax-logo.svg") no-repeat transparent;
+    $image_height:  37px;
+    $image_width:  161px;
+
+    float:      left;
+    height:     $image_height;
+    width:      $image_width;
+    margin-top: ($application_top_nav_height - $image_height)/2;
+    margin-bottom: 10px;
+  }
+
+  @include flexbox;
+  @include flex-direction(row);
+  @include justify-content(space-between);
+  @include align-items(center);
+  max-width: $container-desktop;
+
+  margin: auto;
+  @media (max-width: $screen-sm-max) {
+    // calculate the width of content inside a row (what the footer uses)
+    max-width: $screen-sm-min - ($padding-large-vertical * 2);
+  }
+
+  #session-info {
+    @include flexbox;
+    @include flex-direction(column);
+    @include flex-wrap(wrap);
+    @include justify-content(flex-end);
+    @include align-items(flex-end);
+    text-align: right;
+    @media(min-width: $container-sm) {
+      @include justify-content(space-between);
+      @include flex-direction(row);
+      span:last-child { margin-left: 30px; }
+    }
+  }
+}
+
+#application-body {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+#application-footer {
+  clear: both;
+
+  height: $application_footer_height;
+  background-color: #ffffff;
+  border-top: 1px solid $os_gray;
+
+  color:            $os_gray;
+  font-size:        10px;
+  font-family:      verdana, arial, helvetica, sans-serif;
+  line-height:      14px;
+
+  a {
+    font-size:        10px;
+    text-decoration:  none;
+    color:            $os_gray;
+
+    &:hover {
+      color: $ost_hot_blue;
+    }
+  }
+
+  #footer-copyright {
+    padding-top: 31px;
+  }
+
+  #footer-rice-logo-image {
+    padding-top:  21px;
+    float:        right;
+    @media(max-width: 767px) {
+      float: left;
+    }
+  }
+}
+
+#upper-corner-console {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  #clock.highlight {
+    color: #ff00ff;
+  }
+}
+
+.alert {
+  margin-bottom: -10px;
+  margin-top: 20px;
+}
+
+@-ms-viewport{
+  width: device-width;
 }

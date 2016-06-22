@@ -13,7 +13,7 @@ class Api::V1::UsersController < Api::V1::ApiController
       email addresses in ContactInfos and the password hash in Identity.
 
       Users have the following String attributes:
-      username, first_name, last_name, full_name, title
+      username, first_name, last_name, title, suffix
     EOS
   end
 
@@ -82,7 +82,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
     options = params.slice(:order_by)
     outputs = SearchUsers.call(params[:q], options).outputs
-    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter
+    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter, location: nil
   end
 
   ###############################################################
@@ -98,7 +98,9 @@ class Api::V1::UsersController < Api::V1::ApiController
   def show
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user,
                                               current_human_user)
-    respond_with current_human_user
+    respond_with current_human_user,
+                 represent_with: Api::V1::UserRepresenter,
+                 render_contact_infos: true, location: nil
   end
 
   ###############################################################
@@ -117,6 +119,8 @@ class Api::V1::UsersController < Api::V1::ApiController
   EOS
   def update
     raise SecurityTransgression unless current_human_user
+    security_log :user_updated, user_params: JSON.parse(request.body.read)
+    request.body.rewind
     standard_update(User.find(current_human_user.id))
   end
 
@@ -144,7 +148,6 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     #{json_schema(Api::V1::FindOrCreateUserRepresenter, include: [:readable, :writable])}
   EOS
-
   def find_or_create
     OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user, User)
     # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
@@ -154,7 +157,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
-      respond_with result.outputs[:user], represent_with: Api::V1::FindOrCreateUserRepresenter
+      respond_with result.outputs[:user], represent_with: Api::V1::FindOrCreateUserRepresenter, location: nil
     end
   end
 

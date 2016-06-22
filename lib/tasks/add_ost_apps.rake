@@ -18,7 +18,6 @@ namespace :accounts do
     # to that group.  Once the user and the group are setup, it
     # creates each of the applications declared above.
     task :create_apps, [:app_domain_suffix, :admin_password] => :environment do |t, args|
-      require 'doorkeeper/models/active_record/application'
 
       ActiveRecord::Base.transaction do
         begin
@@ -74,7 +73,6 @@ namespace :accounts do
     # applications.  For each application found, it returns the
     # application id and secret as a JSON object list.
     task :get_app_info => :environment do
-      require 'doorkeeper/models/active_record/application'
 
       apps = Doorkeeper::Application.where(:name => app_data.map { |app| app[:name] })
       apps = apps.map { |app|  {:name => app.name,

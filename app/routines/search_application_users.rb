@@ -1,5 +1,5 @@
 # Routine for searching for ApplicationUsers
-# 
+#
 # Caller provides a query and some options.  The query follows the rules of
 # https://github.com/bruce/keyword_search, e.g.:
 #
@@ -19,18 +19,17 @@
 # for this routine are arrays, not ActiveRecord relations
 
 class SearchApplicationUsers
-  
+
   lev_routine transaction: :no_transaction
 
-  uses_routine ::SearchUsers,
-               as: :search_users
+  uses_routine ::SearchUsers, as: :search_users
 
   protected
 
   def exec(application, query, options={})
     return if application.nil?
 
-    options = options.merge({:return_all => true})
+    options = options.merge(return_all: true)
     users = run(:search_users, query, options).outputs[:items]
 
     per_page = Integer(options[:per_page]) rescue 20

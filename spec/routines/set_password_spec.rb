@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe SetPassword do
   context 'setting the password' do
@@ -74,7 +74,7 @@ describe SetPassword do
       expect(identity.password_expires_at).to be_within(1.hour).of(one_year_later)
       expect(identity.password_expired?).to eq false
 
-      DateTime.stub(:now).and_return(one_year_later + 1.day)
+      allow(DateTime).to receive(:now).and_return(one_year_later + 1.day)
       expect(identity.password_expired?).to eq true
     end
   end

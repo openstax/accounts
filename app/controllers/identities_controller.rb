@@ -1,56 +1,68 @@
 class IdentitiesController < ApplicationController
 
-  skip_before_filter :authenticate_user!, :expired_password, :registration,
-                     only: [:new, :forgot_password, :reset_password]
+  skip_before_filter :authenticate_user!, :expired_password, :finish_sign_up,
+                     only: [:reset_password]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :forgot_password, :reset_password]
-
-  def new
-    @errors ||= env['errors']
-
-    if !current_user.is_anonymous? && current_user.authentications.any?{|auth| auth.provider == 'identity'}
-      redirect_to root_path, alert: (I18n.t :"controllers.identities.already_have_username_and_password")
-    else
-      store_fallback
-    end
-  end
+                  only: [:reset_password]
 
   def update
-    @active_tab = :password
     handle_with(IdentitiesUpdate,
-                success: lambda { redirect_to profile_path, notice: (I18n.t :"controllers.identities.password_changed") },
-                failure: lambda { render 'users/edit', status: 400 })
-  end
-
-  def forgot_password
-    if request.post?
-      handle_with(IdentitiesForgotPassword,
-                  success: lambda {
-                    redirect_to root_path, notice: (I18n.t :"controllers.identities.password_reset_instructions_sent")
-                  },
-                  failure: lambda {
-                    errors = @handler_result.errors.any?
-                    render :forgot_password, status: errors ? 400 : 200
-                  })
-    end
+                success: lambda  do
+                  security_log :password_updated
+                  render status: :accepted, text: (I18n.t :"controllers.identities.password_changed")
+                end,
+                failure: lambda do
+                  render status: 400, text: @handler_result.errors.map(&:message).to_sentence
+                end)
   end
 
   def reset_password
-    if !current_user.is_anonymous? && current_user.identity.password_expired?
-      store_fallback key: :password_return_to
-      flash[:alert] = (I18n.t :"controllers.identities.password_expired")
+    if !current_user.is_anonymous?
+      if current_user.identity.nil?
+        security_log :password_reset_failed
+        flash[:alert] = I18n.t :"controllers.identities.cannot_reset_password_because_user_doesnt_have_one"
+        redirect_to profile_path
+        return
+      end
+
+      if current_user.identity.password_expired?
+        security_log :password_expired
+        store_fallback key: :password_return_to
+        flash[:alert] = I18n.t :"controllers.identities.password_expired"
+      end
     end
+
     handle_with(IdentitiesResetPassword,
-                success: lambda {
+                success: lambda do
                   return if !request.post?
                   sign_in! @handler_result.outputs[:identity].user
+                  security_log :password_reset
                   redirect_back key: :password_return_to,
                                 notice: (I18n.t :"controllers.identities.password_reset_successfully")
-                },
-                failure: lambda {
+                end,
+                failure: lambda do
+                  security_log :password_reset_failed
                   render :reset_password, status: 400
-                })
+                end)
+  end
+
+
+  def destroy
+    handle_with(AuthenticationDelete,
+                success: lambda do
+                  authentication = @handler_result.outputs.authentication
+                  security_log :authentication_deleted,
+                               authentication_id: authentication.id,
+                               authentication_provider: authentication.provider,
+                               authentication_uid: authentication.uid
+                  render status: :ok,
+                         text: (I18n.t :"controllers.identities.identity_removed",
+                                       identity: params[:provider].titleize)
+                end,
+                failure: lambda do
+                  render status: 400, text: @handler_result.errors.map(&:message).to_sentence
+                end)
   end
 
 end

@@ -20,4 +20,14 @@ module SessionsHelper
 
     return I18n.enumerate kind, list, scope: scope
   end
+
+  def last_signin_mark(provider)
+    (
+      <<-SNIPPET
+        <div class="last-signin #{provider}" style="#{'display:none' unless provider == 'force' || last_signin_provider == provider}">
+          <span class="last-signin-symbol">*</span>
+        </div>
+      SNIPPET
+    ).html_safe
+  end
 end

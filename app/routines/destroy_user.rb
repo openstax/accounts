@@ -2,8 +2,6 @@ class DestroyUser
 
   lev_routine
 
-  uses_routine DestroyWhenAssociationEmpty
-
   protected
 
   def exec(user)
@@ -15,7 +13,6 @@ class DestroyUser
     fatal_error(code: :cannot_destroy_activated_user, data: user) if user.is_activated?
 
     user.destroy_original
-    run(DestroyWhenAssociationEmpty, user.person, :users)
   end
 
 end

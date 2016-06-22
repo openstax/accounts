@@ -1,11 +1,9 @@
 class TermsController < ApplicationController
-  skip_before_filter :authenticate_user!, :registration, only: [:index, :show]
+  skip_before_filter :authenticate_user!, :finish_sign_up, only: [:index, :show]
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   before_filter :get_contract, only: [:show]
-
-  layout "layouts/application_body_only"
 
   def index
     @contracts = [FinePrint.get_contract(:general_terms_of_use),
@@ -31,8 +29,7 @@ class TermsController < ApplicationController
   end
 
   def agree
-    handle_with(TermsAgree,
-                complete: lambda { fine_print_return })
+    handle_with(TermsAgree, complete: lambda { fine_print_return })
   end
 
   protected

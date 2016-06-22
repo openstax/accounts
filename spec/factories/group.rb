@@ -4,7 +4,7 @@ FactoryGirl.define do
     name nil
     is_public false
 
-    ignore do
+    transient do
       members_count 1
       owners_count 1
     end

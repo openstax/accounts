@@ -1,14 +1,11 @@
 class ConfirmationMailer < SiteMailer
 
-  def reminder(email_address)
-    @email_address = email_address
-    mail to: "#{email_address.user.full_name} <#{email_address.value}>",
-         subject: "Reminder: please verify this email address"
-  end
-
   def instructions(email_address)
     @email_address = email_address
-    mail to: "#{email_address.user.full_name} <#{email_address.value}>",
-         subject: "Please verify this email address"
+    @show_pin = ConfirmByPin.sequential_failure_for(@email_address).attempts_remaining?
+
+    mail to: "\"#{email_address.user.full_name}\" <#{email_address.value}>",
+         subject: @show_pin ? "Verify your email address using code #{@email_address.confirmation_pin}" :
+                              "Verify your email address"
   end
 end

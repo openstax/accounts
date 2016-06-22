@@ -8,6 +8,8 @@ class ContactInfo < ActiveRecord::Base
 
   attr_accessible :type, :value
 
+  before_validation :strip
+
   validates :user, presence: true
   validates :type, presence: true, inclusion: { in: VALID_TYPES }
   validates :value,
@@ -24,6 +26,9 @@ class ContactInfo < ActiveRecord::Base
 
   before_save :add_unread_update
 
+  def confirmed;  verified;  end
+  def confirmed?; verified?; end
+
   def to_subclass
     return self unless valid?
     becomes(type.constantize)
@@ -31,5 +36,11 @@ class ContactInfo < ActiveRecord::Base
 
   def add_unread_update
     user.add_unread_update
+  end
+
+  protected
+
+  def strip
+    self.value = self.value.try(:strip)
   end
 end

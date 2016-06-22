@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe ApplicationUser do
-  
+
   context 'validation' do
     it 'requires default_contact_info to belong to the user' do
       application_user = FactoryGirl.create :application_user

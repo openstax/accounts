@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 feature 'Login inside an iframe', js: true do
 
@@ -7,9 +7,9 @@ feature 'Login inside an iframe', js: true do
     user = create_user 'user'
     origin = SECRET_SETTINGS[:valid_iframe_origins].last
     visit "/remote/iframe?parent=#{origin}"
-    loaded = page.evaluate_script("OxAccount.Host.setUrl('/login')")
+    loaded = page.evaluate_script("OxAccount.Host.setUrl('/signin')")
     within_frame 'content' do
-      expect(page).to have_content("Sign in Sign up Forgot password")
+      expect(page).to have_content("Sign in with Facebook")
       fill_in 'Username', with: 'user'
       fill_in 'Password', with: 'password'
       click_button 'Sign in'

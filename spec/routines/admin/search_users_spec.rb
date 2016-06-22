@@ -1,34 +1,30 @@
-require 'spec_helper'
+require 'rails_helper'
 
 module Admin
   describe SearchUsers do
-    
-    let!(:user_1)          { FactoryGirl.create :user_with_emails, 
+
+    let!(:user_1)          { FactoryGirl.create :user_with_emails,
                                                 first_name: 'John',
                                                 last_name: 'Stravinsky',
                                                 username: 'jstrav' }
     let!(:user_2)          { FactoryGirl.create :user,
                                                 first_name: 'Mary',
                                                 last_name: 'Mighty',
-                                                full_name: 'Mary Mighty',
                                                 username: 'mary' }
-    let!(:user_3)          { FactoryGirl.create :user, 
+    let!(:user_3)          { FactoryGirl.create :user,
                                                 first_name: 'John',
                                                 last_name: 'Stead',
                                                 username: 'jstead' }
 
-    let!(:user_4)          { FactoryGirl.create :user_with_emails, 
+    let!(:user_4)          { FactoryGirl.create :user_with_emails,
                                                 first_name: 'Bob',
                                                 last_name: 'JST',
                                                 username: 'bigbear' }
 
     before(:each) do
-      MarkContactInfoVerified.call(user_1.contact_infos.email_addresses.order(:value).first)
-      MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.order(:value).first)
       user_4.contact_infos.email_addresses.order(:value).first.update_attribute(
         :value, 'jstoly292929@hotmail.com'
       )
-      user_1.reload
     end
 
     it "should match based on username" do
@@ -36,9 +32,9 @@ module Admin
       expect(outcome).to eq [user_1]
     end
 
-    it "should ignore leading wildcards on username searches" do
-      outcome = SearchUsers.call('username:%rav').outputs.items.to_a
-      expect(outcome).to eq []
+    it "should prepend leading wildcards on username searches" do
+      outcome = SearchUsers.call('username:rav').outputs.items.to_a
+      expect(outcome).to eq [user_1]
     end
 
     it "should match based on one first name" do
@@ -47,20 +43,14 @@ module Admin
     end
 
     it "should match based on one full name" do
-      outcome = SearchUsers.call('full_name:"Mary Mighty"').outputs.items.to_a
+      outcome = SearchUsers.call('name:"Mary Mighty"').outputs.items.to_a
       expect(outcome).to eq [user_2]
     end
 
-    it "should match based on an exact email address" do
-      email = user_1.contact_infos.email_addresses.order(:value).first.value
-      outcome = SearchUsers.call("email:#{email}").outputs.items.to_a
-      expect(outcome).to eq [user_1]
-    end
-
-    it "should not match based on an incomplete email address" do
+    it "should match based on a partial email address" do
       email = user_1.contact_infos.email_addresses.order(:value).first.value.split('@').first
       outcome = SearchUsers.call("email:#{email}").outputs.items.to_a
-      expect(outcome).to eq []
+      expect(outcome).to eq [user_1]
     end
 
     it "should return all results if the query is empty" do
@@ -81,7 +71,7 @@ module Admin
     end
 
     it "shouldn't allow users to add their own wildcards" do
-      outcome = SearchUsers.call("username:'%ar'").outputs.items.to_a
+      outcome = SearchUsers.call("username:'e%r'").outputs.items.to_a
       expect(outcome).to eq []
     end
 
@@ -94,7 +84,7 @@ module Admin
 
       let!(:billy_users) {
         (0..45).to_a.collect{|ii|
-          FactoryGirl.create :user, 
+          FactoryGirl.create :user,
                              first_name: "Billy#{ii.to_s.rjust(2, '0')}",
                              last_name: "Bob_#{(45-ii).to_s.rjust(2,'0')}",
                              username: "billy_#{ii.to_s.rjust(2, '0')}"

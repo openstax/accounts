@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   respond_to :html
 
-  layout 'application_body_only'
+  layout 'application'
 
   # skip all filters defined so far
   skip_filter *_process_action_callbacks.map(&:filter), only: [:routing_error]

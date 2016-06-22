@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe MessagesCreate do
 
@@ -6,8 +6,8 @@ describe MessagesCreate do
     FactoryGirl.create :doorkeeper_application, :trusted,
                        email_from_address: 'app@example.com'
   }
-  let!(:trusted_application_token) { FactoryGirl.create :doorkeeper_access_token, 
-                                                application: trusted_application, 
+  let!(:trusted_application_token) { FactoryGirl.create :doorkeeper_access_token,
+                                                application: trusted_application,
                                                 resource_owner_id: nil }
   let!(:api_user)              { OpenStax::Api::ApiUser.new(
                                    trusted_application_token, nil) }
@@ -91,14 +91,14 @@ describe MessagesCreate do
       { 'application_id' => trusted_application.id,
         'user_id' => user_1.id,
         'send_externally_now' => true,
-        'to' => {'user_ids' => [user_2.id, user_3.id, user_4.id, user_5.id]},
-        'cc' => {'user_ids' => [user_6.id, user_7.id, user_8.id, user_9.id]},
-        'bcc' => {'user_ids' => [user_10.id, user_11.id, user_12.id, user_13.id]},
+        'to' => {'user_ids' => Set.new([user_2.id, user_3.id, user_4.id, user_5.id])},
+        'cc' => {'user_ids' => Set.new([user_6.id, user_7.id, user_8.id, user_9.id])},
+        'bcc' => {'user_ids' => Set.new([user_10.id, user_11.id, user_12.id, user_13.id])},
         'subject' => 'Hello World',
         'subject_prefix' => '[Testing]',
         'body' => {'html' => '<p>Hello there!</p>',
                  'text' => 'Hello there!',
-                 'short_text' => 'Hello!'}}
+                 'short_text' => 'Hello!'} }
     }
 
     it 'creates and sends message with valid params' do
@@ -109,9 +109,11 @@ describe MessagesCreate do
       msg = MessagesCreate.handle(params: message_params,
               caller: api_user).outputs[:message]
 
-      expect(Api::V1::MessageRepresenter.new(msg).to_hash.except('id')).to(
-        eq(expected_response)
-      )
+      response = Api::V1::MessageRepresenter.new(msg).to_hash.except('id')
+      response['to']['user_ids'] = Set.new response['to']['user_ids']
+      response['cc']['user_ids'] = Set.new response['cc']['user_ids']
+      response['bcc']['user_ids'] = Set.new response['bcc']['user_ids']
+      expect(response).to eq(expected_response)
 
       expect(Message.count).to eq(c + 1)
 

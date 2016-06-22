@@ -54,7 +54,7 @@ class Api::V1::MessagesController < Api::V1::ApiController
     handle_with(MessagesCreate, caller: current_api_user,
                 success: lambda {
                            respond_with @handler_result.outputs[:message],
-                                        status: :created
+                                        status: :created, location: nil
                          },
                 failure: lambda {
                   render json: {errors: @handler_result.errors},

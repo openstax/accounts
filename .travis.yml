@@ -1,21 +1,19 @@
 sudo: false
 language: ruby
 cache: bundler
+bundler_args: --without=production --retry=6
 addons:
   postgresql: "9.3"
 rvm:
-  - "1.9.3-p547"
+  - 2.2.3
 before_install:
   - cp config/secret_settings.yml.example config/secret_settings.yml
-  - wget 'https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2'
-  - tar xf phantomjs-1.9.7-linux-x86_64.tar.bz2
-  - export PATH=$PATH:phantomjs-1.9.7-linux-x86_64/bin/
-  - psql -c "CREATE USER ox_accounts WITH CREATEDB PASSWORD 'ox_accounts'" -U postgres
-install:
-  - bundle install
+before_script:
+  - export OXA_DB_USER=postgres
+  - export OXA_DB_PASS=
+  - export OXA_TEST_DB=travis_ci_test
   - bundle exec rake db:create
   - bundle exec rake db:schema:load
-bundler_args: --without-production --retry=6
 script:
   - bundle exec rake
 notifications:

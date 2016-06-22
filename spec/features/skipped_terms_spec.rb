@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 feature 'Skipped terms are respected', js: true do
 
@@ -9,24 +9,18 @@ feature 'Skipped terms are respected', js: true do
 
   scenario 'when signing up/in under one application WITHOUT skip' do
     visit_authorize_uri(@app_without_skip) # simulate arriving from an app
-    click_on 'Sign up'
-
-    fill_in 'Email Address', with: 'bob@example.com'
-    fill_in 'Username', with: 'bob'
-    fill_in 'Password', with: 'password'
-    fill_in 'Password Again', with: 'password'
-    click_on 'Continue'
-
-    click_on 'Continue'
-    expect(page).to have_content('Complete your profile information to create your account')
+    click_password_sign_up
 
     # No skipping
     expect(page).to have_content('I have read')
 
     fill_in 'First Name', with: 'Bob'
     fill_in 'Last Name', with: 'Dillon'
-    check 'register_i_agree'
-    click_on 'Register'
+    fill_in 'Email Address', with: 'bob@example.com'
+    fill_in 'Username', with: 'bob'
+    fill_in 'Password *', with: 'password'
+    fill_in 'Confirm Password', with: 'password'
+    agree_and_click_create
 
     click_on 'Sign out'
 
@@ -45,23 +39,19 @@ feature 'Skipped terms are respected', js: true do
 
   scenario 'when signing up in under one application WITH skip' do
     visit_authorize_uri(@app_with_skip)
-    click_on 'Sign up'
 
-    fill_in 'Email Address', with: 'bobby@example.com'
-    fill_in 'Username', with: 'bobby'
-    fill_in 'Password', with: 'password'
-    fill_in 'Password Again', with: 'password'
+    click_password_sign_up
 
-    click_on 'Continue'
-    expect(page).to have_content('Merge Logins')
-    click_on 'Continue'
+    # Skipping
+    expect(page).not_to have_content('I have read')
 
-    # Skipped!
-    expect(page).to_not have_content('I have read')
-
-    fill_in 'First Name', with: 'Bobby'
-    fill_in 'Last Name', with: 'Kennedy'
-    click_on 'Register'
+    fill_in 'First Name', with: 'Bob'
+    fill_in 'Last Name', with: 'Dillon'
+    fill_in 'Email Address', with: 'bob@example.com'
+    fill_in 'Username', with: 'bob'
+    fill_in 'Password *', with: 'password'
+    fill_in 'Confirm Password', with: 'password'
+    click_on 'Create'
 
     click_on 'Sign out'
 
@@ -70,7 +60,7 @@ feature 'Skipped terms are respected', js: true do
 
     visit_authorize_uri(@app_with_skip)
 
-    fill_in 'Username', with: 'bobby'
+    fill_in 'Username', with: 'bob'
     fill_in 'Password', with: 'password'
     click_on 'Sign in'
 
@@ -80,24 +70,19 @@ feature 'Skipped terms are respected', js: true do
 
   scenario 'no skipping when signing up/in without a particular application' do
     visit '/'
-    click_on 'Sign up'
 
-    fill_in 'Email Address', with: 'bobby@example.com'
-    fill_in 'Username', with: 'bobby'
-    fill_in 'Password', with: 'password'
-    fill_in 'Password Again', with: 'password'
+    click_password_sign_up
 
-    click_on 'Continue'
-    expect(page).to have_content('Merge Logins')
-    click_on 'Continue'
-
-    # Gotta sign
+    # No skipping
     expect(page).to have_content('I have read')
 
-    fill_in 'First Name', with: 'Bobby'
-    fill_in 'Last Name', with: 'Kennedy'
-    check 'register_i_agree'
-    click_on 'Register'
+    fill_in 'First Name', with: 'Bob'
+    fill_in 'Last Name', with: 'Dillon'
+    fill_in 'Email Address', with: 'bob@example.com'
+    fill_in 'Username', with: 'bob'
+    fill_in 'Password *', with: 'password'
+    fill_in 'Confirm Password', with: 'password'
+    agree_and_click_create
 
     click_on 'Sign out'
 
@@ -105,9 +90,8 @@ feature 'Skipped terms are respected', js: true do
     make_new_contract_version
 
     visit '/'
-    click_on 'Sign in'
 
-    fill_in 'Username', with: 'bobby'
+    fill_in 'Username', with: 'bob'
     fill_in 'Password', with: 'password'
     click_on 'Sign in'
 

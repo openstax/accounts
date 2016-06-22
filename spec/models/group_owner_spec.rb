@@ -1,8 +1,8 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe GroupOwner do
   let!(:group_owner) { FactoryGirl.build(:group_owner) }
-  
+
   context 'validation' do
     it 'must have a valid group' do
       group_owner.group = nil

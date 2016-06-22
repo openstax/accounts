@@ -42,14 +42,14 @@ module SignInState
   def authenticate_user!
     unless signed_in?
       store_url unless session[:from_iframe] # iframe login handles the return logic itself
-      redirect_to main_app.login_path(params.slice(:client_id))
+      redirect_to main_app.signin_path(params.slice(:client_id))
     end
   end
 
   def authenticate_admin!
     unless current_user.is_administrator?
       store_url
-      redirect_to main_app.login_path(params.slice(:client_id))
+      redirect_to main_app.signin_path(params.slice(:client_id))
     end
   end
 

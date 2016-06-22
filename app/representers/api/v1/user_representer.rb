@@ -1,8 +1,8 @@
 module Api::V1
   class UserRepresenter < Roar::Decorator
-    include Roar::Representer::JSON
+    include Roar::JSON
 
-    property :id, 
+    property :id,
              type: Integer,
              readable: true,
              writeable: false,
@@ -28,12 +28,16 @@ module Api::V1
     property :full_name,
              type: String,
              readable: true,
-             writeable: true
+             writeable: false
 
     property :title,
              type: String,
              readable: true,
              writeable: true
+
+    collection :contact_infos,
+               if: ->(args) { args[:render_contact_infos] },
+               decorator: ContactInfoRepresenter
 
   end
 end

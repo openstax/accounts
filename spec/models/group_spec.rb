@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Group do
 
@@ -7,7 +7,7 @@ describe Group do
 
   let!(:group_1) { FactoryGirl.create(:group) }
   let!(:group_2) { FactoryGirl.create(:group) }
-  
+
   context 'validation' do
     it 'must have a unique name, if present' do
       group_1.name = nil

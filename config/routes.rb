@@ -1,4 +1,5 @@
 Accounts::Application.routes.draw do
+  mount OpenStax::Api::Engine, at: '/'
 
   # More often used routes should appear first
   root :to => 'static_pages#home'
@@ -8,9 +9,17 @@ Accounts::Application.routes.draw do
     post 'callback', path: 'auth/:provider/callback'
     get 'failure', path: 'auth/failure'
 
+    get 'signin', action: :new
+    get 'signout', action: :destroy
+
+    # Maintain these deprecated routes for a while until client code learns to
+    # use /signin and /signout
     get 'login', action: :new
     get 'logout', action: :destroy
-    get 'i_am_returning'
+
+    get 'help', path: '/signin/help', as: :signin_help
+    post 'help', path: '/signin/help', as: :signin_help
+
     get 'returning_user'
 
     if Rails.env.development?
@@ -27,29 +36,25 @@ Accounts::Application.routes.draw do
   scope controller: 'users' do
     get 'profile', action: :edit
     put 'profile', action: :update
-    get 'ask_for_email'
-    put 'ask_for_email'
   end
 
-  namespace 'registration' do
-    get 'complete'
-    put 'complete'
-    get 'verification_pending'
-    put 'i_verified'
+  namespace 'signup' do
+    get '/', action: :index
+    get 'password'
+    get 'social'
+    post 'social'
   end
 
   resource :identity, only: :update
   scope controller: 'identities' do
-    get 'signup', action: :new
-    get 'forgot_password'
-    post 'forgot_password'
+    delete 'identity/:provider', action: :destroy
     get 'reset_password'
     post 'reset_password'
   end
 
   resources :contact_infos, only: [:create, :destroy] do
     member do
-      put 'toggle_is_searchable'
+      put 'set_searchable'
       put 'resend_confirmation'
     end
   end
@@ -68,11 +73,12 @@ Accounts::Application.routes.draw do
   scope controller: 'static_pages' do
     get 'copyright'
     get 'status'
+    get 'api'
   end
 
   apipie
 
-  api :v1, :default => true do
+  api :v1, default: true do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update] do
@@ -110,6 +116,13 @@ Accounts::Application.routes.draw do
     resources :group_members, only: [:index], path: 'memberships'
     resources :group_owners, only: [:index], path: 'ownerships'
 
+    resources :contact_infos, only: [] do
+      member do
+        put 'resend_confirmation'
+        put 'confirm_by_pin'
+      end
+    end
+
     if !Rails.env.production?
       get 'raise_exception/:type', to: 'dev#raise_exception'
     end
@@ -127,10 +140,11 @@ Accounts::Application.routes.draw do
     put 'cron',                         to: 'base#cron'
     get 'raise_exception/:type',        to: 'base#raise_exception', as: 'raise_exception'
 
-    resources :users, only: [:index, :show, :update, :edit] do
+    resources :users, only: [:index, :update, :edit] do
       post 'become', on: :member
-      post 'make_admin', on: :member
     end
+
+    resource :security_log, only: [:show]
 
     post :verify_contact_info, path: '/contact_infos/:id/verify',
          controller: :contact_infos, action: :verify

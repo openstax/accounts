@@ -1,6 +1,6 @@
 module Api::V1
   class MessageBodyRepresenter < Roar::Decorator
-    include Roar::Representer::JSON
+    include Roar::JSON
 
       property :html,
                type: String,

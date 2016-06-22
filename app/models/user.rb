@@ -2,9 +2,12 @@ class User < ActiveRecord::Base
 
   USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
   USERNAME_MAX_LENGTH = 50
-  VALID_STATES = ['temp', 'unclaimed', 'activated']
-
-  belongs_to :person, inverse_of: :users
+  VALID_STATES = [
+    'temp', # deprecated but still could exist for old accounts
+    'new_social',
+    'unclaimed',
+    'activated'
+  ]
 
   has_one :identity, dependent: :destroy, inverse_of: :user
 
@@ -14,7 +17,7 @@ class User < ActiveRecord::Base
   has_many :contact_infos, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, inverse_of: :user
 
-  has_many :message_recipients, inverse_of: :user, :dependent => :destroy
+  has_many :message_recipients, inverse_of: :user, dependent: :destroy
   has_many :received_messages, through: :message_recipients, source: :message
   has_many :sent_messages, class_name: 'Message'
 
@@ -26,20 +29,26 @@ class User < ActiveRecord::Base
 
   has_many :oauth_applications, through: :member_groups
 
+  has_many :security_logs
+
+  before_validation :strip_names
+
   validates :username, presence: true,
                        length: { minimum: 3, maximum: USERNAME_MAX_LENGTH },
                        format: { with: /\A[A-Za-z\d_]+\z/,
-                                 message: "Usernames can only contain letters, numbers, and underscores." }
+                                 message: "can only contain letters, numbers, and underscores." }
 
   validates :username, uniqueness: { case_sensitive: false },
                        if: :username_changed?
 
   validates :state, inclusion: { in: VALID_STATES,
-                                message: "must be one of #{VALID_STATES.join(',')}" }
+                                 message: "must be one of #{VALID_STATES.join(',')}" }
+
+  validate :name_part_required_for_suffix_or_title
 
   delegate_to_routine :destroy
 
-  attr_accessible :title, :first_name, :last_name, :full_name, :suffix
+  attr_accessible :title, :first_name, :last_name, :suffix, :username
 
   attr_readonly :uuid
 
@@ -49,7 +58,7 @@ class User < ActiveRecord::Base
 
   before_save :add_unread_update
 
-  # Can remove this method definition when we upgrade to Rails 4
+  # Remove this method definition when we upgrade to Rails 4
   def self.none
     where('0=1')
   end
@@ -91,14 +100,17 @@ class User < ActiveRecord::Base
     'unclaimed' == state
   end
 
-  def name
-    result = full_name.present? ? full_name : guessed_full_name || username
-    title.present? ? "#{title} #{result}" : result
+  def is_new_social?
+    'new_social' == state
   end
 
-  def guessed_full_name
-    name = first_name.present? && last_name.present? ? "#{first_name} #{last_name}" : nil
-    suffix.present? ? "#{name} #{suffix}" : name
+  def name
+    full_name.present? ? full_name : username
+  end
+
+  def full_name
+    guess = "#{title} #{first_name} #{last_name} #{suffix}".gsub(/\s+/,' ').strip
+    guess.blank? ? nil : guess
   end
 
   def guessed_first_name
@@ -155,6 +167,33 @@ class User < ActiveRecord::Base
   def make_first_user_an_admin
     return if Rails.env.production?
     self.is_administrator = true if User.count == 0
+  end
+
+  def name_part_required_for_suffix_or_title
+    has_name_parts = first_name.present? || last_name.present?
+
+    if !has_name_parts
+      if title.present?
+        errors.add(:base, "A first or last name is required if a title is provided")
+        return false
+      end
+
+      if suffix.present?
+        errors.add(:base, "A first or last name is required if a suffix is provided")
+        false
+      end
+    end
+
+    true
+  end
+
+  def strip_names
+    self.title      = self.title.try(:strip)
+    self.first_name = self.first_name.try(:strip)
+    self.last_name  = self.last_name.try(:strip)
+    self.suffix     = self.suffix.try(:strip)
+    self.username   = self.username.try(:strip)
+    true
   end
 
 end

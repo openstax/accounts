@@ -17,8 +17,7 @@ end
 
 def imported_user username
   ImportUsers.new('some.csv', nil).create_user(
-    username, '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', '', '', 'Full
-    Name', 'user@example.com')
+    username, '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', 'Full', 'Name', 'user@example.com')
 end
 
 def create_user_with_plone_password
@@ -44,10 +43,13 @@ def create_nonlocal_user(username, provider='facebook')
 
   result = CreateUserFromOmniauthData.call(data)
   raise "create_nonlocal_user for #{username} failed" if result.errors.any?
-  User.find_by_username(username)
+  user = User.find_by_username(username)
+  email = create_email_address_for(user, "#{username}@example.org")
+  MarkContactInfoVerified.call(email)
+  user
 end
 
-def login_as username, password='password'
+def signin_as username, password='password'
   fill_in 'Username', with: username
   fill_in 'Password', with: password
   click_button 'Sign in'
@@ -56,14 +58,15 @@ end
 def create_new_application(trusted = false)
   click_link 'New Application'
   fill_in 'Name', with: 'example'
-  fill_in 'Callback urls', with: 'http://localhost/'
+  fill_in 'Callback urls', with: 'https://localhost/'
   check 'Trusted?' if trusted
   click_button 'Submit'
 end
 
 def create_email_address_for(user, email_address, confirmation_code=nil)
   FactoryGirl.create(:email_address, user: user, value: email_address,
-                     confirmation_code: confirmation_code)
+                     confirmation_code: confirmation_code,
+                     verified: confirmation_code.nil?)
 end
 
 def generate_reset_code_for(username)
@@ -73,23 +76,30 @@ end
 
 def generate_expired_reset_code_for(username)
   one_year_ago = 1.year.ago
-  DateTime.stub(:now).and_return(one_year_ago)
+  allow(DateTime).to receive(:now).and_return(one_year_ago)
   reset_code = generate_reset_code_for username
-  DateTime.unstub(:now)
+  allow(DateTime).to receive(:now).and_call_original
   reset_code
 end
 
-def password_reset_email_sent?(user)
-  user_emails = user.contact_infos.email_addresses.verified
-  code = user.identity.password_reset_code.code
+def sign_in_help_email_sent?(user)
+  user_emails = user.contact_infos.email_addresses
   mail = ActionMailer::Base.deliveries.last
   expect(mail.to.length).to eq(1)
   expect(user_emails.collect {|e| e.value}).to include(mail.to[0])
   expect(mail.from).to eq(['noreply@openstax.org'])
-  expect(mail.subject).to eq('[OpenStax] Reset your password')
-  expect(mail.body.encoded).to include("Hi #{user.username},")
-  @reset_link = "/reset_password?code=#{code}"
-  expect(mail.body.encoded).to include("http://nohost#{@reset_link}")
+  expect(mail.subject).to eq('[OpenStax] Instructions for signing in to your OpenStax account')
+  expect(mail.body.encoded).to include("Hi #{user.casual_name},")
+  unless user.identity.nil?
+    code = user.identity.password_reset_code.code
+    @reset_link = "/reset_password?code=#{code}"
+    expect(mail.body.encoded).to include("http://nohost#{@reset_link}")
+  end
+  social_auths = user.authentications.reject { |a| a.provider == 'identity' }
+  social_auths.each do |social_auth|
+    expect(mail.body.encoded).to include("Sign in with #{social_auth.display_name}")
+    expect(mail.body.encoded).to include("http://nohost/auth/#{social_auth.provider}")
+  end
 end
 
 def link_in_last_email
@@ -99,18 +109,18 @@ end
 
 def create_application
   @app = FactoryGirl.create(:doorkeeper_application, :trusted,
-                           redirect_uri: 'http://www.example.com/callback')
-  token = FactoryGirl.create(:doorkeeper_access_token,
-                             application: @app, resource_owner_id: nil)
+                           redirect_uri: 'https://www.example.com/callback')
+  FactoryGirl.create(:doorkeeper_access_token,
+                     application: @app, resource_owner_id: nil)
   @app
 end
 
 def with_forgery_protection
   begin
-    ActionController::Base.any_instance.stub(:allow_forgery_protection).and_return(true)
+    allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
     yield if block_given?
   ensure
-    ActionController::Base.any_instance.unstub(:allow_forgery_protection)
+    allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_call_original
   end
 end
 
@@ -158,4 +168,22 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
   raise "New contract version didn't save" unless new_contract_version.save
   new_contract_version.publish
   raise "New contract version didn't publish" unless new_contract_version.version == 2
+end
+
+def click_password_sign_up
+  click_on 'Sign up'
+  click_on 'Sign up with a password'
+end
+
+def expect_sign_in_page
+  expect(page).to have_content('Sign in to OpenStax Access all')
+end
+
+def expect_social_sign_up_page
+  expect(page).to have_content('Password managed by')
+end
+
+def agree_and_click_create
+  find(:css, '#signup_i_agree').set(true)
+  click_button 'Create'
 end

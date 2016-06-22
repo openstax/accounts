@@ -7,9 +7,17 @@
 </p>
 <p>
   <% if @handler_result.outputs.can_log_in %>
-    <%= t :".you_can_now_sign_in_html", sign_in: (link_to (t :".sign_in"), login_url) %>
+    <%= t :".you_can_now_sign_in.content_html",
+          link: (link_to (t :".you_can_now_sign_in.sign_in"),
+                         signin_url)
+        %>
   <% else %>
-    <%= t :".please_sign_up_html", sign_up: (link_to (t :".sign_up"), registration_complete_url), email: @handler_result.outputs.email_address %>
+    <%# TODO replace root_url with right value %>
+    <%= t :".please_sign_up.content_html",
+          link: (link_to (t :".please_sign_up.sign_up"),
+                         root_url),
+          email: @handler_result.outputs.email_address
+        %>
   <% end %>
 </p>
 <% end %>
