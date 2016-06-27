@@ -101,7 +101,7 @@ en:
         error: We were unable to verify your email address.
         success: Thank you for verifying your email address.
       verification_code_not_found: >
-        Sorry, we couldn't verify an email using the verification code you
+        Sorry, we couldn't verify your email using the verification code you
         provided. If you typed it in manually, please check for errors. If
         you're still having trouble, please visit your profile page to resend
         the verification email.
@@ -297,7 +297,7 @@ en:
       page_heading: Site Terms & Policies
 
     pose:
-      agree: Agree
+      agree: I agree
       contract_acceptance_required: >
         To continue, please review and agree to the following site terms by
         clicking "I agree" at the bottom of this page.
