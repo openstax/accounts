@@ -62,7 +62,7 @@ class ContactInfosController < ApplicationController
                     msg = I18n.t :"controllers.contact_infos.already_verified"
                   else
                     msg = I18n.t :"controllers.contact_infos.verification_sent",
-                                 address: contact_infos.value
+                                 address: contact_info.value
                     security_log :contact_info_confirmation_resent,
                                  contact_info_id: contact_info.id,
                                  contact_info_type: contact_info.type,
