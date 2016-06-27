@@ -5,7 +5,7 @@ en:
       verification_sent: A verification message has been sent to "%{address}"
 
     identities:
-      cannot_reset_password_beacause_user_doesnt_have_one: >
+      cannot_reset_password_because_user_doesnt_have_one: >
         You cannot reset your password because your account does not have a
         password.
       identity_removed: "%{identity} removed"
@@ -90,7 +90,7 @@ en:
     confirm_by_code:
       unable_to_verify_address: Unable to verify email address
 
-    find_or_create_unclaimed_users:
+    find_or_create_unclaimed_user:
       must_provide_email_or_username: Must provide email or username
 
   # From here on the sections correspond to directories under app/views
@@ -108,7 +108,7 @@ en:
       you_may_now_close_this_window: >
         Your email address is now verified. You may close this window.
 
-    contirm_unclaimed:
+    confirm_unclaimed:
       page_heading: Invite Verification
       please_sign_up:
         # %{link}   a hyperlink pointing to sign up page. Label of the link
@@ -141,7 +141,7 @@ en:
 
   identities:
     reset_password:
-      confirm_again: Confirm Password
+      confirm_password: Confirm Password
       page_heading: Reset Password
       password: Password
       set_password: Set Password

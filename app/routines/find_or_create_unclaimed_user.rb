@@ -19,7 +19,7 @@ class FindOrCreateUnclaimedUser
 
   def exec(options)
     unless options[:email] || options[:username]
-      fatal_error(code: :invalid_input, message: (I18n.t :"routines.fund_or_create_unclaimed_users.must_provide_email_or_usernmae"))
+      fatal_error(code: :invalid_input, message: (I18n.t :"routines.find_or_create_unclaimed_user.must_provide_email_or_username"))
     end
 
     user = find_user(options)

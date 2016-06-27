@@ -5,7 +5,7 @@ pl:
       verification_sent: Wiadomość weryfikacyjna została wysłana do "%{address}"
 
     identities:
-      cannot_reset_password_beacause_doesnt_have_one: >
+      cannot_reset_password_because_user_doesnt_have_one: >
         Nie możesz zmienić swojego hasła, ponieważ go nie posiadasz.
       identity_removed: Usunięto %{identity}
       password_changed: Hasło zostało zmienione
@@ -25,7 +25,7 @@ pl:
         e-mail. Pamiętaj, że adresy e-mail muszą zostać zweryfikowane, zanim
         będzie można ich używać przy logowaniu.
       several_accounts_for_one_email: >
-        Istnieje więcej niż jedno konto powiązane z podanym adresem e-mail. 
+        Istnieje więcej niż jedno konto powiązane z podanym adresem e-mail.
         Zaloguj się używając nazwy użytkownika.
       sign_in_option_already_used: >
         Ta metoda logowania jest już używana przez kogoś innego. Jeżeli jesteś
@@ -90,7 +90,7 @@ pl:
     confirm_by_code:
       unable_to_verify_address: Nie udało się zweryfikować adresu e-mail.
 
-    find_or_create_unclaimed_users:
+    find_or_create_unclaimed_user:
       must_provide_email_or_username: >
         Wymagany jest adres e-mail lub nazwa użytkownika
 
@@ -164,7 +164,7 @@ pl:
     help:
       if_you_know_username_or_email:
         content_html: >
-          Jeżeli pamiętasz swoją nazwę użytkownika lub adres e-mail, 
+          Jeżeli pamiętasz swoją nazwę użytkownika lub adres e-mail,
           wpisz go poniżej. Wyślemy Ci wiadomość e-mail z instrukcją, jak
           możesz odzyskać dostęp do swojego konta. Jeżeli nie pamiętasz
           nazwy ani adresu, %{link}.
@@ -178,7 +178,7 @@ pl:
       logout_reminder_html: >
         Jeżeli używasz publicznego komputera, <b>pamiętaj, aby wylogować się</b>
         gdy skończysz!
-      openstax_wont_use_social_media_with_no_permission_html:
+      openstax_wont_use_social_media_without_permission_html:
         <i>Nie obawiaj się.</i> OpenStax <b>nie zamieści niczego</b> w
         twoich kontach społecznościowych bez twojej zgody.
       page_heading: Zaloguj się do OpenStax!
@@ -193,6 +193,13 @@ pl:
       sign_up: Zarejestruj się
       used_this_method_last_time: Tej metody użyłeś/łaś poprzednim razem.
       username_or_email: Nazwa użytkownika albo adres e-mail
+
+  sign_in_help_mailer:
+    sign_in_help:
+      facebook: Facebook
+      twitter: Twitter
+      google: Google
+      simple_password: a password
 
   signup:
     new_account:
@@ -213,7 +220,7 @@ pl:
         Pamiętaj, że inne strony OpenStax mogą mieć dodatkowe
         regulaminy.
       show_title_and_suffix: Pokaż tytuł i dopisek
-      suffiks: Dopisek
+      suffix: Dopisek
       take_me_back_to_sign_in_page: Powróć do strony logowania.
       title: Tytuł
       username: Nazwa użytkownika *
@@ -232,7 +239,7 @@ pl:
       logout_reminder_html: >
         Jeżeli używasz publicznego komputera <b>pamiętaj, aby wylogować się</b>
         gdy skończysz!
-      openstax_wont_use_social_media_with_no_permission_html:
+      openstax_wont_use_social_media_without_permission_html:
         <i>Nie obawiaj się.</i> OpenStax <b>nie zamieści niczego</b> w
         twoich kontach społecznościowych bez twojej zgody.
       page_heading: Zarejestruj się w OpenStax
