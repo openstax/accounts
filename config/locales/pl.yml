@@ -6,7 +6,7 @@ pl:
 
     identities:
       cannot_reset_password_beacause_doesnt_have_one: >
-        Nie możesz zmienić swojego hasła, ponieważ go jeszcze nie posiadasz.
+        Nie możesz zmienić swojego hasła, ponieważ go nie posiadasz.
       identity_removed: Usunięto %{identity}
       password_changed: Hasło zostało zmienione
       password_expired: >
@@ -212,8 +212,8 @@ pl:
       policies_notice: >
         Pamiętaj, że inne strony OpenStax mogą mieć dodatkowe
         regulaminy.
-      show_title_and_suffix: Podaj tytuł i afiliację
-      suffiks: Afiliacja
+      show_title_and_suffix: Pokaż tytuł i dopisek
+      suffiks: Dopisek
       take_me_back_to_sign_in_page: Powróć do strony logowania.
       title: Tytuł
       username: Nazwa użytkownika *
