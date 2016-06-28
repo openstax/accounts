@@ -201,6 +201,13 @@ en:
         It looks like you used this the last time you signed in.
       username_or_email: Username or Email
 
+  sign_in_help_mailer:
+    sign_in_help:
+      facebook: Facebook
+      twitter: Twitter
+      google: Google
+      simple_password: a password
+
   signup:
     # In fields `first_name`, `last_name`, `email_address` and `username`
     # the asterisk on the end indicated that appropriate field on sign up page
