@@ -71,7 +71,9 @@ class SessionsController < ApplicationController
                                            "else.  If that someone is you, remove it from " \
                                            "your other account and try again."
         else
-          raise IllegalState, "SessionsCallback errors: #{@handler_result.errors.map(&:code).join(', ')}; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect}"
+          Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}"
+          raise IllegalState, "SessionsCallback errors: #{@handler_result.errors.inspect
+                              }; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect}"
         end
       end
     )
