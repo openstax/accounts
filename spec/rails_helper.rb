@@ -48,6 +48,7 @@ RSpec.configure do |config|
   # config.mock_with :rr
 
   config.include WaitForAjax, type: :feature
+  config.include I18nMacros
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -73,6 +74,17 @@ RSpec.configure do |config|
   #     end
   # or set:
   #   config.infer_spec_type_from_file_location!
+
+  # Some tests might change I18n.locale.
+  config.after(:each) do |config|
+    I18n.locale = :en
+  end
+
+  # For Capybara's poltergist tests ensure that request's locale is always
+  # set to English.
+  config.before(type: :feature, js: true) do |config|
+    page.driver.add_header('Accept-Language', 'en')
+  end
 end
 
 # Adds a convenience method to get interpret the body as JSON and convert to a hash;
@@ -131,3 +143,8 @@ class ActiveRecord::Base
 end
 
 ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
+
+# Fail on missing translation in a spec.
+I18n.exception_handler = lambda do |exception, locale, key, options|
+  raise "Missing translation for #{key} in locale #{locale} with options #{options}"
+end
