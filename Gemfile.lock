@@ -385,7 +385,7 @@ DEPENDENCIES
   jbuilder
   jquery-rails
   keyword_search (~> 1.5.0)
-  lev (~> 2.2.0)
+  lev (~> 2.2.2)
   lograge
   maruku
   omniauth
