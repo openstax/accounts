@@ -142,7 +142,7 @@ GEM
     jwt (1.5.1)
     keyword_search (1.5.0)
     kgio (2.10.0)
-    lev (2.2.1)
+    lev (2.2.2)
       actionpack (>= 3.0)
       active_attr
       activemodel (>= 3.0)
@@ -161,7 +161,7 @@ GEM
     maruku (0.7.2)
     mime-types (1.25.1)
     mini_portile2 (2.0.0)
-    multi_json (1.12.0)
+    multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     nokogiri (1.6.7.2)
@@ -344,7 +344,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.49)
+    tzinfo (0.3.50)
     uber (0.0.15)
     uglifier (3.0.0)
       execjs (>= 0.3.0, < 3)
@@ -417,4 +417,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
