@@ -51,23 +51,26 @@ describe ContactInfosController, type: :controller do
     it "returns error if no code given" do
       get 'confirm'
       expect(response.code).to eq('400')
-      expect(response.body).to include("Sorry, we couldn't verify your email using the verification code you provided.")
+      expect(response.body).to have_no_missing_translations
+      expect(response.body).to have_content(t :"contact_infos.confirm.verification_code_not_found")
       expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
     end
 
     it "returns error if code doesn't match" do
       get 'confirm', :code => 'abcd'
       expect(response.code).to eq('400')
-      expect(response.body).to include("Unable to verify email address") # header
-      expect(response.body).to include("Sorry, we couldn't verify your email using the verification code you provided.") # body
+      expect(response.body).to have_no_missing_translations
+      expect(response.body).to have_content(t :"routines.confirm_by_code.unable_to_verify_address")
+      expect(response.body).to have_content(t :"contact_infos.confirm.verification_code_not_found")
       expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
     end
 
     it "returns success if code matches" do
       get 'confirm', :code => @email.confirmation_code
       expect(response).to be_success
-      expect(response.body).to include("Thank you for verifying your email address") # header
-      expect(response.body).to include('Your email address is now verified') # body
+      expect(response.body).to have_no_missing_translations
+      expect(response.body).to have_content(t :"contact_infos.confirm.page_heading.success")
+      expect(response.body).to have_content(t :"contact_infos.confirm.you_may_now_close_this_window")
       expect(EmailAddress.find_by_value(@email.value).verified).to be_truthy
     end
   end
@@ -84,13 +87,15 @@ describe ContactInfosController, type: :controller do
     it "returns error if no code given" do
       get 'confirm_unclaimed'
       expect(response.code).to eq('400')
-      expect(response.body).to include("we couldn't find any pending invitations")
+      expect(response.body).to have_no_missing_translations
+      expect(response.body).to have_content(t :"contact_infos.confirm_unclaimed.verification_code_not_found")
     end
 
     it "returns success if code matches" do
       get 'confirm_unclaimed', :code => email.confirmation_code
       expect(response).to be_success
-      expect(response.body).to include('Thanks for validating your OpenStax invitation')
+      expect(response.body).to have_no_missing_translations
+      expect(response.body).to have_content(t :"contact_infos.confirm_unclaimed.thanks_for_validating")
       expect(EmailAddress.find_by_value(email.value).verified).to be_truthy
     end
 

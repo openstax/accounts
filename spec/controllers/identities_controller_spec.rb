@@ -31,15 +31,17 @@ describe IdentitiesController, type: :controller do
       it 'returns error if no code given' do
         get 'reset_password'
         expect(response.code).to eq('400')
-        expect(response.body).to include('Reset password link is invalid')
-        expect(response.body).not_to include('Set Password')
+        expect(response.body).to have_no_missing_translations
+        expect(response.body).to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
+        expect(response.body).not_to include(t :"identities.reset_password.set_password")
       end
 
       it "returns error if code doesn't match" do
         get 'reset_password', code: 'abcd'
         expect(response.code).to eq('400')
-        expect(response.body).to include('Reset password link is invalid')
-        expect(response.body).not_to include('Set Password')
+        expect(response.body).to have_no_missing_translations
+        expect(response.body).to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
+        expect(response.body).not_to include(t :"identities.reset_password.set_password")
       end
 
       it 'returns error if code has expired' do
@@ -49,15 +51,17 @@ describe IdentitiesController, type: :controller do
         allow(DateTime).to receive(:now).and_call_original
 
         expect(response.code).to eq('400')
-        expect(response.body).to include('Reset password link has expired')
-        expect(response.body).not_to include('Set Password')
+        expect(response.body).to have_no_missing_translations
+        expect(response.body).to include(t :"handlers.identities_reset_password.reset_link_expired")
+        expect(response.body).not_to include(t :"identities.reset_password.set_password")
       end
 
       it 'shows reset password form if code matches' do
         get 'reset_password', code: identity.password_reset_code.code
         expect(response).to be_successful
-        expect(response.body).not_to include('Reset password link is invalid')
-        expect(response.body).to include('Set Password')
+        expect(response.body).to have_no_missing_translations
+        expect(response.body).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
+        expect(response.body).to include(t :"identities.reset_password.set_password")
       end
     end
 
@@ -65,8 +69,9 @@ describe IdentitiesController, type: :controller do
       it 'returns error if no code given' do
         post 'reset_password'
         expect(response.code).to eq('400')
-        expect(response.body).to include('Reset password link is invalid')
-        expect(response.body).not_to include('Set Password')
+        expect(response.body).to have_no_missing_translations
+        expect(response.body).to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
+        expect(response.body).not_to include(t :"identities.reset_password.set_password")
         identity.reload
         expect(identity.authenticate('password')).to be_truthy
       end
@@ -74,8 +79,9 @@ describe IdentitiesController, type: :controller do
       it "returns error if code doesn't match" do
         post 'reset_password', code: 'abcd'
         expect(response.code).to eq('400')
-        expect(response.body).to include('Reset password link is invalid')
-        expect(response.body).not_to include('Set Password')
+        expect(response.body).to have_no_missing_translations
+        expect(response.body).to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
+        expect(response.body).not_to include(t :"identities.reset_password.set_password")
         identity.reload
         expect(identity.authenticate('password')).to be_truthy
       end
@@ -84,9 +90,10 @@ describe IdentitiesController, type: :controller do
         post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: '', password_confirmation: ''})
         expect(response.code).to eq('400')
-        expect(response.body).not_to include('Reset password link is invalid')
+        expect(response.body).to have_no_missing_translations
+        expect(response.body).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
         expect(response.body).to include("Password can't be blank")
-        expect(response.body).to include('Set Password')
+        expect(response.body).to include(t :"identities.reset_password.set_password")
         identity.reload
         expect(identity.authenticate('password')).to be_truthy
       end
@@ -95,9 +102,10 @@ describe IdentitiesController, type: :controller do
         post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: 'pass', password_confirmation: 'pass'})
         expect(response.code).to eq('400')
-        expect(response.body).not_to include('Reset password link is invalid')
+        expect(response.body).to have_no_missing_translations
+        expect(response.body).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
         expect(response.body).to include('Password is too short')
-        expect(response.body).to include('Set Password')
+        expect(response.body).to include(t :"identities.reset_password.set_password")
         identity.reload
         expect(identity.authenticate('password')).to be_truthy
       end
@@ -106,9 +114,10 @@ describe IdentitiesController, type: :controller do
         post('reset_password', code: identity.password_reset_code.code,
              reset_password: { password: 'password', password_confirmation: 'passwordd'})
         expect(response.code).to eq('400')
-        expect(response.body).not_to include('Reset password link is invalid')
+        expect(response.body).to have_no_missing_translations
+        expect(response.body).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
         expect(response.body).to include("Password doesn't match confirmation")
-        expect(response.body).to include('Set Password')
+        expect(response.body).to include(t :"identities.reset_password.set_password")
         identity.reload
         expect(identity.authenticate('password')).to be_truthy
       end
@@ -118,7 +127,7 @@ describe IdentitiesController, type: :controller do
              reset_password: { password: 'password!', password_confirmation: 'password!'})
         expect(response).to redirect_to(root_url)
         expect(flash[:alert]).to be_blank
-        expect(flash[:notice]).to include('Your password has been reset successfully! You are now signed in.')
+        expect(flash[:notice]).to include(t :"controllers.identities.password_reset_successfully")
         identity.reload
         expect(identity.authenticate('password')).to be_falsey
         expect(identity.authenticate('password!')).to be_truthy
