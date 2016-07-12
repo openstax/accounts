@@ -1,4 +1,4 @@
-<%= page_heading (t @handler_result.errors.any? ? :"page_heading.error" : :".page_heading.success") %>
+<%= page_heading (t @handler_result.errors.any? ? :".page_heading.error" : :".page_heading.success") %>
 
 <% if @handler_result.errors.any? %>
   <p><%= t :".verification_code_not_found" %></p>
