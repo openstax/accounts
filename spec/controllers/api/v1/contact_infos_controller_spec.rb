@@ -33,9 +33,23 @@ describe Api::V1::ContactInfosController, type: :controller, api: true, version:
       expect(response).to have_api_error_code('already_confirmed')
     end
 
-    it "sends the confirmation if all good" do
-      expect(SendContactInfoConfirmation).to receive(:call).with(contact_info)
+    it "sends the confirmation if all good and `send_pin` not specified" do
+      expect(SendContactInfoConfirmation).to receive(:call).with(contact_info: contact_info, send_pin: nil)
       api_put :resend_confirmation, right_user_token, parameters: {id: contact_info.id}
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it "sends the confirmation if all good and `send_pin` false" do
+      expect(SendContactInfoConfirmation).to receive(:call).with(contact_info: contact_info, send_pin: false)
+      api_put :resend_confirmation, right_user_token, parameters: {id: contact_info.id},
+                                                      raw_post_data: {send_pin: false}.to_json
+      expect(response).to have_http_status(:no_content)
+    end
+
+    it "sends the confirmation if all good and `send_pin` true" do
+      expect(SendContactInfoConfirmation).to receive(:call).with(contact_info: contact_info, send_pin: true)
+      api_put :resend_confirmation, right_user_token, parameters: {id: contact_info.id},
+                                                      raw_post_data: {send_pin: true}.to_json
       expect(response).to have_http_status(:no_content)
     end
   end

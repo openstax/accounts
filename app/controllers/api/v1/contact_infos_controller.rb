@@ -12,7 +12,8 @@ class Api::V1::ContactInfosController < Api::V1::ApiController
   api :PUT, '/contact_infos/:id/resend_confirmation',
             'Resends the message with instructions on how to confirm the contact info'
   description <<-EOS
-    Does not require an input body.  Called by users (or code running on behalf of users).
+    Does not require an input body, but a body can be used to indicate a PIN should
+    be sent.  Called by users (or code running on behalf of users).
 
     This is always a "resend" because a confirmation message is always sent when a
     contact info is added to an account.
@@ -22,6 +23,8 @@ class Api::V1::ContactInfosController < Api::V1::ApiController
     * 204 if the contact info is owned by the current user and is unconfirmed
     * 422 if the contact info is owned by the current user but is already confirmed.
       Includes an `already_confirmed` error message.
+
+    #{json_schema(Api::V1::ResendConfirmationRepresenter, include: :writeable)}
   EOS
   def resend_confirmation
     OSU::AccessPolicy.require_action_allowed!(:resend_confirmation, current_api_user, @contact_info)
@@ -31,7 +34,9 @@ class Api::V1::ContactInfosController < Api::V1::ApiController
       security_log :contact_info_confirmation_resent, contact_info_id: params[:id],
                                                       contact_info_type: @contact_info.type,
                                                       contact_info_value: @contact_info.value
-      SendContactInfoConfirmation.call(@contact_info)
+
+      payload = consume!(Hashie::Mash.new, represent_with: Api::V1::ResendConfirmationRepresenter)
+      SendContactInfoConfirmation.call(contact_info: @contact_info, send_pin: payload.send_pin)
       head :no_content
     end
   end
