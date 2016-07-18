@@ -9,7 +9,7 @@ describe ContactInfosResendConfirmation do
     it 'resends the confirmation message' do
       cc = contact_info.confirmation_code
       expect_any_instance_of(ConfirmationMailer).to(
-        receive(:instructions).with(contact_info))
+        receive(:instructions).with(email_address: contact_info, send_pin: false))
       ContactInfosResendConfirmation.call(caller: user,
                                           params: { id: contact_info.id })
 

@@ -25,7 +25,7 @@ class ContactInfosCreate
     @contact_info.save
     transfer_errors_from(@contact_info, {scope: :contact_info}, true)
 
-    run(SendContactInfoConfirmation, @contact_info)
+    run(SendContactInfoConfirmation, contact_info: @contact_info)
     outputs[:contact_info] = @contact_info
   end
 
