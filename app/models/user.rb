@@ -1,7 +1,8 @@
 class User < ActiveRecord::Base
 
-  USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
+  USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
   USERNAME_MAX_LENGTH = 50
+  USERNAME_MIN_LENGTH = 3
   VALID_STATES = [
     'temp', # deprecated but still could exist for old accounts
     'new_social',
@@ -34,8 +35,8 @@ class User < ActiveRecord::Base
   before_validation :strip_names
 
   validates :username, presence: true,
-                       length: { minimum: 3, maximum: USERNAME_MAX_LENGTH },
-                       format: { with: /\A[A-Za-z\d_]+\z/,
+                       length: { minimum: USERNAME_MIN_LENGTH, maximum: USERNAME_MAX_LENGTH },
+                       format: { with: USERNAME_VALID_REGEX,
                                  message: "can only contain letters, numbers, and underscores." }
 
   validates :username, uniqueness: { case_sensitive: false },
