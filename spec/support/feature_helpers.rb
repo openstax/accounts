@@ -50,9 +50,9 @@ def create_nonlocal_user(username, provider='facebook')
 end
 
 def signin_as username, password='password'
-  fill_in 'Username', with: username
-  fill_in 'Password', with: password
-  click_button 'Sign in'
+  fill_in (t :"sessions.new.username_or_email"), with: username
+  fill_in (t :"sessions.new.password"), with: password
+  click_button (t :"sessions.new.sign_in")
 end
 
 def create_new_application(trusted = false)
@@ -171,19 +171,22 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
 end
 
 def click_password_sign_up
-  click_on 'Sign up'
-  click_on 'Sign up with a password'
+  click_on (t :"sessions.new.sign_up")
+  click_on (t :"signup.index.sign_up_with_password")
 end
 
 def expect_sign_in_page
-  expect(page).to have_content('Sign in to OpenStax Access all')
+  expect(page).to have_no_missing_translations
+  expect(page).to have_content(t :"sessions.new.page_heading")
+  expect(page).to have_content(t :"sessions.new.page_sub_heading")
 end
 
 def expect_social_sign_up_page
-  expect(page).to have_content('Password managed by')
+  expect(page).to have_no_missing_translations
+  expect(page).to have_content(t :"signup.new_account.password_managed_by", manager: '')
 end
 
 def agree_and_click_create
   find(:css, '#signup_i_agree').set(true)
-  click_button 'Create'
+  click_button (t :"signup.new_account.create_account")
 end
