@@ -5,38 +5,38 @@ en:
       verification_sent: A verification message has been sent to "%{address}"
 
     identities:
-      cannot_reset_password_because_user_doesnt_have_one: >
+      cannot_reset_password_because_user_doesnt_have_one: >-
         You cannot reset your password because your account does not have a
         password.
       identity_removed: "%{identity} removed"
       password_changed: Password changed
-      password_expired: >
+      password_expired: >-
         Your password has expired. Please enter a new password.
-      password_reset_successfully: >
+      password_reset_successfully: >-
         Your password has been reset successfully! You are now signed in.
 
     sessions:
-      accessing_instructions_emailed: >
+      accessing_instructions_emailed: >-
         Instructions for accessing your OpenStax account have been emailed to
         you.
       incorrect_password: The password you provided is incorrect.
       new_sign_in_option_added: Your new sign in option as been added!
-      no_account_for_username_or_email: >
+      no_account_for_username_or_email: >-
         We have no account for the username or email you provided. Email
         addresses must be verified in out system to use them during sign in.
-      several_accounts_for_one_email: >
+      several_accounts_for_one_email: >-
         We found several accounts with your email address. Please sign in using
         your username.
-      sign_in_option_already_used: >
+      sign_in_option_already_used: >-
         That sign in option is already used by someone else. If that someone is
         you, remove it from your other account and try again.
 
     signup:
-      already_have_username_and_password: >
+      already_have_username_and_password: >-
         You already have a username and password on your account!
 
     terms:
-      temporarily_unavailable: >
+      temporarily_unavailable: >-
         The terms are temporarily unavailable. Check back soon.
 
   handlers:
@@ -48,25 +48,25 @@ en:
       reset_link_is_invalid: Reset password link is invalid
 
     sessions_help:
-      did_not_find_account_for_username_or_email: >
+      did_not_find_account_for_username_or_email: >-
         We did not find an account with the username or email you provided.
-      found_account_but_it_has_no_emails: >
+      found_account_but_it_has_no_emails: >-
         We found your account but can't send you an email because your account
         doesn't have any email addresses listed. Please contact support for
         assistance.
 
     signup_password:
-      you_must_agree_to_the_terms: >
+      you_must_agree_to_the_terms: >-
         You must agree to the terms to create your account.
 
     signup_social:
-      you_must_agree_to_the_terms: >
+      you_must_agree_to_the_terms: >-
         You must agree to the terms to create your account.
-      you_must_provide_an_email_address: >
+      you_must_provide_an_email_address: >-
         You must provide an email address to create your account.
 
     terms_agree:
-      you_must_agree_to_the_terms: >
+      you_must_agree_to_the_terms: >-
         You must agree to the terms to continue. If you have questions, please
         contact support.
 
@@ -74,12 +74,12 @@ en:
     alert:
       please_enable_javascript:
         intro: Hey!
-        content: >
+        content: >-
           Please enable JavaScript in your browser! Many %{site_name} pages
           will not work properly without it.
 
     profile:
-      check_searchable_if_you_want_to_be_searchable: >
+      check_searchable_if_you_want_to_be_searchable: >-
         Check the Searchable box if you want other OpenStax users to find you
         using this email address.
       click_to_verify: Click to verify
@@ -100,12 +100,12 @@ en:
       page_heading:
         error: We were unable to verify your email address.
         success: Thank you for verifying your email address.
-      verification_code_not_found: >
+      verification_code_not_found: >-
         Sorry, we couldn't verify your email using the verification code you
         provided. If you typed it in manually, please check for errors. If
         you're still having trouble, please visit your profile page to resend
         the verification email.
-      you_may_now_close_this_window: >
+      you_may_now_close_this_window: >-
         Your email address is now verified. You may close this window.
 
     confirm_unclaimed:
@@ -114,12 +114,12 @@ en:
         # %{link}   a hyperlink pointing to sign up page. Label of the link
         #           is defined by the .sign_up key.
         # %{email}  user's email address.
-        content_html: >
+        content_html: >-
           Please %{link} for an account using email %{email} address in order
           to complete the process.
         sign_up: sign up
       thanks_for_validating: Thanks for validating your OpenStax invitation.
-      verification_code_not_found: >
+      verification_code_not_found: >-
         Sorry, we couldn't find any pending invitations using the verification
         code you provided. If you typed it in manually, please check for errors.
         If you're still having trouble, you might ask whoever setup your account
@@ -132,10 +132,10 @@ en:
 
   errors:
     any:
-      appology_message_html: >
+      appology_message_html: >-
         We're sorry this %{code} error occured. If you need help, please contact
         %{contact_info}.
-      appology_message_long_html: >
+      appology_message_long_html: >-
         We're sorry this %{code} error occured. If you need help, please contact
         %{contact_info} and reference error %{error_id}.
 
@@ -145,10 +145,10 @@ en:
       page_heading: Reset Password
       password: Password
       set_password: Set Password
-      there_was_a_problem_with_reset_link: >
+      there_was_a_problem_with_reset_link: >-
         Unfortunately, there was a problem with your password reset link. If you
         continue to have problems, please contact support.
-      use_form_below_to_reset_password: >
+      use_form_below_to_reset_password: >-
         Use the form below to reset your password.
 
   layouts:
@@ -163,7 +163,7 @@ en:
       welcome_html: Welcome, %{username}
 
     attention:
-      please_enable_javascript: >
+      please_enable_javascript: >-
         Please enable JavaScript in your browser! Some site contet will not work
         properly without it.
 
@@ -172,7 +172,7 @@ en:
       if_you_know_username_or_email:
         # %{link}   an email hyperlink to info@openstax.org. Label of the link
         #           is defined by the .contact_customer_support key.
-        content_html: >
+        content_html: >-
           If you know your account's username or email address, please enter it
           below and we'll send you an email about how to regain access to your
           account. If you do not have this information, please %{link}.
@@ -183,9 +183,9 @@ en:
 
     new:
       cant_sign_in: Can't sign in?
-      logout_reminder_html: >
+      logout_reminder_html: >-
         If you're on a public computer, <b>be sure to sign out</b> when you're done!
-      openstax_wont_use_social_media_without_permission_html: >
+      openstax_wont_use_social_media_without_permission_html: >-
         <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
         network without your permission.
       page_heading: Sign in to OpenStax
@@ -197,7 +197,7 @@ en:
       sign_in_with_google: Sign in with Google
       sign_in_with_twitter: Sign in with Twitter
       sign_up: Sign up
-      used_this_method_last_time: >
+      used_this_method_last_time: >-
         It looks like you used this the last time you signed in.
       username_or_email: Username or Email
 
@@ -223,7 +223,7 @@ en:
       # Labels of both hyperlinks are English titles of appropriate documents.
       # There is no ability to translate titles, as the documents themselves
       # are not translatable.
-      have_read_terms_and_agree_html: >
+      have_read_terms_and_agree_html: >-
         I have read the %{terms_of_use} and the %{privacy_policy} and I agree to
         be bound by their terms.
       last_name: Last Name *
@@ -233,7 +233,7 @@ en:
       #             depending on how the user signs in/
       password_managed_by: Password managed by %{manager}
       please_verify_your_email: Please verify your email!
-      policies_notice: >
+      policies_notice: >-
         Note that other OpenStax sites may have terms of their own.
       show_title_and_suffix: Show title and suffix
       suffix: Suffix
@@ -241,7 +241,7 @@ en:
       title: Title
       username: Username *
       wait_a_second: Wait a second!
-      you_will_receive_verification_email: >
+      you_will_receive_verification_email: >-
         You'll receive a verification email shortly. Please take a moment and
         verify your email address.
 
@@ -251,13 +251,13 @@ en:
         #           is defined by the .sign_in key.
         content_html: <b>Already have an account?</b> %{link}.
         sign_in: Sign in
-      dont_want_to_remember_password_html: >
+      dont_want_to_remember_password_html: >-
         <b>Don't want to remember a password?</b><br/>
         Sign up with Facebook, Google, or Twitter.
-      logout_reminder_html: >
+      logout_reminder_html: >-
         If you're on a public computer, <b>be sure to sign out</b> when
         you're done!
-      openstax_wont_use_social_media_without_permission_html: >
+      openstax_wont_use_social_media_without_permission_html: >-
         <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
         network without your permission.
       page_heading: Sign up with OpenStax
@@ -275,14 +275,14 @@ en:
 
   static_pages:
     copyright:
-      content_copyright_notice_html: >
+      content_copyright_notice_html: >-
         All content on this web site is either Copyright %{copyright_holder} or
         %{copyright_holder} has permission for use from the copyright holders.
-      opensource_notice_html: >
+      opensource_notice_html: >-
         The source code for %{site_name} is open source. For copyright and
         licensing details, see the relevant files at
         <a href="https://github.com/openstax/accounts">https://github.com/openstax/accounts</a>.
-      other_copyright_notice_html: >
+      other_copyright_notice_html: >-
         All other content/information/imagery on this site (including but not
         limited to logos, taglines, images, text copy, web site design, etc;
         excluding user information and content licensed from other entities) is
@@ -296,7 +296,7 @@ en:
       # Labels of both hyperlinks are English titles of appropriate documents.
       # There is no ability to translate titles, as the documents themselves
       # are not translatable.
-      notice_html: >
+      notice_html: >-
         Your use of %{site_name} is governed by two agreements, the
         %{terms_of_use} and the %{privacy_policy}. Please familiarize yourself
         with their contents. If you do not agree with their conditions, please
@@ -305,15 +305,15 @@ en:
 
     pose:
       agree: I agree
-      contract_acceptance_required: >
+      contract_acceptance_required: >-
         To continue, please review and agree to the following site terms by
         clicking "I agree" at the bottom of this page.
       # %{contract_title}   an English name of the contract which's text
       #                     has changed.
-      contracts_changed_notice: >
+      contracts_changed_notice: >-
         There have been changes to the %{contract_title}. Please review them and
         then click "I agree" at the bottom of this page to continue.
-      have_read_terms_and_agree: >
+      have_read_terms_and_agree: >-
         I have read the terms listed above and I agree to be bound by their
         temrs
 
@@ -322,8 +322,8 @@ en:
       add_email_address: Add an email
       email_addresses: Emails
       enable_other_sign_in_options: Enable other sign in options
-      how_you_sign_in_html: How you<br class="wide"/> sign in
+      how_you_sign_in_html: How you<br class="wide"> sign in
       name: Name
-      other_sign_in_options_html: Other sign in<br class="wide"/> options
+      other_sign_in_options_html: Other sign in<br class="wide"> options
       page_heading: Your Account
       username: Username
