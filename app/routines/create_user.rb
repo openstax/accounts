@@ -34,10 +34,21 @@ class CreateUser
 
     loop do
       username = create_random_username
-      break if username_is_unique?(username)
+      break if username_is_unique?(username) || max_attempts_exceeded?
     end
 
     username
+  end
+
+  def max_attempts_exceeded?
+    @attempts_count ||= 0
+    @attempts_count += 1
+    did_exceed = @attempts_count > username_max_attempts
+    did_exceed
+  end
+
+  def username_max_attempts
+    10
   end
 
   def username_is_valid?(username)
