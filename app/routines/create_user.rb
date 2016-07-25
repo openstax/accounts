@@ -30,36 +30,22 @@ class CreateUser
   end
 
   def generate_unique_valid_username(username)
-    return username if username_is_valid?(username) && username_is_unique?(username)
+    return username if username_is_valid?(username) && User.new(username: username).username_is_unique?
 
     username_max_attempts = 10
 
     username_max_attempts.times do
-      username = create_random_username(7)
-      return username if username_is_unique?(username)
+      username = User.new.create_random_username(7)
+      return username if User.new(username: username).username_is_unique?
     end
 
-    return create_random_username(12) # last-ditch effort
-
-    raise "could not create a unique username after 10 tries"
+    raise "could not create a unique username after #{username_max_attempts} tries"
   end
 
   def username_is_valid?(username)
-    return false if username.nil?
-
-    good_length = (username.length >= User::USERNAME_MIN_LENGTH) && (username.length <= User::USERNAME_MAX_LENGTH)
-    all_valid_chars = username.match(User::USERNAME_VALID_REGEX)
-
-    username_is_valid = good_length && all_valid_chars
-  end
-
-  def username_is_unique?(username)
-    return false if username.nil?
-    User.where('LOWER(username) = ?', username).none?
-  end
-
-  def create_random_username(num_digits_in_suffix)
-    "user#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
+    user = User.new(username: username)
+    user.valid?
+    user.errors[:username].none?
   end
 
   def guessed_first_name(full_name)

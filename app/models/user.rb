@@ -1,8 +1,7 @@
 class User < ActiveRecord::Base
 
-  USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
+  USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
   USERNAME_MAX_LENGTH = 50
-  USERNAME_MIN_LENGTH = 3
   VALID_STATES = [
     'temp', # deprecated but still could exist for old accounts
     'new_social',
@@ -35,8 +34,8 @@ class User < ActiveRecord::Base
   before_validation :strip_names
 
   validates :username, presence: true,
-                       length: { minimum: USERNAME_MIN_LENGTH, maximum: USERNAME_MAX_LENGTH },
-                       format: { with: USERNAME_VALID_REGEX,
+                       length: { minimum: 3, maximum: USERNAME_MAX_LENGTH },
+                       format: { with: /\A[A-Za-z\d_]+\z/,
                                  message: "can only contain letters, numbers, and underscores." }
 
   validates :username, uniqueness: { case_sensitive: false },
@@ -58,6 +57,15 @@ class User < ActiveRecord::Base
   before_create :make_first_user_an_admin
 
   before_save :add_unread_update
+
+  def username_is_unique?
+    return false if username.nil?
+    User.where('LOWER(username) = ?', username).none?
+  end
+
+  def create_random_username(num_digits_in_suffix)
+    "user#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
+  end
 
   # Remove this method definition when we upgrade to Rails 4
   def self.none
