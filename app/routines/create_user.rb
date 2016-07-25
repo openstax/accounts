@@ -35,9 +35,11 @@ class CreateUser
     username_max_attempts = 10
 
     username_max_attempts.times do
-      username = create_random_username
+      username = create_random_username(7)
       return username if username_is_unique?(username)
     end
+
+    return create_random_username(12) # last-ditch effort
 
     raise "could not create a unique username after 10 tries"
   end
@@ -56,8 +58,8 @@ class CreateUser
     User.where('LOWER(username) = ?', username).none?
   end
 
-  def create_random_username
-    "user#{rand(1000000)}"
+  def create_random_username(num_digits_in_suffix)
+    "user#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
   end
 
   def guessed_first_name(full_name)
