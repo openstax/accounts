@@ -33,13 +33,13 @@ class CreateUser
     return username if username_is_valid?(username) && username_is_unique?(username)
 
     username_max_attempts = 10
-    attempts_count = 0
-    loop do
+
+    username_max_attempts.times do
       username = create_random_username
-      break if username_is_unique?(username) || (attempts_count += 1) > username_max_attempts
+      return username if username_is_unique?(username)
     end
 
-    username
+    raise "could not create a unique username after 10 tries"
   end
 
   def username_is_valid?(username)
