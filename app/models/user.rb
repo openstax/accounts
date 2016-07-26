@@ -58,13 +58,14 @@ class User < ActiveRecord::Base
 
   before_save :add_unread_update
 
-  def username_is_unique?
-    return false if username.nil?
-    User.where('LOWER(username) = ?', username).none?
+  def self.username_is_valid?(username)
+    user = User.new(username: username)
+    user.valid?
+    user.errors[:username].none?
   end
 
-  def create_random_username(num_digits_in_suffix)
-    "user#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
+  def self.create_random_username(base:, num_digits_in_suffix:)
+    "#{base}#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
   end
 
   # Remove this method definition when we upgrade to Rails 4

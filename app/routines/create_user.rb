@@ -30,22 +30,16 @@ class CreateUser
   end
 
   def generate_unique_valid_username(username)
-    return username if username_is_valid?(username) && User.new(username: username).username_is_unique?
+    return username if User.username_is_valid?(username)
 
     username_max_attempts = 10
 
     username_max_attempts.times do
-      username = User.new.create_random_username(7)
-      return username if User.new(username: username).username_is_unique?
+      username = User.create_random_username(base: "user", num_digits_in_suffix: 7)
+      return username if User.username_is_valid?(username)
     end
 
     raise "could not create a unique username after #{username_max_attempts} tries"
-  end
-
-  def username_is_valid?(username)
-    user = User.new(username: username)
-    user.valid?
-    user.errors[:username].none?
   end
 
   def guessed_first_name(full_name)
