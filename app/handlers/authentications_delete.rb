@@ -1,4 +1,4 @@
-class AuthenticationDelete
+class AuthenticationsDelete
 
   lev_handler
 

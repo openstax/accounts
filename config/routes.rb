@@ -5,26 +5,29 @@ Accounts::Application.routes.draw do
   root :to => 'static_pages#home'
 
   scope controller: 'sessions' do
-    get 'callback', path: 'auth/:provider/callback'
-    post 'callback', path: 'auth/:provider/callback'
+    get 'signin', action: :new
+
+    get 'auth/:provider/callback', action: :create
+    post 'auth/:provider/callback', action: :create
+
+    get 'signout', action: :destroy
+
+    get 'redirect_back'
+
     get 'failure', path: 'auth/failure'
 
-    get 'signin', action: :new
-    get 'signout', action: :destroy
+    get 'help', path: '/signin/help', as: :signin_help
+    post 'help', path: '/signin/help', as: :signin_help
 
     # Maintain these deprecated routes for a while until client code learns to
     # use /signin and /signout
     get 'login', action: :new
     get 'logout', action: :destroy
+  end
 
-    get 'help', path: '/signin/help', as: :signin_help
-    post 'help', path: '/signin/help', as: :signin_help
-
-    get 'returning_user'
-
-    if Rails.env.development?
-      get 'ask_new_or_returning'
-    end
+  scope controller: 'authentications' do
+    post 'auth/:provider', action: :create
+    delete 'auth/:provider', action: :destroy
   end
 
   # routes for access via an iframe
@@ -47,7 +50,6 @@ Accounts::Application.routes.draw do
 
   resource :identity, only: :update
   scope controller: 'identities' do
-    delete 'identity/:provider', action: :destroy
     get 'reset_password'
     post 'reset_password'
   end

@@ -8,13 +8,14 @@ class SessionsController < ApplicationController
 
   skip_before_filter :finish_sign_up, only: [:destroy]
 
-  before_filter :get_authorization_url, only: [:new, :callback]
+  before_filter :get_authorization_url, only: [:new, :create]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:new, :callback, :failure, :destroy, :help]
 
   helper_method :last_signin_provider
 
+  # Login form
   def new
     # If no url to redirect back to, store the fallback url (the authorization url or the referer)
     # Handles the case where the user got sent straight to the login page
@@ -29,7 +30,8 @@ class SessionsController < ApplicationController
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
   end
 
-  def callback
+  # Handle OAuth callback (actual login)
+  def create
     # If we have a client_id but no url to redirect back to,
     # store the fallback url (the authorization page)
     # However, do not store the referrer if the client_id is not present
@@ -47,17 +49,17 @@ class SessionsController < ApplicationController
         when :returning_user
           set_last_signin_provider(authentication.provider)
           security_log :sign_in_successful, authentication_id: authentication.id
-          redirect_to action: :returning_user
+          redirect_to action: :redirect_back
         when :new_password_user
           set_last_signin_provider(authentication.provider)
           security_log :sign_up_successful, authentication_id: authentication.id
-          redirect_to action: :returning_user
+          redirect_to action: :redirect_back
         when :transferred_authentication
           set_last_signin_provider(authentication.provider)
           security_log :authentication_transferred, authentication_id: authentication.id
-          redirect_to action: :returning_user
+          redirect_to action: :redirect_back
         when :no_action
-          redirect_to action: :returning_user
+          redirect_to action: :redirect_back
         when :new_social_user
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to signup_social_path
@@ -68,7 +70,7 @@ class SessionsController < ApplicationController
           redirect_to profile_path, notice: "Your new sign in option has been added!"
         when :authentication_taken
           redirect_to profile_path, alert: "That sign in option is already used by someone " \
-                                           "else.  If that someone is you, remove it from " \
+                                           "else. If that someone is you, remove it from " \
                                            "your other account and try again."
         else
           Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}"
@@ -79,12 +81,12 @@ class SessionsController < ApplicationController
     )
   end
 
-  # This is an official action instead of just doing `redirect_back` in callback
-  # handler so that fine_print can check to see if terms need to be signed.
-  def returning_user
-    redirect_back
+  # This is an official action so that fine_print can check to see if terms need to be signed
+  def redirect_back
+    super
   end
 
+  # Destroy session (logout)
   def destroy
     security_log :sign_out
     if params[:parent]
@@ -112,22 +114,7 @@ class SessionsController < ApplicationController
     redirect_to url
   end
 
-  def help
-    if request.post?
-      handle_with(SessionsHelp,
-                  success: lambda do
-                    security_log :help_requested
-                    redirect_to root_path,
-                                notice: 'Instructions for accessing your OpenStax account have been emailed to you.'
-                  end,
-                  failure: lambda do
-                    security_log :help_request_failed, username_or_email: params[:username_or_email]
-                    render :help, status: 400
-                  end)
-    end
-  end
-
-  # Omniauth failure endpoint
+  # OAuth failure (e.g. wrong password)
   def failure
     flash.now[:alert] = case params[:message]
     when 'cannot_find_user'
@@ -145,6 +132,22 @@ class SessionsController < ApplicationController
     end
 
     render 'new'
+  end
+
+  # Cannot login/forgot password
+  def help
+    if request.post?
+      handle_with(SessionsHelp,
+                  success: lambda do
+                    security_log :help_requested
+                    redirect_to root_path,
+                                notice: 'Instructions for accessing your OpenStax account have been emailed to you.'
+                  end,
+                  failure: lambda do
+                    security_log :help_request_failed, username_or_email: params[:username_or_email]
+                    render :help, status: 400
+                  end)
+    end
   end
 
   protected

@@ -5,13 +5,12 @@ describe IdentitiesController, type: :controller do
   describe 'reset_password' do
     render_views
 
-    let!(:user) { FactoryGirl.create :user, :terms_agreed, username: 'user_one' }
-    let!(:identity) {
-      i = FactoryGirl.create :identity, user: user, password: 'password'
-      i.save!
-      GeneratePasswordResetCode.call(i)
-      i
-    }
+    let!(:user)     { FactoryGirl.create :user, :terms_agreed, username: 'user_one' }
+    let!(:identity) do
+      FactoryGirl.create(:identity, user: user, password: 'password').tap do |id|
+        GeneratePasswordResetCode.call(id)
+      end
+    end
 
     context 'PUT update' do
       it "updates the user's password" do
@@ -19,8 +18,9 @@ describe IdentitiesController, type: :controller do
         expect(!!identity.authenticate('new_password')).to eq false
 
         controller.sign_in! user
-        put 'update', identity: {password: 'new_password',
-                                 password_confirmation: 'new_password'}
+        put 'update', identity: {
+          password: 'new_password', password_confirmation: 'new_password'
+        }
         expect(response.status).to eq 202
         expect(!!identity.reload.authenticate('password')).to eq false
         expect(!!identity.authenticate('new_password')).to eq true
@@ -137,6 +137,7 @@ describe IdentitiesController, type: :controller do
         expect(identity.authenticate('password!')).to be_truthy
       end
     end
+
   end
 
 end
