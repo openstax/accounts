@@ -6,9 +6,6 @@
 # If :ensure_no_errors is not set, the returned user object may have errors
 # and if so will not be saved.
 class CreateUser
-
-  USERNAME_ATTEMPTS = 10
-
   lev_routine
 
   protected
@@ -16,17 +13,8 @@ class CreateUser
   def exec(username:, title: nil, first_name: nil, last_name: nil,
            suffix: nil, full_name: nil, state:, ensure_no_errors: false)
 
-    original_username = username
-
     if ensure_no_errors
-      username = get_valid_username(original_username)
-
-      # If the number of attempts is exceeded, the user creation will fail
-      for i in 1..USERNAME_ATTEMPTS do
-        break if User.where('LOWER(username) = ?', username).none?
-        username = get_valid_username(original_username)
-        username = randomify_username(username)
-      end
+      username = generate_unique_valid_username(username)
     end
 
     outputs[:user] = User.create do |user|
@@ -41,19 +29,17 @@ class CreateUser
     transfer_errors_from(outputs[:user], {type: :verbatim})
   end
 
-  # Returns a valid, though possibly non-unique, username
-  def get_valid_username(base)
-    base = randomify_username(base) if base.blank?
+  def generate_unique_valid_username(username)
+    return username if User.username_is_valid?(username)
 
-    # Go ahead and sanitize the username knowing that User.create will
-    # expect it to adhere to certain rules on length and content.
-    base = base.gsub(User::USERNAME_DISCARDED_CHAR_REGEX, '')
-               .slice(0..User::USERNAME_MAX_LENGTH - 1).downcase
-  end
+    username_max_attempts = 10
 
-  def randomify_username(base)
-    base = 'user' if base.blank?
-    "#{base}#{rand(1000000)}"
+    username_max_attempts.times do
+      username = User.create_random_username(base: "user", num_digits_in_suffix: 7)
+      return username if User.username_is_valid?(username)
+    end
+
+    raise "could not create a unique username after #{username_max_attempts} tries"
   end
 
   def guessed_first_name(full_name)
@@ -65,5 +51,4 @@ class CreateUser
     return nil if full_name.blank?
     full_name.split("\s").drop(1).join(' ')
   end
-
 end
