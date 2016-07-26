@@ -8,16 +8,17 @@ class SessionsController < ApplicationController
 
   skip_before_filter :finish_sign_up, only: [:destroy]
 
+  before_filter :get_authorization_url, only: [:new, :callback]
+
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:new, :callback, :failure, :destroy, :help]
 
   helper_method :last_signin_provider
 
   def new
-    get_authorization_url
-    options = @authorization_url.nil? ? {} : { url: @authorization_url }
     # If no url to redirect back to, store the fallback url (the authorization url or the referer)
     # Handles the case where the user got sent straight to the login page
+    options = @authorization_url.nil? ? {} : { url: @authorization_url }
     store_fallback(options)
 
     # If the user is already logged in, this means they got linked to the login page somehow
@@ -29,7 +30,6 @@ class SessionsController < ApplicationController
   end
 
   def callback
-    get_authorization_url
     # If we have a client_id but no url to redirect back to,
     # store the fallback url (the authorization page)
     # However, do not store the referrer if the client_id is not present
@@ -129,19 +129,21 @@ class SessionsController < ApplicationController
 
   # Omniauth failure endpoint
   def failure
-    security_log :sign_in_failed, reason: params[:message]
-    flash.now[:alert] =
-      case params[:message]
-      when 'cannot_find_user'
-        "We have no account for the username or email you provided.  " \
-        "Email addresses must be verified in our system to use them during sign in."
-      when 'multiple_users'
-        "We found several accounts with your email address.  Please sign in using your username."
-      when 'bad_password'
-        "The password you provided is incorrect."
-      else
-        params[:message]
-      end
+    flash.now[:alert] = case params[:message]
+    when 'cannot_find_user'
+      "We have no account for the username or email you provided. " \
+      "Email addresses must be verified in our system to use them during sign in."
+    when 'multiple_users'
+      "We found several accounts with your email address. Please sign in using your username."
+    when 'bad_password'
+      "The password you provided is incorrect."
+    when 'too_many_login_attempts'
+      "You have made too many login attempts recently. " \
+      "Please try again later or contact customer support for help."
+    else
+      params[:message]
+    end
+
     render 'new'
   end
 
