@@ -75,6 +75,7 @@ group :development, :test do
   gem 'capybara'
   gem 'capybara-email'
   gem 'poltergeist'
+  gem 'timecop'
   gem 'coveralls', require: false
   gem 'shoulda-matchers', require: false
 end

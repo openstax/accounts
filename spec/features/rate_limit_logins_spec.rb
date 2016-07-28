@@ -40,6 +40,16 @@ feature 'User gets blocked after multiple failed login attempts', js: true do
       fill_in 'Password', with: 'password'
       click_button 'Sign in'
       expect(page).to have_content('You have made too many login attempts recently.')
+
+      Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
+        visit '/'
+        expect_sign_in_page
+
+        fill_in 'Username', with: 'user'
+        fill_in 'Password', with: 'password'
+        click_button 'Sign in'
+        expect(page).to have_content('Welcome, user')
+      end
     end
   end
 
@@ -73,6 +83,16 @@ feature 'User gets blocked after multiple failed login attempts', js: true do
       fill_in 'Password', with: 'password'
       click_button 'Sign in'
       expect(page).to have_content('You have made too many login attempts recently.')
+
+      Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
+        visit '/'
+        expect_sign_in_page
+
+        fill_in 'Username', with: 'user@example.com'
+        fill_in 'Password', with: 'password'
+        click_button 'Sign in'
+        expect(page).to have_content('Welcome, user')
+      end
     end
   end
 
@@ -105,6 +125,16 @@ feature 'User gets blocked after multiple failed login attempts', js: true do
       fill_in 'Password', with: 'password'
       click_button 'Sign in'
       expect(page).to have_content('You have made too many login attempts recently.')
+
+      Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
+        visit '/'
+        expect_sign_in_page
+
+        fill_in 'Username', with: 'user'
+        fill_in 'Password', with: 'password'
+        click_button 'Sign in'
+        expect(page).to have_content('Welcome, user')
+      end
     end
   end
 
