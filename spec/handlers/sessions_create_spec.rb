@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SessionsCallback do
+describe SessionsCreate do
 
   let(:user_state) { MockUserState.new }
 
@@ -12,7 +12,7 @@ describe SessionsCallback do
           let!(:identity)       { FactoryGirl.create(:identity) }
 
           it "makes a new user with password" do
-            result = SessionsCallback.handle(
+            result = described_class.handle(
               user_state: user_state,
               request: MockOmniauthRequest.new('identity', identity.uid, {})
             )
@@ -35,7 +35,7 @@ describe SessionsCallback do
                                                      provider: 'twitter') }
 
           it "makes a new social user" do
-            result = SessionsCallback.handle(
+            result = described_class.handle(
               user_state: user_state,
               request: MockOmniauthRequest.new(authentication.provider,
                                                authentication.uid,
@@ -51,7 +51,7 @@ describe SessionsCallback do
           end
 
           it "gracefully handles making a new social user with non-western characters in nickname" do
-            result = SessionsCallback.handle(
+            result = described_class.handle(
               user_state: user_state,
               request: MockOmniauthRequest.new(authentication.provider,
                                                authentication.uid,
@@ -80,7 +80,7 @@ describe SessionsCallback do
           it "should link new auth to the existing user" do
             result = nil
             expect{
-              result = SessionsCallback.handle(
+              result = described_class.handle(
                 user_state: user_state,
                 request: MockOmniauthRequest.new(
                   authentication.provider,
@@ -105,7 +105,7 @@ describe SessionsCallback do
 
           it "ignores the other users and makes a new social user" do
 
-            result = SessionsCallback.handle(
+            result = described_class.handle(
               user_state: user_state,
               request: MockOmniauthRequest.new(authentication.provider,
                                                authentication.uid,
@@ -127,7 +127,7 @@ describe SessionsCallback do
       let!(:authentication) { FactoryGirl.create(:authentication) }
 
       it "logs in the user and returns to app" do
-        result = SessionsCallback.handle(
+        result = described_class.handle(
           user_state: user_state,
           request: MockOmniauthRequest.new(authentication.provider,
                                            authentication.uid,
@@ -153,7 +153,7 @@ describe SessionsCallback do
 
         context "with no email or with an email not in the database" do
           it "adds auth to the signed in user and prompt new or returning" do
-            result = SessionsCallback.handle(
+            result = described_class.handle(
               user_state: user_state,
               request: MockOmniauthRequest.new(authentication.provider,
                                                authentication.uid,
@@ -174,7 +174,7 @@ describe SessionsCallback do
             signed_in_user.last_name = 'Last'
             signed_in_user.save!
 
-            result = SessionsCallback.handle(
+            result = described_class.handle(
               user_state: user_state,
               request: MockOmniauthRequest.new(authentication.provider,
                                                authentication.uid,
@@ -201,7 +201,7 @@ describe SessionsCallback do
           end
 
           it 'does not add auth to the signed in user' do
-            result = SessionsCallback.handle(
+            result = described_class.handle(
               user_state: user_state,
               request: MockOmniauthRequest.new(authentication.provider,
                                                authentication.uid,
@@ -223,7 +223,7 @@ describe SessionsCallback do
                                                      user: signed_in_user) }
 
           it "maintains signed in user" do
-            result = SessionsCallback.handle(
+            result = described_class.handle(
               user_state: user_state,
               request: MockOmniauthRequest.new(authentication.provider,
                                                authentication.uid,
@@ -252,7 +252,7 @@ describe SessionsCallback do
 
             # weird edge case? not on flow chart
             it "transfers the auth to the signed in user, leave the other auths to other user" do
-              result = SessionsCallback.handle(
+              result = described_class.handle(
                 user_state: user_state,
                 request: MockOmniauthRequest.new(authentication.provider,
                                                  authentication.uid,
@@ -280,7 +280,7 @@ describe SessionsCallback do
             }
 
             it "does not transfer auths to signed in user" do
-              result = SessionsCallback.handle(
+              result = described_class.handle(
                 user_state: user_state,
                 request: MockOmniauthRequest.new(authentication.provider,
                                                  authentication.uid,
@@ -315,7 +315,7 @@ describe SessionsCallback do
                          uid: authentication.uid}
             result = nil
             expect{
-              result = SessionsCallback.handle(
+              result = described_class.handle(
                 user_state: user_state,
                 request: MockOmniauthRequest.new(authentication.provider,
                                                  authentication.uid,
@@ -334,7 +334,7 @@ describe SessionsCallback do
                                                      user: signed_in_user) }
 
           it "maintains signed in user and returns to app" do
-            result = SessionsCallback.handle(
+            result = described_class.handle(
               user_state: user_state,
               request: MockOmniauthRequest.new(authentication.provider,
                                                authentication.uid,
@@ -354,7 +354,7 @@ describe SessionsCallback do
             }
 
             it "transfers temp user auths to signed in user, destroys temp user, returns to app" do
-              result = SessionsCallback.handle(
+              result = described_class.handle(
                 user_state: user_state,
                 request: MockOmniauthRequest.new(authentication.provider,
                                                  authentication.uid,
@@ -372,7 +372,7 @@ describe SessionsCallback do
                                                        user: other_user) }
 
             it "does not add auth to signed in user" do
-              result = SessionsCallback.handle(
+              result = described_class.handle(
                 user_state: user_state,
                 request: MockOmniauthRequest.new(authentication.provider,
                                                  authentication.uid,

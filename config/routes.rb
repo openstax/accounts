@@ -26,7 +26,6 @@ Accounts::Application.routes.draw do
   end
 
   scope controller: 'authentications' do
-    post 'auth/:provider', action: :create
     delete 'auth/:provider', action: :destroy
   end
 

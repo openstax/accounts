@@ -1,11 +1,11 @@
 class AuthenticationsController < ApplicationController
 
-  # Add authentication method (OAuth provider) to account
-  def create
-  end
+  include RequireRecentSignin
 
   # Remove authentication method (OAuth provider) from account
   def destroy
+    return reauthenticate_user! if user_signin_is_too_old?
+
     handle_with(
       AuthenticationsDelete,
       success: lambda do

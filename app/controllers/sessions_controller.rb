@@ -3,34 +3,38 @@
 
 class SessionsController < ApplicationController
 
+  include RequireRecentSignin
+
   skip_before_filter :authenticate_user!, :expired_password,
-                     only: [:new, :callback, :failure, :destroy, :help]
+                     only: [:new, :create, :failure, :destroy, :help]
 
   skip_before_filter :finish_sign_up, only: [:destroy]
 
   before_filter :get_authorization_url, only: [:new, :create]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :callback, :failure, :destroy, :help]
+                  only: [:new, :create, :failure, :destroy, :help]
 
   helper_method :last_signin_provider
 
   # Login form
   def new
-    # If no url to redirect back to, store the fallback url (the authorization url or the referer)
+    # If no url to redirect back to, store the fallback url
+    # (the authorization url or the referer)
     # Handles the case where the user got sent straight to the login page
     options = @authorization_url.nil? ? {} : { url: @authorization_url }
     store_fallback(options)
 
     # If the user is already logged in, this means they got linked to the login page somehow
     # Attempt to redirect to the fallback url stored above
-    redirect_back if signed_in?
+    redirect_back if signed_in? && !params[:required]
 
     session[:client_id] = params[:client_id]
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
   end
 
   # Handle OAuth callback (actual login)
+  # May add authentication method (OAuth provider) to account
   def create
     # If we have a client_id but no url to redirect back to,
     # store the fallback url (the authorization page)
@@ -40,12 +44,14 @@ class SessionsController < ApplicationController
     store_fallback(url: @authorization_url) unless @authorization_url.nil?
 
     handle_with(
-      SessionsCallback,
+      SessionsCreate,
       user_state: self,
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]
 
         case @handler_result.outputs[:status]
+        when :new_signin_required
+          reauthenticate_user!
         when :returning_user
           set_last_signin_provider(authentication.provider)
           security_log :sign_in_successful, authentication_id: authentication.id
@@ -53,37 +59,38 @@ class SessionsController < ApplicationController
         when :new_password_user
           set_last_signin_provider(authentication.provider)
           security_log :sign_up_successful, authentication_id: authentication.id
+          security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
         when :transferred_authentication
           set_last_signin_provider(authentication.provider)
           security_log :authentication_transferred, authentication_id: authentication.id
+          security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
         when :no_action
+          security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
         when :new_social_user
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to signup_social_path
         when :authentication_added
-          security_log :authentication_created, authentication_id: authentication.id,
-                                                authentication_provider: authentication.provider,
-                                                authentication_uid: authentication.uid
+          security_log :authentication_created,
+                       authentication_id: authentication.id,
+                       authentication_provider: authentication.provider,
+                       authentication_uid: authentication.uid
+          security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to profile_path, notice: "Your new sign in option has been added!"
         when :authentication_taken
+          security_log :authentication_transfer_failed, authentication_id: authentication.id
           redirect_to profile_path, alert: "That sign in option is already used by someone " \
                                            "else. If that someone is you, remove it from " \
                                            "your other account and try again."
         else
           Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}"
-          raise IllegalState, "SessionsCallback errors: #{@handler_result.errors.inspect
+          raise IllegalState, "SessionsCreate errors: #{@handler_result.errors.inspect
                               }; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect}"
         end
       end
     )
-  end
-
-  # This is an official action so that fine_print can check to see if terms need to be signed
-  def redirect_back
-    super
   end
 
   # Destroy session (logout)
@@ -112,6 +119,11 @@ class SessionsController < ApplicationController
     end
 
     redirect_to url
+  end
+
+  # This is an official action so that fine_print can check to see if terms need to be signed
+  def redirect_back
+    super
   end
 
   # OAuth failure (e.g. wrong password)

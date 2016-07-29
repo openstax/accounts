@@ -1,5 +1,7 @@
 class IdentitiesController < ApplicationController
 
+  include RequireRecentSignin
+
   skip_before_filter :authenticate_user!, :expired_password, :finish_sign_up,
                      only: [:reset_password]
 
@@ -7,6 +9,8 @@ class IdentitiesController < ApplicationController
                   only: [:reset_password]
 
   def update
+    return reauthenticate_user! if user_signin_is_too_old?
+
     handle_with(IdentitiesUpdate,
                 success: lambda  do
                   security_log :password_updated
