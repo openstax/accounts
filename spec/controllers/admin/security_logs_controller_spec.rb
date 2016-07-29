@@ -2,6 +2,11 @@ require 'rails_helper'
 
 describe Admin::SecurityLogsController, type: :controller do
   let(:no_results) { OpenStruct.new(outputs: OpenStruct.new(items: SecurityLog.where('1=0'))) }
+  let(:admin) { FactoryGirl.create :user, :admin, :terms_agreed }
+
+  before(:each) do
+    controller.sign_in! admin
+  end
 
   context 'GET #show' do
     it 'passes an empty hash to Admin::SearchSecurityLog if there is no search query' do
