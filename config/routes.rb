@@ -83,7 +83,7 @@ Accounts::Application.routes.draw do
     resources :users, only: [:index]
 
     resource :user, only: [:show, :update] do
-      post '/find-or-create',    action: 'find_or_create'
+      post '/find-or-create', action: 'find_or_create'
     end
 
     resources :application_users, only: [:index] do
@@ -129,9 +129,7 @@ Accounts::Application.routes.draw do
     end
   end
 
-  use_doorkeeper do
-    controllers :applications => 'oauth/applications'
-  end
+  use_doorkeeper{ controllers applications: 'oauth/applications' }
 
   mount FinePrint::Engine => '/admin/fine_print'
 

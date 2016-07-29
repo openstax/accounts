@@ -17,7 +17,7 @@ class AuthenticationsController < ApplicationController
         render status: :ok, text: "#{params[:provider].titleize} removed"
       end,
       failure: lambda do
-        render status: 400, text: @handler_result.errors.map(&:message).to_sentence
+        render status: 422, text: @handler_result.errors.map(&:message).to_sentence
       end
     )
   end
