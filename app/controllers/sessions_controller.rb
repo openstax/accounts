@@ -139,7 +139,7 @@ class SessionsController < ApplicationController
       "The password you provided is incorrect."
     when 'too_many_login_attempts'
       "You have made too many login attempts recently. " \
-      "Please try again later or contact customer support for help."
+      "Please <a href=\"#{signin_help_url}\">reset your password</a> or try again later."
     else
       params[:message]
     end

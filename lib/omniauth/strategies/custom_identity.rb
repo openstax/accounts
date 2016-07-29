@@ -12,7 +12,7 @@ module OmniAuth
     class CustomIdentity
 
       LOGIN_ATTEMPTS_PERIOD = 1.hour
-      MAX_LOGIN_ATTEMPTS_PER_USER = 100
+      MAX_LOGIN_ATTEMPTS_PER_USER = 10
       MAX_LOGIN_ATTEMPTS_PER_IP = 10000
 
       include OmniAuth::Strategy
@@ -49,17 +49,26 @@ module OmniAuth
       uid { identity.uid }
       info { identity.info }
 
-      def too_many_login_attempts
-        recent_time = Time.now - LOGIN_ATTEMPTS_PERIOD
-        security_log_relation = SecurityLog.sign_in_failed.where{created_at > recent_time}
+      def too_many_login_attempts?
+        ip_attempts_time = Time.now - LOGIN_ATTEMPTS_PERIOD
+        security_log_relation = SecurityLog.sign_in_failed
 
         remote_ip = request.ip
-        ip_attempts = security_log_relation.where(remote_ip: remote_ip).count
+        ip_attempts = security_log_relation.where{created_at > ip_attempts_time}
+                                           .where(remote_ip: remote_ip).count
 
         return true if ip_attempts >= MAX_LOGIN_ATTEMPTS_PER_IP
 
         user = locate_conditions[:user]
-        user_attempts = user.nil? ? 0 : security_log_relation.where(user: user).count
+        if user.nil?
+          user_attempts = 0
+        else
+          last_login_time = SecurityLog.sign_in_successful.maximum(:created_at)
+          user_attempts_time = last_login_time.nil? ? ip_attempts_time :
+                                                      [ip_attempts_time, last_login_time].max
+          user_attempts = security_log_relation.where{created_at > user_attempts_time}
+                                               .where(user: user).count
+        end
 
         return true if user_attempts >= MAX_LOGIN_ATTEMPTS_PER_USER
 
@@ -78,7 +87,7 @@ module OmniAuth
       end
 
       def callback_phase
-        return fail_with_log!(:too_many_login_attempts) if too_many_login_attempts
+        return fail_with_log!(:too_many_login_attempts) if too_many_login_attempts?
 
         if identity.present?
           super
