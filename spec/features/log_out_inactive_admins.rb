@@ -4,6 +4,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   let!(:login_time) { DateTime.now }
 
   before(:each) do
+    allow_any_instance_of(ApplicationController).to receive(:is_real_production_site?).and_return(true)
     Timecop.freeze(login_time)
   end
 

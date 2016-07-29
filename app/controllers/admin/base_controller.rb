@@ -17,7 +17,7 @@ module Admin
     end
 
     def log_out_inactive_admins
-      if current_user.is_administrator?
+      if current_user.is_administrator? && is_real_production_site?
         if session[:last_admin_activity].to_time <= 30.minutes.ago
           sign_out!
           authenticate_admin!
