@@ -44,7 +44,7 @@ class Identity
   confirmDelete: (ev) ->
     new OX.ConfirmationPopover(
       title: false
-      message: "Are you you want to remove this authentication method?"
+      message: "Are you sure you want to remove this sign in option?"
       target: ev.target
       placement: 'top'
       onConfirm: @delete
