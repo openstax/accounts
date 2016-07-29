@@ -183,6 +183,10 @@ def expect_social_sign_up_page
   expect(page).to have_content('Password managed by')
 end
 
+def expect_profile_page
+  expect(page).to have_content('Your Account')
+end
+
 def agree_and_click_create
   find(:css, '#signup_i_agree').set(true)
   click_button 'Create'

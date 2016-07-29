@@ -44,7 +44,7 @@ gem 'action_interceptor', '~> 1.1.0'
 
 gem 'schema_plus', '~> 1.7.1'
 
-gem 'aws-ses', '~> 0.6.0', :require => 'aws/ses'
+gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
 
 gem 'pg'
 
@@ -54,7 +54,7 @@ gem 'p3p'
 gem 'test-unit' # because rspec told me so
 
 gem 'coffee-rails', '~> 3.2.1'
-gem 'therubyracer', :platforms => :ruby
+gem 'therubyracer', platforms: :ruby
 gem 'uglifier', '>= 1.0.3'
 gem 'sass-rails',   '~> 3.2.6'
 gem 'bootstrap-sass', '~> 3.1.1'
@@ -80,9 +80,13 @@ group :development, :test do
   gem 'shoulda-matchers', require: false
 end
 
+group :test do
+  gem 'database_cleaner'
+  gem "codeclimate-test-reporter", require: false
+
+end
+
 group :production do
   gem 'unicorn'
   gem 'lograge'
 end
-
-gem "codeclimate-test-reporter", group: :test, require: nil

@@ -25,19 +25,6 @@ Capybara.javascript_driver = :poltergeist
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
-# don't exit process until all ajax requests are complete
-module WaitForAjax
-  def wait_for_ajax
-    Timeout.timeout(Capybara.default_max_wait_time) do
-      loop until finished_all_ajax_requests?
-    end
-  end
-
-  def finished_all_ajax_requests?
-    page.evaluate_script('jQuery.active').zero?
-  end
-end
-
 RSpec.configure do |config|
   # ## Mock Framework
   #
@@ -47,15 +34,13 @@ RSpec.configure do |config|
   # config.mock_with :flexmock
   # config.mock_with :rr
 
-  config.include WaitForAjax, type: :feature
-
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
 
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
@@ -73,6 +58,45 @@ RSpec.configure do |config|
   #     end
   # or set:
   #   config.infer_spec_type_from_file_location!
+
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:all) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before(:all, js: true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:all, type: :request) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:all, truncation: true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:all) do
+    DatabaseCleaner.start
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  # https://github.com/DatabaseCleaner/database_cleaner#rspec-with-capybara-example says:
+  #   "It's also recommended to use append_after to ensure DatabaseCleaner.clean
+  #    runs after the after-test cleanup capybara/rspec installs."
+  config.append_after(:each) do
+    DatabaseCleaner.clean
+  end
+
+  config.append_after(:all) do
+    DatabaseCleaner.clean
+  end
 end
 
 # Adds a convenience method to get interpret the body as JSON and convert to a hash;
@@ -118,16 +142,3 @@ RSpec::Matchers.define :have_api_error_status do |error_status|
     "expected that response would have status '#{error_status}' but had #{actual.body_as_hash[:status]}"
   end
 end
-
-# monkey patching ActiveRecord::Base to use the same transaction for all threads
-# http://rubydoc.info/github/jnicklas/capybara/master#Transactions_and_database_setup
-class ActiveRecord::Base
-  mattr_accessor :shared_connection
-  @@shared_connection = nil
-
-  def self.connection
-    @@shared_connection || retrieve_connection
-  end
-end
-
-ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection

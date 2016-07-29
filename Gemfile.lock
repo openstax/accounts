@@ -95,6 +95,7 @@ GEM
     css_parser (1.4.1)
       addressable
     daemons (1.2.3)
+    database_cleaner (1.4.1)
     delayed_job (4.1.1)
       activesupport (>= 3.0, < 5.0)
     delayed_job_active_record (4.1.0)
@@ -378,6 +379,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   compass-rails
   coveralls
+  database_cleaner
   delayed_job_active_record
   doorkeeper (= 2.2)
   factory_girl_rails
