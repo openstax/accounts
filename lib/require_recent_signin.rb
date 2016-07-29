@@ -3,7 +3,7 @@ module RequireRecentSignin
   AUTHENTICATION_LOGIN_PERIOD = 10.minutes
 
   def reauthenticate_user!
-    store_url if request.get?
+    store_url
 
     flash[:alert] = 'Please sign in again to confirm your changes'
 
