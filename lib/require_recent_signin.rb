@@ -1,6 +1,6 @@
 module RequireRecentSignin
 
-  AUTHENTICATION_LOGIN_PERIOD = 10.minutes
+  REAUTHENTICATE_AFTER = 10.minutes
 
   def reauthenticate_user!
     store_url
@@ -16,9 +16,12 @@ module RequireRecentSignin
   end
 
   def user_signin_is_too_old?
-    authentication_login_time = Time.now - AUTHENTICATION_LOGIN_PERIOD
-    SecurityLog.sign_in_successful.where(user: current_user)
-                                  .maximum(:created_at) < authentication_login_time
+    last_signin_time = SecurityLog.sign_in_successful.where(user: current_user)
+                                                     .maximum(:created_at)
+    return true if last_signin_time.nil?
+
+    reauthentication_time = Time.now - REAUTHENTICATE_AFTER
+    last_signin_time <= reauthentication_time
   end
 
 end
