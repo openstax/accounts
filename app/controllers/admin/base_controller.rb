@@ -6,13 +6,25 @@ module Admin
 
     include FakeExceptionHelper
 
-    if Rails.env.production?
-      before_filter :authenticate_admin!
-    else
+    if Rails.env.development?
       skip_before_filter :authenticate_user!
       skip_before_filter :finish_sign_up
 
       fine_print_skip :general_terms_of_use, :privacy_policy
+    else
+      before_filter :authenticate_admin!
+      before_filter :log_out_inactive_admins
+    end
+
+    def log_out_inactive_admins
+      if current_user.is_administrator?
+        if session[:last_admin_activity].to_time <= 30.minutes.ago
+          sign_out!
+          authenticate_admin!
+        else
+          session[:last_admin_activity] = DateTime.now.to_s
+        end
+      end
     end
 
     def cron

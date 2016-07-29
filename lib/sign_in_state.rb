@@ -26,6 +26,7 @@ module SignInState
       session[:user_id] = @current_user.id
       cookies.signed[:secure_user_id] = { secure: true,
                                           value: "secure#{@current_user.id}" }
+      session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator?
     end
 
     @current_user
