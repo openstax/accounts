@@ -176,7 +176,7 @@ class User < ActiveRecord::Base
   end
 
   def make_first_user_an_admin
-    return if Rails.env.production?
+    return if Rails.env.production? || Rails.env.test?
     self.is_administrator = true if User.count == 0
   end
 

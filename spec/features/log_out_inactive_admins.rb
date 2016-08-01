@@ -15,7 +15,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "logged-in admin user" do
     before(:each) do
       create_admin_user
-      visit '/signin'
+      visit signin_path
       signin_as 'admin'
     end
 
@@ -76,7 +76,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "logged-in non-admin user" do
     before(:each) do
       create_user 'user'
-      visit '/signin'
+      visit signin_path
       signin_as 'user'
     end
 
@@ -86,6 +86,21 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
       Timecop.travel(login_time + 26.minutes)
       visit non_admin_feature_url
       Timecop.travel(login_time + 31.minutes)
+      visit non_admin_feature_url
+
+      expect(page).to have_current_path(non_admin_feature_url)
+    end
+    scenario "cannot access admin features" do
+      visit admin_feature_url
+
+      expect(page).not_to have_current_path(admin_feature_url)
+    end
+    scenario "can access visitor pages" do
+      visit visitor_page_url
+
+      expect(page).to have_current_path(visitor_page_url)
+    end
+    scenario "can access non-admin (user required login) features when logged in" do
       visit non_admin_feature_url
 
       expect(page).to have_current_path(non_admin_feature_url)
@@ -104,9 +119,9 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
       expect(page).to have_current_path(signin_path)
     end
     scenario "can access visitor pages" do
-      visit "/copyright"
+      visit visitor_page_url
 
-      expect(page).to have_current_path("/copyright")
+      expect(page).to have_current_path(visitor_page_url)
     end
   end
 
@@ -116,5 +131,9 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
 
   def non_admin_feature_url
     "/profile"
+  end
+
+  def visitor_page_url
+    "/copyright"
   end
 end
