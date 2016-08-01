@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Unknown route used' do
+feature 'Unknown route used', truncation: true do
 
   scenario 'when it is a JSON request' do
     visit '/lkajsdlkjdklfsjldkfjsl.json'

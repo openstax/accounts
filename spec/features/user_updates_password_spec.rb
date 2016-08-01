@@ -8,10 +8,6 @@ feature 'User updates password', js: true do
     expect(page).to have_content('Welcome, user')
   end
 
-  after(:each) do
-    wait_for_ajax
-  end
-
   context 'without local password' do
     before(:each) do
       user = User.find_by_username('user')

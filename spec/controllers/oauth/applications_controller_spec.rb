@@ -25,6 +25,8 @@ module Oauth
     end
 
     it "should redirect users that haven't signed contracts" do
+      load 'db/seeds.rb'
+
       controller.sign_in! user2
       get :index
       expect(response.code).to eq('302')

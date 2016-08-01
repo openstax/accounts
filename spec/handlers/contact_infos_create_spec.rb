@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ContactInfosCreate do
+describe ContactInfosCreate, type: :handler do
 
   let!(:user) { FactoryGirl.create :user }
 

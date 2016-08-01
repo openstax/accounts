@@ -16,14 +16,44 @@ require 'shoulda/matchers'
 
 Mail.defaults { delivery_method :test }
 
-# load seed data
-load "#{Rails.root}/db/seeds.rb"
-
 Capybara.javascript_driver = :poltergeist
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/**/*.rb")].each{ |f| require f }
+
+## START of DatabaseCleaner Monkeypatch to allow nested DatabaseCleaner transactions in Rails 3.1
+## DELETE THIS SECTION when upgrading to Rails 4
+## This Monkeypatch requires ruby 2.2 and is not thread-safe
+## Based on http://myronmars.to/n/dev-blog/2012/03/building-an-around-hook-using-fibers
+require 'database_cleaner/active_record/transaction'
+require 'fiber'
+
+class DatabaseCleaner::ActiveRecord::Transaction
+  @@fibers = []
+
+  def start
+    fiber = Fiber.new do
+      connection_class.connection.transaction(joinable: false) do
+        Fiber.yield
+
+        raise ActiveRecord::Rollback
+      end
+    end
+
+    @@fibers << fiber
+
+    fiber.resume
+  end
+
+  def clean
+    fiber = @@fibers.pop
+    return if fiber.nil?
+
+    fiber.resume
+  end
+end
+## END of DatabaseCleaner Monkeypatch
 
 RSpec.configure do |config|
   # ## Mock Framework
@@ -53,7 +83,7 @@ RSpec.configure do |config|
   # To explicitly tag specs without using automatic inference, set the `:type`
   # metadata manually:
   #
-  #     describe ThingsController, :type => :controller do
+  #     describe ThingsController, type: :controller do
   #       # Equivalent to being in spec/controllers
   #     end
   # or set:
@@ -94,6 +124,9 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
+  # Ideally we want nested transactions for before(:all)/after(:all)
+  # and before(:each)/after(:each), but this is only possible in Rails >= 4.0
+  # So for now we use truncation in after(:all)
   config.append_after(:all) do
     DatabaseCleaner.clean
   end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SessionsCreate do
+describe SessionsCreate, type: :handler do
 
   let(:user_state) { MockUserState.new }
 

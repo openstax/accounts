@@ -1,5 +1,5 @@
-# Idempotent operation to create the placeholder contracts for the general_terms_of_use
-# and the privacy_policy.
+# Idempotent operation to create the placeholder contracts
+# for the general_terms_of_use and the privacy_policy.
 
 [
   {
@@ -10,16 +10,10 @@
   {
     name:    'privacy_policy',
     content: 'Placeholder for privacy policy, required for new installations to function',
-    title:   'Privacy Policy'  
+    title:   'Privacy Policy'
   }
 ].each do |contract_data|
-
-  next if FinePrint::Contract.where{name.eq contract_data[:name]}.any?
-
-  (FinePrint::Contract.create do |contract|
-    contract.name    = contract_data[:name]
-    contract.content = contract_data[:content]
-    contract.title   = contract_data[:title]
-  end).publish  
-
+  # This is idempotent because the creation fails if the contract already exists
+  # Also forces the seeded contract version to be 1
+  FinePrint::Contract.create contract_data.merge(version: 1), without_protection: true
 end
