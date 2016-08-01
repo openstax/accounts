@@ -1,6 +1,9 @@
 require "rails_helper"
 
 RSpec.describe SignupController, type: :controller do
+
+  before(:all) { load 'db/seeds.rb' }
+
   let(:params) do
     {
       signup: {
@@ -32,4 +35,5 @@ RSpec.describe SignupController, type: :controller do
       expect(response).to redirect_to signin_path
     end
   end
+
 end
