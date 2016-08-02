@@ -22,12 +22,11 @@ Capybara.javascript_driver = :poltergeist
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each{ |f| require f }
 
-## START of DatabaseCleaner Monkeypatch to allow nested DatabaseCleaner transactions in Rails 3.1
+## START of DatabaseCleaner Monkeypatch to allow nested DatabaseCleaner transactions in Rails 3
 ## DELETE THIS SECTION when upgrading to Rails 4
-## This Monkeypatch requires ruby 2.2 and is not thread-safe
+## This Monkeypatch requires ruby 1.9 and is not thread-safe
 ## Based on http://myronmars.to/n/dev-blog/2012/03/building-an-around-hook-using-fibers
 require 'database_cleaner/active_record/transaction'
-require 'fiber'
 
 class DatabaseCleaner::ActiveRecord::Transaction
   @@fibers = []
