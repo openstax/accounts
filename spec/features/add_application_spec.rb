@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Add application to accounts', js: true do
+feature 'Add application to accounts' do
   scenario 'without logging in' do
     visit '/oauth/applications'
     expect_sign_in_page
@@ -26,15 +26,7 @@ feature 'Add application to accounts', js: true do
     create_user 'user'
     visit '/signin'
     signin_as 'user'
-    expect(page).to have_content('Welcome, user')
-    visit '/oauth/applications'
-    expect(page).to have_content('OAuth Applications')
-    create_new_application
-    expect(page).to have_content('Application created.')
-    expect(page).to have_content('Application: example')
-    expect(page).to have_content('Callback urls: https://localhost/')
-    expect(page.text).to match(/Application Id: [a-z0-9]+/)
-    expect(page.text).to match(/Secret: [a-z0-9]+/)
-    expect(page).to have_content('Trusted? No')
+
+    expect{ visit '/oauth/applications/new' }.to raise_error(StandardError)
   end
 end

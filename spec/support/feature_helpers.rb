@@ -141,6 +141,15 @@ def with_error_pages
   end
 end
 
+def with_show_exceptions_true
+  begin
+    Rails.application.config.action_dispatch.show_exceptions = true
+    yield if block_given?
+  ensure
+    Rails.application.config.action_dispatch.show_exceptions = false
+  end
+end
+
 def click_omniauth_link(provider, options={})
   options[:nickname] ||= 'jimbo'
   options[:uid] ||= '1337'
