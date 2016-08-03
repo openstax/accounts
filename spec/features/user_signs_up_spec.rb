@@ -5,7 +5,7 @@ feature 'User signs up as a local user', js: true do
     create_application
     visit_authorize_uri
 
-    expect_sign_in_page
+    expect(page.current_url).to include(signin_path)
     click_password_sign_up
     expect(page).to have_content('Create Account')
 
@@ -23,9 +23,9 @@ feature 'User signs up as a local user', js: true do
 
     visit '/'
     click_link 'Sign out'
-    expect_sign_in_page
+    expect(page.current_url).to include(signin_path)
     expect(page).not_to have_content('Welcome, testuser')
-    expect_sign_in_page
+    expect(page.current_url).to include(signin_path)
   end
 
   scenario 'sign up chooser page' do
@@ -224,7 +224,7 @@ feature 'User signs up as a local user', js: true do
     end
 
     visit '/signout'
-    expect_sign_in_page
+    expect(page).to have_current_path signin_path
   end
 
 end

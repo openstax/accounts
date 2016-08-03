@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Add application to accounts' do
+feature 'Add application to accounts', js: true do
   scenario 'without logging in' do
     visit '/oauth/applications'
     expect_sign_in_page
@@ -27,6 +27,7 @@ feature 'Add application to accounts' do
     visit '/signin'
     signin_as 'user'
 
-    expect{ visit '/oauth/applications/new' }.to raise_error(StandardError)
+    visit '/oauth/applications/new'
+    expect(page).to have_http_status 403
   end
 end

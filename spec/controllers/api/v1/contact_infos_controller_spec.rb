@@ -21,9 +21,8 @@ describe Api::V1::ContactInfosController, type: :controller, api: true, version:
 
   describe "#resend_confirmation" do
     it "403s if the wrong user makes the request" do
-      expect{
-        api_put :resend_confirmation, wrong_user_token, parameters: {id: contact_info.id}
-      }.to raise_error(SecurityTransgression)
+      api_put :resend_confirmation, wrong_user_token, parameters: {id: contact_info.id}
+      expect(response).to have_http_status 403
     end
 
     it "returns an `already_confirmed` error when confirmed" do
@@ -63,9 +62,8 @@ describe Api::V1::ContactInfosController, type: :controller, api: true, version:
     end
 
     it "403s if the wrong user makes the request" do
-      expect{
-        api_put :confirm_by_pin, wrong_user_token, parameters: {id: contact_info.id}
-      }.to raise_error(SecurityTransgression)
+      api_put :confirm_by_pin, wrong_user_token, parameters: {id: contact_info.id}
+      expect(response).to have_http_status 403
     end
 
     it "204s if already confirmed" do

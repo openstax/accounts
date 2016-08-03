@@ -100,7 +100,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
 
       expect(page).to have_current_path(visitor_page_url)
     end
-    scenario "can access non-admin (user required login) features when logged in" do
+    scenario "can access user features" do
       visit non_admin_feature_url
 
       expect(page).to have_current_path(non_admin_feature_url)
@@ -113,7 +113,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
 
       expect(page).not_to have_current_path(admin_feature_url)
     end
-    scenario "cannot access non-admin* (required login) features" do
+    scenario "cannot access user features" do
       visit non_admin_feature_url
 
       expect(page).to have_current_path(signin_path)

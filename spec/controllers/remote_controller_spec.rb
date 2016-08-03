@@ -8,8 +8,10 @@ describe RemoteController, type: :controller do
     render_views
 
     it 'throws when parent is not present or invalid' do
-      expect { get(:iframe) }.to raise_error(SecurityTransgression)
-      expect { get(:iframe, parent: 'foo') }.to raise_error(SecurityTransgression)
+      get(:iframe)
+      expect(response).to have_http_status :forbidden
+      get(:iframe, parent: 'foo')
+      expect(response).to have_http_status :forbidden
     end
 
     it 'loads and sets parent as context' do
