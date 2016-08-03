@@ -100,10 +100,6 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation
   end
 
-  config.before(:all, type: :request) do
-    DatabaseCleaner.strategy = :truncation
-  end
-
   config.before(:all, truncation: true) do
     DatabaseCleaner.strategy = :truncation
   end
