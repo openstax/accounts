@@ -28,6 +28,6 @@ feature 'Add application to accounts', js: true do
     signin_as 'user'
 
     visit '/oauth/applications/new'
-    expect(page).to have_http_status 403
+    expect(page).to have_http_status :forbidden
   end
 end

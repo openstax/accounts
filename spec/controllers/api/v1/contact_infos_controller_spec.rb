@@ -22,7 +22,7 @@ describe Api::V1::ContactInfosController, type: :controller, api: true, version:
   describe "#resend_confirmation" do
     it "403s if the wrong user makes the request" do
       api_put :resend_confirmation, wrong_user_token, parameters: {id: contact_info.id}
-      expect(response).to have_http_status 403
+      expect(response).to have_http_status :forbidden
     end
 
     it "returns an `already_confirmed` error when confirmed" do
@@ -63,7 +63,7 @@ describe Api::V1::ContactInfosController, type: :controller, api: true, version:
 
     it "403s if the wrong user makes the request" do
       api_put :confirm_by_pin, wrong_user_token, parameters: {id: contact_info.id}
-      expect(response).to have_http_status 403
+      expect(response).to have_http_status :forbidden
     end
 
     it "204s if already confirmed" do
