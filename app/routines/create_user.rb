@@ -17,7 +17,8 @@ class CreateUser
       username = generate_unique_valid_username(username)
     end
 
-    outputs[:user] = User.create do |user|
+    create_method = ensure_no_errors ? :create! : :create
+    outputs[:user] = User.send(create_method) do |user|
       user.username = username
       user.first_name = first_name.present? ? first_name : guessed_first_name(full_name)
       user.last_name = last_name.present? ? last_name : guessed_last_name(full_name)

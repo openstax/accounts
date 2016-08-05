@@ -29,47 +29,42 @@ describe Api::V1::GroupNestingsController, type: :controller, api: true, version
 
   context 'create' do
     it 'must not create a group_nesting without a token' do
-      expect{api_post :create, nil, parameters: {group_id: group_3.id,
-                                                 member_group_id: group_1.id}}.to(
-        raise_error(SecurityTransgression))
+      api_post :create, nil, parameters: {group_id: group_3.id,
+                                                 member_group_id: group_1.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group_nesting for an app without a user token' do
-      expect{api_post :create, untrusted_application_token,
+      api_post :create, untrusted_application_token,
                       parameters: {group_id: group_3.id,
-                                   member_group_id: group_1.id}}.to(
-        raise_error(SecurityTransgression))
+                                   member_group_id: group_1.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group_nesting for an unauthorized user' do
-      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                          member_group_id: group_1.id}}.to(
-        raise_error(SecurityTransgression))
+      api_post :create, user_1_token, parameters: {group_id: group_3.id,
+                                                          member_group_id: group_1.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
 
       group_3.add_owner(user_1)
       controller.current_human_user.reload
 
-      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                          member_group_id: group_1.id}}.to(
-        raise_error(SecurityTransgression))
+      api_post :create, user_1_token, parameters: {group_id: group_3.id,
+                                                          member_group_id: group_1.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
 
       GroupOwner.last.destroy
       group_1.add_owner(user_1)
       controller.current_human_user.reload
 
-      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                          member_group_id: group_1.id}}.to(
-        raise_error(SecurityTransgression))
+      api_post :create, user_1_token, parameters: {group_id: group_3.id,
+                                                          member_group_id: group_1.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must create group_nestings for authorized users' do
@@ -87,42 +82,38 @@ describe Api::V1::GroupNestingsController, type: :controller, api: true, version
 
   context 'destroy' do
     it 'must not destroy a group_nesting without a token' do
-      expect{api_delete :destroy, nil,
+      api_delete :destroy, nil,
                         parameters: {group_id: group_1.id,
-                                     member_group_id: group_2.id}}.to(
-        raise_error(SecurityTransgression))
+                                     member_group_id: group_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(GroupNesting.where(id: group_nesting_1.id).first).not_to be_nil
     end
 
     it 'must not destroy a group_nesting for an app without a user token' do
-      expect{api_delete :destroy, untrusted_application_token,
+      api_delete :destroy, untrusted_application_token,
                         parameters: {group_id: group_1.id,
-                                     member_group_id: group_2.id}}.to(
-        raise_error(SecurityTransgression))
+                                     member_group_id: group_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(GroupNesting.where(id: group_nesting_1.id).first).not_to be_nil
     end
 
     it 'must not destroy a group_nesting for an unauthorized user' do
-      expect{api_delete :destroy, user_1_token,
+      api_delete :destroy, user_1_token,
                         parameters: {group_id: group_1.id,
-                                     member_group_id: group_2.id}}.to(
-        raise_error(SecurityTransgression))
+                                     member_group_id: group_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(GroupNesting.where(id: group_nesting_1.id).first).not_to be_nil
 
       group_2.add_member(user_1)
 
-      expect{api_delete :destroy, user_1_token,
+      api_delete :destroy, user_1_token,
                         parameters: {group_id: group_1.id,
-                                     member_group_id: group_2.id}}.to(
-        raise_error(SecurityTransgression))
+                                     member_group_id: group_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(GroupNesting.where(id: group_nesting_1.id).first).not_to be_nil
     end
 

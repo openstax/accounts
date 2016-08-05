@@ -1,7 +1,7 @@
 require 'openstax_rescue_from'
 
 OpenStax::RescueFrom.configure do |config|
-  config.raise_exceptions = Rails.application.config.consider_all_requests_local
+  config.raise_exceptions = Rails.env.development?
 
   config.app_name = 'Accounts'
   config.app_env = SECRET_SETTINGS[:environment_name]

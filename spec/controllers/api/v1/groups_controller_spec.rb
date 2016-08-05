@@ -251,24 +251,21 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
     end
 
     it 'must not show a private group without a token' do
-      expect{api_get :show, nil, parameters: {id: group_1.id}}.to(
-        raise_error(SecurityTransgression))
+    api_get :show, nil, parameters: {id: group_1.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must not show a private group to an app without a user token' do
-      expect{api_get :show, untrusted_application_token, parameters: {id: group_1.id}}.to(
-        raise_error(SecurityTransgression))
+      api_get :show, untrusted_application_token, parameters: {id: group_1.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must not show a private group to an unauthorized user' do
-      expect{api_get :show, user_1_token, parameters: {id: group_1.id}}.to(
-        raise_error(SecurityTransgression))
+      api_get :show, user_1_token, parameters: {id: group_1.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must show private groups to authorized users' do
@@ -331,17 +328,15 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
   context 'create' do
     it 'must not create a group without a token' do
-      expect{api_post :create, nil}.to(
-        raise_error(SecurityTransgression))
+      api_post :create, nil
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group for an app without a user token' do
-      expect{api_post :create, untrusted_application_token}.to(
-        raise_error(SecurityTransgression))
+      api_post :create, untrusted_application_token
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must create groups for users' do
@@ -367,54 +362,49 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
   context 'update' do
     it 'must not update a group without a token' do
-      expect{api_put :update, nil,
+      api_put :update, nil,
                      parameters: {id: group_3.id},
-                     raw_post_data: {name: 'MyGroup'}}.to(
-        raise_error(SecurityTransgression))
+                     raw_post_data: {name: 'MyGroup'}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(group_3.reload.name).to eq('Group 3')
     end
 
     it 'must not update a group for an app without a user token' do
-      expect{api_put :update, untrusted_application_token,
+      api_put :update, untrusted_application_token,
                      parameters: {id: group_3.id},
-                     raw_post_data: {name: 'MyGroup'}}.to(
-        raise_error(SecurityTransgression))
+                     raw_post_data: {name: 'MyGroup'}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(group_3.reload.name).to eq('Group 3')
     end
 
     it 'must not update a group for an unauthorized user' do
-      expect{api_put :update, user_1_token,
+      api_put :update, user_1_token,
                      parameters: {id: group_3.id},
-                     raw_post_data: {name: 'MyGroup'}}.to(
-        raise_error(SecurityTransgression))
+                     raw_post_data: {name: 'MyGroup'}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(group_3.reload.name).to eq('Group 3')
 
       group_3.add_member(user_1)
 
-      expect{api_put :update, user_1_token,
+      api_put :update, user_1_token,
                      parameters: {id: group_3.id},
-                     raw_post_data: {name: 'MyGroup'}}.to(
-        raise_error(SecurityTransgression))
+                     raw_post_data: {name: 'MyGroup'}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(group_3.reload.name).to eq('Group 3')
 
       FactoryGirl.create(:group_nesting, container_group: group_3,
                                          member_group: group_2)
       group_2.add_owner(user_1)
 
-      expect{api_put :update, user_1_token,
+      api_put :update, user_1_token,
                      parameters: {id: group_3.id},
-                     raw_post_data: {name: 'MyGroup'}}.to(
-        raise_error(SecurityTransgression))
+                     raw_post_data: {name: 'MyGroup'}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(group_3.reload.name).to eq('Group 3')
     end
 
@@ -432,48 +422,43 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
   context 'destroy' do
     it 'must not destroy a group without a token' do
-      expect{api_delete :destroy, nil,
-                        parameters: {id: group_3.id}}.to(
-        raise_error(SecurityTransgression))
+      api_delete :destroy, nil,
+                        parameters: {id: group_3.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(Group.where(id: group_3.id).first).not_to be_nil
     end
 
     it 'must not destroy a group for an app without a user token' do
-      expect{api_delete :destroy, untrusted_application_token,
-                        parameters: {id: group_3.id}}.to(
-        raise_error(SecurityTransgression))
+      api_delete :destroy, untrusted_application_token,
+                        parameters: {id: group_3.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(Group.where(id: group_3.id).first).not_to be_nil
     end
 
     it 'must not destroy a group for an unauthorized user' do
-      expect{api_delete :destroy, user_1_token,
-                        parameters: {id: group_3.id}}.to(
-        raise_error(SecurityTransgression))
+      api_delete :destroy, user_1_token,
+                        parameters: {id: group_3.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(Group.where(id: group_3.id).first).not_to be_nil
 
       group_3.add_member(user_1)
 
-      expect{api_delete :destroy, user_1_token,
-                        parameters: {id: group_3.id}}.to(
-        raise_error(SecurityTransgression))
+      api_delete :destroy, user_1_token,
+                        parameters: {id: group_3.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(Group.where(id: group_3.id).first).not_to be_nil
 
       FactoryGirl.create(:group_nesting, container_group: group_3, member_group: group_2)
       group_2.add_owner(user_1)
 
-      expect{api_delete :destroy, user_1_token,
-                        parameters: {id: group_3.id}}.to(
-        raise_error(SecurityTransgression))
+      api_delete :destroy, user_1_token,
+                        parameters: {id: group_3.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(Group.where(id: group_3.id).first).not_to be_nil
     end
 

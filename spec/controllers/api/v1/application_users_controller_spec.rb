@@ -62,25 +62,22 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
       expect(response.body).to eq(expected_response)
     end
 
-    it "raises not found when not found" do
-      expect {
-        api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo' }
-      }.to raise_error(ActiveRecord::RecordNotFound)
+    it "responds with http status not found when not found" do
+      api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo' }
+      expect(response).to have_http_status :not_found
     end
 
-    it "raises SecurityTransgression when called by anonymous" do
-      expect {
-        api_get :find_by_username, nil, parameters: { username: 'foo' }
-      }.to raise_error(SecurityTransgression)
+    it "responds with http status forbidden when called by anonymous" do
+      api_get :find_by_username, nil, parameters: { username: 'foo' }
+      expect(response).to have_http_status :forbidden
     end
 
     it "only finds users belonging to the requesting application" do
       # bob_brown is not a member of the "trusted_application"
       expect( bob_brown.application_users.where( application_id: trusted_application.id ) ).to be_empty
       # therefore no results will be returned
-      expect {
-        api_get :find_by_username, trusted_application_token, parameters: { username: bob_brown.username }
-      }.to raise_error(ActiveRecord::RecordNotFound)
+      api_get :find_by_username, trusted_application_token, parameters: { username: bob_brown.username }
+      expect(response).to have_http_status :not_found
     end
   end
 
@@ -276,7 +273,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
     end
 
     it "should not let a user call it through an app" do
-      expect{api_get :updates, user_2_token}.to raise_error(SecurityTransgression)
+      api_get :updates, user_2_token
+      expect(response).to have_http_status :forbidden
     end
 
   end
@@ -335,8 +333,10 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
     end
 
     it "should not let a user call it through an app" do
-      expect{api_get :updates, user_2_token}.to raise_error(SecurityTransgression)
-      expect{api_put :updated, user_2_token}.to raise_error(SecurityTransgression)
+      api_get :updates, user_2_token
+      expect(response).to have_http_status :forbidden
+      api_put :updated, user_2_token
+      expect(response).to have_http_status :forbidden
     end
 
   end
