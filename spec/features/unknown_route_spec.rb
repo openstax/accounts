@@ -12,4 +12,10 @@ feature 'Unknown route used' do
     expect(page).to have_http_status :not_found
   end
 
+  scenario "with non-utf-8 characters" do
+    visit "/%E2%EF%BF%BD%A6"
+
+    expect(page).to have_http_status :not_found
+  end
+
 end
