@@ -188,14 +188,14 @@ feature 'User signs up as a local user', js: true do
     agree_and_click_create
 
     expect(page).to have_no_missing_translations
-    expect(page).to have_content("Alert: You must provide an email address to create your account.")
+    expect(page).to have_content(t :"handlers.signup_social.you_must_provide_an_email_address")
     expect(page).to_not have_content(t :"users.edit.page_heading")
 
     fill_in (t :"signup.new_account.email_address"), with: 'bob@example.org'
     click_button (t :"signup.new_account.create_account")
 
     expect(page).to have_no_missing_translations
-    expect(page).to_not have_content("Alert: You must provide an email address to create your account.")
+    expect(page).not_to have_content(t :"handlers.signup_social.you_must_provide_an_email_address")
     expect(page).to have_content(t :"users.edit.page_heading")
   end
 

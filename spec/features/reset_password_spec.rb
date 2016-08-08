@@ -109,7 +109,7 @@ feature 'User resets password', js: true do
     @user.identity.destroy
     visit '/reset_password'
     expect(page).to have_no_missing_translations
-    expect(page).to have_content('Your Account')
+    expect(page).to have_content(t :"users.edit.page_heading")
     expect(page).to have_content(t :"controllers.identities.cannot_reset_password_because_user_doesnt_have_one")
     expect_not_reset_password_page
   end
