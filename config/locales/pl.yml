@@ -30,6 +30,11 @@ pl:
       sign_in_option_already_used: >-
         Ta metoda logowania jest już używana przez kogoś innego. Jeżeli jesteś
         tą osobą, usuń wpierw tę metodę logowania ze swojego innego konta.
+      too_many_login_attempts:
+        content: >-
+          Limit nieudanych prób logowania na Twoje konto został przekroczony.
+          %{reset_password} albo spróbuj ponownie później.
+        reset_password: Zmień hasło
 
     signup:
       already_have_username_and_password: >-

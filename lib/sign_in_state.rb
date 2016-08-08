@@ -26,6 +26,7 @@ module SignInState
       session[:user_id] = @current_user.id
       cookies.signed[:secure_user_id] = { secure: true,
                                           value: "secure#{@current_user.id}" }
+      session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator? && is_real_production_site?
     end
 
     @current_user
@@ -51,6 +52,10 @@ module SignInState
       store_url
       redirect_to main_app.signin_path(params.slice(:client_id))
     end
+  end
+
+  def is_real_production_site?
+    request.host == 'accounts.openstax.org'
   end
 
   # Doorkeeper controllers define authenticate_admin!, so we need another name

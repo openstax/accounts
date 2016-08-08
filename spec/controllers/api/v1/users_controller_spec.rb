@@ -109,7 +109,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
     end
 
     it "should not let an application get a User without a token" do
-      expect {api_get :show, trusted_application_token, parameters: {id: admin_user.id}}.to raise_error(SecurityTransgression)
+      api_get :show, trusted_application_token, parameters: {id: admin_user.id}
+      expect(response).to have_http_status :forbidden
     end
 
     it "should return a properly formatted JSON response for low-info user" do
@@ -195,7 +196,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
     end
 
     it "should not let an application update a User without a token" do
-      expect{api_put :update, trusted_application_token, parameters: {id: admin_user.id}}.to raise_error(SecurityTransgression)
+      api_put :update, trusted_application_token, parameters: {id: admin_user.id}
+      expect(response).to have_http_status :forbidden
     end
 
     it "should not let a user's contact info be modified through the users API" do
@@ -249,21 +251,19 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
     it "should not create a new user for anonymous" do
       user_count = User.count
-      expect{
-        api_post :find_or_create,
-                 nil,
-                 raw_post_data: {email: 'a-new-email@test.com'}
-      }.to raise_error(SecurityTransgression)
+      api_post :find_or_create,
+               nil,
+               raw_post_data: {email: 'a-new-email@test.com'}
+      expect(response).to have_http_status :forbidden
       expect(User.count).to eq user_count
     end
 
     it "should not create a new user for another user" do
       user_count = User.count
-      expect{
-        api_post :find_or_create,
-                 user_2_token,
-                 raw_post_data: {email: 'a-new-email@test.com'}
-      }.to raise_error(SecurityTransgression)
+      api_post :find_or_create,
+               user_2_token,
+               raw_post_data: {email: 'a-new-email@test.com'}
+       expect(response).to have_http_status :forbidden
       expect(User.count).to eq user_count
     end
 

@@ -30,6 +30,13 @@ en:
       sign_in_option_already_used: >-
         That sign in option is already used by someone else. If that someone is
         you, remove it from your other account and try again.
+      too_many_login_attempts:
+        # %{reset_password}   a hyperlink pointing to password reset page. Label
+        #                     of the link is defined by the .reset_password key.
+        content: >-
+          You have made too many login attempts recently. Please
+          %{reset_password} or try again later.
+        reset_password: reset your password
 
     signup:
       already_have_username_and_password: >-

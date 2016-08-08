@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
 
-  USERNAME_DISCARDED_CHAR_REGEX = /[^A-Za-z\d_]/
+  USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
+  USERNAME_MIN_LENGTH = 3
   USERNAME_MAX_LENGTH = 50
   VALID_STATES = [
     'temp', # deprecated but still could exist for old accounts
@@ -34,8 +35,8 @@ class User < ActiveRecord::Base
   before_validation :strip_names
 
   validates :username, presence: true,
-                       length: { minimum: 3, maximum: USERNAME_MAX_LENGTH },
-                       format: { with: /\A[A-Za-z\d_]+\z/,
+                       length: { minimum: USERNAME_MIN_LENGTH, maximum: USERNAME_MAX_LENGTH },
+                       format: { with: USERNAME_VALID_REGEX,
                                  message: "can only contain letters, numbers, and underscores." }
 
   validates :username, uniqueness: { case_sensitive: false },
@@ -57,6 +58,16 @@ class User < ActiveRecord::Base
   before_create :make_first_user_an_admin
 
   before_save :add_unread_update
+
+  def self.username_is_valid?(username)
+    user = User.new(username: username)
+    user.valid?
+    user.errors[:username].none?
+  end
+
+  def self.create_random_username(base:, num_digits_in_suffix:)
+    "#{base}#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
+  end
 
   # Remove this method definition when we upgrade to Rails 4
   def self.none
@@ -165,7 +176,7 @@ class User < ActiveRecord::Base
   end
 
   def make_first_user_an_admin
-    return if Rails.env.production?
+    return if Rails.env.production? || Rails.env.test?
     self.is_administrator = true if User.count == 0
   end
 

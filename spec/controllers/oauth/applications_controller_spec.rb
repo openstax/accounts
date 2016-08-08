@@ -92,8 +92,8 @@ module Oauth
 
     it "should not let a user get someone else's application" do
       controller.sign_in! user
-      expect{get :show, id: untrusted_application_admin.id}.to(
-        raise_error(SecurityTransgression))
+      get :show, id: untrusted_application_admin.id
+      expect(response).to have_http_status :forbidden
     end
 
     it "should let an admin get someone else's application" do
@@ -107,7 +107,8 @@ module Oauth
 
     it "should not let a user get new" do
       controller.sign_in! user
-      expect{ get :new }.to raise_error(SecurityTransgression)
+      get :new
+      expect(response).to have_http_status :forbidden
     end
 
     it "should let an admin get new" do
@@ -118,10 +119,11 @@ module Oauth
 
     it "should not let a user create an application" do
       controller.sign_in! user
-      expect{ post :create, :application => {
+      post :create, :application => {
                 name: 'Some app',
                 redirect_uri: 'http://www.example.com',
-                trusted: true} }.to raise_error(SecurityTransgression)
+                trusted: true}
+      expect(response).to have_http_status :forbidden
     end
 
     it "should let an admin create an application" do
@@ -146,8 +148,8 @@ module Oauth
 
     it "should not let a user edit someone else's application" do
       controller.sign_in! user
-      expect{get :edit, id: untrusted_application_admin.id}.to(
-        raise_error(SecurityTransgression))
+      get :edit, id: untrusted_application_admin.id
+      expect(response).to have_http_status :forbidden
     end
 
     it "should let an admin edit someone else's application" do
@@ -170,7 +172,8 @@ module Oauth
 
     it "should not let a user update someone else's application" do
       controller.sign_in! user
-      expect{post :update, id: untrusted_application_admin.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}}.to raise_error(SecurityTransgression)
+      post :update, id: untrusted_application_admin.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
+      expect(response).to have_http_status :forbidden
     end
 
     it "should let an admin update someone else's application" do
@@ -184,8 +187,8 @@ module Oauth
 
     it "should not let a user destroy an application" do
       controller.sign_in! user
-      expect{delete :destroy, id: untrusted_application_user.id}.to(
-        raise_error(SecurityTransgression))
+      delete :destroy, id: untrusted_application_user.id
+      expect(response).to have_http_status :forbidden
     end
 
     it "should let an admin destroy an application" do

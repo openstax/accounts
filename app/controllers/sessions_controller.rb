@@ -8,16 +8,17 @@ class SessionsController < ApplicationController
 
   skip_before_filter :finish_sign_up, only: [:destroy]
 
+  before_filter :get_authorization_url, only: [:new, :callback]
+
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:new, :callback, :failure, :destroy, :help]
 
   helper_method :last_signin_provider
 
   def new
-    get_authorization_url
-    options = @authorization_url.nil? ? {} : { url: @authorization_url }
     # If no url to redirect back to, store the fallback url (the authorization url or the referer)
     # Handles the case where the user got sent straight to the login page
+    options = @authorization_url.nil? ? {} : { url: @authorization_url }
     store_fallback(options)
 
     # If the user is already logged in, this means they got linked to the login page somehow
@@ -29,7 +30,6 @@ class SessionsController < ApplicationController
   end
 
   def callback
-    get_authorization_url
     # If we have a client_id but no url to redirect back to,
     # store the fallback url (the authorization page)
     # However, do not store the referrer if the client_id is not present
@@ -69,7 +69,9 @@ class SessionsController < ApplicationController
         when :authentication_taken
           redirect_to profile_path, alert: (I18n.t :"controllers.sessions.sign_in_option_already_used")
         else
-          raise IllegalState, "SessionsCallback errors: #{@handler_result.errors.map(&:code).join(', ')}; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect}"
+          Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}"
+          raise IllegalState, "SessionsCallback errors: #{@handler_result.errors.inspect
+                              }; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect}"
         end
       end
     )
@@ -125,18 +127,22 @@ class SessionsController < ApplicationController
 
   # Omniauth failure endpoint
   def failure
-    security_log :sign_in_failed, reason: params[:message]
-    flash.now[:alert] =
-      case params[:message]
-      when 'cannot_find_user'
-        I18n.t :"controllers.sessions.no_account_for_username_or_email"
-      when 'multiple_users'
-        I18n.t :"controllers.sessions.several_accounts_for_one_email"
-      when 'bad_password'
-        I18n.t :"controllers.sessions.incorrect_password"
-      else
-        params[:message]
-      end
+    flash.now[:alert] = case params[:message]
+    when 'cannot_find_user'
+      I18n.t :"controllers.sessions.no_account_for_username_or_email"
+    when 'multiple_users'
+      I18n.t :"controllers.sessions.several_accounts_for_one_email"
+    when 'bad_password'
+      I18n.t :"controllers.sessions.incorrect_password"
+    when 'too_many_login_attempts'
+      I18n.t :"controllers.sessions.too_many_login_attempts.content",
+             reset_password: "<a href=\"#{signin_help_url}\">#{
+                                I18n.t :"controllers.sessions.too_many_login_attempts.reset_password"
+                             }</a>".html_safe
+    else
+      params[:message]
+    end
+
     render 'new'
   end
 

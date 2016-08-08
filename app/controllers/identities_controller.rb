@@ -38,6 +38,7 @@ class IdentitiesController < ApplicationController
                   return if !request.post?
                   sign_in! @handler_result.outputs[:identity].user
                   security_log :password_reset
+                  security_log :sign_in_successful
                   redirect_back key: :password_return_to,
                                 notice: (I18n.t :"controllers.identities.password_reset_successfully")
                 end,

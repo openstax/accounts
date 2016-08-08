@@ -15,7 +15,7 @@ class ContactInfosResendConfirmation
   end
 
   def handle
-    run(SendContactInfoConfirmation, @contact_info)
+    run(SendContactInfoConfirmation, contact_info: @contact_info)
     outputs[:contact_info] = @contact_info
   end
 

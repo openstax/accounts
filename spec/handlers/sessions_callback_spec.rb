@@ -49,6 +49,18 @@ describe SessionsCallback do
             expect(linked_authentications.first.provider).to eq 'twitter'
             expect(linked_authentications.first.uid).to eq authentication.uid
           end
+
+          it "gracefully handles making a new social user with non-western characters in nickname" do
+            result = SessionsCallback.handle(
+              user_state: user_state,
+              request: MockOmniauthRequest.new(authentication.provider,
+                                               authentication.uid,
+                                               {nickname: "將"})
+            )
+
+            expect(result.errors).to be_empty
+            expect(User.last.username).to match(%r/\Auser\d+\z/)
+          end
         end
       end
 

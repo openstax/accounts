@@ -29,17 +29,15 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
 
   context 'index' do
     it 'must not list group ownerships without a token' do
-      expect{api_get :index, nil}.to(
-        raise_error(SecurityTransgression))
+      api_get :index, nil
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must not list group ownerships for an app without a user token' do
-      expect{api_get :index, untrusted_application_token}.to(
-        raise_error(SecurityTransgression))
+      api_get :index, untrusted_application_token
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must list all group ownerships for human users' do
@@ -182,37 +180,33 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
 
   context 'create' do
     it 'must not create a group_owner without a token' do
-      expect{api_post :create, nil, parameters: {group_id: group_3.id,
-                                                 user_id: user_2.id}}.to(
-        raise_error(SecurityTransgression))
+      api_post :create, nil, parameters: {group_id: group_3.id,
+                                                 user_id: user_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group_owner for an app without a user token' do
-      expect{api_post :create, untrusted_application_token,
+      api_post :create, untrusted_application_token,
                       parameters: {group_id: group_3.id,
-                                   user_id: user_2.id}}.to(
-        raise_error(SecurityTransgression))
+                                   user_id: user_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group_owner for an unauthorized user' do
-      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                          user_id: user_2.id}}.to(
-        raise_error(SecurityTransgression))
+      api_post :create, user_1_token, parameters: {group_id: group_3.id,
+                                                          user_id: user_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
 
       group_3.add_member(user_1)
       controller.current_human_user.reload
 
-      expect{api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                          user_id: user_2.id}}.to(
-        raise_error(SecurityTransgression))
+      api_post :create, user_1_token, parameters: {group_id: group_3.id,
+                                                          user_id: user_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
     end
 
     it 'must create group_owners for authorized users' do
@@ -269,42 +263,38 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
 
   context 'destroy' do
     it 'must not destroy a group_owner without a token' do
-      expect{api_delete :destroy, nil,
+      api_delete :destroy, nil,
                         parameters: {group_id: group_2.id,
-                                     user_id: user_2.id}}.to(
-        raise_error(SecurityTransgression))
+                                     user_id: user_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(GroupOwner.where(id: group_owner_1.id).first).not_to be_nil
     end
 
     it 'must not destroy a group_owner for an app without a user token' do
-      expect{api_delete :destroy, untrusted_application_token,
+      api_delete :destroy, untrusted_application_token,
                         parameters: {group_id: group_2.id,
-                                     user_id: user_2.id}}.to(
-        raise_error(SecurityTransgression))
+                                     user_id: user_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(GroupOwner.where(id: group_owner_1.id).first).not_to be_nil
     end
 
     it 'must not destroy a group_owner for an unauthorized user' do
-      expect{api_delete :destroy, user_1_token,
+      api_delete :destroy, user_1_token,
                         parameters: {group_id: group_2.id,
-                                     user_id: user_2.id}}.to(
-        raise_error(SecurityTransgression))
+                                     user_id: user_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(GroupOwner.where(id: group_owner_1.id).first).not_to be_nil
 
       group_2.add_member(user_1)
 
-      expect{api_delete :destroy, user_1_token,
+      api_delete :destroy, user_1_token,
                         parameters: {group_id: group_2.id,
-                                     user_id: user_2.id}}.to(
-        raise_error(SecurityTransgression))
+                                     user_id: user_2.id}
 
-      expect(response.body).to be_empty
+      expect(response).to have_http_status :forbidden
       expect(GroupOwner.where(id: group_owner_1.id).first).not_to be_nil
     end
 

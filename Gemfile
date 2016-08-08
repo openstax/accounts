@@ -18,7 +18,7 @@ gem 'quiet_assets'
 gem 'openstax_utilities'
 gem 'openstax_api', '6.1.5'
 
-gem 'lev', '~> 2.2.0'
+gem 'lev', '~> 2.2.2'
 
 gem 'jquery-rails'
 
@@ -75,6 +75,7 @@ group :development, :test do
   gem 'capybara'
   gem 'capybara-email'
   gem 'poltergeist'
+  gem 'timecop'
   gem 'coveralls', require: false
   gem 'shoulda-matchers', require: false
 end

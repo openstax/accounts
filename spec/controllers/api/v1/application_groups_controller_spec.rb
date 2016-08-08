@@ -179,7 +179,8 @@ describe Api::V1::ApplicationGroupsController, type: :controller, api: true, ver
     end
 
     it "should not let a user call it through an app" do
-      expect{api_get :updates, user_2_token}.to raise_error(SecurityTransgression)
+      api_get :updates, user_2_token
+      expect(response).to have_http_status :forbidden
     end
 
   end
@@ -234,8 +235,10 @@ describe Api::V1::ApplicationGroupsController, type: :controller, api: true, ver
     end
 
     it "should not let a user call it through an app" do
-      expect{api_get :updates, user_2_token}.to raise_error(SecurityTransgression)
-      expect{api_put :updated, user_2_token}.to raise_error(SecurityTransgression)
+      api_get :updates, user_2_token
+      expect(response).to have_http_status :forbidden
+      api_put :updated, user_2_token
+      expect(response).to have_http_status :forbidden
     end
 
   end

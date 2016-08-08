@@ -71,17 +71,14 @@ describe Api::V1::MessagesController, type: :controller, api: true, version: :v1
     it "does not allow users or untrusted applications to send messages" do
       Mail::TestMailer.deliveries.clear
 
-      expect{
-        api_post :create, user_1_untrusted_token, parameters: message_params
-      }.to raise_error(Lev::SecurityTransgression)
+      api_post :create, user_1_untrusted_token, parameters: message_params
+      expect(response).to have_http_status :forbidden
 
-      expect{
-        api_post :create, user_1_trusted_token, parameters: message_params
-      }.to raise_error(Lev::SecurityTransgression)
+      api_post :create, user_1_trusted_token, parameters: message_params
+      expect(response).to have_http_status :forbidden
 
-      expect{
-        api_post :create, untrusted_application_token, parameters: message_params
-      }.to raise_error(Lev::SecurityTransgression)
+      api_post :create, untrusted_application_token, parameters: message_params
+      expect(response).to have_http_status :forbidden
 
       # These exceptions are no longer "notified" out
       expect(Mail::TestMailer.deliveries.size).to eq(0)
