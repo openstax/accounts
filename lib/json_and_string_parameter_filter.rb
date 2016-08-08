@@ -40,15 +40,19 @@ class JsonAndStringParameterFilter
       # no need to do anything with param_value as it's nil
     elsif param_value.is_a?(String)
       if param_key =~ @string_regexp
-        param_value.gsub!(/^.*$/, '[FILTERED]')
+        utf8_encoded(param_value.gsub!(/^.*$/, '[FILTERED]'))
       else
         @value_filters.each do |value_filter|
-          param_value.gsub!(/^.*$/, '[FILTERED]') if value_filter.call(param_value)
+          utf8_encoded(param_value.gsub!(/^.*$/, '[FILTERED]')) if value_filter.call(utf8_encoded(param_value))
         end
       end
     elsif param_value.is_a?(Hash)
       filter_data_by_key(param_value, @string_regexp)
       filter_data_by_value(param_value, @value_filters)
     end
+  end
+
+  def utf8_encoded(input)
+    input.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
   end
 end
