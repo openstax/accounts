@@ -39,7 +39,7 @@ module Oauth
       expect(assigns :application).to be_nil
 
       post :create, :application => {name: 'Some app',
-                                     redirect_uri: 'http://www.example.com',
+                                     redirect_uri: 'https://www.example.com',
                                      trusted: true}
       expect(response.code).to eq('302')
       expect(assigns :application).to be_nil
@@ -48,7 +48,7 @@ module Oauth
       expect(response.code).to eq('302')
       expect(assigns :application).to be_nil
 
-      post :update, id: untrusted_application_user2.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
+      put :update, id: untrusted_application_user2.id, application: {name: 'Some other name', redirect_uri: 'https://www.example.net', trusted: true}
       expect(response.code).to eq('302')
       expect(assigns :application).to be_nil
 
@@ -121,7 +121,7 @@ module Oauth
       controller.sign_in! user
       post :create, :application => {
                 name: 'Some app',
-                redirect_uri: 'http://www.example.com',
+                redirect_uri: 'https://www.example.com',
                 trusted: true}
       expect(response).to have_http_status :forbidden
     end
@@ -163,25 +163,25 @@ module Oauth
 
     it "should let a user update his own untrusted application" do
       controller.sign_in! user
-      post :update, id: untrusted_application_user.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
-      expect(response.code).to eq('200')
+      put :update, id: untrusted_application_user.id, application: {name: 'Some other name', redirect_uri: 'https://www.example.net', trusted: true}
+      expect(response).to redirect_to(oauth_applications_path)
       expect(assigns(:application).name).to eq('Some other name')
-      expect(assigns(:application).redirect_uri).to eq('http://www.example.net')
+      expect(assigns(:application).redirect_uri).to eq('https://www.example.net')
       expect(assigns(:application).trusted).to eq(false)
     end
 
     it "should not let a user update someone else's application" do
       controller.sign_in! user
-      post :update, id: untrusted_application_admin.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
+      put :update, id: untrusted_application_admin.id, application: {name: 'Some other name', redirect_uri: 'https://www.example.net', trusted: true}
       expect(response).to have_http_status :forbidden
     end
 
     it "should let an admin update someone else's application" do
       controller.sign_in! admin
-      post :update, id: untrusted_application_user.id, application: {name: 'Some other name', redirect_uri: 'http://www.example.net', trusted: true}
-      expect(response.code).to eq('200')
+      put :update, id: untrusted_application_user.id, application: {name: 'Some other name', redirect_uri: 'https://www.example.net', trusted: true}
+      expect(response).to redirect_to(oauth_applications_path)
       expect(assigns(:application).name).to eq('Some other name')
-      expect(assigns(:application).redirect_uri).to eq('http://www.example.net')
+      expect(assigns(:application).redirect_uri).to eq('https://www.example.net')
       expect(assigns(:application).trusted).to eq(true)
     end
 

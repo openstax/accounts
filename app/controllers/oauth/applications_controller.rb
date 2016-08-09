@@ -27,7 +27,7 @@ module Oauth
                                                     :applications, :create])
         render :show
       else
-        render :new
+        render :new, status: :unprocessable_entity
       end
     end
 
@@ -49,7 +49,7 @@ module Oauth
                                                     :applications, :update])
         redirect_to action: :index
       else
-        render :edit
+        render :edit, status: :unprocessable_entity
       end
     end
 
