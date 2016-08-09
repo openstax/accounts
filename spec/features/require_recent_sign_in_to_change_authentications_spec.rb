@@ -2,8 +2,32 @@ require 'rails_helper'
 
 feature 'Require recent sign in to change authentications', js: true do
 
-  xscenario 'adding a new authentication' do
-    # TODO: figure out how to make feature specs that sign in using OAuth
+  scenario 'adding a new authentication' do
+    user = create_user 'user'
+
+    visit '/signin'
+    expect_sign_in_page
+    signin_as 'user'
+    expect(page).to have_content('Welcome, user')
+
+    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+      visit '/profile'
+      expect_profile_page
+      expect(page).not_to have_content('Facebook')
+
+      click_link 'Enable other sign in options'
+
+      with_omniauth_test_mode(identity_user: user) do
+        find('.authentication[data-provider="facebook"] .add').click
+        expect_sign_in_page
+        expect(page).to have_content('Please sign in again to confirm your changes')
+
+        signin_as 'user'
+      end
+
+      expect_profile_page
+      expect(page).to have_content('Facebook')
+    end
   end
 
   scenario 'changing the password' do
@@ -51,6 +75,7 @@ feature 'Require recent sign in to change authentications', js: true do
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
         visit '/profile'
         expect_profile_page
+        expect(page).to have_content('Twitter')
 
         find('.authentication[data-provider="twitter"] .delete').click
         click_button 'OK'
@@ -62,7 +87,7 @@ feature 'Require recent sign in to change authentications', js: true do
 
         find('.authentication[data-provider="twitter"] .delete').click
         click_button 'OK'
-        expect(page).not_to have_content('.authentication[data-provider="twitter"]')
+        expect(page).not_to have_content('Twitter')
       end
     end
   end
