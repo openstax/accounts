@@ -78,9 +78,8 @@ class Identity
     window.location.href = "/auth/#{@getType()}"
 
   handleDelete: (response) ->
-    location = response['location']
-    if location
-      window.location.href = location
+    if response.location?
+      window.location.href = response.location
     else
       @moveToDisabledSection()
 
@@ -107,9 +106,8 @@ class Password extends Identity
 
     ).on('save', (e, params) =>
       response = params.response
-      location = response['location']
-      if location
-        window.location.href = location
+      if response.location?
+        window.location.href = response.location
       else if @isEnabled()
         OX.Alert.display(type: 'success', message: response, icon: 'thumbs-up', parentEl: input.parent())
       else
