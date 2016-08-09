@@ -125,6 +125,26 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
     end
   end
 
+  context "non-admin user logs in" do
+    scenario "later someone makes him/her an admin" do
+      current_user = create_user 'user'
+      visit signin_path
+      signin_as 'user'
+      expect(current_user.is_administrator?).to eq false
+
+      Timecop.travel(login_time + 31.minutes)
+      visit non_admin_feature_url
+
+      current_user.is_administrator = true
+      current_user.save
+      expect(current_user.is_administrator?).to eq true
+
+      visit admin_feature_url
+
+      expect(page).to have_http_status :success
+    end
+  end
+
   def admin_feature_url
     admin_security_log_path
   end
