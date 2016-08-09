@@ -20,7 +20,9 @@
 # :authentication_added         if the user is adding an authentication from the profile page
 # :no_action                    if the user is adding an authentication from the profile page that is already linked to them
 #
-class SessionsCallback
+class SessionsCreate
+
+  include RequireRecentSignin
 
   lev_handler
 
@@ -54,6 +56,7 @@ class SessionsCallback
       if authentication_user && authentication_user.is_activated?
         status = :authentication_taken
       else
+        return outputs[:status] = :new_signin_required if user_signin_is_too_old?
         run(TransferAuthentications, authentication, current_user)
         run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
         status = :authentication_added

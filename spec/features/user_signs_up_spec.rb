@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 feature 'User signs up as a local user', js: true do
+
+  background { load 'db/seeds.rb' }
+
   scenario 'success' do
     create_application
     visit_authorize_uri
@@ -41,7 +44,7 @@ feature 'User signs up as a local user', js: true do
     expect(page).to have_content('a password')
   end
 
-  scenario 'with incorrect password confirmation', js: true do
+  scenario 'with incorrect password confirmation' do
     visit '/'
     click_password_sign_up
 
@@ -57,7 +60,7 @@ feature 'User signs up as a local user', js: true do
     expect(page).not_to have_content('Sign out')
   end
 
-  scenario 'with empty username', js: true do
+  scenario 'with empty username' do
     visit '/'
     click_password_sign_up
 
@@ -73,7 +76,7 @@ feature 'User signs up as a local user', js: true do
     expect(page).not_to have_content('Sign out')
   end
 
-  scenario 'with empty password', js: true do
+  scenario 'with empty password' do
     visit '/'
     click_password_sign_up
 
@@ -89,7 +92,7 @@ feature 'User signs up as a local user', js: true do
     expect(page).not_to have_content('Sign out')
   end
 
-  scenario 'with short password', js: true do
+  scenario 'with short password' do
     visit '/'
     click_password_sign_up
 
@@ -122,7 +125,7 @@ feature 'User signs up as a local user', js: true do
     expect(page).not_to have_content('Sign out')
   end
 
-  scenario 'with empty email address', js: true do
+  scenario 'with empty email address' do
     visit '/'
     click_password_sign_up
 
@@ -163,9 +166,7 @@ feature 'User signs up as a local user', js: true do
     user.last_name = "Henry"
     user.save
 
-    authentication = FactoryGirl.create(:authentication,
-                                        user: user,
-                                        provider: 'twitter')
+    authentication = FactoryGirl.create(:authentication, user: user, provider: 'twitter')
 
     visit '/'
     signin_as 'bob'
@@ -211,9 +212,7 @@ feature 'User signs up as a local user', js: true do
     user.state = 'new_social'
     user.save
 
-    authentication = FactoryGirl.create(:authentication,
-                                        user: user,
-                                        provider: 'twitter')
+    authentication = FactoryGirl.create(:authentication, user: user, provider: 'twitter')
 
     visit '/'
     signin_as 'bob'

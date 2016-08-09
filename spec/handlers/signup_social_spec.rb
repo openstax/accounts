@@ -3,7 +3,9 @@ require 'rails_helper'
 # TODO add specs for missing, but required, params
 # TODO add in UsersRegister specs -- oops maybe are none?  then add specs to test rest of SignupProcess
 
-describe SignupSocial do
+describe SignupSocial, type: :handler do
+  before(:all) { load 'db/seeds.rb' }
+
   let(:params) { {
     signup: {
       i_agree: true,

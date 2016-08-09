@@ -50,7 +50,7 @@ class SignupPassword
                     state: 'activated')
     user = outputs[[:create_user, :user]]
 
-    # Create an Identity, but not an Authentication -- that is done in SessionsCallback
+    # Create an Identity, but not an Authentication -- that is done in SessionsCreate
     run(CreateIdentity,
         password:              signup_params.password,
         password_confirmation: signup_params.password_confirmation,

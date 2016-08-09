@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe IdentitiesUpdate do
+describe IdentitiesUpdate, type: :handler do
 
   let!(:identity) { FactoryGirl.create :identity, password: 'password' }
   let!(:user)     { identity.user }

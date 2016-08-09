@@ -58,12 +58,13 @@ module Admin
       'created_at' => SecurityLog.arel_table[:created_at],
       'user' => User.arel_table[:username],
       'application' => Doorkeeper::Application.arel_table[:name],
-      'event_type' => SecurityLog.arel_table[:event_type]
+      'event_type' => SecurityLog.arel_table[:event_type],
+      'id' => SecurityLog.arel_table[:id]
     }
 
     def exec(params = {}, options = {})
 
-      params[:ob] ||= { created_at: :desc }
+      params[:ob] ||= [{ created_at: :desc }, { id: :desc }]
       relation = SecurityLog.joins{[user.outer, application.outer]}.preloaded.reorder(nil)
 
       run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|

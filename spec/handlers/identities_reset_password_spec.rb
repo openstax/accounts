@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe IdentitiesResetPassword do
+describe IdentitiesResetPassword, type: :handler do
   let!(:identity) {
     i = FactoryGirl.create :identity, password: 'password'
     i.save!

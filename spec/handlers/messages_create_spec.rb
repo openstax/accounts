@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MessagesCreate do
+describe MessagesCreate, type: :handler do
 
   let!(:trusted_application)   {
     FactoryGirl.create :doorkeeper_application, :trusted,

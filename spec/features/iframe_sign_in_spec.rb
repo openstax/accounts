@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Login inside an iframe', js: true do
 
-  scenario 'a user signs in', js: true do
+  scenario 'a user signs in' do
     create_application
     user = create_user 'user'
     origin = SECRET_SETTINGS[:valid_iframe_origins].last

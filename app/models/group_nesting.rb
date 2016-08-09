@@ -13,8 +13,7 @@ class GroupNesting < ActiveRecord::Base
   protected
 
   def no_loops
-    return if member_group.nil? ||\
-              !member_group.subtree_group_ids.include?(container_group_id)
+    return if member_group.nil? || !member_group.subtree_group_ids.include?(container_group_id)
     errors.add(:base, 'would create a loop') if errors[:base].blank?
     false
   end

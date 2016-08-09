@@ -2,7 +2,9 @@ require 'rails_helper'
 
 feature 'User claims an unclaimed account', js: true do
 
-  scenario 'a new user signs up and completes profile when an account is waiting', js: true do
+  background { load 'db/seeds.rb' }
+
+  scenario 'a new user signs up and completes profile when an account is waiting' do
     unclaimed_user = FindOrCreateUnclaimedUser.call(
       email:'unclaimeduser@example.com', username: 'therulerofallthings',
       password: "apassword", password_confirmation: "apassword"

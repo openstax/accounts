@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'Skipped terms are respected', js: true do
 
   background do
+    load 'db/seeds.rb'
     @app_with_skip    = FactoryGirl.create :doorkeeper_application, skip_terms: true
     @app_without_skip = FactoryGirl.create :doorkeeper_application, skip_terms: false
   end
