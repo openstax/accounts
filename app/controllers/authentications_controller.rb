@@ -2,10 +2,10 @@ class AuthenticationsController < ApplicationController
 
   include RequireRecentSignin
 
+  before_filter :reauthenticate_user_if_signin_is_too_old!
+
   # Remove authentication method (OAuth provider) from account
   def destroy
-    return reauthenticate_user! if user_signin_is_too_old?
-
     handle_with(
       AuthenticationsDelete,
       success: lambda do

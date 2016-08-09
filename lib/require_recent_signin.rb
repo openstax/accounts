@@ -24,4 +24,8 @@ module RequireRecentSignin
     last_signin_time <= reauthentication_time
   end
 
+  def reauthenticate_user_if_signin_is_too_old!
+    reauthenticate_user! if user_signin_is_too_old?
+  end
+
 end

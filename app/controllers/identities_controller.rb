@@ -8,9 +8,9 @@ class IdentitiesController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:reset_password]
 
-  def update
-    return reauthenticate_user! if user_signin_is_too_old?
+  before_filter :reauthenticate_user_if_signin_is_too_old!, except: :reset_password
 
+  def update
     handle_with(IdentitiesUpdate,
                 success: lambda  do
                   security_log :password_updated
