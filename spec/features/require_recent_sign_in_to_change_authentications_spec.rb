@@ -16,6 +16,10 @@ feature 'Require recent sign in to change authentications', js: true do
       expect(page).not_to have_content('Facebook')
 
       click_link 'Enable other sign in options'
+      wait_for_animations
+      expect(page).to have_no_content('Enable other sign in options')
+      expect(page).to have_content('Other sign in options')
+      expect(page).to have_content('Facebook')
 
       with_omniauth_test_mode(identity_user: user) do
         find('.authentication[data-provider="facebook"] .add').click
@@ -23,10 +27,9 @@ feature 'Require recent sign in to change authentications', js: true do
         expect(page).to have_content('Please sign in again to confirm your changes')
 
         signin_as 'user'
+        expect_profile_page
+        expect(page).to have_content('Facebook')
       end
-
-      expect_profile_page
-      expect(page).to have_content('Facebook')
     end
   end
 
