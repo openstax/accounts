@@ -16,27 +16,43 @@ require 'shoulda/matchers'
 
 Mail.defaults { delivery_method :test }
 
-# load seed data
-load "#{Rails.root}/db/seeds.rb"
-
 Capybara.javascript_driver = :poltergeist
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/support/**/*.rb")].each{ |f| require f }
 
-# don't exit process until all ajax requests are complete
-module WaitForAjax
-  def wait_for_ajax
-    Timeout.timeout(Capybara.default_max_wait_time) do
-      loop until finished_all_ajax_requests?
+## START of DatabaseCleaner Monkeypatch to allow nested DatabaseCleaner transactions in Rails 3
+## DELETE THIS SECTION when upgrading to Rails 4
+## This Monkeypatch requires ruby 1.9 and is not thread-safe
+## Based on http://myronmars.to/n/dev-blog/2012/03/building-an-around-hook-using-fibers
+require 'database_cleaner/active_record/transaction'
+
+class DatabaseCleaner::ActiveRecord::Transaction
+  @@fibers = []
+
+  def start
+    fiber = Fiber.new do
+      connection_class.connection.transaction(joinable: false) do
+        Fiber.yield
+
+        raise ActiveRecord::Rollback
+      end
     end
+
+    @@fibers << fiber
+
+    fiber.resume
   end
 
-  def finished_all_ajax_requests?
-    page.evaluate_script('jQuery.active').zero?
+  def clean
+    fiber = @@fibers.pop
+    return if fiber.nil?
+
+    fiber.resume
   end
 end
+## END of DatabaseCleaner Monkeypatch
 
 RSpec.configure do |config|
   # ## Mock Framework
@@ -47,7 +63,6 @@ RSpec.configure do |config|
   # config.mock_with :flexmock
   # config.mock_with :rr
 
-  config.include WaitForAjax, type: :feature
   config.include I18nMacros
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -56,7 +71,7 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
 
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
@@ -69,11 +84,49 @@ RSpec.configure do |config|
   # To explicitly tag specs without using automatic inference, set the `:type`
   # metadata manually:
   #
-  #     describe ThingsController, :type => :controller do
+  #     describe ThingsController, type: :controller do
   #       # Equivalent to being in spec/controllers
   #     end
   # or set:
   #   config.infer_spec_type_from_file_location!
+
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.before(:all) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before(:all, js: true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:all, truncation: true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:all) do
+    DatabaseCleaner.start
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  # https://github.com/DatabaseCleaner/database_cleaner#rspec-with-capybara-example says:
+  #   "It's also recommended to use append_after to ensure DatabaseCleaner.clean
+  #    runs after the after-test cleanup capybara/rspec installs."
+  config.append_after(:each) do
+    DatabaseCleaner.clean
+  end
+
+  # Ideally we want nested transactions for before(:all)/after(:all)
+  # and before(:each)/after(:each), but this is only possible in Rails >= 4.0
+  # So for now we use truncation in after(:all)
+  config.append_after(:all) do
+    DatabaseCleaner.clean
+  end
 
   # Some tests might change I18n.locale.
   config.after(:each) do |config|
@@ -130,19 +183,6 @@ RSpec::Matchers.define :have_api_error_status do |error_status|
     "expected that response would have status '#{error_status}' but had #{actual.body_as_hash[:status]}"
   end
 end
-
-# monkey patching ActiveRecord::Base to use the same transaction for all threads
-# http://rubydoc.info/github/jnicklas/capybara/master#Transactions_and_database_setup
-class ActiveRecord::Base
-  mattr_accessor :shared_connection
-  @@shared_connection = nil
-
-  def self.connection
-    @@shared_connection || retrieve_connection
-  end
-end
-
-ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
 
 # Fail on missing translation in a spec.
 I18n.exception_handler = lambda do |exception, locale, key, options|

@@ -1,5 +1,8 @@
 en:
   controllers:
+    authentications:
+      authentication_removed: "%{identity} removed"
+
     contact_infos:
       already_verified: Your email address is already verified
       verification_sent: A verification message has been sent to "%{address}"
@@ -8,7 +11,6 @@ en:
       cannot_reset_password_because_user_doesnt_have_one: >-
         You cannot reset your password because your account does not have a
         password.
-      identity_removed: "%{identity} removed"
       password_changed: Password changed
       password_expired: >-
         Your password has expired. Please enter a new password.

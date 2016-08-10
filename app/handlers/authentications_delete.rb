@@ -1,4 +1,4 @@
-class AuthenticationDelete
+class AuthenticationsDelete
 
   lev_handler
 
@@ -15,6 +15,8 @@ class AuthenticationDelete
   def handle
     @auth.destroy
     outputs[:authentication] = @auth
-    transfer_errors_from(@auth, {scope: :authentication})
+    fatal_error(code: :cannot_delete_last_auth,
+                message: "Cannot delete an activated user's last authentication") \
+      unless @auth.destroyed?
   end
 end

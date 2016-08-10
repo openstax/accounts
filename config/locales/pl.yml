@@ -1,5 +1,8 @@
 pl:
   controllers:
+    authentications:
+      authentication_removed: Usunięto %{identity}
+
     contact_infos:
       already_verified: Ten adres e-mail został już zweryfikowany.
       verification_sent: Wiadomość weryfikacyjna została wysłana do "%{address}"
@@ -7,7 +10,6 @@ pl:
     identities:
       cannot_reset_password_because_user_doesnt_have_one: >-
         Nie możesz zmienić swojego hasła, ponieważ go nie posiadasz.
-      identity_removed: Usunięto %{identity}
       password_changed: Hasło zostało zmienione
       password_expired: >-
         Twoje hasło wygasło. Wpisz nowe hasło.

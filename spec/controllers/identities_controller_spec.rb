@@ -5,25 +5,46 @@ describe IdentitiesController, type: :controller do
   describe 'reset_password' do
     render_views
 
-    let!(:user) { FactoryGirl.create :user, :terms_agreed, username: 'user_one' }
-    let!(:identity) {
-      i = FactoryGirl.create :identity, user: user, password: 'password'
-      i.save!
-      GeneratePasswordResetCode.call(i)
-      i
-    }
+    let!(:user)     { FactoryGirl.create :user, :terms_agreed, username: 'user_one' }
+    let!(:identity) do
+      FactoryGirl.create(:identity, user: user, password: 'password').tap do |id|
+        GeneratePasswordResetCode.call(id)
+      end
+    end
 
     context 'PUT update' do
-      it "updates the user's password" do
+      before do
         expect(!!identity.authenticate('password')).to eq true
         expect(!!identity.authenticate('new_password')).to eq false
 
         controller.sign_in! user
-        put 'update', identity: {password: 'new_password',
-                                 password_confirmation: 'new_password'}
-        expect(response.status).to eq 202
-        expect(!!identity.reload.authenticate('password')).to eq false
-        expect(!!identity.authenticate('new_password')).to eq true
+      end
+
+      context 'with recent signin' do
+        before do
+          SecurityLog.create!(user: user, remote_ip: '127.0.0.1',
+                              event_type: :sign_in_successful, event_data: {}.to_json)
+        end
+
+        it "updates the user's password" do
+          put 'update', identity: {
+            password: 'new_password', password_confirmation: 'new_password'
+          }
+          expect(response.status).to eq 202
+          expect(!!identity.reload.authenticate('password')).to eq false
+          expect(!!identity.authenticate('new_password')).to eq true
+        end
+      end
+
+      context 'with old signin' do
+        it "does not update the user's password" do
+          put 'update', identity: {
+            password: 'new_password', password_confirmation: 'new_password'
+          }
+          expect(response.status).to eq 302
+          expect(!!identity.reload.authenticate('password')).to eq true
+          expect(!!identity.authenticate('new_password')).to eq false
+        end
       end
     end
 
@@ -146,6 +167,7 @@ describe IdentitiesController, type: :controller do
         expect(identity.authenticate('password!')).to be_truthy
       end
     end
+
   end
 
 end

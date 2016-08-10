@@ -109,7 +109,7 @@ end
 
 def create_application
   @app = FactoryGirl.create(:doorkeeper_application, :trusted,
-                           redirect_uri: 'https://www.example.com/callback')
+                            redirect_uri: 'https://www.example.com/callback')
   FactoryGirl.create(:doorkeeper_access_token,
                      application: @app, resource_owner_id: nil)
   @app
@@ -184,6 +184,10 @@ end
 def expect_social_sign_up_page
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"signup.new_account.password_managed_by", manager: '')
+end
+
+def expect_profile_page
+  expect(page).to have_content('Your Account')
 end
 
 def agree_and_click_create

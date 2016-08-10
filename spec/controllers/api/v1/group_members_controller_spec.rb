@@ -12,8 +12,7 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
   let!(:user_1)       { FactoryGirl.create :user, :terms_agreed }
   let!(:user_2)       { FactoryGirl.create :user, :terms_agreed }
 
-  let!(:group_member_1) { FactoryGirl.create :group_member, group: group_2,
-                                                            user: user_2 }
+  let!(:group_member_1) { FactoryGirl.create :group_member, group: group_2, user: user_2 }
 
   let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
 
@@ -54,26 +53,31 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
       api_get :index, user_1_token
 
       expect(response.code).to eq('200')
-      expected_response = [{'user_id' => user_1.id,
-        'group' => {
-          'id' => group_1.id,
-          'name' => 'Group 1',
-          'is_public' => false,
-          'owners' => [],
-          'members' => [
-            {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username}}
-          ],
-          'nestings' => [],
-          'supertree_group_ids' => [group_1.id],
-          'subtree_group_ids' => [group_1.id],
-          'subtree_member_ids' => [user_1.id]
-        }}]
+      expected_response = [
+        {
+          'user_id' => user_1.id,
+          'group' => {
+            'id' => group_1.id,
+            'name' => 'Group 1',
+            'is_public' => false,
+            'owners' => [],
+            'members' => [
+              {
+                'group_id' => group_1.id,
+                'user' => { 'id' => user_1.id, 'username' => user_1.username }
+              }
+            ],
+            'nestings' => [],
+            'supertree_group_ids' => [group_1.id],
+            'subtree_group_ids' => [group_1.id],
+            'subtree_member_ids' => [user_1.id]
+          }
+        }
+      ]
 
       expect(JSON.parse(response.body)).to eq(expected_response)
 
-      FactoryGirl.create(:group_nesting, container_group: group_1,
-                                         member_group: group_2)
+      FactoryGirl.create(:group_nesting, container_group: group_1, member_group: group_2)
       controller.current_human_user.reload
 
       api_get :index, user_1_token
@@ -81,15 +85,18 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
       expect(response.code).to eq('200')
 
       group_1.reload
-      group_1_json = {'user_id' => user_1.id,
+      group_1_json = {
+        'user_id' => user_1.id,
         'group' => {
           'id' => group_1.id,
           'name' => 'Group 1',
           'is_public' => false,
           'owners' => [],
           'members' => [
-            {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username}}
+            {
+              'group_id' => group_1.id,
+              'user' => { 'id' => user_1.id, 'username' => user_1.username }
+            }
           ],
           'nestings' => [
             {
@@ -119,15 +126,18 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
       expect(response.code).to eq('200')
 
       group_1.reload
-      group_1_json = {'user_id' => user_1.id,
+      group_1_json = {
+        'user_id' => user_1.id,
         'group' => {
           'id' => group_1.id,
           'name' => 'Group 1',
           'is_public' => false,
           'owners' => [],
           'members' => [
-            {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username}}
+            {
+              'group_id' => group_1.id,
+              'user' => { 'id' => user_1.id, 'username' => user_1.username }
+            }
           ],
           'nestings' => [
             {
@@ -149,11 +159,14 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
           'name' => 'Group 2',
           'is_public' => false,
           'owners' => [],
-          'members' => group_2.group_members.collect{ |group_member| {
-            'group_id' => group_2.id,
-            'user' => { 'id' => group_member.user.id,
-                        'username' => group_member.user.username }
-          } },
+          'members' => a_collection_containing_exactly(
+            *group_2.group_members.map do |group_member|
+              {
+                'group_id' => group_2.id,
+                'user' => { 'id' => group_member.user.id, 'username' => group_member.user.username }
+              }
+            end
+          ),
           'nestings' => [],
           'supertree_group_ids' => group_2.supertree_group_ids,
           'subtree_group_ids' => [group_2.id],
@@ -208,93 +221,96 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
 
   context 'create' do
     it 'must not create a group_member without a token' do
-      api_post :create, nil, parameters: {group_id: group_3.id,
-                                                 user_id: user_2.id}
+      api_post :create, nil, parameters: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group_member for an app without a user token' do
       api_post :create, untrusted_application_token,
-                      parameters: {group_id: group_3.id,
-                                   user_id: user_2.id}
+                        parameters: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group_member for an unauthorized user' do
-      api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                         user_id: user_2.id}
+      api_post :create, user_1_token, parameters: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
 
       group_3.add_member(user_1)
       controller.current_human_user.reload
 
-      api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                          user_id: user_2.id}
+      api_post :create, user_1_token, parameters: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must create group_members for authorized users' do
       group_3.add_owner(user_1)
-      api_post :create, user_1_token, parameters: {group_id: group_3.id,
-                                                   user_id: user_2.id}
+      api_post :create, user_1_token, parameters: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response.code).to eq('201')
-      expected_response = {'user_id' => user_2.id,
+      expected_response = {
+        'user_id' => user_2.id,
         'group' => {
           'id' => group_3.id,
           'name' => 'Group 3',
           'is_public' => true,
           'owners' => [
-            {'group_id' => group_3.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username}}
+            {
+              'group_id' => group_3.id,
+              'user' => { 'id' => user_1.id, 'username' => user_1.username }
+            }
           ],
           'members' => [
-            {'group_id' => group_3.id,
-             'user' => {'id' => user_2.id, 'username' => user_2.username}}
+            {
+              'group_id' => group_3.id,
+              'user' => { 'id' => user_2.id, 'username' => user_2.username }
+            }
           ],
           'nestings' => [],
           'supertree_group_ids' => [group_3.id],
           'subtree_group_ids' => [group_3.id],
           'subtree_member_ids' => [user_2.id]
-        }}
+        }
+      }
       expect(JSON.parse(response.body)).to eq(expected_response)
 
       group_1.add_owner(user_1)
-      api_post :create, user_1_token, parameters: {group_id: group_1.id,
-                                                   user_id: user_1.id}
+      api_post :create, user_1_token, parameters: { group_id: group_1.id, user_id: user_1.id }
 
       expect(response.code).to eq('201')
-      expected_response = {'user_id' => user_1.id,
+      expected_response = {
+        'user_id' => user_1.id,
         'group' => {
           'id' => group_1.id,
           'name' => 'Group 1',
           'is_public' => false,
           'owners' => [
-            {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username}}
+            { 'group_id' => group_1.id,
+              'user' => { 'id' => user_1.id, 'username' => user_1.username }
+            }
           ],
           'members' => [
-            {'group_id' => group_1.id,
-             'user' => {'id' => user_1.id, 'username' => user_1.username}}
+            {
+              'group_id' => group_1.id,
+              'user' => { 'id' => user_1.id, 'username' => user_1.username }
+            }
           ],
           'nestings' => [],
           'supertree_group_ids' => [group_1.id],
           'subtree_group_ids' => [group_1.id],
           'subtree_member_ids' => [user_1.id]
-        }}
+        }
+      }
       expect(JSON.parse(response.body)).to eq(expected_response)
     end
   end
 
   context 'destroy' do
     it 'must not destroy a group_member without a token' do
-      api_delete :destroy, nil,
-                        parameters: {group_id: group_2.id,
-                                     user_id: user_2.id}
+      api_delete :destroy, nil, parameters: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupMember.where(id: group_member_1.id).first).not_to be_nil
@@ -302,26 +318,21 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
 
     it 'must not destroy a group_member for an app without a user token' do
       api_delete :destroy, untrusted_application_token,
-                        parameters: {group_id: group_2.id,
-                                     user_id: user_2.id}
+                          parameters: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupMember.where(id: group_member_1.id).first).not_to be_nil
     end
 
     it 'must not destroy a group_member for an unauthorized user' do
-      api_delete :destroy, user_1_token,
-                        parameters: {group_id: group_2.id,
-                                     user_id: user_2.id}
+      api_delete :destroy, user_1_token, parameters: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupMember.where(id: group_member_1.id).first).not_to be_nil
 
       group_2.add_member(user_1)
 
-      api_delete :destroy, user_1_token,
-                        parameters: {group_id: group_2.id,
-                                     user_id: user_2.id}
+      api_delete :destroy, user_1_token, parameters: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupMember.where(id: group_member_1.id).first).not_to be_nil
@@ -330,18 +341,14 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
     it 'must destroy group_members for authorized users' do
       group_2.add_member(user_1)
       group_member_2 = GroupMember.last
-      api_delete :destroy, user_1_token,
-                 parameters: {group_id: group_2.id,
-                              user_id: user_1.id}
+      api_delete :destroy, user_1_token, parameters: { group_id: group_2.id, user_id: user_1.id }
 
       expect(response.code).to eq('204')
       expect(response.body).to be_blank
       expect(GroupMember.where(id: group_member_2.id).first).to be_nil
 
       group_2.add_owner(user_1)
-      api_delete :destroy, user_1_token,
-                 parameters: {group_id: group_2.id,
-                              user_id: user_2.id}
+      api_delete :destroy, user_1_token, parameters: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response.code).to eq('204')
       expect(response.body).to be_blank

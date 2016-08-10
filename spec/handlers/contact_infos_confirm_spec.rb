@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ContactInfosConfirm do
+describe ContactInfosConfirm, type: :handler do
   let(:email) { FactoryGirl.create :email_address, confirmation_code: '01234' }
 
   it 'returns error if no confirmation code is given' do

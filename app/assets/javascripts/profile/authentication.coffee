@@ -44,7 +44,7 @@ class Identity
   confirmDelete: (ev) ->
     new OX.ConfirmationPopover(
       title: false
-      message: "Are you you want to remove sign in?"
+      message: "Are you sure you want to remove this sign in option?"
       target: ev.target
       placement: 'top'
       onConfirm: @delete
@@ -54,14 +54,14 @@ class Identity
     this.$el.data('provider')
 
   delete: ->
-    $.ajax({type: "DELETE", url: "/identity/#{@getType()}"})
-      .success( @moveToDisabledSection )
+    $.ajax({type: "DELETE", url: "/auth/#{@getType()}"})
+      .success( @handleDelete )
       .error(OX.Alert.display)
 
   isEnabled: ->
     this.$el.closest('.enabled-providers').length isnt 0
 
-  moveToEabledSection: ->
+  moveToEnabledSection: ->
     @$el.hide('fast', =>
       $('.enabled-providers .providers').append(@$el)
       @$el.show()
@@ -76,6 +76,12 @@ class Identity
   add: ->
     # TODO: figure out a way for the BE to pass the url
     window.location.href = "/auth/#{@getType()}"
+
+  handleDelete: (response) ->
+    if response.location?
+      window.location.href = response.location
+    else
+      @moveToDisabledSection()
 
 class Password extends Identity
 
@@ -99,10 +105,13 @@ class Password extends Identity
       identity.removeClass('editing')
 
     ).on('save', (e, params) =>
-      if @isEnabled()
-        OX.Alert.display(type: 'success', message: params.response, icon: 'thumbs-up', parentEl: input.parent())
+      response = params.response
+      if response.location?
+        window.location.href = response.location
+      else if @isEnabled()
+        OX.Alert.display(type: 'success', message: response, icon: 'thumbs-up', parentEl: input.parent())
       else
-        @moveToEabledSection()
+        @moveToEnabledSection()
     )
     # no idea why the defer is needed, but it fails (silently!) without it
     _.defer -> input.editable('show')
@@ -110,7 +119,6 @@ class Password extends Identity
   # password identity works by setting the password
   add: ->
     @editPassword()
-
 
 SPECIAL_TYPES =
   identity: Password

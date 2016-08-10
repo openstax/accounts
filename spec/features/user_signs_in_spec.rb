@@ -2,6 +2,8 @@ require 'rails_helper'
 
 feature 'User logs in as a local user', js: true do
 
+  background { load 'db/seeds.rb' }
+
   scenario 'authenticates against the default (bcrypt) password hashes' do
     with_forgery_protection do
       create_application

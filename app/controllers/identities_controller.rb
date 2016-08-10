@@ -1,10 +1,14 @@
 class IdentitiesController < ApplicationController
 
+  include RequireRecentSignin
+
   skip_before_filter :authenticate_user!, :expired_password, :finish_sign_up,
                      only: [:reset_password]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:reset_password]
+
+  before_filter :reauthenticate_user_if_signin_is_too_old!, except: :reset_password
 
   def update
     handle_with(IdentitiesUpdate,
@@ -13,7 +17,7 @@ class IdentitiesController < ApplicationController
                   render status: :accepted, text: (I18n.t :"controllers.identities.password_changed")
                 end,
                 failure: lambda do
-                  render status: 400, text: @handler_result.errors.map(&:message).to_sentence
+                  render status: 422, text: @handler_result.errors.map(&:message).to_sentence
                 end)
   end
 
@@ -47,23 +51,4 @@ class IdentitiesController < ApplicationController
                   render :reset_password, status: 400
                 end)
   end
-
-
-  def destroy
-    handle_with(AuthenticationDelete,
-                success: lambda do
-                  authentication = @handler_result.outputs.authentication
-                  security_log :authentication_deleted,
-                               authentication_id: authentication.id,
-                               authentication_provider: authentication.provider,
-                               authentication_uid: authentication.uid
-                  render status: :ok,
-                         text: (I18n.t :"controllers.identities.identity_removed",
-                                       identity: params[:provider].titleize)
-                end,
-                failure: lambda do
-                  render status: 400, text: @handler_result.errors.map(&:message).to_sentence
-                end)
-  end
-
 end
