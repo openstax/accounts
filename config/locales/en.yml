@@ -1,7 +1,9 @@
 en:
   controllers:
     authentications:
-      authentication_removed: "%{identity} removed"
+      authentication_removed: "%{authentication} removed"
+      please_sign_in_to_confirm_changes: >-
+        Please sign in again to confirm your changes
 
     contact_infos:
       already_verified: Your email address is already verified
@@ -49,6 +51,10 @@ en:
         The terms are temporarily unavailable. Check back soon.
 
   handlers:
+    authentications_delete:
+      cannot_delete_last_authentication: >-
+        Cannot delete an activated user's last authentication
+
     confirm_unclaimed_account:
       unable_to_verify_address: Unable to verify email address
 

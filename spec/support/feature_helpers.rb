@@ -187,7 +187,8 @@ def expect_social_sign_up_page
 end
 
 def expect_profile_page
-  expect(page).to have_content('Your Account')
+  expect(page).to have_no_missing_translations
+  expect(page).to have_content(t :"users.edit.page_heading")
 end
 
 def agree_and_click_create

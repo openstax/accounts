@@ -1,7 +1,9 @@
 pl:
   controllers:
     authentications:
-      authentication_removed: Usunięto %{identity}
+      authentication_removed: Usunięto %{authentication}
+      please_sign_in_to_confirm_changes: >-
+        Zaloguj się ponownie, aby potwierdzić zmiany
 
     contact_infos:
       already_verified: Ten adres e-mail został już zweryfikowany.
@@ -47,6 +49,11 @@ pl:
         Warunki użytkowania są czasowo niedostępne. Spróbuj ponownie później.
 
   handlers:
+    authentications_delete:
+      cannot_delete_last_authentication: >-
+        Nie można usunąć. Musi pozostać przynajmniej jedna aktywna metoda
+        logowania.
+
     confirm_unclaimed_account:
       unable_to_verify_address: Nie można potwierdzić adresu e-mail.
 
