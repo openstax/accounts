@@ -23,6 +23,7 @@ feature 'Require recent sign in to change authentications', js: true do
 
       with_omniauth_test_mode(identity_user: user) do
         find('.authentication[data-provider="facebook"] .add').click
+        wait_for_ajax
         expect_sign_in_page
         expect(page).to have_content('Please sign in again to confirm your changes')
 
