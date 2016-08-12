@@ -141,23 +141,33 @@ def with_error_pages
   end
 end
 
-def click_omniauth_link(provider, options={})
+# Call this method with a block to test social signins
+def with_omniauth_test_mode(options={})
   options[:nickname] ||= 'jimbo'
   options[:uid] ||= '1337'
-  options[:link_id] ||= "#{provider}-login-button"
 
   begin
     OmniAuth.config.test_mode = true
 
-    OmniAuth.config.mock_auth[provider.to_sym] = OmniAuth::AuthHash.new({
-      uid: options[:uid],
-      provider: provider,
-      info: {
-        nickname: options[:nickname]
-      }
-    })
+    if options[:identity_user].present?
+      identity_uid = options[:identity_user].id.to_s
 
-    click_link options[:link_id]
+      OmniAuth.config.mock_auth[:identity] = OmniAuth::AuthHash.new({
+        uid: identity_uid,
+        provider: 'identity',
+        info: {}
+      })
+    end
+
+    [:facebook, :google, :twitter].each do |provider|
+      OmniAuth.config.mock_auth[provider] = OmniAuth::AuthHash.new({
+        uid: options[:uid],
+        provider: provider.to_s,
+        info: { nickname: options[:nickname] }
+      })
+    end
+
+    yield
   ensure
     OmniAuth.config.test_mode = false
   end
