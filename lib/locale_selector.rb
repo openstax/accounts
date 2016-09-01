@@ -5,7 +5,7 @@ module LocaleSelector
   # sorted descending by weight.
   def parse_accept_language accept_language
     accept_language.split(',').map do |e|
-      return [] unless /\A\s*([a-zA-Z-]+)(?:;q=([0-9]+(?:\.[0-9]+)?))?\s*\Z/ =~ e
+      return [] unless /\A\s*([a-zA-Z]+)(?:-[a-zA-Z]+)*(?:;q=([0-9]+(?:\.[0-9]+)?))?\s*\Z/ =~ e
       [$1.to_sym, ($2 || 1).to_f]
     end.keep_if do |x|
       I18n.available_locales.include? x[0]

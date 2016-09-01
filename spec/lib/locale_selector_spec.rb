@@ -41,6 +41,10 @@ describe LocaleSelector do
     it 'uses implicit weight of one' do
       expect(Selector.new.parse_accept_language 'xx;q=0.5, yy').to eq([:yy, :xx])
     end
+
+    it 'ignores language variants' do
+      expect(Selector.new.parse_accept_language 'xx-XX, yy-YY').to eq([:xx, :yy])
+    end
   end
 
   context 'with empty RFC 7231 Accept-Language' do
