@@ -20,7 +20,7 @@ feature 'User manages emails', js: true do
         find('input').set('user@mysite.com')
         find('.glyphicon-ok').click
       }
-      expect(page).to have_content('Click to verify')
+      expect(page).to have_button('Click to verify')
       expect(page).to have_content('user@mysite.com')
     end
 
@@ -59,8 +59,9 @@ feature 'User manages emails', js: true do
 
   context 'resend_confirmation' do
     scenario 'success' do
-      click_link 'Click to verify'
+      click_button 'Click to verify'
       expect(page).to have_content('A verification message has been sent to "')
+      expect(page).to have_button('Click to verify', disabled: true)
     end
   end
 end
