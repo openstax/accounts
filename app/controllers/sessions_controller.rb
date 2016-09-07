@@ -84,6 +84,11 @@ class SessionsController < ApplicationController
           redirect_to profile_path, alert: "That sign in option is already used by someone " \
                                            "else. If that someone is you, remove it from " \
                                            "your other account and try again."
+        when :same_provider
+          security_log :authentication_transfer_failed, authentication_id: authentication.id
+          redirect_to profile_path, alert: "You are logged in as #{current_user.name}. A different #{authentication.provider} account " \
+                                            "is already linked to your OpenStax account. Only one #{authentication.provider} account " \
+                                            "can be linked to your OpenStax account at a time."
         else
           Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}"
           raise IllegalState, "SessionsCreate errors: #{@handler_result.errors.inspect
