@@ -35,6 +35,11 @@ module Api::V1
              readable: true,
              writeable: true
 
+    property :uuid,
+             type: String,
+             readable: true,
+             writeable: false
+
     collection :contact_infos,
                if: ->(args) { args[:render_contact_infos] },
                decorator: ContactInfoRepresenter
