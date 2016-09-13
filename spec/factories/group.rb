@@ -5,8 +5,8 @@ FactoryGirl.define do
     is_public false
 
     transient do
-      members_count 1
-      owners_count 1
+      members_count 0
+      owners_count 0
     end
 
     after(:build) do |group, evaluator|
