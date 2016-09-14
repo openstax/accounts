@@ -46,6 +46,7 @@ class SessionsCreate
     authentication =
       Authentication.find_or_create_by_provider_and_uid(@data.provider, @data.uid.to_s)
     authentication_user = authentication.user
+    outputs[:authentication] = authentication
 
     if signed_in? && authentication_user == current_user
       status = :no_action
@@ -57,6 +58,8 @@ class SessionsCreate
         status = :authentication_taken
       else
         return outputs[:status] = :new_signin_required if user_signin_is_too_old?
+        return outputs[:status] = :same_provider \
+                                  if current_user.authentications.any?{|user_auth| user_auth.provider == authentication.provider}
         run(TransferAuthentications, authentication, current_user)
         run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
         status = :authentication_added
@@ -88,7 +91,6 @@ class SessionsCreate
     end
 
     outputs[:status] = status
-    outputs[:authentication] = authentication
   end
 
   protected

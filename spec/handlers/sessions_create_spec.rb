@@ -356,6 +356,59 @@ describe SessionsCreate, type: :handler do
             end
           end
         end
+
+        context "linked to no one" do
+          context "but user already has already authenticated with the same provider before" do
+            context "new_social user" do
+              let!(:signed_in_user) { FactoryGirl.create(:new_social_user) }
+              let!(:authentication) { FactoryGirl.create(:authentication, user: signed_in_user) }
+
+              it "returns a status output instead of an exception or errors" do
+                handle_with_uid(111)
+
+                same_provider_different_uid = nil
+                expect{same_provider_different_uid = handle_with_uid(222)}.not_to raise_exception
+                expect(same_provider_different_uid.outputs[:status]).to eq :same_provider
+                expect(same_provider_different_uid.errors).to be_empty
+              end
+            end
+
+            context "temp user" do
+              let!(:signed_in_user) { FactoryGirl.create(:temp_user) }
+              let!(:authentication) { FactoryGirl.create(:authentication, user: signed_in_user) }
+
+              it "returns a status output instead of an exception or errors" do
+                handle_with_uid(111)
+
+                same_provider_different_uid = nil
+                expect{same_provider_different_uid = handle_with_uid(222)}.not_to raise_exception
+                expect(same_provider_different_uid.outputs[:status]).to eq :same_provider
+                expect(same_provider_different_uid.errors).to be_empty
+              end
+            end
+
+            context "non-temp user" do
+              let!(:signed_in_user) { FactoryGirl.create(:user) }
+              let!(:authentication) { FactoryGirl.create(:authentication, user: signed_in_user) }
+
+              it "returns a status output instead of an exception or errors" do
+                handle_with_uid(111)
+
+                same_provider_different_uid = nil
+                expect{same_provider_different_uid = handle_with_uid(222)}.not_to raise_exception
+                expect(same_provider_different_uid.outputs[:status]).to eq :same_provider
+                expect(same_provider_different_uid.errors).to be_empty
+              end
+            end
+          end
+
+          def handle_with_uid(uid)
+            described_class.handle(
+                              user_state: user_state,
+                              request: MockOmniauthRequest.new(authentication.provider, uid, {})
+                            )
+          end
+        end
       end
     end
   end
