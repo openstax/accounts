@@ -63,7 +63,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
             'owners' => [
               {
                 'group_id' => group_1.id,
-                'user' => { 'id' => user_1.id, 'username' => user_1.username }
+                'user' => { 'id' => user_1.id, 'username' => user_1.username, 'uuid' => user_1.uuid }
               }
             ],
             'members' => [],
@@ -94,7 +94,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
           'owners' => [
             {
               'group_id' => group_1.id,
-              'user' => { 'id' => user_1.id, 'username' => user_1.username }
+              'user' => { 'id' => user_1.id, 'username' => user_1.username, 'uuid' => user_1.uuid }
             }
           ],
           'members' => [],
@@ -134,7 +134,8 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
             *group_2.group_owners.map do |group_owner|
               {
                 'group_id' => group_2.id,
-                'user' => { 'id' => group_owner.user.id, 'username' => group_owner.user.username }
+                'user' => { 'id' => group_owner.user.id, 'username' => group_owner.user.username,
+                            'uuid' => group_owner.user.uuid }
               }
             end
           ),
@@ -172,7 +173,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
           'owners' => [
             {
               'group_id' => group_3.id,
-              'user' => { 'id' => user_1.id, 'username' => user_1.username }
+              'user' => { 'id' => user_1.id, 'username' => user_1.username, 'uuid' => user_1.uuid }
             }
           ],
           'members' => [],
@@ -231,7 +232,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
             *group_3.owners.map do |owner|
               {
                 'group_id' => group_3.id,
-                'user' => { 'id' => owner.id, 'username' => owner.username }
+                'user' => { 'id' => owner.id, 'username' => owner.username, 'uuid' => owner.uuid }
               }
             end
           ),
@@ -261,7 +262,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
             *group_1.owners.map do |owner|
               {
                 'group_id' => group_1.id,
-                'user' => { 'id' => owner.id, 'username' => owner.username }
+                'user' => { 'id' => owner.id, 'username' => owner.username, 'uuid' => owner.uuid }
               }
             end
           ),

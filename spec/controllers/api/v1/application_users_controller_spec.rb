@@ -56,7 +56,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
           username: bob_brown.username,
           first_name: bob_brown.first_name,
           last_name: bob_brown.last_name,
-          full_name: bob_brown.full_name
+          full_name: bob_brown.full_name,
+          uuid: bob_brown.uuid
         }, unread_updates: 0
       }.to_json
       expect(response.body).to eq(expected_response)
@@ -95,7 +96,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
             username: user_2.username,
             first_name: user_2.first_name,
             last_name: user_2.last_name,
-            full_name: user_2.full_name
+            full_name: user_2.full_name,
+            uuid: user_2.uuid
           }
         ]
       }.to_json
@@ -170,7 +172,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
             username: user_2.username,
             first_name: user_2.first_name,
             last_name: user_2.last_name,
-            full_name: user_2.full_name
+            full_name: user_2.full_name,
+            uuid: user_2.uuid
           }
         ]
       }.to_json
@@ -212,7 +215,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
           username: user_2.username,
           first_name: user_2.first_name,
           last_name: user_2.last_name,
-          full_name: user_2.full_name
+          full_name: user_2.full_name,
+          uuid: user_2.uuid
         },
         unread_updates: 2
       }].to_json
@@ -237,7 +241,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
           username: user_2.username,
           first_name: user_2.first_name,
           last_name: user_2.last_name,
-          full_name: user_2.full_name
+          full_name: user_2.full_name,
+          uuid: user_2.uuid
         },
         unread_updates: 3
       }].to_json
@@ -256,7 +261,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
           username: user_2.username,
           first_name: user_2.first_name,
           last_name: user_2.last_name,
-          full_name: user_2.full_name
+          full_name: user_2.full_name,
+          uuid: user_2.uuid
         },
         unread_updates: 2
       }].to_json
