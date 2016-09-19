@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   # More often used routes should appear first
   root to: 'static_pages#home'
 
+  match '/auth/salesforce/callback', to: 'admin/salesforce#callback',
+                                     via: [:get, :post]
+
   scope controller: 'sessions' do
     get 'signin', action: :new
 
@@ -148,6 +151,10 @@ Rails.application.routes.draw do
 
     post :verify_contact_info, path: '/contact_infos/:id/verify',
          controller: :contact_infos, action: :verify
+
+    resource :salesforce, only: [], controller: :salesforce do
+      delete :destroy_user
+    end
   end
 
   namespace 'dev' do

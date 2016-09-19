@@ -32,6 +32,11 @@ class User < ActiveRecord::Base
 
   has_many :security_logs
 
+  enum faculty_status: [:no_faculty_info, :pending_faculty, :confirmed_faculty, :rejected_faculty]
+
+  after_initialize { self.faculty_status ||= 'no_faculty_info' }
+  validates :faculty_status, presence: true
+
   before_validation :strip_names
 
   validates :username, presence: true,

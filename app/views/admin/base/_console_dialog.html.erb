@@ -9,6 +9,7 @@
       <li class="active"><a href="#misc-tab" data-toggle="tab">Misc</a></li>
       <li><a href="#users-tab" data-toggle="tab">Users</a></li>
       <li><a href="#links-tab" data-toggle="tab">Links</a></li>
+      <li><a href="#salesforce-tab" data-toggle="tab">Salesforce</a></li>
       <% unless Rails.env.production? %>
         <li class="dev"><a href="#dev-tab" data-toggle="tab">Dev</a></li>
       <% end %>
@@ -32,13 +33,17 @@
         <%= render 'links' %>
       </div>
 
+      <div class="tab-pane" id="salesforce-tab">
+        <%= render 'salesforce' %>
+      </div>
+
       <% unless Rails.env.production? %>
         <div class="tab-pane" id="dev-tab">
           <%= render 'dev/base/index' %>
         </div>
       <% end %>
     </div>
-    
+
   </div>
 
 <% end %>

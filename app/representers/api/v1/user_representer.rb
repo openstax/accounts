@@ -40,6 +40,11 @@ module Api::V1
              readable: true,
              writeable: false
 
+    property :faculty_status,
+             type: String,
+             readable: true,
+             writeable: false
+
     collection :contact_infos,
                if: ->(user_options:, **) { user_options.try(:fetch, :render_contact_infos, false) },
                decorator: ContactInfoRepresenter

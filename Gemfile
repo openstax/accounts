@@ -103,6 +103,14 @@ gem 'will_paginate'
 # Datetime parsing
 gem 'chronic'
 
+# Salesforce
+gem 'restforce'
+gem 'omniauth-salesforce'
+# Fork that supports Ruby >= 2.1
+gem 'active_force', github: 'openstax/active_force', ref: '9695896f5'
+
+gem 'redis-rails'
+
 # Protect attributes from mass-assignment in Active Record models
 # Bringing back the feature from Rails 3
 gem 'protected_attributes'
@@ -162,7 +170,7 @@ group :test do
 
   # CodeClimate integration
   gem "codeclimate-test-reporter", require: false
-
+  gem 'fakeredis'
   # Headless Capybara webkit driver
   gem 'capybara-webkit'
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160906231547) do
+ActiveRecord::Schema.define(:version => 20160918213622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -202,6 +202,14 @@ ActiveRecord::Schema.define(version: 20160906231547) do
     t.datetime "updated_at"
   end
 
+  create_table "salesforce_users", :force => true do |t|
+    t.string "name"
+    t.string "uid",           :null => false
+    t.string "oauth_token",   :null => false
+    t.string "refresh_token", :null => false
+    t.string "instance_url",  :null => false
+  end
+
   create_table "security_logs", force: :cascade do |t|
     t.integer  "user_id",        :index=>{:name=>"index_security_logs_on_user_id_and_created_at", :with=>["created_at"]}
     t.integer  "application_id", :index=>{:name=>"index_security_logs_on_application_id_and_created_at", :with=>["created_at"]}
@@ -230,6 +238,10 @@ ActiveRecord::Schema.define(version: 20160906231547) do
     t.string   "uuid",             :index=>{:name=>"index_users_on_uuid", :unique=>true}
     t.string   "suffix"
     t.string   "state",            :default=>"temp", :null=>false
+    t.string   "salesforce_contact_id"
+    t.integer  "faculty_status",        :default => 0,      :null => false
+    t.index ["faculty_status"], :name => "index_users_on_faculty_status"
+    t.index ["salesforce_contact_id"], :name => "index_users_on_salesforce_contact_id"
   end
   add_index "users", ["username"], :name=>"index_users_on_username_case_insensitive", :case_sensitive=>false
 
