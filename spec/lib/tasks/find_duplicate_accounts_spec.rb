@@ -40,9 +40,10 @@ RSpec.describe "find_duplicate_accounts" do
 
       expect(result[0]["User First Name"]).to eq user_1.first_name
       expect(result[0]["User Last Name"]).to eq user_1.last_name
+      expect(result[0]["Created At"]).to eq user_1.created_at.to_s
       expect(result[0]["Email Address(es)"]).to eq "#{email_2_user_1.value} (verified), #{email_1_user_1.value} (NOT verified)"
       expect(result[0]["User ID"]).to eq user_1.id.to_s
-      expect(result[0]["Social Signup Successful?"]).to eq "On #{sus_user_1.created_at}"
+      expect(result[0]["Signup Successful?"]).to eq "On #{sus_user_1.created_at}"
       expect(result[0]["Reset Password Help Requested?"]).to eq "On #{help_req_1_user_1.created_at} and On #{help_req_2_user_1.created_at}"
       expect(result[0]["Help Request Failed?"]).to eq "On #{help_req_fail_user_1.created_at}"
       expect(result[0]["Authentication Transfer Failed?"]).to be_empty
@@ -51,9 +52,10 @@ RSpec.describe "find_duplicate_accounts" do
 
       expect(result[1]["User First Name"]).to eq same_name.first_name
       expect(result[1]["User Last Name"]).to eq same_name.last_name
+      expect(result[1]["Created At"]).to eq same_name.created_at.to_s
       expect(result[1]["Email Address(es)"]).to eq "#{email_1_user_same_name.value} (verified)"
       expect(result[1]["User ID"]).to eq same_name.id.to_s
-      expect(result[1]["Social Signup Successful?"]).to eq "On #{sus_user_same_name.created_at}"
+      expect(result[1]["Signup Successful?"]).to eq "On #{sus_user_same_name.created_at}"
       expect(result[1]["Reset Password Help Requested?"]).to be_empty
       expect(result[1]["Help Request Failed?"]).to be_empty
       expect(result[1]["Authentication Transfer Failed?"]).to eq "On #{auth_transfer_fail_user_same_name.created_at}"
@@ -103,23 +105,25 @@ RSpec.describe "find_duplicate_accounts" do
       expect(SecurityLog.count).to eq 6
 
       expect(result[0]["Email Address"]).to eq "#{email_1.value} (verified)"
+      expect(result[0]["Created At"]).to eq email_1.created_at.to_s
       expect(result[0]["ContactInfo ID"]).to eq email_1.id.to_s
       expect(result[0]["User First Name"]).to eq user_1.first_name
       expect(result[0]["User Last Name"]).to eq user_1.last_name
       expect(result[0]["User ID"]).to eq user_1.id.to_s
       expect(result[0]["Applications"]).to eq "#{user_1.applications.first.name}, #{user_1.applications.second.name}"
-      expect(result[0]["Social Signup Successful?"]).to eq "On #{sus_user_1.created_at}"
+      expect(result[0]["Signup Successful?"]).to eq "On #{sus_user_1.created_at}"
       expect(result[0]["Reset Password Help Requested?"]).to eq "On #{help_req_1_user_1.created_at} and On #{help_req_2_user_1.created_at}"
       expect(result[0]["Help Request Failed?"]).to eq "On #{help_req_fail_user_1.created_at}"
       expect(result[0]["Authentication Transfer Failed?"]).to be_empty
 
       expect(result[1]["Email Address"]).to eq "#{same_email_diff_user.value} (NOT verified)"
+      expect(result[1]["Created At"]).to eq email_1.created_at.to_s
       expect(result[1]["ContactInfo ID"]).to eq same_email_diff_user.id.to_s
       expect(result[1]["User First Name"]).to eq user_2.first_name
       expect(result[1]["User Last Name"]).to eq user_2.last_name
       expect(result[1]["User ID"]).to eq user_2.id.to_s
       expect(result[1]["Applications"]).to be_empty
-      expect(result[1]["Social Signup Successful?"]).to eq "On #{sus_user_2.created_at}"
+      expect(result[1]["Signup Successful?"]).to eq "On #{sus_user_2.created_at}"
       expect(result[1]["Reset Password Help Requested?"]).to be_empty
       expect(result[1]["Help Request Failed?"]).to be_empty
       expect(result[1]["Authentication Transfer Failed?"]).to eq "On #{auth_transfer_fail_user_2.created_at}"

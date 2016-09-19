@@ -3,10 +3,11 @@ task :find_duplicate_accounts => [:environment] do
   CSV.open("duplicate_users_by_name.csv", 'w+') do |csv|
     csv << ['User First Name',
             'User Last Name',
+            'Created At',
             'Email Address(es)',
             'User ID',
             'Applications',
-            'Social Signup Successful?',
+            'Signup Successful?',
             'Reset Password Help Requested?',
             'Help Request Failed?',
             'Authentication Transfer Failed?'
@@ -21,6 +22,7 @@ task :find_duplicate_accounts => [:environment] do
     where_names_match.find_each do |user|
       csv << [user.first_name,
               user.last_name,
+              user.created_at.to_s,
               (user.contact_infos.any? ? user.contact_infos.map{ |ci| "#{ci.value} #{ci.verified ? '(verified)' : '(NOT verified)'}" }.join(", ") : ""),
               user.id,
               (user.applications.any? ? ( user.applications.map(&:name).join(", ") ) : ""),
@@ -34,12 +36,13 @@ task :find_duplicate_accounts => [:environment] do
 
   CSV.open("duplicate_users_by_email.csv", 'w+') do |csv|
     csv << ['Email Address',
+            'Created At',
             'ContactInfo ID',
             'User First Name',
             'User Last Name',
             'User ID',
             'Applications',
-            'Social Signup Successful?',
+            'Signup Successful?',
             'Reset Password Help Requested?',
             'Help Request Failed?',
             'Authentication Transfer Failed?'
@@ -52,6 +55,7 @@ task :find_duplicate_accounts => [:environment] do
     where_email_addresses_match.find_each do |contact_info|
       csv << [
               "#{contact_info.value} #{contact_info.verified ? '(verified)' : '(NOT verified)'}",
+              contact_info.created_at.to_s,
               contact_info.id,
               contact_info.user.try(:first_name),
               contact_info.user.try(:last_name),
