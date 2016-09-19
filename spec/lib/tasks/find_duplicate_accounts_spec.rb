@@ -23,6 +23,9 @@ RSpec.describe "find_duplicate_accounts" do
     let!(:email_2_user_1) {FactoryGirl.create :email_address, user: user_1, verified: true}
     let!(:email_1_user_same_name) {FactoryGirl.create :email_address, user: same_name, verified: true}
 
+    let!(:authentications_1) {FactoryGirl.create :authentication, user: user_1, provider: "google"}
+    let!(:authentications_2) {FactoryGirl.create :authentication, user: user_1, provider: "facebook"}
+
     let!(:sus_user_1)                          {FactoryGirl.create :security_log, event_type: :sign_up_successful, user: user_1}
     let!(:help_req_1_user_1)                   {FactoryGirl.create :security_log, event_type: :help_requested, user: user_1}
     let!(:help_req_2_user_1)                   {FactoryGirl.create :security_log, event_type: :help_requested, user: user_1}
@@ -41,13 +44,14 @@ RSpec.describe "find_duplicate_accounts" do
       expect(result[0]["User First Name"]).to eq user_1.first_name
       expect(result[0]["User Last Name"]).to eq user_1.last_name
       expect(result[0]["Created At"]).to eq user_1.created_at.to_s
-      expect(result[0]["Email Address(es)"]).to eq "#{email_2_user_1.value} (verified), #{email_1_user_1.value} (NOT verified)"
+      expect(result[0]["Email Address(es)"].split(", ")).to match_array ["#{email_2_user_1.value} (verified)", "#{email_1_user_1.value} (NOT verified)"]
       expect(result[0]["User ID"]).to eq user_1.id.to_s
       expect(result[0]["Signup Successful?"]).to eq "On #{sus_user_1.created_at}"
-      expect(result[0]["Reset Password Help Requested?"]).to eq "On #{help_req_1_user_1.created_at} and On #{help_req_2_user_1.created_at}"
+      expect(result[0]["Reset Password Help Requested?"].split(" and ")).to match_array ["On #{help_req_1_user_1.created_at}", "On #{help_req_2_user_1.created_at}"]
       expect(result[0]["Help Request Failed?"]).to eq "On #{help_req_fail_user_1.created_at}"
       expect(result[0]["Authentication Transfer Failed?"]).to be_empty
-      expect(result[0]["Applications"]).to eq "#{user_1.applications.first.name}, #{user_1.applications.second.name}"
+      expect(result[0]["Applications"].split(", ")).to match_array [user_1.applications.first.name, user_1.applications.second.name]
+      expect(result[0]["Authentications"].split(", ")).to match_array ["Facebook", "Google"]
 
 
       expect(result[1]["User First Name"]).to eq same_name.first_name
@@ -60,6 +64,7 @@ RSpec.describe "find_duplicate_accounts" do
       expect(result[1]["Help Request Failed?"]).to be_empty
       expect(result[1]["Authentication Transfer Failed?"]).to eq "On #{auth_transfer_fail_user_same_name.created_at}"
       expect(result[1]["Applications"]).to be_empty
+      expect(result[1]["Authentications"]).to be_empty
     end
   end
 
@@ -82,6 +87,8 @@ RSpec.describe "find_duplicate_accounts" do
     let!(:user_2) { FactoryGirl.create :user, first_name: "Jack", last_name: "Shepherd" }
     let!(:email_1) { FactoryGirl.create :email_address, user: user_1, verified: true }
     let!(:same_email_diff_user) { FactoryGirl.create :email_address, user: user_2, value: email_1.value }
+
+    let!(:authentications) {FactoryGirl.create :authentication, user: user_1, provider: "facebook"}
 
     let!(:cool) { FactoryGirl.create :user }
     let!(:person) { FactoryGirl.create :user }
@@ -110,11 +117,12 @@ RSpec.describe "find_duplicate_accounts" do
       expect(result[0]["User First Name"]).to eq user_1.first_name
       expect(result[0]["User Last Name"]).to eq user_1.last_name
       expect(result[0]["User ID"]).to eq user_1.id.to_s
-      expect(result[0]["Applications"]).to eq "#{user_1.applications.first.name}, #{user_1.applications.second.name}"
+      expect(result[0]["Applications"].split(", ")).to match_array [user_1.applications.first.name, user_1.applications.second.name]
       expect(result[0]["Signup Successful?"]).to eq "On #{sus_user_1.created_at}"
-      expect(result[0]["Reset Password Help Requested?"]).to eq "On #{help_req_1_user_1.created_at} and On #{help_req_2_user_1.created_at}"
+      expect(result[0]["Reset Password Help Requested?"].split(" and ")).to match_array ["On #{help_req_1_user_1.created_at}", "On #{help_req_2_user_1.created_at}"]
       expect(result[0]["Help Request Failed?"]).to eq "On #{help_req_fail_user_1.created_at}"
       expect(result[0]["Authentication Transfer Failed?"]).to be_empty
+      expect(result[0]["Authentications"]).to eq "Facebook"
 
       expect(result[1]["Email Address"]).to eq "#{same_email_diff_user.value} (NOT verified)"
       expect(result[1]["Created At"]).to eq email_1.created_at.to_s
@@ -127,6 +135,7 @@ RSpec.describe "find_duplicate_accounts" do
       expect(result[1]["Reset Password Help Requested?"]).to be_empty
       expect(result[1]["Help Request Failed?"]).to be_empty
       expect(result[1]["Authentication Transfer Failed?"]).to eq "On #{auth_transfer_fail_user_2.created_at}"
+      expect(result[1]["Authentications"]).to be_empty
     end
   end
 
