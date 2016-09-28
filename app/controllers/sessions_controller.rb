@@ -82,6 +82,11 @@ class SessionsController < ApplicationController
         when :authentication_taken
           security_log :authentication_transfer_failed, authentication_id: authentication.id
           redirect_to profile_path, alert: (I18n.t :"controllers.sessions.sign_in_option_already_used")
+        when :same_provider
+          security_log :authentication_transfer_failed, authentication_id: authentication.id
+          redirect_to profile_path, alert: (I18n.t :"controllers.sessions.same_provider_already_linked",
+                                                   user_name: current_user.name,
+                                                   authentication: authentication.display_name)
         else
           Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}"
           raise IllegalState, "SessionsCreate errors: #{@handler_result.errors.inspect

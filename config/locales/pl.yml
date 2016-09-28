@@ -28,6 +28,10 @@ pl:
         Nie istnieje konto powiązane z podaną nazwą użytkownika bądź adresem
         e-mail. Pamiętaj, że adresy e-mail muszą zostać zweryfikowane, zanim
         będzie można ich używać przy logowaniu.
+      same_provider_already_linked: >-
+        Jesteś zalogowany/a jako %{user_name}. Obecnie z twoim kontem Openstax
+        powiązane jest już konto %{authentication}. Tylko jedno konto
+        %{authentication} może być powiązane z kontem Openstax.
       several_accounts_for_one_email: >-
         Istnieje więcej niż jedno konto powiązane z podanym adresem e-mail.
         Zaloguj się używając nazwy użytkownika.

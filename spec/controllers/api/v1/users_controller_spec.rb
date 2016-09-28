@@ -58,7 +58,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
             username: user_2.username,
             first_name: user_2.first_name,
             last_name: user_2.last_name,
-            full_name: user_2.full_name
+            full_name: user_2.full_name,
+            uuid: user_2.uuid
           }
         ]
       }.to_json
@@ -102,6 +103,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       expected_response = {
         id: user_1.id,
         username: user_1.username,
+        uuid: user_1.uuid,
         contact_infos: []
       }.to_json
 
@@ -119,6 +121,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       expected_response = {
         id: user_1.id,
         username: user_1.username,
+        uuid: user_1.uuid,
         contact_infos: []
       }.to_json
 

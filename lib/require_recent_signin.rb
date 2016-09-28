@@ -5,7 +5,7 @@ module RequireRecentSignin
   def reauthenticate_user!
     store_url
 
-    flash[:alert] = (I18n.t :"controllers.authentications.please_sign_in_to_confirm_changes")
+    flash.alert = (I18n.t :"controllers.authentications.please_sign_in_to_confirm_changes")
 
     location = main_app.signin_path params.slice(:client_id).merge(required: true)
 
@@ -16,8 +16,7 @@ module RequireRecentSignin
   end
 
   def user_signin_is_too_old?
-    last_signin_time = SecurityLog.sign_in_successful.where(user: current_user)
-                                                     .maximum(:created_at)
+    last_signin_time = SecurityLog.sign_in_successful.where(user: current_user).maximum(:created_at)
     return true if last_signin_time.nil?
 
     reauthentication_time = Time.now - REAUTHENTICATE_AFTER

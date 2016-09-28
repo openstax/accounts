@@ -12,8 +12,7 @@ before_script:
   - export OXA_DB_USER=postgres
   - export OXA_DB_PASS=
   - export OXA_TEST_DB=travis_ci_test
-  - bundle exec rake db:create
-  - bundle exec rake db:schema:load
+  - bundle exec rake db:create db:schema:load
 script:
   - bundle exec rake
 notifications:

@@ -23,7 +23,7 @@ feature 'User manages emails', js: true do
         find('.glyphicon-ok').click
       }
       expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"helpers.profile.click_to_verify")
+      expect(page).to have_button(t :"helpers.profile.click_to_verify")
       expect(page).to have_content('user@mysite.com')
     end
 
@@ -61,9 +61,10 @@ feature 'User manages emails', js: true do
 
   context 'resend_confirmation' do
     scenario 'success' do
-      click_link (t :"helpers.profile.click_to_verify")
+      click_button (t :"helpers.profile.click_to_verify")
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"controllers.contact_infos.verification_sent", address: "user@unverified.com")
+      expect(page).to have_button((t :"helpers.profile.click_to_verify"), disabled: true)
     end
   end
 end

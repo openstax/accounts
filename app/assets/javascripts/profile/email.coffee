@@ -24,11 +24,15 @@ class Email
 
   sendVerification: (ev) ->
     ev.preventDefault()
+    ev.target.disabled = true
     $.ajax({type: "PUT", url: @url('resend_confirmation')})
       .success( (resp) =>
         OX.Alert.display(message: resp.message, type: 'success', parentEl: @$el)
       )
-      .error(OX.Alert.displayInsideElement(@$el))
+      .error( (e) =>
+        OX.Alert.display(_.extend(e, parentEl: @$el))
+        ev.target.disabled = false
+      )
 
   saveSearchable: (ev) ->
     @toggleSpinner(true)

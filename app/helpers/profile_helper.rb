@@ -35,7 +35,7 @@ module ProfileHelper
   end
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
-    verify_link = is_verified ? '' : "<span class='verify'>(#{link_to((I18n.t :"helpers.profile.click_to_verify"), resend_confirmation_contact_info_path(id))})</span>"
+    verify_link = is_verified ? '' : "<span class='verify'>(#{button_to((I18n.t :"helpers.profile.click_to_verify"), resend_confirmation_contact_info_path(id), method: :put ) })</span>"
     (
       <<-SNIPPET
         <div class="email-entry controls-hidden" data-id="#{id}">

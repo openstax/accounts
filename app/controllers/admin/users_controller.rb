@@ -36,8 +36,10 @@ module Admin
     end
 
     def become
+      admin = current_user
       security_log :admin_became_user, user_id: params[:id], username: @user.username
       sign_in!(@user)
+      security_log :sign_in_successful, admin_user_id: admin.id, admin_username: admin.username
       redirect_to request.referrer
     end
 
@@ -55,10 +57,10 @@ module Admin
     end
 
     def change_user_password
-      return true if params[:user][:password].blank? && params[:user][:password_confirmation].blank?
+      return true if params[:user][:password].blank?
 
       @user.identity.password = params[:user][:password]
-      @user.identity.password_confirmation = params[:user][:password_confirmation]
+      @user.identity.password_confirmation = params[:user][:password]
       return true if @user.identity.save
       flash[:alert] = "Failed to change password: #{@user.identity.errors.full_messages}"
       return false

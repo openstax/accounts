@@ -28,6 +28,10 @@ en:
       no_account_for_username_or_email: >-
         We have no account for the username or email you provided. Email
         addresses must be verified in out system to use them during sign in.
+      same_provider_already_linked: >-
+        You are logged in as %{user_name}. A different %{authentication} account
+        is already linked to your OpenStax account. Only one %{authentication}
+        account can be linked to your OpenStax account at a time.
       several_accounts_for_one_email: >-
         We found several accounts with your email address. Please sign in using
         your username.

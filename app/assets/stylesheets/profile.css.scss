@@ -92,7 +92,18 @@
         margin-left: 6px;
       }
     }
-    .verify { margin-left: 20px; }
+    .verify {
+      margin-left: 20px;
+      form {
+        display: inline;
+        div { display: inline; }
+      }
+      input {
+        color: $link-color;
+        padding: 0;
+        font-size: 13px;
+      }
+    }
     &.new {
       .verify, .properties, .mod-holder { display: none; }
     }
