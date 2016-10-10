@@ -59,9 +59,10 @@ class ContactInfosController < ApplicationController
                   contact_info = @handler_result.outputs[:contact_info]
 
                   if contact_info.verified
-                    msg = 'Your email address is already verified'
+                    msg = I18n.t :"controllers.contact_infos.already_verified"
                   else
-                    msg = "A verification message has been sent to \"#{contact_info.value}\""
+                    msg = I18n.t :"controllers.contact_infos.verification_sent",
+                                 address: contact_info.value
                     security_log :contact_info_confirmation_resent,
                                  contact_info_id: contact_info.id,
                                  contact_info_type: contact_info.type,

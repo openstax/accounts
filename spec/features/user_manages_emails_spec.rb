@@ -7,35 +7,37 @@ feature 'User manages emails', js: true do
                              confirmation_code: SecureRandom.hex(32))
     visit '/signin'
     signin_as 'user'
-    expect(page).to have_content('Welcome, user')
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
 
     visit '/profile'
-    expect(page).to have_content('Emails')
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"users.edit.email_addresses")
   end
 
   context 'create' do
     scenario 'success' do
-      click_link 'Add an email'
+      click_link (t :"users.edit.add_email_address")
       within(:css, '.email-entry.new') {
         find('input').set('user@mysite.com')
         find('.glyphicon-ok').click
       }
-      expect(page).to have_button('Click to verify')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_button(t :"helpers.profile.click_to_verify")
       expect(page).to have_content('user@mysite.com')
     end
 
     scenario 'with empty value' do
-      click_link 'Add an email'
+      click_link (t :"users.edit.add_email_address")
       within(:css, '.email-entry.new') {
         find('input').set('')
         find('.glyphicon-ok').click
       }
-      # input just disappears
       expect(page).to_not have_css('.email-entry.new input')
     end
 
     scenario 'with invalid value' do
-      click_link 'Add an email'
+      click_link (t :"users.edit.add_email_address")
       within(:css, '.email-entry.new') {
         find('input').set('user')
         find('.glyphicon-ok').click
@@ -59,9 +61,10 @@ feature 'User manages emails', js: true do
 
   context 'resend_confirmation' do
     scenario 'success' do
-      click_button 'Click to verify'
-      expect(page).to have_content('A verification message has been sent to "')
-      expect(page).to have_button('Click to verify', disabled: true)
+      click_button (t :"helpers.profile.click_to_verify")
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"controllers.contact_infos.verification_sent", address: "user@unverified.com")
+      expect(page).to have_button((t :"helpers.profile.click_to_verify"), disabled: true)
     end
   end
 end

@@ -5,10 +5,12 @@ feature 'User updates profile', js: true do
     create_user('user')
     visit '/signin'
     signin_as 'user'
-    expect(page).to have_content('Welcome, user')
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
 
     visit '/profile'
-    expect(page).to have_content('Your Account')
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"users.edit.page_heading")
   end
 
   scenario 'username' do

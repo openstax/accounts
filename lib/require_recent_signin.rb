@@ -5,7 +5,7 @@ module RequireRecentSignin
   def reauthenticate_user!
     store_url
 
-    flash.alert = 'Please sign in again to confirm your changes'
+    flash.alert = (I18n.t :"controllers.authentications.please_sign_in_to_confirm_changes")
 
     location = main_app.signin_path params.slice(:client_id).merge(required: true)
 

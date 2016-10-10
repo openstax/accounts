@@ -10,18 +10,18 @@
       <% user = signed_in? ? current_user : OpenStruct.new %>
       <% email = user.email_addresses.try(:first).try(:value) %>
 
-      <%= standard_field form: f, name: :title, type: :text_field, label: "Title",
+      <%= standard_field form: f, name: :title, type: :text_field, label: (t :".title"),
                          options: {value: user.title, hide: true} %>
-      <%= standard_field form: f, name: :first_name, type: :text_field, label: "First Name *",
+      <%= standard_field form: f, name: :first_name, type: :text_field, label: (t :".first_name"),
                          options: {value: user.first_name || user.guessed_first_name} %>
-      <%= standard_field form: f, name: :last_name, type: :text_field, label: "Last Name *",
+      <%= standard_field form: f, name: :last_name, type: :text_field, label: (t :".last_name"),
                          options: {value: user.last_name || user.guessed_last_name} %>
-      <%= link_to "Show title and suffix", "#", id: 'show-more-fields' %>
-      <%= standard_field form: f, name: :suffix, type: :text_field, label: "Suffix",
+      <%= link_to (t :".show_title_and_suffix"), "#", id: 'show-more-fields' %>
+      <%= standard_field form: f, name: :suffix, type: :text_field, label: (t :".suffix"),
                          options: {value: user.suffix, hide: true} %>
-      <%= standard_field form: f, name: :email_address, type: :text_field, label: "Email Address *",
+      <%= standard_field form: f, name: :email_address, type: :text_field, label: (t :".email_address"),
                          options: {value: email, disabled: email.present?} %>
-      <%= standard_field form: f, name: :username, type: :text_field, label: "Username *",
+      <%= standard_field form: f, name: :username, type: :text_field, label: (t :".username"),
                          options: {value: user.username} %>
 
       <% if is_social_signup %>
@@ -36,11 +36,11 @@
               <i class="fa fa-<%= icon_class %> fa-stack-1x fa-inverse"></i>
             </div>
           </div>
-          <div class="message">Password managed by <%= authentication.display_name %></div>
+          <div class="message"><%= t :".password_managed_by", manager: authentication.display_name %></div>
         </div>
       <% else %>
-        <%= standard_field form: f, name: :password, type: :password_field, label: "Password *" %>
-        <%= standard_field form: f, name: :password_confirmation, type: :password_field, label: "Confirm Password *" %>
+        <%= standard_field form: f, name: :password, type: :password_field, label: (t :".password") %>
+        <%= standard_field form: f, name: :password_confirmation, type: :password_field, label: (t :".confirm_password") %>
       <% end %>
     </div>
 
@@ -49,17 +49,17 @@
       <div class="side-notice">
       <% if is_social_signup %>
         <div class="already-have-account well">
-          <span class="title">Wait a second!</span>
+          <span class="title"><%= t :".wait_a_second" %></span>
 
-          I might already have an account.
+          <%= t :".might_already_have_an_account" %>
 
-          <%= link_to "Take me back to the sign in page.", signout_path %>
+          <%= link_to (t :".take_me_back_to_sign_in_page"), signout_path %>
         </div>
       <% else %>
         <div class="verify-email well">
-          <span class="title">Please verify your email!</span>
+          <span class="title"><%= t :".please_verify_your_email" %></span>
 
-          You'll receive a verification email shortly.  Please take a moment and verify your email address.
+          <%= t :".you_will_receive_verification_email" %>
         </div>
       <% end %>
       </div>
@@ -82,9 +82,12 @@
 
         <div class="checkbox">
           <label>
-            <%= f.check_box :i_agree %> I have read the <%= contract_links[0] %> and the
-            <%= contract_links[1] %> and I agree to be bound by their terms.<br/>
-            <i>Note that other OpenStax sites may have terms of their own.</i>
+            <%= f.check_box :i_agree %>
+            <%= t :".have_read_terms_and_agree_html",
+                  terms_of_use: contract_links[0],
+                  privacy_policy: contract_links[1]
+                %><br/>
+            <i><%= t :".policies_notice" %></i>
           </label>
         </div>
 
@@ -100,8 +103,8 @@
 
 
       <div>
-        <%= f.submit "Create Account", id: "create_account_submit", class: 'btn btn-primary' %>
-        <%= link_to "Cancel", (is_social_signup ? signout_path : root_path), class: 'btn btn-default pull-right' %>
+        <%= f.submit (t :".create_account"), id: "create_account_submit", class: 'btn btn-primary' %>
+        <%= link_to (t :".cancel"), (is_social_signup ? signout_path : root_path), class: 'btn btn-default pull-right' %>
       </div>
 
     </div>

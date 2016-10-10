@@ -2,7 +2,7 @@
 
 <% @parent_col_id = "signup" %>
 
-<%= page_heading "Sign up with OpenStax", sub_heading_text: "Access all OpenStax tools and resources", center: true %>
+<%= page_heading (t :".page_heading"), sub_heading_text: (t :".page_sub_heading"), center: true %>
 
 <div id="options" class="row">
 
@@ -10,21 +10,21 @@
 
     <div class="button-form-group">
       <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook', id: 'facebook-login-button' do %>
-        <span class="fa fa-facebook"></span> Sign up with Facebook
+        <span class="fa fa-facebook"></span> <%= t :".sign_up_with_facebook" %>
       <% end %>
       <%#= last_signin_mark('facebook') %>
 
       <%= link_to "/auth/google_oauth2", class: 'btn btn-block btn-social btn-google', id: 'google-login-button' do %>
-        <span class="fa fa-google"></span> Sign up with Google
+        <span class="fa fa-google"></span> <%= t :".sign_up_with_google" %>
       <% end %>
       <%#= last_signin_mark('google_oauth2') %>
 
       <%= link_to "/auth/twitter", class: 'btn btn-block btn-social btn-twitter', id: 'twitter-login-button' do %>
-        <span class="fa fa-twitter"></span> Sign up with Twitter
+        <span class="fa fa-twitter"></span> <%= t :".sign_up_with_twitter" %>
       <% end %>
 
       <%= link_to "/signup/password", class: 'btn btn-block btn-social btn-identity', id: 'identity-login-button' do %>
-        <span class="fa fa-key"></span> Sign up with a password
+        <span class="fa fa-key"></span> <%= t :".sign_up_with_password" %>
       <% end %>
       <%#= last_signin_mark('twitter') %>
     </div>
@@ -36,9 +36,14 @@
 
     <div id="the-message">
 
-      <p class='dont-want-to-remember'><b>Don't want to remember a password?</b><br/>Sign up with Facebook, Google, or Twitter.</p>
+      <p class='dont-want-to-remember'><%= t :".dont_want_to_remember_password_html" %></p>
 
-      <p class='already-have-account'><b>Already have an account?</b>&nbsp;&nbsp;<%= link_to "Sign in", signin_path %>.</p>
+      <p class='already-have-account'>
+        <%= t :".already_have_an_account.content_html",
+              link: (link_to (t :".already_have_an_account.sign_in"),
+                             signin_path)
+            %>
+      </p>
     </div>
 
   </div>
@@ -48,7 +53,12 @@
 
 <div id="reminders" class="row" style="padding-top:30px">
   <div class="col-xs-12">
-    <p><i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social network without your permission.</p>
-    <p>If you're on a public computer, <b style="white-space:nowrap">be sure to sign out</b> when you're done!</p>
+    <p><%= t :".openstax_wont_use_social_media_without_permission_html" %></p>
+    <style type="text/css">
+      p.b-no-wrap > b {
+        white-space: nowrap;
+      }
+    </style>
+    <p class="b-no-wrap"><%= t :".logout_reminder_html" %></p>
   </div>
 </div>

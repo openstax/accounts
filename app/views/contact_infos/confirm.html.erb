@@ -1,7 +1,7 @@
-<%= page_heading @handler_result.errors.any? ? "We were unable to verify your email address" : "Thank you for verifying your email address"%>
+<%= page_heading (t @handler_result.errors.any? ? :".page_heading.error" : :".page_heading.success") %>
 
 <% if @handler_result.errors.any? %>
-  <p>Sorry, we couldn't verify your email using the verification code you provided.  If you typed it in manually, please check for errors.  If you're still having trouble, please visit your profile page to resend the verification email.</p>
+  <p><%= t :".verification_code_not_found" %></p>
 <% else %>
-  <p>Your email address is now verified.  You may close this window.</p>
+  <p><%= t :".you_may_now_close_this_window" %></p>
 <% end %>

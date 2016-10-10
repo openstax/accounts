@@ -1,4 +1,4 @@
-# Copyright 2011-2013 Rice University. Licensed under the Affero General Public 
+# Copyright 2011-2013 Rice University. Licensed under the Affero General Public
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 module AlertHelper
@@ -12,8 +12,8 @@ module AlertHelper
 
   def javascript_not_enabled_alert
     { type:       :error,
-      intro:      "Hey!",
-      content:    "Please enable JavaScript in your browser! Many #{SITE_NAME} pages will not work properly without it.",
+      intro:      (I18n.t :"helpers.alert.please_enable_javascript.intro"),
+      content:    (I18n.t :"helpers.alert.please_enable_javascript.content", site_name: SITE_NAME),
       no_dismiss: true
     }
   end

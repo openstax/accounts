@@ -41,7 +41,8 @@ feature 'Require recent sign in to change authentications', js: true do
       visit '/signin'
       expect_sign_in_page
       signin_as 'user'
-      expect(page).to have_content('Welcome, user')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
 
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
         visit '/profile'
@@ -52,7 +53,7 @@ feature 'Require recent sign in to change authentications', js: true do
         fill_in 'password_confirmation', with: 'password'
         find('.authentication.editing[data-provider="identity"] button[type="submit"]').click
         expect_sign_in_page
-        expect(page).to have_content('Please sign in again to confirm your changes')
+        expect(page).to have_content(t :"controllers.authentications.please_sign_in_to_confirm_changes")
 
         signin_as 'user'
         expect_profile_page
@@ -61,7 +62,7 @@ feature 'Require recent sign in to change authentications', js: true do
         fill_in 'password', with: 'password'
         fill_in 'password_confirmation', with: 'password'
         find('.authentication.editing[data-provider="identity"] button[type="submit"]').click
-        expect(page).to have_content('Password changed')
+        expect(page).to have_content(t :"controllers.identities.password_changed")
       end
     end
   end
@@ -74,7 +75,8 @@ feature 'Require recent sign in to change authentications', js: true do
       visit '/signin'
       expect_sign_in_page
       signin_as 'user'
-      expect(page).to have_content('Welcome, user')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
 
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
         visit '/profile'
@@ -84,7 +86,7 @@ feature 'Require recent sign in to change authentications', js: true do
         find('.authentication[data-provider="twitter"] .delete').click
         click_button 'OK'
         expect_sign_in_page
-        expect(page).to have_content('Please sign in again to confirm your changes')
+        expect(page).to have_content(t :"controllers.authentications.please_sign_in_to_confirm_changes")
 
         signin_as 'user'
         expect_profile_page

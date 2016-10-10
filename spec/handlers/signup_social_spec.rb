@@ -27,8 +27,7 @@ describe SignupSocial, type: :handler do
       expect(result.errors.length).to be 1
       error = result.errors.first
       expect(error.code).to eq(:email_address_required)
-      expect(error.message).to eq(
-        'You must provide an email address to create your account.')
+      expect(error.message).to eq(t :"handlers.signup_social.you_must_provide_an_email_address")
     end
 
     it 'is not required if the social network already provided one' do

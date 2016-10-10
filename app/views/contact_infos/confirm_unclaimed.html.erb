@@ -1,15 +1,23 @@
-<%= page_heading "Invite Verification" %>
+<%= page_heading (t :".page_heading") %>
 <% if @handler_result.errors.any? %>
-  <p>Sorry, we couldn't find any pending invitations using the verification code you provided.  If you typed it in manually, please check for errors.  If you're still having trouble, you might ask whoever setup your account to try again.</p>
+  <p><%= t :".verification_code_not_found" %></p>
 <% else %>
 <p>
-  Thanks for validating your OpenStax invitation.
+  <%= t :".thanks_for_validating" %>
 </p>
 <p>
   <% if @handler_result.outputs.can_log_in %>
-    You can now <%= link_to("sign in", signin_url) %> to your new account.
+    <%= t :".you_can_now_sign_in.content_html",
+          link: (link_to (t :".you_can_now_sign_in.sign_in"),
+                         signin_url)
+        %>
   <% else %>
-    Please <%= link_to('sign up',root_url) %> for a account using email <%= @handler_result.outputs.email_address %> address in order to complete the process. <%# TODO replace root_url with right value %>
+    <%# TODO replace root_url with right value %>
+    <%= t :".please_sign_up.content_html",
+          link: (link_to (t :".please_sign_up.sign_up"),
+                         root_url),
+          email: @handler_result.outputs.email_address
+        %>
   <% end %>
 </p>
 <% end %>

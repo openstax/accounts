@@ -4,11 +4,11 @@
   <%= javascript_include_tag  "profile" %>
 <% end %>
 
-<%= page_heading("Your Account") %>
+<%= page_heading (t :".page_heading") %>
 
 <div class="row name">
   <div class="col-sm-2 category">
-    Name
+    <%= t :".name" %>
   </div>
   <div class="col-sm-10 info">
     <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></a>
@@ -17,7 +17,7 @@
 
 <div class="row">
   <div class="col-sm-2 category">
-    Username
+    <%= t :".username" %>
   </div>
   <div class="col-sm-10 info">
     <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
@@ -26,7 +26,7 @@
 
 <div class="row">
   <div class="col-sm-2 category">
-    Emails
+    <%= t :".email_addresses" %>
   </div>
   <div id="email-template" style="display:none">
     <%= email_entry(value: "", id: "", is_verified: false, is_searchable: "") %>
@@ -35,7 +35,7 @@
     <% current_user.email_addresses.order(:created_at).each do |email| %>
       <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
     <% end %>
-    <%= link_to "Add an email", '#', {id: 'add-an-email'} %>
+    <%= link_to (t :".add_email_address"), '#', {id: 'add-an-email'} %>
   </div>
 </div>
 
@@ -49,7 +49,7 @@
 
 <div class="row enabled-providers">
   <div class="col-sm-2 category">
-    How you<br class="wide"/> sign in
+    <%= t :".how_you_sign_in_html" %>
   </div>
   <div class="col-sm-10 info providers">
     <% current_providers.each do |provider| %>
@@ -57,14 +57,14 @@
     <% end %>
   </div>
   <% if other_providers.any? %>
-  <div class="col-sm-offset-2 info col-sm-10"><%= link_to "Enable other sign in options",nil ,id: 'enable-other-sign-in' %></div>
+  <div class="col-sm-offset-2 info col-sm-10"><%= link_to (t :".enable_other_sign_in_options"), nil, id: 'enable-other-sign-in' %></div>
   <% end %>
 
 </div>
 
 <div class="row other-sign-in">
   <div class="col-sm-2 category">
-    Other sign in<br class="wide"/> options
+    <%= t :".other_sign_in_options_html" %>
   </div>
   <div class="col-sm-10 info providers">
     <% other_providers.each do |provider| %>

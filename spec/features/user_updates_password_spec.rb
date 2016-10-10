@@ -5,7 +5,8 @@ feature 'User updates password', js: true do
     create_user('user')
     visit '/signin'
     signin_as 'user'
-    expect(page).to have_content('Welcome, user')
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
   end
 
   context 'without local password' do
@@ -18,7 +19,8 @@ feature 'User updates password', js: true do
 
     scenario 'password form is invisible', js: true do
       visit '/profile'
-      expect(page).to have_content('How you sign in')
+      expect(page).to have_no_missing_translations
+      expect(page.html).to include(t :"users.edit.how_you_sign_in_html")
       expect(page).to have_css('[data-provider=facebook]')
       expect(page).to_not have_css('[data-provider=identity]')
     end
@@ -33,7 +35,8 @@ feature 'User updates password', js: true do
         fill_in 'password_confirmation', with: 'new_password'
         find('.editable-submit').click
       }
-      expect(page).to have_content('How you sign in')
+      expect(page).to have_no_missing_translations
+      expect(page.html).to include(t :"users.edit.how_you_sign_in_html")
       expect(page).to have_css('[data-provider=facebook]')
       expect(page).to have_css('[data-provider=identity]')
     end
@@ -54,7 +57,8 @@ feature 'User updates password', js: true do
         fill_in 'password_confirmation', with: 'new_password'
         find('.editable-submit').click
       }
-      expect(page).to have_content('Password changed')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"controllers.identities.password_changed")
     end
 
     scenario 'with password confirmation empty or incorrect' do
@@ -63,16 +67,18 @@ feature 'User updates password', js: true do
         fill_in 'password_confirmation', with: ''
         find('.editable-submit').click
       }
+      expect(page).to have_no_missing_translations
       expect(page).to have_content("doesn't match confirmation and can't be blank")
-      expect(page).not_to have_content('Password changed')
+      expect(page).not_to have_content(t :"controllers.identities.password_changed")
 
       within(:css, '[data-provider=identity]') {
         fill_in 'password', with: 'new_password'
         fill_in 'password_confirmation', with: 'new_apswords'
         find('.editable-submit').click
       }
+      expect(page).to have_no_missing_translations
       expect(page).to have_content("doesn't match confirmation")
-      expect(page).not_to have_content('Password changed')
+      expect(page).not_to have_content(t :"controllers.identities.password_changed")
     end
 
     scenario 'with new password too short' do
@@ -81,8 +87,9 @@ feature 'User updates password', js: true do
         fill_in 'password_confirmation', with: 'pass'
         find('.editable-submit').click
       }
+      expect(page).to have_no_missing_translations
       expect(page).to have_content('is too short (minimum is 8 characters)')
-      expect(page).not_to have_content('Password changed')
+      expect(page).not_to have_content(t :"controllers.identities.password_changed")
     end
   end
 end

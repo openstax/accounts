@@ -14,7 +14,7 @@ class IdentitiesController < ApplicationController
     handle_with(IdentitiesUpdate,
                 success: lambda  do
                   security_log :password_updated
-                  render status: :accepted, text: 'Password changed'
+                  render status: :accepted, text: (I18n.t :"controllers.identities.password_changed")
                 end,
                 failure: lambda do
                   render status: 422, text: @handler_result.errors.map(&:message).to_sentence
@@ -25,7 +25,7 @@ class IdentitiesController < ApplicationController
     if !current_user.is_anonymous?
       if current_user.identity.nil?
         security_log :password_reset_failed
-        flash[:alert] = "You cannot reset your password because your account does not have a password."
+        flash[:alert] = I18n.t :"controllers.identities.cannot_reset_password_because_user_doesnt_have_one"
         redirect_to profile_path
         return
       end
@@ -33,7 +33,7 @@ class IdentitiesController < ApplicationController
       if current_user.identity.password_expired?
         security_log :password_expired
         store_fallback key: :password_return_to
-        flash[:alert] = 'Your password has expired. Please enter a new password.'
+        flash[:alert] = I18n.t :"controllers.identities.password_expired"
       end
     end
 
@@ -44,12 +44,11 @@ class IdentitiesController < ApplicationController
                   security_log :password_reset
                   security_log :sign_in_successful
                   redirect_back key: :password_return_to,
-                                notice: 'Your password has been reset successfully! You are now signed in.'
+                                notice: (I18n.t :"controllers.identities.password_reset_successfully")
                 end,
                 failure: lambda do
                   security_log :password_reset_failed
                   render :reset_password, status: 400
                 end)
   end
-
 end

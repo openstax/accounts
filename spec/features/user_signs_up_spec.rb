@@ -10,24 +10,26 @@ feature 'User signs up as a local user', js: true do
 
     expect(page.current_url).to include(signin_path)
     click_password_sign_up
-    expect(page).to have_content('Create Account')
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"signup.password.page_heading")
 
-    fill_in 'First Name', with: 'Test'
-    fill_in 'Last Name', with: 'User'
-    fill_in 'Email Address', with: 'testuser@example.com'
-    fill_in 'Username', with: 'testuser'
-    fill_in 'Password *', with: 'password'
-    fill_in 'Confirm Password', with: 'password'
+    fill_in (t :"signup.new_account.first_name"), with: 'Test'
+    fill_in (t :"signup.new_account.last_name"), with: 'User'
+    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
+    fill_in (t :"signup.new_account.username"), with: 'testuser'
+    fill_in (t :"signup.new_account.password"), with: 'password'
+    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
     agree_and_click_create
 
+    expect(page).to have_no_missing_translations
     expect(page).not_to have_content('Alert')
 
     expect(page.current_url).to match(app_callback_url)
 
     visit '/'
-    click_link 'Sign out'
+    click_link (t :"layouts.application_header.sign_out")
     expect(page.current_url).to include(signin_path)
-    expect(page).not_to have_content('Welcome, testuser')
+    expect(page).not_to have_content(t :"layouts.application_header.welcome_html", username: 'testuser')
     expect(page.current_url).to include(signin_path)
   end
 
@@ -36,76 +38,82 @@ feature 'User signs up as a local user', js: true do
     visit_authorize_uri
 
     expect_sign_in_page
-    click_link 'Sign up'
-    expect(page).to have_content('Sign up with OpenStax')
-    expect(page).to have_content('Facebook')
-    expect(page).to have_content('Google')
-    expect(page).to have_content('Twitter')
-    expect(page).to have_content('a password')
+    click_link (t :"sessions.new.sign_up")
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"signup.index.page_heading")
+    expect(page).to have_content(t :"signup.index.sign_up_with_facebook")
+    expect(page).to have_content(t :"signup.index.sign_up_with_google")
+    expect(page).to have_content(t :"signup.index.sign_up_with_twitter")
+    expect(page).to have_content(t :"signup.index.sign_up_with_password")
   end
 
   scenario 'with incorrect password confirmation' do
     visit '/'
     click_password_sign_up
+    expect(page).to have_no_missing_translations
 
-    fill_in 'First Name', with: 'Test'
-    fill_in 'Last Name', with: 'User'
-    fill_in 'Email Address', with: 'testuser@example.com'
-    fill_in 'Username', with: 'testuser'
-    fill_in 'Password *', with: 'password'
-    fill_in 'Confirm Password', with: 'pass'
+    fill_in (t :"signup.new_account.first_name"), with: 'Test'
+    fill_in (t :"signup.new_account.last_name"), with: 'User'
+    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
+    fill_in (t :"signup.new_account.username"), with: 'testuser'
+    fill_in (t :"signup.new_account.password"), with: 'password'
+    fill_in (t :"signup.new_account.confirm_password"), with: 'pass'
     agree_and_click_create
 
+    expect(page).to have_no_missing_translations
     expect(page).to have_content("Alert: Password doesn't match confirmation")
-    expect(page).not_to have_content('Sign out')
+    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
   end
 
   scenario 'with empty username' do
     visit '/'
     click_password_sign_up
 
-    fill_in 'First Name', with: 'Test'
-    fill_in 'Last Name', with: 'User'
-    fill_in 'Email Address', with: 'testuser@example.com'
-    fill_in 'Username', with: ''
-    fill_in 'Password *', with: 'password'
-    fill_in 'Confirm Password', with: 'password'
+    fill_in (t :"signup.new_account.first_name"), with: 'Test'
+    fill_in (t :"signup.new_account.last_name"), with: 'User'
+    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
+    fill_in (t :"signup.new_account.username"), with: ''
+    fill_in (t :"signup.new_account.password"), with: 'password'
+    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
     agree_and_click_create
 
+    expect(page).to have_no_missing_translations
     expect(page).to have_content("Alert: Username can't be blank")
-    expect(page).not_to have_content('Sign out')
+    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
   end
 
   scenario 'with empty password' do
     visit '/'
     click_password_sign_up
 
-    fill_in 'First Name', with: 'Test'
-    fill_in 'Last Name', with: 'User'
-    fill_in 'Email Address', with: 'testuser@example.com'
-    fill_in 'Username', with: 'testuser'
-    fill_in 'Password *', with: ''
-    fill_in 'Confirm Password', with: ''
+    fill_in (t :"signup.new_account.first_name"), with: 'Test'
+    fill_in (t :"signup.new_account.last_name"), with: 'User'
+    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
+    fill_in (t :"signup.new_account.username"), with: 'testuser'
+    fill_in (t :"signup.new_account.password"), with: ''
+    fill_in (t :"signup.new_account.confirm_password"), with: ''
     agree_and_click_create
 
+    expect(page).to have_no_missing_translations
     expect(page).to have_content("Alert: Password can't be blank Password confirmation can't be blank")
-    expect(page).not_to have_content('Sign out')
+    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
   end
 
   scenario 'with short password' do
     visit '/'
     click_password_sign_up
 
-    fill_in 'First Name', with: 'Test'
-    fill_in 'Last Name', with: 'User'
-    fill_in 'Email Address', with: 'testuser@example.com'
-    fill_in 'Username', with: 'testuser'
-    fill_in 'Password *', with: 'pass'
-    fill_in 'Confirm Password', with: 'pass'
+    fill_in (t :"signup.new_account.first_name"), with: 'Test'
+    fill_in (t :"signup.new_account.last_name"), with: 'User'
+    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
+    fill_in (t :"signup.new_account.username"), with: 'testuser'
+    fill_in (t :"signup.new_account.password"), with: 'pass'
+    fill_in (t :"signup.new_account.confirm_password"), with: 'pass'
     agree_and_click_create
 
+    expect(page).to have_no_missing_translations
     expect(page).to have_content("Password is too short (minimum is 8 characters)")
-    expect(page).not_to have_content('Sign out')
+    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
   end
 
   scenario 'with a username already taken' do
@@ -113,48 +121,51 @@ feature 'User signs up as a local user', js: true do
     visit '/'
     click_password_sign_up
 
-    fill_in 'First Name', with: 'Test'
-    fill_in 'Last Name', with: 'User'
-    fill_in 'Email Address', with: 'testuser@example.com'
-    fill_in 'Username', with: 'testuser'
-    fill_in 'Password *', with: 'password'
-    fill_in 'Confirm Password', with: 'password'
+    fill_in (t :"signup.new_account.first_name"), with: 'Test'
+    fill_in (t :"signup.new_account.last_name"), with: 'User'
+    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
+    fill_in (t :"signup.new_account.username"), with: 'testuser'
+    fill_in (t :"signup.new_account.password"), with: 'password'
+    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
     agree_and_click_create
 
+    expect(page).to have_no_missing_translations
     expect(page).to have_content('Username has already been taken', count: 1)
-    expect(page).not_to have_content('Sign out')
+    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
   end
 
   scenario 'with empty email address' do
     visit '/'
     click_password_sign_up
 
-    fill_in 'First Name', with: 'Test'
-    fill_in 'Last Name', with: 'User'
-    fill_in 'Email Address', with: ''
-    fill_in 'Username', with: 'testuser'
-    fill_in 'Password *', with: 'password'
-    fill_in 'Confirm Password', with: 'password'
+    fill_in (t :"signup.new_account.first_name"), with: 'Test'
+    fill_in (t :"signup.new_account.last_name"), with: 'User'
+    fill_in (t :"signup.new_account.email_address"), with: ''
+    fill_in (t :"signup.new_account.username"), with: 'testuser'
+    fill_in (t :"signup.new_account.password"), with: 'password'
+    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
     agree_and_click_create
 
+    expect(page).to have_no_missing_translations
     expect(page).to have_content("Alert: Email address can't be blank")
-    expect(page).not_to have_content('Sign out')
+    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
   end
 
   scenario 'with an invalid email address' do
     visit '/'
     click_password_sign_up
 
-    fill_in 'First Name', with: 'Test'
-    fill_in 'Last Name', with: 'User'
-    fill_in 'Email Address', with: 'testuser@ex ample.org'
-    fill_in 'Username', with: 'testuser'
-    fill_in 'Password *', with: 'password'
-    fill_in 'Confirm Password', with: 'password'
+    fill_in (t :"signup.new_account.first_name"), with: 'Test'
+    fill_in (t :"signup.new_account.last_name"), with: 'User'
+    fill_in (t :"signup.new_account.email_address"), with: 'testuser@ex ample.org'
+    fill_in (t :"signup.new_account.username"), with: 'testuser'
+    fill_in (t :"signup.new_account.password"), with: 'password'
+    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
     agree_and_click_create
 
+    expect(page).to have_no_missing_translations
     expect(page).to have_content('Value "testuser@ex ample.org" is not a valid email address')
-    expect(page).not_to have_content('Welcome, testuser')
+    expect(page).not_to have_content(t :"layouts.application_header.welcome_html", username: 'testuser')
   end
 
   scenario 'without any email addresses' do
@@ -177,31 +188,34 @@ feature 'User signs up as a local user', js: true do
 
     agree_and_click_create
 
-    expect(page).to have_content("Alert: You must provide an email address to create your account.")
-    expect(page).to_not have_content("Your Account")
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"handlers.signup_social.you_must_provide_an_email_address")
+    expect(page).to_not have_content(t :"users.edit.page_heading")
 
-    fill_in 'Email Address', with: 'bob@example.org'
-    click_button 'Create'
+    fill_in (t :"signup.new_account.email_address"), with: 'bob@example.org'
+    click_button (t :"signup.new_account.create_account")
 
-    expect(page).to_not have_content("Alert: You must provide an email address to create your account.")
-    expect(page).to have_content("Your Account")
+    expect(page).to have_no_missing_translations
+    expect(page).not_to have_content(t :"handlers.signup_social.you_must_provide_an_email_address")
+    expect(page).to have_content(t :"users.edit.page_heading")
   end
 
   scenario 'when already has password' do
     visit '/'
     click_password_sign_up
 
-    fill_in 'First Name', with: 'Test'
-    fill_in 'Last Name', with: 'User'
-    fill_in 'Email Address', with: 'testuser@example.com'
-    fill_in 'Username', with: 'testuser'
-    fill_in 'Password *', with: 'password'
-    fill_in 'Confirm Password', with: 'password'
+    fill_in (t :"signup.new_account.first_name"), with: 'Test'
+    fill_in (t :"signup.new_account.last_name"), with: 'User'
+    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
+    fill_in (t :"signup.new_account.username"), with: 'testuser'
+    fill_in (t :"signup.new_account.password"), with: 'password'
+    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
     agree_and_click_create
 
     visit '/signup/password'
-    expect(page).to have_content("You already have a username and password")
-    expect(page).to have_content("Your Account")
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"controllers.signup.already_have_username_and_password")
+    expect(page).to have_content(t :"users.edit.page_heading")
   end
 
   scenario 'not fully signed up social user goes elsewhere' do

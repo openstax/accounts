@@ -30,13 +30,13 @@ class SignupSocial
     user = caller
 
     if options[:contracts_required] && !signup_params.i_agree
-      fatal_error(code: :did_not_agree, message: 'You must agree to the terms to create your account.')
+      fatal_error(code: :did_not_agree, message: (I18n.t :"handlers.signup_social.you_must_agree_to_the_terms"))
     end
 
     if user.email_addresses.empty?
       if signup_params.email_address.blank?
         fatal_error(code: :email_address_required,
-                    message: 'You must provide an email address to create your account.')
+                    message: (I18n.t :"handlers.signup_social.you_must_provide_an_email_address"))
       else
         run(AddEmailToUser, signup_params.email_address, user)
       end

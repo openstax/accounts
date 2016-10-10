@@ -14,7 +14,9 @@ class AuthenticationsController < ApplicationController
                      authentication_id: authentication.id,
                      authentication_provider: authentication.provider,
                      authentication_uid: authentication.uid
-        render status: :ok, text: "#{params[:provider].titleize} removed"
+        render status: :ok,
+               text: (I18n.t :"controllers.authentications.authentication_removed",
+                             authentication: params[:provider].titleize)
       end,
       failure: lambda do
         render status: 422, text: @handler_result.errors.map(&:message).to_sentence

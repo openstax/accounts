@@ -78,17 +78,15 @@ class SessionsController < ApplicationController
                        authentication_provider: authentication.provider,
                        authentication_uid: authentication.uid
           security_log :sign_in_successful, authentication_id: authentication.id
-          redirect_to profile_path, notice: "Your new sign in option has been added!"
+          redirect_to profile_path, notice: (I18n.t :"controllers.sessions.new_sign_in_option_added")
         when :authentication_taken
           security_log :authentication_transfer_failed, authentication_id: authentication.id
-          redirect_to profile_path, alert: "That sign in option is already used by someone " \
-                                           "else. If that someone is you, remove it from " \
-                                           "your other account and try again."
+          redirect_to profile_path, alert: (I18n.t :"controllers.sessions.sign_in_option_already_used")
         when :same_provider
           security_log :authentication_transfer_failed, authentication_id: authentication.id
-          redirect_to profile_path, alert: "You are logged in as #{current_user.name}. A different #{authentication.display_name} account " \
-                                            "is already linked to your OpenStax account. Only one #{authentication.display_name} account " \
-                                            "can be linked to your OpenStax account at a time."
+          redirect_to profile_path, alert: (I18n.t :"controllers.sessions.same_provider_already_linked",
+                                                   user_name: current_user.name,
+                                                   authentication: authentication.display_name)
         else
           Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}"
           raise IllegalState, "SessionsCreate errors: #{@handler_result.errors.inspect
@@ -135,15 +133,16 @@ class SessionsController < ApplicationController
   def failure
     flash.now[:alert] = case params[:message]
     when 'cannot_find_user'
-      "We have no account for the username or email you provided. " \
-      "Email addresses must be verified in our system to use them during sign in."
+      I18n.t :"controllers.sessions.no_account_for_username_or_email"
     when 'multiple_users'
-      "We found several accounts with your email address. Please sign in using your username."
+      I18n.t :"controllers.sessions.several_accounts_for_one_email"
     when 'bad_password'
-      "The password you provided is incorrect."
+      I18n.t :"controllers.sessions.incorrect_password"
     when 'too_many_login_attempts'
-      "You have made too many login attempts recently. " \
-      "Please <a href=\"#{signin_help_url}\">reset your password</a> or try again later."
+      I18n.t :"controllers.sessions.too_many_login_attempts.content",
+             reset_password: "<a href=\"#{signin_help_url}\">#{
+                                I18n.t :"controllers.sessions.too_many_login_attempts.reset_password"
+                             }</a>".html_safe
     else
       params[:message]
     end
@@ -158,7 +157,7 @@ class SessionsController < ApplicationController
                   success: lambda do
                     security_log :help_requested
                     redirect_to root_path,
-                                notice: 'Instructions for accessing your OpenStax account have been emailed to you.'
+                                notice: (I18n.t :"controllers.sessions.accessing_instructions_emailed")
                   end,
                   failure: lambda do
                     security_log :help_request_failed, username_or_email: params[:username_or_email]

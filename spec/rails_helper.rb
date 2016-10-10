@@ -63,6 +63,8 @@ RSpec.configure do |config|
   # config.mock_with :flexmock
   # config.mock_with :rr
 
+  config.include I18nMacros
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
@@ -125,6 +127,17 @@ RSpec.configure do |config|
   config.append_after(:all) do
     DatabaseCleaner.clean
   end
+
+  # Some tests might change I18n.locale.
+  config.after(:each) do |config|
+    I18n.locale = :en
+  end
+
+  # For Capybara's poltergist tests ensure that request's locale is always
+  # set to English.
+  config.before(type: :feature, js: true) do |config|
+    page.driver.add_header('Accept-Language', 'en')
+  end
 end
 
 # Adds a convenience method to get interpret the body as JSON and convert to a hash;
@@ -169,4 +182,9 @@ RSpec::Matchers.define :have_api_error_status do |error_status|
   failure_message do |actual|
     "expected that response would have status '#{error_status}' but had #{actual.body_as_hash[:status]}"
   end
+end
+
+# Fail on missing translation in a spec.
+I18n.exception_handler = lambda do |exception, locale, key, options|
+  raise "Missing translation for #{key} in locale #{locale} with options #{options}"
 end

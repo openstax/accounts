@@ -47,7 +47,7 @@ class SessionsHelp
 
       if @matching_users.blank?
         fatal_error(code: :user_not_found,
-                    message: 'We did not find an account with the username or email you provided.',
+                    message: (I18n.t :"handlers.sessions_help.did_not_find_account_for_username_or_email"),
                     offending_inputs: [:username_or_email])
       end
     end
@@ -64,9 +64,7 @@ class SessionsHelp
 
     if email_addresses.empty?
       fatal_error(code: :no_email_addresses,
-                  message: "We found your account but can't send you an email because your " \
-                           "account doesn't have any email addresses listed.  Please contact " \
-                           "support for assistance.",
+                  message: (I18n.t :"handlers.sessions_help.found_account_but_it_has_no_emails"),
                   offending_inputs: [:email_address])
     end
 

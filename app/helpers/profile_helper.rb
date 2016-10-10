@@ -11,7 +11,7 @@ module ProfileHelper
 
     icon_class, display_name =
       case provider
-      when 'identity' then ['key', 'Password']
+      when 'identity' then ['key', (I18n.t :"helpers.profile.password")]
       when 'google_oauth2' then ['google', 'Google']
       else [ provider, provider.capitalize ]
       end
@@ -35,7 +35,7 @@ module ProfileHelper
   end
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
-    verify_link = is_verified ? '' : "<span class='verify'>(#{button_to('Click to verify', resend_confirmation_contact_info_path(id), method: :put ) })</span>"
+    verify_link = is_verified ? '' : "<span class='verify'>(#{button_to((I18n.t :"helpers.profile.click_to_verify"), resend_confirmation_contact_info_path(id), method: :put ) })</span>"
     (
       <<-SNIPPET
         <div class="email-entry controls-hidden" data-id="#{id}">
@@ -45,8 +45,8 @@ module ProfileHelper
             <span class="glyphicon glyphicon-trash mod delete"></span>
           </span>
           <div class="properties">
-            <input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> Searchable
-            <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="Check the Searchable box if you want other OpenStax users to find you using this email address."></i>
+            <input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"helpers.profile.searchable"}
+            <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="#{I18n.t :"helpers.profile.check_searchable_if_you_want_to_be_searchable"}"></i>
 
           </div>
           <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>

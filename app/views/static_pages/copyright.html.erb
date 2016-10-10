@@ -1,10 +1,7 @@
-<%= page_heading "Copyright and Licensing Details" %>
+<%= page_heading (t :".page_heading") %>
 
-<p>All content on this web site is either Copyright <%= COPYRIGHT_HOLDER %> or 
-<%= COPYRIGHT_HOLDER %> has permission for use from the copyright holders.</p>
+<p><%= t :".content_copyright_notice_html", copyright_holder: COPYRIGHT_HOLDER %></p>
 
-<p>The source code for <%= SITE_NAME %> is open source.  For copyright and licensing details, see the relevant files at <a href="http://github.com/openstax/accounts">http://github.com/openstax/accounts</a>.</p>
+<p><%= t :".opensource_notice_html", site_name: SITE_NAME %></p>
 
-<p>All other content/information/imagery on this site (including but not limited to logos, taglines, images, 
-   text copy, web site design, etc; excluding user information and content licensed
-   from other entities) is Copyright <%= COPYRIGHT_HOLDER %> All Rights Reserved.</p>
+<p><%= t :".other_copyright_notice_html", copyright_holder: COPYRIGHT_HOLDER %></p>

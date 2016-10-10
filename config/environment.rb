@@ -2,6 +2,7 @@
 require File.expand_path('../application', __FILE__)
 
 require 'active_record_enum'
+require 'locale_selector'
 require 'markdown_wrapper'
 require 'settings'
 require 'sign_in_state'

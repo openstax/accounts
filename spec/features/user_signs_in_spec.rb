@@ -11,14 +11,15 @@ feature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in 'Username', with: 'user'
-      fill_in 'Password', with: 'pass'
-      click_button 'Sign in'
-      expect(page).to have_content('The password you provided is incorrect.')
+      fill_in (t :"sessions.new.username_or_email"), with: 'user'
+      fill_in (t :"sessions.new.password"), with: 'pass'
+      click_button (t :"sessions.new.sign_in")
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"controllers.sessions.incorrect_password")
 
-      fill_in 'Username', with: 'user'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: 'user'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
       expect(page.current_url).to match(app_callback_url)
     end
   end
@@ -30,14 +31,15 @@ feature 'User logs in as a local user', js: true do
       visit_authorize_uri
 
       expect_sign_in_page
-      fill_in 'Username', with: 'plone_user'
-      fill_in 'Password', with: 'pass'
-      click_button 'Sign in'
-      expect(page).to have_content('The password you provided is incorrect.')
+      fill_in (t :"sessions.new.username_or_email"), with: 'plone_user'
+      fill_in (t :"sessions.new.password"), with: 'pass'
+      click_button (t :"sessions.new.sign_in")
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"controllers.sessions.incorrect_password")
 
-      fill_in 'Username', with: 'plone_user'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: 'plone_user'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
       expect(page.current_url).to match(app_callback_url)
     end
   end
@@ -48,10 +50,11 @@ feature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in 'Username', with: 'user'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
-      expect(page).to have_content('We have no account')
+      fill_in (t :"sessions.new.username_or_email"), with: 'user'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"controllers.sessions.no_account_for_username_or_email")
     end
   end
 
@@ -66,16 +69,17 @@ feature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in 'Username', with: 'expired_password'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: 'expired_password'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
 
-      expect(page).to have_content('Welcome, expired_password')
-      expect(page).to have_content('Alert: Your password has expired')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'expired_password')
+      expect(page).to have_content(t :"controllers.identities.password_expired")
 
-      fill_in 'Password', with: 'Passw0rd!'
-      fill_in 'Confirm Password', with: 'Passw0rd!'
-      click_button 'Set Password'
+      fill_in (t :"identities.reset_password.password"), with: 'Passw0rd!'
+      fill_in (t :"identities.reset_password.confirm_password"), with: 'Passw0rd!'
+      click_button (t :"identities.reset_password.set_password")
 
       expect(page.current_url).to match(app_callback_url)
     end
@@ -89,25 +93,26 @@ feature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in 'Username', with: 'imported_user'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: 'imported_user'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
 
-      expect(page).to have_content('Welcome, imported_user')
-      expect(page).to have_content('Alert: Your password has expired')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'imported_user')
+      expect(page).to have_content(t :"controllers.identities.password_expired")
 
-      fill_in 'Password', with: 'Passw0rd!'
-      fill_in 'Confirm Password', with: 'Passw0rd!'
-      click_button 'Set Password'
+      fill_in (t :"identities.reset_password.password"), with: 'Passw0rd!'
+      fill_in (t :"identities.reset_password.confirm_password"), with: 'Passw0rd!'
+      click_button (t :"identities.reset_password.set_password")
 
       expect(page).to have_content('Terms of Use')
 
       find(:css, '#agreement_i_agree').set(true)
-      click_button 'I agree'
+      click_button (t :"terms.pose.agree")
 
       expect(page).to have_content('Privacy Policy')
       find(:css, '#agreement_i_agree').set(true)
-      click_button 'I agree'
+      click_button (t :"terms.pose.agree")
 
       expect(page.current_url).to match(app_callback_url)
     end
@@ -122,7 +127,8 @@ feature 'User logs in as a local user', js: true do
     signin_as 'jimbo', 'password'
 
     visit '/'
-    expect(page).to have_content('Your Account')
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"users.edit.page_heading")
   end
 
   scenario 'and gets asked to reset password and accept terms on home page' do
@@ -133,25 +139,26 @@ feature 'User logs in as a local user', js: true do
       visit '/'
       expect_sign_in_page
 
-      fill_in 'Username', with: 'imported_user'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: 'imported_user'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
 
-      expect(page).to have_content('Welcome, imported_user')
-      expect(page).to have_content('Alert: Your password has expired')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'imported_user')
+      expect(page).to have_content(t :"controllers.identities.password_expired")
 
-      fill_in 'Password', with: 'Passw0rd!'
-      fill_in 'Confirm Password', with: 'Passw0rd!'
-      click_button 'Set Password'
+      fill_in (t :"identities.reset_password.password"), with: 'Passw0rd!'
+      fill_in (t :"identities.reset_password.confirm_password"), with: 'Passw0rd!'
+      click_button (t :"identities.reset_password.set_password")
 
       expect(page).to have_content('Terms of Use')
 
       find(:css, '#agreement_i_agree').set(true)
-      click_button 'I agree'
+      click_button (t :"terms.pose.agree")
 
       expect(page).to have_content('Privacy Policy')
       find(:css, '#agreement_i_agree').set(true)
-      click_button 'I agree'
+      click_button (t :"terms.pose.agree")
 
       expect(current_path).to eq profile_path
     end
@@ -170,11 +177,12 @@ feature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in 'Username', with: 'therulerofallthings'
-      fill_in 'Password', with: 'apassword'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: 'therulerofallthings'
+      fill_in (t :"sessions.new.password"), with: 'apassword'
+      click_button (t :"sessions.new.sign_in")
 
-      expect(page).to have_content('Alert: Your password has expired')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"controllers.identities.password_expired")
       expect(new_user.reload.state).to eq("activated")
     end
 
@@ -188,14 +196,15 @@ feature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in 'Username', with: 'user'
-      fill_in 'Password', with: 'pass'
-      click_button 'Sign in'
-      expect(page).to have_content('The password you provided is incorrect')
+      fill_in (t :"sessions.new.username_or_email"), with: 'user'
+      fill_in (t :"sessions.new.password"), with: 'pass'
+      click_button (t :"sessions.new.sign_in")
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"controllers.sessions.incorrect_password")
 
-      fill_in 'Username or Email', with: 'user@example.com'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
       expect(page.current_url).to match(app_callback_url)
     end
   end
@@ -208,14 +217,15 @@ feature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in 'Username or Email', with: 'user@example.com'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
-      expect(page).to have_content('We have no account for the username or email you provided.  Email addresses must be verified in our system to use them during sign in.')
+      fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"controllers.sessions.no_account_for_username_or_email")
 
-      fill_in 'Username', with: 'user'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: 'user'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
       expect(page.current_url).to match(app_callback_url)
     end
   end
@@ -233,14 +243,15 @@ feature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in 'Username or Email', with: 'user@example.com'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
-      expect(page).to have_content('We found several accounts with your email address.  Please sign in using your username.')
+      fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"controllers.sessions.several_accounts_for_one_email")
 
-      fill_in 'Username', with: 'user'
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: 'user'
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
       expect(page.current_url).to match(app_callback_url)
     end
   end
@@ -252,11 +263,12 @@ feature 'User logs in as a local user', js: true do
 
       visit '/'
 
-      fill_in 'Username', with: ' user '
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: ' user '
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
 
-      expect(page).to have_content('Welcome, user')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
     end
   end
 
@@ -267,11 +279,12 @@ feature 'User logs in as a local user', js: true do
 
       visit '/'
 
-      fill_in 'Username', with: ' user@example.com '
-      fill_in 'Password', with: 'password'
-      click_button 'Sign in'
+      fill_in (t :"sessions.new.username_or_email"), with: ' user@example.com '
+      fill_in (t :"sessions.new.password"), with: 'password'
+      click_button (t :"sessions.new.sign_in")
 
-      expect(page).to have_content('Welcome, user')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
     end
   end
 
