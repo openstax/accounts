@@ -198,6 +198,7 @@ en:
         contact_customer_support: contact customer support
       page_heading: We're sorry you're having trouble accessing your account.
       submit: Submit
+      submitting: Submitting...
       username_or_email: Username or Email
 
     new:

@@ -3,6 +3,7 @@ task :find_duplicate_accounts => [:environment] do
   CSV.open("duplicate_users_by_name.csv", 'w+') do |csv|
     csv << ['User First Name',
             'User Last Name',
+            'Username',
             'Created At',
             'Email Address(es)',
             'User ID',
@@ -23,6 +24,7 @@ task :find_duplicate_accounts => [:environment] do
     where_names_match.find_each do |user|
       csv << [user.first_name,
               user.last_name,
+              user.username,
               user.created_at.to_s,
               (user.contact_infos.any? ? user.contact_infos.map{ |ci| "#{ci.value} #{ci.verified ? '(verified)' : '(NOT verified)'}" }.join(", ") : ""),
               user.id,
@@ -42,6 +44,7 @@ task :find_duplicate_accounts => [:environment] do
             'ContactInfo ID',
             'User First Name',
             'User Last Name',
+            'Username',
             'User ID',
             'Applications',
             'Authentications',
@@ -63,6 +66,7 @@ task :find_duplicate_accounts => [:environment] do
               contact_info.id,
               user.try(:first_name),
               user.try(:last_name),
+              user.try(:username),
               user.try(:id),
               (user && user.applications.any?)    ? user.applications.map(&:name).join(", ") : "",
               (user && user.authentications.any?) ? user.authentications.map(&:display_name).join(", ") : "",

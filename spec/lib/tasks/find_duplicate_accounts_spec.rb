@@ -9,8 +9,8 @@ RSpec.describe "find_duplicate_accounts" do
   end
 
   context "when it finds users with the same name (first name AND last name)" do
-    let!(:user_1)    {FactoryGirl.create :user, first_name: "Robert", last_name: "Martin"}
-    let!(:same_name) {FactoryGirl.create :user, first_name: "robert", last_name: "martin"}
+    let!(:user_1)    {FactoryGirl.create :user, first_name: "Robert", last_name: "Martin", username: "RubyMaster"}
+    let!(:same_name) {FactoryGirl.create :user, first_name: "robert", last_name: "martin", username: "RailsMaster"}
 
     let!(:same_first_name) {FactoryGirl.create :user, first_name: user_1.first_name, last_name: "Ernser"}
     let!(:same_last_name)  {FactoryGirl.create :user, first_name: "Kaci", last_name: user_1.last_name}
@@ -43,6 +43,7 @@ RSpec.describe "find_duplicate_accounts" do
 
       expect(result[0]["User First Name"]).to eq user_1.first_name
       expect(result[0]["User Last Name"]).to eq user_1.last_name
+      expect(result[0]["Username"]).to eq "RubyMaster"
       expect(result[0]["Created At"]).to eq user_1.created_at.to_s
       expect(result[0]["Email Address(es)"].split(", ")).to match_array ["#{email_2_user_1.value} (verified)", "#{email_1_user_1.value} (NOT verified)"]
       expect(result[0]["User ID"]).to eq user_1.id.to_s
@@ -56,6 +57,7 @@ RSpec.describe "find_duplicate_accounts" do
 
       expect(result[1]["User First Name"]).to eq same_name.first_name
       expect(result[1]["User Last Name"]).to eq same_name.last_name
+      expect(result[1]["Username"]).to eq "RailsMaster"
       expect(result[1]["Created At"]).to eq same_name.created_at.to_s
       expect(result[1]["Email Address(es)"]).to eq "#{email_1_user_same_name.value} (verified)"
       expect(result[1]["User ID"]).to eq same_name.id.to_s
@@ -83,8 +85,8 @@ RSpec.describe "find_duplicate_accounts" do
   end
 
   context "when it finds users with the same email address" do
-    let!(:user_1) { FactoryGirl.create :user, first_name: "John", last_name: "Lock" }
-    let!(:user_2) { FactoryGirl.create :user, first_name: "Jack", last_name: "Shepherd" }
+    let!(:user_1) { FactoryGirl.create :user, first_name: "John", last_name: "Lock", username: "RubyKing" }
+    let!(:user_2) { FactoryGirl.create :user, first_name: "Jack", last_name: "Shepherd", username: "RailsKing" }
     let!(:email_1) { FactoryGirl.create :email_address, user: user_1, verified: true }
     let!(:same_email_diff_user) { FactoryGirl.create :email_address, user: user_2, value: email_1.value }
 
@@ -117,6 +119,7 @@ RSpec.describe "find_duplicate_accounts" do
       expect(result[0]["User First Name"]).to eq user_1.first_name
       expect(result[0]["User Last Name"]).to eq user_1.last_name
       expect(result[0]["User ID"]).to eq user_1.id.to_s
+      expect(result[0]["Username"]).to eq "RubyKing"
       expect(result[0]["Applications"].split(", ")).to match_array [user_1.applications.first.name, user_1.applications.second.name]
       expect(result[0]["Signup Successful?"]).to eq "On #{sus_user_1.created_at}"
       expect(result[0]["Reset Password Help Requested?"].split(" and ")).to match_array ["On #{help_req_1_user_1.created_at}", "On #{help_req_2_user_1.created_at}"]
@@ -130,6 +133,7 @@ RSpec.describe "find_duplicate_accounts" do
       expect(result[1]["User First Name"]).to eq user_2.first_name
       expect(result[1]["User Last Name"]).to eq user_2.last_name
       expect(result[1]["User ID"]).to eq user_2.id.to_s
+      expect(result[1]["Username"]).to eq "RailsKing"
       expect(result[1]["Applications"]).to be_empty
       expect(result[1]["Signup Successful?"]).to eq "On #{sus_user_2.created_at}"
       expect(result[1]["Reset Password Help Requested?"]).to be_empty

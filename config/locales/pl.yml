@@ -189,6 +189,7 @@ pl:
         contact_customer_support: skontaktuj się z działem pomocy
       page_heading: Przykro nam, że masz problemy z dostępem do swojego konta.
       submit: Wyślij
+      submitting: Wysyłanie...
       username_or_email: Nazwa użytkownika albo adres e-mail
 
     new:
