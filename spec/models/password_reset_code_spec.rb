@@ -4,16 +4,6 @@ describe PasswordResetCode do
 
   let!(:password_reset_code) { FactoryGirl.build :password_reset_code }
 
-  it 'does not allow mass assignment' do
-    password_reset_code.save!
-    expect {
-      password_reset_code.update_attributes(code: '1234')
-    }.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
-    expect {
-      password_reset_code.update_attributes(expires_at: DateTime.now)
-    }.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
-  end
-
   it 'generates a code' do
     password_reset_code.code = nil
     password_reset_code.generate

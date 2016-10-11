@@ -63,7 +63,7 @@ feature 'User resets password', js: true do
     fill_in (t :"identities.reset_password.password"), with: 'password!'
     fill_in (t :"identities.reset_password.confirm_password"), with: 'password!!'
     click_button (t :"identities.reset_password.set_password")
-    expect(page).to have_content("Password doesn't match confirmation")
+    expect(page).to have_content("Password confirmation doesn't match Password")
   end
 
   scenario 'successful' do

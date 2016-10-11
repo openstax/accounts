@@ -1,5 +1,5 @@
 # Routine for listing groups visible to a certain app
-# 
+#
 # Caller provides the Doorkeeper::Application
 
 class GetUpdatedApplicationGroups
@@ -18,6 +18,7 @@ class GetUpdatedApplicationGroups
     visible_group_ids = Group
       .includes(:owners => :application_users)
       .includes(:members => :application_users)
+      .references(:all)
       .where{(is_public.eq true) |\
              (owners.application_users.application_id.eq my{application.id}) |\
              (members.application_users.application_id.eq my{application.id})}

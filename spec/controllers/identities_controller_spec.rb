@@ -137,7 +137,7 @@ describe IdentitiesController, type: :controller do
         expect(response.code).to eq('400')
         expect(response.body).to have_no_missing_translations
         expect(response.body).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
-        expect(response.body).to include("Password doesn't match confirmation")
+        expect(response.body).to include("Password confirmation doesn't match Password")
         expect(response.body).to include(t :"identities.reset_password.set_password")
         identity.reload
         expect(identity.authenticate('password')).to be_truthy

@@ -22,7 +22,7 @@ class Api::V1::GroupOwnersController < Api::V1::ApiController
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:index, current_api_user, GroupOwner)
-    respond_with current_human_user.group_owners, location: nil
+    respond_with current_human_user.group_owners, user_options: { render_contact_infos: false }, location: nil
   end
 
   ###############################################################
@@ -43,7 +43,7 @@ class Api::V1::GroupOwnersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:create, current_api_user, go)
 
     if go.save
-      respond_with go, status: :created, location: nil
+      respond_with go, user_options: { render_contact_infos: false }, status: :created, location: nil
     else
       render json: go.errors, status: :unprocessable_entity
     end

@@ -1,4 +1,4 @@
-# Copyright 2015 Rice University. Licensed under the Affero General Public 
+# Copyright 2016 Rice University. Licensed under the Affero General Public
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 class ApiMailer < ActionMailer::Base

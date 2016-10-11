@@ -26,15 +26,15 @@ namespace :accounts do
           # Get the admin password
           password = args[:admin_password]
           # Create application owner if needed
-          app_owner_group = Group.find_or_create_by_name('ost_app_admin_group')
-          user = User.find_or_create_by_username('ost_app_admin')
-          identity = Identity.find_or_create_by_user_id(user.id) do |new_identity|
+          app_owner_group = Group.find_or_create_by(name: 'ost_app_admin_group')
+          user = User.find_or_create_by(username: 'ost_app_admin')
+          identity = Identity.find_or_create_by(user_id: user.id) do |new_identity|
             new_identity.password = password
             new_identity.password_confirmation = password
             new_identity.save!
           end
           app_owner_group.add_owner(user)
-          auth = Authentication.find_or_create_by_uid(user.identity.id.to_s) do |new_auth|
+          auth = Authentication.find_or_create_by(uid: user.identity.id.to_s) do |new_auth|
             new_auth.provider = 'identity'
             new_auth.user_id = user.id
             new_auth.save!
@@ -51,7 +51,7 @@ namespace :accounts do
             else
               url = "https://#{app[:prefix]}#{suffix}.openstax.org/#{cb_path}"
             end
-            Doorkeeper::Application.find_or_create_by_name(app[:name]) do |application|
+            Doorkeeper::Application.find_or_create_by(name: app[:name]) do |application|
               application.redirect_uri = url
               application.owner = app_owner_group
               application.trusted = true

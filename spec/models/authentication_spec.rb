@@ -12,8 +12,8 @@ describe Authentication do
 
     it "is returned by by_provider_and_uid!" do
       value = nil
-      expect{value = Authentication.find_or_create_by_provider_and_uid(
-        authentication.provider, authentication.uid
+      expect{value = Authentication.find_or_create_by(provider: authentication.provider,
+        uid: authentication.uid
       )}.not_to change{Authentication.count}
       expect(value).to eq authentication
     end
@@ -33,8 +33,8 @@ describe Authentication do
     it "is created by by_provider_and_uid!" do
       provider = SecureRandom.hex(4)
       value = nil
-      expect{value = Authentication.find_or_create_by_provider_and_uid(
-        provider, "42"
+      expect{
+        value = Authentication.find_or_create_by(provider: provider, uid: "42"
       )}.to change{Authentication.count}.by(1)
       expect(value.class).to eq Authentication
       expect(value.provider).to eq provider

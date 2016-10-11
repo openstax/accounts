@@ -136,8 +136,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         username: user_2.username,
         first_name: user_2.first_name,
         last_name: user_2.last_name,
-        full_name: user_2.full_name,
-        contact_infos: [be_kind_of(Hash), be_kind_of(Hash)]
+        full_name: user_2.full_name
       )
     end
 

@@ -38,7 +38,7 @@ class ArchiveTempUsers
     temp_users = temp_users.where('id NOT IN (?)', exclude_user_ids) \
       unless exclude_user_ids.empty?
 
-    temp_users.includes(:contact_infos).includes(:authentications).includes(:identity)
+    temp_users.preload(:contact_infos, :authentications, :identity)
   end
 
   def self.run

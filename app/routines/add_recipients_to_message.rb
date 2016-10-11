@@ -17,7 +17,7 @@ class AddRecipientsToMessage
     end
 
     literal_cis = {} # A map from ContactInfo values to (existing) ContactInfos
-    sort(ContactInfo.where(:value => literals).includes(:user), :value, literals).each do |ci|
+    sort(ContactInfo.where(:value => literals).preload(:user), :value, literals).each do |ci|
       literal_cis[ci.value] = ci
     end
 
@@ -29,11 +29,11 @@ class AddRecipientsToMessage
 
     user_cis = {} # A map from User ID's to (default) ContactInfos
     app.application_users.where(:user_id => user_ids)
-                         .includes(:default_contact_info).each do |app_user|
+                         .preload(:default_contact_info).each do |app_user|
       user_cis[app_user.user_id] = app_user.default_contact_info
     end
 
-    sort(User.where(:id => user_ids).includes(:contact_infos), :id, user_ids).each do |user|
+    sort(User.where(:id => user_ids).preload(:contact_infos), :id, user_ids).each do |user|
       # Grab the User's first ContactInfo if no default
       cis.push user_cis[user.id] || user.contact_infos.first
     end
@@ -52,7 +52,7 @@ class AddRecipientsToMessage
   end
 
   def sorted_where(klass, key, values, includes)
-    klass.where(key => values).includes(includes)
+    klass.where(key => values).preload(includes)
   end
 
 end

@@ -44,7 +44,7 @@ class SessionsCreate
 
   def handle
     authentication =
-      Authentication.find_or_create_by_provider_and_uid(@data.provider, @data.uid.to_s)
+      Authentication.find_or_create_by(provider: @data.provider, uid: @data.uid.to_s)
     authentication_user = authentication.user
     outputs[:authentication] = authentication
 

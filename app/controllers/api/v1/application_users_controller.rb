@@ -102,7 +102,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
   EOS
   def find_by_username
     raise SecurityTransgression if current_application.nil?
-    application_user = ApplicationUser.includes(:user).joins(:user).where({
+    application_user = ApplicationUser.preload(:user).joins(:user).where({
       :user           => { :username => params[:username] },
       :application_id => current_application.id
     }).first!

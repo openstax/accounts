@@ -467,8 +467,19 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       api_delete :destroy, user_1_token,
                  parameters: {id: group_3.id}
 
-      expect(response.code).to eq('204')
-      expect(response.body).to be_blank
+      expect(response).to have_http_status(:success)
+
+      expected_response = {
+        'id' => group_3.id,
+        'name' => 'Group 3',
+        'is_public' => true,
+        'members' => [], 'owners' => [], 'nestings' => [],
+        'supertree_group_ids' => [],
+        'subtree_group_ids' => [],
+        'subtree_member_ids' => []
+      }
+      expect(JSON.parse(response.body)).to eq(expected_response)
+
       expect(Group.where(id: group_3.id).first).to be_nil
     end
   end

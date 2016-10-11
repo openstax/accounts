@@ -1,19 +1,20 @@
 ActionController::Base.class_exec do
   use_openstax_exception_rescue
 
-  include SignInState
+  layout 'application'
 
   protect_from_forgery
 
-  helper OSU::OsuHelper, ApplicationHelper
+  include ApplicationHelper
+  include SignInState
+  include OSU::OsuHelper
 
-  helper_method :current_user, :signed_in?
+  helper ApplicationHelper, SignInState, OSU::OsuHelper
 
   if SECRET_SETTINGS[:beta_protection] != false
     protect_beta username: SECRET_SETTINGS[:beta_username],
                  password: SECRET_SETTINGS[:beta_password]
   end
-
 
   before_filter :authenticate_user!
   before_filter :finish_sign_up
@@ -76,14 +77,4 @@ ActionController::Base.class_exec do
     cookies.signed[:last_signin_provider]
   end
 
-end
-
-# Layout is not inheritable in Rails 3.2
-Rails.application.config.to_prepare do
-  # Put this code inside the class_exec above in Rails 4
-  # and remove it from ApplicationController
-  [Doorkeeper::ApplicationController,
-   FinePrint::ApplicationController].each do |klass|
-    klass.layout 'application'
-  end
 end

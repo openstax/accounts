@@ -41,7 +41,7 @@ module Api::V1
              writeable: false
 
     collection :contact_infos,
-               if: ->(args) { args[:render_contact_infos] },
+               if: ->(user_options:, **) { user_options.try(:fetch, :render_contact_infos, false) },
                decorator: ContactInfoRepresenter
 
   end

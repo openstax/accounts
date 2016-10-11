@@ -3,12 +3,12 @@ require 'rails_helper'
 RSpec.describe SecurityLog, type: :model do
   subject(:security_log) { FactoryGirl.create :security_log }
 
-  it { is_expected.to belong_to :user }
-  it { is_expected.to belong_to :application }
+  it { should belong_to :user }
+  it { should belong_to :application }
 
-  it { is_expected.to validate_presence_of :remote_ip }
-  it { is_expected.to validate_presence_of :event_type }
-  it { is_expected.to validate_presence_of :event_data }
+  it { should validate_presence_of :remote_ip }
+  it { should validate_presence_of :event_type }
+  it { should validate_presence_of :event_data }
 
   it 'cannot be updated' do
     expect{security_log.save}.to raise_error ActiveRecord::ReadOnlyRecord

@@ -30,7 +30,7 @@ class Group < ActiveRecord::Base
   scope :visible_for, lambda { |user|
     next where(is_public: true) unless user.is_a? User
 
-    includes(:group_members).includes(:group_owners)
+    eager_load(:group_members, :group_owners)
     .where{((is_public.eq true) |\
              (group_members.user_id.eq my{user.id}) |\
              (group_owners.user_id.eq my{user.id}))}
@@ -76,7 +76,7 @@ class Group < ActiveRecord::Base
     return [] unless persisted?
     reload
 
-    gids = [id] + (Group.includes(:member_group_nestings)
+    gids = [id] + (Group.joins(:member_group_nestings)
                         .where(member_group_nestings: {member_group_id: id})
                         .first.try(:supertree_group_ids) || [])
     update_column(:cached_supertree_group_ids, gids.to_yaml)
@@ -88,7 +88,7 @@ class Group < ActiveRecord::Base
     return [] unless persisted?
     reload
 
-    gids = [id] + Group.includes(:container_group_nesting)
+    gids = [id] + Group.joins(:container_group_nesting)
                        .where(container_group_nesting: {container_group_id: id})
                        .collect{|g| g.subtree_group_ids}.flatten
     update_column(:cached_subtree_group_ids, gids.to_yaml)

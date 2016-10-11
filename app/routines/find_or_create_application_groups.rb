@@ -8,7 +8,7 @@ class FindOrCreateApplicationGroups
   def exec(application_id, group_ids)
     application_groups = ApplicationGroup.where(application_id: application_id,
                                                 group_id: group_ids)
-                                         .includes(:group).to_a
+                                         .preload(:group).to_a
     ag_group_ids = application_groups.collect{|ag| ag.group_id}
 
     # There might be a way to make this more efficient

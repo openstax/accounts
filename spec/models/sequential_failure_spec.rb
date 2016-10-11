@@ -1,10 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe SequentialFailure, :type => :model do
-  it { is_expected.to validate_presence_of(:length) }
-  it { is_expected.to validate_presence_of(:reference) }
+RSpec.describe SequentialFailure, type: :model do
+  it { should validate_presence_of(:length) }
+  it { should validate_presence_of(:reference) }
   subject { SequentialFailure.confirm_by_pin.new }
-  it { is_expected.to validate_uniqueness_of(:reference).scoped_to(:kind) }
+
+  it "validates uniqueness of reference scoped to kind" do
+    # Have to create a record in the db so make this test pass with `scoped_to`
+    # https://github.com/thoughtbot/shoulda-matchers/issues/336
+    SequentialFailure.confirm_by_pin.create!(reference: 'blah', length: 3)
+    should validate_uniqueness_of(:reference).scoped_to(:kind)
+  end
 
   it "resets" do
     sf = SequentialFailure.confirm_by_pin.create!(reference: 'blah', length: 3)

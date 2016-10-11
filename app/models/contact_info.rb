@@ -1,6 +1,4 @@
 class ContactInfo < ActiveRecord::Base
-  VALID_TYPES = ['EmailAddress']
-
   belongs_to :user, inverse_of: :contact_infos
 
   has_many :application_users, foreign_key: :default_contact_info_id
@@ -11,18 +9,18 @@ class ContactInfo < ActiveRecord::Base
   before_validation :strip
 
   validates :user, presence: true
-  validates :type, presence: true, inclusion: { in: VALID_TYPES }
+  validates :type, presence: true
   validates :value,
             presence: true,
             uniqueness: {scope: [:user_id, :type]}
 
-  scope :email_addresses, where(type: 'EmailAddress')
+  scope :email_addresses, -> { where(type: 'EmailAddress') }
   sifter :email_addresses do type.eq 'EmailAddress' end
 
-  scope :verified, where(verified: true)
+  scope :verified, -> { where(verified: true) }
   sifter :verified do verified.eq true end
 
-  scope :with_users, lambda { includes(:user) }
+  scope :with_users, lambda { joins(:user) }
 
   before_save :add_unread_update
 

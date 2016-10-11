@@ -68,7 +68,7 @@ feature 'User updates password', js: true do
         find('.editable-submit').click
       }
       expect(page).to have_no_missing_translations
-      expect(page).to have_content("doesn't match confirmation and can't be blank")
+      expect(page).to have_content("doesn't match Password and can't be blank")
       expect(page).not_to have_content(t :"controllers.identities.password_changed")
 
       within(:css, '[data-provider=identity]') {
@@ -77,7 +77,7 @@ feature 'User updates password', js: true do
         find('.editable-submit').click
       }
       expect(page).to have_no_missing_translations
-      expect(page).to have_content("doesn't match confirmation")
+      expect(page).to have_content("doesn't match Password")
       expect(page).not_to have_content(t :"controllers.identities.password_changed")
     end
 

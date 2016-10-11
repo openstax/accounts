@@ -14,6 +14,8 @@ require 'mail'
 
 require 'shoulda/matchers'
 
+ActiveRecord::Migration.check_pending!
+
 Mail.defaults { delivery_method :test }
 
 Capybara.javascript_driver = :poltergeist
@@ -187,4 +189,11 @@ end
 # Fail on missing translation in a spec.
 I18n.exception_handler = lambda do |exception, locale, key, options|
   raise "Missing translation for #{key} in locale #{locale} with options #{options}"
+end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
 end

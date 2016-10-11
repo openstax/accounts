@@ -1,9 +1,6 @@
 # Copied from https://github.com/rails/rails/blob/e3ceb28e66ca6e869f8f9778dc42672f48001a90/activerecord/lib/active_record/enum.rb
 # until we upgrade to Rails 4.1+
 
-# Changed from `/object/` to `/hash/`
-require 'active_support/core_ext/hash/deep_dup'
-
 module ActiveRecord
   # Declare an enum attribute where the values map to integers in the database,
   # but can be queried by name. Example:

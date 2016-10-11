@@ -17,7 +17,7 @@ Accounts::Application.routes.draw do
     get 'failure', path: 'auth/failure'
 
     get 'help', path: '/signin/help', as: :signin_help
-    post 'help', path: '/signin/help', as: :signin_help
+    post 'help', path: '/signin/help'
 
     # Maintain these deprecated routes for a while until client code learns to
     # use /signin and /signout
@@ -156,6 +156,6 @@ Accounts::Application.routes.draw do
   end
 
   # Any other routes are handled here
-  match '*path', to: 'application#routing_error'
+  match '*path', to: 'application#routing_error', via: [:get, :post, :put, :patch, :delete]
 
 end

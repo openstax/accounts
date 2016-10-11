@@ -7,7 +7,7 @@ class ConfirmByPin
 
   def self.sequential_failure_for(contact_info)
     SequentialFailure.confirm_by_pin
-                     .find_or_initialize_by_reference(contact_info.value).tap do |sf|
+                     .find_or_initialize_by(reference: contact_info.value).tap do |sf|
       sf.num_failures_allowed = MAX_PIN_FAILURES
     end
   end
