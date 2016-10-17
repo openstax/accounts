@@ -132,7 +132,7 @@ module Admin
             type_strings = to_string_array(types)
             sanitized_event_types = Admin::SearchSecurityLog.sanitize_event_types(type_strings)
 
-            @items = @items.where(event_type: sanitized_event_types)
+            @items = @items.where(event_type: sanitized_event_types.flatten)
           end
         end
 

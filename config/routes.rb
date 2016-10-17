@@ -1,4 +1,4 @@
-Accounts::Application.routes.draw do
+Rails.application.routes.draw do
   mount OpenStax::Api::Engine, at: '/'
 
   # More often used routes should appear first

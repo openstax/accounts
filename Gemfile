@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'bcrypt', '~> 3.1.7'
+gem 'rails', '4.1.16'
 
-gem 'rails', '4.0.13'
+gem 'bcrypt', '~> 3.1.7'
 
 gem 'doorkeeper', '2.2.2'
 
@@ -29,13 +29,13 @@ gem 'smarter_csv'
 gem 'apipie-rails', '~> 0.1.2'
 gem 'maruku'
 
-gem 'jbuilder', '~> 1.2'
+gem 'jbuilder', '~> 2.0'
 
 gem 'delayed_job_active_record'
 
 gem 'representable', '~> 3.0.0'
 
-gem "keyword_search", '~> 1.5.0'
+gem 'keyword_search', '~> 1.5.0'
 
 gem 'fine_print', '~> 3.1.0'
 
@@ -55,10 +55,10 @@ gem 'test-unit' # because rspec told me so
 gem 'coffee-rails', '~> 4.0.0'
 gem 'therubyracer', platforms: :ruby
 gem 'uglifier', '>= 1.0.3'
-gem 'sass-rails', '~> 4.0.2'
+gem 'sass-rails', '~> 4.0.3'
 gem 'bootstrap-sass', '~> 3.1.1'
 gem 'compass-rails'
-gem "font-awesome-rails"
+gem 'font-awesome-rails'
 
 gem 'premailer-rails'
 
@@ -80,6 +80,11 @@ group :development, :test do
   gem 'poltergeist'
   gem 'timecop'
   gem 'coveralls', require: false
+end
+
+group :development do
+  # Speedup and run specs when files change
+  gem 'spring'
 end
 
 group :test do

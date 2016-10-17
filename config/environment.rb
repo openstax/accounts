@@ -1,7 +1,6 @@
 # Load the Rails application
 require File.expand_path('../application', __FILE__)
 
-require 'active_record_enum'
 require 'locale_selector'
 require 'markdown_wrapper'
 require 'settings'
@@ -16,4 +15,4 @@ TEAM_NAME = 'OpenStax' # used when talking about our team
 COPYRIGHT_HOLDER = 'Rice University'
 
 # Initialize the Rails application
-Accounts::Application.initialize!
+Rails.application.initialize!

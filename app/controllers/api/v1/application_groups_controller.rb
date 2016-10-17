@@ -60,7 +60,7 @@ class Api::V1::ApplicationGroupsController < Api::V1::ApiController
   def updated
     OSU::AccessPolicy.require_action_allowed!(:updated, current_api_user, ApplicationGroup)
     errors = MarkApplicationGroupUpdatesAsRead.call(current_application,
-               ActiveSupport::JSON.decode(request.body)).errors
+               ActiveSupport::JSON.decode(request.body.string)).errors
     head (errors.any? ? :internal_server_error : :no_content)
   end
 
