@@ -113,6 +113,8 @@ gem 'redis-rails'
 
 gem 'awesome_print'
 
+gem 'whenever', require: false
+
 gem 'protected_attributes'
 
 # Fast JSON parsing

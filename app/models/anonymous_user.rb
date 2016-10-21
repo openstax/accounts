@@ -80,4 +80,20 @@ class AnonymousUser
     full_name
   end
 
+  User.faculty_statuses.each do |status, value|
+    define_method "#{status}?" do
+      User::DEFAULT_FACULTY_STATUS.to_s == status
+    end
+
+    define_method "#{status}!" do
+    end
+  end
+
+  def faculty_status
+    User::DEFAULT_FACULTY_STATUS.to_s
+  end
+
+  def faculty_status=(status)
+  end
+
 end

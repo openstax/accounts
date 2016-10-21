@@ -71,7 +71,7 @@ class UpdateUserSalesforceInfo
   def cache_contact_data_in_user(contact, user)
     if contact.nil?
       user.salesforce_contact_id = nil
-      user.faculty_status = :no_faculty_info
+      user.faculty_status = User::DEFAULT_FACULTY_STATUS
     else
       user.salesforce_contact_id = contact.id
 

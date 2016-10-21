@@ -419,6 +419,8 @@ GEM
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
+    whenever (0.9.7)
+      chronic (>= 0.6.3)
     will_paginate (3.1.3)
     xml-simple (1.1.5)
     xpath (2.0.0)
@@ -489,6 +491,7 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   unicorn
   unicorn-worker-killer
+  whenever
   web-console (~> 2.0)
   will_paginate
 
