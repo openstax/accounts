@@ -155,7 +155,8 @@ describe Api::V1::ApplicationGroupsController, type: :controller, api: true, ver
           is_public: false,
           owners: [
             {group_id: group_2.id,
-             user: {id: user_1.id, username: user_1.username, uuid: user_1.uuid}}
+             user: {id: user_1.id, username: user_1.username, uuid: user_1.uuid,
+                    faculty_status: user_1.faculty_status}}
           ],
           members: [],
           nestings: [],

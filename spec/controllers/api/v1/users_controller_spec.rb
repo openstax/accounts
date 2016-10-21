@@ -59,7 +59,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
             first_name: user_2.first_name,
             last_name: user_2.last_name,
             full_name: user_2.full_name,
-            uuid: user_2.uuid
+            uuid: user_2.uuid,
+            faculty_status: user_2.faculty_status
           }
         ]
       }.to_json
@@ -104,6 +105,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         id: user_1.id,
         username: user_1.username,
         uuid: user_1.uuid,
+        faculty_status: user_1.faculty_status,
         contact_infos: []
       }.to_json
 
@@ -122,6 +124,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         id: user_1.id,
         username: user_1.username,
         uuid: user_1.uuid,
+        faculty_status: user_1.faculty_status,
         contact_infos: []
       }.to_json
 
@@ -137,6 +140,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         first_name: user_2.first_name,
         last_name: user_2.last_name,
         full_name: user_2.full_name
+        faculty_status: user_1.faculty_status,
       )
     end
 
