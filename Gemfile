@@ -111,8 +111,8 @@ gem 'active_force', github: 'openstax/active_force', ref: '9695896f5'
 
 gem 'redis-rails'
 
-# Protect attributes from mass-assignment in Active Record models
-# Bringing back the feature from Rails 3
+gem 'awesome_print'
+
 gem 'protected_attributes'
 
 # Fast JSON parsing
