@@ -171,6 +171,7 @@ group :test do
   # CodeClimate integration
   gem "codeclimate-test-reporter", require: false
   gem 'fakeredis'
+  gem 'db-query-matchers'
   # Headless Capybara webkit driver
   gem 'capybara-webkit'
 

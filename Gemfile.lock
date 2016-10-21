@@ -111,6 +111,7 @@ GEM
       addressable
     daemons (1.2.4)
     database_cleaner (1.5.3)
+    db-query-matchers (0.6.0)
     debug_inspector (0.0.2)
     declarative (0.0.8)
       uber (>= 0.0.15)
@@ -443,6 +444,7 @@ DEPENDENCIES
   coveralls
   daemons
   database_cleaner
+  db-query-matchers
   delayed_job_active_record
   doorkeeper (= 2.2.2)
   dotenv-rails

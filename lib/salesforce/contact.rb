@@ -8,5 +8,7 @@ module Salesforce
     field :last_modified_at,        from: "LastModifiedDate"
 
     self.table_name = 'Contact'
+
+
   end
 end
