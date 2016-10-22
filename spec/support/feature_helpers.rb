@@ -93,12 +93,12 @@ def sign_in_help_email_sent?(user)
   unless user.identity.nil?
     code = user.identity.password_reset_code.code
     @reset_link = "/reset_password?code=#{code}"
-    expect(mail.body.encoded).to include("http://nohost#{@reset_link}")
+    expect(mail.body.encoded).to include("http://localhost:2999#{@reset_link}")
   end
   social_auths = user.authentications.reject { |a| a.provider == 'identity' }
   social_auths.each do |social_auth|
     expect(mail.body.encoded).to include("Sign in with #{social_auth.display_name}")
-    expect(mail.body.encoded).to include("http://nohost/auth/#{social_auth.provider}")
+    expect(mail.body.encoded).to include("http://localhost:2999/auth/#{social_auth.provider}")
   end
 end
 

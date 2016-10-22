@@ -13,7 +13,7 @@ RSpec.describe SignupController, type: :controller do
         first_name: 'Little',
         last_name: 'Sheep',
         email_address: 'sheep@example.org',
-        contract_1_id: FinePrint::Contract.first.id,
+        contract_1_id: FinePrint::Contract.first.id, # rspec spec --seed 39569 fails here
         contract_2_id: FinePrint::Contract.last.id }
     }
   end

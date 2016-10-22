@@ -1,27 +1,56 @@
+require 'simplecov'
 require 'coveralls'
-Coveralls.wear!('rails')
+require 'parallel_tests'
 
-require "codeclimate-test-reporter"
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+]) if ParallelTests.first_process?
+
+SimpleCov.at_exit do
+  ParallelTests.wait_for_other_processes_to_finish if ParallelTests.first_process?
+  SimpleCov.result.format!
+end
+
+SimpleCov.start 'rails'
+
+require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.start
 
-# This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["RAILS_ENV"] ||= 'test'
+ENV['RAILS_ENV'] ||= 'test'
+
 require 'spec_helper'
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
-require 'capybara/poltergeist'
-require 'capybara/email/rspec'
-require 'mail'
+
+# Add additional requires below this line. Rails is not loaded until this point!
 
 require 'shoulda/matchers'
 
-Mail.defaults { delivery_method :test }
+require 'capybara'
 
-Capybara.javascript_driver = :poltergeist
+Capybara.javascript_driver = :webkit
 
-# Requires supporting ruby files with custom matchers and macros, etc,
-# in spec/support/ and its subdirectories.
-Dir[Rails.root.join("spec/support/**/*.rb")].each{ |f| require f }
+require 'capybara/email/rspec'
+
+# Requires supporting ruby files with custom matchers and macros, etc, in
+# spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
+# run as spec files by default. This means that files in spec/support that end
+# in _spec.rb will both be required and run as specs, causing the specs to be
+# run twice. It is recommended that you do not name files matching this glob to
+# end with _spec.rb. You can configure this pattern with the --pattern
+# option on the command line or in ~/.rspec, .rspec or `.rspec-local`.
+#
+# The following line is provided for convenience purposes. It has the downside
+# of increasing the boot-up time by auto-requiring all files in the support
+# directory. Alternatively, in the individual `*_spec.rb` files, manually
+# require only the support files necessary.
+#
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+
+# Checks for pending migrations before tests are run.
+# If you are not using ActiveRecord, you can remove this line.
+ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
   # ## Mock Framework
@@ -91,22 +120,18 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
-  # Ideally we want nested transactions for before(:all)/after(:all)
-  # and before(:each)/after(:each), but this is only possible in Rails >= 4.0
-  # So for now we use truncation in after(:all)
   config.append_after(:all) do
     DatabaseCleaner.clean
   end
 
   # Some tests might change I18n.locale.
-  config.after(:each) do |config|
+  config.before(:each) do |config|
     I18n.locale = :en
   end
 
-  # For Capybara's poltergist tests ensure that request's locale is always
-  # set to English.
+  # For Capybara's poltergist tests ensure that request's locale is always set to English.
   config.before(type: :feature, js: true) do |config|
-    page.driver.add_header('Accept-Language', 'en')
+    page.driver.header 'Accept-Language', 'en'
   end
 end
 

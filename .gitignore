@@ -19,9 +19,7 @@
 # Ignore OS X's Desktop Service Store files
 *.DS_Store
 
-config/developer_settings.yml
-config/secret_settings.yml
-config/deploy_settings.yml
+config/secrets.yml
 
 # Ignore editor temp files
 *~

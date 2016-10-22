@@ -1,21 +1,14 @@
 require 'rails_helper'
 require 'rake'
 
-describe 'accounts:create_admin rake task' do
-  before :all do
-    Rake::Task['accounts:create_admin'] rescue Accounts::Application.load_tasks
-  end
+describe 'accounts:create_admin' do
+  include_context "rake"
 
-  before :each do
-    Rake::Task['accounts:create_admin'].reenable
-    # create the first user so User#make_first_user_an_admin doesn't interfere
-    # with the tests
-    FactoryGirl.create :user
-  end
+  before(:all) { FactoryGirl.create :user }
 
   it 'creates an admin user' do
     expect {
-      Rake::Task['accounts:create_admin'].invoke('admin', 'password')
+      subject.invoke('admin', 'password')
     }.to change { User.count }.by(1)
     user = User.order(:id).last
     expect(user.username).to eq('admin')
@@ -27,7 +20,7 @@ describe 'accounts:create_admin rake task' do
   it 'makes an existing user an admin user' do
     user = FactoryGirl.create :user
     expect {
-      Rake::Task['accounts:create_admin'].invoke(user.username, 'passw0rd')
+      subject.invoke(user.username, 'passw0rd')
     }.to_not change { User.count }
     user.reload
     expect(user.is_administrator).to be true

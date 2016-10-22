@@ -29,6 +29,8 @@ RSpec.configure do |config|
     # ...rather than:
     #     # => "be bigger than 2"
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+
+    expectations.syntax = :expect
   end
 
   # rspec-mocks config goes here. You can use an alternate test double
@@ -45,21 +47,6 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = :random
-
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
-  end
-
-  config.mock_with :rspec do |mocks|
-    # In RSpec 3, `any_instance` implementation blocks will be yielded the receiving
-    # instance as the first block argument to allow the implementation block to use
-    # the state of the receiver.
-    # In RSpec 2.99, to maintain compatibility with RSpec 3 you need to either set
-    # this config option to `false` OR set this to `true` and update your
-    # `any_instance` implementation blocks to account for the first block argument
-    # being the receiving instance.
-    mocks.yield_receiver_to_any_instance_implementation_blocks = true
-  end
 
   config.example_status_persistence_file_path = ".rspec_last_failures"
 
@@ -114,21 +101,22 @@ RSpec.configure do |config|
 =end
 end
 
-# For rspec < 3.0 which doesn't have the output matcher
-# See http://stackoverflow.com/questions/16507067/testing-stdout-output-in-rspec
-
+# http://stackoverflow.com/questions/16507067/testing-stdout-output-in-rspec
 require 'stringio'
 
 def capture_output(&blk)
   old_stdout = $stdout
   old_stderr = $stderr
-  $stdout = fake_stdout = StringIO.new
-  $stderr = fake_stderr = StringIO.new
+
   begin
+    $stdout = StringIO.new
+    $stderr = StringIO.new
+
     blk.call
+
+    [$stdout.string, $stderr.string]
   ensure
     $stdout = old_stdout
     $stderr = old_stderr
   end
-  [fake_stdout.string, fake_stderr.string]
 end

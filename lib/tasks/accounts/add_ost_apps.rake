@@ -72,7 +72,7 @@ namespace :accounts do
     # This task gets information about all the authorized oauth
     # applications.  For each application found, it returns the
     # application id and secret as a JSON object list.
-    task :get_app_info => :environment do
+    task get_app_info: :environment do
 
       apps = Doorkeeper::Application.where(:name => app_data.map { |app| app[:name] })
       apps = apps.map { |app|  {:name => app.name,

@@ -3,7 +3,6 @@ require File.expand_path('../application', __FILE__)
 
 require 'locale_selector'
 require 'markdown_wrapper'
-require 'settings'
 require 'sign_in_state'
 require 'contracts_not_required'
 require 'require_recent_signin'

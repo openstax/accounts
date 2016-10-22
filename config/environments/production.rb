@@ -1,3 +1,5 @@
+secrets = Rails.application.secrets
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -61,7 +63,9 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.delivery_method = :ses
-  config.action_mailer.default_url_options = { :protocol => 'https', :host => DEPLOY_SETTINGS[:host] }
+  config.action_mailer.default_url_options = { protocol: 'https',
+                                               host: secrets[:host],
+                                               port: secrets[:port] }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found)
@@ -90,6 +94,4 @@ Rails.application.configure do
     { "params" => params }
   end
   config.lograge.ignore_actions = ["static_pages#status"]
-
-
 end

@@ -1,5 +1,5 @@
 desc "Find possible duplicate acccounts"
-task :find_duplicate_accounts => [:environment] do
+task find_duplicate_accounts: [:environment] do
   CSV.open("duplicate_users_by_name.csv", 'w+') do |csv|
     csv << ['User First Name',
             'User Last Name',

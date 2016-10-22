@@ -1,10 +1,9 @@
 namespace :accounts do
   namespace :oauth_apps do
-
     create_or_update_description = 'Create or update an oauth application in accounts, arguments USERNAME (application owner username), APP_NAME, REDIRECT_URI (separated by commas for multiple uris), EMAIL_FROM_ADDRESS, EMAIL_SUBJECT_PREFIX, TRUSTED (default true)'
 
     desc create_or_update_description
-    task :create => [:environment] do
+    task create_or_update: [:environment] do
       user = User.find_by_username(ENV['USERNAME'])
       name = ENV['APP_NAME']
       # one redirect uri per line
@@ -32,23 +31,11 @@ namespace :accounts do
       end
     end
 
-    # the update task is an alias of the create task
+    # The create and update tasks are aliases or create_or_update
     desc create_or_update_description
-    task update: :create
+    task create: :create
 
-    desc 'List tokens and secrets for all the oauth applications in accounts, optional argument APP_NAME'
-    task :list => [:environment] do
-      app_name = "#{ENV['APP_NAME']}".downcase
-      if app_name.present?
-        apps = Doorkeeper::Application.where { lower(name) == app_name }
-      else
-        apps = Doorkeeper::Application
-      end
-      apps = apps.order(:name)
-      apps.each do |application|
-        puts "#{application.name}: #{application.uid} #{application.secret}"
-      end
-      puts 'No applications found.' if apps.empty?
-    end
+    desc create_or_update_description
+    task update: :create_or_update
   end
 end

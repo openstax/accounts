@@ -55,22 +55,27 @@ describe ArchiveTempUsers do
 
   it 'warns if temp users have applications' do
     user_with_app
-    _, err = capture_output { ArchiveTempUsers.run }
-    expect(err).to match(/are linked to an application/)
+    capture_output do
+      expect{ ArchiveTempUsers.run }.to output(/are linked to an application/).to_stderr
+    end
     expect(User.exists?(user_with_app.id)).to be true
   end
 
   it 'warns if temp users have messages' do
     user_with_messages
-    _, err = capture_output { ArchiveTempUsers.run }
-    expect(err).to match(/have received messages.*\n.*have sent messages/)
+    capture_output do
+      expect{ ArchiveTempUsers.run }.to(
+        output(/have received messages.*\n.*have sent messages/).to_stderr
+      )
+    end
     expect(user_with_messages.reload.email_addresses).to_not be_empty
   end
 
   it 'warns if temp users have groups' do
     user_with_groups
-    _, err = capture_output { ArchiveTempUsers.run }
-    expect(err).to match(/are group owners.*\n.*are group members/)
+    capture_output do
+      expect{ ArchiveTempUsers.run }.to output(/are group owners.*\n.*are group members/).to_stderr
+    end
     expect(User.exists?(user_with_groups.id)).to be true
   end
 
@@ -79,8 +84,9 @@ describe ArchiveTempUsers do
 
     filename = "archived_temp_users.#{@timestamp}.json"
 
-    out, err = capture_output { ArchiveTempUsers.run }
-    expect(out).to match(/Output in #{filename}\n/)
+    capture_output do
+      expect{ ArchiveTempUsers.run }.to output(/Output in #{filename}\n/).to_stdout
+    end
 
     output_text = File.read(filename)
     result = JSON.parse(output_text)

@@ -30,7 +30,7 @@ Rails.application.configure do
   # The :test delivery method accumulates sent emails in the
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
-  config.action_mailer.default_url_options = { :host => 'nohost' }
+  config.action_mailer.default_url_options = DEV_URL_OPTIONS
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
@@ -40,5 +40,3 @@ Rails.application.configure do
 
   config.active_support.test_order = :random
 end
-
-Rails.application.routes.default_url_options[:host] = DEV_HOST

@@ -2,7 +2,7 @@ require 'import_users'
 
 namespace :accounts do
   desc 'Import users from csv file, CSV_FILE=csv_filename, APP_NAME=app_name, output is in import_users_results.{timestamp}.csv'
-  task :import_users => [:environment] do
+  task import_users: [:environment] do
     apps = {}
     Doorkeeper::Application.find_each do |app|
       apps[app.name] = { id: app.id, callback: app.redirect_uri }

@@ -2,13 +2,15 @@ require 'rails_helper'
 
 feature 'Login inside an iframe', js: true do
 
+  let(:valid_iframe_origins) { Rails.application.secrets[:valid_iframe_origins] }
+
   scenario 'a user signs in' do
     create_application
     user = create_user 'user'
-    origin = SECRET_SETTINGS[:valid_iframe_origins].last
+    origin = valid_iframe_origins.last
     visit "/remote/iframe?parent=#{origin}"
     loaded = page.evaluate_script("OxAccount.Host.setUrl('/signin')")
-    within_frame 'content' do
+    page.driver.within_frame 'content' do
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"sessions.new.sign_in_with_facebook")
       fill_in (t :"sessions.new.username_or_email"), with: 'user'
