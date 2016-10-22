@@ -13,14 +13,13 @@ module Admin
 
     def destroy_user
       SalesforceUser.destroy_all
+      ActiveForce.clear_sfdc_client! # since user is now gone, any client invalid
       redirect_to admin_salesforce_path
     end
 
     def update_users
       UpdateUserSalesforceInfo.call
-
       flash[:notice] = "The update completed."
-
       redirect_to admin_salesforce_path
     end
 
