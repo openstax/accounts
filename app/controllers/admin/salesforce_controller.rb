@@ -16,5 +16,13 @@ module Admin
       redirect_to admin_salesforce_path
     end
 
+    def update_users
+      UpdateUserSalesforceInfo.call
+
+      flash[:notice] = "The update completed."
+
+      redirect_to admin_salesforce_path
+    end
+
   end
 end

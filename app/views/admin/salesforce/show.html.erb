@@ -22,3 +22,21 @@
 <%= link_to "Set Accounts's Salesforce User", "/auth/salesforce?redirect_uri=#{auth_salesforce_callback_url}", id: "sign_in", class: 'btn btn-primary' %>
 
 <%= link_to "Clear Salesforce User", destroy_user_admin_salesforce_path, class: 'btn btn-danger pull-right', method: :delete %>
+
+<hr/>
+
+<h3>Refresh Salesforce User Info</h3>
+
+<p>Use the button below to trigger a refresh the cache of information from Salesforce Contact records into Accounts User records.</p>
+
+<p>This operation...</p>
+<ol>
+  <li><b>takes a several minutes to complete</b>,</li>
+  <li>does not write anything to Salesforce, and</li>
+  <li>is called automatically <a href="https://github.com/openstax/accounts/blob/master/config/schedule.rb">the schedule shown here.</a></li>
+</ol>
+
+<%= form_tag(update_users_admin_salesforce_path, method: :put, style: 'margin: 30px 0') do %>
+  <%= submit_tag 'Refresh', class: 'btn btn-primary', disable_with: "Refreshing..." %>
+<% end %>
+

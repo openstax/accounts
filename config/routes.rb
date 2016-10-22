@@ -154,7 +154,10 @@ Rails.application.routes.draw do
          controller: :contact_infos, action: :verify
 
     resource :salesforce, only: [:show], controller: :salesforce do
-      delete :destroy_user, on: :collection
+      collection do
+        delete :destroy_user
+        put :update_users
+      end
     end
   end
 
