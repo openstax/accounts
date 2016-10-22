@@ -101,4 +101,8 @@ module ApplicationHelper
     end
   end
 
+  def is_real_production_site?
+    request.host == 'accounts.openstax.org'
+  end
+
 end

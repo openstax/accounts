@@ -1,4 +1,4 @@
-<h2> "Salesforce Integration" </h2>
+<% @page_header = "Salesforce Integration" %>
 
 <h3>API User Setup</h3>
 
@@ -19,6 +19,6 @@
 </p>
 </div>
 
-<%= link_to "Set Accounts's Salesforce User", "/auth/salesforce?redirect_uri=http://localhost:2999/auth/salesforce/callback", id: "sign_in", class: 'btn btn-primary' %>
+<%= link_to "Set Accounts's Salesforce User", "/auth/salesforce?redirect_uri=#{auth_salesforce_callback_url}", id: "sign_in", class: 'btn btn-primary' %>
 
 <%= link_to "Clear Salesforce User", destroy_user_admin_salesforce_path, class: 'btn btn-danger pull-right', method: :delete %>

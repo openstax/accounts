@@ -1,0 +1,13 @@
+@import "bootstrap";
+@import "common_colors";
+@import "admin_navbar";
+
+.underlined-spaced-row {
+  border-bottom: 1px solid gray;
+  padding-bottom: 20px;
+  margin-bottom: 20px
+}
+
+nav.navbar.production {
+  border-bottom: 2px solid red;
+}

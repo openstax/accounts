@@ -9,11 +9,12 @@
       <li class="active"><a href="#misc-tab" data-toggle="tab">Misc</a></li>
       <li><a href="#users-tab" data-toggle="tab">Users</a></li>
       <li><a href="#links-tab" data-toggle="tab">Links</a></li>
-      <li><a href="#salesforce-tab" data-toggle="tab">Salesforce</a></li>
       <% unless Rails.env.production? %>
         <li class="dev"><a href="#dev-tab" data-toggle="tab">Dev</a></li>
       <% end %>
+      <li><a href="admin/console">Full Console >></a></li>
     </ul>
+
   </div>
 
   <div class="modal-body">
@@ -31,10 +32,6 @@
 
       <div class="tab-pane" id="links-tab">
         <%= render 'links' %>
-      </div>
-
-      <div class="tab-pane" id="salesforce-tab">
-        <%= render 'salesforce' %>
       </div>
 
       <% unless Rails.env.production? %>

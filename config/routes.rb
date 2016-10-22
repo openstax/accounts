@@ -139,6 +139,7 @@ Rails.application.routes.draw do
 
   namespace 'admin' do
     get '/', to: 'base#index'
+    get '/console', to: 'console#index'
 
     put 'cron',                         to: 'base#cron'
     get 'raise_exception/:type',        to: 'base#raise_exception', as: 'raise_exception'
@@ -152,8 +153,8 @@ Rails.application.routes.draw do
     post :verify_contact_info, path: '/contact_infos/:id/verify',
          controller: :contact_infos, action: :verify
 
-    resource :salesforce, only: [], controller: :salesforce do
-      delete :destroy_user
+    resource :salesforce, only: [:show], controller: :salesforce do
+      delete :destroy_user, on: :collection
     end
   end
 
