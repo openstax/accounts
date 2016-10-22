@@ -5,7 +5,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
   let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
   let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }
   let!(:user_1)          { FactoryGirl.create :user, :terms_agreed }
-  let!(:user_2)          { FactoryGirl.create :user_with_emails, :terms_agreed, first_name: 'Bob', last_name: 'Michaels' }
+  let!(:user_2)          { FactoryGirl.create :user_with_emails, :terms_agreed, first_name: 'Bob',
+                                              last_name: 'Michaels', salesforce_contact_id: "somesfid" }
   let!(:unclaimed_user)  { FactoryGirl.create :user_with_emails, state:'unclaimed' }
   let!(:admin_user)      { FactoryGirl.create :user, :terms_agreed, :admin }
 
@@ -60,6 +61,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
             last_name: user_2.last_name,
             full_name: user_2.full_name,
             uuid: user_2.uuid,
+            salesforce_contact_id: user_2.salesforce_contact_id,
             faculty_status: user_2.faculty_status
           }
         ]
