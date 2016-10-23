@@ -60,9 +60,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
             first_name: user_2.first_name,
             last_name: user_2.last_name,
             full_name: user_2.full_name,
-            uuid: user_2.uuid,
-            salesforce_contact_id: user_2.salesforce_contact_id,
-            faculty_status: user_2.faculty_status
+            uuid: user_2.uuid
           }
         ]
       }.to_json
@@ -134,6 +132,9 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
     end
 
     it "should return a properly formatted JSON response for user with name" do
+      user_2.salesforce_contact_id = 'blah'
+      user_2.save
+
       api_get :show, user_2_token
 
       expect(response.body_as_hash).to include(
@@ -143,6 +144,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         last_name: user_2.last_name,
         full_name: user_2.full_name
         faculty_status: user_1.faculty_status,
+        salesforce_contact_id: 'blah',
       )
     end
 

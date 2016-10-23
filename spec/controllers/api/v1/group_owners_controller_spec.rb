@@ -332,8 +332,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
     {
       'id' => user.id,
       'username' => user.username,
-      'uuid' => user.uuid,
-      'faculty_status' => user.faculty_status
+      'uuid' => user.uuid
     }
   end
 
