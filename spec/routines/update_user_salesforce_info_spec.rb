@@ -22,6 +22,13 @@ describe UpdateUserSalesforceInfo do
       expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
     end
 
+    it 'caches it when the SF info exists on SF under an alt email' do
+      stub_contacts({id: 'foo', email: 'bobby@example.com', email_alt: "bob@example.com",
+                     faculty_verified: "Confirmed"})
+      described_class.call
+      expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
+    end
+
     it 'does not explode when the SF info does not exist on SF' do
       stub_contacts([])
       described_class.call
@@ -162,6 +169,15 @@ describe UpdateUserSalesforceInfo do
     expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 3)
   end
 
+  it 'logs an error when an email alt is a different contact\'s primary email' do
+    stub_contacts([
+      {id: "one", email: "bob@example.com", faculty_verified: "Confirmed"},
+      {id: "two", email: "bobby@example.com", email_alt: "bob@example.com", faculty_verified: "Confirmed"}
+    ])
+    expect_any_instance_of(described_class).to receive(:error!)
+    described_class.call
+  end
+
   def stub_contacts(contacts)
     contacts = [contacts].flatten.map do |contact|
       case contact
@@ -170,6 +186,7 @@ describe UpdateUserSalesforceInfo do
       when Hash
         Salesforce::Contact.new(id: contact[:id],
                                 email: contact[:email],
+                                email_alt: contact[:email_alt],
                                 faculty_verified: contact[:faculty_verified])
       end
     end

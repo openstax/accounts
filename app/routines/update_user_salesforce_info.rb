@@ -13,9 +13,26 @@ class UpdateUserSalesforceInfo
     contacts_by_email = {}
     contacts_by_id = {}
 
+    # Store a map of contacts by primary email
+
     contacts.each do |contact|
+      next if contact.email.nil?
       contacts_by_email[contact.email] = contact
       contacts_by_id[contact.id] = contact
+    end
+
+    # Add contacts by alt email if they don't already exist in the map; error if they do.
+
+    contacts.each do |contact|
+      next if contact.email_alt.nil?
+
+      if contacts_by_email[contact.email_alt].present?
+        error!(message: "#{contact.email_alt} is an alt email on contact #{contact.id} but a " \
+                        "primary email on contact #{contacts_by_email[contact.email_alt].id}")
+      else
+        contacts_by_email[contact.email_alt] = contact
+        contacts_by_id[contact.id] = contact
+      end
     end
 
     # Go through all users that have already have a Salesforce ID and make sure
@@ -115,7 +132,7 @@ class UpdateUserSalesforceInfo
       message: exception.message,
       first_backtrace_line: exception.backtrace.try(:first)
     } if exception.present?
-    error[:user] = user.try(:id)
+    error[:user] = user.id if user.present?
 
     @errors.push(error)
   end
