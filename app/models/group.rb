@@ -79,7 +79,7 @@ class Group < ActiveRecord::Base
     gids = [id] + (Group.joins(:member_group_nestings)
                         .where(member_group_nestings: {member_group_id: id})
                         .first.try(:supertree_group_ids) || [])
-    update_column(:cached_supertree_group_ids, gids.to_yaml)
+    update_column(:cached_supertree_group_ids, gids)
     self.cached_supertree_group_ids = gids
   end
 
@@ -91,7 +91,7 @@ class Group < ActiveRecord::Base
     gids = [id] + Group.joins(:container_group_nesting)
                        .where(container_group_nesting: {container_group_id: id})
                        .collect{|g| g.subtree_group_ids}.flatten
-    update_column(:cached_subtree_group_ids, gids.to_yaml)
+    update_column(:cached_subtree_group_ids, gids)
     self.cached_subtree_group_ids = gids
   end
 

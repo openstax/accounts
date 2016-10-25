@@ -16,7 +16,7 @@ class SendMessage
       bcc: msg.bcc_addresses,
       subject: msg.subject_string,
     )
-    fatal_error(code: :not_sent, message: 'Message could not be sent') unless mail.deliver
+    fatal_error(code: :not_sent, message: 'Message could not be sent') unless mail.deliver_now
   end
 
 end

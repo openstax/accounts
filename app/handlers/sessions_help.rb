@@ -33,7 +33,7 @@ class SessionsHelp
           reset_password_code: code,
           multiple_emails_per_user: email_addresses.count > 1,
           multiple_users: matching_users.count > 1
-        ).deliver
+        ).deliver_later
       end
     end
   end

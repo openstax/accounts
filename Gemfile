@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Rails framework
-gem 'rails', '4.1.16'
+gem 'rails', '4.2.7.1'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.1.1'
@@ -80,7 +80,10 @@ gem 'fine_print', '~> 3.1.0'
 gem 'action_interceptor', '~> 1.1.0'
 
 # Case-insensitive database indices for PostgreSQL
-gem 'schema_plus', '~> 1.7.1'
+# schema_plus_core and transaction_isolation monekeypatches conflict with each other,
+# but loading schema_plus_pg_indexes late seems to fix this
+# So we load it in an after_initialize block in config/application.rb
+gem 'schema_plus_pg_indexes', require: false
 
 # PostgreSQL database
 gem 'pg'

@@ -32,14 +32,13 @@ class SearchApplicationUsers
     options = options.merge(return_all: true)
     users = run(:search_users, query, options).outputs[:items]
 
+    app_id = application.id
     per_page = Integer(options[:per_page]) rescue 20
     page = Integer(options[:page]) rescue 0
 
-    users = users.preload(:application_users)
-                 .joins(:application_users)
-                 .where(:application_users => {
-                          :application_id => application.id})
-    users = users.limit(per_page).offset(per_page*page)
+    users = users.preload(:application_users).joins(:application_users).where do
+      application_users.application_id == app_id
+    end.limit(per_page).offset(per_page*page)
 
     outputs[:items] = users
   end
