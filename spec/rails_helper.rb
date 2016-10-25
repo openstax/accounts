@@ -175,7 +175,8 @@ RSpec::Matchers.define :have_api_error_status do |error_status|
   end
 
   failure_message do |actual|
-    "expected that response would have status '#{error_status}' but had #{actual.body_as_hash[:status]}"
+    "expected that response would have status '#{
+    error_status}' but had #{actual.body_as_hash[:status]}"
   end
 end
 

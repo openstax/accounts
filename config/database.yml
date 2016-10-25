@@ -12,11 +12,5 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: <%= ENV['OXA_TEST_DB'] || 'ox_accounts_test' %>
-
-production:
-  adapter: postgresql
-  database: accounts
-  username: accounts
-  password: openstaxaccounts
-  port: 5432
+  database: '<%= ENV['OXA_TEST_DB'] || 'ox_accounts_test' %><%=
+                 "_#{ENV['TEST_ENV_NUMBER']}" if !ENV['TEST_ENV_NUMBER'].blank? %>'
