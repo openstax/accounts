@@ -3,7 +3,7 @@ require 'openstax_rescue_from'
 secrets = Rails.application.secrets
 
 OpenStax::RescueFrom.configure do |config|
-  # Show the default Rails exception debugging page in dev
+  # Show the default Rails exception debugging page on dev
   config.raise_exceptions = Rails.env.development?
 
   config.app_name = 'Accounts'
