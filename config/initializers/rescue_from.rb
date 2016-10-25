@@ -3,6 +3,7 @@ require 'openstax_rescue_from'
 secrets = Rails.application.secrets
 
 OpenStax::RescueFrom.configure do |config|
+  # Show the default Rails exception debugging page in dev
   config.raise_exceptions = Rails.env.development?
 
   config.app_name = 'Accounts'
@@ -14,7 +15,7 @@ OpenStax::RescueFrom.configure do |config|
   # config.html_error_template_path = 'errors/any'
   # config.html_error_template_layout_name = 'application'
 
-  # config.email_prefix = "[#{app_name}] (#{app_env}) "
+  # config.email_prefix = "[#{config.app_name}] (#{config.app_env}) "
   config.sender_address = secrets[:exception]['sender']
   config.exception_recipients = secrets[:exception]['recipients']
 end

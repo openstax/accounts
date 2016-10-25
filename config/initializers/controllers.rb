@@ -1,15 +1,17 @@
 ActionController::Base.class_exec do
-  use_openstax_exception_rescue
 
-  layout 'application'
+  use_openstax_exception_rescue
 
   protect_from_forgery
 
+  layout 'application'
+
+  include OSU::OsuHelper
   include ApplicationHelper
   include SignInState
-  include OSU::OsuHelper
+  include LocaleSelector
 
-  helper ApplicationHelper, SignInState, OSU::OsuHelper
+  helper OSU::OsuHelper, ApplicationHelper, SignInState
 
   secrets = Rails.application.secrets
   protect_beta(username: secrets[:beta_username], password: secrets[:beta_password]) \
@@ -18,6 +20,7 @@ ActionController::Base.class_exec do
   before_filter :authenticate_user!
   before_filter :finish_sign_up
   before_filter :expired_password
+  before_filter :set_locale
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 

@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
+
   mount OpenStax::Api::Engine, at: '/'
 
   # More often used routes should appear first
-  root :to => 'static_pages#home'
+  root to: 'static_pages#home'
 
   scope controller: 'sessions' do
     get 'signin', action: :new
@@ -124,7 +125,7 @@ Rails.application.routes.draw do
       end
     end
 
-    if !Rails.env.production?
+    unless Rails.env.production?
       get 'raise_exception/:type', to: 'dev#raise_exception'
     end
   end
@@ -154,8 +155,5 @@ Rails.application.routes.draw do
       post 'generate', on: :collection
     end
   end
-
-  # Any other routes are handled here
-  match '*path', to: 'application#routing_error', via: [:get, :post, :put, :patch, :delete]
 
 end

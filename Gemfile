@@ -7,19 +7,19 @@ gem 'rails', '4.2.7.1'
 gem 'bootstrap-sass', '~> 3.1.1'
 
 # SCSS stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails', '~> 5.0'
 
 # Compass stylesheets
 gem 'compass-rails'
 
 # CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails', '~> 4.1.0'
 
 # JavaScript asset compiler
 gem 'therubyracer', platforms: :ruby
 
 # JavaScript asset compressor
-gem 'uglifier', '>= 1.0.3'
+gem 'uglifier', '>= 1.3.0'
 
 # Password hashing
 gem 'bcrypt', '~> 3.1.7'
@@ -140,6 +140,9 @@ group :development, :test do
 end
 
 group :development do
+  # Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'web-console', '~> 2.0'
+
   # Speedup and run specs when files change
   gem 'spring'
 end

@@ -3,22 +3,22 @@ require 'rails_helper'
 describe MergeUnclaimedUsers do
 
   context 'given an unclaimed account' do
-    let!(:unclaimed_user) { u = FactoryGirl.create :user, state: 'unclaimed'
+    let!(:unclaimed_user) do
+      u = FactoryGirl.create :user, state: 'unclaimed'
       AddEmailToUser.call('unclaimeduser@example.com', u)
       u
-    }
-    let!(:matching_user){ u = FactoryGirl.create(:user)
+    end
+    let!(:matching_user) do
+      u = FactoryGirl.create(:user)
       AddEmailToUser.call('unclaimeduser@example.com', u)
       u
-    }
+    end
 
     it "is claimed when email matches" do
-      expect{
+      expect do
         MergeUnclaimedUsers.call(matching_user.contact_infos.first)
-      }.to change(User,:count).by(-1)
-      expect{
-        unclaimed_user.reload
-      }.to raise_error(ActiveRecord::RecordNotFound)
+      end.to change(User,:count).by(-1)
+      expect{ unclaimed_user.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
 

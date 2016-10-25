@@ -22,12 +22,13 @@ describe SearchApplicationUsers do
 
   before(:each) do
     [user_1, user_2, user_3].each do |user|
-      FactoryGirl.create :application_user, application: application,
-                                            user: user
+      FactoryGirl.create :application_user, application: application, user: user
     end
     MarkContactInfoVerified.call(user_1.contact_infos.email_addresses.order(:value).first)
     MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.order(:value).first)
-    user_4.contact_infos.email_addresses.order(:value).first.update_attribute(:value, 'jstoly292929@hotmail.com')
+    user_4.contact_infos.email_addresses.order(:value).first.update_attribute(
+      :value, 'jstoly292929@hotmail.com'
+    )
     user_1.reload
   end
 
@@ -131,9 +132,15 @@ describe SearchApplicationUsers do
 
   context "sorting" do
 
-    let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
-    let!(:bob_jones) { FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
-    let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
+    let!(:bob_brown) do
+      FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
+    end
+    let!(:bob_jones) do
+      FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
+    end
+    let!(:tim_jones) do
+      FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
+    end
 
     before(:each) do
       [bob_brown, bob_jones, tim_jones].each do |user|
