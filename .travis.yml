@@ -1,12 +1,7 @@
 branches:
   only: master
 sudo: false
-env:
-  - DISPLAY=:99.0
-  - OXA_DB_USER=postgres
-  - OXA_DB_PASS=
-  - OXA_TEST_DB=travis_ci_test
-  - PARALLEL_TEST_PROCESSORS=2
+env: DISPLAY=:99.0 OXA_DB_USER=postgres OXA_TEST_DB=travis_ci_test PARALLEL_TEST_PROCESSORS=2
 language: ruby
 rvm: "2.2.3"
 cache: bundler

@@ -150,7 +150,7 @@ def with_omniauth_test_mode(options={})
     OmniAuth.config.test_mode = true
 
     if options[:identity_user].present?
-      identity_uid = options[:identity_user].id.to_s
+      identity_uid = options[:identity_user].identity.id.to_s
 
       OmniAuth.config.mock_auth[:identity] = OmniAuth::AuthHash.new({
         uid: identity_uid,

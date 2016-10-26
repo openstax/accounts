@@ -2,16 +2,16 @@ require 'rails_helper'
 
 feature 'Unknown route used' do
 
-  before(:all) do
+  background do
     # show_exceptions controls both the development and production error pages
     # So we temporarily enable it in the test environment for this feature spec
-    @old_show_exceptions = Rails.application.config.action_dispatch.show_exceptions
-
     # nil is the default value in production and actually turns this setting on
-    Rails.application.config.action_dispatch.show_exceptions = nil
-  end
+    original_call = ActionDispatch::ShowExceptions.instance_method(:call)
 
-  after(:all) { Rails.application.config.action_dispatch.show_exceptions = @old_show_exceptions }
+    allow_any_instance_of(ActionDispatch::ShowExceptions).to receive(:call) do |se, env|
+      original_call.bind(se).call env.merge('action_dispatch.show_exceptions' => nil)
+    end
+  end
 
   scenario 'when it is a JSON request' do
     visit '/lkajsdlkjdklfsjldkfjsl.json'

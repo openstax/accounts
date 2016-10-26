@@ -2,7 +2,14 @@ require "rails_helper"
 
 RSpec.describe SignupController, type: :controller do
 
-  before(:all) { load 'db/seeds.rb' }
+  # For whatever reason, before(:all) here is glitchy and sometimes deletes the contracts
+  # on rollback between examples, so we create them for each example instead
+  before(:each) do
+    load 'db/seeds.rb'
+
+    @contract_1 = FinePrint::Contract.first
+    @contract_2 = FinePrint::Contract.last
+  end
 
   let(:params) do
     {
@@ -13,12 +20,12 @@ RSpec.describe SignupController, type: :controller do
         first_name: 'Little',
         last_name: 'Sheep',
         email_address: 'sheep@example.org',
-        contract_1_id: FinePrint::Contract.first.id, # rspec spec --seed 39569 fails here
-        contract_2_id: FinePrint::Contract.last.id }
+        contract_1_id: @contract_1.id,
+        contract_2_id: @contract_2.id }
     }
   end
 
-  let(:user) { FactoryGirl.create :temp_user }
+  let(:user)            { FactoryGirl.create :temp_user }
   let!(:authentication) { FactoryGirl.create :authentication, user: user }
 
   context "POST social" do
