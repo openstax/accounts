@@ -5,12 +5,12 @@ class CreateAuthentications < ActiveRecord::Migration
       t.string :provider
       t.string :uid
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :authentications, 
               [:user_id, :provider], 
-              :name => 'index_authentications_on_user_id_scoped', 
-              :unique => true
+              name: 'index_authentications_on_user_id_scoped', 
+              unique: true
   end
 end

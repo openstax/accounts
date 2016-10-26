@@ -6,7 +6,7 @@ class CreateMessageBodies < ActiveRecord::Migration
       t.text :text, null: false, default: ''
       t.string :short_text, null: false, default: ''
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :message_bodies, :message_id, unique: true

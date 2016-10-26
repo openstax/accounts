@@ -5,7 +5,7 @@ class CreateApplicationGroups < ActiveRecord::Migration
       t.references :group, null: false
       t.integer :unread_updates, null: false, default: 1
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :application_groups, [:group_id, :application_id], unique: true

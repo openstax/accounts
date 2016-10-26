@@ -7,7 +7,7 @@ FactoryGirl.define do
     end
 
     association :application, factory: :doorkeeper_application
-    group { FactoryGirl.build(:group, :name => name,
+    group { FactoryGirl.build(:group, name: name,
                                       :is_public => is_public) }
     unread_updates 1
 

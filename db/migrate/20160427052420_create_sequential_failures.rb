@@ -5,7 +5,7 @@ class CreateSequentialFailures < ActiveRecord::Migration
       t.string :reference, null: false
       t.integer :length, default: 0
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :sequential_failures, [:kind, :reference], unique: true
