@@ -140,7 +140,7 @@ describe SessionsCreate, type: :handler do
     before(:each) do
       user_state.sign_in!(signed_in_user)
       SecurityLog.create! user: signed_in_user, remote_ip: '127.0.0.1',
-                          event_type: :sign_in_successful, event_data: {}.to_json
+                          event_type: :sign_in_successful, event_data: {}
     end
 
     context "as a temp user" do
@@ -417,7 +417,7 @@ describe SessionsCreate, type: :handler do
     before(:each) do
       user_state.sign_in!(signed_in_user)
       SecurityLog.create! user: signed_in_user, remote_ip: '127.0.0.1',
-                          event_type: :sign_in_successful, event_data: {}.to_json
+                          event_type: :sign_in_successful, event_data: {}
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER)
     end
 

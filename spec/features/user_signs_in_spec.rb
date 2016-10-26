@@ -213,7 +213,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       create_application
       user = create_user 'user'
-      create_email_address_for user, 'user@example.com', confirmation_code: 'unverified'
+      create_email_address_for user, 'user@example.com', 'unverified'
       visit_authorize_uri
       expect_sign_in_page
 

@@ -14,8 +14,8 @@ describe SignupSocial, type: :handler do
       first_name: 'Little',
       last_name: 'Sheep',
       email_address: '',
-      contract_1_id: FinePrint::Contract.first.id,
-      contract_2_id: FinePrint::Contract.last.id
+      contract_1_id: "1",
+      contract_2_id: "2"
     }
   } }
 

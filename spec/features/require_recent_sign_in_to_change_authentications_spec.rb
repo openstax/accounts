@@ -8,6 +8,7 @@ feature 'Require recent sign in to change authentications', js: true do
     visit '/signin'
     expect_sign_in_page
     signin_as 'user'
+    expect(page).to have_http_status :ok
     expect(page).to have_content('Welcome, user')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do

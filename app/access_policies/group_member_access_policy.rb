@@ -4,11 +4,11 @@ class GroupMemberAccessPolicy
   def self.action_allowed?(action, requestor, group_member)
     # Deny access to applications without human users
     return false if !requestor.is_human? || requestor.is_anonymous?
+    return true if action == :index
+
     group = group_member.group
 
     case action
-    when :index
-      true
     when :create
       group.has_owner?(requestor)
     when :destroy

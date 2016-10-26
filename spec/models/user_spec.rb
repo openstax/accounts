@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe User do
+describe User, type: :model do
 
-  it { is_expected.to have_many :security_logs }
+  it { should have_many :security_logs }
 
   it 'requires at least a first or last name if a title is set' do
     user = User.new(title: "Hi")

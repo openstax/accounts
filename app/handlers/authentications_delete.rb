@@ -5,7 +5,7 @@ class AuthenticationsDelete
   protected
 
   def setup
-    @auth = caller.authentications.find_by_provider(params[:provider])
+    @auth = caller.authentications.find_by(provider: params[:provider])
   end
 
   def authorized?

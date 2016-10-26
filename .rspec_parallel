@@ -1,0 +1,5 @@
+--order defined
+--require rspec/instafail
+--format RSpec::Instafail
+--format progress
+--format ParallelTests::RSpec::RuntimeLogger --out tmp/parallel_runtime_rspec.log

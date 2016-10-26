@@ -5,8 +5,6 @@ class StaticPagesController < ApplicationController
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:api, :copyright, :status]
 
-  skip_protect_beta only: [:status]
-
   layout 'application'
 
   def api

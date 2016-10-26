@@ -3,8 +3,7 @@ require 'rails_helper'
 feature 'User manages emails', js: true do
   before(:each) do
     user = create_user('user')
-    create_email_address_for(user, 'user@unverified.com',
-                             confirmation_code: SecureRandom.hex(32))
+    create_email_address_for(user, 'user@unverified.com', SecureRandom.hex(32))
     visit '/signin'
     signin_as 'user'
     expect(page).to have_no_missing_translations

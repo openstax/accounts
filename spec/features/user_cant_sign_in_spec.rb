@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-feature "User can't sign in", js: true do
+# If you use js: true you must sleep to wait for the emails to arrive
+feature "User can't sign in" do
   background do
     @user = create_user 'user1'
     @email = create_email_address_for @user, 'user@example.com'
@@ -19,7 +20,9 @@ feature "User can't sign in", js: true do
   scenario 'username not found' do
     fill_in (t :"sessions.help.username_or_email"), with: 'aaaaa'
     click_button (t :"sessions.help.submit")
-    expect(page.text).to include(t :"handlers.sessions_help.did_not_find_account_for_username_or_email")
+    expect(page.text).to(
+      include(t :"handlers.sessions_help.did_not_find_account_for_username_or_email")
+    )
   end
 
   scenario 'user is not a local user' do
@@ -78,7 +81,8 @@ feature "User can't sign in", js: true do
   end
 
   scenario 'user has google auth' do
-    user = FactoryGirl.create :user, username: 'user2', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
+    user = FactoryGirl.create :user, username: 'user2', first_name: 'John',
+                                     last_name: 'Doe', suffix: 'Jr.'
     FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
     email_1 = FactoryGirl.create :email_address, user: user
 
@@ -89,7 +93,10 @@ feature "User can't sign in", js: true do
   end
 
   scenario 'user has multiple email addresses' do
-    user = FactoryGirl.create :user, username: 'user2', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
+    clear_emails
+
+    user = FactoryGirl.create :user, username: 'user2', first_name: 'John',
+                                     last_name: 'Doe', suffix: 'Jr.'
     FactoryGirl.create :authentication, provider: 'identity', user: user
     FactoryGirl.create :identity, user: user
 
@@ -109,12 +116,14 @@ feature "User can't sign in", js: true do
   scenario 'submitted email addresses matches multiple users' do
     clear_emails
 
-    user_a = FactoryGirl.create :user, username: 'user_a', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
+    user_a = FactoryGirl.create :user, username: 'user2', first_name: 'John',
+                                       last_name: 'Doe', suffix: 'Jr.'
     FactoryGirl.create :authentication, provider: 'identity', user: user_a
     FactoryGirl.create :identity, user: user_a
     email_a = FactoryGirl.create :email_address, user: user_a
 
-    user_b = FactoryGirl.create :user, username: 'user_b', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
+    user_b = FactoryGirl.create :user, username: 'user_b', first_name: 'John',
+                                       last_name: 'Doe', suffix: 'Jr.'
     FactoryGirl.create :authentication, provider: 'identity', user: user_b
     FactoryGirl.create :identity, user: user_b
     FactoryGirl.create :email_address, user: user_b, value: email_a.value

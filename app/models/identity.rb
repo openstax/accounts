@@ -15,7 +15,6 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
   # omniauth-identity does not provide them by default
   # These attributes are (obviously) not saved in the database
   validates :password, presence: true, length: { minimum: 8, maximum: 50 }
-  validates :password_confirmation, presence: true
   validates :user, presence: true
   validates :user_id, uniqueness: true
 

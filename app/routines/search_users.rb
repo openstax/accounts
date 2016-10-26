@@ -37,7 +37,7 @@ class SearchUsers
 
   def exec(query, options={})
 
-    users = User.scoped
+    users = User.all
 
     KeywordSearch.search(query) do |with|
 
@@ -122,10 +122,6 @@ class SearchUsers
 
     end
 
-    # Select only distinct records
-
-    users = users.uniq
-
     # Ordering
 
     # Parse the input
@@ -154,6 +150,10 @@ class SearchUsers
       # clause is not in the select clause
       users = users.order("users.#{order_by}")
     end
+
+    # Select only distinct records
+
+    users = users.uniq
 
     if options[:return_all]
       outputs[:items] = users

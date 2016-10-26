@@ -14,7 +14,8 @@ class IdentitiesController < ApplicationController
     handle_with(IdentitiesUpdate,
                 success: lambda  do
                   security_log :password_updated
-                  render status: :accepted, text: (I18n.t :"controllers.identities.password_changed")
+                  render status: :accepted,
+                         text: (I18n.t :"controllers.identities.password_changed")
                 end,
                 failure: lambda do
                   render status: 422, text: @handler_result.errors.map(&:message).to_sentence
@@ -25,7 +26,9 @@ class IdentitiesController < ApplicationController
     if !current_user.is_anonymous?
       if current_user.identity.nil?
         security_log :password_reset_failed
-        flash[:alert] = I18n.t :"controllers.identities.cannot_reset_password_because_user_doesnt_have_one"
+        flash[:alert] = I18n.t(
+          :"controllers.identities.cannot_reset_password_because_user_doesnt_have_one"
+        )
         redirect_to profile_path
         return
       end

@@ -22,11 +22,6 @@ describe LocaleSelector do
 
   before :each do
     allow(I18n).to receive(:available_locales).and_return [:xx, :yy, :zz]
-    # Since we reset I18n.locale to :en after each test (see rails_helper.rb)
-    # all tests which expect(I18n).to receive(:locale=).with(:some_test_locale)
-    # would fail in the after block. To ensure that they don't we explicitly
-    # expect to receive :en once.
-    expect(I18n).to receive(:locale=).once.with(:en)
   end
 
   context 'with correct RFC 7231 Accept-Language' do

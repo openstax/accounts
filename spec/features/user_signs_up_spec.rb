@@ -61,7 +61,7 @@ feature 'User signs up as a local user', js: true do
     agree_and_click_create
 
     expect(page).to have_no_missing_translations
-    expect(page).to have_content("Alert: Password doesn't match confirmation")
+    expect(page).to have_content("Alert: Password confirmation doesn't match Password")
     expect(page).not_to have_content(t :"layouts.application_header.sign_out")
   end
 

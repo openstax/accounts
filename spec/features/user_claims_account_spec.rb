@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User claims an unclaimed account', js: true do
+feature 'User claims an unclaimed account' do
 
   background { load 'db/seeds.rb' }
 

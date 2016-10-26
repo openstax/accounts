@@ -41,7 +41,7 @@ module Admin
         Integer(event_type) \
           rescue SecurityLog.event_types.keys.select{ |key| key.include?(event_type_string) }
                                              .map{ |key| SecurityLog.event_types[key] }
-      end
+      end.flatten
     end
 
     # Attempt to transform string representations of times into time ranges

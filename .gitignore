@@ -4,43 +4,39 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile ~/.gitignore_global
 
-# Ignore bundler config
+# Ignore bundler config.
 /.bundle
 
-# Ignore the default SQLite database and yaml_db database files
-/db/*.sqlite3*
-/db/data.yml*
+# Ignore the default SQLite database.
+/db/*.sqlite3
+/db/*.sqlite3-journal
 
 # Ignore all logfiles and tempfiles.
-/log/*.log
-/tmp/**/*
+/log/*
+!/log/.keep
+/tmp
 
-# Ignore OS X's Desktop Service Store files
-*.DS_Store
+# Ignore the secrets file
+config/secrets.yml
 
-config/developer_settings.yml
-config/secret_settings.yml
-config/deploy_settings.yml
-
-# Ignore editor temp files
-*~
+# Ignore yaml_db database files
+/db/data.yml*
 
 # Ignore Cucumber and RSpec failure information
 cucumber_rerun.txt
 .rspec_last_failures
 
-Ignore Coveralls reports
+# Ignore byebug history files
+.byebug_history
+
+# Ignore Coveralls reports
 coverage/*
 
-.vagrant*
+# Ignore Brakeman security scan results
 brakeman.html
 
-notes
+# Ignore OS X's Desktop Service Store files
+*.DS_Store
 
-Berksfile.lock
-
-.vagrant_setup.json
-
-doc/apidoc*
-
-.byebug_history
+# Ignore unix editor temp files
+*~

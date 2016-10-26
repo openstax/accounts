@@ -63,7 +63,7 @@ feature 'User resets password', js: true do
     fill_in (t :"identities.reset_password.password"), with: 'password!'
     fill_in (t :"identities.reset_password.confirm_password"), with: 'password!!'
     click_button (t :"identities.reset_password.set_password")
-    expect(page).to have_content("Password doesn't match confirmation")
+    expect(page).to have_content("Password confirmation doesn't match Password")
   end
 
   scenario 'successful' do
@@ -106,11 +106,14 @@ feature 'User resets password', js: true do
     fill_in (t :"sessions.new.username_or_email"), with: 'user'
     fill_in (t :"sessions.new.password"), with: 'password'
     click_button (t :"sessions.new.sign_in")
+    expect_profile_page
     @user.identity.destroy
     visit '/reset_password'
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"users.edit.page_heading")
-    expect(page).to have_content(t :"controllers.identities.cannot_reset_password_because_user_doesnt_have_one")
+    expect_profile_page
+    expect(page).to(
+      have_content(t :"controllers.identities.cannot_reset_password_because_user_doesnt_have_one")
+    )
     expect_not_reset_password_page
   end
 

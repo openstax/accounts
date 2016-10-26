@@ -1,11 +1,9 @@
-<% content_for :application_body do %>
-  <h3 class='rescue-from'><%= @message %></h3>
+<h3 class='rescue-from'><%= @message %></h3>
 
-  <p class='rescue-form'>
-    <% if @error_id and @did_notify %>
-      <%= t :".appology_message_html", code: @code, contact_info: openstax_rescue_from_contact_info %>
-    <% else %>
-      <%= t :".appology_message_long_html", code: @code, contact_info: openstax_rescue_from_contact_info, error_id: @error_id %>
-    <% end %>
-  </p>
-<% end %>
+<p class='rescue-form'>
+  <% if @error_id and @did_notify %>
+    <%= t :".appology_message_html", code: @code, contact_info: openstax_rescue_from_contact_info %>
+  <% else %>
+    <%= t :".appology_message_long_html", code: @code, contact_info: openstax_rescue_from_contact_info, error_id: @error_id %>
+  <% end %>
+</p>

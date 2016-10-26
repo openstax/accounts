@@ -27,7 +27,7 @@ describe IdentitiesUpdate, type: :handler do
       id = result.outputs[:identity]
       errors = result.errors
       expect(id).not_to be_valid
-      expect(errors.has_offending_input?(:password)).to eq true
+      expect(errors.has_offending_input?(:password_confirmation)).to eq true
     end
   end
 

@@ -7,7 +7,7 @@ class SendMessage
   protected
 
   def exec(msg)
-    mail = ApiMailer.mail(
+    outputs[:mail] = ApiMailer.mail(
       msg.body.html,
       msg.body.text,
       from: msg.from_address,
@@ -15,8 +15,7 @@ class SendMessage
       cc: msg.cc_addresses,
       bcc: msg.bcc_addresses,
       subject: msg.subject_string,
-    )
-    fatal_error(code: :not_sent, message: 'Message could not be sent') unless mail.deliver
+    ).deliver_later
   end
 
 end

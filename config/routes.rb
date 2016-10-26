@@ -1,8 +1,9 @@
-Accounts::Application.routes.draw do
+Rails.application.routes.draw do
+
   mount OpenStax::Api::Engine, at: '/'
 
   # More often used routes should appear first
-  root :to => 'static_pages#home'
+  root to: 'static_pages#home'
 
   scope controller: 'sessions' do
     get 'signin', action: :new
@@ -17,7 +18,7 @@ Accounts::Application.routes.draw do
     get 'failure', path: 'auth/failure'
 
     get 'help', path: '/signin/help', as: :signin_help
-    post 'help', path: '/signin/help', as: :signin_help
+    post 'help', path: '/signin/help'
 
     # Maintain these deprecated routes for a while until client code learns to
     # use /signin and /signout
@@ -124,7 +125,7 @@ Accounts::Application.routes.draw do
       end
     end
 
-    if !Rails.env.production?
+    unless Rails.env.production?
       get 'raise_exception/:type', to: 'dev#raise_exception'
     end
   end
@@ -154,8 +155,5 @@ Accounts::Application.routes.draw do
       post 'generate', on: :collection
     end
   end
-
-  # Any other routes are handled here
-  match '*path', to: 'application#routing_error'
 
 end

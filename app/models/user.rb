@@ -69,11 +69,6 @@ class User < ActiveRecord::Base
     "#{base}#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
   end
 
-  # Remove this method definition when we upgrade to Rails 4
-  def self.none
-    where('0=1')
-  end
-
   def is_anonymous?
     false
   end

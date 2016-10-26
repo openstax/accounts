@@ -1,4 +1,4 @@
-VALID_IFRAME_ORIGINS = (SECRET_SETTINGS[:valid_iframe_origins] || []).map do |origin|
+VALID_IFRAME_ORIGINS = Rails.application.secrets[:valid_iframe_origins].map do |origin|
   Regexp.new("\\A#{origin}")
 end
 

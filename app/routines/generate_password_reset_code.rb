@@ -11,7 +11,7 @@ class GeneratePasswordResetCode
   protected
 
   def exec(identity, expiration_period = PasswordResetCode::DEFAULT_EXPIRATION_PERIOD)
-    identity.password_reset_code ||= identity.build_password_reset_code
+    identity.build_password_reset_code if identity.password_reset_code.nil?
     prc = identity.password_reset_code
     prc.generate(expiration_period)
     prc.save
