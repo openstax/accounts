@@ -1,5 +1,7 @@
 require 'singleton'
 
+class AnonymousUserIsImmutableError < StandardError; end
+
 class AnonymousUser
   include Singleton
 
@@ -86,6 +88,7 @@ class AnonymousUser
     end
 
     define_method "#{status}!" do
+      raise AnonymousUserIsImmutableError, "Cannot set faculty status on the AnonymousUser."
     end
   end
 
@@ -94,6 +97,7 @@ class AnonymousUser
   end
 
   def faculty_status=(status)
+    raise AnonymousUserIsImmutableError, "Cannot set faculty status on the AnonymousUser."
   end
 
 end

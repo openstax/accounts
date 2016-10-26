@@ -31,6 +31,7 @@ class UpdateUserSalesforceInfo
                         "primary email on contact #{contacts_by_email[contact.email_alt].id}")
       else
         contacts_by_email[contact.email_alt] = contact
+        # only necessary for old Contacts that may have an alt email but not a primary
         contacts_by_id[contact.id] = contact
       end
     end
@@ -38,9 +39,7 @@ class UpdateUserSalesforceInfo
     # Go through all users that have already have a Salesforce ID and make sure
     # their SF information is stil the same.
 
-    User.where("salesforce_contact_id IS NOT NULL")
-        .find_each do |user|
-
+    User.where{salesforce_contact_id != nil}.find_each do |user|
       begin
         contact = contacts_by_id[user.salesforce_contact_id]
         cache_contact_data_in_user(contact, user)
@@ -118,8 +117,6 @@ class UpdateUserSalesforceInfo
     # Here's one example query as a starting point:
     #   Salesforce::Contact.order("LastModifiedDate").where("LastModifiedDate >= #{1.day.ago.utc.iso8601}")
 
-    # TODO DEAL WITH EMAIL_ALT!! Not guaranteed to be unique unfortunately
-
     @contacts ||= Salesforce::Contact.select(:id, :email, :faculty_verified).to_a
   end
 
@@ -140,9 +137,9 @@ class UpdateUserSalesforceInfo
   def notify_errors
     return if @errors.empty?
     Rails.logger.warn("UpdateUserSalesforceInfo errors: " + @errors.inspect)
-    DevMailer.pp(object: @errors,
-                 subject: "UpdateUserSalesforceInfo errors",
-                 to: SECRET_SETTINGS[:mail_recipients][:salesforce]).deliver
+    DevMailer.inspect_object(object: @errors,
+                             subject: "UpdateUserSalesforceInfo errors",
+                             to: SECRET_SETTINGS[:mail_recipients][:salesforce]).deliver
   end
 
 end

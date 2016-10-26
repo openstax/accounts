@@ -6,8 +6,7 @@ module Admin
     end
 
     def callback
-      user = SalesforceUser.save_from_omniauth!(env["omniauth.auth"])
-      SalesforceUser.all.reject{|uu| uu.id == user.id}.each(&:destroy)
+      SalesforceUser.save_from_omniauth!(env["omniauth.auth"])
       redirect_to admin_salesforce_path
     end
 
