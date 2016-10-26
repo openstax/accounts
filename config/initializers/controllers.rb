@@ -13,10 +13,6 @@ ActionController::Base.class_exec do
 
   helper OSU::OsuHelper, ApplicationHelper, SignInState
 
-  secrets = Rails.application.secrets
-  protect_beta(username: secrets[:beta_username], password: secrets[:beta_password]) \
-    if Rails.application.secrets[:beta_protection]
-
   before_filter :authenticate_user!
   before_filter :finish_sign_up
   before_filter :expired_password

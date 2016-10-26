@@ -1,5 +1,5 @@
 if Rails.env.production?
-  secrets = Rails.application.secrets['aws']['ses']
+  secrets = Rails.application.secrets[:aws]['ses']
 
   ActionMailer::Base.add_delivery_method(
     :ses,
