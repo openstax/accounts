@@ -38,5 +38,8 @@ module Accounts
     # Use the ExceptionsController to rescue routing/bad request exceptions
     # https://coderwall.com/p/w3ghqq/rails-3-2-error-handling-with-exceptions_app
     config.exceptions_app = ->(env) { ExceptionsController.action(:rescue_from).call(env) }
+
+    # Use delayed_job for background jobs
+    config.active_job.queue_adapter = :delayed_job
   end
 end
