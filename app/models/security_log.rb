@@ -47,7 +47,9 @@ class SecurityLog < ActiveRecord::Base
     :authentication_transfer_failed
   ]
 
-  validates :remote_ip, :event_type, :event_data, presence: true
+  json_serialize :event_data, Hash
+
+  validates :remote_ip, :event_type, presence: true
 
   before_destroy { raise ActiveRecord::ReadOnlyRecord }
 

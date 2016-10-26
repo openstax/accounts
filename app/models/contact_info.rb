@@ -20,7 +20,7 @@ class ContactInfo < ActiveRecord::Base
   scope :verified, -> { where(verified: true) }
   sifter :verified do verified.eq true end
 
-  scope :with_users, lambda { joins(:user) }
+  scope :with_users, lambda { joins(:user).eager_load(:user) }
 
   before_save :add_unread_update
 

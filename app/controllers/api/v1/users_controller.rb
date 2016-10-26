@@ -82,7 +82,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
     options = params.slice(:order_by)
     outputs = SearchUsers.call(params[:q], options).outputs
-    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter, user_options: {render_contact_infos: false}, location: nil
+    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter, location: nil
   end
 
   ###############################################################

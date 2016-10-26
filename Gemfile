@@ -107,6 +107,12 @@ gem 'chronic'
 # Bringing back the feature from Rails 3
 gem 'protected_attributes'
 
+# Fast JSON parsing
+gem 'oj'
+
+# Replace JSON with Oj
+gem 'oj_mimic_json'
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails'

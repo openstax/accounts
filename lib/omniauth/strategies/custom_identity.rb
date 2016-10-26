@@ -79,7 +79,7 @@ module OmniAuth
           user: locate_conditions[:user],
           remote_ip: request.ip,
           event_type: :sign_in_failed,
-          event_data: { reason: reason.to_s }.to_s
+          event_data: { reason: reason.to_s }
         )
 
         fail!(reason.to_sym)

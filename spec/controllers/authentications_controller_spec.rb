@@ -11,7 +11,7 @@ describe AuthenticationsController, type: :controller do
       context 'with recent signin' do
         before do
           SecurityLog.create!(user: user, remote_ip: '127.0.0.1',
-                              event_type: :sign_in_successful, event_data: {}.to_json)
+                              event_type: :sign_in_successful, event_data: {})
         end
 
         it "does not delete the given authentication" do
@@ -40,7 +40,7 @@ describe AuthenticationsController, type: :controller do
       context 'with recent signin' do
         before do
           SecurityLog.create!(user: user, remote_ip: '127.0.0.1',
-                              event_type: :sign_in_successful, event_data: {}.to_json)
+                              event_type: :sign_in_successful, event_data: {})
         end
 
         it "deletes the given authentication" do

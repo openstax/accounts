@@ -23,7 +23,7 @@ describe IdentitiesController, type: :controller do
       context 'with recent signin' do
         before do
           SecurityLog.create!(user: user, remote_ip: '127.0.0.1',
-                              event_type: :sign_in_successful, event_data: {}.to_json)
+                              event_type: :sign_in_successful, event_data: {})
         end
 
         it "updates the user's password" do

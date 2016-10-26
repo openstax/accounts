@@ -8,7 +8,6 @@ RSpec.describe SecurityLog, type: :model do
 
   it { should validate_presence_of :remote_ip }
   it { should validate_presence_of :event_type }
-  it { should validate_presence_of :event_data }
 
   it 'cannot be updated' do
     expect{security_log.save}.to raise_error ActiveRecord::ReadOnlyRecord

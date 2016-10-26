@@ -41,7 +41,7 @@ ActionController::Base.class_exec do
       application: application,
       remote_ip: request.remote_ip,
       event_type: event_type,
-      event_data: event_data.to_json
+      event_data: event_data
     )
   end
 

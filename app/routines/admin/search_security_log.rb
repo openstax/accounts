@@ -41,7 +41,7 @@ module Admin
         Integer(event_type) \
           rescue SecurityLog.event_types.keys.select{ |key| key.include?(event_type_string) }
                                              .map{ |key| SecurityLog.event_types[key] }
-      end
+      end.flatten
     end
 
     # Attempt to transform string representations of times into time ranges
@@ -132,7 +132,7 @@ module Admin
             type_strings = to_string_array(types)
             sanitized_event_types = Admin::SearchSecurityLog.sanitize_event_types(type_strings)
 
-            @items = @items.where(event_type: sanitized_event_types.flatten)
+            @items = @items.where(event_type: sanitized_event_types)
           end
         end
 

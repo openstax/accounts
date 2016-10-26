@@ -9,29 +9,60 @@ RSpec.describe "find_duplicate_accounts" do
   end
 
   context "when it finds users with the same name (first name AND last name)" do
-    let!(:user_1)    {FactoryGirl.create :user, first_name: "Robert", last_name: "Martin", username: "RubyMaster"}
-    let!(:same_name) {FactoryGirl.create :user, first_name: "robert", last_name: "martin", username: "RailsMaster"}
+    let!(:user_1)          do
+      FactoryGirl.create :user, first_name: "Robert", last_name: "Martin", username: "RubyMaster"
+    end
+    let!(:same_name)       do
+      FactoryGirl.create :user, first_name: "robert", last_name: "martin", username: "RailsMaster"
+    end
 
-    let!(:same_first_name) {FactoryGirl.create :user, first_name: user_1.first_name, last_name: "Ernser"}
-    let!(:same_last_name)  {FactoryGirl.create :user, first_name: "Kaci", last_name: user_1.last_name}
-    let!(:different_name)  {FactoryGirl.create :user, first_name: "Sandi", last_name: "Metz"}
+    let!(:same_first_name) do
+      FactoryGirl.create :user, first_name: user_1.first_name, last_name: "Ernser"
+    end
+    let!(:same_last_name)  do
+      FactoryGirl.create :user, first_name: "Kaci", last_name: user_1.last_name
+    end
+    let!(:different_name)  do
+      FactoryGirl.create :user, first_name: "Sandi", last_name: "Metz"
+    end
 
-    let!(:app_1_user_1) {FactoryGirl.create :application_user, user: user_1}
-    let!(:app_2_user_1) {FactoryGirl.create :application_user, user: user_1}
+    let!(:app_1_user_1)           { FactoryGirl.create :application_user, user: user_1 }
+    let!(:app_2_user_1)           { FactoryGirl.create :application_user, user: user_1 }
 
-    let!(:email_1_user_1) {FactoryGirl.create :email_address, user: user_1}
-    let!(:email_2_user_1) {FactoryGirl.create :email_address, user: user_1, verified: true}
-    let!(:email_1_user_same_name) {FactoryGirl.create :email_address, user: same_name, verified: true}
+    let!(:email_1_user_1)         { FactoryGirl.create :email_address, user: user_1 }
+    let!(:email_2_user_1)         do
+      FactoryGirl.create :email_address, user: user_1, verified: true
+    end
+    let!(:email_1_user_same_name) do
+      FactoryGirl.create :email_address, user: same_name, verified: true
+    end
 
-    let!(:authentications_1) {FactoryGirl.create :authentication, user: user_1, provider: "google"}
-    let!(:authentications_2) {FactoryGirl.create :authentication, user: user_1, provider: "facebook"}
+    let!(:authentications_1) do
+      FactoryGirl.create :authentication, user: user_1, provider: "google"
+    end
+    let!(:authentications_2) do
+      FactoryGirl.create :authentication, user: user_1, provider: "facebook"
+    end
 
-    let!(:sus_user_1)                          {FactoryGirl.create :security_log, event_type: :sign_up_successful, user: user_1}
-    let!(:help_req_1_user_1)                   {FactoryGirl.create :security_log, event_type: :help_requested, user: user_1}
-    let!(:help_req_2_user_1)                   {FactoryGirl.create :security_log, event_type: :help_requested, user: user_1}
-    let!(:help_req_fail_user_1)        {FactoryGirl.create :security_log, event_type: :help_request_failed, user: user_1}
-    let!(:sus_user_same_name)                  {FactoryGirl.create :security_log, event_type: :sign_up_successful, user: same_name}
-    let!(:auth_transfer_fail_user_same_name) {FactoryGirl.create :security_log, event_type: :authentication_transfer_failed, user: same_name}
+    let!(:sus_user_1)                        do
+      FactoryGirl.create :security_log, event_type: :sign_up_successful, user: user_1
+    end
+    let!(:help_req_1_user_1)                 do
+      FactoryGirl.create :security_log, event_type: :help_requested, user: user_1
+    end
+    let!(:help_req_2_user_1)                 do
+      FactoryGirl.create :security_log, event_type: :help_requested, user: user_1
+    end
+    let!(:help_req_fail_user_1)              do
+      FactoryGirl.create :security_log, event_type: :help_request_failed, user: user_1
+    end
+    let!(:sus_user_same_name)                do
+      FactoryGirl.create :security_log, event_type: :sign_up_successful, user: same_name
+    end
+    let!(:auth_transfer_fail_user_same_name) do
+      FactoryGirl.create :security_log, event_type: :authentication_transfer_failed,
+                                        user: same_name
+    end
 
     it "creates a csv file with the results" do
       call

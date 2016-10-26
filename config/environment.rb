@@ -6,6 +6,7 @@ require 'markdown_wrapper'
 require 'sign_in_state'
 require 'contracts_not_required'
 require 'require_recent_signin'
+require 'json_serialize'
 require 'omniauth/strategies/custom_identity'
 
 SITE_NAME = 'OpenStax Accounts'
