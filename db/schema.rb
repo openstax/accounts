@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160918213622) do
+ActiveRecord::Schema.define(version: 20160918213622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -202,12 +202,12 @@ ActiveRecord::Schema.define(:version => 20160918213622) do
     t.datetime "updated_at"
   end
 
-  create_table "salesforce_users", :force => true do |t|
+  create_table "salesforce_users", force: :cascade do |t|
     t.string "name"
-    t.string "uid",           :null => false
-    t.string "oauth_token",   :null => false
-    t.string "refresh_token", :null => false
-    t.string "instance_url",  :null => false
+    t.string "uid",           :null=>false
+    t.string "oauth_token",   :null=>false
+    t.string "refresh_token", :null=>false
+    t.string "instance_url",  :null=>false
   end
 
   create_table "security_logs", force: :cascade do |t|
@@ -228,20 +228,18 @@ ActiveRecord::Schema.define(:version => 20160918213622) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "username",         :default=>"", :null=>false, :index=>{:name=>"index_users_on_username", :unique=>true}
+    t.string   "username",              :default=>"", :null=>false, :index=>{:name=>"index_users_on_username", :unique=>true}
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_administrator", :default=>false
-    t.string   "first_name",       :index=>{:name=>"index_users_on_first_name", :case_sensitive=>false}
-    t.string   "last_name",        :index=>{:name=>"index_users_on_last_name", :case_sensitive=>false}
+    t.boolean  "is_administrator",      :default=>false
+    t.string   "first_name",            :index=>{:name=>"index_users_on_first_name", :case_sensitive=>false}
+    t.string   "last_name",             :index=>{:name=>"index_users_on_last_name", :case_sensitive=>false}
     t.string   "title"
-    t.string   "uuid",             :index=>{:name=>"index_users_on_uuid", :unique=>true}
+    t.string   "uuid",                  :index=>{:name=>"index_users_on_uuid", :unique=>true}
     t.string   "suffix"
-    t.string   "state",            :default=>"temp", :null=>false
-    t.string   "salesforce_contact_id"
-    t.integer  "faculty_status",        :default => 0,      :null => false
-    t.index ["faculty_status"], :name => "index_users_on_faculty_status"
-    t.index ["salesforce_contact_id"], :name => "index_users_on_salesforce_contact_id"
+    t.string   "state",                 :default=>"temp", :null=>false
+    t.string   "salesforce_contact_id", :index=>{:name=>"index_users_on_salesforce_contact_id"}
+    t.integer  "faculty_status",        :default=>0, :null=>false, :index=>{:name=>"index_users_on_faculty_status"}
   end
   add_index "users", ["username"], :name=>"index_users_on_username_case_insensitive", :case_sensitive=>false
 

@@ -13,8 +13,8 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   provider :google_oauth2, secrets[:google_client_id], secrets[:google_client_secret]
   provider :custom_identity
 
-  provider :salesforce, SECRET_SETTINGS[:salesforce]['consumer_key'],
-                        SECRET_SETTINGS[:salesforce]['consumer_secret']
+  provider :salesforce, secrets[:salesforce]['consumer_key'],
+                        secrets[:salesforce]['consumer_secret']
 end
 
 OmniAuth.config.logger = Rails.logger

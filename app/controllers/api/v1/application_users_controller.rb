@@ -89,7 +89,9 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     options = params.slice(:page, :per_page, :order_by)
     outputs = SearchApplicationUsers.call(current_application, params[:q], options).outputs
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
-                          render_salesforce_info: current_api_user.application.trusted?,
+                          user_options: {
+                            render_salesforce_info: current_api_user.application.trusted?
+                          },
                           location: nil
   end
 
@@ -173,7 +175,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     outputs = GetUpdatedApplicationUsers.call(current_application).outputs
     respond_with outputs[:application_users],
                  represent_with: Api::V1::ApplicationUsersRepresenter,
-                 render_salesforce_info: true,
+                 user_options: { render_salesforce_info: true },
                  location: nil
   end
 

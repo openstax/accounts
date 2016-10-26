@@ -9,12 +9,6 @@ describe UpdateUserSalesforceInfo do
     email
   }
 
-  NOTIFICATION_EMAIL = 'to@example.com'
-
-  before(:each) {
-    (SECRET_SETTINGS[:mail_recipients] ||= {}).merge!(salesforce: NOTIFICATION_EMAIL)
-  }
-
   context 'user has no SF info yet' do
     it 'caches it when the SF info exists on SF' do
       stub_contacts({id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed"})

@@ -7,7 +7,7 @@ module Salesforce
         Rails.logger.error { "The Salesforce client was requested but no user is available." }
         raise Salesforce::UserMissing
       end
-      secrets = SECRET_SETTINGS[:salesforce]
+      secrets = Rails.application.secrets[:salesforce]
       super(oauth_token: user.oauth_token,
             refresh_token: user.refresh_token,
             instance_url: user.instance_url,

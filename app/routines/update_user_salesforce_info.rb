@@ -137,9 +137,11 @@ class UpdateUserSalesforceInfo
   def notify_errors
     return if @errors.empty?
     Rails.logger.warn("UpdateUserSalesforceInfo errors: " + @errors.inspect)
-    DevMailer.inspect_object(object: @errors,
-                             subject: "UpdateUserSalesforceInfo errors",
-                             to: SECRET_SETTINGS[:mail_recipients][:salesforce]).deliver
+    DevMailer.inspect_object(
+      object: @errors,
+      subject: "UpdateUserSalesforceInfo errors",
+      to: Rails.application.secrets[:mail_recipients]['salesforce']
+    ).deliver_later
   end
 
 end

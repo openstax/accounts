@@ -35,7 +35,6 @@ class User < ActiveRecord::Base
   enum faculty_status: [:no_faculty_info, :pending_faculty, :confirmed_faculty, :rejected_faculty]
 
   DEFAULT_FACULTY_STATUS = :no_faculty_info
-  after_initialize { self.faculty_status ||= DEFAULT_FACULTY_STATUS }
   validates :faculty_status, presence: true
 
   before_validation :strip_names

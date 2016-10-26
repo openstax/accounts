@@ -41,13 +41,13 @@ module Api::V1
              writeable: false
 
     property :salesforce_contact_id,
-             if: ->(args) { args[:render_salesforce_info] },
+             if: ->(user_options:, **) { user_options.try(:fetch, :render_salesforce_info, false) },
              type: String,
              readable: true,
              writeable: false
 
     property :faculty_status,
-             if: ->(args) { args[:render_salesforce_info] },
+             if: ->(user_options:, **) { user_options.try(:fetch, :render_salesforce_info, false) },
              type: String,
              readable: true,
              writeable: false,

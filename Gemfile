@@ -109,6 +109,7 @@ gem 'omniauth-salesforce'
 # Fork that supports Ruby >= 2.1
 gem 'active_force', github: 'openstax/active_force', ref: '9695896f5'
 
+# Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
 
 gem 'whenever', require: false
@@ -130,9 +131,6 @@ group :development, :test do
 
   # Show failing parallel specs instantly
   gem 'rspec-instafail'
-
-  # Allows 'ap' alternative to 'pp'
-  gem 'awesome_print'
 
   # Thin development server
   gem 'thin'
