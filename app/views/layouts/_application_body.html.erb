@@ -5,6 +5,6 @@
   <div <%= "id=#{@parent_col_id}" if @parent_col_id %> class="col-xs-12">
     <%= yield :above_page_heading %>
     <%= yield :page_heading %>
-    <%= yield %>
+    <%= content_for?(:application_body) ? content_for(:application_body) : yield %>
   </div>
 </div>

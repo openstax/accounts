@@ -1,5 +1,4 @@
 class UpdateUserSalesforceInfo
-  USER_BLOCK_SIZE = 1000
 
   def initialize
     @errors = []
@@ -140,7 +139,7 @@ class UpdateUserSalesforceInfo
     DevMailer.inspect_object(
       object: @errors,
       subject: "UpdateUserSalesforceInfo errors",
-      to: Rails.application.secrets[:mail_recipients]['salesforce']
+      to: Rails.application.secrets[:salesforce]['mail_recipients']
     ).deliver_later
   end
 

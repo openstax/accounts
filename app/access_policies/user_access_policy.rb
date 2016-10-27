@@ -16,8 +16,8 @@ class UserAccessPolicy
       requestor == user # Temp or unclaimed users only
     when :unclaimed
       # find-or-create accounts that are a stand-in for a person who's not yet signed up
-      # only applications can access this via client credentials
-      requestor.is_application?
+      # only trusted applications can access this via client credentials
+      requestor.is_application? && requestor.trusted?
     end
   end
 end

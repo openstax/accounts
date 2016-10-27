@@ -30,9 +30,13 @@ class FindOrCreateUnclaimedUser
 
   def create_user(options)
     user = run(CreateUser,
-               state: 'unclaimed', username: options[:username],
+               state: 'unclaimed',
+               username: options[:username],
                first_name: options[:first_name],
-               last_name: options[:last_name], full_name: options[:full_name],
+               last_name: options[:last_name],
+               full_name: options[:full_name],
+               salesforce_contact_id: options[:salesforce_contact_id],
+               faculty_status: options[:faculty_status],
                ensure_no_errors: true).outputs.user
 
     # routine is smart and gracefully handles case of missing options[:email]
