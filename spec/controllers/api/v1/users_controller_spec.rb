@@ -5,7 +5,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
   let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
   let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }
   let!(:user_1)          { FactoryGirl.create :user, :terms_agreed }
-  let!(:user_2)          { FactoryGirl.create :user_with_emails, :terms_agreed, first_name: 'Bob', last_name: 'Michaels' }
+  let!(:user_2)          { FactoryGirl.create :user_with_emails, :terms_agreed, first_name: 'Bob',
+                                              last_name: 'Michaels', salesforce_contact_id: "somesfid" }
   let!(:unclaimed_user)  { FactoryGirl.create :user_with_emails, state:'unclaimed' }
   let!(:admin_user)      { FactoryGirl.create :user, :terms_agreed, :admin }
 
@@ -104,6 +105,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         id: user_1.id,
         username: user_1.username,
         uuid: user_1.uuid,
+        faculty_status: user_1.faculty_status,
         contact_infos: []
       }.to_json
 
@@ -122,6 +124,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         id: user_1.id,
         username: user_1.username,
         uuid: user_1.uuid,
+        faculty_status: user_1.faculty_status,
         contact_infos: []
       }.to_json
 
@@ -129,6 +132,9 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
     end
 
     it "should return a properly formatted JSON response for user with name" do
+      user_2.salesforce_contact_id = 'blah'
+      user_2.save
+
       api_get :show, user_2_token
 
       expect(response.body_as_hash).to include(
@@ -136,7 +142,9 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
         username: user_2.username,
         first_name: user_2.first_name,
         last_name: user_2.last_name,
-        full_name: user_2.full_name
+        full_name: user_2.full_name,
+        faculty_status: user_1.faculty_status,
+        salesforce_contact_id: 'blah',
       )
     end
 

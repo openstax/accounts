@@ -1,5 +1,6 @@
 module Admin
   class SecurityLogsController < BaseController
+    layout 'admin'
 
     def show
       items = SearchSecurityLog.call(params[:search] || {}).outputs.items || SecurityLog.none

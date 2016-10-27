@@ -40,6 +40,21 @@ module Api::V1
              readable: true,
              writeable: false
 
+    property :salesforce_contact_id,
+             if: ->(user_options:, **) { user_options.try(:fetch, :render_salesforce_info, false) },
+             type: String,
+             readable: true,
+             writeable: false
+
+    property :faculty_status,
+             if: ->(user_options:, **) { user_options.try(:fetch, :render_salesforce_info, false) },
+             type: String,
+             readable: true,
+             writeable: false,
+             schema_info: {
+                description: "One of #{User.faculty_statuses.keys.map{|st| "'#{st}'"}.join(', ')}"
+             }
+
     collection :contact_infos,
                if: ->(user_options:, **) { user_options.try(:fetch, :render_contact_infos, false) },
                decorator: ContactInfoRepresenter

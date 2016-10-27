@@ -63,7 +63,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
             'owners' => [
               {
                 'group_id' => group_1.id,
-                'user' => { 'id' => user_1.id, 'username' => user_1.username, 'uuid' => user_1.uuid }
+                'user' => user_hash(user_1)
               }
             ],
             'members' => [],
@@ -94,7 +94,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
           'owners' => [
             {
               'group_id' => group_1.id,
-              'user' => { 'id' => user_1.id, 'username' => user_1.username, 'uuid' => user_1.uuid }
+              'user' => user_hash(user_1)
             }
           ],
           'members' => [],
@@ -134,8 +134,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
             *group_2.group_owners.map do |group_owner|
               {
                 'group_id' => group_2.id,
-                'user' => { 'id' => group_owner.user.id, 'username' => group_owner.user.username,
-                            'uuid' => group_owner.user.uuid }
+                'user' => user_hash(group_owner.user)
               }
             end
           ),
@@ -173,7 +172,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
           'owners' => [
             {
               'group_id' => group_3.id,
-              'user' => { 'id' => user_1.id, 'username' => user_1.username, 'uuid' => user_1.uuid }
+              'user' => user_hash(user_1)
             }
           ],
           'members' => [],
@@ -232,7 +231,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
             *group_3.owners.map do |owner|
               {
                 'group_id' => group_3.id,
-                'user' => { 'id' => owner.id, 'username' => owner.username, 'uuid' => owner.uuid }
+                'user' => user_hash(owner)
               }
             end
           ),
@@ -262,7 +261,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
             *group_1.owners.map do |owner|
               {
                 'group_id' => group_1.id,
-                'user' => { 'id' => owner.id, 'username' => owner.username, 'uuid' => owner.uuid }
+                'user' => user_hash(owner)
               }
             end
           ),
@@ -327,6 +326,14 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
       expect(response.body).to be_blank
       expect(GroupOwner.where(id: group_owner_1.id).first).to be_nil
     end
+  end
+
+  def user_hash(user)
+    {
+      'id' => user.id,
+      'username' => user.username,
+      'uuid' => user.uuid
+    }
   end
 
 end

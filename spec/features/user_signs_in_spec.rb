@@ -205,6 +205,7 @@ feature 'User logs in as a local user', js: true do
       fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
       fill_in (t :"sessions.new.password"), with: 'password'
       click_button (t :"sessions.new.sign_in")
+
       expect(page.current_url).to match(app_callback_url)
     end
   end

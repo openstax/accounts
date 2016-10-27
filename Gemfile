@@ -103,8 +103,17 @@ gem 'will_paginate'
 # Datetime parsing
 gem 'chronic'
 
-# Protect attributes from mass-assignment in Active Record models
-# Bringing back the feature from Rails 3
+# Salesforce
+gem 'restforce'
+gem 'omniauth-salesforce'
+# Fork that supports Ruby >= 2.1
+gem 'active_force', github: 'openstax/active_force', ref: '9695896f5'
+
+# Allows 'ap' alternative to 'pp', used in a mailer
+gem 'awesome_print'
+
+gem 'whenever', require: false
+
 gem 'protected_attributes'
 
 # Fast JSON parsing
@@ -122,9 +131,6 @@ group :development, :test do
 
   # Show failing parallel specs instantly
   gem 'rspec-instafail'
-
-  # Allows 'ap' alternative to 'pp'
-  gem 'awesome_print'
 
   # Thin development server
   gem 'thin'
@@ -162,7 +168,7 @@ group :test do
 
   # CodeClimate integration
   gem "codeclimate-test-reporter", require: false
-
+  gem 'db-query-matchers'
   # Headless Capybara webkit driver
   gem 'capybara-webkit'
 

@@ -22,6 +22,29 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :salesforce_contact %>
+    <div>
+      <% sf_id = @user.salesforce_contact_id %>
+      <% if sf_id.nil? %>
+        Not Set
+      <% else %>
+        <% sf_user = SalesforceUser.first %>
+
+        <% if sf_user.nil? %>
+          <%= sf_id %>
+        <% else %>
+          <%= link_to sf_id, sf_user.instance_url + "/" + sf_id, target: '_blank' %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :faculty_status %>
+    <div><%= @user.faculty_status %></div>
+  </div>
+
+  <div class="form-group">
     <%= f.label :first_name %>
     <%= f.text_field :first_name, value: params[:user].nil? ? @user.first_name : params[:user][:first_name] %>
   </div>

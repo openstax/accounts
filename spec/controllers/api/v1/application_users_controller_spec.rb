@@ -173,7 +173,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
             first_name: user_2.first_name,
             last_name: user_2.last_name,
             full_name: user_2.full_name,
-            uuid: user_2.uuid
+            uuid: user_2.uuid,
+            faculty_status: user_2.faculty_status
           }
         ]
       }.to_json
@@ -216,7 +217,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
           first_name: user_2.first_name,
           last_name: user_2.last_name,
           full_name: user_2.full_name,
-          uuid: user_2.uuid
+          uuid: user_2.uuid,
+          faculty_status: user_2.faculty_status
         },
         unread_updates: 2
       }].to_json
@@ -242,7 +244,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
           first_name: user_2.first_name,
           last_name: user_2.last_name,
           full_name: user_2.full_name,
-          uuid: user_2.uuid
+          uuid: user_2.uuid,
+          faculty_status: user_2.faculty_status
         },
         unread_updates: 3
       }].to_json
@@ -262,7 +265,8 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
           first_name: user_2.first_name,
           last_name: user_2.last_name,
           full_name: user_2.full_name,
-          uuid: user_2.uuid
+          uuid: user_2.uuid,
+          faculty_status: user_2.faculty_status
         },
         unread_updates: 2
       }].to_json

@@ -143,6 +143,12 @@ class ActionDispatch::TestResponse
   end
 end
 
+def disable_sfdc_client
+  allow(ActiveForce)
+    .to receive(:sfdc_client)
+    .and_return(double('null object').as_null_object)
+end
+
 RSpec::Matchers.define :have_routine_error do |error_code|
   include RSpec::Matchers::Composable
 

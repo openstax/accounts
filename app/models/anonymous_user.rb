@@ -1,5 +1,7 @@
 require 'singleton'
 
+class AnonymousUserIsImmutableError < StandardError; end
+
 class AnonymousUser
   include Singleton
 
@@ -78,6 +80,24 @@ class AnonymousUser
 
   def casual_name
     full_name
+  end
+
+  User.faculty_statuses.each do |status, value|
+    define_method "#{status}?" do
+      User::DEFAULT_FACULTY_STATUS.to_s == status
+    end
+
+    define_method "#{status}!" do
+      raise AnonymousUserIsImmutableError, "Cannot set faculty status on the AnonymousUser."
+    end
+  end
+
+  def faculty_status
+    User::DEFAULT_FACULTY_STATUS.to_s
+  end
+
+  def faculty_status=(status)
+    raise AnonymousUserIsImmutableError, "Cannot set faculty status on the AnonymousUser."
   end
 
 end

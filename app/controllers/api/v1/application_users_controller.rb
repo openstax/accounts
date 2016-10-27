@@ -88,7 +88,11 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, ApplicationUser)
     options = params.slice(:page, :per_page, :order_by)
     outputs = SearchApplicationUsers.call(current_application, params[:q], options).outputs
-    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter, location: nil
+    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
+                          user_options: {
+                            render_salesforce_info: current_api_user.application.trusted?
+                          },
+                          location: nil
   end
 
   ###############################################################
@@ -170,7 +174,9 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:updates, current_api_user, ApplicationUser)
     outputs = GetUpdatedApplicationUsers.call(current_application).outputs
     respond_with outputs[:application_users],
-                 represent_with: Api::V1::ApplicationUsersRepresenter, location: nil
+                 represent_with: Api::V1::ApplicationUsersRepresenter,
+                 user_options: { render_salesforce_info: true },
+                 location: nil
   end
 
   ###############################################################
