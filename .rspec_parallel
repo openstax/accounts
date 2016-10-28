@@ -1,4 +1,3 @@
---order defined
 --require rspec/instafail
 --format RSpec::Instafail
 --format progress
