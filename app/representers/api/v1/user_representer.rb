@@ -52,7 +52,7 @@ module Api::V1
              readable: true,
              writeable: false,
              schema_info: {
-                description: "One of #{User.faculty_statuses.keys.map{|st| "'#{st}'"}.join(', ')}"
+                description: "One of #{User.faculty_statuses.keys.map(&:to_s).inspect}"
              }
 
     collection :contact_infos,

@@ -69,5 +69,24 @@ module Api::V1
                required: false,
                description: 'Full name to assign to newly created user, used for first and last name if they are missing'
              }
+
+    property :salesforce_contact_id,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               description: 'Salesforce contact id to assign to newly created user'
+             }
+
+    property :faculty_status,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               description: "Faculty status to assign to newly created user, one of #{
+                 User.faculty_statuses.keys.map(&:to_s).inspect
+               }"
+             }
+
   end
 end

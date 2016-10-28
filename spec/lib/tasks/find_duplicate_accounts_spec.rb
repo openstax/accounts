@@ -116,25 +116,45 @@ RSpec.describe "find_duplicate_accounts" do
   end
 
   context "when it finds users with the same email address" do
-    let!(:user_1) { FactoryGirl.create :user, first_name: "John", last_name: "Lock", username: "RubyKing" }
-    let!(:user_2) { FactoryGirl.create :user, first_name: "Jack", last_name: "Shepherd", username: "RailsKing" }
-    let!(:email_1) { FactoryGirl.create :email_address, user: user_1, verified: true }
-    let!(:same_email_diff_user) { FactoryGirl.create :email_address, user: user_2, value: email_1.value }
+    let!(:user_1) do
+      FactoryGirl.create :user, first_name: "John", last_name: "Lock", username: "RubyKing"
+    end
+    let!(:user_2) do
+      FactoryGirl.create :user, first_name: "Jack", last_name: "Shepherd", username: "RailsKing"
+    end
+    let!(:email_1) do
+      FactoryGirl.create :email_address, user: user_1, verified: true
+    end
+    let!(:same_email_diff_user) do
+      FactoryGirl.create :email_address, user: user_2, value: email_1.value
+    end
 
-    let!(:authentications) {FactoryGirl.create :authentication, user: user_1, provider: "facebook"}
+    let!(:authentication) { FactoryGirl.create :authentication, user: user_1, provider: "facebook" }
 
-    let!(:cool) { FactoryGirl.create :user }
+    let!(:cool)   { FactoryGirl.create :user }
     let!(:person) { FactoryGirl.create :user }
 
-    let!(:sus_user_1) {FactoryGirl.create :security_log, event_type: :sign_up_successful, user: user_1}
-    let!(:help_req_1_user_1) {FactoryGirl.create :security_log, event_type: :help_requested, user: user_1}
-    let!(:help_req_2_user_1) {FactoryGirl.create :security_log, event_type: :help_requested, user: user_1}
-    let!(:help_req_fail_user_1) {FactoryGirl.create :security_log, event_type: :help_request_failed, user: user_1}
-    let!(:sus_user_2) {FactoryGirl.create :security_log, event_type: :sign_up_successful, user: user_2}
-    let!(:auth_transfer_fail_user_2) {FactoryGirl.create :security_log, event_type: :authentication_transfer_failed, user: user_2}
+    let!(:sus_user_1) do
+      FactoryGirl.create :security_log, event_type: :sign_up_successful, user: user_1
+    end
+    let!(:help_req_1_user_1) do
+      FactoryGirl.create :security_log, event_type: :help_requested, user: user_1
+    end
+    let!(:help_req_2_user_1) do
+      FactoryGirl.create :security_log, event_type: :help_requested, user: user_1
+    end
+    let!(:help_req_fail_user_1) do
+      FactoryGirl.create :security_log, event_type: :help_request_failed, user: user_1
+    end
+    let!(:sus_user_2) do
+      FactoryGirl.create :security_log, event_type: :sign_up_successful, user: user_2
+    end
+    let!(:auth_transfer_fail_user_2) do
+      FactoryGirl.create :security_log, event_type: :authentication_transfer_failed, user: user_2
+    end
 
-    let!(:app_1_user_1) {FactoryGirl.create :application_user, user: user_1}
-    let!(:app_2_user_1) {FactoryGirl.create :application_user, user: user_1}
+    let!(:app_1_user_1) { FactoryGirl.create :application_user, user: user_1 }
+    let!(:app_2_user_1) { FactoryGirl.create :application_user, user: user_1 }
 
     it "creates a csv file with the results" do
       call
@@ -159,7 +179,7 @@ RSpec.describe "find_duplicate_accounts" do
       expect(result[0]["Authentications"]).to eq "Facebook"
 
       expect(result[1]["Email Address"]).to eq "#{same_email_diff_user.value} (NOT verified)"
-      expect(result[1]["Created At"]).to eq email_1.created_at.to_s
+      expect(result[1]["Created At"]).to eq same_email_diff_user.created_at.to_s
       expect(result[1]["ContactInfo ID"]).to eq same_email_diff_user.id.to_s
       expect(result[1]["User First Name"]).to eq user_2.first_name
       expect(result[1]["User Last Name"]).to eq user_2.last_name
