@@ -185,6 +185,7 @@ describe UpdateUserSalesforceInfo do
       end
     end
 
+    expect(Salesforce::Contact).to receive(:select).with(:id, :email, :email_alt, :faculty_verified)
     allow(Salesforce::Contact).to receive(:select).and_return(contacts)
   end
 
