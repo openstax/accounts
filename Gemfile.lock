@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/openstax/active_force.git
+  remote: https://github.com/openstax/active_force
   revision: 9695896f576ea850d6ca60fb7b8af9c0dd07e8ea
   ref: 9695896f5
   specs:

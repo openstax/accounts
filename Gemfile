@@ -107,7 +107,7 @@ gem 'chronic'
 gem 'restforce'
 gem 'omniauth-salesforce'
 # Fork that supports Ruby >= 2.1
-gem 'active_force', github: 'openstax/active_force', ref: '9695896f5'
+gem 'active_force', git: 'https://github.com/openstax/active_force', ref: '9695896f5'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
