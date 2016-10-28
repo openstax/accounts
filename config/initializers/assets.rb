@@ -9,4 +9,5 @@ Rails.application.config.assets.precompile += %w(
   admin.css
   admin.js
   profile.js
+  remote-access.js
 )
