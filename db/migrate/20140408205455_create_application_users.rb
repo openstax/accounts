@@ -5,7 +5,7 @@ class CreateApplicationUsers < ActiveRecord::Migration
       t.references :user, null: false
       t.references :default_contact_info
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :application_users, [:user_id, :application_id], unique: true

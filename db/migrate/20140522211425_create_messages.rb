@@ -7,7 +7,7 @@ class CreateMessages < ActiveRecord::Migration
       t.text :subject, null: false
       t.string :subject_prefix, null: false, default: ''
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :messages, [:application_id, :user_id]

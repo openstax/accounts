@@ -6,7 +6,7 @@ class CreateGroups < ActiveRecord::Migration
       t.text :cached_subtree_group_ids
       t.text :cached_supertree_group_ids
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :groups, :is_public

@@ -5,7 +5,7 @@ class CreatePasswordResetCodes < ActiveRecord::Migration
       t.string :code, null: false
       t.datetime :expires_at
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :password_reset_codes, :identity_id, unique: true

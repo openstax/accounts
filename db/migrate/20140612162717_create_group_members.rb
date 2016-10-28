@@ -4,7 +4,7 @@ class CreateGroupMembers < ActiveRecord::Migration
       t.references :group, null: false
       t.references :user, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
     add_index :group_members, [:group_id, :user_id], unique: true

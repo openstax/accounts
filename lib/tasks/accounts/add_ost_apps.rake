@@ -5,10 +5,10 @@
 namespace :accounts do
   namespace :ost do
     # These are the apps that we want to create
-    app_data = [{:name => "OpenStax Exercises", :prefix => "exercises"},
-                {:name => "OpenStax Tutor", :prefix => "tutor", skip_terms: true},
-                {:name => "OpenStax Exchange", :prefix => "exchange"},
-                {:name => "OpenStax BigLearn", :prefix => "biglearn"}]
+    app_data = [{name: "OpenStax Exercises", prefix: "exercises"},
+                {name: "OpenStax Tutor", prefix: "tutor", skip_terms: true},
+                {name: "OpenStax Exchange", prefix: "exchange"},
+                {name: "OpenStax BigLearn", prefix: "biglearn"}]
     desc "Manage applications for exercises, exchange, tutor and biglearn"
 
     # This task creates applications based on the given parameters.
@@ -74,11 +74,11 @@ namespace :accounts do
     # application id and secret as a JSON object list.
     task get_app_info: :environment do
 
-      apps = Doorkeeper::Application.where(:name => app_data.map { |app| app[:name] })
-      apps = apps.map { |app|  {:name => app.name,
-                                :id => app.uid,
-                                :secret => app.secret,
-                                :url =>  app.redirect_uri}}
+      apps = Doorkeeper::Application.where(name: app_data.map { |app| app[:name] })
+      apps = apps.map { |app|  {name: app.name,
+                                id: app.uid,
+                                secret: app.secret,
+                                url: app.redirect_uri}}
       puts JSON.generate(apps)
     end
   end

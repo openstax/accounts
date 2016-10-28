@@ -7,13 +7,11 @@ class CreateMessageRecipients < ActiveRecord::Migration
       t.string :recipient_type, null: false
       t.boolean :read, null: false, default: false
 
-      t.timestamps
+      t.timestamps null: false
     end
 
-    add_index :message_recipients, [:message_id, :user_id],
-                                   unique: true
-    add_index :message_recipients, [:contact_info_id, :message_id],
-                                   unique: true
+    add_index :message_recipients, [:message_id, :user_id], unique: true
+    add_index :message_recipients, [:contact_info_id, :message_id], unique: true
     add_index :message_recipients, [:user_id, :read]
   end
 end
