@@ -116,7 +116,7 @@ class UpdateUserSalesforceInfo
     # Here's one example query as a starting point:
     #   Salesforce::Contact.order("LastModifiedDate").where("LastModifiedDate >= #{1.day.ago.utc.iso8601}")
 
-    @contacts ||= Salesforce::Contact.select(:id, :email, :faculty_verified).to_a
+    @contacts ||= Salesforce::Contact.select(:id, :email, :email_alt, :faculty_verified).to_a
   end
 
   def error!(exception: nil, message: nil, user: nil)
