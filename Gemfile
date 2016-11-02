@@ -34,6 +34,9 @@ gem 'omniauth-facebook'
 gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
+# Key-value store for caching
+gem 'redis-rails'
+
 # Ruby dsl for SQL queries
 gem 'squeel'
 
@@ -50,7 +53,10 @@ gem 'openstax_api', '~> 8.0.0'
 gem 'openstax_rescue_from', '~> 1.6.0'
 
 # Lev framework
-gem 'lev', '~> 2.2.2'
+gem 'lev', '~> 7.0.3'
+
+# Background job status store
+gem 'jobba', '~> 1.4.0'
 
 # jQuery library
 gem 'jquery-rails'
@@ -174,6 +180,9 @@ group :test do
 
   # Testing emails
   gem 'capybara-email'
+
+  # Fake in-memory Redis for testing
+  gem 'fakeredis'
 end
 
 group :production do
