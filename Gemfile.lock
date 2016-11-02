@@ -181,11 +181,12 @@ GEM
     key_struct (0.4.2)
     keyword_search (1.5.0)
     kgio (2.10.0)
-    lev (2.2.2)
-      actionpack (>= 3.0)
+    lev (7.0.3)
+      actionpack (>= 4.2)
       active_attr
-      activemodel (>= 3.0)
-      activerecord (>= 3.0)
+      activejob
+      activemodel (>= 4.2)
+      activerecord (>= 4.2)
       hashie
       transaction_isolation
       transaction_retry
@@ -476,7 +477,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   keyword_search (~> 1.5.0)
-  lev (~> 2.2.2)
+  lev (~> 7.0.3)
   lograge
   maruku
   oj

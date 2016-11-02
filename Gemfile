@@ -50,7 +50,7 @@ gem 'openstax_api', '~> 8.0.0'
 gem 'openstax_rescue_from', '~> 1.6.0'
 
 # Lev framework
-gem 'lev', '~> 2.2.2'
+gem 'lev', '~> 7.0.3'
 
 # jQuery library
 gem 'jquery-rails'
