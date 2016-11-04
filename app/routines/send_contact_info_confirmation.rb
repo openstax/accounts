@@ -11,7 +11,7 @@ class SendContactInfoConfirmation
     contact_info.confirmation_code    = SecureRandom.hex(32)
     contact_info.confirmation_sent_at = Time.now
     contact_info.save
-    transfer_errors_from(contact_info, {type: :verbatim, fail_if_errors: true})
+    transfer_errors_from(contact_info, {type: :verbatim}, true)
 
     case contact_info.type
     when 'EmailAddress'
