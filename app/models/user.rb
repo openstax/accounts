@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   validates :state, inclusion: { in: VALID_STATES,
                                  message: "must be one of #{VALID_STATES.join(',')}" }
 
-  validate :name_part_required_for_suffix_or_title
+  validates :first_name, :last_name, presence: true, allow_blank: false
 
   delegate_to_routine :destroy
 
@@ -133,7 +133,7 @@ class User < ActiveRecord::Base
   end
 
   def casual_name
-    first_name.present? ? first_name : username
+    first_name
   end
 
   def add_unread_update
@@ -178,24 +178,6 @@ class User < ActiveRecord::Base
   def make_first_user_an_admin
     return if Rails.env.production? || Rails.env.test?
     self.is_administrator = true if User.count == 0
-  end
-
-  def name_part_required_for_suffix_or_title
-    has_name_parts = first_name.present? || last_name.present?
-
-    if !has_name_parts
-      if title.present?
-        errors.add(:base, "A first or last name is required if a title is provided")
-        return false
-      end
-
-      if suffix.present?
-        errors.add(:base, "A first or last name is required if a suffix is provided")
-        false
-      end
-    end
-
-    true
   end
 
   def strip_names
