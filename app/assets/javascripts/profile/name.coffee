@@ -7,7 +7,7 @@ class OX.Profile.Name
       value: attribs,
       success: (response) -> $(@).html(response.full_name)
       validate: (attrs) ->
-        required = " must be specified"
+        required = " can't be blank"
         if not attrs.first_name and not attrs.last_name
           "First and last name #{required}"
         else if not attrs.first_name
