@@ -150,6 +150,9 @@ group :development, :test do
   # Fixture replacement
   gem 'factory_girl_rails'
 
+  # fake data generation
+  gem 'faker'
+
   # Time travel
   gem 'timecop'
 
@@ -184,7 +187,6 @@ group :test do
   # Fake in-memory Redis for testing
   gem 'fakeredis'
 
-  gem 'faker'
 end
 
 group :production do
