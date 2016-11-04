@@ -183,6 +183,8 @@ group :test do
 
   # Fake in-memory Redis for testing
   gem 'fakeredis'
+
+  gem 'faker'
 end
 
 group :production do
