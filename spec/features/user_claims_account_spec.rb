@@ -7,7 +7,8 @@ feature 'User claims an unclaimed account' do
   scenario 'a new user signs up and completes profile when an account is waiting' do
     unclaimed_user = FindOrCreateUnclaimedUser.call(
       email:'unclaimeduser@example.com', username: 'therulerofallthings',
-      password: "apassword", password_confirmation: "apassword"
+                                    first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
+                                    password: "apassword", password_confirmation: "apassword"
     ).outputs[:user]
     visit '/'
     click_password_sign_up

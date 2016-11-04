@@ -54,7 +54,12 @@ class CreateUser
 
   def guessed_last_name(full_name)
     return nil if full_name.blank?
-    full_name.split("\s").drop(1).join(' ')
+    parts = full_name.split("\s")
+    if parts.many?
+      parts.drop(1).join(' ')
+    else
+      full_name
+    end
   end
 
 end

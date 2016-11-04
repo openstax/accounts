@@ -9,7 +9,8 @@ namespace :accounts do
       begin
         username = args[:username]
         password = args[:password] || args[:username]
-        user = User.find_or_create_by(username: username)
+        user = User.find_by(username: username) ||
+               User.create(username: username, first_name: username, last_name: username)
         identity = Identity.find_or_create_by(user_id: user.id) do |identity|
           identity.user = user
           identity.password = password
