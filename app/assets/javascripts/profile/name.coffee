@@ -7,8 +7,13 @@ class OX.Profile.Name
       value: attribs,
       success: (response) -> $(@).html(response.full_name)
       validate: (attrs) ->
-        unless attrs.first_name and attrs.last_name
-          "First and last name must be specified"
+        required = " must be specified"
+        if not attrs.first_name and not attrs.last_name
+          "First and last name #{required}"
+        else if not attrs.first_name
+          "First name #{required}"
+        else if not attrs.last_name
+          "Last name #{required}"
     )
 
   @defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults,
