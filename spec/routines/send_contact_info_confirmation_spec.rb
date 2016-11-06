@@ -25,8 +25,26 @@ describe SendContactInfoConfirmation do
       result = SendContactInfoConfirmation.call(contact_info: email)
       expect(result.errors).not_to be_present
       refetched_email = EmailAddress.find(email.id)
+
       expect(refetched_email.confirmation_sent_at.utc).to eq(now.utc)
       expect(refetched_email.confirmation_code).not_to be_blank
+    end
+
+    it 'has a confirmation email with url that matches record' do
+       expect {
+         SendContactInfoConfirmation.call(contact_info: email)
+       }.to change { ActionMailer::Base.deliveries.count }.by(1)
+       delivery = ActionMailer::Base.deliveries.last
+       expect(delivery.body.encoded).to include("confirm?code=#{email.confirmation_code}")
+    end
+
+    context 'something goes wrong' do
+      it 'does not send an email and sets errors' do
+        email.value = '' # cause a failure during save
+        result = SendContactInfoConfirmation.call(contact_info: email, send_pin: nil)
+        expect_any_instance_of(ConfirmationMailer).to_not receive(:instructions)
+        expect(result.errors).to be_present
+      end
     end
 
     context 'confirmation_pin' do
