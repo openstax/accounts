@@ -6,16 +6,18 @@ class SessionsController < ApplicationController
   include RequireRecentSignin
 
   skip_before_filter :authenticate_user!, :expired_password,
-                     only: [:new, :create, :failure, :destroy, :help]
+                     only: [:new, :lookup_login, :authenticate,
+                            :create, :failure, :destroy, :help]
 
-  skip_before_filter :finish_sign_up, only: [:destroy]
+  skip_before_filter :finish_sign_up, only: [:destroy]  # TODO used?
 
   before_filter :get_authorization_url, only: [:new, :create]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :create, :failure, :destroy, :help]
+                  only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :help]
 
-  helper_method :last_signin_provider
+  helper_method :last_signin_provider  #  TODO still useful?
+  helper_method :get_login_info
 
   # Login form
   def new
@@ -31,6 +33,23 @@ class SessionsController < ApplicationController
 
     session[:client_id] = params[:client_id]
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
+  end
+
+  def lookup_login
+    handle_with(SessionsLookupLogin,
+                success: lambda do
+                  set_login_info(username_or_email: @handler_result.outputs.username_or_email,
+                                 names: @handler_result.outputs.names,
+                                 providers: @handler_result.outputs.providers)
+                  redirect_to :authenticate
+                end,
+                failure: lambda do
+                  render :new
+                end)
+  end
+
+  def authenticate
+    redirect_to root_path if signed_in?
   end
 
   # Handle OAuth callback (actual login)
@@ -140,7 +159,7 @@ class SessionsController < ApplicationController
       I18n.t :"controllers.sessions.incorrect_password"
     when 'too_many_login_attempts'
       I18n.t :"controllers.sessions.too_many_login_attempts.content",
-             reset_password: "<a href=\"#{signin_help_url}\">#{
+             reset_password: "<a href=\"#{login_help_url}\">#{
                                 I18n.t :"controllers.sessions.too_many_login_attempts.reset_password"
                              }</a>".html_safe
     else

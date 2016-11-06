@@ -34,7 +34,7 @@ feature 'User signs up as a local user', js: true do
         create_application
         visit_authorize_uri
 
-        expect(page.current_url).to include(signin_path)
+        expect(page.current_url).to include(login_path)
         click_password_sign_up
         expect(page).to have_no_missing_translations
         expect(page).to have_content(t :"signup.password.page_heading")
@@ -54,11 +54,11 @@ feature 'User signs up as a local user', js: true do
 
         visit '/'
         click_link (t :"layouts.application_header.sign_out")
-        expect(page.current_url).to include(signin_path)
+        expect(page.current_url).to include(login_path)
         expect(page).not_to(
           have_content(t :"layouts.application_header.welcome_html", username: 'testuser')
         )
-        expect(page.current_url).to include(signin_path)
+        expect(page.current_url).to include(login_path)
       end
     end
 
@@ -269,7 +269,7 @@ feature 'User signs up as a local user', js: true do
     end
 
     visit '/signout'
-    expect(page).to have_current_path signin_path
+    expect(page).to have_current_path login_path
   end
 
 end

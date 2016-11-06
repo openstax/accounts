@@ -31,9 +31,7 @@ module OmniAuth
 
       option :fields, [:username, :first_name, :last_name]
       option(:locate_conditions, lambda do |req|
-        auth_key = req.params['auth_key'].try(:strip)
-        contacts = ContactInfo.verified.where(value: auth_key).preload(:user)
-        users = [User.find_by(username: auth_key) || contacts.map(&:user)].flatten
+        users = LookupUsers.by_email_or_username(req.params['auth_key'])
         users_returned = users.size
         user = users.first if users_returned == 1
         user_id = user.try :id

@@ -219,7 +219,8 @@ en:
       sign_up: Sign up
       used_this_method_last_time: >-
         It looks like you used this the last time you signed in.
-      username_or_email: Username or Email
+      username_or_email: Email or username
+      next: Next
 
   sign_in_help_mailer:
     sign_in_help:
