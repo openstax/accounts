@@ -1,5 +1,7 @@
 branches:
-  only: master
+  only:
+    - master
+    - 2016-accounts-flow
 sudo: false
 env: DISPLAY=:99.0 OXA_DB_USER=postgres OXA_TEST_DB=travis_ci_test PARALLEL_TEST_PROCESSORS=2
 language: ruby
