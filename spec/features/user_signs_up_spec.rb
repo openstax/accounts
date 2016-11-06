@@ -31,6 +31,26 @@ xfeature 'User signs up as a local user', js: true do
     end
   end
 
+  scenario 'success' do
+    create_application
+    visit_authorize_uri
+
+    expect(page.current_url).to include(login_path)
+    click_password_sign_up
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"signup.password.page_heading")
+
+    fill_in (t :"signup.new_account.first_name"), with: 'Test'
+    fill_in (t :"signup.new_account.last_name"), with: 'User'
+    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
+    fill_in (t :"signup.new_account.username"), with: 'testuser'
+    fill_in (t :"signup.new_account.password"), with: 'password'
+    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
+    agree_and_click_create
+
+    expect(page).to have_no_missing_translations
+    expect(page).not_to have_content('Alert')
+
   context 'with forgery protection' do
     scenario 'success with username' do
       with_forgery_protection do
@@ -64,7 +84,9 @@ xfeature 'User signs up as a local user', js: true do
       end
     end
 
+
     scenario 'success with empty username' do
+
       with_forgery_protection do
         visit_authorize_uri
         expect_sign_in_page
