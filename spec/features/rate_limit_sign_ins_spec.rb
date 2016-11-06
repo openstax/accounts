@@ -147,8 +147,8 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
     visit '/'
     expect_sign_in_page
     fill_in (t :"sessions.new.username_or_email"), with: username_or_email
+    click_button (t :"sessions.new.next")
     fill_in (t :"sessions.new.password"), with: password
-    click_button (t :"sessions.new.sign_in")
     expect(page).to have_no_missing_translations
   end
 

@@ -39,7 +39,7 @@ RSpec.describe SignupController, type: :controller do
     it "redirects to login page if user is not logged in" do
       post :social, params
 
-      expect(response).to redirect_to signin_path
+      expect(response).to redirect_to login_path
     end
   end
 

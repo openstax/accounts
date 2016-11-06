@@ -132,8 +132,16 @@ class User < ActiveRecord::Base
     full_name.present? ? full_name.split("\s").drop(1).join(' ') : nil
   end
 
-  def casual_name
+  def casual_name # TODO are we ok now that username not required?
     first_name.present? ? first_name : username
+  end
+
+  def standard_name # TODO needs spec
+    formal_name.present? ? formal_name : casual_name
+  end
+
+  def formal_name # TODO needs spec
+    "#{title} #{last_name} #{suffix}".gsub(/\s+/,' ').strip if title.present? && last_name.present?
   end
 
   def add_unread_update

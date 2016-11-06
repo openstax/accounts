@@ -1,10 +1,18 @@
 
 class SignupController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:index, :password]
+  skip_before_filter :authenticate_user!, only: [:index, :password] # TODO change
   skip_before_filter :finish_sign_up
 
   fine_print_skip :general_terms_of_use, :privacy_policy
+
+  def start
+
+  end
+
+  def verify_email
+
+  end
 
   def password
     @errors ||= env['errors']

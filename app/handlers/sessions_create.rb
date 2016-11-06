@@ -42,6 +42,10 @@ class SessionsCreate
     true
   end
 
+  # TODO compare incoming social authentication with login_info in cookies to make
+  # sure that the authentication matches the username or email that the user started
+  # with
+
   def handle
     authentication =
       Authentication.find_or_create_by(provider: @data.provider, uid: @data.uid.to_s)

@@ -67,6 +67,26 @@ ActionController::Base.class_exec do
     redirect_to reset_password_path(code_hash)
   end
 
+  def set_login_info(username_or_email:, names:, providers:)
+    cookies.signed[:login_key] = @handler_result.outputs.username_or_email
+    cookies.signed[:login_names] = @handler_result.outputs.names
+    cookies.signed[:login_providers] = @handler_result.outputs.providers
+  end
+
+  def get_login_info
+    {
+      username_or_email: cookies.signed[:login_key],
+      names: cookies.signed[:login_names],
+      providers: cookies.signed[:login_providers]
+    }
+  end
+
+  def clear_login_info
+    cookies.delete(:login_key)
+    cookies.delete(:login_names)
+    cookies.delete(:login_providers)
+  end
+
   def set_last_signin_provider(provider)
     cookies.signed[:last_signin_provider] = provider
   end
