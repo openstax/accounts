@@ -59,7 +59,10 @@ xfeature 'User signs up as a local user', js: true do
 
         expect_sign_in_page
         expect(page).not_to(
+        expect(page).not_to(
           have_content(t :"layouts.application_header.welcome_html", username: 'testuser')
+        )
+        expect(page.current_url).to include(login_path)
         )
       end
     end
