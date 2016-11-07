@@ -194,7 +194,9 @@ class User < ActiveRecord::Base
   def ensure_names_continue_to_be_present
     %w{first_name last_name}.each do |attr|
       change = changes[attr]
-      unless change.nil? || change.first.blank? || !change.last.blank?
+      if (new_record? && self[attr].blank?) ||
+         !(change.nil? || change.first.blank? || !change.last.blank?)
+
         errors.add(attr.to_sym, "can't be blank")
       end
     end
