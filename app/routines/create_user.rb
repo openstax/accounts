@@ -12,7 +12,7 @@ class CreateUser
   protected
 
   def exec(state:, username:,
-           title: nil, first_name: nil, last_name: nil, full_name: nil, suffix: nil,
+           title: nil, first_name: nil, last_name: nil, suffix: nil,
            salesforce_contact_id: nil, faculty_status: nil,
            ensure_no_errors: false)
 
@@ -23,8 +23,8 @@ class CreateUser
     outputs[:user] = User.send(create_method) do |user|
       user.state = state
       user.username = username
-      user.first_name = first_name.present? ? first_name : guessed_first_name(full_name)
-      user.last_name = last_name.present? ? last_name : guessed_last_name(full_name)
+      user.first_name = first_name
+      user.last_name = last_name
       user.title = title
       user.suffix = suffix
       user.salesforce_contact_id = salesforce_contact_id
@@ -45,16 +45,6 @@ class CreateUser
     end
 
     raise "could not create a unique username after #{username_max_attempts} tries"
-  end
-
-  def guessed_first_name(full_name)
-    return nil if full_name.blank?
-    full_name.split("\s")[0]
-  end
-
-  def guessed_last_name(full_name)
-    return nil if full_name.blank?
-    full_name.split("\s").drop(1).join(' ')
   end
 
 end
