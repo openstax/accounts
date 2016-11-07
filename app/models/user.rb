@@ -133,7 +133,7 @@ class User < ActiveRecord::Base
   end
 
   def casual_name
-    first_name
+    first_name.present? ? first_name : username
   end
 
   def add_unread_update
