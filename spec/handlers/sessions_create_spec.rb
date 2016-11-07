@@ -30,7 +30,7 @@ describe SessionsCreate, type: :handler do
           end
         end
 
-        context "using a social network" do
+        xcontext "using a social network" do
           let!(:authentication) { FactoryGirl.create(:authentication,
                                                      user: nil,
                                                      provider: 'twitter') }
@@ -102,7 +102,7 @@ describe SessionsCreate, type: :handler do
           let!(:email1) { FactoryGirl.create(:email_address, user: user1) }
           let!(:email2) { FactoryGirl.create(:email_address, value: email1.value, user: user2) }
 
-          it "ignores the other users and makes a new social user" do
+          xit "ignores the other users and makes a new social user" do
 
             result = described_class.handle(
               user_state: user_state,

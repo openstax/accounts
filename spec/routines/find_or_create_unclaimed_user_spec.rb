@@ -78,29 +78,15 @@ describe FindOrCreateUnclaimedUser do
         }.to change(User,:count).by(1)
       end
 
-      it 'sets the first name, last name if given, ignoring full name' do
+      it 'sets the first name and last name' do
         expect {
           new_user = FindOrCreateUnclaimedUser.call(
             username: 'bobsmith', email: 'anunusedemail@example.com',
-            first_name: 'Bob', last_name: 'Smith', full_name: 'Frank Franky'
+            first_name: 'Bob', last_name: 'Smith'
           ).outputs.user
           expect(new_user.username).to eq('bobsmith')
           expect(new_user.first_name).to eq('Bob')
           expect(new_user.last_name).to eq('Smith')
-          expect(new_user.full_name).to eq('Bob Smith')
-        }.to change { User.count }.by(1)
-      end
-
-      it 'assumes the first name & last name if not given and full name present' do
-        expect {
-          new_user = FindOrCreateUnclaimedUser.call(
-            username: 'bobsmith', email: 'anunusedemail@example.com',
-            full_name: 'Frank Franky'
-          ).outputs.user
-          expect(new_user.username).to eq('bobsmith')
-          expect(new_user.first_name).to eq('Frank')
-          expect(new_user.last_name).to eq('Franky')
-          expect(new_user.full_name).to eq('Frank Franky')
         }.to change { User.count }.by(1)
       end
 

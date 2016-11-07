@@ -25,7 +25,7 @@ feature "User can't sign in" do
     )
   end
 
-  scenario 'user is not a local user' do
+  xscenario 'user is not a local user' do
     user = create_nonlocal_user 'not_local'
     fill_in (t :"sessions.help.username_or_email"), with: 'not_local'
     click_button (t :"sessions.help.submit")

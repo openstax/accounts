@@ -27,7 +27,7 @@ class SessionsCreate
   lev_handler
 
   uses_routine TransferAuthentications
-  uses_routine CreateUserFromOmniauthData
+  uses_routine CreateUser
   uses_routine TransferOmniauthData
   uses_routine ActivateUnclaimedUser
 
@@ -80,8 +80,8 @@ class SessionsCreate
         authentication_user = users_matching_oauth_data.first
         status = :transferred_authentication
       else
-        outcome = run(CreateUserFromOmniauthData, @data)
-        authentication_user = outcome.outputs[:user]
+        # This will be updated to use a routine that does more
+        authentication_user = User.new
         run(TransferOmniauthData, @data, authentication_user)
         status = :new_social_user
       end

@@ -41,9 +41,11 @@ def create_nonlocal_user(username, provider='facebook')
     end
   data = OmniauthData.new(auth_data)
 
-  result = CreateUserFromOmniauthData.call(data)
+  user = FactoryGirl.create(:user)
+  result = TransferOmniauthData.call(data, user)
   raise "create_nonlocal_user for #{username} failed" if result.errors.any?
-  user = User.find_by_username(username)
+  user.save!
+
   email = create_email_address_for(user, "#{username}@example.org")
   MarkContactInfoVerified.call(email)
   user
