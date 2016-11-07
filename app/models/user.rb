@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   validates :state, inclusion: { in: VALID_STATES,
                                  message: "must be one of #{VALID_STATES.join(',')}" }
 
-  validates :first_name, :last_name, presence: true, allow_blank: false
+  validate :ensure_names_continue_to_be_present
 
   delegate_to_routine :destroy
 
@@ -187,6 +187,17 @@ class User < ActiveRecord::Base
     self.suffix     = self.suffix.try(:strip)
     self.username   = self.username.try(:strip)
     true
+  end
+
+  # there are existing users without names
+  # allow them to continue to function, but require a name to exist once it's set
+  def ensure_names_continue_to_be_present
+    %w{first_name last_name}.each do |attr|
+      change = changes[attr]
+      unless change.nil? || change.first.blank? || !change.last.blank?
+        errors.add(attr.to_sym, "can't be blank")
+      end
+    end
   end
 
 end

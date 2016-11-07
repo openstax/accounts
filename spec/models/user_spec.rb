@@ -4,15 +4,21 @@ describe User, type: :model do
 
   it { should have_many :security_logs }
 
-  it 'requires first and last name' do
+  it 'requires first and last name once set' do
     user = User.new(first_name: "John", username: 'agent_smith')
-    expect(user).not_to be_valid
+    expect(user.save).to be(true)
+
+    user.first_name = ''
+    expect(user.save).to be(false)
+    expect(user.errors[:first_name]).to include("can't be blank")
+
+    user.first_name = 'Joe'
+    user.last_name  = 'Smith'
+    expect(user.save).to be(true)
+
+    user.last_name = nil
+    expect(user.save).to be(false)
     expect(user.errors[:last_name]).to include("can't be blank")
-    user.last_name = ' '
-    expect(user).not_to be_valid
-    expect(user.errors[:last_name]).to include("can't be blank")
-    user.last_name = 'Smith'
-    expect(user).to be_valid
   end
 
   it 'strips whitespace off of title, first & last names, suffix, username' do
