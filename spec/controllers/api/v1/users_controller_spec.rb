@@ -229,7 +229,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       }.to change{User.count}.by(1)
       expect(response.code).to eq('201')
       new_user_id = User.order(:id).last.id
-      expect(response.body).to eq({'id'=> new_user_id}.to_json)
+      expect(response.body).to eq({id: new_user_id}.to_json)
     end
 
     it 'creates a new user with first name, last name and full name if given' do
