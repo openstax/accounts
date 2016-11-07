@@ -38,6 +38,8 @@ describe TransferOmniauthData do
 
       user = FactoryGirl.create :user
       TransferOmniauthData.call(data, user)
+      expect(user.first_name).to eq('User')
+      expect(user.last_name).to eq('One')
       expect(user.contact_infos.length).to eq(1)
       expect(user.contact_infos[0].type).to eq('EmailAddress')
       expect(user.contact_infos[0].value).to eq('user@example.com')
@@ -85,6 +87,9 @@ describe TransferOmniauthData do
       }
       data = OmniauthData.new(auth_hash)
       TransferOmniauthData.call(data, user)
+      expect(user.username).to eq('user1')
+      expect(user.first_name).to eq('User')
+      expect(user.last_name).to eq('N. One')
       expect(user.contact_infos).to be_empty
     end
   end
@@ -119,6 +124,9 @@ describe TransferOmniauthData do
       }
       data = OmniauthData.new(auth_hash)
       TransferOmniauthData.call(data, user)
+      expect(user.username).to eq('User N. One')
+      expect(user.first_name).to eq('User')
+      expect(user.last_name).to eq('One')
       expect(user.contact_infos.length).to eq(1)
       expect(user.contact_infos[0].type).to eq('EmailAddress')
       expect(user.contact_infos[0].value).to eq('user@example.com')
