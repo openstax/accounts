@@ -23,6 +23,7 @@ class ContactInfo < ActiveRecord::Base
   scope :with_users, lambda { joins(:user).eager_load(:user) }
 
   before_save :add_unread_update
+  before_destroy :check_if_last_verified
 
   def confirmed;  verified;  end
   def confirmed?; verified?; end
@@ -40,5 +41,9 @@ class ContactInfo < ActiveRecord::Base
 
   def strip
     self.value = self.value.try(:strip)
+  end
+
+  def check_if_last_verified
+    false
   end
 end
