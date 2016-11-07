@@ -17,56 +17,23 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         create_user 'user'
 
         max_attempts_per_user.times do
-          visit '/'
-          expect_sign_in_page
-
-          fill_in (t :"sessions.new.username_or_email"), with: 'user'
-          fill_in (t :"sessions.new.password"), with: SecureRandom.hex
-          click_button (t :"sessions.new.sign_in")
-          expect(page).to have_no_missing_translations
+          log_in_good_username_bad_password
           expect(page).to have_content(t :"controllers.sessions.incorrect_password")
         end
 
-          visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user'
-        fill_in (t :"sessions.new.password"), with: SecureRandom.hex
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_good_username_bad_password
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user'
-        fill_in (t :"sessions.new.password"), with: 'password'
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_correctly_with_username
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        reset_code = generate_reset_code_for 'user'
-        visit "/reset_password?code=#{reset_code}"
-        expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
-        expect(page).to have_content(t :"identities.reset_password.confirm_password")
-        fill_in (t :"identities.reset_password.password"), with: '1234abcd'
-        fill_in (t :"identities.reset_password.confirm_password"), with: '1234abcd'
-        click_button (t :"identities.reset_password.set_password")
-        expect(page).to have_content(
-          t :"controllers.identities.password_reset_successfully"
-        )
+        reset_password(password: '1234abcd')
 
         click_link (t :"layouts.application_header.sign_out")
 
-        visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user'
-        fill_in (t :"sessions.new.password"), with: '1234abcd'
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_correctly_with_username(password: '1234abcd')
         expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
       end
     end
@@ -76,44 +43,20 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         create_user 'user'
 
         max_attempts_per_user.times do
-          visit '/'
-          expect_sign_in_page
-
-          fill_in (t :"sessions.new.username_or_email"), with: 'user'
-          fill_in (t :"sessions.new.password"), with: SecureRandom.hex
-          click_button (t :"sessions.new.sign_in")
-          expect(page).to have_no_missing_translations
+          log_in_good_username_bad_password
           expect(page).to have_content(t :"controllers.sessions.incorrect_password")
         end
 
-          visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user'
-        fill_in (t :"sessions.new.password"), with: SecureRandom.hex
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_good_username_bad_password
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user'
-        fill_in (t :"sessions.new.password"), with: 'password'
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_correctly_with_username
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
         Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
-          visit '/'
-          expect_sign_in_page
-
-          fill_in (t :"sessions.new.username_or_email"), with: 'user'
-          fill_in (t :"sessions.new.password"), with: 'password'
-          click_button (t :"sessions.new.sign_in")
-          expect(page).to have_no_missing_translations
+          log_in_correctly_with_username
           expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
@@ -127,55 +70,23 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         create_email_address_for user, 'user@example.com'
 
         max_attempts_per_user.times do
-          visit '/'
-          expect_sign_in_page
-
-          fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-          fill_in (t :"sessions.new.password"), with: SecureRandom.hex
-          click_button (t :"sessions.new.sign_in")
-          expect(page).to have_no_missing_translations
+          log_in_good_email_bad_password
           expect(page).to have_content(t :"controllers.sessions.incorrect_password")
         end
 
-        visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-        fill_in (t :"sessions.new.password"), with: SecureRandom.hex
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_good_email_bad_password
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-        fill_in (t :"sessions.new.password"), with: 'password'
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_correctly_with_email
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        reset_code = generate_reset_code_for 'user'
-        visit "/reset_password?code=#{reset_code}"
-        expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
-        expect(page).to have_content(t :"identities.reset_password.confirm_password")
-        fill_in (t :"identities.reset_password.password"), with: '1234abcd'
-        fill_in (t :"identities.reset_password.confirm_password"), with: '1234abcd'
-        click_button (t :"identities.reset_password.set_password")
-        expect(page).to have_content(
-          t :"controllers.identities.password_reset_successfully"
-        )
+        reset_password(password: '1234abcd')
 
         click_link (t :"layouts.application_header.sign_out")
 
-        visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-        fill_in (t :"sessions.new.password"), with: '1234abcd'
-        click_button (t :"sessions.new.sign_in")
+        log_in_correctly_with_email(password: '1234abcd')
         expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
       end
     end
@@ -186,44 +97,20 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         create_email_address_for user, 'user@example.com'
 
         max_attempts_per_user.times do
-          visit '/'
-          expect_sign_in_page
-
-          fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-          fill_in (t :"sessions.new.password"), with: SecureRandom.hex
-          click_button (t :"sessions.new.sign_in")
-          expect(page).to have_no_missing_translations
+          log_in_good_email_bad_password
           expect(page).to have_content(t :"controllers.sessions.incorrect_password")
         end
 
-        visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-        fill_in (t :"sessions.new.password"), with: SecureRandom.hex
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_good_email_bad_password
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-        fill_in (t :"sessions.new.password"), with: 'password'
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_correctly_with_email
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
         Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
-          visit '/'
-          expect_sign_in_page
-
-          fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-          fill_in (t :"sessions.new.password"), with: 'password'
-          click_button (t :"sessions.new.sign_in")
-          expect(page).to have_no_missing_translations
+          log_in_correctly_with_email
           expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
@@ -231,53 +118,71 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
   end
 
   context 'with random usernames' do
-    scenario 'getting thier ip unblocked after 1 hour' do
+    scenario 'getting their ip unblocked after 1 hour' do
       with_forgery_protection do
         create_user 'user'
 
         max_attempts_per_ip.times do
-          visit '/'
-          expect_sign_in_page
-
-          fill_in (t :"sessions.new.username_or_email"), with: SecureRandom.hex
-          fill_in (t :"sessions.new.password"), with: SecureRandom.hex
-          click_button (t :"sessions.new.sign_in")
-          expect(page).to have_no_missing_translations
+          log_in_bad_everything
           expect(page).to have_content(t :"controllers.sessions.no_account_for_username_or_email")
         end
 
-        visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: SecureRandom.hex
-        fill_in (t :"sessions.new.password"), with: SecureRandom.hex
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_bad_everything
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        visit '/'
-        expect_sign_in_page
-
-        fill_in (t :"sessions.new.username_or_email"), with: 'user'
-        fill_in (t :"sessions.new.password"), with: 'password'
-        click_button (t :"sessions.new.sign_in")
-        expect(page).to have_no_missing_translations
+        log_in_correctly_with_username
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
         Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
-          visit '/'
-          expect_sign_in_page
-
-          fill_in (t :"sessions.new.username_or_email"), with: 'user'
-          fill_in (t :"sessions.new.password"), with: 'password'
-          click_button (t :"sessions.new.sign_in")
-          expect(page).to have_no_missing_translations
+          log_in_correctly_with_username
           expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
     end
+  end
+
+  def log_in(username_or_email:, password:)
+    visit '/'
+    expect_sign_in_page
+    fill_in (t :"sessions.new.username_or_email"), with: username_or_email
+    fill_in (t :"sessions.new.password"), with: password
+    click_button (t :"sessions.new.sign_in")
+    expect(page).to have_no_missing_translations
+  end
+
+  def log_in_good_username_bad_password
+    log_in(username_or_email: 'user', password: SecureRandom.hex)
+  end
+
+  def log_in_good_email_bad_password
+    log_in(username_or_email: 'user@example.com', password: SecureRandom.hex)
+  end
+
+  def log_in_bad_everything
+    log_in(username_or_email: SecureRandom.hex, password: SecureRandom.hex)
+  end
+
+  def log_in_correctly_with_username(password: 'password')
+    log_in(username_or_email: 'user', password: password)
+  end
+
+  def log_in_correctly_with_email(password: 'password')
+    log_in(username_or_email: 'user@example.com', password: password)
+  end
+
+  def reset_password(password:)
+    reset_code = generate_reset_code_for 'user'
+    visit "/reset_password?code=#{reset_code}"
+    expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
+    expect(page).to have_content(t :"identities.reset_password.confirm_password")
+    fill_in (t :"identities.reset_password.password"), with: password
+    fill_in (t :"identities.reset_password.confirm_password"), with: password
+    click_button (t :"identities.reset_password.set_password")
+    expect(page).to have_content(
+      t :"controllers.identities.password_reset_successfully"
+    )
   end
 
 end
