@@ -137,7 +137,7 @@ describe TransferOmniauthData do
       }
       data = OmniauthData.new(auth_hash)
       TransferOmniauthData.call(data, user)
-      expect(user.username).to eq('User N. One')
+      expect(user.username).to eq('user_n_one')
       expect(user.first_name).to eq('User')
       expect(user.last_name).to eq('One')
       expect(user.contact_infos.length).to eq(1)

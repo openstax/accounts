@@ -10,8 +10,7 @@ class TransferOmniauthData
     # This routine is not called for identity, so error out
     raise Unexpected if data.provider == 'identity'
 
-
-    user.username = data.nickname if user.username.blank?
+    user.username = data.nickname.gsub(/\W/, '').underscore if user.username.blank?
 
     if user.first_name.blank?
       user.first_name = data.first_name.present? ? data.first_name : guessed_first_name(data.name)
