@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User logs in as a local user', js: true do
+xfeature 'User logs in as a local user', js: true do
 
   background { load 'db/seeds.rb' }
 

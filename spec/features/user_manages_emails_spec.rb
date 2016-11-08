@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User manages emails', js: true do
+xfeature 'User manages emails', js: true do
   before(:each) do
     user = create_user('user')
     create_email_address_for(user, 'user@unverified.com', SecureRandom.hex(32))

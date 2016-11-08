@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Login inside an iframe', js: true do
+xfeature 'Login inside an iframe', js: true do
 
   let(:valid_iframe_origins) { Rails.application.secrets[:valid_iframe_origins] }
 

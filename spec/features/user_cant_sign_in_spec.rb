@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 # If you use js: true you must sleep to wait for the emails to arrive
-feature "User can't sign in" do
+xfeature "User can't sign in" do
   background do
     @user = create_user 'user1'
     @email = create_email_address_for @user, 'user@example.com'

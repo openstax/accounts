@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User gets blocked after multiple failed sign in attempts', js: true do
+xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
   let(:max_attempts_per_user) { 2 }
   let(:max_attempts_per_ip)   { max_attempts_per_user + 3 }
 
