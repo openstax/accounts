@@ -29,18 +29,29 @@ describe ContactInfo do
 
   context 'user emails' do
 
-    let!(:email1) { FactoryGirl.build(:email_address,
+    let!(:email1) { FactoryGirl.build(:email_address, verified: true,
                                       value: 'my@email.com') }
-    let!(:email2) { FactoryGirl.build(:email_address,
+    let!(:email2) { FactoryGirl.build(:email_address, verified: true,
                                       value: 'my@email.com') }
 
     it 'does not allow the same user to have a repeated email address' do
       email1.save!
       expect(email2).to be_valid
-
       email2.user = email1.user
       expect(email2).not_to be_valid
       expect(email2.errors.types[:value]).to include(:taken)
+    end
+
+    it 'does not allow removing the last verified email address' do
+      email2.value = 'email2@test.com'
+      email2.user = email1.user
+      email2.save!
+      email1.save!
+      email1.destroy
+      expect(email1.destroyed?).to be true
+      email2.destroy
+      expect(email2.destroyed?).to be false
+      expect(email2.errors[:user].to_s).to include('unable to delete')
     end
 
   end

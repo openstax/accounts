@@ -44,6 +44,9 @@ class ContactInfo < ActiveRecord::Base
   end
 
   def check_if_last_verified
-    false
+    if verified? and not user.contact_infos.verified.many?
+      errors.add(:user, 'unable to delete last verified email address')
+      return false
+    end
   end
 end
