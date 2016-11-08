@@ -80,7 +80,8 @@ class SessionsCreate
         authentication_user = users_matching_oauth_data.first
         status = :transferred_authentication
       else
-        # This will be updated to use a routine that does more
+        # TODO: complete this as part of the new user signup flow
+        # This "else" block will most likely be removed at that time
         authentication_user = User.new
         run(TransferOmniauthData, @data, authentication_user)
         status = :new_social_user
