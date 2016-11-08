@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Skipped terms are respected', js: true do
+xfeature 'Skipped terms are respected', js: true do
 
   background do
     load 'db/seeds.rb'

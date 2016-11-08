@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Require recent sign in to change authentications', js: true do
+xfeature 'Require recent sign in to change authentications', js: true do
 
   scenario 'adding a new authentication' do
     user = create_user 'user'

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User resets password', js: true do
+xfeature 'User resets password', js: true do
   background do
     @user = create_user 'user'
     @reset_code = generate_reset_code_for 'user'
