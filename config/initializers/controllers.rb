@@ -68,11 +68,11 @@ ActionController::Base.class_exec do
   end
 
   def set_last_signin_provider(provider)
-    cookies.signed[:last_signin_provider] = provider
+    session[:last_signin_provider] = provider
   end
 
   def last_signin_provider
-    cookies.signed[:last_signin_provider]
+    session[:last_signin_provider]
   end
 
 end

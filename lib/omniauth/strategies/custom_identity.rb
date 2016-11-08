@@ -16,18 +16,8 @@ module OmniAuth
       MAX_LOGIN_ATTEMPTS_PER_IP = 10000
 
       include OmniAuth::Strategy
-
-      #
-      # Since this strategy is controller-like but from Rack, let's add
-      # some current_user methods (for which we also need cookies)
-      #
-
       include SignInState
       include ContractsNotRequired
-
-      def cookies
-        @cookies ||= ActionDispatch::Request.new(env).cookie_jar
-      end
 
       #
       # Strategy stuff
