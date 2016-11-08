@@ -5,28 +5,19 @@ module SignInState
 
   # Always return an object
   def current_user
-    if request.ssl? && \
-       cookies.signed[:secure_user_id] != "secure#{session[:user_id]}"
-      sign_out! # hijacked
-    else
-      @current_user ||= User.where(id: session[:user_id]).first \
-        if session[:user_id]
-      @current_user ||= AnonymousUser.instance
-    end
-
-    @current_user
+    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+    @current_user ||= AnonymousUser.instance
   end
 
   def sign_in!(user)
     @current_user = user || AnonymousUser.instance
+
     if @current_user.is_anonymous?
       session[:user_id] = nil
-      cookies.delete(:secure_user_id)
     else
       session[:user_id] = @current_user.id
-      cookies.signed[:secure_user_id] = { secure: true,
-                                          value: "secure#{@current_user.id}" }
-      session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator? && is_real_production_site?
+      session[:last_admin_activity] = DateTime.now.to_s \
+        if @current_user.is_administrator? && is_real_production_site?
     end
 
     @current_user
