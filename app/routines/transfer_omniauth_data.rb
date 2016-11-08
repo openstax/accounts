@@ -10,9 +10,16 @@ class TransferOmniauthData
     # This routine is not called for identity, so error out
     raise Unexpected if data.provider == 'identity'
 
-    user.username   = data.nickname
-    user.first_name = data.first_name.present? ? data.first_name : guessed_first_name(data.name)
-    user.last_name  = data.last_name.present?  ? data.last_name  : guessed_last_name(data.name)
+
+    user.username = data.nickname if user.username.blank?
+
+    if user.first_name.blank?
+      user.first_name = data.first_name.present? ? data.first_name : guessed_first_name(data.name)
+    end
+
+    if user.last_name.blank?
+      user.last_name = data.last_name.present?  ? data.last_name  : guessed_last_name(data.name)
+    end
 
     run(AddEmailToUser, data.email, user, {already_verified: true})
   end
