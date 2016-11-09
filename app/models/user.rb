@@ -39,12 +39,14 @@ class User < ActiveRecord::Base
 
   before_validation :strip_names
 
-  validates :username, presence: true,
-                       length: { minimum: USERNAME_MIN_LENGTH, maximum: USERNAME_MAX_LENGTH },
+  validates :username, length: { minimum: USERNAME_MIN_LENGTH,
+                                 maximum: USERNAME_MAX_LENGTH,
+                                 allow_nil: true },
                        format: { with: USERNAME_VALID_REGEX,
-                                 message: "can only contain letters, numbers, and underscores." }
+                                 message: "can only contain letters, numbers, and underscores.",
+                                 allow_nil: true }
 
-  validates :username, uniqueness: { case_sensitive: false },
+  validates :username, uniqueness: { case_sensitive: false, allow_nil: true },
                        if: :username_changed?
 
   validates :state, inclusion: { in: VALID_STATES,
