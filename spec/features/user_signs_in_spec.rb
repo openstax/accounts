@@ -1,10 +1,21 @@
 require 'rails_helper'
 
-xfeature 'User logs in as a local user', js: true do
+feature 'User logs in as a local user', js: true do
 
   background { load 'db/seeds.rb' }
 
-  scenario 'authenticates against the default (bcrypt) password hashes' do
+  scenario 'authentication on the happy path' do
+    with_forgery_protection do
+      create_application
+      create_user 'user'
+      visit_authorize_uri
+      expect_sign_in_page
+      fill_in 'email', with: user.email
+      click_button 'NEXT'
+    end
+  end
+
+  xscenario 'authenticates against the default (bcrypt) password hashes' do
     with_forgery_protection do
       create_application
       create_user 'user'
@@ -24,7 +35,7 @@ xfeature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'authenticates against plone (ssha) password hashes' do
+  xscenario 'authenticates against plone (ssha) password hashes' do
     with_forgery_protection do
       create_application
       create_user_with_plone_password
@@ -44,7 +55,7 @@ xfeature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'with an unknown username' do
+  xscenario 'with an unknown username' do
     with_forgery_protection do
       create_application
       visit_authorize_uri
@@ -58,7 +69,7 @@ xfeature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'with a password that is expired' do
+  xscenario 'with a password that is expired' do
     @user = create_user 'expired_password'
     identity = @user.identity
     identity.password_expires_at = 1.week.ago
@@ -85,7 +96,7 @@ xfeature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'with a user imported from csv' do
+  xscenario 'with a user imported from csv' do
     imported_user 'imported_user'
 
     with_forgery_protection do
@@ -118,7 +129,7 @@ xfeature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'redirect home page visitors' do
+  xscenario 'redirect home page visitors' do
     user = create_user('jimbo')
 
     visit '/'
@@ -131,7 +142,7 @@ xfeature 'User logs in as a local user', js: true do
     expect(page).to have_content(t :"users.edit.page_heading")
   end
 
-  scenario 'and gets asked to reset password and accept terms on home page' do
+  xscenario 'and gets asked to reset password and accept terms on home page' do
     imported_user 'imported_user'
 
     with_forgery_protection do
@@ -164,7 +175,7 @@ xfeature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'a user signs into an account that has been created by an admin for them', js: true do
+  xscenario 'a user signs into an account that has been created by an admin for them', js: true do
 
     new_user = FindOrCreateUnclaimedUser.call(
       email:'unclaimeduser@example.com', username: 'therulerofallthings',
@@ -189,7 +200,7 @@ xfeature 'User logs in as a local user', js: true do
 
   end
 
-  scenario 'with an email address and password' do
+  xscenario 'with an email address and password' do
     with_forgery_protection do
       create_application
       user = create_user 'user'
@@ -211,7 +222,7 @@ xfeature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'with an unverified email address and password' do
+  xscenario 'with an unverified email address and password' do
     with_forgery_protection do
       create_application
       user = create_user 'user'
@@ -232,7 +243,7 @@ xfeature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'with an email address linked to several user accounts' do
+  xscenario 'with an email address linked to several user accounts' do
     with_forgery_protection do
       create_application
 
@@ -258,7 +269,7 @@ xfeature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'with an unstripped username' do
+  xscenario 'with an unstripped username' do
     with_forgery_protection do
       user = create_user 'user'
       create_email_address_for user, 'user@example.com'
@@ -274,7 +285,7 @@ xfeature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'with an unstripped email' do
+  xscenario 'with an unstripped email' do
     with_forgery_protection do
       user = create_user 'user'
       create_email_address_for user, 'user@example.com'

@@ -11,12 +11,14 @@ Rails.application.routes.draw do
   scope controller: 'sessions' do
     get 'login', action: :new
 
+
     post 'lookup_login'
 
     get 'authenticate'
 
     get 'auth/:provider/callback', action: :create
     post 'auth/:provider/callback', action: :create
+    post 'signin-with-email', action: :signin_with_email, as: :signin_with_email
 
     get 'logout', action: :destroy
 

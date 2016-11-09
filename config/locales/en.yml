@@ -208,7 +208,7 @@ en:
       openstax_wont_use_social_media_without_permission_html: >-
         <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
         network without your permission.
-      page_heading: Sign in to OpenStax
+      page_heading: Log in to OpenStax
       page_sub_heading: Access all OpenStax tools and resources
       password: Password
       separator_or: OR
@@ -217,6 +217,7 @@ en:
       sign_in_with_google: Sign in with Google
       sign_in_with_twitter: Sign in with Twitter
       sign_up: Sign up
+      no_account_q: No account?
       used_this_method_last_time: >-
         It looks like you used this the last time you signed in.
       username_or_email: Email or username

@@ -1,18 +1,21 @@
-<% @hide_session_info = true %>
+<%= image_tag('openstax-logo-white.png', width: 174, height: 40, class: 'logo') %>
 
-<% @parent_col_id = "signin" %>
+<div class="ox-card">
 
-<%= page_heading (t :".page_heading"), sub_heading_text: (t :".page_sub_heading"), center: true %>
+  <h1 class="title"><%= t '.page_heading' %></h1>
 
-<div class="row">
-  <h3>Log in to OpenStax</h3>
+  <%= form_tag '/auth/identity/callback' do %>
 
-  <%= lev_form_for :login, url: lookup_login_path, method: :post do |f| %>
-    <%= f.text_field :username_or_email, placeholder: (t :".username_or_email") %>
-    <%= f.submit (t :".next"), class: 'btn btn-primary' %>
+    <input type="email" placeholder="name@mail.edu" name="email" />
+
+    <input type="submit" class="btn btn-primary" value="NEXT" />
+
+    <div class="footer">
+      <p>
+        <%= t '.no_account_q' %>
+        <%= link_to(t('.sign_up'), signup_password_path) %>
+      </p>
+    </div>
   <% end %>
 
-  <hr/>
-
-  <p>No account? <span class='sign-up'><%= link_to (t :".sign_up"), signup_path %></span></p>
 </div>

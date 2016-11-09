@@ -190,7 +190,6 @@ end
 def expect_sign_in_page
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"sessions.new.page_heading")
-  expect(page).to have_content(t :"sessions.new.page_sub_heading")
 end
 
 def expect_social_sign_up_page
