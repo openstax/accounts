@@ -97,7 +97,10 @@ body, p, ol, ul, td, a {
 }
 
 #application-footer {
-  clear: both;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
   height: $application_footer_height;
   background-color: #ffffff;

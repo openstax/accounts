@@ -9,6 +9,7 @@ Accounts::Application.routes.draw do
     get 'failure', path: 'auth/failure'
 
     get 'signin', action: :new
+    post 'signin-with-email', action :signin_with_email, as: :signin_with_email
     get 'signout', action: :destroy
 
     # Maintain these deprecated routes for a while until client code learns to

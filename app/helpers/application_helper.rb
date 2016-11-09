@@ -7,9 +7,9 @@ module ApplicationHelper
       add_local_error_alert now: true, content: error.translate
     end
 
-    @handler_result.errors.any? ?
-      js_refresh_alerts(options) :
-      js_refresh_alerts(options) + capture(&block).html_safe
+#    @handler_result.errors.any? ?
+#      js_refresh_alerts(options) :
+#      js_refresh_alerts(options) + capture(&block).html_safe
   end
 
   def js_refresh_alerts(options={})

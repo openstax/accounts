@@ -1,82 +1,21 @@
-<% @hide_session_info = true %>
+<%= image_tag('openstax-logo-white.png', width: 174, height: 40, class: 'logo') %>
 
-<% @parent_col_id = "signin" %>
 
-<%= page_heading "Sign in to OpenStax", sub_heading_text: "Access your OpenStax Tutor, Concept Coach, and openstaxcollege.org accounts" %>
+<div class="ox-card">
 
-<div id="options" class="row">
+  <h1 class="title">Log in to OpenStax</h1>
 
-  <div id="social-login" class="col-sm-6">
+  <%= form_tag '/auth/identity/callback' do %>
 
-    <div class="button-form-group">
-      <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook', id: 'facebook-login-button' do %>
-        <span class="fa fa-facebook"></span> Sign in with Facebook
-      <% end %>
-      <%= last_signin_mark('facebook') %>
+    <input type="email" placeholder="name@mail.edu" name="email" />
 
-      <%= link_to "/auth/google", class: 'btn btn-block btn-social btn-google', id: 'google-login-button' do %>
-        <span class="fa fa-google"></span> Sign in with Google
-      <% end %>
-      <%= last_signin_mark('google') %>
+    <input type="submit" class="btn btn-primary" value="NEXT" />
 
-      <%= link_to "/auth/twitter", class: 'btn btn-block btn-social btn-twitter', id: 'twitter-login-button' do %>
-        <span class="fa fa-twitter"></span> Sign in with Twitter
-      <% end %>
-      <%= last_signin_mark('twitter') %>
+    <div class="footer">
+      <p>
+        No account?
+        <%= link_to('Sign Up', signup_password_path) %>
+      </p>
     </div>
-
-  </div>
-
-  <div id="password-login" class="col-sm-6">
-
-    <span id="vertical-or" class="hidden-xs">OR</span>
-
-    <div id="horizontal-or-bar" class="visible-xs">
-      <span>OR</span>
-    </div>
-
-    <div class="button-form-group">
-      <%= form_tag '/auth/identity/callback' do %>
-        <div class="form-group">
-          <label for='auth_key'>Username or Email</label>
-          <input type='text' id='auth_key' name='auth_key' class="form-control" autocapitalize="off" autocorrect="off"/>
-        </div>
-        <%= last_signin_mark('identity') %>
-
-        <div class="form-group">
-          <label for='password'>Password</label>
-          <input type='password' id='password' name='password' class="form-control"/>
-        </div>
-
-        <div class='password-actions'>
-          <button type="submit" class="btn btn-primary">Sign in</button>
-
-          <span class='sign-up'><%= link_to "Sign up", signup_password_path %></span>
-        </div>
-
-      <% end %>
-    </div>
-
-  </div>
-</div>
-
-<div id="last-signin-explanation" class="row" style="<%= 'display:none' if last_signin_provider.blank? %>">
-  <div class="col-xs-12" style="text-align: center">
-    <div class="content">
-      <span class="last-signin-symbol">*</span>&nbsp;&nbsp;&nbsp;It looks like you used this the last time you signed in.
-    </div>
-  </div>
-</div>
-
-<div id="cant-sign-in" class="row">
-  <div class="col-xs-12" style='text-align: center'>
-    <span><%= link_to "Can't sign in?", signin_help_path %></span>
-  </div>
-</div>
-
-<div id="reminders" class="row">
-  <div class="col-xs-12">
-    <p><i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social network without your permission.</p>
-    <p>If you're on a public computer, <b style="white-space:nowrap">be sure to sign out</b> when you're done!</p>
-  </div>
+  <% end %>
 </div>
