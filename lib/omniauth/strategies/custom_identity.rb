@@ -11,6 +11,8 @@ module OmniAuth
     #
     class CustomIdentity
 
+      NullSession = ActionController::RequestForgeryProtection::ProtectionMethods::NullSession
+
       LOGIN_ATTEMPTS_PERIOD = 1.hour
       MAX_LOGIN_ATTEMPTS_PER_USER = 10
       MAX_LOGIN_ATTEMPTS_PER_IP = 10000
@@ -18,6 +20,10 @@ module OmniAuth
       include OmniAuth::Strategy
       include SignInState
       include ContractsNotRequired
+
+      # Request forgery protection
+      include ActiveSupport::Configurable
+      include ActionController::RequestForgeryProtection
 
       #
       # Strategy stuff
@@ -27,7 +33,7 @@ module OmniAuth
       option(:locate_conditions, lambda do |req|
         auth_key = req.params['auth_key'].try(:strip)
         contacts = ContactInfo.verified.where(value: auth_key).preload(:user)
-        users = [User.where(username: auth_key).first || contacts.map(&:user)].flatten
+        users = [User.find_by(username: auth_key) || contacts.map(&:user)].flatten
         users_returned = users.size
         user = users.first if users_returned == 1
         user_id = user.try :id
@@ -95,18 +101,39 @@ module OmniAuth
 
       def other_phase
         if on_signup_path?
-          if request.get?
-            # Normal identity shows sign up form, but we don't want that
-            raise ActionController::RoutingError.new('Not Found')
-          elsif request.post?
-            handle_signup
-          end
+          # Normal identity shows sign up form on GET, but we don't want that
+          request.post? ? handle_signup : raise(ActionController::RoutingError.new('Not Found'))
         else
           call_app!
         end
       end
 
+      def verified_request?
+        !protect_against_forgery? || request.get? || request.head? ||
+        valid_authenticity_token?(session, form_authenticity_param) ||
+        valid_authenticity_token?(session, request.env['X_CSRF_TOKEN'])
+      end
+
+      def form_authenticity_param
+        request.params[request_forgery_protection_token.to_s]
+      end
+
+      def handle_unverified_request
+        rq = ActionDispatch::Request.new(request.env)
+        rq.session = NullSession::NullSessionHash.new(rq.env)
+        rq.env['action_dispatch.request.flash_hash'] = nil
+        rq.env['rack.session.options'] = { skip: true }
+        rq.env['action_dispatch.cookies'] = NullSession::NullCookieJar.build(rq)
+      end
+
       def handle_signup
+        unless verified_request?
+          Rails.logger.warn{ "Can't verify CSRF token authenticity" } \
+            if Rails.logger && log_warning_on_csrf_failure
+
+          handle_unverified_request
+        end
+
         @handler_result =
           SignupPassword.handle(
             params: request,
