@@ -4,12 +4,23 @@ describe User, type: :model do
 
   it { should have_many :security_logs }
 
-  it 'requires at least a first or last name if a title is set' do
-    user = User.new(title: "Hi")
-    expect(user).not_to be_valid
+  it 'requires first and last name once set' do
+    user = User.new(first_name: "John", username: 'agent_smith')
+    expect(user.save).to be(false)
+    expect(user.errors[:last_name]).to include("can't be blank")
+    user.last_name = 'Smith'
+    expect(user.save).to be(true)
 
-    user = User.new(suffix: "Hi")
-    expect(user).not_to be_valid
+    user.first_name = ''
+    expect(user.save).to be(false)
+    expect(user.errors[:first_name]).to include("can't be blank")
+
+    user.first_name = 'Joe'
+    expect(user.save).to be(true)
+
+    user.last_name = nil
+    expect(user.save).to be(false)
+    expect(user.errors[:last_name]).to include("can't be blank")
   end
 
   it 'strips whitespace off of title, first & last names, suffix, username' do
@@ -36,18 +47,8 @@ describe User, type: :model do
     end
 
     it 'includes the title if present' do
-      user = FactoryGirl.create :user, title: "Mr.", first_name: "Bob"
-      expect(user.full_name).to eq "Mr. Bob"
-    end
-
-    it 'includes the suffix if present' do
-      user = FactoryGirl.create :user, suffix: "Jr.", first_name: "Bob"
-      expect(user.full_name).to eq "Bob Jr."
-    end
-
-    it 'does not have extra spaces in middle if missing first name' do
-      user = FactoryGirl.create :user, title: "Professor", last_name: "Einstein"
-      expect(user.full_name).to eq "Professor Einstein"
+      user = FactoryGirl.create :user, title: "Mr.", first_name: "Bob", last_name: "Jones"
+      expect(user.full_name).to eq "Mr. Bob Jones"
     end
   end
 
@@ -133,13 +134,7 @@ describe User, type: :model do
   end
 
   it 'returns a name' do
-    user = FactoryGirl.create :user, username: 'username'
-    expect(user.name).to eq('username')
-
-    user.first_name = 'User'
-    expect(user.name).to eq('User')
-
-    user.last_name = 'One'
+    user = FactoryGirl.create :user, first_name: 'User', last_name: 'One'
     expect(user.name).to eq('User One')
 
     user.title = 'Miss'
@@ -150,13 +145,9 @@ describe User, type: :model do
     expect(user.name).to eq('Dr User One Second')
   end
 
-  it 'returns a casual name' do
-    user = FactoryGirl.create :user, username: 'username', first_name: ''
-    expect(user.casual_name).to eq('username')
-
-    user.first_name = 'First'
-    user.last_name = 'Last'
-    expect(user.casual_name).to eq('First')
+  it 'returns the first name as casual name' do
+    user = FactoryGirl.create :user, first_name: 'Nikola', last_name: 'Tesla'
+    expect(user.casual_name).to eq('Nikola')
   end
 
 

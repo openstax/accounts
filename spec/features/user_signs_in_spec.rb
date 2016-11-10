@@ -168,6 +168,7 @@ xfeature 'User logs in as a local user', js: true do
 
     new_user = FindOrCreateUnclaimedUser.call(
       email:'unclaimeduser@example.com', username: 'therulerofallthings',
+      first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
       password: "apassword", password_confirmation: "apassword"
     ).outputs.user
     expect(new_user.reload.state).to eq("unclaimed")

@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   validates :state, inclusion: { in: VALID_STATES,
                                  message: "must be one of #{VALID_STATES.join(',')}" }
 
-  validate :name_part_required_for_suffix_or_title
+  validate :ensure_names_continue_to_be_present
 
   delegate_to_routine :destroy
 
@@ -188,24 +188,6 @@ class User < ActiveRecord::Base
     self.is_administrator = true if User.count == 0
   end
 
-  def name_part_required_for_suffix_or_title
-    has_name_parts = first_name.present? || last_name.present?
-
-    if !has_name_parts
-      if title.present?
-        errors.add(:base, "A first or last name is required if a title is provided")
-        return false
-      end
-
-      if suffix.present?
-        errors.add(:base, "A first or last name is required if a suffix is provided")
-        false
-      end
-    end
-
-    true
-  end
-
   def strip_names
     self.title      = self.title.try(:strip)
     self.first_name = self.first_name.try(:strip)
@@ -213,6 +195,19 @@ class User < ActiveRecord::Base
     self.suffix     = self.suffix.try(:strip)
     self.username   = self.username.try(:strip)
     true
+  end
+
+  # there are existing users without names
+  # allow them to continue to function, but require a name to exist once it's set
+  def ensure_names_continue_to_be_present
+    %w{first_name last_name}.each do |attr|
+      change = changes[attr]
+      if (new_record? && self[attr].blank?) ||
+         !(change.nil? || change.first.blank? || !change.last.blank?)
+
+        errors.add(attr.to_sym, "can't be blank")
+      end
+    end
   end
 
 end

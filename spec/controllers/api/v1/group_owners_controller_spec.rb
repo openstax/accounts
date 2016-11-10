@@ -328,12 +328,4 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
     end
   end
 
-  def user_hash(user)
-    {
-      'id' => user.id,
-      'username' => user.username,
-      'uuid' => user.uuid
-    }
-  end
-
 end

@@ -484,12 +484,4 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
     end
   end
 
-  def user_hash(user)
-    {
-      'id' => user.id,
-      'username' => user.username,
-      'uuid' => user.uuid
-    }
-  end
-
 end

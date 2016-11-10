@@ -100,15 +100,10 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
     it "should not let id be specified" do
       api_get :show, user_1_token, parameters: {id: admin_user.id}
-
-      expected_response = {
-        id: user_1.id,
-        username: user_1.username,
-        uuid: user_1.uuid,
+      expected_response = user_hash(user_1).merge({
         faculty_status: user_1.faculty_status,
         contact_infos: []
-      }.to_json
-
+      }).to_json
       expect(response.body).to eq(expected_response)
     end
 
@@ -119,15 +114,10 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
     it "should return a properly formatted JSON response for low-info user" do
       api_get :show, user_1_token
-
-      expected_response = {
-        id: user_1.id,
-        username: user_1.username,
-        uuid: user_1.uuid,
+      expected_response = user_hash(user_1).merge({
         faculty_status: user_1.faculty_status,
         contact_infos: []
-      }.to_json
-
+      }).to_json
       expect(response.body).to eq(expected_response)
     end
 
@@ -235,7 +225,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       expect{
         api_post :find_or_create,
                  trusted_application_token,
-                 raw_post_data: {email: 'a-new-email@test.com'}
+                 raw_post_data: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('201')
       new_user_id = User.order(:id).last.id

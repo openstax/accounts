@@ -88,16 +88,13 @@ $('#username').editable({
   }
 });
 
-$('#name').editable({
-  value: {
+OX.Profile.Name.editable($('#name'), {
     title: "<%= current_user.title %>",
     first_name: "<%= current_user.first_name %>",
     last_name: "<%= current_user.last_name %>",
     suffix: "<%= current_user.suffix %>"
-  },
-  success: function(response, newValue) {
-    $(this).html(response.full_name);
-  }
 });
+
+
 </script>
 <% end # javscript content block %>
