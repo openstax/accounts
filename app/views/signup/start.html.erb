@@ -1,3 +1,20 @@
-<p>start.html.erb</p>
+<% @hide_session_info = true %>
 
-<p>Solicit role and email address</p>
+<% @parent_col_id = "signin" %>
+
+<%= page_heading (t :".page_heading"), sub_heading_text: (t :".page_sub_heading"), center: true %>
+
+<div class="row">
+  <h3>Sign up with OpenStax</h3>
+
+  <%= lev_form_for :signup, url: signup_submit_email_path, method: :post do |f| %>
+    <%= f.select :role, options_for_select(%w(Instructor Student).map{|role| [role, role]},
+                        [saved_role].compact) %>
+    <%= f.text_field :email, placeholder: (t :".email"), value: saved_email %>
+    <%= f.submit (t :".next"), class: 'btn btn-primary' %>
+  <% end %>
+
+  <hr/>
+
+  <p>No account? <span class='sign-up'><%= link_to (t :".sign_up"), signup_path %></span></p>
+</div>

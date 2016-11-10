@@ -3,7 +3,7 @@ class ConfirmByPin
 
   uses_routine ConfirmContactInfo
 
-  MAX_PIN_FAILURES = 5
+  MAX_PIN_FAILURES = 10
 
   def self.sequential_failure_for(contact_info)
     SequentialFailure.confirm_by_pin

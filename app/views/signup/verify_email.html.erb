@@ -1,3 +1,13 @@
-<p>verify_email.html.erb</p>
+<p>Enter Your PIN</p>
 
-<p>Verify email by PIN (during signup)</p>
+<p>Please check: <%= saved_email %></p>
+<p>You will receive a six-digit PIN.</p>
+
+<%= lev_form_for :pin, url: signup_check_pin_path, method: :post do |f| %>
+  <%= f.text_field :pin, placeholder: (t :".pin") %>
+  <%= f.submit (t :".next"), class: 'btn btn-primary' %>
+<% end %>
+
+<%# TODO make sure email/role persist if go back to signup start %>
+
+<p>Email incorrect? <span class='sign-up'><%= link_to (t :".sign_up"), signup_path %></span></p>

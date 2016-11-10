@@ -49,10 +49,16 @@ Rails.application.routes.draw do
   end
 
   namespace 'signup' do
-    get '/', action: :index
+    get '/', action: :start
     get 'password'
     get 'social'
-    post 'social'
+    # post 'social'
+
+
+    post 'submit_email'
+    get 'verify_email'
+    post 'check_pin'
+    get 'check_token'
   end
 
   resource :identity, only: :update
