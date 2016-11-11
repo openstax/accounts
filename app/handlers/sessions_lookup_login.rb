@@ -17,6 +17,7 @@ class SessionsLookupLogin
     users = LookupUsers.by_email_or_username(login_params.username_or_email)
 
     fatal_error(code: :unknown_username_or_email,
+                message: I18n.t('errors.no_account_for_username_or_email'),
                 offending_inputs: [:username_or_email]
                ) if users.empty?
 

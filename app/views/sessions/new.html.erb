@@ -10,12 +10,10 @@
   <%= lev_form_for :login, url: lookup_login_path do |f| %>
 
     <div class="form-group<%= ' has-error' if is_invalid %>">
-
       <%= f.text_field :username_or_email, placeholder: t('.email_placeholder'),
           class: "form-control wide", autofocus: true %>
         <%= render(partial: "layouts/attention") %>
     </div>
-
 
     <input type="submit" class="btn btn-primary" value="<%= t '.next' %>" />
 
