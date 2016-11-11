@@ -1,24 +1,22 @@
 # Creates a user with the supplied parameters.
 #
-# If :ensure_no_errors is true, the routine will make sure that the
-# username is available (blank/nil usernames are allowed in this case)
+# If :ensure_no_errors is true, the routine will make sure that the username is available or nil
 #
 # If :ensure_no_errors is not set, the returned user object may have errors
-# and if so will not be saved.
+# that will cause this routine to fail
 class CreateUser
 
   lev_routine
 
   protected
 
-  def exec(state:, username:,
+  def exec(state:, username: nil,
            title: nil, first_name: nil, last_name: nil, full_name: nil, suffix: nil,
            salesforce_contact_id: nil, faculty_status: nil,
            ensure_no_errors: false)
 
     username = generate_unique_valid_username(username) if ensure_no_errors
     create_method = ensure_no_errors ? :create! : :create
-    faculty_status ||= :no_faculty_info
 
     outputs[:user] = User.send(create_method) do |user|
       user.state = state
@@ -28,7 +26,7 @@ class CreateUser
       user.title = title
       user.suffix = suffix
       user.salesforce_contact_id = salesforce_contact_id
-      user.faculty_status = faculty_status
+      user.faculty_status = faculty_status || :no_faculty_info
     end
 
     transfer_errors_from(outputs[:user], {type: :verbatim})

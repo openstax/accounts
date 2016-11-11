@@ -5,7 +5,6 @@ class SignupPassword
   paramify :signup do
     attribute :i_agree, type: boolean
     attribute :username, type: String
-    validates :username, presence: true
     attribute :title, type: String
     attribute :first_name, type: String
     validates :first_name, presence: true
@@ -39,10 +38,14 @@ class SignupPassword
 
   def handle
     if options[:contracts_required] && !signup_params.i_agree
-      fatal_error(code: :did_not_agree, message: (I18n.t :"handlers.signup_password.you_must_agree_to_the_terms"))
+      fatal_error(code: :did_not_agree,
+                  message: (I18n.t :"handlers.signup_password.you_must_agree_to_the_terms"))
     end
 
-    run(CreateUser, username: signup_params.username,
+    username = signup_params.username
+    username = nil if signup_params.username.blank?
+
+    run(CreateUser, username: username,
                     title: (signup_params.title if signup_params.title.blank?),
                     first_name: signup_params.first_name,
                     last_name: signup_params.last_name,

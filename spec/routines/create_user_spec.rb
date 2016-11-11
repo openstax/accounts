@@ -25,7 +25,7 @@ describe CreateUser do
       it "raises an exception" do
         expect{
           CreateUser.call(username: "unclebob", first_name: "Robert", last_name: "Martin", ensure_no_errors: true, state: "bogus_state!")
-          }.to raise_error(StandardError)
+        }.to raise_error(StandardError)
       end
     end
 
@@ -40,8 +40,8 @@ describe CreateUser do
 
         it "does not raise an exception" do
           expect{
-              CreateUser.call(username: "!@#$%^&*", first_name: "!@#$%^&*", last_name: "!@#$%^&*", ensure_no_errors: false, state: 'activated')
-            }.to_not raise_error
+            CreateUser.call(username: "!@#$%^&*", first_name: "!@#$%^&*", last_name: "!@#$%^&*", ensure_no_errors: false, state: 'activated')
+          }.to_not raise_error
         end
       end
 

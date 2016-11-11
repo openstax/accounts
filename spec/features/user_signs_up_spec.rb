@@ -2,15 +2,18 @@ require 'rails_helper'
 
 feature 'User signs up as a local user', js: true do
 
-  background { load 'db/seeds.rb' }
+  background do
+    load 'db/seeds.rb'
+
+    create_application
+  end
 
   context 'without forgery protection' do
     scenario 'failure' do
-      create_application
       visit_authorize_uri
-
-      expect(page.current_url).to include(signin_path)
+      expect_sign_in_page
       click_password_sign_up
+
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"signup.password.page_heading")
 
@@ -29,13 +32,12 @@ feature 'User signs up as a local user', js: true do
   end
 
   context 'with forgery protection' do
-    scenario 'success' do
+    scenario 'success with username' do
       with_forgery_protection do
-        create_application
         visit_authorize_uri
-
-        expect(page.current_url).to include(signin_path)
+        expect_sign_in_page
         click_password_sign_up
+
         expect(page).to have_no_missing_translations
         expect(page).to have_content(t :"signup.password.page_heading")
 
@@ -54,17 +56,49 @@ feature 'User signs up as a local user', js: true do
 
         visit '/'
         click_link (t :"layouts.application_header.sign_out")
-        expect(page.current_url).to include(signin_path)
+
+        expect_sign_in_page
         expect(page).not_to(
           have_content(t :"layouts.application_header.welcome_html", username: 'testuser')
         )
-        expect(page.current_url).to include(signin_path)
+      end
+    end
+
+    scenario 'success with empty username' do
+      with_forgery_protection do
+        visit_authorize_uri
+        expect_sign_in_page
+        click_password_sign_up
+
+        expect(page).to have_no_missing_translations
+        expect(page).to have_content(t :"signup.password.page_heading")
+
+        fill_in (t :"signup.new_account.first_name"), with: 'Test'
+        fill_in (t :"signup.new_account.last_name"), with: 'User'
+        fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
+        fill_in (t :"signup.new_account.username"), with: ''
+        fill_in (t :"signup.new_account.password"), with: 'password'
+        fill_in (t :"signup.new_account.confirm_password"), with: 'password'
+        agree_and_click_create
+
+        expect(page).to have_no_missing_translations
+        expect(page).not_to have_content('Alert')
+
+        expect(page.current_url).to match(app_callback_url)
+
+        visit '/'
+        click_link (t :"layouts.application_header.sign_out")
+
+        expect_sign_in_page
+        expect(page).not_to have_content(t :"layouts.application_header.welcome_html",
+                                         username: 'testuser')
       end
     end
 
     scenario 'when already has password' do
       with_forgery_protection do
-        visit '/'
+        visit_authorize_uri
+        expect_sign_in_page
         click_password_sign_up
 
         fill_in (t :"signup.new_account.first_name"), with: 'Test'
@@ -84,11 +118,10 @@ feature 'User signs up as a local user', js: true do
   end
 
   scenario 'sign up chooser page' do
-    create_application
     visit_authorize_uri
-
     expect_sign_in_page
     click_link (t :"sessions.new.sign_up")
+
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t :"signup.index.page_heading")
     expect(page).to have_content(t :"signup.index.sign_up_with_facebook")
@@ -98,8 +131,10 @@ feature 'User signs up as a local user', js: true do
   end
 
   scenario 'with incorrect password confirmation' do
-    visit '/'
+    visit_authorize_uri
+    expect_sign_in_page
     click_password_sign_up
+
     expect(page).to have_no_missing_translations
 
     fill_in (t :"signup.new_account.first_name"), with: 'Test'
@@ -115,25 +150,9 @@ feature 'User signs up as a local user', js: true do
     expect(page).not_to have_content(t :"layouts.application_header.sign_out")
   end
 
-  scenario 'with empty username' do
-    visit '/'
-    click_password_sign_up
-
-    fill_in (t :"signup.new_account.first_name"), with: 'Test'
-    fill_in (t :"signup.new_account.last_name"), with: 'User'
-    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
-    fill_in (t :"signup.new_account.username"), with: ''
-    fill_in (t :"signup.new_account.password"), with: 'password'
-    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
-    agree_and_click_create
-
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content("Alert: Username can't be blank")
-    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
-  end
-
   scenario 'with empty password' do
-    visit '/'
+    visit_authorize_uri
+    expect_sign_in_page
     click_password_sign_up
 
     fill_in (t :"signup.new_account.first_name"), with: 'Test'
@@ -145,12 +164,15 @@ feature 'User signs up as a local user', js: true do
     agree_and_click_create
 
     expect(page).to have_no_missing_translations
-    expect(page).to have_content("Alert: Password can't be blank Password confirmation can't be blank")
+    expect(page).to have_content(
+      "Alert: Password can't be blank Password confirmation can't be blank"
+    )
     expect(page).not_to have_content(t :"layouts.application_header.sign_out")
   end
 
   scenario 'with short password' do
-    visit '/'
+    visit_authorize_uri
+    expect_sign_in_page
     click_password_sign_up
 
     fill_in (t :"signup.new_account.first_name"), with: 'Test'
@@ -168,7 +190,9 @@ feature 'User signs up as a local user', js: true do
 
   scenario 'with a username already taken' do
     create_user 'testuser'
-    visit '/'
+
+    visit_authorize_uri
+    expect_sign_in_page
     click_password_sign_up
 
     fill_in (t :"signup.new_account.first_name"), with: 'Test'
@@ -185,7 +209,8 @@ feature 'User signs up as a local user', js: true do
   end
 
   scenario 'with empty email address' do
-    visit '/'
+    visit_authorize_uri
+    expect_sign_in_page
     click_password_sign_up
 
     fill_in (t :"signup.new_account.first_name"), with: 'Test'
@@ -202,7 +227,8 @@ feature 'User signs up as a local user', js: true do
   end
 
   scenario 'with an invalid email address' do
-    visit '/'
+    visit_authorize_uri
+    expect_sign_in_page
     click_password_sign_up
 
     fill_in (t :"signup.new_account.first_name"), with: 'Test'
@@ -269,7 +295,7 @@ feature 'User signs up as a local user', js: true do
     end
 
     visit '/signout'
-    expect(page).to have_current_path signin_path
+    expect_sign_in_page
   end
 
 end

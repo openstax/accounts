@@ -74,41 +74,51 @@ describe User, type: :model do
   end
 
   context 'username' do
-    it 'must be unique (case-insensitive) on creation' do
+    it 'must be unique (case-insensitive) on creation, if provided' do
       user_1 = FactoryGirl.create :user, username: "MyUs3Rn4M3"
 
-      user_2 = FactoryGirl.build :user, username: user_1.username
-      expect(user_2).not_to be_valid
-      expect(user_2.errors).to include(:username)
-      expect(user_2.errors[:username]).to include('has already been taken')
+      user_2 = FactoryGirl.create :user, username: nil
 
-      user_3 = FactoryGirl.build :user, username: user_1.username.upcase
+      user_3 = FactoryGirl.build :user, username: user_1.username
       expect(user_3).not_to be_valid
       expect(user_3.errors).to include(:username)
+      expect(user_3.errors[:username]).to include('has already been taken')
 
-      user_4 = FactoryGirl.build :user, username: user_1.username.downcase
+      user_4 = FactoryGirl.build :user, username: user_1.username.upcase
       expect(user_4).not_to be_valid
       expect(user_4.errors).to include(:username)
+
+      user_5 = FactoryGirl.build :user, username: user_1.username.downcase
+      expect(user_5).not_to be_valid
+      expect(user_5.errors).to include(:username)
+
+      user_6 = FactoryGirl.build :user, username: nil
+      expect(user_6).to be_valid
     end
 
     it 'cannot be updated to match (case-insensitive) an existing username' do
       user_1 = FactoryGirl.create :user, username: "MyUs3Rn4M3"
 
-      user_2 = FactoryGirl.create :user
-      expect(user_2).to be_valid
-      expect(user_2.errors).to be_empty
+      user_2 = FactoryGirl.create :user, username: nil
 
-      user_2.username = user_1.username
-      expect(user_2).not_to be_valid
-      expect(user_2.errors).to include(:username)
+      user_3 = FactoryGirl.create :user
+      expect(user_3).to be_valid
+      expect(user_3.errors).to be_empty
 
-      user_2.username = user_1.username.upcase
-      expect(user_2).not_to be_valid
-      expect(user_2.errors).to include(:username)
+      user_3.username = user_1.username
+      expect(user_3).not_to be_valid
+      expect(user_3.errors).to include(:username)
 
-      user_2.username = user_1.username.downcase
-      expect(user_2).not_to be_valid
-      expect(user_2.errors).to include(:username)
+      user_3.username = user_1.username.upcase
+      expect(user_3).not_to be_valid
+      expect(user_3.errors).to include(:username)
+
+      user_3.username = user_1.username.downcase
+      expect(user_3).not_to be_valid
+      expect(user_3.errors).to include(:username)
+
+      user_3.username = nil
+      expect(user_3).to be_valid
     end
 
     it 'does not interfere with updates if duplicated but not changed' do
