@@ -68,7 +68,6 @@ class SessionsController < ApplicationController
       user_state: self,
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]
-
         case @handler_result.outputs[:status]
         when :new_signin_required
           reauthenticate_user!
@@ -153,7 +152,7 @@ class SessionsController < ApplicationController
   def failure
     flash.now[:alert] = case params[:message]
     when 'cannot_find_user'
-      I18n.t :"controllers.sessions.no_account_for_username_or_email"
+      I18n.t :"errors.no_account_for_username_or_email"
     when 'multiple_users'
       I18n.t :"controllers.sessions.several_accounts_for_one_email"
     when 'bad_password'
@@ -166,8 +165,12 @@ class SessionsController < ApplicationController
     else
       params[:message]
     end
-
-    render 'new'
+    if cookies.signed[:login_key]
+      @login = OpenStruct.new(username_or_email: cookies.signed[:login_key])
+      render 'authenticate'
+    else
+      render 'new'
+    end
   end
 
   # Cannot login/forgot password
