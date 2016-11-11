@@ -25,9 +25,6 @@ en:
         you.
       incorrect_password: The password you provided is incorrect.
       new_sign_in_option_added: Your new sign in option as been added!
-      no_account_for_username_or_email: >-
-        We have no account for the username or email you provided. Email
-        addresses must be verified in out system to use them during sign in.
       same_provider_already_linked: >-
         You are logged in as %{user_name}. A different %{authentication} account
         is already linked to your OpenStax account. Only one %{authentication}
@@ -153,7 +150,9 @@ en:
     please_enable_javascript: >-
       Please enable JavaScript in your browser! Some site contet will not work
       properly without it.
-    unknown_username_or_email: "Unknown Username or Email"
+    no_account_for_username_or_email: >-
+        We have no account for the username or email you provided. Email
+        addresses must be verified in out system to use them during sign in.
     alert: 'Alert: '
     any:
       appology_message_html: >-
