@@ -150,6 +150,11 @@ en:
         sign_in: sign in
 
   errors:
+    please_enable_javascript: >-
+      Please enable JavaScript in your browser! Some site contet will not work
+      properly without it.
+    unknown_username_or_email: "Unknown Username or Email"
+    alert: 'Alert: '
     any:
       appology_message_html: >-
         We're sorry this %{code} error occured. If you need help, please contact
@@ -181,10 +186,6 @@ en:
       #               the link is user's username.
       welcome_html: Welcome, %{username}
 
-    attention:
-      please_enable_javascript: >-
-        Please enable JavaScript in your browser! Some site contet will not work
-        properly without it.
 
   sessions:
     help:
@@ -202,7 +203,7 @@ en:
       username_or_email: Username or Email
 
     new:
-      cant_sign_in: Can't sign in?
+      cant_sign_in: Can’t sign in?
       logout_reminder_html: >-
         If you're on a public computer, <b>be sure to sign out</b> when you're done!
       openstax_wont_use_social_media_without_permission_html: >-
@@ -210,18 +211,26 @@ en:
         network without your permission.
       page_heading: Log in to OpenStax
       page_sub_heading: Access all OpenStax tools and resources
-      password: Password
-      separator_or: OR
       sign_in: Sign in
-      sign_in_with_facebook: Sign in with Facebook
-      sign_in_with_google: Sign in with Google
-      sign_in_with_twitter: Sign in with Twitter
       sign_up: Sign up
       no_account_q: No account?
       used_this_method_last_time: >-
         It looks like you used this the last time you signed in.
-      username_or_email: Email or username
+      email: Email
+      email_placeholder: "name@mail.edu"
+      unrecognized_email: We don’t recognize this email, please try again.
       next: Next
+      cannot_find_user: 'Cannot find user'
+
+    authenticate:
+      name_greeting: Hi %{name}!
+      separator_or: OR
+      sign_in_with_facebook: Sign in with Facebook
+      sign_in_with_google: Google
+      sign_in_with_twitter: Sign in with Twitter
+      login: Login
+      password: Password
+      forgot_password: Can’t remember password?
 
   sign_in_help_mailer:
     sign_in_help:
