@@ -237,16 +237,11 @@ feature 'User logs in as a local user', js: true do
 
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"controllers.sessions.several_accounts_for_one_email")
-
-      # TODO check what UX says should happen here?
-      # fill_in 'login_username_or_email', with: 'user'
-
-      # click_button (t :"sessions.new.next")
-
-      # fill_in 'login_password', with: 'password'
-      # click_button (t :"sessions.authenticate.login")
-
-      # expect(page.current_url).to match(app_callback_url)
+      fill_in 'login_username_or_email', with: 'user'
+      click_button (t :"sessions.new.next")
+      fill_in 'login_password', with: 'password'
+      click_button (t :"sessions.authenticate.login")
+      expect(page.current_url).to match(app_callback_url)
     end
   end
 
@@ -280,10 +275,6 @@ feature 'User logs in as a local user', js: true do
 
       fill_in 'login_password', with: 'password'
       click_button (t :"sessions.authenticate.login")
-
-      # fill_in (t :"sessions.new.username_or_email"), with: ' user@example.com '
-      # fill_in (t :"sessions.new.password"), with: 'password'
-      # click_button (t :"sessions.new.sign_in")
 
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')

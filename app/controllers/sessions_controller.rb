@@ -165,7 +165,7 @@ class SessionsController < ApplicationController
     else
       params[:message]
     end
-    if cookies.signed[:login_key]
+    if cookies.signed[:login_key] && params[:message] == 'bad_password'
       @login = OpenStruct.new(username_or_email: cookies.signed[:login_key])
       render 'authenticate'
     else
