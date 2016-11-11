@@ -1,74 +1,46 @@
-<% @parent_col_id = "signin" %>
-
-<%= page_heading (t :".page_heading"), sub_heading_text: (t :".page_sub_heading"), center: true %>
-
 <% login_info = get_login_info %>
 
-<h3>
-  Hi<%= login_info[:names].size == 1 ? " #{login_info[:names].first}!" : "!" %>
-</h3>
+<div class="ox-card login">
 
-<div id="options" class="row">
-  <div class="col-sm-12">
+  <h1 class="title"><%= t '.name_greeting', name: login_info[:names].first %></h1>
 
-    <% if login_info[:providers].include?('identity') %>
-      <div class="button-form-group">
-        <%= form_tag '/auth/identity/callback' do %>
-          <input type='hidden' id='auth_key' name='auth_key' class="form-control"
-                 value='<%= login_info[:username_or_email] %>'/>
-          <div class="form-group">
-            <label for='password'><%= t :".password" %></label>
-            <input type='password' id='password' name='password' class="form-control"/>
-          </div>
-
-          <div class='password-actions'>
-            <button type="submit" class="btn btn-primary"><%= t :".sign_in" %></button>
-          </div>
-
-        <% end %>
-      </div>
-
-      <% if login_info[:providers].size > 1 %>
-        <div id="horizontal-or-bar">
-          <span><%= t :".separator_or" %></span>
-        </div>
-      <% end %>
+  <% if login_info[:providers].include?('google_oauth2') %>
+    <%= link_to "/auth/google_oauth2", class: 'btn btn-social btn-google',
+                                       id: 'google-login-button' do %>
+      <span class="fa fa-google"></span> <%= t :".sign_in_with_google" %>
     <% end %>
+  <% end %>
 
-    <% if login_info[:providers].include?('facebook') %>
-      <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook',
-                                    id: 'facebook-login-button' do %>
-        <span class="fa fa-facebook"></span> <%= t :".sign_in_with_facebook" %>
-      <% end %>
+  <% if login_info[:providers].include?('facebook') %>
+    <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook',
+                                  id: 'facebook-login-button' do %>
+      <span class="fa fa-facebook"></span> <%= t :".sign_in_with_facebook" %>
     <% end %>
+  <% end %>
 
-    <% if login_info[:providers].include?('google_oauth2') %>
-      <%= link_to "/auth/google_oauth2", class: 'btn btn-block btn-social btn-google',
-                                         id: 'google-login-button' do %>
-        <span class="fa fa-google"></span> <%= t :".sign_in_with_google" %>
-      <% end %>
+  <% if login_info[:providers].include?('identity') %>
+    <% if login_info[:providers].many? %>
+
+    <div class="separator-line" data-text="">
+      <%= t '.separator_or' %>
+    </div>
+
     <% end %>
+    <%= lev_form_for :login, url: '/auth/identity/callback' do |f| %>
 
-  </div>
-</div>
+      <%= f.password_field :password, placeholder: t(".password"), class: 'wide'  %>
 
-<div id="cant-sign-in" class="row">
-  <div class="col-xs-12" style='text-align: center'>
-    <span><%= link_to (t :".cant_sign_in"), login_help_path %></span>
-  </div>
-</div>
+      <%= f.hidden_field :username_or_email, placeholder: t(".password"),
+          class: 'form-control ', autofocus: true  %>
 
-<div id="reminders" class="row">
-  <div class="col-xs-12">
-    <p><%= t :".openstax_wont_use_social_media_without_permission_html" %>
+      <input type="submit" class="btn btn-primary" value="<%= t '.login' %>" />
 
-    <style type="text/css">
-      p.b-no-wrap > b {
-        white-space: nowrap;
-      }
-    </style>
-    <p class="b-no-wrap">
-      <%= t :".logout_reminder_html" %>
-    </p>
-  </div>
+      <div class="footer">
+        <p>
+          <%= link_to(t('forgot_password'), login_help_path) %>
+            </p>
+         </div>
+     <% end %>
+
+  <% end %>
 </div>
