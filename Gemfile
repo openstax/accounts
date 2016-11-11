@@ -158,6 +158,11 @@ group :development, :test do
 
   # Coveralls integration
   gem 'coveralls', require: false
+  # Speedup and run specs when files change
+  gem 'spring'
+  gem 'spring-commands-rspec'
+  gem 'guard-rspec'
+  gem 'guard-livereload', '~> 2.5', require: false
 end
 
 group :development do
