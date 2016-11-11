@@ -3,7 +3,7 @@ require 'rails_helper'
 # TODO add specs for missing, but required, params
 # TODO add in UsersRegister specs -- oops maybe are none?  then add specs to test rest of SignupProcess
 
-describe SignupPassword, type: :handler do
+RSpec.describe SignupPassword, type: :handler do
 
   context "when user info ok but passwords don't match" do
     let (:the_call) { -> {

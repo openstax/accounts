@@ -63,16 +63,11 @@ class FindOrCreateUnclaimedUser
 
   # Attempt to find a user by either the username or email address
   def find_user(options)
-    user = nil
-    if options[:username]
-      user = User.where(username: options[:username]).first
-    end
-    if !user && options[:email]
-      email = EmailAddress.with_users.where(value: options[:email]).first
-      if email
-        user = email.user
-      end
-    end
+    user = User.find_by(username: options[:username]) if options[:username].present?
+
+    user = EmailAddress.with_users.find_by(value: options[:email]).try!(:user) \
+      if !user && options[:email]
+
     user
   end
 
