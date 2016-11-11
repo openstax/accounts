@@ -186,7 +186,6 @@ end
 
 def click_password_sign_up
   click_on (t :"sessions.new.sign_up")
-  click_on (t :"signup.index.sign_up_with_password")
 end
 
 def expect_sign_in_page
