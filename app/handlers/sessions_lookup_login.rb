@@ -16,7 +16,9 @@ class SessionsLookupLogin
   def handle
     users = LookupUsers.by_email_or_username(login_params.username_or_email)
 
-    fatal_error(code: :unknown_username_or_email) if users.empty?
+    fatal_error(code: :unknown_username_or_email,
+                offending_inputs: [:username_or_email]
+               ) if users.empty?
 
     outputs.names = users.map(&:standard_name).uniq
     outputs.username_or_email = login_params.username_or_email
