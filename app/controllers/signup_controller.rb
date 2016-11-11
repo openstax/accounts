@@ -17,9 +17,10 @@ class SignupController < ApplicationController
   def password
     @errors ||= env['errors']
 
-    if !current_user.is_anonymous? && current_user.authentications.any?{|auth| auth.provider == 'identity'}
+    if !current_user.is_anonymous? &&
+       current_user.authentications.any?{ |auth| auth.provider == 'identity' }
       security_log :sign_up_failed
-      redirect_to root_path, alert: (I18n.t :"controllers.signup.already_have_username_and_password")
+      redirect_to root_path, alert: I18n.t(:"controllers.signup.already_have_username_and_password")
     else
       store_fallback
     end
