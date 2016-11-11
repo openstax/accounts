@@ -14,7 +14,7 @@ module OmniAuth
       NullSession = ActionController::RequestForgeryProtection::ProtectionMethods::NullSession
 
       LOGIN_ATTEMPTS_PERIOD = 1.hour
-      MAX_LOGIN_ATTEMPTS_PER_USER = 10
+      MAX_LOGIN_ATTEMPTS_PER_USER = 12
       MAX_LOGIN_ATTEMPTS_PER_IP = 10000
 
       include OmniAuth::Strategy
