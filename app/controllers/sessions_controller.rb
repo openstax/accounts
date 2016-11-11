@@ -32,7 +32,7 @@ class SessionsController < ApplicationController
     redirect_back if signed_in? && !params[:required]
 
     session[:client_id] = params[:client_id]
-    @application = Doorkeeper::Application.where(uid: params[:client_id]).first
+    @application = Doorkeeper::Application.find_by(uid: params[:client_id])
   end
 
   def lookup_login
