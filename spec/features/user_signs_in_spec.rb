@@ -7,13 +7,24 @@ feature 'User logs in as a local user', js: true do
   scenario 'authentication on the happy path' do
     with_forgery_protection do
       create_application
-      create_user 'user'
+      user = create_user 'user'
+      create_email_address_for(user, 'user@example.com')
       visit_authorize_uri
       expect_sign_in_page
-      fill_in 'email', with: user.email
-      click_button 'NEXT'
+      fill_in 'login_username_or_email', with: user.contact_infos.last.value
+      click_button (t :"sessions.new.next")
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t("sessions.authenticate.name_greeting",
+                                     name: user.first_name)
+                                  )
+
+      fill_in ('login_password'), with: 'password'
+      click_button (t :"sessions.authenticate.login")
+
+      expect(page.current_url).to match(app_callback_url)
     end
   end
+
 
   xscenario 'authenticates against the default (bcrypt) password hashes' do
     with_forgery_protection do
