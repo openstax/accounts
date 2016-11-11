@@ -1,22 +1,12 @@
-<% alert_messages = [] %>
-<% handler_errors.each do |error| %>
-  <% alert_messages.push error.translate %>
-<% end %>
-
-<% alert_messages.push(flash[:alert]) if flash[:alert] %>
-
-<% notice_messages = [] %>
-<% notice_messages.push(flash[:notice]) if flash[:notice] %>
-
-<% alert_messages = alert_messages.collect{|msg| msg.gsub("contact support", mail_to("info@openstax.org", "contact support")).html_safe} %>
+<% errors = collect_errors %>
 
 <div class="row">
   <div class="col-xs-12">
     <noscript>
-      <%= attention_tag (t :".please_enable_javascript"), :alert %>
+      <%= attention_tag('please_enable_javascript', :alert) %>
     </noscript>
 
-    <%= alert_tag(alert_messages) %>
-    <%= notice_tag(notice_messages) %>
+    <%= alert_tag(errors[:alerts])   %>
+    <%= notice_tag(errors[:notices]) %>
   </div>
 </div>
