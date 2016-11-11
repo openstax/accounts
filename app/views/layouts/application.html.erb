@@ -30,7 +30,7 @@
 
     <div id="application-container" class="container">
 
-      <%= render partial: "layouts/attention" %>
+      <%= render(partial: "layouts/attention") unless @hide_layout_errors %>
 
       <%= render partial: "layouts/application_body" %>
 
