@@ -170,7 +170,7 @@ group :development do
   gem 'web-console', '~> 2.0'
 
   # Speedup and run specs when files change
-  gem 'spring'
+
 end
 
 group :test do
