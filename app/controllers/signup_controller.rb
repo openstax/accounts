@@ -56,6 +56,35 @@ class SignupController < ApplicationController
     end
   end
 
+  def submit_password
+    handle_with(SignupPassword, # TODO make this consistent with action name
+                signup_contact_info: saved_signup_contact_info,
+                success: lambda do
+                  redirect_to action: :profile
+                end,
+                failure: lambda do
+                  render :password
+                end)
+  end
+
+  def profile
+
+  end
+
+  def submit_profile
+        handle_with(SignupSubmitProfile,
+                contracts_required: !contracts_not_required(
+                  client_id: request['client_id'] || session['client_id']
+                ),
+                success: lambda do
+                  redirect_to action: :profile
+                end,
+                failure: lambda do
+                  render :password
+                end)
+
+  end
+
   def social
     if request.post?
       handle_with(SignupSocial,

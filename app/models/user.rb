@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
     'temp', # deprecated but still could exist for old accounts
     'new_social',
     'unclaimed',
+    'needs_profile',
     'activated'
   ]
 
@@ -64,6 +65,8 @@ class User < ActiveRecord::Base
 
   before_create :make_first_user_an_admin
 
+  before_create :default_to_needs_profile
+
   before_save :add_unread_update
 
   def self.username_is_valid?(username)
@@ -115,6 +118,10 @@ class User < ActiveRecord::Base
 
   def is_new_social?
     'new_social' == state
+  end
+
+  def is_needs_profile?
+    'needs_profile' == state
   end
 
   def name
@@ -181,6 +188,10 @@ class User < ActiveRecord::Base
 
   protected
 
+  def default_to_needs_profile
+    self.state ||= 'needs_profile'
+  end
+
   def generate_uuid
     self.uuid ||= SecureRandom.uuid
   end
@@ -202,13 +213,17 @@ class User < ActiveRecord::Base
   # there are existing users without names
   # allow them to continue to function, but require a name to exist once it's set
   def ensure_names_continue_to_be_present
+    return true if is_needs_profile?
+
     %w{first_name last_name}.each do |attr|
       change = changes[attr]
-      if (new_record? && self[attr].blank?) ||
-         !(change.nil? || change.first.blank? || !change.last.blank?)
 
-        errors.add(attr.to_sym, "can't be blank")
-      end
+      next if change.nil? # no change, so no problem
+
+      was = change[0]
+      is = change[1]
+
+      errors.add(attr.to_sym, "can't be blank") if was.present? && is.nil?
     end
   end
 

@@ -3,22 +3,10 @@ class SignupPassword
   lev_handler
 
   paramify :signup do
-    attribute :i_agree, type: boolean
-    attribute :username, type: String
-    attribute :title, type: String
-    attribute :first_name, type: String
-    validates :first_name, presence: true
-    attribute :last_name, type: String
-    validates :last_name, presence: true
-    attribute :suffix, type: String
-    attribute :email_address, type: String
-    validates :email_address, presence: true
     attribute :password, type: String
     validates :password, presence: true
     attribute :password_confirmation, type: String
     validates :password_confirmation, presence: true
-    attribute :contract_1_id, type: Integer
-    attribute :contract_2_id, type: Integer
   end
 
   uses_routine CreateUser,
@@ -37,21 +25,8 @@ class SignupPassword
   end
 
   def handle
-    if options[:contracts_required] && !signup_params.i_agree
-      fatal_error(code: :did_not_agree,
-                  message: (I18n.t :"handlers.signup_password.you_must_agree_to_the_terms"))
-    end
-
-    username = signup_params.username
-    username = nil if signup_params.username.blank?
-
-    run(CreateUser, username: username,
-                    title: (signup_params.title if signup_params.title.blank?),
-                    first_name: signup_params.first_name,
-                    last_name: signup_params.last_name,
-                    suffix: (signup_params.suffix if !signup_params.suffix.blank?),
-                    state: 'activated')
-    user = outputs[[:create_user, :user]]
+    user = User.create(state: 'needs_profile') # TODO take out state if before_create stays in user.rb
+    transfer_errors_from(user, {type: :verbatim}, true)
 
     # Create an Identity, but not an Authentication -- that is done in SessionsCreate
     run(CreateIdentity,
@@ -60,12 +35,7 @@ class SignupPassword
         user_id:               user.id
     )
 
-    run(AddEmailToUser, signup_params.email_address, user)
-
-    if options[:contracts_required]
-      run(AgreeToTerms, signup_params.contract_1_id, user, no_error_if_already_signed: true)
-      run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
-    end
+    run(TransferSignupContactInfo, options[:signup_contact_info], user)
   end
 
 end

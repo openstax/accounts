@@ -59,6 +59,7 @@ Rails.application.routes.draw do
     get 'verify_email'
     post 'check_pin'
     get 'check_token'
+    post 'submit_password'
   end
 
   resource :identity, only: :update
