@@ -185,6 +185,9 @@ en:
       #               the link is user's username.
       welcome_html: Welcome, %{username}
 
+    attention:
+      please_enable_javascript: Please enable JavaScript.
+
 
   sessions:
     help:
