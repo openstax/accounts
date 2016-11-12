@@ -32,8 +32,7 @@
 
       <%= f.password_field :password, placeholder: t(".password"), class: 'wide'  %>
 
-      <%= f.hidden_field :username_or_email, placeholder: t(".password"),
-          class: 'form-control ', autofocus: true  %>
+      <%= f.hidden_field :username_or_email %>
 
       <input type="submit" class="btn btn-primary" value="<%= t '.login' %>" />
 
