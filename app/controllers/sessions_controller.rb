@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
                             :create, :failure, :destroy, :help]
 
   skip_before_filter :finish_sign_up, only: [:destroy]  # TODO used?
-  before_filter :remember_login_params, only: [:new, :create, :lookup_login]
+  before_filter :remember_login_params, only: [:new, :create, :lookup_login, :authenticate]
   before_filter :get_authorization_url, only: [:new, :create]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
@@ -42,7 +42,7 @@ class SessionsController < ApplicationController
                   set_login_info(username_or_email: @handler_result.outputs.username_or_email,
                                  names: @handler_result.outputs.names,
                                  providers: @handler_result.outputs.providers)
-                  render :authenticate
+                  redirect_to :authenticate
                 end,
                 failure: lambda do
                   render :new
@@ -204,5 +204,6 @@ class SessionsController < ApplicationController
 
   def remember_login_params
     @login = OpenStruct.new(params[:login])
+    @login.username_or_email ||= cookies.signed[:login_key]
   end
 end
