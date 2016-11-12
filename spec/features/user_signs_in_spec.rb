@@ -4,7 +4,7 @@ feature 'User logs in as a local user', js: true do
 
   background { load 'db/seeds.rb' }
 
-  scenario 'authentication on the happy path' do
+  scenario 'authentication using email address passwords' do
     with_forgery_protection do
       create_application
       user = create_user 'user'
