@@ -1,4 +1,5 @@
-<%= image_tag('openstax-logo-white.png', width: 174, height: 40, class: 'logo') %>
+<%= render 'layouts/ox_white_logo' %>
+
 <% @hide_layout_errors = true %>
 
 <% is_invalid = collect_errors.any? %>
