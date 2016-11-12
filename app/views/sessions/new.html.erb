@@ -1,18 +1,29 @@
-<% @hide_session_info = true %>
+<%= render 'layouts/ox_white_logo' %>
 
-<% @parent_col_id = "signin" %>
+<% @hide_layout_errors = true %>
 
-<%= page_heading (t :".page_heading"), sub_heading_text: (t :".page_sub_heading"), center: true %>
+<% is_invalid = collect_errors.any? %>
 
-<div class="row">
-  <h3>Log in to OpenStax</h3>
+<div class="ox-card login">
 
-  <%= lev_form_for :login, url: lookup_login_path, method: :post do |f| %>
-    <%= f.text_field :username_or_email, placeholder: (t :".username_or_email") %>
-    <%= f.submit (t :".next"), class: 'btn btn-primary' %>
+  <h1 class="title"><%= t '.page_heading' %></h1>
+
+  <%= lev_form_for :login, url: lookup_login_path do |f| %>
+
+    <div class="form-group<%= ' has-error' if is_invalid %>">
+      <%= f.text_field :username_or_email, placeholder: t('.email_placeholder'),
+          class: "form-control wide", autofocus: true %>
+        <%= render(partial: "layouts/attention") %>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="<%= t '.next' %>" />
+
+    <div class="footer">
+      <p>
+        <%= t '.no_account_q' %>
+        <%= link_to(t('.sign_up'), signup_password_path) %>
+      </p>
+    </div>
   <% end %>
 
-  <hr/>
-
-  <p>No account? <span class='sign-up'><%= link_to (t :".sign_up"), signup_path %></span></p>
 </div>

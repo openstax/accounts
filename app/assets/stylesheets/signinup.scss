@@ -1,177 +1,66 @@
-.btn-identity       { @include btn-social(#666666); }
+body.sessions {
+  background: image_url('home-bg.jpg') no-repeat center center fixed;
 
-#signin, #signup {
-
-  $social_button_width: 240px;
-
-  @mixin button-form-group {
-    width: $social_button_width;
+  .logo {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
   }
 
-  #options {
-
-    margin-top: 20px;
-
-    $or_color: lighten($os_gray, 40%);
-
-    .button-form-group {
-      @include button-form-group;
+  .login.ox-card {
+    margin-top: 2rem;
+    input {
+      font-size: 2rem;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
     }
-
-    #social-login {
-      a.btn-social {
-        margin-top: 13px;
-      }
+    input[type=submit] {
+      background-color: $os_orange;
+      border-color: darken($os_orange, 10%);
     }
-
-    .btn-social {
-      padding-top: 10px;
-      padding-bottom: 10px;
-      padding-left: 50px;
-
-      > :first-child {
-        padding-top: 4px;
-        width: 40px;
-        padding-left: 2px;
-      }
-    }
-
-    #vertical-or {
-      color: $or_color;
-      float: left;
-      margin-left: -25px;
-      margin-top: 74px;
-      background-color: white;
-      height: 29px;
-      line-height: 28px;
-    }
-
-    #horizontal-or-bar {
-      @include button-form-group;
-      border-bottom: 1px solid $or_color;
-      margin-bottom: 30px;
-      text-align: center;
-      color: $or_color;
-      margin-top: 5px;
-
-      span {
-        position: relative;
-        background-color: white;
-        display: inline-block;
-        width: 40px;
-        top: 15px;
-        line-height: 30px;
-      }
-    }
-
-    @media(min-width: 768px) {
-       #password-login {
-          border-left: 1px solid $or_color;
-       }
-    }
-
-    .sign-up {
-      float: right;
-      width: 130px;
-      display: inline-block;
-      text-align: right;
-      margin-top: 8px;
-    }
-
-  }
-
-  #social-signup-message {
-    margin-top:82px;
-
-    .the-message {
-      width: 280px;
-    }
-
-    @media(max-width: 767px) {
-      margin-top: 70px;
-
-      p {
-        @include button-form-group;
-        width: $social_button_width + 10px;
-        margin-bottom: 8px;
-
-        &.dont-want-to-remember {
-          display: none;
-        }
-      }
+    .alert {
+      margin-bottom: 0;
+      margin-top: 0;
+      background-color: transparent;
+      border: 0;
+      strong { display: none; }
     }
   }
 
-  #cant-sign-in {
-    padding-top: 30px;
+  .btn-social {
+    margin: 10px 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 50px;
+    width: 180px;
+    border-radius: 0;
+    > :first-child {
+      padding-top: 4px;
+      width: 40px;
+      padding-left: 2px;
+    }
   }
 
-  #reminders {
-    margin-top: 30px;
-
+  .separator-line {
     text-align: center;
-
-    p {
-      font-size: 10px;
-      color: lighten($os_gray, 30%);
-      margin-bottom: 4px;
-    }
-
-    @media(max-width: 767px) {
-      p {
-        @include button-form-group;
-        width: $social_button_width + 10px;
-        margin-bottom: 8px;
-      }
-    }
-  }
-
- .last-signin-symbol {
-    font-style: normal;
-    font-size: 50px;
-    color: #76b143;
-    font-family: helvetica, verdana, arial, sans-serif;
-  }
-
-  #last-signin-explanation {
-    font-style: italic;
-    font-size: 13px;
-    color: lighten($os_gray, 30%);
-    margin-top: 30px;
-
-    @media(max-width: 767px) {
-      div.content {
-        @include button-form-group;
-        width: $social_button_width - 20px;
-        margin-bottom: 8px;
-      }
-    }
-
-    @media(max-width: 399px) {
-      padding: 0 40px;
-    }
-
-    .last-signin-symbol {
-      margin-top: -15px;
+    position: relative;
+    &:after {
+      border-top: 2px solid darken($os_light_gray, 10%);
+      content: '';
+      display: block;
+      width: calc(50% - 20px);
+      right: 0px;
       position: absolute;
-      margin-left: -10px;
+      top: 50%;
     }
-  }
-
-  .last-signin {
-    margin-top: -46px;
-    margin-left: -26px;
-    position: absolute;
-
-    &.identity {
-      margin-top: -57px;
-      margin-left: -24px;
+    &:before {
+      border-top: 2px solid darken($os_light_gray, 10%);
+      content: '';
+      display: block;
+      width: calc(50% - 20px);
+      left: 0px;
+      position: absolute;
+      top: 50%;
     }
-  }
 
+  }
 }
-
-

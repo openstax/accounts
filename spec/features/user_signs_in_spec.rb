@@ -1,45 +1,45 @@
 require 'rails_helper'
 
-xfeature 'User logs in as a local user', js: true do
+feature 'User logs in as a local user', js: true do
 
   background { load 'db/seeds.rb' }
 
-  scenario 'authenticates against the default (bcrypt) password hashes' do
+  scenario 'authentication using email address passwords' do
     with_forgery_protection do
       create_application
-      create_user 'user'
+      user = create_user 'user'
+      create_email_address_for(user, 'user@example.com')
       visit_authorize_uri
       expect_sign_in_page
-
-      fill_in (t :"sessions.new.username_or_email"), with: 'user'
-      fill_in (t :"sessions.new.password"), with: 'pass'
-      click_button (t :"sessions.new.sign_in")
+      fill_in 'login_username_or_email', with: user.contact_infos.last.value
+      click_button (t :"sessions.new.next")
       expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"controllers.sessions.incorrect_password")
-
-      fill_in (t :"sessions.new.username_or_email"), with: 'user'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      expect(page).to have_content(t("sessions.authenticate.name_greeting",
+                                     name: user.first_name))
+      fill_in 'login_password', with: 'password'
+      click_button (t :"sessions.authenticate.login")
       expect(page.current_url).to match(app_callback_url)
     end
   end
 
+
   scenario 'authenticates against plone (ssha) password hashes' do
     with_forgery_protection do
       create_application
-      create_user_with_plone_password
+      user = create_user_with_plone_password
+      create_email_address_for(user, 'user@example.com')
       visit_authorize_uri
+      fill_in 'login_username_or_email', with: user.contact_infos.last.value
 
-      expect_sign_in_page
-      fill_in (t :"sessions.new.username_or_email"), with: 'plone_user'
-      fill_in (t :"sessions.new.password"), with: 'pass'
-      click_button (t :"sessions.new.sign_in")
+      click_button (t :"sessions.new.next")
+      fill_in 'login_password', with: 'pass' #nope
+
+      click_button (t :"sessions.authenticate.login")
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"controllers.sessions.incorrect_password")
 
-      fill_in (t :"sessions.new.username_or_email"), with: 'plone_user'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      fill_in 'login_password', with: 'password' #match
+      click_button (t :"sessions.authenticate.login")
       expect(page.current_url).to match(app_callback_url)
     end
   end
@@ -50,11 +50,10 @@ xfeature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in (t :"sessions.new.username_or_email"), with: 'user'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      fill_in 'login_username_or_email', with: 'user'
+      click_button (t :"sessions.new.next")
       expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"controllers.sessions.no_account_for_username_or_email")
+      expect(page).to have_content(t :"errors.no_account_for_username_or_email")
     end
   end
 
@@ -69,9 +68,12 @@ xfeature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in (t :"sessions.new.username_or_email"), with: 'expired_password'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      fill_in 'login_username_or_email', with: 'expired_password'
+      click_button (t :"sessions.new.next")
+
+      fill_in 'login_password', with: 'password'
+
+      click_button (t :"sessions.authenticate.login")
 
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'expired_password')
@@ -93,9 +95,10 @@ xfeature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in (t :"sessions.new.username_or_email"), with: 'imported_user'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      fill_in 'login_username_or_email', with: 'imported_user'
+      click_button (t :"sessions.new.next")
+      fill_in 'login_password', with: 'password'
+      click_button (t :"sessions.authenticate.login")
 
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'imported_user')
@@ -139,9 +142,7 @@ xfeature 'User logs in as a local user', js: true do
       visit '/'
       expect_sign_in_page
 
-      fill_in (t :"sessions.new.username_or_email"), with: 'imported_user'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      signin_as 'imported_user'
 
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'imported_user')
@@ -178,9 +179,10 @@ xfeature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in (t :"sessions.new.username_or_email"), with: 'therulerofallthings'
-      fill_in (t :"sessions.new.password"), with: 'apassword'
-      click_button (t :"sessions.new.sign_in")
+      fill_in 'login_username_or_email', with: 'therulerofallthings'
+      click_button (t :"sessions.new.next")
+      fill_in 'login_password', with: 'apassword'
+      click_button (t :"sessions.authenticate.login")
 
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"controllers.identities.password_expired")
@@ -189,27 +191,6 @@ xfeature 'User logs in as a local user', js: true do
 
   end
 
-  scenario 'with an email address and password' do
-    with_forgery_protection do
-      create_application
-      user = create_user 'user'
-      create_email_address_for user, 'user@example.com'
-      visit_authorize_uri
-      expect_sign_in_page
-
-      fill_in (t :"sessions.new.username_or_email"), with: 'user'
-      fill_in (t :"sessions.new.password"), with: 'pass'
-      click_button (t :"sessions.new.sign_in")
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"controllers.sessions.incorrect_password")
-
-      fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
-
-      expect(page.current_url).to match(app_callback_url)
-    end
-  end
 
   scenario 'with an unverified email address and password' do
     with_forgery_protection do
@@ -219,15 +200,18 @@ xfeature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"controllers.sessions.no_account_for_username_or_email")
+      fill_in 'login_username_or_email', with: 'user@example.com'
+      click_button (t :"sessions.new.next")
 
-      fill_in (t :"sessions.new.username_or_email"), with: 'user'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"errors.no_account_for_username_or_email")
+
+      fill_in 'login_username_or_email', with: 'user'
+      click_button (t :"sessions.new.next")
+
+      fill_in 'login_password', with: 'password'
+      click_button (t :"sessions.authenticate.login")
+
       expect(page.current_url).to match(app_callback_url)
     end
   end
@@ -245,15 +229,18 @@ xfeature 'User logs in as a local user', js: true do
       visit_authorize_uri
       expect_sign_in_page
 
-      fill_in (t :"sessions.new.username_or_email"), with: 'user@example.com'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      fill_in 'login_username_or_email', with: 'user@example.com'
+      click_button (t :"sessions.new.next")
+
+      fill_in 'login_password', with: 'password'
+      click_button (t :"sessions.authenticate.login")
+
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"controllers.sessions.several_accounts_for_one_email")
-
-      fill_in (t :"sessions.new.username_or_email"), with: 'user'
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      fill_in 'login_username_or_email', with: 'user'
+      click_button (t :"sessions.new.next")
+      fill_in 'login_password', with: 'password'
+      click_button (t :"sessions.authenticate.login")
       expect(page.current_url).to match(app_callback_url)
     end
   end
@@ -265,9 +252,11 @@ xfeature 'User logs in as a local user', js: true do
 
       visit '/'
 
-      fill_in (t :"sessions.new.username_or_email"), with: ' user '
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      fill_in 'login_username_or_email', with: 'user  '
+      click_button (t :"sessions.new.next")
+
+      fill_in 'login_password', with: 'password'
+      click_button (t :"sessions.authenticate.login")
 
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
@@ -281,9 +270,11 @@ xfeature 'User logs in as a local user', js: true do
 
       visit '/'
 
-      fill_in (t :"sessions.new.username_or_email"), with: ' user@example.com '
-      fill_in (t :"sessions.new.password"), with: 'password'
-      click_button (t :"sessions.new.sign_in")
+      fill_in 'login_username_or_email', with: ' user@example.com '
+      click_button (t :"sessions.new.next")
+
+      fill_in 'login_password', with: 'password'
+      click_button (t :"sessions.authenticate.login")
 
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')

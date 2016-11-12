@@ -14,7 +14,7 @@ module OmniAuth
       NullSession = ActionController::RequestForgeryProtection::ProtectionMethods::NullSession
 
       LOGIN_ATTEMPTS_PERIOD = 1.hour
-      MAX_LOGIN_ATTEMPTS_PER_USER = 10
+      MAX_LOGIN_ATTEMPTS_PER_USER = 12
       MAX_LOGIN_ATTEMPTS_PER_IP = 10000
 
       include OmniAuth::Strategy
@@ -31,7 +31,9 @@ module OmniAuth
 
       option :fields, [:username, :first_name, :last_name]
       option(:locate_conditions, lambda do |req|
-        users = LookupUsers.by_email_or_username(req.params['auth_key'])
+        users = LookupUsers.by_email_or_username(
+          req.params['login'].try(:[], 'username_or_email')
+        )
         users_returned = users.size
         user = users.first if users_returned == 1
         user_id = user.try :id
@@ -165,7 +167,10 @@ module OmniAuth
       end
 
       def identity
-        @identity ||= model.authenticate(locate_conditions.slice(:user_id), request['password'])
+        @identity ||= model.authenticate(
+          locate_conditions.slice(:user_id),
+          request.params['login'].try(:[], 'password')
+        )
       end
 
       def locate_conditions

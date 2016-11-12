@@ -64,7 +64,8 @@ xfeature 'User signs up as a local user', js: true do
       end
     end
 
-    scenario 'success with empty username' do
+
+    scenario 'when already has password' do
       with_forgery_protection do
         visit_authorize_uri
         expect_sign_in_page

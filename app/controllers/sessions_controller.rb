@@ -1,5 +1,6 @@
 # References:
 #   https://gist.github.com/stefanobernardi/3769177
+require 'ostruct'
 
 class SessionsController < ApplicationController
 
@@ -10,7 +11,7 @@ class SessionsController < ApplicationController
                             :create, :failure, :destroy, :help]
 
   skip_before_filter :finish_sign_up, only: [:destroy]  # TODO used?
-
+  before_filter :remember_login_params, only: [:new, :create, :lookup_login, :authenticate]
   before_filter :get_authorization_url, only: [:new, :create]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
@@ -32,7 +33,7 @@ class SessionsController < ApplicationController
     redirect_back if signed_in? && !params[:required]
 
     session[:client_id] = params[:client_id]
-    @application = Doorkeeper::Application.find_by(uid: params[:client_id])
+    @application = Doorkeeper::Application.where(uid: params[:client_id]).first
   end
 
   def lookup_login
@@ -67,7 +68,6 @@ class SessionsController < ApplicationController
       user_state: self,
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]
-
         case @handler_result.outputs[:status]
         when :new_signin_required
           reauthenticate_user!
@@ -152,7 +152,7 @@ class SessionsController < ApplicationController
   def failure
     flash.now[:alert] = case params[:message]
     when 'cannot_find_user'
-      I18n.t :"controllers.sessions.no_account_for_username_or_email"
+      I18n.t :"errors.no_account_for_username_or_email"
     when 'multiple_users'
       I18n.t :"controllers.sessions.several_accounts_for_one_email"
     when 'bad_password'
@@ -165,8 +165,12 @@ class SessionsController < ApplicationController
     else
       params[:message]
     end
-
-    render 'new'
+    if cookies.signed[:login_key] && params[:message] == 'bad_password'
+      @login = OpenStruct.new(username_or_email: cookies.signed[:login_key])
+      render 'authenticate'
+    else
+      render 'new'
+    end
   end
 
   # Cannot login/forgot password
@@ -198,4 +202,8 @@ class SessionsController < ApplicationController
                                                  response_type: 'code')
   end
 
+  def remember_login_params
+    @login = OpenStruct.new(params[:login])
+    @login.username_or_email ||= cookies.signed[:login_key]
+  end
 end

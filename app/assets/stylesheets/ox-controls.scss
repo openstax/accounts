@@ -7,3 +7,22 @@
   .glyphicon { margin-right: 0.5rem; }
   .msg{ @include flex(1); }
 }
+
+.ox-card {
+  display: block;
+  margin: auto;
+  max-width: 500px;
+  background-color: $os_light_gray;
+  padding: 2rem;
+  .title { margin: 0 auto; }
+  .wide {
+    width: 100%;
+  }
+
+  .footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid darken($os_light_gray, 10%);
+
+  }
+}
