@@ -1,8 +1,8 @@
 
 class SignupController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:start, :submit_email, :verify_email,
-                                                 :check_pin, :password, :check_token, :profile] # TODO change
+  skip_before_filter :authenticate_user!, only: [:start, :verify_email,
+                                                 :check_pin, :password, :check_token, :profile, :social] # TODO change
   skip_before_filter :finish_sign_up
 
   fine_print_skip :general_terms_of_use, :privacy_policy
@@ -10,6 +10,9 @@ class SignupController < ApplicationController
   helper_method :saved_email, :saved_role
 
   before_filter :restart_if_missing_info, only: [:verify_email, :password]  # TODO spec me
+
+  before_filter :transfer_signup_contact_info, only: [:profile], if: -> { request.get? }
+
 
   include SignUpState
 
@@ -131,5 +134,15 @@ class SignupController < ApplicationController
   def restart_if_missing_info
     redirect_to signup_path if saved_signup_contact_info.nil? || saved_role.nil?
   end
+
+  def transfer_signup_contact_info
+    return if saved_signup_contact_info.nil?
+
+    TransferSignupContactInfo[
+      signup_contact_info: saved_signup_contact_info,
+      user: current_user
+    ]
+  end
+
 
 end

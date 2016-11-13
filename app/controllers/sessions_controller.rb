@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
                 success: lambda do
                   set_login_info(username_or_email: @handler_result.outputs.username_or_email,
                                  names: @handler_result.outputs.names,
-                                 providers: @handler_result.outputs.providers)
+                                 providers: @handler_result.outputs.providers.to_hash)
                   redirect_to :authenticate
                 end,
                 failure: lambda do
@@ -90,7 +90,7 @@ class SessionsController < ApplicationController
           redirect_to action: :redirect_back
         when :new_social_user
           security_log :sign_in_successful, authentication_id: authentication.id
-          redirect_to signup_social_path
+          redirect_to signup_profile_path
         when :authentication_added
           security_log :authentication_created,
                        authentication_id: authentication.id,

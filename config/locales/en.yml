@@ -314,7 +314,9 @@ en:
       enter_password: Enter Password
 
     social:
-      page_heading: Create Account
+      page_heading: TBD Title
+      facebook: Facebook
+      google: Google
 
     profile:
       name_heading: Name

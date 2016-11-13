@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161112174610) do
+ActiveRecord::Schema.define(version: 20161113215330) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 20161112174610) do
     t.string   "uid",        :index=>{:name=>"index_authentications_on_uid_scoped", :with=>["provider"], :unique=>true}
     t.datetime "created_at", :null=>false
     t.datetime "updated_at", :null=>false
+    t.string   "login_hint"
   end
 
   create_table "contact_infos", force: :cascade do |t|

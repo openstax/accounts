@@ -14,9 +14,9 @@
                                 errors: @handler_result.try(:errors)) %>
 
     <h3><%= t('.name_heading') %></h3>
-    <%= fh.text_field name: :title %>
-    <%= fh.text_field name: :first_name %>
-    <%= fh.text_field name: :last_name %>
+    <%= fh.text_field name: :title %> <%# TODO make select tag %>
+    <%= fh.text_field name: :first_name, value: current_user.first_name %>
+    <%= fh.text_field name: :last_name, value: current_user.last_name %>
     <%= fh.text_field name: :suffix %>
 
     <h3><%= t('.more_things_heading') %></h3>
