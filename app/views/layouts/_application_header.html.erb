@@ -3,29 +3,29 @@
 
 <div id="application-header">
 
-  <div>
+  <div id="top-nav-logo">
     <a href="<%= root_path %>" id="top-nav-logo"></a>
   </div>
 
-  <% unless @hide_session_info %>
-  <div id="session-info">
-  <% if signed_in? %>
-    <span>
-      <%= t :".welcome_html",
-            username: (link_to current_user.username,
-                               main_app.profile_path,
-                               class: 'username')
-          %>
-    </span>
-    <span>
-      <%= link_to (t :".sign_out"), main_app.signout_path %>
-    </span>
-  <% else %>
-    <span>
-      <%= link_to (t :".sign_in"), main_app.login_path %>
-    </span>
-  <% end %>
-  </div>
+  <% unless @hide_session_info || true %>
+    <div id="session-info">
+    <% if signed_in? %>
+      <span>
+        <%= t :".welcome_html",
+              username: (link_to current_user.username,
+                                 main_app.profile_path,
+                                 class: 'username')
+            %>
+      </span>
+      <span>
+        <%= link_to (t :".sign_out"), main_app.signout_path %>
+      </span>
+    <% else %>
+      <span>
+        <%= link_to (t :".sign_in"), main_app.login_path %>
+      </span>
+    <% end %>
+    </div>
   <% end %>
 
 </div>

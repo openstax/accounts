@@ -9,6 +9,8 @@ body {
   background-color: $application_background_color;
   color:            $os_gray;
   margin-top:       0px;
+  background: image_url('home-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
 }
 
 body, p, ol, ul, td, a {
@@ -48,26 +50,25 @@ body, p, ol, ul, td, a {
 }
 
 #application-header {
-  border-bottom: 1px solid $os_gray;
   padding-left: $application_edge_distance * 1.5;
   padding-right: $application_edge_distance * 1.5;
-
-  #top-nav-frame {
-    height: $application_top_nav_height;
-    background-color: $application_background_color;
-  }
+  margin-top: 10px;
 
   #top-nav-logo  {
-    // background: image-url("accounts_horiz_v2.png") no-repeat transparent;
-    background: image-url("openstax-logo.svg") no-repeat transparent;
-    $image_height:  37px;
-    $image_width:  161px;
+    $image_height:  40px;
+    $image_width:  174px;
 
-    float:      left;
     height:     $image_height;
     width:      $image_width;
-    margin-top: ($application_top_nav_height - $image_height)/2;
-    margin-bottom: 10px;
+    margin: auto;
+
+    a {
+      background: image-url("openstax-logo-white.svg") no-repeat transparent;
+      background-position: center;
+      margin-top: ($application_top_nav_height - $image_height)/2;
+      margin-bottom: 10px;
+      display: block;
+    }
   }
 
   @include flexbox;
@@ -109,8 +110,6 @@ body, p, ol, ul, td, a {
   bottom: 0;
 
   height: $application_footer_height;
-  background-color: #ffffff;
-  border-top: 1px solid $os_gray;
 
   color:            $os_gray;
   font-size:        10px;
@@ -120,7 +119,7 @@ body, p, ol, ul, td, a {
   a {
     font-size:        10px;
     text-decoration:  none;
-    color:            $os_gray;
+    color:            white;
 
     &:hover {
       color: $ost_hot_blue;
@@ -144,6 +143,11 @@ body, p, ol, ul, td, a {
   position: absolute;
   top: 0;
   left: 0;
+  color: white;
+
+  a {
+    text-decoration: underline;
+  }
 
   #clock.highlight {
     color: #ff00ff;
