@@ -1,4 +1,4 @@
-class SignupCheckPin
+class SignupVerifyEmail
 
   lev_handler
 

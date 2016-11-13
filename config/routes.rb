@@ -50,14 +50,17 @@ Rails.application.routes.draw do
 
   namespace 'signup' do
     get '/', action: :start
+    post '/', action: :start
     get 'password'
     get 'social'
     # post 'social'
 
 
-    post 'submit_email'
+    # post 'submit_email'
     get 'verify_email'
-    post 'check_pin'
+    post 'verify_email'
+
+    # post 'check_pin'
     get 'check_token'
     post 'submit_password'
     get 'profile'

@@ -1,35 +1,6 @@
-<%= render 'layouts/ox_white_logo' %>
-
 <% @hide_layout_errors = true %>
 
-<% errors = @handler_result.try(:errors) %>
-
 <% saved_role_sym = saved_role.downcase.to_sym %>
-
-<% is_invalid = collect_errors.any? %>
-
-<%
-  text_field = -> (f:, name:, label: nil, autofocus: false, except: nil, only: nil) {
-    if only.present? && exception.present?
-      raise "Can only set one of `except` or `only`"
-    elsif except.present?
-      return if [except].flatten.compact.include?(saved_role_sym)
-    elsif only.present?
-      return unless [only].flatten.compact.include?(saved_role_sym)
-    end
-
-    error = errors.present? ?
-            @handler_result.errors.find{|error| error.offending_inputs == [:profile, name]} :
-            false
-
-    # TODO actually show the error message
-
-    label ||= ".#{name}"
-    content_tag :div, class: "form-group #{'has-error' if error}" do
-      f.text_field name, placeholder: t(label), class: "form-control wide", autofocus: autofocus
-    end
-  }
-%>
 
 <div class="ox-card login">
 
@@ -37,18 +8,23 @@
 
   <%= lev_form_for :profile, url: signup_profile_path do |f| %>
 
+    <% fh = FormHelper::One.new(f: f,
+                                limit_to: saved_role_sym,
+                                context: self,
+                                errors: @handler_result.try(:errors)) %>
+
     <h3><%= t('.name_heading') %></h3>
-    <%= text_field.call f: f, name: :title %>
-    <%= text_field.call f: f, name: :first_name %>
-    <%= text_field.call f: f, name: :last_name %>
-    <%= text_field.call f: f, name: :suffix %>
+    <%= fh.text_field name: :title %>
+    <%= fh.text_field name: :first_name %>
+    <%= fh.text_field name: :last_name %>
+    <%= fh.text_field name: :suffix %>
 
     <h3><%= t('.more_things_heading') %></h3>
-    <%= text_field.call f: f, name: :phone_number, except: :student %>
-    <%= text_field.call f: f, name: :school %>
-    <%= text_field.call f: f, name: :url, except: :student %>
-    <%= text_field.call f: f, name: :num_students, except: :student %>
-    <%= text_field.call f: f, name: :using_openstax, except: :student %>
+    <%= fh.text_field name: :phone_number, except: :student %>
+    <%= fh.text_field name: :school %>
+    <%= fh.text_field name: :url, except: :student %>
+    <%= fh.text_field name: :num_students, except: :student %>
+    <%= fh.text_field name: :using_openstax, except: :student %>
 
     <% if saved_role_sym != :student %>
       <h3><%= t('.titles_heading') %></h3>

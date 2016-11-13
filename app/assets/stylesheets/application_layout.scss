@@ -50,24 +50,30 @@ body, p, ol, ul, td, a {
 }
 
 #application-header {
+  $image_height:  40px;
+  $image_width:  174px;
+
   padding-left: $application_edge_distance * 1.5;
   padding-right: $application_edge_distance * 1.5;
-  margin-top: 10px;
+  // margin-top: 10px;
+
 
   #top-nav-logo  {
-    $image_height:  40px;
-    $image_width:  174px;
 
     height:     $image_height;
     width:      $image_width;
-    margin: auto;
+    // margin: auto;
+
+    $top_bottom_margin: ($application_top_nav_height - $image_height)/2;
+    margin: $top_bottom_margin auto;
+      // margin-bottom: 10px;
 
     a {
       background: image-url("openstax-logo-white.svg") no-repeat transparent;
       background-position: center;
-      margin-top: ($application_top_nav_height - $image_height)/2;
-      margin-bottom: 10px;
       display: block;
+          height:     $image_height;
+    width:      $image_width;
     }
   }
 
@@ -99,7 +105,6 @@ body, p, ol, ul, td, a {
 }
 
 #application-body {
-  margin-top: 20px;
   margin-bottom: 30px;
 }
 
@@ -116,27 +121,28 @@ body, p, ol, ul, td, a {
   font-family:      verdana, arial, helvetica, sans-serif;
   line-height:      14px;
 
+  div {
+    text-align: center;
+    #footer-copyright {
+      margin: auto;
+    }
+
+    #footer-rice-logo-image {
+      margin-bottom: 12px;
+    }
+  }
+
   a {
     font-size:        10px;
     text-decoration:  none;
-    color:            white;
+    color:            #e3e3ff;
 
     &:hover {
       color: $ost_hot_blue;
     }
   }
 
-  #footer-copyright {
-    padding-top: 31px;
-  }
 
-  #footer-rice-logo-image {
-    padding-top:  21px;
-    float:        right;
-    @media(max-width: 767px) {
-      float: left;
-    }
-  }
 }
 
 #upper-corner-console {

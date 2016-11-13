@@ -1,4 +1,4 @@
-class SignupSubmitEmail
+class SignupStart
 
   lev_handler
 

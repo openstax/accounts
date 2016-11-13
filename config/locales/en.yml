@@ -302,8 +302,16 @@ en:
       sign_up_with_password: Sign up with a password
       sign_up_with_twitter: Sign up with Twitter
 
+    verify_email:
+      page_heading: Enter Your PIN
+      pin: Enter PIN
+      verify_pin: Verify PIN
+
     password:
-      page_heading: Create Account
+      page_heading: Enter Password
+      password: Password
+      password_confirmation: Confirm Password
+      enter_password: Enter Password
 
     social:
       page_heading: Create Account

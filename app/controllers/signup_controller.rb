@@ -14,36 +14,38 @@ class SignupController < ApplicationController
   include SignUpState
 
   def start
+    if request.post?
+      handle_with(SignupStart,
+                  existing_signup_contact_info: saved_signup_contact_info,
+                  success: lambda do
+                    save_signup_state(
+                      role: @handler_result.outputs.role,
+                      signup_contact_info: @handler_result.outputs.signup_contact_info
+                    )
+                    redirect_to action: :verify_email
+                  end,
+                  failure: lambda do
+                    render :start
+                  end)
+    end
   end
 
-  def submit_email
-    handle_with(SignupSubmitEmail,
-                existing_signup_contact_info: saved_signup_contact_info,
-                success: lambda do
-                  save_signup_state(
-                    role: @handler_result.outputs.role,
-                    signup_contact_info: @handler_result.outputs.signup_contact_info
-                  )
-                  redirect_to action: :verify_email
-                end,
-                failure: lambda do
-                  render :start
-                end)
-  end
 
   def verify_email
-
+    if request.post?
+      handle_with(SignupVerifyEmail,
+                  signup_contact_info: saved_signup_contact_info,
+                  success: lambda do
+                    redirect_to action: :password
+                  end,
+                  failure: lambda do
+                    render :verify_email
+                  end)
+    end
   end
 
   def check_pin
-    handle_with(SignupCheckPin,
-                signup_contact_info: saved_signup_contact_info,
-                success: lambda do
-                  redirect_to action: :password
-                end,
-                failure: lambda do
-                  render :verify_email
-                end)
+
   end
 
   def check_token
