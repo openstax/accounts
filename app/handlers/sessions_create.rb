@@ -91,7 +91,6 @@ class SessionsCreate
         run(TransferOmniauthData, @data, authentication_user)
         status = :new_social_user
       end
-
       run(TransferAuthentications, authentication, authentication_user)
       sign_in!(authentication_user)
     end

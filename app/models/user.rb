@@ -42,10 +42,10 @@ class User < ActiveRecord::Base
 
   validates :username, length: { minimum: USERNAME_MIN_LENGTH,
                                  maximum: USERNAME_MAX_LENGTH,
-                                 allow_nil: true },
+                                 allow_blank: true },
                        format: { with: USERNAME_VALID_REGEX,
                                  message: "can only contain letters, numbers, and underscores.",
-                                 allow_nil: true }
+                                 allow_blank: true }
 
   validates :username, uniqueness: { case_sensitive: false, allow_nil: true },
                        if: :username_changed?
@@ -64,8 +64,6 @@ class User < ActiveRecord::Base
   before_create :generate_uuid
 
   before_create :make_first_user_an_admin
-
-  before_create :default_to_needs_profile
 
   before_save :add_unread_update
 
@@ -187,10 +185,6 @@ class User < ActiveRecord::Base
   end
 
   protected
-
-  def default_to_needs_profile
-    self.state ||= 'needs_profile'
-  end
 
   def generate_uuid
     self.uuid ||= SecureRandom.uuid

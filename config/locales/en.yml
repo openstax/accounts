@@ -308,6 +308,22 @@ en:
     social:
       page_heading: Create Account
 
+    profile:
+      name_heading: Name
+      title: Title
+      first_name: First Name
+      last_name: Last Name
+      suffix: Suffix
+      more_things_heading: And a few more things...
+      phone_number: Phone Number
+      school: School
+      url: Your specific school web page
+      num_students: Number of students per semester
+      using_openstax: Already using OpenStax?
+      create_account: Create Account
+      titles_heading: OpenStax titles I'm interested in
+      titles_instructions: Check all that apply.
+
   static_pages:
     copyright:
       content_copyright_notice_html: >-

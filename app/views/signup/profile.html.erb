@@ -1,0 +1,103 @@
+<%= render 'layouts/ox_white_logo' %>
+
+<% @hide_layout_errors = true %>
+
+<% errors = @handler_result.try(:errors) %>
+
+<% saved_role_sym = saved_role.downcase.to_sym %>
+
+<% is_invalid = collect_errors.any? %>
+
+<%
+  text_field = -> (f:, name:, label: nil, autofocus: false, except: nil, only: nil) {
+    if only.present? && exception.present?
+      raise "Can only set one of `except` or `only`"
+    elsif except.present?
+      return if [except].flatten.compact.include?(saved_role_sym)
+    elsif only.present?
+      return unless [only].flatten.compact.include?(saved_role_sym)
+    end
+
+    error = errors.present? ?
+            @handler_result.errors.find{|error| error.offending_inputs == [:profile, name]} :
+            false
+
+    # TODO actually show the error message
+
+    label ||= ".#{name}"
+    content_tag :div, class: "form-group #{'has-error' if error}" do
+      f.text_field name, placeholder: t(label), class: "form-control wide", autofocus: autofocus
+    end
+  }
+%>
+
+<div class="ox-card login">
+
+  <h1 class="title"><%= t '.page_heading' %></h1>
+
+  <%= lev_form_for :profile, url: signup_profile_path do |f| %>
+
+    <h3><%= t('.name_heading') %></h3>
+    <%= text_field.call f: f, name: :title %>
+    <%= text_field.call f: f, name: :first_name %>
+    <%= text_field.call f: f, name: :last_name %>
+    <%= text_field.call f: f, name: :suffix %>
+
+    <h3><%= t('.more_things_heading') %></h3>
+    <%= text_field.call f: f, name: :phone_number, except: :student %>
+    <%= text_field.call f: f, name: :school %>
+    <%= text_field.call f: f, name: :url, except: :student %>
+    <%= text_field.call f: f, name: :num_students, except: :student %>
+    <%= text_field.call f: f, name: :using_openstax, except: :student %>
+
+    <% if saved_role_sym != :student %>
+      <h3><%= t('.titles_heading') %></h3>
+      <p><%= t('.titles_instructions') %></p>
+
+      TODO add titles multi select
+    <% end %>
+
+    <% unless @contracts_not_required %>
+      <%
+        contracts = [FinePrint.get_contract(:general_terms_of_use),
+                     FinePrint.get_contract(:privacy_policy)]
+
+        contract_links = contracts.collect do |contract|
+          link_to contract.title, term_path(contract), remote: true
+        end
+      %>
+
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :i_agree %>
+          <%= t :".have_read_terms_and_agree_html",
+                terms_of_use: contract_links[0],
+                privacy_policy: contract_links[1]
+              %><br/>
+          <i><%= t :".policies_notice" %></i>
+        </label>
+      </div>
+
+      <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
+      <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
+    <% end %>
+
+    <%= f.submit (t :".create_account"), id: "create_account_submit", class: 'btn btn-primary' %>
+
+  <% end %>
+
+</div>
+
+
+<% unless @contracts_not_required %>
+  <script type="text/javascript">
+    Accounts.Ui.enableOnChecked('#create_account_submit', '#profile_i_agree');
+    $(document).ready(function() {
+      $('#show-more-fields').click(function(e) {
+        e.preventDefault();
+        $(this).hide();
+        $('#signup_title, #signup_suffix').parent().show();
+      })
+    });
+  </script>
+<% end %>

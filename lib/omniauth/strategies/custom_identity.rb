@@ -19,6 +19,7 @@ module OmniAuth
 
       include OmniAuth::Strategy
       include SignInState
+      include SignUpState
       include ContractsNotRequired
 
       # Request forgery protection
@@ -138,9 +139,7 @@ module OmniAuth
           SignupPassword.handle(
             params: request,
             caller: current_user,
-            contracts_required: !contracts_not_required(
-              client_id: request['client_id'] || session['client_id']
-            )
+            signup_contact_info: saved_signup_contact_info
           )
 
         env['errors'] = @handler_result.errors
@@ -150,11 +149,11 @@ module OmniAuth
           env['PATH_INFO'] = callback_path
           callback_phase
         else
-          show_signup_form
+          show_password_form
         end
       end
 
-      def show_signup_form
+      def show_password_form
         SignupController.action(:password).call(env)
       end
 

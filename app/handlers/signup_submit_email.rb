@@ -14,6 +14,8 @@ class SignupSubmitEmail
   end
 
   def handle
+    outputs.role = signup_params.role
+
     # Return if user went back, didn't change anything, and resubmitted
     if existing_signup_contact_info.try(:value) == email
       outputs.signup_contact_info = existing_signup_contact_info
@@ -36,7 +38,6 @@ class SignupSubmitEmail
     ).deliver_later
 
     outputs.signup_contact_info = new_signup_contact_info
-    outputs.role = signup_params.role
   end
 
   def email

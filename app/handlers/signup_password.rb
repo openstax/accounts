@@ -9,14 +9,11 @@ class SignupPassword
     validates :password_confirmation, presence: true
   end
 
-  uses_routine CreateUser,
-               translations: { inputs: {scope: :signup} }
   uses_routine CreateIdentity,
                translations: { inputs:  {scope: :signup},
                                outputs: {type: :verbatim}  }
-  uses_routine AddEmailToUser,
+  uses_routine TransferSignupContactInfo,
                translations: { inputs: {scope: :signup} }
-  uses_routine AgreeToTerms
 
   protected
 
@@ -25,7 +22,7 @@ class SignupPassword
   end
 
   def handle
-    user = User.create(state: 'needs_profile') # TODO take out state if before_create stays in user.rb
+    user = User.create
     transfer_errors_from(user, {type: :verbatim}, true)
 
     # Create an Identity, but not an Authentication -- that is done in SessionsCreate
@@ -35,7 +32,9 @@ class SignupPassword
         user_id:               user.id
     )
 
-    run(TransferSignupContactInfo, options[:signup_contact_info], user)
+    run(TransferSignupContactInfo,
+        signup_contact_info: options[:signup_contact_info],
+        user: user)
   end
 
 end

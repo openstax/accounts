@@ -25,6 +25,10 @@ class AnonymousUser
     false
   end
 
+  def is_needs_profile?
+    false
+  end
+
   def id
     nil
   end

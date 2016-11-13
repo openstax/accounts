@@ -50,8 +50,14 @@ ActionController::Base.class_exec do
 
   def finish_sign_up
     return true if request.format != :html
-    return unless current_user.is_new_social?
-    redirect_to signup_social_path
+
+    if current_user.is_needs_profile?
+      redirect_to signup_profile_path
+    else
+# TODO check that this is clean
+    end
+    # return unless current_user.is_new_social?
+    # redirect_to signup_social_path
   end
 
   def expired_password
@@ -66,6 +72,8 @@ ActionController::Base.class_exec do
 
     redirect_to reset_password_path(code_hash)
   end
+
+  # TODO move this login_info stuff to sign_in_state.rb
 
   def set_login_info(username_or_email:, names:, providers:)
     cookies.signed[:login_key] = @handler_result.outputs.username_or_email

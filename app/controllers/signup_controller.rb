@@ -2,12 +2,16 @@
 class SignupController < ApplicationController
 
   skip_before_filter :authenticate_user!, only: [:start, :submit_email, :verify_email,
-                                                 :check_pin, :password, :check_token] # TODO change
+                                                 :check_pin, :password, :check_token, :profile] # TODO change
   skip_before_filter :finish_sign_up
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   helper_method :saved_email, :saved_role
+
+  before_filter :restart_if_missing_info, only: [:verify_email, :password]  # TODO spec me
+
+  include SignUpState
 
   def start
   end
@@ -16,8 +20,10 @@ class SignupController < ApplicationController
     handle_with(SignupSubmitEmail,
                 existing_signup_contact_info: saved_signup_contact_info,
                 success: lambda do
-                  session[:signup] = {role: @handler_result.outputs.role,
-                                      ci_id: @handler_result.outputs.signup_contact_info.id }
+                  save_signup_state(
+                    role: @handler_result.outputs.role,
+                    signup_contact_info: @handler_result.outputs.signup_contact_info
+                  )
                   redirect_to action: :verify_email
                 end,
                 failure: lambda do
@@ -56,34 +62,41 @@ class SignupController < ApplicationController
     end
   end
 
-  def submit_password
-    handle_with(SignupPassword, # TODO make this consistent with action name
-                signup_contact_info: saved_signup_contact_info,
-                success: lambda do
-                  redirect_to action: :profile
-                end,
-                failure: lambda do
-                  render :password
-                end)
-  end
+  # def submit_password
+  #   handle_with(SignupPassword, # TODO make this consistent with action name
+  #               signup_contact_info: saved_signup_contact_info,
+  #               success: lambda do
+  #                 redirect_to action: :profile
+  #               end,
+  #               failure: lambda do
+  #                 render :password
+  #               end)
+  # end
 
   def profile
+    if request.post?
+      handler = case saved_role
+      when /student/i
+        SignupProfileStudent
+      else
+        SignupProfileInstructor
+      end
 
+      handle_with(handler,
+                  contracts_required: !contracts_not_required(
+                    client_id: request['client_id'] || session['client_id']
+                  ),
+                  success: lambda do
+                    clear_signup_state
+                    redirect_to root_path # TODO this is a placeholder
+                  end,
+                  failure: lambda do
+                    render :profile
+                  end)
+    end
   end
 
-  def submit_profile
-        handle_with(SignupSubmitProfile,
-                contracts_required: !contracts_not_required(
-                  client_id: request['client_id'] || session['client_id']
-                ),
-                success: lambda do
-                  redirect_to action: :profile
-                end,
-                failure: lambda do
-                  render :password
-                end)
-
-  end
+  # TODO change all blah and submit_blah actions to blah with switch on GET and POST
 
   def social
     if request.post?
@@ -101,28 +114,20 @@ class SignupController < ApplicationController
     end
   end
 
-  def finish
-    handle_with(SignupFinish,
-                success: lambda do
-                  session.delete(:signup)
-                end,
-                failure: lambda do
+  # def finish
+  #   handle_with(SignupFinish,
+  #               success: lambda do
+  #                 clear_signup_state
+  #               end,
+  #               failure: lambda do
 
-                end)
-  end
+  #               end)
+  # end
 
   protected
 
-  def saved_role
-    session[:signup].try(:[],'role')
-  end
-
-  def saved_signup_contact_info
-    @saved_signup_contact_info ||= SignupContactInfo.find_by(id: session[:signup].try(:[],'ci_id'))
-  end
-
-  def saved_email
-    @saved_email ||= saved_signup_contact_info.try(:value)
+  def restart_if_missing_info
+    redirect_to signup_path if saved_signup_contact_info.nil? || saved_role.nil?
   end
 
 end

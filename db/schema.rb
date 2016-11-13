@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161109234041) do
+ActiveRecord::Schema.define(version: 20161112174610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.integer  "application_id", :null=>false, :index=>{:name=>"index_application_groups_on_application_id_and_unread_updates", :with=>["unread_updates"]}
     t.integer  "group_id",       :null=>false, :index=>{:name=>"index_application_groups_on_group_id_and_application_id", :with=>["application_id"], :unique=>true}
     t.integer  "unread_updates", :default=>1, :null=>false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",     :null=>false
+    t.datetime "updated_at",     :null=>false
   end
   add_index "application_groups", ["group_id", "unread_updates"], :name=>"index_application_groups_on_group_id_and_unread_updates"
 
@@ -29,8 +29,8 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.integer  "application_id",          :null=>false, :index=>{:name=>"index_application_users_on_application_id"}
     t.integer  "user_id",                 :null=>false, :index=>{:name=>"index_application_users_on_user_id_and_application_id", :with=>["application_id"], :unique=>true}
     t.integer  "default_contact_info_id", :index=>{:name=>"index_application_users_on_default_contact_info_id"}
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",              :null=>false
+    t.datetime "updated_at",              :null=>false
     t.integer  "unread_updates",          :default=>1, :null=>false
   end
   add_index "application_users", ["application_id", "unread_updates"], :name=>"index_application_users_on_application_id_and_unread_updates"
@@ -40,8 +40,8 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.integer  "user_id",    :index=>{:name=>"index_authentications_on_user_id_scoped", :with=>["provider"], :unique=>true}
     t.string   "provider"
     t.string   "uid",        :index=>{:name=>"index_authentications_on_uid_scoped", :with=>["provider"], :unique=>true}
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null=>false
+    t.datetime "updated_at", :null=>false
   end
 
   create_table "contact_infos", force: :cascade do |t|
@@ -50,8 +50,8 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.boolean  "verified",             :default=>false
     t.string   "confirmation_code",    :index=>{:name=>"index_contact_infos_on_confirmation_code", :unique=>true}
     t.integer  "user_id",              :index=>{:name=>"index_contact_infos_on_user_id"}
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",           :null=>false
+    t.datetime "updated_at",           :null=>false
     t.datetime "confirmation_sent_at"
     t.boolean  "is_searchable",        :default=>false
     t.string   "confirmation_pin",     :index=>{:name=>"index_contact_infos_on_confirmation_pin"}
@@ -76,38 +76,38 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.integer  "version"
     t.string   "title",      :null=>false
     t.text     "content",    :null=>false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null=>false
+    t.datetime "updated_at", :null=>false
   end
 
   create_table "fine_print_signatures", force: :cascade do |t|
     t.integer  "contract_id", :null=>false, :index=>{:name=>"index_fine_print_signatures_on_contract_id"}
     t.integer  "user_id",     :null=>false, :index=>{:name=>"index_fine_print_s_on_u_id_and_u_type_and_c_id", :with=>["user_type", "contract_id"], :unique=>true}
     t.string   "user_type",   :null=>false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null=>false
+    t.datetime "updated_at",  :null=>false
     t.boolean  "is_implicit", :default=>false, :null=>false
   end
 
   create_table "group_members", force: :cascade do |t|
     t.integer  "group_id",   :null=>false, :index=>{:name=>"index_group_members_on_group_id_and_user_id", :with=>["user_id"], :unique=>true}
     t.integer  "user_id",    :null=>false, :index=>{:name=>"index_group_members_on_user_id"}
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null=>false
+    t.datetime "updated_at", :null=>false
   end
 
   create_table "group_nestings", force: :cascade do |t|
     t.integer  "member_group_id",    :null=>false, :index=>{:name=>"index_group_nestings_on_member_group_id", :unique=>true}
     t.integer  "container_group_id", :null=>false, :index=>{:name=>"index_group_nestings_on_container_group_id"}
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",         :null=>false
+    t.datetime "updated_at",         :null=>false
   end
 
   create_table "group_owners", force: :cascade do |t|
     t.integer  "group_id",   :null=>false, :index=>{:name=>"index_group_owners_on_group_id_and_user_id", :with=>["user_id"], :unique=>true}
     t.integer  "user_id",    :null=>false, :index=>{:name=>"index_group_owners_on_user_id"}
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null=>false
+    t.datetime "updated_at", :null=>false
   end
 
   create_table "groups", force: :cascade do |t|
@@ -115,14 +115,14 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.string   "name"
     t.text     "cached_subtree_group_ids"
     t.text     "cached_supertree_group_ids"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                 :null=>false
+    t.datetime "updated_at",                 :null=>false
   end
 
   create_table "identities", force: :cascade do |t|
     t.string   "password_digest"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",          :null=>false
+    t.datetime "updated_at",          :null=>false
     t.integer  "user_id",             :null=>false, :index=>{:name=>"index_identities_on_user_id"}
     t.datetime "password_expires_at"
   end
@@ -132,8 +132,8 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.text     "html",       :default=>"", :null=>false
     t.text     "text",       :default=>"", :null=>false
     t.string   "short_text", :default=>"", :null=>false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null=>false
+    t.datetime "updated_at", :null=>false
   end
 
   create_table "message_recipients", force: :cascade do |t|
@@ -142,8 +142,8 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.integer  "user_id",         :index=>{:name=>"index_message_recipients_on_user_id_and_read", :with=>["read"]}
     t.string   "recipient_type",  :null=>false
     t.boolean  "read",            :default=>false, :null=>false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",      :null=>false
+    t.datetime "updated_at",      :null=>false
   end
 
   create_table "messages", force: :cascade do |t|
@@ -152,8 +152,8 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.boolean  "send_externally_now", :default=>false, :null=>false
     t.text     "subject",             :null=>false
     t.string   "subject_prefix",      :default=>"", :null=>false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",          :null=>false
+    t.datetime "updated_at",          :null=>false
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -183,8 +183,8 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.string   "uid",                  :null=>false, :index=>{:name=>"index_oauth_applications_on_uid", :unique=>true}
     t.string   "secret",               :null=>false
     t.text     "redirect_uri",         :null=>false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",           :null=>false
+    t.datetime "updated_at",           :null=>false
     t.boolean  "trusted",              :default=>false
     t.integer  "owner_id",             :index=>{:name=>"index_oauth_applications_on_owner_id_and_owner_type", :with=>["owner_type"]}
     t.string   "owner_type"
@@ -198,8 +198,8 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.integer  "identity_id", :null=>false, :index=>{:name=>"index_password_reset_codes_on_identity_id", :unique=>true}
     t.string   "code",        :null=>false, :index=>{:name=>"index_password_reset_codes_on_code", :unique=>true}
     t.datetime "expires_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null=>false
+    t.datetime "updated_at",  :null=>false
   end
 
   create_table "salesforce_users", force: :cascade do |t|
@@ -223,8 +223,8 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.integer  "kind",       :null=>false, :index=>{:name=>"index_sequential_failures_on_kind_and_reference", :with=>["reference"], :unique=>true}
     t.string   "reference",  :null=>false
     t.integer  "length",     :default=>0
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null=>false
+    t.datetime "updated_at", :null=>false
   end
 
   create_table "signup_contact_infos", force: :cascade do |t|
@@ -239,16 +239,16 @@ ActiveRecord::Schema.define(version: 20161109234041) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "username",              :default=>"", :index=>{:name=>"index_users_on_username", :unique=>true}
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "username",              :index=>{:name=>"index_users_on_username", :unique=>true}
+    t.datetime "created_at",            :null=>false
+    t.datetime "updated_at",            :null=>false
     t.boolean  "is_administrator",      :default=>false
     t.string   "first_name",            :index=>{:name=>"index_users_on_first_name", :case_sensitive=>false}
     t.string   "last_name",             :index=>{:name=>"index_users_on_last_name", :case_sensitive=>false}
     t.string   "title"
     t.string   "uuid",                  :index=>{:name=>"index_users_on_uuid", :unique=>true}
     t.string   "suffix"
-    t.string   "state",                 :default=>"temp", :null=>false
+    t.string   "state",                 :default=>"needs_profile", :null=>false
     t.string   "salesforce_contact_id", :index=>{:name=>"index_users_on_salesforce_contact_id"}
     t.integer  "faculty_status",        :default=>0, :null=>false, :index=>{:name=>"index_users_on_faculty_status"}
   end

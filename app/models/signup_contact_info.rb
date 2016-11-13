@@ -9,6 +9,8 @@ class SignupContactInfo < ActiveRecord::Base
   validates :kind, presence: true
   validates :value, presence: true
 
+  # TODO validate format exact same as in ContactInfo
+
   scope :verified, -> { where(verified: true) }
   sifter :verified do verified.eq true end
 
