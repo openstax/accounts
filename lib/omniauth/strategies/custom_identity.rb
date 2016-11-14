@@ -149,11 +149,11 @@ module OmniAuth
           env['PATH_INFO'] = callback_path
           callback_phase
         else
-          show_password_form
+          show_signup_password_form
         end
       end
 
-      def show_password_form
+      def show_signup_password_form
         SignupController.action(:password).call(env)
       end
 

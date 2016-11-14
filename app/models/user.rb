@@ -217,7 +217,7 @@ class User < ActiveRecord::Base
       was = change[0]
       is = change[1]
 
-      errors.add(attr.to_sym, "can't be blank") if was.present? && is.nil?
+      errors.add(attr.to_sym, "can't be blank") if !was.blank? && is.blank?
     end
   end
 

@@ -207,3 +207,51 @@ def agree_and_click_create
   find(:css, '#signup_i_agree').set(true)
   click_button (t :"signup.new_account.create_account")
 end
+
+def arrive_from_app
+  create_application
+  visit_authorize_uri
+  expect_sign_in_page
+end
+
+def expect_back_at_app
+  expect(page.current_url).to match(app_callback_url)
+end
+
+def expect_profile_screen
+  expect(page).to have_content(t :"users.edit.page_heading")
+end
+
+def complete_username_or_email_screen(username_or_email)
+  expect_sign_in_page
+  expect(page).to have_no_missing_translations
+  fill_in (t :"sessions.new.email_placeholder"), with: username_or_email
+  click_button (t :"sessions.new.next")
+  expect(page).to have_no_missing_translations
+end
+
+def complete_password_screen(password)
+  fill_in (t :"sessions.authenticate.password"), with: password
+  expect(page).to have_no_missing_translations
+  click_button (t :"sessions.authenticate.login")
+  expect(page).to have_no_missing_translations
+end
+
+def complete_reset_password_screen(password=nil)
+  password ||= 'Passw0rd!'
+  fill_in (t :"identities.reset_password.password"), with: password
+  fill_in (t :"identities.reset_password.confirm_password"), with: password
+  click_button (t :"identities.reset_password.set_password")
+end
+
+def complete_terms_screens
+  expect(page).to have_content('Terms of Use')
+
+  find(:css, '#agreement_i_agree').set(true)
+  click_button (t :"terms.pose.agree")
+
+  expect(page).to have_content('Privacy Policy')
+  find(:css, '#agreement_i_agree').set(true)
+  click_button (t :"terms.pose.agree")
+end
+

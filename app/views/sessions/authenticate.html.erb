@@ -1,5 +1,6 @@
 <%
   login_info = get_login_info
+  username_or_email = login_info[:username_or_email]
   names = login_info[:names] || []
   providers = login_info[:providers] || {}
 %>
@@ -35,7 +36,7 @@
 
       <%= f.password_field :password, placeholder: t(".password"), class: 'wide'  %>
 
-      <%= f.hidden_field :username_or_email %>
+      <%= f.hidden_field :username_or_email, value: username_or_email %>
 
       <input type="submit" class="btn btn-primary" value="<%= t '.login' %>" />
 

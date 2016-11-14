@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
                             :create, :failure, :destroy, :help]
 
   skip_before_filter :finish_sign_up, only: [:destroy]  # TODO used?
-  before_filter :remember_login_params, only: [:new, :create, :lookup_login, :authenticate]
+
   before_filter :get_authorization_url, only: [:new, :create]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
@@ -165,8 +165,8 @@ class SessionsController < ApplicationController
     else
       params[:message]
     end
-    if cookies.signed[:login_key] && params[:message] == 'bad_password'
-      @login = OpenStruct.new(username_or_email: cookies.signed[:login_key])
+
+    if params[:message] == 'bad_password'
       render 'authenticate'
     else
       render 'new'
@@ -202,8 +202,4 @@ class SessionsController < ApplicationController
                                                  response_type: 'code')
   end
 
-  def remember_login_params
-    @login = OpenStruct.new(params[:login])
-    @login.username_or_email ||= cookies.signed[:login_key]
-  end
 end

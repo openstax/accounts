@@ -22,19 +22,19 @@ class SignupPassword
   end
 
   def handle
-    user = User.create
-    transfer_errors_from(user, {type: :verbatim}, true)
+    outputs.user = User.create
+    transfer_errors_from(outputs.user, {type: :verbatim}, true)
 
     # Create an Identity, but not an Authentication -- that is done in SessionsCreate
     run(CreateIdentity,
         password:              signup_params.password,
         password_confirmation: signup_params.password_confirmation,
-        user_id:               user.id
+        user_id:               outputs.user.id
     )
 
     run(TransferSignupContactInfo,
         signup_contact_info: options[:signup_contact_info],
-        user: user)
+        user: outputs.user)
   end
 
 end

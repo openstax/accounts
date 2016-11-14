@@ -155,7 +155,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
           type: "EmailAddress",
           value: "unconfirmed@example.com",
           is_verified: false,
-          num_pin_verification_attempts_remaining: 5
+          num_pin_verification_attempts_remaining: ConfirmByPin::MAX_PIN_FAILURES
         },
         {
           id: confirmed_email.id,

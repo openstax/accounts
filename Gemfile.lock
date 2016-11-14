@@ -213,6 +213,8 @@ GEM
     key_struct (0.4.2)
     keyword_search (1.5.0)
     kgio (2.10.0)
+    launchy (2.4.3)
+      addressable (~> 2.3)
     lev (7.0.3)
       actionpack (>= 4.2)
       active_attr
@@ -552,6 +554,7 @@ DEPENDENCIES
   jobba (~> 1.4.0)
   jquery-rails
   keyword_search (~> 1.5.0)
+  launchy
   lev (~> 7.0.3)
   lograge
   maruku
