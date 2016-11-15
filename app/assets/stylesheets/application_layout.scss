@@ -9,6 +9,8 @@ body {
   background-color: $application_background_color;
   color:            $os_gray;
   margin-top:       0px;
+  background: image_url('home-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
 }
 
 body, p, ol, ul, td, a {
@@ -48,26 +50,31 @@ body, p, ol, ul, td, a {
 }
 
 #application-header {
-  border-bottom: 1px solid $os_gray;
+  $image_height:  40px;
+  $image_width:  174px;
+
   padding-left: $application_edge_distance * 1.5;
   padding-right: $application_edge_distance * 1.5;
+  // margin-top: 10px;
 
-  #top-nav-frame {
-    height: $application_top_nav_height;
-    background-color: $application_background_color;
-  }
 
   #top-nav-logo  {
-    // background: image-url("accounts_horiz_v2.png") no-repeat transparent;
-    background: image-url("openstax-logo.svg") no-repeat transparent;
-    $image_height:  37px;
-    $image_width:  161px;
 
-    float:      left;
     height:     $image_height;
     width:      $image_width;
-    margin-top: ($application_top_nav_height - $image_height)/2;
-    margin-bottom: 10px;
+    // margin: auto;
+
+    $top_bottom_margin: ($application_top_nav_height - $image_height)/2;
+    margin: $top_bottom_margin auto;
+      // margin-bottom: 10px;
+
+    a {
+      background: image-url("openstax-logo-white.svg") no-repeat transparent;
+      background-position: center;
+      display: block;
+          height:     $image_height;
+    width:      $image_width;
+    }
   }
 
   @include flexbox;
@@ -98,7 +105,6 @@ body, p, ol, ul, td, a {
 }
 
 #application-body {
-  margin-top: 20px;
   margin-bottom: 30px;
 }
 
@@ -109,41 +115,45 @@ body, p, ol, ul, td, a {
   bottom: 0;
 
   height: $application_footer_height;
-  background-color: #ffffff;
-  border-top: 1px solid $os_gray;
 
   color:            $os_gray;
   font-size:        10px;
   font-family:      verdana, arial, helvetica, sans-serif;
   line-height:      14px;
 
+  div {
+    text-align: center;
+    #footer-copyright {
+      margin: auto;
+    }
+
+    #footer-rice-logo-image {
+      margin-bottom: 12px;
+    }
+  }
+
   a {
     font-size:        10px;
     text-decoration:  none;
-    color:            $os_gray;
+    color:            #e3e3ff;
 
     &:hover {
       color: $ost_hot_blue;
     }
   }
 
-  #footer-copyright {
-    padding-top: 31px;
-  }
 
-  #footer-rice-logo-image {
-    padding-top:  21px;
-    float:        right;
-    @media(max-width: 767px) {
-      float: left;
-    }
-  }
 }
 
 #upper-corner-console {
   position: absolute;
   top: 0;
   left: 0;
+  color: white;
+
+  a {
+    text-decoration: underline;
+  }
 
   #clock.highlight {
     color: #ff00ff;

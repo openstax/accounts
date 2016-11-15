@@ -8,5 +8,7 @@ class ConfirmationMailer < SiteMailer
     mail to: "\"#{email_address.user.full_name}\" <#{email_address.value}>",
          subject: @show_pin ? "Verify your email address using code #{@email_address.confirmation_pin}" :
                               "Verify your email address"
+
+    email_address.update_column(:confirmation_sent_at, Time.now)
   end
 end

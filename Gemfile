@@ -183,15 +183,15 @@ group :test do
   # CodeClimate integration
   gem "codeclimate-test-reporter", require: false
   gem 'db-query-matchers'
-  # Headless Capybara webkit driver
-  gem 'capybara-webkit'
-
+  # Headless Capybara driver
+  gem 'poltergeist'
   # Testing emails
   gem 'capybara-email'
 
   # Fake in-memory Redis for testing
   gem 'fakeredis'
 
+  gem 'launchy'
 end
 
 group :production do

@@ -145,7 +145,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       ConfirmContactInfo.call(confirmed_email)
 
       over_pinned_email = AddEmailToUser.call("over_pinned@example.com", user_1).outputs.email
-      ConfirmByPin::MAX_PIN_FAILURES.times { ConfirmByPin.call(contact_info: over_pinned_email, pin: "whatever") }
+      ConfirmByPin.max_pin_failures.times { ConfirmByPin.call(contact_info: over_pinned_email, pin: "whatever") }
 
       api_get :show, user_1_token
 
@@ -155,7 +155,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
           type: "EmailAddress",
           value: "unconfirmed@example.com",
           is_verified: false,
-          num_pin_verification_attempts_remaining: 5
+          num_pin_verification_attempts_remaining: ConfirmByPin.max_pin_failures
         },
         {
           id: confirmed_email.id,

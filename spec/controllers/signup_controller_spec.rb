@@ -28,7 +28,7 @@ RSpec.describe SignupController, type: :controller do
   let(:user)            { FactoryGirl.create :temp_user }
   let!(:authentication) { FactoryGirl.create :authentication, user: user }
 
-  context "POST social" do
+  xcontext "POST social" do
     it "creates a new user with a social network and redirects on success" do
       controller.sign_in! user
       post :social, params

@@ -4,7 +4,7 @@ feature 'User claims an unclaimed account' do
 
   background { load 'db/seeds.rb' }
 
-  scenario 'a new user signs up and completes profile when an account is waiting' do
+  xscenario 'a new user signs up and completes profile when an account is waiting' do
     unclaimed_user = FindOrCreateUnclaimedUser.call(
       email:'unclaimeduser@example.com', username: 'therulerofallthings',
                                     first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,

@@ -1,3 +1,20 @@
-<p>start.html.erb</p>
+<% @hide_session_info = true %>
 
-<p>Solicit role and email address</p>
+<div class="ox-card login">
+
+  <h1 class="title"><%= t '.page_heading' %></h1>
+
+  <%= lev_form_for :signup, url: signup_path, method: :post do |f| %>
+
+    <% fh = FormHelper::One.new(f: f,
+                                context: self,
+                                errors: @handler_result.try(:errors)) %>
+    <%# TODO put select in form helper %>
+    <%# TODO put select options in translations %>
+    <%= f.select :role, options_for_select(%w(Instructor Student).map{|role| [role, role]},
+                        [saved_role].compact) %>
+    <%= fh.text_field name: :email, value: saved_email %>
+    <%= f.submit (t :".next"), class: 'btn btn-primary' %>
+  <% end %>
+
+</div>

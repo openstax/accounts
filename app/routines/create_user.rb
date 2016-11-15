@@ -4,7 +4,7 @@
 #
 # If :ensure_no_errors is not set, the returned user object may have errors
 # that will cause this routine to fail
-class CreateUser
+class CreateUser   # TODO is this routine still used?
 
   lev_routine
 

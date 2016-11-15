@@ -18,7 +18,7 @@ describe SendContactInfoConfirmation do
 
   context 'when email address is not verified' do
     it 'sends a confirmation email' do
-      expect_any_instance_of(ConfirmationMailer).to receive(:instructions)
+      expect_any_instance_of(ConfirmationMailer).to receive(:instructions).and_call_original
       now = Time.parse('2014-02-24 10:00')
       allow(Time).to receive(:now).and_return(now)
 

@@ -11,11 +11,11 @@ class SessionsController < ApplicationController
                             :create, :failure, :destroy, :help]
 
   skip_before_filter :finish_sign_up, only: [:destroy]  # TODO used?
-  before_filter :remember_login_params, only: [:new, :create, :lookup_login, :authenticate]
+
   before_filter :get_authorization_url, only: [:new, :create]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :help]
+                  only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :help, :redirect_back]
 
   helper_method :last_signin_provider  #  TODO still useful?
   helper_method :get_login_info
@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
                 success: lambda do
                   set_login_info(username_or_email: @handler_result.outputs.username_or_email,
                                  names: @handler_result.outputs.names,
-                                 providers: @handler_result.outputs.providers)
+                                 providers: @handler_result.outputs.providers.to_hash)
                   redirect_to :authenticate
                 end,
                 failure: lambda do
@@ -90,7 +90,7 @@ class SessionsController < ApplicationController
           redirect_to action: :redirect_back
         when :new_social_user
           security_log :sign_in_successful, authentication_id: authentication.id
-          redirect_to signup_social_path
+          redirect_to signup_profile_path
         when :authentication_added
           security_log :authentication_created,
                        authentication_id: authentication.id,
@@ -165,8 +165,8 @@ class SessionsController < ApplicationController
     else
       params[:message]
     end
-    if cookies.signed[:login_key] && params[:message] == 'bad_password'
-      @login = OpenStruct.new(username_or_email: cookies.signed[:login_key])
+
+    if params[:message] == 'bad_password'
       render 'authenticate'
     else
       render 'new'
@@ -202,8 +202,4 @@ class SessionsController < ApplicationController
                                                  response_type: 'code')
   end
 
-  def remember_login_params
-    @login = OpenStruct.new(params[:login])
-    @login.username_or_email ||= cookies.signed[:login_key]
-  end
 end

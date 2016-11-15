@@ -6,84 +6,60 @@ feature 'User logs in as a local user', js: true do
 
   scenario 'authentication using email address passwords' do
     with_forgery_protection do
-      create_application
       user = create_user 'user'
       create_email_address_for(user, 'user@example.com')
-      visit_authorize_uri
-      expect_sign_in_page
-      fill_in 'login_username_or_email', with: user.contact_infos.last.value
-      click_button (t :"sessions.new.next")
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t("sessions.authenticate.name_greeting",
-                                     name: user.first_name))
-      fill_in 'login_password', with: 'password'
-      click_button (t :"sessions.authenticate.login")
-      expect(page.current_url).to match(app_callback_url)
+
+      arrive_from_app
+
+      complete_login_username_or_email_screen 'user@example.com'
+      complete_login_password_screen 'password'
+
+      expect_back_at_app
     end
   end
 
-
   scenario 'authenticates against plone (ssha) password hashes' do
     with_forgery_protection do
-      create_application
       user = create_user_with_plone_password
       create_email_address_for(user, 'user@example.com')
-      visit_authorize_uri
-      fill_in 'login_username_or_email', with: user.contact_infos.last.value
 
-      click_button (t :"sessions.new.next")
-      fill_in 'login_password', with: 'pass' #nope
+      arrive_from_app
 
-      click_button (t :"sessions.authenticate.login")
-      expect(page).to have_no_missing_translations
+      complete_login_username_or_email_screen 'user@example.com'
+      complete_login_password_screen 'pass' # bad
       expect(page).to have_content(t :"controllers.sessions.incorrect_password")
 
-      fill_in 'login_password', with: 'password' #match
-      click_button (t :"sessions.authenticate.login")
-      expect(page.current_url).to match(app_callback_url)
+      complete_login_password_screen 'password' # good
+
+      expect_back_at_app
     end
   end
 
   scenario 'with an unknown username' do
     with_forgery_protection do
-      create_application
-      visit_authorize_uri
-      expect_sign_in_page
-
-      fill_in 'login_username_or_email', with: 'user'
-      click_button (t :"sessions.new.next")
-      expect(page).to have_no_missing_translations
+      arrive_from_app
+      complete_login_username_or_email_screen 'user'
       expect(page).to have_content(t :"errors.no_account_for_username_or_email")
     end
   end
 
   scenario 'with a password that is expired' do
-    @user = create_user 'expired_password'
+    @user = create_user 'expired_password_user'
     identity = @user.identity
     identity.password_expires_at = 1.week.ago
     identity.save
 
     with_forgery_protection do
-      create_application
-      visit_authorize_uri
-      expect_sign_in_page
+      arrive_from_app
 
-      fill_in 'login_username_or_email', with: 'expired_password'
-      click_button (t :"sessions.new.next")
+      complete_login_username_or_email_screen 'expired_password_user'
+      complete_login_password_screen 'password'
 
-      fill_in 'login_password', with: 'password'
-
-      click_button (t :"sessions.authenticate.login")
-
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'expired_password')
       expect(page).to have_content(t :"controllers.identities.password_expired")
 
-      fill_in (t :"identities.reset_password.password"), with: 'Passw0rd!'
-      fill_in (t :"identities.reset_password.confirm_password"), with: 'Passw0rd!'
-      click_button (t :"identities.reset_password.set_password")
+      complete_reset_password_screen
 
-      expect(page.current_url).to match(app_callback_url)
+      expect_back_at_app
     end
   end
 
@@ -91,33 +67,17 @@ feature 'User logs in as a local user', js: true do
     imported_user 'imported_user'
 
     with_forgery_protection do
-      create_application
-      visit_authorize_uri
-      expect_sign_in_page
+      arrive_from_app
 
-      fill_in 'login_username_or_email', with: 'imported_user'
-      click_button (t :"sessions.new.next")
-      fill_in 'login_password', with: 'password'
-      click_button (t :"sessions.authenticate.login")
+      complete_login_username_or_email_screen 'imported_user'
+      complete_login_password_screen 'password'
 
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'imported_user')
       expect(page).to have_content(t :"controllers.identities.password_expired")
 
-      fill_in (t :"identities.reset_password.password"), with: 'Passw0rd!'
-      fill_in (t :"identities.reset_password.confirm_password"), with: 'Passw0rd!'
-      click_button (t :"identities.reset_password.set_password")
+      complete_reset_password_screen
+      complete_terms_screens
 
-      expect(page).to have_content('Terms of Use')
-
-      find(:css, '#agreement_i_agree').set(true)
-      click_button (t :"terms.pose.agree")
-
-      expect(page).to have_content('Privacy Policy')
-      find(:css, '#agreement_i_agree').set(true)
-      click_button (t :"terms.pose.agree")
-
-      expect(page.current_url).to match(app_callback_url)
+      expect_back_at_app
     end
   end
 
@@ -127,121 +87,74 @@ feature 'User logs in as a local user', js: true do
     visit '/'
     expect_sign_in_page
 
-    signin_as 'jimbo', 'password'
+    complete_login_username_or_email_screen 'jimbo'
+    complete_login_password_screen 'password'
 
     visit '/'
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t :"users.edit.page_heading")
   end
 
-  scenario 'and gets asked to reset password and accept terms on home page' do
-    imported_user 'imported_user'
-
-    with_forgery_protection do
-      create_application
-      visit '/'
-      expect_sign_in_page
-
-      signin_as 'imported_user'
-
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'imported_user')
-      expect(page).to have_content(t :"controllers.identities.password_expired")
-
-      fill_in (t :"identities.reset_password.password"), with: 'Passw0rd!'
-      fill_in (t :"identities.reset_password.confirm_password"), with: 'Passw0rd!'
-      click_button (t :"identities.reset_password.set_password")
-
-      expect(page).to have_content('Terms of Use')
-
-      find(:css, '#agreement_i_agree').set(true)
-      click_button (t :"terms.pose.agree")
-
-      expect(page).to have_content('Privacy Policy')
-      find(:css, '#agreement_i_agree').set(true)
-      click_button (t :"terms.pose.agree")
-
-      expect(current_path).to eq profile_path
-    end
-  end
-
   scenario 'a user signs into an account that has been created by an admin for them', js: true do
-
     new_user = FindOrCreateUnclaimedUser.call(
       email:'unclaimeduser@example.com', username: 'therulerofallthings',
       first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
       password: "apassword", password_confirmation: "apassword"
     ).outputs.user
+
     expect(new_user.reload.state).to eq("unclaimed")
 
     with_forgery_protection do
-      create_application
-      visit_authorize_uri
-      expect_sign_in_page
+      arrive_from_app
 
-      fill_in 'login_username_or_email', with: 'therulerofallthings'
-      click_button (t :"sessions.new.next")
-      fill_in 'login_password', with: 'apassword'
-      click_button (t :"sessions.authenticate.login")
+      complete_login_username_or_email_screen 'therulerofallthings'
+      complete_login_password_screen 'apassword'
 
-      expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"controllers.identities.password_expired")
       expect(new_user.reload.state).to eq("activated")
     end
-
   end
-
 
   scenario 'with an unverified email address and password' do
     with_forgery_protection do
-      create_application
+      arrive_from_app
+
       user = create_user 'user'
       create_email_address_for user, 'user@example.com', 'unverified'
-      visit_authorize_uri
-      expect_sign_in_page
 
-      fill_in 'login_username_or_email', with: 'user@example.com'
-      click_button (t :"sessions.new.next")
+      complete_login_username_or_email_screen 'user@example.com'
 
-      expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"errors.no_account_for_username_or_email")
 
-      fill_in 'login_username_or_email', with: 'user'
-      click_button (t :"sessions.new.next")
+      complete_login_username_or_email_screen 'user'
+      complete_login_password_screen 'password'
 
-      fill_in 'login_password', with: 'password'
-      click_button (t :"sessions.authenticate.login")
-
-      expect(page.current_url).to match(app_callback_url)
+      expect_back_at_app
     end
   end
 
   scenario 'with an email address linked to several user accounts' do
     with_forgery_protection do
-      create_application
-
       # two users with the same email address, both verified
       user = create_user 'user'
       create_email_address_for(user, 'user@example.com')
       another_user = create_user 'another_user'
       create_email_address_for(another_user, 'user@example.com')
 
-      visit_authorize_uri
-      expect_sign_in_page
+      arrive_from_app
 
-      fill_in 'login_username_or_email', with: 'user@example.com'
-      click_button (t :"sessions.new.next")
+      complete_login_username_or_email_screen 'user@example.com'
 
-      fill_in 'login_password', with: 'password'
-      click_button (t :"sessions.authenticate.login")
+      # TODO test that it just says "Hi!" (no names since there are multiple)
 
-      expect(page).to have_no_missing_translations
+      complete_login_password_screen 'password'
+
       expect(page).to have_content(t :"controllers.sessions.several_accounts_for_one_email")
-      fill_in 'login_username_or_email', with: 'user'
-      click_button (t :"sessions.new.next")
-      fill_in 'login_password', with: 'password'
-      click_button (t :"sessions.authenticate.login")
-      expect(page.current_url).to match(app_callback_url)
+
+      complete_login_username_or_email_screen 'user'
+      complete_login_password_screen 'password'
+
+      expect_back_at_app
     end
   end
 
@@ -252,14 +165,10 @@ feature 'User logs in as a local user', js: true do
 
       visit '/'
 
-      fill_in 'login_username_or_email', with: 'user  '
-      click_button (t :"sessions.new.next")
+      complete_login_username_or_email_screen 'user   '
+      complete_login_password_screen 'password'
 
-      fill_in 'login_password', with: 'password'
-      click_button (t :"sessions.authenticate.login")
-
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+      expect_profile_screen
     end
   end
 
@@ -270,14 +179,10 @@ feature 'User logs in as a local user', js: true do
 
       visit '/'
 
-      fill_in 'login_username_or_email', with: ' user@example.com '
-      click_button (t :"sessions.new.next")
+      complete_login_username_or_email_screen ' user@example.com   '
+      complete_login_password_screen 'password'
 
-      fill_in 'login_password', with: 'password'
-      click_button (t :"sessions.authenticate.login")
-
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+      expect_profile_screen
     end
   end
 

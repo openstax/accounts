@@ -48,6 +48,13 @@ class SessionsCreate
 
   def handle
     authentication = Authentication.find_or_create_by(provider: @data.provider, uid: @data.uid.to_s)
+
+    # Refresh google login hints if needed
+    if @data.provider == 'google_oauth2'
+      authentication.login_hint = @data.email
+      authentication.save! if authentication.changed?
+    end
+
     authentication_user = authentication.user
     outputs[:authentication] = authentication
 
@@ -91,7 +98,6 @@ class SessionsCreate
         run(TransferOmniauthData, @data, authentication_user)
         status = :new_social_user
       end
-
       run(TransferAuthentications, authentication, authentication_user)
       sign_in!(authentication_user)
     end

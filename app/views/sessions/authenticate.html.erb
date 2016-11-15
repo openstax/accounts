@@ -1,27 +1,31 @@
-<% login_info = get_login_info %>
-
-<%= render 'layouts/ox_white_logo' %>
+<%
+  login_info = get_login_info
+  username_or_email = login_info[:username_or_email]
+  names = login_info[:names] || []
+  providers = login_info[:providers] || {}
+%>
 
 <div class="ox-card login">
 
-  <h1 class="title"><%= t '.name_greeting', name: login_info[:names].first %></h1>
+  <h1 class="title"><%= t '.name_greeting', name: names.first %></h1>
 
-  <% if login_info[:providers].include?('google_oauth2') %>
-    <%= link_to "/auth/google_oauth2", class: 'btn btn-social btn-google',
-                                       id: 'google-login-button' do %>
+  <% if providers.keys.include?('google_oauth2') %>
+    <%= link_to "/auth/google_oauth2?login_hint=#{providers['google_oauth2']}",
+                class: 'btn btn-social btn-google',
+                id: 'google-login-button' do %>
       <span class="fa fa-google"></span> <%= t :".sign_in_with_google" %>
     <% end %>
   <% end %>
 
-  <% if login_info[:providers].include?('facebook') %>
+  <% if providers.keys.include?('facebook') %>
     <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook',
                                   id: 'facebook-login-button' do %>
       <span class="fa fa-facebook"></span> <%= t :".sign_in_with_facebook" %>
     <% end %>
   <% end %>
 
-  <% if login_info[:providers].include?('identity') %>
-    <% if login_info[:providers].many? %>
+  <% if providers.keys.include?('identity') %>
+    <% if providers.many? %>
 
     <div class="separator-line" data-text="">
       <%= t '.separator_or' %>
@@ -32,7 +36,7 @@
 
       <%= f.password_field :password, placeholder: t(".password"), class: 'wide'  %>
 
-      <%= f.hidden_field :username_or_email %>
+      <%= f.hidden_field :username_or_email, value: username_or_email %>
 
       <input type="submit" class="btn btn-primary" value="<%= t '.login' %>" />
 

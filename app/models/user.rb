@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
     'temp', # deprecated but still could exist for old accounts
     'new_social',
     'unclaimed',
+    'needs_profile',
     'activated'
   ]
 
@@ -41,10 +42,10 @@ class User < ActiveRecord::Base
 
   validates :username, length: { minimum: USERNAME_MIN_LENGTH,
                                  maximum: USERNAME_MAX_LENGTH,
-                                 allow_nil: true },
+                                 allow_blank: true },
                        format: { with: USERNAME_VALID_REGEX,
                                  message: "can only contain letters, numbers, and underscores.",
-                                 allow_nil: true }
+                                 allow_blank: true }
 
   validates :username, uniqueness: { case_sensitive: false, allow_nil: true },
                        if: :username_changed?
@@ -115,6 +116,10 @@ class User < ActiveRecord::Base
 
   def is_new_social?
     'new_social' == state
+  end
+
+  def is_needs_profile?
+    'needs_profile' == state
   end
 
   def name
@@ -202,13 +207,17 @@ class User < ActiveRecord::Base
   # there are existing users without names
   # allow them to continue to function, but require a name to exist once it's set
   def ensure_names_continue_to_be_present
+    return true if is_needs_profile?
+
     %w{first_name last_name}.each do |attr|
       change = changes[attr]
-      if (new_record? && self[attr].blank?) ||
-         !(change.nil? || change.first.blank? || !change.last.blank?)
 
-        errors.add(attr.to_sym, "can't be blank")
-      end
+      next if change.nil? # no change, so no problem
+
+      was = change[0]
+      is = change[1]
+
+      errors.add(attr.to_sym, "can't be blank") if !was.blank? && is.blank?
     end
   end
 

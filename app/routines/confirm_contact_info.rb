@@ -7,7 +7,7 @@ class ConfirmContactInfo
   protected
 
   def exec(contact_info)
-    run(MergeUnclaimedUsers, contact_info)
+    run(MergeUnclaimedUsers, contact_info) if contact_info.is_a?(ContactInfo)
     run(MarkContactInfoVerified, contact_info)
   end
 

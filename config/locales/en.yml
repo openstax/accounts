@@ -278,7 +278,9 @@ en:
         You'll receive a verification email shortly. Please take a moment and
         verify your email address.
 
-    index:
+    start:
+      email: Email
+      next: Next
       already_have_an_account:
         # %{link}   a hyperlink pointing to sign in page. Label of the link
         #           is defined by the .sign_in key.
@@ -299,12 +301,43 @@ en:
       sign_up_with_google: Sign up with Google
       sign_up_with_password: Sign up with a password
       sign_up_with_twitter: Sign up with Twitter
+      email_in_use:
+        # content_html: Email already in use.  Are you trying to %{link}?
+        # sign_in: sign in
+
+    verify_email:
+      page_heading_pin: Enter Your PIN
+      page_heading_token: Verify Your Email
+      pin: Enter PIN
+      verify_pin: Verify PIN
+      edit_email_address: Edit email address.
 
     password:
-      page_heading: Create Account
+      page_heading: Enter Password
+      password: Password
+      password_confirmation: Confirm Password
+      enter_password: Enter Password
 
     social:
-      page_heading: Create Account
+      page_heading: TBD Title
+      facebook: Facebook
+      google: Google
+
+    profile:
+      page_heading: Complete your account
+      name_heading: Name
+      first_name: First Name
+      last_name: Last Name
+      suffix: Suffix
+      more_things_heading: And a few more things...
+      phone_number: Phone Number
+      school: School
+      url: Your specific school web page
+      num_students: Number of students per semester
+      using_openstax: Already using OpenStax?
+      create_account: Create Account
+      titles_heading: OpenStax titles I'm interested in
+      titles_instructions: Check all that apply.
 
   static_pages:
     copyright:

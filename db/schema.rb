@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161109234041) do
+ActiveRecord::Schema.define(version: 20161113215330) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.string   "uid",        :index=>{:name=>"index_authentications_on_uid_scoped", :with=>["provider"], :unique=>true}
     t.datetime "created_at", :null=>false
     t.datetime "updated_at", :null=>false
+    t.string   "login_hint"
   end
 
   create_table "contact_infos", force: :cascade do |t|
@@ -227,8 +228,19 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.datetime "updated_at", :null=>false
   end
 
+  create_table "signup_contact_infos", force: :cascade do |t|
+    t.integer  "kind",                 :default=>0, :null=>false, :index=>{:name=>"index_signup_contact_infos_on_kind"}
+    t.string   "value",                :null=>false
+    t.boolean  "verified",             :default=>false
+    t.string   "confirmation_code"
+    t.string   "confirmation_pin"
+    t.datetime "confirmation_sent_at"
+    t.datetime "created_at",           :null=>false
+    t.datetime "updated_at",           :null=>false
+  end
+
   create_table "users", force: :cascade do |t|
-    t.string   "username",              :default=>"", :index=>{:name=>"index_users_on_username", :unique=>true}
+    t.string   "username",              :index=>{:name=>"index_users_on_username", :unique=>true}
     t.datetime "created_at",            :null=>false
     t.datetime "updated_at",            :null=>false
     t.boolean  "is_administrator",      :default=>false
@@ -237,7 +249,7 @@ ActiveRecord::Schema.define(version: 20161109234041) do
     t.string   "title"
     t.string   "uuid",                  :index=>{:name=>"index_users_on_uuid", :unique=>true}
     t.string   "suffix"
-    t.string   "state",                 :default=>"temp", :null=>false
+    t.string   "state",                 :default=>"needs_profile", :null=>false
     t.string   "salesforce_contact_id", :index=>{:name=>"index_users_on_salesforce_contact_id"}
     t.integer  "faculty_status",        :default=>0, :null=>false, :index=>{:name=>"index_users_on_faculty_status"}
   end

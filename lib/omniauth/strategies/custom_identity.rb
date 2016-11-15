@@ -19,11 +19,19 @@ module OmniAuth
 
       include OmniAuth::Strategy
       include SignInState
+      include SignUpState
       include ContractsNotRequired
 
       # Request forgery protection
       include ActiveSupport::Configurable
       include ActionController::RequestForgeryProtection
+
+      # This is defined in RequestForgeryProtection, but since this file isn't ActionController
+      # it doesn't pick up that code's setting, which is what we want so this CustomIdentity
+      # has the same CSRF behavior as controllers
+      def protect_against_forgery?
+        ActionController::Base.allow_forgery_protection
+      end
 
       #
       # Strategy stuff
@@ -132,29 +140,28 @@ module OmniAuth
             if Rails.logger && log_warning_on_csrf_failure
 
           handle_unverified_request
-        end
-
-        @handler_result =
-          SignupPassword.handle(
-            params: request,
-            caller: current_user,
-            contracts_required: !contracts_not_required(
-              client_id: request['client_id'] || session['client_id']
-            )
-          )
-
-        env['errors'] = @handler_result.errors
-
-        if @handler_result.errors.none?
-          @identity = @handler_result.outputs[:identity]
-          env['PATH_INFO'] = callback_path
-          callback_phase
+          SessionsController.action(:new).call(env)
         else
-          show_signup_form
+          @handler_result =
+            SignupPassword.handle(
+              params: request,
+              caller: current_user,
+              signup_contact_info: saved_signup_contact_info
+            )
+
+          env['errors'] = @handler_result.errors
+
+          if @handler_result.errors.none?
+            @identity = @handler_result.outputs[:identity]
+            env['PATH_INFO'] = callback_path
+            callback_phase
+          else
+            show_signup_password_form
+          end
         end
       end
 
-      def show_signup_form
+      def show_signup_password_form
         SignupController.action(:password).call(env)
       end
 

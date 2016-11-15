@@ -4,23 +4,38 @@ describe User, type: :model do
 
   it { should have_many :security_logs }
 
-  it 'requires first and last name once set' do
-    user = User.new(first_name: "John", username: 'agent_smith')
-    expect(user.save).to be(false)
-    expect(user.errors[:last_name]).to include("can't be blank")
-    user.last_name = 'Smith'
-    expect(user.save).to be(true)
+  context 'when the user is activated' do
+    let(:user) { User.new.tap{|u| u.state = 'activated'} }
 
-    user.first_name = ''
-    expect(user.save).to be(false)
-    expect(user.errors[:first_name]).to include("can't be blank")
+    context 'when the names start nil' do
+      it 'is valid for the first name to stay blank' do
+        user.last_name = "Smith"
+        expect(user).to be_valid
+      end
 
-    user.first_name = 'Joe'
-    expect(user.save).to be(true)
+      it 'is valid for the last name name to stay blank' do
+        user.first_name = "John"
+        expect(user).to be_valid
+      end
+    end
 
-    user.last_name = nil
-    expect(user.save).to be(false)
-    expect(user.errors[:last_name]).to include("can't be blank")
+    context 'when the names start populated' do
+      before(:each) {
+        user.update_attributes(first_name: "John", last_name: "Smith")
+      }
+
+      it 'is invalid for the first name to become blank' do
+        user.first_name = "   "
+        expect(user).not_to be_valid
+        expect(user.errors[:first_name]).to include("can't be blank")
+      end
+
+      it 'is invalid for the last name to become blank' do
+        user.last_name = "\t   "
+        expect(user).not_to be_valid
+        expect(user.errors[:last_name]).to include("can't be blank")
+      end
+    end
   end
 
   it 'strips whitespace off of title, first & last names, suffix, username' do
@@ -162,9 +177,9 @@ describe User, type: :model do
 
 
   context "state" do
-    it "defaults to temp" do
-      expect(User.new.state ).to eq("temp")
-      expect(User.new.is_temp? ).to be_truthy
+    it "defaults to needs_profile" do
+      expect(User.new.state ).to eq("needs_profile")
+      expect(User.new.is_needs_profile? ).to be_truthy
     end
 
     it "can be set to active" do

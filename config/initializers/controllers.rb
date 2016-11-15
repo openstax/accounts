@@ -48,10 +48,18 @@ ActionController::Base.class_exec do
 
   include ContractsNotRequired
 
+
+
   def finish_sign_up
     return true if request.format != :html
-    return unless current_user.is_new_social?
-    redirect_to signup_social_path
+
+    if current_user.is_needs_profile?
+      redirect_to signup_profile_path
+    else
+# TODO check that this is clean
+    end
+    # return unless current_user.is_new_social?
+    # redirect_to signup_social_path
   end
 
   def expired_password
@@ -67,24 +75,26 @@ ActionController::Base.class_exec do
     redirect_to reset_password_path(code_hash)
   end
 
+  # TODO move this login_info stuff to sign_in_state.rb
+
   def set_login_info(username_or_email:, names:, providers:)
-    cookies.signed[:login_key] = @handler_result.outputs.username_or_email
-    cookies.signed[:login_names] = @handler_result.outputs.names
-    cookies.signed[:login_providers] = @handler_result.outputs.providers
+    session[:login] = {
+      key: @handler_result.outputs.username_or_email,
+      names: @handler_result.outputs.names,
+      providers: @handler_result.outputs.providers
+    }
   end
 
   def get_login_info
     {
-      username_or_email: cookies.signed[:login_key],
-      names: cookies.signed[:login_names],
-      providers: cookies.signed[:login_providers]
+      username_or_email: session[:login].try(:[],'key'),
+      names: session[:login].try(:[],'names'),
+      providers: session[:login].try(:[],'providers')
     }
   end
 
   def clear_login_info
-    cookies.delete(:login_key)
-    cookies.delete(:login_names)
-    cookies.delete(:login_providers)
+    session.delete(:login)
   end
 
   def set_last_signin_provider(provider)
