@@ -24,7 +24,7 @@ describe ConfirmByPin do
   end
 
   it 'eventually runs out of available attempts' do
-    ConfirmByPin::MAX_PIN_FAILURES.times {
+    ConfirmByPin.max_pin_failures.times {
       expect(
         described_class.call(contact_info: contact_info, pin: "whatever")
       ).to have_routine_error(:pin_not_correct)
@@ -40,7 +40,7 @@ describe ConfirmByPin do
       SequentialFailure.create!(
         kind: :confirm_by_pin,
         reference: "bob@example.com",
-        length: ConfirmByPin::MAX_PIN_FAILURES
+        length: ConfirmByPin.max_pin_failures
       )
     }
 

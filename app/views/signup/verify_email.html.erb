@@ -1,23 +1,38 @@
+<%
+  errors = @handler_result.try(:errors) || []
+  attempts_remaining = !errors.map(&:code).include?(:no_pin_confirmation_attempts_remaining)
+  errors.clear if !attempts_remaining
+%>
 
 <div class="ox-card">
 
-  <h1 class="title"><%= t '.page_heading' %></h1>
+  <h1 class="title"><%= t (attempts_remaining ? '.page_heading_pin' : '.page_heading_token') %></h1>
 
   <p>Please check: <%= saved_email %></p> <%# TODO put in locale! %>
-  <p>You will receive a six-digit PIN.</p>
 
-  <%= lev_form_for :pin, url: signup_verify_email_path, method: :post do |f| %>
+  <% if attempts_remaining %>
 
-    <% fh = FormHelper::One.new(f: f,
-                                context: self,
-                                errors: @handler_result.try(:errors)) %>
+    <p>You will receive a six-digit PIN.</p>
 
-    <%= fh.text_field name: :pin %>
-    <%= f.submit (t :".verify_pin"), class: 'btn btn-primary' %>
+    <%= lev_form_for :pin, url: signup_verify_email_path, method: :post do |f| %>
+
+      <% fh = FormHelper::One.new(f: f,
+                                  context: self,
+                                  errors: @handler_result.try(:errors)) %>
+
+      <%= fh.text_field name: :pin %>
+      <%= f.submit (t :".verify_pin"), class: 'btn btn-primary' %>
+    <% end %>
+
+  <% else %>
+
+    <p>You have run out of attempts at verifying this email using a PIN.
+       To verify, please click on the link in the verification email.</p>
+
   <% end %>
 
   <%# TODO make sure email/role persist if go back to signup start %>
 
-  <p>Email incorrect? <span class='sign-up'><%= link_to (t :".sign_up"), signup_path %></span></p>
+  <p>Used the wrong email? <%= link_to (t :".edit_email_address"), signup_path %></p>
 
 </div>

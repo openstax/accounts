@@ -301,11 +301,16 @@ en:
       sign_up_with_google: Sign up with Google
       sign_up_with_password: Sign up with a password
       sign_up_with_twitter: Sign up with Twitter
+      email_in_use:
+        # content_html: Email already in use.  Are you trying to %{link}?
+        # sign_in: sign in
 
     verify_email:
-      page_heading: Enter Your PIN
+      page_heading_pin: Enter Your PIN
+      page_heading_token: Verify Your Email
       pin: Enter PIN
       verify_pin: Verify PIN
+      edit_email_address: Edit email address.
 
     password:
       page_heading: Enter Password
