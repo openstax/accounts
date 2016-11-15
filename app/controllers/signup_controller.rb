@@ -67,17 +67,6 @@ class SignupController < ApplicationController
     end
   end
 
-  # def submit_password
-  #   handle_with(SignupPassword, # TODO make this consistent with action name
-  #               signup_contact_info: saved_signup_contact_info,
-  #               success: lambda do
-  #                 redirect_to action: :profile
-  #               end,
-  #               failure: lambda do
-  #                 render :password
-  #               end)
-  # end
-
   def profile
     if request.post?
       handler = case saved_role
@@ -93,7 +82,7 @@ class SignupController < ApplicationController
                   ),
                   success: lambda do
                     clear_signup_state
-                    redirect_to root_path # TODO this is a placeholder
+                    redirect_back
                   end,
                   failure: lambda do
                     render :profile

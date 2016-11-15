@@ -10,6 +10,7 @@
                                 context: self,
                                 errors: @handler_result.try(:errors)) %>
     <%# TODO put select in form helper %>
+    <%# TODO put select options in translations %>
     <%= f.select :role, options_for_select(%w(Instructor Student).map{|role| [role, role]},
                         [saved_role].compact) %>
     <%= fh.text_field name: :email, value: saved_email %>

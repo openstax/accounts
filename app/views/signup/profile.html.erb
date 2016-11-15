@@ -14,7 +14,6 @@
                                 errors: @handler_result.try(:errors)) %>
 
     <h3><%= t('.name_heading') %></h3>
-    <%= fh.text_field name: :title %> <%# TODO make select tag %>
     <%= fh.text_field name: :first_name, value: current_user.first_name %>
     <%= fh.text_field name: :last_name, value: current_user.last_name %>
     <%= fh.text_field name: :suffix %>
@@ -24,9 +23,18 @@
     <%= fh.text_field name: :school %>
     <%= fh.text_field name: :url, except: :student %>
     <%= fh.text_field name: :num_students, except: :student %>
-    <%= fh.text_field name: :using_openstax, except: :student %>
 
     <% if saved_role_sym != :student %>
+      <%= f.select :using_openstax,  # TODO move into form helper
+                   options_for_select(
+                    [
+                      ["Already using OpenStax?", ""],
+                      ["Yes, I am using OpenStax as a primary resource in my courses", "primary"],
+                      ["Yes, I am recommending OpenStax to my students as an optional resource", "optional"],
+                      ["No, I'm not using OpenStax in my courses yet", "no"]
+                    ], selected: "", disabled: "", hidden: "") %>
+
+
       <h3><%= t('.titles_heading') %></h3>
       <p><%= t('.titles_instructions') %></p>
 

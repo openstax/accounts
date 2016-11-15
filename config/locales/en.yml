@@ -319,8 +319,8 @@ en:
       google: Google
 
     profile:
+      page_heading: Complete your account
       name_heading: Name
-      title: Title
       first_name: First Name
       last_name: Last Name
       suffix: Suffix

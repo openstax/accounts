@@ -11,8 +11,8 @@ feature 'User logs in as a local user', js: true do
 
       arrive_from_app
 
-      complete_username_or_email_screen 'user@example.com'
-      complete_password_screen 'password'
+      complete_login_username_or_email_screen 'user@example.com'
+      complete_login_password_screen 'password'
 
       expect_back_at_app
     end
@@ -25,11 +25,11 @@ feature 'User logs in as a local user', js: true do
 
       arrive_from_app
 
-      complete_username_or_email_screen 'user@example.com'
-      complete_password_screen 'pass' # bad
+      complete_login_username_or_email_screen 'user@example.com'
+      complete_login_password_screen 'pass' # bad
       expect(page).to have_content(t :"controllers.sessions.incorrect_password")
 
-      complete_password_screen 'password' # good
+      complete_login_password_screen 'password' # good
 
       expect_back_at_app
     end
@@ -38,7 +38,7 @@ feature 'User logs in as a local user', js: true do
   scenario 'with an unknown username' do
     with_forgery_protection do
       arrive_from_app
-      complete_username_or_email_screen 'user'
+      complete_login_username_or_email_screen 'user'
       expect(page).to have_content(t :"errors.no_account_for_username_or_email")
     end
   end
@@ -52,8 +52,8 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       arrive_from_app
 
-      complete_username_or_email_screen 'expired_password_user'
-      complete_password_screen 'password'
+      complete_login_username_or_email_screen 'expired_password_user'
+      complete_login_password_screen 'password'
 
       expect(page).to have_content(t :"controllers.identities.password_expired")
 
@@ -69,8 +69,8 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       arrive_from_app
 
-      complete_username_or_email_screen 'imported_user'
-      complete_password_screen 'password'
+      complete_login_username_or_email_screen 'imported_user'
+      complete_login_password_screen 'password'
 
       expect(page).to have_content(t :"controllers.identities.password_expired")
 
@@ -87,8 +87,8 @@ feature 'User logs in as a local user', js: true do
     visit '/'
     expect_sign_in_page
 
-    complete_username_or_email_screen 'jimbo'
-    complete_password_screen 'password'
+    complete_login_username_or_email_screen 'jimbo'
+    complete_login_password_screen 'password'
 
     visit '/'
     expect(page).to have_no_missing_translations
@@ -107,8 +107,8 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       arrive_from_app
 
-      complete_username_or_email_screen 'therulerofallthings'
-      complete_password_screen 'apassword'
+      complete_login_username_or_email_screen 'therulerofallthings'
+      complete_login_password_screen 'apassword'
 
       expect(page).to have_content(t :"controllers.identities.password_expired")
       expect(new_user.reload.state).to eq("activated")
@@ -122,12 +122,12 @@ feature 'User logs in as a local user', js: true do
       user = create_user 'user'
       create_email_address_for user, 'user@example.com', 'unverified'
 
-      complete_username_or_email_screen 'user@example.com'
+      complete_login_username_or_email_screen 'user@example.com'
 
       expect(page).to have_content(t :"errors.no_account_for_username_or_email")
 
-      complete_username_or_email_screen 'user'
-      complete_password_screen 'password'
+      complete_login_username_or_email_screen 'user'
+      complete_login_password_screen 'password'
 
       expect_back_at_app
     end
@@ -143,16 +143,16 @@ feature 'User logs in as a local user', js: true do
 
       arrive_from_app
 
-      complete_username_or_email_screen 'user@example.com'
+      complete_login_username_or_email_screen 'user@example.com'
 
       # TODO test that it just says "Hi!" (no names since there are multiple)
 
-      complete_password_screen 'password'
+      complete_login_password_screen 'password'
 
       expect(page).to have_content(t :"controllers.sessions.several_accounts_for_one_email")
 
-      complete_username_or_email_screen 'user'
-      complete_password_screen 'password'
+      complete_login_username_or_email_screen 'user'
+      complete_login_password_screen 'password'
 
       expect_back_at_app
     end
@@ -165,8 +165,8 @@ feature 'User logs in as a local user', js: true do
 
       visit '/'
 
-      complete_username_or_email_screen 'user   '
-      complete_password_screen 'password'
+      complete_login_username_or_email_screen 'user   '
+      complete_login_password_screen 'password'
 
       expect_profile_screen
     end
@@ -179,8 +179,8 @@ feature 'User logs in as a local user', js: true do
 
       visit '/'
 
-      complete_username_or_email_screen ' user@example.com   '
-      complete_password_screen 'password'
+      complete_login_username_or_email_screen ' user@example.com   '
+      complete_login_password_screen 'password'
 
       expect_profile_screen
     end

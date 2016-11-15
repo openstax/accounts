@@ -128,6 +128,18 @@ def with_forgery_protection
   end
 end
 
+def allow_forgery_protection
+  allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
+  allow(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
+end
+
+def mock_bad_csrf_token
+  original_rr_params = Rack::Request.instance_method(:params)
+  allow_any_instance_of(Rack::Request).to receive(:params) do |request|
+    original_rr_params.bind(request).call.merge('authenticity_token' => 'Invalid!')
+  end
+end
+
 def visit_authorize_uri(app=@app)
   visit "/oauth/authorize?redirect_uri=#{app.redirect_uri}&response_type=code&client_id=#{app.uid}"
 end
@@ -184,8 +196,14 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
   raise "New contract version didn't publish" unless new_contract_version.version == 2
 end
 
-def click_password_sign_up
+def click_password_sign_up  # TODO remove, bad name
   click_on (t :"sessions.new.sign_up")
+end
+
+def click_sign_up
+  click_on (t :"sessions.new.sign_up")
+  expect(page).to have_no_missing_translations
+  expect(page).to have_content(t :"signup.start.page_heading")
 end
 
 def expect_sign_in_page
@@ -209,7 +227,7 @@ def agree_and_click_create
 end
 
 def arrive_from_app
-  create_application
+  create_application unless @app.present?
   visit_authorize_uri
   expect_sign_in_page
 end
@@ -222,18 +240,83 @@ def expect_profile_screen
   expect(page).to have_content(t :"users.edit.page_heading")
 end
 
-def complete_username_or_email_screen(username_or_email)
+def expect_signup_profile_screen
+  fill_in 'profile_first_name', with: ''
+  expect(page).to have_content(t :"signup.profile.page_heading")
+end
+
+def complete_login_username_or_email_screen(username_or_email)
+  fill_in (t :"sessions.new.email_placeholder"), with: username_or_email
   expect_sign_in_page
   expect(page).to have_no_missing_translations
-  fill_in (t :"sessions.new.email_placeholder"), with: username_or_email
   click_button (t :"sessions.new.next")
   expect(page).to have_no_missing_translations
 end
 
-def complete_password_screen(password)
+def complete_login_password_screen(password)
+  # TODO expect login password screen
   fill_in (t :"sessions.authenticate.password"), with: password
   expect(page).to have_no_missing_translations
   click_button (t :"sessions.authenticate.login")
+  expect(page).to have_no_missing_translations
+end
+
+def complete_signup_email_screen(role, email)
+  @signup_email = email
+  select role, from: "signup_role"
+  fill_in (t :"signup.start.email"), with: email
+  expect(page).to have_content(t :"signup.start.page_heading")
+  expect(page).to have_no_missing_translations
+  click_button (t :"signup.start.next")
+  expect(page).to have_no_missing_translations
+end
+
+def complete_signup_verify_screen(pin: nil, pass: nil)
+  until (sci = SignupContactInfo.find_by(value: @signup_email)) do
+    sleep(0.1) # transaction from earlier step may not have committed
+  end
+
+  if pin.nil?
+    raise "Must set either `pin` or `pass`" if pass.nil?
+    pin = sci.confirmation_pin
+    pin[0] = (9-pin[0].to_i).to_s if !pass
+  end
+  fill_in (t :"signup.verify_email.pin"), with: pin
+  expect(page).to have_no_missing_translations
+  click_button (t :"signup.verify_email.verify_pin")
+  expect(page).to have_no_missing_translations
+end
+
+def complete_signup_password_screen(password, confirmation=nil)
+  confirmation ||= password
+  fill_in 'signup_password', with: password
+  fill_in (t :"signup.password.password_confirmation"), with: confirmation
+
+  expect(page).to have_content(t :"signup.password.page_heading")
+  expect(page).to have_no_missing_translations
+  click_button (t :"signup.password.enter_password")
+  expect(page).to have_no_missing_translations
+end
+
+def complete_signup_profile_screen(first_name:, last_name:, suffix: nil,
+                                   phone_number:, school:, url:, num_students:,
+                                   using_openstax:, agree:)
+
+  fill_in (t :"signup.profile.first_name"), with: first_name
+  fill_in (t :"signup.profile.last_name"), with: last_name
+  fill_in (t :"signup.profile.suffix"), with: suffix if suffix.present?
+  fill_in (t :"signup.profile.phone_number"), with: phone_number
+  fill_in (t :"signup.profile.school"), with: school
+  fill_in (t :"signup.profile.url"), with: url
+  fill_in (t :"signup.profile.num_students"), with: num_students
+  select using_openstax, from: "profile_using_openstax"
+
+  expect(page).to have_content(t :"signup.profile.page_heading")
+  expect(page).to have_no_missing_translations
+
+  find(:css, '#profile_i_agree').trigger('click') if agree
+
+  click_button (t :"signup.profile.create_account")
   expect(page).to have_no_missing_translations
 end
 
@@ -245,9 +328,9 @@ def complete_reset_password_screen(password=nil)
 end
 
 def complete_terms_screens
-  expect(page).to have_content('Terms of Use')
 
   find(:css, '#agreement_i_agree').set(true)
+  expect(page).to have_content('Terms of Use')
   click_button (t :"terms.pose.agree")
 
   expect(page).to have_content('Privacy Policy')
