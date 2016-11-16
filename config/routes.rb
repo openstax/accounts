@@ -175,6 +175,8 @@ Rails.application.routes.draw do
         put :update_users
       end
     end
+
+    mount RailsSettingsUi::Engine, at: 'settings'
   end
 
   namespace 'dev' do

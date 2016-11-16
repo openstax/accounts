@@ -47,17 +47,18 @@ class SignupProfileInstructor
       run(AgreeToTerms, profile_params.contract_2_id, caller, no_error_if_already_signed: true)
     end
 
-    # TODO check if enabled to push Leads
-    PushSalesforceLead.perform_later(
-      user: caller,
-      role: options[:role],
-      phone_number: profile_params.phone_number,
-      school: caller.self_reported_school,
-      num_students: profile_params.num_students,
-      using_openstax: profile_params.using_openstax,
-      url: profile_params.url,
-      newsletter: profile_params.newsletter
-    )
+    if Settings::Salesforce.push_leads_enabled
+      PushSalesforceLead.perform_later(
+        user: caller,
+        role: options[:role],
+        phone_number: profile_params.phone_number,
+        school: caller.self_reported_school,
+        num_students: profile_params.num_students,
+        using_openstax: profile_params.using_openstax,
+        url: profile_params.url,
+        newsletter: profile_params.newsletter
+      )
+    end
   end
 
 end
