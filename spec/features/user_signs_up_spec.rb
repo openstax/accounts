@@ -1,275 +1,200 @@
 require 'rails_helper'
 
-feature 'User signs up as a local user', js: true do
+feature 'User signs up', js: true do
 
-  background { load 'db/seeds.rb' }
-
-  context 'without forgery protection' do
-    scenario 'failure' do
-      create_application
-      visit_authorize_uri
-
-      expect(page.current_url).to include(signin_path)
-      click_password_sign_up
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"signup.password.page_heading")
-
-      fill_in (t :"signup.new_account.first_name"), with: 'Test'
-      fill_in (t :"signup.new_account.last_name"), with: 'User'
-      fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
-      fill_in (t :"signup.new_account.username"), with: 'testuser'
-      fill_in (t :"signup.new_account.password"), with: 'password'
-      fill_in (t :"signup.new_account.confirm_password"), with: 'password'
-      agree_and_click_create
-
-      expect(page).to have_no_missing_translations
-      expect(page).not_to have_content('Alert')
-      expect(page).not_to have_content(t :"layouts.application_header.sign_out")
-    end
-  end
-
-  context 'with forgery protection' do
-    scenario 'success' do
-      with_forgery_protection do
-        create_application
-        visit_authorize_uri
-
-        expect(page.current_url).to include(signin_path)
-        click_password_sign_up
-        expect(page).to have_no_missing_translations
-        expect(page).to have_content(t :"signup.password.page_heading")
-
-        fill_in (t :"signup.new_account.first_name"), with: 'Test'
-        fill_in (t :"signup.new_account.last_name"), with: 'User'
-        fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
-        fill_in (t :"signup.new_account.username"), with: 'testuser'
-        fill_in (t :"signup.new_account.password"), with: 'password'
-        fill_in (t :"signup.new_account.confirm_password"), with: 'password'
-        agree_and_click_create
-
-        expect(page).to have_no_missing_translations
-        expect(page).not_to have_content('Alert')
-
-        expect(page.current_url).to match(app_callback_url)
-
-        visit '/'
-        click_link (t :"layouts.application_header.sign_out")
-        expect(page.current_url).to include(signin_path)
-        expect(page).not_to(
-          have_content(t :"layouts.application_header.welcome_html", username: 'testuser')
-        )
-        expect(page.current_url).to include(signin_path)
-      end
-    end
-
-    scenario 'when already has password' do
-      with_forgery_protection do
-        visit '/'
-        click_password_sign_up
-
-        fill_in (t :"signup.new_account.first_name"), with: 'Test'
-        fill_in (t :"signup.new_account.last_name"), with: 'User'
-        fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
-        fill_in (t :"signup.new_account.username"), with: 'testuser'
-        fill_in (t :"signup.new_account.password"), with: 'password'
-        fill_in (t :"signup.new_account.confirm_password"), with: 'password'
-        agree_and_click_create
-
-        visit '/signup/password'
-        expect(page).to have_no_missing_translations
-        expect(page).to have_content(t :"controllers.signup.already_have_username_and_password")
-        expect(page).to have_content(t :"users.edit.page_heading")
-      end
-    end
-  end
-
-  scenario 'sign up chooser page' do
+  background do
+    load 'db/seeds.rb'
     create_application
-    visit_authorize_uri
-
-    expect_sign_in_page
-    click_link (t :"sessions.new.sign_up")
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"signup.index.page_heading")
-    expect(page).to have_content(t :"signup.index.sign_up_with_facebook")
-    expect(page).to have_content(t :"signup.index.sign_up_with_google")
-    expect(page).to have_content(t :"signup.index.sign_up_with_twitter")
-    expect(page).to have_content(t :"signup.index.sign_up_with_password")
   end
 
-  scenario 'with incorrect password confirmation' do
-    visit '/'
-    click_password_sign_up
-    expect(page).to have_no_missing_translations
-
-    fill_in (t :"signup.new_account.first_name"), with: 'Test'
-    fill_in (t :"signup.new_account.last_name"), with: 'User'
-    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
-    fill_in (t :"signup.new_account.username"), with: 'testuser'
-    fill_in (t :"signup.new_account.password"), with: 'password'
-    fill_in (t :"signup.new_account.confirm_password"), with: 'pass'
-    agree_and_click_create
-
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content("Alert: Password confirmation doesn't match Password")
-    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
+  scenario 'happy path success with password' do
+    arrive_from_app
+    click_sign_up
+    complete_signup_email_screen("Instructor","bob@bob.edu")
+    complete_signup_verify_screen(pass: true)
+    complete_signup_password_screen('password')
+    complete_signup_profile_screen(
+      first_name: "Bob",
+      last_name: "Armstrong",
+      phone_number: "634-5789",
+      school: "Rice University",
+      url: "http://www.ece.rice.edu/boba",
+      num_students: 30,
+      using_openstax: "primary",
+      agree: true
+    )
+    expect_back_at_app
   end
 
-  scenario 'with empty username' do
-    visit '/'
-    click_password_sign_up
+  # TODO test password log in CSRF in CustomIdentity similar to below
 
-    fill_in (t :"signup.new_account.first_name"), with: 'Test'
-    fill_in (t :"signup.new_account.last_name"), with: 'User'
-    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
-    fill_in (t :"signup.new_account.username"), with: ''
-    fill_in (t :"signup.new_account.password"), with: 'password'
-    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
-    agree_and_click_create
+  context 'CSRF verification in CustomIdentity signup' do
+    scenario 'valid CSRF' do
+      allow_forgery_protection
 
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content("Alert: Username can't be blank")
-    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
-  end
+      visit signup_path
 
-  scenario 'with empty password' do
-    visit '/'
-    click_password_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      complete_signup_verify_screen(pass: true)
+      complete_signup_password_screen('password')
 
-    fill_in (t :"signup.new_account.first_name"), with: 'Test'
-    fill_in (t :"signup.new_account.last_name"), with: 'User'
-    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
-    fill_in (t :"signup.new_account.username"), with: 'testuser'
-    fill_in (t :"signup.new_account.password"), with: ''
-    fill_in (t :"signup.new_account.confirm_password"), with: ''
-    agree_and_click_create
-
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content("Alert: Password can't be blank Password confirmation can't be blank")
-    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
-  end
-
-  scenario 'with short password' do
-    visit '/'
-    click_password_sign_up
-
-    fill_in (t :"signup.new_account.first_name"), with: 'Test'
-    fill_in (t :"signup.new_account.last_name"), with: 'User'
-    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
-    fill_in (t :"signup.new_account.username"), with: 'testuser'
-    fill_in (t :"signup.new_account.password"), with: 'pass'
-    fill_in (t :"signup.new_account.confirm_password"), with: 'pass'
-    agree_and_click_create
-
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content("Password is too short (minimum is 8 characters)")
-    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
-  end
-
-  scenario 'with a username already taken' do
-    create_user 'testuser'
-    visit '/'
-    click_password_sign_up
-
-    fill_in (t :"signup.new_account.first_name"), with: 'Test'
-    fill_in (t :"signup.new_account.last_name"), with: 'User'
-    fill_in (t :"signup.new_account.email_address"), with: 'testuser@example.com'
-    fill_in (t :"signup.new_account.username"), with: 'testuser'
-    fill_in (t :"signup.new_account.password"), with: 'password'
-    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
-    agree_and_click_create
-
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content('Username has already been taken', count: 1)
-    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
-  end
-
-  scenario 'with empty email address' do
-    visit '/'
-    click_password_sign_up
-
-    fill_in (t :"signup.new_account.first_name"), with: 'Test'
-    fill_in (t :"signup.new_account.last_name"), with: 'User'
-    fill_in (t :"signup.new_account.email_address"), with: ''
-    fill_in (t :"signup.new_account.username"), with: 'testuser'
-    fill_in (t :"signup.new_account.password"), with: 'password'
-    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
-    agree_and_click_create
-
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content("Alert: Email address can't be blank")
-    expect(page).not_to have_content(t :"layouts.application_header.sign_out")
-  end
-
-  scenario 'with an invalid email address' do
-    visit '/'
-    click_password_sign_up
-
-    fill_in (t :"signup.new_account.first_name"), with: 'Test'
-    fill_in (t :"signup.new_account.last_name"), with: 'User'
-    fill_in (t :"signup.new_account.email_address"), with: 'testuser@ex ample.org'
-    fill_in (t :"signup.new_account.username"), with: 'testuser'
-    fill_in (t :"signup.new_account.password"), with: 'password'
-    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
-    agree_and_click_create
-
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content('Value "testuser@ex ample.org" is not a valid email address')
-    expect(page).not_to have_content(t :"layouts.application_header.welcome_html", username: 'testuser')
-  end
-
-  scenario 'without any email addresses' do
-    # this is a test for twitter users who have no email addresses
-
-    # Some shenanigans to fake social sign up
-    user = create_user 'bob'
-    user.first_name = "Bob"
-    user.last_name = "Henry"
-    user.save
-
-    authentication = FactoryGirl.create(:authentication, user: user, provider: 'twitter')
-
-    visit '/'
-    signin_as 'bob'
-
-    visit '/signup/social'
-
-    allow(OSU::AccessPolicy).to receive(:action_allowed?).and_return(true)
-
-    agree_and_click_create
-
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"handlers.signup_social.you_must_provide_an_email_address")
-    expect(page).to_not have_content(t :"users.edit.page_heading")
-
-    fill_in (t :"signup.new_account.email_address"), with: 'bob@example.org'
-    click_button (t :"signup.new_account.create_account")
-
-    expect(page).to have_no_missing_translations
-    expect(page).not_to have_content(t :"handlers.signup_social.you_must_provide_an_email_address")
-    expect(page).to have_content(t :"users.edit.page_heading")
-  end
-
-  scenario 'not fully signed up social user goes elsewhere' do
-    # Some shenanigans to fake social sign up
-    user = create_user 'bob'
-    user.first_name = "Bob"
-    user.last_name = "Henry"
-    user.state = 'new_social'
-    user.save
-
-    authentication = FactoryGirl.create(:authentication, user: user, provider: 'twitter')
-
-    visit '/'
-    signin_as 'bob'
-
-    ['/profile', '/signin'].each do |path|
-      visit path
-      expect_social_sign_up_page
+      expect_signup_profile_screen
     end
 
-    visit '/signout'
-    expect(page).to have_current_path signin_path
+    scenario 'invalid CSRF'  do
+      allow_forgery_protection
+
+      visit signup_path
+
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      complete_signup_verify_screen(pass: true)
+
+      mock_bad_csrf_token
+
+      complete_signup_password_screen('password')
+
+      expect_sign_in_page
+    end
+  end
+
+  context "start screen" do
+    scenario 'failure because email in use' do
+      create_email_address_for(create_user('user'), "bob@bob.edu")
+      visit signup_path
+      select 'Instructor', from: "signup_role"
+      fill_in (t :"signup.start.email"), with: "bob@bob.edu"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content 'Email already in use'
+    end
+
+    scenario 'failure because suspected non-school email then success' do
+      visit signup_path
+      select 'Instructor', from: "signup_role"
+      fill_in (t :"signup.start.email"), with: "bob@gmail.com"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content 'If this is your school email, click Next'
+    end
+
+    scenario 'failure because email blank' do
+      skip # TODO
+    end
+
+    scenario 'failure because email is badly formatted' do
+      skip # TODO
+    end
+  end
+
+  context "verify PIN screen" do
+    before(:each) {
+      visit '/'
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+    }
+
+    scenario 'user leaves verify screen to edit email' do
+      click_link (t :'signup.verify_email.edit_email_address')
+      complete_signup_email_screen("Instructor","bob2@bob.edu")
+
+      complete_signup_verify_screen(pass: true)
+      complete_signup_password_screen('password')
+      complete_signup_profile_screen_with_whatever
+
+      expect(page).to have_content("bob2@bob.edu")
+      expect(page).not_to have_content("bob@bob.edu")
+    end
+
+    scenario 'user gets PIN wrong' do
+      complete_signup_verify_screen(pass: false)
+      expect_signup_verify_screen
+      expect(page).to have_content 'pin_not_correct'  # TODO fix when make proper alert
+    end
+
+    scenario 'user gets PIN wrong too many times' do
+      allow(ConfirmByPin).to receive(:max_pin_failures) { 1 }
+      complete_signup_verify_screen(pass: false)
+      expect_signup_verify_screen
+      expect(page).to have_content 'pin_not_correct'  # TODO fix when make proper alert
+      complete_signup_verify_screen(pass: false)
+      expect(page).to have_content(t :'signup.verify_email.page_heading_token')
+    end
+  end
+
+  context 'password screen' do
+    before(:each) {
+      visit '/'
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      complete_signup_verify_screen(pass: true)
+    }
+
+    scenario 'passwords do not match' do
+      complete_signup_password_screen('password', 'blah')
+      expect(page).to have_no_missing_translations
+      skip # TODO
+    end
+
+    scenario 'fields blank' do
+      complete_signup_password_screen('', '')
+      expect(page).to have_no_missing_translations
+      skip # TODO
+    end
+
+    scenario 'password too short' do
+      complete_signup_password_screen('p', 'p')
+      expect(page).to have_no_missing_translations
+      skip # TODO
+    end
+
+    context 'user already has password' do
+      before(:each) do
+        complete_signup_password_screen('password')
+      end
+
+      # TODO do we want some generalized code that helps get people back
+      # to the right part of the signup flow?  Instead of putting something
+      # specifically in for the password action
+
+      scenario 'redirected to profile entry if needed' do
+        visit '/signup/password'
+        skip # TODO see above
+        expect_signup_profile_screen
+      end
+
+      scenario 'redirected anywhere if fully activated' do
+        complete_signup_profile_screen_with_whatever
+        visit '/signup/password'
+        skip # TODO see above
+        expect_profile_screen
+      end
+    end
+
+    scenario 'can get to social screen' do
+      skip # TODO
+    end
+  end
+
+  context 'social screen' do
+    # TODO ...
+
+    scenario 'can get to password screen' do
+      skip # TODO
+    end
+  end
+
+  context 'instructor profile screen' do
+    scenario 'required fields blank' do
+      skip # TODO
+    end
+
+    scenario 'submit without agreement' do
+      # This could maybe be a controller spec; just want to make sure
+      # we don't let people submit on this screen without agreeing to
+      # terms.
+    end
+  end
+
+  context 'student profile screen' do
+    skip # TODO
   end
 
 end

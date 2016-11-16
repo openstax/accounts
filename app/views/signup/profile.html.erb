@@ -1,0 +1,89 @@
+<% @hide_layout_errors = true %>
+
+<% saved_role_sym = saved_role.downcase.to_sym %>
+
+<div class="ox-card login">
+
+  <h1 class="title"><%= t '.page_heading' %></h1>
+
+  <%= lev_form_for :profile, url: signup_profile_path do |f| %>
+
+    <% fh = FormHelper::One.new(f: f,
+                                limit_to: saved_role_sym,
+                                context: self,
+                                errors: @handler_result.try(:errors)) %>
+
+    <h3><%= t('.name_heading') %></h3>
+    <%= fh.text_field name: :first_name, value: current_user.first_name %>
+    <%= fh.text_field name: :last_name, value: current_user.last_name %>
+    <%= fh.text_field name: :suffix %>
+
+    <h3><%= t('.more_things_heading') %></h3>
+    <%= fh.text_field name: :phone_number, except: :student %>
+    <%= fh.text_field name: :school %>
+    <%= fh.text_field name: :url, except: :student %>
+    <%= fh.text_field name: :num_students, except: :student %>
+
+    <% if saved_role_sym != :student %>
+      <%= f.select :using_openstax,  # TODO move into form helper
+                   options_for_select(
+                    [
+                      ["Already using OpenStax?", ""],
+                      ["Yes, I am using OpenStax as a primary resource in my courses", "primary"],
+                      ["Yes, I am recommending OpenStax to my students as an optional resource", "optional"],
+                      ["No, I'm not using OpenStax in my courses yet", "no"]
+                    ], selected: "", disabled: "", hidden: "") %>
+
+
+      <h3><%= t('.titles_heading') %></h3>
+      <p><%= t('.titles_instructions') %></p>
+
+      TODO add titles multi select
+    <% end %>
+
+    <% unless @contracts_not_required %>
+      <%
+        contracts = [FinePrint.get_contract(:general_terms_of_use),
+                     FinePrint.get_contract(:privacy_policy)]
+
+        contract_links = contracts.collect do |contract|
+          link_to contract.title, term_path(contract), remote: true
+        end
+      %>
+
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :i_agree %>
+          <%= t :".have_read_terms_and_agree_html",
+                terms_of_use: contract_links[0],
+                privacy_policy: contract_links[1]
+              %><br/>
+          <i><%= t :".policies_notice" %></i>
+        </label>
+      </div>
+
+      <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
+      <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
+    <% end %>
+
+    <%# TODO add "keep me informed" %>
+
+    <%= f.submit (t :".create_account"), id: "create_account_submit", class: 'btn btn-primary' %>
+
+  <% end %>
+
+</div>
+
+
+<% unless @contracts_not_required %>
+  <script type="text/javascript">
+    Accounts.Ui.enableOnChecked('#create_account_submit', '#profile_i_agree');
+    $(document).ready(function() {
+      $('#show-more-fields').click(function(e) {
+        e.preventDefault();
+        $(this).hide();
+        $('#signup_title, #signup_suffix').parent().show();
+      })
+    });
+  </script>
+<% end %>

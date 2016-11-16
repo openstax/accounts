@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
     'temp', # deprecated but still could exist for old accounts
     'new_social',
     'unclaimed',
+    'needs_profile',
     'activated'
   ]
 
@@ -39,18 +40,20 @@ class User < ActiveRecord::Base
 
   before_validation :strip_names
 
-  validates :username, presence: true,
-                       length: { minimum: USERNAME_MIN_LENGTH, maximum: USERNAME_MAX_LENGTH },
+  validates :username, length: { minimum: USERNAME_MIN_LENGTH,
+                                 maximum: USERNAME_MAX_LENGTH,
+                                 allow_blank: true },
                        format: { with: USERNAME_VALID_REGEX,
-                                 message: "can only contain letters, numbers, and underscores." }
+                                 message: "can only contain letters, numbers, and underscores.",
+                                 allow_blank: true }
 
-  validates :username, uniqueness: { case_sensitive: false },
+  validates :username, uniqueness: { case_sensitive: false, allow_nil: true },
                        if: :username_changed?
 
   validates :state, inclusion: { in: VALID_STATES,
                                  message: "must be one of #{VALID_STATES.join(',')}" }
 
-  validate :name_part_required_for_suffix_or_title
+  validate :ensure_names_continue_to_be_present
 
   delegate_to_routine :destroy
 
@@ -115,6 +118,10 @@ class User < ActiveRecord::Base
     'new_social' == state
   end
 
+  def is_needs_profile?
+    'needs_profile' == state
+  end
+
   def name
     full_name.present? ? full_name : username
   end
@@ -132,8 +139,16 @@ class User < ActiveRecord::Base
     full_name.present? ? full_name.split("\s").drop(1).join(' ') : nil
   end
 
-  def casual_name
+  def casual_name # TODO are we ok now that username not required?
     first_name.present? ? first_name : username
+  end
+
+  def standard_name # TODO needs spec
+    formal_name.present? ? formal_name : casual_name
+  end
+
+  def formal_name # TODO needs spec
+    "#{title} #{last_name} #{suffix}".gsub(/\s+/,' ').strip if title.present? && last_name.present?
   end
 
   def add_unread_update
@@ -180,24 +195,6 @@ class User < ActiveRecord::Base
     self.is_administrator = true if User.count == 0
   end
 
-  def name_part_required_for_suffix_or_title
-    has_name_parts = first_name.present? || last_name.present?
-
-    if !has_name_parts
-      if title.present?
-        errors.add(:base, "A first or last name is required if a title is provided")
-        return false
-      end
-
-      if suffix.present?
-        errors.add(:base, "A first or last name is required if a suffix is provided")
-        false
-      end
-    end
-
-    true
-  end
-
   def strip_names
     self.title      = self.title.try(:strip)
     self.first_name = self.first_name.try(:strip)
@@ -205,6 +202,23 @@ class User < ActiveRecord::Base
     self.suffix     = self.suffix.try(:strip)
     self.username   = self.username.try(:strip)
     true
+  end
+
+  # there are existing users without names
+  # allow them to continue to function, but require a name to exist once it's set
+  def ensure_names_continue_to_be_present
+    return true if is_needs_profile?
+
+    %w{first_name last_name}.each do |attr|
+      change = changes[attr]
+
+      next if change.nil? # no change, so no problem
+
+      was = change[0]
+      is = change[1]
+
+      errors.add(attr.to_sym, "can't be blank") if !was.blank? && is.blank?
+    end
   end
 
 end

@@ -28,8 +28,14 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 
 require 'capybara'
+require 'capybara/poltergeist'
+Capybara.javascript_driver = :poltergeist
 
-Capybara.javascript_driver = :webkit
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(app, {
+    :window_size => [1920, 6000]
+  })
+end
 
 require 'capybara/email/rspec'
 
@@ -131,7 +137,8 @@ RSpec.configure do |config|
 
   # For Capybara's poltergist tests ensure that request's locale is always set to English.
   config.before(type: :feature, js: true) do |config|
-    page.driver.header 'Accept-Language', 'en'
+    # page.driver.header 'Accept-Language', 'en'
+    page.driver.add_header('Accept-Language', 'en')
   end
 end
 

@@ -11,10 +11,6 @@ class Email
     this.$el.find('.delete').click(@confirmDelete)
     this.$el.find('.searchable').change(@saveSearchable)
     this.$el.find('.verify').click(@sendVerification)
-    this.$el.find('.email').click(@revealControls)
-
-  revealControls: ->
-    this.$el.removeClass('controls-hidden')
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)
@@ -56,9 +52,10 @@ class Email
       this.$el.find('.searchable').prop('checked', contact.is_searchable)
 
   confirmDelete: (ev) ->
-    [title, message] = if this.$el.siblings('.email-entry').length is 0 # we're the only one
-      ["Are you sure?",
-      "If you remove this address from your account, we will be unable to help you access your account if you can’t sign in."]
+    verified_count = this.$el.siblings('.email-entry.verified')
+    [title, message] = if verified_count is 1 # we're the only one
+      ["Unable to remove",
+      "You cannot remove the only verified email"]
     else
       [false, "Are you sure you want to remove this email address from your account?"]
     new OX.ConfirmationPopover(

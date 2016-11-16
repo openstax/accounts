@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 # If you use js: true you must sleep to wait for the emails to arrive
-feature "User can't sign in" do
+xfeature "User can't sign in" do
   background do
     @user = create_user 'user1'
     @email = create_email_address_for @user, 'user@example.com'
@@ -25,7 +25,7 @@ feature "User can't sign in" do
     )
   end
 
-  scenario 'user is not a local user' do
+  xscenario 'user is not a local user' do
     user = create_nonlocal_user 'not_local'
     fill_in (t :"sessions.help.username_or_email"), with: 'not_local'
     click_button (t :"sessions.help.submit")

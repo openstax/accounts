@@ -44,6 +44,7 @@ describe ImportUsers do
 
     user1 = User.find_by_username('user1')
     expect(user1.title).to eq('Dr')
+    expect(user1.first_name).to eq('User')
     expect(user1.casual_name).to eq('User')
     expect(user1.name).to eq('Dr User One')
     expect(user1.state).to eq("activated")
@@ -61,7 +62,7 @@ describe ImportUsers do
 
     user2 = User.find_by_username('user2')
     expect(user2.title).to eq('Professor')
-    expect(user2.casual_name).to eq('user2')
+    expect(user2.first_name).to eq(nil)
     expect(user2.name).to eq('Professor ユーザー')
 
     expect(result[2]['row_number']).to eq('3')
@@ -71,7 +72,7 @@ describe ImportUsers do
 
     user3 = User.find_by_username('User1')
     expect(user3.title).to eq('Dr')
-    expect(user3.casual_name).to eq('Different')
+    expect(user3.first_name).to eq('Different')
     expect(user3.name).to eq('Dr Different User1')
     expect(user3.state).to eq('activated')
     expect(user3.identity.authenticate('password')).to be_truthy

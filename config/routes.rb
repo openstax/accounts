@@ -9,24 +9,28 @@ Rails.application.routes.draw do
                                      via: [:get, :post]
 
   scope controller: 'sessions' do
-    get 'signin', action: :new
+    get 'login', action: :new
+
+    post 'lookup_login'
+
+    get 'authenticate'
 
     get 'auth/:provider/callback', action: :create
     post 'auth/:provider/callback', action: :create
 
-    get 'signout', action: :destroy
+    get 'logout', action: :destroy
 
     get 'redirect_back'
 
     get 'failure', path: 'auth/failure'
 
-    get 'help', path: '/signin/help', as: :signin_help
-    post 'help', path: '/signin/help'
+    get 'help', path: '/login/help', as: :login_help
+    post 'help', path: '/login/help'
 
     # Maintain these deprecated routes for a while until client code learns to
-    # use /signin and /signout
-    get 'login', action: :new
-    get 'logout', action: :destroy
+    # use /login and /logout
+    get 'signin', action: :new
+    get 'signout', action: :destroy
   end
 
   scope controller: 'authentications' do
@@ -45,10 +49,22 @@ Rails.application.routes.draw do
   end
 
   namespace 'signup' do
-    get '/', action: :index
+    get '/', action: :start
+    post '/', action: :start
     get 'password'
     get 'social'
-    post 'social'
+    # post 'social'
+
+
+    # post 'submit_email'
+    get 'verify_email'
+    post 'verify_email'
+
+    # post 'check_pin'
+    get 'check_token'
+    post 'submit_password'
+    get 'profile'
+    post 'profile'
   end
 
   resource :identity, only: :update

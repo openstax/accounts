@@ -10,6 +10,7 @@ module SignInState
   end
 
   def sign_in!(user)
+    clear_login_info # TODO rename ...login_state AND rename sign_in_state to log_in_state
     @current_user = user || AnonymousUser.instance
 
     if @current_user.is_anonymous?
@@ -24,6 +25,7 @@ module SignInState
   end
 
   def sign_out!
+    session.delete(:signup) # TODO call as clear_signup_state or something
     sign_in!(AnonymousUser.instance)
   end
 
@@ -35,14 +37,14 @@ module SignInState
     return if signed_in?
 
     store_url
-    redirect_to main_app.signin_path(params.slice(:client_id))
+    redirect_to main_app.login_path(params.slice(:client_id))
   end
 
   def authenticate_admin!
     return if current_user.is_administrator?
 
     store_url
-    redirect_to main_app.signin_path(params.slice(:client_id))
+    redirect_to main_app.login_path(params.slice(:client_id))
   end
 
   def is_real_production_site?
