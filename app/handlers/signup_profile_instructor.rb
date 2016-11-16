@@ -15,8 +15,12 @@ class SignupProfileInstructor
     validates :school, presence: true
     attribute :url, type: String
     validates :url, presence: true
-    attribute :num_students, type: String
+    attribute :num_students, type: Integer
     validates :num_students, presence: true
+    validates :num_students, numericality: {
+                only_integer: true,
+                greater_than_or_equal_to: 0
+              }
     attribute :using_openstax, type: String
     validates :using_openstax, presence: true
     attribute :newsletter, type: boolean
@@ -40,6 +44,8 @@ class SignupProfileInstructor
     caller.self_reported_school = profile_params.school
 
     caller.save
+
+    transfer_errors_from(caller, {type: :verbatim}, true)
 
     # Agree to terms
     if options[:contracts_required]

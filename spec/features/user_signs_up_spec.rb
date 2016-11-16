@@ -22,6 +22,7 @@ feature 'User signs up', js: true do
       url: "http://www.ece.rice.edu/boba",
       num_students: 30,
       using_openstax: "primary",
+      newsletter: true,
       agree: true
     )
 
