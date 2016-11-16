@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161113215330) do
+ActiveRecord::Schema.define(version: 20161116132136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -252,6 +252,7 @@ ActiveRecord::Schema.define(version: 20161113215330) do
     t.string   "state",                 :default=>"needs_profile", :null=>false
     t.string   "salesforce_contact_id", :index=>{:name=>"index_users_on_salesforce_contact_id"}
     t.integer  "faculty_status",        :default=>0, :null=>false, :index=>{:name=>"index_users_on_faculty_status"}
+    t.string   "self_reported_school"
   end
   add_index "users", ["username"], :name=>"index_users_on_username_case_insensitive", :case_sensitive=>false
 

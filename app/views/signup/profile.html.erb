@@ -66,6 +66,13 @@
       <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
     <% end %>
 
+    <div class="checkbox">
+      <label>
+        <%= f.check_box :newsletter %>
+        <%= t :".keep_me_informed" %>
+      </label>
+    </div>
+
     <%# TODO add "keep me informed" %>
 
     <%= f.submit (t :".create_account"), id: "create_account_submit", class: 'btn btn-primary' %>

@@ -338,6 +338,7 @@ en:
       create_account: Create Account
       titles_heading: OpenStax titles I'm interested in
       titles_instructions: Check all that apply.
+      keep_me_informed: Keep me informed about OpenStax.
 
   static_pages:
     copyright:

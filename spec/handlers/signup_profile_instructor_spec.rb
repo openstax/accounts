@@ -55,6 +55,7 @@ RSpec.describe SignupProfileInstructor, type: :handler do
       end
 
       xit "updates the user's info" do
+        # check school too
       end
 
       xit "sends a Lead off to Salesforce" do
