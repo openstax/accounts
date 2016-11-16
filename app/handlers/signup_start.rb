@@ -23,7 +23,8 @@ class SignupStart
     end
 
     # If email in use, want users to login with that email, not create another account
-    fatal_error(code: :email_in_use) if email_in_use?
+    return outputs[:status] = :email_in_use if email_in_use?
+
 
     # Blow away the user's existing signup email, if it exists
     existing_signup_contact_info.try(:destroy)

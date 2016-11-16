@@ -1,4 +1,3 @@
-
 class SignupController < ApplicationController
 
   skip_before_filter :authenticate_user!, only: [:start, :verify_email,
@@ -21,11 +20,17 @@ class SignupController < ApplicationController
       handle_with(SignupStart,
                   existing_signup_contact_info: saved_signup_contact_info,
                   success: lambda do
-                    save_signup_state(
-                      role: @handler_result.outputs.role,
-                      signup_contact_info: @handler_result.outputs.signup_contact_info
-                    )
-                    redirect_to action: :verify_email
+                    case @handler_result.outputs[:status]
+                    when :email_in_use
+                      flash.now[:alert] = I18n.t('signup.start.email_in_use', link: signin_url)
+                      render :start
+                    else
+                      save_signup_state(
+                        role: @handler_result.outputs.role,
+                        signup_contact_info: @handler_result.outputs.signup_contact_info
+                      )
+                      redirect_to action: :verify_email
+                    end
                   end,
                   failure: lambda do
                     render :start
