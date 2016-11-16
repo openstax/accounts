@@ -37,6 +37,10 @@ RSpec.describe SignupProfileInstructor, type: :handler do
 
     end
 
+    it "requires a number >= 0 for num_students" do
+      skip # TODO
+    end
+
     context "when the fields are properly filled in" do
       let (:the_call) { -> {
         described_class.handle(
@@ -55,6 +59,7 @@ RSpec.describe SignupProfileInstructor, type: :handler do
       end
 
       xit "updates the user's info" do
+        # check school too
       end
 
       xit "sends a Lead off to Salesforce" do

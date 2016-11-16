@@ -393,7 +393,7 @@ describe SessionsCreate, type: :handler do
               let!(:signed_in_user) { FactoryGirl.create(:user) }
               let!(:authentication) { FactoryGirl.create(:authentication, user: signed_in_user) }
 
-              it "returns a status output instead of an exception or errors" do
+              xit "returns a status output instead of an exception or errors" do
                 handle_with_uid(111)
 
                 same_provider_different_uid = nil

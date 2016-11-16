@@ -128,6 +128,10 @@ gem 'oj'
 # Replace JSON with Oj
 gem 'oj_mimic_json'
 
+# Admin toggles
+gem 'rails-settings-ui'
+gem 'rails-settings-cached'
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails'

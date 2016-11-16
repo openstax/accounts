@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
   DEFAULT_FACULTY_STATUS = :no_faculty_info
   validates :faculty_status, presence: true
 
-  before_validation :strip_names
+  before_validation :strip_fields
 
   validates :username, length: { minimum: USERNAME_MIN_LENGTH,
                                  maximum: USERNAME_MAX_LENGTH,
@@ -195,12 +195,13 @@ class User < ActiveRecord::Base
     self.is_administrator = true if User.count == 0
   end
 
-  def strip_names
-    self.title      = self.title.try(:strip)
-    self.first_name = self.first_name.try(:strip)
-    self.last_name  = self.last_name.try(:strip)
-    self.suffix     = self.suffix.try(:strip)
-    self.username   = self.username.try(:strip)
+  def strip_fields
+    self.title.try(:strip!)
+    self.first_name.try(:strip!)
+    self.last_name.try(:strip!)
+    self.suffix.try(:strip!)
+    self.username.try(:strip!)
+    self.self_reported_school.try(:strip!)
     true
   end
 

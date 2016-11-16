@@ -80,6 +80,7 @@ class SignupController < ApplicationController
                   contracts_required: !contracts_not_required(
                     client_id: request['client_id'] || session['client_id']
                   ),
+                  role: saved_role,
                   success: lambda do
                     clear_signup_state
                     redirect_back
@@ -108,16 +109,6 @@ class SignupController < ApplicationController
     end
   end
 
-  # def finish
-  #   handle_with(SignupFinish,
-  #               success: lambda do
-  #                 clear_signup_state
-  #               end,
-  #               failure: lambda do
-
-  #               end)
-  # end
-
   protected
 
   def restart_if_missing_info
@@ -132,6 +123,5 @@ class SignupController < ApplicationController
       user: current_user
     ]
   end
-
 
 end

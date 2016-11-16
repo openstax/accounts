@@ -304,7 +304,7 @@ end
 
 def complete_signup_profile_screen(first_name:, last_name:, suffix: nil,
                                    phone_number:, school:, url:, num_students:,
-                                   using_openstax:, agree:)
+                                   using_openstax:, newsletter:, agree:)
 
   fill_in (t :"signup.profile.first_name"), with: first_name
   fill_in (t :"signup.profile.last_name"), with: last_name
@@ -333,6 +333,7 @@ def complete_signup_profile_screen_with_whatever
     url: "http://www.ece.rice.edu/boba",
     num_students: 30,
     using_openstax: "primary",
+    newsletter: true,
     agree: true
   )
 end

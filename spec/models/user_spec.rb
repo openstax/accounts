@@ -53,6 +53,9 @@ describe User, type: :model do
 
     user = FactoryGirl.create :user, username: " user "
     expect(user.username).to eq "user"
+
+    user = FactoryGirl.create :user, self_reported_school: " Rice University\t "
+    expect(user.self_reported_school).to eq "Rice University"
   end
 
   context 'full_name' do
