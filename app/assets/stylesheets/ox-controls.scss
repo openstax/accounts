@@ -25,9 +25,27 @@
     border-top: 2px solid darken($os_light_gray, 10%);
   }
   input {
-    font-size: 2rem;
+    color: $os_gray;
+    font-size: 1.8rem;
     padding: 0.5rem;
     margin: 0.5rem 0;
+    border-radius: 0px;
+  }
+
+  select {
+    // use a SVG icon for the dropdown indicator
+    -webkit-appearance: none;
+    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50px' height='50px'><polyline points='46.139,15.518 25.166,36.49 4.193,15.519'/></svg>") right no-repeat;
+    background-position: right 1rem top $input-height-base / 4;
+    background-size: 18px 18px;
+    background-color: white;
+    height: $input-height-base;
+    border-radius: 0px;
+    padding: $padding-base-vertical $padding-base-horizontal;
+    font-size: 1.8rem;
+    &:active {
+      border: 1px solid #000;
+    }
   }
 
   input[type=submit] {
@@ -38,6 +56,7 @@
     color: white;
     background-color: $os_orange;
     border-color: darken($os_orange, 10%);
+
     &:hover {
       color: $os_light_gray;
       background-color: darken($os_orange, 5%);
