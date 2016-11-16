@@ -1,5 +1,7 @@
 class EmailAddress < ContactInfo
-  validates :value, format: {
-    with: /\A[^@ ]+@[^@. ]+\.[^@ ]+\z/,
-    message: "\"%{value}\" is not a valid email address" }
+  include EmailAddressValidations
+
+  email_validation_formats.each do |format|
+    validates :value, format: format
+  end
 end

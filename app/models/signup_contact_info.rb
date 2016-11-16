@@ -6,6 +6,12 @@ class SignupContactInfo < ActiveRecord::Base
   before_validation :strip
   before_create :initialize_tokens
 
+  include EmailAddressValidations
+
+  email_validation_formats.each do |format|
+    validates :value, format: format, if: -> { email_address? }
+  end
+
   validates :kind, presence: true
   validates :value, presence: true
 
