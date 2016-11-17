@@ -284,7 +284,8 @@ en:
       iama: I am a
       instructor: Instructor
       student: Student
-      email_in_use: Email already in use.  Are you trying to <a href="%{link}">sign in</a>?
+      email_in_use: Email already in use.  Are you trying to <a href="%{signin_url}">sign in</a>?
+      blank: cannot be left blank
       already_have_an_account:
         # %{link}   a hyperlink pointing to sign in page. Label of the link
         #           is defined by the .sign_in key.
