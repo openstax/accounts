@@ -17,7 +17,7 @@ feature 'User resets password', js: true do
     visit '/reset_password?code=1234'
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    expect(page).to have_current_path reset_password_path(code: '1234')
+    expect_reset_password_page('1234')
   end
 
   scenario 'using a link with an expired code' do
@@ -25,21 +25,21 @@ feature 'User resets password', js: true do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t :"handlers.identities_reset_password.reset_link_expired")
-    expect(page).to have_current_path reset_password_path(code: @reset_code)
+    expect_reset_password_page
   end
 
   scenario 'using a link with a valid code' do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).to have_no_missing_translations
     expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    expect(page).to have_current_path reset_password_path(code: @reset_code)
+    expect_reset_password_page
   end
 
   scenario 'with a blank password' do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).to have_no_missing_translations
     expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    expect(page).to have_current_path reset_password_path(code: @reset_code)
+    expect_reset_password_page
     click_button (t :"identities.reset_password.set_password")
     expect(page).to have_content("Password can't be blank")
     expect(page).to have_content("Password is too short")
@@ -49,7 +49,7 @@ feature 'User resets password', js: true do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).to have_no_missing_translations
     expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    expect(page).to have_current_path reset_password_path(code: @reset_code)
+    expect_reset_password_page
     fill_in (t :"identities.reset_password.password"), with: 'pass'
     fill_in (t :"identities.reset_password.confirm_password"), with: 'pass'
     click_button (t :"identities.reset_password.set_password")
@@ -60,7 +60,7 @@ feature 'User resets password', js: true do
     visit "/reset_password?code=#{@reset_code}"
     expect(page).to have_no_missing_translations
     expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    expect(page).to have_current_path reset_password_path(code: @reset_code)
+    expect_reset_password_page
     fill_in (t :"identities.reset_password.password"), with: 'password!'
     fill_in (t :"identities.reset_password.confirm_password"), with: 'password!!'
     click_button (t :"identities.reset_password.set_password")
@@ -116,6 +116,11 @@ feature 'User resets password', js: true do
       have_content(t :"controllers.identities.cannot_reset_password_because_user_doesnt_have_one")
     )
     expect_profile_page
+  end
+
+  def expect_reset_password_page(code = @reset_code)
+    expect(page).to have_current_path reset_password_path(code: code)
+    expect(page).to have_no_missing_translations
   end
 
 end
