@@ -20,19 +20,17 @@ class SignupController < ApplicationController
       handle_with(SignupStart,
                   existing_signup_contact_info: saved_signup_contact_info,
                   success: lambda do
-                    case @handler_result.outputs[:status]
-                    when :email_in_use
-                      flash.now[:alert] = I18n.t('signup.start.email_in_use', link: signin_url)
-                      render :start
-                    else
                       save_signup_state(
                         role: @handler_result.outputs.role,
-                        signup_contact_info: @handler_result.outputs.signup_contact_info
+                        signup_contact_info_id: @handler_result.outputs.signup_contact_info.id
                       )
                       redirect_to action: :verify_email
-                    end
                   end,
                   failure: lambda do
+                    save_signup_state(role: params[:signup][:role], signup_contact_info_id: nil)
+                    @handler_result.errors.each do | error |
+                      error.message = I18n.t("signup.start.#{error.code}", signin_url: signin_url)
+                    end
                     render :start
                   end)
     end

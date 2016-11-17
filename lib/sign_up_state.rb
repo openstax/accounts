@@ -1,7 +1,7 @@
 module SignUpState
 
   def saved_role
-    session[:signup].try(:[],'role')
+    session[:signup].try(:[], 'role')
   end
 
   def saved_signup_contact_info
@@ -12,10 +12,10 @@ module SignUpState
     @saved_email ||= saved_signup_contact_info.try(:value)
   end
 
-  def save_signup_state(role:, signup_contact_info:)
+  def save_signup_state(role:, signup_contact_info_id:)
     session[:signup] = {
       role: role,
-      ci_id: signup_contact_info.id
+      ci_id: signup_contact_info_id
     }
   end
 
