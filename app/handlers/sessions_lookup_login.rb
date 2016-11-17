@@ -30,7 +30,10 @@ class SessionsLookupLogin
     outputs.providers = Authentication.where{user_id.in users.map(&:id)}
                                       .each_with_object({}) do |authentication, hash|
       provider = authentication.provider
-      hash[provider] =
+
+      hash[provider] = { uid: authentication.uid }
+
+      hash[provider][:login_hint] =
         case provider
         when 'google_oauth2'
           # the google login hint is an email; only leak this info if the user

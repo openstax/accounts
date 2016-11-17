@@ -20,6 +20,8 @@ class SessionsController < ApplicationController
   helper_method :last_signin_provider  #  TODO still useful?
   helper_method :get_login_info
 
+  include SignUpState
+
   # Login form
   def new
     # If no url to redirect back to, store the fallback url
@@ -66,6 +68,8 @@ class SessionsController < ApplicationController
     handle_with(
       SessionsCreate,
       user_state: self,
+      saved_signup_contact_info: saved_signup_contact_info,  # TODO change key to just signup_contact_info
+      login_providers: get_login_info[:providers],
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]
         case @handler_result.outputs[:status]
@@ -80,11 +84,11 @@ class SessionsController < ApplicationController
           security_log :sign_up_successful, authentication_id: authentication.id
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
-        when :transferred_authentication
-          set_last_signin_provider(authentication.provider)
-          security_log :authentication_transferred, authentication_id: authentication.id
-          security_log :sign_in_successful, authentication_id: authentication.id
-          redirect_to action: :redirect_back
+        # when :transferred_authentication
+        #   set_last_signin_provider(authentication.provider)
+        #   security_log :authentication_transferred, authentication_id: authentication.id
+        #   security_log :sign_in_successful, authentication_id: authentication.id
+        #   redirect_to action: :redirect_back
         when :no_action
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
@@ -106,10 +110,15 @@ class SessionsController < ApplicationController
           redirect_to profile_path, alert: (I18n.t :"controllers.sessions.same_provider_already_linked",
                                                    user_name: current_user.name,
                                                    authentication: authentication.display_name)
+        when :mismatched_authentication
+          # TODO new security log entry
+          redirect_to action: :authenticate # TODO need error message and feature spec!
         else
-          Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}"
+          Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}; " \
+                             "status: #{@handler_result.outputs[:status]}"
           raise IllegalState, "SessionsCreate errors: #{@handler_result.errors.inspect
-                              }; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect}"
+                              }; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect
+                              }; status: #{@handler_result.outputs[:status]}"
         end
       end
     )

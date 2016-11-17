@@ -14,6 +14,7 @@ feature 'User signs up', js: true do
     complete_signup_email_screen("Instructor","bob@bob.edu")
     complete_signup_verify_screen(pass: true)
     complete_signup_password_screen('password')
+
     complete_signup_profile_screen(
       first_name: "Bob",
       last_name: "Armstrong",
