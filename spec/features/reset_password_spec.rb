@@ -76,7 +76,7 @@ feature 'User resets password', js: true do
     click_button (t :"identities.reset_password.set_password")
     expect(page).to have_content(t :"controllers.identities.password_reset_successfully")
 
-    expect(page).to have_current_path profile_path
+    expect_profile_page
 
     click_link (t :"users.edit.sign_out")
     expect(page).to have_current_path login_path
@@ -89,7 +89,7 @@ feature 'User resets password', js: true do
     # try logging in with the new password
     complete_login_password_screen '1234abcd'
 
-    expect(page).to have_current_path profile_path
+    expect_profile_page
     expect(page).to have_no_missing_translations
     expect(page).to have_content(@user.full_name)
 
