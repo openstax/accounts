@@ -6,7 +6,7 @@ class SignupController < ApplicationController
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  helper_method :saved_email, :saved_role
+  helper_method :saved_email, :saved_role, :instructor_has_selected_subject
 
   before_filter :restart_if_missing_info, only: [:verify_email, :password]  # TODO spec me
 
@@ -125,6 +125,10 @@ class SignupController < ApplicationController
       signup_contact_info: saved_signup_contact_info,
       user: current_user
     ]
+  end
+
+  def instructor_has_selected_subject(key)
+    params[:profile] && params[:profile][:subjects] && params[:profile][:subjects][key] == '1'
   end
 
 end

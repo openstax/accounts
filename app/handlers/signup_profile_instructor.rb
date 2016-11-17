@@ -17,6 +17,7 @@ class SignupProfileInstructor
     validates :url, presence: true
     attribute :num_students, type: Integer
     validates :num_students, presence: true
+    attribute :subjects, type: Object
     validates :num_students, numericality: {
                 only_integer: true,
                 greater_than_or_equal_to: 0
@@ -52,6 +53,9 @@ class SignupProfileInstructor
       run(AgreeToTerms, profile_params.contract_1_id, caller, no_error_if_already_signed: true)
       run(AgreeToTerms, profile_params.contract_2_id, caller, no_error_if_already_signed: true)
     end
+
+    # TODO: push to subject keys to Salesforce once it knows how to deal with it
+    profile_params.subjects.find_all{|k,v| v == '1'}.map{|kv| kv.first }
 
     if Settings::Salesforce.push_leads_enabled
       PushSalesforceLead.perform_later(
