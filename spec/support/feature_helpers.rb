@@ -258,6 +258,11 @@ def complete_login_username_or_email_screen(username_or_email)
 
 end
 
+
+def expect_profile_page
+  expect(page).to have_current_path profile_path
+end
+
 def complete_login_password_screen(password)
   # TODO expect login password screen
   fill_in (t :"sessions.authenticate.password"), with: password

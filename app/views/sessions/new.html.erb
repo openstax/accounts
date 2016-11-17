@@ -8,20 +8,19 @@
 
   <%= lev_form_for :login, url: lookup_login_path do |f| %>
 
-    <div class="form-group<%= ' has-error' if is_invalid %>">
-      <%= f.text_field :username_or_email, placeholder: t('.email_placeholder'),
-          class: "form-control wide", autofocus: true %>
-        <%= render(partial: "layouts/attention") %>
-    </div>
+    <%= standard_field form: f, name: :username_or_email,
+        type: :text_field, options: { placeholder: t('.email_placeholder') } %>
 
-    <input type="submit" value="<%= t '.next' %>" />
+     <%= render(partial: "layouts/attention") %>
 
-    <div class="footer">
-      <p>
-        <%= t '.no_account_q' %>
-        <%= link_to(t('.sign_up'), signup_password_path) %>
-      </p>
-    </div>
+      <input type="submit" value="<%= t '.next' %>" class="primary" />
+
+      <div class="footer">
+        <p>
+          <%= t '.no_account_q' %>
+          <%= link_to(t('.sign_up'), signup_password_path) %>
+        </p>
+      </div>
   <% end %>
 
 </div>

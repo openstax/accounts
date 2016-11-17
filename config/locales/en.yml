@@ -204,7 +204,7 @@ en:
           below and we'll send you an email about how to regain access to your
           account. If you do not have this information, please %{link}.
         contact_customer_support: contact customer support
-      page_heading: We're sorry you're having trouble accessing your account.
+      page_heading: Recover Password
       submit: Submit
       submitting: Submitting...
       username_or_email: Username or Email
@@ -410,3 +410,4 @@ en:
       other_sign_in_options_html: Other sign in<br class="wide"> options
       page_heading: Your Account
       username: Username
+      sign_out: Sign out

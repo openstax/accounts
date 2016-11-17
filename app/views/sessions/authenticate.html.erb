@@ -34,11 +34,11 @@
     <% end %>
     <%= lev_form_for :login, url: '/auth/identity/callback' do |f| %>
 
-      <%= f.password_field :password, placeholder: t(".password"), class: 'wide'  %>
+      <%= f.password_field :password, placeholder: t(".password")  %>
 
       <%= f.hidden_field :username_or_email, value: username_or_email %>
 
-      <input type="submit" class="btn btn-primary" value="<%= t '.login' %>" />
+      <input type="submit" class="primary" value="<%= t '.login' %>" />
 
       <div class="footer">
         <p>
