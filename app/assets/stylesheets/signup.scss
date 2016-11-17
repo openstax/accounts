@@ -14,4 +14,8 @@ body.signup {
     // bs variable
     color: $state-danger-text;
   }
+
+  .subjects {
+    label { font-weight: inherit; }
+  }
 }
