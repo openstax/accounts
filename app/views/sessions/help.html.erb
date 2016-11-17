@@ -1,21 +1,24 @@
-<% @parent_col_id = "signin-help" %>
+<% @hide_layout_errors = true %>
 
-<%= page_heading (t :".page_heading") %>
+<div class="ox-card help">
 
-<div class="row">
-  <div class="col-xs-12">
-    <p><%= t :".if_you_know_username_or_email.content_html",
-             link: (mail_to "info@openstax.org",
-                            (t :".if_you_know_username_or_email.contact_customer_support"))
-          %></p>
-  </div>
-</div>
+  <h1 class="title"><%= t '.page_heading' %></h1>
 
-<div class="row">
-  <div class="col-sm-6">
+  <p><%= t :".if_you_know_username_or_email.content_html",
+         link: (mail_to "info@openstax.org",
+         (t :".if_you_know_username_or_email.contact_customer_support"))
+         %>
+  </p>
+
     <%= lev_form_for :help, url: '' do |f| %>
-      <%= standard_field form: f, name: :username_or_email, type: :text_field, label: (t :".username_or_email") %>
-      <%= submit_tag (t :".submit"), data: { disable_with: (t :".submitting") }, class: 'btn btn-primary' %>
+      <%= standard_field form: f, name: :username_or_email,
+          type: :text_field, label: (t :".username_or_email") %>
+
+      <%= render(partial: "layouts/attention") %>
+
+      <%= submit_tag (t :".submit"), data: { disable_with: (t :".submitting") }, class: 'primary' %>
     <% end %>
+
   </div>
+
 </div>
