@@ -1,5 +1,3 @@
-<% @hide_layout_errors = true %>
-
 <% saved_role_sym = saved_role.downcase.to_sym %>
 
 <div class="ox-card login">
@@ -38,7 +36,29 @@
       <h3><%= t('.titles_heading') %></h3>
       <p><%= t('.titles_instructions') %></p>
 
-      TODO add titles multi select
+      <%# TODO: get this listing from Salesforce %>
+
+      <div class="subjects clearfix">
+        <%
+          {
+            hs_physics:           'High School Physics',
+            college_physics:      'College Physics',
+            ap_biology:           'Biology for AP® Courses',
+            concepts_biology:     'Concepts of Biology',
+            college_biology:      'College Biology',
+            principles_economics: 'Principles of Economics',
+            macro_economics:      'Macroeconomics',
+            micro_economics:      'Microeconomics',
+            intro_sociology:      'Introduction to Sociology',
+            anatomy_physiology:   'Anatomy & Physiology'
+          }.each do | key, title | %>
+            <div class="half-width">
+              <%= f.check_box("subjects[#{key}]", checked: instructor_has_selected_subject(key)) %>
+              <%= f.label "subjects[#{key}]", title %>
+            </div>
+          <% end %>
+      </div>
+
     <% end %>
 
     <% unless @contracts_not_required %>
