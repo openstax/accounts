@@ -21,7 +21,7 @@
                                   errors: @handler_result.try(:errors)) %>
 
       <%= fh.text_field name: :pin %>
-      <%= f.submit (t :".verify_pin"), class: 'btn btn-primary' %>
+      <%= f.submit (t :".verify_pin"), class: 'primary' %>
     <% end %>
 
   <% else %>
