@@ -105,7 +105,7 @@ body, p, ol, ul, td, a {
 }
 
 #application-body {
-  margin-bottom: 30px;
+  margin-bottom: $application_footer_height + 20px;
 }
 
 #application-footer {
@@ -113,9 +113,8 @@ body, p, ol, ul, td, a {
   left: 0;
   right: 0;
   bottom: 0;
-
+  z-index: -1;
   height: $application_footer_height;
-
   color:            $os_gray;
   font-size:        10px;
   font-family:      verdana, arial, helvetica, sans-serif;
@@ -158,11 +157,6 @@ body, p, ol, ul, td, a {
   #clock.highlight {
     color: #ff00ff;
   }
-}
-
-.alert {
-  margin-bottom: -10px;
-  margin-top: 20px;
 }
 
 @-ms-viewport{
