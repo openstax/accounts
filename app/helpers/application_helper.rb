@@ -7,9 +7,9 @@ module ApplicationHelper
       add_local_error_alert now: true, content: error.translate
     end
 
-    @handler_result.errors.any? ?
-      js_refresh_alerts(options) :
-      js_refresh_alerts(options) + capture(&block).html_safe
+   @handler_result.errors.any? ?
+     js_refresh_alerts(options) :
+     js_refresh_alerts(options) + capture(&block).html_safe
   end
 
   def js_refresh_alerts(options={})
@@ -35,10 +35,10 @@ module ApplicationHelper
     alert_class = type == :alert ? "alert-danger" : "alert-info"
 
     content_tag :div, class: "alert #{alert_class}", role: "alert" do
-      (type == :alert ? content_tag(:strong, "Alert: ") : "") +
+      (type == :alert ? content_tag(:strong, I18n.t( 'errors.alert')) : "") +
       (messages.size == 1 ?
-       messages.first :
-       ("<ul>"+messages.collect{|a| "<li>"+a+"</li>"}.join("")+"</ul>").html_safe)
+       messages.first.html_safe :
+       ("<ul>"+messages.collect{|a| "<li>#{a}</li>"}.join("")+"</ul>").html_safe)
     end
   end
 
@@ -64,11 +64,29 @@ module ApplicationHelper
 
   end
 
-  def standard_field(options={})
+  def collect_errors
+    alert_messages = []
+    handler_errors.each do |error|
+      alert_messages.push error.translate
+    end
 
-    raise IllegalArgument, "Must specify a :type" if !options[:type]
-    raise IllegalArgument, "Must specify a :form" if !options[:form]
-    raise IllegalArgument, "Must specify a :name" if !options[:name]
+    alert_messages.push(flash[:alert]) if flash[:alert]
+
+    notice_messages = []
+    notice_messages.push(flash[:notice]) if flash[:notice]
+
+    alert_messages.collect{|msg|
+      msg.gsub("contact support", mail_to("info@openstax.org", "contact support"))
+        .html_safe
+    }
+    errors = {}
+    errors[:alerts] = alert_messages if alert_messages.any?
+    errors[:notices] = notice_messages if notice_messages.any?
+    errors
+  end
+
+  def standard_field(options={})
+    %i{type form name}.each{ |key| raise IllegalArgument, "Must specify a :#{key}" if !options[key] }
 
     options[:options] ||= {}
     hide = options[:options].delete(:hide)

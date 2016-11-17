@@ -25,9 +25,6 @@ en:
         you.
       incorrect_password: The password you provided is incorrect.
       new_sign_in_option_added: Your new sign in option as been added!
-      no_account_for_username_or_email: >-
-        We have no account for the username or email you provided. Email
-        addresses must be verified in out system to use them during sign in.
       same_provider_already_linked: >-
         You are logged in as %{user_name}. A different %{authentication} account
         is already linked to your OpenStax account. Only one %{authentication}
@@ -150,6 +147,13 @@ en:
         sign_in: sign in
 
   errors:
+    please_enable_javascript: >-
+      Please enable JavaScript in your browser! Some site contet will not work
+      properly without it.
+    no_account_for_username_or_email: >-
+        We have no account for the username or email you provided. Email
+        addresses must be verified in out system to use them during sign in.
+    alert: 'Alert: '
     any:
       appology_message_html: >-
         We're sorry this %{code} error occured. If you need help, please contact
@@ -182,9 +186,13 @@ en:
       welcome_html: Welcome, %{username}
 
     attention:
-      please_enable_javascript: >-
-        Please enable JavaScript in your browser! Some site contet will not work
-        properly without it.
+      please_enable_javascript: Please enable JavaScript.
+
+  settings:
+    attributes:
+      push_salesforce_lead_enabled:
+        name: 'Push leads to Salesforce?'
+        help_block: 'If checked (and SF configured), new accounts will be pushed to SF as Leads'
 
   sessions:
     help:
@@ -196,30 +204,40 @@ en:
           below and we'll send you an email about how to regain access to your
           account. If you do not have this information, please %{link}.
         contact_customer_support: contact customer support
-      page_heading: We're sorry you're having trouble accessing your account.
+      page_heading: Recover Password
       submit: Submit
       submitting: Submitting...
       username_or_email: Username or Email
 
     new:
-      cant_sign_in: Can't sign in?
+      cant_sign_in: Can’t sign in?
       logout_reminder_html: >-
         If you're on a public computer, <b>be sure to sign out</b> when you're done!
       openstax_wont_use_social_media_without_permission_html: >-
         <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
         network without your permission.
-      page_heading: Sign in to OpenStax
+      page_heading: Log in to OpenStax
       page_sub_heading: Access all OpenStax tools and resources
-      password: Password
-      separator_or: OR
       sign_in: Sign in
-      sign_in_with_facebook: Sign in with Facebook
-      sign_in_with_google: Sign in with Google
-      sign_in_with_twitter: Sign in with Twitter
       sign_up: Sign up
+      no_account_q: No account?
       used_this_method_last_time: >-
         It looks like you used this the last time you signed in.
-      username_or_email: Username or Email
+      email: Email
+      email_placeholder: "name@mail.edu"
+      unrecognized_email: We don’t recognize this email, please try again.
+      next: Next
+      cannot_find_user: 'Cannot find user'
+
+    authenticate:
+      name_greeting: Hi %{name}!
+      separator_or: OR
+      sign_in_with_facebook: Sign in with Facebook
+      sign_in_with_google: Google
+      sign_in_with_twitter: Sign in with Twitter
+      login: Login
+      password: Password
+      forgot_password: Can’t remember password?
 
   sign_in_help_mailer:
     sign_in_help:
@@ -244,8 +262,7 @@ en:
       # There is no ability to translate titles, as the documents themselves
       # are not translatable.
       have_read_terms_and_agree_html: >-
-        I have read the %{terms_of_use} and the %{privacy_policy} and I agree to
-        be bound by their terms.
+        I agree to the %{terms_of_use} and the %{privacy_policy}.
       last_name: Last Name *
       might_already_have_an_account: I might already have an account.
       password: Password *
@@ -265,7 +282,14 @@ en:
         You'll receive a verification email shortly. Please take a moment and
         verify your email address.
 
-    index:
+    start:
+      email: Email
+      next: Next
+      iama: I am a
+      instructor: Instructor
+      student: Student
+      email_in_use: Email already in use.  Are you trying to <a href="%{signin_url}">sign in</a>?
+      blank: cannot be left blank
       already_have_an_account:
         # %{link}   a hyperlink pointing to sign in page. Label of the link
         #           is defined by the .sign_in key.
@@ -286,12 +310,60 @@ en:
       sign_up_with_google: Sign up with Google
       sign_up_with_password: Sign up with a password
       sign_up_with_twitter: Sign up with Twitter
+      teacher_school_email: >-
+        To access faculty-only products, provide your school email address
+        so we can ensure you are an instructor. You can always add an alternate
+        email later.
+      teacher_school_email_warning: >-
+        If this is your school email, click Next. If this is not your school email,
+        please edit the above address, then click Next.
+
+        # sign_in: sign in
+
+    verify_email:
+      page_heading_pin: Enter Your PIN
+      page_heading_token: Verify Your Email
+      pin: Enter PIN
+      verify_pin: Verify PIN
+      edit_email_address: Edit email address.
 
     password:
-      page_heading: Create Account
+      page_heading: Enter Password
+      password: Password
+      password_confirmation: Confirm Password
+      enter_password: Enter Password
 
     social:
-      page_heading: Create Account
+      page_heading: TBD Title
+      facebook: Facebook
+      google: Google
+
+    profile:
+      page_heading: Complete your account
+      name_heading: Name
+      instructor_verification_heading: Instructor verification
+      instructor_verification_help: >-
+        We need information to help verify you're an instructor and give you access
+        to materials like test banks and OpenStax Tutor course setup.
+      instructor_use:
+        how: How are you using OpenStax?
+        fully: Fully adopted and using it as the primary textbook
+        recommended: Recommending the book – my students buy a different book
+        piloting: Piloting the book
+        interested: Interested in using OpenStax in the future
+        nope: Not using OpenStax
+      first_name: First Name
+      last_name: Last Name
+      suffix: Suffix
+      more_things_heading: And a few more things...
+      phone_number: Phone Number
+      school: School
+      url: Your specific school web page
+      num_students: Number of students per semester
+      using_openstax: Already using OpenStax?
+      create_account: Create Account
+      titles_interested: Select all OpenStax titles that interest you
+      keep_me_informed: Send me news about new titles, resources, and related information.
 
   static_pages:
     copyright:
@@ -347,3 +419,4 @@ en:
       other_sign_in_options_html: Other sign in<br class="wide"> options
       page_heading: Your Account
       username: Username
+      sign_out: Sign out

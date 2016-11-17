@@ -4,7 +4,15 @@
   <%= javascript_include_tag  "profile" %>
 <% end %>
 
-<%= page_heading (t :".page_heading") %>
+<div class="ox-card">
+
+      <span style="float:right">
+        <%= link_to (t :".sign_out"), main_app.signout_path %>
+      </span>
+
+
+<h1 class="title"><%= t '.page_heading' %></h1>
+
 
 <div class="row name">
   <div class="col-sm-2 category">
@@ -73,6 +81,7 @@
   </div>
 </div>
 
+</div>
 
 <%= content_for :javascript do %>
 <script type="text/javascript">
@@ -88,16 +97,13 @@ $('#username').editable({
   }
 });
 
-$('#name').editable({
-  value: {
+OX.Profile.Name.editable($('#name'), {
     title: "<%= current_user.title %>",
     first_name: "<%= current_user.first_name %>",
     last_name: "<%= current_user.last_name %>",
     suffix: "<%= current_user.suffix %>"
-  },
-  success: function(response, newValue) {
-    $(this).html(response.full_name);
-  }
 });
+
+
 </script>
 <% end # javscript content block %>

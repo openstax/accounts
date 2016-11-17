@@ -100,15 +100,10 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
     it "should not let id be specified" do
       api_get :show, user_1_token, parameters: {id: admin_user.id}
-
-      expected_response = {
-        id: user_1.id,
-        username: user_1.username,
-        uuid: user_1.uuid,
+      expected_response = user_hash(user_1).merge({
         faculty_status: user_1.faculty_status,
         contact_infos: []
-      }.to_json
-
+      }).to_json
       expect(response.body).to eq(expected_response)
     end
 
@@ -119,15 +114,10 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
     it "should return a properly formatted JSON response for low-info user" do
       api_get :show, user_1_token
-
-      expected_response = {
-        id: user_1.id,
-        username: user_1.username,
-        uuid: user_1.uuid,
+      expected_response = user_hash(user_1).merge({
         faculty_status: user_1.faculty_status,
         contact_infos: []
-      }.to_json
-
+      }).to_json
       expect(response.body).to eq(expected_response)
     end
 
@@ -155,7 +145,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       ConfirmContactInfo.call(confirmed_email)
 
       over_pinned_email = AddEmailToUser.call("over_pinned@example.com", user_1).outputs.email
-      ConfirmByPin::MAX_PIN_FAILURES.times { ConfirmByPin.call(contact_info: over_pinned_email, pin: "whatever") }
+      ConfirmByPin.max_pin_failures.times { ConfirmByPin.call(contact_info: over_pinned_email, pin: "whatever") }
 
       api_get :show, user_1_token
 
@@ -165,7 +155,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
           type: "EmailAddress",
           value: "unconfirmed@example.com",
           is_verified: false,
-          num_pin_verification_attempts_remaining: 5
+          num_pin_verification_attempts_remaining: ConfirmByPin.max_pin_failures
         },
         {
           id: confirmed_email.id,
@@ -235,7 +225,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       expect{
         api_post :find_or_create,
                  trusted_application_token,
-                 raw_post_data: {email: 'a-new-email@test.com'}
+                 raw_post_data: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('201')
       new_user_id = User.order(:id).last.id

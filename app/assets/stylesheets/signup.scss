@@ -1,0 +1,21 @@
+body.signup {
+  input[type=text],
+  select {
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  // elements which are conditionally displayed depending on signup state
+  #signup_email:not([value]), .audience-help, .edu-warning {
+    display: none;
+  }
+
+  .edu-warning {
+    // bs variable
+    color: $state-danger-text;
+  }
+
+  .subjects {
+    label { font-weight: inherit; }
+  }
+}

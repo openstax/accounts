@@ -1,91 +1,26 @@
-<% @hide_session_info = true %>
+<% @hide_layout_errors = true %>
 
-<% @parent_col_id = "signin" %>
+<% is_invalid = collect_errors.any? %>
 
-<%= page_heading (t :".page_heading"), sub_heading_text: (t :".page_sub_heading"), center: true %>
+<div class="ox-card login">
 
-<div id="options" class="row">
+  <h1 class="title"><%= t '.page_heading' %></h1>
 
-  <div id="social-login" class="col-sm-6">
+  <%= lev_form_for :login, url: lookup_login_path do |f| %>
 
-    <div class="button-form-group">
-      <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook', id: 'facebook-login-button' do %>
-        <span class="fa fa-facebook"></span> <%= t :".sign_in_with_facebook" %>
-      <% end %>
-      <%= last_signin_mark('facebook') %>
+    <%= standard_field form: f, name: :username_or_email,
+        type: :text_field, options: { placeholder: t('.email_placeholder') } %>
 
-      <%= link_to "/auth/google_oauth2", class: 'btn btn-block btn-social btn-google', id: 'google-login-button' do %>
-        <span class="fa fa-google"></span> <%= t :".sign_in_with_google" %>
-      <% end %>
-      <%= last_signin_mark('google_oauth2') %>
+     <%= render(partial: "layouts/attention") %>
 
-      <%= link_to "/auth/twitter", class: 'btn btn-block btn-social btn-twitter', id: 'twitter-login-button' do %>
-        <span class="fa fa-twitter"></span> <%= t :".sign_in_with_twitter" %>
-      <% end %>
-      <%= last_signin_mark('twitter') %>
-    </div>
+      <input type="submit" value="<%= t '.next' %>" class="primary" />
 
-  </div>
+      <div class="footer">
+        <p>
+          <%= t '.no_account_q' %>
+          <%= link_to(t('.sign_up'), signup_password_path) %>
+        </p>
+      </div>
+  <% end %>
 
-  <div id="password-login" class="col-sm-6">
-
-    <span id="vertical-or" class="hidden-xs"><%= t :".separator_or" %></span>
-
-    <div id="horizontal-or-bar" class="visible-xs">
-      <span><%= t :".separator_or" %></span>
-    </div>
-
-    <div class="button-form-group">
-      <%= form_tag '/auth/identity/callback' do %>
-        <div class="form-group">
-          <label for='auth_key'><%= t :".username_or_email" %></label>
-          <input type='text' id='auth_key' name='auth_key' class="form-control" autocapitalize="off" autocorrect="off"/>
-        </div>
-        <%= last_signin_mark('identity') %>
-
-        <div class="form-group">
-          <label for='password'><%= t :".password" %></label>
-          <input type='password' id='password' name='password' class="form-control"/>
-        </div>
-
-        <div class='password-actions'>
-          <button type="submit" class="btn btn-primary"><%= t :".sign_in" %></button>
-
-          <span class='sign-up'><%= link_to (t :".sign_up"), signup_path %></span>
-        </div>
-
-      <% end %>
-    </div>
-
-  </div>
-</div>
-
-<div id="last-signin-explanation" class="row" style="<%= 'display:none' if last_signin_provider.blank? %>">
-  <div class="col-xs-12" style="text-align: center">
-    <div class="content">
-      <span class="last-signin-symbol">*</span>&nbsp;&nbsp;&nbsp;<%= t :".used_this_method_last_time" %>
-    </div>
-  </div>
-</div>
-
-<div id="cant-sign-in" class="row">
-  <div class="col-xs-12" style='text-align: center'>
-    <span><%= link_to (t :".cant_sign_in"), signin_help_path %></span>
-  </div>
-</div>
-
-<div id="reminders" class="row">
-  <div class="col-xs-12">
-    <p><%= t :".openstax_wont_use_social_media_without_permission_html" %>
-
-    <style type="text/css">
-      p.b-no-wrap > b {
-        white-space: nowrap;
-      }
-    </style>
-    <p class="b-no-wrap">
-      <%= t :".logout_reminder_html" %>
-    </p>
-    <%# <p>If you're on a public computer, <b style="white-space:nowrap">be sure to sign out</b> when you're done!</p> %>
-  </div>
 </div>

@@ -15,7 +15,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "logged-in admin user" do
     before(:each) do
       create_admin_user
-      visit signin_path
+      visit login_path
       signin_as 'admin'
     end
 
@@ -38,7 +38,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
         Timecop.travel(login_time + 31.minutes)
         visit admin_feature_url
 
-        expect(page).to have_current_path(signin_path)
+        expect(page).to have_current_path(login_path)
       end
     end
     context "that HAS accessed any admin features in the past 30mins" do
@@ -58,7 +58,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
         Timecop.travel(login_time + 31.minutes)
         visit admin_feature_url
 
-        expect(page).to have_current_path(signin_path)
+        expect(page).to have_current_path(login_path)
       end
     end
     context "when accessing only non-admin features" do
@@ -79,7 +79,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "logged-in non-admin user" do
     before(:each) do
       create_user 'user'
-      visit signin_path
+      visit login_path
       signin_as 'user'
     end
 
@@ -120,7 +120,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
     scenario "cannot access user features" do
       visit non_admin_feature_url
 
-      expect(page).to have_current_path(signin_path)
+      expect(page).to have_current_path(login_path)
     end
     scenario "can access visitor pages" do
       visit visitor_page_url
@@ -132,7 +132,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "non-admin user logs in" do
     scenario "later someone makes him/her an admin" do
       current_user = create_user 'user'
-      visit signin_path
+      visit login_path
       signin_as 'user'
       expect(current_user.is_administrator?).to eq false
 

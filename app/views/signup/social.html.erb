@@ -1,5 +1,33 @@
-<% @hide_session_info = true %>
+<div class="ox-card">
 
-<% page_heading (t :".page_heading") %>
+  <h1 class="title"><%= t '.page_heading' %></h1>
 
-<%= render partial: 'new_account', locals: { url: signup_social_path } %>
+
+    <div class="button-form-group">
+      <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook', id: 'facebook-login-button' do %>
+        <span class="fa fa-facebook"></span> <%= t :".facebook" %>
+      <% end %>
+
+      <%= link_to "/auth/google_oauth2", class: 'btn btn-block btn-social btn-google', id: 'google-login-button' do %>
+        <span class="fa fa-google"></span> <%= t :".google" %>
+      <% end %>
+    </div>
+
+    <div id="reminders" class="row" style="padding-top:30px">
+      <div class="col-xs-12">
+        <p><%= t :".openstax_wont_use_social_media_without_permission_html" %></p>
+        <style type="text/css">
+          p.b-no-wrap > b {
+            white-space: nowrap;
+          }
+        </style>
+        <p class="b-no-wrap"><%= t :".logout_reminder_html" %></p>
+      </div>
+    </div>
+
+    <p>
+      Don't want to use one of these?<br/>
+      <%= link_to "Set up a password instead", signup_password_path %>.
+    </p>
+
+</div>

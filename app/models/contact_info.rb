@@ -23,6 +23,7 @@ class ContactInfo < ActiveRecord::Base
   scope :with_users, lambda { joins(:user).eager_load(:user) }
 
   before_save :add_unread_update
+  before_destroy :check_if_last_verified
 
   def confirmed;  verified;  end
   def confirmed?; verified?; end
@@ -36,9 +37,24 @@ class ContactInfo < ActiveRecord::Base
     user.add_unread_update
   end
 
+  def reset_confirmation_pin!
+    self.confirmation_pin = TokenMaker.contact_info_confirmation_pin
+  end
+
+  def reset_confirmation_code!
+    self.confirmation_code = TokenMaker.contact_info_confirmation_code
+  end
+
   protected
 
   def strip
     self.value = self.value.try(:strip)
+  end
+
+  def check_if_last_verified
+    if verified? and not user.contact_infos.verified.many? and not destroyed_by_association
+      errors.add(:user, 'unable to delete last verified email address')
+      return false
+    end
   end
 end

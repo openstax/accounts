@@ -4,12 +4,38 @@ describe User, type: :model do
 
   it { should have_many :security_logs }
 
-  it 'requires at least a first or last name if a title is set' do
-    user = User.new(title: "Hi")
-    expect(user).not_to be_valid
+  context 'when the user is activated' do
+    let(:user) { User.new.tap{|u| u.state = 'activated'} }
 
-    user = User.new(suffix: "Hi")
-    expect(user).not_to be_valid
+    context 'when the names start nil' do
+      it 'is valid for the first name to stay blank' do
+        user.last_name = "Smith"
+        expect(user).to be_valid
+      end
+
+      it 'is valid for the last name name to stay blank' do
+        user.first_name = "John"
+        expect(user).to be_valid
+      end
+    end
+
+    context 'when the names start populated' do
+      before(:each) {
+        user.update_attributes(first_name: "John", last_name: "Smith")
+      }
+
+      it 'is invalid for the first name to become blank' do
+        user.first_name = "   "
+        expect(user).not_to be_valid
+        expect(user.errors[:first_name]).to include("can't be blank")
+      end
+
+      it 'is invalid for the last name to become blank' do
+        user.last_name = "\t   "
+        expect(user).not_to be_valid
+        expect(user.errors[:last_name]).to include("can't be blank")
+      end
+    end
   end
 
   it 'strips whitespace off of title, first & last names, suffix, username' do
@@ -27,6 +53,9 @@ describe User, type: :model do
 
     user = FactoryGirl.create :user, username: " user "
     expect(user.username).to eq "user"
+
+    user = FactoryGirl.create :user, self_reported_school: " Rice University\t "
+    expect(user.self_reported_school).to eq "Rice University"
   end
 
   context 'full_name' do
@@ -36,18 +65,8 @@ describe User, type: :model do
     end
 
     it 'includes the title if present' do
-      user = FactoryGirl.create :user, title: "Mr.", first_name: "Bob"
-      expect(user.full_name).to eq "Mr. Bob"
-    end
-
-    it 'includes the suffix if present' do
-      user = FactoryGirl.create :user, suffix: "Jr.", first_name: "Bob"
-      expect(user.full_name).to eq "Bob Jr."
-    end
-
-    it 'does not have extra spaces in middle if missing first name' do
-      user = FactoryGirl.create :user, title: "Professor", last_name: "Einstein"
-      expect(user.full_name).to eq "Professor Einstein"
+      user = FactoryGirl.create :user, title: "Mr.", first_name: "Bob", last_name: "Jones"
+      expect(user.full_name).to eq "Mr. Bob Jones"
     end
   end
 
@@ -74,41 +93,51 @@ describe User, type: :model do
   end
 
   context 'username' do
-    it 'must be unique (case-insensitive) on creation' do
+    it 'must be unique (case-insensitive) on creation, if provided' do
       user_1 = FactoryGirl.create :user, username: "MyUs3Rn4M3"
 
-      user_2 = FactoryGirl.build :user, username: user_1.username
-      expect(user_2).not_to be_valid
-      expect(user_2.errors).to include(:username)
-      expect(user_2.errors[:username]).to include('has already been taken')
+      user_2 = FactoryGirl.create :user, username: nil
 
-      user_3 = FactoryGirl.build :user, username: user_1.username.upcase
+      user_3 = FactoryGirl.build :user, username: user_1.username
       expect(user_3).not_to be_valid
       expect(user_3.errors).to include(:username)
+      expect(user_3.errors[:username]).to include('has already been taken')
 
-      user_4 = FactoryGirl.build :user, username: user_1.username.downcase
+      user_4 = FactoryGirl.build :user, username: user_1.username.upcase
       expect(user_4).not_to be_valid
       expect(user_4.errors).to include(:username)
+
+      user_5 = FactoryGirl.build :user, username: user_1.username.downcase
+      expect(user_5).not_to be_valid
+      expect(user_5.errors).to include(:username)
+
+      user_6 = FactoryGirl.build :user, username: nil
+      expect(user_6).to be_valid
     end
 
     it 'cannot be updated to match (case-insensitive) an existing username' do
       user_1 = FactoryGirl.create :user, username: "MyUs3Rn4M3"
 
-      user_2 = FactoryGirl.create :user
-      expect(user_2).to be_valid
-      expect(user_2.errors).to be_empty
+      user_2 = FactoryGirl.create :user, username: nil
 
-      user_2.username = user_1.username
-      expect(user_2).not_to be_valid
-      expect(user_2.errors).to include(:username)
+      user_3 = FactoryGirl.create :user
+      expect(user_3).to be_valid
+      expect(user_3.errors).to be_empty
 
-      user_2.username = user_1.username.upcase
-      expect(user_2).not_to be_valid
-      expect(user_2.errors).to include(:username)
+      user_3.username = user_1.username
+      expect(user_3).not_to be_valid
+      expect(user_3.errors).to include(:username)
 
-      user_2.username = user_1.username.downcase
-      expect(user_2).not_to be_valid
-      expect(user_2.errors).to include(:username)
+      user_3.username = user_1.username.upcase
+      expect(user_3).not_to be_valid
+      expect(user_3.errors).to include(:username)
+
+      user_3.username = user_1.username.downcase
+      expect(user_3).not_to be_valid
+      expect(user_3.errors).to include(:username)
+
+      user_3.username = nil
+      expect(user_3).to be_valid
     end
 
     it 'does not interfere with updates if duplicated but not changed' do
@@ -133,13 +162,7 @@ describe User, type: :model do
   end
 
   it 'returns a name' do
-    user = FactoryGirl.create :user, username: 'username'
-    expect(user.name).to eq('username')
-
-    user.first_name = 'User'
-    expect(user.name).to eq('User')
-
-    user.last_name = 'One'
+    user = FactoryGirl.create :user, first_name: 'User', last_name: 'One'
     expect(user.name).to eq('User One')
 
     user.title = 'Miss'
@@ -150,20 +173,16 @@ describe User, type: :model do
     expect(user.name).to eq('Dr User One Second')
   end
 
-  it 'returns a casual name' do
-    user = FactoryGirl.create :user, username: 'username', first_name: ''
-    expect(user.casual_name).to eq('username')
-
-    user.first_name = 'First'
-    user.last_name = 'Last'
-    expect(user.casual_name).to eq('First')
+  it 'returns the first name as casual name' do
+    user = FactoryGirl.create :user, first_name: 'Nikola', last_name: 'Tesla'
+    expect(user.casual_name).to eq('Nikola')
   end
 
 
   context "state" do
-    it "defaults to temp" do
-      expect(User.new.state ).to eq("temp")
-      expect(User.new.is_temp? ).to be_truthy
+    it "defaults to needs_profile" do
+      expect(User.new.state ).to eq("needs_profile")
+      expect(User.new.is_needs_profile? ).to be_truthy
     end
 
     it "can be set to active" do

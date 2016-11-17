@@ -81,7 +81,7 @@ describe Api::V1::ContactInfosController, type: :controller, api: true, version:
     end
 
     it "422s if no more pin attempts" do
-      ConfirmByPin::MAX_PIN_FAILURES.times { ConfirmByPin.call(contact_info: contact_info, pin: "whatever") }
+      ConfirmByPin.max_pin_failures.times { ConfirmByPin.call(contact_info: contact_info, pin: "whatever") }
 
       api_put :confirm_by_pin, right_user_token, parameters: {id: contact_info.id},
                                                  raw_post_data: {pin: 'blah'}.to_json

@@ -27,7 +27,7 @@ class SessionsCreate
   lev_handler
 
   uses_routine TransferAuthentications
-  uses_routine CreateUserFromOmniauthData
+  uses_routine CreateUser
   uses_routine TransferOmniauthData
   uses_routine ActivateUnclaimedUser
 
@@ -42,9 +42,19 @@ class SessionsCreate
     true
   end
 
+  # TODO compare incoming social authentication with login_info in cookies to make
+  # sure that the authentication matches the username or email that the user started
+  # with
+
   def handle
-    authentication =
-      Authentication.find_or_create_by(provider: @data.provider, uid: @data.uid.to_s)
+    authentication = Authentication.find_or_create_by(provider: @data.provider, uid: @data.uid.to_s)
+
+    # Refresh google login hints if needed
+    if @data.provider == 'google_oauth2'
+      authentication.login_hint = @data.email
+      authentication.save! if authentication.changed?
+    end
+
     authentication_user = authentication.user
     outputs[:authentication] = authentication
 
@@ -59,7 +69,9 @@ class SessionsCreate
       else
         return outputs[:status] = :new_signin_required if user_signin_is_too_old?
         return outputs[:status] = :same_provider \
-                                  if current_user.authentications.any?{|user_auth| user_auth.provider == authentication.provider}
+          if current_user.authentications.any? do |user_auth|
+            user_auth.provider == authentication.provider
+          end
         run(TransferAuthentications, authentication, current_user)
         run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
         status = :authentication_added
@@ -80,12 +92,12 @@ class SessionsCreate
         authentication_user = users_matching_oauth_data.first
         status = :transferred_authentication
       else
-        outcome = run(CreateUserFromOmniauthData, @data)
-        authentication_user = outcome.outputs[:user]
+        # TODO: complete this as part of the new user signup flow
+        # This "else" block will most likely be removed at that time
+        authentication_user = User.new
         run(TransferOmniauthData, @data, authentication_user)
         status = :new_social_user
       end
-
       run(TransferAuthentications, authentication, authentication_user)
       sign_in!(authentication_user)
     end

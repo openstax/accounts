@@ -1,0 +1,120 @@
+<% saved_role_sym = saved_role.downcase.to_sym %>
+
+<div class="ox-card login">
+
+  <h1 class="title"><%= t '.page_heading' %></h1>
+
+  <%= lev_form_for :profile, url: signup_profile_path do |f| %>
+
+    <% fh = FormHelper::One.new(f: f,
+                                limit_to: saved_role_sym,
+                                context: self,
+                                errors: @handler_result.try(:errors)) %>
+
+    <h3><%= t('.name_heading') %></h3>
+    <%= fh.text_field name: :first_name, value: current_user.first_name %>
+    <%= fh.text_field name: :last_name, value: current_user.last_name %>
+    <%= fh.text_field name: :suffix %>
+
+    <h3><%= t('.more_things_heading') %></h3>
+    <%= fh.text_field name: :phone_number, except: :student %>
+    <%= fh.text_field name: :school %>
+    <%= fh.text_field name: :url, except: :student %>
+    <%= fh.text_field name: :num_students, except: :student %>
+
+    <% if saved_role_sym != :student %>
+      <h3><%= t '.instructor_verification_heading' %></h3>
+      <p><%= t '.instructor_verification_help' %></p>
+
+      <%= f.select :using_openstax,  # TODO move into form helper
+                   options_for_select(
+                   [
+                     [t('.instructor_use.how'), ""],
+                     [t('.instructor_use.fully'), ''],
+                     [t('.instructor_use.recommended'), ''],
+                     [t('.instructor_use.piloting'), ''],
+                     [t('.instructor_use.interested'), ''],
+                     [t('.instructor_use.nope'), '']
+                    ], selected: "", disabled: "", hidden: "") %>
+
+
+      <p><%= t('.titles_interested') %></p>
+
+      <%# TODO: get this listing from Salesforce %>
+
+      <div class="subjects clearfix">
+        <%
+          {
+            hs_physics:           'High School Physics',
+            college_physics:      'College Physics',
+            ap_biology:           'Biology for AP® Courses',
+            concepts_biology:     'Concepts of Biology',
+            college_biology:      'College Biology',
+            principles_economics: 'Principles of Economics',
+            macro_economics:      'Macroeconomics',
+            micro_economics:      'Microeconomics',
+            intro_sociology:      'Introduction to Sociology',
+            anatomy_physiology:   'Anatomy & Physiology'
+          }.each do | key, title | %>
+            <div class="half-width">
+              <%= f.check_box("subjects[#{key}]", checked: instructor_has_selected_subject(key)) %>
+              <%= f.label "subjects[#{key}]", title %>
+            </div>
+          <% end %>
+      </div>
+
+    <% end %>
+
+    <% unless @contracts_not_required %>
+      <%
+        contracts = [FinePrint.get_contract(:general_terms_of_use),
+                     FinePrint.get_contract(:privacy_policy)]
+
+        contract_links = contracts.collect do |contract|
+          link_to contract.title, term_path(contract), remote: true
+        end
+      %>
+
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :i_agree %>
+          <%= t :".have_read_terms_and_agree_html",
+                terms_of_use: contract_links[0],
+                privacy_policy: contract_links[1]
+              %><br/>
+          <i><%= t :".policies_notice" %></i>
+        </label>
+      </div>
+
+      <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
+      <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
+    <% end %>
+
+    <div class="checkbox">
+      <label>
+        <%= f.check_box :newsletter, checked: true %>
+        <%= t :".keep_me_informed" %>
+      </label>
+    </div>
+
+    <%# TODO add "keep me informed" %>
+
+    <%= f.submit (t :".create_account"), id: "create_account_submit", class: 'primary' %>
+
+  <% end %>
+
+</div>
+
+
+<% unless @contracts_not_required %>
+  <script type="text/javascript">
+    Accounts.Ui.enableOnChecked('#create_account_submit', '#profile_i_agree');
+    $(document).ready(function() {
+      $('#show-more-fields').click(function(e) {
+        e.preventDefault();
+        $(this).hide();
+        $('#signup_title, #signup_suffix').parent().show();
+      })
+    });
+  </script>
+<% end %>

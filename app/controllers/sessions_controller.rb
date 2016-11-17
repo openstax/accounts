@@ -1,21 +1,24 @@
 # References:
 #   https://gist.github.com/stefanobernardi/3769177
+require 'ostruct'
 
 class SessionsController < ApplicationController
 
   include RequireRecentSignin
 
   skip_before_filter :authenticate_user!, :expired_password,
-                     only: [:new, :create, :failure, :destroy, :help]
+                     only: [:new, :lookup_login, :authenticate,
+                            :create, :failure, :destroy, :help]
 
-  skip_before_filter :finish_sign_up, only: [:destroy]
+  skip_before_filter :finish_sign_up, only: [:destroy]  # TODO used?
 
   before_filter :get_authorization_url, only: [:new, :create]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :create, :failure, :destroy, :help]
+                  only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :help, :redirect_back]
 
-  helper_method :last_signin_provider
+  helper_method :last_signin_provider  #  TODO still useful?
+  helper_method :get_login_info
 
   # Login form
   def new
@@ -33,6 +36,23 @@ class SessionsController < ApplicationController
     @application = Doorkeeper::Application.where(uid: params[:client_id]).first
   end
 
+  def lookup_login
+    handle_with(SessionsLookupLogin,
+                success: lambda do
+                  set_login_info(username_or_email: @handler_result.outputs.username_or_email,
+                                 names: @handler_result.outputs.names,
+                                 providers: @handler_result.outputs.providers.to_hash)
+                  redirect_to :authenticate
+                end,
+                failure: lambda do
+                  render :new
+                end)
+  end
+
+  def authenticate
+    redirect_to root_path if signed_in?
+  end
+
   # Handle OAuth callback (actual login)
   # May add authentication method (OAuth provider) to account
   def create
@@ -48,7 +68,6 @@ class SessionsController < ApplicationController
       user_state: self,
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]
-
         case @handler_result.outputs[:status]
         when :new_signin_required
           reauthenticate_user!
@@ -71,7 +90,7 @@ class SessionsController < ApplicationController
           redirect_to action: :redirect_back
         when :new_social_user
           security_log :sign_in_successful, authentication_id: authentication.id
-          redirect_to signup_social_path
+          redirect_to signup_profile_path
         when :authentication_added
           security_log :authentication_created,
                        authentication_id: authentication.id,
@@ -133,21 +152,25 @@ class SessionsController < ApplicationController
   def failure
     flash.now[:alert] = case params[:message]
     when 'cannot_find_user'
-      I18n.t :"controllers.sessions.no_account_for_username_or_email"
+      I18n.t :"errors.no_account_for_username_or_email"
     when 'multiple_users'
       I18n.t :"controllers.sessions.several_accounts_for_one_email"
     when 'bad_password'
       I18n.t :"controllers.sessions.incorrect_password"
     when 'too_many_login_attempts'
       I18n.t :"controllers.sessions.too_many_login_attempts.content",
-             reset_password: "<a href=\"#{signin_help_url}\">#{
+             reset_password: "<a href=\"#{login_help_url}\">#{
                                 I18n.t :"controllers.sessions.too_many_login_attempts.reset_password"
                              }</a>".html_safe
     else
       params[:message]
     end
 
-    render 'new'
+    if params[:message] == 'bad_password'
+      render 'authenticate'
+    else
+      render 'new'
+    end
   end
 
   # Cannot login/forgot password

@@ -20,7 +20,7 @@ class StaticPagesController < ApplicationController
       redirect_to profile_path
     else
       store_url # needed for happy login flow, authenticate_user! does it too
-      redirect_to signin_path
+      redirect_to login_path
     end
   end
 
