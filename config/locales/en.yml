@@ -343,7 +343,7 @@ en:
       name_heading: Name
       instructor_verification_heading: Instructor verification
       instructor_verification_help: >-
-        We need information to help verify you're an instructor and give you access
+        We need information to help verify you’re an instructor and give you access
         to materials like test banks and OpenStax Tutor course setup.
       instructor_use:
         how: How are you using OpenStax?
@@ -352,6 +352,13 @@ en:
         piloting: Piloting the book
         interested: Interested in using OpenStax in the future
         nope: Not using OpenStax
+      # %{terms_of_use}     a hyperlink to text of the Terms of Use.
+      # %{privacy_policy}   a hyperlink to text of the Privacy Policy.
+      # Labels of both hyperlinks are English titles of appropriate documents.
+      # There is no ability to translate titles, as the documents themselves
+      # are not translatable.
+      have_read_terms_and_agree_html: >-
+        I agree to the %{terms_of_use} and the %{privacy_policy}.
       first_name: First Name
       last_name: Last Name
       suffix: Suffix
