@@ -86,10 +86,7 @@ module ApplicationHelper
   end
 
   def standard_field(options={})
-
-    raise IllegalArgument, "Must specify a :type" if !options[:type]
-    raise IllegalArgument, "Must specify a :form" if !options[:form]
-    raise IllegalArgument, "Must specify a :name" if !options[:name]
+    %i{type form name}.each{ |key| raise IllegalArgument, "Must specify a :#{key}" if !options[key] }
 
     options[:options] ||= {}
     hide = options[:options].delete(:hide)
