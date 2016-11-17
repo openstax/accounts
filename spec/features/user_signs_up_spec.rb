@@ -10,7 +10,6 @@ feature 'User signs up', js: true do
   scenario 'happy path success with password' do
     arrive_from_app
     click_sign_up
-
     complete_signup_email_screen("Instructor","bob@bob.edu")
     complete_signup_verify_screen(pass: true)
     complete_signup_password_screen('password')
@@ -25,7 +24,6 @@ feature 'User signs up', js: true do
       newsletter: true,
       agree: true
     )
-
     expect_back_at_app
   end
 
@@ -64,15 +62,18 @@ feature 'User signs up', js: true do
     scenario 'failure because email in use' do
       create_email_address_for(create_user('user'), "bob@bob.edu")
       visit signup_path
-      complete_signup_email_screen("Instructor","bob@bob.edu")
-      expect(page).to have_content 'email_in_use'  # TODO fix when make proper alert
+      select 'Instructor', from: "signup_role"
+      fill_in (t :"signup.start.email"), with: "bob@bob.edu"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content 'Email already in use'
     end
 
     scenario 'failure because suspected non-school email then success' do
       visit signup_path
-      complete_signup_email_screen("Instructor","bob@gmail.com")
-      skip # TODO Nathan should this be a JS check to see that email is not @blah.edu?
-      # checking in BE might be a waste
+      select 'Instructor', from: "signup_role"
+      fill_in (t :"signup.start.email"), with: "bob@gmail.com"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content 'If this is your school email, click Next'
     end
 
     scenario 'failure because email blank' do

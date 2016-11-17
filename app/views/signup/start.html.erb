@@ -1,6 +1,18 @@
+<% @hide_layout_errors = true %>
 <% @hide_session_info = true %>
+<% content_for :head do %>
+  <%= javascript_include_tag  "signup" %>
+<% end %>
 
-<div class="ox-card login">
+<%
+signup_roles = {
+  initial: t('.iama'),
+  instructor: t('.instructor'),
+  student: t('.student')
+}
+%>
+
+<div class="ox-card signup">
 
   <h1 class="title"><%= t '.page_heading' %></h1>
 
@@ -10,11 +22,24 @@
                                 context: self,
                                 errors: @handler_result.try(:errors)) %>
     <%# TODO put select in form helper %>
-    <%# TODO put select options in translations %>
-    <%= f.select :role, options_for_select(%w(Instructor Student).map{|role| [role, role]},
-                        [saved_role].compact) %>
-    <%= fh.text_field name: :email, value: saved_email %>
-    <%= f.submit (t :".next"), class: 'btn btn-primary' %>
+
+    <%= f.select :role, options_for_select(signup_roles.invert.to_a, saved_role) %>
+
+    <div class="email-input-group">
+      <div class="audience-help" data-audience="instructor">
+        <h4><%= t '.email' %></h4>
+        <p>
+          <%= t '.teacher_school_email' %>
+        </p>
+      </div>
+
+      <%= fh.text_field name: :email, value: saved_email %>
+      <p class="edu-warning">
+        <%= t '.teacher_school_email_warning' %>
+      </p>
+      <%= render(partial: "layouts/attention") %>
+    </div>
+    <%= f.submit (t :".next") %>
   <% end %>
 
 </div>

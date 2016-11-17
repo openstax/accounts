@@ -9,6 +9,7 @@ Rails.application.config.assets.precompile += %w(
   admin.css
   admin.js
   profile.js
+  signup.js
   remote-access.js
   bootstrap-editable/loading.gif
   bootstrap-editable/clear.png

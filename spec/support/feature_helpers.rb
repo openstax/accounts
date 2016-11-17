@@ -255,6 +255,7 @@ def complete_login_username_or_email_screen(username_or_email)
   expect(page).to have_no_missing_translations
   click_button (t :"sessions.new.next")
   expect(page).to have_no_missing_translations
+
 end
 
 def complete_login_password_screen(password)
@@ -267,19 +268,22 @@ end
 
 def complete_signup_email_screen(role, email)
   @signup_email = email
+  expect(page).to have_content(t :"signup.start.page_heading")
   select role, from: "signup_role"
   fill_in (t :"signup.start.email"), with: email
-  expect(page).to have_content(t :"signup.start.page_heading")
   expect(page).to have_no_missing_translations
-  click_button (t :"signup.start.next")
+  click_button(t :"signup.start.next")
+  click_button(t :"signup.start.next") unless email =~ /\.edu$/
   expect(page).to have_no_missing_translations
+  expect(page).to have_content(t :"signup.verify_email.page_heading_pin")
 end
 
 def complete_signup_verify_screen(pin: nil, pass: nil)
-  until (sci = SignupContactInfo.find_by(value: @signup_email)) do
+  tries = 0
+  while (tries+=1) < 100 && (sci = SignupContactInfo.find_by(value: @signup_email)).nil? do
     sleep(0.1) # transaction from earlier step may not have committed
   end
-
+  fail("unable to find email #{@signup_email}.  Did creation step fail silently?") if sci.nil?
   if pin.nil?
     raise "Must set either `pin` or `pass`" if pass.nil?
     pin = sci.confirmation_pin
@@ -355,4 +359,3 @@ def complete_terms_screens
   find(:css, '#agreement_i_agree').set(true)
   click_button (t :"terms.pose.agree")
 end
-

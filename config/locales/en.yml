@@ -286,6 +286,11 @@ en:
     start:
       email: Email
       next: Next
+      iama: I am a
+      instructor: Instructor
+      student: Student
+      email_in_use: Email already in use.  Are you trying to <a href="%{signin_url}">sign in</a>?
+      blank: cannot be left blank
       already_have_an_account:
         # %{link}   a hyperlink pointing to sign in page. Label of the link
         #           is defined by the .sign_in key.
@@ -306,8 +311,14 @@ en:
       sign_up_with_google: Sign up with Google
       sign_up_with_password: Sign up with a password
       sign_up_with_twitter: Sign up with Twitter
-      email_in_use:
-        # content_html: Email already in use.  Are you trying to %{link}?
+      teacher_school_email: >-
+        To access faculty-only products, provide your school email address
+        so we can ensure you are an instructor. You can always add an alternate
+        email later.
+      teacher_school_email_warning: >-
+        If this is your school email, click Next. If this is not your school email,
+        please edit the above address, then click Next.
+
         # sign_in: sign in
 
     verify_email:
