@@ -20,6 +20,8 @@
 # :authentication_added         if the user is adding an authentication from the profile page
 # :no_action                    if the user is adding an authentication from the profile page that is already linked to them
 #
+# TODO clean up this comment
+#
 class SessionsCreate
 
   include RequireRecentSignin
@@ -27,7 +29,6 @@ class SessionsCreate
   lev_handler
 
   uses_routine TransferAuthentications
-  uses_routine CreateUser
   uses_routine TransferOmniauthData
   uses_routine ActivateUnclaimedUser
 
@@ -42,67 +43,89 @@ class SessionsCreate
     true
   end
 
-  # TODO compare incoming social authentication with login_info in cookies to make
-  # sure that the authentication matches the username or email that the user started
-  # with
-
   def handle
-    authentication = Authentication.find_or_create_by(provider: @data.provider, uid: @data.uid.to_s)
+    outputs[:status] =
+      if signing_up?
+        handle_during_signup
+      elsif logging_in?
+        handle_during_login
+      elsif signed_in?
+        handle_while_logged_in
+      else
+        fatal_error(code: :unknown_callback_state)
+      end
+  end
 
-    # Refresh google login hints if needed
-    if @data.provider == 'google_oauth2'
-      authentication.login_hint = @data.email
-      authentication.save! if authentication.changed?
+  def handle_during_login
+    # The incoming authentication must match an existing user and match the
+    # authentications corresponding to the username/email provided during login.
+
+    if (
+         authentication_user.nil? ||
+         options[:login_providers][authentication.provider].nil? ||
+         options[:login_providers][authentication.provider]['uid'] != authentication.uid
+       )
+      return :mismatched_authentication
     end
 
-    authentication_user = authentication.user
-    outputs[:authentication] = authentication
+    sign_in!(authentication_user)
+    return :returning_user
+  end
 
-    if signed_in? && authentication_user == current_user
-      status = :no_action
+  def handle_during_signup
+    # Before we proceed with the normal sign up flow, we need to check if the
+    # incoming authentication is connected to an existing user (to prevent creating
+    # a duplicate account).  We can detect this in two ways: if the authentication
+    # is already in use by an existing user OR if the authentication's email is
+    # in use by an existing user.
 
-    elsif signed_in?
-      # This is from adding authentications on the profile screen
+    if authentication_user.present? || users_matching_oauth_data.any?
+      # TODO: copy over SCI to old user, copy over incoming authentication to older user
+      # if not already there, sign in the old, redirect them back as if they had just signed in
 
-      if authentication_user && authentication_user.is_activated?
-        status = :authentication_taken
-      else
-        return outputs[:status] = :new_signin_required if user_signin_is_too_old?
-        return outputs[:status] = :same_provider \
-          if current_user.authentications.any? do |user_auth|
-            user_auth.provider == authentication.provider
-          end
-        run(TransferAuthentications, authentication, current_user)
-        run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
-        status = :authentication_added
-      end
-
-    elsif authentication_user.present?
-      sign_in!(authentication_user)
-      status = :returning_user
-
+      # closest existing status:
+      #           outputs[:status] = :transferred_authentication
+      raise "not yet implemented"
     else
-      # No authentication user, so we need to find or create a user to attach to
+      # This is the normal signup flow.  For password signups, we need to find
+      # the existing user; for social, we need to make a new one.  Then we attach
+      # the authentication.
 
       if authentication.provider == 'identity'
         identity = Identity.find(authentication.uid)
         authentication_user = identity.user
-        status = :new_password_user
-      elsif users_matching_oauth_data.size == 1
-        authentication_user = users_matching_oauth_data.first
-        status = :transferred_authentication
+        status = :new_password_user  # TODO can this merge with new_social_user?
       else
-        # TODO: complete this as part of the new user signup flow
-        # This "else" block will most likely be removed at that time
         authentication_user = User.new
         run(TransferOmniauthData, @data, authentication_user)
         status = :new_social_user
       end
+
+      run(TransferSignupContactInfo,
+          signup_contact_info: options[:saved_signup_contact_info],
+          user: authentication_user)
+
       run(TransferAuthentications, authentication, authentication_user)
       sign_in!(authentication_user)
+      return status
     end
+  end
 
-    outputs[:status] = status
+  def handle_while_logged_in
+    # Normally this happens when adding authentications on the profile screen.
+
+    return :no_action if authentication_user == current_user
+
+    return :authentication_taken if authentication_user && authentication_user.is_activated?
+
+    return :same_provider \
+      if current_user.authentications.map(&:provider).include?(authentication.provider)
+
+    return :new_signin_required if user_signin_is_too_old?
+
+    run(TransferAuthentications, authentication, current_user)
+    run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
+    return :authentication_added
   end
 
   protected
@@ -128,19 +151,42 @@ class SessionsCreate
 
   def users_matching_oauth_data
     # We find potential matching users by comparing their email addresses to
-    # what comes back in the OAuth data.
-    #
-    # Note: we trust that Google/FB/Twitter omniauth strategies
-    #       will only give us verified emails.
+    # what comes back in the OAuth data.  We trust that Google/FB/ omniauth
+    # strategies will only give us verified emails.
     #
     #   true for Google (omniauth strategy checks that the emails are verified)
     #   true for FB (their API only returns verified emails)
-    #   true for Twitter (they don't return any emails)
 
     @users_matching_oauth_data ||= EmailAddress.where(value: @data.email)
                                                .verified
                                                .with_users
                                                .map(&:user)
+  end
+
+  def authentication
+    outputs[:authentication] ||=
+      Authentication.find_or_create_by(provider: @data.provider, uid: @data.uid.to_s)
+                    .tap do |authentication|
+
+        # Refresh google login hints if needed
+        if @data.provider == 'google_oauth2'    # TODO spec this
+          authentication.login_hint = @data.email
+          authentication.save! if authentication.changed?
+        end
+
+      end
+  end
+
+  def authentication_user
+    @authentication_user ||= authentication.user
+  end
+
+  def signing_up?
+    options[:saved_signup_contact_info].present?
+  end
+
+  def logging_in?
+    options[:login_providers].present?
   end
 
 end

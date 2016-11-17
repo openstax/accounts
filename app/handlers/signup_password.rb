@@ -31,10 +31,6 @@ class SignupPassword
         password_confirmation: signup_params.password_confirmation,
         user_id:               outputs.user.id
     )
-
-    run(TransferSignupContactInfo,
-        signup_contact_info: options[:signup_contact_info],
-        user: outputs.user)
   end
 
 end

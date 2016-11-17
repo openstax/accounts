@@ -8,6 +8,7 @@ module SignUpState
     @saved_signup_contact_info ||= SignupContactInfo.find_by(id: session[:signup].try(:[],'ci_id'))
   end
 
+  # TODO this name is too generic; saved_signup_email or something would be better
   def saved_email
     @saved_email ||= saved_signup_contact_info.try(:value)
   end

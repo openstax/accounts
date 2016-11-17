@@ -10,7 +10,11 @@ class TransferOmniauthData
     # This routine is not called for identity, so error out
     raise Unexpected if data.provider == 'identity'
 
-    user.username = data.nickname.gsub(/\W/, '').underscore if user.username.blank?
+    # Usernames are deprecated, so do NOT set a username based on the data.
+    # Setting a username would cause it to be visible on profile pages without
+    # way for it to be edited.  We can always bring usernames back to life later.
+
+    # TODO write a spec that proves that usernames are not set by this routine.
 
     if user.first_name.blank?
       user.first_name = data.first_name.present? ? data.first_name : guessed_first_name(data.name)
@@ -19,6 +23,9 @@ class TransferOmniauthData
     if user.last_name.blank?
       user.last_name = data.last_name.present?  ? data.last_name  : guessed_last_name(data.name)
     end
+
+    user.save
+    transfer_errors_from(user, {type: :verbatim}, true)
 
     run(AddEmailToUser, data.email, user, {already_verified: true})
   end

@@ -28,11 +28,6 @@ RSpec.describe SignupPassword, type: :handler do
       expect{the_call}.not_to change(Identity, :count)
     end
 
-    it "doesn't create a ContactInfo or destroy the SignupContactInfo" do
-      expect{the_call}.not_to change(ContactInfo, :count)
-      expect(signup_contact_info).not_to be_destroyed
-    end
-
     it "has errors for password fields" do
       outcome = the_call
       expect(outcome.errors).to have_offending_input(:password)
@@ -66,12 +61,6 @@ RSpec.describe SignupPassword, type: :handler do
       user = outcome.outputs.user
 
       expect(user.identity).to be_present
-
-      expect(user.contact_infos.size).to eq 1
-      expect(user.contact_infos.first.value).to eq "bob@armstrong.com"
-      expect(user.contact_infos.first).to be_verified
-
-      expect(signup_contact_info).to be_destroyed
     end
   end
 

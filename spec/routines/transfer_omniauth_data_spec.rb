@@ -3,7 +3,7 @@ require 'rails_helper'
 describe TransferOmniauthData do
 
   context 'when names are not blank' do
-    it 'does not update' do
+    it 'does not update but does persist' do
       user = FactoryGirl.build :user
       names = user.first_name, user.last_name
       data = OmniauthData.new({provider: 'twitter', uid: '12345678', info: {
@@ -13,6 +13,7 @@ describe TransferOmniauthData do
       TransferOmniauthData.call(data, user)
       expect(user.first_name).to eq(names.first)
       expect(user.last_name).to eq(names.last)
+      expect(user).to be_persisted
     end
   end
 
@@ -137,7 +138,6 @@ describe TransferOmniauthData do
       }
       data = OmniauthData.new(auth_hash)
       TransferOmniauthData.call(data, user)
-      expect(user.username).to eq('user_n_one')
       expect(user.first_name).to eq('User')
       expect(user.last_name).to eq('One')
       expect(user.contact_infos.length).to eq(1)
