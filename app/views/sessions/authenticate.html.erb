@@ -34,7 +34,7 @@
     <% end %>
     <%= lev_form_for :login, url: '/auth/identity/callback' do |f| %>
 
-      <%= f.password_field :password, placeholder: t(".password"), class: 'wide'  %>
+      <%= f.password_field :password, placeholder: t(".password")  %>
 
       <%= f.hidden_field :username_or_email, value: username_or_email %>
 
