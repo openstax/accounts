@@ -262,8 +262,7 @@ en:
       # There is no ability to translate titles, as the documents themselves
       # are not translatable.
       have_read_terms_and_agree_html: >-
-        I have read the %{terms_of_use} and the %{privacy_policy} and I agree to
-        be bound by their terms.
+        I agree to the %{terms_of_use} and the %{privacy_policy}.
       last_name: Last Name *
       might_already_have_an_account: I might already have an account.
       password: Password *
@@ -342,6 +341,17 @@ en:
     profile:
       page_heading: Complete your account
       name_heading: Name
+      instructor_verification_heading: Instructor verification
+      instructor_verification_help: >-
+        We need information to help verify you're an instructor and give you access
+        to materials like test banks and OpenStax Tutor course setup.
+      instructor_use:
+        how: How are you using OpenStax?
+        fully: Fully adopted and using it as the primary textbook
+        recommended: Recommending the book – my students buy a different book
+        piloting: Piloting the book
+        interested: Interested in using OpenStax in the future
+        nope: Not using OpenStax
       first_name: First Name
       last_name: Last Name
       suffix: Suffix
@@ -352,9 +362,8 @@ en:
       num_students: Number of students per semester
       using_openstax: Already using OpenStax?
       create_account: Create Account
-      titles_heading: OpenStax titles I'm interested in
-      titles_instructions: Check all that apply.
-      keep_me_informed: Keep me informed about OpenStax.
+      titles_interested: Select all OpenStax titles that interest you
+      keep_me_informed: Send me news about new titles, resources, and related information.
 
   static_pages:
     copyright:

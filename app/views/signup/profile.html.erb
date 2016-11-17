@@ -23,18 +23,22 @@
     <%= fh.text_field name: :num_students, except: :student %>
 
     <% if saved_role_sym != :student %>
+      <h3><%= t '.instructor_verification_heading' %></h3>
+      <p><%= t '.instructor_verification_help' %></p>
+
       <%= f.select :using_openstax,  # TODO move into form helper
                    options_for_select(
-                    [
-                      ["Already using OpenStax?", ""],
-                      ["Yes, I am using OpenStax as a primary resource in my courses", "primary"],
-                      ["Yes, I am recommending OpenStax to my students as an optional resource", "optional"],
-                      ["No, I'm not using OpenStax in my courses yet", "no"]
+                   [
+                     [t('.instructor_use.how'), ""],
+                     [t('.instructor_use.fully'), ''],
+                     [t('.instructor_use.recommended'), ''],
+                     [t('.instructor_use.piloting'), ''],
+                     [t('.instructor_use.interested'), ''],
+                     [t('.instructor_use.nope'), '']
                     ], selected: "", disabled: "", hidden: "") %>
 
 
-      <h3><%= t('.titles_heading') %></h3>
-      <p><%= t('.titles_instructions') %></p>
+      <p><%= t('.titles_interested') %></p>
 
       <%# TODO: get this listing from Salesforce %>
 
