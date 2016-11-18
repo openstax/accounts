@@ -15,8 +15,8 @@ module SignUpState
 
   def save_signup_state(role:, signup_contact_info_id:)
     session[:signup] = {
-      role: role,
-      ci_id: signup_contact_info_id
+      'role' => role,
+      'ci_id' => signup_contact_info_id
     }
   end
 

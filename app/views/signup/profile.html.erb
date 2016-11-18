@@ -1,5 +1,3 @@
-<% @hide_layout_errors = true %>
-
 <% saved_role_sym = saved_role.downcase.to_sym %>
 
 <div class="ox-card login">
@@ -25,20 +23,46 @@
     <%= fh.text_field name: :num_students, except: :student %>
 
     <% if saved_role_sym != :student %>
+      <h3><%= t '.instructor_verification_heading' %></h3>
+      <p><%= t '.instructor_verification_help' %></p>
+
       <%= f.select :using_openstax,  # TODO move into form helper
                    options_for_select(
-                    [
-                      ["Already using OpenStax?", ""],
-                      ["Yes, I am using OpenStax as a primary resource in my courses", "primary"],
-                      ["Yes, I am recommending OpenStax to my students as an optional resource", "optional"],
-                      ["No, I'm not using OpenStax in my courses yet", "no"]
+                   [
+                     [t('.instructor_use.how'), ""],
+                     [t('.instructor_use.fully'), 'fully'],
+                     [t('.instructor_use.recommended'), 'recommended'],
+                     [t('.instructor_use.piloting'), 'pioloting'],
+                     [t('.instructor_use.interested'), 'interested'],
+                     [t('.instructor_use.nope'), 'no']
                     ], selected: "", disabled: "", hidden: "") %>
 
 
-      <h3><%= t('.titles_heading') %></h3>
-      <p><%= t('.titles_instructions') %></p>
+      <p><%= t('.titles_interested') %></p>
 
-      TODO add titles multi select
+      <%# TODO: get this listing from Salesforce %>
+
+      <div class="subjects clearfix">
+        <%
+          {
+            hs_physics:           'High School Physics',
+            college_physics:      'College Physics',
+            ap_biology:           'Biology for AP® Courses',
+            concepts_biology:     'Concepts of Biology',
+            college_biology:      'College Biology',
+            principles_economics: 'Principles of Economics',
+            macro_economics:      'Macroeconomics',
+            micro_economics:      'Microeconomics',
+            intro_sociology:      'Introduction to Sociology',
+            anatomy_physiology:   'Anatomy & Physiology'
+          }.each do | key, title | %>
+            <div class="half-width">
+              <%= f.check_box("subjects[#{key}]", checked: instructor_has_selected_subject(key)) %>
+              <%= f.label "subjects[#{key}]", title %>
+            </div>
+          <% end %>
+      </div>
+
     <% end %>
 
     <% unless @contracts_not_required %>
