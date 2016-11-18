@@ -12,23 +12,7 @@ class PushSalesforceLead
     # Get email with try -- should be there, but who knows
     email = user.contact_infos.verified.first.try(:value)
 
-    adoption_status =
-    case using_openstax
-    when /something/
-      "Confirmed Adoption Won"
-    when /something/
-      "Piloting book this semester"
-    when /something/
-      "Confirmed Will Recommend"
-    when /something/
-      "High Interest in Adopting"
-    when /something/
-      "Not using"
-    else
-      nil
-    end
-
-    source = "Instructor" == role ? "OSC Faculty" : "OSC User"
+    source = role.match(/instructor/i) ? "OSC Faculty" : "OSC User"
 
     lead = Salesforce::Lead.new(
       first_name: user.first_name,
@@ -41,20 +25,22 @@ class PushSalesforceLead
       newsletter_opt_in: newsletter,    # set both of these
       phone: phone_number,
       website: url,
-      adoption_status: adoption_status,
-      num_students: num_students
+      adoption_status: using_openstax,
+      num_students: num_students.to_i
     )
 
     lead.save
 
-    handle_errors(lead, user, role)
+    if lead.errors.any?
+      handle_errors(lead, user, role)
+    else
+      Rails.logger.info("PushSalesforceLead: pushed #{lead.id} for user #{user.id}")
+    end
 
     # TODO write spec that SF User Missing makes BG job retry and sends email
   end
 
   def handle_errors(lead, user, role)
-    return if lead.errors.none?
-
     message = "PushSalesforceLead error! #{lead.inspect}; User: #{user.id}; " \
               "Role: #{role}; Error: #{lead.errors.full_messages}"
 

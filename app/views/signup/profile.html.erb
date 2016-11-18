@@ -30,11 +30,11 @@
                    options_for_select(
                    [
                      [t('.instructor_use.how'), ""],
-                     [t('.instructor_use.fully'), 'fully'],
-                     [t('.instructor_use.recommended'), 'recommended'],
-                     [t('.instructor_use.piloting'), 'pioloting'],
-                     [t('.instructor_use.interested'), 'interested'],
-                     [t('.instructor_use.nope'), 'no']
+                     [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
+                     [t('.instructor_use.recommended'), 'Confirmed Will Recommend'],
+                     [t('.instructor_use.piloting'), 'Piloting book this semester'],
+                     [t('.instructor_use.interested'), 'High Interest in Adopting'],
+                     [t('.instructor_use.nope'), 'Not using']
                     ], selected: "", disabled: "", hidden: "") %>
 
 
@@ -96,8 +96,6 @@
         <%= t :".keep_me_informed" %>
       </label>
     </div>
-
-    <%# TODO add "keep me informed" %>
 
     <%= f.submit (t :".create_account"), id: "create_account_submit", class: 'primary' %>
 

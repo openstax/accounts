@@ -86,6 +86,7 @@ class SignupController < ApplicationController
                   role: saved_role,
                   success: lambda do
                     clear_signup_state
+                    # TODO send faculty (or admin who selected faculty) to verification screen
                     redirect_back
                   end,
                   failure: lambda do
