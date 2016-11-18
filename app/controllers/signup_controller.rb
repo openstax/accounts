@@ -101,7 +101,6 @@ class SignupController < ApplicationController
       handle_with(SignupSocial,
                   contracts_required: !contracts_not_required,
                   success: lambda do
-                    set_last_signin_provider(current_user.authentications.first.provider)
                     security_log :sign_up_successful
                     redirect_back
                   end,
