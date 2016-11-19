@@ -364,3 +364,14 @@ def complete_terms_screens
   find(:css, '#agreement_i_agree').set(true)
   click_button (t :"terms.pose.agree")
 end
+
+def mock_current_user(user)
+  # The following mocks are a little faster than:
+  #   visit '/'
+  #   complete_login_username_or_email_screen(user.username)
+  #   complete_login_password_screen('password')
+  # when real recent logins don't matter
+
+  allow_any_instance_of(ActionController::Base).to receive(:current_user) { user }
+  allow_any_instance_of(SignInState).to receive(:current_user) { user }
+end

@@ -1,17 +1,24 @@
 require 'rails_helper'
 
-xfeature 'User manages emails', js: true do
-  before(:each) do
-    user = create_user('user')
-    create_email_address_for(user, 'user@unverified.com', SecureRandom.hex(32))
-    visit '/signin'
-    signin_as 'user'
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+feature 'User manages emails', js: true do
+  let(:verified_emails) { ["one@verified.com"] }
+  let(:unverified_emails) { [] }
 
+  let(:user) {
+    create_user('user').tap do |user|
+      verified_emails.each do |verified_email|
+        create_email_address_for(user, verified_email)
+      end
+
+      unverified_emails.each do |unverified_email|
+        create_email_address_for(user, unverified_email, SecureRandom.hex(32))
+      end
+    end
+  }
+
+  before(:each) do
+    mock_current_user(user)
     visit '/profile'
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"users.edit.email_addresses")
   end
 
   context 'create' do
@@ -46,19 +53,44 @@ xfeature 'User manages emails', js: true do
   end
 
   context 'destroy' do
-    scenario 'success' do
-      within(:css, '.email-entry') {
-        find('.email').click
-        find('.delete').click
-      }
-      within(:css, '.popover-content') {
-        find('.confirm-dialog-btn-confirm').click
-      }
-      expect(page).to_not have_content('user@unverified.com')
+    context 'when there are two emails' do
+      let(:verified_emails) { ['one@verified.com', 'two@verified.com']}
+
+      scenario 'one of the emails can be deleted' do
+        email = nil
+
+        within(:css, '.email-entry:first-of-type') {
+          email = find('.email').text
+          find('.email').click
+          find('.delete').click
+        }
+
+        within(:css, '.popover-content') {
+          find('.confirm-dialog-btn-confirm').click
+        }
+        expect(page).to_not have_content(email)
+      end
+    end
+
+    context 'when there is only one email' do
+      scenario 'that email cannot be deleted' do
+        within(:css, '.email-entry:first-of-type') {
+          find('.email').click
+          find('.delete').click
+        }
+
+        within(:css, '.popover-content') {
+          find('.confirm-dialog-btn-confirm').click
+        }
+        expect(page).to_not have_content('user@unverified.com')
+      end
     end
   end
 
   context 'resend_confirmation' do
+    let(:verified_emails) { [] }
+    let(:unverified_emails) { ['user@unverified.com'] }
+
     scenario 'success' do
       click_button (t :"helpers.profile.click_to_verify")
       expect(page).to have_no_missing_translations

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
+feature 'User gets blocked after multiple failed sign in attempts', js: true do
   let(:max_attempts_per_user) { 2 }
   let(:max_attempts_per_ip)   { max_attempts_per_user + 3 }
 
@@ -34,7 +34,8 @@ xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
         click_link (t :"layouts.application_header.sign_out")
 
         log_in_correctly_with_username(password: '1234abcd')
-        expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+        # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+        expect_profile_page
       end
     end
 
@@ -57,7 +58,8 @@ xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
-          expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+          expect_profile_page
+          # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
     end
@@ -87,7 +89,8 @@ xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
         click_link (t :"layouts.application_header.sign_out")
 
         log_in_correctly_with_email(password: '1234abcd')
-        expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+        expect_profile_page
+        # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
       end
     end
 
@@ -111,13 +114,22 @@ xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_email
-          expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+          expect_profile_page
+          # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
     end
   end
 
-  context 'with random usernames' do
+  xcontext 'with random usernames' do
+    # TODO the spec as written doesn't work because a bad username is not something we
+    # take special note of any more (since we only test password/social auth after
+    # user has already gotten past the username/email screen).  We could potentially
+    # add a security_log event to detect when a bad username is entered and then test
+    # that the IP address gets locked out here.
+    #
+    # If we do bring this spec back, we will need to update log_in_bad_everything
+    # because that method expects to see the password page even tho the username is bad.
     scenario 'getting their ip unblocked after 1 hour' do
       with_forgery_protection do
         create_user 'user'
@@ -137,7 +149,7 @@ xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
-          expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+          expect_profile_page
         end
       end
     end
@@ -145,11 +157,8 @@ xfeature 'User gets blocked after multiple failed sign in attempts', js: true do
 
   def log_in(username_or_email:, password:)
     visit '/'
-    expect_sign_in_page
-    fill_in (t :"sessions.new.username_or_email"), with: username_or_email
-    click_button (t :"sessions.new.next")
-    fill_in (t :"sessions.new.password"), with: password
-    expect(page).to have_no_missing_translations
+    complete_login_username_or_email_screen(username_or_email)
+    complete_login_password_screen(password)
   end
 
   def log_in_good_username_bad_password
