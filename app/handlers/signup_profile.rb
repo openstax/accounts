@@ -4,16 +4,29 @@ class SignupProfile
 
   def self.include_common_params_in(paramifier)
     paramifier.instance_exec(&(proc {
+      # All children of this handler should know about all of
+      # these fields (because all may be used in this parent
+      # handler), but only some should always be required;
+      # some children will require specific ones in addition
+
       attribute :first_name, type: String
-      validates :first_name, presence: true
       attribute :last_name, type: String
-      validates :last_name, presence: true
       attribute :suffix, type: String
       attribute :school, type: String
-      validates :school, presence: true
+      attribute :phone_number, type: String
+      attribute :subjects, type: Object
+      attribute :url, type: String
+      attribute :num_students, type: Integer
+      attribute :using_openstax, type: String
       attribute :newsletter, type: boolean
       attribute :contract_1_id, type: Integer
       attribute :contract_2_id, type: Integer
+
+      # All children must require these fields:
+
+      validates :first_name, presence: true
+      validates :last_name, presence: true
+      validates :school, presence: true
     }))
   end
 
@@ -41,7 +54,7 @@ class SignupProfile
       run(AgreeToTerms, profile_params.contract_2_id, caller, no_error_if_already_signed: true)
     end
 
-    if push_lead && Settings::Salesforce.push_leads_enabled # TODO why is the cached setting sometimes wrong
+    if push_lead && Settings::Salesforce.push_leads_enabled
       # TODO: make sure the subject keys are in the correct form for Salesforce, then
       # concatenate the selected ones into the Salesforce format, e.g.:
       # "Macro Econ;Micro Econ;US History;AP Macro Econ"
@@ -62,6 +75,7 @@ class SignupProfile
   end
 
   def push_lead
+    # disable by default, override in subclasses to enable
     false
   end
 

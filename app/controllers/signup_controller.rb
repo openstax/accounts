@@ -51,7 +51,7 @@ class SignupController < ApplicationController
   end
 
   def check_pin
-
+    # TODO this is OBE - toast it
   end
 
   def check_token
@@ -75,8 +75,10 @@ class SignupController < ApplicationController
       handler = case saved_role
       when /student/i
         SignupProfileStudent
-      else
+      when /instructor/i
         SignupProfileInstructor
+      else
+        SignupProfileOther
       end
 
       handle_with(handler,

@@ -13,7 +13,7 @@ module FormHelper
     end
 
     def text_field(name:, label: nil, value: nil, type: nil, autofocus: false, except: nil, only: nil)
-      if only.present? && exception.present?
+      if only.present? && except.present?
         raise "Can only set one of `except` or `only`"
       elsif except.present?
         return if [except].flatten.compact.include?(@limit_to)

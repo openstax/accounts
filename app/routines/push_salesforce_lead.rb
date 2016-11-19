@@ -12,7 +12,7 @@ class PushSalesforceLead
     # Get email with try -- should be there, but who knows
     email = user.contact_infos.verified.first.try(:value)
 
-    source = role.match(/instructor/i) ? "OSC Faculty" : "OSC User"
+    source = (role || "").match(/instructor/i) ? "OSC Faculty" : "OSC User"
 
     lead = Salesforce::Lead.new(
       first_name: user.first_name,
