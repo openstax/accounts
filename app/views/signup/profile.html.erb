@@ -1,4 +1,4 @@
-<% saved_role_sym = saved_role.downcase.to_sym %>
+<% saved_role_sym = (saved_role || "Other").downcase.to_sym %>
 
 <div class="ox-card login">
 
@@ -16,13 +16,20 @@
     <%= fh.text_field name: :last_name, value: current_user.last_name %>
     <%= fh.text_field name: :suffix %>
 
+    <% if saved_role_sym != :student %>
     <h3><%= t('.more_things_heading') %></h3>
+    <% end %>
+
     <%= fh.text_field name: :phone_number, except: :student %>
     <%= fh.text_field name: :school %>
-    <%= fh.text_field name: :url, except: :student %>
-    <%= fh.text_field name: :num_students, except: :student %>
+    <%= fh.text_field name: :num_students, only: :instructor %>
 
-    <% if saved_role_sym != :student %>
+    <%# TODO add a "Do you want access to faculty only material?" checkbox
+        for the "other" roles; if checked, reveal the URL.  If checked, in
+        profile create a "can't be blank" error if the URL is blank. %>
+    <%= fh.text_field name: :url, except: :student %>
+
+    <% if saved_role_sym == :instructor %>
       <h3><%= t '.instructor_verification_heading' %></h3>
       <p><%= t '.instructor_verification_help' %></p>
 
@@ -30,17 +37,27 @@
                    options_for_select(
                    [
                      [t('.instructor_use.how'), ""],
-                     [t('.instructor_use.fully'), 'fully'],
-                     [t('.instructor_use.recommended'), 'recommended'],
-                     [t('.instructor_use.piloting'), 'pioloting'],
-                     [t('.instructor_use.interested'), 'interested'],
-                     [t('.instructor_use.nope'), 'no']
+                     [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
+                     [t('.instructor_use.recommended'), 'Confirmed Will Recommend'],
+                     [t('.instructor_use.piloting'), 'Piloting book this semester'],
+                     [t('.instructor_use.interested'), 'High Interest in Adopting'],
+                     [t('.instructor_use.nope'), 'Not using']
                     ], selected: "", disabled: "", hidden: "") %>
 
+    <% end %>
 
+    <% if saved_role_sym != :student %>
       <p><%= t('.titles_interested') %></p>
 
-      <%# TODO: get this listing from Salesforce %>
+      <%# TODO: get the options from global settings in /admin/settings.  For each boo, we
+          should have a rails-friendly symbol key that maps to the full book name (not in
+          Salesforce) as well as the Salesforce abbreviation, e.g.
+            ...
+            macro_economics: ["Macro Econ", "Principles of Macroeconomics"]
+            ...
+          A `/lib/settings/books.rb` class would probably be appropriate to provide wrapped
+          access to this hash of info.
+      %>
 
       <div class="subjects clearfix">
         <%
@@ -62,7 +79,6 @@
             </div>
           <% end %>
       </div>
-
     <% end %>
 
     <% unless @contracts_not_required %>
@@ -96,8 +112,6 @@
         <%= t :".keep_me_informed" %>
       </label>
     </div>
-
-    <%# TODO add "keep me informed" %>
 
     <%= f.submit (t :".create_account"), id: "create_account_submit", class: 'primary' %>
 

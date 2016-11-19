@@ -97,12 +97,4 @@ ActionController::Base.class_exec do
     session.delete(:login)
   end
 
-  def set_last_signin_provider(provider)
-    session[:last_signin_provider] = provider
-  end
-
-  def last_signin_provider
-    session[:last_signin_provider]
-  end
-
 end

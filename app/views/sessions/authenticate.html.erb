@@ -10,7 +10,7 @@
   <h1 class="title"><%= t '.name_greeting', name: names.first %></h1>
 
   <% if providers.keys.include?('google_oauth2') %>
-    <%= link_to "/auth/google_oauth2?login_hint=#{providers['google_oauth2'][:login_hint]}",
+    <%= link_to "/auth/google_oauth2?login_hint=#{providers['google_oauth2']['login_hint']}",
                 class: 'btn btn-social btn-google',
                 id: 'google-login-button' do %>
       <span class="fa fa-google"></span> <%= t :".sign_in_with_google" %>

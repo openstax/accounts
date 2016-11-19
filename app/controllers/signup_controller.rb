@@ -51,7 +51,7 @@ class SignupController < ApplicationController
   end
 
   def check_pin
-
+    # TODO this is OBE - toast it
   end
 
   def check_token
@@ -75,8 +75,10 @@ class SignupController < ApplicationController
       handler = case saved_role
       when /student/i
         SignupProfileStudent
-      else
+      when /instructor/i
         SignupProfileInstructor
+      else
+        SignupProfileOther
       end
 
       handle_with(handler,
@@ -86,6 +88,7 @@ class SignupController < ApplicationController
                   role: saved_role,
                   success: lambda do
                     clear_signup_state
+                    # TODO send faculty (or admin who selected faculty) to verification screen
                     redirect_back
                   end,
                   failure: lambda do
@@ -101,7 +104,6 @@ class SignupController < ApplicationController
       handle_with(SignupSocial,
                   contracts_required: !contracts_not_required,
                   success: lambda do
-                    set_last_signin_provider(current_user.authentications.first.provider)
                     security_log :sign_up_successful
                     redirect_back
                   end,

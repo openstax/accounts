@@ -193,7 +193,7 @@ group :test do
   gem 'capybara-email'
 
   # Fake in-memory Redis for testing
-  gem 'fakeredis'
+  gem 'fakeredis', require: 'fakeredis/rspec'
 
   gem 'launchy'
 end

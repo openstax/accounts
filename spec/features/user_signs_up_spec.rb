@@ -25,6 +25,10 @@ feature 'User signs up', js: true do
       newsletter: true,
       agree: true
     )
+
+    expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
+    expect(SignupContactInfo.count).to eq 0
+
     expect_back_at_app
   end
 

@@ -17,7 +17,6 @@ class SessionsController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :help, :redirect_back]
 
-  helper_method :last_signin_provider  #  TODO still useful?
   helper_method :get_login_info
 
   include SignUpState
@@ -76,16 +75,13 @@ class SessionsController < ApplicationController
         when :new_signin_required
           reauthenticate_user!
         when :returning_user
-          set_last_signin_provider(authentication.provider)
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
         when :new_password_user
-          set_last_signin_provider(authentication.provider)
           security_log :sign_up_successful, authentication_id: authentication.id
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
         # when :transferred_authentication
-        #   set_last_signin_provider(authentication.provider)
         #   security_log :authentication_transferred, authentication_id: authentication.id
         #   security_log :sign_in_successful, authentication_id: authentication.id
         #   redirect_to action: :redirect_back

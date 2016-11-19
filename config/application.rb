@@ -41,5 +41,15 @@ module Accounts
 
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
+
+    # Opting in to future behavior to get rid of deprecation warnings
+    config.active_record.raise_in_transactional_callbacks = true
+
+    redis_secrets = secrets['redis']
+    config.cache_store = :redis_store, {
+      url: redis_secrets['url'],
+      namespace: redis_secrets['namespaces']['cache'],
+      expires_in: 90.minutes
+    }
   end
 end

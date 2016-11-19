@@ -288,6 +288,10 @@ en:
       iama: I am a
       instructor: Instructor
       student: Student
+      administrator: Administrator
+      librarian: Librarian
+      designer: Instructional Designer
+      other: Other
       email_in_use: Email already in use.  Are you trying to <a href="%{signin_url}">sign in</a>?
       blank: cannot be left blank
       already_have_an_account:

@@ -141,7 +141,7 @@ RSpec.configure do |config|
     page.driver.add_header('Accept-Language', 'en')
   end
 
-  config.before(:all) do
+  config.before(:each) do
     # Get rid of possibly-shared config setting cache values between test and dev or any leftover
     # cached values from other test runs. This is 15 seconds faster than `Rails.cache.clear`
     Rails.cache.delete_matched("rails_settings_cached/*")
