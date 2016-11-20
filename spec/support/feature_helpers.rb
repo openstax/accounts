@@ -365,6 +365,12 @@ def complete_terms_screens
   click_button (t :"terms.pose.agree")
 end
 
+def log_in(username_or_email, password)
+  visit '/'
+  complete_login_username_or_email_screen(username_or_email)
+  complete_login_password_screen(password)
+end
+
 def mock_current_user(user)
   # The following mocks are a little faster than:
   #   visit '/'

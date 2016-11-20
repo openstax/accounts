@@ -155,30 +155,24 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
     end
   end
 
-  def log_in(username_or_email:, password:)
-    visit '/'
-    complete_login_username_or_email_screen(username_or_email)
-    complete_login_password_screen(password)
-  end
-
   def log_in_good_username_bad_password
-    log_in(username_or_email: 'user', password: SecureRandom.hex)
+    log_in('user', SecureRandom.hex)
   end
 
   def log_in_good_email_bad_password
-    log_in(username_or_email: 'user@example.com', password: SecureRandom.hex)
+    log_in('user@example.com', SecureRandom.hex)
   end
 
   def log_in_bad_everything
-    log_in(username_or_email: SecureRandom.hex, password: SecureRandom.hex)
+    log_in(SecureRandom.hex, SecureRandom.hex)
   end
 
   def log_in_correctly_with_username(password: 'password')
-    log_in(username_or_email: 'user', password: password)
+    log_in('user', password)
   end
 
   def log_in_correctly_with_email(password: 'password')
-    log_in(username_or_email: 'user@example.com', password: password)
+    log_in('user@example.com', password)
   end
 
   def reset_password(password:)

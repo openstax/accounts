@@ -123,4 +123,16 @@ module ApplicationHelper
     request.host == 'accounts.openstax.org'
   end
 
+  def translate_error(code:, force: false)
+    return unless @handler_result.try(:errors)
+
+    error = @handler_result.errors.select{|error| error.code == code}.first
+
+    return if error.nil?
+    return if error.message.present? && !force
+
+    # use a block for the error message so we avoid unnecesarry i18n translation
+    error.message = yield
+  end
+
 end

@@ -50,6 +50,18 @@ class SessionsController < ApplicationController
                 end)
   end
 
+  def reauthenticate
+    handle_with(SessionsReauthenticate,
+                complete: lambda do
+                  set_login_info(username_or_email: current_user.username.blank? ?
+                                                    current_user.email_addresses.first.value :
+                                                    current_user.username,
+                                 names: @handler_result.outputs.names,
+                                 providers: @handler_result.outputs.providers.to_hash)
+                  render :authenticate
+                end)
+  end
+
   def authenticate
     redirect_to root_path if signed_in?
   end
