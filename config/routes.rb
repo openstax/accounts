@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
     get 'authenticate'
 
+    get 'reauthenticate'
+
     get 'auth/:provider/callback', action: :create
     post 'auth/:provider/callback', action: :create
 

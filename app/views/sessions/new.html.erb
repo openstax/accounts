@@ -1,3 +1,7 @@
+<%
+  translate_error(code: :no_users) { t('errors.no_account_for_username_or_email') }
+%>
+
 <% @hide_layout_errors = true %>
 
 <% is_invalid = collect_errors.any? %>

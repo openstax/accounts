@@ -79,18 +79,19 @@ ActionController::Base.class_exec do
 
   def set_login_info(username_or_email:, names:, providers:)
     session[:login] = {
-      key: @handler_result.outputs.username_or_email,
-      names: @handler_result.outputs.names,
-      providers: @handler_result.outputs.providers
+      key: username_or_email,
+      names: names,
+      providers: providers
     }
   end
 
   def get_login_info
+    hash = (session[:login] || {}).with_indifferent_access
     {
-      username_or_email: session[:login].try(:[],'key'),
-      names: session[:login].try(:[],'names'),
-      providers: session[:login].try(:[],'providers')
-    }
+      username_or_email: hash['key'],
+      names: hash['names'],
+      providers: hash['providers']
+    }.with_indifferent_access
   end
 
   def clear_login_info

@@ -1,12 +1,11 @@
 require 'rails_helper'
 
-xfeature 'User updates password', js: true do
+feature 'User updates password', js: true do
   before(:each) do
     create_user('user')
-    visit '/signin'
-    signin_as 'user'
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+    visit '/'
+    complete_login_username_or_email_screen('user')
+    complete_login_password_screen('password')
   end
 
   context 'without local password' do

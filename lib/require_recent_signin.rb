@@ -7,7 +7,7 @@ module RequireRecentSignin
 
     flash.alert = (I18n.t :"controllers.authentications.please_sign_in_to_confirm_changes")
 
-    location = main_app.login_path params.slice(:client_id).merge(required: true)
+    location = main_app.reauthenticate_path params.slice(:client_id).merge(required: true)
 
     respond_to do |format|
       format.json{ render json: { location: location } }
