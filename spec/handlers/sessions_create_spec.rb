@@ -5,7 +5,7 @@ describe SessionsCreate, type: :handler do
 
   let(:user_state) { MockUserState.new }
   let(:login_providers) { nil }
-  let(:saved_signup_contact_info) { nil }
+  let(:signup_contact_info) { nil }
 
   context "logging in" do
     context "no user linked to oauth response" do
@@ -59,7 +59,7 @@ describe SessionsCreate, type: :handler do
   context "signing up" do
     context "oauth response already directly linked to a user" do
       let(:authentication) { FactoryGirl.create(:authentication, provider: 'google_oauth2') }
-      let(:saved_signup_contact_info) {
+      let(:signup_contact_info) {
         FactoryGirl.create(:signup_contact_info, value: "bob@bob.com", verified: true)
       }
       it "freaks out for the moment" do
@@ -71,7 +71,7 @@ describe SessionsCreate, type: :handler do
 
     context "oauth response already linked to user by email address" do
       let(:other_user_email) { FactoryGirl.create(:email_address, verified: true)}
-      let(:saved_signup_contact_info) {
+      let(:signup_contact_info) {
         FactoryGirl.create(:signup_contact_info, value: "bob@bob.com", verified: true)
       }
 
@@ -86,7 +86,7 @@ describe SessionsCreate, type: :handler do
 
     context "normal password sign up" do
       let(:identity) { FactoryGirl.create :identity }
-      let(:saved_signup_contact_info) {
+      let(:signup_contact_info) {
         FactoryGirl.create(:signup_contact_info, value: "bob@bob.com", verified: true)
       }
 
@@ -100,12 +100,12 @@ describe SessionsCreate, type: :handler do
         expect(user.contact_infos.size).to eq 1
         expect(user.contact_infos.first.value).to eq "bob@bob.com"
         expect(user.contact_infos.first).to be_verified
-        expect(saved_signup_contact_info).to be_destroyed
+        expect(signup_contact_info).to be_destroyed
       end
     end
 
     context "normal social sign up" do
-      let(:saved_signup_contact_info) {
+      let(:signup_contact_info) {
         FactoryGirl.create(:signup_contact_info, value: "bob@bob.com", verified: true)
       }
 
@@ -120,7 +120,7 @@ describe SessionsCreate, type: :handler do
         expect(user.contact_infos.size).to eq 1
         expect(user.contact_infos.first.value).to eq "bob@bob.com"
         expect(user.contact_infos.first).to be_verified
-        expect(saved_signup_contact_info).to be_destroyed
+        expect(signup_contact_info).to be_destroyed
       end
     end
   end
@@ -199,7 +199,7 @@ describe SessionsCreate, type: :handler do
   def handle(**args)
     described_class.handle(user_state: user_state,
                            login_providers: login_providers,
-                           saved_signup_contact_info: saved_signup_contact_info,
+                           signup_contact_info: signup_contact_info,
                            **args)
   end
 

@@ -1,4 +1,4 @@
-<% saved_role_sym = (saved_role || "Other").downcase.to_sym %>
+<% signup_role_sym = (signup_role || "Other").downcase.to_sym %>
 
 <div class="ox-card login">
 
@@ -7,7 +7,7 @@
   <%= lev_form_for :profile, url: signup_profile_path do |f| %>
 
     <% fh = FormHelper::One.new(f: f,
-                                limit_to: saved_role_sym,
+                                limit_to: signup_role_sym,
                                 context: self,
                                 errors: @handler_result.try(:errors)) %>
 
@@ -16,7 +16,7 @@
     <%= fh.text_field name: :last_name, value: current_user.last_name %>
     <%= fh.text_field name: :suffix %>
 
-    <% if saved_role_sym != :student %>
+    <% if signup_role_sym != :student %>
     <h3><%= t('.more_things_heading') %></h3>
     <% end %>
 
@@ -29,7 +29,7 @@
         profile create a "can't be blank" error if the URL is blank. %>
     <%= fh.text_field name: :url, except: :student %>
 
-    <% if saved_role_sym == :instructor %>
+    <% if signup_role_sym == :instructor %>
       <h3><%= t '.instructor_verification_heading' %></h3>
       <p><%= t '.instructor_verification_help' %></p>
 
@@ -46,7 +46,7 @@
 
     <% end %>
 
-    <% if saved_role_sym != :student %>
+    <% if signup_role_sym != :student %>
       <p><%= t('.titles_interested') %></p>
 
       <%# TODO: get the options from global settings in /admin/settings.  For each boo, we

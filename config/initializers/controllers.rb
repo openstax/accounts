@@ -8,10 +8,10 @@ ActionController::Base.class_exec do
 
   include OSU::OsuHelper
   include ApplicationHelper
-  include SignInState
+  include UserSessionManagement
   include LocaleSelector
 
-  helper OSU::OsuHelper, ApplicationHelper, SignInState
+  helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
   before_filter :authenticate_user!
   before_filter :finish_sign_up
@@ -73,29 +73,6 @@ ActionController::Base.class_exec do
     store_url key: :password_return_to
 
     redirect_to reset_password_path(code_hash)
-  end
-
-  # TODO move this login_info stuff to sign_in_state.rb
-
-  def set_login_info(username_or_email:, names:, providers:)
-    session[:login] = {
-      key: username_or_email,
-      names: names,
-      providers: providers
-    }
-  end
-
-  def get_login_info
-    hash = (session[:login] || {}).with_indifferent_access
-    {
-      username_or_email: hash['key'],
-      names: hash['names'],
-      providers: hash['providers']
-    }.with_indifferent_access
-  end
-
-  def clear_login_info
-    session.delete(:login)
   end
 
 end

@@ -144,7 +144,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
       expect(current_user.is_administrator?).to eq true
 
       visit non_admin_feature_url
-      expect(page).to have_http_status(:not_modified)
+      expect(page).to have_http_status(:success)
       expect(page).to have_current_path(non_admin_feature_url)
       visit admin_feature_url
       expect(page).to have_http_status(:success)

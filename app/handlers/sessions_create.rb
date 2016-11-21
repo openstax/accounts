@@ -102,7 +102,7 @@ class SessionsCreate
       end
 
       run(TransferSignupContactInfo,
-          signup_contact_info: options[:saved_signup_contact_info],
+          signup_contact_info: options[:signup_contact_info],
           user: authentication_user)
 
       run(TransferAuthentications, authentication, authentication_user)
@@ -182,7 +182,7 @@ class SessionsCreate
   end
 
   def signing_up?
-    options[:saved_signup_contact_info].present?
+    options[:signup_contact_info].present?
   end
 
   def logging_in?
