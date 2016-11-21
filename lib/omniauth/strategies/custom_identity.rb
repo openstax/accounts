@@ -18,8 +18,7 @@ module OmniAuth
       MAX_LOGIN_ATTEMPTS_PER_IP = 10000
 
       include OmniAuth::Strategy
-      include SignInState
-      include SignUpState
+      include UserSessionManagement
       include ContractsNotRequired
 
       # Request forgery protection
@@ -146,7 +145,7 @@ module OmniAuth
             SignupPassword.handle(
               params: request,
               caller: current_user,
-              signup_contact_info: saved_signup_contact_info
+              signup_contact_info: signup_contact_info
             )
 
           env['errors'] = @handler_result.errors

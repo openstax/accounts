@@ -1,4 +1,4 @@
-module SignInState
+module UserSessionManagement
 
   # References:
   #   http://railscasts.com/episodes/356-dangers-of-session-hijacking
@@ -10,7 +10,7 @@ module SignInState
   end
 
   def sign_in!(user)
-    clear_login_info # TODO rename ...login_state AND rename sign_in_state to log_in_state
+    clear_login_state
     @current_user = user || AnonymousUser.instance
 
     if @current_user.is_anonymous?
@@ -18,14 +18,14 @@ module SignInState
     else
       session[:user_id] = @current_user.id
       session[:last_admin_activity] = DateTime.now.to_s \
-        if @current_user.is_administrator? && is_real_production_site?
+        if @current_user.is_administrator?
     end
 
     @current_user
   end
 
   def sign_out!
-    session.delete(:signup) # TODO call as clear_signup_state or something
+    clear_signup_state
     sign_in!(AnonymousUser.instance)
   end
 
@@ -47,11 +47,50 @@ module SignInState
     redirect_to main_app.login_path(params.slice(:client_id))
   end
 
-  def is_real_production_site?
-    request.host == 'accounts.openstax.org'
-  end
-
   # Doorkeeper controllers define authenticate_admin!, so we need another name
   alias_method :admin_authentication!, :authenticate_admin!
+
+  def set_login_state(username_or_email:, names:, providers:)
+    session[:login] = {
+      'u' => username_or_email,
+      'n' => names,
+      'p' => providers
+    }
+  end
+
+  def get_login_state
+    {
+      username_or_email: session[:login].try(:[],'u'),
+      names: session[:login].try(:[],'n'),
+      providers: session[:login].try(:[],'p')
+    }
+  end
+
+  def clear_login_state
+    session.delete(:login)
+  end
+
+  def save_signup_state(role:, signup_contact_info_id:)
+    session[:signup] = {
+      'r' => role,
+      'c' => signup_contact_info_id
+    }
+  end
+
+  def clear_signup_state
+    session.delete(:signup)
+  end
+
+  def signup_role
+    session[:signup].try(:[], 'r')
+  end
+
+  def signup_contact_info
+    @signup_contact_info ||= SignupContactInfo.find_by(id: session[:signup].try(:[],'c'))
+  end
+
+  def signup_email
+    @signup_email ||= signup_contact_info.try(:value)
+  end
 
 end

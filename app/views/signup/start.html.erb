@@ -27,7 +27,7 @@ signup_roles = {
                                 errors: @handler_result.try(:errors)) %>
     <%# TODO put select in form helper %>
 
-    <%= f.select :role, options_for_select(signup_roles.invert.to_a, saved_role) %>
+    <%= f.select :role, options_for_select(signup_roles.invert.to_a, signup_role) %>
 
     <div class="email-input-group">
       <div class="audience-help" data-audience="instructor">
@@ -37,7 +37,7 @@ signup_roles = {
         </p>
       </div>
 
-      <%= fh.text_field name: :email, value: saved_email %>
+      <%= fh.text_field name: :email, value: signup_email %>
       <p class="edu-warning">
         <%= t '.teacher_school_email_warning' %>
       </p>

@@ -379,5 +379,5 @@ def mock_current_user(user)
   # when real recent logins don't matter
 
   allow_any_instance_of(ActionController::Base).to receive(:current_user) { user }
-  allow_any_instance_of(SignInState).to receive(:current_user) { user }
+  allow_any_instance_of(UserSessionManagement).to receive(:current_user) { user }
 end

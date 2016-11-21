@@ -1,8 +1,8 @@
 <%
-  login_info = get_login_info
-  username_or_email = login_info[:username_or_email]
-  names = login_info[:names] || []
-  providers = login_info[:providers] || {}
+  login_state = get_login_state
+  username_or_email = login_state[:username_or_email]
+  names = login_state[:names] || []
+  providers = login_state[:providers] || {}
 %>
 
 <div class="ox-card login">

@@ -17,10 +17,6 @@ class SessionsController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :help, :redirect_back]
 
-  helper_method :get_login_info
-
-  include SignUpState
-
   # Login form
   def new
     # If no url to redirect back to, store the fallback url
@@ -40,9 +36,9 @@ class SessionsController < ApplicationController
   def lookup_login
     handle_with(SessionsLookupLogin,
                 success: lambda do
-                  set_login_info(username_or_email: @handler_result.outputs.username_or_email,
-                                 names: @handler_result.outputs.names,
-                                 providers: @handler_result.outputs.providers.to_hash)
+                  set_login_state(username_or_email: @handler_result.outputs.username_or_email,
+                                  names: @handler_result.outputs.names,
+                                  providers: @handler_result.outputs.providers.to_hash)
                   redirect_to :authenticate
                 end,
                 failure: lambda do
@@ -53,9 +49,9 @@ class SessionsController < ApplicationController
   def reauthenticate
     handle_with(SessionsReauthenticate,
                 complete: lambda do
-                  set_login_info(username_or_email: current_user.username.blank? ?
-                                                    current_user.email_addresses.first.value :
-                                                    current_user.username,
+                  set_login_state(username_or_email: current_user.username.blank? ?
+                                                     current_user.email_addresses.first.value :
+                                                     current_user.username,
                                  names: @handler_result.outputs.names,
                                  providers: @handler_result.outputs.providers.to_hash)
                   render :authenticate
@@ -79,8 +75,8 @@ class SessionsController < ApplicationController
     handle_with(
       SessionsCreate,
       user_state: self,
-      saved_signup_contact_info: saved_signup_contact_info,  # TODO change key to just signup_contact_info
-      login_providers: get_login_info[:providers],
+      signup_contact_info: signup_contact_info,
+      login_providers: get_login_state[:providers],
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]
         case @handler_result.outputs[:status]

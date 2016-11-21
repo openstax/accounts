@@ -6,19 +6,17 @@ class SignupController < ApplicationController
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  helper_method :saved_email, :saved_role, :instructor_has_selected_subject
+  helper_method :signup_email, :signup_role, :instructor_has_selected_subject
 
   before_filter :restart_if_missing_info, only: [:verify_email, :password]  # TODO spec me
 
   before_filter :transfer_signup_contact_info, only: [:profile], if: -> { request.get? }
 
 
-  include SignUpState
-
   def start
     if request.post?
       handle_with(SignupStart,
-                  existing_signup_contact_info: saved_signup_contact_info,
+                  existing_signup_contact_info: signup_contact_info,
                   success: lambda do
                       save_signup_state(
                         role: @handler_result.outputs.role,
@@ -40,7 +38,7 @@ class SignupController < ApplicationController
   def verify_email
     if request.post?
       handle_with(SignupVerifyEmail,
-                  signup_contact_info: saved_signup_contact_info,
+                  signup_contact_info: signup_contact_info,
                   success: lambda do
                     redirect_to action: :password
                   end,
@@ -72,7 +70,7 @@ class SignupController < ApplicationController
 
   def profile
     if request.post?
-      handler = case saved_role
+      handler = case signup_role
       when /student/i
         SignupProfileStudent
       when /instructor/i
@@ -85,7 +83,7 @@ class SignupController < ApplicationController
                   contracts_required: !contracts_not_required(
                     client_id: request['client_id'] || session['client_id']
                   ),
-                  role: saved_role,
+                  role: signup_role,
                   success: lambda do
                     clear_signup_state
                     # TODO send faculty (or admin who selected faculty) to verification screen
@@ -117,14 +115,14 @@ class SignupController < ApplicationController
   protected
 
   def restart_if_missing_info
-    redirect_to signup_path if saved_signup_contact_info.nil? || saved_role.nil?
+    redirect_to signup_path if signup_contact_info.nil? || signup_role.nil?
   end
 
   def transfer_signup_contact_info
-    return if saved_signup_contact_info.nil?
+    return if signup_contact_info.nil?
 
     TransferSignupContactInfo[
-      signup_contact_info: saved_signup_contact_info,
+      signup_contact_info: signup_contact_info,
       user: current_user
     ]
   end
