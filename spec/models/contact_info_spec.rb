@@ -57,15 +57,24 @@ describe ContactInfo do
       expect(email2.errors[:user].to_s).to include('unable to delete')
     end
 
-    it 'does not allow a user to add an already used email' do
-      email1.save
-      email2.save
-      newemail = user2.email_addresses.build value: email1.value
-      expect(newemail.save).to be false
-      expect(newemail.errors[:value].to_s).to include('email is already in use')
+    context 'when altering email value' do
+      before(:each){
+        email1.save
+        email2.save
+      }
+      it 'does not allow a user to add an already used email' do
+        newemail = user2.email_addresses.build value: email1.value
+        expect(newemail.save).to be false
+        expect(newemail.errors[:value].to_s).to include('email is already in use')
+      end
+
+      it 'does not allow a user to update their email to be a duplicate' do
+        email1.save!
+        email2.save!
+        email1.value = email2.value
+        expect(email1.save).to be false
+        expect(email1.errors[:value].to_s).to include('email is already in use')
+      end
     end
-
-
   end
-
 end
