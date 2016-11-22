@@ -144,7 +144,9 @@ feature 'User logs in as a local user', js: true do
       create_email_address_for(user, 'user@example.com')
       another_user = create_user 'another_user'
 
-      create_email_address_for(another_user, 'user@example.com')
+      email = create_email_address_for(another_user, 'temp@example.com')
+      # "update_attribute" skips model validation
+      email.update_attribute('value', 'user@example.com')
 
       arrive_from_app
       complete_login_username_or_email_screen 'user@example.com'
