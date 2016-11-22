@@ -126,9 +126,9 @@ RSpec.describe "find_duplicate_accounts" do
       FactoryGirl.create :email_address, user: user_1, verified: true
     end
     let!(:same_email_diff_user) do
-      email = FactoryGirl.create :email_address, user: user_2#, value: email_1.value
-      email.update_attribute('value', email_1.value)
-      email
+      email = FactoryGirl.create :email_address, user: user_2
+      ContactInfo.where(id: email.id).update_all(value: email_1.value)
+      email.reload
     end
 
     let!(:authentication) { FactoryGirl.create :authentication, user: user_1, provider: "facebook" }

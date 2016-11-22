@@ -64,9 +64,8 @@ describe ConfirmByPin do
 
       AddEmailToUser.call("bob-2@example.com", other_user)
       other_contact_info = other_user.contact_infos.last
-      other_contact_info.update_attribute('value', 'bob@example.com')
-
-
+      ContactInfo.where(id: other_contact_info.id).update_all(value: 'bob@example.com')
+      other_contact_info.reload
       expect(
         described_class.call(contact_info: contact_info, pin: contact_info.confirmation_pin)
       ).to have_routine_error(:no_pin_confirmation_attempts_remaining)
