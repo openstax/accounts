@@ -211,6 +211,10 @@ def expect_sign_in_page
   expect(page).to have_content(t :"sessions.new.page_heading")
 end
 
+def expect_authenticate_page
+  expect(page.body).to match(/Hi.*!/)
+end
+
 def expect_social_sign_up_page
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"signup.new_account.password_managed_by", manager: '')
@@ -250,7 +254,7 @@ def expect_signup_profile_screen
 end
 
 def complete_login_username_or_email_screen(username_or_email)
-  fill_in (t :"sessions.new.email_placeholder"), with: username_or_email
+  fill_in 'login_username_or_email', with: username_or_email
   expect_sign_in_page
   expect(page).to have_no_missing_translations
   click_button (t :"sessions.new.next")

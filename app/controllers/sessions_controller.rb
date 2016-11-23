@@ -8,14 +8,14 @@ class SessionsController < ApplicationController
 
   skip_before_filter :authenticate_user!, :expired_password,
                      only: [:new, :lookup_login, :authenticate,
-                            :create, :failure, :destroy, :help]
+                            :create, :failure, :destroy, :help, :email_usernames]
 
   skip_before_filter :finish_sign_up, only: [:destroy]  # TODO used?
 
   before_filter :get_authorization_url, only: [:new, :create]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :help, :redirect_back]
+                  only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :help, :redirect_back, :email_usernames]
 
   # Login form
   def new
@@ -42,6 +42,8 @@ class SessionsController < ApplicationController
                   redirect_to :authenticate
                 end,
                 failure: lambda do
+                  set_login_state(username_or_email: @handler_result.outputs.username_or_email,
+                                  matching_usernames: @handler_result.outputs.usernames)
                   render :new
                 end)
   end
@@ -52,8 +54,8 @@ class SessionsController < ApplicationController
                   set_login_state(username_or_email: current_user.username.blank? ?
                                                      current_user.email_addresses.first.value :
                                                      current_user.username,
-                                 names: @handler_result.outputs.names,
-                                 providers: @handler_result.outputs.providers.to_hash)
+                                  names: @handler_result.outputs.names,
+                                  providers: @handler_result.outputs.providers.to_hash)
                   render :authenticate
                 end)
   end
@@ -187,9 +189,9 @@ class SessionsController < ApplicationController
   end
 
   # Cannot login/forgot password
-  def help
+  def help  # TODO OBE?
     if request.post?
-      handle_with(SessionsHelp,
+      handle_with(SessionsHelp, # TODO ditch this handler if becomes unused
                   success: lambda do
                     security_log :help_requested
                     redirect_to root_path,
@@ -199,6 +201,17 @@ class SessionsController < ApplicationController
                     security_log :help_request_failed, username_or_email: params[:username_or_email]
                     render :help, status: 400
                   end)
+    end
+  end
+
+  def email_usernames
+    SignInHelpMailer.multiple_accounts(
+      email_address: get_login_state[:username_or_email],
+      usernames: get_login_state[:matching_usernames]
+    ).deliver_later
+
+    respond_to do |format|
+      format.js
     end
   end
 

@@ -29,6 +29,8 @@ Rails.application.routes.draw do
     get 'help', path: '/login/help', as: :login_help
     post 'help', path: '/login/help'
 
+    post 'email_usernames'
+
     # Maintain these deprecated routes for a while until client code learns to
     # use /login and /logout
     get 'signin', action: :new

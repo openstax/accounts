@@ -24,6 +24,16 @@
     <% end %>
   <% end %>
 
+  <%# Keep Twitter log in around until we figure out a way to move those
+      users to a different authentication %>
+
+  <% if providers.keys.include?('twitter') %>
+    <%= link_to "/auth/twitter", class: 'btn btn-block btn-social btn-twitter',
+                                 id: 'twitter-login-button' do %>
+      <span class="fa fa-twitter"></span> <%= t :".sign_in_with_twitter" %>
+    <% end %>
+  <% end %>
+
   <% if providers.keys.include?('identity') %>
     <% if providers.many? %>
 
@@ -42,7 +52,7 @@
 
       <div class="footer">
         <p>
-          <%= link_to(t('forgot_password'), login_help_path) %>
+          <%= link_to(t('.forgot_password'), login_help_path) %>
             </p>
          </div>
      <% end %>

@@ -1,176 +1,256 @@
 require 'rails_helper'
 
 # If you use js: true you must sleep to wait for the emails to arrive
-xfeature "User can't sign in" do
-  background do
-    @user = create_user 'user1'
-    @email = create_email_address_for @user, 'user@example.com'
-    @email.verified = true
-    @email.save!
+feature "User can't sign in", js: true do
+  # background do
+  #   @user = create_user 'user1'
+  #   @email = create_email_address_for @user, 'user@example.com'
+  #   @email.verified = true
+  #   @email.save!
 
-    visit '/'
-    click_link (t :"sessions.new.cant_sign_in")
+  #   visit '/'
+  #   # click_link (t :"sessions.new.cant_sign_in")
+  # end
+
+  context "problems finding log in user" do
+    before(:each) do
+      visit '/'
+    end
+
+    scenario "email unknown" do
+      complete_login_username_or_email_screen('bob@bob.com')
+      expect(page).to have_content(t :"sessions.new.unknown_email")
+    end
+
+    scenario "username unknown" do
+      complete_login_username_or_email_screen('bob')
+      expect(page).to have_content(t :"sessions.new.unknown_username")
+    end
+
+    scenario "multiple accounts match email" do
+      email_address = 'user@example.com'
+      user1 = create_user 'user1'
+      create_email_address_for(user1, email_address)
+      user2 = create_user 'user2'
+      create_email_address_for(user2, email_address)
+
+      complete_login_username_or_email_screen(email_address)
+      expect(page).to have_content(t(:"sessions.new.multiple_users.content_html").split('.')[0])
+
+      click_link t(:"sessions.new.multiple_users.click_here")
+      expect(page).to have_content(
+        ActionView::Base.full_sanitizer.sanitize(
+          t(:"sessions.new.sent_multiple_usernames", email: email_address)
+        )
+      )
+      expect(page.first('input')["placeholder"]).to eq t(:"sessions.new.username_placeholder")
+      expect(page.first('input').text).to be_blank
+
+      open_email(email_address)
+      expect(current_email).to have_content('used on more than one')
+      expect(current_email).to have_content('<b>user1</b> and <b>user2</b>')
+
+      complete_login_username_or_email_screen('user2')
+      expect_authenticate_page
+    end
   end
 
-  scenario 'username is not given' do
-    click_button (t :"sessions.help.submit")
-    expect(page.text).to include("Username or email can't be blank")
+  context "we find one user" do
+    before(:each) do
+      @user = create_user 'user'
+      @email = create_email_address_for @user, 'user@example.com'
+      visit '/'
+    end
+
+    scenario "just has password auth" do
+      complete_login_username_or_email_screen('user@example.com')
+
+      complete_login_password_screen('wrongpassword')
+      expect(page).to have_content(t :"controllers.sessions.incorrect_password")
+
+      test_forgot_password_flow
+
+      # TODO check email, click link in email, reset password, see that get redirected back
+      # should maybe arrive_from_app
+    end
+
+    context "just has social auth" do
+      # TODO destroy password auth
+
+    end
+
+    context "has both password and social auths" do
+      # TODO check for presence of both log in options
+
+      # test_forgot_password_flow
+    end
+
   end
 
-  scenario 'username not found' do
-    fill_in (t :"sessions.help.username_or_email"), with: 'aaaaa'
-    click_button (t :"sessions.help.submit")
-    expect(page.text).to(
-      include(t :"handlers.sessions_help.did_not_find_account_for_username_or_email")
-    )
+  def test_forgot_password_flow
+    click_link(t :"sessions.authenticate.forgot_password")
   end
 
-  xscenario 'user is not a local user' do
-    user = create_nonlocal_user 'not_local'
-    fill_in (t :"sessions.help.username_or_email"), with: 'not_local'
-    click_button (t :"sessions.help.submit")
-    expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
-    sign_in_help_email_sent? user
-  end
 
-  scenario 'user does not have any verified email addresses' do
-    @email.destroy
-    fill_in (t :"sessions.help.username_or_email"), with: 'user1'
-    click_button (t :"sessions.help.submit")
-    expect(page.text).to include("doesn't have any email addresses")
-  end
+  # scenario 'username is not given' do
+  #   click_button (t :"sessions.help.submit")
+  #   expect(page.text).to include("Username or email can't be blank")
+  # end
 
-  scenario 'user does not have any verified email addresses' do
-    @email.verified = false
-    @email.save
-    fill_in (t :"sessions.help.username_or_email"), with: 'user1'
-    click_button (t :"sessions.help.submit")
-    expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
-  end
+  # scenario 'username not found' do
+  #   fill_in (t :"sessions.help.username_or_email"), with: 'aaaaa'
+  #   click_button (t :"sessions.help.submit")
+  #   expect(page.text).to(
+  #     include(t :"handlers.sessions_help.did_not_find_account_for_username_or_email")
+  #   )
+  # end
 
-  scenario 'user gets a password reset email' do
-    fill_in (t :"sessions.help.username_or_email"), with: 'user1'
-    click_button (t :"sessions.help.submit")
-    expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
-    @user.identity.reload
-    sign_in_help_email_sent? @user
+  # xscenario 'user is not a local user' do
+  #   user = create_nonlocal_user 'not_local'
+  #   fill_in (t :"sessions.help.username_or_email"), with: 'not_local'
+  #   click_button (t :"sessions.help.submit")
+  #   expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
+  #   sign_in_help_email_sent? user
+  # end
 
-    visit @reset_link
-    expect(page.text).to include(t :"identities.reset_password.page_heading")
-    expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
-    fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
-    click_button (t :"identities.reset_password.set_password")
-    expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
-  end
+  # scenario 'user does not have any verified email addresses' do
+  #   @email.destroy
+  #   fill_in (t :"sessions.help.username_or_email"), with: 'user1'
+  #   click_button (t :"sessions.help.submit")
+  #   expect(page.text).to include("doesn't have any email addresses")
+  # end
 
-  scenario 'user enters an email address' do
-    fill_in (t :"sessions.help.username_or_email"), with: @email.value
-    click_button (t :"sessions.help.submit")
-    expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
-    @user.identity.reload
-    sign_in_help_email_sent? @user
+  # scenario 'user does not have any verified email addresses' do
+  #   @email.verified = false
+  #   @email.save
+  #   fill_in (t :"sessions.help.username_or_email"), with: 'user1'
+  #   click_button (t :"sessions.help.submit")
+  #   expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
+  # end
 
-    visit @reset_link
-    expect(page.text).to include(t :"identities.reset_password.page_heading")
-    expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
-    fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
-    click_button (t :"identities.reset_password.set_password")
-    expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
-  end
+  # scenario 'user gets a password reset email' do
+  #   fill_in (t :"sessions.help.username_or_email"), with: 'user1'
+  #   click_button (t :"sessions.help.submit")
+  #   expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
+  #   @user.identity.reload
+  #   sign_in_help_email_sent? @user
 
-  scenario 'user has google auth' do
-    user = FactoryGirl.create :user, username: 'user2', first_name: 'John',
-                                     last_name: 'Doe', suffix: 'Jr.'
-    FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
-    email_1 = FactoryGirl.create :email_address, user: user
+  #   visit @reset_link
+  #   expect(page.text).to include(t :"identities.reset_password.page_heading")
+  #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
+  #   fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
+  #   fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
+  #   click_button (t :"identities.reset_password.set_password")
+  #   expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
+  # end
 
-    fill_in (t :"sessions.help.username_or_email"), with: user.username
-    click_button (t :"sessions.help.submit")
+  # scenario 'user enters an email address' do
+  #   fill_in (t :"sessions.help.username_or_email"), with: @email.value
+  #   click_button (t :"sessions.help.submit")
+  #   expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
+  #   @user.identity.reload
+  #   sign_in_help_email_sent? @user
 
-    sign_in_help_email_sent? user
-  end
+  #   visit @reset_link
+  #   expect(page.text).to include(t :"identities.reset_password.page_heading")
+  #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
+  #   fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
+  #   fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
+  #   click_button (t :"identities.reset_password.set_password")
+  #   expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
+  # end
 
-  scenario 'user has multiple email addresses' do
-    clear_emails
+  # scenario 'user has google auth' do
+  #   user = FactoryGirl.create :user, username: 'user2', first_name: 'John',
+  #                                    last_name: 'Doe', suffix: 'Jr.'
+  #   FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+  #   email_1 = FactoryGirl.create :email_address, user: user
 
-    user = FactoryGirl.create :user, username: 'user2', first_name: 'John',
-                                     last_name: 'Doe', suffix: 'Jr.'
-    FactoryGirl.create :authentication, provider: 'identity', user: user
-    FactoryGirl.create :identity, user: user
+  #   fill_in (t :"sessions.help.username_or_email"), with: user.username
+  #   click_button (t :"sessions.help.submit")
 
-    email_1 = FactoryGirl.create :email_address, user: user
-    email_2 = FactoryGirl.create :email_address, user: user
+  #   sign_in_help_email_sent? user
+  # end
 
-    fill_in (t :"sessions.help.username_or_email"), with: user.username
-    click_button (t :"sessions.help.submit")
+  # scenario 'user has multiple email addresses' do
+  #   clear_emails
 
-    open_email(email_1.value)
-    expect(current_email).to have_content('to all of the addresses')
+  #   user = FactoryGirl.create :user, username: 'user2', first_name: 'John',
+  #                                    last_name: 'Doe', suffix: 'Jr.'
+  #   FactoryGirl.create :authentication, provider: 'identity', user: user
+  #   FactoryGirl.create :identity, user: user
 
-    open_email(email_2.value)
-    expect(current_email).to have_content('to all of the addresses')
-  end
+  #   email_1 = FactoryGirl.create :email_address, user: user
+  #   email_2 = FactoryGirl.create :email_address, user: user
 
-  scenario 'submitted email addresses matches multiple users' do
-    clear_emails
+  #   fill_in (t :"sessions.help.username_or_email"), with: user.username
+  #   click_button (t :"sessions.help.submit")
 
-    user_a = FactoryGirl.create :user, username: 'user2', first_name: 'John',
-                                       last_name: 'Doe', suffix: 'Jr.'
-    FactoryGirl.create :authentication, provider: 'identity', user: user_a
-    FactoryGirl.create :identity, user: user_a
-    email_a = FactoryGirl.create :email_address, user: user_a
+  #   open_email(email_1.value)
+  #   expect(current_email).to have_content('to all of the addresses')
 
-    user_b = FactoryGirl.create :user, username: 'user_b', first_name: 'John',
-                                       last_name: 'Doe', suffix: 'Jr.'
-    FactoryGirl.create :authentication, provider: 'identity', user: user_b
-    FactoryGirl.create :identity, user: user_b
-    FactoryGirl.create :email_address, user: user_b, value: email_a.value
+  #   open_email(email_2.value)
+  #   expect(current_email).to have_content('to all of the addresses')
+  # end
 
-    fill_in (t :"sessions.help.username_or_email"), with: email_a.value
-    click_button (t :"sessions.help.submit")
+  # scenario 'submitted email addresses matches multiple users' do
+  #   clear_emails
 
-    open_email(email_a.value)
+  #   user_a = FactoryGirl.create :user, username: 'user2', first_name: 'John',
+  #                                      last_name: 'Doe', suffix: 'Jr.'
+  #   FactoryGirl.create :authentication, provider: 'identity', user: user_a
+  #   FactoryGirl.create :identity, user: user_a
+  #   email_a = FactoryGirl.create :email_address, user: user_a
 
-    expect(all_emails.length).to eq 2
+  #   user_b = FactoryGirl.create :user, username: 'user_b', first_name: 'John',
+  #                                      last_name: 'Doe', suffix: 'Jr.'
+  #   FactoryGirl.create :authentication, provider: 'identity', user: user_b
+  #   FactoryGirl.create :identity, user: user_b
+  #   FactoryGirl.create :email_address, user: user_b, value: email_a.value
 
-    expect(all_emails.first).to have_content('to multiple accounts')
-    expect(all_emails.first).to have_content(user_a.username)
+  #   fill_in (t :"sessions.help.username_or_email"), with: email_a.value
+  #   click_button (t :"sessions.help.submit")
 
-    expect(all_emails.last).to have_content('to multiple accounts')
-    expect(all_emails.last).to have_content(user_b.username)
-  end
+  #   open_email(email_a.value)
 
-  scenario 'user enters an email address with leading and trailing whitespace' do
-    fill_in (t :"sessions.help.username_or_email"), with: "     #{@email.value}   "
-    click_button (t :"sessions.help.submit")
-    expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
-    @user.identity.reload
-    sign_in_help_email_sent? @user
+  #   expect(all_emails.length).to eq 2
 
-    visit @reset_link
-    expect(page.text).to include(t :"identities.reset_password.page_heading")
-    expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
-    fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
-    click_button (t :"identities.reset_password.set_password")
-    expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
-  end
+  #   expect(all_emails.first).to have_content('to multiple accounts')
+  #   expect(all_emails.first).to have_content(user_a.username)
 
-  scenario 'user enters a username with leading or trailing whitespace' do
-    fill_in (t :"sessions.help.username_or_email"), with: "     #{@user.username}   "
-    click_button (t :"sessions.help.submit")
-    expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
-    @user.identity.reload
-    sign_in_help_email_sent? @user
+  #   expect(all_emails.last).to have_content('to multiple accounts')
+  #   expect(all_emails.last).to have_content(user_b.username)
+  # end
 
-    visit @reset_link
-    expect(page.text).to include(t :"identities.reset_password.page_heading")
-    expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
-    fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
-    click_button (t :"identities.reset_password.set_password")
-    expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
-  end
+  # scenario 'user enters an email address with leading and trailing whitespace' do
+  #   fill_in (t :"sessions.help.username_or_email"), with: "     #{@email.value}   "
+  #   click_button (t :"sessions.help.submit")
+  #   expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
+  #   @user.identity.reload
+  #   sign_in_help_email_sent? @user
+
+  #   visit @reset_link
+  #   expect(page.text).to include(t :"identities.reset_password.page_heading")
+  #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
+  #   fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
+  #   fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
+  #   click_button (t :"identities.reset_password.set_password")
+  #   expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
+  # end
+
+  # scenario 'user enters a username with leading or trailing whitespace' do
+  #   fill_in (t :"sessions.help.username_or_email"), with: "     #{@user.username}   "
+  #   click_button (t :"sessions.help.submit")
+  #   expect(page.text).to include(t :"controllers.sessions.accessing_instructions_emailed")
+  #   @user.identity.reload
+  #   sign_in_help_email_sent? @user
+
+  #   visit @reset_link
+  #   expect(page.text).to include(t :"identities.reset_password.page_heading")
+  #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
+  #   fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
+  #   fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
+  #   click_button (t :"identities.reset_password.set_password")
+  #   expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
+  # end
 end

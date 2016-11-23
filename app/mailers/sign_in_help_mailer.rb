@@ -11,4 +11,12 @@ class SignInHelpMailer < SiteMailer
          subject: "Instructions for signing in to your OpenStax account"
   end
 
+  def multiple_accounts(email_address:, usernames:)
+    @email_address = email_address
+    @usernames = usernames
+
+    mail to: email_address,
+         subject: "Your OpenStax usernames"
+  end
+
 end

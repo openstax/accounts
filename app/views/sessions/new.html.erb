@@ -1,5 +1,16 @@
 <%
-  translate_error(code: :no_users) { t('errors.no_account_for_username_or_email') }
+  translate_error(code: :no_users) do
+    gave_an_email = params["login"]["username_or_email"].match(/@/)
+    gave_an_email ? t(:'.unknown_email') : t(:'.unknown_username')
+  end
+
+  translate_error(code: :multiple_users) do
+    t(:".multiple_users.content_html",
+      link: (link_to (t :".multiple_users.click_here"),
+                     email_usernames_path,
+                     method: :post,
+                     remote: true))
+  end
 %>
 
 <% @hide_layout_errors = true %>
