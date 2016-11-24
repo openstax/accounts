@@ -72,9 +72,18 @@ Rails.application.routes.draw do
   end
 
   resource :identity, only: :update
+
   scope controller: 'identities' do
     get 'reset_password'
     post 'reset_password'
+
+    post 'send_password_reset'
+    get 'sent_password_reset'
+
+    post 'send_password_add'
+    get 'sent_password_add'
+
+    get 'add_password'
   end
 
   resources :contact_infos, only: [:create, :destroy] do

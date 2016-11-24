@@ -55,11 +55,11 @@ feature "User can't sign in", js: true do
     end
   end
 
-  context "we find one user" do
+  context "we find one user", js: true do
     before(:each) do
       @user = create_user 'user'
       @email = create_email_address_for @user, 'user@example.com'
-      visit '/'
+      arrive_from_app
     end
 
     scenario "just has password auth" do
@@ -68,27 +68,52 @@ feature "User can't sign in", js: true do
       complete_login_password_screen('wrongpassword')
       expect(page).to have_content(t :"controllers.sessions.incorrect_password")
 
-      test_forgot_password_flow
+      click_link(t :"sessions.authenticate.reset_password")
+      expect(page).to have_content(/sent_password/)  # TODO check for real sent password content
 
-      # TODO check email, click link in email, reset password, see that get redirected back
-      # should maybe arrive_from_app
+      open_email('user@example.com')
+      expect(current_email).to have_content("Click here to reset")
+
+      reset_password_path = get_path_from_absolute_link(current_email, 'a')
+      visit reset_password_path
+
+      complete_reset_password_screen
+      expect_back_at_app
     end
 
-    context "just has social auth" do
-      # TODO destroy password auth
+    scenario "just has social auth" do
+      @user.identity.destroy
+      password_authentication = @user.authentications.first
+      FactoryGirl.create :authentication, provider: 'google_oauth2', user: @user
+      password_authentication.destroy
+
+      complete_login_username_or_email_screen('user@example.com')
+
+
+      # TODO somehow simulate oauth failure so we see error message
+
+      click_link(t :"sessions.authenticate.add_password")
+      expect(page).to have_content(/sent_password/)  # TODO check for real sent password content
+
+      open_email('user@example.com')
+      expect(current_email).to have_content("Click here to add")
+
+      add_password_path = get_path_from_absolute_link(current_email, 'a')
+      visit add_password_path
+
+      # TODO fill in add password
+
+      # complete_reset_password_screen
+      # expect_back_at_app
 
     end
 
-    context "has both password and social auths" do
-      # TODO check for presence of both log in options
-
-      # test_forgot_password_flow
+    scenario "has both password and social auths" do
+      FactoryGirl.create :authentication, provider: 'google_oauth2', user: @user
+      complete_login_username_or_email_screen('user@example.com')
+      expect(page).to have_content(t :"sessions.authenticate.reset_password")
     end
 
-  end
-
-  def test_forgot_password_flow
-    click_link(t :"sessions.authenticate.forgot_password")
   end
 
 

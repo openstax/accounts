@@ -37,13 +37,14 @@ class SessionsController < ApplicationController
     handle_with(SessionsLookupLogin,
                 success: lambda do
                   set_login_state(username_or_email: @handler_result.outputs.username_or_email,
+                                  matching_user_ids: @handler_result.outputs.user_ids,
                                   names: @handler_result.outputs.names,
                                   providers: @handler_result.outputs.providers.to_hash)
                   redirect_to :authenticate
                 end,
                 failure: lambda do
                   set_login_state(username_or_email: @handler_result.outputs.username_or_email,
-                                  matching_usernames: @handler_result.outputs.usernames)
+                                  matching_user_ids: @handler_result.outputs.user_ids)
                   render :new
                 end)
   end
@@ -205,9 +206,11 @@ class SessionsController < ApplicationController
   end
 
   def email_usernames
+    usernames = User.where{id.in my{get_login_state[:matching_user_ids]}}.map(&:username)
+
     SignInHelpMailer.multiple_accounts(
       email_address: get_login_state[:username_or_email],
-      usernames: get_login_state[:matching_usernames]
+      usernames: usernames
     ).deliver_later
 
     respond_to do |format|

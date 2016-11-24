@@ -62,7 +62,7 @@ ActionController::Base.class_exec do
     # redirect_to signup_social_path
   end
 
-  def expired_password
+  def expired_password  # TODO gotta be broken
     return true if request.format != :html
 
     identity = current_user.identity

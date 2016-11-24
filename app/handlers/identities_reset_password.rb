@@ -2,29 +2,25 @@ class IdentitiesResetPassword
 
   lev_handler
 
-  uses_routine SetPassword, translations: { outputs: { type: :verbatim } }
+  paramify :reset_password do
+    attribute :password, type: String
+    attribute :password_confirmation, type: String
+
+    validates :password, presence: true
+    validates :password_confirmation, presence: true
+  end
+
+  uses_routine ChangePassword, translations: { outputs: { type: :verbatim } }
 
   protected
 
   def authorized?
-    true
+    !caller.is_anonymous?
   end
 
   def handle
-    prc = PasswordResetCode.where(code: params[:code]).first
-    identity = prc.try(:identity)
-    fatal_error(message: (I18n.t :"handlers.identities_reset_password.reset_link_is_invalid"), code: :invalid_code,
-                offending_inputs: [:code]) if identity.nil?
-    fatal_error(message: (I18n.t :"handlers.identities_reset_password.reset_link_expired"),
-                code: :expired_code, offending_inputs: [:code]) if prc.expired?
-
-    if request.post?
-      run(SetPassword,
-          identity,
-          params[:reset_password].try(:[], :password),
-          params[:reset_password].try(:[], :password_confirmation))
-    else
-      outputs[:identity] = identity
-    end
+    run(ChangePassword, user: caller,
+                        password: reset_password_params.password,
+                        password_confirmation: reset_password_params.password_confirmation )
   end
 end

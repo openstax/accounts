@@ -173,6 +173,8 @@ en:
         continue to have problems, please contact support.
       use_form_below_to_reset_password: >-
         Use the form below to reset your password.
+      expired_reset_link: >-
+        The password reset link you used has expired.
 
   layouts:
     application_footer:
@@ -250,6 +252,9 @@ en:
       login: Login
       password: Password
       forgot_password: Can’t remember password?
+      trouble_logging_in: Trouble logging in?
+      reset_password: Click here to reset your password
+      add_password: Click here to add a password
 
   sign_in_help_mailer:
     sign_in_help:

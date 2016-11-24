@@ -73,17 +73,19 @@ def create_email_address_for(user, email_address, confirmation_code=nil)
                      verified: confirmation_code.nil?)
 end
 
-def generate_reset_code_for(username)
+def generate_login_token_for(username)
   user = User.find_by_username(username)
-  GeneratePasswordResetCode.call(user.identity).outputs[:code]
+  user.reset_login_token
+  user.save!
+  user.login_token
 end
 
-def generate_expired_reset_code_for(username)
-  one_year_ago = 1.year.ago
-  allow(DateTime).to receive(:now).and_return(one_year_ago)
-  reset_code = generate_reset_code_for username
-  allow(DateTime).to receive(:now).and_call_original
-  reset_code
+def generate_expired_login_token_for(username)
+  user = User.find_by_username(username)
+  user.reset_login_token
+  user.login_token_expires_at = 1.year.ago
+  user.save!
+  user.login_token
 end
 
 def sign_in_help_email_sent?(user)
@@ -385,3 +387,9 @@ def mock_current_user(user)
   allow_any_instance_of(ActionController::Base).to receive(:current_user) { user }
   allow_any_instance_of(UserSessionManagement).to receive(:current_user) { user }
 end
+
+def get_path_from_absolute_link(node, xpath)
+  uri = URI(node.find(xpath)['href'])
+  "#{uri.path}?#{uri.query}"
+end
+
