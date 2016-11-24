@@ -196,6 +196,8 @@ group :test do
   gem 'fakeredis', require: 'fakeredis/rspec'
 
   gem 'launchy'
+
+  gem 'capybara-screenshot', require: false
 end
 
 group :production do

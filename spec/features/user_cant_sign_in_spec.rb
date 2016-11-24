@@ -20,11 +20,13 @@ feature "User can't sign in", js: true do
     scenario "email unknown" do
       complete_login_username_or_email_screen('bob@bob.com')
       expect(page).to have_content(t :"sessions.new.unknown_email")
+      screenshot!
     end
 
     scenario "username unknown" do
       complete_login_username_or_email_screen('bob')
       expect(page).to have_content(t :"sessions.new.unknown_username")
+      screenshot!
     end
 
     scenario "multiple accounts match email" do
@@ -37,18 +39,24 @@ feature "User can't sign in", js: true do
       complete_login_username_or_email_screen(email_address)
       expect(page).to have_content(t(:"sessions.new.multiple_users.content_html").split('.')[0])
 
+      screenshot!
+
       click_link t(:"sessions.new.multiple_users.click_here")
       expect(page).to have_content(
         ActionView::Base.full_sanitizer.sanitize(
           t(:"sessions.new.sent_multiple_usernames", email: email_address)
         )
       )
+
+      screenshot!
+
       expect(page.first('input')["placeholder"]).to eq t(:"sessions.new.username_placeholder")
       expect(page.first('input').text).to be_blank
 
       open_email(email_address)
       expect(current_email).to have_content('used on more than one')
       expect(current_email).to have_content('<b>user1</b> and <b>user2</b>')
+      capture_email!
 
       complete_login_username_or_email_screen('user2')
       expect_authenticate_page
