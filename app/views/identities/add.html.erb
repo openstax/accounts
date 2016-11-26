@@ -24,7 +24,7 @@
     <p><%= t :".use_form_below_to_add_password" %></p>
 
     <% if !@handler_result.errors.has_offending_input? :code %>  <%# TODO OBE? also probably on reset_password %>
-      <%= lev_form_for :set_password, url: add_password_path do |f| %>
+      <%= lev_form_for :set_password, url: password_add_path do |f| %>
         <%= standard_field form: f, name: :password,
             type: :password_field,
             label: (t :"identities.password") %>

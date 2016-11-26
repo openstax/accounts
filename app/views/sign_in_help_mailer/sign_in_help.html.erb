@@ -19,7 +19,7 @@
 <% if @user.identity.present? %>
   <p>You can sign in to your account with a password.  To reset your password, please follow this link:</p>
 
-  <p><%= link_to "Reset your password", reset_password_url(code: @reset_password_code) %></p>
+  <p><%= link_to "Reset your password", password_reset_url(code: @reset_password_code) %></p>
 <% else %>
   <p>Your account does not use a password to sign in.</p>
 <% end %>

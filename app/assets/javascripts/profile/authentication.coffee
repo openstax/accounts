@@ -96,7 +96,7 @@ class Password extends Identity
     OX.Alert.hideAll()
     input.editable(
       type: 'oxpassword'
-      url: '/identity'
+      url: '/password/set'
       params: (params) -> {set_password: params.value}
     ).on('hidden', (e, reason) ->
       input.editable('destroy')

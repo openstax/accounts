@@ -69,7 +69,7 @@ ActionController::Base.class_exec do
     return unless identity.try(:password_expired?)
 
     flash[:alert] = I18n.t :"controllers.identities.password_expired"
-    redirect_to reset_password_path
+    redirect_to password_reset_path
   end
 
 end

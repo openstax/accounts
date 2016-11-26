@@ -175,19 +175,19 @@ en:
       Use the form below to reset your password.
     use_form_below_to_add_password: >-
       Use the form below to add a password.
-    reset_password:
+    reset:
       page_heading: Reset Password
       use_form_below_to_reset_password: >-
         Use the form below to reset your password.
-    add_password:
+    add:
       page_heading: Add Password
       use_form_below_to_add_password: >-
         Use the form below to add a password.
-    add_password_success:
+    add_success:
       page_heading: Success!
       message: Your password was added to your account.
       continue: Continue
-    reset_password_success:
+    reset_success:
       page_heading: Success!
       message: Your password has been reset.
       continue: Continue

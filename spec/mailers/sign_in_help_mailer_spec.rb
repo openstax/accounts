@@ -18,7 +18,7 @@ describe SignInHelpMailer, type: :mailer do
 
     it 'renders the body' do
       expect(@mail.body.encoded).to include('Hi John')
-      expect(@mail.body.encoded).to include('http://localhost:2999/reset_password?code=1234')
+      expect(@mail.body.encoded).to include('http://localhost:2999/password/reset?code=1234')
     end
   end
 end
