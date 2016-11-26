@@ -14,7 +14,7 @@ class IdentitiesController < ApplicationController
                  except: [:reset_password, :send_password_reset, :sent_password_reset, :add_password, :send_password_add, :sent_password_add]
 
   def update  # TODO only used for password add/change from profile page -- rename to something more specific
-    handle_with(IdentitiesUpdate,  # TODO change to IdentitiesSetPassword
+    handle_with(IdentitiesSetPassword,
                 success: lambda  do
                   security_log :password_updated
                   render status: :accepted,

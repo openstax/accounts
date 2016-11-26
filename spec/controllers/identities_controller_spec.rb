@@ -24,7 +24,7 @@ describe IdentitiesController, type: :controller do
       context "anonymous user" do
         it "requires login" do
           expect(
-            put 'update', identity: {
+            put 'update', set_password: {
               password: 'new_password', password_confirmation: 'password_confirmation'
             }
           ).to redirect_to login_path
@@ -43,7 +43,7 @@ describe IdentitiesController, type: :controller do
           end
 
           it "updates the user's password" do
-            put 'update', identity: {
+            put 'update', set_password: {
               password: 'new_password', password_confirmation: 'new_password'
             }
             expect(response.status).to eq 202
@@ -54,7 +54,7 @@ describe IdentitiesController, type: :controller do
 
         context 'with old signin' do
           it "does not update the user's password" do
-            put 'update', identity: {
+            put 'update', set_password: {
               password: 'new_password', password_confirmation: 'new_password'
             }
             expect(response.status).to eq 302

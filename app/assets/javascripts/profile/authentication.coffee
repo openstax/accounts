@@ -97,7 +97,7 @@ class Password extends Identity
     input.editable(
       type: 'oxpassword'
       url: '/identity'
-      params: (params) -> {identity: params.value}
+      params: (params) -> {set_password: params.value}
     ).on('hidden', (e, reason) ->
       input.editable('destroy')
       input.attr('style', '') # editable calls hide() which sets 'display:block'
