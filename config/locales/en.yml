@@ -29,12 +29,6 @@ en:
         You are logged in as %{user_name}. A different %{authentication} account
         is already linked to your OpenStax account. Only one %{authentication}
         account can be linked to your OpenStax account at a time.
-      several_accounts_for_one_email: >-
-        We found several accounts with your email address. Please sign in using
-        your username.
-      no_users: >-
-          We have no account for the username or email you provided. Email
-          addresses must be verified in out system to use them during sign in.
       sign_in_option_already_used: >-
         That sign in option is already used by someone else. If that someone is
         you, remove it from your other account and try again.
@@ -244,18 +238,17 @@ en:
       email: Email
       email_placeholder: Email or username
       username_placeholder: Username
-      unrecognized_email: We don’t recognize this email, please try again.
       next: Next
-      cannot_find_user: 'Cannot find user'
-      unknown_username: We don't recognize this username.  Please try again or try your email instead.
-      unknown_email: We don't recognize this email. Please try again.
+      cannot_find_user: Cannot find user
+      unknown_username: We don’t recognize this username.  Please try again or try your email instead.
+      unknown_email: We don’t recognize this email, please try again.
       multiple_users:
         # %{link}   a hyperlink that sends usernames to the email being used for log in.
         #           The label is defined by the .click_here key.
         content_html: >-
           We found several accounts with this email. Please log in using your username.<br/>
           Forgot your username? %{link}.
-        click_here: Click here and we'll email them to you
+        click_here: Click here and we’ll email them to you
       sent_multiple_usernames: >-
         Please check <strong>%{email}</strong> for an email listing your usernames, and use one to log in.
 

@@ -39,7 +39,7 @@ feature 'User logs in as a local user', js: true do
     with_forgery_protection do
       arrive_from_app
       complete_login_username_or_email_screen 'user'
-      expect(page).to have_content(t :"controllers.sessions.no_users")
+      expect(page).to have_content(t :"sessions.new.unknown_username")
     end
   end
 
@@ -120,19 +120,12 @@ feature 'User logs in as a local user', js: true do
   scenario 'with an unverified email address and password' do
     with_forgery_protection do
       arrive_from_app
-
       user = create_user 'user'
       create_email_address_for user, 'user@example.com', 'unverified'
-
       complete_login_username_or_email_screen 'user@example.com'
-
       expect(page).to have_content(t :"sessions.new.unknown_email")
-
-      expect(page).to have_content(t :"controllers.sessions.no_users")
-
       complete_login_username_or_email_screen 'user'
       complete_login_password_screen 'password'
-
       expect_back_at_app
     end
   end
@@ -151,7 +144,7 @@ feature 'User logs in as a local user', js: true do
       arrive_from_app
       complete_login_username_or_email_screen 'user@example.com'
       expect_sign_in_page
-      expect(page).to have_content(t :"controllers.sessions.several_accounts_for_one_email")
+      expect(page).to have_content(t("sessions.new.multiple_users.content_html").sub('<br/>', ' ').sub(' %{link}.', ''))
 
       complete_login_username_or_email_screen 'user'
       complete_login_password_screen 'password'
