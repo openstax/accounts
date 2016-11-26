@@ -62,17 +62,14 @@ ActionController::Base.class_exec do
     # redirect_to signup_social_path
   end
 
-  def expired_password  # TODO gotta be broken
+  def expired_password  # TODO rename as action, e.g. `check_if_password_expired`
     return true if request.format != :html
 
     identity = current_user.identity
     return unless identity.try(:password_expired?)
 
-    code = GeneratePasswordResetCode.call(identity).outputs[:code]
-    code_hash = { code: code }
-    store_url key: :password_return_to
-
-    redirect_to reset_password_path(code_hash)
+    flash[:alert] = I18n.t :"controllers.identities.password_expired"
+    redirect_to reset_password_path
   end
 
 end

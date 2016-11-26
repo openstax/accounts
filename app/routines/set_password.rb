@@ -1,5 +1,5 @@
 # Sets the password for a user
-class ChangePassword
+class SetPassword
 
   lev_routine
 
@@ -10,7 +10,7 @@ class ChangePassword
            password_confirmation:,
            expiration_period: Identity::DEFAULT_PASSWORD_EXPIRATION_PERIOD)
 
-    identity = user.identity
+    identity = user.identity || user.build_identity
 
     fatal_error(code: :no_password_to_change) if identity.nil?
 
@@ -24,6 +24,11 @@ class ChangePassword
     outputs[:identity] = identity
 
     transfer_errors_from(identity, {type: :verbatim}, true)
+
+    # If the user does not have an authentication for an identity then we create once
+    unless user.authentications.where(provider: 'identity').any?
+      user.authentications.create!(provider: 'identity', uid: identity.id.to_s)
+    end
   end
 
 end

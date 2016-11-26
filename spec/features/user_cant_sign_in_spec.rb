@@ -97,7 +97,6 @@ feature "User can't sign in", js: true do
 
       complete_login_username_or_email_screen('user@example.com')
 
-
       # TODO somehow simulate oauth failure so we see error message
 
       click_link(t :"sessions.authenticate.add_password")
@@ -109,11 +108,16 @@ feature "User can't sign in", js: true do
       add_password_path = get_path_from_absolute_link(current_email, 'a')
       visit add_password_path
 
-      # TODO fill in add password
+      expect(@user.identity(true)).to be_nil
 
-      # complete_reset_password_screen
-      # expect_back_at_app
+      complete_add_password_screen
 
+      expect(@user.identity(true)).not_to be_nil
+      expect(@user.authentications(true).map(&:provider)).to contain_exactly(
+        "google_oauth2", "identity"
+      )
+
+      expect_back_at_app
     end
 
     scenario "has both password and social auths" do
@@ -171,9 +175,9 @@ feature "User can't sign in", js: true do
   #   visit @reset_link
   #   expect(page.text).to include(t :"identities.reset_password.page_heading")
   #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
-  #   fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
-  #   fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
-  #   click_button (t :"identities.reset_password.set_password")
+  #   fill_in (t :"identities.password"), with: 'Pazzw0rd!'
+  #   fill_in (t :"identities.confirm_password"), with: 'Pazzw0rd!'
+  #   click_button (t :"identities.set_password")
   #   expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
   # end
 
@@ -187,9 +191,9 @@ feature "User can't sign in", js: true do
   #   visit @reset_link
   #   expect(page.text).to include(t :"identities.reset_password.page_heading")
   #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
-  #   fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
-  #   fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
-  #   click_button (t :"identities.reset_password.set_password")
+  #   fill_in (t :"identities.password"), with: 'Pazzw0rd!'
+  #   fill_in (t :"identities.confirm_password"), with: 'Pazzw0rd!'
+  #   click_button (t :"identities.set_password")
   #   expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
   # end
 
@@ -265,9 +269,9 @@ feature "User can't sign in", js: true do
   #   visit @reset_link
   #   expect(page.text).to include(t :"identities.reset_password.page_heading")
   #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
-  #   fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
-  #   fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
-  #   click_button (t :"identities.reset_password.set_password")
+  #   fill_in (t :"identities.password"), with: 'Pazzw0rd!'
+  #   fill_in (t :"identities.confirm_password"), with: 'Pazzw0rd!'
+  #   click_button (t :"identities.set_password")
   #   expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
   # end
 
@@ -281,9 +285,9 @@ feature "User can't sign in", js: true do
   #   visit @reset_link
   #   expect(page.text).to include(t :"identities.reset_password.page_heading")
   #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
-  #   fill_in (t :"identities.reset_password.password"), with: 'Pazzw0rd!'
-  #   fill_in (t :"identities.reset_password.confirm_password"), with: 'Pazzw0rd!'
-  #   click_button (t :"identities.reset_password.set_password")
+  #   fill_in (t :"identities.password"), with: 'Pazzw0rd!'
+  #   fill_in (t :"identities.confirm_password"), with: 'Pazzw0rd!'
+  #   click_button (t :"identities.set_password")
   #   expect(page.text).to include(t :"controllers.identities.password_reset_successfully")
   # end
 end

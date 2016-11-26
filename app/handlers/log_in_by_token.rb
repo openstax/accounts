@@ -7,7 +7,6 @@ class LogInByToken
   end
 
   def handle
-    # debugger
     return if !caller.is_anonymous?
 
     fatal_error(code: :token_blank) if login_token.blank?

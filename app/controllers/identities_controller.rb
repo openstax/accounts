@@ -11,7 +11,7 @@ class IdentitiesController < ApplicationController
   before_filter :reauthenticate_user_if_signin_is_too_old!,
                  except: [:reset_password, :send_password_reset, :sent_password_reset, :add_password, :send_password_add, :sent_password_add]
 
-  def update
+  def update  # TODO only used for password add/change from profile page -- rename to something more specific
     handle_with(IdentitiesUpdate,
                 success: lambda  do
                   security_log :password_updated
@@ -24,24 +24,64 @@ class IdentitiesController < ApplicationController
   end
 
   def reset_password
+    set_password(kind: :reset)
+  end
+
+  def add_password
+    set_password(kind: :add)
+  end
+
+  # TODO dry up this code!
+
+  def send_password_reset
+    send_password_email(kind: :reset, success_redirect: :sent_password_reset)
+  end
+
+  def send_password_add
+    send_password_email(kind: :add, success_redirect: :sent_password_add)
+  end
+
+  def sent_password_reset; end
+  def sent_password_add; end
+
+  protected
+
+  def send_password_email(kind:, success_redirect:)
+    handle_with(IdentitiesSendPasswordEmail,
+                kind: kind,
+                user: User.find(get_login_state[:matching_user_ids].first),
+                success: lambda do
+                  redirect_to success_redirect
+                end,
+                failure: lambda do
+                  redirect_to authenticate_path # TODO spec this or remove and switch success to complete
+                end)
+  end
+
+  def set_password(kind:)
     if request.get?
       handle_with(LogInByToken,
                   user_state: self,
                   success: lambda do
                     security_log :sign_in_successful, {type: 'token'}
-                    redirect_to :add_password if current_user.identity.nil?
+                    case kind
+                    when :add
+                      redirect_to :reset_password if current_user.identity.present?
+                    when :reset
+                      redirect_to :add_password if current_user.identity.nil?
+                    end
                   end,
                   failure: ->{})
     elsif request.post?
-      handle_with(IdentitiesResetPassword,
+      handle_with(IdentitiesSetPassword,
                   success: lambda do
                     security_log :password_reset
-                    redirect_back key: :password_return_to,
-                                  notice: (I18n.t :"controllers.identities.password_reset_successfully")
+                    redirect_back
                   end,
                   failure: lambda do
                     security_log :password_reset_failed
-                    render :reset_password, status: 400
+                    action = "#{kind}_password".to_sym
+                    render action, status: 400
                   end)
     end
 
@@ -54,46 +94,6 @@ class IdentitiesController < ApplicationController
     #     flash[:alert] = I18n.t :"controllers.identities.password_expired"
     #   end
     # end
-  end
-
-  def send_password_reset
-    handle_with(IdentitiesSendPasswordEmail,
-                kind: :reset,
-                user: User.find(get_login_state[:matching_user_ids].first),
-                success: lambda do
-                  redirect_to :sent_password_reset
-                end,
-                failure: lambda do
-                  redirect_to authenticate_path # TODO spec this or remove and switch success to complete
-                end)
-  end
-
-  def sent_password_reset
-  end
-
-  def sent_password_add; end
-
-  def send_password_add  # TODO dry up
-    handle_with(IdentitiesSendPasswordEmail,
-                kind: :add,
-                user: User.find(get_login_state[:matching_user_ids].first),
-                success: lambda do
-                  redirect_to :sent_password_add
-                end,
-                failure: lambda do
-                  redirect_to authenticate_path # TODO spec this or remove and switch success to complete
-                end)
-  end
-
-  def add_password
-    # This is only a GET route; adding a password has to go through the oauth mechanisms
-    handle_with(LogInByToken,
-                user_state: self,
-                success: lambda do
-                  security_log :sign_in_successful, {type: 'token'}
-                  redirect_to :reset_password if current_user.identity.present?
-                end,
-                failure: ->{})
   end
 
 end

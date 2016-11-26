@@ -163,18 +163,26 @@ en:
         %{contact_info} and reference error %{error_id}.
 
   identities:
+    confirm_password: Confirm Password
+    password: Password
+    set_password: Set Password
+    there_was_a_problem_with_reset_link: >-
+      Unfortunately, there was a problem with your password reset link. If you
+      continue to have problems, please contact support.
+    expired_reset_link: >-
+      The password reset link you used has expired.
+    use_form_below_to_reset_password: >-
+      Use the form below to reset your password.
+    use_form_below_to_add_password: >-
+      Use the form below to add a password.
     reset_password:
-      confirm_password: Confirm Password
       page_heading: Reset Password
-      password: Password
-      set_password: Set Password
-      there_was_a_problem_with_reset_link: >-
-        Unfortunately, there was a problem with your password reset link. If you
-        continue to have problems, please contact support.
       use_form_below_to_reset_password: >-
         Use the form below to reset your password.
-      expired_reset_link: >-
-        The password reset link you used has expired.
+    add_password:
+      page_heading: Add Password
+      use_form_below_to_add_password: >-
+        Use the form below to add a password.
 
   layouts:
     application_footer:

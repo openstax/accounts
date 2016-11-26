@@ -355,9 +355,16 @@ end
 
 def complete_reset_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in (t :"identities.reset_password.password"), with: password
-  fill_in (t :"identities.reset_password.confirm_password"), with: password
-  click_button (t :"identities.reset_password.set_password")
+  fill_in (t :"identities.password"), with: password
+  fill_in (t :"identities.confirm_password"), with: password
+  click_button (t :"identities.set_password")
+end
+
+def complete_add_password_screen(password=nil)
+  password ||= 'Passw0rd!'
+  fill_in (t :"identities.password"), with: password
+  fill_in (t :"identities.confirm_password"), with: password
+  click_button (t :"identities.set_password")
 end
 
 def complete_terms_screens

@@ -84,6 +84,7 @@ Rails.application.routes.draw do
     get 'sent_password_add'
 
     get 'add_password'
+    post 'add_password'
   end
 
   resources :contact_infos, only: [:create, :destroy] do

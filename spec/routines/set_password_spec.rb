@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ChangePassword do
+describe SetPassword do
   let(:user) { identity.user }
 
   context 'setting the password' do

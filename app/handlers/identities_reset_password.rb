@@ -10,7 +10,7 @@ class IdentitiesResetPassword
     validates :password_confirmation, presence: true
   end
 
-  uses_routine ChangePassword, translations: { outputs: { type: :verbatim } }
+  uses_routine SetPassword, translations: { outputs: { type: :verbatim } }
 
   protected
 
@@ -19,8 +19,8 @@ class IdentitiesResetPassword
   end
 
   def handle
-    run(ChangePassword, user: caller,
-                        password: reset_password_params.password,
-                        password_confirmation: reset_password_params.password_confirmation )
+    run(SetPassword, user: caller,
+                     password: reset_password_params.password,
+                     password_confirmation: reset_password_params.password_confirmation )
   end
 end
