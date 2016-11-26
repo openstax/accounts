@@ -71,25 +71,25 @@ Rails.application.routes.draw do
     post 'profile'
   end
 
-  resource :identity, only: :update
+  scope controller: 'identities', path: 'password', as: 'password' do
+    put 'set'
 
-  scope controller: 'identities' do
-    get 'reset_password'
-    post 'reset_password'
+    get 'reset'
+    post 'reset'
 
-    post 'send_password_reset'
-    get 'sent_password_reset'
+    post 'send_reset'
+    get 'sent_reset'
 
-    post 'send_password_add'
-    get 'sent_password_add'
+    post 'send_add'
+    get 'sent_add'
 
-    get 'add_password'
-    post 'add_password'
+    get 'add'
+    post 'add'
 
-    get 'reset_password_success'
-    get 'add_password_success'
+    get 'reset_success'
+    get 'add_success'
 
-    get 'continue' # TODO would be nice for this to be scoped - can we change all of these to be /password/blah
+    get 'continue'
   end
 
   resources :contact_infos, only: [:create, :destroy] do

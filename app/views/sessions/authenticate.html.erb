@@ -57,12 +57,12 @@
 
     <p>
       <%= t(:'.trouble_logging_in') %>
-      <%= link_to(t(:'.reset_password'), send_password_reset_path, method: :post) %>
+      <%= link_to(t(:'.reset_password'), password_send_reset_path, method: :post) %>
     </p>
   <% else %>
     <p>
       <%= t(:'.trouble_logging_in') %>
-      <%= link_to(t(:'.add_password'), send_password_add_path, method: :post) %>
+      <%= link_to(t(:'.add_password'), password_send_add_path, method: :post) %>
     </p>
   <% end %>
 

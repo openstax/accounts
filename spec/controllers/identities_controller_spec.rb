@@ -15,7 +15,7 @@ describe IdentitiesController, type: :controller do
       FactoryGirl.create :user, :terms_agreed, username: 'user_no_identity'
     }
 
-    context 'PUT update' do
+    context 'PUT set' do
       before do
         expect(!!identity.authenticate('password')).to eq true
         expect(!!identity.authenticate('new_password')).to eq false
@@ -24,7 +24,7 @@ describe IdentitiesController, type: :controller do
       context "anonymous user" do
         it "requires login" do
           expect(
-            put 'update', set_password: {
+            put 'set', set_password: {
               password: 'new_password', password_confirmation: 'password_confirmation'
             }
           ).to redirect_to login_path
@@ -43,7 +43,7 @@ describe IdentitiesController, type: :controller do
           end
 
           it "updates the user's password" do
-            put 'update', set_password: {
+            put 'set', set_password: {
               password: 'new_password', password_confirmation: 'new_password'
             }
             expect(response.status).to eq 202
@@ -54,7 +54,7 @@ describe IdentitiesController, type: :controller do
 
         context 'with old signin' do
           it "does not update the user's password" do
-            put 'update', set_password: {
+            put 'set', set_password: {
               password: 'new_password', password_confirmation: 'new_password'
             }
             expect(response.status).to eq 302
@@ -71,19 +71,19 @@ describe IdentitiesController, type: :controller do
       context 'GET logged in' do
         it 'renders reset_password if has a password' do
           controller.sign_in! user
-          get 'reset_password'
-          expect(response.body).to include(t :"identities.reset_password.page_heading")
+          get 'reset'
+          expect(response.body).to include(t :"identities.reset.page_heading")
         end
 
         it 'redirects to add_password if does not have a password' do
           controller.sign_in! user_no_identity
-          expect(get 'reset_password').to redirect_to add_password_path
+          expect(get 'reset').to redirect_to password_add_path
         end
       end
 
       context "GET not logged in" do
         it 'errors if the login token is bad' do
-          get :reset_password, token: '123'
+          get :reset, token: '123'
           expect(response.code).to eq('400')
           expect(response.body).to include(t :"identities.there_was_a_problem_with_reset_link")
         end
@@ -91,7 +91,7 @@ describe IdentitiesController, type: :controller do
         it 'errors if the login token is expired' do
           user.reset_login_token(expiration_period: -1.year)
           user.save!
-          get :reset_password, token: user.login_token
+          get :reset, token: user.login_token
           expect(response.code).to eq('400')
           expect(response.body).to include(t :"identities.expired_reset_link")
         end
@@ -140,7 +140,7 @@ describe IdentitiesController, type: :controller do
 
         it 'changes password if everything validates' do
           reset_password('password!', 'password!')
-          expect(response).to redirect_to(reset_password_success_url)
+          expect(response).to redirect_to(password_reset_success_url)
           expect(flash[:alert]).to be_blank
           identity.reload
           expect(identity.authenticate('password')).to be_falsey
@@ -149,7 +149,7 @@ describe IdentitiesController, type: :controller do
       end
 
       def reset_password(password, confirmation)
-        post('reset_password', set_password: {
+        post('reset', set_password: {
           password: password, password_confirmation: confirmation
         })
       end

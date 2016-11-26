@@ -3,17 +3,18 @@ class IdentitiesController < ApplicationController
   include RequireRecentSignin
 
   skip_before_filter :authenticate_user!, :expired_password, :finish_sign_up,
-                     only: [:reset_password, :send_password_reset, :sent_password_reset, :add_password, :send_password_add, :sent_password_add]
+                     only: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:reset_password, :send_password_reset, :sent_password_reset, :add_password, :send_password_add, :sent_password_add,
-                         :reset_password_success, :add_password_success]  # TODO dry up these filters
+                  only: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add,
+                         :reset_success, :add_success]
 
   # TODO is it bad that reset_password excluded from reauthenticate if too old?  write spec
   before_filter :reauthenticate_user_if_signin_is_too_old!,
-                 except: [:reset_password, :send_password_reset, :sent_password_reset, :add_password, :send_password_add, :sent_password_add]
+                 except: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add]
 
-  def update  # TODO only used for password add/change from profile page -- rename to something more specific
+  # `set` is used from the profile page to edit/add a user's password
+  def set
     handle_with(IdentitiesSetPassword,
                 success: lambda  do
                   security_log :password_updated
@@ -25,24 +26,24 @@ class IdentitiesController < ApplicationController
                 end)
   end
 
-  def reset_password
+  def reset
     set_password(kind: :reset)
   end
 
-  def add_password
+  def add
     set_password(kind: :add)
   end
 
-  def send_password_reset
-    send_password_email(kind: :reset, success_redirect: :sent_password_reset)
+  def send_reset
+    send_password_email(kind: :reset, success_redirect: :sent_reset)
   end
 
-  def send_password_add
-    send_password_email(kind: :add, success_redirect: :sent_password_add)
+  def send_add
+    send_password_email(kind: :add, success_redirect: :sent_add)
   end
 
-  def sent_password_reset; end
-  def sent_password_add; end
+  def sent_reset; end
+  def sent_add; end
 
   def continue
     redirect_back
@@ -70,9 +71,9 @@ class IdentitiesController < ApplicationController
                     security_log :sign_in_successful, {type: 'token'}
                     case kind
                     when :add
-                      redirect_to action: :reset_password if current_user.identity.present?
+                      redirect_to action: :reset if current_user.identity.present?
                     when :reset
-                      redirect_to action: :add_password if current_user.identity.nil?
+                      redirect_to action: :add if current_user.identity.nil?
                     end
                   end,
                   failure: -> {
@@ -82,13 +83,11 @@ class IdentitiesController < ApplicationController
       handle_with(IdentitiesSetPassword,
                   success: lambda do
                     security_log :password_reset
-                    redirect_to action: "#{kind}_password_success".to_sym
+                    redirect_to action: "#{kind}_success".to_sym
                   end,
                   failure: lambda do
-                    # debugger
                     security_log :password_reset_failed
-                    action = "#{kind}_password".to_sym
-                    render action, status: 400
+                    render kind, status: 400
                   end)
     end
 

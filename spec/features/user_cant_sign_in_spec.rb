@@ -77,13 +77,13 @@ feature "User can't sign in", js: true do
       expect(page).to have_content(t :"controllers.sessions.incorrect_password")
 
       click_link(t :"sessions.authenticate.reset_password")
-      expect(page).to have_content(/sent_password/)  # TODO check for real sent password content
+      expect(page).to have_content(/sent_reset/)  # TODO check for real sent password content
 
       open_email('user@example.com')
       expect(current_email).to have_content("Click here to reset")
 
-      reset_password_path = get_path_from_absolute_link(current_email, 'a')
-      visit reset_password_path
+      password_reset_path = get_path_from_absolute_link(current_email, 'a')
+      visit password_reset_path
 
       complete_reset_password_screen
       complete_reset_password_success_screen
@@ -102,13 +102,13 @@ feature "User can't sign in", js: true do
       # TODO somehow simulate oauth failure so we see error message
 
       click_link(t :"sessions.authenticate.add_password")
-      expect(page).to have_content(/sent_password/)  # TODO check for real sent password content
+      expect(page).to have_content(/sent_add/)  # TODO check for real sent password content
 
       open_email('user@example.com')
       expect(current_email).to have_content("Click here to add")
 
-      add_password_path = get_path_from_absolute_link(current_email, 'a')
-      visit add_password_path
+      password_add_path = get_path_from_absolute_link(current_email, 'a')
+      visit password_add_path
 
       expect(@user.identity(true)).to be_nil
 
@@ -176,7 +176,7 @@ feature "User can't sign in", js: true do
   #   sign_in_help_email_sent? @user
 
   #   visit @reset_link
-  #   expect(page.text).to include(t :"identities.reset_password.page_heading")
+  #   expect(page.text).to include(t :"identities.reset.page_heading")
   #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
   #   fill_in (t :"identities.password"), with: 'Pazzw0rd!'
   #   fill_in (t :"identities.confirm_password"), with: 'Pazzw0rd!'
@@ -192,7 +192,7 @@ feature "User can't sign in", js: true do
   #   sign_in_help_email_sent? @user
 
   #   visit @reset_link
-  #   expect(page.text).to include(t :"identities.reset_password.page_heading")
+  #   expect(page.text).to include(t :"identities.reset.page_heading")
   #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
   #   fill_in (t :"identities.password"), with: 'Pazzw0rd!'
   #   fill_in (t :"identities.confirm_password"), with: 'Pazzw0rd!'
@@ -270,7 +270,7 @@ feature "User can't sign in", js: true do
   #   sign_in_help_email_sent? @user
 
   #   visit @reset_link
-  #   expect(page.text).to include(t :"identities.reset_password.page_heading")
+  #   expect(page.text).to include(t :"identities.reset.page_heading")
   #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
   #   fill_in (t :"identities.password"), with: 'Pazzw0rd!'
   #   fill_in (t :"identities.confirm_password"), with: 'Pazzw0rd!'
@@ -286,7 +286,7 @@ feature "User can't sign in", js: true do
   #   sign_in_help_email_sent? @user
 
   #   visit @reset_link
-  #   expect(page.text).to include(t :"identities.reset_password.page_heading")
+  #   expect(page.text).to include(t :"identities.reset.page_heading")
   #   expect(page.text).not_to include(t :"handlers.identities_reset_password.reset_link_is_invalid")
   #   fill_in (t :"identities.password"), with: 'Pazzw0rd!'
   #   fill_in (t :"identities.confirm_password"), with: 'Pazzw0rd!'
