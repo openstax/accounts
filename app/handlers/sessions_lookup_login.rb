@@ -19,11 +19,6 @@ class SessionsLookupLogin
 
   def handle
     run(GetLoginInfo, username_or_email: login_params.username_or_email)
-    fatal_error(code: :several_accounts_for_one_email) if input_is_email? && outputs.names.many?
   end
 
-
-  def input_is_email?
-    login_params.username_or_email.include?('@')
-  end
 end
