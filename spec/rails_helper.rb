@@ -30,14 +30,60 @@ require 'shoulda/matchers'
 require 'capybara'
 require 'capybara/poltergeist'
 Capybara.javascript_driver = :poltergeist
+window_size = [1920, 6000]
+
+require 'capybara/email/rspec'
+
+if EnvUtilities.load_boolean(name: 'SSHOT', default: false)
+  require 'capybara-screenshot/rspec'
+  Capybara::Screenshot.autosave_on_failure = false
+  Capybara.asset_host = 'http://localhost:2999'
+  Capybara::Screenshot.append_timestamp = false
+  window_size = [1000, 6000] # narrower images
+
+  def screenshots_dir
+    @screenshots_dir ||= Rails.root.join "tmp/capybara/screenshots_#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
+  end
+
+  def screenshot!(suffix=nil)
+    include_html_screenshots = false
+
+    original_save_path = Capybara.save_path
+    begin
+      Capybara.save_path = screenshots_dir
+      saver = Capybara::Screenshot::Saver.new(
+        Capybara, Capybara.page, include_html_screenshots, screenshot_base(suffix)
+      )
+
+      if saver.save
+        {:html => saver.html_path, :image => saver.screenshot_path}
+      end
+    ensure
+      Capybara.save_path = original_save_path
+    end
+  end
+
+  def capture_email!(suffix=nil)
+    current_email.save_page("#{screenshots_dir}/#{screenshot_base(suffix)}.html")
+  end
+
+  def screenshot_base(suffix=nil)
+    @screenshot_prefix_usage_counts ||= {}
+    prefix = "#{self.class.description}_#{RSpec.current_example.description}".gsub(/\W+/,'_')
+    @screenshot_prefix_usage_counts[prefix] ||= 0
+    next_available_index = (@screenshot_prefix_usage_counts[prefix] += 1)
+    "#{prefix}_#{next_available_index}#{'_' + suffix if suffix.present?}".gsub(/\W+/,'_')
+  end
+else
+  def screenshot!(*args); end
+  def capture_email!(*args); end
+end
 
 Capybara.register_driver :poltergeist do |app|
   Capybara::Poltergeist::Driver.new(app, {
-    :window_size => [1920, 6000]
+    :window_size => window_size
   })
 end
-
-require 'capybara/email/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -160,6 +206,11 @@ def disable_sfdc_client
   allow(ActiveForce)
     .to receive(:sfdc_client)
     .and_return(double('null object').as_null_object)
+end
+
+# This method isn't great... seems to take too much
+def just_text(string)
+  ActionView::Base.full_sanitizer.sanitize(string).gsub(/\W*\n\W*/," \n ")
 end
 
 RSpec::Matchers.define :have_routine_error do |error_code|

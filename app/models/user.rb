@@ -55,6 +55,8 @@ class User < ActiveRecord::Base
 
   validate :ensure_names_continue_to_be_present
 
+  validates :login_token, uniqueness: {allow_nil: true}
+
   delegate_to_routine :destroy
 
   attr_accessible :title, :first_name, :last_name, :suffix, :username
@@ -182,6 +184,17 @@ class User < ActiveRecord::Base
 
   def can_sort?(resource)
     resource.can_be_sorted_by?(self)
+  end
+
+  # Login token
+
+  def reset_login_token(expiration_period: nil)
+    self.login_token = SecureRandom.hex(16)
+    self.login_token_expires_at = expiration_period.nil? ? nil : DateTime.now + expiration_period
+  end
+
+  def login_token_expired?
+    !login_token_expires_at.nil? && login_token_expires_at <= DateTime.now
   end
 
   protected

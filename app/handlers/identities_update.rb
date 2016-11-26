@@ -3,7 +3,6 @@ class IdentitiesUpdate
   lev_handler
 
   paramify :identity do
-    attribute :current_password, type: String
     attribute :password, type: String
     attribute :password_confirmation, type: String
   end

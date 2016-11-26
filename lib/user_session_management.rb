@@ -50,9 +50,10 @@ module UserSessionManagement
   # Doorkeeper controllers define authenticate_admin!, so we need another name
   alias_method :admin_authentication!, :authenticate_admin!
 
-  def set_login_state(username_or_email:, names:, providers:)
+  def set_login_state(username_or_email: nil, matching_user_ids: nil, names: nil, providers: nil)
     session[:login] = {
       'u' => username_or_email,
+      'm' => matching_user_ids,
       'n' => names,
       'p' => providers
     }
@@ -61,6 +62,7 @@ module UserSessionManagement
   def get_login_state
     {
       username_or_email: session[:login].try(:[],'u'),
+      matching_user_ids: session[:login].try(:[], 'm'),
       names: session[:login].try(:[],'n'),
       providers: session[:login].try(:[],'p')
     }

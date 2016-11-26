@@ -11,7 +11,7 @@ class ConfirmByPin
   end
 
   def self.max_pin_failures
-    10
+    12
   end
 
   protected

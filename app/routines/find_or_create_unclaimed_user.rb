@@ -12,7 +12,6 @@ class FindOrCreateUnclaimedUser
 
   uses_routine CreateUser, translations: { outputs: { type: :verbatim } }
   uses_routine AddEmailToUser
-  uses_routine SetPassword
   uses_routine CreateIdentity
 
   protected

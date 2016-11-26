@@ -35,14 +35,6 @@ feature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'with an unknown username' do
-    with_forgery_protection do
-      arrive_from_app
-      complete_login_username_or_email_screen 'user'
-      expect(page).to have_content(t :"errors.no_account_for_username_or_email")
-    end
-  end
-
   scenario 'with a password that is expired' do
     @user = create_user 'expired_password_user'
     identity = @user.identity
@@ -58,6 +50,7 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content(t :"controllers.identities.password_expired")
 
       complete_reset_password_screen
+      complete_reset_password_success_screen
 
       expect_back_at_app
     end
@@ -75,6 +68,7 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content(t :"controllers.identities.password_expired")
 
       complete_reset_password_screen
+      complete_reset_password_success_screen
       complete_terms_screens
 
       expect_back_at_app
@@ -124,32 +118,7 @@ feature 'User logs in as a local user', js: true do
 
       complete_login_username_or_email_screen 'user@example.com'
 
-      expect(page).to have_content(t :"errors.no_account_for_username_or_email")
-
-      complete_login_username_or_email_screen 'user'
-      complete_login_password_screen 'password'
-
-      expect_back_at_app
-    end
-  end
-
-  scenario 'with an email address linked to several user accounts' do
-    with_forgery_protection do
-      # two users with the same email address, both verified
-      user = create_user 'user'
-      create_email_address_for(user, 'user@example.com')
-      another_user = create_user 'another_user'
-      create_email_address_for(another_user, 'user@example.com')
-
-      arrive_from_app
-
-      complete_login_username_or_email_screen 'user@example.com'
-
-      # TODO test that it just says "Hi!" (no names since there are multiple)
-
-      complete_login_password_screen 'password'
-
-      expect(page).to have_content(t :"controllers.sessions.several_accounts_for_one_email")
+      expect(page).to have_content(t :"sessions.new.unknown_email")
 
       complete_login_username_or_email_screen 'user'
       complete_login_password_screen 'password'

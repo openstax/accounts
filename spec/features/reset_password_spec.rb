@@ -3,78 +3,75 @@ require 'rails_helper'
 feature 'User resets password', js: true do
   background do
     @user = create_user 'user'
-    @reset_code = generate_reset_code_for 'user'
+    @login_token = generate_login_token_for 'user'
   end
 
   scenario 'using a link without a code' do
     visit '/reset_password'
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
+    expect(page).to have_content(t :"identities.there_was_a_problem_with_reset_link")
     expect(page).to have_current_path reset_password_path
   end
 
   scenario 'using a link with an invalid code' do
-    visit '/reset_password?code=1234'
+    visit '/reset_password?token=1234'
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
+    expect(page).to have_content(t :"identities.there_was_a_problem_with_reset_link")
     expect_reset_password_page('1234')
   end
 
   scenario 'using a link with an expired code' do
-    @reset_code = generate_expired_reset_code_for 'user'
-    visit "/reset_password?code=#{@reset_code}"
+    @login_token = generate_expired_login_token_for 'user'
+    visit "/reset_password?token=#{@login_token}"
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"handlers.identities_reset_password.reset_link_expired")
+    expect(page).to have_content(t :"identities.expired_reset_link")
     expect_reset_password_page
   end
 
   scenario 'using a link with a valid code' do
-    visit "/reset_password?code=#{@reset_code}"
+    visit "/reset_password?token=#{@login_token}"
     expect(page).to have_no_missing_translations
-    expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
+    expect(page).to have_content(t :"identities.confirm_password")
     expect_reset_password_page
   end
 
   scenario 'with a blank password' do
-    visit "/reset_password?code=#{@reset_code}"
-    expect(page).to have_no_missing_translations
-    expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
+    visit "/reset_password?token=#{@login_token}"
     expect_reset_password_page
-    click_button (t :"identities.reset_password.set_password")
+    click_button (t :"identities.set_password")
     expect(page).to have_content("Password can't be blank")
-    expect(page).to have_content("Password is too short")
   end
 
   scenario 'password is too short' do
-    visit "/reset_password?code=#{@reset_code}"
+    visit "/reset_password?token=#{@login_token}"
     expect(page).to have_no_missing_translations
     expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
     expect_reset_password_page
-    fill_in (t :"identities.reset_password.password"), with: 'pass'
-    fill_in (t :"identities.reset_password.confirm_password"), with: 'pass'
-    click_button (t :"identities.reset_password.set_password")
+    fill_in (t :"identities.password"), with: 'pass'
+    fill_in (t :"identities.confirm_password"), with: 'pass'
+    click_button (t :"identities.set_password")
     expect(page).to have_content('Password is too short')
   end
 
   scenario "password and password confirmation don't match" do
-    visit "/reset_password?code=#{@reset_code}"
+    visit "/reset_password?token=#{@login_token}"
     expect(page).to have_no_missing_translations
     expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
     expect_reset_password_page
-    fill_in (t :"identities.reset_password.password"), with: 'password!'
-    fill_in (t :"identities.reset_password.confirm_password"), with: 'password!!'
-    click_button (t :"identities.reset_password.set_password")
+    fill_in (t :"identities.password"), with: 'password!'
+    fill_in (t :"identities.confirm_password"), with: 'password!!'
+    click_button (t :"identities.set_password")
     expect(page).to have_content("Password confirmation doesn't match Password")
   end
 
   scenario 'successful' do
-    visit "/reset_password?code=#{@reset_code}"
+    visit "/reset_password?token=#{@login_token}"
     expect(page).to have_no_missing_translations
-    expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    fill_in (t :"identities.reset_password.password"), with: '1234abcd'
-    fill_in (t :"identities.reset_password.confirm_password"), with: '1234abcd'
-    click_button (t :"identities.reset_password.set_password")
-    expect(page).to have_content(t :"controllers.identities.password_reset_successfully")
+    fill_in (t :"identities.password"), with: '1234abcd'
+    fill_in (t :"identities.confirm_password"), with: '1234abcd'
+    click_button (t :"identities.set_password")
+    expect(page).to have_content(t :"identities.reset_password_success.message")
+    click_link (t :"identities.reset_password_success.continue")
 
     expect_profile_page
 
@@ -92,34 +89,16 @@ feature 'User resets password', js: true do
     expect_profile_page
     expect(page).to have_no_missing_translations
     expect(page).to have_content(@user.full_name)
-
-    click_link (t :"users.edit.sign_out")
-
-    # check that the reset password link cannot be reused again
-    visit "/reset_password?code=#{@reset_code}"
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"handlers.identities_reset_password.reset_link_expired")
   end
 
-  scenario 'without identity' do
-    visit '/signin'
-    expect(page).to have_no_missing_translations
-    complete_login_username_or_email_screen 'user'
-    complete_login_password_screen 'password'
-
-    expect_profile_page
-
+  scenario 'without identity gets redirected to add password' do
     @user.identity.destroy
-    visit '/reset_password'
-    expect(page).to have_no_missing_translations
-    expect(page).to(
-      have_content(t :"controllers.identities.cannot_reset_password_because_user_doesnt_have_one")
-    )
-    expect_profile_page
+    visit "/reset_password?token=#{@login_token}"
+    expect(page).to have_current_path add_password_path
   end
 
-  def expect_reset_password_page(code = @reset_code)
-    expect(page).to have_current_path reset_password_path(code: code)
+  def expect_reset_password_page(code = @login_token)
+    expect(page).to have_current_path reset_password_path(token: code)
     expect(page).to have_no_missing_translations
   end
 

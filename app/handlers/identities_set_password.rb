@@ -1,8 +1,8 @@
-class IdentitiesResetPassword
+class IdentitiesSetPassword
 
   lev_handler
 
-  paramify :reset_password do
+  paramify :set_password do
     attribute :password, type: String
     attribute :password_confirmation, type: String
 
@@ -10,7 +10,7 @@ class IdentitiesResetPassword
     validates :password_confirmation, presence: true
   end
 
-  uses_routine SetPassword, translations: { outputs: { type: :verbatim } }
+  uses_routine SetPassword
 
   protected
 
@@ -20,7 +20,7 @@ class IdentitiesResetPassword
 
   def handle
     run(SetPassword, user: caller,
-                     password: reset_password_params.password,
-                     password_confirmation: reset_password_params.password_confirmation )
+                     password: set_password_params.password,
+                     password_confirmation: set_password_params.password_confirmation )
   end
 end

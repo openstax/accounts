@@ -73,17 +73,19 @@ def create_email_address_for(user, email_address, confirmation_code=nil)
                      verified: confirmation_code.nil?)
 end
 
-def generate_reset_code_for(username)
+def generate_login_token_for(username)
   user = User.find_by_username(username)
-  GeneratePasswordResetCode.call(user.identity).outputs[:code]
+  user.reset_login_token
+  user.save!
+  user.login_token
 end
 
-def generate_expired_reset_code_for(username)
-  one_year_ago = 1.year.ago
-  allow(DateTime).to receive(:now).and_return(one_year_ago)
-  reset_code = generate_reset_code_for username
-  allow(DateTime).to receive(:now).and_call_original
-  reset_code
+def generate_expired_login_token_for(username)
+  user = User.find_by_username(username)
+  user.reset_login_token
+  user.login_token_expires_at = 1.year.ago
+  user.save!
+  user.login_token
 end
 
 def sign_in_help_email_sent?(user)
@@ -211,6 +213,10 @@ def expect_sign_in_page
   expect(page).to have_content(t :"sessions.new.page_heading")
 end
 
+def expect_authenticate_page
+  expect(page.body).to match(/Hi.*!/)
+end
+
 def expect_social_sign_up_page
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"signup.new_account.password_managed_by", manager: '')
@@ -250,7 +256,7 @@ def expect_signup_profile_screen
 end
 
 def complete_login_username_or_email_screen(username_or_email)
-  fill_in (t :"sessions.new.email_placeholder"), with: username_or_email
+  fill_in 'login_username_or_email', with: username_or_email
   expect_sign_in_page
   expect(page).to have_no_missing_translations
   click_button (t :"sessions.new.next")
@@ -349,9 +355,26 @@ end
 
 def complete_reset_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in (t :"identities.reset_password.password"), with: password
-  fill_in (t :"identities.reset_password.confirm_password"), with: password
-  click_button (t :"identities.reset_password.set_password")
+  fill_in (t :"identities.password"), with: password
+  fill_in (t :"identities.confirm_password"), with: password
+  click_button (t :"identities.set_password")
+  expect(page).to have_content(t :"identities.reset_password_success.message")
+end
+
+def complete_reset_password_success_screen
+  click_link (t :"identities.reset_password_success.continue")
+end
+
+def complete_add_password_screen(password=nil)
+  password ||= 'Passw0rd!'
+  fill_in (t :"identities.password"), with: password
+  fill_in (t :"identities.confirm_password"), with: password
+  click_button (t :"identities.set_password")
+  expect(page).to have_content(t :"identities.add_password_success.message")
+end
+
+def complete_add_password_success_screen
+  click_link (t :"identities.add_password_success.continue")
 end
 
 def complete_terms_screens
@@ -381,3 +404,9 @@ def mock_current_user(user)
   allow_any_instance_of(ActionController::Base).to receive(:current_user) { user }
   allow_any_instance_of(UserSessionManagement).to receive(:current_user) { user }
 end
+
+def get_path_from_absolute_link(node, xpath)
+  uri = URI(node.find(xpath)['href'])
+  "#{uri.path}?#{uri.query}"
+end
+

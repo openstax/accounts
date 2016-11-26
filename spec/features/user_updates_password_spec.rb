@@ -66,8 +66,9 @@ feature 'User updates password', js: true do
         fill_in 'password_confirmation', with: ''
         find('.editable-submit').click
       }
+
       expect(page).to have_no_missing_translations
-      expect(page).to have_content("doesn't match Password")
+      expect(page).to have_content("can't be blank")
       expect(page).not_to have_content(t :"controllers.identities.password_changed")
 
       within(:css, '[data-provider=identity]') {

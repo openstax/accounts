@@ -4,7 +4,8 @@ secrets = Rails.application.secrets[:exception]
 
 OpenStax::RescueFrom.configure do |config|
   # Show the default Rails exception debugging page on dev
-  config.raise_exceptions = Rails.env.development?
+  config.raise_exceptions = EnvUtilities.load_boolean(name: 'RAISE',
+                                                      default: Rails.env.development?)
 
   config.app_name = 'Accounts'
   config.app_env = secrets['environment_name']

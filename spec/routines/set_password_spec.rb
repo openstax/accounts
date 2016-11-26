@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe SetPassword do
+  let(:user) { identity.user }
+
   context 'setting the password' do
     let!(:identity) { FactoryGirl.create :identity, password: 'qwertyui' }
 
@@ -8,34 +10,17 @@ describe SetPassword do
       expect(identity.authenticate('qwertyui')).to eq identity
       expect(identity.authenticate('password')).to eq false
 
-      SetPassword.call(identity, 'password', 'password')
+      call(user, 'password', 'password')
       identity.reload
 
       expect(identity.authenticate('qwertyui')).to eq false
       expect(identity.authenticate('password')).to eq identity
     end
 
-    it 'resets the password_reset_code' do
-      expect(identity.password_reset_code).to be_nil
-      code = GeneratePasswordResetCode.call(identity).outputs[:code]
-      expect(code).not_to be_nil
-
-      identity.reload
-
-      expect(identity.password_reset_code.code).to eq(code)
-      expect(identity.password_reset_code.expires_at).not_to be_nil
-
-      SetPassword.call(identity, 'password', 'password')
-
-      identity.reload
-
-      expect(identity.password_reset_code.expired?).to eq true
-    end
-
     it 'returns errors if password is too short' do
       expect(identity.authenticate('qwertyui')).to eq identity
 
-      errors = SetPassword.call(identity, 'pass', 'pass').errors
+      errors = call(user, 'pass', 'pass').errors
       expect(errors).not_to be_empty
 
       identity.reload
@@ -48,7 +33,7 @@ describe SetPassword do
       expect(identity.authenticate('qwertyui')).to eq identity
       expect(identity.authenticate('password')).to eq false
 
-      errors = SetPassword.call(identity, 'password', 'passwordd').errors
+      errors = call(user, 'password', 'passwordd').errors
       expect(errors).not_to be_empty
 
       identity.reload
@@ -67,7 +52,7 @@ describe SetPassword do
       stub_const('Identity::DEFAULT_PASSWORD_EXPIRATION_PERIOD', 1.year)
       one_year_later = DateTime.now + 1.year
 
-      SetPassword.call(identity, '1234567890', '1234567890')
+      call(user, '1234567890', '1234567890')
 
       identity.reload
 
@@ -78,4 +63,9 @@ describe SetPassword do
       expect(identity.password_expired?).to eq true
     end
   end
+
+  def call(user, password, confirmation)
+    described_class.call(user: user, password: password, password_confirmation: confirmation)
+  end
+
 end

@@ -163,16 +163,34 @@ en:
         %{contact_info} and reference error %{error_id}.
 
   identities:
+    confirm_password: Confirm Password
+    password: Password
+    set_password: Set Password
+    there_was_a_problem_with_reset_link: >-
+      Unfortunately, there was a problem with your password reset link. If you
+      continue to have problems, please contact support.
+    expired_reset_link: >-
+      The password reset link you used has expired.
+    use_form_below_to_reset_password: >-
+      Use the form below to reset your password.
+    use_form_below_to_add_password: >-
+      Use the form below to add a password.
     reset_password:
-      confirm_password: Confirm Password
       page_heading: Reset Password
-      password: Password
-      set_password: Set Password
-      there_was_a_problem_with_reset_link: >-
-        Unfortunately, there was a problem with your password reset link. If you
-        continue to have problems, please contact support.
       use_form_below_to_reset_password: >-
         Use the form below to reset your password.
+    add_password:
+      page_heading: Add Password
+      use_form_below_to_add_password: >-
+        Use the form below to add a password.
+    add_password_success:
+      page_heading: Success!
+      message: Your password was added to your account.
+      continue: Continue
+    reset_password_success:
+      page_heading: Success!
+      message: Your password has been reset.
+      continue: Continue
 
   layouts:
     application_footer:
@@ -204,7 +222,7 @@ en:
           below and we'll send you an email about how to regain access to your
           account. If you do not have this information, please %{link}.
         contact_customer_support: contact customer support
-      page_heading: Recover Password
+      page_heading: Get help logging in
       submit: Submit
       submitting: Submitting...
       username_or_email: Username or Email
@@ -224,10 +242,22 @@ en:
       used_this_method_last_time: >-
         It looks like you used this the last time you signed in.
       email: Email
-      email_placeholder: "name@mail.edu"
+      email_placeholder: Email or username
+      username_placeholder: Username
       unrecognized_email: We don’t recognize this email, please try again.
       next: Next
       cannot_find_user: 'Cannot find user'
+      unknown_username: We don't recognize this username.  Please try again or try your email instead.
+      unknown_email: We don't recognize this email. Please try again.
+      multiple_users:
+        # %{link}   a hyperlink that sends usernames to the email being used for log in.
+        #           The label is defined by the .click_here key.
+        content_html: >-
+          We found several accounts with this email. Please log in using your username.<br/>
+          Forgot your username? %{link}.
+        click_here: Click here and we'll email them to you
+      sent_multiple_usernames: >-
+        Please check <strong>%{email}</strong> for an email listing your usernames, and use one to log in.
 
     authenticate:
       name_greeting: Hi %{name}!
@@ -238,6 +268,9 @@ en:
       login: Login
       password: Password
       forgot_password: Can’t remember password?
+      trouble_logging_in: Trouble logging in?
+      reset_password: Click here to reset your password
+      add_password: Click here to add a password
 
   sign_in_help_mailer:
     sign_in_help:

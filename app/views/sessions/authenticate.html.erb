@@ -24,6 +24,16 @@
     <% end %>
   <% end %>
 
+  <%# Keep Twitter log in around until we figure out a way to move those
+      users to a different authentication %>
+
+  <% if providers.keys.include?('twitter') %>
+    <%= link_to "/auth/twitter", class: 'btn btn-block btn-social btn-twitter',
+                                 id: 'twitter-login-button' do %>
+      <span class="fa fa-twitter"></span> <%= t :".sign_in_with_twitter" %>
+    <% end %>
+  <% end %>
+
   <% if providers.keys.include?('identity') %>
     <% if providers.many? %>
 
@@ -41,11 +51,19 @@
       <input type="submit" class="primary" value="<%= t '.login' %>" />
 
       <div class="footer">
-        <p>
-          <%= link_to(t('forgot_password'), login_help_path) %>
-            </p>
-         </div>
-     <% end %>
 
+         </div>
+    <% end %>
+
+    <p>
+      <%= t(:'.trouble_logging_in') %>
+      <%= link_to(t(:'.reset_password'), send_password_reset_path, method: :post) %>
+    </p>
+  <% else %>
+    <p>
+      <%= t(:'.trouble_logging_in') %>
+      <%= link_to(t(:'.add_password'), send_password_add_path, method: :post) %>
+    </p>
   <% end %>
+
 </div>

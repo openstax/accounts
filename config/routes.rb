@@ -29,6 +29,8 @@ Rails.application.routes.draw do
     get 'help', path: '/login/help', as: :login_help
     post 'help', path: '/login/help'
 
+    post 'email_usernames'
+
     # Maintain these deprecated routes for a while until client code learns to
     # use /login and /logout
     get 'signin', action: :new
@@ -70,9 +72,24 @@ Rails.application.routes.draw do
   end
 
   resource :identity, only: :update
+
   scope controller: 'identities' do
     get 'reset_password'
     post 'reset_password'
+
+    post 'send_password_reset'
+    get 'sent_password_reset'
+
+    post 'send_password_add'
+    get 'sent_password_add'
+
+    get 'add_password'
+    post 'add_password'
+
+    get 'reset_password_success'
+    get 'add_password_success'
+
+    get 'continue' # TODO would be nice for this to be scoped - can we change all of these to be /password/blah
   end
 
   resources :contact_infos, only: [:create, :destroy] do

@@ -48,6 +48,14 @@ $ rails server
 
 which will start Accounts up on port 2999, i.e. http://localhost:2999.
 
+## Running Specs
+
+When running feature specs, the default behavior is for exceptions to be rescued and nice error pages to be shown.  This can make debugging difficult if you're not expecting an error.  To not rescue exceptions, do:
+
+```
+$ RAISE=true rspec
+```
+
 ## Background Jobs
 
 Accounts in production runs background jobs using `delayed_job`.
