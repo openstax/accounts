@@ -32,7 +32,7 @@ feature "User can't sign in", js: true do
     scenario "multiple accounts match email" do
       email_address = 'user@example.com'
       user1 = create_user 'user1'
-      email1 = create_email_address_for(user1, 'user@example.com')
+      email1 = create_email_address_for(user1, email_address)
       user2 = create_user 'user2'
       email2 = create_email_address_for(user2, 'user-2@example.com')
       ContactInfo.where(id: email2.id).update_all(value: email1.value)
