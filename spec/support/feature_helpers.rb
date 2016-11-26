@@ -358,6 +358,11 @@ def complete_reset_password_screen(password=nil)
   fill_in (t :"identities.password"), with: password
   fill_in (t :"identities.confirm_password"), with: password
   click_button (t :"identities.set_password")
+  expect(page).to have_content(t :"identities.reset_password_success.message")
+end
+
+def complete_reset_password_success_screen
+  click_link (t :"identities.reset_password_success.continue")
 end
 
 def complete_add_password_screen(password=nil)
@@ -365,6 +370,11 @@ def complete_add_password_screen(password=nil)
   fill_in (t :"identities.password"), with: password
   fill_in (t :"identities.confirm_password"), with: password
   click_button (t :"identities.set_password")
+  expect(page).to have_content(t :"identities.add_password_success.message")
+end
+
+def complete_add_password_success_screen
+  click_link (t :"identities.add_password_success.continue")
 end
 
 def complete_terms_screens

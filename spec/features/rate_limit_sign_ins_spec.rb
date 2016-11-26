@@ -178,14 +178,8 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
   def reset_password(password:)
     login_token = generate_login_token_for 'user'
     visit "/reset_password?token=#{login_token}"
-    expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    expect(page).to have_content(t :"identities.confirm_password")
-    fill_in (t :"identities.password"), with: password
-    fill_in (t :"identities.confirm_password"), with: password
-    click_button (t :"identities.set_password")
-    expect(page).to have_content(
-      t :"controllers.identities.password_reset_successfully"
-    )
+    complete_reset_password_screen(password)
+    complete_reset_password_success_screen
   end
 
 end

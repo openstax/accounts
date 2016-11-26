@@ -5,6 +5,9 @@ class IdentitiesSetPassword
   paramify :set_password do
     attribute :password, type: String
     attribute :password_confirmation, type: String
+
+    validates :password, presence: true
+    validates :password_confirmation, presence: true
   end
 
   uses_routine SetPassword

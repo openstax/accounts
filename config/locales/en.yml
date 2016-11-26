@@ -183,6 +183,14 @@ en:
       page_heading: Add Password
       use_form_below_to_add_password: >-
         Use the form below to add a password.
+    add_password_success:
+      page_heading: Success!
+      message: Your password was added to your account.
+      continue: Continue
+    reset_password_success:
+      page_heading: Success!
+      message: Your password has been reset.
+      continue: Continue
 
   layouts:
     application_footer:

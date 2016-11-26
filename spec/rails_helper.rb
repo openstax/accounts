@@ -208,6 +208,11 @@ def disable_sfdc_client
     .and_return(double('null object').as_null_object)
 end
 
+# This method isn't great... seems to take too much
+def just_text(string)
+  ActionView::Base.full_sanitizer.sanitize(string).gsub(/\W*\n\W*/," \n ")
+end
+
 RSpec::Matchers.define :have_routine_error do |error_code|
   include RSpec::Matchers::Composable
 

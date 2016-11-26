@@ -86,6 +86,8 @@ feature "User can't sign in", js: true do
       visit reset_password_path
 
       complete_reset_password_screen
+      complete_reset_password_success_screen
+
       expect_back_at_app
     end
 
@@ -111,6 +113,7 @@ feature "User can't sign in", js: true do
       expect(@user.identity(true)).to be_nil
 
       complete_add_password_screen
+      complete_add_password_success_screen
 
       expect(@user.identity(true)).not_to be_nil
       expect(@user.authentications(true).map(&:provider)).to contain_exactly(

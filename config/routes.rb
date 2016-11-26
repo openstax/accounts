@@ -85,6 +85,11 @@ Rails.application.routes.draw do
 
     get 'add_password'
     post 'add_password'
+
+    get 'reset_password_success'
+    get 'add_password_success'
+
+    get 'continue' # TODO would be nice for this to be scoped - can we change all of these to be /password/blah
   end
 
   resources :contact_infos, only: [:create, :destroy] do

@@ -6,13 +6,15 @@ class IdentitiesController < ApplicationController
                      only: [:reset_password, :send_password_reset, :sent_password_reset, :add_password, :send_password_add, :sent_password_add]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:reset_password, :send_password_reset, :sent_password_reset, :add_password, :send_password_add, :sent_password_add]  # TODO dry up these filters
+                  only: [:reset_password, :send_password_reset, :sent_password_reset, :add_password, :send_password_add, :sent_password_add,
+                         :reset_password_success, :add_password_success]  # TODO dry up these filters
 
+  # TODO is it bad that reset_password excluded from reauthenticate if too old?  write spec
   before_filter :reauthenticate_user_if_signin_is_too_old!,
                  except: [:reset_password, :send_password_reset, :sent_password_reset, :add_password, :send_password_add, :sent_password_add]
 
   def update  # TODO only used for password add/change from profile page -- rename to something more specific
-    handle_with(IdentitiesUpdate,
+    handle_with(IdentitiesUpdate,  # TODO change to IdentitiesSetPassword
                 success: lambda  do
                   security_log :password_updated
                   render status: :accepted,
@@ -31,8 +33,6 @@ class IdentitiesController < ApplicationController
     set_password(kind: :add)
   end
 
-  # TODO dry up this code!
-
   def send_password_reset
     send_password_email(kind: :reset, success_redirect: :sent_password_reset)
   end
@@ -44,6 +44,10 @@ class IdentitiesController < ApplicationController
   def sent_password_reset; end
   def sent_password_add; end
 
+  def continue
+    redirect_back
+  end
+
   protected
 
   def send_password_email(kind:, success_redirect:)
@@ -51,7 +55,7 @@ class IdentitiesController < ApplicationController
                 kind: kind,
                 user: User.find(get_login_state[:matching_user_ids].first),
                 success: lambda do
-                  redirect_to success_redirect
+                  redirect_to action: success_redirect
                 end,
                 failure: lambda do
                   redirect_to authenticate_path # TODO spec this or remove and switch success to complete
@@ -66,19 +70,22 @@ class IdentitiesController < ApplicationController
                     security_log :sign_in_successful, {type: 'token'}
                     case kind
                     when :add
-                      redirect_to :reset_password if current_user.identity.present?
+                      redirect_to action: :reset_password if current_user.identity.present?
                     when :reset
-                      redirect_to :add_password if current_user.identity.nil?
+                      redirect_to action: :add_password if current_user.identity.nil?
                     end
                   end,
-                  failure: ->{})
+                  failure: -> {
+                    render status: 400
+                  })
     elsif request.post?
       handle_with(IdentitiesSetPassword,
                   success: lambda do
                     security_log :password_reset
-                    redirect_back
+                    redirect_to action: "#{kind}_password_success".to_sym
                   end,
                   failure: lambda do
+                    # debugger
                     security_log :password_reset_failed
                     action = "#{kind}_password".to_sym
                     render action, status: 400

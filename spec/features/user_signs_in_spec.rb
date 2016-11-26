@@ -50,6 +50,7 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content(t :"controllers.identities.password_expired")
 
       complete_reset_password_screen
+      complete_reset_password_success_screen
 
       expect_back_at_app
     end
@@ -67,6 +68,7 @@ feature 'User logs in as a local user', js: true do
       expect(page).to have_content(t :"controllers.identities.password_expired")
 
       complete_reset_password_screen
+      complete_reset_password_success_screen
       complete_terms_screens
 
       expect_back_at_app

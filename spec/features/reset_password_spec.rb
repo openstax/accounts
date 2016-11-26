@@ -70,7 +70,8 @@ feature 'User resets password', js: true do
     fill_in (t :"identities.password"), with: '1234abcd'
     fill_in (t :"identities.confirm_password"), with: '1234abcd'
     click_button (t :"identities.set_password")
-    expect(page).to have_content(t :"controllers.identities.password_reset_successfully")
+    expect(page).to have_content(t :"identities.reset_password_success.message")
+    click_link (t :"identities.reset_password_success.continue")
 
     expect_profile_page
 
