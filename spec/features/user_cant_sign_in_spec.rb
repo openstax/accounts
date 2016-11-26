@@ -32,9 +32,10 @@ feature "User can't sign in", js: true do
     scenario "multiple accounts match email" do
       email_address = 'user@example.com'
       user1 = create_user 'user1'
-      create_email_address_for(user1, email_address)
+      email1 = create_email_address_for(user1, 'user@example.com')
       user2 = create_user 'user2'
-      create_email_address_for(user2, email_address)
+      email2 = create_email_address_for(user2, 'user-2@example.com')
+      ContactInfo.where(id: email2.id).update_all(value: email1.value)
 
       complete_login_username_or_email_screen(email_address)
       expect(page).to have_content(t(:"sessions.new.multiple_users.content_html").split('.')[0])
