@@ -24,9 +24,12 @@ class ContactInfo < ActiveRecord::Base
 
   before_save :add_unread_update
   before_destroy :check_if_last_verified
+  before_save :check_if_email_taken
 
   def confirmed;  verified;  end
   def confirmed?; verified?; end
+
+  def email?; type == 'EmailAddress' end
 
   def to_subclass
     return self unless valid?
@@ -54,6 +57,13 @@ class ContactInfo < ActiveRecord::Base
   def check_if_last_verified
     if verified? and not user.contact_infos.verified.many? and not destroyed_by_association
       errors.add(:user, 'unable to delete last verified email address')
+      return false
+    end
+  end
+
+  def check_if_email_taken
+    if (new_record? || value_changed?) && ContactInfo.email_addresses.where(value: value).any?
+      errors.add(:value, 'email is already in use')
       return false
     end
   end

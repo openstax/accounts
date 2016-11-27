@@ -37,7 +37,7 @@ class ImportUsers
                           row[:title], row[:first_name], row[:last_name],
                           row[:email_address])
               FindOrCreateApplicationUser.call(@app_id, @user.id) unless @app_id.nil?
-            rescue ActiveRecord::RecordInvalid => e
+            rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid => e
               model_name = e.record.class.name
               error = "#{model_name} #{e.inspect}"
             rescue ActiveRecord::StatementInvalid => e

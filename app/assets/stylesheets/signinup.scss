@@ -19,6 +19,13 @@ body.sessions {
     }
   }
 
+  .identity-password {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    input { margin: 0; }
+  }
+
   .separator-line {
     text-align: center;
     position: relative;
@@ -40,6 +47,5 @@ body.sessions {
       position: absolute;
       top: 50%;
     }
-
   }
 }

@@ -10,13 +10,19 @@ describe MergeUnclaimedUsers do
     end
     let!(:matching_user) do
       u = FactoryGirl.create(:user)
-      AddEmailToUser.call('unclaimeduser@example.com', u)
+      AddEmailToUser.call('matched@example.com', u)
       u
+    end
+    let(:matching_email) do
+      email = matching_user.contact_infos.last
+      email.value = 'unclaimeduser@example.com'
+      email.save(validate: false)
+      email
     end
 
     it "is claimed when email matches" do
       expect do
-        MergeUnclaimedUsers.call(matching_user.contact_infos.first)
+        MergeUnclaimedUsers.call(matching_email)
       end.to change(User,:count).by(-1)
       expect{ unclaimed_user.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
@@ -31,7 +37,7 @@ describe MergeUnclaimedUsers do
       application_user = FactoryGirl.create :application_user,
                                             application: application, user: unclaimed_user
 
-      MergeUnclaimedUsers.call(matching_user.contact_infos.first)
+      MergeUnclaimedUsers.call(matching_email)
       expect(matching_user.member_groups).to include(group)
       expect(matching_user.owned_groups).to  include(group)
 

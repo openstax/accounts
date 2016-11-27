@@ -28,16 +28,19 @@ describe ContactInfo do
   end
 
   context 'user emails' do
+    let(:user1){ FactoryGirl.create :user }
+    let(:user2){ FactoryGirl.create :user }
 
-    let!(:email1) { FactoryGirl.build(:email_address, verified: true,
-                                      value: 'my@email.com') }
-    let!(:email2) { FactoryGirl.build(:email_address, verified: true,
-                                      value: 'my@email.com') }
+    let!(:email1) { FactoryGirl.build(:email_address, user: user1,
+                                      verified: true, value: 'my1@email.com') }
+    let!(:email2) { FactoryGirl.build(:email_address, user: user2,
+                                      verified: true, value: 'my2@email.com') }
 
     it 'does not allow the same user to have a repeated email address' do
       email1.save!
       expect(email2).to be_valid
       email2.user = email1.user
+      email2.value = email1.value
       expect(email2).not_to be_valid
       expect(email2.errors.types[:value]).to include(:taken)
     end
@@ -54,6 +57,24 @@ describe ContactInfo do
       expect(email2.errors[:user].to_s).to include('unable to delete')
     end
 
-  end
+    context 'when altering email value' do
+      before(:each){
+        email1.save
+        email2.save
+      }
+      it 'does not allow a user to add an already used email' do
+        newemail = user2.email_addresses.build value: email1.value
+        expect(newemail.save).to be false
+        expect(newemail.errors[:value].to_s).to include('email is already in use')
+      end
 
+      it 'does not allow a user to update their email to be a duplicate' do
+        email1.save!
+        email2.save!
+        email1.value = email2.value
+        expect(email1.save).to be false
+        expect(email1.errors[:value].to_s).to include('email is already in use')
+      end
+    end
+  end
 end

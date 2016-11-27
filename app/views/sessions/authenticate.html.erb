@@ -42,7 +42,7 @@
     </div>
 
     <% end %>
-    <%= lev_form_for :login, url: '/auth/identity/callback' do |f| %>
+    <%= lev_form_for :login, url: '/auth/identity/callback', html: {class: "identity-password"} do |f| %>
 
       <%= f.password_field :password, placeholder: t(".password")  %>
 
@@ -50,12 +50,9 @@
 
       <input type="submit" class="primary" value="<%= t '.login' %>" />
 
-      <div class="footer">
-
-         </div>
     <% end %>
 
-    <p>
+    <p class="footer">
       <%= t(:'.trouble_logging_in') %>
       <%= link_to(t(:'.reset_password'), password_send_reset_path, method: :post) %>
     </p>

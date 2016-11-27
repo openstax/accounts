@@ -20,4 +20,5 @@ class SessionsLookupLogin
   def handle
     run(GetLoginInfo, username_or_email: login_params.username_or_email)
   end
+
 end
