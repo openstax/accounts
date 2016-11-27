@@ -88,26 +88,6 @@ def generate_expired_login_token_for(username)
   user.login_token
 end
 
-def sign_in_help_email_sent?(user)
-  user_emails = user.contact_infos.email_addresses
-  mail = ActionMailer::Base.deliveries.last
-  expect(mail.to.length).to eq(1)
-  expect(user_emails.collect {|e| e.value}).to include(mail.to[0])
-  expect(mail.from).to eq(['noreply@openstax.org'])
-  expect(mail.subject).to eq('[OpenStax] Instructions for signing in to your OpenStax account')
-  expect(mail.body.encoded).to include("Hi #{user.casual_name},")
-  unless user.identity.nil?
-    code = user.identity.password_reset_code.code
-    @reset_link = "/reset_password?code=#{code}"
-    expect(mail.body.encoded).to include("http://localhost:2999#{@reset_link}")
-  end
-  social_auths = user.authentications.reject { |a| a.provider == 'identity' }
-  social_auths.each do |social_auth|
-    expect(mail.body.encoded).to include("Sign in with #{social_auth.display_name}")
-    expect(mail.body.encoded).to include("http://localhost:2999/auth/#{social_auth.provider}")
-  end
-end
-
 def link_in_last_email
   mail = ActionMailer::Base.deliveries.last
   /http:\/\/[^\/]*(\/[^\s]*)/.match(mail.body.encoded)[1]

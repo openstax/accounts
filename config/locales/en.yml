@@ -272,13 +272,6 @@ en:
       reset_password: Click here to reset your password
       add_password: Click here to add a password
 
-  sign_in_help_mailer:
-    sign_in_help:
-      facebook: Facebook
-      twitter: Twitter
-      google: Google
-      simple_password: a password
-
   signup:
     # In fields `first_name`, `last_name`, `email_address` and `username`
     # the asterisk on the end indicated that appropriate field on sign up page

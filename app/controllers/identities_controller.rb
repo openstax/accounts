@@ -56,9 +56,12 @@ class IdentitiesController < ApplicationController
                 kind: kind,
                 user: User.find(get_login_state[:matching_user_ids].first),
                 success: lambda do
+                  security_log :help_requested
                   redirect_to action: success_redirect
                 end,
                 failure: lambda do
+                  # TODO get this security log in (copied from old sessions#help)
+                  # security_log :help_request_failed, username_or_email: params[:username_or_email]
                   redirect_to authenticate_path # TODO spec this or remove and switch success to complete
                 end)
   end

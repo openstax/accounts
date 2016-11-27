@@ -213,13 +213,6 @@ pl:
       used_this_method_last_time: Tej metody użyłeś/łaś poprzednim razem.
       username_or_email: Nazwa użytkownika albo adres e-mail
 
-  sign_in_help_mailer:
-    sign_in_help:
-      facebook: Facebook
-      twitter: Twitter
-      google: Google
-      simple_password: a password
-
   signup:
     new_account:
       cancel: Anuluj

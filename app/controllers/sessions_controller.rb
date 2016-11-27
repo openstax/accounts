@@ -8,14 +8,14 @@ class SessionsController < ApplicationController
 
   skip_before_filter :authenticate_user!, :expired_password,
                      only: [:new, :lookup_login, :authenticate,
-                            :create, :failure, :destroy, :help, :email_usernames]
+                            :create, :failure, :destroy, :email_usernames]
 
   skip_before_filter :finish_sign_up, only: [:destroy]  # TODO used?
 
   before_filter :get_authorization_url, only: [:new, :create]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :help, :redirect_back, :email_usernames]
+                  only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :redirect_back, :email_usernames]
 
   # Login form
   def new
@@ -166,43 +166,24 @@ class SessionsController < ApplicationController
 
   # OAuth failure (e.g. wrong password)
   def failure
-    flash.now[:alert] = case params[:message]
+    action, message = case params[:message]
     when 'cannot_find_user'
-      I18n.t :"errors.no_account_for_username_or_email"
+      [:new, (I18n.t :"errors.no_account_for_username_or_email")]
     when 'multiple_users'
-      I18n.t :"controllers.sessions.several_accounts_for_one_email"
+      [:new, (I18n.t :"controllers.sessions.several_accounts_for_one_email")]
     when 'bad_password'
-      I18n.t :"controllers.sessions.incorrect_password"
+      [:authenticate, (I18n.t :"controllers.sessions.incorrect_password")]
     when 'too_many_login_attempts'
-      I18n.t :"controllers.sessions.too_many_login_attempts.content",
-             reset_password: "<a href=\"#{login_help_url}\">#{
+      [:authenticate, (I18n.t :"controllers.sessions.too_many_login_attempts.content",
+                              reset_password: "<a href=\"#{password_send_reset_path}\">#{
                                 I18n.t :"controllers.sessions.too_many_login_attempts.reset_password"
-                             }</a>".html_safe
+                              }</a>".html_safe)]
     else
-      params[:message]
+      [:new, params[:message]]
     end
 
-    if params[:message] == 'bad_password'
-      render 'authenticate'
-    else
-      render 'new'
-    end
-  end
-
-  # Cannot login/forgot password
-  def help  # TODO OBE?
-    if request.post?
-      handle_with(SessionsHelp, # TODO ditch this handler if becomes unused
-                  success: lambda do
-                    security_log :help_requested
-                    redirect_to root_path,
-                                notice: (I18n.t :"controllers.sessions.accessing_instructions_emailed")
-                  end,
-                  failure: lambda do
-                    security_log :help_request_failed, username_or_email: params[:username_or_email]
-                    render :help, status: 400
-                  end)
-    end
+    flash.now[:alert] = message
+    render action
   end
 
   def email_usernames

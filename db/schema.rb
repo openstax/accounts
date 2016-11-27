@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161123185356) do
+ActiveRecord::Schema.define(version: 20161127063044) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -193,14 +193,6 @@ ActiveRecord::Schema.define(version: 20161123185356) do
     t.string   "email_subject_prefix", :default=>"", :null=>false
     t.boolean  "skip_terms",           :default=>false, :null=>false
     t.string   "scopes",               :default=>"", :null=>false
-  end
-
-  create_table "password_reset_codes", force: :cascade do |t|
-    t.integer  "identity_id", :null=>false, :index=>{:name=>"index_password_reset_codes_on_identity_id", :unique=>true}
-    t.string   "code",        :null=>false, :index=>{:name=>"index_password_reset_codes_on_code", :unique=>true}
-    t.datetime "expires_at"
-    t.datetime "created_at",  :null=>false
-    t.datetime "updated_at",  :null=>false
   end
 
   create_table "salesforce_users", force: :cascade do |t|
