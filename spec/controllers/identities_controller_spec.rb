@@ -6,11 +6,7 @@ describe IdentitiesController, type: :controller do
     render_views
 
     let!(:user)     { FactoryGirl.create :user, :terms_agreed, username: 'user_one' }
-    let!(:identity) do
-      FactoryGirl.create(:identity, user: user, password: 'password').tap do |id|
-        GeneratePasswordResetCode.call(id)
-      end
-    end
+    let!(:identity) { FactoryGirl.create(:identity, user: user, password: 'password') }
     let!(:user_no_identity) {
       FactoryGirl.create :user, :terms_agreed, username: 'user_no_identity'
     }

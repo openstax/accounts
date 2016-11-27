@@ -5,10 +5,6 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
 
   belongs_to :user, inverse_of: :identity
 
-  has_one :password_reset_code, dependent: :destroy,
-                                inverse_of: :identity,
-                                autosave: true
-
   attr_accessible :password, :password_confirmation
 
   # We need these validations because
