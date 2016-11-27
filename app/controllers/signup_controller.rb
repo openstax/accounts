@@ -1,7 +1,7 @@
 class SignupController < ApplicationController
 
   skip_before_filter :authenticate_user!, only: [:start, :verify_email,
-                                                 :check_pin, :password, :check_token, :profile, :social] # TODO change
+                                                 :password, :check_token, :profile, :social] # TODO change
   skip_before_filter :finish_sign_up
 
   fine_print_skip :general_terms_of_use, :privacy_policy
@@ -46,10 +46,6 @@ class SignupController < ApplicationController
                     render :verify_email
                   end)
     end
-  end
-
-  def check_pin
-    # TODO this is OBE - toast it
   end
 
   def check_token
@@ -98,18 +94,18 @@ class SignupController < ApplicationController
   # TODO change all blah and submit_blah actions to blah with switch on GET and POST
 
   def social
-    if request.post?
-      handle_with(SignupSocial,
-                  contracts_required: !contracts_not_required,
-                  success: lambda do
-                    security_log :sign_up_successful
-                    redirect_back
-                  end,
-                  failure: lambda do
-                    security_log :sign_up_failed
-                    render :social, status: 400
-                  end)
-    end
+    # if request.post?
+    #   handle_with(SignupSocial,
+    #               contracts_required: !contracts_not_required,
+    #               success: lambda do
+    #                 security_log :sign_up_successful
+    #                 redirect_back
+    #               end,
+    #               failure: lambda do
+    #                 security_log :sign_up_failed
+    #                 render :social, status: 400
+    #               end)
+    # end
   end
 
   protected
