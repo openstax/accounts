@@ -2,8 +2,8 @@ en:
   controllers:
     authentications:
       authentication_removed: "%{authentication} removed"
-      please_sign_in_to_confirm_changes: >-
-        Please sign in again to confirm your changes
+      please_log_in_again: >-
+        Please log in again before continuing.
 
     contact_infos:
       already_verified: Your email address is already verified

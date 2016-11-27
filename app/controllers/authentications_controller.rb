@@ -24,4 +24,6 @@ class AuthenticationsController < ApplicationController
     )
   end
 
+  # TODO add an `add` action that triggers reauthenticate esp for social (so reauthenticate before leave Accounts)
+
 end
