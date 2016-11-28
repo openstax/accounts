@@ -38,7 +38,8 @@
   </div>
 
   <% end %>
-  <%= lev_form_for :login, url: '/auth/identity/callback', html: {class: "identity-password"} do |f| %>
+    <%= lev_form_for :login, url: '/auth/identity/callback',
+        html: {class: collect_errors.any? ? 'is-invalid identity-password' : 'identity-password'} do |f| %>
 
     <%= f.password_field :password, placeholder: t(".password")  %>
 
@@ -47,6 +48,8 @@
     <input type="submit" class="primary" value="<%= t '.login' %>" />
 
   <% end %>
+
+  <%= render(partial: "layouts/attention") %>
 
   <p class="footer">
     <%= t(:'.trouble_logging_in') %>

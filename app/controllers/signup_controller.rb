@@ -45,6 +45,9 @@ class SignupController < ApplicationController
                     redirect_to action: :password
                   end,
                   failure: lambda do
+                    @handler_result.errors.each do | error |
+                      error.message = I18n.t("signup.verify_email.#{error.code}")
+                    end
                     render :verify_email
                   end)
     end

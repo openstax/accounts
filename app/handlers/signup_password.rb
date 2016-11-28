@@ -30,7 +30,10 @@ class SignupPassword
         password:              signup_params.password,
         password_confirmation: signup_params.password_confirmation,
         user_id:               outputs.user.id
-    )
+       )
+    transfer_errors_from(outputs.identity, {type: :verbatim}, true)
+
+
   end
 
 end

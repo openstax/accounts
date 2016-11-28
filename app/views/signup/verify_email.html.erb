@@ -1,4 +1,5 @@
 <%
+  @hide_layout_errors = true
   errors = @handler_result.try(:errors) || []
   attempts_remaining = !errors.map(&:code).include?(:no_pin_confirmation_attempts_remaining)
   errors.clear if !attempts_remaining
@@ -14,24 +15,27 @@
 
     <p>You will receive a six-digit PIN.</p>
 
-    <%= lev_form_for :pin, url: signup_verify_email_path, method: :post do |f| %>
+    <%= lev_form_for :pin, url: signup_verify_email_path, method: :post,
+        html: {class: collect_errors.any? ? 'is-invalid' : ''} do |f| %>
 
       <% fh = FormHelper::One.new(f: f,
                                   context: self,
                                   errors: @handler_result.try(:errors)) %>
 
       <%= fh.text_field name: :pin %>
+      <%= render(partial: "layouts/attention") %>
       <%= f.submit (t :".verify_pin"), class: 'primary' %>
     <% end %>
 
   <% else %>
 
-    <p>You have run out of attempts at verifying this email using a PIN.
-       To verify, please click on the link in the verification email.</p>
+    <p><%= t '.no_pin_confirmation_attempts_remaining' %></p>
 
+    <%= render(partial: "layouts/attention") %>
   <% end %>
 
   <%# TODO make sure email/role persist if go back to signup start %>
+
 
   <p>Used the wrong email? <%= link_to (t :".edit_email_address"), signup_path %></p>
 
