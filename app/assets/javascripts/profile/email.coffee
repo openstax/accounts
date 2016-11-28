@@ -51,9 +51,12 @@ class Email
     if contact.is_searchable?
       this.$el.find('.searchable').prop('checked', contact.is_searchable)
 
+  isVerified: ->
+    @$el.hasClass('verified')
+
   confirmDelete: (ev) ->
-    verified_count = this.$el.siblings('.email-entry.verified')
-    [title, message] = if verified_count is 1 # we're the only one
+    lastVerified = @isVerified() and not @$el.siblings('.email-entry.verified').length
+    [title, message] = if lastVerified
       ["Unable to remove",
       "You cannot remove the only verified email"]
     else
