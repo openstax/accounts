@@ -130,9 +130,10 @@
 
 
   .editable-input {
-    div:first-child {
+    > div:first-child {
       input { margin-top: 0; }
     }
+    > input:first-child{  margin-top: 0; }
   }
 
   .authentication {
