@@ -9,21 +9,21 @@ class IdentitiesController < ApplicationController
                   only: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add,
                          :reset_success, :add_success]
 
-  # TODO is it bad that reset_password excluded from reauthenticate if too old?  write spec
-  before_filter :reauthenticate_user_if_signin_is_too_old!,
-                 except: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add]
-
-  # `set` is used from the profile page to edit/add a user's password
+  # Used from the profile page to edit/add a user's password
   def set
-    handle_with(IdentitiesSetPassword,
-                success: lambda  do
-                  security_log :password_updated
-                  render status: :accepted,
-                         text: (I18n.t :"controllers.identities.password_changed")
-                end,
-                failure: lambda do
-                  render status: 422, text: @handler_result.errors.map(&:message).to_sentence
-                end)
+    if user_signin_is_too_old?
+      reauthenticate_user!
+    else
+      handle_with(IdentitiesSetPassword,
+                  success: lambda  do
+                    security_log :password_updated
+                    render status: :accepted,
+                           text: (I18n.t :"controllers.identities.password_changed")
+                  end,
+                  failure: lambda do
+                    render status: 422, text: @handler_result.errors.map(&:message).to_sentence
+                  end)
+    end
   end
 
   def reset
@@ -71,27 +71,39 @@ class IdentitiesController < ApplicationController
       handle_with(LogInByToken,
                   user_state: self,
                   success: lambda do
-                    security_log :sign_in_successful, {type: 'token'}
-                    case kind
-                    when :add
-                      redirect_to action: :reset if current_user.identity.present?
-                    when :reset
-                      redirect_to action: :add if current_user.identity.nil?
+                    # This reauthenticate check is only relevant if user was already
+                    # logged in before making this request.
+                    if user_signin_is_too_old?
+                      reauthenticate_user!
+                    else
+                      case kind
+                      when :add
+                        redirect_to action: :reset if current_user.identity.present?
+                      when :reset
+                        redirect_to action: :add if current_user.identity.nil?
+                      end
                     end
                   end,
                   failure: -> {
                     render status: 400
                   })
     elsif request.post?
-      handle_with(IdentitiesSetPassword,
-                  success: lambda do
-                    security_log :password_reset
-                    redirect_to action: "#{kind}_success".to_sym
-                  end,
-                  failure: lambda do
-                    security_log :password_reset_failed
-                    render kind, status: 400
-                  end)
+      if current_user.is_anonymous?
+        raise Lev::SecurityTransgression
+      elsif user_signin_is_too_old?
+        # This check again here in case a long time elapsed between the GET and the POST
+        reauthenticate_user_if_signin_is_too_old!
+      else
+        handle_with(IdentitiesSetPassword,
+                    success: lambda do
+                      security_log :password_reset
+                      redirect_to action: "#{kind}_success".to_sym
+                    end,
+                    failure: lambda do
+                      security_log :password_reset_failed
+                      render kind, status: 400
+                    end)
+      end
     end
 
     # MAJOR TODO: figure out where this password expired stuff fits in

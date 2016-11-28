@@ -21,7 +21,7 @@ feature 'Require recent sign in to change authentications', js: true do
       with_omniauth_test_mode(identity_user: user) do
         find('.authentication[data-provider="facebook"] .add').click
         wait_for_ajax
-        expect(page).to have_content('Please sign in again to confirm your changes')
+        expect(page).to have_content(t :"controllers.authentications.please_log_in_again")
         complete_login_password_screen('password')
         expect_profile_page
         expect(page).to have_content('Facebook')
@@ -42,19 +42,22 @@ feature 'Require recent sign in to change authentications', js: true do
         expect_profile_page
 
         find('.authentication[data-provider="identity"] .edit').click
-        fill_in 'password', with: 'password'
-        fill_in 'password_confirmation', with: 'password'
-        find('.authentication.editing[data-provider="identity"] button[type="submit"]').click
 
-        expect(page).to have_content(t :"controllers.authentications.please_sign_in_to_confirm_changes")
+        expect(page).to have_content(t :"controllers.authentications.please_log_in_again")
         complete_login_password_screen('password')
+
+        complete_reset_password_screen
+        complete_reset_password_success_screen
+
         expect_profile_page
 
         find('.authentication[data-provider="identity"] .edit').click
-        fill_in 'password', with: 'password'
-        fill_in 'password_confirmation', with: 'password'
-        find('.authentication.editing[data-provider="identity"] button[type="submit"]').click
-        expect(page).to have_content(t :"controllers.identities.password_changed")
+
+        # Don't have to reauthenticate since just did
+        expect(page).not_to have_content(t :"controllers.authentications.please_log_in_again")
+
+        complete_reset_password_screen
+        complete_reset_password_success_screen
       end
     end
   end
@@ -75,7 +78,7 @@ feature 'Require recent sign in to change authentications', js: true do
 
         find('.authentication[data-provider="twitter"] .delete').click
         click_button 'OK'
-        expect(page).to have_content(t :"controllers.authentications.please_sign_in_to_confirm_changes")
+        expect(page).to have_content(t :"controllers.authentications.please_log_in_again")
 
         complete_login_password_screen('password')
         expect_profile_page

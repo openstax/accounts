@@ -28,15 +28,8 @@ describe IdentitiesController, type: :controller do
       end
 
       context "logged in user" do
-        before do
-          controller.sign_in! user
-        end
-
         context 'with recent signin' do
-          before do
-            SecurityLog.create!(user: user, remote_ip: '127.0.0.1',
-                                event_type: :sign_in_successful, event_data: {})
-          end
+          before { controller.sign_in! user }
 
           it "updates the user's password" do
             put 'set', set_password: {
@@ -49,6 +42,8 @@ describe IdentitiesController, type: :controller do
         end
 
         context 'with old signin' do
+          before { Timecop.freeze(11.minutes.ago) { controller.sign_in! user } }
+
           it "does not update the user's password" do
             put 'set', set_password: {
               password: 'new_password', password_confirmation: 'new_password'

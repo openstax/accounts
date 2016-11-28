@@ -1,17 +1,20 @@
 class SignupController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:start, :verify_email,
-                                                 :check_pin, :password, :check_token, :profile, :social] # TODO change
+  skip_before_filter :authenticate_user!, only: [:start, :verify_email, :check_token, :password, :social]
+
   skip_before_filter :finish_sign_up
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  helper_method :signup_email, :signup_role, :instructor_has_selected_subject
+  # TODO spec this and maybe make more specific to what each action needs (including :profile, which needs role)
+  before_filter :restart_if_missing_info, only: [:verify_email, :password, :social, :check_token]
 
-  before_filter :restart_if_missing_info, only: [:verify_email, :password]  # TODO spec me
+  # TODO spec this
+  before_filter :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :check_token]
 
   before_filter :transfer_signup_contact_info, only: [:profile], if: -> { request.get? }
 
+  helper_method :signup_email, :signup_role, :instructor_has_selected_subject
 
   def start
     if request.post?
@@ -34,7 +37,6 @@ class SignupController < ApplicationController
     end
   end
 
-
   def verify_email
     if request.post?
       handle_with(SignupVerifyEmail,
@@ -48,25 +50,12 @@ class SignupController < ApplicationController
     end
   end
 
-  def check_pin
-    # TODO this is OBE - toast it
-  end
-
   def check_token
     raise "not yet implemented"
   end
 
-  def password
-    @errors ||= env['errors']
-
-    if !current_user.is_anonymous? &&
-       current_user.authentications.any?{ |auth| auth.provider == 'identity' }
-      security_log :sign_up_failed
-      redirect_to root_path, alert: I18n.t(:"controllers.signup.already_have_username_and_password")
-    else
-      store_fallback
-    end
-  end
+  def password; end
+  def social; end
 
   def profile
     if request.post?
@@ -95,23 +84,6 @@ class SignupController < ApplicationController
     end
   end
 
-  # TODO change all blah and submit_blah actions to blah with switch on GET and POST
-
-  def social
-    if request.post?
-      handle_with(SignupSocial,
-                  contracts_required: !contracts_not_required,
-                  success: lambda do
-                    security_log :sign_up_successful
-                    redirect_back
-                  end,
-                  failure: lambda do
-                    security_log :sign_up_failed
-                    render :social, status: 400
-                  end)
-    end
-  end
-
   protected
 
   def restart_if_missing_info
@@ -129,6 +101,11 @@ class SignupController < ApplicationController
 
   def instructor_has_selected_subject(key)
     params[:profile] && params[:profile][:subjects] && params[:profile][:subjects][key] == '1'
+  end
+
+  def exit_signup_if_logged_in
+    # TODO add a flash[:alert] like "You have already signed up"
+    redirect_to root_path if signed_in?
   end
 
 end

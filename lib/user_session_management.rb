@@ -9,7 +9,9 @@ module UserSessionManagement
     @current_user ||= AnonymousUser.instance
   end
 
-  def sign_in!(user)
+  def sign_in!(user, options={})
+    options[:security_log_data] ||= {}
+
     clear_login_state
     @current_user = user || AnonymousUser.instance
 
@@ -19,6 +21,7 @@ module UserSessionManagement
       session[:user_id] = @current_user.id
       session[:last_admin_activity] = DateTime.now.to_s \
         if @current_user.is_administrator?
+      security_log :sign_in_successful, options[:security_log_data]
     end
 
     @current_user

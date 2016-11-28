@@ -2,7 +2,7 @@ pl:
   controllers:
     authentications:
       authentication_removed: Usunięto %{authentication}
-      please_sign_in_to_confirm_changes: >-
+      please_log_in_again: >-
         Zaloguj się ponownie, aby potwierdzić zmiany
 
     contact_infos:

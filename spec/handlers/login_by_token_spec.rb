@@ -1,12 +1,10 @@
 require 'rails_helper'
 
 describe LogInByToken, type: :handler do
-  let!(:user) {
-    FactoryGirl.create :user
-  }
+  let!(:user) { FactoryGirl.create :user }
 
   let(:user_state) do
-    class SpecUserState; def sign_in!(arg); end; end
+    class SpecUserState; def sign_in!(*args); end; end
     SpecUserState.new
   end
 
@@ -51,7 +49,7 @@ describe LogInByToken, type: :handler do
       user.reset_login_token
       user.save!
       @params = {token: user.login_token}
-      expect(user_state).to receive(:sign_in!).with(user)
+      expect(user_state).to receive(:sign_in!).with(user, {security_log_data: {type: 'token'}})
       expect(handle.errors).to be_empty
     end
   end

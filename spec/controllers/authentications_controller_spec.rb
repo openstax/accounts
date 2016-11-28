@@ -4,15 +4,10 @@ describe AuthenticationsController, type: :controller do
   let(:user)            { FactoryGirl.create :user, :terms_agreed }
   let!(:authentication) { FactoryGirl.create :authentication, user: user, provider: 'facebook' }
 
-  before { controller.sign_in! user }
-
   context '#destroy' do
     context 'with only 1 authentication' do
       context 'with recent signin' do
-        before do
-          SecurityLog.create!(user: user, remote_ip: '127.0.0.1',
-                              event_type: :sign_in_successful, event_data: {})
-        end
+        before { controller.sign_in! user }
 
         it "does not delete the given authentication" do
           expect{ delete 'destroy', provider: authentication.provider }.not_to(
@@ -24,6 +19,8 @@ describe AuthenticationsController, type: :controller do
       end
 
       context 'with old signin' do
+        before { Timecop.freeze(11.minutes.ago) { controller.sign_in! user } }
+
         it "does not delete the given authentication" do
           expect{ delete 'destroy', provider: authentication.provider }.not_to(
             change{ Authentication.count }
@@ -38,10 +35,7 @@ describe AuthenticationsController, type: :controller do
       before { FactoryGirl.create :authentication, user: user, provider: 'twitter' }
 
       context 'with recent signin' do
-        before do
-          SecurityLog.create!(user: user, remote_ip: '127.0.0.1',
-                              event_type: :sign_in_successful, event_data: {})
-        end
+        before { controller.sign_in! user }
 
         it "deletes the given authentication" do
           expect{ delete 'destroy', provider: authentication.provider }.to(
@@ -53,6 +47,8 @@ describe AuthenticationsController, type: :controller do
       end
 
       context 'with old signin' do
+        before { Timecop.freeze(11.minutes.ago) { controller.sign_in! user } }
+
         it "does not delete the given authentication" do
           expect{ delete 'destroy', provider: authentication.provider }.not_to(
             change{ Authentication.count }

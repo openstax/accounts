@@ -16,7 +16,7 @@ class LogInByToken
     fatal_error(code: :unknown_login_token) if user.nil?
     fatal_error(code: :expired_login_token) if user.login_token_expired?
 
-    user_state.sign_in!(user)
+    user_state.sign_in!(user, {security_log_data: {type: 'token'}})
   end
 
   def login_token
