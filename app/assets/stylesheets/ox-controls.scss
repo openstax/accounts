@@ -96,3 +96,27 @@
 
 
 }
+
+.ox-separator-line {
+  text-align: center;
+  position: relative;
+  margin: 10px 0;
+  &:after {
+    border-top: 2px solid darken($os_light_gray, 10%);
+    content: '';
+    display: block;
+    width: calc(50% - 20px);
+    right: 0px;
+    position: absolute;
+    top: 50%;
+  }
+  &:before {
+    border-top: 2px solid darken($os_light_gray, 10%);
+    content: '';
+    display: block;
+    width: calc(50% - 20px);
+    left: 0px;
+    position: absolute;
+    top: 50%;
+  }
+}
