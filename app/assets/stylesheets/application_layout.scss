@@ -42,13 +42,6 @@ body, p, ol, ul, td, a {
   font-weight: normal;
 }
 
-.container .row {
-  @media(min-width: 400px) {
-    padding-left: $application_edge_distance;
-    padding-right: $application_edge_distance;
-  }
-}
-
 #application-header {
   $image_height:  40px;
   $image_width:  174px;
