@@ -69,6 +69,10 @@ module ApplicationHelper
       alert_messages.push error.translate
     end
 
+    (request.env['errors'] || []).each do |error|
+      alert_messages.push error.translate
+    end
+
     alert_messages.push(flash[:alert]) if flash[:alert]
 
     notice_messages = []
