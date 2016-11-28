@@ -78,11 +78,20 @@
     }
   }
 
+  .is-invalid {
+    input[type="text"],
+    input[type="password"] {
+      background-color: $state-danger-bg;
+      border: 1px solid $state-danger-border;
+    }
+
+  }
+
   .alert {
-    margin-bottom: 0;
-    margin-top: 0;
+    margin: 10px 0;
     background-color: transparent;
     border: 0;
+    padding: 0;
   }
 
 

@@ -81,22 +81,6 @@ en:
         You must agree to the terms to continue. If you have questions, please
         contact support.
 
-  helpers:
-    alert:
-      please_enable_javascript:
-        intro: Hey!
-        content: >-
-          Please enable JavaScript in your browser! Many %{site_name} pages
-          will not work properly without it.
-
-    profile:
-      check_searchable_if_you_want_to_be_searchable: >-
-        Check the Searchable box if you want other OpenStax users to find you
-        using this email address.
-      click_to_verify: Click to verify
-      password: Password
-      searchable: Searchable
-
   routines:
     confirm_by_code:
       unable_to_verify_address: Unable to verify email address
@@ -145,7 +129,6 @@ en:
     please_enable_javascript: >-
       Please enable JavaScript in your browser! Some site contet will not work
       properly without it.
-    alert: 'Alert: '
     any:
       appology_message_html: >-
         We're sorry this %{code} error occured. If you need help, please contact
@@ -352,6 +335,8 @@ en:
       pin: Enter PIN
       verify_pin: Verify PIN
       edit_email_address: Edit email address.
+      pin_not_correct: That PIN is not correct, please re-check the emailed PIN.
+      no_pin_confirmation_attempts_remaining: You have run out of attempts at verifying this email using a PIN. To verify, please click on the link in the verification email.
 
     password:
       page_heading: Enter Password
@@ -453,3 +438,9 @@ en:
       page_heading: Your Account
       username: Username
       sign_out: Sign out
+      check_searchable_if_you_want_to_be_searchable: >-
+        Check the Searchable box if you want other OpenStax users to find you
+        using this email address.
+      click_to_verify: Click to verify
+      password: Password
+      searchable: Searchable

@@ -23,6 +23,7 @@
   </div>
 </div>
 
+<% if current_user.username.present? %>
 <div class="row">
   <div class="col-sm-2 category">
     <%= t :".username" %>
@@ -31,6 +32,7 @@
     <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
   </div>
 </div>
+<% end %>
 
 <div class="row">
   <div class="col-sm-2 category">
@@ -48,11 +50,11 @@
 </div>
 
 <%
-  all_providers = %w(facebook google_oauth2 twitter identity)
+  all_providers = %w(facebook google_oauth2 identity twitter)
 
   # The `all providers &` enforces a standard sort order
   current_providers = all_providers & current_user.authentications.collect(&:provider)
-  other_providers   = all_providers - current_providers
+  other_providers   = all_providers - current_providers - ['twitter']
 %>
 
 <div class="row enabled-providers">

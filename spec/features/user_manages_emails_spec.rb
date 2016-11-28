@@ -23,13 +23,13 @@ feature 'User manages emails', js: true do
 
   context 'create' do
     scenario 'success' do
-      click_link (t :"users.edit.add_email_address")
+      click_link(t :"users.edit.add_email_address")
       within(:css, '.email-entry.new') {
         find('input').set('user@mysite.com')
         find('.glyphicon-ok').click
       }
       expect(page).to have_no_missing_translations
-      expect(page).to have_button(t :"helpers.profile.click_to_verify")
+      expect(page).to have_button(t :"users.edit.click_to_verify")
       expect(page).to have_content('user@mysite.com')
     end
 
@@ -92,10 +92,10 @@ feature 'User manages emails', js: true do
     let(:unverified_emails) { ['user@unverified.com'] }
 
     scenario 'success' do
-      click_button (t :"helpers.profile.click_to_verify")
+      click_button (t :"users.edit.click_to_verify")
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"controllers.contact_infos.verification_sent", address: "user@unverified.com")
-      expect(page).to have_button((t :"helpers.profile.click_to_verify"), disabled: true)
+      expect(page).to have_button((t :"users.edit.click_to_verify"), disabled: true)
     end
   end
 end
