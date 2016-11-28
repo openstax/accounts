@@ -112,16 +112,17 @@ feature 'User signs up', js: true do
     scenario 'user gets PIN wrong' do
       complete_signup_verify_screen(pass: false)
       expect_signup_verify_screen
-      expect(page).to have_content 'pin_not_correct'  # TODO fix when make proper alert
+      expect(page).to have_content t('signup.verify_email.pin_not_correct')
     end
 
     scenario 'user gets PIN wrong too many times' do
       allow(ConfirmByPin).to receive(:max_pin_failures) { 1 }
       complete_signup_verify_screen(pass: false)
       expect_signup_verify_screen
-      expect(page).to have_content 'pin_not_correct'  # TODO fix when make proper alert
+      expect(page).to have_content t('signup.verify_email.pin_not_correct')
       complete_signup_verify_screen(pass: false)
       expect(page).to have_content(t :'signup.verify_email.page_heading_token')
+      expect(page).to have_content(t :'signup.verify_email.no_pin_confirmation_attempts_remaining')
     end
   end
 
@@ -136,19 +137,19 @@ feature 'User signs up', js: true do
     scenario 'passwords do not match' do
       complete_signup_password_screen('password', 'blah')
       expect(page).to have_no_missing_translations
-      skip # TODO
+      expect(page).to have_content('confirmation doesn\'t match')
     end
 
     scenario 'fields blank' do
       complete_signup_password_screen('', '')
       expect(page).to have_no_missing_translations
-      skip # TODO
+      expect(page).to have_content("can't be blank")
     end
 
     scenario 'password too short' do
       complete_signup_password_screen('p', 'p')
       expect(page).to have_no_missing_translations
-      skip # TODO
+      expect(page).to have_content('too short')
     end
 
     context 'user already has password' do

@@ -343,6 +343,8 @@ en:
       pin: Enter PIN
       verify_pin: Verify PIN
       edit_email_address: Edit email address.
+      pin_not_correct: That PIN is not correct, please re-check the emailed PIN.
+      no_pin_confirmation_attempts_remaining: You have run out of attempts at verifying this email using a PIN. To verify, please click on the link in the verification email.
 
     password:
       page_heading: Enter Password
