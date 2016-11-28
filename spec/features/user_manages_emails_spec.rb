@@ -69,6 +69,8 @@ feature 'User manages emails', js: true do
           find('.confirm-dialog-btn-confirm').click
         }
         expect(page).to_not have_content(email)
+        expect(page).to have_selector('.email')
+        expect(page).not_to have_selector('.email .delete')
       end
     end
 

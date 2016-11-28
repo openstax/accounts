@@ -8,13 +8,16 @@ class Email
     _.bindAll(@, _.functions(@)...)
     this.$el = $(@el)
     @id = this.$el.attr('data-id')
+    this.$el.find('.searchable').change(@saveSearchable)
+    this.$el.find('.verify').click(@sendVerification)
+    @update()
+
+  update: ->
     delBtn = this.$el.find('.delete')
     if @isOnlyVerifiedEmail()
       delBtn.hide()
     else
       delBtn.click(@confirmDelete)
-    this.$el.find('.searchable').change(@saveSearchable)
-    this.$el.find('.verify').click(@sendVerification)
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)
@@ -70,16 +73,23 @@ class Email
   delete: ->
     @toggleSpinner(true)
     $.ajax(type: "DELETE", url: @url())
-      .success( => @$el.remove() )
+      .success( =>
+        @$el.remove()
+        OX.Profile.Email.onDeleteEmail(@)
+      )
       .error(OX.Alert.displayInsideElement(@$el))
       .complete(@toggleSpinner)
 
 OX.Profile.Email = {
 
   initialize: ->
-    $('.email-entry').each ->
-      new Email(this)
+    $('.email-entry').each (indx, el) ->
+      $(el).data(email: new Email(this))
     @addEmail = $('#add-an-email').click( => @onAddEmail() )
+
+  onDeleteEmail: ->
+    $('.info .email-entry').each (indx, el) ->
+      $(el).data().email.update()
 
   onAddEmail: ->
     email = $('#email-template').children().clone().addClass('new')

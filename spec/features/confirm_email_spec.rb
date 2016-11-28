@@ -17,7 +17,7 @@ feature 'Confirm email address', js: true do
     visit '/confirm'
     expect(page).to have_no_missing_translations
     expect(page).to_not have_content('Alert: no_contact_info_for_code')
-    expect(page).to have_content(t :"routines.confirm_by_code.unable_to_verify_address")
+    expect(page).to have_content(t :"contact_infos.confirm.page_heading.error")
     expect(page).to have_content(t :"contact_infos.confirm.verification_code_not_found")
   end
 
@@ -25,7 +25,7 @@ feature 'Confirm email address', js: true do
     visit '/confirm?code=1234'
     expect(page).to have_no_missing_translations
     expect(page).to_not have_content('Alert: no_contact_info_for_code')
-    expect(page).to have_content(t :"routines.confirm_by_code.unable_to_verify_address")
+    expect(page).to have_content(t :"contact_infos.confirm.page_heading.error")
     expect(page).to have_content(t :"contact_infos.confirm.verification_code_not_found")
   end
 end
