@@ -8,9 +8,16 @@ class Email
     _.bindAll(@, _.functions(@)...)
     this.$el = $(@el)
     @id = this.$el.attr('data-id')
-    this.$el.find('.delete').click(@confirmDelete)
     this.$el.find('.searchable').change(@saveSearchable)
     this.$el.find('.verify').click(@sendVerification)
+    @update()
+
+  update: ->
+    delBtn = this.$el.find('.delete')
+    if @isOnlyVerifiedEmail()
+      delBtn.hide()
+    else
+      delBtn.click(@confirmDelete)
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)
@@ -51,19 +58,13 @@ class Email
     if contact.is_searchable?
       this.$el.find('.searchable').prop('checked', contact.is_searchable)
 
-  isVerified: ->
-    @$el.hasClass('verified')
+  isOnlyVerifiedEmail: ->
+    @$el.hasClass('verified') and not @$el.siblings('.email-entry.verified').length
 
   confirmDelete: (ev) ->
-    lastVerified = @isVerified() and not @$el.siblings('.email-entry.verified').length
-    [title, message] = if lastVerified
-      ["Unable to remove",
-      "You cannot remove the only verified email"]
-    else
-      [false, "Are you sure you want to remove this email address from your account?"]
     new OX.ConfirmationPopover(
-      title: title
-      message: message
+      title: false
+      message: "Are you sure you want to remove this email address from your account?"
       target: ev.target
       placement: 'top'
       onConfirm: @delete
@@ -72,16 +73,23 @@ class Email
   delete: ->
     @toggleSpinner(true)
     $.ajax(type: "DELETE", url: @url())
-      .success( => @$el.remove() )
+      .success( =>
+        @$el.remove()
+        OX.Profile.Email.onDeleteEmail(@)
+      )
       .error(OX.Alert.displayInsideElement(@$el))
       .complete(@toggleSpinner)
 
 OX.Profile.Email = {
 
   initialize: ->
-    $('.email-entry').each ->
-      new Email(this)
+    $('.email-entry').each (indx, el) ->
+      $(el).data(email: new Email(this))
     @addEmail = $('#add-an-email').click( => @onAddEmail() )
+
+  onDeleteEmail: ->
+    $('.info .email-entry').each (indx, el) ->
+      $(el).data().email.update()
 
   onAddEmail: ->
     email = $('#email-template').children().clone().addClass('new')

@@ -293,7 +293,7 @@ def complete_signup_password_screen(password, confirmation=nil)
 
   expect(page).to have_content(t :"signup.password.page_heading")
   expect(page).to have_no_missing_translations
-  click_button (t :"signup.password.enter_password")
+  click_button (t :"signup.password.create_password")
   expect(page).to have_no_missing_translations
 end
 
@@ -389,4 +389,3 @@ def get_path_from_absolute_link(node, xpath)
   uri = URI(node.find(xpath)['href'])
   "#{uri.path}?#{uri.query}"
 end
-

@@ -69,20 +69,14 @@ feature 'User manages emails', js: true do
           find('.confirm-dialog-btn-confirm').click
         }
         expect(page).to_not have_content(email)
+        expect(page).to have_selector('.email')
+        expect(page).not_to have_selector('.email .delete')
       end
     end
 
     context 'when there is only one email' do
       scenario 'that email cannot be deleted' do
-        within(:css, '.email-entry:first-of-type') {
-          find('.email').click
-          find('.delete').click
-        }
-
-        within(:css, '.popover-content') {
-          find('.confirm-dialog-btn-confirm').click
-        }
-        expect(page).to_not have_content('user@unverified.com')
+        expect(page).not_to have_selector('.email .delete')
       end
     end
   end

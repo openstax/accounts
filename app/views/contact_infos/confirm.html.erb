@@ -1,7 +1,13 @@
-<%= page_heading (t @handler_result.errors.any? ? :".page_heading.error" : :".page_heading.success") %>
+<% @hide_layout_errors = true %>
+
+<div class="ox-card">
+  <h1 class="title">
+    <%= t @handler_result.errors.any? ? :".page_heading.error" : :".page_heading.success" %>
+  </h1>
 
 <% if @handler_result.errors.any? %>
   <p><%= t :".verification_code_not_found" %></p>
 <% else %>
   <p><%= t :".you_may_now_close_this_window" %></p>
 <% end %>
+</div>
