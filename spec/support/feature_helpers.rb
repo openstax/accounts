@@ -56,7 +56,7 @@ def signin_as username, password='password'
   fill_in 'login_username_or_email', with: username
   click_button (t :"sessions.new.next")
   fill_in 'login_password', with: password
-  click_button (t :"sessions.authenticate.login")
+  click_button (t :"sessions.authenticate_options.login")
 end
 
 def create_new_application(trusted = false)
@@ -251,9 +251,9 @@ end
 
 def complete_login_password_screen(password)
   # TODO expect login password screen
-  fill_in (t :"sessions.authenticate.password"), with: password
+  fill_in (t :"sessions.authenticate_options.password"), with: password
   expect(page).to have_no_missing_translations
-  click_button (t :"sessions.authenticate.login")
+  click_button (t :"sessions.authenticate_options.login")
   expect(page).to have_no_missing_translations
 end
 

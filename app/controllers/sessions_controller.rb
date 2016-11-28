@@ -57,7 +57,6 @@ class SessionsController < ApplicationController
                                                      current_user.username,
                                   names: @handler_result.outputs.names,
                                   providers: @handler_result.outputs.providers.to_hash)
-                  render :authenticate
                 end)
   end
 
