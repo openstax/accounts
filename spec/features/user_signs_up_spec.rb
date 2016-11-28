@@ -9,11 +9,17 @@ feature 'User signs up', js: true do
 
   scenario 'happy path success with password' do
     arrive_from_app
+    screenshot!
     click_sign_up
-    complete_signup_email_screen("Instructor","bob@bob.edu")
+    screenshot!
+    complete_signup_email_screen("Instructor","bob@bob.edu", screenshot_after_role: true)
+    screenshot!
+    capture_email!(address: "bob@bob.edu")
     complete_signup_verify_screen(pass: true)
+    screenshot!
     complete_signup_password_screen('password')
 
+    screenshot!
     complete_signup_profile_screen(
       first_name: "Bob",
       last_name: "Armstrong",
@@ -71,6 +77,7 @@ feature 'User signs up', js: true do
       fill_in (t :"signup.start.email"), with: "bob@bob.edu"
       click_button(t :"signup.start.next")
       expect(page).to have_content 'Email already in use'
+      screenshot!
     end
 
     scenario 'failure because suspected non-school email then success' do
@@ -79,6 +86,7 @@ feature 'User signs up', js: true do
       fill_in (t :"signup.start.email"), with: "bob@gmail.com"
       click_button(t :"signup.start.next")
       expect(page).to have_content 'If this is your school email, click Next'
+      screenshot!
     end
 
     scenario 'failure because email blank' do
@@ -98,7 +106,9 @@ feature 'User signs up', js: true do
     }
 
     scenario 'user leaves verify screen to edit email' do
+      screenshot!
       click_link (t :'signup.verify_email.edit_email_address')
+      screenshot!(suffix: 'went_back')
       complete_signup_email_screen("Instructor","bob2@bob.edu")
 
       complete_signup_verify_screen(pass: true)
@@ -113,6 +123,7 @@ feature 'User signs up', js: true do
       complete_signup_verify_screen(pass: false)
       expect_signup_verify_screen
       expect(page).to have_content t('signup.verify_email.pin_not_correct')
+      screenshot!
     end
 
     scenario 'user gets PIN wrong too many times' do
@@ -123,6 +134,7 @@ feature 'User signs up', js: true do
       complete_signup_verify_screen(pass: false)
       expect(page).to have_content(t :'signup.verify_email.page_heading_token')
       expect(page).to have_content(t :'signup.verify_email.no_pin_confirmation_attempts_remaining')
+      screenshot!
     end
   end
 
@@ -138,18 +150,21 @@ feature 'User signs up', js: true do
       complete_signup_password_screen('password', 'blah')
       expect(page).to have_no_missing_translations
       expect(page).to have_content('confirmation doesn\'t match')
+      screenshot!
     end
 
     scenario 'fields blank' do
       complete_signup_password_screen('', '')
       expect(page).to have_no_missing_translations
       expect(page).to have_content("can't be blank")
+      screenshot!
     end
 
     scenario 'password too short' do
       complete_signup_password_screen('p', 'p')
       expect(page).to have_no_missing_translations
       expect(page).to have_content('too short')
+      screenshot!
     end
 
     context 'user already has password' do

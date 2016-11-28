@@ -42,10 +42,10 @@ if EnvUtilities.load_boolean(name: 'SSHOT', default: false)
   window_size = [1000, 6000] # narrower images
 
   def screenshots_dir
-    @screenshots_dir ||= Rails.root.join "tmp/capybara/screenshots_#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
+    $screenshots_dir ||= Rails.root.join "tmp/capybara/screenshots_#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
   end
 
-  def screenshot!(suffix=nil)
+  def screenshot!(suffix: nil)
     include_html_screenshots = false
 
     original_save_path = Capybara.save_path
@@ -63,7 +63,8 @@ if EnvUtilities.load_boolean(name: 'SSHOT', default: false)
     end
   end
 
-  def capture_email!(suffix=nil)
+  def capture_email!(address: nil, suffix: nil)
+    open_email(address) if address.present?
     current_email.save_page("#{screenshots_dir}/#{screenshot_base(suffix)}.html")
   end
 

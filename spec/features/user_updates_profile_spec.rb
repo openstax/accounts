@@ -13,20 +13,24 @@ feature 'User updates profile', js: true do
 
     scenario 'first name' do
       fill_in 'first_name', with: 'testuser'
+      screenshot!
       find('.glyphicon-ok').click
       expect(page).to have_link('testuser')
+      screenshot!
     end
 
     scenario 'blank first name' do
       fill_in 'first_name', with: ''
       find('.glyphicon-ok').click
       expect(find('.editable-error-block').text).to include "First name can't be blank"
+      screenshot!
     end
 
     scenario 'blank last name' do
       fill_in 'last_name', with: ''
       find('.glyphicon-ok').click
       expect(find('.editable-error-block').text).to include "Last name can't be blank"
+      screenshot!
     end
 
     scenario 'blank first and last name' do
@@ -34,12 +38,14 @@ feature 'User updates profile', js: true do
       fill_in 'last_name', with: ''
       find('.glyphicon-ok').click
       expect(find('.editable-error-block').text).to include "First and last name can't be blank"
+      screenshot!
     end
 
     scenario 'name with spaces' do
       fill_in 'last_name', with: '  '
       find('.glyphicon-ok').click
       expect(find('.editable-error-block').text).to include "Last name can't be blank"
+      screenshot!
     end
 
   end

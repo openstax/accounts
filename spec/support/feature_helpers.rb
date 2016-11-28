@@ -257,10 +257,13 @@ def complete_login_password_screen(password)
   expect(page).to have_no_missing_translations
 end
 
-def complete_signup_email_screen(role, email)
+def complete_signup_email_screen(role, email, options={})
+  options[:screenshot_after_role] ||= false
+
   @signup_email = email
   expect(page).to have_content(t :"signup.start.page_heading")
   select role, from: "signup_role"
+  screenshot! if options[:screenshot_after_role]
   fill_in (t :"signup.start.email"), with: email
   expect(page).to have_no_missing_translations
   click_button(t :"signup.start.next")
