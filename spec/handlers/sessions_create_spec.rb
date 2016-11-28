@@ -62,10 +62,10 @@ describe SessionsCreate, type: :handler do
       let(:signup_contact_info) {
         FactoryGirl.create(:signup_contact_info, value: "bob@bob.com", verified: true)
       }
-      it "freaks out for the moment" do
-        expect{
-          handle(request: MockOmniauthRequest.new(authentication.provider, authentication.uid, {}))
-        }.to raise_error("not yet implemented")
+      it "returns existing_user_signed_up_again status and transfers email" do
+        result = handle(request: MockOmniauthRequest.new(authentication.provider, authentication.uid, {}))
+        expect(result.outputs.status).to eq :existing_user_signed_up_again
+        expect(authentication.user.contact_infos.verified.map(&:value)).to include "bob@bob.com"
       end
     end
 
@@ -75,12 +75,14 @@ describe SessionsCreate, type: :handler do
         FactoryGirl.create(:signup_contact_info, value: "bob@bob.com", verified: true)
       }
 
-      it "freaks out for the moment" do
-        expect{
-          handle(request: MockOmniauthRequest.new("facebook",
-                                                  "some_uid",
-                                                  {email: other_user_email.value}))
-        }.to raise_error("not yet implemented")
+      it "returns existing_user_signed_up_again status and transfers auth" do
+        expect {
+          result = handle(request: MockOmniauthRequest.new("facebook",
+                                                           "some_uid",
+                                                           {email: other_user_email.value}))
+          expect(result.outputs.status).to eq :existing_user_signed_up_again
+          expect(SignupContactInfo.count).to eq 0
+        }.to change{other_user_email.user.authentications.count}.by 1
       end
     end
 
@@ -196,11 +198,67 @@ describe SessionsCreate, type: :handler do
     end
   end
 
+  context 'user_most_recently_used' do
+
+    it 'returns nil when no users' do
+      expect(user_most_recently_used([])).to be_nil
+    end
+
+    it 'returns the user when there is only one' do
+      user = Object.new
+      expect(user_most_recently_used([user])).to eq user
+    end
+
+    context "multiple users" do
+      before(:each) {
+        @user1 = FactoryGirl.create :user, created_at: 1.year.ago
+        @user2 = FactoryGirl.create :user, created_at: 1.year.ago
+
+        @user1.update_attribute(:updated_at, 1.month.ago)
+        @user2.update_attribute(:updated_at, 1.year.ago)
+
+        @user3 = FactoryGirl.create :user
+        Timecop.freeze(2.months.ago) do
+          SecurityLog.create! user: @user3, remote_ip: '127.0.0.1',
+                              event_type: :sign_in_successful, event_data: {}
+        end
+
+        @user4 = FactoryGirl.create :user, created_at: 2.years.ago, updated_at: 2.years.ago
+        Timecop.freeze(1.day.ago) do
+          SecurityLog.create! user: @user4, remote_ip: '127.0.0.1',
+                              event_type: :sign_in_successful, event_data: {}
+        end
+      }
+
+
+      it 'favors later updated_at' do
+        expect(user_most_recently_used([@user1, @user2])).to eq @user1
+      end
+
+      it 'favors later created_at when updated_at equal' do
+        @user2.updated_at = @user1.updated_at
+        expect(user_most_recently_used([@user1, @user2])).to eq @user2
+      end
+
+      it 'favors log in over no log in' do
+        expect(user_most_recently_used([@user4, @user1])).to eq @user4
+      end
+
+      it 'favors recent logins' do
+        expect(user_most_recently_used([@user4, @user3])).to eq @user4
+      end
+    end
+  end
+
   def handle(**args)
     described_class.handle(user_state: user_state,
                            login_providers: login_providers,
                            signup_contact_info: signup_contact_info,
                            **args)
+  end
+
+  def user_most_recently_used(users)
+    described_class.new.send(:user_most_recently_used, users)
   end
 
 end

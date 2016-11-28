@@ -157,11 +157,11 @@ def with_omniauth_test_mode(options={})
       })
     end
 
-    [:facebook, :google, :twitter].each do |provider|
+    [:facebook, :google_oauth2, :twitter].each do |provider|
       OmniAuth.config.mock_auth[provider] = OmniAuth::AuthHash.new({
         uid: options[:uid],
         provider: provider.to_s,
-        info: { nickname: options[:nickname] }
+        info: { nickname: options[:nickname], email: options[:email] }
       })
     end
 

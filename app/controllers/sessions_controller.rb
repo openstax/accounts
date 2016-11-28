@@ -91,10 +91,10 @@ class SessionsController < ApplicationController
           security_log :sign_up_successful, authentication_id: authentication.id
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
-        # when :transferred_authentication
-        #   security_log :authentication_transferred, authentication_id: authentication.id
-        #   security_log :sign_in_successful, authentication_id: authentication.id
-        #   redirect_to action: :redirect_back
+        when :existing_user_signed_up_again
+          # TODO security_log that user signed up again and we merged
+          security_log :sign_in_successful, authentication_id: authentication.id
+          redirect_to action: :redirect_back
         when :no_action
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back

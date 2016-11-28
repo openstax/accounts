@@ -219,4 +219,58 @@ feature 'User signs up', js: true do
     skip # TODO
   end
 
+  context "user tries to make a duplicate account" do
+    scenario "detected by reusing social auth" do
+      existing_user = create_user('existing')
+      existing_social =
+        FactoryGirl.create :authentication, provider: 'google_oauth2', user: existing_user
+
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      complete_signup_verify_screen(pass: true)
+
+      click_link(t :"signup.password.use_social")
+
+      with_omniauth_test_mode(uid: existing_social.uid) do
+        click_link('google-login-button')
+      end
+
+      expect(existing_user.contact_infos.verified.map(&:value)).to include("bob@bob.edu")
+      expect(SignupContactInfo.count).to eq 0
+
+      expect_back_at_app
+    end
+
+    scenario "detected by social returning existing email" do
+      existing_user = create_user('existing')
+      create_email_address_for existing_user, 'bob@gmail.com'
+
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      complete_signup_verify_screen(pass: true)
+
+      click_link(t :"signup.password.use_social")
+
+      with_omniauth_test_mode(email: 'bob@gmail.com') do
+        click_link('google-login-button')
+      end
+
+      expect(
+        existing_user.contact_infos.verified.map(&:value)
+      ).to contain_exactly("bob@bob.edu", "bob@gmail.com")
+
+      expect(existing_user.authentications.count).to eq 2
+
+      expect(SignupContactInfo.count).to eq 0
+
+      expect_back_at_app
+    end
+
+    scenario 'when there are multiple existing matching accounts' do
+      skip # TODO
+    end
+  end
+
 end
