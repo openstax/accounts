@@ -81,14 +81,6 @@ en:
         You must agree to the terms to continue. If you have questions, please
         contact support.
 
-    profile:
-      check_searchable_if_you_want_to_be_searchable: >-
-        Check the Searchable box if you want other OpenStax users to find you
-        using this email address.
-      click_to_verify: Click to verify
-      password: Password
-      searchable: Searchable
-
   routines:
     confirm_by_code:
       unable_to_verify_address: Unable to verify email address
@@ -446,3 +438,9 @@ en:
       page_heading: Your Account
       username: Username
       sign_out: Sign out
+      check_searchable_if_you_want_to_be_searchable: >-
+        Check the Searchable box if you want other OpenStax users to find you
+        using this email address.
+      click_to_verify: Click to verify
+      password: Password
+      searchable: Searchable

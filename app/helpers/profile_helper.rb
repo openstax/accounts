@@ -11,7 +11,7 @@ module ProfileHelper
 
     icon_class, display_name =
       case provider
-      when 'identity' then ['key', (I18n.t :"helpers.profile.password")]
+      when 'identity' then ['key', (I18n.t :"users.edit.password")]
       when 'google_oauth2' then ['google', 'Google']
       else [ provider, provider.capitalize ]
       end
@@ -45,7 +45,7 @@ module ProfileHelper
             <span class="glyphicon glyphicon-trash mod delete"></span>
           </span>
           <div class="properties">
-            <input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"helpers.profile.searchable"}
+            <input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"users.edit.searchable"}
             <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="#{I18n.t :"helpers.profile.check_searchable_if_you_want_to_be_searchable"}"></i>
 
           </div>
