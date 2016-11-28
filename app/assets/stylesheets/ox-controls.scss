@@ -100,8 +100,11 @@
     input[type="password"] {
       background-color: $state-danger-bg;
       border: 1px solid darken($state-danger-border, 10%);
+      &:focus {
+        background-color: darken($state-danger-bg, 1%);
+        border: 1px solid darken($state-danger-border, 30%);
+      }
     }
-
   }
 
   .alert {
