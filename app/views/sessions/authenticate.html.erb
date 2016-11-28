@@ -1,66 +1,12 @@
 <%
   login_state = get_login_state
-  username_or_email = login_state[:username_or_email]
   names = login_state[:names] || []
-  providers = login_state[:providers] || {}
 %>
 
 <div class="ox-card login">
 
   <h1 class="title"><%= t '.name_greeting', name: names.first %></h1>
 
-  <% if providers.keys.include?('google_oauth2') %>
-    <%= link_to "/auth/google_oauth2?login_hint=#{providers['google_oauth2']['login_hint']}",
-                class: 'btn btn-social btn-google',
-                id: 'google-login-button' do %>
-      <span class="fa fa-google"></span> <%= t :".sign_in_with_google" %>
-    <% end %>
-  <% end %>
-
-  <% if providers.keys.include?('facebook') %>
-    <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook',
-                                  id: 'facebook-login-button' do %>
-      <span class="fa fa-facebook"></span> <%= t :".sign_in_with_facebook" %>
-    <% end %>
-  <% end %>
-
-  <%# Keep Twitter log in around until we figure out a way to move those
-      users to a different authentication %>
-
-  <% if providers.keys.include?('twitter') %>
-    <%= link_to "/auth/twitter", class: 'btn btn-block btn-social btn-twitter',
-                                 id: 'twitter-login-button' do %>
-      <span class="fa fa-twitter"></span> <%= t :".sign_in_with_twitter" %>
-    <% end %>
-  <% end %>
-
-  <% if providers.keys.include?('identity') %>
-    <% if providers.many? %>
-
-    <div class="separator-line" data-text="">
-      <%= t '.separator_or' %>
-    </div>
-
-    <% end %>
-    <%= lev_form_for :login, url: '/auth/identity/callback', html: {class: "identity-password"} do |f| %>
-
-      <%= f.password_field :password, placeholder: t(".password")  %>
-
-      <%= f.hidden_field :username_or_email, value: username_or_email %>
-
-      <input type="submit" class="primary" value="<%= t '.login' %>" />
-
-    <% end %>
-
-    <p class="footer">
-      <%= t(:'.trouble_logging_in') %>
-      <%= link_to(t(:'.reset_password'), password_send_reset_path, method: :post) %>
-    </p>
-  <% else %>
-    <p>
-      <%= t(:'.trouble_logging_in') %>
-      <%= link_to(t(:'.add_password'), password_send_add_path, method: :post) %>
-    </p>
-  <% end %>
+  <%= render partial: 'authenticate_options' %>
 
 </div>

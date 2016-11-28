@@ -21,7 +21,7 @@ feature 'Require recent sign in to change authentications', js: true do
       with_omniauth_test_mode(identity_user: user) do
         find('.authentication[data-provider="facebook"] .add').click
         wait_for_ajax
-        expect(page).to have_content(t :"controllers.authentications.please_log_in_again")
+        expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
         complete_login_password_screen('password')
         expect_profile_page
         expect(page).to have_content('Facebook')
@@ -43,7 +43,7 @@ feature 'Require recent sign in to change authentications', js: true do
 
         find('.authentication[data-provider="identity"] .edit').click
 
-        expect(page).to have_content(t :"controllers.authentications.please_log_in_again")
+        expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
         complete_login_password_screen('password')
 
         complete_reset_password_screen
@@ -54,7 +54,7 @@ feature 'Require recent sign in to change authentications', js: true do
         find('.authentication[data-provider="identity"] .edit').click
 
         # Don't have to reauthenticate since just did
-        expect(page).not_to have_content(t :"controllers.authentications.please_log_in_again")
+        expect(page).not_to have_content(t :"sessions.reauthenticate.page_heading")
 
         complete_reset_password_screen
         complete_reset_password_success_screen
@@ -78,7 +78,7 @@ feature 'Require recent sign in to change authentications', js: true do
 
         find('.authentication[data-provider="twitter"] .delete').click
         click_button 'OK'
-        expect(page).to have_content(t :"controllers.authentications.please_log_in_again")
+        expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
 
         complete_login_password_screen('password')
         expect_profile_page

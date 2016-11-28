@@ -2,8 +2,6 @@ en:
   controllers:
     authentications:
       authentication_removed: "%{authentication} removed"
-      please_log_in_again: >-
-        Please log in again before continuing.
 
     contact_infos:
       already_verified: Your email address is already verified
@@ -254,6 +252,11 @@ en:
 
     authenticate:
       name_greeting: Hi %{name}!
+
+    reauthenticate:
+      page_heading: Please log in again before continuing.
+
+    authenticate_options:
       separator_or: OR
       sign_in_with_facebook: Sign in with Facebook
       sign_in_with_google: Google

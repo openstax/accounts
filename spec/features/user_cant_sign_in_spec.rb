@@ -73,7 +73,7 @@ feature "User can't sign in", js: true do
       complete_login_password_screen('wrongpassword')
       expect(page).to have_content(t :"controllers.sessions.incorrect_password")
 
-      click_link(t :"sessions.authenticate.reset_password")
+      click_link(t :"sessions.authenticate_options.reset_password")
       expect(page).to have_content(/sent_reset/)  # TODO check for real sent password content
 
       open_email('user@example.com')
@@ -98,7 +98,7 @@ feature "User can't sign in", js: true do
 
       # TODO somehow simulate oauth failure so we see error message
 
-      click_link(t :"sessions.authenticate.add_password")
+      click_link(t :"sessions.authenticate_options.add_password")
       expect(page).to have_content(/sent_add/)  # TODO check for real sent password content
 
       open_email('user@example.com')
@@ -123,7 +123,7 @@ feature "User can't sign in", js: true do
     scenario "has both password and social auths" do
       FactoryGirl.create :authentication, provider: 'google_oauth2', user: @user
       complete_login_username_or_email_screen('user@example.com')
-      expect(page).to have_content(t :"sessions.authenticate.reset_password")
+      expect(page).to have_content(t :"sessions.authenticate_options.reset_password")
     end
   end
 
