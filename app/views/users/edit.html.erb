@@ -23,6 +23,7 @@
   </div>
 </div>
 
+<% if current_user.username.present? %>
 <div class="row">
   <div class="col-sm-2 category">
     <%= t :".username" %>
@@ -31,6 +32,7 @@
     <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
   </div>
 </div>
+<% end %>
 
 <div class="row">
   <div class="col-sm-2 category">
