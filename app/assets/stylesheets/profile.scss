@@ -129,6 +129,12 @@
   }
 
 
+  .editable-input {
+    div:first-child {
+      input { margin-top: 0; }
+    }
+  }
+
   .authentication {
     .mod-holder {
       > span { margin-left: 8px; }
