@@ -54,6 +54,8 @@ class Password extends AuthenticationOption
     super
     this.$el.find('.edit').click @editPassword
 
+  # TODO we should just use normal links for edit and add, instead of these JS handlers
+
   editPassword: ->
     window.location.href = "/password/reset"
 
