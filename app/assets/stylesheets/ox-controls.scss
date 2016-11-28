@@ -18,7 +18,7 @@
     margin: 10px 0 20px 0;
     text-align: center;
     font-size: 18px;
-    font-family: 'HelveticaNeue-Bold', 'Helvetica Neue Bold', 'Helvetica Neue';
+    font-family: $os_heading_font_family;
     font-weight: 700;
     font-size: 18px;
     color: $os_dark;
@@ -35,7 +35,7 @@
   input {
     color: $os_gray;
     font-size: 1.8rem;
-    padding: 0.5rem;
+    padding: 2rem 0.8rem;
     margin: 0.5rem 0;
     border-radius: 0px;
     &:not([type="checkbox"],[type="radio"]) {
@@ -78,10 +78,11 @@
       border-radius: 0;
       padding: 1rem 2rem;
       color: white;
-      width: 200px;
+      width: 120px;
       background-color: $os_orange;
       border-color: darken($os_orange, 10%);
-
+      font-weight: 700;
+      font-family: $os_heading_font_family;
       &:hover {
         color: $os_light_gray;
         background-color: darken($os_orange, 5%);
@@ -94,7 +95,7 @@
     input[type="text"],
     input[type="password"] {
       background-color: $state-danger-bg;
-      border: 1px solid $state-danger-border;
+      border: 1px solid darken($state-danger-border, 10%);
     }
 
   }
@@ -108,6 +109,7 @@
 
   a {
     color: $os_link_color;
+    text-decoration: underline;
   }
 
 }
