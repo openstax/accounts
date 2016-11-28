@@ -1,12 +1,6 @@
 <% errors = collect_errors %>
 
-<div class="row">
-  <div class="col-xs-12">
-    <noscript>
-      <%= attention_tag(t('.please_enable_javascript'), :alert) %>
-    </noscript>
-
-    <%= alert_tag(errors[:alerts])   %>
-    <%= notice_tag(errors[:notices]) %>
-  </div>
+<div class="errors">
+  <%= alert_tag(errors[:alerts])   %>
+  <%= notice_tag(errors[:notices]) %>
 </div>
