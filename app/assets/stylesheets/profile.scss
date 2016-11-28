@@ -64,7 +64,10 @@
 
   .authentication {
     margin-bottom: 6px;
-
+    .name {
+      width: 80px;
+      display: inline-block;
+    }
     .fa-stack {
       left: -3px;
     }
