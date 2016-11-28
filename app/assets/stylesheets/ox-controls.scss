@@ -41,6 +41,10 @@
     &:not([type="checkbox"],[type="radio"]) {
       width: 100%;
     }
+    &:focus {
+      border: 1px solid $os_dark;
+      box-shadow: none;
+    }
   }
 
   select:not([multiple]) {
