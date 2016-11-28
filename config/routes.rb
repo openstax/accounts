@@ -65,8 +65,6 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'identities', path: 'password', as: 'password' do
-    put 'set'
-
     get 'reset'
     post 'reset'
 
