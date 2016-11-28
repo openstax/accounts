@@ -35,10 +35,9 @@ module ApplicationHelper
     alert_class = type == :alert ? "alert-danger" : "alert-info"
 
     content_tag :div, class: "alert #{alert_class}", role: "alert" do
-      (type == :alert ? content_tag(:strong, I18n.t( 'errors.alert')) : "") +
-      (messages.size == 1 ?
+      messages.size == 1 ?
        messages.first.html_safe :
-       ("<ul>"+messages.collect{|a| "<li>#{a}</li>"}.join("")+"</ul>").html_safe)
+        ("<ul>"+messages.collect{|a| "<li>#{a}</li>"}.join("")+"</ul>").html_safe
     end
   end
 
