@@ -1,3 +1,5 @@
+<%  @hide_layout_errors = true %>
+
 <% signup_role_sym = (signup_role || "Other").downcase.to_sym %>
 
 <div class="ox-card login">
@@ -5,6 +7,8 @@
   <h1 class="title"><%= t '.page_heading' %></h1>
 
   <%= lev_form_for :profile, url: signup_profile_path do |f| %>
+
+    <%= render(partial: "layouts/attention") %>
 
     <% fh = FormHelper::One.new(f: f,
                                 limit_to: signup_role_sym,
