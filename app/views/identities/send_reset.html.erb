@@ -1,0 +1,15 @@
+<% @hide_layout_errors = true %>
+
+<div class="ox-card"> <%# TODO combine this with send_add using a partial so we can DRY it up %>
+
+  <h1 class="title"><%= t :".page_heading" %></h1>
+
+  <p><%= (t :".we_sent_email",
+            emails: @handler_result.outputs
+                                   .email_addresses
+                                   .map{|em| "<b>#{em}</b>"}
+                                   .to_sentence).html_safe %></p>
+
+  <p><%= t :".close_this_window" %></p>
+
+</div>

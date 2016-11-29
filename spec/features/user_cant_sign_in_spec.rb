@@ -75,7 +75,8 @@ feature "User can't sign in", js: true do
       screenshot!
 
       click_link(t :"sessions.authenticate_options.reset_password")
-      expect(page).to have_content(/sent_reset/)  # TODO check for real sent password content
+      expect(page).to have_content(t(:'identities.send_reset.we_sent_email', emails: 'user@example.com'))
+      screenshot!
 
       open_email('user@example.com')
       expect(current_email).to have_content("Click here to reset")
@@ -104,7 +105,8 @@ feature "User can't sign in", js: true do
       # TODO somehow simulate oauth failure so we see error message
 
       click_link(t :"sessions.authenticate_options.add_password")
-      expect(page).to have_content(/sent_add/)  # TODO check for real sent password content
+      expect(page).to have_content(t(:'identities.send_add.we_sent_email', emails: 'user@example.com'))
+      screenshot!
 
       open_email('user@example.com')
       expect(current_email).to have_content("Click here to add")
