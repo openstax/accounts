@@ -23,10 +23,15 @@ class GetLoginInfo
 
     fatal_error(code: :multiple_users, offending_inputs: :username_or_email) if users.many?
 
+    user = users.first
+
+    # in case a `user` arg was provided instead of `username_or_email`
+    outputs.username_or_email ||= user.email_addresses.verified.first.try(:value) || user.username
+
     # providers is hash where the keys are providers, and the values are product-
     # specific info.  E.g. for google, the value is a login hint that helps
     # google know which account is being targeted.
-    outputs.providers = Authentication.where{user_id.in users.map(&:id)}
+    outputs.providers = Authentication.where{user_id == user.id}
                                       .each_with_object({}) do |authentication, hash|
       provider = authentication.provider
 

@@ -52,6 +52,9 @@ feature 'User manages emails', js: true do
     end
   end
 
+  # TODO screenshots all around
+  # TODO spec to show can't add already-used email
+
   context 'destroy' do
     context 'when there are two emails' do
       let(:verified_emails) { ['one@verified.com', 'two@verified.com']}

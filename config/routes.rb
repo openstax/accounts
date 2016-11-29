@@ -36,6 +36,7 @@ Rails.application.routes.draw do
 
   scope controller: 'authentications' do
     delete 'auth/:provider', action: :destroy
+    get 'add/:provider', action: :add
   end
 
   # routes for access via an iframe

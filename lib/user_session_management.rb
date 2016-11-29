@@ -17,6 +17,7 @@ module UserSessionManagement
 
     if @current_user.is_anonymous?
       session[:user_id] = nil
+      security_log :sign_out
     else
       session[:user_id] = @current_user.id
       session[:last_admin_activity] = DateTime.now.to_s \
@@ -63,6 +64,8 @@ module UserSessionManagement
   end
 
   def get_login_state
+    clear_login_state if signed_in? # should have happened already, but may not have
+
     {
       username_or_email: session[:login].try(:[],'u'),
       matching_user_ids: session[:login].try(:[], 'm'),

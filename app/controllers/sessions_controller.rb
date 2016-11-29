@@ -52,11 +52,8 @@ class SessionsController < ApplicationController
   def reauthenticate
     handle_with(SessionsReauthenticate,
                 complete: lambda do
-                  set_login_state(username_or_email: current_user.username.blank? ?
-                                                     current_user.email_addresses.first.value :
-                                                     current_user.username,
-                                  names: @handler_result.outputs.names,
-                                  providers: @handler_result.outputs.providers.to_hash)
+                  @username_or_email = @handler_result.outputs.username_or_email
+                  @providers = @handler_result.outputs.providers.to_hash
                 end)
   end
 
@@ -83,7 +80,7 @@ class SessionsController < ApplicationController
         authentication = @handler_result.outputs[:authentication]
         case @handler_result.outputs[:status]
         when :new_signin_required
-          reauthenticate_user!
+          reauthenticate_user! # TODO maybe replace with static "session has expired" b/c hard to recover
         when :returning_user
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
@@ -132,7 +129,6 @@ class SessionsController < ApplicationController
 
   # Destroy session (logout)
   def destroy
-    security_log :sign_out
     if params[:parent]
       url = iframe_after_logout_url(parent: params[:parent])
     end
@@ -165,6 +161,11 @@ class SessionsController < ApplicationController
 
   # OAuth failure (e.g. wrong password)
   def failure
+    if params[:message] == 'csrf_detected'
+      redirect_to logout_path, alert: 'CSRF Error!'
+      return
+    end
+
     action, message = case params[:message]
     when 'cannot_find_user'
       [:new, (I18n.t :"errors.no_account_for_username_or_email")]

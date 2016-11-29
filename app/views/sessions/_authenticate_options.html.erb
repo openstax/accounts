@@ -1,8 +1,8 @@
 <%
   login_state = get_login_state
-  username_or_email = login_state[:username_or_email]
-  names = login_state[:names] || []
-  providers = login_state[:providers] || {}
+
+  username_or_email = @username_or_email || login_state[:username_or_email]
+  providers = @providers || login_state[:providers] || {}
 %>
 
 <% if providers.keys.include?('google_oauth2') %>
