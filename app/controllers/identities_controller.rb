@@ -18,11 +18,11 @@ class IdentitiesController < ApplicationController
   end
 
   def send_reset
-    send_password_email(kind: :reset, success_redirect: :sent_reset)
+    send_password_email(kind: :reset)
   end
 
   def send_add
-    send_password_email(kind: :add, success_redirect: :sent_add)
+    send_password_email(kind: :add)
   end
 
   def sent_reset; end
@@ -34,13 +34,12 @@ class IdentitiesController < ApplicationController
 
   protected
 
-  def send_password_email(kind:, success_redirect:)
+  def send_password_email(kind:)
     handle_with(IdentitiesSendPasswordEmail,
                 kind: kind,
                 user: User.find(get_login_state[:matching_user_ids].first),
                 success: lambda do
                   security_log :help_requested
-                  redirect_to action: success_redirect
                 end,
                 failure: lambda do
                   # TODO get this security log in (copied from old sessions#help)

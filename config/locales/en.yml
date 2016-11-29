@@ -167,6 +167,16 @@ en:
       message: Your password has been reset.
       continue: Continue
 
+    send_reset:
+      page_heading: Check your email
+      we_sent_email: We sent an email to %{emails}.  Click the link in that email to reset your password.
+      close_this_window: You can close this window.
+
+    send_add:
+      page_heading: Check your email
+      we_sent_email: We sent an email to %{emails}.  Click the link in that email to reset your password.
+      close_this_window: You can close this window.
+
   layouts:
     application_footer:
       terms_of_use: Terms of Use

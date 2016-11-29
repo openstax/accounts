@@ -24,6 +24,8 @@ class IdentitiesSendPasswordEmail
         email_address: email_address
       ).deliver_later
     end
+
+    outputs.email_addresses = email_addresses
   end
 
   def user

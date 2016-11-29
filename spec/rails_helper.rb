@@ -32,12 +32,13 @@ require 'capybara/poltergeist'
 Capybara.javascript_driver = :poltergeist
 window_size = [1920, 6000]
 
+Capybara.asset_host = 'http://localhost:2999'
+
 require 'capybara/email/rspec'
 
 if EnvUtilities.load_boolean(name: 'SSHOT', default: false)
   require 'capybara-screenshot/rspec'
   Capybara::Screenshot.autosave_on_failure = false
-  Capybara.asset_host = 'http://localhost:2999'
   Capybara::Screenshot.append_timestamp = false
   window_size = [1000, 6000] # narrower images
 
