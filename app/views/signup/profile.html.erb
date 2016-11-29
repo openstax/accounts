@@ -63,19 +63,7 @@
       %>
 
       <div class="subjects clearfix">
-        <%
-          {
-            hs_physics:           'High School Physics',
-            college_physics:      'College Physics',
-            ap_biology:           'Biology for AP® Courses',
-            concepts_biology:     'Concepts of Biology',
-            college_biology:      'College Biology',
-            principles_economics: 'Principles of Economics',
-            macro_economics:      'Macroeconomics',
-            micro_economics:      'Microeconomics',
-            intro_sociology:      'Introduction to Sociology',
-            anatomy_physiology:   'Anatomy & Physiology'
-          }.each do | key, title | %>
+        <% Settings::Subjects.each do | key, title | %>
             <div class="half-width">
               <%= f.check_box("subjects[#{key}]", checked: instructor_has_selected_subject(key)) %>
               <%= f.label "subjects[#{key}]", title %>

@@ -1,6 +1,18 @@
 # config/app.yml for rails-settings-cached
 defaults: &defaults
   push_salesforce_lead_enabled: false
+  subjects:
+    hs_physics:           'High School Physics'
+    college_physics:      'College Physics'
+    ap_biology:           'Biology for AP® Courses'
+    concepts_biology:     'Concepts of Biology'
+    college_biology:      'College Biology'
+    principles_economics: 'Principles of Economics'
+    macro_economics:      'Macroeconomics'
+    micro_economics:      'Microeconomics'
+    intro_sociology:      'Introduction to Sociology'
+    anatomy_physiology:   'Anatomy & Physiology'
+
 
 development:
   <<: *defaults

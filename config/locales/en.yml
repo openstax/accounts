@@ -183,6 +183,9 @@ en:
 
   settings:
     attributes:
+      subjects:
+        name: Subjects
+        help_block: List of subjects that teachers choose from whe signing up
       push_salesforce_lead_enabled:
         name: 'Push leads to Salesforce?'
         help_block: 'If checked (and SF configured), new accounts will be pushed to SF as Leads'
