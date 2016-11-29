@@ -55,7 +55,7 @@
 
   select:not([multiple]) {
     background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50px' height='50px'><polyline points='46.139,15.518 25.166,36.49 4.193,15.519'/></svg>") right no-repeat;
-    background-position: right 1rem top $input-height-base / 4;
+    background-position: right 1rem center;
     background-size: 18px 18px;
     background-color: white;
     border-radius: 0px;
