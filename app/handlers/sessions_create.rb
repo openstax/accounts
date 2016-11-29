@@ -77,15 +77,16 @@ class SessionsCreate
     # incoming authentication is connected to an existing user (to prevent creating
     # a duplicate account).  We can detect this in two ways: if the authentication
     # is already in use by an existing user OR if the authentication's email is
-    # in use by an existing user.
+    # in use by an existing user or users.  If there are multiple potential existing
+    # users, choose the most recently used (anything to avoid making yet another
+    # duplicate).
 
-    if authentication_user.present? || users_matching_oauth_data.any?
-      # TODO: copy over SCI to old user, copy over incoming authentication to older user
-      # if not already there, sign in the old, redirect them back as if they had just signed in
+    existing_user = authentication_user || user_most_recently_used(users_matching_oauth_data)
 
-      # closest existing status:
-      #           outputs[:status] = :transferred_authentication
-      raise "not yet implemented"
+    if existing_user.present?
+      # Want to transfer the SCI and authentication to this existing user and sign that user in
+      receiving_user = existing_user
+      status = :existing_user_signed_up_again
     else
       # This is the normal signup flow.  For password signups, we need to find
       # the existing user; for social, we need to make a new one.  Then we attach
@@ -93,22 +94,23 @@ class SessionsCreate
 
       if authentication.provider == 'identity'
         identity = Identity.find(authentication.uid)
-        authentication_user = identity.user
+        receiving_user = identity.user
         status = :new_password_user  # TODO can this merge with new_social_user?
       else
-        authentication_user = User.new
-        run(TransferOmniauthData, @data, authentication_user)
+        receiving_user = User.new
+        run(TransferOmniauthData, @data, receiving_user)
         status = :new_social_user
       end
-
-      run(TransferSignupContactInfo,
-          signup_contact_info: options[:signup_contact_info],
-          user: authentication_user)
-
-      run(TransferAuthentications, authentication, authentication_user)
-      sign_in!(authentication_user)
-      return status
     end
+
+    run(TransferSignupContactInfo,
+        signup_contact_info: options[:signup_contact_info],
+        user: receiving_user)
+
+    run(TransferAuthentications, authentication, receiving_user)
+
+    sign_in!(receiving_user)
+    return status
   end
 
   def handle_while_logged_in
@@ -161,6 +163,22 @@ class SessionsCreate
                                                .verified
                                                .with_users
                                                .map(&:user)
+  end
+
+  def user_most_recently_used(users)
+    return nil if users.empty?
+    return users.first if users.one?
+
+    user_id_by_sign_in = SecurityLog.sign_in_successful
+                                    .where{user_id.in my{users.map(&:id)}}
+                                    .first
+                                    .try(&:user_id)
+
+    if user_id_by_sign_in.present?
+      return users.select{|uu| uu.id == user_id_by_sign_in}.first
+    end
+
+    return users.sort_by{|uu| [uu.updated_at, uu.created_at]}.last
   end
 
   def authentication

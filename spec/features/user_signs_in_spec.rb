@@ -1,24 +1,26 @@
 require 'rails_helper'
 
-feature 'User logs in as a local user', js: true do
+feature 'User logs in', js: true do
 
   background { load 'db/seeds.rb' }
 
-  scenario 'authentication using email address passwords' do
+  scenario 'using email and password' do
     with_forgery_protection do
       user = create_user 'user'
       create_email_address_for(user, 'user@example.com')
 
       arrive_from_app
 
+      screenshot!
       complete_login_username_or_email_screen 'user@example.com'
+      screenshot!
       complete_login_password_screen 'password'
 
       expect_back_at_app
     end
   end
 
-  scenario 'authenticates against plone (ssha) password hashes' do
+  scenario 'against plone (ssha) password hashes' do
     with_forgery_protection do
       user = create_user_with_plone_password
       create_email_address_for(user, 'user@example.com')
@@ -40,6 +42,7 @@ feature 'User logs in as a local user', js: true do
       arrive_from_app
       complete_login_username_or_email_screen 'user'
       expect(page).to have_content(t :"sessions.new.unknown_username")
+      screenshot!
     end
   end
 
@@ -56,6 +59,7 @@ feature 'User logs in as a local user', js: true do
       complete_login_password_screen 'password'
 
       expect(page).to have_content(t :"controllers.identities.password_expired")
+      screenshot!
 
       complete_reset_password_screen
       complete_reset_password_success_screen
@@ -83,7 +87,7 @@ feature 'User logs in as a local user', js: true do
     end
   end
 
-  scenario 'redirect home page visitors' do
+  scenario 'gets redirected to profile' do
     user = create_user('jimbo')
 
     visit '/'
@@ -97,7 +101,7 @@ feature 'User logs in as a local user', js: true do
     expect(page).to have_content(t :"users.edit.page_heading")
   end
 
-  scenario 'a user signs into an account that has been created by an admin for them', js: true do
+  scenario 'into an account created by an admin for them', js: true do
     new_user = FindOrCreateUnclaimedUser.call(
       email:'unclaimeduser@example.com', username: 'therulerofallthings',
       first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
@@ -124,6 +128,7 @@ feature 'User logs in as a local user', js: true do
       create_email_address_for user, 'user@example.com', 'unverified'
       complete_login_username_or_email_screen 'user@example.com'
       expect(page).to have_content(t :"sessions.new.unknown_email")
+      screenshot!
       complete_login_username_or_email_screen 'user'
       complete_login_password_screen 'password'
       expect_back_at_app
@@ -145,6 +150,7 @@ feature 'User logs in as a local user', js: true do
       complete_login_username_or_email_screen 'user@example.com'
       expect_sign_in_page
       expect(page).to have_content(t("sessions.new.multiple_users.content_html").sub('<br/>', ' ').sub(' %{link}.', ''))
+      screenshot!
 
       complete_login_username_or_email_screen 'user'
       complete_login_password_screen 'password'

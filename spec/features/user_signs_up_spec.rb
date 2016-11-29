@@ -9,11 +9,17 @@ feature 'User signs up', js: true do
 
   scenario 'happy path success with password' do
     arrive_from_app
+    screenshot!
     click_sign_up
-    complete_signup_email_screen("Instructor","bob@bob.edu")
+    screenshot!
+    complete_signup_email_screen("Instructor","bob@bob.edu", screenshot_after_role: true)
+    screenshot!
+    capture_email!(address: "bob@bob.edu")
     complete_signup_verify_screen(pass: true)
+    screenshot!
     complete_signup_password_screen('password')
 
+    screenshot!
     complete_signup_profile_screen(
       first_name: "Bob",
       last_name: "Armstrong",
@@ -71,6 +77,7 @@ feature 'User signs up', js: true do
       fill_in (t :"signup.start.email"), with: "bob@bob.edu"
       click_button(t :"signup.start.next")
       expect(page).to have_content 'Email already in use'
+      screenshot!
     end
 
     scenario 'failure because suspected non-school email then success' do
@@ -79,6 +86,7 @@ feature 'User signs up', js: true do
       fill_in (t :"signup.start.email"), with: "bob@gmail.com"
       click_button(t :"signup.start.next")
       expect(page).to have_content 'If this is your school email, click Next'
+      screenshot!
     end
 
     scenario 'failure because email blank' do
@@ -98,7 +106,9 @@ feature 'User signs up', js: true do
     }
 
     scenario 'user leaves verify screen to edit email' do
+      screenshot!
       click_link (t :'signup.verify_email.edit_email_address')
+      screenshot!(suffix: 'went_back')
       complete_signup_email_screen("Instructor","bob2@bob.edu")
 
       complete_signup_verify_screen(pass: true)
@@ -113,6 +123,7 @@ feature 'User signs up', js: true do
       complete_signup_verify_screen(pass: false)
       expect_signup_verify_screen
       expect(page).to have_content t('signup.verify_email.pin_not_correct')
+      screenshot!
     end
 
     scenario 'user gets PIN wrong too many times' do
@@ -123,6 +134,7 @@ feature 'User signs up', js: true do
       complete_signup_verify_screen(pass: false)
       expect(page).to have_content(t :'signup.verify_email.page_heading_token')
       expect(page).to have_content(t :'signup.verify_email.no_pin_confirmation_attempts_remaining')
+      screenshot!
     end
   end
 
@@ -138,18 +150,21 @@ feature 'User signs up', js: true do
       complete_signup_password_screen('password', 'blah')
       expect(page).to have_no_missing_translations
       expect(page).to have_content('confirmation doesn\'t match')
+      screenshot!
     end
 
     scenario 'fields blank' do
       complete_signup_password_screen('', '')
       expect(page).to have_no_missing_translations
       expect(page).to have_content("can't be blank")
+      screenshot!
     end
 
     scenario 'password too short' do
       complete_signup_password_screen('p', 'p')
       expect(page).to have_no_missing_translations
       expect(page).to have_content('too short')
+      screenshot!
     end
 
     context 'user already has password' do
@@ -202,6 +217,60 @@ feature 'User signs up', js: true do
 
   context 'student profile screen' do
     skip # TODO
+  end
+
+  context "user tries to make a duplicate account" do
+    scenario "detected by reusing social auth" do
+      existing_user = create_user('existing')
+      existing_social =
+        FactoryGirl.create :authentication, provider: 'google_oauth2', user: existing_user
+
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      complete_signup_verify_screen(pass: true)
+
+      click_link(t :"signup.password.use_social")
+
+      with_omniauth_test_mode(uid: existing_social.uid) do
+        click_link('google-login-button')
+      end
+
+      expect(existing_user.contact_infos.verified.map(&:value)).to include("bob@bob.edu")
+      expect(SignupContactInfo.count).to eq 0
+
+      expect_back_at_app
+    end
+
+    scenario "detected by social returning existing email" do
+      existing_user = create_user('existing')
+      create_email_address_for existing_user, 'bob@gmail.com'
+
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      complete_signup_verify_screen(pass: true)
+
+      click_link(t :"signup.password.use_social")
+
+      with_omniauth_test_mode(email: 'bob@gmail.com') do
+        click_link('google-login-button')
+      end
+
+      expect(
+        existing_user.contact_infos.verified.map(&:value)
+      ).to contain_exactly("bob@bob.edu", "bob@gmail.com")
+
+      expect(existing_user.authentications.count).to eq 2
+
+      expect(SignupContactInfo.count).to eq 0
+
+      expect_back_at_app
+    end
+
+    scenario 'when there are multiple existing matching accounts' do
+      skip # TODO
+    end
   end
 
 end

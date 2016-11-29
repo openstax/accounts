@@ -11,51 +11,6 @@ describe IdentitiesController, type: :controller do
       FactoryGirl.create :user, :terms_agreed, username: 'user_no_identity'
     }
 
-    context 'PUT set' do
-      before do
-        expect(!!identity.authenticate('password')).to eq true
-        expect(!!identity.authenticate('new_password')).to eq false
-      end
-
-      context "anonymous user" do
-        it "requires login" do
-          expect(
-            put 'set', set_password: {
-              password: 'new_password', password_confirmation: 'password_confirmation'
-            }
-          ).to redirect_to login_path
-        end
-      end
-
-      context "logged in user" do
-        context 'with recent signin' do
-          before { controller.sign_in! user }
-
-          it "updates the user's password" do
-            put 'set', set_password: {
-              password: 'new_password', password_confirmation: 'new_password'
-            }
-            expect(response.status).to eq 202
-            expect(!!identity.reload.authenticate('password')).to eq false
-            expect(!!identity.authenticate('new_password')).to eq true
-          end
-        end
-
-        context 'with old signin' do
-          before { Timecop.freeze(11.minutes.ago) { controller.sign_in! user } }
-
-          it "does not update the user's password" do
-            put 'set', set_password: {
-              password: 'new_password', password_confirmation: 'new_password'
-            }
-            expect(response.status).to eq 302
-            expect(!!identity.reload.authenticate('password')).to eq true
-            expect(!!identity.authenticate('new_password')).to eq false
-          end
-        end
-      end
-    end
-
     context "reset_password" do
       # Which, code-wise, is very similar to add_password
 

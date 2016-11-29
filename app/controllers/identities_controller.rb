@@ -9,23 +9,6 @@ class IdentitiesController < ApplicationController
                   only: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add,
                          :reset_success, :add_success]
 
-  # Used from the profile page to edit/add a user's password
-  def set
-    if user_signin_is_too_old?
-      reauthenticate_user!
-    else
-      handle_with(IdentitiesSetPassword,
-                  success: lambda  do
-                    security_log :password_updated
-                    render status: :accepted,
-                           text: (I18n.t :"controllers.identities.password_changed")
-                  end,
-                  failure: lambda do
-                    render status: 422, text: @handler_result.errors.map(&:message).to_sentence
-                  end)
-    end
-  end
-
   def reset
     set_password(kind: :reset)
   end

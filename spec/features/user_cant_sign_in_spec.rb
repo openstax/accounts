@@ -72,17 +72,21 @@ feature "User can't sign in", js: true do
 
       complete_login_password_screen('wrongpassword')
       expect(page).to have_content(t :"controllers.sessions.incorrect_password")
+      screenshot!
 
       click_link(t :"sessions.authenticate_options.reset_password")
       expect(page).to have_content(/sent_reset/)  # TODO check for real sent password content
 
       open_email('user@example.com')
       expect(current_email).to have_content("Click here to reset")
+      capture_email!
 
       password_reset_path = get_path_from_absolute_link(current_email, 'a')
       visit password_reset_path
+      screenshot!
 
       complete_reset_password_screen
+      screenshot!
       complete_reset_password_success_screen
 
       expect_back_at_app
@@ -95,6 +99,7 @@ feature "User can't sign in", js: true do
       password_authentication.destroy
 
       complete_login_username_or_email_screen('user@example.com')
+      screenshot!
 
       # TODO somehow simulate oauth failure so we see error message
 
@@ -103,13 +108,16 @@ feature "User can't sign in", js: true do
 
       open_email('user@example.com')
       expect(current_email).to have_content("Click here to add")
+      capture_email!
 
       password_add_path = get_path_from_absolute_link(current_email, 'a')
       visit password_add_path
+      screenshot!
 
       expect(@user.identity(true)).to be_nil
 
       complete_add_password_screen
+      screenshot!
       complete_add_password_success_screen
 
       expect(@user.identity(true)).not_to be_nil
@@ -124,6 +132,7 @@ feature "User can't sign in", js: true do
       FactoryGirl.create :authentication, provider: 'google_oauth2', user: @user
       complete_login_username_or_email_screen('user@example.com')
       expect(page).to have_content(t :"sessions.authenticate_options.reset_password")
+      screenshot!
     end
   end
 
