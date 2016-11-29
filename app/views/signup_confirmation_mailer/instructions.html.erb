@@ -12,6 +12,10 @@
   <p>Click on the link below to verify your email address:</p>
 <% end %>
 
-<p><%= signup_check_token_url(code: @signup_contact_info.confirmation_code) %></p>
+<%
+  token_url = signup_verify_by_token_url(code: @signup_contact_info.confirmation_code)
+%>
+
+<p><%= link_to token_url, token_url %></p>
 
 <%= render :partial => 'shared/email_closing' %>

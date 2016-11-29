@@ -59,7 +59,7 @@ Rails.application.routes.draw do
     get 'verify_email'
     post 'verify_email'
 
-    get 'check_token'
+    get 'verify_by_token'
 
     get 'profile'
     post 'profile'

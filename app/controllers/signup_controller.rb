@@ -1,16 +1,16 @@
 class SignupController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:start, :verify_email, :check_token, :password, :social]
+  skip_before_filter :authenticate_user!, only: [:start, :verify_email, :verify_by_token, :password, :social]
 
   skip_before_filter :finish_sign_up
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   # TODO spec this and maybe make more specific to what each action needs (including :profile, which needs role)
-  before_filter :restart_if_missing_info, only: [:verify_email, :password, :social, :check_token]
+  before_filter :restart_if_missing_info, only: [:verify_email, :password, :social, :verify_by_token]
 
   # TODO spec this
-  before_filter :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :check_token]
+  before_filter :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
 
   before_filter :transfer_signup_contact_info, only: [:profile], if: -> { request.get? }
 
@@ -37,7 +37,7 @@ class SignupController < ApplicationController
     end
   end
 
-  def verify_email
+  def verify_email  # TODO maybe rename just `verify`
     if request.post?
       handle_with(SignupVerifyEmail,
                   signup_contact_info: signup_contact_info,
@@ -53,8 +53,14 @@ class SignupController < ApplicationController
     end
   end
 
-  def check_token
-    raise "not yet implemented"
+  def verify_by_token
+    handle_with(SignupVerifyByToken,
+                success: lambda do
+                  redirect_to action: :password
+                end,
+                failure: lambda do
+                  raise "not yet implemented"
+                end)
   end
 
   def password; end
