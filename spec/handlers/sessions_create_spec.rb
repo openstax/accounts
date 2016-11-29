@@ -51,7 +51,7 @@ describe SessionsCreate, type: :handler do
                                            authentication.uid,
                                            {email: "bob@bob.com"})
         )
-        expect(authentication.reload.login_hint).to eq "bob@bob.com"
+        expect(result.outputs.authentication.login_hint).to eq "bob@bob.com"
       end
     end
   end

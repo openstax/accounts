@@ -24,6 +24,9 @@ class AuthenticationsController < ApplicationController
     )
   end
 
-  # TODO add an `add` action that triggers reauthenticate esp for social (so reauthenticate before leave Accounts)
+  # This wrapper of the oauth route exists to do reauth before adding
+  def add
+    redirect_to "/auth/#{params[:provider]}"
+  end
 
 end

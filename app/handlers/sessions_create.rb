@@ -47,10 +47,10 @@ class SessionsCreate
     outputs[:status] =
       if signing_up?
         handle_during_signup
-      elsif logging_in?
-        handle_during_login
       elsif signed_in?
         handle_while_logged_in
+      elsif logging_in?
+        handle_during_login
       else
         fatal_error(code: :unknown_callback_state)
       end
@@ -182,14 +182,17 @@ class SessionsCreate
   end
 
   def authentication
+    # We don't use fatal_errors in this handler (we could, but we don't), so just build
+    # don't create an authentication here because we don't want to leave orphaned
+    # records lying around if we return a error-ish status
+
     outputs[:authentication] ||=
-      Authentication.find_or_create_by(provider: @data.provider, uid: @data.uid.to_s)
+      Authentication.find_or_initialize_by(provider: @data.provider, uid: @data.uid.to_s)
                     .tap do |authentication|
 
         # Refresh google login hints if needed
-        if @data.provider == 'google_oauth2'    # TODO spec this
+        if @data.provider == 'google_oauth2'
           authentication.login_hint = @data.email
-          authentication.save! if authentication.changed?
         end
 
       end
