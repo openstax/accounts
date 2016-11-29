@@ -15,7 +15,6 @@
                                 context: self,
                                 errors: @handler_result.try(:errors)) %>
 
-    <h3><%= t('.name_heading') %></h3>
     <%= fh.text_field name: :first_name, value: current_user.first_name %>
     <%= fh.text_field name: :last_name, value: current_user.last_name %>
     <%= fh.text_field name: :suffix %>
@@ -100,9 +99,7 @@
           <%= f.check_box :i_agree %>
           <%= t :".have_read_terms_and_agree_html",
                 terms_of_use: contract_links[0],
-                privacy_policy: contract_links[1]
-              %><br/>
-          <i><%= t :".policies_notice" %></i>
+                privacy_policy: contract_links[1] %>
         </label>
       </div>
 

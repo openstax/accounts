@@ -35,11 +35,11 @@
   input {
     color: $os_gray;
     font-size: 1.8rem;
-    padding: 1rem 0.8rem;
-    margin: 0.5rem 0;
     border-radius: 0px;
     &:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
       width: 100%;
+      padding: 1rem 0.8rem;
+      margin: 0.5rem 0;
     }
     &[type="text"],
     &[type="password"] {
