@@ -19,16 +19,4 @@ body.sessions {
     }
   }
 
-  .identity-password {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    input {
-      margin: 0;
-      width: 46%;
-      &[type=submit].primary { width: 46%; }
-    }
-
-  }
-
 }
