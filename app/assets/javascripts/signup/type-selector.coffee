@@ -17,6 +17,7 @@ class OX.Signup.TypeSelector
     if initial.length
       @el.val('student') if @el.val() is 'initial'
       initial.remove()
+      @onChange()
 
   onChange: ->
     @getEmail().setType(@el.val())
