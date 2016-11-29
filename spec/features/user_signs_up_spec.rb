@@ -38,6 +38,25 @@ feature 'User signs up', js: true do
     expect_back_at_app
   end
 
+  scenario 'happy path success with email verification by link' do
+    arrive_from_app
+    click_sign_up
+    complete_signup_email_screen("Instructor","bob@bob.edu", screenshot_after_role: true)
+    open_email("bob@bob.edu")
+    verify_email_path = get_path_from_absolute_link(current_email, 'a')
+
+    visit verify_email_path
+
+    complete_signup_password_screen('password')
+
+    complete_signup_profile_screen_with_whatever
+
+    expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
+    expect(SignupContactInfo.count).to eq 0
+
+    expect_back_at_app
+  end
+
   # TODO test password log in CSRF in CustomIdentity similar to below
 
   context 'CSRF verification in CustomIdentity signup' do

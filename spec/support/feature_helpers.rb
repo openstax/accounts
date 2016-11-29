@@ -263,7 +263,10 @@ def complete_signup_email_screen(role, email, options={})
   @signup_email = email
   expect(page).to have_content(t :"signup.start.page_heading")
   select role, from: "signup_role"
-  screenshot! if options[:screenshot_after_role]
+  if options[:screenshot_after_role]
+    wait_for_animations
+    screenshot!
+  end
   fill_in (t :"signup.start.email"), with: email
   expect(page).to have_no_missing_translations
   click_button(t :"signup.start.next")
