@@ -10,9 +10,9 @@
     big_time_error_message =
       case error_codes.first
       when :token_blank, :unknown_login_token
-        t :"identities.there_was_a_problem_with_reset_link"
+        t :"identities.there_was_a_problem_with_password_link"
       when :expired_login_token
-        t :"identities.expired_reset_link"
+        t :"identities.expired_password_link"
       end
 
    if big_time_error_message %>
@@ -23,18 +23,17 @@
 
     <p><%= t :".use_form_below_to_reset_password" %></p>
 
-      <%= lev_form_for :set_password, url: '',
-        html: {class: collect_errors.any? ? 'is-invalid' : ''} do |f| %>
-        <%= standard_field form: f, name: :password,
-            type: :password_field,
-            label: (t :"identities.password") %>
-        <%= standard_field form: f, name: :password_confirmation,
-            type: :password_field,
-            label: (t :"identities.confirm_password") %>
-        <%= render(partial: "layouts/attention") %>
-        <%= submit_tag (t :"identities.set_password"), class: 'primary' %>
-      <% end %>
-
+    <%= lev_form_for :set_password, url: '',
+      html: {class: collect_errors.any? ? 'is-invalid' : ''} do |f| %>
+      <%= standard_field form: f, name: :password,
+          type: :password_field,
+          options: { placeholder: t(:"identities.password") } %>
+      <%= standard_field form: f, name: :password_confirmation,
+          type: :password_field,
+          options: { placeholder: t(:"identities.confirm_password") } %>
+      <%= render(partial: "layouts/attention") %>
+      <%= submit_tag (t :"identities.reset.submit"), class: 'primary' %>
+    <% end %>
 
   <% end %>
 </div>

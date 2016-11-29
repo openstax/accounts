@@ -31,7 +31,7 @@ describe IdentitiesController, type: :controller do
         it 'errors if the login token is bad' do
           get :reset, token: '123'
           expect(response.code).to eq('400')
-          expect(response.body).to include(t :"identities.there_was_a_problem_with_reset_link")
+          expect(response.body).to include(t :"identities.there_was_a_problem_with_password_link")
         end
 
         it 'errors if the login token is expired' do
@@ -39,7 +39,7 @@ describe IdentitiesController, type: :controller do
           user.save!
           get :reset, token: user.login_token
           expect(response.code).to eq('400')
-          expect(response.body).to include(t :"identities.expired_reset_link")
+          expect(response.body).to include(t :"identities.expired_password_link")
         end
       end
 
@@ -57,9 +57,9 @@ describe IdentitiesController, type: :controller do
           reset_password('','')
           expect(response.code).to eq('400')
           expect(response.body).to have_no_missing_translations
-          expect(response.body).not_to include(t :"identities.there_was_a_problem_with_reset_link")
+          expect(response.body).not_to include(t :"identities.there_was_a_problem_with_password_link")
           expect(response.body).to include("Password can't be blank")
-          expect(response.body).to include(t :"identities.set_password")
+          expect(response.body).to include(t :"identities.reset.submit")
           identity.reload
           expect(identity.authenticate('password')).to be_truthy
         end
@@ -69,7 +69,7 @@ describe IdentitiesController, type: :controller do
           expect(response.code).to eq('400')
           expect(response.body).to have_no_missing_translations
           expect(response.body).to include('Password is too short')
-          expect(response.body).to include(t :"identities.set_password")
+          expect(response.body).to include(t :"identities.reset.submit")
           identity.reload
           expect(identity.authenticate('password')).to be_truthy
         end
@@ -79,7 +79,7 @@ describe IdentitiesController, type: :controller do
           expect(response.code).to eq('400')
           expect(response.body).to have_no_missing_translations
           expect(response.body).to include("Password confirmation doesn't match Password")
-          expect(response.body).to include(t :"identities.set_password")
+          expect(response.body).to include(t :"identities.reset.submit")
           identity.reload
           expect(identity.authenticate('password')).to be_truthy
         end

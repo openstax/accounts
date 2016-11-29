@@ -18,11 +18,18 @@ feature 'User updates password on profile screen', js: true do
     @user.identity(true)
     visit '/profile'
 
+    screenshot!
     find('#enable-other-sign-in').click
+
+    screenshot!
     wait_for_animations # wait for slide-down effect
     find('[data-provider=identity] .add').click
+
+    screenshot!
     complete_add_password_screen
+    screenshot!
     complete_add_password_success_screen
+    screenshot!
     expect(page).to have_no_missing_translations
     expect(page.html).to include(t :"users.edit.how_you_sign_in_html")
     expect(page).to have_css('[data-provider=facebook]')

@@ -343,7 +343,7 @@ def complete_reset_password_screen(password=nil)
   password ||= 'Passw0rd!'
   fill_in (t :"identities.password"), with: password
   fill_in (t :"identities.confirm_password"), with: password
-  click_button (t :"identities.set_password")
+  click_button (t :"identities.reset.submit")
   expect(page).to have_content(t :"identities.reset_success.message")
 end
 
@@ -355,7 +355,7 @@ def complete_add_password_screen(password=nil)
   password ||= 'Passw0rd!'
   fill_in (t :"identities.password"), with: password
   fill_in (t :"identities.confirm_password"), with: password
-  click_button (t :"identities.set_password")
+  click_button (t :"identities.add.submit")
   expect(page).to have_content(t :"identities.add_success.message")
 end
 

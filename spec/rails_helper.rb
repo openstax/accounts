@@ -56,6 +56,9 @@ if EnvUtilities.load_boolean(name: 'SSHOT', default: false)
         Capybara, Capybara.page, include_html_screenshots, screenshot_base(suffix)
       )
 
+      wait_for_ajax
+      wait_for_animations
+
       if saver.save
         {:html => saver.html_path, :image => saver.screenshot_path}
       end

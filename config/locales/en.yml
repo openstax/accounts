@@ -140,12 +140,11 @@ en:
   identities:
     confirm_password: Confirm Password
     password: Password
-    set_password: Set Password
-    there_was_a_problem_with_reset_link: >-
-      Unfortunately, there was a problem with your password reset link. If you
+    there_was_a_problem_with_password_link: >-
+      Unfortunately, there was a problem with your password link. If you
       continue to have problems, please contact support.
-    expired_reset_link: >-
-      The password reset link you used has expired.
+    expired_password_link: >-
+      The password link you used has expired.
     use_form_below_to_reset_password: >-
       Use the form below to reset your password.
     use_form_below_to_add_password: >-
@@ -154,10 +153,12 @@ en:
       page_heading: Reset Password
       use_form_below_to_reset_password: >-
         Use the form below to reset your password.
+      submit: Reset Password
     add:
       page_heading: Add Password
       use_form_below_to_add_password: >-
         Use the form below to add a password.
+      submit: Add Password
     add_success:
       page_heading: Success!
       message: Your password was added to your account.
