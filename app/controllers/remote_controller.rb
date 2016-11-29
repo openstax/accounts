@@ -23,7 +23,7 @@ class RemoteController < ApplicationController
   protected
 
   def require_parent_param
-    if @iframe_parent.blank?
+    if params[:parent].blank?
       raise SecurityTransgression.new("must supply valid 'parent' query parameter")
     end
   end
