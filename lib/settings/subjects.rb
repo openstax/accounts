@@ -4,8 +4,12 @@ module Settings
     class << self
       include Enumerable
 
-      def each
-        Settings::Db.store.subjects.each{|code| yield code }
+      def each(sorted: false)
+        list = Settings::Db.store.subjects
+        if sorted
+          list = list.sort_by{ |subject| subject.last['title']}
+        end
+        list.each{|code| yield code }
       end
 
       def [](code)
