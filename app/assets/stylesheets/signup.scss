@@ -16,7 +16,32 @@ body.signup {
   }
 
   .subjects {
-    label { font-weight: inherit; }
+    // Height of list is selected to chop off in middle of line to provide an
+    // indication that there's items that can be scrolled to
+    max-height: 139px;
+    overflow-y: scroll;
+
+    .subject {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      &:first-child,
+      & + .subject { border-top: 1px solid $os_line_color; }
+      &:last-child { border-bottom: 1px solid $os_line_color; }
+      > * {
+        margin: 0;
+        padding: 0;
+      }
+
+      label {
+        font-weight: inherit;
+        font-size: 15px;
+        display: inline;
+        margin-left: 0.5rem;
+        flex: 1;
+        cursor: pointer;
+      }
+    }
   }
 
   .newsletter {
