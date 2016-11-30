@@ -7,31 +7,31 @@ defaults: &defaults
       sf: HS Physics
     college_physics:
       title: College Physics
-      sf: Phys
+      sf: College Physics (Algebra)
     ap_biology:
       title: Biology for AP® Courses
-      sf: APBio
+      sf: AP Bio
     concepts_biology:
       title: Concepts of Biology
-      sf: Concepts Bio
+      sf: Concepts of Bio (non-majors)
     college_biology:
       title: College Biology
-      sf: College Bio
+      sf: Biology w Courseware
     principles_economics:
       title: Principles of Economics
-      sf: Princ Econ
+      sf: Economics
     macro_economics:
       title: Macro Economics
-      sf: Macroeconomics
+      sf: Macro Econ
     micro_economics:
       title: Micro Economics
-      sf: Macroeconomics
+      sf: Micro Econ
     intro_sociology:
       title: Introduction to Sociology
-      sf: Intro Soc
+      sf: Introduction to Sociology
     anatomy_physiology:
       title: Anatomy & Physiology
-      sf: 'AnP'
+      sf: Anatomy & Physiology
 
 development:
   <<: *defaults
