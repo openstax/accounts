@@ -21,16 +21,24 @@ body.signup {
     max-height: 139px;
     overflow-y: scroll;
 
+    border: 1px solid #ccc;
+    padding: 5px;
+    background-color: white;
+
     .subject {
       height: 30px;
       display: flex;
       align-items: center;
-      &:first-child,
+      // &:first-child,
       & + .subject { border-top: 1px solid $os_line_color; }
-      &:last-child { border-bottom: 1px solid $os_line_color; }
+      // &:last-child { border-bottom: 1px solid $os_line_color; }
       > * {
         margin: 0;
         padding: 0;
+      }
+
+      input {
+        margin-top: 0px;
       }
 
       label {

@@ -6,6 +6,7 @@ class SignupProfileOther < SignupProfile
     # These fields from SignupProfile are required for other roles:
 
     validates :phone_number, presence: true
+    validates :url, presence: true
   end
 
   def push_lead

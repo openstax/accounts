@@ -36,7 +36,9 @@ Capybara.asset_host = 'http://localhost:2999'
 
 require 'capybara/email/rspec'
 
-if EnvUtilities.load_boolean(name: 'SSHOT', default: false)
+do_screenshots = EnvUtilities.load_boolean(name: 'SSHOT', default: false)
+
+if do_screenshots
   require 'capybara-screenshot/rspec'
   Capybara::Screenshot.autosave_on_failure = false
   Capybara::Screenshot.append_timestamp = false
