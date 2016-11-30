@@ -15,6 +15,11 @@
     text-align: center;
     font-size: 18px;
   }
+  .minor-heading {
+    font-weight: 700;
+    margin-top: 18px;
+    margin-bottom: 8px;
+  }
   h3 { font-size: 16px; }
   h3 { font-size: 15px; }
 
@@ -112,12 +117,6 @@
   a:not(.btn) {
     color: $os_link_color;
     text-decoration: underline;
-  }
-
-  .minor-heading {
-    font-weight: 700;
-    margin-top: 18px;
-    margin-bottom: 8px;
   }
 
 }
