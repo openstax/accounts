@@ -52,33 +52,11 @@
     <% if signup_role_sym != :student %>
       <p><%= t('.titles_interested') %></p>
 
-      <%# TODO: get the options from global settings in /admin/settings.  For each boo, we
-          should have a rails-friendly symbol key that maps to the full book name (not in
-          Salesforce) as well as the Salesforce abbreviation, e.g.
-            ...
-            macro_economics: ["Macro Econ", "Principles of Macroeconomics"]
-            ...
-          A `/lib/settings/books.rb` class would probably be appropriate to provide wrapped
-          access to this hash of info.
-      %>
-
       <div class="subjects clearfix">
-        <%
-          {
-            hs_physics:           'High School Physics',
-            college_physics:      'College Physics',
-            ap_biology:           'Biology for AP® Courses',
-            concepts_biology:     'Concepts of Biology',
-            college_biology:      'College Biology',
-            principles_economics: 'Principles of Economics',
-            macro_economics:      'Macroeconomics',
-            micro_economics:      'Microeconomics',
-            intro_sociology:      'Introduction to Sociology',
-            anatomy_physiology:   'Anatomy & Physiology'
-          }.each do | key, title | %>
+        <% Settings::Subjects.each do | key, info | %>
             <div class="half-width">
               <%= f.check_box("subjects[#{key}]", checked: instructor_has_selected_subject(key)) %>
-              <%= f.label "subjects[#{key}]", title %>
+              <%= f.label "subjects[#{key}]", info['title'] %>
             </div>
           <% end %>
       </div>

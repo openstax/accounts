@@ -59,7 +59,10 @@ class SignupProfile
       # concatenate the selected ones into the Salesforce format, e.g.:
       # "Macro Econ;Micro Econ;US History;AP Macro Econ"
       #
-      # profile_params.subjects.find_all{|k,v| v == '1'}.map{|kv| kv.first }
+      # profile_params.subjects.find_all{|k,v| v == '1'}.map{|kv|
+      #   Settings::Subjects[kv.first]['sf']
+      # }
+
 
       PushSalesforceLead.perform_later(
         user: caller,
