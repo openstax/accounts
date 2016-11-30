@@ -1,18 +1,21 @@
 # config/app.yml for rails-settings-cached
+
+# Subjects list generated from spreadsheet via IRB:
+# require 'active_support'; include ActiveSupport::Inflector
+# books = File.read('/tmp/books.txt').split("\n")
+# books.sort.each{|bt| (b,t)=bt.split("\t"); puts underscore(b.gsub(/([\W|\s]+)/, '_'))+":\n  title: #{t}\n  sf: #{b}\n" }; 1
+
 defaults: &defaults
   push_salesforce_lead_enabled: false
   subjects:
-    ap_bio:
-      title: AP Bio
-      sf: AP Bio
     ap_macro_econ:
-      title: AP Macro Econ
+      title: Principles of Macroeconomics for AP® Courses
       sf: AP Macro Econ
     ap_micro_econ:
-      title: AP Micro Econ
+      title: Principles of Microeconomics for AP® Courses
       sf: AP Micro Econ
     ap_physics:
-      title: AP Physics
+      title: The AP Physics Collection
       sf: AP Physics
     accounting:
       title: Accounting
@@ -24,20 +27,14 @@ defaults: &defaults
       title: American Government
       sf: American Government
     anatomy_physiology:
-      title: Anatomy & Physiology
+      title: Anatomy and Physiology
       sf: Anatomy & Physiology
     astronomy:
       title: Astronomy
       sf: Astronomy
-    basic_college_math:
-      title: Basic College Math
-      sf: Basic College Math
     biology:
       title: Biology
       sf: Biology
-    biology_w_courseware:
-      title: Biology w Courseware
-      sf: Biology w Courseware
     calculus:
       title: Calculus
       sf: Calculus
@@ -51,71 +48,44 @@ defaults: &defaults
       title: College Algebra
       sf: College Algebra
     college_physics_algebra:
-      title: 'College Physics (Algebra)'
-      sf: 'College Physics (Algebra)'
+      title: College Physics
+      sf: College Physics (Algebra)
     concepts_of_bio_non_majors:
-      title: 'Concepts of Bio (non-majors)'
-      sf: 'Concepts of Bio (non-majors)'
+      title: Concepts of Biology
+      sf: Concepts of Bio (non-majors)
     economics:
-      title: Economics
+      title: Principles of Economics
       sf: Economics
-    elementary_algebra:
-      title: Elementary Algebra
-      sf: Elementary Algebra
-    finite_algebra:
-      title: Finite Algebra
-      sf: Finite Algebra
-    hs_physics:
-      title: HS Physics
-      sf: HS Physics
-    hs_statistics:
-      title: HS Statistics
-      sf: HS Statistics
-    intermediate_algebra:
-      title: Intermediate Algebra
-      sf: Intermediate Algebra
-    introduction_to_business:
-      title: Introduction to Business
-      sf: Introduction to Business
     introduction_to_sociology:
-      title: Introduction to Sociology
+      title: Introduction to Sociology 2e
       sf: Introduction to Sociology
     introductory_statistics:
       title: Introductory Statistics
       sf: Introductory Statistics
     macro_econ:
-      title: Macro Econ
+      title: Principles of Macroeconomics
       sf: Macro Econ
-    management:
-      title: Management
-      sf: Management
     micro_econ:
-      title: Micro Econ
+      title: Principles of Microeconomics
       sf: Micro Econ
     microbiology:
       title: Microbiology
       sf: Microbiology
-    physics_w_courseware:
-      title: Physics w Courseware
-      sf: Physics w Courseware
     pre_algebra:
-      title: PreAlgebra
+      title: Prealgebra
       sf: PreAlgebra
     precalc:
-      title: Precalc
+      title: Precalculus
       sf: Precalc
     psychology:
       title: Psychology
       sf: Psychology
-    sociology_w_courseware:
-      title: Sociology w Courseware
-      sf: Sociology w Courseware
     us_history:
-      title: US History
+      title: U.S. History
       sf: US History
-    university_physics:
+    university_physics_calc:
       title: University Physics
-      sf: University Physics
+      sf: University Physics (Calc)
 
 development:
   <<: *defaults
