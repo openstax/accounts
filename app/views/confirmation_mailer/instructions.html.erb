@@ -3,13 +3,13 @@
 <p>Someone is trying to add '<%= @email_address.value %>' to an OpenStax account.  If this wasn't you, please disregard this message.</p>
 
 <% if @show_pin %>
-  <p>Enter your 6-digit code in the verification code field in your browser to verify your email address:</p>
+  <p>Enter your 6-digit code in the PIN field in your browser to confirm your email address:</p>
 
-  <p>Your code: <b><%= @email_address.confirmation_pin %></b></p>
+  <p>Your PIN: <b><%= @email_address.confirmation_pin %></b></p>
 
-  <p>If you have any trouble using this code, you can also click the link below to verify:</p>
+  <p>If you have any trouble using this PIN, you can also click the link below to confirm your email address:</p>
 <% else %>
-  <p>Click on the link below to verify your email address:</p>
+  <p>Click on the link below to confirm your email address:</p>
 <% end %>
 
 

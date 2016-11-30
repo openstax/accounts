@@ -3,6 +3,10 @@ en:
     attributes:
       sessions_lookup_login/login_paramifier:
         username_or_email: Email or username
+  activerecord:
+    attributes:
+      signup_contact_info:
+        value: Email address
 
   controllers:
     authentications:
@@ -317,6 +321,7 @@ en:
       librarian: Librarian
       designer: Instructional Designer
       other: Other
+      invalid: is invalid.
       email_in_use: Email already in use.  Are you trying to <a href="%{signin_url}">sign in</a>?
       blank: cannot be left blank
       already_have_an_account:
@@ -349,19 +354,19 @@ en:
         If not, please enter your school email address.
 
     verify_email:
-      page_heading_pin: Enter your pin to confirm your email
+      page_heading_pin: Enter your PIN to confirm your email
       page_heading_token: Confirm your email
-      pin: Enter pin
+      pin: Enter PIN
       confirm: Confirm
       used_wrong_email: Used the wrong email?
       edit_email_address: Edit email address
       check_your_email: Check your inbox for %{email}!
-      you_will_have_received: You will have received a six-digit pin. Enter it below.
-      pin_not_correct: This pin is incorrect.  Please enter the correct pin.
+      you_will_have_received: You will have received a six-digit PIN. Enter it below.
+      pin_not_correct: This PIN is incorrect.  Please enter the correct PIN.
       no_pin_confirmation_attempts_remaining:
         content_html: >-
-          You have run out of attempts at confirming this email using a pin.  Please
-          click the link in the email that contains your pin.  This will confirm your
+          You have run out of attempts at confirming this email using a PIN.  Please
+          click the link in the email that contains your PIN.  This will confirm your
           email.  If you did not receive the email, please check your spam folder.
           Need help?  %{help_link}.
         help_link_text: Contact our customer service team
@@ -381,6 +386,7 @@ en:
       google: Google
       openstax_wont_use_social_media_without_permission_html: >-
         Don't worry. OpenStax won't post anything to your social network without your permission.
+      use_password: Set up a password instead
 
     profile:
       page_heading: Complete your account

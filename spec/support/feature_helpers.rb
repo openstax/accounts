@@ -270,7 +270,7 @@ def complete_signup_email_screen(role, email, options={})
   fill_in (t :"signup.start.email_placeholder"), with: email
   expect(page).to have_no_missing_translations
   click_button(t :"signup.start.next")
-  click_button(t :"signup.start.next") unless email =~ /\.edu$/
+  click_button(t :"signup.start.next") unless (email =~ /\.edu$/) || role.match(/student/i)
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"signup.verify_email.page_heading_pin")
 end
@@ -303,18 +303,20 @@ def complete_signup_password_screen(password, confirmation=nil)
   expect(page).to have_no_missing_translations
 end
 
-def complete_signup_profile_screen(first_name:, last_name:, suffix: nil,
-                                   phone_number:, school:, url:, num_students:,
-                                   using_openstax:, newsletter:, agree:)
+def complete_signup_profile_screen(role:, first_name: "", last_name: "", suffix: nil,
+                                   phone_number: "", school: "", url: "", num_students: "",
+                                   using_openstax: "", newsletter: true, agree: true)
+
+  raise IllegalArgument unless [:student, :instructor, :other].include?(role)
 
   fill_in (t :"signup.profile.first_name"), with: first_name
   fill_in (t :"signup.profile.last_name"), with: last_name
   fill_in (t :"signup.profile.suffix"), with: suffix if suffix.present?
-  fill_in (t :"signup.profile.phone_number"), with: phone_number
+  fill_in (t :"signup.profile.phone_number"), with: phone_number if role != :student
   fill_in (t :"signup.profile.school"), with: school
-  fill_in (t :"signup.profile.url"), with: url
-  fill_in (t :"signup.profile.num_students"), with: num_students
-  select using_openstax, from: "profile_using_openstax"
+  fill_in (t :"signup.profile.url"), with: url if role != :student
+  fill_in (t :"signup.profile.num_students"), with: num_students if role == :instructor
+  select using_openstax, from: "profile_using_openstax" if !using_openstax.blank? if role == :instructor
 
   expect(page).to have_content(t :"signup.profile.page_heading")
   expect(page).to have_no_missing_translations
@@ -325,8 +327,9 @@ def complete_signup_profile_screen(first_name:, last_name:, suffix: nil,
   expect(page).to have_no_missing_translations
 end
 
-def complete_signup_profile_screen_with_whatever
+def complete_signup_profile_screen_with_whatever(role: :instructor)
   complete_signup_profile_screen(
+    role: role,
     first_name: "Bob",
     last_name: "Armstrong",
     phone_number: "634-5789",

@@ -15,7 +15,7 @@ class SignupController < ApplicationController
   # TODO spec this
   before_filter :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
 
-  before_filter :require_verified_signup_contact_info, only: [:password, :social]
+  before_filter :check_ready_for_password_or_social, only: [:password, :social]
 
   helper_method :signup_email, :signup_role, :instructor_has_selected_subject
 
@@ -133,7 +133,7 @@ class SignupController < ApplicationController
     redirect_to signup_path if signup_contact_info.nil? || signup_role.nil?
   end
 
-  def require_verified_signup_contact_info
+  def check_ready_for_password_or_social
     if signup_contact_info.nil?
       redirect_to action: :start
     elsif !signup_contact_info.verified?

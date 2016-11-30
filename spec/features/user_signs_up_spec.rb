@@ -21,6 +21,7 @@ feature 'User signs up', js: true do
 
     screenshot!
     complete_signup_profile_screen(
+      role: :instructor,
       first_name: "Bob",
       last_name: "Armstrong",
       phone_number: "634-5789",
@@ -114,11 +115,20 @@ feature 'User signs up', js: true do
     end
 
     scenario 'failure because email blank' do
-      skip # TODO
+      visit signup_path
+      select 'Instructor', from: "signup_role"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content "cannot be left blank"
+      screenshot!
     end
 
     scenario 'failure because email is badly formatted' do
-      skip # TODO
+      visit signup_path
+      select 'Instructor', from: "signup_role"
+      fill_in (t :"signup.start.email_placeholder"), with: "bob@gma@il.com"
+      2.times { click_button(t :"signup.start.next") }
+      expect(page).to have_content "Email address is invalid"
+      screenshot!
     end
   end
 
@@ -203,45 +213,138 @@ feature 'User signs up', js: true do
 
       scenario 'redirected to profile entry if needed' do
         visit '/signup/password'
-        skip # TODO see above
         expect_signup_profile_screen
       end
 
-      scenario 'redirected anywhere if fully activated' do
+      scenario 'redirects to profile screen if fully activated' do
         complete_signup_profile_screen_with_whatever
         visit '/signup/password'
-        skip # TODO see above
         expect_profile_screen
       end
     end
 
-    scenario 'can get to social screen' do
-      skip # TODO
-    end
-  end
-
-  context 'social screen' do
-    # TODO ...
-
-    scenario 'can get to password screen' do
-      skip # TODO
+    scenario 'can get to social screen and back to password' do
+      click_link (t :"signup.password.use_social")
+      expect(page).to have_content(t :"signup.social.openstax_wont_use_social_media_without_permission_html")
+      screenshot!
+      click_link (t :"signup.social.use_password")
+      expect(page).to have_content(t :"signup.password.page_heading")
     end
   end
 
   context 'instructor profile screen' do
+    before(:each) do
+      visit '/'
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      complete_signup_verify_screen(pass: true)
+      complete_signup_password_screen('password')
+    end
+
     scenario 'required fields blank' do
-      skip # TODO
+      complete_signup_profile_screen(
+        role: :instructor,
+        first_name: "",
+        last_name: "",
+        phone_number: "",
+        school: "",
+        url: "",
+        num_students: "",
+        using_openstax: "",
+        newsletter: true,
+        agree: true
+      )
+
+      expect(page).to have_content("can't be blank", count: 6)
+      expect(page).to have_content("is not a number")
+
+      screenshot!
     end
 
     scenario 'submit without agreement' do
-      # This could maybe be a controller spec; just want to make sure
+      # TODO This could maybe be a controller spec; just want to make sure
       # we don't let people submit on this screen without agreeing to
       # terms.
     end
   end
 
   context 'student profile screen' do
-    skip # TODO
+    before(:each) do
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Student","bob@myspace.com")
+      complete_signup_verify_screen(pass: true)
+      complete_signup_password_screen('password')
+    end
+
+    scenario 'happy path' do
+      screenshot!
+      complete_signup_profile_screen(
+        role: :student,
+        first_name: "Billy",
+        last_name: "Budd",
+        school: "Rice University"
+      )
+      expect_back_at_app
+    end
+
+    scenario 'required fields blank' do
+      complete_signup_profile_screen(
+        role: :student,
+        first_name: "",
+        last_name: "",
+        phone_number: "",
+        school: "",
+        url: "",
+        num_students: "",
+        using_openstax: "",
+        newsletter: true,
+        agree: true
+      )
+
+      expect(page).to have_content("can't be blank", count: 3)
+
+      screenshot!
+    end
+  end
+
+  context 'other role profile screen' do
+    before(:each) do
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Administrator","bob@bigshot.edu")
+      complete_signup_verify_screen(pass: true)
+      complete_signup_password_screen('password')
+    end
+
+    scenario 'happy path' do
+      screenshot!
+      complete_signup_profile_screen(
+        role: :other,
+        first_name: "Malcolm",
+        last_name: "Gillis",
+        school: "Rice University",
+        phone_number: "000-0000",
+        url: "http://www.rice.edu/~malcolm"
+      )
+      screenshot!
+      complete_instructor_access_pending_screen
+      expect_back_at_app
+    end
+
+    scenario 'required fields blank' do
+      complete_signup_profile_screen(
+        role: :other,
+        first_name: "",
+        last_name: "",
+        school: "",
+        phone_number: "",
+        url: ""
+      )
+
+      screenshot!
+      expect(page).to have_content("can't be blank", count: 5)
+    end
   end
 
   context "user tries to make a duplicate account" do

@@ -6,8 +6,8 @@ class ConfirmationMailer < SiteMailer
                 ConfirmByPin.sequential_failure_for(@email_address).attempts_remaining?
 
     mail to: "\"#{email_address.user.full_name}\" <#{email_address.value}>",
-         subject: @show_pin ? "Verify your email address using code #{@email_address.confirmation_pin}" :
-                              "Verify your email address"
+         subject: @show_pin ? "Confirm your email address using PIN #{@email_address.confirmation_pin}" :
+                              "Confirm your email address"
 
     email_address.update_column(:confirmation_sent_at, Time.now)
   end
