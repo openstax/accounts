@@ -80,9 +80,6 @@ defaults: &defaults
     introduction_to_sociology:
       title: Introduction to Sociology
       sf: Introduction to Sociology
-    introduction_to_spanish:
-      title: Introduction to Spanish
-      sf: Introduction to Spanish
     introductory_statistics:
       title: Introductory Statistics
       sf: Introductory Statistics
@@ -98,9 +95,6 @@ defaults: &defaults
     microbiology:
       title: Microbiology
       sf: Microbiology
-    other:
-      title: Other
-      sf: Other
     physics_w_courseware:
       title: Physics w Courseware
       sf: Physics w Courseware
