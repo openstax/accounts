@@ -9,11 +9,11 @@
 
   <h1 class="title"><%= t (attempts_remaining ? '.page_heading_pin' : '.page_heading_token') %></h1>
 
-  <p>Please check: <%= signup_email %></p> <%# TODO put in locale! %>
+  <p><%= t :".check_your_email", email: signup_email %></p>
 
   <% if attempts_remaining %>
 
-    <p>You will receive a six-digit PIN.</p>
+    <p><%= t :".you_will_have_received" %></p>
 
     <%= lev_form_for :pin, url: signup_verify_email_path, method: :post,
         html: {class: collect_errors.any? ? 'is-invalid' : ''} do |f| %>
@@ -24,19 +24,24 @@
 
       <%= fh.text_field name: :pin %>
       <%= render(partial: "layouts/attention") %>
-      <%= f.submit (t :".verify_pin"), class: 'primary' %>
+      <%= f.submit (t :".confirm"), class: 'primary' %>
     <% end %>
 
   <% else %>
 
-    <p><%= t '.no_pin_confirmation_attempts_remaining' %></p>
+    <%# TODO have a different message at 2 attempts remaining:
+
+    You have two more tries to enter the correct PIN. After the tenth unsuccessful attempt,
+    please go back to the email that contains the PIN and click the “confirmverify email
+    address” link. This will also confirmverify your email for your OpenStax account.
+
+    %>
+
+    <p><%= t '.no_pin_confirmation_attempts_remaining.content_html', help_link: mail_to('info@openstax.org', t(:".no_pin_confirmation_attempts_remaining.help_link_text")) %></p>
 
     <%= render(partial: "layouts/attention") %>
   <% end %>
 
-  <%# TODO make sure email/role persist if go back to signup start %>
-
-
-  <p>Used the wrong email? <%= link_to (t :".edit_email_address"), signup_path %></p>
+  <p><%= t :".used_wrong_email" %> <%= link_to (t :".edit_email_address"), signup_path %>.</p>
 
 </div>

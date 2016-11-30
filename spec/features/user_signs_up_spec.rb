@@ -152,7 +152,7 @@ feature 'User signs up', js: true do
       expect(page).to have_content t('signup.verify_email.pin_not_correct')
       complete_signup_verify_screen(pass: false)
       expect(page).to have_content(t :'signup.verify_email.page_heading_token')
-      expect(page).to have_content(t :'signup.verify_email.no_pin_confirmation_attempts_remaining')
+      expect(page).to have_content(t(:'signup.verify_email.no_pin_confirmation_attempts_remaining.content_html')[0..15])
       screenshot!
     end
   end

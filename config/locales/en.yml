@@ -349,27 +349,38 @@ en:
         If not, please enter your school email address.
 
     verify_email:
-      page_heading_pin: Enter Your PIN
-      page_heading_token: Verify Your Email
-      pin: Enter PIN
-      verify_pin: Verify PIN
-      edit_email_address: Edit email address.
-      pin_not_correct: That PIN is not correct, please re-check the emailed PIN.
-      no_pin_confirmation_attempts_remaining: You have run out of attempts at verifying this email using a PIN. To verify, please click on the link in the verification email.
+      page_heading_pin: Enter your pin to confirm your email
+      page_heading_token: Confirm your email
+      pin: Enter pin
+      confirm: Confirm
+      used_wrong_email: Used the wrong email?
+      edit_email_address: Edit email address
+      check_your_email: Check your inbox for %{email}!
+      you_will_have_received: You will have received a six-digit pin. Enter it below.
+      pin_not_correct: This pin is incorrect.  Please enter the correct pin.
+      no_pin_confirmation_attempts_remaining:
+        content_html: >-
+          You have run out of attempts at confirming this email using a pin.  Please
+          click the link in the email that contains your pin.  This will confirm your
+          email.  If you did not receive the email, please check your spam folder.
+          Need help?  %{help_link}.
+        help_link_text: Contact our customer service team
 
     password:
-      page_heading: Create Password
+      page_heading: Choose your password
       password: Password
       password_confirmation: Confirm Password
-      create_password: Create Password
+      create_password: Submit
       dont_want_to_remember: Don’t want to remember another password?
-      use_social: Sign up with Google or Facebook instead.
+      use_social: Sign up with Google or Facebook instead
       separator_or: or
 
     social:
-      page_heading: TBD Title
+      page_heading: Choose the social account you want to use
       facebook: Facebook
       google: Google
+      openstax_wont_use_social_media_without_permission_html: >-
+        Don't worry. OpenStax won't post anything to your social network without your permission.
 
     profile:
       page_heading: Complete your account

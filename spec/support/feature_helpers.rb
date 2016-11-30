@@ -288,7 +288,7 @@ def complete_signup_verify_screen(pin: nil, pass: nil)
   end
   fill_in (t :"signup.verify_email.pin"), with: pin
   expect(page).to have_no_missing_translations
-  click_button (t :"signup.verify_email.verify_pin")
+  click_button (t :"signup.verify_email.confirm")
   expect(page).to have_no_missing_translations
 end
 
