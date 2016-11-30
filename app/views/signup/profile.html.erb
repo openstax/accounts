@@ -21,6 +21,7 @@
 
     <% if signup_role_sym != :student %>
       <h3><%= t '.instructor_verification_heading' %></h3>
+      <p><%= t '.instructor_verification_help' %></p>
     <% end %>
 
     <%= fh.text_field name: :phone_number, except: :student %>
