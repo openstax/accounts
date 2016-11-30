@@ -267,7 +267,7 @@ def complete_signup_email_screen(role, email, options={})
     wait_for_animations
     screenshot!
   end
-  fill_in (t :"signup.start.email"), with: email
+  fill_in (t :"signup.start.email_placeholder"), with: email
   expect(page).to have_no_missing_translations
   click_button(t :"signup.start.next")
   click_button(t :"signup.start.next") unless email =~ /\.edu$/
@@ -288,7 +288,7 @@ def complete_signup_verify_screen(pin: nil, pass: nil)
   end
   fill_in (t :"signup.verify_email.pin"), with: pin
   expect(page).to have_no_missing_translations
-  click_button (t :"signup.verify_email.verify_pin")
+  click_button (t :"signup.verify_email.confirm")
   expect(page).to have_no_missing_translations
 end
 
@@ -343,7 +343,7 @@ def complete_reset_password_screen(password=nil)
   password ||= 'Passw0rd!'
   fill_in (t :"identities.password"), with: password
   fill_in (t :"identities.confirm_password"), with: password
-  click_button (t :"identities.set_password")
+  click_button (t :"identities.reset.submit")
   expect(page).to have_content(t :"identities.reset_success.message")
 end
 
@@ -355,7 +355,7 @@ def complete_add_password_screen(password=nil)
   password ||= 'Passw0rd!'
   fill_in (t :"identities.password"), with: password
   fill_in (t :"identities.confirm_password"), with: password
-  click_button (t :"identities.set_password")
+  click_button (t :"identities.add.submit")
   expect(page).to have_content(t :"identities.add_success.message")
 end
 

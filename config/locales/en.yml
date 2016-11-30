@@ -1,4 +1,9 @@
 en:
+  activemodel:
+    attributes:
+      sessions_lookup_login/login_paramifier:
+        username_or_email: Email or username
+
   controllers:
     authentications:
       authentication_removed: "%{authentication} removed"
@@ -140,12 +145,11 @@ en:
   identities:
     confirm_password: Confirm Password
     password: Password
-    set_password: Set Password
-    there_was_a_problem_with_reset_link: >-
-      Unfortunately, there was a problem with your password reset link. If you
+    there_was_a_problem_with_password_link: >-
+      Unfortunately, there was a problem with your password link. If you
       continue to have problems, please contact support.
-    expired_reset_link: >-
-      The password reset link you used has expired.
+    expired_password_link: >-
+      The password link you used has expired.
     use_form_below_to_reset_password: >-
       Use the form below to reset your password.
     use_form_below_to_add_password: >-
@@ -154,10 +158,12 @@ en:
       page_heading: Reset Password
       use_form_below_to_reset_password: >-
         Use the form below to reset your password.
+      submit: Reset Password
     add:
       page_heading: Add Password
       use_form_below_to_add_password: >-
         Use the form below to add a password.
+      submit: Add Password
     add_success:
       page_heading: Success!
       message: Your password was added to your account.
@@ -222,26 +228,27 @@ en:
       openstax_wont_use_social_media_without_permission_html: >-
         <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
         network without your permission.
-      page_heading: Log in to OpenStax
+      page_heading: Log in to your OpenStax account
       page_sub_heading: Access all OpenStax tools and resources
       sign_in: Sign in
-      sign_up: Sign up
-      no_account_q: No account?
+      sign_up: Sign up here
+      no_account_q: Need an account?
       used_this_method_last_time: >-
         It looks like you used this the last time you signed in.
       email: Email
+      blank: Email or username can't be blank.
       email_placeholder: Email or username
       username_placeholder: Username
       next: Next
       cannot_find_user: Cannot find user
-      unknown_username: We don’t recognize this username.  Please try again or try your email instead.
-      unknown_email: We don’t recognize this email, please try again.
+      unknown_username: We don’t recognize this username.  Please try again or use your email address instead.
+      unknown_email: We don’t recognize this email.  Please try again.
       multiple_users:
         # %{link}   a hyperlink that sends usernames to the email being used for log in.
         #           The label is defined by the .click_here key.
         content_html: >-
           We found several accounts with this email. Please log in using your username.<br/>
-          Forgot your username? %{link}.
+          Forgot your usernames? %{link}.
         click_here: Click here and we’ll email them to you
       sent_multiple_usernames: >-
         Please check <strong>%{email}</strong> for an email listing your usernames, and use one to log in.
@@ -259,9 +266,9 @@ en:
       sign_in_with_twitter: Sign in with Twitter
       login: Login
       password: Password
-      forgot_password: Can’t remember password?
+      forgot_password: Can’t remember your password?
       trouble_logging_in: Trouble logging in?
-      reset_password: Click here to reset your password
+      reset_password: Click here to reset it
       add_password: Click here to add a password
 
   signup:
@@ -301,7 +308,7 @@ en:
         verify your email address.
 
     start:
-      email: Email
+      email: School email address
       next: Next
       iama: I am a
       instructor: Instructor
@@ -326,44 +333,54 @@ en:
       openstax_wont_use_social_media_without_permission_html: >-
         <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
         network without your permission.
-      page_heading: Sign up with OpenStax
+      page_heading: Sign up for an OpenStax account
       page_sub_heading: Access all OpenStax tools and resources
+      email_placeholder: me@myschool.edu
       sign_up_with_facebook: Sign up with Facebook
       sign_up_with_google: Sign up with Google
       sign_up_with_password: Sign up with a password
       sign_up_with_twitter: Sign up with Twitter
       teacher_school_email: >-
-        To access faculty-only products, provide your school email address
-        so we can ensure you are an instructor. You can always add an alternate
-        email later.
-      teacher_school_email_warning: >-
-        If this is your school email, click Next. If this is not your school email,
-        please edit the above address, then click Next.
-
-        # sign_in: sign in
+        To access faculty-only materials like test banks and OpenStax Tutor course setup,
+        you must provide your school email address.  You can add an alternate email
+        address later if necessary.
+      teacher_school_email_warning:
+        Is this your school email address?  If yes, click %{button} below.
+        If not, please enter your school email address.
 
     verify_email:
-      page_heading_pin: Enter Your PIN
-      page_heading_token: Verify Your Email
-      pin: Enter PIN
-      verify_pin: Verify PIN
-      edit_email_address: Edit email address.
-      pin_not_correct: That PIN is not correct, please re-check the emailed PIN.
-      no_pin_confirmation_attempts_remaining: You have run out of attempts at verifying this email using a PIN. To verify, please click on the link in the verification email.
+      page_heading_pin: Enter your pin to confirm your email
+      page_heading_token: Confirm your email
+      pin: Enter pin
+      confirm: Confirm
+      used_wrong_email: Used the wrong email?
+      edit_email_address: Edit email address
+      check_your_email: Check your inbox for %{email}!
+      you_will_have_received: You will have received a six-digit pin. Enter it below.
+      pin_not_correct: This pin is incorrect.  Please enter the correct pin.
+      no_pin_confirmation_attempts_remaining:
+        content_html: >-
+          You have run out of attempts at confirming this email using a pin.  Please
+          click the link in the email that contains your pin.  This will confirm your
+          email.  If you did not receive the email, please check your spam folder.
+          Need help?  %{help_link}.
+        help_link_text: Contact our customer service team
 
     password:
-      page_heading: Create Password
+      page_heading: Choose your password
       password: Password
       password_confirmation: Confirm Password
-      create_password: Create Password
+      create_password: Submit
       dont_want_to_remember: Don’t want to remember another password?
-      use_social: Sign up with Google or Facebook instead.
+      use_social: Sign up with Google or Facebook instead
       separator_or: or
 
     social:
-      page_heading: TBD Title
+      page_heading: Choose the social account you want to use
       facebook: Facebook
       google: Google
+      openstax_wont_use_social_media_without_permission_html: >-
+        Don't worry. OpenStax won't post anything to your social network without your permission.
 
     profile:
       page_heading: Complete your account
