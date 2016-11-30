@@ -1,37 +1,91 @@
 # config/app.yml for rails-settings-cached
+
+# Subjects list generated from spreadsheet via IRB:
+# require 'active_support'; include ActiveSupport::Inflector
+# books = File.read('/tmp/books.txt').split("\n")
+# books.sort.each{|bt| (b,t)=bt.split("\t"); puts underscore(b.gsub(/([\W|\s]+)/, '_'))+":\n  title: #{t}\n  sf: #{b}\n" }; 1
+
 defaults: &defaults
   push_salesforce_lead_enabled: false
   subjects:
-    hs_physics:
-      title: High School Physics
-      sf: HS Physics
-    college_physics:
+    ap_macro_econ:
+      title: Principles of Macroeconomics for AP® Courses
+      sf: AP Macro Econ
+    ap_micro_econ:
+      title: Principles of Microeconomics for AP® Courses
+      sf: AP Micro Econ
+    ap_physics:
+      title: The AP Physics Collection
+      sf: AP Physics
+    accounting:
+      title: Accounting
+      sf: Accounting
+    algebra_and_trigonometry:
+      title: Algebra and Trigonometry
+      sf: Algebra and Trigonometry
+    american_government:
+      title: American Government
+      sf: American Government
+    anatomy_physiology:
+      title: Anatomy and Physiology
+      sf: Anatomy & Physiology
+    astronomy:
+      title: Astronomy
+      sf: Astronomy
+    biology:
+      title: Biology
+      sf: Biology
+    calculus:
+      title: Calculus
+      sf: Calculus
+    chem_atoms_first:
+      title: 'Chemistry: Atoms First'
+      sf: 'Chem: Atoms First'
+    chemistry:
+      title: Chemistry
+      sf: Chemistry
+    college_algebra:
+      title: College Algebra
+      sf: College Algebra
+    college_physics_algebra:
       title: College Physics
       sf: College Physics (Algebra)
-    ap_biology:
-      title: Biology for AP® Courses
-      sf: AP Bio
-    concepts_biology:
+    concepts_of_bio_non_majors:
       title: Concepts of Biology
       sf: Concepts of Bio (non-majors)
-    college_biology:
-      title: College Biology
-      sf: Biology w Courseware
-    principles_economics:
+    economics:
       title: Principles of Economics
       sf: Economics
-    macro_economics:
-      title: Macro Economics
-      sf: Macro Econ
-    micro_economics:
-      title: Micro Economics
-      sf: Micro Econ
-    intro_sociology:
-      title: Introduction to Sociology
+    introduction_to_sociology:
+      title: Introduction to Sociology 2e
       sf: Introduction to Sociology
-    anatomy_physiology:
-      title: Anatomy & Physiology
-      sf: Anatomy & Physiology
+    introductory_statistics:
+      title: Introductory Statistics
+      sf: Introductory Statistics
+    macro_econ:
+      title: Principles of Macroeconomics
+      sf: Macro Econ
+    micro_econ:
+      title: Principles of Microeconomics
+      sf: Micro Econ
+    microbiology:
+      title: Microbiology
+      sf: Microbiology
+    pre_algebra:
+      title: Prealgebra
+      sf: PreAlgebra
+    precalc:
+      title: Precalculus
+      sf: Precalc
+    psychology:
+      title: Psychology
+      sf: Psychology
+    us_history:
+      title: U.S. History
+      sf: US History
+    university_physics_calc:
+      title: University Physics
+      sf: University Physics (Calc)
 
 development:
   <<: *defaults

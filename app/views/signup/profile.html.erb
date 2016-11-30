@@ -20,7 +20,7 @@
     <%= fh.text_field name: :suffix %>
 
     <% if signup_role_sym != :student %>
-      <div class="minor-heading"><%= t '.instructor_verification_heading' %></div>
+      <h3><%= t '.instructor_verification_heading' %></h3>
       <p><%= t '.instructor_verification_help' %></p>
     <% end %>
 
@@ -45,11 +45,12 @@
     <% end %>
 
     <% if signup_role_sym != :student %>
-      <div class="minor-heading"><%= t('.titles_interested') %></div>
+
+      <h3><%= t('.titles_interested') %></h3>
 
       <div class="subjects clearfix">
-        <% Settings::Subjects.each do | key, info | %>
-            <div class="half-width">
+        <% Settings::Subjects.each(sorted: true) do | key, info | %>
+            <div class="subject">
               <%= f.check_box("subjects[#{key}]", checked: instructor_has_selected_subject(key)) %>
               <%= f.label "subjects[#{key}]", info['title'] %>
             </div>

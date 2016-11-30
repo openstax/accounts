@@ -1,4 +1,5 @@
 @import "mixins/flexbox";
+@import "controls/card";
 
 .ox-alert {
   @include flexbox;
@@ -8,131 +9,12 @@
   .msg{ @include flex(1); }
 }
 
-.ox-card {
-  display: block;
-  margin: auto;
-  max-width: 570px;
-  background-color: $os_light_gray;
-  padding: 20px 50px;
-  h1.title {
-    margin: 10px 0 20px 0;
-    text-align: center;
-    font-size: 18px;
-    font-family: $os_heading_font_family;
-    font-weight: 700;
-    font-size: 18px;
-    color: $os_dark;
-  }
-  .half-width {
-    width: 50%;
-    float: left;
-  }
-  .footer {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 2px solid darken($os_light_gray, 10%);
-  }
-  input {
-    color: $os_gray;
-    font-size: 1.8rem;
-    border-radius: 0px;
-    &:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
-      width: 100%;
-      padding: 1rem 0.8rem;
-      margin: 0.5rem 0;
-    }
-    &[type="text"],
-    &[type="password"] {
-      border: 1px solid darken($os_light_gray, 10%);
-      &:focus {
-        border: 1px solid $os_dark;
-        box-shadow: none;
-        outline: none;
-      }
-    }
-  }
-  .form-control { height: inherit; }
-
-  select:not([multiple]) {
-    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50px' height='50px'><polyline points='46.139,15.518 25.166,36.49 4.193,15.519'/></svg>") right no-repeat;
-    background-position: right 1rem center;
-    background-size: 18px 18px;
-    background-color: white;
-    border-radius: 0px;
-    padding: 1rem 0.8rem;
-    font-size: 1.8rem;
-    // don't dispaly the selection arrow since we're using a SVG icon for it
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance:none;
-    border-color: $input-border;
-    color: $os_gray;
-    &::-ms-expand {
-      display: none;
-    }
-    &:active {
-      border: 1px solid #000;
-    }
-  }
-
-  input[type=submit] {
-    width: inherit;
-    &.primary {
-      @extend .btn;
-      text-transform: uppercase;
-      border-radius: 0;
-      padding: 1rem 2rem;
-      color: white;
-      background-color: $os_orange;
-      border-color: darken($os_orange, 10%);
-      font-weight: 700;
-      font-family: $os_heading_font_family;
-      &:hover {
-        color: $os_light_gray;
-        background-color: darken($os_orange, 5%);
-        border-color: darken($os_orange, 20%);
-      }
-    }
-  }
-
-  .is-invalid {
-    input[type="text"],
-    input[type="password"] {
-      background-color: $state-danger-bg;
-      border: 1px solid darken($state-danger-border, 10%);
-      &:focus {
-        background-color: darken($state-danger-bg, 1%);
-        border: 1px solid darken($state-danger-border, 30%);
-      }
-    }
-  }
-
-  .alert {
-    margin: 10px 0;
-    background-color: transparent;
-    border: 0;
-    padding: 0;
-  }
-
-  a:not(.btn) {
-    color: $os_link_color;
-    text-decoration: underline;
-  }
-
-  .minor-heading {
-    font-weight: 700;
-    margin-top: 18px;
-    margin-bottom: 8px;
-  }
-
-}
-
 .ox-separator-line {
   text-align: center;
   position: relative;
   margin: 10px 0;
   &:after {
-    border-top: 2px solid darken($os_light_gray, 10%);
+    border-top: 2px solid $os_line_color;
     content: '';
     display: block;
     width: calc(50% - 20px);
@@ -141,7 +23,7 @@
     top: 50%;
   }
   &:before {
-    border-top: 2px solid darken($os_light_gray, 10%);
+    border-top: 2px solid $os_line_color;
     content: '';
     display: block;
     width: calc(50% - 20px);
