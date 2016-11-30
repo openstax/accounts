@@ -20,21 +20,16 @@
     <%= fh.text_field name: :suffix %>
 
     <% if signup_role_sym != :student %>
-    <h3><%= t('.more_things_heading') %></h3>
+      <div class="minor-heading"><%= t '.instructor_verification_heading' %></div>
+      <p><%= t '.instructor_verification_help' %></p>
     <% end %>
 
     <%= fh.text_field name: :phone_number, except: :student %>
     <%= fh.text_field name: :school %>
     <%= fh.text_field name: :num_students, only: :instructor %>
-
-    <%# TODO add a "Do you want access to faculty only material?" checkbox
-        for the "other" roles; if checked, reveal the URL.  If checked, in
-        profile create a "can't be blank" error if the URL is blank. %>
     <%= fh.text_field name: :url, except: :student %>
 
     <% if signup_role_sym == :instructor %>
-      <h3><%= t '.instructor_verification_heading' %></h3>
-      <p><%= t '.instructor_verification_help' %></p>
 
       <%= f.select :using_openstax,  # TODO move into form helper
                    options_for_select(
@@ -50,7 +45,7 @@
     <% end %>
 
     <% if signup_role_sym != :student %>
-      <p><%= t('.titles_interested') %></p>
+      <div class="minor-heading"><%= t('.titles_interested') %></div>
 
       <div class="subjects clearfix">
         <% Settings::Subjects.each do | key, info | %>
@@ -62,34 +57,38 @@
       </div>
     <% end %>
 
-    <% unless @contracts_not_required %>
-      <%
-        contracts = [FinePrint.get_contract(:general_terms_of_use),
-                     FinePrint.get_contract(:privacy_policy)]
-
-        contract_links = contracts.collect do |contract|
-          link_to contract.title, term_path(contract), remote: true
-        end
-      %>
-
+    <div class="newsletter">
       <div class="checkbox">
         <label>
-          <%= f.check_box :i_agree %>
-          <%= t :".have_read_terms_and_agree_html",
-                terms_of_use: contract_links[0],
-                privacy_policy: contract_links[1] %>
+          <%= f.check_box :newsletter, checked: true %>
+          <%= t :".keep_me_informed" %>
         </label>
       </div>
+    </div>
 
-      <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
-      <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
-    <% end %>
+    <div class="agree">
+      <% unless @contracts_not_required %>
+        <%
+          contracts = [FinePrint.get_contract(:general_terms_of_use),
+                       FinePrint.get_contract(:privacy_policy)]
 
-    <div class="checkbox">
-      <label>
-        <%= f.check_box :newsletter, checked: true %>
-        <%= t :".keep_me_informed" %>
-      </label>
+          contract_links = contracts.collect do |contract|
+            link_to contract.title, term_path(contract), remote: true
+          end
+        %>
+
+        <div class="checkbox">
+          <label>
+            <%= f.check_box :i_agree %>
+            <%= t :".have_read_terms_and_agree_html",
+                  terms_of_use: contract_links[0],
+                  privacy_policy: contract_links[1] %>
+          </label>
+        </div>
+
+        <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
+        <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
+      <% end %>
     </div>
 
     <%= f.submit (t :".create_account"), id: "create_account_submit", class: 'primary' %>

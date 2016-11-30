@@ -1,7 +1,7 @@
 body.signup {
   input[type=text],
   select {
-    margin-top: 1rem;
+    // margin-top: 1rem;
     width: 100%;
   }
 
@@ -17,5 +17,19 @@ body.signup {
 
   .subjects {
     label { font-weight: inherit; }
+  }
+
+  .newsletter {
+    margin: 20px 0px 20px;
+  }
+
+  .agree {
+    margin-bottom: 16px;
+  }
+
+  .checkbox {
+    input {
+      margin-top: 2px;
+    }
   }
 }

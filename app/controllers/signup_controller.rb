@@ -96,14 +96,23 @@ class SignupController < ApplicationController
                   ),
                   role: signup_role,
                   success: lambda do
+                    is_student = signup_role == "student"
                     clear_signup_state
-                    # TODO send faculty (or admin who selected faculty) to verification screen
-                    redirect_back
+
+                    if is_student
+                      redirect_back
+                    else
+                      redirect_to action: :instructor_access_pending
+                    end
                   end,
                   failure: lambda do
                     render :profile
                   end)
     end
+  end
+
+  def instructor_access_pending
+    redirect_back if request.post?
   end
 
   protected

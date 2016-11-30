@@ -415,6 +415,15 @@ en:
       titles_interested: Select all OpenStax titles that interest you
       keep_me_informed: Send me news about new titles, resources, and related information.
 
+    instructor_access_pending:
+      page_heading: Welcome to OpenStax!
+      message: >-
+        Your instructor access is pending. We will verify your instructor status
+        within 3-4 business days. In the meantime, you can access all books and
+        resources except those that require instructor verification.
+      check_box: Send me an email when my instructor access is approved.
+      ok: OK
+
   static_pages:
     copyright:
       content_copyright_notice_html: >-
