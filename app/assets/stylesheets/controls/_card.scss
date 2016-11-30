@@ -5,7 +5,7 @@
   background-color: $os_light_gray;
   padding: 20px 50px;
 
-  h1, h2, h3 {
+  h1, h2, h3, .minor-heading {
     font-family: $os_heading_font_family;
     font-weight: 700;
     color: $os_dark;
@@ -16,7 +16,6 @@
     font-size: 18px;
   }
   .minor-heading {
-    font-weight: 700;
     margin-top: 18px;
     margin-bottom: 8px;
   }

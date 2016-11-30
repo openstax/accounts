@@ -20,7 +20,7 @@
     <%= fh.text_field name: :suffix %>
 
     <% if signup_role_sym != :student %>
-      <div class="minor-heading"><%= t '.instructor_verification_heading' %></div>
+      <h3><%= t '.instructor_verification_heading' %></h3>
     <% end %>
 
     <%= fh.text_field name: :phone_number, except: :student %>
@@ -45,7 +45,6 @@
 
     <% if signup_role_sym != :student %>
 
-      <div class="minor-heading"><%= t('.titles_interested') %></div>
       <h3><%= t('.titles_interested') %></h3>
 
       <div class="subjects clearfix">
