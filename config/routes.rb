@@ -63,6 +63,8 @@ Rails.application.routes.draw do
 
     get 'profile'
     post 'profile'
+
+    match 'instructor_access_pending', via: [:get, :post]
   end
 
   scope controller: 'identities', path: 'password', as: 'password' do

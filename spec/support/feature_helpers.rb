@@ -374,6 +374,11 @@ def complete_terms_screens
   click_button (t :"terms.pose.agree")
 end
 
+def complete_instructor_access_pending_screen
+  expect(page).to have_content(t :"signup.instructor_access_pending.message")
+  click_button (t :"signup.instructor_access_pending.ok")
+end
+
 def log_in(username_or_email, password)
   visit '/'
   complete_login_username_or_email_screen(username_or_email)

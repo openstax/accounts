@@ -35,6 +35,9 @@ feature 'User signs up', js: true do
     expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
     expect(SignupContactInfo.count).to eq 0
 
+    screenshot!
+    complete_instructor_access_pending_screen
+
     expect_back_at_app
   end
 
@@ -53,6 +56,8 @@ feature 'User signs up', js: true do
 
     expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
     expect(SignupContactInfo.count).to eq 0
+
+    complete_instructor_access_pending_screen
 
     expect_back_at_app
   end
@@ -133,6 +138,7 @@ feature 'User signs up', js: true do
       complete_signup_verify_screen(pass: true)
       complete_signup_password_screen('password')
       complete_signup_profile_screen_with_whatever
+      complete_instructor_access_pending_screen
 
       expect(page).to have_content("bob2@bob.edu")
       expect(page).not_to have_content("bob@bob.edu")
