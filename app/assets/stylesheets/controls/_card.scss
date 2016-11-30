@@ -4,15 +4,20 @@
   max-width: 570px;
   background-color: $os_light_gray;
   padding: 20px 50px;
+
+  h1, h2, h3 {
+    font-family: $os_heading_font_family;
+    font-weight: 700;
+    color: $os_dark;
+  }
   h1.title {
     margin: 10px 0 20px 0;
     text-align: center;
     font-size: 18px;
-    font-family: $os_heading_font_family;
-    font-weight: 700;
-    font-size: 18px;
-    color: $os_dark;
   }
+  h3 { font-size: 16px; }
+  h3 { font-size: 15px; }
+
   .half-width {
     width: 50%;
     float: left;
