@@ -1,4 +1,9 @@
 en:
+  activemodel:
+    attributes:
+      sessions_lookup_login/login_paramifier:
+        username_or_email: Email or username
+
   controllers:
     authentications:
       authentication_removed: "%{authentication} removed"
@@ -223,26 +228,27 @@ en:
       openstax_wont_use_social_media_without_permission_html: >-
         <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
         network without your permission.
-      page_heading: Log in to OpenStax
+      page_heading: Log in to your OpenStax account
       page_sub_heading: Access all OpenStax tools and resources
       sign_in: Sign in
-      sign_up: Sign up
-      no_account_q: No account?
+      sign_up: Sign up here
+      no_account_q: Need an account?
       used_this_method_last_time: >-
         It looks like you used this the last time you signed in.
       email: Email
+      blank: Email or username can't be blank.
       email_placeholder: Email or username
       username_placeholder: Username
       next: Next
       cannot_find_user: Cannot find user
-      unknown_username: We don’t recognize this username.  Please try again or try your email instead.
-      unknown_email: We don’t recognize this email, please try again.
+      unknown_username: We don’t recognize this username.  Please try again or use your email address instead.
+      unknown_email: We don’t recognize this email.  Please try again.
       multiple_users:
         # %{link}   a hyperlink that sends usernames to the email being used for log in.
         #           The label is defined by the .click_here key.
         content_html: >-
           We found several accounts with this email. Please log in using your username.<br/>
-          Forgot your username? %{link}.
+          Forgot your usernames? %{link}.
         click_here: Click here and we’ll email them to you
       sent_multiple_usernames: >-
         Please check <strong>%{email}</strong> for an email listing your usernames, and use one to log in.
@@ -260,9 +266,9 @@ en:
       sign_in_with_twitter: Sign in with Twitter
       login: Login
       password: Password
-      forgot_password: Can’t remember password?
+      forgot_password: Can’t remember your password?
       trouble_logging_in: Trouble logging in?
-      reset_password: Click here to reset your password
+      reset_password: Click here to reset it
       add_password: Click here to add a password
 
   signup:
@@ -302,7 +308,7 @@ en:
         verify your email address.
 
     start:
-      email: Email
+      email: School email address
       next: Next
       iama: I am a
       instructor: Instructor
@@ -327,21 +333,20 @@ en:
       openstax_wont_use_social_media_without_permission_html: >-
         <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
         network without your permission.
-      page_heading: Sign up with OpenStax
+      page_heading: Sign up for an OpenStax account
       page_sub_heading: Access all OpenStax tools and resources
+      email_placeholder: me@myschool.edu
       sign_up_with_facebook: Sign up with Facebook
       sign_up_with_google: Sign up with Google
       sign_up_with_password: Sign up with a password
       sign_up_with_twitter: Sign up with Twitter
       teacher_school_email: >-
-        To access faculty-only products, provide your school email address
-        so we can ensure you are an instructor. You can always add an alternate
-        email later.
-      teacher_school_email_warning: >-
-        If this is your school email, click Next. If this is not your school email,
-        please edit the above address, then click Next.
-
-        # sign_in: sign in
+        To access faculty-only materials like test banks and OpenStax Tutor course setup,
+        you must provide your school email address.  You can add an alternate email
+        address later if necessary.
+      teacher_school_email_warning:
+        Is this your school email address?  If yes, click %{button} below.
+        If not, please enter your school email address.
 
     verify_email:
       page_heading_pin: Enter Your PIN

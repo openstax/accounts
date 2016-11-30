@@ -37,9 +37,9 @@ signup_roles = {
         </p>
       </div>
 
-      <%= fh.text_field name: :email, value: signup_email %>
+      <%= fh.text_field name: :email, value: signup_email, label: :'.email_placeholder' %>
       <p class="edu-warning">
-        <%= t '.teacher_school_email_warning' %>
+        <%= t '.teacher_school_email_warning', button: (t :'.next').downcase %>
       </p>
       <%= render(partial: "layouts/attention") %>
     </div>

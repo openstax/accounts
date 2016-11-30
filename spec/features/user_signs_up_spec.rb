@@ -41,7 +41,7 @@ feature 'User signs up', js: true do
   scenario 'happy path success with email verification by link' do
     arrive_from_app
     click_sign_up
-    complete_signup_email_screen("Instructor","bob@bob.edu", screenshot_after_role: true)
+    complete_signup_email_screen("Instructor","bob@bob.edu")
     open_email("bob@bob.edu")
     verify_email_path = get_path_from_absolute_link(current_email, 'a')
 
@@ -93,7 +93,7 @@ feature 'User signs up', js: true do
       create_email_address_for(create_user('user'), "bob@bob.edu")
       visit signup_path
       select 'Instructor', from: "signup_role"
-      fill_in (t :"signup.start.email"), with: "bob@bob.edu"
+      fill_in (t :"signup.start.email_placeholder"), with: "bob@bob.edu"
       click_button(t :"signup.start.next")
       expect(page).to have_content 'Email already in use'
       screenshot!
@@ -102,9 +102,9 @@ feature 'User signs up', js: true do
     scenario 'failure because suspected non-school email then success' do
       visit signup_path
       select 'Instructor', from: "signup_role"
-      fill_in (t :"signup.start.email"), with: "bob@gmail.com"
+      fill_in (t :"signup.start.email_placeholder"), with: "bob@gmail.com"
       click_button(t :"signup.start.next")
-      expect(page).to have_content 'If this is your school email, click Next'
+      expect(page).to have_content 'To access faculty-only materials'
       screenshot!
     end
 
@@ -291,5 +291,40 @@ feature 'User signs up', js: true do
       skip # TODO
     end
   end
+
+  context "user enters email then manually jumps ahead" do
+    before(:each) {
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+    }
+
+    scenario 'to password entry' do
+      visit '/signup/password'
+      expect_signup_verify_screen
+    end
+
+    scenario 'to social entry' do
+      visit '/signup/social'
+      expect_signup_verify_screen
+    end
+
+    scenario 'to profile screen' do
+      visit '/signup/profile'
+      expect(page).to have_content("You are not allowed")
+      expect(SignupContactInfo.count).to eq 0
+      expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 0
+    end
+
+    scenario 'to profile screen signed in as other user' do
+      create_user 'otheruser'
+      log_in('otheruser', 'password')
+      visit '/signup/profile'
+      expect(page).to have_content("You are not allowed")
+      expect(SignupContactInfo.count).to eq 0
+      expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 0
+    end
+  end
+
 
 end

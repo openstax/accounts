@@ -267,7 +267,7 @@ def complete_signup_email_screen(role, email, options={})
     wait_for_animations
     screenshot!
   end
-  fill_in (t :"signup.start.email"), with: email
+  fill_in (t :"signup.start.email_placeholder"), with: email
   expect(page).to have_no_missing_translations
   click_button(t :"signup.start.next")
   click_button(t :"signup.start.next") unless email =~ /\.edu$/
