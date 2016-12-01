@@ -388,6 +388,10 @@ def log_in(username_or_email, password)
   complete_login_password_screen(password)
 end
 
+def log_out
+  visit '/logout'
+end
+
 def mock_current_user(user)
   # The following mocks are a little faster than:
   #   visit '/'

@@ -1,5 +1,7 @@
 class SignupController < ApplicationController
 
+  PROFILE_TIMEOUT = 30.minutes
+
   skip_before_filter :authenticate_user!,
                      only: [:start, :verify_email, :verify_by_token, :password, :social, :profile]
 
@@ -17,7 +19,7 @@ class SignupController < ApplicationController
 
   before_filter :check_ready_for_password_or_social, only: [:password, :social]
 
-  helper_method :signup_email, :signup_role, :instructor_has_selected_subject
+  helper_method :signup_email, :instructor_has_selected_subject
 
   def start
     if request.post?
@@ -94,7 +96,6 @@ class SignupController < ApplicationController
                   contracts_required: !contracts_not_required(
                     client_id: request['client_id'] || session['client_id']
                   ),
-                  role: signup_role,
                   success: lambda do
                     is_student = signup_role == "student"
                     clear_signup_state
@@ -120,6 +121,12 @@ class SignupController < ApplicationController
   def check_ready_for_profile
     # Only expect signed in, needs_profile users
     fail_signup if !signed_in? || !current_user.is_needs_profile?
+
+    if last_login_is_older_than?(PROFILE_TIMEOUT)
+      sign_out!
+      redirect_to root_path, alert: t(:"signup.profile.timeout")
+    end
+
     true
   end
 

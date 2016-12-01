@@ -34,9 +34,12 @@ class User < ActiveRecord::Base
   has_many :security_logs
 
   enum faculty_status: [:no_faculty_info, :pending_faculty, :confirmed_faculty, :rejected_faculty]
+  enum role: [:unknown, :student, :instructor, :administrator, :librarian, :designer, :other]
 
   DEFAULT_FACULTY_STATUS = :no_faculty_info
   validates :faculty_status, presence: true
+
+  validates :role, presence: true
 
   before_validation :strip_fields
 
@@ -195,6 +198,10 @@ class User < ActiveRecord::Base
 
   def login_token_expired?
     !login_token_expires_at.nil? && login_token_expires_at <= DateTime.now
+  end
+
+  def self.known_roles
+    roles.except("unknown").keys
   end
 
   protected

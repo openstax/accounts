@@ -420,6 +420,7 @@ en:
       create_account: Create Account
       titles_interested: Select all OpenStax titles that interest you
       keep_me_informed: Send me news about new titles, resources, and related information.
+      timeout: Please log in again to complete your sign up
 
     instructor_access_pending:
       page_heading: Welcome to OpenStax!

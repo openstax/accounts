@@ -49,19 +49,9 @@ ActionController::Base.class_exec do
 
   include ContractsNotRequired
 
-
-
   def complete_signup_profile
     return true if request.format != :html
-
-    if current_user.is_needs_profile?
-      if last_login_is_older_than?(30.minutes)
-        sign_out!
-        redirect_to root_path, alert: "Please log in again to complete your sign up"
-      else
-        redirect_to signup_profile_path
-      end
-    end
+    redirect_to signup_profile_path if current_user.is_needs_profile?
   end
 
   def expired_password  # TODO rename as action, e.g. `check_if_password_expired`

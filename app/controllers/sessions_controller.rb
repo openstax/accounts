@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
                      only: [:new, :lookup_login, :authenticate,
                             :create, :failure, :destroy, :email_usernames]
 
-  skip_before_filter :complete_signup_profile, only: [:destroy]  # TODO used?
+  skip_before_filter :complete_signup_profile, only: [:destroy]
 
   before_filter :get_authorization_url, only: [:new, :create]
 
@@ -75,6 +75,7 @@ class SessionsController < ApplicationController
       SessionsCreate,
       user_state: self,
       signup_contact_info: signup_contact_info,
+      signup_role: signup_role,
       login_providers: get_login_state[:providers],
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]

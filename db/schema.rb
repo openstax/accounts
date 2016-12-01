@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161127063044) do
+ActiveRecord::Schema.define(version: 20161201014148) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -256,6 +256,7 @@ ActiveRecord::Schema.define(version: 20161127063044) do
     t.string   "self_reported_school"
     t.string   "login_token",            :index=>{:name=>"index_users_on_login_token", :unique=>true}
     t.datetime "login_token_expires_at"
+    t.integer  "role",                   :default=>0, :null=>false, :index=>{:name=>"index_users_on_role"}
   end
   add_index "users", ["username"], :name=>"index_users_on_username_case_insensitive", :case_sensitive=>false
 

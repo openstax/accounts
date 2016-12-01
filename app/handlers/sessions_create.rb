@@ -101,6 +101,9 @@ class SessionsCreate
         run(TransferOmniauthData, @data, receiving_user)
         status = :new_social_user
       end
+
+      receiving_user.role = options[:signup_role]
+      receiving_user.save!
     end
 
     run(TransferSignupContactInfo,

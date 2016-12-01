@@ -254,6 +254,7 @@ describe SessionsCreate, type: :handler do
     described_class.handle(user_state: user_state,
                            login_providers: login_providers,
                            signup_contact_info: signup_contact_info,
+                           signup_role: "instructor",
                            **args)
   end
 
