@@ -9,12 +9,12 @@ OpenStax::RescueFrom.configure do |config|
 
   config.app_name = 'Accounts'
   config.app_env = secrets['environment_name']
-  config.contact_name = secrets['contact_name']
+  config.contact_name = secrets['contact_name'].html_safe
 
   # config.notifier = ExceptionNotifier
 
   # config.html_error_template_path = 'errors/any'
-  # config.html_error_template_layout_name = 'application'
+  config.html_error_template_layout_name = 'error'
 
   # config.email_prefix = "[#{config.app_name}] (#{config.app_env}) "
   config.sender_address = secrets['sender']
