@@ -32,7 +32,6 @@ class SignupProfile
 
   def authorized?
     caller.is_needs_profile?
-    # OSU::AccessPolicy.action_allowed?(:signup, caller, caller)  # TODO was this before
   end
 
   def handle
@@ -55,14 +54,17 @@ class SignupProfile
     end
 
     if push_lead && Settings::Salesforce.push_leads_enabled
-      # TODO: make sure the subject keys are in the correct form for Salesforce, then
-      # concatenate the selected ones into the Salesforce format, e.g.:
-      # "Macro Econ;Micro Econ;US History;AP Macro Econ"
-      #
-      # profile_params.subjects.find_all{|k,v| v == '1'}.map{|kv|
-      #   Settings::Subjects[kv.first]['sf']
-      # }
 
+      # profile_params.subjects is a hash of book code name to "1" or "0", depending on
+      # if that book was selected or not selected, respectively.  We need to convert this
+      # hash to a semicolon-separated string of Salesforce book codes, e.g.:
+      # "Macro Econ;Micro Econ;US History;AP Macro Econ".
+
+      subject = profile_params.subjects
+                              .select{|k,v| v == '1'}
+                              .keys
+                              .map{|code| Settings::Subjects[code]['sf']}
+                              .join(';')
 
       PushSalesforceLead.perform_later(
         user: caller,
@@ -71,6 +73,7 @@ class SignupProfile
         school: caller.self_reported_school,
         num_students: profile_params.num_students,
         using_openstax: profile_params.using_openstax,
+        subject: subject,
         url: profile_params.url,
         newsletter: profile_params.newsletter
       )

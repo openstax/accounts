@@ -72,17 +72,7 @@ class SignupController < ApplicationController
   def social; end
 
   def profile
-    if request.get?
-      if signup_contact_info.present?
-        TransferSignupContactInfo[
-          signup_contact_info: signup_contact_info,
-          user: current_user
-        ]
-      end
-
-      # Should have a verified email by now
-      fail_signup if current_user.contact_infos.verified.none?
-    elsif request.post?
+    if request.post?
       handler = case signup_role
       when /student/i
         SignupProfileStudent
@@ -119,8 +109,10 @@ class SignupController < ApplicationController
   protected
 
   def check_ready_for_profile
-    # Only expect signed in, needs_profile users
-    fail_signup if !signed_in? || !current_user.is_needs_profile?
+    # Only expect signed in, needs_profile users, who have a verified email
+    fail_signup if !signed_in? ||
+                   !current_user.is_needs_profile? ||
+                   current_user.contact_infos.verified.none?
 
     if last_login_is_older_than?(PROFILE_TIMEOUT)
       sign_out!

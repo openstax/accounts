@@ -4,75 +4,106 @@ require 'rails_helper'
 
 RSpec.describe SignupProfileInstructor, type: :handler do
 
-  xcontext "when the user has arrived well-formed" do
+  before(:each) {
+    load 'db/seeds.rb'
+    disable_sfdc_client
+    allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
+  }
+
+  context "when the user has arrived well-formed" do
 
     let(:user) {
-      # user in good state
+      create_user('user').tap{|uu| uu.update_attribute(:state, 'needs_profile')}
     }
 
-    context "when the fields are missing" do
-      let (:the_call) { -> {
-        described_class.handle(
-          params: {
-            signup: {
-              username: 'joebob',
-              first_name: 'joe',
-              last_name: 'bob',
-              password: 'pass',
-              password_confirmation: 'word',
-              email_address: 'joebob@example.com'
-            }
-          },
-          caller: user
-        )
-      }}
+    context "when required fields are missing" do
+      [:first_name, :last_name, :school, :phone_number,
+       :url, :num_students, :using_openstax].each do |required_field|
 
-      it "has errors" do
-        outcome = the_call.call
-        expect(outcome.errors).to have_offending_input(:signup)
-        expect(outcome.errors).to have_offending_input(:password)
+        it "errors if no #{required_field}" do
+          outcome = handle(required_field => '')
+          expect(outcome.errors).to have_offending_input(required_field)
+        end
+
       end
-
-      # TODO other specs
-
     end
 
     it "requires a number >= 0 for num_students" do
-      skip # TODO
+      outcome = handle(num_students: "-1")
+      expect(outcome.errors).to have_offending_input(:num_students)
     end
 
     context "when the fields are properly filled in" do
-      let (:the_call) { -> {
-        described_class.handle(
-          params: {
-            signup: {
-              # include agreement? can't submit without
-            }
-          },
-          caller: user
-        )
-      }}
-
-      xit "has no errors" do
-        outcome = the_call.call
+      it "has no errors" do
+        outcome = handle
         expect(outcome.errors).to be_empty
       end
 
-      xit "updates the user's info" do
-        # check school too
+      context "salesforce lead gets pushed" do
+        it "sends the subject properly formatted" do
+          expect_lead_push(subject: "Macro Econ;Biology")
+          handle
+        end
+
+        it "sends num_students as a number" do
+          expect_lead_push(num_students: 30)
+          handle
+        end
       end
 
-      xit "sends a Lead off to Salesforce" do
+      it "updates the user and leaves him 'activated'" do
+        handle
+        user.reload
+        expect(user.first_name).to eq "joe"
+        expect(user.last_name).to eq "bob"
+        expect(user.self_reported_school).to eq "rice"
+        expect(user.state).to eq "activated"
       end
 
-      xit "agrees to terms for the user" do
-      end
-
-      xit "leaves the user in the 'activated' state" do
+      it "agrees to terms for the user" do
+        handle
+        expect(FinePrint::Signature.where(user_id:  user.id).count).to eq 2
       end
     end
 
   end
 
+  context "when the user is already activated" do
+    let(:user) { create_user('user') }
+
+    it "freaks out" do
+      expect{ handle }.to raise_error(Lev::SecurityTransgression)
+    end
+  end
+
+  def handle(first_name: "joe", last_name: "bob", school: "rice", phone_number: "000-0000",
+             subjects: {"accounting"=>"0", "macro_econ"=>"1", "biology"=>"1", "calculus"=>"0"},
+             url: "www", num_students: "30", using_openstax: "primary")
+
+    contract_ids = FinePrint::Contract.all.map(&:id)
+
+    described_class.handle(
+      params: {
+        profile: {
+          first_name: first_name,
+          last_name: last_name,
+          school: school,
+          phone_number: phone_number,
+          subjects: subjects,
+          url: url,
+          num_students: num_students,
+          using_openstax: using_openstax,
+          contract_1_id: contract_ids[0],
+          contract_2_id: contract_ids[1]
+        }
+      },
+      caller: user,
+      contracts_required: true
+    )
+  end
+
+  def expect_lead_push(options={})
+    expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including(options))
+  end
 
 end

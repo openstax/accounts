@@ -14,7 +14,7 @@ module Settings
 
       def [](code)
         book = find{|book_code, info| book_code == code }
-        book ? book['info'] : {}
+        book ? book[1] : {}
       end
 
     end
