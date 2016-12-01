@@ -4,7 +4,7 @@ class PushSalesforceLead
 
   protected
 
-  def exec(user:, role:, phone_number:, school:, num_students:, using_openstax:, url:, newsletter:)
+  def exec(user:, role:, phone_number:, school:, num_students:, using_openstax:, url:, newsletter:, subject:)
 
     status.set_job_name(self.class.name)
     status.set_job_args(user: user.to_global_id.to_s)
@@ -21,6 +21,7 @@ class PushSalesforceLead
       school: user.self_reported_school,
       email: email,
       source: source,
+      subject: subject,
       newsletter: newsletter,           # we were asked to
       newsletter_opt_in: newsletter,    # set both of these
       phone: phone_number,

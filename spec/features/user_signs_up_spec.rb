@@ -8,6 +8,9 @@ feature 'User signs up', js: true do
   end
 
   scenario 'happy path success with password' do
+    disable_sfdc_client
+    allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
+
     arrive_from_app
     screenshot!
     click_sign_up
@@ -20,6 +23,11 @@ feature 'User signs up', js: true do
     complete_signup_password_screen('password')
 
     screenshot!
+
+    expect_any_instance_of(PushSalesforceLead)
+      .to receive(:exec)
+      .with(hash_including(subject: "Biology;Macro Econ"))
+
     complete_signup_profile_screen(
       role: :instructor,
       first_name: "Bob",
@@ -30,6 +38,7 @@ feature 'User signs up', js: true do
       num_students: 30,
       using_openstax: "primary",
       newsletter: true,
+      subjects: ["Biology", "Principles of Macroeconomics"],
       agree: true
     )
 
