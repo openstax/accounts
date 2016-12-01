@@ -11,7 +11,6 @@ feature 'Require recent log in to change authentications', js: true do
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       expect(page).not_to have_content('Facebook')
-
       screenshot!
       click_link 'Enable other sign in options'
       wait_for_animations

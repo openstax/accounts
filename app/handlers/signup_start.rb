@@ -14,6 +14,8 @@ class SignupStart
   end
 
   def handle
+    fatal_error(code: :unknown_role) if !User.known_roles.include?(signup_params.role)
+
     outputs.role = signup_params.role
 
     # Return if user went back, didn't change anything, and resubmitted

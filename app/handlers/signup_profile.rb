@@ -66,7 +66,7 @@ class SignupProfile
 
       PushSalesforceLead.perform_later(
         user: caller,
-        role: options[:role],
+        role: caller.role,
         phone_number: profile_params.phone_number,
         school: caller.self_reported_school,
         num_students: profile_params.num_students,

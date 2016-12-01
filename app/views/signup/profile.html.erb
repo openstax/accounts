@@ -1,6 +1,6 @@
 <%  @hide_layout_errors = true %>
 
-<% signup_role_sym = (signup_role || "Other").downcase.to_sym %>
+<% role = current_user.role.downcase.to_sym %>
 
 <div class="ox-card login">
 
@@ -11,7 +11,7 @@
     <%= render(partial: "layouts/attention") %>
 
     <% fh = FormHelper::One.new(f: f,
-                                limit_to: signup_role_sym,
+                                limit_to: role,
                                 context: self,
                                 errors: @handler_result.try(:errors)) %>
 
@@ -19,7 +19,7 @@
     <%= fh.text_field name: :last_name, value: current_user.last_name %>
     <%= fh.text_field name: :suffix %>
 
-    <% if signup_role_sym != :student %>
+    <% if role != :student %>
       <h3><%= t '.instructor_verification_heading' %></h3>
       <p><%= t '.instructor_verification_help' %></p>
     <% end %>
@@ -29,7 +29,7 @@
     <%= fh.text_field name: :num_students, only: :instructor %>
     <%= fh.text_field name: :url, except: :student %>
 
-    <% if signup_role_sym == :instructor %>
+    <% if role == :instructor %>
 
       <%= f.select :using_openstax,  # TODO move into form helper
                    options_for_select(
@@ -44,7 +44,7 @@
 
     <% end %>
 
-    <% if signup_role_sym != :student %>
+    <% if role != :student %>
 
       <h3><%= t('.titles_interested') %></h3>
 

@@ -435,5 +435,50 @@ feature 'User signs up', js: true do
     end
   end
 
+  context "user waits too long to finish signup profile" do
+    before(:each) {
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      complete_signup_verify_screen(pass: true)
+      complete_signup_password_screen('password')
+    }
+
+    scenario "gets redirected to home page but can recover" do
+      Timecop.freeze(Time.now + SignupController::PROFILE_TIMEOUT) do
+        complete_signup_profile_screen_with_whatever(role: :instructor)
+        expect_sign_in_page
+        expect(page).to have_content(t :"signup.profile.timeout")
+        complete_login_username_or_email_screen("bob@bob.edu")
+        complete_login_password_screen('password')
+        expect_signup_profile_screen
+      end
+    end
+  end
+
+  scenario "user needs_profile and logs in from different browser" do
+    arrive_from_app
+    click_sign_up
+    complete_signup_email_screen("Instructor","bob@bob.edu")
+    complete_signup_verify_screen(pass: true)
+    complete_signup_password_screen('password')
+    expect_signup_profile_screen
+
+    # simulate different browser by logging out
+    log_out
+    arrive_from_app
+
+    # TODO actually test that the signup_state has been cleared
+
+    complete_login_username_or_email_screen("bob@bob.edu")
+    complete_login_password_screen('password')
+
+    expect_signup_profile_screen
+
+    complete_signup_profile_screen_with_whatever(role: :instructor)
+    complete_instructor_access_pending_screen
+    expect_back_at_app
+  end
+
 
 end
