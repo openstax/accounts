@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
                      only: [:new, :lookup_login, :authenticate,
                             :create, :failure, :destroy, :email_usernames]
 
-  skip_before_filter :finish_sign_up, only: [:destroy]  # TODO used?
+  skip_before_filter :complete_signup_profile, only: [:destroy]  # TODO used?
 
   before_filter :get_authorization_url, only: [:new, :create]
 

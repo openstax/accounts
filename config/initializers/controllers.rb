@@ -10,11 +10,12 @@ ActionController::Base.class_exec do
   include ApplicationHelper
   include UserSessionManagement
   include LocaleSelector
+  include RequireRecentSignin
 
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
   before_filter :authenticate_user!
-  before_filter :finish_sign_up
+  before_filter :complete_signup_profile
   before_filter :expired_password
   before_filter :set_locale
 
@@ -50,16 +51,17 @@ ActionController::Base.class_exec do
 
 
 
-  def finish_sign_up
+  def complete_signup_profile
     return true if request.format != :html
 
     if current_user.is_needs_profile?
-      redirect_to signup_profile_path
-    else
-# TODO check that this is clean
+      if last_login_is_older_than?(30.minutes)
+        sign_out!
+        redirect_to root_path, alert: "Please log in again to complete your sign up"
+      else
+        redirect_to signup_profile_path
+      end
     end
-    # return unless current_user.is_new_social?
-    # redirect_to signup_social_path
   end
 
   def expired_password  # TODO rename as action, e.g. `check_if_password_expired`

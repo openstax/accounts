@@ -3,7 +3,7 @@ class SignupController < ApplicationController
   skip_before_filter :authenticate_user!,
                      only: [:start, :verify_email, :verify_by_token, :password, :social, :profile]
 
-  skip_before_filter :finish_sign_up
+  skip_before_filter :complete_signup_profile
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
