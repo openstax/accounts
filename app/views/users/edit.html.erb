@@ -6,12 +6,10 @@
 
 <div class="ox-card">
 
-  <%= link_to (t :".sign_out"), main_app.signout_path, class: 'sign-out' %>
-
-
-
-<h1 class="title"><%= t '.page_heading' %></h1>
-
+  <div class="profile-title">
+    <%= link_to (t :".sign_out"), main_app.signout_path, class: 'sign-out' %>
+    <h1 class="title"><%= t '.page_heading' %></h1>
+</div>
 
 <div class="row name">
   <div class="col-sm-2 category">

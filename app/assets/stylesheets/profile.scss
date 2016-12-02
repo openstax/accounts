@@ -3,9 +3,16 @@
 
 #profile .ox-card {
   .alert { margin: 10px; }
-  .sign-out {
-    float: right;
+
+  .profile-title {
+    position: relative;
+
+    .sign-out {
+      position: absolute;
+      right: 0px;
+    }
   }
+
   .col-sm-2 {
     padding: 0;
   }
