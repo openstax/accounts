@@ -363,6 +363,7 @@ en:
       check_your_email: Check your inbox for %{email}!
       you_will_have_received: You will have received a six-digit PIN. Enter it below.
       pin_not_correct: This PIN is incorrect.  Please enter the correct PIN.
+      blank: cannot be blank.
       no_pin_confirmation_attempts_remaining:
         content_html: >-
           You have run out of attempts at confirming this email using a PIN.  Please
