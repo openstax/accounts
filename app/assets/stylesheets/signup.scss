@@ -13,7 +13,7 @@ body.signup {
   .subjects {
     // Height of list is selected to chop off in middle of line to provide an
     // indication that there's items that can be scrolled to
-    max-height: 139px;
+    max-height: 235px;
     overflow-y: scroll;
     border: 1px solid #ccc;
     padding: 5px;
@@ -34,27 +34,29 @@ body.signup {
     }
 
     .subject {
-      height: 30px;
       display: flex;
-      align-items: center;
+      height: 50px;
 
       & + .subject { border-top: 1px solid $os_line_color; }
       > * {
         margin: 0;
         padding: 0;
+        display: flex;
+        align-items: center;
       }
 
       input {
         margin-top: 0px;
+        align-self: center;
       }
 
       label {
         font-weight: inherit;
         font-size: 15px;
-        display: inline;
         margin-left: 0.5rem;
         flex: 1;
         cursor: pointer;
+        align-self: stretch;
       }
     }
   }
