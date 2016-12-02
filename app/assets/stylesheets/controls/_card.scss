@@ -1,5 +1,6 @@
 .ox-card {
   $input-height: 50px;
+  $input-border-color: darken($os_light_gray, 10%);
 
   display: block;
   margin: auto;
@@ -29,6 +30,9 @@
     width: 50%;
     float: left;
   }
+  .card-body {
+    min-height: 250px;
+  }
   .footer {
     margin-top: $os-section-spacing;
     padding-top: $os-section-spacing;
@@ -50,12 +54,12 @@
     }
     &[type="text"],
     &[type="password"] {
-      border: 1px solid darken($os_light_gray, 10%);
+      border: 1px solid $input-border-color;
     }
   }
 
   select:not([multiple]) {
-    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50px' height='50px'><polyline points='46.139,15.518 25.166,36.49 4.193,15.519'/></svg>") right no-repeat;
+    background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50px' height='50px'><polyline fill='" + $input-border-color +"' points='46.139,15.518 25.166,36.49 4.193,15.519'/></svg>") right no-repeat;
     background-position: right 1rem center;
     background-size: 18px 18px;
     background-color: white;
