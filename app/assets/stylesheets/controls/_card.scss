@@ -4,6 +4,7 @@
   max-width: 570px;
   background-color: $os_light_gray;
   padding: 20px 50px;
+  font-size: 14px;
 
   h1, h2, h3, .minor-heading {
     font-family: $os_heading_font_family;
@@ -33,7 +34,7 @@
   }
   input {
     color: $os_gray;
-    font-size: 1.8rem;
+    font-size: 16px;
     border-radius: 0px;
     &:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
       width: 100%;
@@ -59,7 +60,7 @@
     background-color: white;
     border-radius: 0px;
     padding: 1rem 0.8rem;
-    font-size: 1.8rem;
+    font-size: 16px;
     // don't dispaly the selection arrow since we're using a SVG icon for it
     appearance: none;
     -webkit-appearance: none;
