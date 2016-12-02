@@ -5,21 +5,13 @@ class OX.Signup.TypeSelector
     @type_selector = new TypeSelector(role) if role.length
 
   constructor: (@el) ->
-    _.bindAll(@, 'onChange', 'onSelect')
-    @el.mousedown(@onSelect)
+    _.bindAll(@, 'onChange')
+    $("input[type='submit']").attr('disabled', true)
     @el.change(@onChange)
-    @onChange() if @el.val() isnt 'initial'
-
-
-  onSelect: (ev) ->
-     # remove the "I am a" option; it's an invalid selection
-    initial = this.el.find('option[value="initial"]')
-    if initial.length
-      @el.val('student') if @el.val() is 'initial'
-      initial.remove()
-      @onChange()
+    @onChange() if @el.val()
 
   onChange: ->
+    $("input[type='submit']").attr('disabled', false)
     @getEmail().setType(@el.val())
 
   getEmail: ->

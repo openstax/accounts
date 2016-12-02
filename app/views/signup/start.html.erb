@@ -27,7 +27,8 @@ signup_roles = {
                                 errors: @handler_result.try(:errors)) %>
     <%# TODO put select in form helper %>
 
-    <%= f.select :role, options_for_select(signup_roles.invert.to_a, signup_role) %>
+    <%= f.select :role, options_for_select(signup_roles.invert.to_a,
+        selected: signup_role || 'initial', disabled: "initial", hidden: "initial" ) %>
 
     <div class="email-input-group card-body">
       <div class="audience-help" data-audience="instructor">
