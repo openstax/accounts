@@ -15,6 +15,7 @@ module Salesforce
     field :newsletter_opt_in,   from: "Newsletter_Opt_In__c"
     field :adoption_status,     from: "Adoption_Status__c"
     field :num_students,        from: "Number_of_Students__c"
+    field :os_accounts_id,      from: "OS_Accounts_ID__c"
 
     self.table_name = 'Lead'
   end

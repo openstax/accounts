@@ -27,7 +27,8 @@ class PushSalesforceLead
       phone: phone_number,
       website: url,
       adoption_status: using_openstax,
-      num_students: num_students.to_i
+      num_students: num_students.to_i,
+      os_accounts_id: user.id
     )
 
     lead.save
