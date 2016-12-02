@@ -32,7 +32,10 @@
           type: :password_field,
           options: { placeholder: t(:"identities.confirm_password") } %>
       <%= render(partial: "layouts/attention") %>
-      <%= submit_tag (t :"identities.add.submit"), class: 'primary' %>
+
+      <section class="footer">
+        <%= submit_tag (t :"identities.add.submit"), class: 'primary' %>
+      </section>
     <% end %>
 
   <% end %>

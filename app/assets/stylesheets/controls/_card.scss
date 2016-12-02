@@ -36,9 +36,9 @@
   .footer {
     margin-top: $os-section-spacing;
     padding-top: $os-section-spacing;
-    border-top: 2px solid darken($os_light_gray, 10%);
+
     .extra-info {
-      margin-top: $os-section-spacing * 0.3;
+      margin-top: $os-section-spacing * 0.5;
     }
   }
   input {

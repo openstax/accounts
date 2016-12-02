@@ -3,5 +3,7 @@
 
   <p><%= t :".message" %></p>
 
-  <%= link_to (t :".continue"), password_continue_path %>. <%# TODO style link like a button %>
+  <section class="footer">
+    <%= button_to (t :".continue"), password_continue_path, {class: 'primary', method: :get} %>
+  </section>
 </div>
