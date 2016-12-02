@@ -17,4 +17,9 @@
   </div>
 <% end %>
 
+<% content_for :head do %>
+  <%= stylesheet_link_tag    "application_body_api_docs" %>
+  <%= stylesheet_link_tag    "syntax_highlight" %>
+<% end %>
+
 <%= render template: "layouts/application" %>
