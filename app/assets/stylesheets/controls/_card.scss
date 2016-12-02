@@ -1,4 +1,6 @@
 .ox-card {
+  $input-height: 50px;
+
   display: block;
   margin: auto;
   max-width: 570px;
@@ -36,9 +38,9 @@
     color: $os_gray;
     font-size: 16px;
     border-radius: 0px;
+    height: $input-height;
     &:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
       width: 100%;
-      padding: 1rem 0.8rem;
       margin: 0.5rem 0;
     }
     &[type="text"],
@@ -51,7 +53,6 @@
       }
     }
   }
-  .form-control { height: inherit; }
 
   select:not([multiple]) {
     background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50px' height='50px'><polyline points='46.139,15.518 25.166,36.49 4.193,15.519'/></svg>") right no-repeat;
@@ -61,6 +62,7 @@
     border-radius: 0px;
     padding: 1rem 0.8rem;
     font-size: 16px;
+    height: $input-height;
     // don't dispaly the selection arrow since we're using a SVG icon for it
     appearance: none;
     -webkit-appearance: none;
@@ -77,6 +79,7 @@
 
   input[type=submit] {
     width: inherit;
+    height: $input-height;
     &.primary {
       @extend .btn;
       text-transform: uppercase;
