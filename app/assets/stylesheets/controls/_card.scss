@@ -46,11 +46,6 @@
     &[type="text"],
     &[type="password"] {
       border: 1px solid darken($os_light_gray, 10%);
-      &:focus {
-        border: 1px solid $os_dark;
-        box-shadow: none;
-        outline: none;
-      }
     }
   }
 
