@@ -108,6 +108,9 @@
         color: $link-color;
         padding: 0;
         font-size: 13px;
+        display: inline;
+        border: 0;
+        background: transparent;
       }
     }
     &.new {

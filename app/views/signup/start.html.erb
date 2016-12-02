@@ -38,12 +38,14 @@ signup_roles = {
       </div>
 
       <%= fh.text_field name: :email, value: signup_email, label: :'.email_placeholder' %>
-      <p class="edu-warning">
+      <p class="warning">
         <%= t '.teacher_school_email_warning', button: (t :'.next').downcase %>
       </p>
       <%= render(partial: "layouts/attention") %>
     </div>
-    <%= f.submit (t :".next"), class: 'primary' %>
+    <section class="footer">
+      <%= f.submit (t :".next"), class: 'primary' %>
+    </section>
   <% end %>
 
 </div>

@@ -24,7 +24,12 @@
 
       <%= fh.text_field name: :pin %>
       <%= render(partial: "layouts/attention") %>
-      <%= f.submit (t :".confirm"), class: 'primary' %>
+      <section class="footer">
+        <%= f.submit (t :".confirm"), class: 'primary' %>
+        <p class="extra-info">
+          <%= t :".used_wrong_email" %> <%= link_to (t :".edit_email_address"), signup_path %>.
+        </p>
+      </section>
     <% end %>
 
   <% else %>
@@ -41,7 +46,5 @@
 
     <%= render(partial: "layouts/attention") %>
   <% end %>
-
-  <p><%= t :".used_wrong_email" %> <%= link_to (t :".edit_email_address"), signup_path %>.</p>
 
 </div>
