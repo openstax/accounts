@@ -12,7 +12,7 @@
 .ox-separator-line {
   text-align: center;
   position: relative;
-  margin: 10px 0;
+  margin: $os-section-spacing 0;
   &:after {
     border-top: 2px solid $os_line_color;
     content: '';

@@ -41,20 +41,22 @@
     <%= lev_form_for :login, url: '/auth/identity/callback',
         html: {class: collect_errors.any? ? 'is-invalid identity-password' : 'identity-password'} do |f| %>
 
-    <%= f.password_field :password, placeholder: t(".password")  %>
+    <section>
+      <%= f.password_field :password, placeholder: t(".password")  %>
+      <%= render(partial: "layouts/attention") %>
+      <%= f.hidden_field :username_or_email, value: username_or_email %>
+    </section>
 
-    <%= f.hidden_field :username_or_email, value: username_or_email %>
-
+  <section class="footer">
     <input type="submit" class="primary" value="<%= t '.login' %>" />
+    <p class="extra-info">
+      <%= t(:'.forgot_password') %>
+      <%= link_to(t(:'.reset_password'), password_send_reset_path, method: :post) %>.
+    </p>
+  </section>
 
   <% end %>
 
-  <%= render(partial: "layouts/attention") %>
-
-  <p class="footer">
-    <%= t(:'.forgot_password') %>
-    <%= link_to(t(:'.reset_password'), password_send_reset_path, method: :post) %>.
-  </p>
 <% else %>
   <p>
     <%= t(:'.trouble_logging_in') %>

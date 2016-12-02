@@ -10,11 +10,6 @@ body.signup {
     display: none;
   }
 
-  .edu-warning {
-    // bs variable
-    color: $state-danger-text;
-  }
-
   .subjects {
     // Height of list is selected to chop off in middle of line to provide an
     // indication that there's items that can be scrolled to

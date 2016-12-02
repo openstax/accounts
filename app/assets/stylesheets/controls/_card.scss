@@ -14,13 +14,13 @@
     color: $os_dark;
   }
   h1.title {
-    margin: 10px 0 20px 0;
+    margin: 0 0 $os-section-spacing 0;
     text-align: center;
     font-size: 18px;
   }
   .minor-heading {
-    margin-top: 18px;
-    margin-bottom: 8px;
+    margin-top: $os-section-spacing;
+    margin-bottom: $os-section-spacing / 2;
   }
   h3 { font-size: 16px; }
   h3 { font-size: 15px; }
@@ -30,18 +30,23 @@
     float: left;
   }
   .footer {
-    margin-top: 1rem;
-    padding-top: 1rem;
+    margin-top: $os-section-spacing;
+    padding-top: $os-section-spacing;
     border-top: 2px solid darken($os_light_gray, 10%);
+    .extra-info {
+      margin-top: $os-section-spacing * 0.3;
+    }
   }
   input {
     color: $os_gray;
     font-size: 16px;
     border-radius: 0px;
-    height: $input-height;
-    &:not([type="checkbox"]):not([type="radio"]):not([type="submit"]) {
-      width: 100%;
-      margin: 0.5rem 0;
+    &:not([type="checkbox"]):not([type="radio"]){
+      height: $input-height;
+      &:not([type="submit"]) {
+        width: 100%;
+        padding-left: 5px;
+      }
     }
     &[type="text"],
     &[type="password"] {
@@ -75,8 +80,10 @@
   input[type=submit] {
     width: inherit;
     height: $input-height;
+    display: block;
     &.primary {
       @extend .btn;
+      display: block;
       text-transform: uppercase;
       border-radius: 0;
       padding: 1rem 2rem;
@@ -111,10 +118,30 @@
     border: 0;
     padding: 0;
   }
+  .warning {
+    color: $state-danger-text; // bs variable
+  }
 
   a:not(.btn) {
     color: $os_link_color;
     text-decoration: underline;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+    & + .warning {
+      margin-top: 5px;
+    }
+  }
+  // elements that should be treated as a "section" and have extra spacing after them
+  // unless they are the last item or their followed by footer
+  select,
+  section,
+  .warning,
+  .form-group {
+    & + *:not(.footer):not(.alert):not(.warning):not(.errors) {
+      margin-top: $os-section-spacing;
+    }
   }
 
 }
