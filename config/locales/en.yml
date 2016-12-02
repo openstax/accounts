@@ -154,19 +154,15 @@ en:
       continue to have problems, please contact support.
     expired_password_link: >-
       The password link you used has expired.
-    use_form_below_to_reset_password: >-
-      Use the form below to reset your password.
-    use_form_below_to_add_password: >-
-      Use the form below to add a password.
     reset:
-      page_heading: Reset Password
+      page_heading: Reset your password
       use_form_below_to_reset_password: >-
         Use the form below to reset your password.
       submit: Reset Password
     add:
-      page_heading: Add Password
+      page_heading: Add a password
       use_form_below_to_add_password: >-
-        Use the form below to add a password.
+        Use the form below to add a password to your account.
       submit: Add Password
     add_success:
       page_heading: Success!
@@ -264,7 +260,7 @@ en:
       page_heading: Please log in again before continuing.
 
     authenticate_options:
-      separator_or: OR
+      separator_or: or
       sign_in_with_facebook: Log in with Facebook
       sign_in_with_google: Google
       sign_in_with_twitter: Log in with Twitter
@@ -386,7 +382,7 @@ en:
       facebook: Facebook
       google: Google
       openstax_wont_use_social_media_without_permission_html: >-
-        Don't worry. OpenStax won't post anything to your social network without your permission.
+        OpenStax won't post to your social network without your permission.
       use_password: Set up a password instead
 
     profile:

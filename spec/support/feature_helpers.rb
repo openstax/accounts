@@ -355,7 +355,7 @@ def complete_reset_password_screen(password=nil)
 end
 
 def complete_reset_password_success_screen
-  click_link (t :"identities.reset_success.continue")
+  click_button (t :"identities.reset_success.continue")
 end
 
 def complete_add_password_screen(password=nil)
@@ -367,7 +367,7 @@ def complete_add_password_screen(password=nil)
 end
 
 def complete_add_password_success_screen
-  click_link (t :"identities.add_success.continue")
+  click_button (t :"identities.add_success.continue")
 end
 
 def complete_terms_screens
