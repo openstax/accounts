@@ -29,7 +29,7 @@ signup_roles = {
 
     <%= f.select :role, options_for_select(signup_roles.invert.to_a, signup_role) %>
 
-    <div class="email-input-group">
+    <div class="email-input-group card-body">
       <div class="audience-help" data-audience="instructor">
         <div class="minor-heading"><%= t '.email' %></div>
         <p>
@@ -38,7 +38,7 @@ signup_roles = {
       </div>
 
       <%= fh.text_field name: :email, value: signup_email, label: :'.email_placeholder' %>
-      <p class="warning">
+      <p class="warning edu">
         <%= t '.teacher_school_email_warning', button: (t :'.next').downcase %>
       </p>
       <%= render(partial: "layouts/attention") %>

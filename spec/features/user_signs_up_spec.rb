@@ -104,6 +104,15 @@ feature 'User signs up', js: true do
   end
 
   context "start screen" do
+    scenario 'hiding/displaying edu email warning' do
+      create_email_address_for(create_user('user'), "bob@bob.edu")
+      visit signup_path
+      expect(page).not_to have_content t('signup.start.teacher_school_email')
+      select 'Instructor', from: "signup_role"
+      expect(page).to have_content t('signup.start.teacher_school_email')
+      select 'Student', from: "signup_role"
+      expect(page).not_to have_content t('signup.start.teacher_school_email')
+    end
     scenario 'failure because email in use' do
       create_email_address_for(create_user('user'), "bob@bob.edu")
       visit signup_path

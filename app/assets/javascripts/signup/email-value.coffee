@@ -13,14 +13,14 @@ class OX.Signup.EmailValue
   onChange: ->
     if @showing_warning
       @group.removeClass('has-error')
-      @group.find(".edu-warning").hide()
+      @group.find(".edu.warning").hide()
       @showing_warning = false
 
   onSubmit: (ev) ->
     if @userType is 'instructor' and not ((@email.val() == '') or @showing_warning or IS_EDU.test(@email.val()))
       @showing_warning = true
       @group.addClass('has-error')
-      @group.find(".edu-warning").show()
+      @group.find(".edu.warning").show()
       @email.focus()
       ev.preventDefault()
 
