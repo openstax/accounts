@@ -27,3 +27,17 @@
 .navbar-fixed-bottom .container {
     max-width: $application_master_width;
 }
+
+.btn-social {
+  margin: 15px auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 50px;
+  width: 200px;
+  border-radius: 0;
+  > :first-child {
+    padding-top: 4px;
+    width: 40px;
+    padding-left: 2px;
+  }
+}

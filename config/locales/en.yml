@@ -180,7 +180,7 @@ en:
 
     send_add:
       page_heading: Check your email
-      we_sent_email: We sent an email to %{emails}.  Click the link in that email to reset your password.
+      we_sent_email: We sent an email to %{emails}.  Click the link in that email to add a password.
       close_this_window: You can close this window.
 
   layouts:
@@ -262,7 +262,7 @@ en:
     authenticate_options:
       separator_or: or
       sign_in_with_facebook: Log in with Facebook
-      sign_in_with_google: Google
+      sign_in_with_google: Log in with Google
       sign_in_with_twitter: Log in with Twitter
       login: Login
       password: Password
