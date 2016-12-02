@@ -26,11 +26,11 @@
       <% fh = FormHelper::One.new(f: f,
          context: self, errors: @handler_result.try(:errors)) %>
 
-      <section>
+      <div class="card-body">
         <%= fh.text_field name: :username_or_email,
             label: '.email_placeholder' %>
         <%= render(partial: "layouts/attention") %>
-      </section>
+      </div>
 
 
       <section class="footer">
