@@ -31,13 +31,13 @@ en:
         Instructions for accessing your OpenStax account have been emailed to
         you.
       incorrect_password: The password you provided is incorrect.
-      new_sign_in_option_added: Your new sign in option as been added!
+      new_sign_in_option_added: Your new log in option as been added!
       same_provider_already_linked: >-
         You are logged in as %{user_name}. A different %{authentication} account
         is already linked to your OpenStax account. Only one %{authentication}
         account can be linked to your OpenStax account at a time.
       sign_in_option_already_used: >-
-        That sign in option is already used by someone else. If that someone is
+        That log in option is already used by someone else. If that someone is
         you, remove it from your other account and try again.
       too_many_login_attempts:
         # %{reset_password}   a hyperlink pointing to password reset page. Label
@@ -132,7 +132,7 @@ en:
         # %{link}   a hyperlink pointing to sing in page. Label of the link
         #           is defined by the .sign_up key.
         content_html: You can now %{link} to your new account.
-        sign_in: sign in
+        sign_in: log in
 
   errors:
     please_enable_javascript: >-
@@ -192,8 +192,8 @@ en:
       terms_of_use: Terms of Use
 
     application_header:
-      sign_out: Sign out
-      sign_in: Sign in
+      sign_out: Log out
+      sign_in: Log in
       # %{username}   a hyperlink pointing to the user's profile page. Label of
       #               the link is user's username.
       welcome_html: Welcome, %{username}
@@ -226,7 +226,7 @@ en:
       username_or_email: Username or Email
 
     new:
-      cant_sign_in: Can’t sign in?
+      cant_sign_in: Can’t log in?
       logout_reminder_html: >-
         If you're on a public computer, <b>be sure to sign out</b> when you're done!
       openstax_wont_use_social_media_without_permission_html: >-
@@ -234,7 +234,7 @@ en:
         network without your permission.
       page_heading: Log in to your OpenStax account
       page_sub_heading: Access all OpenStax tools and resources
-      sign_in: Sign in
+      sign_in: Log in
       sign_up: Sign up here
       no_account_q: Need an account?
       used_this_method_last_time: >-
@@ -265,9 +265,9 @@ en:
 
     authenticate_options:
       separator_or: OR
-      sign_in_with_facebook: Sign in with Facebook
+      sign_in_with_facebook: Log in with Facebook
       sign_in_with_google: Google
-      sign_in_with_twitter: Sign in with Twitter
+      sign_in_with_twitter: Log in with Twitter
       login: Login
       password: Password
       forgot_password: Can’t remember your password?
@@ -303,7 +303,7 @@ en:
         Note that other OpenStax sites may have terms of their own.
       show_title_and_suffix: Show title and suffix
       suffix: Suffix
-      take_me_back_to_sign_in_page: Take me back to the sign in page.
+      take_me_back_to_sign_in_page: Take me back to the log in page.
       title: Title
       username: Username *
       wait_a_second: Wait a second!
@@ -322,13 +322,13 @@ en:
       designer: Instructional Designer
       other: Other
       invalid: is invalid.
-      email_in_use: Email already in use.  Are you trying to <a href="%{signin_url}">sign in</a>?
+      email_in_use: Email already in use.  Are you trying to <a href="%{signin_url}">log in</a>?
       blank: cannot be left blank
       already_have_an_account:
         # %{link}   a hyperlink pointing to sign in page. Label of the link
         #           is defined by the .sign_in key.
         content_html: <b>Already have an account?</b> %{link}.
-        sign_in: Sign in
+        sign_in: Log in
       dont_want_to_remember_password_html: >-
         <b>Don't want to remember a password?</b><br/>
         Sign up with Facebook, Google, or Twitter.
@@ -480,13 +480,13 @@ en:
     edit:
       add_email_address: Add an email
       email_addresses: Emails
-      enable_other_sign_in_options: Enable other sign in options
-      how_you_sign_in_html: How you<br class="wide"> sign in
+      enable_other_sign_in_options: Enable other log in options
+      how_you_sign_in_html: How you<br class="wide"> log in
       name: Name
-      other_sign_in_options_html: Other sign in<br class="wide"> options
+      other_sign_in_options_html: Other log in<br class="wide"> options
       page_heading: Your Account
       username: Username
-      sign_out: Sign out
+      sign_out: Log out
       check_searchable_if_you_want_to_be_searchable: >-
         Check the Searchable box if you want other OpenStax users to find you
         using this email address.
