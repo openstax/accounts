@@ -1,8 +1,4 @@
-<% @hide_layout_errors = true %>
-
-<div class="ox-card reset-password">
-
-  <h1 class="title"><%= t ".page_heading" %></h1>
+<%= ox_card(classes: "reset-password", heading: (t ".page_heading")) do %>
 
   <%
     error_codes = @handler_result.errors.map(&:code)
@@ -39,4 +35,5 @@
     <% end %>
 
   <% end %>
-</div>
+
+<% end %>

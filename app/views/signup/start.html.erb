@@ -1,4 +1,3 @@
-<% @hide_layout_errors = true %>
 <% @hide_session_info = true %>
 <% content_for :head do %>
   <%= javascript_include_tag  "signup" %>
@@ -16,9 +15,7 @@ signup_roles = {
 }
 %>
 
-<div class="ox-card signup">
-
-  <h1 class="title"><%= t '.page_heading' %></h1>
+<%= ox_card(classes: "signup", heading: (t :'.page_heading')) do %>
 
   <%= lev_form_for :signup, url: signup_path, method: :post do |f| %>
 
@@ -49,4 +46,4 @@ signup_roles = {
     </section>
   <% end %>
 
-</div>
+<% end %>

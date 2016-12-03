@@ -1,7 +1,4 @@
-<div class="ox-card">
-
-  <h1 class="title"><%= t '.page_heading' %></h1>
-
+<%= ox_card(heading: (t :'.page_heading')) do %>
 
     <div class="button-form-group">
       <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook', id: 'facebook-login-button' do %>
@@ -22,4 +19,4 @@
       <%= link_to (t :".use_password"), signup_password_path %>.
     </p>
 
-</div>
+<% end %>

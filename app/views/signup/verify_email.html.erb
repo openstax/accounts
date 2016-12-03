@@ -1,13 +1,10 @@
 <%
-  @hide_layout_errors = true
   errors = @handler_result.try(:errors) || []
   attempts_remaining = !errors.map(&:code).include?(:no_pin_confirmation_attempts_remaining)
   errors.clear if !attempts_remaining
 %>
 
-<div class="ox-card">
-
-  <h1 class="title"><%= t (attempts_remaining ? '.page_heading_pin' : '.page_heading_token') %></h1>
+<%= ox_card(heading: (t (attempts_remaining ? :'.page_heading_pin' : :'.page_heading_token'))) do %>
 
   <p><%= t :".check_your_email", email: signup_email %></p>
 
@@ -47,4 +44,4 @@
     <%= render(partial: "layouts/attention") %>
   <% end %>
 
-</div>
+<% end %>

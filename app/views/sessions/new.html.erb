@@ -15,20 +15,7 @@
   end
 %>
 
-<div class="ox-card login">
-  <% if flash[:alert].present? %>
-    <div class="top-level-alerts danger">
-      <%= alert_tag(flash[:alert]) if flash[:alert] %>
-    </div>
-  <% end %>
-
-  <% if flash[:notice].present? %>
-    <div class="top-level-alerts info">
-      <%= notice_tag(flash[:notice]) if flash[:notice] %>
-    </div>
-  <% end %>
-
-  <h1 class="title"><%= t '.page_heading' %></h1>
+<%= ox_card(classes: "login", heading: (t :".page_heading")) do %>
 
   <%= lev_form_for :login, url: lookup_login_path do |f| %>
 
@@ -51,4 +38,5 @@
       </section>
   <% end %>
 
-</div>
+<% end %>
+

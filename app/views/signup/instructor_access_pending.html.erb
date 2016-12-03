@@ -1,8 +1,4 @@
-<% @hide_layout_errors = true %>
-
-<div class="ox-card">
-
-  <h1 class="title"><%= t :'.page_heading' %></h1>
+<%= ox_card(heading: (t :'.page_heading')) do %>
 
   <p><%= t :'.message' %></p>
 
@@ -16,4 +12,4 @@
     <%= button_to (t :".ok"), {action: :instructor_access_pending}, {class: 'primary'} %>
   </section>
 
-</div>
+<% end %>

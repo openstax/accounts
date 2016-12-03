@@ -138,4 +138,30 @@ module ApplicationHelper
     error.message = yield
   end
 
+  def ox_card(classes: "", heading: "", &block)
+    @hide_layout_errors = true
+
+    content_tag :div, class: "ox-card #{classes}" do
+      danger_alerts = if flash[:alert].present?
+        content_tag :div, class: "top-level-alerts danger" do
+          alert_tag(flash[:alert])
+        end
+      end
+
+      info_alerts = if flash[:notice].present?
+        content_tag :div, class: "top-level-alerts info" do
+          notice_tag(flash[:notice])
+        end
+      end
+
+      heading_div = if heading.present?
+        content_tag(:h1, class: "title") { heading }
+      end
+
+      body = capture(&block)
+
+      "#{danger_alerts}\n#{info_alerts}\n#{heading_div}\n#{body}".html_safe
+    end
+  end
+
 end

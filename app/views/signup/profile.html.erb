@@ -1,10 +1,6 @@
-<%  @hide_layout_errors = true %>
-
 <% role = current_user.role.downcase.to_sym %>
 
-<div class="ox-card login">
-
-  <h1 class="title"><%= t '.page_heading' %></h1>
+<%= ox_card(classes: "login", heading: (t :'.page_heading')) do %>
 
   <%= lev_form_for :profile, url: signup_profile_path do |f| %>
 
@@ -92,8 +88,7 @@
 
   <% end %>
 
-</div>
-
+<% end %>
 
 <% unless @contracts_not_required %>
   <script type="text/javascript">

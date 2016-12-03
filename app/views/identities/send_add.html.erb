@@ -1,8 +1,4 @@
-<% @hide_layout_errors = true %>
-
-<div class="ox-card">
-
-  <h1 class="title"><%= t :".page_heading" %></h1>
+<%= ox_card(heading: (t :"page_heading")) do %>
 
   <p><%= (t :".we_sent_email",
             emails: @handler_result.outputs
@@ -12,4 +8,4 @@
 
   <p><%= t :".close_this_window" %></p>
 
-</div>
+<% end %>
