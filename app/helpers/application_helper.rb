@@ -164,4 +164,8 @@ module ApplicationHelper
     end
   end
 
+  def all_errors
+    (@errors || []) + (@handler_result.try(:errors) || [])
+  end
+
 end

@@ -11,6 +11,7 @@ feature 'User resets password', js: true do
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t :"identities.there_was_a_problem_with_password_link")
     expect(page).to have_current_path password_reset_path
+    screenshot!
   end
 
   scenario 'using a link with an invalid code' do
@@ -18,6 +19,7 @@ feature 'User resets password', js: true do
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t :"identities.there_was_a_problem_with_password_link")
     expect_reset_password_page('1234')
+    screenshot!
   end
 
   scenario 'using a link with an expired code' do
@@ -26,6 +28,7 @@ feature 'User resets password', js: true do
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t :"identities.expired_password_link")
     expect_reset_password_page
+    screenshot!
   end
 
   scenario 'using a link with a valid code' do
@@ -40,6 +43,7 @@ feature 'User resets password', js: true do
     expect_reset_password_page
     click_button (t :"identities.reset.submit")
     expect(page).to have_content("Password can't be blank")
+    screenshot!
   end
 
   scenario 'password is too short' do
@@ -51,6 +55,7 @@ feature 'User resets password', js: true do
     fill_in (t :"identities.confirm_password"), with: 'pass'
     click_button (t :"identities.reset.submit")
     expect(page).to have_content('Password is too short')
+    screenshot!
   end
 
   scenario "password and password confirmation don't match" do
@@ -62,6 +67,7 @@ feature 'User resets password', js: true do
     fill_in (t :"identities.confirm_password"), with: 'password!!'
     click_button (t :"identities.reset.submit")
     expect(page).to have_content("Password confirmation doesn't match Password")
+    screenshot!
   end
 
   scenario 'successful' do
