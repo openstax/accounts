@@ -8,12 +8,11 @@
 
   <%= lev_form_for :profile, url: signup_profile_path do |f| %>
 
-    <%= render(partial: "layouts/attention") %>
-
     <% fh = FormHelper::One.new(f: f,
                                 limit_to: role,
                                 context: self,
-                                errors: @handler_result.try(:errors)) %>
+                                errors: @handler_result.try(:errors),
+                                error_field_classes: "alert alert-danger") %>
 
     <%= fh.text_field name: :first_name, value: current_user.first_name %>
     <%= fh.text_field name: :last_name, value: current_user.last_name %>
@@ -29,20 +28,17 @@
     <%= fh.text_field name: :num_students, only: :instructor %>
     <%= fh.text_field name: :url, except: :student %>
 
-    <% if role == :instructor %>
-
-      <%= f.select :using_openstax,  # TODO move into form helper
-                   options_for_select(
-                   [
-                     [t('.instructor_use.how'), ""],
-                     [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
-                     [t('.instructor_use.recommended'), 'Confirmed Will Recommend'],
-                     [t('.instructor_use.piloting'), 'Piloting book this semester'],
-                     [t('.instructor_use.interested'), 'High Interest in Adopting'],
-                     [t('.instructor_use.nope'), 'Not using']
-                    ], selected: "", disabled: "", hidden: "") %>
-
-    <% end %>
+    <%= fh.select name: :using_openstax,
+                  only: :instructor,
+                  options: options_for_select(
+                  [
+                    [t('.instructor_use.how'), ""],
+                    [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
+                    [t('.instructor_use.recommended'), 'Confirmed Will Recommend'],
+                    [t('.instructor_use.piloting'), 'Piloting book this semester'],
+                    [t('.instructor_use.interested'), 'High Interest in Adopting'],
+                    [t('.instructor_use.nope'), 'Not using']
+                  ], selected: "", disabled: "", hidden: "") %>
 
     <% if role != :student %>
 

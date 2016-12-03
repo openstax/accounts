@@ -15,23 +15,32 @@
   end
 %>
 
-
 <div class="ox-card login">
+  <% if flash[:alert].present? %>
+    <div class="top-level-alerts danger">
+      <%= alert_tag(flash[:alert]) if flash[:alert] %>
+    </div>
+  <% end %>
+
+  <% if flash[:notice].present? %>
+    <div class="top-level-alerts info">
+      <%= notice_tag(flash[:notice]) if flash[:notice] %>
+    </div>
+  <% end %>
 
   <h1 class="title"><%= t '.page_heading' %></h1>
 
-  <%= lev_form_for :login, url: lookup_login_path,
-      html: {class: collect_errors.any? ? 'is-invalid' : ''} do |f| %>
+  <%= lev_form_for :login, url: lookup_login_path do |f| %>
 
       <% fh = FormHelper::One.new(f: f,
-         context: self, errors: @handler_result.try(:errors)) %>
+                                  context: self,
+                                  errors: @handler_result.try(:errors),
+                                  error_field_classes: "alert alert-danger") %>
 
       <div class="card-body">
         <%= fh.text_field name: :username_or_email,
             label: '.email_placeholder' %>
-        <%= render(partial: "layouts/attention") %>
       </div>
-
 
       <section class="footer">
         <input type="submit" value="<%= t '.next' %>" class="primary" />

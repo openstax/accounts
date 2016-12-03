@@ -24,7 +24,8 @@ signup_roles = {
 
     <% fh = FormHelper::One.new(f: f,
                                 context: self,
-                                errors: @handler_result.try(:errors)) %>
+                                errors: @handler_result.try(:errors),
+                                error_field_classes: "alert alert-danger") %>
     <%# TODO put select in form helper %>
 
     <%= f.select :role, options_for_select(signup_roles.invert.to_a,
@@ -42,7 +43,6 @@ signup_roles = {
       <p class="warning edu">
         <%= t '.teacher_school_email_warning', button: (t :'.next').downcase %>
       </p>
-      <%= render(partial: "layouts/attention") %>
     </div>
     <section class="footer">
       <%= f.submit (t :".next"), class: 'primary' %>

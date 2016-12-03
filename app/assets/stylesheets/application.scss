@@ -41,3 +41,22 @@
     padding-left: 2px;
   }
 }
+
+.top-level-alerts {
+  margin: -30px -50px 30px -50px;
+  padding: 10px;
+
+  &.info {
+    background-color: #d9edf7;
+    border-bottom: 1px solid #bce8f1;
+  }
+
+  &.danger {
+    background-color: #f2dede;
+    border-bottom: 1px solid #ebccd1;
+  }
+
+  div.alert {
+    padding: 0px 10px;
+  }
+}

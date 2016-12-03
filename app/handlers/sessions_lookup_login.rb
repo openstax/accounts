@@ -9,7 +9,7 @@ class SessionsLookupLogin
 
   uses_routine GetLoginInfo,
                translations: { outputs: { type: :verbatim },
-                               inputs: { type: :verbatim } }
+                               inputs: { scope: :login } }
 
   protected
 
