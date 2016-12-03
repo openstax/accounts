@@ -1,15 +1,15 @@
-<p>Welcome! Please verify your email.</p>
+<p>Welcome! Please confirm your email.</p>
 
 <p>Someone is trying to use '<%= @signup_contact_info.value %>' to create an OpenStax account.  If this wasn't you, please disregard this message.</p>
 
 <% if @show_pin %>
-  <p>Enter your 6-digit PIN in your browser to verify your email address:</p>
+  <p>Enter your 6-digit PIN in your browser to confirm your email address:</p>
 
   <p>Your PIN: <b><%= @signup_contact_info.confirmation_pin %></b></p>
 
-  <p>If you have any trouble using this PIN, you can also click the link below to verify:</p>
+  <p>If you have any trouble using this PIN, you can also click the link below to confirm your email address:</p>
 <% else %>
-  <p>Click on the link below to verify your email address:</p>
+  <p>Click on the link below to confirm your email address:</p>
 <% end %>
 
 <%
