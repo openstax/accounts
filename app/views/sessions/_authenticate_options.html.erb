@@ -49,11 +49,16 @@
 
   <% end %>
     <%= lev_form_for :login, url: '/auth/identity/callback',
-        html: {class: collect_errors.any? ? 'is-invalid identity-password' : 'identity-password'} do |f| %>
+        html: {class: 'identity-password'} do |f| %>
+
+    <% fh = FormHelper::One.new(f: f,
+                                context: self,
+                                errors: @errors || @handler_result.try(:errors),
+                                error_field_classes: "alert alert-danger") %>
 
     <section>
-      <%= f.password_field :password, placeholder: t(".password")  %>
-      <%= render(partial: "layouts/attention") %>
+      <%= fh.text_field name: :password, type: :password  %>
+      <%#= render(partial: "layouts/attention") %>
       <%= f.hidden_field :username_or_email, value: username_or_email %>
     </section>
 

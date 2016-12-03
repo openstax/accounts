@@ -23,4 +23,10 @@ class ApplicationController < ActionController::Base
     true
   end
 
+  def field_error!(on:, code:, message:)
+    @errors ||= Lev::Errors.new
+    message = I18n.t(message) if message.is_a?(Symbol)
+    @errors.add(false, offending_inputs: on, code: code, message: message)
+  end
+
 end
