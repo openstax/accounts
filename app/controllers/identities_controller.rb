@@ -60,9 +60,9 @@ class IdentitiesController < ApplicationController
                     else
                       case kind
                       when :add
-                        redirect_to action: :reset if current_user.identity.present?
+                        redirect_to action: :reset if current_user.identity.present? && !current_page?(password_reset_path)
                       when :reset
-                        redirect_to action: :add if current_user.identity.nil?
+                        redirect_to action: :add if current_user.identity.nil? && !current_page?(password_add_path)
                       end
                     end
                   end,

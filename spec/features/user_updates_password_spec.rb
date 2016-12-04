@@ -44,4 +44,17 @@ feature 'User updates password on profile screen', js: true do
     expect(page.html).to include(t :"users.edit.how_you_sign_in_html")
     expect(page).to have_css('[data-provider=identity]')
   end
+
+  scenario "deletes password" do
+    FactoryGirl.create :authentication, user: @user, provider: 'facebook'
+    visit '/profile'
+    expect(@user.identity(true)).to be_present
+    expect(@user.authentications(true).count).to eq 2
+    expect(page).to have_css('[data-provider=identity]')
+    find('[data-provider=identity] .delete').click
+    find('.confirm-dialog-btn-confirm').click
+    expect(page).not_to have_css('[data-provider=identity]')
+    expect(@user.identity(true)).to be_nil
+    expect(@user.authentications(true).count).to eq 1
+  end
 end

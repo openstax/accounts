@@ -29,10 +29,11 @@ class SetPassword
 
     transfer_errors_from(identity, {type: :verbatim}, true)
 
-    # If the user does not have an authentication for an identity then we create once
-    unless user.authentications.where(provider: 'identity').any?
+    identity_authentication =
+      user.authentications.find_by(provider: 'identity') ||
       user.authentications.create!(provider: 'identity', uid: identity.id.to_s)
-    end
+
+    fatal_error(code: :orphaned_identity_auth) if identity_authentication.uid != identity.id.to_s
   end
 
 end

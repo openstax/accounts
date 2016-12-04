@@ -116,7 +116,7 @@ class SessionsController < ApplicationController
                                                    authentication: authentication.display_name)
         when :mismatched_authentication
           # TODO new security log entry
-          redirect_to action: :authenticate # TODO need error message and feature spec!
+          redirect_to action: :authenticate, alert: "Mismatched login!" # TODO need feature spec!
         else
           Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}; " \
                              "status: #{@handler_result.outputs[:status]}"
