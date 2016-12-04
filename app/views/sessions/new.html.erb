@@ -15,23 +15,19 @@
   end
 %>
 
+<%= ox_card(classes: "login", heading: (t :".page_heading")) do %>
 
-<div class="ox-card login">
-
-  <h1 class="title"><%= t '.page_heading' %></h1>
-
-  <%= lev_form_for :login, url: lookup_login_path,
-      html: {class: collect_errors.any? ? 'is-invalid' : ''} do |f| %>
+  <%= lev_form_for :login, url: lookup_login_path do |f| %>
 
       <% fh = FormHelper::One.new(f: f,
-         context: self, errors: @handler_result.try(:errors)) %>
+                                  context: self,
+                                  errors: @handler_result.try(:errors),
+                                  error_field_classes: "alert alert-danger") %>
 
       <div class="card-body">
         <%= fh.text_field name: :username_or_email,
             label: '.email_placeholder' %>
-        <%= render(partial: "layouts/attention") %>
       </div>
-
 
       <section class="footer">
         <input type="submit" value="<%= t '.next' %>" class="primary" />
@@ -42,4 +38,5 @@
       </section>
   <% end %>
 
-</div>
+<% end %>
+

@@ -1,8 +1,4 @@
-<% @hide_layout_errors = true %>
-
-<div class="ox-card help">
-
-  <h1 class="title"><%= t '.page_heading' %></h1>
+<%= ox_card(classes: "help", heading: (t :'.page_heading')) do %>
 
   <p><%= t :".if_you_know_username_or_email.content_html",
          link: (mail_to "info@openstax.org",
@@ -21,4 +17,4 @@
 
   </div>
 
-</div>
+<% end %>

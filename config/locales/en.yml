@@ -3,6 +3,24 @@ en:
     attributes:
       sessions_lookup_login/login_paramifier:
         username_or_email: Email or username
+      signup_profile_instructor/profile_paramifier:
+        first_name: This field
+        last_name: This field
+        phone_number: This field
+        school: This field
+        num_students: This field
+        url: This field
+        using_openstax: This field
+      signup_profile_other/profile_paramifier:
+        first_name: This field
+        last_name: This field
+        phone_number: This field
+        school: This field
+        url: This field
+      signup_profile_student/profile_paramifier:
+        first_name: This field
+        last_name: This field
+        school: This field
   activerecord:
     attributes:
       signup_contact_info:

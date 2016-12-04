@@ -113,6 +113,7 @@ feature 'User signs up', js: true do
       select 'Student', from: "signup_role"
       expect(page).not_to have_content t('signup.start.teacher_school_email')
     end
+
     scenario 'failure because email in use' do
       create_email_address_for(create_user('user'), "bob@bob.edu")
       visit signup_path
@@ -467,6 +468,7 @@ feature 'User signs up', js: true do
         complete_signup_profile_screen_with_whatever(role: :instructor)
         expect_sign_in_page
         expect(page).to have_content(t :"signup.profile.timeout")
+        screenshot!
         complete_login_username_or_email_screen("bob@bob.edu")
         complete_login_password_screen('password')
         expect_signup_profile_screen

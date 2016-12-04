@@ -14,7 +14,9 @@ class SignupStart
   end
 
   def handle
-    fatal_error(code: :unknown_role) if !User.known_roles.include?(signup_params.role)
+    if !User.known_roles.include?(signup_params.role)
+      fatal_error(code: :unknown_role, offending_inputs: [:signup, :role])
+    end
 
     outputs.role = signup_params.role
 
@@ -25,14 +27,16 @@ class SignupStart
     end
 
     # If email in use, want users to login with that email, not create another account
-    fatal_error(code: :email_in_use) if email_in_use?
+    fatal_error(code: :email_in_use, offending_inputs: [:signup, :email]) if email_in_use?
 
     # Blow away the user's existing signup email, if it exists
     existing_signup_contact_info.try(:destroy)
 
     # Create a new one
     new_signup_contact_info = SignupContactInfo.email_address.create(value: email)
-    transfer_errors_from(new_signup_contact_info, {type: :verbatim}, true)
+    transfer_errors_from(new_signup_contact_info,
+                         { map: { value: :email }, scope: :signup },
+                         true)
 
     # Send the pin
     SignupConfirmationMailer.instructions(

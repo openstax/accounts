@@ -1,42 +1,8 @@
-<% @hide_layout_errors = true %>
+<%= ox_card(classes: "reset-password", heading: (t :".page_heading")) do %>
 
-<div class="ox-card reset-password">
+  <%= render partial: 'set', locals: {
+    message: (t :".use_form_below_to_reset_password"),
+    submit_text: (t :"identities.reset.submit")
+  } %>
 
-  <h1 class="title"><%= t ".page_heading" %></h1>
-
-  <%
-    error_codes = @handler_result.errors.map(&:code)
-
-    big_time_error_message =
-      case error_codes.first
-      when :token_blank, :unknown_login_token
-        t :"identities.there_was_a_problem_with_password_link"
-      when :expired_login_token
-        t :"identities.expired_password_link"
-      end
-
-   if big_time_error_message %>
-
-    <p><%= big_time_error_message %></p>
-
-  <% else %>
-
-    <p><%= t :".use_form_below_to_reset_password" %></p>
-
-    <%= lev_form_for :set_password, url: '',
-      html: {class: collect_errors.any? ? 'is-invalid' : ''} do |f| %>
-      <%= standard_field form: f, name: :password,
-          type: :password_field,
-          options: { placeholder: t(:"identities.password") } %>
-      <%= standard_field form: f, name: :password_confirmation,
-          type: :password_field,
-          options: { placeholder: t(:"identities.confirm_password") } %>
-      <%= render(partial: "layouts/attention") %>
-
-      <section class="footer">
-        <%= submit_tag (t :"identities.reset.submit"), class: 'primary' %>
-      </section>
-    <% end %>
-
-  <% end %>
-</div>
+<% end %>

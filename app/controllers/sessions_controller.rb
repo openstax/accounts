@@ -116,7 +116,7 @@ class SessionsController < ApplicationController
                                                    authentication: authentication.display_name)
         when :mismatched_authentication
           # TODO new security log entry
-          redirect_to action: :authenticate # TODO need error message and feature spec!
+          redirect_to action: :authenticate, alert: "Mismatched login!" # TODO need feature spec!
         else
           Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}; " \
                              "status: #{@handler_result.outputs[:status]}"
@@ -167,24 +167,26 @@ class SessionsController < ApplicationController
       return
     end
 
-    action, message = case params[:message]
+    case params[:message]
     when 'cannot_find_user'
-      [:new, (I18n.t :"errors.no_account_for_username_or_email")]
+      flash[:alert] = I18n.t :"errors.no_account_for_username_or_email"
+      render :new
     when 'multiple_users'
-      [:new, (I18n.t :"controllers.sessions.several_accounts_for_one_email")]
+      flash[:alert] = I18n.t :"controllers.sessions.several_accounts_for_one_email"
+      render :new
     when 'bad_password'
-      [:authenticate, (I18n.t :"controllers.sessions.incorrect_password")]
+      field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
+      render :authenticate
     when 'too_many_login_attempts'
-      [:authenticate, (I18n.t :"controllers.sessions.too_many_login_attempts.content",
-                              reset_password: "<a href=\"#{password_send_reset_path}\">#{
-                                I18n.t :"controllers.sessions.too_many_login_attempts.reset_password"
-                              }</a>".html_safe)]
+      flash[:alert] = I18n.t :"controllers.sessions.too_many_login_attempts.content",
+                             reset_password: "<a href=\"#{password_send_reset_path}\">#{
+                               I18n.t :"controllers.sessions.too_many_login_attempts.reset_password"
+                             }</a>".html_safe
+      render :authenticate
     else
-      [:new, params[:message]]
+      flash[:alert] = params[:message]
+      render :new
     end
-
-    flash.now[:alert] = message
-    render action
   end
 
   def email_usernames

@@ -104,9 +104,10 @@
     }
   }
 
-  .is-invalid {
+  .is-invalid, .has-error {
     input[type="text"],
-    input[type="password"] {
+    input[type="password"],
+    select {
       background-color: $state-danger-bg;
       border: 1px solid darken($state-danger-border, 10%);
       &:focus {

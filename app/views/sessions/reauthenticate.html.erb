@@ -1,7 +1,5 @@
-<div class="ox-card login">
-
-  <h1 class="title"><%= t :'.page_heading' %></h1>
+<%= ox_card(classes: "login", heading: (t :'.page_heading')) do %>
 
   <%= render partial: 'authenticate_options' %>
 
-</div>
+<% end %>
