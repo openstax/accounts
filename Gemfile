@@ -173,6 +173,7 @@ group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
 
+  gem  'i18n-tasks', '~> 0.9.6'
   # Speedup and run specs when files change
 
 end
