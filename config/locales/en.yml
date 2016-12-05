@@ -79,7 +79,7 @@ en:
         Cannot delete an activated user's last authentication
 
     confirm_unclaimed_account:
-      unable_to_verify_address: Unable to verify email address
+      unable_to_verify_address: Unable to confirm email address
 
     identities_reset_password:
       reset_link_expired: Reset password link has expired
@@ -110,7 +110,7 @@ en:
 
   routines:
     confirm_by_code:
-      unable_to_verify_address: Unable to verify email address
+      unable_to_verify_address: Unable to confirm email address
 
     find_or_create_unclaimed_user:
       must_provide_email_or_username: Must provide email or username
@@ -120,15 +120,15 @@ en:
   contact_infos:
     confirm:
       page_heading:
-        error: We were unable to verify your email address.
-        success: Thank you for verifying your email address.
+        error: We were unable to confirm your email address.
+        success: Thank you for confirming your email address.
       verification_code_not_found: >-
-        Sorry, we couldn't verify your email using the verification code you
+        Sorry, we couldn't confirm your email using the confirmation code you
         provided. If you typed it in manually, please check for errors. If
         you're still having trouble, please visit your profile page to resend
         the verification email.
       you_may_now_close_this_window: >-
-        Your email address is now verified. You may close this window.
+        Your email address is now confirmed. You may close this window.
 
     confirm_unclaimed:
       page_heading: Invite Verification
@@ -312,7 +312,7 @@ en:
       # %{manager}  one of 'Password', 'Google', 'Facebook' or 'Twitter',
       #             depending on how the user signs in/
       password_managed_by: Password managed by %{manager}
-      please_verify_your_email: Please verify your email!
+      please_verify_your_email: Please confirm your email!
       policies_notice: >-
         Note that other OpenStax sites may have terms of their own.
       show_title_and_suffix: Show title and suffix
@@ -322,8 +322,8 @@ en:
       username: Username *
       wait_a_second: Wait a second!
       you_will_receive_verification_email: >-
-        You'll receive a verification email shortly. Please take a moment and
-        verify your email address.
+        You'll receive a confirmation email shortly. Please take a moment and
+        confirm your email address.
 
     start:
       email: School email address
@@ -388,6 +388,7 @@ en:
 
     password:
       page_heading: Choose your password
+      password_requirements: Password must be at least 8 characters.
       password: Password
       password_confirmation: Confirm Password
       create_password: Submit
@@ -504,6 +505,6 @@ en:
       check_searchable_if_you_want_to_be_searchable: >-
         Check the Searchable box if you want other OpenStax users to find you
         using this email address.
-      click_to_verify: Click to verify
+      click_to_verify: Click to confirm
       password: Password
       searchable: Searchable
