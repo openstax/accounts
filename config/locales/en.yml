@@ -388,6 +388,7 @@ en:
 
     password:
       page_heading: Choose your password
+      password_requirements: Password must be at least 8 characters.
       password: Password
       password_confirmation: Confirm Password
       create_password: Submit
