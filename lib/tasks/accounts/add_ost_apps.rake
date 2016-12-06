@@ -31,6 +31,7 @@ namespace :accounts do
           identity = Identity.find_or_create_by(user_id: user.id) do |new_identity|
             new_identity.password = password
             new_identity.password_confirmation = password
+            new_identity.user = user
             new_identity.save!
           end
           app_owner_group.add_owner(user)
