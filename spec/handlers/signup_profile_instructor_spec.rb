@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-# TODO implement this -- what is below is just a sketch, hasn't been run ever
-
 RSpec.describe SignupProfileInstructor, type: :handler do
 
   before(:each) {

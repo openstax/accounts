@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TransferSignupContactInfo do
+describe TransferSignupState do
 
   # TODO write this bad boy
 

@@ -21,8 +21,8 @@ class SignupStart
     outputs.role = signup_params.role
 
     # Return if user went back, didn't change anything, and resubmitted
-    if existing_signup_contact_info.try(:value) == email
-      outputs.signup_contact_info = existing_signup_contact_info
+    if existing_signup_state.try(:contact_info_value) == email
+      outputs.signup_state = existing_signup_state
       return
     end
 
@@ -30,20 +30,24 @@ class SignupStart
     fatal_error(code: :email_in_use, offending_inputs: [:signup, :email]) if email_in_use?
 
     # Blow away the user's existing signup email, if it exists
-    existing_signup_contact_info.try(:destroy)
+    existing_signup_state.try(:destroy)
 
     # Create a new one
-    new_signup_contact_info = SignupContactInfo.email_address.create(value: email)
-    transfer_errors_from(new_signup_contact_info,
-                         { map: { value: :email }, scope: :signup },
+    new_signup_state = SignupState.email_address.create(contact_info_value: email,
+                                                        role: signup_params.role,
+                                                        return_to: options[:return_to])
+
+    transfer_errors_from(new_signup_state,
+                         { map: { contact_info_value: :email },
+                           scope: :signup },
                          true)
 
     # Send the pin
     SignupConfirmationMailer.instructions(
-      signup_contact_info: new_signup_contact_info
+      signup_state: new_signup_state
     ).deliver_later
 
-    outputs.signup_contact_info = new_signup_contact_info
+    outputs.signup_state = new_signup_state
   end
 
   def email
@@ -54,7 +58,7 @@ class SignupStart
     ContactInfo.verified.where(value: email).any?
   end
 
-  def existing_signup_contact_info
-    options[:existing_signup_contact_info]
+  def existing_signup_state
+    options[:existing_signup_state]
   end
 end

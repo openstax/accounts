@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
 
   include RequireRecentSignin
 
-  skip_before_filter :authenticate_user!, :expired_password,
+  skip_before_filter :authenticate_user!, :check_if_password_expired,
                      only: [:new, :lookup_login, :authenticate,
                             :create, :failure, :destroy, :email_usernames]
 
@@ -74,8 +74,7 @@ class SessionsController < ApplicationController
     handle_with(
       SessionsCreate,
       user_state: self,
-      signup_contact_info: signup_contact_info,
-      signup_role: signup_role,
+      signup_state: signup_state,
       login_providers: get_login_state[:providers],
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]

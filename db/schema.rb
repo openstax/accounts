@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161201014148) do
+ActiveRecord::Schema.define(version: 20161205215339) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -229,15 +229,17 @@ ActiveRecord::Schema.define(version: 20161201014148) do
     t.datetime "updated_at"
   end
 
-  create_table "signup_contact_infos", force: :cascade do |t|
-    t.integer  "kind",                 :default=>0, :null=>false, :index=>{:name=>"index_signup_contact_infos_on_kind"}
-    t.string   "value",                :null=>false
+  create_table "signup_states", force: :cascade do |t|
+    t.integer  "contact_info_kind",    :default=>0, :null=>false, :index=>{:name=>"index_signup_states_on_contact_info_kind"}
+    t.string   "contact_info_value",   :null=>false
     t.boolean  "verified",             :default=>false
     t.string   "confirmation_code"
     t.string   "confirmation_pin"
     t.datetime "confirmation_sent_at"
     t.datetime "created_at",           :null=>false
     t.datetime "updated_at",           :null=>false
+    t.string   "role",                 :null=>false
+    t.text     "return_to"
   end
 
   create_table "users", force: :cascade do |t|

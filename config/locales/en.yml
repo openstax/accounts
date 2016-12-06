@@ -23,8 +23,8 @@ en:
         school: This field
   activerecord:
     attributes:
-      signup_contact_info:
-        value: Email address
+      signup_state:
+        contact_info_value: Email address
 
   controllers:
     authentications:

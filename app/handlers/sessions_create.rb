@@ -31,6 +31,7 @@ class SessionsCreate
   uses_routine TransferAuthentications
   uses_routine TransferOmniauthData
   uses_routine ActivateUnclaimedUser
+  uses_routine TransferSignupState
 
   protected
 
@@ -101,13 +102,10 @@ class SessionsCreate
         run(TransferOmniauthData, @data, receiving_user)
         status = :new_social_user
       end
-
-      receiving_user.role = options[:signup_role]
-      receiving_user.save!
     end
 
-    run(TransferSignupContactInfo,
-        signup_contact_info: options[:signup_contact_info],
+    run(TransferSignupState,
+        signup_state: options[:signup_state],
         user: receiving_user)
 
     run(TransferAuthentications, authentication, receiving_user)
@@ -206,7 +204,7 @@ class SessionsCreate
   end
 
   def signing_up?
-    options[:signup_contact_info].present?
+    options[:signup_state].present?
   end
 
   def logging_in?

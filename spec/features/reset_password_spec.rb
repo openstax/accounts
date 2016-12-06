@@ -81,7 +81,6 @@ feature 'User resets password', js: true do
       end
 
       scenario 'successful' do
-        # debugger
         visit start_path(type: type, token: @login_token)
         expect(page).to have_no_missing_translations
         fill_in (t :"identities.password"), with: '1234abcd'
@@ -99,7 +98,7 @@ feature 'User resets password', js: true do
         complete_login_username_or_email_screen 'user'
         complete_login_password_screen 'password'
         expect(page).to have_content(t :"controllers.sessions.incorrect_password")
-# debugger
+
         # try logging in with the new password
         complete_login_password_screen '1234abcd'
 
@@ -144,14 +143,5 @@ feature 'User resets password', js: true do
       token.present? ? password_add_path(token: token) : password_add_path
     end
   end
-
-  # def expect_page(type:, token: nil)
-  #   case type
-  #   when :reset
-  #     token.present? ? password_reset_path(token: token) : password_reset_path
-  #   when :add
-  #     token.present? ? password_add_path(token: token) : password_add_path
-  #   end
-  # end
 
 end

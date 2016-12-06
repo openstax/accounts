@@ -12,8 +12,6 @@ class SignupPassword
   uses_routine CreateIdentity,
                translations: { inputs:  {scope: :signup},
                                outputs: {type: :verbatim}  }
-  uses_routine TransferSignupContactInfo,
-               translations: { inputs: {scope: :signup} }
 
   protected
 
