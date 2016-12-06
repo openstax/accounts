@@ -55,6 +55,7 @@ module UserSessionManagement
   alias_method :admin_authentication!, :authenticate_admin!
 
   def set_login_state(username_or_email: nil, matching_user_ids: nil, names: nil, providers: nil)
+    clear_signup_state
     session[:login] = {
       'u' => username_or_email,
       'm' => matching_user_ids,
@@ -79,6 +80,7 @@ module UserSessionManagement
   end
 
   def save_signup_state(signup_state)
+    clear_login_state
     # There may be an old signup state object around, check for that
     clear_signup_state if signup_state.id != session[:signup]
     session[:signup] = signup_state.id

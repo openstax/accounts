@@ -16,7 +16,7 @@ ActionController::Base.class_exec do
 
   before_filter :authenticate_user!
   before_filter :complete_signup_profile
-  before_filter :expired_password
+  before_filter :check_if_password_expired
   before_filter :set_locale
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
@@ -54,7 +54,7 @@ ActionController::Base.class_exec do
     redirect_to signup_profile_path if current_user.is_needs_profile?
   end
 
-  def expired_password  # TODO rename as action, e.g. `check_if_password_expired`
+  def check_if_password_expired
     return true if request.format != :html
 
     identity = current_user.identity

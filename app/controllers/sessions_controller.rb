@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
 
   include RequireRecentSignin
 
-  skip_before_filter :authenticate_user!, :expired_password,
+  skip_before_filter :authenticate_user!, :check_if_password_expired,
                      only: [:new, :lookup_login, :authenticate,
                             :create, :failure, :destroy, :email_usernames]
 
@@ -34,7 +34,6 @@ class SessionsController < ApplicationController
   end
 
   def lookup_login
-    clear_signup_state # TODO move into success block?
     handle_with(SessionsLookupLogin,
                 success: lambda do
                   set_login_state(username_or_email: @handler_result.outputs.username_or_email,

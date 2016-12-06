@@ -11,8 +11,8 @@ class SignupController < ApplicationController
 
   before_filter :check_ready_for_profile, only: [:profile]
 
-  # TODO spec this and maybe make more specific to what each action needs (including :profile, which needs role)
-  before_filter :restart_if_missing_info, only: [:verify_email, :password, :social]
+  # TODO spec this
+  before_filter :restart_if_missing_signup_state, only: [:verify_email, :password, :social]
 
   # TODO spec this
   before_filter :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
@@ -27,7 +27,7 @@ class SignupController < ApplicationController
                   existing_signup_state: signup_state,
                   return_to: session[:return_to],
                   success: lambda do
-                    save_signup_state(@handler_result.outputs.signup_state) # TODO clean login_state  (maybe do this in the save_ methods!!)
+                    save_signup_state(@handler_result.outputs.signup_state)
                     redirect_to action: :verify_email
                   end,
                   failure: lambda do
@@ -40,7 +40,7 @@ class SignupController < ApplicationController
     end
   end
 
-  def verify_email  # TODO maybe rename just `verify`
+  def verify_email
     if request.post?
       handle_with(SignupVerifyEmail,
                   signup_state: signup_state,
@@ -59,15 +59,15 @@ class SignupController < ApplicationController
   def verify_by_token
     handle_with(SignupVerifyByToken,
                 success: lambda do
-                  @handler_result.outputs.contact_info.tap do |state|
-                    # debugger
+                  @handler_result.outputs.signup_state.tap do |state|
                     session[:return_to] = state.return_to
                     save_signup_state(state)
                   end
                   redirect_to action: :password
                 end,
                 failure: lambda do
-                  raise "not yet implemented"
+                  # TODO spec this and set an error message
+                  redirect_to action: :start
                 end)
   end
 
@@ -129,7 +129,7 @@ class SignupController < ApplicationController
     raise SecurityTransgression
   end
 
-  def restart_if_missing_info
+  def restart_if_missing_signup_state
     redirect_to signup_path if signup_state.nil?
   end
 
@@ -148,8 +148,8 @@ class SignupController < ApplicationController
   end
 
   def exit_signup_if_logged_in
-    # TODO add a flash[:alert] like "You have already signed up"
-    redirect_to root_path if signed_in?
+    # TODO i18n
+    redirect_to(root_path, notice: "You have already signed up") if signed_in?
   end
 
 end
