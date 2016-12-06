@@ -78,27 +78,29 @@ module UserSessionManagement
     session.delete(:login)
   end
 
-  def save_signup_state(role:, signup_contact_info_id:)
-    session[:signup] = {
-      'r' => role,
-      'c' => signup_contact_info_id
-    }
+  def save_signup_state(signup_state)
+    # There may be an old signup state object around, check for that
+    clear_signup_state if signup_state.id != session[:signup]
+    session[:signup] = signup_state.id
   end
 
   def clear_signup_state
+    signup_state.try(:destroy)
+    @signup_state = nil
     session.delete(:signup)
   end
 
-  def signup_role
-    session[:signup].try(:[], 'r')
+  def signup_state
+    id = session[:signup].to_i rescue nil
+    @signup_state ||= SignupState.find_by(id: id)
   end
 
-  def signup_contact_info
-    @signup_contact_info ||= SignupContactInfo.find_by(id: session[:signup].try(:[],'c'))
+  def signup_role
+    signup_state.try(:role)
   end
 
   def signup_email
-    @signup_email ||= signup_contact_info.try(:value)
+    signup_state.try(:contact_info_value)
   end
 
 end

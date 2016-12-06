@@ -34,6 +34,7 @@ class SessionsController < ApplicationController
   end
 
   def lookup_login
+    clear_signup_state # TODO move into success block?
     handle_with(SessionsLookupLogin,
                 success: lambda do
                   set_login_state(username_or_email: @handler_result.outputs.username_or_email,
@@ -74,8 +75,7 @@ class SessionsController < ApplicationController
     handle_with(
       SessionsCreate,
       user_state: self,
-      signup_contact_info: signup_contact_info,
-      signup_role: signup_role,
+      signup_state: signup_state,
       login_providers: get_login_state[:providers],
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]

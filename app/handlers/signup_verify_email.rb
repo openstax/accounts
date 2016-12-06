@@ -14,7 +14,7 @@ class SignupVerifyEmail
   end
 
   def handle
-    run(ConfirmByPin, contact_info: options[:signup_contact_info], pin: pin_params.pin)
+    run(ConfirmByPin, contact_info: options[:signup_state], pin: pin_params.pin)
   end
 
 end

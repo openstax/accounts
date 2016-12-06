@@ -5,7 +5,7 @@ describe SessionsCreate, type: :handler do
 
   let(:user_state) { MockUserState.new }
   let(:login_providers) { nil }
-  let(:signup_contact_info) { nil }
+  let(:signup_state) { nil }
 
   context "logging in" do
     context "no user linked to oauth response" do
@@ -59,8 +59,8 @@ describe SessionsCreate, type: :handler do
   context "signing up" do
     context "oauth response already directly linked to a user" do
       let(:authentication) { FactoryGirl.create(:authentication, provider: 'google_oauth2') }
-      let(:signup_contact_info) {
-        FactoryGirl.create(:signup_contact_info, value: "bob@bob.com", verified: true)
+      let(:signup_state) {
+        FactoryGirl.create(:signup_state, contact_info_value: "bob@bob.com", verified: true)
       }
       it "returns existing_user_signed_up_again status and transfers email" do
         result = handle(request: MockOmniauthRequest.new(authentication.provider, authentication.uid, {}))
@@ -71,8 +71,8 @@ describe SessionsCreate, type: :handler do
 
     context "oauth response already linked to user by email address" do
       let(:other_user_email) { FactoryGirl.create(:email_address, verified: true)}
-      let(:signup_contact_info) {
-        FactoryGirl.create(:signup_contact_info, value: "bob@bob.com", verified: true)
+      let(:signup_state) {
+        FactoryGirl.create(:signup_state, contact_info_value: "bob@bob.com", verified: true)
       }
 
       it "returns existing_user_signed_up_again status and transfers auth" do
@@ -81,15 +81,15 @@ describe SessionsCreate, type: :handler do
                                                            "some_uid",
                                                            {email: other_user_email.value}))
           expect(result.outputs.status).to eq :existing_user_signed_up_again
-          expect(SignupContactInfo.count).to eq 0
+          expect(SignupState.count).to eq 0
         }.to change{other_user_email.user.authentications.count}.by 1
       end
     end
 
     context "normal password sign up" do
       let(:identity) { FactoryGirl.create :identity }
-      let(:signup_contact_info) {
-        FactoryGirl.create(:signup_contact_info, value: "bob@bob.com", verified: true)
+      let(:signup_state) {
+        FactoryGirl.create(:signup_state, contact_info_value: "bob@bob.com", verified: true)
       }
 
       it "adds authentication, logs in user, returns new_password_user" do
@@ -102,13 +102,13 @@ describe SessionsCreate, type: :handler do
         expect(user.contact_infos.size).to eq 1
         expect(user.contact_infos.first.value).to eq "bob@bob.com"
         expect(user.contact_infos.first).to be_verified
-        expect(signup_contact_info).to be_destroyed
+        expect(signup_state).to be_destroyed
       end
     end
 
     context "normal social sign up" do
-      let(:signup_contact_info) {
-        FactoryGirl.create(:signup_contact_info, value: "bob@bob.com", verified: true)
+      let(:signup_state) {
+        FactoryGirl.create(:signup_state, contact_info_value: "bob@bob.com", verified: true)
       }
 
       it "adds authentication, logs in user, returns new_social_user" do
@@ -122,7 +122,7 @@ describe SessionsCreate, type: :handler do
         expect(user.contact_infos.size).to eq 1
         expect(user.contact_infos.first.value).to eq "bob@bob.com"
         expect(user.contact_infos.first).to be_verified
-        expect(signup_contact_info).to be_destroyed
+        expect(signup_state).to be_destroyed
       end
     end
   end
@@ -253,8 +253,7 @@ describe SessionsCreate, type: :handler do
   def handle(**args)
     described_class.handle(user_state: user_state,
                            login_providers: login_providers,
-                           signup_contact_info: signup_contact_info,
-                           signup_role: "instructor",
+                           signup_state: signup_state,
                            **args)
   end
 

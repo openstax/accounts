@@ -145,7 +145,7 @@ module OmniAuth
             SignupPassword.handle(
               params: request,
               caller: current_user,
-              signup_contact_info: signup_contact_info
+              signup_state: signup_state
             )
 
           env['errors'] = @handler_result.errors

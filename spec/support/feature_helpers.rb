@@ -230,6 +230,10 @@ def expect_signup_verify_screen
   expect(page).to have_content(t :'signup.verify_email.page_heading_pin')
 end
 
+def expect_signup_password_screen
+  expect(page).to have_content(t :"signup.password.page_heading")
+end
+
 def expect_signup_profile_screen
   fill_in 'profile_first_name', with: ''
   expect(page).to have_content(t :"signup.profile.page_heading")
@@ -277,13 +281,13 @@ end
 
 def complete_signup_verify_screen(pin: nil, pass: nil)
   tries = 0
-  while (tries+=1) < 100 && (sci = SignupContactInfo.find_by(value: @signup_email)).nil? do
+  while (tries+=1) < 100 && (ss = SignupState.find_by(contact_info_value: @signup_email)).nil? do
     sleep(0.1) # transaction from earlier step may not have committed
   end
-  fail("unable to find email #{@signup_email}.  Did creation step fail silently?") if sci.nil?
+  fail("unable to find email #{@signup_email}.  Did creation step fail silently?") if ss.nil?
   if pin.nil?
     raise "Must set either `pin` or `pass`" if pass.nil?
-    pin = sci.confirmation_pin
+    pin = ss.confirmation_pin
     pin[0] = (9-pin[0].to_i).to_s if !pass
   end
   fill_in (t :"signup.verify_email.pin"), with: pin

@@ -43,7 +43,7 @@ feature 'User signs up', js: true do
     )
 
     expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
-    expect(SignupContactInfo.count).to eq 0
+    expect(SignupState.count).to eq 0
 
     screenshot!
     complete_instructor_access_pending_screen
@@ -65,7 +65,7 @@ feature 'User signs up', js: true do
     complete_signup_profile_screen_with_whatever
 
     expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
-    expect(SignupContactInfo.count).to eq 0
+    expect(SignupState.count).to eq 0
 
     complete_instructor_access_pending_screen
 
@@ -384,7 +384,7 @@ feature 'User signs up', js: true do
       end
 
       expect(existing_user.contact_infos.verified.map(&:value)).to include("bob@bob.edu")
-      expect(SignupContactInfo.count).to eq 0
+      expect(SignupState.count).to eq 0
 
       expect_back_at_app
     end
@@ -410,7 +410,7 @@ feature 'User signs up', js: true do
 
       expect(existing_user.authentications.count).to eq 2
 
-      expect(SignupContactInfo.count).to eq 0
+      expect(SignupState.count).to eq 0
 
       expect_back_at_app
     end
@@ -440,7 +440,7 @@ feature 'User signs up', js: true do
     scenario 'to profile screen' do
       visit '/signup/profile'
       expect(page).to have_content("You are not allowed")
-      expect(SignupContactInfo.count).to eq 0
+      expect(SignupState.count).to eq 0
       expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 0
     end
 
@@ -449,7 +449,7 @@ feature 'User signs up', js: true do
       log_in('otheruser', 'password')
       visit '/signup/profile'
       expect(page).to have_content("You are not allowed")
-      expect(SignupContactInfo.count).to eq 0
+      expect(SignupState.count).to eq 0
       expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 0
     end
   end
@@ -477,28 +477,91 @@ feature 'User signs up', js: true do
   end
 
   scenario "user needs_profile and logs in from different browser" do
-    arrive_from_app
-    click_sign_up
-    complete_signup_email_screen("Instructor","bob@bob.edu")
-    complete_signup_verify_screen(pass: true)
-    complete_signup_password_screen('password')
-    expect_signup_profile_screen
+    Capybara.using_session("browser_1") do
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      complete_signup_verify_screen(pass: true)
+      complete_signup_password_screen('password')
+      expect_signup_profile_screen
+    end
 
-    # simulate different browser by logging out
-    log_out
-    arrive_from_app
+    Capybara.using_session("browser_2") do
+      arrive_from_app
 
-    # TODO actually test that the signup_state has been cleared
+      complete_login_username_or_email_screen("bob@bob.edu")
+      complete_login_password_screen('password')
 
-    complete_login_username_or_email_screen("bob@bob.edu")
-    complete_login_password_screen('password')
+      expect_signup_profile_screen
 
-    expect_signup_profile_screen
-
-    complete_signup_profile_screen_with_whatever(role: :instructor)
-    complete_instructor_access_pending_screen
-    expect_back_at_app
+      complete_signup_profile_screen_with_whatever(role: :instructor)
+      complete_instructor_access_pending_screen
+      expect_back_at_app
+    end
   end
 
+  scenario "user clicks confirmation link in different browser" do
+    confirm_link_path = nil
+
+    Capybara.using_session("browser_1") do
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+
+      open_email("bob@bob.edu")
+      confirm_link_path = get_path_from_absolute_link(current_email, 'a')
+    end
+
+    Capybara.using_session("browser_2") do
+      visit confirm_link_path
+      expect_signup_password_screen
+      complete_signup_password_screen('password')
+      complete_signup_profile_screen_with_whatever(role: :instructor)
+      complete_instructor_access_pending_screen
+      expect_back_at_app
+    end
+  end
+
+  scenario "user starts signup in browser 1, again in browser 2, clicks browser 2 confirm link in browser 1" do
+    Capybara.using_session("browser_1") do
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu")
+      clear_emails
+
+      confirm_link_path = nil
+
+      Capybara.using_session("browser_2") do
+        arrive_from_app
+        click_sign_up
+        complete_signup_email_screen("Instructor","bob@bob.edu")
+
+        open_email("bob@bob.edu")
+        confirm_link_path = get_path_from_absolute_link(current_email, 'a')
+      end
+
+      visit confirm_link_path
+
+      # this didn't work before b/c needed info was in session of browser_2
+      expect_signup_password_screen
+
+      # This happens if user clicks link twice - should be ok - wasn't because
+      # confirmation code was cleared and we got a 500
+      visit confirm_link_path
+
+      expect(page.status_code).not_to eq 500
+      expect(page.body).not_to have_content("Sorry")
+
+      complete_signup_password_screen('password')
+      complete_signup_profile_screen_with_whatever(role: :instructor)
+      complete_instructor_access_pending_screen
+
+      expect_back_at_app
+    end
+  end
+
+  scenario "user clicks confirm link twice" do
+
+  end
 
 end

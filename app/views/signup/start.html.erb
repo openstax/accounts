@@ -1,4 +1,3 @@
-<% @hide_session_info = true %>
 <% content_for :head do %>
   <%= javascript_include_tag  "signup" %>
 <% end %>
@@ -26,7 +25,7 @@ signup_roles = {
     <%# TODO put select in form helper %>
 
     <%= f.select :role, options_for_select(signup_roles.invert.to_a,
-        selected: signup_role || 'initial', disabled: "initial", hidden: "initial" ) %>
+        selected: @role || 'initial', disabled: "initial", hidden: "initial" ) %>
 
     <div class="email-input-group card-body">
       <div class="audience-help" data-audience="instructor">

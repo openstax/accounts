@@ -12,7 +12,7 @@ class SignupController < ApplicationController
   before_filter :check_ready_for_profile, only: [:profile]
 
   # TODO spec this and maybe make more specific to what each action needs (including :profile, which needs role)
-  before_filter :restart_if_missing_info, only: [:verify_email, :password, :social, :verify_by_token]
+  before_filter :restart_if_missing_info, only: [:verify_email, :password, :social]
 
   # TODO spec this
   before_filter :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
@@ -24,17 +24,15 @@ class SignupController < ApplicationController
   def start
     if request.post?
       handle_with(SignupStart,
-                  existing_signup_contact_info: signup_contact_info,
+                  existing_signup_state: signup_state,
+                  return_to: session[:return_to],
                   success: lambda do
-                      save_signup_state(
-                        role: @handler_result.outputs.role,
-                        signup_contact_info_id: @handler_result.outputs.signup_contact_info.id
-                      )
-                      redirect_to action: :verify_email
+                    save_signup_state(@handler_result.outputs.signup_state) # TODO clean login_state  (maybe do this in the save_ methods!!)
+                    redirect_to action: :verify_email
                   end,
                   failure: lambda do
-                    save_signup_state(role: params[:signup][:role], signup_contact_info_id: nil)
-                    @handler_result.errors.each do | error |
+                    @role = params[:signup][:role]
+                    @handler_result.errors.each do | error |   # TODO move to view?
                       error.message = I18n.t("signup.start.#{error.code}", signin_url: signin_url)
                     end
                     render :start
@@ -45,12 +43,12 @@ class SignupController < ApplicationController
   def verify_email  # TODO maybe rename just `verify`
     if request.post?
       handle_with(SignupVerifyEmail,
-                  signup_contact_info: signup_contact_info,
+                  signup_state: signup_state,
                   success: lambda do
                     redirect_to action: :password
                   end,
                   failure: lambda do
-                    @handler_result.errors.each do | error |
+                    @handler_result.errors.each do | error |  # TODO move to view?
                       error.message = I18n.t("signup.verify_email.#{error.code}")
                     end
                     render :verify_email
@@ -61,6 +59,11 @@ class SignupController < ApplicationController
   def verify_by_token
     handle_with(SignupVerifyByToken,
                 success: lambda do
+                  @handler_result.outputs.contact_info.tap do |state|
+                    # debugger
+                    session[:return_to] = state.return_to
+                    save_signup_state(state)
+                  end
                   redirect_to action: :password
                 end,
                 failure: lambda do
@@ -73,10 +76,10 @@ class SignupController < ApplicationController
 
   def profile
     if request.post?
-      handler = case signup_role
-      when /student/i
+      handler = case current_user.role
+      when "student"
         SignupProfileStudent
-      when /instructor/i
+      when "instructor"
         SignupProfileInstructor
       else
         SignupProfileOther
@@ -87,10 +90,9 @@ class SignupController < ApplicationController
                     client_id: request['client_id'] || session['client_id']
                   ),
                   success: lambda do
-                    is_student = signup_role == "student"
                     clear_signup_state
 
-                    if is_student
+                    if current_user.student?
                       redirect_back
                     else
                       redirect_to action: :instructor_access_pending
@@ -123,19 +125,18 @@ class SignupController < ApplicationController
   end
 
   def fail_signup
-    signup_contact_info.try(:destroy)
     clear_signup_state
     raise SecurityTransgression
   end
 
   def restart_if_missing_info
-    redirect_to signup_path if signup_contact_info.nil? || signup_role.nil?
+    redirect_to signup_path if signup_state.nil?
   end
 
   def check_ready_for_password_or_social
-    if signup_contact_info.nil?
+    if signup_state.nil?
       redirect_to action: :start
-    elsif !signup_contact_info.verified?
+    elsif !signup_state.verified?
       redirect_to action: :verify_email
     else
       true
