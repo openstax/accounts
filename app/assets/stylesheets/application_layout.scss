@@ -11,6 +11,7 @@ body {
   margin-top:       0px;
   background: image_url('home-bg.jpg') no-repeat center center fixed;
   background-size: cover;
+  margin-bottom: $application_footer_height + 20px;
 }
 
 body, p, ol, ul, td, a {
@@ -98,7 +99,7 @@ body, p, ol, ul, td, a {
 }
 
 #application-body {
-  margin-bottom: $application_footer_height + 20px;
+  margin-bottom: 0;
 }
 
 #application-footer {
