@@ -12,6 +12,9 @@ module UserSessionManagement
   def sign_in!(user, options={})
     options[:security_log_data] ||= {}
 
+    session[:client_id] = nil
+    session[:alt_signup] = nil
+
     clear_login_state
     @current_user = user || AnonymousUser.instance
 
@@ -41,7 +44,7 @@ module UserSessionManagement
     return if signed_in?
 
     store_url
-    redirect_to main_app.login_path(params.slice(:client_id))
+    redirect_to main_app.login_path(params.slice(:client_id, :signup_at))
   end
 
   def authenticate_admin!
@@ -103,6 +106,45 @@ module UserSessionManagement
 
   def signup_email
     signup_state.try(:contact_info_value)
+  end
+
+  def set_client_app(client_id)
+    @client_app = client_id.nil? ?
+                    nil :
+                    Doorkeeper::Application.find_by(uid: client_id)
+    session[:client_app] = @client_app.present? ? @client_app.id : nil
+  end
+
+  def get_client_app
+    @client_app ||= session[:client_app].nil? ?
+                      nil :
+                      Doorkeeper::Application.find_by(id: session[:client_app])
+  end
+
+  def set_alternate_signup_url(url)
+    if url.blank?
+      session[:alt_signup] = nil
+    elsif !url.is_a?(String)
+      raise IllegalArgument
+    elsif is_redirect_url?(application: get_client_app, url: url)
+      session[:alt_signup] = url
+    else
+      session[:alt_signup] = nil
+
+      message = "Alternate signup URL (#{url}) is not a redirect_uri " \
+                "for client app #{get_client_app.try(:uid)}"
+      Rails.logger.warn(message)
+
+      if Rails.env.production?
+        DevMailer.inspect_object(object: message, subject: message).deliver_later
+      else
+        raise message
+      end
+    end
+  end
+
+  def get_alternate_signup_url
+    session[:alt_signup]
   end
 
 end

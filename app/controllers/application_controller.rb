@@ -29,4 +29,10 @@ class ApplicationController < ActionController::Base
     @errors.add(false, offending_inputs: on, code: code, message: message)
   end
 
+  def is_redirect_url?(application:, url:)
+    return false if application.nil? || url.nil?
+    # Let doorkeeper do the work of checking the URL against the app's redirect_uris
+    Doorkeeper::OAuth::Helpers::URIChecker.valid_for_authorization?(url, application.redirect_uri)
+  end
+
 end
