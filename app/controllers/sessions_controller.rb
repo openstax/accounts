@@ -12,26 +12,19 @@ class SessionsController < ApplicationController
 
   skip_before_filter :complete_signup_profile, only: [:destroy]
 
-  before_filter :get_authorization_url, only: [:new, :create]
+  before_filter :save_new_params_in_session, only: [:new]
+  before_filter :store_authorization_url_as_fallback, only: [:new, :create]
+
+  # If the user arrives to :new already logged in, this means they got linked to
+  # the login page somehow; attempt to redirect to the authorization url stored
+  # earlier
+  before_filter :redirect_back, if: -> { signed_in? }, only: :new
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :redirect_back, :email_usernames]
 
   # Login form
-  def new
-    # If no url to redirect back to, store the fallback url
-    # (the authorization url or the referer)
-    # Handles the case where the user got sent straight to the login page
-    options = @authorization_url.nil? ? {} : { url: @authorization_url }
-    store_fallback(options)
-
-    # If the user is already logged in, this means they got linked to the login page somehow
-    # Attempt to redirect to the fallback url stored above
-    redirect_back if signed_in? && !params[:required]
-
-    session[:client_id] = params[:client_id]
-    @application = Doorkeeper::Application.where(uid: params[:client_id]).first
-  end
+  def new; end
 
   def lookup_login
     handle_with(SessionsLookupLogin,
@@ -64,13 +57,6 @@ class SessionsController < ApplicationController
   # Handle OAuth callback (actual login)
   # May add authentication method (OAuth provider) to account
   def create
-    # If we have a client_id but no url to redirect back to,
-    # store the fallback url (the authorization page)
-    # However, do not store the referrer if the client_id is not present
-    # The referrer in this case is most likely the login page
-    # and we don't want to send users back there
-    store_fallback(url: @authorization_url) unless @authorization_url.nil?
-
     handle_with(
       SessionsCreate,
       user_state: self,
@@ -133,7 +119,6 @@ class SessionsController < ApplicationController
       url = iframe_after_logout_url(parent: params[:parent])
     end
     session[ActionInterceptor.config.default_key] = nil
-    session[:client_id] = nil
 
     sign_out!
 
@@ -203,15 +188,28 @@ class SessionsController < ApplicationController
 
   protected
 
-  def get_authorization_url
-    client_id = params[:client_id] || session[:client_id]
-    client_app = Doorkeeper::Application.where(uid: client_id).first
+  def store_authorization_url_as_fallback
+    # In case we need to redirect_back, but don't have something to redirect back
+    # to (e.g. no authorization url or referrer), form and store as the fallback
+    # an authorization URL.  Handles the case where the user got sent straight to
+    # the login page.  Only works if we have know the client app.
+
+    client_app = get_client_app
     return if client_app.nil?
 
     redirect_uri = client_app.redirect_uri.lines.first.chomp
-    @authorization_url = oauth_authorization_url(client_id: client_id,
-                                                 redirect_uri: redirect_uri,
-                                                 response_type: 'code')
+    authorization_url = oauth_authorization_url(client_id: client_app.uid,
+                                                redirect_uri: redirect_uri,
+                                                response_type: 'code')
+
+    store_fallback(url: authorization_url) unless authorization_url.nil?
+  end
+
+  def save_new_params_in_session
+    # Store these params in the session so they are available if the lookup_login
+    # fails.  Also these methods perform checks on the alternate signup URL.
+    set_client_app(params[:client_id])
+    set_alternate_signup_url(params[:signup_at])
   end
 
 end

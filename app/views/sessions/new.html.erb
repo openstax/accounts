@@ -33,7 +33,7 @@
         <input type="submit" value="<%= t '.next' %>" class="primary" />
         <p class="extra-info">
           <%= t '.no_account_q' %>
-          <%= link_to(t('.sign_up'), signup_path) %>.
+          <%= link_to(t('.sign_up'), get_alternate_signup_url || signup_path) %>.
         </p>
       </section>
   <% end %>

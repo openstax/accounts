@@ -5,6 +5,8 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
+    # JP doesn't think this is ever getting called because ActionController::Base has a
+    # before_filter :authenticate_user!
     authenticate_user!
     current_user
   end
