@@ -35,7 +35,7 @@ describe IdentitiesController, type: :controller do
         end
 
         it 'errors if the login token is expired' do
-          user.reset_login_token(expiration_period: -1.year)
+          user.refresh_login_token(expiration_period: -1.year)
           user.save!
           get :reset, token: user.login_token
           expect(response.code).to eq('400')

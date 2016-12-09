@@ -1,5 +1,7 @@
 class IdentitiesSendPasswordEmail
 
+  LOGIN_TOKEN_EXPIRES_AFTER = 2.days
+
   lev_handler
 
   protected
@@ -11,7 +13,7 @@ class IdentitiesSendPasswordEmail
   def handle
     fatal_error(code: :user_missing) if user.nil?
 
-    user.reset_login_token
+    user.refresh_login_token(expiration_period: LOGIN_TOKEN_EXPIRES_AFTER)
     user.save
     transfer_errors_from(user, {type: :verbatim}, true)
 

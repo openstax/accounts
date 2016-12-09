@@ -38,7 +38,7 @@ describe LogInByToken, type: :handler do
       end
 
       it 'if login_token is expired' do
-        user.reset_login_token(expiration_period: -1.year)
+        user.refresh_login_token(expiration_period: -1.year)
         user.save!
         @params = {token: user.login_token}
         expect(handle).to have_routine_error(:expired_login_token)
@@ -46,7 +46,7 @@ describe LogInByToken, type: :handler do
     end
 
     it 'logs in the user on success' do
-      user.reset_login_token
+      user.refresh_login_token
       user.save!
       @params = {token: user.login_token}
       expect(user_state).to receive(:sign_in!).with(user, {security_log_data: {type: 'token'}})

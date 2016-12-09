@@ -140,6 +140,37 @@ feature 'User resets password', js: true do
     end
   end
 
+  scenario 'reset password links stay constant for a fixed time' do
+    user = create_user 'user'
+    create_email_address_for user, 'user@example.com'
+
+    visit '/'
+    complete_login_username_or_email_screen('user@example.com')
+    click_link(t :"sessions.authenticate_options.reset_password")
+    open_email('user@example.com')
+    reset_link_path_1 = get_path_from_absolute_link(current_email, 'a')
+    clear_emails
+
+    visit '/'
+    complete_login_username_or_email_screen('user@example.com')
+    click_link(t :"sessions.authenticate_options.reset_password")
+    open_email('user@example.com')
+    reset_link_path_2 = get_path_from_absolute_link(current_email, 'a')
+    clear_emails
+
+    expect(reset_link_path_2).to eq reset_link_path_1
+
+    Timecop.freeze(Time.now + IdentitiesSendPasswordEmail::LOGIN_TOKEN_EXPIRES_AFTER) do
+      visit '/'
+      complete_login_username_or_email_screen('user@example.com')
+      click_link(t :"sessions.authenticate_options.reset_password")
+      open_email('user@example.com')
+      reset_link_path_3 = get_path_from_absolute_link(current_email, 'a')
+
+      expect(reset_link_path_3).not_to eq reset_link_path_1
+    end
+  end
+
   def expect_reset_password_page(code = @login_token)
     expect(page).to have_current_path password_reset_path(token: code)
     expect(page).to have_no_missing_translations
