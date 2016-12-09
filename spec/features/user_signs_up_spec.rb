@@ -133,6 +133,19 @@ feature 'User signs up', js: true do
       screenshot!
     end
 
+    scenario 'non-school warning clears other errors' do
+      create_email_address_for(create_user('otheruser'), "bob@bob.edu")
+      visit signup_path
+      select 'Instructor', from: "signup_role"
+      fill_in (t :"signup.start.email_placeholder"), with: "bob@bob.edu"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content 'Email already in use'
+      fill_in (t :"signup.start.email_placeholder"), with: "non@school.com"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content 'To access faculty-only materials'
+      expect(page).not_to have_content 'Email already in use'
+    end
+
     scenario 'failure because email blank' do
       visit signup_path
       select 'Instructor', from: "signup_role"
@@ -364,6 +377,31 @@ feature 'User signs up', js: true do
       screenshot!
       expect(page).to have_content("can't be blank", count: 5)
     end
+  end
+
+  scenario "email already in use doesn't revert to previous error email" do
+    # This test revealed the need to clear the signup state when the start
+    # action is posted to (in the case that the post fails, we don't set
+    # a new signup state and the form renders with whatever the old signup
+    # state was)
+
+    create_email_address_for(create_user('otheruser'), "bob@bob.edu")
+    arrive_from_app
+    click_sign_up
+    complete_signup_email_screen("Instructor", "somebody@somewhere.com")
+
+    visit '/'
+    click_sign_up
+    expect(page).to have_content(t :"signup.start.page_heading")
+
+    select "Instructor", from: "signup_role"
+    wait_for_ajax
+    wait_for_animations
+    fill_in (t :"signup.start.email_placeholder"), with: "bob@bob.edu"
+
+    click_button(t :"signup.start.next")
+    expect(page).to have_content 'Email already in use'
+    expect(page).to have_xpath("//input[@value='bob@bob.edu']")
   end
 
   context "user tries to make a duplicate account" do

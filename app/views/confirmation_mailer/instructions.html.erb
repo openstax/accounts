@@ -13,6 +13,10 @@
 <% end %>
 
 
-<p><%= confirm_url(code: @email_address.confirmation_code) %></p>
+<%
+  token_url = confirm_url(code: @email_address.confirmation_code)
+%>
+
+<p><%= link_to token_url, token_url %></p>
 
 <%= render :partial => 'shared/email_closing' %>

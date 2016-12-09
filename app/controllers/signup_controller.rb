@@ -23,6 +23,7 @@ class SignupController < ApplicationController
 
   def start
     if request.post?
+      clear_signup_state # start fresh
       handle_with(SignupStart,
                   existing_signup_state: signup_state,
                   return_to: session[:return_to],

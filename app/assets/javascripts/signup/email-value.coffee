@@ -20,6 +20,7 @@ class OX.Signup.EmailValue
     if @userType is 'instructor' and not ((@email.val() == '') or @showing_warning or IS_EDU.test(@email.val()))
       @showing_warning = true
       @group.addClass('has-error')
+      @group.find(".errors").empty()
       @group.find(".edu.warning").show()
       @email.focus()
       ev.preventDefault()

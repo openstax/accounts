@@ -40,12 +40,12 @@ class ContactInfo < ActiveRecord::Base
     user.add_unread_update
   end
 
-  def reset_confirmation_pin!
-    self.confirmation_pin = TokenMaker.contact_info_confirmation_pin
+  def init_confirmation_pin!
+    self.confirmation_pin ||= TokenMaker.contact_info_confirmation_pin
   end
 
-  def reset_confirmation_code!
-    self.confirmation_code = TokenMaker.contact_info_confirmation_code
+  def init_confirmation_code!
+    self.confirmation_code ||= TokenMaker.contact_info_confirmation_code
   end
 
   protected

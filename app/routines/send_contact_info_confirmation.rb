@@ -7,8 +7,8 @@ class SendContactInfoConfirmation
   def exec(contact_info:, send_pin: false)
     return if contact_info.verified
 
-    contact_info.reset_confirmation_pin! if send_pin
-    contact_info.reset_confirmation_code!
+    contact_info.init_confirmation_pin! if send_pin
+    contact_info.init_confirmation_code!
     contact_info.save
     transfer_errors_from(contact_info, {type: :verbatim}, true)
 

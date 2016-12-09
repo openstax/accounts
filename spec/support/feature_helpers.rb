@@ -94,8 +94,16 @@ def link_in_last_email
 end
 
 def create_application
-  @app = FactoryGirl.create(:doorkeeper_application, :trusted,
-                            redirect_uri: 'https://www.example.com/callback')
+  @app = FactoryGirl.create(:doorkeeper_application, :trusted)
+
+  # We want to provide a local "external" redirect uri so our specs aren't actually
+  # making HTTP calls against real external URLs like "example.com"
+  server = Capybara.current_session.try(:server)
+  redirect_uri = server.present? ?
+                 "http://#{server.host}:#{server.port}/#{external_app_for_specs_path}" :
+                 external_app_for_specs_url
+  @app.update_column(:redirect_uri, redirect_uri)
+
   FactoryGirl.create(:doorkeeper_access_token,
                      application: @app, resource_owner_id: nil)
   @app
@@ -263,6 +271,7 @@ end
 
 def complete_signup_email_screen(role, email, options={})
   options[:screenshot_after_role] ||= false
+  options[:only_one_next] ||= false
 
   @signup_email = email
   expect(page).to have_content(t :"signup.start.page_heading")
@@ -274,9 +283,16 @@ def complete_signup_email_screen(role, email, options={})
   fill_in (t :"signup.start.email_placeholder"), with: email
   expect(page).to have_no_missing_translations
   click_button(t :"signup.start.next")
-  click_button(t :"signup.start.next") unless (email =~ /\.edu$/) || role.match(/student/i)
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"signup.verify_email.page_heading_pin")
+
+  expecting_institutional_email_warning = !(email =~ /\.edu$/) && !role.match(/student/i)
+
+  click_button(t :"signup.start.next") unless !expecting_institutional_email_warning ||
+                                              options[:only_one_next]
+
+  if !(options[:only_one_next] && expecting_institutional_email_warning)
+    expect(page).to have_no_missing_translations
+    expect(page).to have_content(t :"signup.verify_email.page_heading_pin")
+  end
 end
 
 def complete_signup_verify_screen(pin: nil, pass: nil)
