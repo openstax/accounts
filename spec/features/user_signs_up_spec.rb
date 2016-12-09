@@ -133,6 +133,19 @@ feature 'User signs up', js: true do
       screenshot!
     end
 
+    scenario 'non-school warning clears other errors' do
+      create_email_address_for(create_user('otheruser'), "bob@bob.edu")
+      visit signup_path
+      select 'Instructor', from: "signup_role"
+      fill_in (t :"signup.start.email_placeholder"), with: "bob@bob.edu"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content 'Email already in use'
+      fill_in (t :"signup.start.email_placeholder"), with: "non@school.com"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content 'To access faculty-only materials'
+      expect(page).not_to have_content 'Email already in use'
+    end
+
     scenario 'failure because email blank' do
       visit signup_path
       select 'Instructor', from: "signup_role"
