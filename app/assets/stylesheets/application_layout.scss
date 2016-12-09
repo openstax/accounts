@@ -11,6 +11,7 @@ body {
   margin-top:       0px;
   background: image_url('home-bg.jpg') no-repeat center center fixed;
   background-size: cover;
+  margin-bottom: $application_footer_height + 20px;
 }
 
 body, p, ol, ul, td, a {
@@ -48,25 +49,19 @@ body, p, ol, ul, td, a {
 
   padding-left: $application_edge_distance * 1.5;
   padding-right: $application_edge_distance * 1.5;
-  // margin-top: 10px;
-
 
   #top-nav-logo  {
-
     height:     $image_height;
     width:      $image_width;
-    // margin: auto;
-
     $top_bottom_margin: ($application_top_nav_height - $image_height)/2;
     margin: $top_bottom_margin auto;
-      // margin-bottom: 10px;
 
     a {
       background: image-url("openstax-logo-white.svg") no-repeat transparent;
       background-position: center;
       display: block;
-          height:     $image_height;
-    width:      $image_width;
+      height:  $image_height;
+      width:   $image_width;
     }
   }
 
@@ -98,7 +93,7 @@ body, p, ol, ul, td, a {
 }
 
 #application-body {
-  margin-bottom: $application_footer_height + 20px;
+  margin-bottom: 0;
 }
 
 #application-footer {
