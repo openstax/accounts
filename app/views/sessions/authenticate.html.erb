@@ -5,6 +5,6 @@
 
 <%= ox_card(classes: "login", heading: (t :'.name_greeting', name: names.first)) do %>
 
-  <%= render partial: 'authenticate_options' %>
+  <%= render partial: 'authenticate_options', locals: {source: 'authenticate'} %>
 
 <% end %>

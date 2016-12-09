@@ -158,9 +158,13 @@ class SessionsController < ApplicationController
     when 'multiple_users'
       flash[:alert] = I18n.t :"controllers.sessions.several_accounts_for_one_email"
       render :new
-    when 'bad_password'
+    when 'bad_authenticate_password'
       field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
       render :authenticate
+    when'bad_reauthenticate_password'
+      field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
+      reauthenticate # load state needed for render
+      render :reauthenticate
     when 'too_many_login_attempts'
       flash[:alert] = I18n.t :"controllers.sessions.too_many_login_attempts.content",
                              reset_password: "<a href=\"#{password_send_reset_path}\">#{

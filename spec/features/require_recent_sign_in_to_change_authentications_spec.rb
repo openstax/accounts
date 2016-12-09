@@ -69,6 +69,28 @@ feature 'Require recent log in to change authentications', js: true do
     end
   end
 
+  scenario 'bad password on reauthentication' do
+    create_user 'user'
+    log_in('user', 'password')
+
+    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+      visit '/profile'
+      expect_profile_page
+
+      find('.authentication[data-provider="identity"] .edit').click
+
+      expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
+      complete_login_password_screen('wrongpassword')
+      screenshot!
+
+      expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
+      complete_login_password_screen('password')
+
+      complete_reset_password_screen
+      complete_reset_password_success_screen
+    end
+  end
+
   scenario 'removing an authentication' do
     with_forgery_protection do
       user = create_user 'user'
