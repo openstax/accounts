@@ -125,6 +125,21 @@ feature 'User resets password', js: true do
     expect(page).to have_current_path password_reset_path
   end
 
+  scenario 'reset from reauthenticate page sends email' do
+    user = create_user 'user'
+    create_email_address_for user, 'user@example.com'
+    log_in('user','password')
+
+    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+      find('[data-provider=identity] .edit').click
+      expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
+      click_link(t :"sessions.authenticate_options.reset_password")
+      expect(page).to have_content(t(:'identities.send_reset.we_sent_email', emails: 'user@example.com'))
+      open_email('user@example.com')
+      expect(current_email).to have_content('reset')
+    end
+  end
+
   def expect_reset_password_page(code = @login_token)
     expect(page).to have_current_path password_reset_path(token: code)
     expect(page).to have_no_missing_translations
