@@ -16,12 +16,12 @@ feature 'User manages emails', js: true do
     end
   }
 
-  before(:each) do
-    mock_current_user(user)
-    visit '/profile'
-  end
-
   context 'create' do
+    before(:each) do
+      mock_current_user(user)
+      visit '/profile'
+    end
+
     scenario 'success' do
       click_link(t :"users.edit.add_email_address")
       within(:css, '.email-entry.new') {
@@ -31,6 +31,25 @@ feature 'User manages emails', js: true do
       expect(page).to have_no_missing_translations
       expect(page).to have_button(t :"users.edit.click_to_verify")
       expect(page).to have_content('user@mysite.com')
+    end
+
+    scenario 'click to verify does not change token' do
+      click_link(t :"users.edit.add_email_address")
+      within(:css, '.email-entry.new') {
+        find('input').set('user@mysite.com')
+        find('.glyphicon-ok').click
+      }
+      wait_for_ajax
+      open_email('user@mysite.com')
+      original_link_path = get_path_from_absolute_link(current_email, 'a')
+
+      expect(page).to have_no_missing_translations
+      expect(page).to have_button(t :"users.edit.click_to_verify")
+      click_button(t :"users.edit.click_to_verify")
+
+      visit(original_link_path)
+
+      expect(page).to have_content(t :"contact_infos.confirm.page_heading.success")
     end
 
     scenario 'with empty value' do
@@ -50,12 +69,18 @@ feature 'User manages emails', js: true do
       }
       expect(page).to have_content('Value "user" is not a valid email address')
     end
+
   end
 
   # TODO screenshots all around
   # TODO spec to show can't add already-used email
 
   context 'destroy' do
+    before(:each) do
+      mock_current_user(user)
+      visit '/profile'
+    end
+
     context 'when there are two emails' do
       let(:verified_emails) { ['one@verified.com', 'two@verified.com']}
 
@@ -85,6 +110,11 @@ feature 'User manages emails', js: true do
   end
 
   context 'resend_confirmation' do
+    before(:each) do
+      mock_current_user(user)
+      visit '/profile'
+    end
+
     let(:verified_emails) { [] }
     let(:unverified_emails) { ['user@unverified.com'] }
 
@@ -94,5 +124,15 @@ feature 'User manages emails', js: true do
       expect(page).to have_content(t :"controllers.contact_infos.verification_sent", address: "user@unverified.com")
       expect(page).to have_button((t :"users.edit.click_to_verify"), disabled: true)
     end
+  end
+
+  scenario 'confirmation does not log user in' do
+    create_email_address_for(user, 'yoyo@yoyo.com', 'atoken')
+    visit '/profile'
+    expect_sign_in_page
+    visit(confirm_path(code: 'atoken'))
+    expect(page).to have_content(t :"contact_infos.confirm.page_heading.success")
+    visit('/profile')
+    expect_sign_in_page
   end
 end

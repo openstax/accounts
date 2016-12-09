@@ -21,6 +21,7 @@ class TermsController < ApplicationController
     # Prevent routing error email when accessing this route for HTML format
     respond_to do |format|
       format.js
+      format.html
     end
   end
 

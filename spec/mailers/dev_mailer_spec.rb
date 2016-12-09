@@ -21,6 +21,13 @@ describe DevMailer, type: :mailer do
         DevMailer.inspect_object object: nil, to: "bob@example.com", subject: "Howdy"
       }.not_to raise_error
     end
+
+    it 'does not explode without a to and uses a default' do
+      expect{
+        mail = (DevMailer.inspect_object object: nil, subject: "Howdy")
+        expect(mail.to).not_to be_empty
+      }.not_to raise_error
+    end
   end
 
 end

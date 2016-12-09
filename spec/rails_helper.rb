@@ -268,3 +268,12 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+
+class ExternalAppForSpecsController < ActionController::Base
+  skip_filter *_process_action_callbacks.map(&:filter)
+
+  def index
+    render plain: 'This is a fake external application'
+  end
+end

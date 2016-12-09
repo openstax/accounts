@@ -1,11 +1,12 @@
 <%# Copyright 2011-2016 Rice University. Licensed under the Affero General Public
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
-<%= page_heading (t :".page_heading") %>
+<%= ox_card(heading: (t :".page_heading")) do %>
 
-<% contract_links = @contracts.collect do |contract|
-     link_to contract.title, term_path(contract), remote: true
-   end %>
+  <% contract_links = @contracts.collect do |contract|
+       link_to contract.title, term_path(contract), remote: true
+     end %>
 
+  <p><%= t :".notice_html", site_name: SITE_NAME, terms_of_use: contract_links[0], privacy_policy: contract_links[1] %></p>
 
-<p><%= t :".notice_html", site_name: SITE_NAME, terms_of_use: contract_links[0], privacy_policy: contract_links[1] %></p>
+<% end %>

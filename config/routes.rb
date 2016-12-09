@@ -198,4 +198,8 @@ Rails.application.routes.draw do
     end
   end
 
+  if Rails.env.test?
+    get '/external_app_for_specs' => 'external_app_for_specs#index'
+  end
+
 end
