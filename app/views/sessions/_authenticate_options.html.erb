@@ -57,7 +57,7 @@
                                 error_field_classes: "alert alert-danger") %>
 
     <section>
-      <%= fh.text_field name: :password, type: :password  %>
+      <%= fh.text_field name: :password, type: :password, autofocus: true %>
       <%#= render(partial: "layouts/attention") %>
       <%= f.hidden_field :username_or_email, value: username_or_email %>
     </section>
