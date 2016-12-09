@@ -219,14 +219,14 @@ describe User, type: :model do
     end
 
     it 'can be reset without expiring' do
-      user.reset_login_token
+      user.refresh_login_token
       expect(user.login_token).not_to be_nil
       expect(user.login_token_expired?).to be_falsey
       expect(user.save).to be_truthy
     end
 
     it 'can be reset with an expiration' do
-      user.reset_login_token(expiration_period: 10.minutes)
+      user.refresh_login_token(expiration_period: 10.minutes)
       expect(user.login_token_expires_at).to be > Time.now
 
       expect(user.save).to be_truthy
@@ -239,7 +239,7 @@ describe User, type: :model do
     end
 
     it 'cannot be used twice' do
-      user.reset_login_token
+      user.refresh_login_token
       user.save
 
       user2 = FactoryGirl.create :user

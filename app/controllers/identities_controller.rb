@@ -35,9 +35,14 @@ class IdentitiesController < ApplicationController
   protected
 
   def send_password_email(kind:)
+    # Can be reached before logged in (can't remember password) or when logged
+    # in and asked to reauthenticate and can't remember password.
+
+    user = signed_in? ? current_user : User.find(get_login_state[:matching_user_ids].first)
+
     handle_with(IdentitiesSendPasswordEmail,
                 kind: kind,
-                user: User.find(get_login_state[:matching_user_ids].first),
+                user: user,
                 success: lambda do
                   security_log :help_requested
                 end,

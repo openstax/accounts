@@ -191,8 +191,11 @@ class User < ActiveRecord::Base
 
   # Login token
 
-  def reset_login_token(expiration_period: nil)
-    self.login_token = SecureRandom.hex(16)
+  def refresh_login_token(expiration_period: nil)
+    if login_token.blank? || login_token_expired? || expiration_period.try(:<,0)
+      self.login_token = SecureRandom.hex(16)
+    end
+
     self.login_token_expires_at = expiration_period.nil? ? nil : DateTime.now + expiration_period
   end
 

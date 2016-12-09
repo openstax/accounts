@@ -75,14 +75,14 @@ end
 
 def generate_login_token_for(username)
   user = User.find_by_username(username)
-  user.reset_login_token
+  user.refresh_login_token
   user.save!
   user.login_token
 end
 
 def generate_expired_login_token_for(username)
   user = User.find_by_username(username)
-  user.reset_login_token
+  user.refresh_login_token
   user.login_token_expires_at = 1.year.ago
   user.save!
   user.login_token
