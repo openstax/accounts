@@ -19,7 +19,7 @@
                                   context: self,
                                   errors: @handler_result.try(:errors)) %>
 
-      <%= fh.text_field name: :pin %>
+      <%= fh.text_field name: :pin, autofocus: true %>
       <%= render(partial: "layouts/attention") %>
       <section class="footer">
         <%= f.submit (t :".confirm"), class: 'primary' %>
