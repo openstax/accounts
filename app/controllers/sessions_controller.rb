@@ -102,6 +102,9 @@ class SessionsController < ApplicationController
         when :mismatched_authentication
           # TODO new security log entry
           redirect_to action: :authenticate, alert: "Mismatched login!" # TODO need feature spec!
+        when :email_already_in_use
+          redirect_to profile_path,
+                      alert: "That way to log in cannot be added because it is associated to an email address that is already in use!" # TODO i18n
         else
           Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}; " \
                              "status: #{@handler_result.outputs[:status]}"

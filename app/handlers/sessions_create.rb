@@ -126,6 +126,8 @@ class SessionsCreate
 
     return :new_signin_required if user_signin_is_too_old?
 
+    return :email_already_in_use if ContactInfo.verified.where(value: @data.email).any?
+
     run(TransferAuthentications, authentication, current_user)
     run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
     return :authentication_added
