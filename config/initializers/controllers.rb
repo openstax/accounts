@@ -15,8 +15,6 @@ ActionController::Base.class_exec do
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
   before_filter :authenticate_user!
-  before_filter :complete_signup_profile
-  before_filter :check_if_password_expired
   before_filter :set_locale
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
@@ -43,25 +41,11 @@ ActionController::Base.class_exec do
   end
 
   def disable_fine_print
+    request.method.to_s.downcase == "options" ||
     contracts_not_required(client_id: params[:client_id] || session[:client_id]) ||
     current_user.is_anonymous?
   end
 
   include ContractsNotRequired
-
-  def complete_signup_profile
-    return true if request.format != :html
-    redirect_to signup_profile_path if current_user.is_needs_profile?
-  end
-
-  def check_if_password_expired
-    return true if request.format != :html
-
-    identity = current_user.identity
-    return unless identity.try(:password_expired?)
-
-    flash[:alert] = I18n.t :"controllers.identities.password_expired"
-    redirect_to password_reset_path
-  end
 
 end
