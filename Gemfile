@@ -30,7 +30,7 @@ gem 'doorkeeper', '2.2.2'
 # OAuth clients
 gem 'omniauth'
 gem 'omniauth-identity'
-gem 'omniauth-facebook'
+gem 'omniauth-facebook', '~>3.0.0'
 gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
