@@ -538,6 +538,18 @@ feature 'User signs up', js: true do
     end
   end
 
+  scenario "user needs_profile, loses their place, and comes back from an app" do
+    arrive_from_app
+    click_sign_up
+    complete_signup_email_screen("Instructor","bob@bob.edu")
+    complete_signup_verify_screen(pass: true)
+    complete_signup_password_screen('password')
+    expect_signup_profile_screen
+
+    visit_authorize_uri
+    expect_signup_profile_screen
+  end
+
   scenario "user clicks confirmation link in different browser" do
     confirm_link_path = nil
 

@@ -68,6 +68,31 @@ feature 'User logs in', js: true do
     end
   end
 
+  scenario 'with a password that is expired, loses place, comes back from app' do
+    @user = create_user 'expired_password_user'
+    identity = @user.identity
+    identity.password_expires_at = 1.week.ago
+    identity.save
+
+    with_forgery_protection do
+      arrive_from_app
+
+      complete_login_username_or_email_screen 'expired_password_user'
+      complete_login_password_screen 'password'
+
+      expect(page).to have_content(t :"controllers.identities.password_expired")
+
+      visit_authorize_uri
+
+      expect(page).to have_content(t :"controllers.identities.password_expired")
+
+      complete_reset_password_screen
+      complete_reset_password_success_screen
+
+      expect_back_at_app
+    end
+  end
+
   scenario 'with a user imported from csv' do
     imported_user 'imported_user'
 
