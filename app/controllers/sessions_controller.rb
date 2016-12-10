@@ -102,6 +102,9 @@ class SessionsController < ApplicationController
         when :mismatched_authentication
           # TODO new security log entry
           redirect_to action: :authenticate, alert: "Mismatched login!" # TODO need feature spec!
+        when :email_already_in_use
+          redirect_to profile_path,
+                      alert: "That way to log in cannot be added because it is associated to an email address that is already in use!" # TODO i18n
         else
           Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}; " \
                              "status: #{@handler_result.outputs[:status]}"
@@ -158,9 +161,13 @@ class SessionsController < ApplicationController
     when 'multiple_users'
       flash[:alert] = I18n.t :"controllers.sessions.several_accounts_for_one_email"
       render :new
-    when 'bad_password'
+    when 'bad_authenticate_password'
       field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
       render :authenticate
+    when'bad_reauthenticate_password'
+      field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
+      reauthenticate # load state needed for render
+      render :reauthenticate
     when 'too_many_login_attempts'
       flash[:alert] = I18n.t :"controllers.sessions.too_many_login_attempts.content",
                              reset_password: "<a href=\"#{password_send_reset_path}\">#{

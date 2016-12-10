@@ -24,7 +24,7 @@ class ContactInfo < ActiveRecord::Base
 
   before_save :add_unread_update
   before_destroy :check_if_last_verified
-  before_save :check_if_email_taken
+  before_save :check_for_verified_collision
 
   def confirmed;  verified;  end
   def confirmed?; verified?; end
@@ -61,10 +61,10 @@ class ContactInfo < ActiveRecord::Base
     end
   end
 
-  def check_if_email_taken
-    if (new_record? || value_changed?) && ContactInfo.email_addresses.where(value: value).any?
-      errors.add(:value, 'email is already in use')
-      return false
+  def check_for_verified_collision
+    if verified? && ContactInfo.verified.where(value: value).where{id != my{id}}.any?
+      errors.add(:value, 'already confirmed on another account')
     end
+    errors.none?
   end
 end
