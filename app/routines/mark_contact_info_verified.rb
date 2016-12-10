@@ -8,7 +8,7 @@ class MarkContactInfoVerified
     contact_info.verified = true
     contact_info.save
 
-    transfer_errors_from(contact_info, {type: :verbatim})
+    transfer_errors_from(contact_info, {type: :verbatim}, true)
   end
 
 end

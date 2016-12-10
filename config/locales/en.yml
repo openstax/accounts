@@ -127,6 +127,8 @@ en:
         provided. If you typed it in manually, please check for errors. If
         you're still having trouble, please visit your profile page to resend
         the verification email.
+      email_already_in_use: >-
+        The email address you are trying to confirm is in use by another OpenStax user.
       you_may_now_close_this_window: >-
         Your email address is now confirmed. You may close this window.
 
