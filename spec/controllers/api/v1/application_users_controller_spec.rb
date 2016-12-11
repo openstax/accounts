@@ -51,16 +51,10 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
       expect(response.code).to eq('200')
       expected_response = {
         id: bob_brown.application_users.first.id,
-        user: {
-          id: bob_brown.id,
-          username: bob_brown.username,
-          first_name: bob_brown.first_name,
-          last_name: bob_brown.last_name,
-          full_name: bob_brown.full_name,
-          uuid: bob_brown.uuid
-        }, unread_updates: 0
-      }.to_json
-      expect(response.body).to eq(expected_response)
+        user: user_matcher(bob_brown, include_private_data: false),
+        unread_updates: 0
+      }
+      expect(response.body_as_hash).to match(expected_response)
     end
 
     it "responds with http status not found when not found" do
@@ -90,19 +84,10 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
 
       expected_response = {
         total_count: 1,
-        items: [
-          {
-            id: user_2.id,
-            username: user_2.username,
-            first_name: user_2.first_name,
-            last_name: user_2.last_name,
-            full_name: user_2.full_name,
-            uuid: user_2.uuid
-          }
-        ]
-      }.to_json
+        items: [ user_matcher(user_2, include_private_data: false) ]
+      }
 
-      expect(response.body).to eq(expected_response)
+      expect(response.body_as_hash).to match(expected_response)
     end
 
     it "should return the 2nd page when requested" do
@@ -146,7 +131,7 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
       expect(outcome["items"][2]["username"]).to eq "foo_tj"
     end
 
-    it "should return only users that use an app" do
+    it "should return no users if no one uses an app" do
       api_get :index, trusted_application_token, parameters: {q: 'first_name:bob last_name:Michaels'}
       expect(response.code).to eq('200')
 
@@ -156,7 +141,10 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
       }.to_json
 
       expect(response.body).to eq(expected_response)
+    end
 
+    it "should return only users that use an app" do
+      # Make one app user
       trusted_app_user = FactoryGirl.create :application_user,
                                             application: trusted_application,
                                             user: user_2
@@ -166,20 +154,10 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
 
       expected_response = {
         total_count: 1,
-        items: [
-          {
-            id: user_2.id,
-            username: user_2.username,
-            first_name: user_2.first_name,
-            last_name: user_2.last_name,
-            full_name: user_2.full_name,
-            uuid: user_2.uuid,
-            faculty_status: user_2.faculty_status
-          }
-        ]
-      }.to_json
+        items: [ user_matcher(user_2, include_private_data: true) ]
+      }
 
-      expect(response.body).to eq(expected_response)
+      expect(response.body_as_hash).to match(expected_response)
     end
 
   end
@@ -198,90 +176,6 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
       expect(response.body).to eq(expected_response)
     end
 
-    it "should return properly formatted JSON responses" do
-      app_user = user_2.application_users.first
-      expect(app_user.unread_updates).to eq 1
-
-      user_2.first_name = 'Bo'
-      user_2.save!
-
-      expect(app_user.reload.unread_updates).to eq 2
-
-      api_get :updates, untrusted_application_token
-
-      expected_response = [{
-        id: app_user.id,
-        user: {
-          id: user_2.id,
-          username: user_2.username,
-          first_name: user_2.first_name,
-          last_name: user_2.last_name,
-          full_name: user_2.full_name,
-          uuid: user_2.uuid,
-          faculty_status: user_2.faculty_status
-        },
-        unread_updates: 2
-      }].to_json
-
-      expect(response.body).to eq(expected_response)
-
-      api_get :updates, untrusted_application_token
-
-      expect(response.body).to eq(expected_response)
-
-      user_2.first_name = 'Bob'
-      user_2.save!
-
-      expect(app_user.reload.unread_updates).to eq 3
-
-      api_get :updates, untrusted_application_token
-
-      expected_response = [{
-        id: app_user.id,
-        user: {
-          id: user_2.id,
-          username: user_2.username,
-          first_name: user_2.first_name,
-          last_name: user_2.last_name,
-          full_name: user_2.full_name,
-          uuid: user_2.uuid,
-          faculty_status: user_2.faculty_status
-        },
-        unread_updates: 3
-      }].to_json
-
-      expect(response.body).to eq(expected_response)
-
-      app_user.unread_updates = 2
-      app_user.save!
-
-      api_get :updates, untrusted_application_token
-
-      expected_response = [{
-        id: app_user.id,
-        user: {
-          id: user_2.id,
-          username: user_2.username,
-          first_name: user_2.first_name,
-          last_name: user_2.last_name,
-          full_name: user_2.full_name,
-          uuid: user_2.uuid,
-          faculty_status: user_2.faculty_status
-        },
-        unread_updates: 2
-      }].to_json
-
-      expect(response.body).to eq(expected_response)
-
-      app_user.unread_updates = 0
-      app_user.save!
-
-      api_get :updates, untrusted_application_token
-      expected_response = [].to_json
-
-      expect(response.body).to eq(expected_response)
-    end
-
     it "should not let a user call it through an app" do
       api_get :updates, user_2_token
       expect(response).to have_http_status :forbidden
@@ -290,46 +184,6 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
   end
 
   describe "updated" do
-    it "should properly change unread_updates" do
-      app_user = user_2.application_users.first
-      expect(app_user.unread_updates).to eq 1
-
-      user_2.first_name = 'Bo'
-      user_2.save!
-
-      expect(app_user.reload.unread_updates).to eq 2
-
-      user_2.first_name = 'Bob'
-      user_2.save!
-
-      expect(app_user.reload.unread_updates).to eq 3
-
-      user_2.first_name = 'B'
-      user_2.save!
-
-      expect(app_user.reload.unread_updates).to eq 4
-
-      api_put :updated, untrusted_application_token, raw_post_data: [
-        {user_id: user_2.id, read_updates: 2}].to_json
-
-      expect(response.status).to eq(204)
-
-      expect(app_user.reload.unread_updates).to eq 4
-
-      api_put :updated, untrusted_application_token, raw_post_data: [
-        {user_id: user_2.id, read_updates: 1}].to_json
-
-      expect(response.status).to eq(204)
-
-      expect(app_user.reload.unread_updates).to eq 4
-
-      api_put :updated, untrusted_application_token, raw_post_data: [
-        {user_id: user_2.id, read_updates: 4}].to_json
-
-      expect(response.status).to eq(204)
-
-      expect(app_user.reload.unread_updates).to eq 0
-    end
 
     it "should not let an app mark another app's updates as read" do
       app_user = user_2.application_users.first
@@ -340,13 +194,6 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
         {id: app_user.id, read_updates: 1}].to_json
 
       expect(app_user.reload.unread_updates).to eq 1
-    end
-
-    it "should not let a user call it through an app" do
-      api_get :updates, user_2_token
-      expect(response).to have_http_status :forbidden
-      api_put :updated, user_2_token
-      expect(response).to have_http_status :forbidden
     end
 
   end

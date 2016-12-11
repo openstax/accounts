@@ -82,7 +82,9 @@ class Api::V1::UsersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
     options = params.slice(:order_by)
     outputs = SearchUsers.call(params[:q], options).outputs
-    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter, location: nil
+    respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
+                          location: nil,
+                          user_options: { include_private_data: current_application.trusted? }
   end
 
   ###############################################################
@@ -100,8 +102,7 @@ class Api::V1::UsersController < Api::V1::ApiController
                                               current_human_user)
     respond_with current_human_user,
                  represent_with: Api::V1::UserRepresenter,
-                 user_options: { render_contact_infos: true, 
-                                 render_salesforce_info: true, }, 
+                 user_options: { include_private_data: true },
                  location: nil
   end
 
