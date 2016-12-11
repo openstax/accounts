@@ -21,7 +21,7 @@ class Email
       delBtn.click(@confirmDelete)
 
   toggleProperties: ->
-    this.$el.find('.properties').toggle()
+    this.$el.toggleClass('expanded')
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)

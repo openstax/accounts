@@ -106,6 +106,10 @@
         margin-left: 6px;
       }
     }
+    &.expanded {
+      .properties { display: block; }
+      .toggle-properties { color: black; }
+    }
     .verify {
       margin-left: 20px;
       form {
