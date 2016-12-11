@@ -10,7 +10,7 @@ class Email
     @id = this.$el.attr('data-id')
     this.$el.find('.searchable').change(@saveSearchable)
     this.$el.find('.verify').click(@sendVerification)
-    this.$el.find('.toggle-properties').click(@toggleProperties)
+    this.$el.find('.email').click(@toggleProperties)
     @update()
 
   update: ->

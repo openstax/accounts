@@ -39,13 +39,11 @@ module ProfileHelper
     (
       <<-SNIPPET
         <div class="email-entry #{'verified' if is_verified}" data-id="#{id}">
-          <span class="email">#{value}</span>
+          <span class="email editable-click">#{value}</span>
           #{verify_link}
-          <span class="mod-holder">
+
+          <div class="controls">
             <span class="glyphicon glyphicon-trash mod delete"></span>
-            <span class="glyphicon glyphicon-cog mod toggle-properties"></span>
-          </span>
-          <div class="properties">
             <input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"users.edit.searchable"}
             <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="#{I18n.t :"users.edit.check_searchable_if_you_want_to_be_searchable"}"></i>
 

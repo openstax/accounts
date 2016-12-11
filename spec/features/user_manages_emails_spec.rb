@@ -71,14 +71,14 @@ feature 'User manages emails', js: true do
     end
 
     scenario 'toggles searchable field' do
-      entry = ".email-entry[data-id=\"#{user.id}\"]"
-      expect(page).to_not have_selector("#{entry} .properties", visible: true)
-      find('.toggle-properties').click
-      expect(page).to have_selector("#{entry} .properties", visible: true)
+      expect(page).to_not have_content(t('users.edit.searchable'))
+      find(".email-entry[data-id=\"#{user.id}\"] .email").click
+      expect(page).to have_content(t('users.edit.searchable'))
       screenshot!
     end
 
   end
+
 
   # TODO screenshots all around
   # TODO spec to show can't add already-used email
