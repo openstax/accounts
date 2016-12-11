@@ -116,6 +116,10 @@
       input[type='checkbox'] {
         margin-left: 6px;
       }
+      .delete {
+        margin-left: 1rem;
+        font-size: 13px;
+      }
     }
     &.expanded {
       .controls { height: 30px; }

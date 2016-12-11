@@ -43,10 +43,9 @@ module ProfileHelper
           #{verify_link}
 
           <div class="controls">
-            <span class="glyphicon glyphicon-trash mod delete"></span>
             <input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"users.edit.searchable"}
             <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="#{I18n.t :"users.edit.check_searchable_if_you_want_to_be_searchable"}"></i>
-
+            <span class="glyphicon glyphicon-trash mod delete"></span>
           </div>
           <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
         </div>
