@@ -43,6 +43,7 @@ module ProfileHelper
           #{verify_link}
           <span class="mod-holder">
             <span class="glyphicon glyphicon-trash mod delete"></span>
+            <span class="glyphicon glyphicon-cog mod toggle-properties"></span>
           </span>
           <div class="properties">
             <input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"users.edit.searchable"}

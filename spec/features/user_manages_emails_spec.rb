@@ -70,6 +70,14 @@ feature 'User manages emails', js: true do
       expect(page).to have_content('Value "user" is not a valid email address')
     end
 
+    scenario 'toggles searchable field' do
+      entry = ".email-entry[data-id=\"#{user.id}\"]"
+      expect(page).to_not have_selector("#{entry} .properties", visible: true)
+      find('.toggle-properties').click
+      expect(page).to have_selector("#{entry} .properties", visible: true)
+      screenshot!
+    end
+
   end
 
   # TODO screenshots all around
