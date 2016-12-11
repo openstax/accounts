@@ -48,7 +48,7 @@
   }
 
   .info .mod-holder {
-    width: 20px;
+    width: 45px;
     display: inline-block;
     margin-left:15px;
   }
@@ -98,12 +98,17 @@
       top: 15px;
     }
     .properties {
+      display: none;
       margin-left: 20px;
       font-style: italic;
       font-size: 11px;
       input[type='checkbox'] {
         margin-left: 6px;
       }
+    }
+    &.expanded {
+      .properties { display: block; }
+      .toggle-properties { color: black; }
     }
     .verify {
       margin-left: 20px;
@@ -118,6 +123,7 @@
         display: inline;
         border: 0;
         background: transparent;
+        height: 20px;
       }
     }
     &.new {

@@ -10,6 +10,7 @@ class Email
     @id = this.$el.attr('data-id')
     this.$el.find('.searchable').change(@saveSearchable)
     this.$el.find('.verify').click(@sendVerification)
+    this.$el.find('.toggle-properties').click(@toggleProperties)
     @update()
 
   update: ->
@@ -18,6 +19,9 @@ class Email
       delBtn.hide()
     else
       delBtn.click(@confirmDelete)
+
+  toggleProperties: ->
+    this.$el.toggleClass('expanded')
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)
