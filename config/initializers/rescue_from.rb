@@ -13,7 +13,7 @@ OpenStax::RescueFrom.configure do |config|
 
   # config.notifier = ExceptionNotifier
 
-  # config.html_error_template_path = 'errors/any'
+  config.html_error_template_path = 'errors/any'
   config.html_error_template_layout_name = 'error'
 
   # config.email_prefix = "[#{config.app_name}] (#{config.app_env}) "
@@ -26,3 +26,9 @@ OpenStax::RescueFrom.register_exception(
   notify: false,
   status: :forbidden
 )
+
+module OpenStax::RescueFrom
+  def self.default_friendly_message
+    "We had some unexpected trouble with your request."
+  end
+end
