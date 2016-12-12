@@ -14,6 +14,7 @@ class SessionsController < ApplicationController
 
   before_filter :save_new_params_in_session, only: [:new]
   before_filter :store_authorization_url_as_fallback, only: [:new, :create]
+  before_filter :maybe_skip_to_sign_up, only: [:new]
 
   # If the user arrives to :new already logged in, this means they got linked to
   # the login page somehow; attempt to redirect to the authorization url stored
@@ -217,6 +218,10 @@ class SessionsController < ApplicationController
     # fails.  Also these methods perform checks on the alternate signup URL.
     set_client_app(params[:client_id])
     set_alternate_signup_url(params[:signup_at])
+  end
+
+  def maybe_skip_to_sign_up
+    redirect_to signup_path if params[:go] == 'signup'
   end
 
 end

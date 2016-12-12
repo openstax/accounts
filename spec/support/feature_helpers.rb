@@ -130,8 +130,11 @@ def mock_bad_csrf_token
   end
 end
 
-def visit_authorize_uri(app=@app)
-  visit "/oauth/authorize?redirect_uri=#{app.redirect_uri}&response_type=code&client_id=#{app.uid}"
+def visit_authorize_uri(app: @app, params: {})
+  visit "/oauth/authorize?redirect_uri=#{app.redirect_uri}&" \
+                         "response_type=code&" \
+                         "client_id=#{app.uid}" \
+                         "#{'&' + params.to_query if params.any?}"
 end
 
 def app_callback_url
@@ -201,6 +204,11 @@ def expect_sign_in_page
   expect(page).to have_content(t :"sessions.new.page_heading")
 end
 
+def expect_sign_up_page
+  expect(page).to have_no_missing_translations
+  expect(page).to have_content(t :"signup.start.page_heading")
+end
+
 def expect_authenticate_page
   expect(page.body).to match(/Hi.*!/)
 end
@@ -220,10 +228,10 @@ def agree_and_click_create
   click_button (t :"signup.new_account.create_account")
 end
 
-def arrive_from_app
+def arrive_from_app(params: {}, do_expect: true)
   create_application unless @app.present?
-  visit_authorize_uri
-  expect_sign_in_page
+  visit_authorize_uri(params: params)
+  expect_sign_in_page if do_expect
 end
 
 def expect_back_at_app
