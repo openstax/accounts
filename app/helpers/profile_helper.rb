@@ -36,24 +36,27 @@ module ProfileHelper
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
     verify_link = is_verified ? '' : ""
+    unconfirmed_link =
+      is_verified ?
+        '' :
+        %Q[&nbsp;[ <span class='email'><span class='unconfirmed-warning'>#{I18n.t :'users.edit.unconfirmed_warning'}</span></span> ]]
+
     (
       <<-SNIPPET
         <div class="email-entry #{'verified' if is_verified}" data-id="#{id}">
-          <span class="email editable-click">
-             <span class="value">#{value}</span>
-             <span class="unconfirmed-warning">
-               #{I18n.t :"users.edit.unconfirmed_warning"}
-             </span>
-          </span>
+          <span class="email editable-click"><span class="value">#{value}</span></span>
+          #{unconfirmed_link}
           <div class="controls">
-            <span class="searchable-toggle">
-              <input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"users.edit.searchable"}
-              <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="right" title="#{I18n.t :"users.edit.check_searchable_if_you_want_to_be_searchable"}"></i>
-            </span>
-            <span class="glyphicon glyphicon-trash mod delete"></span>
-            <span class='resend-confirmation'>
+            <div class='resend-confirmation'>
+              <i class='fa fa-envelope-o'></i>
               #{button_to((I18n.t :"users.edit.resend_confirmation"), resend_confirmation_contact_info_path(id: id), method: :put )}
-            </span>
+            </div>
+            <div class="delete">
+              <span class="glyphicon glyphicon-trash"></span><a href="#">Delete</a>
+            </div>
+            <div class="searchable-toggle">
+              <label><input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"users.edit.searchable"}</label>
+            </div>
           </div>
           <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
         </div>

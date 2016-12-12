@@ -507,7 +507,7 @@ en:
       check_searchable_if_you_want_to_be_searchable: >-
         Check the Searchable box if you want other OpenStax users to find you
         using this email address.
-      resend_confirmation: '[Resend Confirmation Email]'
-      unconfirmed_warning: (Unconfirmed)
+      resend_confirmation: 'Resend confirmation email'
+      unconfirmed_warning: unconfirmed
       password: Password
-      searchable: Searchable
+      searchable: Let other users find me by this email.
