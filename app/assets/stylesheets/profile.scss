@@ -86,6 +86,18 @@
     &:first-child {
       .alert { margin-top: 0; }
     }
+    .email {
+      color: $os_link_color;
+      text-decoration: underline;
+      cursor: pointer;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    &.verified {
+      .unconfirmed-warning { display: none; }
+      .resend-confirmation { display: none; }
+    }
     .alert {
       margin-left: 0px;
       margin-right: 0px;
@@ -97,20 +109,27 @@
       left: -20px;
       top: 15px;
     }
-    .properties {
-      display: none;
+    .controls {
+      height: 0px;
+      overflow: hidden;
       margin-left: 20px;
-      font-style: italic;
-      font-size: 11px;
+      transition: height 0.4s;
+      .searchable-toggle {
+        font-style: italic;
+        font-size: 11px;
+      }
       input[type='checkbox'] {
         margin-left: 6px;
       }
+      .delete {
+        margin-left: 1rem;
+        font-size: 13px;
+      }
     }
     &.expanded {
-      .properties { display: block; }
-      .toggle-properties { color: black; }
+      .controls { height: 30px; }
     }
-    .verify {
+    .resend-confirmation {
       margin-left: 20px;
       form {
         display: inline;
@@ -127,17 +146,7 @@
       }
     }
     &.new {
-      .verify, .properties, .mod-holder { display: none; }
-    }
-    &.controls-hidden {
-      .email {
-        color: $link-color;
-        cursor: pointer;
-        text-decoration: none;
-        border-bottom: dashed 1px #0088cc;
-        &:hover{ text-decoration: none; }
-      }
-      .properties, .mod-holder { display: none; }
+      .resend-confirmation, .unconfirmed-warning, .controls { display: none; }
     }
   }
 
