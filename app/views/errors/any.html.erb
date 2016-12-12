@@ -1,5 +1,5 @@
 <% content_for :application_body do %>
-  <h3 class='rescue-from'><%= @message %></h3>
+  <h3 class='rescue-from'><%= @message %> (<%= @code %>)</h3>
 
   <p class='rescue-form'>
     <% if @error_id and @did_notify %>

@@ -160,11 +160,9 @@ en:
       properly without it.
     any:
       appology_message_html: >-
-        We're sorry this %{code} error occured. If you need help, please contact
-        %{contact_info}.
+        If you need help, please contact %{contact_info}.
       appology_message_long_html: >-
-        We're sorry this %{code} error occured. If you need help, please contact
-        %{contact_info} and reference error %{error_id}.
+        If you need help, please contact %{contact_info} and reference error %{error_id}.
 
   identities:
     confirm_password: Confirm Password
