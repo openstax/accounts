@@ -9,7 +9,7 @@ class Email
     this.$el = $(@el)
     @id = this.$el.attr('data-id')
     this.$el.find('.searchable').change(@saveSearchable)
-    this.$el.find('.verify').click(@sendVerification)
+    this.$el.find('.resend-confirmation').click(@sendVerification)
     this.$el.find('.email').click(@toggleProperties)
     @update()
 
@@ -97,9 +97,8 @@ OX.Profile.Email = {
 
   onAddEmail: ->
     email = $('#email-template').children().clone().addClass('new')
-    input = $(email).insertBefore(@addEmail).find('.email')
+    input = $(email).insertBefore(@addEmail).find('.email .value')
     @addEmail.hide()
-
     input.editable(
       url: BASE_URL
       params: (params) ->

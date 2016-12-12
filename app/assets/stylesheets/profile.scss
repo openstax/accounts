@@ -94,7 +94,10 @@
         text-decoration: none;
       }
     }
-
+    &.verified {
+      .unconfirmed-warning { display: none; }
+      .resend-confirmation { display: none; }
+    }
     .alert {
       margin-left: 0px;
       margin-right: 0px;
@@ -110,9 +113,11 @@
       height: 0px;
       overflow: hidden;
       margin-left: 20px;
-      font-style: italic;
-      font-size: 11px;
       transition: height 0.4s;
+      .searchable-toggle {
+        font-style: italic;
+        font-size: 11px;
+      }
       input[type='checkbox'] {
         margin-left: 6px;
       }
@@ -123,9 +128,8 @@
     }
     &.expanded {
       .controls { height: 30px; }
-
     }
-    .verify {
+    .resend-confirmation {
       margin-left: 20px;
       form {
         display: inline;
@@ -142,8 +146,7 @@
       }
     }
     &.new {
-      .verify, .controls { display: none; }
-
+      .resend-confirmation, .unconfirmed-warning, .controls { display: none; }
     }
   }
 
