@@ -510,4 +510,4 @@ en:
       resend_confirmation: 'Resend confirmation email'
       unconfirmed_warning: unconfirmed
       password: Password
-      searchable: Searchable
+      searchable: Let other users find me by this email.

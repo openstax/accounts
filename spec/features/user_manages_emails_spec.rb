@@ -27,6 +27,8 @@ feature 'User manages emails', js: true do
       within(:css, '.email-entry.new') {
         find('input').set('user@mysite.com')
         find('.glyphicon-ok').click
+        wait_for_ajax
+        find(".unconfirmed-warning").click
       }
       expect(page).to have_no_missing_translations
       expect(page).to have_button(t :"users.edit.resend_confirmation")
@@ -127,7 +129,7 @@ feature 'User manages emails', js: true do
     let(:unverified_emails) { ['user@unverified.com'] }
 
     scenario 'success' do
-      find(".email-entry[data-id=\"#{user.id}\"] .email").click
+      find(".email-entry[data-id=\"#{user.id}\"] .value").click
       click_button (t :"users.edit.resend_confirmation")
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"controllers.contact_infos.verification_sent", address: "user@unverified.com")
