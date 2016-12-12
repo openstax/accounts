@@ -36,15 +36,16 @@ module ProfileHelper
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
     verify_link = is_verified ? '' : ""
+    unconfirmed_link =
+      is_verified ?
+        '' :
+        %Q[&nbsp;[ <span class='email'><span class='unconfirmed-warning'>#{I18n.t :'users.edit.unconfirmed_warning'}</span></span> ]]
+
     (
       <<-SNIPPET
         <div class="email-entry #{'verified' if is_verified}" data-id="#{id}">
-          <span class="email editable-click">
-             <span class="value">#{value}</span>
-             <span class="unconfirmed-warning">
-               #{I18n.t :"users.edit.unconfirmed_warning"}
-             </span>
-          </span>
+          <span class="email editable-click"><span class="value">#{value}</span></span>
+          #{unconfirmed_link}
           <div class="controls">
             <span class="searchable-toggle">
               <input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"users.edit.searchable"}
