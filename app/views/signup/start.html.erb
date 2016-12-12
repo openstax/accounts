@@ -24,8 +24,10 @@ signup_roles = {
                                 error_field_classes: "alert alert-danger") %>
     <%# TODO put select in form helper %>
 
-    <%= f.select :role, options_for_select(signup_roles.invert.to_a,
-        selected: @role || 'initial', disabled: "initial", hidden: "initial" ) %>
+    <%= f.select :role,
+                 options_for_select(signup_roles.invert.to_a,
+                                    selected: @role || 'initial', disabled: "initial", hidden: "initial" ),
+                 {}, {autofocus: true} %>
 
     <div class="email-input-group card-body">
       <div class="audience-help" data-audience="instructor">

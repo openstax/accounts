@@ -25,7 +25,8 @@
                                 error_field_classes: "alert alert-danger") %>
 
     <%= fh.text_field name: :password, type: :password,
-                      label: :"identities.password" %>
+                      label: :"identities.password",
+                      autofocus: true %>
     <%= fh.text_field name: :password_confirmation, type: :password,
                       label: :"identities.confirm_password" %>
 
