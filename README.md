@@ -19,6 +19,12 @@ Accounts requires the repeatable read isolation level to work properly. If using
 default_transaction_isolation = 'repeatable read'
 ```
 
+## Using
+
+* OAuth requests that arrive with query param `go=signup` will skip log in and go straight to signup
+* OAuth requests that arrive with query param `signup_at=blah` will redirect users to `blah` if they click the
+link to sign up.
+
 ## Development Setup
 
 In development, Accounts can be run as a normal Rails app on your machine, or you can run it in a Vagrant virtual machine that mimics our production setup.
