@@ -54,18 +54,6 @@ class SignupProfile
     end
 
     if push_lead && Settings::Salesforce.push_leads_enabled
-
-      # profile_params.subjects is a hash of book code name to "1" or "0", depending on
-      # if that book was selected or not selected, respectively.  We need to convert this
-      # hash to a semicolon-separated string of Salesforce book codes, e.g.:
-      # "Macro Econ;Micro Econ;US History;AP Macro Econ".
-
-      subject = profile_params.subjects
-                              .select{|k,v| v == '1'}
-                              .keys
-                              .map{|code| Settings::Subjects[code]['sf']}
-                              .join(';')
-
       PushSalesforceLead.perform_later(
         user: caller,
         role: caller.role,
@@ -73,7 +61,7 @@ class SignupProfile
         school: caller.self_reported_school,
         num_students: profile_params.num_students,
         using_openstax: profile_params.using_openstax,
-        subject: subject,
+        subject: SubjectsUtils.form_choices_to_salesforce_string(profile_params.subjects),
         url: profile_params.url,
         newsletter: profile_params.newsletter
       )

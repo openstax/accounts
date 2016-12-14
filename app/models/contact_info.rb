@@ -19,6 +19,7 @@ class ContactInfo < ActiveRecord::Base
 
   scope :verified, -> { where(verified: true) }
   sifter :verified do verified.eq true end
+  scope :unverified, -> { where(verified: false) }
 
   scope :with_users, lambda { joins(:user).eager_load(:user) }
 

@@ -13,3 +13,10 @@
 .text-nowrap {
   white-space: nowrap;
 }
+
+form.full-width {
+  input[type=text],
+  select {
+    width: 100%;
+  }
+}

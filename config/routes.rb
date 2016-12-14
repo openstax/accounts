@@ -92,9 +92,15 @@ Rails.application.routes.draw do
       put 'resend_confirmation'
     end
   end
+
   scope controller: 'contact_infos' do
     get 'confirm'
     get 'confirm/unclaimed', action: :confirm_unclaimed
+  end
+
+  namespace 'faculty_access' do
+    match 'apply', via: [:get, :post]
+    match 'pending', via: [:get, :post]
   end
 
   resources :terms, only: [:index, :show] do

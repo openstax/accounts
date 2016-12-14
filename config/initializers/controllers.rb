@@ -14,6 +14,7 @@ ActionController::Base.class_exec do
 
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
+  before_filter :save_redirect
   before_filter :authenticate_user!
   before_filter :complete_signup_profile
   before_filter :check_if_password_expired
@@ -63,6 +64,26 @@ ActionController::Base.class_exec do
 
     flash[:alert] = I18n.t :"controllers.identities.password_expired"
     redirect_to password_reset_path
+  end
+
+  def save_redirect
+    return true if request.format != :html || request.options?
+
+    url = params["r"]
+
+    return true if url.blank?
+
+    valid_hosts = Rails.application.secrets.valid_iframe_origins.map do |origin|
+      URI.parse(origin).host
+    end
+
+    valid_hosts.unshift("127.0.0.1") if !Rails.env.production?
+
+    uri = URI.parse(url)
+
+    return true unless valid_hosts.any?{|valid_host| uri.host.ends_with?(valid_host)}
+
+    store_url(url: url)
   end
 
 end

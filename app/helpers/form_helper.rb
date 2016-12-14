@@ -1,11 +1,12 @@
 module FormHelper
 
   class One
-    def initialize(f:, limit_to: nil, context:, errors: nil, error_field_classes: "error")
+    def initialize(f:, limit_to: nil, context:, errors: nil, params: nil, error_field_classes: "error")
       @f = f
       @limit_to = limit_to
       @context = context
       @errors = errors
+      @params = params
       @error_field_classes = error_field_classes
     end
 
@@ -24,23 +25,33 @@ module FormHelper
                                     value: value,
                                     type: type,
                                     class: "form-control wide",
+                                    data: data(only: only, except: except),
                                     autofocus: autofocus
 
         "#{input}\n#{errors_div}".html_safe
       end
     end
 
-    def select(name:, options:, except: nil, only: nil)
+    def select(name:, options:, except: nil, only: nil, autofocus: nil)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
 
+      html_options = {data: data(only: only, except: except)}
+      html_options[:autofocus] = autofocus if !autofocus.nil?
+
       c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
-        "#{@f.select name, options}#{errors_div}".html_safe
+        "#{@f.select name, options, {}, html_options}#{errors_div}".html_safe
       end
     end
 
+    def get_params_value(name)
+      @params.try(:[], @f.object_name).try(:[], name)
+    end
+
     def excluded?(except:, only:)
+      return false if @limit_to == :any
+
       if only.present? && except.present?
         raise "Can only set one of `except` or `only`"
       elsif except.present?
@@ -48,6 +59,10 @@ module FormHelper
       elsif only.present?
         true if ![only].flatten.compact.include?(@limit_to)
       end
+    end
+
+    def data(only:, except:)
+      {only: only, except: except}.delete_if{|k,v| v.nil?}
     end
 
     def get_errors_div(name:)
