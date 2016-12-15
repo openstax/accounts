@@ -340,7 +340,7 @@ en:
         confirm your email address.
 
     start:
-      email: School email address
+      email: Your official email address
       next: Next
       iama: I am a
       instructor: Instructor
@@ -375,7 +375,7 @@ en:
       sign_up_with_twitter: Sign up with Twitter
       teacher_school_email: >-
         To access faculty-only materials like test banks and OpenStax Tutor course setup,
-        you must provide your school email address.  You can add an alternate email
+        you must provide the email address given to you by your school.  You can add an alternate email
         address later if necessary.
       teacher_school_email_warning:
         Is this your school email address?  If yes, click %{button} below.
