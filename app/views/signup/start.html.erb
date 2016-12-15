@@ -16,7 +16,7 @@ signup_roles = {
 
 <%= ox_card(classes: "signup", heading: (t :'.page_heading')) do %>
 
-  <%= lev_form_for :signup, url: signup_path, method: :post do |f| %>
+  <%= lev_form_for :signup, url: signup_path, method: :post, html: {class: 'full-width'} do |f| %>
 
     <% fh = FormHelper::One.new(f: f,
                                 context: self,
