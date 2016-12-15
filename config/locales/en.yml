@@ -340,7 +340,8 @@ en:
         confirm your email address.
 
     start:
-      email: Your official email address
+      instructor_email: Your school email address
+      student_email: Email
       next: Next
       iama: I am a
       instructor: Instructor
@@ -466,7 +467,7 @@ en:
       page_heading: Apply for instructor access
       instructions: To access faculty-only products, please provide the following information so that we can verify that you are faculty.
       role_heading: Your faculty role
-      email: Your official email address
+      email: Your school email address
       iama: I am a
       instructor: Instructor
       administrator: Administrator

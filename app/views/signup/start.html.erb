@@ -31,10 +31,13 @@ signup_roles = {
 
     <div class="email-input-group card-body">
       <div class="audience-help" data-audience="instructor">
-        <div class="minor-heading"><%= t '.email' %></div>
+        <h3><%= t '.instructor_email' %></h3>
         <p>
           <%= t '.teacher_school_email' %>
         </p>
+      </div>
+      <div class="audience-help" data-audience="student">
+        <h3><%= t '.student_email' %></h3>
       </div>
 
       <%= fh.text_field name: :email, value: signup_email, label: :'.email_placeholder' %>
