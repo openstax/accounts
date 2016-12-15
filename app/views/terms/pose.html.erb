@@ -1,4 +1,4 @@
-<%= page_heading @contract.title %>
+<%= ox_card(heading: @contract.title) do %>
 
   <% if FinePrint.signed_any_version_of_contract?(current_user, @contract) %>
     <p><%= t :".contracts_changed_notice", contract_title: @contract.title %></p>
@@ -18,8 +18,10 @@
     </div>
 
     <%= f.hidden_field :contract_id, value: @contract.id %>
-    <%= f.submit (t :".agree"), id: "agreement_submit", class: 'btn btn-primary' %>
+    <%= f.submit (t :".agree"), id: "agreement_submit", class: 'primary' %>
   <% end %>
+
+<% end %>
 
 <% content_for :javascript do %>
   <script type="text/javascript">

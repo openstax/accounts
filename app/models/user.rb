@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
   has_many :security_logs
 
   enum faculty_status: [:no_faculty_info, :pending_faculty, :confirmed_faculty, :rejected_faculty]
-  enum role: [:unknown, :student, :instructor, :administrator, :librarian, :designer, :other]
+  enum role: [:unknown_role, :student, :instructor, :administrator, :librarian, :designer, :other]
 
   DEFAULT_FACULTY_STATUS = :no_faculty_info
   validates :faculty_status, presence: true
@@ -204,7 +204,11 @@ class User < ActiveRecord::Base
   end
 
   def self.known_roles
-    roles.except("unknown").keys
+    roles.except("unknown_role").keys
+  end
+
+  def self.non_student_known_roles
+    known_roles - ["student"]
   end
 
   protected

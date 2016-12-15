@@ -21,6 +21,20 @@ en:
         first_name: This field
         last_name: This field
         school: This field
+      faculty_access_apply_instructor/apply_paramifier:
+        first_name: This field
+        last_name: This field
+        phone_number: This field
+        school: This field
+        num_students: This field
+        url: This field
+        using_openstax: This field
+      faculty_access_apply_other/apply_paramifier:
+        first_name: This field
+        last_name: This field
+        phone_number: This field
+        school: This field
+        url: This field
   activerecord:
     attributes:
       signup_state:
@@ -428,7 +442,7 @@ en:
       last_name: Last Name
       suffix: Suffix
       more_things_heading: And a few more things...
-      phone_number: Phone Number
+      phone_number: Phone number
       school: School
       url: Your specific school web page
       num_students: Number of students per semester
@@ -440,6 +454,55 @@ en:
 
     instructor_access_pending:
       page_heading: Welcome to OpenStax!
+      message: >-
+        Your instructor access is pending. We will verify your instructor status
+        within 3-4 business days. In the meantime, you can access all books and
+        resources except those that require instructor verification.
+      check_box: Send me an email when my instructor access is approved.
+      ok: OK
+
+  faculty_access:
+    apply:
+      page_heading: Apply for instructor access
+      instructions: To access faculty-only products, please provide the following information so that we can verify that you are faculty.
+      role_heading: Your faculty role
+      email: Your official email address
+      iama: I am a
+      instructor: Instructor
+      administrator: Administrator
+      librarian: Librarian
+      designer: Instructional Designer
+      other: Other
+      name_heading: Name
+      first_name: First name
+      last_name: Last name
+      suffix: Suffix
+      email_placeholder: me@myschool.edu
+      email_in_use: This email is already in use.
+      teacher_school_email: >-
+        This is the email address given to you by your school.
+      teacher_school_email_warning:
+        Is this your school email address?  If yes, click %{button} below.
+        If not, please enter your school email address.
+      additional_information_heading: Additional information
+      instructor_use:
+        how: How are you using OpenStax?
+        fully: Fully adopted and using it as the primary textbook
+        recommended: Recommending the book – my students buy a different book
+        piloting: Piloting the book
+        interested: Interested in using OpenStax in the future
+        nope: Not using OpenStax
+      phone_number: Phone number
+      school: School
+      url: Your specific school web page
+      num_students: Number of students per semester
+      using_openstax: Already using OpenStax?
+      titles_interested: Select all OpenStax titles that interest you
+      keep_me_informed: Send me news about new titles, resources, and related information.
+      submit: Apply
+
+    pending:
+      page_heading: Your application has been submitted
       message: >-
         Your instructor access is pending. We will verify your instructor status
         within 3-4 business days. In the meantime, you can access all books and
@@ -481,15 +544,14 @@ en:
       agree: I agree
       contract_acceptance_required: >-
         To continue, please review and agree to the following site terms by
-        clicking "I agree" at the bottom of this page.
+        clicking the agreement button at the bottom of this page.
       # %{contract_title}   an English name of the contract which's text
       #                     has changed.
       contracts_changed_notice: >-
         There have been changes to the %{contract_title}. Please review them and
-        then click "I agree" at the bottom of this page to continue.
+        then click the agreement button at the bottom of this page to continue.
       have_read_terms_and_agree: >-
-        I have read the terms listed above and I agree to be bound by their
-        temrs
+        I have read and agree to the terms listed above.
 
   users:
     edit:

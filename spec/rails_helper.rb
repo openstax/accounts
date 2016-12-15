@@ -272,6 +272,7 @@ end
 
 class ExternalAppForSpecsController < ActionController::Base
   skip_filter *_process_action_callbacks.map(&:filter)
+  layout false
 
   def index
     render plain: 'This is a fake external application'

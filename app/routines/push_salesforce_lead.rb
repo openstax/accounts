@@ -4,13 +4,16 @@ class PushSalesforceLead
 
   protected
 
-  def exec(user:, role:, phone_number:, school:, num_students:, using_openstax:, url:, newsletter:, subject:)
+  def exec(user:, email: nil, role:, phone_number:, school:, num_students:, using_openstax:, url:, newsletter:, subject:)
 
     status.set_job_name(self.class.name)
     status.set_job_args(user: user.to_global_id.to_s)
 
-    # Get email with try -- should be there, but who knows
-    email = user.contact_infos.verified.first.try(:value)
+    # If no email is given, pull from verified emails first, then unverified
+    email ||= user.contact_infos.verified.first.try(:value) ||
+              user.contact_infos.first.try(:value)
+
+    fatal_error(code: :email_missing) if email.nil?
 
     source = (role || "").match(/instructor/i) ? "OSC Faculty" : "OSC User"
 
@@ -37,6 +40,9 @@ class PushSalesforceLead
       handle_errors(lead, user, role)
     else
       Rails.logger.info("PushSalesforceLead: pushed #{lead.id} for user #{user.id}")
+      user.pending_faculty! if !user.confirmed_faculty?
+      user.save if user.changed?
+      transfer_errors_from(user, {type: :verbatim}, true)
     end
 
     # TODO write spec that SF User Missing makes BG job retry and sends email

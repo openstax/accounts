@@ -16,6 +16,7 @@ require 'salesforce/user_missing'
 require 'salesforce/contact'
 require 'salesforce/lead'
 require 'email_address_validations'
+require 'subjects_utils'
 
 SITE_NAME = 'OpenStax Accounts'
 PAGE_TITLE_SUFFIX = SITE_NAME

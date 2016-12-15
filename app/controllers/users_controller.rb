@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:edit, :update]
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 
   before_filter :allow_iframe_access, only: [:edit, :update]
 
