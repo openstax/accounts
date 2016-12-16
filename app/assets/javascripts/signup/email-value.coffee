@@ -27,6 +27,7 @@ class OX.Signup.EmailValue
 
 
   setType: (newUserType) ->
+    newUserType = if newUserType == "student" then "student" else "instructor"
     @group.find("[data-audience=\"#{@userType}\"]").hide()
     @userType = newUserType
     @group.find("[data-audience=\"#{@userType}\"]").show()
