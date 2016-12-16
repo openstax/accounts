@@ -261,7 +261,7 @@ GEM
       responders
       roar (>= 1.0)
       roar-rails (>= 1.0)
-    openstax_rescue_from (1.6.0)
+    openstax_rescue_from (1.7.1)
       exception_notification (>= 4.1, < 5.0)
       rails (>= 3.1, < 5.0)
     openstax_utilities (4.2.3)
@@ -515,7 +515,7 @@ DEPENDENCIES
   omniauth-salesforce
   omniauth-twitter
   openstax_api (~> 8.0.0)
-  openstax_rescue_from (~> 1.6.0)
+  openstax_rescue_from (~> 1.7.1)
   openstax_utilities (~> 4.2.0)
   p3p
   parallel_tests
