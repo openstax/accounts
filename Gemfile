@@ -50,7 +50,7 @@ gem 'openstax_utilities', '~> 4.2.0'
 gem 'openstax_api', '~> 8.0.0'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', '~> 1.6.0'
+gem 'openstax_rescue_from', '~> 1.7.1'
 
 # Lev framework
 gem 'lev', '~> 7.0.3'
