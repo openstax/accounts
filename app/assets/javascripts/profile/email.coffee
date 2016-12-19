@@ -10,15 +10,16 @@ class Email
     @id = this.$el.attr('data-id')
     this.$el.find('.searchable').change(@saveSearchable)
     this.$el.find('.resend-confirmation').click(@sendVerification)
-    this.$el.find('.email').click(@toggleProperties)
+    this.$el.find('.email, .unconfirmed-warning').click(@toggleProperties)
     @update()
 
   update: ->
     delBtn = this.$el.find('.delete')
+    delBtn.off('click', @confirmDelete)
     if @isOnlyVerifiedEmail()
       delBtn.hide()
     else
-      delBtn.click(@confirmDelete)
+      delBtn.on('click', @confirmDelete)
 
   toggleProperties: ->
     this.$el.toggleClass('expanded')
