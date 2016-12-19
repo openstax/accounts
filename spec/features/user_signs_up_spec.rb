@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'rails_helper'
 
 feature 'User signs up', js: true do
@@ -293,10 +294,30 @@ feature 'User signs up', js: true do
       screenshot!
     end
 
-    scenario 'submit without agreement' do
-      # TODO This could maybe be a controller spec; just want to make sure
-      # we don't let people submit on this screen without agreeing to
-      # terms.
+    scenario 'submit with invalid fields retains other values' do
+      attrs = {
+        first_name: "Bob",
+        last_name: "Smith",
+        phone_number: "999-9999",
+        school: "CC University",
+        url: "cc.com.edu",
+      }
+      complete_signup_profile_screen(
+        attrs.merge(
+          newsletter: true,
+          using_openstax: t('signup.profile.instructor_use.piloting'),
+          role: :instructor,
+          num_students: "-9", # invalid!
+          agree: true,
+        )
+      )
+      expect(page).to have_content("must be greater than or equal to 0")
+      attrs.each do |key, value|
+        expect(page).to have_field(t("signup.profile.#{key}"), with: value)
+      end
+      expect(page).to have_field("profile_using_openstax", with: t('signup.profile.instructor_use.piloting'))
+      expect(page).to have_checked_field('profile_newsletter')
+      screenshot!
     end
   end
 
