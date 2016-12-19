@@ -1,7 +1,7 @@
-<%= page_heading (t :".page_heading") %>
+<%= ox_card(classes: "copyright", heading: (t :".page_heading")) do %>
+   <p><%= t :".content_copyright_notice_html", copyright_holder: COPYRIGHT_HOLDER %></p>
 
-<p><%= t :".content_copyright_notice_html", copyright_holder: COPYRIGHT_HOLDER %></p>
+   <p><%= t :".opensource_notice_html", site_name: SITE_NAME %></p>
 
-<p><%= t :".opensource_notice_html", site_name: SITE_NAME %></p>
-
-<p><%= t :".other_copyright_notice_html", copyright_holder: COPYRIGHT_HOLDER %></p>
+   <p><%= t :".other_copyright_notice_html", copyright_holder: COPYRIGHT_HOLDER %></p>
+<% end %>
