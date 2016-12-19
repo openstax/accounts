@@ -471,7 +471,7 @@ def complete_faculty_access_apply_screen(role: nil, first_name: nil, last_name: 
   subjects.each do |subject|
     find_field(subject).set("1")
   end
-
+  page.check('profile[newsletter]') if newsletter
   click_button (t :"faculty_access.apply.submit")
   expect(page).to have_no_missing_translations
 end
