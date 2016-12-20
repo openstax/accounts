@@ -71,7 +71,7 @@ ActionController::Base.class_exec do
 
     url = params["r"]
 
-    return true unless url.present?
+    return true if url.blank?
 
     valid_hosts = Rails.application.secrets.valid_iframe_origins.map do |origin|
       URI.parse(origin).host
@@ -81,7 +81,7 @@ ActionController::Base.class_exec do
 
     uri = URI.parse(url)
 
-    return true unless valid_hosts.any?{|valid_host| uri.host.ends_with?(valid_host)}
+    return true unless uri.host.present? && valid_hosts.any?{|valid_host| uri.host.ends_with?(valid_host)}
 
     store_url(url: url)
   end
