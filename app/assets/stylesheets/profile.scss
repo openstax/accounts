@@ -86,7 +86,8 @@
     &:first-child {
       .alert { margin-top: 0; }
     }
-    .email {
+    .email,
+    .unconfirmed-warning .msg {
       color: $os_link_color;
       text-decoration: underline;
       cursor: pointer;
@@ -94,6 +95,7 @@
         text-decoration: none;
       }
     }
+    .unconfirmed-warning .msg { margin: 0 0.5rem; }
     &.verified {
       .unconfirmed-warning { display: none; }
       .resend-confirmation { display: none; }
@@ -157,6 +159,7 @@
       }
     }
     &.new {
+      .editable-click { border-bottom: 0; }
       .resend-confirmation, .unconfirmed-warning, .controls { display: none; }
     }
   }

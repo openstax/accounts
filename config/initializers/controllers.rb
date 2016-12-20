@@ -81,7 +81,7 @@ ActionController::Base.class_exec do
 
     uri = URI.parse(url)
 
-    return true unless valid_hosts.any?{|valid_host| uri.host.ends_with?(valid_host)}
+    return true unless uri.host.present? && valid_hosts.any?{|valid_host| uri.host.ends_with?(valid_host)}
 
     store_url(url: url)
   end

@@ -36,10 +36,11 @@ module ProfileHelper
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
     verify_link = is_verified ? '' : ""
-    unconfirmed_link =
-      is_verified ?
-        '' :
-        %Q[&nbsp;[ <span class='email'><span class='unconfirmed-warning'>#{I18n.t :'users.edit.unconfirmed_warning'}</span></span> ]]
+    unconfirmed_link = is_verified ? '' : <<-EOV
+      <span class='unconfirmed-warning'>[<span class='msg editable-click'>
+        #{I18n.t :'users.edit.unconfirmed_warning'}
+      </span>]</span>
+    EOV
 
     (
       <<-SNIPPET

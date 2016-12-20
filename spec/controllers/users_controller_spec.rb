@@ -5,10 +5,17 @@ RSpec.describe UsersController, type: :controller do
   let!(:user) { FactoryGirl.create :user, :terms_agreed }
 
   context 'GET edit' do
+    before(:each) { controller.sign_in! user }
+
     it 'renders the edit profile page' do
-      controller.sign_in! user
       get 'edit'
       expect(response.status).to eq 200
+    end
+
+    it 'sets headers to prevent caching' do
+      get 'edit'
+      expect(response.headers['Pragma']).to eq 'no-cache'
+      expect(response.headers['Cache-Control']).to eq('no-cache, no-store')
     end
   end
 
