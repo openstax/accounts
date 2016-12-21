@@ -383,8 +383,8 @@ en:
         If not, please enter your school email address.
 
     verify_email:
-      page_heading_pin: Enter your PIN to confirm your email
-      page_heading_token: Confirm your email
+      page_heading_pin: Check your email
+      page_heading_token: Check your email
       pin: Enter PIN
       confirm: Confirm
       used_wrong_email: Used the wrong email?
@@ -445,7 +445,7 @@ en:
       more_things_heading: And a few more things...
       phone_number: Phone number
       school: School
-      url: Your specific school web page
+      url: A web page that shows you are faculty
       num_students: Number of students per semester
       using_openstax: Already using OpenStax?
       create_account: Create Account
@@ -454,7 +454,7 @@ en:
       timeout: Please log in again to complete your sign up
 
     instructor_access_pending:
-      page_heading: Welcome to OpenStax!
+      page_heading: Almost done...
       message: >-
         Your instructor access is pending. We will verify your instructor status
         within 3-4 business days. In the meantime, you can access all books and
@@ -495,7 +495,7 @@ en:
         nope: Not using OpenStax
       phone_number: Phone number
       school: School
-      url: Your specific school web page
+      url: A web page that shows you are faculty
       num_students: Number of students per semester
       using_openstax: Already using OpenStax?
       titles_interested: Select all OpenStax titles that interest you

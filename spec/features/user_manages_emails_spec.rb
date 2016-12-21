@@ -30,6 +30,7 @@ feature 'User manages emails', js: true do
         wait_for_ajax
         find(".unconfirmed-warning").click
       }
+      capture_email!(address: 'user@mysite.com')
       expect(page).to have_no_missing_translations
       expect(page).to have_button(t :"users.edit.resend_confirmation")
       expect(page).to have_content('user@mysite.com')
