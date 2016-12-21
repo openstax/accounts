@@ -19,6 +19,12 @@ Accounts requires the repeatable read isolation level to work properly. If using
 default_transaction_isolation = 'repeatable read'
 ```
 
+## Using
+
+* OAuth requests that arrive with query param `go=signup` will skip log in and go straight to signup
+* OAuth requests that arrive with query param `signup_at=blah` will redirect users to `blah` if they click the
+link to sign up.
+
 ## Development Setup
 
 In development, Accounts can be run as a normal Rails app on your machine, or you can run it in a Vagrant virtual machine that mimics our production setup.
@@ -47,6 +53,14 @@ $ rails server
 ```
 
 which will start Accounts up on port 2999, i.e. http://localhost:2999.
+
+## Running Specs
+
+When running feature specs, the default behavior is for exceptions to be rescued and nice error pages to be shown.  This can make debugging difficult if you're not expecting an error.  To not rescue exceptions, do:
+
+```
+$ RAISE=true rspec
+```
 
 ## Background Jobs
 

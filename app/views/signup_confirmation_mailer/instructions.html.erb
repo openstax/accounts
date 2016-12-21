@@ -1,0 +1,21 @@
+<p>Welcome! Please confirm your email.</p>
+
+<p>Someone is trying to use '<%= @signup_state.contact_info_value %>' to create an OpenStax account.  If this wasn't you, please disregard this message.</p>
+
+<% if @show_pin %>
+  <p>Enter your 6-digit PIN in your browser to confirm your email address:</p>
+
+  <p>Your PIN: <b><%= @signup_state.confirmation_pin %></b></p>
+
+  <p>If you have any trouble using this PIN, you can also click the link below to confirm your email address:</p>
+<% else %>
+  <p>Click on the link below to confirm your email address:</p>
+<% end %>
+
+<%
+  token_url = signup_verify_by_token_url(code: @signup_state.confirmation_code)
+%>
+
+<p><%= link_to token_url, token_url %></p>
+
+<%= render :partial => 'shared/email_closing' %>

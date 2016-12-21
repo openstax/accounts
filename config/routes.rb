@@ -9,28 +9,34 @@ Rails.application.routes.draw do
                                      via: [:get, :post]
 
   scope controller: 'sessions' do
-    get 'signin', action: :new
+    get 'login', action: :new
+
+    post 'lookup_login'
+
+    get 'authenticate'
+
+    get 'reauthenticate'
 
     get 'auth/:provider/callback', action: :create
     post 'auth/:provider/callback', action: :create
 
-    get 'signout', action: :destroy
+    get 'logout', action: :destroy
 
     get 'redirect_back'
 
     get 'failure', path: 'auth/failure'
 
-    get 'help', path: '/signin/help', as: :signin_help
-    post 'help', path: '/signin/help'
+    post 'email_usernames'
 
     # Maintain these deprecated routes for a while until client code learns to
-    # use /signin and /signout
-    get 'login', action: :new
-    get 'logout', action: :destroy
+    # use /login and /logout
+    get 'signin', action: :new
+    get 'signout', action: :destroy
   end
 
   scope controller: 'authentications' do
     delete 'auth/:provider', action: :destroy
+    get 'add/:provider', action: :add
   end
 
   # routes for access via an iframe
@@ -45,16 +51,39 @@ Rails.application.routes.draw do
   end
 
   namespace 'signup' do
-    get '/', action: :index
+    get '/', action: :start
+    post '/', action: :start
     get 'password'
     get 'social'
-    post 'social'
+
+    get 'verify_email'
+    post 'verify_email'
+
+    get 'verify_by_token'
+
+    get 'profile'
+    post 'profile'
+
+    match 'instructor_access_pending', via: [:get, :post]
   end
 
-  resource :identity, only: :update
-  scope controller: 'identities' do
-    get 'reset_password'
-    post 'reset_password'
+  scope controller: 'identities', path: 'password', as: 'password' do
+    get 'reset'
+    post 'reset'
+
+    post 'send_reset'
+    get 'sent_reset'
+
+    post 'send_add'
+    get 'sent_add'
+
+    get 'add'
+    post 'add'
+
+    get 'reset_success'
+    get 'add_success'
+
+    get 'continue'
   end
 
   resources :contact_infos, only: [:create, :destroy] do
@@ -63,9 +92,15 @@ Rails.application.routes.draw do
       put 'resend_confirmation'
     end
   end
+
   scope controller: 'contact_infos' do
     get 'confirm'
     get 'confirm/unclaimed', action: :confirm_unclaimed
+  end
+
+  namespace 'faculty_access' do
+    match 'apply', via: [:get, :post]
+    match 'pending', via: [:get, :post]
   end
 
   resources :terms, only: [:index, :show] do
@@ -159,12 +194,18 @@ Rails.application.routes.draw do
         put :update_users
       end
     end
+
+    mount RailsSettingsUi::Engine, at: 'settings'
   end
 
   namespace 'dev' do
     resources :users, only: [:create] do
       post 'generate', on: :collection
     end
+  end
+
+  if Rails.env.test?
+    get '/external_app_for_specs' => 'external_app_for_specs#index'
   end
 
 end

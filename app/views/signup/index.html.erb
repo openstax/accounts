@@ -12,12 +12,10 @@
       <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook', id: 'facebook-login-button' do %>
         <span class="fa fa-facebook"></span> <%= t :".sign_up_with_facebook" %>
       <% end %>
-      <%#= last_signin_mark('facebook') %>
 
       <%= link_to "/auth/google_oauth2", class: 'btn btn-block btn-social btn-google', id: 'google-login-button' do %>
         <span class="fa fa-google"></span> <%= t :".sign_up_with_google" %>
       <% end %>
-      <%#= last_signin_mark('google_oauth2') %>
 
       <%= link_to "/auth/twitter", class: 'btn btn-block btn-social btn-twitter', id: 'twitter-login-button' do %>
         <span class="fa fa-twitter"></span> <%= t :".sign_up_with_twitter" %>
@@ -26,7 +24,6 @@
       <%= link_to "/signup/password", class: 'btn btn-block btn-social btn-identity', id: 'identity-login-button' do %>
         <span class="fa fa-key"></span> <%= t :".sign_up_with_password" %>
       <% end %>
-      <%#= last_signin_mark('twitter') %>
     </div>
 
   </div>
@@ -41,7 +38,7 @@
       <p class='already-have-account'>
         <%= t :".already_have_an_account.content_html",
               link: (link_to (t :".already_have_an_account.sign_in"),
-                             signin_path)
+                             login_path)
             %>
       </p>
     </div>

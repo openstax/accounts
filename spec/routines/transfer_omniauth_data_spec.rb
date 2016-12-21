@@ -2,6 +2,21 @@ require 'rails_helper'
 
 describe TransferOmniauthData do
 
+  context 'when names are not blank' do
+    it 'does not update but does persist' do
+      user = FactoryGirl.build :user
+      names = user.first_name, user.last_name
+      data = OmniauthData.new({provider: 'twitter', uid: '12345678', info: {
+        first_name: 'User',
+        last_name: 'One'
+      }})
+      TransferOmniauthData.call(data, user)
+      expect(user.first_name).to eq(names.first)
+      expect(user.last_name).to eq(names.last)
+      expect(user).to be_persisted
+    end
+  end
+
   context 'when auth provider is facebook' do
     it 'stores user information' do
       auth_hash = OmniAuth::AuthHash.new provider: 'facebook', uid: '1234567890'
@@ -36,8 +51,10 @@ describe TransferOmniauthData do
       }
       data = OmniauthData.new(auth_hash)
 
-      user = FactoryGirl.create :user
+      user = FactoryGirl.build :user, first_name: '', last_name: ''
       TransferOmniauthData.call(data, user)
+      expect(user.first_name).to eq('User')
+      expect(user.last_name).to eq('One')
       expect(user.contact_infos.length).to eq(1)
       expect(user.contact_infos[0].type).to eq('EmailAddress')
       expect(user.contact_infos[0].value).to eq('user@example.com')
@@ -47,7 +64,7 @@ describe TransferOmniauthData do
 
   context 'when auth provider is twitter' do
     it 'stores user information' do
-      user = FactoryGirl.create :user
+      user = FactoryGirl.build :user, first_name: '', last_name: ''
       auth_hash = OmniAuth::AuthHash.new provider: 'twitter', uid: '12345678'
       auth_hash.extra = {
         oauth_token: '12345678-abcdefg',
@@ -85,13 +102,15 @@ describe TransferOmniauthData do
       }
       data = OmniauthData.new(auth_hash)
       TransferOmniauthData.call(data, user)
+      expect(user.first_name).to eq('User')
+      expect(user.last_name).to eq('N. One')
       expect(user.contact_infos).to be_empty
     end
   end
 
   context 'when auth provider is google' do
     it 'stores user information' do
-      user = FactoryGirl.create :user
+      user = FactoryGirl.build :user, first_name: '', last_name: '', username: ''
       auth_hash = OmniAuth::AuthHash.new provider: 'google_oauth2', uid: '12345678901234567890'
       auth_hash.extra = {
         id_token: 'SoMeLoNgRaNdOmStRiNg',
@@ -119,6 +138,8 @@ describe TransferOmniauthData do
       }
       data = OmniauthData.new(auth_hash)
       TransferOmniauthData.call(data, user)
+      expect(user.first_name).to eq('User')
+      expect(user.last_name).to eq('One')
       expect(user.contact_infos.length).to eq(1)
       expect(user.contact_infos[0].type).to eq('EmailAddress')
       expect(user.contact_infos[0].value).to eq('user@example.com')

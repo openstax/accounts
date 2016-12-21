@@ -1,24 +1,52 @@
 require 'rails_helper'
 
 describe SignInHelpMailer, type: :mailer do
-  describe 'basic features' do
-    before :each do
-      @user = FactoryGirl.create :user, username: 'user1', first_name: 'John', last_name: 'Doe', suffix: 'Jr.'
-      FactoryGirl.create :authentication, provider: 'identity', user: @user
-      FactoryGirl.create :identity, user: @user
-      @email = FactoryGirl.create :email_address, user: @user
-      @mail = SignInHelpMailer.sign_in_help user: @user, email_address: @email.value, reset_password_code: '1234'
-    end
+
+  context "multiple_accounts" do
+    let(:mail) { SignInHelpMailer.multiple_accounts email_address: "bob@bob.com", usernames: ["bob", "bobby"] }
 
     it 'renders the headers' do
-      expect(@mail.subject).to eq('[OpenStax] Instructions for signing in to your OpenStax account')
-      expect(@mail.header['to'].to_s).to eq("\"John Doe Jr.\" <#{@email.value}>")
-      expect(@mail.from).to eq(['noreply@openstax.org'])
+      expect(mail.subject).to eq('[OpenStax] Your OpenStax usernames')
+      expect(mail.header['to'].to_s).to eq("bob@bob.com")
+      expect(mail.from).to eq(['noreply@openstax.org'])
     end
 
     it 'renders the body' do
-      expect(@mail.body.encoded).to include('Hi John')
-      expect(@mail.body.encoded).to include('http://localhost:2999/reset_password?code=1234')
+      expect(mail.body.encoded).to include('Your email address, <b>bob@bob.com</b>')
+      expect(mail.body.encoded).to include('are: <b>bob</b> and <b>bobby</b>')
     end
   end
+
+  context "reset_password" do
+    let(:user) { OpenStruct.new(full_name: "Big Bob", login_token: "1234", casual_name: "Big") }
+    let(:mail) { SignInHelpMailer.reset_password user: user, email_address: "bob@bob.com" }
+
+    it 'renders the headers' do
+      expect(mail.subject).to eq('[OpenStax] Reset your OpenStax password')
+      expect(mail.header['to'].value).to eq("\"Big Bob\" <bob@bob.com>")
+      expect(mail.from).to eq(['noreply@openstax.org'])
+    end
+
+    it 'renders the body' do
+      expect(mail.body.encoded).to include('Hi Big,')
+      expect(mail.body.encoded).to include('password/reset?token=1234')
+    end
+  end
+
+  context "add_password" do
+    let(:user) { OpenStruct.new(full_name: "Big Bob", login_token: "1234", casual_name: "Big") }
+    let(:mail) { SignInHelpMailer.add_password user: user, email_address: "bob@bob.com" }
+
+    it 'renders the headers' do
+      expect(mail.subject).to eq('[OpenStax] Add a password to your OpenStax account')
+      expect(mail.header['to'].value).to eq("\"Big Bob\" <bob@bob.com>")
+      expect(mail.from).to eq(['noreply@openstax.org'])
+    end
+
+    it 'renders the body' do
+      expect(mail.body.encoded).to include('Hi Big,')
+      expect(mail.body.encoded).to include('password/add?token=1234')
+    end
+  end
+
 end

@@ -3,13 +3,22 @@ class ConfirmByPin
 
   uses_routine ConfirmContactInfo
 
-  MAX_PIN_FAILURES = 5
-
   def self.sequential_failure_for(contact_info)
-    SequentialFailure.confirm_by_pin
-                     .find_or_initialize_by(reference: contact_info.value).tap do |sf|
-      sf.num_failures_allowed = MAX_PIN_FAILURES
+    value_method = case contact_info
+    when ContactInfo
+      :value
+    when SignupState
+      :contact_info_value
     end
+
+    SequentialFailure.confirm_by_pin
+                     .find_or_initialize_by(reference: contact_info.send(value_method)).tap do |sf|
+      sf.num_failures_allowed = max_pin_failures
+    end
+  end
+
+  def self.max_pin_failures
+    12
   end
 
   protected

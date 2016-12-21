@@ -19,13 +19,18 @@ class ContactInfo < ActiveRecord::Base
 
   scope :verified, -> { where(verified: true) }
   sifter :verified do verified.eq true end
+  scope :unverified, -> { where(verified: false) }
 
   scope :with_users, lambda { joins(:user).eager_load(:user) }
 
   before_save :add_unread_update
+  before_destroy :check_if_last_verified
+  before_save :check_for_verified_collision
 
   def confirmed;  verified;  end
   def confirmed?; verified?; end
+
+  def email?; type == 'EmailAddress' end
 
   def to_subclass
     return self unless valid?
@@ -36,9 +41,31 @@ class ContactInfo < ActiveRecord::Base
     user.add_unread_update
   end
 
+  def init_confirmation_pin!
+    self.confirmation_pin ||= TokenMaker.contact_info_confirmation_pin
+  end
+
+  def init_confirmation_code!
+    self.confirmation_code ||= TokenMaker.contact_info_confirmation_code
+  end
+
   protected
 
   def strip
     self.value = self.value.try(:strip)
+  end
+
+  def check_if_last_verified
+    if verified? and not user.contact_infos.verified.many? and not destroyed_by_association
+      errors.add(:user, 'unable to delete last verified email address')
+      return false
+    end
+  end
+
+  def check_for_verified_collision
+    if verified? && ContactInfo.verified.where(value: value).where{id != my{id}}.any?
+      errors.add(:value, 'already confirmed on another account')
+    end
+    errors.none?
   end
 end

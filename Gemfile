@@ -30,7 +30,7 @@ gem 'doorkeeper', '2.2.2'
 # OAuth clients
 gem 'omniauth'
 gem 'omniauth-identity'
-gem 'omniauth-facebook'
+gem 'omniauth-facebook', '~>3.0.0'
 gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
@@ -50,7 +50,7 @@ gem 'openstax_utilities', '~> 4.2.0'
 gem 'openstax_api', '~> 8.0.0'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', '~> 1.6.0'
+gem 'openstax_rescue_from', '~> 1.7.1'
 
 # Lev framework
 gem 'lev', '~> 7.0.3'
@@ -128,6 +128,10 @@ gem 'oj'
 # Replace JSON with Oj
 gem 'oj_mimic_json'
 
+# Admin toggles
+gem 'rails-settings-ui'
+gem 'rails-settings-cached'
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails'
@@ -150,19 +154,28 @@ group :development, :test do
   # Fixture replacement
   gem 'factory_girl_rails'
 
+  # fake data generation
+  gem 'faker'
+
   # Time travel
   gem 'timecop'
 
   # Coveralls integration
   gem 'coveralls', require: false
+  # Speedup and run specs when files change
+  gem 'spring'
+  gem 'spring-commands-rspec'
+  gem 'guard-rspec'
+  gem 'guard-livereload', '~> 2.5', require: false
 end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
 
+  gem  'i18n-tasks', '~> 0.9.6'
   # Speedup and run specs when files change
-  gem 'spring'
+
 end
 
 group :test do
@@ -175,14 +188,17 @@ group :test do
   # CodeClimate integration
   gem "codeclimate-test-reporter", require: false
   gem 'db-query-matchers'
-  # Headless Capybara webkit driver
-  gem 'capybara-webkit'
-
+  # Headless Capybara driver
+  gem 'poltergeist'
   # Testing emails
   gem 'capybara-email'
 
   # Fake in-memory Redis for testing
-  gem 'fakeredis'
+  gem 'fakeredis', require: 'fakeredis/rspec'
+
+  gem 'launchy'
+
+  gem 'capybara-screenshot', require: false
 end
 
 group :production do

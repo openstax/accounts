@@ -8,7 +8,7 @@ module Admin
 
     if Rails.env.development?
       skip_before_filter :authenticate_user!
-      skip_before_filter :finish_sign_up
+      skip_before_filter :complete_signup_profile
 
       fine_print_skip :general_terms_of_use, :privacy_policy
     else

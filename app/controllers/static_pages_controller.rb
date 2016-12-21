@@ -1,7 +1,7 @@
 class StaticPagesController < ApplicationController
   skip_before_filter :authenticate_user!, only: [:api, :copyright, :home, :status]
 
-  skip_before_filter :finish_sign_up, only: [:api, :copyright, :status]
+  skip_before_filter :complete_signup_profile, only: [:api, :copyright, :status]
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:api, :copyright, :status]
 
@@ -19,8 +19,7 @@ class StaticPagesController < ApplicationController
     if signed_in?
       redirect_to profile_path
     else
-      store_url # needed for happy login flow, authenticate_user! does it too
-      redirect_to signin_path
+      authenticate_user!
     end
   end
 

@@ -24,7 +24,7 @@ describe ConfirmByPin do
   end
 
   it 'eventually runs out of available attempts' do
-    ConfirmByPin::MAX_PIN_FAILURES.times {
+    ConfirmByPin.max_pin_failures.times {
       expect(
         described_class.call(contact_info: contact_info, pin: "whatever")
       ).to have_routine_error(:pin_not_correct)
@@ -40,7 +40,7 @@ describe ConfirmByPin do
       SequentialFailure.create!(
         kind: :confirm_by_pin,
         reference: "bob@example.com",
-        length: ConfirmByPin::MAX_PIN_FAILURES
+        length: ConfirmByPin.max_pin_failures
       )
     }
 
@@ -59,11 +59,14 @@ describe ConfirmByPin do
       ).to have_routine_error(:no_pin_confirmation_attempts_remaining)
     end
 
-    it 'can succeed after other contact info with same value is confirmed (would be by code)' do
+    it 'fails by code after other contact info with same value is confirmed' do
       other_user = FactoryGirl.create(:user)
-      AddEmailToUser.call("bob@example.com", other_user)
-      other_contact_info = other_user.contact_infos.first
 
+      AddEmailToUser.call("bob-2@example.com", other_user)
+      other_contact_info = other_user.contact_infos.last
+      ContactInfo.where(id: other_contact_info.id).update_all(value: 'bob@example.com')
+
+      other_contact_info.reload
       expect(
         described_class.call(contact_info: contact_info, pin: contact_info.confirmation_pin)
       ).to have_routine_error(:no_pin_confirmation_attempts_remaining)
@@ -75,7 +78,7 @@ describe ConfirmByPin do
       ConfirmByCode.call(contact_info.confirmation_code)
 
       described_class.call(contact_info: other_contact_info, pin: other_contact_info.confirmation_pin)
-      expect(other_contact_info.reload).to be_confirmed
+      expect(other_contact_info.reload).not_to be_confirmed
     end
   end
 

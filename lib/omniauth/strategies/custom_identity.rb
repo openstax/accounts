@@ -14,16 +14,23 @@ module OmniAuth
       NullSession = ActionController::RequestForgeryProtection::ProtectionMethods::NullSession
 
       LOGIN_ATTEMPTS_PERIOD = 1.hour
-      MAX_LOGIN_ATTEMPTS_PER_USER = 10
+      MAX_LOGIN_ATTEMPTS_PER_USER = 12
       MAX_LOGIN_ATTEMPTS_PER_IP = 10000
 
       include OmniAuth::Strategy
-      include SignInState
+      include UserSessionManagement
       include ContractsNotRequired
 
       # Request forgery protection
       include ActiveSupport::Configurable
       include ActionController::RequestForgeryProtection
+
+      # This is defined in RequestForgeryProtection, but since this file isn't ActionController
+      # it doesn't pick up that code's setting, which is what we want so this CustomIdentity
+      # has the same CSRF behavior as controllers
+      def protect_against_forgery?
+        ActionController::Base.allow_forgery_protection
+      end
 
       #
       # Strategy stuff
@@ -31,9 +38,9 @@ module OmniAuth
 
       option :fields, [:username, :first_name, :last_name]
       option(:locate_conditions, lambda do |req|
-        auth_key = req.params['auth_key'].try(:strip)
-        contacts = ContactInfo.verified.where(value: auth_key).preload(:user)
-        users = [User.find_by(username: auth_key) || contacts.map(&:user)].flatten
+        users = LookupUsers.by_email_or_username(
+          req.params['login'].try(:[], 'username_or_email')
+        )
         users_returned = users.size
         user = users.first if users_returned == 1
         user_id = user.try :id
@@ -92,7 +99,15 @@ module OmniAuth
           elsif locate_conditions[:users_returned] > 1
             :multiple_users
           else
-            :bad_password
+            source = request.params["login"]["source"]
+            case source
+            when "authenticate"
+              :bad_authenticate_password
+            when "reauthenticate"
+              :bad_reauthenticate_password
+            else
+              raise IllegalArgument, "Unknown password error source: #{source}"
+            end
           end
 
           fail_with_log!(reason)
@@ -132,29 +147,28 @@ module OmniAuth
             if Rails.logger && log_warning_on_csrf_failure
 
           handle_unverified_request
-        end
-
-        @handler_result =
-          SignupPassword.handle(
-            params: request,
-            caller: current_user,
-            contracts_required: !contracts_not_required(
-              client_id: request['client_id'] || session['client_id']
-            )
-          )
-
-        env['errors'] = @handler_result.errors
-
-        if @handler_result.errors.none?
-          @identity = @handler_result.outputs[:identity]
-          env['PATH_INFO'] = callback_path
-          callback_phase
+          SessionsController.action(:new).call(env)
         else
-          show_signup_form
+          @handler_result =
+            SignupPassword.handle(
+              params: request,
+              caller: current_user,
+              signup_state: signup_state
+            )
+
+          env['errors'] = @handler_result.errors
+
+          if @handler_result.errors.none?
+            @identity = @handler_result.outputs[:identity]
+            env['PATH_INFO'] = callback_path
+            callback_phase
+          else
+            show_signup_password_form
+          end
         end
       end
 
-      def show_signup_form
+      def show_signup_password_form
         SignupController.action(:password).call(env)
       end
 
@@ -167,7 +181,10 @@ module OmniAuth
       end
 
       def identity
-        @identity ||= model.authenticate(locate_conditions.slice(:user_id), request['password'])
+        @identity ||= model.authenticate(
+          locate_conditions.slice(:user_id),
+          request.params['login'].try(:[], 'password')
+        )
       end
 
       def locate_conditions

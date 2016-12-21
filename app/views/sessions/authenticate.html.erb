@@ -1,0 +1,10 @@
+<%
+  login_state = get_login_state
+  names = login_state[:names] || []
+%>
+
+<%= ox_card(classes: "login", heading: (t :'.name_greeting', name: names.first)) do %>
+
+  <%= render partial: 'authenticate_options', locals: {source: 'authenticate'} %>
+
+<% end %>

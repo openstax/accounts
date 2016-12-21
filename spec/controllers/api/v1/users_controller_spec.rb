@@ -53,19 +53,10 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
       expected_response = {
         total_count: 1,
-        items: [
-          {
-            id: user_2.id,
-            username: user_2.username,
-            first_name: user_2.first_name,
-            last_name: user_2.last_name,
-            full_name: user_2.full_name,
-            uuid: user_2.uuid
-          }
-        ]
-      }.to_json
+        items: [ user_matcher(user_2, include_private_data: true) ]
+      }
 
-      expect(response.body).to eq(expected_response)
+      expect(response.body_as_hash).to match(expected_response)
     end
 
     it "should allow sort by multiple fields in different directions" do
@@ -100,16 +91,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
     it "should not let id be specified" do
       api_get :show, user_1_token, parameters: {id: admin_user.id}
-
-      expected_response = {
-        id: user_1.id,
-        username: user_1.username,
-        uuid: user_1.uuid,
-        faculty_status: user_1.faculty_status,
-        contact_infos: []
-      }.to_json
-
-      expect(response.body).to eq(expected_response)
+      expected_response = user_matcher(user_1, include_private_data: true)
+      expect(response.body_as_hash).to match(expected_response)
     end
 
     it "should not let an application get a User without a token" do
@@ -119,16 +102,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
     it "should return a properly formatted JSON response for low-info user" do
       api_get :show, user_1_token
-
-      expected_response = {
-        id: user_1.id,
-        username: user_1.username,
-        uuid: user_1.uuid,
-        faculty_status: user_1.faculty_status,
-        contact_infos: []
-      }.to_json
-
-      expect(response.body).to eq(expected_response)
+      expected_response = user_matcher(user_1, include_private_data: true)
+      expect(response.body_as_hash).to eq(expected_response)
     end
 
     it "should return a properly formatted JSON response for user with name" do
@@ -137,15 +112,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
       api_get :show, user_2_token
 
-      expect(response.body_as_hash).to include(
-        id: user_2.id,
-        username: user_2.username,
-        first_name: user_2.first_name,
-        last_name: user_2.last_name,
-        full_name: user_2.full_name,
-        faculty_status: user_1.faculty_status,
-        salesforce_contact_id: 'blah',
-      )
+      expect(response.body_as_hash).to match(user_matcher(user_2, include_private_data: true))
     end
 
     it 'should include contact infos' do
@@ -155,7 +122,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       ConfirmContactInfo.call(confirmed_email)
 
       over_pinned_email = AddEmailToUser.call("over_pinned@example.com", user_1).outputs.email
-      ConfirmByPin::MAX_PIN_FAILURES.times { ConfirmByPin.call(contact_info: over_pinned_email, pin: "whatever") }
+      ConfirmByPin.max_pin_failures.times { ConfirmByPin.call(contact_info: over_pinned_email, pin: "whatever") }
 
       api_get :show, user_1_token
 
@@ -165,7 +132,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
           type: "EmailAddress",
           value: "unconfirmed@example.com",
           is_verified: false,
-          num_pin_verification_attempts_remaining: 5
+          num_pin_verification_attempts_remaining: ConfirmByPin.max_pin_failures
         },
         {
           id: confirmed_email.id,
@@ -180,6 +147,16 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
           is_verified: false,
           num_pin_verification_attempts_remaining: 0
         }
+      )
+    end
+
+    it "should include self_reported_school when present" do
+      user_2.self_reported_school = "Rice University"
+      user_2.save
+
+      api_get :show, user_2_token
+      expect(response.body_as_hash).to include(
+        self_reported_school: "Rice University",
       )
     end
 
@@ -235,7 +212,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       expect{
         api_post :find_or_create,
                  trusted_application_token,
-                 raw_post_data: {email: 'a-new-email@test.com'}
+                 raw_post_data: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('201')
       new_user_id = User.order(:id).last.id

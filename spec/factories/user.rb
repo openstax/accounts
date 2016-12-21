@@ -2,7 +2,8 @@ FactoryGirl.define do
   factory :user do
     username { SecureRandom.hex(3) }
     state 'activated' # otherwise the default from DB will be to 'temp'
-
+    first_name { Faker::Name.first_name }
+    last_name  { Faker::Name.last_name  }
     trait :admin do
       is_administrator true
     end
@@ -37,7 +38,8 @@ FactoryGirl.define do
 
       after(:build) do |user, evaluator|
         evaluator.emails_count.times do
-          user.contact_infos << FactoryGirl.build(:email_address)
+          # make sure build email with nil user so don't make extra unexpected users
+          user.contact_infos << FactoryGirl.build(:email_address, user: nil)
         end
       end
     end

@@ -1,5 +1,5 @@
 class TermsController < ApplicationController
-  skip_before_filter :authenticate_user!, :finish_sign_up, only: [:index, :show]
+  skip_before_filter :authenticate_user!, :complete_signup_profile, only: [:index, :show]
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
@@ -21,6 +21,7 @@ class TermsController < ApplicationController
     # Prevent routing error email when accessing this route for HTML format
     respond_to do |format|
       format.js
+      format.html
     end
   end
 

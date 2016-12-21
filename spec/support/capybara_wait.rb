@@ -9,15 +9,19 @@ module CapybaraWait
   end
 
   def finished_all_ajax_requests?
-    page.evaluate_script('jQuery.active').zero?
+    has_jquery? ? page.evaluate_script('jQuery.active').zero? : true
   end
 
   def wait_for_animations(timeout = Capybara.default_max_wait_time, interval = 0.1)
     wait_until(timeout, interval) { finished_all_animations? }
   end
 
+  def has_jquery?
+    page.evaluate_script('typeof(jQuery) == "undefined"') == false
+  end
+
   def finished_all_animations?
-    page.evaluate_script('$(":animated").length').zero?
+    has_jquery? ? page.evaluate_script('$(":animated").length').zero? : true
   end
 end
 

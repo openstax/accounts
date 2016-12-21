@@ -8,9 +8,10 @@ feature 'Add application to accounts', js: true do
 
   scenario 'as an admin user' do
     create_admin_user
-    visit '/signin'
-    signin_as 'admin'
-    expect(page).to have_content('Welcome, admin')
+    visit '/'
+    complete_login_username_or_email_screen('admin')
+    complete_login_password_screen('password')
+
     visit '/oauth/applications'
     expect(page).to have_content('OAuth Applications')
     create_new_application(true)
@@ -24,8 +25,9 @@ feature 'Add application to accounts', js: true do
 
   scenario 'as a normal local user' do
     create_user 'user'
-    visit '/signin'
-    signin_as 'user'
+    visit '/'
+    complete_login_username_or_email_screen('user')
+    complete_login_password_screen('password')
 
     visit '/oauth/applications/new'
     expect(page).to have_http_status :forbidden

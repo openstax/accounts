@@ -1,5 +1,22 @@
-<% @hide_session_info = true %>
+<%= ox_card(heading: (t :'.page_heading')) do %>
 
-<% page_heading (t :".page_heading") %>
+    <div class="button-form-group">
+      <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook', id: 'facebook-login-button' do %>
+        <span class="fa fa-facebook"></span> <%= t :".facebook" %>
+      <% end %>
 
-<%= render partial: 'new_account', locals: { url: signup_social_path } %>
+      <%= link_to "/auth/google_oauth2", class: 'btn btn-block btn-social btn-google', id: 'google-login-button' do %>
+        <span class="fa fa-google"></span> <%= t :".google" %>
+      <% end %>
+    </div>
+
+    <div style="padding:30px 0 10px">
+      <p><%= t :".openstax_wont_use_social_media_without_permission_html" %></p>
+    </div>
+
+    <p>
+      Don't want to use one of these?<br/>
+      <%= link_to (t :".use_password"), signup_password_path %>.
+    </p>
+
+<% end %>

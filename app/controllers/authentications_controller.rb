@@ -24,4 +24,9 @@ class AuthenticationsController < ApplicationController
     )
   end
 
+  # This wrapper of the oauth route exists to do reauth before adding
+  def add
+    redirect_to "/auth/#{params[:provider]}"
+  end
+
 end

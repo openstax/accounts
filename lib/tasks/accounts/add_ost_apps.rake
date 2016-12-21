@@ -5,10 +5,28 @@
 namespace :accounts do
   namespace :ost do
     # These are the apps that we want to create
-    app_data = [{name: "OpenStax Exercises", prefix: "exercises"},
-                {name: "OpenStax Tutor", prefix: "tutor", skip_terms: true},
-                {name: "OpenStax Exchange", prefix: "exchange"},
-                {name: "OpenStax BigLearn", prefix: "biglearn"}]
+    app_data = [
+      {
+        name: "OpenStax Exercises",
+        prefix: "exercises"
+      },
+      {
+        name: "OpenStax Tutor",
+        prefix: "tutor",
+        skip_terms: true,
+        extra_redirect_paths: [
+          "signup"
+        ]
+      },
+      {
+        name: "OpenStax Exchange",
+        prefix: "exchange"
+      },
+      {
+        name: "OpenStax BigLearn",
+        prefix: "biglearn"
+      }
+    ]
     desc "Manage applications for exercises, exchange, tutor and biglearn"
 
     # This task creates applications based on the given parameters.
@@ -31,6 +49,7 @@ namespace :accounts do
           identity = Identity.find_or_create_by(user_id: user.id) do |new_identity|
             new_identity.password = password
             new_identity.password_confirmation = password
+            new_identity.user = user
             new_identity.save!
           end
           app_owner_group.add_owner(user)
@@ -39,27 +58,30 @@ namespace :accounts do
             new_auth.user_id = user.id
             new_auth.save!
           end
+
           # For each app above, create and assign defaults if it doesn't exist
-          cb_path = "accounts/auth/openstax/callback"
           app_data.each do |app|
             # If the suffix parameter starts with `http` assume that
             # the entire hostname is given with a placeholder for the
             # app name (`<app>`).  Otherwise use the default url
             # pattern to construct the redirect url.
-            if suffix.start_with?('http')
-              url = "#{suffix.gsub('<app>', app[:prefix])}/#{cb_path}"
-            else
-              url = "https://#{app[:prefix]}#{suffix}.openstax.org/#{cb_path}"
-            end
+            redirect_paths = (app[:extra_redirect_paths] || []).unshift("accounts/auth/openstax/callback")
+
+            redirect_url_base = suffix.start_with?('http') ?
+                                  "#{suffix.gsub('<app>', app[:prefix])}/" :
+                                  "https://#{app[:prefix]}#{suffix}.openstax.org/"
+
+            redirect_urls = redirect_paths.map{|path| "#{redirect_url_base}#{path}"}.join("\n")
+
             Doorkeeper::Application.find_or_create_by(name: app[:name]) do |application|
-              application.redirect_uri = url
+              application.redirect_uri = redirect_urls
               application.owner = app_owner_group
               application.trusted = true
               application.email_from_address = "noreply@#{app[:prefix]}.openstax.org"
               application.email_subject_prefix = "[#{app[:name]}]"
               application.skip_terms = app[:skip_terms] || false
               application.save!
-              puts "Created #{app[:name]} with return url @ #{url}"
+              puts "Created #{app[:name]} with return url @ #{redirect_urls.split("\n").first}"
             end
           end
         rescue Exception => e

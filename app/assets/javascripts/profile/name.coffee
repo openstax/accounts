@@ -2,6 +2,20 @@
 
 class OX.Profile.Name
 
+  @editable: (el, attribs) ->
+    el.editable(
+      value: attribs,
+      success: (response) -> $(@).html(response.full_name)
+      validate: (attrs) ->
+        required = " can't be blank"
+        if not attrs.first_name and not attrs.last_name
+          "First and last name #{required}"
+        else if not attrs.first_name
+          "First name #{required}"
+        else if not attrs.last_name
+          "Last name #{required}"
+    )
+
   @defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults,
     tpl: '''
        <div><input type="text" name="title" class="form-control input-sm" placeholder="Title"></div>
@@ -10,10 +24,12 @@ class OX.Profile.Name
        <div><input type="text" name="suffix" class="form-control input-sm" placeholder="Suffix"></div>
     '''
     inputclass: ''
+
   )
 
   constructor: (options) ->
     this.init('profile_name', options, OX.Profile.Name.defaults)
+
 
 $.fn.editabletypes.profile_name = OX.Profile.Name
 $.fn.editableutils.inherit(OX.Profile.Name, $.fn.editabletypes.abstractinput)

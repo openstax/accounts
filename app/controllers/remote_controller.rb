@@ -1,11 +1,12 @@
 class RemoteController < ApplicationController
 
   skip_before_filter :authenticate_user!, only: [:iframe, :notify_logout]
-  skip_before_filter :finish_sign_up,     only: [:iframe]
-  skip_before_filter :expired_password,   only: [:iframe]
+  skip_before_filter :complete_signup_profile,     only: [:iframe]
+  skip_before_filter :check_if_password_expired,   only: [:iframe]
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:iframe]
 
-  before_filter :validate_iframe_parent, only: [:iframe, :notify_logout]
+  before_filter :require_parent_param, only: [:iframe, :notify_logout]
+  before_filter :allow_iframe_access, only: [:iframe, :notify_logout]
 
   layout false
 
@@ -19,13 +20,11 @@ class RemoteController < ApplicationController
   def notify_logout
   end
 
-  private
+  protected
 
-  def validate_iframe_parent
-    @iframe_parent = params[:parent]
-    valid_origins = Rails.application.secrets[:valid_iframe_origins] || []
-    unless valid_origins.any?{|origin| @iframe_parent =~ /^#{origin}/ }
-      raise SecurityTransgression.new("#{@iframe_parent} is not allowed to iframe content")
+  def require_parent_param
+    if params[:parent].blank?
+      raise SecurityTransgression.new("must supply valid 'parent' query parameter")
     end
   end
 

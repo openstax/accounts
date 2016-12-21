@@ -34,7 +34,8 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         click_link (t :"layouts.application_header.sign_out")
 
         log_in_correctly_with_username(password: '1234abcd')
-        expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+        # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+        expect_profile_page
       end
     end
 
@@ -57,7 +58,8 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
-          expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+          expect_profile_page
+          # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
     end
@@ -87,7 +89,8 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         click_link (t :"layouts.application_header.sign_out")
 
         log_in_correctly_with_email(password: '1234abcd')
-        expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+        expect_profile_page
+        # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
       end
     end
 
@@ -111,13 +114,22 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_email
-          expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+          expect_profile_page
+          # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
     end
   end
 
-  context 'with random usernames' do
+  xcontext 'with random usernames' do
+    # TODO the spec as written doesn't work because a bad username is not something we
+    # take special note of any more (since we only test password/social auth after
+    # user has already gotten past the username/email screen).  We could potentially
+    # add a security_log event to detect when a bad username is entered and then test
+    # that the IP address gets locked out here.
+    #
+    # If we do bring this spec back, we will need to update log_in_bad_everything
+    # because that method expects to see the password page even tho the username is bad.
     scenario 'getting their ip unblocked after 1 hour' do
       with_forgery_protection do
         create_user 'user'
@@ -137,52 +149,37 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
-          expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
+          expect_profile_page
         end
       end
     end
   end
 
-  def log_in(username_or_email:, password:)
-    visit '/'
-    expect_sign_in_page
-    fill_in (t :"sessions.new.username_or_email"), with: username_or_email
-    fill_in (t :"sessions.new.password"), with: password
-    click_button (t :"sessions.new.sign_in")
-    expect(page).to have_no_missing_translations
-  end
-
   def log_in_good_username_bad_password
-    log_in(username_or_email: 'user', password: SecureRandom.hex)
+    log_in('user', SecureRandom.hex)
   end
 
   def log_in_good_email_bad_password
-    log_in(username_or_email: 'user@example.com', password: SecureRandom.hex)
+    log_in('user@example.com', SecureRandom.hex)
   end
 
   def log_in_bad_everything
-    log_in(username_or_email: SecureRandom.hex, password: SecureRandom.hex)
+    log_in(SecureRandom.hex, SecureRandom.hex)
   end
 
   def log_in_correctly_with_username(password: 'password')
-    log_in(username_or_email: 'user', password: password)
+    log_in('user', password)
   end
 
   def log_in_correctly_with_email(password: 'password')
-    log_in(username_or_email: 'user@example.com', password: password)
+    log_in('user@example.com', password)
   end
 
   def reset_password(password:)
-    reset_code = generate_reset_code_for 'user'
-    visit "/reset_password?code=#{reset_code}"
-    expect(page).not_to have_content(t :"handlers.identities_reset_password.reset_link_is_invalid")
-    expect(page).to have_content(t :"identities.reset_password.confirm_password")
-    fill_in (t :"identities.reset_password.password"), with: password
-    fill_in (t :"identities.reset_password.confirm_password"), with: password
-    click_button (t :"identities.reset_password.set_password")
-    expect(page).to have_content(
-      t :"controllers.identities.password_reset_successfully"
-    )
+    login_token = generate_login_token_for 'user'
+    visit password_reset_path(token: login_token)
+    complete_reset_password_screen(password)
+    complete_reset_password_success_screen
   end
 
 end

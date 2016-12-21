@@ -8,14 +8,16 @@ ActionController::Base.class_exec do
 
   include OSU::OsuHelper
   include ApplicationHelper
-  include SignInState
+  include UserSessionManagement
   include LocaleSelector
+  include RequireRecentSignin
 
-  helper OSU::OsuHelper, ApplicationHelper, SignInState
+  helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
+  before_filter :save_redirect
   before_filter :authenticate_user!
-  before_filter :finish_sign_up
-  before_filter :expired_password
+  before_filter :complete_signup_profile
+  before_filter :check_if_password_expired
   before_filter :set_locale
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
@@ -42,37 +44,46 @@ ActionController::Base.class_exec do
   end
 
   def disable_fine_print
+    request.options? ||
     contracts_not_required(client_id: params[:client_id] || session[:client_id]) ||
     current_user.is_anonymous?
   end
 
   include ContractsNotRequired
 
-  def finish_sign_up
-    return true if request.format != :html
-    return unless current_user.is_new_social?
-    redirect_to signup_social_path
+  def complete_signup_profile
+    return true if request.format != :html || request.options?
+    redirect_to signup_profile_path if current_user.is_needs_profile?
   end
 
-  def expired_password
-    return true if request.format != :html
+  def check_if_password_expired
+    return true if request.format != :html || request.options?
 
     identity = current_user.identity
     return unless identity.try(:password_expired?)
 
-    code = GeneratePasswordResetCode.call(identity).outputs[:code]
-    code_hash = { code: code }
-    store_url key: :password_return_to
-
-    redirect_to reset_password_path(code_hash)
+    flash[:alert] = I18n.t :"controllers.identities.password_expired"
+    redirect_to password_reset_path
   end
 
-  def set_last_signin_provider(provider)
-    session[:last_signin_provider] = provider
-  end
+  def save_redirect
+    return true if request.format != :html || request.options?
 
-  def last_signin_provider
-    session[:last_signin_provider]
+    url = params["r"]
+
+    return true if url.blank?
+
+    valid_hosts = Rails.application.secrets.valid_iframe_origins.map do |origin|
+      URI.parse(origin).host
+    end
+
+    valid_hosts.unshift("127.0.0.1") if !Rails.env.production?
+
+    uri = URI.parse(url)
+
+    return true unless uri.host.present? && valid_hosts.any?{|valid_host| uri.host.ends_with?(valid_host)}
+
+    store_url(url: url)
   end
 
 end

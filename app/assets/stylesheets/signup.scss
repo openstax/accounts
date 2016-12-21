@@ -1,0 +1,24 @@
+body.signup {
+
+  // elements which are conditionally displayed depending on signup state
+  #signup_email:not([value]), .audience-help, .edu.warning {
+    display: none;
+  }
+
+  @import "controls/subjects_multi_select";
+
+  .newsletter {
+    margin: 20px 0px 20px;
+  }
+
+  .agree {
+    margin-bottom: 16px;
+  }
+
+  .checkbox {
+    input {
+      margin-top: 2px;
+    }
+  }
+
+}

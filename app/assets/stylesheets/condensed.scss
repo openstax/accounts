@@ -1,85 +1,26 @@
 body.condensed {
 
+  background: white;
+
+  #application-header,
+  #application-footer,
+  #upper-corner-console,
+  .sign-out {
+    display: none;
+  }
   #application-container {
-    max-width: 960px;
-    width: inherit;
-    padding-left: 30px;
-    padding-right: 30px;
+    margin: 0;
+    padding: 0;
+    background: white;
   }
-
-  &.iframe {
-    #application-container {
-      width: calc(100% - 40px); // a bit of space for scrollbars (which should never appear)
-      min-width: inherit;
-    }
-
-    #upper-corner-console,
-    #top-nav-frame {
-      display: none;
-    }
-    #page-heading {
-      padding: 0;
-    }
-
-  }
-
   #application-body {
-    margin: 5px;
-    min-height: 250px;
+    margin: 0;
+    padding: 0;
+  }
+  .ox-card {
+    width: 100%;
+    max-width: 100%;
+    background: white;
   }
 
-  .new-login {
-    display: flex;
-    justify-content: space-around;
-    .login-options {
-      order: 2;
-    }
-    .login-explanation {
-      order: 1;
-    }
-  }
-
-  // Page that asks if account is new after a third party login
-  .signup, .new-or-returning {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    .left { order: 1; }
-    .middle-space {
-      order: 2;
-      display: flex !important; // inline-block is set as style attribute
-      flex-direction: column;
-      align-self: stretch;
-      margin: 0;
-      .or-bar {
-        height: inherit;
-        flex: 1;
-        margin: 0;
-        .or-text {
-          left: -25px;
-          top: 50%;
-        }
-      }
-    }
-    .right { order: 3; }
-
-    .login-options {
-      width: 100%;
-      display: flex;
-      flex-flow: row wrap;
-      a {
-        margin-top: 0;
-        width: initial;
-      }
-    }
-  }
-  .signup #signup-alternatives {
-    order: 1;
-    align-self: flex-start;
-    margin-left: 20px;
-    .login-button {
-      padding: 0;
-      width: initial;
-    }
-  }
 }

@@ -60,7 +60,6 @@ describe ContactInfosController, type: :controller do
       get 'confirm', :code => 'abcd'
       expect(response.code).to eq('400')
       expect(response.body).to have_no_missing_translations
-      expect(response.body).to have_content(t :"routines.confirm_by_code.unable_to_verify_address")
       expect(response.body).to have_content(t :"contact_infos.confirm.verification_code_not_found")
       expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
     end

@@ -2,7 +2,7 @@ pl:
   controllers:
     authentications:
       authentication_removed: Usunięto %{authentication}
-      please_sign_in_to_confirm_changes: >-
+      please_log_in_again: >-
         Zaloguj się ponownie, aby potwierdzić zmiany
 
     contact_infos:
@@ -212,13 +212,6 @@ pl:
       sign_up: Zarejestruj się
       used_this_method_last_time: Tej metody użyłeś/łaś poprzednim razem.
       username_or_email: Nazwa użytkownika albo adres e-mail
-
-  sign_in_help_mailer:
-    sign_in_help:
-      facebook: Facebook
-      twitter: Twitter
-      google: Google
-      simple_password: a password
 
   signup:
     new_account:

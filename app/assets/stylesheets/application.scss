@@ -11,11 +11,14 @@
 @import "bootstrap-social";
 @import "signinup";
 @import "profile";
+@import "signup";
+@import "faculty_access";
 @import "social";
 @import "create_account";
 @import "misc";
 @import "application_js_hooks";
 @import "pagination";
+@import "condensed";
 
 /* Set a max-width, maintaining responsiveness */
 
@@ -24,4 +27,37 @@
 .navbar-fixed-top .container,
 .navbar-fixed-bottom .container {
     max-width: $application_master_width;
+}
+
+.btn-social {
+  margin: 15px auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 50px;
+  width: 200px;
+  border-radius: 0;
+  > :first-child {
+    padding-top: 4px;
+    width: 40px;
+    padding-left: 2px;
+  }
+}
+
+.top-level-alerts {
+  margin: -30px -50px 30px -50px;
+  padding: 10px;
+
+  &.info {
+    background-color: #d9edf7;
+    border-bottom: 1px solid #bce8f1;
+  }
+
+  &.danger {
+    background-color: #f2dede;
+    border-bottom: 1px solid #ebccd1;
+  }
+
+  div.alert {
+    padding: 0px 10px;
+  }
 }

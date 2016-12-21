@@ -7,9 +7,9 @@ module ApplicationHelper
       add_local_error_alert now: true, content: error.translate
     end
 
-    @handler_result.errors.any? ?
-      js_refresh_alerts(options) :
-      js_refresh_alerts(options) + capture(&block).html_safe
+   @handler_result.errors.any? ?
+     js_refresh_alerts(options) :
+     js_refresh_alerts(options) + capture(&block).html_safe
   end
 
   def js_refresh_alerts(options={})
@@ -35,10 +35,9 @@ module ApplicationHelper
     alert_class = type == :alert ? "alert-danger" : "alert-info"
 
     content_tag :div, class: "alert #{alert_class}", role: "alert" do
-      (type == :alert ? content_tag(:strong, "Alert: ") : "") +
-      (messages.size == 1 ?
-       messages.first :
-       ("<ul>"+messages.collect{|a| "<li>"+a+"</li>"}.join("")+"</ul>").html_safe)
+      messages.size == 1 ?
+       messages.first.html_safe :
+        ("<ul>"+messages.collect{|a| "<li>#{a}</li>"}.join("")+"</ul>").html_safe
     end
   end
 
@@ -64,11 +63,33 @@ module ApplicationHelper
 
   end
 
-  def standard_field(options={})
+  def collect_errors
+    alert_messages = []
+    handler_errors.each do |error|
+      alert_messages.push error.translate
+    end
 
-    raise IllegalArgument, "Must specify a :type" if !options[:type]
-    raise IllegalArgument, "Must specify a :form" if !options[:form]
-    raise IllegalArgument, "Must specify a :name" if !options[:name]
+    (request.env['errors'] || []).each do |error|
+      alert_messages.push error.translate
+    end
+
+    alert_messages.push(flash[:alert]) if flash[:alert]
+
+    notice_messages = []
+    notice_messages.push(flash[:notice]) if flash[:notice]
+
+    alert_messages.collect{|msg|
+      msg.gsub("contact support", mail_to("info@openstax.org", "contact support"))
+        .html_safe
+    }
+    errors = {}
+    errors[:alerts] = alert_messages if alert_messages.any?
+    errors[:notices] = notice_messages if notice_messages.any?
+    errors
+  end
+
+  def standard_field(options={})
+    %i{type form name}.each{ |key| raise IllegalArgument, "Must specify a :#{key}" if !options[key] }
 
     options[:options] ||= {}
     hide = options[:options].delete(:hide)
@@ -103,6 +124,48 @@ module ApplicationHelper
 
   def is_real_production_site?
     request.host == 'accounts.openstax.org'
+  end
+
+  def translate_error(code:, force: false)
+    return unless @handler_result.try(:errors)
+
+    error = @handler_result.errors.select{|error| error.code == code}.first
+
+    return if error.nil?
+    return if error.message.present? && !force
+
+    # use a block for the error message so we avoid unnecesarry i18n translation
+    error.message = yield
+  end
+
+  def ox_card(classes: "", heading: "", &block)
+    @hide_layout_errors = true
+
+    content_tag :div, class: "ox-card #{classes}" do
+      danger_alerts = if flash[:alert].present?
+        content_tag :div, class: "top-level-alerts danger" do
+          alert_tag(flash[:alert])
+        end
+      end
+
+      info_alerts = if flash[:notice].present?
+        content_tag :div, class: "top-level-alerts info" do
+          notice_tag(flash[:notice])
+        end
+      end
+
+      heading_div = if heading.present?
+        content_tag(:h1, class: "title") { heading }
+      end
+
+      body = capture(&block)
+
+      "#{danger_alerts}\n#{info_alerts}\n#{heading_div}\n#{body}".html_safe
+    end
+  end
+
+  def all_errors
+    (@errors || []) + (@handler_result.try(:errors) || [])
   end
 
 end

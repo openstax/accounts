@@ -18,8 +18,8 @@ describe ConfirmationMailer, type: :mailer do
     it 'does not include PIN when directed not to' do
       mail = ConfirmationMailer.instructions email_address: email, send_pin: false
 
-      expect(mail.subject).to eq("[OpenStax] Verify your email address")
-      expect(mail.body.encoded).not_to include('Your code')
+      expect(mail.subject).to eq("[OpenStax] Confirm your email address")
+      expect(mail.body.encoded).not_to include('Your PIN')
     end
 
     it "has PIN info when PIN attempts remain" do
@@ -27,9 +27,9 @@ describe ConfirmationMailer, type: :mailer do
 
       mail = ConfirmationMailer.instructions email_address: email, send_pin: true
 
-      expect(mail.subject).to eq("[OpenStax] Verify your email address using code 123456")
+      expect(mail.subject).to eq("[OpenStax] Confirm your email address using PIN 123456")
       expect(mail.body.encoded).to include('Enter your 6-digit')
-      expect(mail.body.encoded).to include('Your code: <b>123456</b>')
+      expect(mail.body.encoded).to include('Your PIN: <b>123456</b>')
     end
 
     it "has just link when no PIN attempts remain" do
@@ -37,9 +37,9 @@ describe ConfirmationMailer, type: :mailer do
 
       mail = ConfirmationMailer.instructions email_address: email, send_pin: true
 
-      expect(mail.subject).to eq("[OpenStax] Verify your email address")
+      expect(mail.subject).to eq("[OpenStax] Confirm your email address")
       expect(mail.body.encoded).to include('Click on the link below')
-      expect(mail.body.encoded).not_to include('Your code')
+      expect(mail.body.encoded).not_to include('Your PIN')
     end
 
   end

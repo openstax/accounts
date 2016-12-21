@@ -28,10 +28,69 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 
 require 'capybara'
+require 'capybara/poltergeist'
+Capybara.javascript_driver = :poltergeist
+window_size = [1920, 6000]
 
-Capybara.javascript_driver = :webkit
+Capybara.asset_host = 'http://localhost:2999'
 
 require 'capybara/email/rspec'
+
+do_screenshots = EnvUtilities.load_boolean(name: 'SSHOT', default: false)
+
+if do_screenshots
+  require 'capybara-screenshot/rspec'
+  Capybara::Screenshot.autosave_on_failure = false
+  Capybara::Screenshot.append_timestamp = false
+  window_size = [1000, 6000] # narrower images
+
+  def screenshots_dir
+    $screenshots_dir ||= Rails.root.join "tmp/capybara/screenshots_#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
+  end
+
+  def screenshot!(suffix: nil)
+    include_html_screenshots = false
+
+    original_save_path = Capybara.save_path
+    begin
+      Capybara.save_path = screenshots_dir
+      saver = Capybara::Screenshot::Saver.new(
+        Capybara, Capybara.page, include_html_screenshots, screenshot_base(suffix)
+      )
+
+      wait_for_ajax
+      wait_for_animations
+
+      if saver.save
+        {:html => saver.html_path, :image => saver.screenshot_path}
+      end
+    ensure
+      Capybara.save_path = original_save_path
+    end
+  end
+
+  def capture_email!(address: nil, suffix: nil)
+    open_email(address) if address.present?
+    current_email.save_page("#{screenshots_dir}/#{screenshot_base(suffix)}.html")
+  end
+
+  def screenshot_base(suffix=nil)
+    @screenshot_prefix_usage_counts ||= {}
+    prefix = "#{self.class.description}_#{RSpec.current_example.description}".gsub(/\W+/,'_')
+    @screenshot_prefix_usage_counts[prefix] ||= 0
+    next_available_index = (@screenshot_prefix_usage_counts[prefix] += 1)
+    "#{prefix}_#{next_available_index}#{'_' + suffix if suffix.present?}".gsub(/\W+/,'_')
+  end
+else
+  def screenshot!(*args); end
+  def capture_email!(*args); end
+end
+
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(app, {
+    :window_size => window_size
+  })
+end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -131,7 +190,14 @@ RSpec.configure do |config|
 
   # For Capybara's poltergist tests ensure that request's locale is always set to English.
   config.before(type: :feature, js: true) do |config|
-    page.driver.header 'Accept-Language', 'en'
+    # page.driver.header 'Accept-Language', 'en'
+    page.driver.add_header('Accept-Language', 'en')
+  end
+
+  config.before(:each) do
+    # Get rid of possibly-shared config setting cache values between test and dev or any leftover
+    # cached values from other test runs. This is 15 seconds faster than `Rails.cache.clear`
+    Rails.cache.delete_matched("rails_settings_cached/*")
   end
 end
 
@@ -147,6 +213,11 @@ def disable_sfdc_client
   allow(ActiveForce)
     .to receive(:sfdc_client)
     .and_return(double('null object').as_null_object)
+end
+
+# This method isn't great... seems to take too much
+def just_text(string)
+  ActionView::Base.full_sanitizer.sanitize(string).gsub(/\W*\n\W*/," \n ")
 end
 
 RSpec::Matchers.define :have_routine_error do |error_code|
@@ -195,5 +266,27 @@ Shoulda::Matchers.configure do |config|
   config.integrate do |with|
     with.test_framework :rspec
     with.library :rails
+  end
+end
+
+
+class ExternalAppForSpecsController < ActionController::Base
+  skip_filter *_process_action_callbacks.map(&:filter)
+  layout false
+
+  def index
+    render plain: 'This is a fake external application'
+  end
+end
+
+# From: https://github.com/rspec/rspec-rails/issues/925#issuecomment-164094792
+# See also: https://github.com/codeforamerica/ohana-api/blob/master/spec/api/cors_spec.rb
+#
+# Add support for testing `options` requests in RSpec.
+# See: https://github.com/rspec/rspec-rails/issues/925
+def options(*args)
+  reset! unless integration_session
+  integration_session.__send__(:process, :options, *args).tap do
+    copy_session_variables!
   end
 end

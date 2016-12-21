@@ -20,14 +20,20 @@ describe FindOrCreateUnclaimedUser do
 
       it "creates a new user with the email" do
         expect {
-          newuser = FindOrCreateUnclaimedUser.call(email:"anunusedemail@example.com").outputs.user
+          newuser = FindOrCreateUnclaimedUser.call(
+            email:"anunusedemail@example.com",
+            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name
+          ).outputs.user
           expect(newuser.contact_infos.first.value).to eq("anunusedemail@example.com")
         }.to change(User,:count).by(1)
       end
 
       it "sends an invitation email" do
           expect {
-            FindOrCreateUnclaimedUser.call(email:"anunusedemail@example.com").outputs.user
+            FindOrCreateUnclaimedUser.call(
+              email:"anunusedemail@example.com",
+              first_name: Faker::Name.first_name, last_name: Faker::Name.last_name
+            ).outputs.user
             email = ActionMailer::Base.deliveries.last
             expect(email.subject).to match('You have been invited to join OpenStax')
           }.to change { ActionMailer::Base.deliveries.count }.by(1)
@@ -64,36 +70,23 @@ describe FindOrCreateUnclaimedUser do
       it "creates a new user with that username" do
         expect {
           new_user = FindOrCreateUnclaimedUser.call(
-            username: "bobsmith", email:"anunusedemail@example.com"
+            username: "bobsmith", email:"anunusedemail@example.com",
+            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name
           ).outputs.user
           expect(new_user.username).to eq("bobsmith")
           expect(new_user.contact_infos.first.value).to eq("anunusedemail@example.com")
         }.to change(User,:count).by(1)
       end
 
-      it 'sets the first name, last name if given, ignoring full name' do
+      it 'sets the first name and last name' do
         expect {
           new_user = FindOrCreateUnclaimedUser.call(
             username: 'bobsmith', email: 'anunusedemail@example.com',
-            first_name: 'Bob', last_name: 'Smith', full_name: 'Frank Franky'
+            first_name: 'Bob', last_name: 'Smith'
           ).outputs.user
           expect(new_user.username).to eq('bobsmith')
           expect(new_user.first_name).to eq('Bob')
           expect(new_user.last_name).to eq('Smith')
-          expect(new_user.full_name).to eq('Bob Smith')
-        }.to change { User.count }.by(1)
-      end
-
-      it 'assumes the first name & last name if not given and full name present' do
-        expect {
-          new_user = FindOrCreateUnclaimedUser.call(
-            username: 'bobsmith', email: 'anunusedemail@example.com',
-            full_name: 'Frank Franky'
-          ).outputs.user
-          expect(new_user.username).to eq('bobsmith')
-          expect(new_user.first_name).to eq('Frank')
-          expect(new_user.last_name).to eq('Franky')
-          expect(new_user.full_name).to eq('Frank Franky')
         }.to change { User.count }.by(1)
       end
 
@@ -101,8 +94,9 @@ describe FindOrCreateUnclaimedUser do
 
         it "sets the password" do
           new_user = FindOrCreateUnclaimedUser.call(
+            email:"anunusedemail@example.com",
             password:'password123', password_confirmation: 'password123', username: "bobsmith",
-            email:"anunusedemail@example.com"
+            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name
           ).outputs.user
           expect(new_user.reload.identity.authenticate('password123')).to be_truthy
         end

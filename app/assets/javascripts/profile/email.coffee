@@ -8,13 +8,21 @@ class Email
     _.bindAll(@, _.functions(@)...)
     this.$el = $(@el)
     @id = this.$el.attr('data-id')
-    this.$el.find('.delete').click(@confirmDelete)
     this.$el.find('.searchable').change(@saveSearchable)
-    this.$el.find('.verify').click(@sendVerification)
-    this.$el.find('.email').click(@revealControls)
+    this.$el.find('.resend-confirmation').click(@sendVerification)
+    this.$el.find('.email, .unconfirmed-warning').click(@toggleProperties)
+    @update()
 
-  revealControls: ->
-    this.$el.removeClass('controls-hidden')
+  update: ->
+    delBtn = this.$el.find('.delete')
+    delBtn.off('click', @confirmDelete)
+    if @isOnlyVerifiedEmail()
+      delBtn.hide()
+    else
+      delBtn.on('click', @confirmDelete)
+
+  toggleProperties: ->
+    this.$el.toggleClass('expanded')
 
   toggleSpinner: (show) ->
     this.$el.find('.spinner').toggle(_.isBoolean(show) and show)
@@ -55,15 +63,13 @@ class Email
     if contact.is_searchable?
       this.$el.find('.searchable').prop('checked', contact.is_searchable)
 
+  isOnlyVerifiedEmail: ->
+    @$el.hasClass('verified') and not @$el.siblings('.email-entry.verified').length
+
   confirmDelete: (ev) ->
-    [title, message] = if this.$el.siblings('.email-entry').length is 0 # we're the only one
-      ["Are you sure?",
-      "If you remove this address from your account, we will be unable to help you access your account if you can’t sign in."]
-    else
-      [false, "Are you sure you want to remove this email address from your account?"]
     new OX.ConfirmationPopover(
-      title: title
-      message: message
+      title: false
+      message: "Are you sure you want to remove this email address from your account?"
       target: ev.target
       placement: 'top'
       onConfirm: @delete
@@ -72,22 +78,28 @@ class Email
   delete: ->
     @toggleSpinner(true)
     $.ajax(type: "DELETE", url: @url())
-      .success( => @$el.remove() )
+      .success( =>
+        @$el.remove()
+        OX.Profile.Email.onDeleteEmail(@)
+      )
       .error(OX.Alert.displayInsideElement(@$el))
       .complete(@toggleSpinner)
 
 OX.Profile.Email = {
 
   initialize: ->
-    $('.email-entry').each ->
-      new Email(this)
+    $('.email-entry').each (indx, el) ->
+      $(el).data(email: new Email(this))
     @addEmail = $('#add-an-email').click( => @onAddEmail() )
+
+  onDeleteEmail: ->
+    $('.info .email-entry').each (indx, el) ->
+      $(el).data().email.update()
 
   onAddEmail: ->
     email = $('#email-template').children().clone().addClass('new')
-    input = $(email).insertBefore(@addEmail).find('.email')
+    input = $(email).insertBefore(@addEmail).find('.email .value')
     @addEmail.hide()
-
     input.editable(
       url: BASE_URL
       params: (params) ->

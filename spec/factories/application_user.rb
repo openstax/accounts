@@ -2,8 +2,8 @@ FactoryGirl.define do
   factory :application_user do
     transient do
       username { SecureRandom.hex(3) }
-      first_name nil
-      last_name nil
+      first_name Faker::Name.first_name
+      last_name  Faker::Name.last_name
     end
 
     association :application, factory: :doorkeeper_application

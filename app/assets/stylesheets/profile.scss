@@ -1,10 +1,20 @@
 @import "bootstrap-editable";
 
-#profile {
+
+#profile .ox-card {
   .alert { margin: 10px; }
 
-  .container, .row, .col-sm-3, .col-sm-6, .col-sm-9 {
-    /*border: 1px solid red;*/
+  .profile-title {
+    position: relative;
+
+    .sign-out {
+      position: absolute;
+      right: 0px;
+    }
+  }
+
+  .col-sm-2 {
+    padding: 0;
   }
 
   > .row {
@@ -38,7 +48,7 @@
   }
 
   .info .mod-holder {
-    width: 20px;
+    width: 45px;
     display: inline-block;
     margin-left:15px;
   }
@@ -63,7 +73,10 @@
 
   .authentication {
     margin-bottom: 6px;
-
+    .name {
+      width: 80px;
+      display: inline-block;
+    }
     .fa-stack {
       left: -3px;
     }
@@ -72,6 +85,20 @@
   .email-entry {
     &:first-child {
       .alert { margin-top: 0; }
+    }
+    .email,
+    .unconfirmed-warning .msg {
+      color: $os_link_color;
+      text-decoration: underline;
+      cursor: pointer;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    .unconfirmed-warning .msg { margin: 0 0.5rem; }
+    &.verified {
+      .unconfirmed-warning { display: none; }
+      .resend-confirmation { display: none; }
     }
     .alert {
       margin-left: 0px;
@@ -84,38 +111,56 @@
       left: -20px;
       top: 15px;
     }
-    .properties {
+    .controls {
+      display: none;
+      overflow: hidden;
       margin-left: 20px;
-      font-style: italic;
-      font-size: 11px;
+      margin-top: 4px;
+      font-size: 13px;
+      div {
+        margin-top: 4px;
+      }
+      .searchable-toggle {
+        label { font-weight: normal; }
+      }
       input[type='checkbox'] {
         margin-left: 6px;
+        margin-right: 4px;
+      }
+      .delete {
+        margin-left: 6px;
+        a {
+          font-size: 13px;
+          margin-left: 8px;
+        }
       }
     }
-    .verify {
-      margin-left: 20px;
+    &.expanded {
+      .controls {
+        display: block;
+      }
+    }
+    .resend-confirmation {
+      margin-left: 7px;
       form {
         display: inline;
         div { display: inline; }
       }
       input {
-        color: $link-color;
+        color: $os_link_color;
         padding: 0;
         font-size: 13px;
+        display: inline;
+        border: 0;
+        background: transparent;
+        height: 20px;
+        text-decoration: underline;
+        margin-left: 3px;
       }
     }
     &.new {
-      .verify, .properties, .mod-holder { display: none; }
-    }
-    &.controls-hidden {
-      .email {
-        color: $link-color;
-        cursor: pointer;
-        text-decoration: none;
-        border-bottom: dashed 1px #0088cc;
-        &:hover{ text-decoration: none; }
-      }
-      .properties, .mod-holder { display: none; }
+      .editable-click { border-bottom: 0; }
+      .resend-confirmation, .unconfirmed-warning, .controls { display: none; }
     }
   }
 
@@ -124,6 +169,13 @@
     display: block;
   }
 
+
+  .editable-input {
+    > div:first-child {
+      input { margin-top: 0; }
+    }
+    > input:first-child{  margin-top: 0; }
+  }
 
   .authentication {
     .mod-holder {
