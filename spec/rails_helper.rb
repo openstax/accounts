@@ -71,7 +71,19 @@ if do_screenshots
 
   def capture_email!(address: nil, suffix: nil)
     open_email(address) if address.present?
-    current_email.save_page("#{screenshots_dir}/#{screenshot_base(suffix)}.html")
+
+    # Used to just call built-in `save_page`, but switched to below to add headers
+    # current_email.save_page("#{screenshots_dir}/#{screenshot_base(suffix)}.html")
+
+    path = "#{screenshots_dir}/#{screenshot_base(suffix)}.html"
+    FileUtils.mkdir_p(File.dirname(path))
+    File.open(path,'w') do |f|
+      f.write("Subject: #{current_email.subject}<br/>")
+      f.write("To: #{current_email.to.join(', ')}<br/>")
+      f.write("From: #{current_email.from.join(', ')}<br/>")
+      f.write("--------------------<br/><br/>")
+      f.write(current_email.body)
+    end
   end
 
   def screenshot_base(suffix=nil)

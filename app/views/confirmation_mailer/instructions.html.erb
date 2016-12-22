@@ -1,9 +1,7 @@
 <p>Hi <%= @email_address.user.casual_name %>,</p>
 
-<p>Someone is trying to add '<%= @email_address.value %>' to an OpenStax account.  If this wasn't you, please disregard this message.</p>
-
 <% if @show_pin %>
-  <p>Enter your 6-digit code in the PIN field in your browser to confirm your email address:</p>
+  <p>Enter your 6-digit PIN in your browser to confirm your email address:</p>
 
   <p>Your PIN: <b><%= @email_address.confirmation_pin %></b></p>
 
@@ -18,5 +16,8 @@
 %>
 
 <p><%= link_to token_url, token_url %></p>
+
+<p>We sent this message because someone is trying to add '<%= @email_address.value %>' to an OpenStax account.  If this wasn't you, please disregard this message.</p>
+
 
 <%= render :partial => 'shared/email_closing' %>

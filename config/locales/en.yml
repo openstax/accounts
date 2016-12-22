@@ -390,7 +390,7 @@ en:
       used_wrong_email: Used the wrong email?
       edit_email_address: Edit email address
       check_your_email: Check your inbox for %{email}!
-      you_will_have_received: You will have received a six-digit PIN. Enter it below.
+      you_will_have_received: We sent you a six-digit PIN. Enter it below.
       pin_not_correct: This PIN is incorrect.  Please enter the correct PIN.
       blank: cannot be blank.
       no_pin_confirmation_attempts_remaining:
