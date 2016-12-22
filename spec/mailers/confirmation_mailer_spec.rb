@@ -27,7 +27,7 @@ describe ConfirmationMailer, type: :mailer do
 
       mail = ConfirmationMailer.instructions email_address: email, send_pin: true
 
-      expect(mail.subject).to eq("[OpenStax] Confirm your email address using PIN 123456")
+      expect(mail.subject).to eq("[OpenStax] Use PIN 123456 to confirm your email address")
       expect(mail.body.encoded).to include('Enter your 6-digit')
       expect(mail.body.encoded).to include('Your PIN: <b>123456</b>')
     end

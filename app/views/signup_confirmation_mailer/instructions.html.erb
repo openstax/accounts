@@ -1,6 +1,4 @@
-<p>Welcome! Please confirm your email.</p>
-
-<p>Someone is trying to use '<%= @signup_state.contact_info_value %>' to create an OpenStax account.  If this wasn't you, please disregard this message.</p>
+<p>Welcome!</p>
 
 <% if @show_pin %>
   <p>Enter your 6-digit PIN in your browser to confirm your email address:</p>
@@ -17,5 +15,8 @@
 %>
 
 <p><%= link_to token_url, token_url %></p>
+
+<p>We sent this message because someone is trying to use '<%= @signup_state.contact_info_value %>' to create an OpenStax account.  If this wasn't you, please disregard this message.</p>
+
 
 <%= render :partial => 'shared/email_closing' %>
