@@ -210,7 +210,8 @@ en:
       page_heading: Success!
       message: Your password has been reset.
       continue: Continue
-
+    set:
+      cancel: Cancel
     send_reset:
       page_heading: Check your email
       we_sent_email: We sent an email to %{emails}.  Click the link in that email to reset your password.

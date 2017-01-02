@@ -32,6 +32,9 @@
 
     <section class="footer">
       <%= submit_tag submit_text, class: 'primary' %>
+      <% if signed_in? %>
+         <%= link_to(t('.cancel'), profile_path) %>
+      <% end %>
     </section>
   <% end %>
 
