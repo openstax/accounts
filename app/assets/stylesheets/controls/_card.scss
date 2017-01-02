@@ -79,10 +79,10 @@
   input[type=submit] {
     width: inherit;
     height: $input-height;
-    display: block;
+    display: inline-block;
+    margin-right: 1rem;
     &.primary {
       @extend .btn;
-      display: block;
       text-transform: uppercase;
       border-radius: 0;
       padding: 1rem 2rem;
