@@ -10,6 +10,8 @@ class UpdateUserSalesforceInfo
   end
 
   def call
+    return if !SalesforceUser.any? && !is_real_production?
+
     contacts_by_email = {}
     contacts_by_id = {}
 
@@ -145,6 +147,10 @@ class UpdateUserSalesforceInfo
       subject: "UpdateUserSalesforceInfo errors",
       to: Rails.application.secrets[:salesforce]['mail_recipients']
     ).deliver_later
+  end
+
+  def is_real_production?
+    Rails.application.secrets.exception['environment_name'] == "prodtutor"
   end
 
 end

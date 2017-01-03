@@ -3,6 +3,10 @@ require 'rails_helper'
 describe UpdateUserSalesforceInfo do
   let!(:user) { FactoryGirl.create :user }
 
+  before(:each) {
+    allow_any_instance_of(described_class).to receive(:is_real_production?) { true }
+  }
+
   let!(:contact_info) {
     email = AddEmailToUser.call("bob@example.com", user).outputs.email
     ConfirmContactInfo.call(email)
@@ -167,7 +171,7 @@ describe UpdateUserSalesforceInfo do
     end
 
     stub_contacts(contacts)
-    expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 3)
+    expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 4)
   end
 
   it 'logs an error when an email alt is a different contact\'s primary email' do
