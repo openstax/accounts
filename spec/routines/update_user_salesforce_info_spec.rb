@@ -71,13 +71,20 @@ describe UpdateUserSalesforceInfo do
   end
 
   context 'user maps to multipe SF contacts' do
-    it 'sends an error message' do
+    before(:each) {
       email = AddEmailToUser.call("otherbob@example.com", user).outputs.email
       ConfirmContactInfo.call(email)
       stub_contacts([{id: 'foo', email: 'bob@example.com', faculty_verified: "Pending"},
                      {id: 'foo2', email: 'otherbob@example.com', faculty_verified: "Pending"}])
       expect(Rails.logger).to receive(:warn)
-      expect { described_class.call }.to change { ActionMailer::Base.deliveries.count }.by(1)
+    }
+
+    it 'sends an error message if enabled' do
+      expect { described_class.call(enable_error_email: true) }.to change { ActionMailer::Base.deliveries.count }.by(1)
+    end
+
+    it 'does not send an error message by default' do
+      expect { described_class.call }.to change { ActionMailer::Base.deliveries.count }.by(0)
     end
   end
 
@@ -108,35 +115,35 @@ describe UpdateUserSalesforceInfo do
 
   context '#cache_contact_data_in_user' do
     it 'handles nil contacts' do
-      described_class.new.cache_contact_data_in_user(nil, user)
+      described_class.new(enable_error_email: true).cache_contact_data_in_user(nil, user)
       expect(user.salesforce_contact_id).to be_nil
       expect(user.faculty_status).to eq 'no_faculty_info'
     end
 
     it 'handles Confirmed faculty status' do
       contact = Salesforce::Contact.new(id: 'foo', faculty_verified: "Confirmed")
-      described_class.new.cache_contact_data_in_user(contact, user)
+      described_class.new(enable_error_email: true).cache_contact_data_in_user(contact, user)
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'confirmed_faculty'
     end
 
     it 'handles Pending faculty status' do
       contact = Salesforce::Contact.new(id: 'foo', faculty_verified: "Pending")
-      described_class.new.cache_contact_data_in_user(contact, user)
+      described_class.new(enable_error_email: true).cache_contact_data_in_user(contact, user)
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'pending_faculty'
     end
 
     it 'handles Rejected faculty status' do
       contact = Salesforce::Contact.new(id: 'foo', faculty_verified: "Rejected")
-      described_class.new.cache_contact_data_in_user(contact, user)
+      described_class.new(enable_error_email: true).cache_contact_data_in_user(contact, user)
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'rejected_faculty'
     end
 
     it 'handles Rejected2 faculty status' do
       contact = Salesforce::Contact.new(id: 'foo', faculty_verified: "Rejected2")
-      described_class.new.cache_contact_data_in_user(contact, user)
+      described_class.new(enable_error_email: true).cache_contact_data_in_user(contact, user)
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'rejected_faculty'
     end
@@ -144,7 +151,7 @@ describe UpdateUserSalesforceInfo do
     it 'raises for unknown faculty status' do
       contact = Salesforce::Contact.new(id: 'foo', faculty_verified: "Diddly")
       expect{
-        described_class.new.cache_contact_data_in_user(contact, user)
+        described_class.new(enable_error_email: true).cache_contact_data_in_user(contact, user)
       }.to raise_error(RuntimeError)
     end
   end
@@ -194,4 +201,5 @@ describe UpdateUserSalesforceInfo do
     expect(user.salesforce_contact_id).to eq id
     expect(user.faculty_status).to eq faculty_status.to_s
   end
+
 end

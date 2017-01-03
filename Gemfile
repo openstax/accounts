@@ -199,6 +199,8 @@ group :test do
   gem 'launchy'
 
   gem 'capybara-screenshot', require: false
+
+  gem 'whenever-test'
 end
 
 group :production do

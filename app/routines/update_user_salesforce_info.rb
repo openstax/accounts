@@ -1,11 +1,12 @@
 class UpdateUserSalesforceInfo
 
-  def initialize
+  def initialize(enable_error_email:)
+    @enable_error_email = enable_error_email
     @errors = []
   end
 
-  def self.call
-    new.call
+  def self.call(enable_error_email: false)
+    new(enable_error_email: enable_error_email).call
   end
 
   def call
@@ -136,6 +137,9 @@ class UpdateUserSalesforceInfo
   def notify_errors
     return if @errors.empty?
     Rails.logger.warn("UpdateUserSalesforceInfo errors: " + @errors.inspect)
+
+    return unless @enable_error_email
+
     DevMailer.inspect_object(
       object: @errors,
       subject: "UpdateUserSalesforceInfo errors",
