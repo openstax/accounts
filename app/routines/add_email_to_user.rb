@@ -11,18 +11,18 @@ class AddEmailToUser
     return if email_address_text.blank?
 
     # If the email address already exists and is attached to the user, nothing to do
-    email_address = user.email_addresses.where(value: email_address_text).first
+    email_address = user.email_addresses.find_by(value: email_address_text)
     return if email_address.try(:verified)
 
-    # If it is a brand new email address, make it
-    if email_address.nil?
-      email_address = EmailAddress.new(value: email_address_text)
-      email_address.user = user
-    end
+    # If it is a brand new email address, initialize it
+    email_address ||= EmailAddress.new(value: email_address_text)
+    email_address.user = user
 
-    # This is either a new email address (unverified) or an existing email address
-    # that is unverified, so verified should be false unless already verified
-    email_address.verified = options[:already_verified] || false
+    verified = options[:already_verified]
+    verified = Rails.application.secrets[:auto_verify_emails] if verified.nil?
+    verified = false if verified.nil?
+
+    email_address.verified = verified
 
     email_address.save
     transfer_errors_from(email_address, { scope: :email_address }, true)
