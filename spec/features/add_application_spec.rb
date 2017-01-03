@@ -13,7 +13,7 @@ feature 'Add application to accounts', js: true do
     complete_login_password_screen('password')
 
     visit '/oauth/applications'
-    expect(page).to have_content('OAuth Applications')
+    expect(page).to have_content('OAuth2 Provider Applications')
     create_new_application(true)
     expect(page).to have_content('Application created.')
     expect(page).to have_content('Application: example')
