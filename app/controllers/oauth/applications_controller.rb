@@ -1,7 +1,7 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
-    before_filter :get_user
-    before_filter :get_application, :only => [:show, :edit, :update, :destroy]
+    before_filter :set_user
+    before_filter :set_application, only: [:show, :edit, :update, :destroy]
     respond_to :html
 
     def index
@@ -23,9 +23,8 @@ module Oauth
       if @application.save
         security_log :application_created, application_id: @application.id,
                                            application_name: @application.name
-        flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
-                                                    :applications, :create])
-        render :show
+        flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
+        redirect_to oauth_application_url(@application)
       else
         render :new, status: :unprocessable_entity
       end
@@ -45,9 +44,8 @@ module Oauth
       if @application.update_attributes(app_params)
         security_log :application_updated, application_id: @application.id,
                                            application_params: app_params
-        flash[:notice] = I18n.t(:notice, :scope => [:doorkeeper, :flash,
-                                                    :applications, :update])
-        redirect_to action: :index
+        flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :update])
+        redirect_to oauth_application_url(@application)
       else
         render :edit, status: :unprocessable_entity
       end
@@ -60,33 +58,29 @@ module Oauth
       super
     end
 
-    protected
+    private
 
-    def get_user
+    def set_user
       @user = current_user
     end
 
-    def get_application
+    def set_application
       @application = Doorkeeper::Application.find(params[:id])
     end
 
-    private
-
     def user_params
-      return {} if params[:application].nil?
-      params[:application].slice(:name, :redirect_uri, :email_subject_prefix)
+      params.require(:doorkeeper_application).permit(:name, :redirect_uri, :email_subject_prefix)
     end
 
     def admin_params
-      return {} if params[:application].nil?
-      params[:application].slice(:trusted, :email_from_address)
+      params.require(:doorkeeper_application)
+            .permit(:name, :redirect_uri, :email_subject_prefix, :email_from_address, :trusted)
     end
 
     # We control which attributes of Doorkeeper::Applications can be updated
     # here, since they differ for normal users and administrators
     def application_params(user)
-      user.is_administrator? ? \
-        user_params.merge(admin_params) : user_params
+      user.is_administrator? ? admin_params : user_params
     end
   end
 end
