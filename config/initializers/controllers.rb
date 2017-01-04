@@ -73,15 +73,15 @@ ActionController::Base.class_exec do
 
     return true if url.blank?
 
-    valid_hosts = Rails.application.secrets.valid_iframe_origins.map do |origin|
-      URI.parse(origin).host
-    end
-
-    valid_hosts.unshift("127.0.0.1") if !Rails.env.production?
-
     uri = URI.parse(url)
 
-    return true unless uri.host.present? && valid_hosts.any?{|valid_host| uri.host.ends_with?(valid_host)}
+    return true if uri.host.blank?
+
+    valid_host_regexes = Rails.application.secrets.valid_redirect_host_regexes.map do |regex_string|
+      Regexp.new(regex_string)
+    end
+
+    return true if valid_host_regexes.none?{|regex| uri.host.match(regex)}
 
     store_url(url: url)
   end

@@ -17,6 +17,11 @@ RSpec.describe "Controllers affected by initializers/controllers.rb", type: :con
       get :index, r: "https://openstax.org/hi"
     end
 
+    it 'saves a redirect that is in an approved subdomain' do
+      expect_to_save_redirect("https://tutor.openstax.org/hi")
+      get :index, r: "https://tutor.openstax.org/hi"
+    end
+
     context "does not store a redirect if" do
       before(:each) { expect_not_to_save_redirect }
 
@@ -42,6 +47,10 @@ RSpec.describe "Controllers affected by initializers/controllers.rb", type: :con
 
       it 'has an badly formatted valid URL' do
         get :index, r: "openstax.org/blah"
+      end
+
+      it 'has a param for a bad site ending with openstax.org' do
+        get :index, r: "https://pirateopenstax.org"
       end
     end
   end
