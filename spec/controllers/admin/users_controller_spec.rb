@@ -17,6 +17,7 @@ RSpec.describe Admin::UsersController, type: :controller do
                      last_name: 'Kristensen',
                      email_address: 'malik@example.org',
                      is_administrator: '1',
+                     faculty_status: 'rejected_faculty',
                      password: 'si4eeSai',
                      password_confirmation: 'si4eeSai'
                    }
@@ -25,7 +26,8 @@ RSpec.describe Admin::UsersController, type: :controller do
       expect(user.last_name).to eq 'Kristensen'
       expect(user.full_name).to eq 'Malik Kristensen'
       expect(user.email_addresses.first.value).to eq 'malik@example.org'
-      expect(user.is_administrator).to be true
+      expect(user).to be_is_administrator
+      expect(user).to be_rejected_faculty
       expect(user.identity.authenticate('si4eeSai')).to eq user.identity
     end
   end

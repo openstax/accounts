@@ -41,7 +41,15 @@
 
   <div class="form-group">
     <%= f.label :faculty_status %>
-    <div><%= @user.faculty_status %></div>
+    <% if sf_id.nil? %>
+      <% faculty_statuses = User.faculty_statuses.keys.map{ |key| [key.humanize, key] } %>
+      <div><%= f.select :faculty_status, faculty_statuses %></div>
+    <% else %>
+      <div><%= @user.faculty_status.humanize %></div>
+      <span class="help-block">
+        This is a Salesforce user. You must change this setting in Salesforce.
+      </span>
+    <% end %>
   </div>
 
   <div class="form-group">
@@ -84,9 +92,9 @@
     <%= text_field_tag 'user[email_address]', params[:user].try(:[], :email_address) %>
   </div>
 
-  <div class="checkbox">
-    <%= f.label :is_administrator, 'Administrator?' %>
+  <div class="form-group">
     <%= f.check_box :is_administrator %>
+    <%= f.label :is_administrator, 'Administrator?' %>
   </div>
 
   <div class="actions">
