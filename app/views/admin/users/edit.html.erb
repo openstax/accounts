@@ -1,6 +1,8 @@
 <%# Copyright 2011-2016 Rice University. Licensed under the Affero General Public
     License version 3 or later.  See the COPYRIGHT file for details. %>
 
-<%= page_heading 'User Detail' %>
+<%= ox_card(heading: "User Detail") do %>
 
-<%= render 'form' %>
+  <%= render 'form' %>
+
+<% end %>
