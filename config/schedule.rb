@@ -12,7 +12,7 @@ set :runner_command, "#{bundle_command} rails runner"
 every 1.hour, at: 45 do
   runner <<-CMD
     OpenStax::RescueFrom.this{
-      UpdateUserSalesforceInfo.call(enable_error_email: Time.zone.now.hour == 0)
+      UpdateUserSalesforceInfo.call(allow_error_email: Time.zone.now.hour == 0)
     }
   CMD
 end

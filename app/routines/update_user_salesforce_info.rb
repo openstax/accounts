@@ -1,12 +1,12 @@
 class UpdateUserSalesforceInfo
 
-  def initialize(enable_error_email:)
-    @enable_error_email = enable_error_email
+  def initialize(allow_error_email:)
+    @allow_error_email = allow_error_email
     @errors = []
   end
 
-  def self.call(enable_error_email: false)
-    new(enable_error_email: enable_error_email).call
+  def self.call(allow_error_email: false)
+    new(allow_error_email: allow_error_email).call
   end
 
   def call
@@ -140,13 +140,13 @@ class UpdateUserSalesforceInfo
     return if @errors.empty?
     Rails.logger.warn("UpdateUserSalesforceInfo errors: " + @errors.inspect)
 
-    return unless @enable_error_email
-
-    DevMailer.inspect_object(
-      object: @errors,
-      subject: "UpdateUserSalesforceInfo errors",
-      to: Rails.application.secrets[:salesforce]['mail_recipients']
-    ).deliver_later
+    if @allow_error_email && is_real_production?
+      DevMailer.inspect_object(
+        object: @errors,
+        subject: "UpdateUserSalesforceInfo errors",
+        to: Rails.application.secrets[:salesforce]['mail_recipients']
+      ).deliver_later
+    end
   end
 
   def is_real_production?

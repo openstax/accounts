@@ -17,7 +17,7 @@ module Admin
     end
 
     def update_users
-      UpdateUserSalesforceInfo.call(enable_error_email: true)
+      UpdateUserSalesforceInfo.call(allow_error_email: true)
       flash[:notice] = "The update completed."
       redirect_to admin_salesforce_path
     end
