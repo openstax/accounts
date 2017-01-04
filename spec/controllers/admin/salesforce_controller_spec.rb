@@ -8,7 +8,7 @@ RSpec.describe Admin::SalesforceController, type: :controller do
   end
 
   it 'enables emails on manual user updates' do
-    expect(UpdateUserSalesforceInfo).to receive(:call).with(enable_error_email: true)
+    expect(UpdateUserSalesforceInfo).to receive(:call).with(allow_error_email: true)
     post :update_users
   end
 end
