@@ -41,8 +41,15 @@
 
   <div class="form-group">
     <%= f.label :faculty_status %>
-    <% faculty_statuses = User.faculty_statuses.keys.map{ |key| [key.humanize, key] } %>
-    <div><%= f.select :faculty_status, faculty_statuses %></div>
+    <% if sf_id.nil? %>
+      <% faculty_statuses = User.faculty_statuses.keys.map{ |key| [key.humanize, key] } %>
+      <div><%= f.select :faculty_status, faculty_statuses %></div>
+    <% else %>
+      <div><%= @user.faculty_status.humanize %></div>
+      <span class="help-block">
+        This is a Salesforce user. You must change this setting in Salesforce.
+      </span>
+    <% end %>
   </div>
 
   <div class="form-group">
