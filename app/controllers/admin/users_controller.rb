@@ -66,11 +66,12 @@ module Admin
       return false
     end
 
+    def admin_user_params
+      params.require(:user).permit(:first_name, :last_name, :faculty_status, :is_administrator)
+    end
+
     def update_user
-      @user.is_administrator = params[:user][:is_administrator]
-      @user.faculty_status = params[:user][:faculty_status] if params[:user][:faculty_status]
-      user_params = params[:user].slice(:first_name, :last_name)
-      @user.update_attributes(user_params)
+      @user.update_attributes(admin_user_params)
     end
   end
 end

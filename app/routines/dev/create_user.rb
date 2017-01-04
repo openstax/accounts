@@ -5,23 +5,21 @@ module Dev
 
     protected
 
-    def exec(inputs={})
-
-      username = inputs[:username]
-
-      if username.nil? || inputs[:ensure_no_errors]
+    def user_params(inputs)
+      if inputs[:username].nil? || inputs[:ensure_no_errors]
         loop do
-          break if !username.nil? && User.where(username: username).none?
-          username = "#{inputs[:username] || 'user'}#{rand(1000000)}"
+          break if !inputs[:username].nil? && User.where(username: inputs[:username]).none?
+          inputs[:username] = "#{inputs[:username] || 'user'}#{rand(1000000)}"
         end
       end
 
-      outputs[:user] = User.create do |user|
-        user.first_name = inputs[:first_name]
-        user.last_name = inputs[:last_name]
-        user.username = username
-        user.state = :activated
-      end
+      ActionController::Parameters.new(inputs.except(:ensure_no_errors))
+                                  .permit(:first_name, :last_name, :username)
+                                  .merge(state: :activated)
+    end
+
+    def exec(inputs={})
+      outputs[:user] = User.create(user_params(inputs))
 
       transfer_errors_from(outputs[:user], {type: :verbatim})
     end

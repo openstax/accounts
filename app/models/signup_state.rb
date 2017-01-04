@@ -1,5 +1,4 @@
 class SignupState < ActiveRecord::Base
-  attr_accessible :contact_info_value, :role, :return_to
 
   enum contact_info_kind: [:email_address]
 

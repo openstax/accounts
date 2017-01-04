@@ -82,10 +82,7 @@ class ImportUsers
     identity.save(validate: false)
 
     # User is using the omniauth identity authentication
-    @user.authentications.create!(
-      provider: 'identity',
-      uid: identity.id.to_s,
-    )
+    @user.authentications.create!(provider: 'identity', uid: identity.id.to_s)
 
     # Imported email addresses are verified
     ea = EmailAddress.new(value: email_address)

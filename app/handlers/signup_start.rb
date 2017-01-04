@@ -38,8 +38,7 @@ class SignupStart
                                                         return_to: options[:return_to])
 
     transfer_errors_from(new_signup_state,
-                         { map: { contact_info_value: :email },
-                           scope: :signup },
+                         { map: { contact_info_value: :email }, scope: :signup },
                          true)
 
     # Send the pin

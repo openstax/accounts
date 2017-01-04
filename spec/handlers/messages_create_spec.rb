@@ -106,8 +106,7 @@ describe MessagesCreate, type: :handler do
 
       c = Message.count
 
-      msg = MessagesCreate.handle(params: message_params,
-              caller: api_user).outputs[:message]
+      msg = MessagesCreate.handle(params: message_params, caller: api_user).outputs[:message]
 
       response = Api::V1::MessageRepresenter.new(msg).to_hash.except('id')
       response['to']['user_ids'] = Set.new response['to']['user_ids']

@@ -10,7 +10,7 @@ class TransferAuthentications
     authentications = [authentications] if !(authentications.is_a? Array)
     authentications.each do |authentication|
       authentication_user = authentication.user
-      authentication.update_attributes(user_id: target_user.id)
+      authentication.update_attribute(:user_id, target_user.id)
       transfer_errors_from(authentication, {type: :verbatim}, true)
 
       run(DestroyUser, authentication_user) \

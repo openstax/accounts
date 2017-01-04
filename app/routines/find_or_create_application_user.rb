@@ -6,15 +6,8 @@ class FindOrCreateApplicationUser
   protected
 
   def exec(application_id, user_id)
-    application_user = ApplicationUser.where(:application_id => application_id,
-                                             :user_id => user_id).first
-    unless application_user
-      application_user = ApplicationUser.create do |app_user|
-        app_user.application_id = application_id
-        app_user.user_id = user_id
-        app_user.save!
-      end
-    end
+    application_user = ApplicationUser.find_or_create_by(application_id: application_id,
+                                                         user_id: user_id)
 
     outputs[:application_user] = application_user
   end
