@@ -14,7 +14,7 @@
           Proc.new { |user| user.id.to_s },
           Proc.new do |user|
             security_log_params = { query: "user:\"#{user.username}\"" }
-            link_to user.username, admin_security_log_path(search: security_log_params)
+            link_to (user.username || '(none)'), admin_security_log_path(search: security_log_params)
           end,
           Proc.new { |user| user.first_name || '---' },
           Proc.new { |user| user.last_name || '---' },
