@@ -7,8 +7,12 @@ body.sessions {
   &.new {
     .ox-card .form-group +
     a:not(.footer).trouble {
-      display: block;
+      display: inline-block;
       margin-top: 10px;
+    }
+    i {
+      color: $os_link_color;
+      margin-left: 6px;
     }
   }
 }
