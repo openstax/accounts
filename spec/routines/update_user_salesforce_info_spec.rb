@@ -92,6 +92,19 @@ describe UpdateUserSalesforceInfo do
     end
   end
 
+  context 'user has two verified emails that are the primary and alt email on one contact' do
+    before(:each) {
+      email = AddEmailToUser.call("bobalt@example.com", user).outputs.email
+      ConfirmContactInfo.call(email)
+      stub_contacts([{id: 'foo', email: 'bob@example.com', email_alt: 'bobalt@example.com', faculty_verified: "Pending"}])
+    }
+
+    it 'does not find that one contact twice and freak out' do
+      expect(Rails.logger).not_to receive(:warn)
+      described_class.call
+    end
+  end
+
   context 'user matches SF info via unverified email' do
     it 'does not sync that SF info' do
       AddEmailToUser.call("unverified@example.com", user)
