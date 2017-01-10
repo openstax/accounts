@@ -67,7 +67,10 @@ class UpdateUserSalesforceInfo
         # of which are verified and some are not, and in case `user.contact_infos` gets
         # those, add this extra `select(&:verified?)` call
 
-        contacts = user.contact_infos.select(&:verified?).map{|ci| contacts_by_email[ci.value]}
+        contacts = user.contact_infos
+                       .select(&:verified?)
+                       .map{|ci| contacts_by_email[ci.value]}
+                       .uniq
 
         next if contacts.size == 0
 
