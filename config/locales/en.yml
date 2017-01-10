@@ -275,6 +275,7 @@ en:
       cannot_find_user: Cannot find user
       unknown_username: We don’t recognize this username.  Please try again or use your email address instead.
       unknown_email: We don’t recognize this email.  Please try again.
+      having_trouble: Trouble logging in?
       multiple_users:
         # %{link}   a hyperlink that sends usernames to the email being used for log in.
         #           The label is defined by the .click_here key.
