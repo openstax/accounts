@@ -24,16 +24,17 @@
     <%= fh.text_field name: :num_students, only: :instructor %>
     <%= fh.text_field name: :url, except: :student %>
 
+    <%# These dropdown option values are dictated by Salesforce and should not be changed %>
     <%= fh.select name: :using_openstax,
                   only: :instructor,
                   options: options_for_select(
                   [
                     [t('.instructor_use.how'), ""],
-                    [t('.instructor_use.fully'), t('.instructor_use.fully')],
-                    [t('.instructor_use.recommended'), t('.instructor_use.recommended')],
-                    [t('.instructor_use.piloting'), t('.instructor_use.piloting')],
-                    [t('.instructor_use.interested'), t('.instructor_use.interested')],
-                    [t('.instructor_use.nope'), t('.instructor_use.nope')]
+                    [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
+                    [t('.instructor_use.recommended'), 'Confirmed Will Recommend'],
+                    [t('.instructor_use.piloting'), 'Piloting book this semester'],
+                    [t('.instructor_use.interested'), 'High Interest in Adopting'],
+                    [t('.instructor_use.nope'), 'Not using']
                    ],
                    selected: (params.try(:[], 'profile').try(:[], 'using_openstax') || ''),
                    disabled: "", hidden: "") %>
