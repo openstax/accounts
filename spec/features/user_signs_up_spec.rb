@@ -305,7 +305,7 @@ feature 'User signs up', js: true do
       complete_signup_profile_screen(
         attrs.merge(
           newsletter: true,
-          using_openstax: t('signup.profile.instructor_use.piloting'),
+          using_openstax: "primary",
           role: :instructor,
           num_students: "-9", # invalid!
           agree: true,
@@ -315,7 +315,8 @@ feature 'User signs up', js: true do
       attrs.each do |key, value|
         expect(page).to have_field(t("signup.profile.#{key}"), with: value)
       end
-      expect(page).to have_field("profile_using_openstax", with: t('signup.profile.instructor_use.piloting'))
+
+      expect(page).to have_field("profile_using_openstax", with: 'Confirmed Adoption Won')
       expect(page).to have_checked_field('profile_newsletter')
       screenshot!
     end
