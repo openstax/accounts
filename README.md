@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/openstax/accounts.png?branch=master)](https://travis-ci.org/openstax/accounts)
 [![Code Climate](https://codeclimate.com/github/openstax/accounts.png)](https://codeclimate.com/github/openstax/accounts)
-[![Coverage Status](https://coveralls.io/repos/openstax/accounts/badge.png)](https://coveralls.io/r/openstax/accounts)
+[![Coverage Status](https://img.shields.io/codecov/c/github/openstax/accounts.svg)](https://codecov.io/gh/openstax/accounts)
 
 OpenStax Accounts is a centralized provider of account-related services for OpenStax products, including:
 

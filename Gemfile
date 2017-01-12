@@ -160,8 +160,9 @@ group :development, :test do
   # Time travel
   gem 'timecop'
 
-  # Coveralls integration
-  gem 'coveralls', require: false
+  # Codecov integration
+  gem 'codecov', :require => false
+
   # Speedup and run specs when files change
   gem 'spring'
   gem 'spring-commands-rspec'

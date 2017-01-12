@@ -1,11 +1,8 @@
 require 'simplecov'
-require 'coveralls'
+require 'codecov'
 require 'parallel_tests'
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  Coveralls::SimpleCov::Formatter
-]) if ParallelTests.first_process?
+SimpleCov.formatter = SimpleCov::Formatter::Codecov
 
 SimpleCov.at_exit do
   ParallelTests.wait_for_other_processes_to_finish if ParallelTests.first_process?
