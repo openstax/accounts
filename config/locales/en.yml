@@ -498,7 +498,7 @@ en:
       url: A web page that shows you are faculty
       num_students: Number of students per semester
       using_openstax: Already using OpenStax?
-      titles_interested: Select all OpenStax titles that interest you
+      titles_interested: Select at least one OpenStax titles that interest you
       keep_me_informed: Send me news about new titles, resources, and related information.
       submit: Apply
 
