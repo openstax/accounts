@@ -42,14 +42,16 @@
 
       <h3><%= t('.titles_interested') %></h3>
 
-      <div class="subjects clearfix">
-        <% Settings::Subjects.each(sorted: true) do | key, info | %>
-            <div class="subject">
-              <%= f.check_box("subjects[#{key}]", checked: instructor_has_selected_subject(key)) %>
-              <%= f.label "subjects[#{key}]", info['title'] %>
-            </div>
-          <% end %>
-      </div>
+      <%= fh.wrapper_div(name: :subjects, class_name: 'subjects' ) do %>
+        <div class="scroll-pane">
+          <% Settings::Subjects.each(sorted: true) do | key, info | %>
+              <div class="subject">
+                <%= f.check_box("subjects[#{key}]", checked: instructor_has_selected_subject(key)) %>
+                <%= f.label "subjects[#{key}]", info['title'] %>
+              </div>
+            <% end %>
+        </div>
+      <% end %>
     <% end %>
 
     <div class="newsletter">
