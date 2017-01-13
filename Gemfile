@@ -161,7 +161,7 @@ group :development, :test do
   gem 'timecop'
 
   # Codecov integration
-  gem 'codecov', :require => false
+  gem 'codecov', require: false
 
   # Speedup and run specs when files change
   gem 'spring'
@@ -186,11 +186,11 @@ group :test do
   # Test database cleanup gem with multiple strategies
   gem 'database_cleaner'
 
-  # CodeClimate integration
-  gem "codeclimate-test-reporter", require: false
   gem 'db-query-matchers'
+
   # Headless Capybara driver
   gem 'poltergeist'
+
   # Testing emails
   gem 'capybara-email'
 
