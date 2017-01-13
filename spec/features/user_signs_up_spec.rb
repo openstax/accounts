@@ -290,6 +290,7 @@ feature 'User signs up', js: true do
 
       expect(page).to have_content("can't be blank", count: 6)
       expect(page).to have_content("is not a number")
+      expect(page).to have_content("Subjects must have at least one selected")
 
       screenshot!
     end
