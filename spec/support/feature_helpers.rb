@@ -374,6 +374,7 @@ def complete_signup_profile_screen_with_whatever(role: :instructor)
     school: "Rice University",
     url: "http://www.ece.rice.edu/boba",
     num_students: 30,
+    subjects: ["Biology"],
     using_openstax: "primary",
     newsletter: true,
     agree: true
