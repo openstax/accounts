@@ -68,17 +68,16 @@ class Api::V1::ContactInfosController < Api::V1::ApiController
       payload = consume!(Hashie::Mash.new, represent_with: Api::V1::ConfirmByPinRepresenter)
       outputs = ConfirmByPin.call(contact_info: @contact_info, pin: payload.pin)
 
-      if outputs.errors.none?
-        security_log :contact_info_confirmed_by_pin, contact_info_id: params[:id],
-                                                     contact_info_type: @contact_info.type,
-                                                     contact_info_value: @contact_info.value
-        head :no_content
-      else
+      if render_api_errors(outputs.errors)
         security_log :contact_info_confirmation_by_pin_failed,
                      contact_info_id: params[:id],
                      contact_info_type: @contact_info.type,
                      contact_info_value: @contact_info.value
-        render_api_errors(outputs.errors)
+      else
+        security_log :contact_info_confirmed_by_pin, contact_info_id: params[:id],
+                                                     contact_info_type: @contact_info.type,
+                                                     contact_info_value: @contact_info.value
+        head :no_content
       end
     end
   end

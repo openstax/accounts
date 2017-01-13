@@ -47,7 +47,7 @@ gem 'quiet_assets'
 gem 'openstax_utilities', '~> 4.2.0'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 8.0.0'
+gem 'openstax_api', '~> 8.1.0'
 
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from', '~> 1.7.1'
