@@ -1,21 +1,12 @@
 require 'simplecov'
-require 'coveralls'
+require 'codecov'
 require 'parallel_tests'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  Coveralls::SimpleCov::Formatter
-]) if ParallelTests.first_process?
-
-SimpleCov.at_exit do
-  ParallelTests.wait_for_other_processes_to_finish if ParallelTests.first_process?
-  SimpleCov.result.format!
-end
+  SimpleCov::Formatter::HTMLFormatter, SimpleCov::Formatter::Codecov
+]) if ENV['CI'] == 'true'
 
 SimpleCov.start 'rails'
-
-require 'codeclimate-test-reporter'
-CodeClimate::TestReporter.start
 
 ENV['RAILS_ENV'] ||= 'test'
 

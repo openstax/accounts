@@ -29,7 +29,7 @@ cucumber_rerun.txt
 # Ignore byebug history files
 .byebug_history
 
-# Ignore Coveralls reports
+# Ignore Coverage reports
 coverage/*
 
 # Ignore Brakeman security scan results
