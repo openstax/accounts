@@ -121,6 +121,12 @@ module UserSessionManagement
                       Doorkeeper::Application.find_by(id: session[:client_app])
   end
 
+  def is_redirect_url?(application:, url:)
+    return false if application.nil? || url.nil?
+    # Let doorkeeper do the work of checking the URL against the app's redirect_uris
+    Doorkeeper::OAuth::Helpers::URIChecker.valid_for_authorization?(url, application.redirect_uri)
+  end
+
   def set_alternate_signup_url(url)
     if url.blank? || !url.is_a?(String)
       session[:alt_signup] = nil
