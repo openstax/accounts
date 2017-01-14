@@ -107,11 +107,9 @@ class SessionsController < ApplicationController
           redirect_to profile_path,
                       alert: "That way to log in cannot be added because it is associated to an email address that is already in use!" # TODO i18n
         else
-          Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}; " \
-                             "status: #{@handler_result.outputs[:status]}"
-          raise IllegalState, "SessionsCreate errors: #{@handler_result.errors.inspect
-                              }; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect
-                              }; status: #{@handler_result.outputs[:status]}"
+          Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']
+                             }; status: #{@handler_result.outputs[:status]}"
+          redirect_to root_path, alert: 'Sorry, we lost you. Please log in again.'
         end
       end
     )
