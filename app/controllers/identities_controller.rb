@@ -38,7 +38,10 @@ class IdentitiesController < ApplicationController
     # Can be reached before logged in (can't remember password) or when logged
     # in and asked to reauthenticate and can't remember password.
 
-    user = signed_in? ? current_user : User.find(get_login_state[:matching_user_ids].first)
+    user = signed_in? ? current_user :
+                        User.find_by(id: get_login_state[:matching_user_ids].try(:first))
+
+    redirect_to(root_path, alert: 'Sorry, we lost you. Please try again.') && return if user.nil?
 
     handle_with(IdentitiesSendPasswordEmail,
                 kind: kind,

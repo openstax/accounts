@@ -102,5 +102,31 @@ describe IdentitiesController, type: :controller do
 
     end
 
+    context 'send_add' do
+
+      it 'redirects to the home page with a message if the user is not found' do
+        post :send_add
+        expect(response).to redirect_to root_path
+        expect(flash.alert).to eq 'Sorry, we lost you. Please try again.'
+      end
+
+      xit 'sends a message to add a password to the account if the user is found' do
+      end
+
+    end
+
+    context 'send_reset' do
+
+      it 'redirects to the home page with a message if the user is not found' do
+        post :send_reset
+        expect(response).to redirect_to root_path
+        expect(flash.alert).to eq 'Sorry, we lost you. Please try again.'
+      end
+
+      xit 'sends a reset password message if the user is found' do
+      end
+
+    end
+
   end
 end
