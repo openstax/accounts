@@ -211,4 +211,10 @@ feature 'User logs in', js: true do
     end
   end
 
+  scenario 'anonymous user GETs `/auth/identity/callback` directly' do
+    visit '/auth/identity/callback'
+    expect(page).not_to have_content(500)
+    expect(page).to have_content(I18n.t :"controllers.sessions.no_account_for_username_or_email")
+  end
+
 end
