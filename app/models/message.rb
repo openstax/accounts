@@ -17,8 +17,6 @@ class Message < ActiveRecord::Base
   validates :subject, presence: true
   validates :subject_prefix, presence: true
 
-  attr_accessible :user_id, :send_externally_now, :subject, :subject_prefix
-
   def from_address
     @from_address ||= application.email_from_address
   end

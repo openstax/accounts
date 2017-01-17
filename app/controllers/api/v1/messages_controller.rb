@@ -51,12 +51,12 @@ class Api::V1::MessagesController < Api::V1::ApiController
     #{json_schema(Api::V1::MessageRepresenter, include: [:writeable])}
   EOS
   def create
-    handle_with(MessagesCreate, caller: current_api_user,
-                success: lambda {
-                           respond_with @handler_result.outputs[:message],
-                                        status: :created, location: nil
-                         },
-                failure: lambda {
+    handle_with(MessagesCreate,
+                caller: current_api_user,
+                success: -> {
+                  respond_with @handler_result.outputs[:message], status: :created, location: nil
+                },
+                failure: -> {
                   render json: {errors: @handler_result.errors},
                   status: :unprocessable_entity
                 })

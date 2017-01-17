@@ -50,10 +50,8 @@ class FindOrCreateUnclaimedUser
       # they'll be prompted to reset it
       identity.password_expires_at = DateTime.now
       identity.save!
-      user.authentications.create!(
-        # TODO review this creation of authentication (otherwise only in SessionsCreate)
-        provider: 'identity', uid: identity.id.to_s
-      )
+      # TODO review this creation of authentication (otherwise only in SessionsCreate)
+      user.authentications.create!(provider: 'identity', uid: identity.id.to_s)
     end
 
     user

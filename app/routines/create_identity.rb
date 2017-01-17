@@ -7,12 +7,12 @@ class CreateIdentity
 
   protected
 
+  def identity_params(inputs)
+    ActionController::Parameters.new(inputs).permit(:password, :password_confirmation, :user_id)
+  end
+
   def exec(inputs={})
-    outputs[:identity] = Identity.create do |identity|
-      identity.password = inputs[:password]
-      identity.password_confirmation = inputs[:password_confirmation]
-      identity.user_id = inputs[:user_id]
-    end
+    outputs[:identity] = Identity.create(identity_params(inputs))
 
     transfer_errors_from(outputs[:identity],{type: :verbatim})
   end

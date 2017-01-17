@@ -16,13 +16,11 @@ class UsersController < ApplicationController
       if current_user.update_attributes(user_params)
         security_log :user_updated, user_params: user_params
 
-        format.json {
-          render json: { full_name: current_user.full_name }, status: :ok
-        }
+        format.json { render json: { full_name: current_user.full_name }, status: :ok }
       else
-        format.json {
+        format.json do
           render json: current_user.errors.full_messages.first, status: :unprocessable_entity
-        }
+        end
       end
     end
   end
@@ -36,7 +34,7 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params[:value].is_a?(Hash) ? params[:value] : {params[:name] => params[:value]}
+    params.require(:value).permit(:username, :title, :first_name, :last_name, :suffix)
   end
 
 end

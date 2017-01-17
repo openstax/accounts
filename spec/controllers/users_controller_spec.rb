@@ -24,7 +24,7 @@ RSpec.describe UsersController, type: :controller do
       controller.sign_in! user
       put 'update', {
         name: 'username',
-        value: 'newusername',
+        value: { username: 'newusername' },
         format: 'json'
       }
       expect(response.status).to eq 200

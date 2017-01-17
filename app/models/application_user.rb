@@ -4,8 +4,6 @@ class ApplicationUser < ActiveRecord::Base
   belongs_to :user, inverse_of: :application_users
 
   belongs_to :default_contact_info, class_name: 'ContactInfo'
-  
-  attr_accessible :default_contact_info
 
   validates_presence_of :user, :application
   validates_uniqueness_of :user_id, scope: :application_id

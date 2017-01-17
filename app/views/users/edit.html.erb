@@ -91,16 +91,21 @@ $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
 $.fn.editable.defaults.url = "<%= profile_path %>";
 
 $('#username').editable({
+  params: function(params) {
+    var vals = {};
+    vals[params.name] = params.value;
+    return { value: vals };
+  },
   success: function(response, newValue) {
     $('#session-info .username').text(newValue);
   }
 });
 
 OX.Profile.Name.editable($('#name'), {
-    title: "<%= current_user.title %>",
-    first_name: "<%= current_user.first_name %>",
-    last_name: "<%= current_user.last_name %>",
-    suffix: "<%= current_user.suffix %>"
+  title: "<%= current_user.title %>",
+  first_name: "<%= current_user.first_name %>",
+  last_name: "<%= current_user.last_name %>",
+  suffix: "<%= current_user.suffix %>"
 });
 
 

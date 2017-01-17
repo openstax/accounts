@@ -1,8 +1,6 @@
 require_relative 'doorkeeper'
 
-Doorkeeper::Application.class_eval do
-  attr_accessible :trusted, :email_from_address, :email_subject_prefix
-
+Doorkeeper::Application.class_exec do
   has_many :application_users, foreign_key: :application_id,
                                dependent: :destroy,
                                inverse_of: :application
@@ -18,7 +16,7 @@ Doorkeeper::Application.class_eval do
   has_many :security_logs, inverse_of: :application
 end
 
-Doorkeeper::AccessToken.class_eval do
+Doorkeeper::AccessToken.class_exec do
   before_create :create_application_user
 
   def create_application_user
