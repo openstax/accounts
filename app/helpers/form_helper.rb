@@ -14,6 +14,15 @@ module FormHelper
       @context
     end
 
+    def wrapper_div(name:, except: nil, only: nil, class_name: '', &block)
+      return if excluded?(except: except, only: only)
+      errors_div = get_errors_div(name: name)
+      c.content_tag :div, class: "form-group #{class_name} #{'has-error' if errors_div.present?}" do
+        content = c.capture(&block)
+        errors_div.present? ? content + errors_div : content
+      end
+    end
+
     def text_field(name:, label: nil, value: nil, type: nil, autofocus: false, except: nil, only: nil)
       return if excluded?(except: except, only: only)
 

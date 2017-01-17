@@ -290,6 +290,7 @@ feature 'User signs up', js: true do
 
       expect(page).to have_content("can't be blank", count: 6)
       expect(page).to have_content("is not a number")
+      expect(page).to have_content("Subjects must have at least one selection")
 
       screenshot!
     end
@@ -379,6 +380,7 @@ feature 'User signs up', js: true do
         last_name: "Gillis",
         school: "Rice University",
         phone_number: "000-0000",
+        subjects: ["Biology"],
         url: "http://www.rice.edu/~malcolm"
       )
       screenshot!

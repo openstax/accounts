@@ -13,6 +13,11 @@ class SignupProfileInstructor < SignupProfile
                 greater_than_or_equal_to: 0
               }
     validates :using_openstax, presence: true
+    validate :subjects, lambda { |profile|
+      unless profile.subjects.detect{|_, checked| checked == '1'}
+        profile.errors.add(:subjects, 'must have at least one selection')
+      end
+    }
   end
 
   def push_lead
