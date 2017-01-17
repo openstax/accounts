@@ -450,7 +450,7 @@ en:
       num_students: Number of students per semester
       using_openstax: Already using OpenStax?
       create_account: Create Account
-      titles_interested: Select all OpenStax titles that interest you
+      titles_interested: Select all OpenStax subjects that interest you
       keep_me_informed: Send me news about new titles, resources, and related information.
       timeout: Please log in again to complete your sign up
 
