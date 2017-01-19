@@ -15,12 +15,16 @@ feature "Params given on entry", js: true do
   end
 
   context "signup_at=something" do
-    before(:each) do
-      allow_any_instance_of(Doorkeeper::Application).to receive(:is_redirect_url?).and_return(true)
+    let(:alt_signup_url)     do
+      server = Capybara.current_session.server
+      "http://#{server.host}:#{server.port}/copyright"
     end
-
-    let(:alt_signup_url) { "copyright" }
     let(:alt_signup_content) { t :"static_pages.copyright.page_heading" }
+
+    before(:each) do
+      @app = create_application
+      @app.update_attribute :redirect_uri, "#{@app.redirect_uri}\n#{alt_signup_url}"
+    end
 
     scenario "arriving from app" do
       arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
@@ -29,7 +33,7 @@ feature "Params given on entry", js: true do
     end
 
     scenario "straight to login" do
-      visit "login?signup_at=#{alt_signup_url}"
+      visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
       click_link(t :"sessions.new.sign_up")
       expect(page).to have_content(alt_signup_content)
     end
