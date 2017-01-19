@@ -41,7 +41,8 @@ class IdentitiesController < ApplicationController
     user = signed_in? ? current_user :
                         User.find_by(id: get_login_state[:matching_user_ids].try(:first))
 
-    redirect_to(root_path, alert: 'Sorry, we lost you. Please try again.') && return if user.nil?
+    redirect_to(root_path,
+                alert: I18n.t(:'controllers.identities.lost_user')) && return if user.nil?
 
     handle_with(IdentitiesSendPasswordEmail,
                 kind: kind,

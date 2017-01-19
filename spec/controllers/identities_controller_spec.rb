@@ -107,7 +107,7 @@ describe IdentitiesController, type: :controller do
       it 'redirects to the home page with a message if the user is not found' do
         post :send_add
         expect(response).to redirect_to root_path
-        expect(flash.alert).to eq 'Sorry, we lost you. Please try again.'
+        expect(flash.alert).to eq I18n.t(:'controllers.identities.lost_user')
       end
 
       xit 'sends a message to add a password to the account if the user is found' do
@@ -120,7 +120,7 @@ describe IdentitiesController, type: :controller do
       it 'redirects to the home page with a message if the user is not found' do
         post :send_reset
         expect(response).to redirect_to root_path
-        expect(flash.alert).to eq 'Sorry, we lost you. Please try again.'
+        expect(flash.alert).to eq I18n.t(:'controllers.identities.lost_user')
       end
 
       xit 'sends a reset password message if the user is found' do
