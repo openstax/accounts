@@ -333,7 +333,7 @@ GEM
     omniauth-twitter (1.2.1)
       json (~> 1.3)
       omniauth-oauth (~> 1.1)
-    openstax_api (8.0.0)
+    openstax_api (8.1.0)
       doorkeeper (>= 2.0)
       exception_notification (>= 4.0)
       lev (>= 1.0.0)
@@ -533,7 +533,7 @@ GEM
       tins (~> 1.0)
     terminal-table (1.7.3)
       unicode-display_width (~> 1.1.1)
-    test_xml (0.1.7)
+    test_xml (0.1.8)
       diffy (~> 3.0)
       nokogiri (>= 1.3.2)
     therubyracer (0.12.2)
@@ -632,7 +632,7 @@ DEPENDENCIES
   omniauth-identity
   omniauth-salesforce
   omniauth-twitter
-  openstax_api (~> 8.0.0)
+  openstax_api (~> 8.1.0)
   openstax_rescue_from (~> 1.7.1)
   openstax_utilities (~> 4.2.0)
   p3p
