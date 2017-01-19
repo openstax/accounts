@@ -7,6 +7,21 @@ module EmailAddressValidations
         {
           with: /\A[^@ ]+@[^@. ]+\.[^@ ]+\z/,
           message: "\"%{value}\" is not a valid email address"
+        },
+        {
+          # AWS::SES::ResponseError InvalidParameterValue - Domain contains dot-dot
+          without: /.*\.{2,}.*/,
+          message: "\"%{value}\" has too many dots in a row"
+        },
+        {
+          # AWS::SES::ResponseError InvalidParameterValue - Domain ends with dot
+          without: /.*\.\z/,
+          message: "\"%{value}\" cannot end with a dot"
+        },
+        {
+          # AWS::SES::ResponseError InvalidParameterValue - Domain contains illegal character
+          without: /`/,
+          message: "\"%{value}\" should not contain a tick (`)"
         }
       ]
     end

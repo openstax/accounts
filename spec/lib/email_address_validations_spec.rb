@@ -26,6 +26,23 @@ describe EmailAddressValidations do
     expect_invalid('user@localhost')
   end
 
+  it 'returns errors for an email address ending in a dot' do
+    expect_invalid('user@somedomain.com.')
+  end
+
+  it 'returns errors for email address with more than one dot in a row' do
+    expect_invalid('bob@hotmail..com')
+    expect_invalid('bob@hotmail...com')
+  end
+
+  it 'returns errors for email addresses with a tick' do
+    expect_invalid('bob@gmail.com`')
+  end
+
+  it 'returns errors for a username looking entry' do
+    expect_invalid('bobbybobby')
+  end
+
   def expect_valid(value)
     email_objects(value).each do |email|
       expect(email).to be_valid
