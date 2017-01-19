@@ -16,6 +16,13 @@ Doorkeeper::Application.class_eval do
   has_many :messages, inverse_of: :application
 
   has_many :security_logs, inverse_of: :application
+
+  def is_redirect_url?(url)
+    return false if url.nil?
+
+    # Let doorkeeper do the work of checking the URL against the app's redirect_uris
+    Doorkeeper::OAuth::Helpers::URIChecker.valid_for_authorization?(url, redirect_uri)
+  end
 end
 
 Doorkeeper::AccessToken.class_eval do

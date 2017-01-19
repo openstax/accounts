@@ -121,12 +121,6 @@ module UserSessionManagement
                       Doorkeeper::Application.find_by(id: session[:client_app])
   end
 
-  def is_redirect_url?(application:, url:)
-    return false if application.nil? || url.nil?
-    # Let doorkeeper do the work of checking the URL against the app's redirect_uris
-    Doorkeeper::OAuth::Helpers::URIChecker.valid_for_authorization?(url, application.redirect_uri)
-  end
-
   def set_alternate_signup_url(url)
     if url.blank? || !url.is_a?(String)
       session[:alt_signup] = nil
@@ -135,13 +129,13 @@ module UserSessionManagement
       # Just in case the url got encoded multiple times
       current_url, url = url, URI.decode(url) until url == current_url
 
-      if is_redirect_url?(application: get_client_app, url: url)
+      if get_client_app.try!(:is_redirect_url?, url)
         session[:alt_signup] = url
       else
         session[:alt_signup] = nil
 
         message = "Alternate signup URL (#{url}) is not a redirect_uri " \
-                  "for client app #{get_client_app.try(:uid)}"
+                  "for client app #{get_client_app.try!(:uid)}"
         Rails.logger.warn(message)
 
         raise message unless Rails.env.production?

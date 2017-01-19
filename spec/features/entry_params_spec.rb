@@ -15,9 +15,9 @@ feature "Params given on entry", js: true do
   end
 
   context "signup_at=something" do
-    before(:each) {
-      allow_any_instance_of(ApplicationController).to receive(:is_redirect_url?) { true }
-    }
+    before(:each) do
+      allow_any_instance_of(Doorkeeper::Application).to receive(:is_redirect_url?).and_return(true)
+    end
 
     let(:alt_signup_url) { "copyright" }
     let(:alt_signup_content) { t :"static_pages.copyright.page_heading" }

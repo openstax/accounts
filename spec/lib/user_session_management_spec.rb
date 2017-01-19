@@ -31,7 +31,8 @@ RSpec.describe UserSessionManagement, type: :lib do
       expect(controller.current_user).to eq user_1
     end
 
-    it 'sign_out! does nothing' do
+    it 'sign_out! calls clear_signup_state' do
+      expect(controller).to receive(:clear_signup_state)
       controller.sign_out!
       expect(controller.current_user).to eq AnonymousUser.instance
     end
@@ -202,7 +203,8 @@ RSpec.describe UserSessionManagement, type: :lib do
       expect(controller.current_user).to eq user_2
     end
 
-    it 'sign_out! can be used to sign out the user' do
+    it 'sign_out! calls clear_signup_state and can be used to sign out the user' do
+      expect(controller).to receive(:clear_signup_state)
       controller.sign_out!
       expect(controller.current_user).to eq AnonymousUser.instance
     end
@@ -369,29 +371,6 @@ RSpec.describe UserSessionManagement, type: :lib do
       expect(controller.get_alternate_signup_url).to be_nil
       controller.set_alternate_signup_url(nil)
       expect(controller.get_alternate_signup_url).to be_nil
-    end
-  end
-
-  context 'is_redirect_url?' do
-    let(:app) { FactoryGirl.create :doorkeeper_application }
-    let(:url) { "#{Faker::Internet.url}/#{SecureRandom.uuid}" }
-
-    it 'returns nil if the given app or url are nil' do
-      expect(Doorkeeper::OAuth::Helpers::URIChecker).not_to receive(:valid_for_authorization?)
-      expect(controller.is_redirect_url?(application: app, url: nil)).to eq false
-      expect(controller.is_redirect_url?(application: nil, url: url)).to eq false
-    end
-
-    it 'delegates to Doorkeeper::OAuth::Helpers::URIChecker' do
-      expect(Doorkeeper::OAuth::Helpers::URIChecker).to(
-        receive(:valid_for_authorization?).with(url, app.redirect_uri).and_call_original
-      )
-      expect(controller.is_redirect_url?(application: app, url: url)).to eq false
-      expect(Doorkeeper::OAuth::Helpers::URIChecker).to(
-        receive(:valid_for_authorization?).with(app.redirect_uri, app.redirect_uri)
-                                          .and_call_original
-      )
-      expect(controller.is_redirect_url?(application: app, url: app.redirect_uri)).to eq true
     end
   end
 
