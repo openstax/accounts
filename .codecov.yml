@@ -1,7 +1,111 @@
-# Configures when (if at all) codecov will create GitHub comments on a Pull Request
-# and what should be included in the comment.
-comment: false
+# codecov:
+#   url: "string"        # [enterprise] your self-hosted Codecov endpoint
+#                        # ex. https://codecov.company.com
+#   slug: "owner/repo"   # [enterprise] the project's name when using the global upload tokens
+#   branch: master       # the branch to show by default, inherited from your git repository settings
+#                        # ex. master, stable or release
+#                        # default: the default branch in git/mercurial
+#   bot: username        # the username that will consume any oauth requests
+#                        # must have previously logged into Codecov
+#   ci:                  # [advanced] a list of custom CI domains
+#     - "ci.custom.com"
+#   notify:              # [advanced] usage only
+#     after_n_builds: 5  # how many build to wait for before submitting notifications
+#                        # therefore skipping status checks
+#     countdown: 50      # number of seconds to wait before checking CI status
+#     delay: 100         # number of seconds between each CI status check
 
-#comment:
-#  layout: "header, diff, changes, uncovered, tree"
-#  behavior: default
+coverage:
+  # precision: 2         # how many decimal places to display in the UI: 0 <= value <= 4
+  # round: down          # how coverage is rounded: down/up/nearest
+  # range: 50...100      # custom range of coverage colors from red -> yellow -> green
+
+  # notify:
+  #   irc:
+  #     default:                        # -> see "sections" below
+  #       server: "chat.freenode.net"   #*S the domain of the irc server
+  #       branches: null                # -> see "branch patterns" below
+  #       threshold: null               # -> see "threshold" below
+  #       message: "template string"    # [advanced] -> see "customized message" below
+
+  #   slack:
+  #     default:                        # -> see "sections" below
+  #       url: "https://hooks.slack.com/..."  #*S unique Slack notifications url
+  #       branches: null                # -> see "branch patterns" below
+  #       threshold: null               # -> see "threshold" below
+  #       attachments: "sunburst, diff" # list of attachments to include in notification
+  #       message: "template string"    # [advanced] -> see "customized message" below
+
+  #   hipchat:
+  #     default:                        # -> see "sections" below
+  #       url: "https://team.hipchat.com/.." #*S your HipChat room
+  #       notify: true                  # boolean: toggle the messages "notify" feature (true is noisy)
+  #       branches: null                # -> see "branch patterns" below
+  #       card: true                    # boolean: enable or disable including extra details
+  #       threshold: null               # -> see "threshold" below
+  #       message: "template string"    # [advanced] -> see "customized message" below
+
+  #   gitter:
+  #     default:                        # -> see "sections" below
+  #       url: "https://webhooks.gitter.im/..."  #*S unique Gitter notifications url
+  #       branches: null                # -> see "branch patterns" below
+  #       threshold: null               # -> see "threshold" below
+  #       message: "template string"    # [advanced] -> see "customized message" below
+
+  #   webhook:
+  #     default:                        # -> see "sections" below
+  #       url: "https://domain.com"     #*S custom domain endpoint to post data to
+  #       branches: null                # -> see "branch patterns" below
+  #       threshold: null               # -> see "threshold" below
+
+  status:
+    project:                   # measuring the overall project coverage
+      default:                 # context, you can create multiple ones with custom titles
+        # enabled: yes           # must be yes|true to enable this status
+        target: 0%               # specify the target coverage for each commit status
+        #                        #   option: "auto" (must increase from parent commit or pull request base)
+        #                        #   option: "X%" a static target percentage to hit
+        # branches:              # -> see "branch patterns" below
+        threshold: 0%            # allowed to drop X% and still result in a "success" commit status
+        # if_no_uploads: error   # will post commit status of "error" if no coverage reports we uploaded
+        #                        # options: success, error, failure
+        # if_not_found: success  # if parent is not found report status as success, error, or failure
+        # if_ci_failed: error    # if ci fails report status as success, error, or failure
+
+    patch:                     # pull requests only: this commit status will measure the
+                               # entire pull requests Coverage Diff. Checking if the lines
+                               # adjusted are covered at least X%.
+      default:
+        # enabled: yes             # must be yes|true to enable this status
+        target: 0%                 # specify the target "X%" coverage to hit
+        # branches: null           # -> see "branch patterns" below
+        threshold: 0%              # allowed to drop X% and still result in a "success" commit status
+        # if_no_uploads: error     # will post commit status of "error" if no coverage reports we uploaded
+        #                          # options: success, error, failure
+        # if_not_found: success
+        # if_ci_failed: error
+
+    # changes:                   # if there are any unexpected changes in coverage
+    #   default:
+    #     enabled: yes             # must be yes|true to enable this status
+    #     branches: null           # -> see "branch patterns" below
+    #     if_no_uploads: error
+    #     if_not_found: success
+    #     if_ci_failed: error
+
+
+  # ignore:          # files and folders that will be removed during processing
+  #   - "tests/*"
+  #   - "demo/*.rb"
+
+  # fixes:           # [advanced] in rare cases the report tree is invalid, specify adjustments here
+  #   - "old_path::new_path"
+
+comment: false  # to disable comments
+# comment:
+#   layout: "header, diff, changes, sunburst, suggestions, tree"
+#   branches: null           # -> see "branch patterns" below
+#   behavior: default        # option: "default" posts once then update, posts new if delete
+#                            # option: "once"    post once then updates, if deleted do not post new
+#                            # option: "new"     delete old, post new
+#                            # option: "spammy"  post new
