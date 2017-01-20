@@ -62,6 +62,10 @@ en:
       accessing_instructions_emailed: >-
         Instructions for accessing your OpenStax account have been emailed to
         you.
+      no_account_for_username_or_email: >-
+        We could not find your account using the information provided. Please try again.
+      several_accounts_for_one_email: >-
+        We found multiple accounts for the information provided. Please try again.
       incorrect_password: The password you provided is incorrect.
       new_sign_in_option_added: Your new log in option as been added!
       same_provider_already_linked: >-

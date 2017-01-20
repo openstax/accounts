@@ -157,7 +157,7 @@ class SessionsController < ApplicationController
 
     case params[:message]
     when 'cannot_find_user'
-      flash[:alert] = I18n.t :"errors.no_account_for_username_or_email"
+      flash[:alert] = I18n.t :"controllers.sessions.no_account_for_username_or_email"
       render :new
     when 'multiple_users'
       flash[:alert] = I18n.t :"controllers.sessions.several_accounts_for_one_email"

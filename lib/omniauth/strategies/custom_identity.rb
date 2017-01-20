@@ -99,14 +99,15 @@ module OmniAuth
           elsif locate_conditions[:users_returned] > 1
             :multiple_users
           else
-            source = request.params["login"]["source"]
+            source = request.params.try(:[],"login").try(:[],"source")
+
             case source
             when "authenticate"
               :bad_authenticate_password
             when "reauthenticate"
               :bad_reauthenticate_password
             else
-              raise IllegalArgument, "Unknown password error source: #{source}"
+              raise IllegalArgument, "Unknown password error source: #{source || 'nil'}"
             end
           end
 
