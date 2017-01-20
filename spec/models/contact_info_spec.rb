@@ -36,16 +36,22 @@ describe ContactInfo do
     let!(:email2) { FactoryGirl.build(:email_address, user: user2,
                                       verified: true, value: 'my2@email.com') }
 
-    it 'does not allow the same user to have a repeated email address regardless of verification' do
+    it 'does not allow the same user to have a repeated email address regardless of verification and case' do
       email1.save!
       expect(email2).to be_valid
       email2.user = email1.user
-      email2.value = email1.value
+      email2.value = email1.value.upcase
       expect(email2).not_to be_valid
       expect(email2.errors.types[:value]).to include(:taken)
       email2.verified = false
       expect(email2).not_to be_valid
       expect(email2.errors.types[:value]).to include(:taken)
+    end
+
+    it 'does not allow two users to have the same verified email with different case' do
+      email1.save!
+      email2.value = email1.value.upcase
+      expect(email2).not_to be_valid
     end
 
     it 'does not allow removing the last verified email address' do

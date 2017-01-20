@@ -12,7 +12,12 @@ class ContactInfo < ActiveRecord::Base
   validates :type, presence: true
   validates :value,
             presence: true,
-            uniqueness: {scope: [:user_id, :type]}
+            uniqueness: {scope: [:user_id, :type], case_sensitive: false}
+
+  validate :check_for_verified_collision
+
+  before_save :add_unread_update
+  before_destroy :check_if_last_verified
 
   scope :email_addresses, -> { where(type: 'EmailAddress') }
   sifter :email_addresses do type.eq 'EmailAddress' end
@@ -22,10 +27,6 @@ class ContactInfo < ActiveRecord::Base
   scope :unverified, -> { where(verified: false) }
 
   scope :with_users, lambda { joins(:user).eager_load(:user) }
-
-  before_save :add_unread_update
-  before_destroy :check_if_last_verified
-  before_save :check_for_verified_collision
 
   def confirmed;  verified;  end
   def confirmed?; verified?; end
@@ -63,9 +64,14 @@ class ContactInfo < ActiveRecord::Base
   end
 
   def check_for_verified_collision
-    if verified? && ContactInfo.verified.where(value: value).where{id != my{id}}.any?
-      errors.add(:value, 'already confirmed on another account')
-    end
+    errors.add(:value, 'already confirmed on another account') \
+      if value.present? &&
+         verified? &&
+         ContactInfo.verified
+                    .where('lower(value) = ?', value.downcase)
+                    .where{id != my{id}}
+                    .any?
+
     errors.none?
   end
 end
