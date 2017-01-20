@@ -36,7 +36,8 @@ class SessionsCreate
   protected
 
   def setup
-    @data = OmniauthData.new(request.env['omniauth.auth'])
+    @data = OmniauthData.new(request.env['omniauth.auth']) \
+      rescue fatal_error(code: :invalid_omniauth_data)
     @user_state = options[:user_state]
   end
 

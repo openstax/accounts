@@ -65,7 +65,8 @@ class SessionsController < ApplicationController
       login_providers: get_login_state[:providers],
       complete: lambda do
         authentication = @handler_result.outputs[:authentication]
-        case @handler_result.outputs[:status]
+        status = @handler_result.outputs[:status]
+        case status
         when :new_signin_required
           reauthenticate_user! # TODO maybe replace with static "session has expired" b/c hard to recover
         when :returning_user
@@ -106,12 +107,28 @@ class SessionsController < ApplicationController
         when :email_already_in_use
           redirect_to profile_path,
                       alert: "That way to log in cannot be added because it is associated to an email address that is already in use!" # TODO i18n
+        when :unknown_callback_state, :invalid_omniauth_data
+          # Something weird happened to the user's session or omniauth data and we lost their info
+          Rails.logger.warn do
+            oauth = request.env['omniauth.auth']
+            errors = @handler_result.errors.inspect
+
+            "Lost User: SessionsCreate: OAuth data: #{oauth}; status: #{status}; errors: #{errors}"
+          end
+
+          redirect_to root_path, alert: I18n.t(:'controllers.lost_user')
         else
-          Rails.logger.fatal "IllegalState: OAuth data: #{request.env['omniauth.auth']}; " \
-                             "status: #{@handler_result.outputs[:status]}"
-          raise IllegalState, "SessionsCreate errors: #{@handler_result.errors.inspect
-                              }; Last exception: #{$!.inspect}; Exception backtrace: #{$@.inspect
-                              }; status: #{@handler_result.outputs[:status]}"
+          oauth = request.env['omniauth.auth']
+          errors = @handler_result.errors.inspect
+          last_exception = $!.inspect
+          exception_backtrace = $@.inspect
+
+          error_message = "SessionsCreate: OAuth data: #{oauth}; status: #{status}; " +
+                          "errors: #{errors}; last exception: #{last_exception}; " +
+                          "exception backtrace: #{exception_backtrace}"
+
+          # This will print the exception to the logs and send devs an exception email
+          raise IllegalState, error_message
         end
       end
     )
