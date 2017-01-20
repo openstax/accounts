@@ -22,7 +22,7 @@ class IdentitiesSendPasswordEmail
     email_addresses.each do |email_address|
       SignInHelpMailer.send(
         mailer_method,
-        user: options[:user],
+        user: user,
         email_address: email_address
       ).deliver_later
     end

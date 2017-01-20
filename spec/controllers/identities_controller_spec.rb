@@ -110,7 +110,16 @@ describe IdentitiesController, type: :controller do
         expect(flash.alert).to eq I18n.t(:'controllers.identities.lost_user')
       end
 
-      xit 'sends a message to add a password to the account if the user is found' do
+      it 'sends a message to add a password to the account if the user is found' do
+        controller.sign_in! user_no_identity
+        original_handle = IdentitiesSendPasswordEmail.method(:handle)
+        expect(IdentitiesSendPasswordEmail).to receive(:handle) do |options|
+          expect(options[:user]).to eq user_no_identity
+          expect(options[:kind]).to eq :add
+          original_handle.call(options)
+        end
+        post :send_add
+        expect(response).to have_http_status(:success)
       end
 
     end
@@ -123,7 +132,16 @@ describe IdentitiesController, type: :controller do
         expect(flash.alert).to eq I18n.t(:'controllers.identities.lost_user')
       end
 
-      xit 'sends a reset password message if the user is found' do
+      it 'sends a reset password message if the user is found' do
+        controller.sign_in! user
+        original_handle = IdentitiesSendPasswordEmail.method(:handle)
+        expect(IdentitiesSendPasswordEmail).to receive(:handle) do |options|
+          expect(options[:user]).to eq user
+          expect(options[:kind]).to eq :reset
+          original_handle.call(options)
+        end
+        post :send_reset
+        expect(response).to have_http_status(:success)
       end
 
     end
