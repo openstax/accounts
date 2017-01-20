@@ -145,8 +145,7 @@ module Oauth
         redirect_uri: 'https://www.example.com',
         trusted: true
       }
-      new_application = Doorkeeper::Application.order(:created_at).last
-      expect(response).to redirect_to(oauth_application_path(new_application))
+      expect(response).to redirect_to(oauth_application_path(assigns(:application)))
       expect(assigns(:application).name).to eq('Some app')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
       expect(assigns(:application).trusted).to eq(true)

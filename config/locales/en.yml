@@ -57,7 +57,6 @@ en:
         Your password has expired. Please enter a new password.
       password_reset_successfully: >-
         Your password has been reset successfully! You are now signed in.
-      lost_user: 'Sorry, we lost you. Please try again.'
 
     sessions:
       accessing_instructions_emailed: >-
@@ -91,6 +90,8 @@ en:
     terms:
       temporarily_unavailable: >-
         The terms are temporarily unavailable. Check back soon.
+
+    lost_user: 'Sorry, we lost you. Please try again.'
 
   handlers:
     authentications_delete:
