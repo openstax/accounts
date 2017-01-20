@@ -102,5 +102,49 @@ describe IdentitiesController, type: :controller do
 
     end
 
+    context 'send_add' do
+
+      it 'redirects to the home page with a message if the user is not found' do
+        post :send_add
+        expect(response).to redirect_to root_path
+        expect(flash.alert).to eq I18n.t(:'controllers.identities.lost_user')
+      end
+
+      it 'sends a message to add a password to the account if the user is found' do
+        controller.sign_in! user_no_identity
+        original_handle = IdentitiesSendPasswordEmail.method(:handle)
+        expect(IdentitiesSendPasswordEmail).to receive(:handle) do |options|
+          expect(options[:user]).to eq user_no_identity
+          expect(options[:kind]).to eq :add
+          original_handle.call(options)
+        end
+        post :send_add
+        expect(response).to have_http_status(:success)
+      end
+
+    end
+
+    context 'send_reset' do
+
+      it 'redirects to the home page with a message if the user is not found' do
+        post :send_reset
+        expect(response).to redirect_to root_path
+        expect(flash.alert).to eq I18n.t(:'controllers.identities.lost_user')
+      end
+
+      it 'sends a reset password message if the user is found' do
+        controller.sign_in! user
+        original_handle = IdentitiesSendPasswordEmail.method(:handle)
+        expect(IdentitiesSendPasswordEmail).to receive(:handle) do |options|
+          expect(options[:user]).to eq user
+          expect(options[:kind]).to eq :reset
+          original_handle.call(options)
+        end
+        post :send_reset
+        expect(response).to have_http_status(:success)
+      end
+
+    end
+
   end
 end
