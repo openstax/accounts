@@ -122,23 +122,23 @@ module UserSessionManagement
   end
 
   def set_alternate_signup_url(url)
-    if url.blank?
+    if url.blank? || !url.is_a?(String)
       session[:alt_signup] = nil
-    elsif !url.is_a?(String)
-      raise IllegalArgument
-    elsif is_redirect_url?(application: get_client_app, url: url)
-      session[:alt_signup] = url
     else
-      session[:alt_signup] = nil
+      # http://stackoverflow.com/a/18355425
+      # Just in case the url got encoded multiple times
+      current_url, url = url, URI.decode(url) until url == current_url
 
-      message = "Alternate signup URL (#{url}) is not a redirect_uri " \
-                "for client app #{get_client_app.try(:uid)}"
-      Rails.logger.warn(message)
-
-      if Rails.env.production?
-        DevMailer.inspect_object(object: message, subject: message).deliver_later
+      if get_client_app.try!(:is_redirect_url?, url)
+        session[:alt_signup] = url
       else
-        raise message
+        session[:alt_signup] = nil
+
+        message = "Alternate signup URL (#{url}) is not a redirect_uri " \
+                  "for client app #{get_client_app.try!(:uid)}"
+        Rails.logger.warn(message)
+
+        raise message unless Rails.env.production?
       end
     end
   end
