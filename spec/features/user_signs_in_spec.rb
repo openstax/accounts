@@ -211,6 +211,28 @@ feature 'User logs in', js: true do
     end
   end
 
+  scenario 'with a username but different case' do
+    create_user 'user'
+
+    visit '/'
+
+    complete_login_username_or_email_screen 'UsER'
+    complete_login_password_screen 'password'
+
+    expect_profile_screen
+  end
+
+  scenario 'with an email with different case' do
+    create_email_address_for (create_user 'user'), 'user@example.com'
+
+    visit '/'
+
+    complete_login_username_or_email_screen 'USER@example.com'
+    complete_login_password_screen 'password'
+
+    expect_profile_screen
+  end
+
   scenario 'anonymous user GETs `/auth/identity/callback` directly' do
     visit '/auth/identity/callback'
     expect(page).not_to have_content(500)
