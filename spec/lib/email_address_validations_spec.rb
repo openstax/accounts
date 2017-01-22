@@ -39,6 +39,10 @@ describe EmailAddressValidations do
     expect_invalid('bob@gmail.com`')
   end
 
+  it 'returns errors for email addresses with a colon' do
+    expect_invalid('something:bob@example.com')
+  end
+
   it 'returns errors for a username looking entry' do
     expect_invalid('bobbybobby')
   end

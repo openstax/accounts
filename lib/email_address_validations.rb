@@ -22,6 +22,11 @@ module EmailAddressValidations
           # AWS::SES::ResponseError InvalidParameterValue - Domain contains illegal character
           without: /`/,
           message: "\"%{value}\" should not contain a tick (`)"
+        },
+        {
+          # AWS::SES::ResponseError InvalidParameterValue - Domain contains illegal character
+          without: /:/,
+          message: "\"%{value}\" should not contain a colon"
         }
       ]
     end
