@@ -23,7 +23,6 @@ class SignupController < ApplicationController
 
   def start
     if request.post?
-      clear_signup_state # start fresh
       handle_with(SignupStart,
                   existing_signup_state: signup_state,
                   return_to: session[:return_to],
@@ -33,6 +32,7 @@ class SignupController < ApplicationController
                   end,
                   failure: lambda do
                     @role = params[:signup][:role]
+                    @signup_email = params[:signup][:email]
                     @handler_result.errors.each do | error |   # TODO move to view?
                       error.message = I18n.t("signup.start.#{error.code}", signin_url: signin_url)
                     end

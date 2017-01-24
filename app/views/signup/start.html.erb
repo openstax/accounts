@@ -40,7 +40,7 @@ signup_roles = {
         <h3><%= t '.student_email' %></h3>
       </div>
 
-      <%= fh.text_field name: :email, value: signup_email, label: :'.email_placeholder' %>
+      <%= fh.text_field name: :email, value: @signup_email || signup_email, label: :'.email_placeholder' %>
       <p class="warning edu">
         <%= t '.teacher_school_email_warning', button: (t :'.next').downcase %>
       </p>
