@@ -110,7 +110,7 @@ en:
         We did not find an account with the username or email you provided.
       found_account_but_it_has_no_emails: >-
         We found your account but can't send you an email because your account
-        doesn't have any email addresses listed. Please contact support for
+        doesn't have any email addresses listed. Please contact Support for
         assistance.
 
     signup_password:
@@ -126,7 +126,7 @@ en:
     terms_agree:
       you_must_agree_to_the_terms: >-
         You must agree to the terms to continue. If you have questions, please
-        contact support.
+        contact Support.
 
   routines:
     confirm_by_code:
@@ -189,7 +189,7 @@ en:
     password: Password
     there_was_a_problem_with_password_link: >-
       Unfortunately, there was a problem with your password link. If you
-      continue to have problems, please contact support.
+      continue to have problems, please contact Support.
     expired_password_link: >-
       The password link you used has expired.
     reset:
@@ -253,7 +253,7 @@ en:
           If you know your account's username or email address, please enter it
           below and we'll send you an email about how to regain access to your
           account. If you do not have this information, please %{link}.
-        contact_customer_support: contact customer support
+        contact_customer_support: contact Support
       page_heading: Get help logging in
       submit: Submit
       submitting: Submitting...
@@ -282,6 +282,11 @@ en:
       unknown_username: We don’t recognize this username.  Please try again or use your email address instead.
       unknown_email: We don’t recognize this email.  Please try again.
       having_trouble: Trouble logging in?
+      multiple_users_missing_usernames:
+        content_html: >-
+          We found several accounts with this email and unfortunately we can't tell which to use.
+          Please %{help_link}.
+        help_link_text: contact our Support team for assistance
       multiple_users:
         # %{link}   a hyperlink that sends usernames to the email being used for log in.
         #           The label is defined by the .click_here key.
@@ -406,7 +411,7 @@ en:
           click the link in the email that contains your PIN.  This will confirm your
           email.  If you did not receive the email, please check your spam folder.
           Need help?  %{help_link}.
-        help_link_text: Contact our customer service team
+        help_link_text: Contact our Support team
 
     password:
       page_heading: Choose your password

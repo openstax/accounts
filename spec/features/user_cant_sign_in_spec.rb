@@ -58,6 +58,31 @@ feature "User can't sign in", js: true do
       complete_login_username_or_email_screen('user2')
       expect_authenticate_page
     end
+
+    scenario "multiple accounts match email but no usernames" do
+      # For a brief window in 2017 users could sign up with jimbo@gmail.com and Jimbo@gmail.com
+      # and also not have a username.  So the "you can't sign in with email you must use your
+      # username" approach won't work for them.  We need to give them some other "contact support"
+      # message.
+      email_address = 'user@example.com'
+      user1 = create_user 'user1'
+      email1 = create_email_address_for(user1, email_address)
+      user2 = create_user 'user2'
+      email2 = create_email_address_for(user2, 'temporary@email.com')
+      ContactInfo.where(id: email2.id).update_all(value: 'UsEr@example.com')
+      user2.update_attribute(:username, nil)
+      user1.update_attribute(:username, nil)
+
+      # Can't be an exact email match to trigger this scenario
+      complete_login_username_or_email_screen('useR@example.com')
+      expect(page).to have_content(t(:"sessions.new.multiple_users_missing_usernames.content_html").split('.')[0])
+
+      expect(page.all('a')
+                 .select{|link| link.text == t(:"sessions.new.multiple_users_missing_usernames.help_link_text")}
+                 .first["href"]).to eq "mailto:info@openstax.org"
+
+      screenshot!
+    end
   end
 
   context "we find one user", js: true do

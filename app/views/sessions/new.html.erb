@@ -13,6 +13,12 @@
                      method: :post,
                      remote: true))
   end
+
+  translate_error(code: :multiple_users_missing_usernames) do
+    t(:".multiple_users_missing_usernames.content_html",
+      help_link: (mail_to "info@openstax.org",
+                  (t :".multiple_users_missing_usernames.help_link_text")))
+  end
 %>
 
 <%= ox_card(classes: "login", heading: (t :".page_heading")) do %>
