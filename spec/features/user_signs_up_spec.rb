@@ -187,6 +187,24 @@ feature 'User signs up', js: true do
       expect(page).not_to have_content("bob@bob.edu")
     end
 
+    scenario 'user edits email to same value, PIN/token remains, no email' do
+      expect(SignupState.count).to eq 1
+
+      original_pin = SignupState.first.confirmation_pin
+      original_code = SignupState.first.confirmation_code
+
+      click_link (t :'signup.verify_email.edit_email_address')
+
+      expect{
+        complete_signup_email_screen("Instructor","bob@bob.edu")
+      }.to change { ActionMailer::Base.deliveries.count }.by(0)
+
+      expect(SignupState.count).to eq 1
+
+      expect(SignupState.first.confirmation_pin).to eq original_pin
+      expect(SignupState.first.confirmation_code).to eq original_code
+    end
+
     scenario 'user gets PIN wrong' do
       complete_signup_verify_screen(pass: false)
       expect_signup_verify_screen
@@ -424,6 +442,7 @@ feature 'User signs up', js: true do
     fill_in (t :"signup.start.email_placeholder"), with: "bob@bob.edu"
 
     click_button(t :"signup.start.next")
+
     expect(page).to have_content 'Email already in use'
     expect(page).to have_xpath("//input[@value='bob@bob.edu']")
   end
