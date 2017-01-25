@@ -341,7 +341,7 @@ feature 'User signs up', js: true do
     end
 
     scenario "subjects list is sorted correctly" do
-      subjects = all('.subjects .subject label').map { |subject| subject.text }
+      subjects = all('.subjects .subject label').map(&:text)
       last = subjects.pop
       expect(last).to eq('Not Listed')
       expect(subjects).to eq(subjects.sort)
