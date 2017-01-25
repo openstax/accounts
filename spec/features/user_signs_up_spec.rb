@@ -125,6 +125,15 @@ feature 'User signs up', js: true do
       screenshot!
     end
 
+    scenario 'failure because email in use case-insensitively' do
+      create_email_address_for(create_user('user'), "bob@bob.edu")
+      visit signup_path
+      select 'Instructor', from: "signup_role"
+      fill_in (t :"signup.start.email_placeholder"), with: "Bob@bob.edu"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content 'Email already in use'
+    end
+
     scenario 'failure because suspected non-school email then success' do
       visit signup_path
       select 'Instructor', from: "signup_role"
