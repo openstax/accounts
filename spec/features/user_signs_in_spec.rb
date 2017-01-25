@@ -239,4 +239,17 @@ feature 'User logs in', js: true do
     expect(page).to have_content(I18n.t :"controllers.sessions.no_account_for_username_or_email")
   end
 
+  scenario 'views login help' do
+    user = create_user('mr_bojangles')
+    visit '/'
+    expect_sign_in_page
+    expect(page).to have_content(t :"sessions.new.having_trouble")
+    expect(page).not_to have_content(t :"sessions.new.help")
+    expect(page).not_to have_link(t :"sessions.new.knowledge_base")
+
+    click_link t :"sessions.new.having_trouble"
+    expect(page).to have_content(t :"sessions.new.help")
+    expect(page).to have_link(t :"sessions.new.knowledge_base", target: "_blank")
+  end
+
 end
