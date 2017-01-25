@@ -71,6 +71,9 @@ defaults: &defaults
     microbiology:
       title: Microbiology
       sf: Microbiology
+    not_listed:
+      title: Not Listed
+      sf: Not Listed
     pre_algebra:
       title: Prealgebra
       sf: PreAlgebra
