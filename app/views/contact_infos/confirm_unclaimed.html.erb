@@ -1,11 +1,7 @@
-<%= page_heading (t :".page_heading") %>
-<% if @handler_result.errors.any? %>
-  <p><%= t :".verification_code_not_found" %></p>
-<% else %>
-<p>
-  <%= t :".thanks_for_validating" %>
-</p>
-<p>
+<%= ox_card(heading: (t @handler_result.errors.any? ?
+                        :".verification_code_not_found" :
+                        :".thanks_for_validating")) do %>
+
   <% if @handler_result.outputs.can_log_in %>
     <%= t :".you_can_now_sign_in.content_html",
           link: (link_to (t :".you_can_now_sign_in.sign_in"),
@@ -19,5 +15,5 @@
           email: @handler_result.outputs.email_address
         %>
   <% end %>
-</p>
+
 <% end %>
