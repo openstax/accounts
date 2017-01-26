@@ -11,22 +11,27 @@ module EmailAddressValidations
         {
           # AWS::SES::ResponseError InvalidParameterValue - Domain contains dot-dot
           without: /.*\.{2,}.*/,
-          message: "\"%{value}\" has too many dots in a row"
+          message: "This email has too many dots in a row"
         },
         {
           # AWS::SES::ResponseError InvalidParameterValue - Domain ends with dot
           without: /.*\.\z/,
-          message: "\"%{value}\" cannot end with a dot"
+          message: "An email cannot end with a dot"
         },
         {
           # AWS::SES::ResponseError InvalidParameterValue - Domain contains illegal character
           without: /`/,
-          message: "\"%{value}\" should not contain a tick (`)"
+          message: "An email should not contain a tick (`)"
         },
         {
           # AWS::SES::ResponseError InvalidParameterValue - Domain contains illegal character
           without: /:/,
-          message: "\"%{value}\" should not contain a colon"
+          message: "An email should not contain a colon"
+        },
+        {
+          # AWS::SES::ResponseError InvalidParameterValue - Domain contains illegal character
+          without: /,/,
+          message: "An email should not contain a comma"
         }
       ]
     end
