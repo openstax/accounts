@@ -50,7 +50,7 @@ gem 'openstax_utilities', '~> 4.2.0'
 gem 'openstax_api', '~> 8.1.0'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', '~> 1.7.1'
+gem 'openstax_rescue_from', '~> 1.8.0'
 
 # Lev framework
 gem 'lev', '~> 7.0.3'
@@ -211,9 +211,11 @@ group :production do
   # Unicorn worker killer
   gem 'unicorn-worker-killer'
 
-  # AWS SES integration
-  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
-
   # Consistent logging
   gem 'lograge'
+end
+
+group :production, :test do
+  # AWS SES integration
+  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
 end
