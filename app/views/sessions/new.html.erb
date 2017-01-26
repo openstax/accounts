@@ -1,3 +1,6 @@
+<% content_for :head do %>
+  <%= javascript_include_tag  "signin" %>
+<% end %>
 <%
   @hide_layout_errors = true
 
@@ -33,9 +36,17 @@
       <div class="card-body">
         <%= fh.text_field name: :username_or_email,
             label: '.email_placeholder', autofocus: true %>
-        <a class="trouble" target="_blank" href="http://openstax.force.com/support/articles/How_To/Can-t-log-in-to-your-OpenStax-account">
+        <a class="trouble" tabindex="-1" href="#">
           <%= t '.having_trouble' %>
-        </a><i class="fa fa-external-link" aria-hidden="true"></i>
+        </a>
+          <div class="login-help" style="display: none;">
+            <p><%= t '.help' %></p>
+            <p>
+              <%= t '.cant_remember_email' %>
+              <br />
+              <a target="_blank" tabindex="-1" href="http://openstax.force.com/support/articles/How_To/Can-t-log-in-to-your-OpenStax-account"><%= t '.knowledge_base' %></a><i class="fa fa-external-link" aria-hidden="true"></i>
+            </p>
+          </div>
       </div>
 
       <section class="footer">

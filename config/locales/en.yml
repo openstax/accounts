@@ -282,6 +282,9 @@ en:
       unknown_username: We don’t recognize this username.  Please try again or use your email address instead.
       unknown_email: We don’t recognize this email.  Please try again.
       having_trouble: Trouble logging in?
+      help: Enter the email or username associated with your OpenStax account, and we will help you log in.
+      cant_remember_email: Don’t know how you signed up?
+      knowledge_base: Visit our knowledge base for help
       multiple_users_missing_usernames:
         content_html: >-
           We found several accounts with this email and unfortunately we can't tell which to use.
