@@ -47,6 +47,14 @@ describe EmailAddressValidations do
     expect_invalid('bobbybobby')
   end
 
+  it 'returns errors when email contains a space' do
+    expect_invalid('bob by@gmail.com')
+  end
+
+  it 'returns errors when email address contains a comma' do
+    expect_invalid('bob,by@gmail.com')
+  end
+
   def expect_valid(value)
     email_objects(value).each do |email|
       expect(email).to be_valid
