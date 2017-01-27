@@ -354,10 +354,7 @@ en:
         You'll receive a confirmation email shortly. Please take a moment and
         confirm your email address.
 
-    start:
-      instructor_email: Your school email address
-      student_email: Email
-      next: Next
+    role_selection:
       iama: I am a
       instructor: Instructor
       student: Student
@@ -365,6 +362,11 @@ en:
       librarian: Librarian
       designer: Instructional Designer
       other: Other
+
+    start:
+      instructor_email: Your school email address
+      student_email: Email
+      next: Next
       invalid: is invalid.
       email_in_use: Email already in use.  Are you trying to <a href="%{signin_url}">log in</a>?
       blank: cannot be left blank

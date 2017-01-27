@@ -76,21 +76,27 @@ class SignupController < ApplicationController
   def social; end
 
   def profile
+    is_changing_role = false
     if request.post?
-      handler = case current_user.role
-      when "student"
-        SignupProfileStudent
-      when "instructor"
-        SignupProfileInstructor
-      else
-        SignupProfileOther
-      end
+      handler = case
+                when current_user.role != params['profile']['role']
+                  is_changing_role = true
+                  SignupChangeRole
+                when current_user.role == "student"
+                  SignupProfileStudent
+                when current_user.role == "instructor"
+                  SignupProfileInstructor
+                else
+                  SignupProfileOther
+                end
 
       handle_with(handler,
                   contracts_required: !contracts_not_required(
                     client_id: request['client_id'] || session['client_id']
                   ),
                   success: lambda do
+                    render :profile and return if is_changing_role
+
                     clear_signup_state
 
                     if current_user.student?

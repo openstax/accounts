@@ -1,0 +1,16 @@
+<%
+signup_roles = {
+  initial: t('.iama'),
+  student: t('.student'),
+  instructor: t('.instructor'),
+  administrator: t('.administrator'),
+  librarian: t('.librarian'),
+  designer: t('.designer'),
+  other: t('.other')
+}
+  %>
+
+<%= form.select :role,
+    options_for_select(signup_roles.invert.to_a,
+      selected: role || 'initial', disabled: "initial", hidden: "initial"
+    ), {}, {autofocus: true} %>

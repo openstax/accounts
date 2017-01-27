@@ -2,17 +2,6 @@
   <%= javascript_include_tag  "signup" %>
 <% end %>
 
-<%
-signup_roles = {
-  initial: t('.iama'),
-  student: t('.student'),
-  instructor: t('.instructor'),
-  administrator: t('.administrator'),
-  librarian: t('.librarian'),
-  designer: t('.designer'),
-  other: t('.other')
-}
-%>
 
 <%= ox_card(classes: "signup", heading: (t :'.page_heading')) do %>
 
@@ -22,12 +11,8 @@ signup_roles = {
                                 context: self,
                                 errors: @handler_result.try(:errors),
                                 error_field_classes: "alert alert-danger") %>
-    <%# TODO put select in form helper %>
 
-    <%= f.select :role,
-                 options_for_select(signup_roles.invert.to_a,
-                                    selected: @role || 'initial', disabled: "initial", hidden: "initial" ),
-                 {}, {autofocus: true} %>
+    <%= render partial: 'role_selection', locals: { role: @role, form: f } %>
 
     <div class="email-input-group card-body">
       <div class="audience-help" data-audience="instructor">

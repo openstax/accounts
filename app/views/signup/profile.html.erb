@@ -1,8 +1,13 @@
+<% content_for :head do %>
+  <%= javascript_include_tag  "signup" %>
+<% end %>
 <% role = current_user.role.downcase.to_sym %>
 
 <%= ox_card(classes: "login", heading: (t :'.page_heading')) do %>
 
   <%= lev_form_for :profile, url: signup_profile_path, html: {class: 'full-width'} do |f| %>
+    <h3>I am a:</h3>
+    <%= render partial: 'role_selection', locals: { role: role, form: f } %>
 
     <% fh = FormHelper::One.new(f: f,
                                 limit_to: role,
