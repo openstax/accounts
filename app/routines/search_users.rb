@@ -30,7 +30,7 @@ class SearchUsers
 
   protected
 
-  SORTABLE_FIELDS = ['username', 'first_name', 'last_name', 'id']
+  SORTABLE_FIELDS = ['username', 'first_name', 'last_name', 'id', 'role']
   SORT_ASCENDING = 'ASC'
   SORT_DESCENDING = 'DESC'
   MAX_MATCHING_USERS = 10
@@ -139,7 +139,7 @@ class SearchUsers
     order_bys.compact!
 
     # Use a default sort if none provided
-    order_bys = ['username', SORT_ASCENDING] if order_bys.empty?
+    order_bys = [['username', SORT_ASCENDING]] if order_bys.empty?
 
     # Convert to query style
     order_bys = order_bys.map{|order_by| "#{order_by[0]} #{order_by[1]}"}
@@ -150,6 +150,8 @@ class SearchUsers
       # clause is not in the select clause
       users = users.order("users.#{order_by}")
     end
+
+    users = users.includes(:contact_infos)
 
     # Select only distinct records
 

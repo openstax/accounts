@@ -181,6 +181,8 @@ Rails.application.routes.draw do
 
     resources :users, only: [:index, :update, :edit] do
       post 'become', on: :member
+      get 'search', on: :collection
+      get 'js_search', on: :collection
     end
 
     resource :security_log, only: [:show]

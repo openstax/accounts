@@ -1,0 +1,140 @@
+<%# Renderer's of this partial can direct the form's target with 'override_search_path' %>
+
+<% @page_header = "Users" %>
+
+<%= lev_form_for :search,
+                 url: search_admin_users_path,
+                 method: :get,
+                 html: {class: 'form-horizontal'} do |f| %>
+
+
+  <div class="input-group" style="width:100%">
+    <%= f.search_field :terms,  class: 'form-control', placeholder: "Search terms" %>
+  </div>
+  <div class="input-group" style="margin-bottom: 20px" >
+    <%= f.search_field :order_by,  class: 'form-control', placeholder: "Ordered by" %>
+    <span class="input-group-btn">
+      <%= f.submit 'Search', class: 'btn btn-primary' %>
+    </span>
+  </div>
+  <div class="user-search-help"><%= link_to "Search help", "/api/docs/v1/users/index" %></div>
+
+  <%= f.hidden_field :per_page, value: 50 %>
+
+<% end %>
+
+
+<% if @handler_result %>
+
+<%= render partial: 'new_search_pagination' %>
+
+<table id="search-results-list">
+
+    <tr>
+      <th class="expand"></th>
+      <th>ID</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Username</th>
+      <th>Faculty Status</th>
+      <th>Role</th>
+      <th></th>
+    </tr>
+    <% @handler_result.outputs[:items].each do |user| %>
+      <% zebra = cycle('odd', 'even') %>
+      <tr class="<%= zebra %>">
+        <td>
+          <a class="expand" href="#">
+            <i class="fa fa-plus" aria-hidden="false"></i></a>
+        </td>
+        <td><%= link_to user.id, edit_admin_user_path(user), target: '_blank' %></td>
+        <td><%= user.first_name || '---' %></td>
+        <td><%= user.last_name || '---' %></td>
+        <td><%= user.username || '(none)' %></td>
+        <td><%= user.faculty_status %></td>
+        <td><%= user.unknown_role? ? "Unknown" : user.role.capitalize %></td>
+        <td>
+          <%= link_to become_admin_user_path(user),
+                      method: :post,
+                      data: {confirm: "Log in as user #{user.id}, #{user.full_name || '(no name)'}?"} do %>
+            <i class="fa fa-key" aria-hidden="false"></i>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="<%= zebra %> details">
+        <td></td>
+        <td colspan=6>
+          <div>
+            <div style="float:right">
+              <span class="created"><i>Created:</i> <%= user.created_at.in_time_zone('Central Time (US & Canada)') %></span>
+              <br/>
+              <span class="updated"><i>Updated:</i> <%= user.updated_at.in_time_zone('Central Time (US & Canada)') %></span>
+            </div>
+
+            <span class="full-name"><%= user.full_name || '(no name)' %></span> |
+
+            <% if user.is_administrator %>
+              <span class="admin">Administrator</span> |
+            <% end %>
+
+            <% sf_id = user.salesforce_contact_id %>
+
+            <% if sf_id.present? %>
+              <% sf_user = SalesforceUser.first %>
+              <span class="sf">
+                <i>Salesforce:</i>
+
+                <% if sf_user.nil? %>
+                  <%= sf_id %>
+                <% else %>
+                  <%= link_to sf_id, sf_user.instance_url + "/" + sf_id, target: '_blank' %>
+                <% end %>
+              </span> |
+            <% end %>
+
+            <% security_log_params = { query: "id:\"#{user.id}\"" } %>
+
+            <span class="security_log">
+              <%= link_to "Security Log", admin_security_log_path(search: security_log_params), target: '_blank' %>
+            </span> |
+
+            <span class="state">
+              <i>State:</i> <%= user.state %>
+            </span>
+
+            <% if user.self_reported_school.present? %>
+              | <span class="school">
+                <i>Self-reported school:</i> <%= user.self_reported_school %>
+              </span>
+            <% end %>
+
+            <% user.contact_infos.each do |contact_info| %>
+              <div class="email">
+                <%= link_to contact_info.value, "mailto:#{contact_info.value}" %>
+                (<%= contact_info.verified ? "confirmed" : "NOT confirmed" %>)
+              </div>
+            <% end %>
+
+          </div>
+        </td>
+        <td></td>
+      </tr>
+    <% end %>
+
+</table>
+
+<%= render partial: 'new_search_pagination' %>
+
+<% end %>
+
+<% content_for :javascript do %>
+  <script type="text/javascript">
+    $('.expand').click(function(e) {
+      $(this).parent().parent().next('tr').toggle();
+      $(this).find("i").toggleClass("fa-plus");
+      $(this).find("i").toggleClass("fa-minus");
+      e.preventDefault();
+    });
+  </script>
+
+<% end %>

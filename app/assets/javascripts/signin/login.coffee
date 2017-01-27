@@ -5,7 +5,6 @@ class OX.Signin.Login
     new OX.Signin.Login(card) if card.length
 
   constructor: (@el) ->
-    console.log @el.find('a.trouble')
     @el.find('a.trouble').click(@onHelpClick)
 
   onHelpClick: (ev) =>

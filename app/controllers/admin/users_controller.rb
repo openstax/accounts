@@ -1,11 +1,21 @@
 module Admin
   class UsersController < BaseController
+    layout 'admin', except: :js_search
 
     before_filter :get_user, only: [:edit, :update, :destroy, :become]
 
-    def index
+    # Used by dialog
+    def js_search
       security_log :users_searched_by_admin, search: params[:search]
       handle_with(UsersSearch, complete: lambda { render 'search' })
+    end
+
+    def index; end
+
+    # Used by full console page
+    def search
+      security_log :users_searched_by_admin, search: params[:search]
+      handle_with(UsersSearch, complete: lambda { render 'index' })
     end
 
     def update
