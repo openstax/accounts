@@ -123,8 +123,6 @@ module UserSessionManagement
 
   # called when user arrived at app with go == 'student_signup'
   def set_student_signup_role(is_student)
-      Rails.logger.warn '*'*80
-      Rails.logger.warn is_student
       session[:signup_role] = is_student ? 'student' : nil
   end
 
