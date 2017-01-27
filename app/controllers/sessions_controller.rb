@@ -235,10 +235,11 @@ class SessionsController < ApplicationController
     # fails.  Also these methods perform checks on the alternate signup URL.
     set_client_app(params[:client_id])
     set_alternate_signup_url(params[:signup_at])
+    set_student_signup_role(params[:go] == 'student_signup')
   end
 
   def maybe_skip_to_sign_up
-    redirect_to signup_path if params[:go] == 'signup'
+    redirect_to signup_path if %w{signup student_signup}.include?(params[:go])
   end
 
 end

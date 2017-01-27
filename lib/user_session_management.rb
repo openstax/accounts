@@ -121,6 +121,13 @@ module UserSessionManagement
                       Doorkeeper::Application.find_by(id: session[:client_app])
   end
 
+  # called when user arrived at app with go == 'student_signup'
+  def set_student_signup_role(is_student)
+      Rails.logger.warn '*'*80
+      Rails.logger.warn is_student
+      session[:signup_role] = is_student ? 'student' : nil
+  end
+
   def set_alternate_signup_url(url)
     if url.blank? || !url.is_a?(String)
       session[:alt_signup] = nil
