@@ -37,9 +37,11 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
 
-            <li><%= link_to 'Security Log', admin_security_log_path %></li>
-            <li><%= link_to 'Salesforce', admin_salesforce_path %></li>
-            <li><%= link_to 'Settings', admin_rails_settings_ui_path %></li>
+            <li><%= link_to 'Users', main_app.admin_users_path %></li>
+            <li><%= link_to 'Security Log', main_app.admin_security_log_path %></li>
+            <li><%= link_to 'Salesforce', main_app.admin_salesforce_path %></li>
+            <li><%= link_to 'Settings', main_app.admin_rails_settings_ui_path %></li>
+            <li><%= link_to 'Terms', main_app.fine_print_path %></li>
 
 <% if false %>
             <li class="dropdown">
@@ -59,7 +61,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= current_user.username %> <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><%= link_to 'Sign out!', signout_path %></li>
+                <li><%= link_to 'Sign out!', main_app.signout_path %></li>
               </ul>
             </li>
           </ul>
@@ -76,6 +78,8 @@
 
       <%= yield %>
     </div>
+
+  <%= yield :javascript %>
 
   </body>
 </html>
