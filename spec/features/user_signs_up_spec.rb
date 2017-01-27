@@ -115,6 +115,13 @@ feature 'User signs up', js: true do
       expect(page).not_to have_content t('signup.start.teacher_school_email')
     end
 
+    scenario 'profile selection is set to student when coming from "student_signup"' do
+      visit signin_path(go: 'student_signup')
+      expect(page).to have_selector('#signup_role', visible: false)
+      expect(page.find('#signup_role', visible: false).value).to eq 'student'
+      expect(page).to have_content 'Email'
+    end
+
     scenario 'failure because email in use' do
       create_email_address_for(create_user('user'), "bob@bob.edu")
       visit signup_path
