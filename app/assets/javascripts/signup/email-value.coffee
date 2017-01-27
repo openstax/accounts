@@ -5,7 +5,7 @@ class OX.Signup.EmailValue
   constructor: ->
     _.bindAll(@, 'onChange', 'onSubmit')
     @group = $('.email-input-group')
-    @email = @group.find('#signup_email').slideDown()
+    @email = @group.find('#signup_email').show()
     @email.change(@onChange)
     @group.closest('form').submit(@onSubmit)
     @userType = ''
