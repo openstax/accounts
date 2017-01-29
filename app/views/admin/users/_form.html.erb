@@ -8,96 +8,185 @@
     });</script>
 <% end %>
 
-<%= form_for([:admin, @user]) do |f| %>
+<%= form_for [:admin, @user], html: {id: 'admin-user-form', class: 'form-horizontal'} do |f| %>
   <%= render "shared/error_messages", :target => @user %>
 
   <div class="form-group">
-    <%= f.label :username %>
-    <div><%= @user.username %></div>
+    <%= f.label :username, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <%= f.text_field :username,
+                       value: params[:user].nil? ? @user.username : params[:user][:username],
+                       class: "form-control" %>
+    </div>
   </div>
 
   <div class="form-group">
-    <%= f.label :name %>
-    <div><%= @user.name %></div>
+    <%= f.label :name, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <p class="form-control-static">
+        <%= @user.name %>
+          <%= link_to become_admin_user_path(@user),
+                      method: :post,
+                      data: {confirm: "Log in as user #{@user.id}, #{@user.full_name || '(no name)'}?"} do %>
+            <i class="fa fa-key" aria-hidden="false"></i>
+          <% end %>
+      </p>
+    </div>
   </div>
 
   <div class="form-group">
-    <%= f.label :salesforce_contact %>
-    <div>
+    <%= f.label :salesforce_contact, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
       <% sf_id = @user.salesforce_contact_id %>
-      <% if sf_id.nil? %>
-        Not Set
-      <% else %>
-        <% sf_user = SalesforceUser.first %>
-
-        <% if sf_user.nil? %>
-          <%= sf_id %>
+      <p class="form-control-static">
+        <% if sf_id.nil? %>
+          Not Set
         <% else %>
-          <%= link_to sf_id, sf_user.instance_url + "/" + sf_id, target: '_blank' %>
+          <% sf_user = SalesforceUser.first %>
+
+          <% if sf_user.nil? %>
+            <%= sf_id %>
+          <% else %>
+            <%= link_to sf_id, sf_user.instance_url + "/" + sf_id, target: '_blank' %>
+          <% end %>
         <% end %>
+      </p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :faculty_status, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <% if sf_id.nil? %>
+        <% faculty_statuses = User.faculty_statuses.keys.map{ |key| [key.humanize, key] } %>
+        <%= f.select :faculty_status, faculty_statuses, {}, {class: "form-control"} %>
+      <% else %>
+        <p class="form-control-static">
+          <%= @user.faculty_status.humanize %>
+          <span class="help-block">This is a Salesforce user. You must change this setting in Salesforce.</span>
+        </p>
       <% end %>
     </div>
   </div>
 
   <div class="form-group">
-    <%= f.label :faculty_status %>
-    <% if sf_id.nil? %>
-      <% faculty_statuses = User.faculty_statuses.keys.map{ |key| [key.humanize, key] } %>
-      <div><%= f.select :faculty_status, faculty_statuses %></div>
-    <% else %>
-      <div><%= @user.faculty_status.humanize %></div>
-      <span class="help-block">
-        This is a Salesforce user. You must change this setting in Salesforce.
-      </span>
-    <% end %>
+    <%= f.label :first_name, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <%= f.text_field :first_name,
+                       value: params[:user].nil? ? @user.first_name : params[:user][:first_name],
+                       class: "form-control" %>
+    </div>
   </div>
 
-  <div class="form-group">
-    <%= f.label :first_name %>
-    <%= f.text_field :first_name, value: params[:user].nil? ? @user.first_name : params[:user][:first_name] %>
-  </div>
 
   <div class="form-group">
-    <%= f.label :last_name %>
-    <%= f.text_field :last_name, value: params[:user].nil? ? @user.last_name : params[:user][:last_name] %>
+    <%= f.label :last_name, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <%= f.text_field :last_name,
+                       value: params[:user].nil? ? @user.last_name : params[:user][:last_name],
+                       class: 'form-control' %>
+    </div>
   </div>
+
 
   <% unless @user.identity.nil? %>
     <div class="form-group">
-      <%= f.label :password, 'Change password' %>
-      <%= f.text_field :password, value: '' %>
+      <%= f.label :password, 'Change password to', class: "col-sm-2 control-label" %>
+      <div class="col-sm-10">
+        <%= f.text_field :password, value: '', class: 'form-control' %>
+      </div>
     </div>
   <% end %>
 
   <div class="form-group">
-    <%= f.label :existing_email_addresses %>
-    <ul>
+    <%= f.label :email_addresses, class: "col-sm-2 control-label" %>
+    <ul class="col-sm-10 form-control-static">
     <% @user.email_addresses.each do |email| %>
-      <li>
+      <li style="margin-left: 20px;">
       <%= email.value %>
       <% if email.verified %>
-        (Verified)
+        (Confirmed)
       <% else %>
-        <%= link_to 'Mark this email address as verified', admin_verify_contact_info_path(email),
+        <%= link_to 'Mark this email address as confirmed', admin_verify_contact_info_path(email),
                     remote: true, method: :post,
                     class: 'btn btn-default btn-xs verify-email',
-                    confirm: "Are you sure you want to mark \"#{email.value}\" as verified?"
+                    data: {confirm: "Are you sure you want to mark \"#{email.value}\" as confirmed? (You are saying you absolutely know this email address belongs to this user)"}
         %>
       <% end %>
       </li>
     <% end %>
     </ul>
-
-    <%= f.label :email_address, 'New email address' %>
-    <%= text_field_tag 'user[email_address]', params[:user].try(:[], :email_address) %>
   </div>
 
   <div class="form-group">
-    <%= f.check_box :is_administrator %>
-    <%= f.label :is_administrator, 'Administrator?' %>
+    <%= f.label :email_address, 'New email address', class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <%= text_field_tag 'user[email_address]', params[:user].try(:[], :email_address), class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :apps, class: "col-sm-2 control-label" %>
+    <ul class="col-sm-10 form-control-static">
+    <% @user.application_users.includes(:application).each do |app_user| %>
+      <li style="margin-left: 20px;">
+        <% app_name = app_user.application.name %>
+        <%= app_name %>
+        <% if app_name == "OpenStax Tutor" %>
+          <% url = begin
+               a_url = app_user.application.redirect_uri.split.first
+               uri = URI.parse(a_url)
+               uri.path = "/admin/users/info"
+               uri.query = "openstax_uid=#{@user.id}"
+               uri.to_s
+             rescue Exception => e
+               nil
+             end %>
+          <% if url.present? %>
+            [ <%= link_to('User info on Tutor', url) %> ]
+          <% end %>
+        <% end %>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :login_methods, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <p class="form-control-static">
+        <%= @user.authentications.map(&:display_name).sort.join(', ') %>
+      </p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :security_log, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <p class="form-control-static">
+        <%= link_to "Security Log", admin_security_log_path(search: { query: "user:#{@user.id}" }) %>
+      </p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :is_administrator, 'Administrator?', class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <div class="checkbox">
+        <%= f.check_box :is_administrator, style: 'margin-left: 0px' %>
+      </div>
+    </div>
+  </div>
+
+ <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <%= f.submit 'Save', class: 'btn btn-primary' %>
+    </div>
   </div>
 
   <div class="actions">
-    <%= f.submit 'Save', class: 'btn btn-default' %>
+
   </div>
+
+
 <% end %>

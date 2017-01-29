@@ -228,6 +228,7 @@ class User < ActiveRecord::Base
     self.last_name.try(:strip!)
     self.suffix.try(:strip!)
     self.username.try(:strip!)
+    self.username = nil if self.username.blank?
     self.self_reported_school.try(:strip!)
     true
   end

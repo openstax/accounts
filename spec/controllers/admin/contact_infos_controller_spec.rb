@@ -12,6 +12,6 @@ RSpec.describe Admin::ContactInfosController, type: :controller do
     email = user.email_addresses.first
     post :verify, id: email.id
     expect(email.reload.verified).to be true
-    expect(response.body).to eq '(Verified)'
+    expect(response.body).to eq '(Confirmed)'
   end
 end
