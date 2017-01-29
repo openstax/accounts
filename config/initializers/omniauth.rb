@@ -3,6 +3,9 @@
 
 secrets = Rails.application.secrets
 
+salesforce_client_options =
+  secrets[:salesforce]['login_site'] ? { site: secrets[:salesforce]['login_site'] } : {}
+
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :facebook, secrets[:facebook_app_id], secrets[:facebook_app_secret],
            client_options: {
@@ -14,7 +17,8 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   provider :custom_identity
 
   provider :salesforce, secrets[:salesforce]['consumer_key'],
-                        secrets[:salesforce]['consumer_secret']
+                        secrets[:salesforce]['consumer_secret'],
+                        client_options: salesforce_client_options
 end
 
 OmniAuth.config.logger = Rails.logger
