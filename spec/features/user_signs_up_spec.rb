@@ -211,7 +211,15 @@ feature 'User signs up', js: true do
       complete_signup_password_screen('password')
       expect(page).to_not have_content(t('signup.profile.titles_interested'))
       expect(page).to_not have_content(t('signup.profile.num_students'))
-
+      complete_signup_profile_screen(
+        role: :student,
+        first_name: "Billy",
+        last_name: "Budd",
+        school: "Rice University"
+      )
+      ci = ContactInfo.where(value: "bob2@bob.com").first
+      expect(ci).to be_present
+      expect(ci.user.role).to eq 'student'
     end
 
     scenario 'user edits email to same value, PIN/token remains, no email' do
