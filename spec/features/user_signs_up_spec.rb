@@ -204,6 +204,16 @@ feature 'User signs up', js: true do
       expect(page).not_to have_content("bob@bob.edu")
     end
 
+    scenario 'user leaves verify screen to edit email and also changes role' do
+      click_link (t :'signup.verify_email.edit_email_address')
+      complete_signup_email_screen("Student","bob2@bob.com")
+      complete_signup_verify_screen(pass: true)
+      complete_signup_password_screen('password')
+      expect(page).to_not have_content(t('signup.profile.titles_interested'))
+      expect(page).to_not have_content(t('signup.profile.num_students'))
+
+    end
+
     scenario 'user edits email to same value, PIN/token remains, no email' do
       expect(SignupState.count).to eq 1
 

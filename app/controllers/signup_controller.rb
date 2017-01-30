@@ -38,6 +38,8 @@ class SignupController < ApplicationController
                     end
                     render :start
                   end)
+    else
+      @role = signup_role # select whatever value the role was previously set to
     end
   end
 
