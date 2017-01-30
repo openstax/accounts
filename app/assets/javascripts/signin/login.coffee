@@ -9,4 +9,4 @@ class OX.Signin.Login
 
   onHelpClick: (ev) =>
     ev.preventDefault()
-    @el.find('.login-help').toggle('fast')
+    @el.find('.login-help').slideToggle('fast')
