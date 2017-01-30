@@ -122,6 +122,8 @@ module UserSessionManagement
   end
 
   # called when user arrived at app with go == 'student_signup'
+  # note we're also clearning the session[:signup_role], that's important
+  # so the session var doesn't stick around if user later comes from a different origin
   def set_student_signup_role(is_student)
       session[:signup_role] = is_student ? 'student' : nil
   end
