@@ -115,6 +115,14 @@ feature 'User signs up', js: true do
       expect(page).not_to have_content t('signup.start.teacher_school_email')
     end
 
+    scenario 'profile selection is set to student role and hidden when coming from "student_signup"' do
+      visit signin_path(go: 'student_signup')
+      expect(page).to have_selector('#signup_role', visible: false)
+      expect(page.find('#signup_role', visible: false).value).to eq 'student'
+      expect(page).to have_content 'Email'
+      screenshot!
+    end
+
     scenario 'failure because email in use' do
       create_email_address_for(create_user('user'), "bob@bob.edu")
       visit signup_path
@@ -194,6 +202,24 @@ feature 'User signs up', js: true do
 
       expect(page).to have_content("bob2@bob.edu")
       expect(page).not_to have_content("bob@bob.edu")
+    end
+
+    scenario 'user leaves verify screen to edit email and also changes role' do
+      click_link (t :'signup.verify_email.edit_email_address')
+      complete_signup_email_screen("Student","bob2@bob.com")
+      complete_signup_verify_screen(pass: true)
+      complete_signup_password_screen('password')
+      expect(page).to_not have_content(t('signup.profile.titles_interested'))
+      expect(page).to_not have_content(t('signup.profile.num_students'))
+      complete_signup_profile_screen(
+        role: :student,
+        first_name: "Billy",
+        last_name: "Budd",
+        school: "Rice University"
+      )
+      ci = ContactInfo.where(value: "bob2@bob.com").first
+      expect(ci).to be_present
+      expect(ci.user.role).to eq 'student'
     end
 
     scenario 'user edits email to same value, PIN/token remains, no email' do

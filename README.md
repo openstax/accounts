@@ -21,7 +21,7 @@ default_transaction_isolation = 'repeatable read'
 
 ## Using
 
-* OAuth requests that arrive with query param `go=signup` will skip log in and go straight to signup
+* OAuth requests that arrive with query param `go=signup` will skip log in and go straight to signup. `go=student_signup` will skip to signup and force the signup to have the "student" role.
 * OAuth requests that arrive with query param `signup_at=blah` will redirect users to `blah` if they click the
 link to sign up.
 

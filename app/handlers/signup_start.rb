@@ -22,6 +22,7 @@ class SignupStart
 
     # Return if user went back, didn't change anything, and resubmitted
     if existing_signup_state.try(:contact_info_value) == email
+      existing_signup_state.update_attributes(role: signup_params.role)
       outputs.signup_state = existing_signup_state
       return
     end
