@@ -250,6 +250,7 @@ feature 'User logs in', js: true do
     click_link t :"sessions.new.having_trouble"
     expect(page).to have_content(t :"sessions.new.help")
     expect(page).to have_link(t :"sessions.new.knowledge_base", target: "_blank")
+    screenshot!
   end
 
 end
