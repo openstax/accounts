@@ -1,9 +1,9 @@
 module I18n
   module Enumerators
-    # A fallback enumerator which just returns all elements separater by ','
+    # A fallback enumerator which just returns all elements separated by ','
     module Simple
       def self.enumerate list, options = {}
-        return list.map {|key| I18n.translate key }.join ', '
+        return list.join ', '
       end
     end
 
