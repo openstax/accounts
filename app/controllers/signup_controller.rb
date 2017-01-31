@@ -33,9 +33,6 @@ class SignupController < ApplicationController
                   failure: lambda do
                     @role = params[:signup][:role]
                     @signup_email = params[:signup][:email]
-                    @handler_result.errors.each do | error |   # TODO move to view?
-                      error.message = I18n.t("signup.start.#{error.code}", signin_url: signin_url)
-                    end
                     render :start
                   end)
     else

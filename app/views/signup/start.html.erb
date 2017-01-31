@@ -12,6 +12,12 @@ signup_roles = {
   designer: t('.designer'),
   other: t('.other')
 }
+
+translate_error(code: :email_in_use) do
+  t :'.email_in_use.content_html',
+    link: (link_to (t :'.email_in_use.log_in'),
+                   signin_url)
+end
 %>
 
 <%= ox_card(classes: "signup", heading: (t :'.page_heading')) do %>
