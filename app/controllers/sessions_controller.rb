@@ -106,7 +106,7 @@ class SessionsController < ApplicationController
           redirect_to action: :authenticate, alert: "Mismatched login!" # TODO need feature spec!
         when :email_already_in_use
           redirect_to profile_path,
-                      alert: "That way to log in cannot be added because it is associated to an email address that is already in use!" # TODO i18n
+                      alert: (I18n.t :"controllers.sessions.way_to_login_cannot_be_added")
         when :unknown_callback_state, :invalid_omniauth_data
           # Something weird happened to the user's session or omniauth data and we lost their info
           Rails.logger.warn do

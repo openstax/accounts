@@ -82,6 +82,9 @@ en:
           You have made too many login attempts recently. Please
           %{reset_password} or try again later.
         reset_password: reset your password
+      way_to_login_cannot_be_added: >-
+        That way to log in cannot be added because it is associated to an email
+        address that is already in use!
 
     signup:
       already_have_username_and_password: >-
@@ -322,6 +325,9 @@ en:
     # In fields `first_name`, `last_name`, `email_address` and `username`
     # the asterisk on the end indicated that appropriate field on sign up page
     # must be filled in.
+    exit_if_logged_in:
+      already_logged_in: You have already signed up
+
     new_account:
       cancel: Cancel
       confirm_password: Confirm Password *
