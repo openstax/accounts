@@ -22,7 +22,7 @@ feature 'User resets password', js: true do
         visit start_path(type: type)
         screenshot!
         expect(page).to have_no_missing_translations
-        expect(page).to have_content(t :"identities.there_was_a_problem_with_password_link")
+        expect(page).to have_content(t :"identities.set.there_was_a_problem_with_password_link")
         expect(page).to have_current_path start_path(type: type)
       end
 
@@ -30,7 +30,7 @@ feature 'User resets password', js: true do
         visit start_path(type: type, token: '1234')
         screenshot!
         expect(page).to have_no_missing_translations
-        expect(page).to have_content(t :"identities.there_was_a_problem_with_password_link")
+        expect(page).to have_content(t :"identities.set.there_was_a_problem_with_password_link")
         expect_page(type: type, token: '1234')
       end
 
@@ -39,14 +39,14 @@ feature 'User resets password', js: true do
         visit start_path(type: type, token: @login_token)
         screenshot!
         expect(page).to have_no_missing_translations
-        expect(page).to have_content(t :"identities.expired_password_link")
+        expect(page).to have_content(t :"identities.set.expired_password_link")
         expect_page(type: type)
       end
 
       scenario 'using a link with a valid code' do
         visit start_path(type: type, token: @login_token)
         expect(page).to have_no_missing_translations
-        expect(page.first('#set_password_password_confirmation')["placeholder"]).to eq t :"identities.confirm_password"
+        expect(page.first('#set_password_password_confirmation')["placeholder"]).to eq t :"identities.set.confirm_password"
         expect_page(type: type)
       end
 
@@ -62,8 +62,8 @@ feature 'User resets password', js: true do
         visit start_path(type: type, token: @login_token)
         expect(page).to have_no_missing_translations
         expect_page(type: type)
-        fill_in (t :"identities.password"), with: 'pass'
-        fill_in (t :"identities.confirm_password"), with: 'pass'
+        fill_in (t :"identities.set.password"), with: 'pass'
+        fill_in (t :"identities.set.confirm_password"), with: 'pass'
         click_button (t :"identities.#{type}.submit")
         expect(page).to have_content('Password is too short')
         screenshot!
@@ -73,8 +73,8 @@ feature 'User resets password', js: true do
         visit start_path(type: type, token: @login_token)
         expect(page).to have_no_missing_translations
         expect_page(type: type)
-        fill_in (t :"identities.password"), with: 'password!'
-        fill_in (t :"identities.confirm_password"), with: 'password!!'
+        fill_in (t :"identities.set.password"), with: 'password!'
+        fill_in (t :"identities.set.confirm_password"), with: 'password!!'
         click_button (t :"identities.#{type}.submit")
         expect(page).to have_content("Password confirmation doesn't match Password")
         screenshot!
@@ -83,8 +83,8 @@ feature 'User resets password', js: true do
       scenario 'successful' do
         visit start_path(type: type, token: @login_token)
         expect(page).to have_no_missing_translations
-        fill_in (t :"identities.password"), with: '1234abcd'
-        fill_in (t :"identities.confirm_password"), with: '1234abcd'
+        fill_in (t :"identities.set.password"), with: '1234abcd'
+        fill_in (t :"identities.set.confirm_password"), with: '1234abcd'
         click_button (t :"identities.#{type}.submit")
         expect(page).to have_content(t :"identities.#{type}_success.message")
         click_button (t :"identities.#{type}_success.continue")

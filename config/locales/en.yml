@@ -188,13 +188,14 @@ en:
         If you need help, please contact %{contact_info} and reference error %{error_id}.
 
   identities:
-    confirm_password: Confirm Password
-    password: Password
-    there_was_a_problem_with_password_link: >-
-      Unfortunately, there was a problem with your password link. If you
-      continue to have problems, please contact Support.
-    expired_password_link: >-
-      The password link you used has expired.
+    set:
+      confirm_password: Confirm Password
+      password: Password
+      there_was_a_problem_with_password_link: >-
+        Unfortunately, there was a problem with your password link. If you
+        continue to have problems, please contact Support.
+      expired_password_link: >-
+        The password link you used has expired.
     reset:
       page_heading: Reset your password
       use_form_below_to_reset_password: >-
