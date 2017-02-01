@@ -372,13 +372,13 @@ en:
       librarian: Librarian
       designer: Instructional Designer
       other: Other
-      invalid: is invalid.
+      email_address_invalid: Email address is invalid
       email_in_use:
         # %{link}   a hyperlink pointing to log in page. Label of the link is
         #           defined by the .log_in key.
         content_html: Email already in use. Are you trying to %{link}?
         log_in: log in
-      blank: cannot be left blank
+      email_cannot_be_blank: Email address cannot be left blank
       already_have_an_account:
         # %{link}   a hyperlink pointing to sign in page. Label of the link
         #           is defined by the .sign_in key.
