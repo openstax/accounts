@@ -90,8 +90,8 @@ describe SearchApplicationUsers do
   end
 
   it "should gather space-separated unprefixed search terms" do
-    outcome = SearchApplicationUsers.call(application, "john mighty").outputs.items.to_a
-    expect(outcome).to eq [user_3, user_1, user_2]
+    outcome = SearchApplicationUsers.call(application, "john strav").outputs.items.to_a
+    expect(outcome).to eq [user_1]
   end
 
   context "pagination and sorting" do

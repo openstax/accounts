@@ -102,9 +102,9 @@ describe SearchUsers, type: :routine do
     expect(outcome).to eq []
   end
 
-  it "should gather space-separated unprefixed search terms" do
-    outcome = described_class.call("john mighty").outputs.items.to_a
-    expect(outcome).to eq [user_3, user_1, user_2]
+  it 'should match both first and last name for an unprefixed search for two words' do
+    outcome = described_class.call('john stravinsky').outputs.items.to_a
+    expect(outcome).to eq [user_1] # Not user_2 even though his first name is John
   end
 
   context "sorting" do

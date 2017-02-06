@@ -100,26 +100,30 @@ class SearchUsers
       # prefix).
 
       with.keyword :any do |terms|
-        sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin],
-                                                  prepend_wildcard: options[:admin])
         sanitized_names = sanitize_strings(terms, append_wildcard: true,
-                                                  prepend_wildcard: options[:admin])
+                                           prepend_wildcard: options[:admin])
 
-        users = users.joins{contact_infos.outer}.where do
-          contact_infos_query = contact_infos.value.like_any sanitized_terms
-          contact_infos_query &= (contact_infos.type.eq('EmailAddress') &
-                                  contact_infos.verified.eq(true) &
-                                  contact_infos.is_searchable.eq(true)) unless options[:admin]
-
-                                              username.like_any(sanitized_names) |
-                                            first_name.like_any(sanitized_names) |
-                                             last_name.like_any(sanitized_names) |
-          first_name.op('||', ' ').op('||', last_name).like_any(sanitized_names) |
-                                                                    id.in(terms) |
-                                                             contact_infos_query
+        if sanitized_names.length == 2 # looks like a "firstname lastname" search
+          users = users.joins{contact_infos.outer}.where do
+            (first_name.like(sanitized_names.first) & last_name.like(sanitized_names.last))
+          end
+        else # otherwise try to match "all the things"
+          sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin],
+                                             prepend_wildcard: options[:admin])
+          users = users.joins{contact_infos.outer}.where do
+            contact_infos_query = contact_infos.value.like_any sanitized_terms
+            contact_infos_query &= (contact_infos.type.eq('EmailAddress') &
+                                    contact_infos.verified.eq(true) &
+                                    contact_infos.is_searchable.eq(true)) unless options[:admin]
+            username.like_any(sanitized_names) |
+              first_name.like_any(sanitized_names) |
+              last_name.like_any(sanitized_names) |
+              first_name.op('||', ' ').op('||', last_name).like_any(sanitized_names) |
+              contact_infos_query |
+              id.in(terms)
+          end
         end
       end
-
     end
 
     # Ordering
