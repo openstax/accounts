@@ -9,7 +9,7 @@ class AuthenticationOption
   confirmDelete: (ev) ->
     new OX.ConfirmationPopover(
       title: false
-      message: "Are you sure you want to remove this sign in option?"
+      message: OX.I18n.authentication.confirm_delete
       target: ev.target
       placement: 'top'
       onConfirm: @delete
