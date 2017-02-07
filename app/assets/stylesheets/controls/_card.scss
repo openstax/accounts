@@ -76,27 +76,13 @@
     }
   }
 
-  input[type=submit] {
+  input[type=submit],
+  .btn.cancel {
     width: inherit;
-    height: $input-height;
+    padding: 0 20px;
+    line-height: $input-height;
     display: inline-block;
     margin-right: 1rem;
-    &.primary {
-      @extend .btn;
-      text-transform: uppercase;
-      border-radius: 0;
-      padding: 1rem 2rem;
-      color: white;
-      background-color: $os_orange;
-      border-color: darken($os_orange, 10%);
-      font-weight: 700;
-      font-family: $os_heading_font_family;
-      &:hover {
-        color: $os_light_gray;
-        background-color: darken($os_orange, 5%);
-        border-color: darken($os_orange, 20%);
-      }
-    }
   }
 
   .is-invalid, .has-error {
