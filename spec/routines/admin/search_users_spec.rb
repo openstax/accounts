@@ -75,8 +75,8 @@ describe Admin::SearchUsers, type: :routine do
   end
 
   it "should gather space-separated unprefixed search terms" do
-    outcome = described_class.call("john mighty").outputs.items.to_a
-    expect(outcome).to eq [user_3, user_1, user_2]
+    outcome = described_class.call("john strav").outputs.items.to_a
+    expect(outcome).to eq [user_1]
   end
 
   context "pagination and sorting" do
