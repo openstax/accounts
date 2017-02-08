@@ -106,6 +106,18 @@ feature 'User resets password', js: true do
         expect(page).to have_no_missing_translations
         expect(page).to have_content(@user.full_name)
       end
+
+      scenario 'cancels reset' do
+        visit start_path(type: type, token: @login_token)
+        expect(page).to have_no_missing_translations
+        fill_in (t :"identities.password"), with: '1234abcd'
+        fill_in (t :"identities.confirm_password"), with: '1234abcd'
+        fill_in (t :"identities.confirm_password"), with: '1234abcd'
+        click_link (t :"identities.set.cancel")
+        expect_profile_page
+        expect(@user.identity.authenticate '1234abcd').to eq(false)
+      end
+
     end
 
   end

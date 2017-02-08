@@ -31,6 +31,7 @@
                       label: :"identities.confirm_password" %>
 
     <section class="footer">
+      <%= link_to(t('.cancel'), profile_path, class: 'btn cancel') %>
       <%= submit_tag submit_text, class: 'primary' %>
     </section>
   <% end %>

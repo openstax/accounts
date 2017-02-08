@@ -197,6 +197,8 @@ en:
       use_form_below_to_reset_password: >-
         Use the form below to reset your password.
       submit: Reset Password
+    set:
+      cancel: Cancel
     add:
       page_heading: Add a password
       use_form_below_to_add_password: >-
@@ -210,7 +212,6 @@ en:
       page_heading: Success!
       message: Your password has been reset.
       continue: Continue
-
     send_reset:
       page_heading: Check your email
       we_sent_email: We sent an email to %{emails}.  Click the link in that email to reset your password.

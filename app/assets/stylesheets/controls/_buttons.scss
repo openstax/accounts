@@ -1,0 +1,37 @@
+@mixin ox-button($bg_color, $fg_color: white) {
+  transition: background-color 0.2s ease;
+  background-color: $bg_color;
+  border-color: darken($bg_color, 10%);
+  color: $fg_color;
+  &:hover {
+    background-color: darken($bg_color, 5%);
+    border-color: darken($bg_color, 20%);
+    color: darken($fg_color, 5%);
+  }
+}
+
+
+.btn,
+input[type=submit],
+button {
+  &.cancel,
+  &.primary {
+    @extend .btn;
+    text-transform: uppercase;
+    border-radius: 0;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    border-color: darken($os_orange, 10%);
+    font-weight: 700;
+    font-family: $os_heading_font_family;
+  }
+
+  &.cancel {
+    @include ox-button($os_gray);
+  }
+
+  &.primary {
+    @include ox-button($os_orange);
+  }
+
+}

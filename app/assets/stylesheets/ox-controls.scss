@@ -1,5 +1,6 @@
 @import "mixins/flexbox";
 @import "controls/card";
+@import "controls/buttons";
 
 .ox-alert {
   @include flexbox;
