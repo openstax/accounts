@@ -86,6 +86,40 @@ class UpdateUserSalesforceInfo
       end
     end
 
+    # Now that we've done all we can with Contacts, see if any Users who still don't
+    # have a salesforce_contact_id might have a Lead in SF, and if so mark them as pending
+
+    leads_by_email = {}
+
+    leads.each do |lead|
+      next if lead.email.nil?
+      leads_by_email[lead.email] = lead
+    end
+
+    lead_emails = leads_by_email.keys
+
+    User.eager_load(:contact_infos)
+        .where(salesforce_contact_id: nil)
+        .where(contact_infos: { value: lead_emails, verified: true })
+        .find_each do |user|
+
+      begin
+        leads = user.contact_infos
+                    .select(&:verified?)
+                    .map{|ci| leads_by_email[ci.value]}
+                    .uniq
+
+        next if leads.size == 0
+
+        # TODO maybe we can set rejected state too based on lead status
+        # TODO write real specs for all of this
+        user.pending!
+        user.save!
+      rescue StandardError => ee
+        error!(exception: ee, user: user)
+      end
+    end
+
     notify_errors
   end
 
@@ -123,6 +157,10 @@ class UpdateUserSalesforceInfo
     #   Salesforce::Contact.order("LastModifiedDate").where("LastModifiedDate >= #{1.day.ago.utc.iso8601}")
 
     @contacts ||= Salesforce::Contact.select(:id, :email, :email_alt, :faculty_verified).to_a
+  end
+
+  def leads
+    @leads ||= Salesforce::Lead.select(:id, :email).to_a
   end
 
   def error!(exception: nil, message: nil, user: nil)

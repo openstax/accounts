@@ -7,6 +7,15 @@ GIT
       active_attr (~> 0.8)
       restforce (~> 2.1.0)
 
+PATH
+  remote: /Users/jps/dev/openstax/openstax_salesforce
+  specs:
+    openstax_salesforce (0.0.1)
+      active_force
+      omniauth-salesforce (~> 1.0.5)
+      rails (~> 4.2.0)
+      restforce (~> 2.1.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -116,6 +125,8 @@ GEM
       sass-rails (< 5.1)
       sprockets (< 4.0)
     concurrent-ruby (1.0.2)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     css_parser (1.4.5)
       addressable
     daemons (1.2.4)
@@ -224,6 +235,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    hashdiff (0.3.1)
     hashie (3.4.6)
     highline (1.7.8)
     hike (1.2.3)
@@ -480,6 +492,7 @@ GEM
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
     ruby_dep (1.3.1)
+    safe_yaml (1.0.4)
     sass (3.4.22)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -567,11 +580,16 @@ GEM
       get_process_mem (~> 0)
       unicorn (>= 4, < 6)
     url (0.3.2)
+    vcr (3.0.3)
     web-console (2.3.0)
       activemodel (>= 4.0)
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
+    webmock (2.3.1)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
     websocket-driver (0.6.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
@@ -630,10 +648,10 @@ DEPENDENCIES
   omniauth-facebook (~> 3.0.0)
   omniauth-google-oauth2
   omniauth-identity
-  omniauth-salesforce
   omniauth-twitter
   openstax_api (~> 8.1.0)
   openstax_rescue_from (~> 1.8.0)
+  openstax_salesforce!
   openstax_utilities (~> 4.2.0)
   p3p
   parallel_tests
@@ -647,7 +665,6 @@ DEPENDENCIES
   rails-settings-ui
   redis-rails
   representable (~> 3.0.0)
-  restforce
   rspec-instafail
   rspec-rails (~> 3.5)
   sass-rails (~> 5.0)
@@ -663,7 +680,9 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   unicorn
   unicorn-worker-killer
+  vcr
   web-console (~> 2.0)
+  webmock
   whenever
   whenever-test
   will_paginate
