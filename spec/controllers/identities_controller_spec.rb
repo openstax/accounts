@@ -31,7 +31,7 @@ describe IdentitiesController, type: :controller do
         it 'errors if the login token is bad' do
           get :reset, token: '123'
           expect(response.code).to eq('400')
-          expect(response.body).to include(t :"identities.there_was_a_problem_with_password_link")
+          expect(response.body).to include(t :"identities.set.there_was_a_problem_with_password_link")
         end
 
         it 'errors if the login token is expired' do
@@ -39,7 +39,7 @@ describe IdentitiesController, type: :controller do
           user.save!
           get :reset, token: user.login_token
           expect(response.code).to eq('400')
-          expect(response.body).to include(t :"identities.expired_password_link")
+          expect(response.body).to include(t :"identities.set.expired_password_link")
         end
       end
 
@@ -57,7 +57,7 @@ describe IdentitiesController, type: :controller do
           reset_password('','')
           expect(response.code).to eq('400')
           expect(response.body).to have_no_missing_translations
-          expect(response.body).not_to include(t :"identities.there_was_a_problem_with_password_link")
+          expect(response.body).not_to include(t :"identities.set.there_was_a_problem_with_password_link")
           expect(response.body).to include("Password can't be blank")
           expect(response.body).to include(t :"identities.reset.submit")
           identity.reload

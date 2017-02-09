@@ -4,9 +4,9 @@
   big_time_error_message =
     case error_codes.first
     when :token_blank, :unknown_login_token
-      t :"identities.there_was_a_problem_with_password_link"
+      t :".there_was_a_problem_with_password_link"
     when :expired_login_token
-      t :"identities.expired_password_link"
+      t :".expired_password_link"
     end
 
  if big_time_error_message %>
@@ -25,10 +25,10 @@
                                 error_field_classes: "alert alert-danger") %>
 
     <%= fh.text_field name: :password, type: :password,
-                      label: :"identities.password",
+                      label: :".password",
                       autofocus: true %>
     <%= fh.text_field name: :password_confirmation, type: :password,
-                      label: :"identities.confirm_password" %>
+                      label: :".confirm_password" %>
 
     <section class="footer">
       <%= link_to(t('.cancel'), profile_path, class: 'btn cancel') %>
