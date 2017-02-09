@@ -196,13 +196,12 @@ en:
         continue to have problems, please contact Support.
       expired_password_link: >-
         The password link you used has expired.
+      cancel: Cancel
     reset:
       page_heading: Reset your password
       use_form_below_to_reset_password: >-
         Use the form below to reset your password.
       submit: Reset Password
-    set:
-      cancel: Cancel
     add:
       page_heading: Add a password
       use_form_below_to_add_password: >-

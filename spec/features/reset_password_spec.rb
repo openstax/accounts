@@ -110,9 +110,9 @@ feature 'User resets password', js: true do
       scenario 'cancels reset' do
         visit start_path(type: type, token: @login_token)
         expect(page).to have_no_missing_translations
-        fill_in (t :"identities.password"), with: '1234abcd'
-        fill_in (t :"identities.confirm_password"), with: '1234abcd'
-        fill_in (t :"identities.confirm_password"), with: '1234abcd'
+        fill_in (t :"identities.set.password"), with: '1234abcd'
+        fill_in (t :"identities.set.confirm_password"), with: '1234abcd'
+        fill_in (t :"identities.set.confirm_password"), with: '1234abcd'
         click_link (t :"identities.set.cancel")
         expect_profile_page
         expect(@user.identity.authenticate '1234abcd').to eq(false)
