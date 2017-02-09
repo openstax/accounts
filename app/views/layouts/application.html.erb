@@ -20,6 +20,11 @@
 
     <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script type="text/javascript">
+      window.OX = window.OX || {}
+      OX.I18n = <%= (t :javascript).to_json.html_safe %>
+    </script>
   </head>
 
   <body class="<%= controller_name %> <%= action_name %>">

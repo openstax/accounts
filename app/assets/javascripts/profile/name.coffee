@@ -7,27 +7,32 @@ class OX.Profile.Name
       value: attribs,
       success: (response) -> $(@).html(response.full_name)
       validate: (attrs) ->
-        required = " can't be blank"
         if not attrs.first_name and not attrs.last_name
-          "First and last name #{required}"
+          OX.I18n.name.first_last_name_blank
         else if not attrs.first_name
-          "First name #{required}"
+          OX.I18n.name.first_name_blank
         else if not attrs.last_name
-          "Last name #{required}"
+          OX.I18n.name.last_name_blank
     )
 
   @defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults,
-    tpl: '''
-       <div><input type="text" name="title" class="form-control input-sm" placeholder="Title"></div>
-       <div><input type="text" name="first_name" class="form-control input-sm" placeholder="First name"></div>
-       <div><input type="text" name="last_name" class="form-control input-sm" placeholder="Last name"></div>
-       <div><input type="text" name="suffix" class="form-control input-sm" placeholder="Suffix"></div>
-    '''
+    tpl: () -> """
+       <div><input type="text" name="title" class="form-control input-sm" placeholder="#{OX.I18n.name.title}"></div>
+       <div><input type="text" name="first_name" class="form-control input-sm" placeholder="#{OX.I18n.name.first_name}"></div>
+       <div><input type="text" name="last_name" class="form-control input-sm" placeholder="#{OX.I18n.name.last_name}"></div>
+       <div><input type="text" name="suffix" class="form-control input-sm" placeholder="#{OX.I18n.name.suffix}"></div>
+    """
     inputclass: ''
 
   )
 
   constructor: (options) ->
+    # We defer evaluating template until construction, as otherwise it would try
+    # to read values if OX.I18n before its initialisation.
+    defaults = OX.Profile.Name.defaults
+    defaults = $.extend(defaults, {
+      tpl: defaults.tpl(),
+    })
     this.init('profile_name', options, OX.Profile.Name.defaults)
 
 

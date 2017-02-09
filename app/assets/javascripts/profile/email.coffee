@@ -69,7 +69,7 @@ class Email
   confirmDelete: (ev) ->
     new OX.ConfirmationPopover(
       title: false
-      message: "Are you sure you want to remove this email address from your account?"
+      message: OX.I18n.email.confirm_delete
       target: ev.target
       placement: 'top'
       onConfirm: @delete

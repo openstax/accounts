@@ -40,6 +40,34 @@ en:
       signup_state:
         contact_info_value: Email address
 
+  # Strings in this section are intended for use from within JavaScript files.
+  # They are reproduced as a global `window.OX.I18n`. For example the key
+  # `javascript.alert.close` would be accessible as `window.OX.I18n.alert.close`.
+  javascript:
+    alert:
+      close: Close
+
+    authentication:
+      confirm_delete: Are you sure you want to remove this sign in option?
+
+    confirmation_popover:
+      title: Are you sure?
+      cancelText: Cancel
+      confirmText: OK
+
+    email:
+      confirm_delete: >-
+        Are you sure you want to remove this email address from your account?
+
+    name:
+      first_last_name_blank: First and last name can't be blank
+      first_name_blank: First name can't be blank
+      last_name_blank: Last name can't be blank
+      title: Title
+      first_name: First name
+      last_name: Last name
+      suffix: Suffix
+
   controllers:
     authentications:
       authentication_removed: "%{authentication} removed"

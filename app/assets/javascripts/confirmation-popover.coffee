@@ -3,12 +3,9 @@ class OX.ConfirmationPopover
   constructor: (options) ->
     @options = _.defaults({}, options, {
       html: true,
-      title: 'Are you sure?'
       placement: 'right'
-      cancelText: 'Cancel'
-      confirmText: 'OK'
       message: ''
-    })
+    }, OX.I18n.confirmation_popover)
     # call after defaults are set since generateContent reads @options
     @options.content = $(@generateContent())
     popover = $(@options.target).popover(@options)

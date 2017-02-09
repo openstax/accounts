@@ -16,7 +16,7 @@ OX.Alert = {
         <div class="ox-alert fade in alert alert-#{type} alert-dismissible" role="alert">
           <span class="glyphicon glyphicon-#{icon}" aria-hidden="true"></span>
           <span class="msg"></span>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <button type="button" class="close" data-dismiss="alert" aria-label="#{OX.I18n.alert.close}">
             &times;
          </button>
         </div>

@@ -1,4 +1,29 @@
 pl:
+  javascript:
+    alert:
+      close: Zamknij
+
+    authentication:
+      confirm_delete: Czy na pewno chcesz usunąć tę metodę logowania?
+
+    confirmation_popover:
+      title: Na pewno?
+      cancelText: Anuluj
+      confirmText: OK
+
+    email:
+      confirm_delete: >-
+        Czy na pewno chcesz usunąć ten adres e-mail?
+
+    name:
+      first_last_name_blank: Imię i nazwisko nie mogą być puste
+      first_name_blank: Imię nie może być puste
+      last_name_blank: Nazwisko nie może być puste
+      title: Tytuł
+      first_name: Imię
+      last_name: Nazwisko
+      suffix: Dopisek
+
   controllers:
     authentications:
       authentication_removed: Usunięto %{authentication}
