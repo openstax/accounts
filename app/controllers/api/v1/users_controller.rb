@@ -52,8 +52,14 @@ class Api::V1::UsersController < Api::V1::ApiController
     * `email` &ndash; Matches Users' emails exactly.
 
     You can also add search terms without prefixes, separated by spaces.
-    These terms  will be searched for in all of the prefix categories.
-    Any matching Users will be returned.
+
+    If there are two uprefixed search terms, they will be treated as
+    a search for <first name> <last name>. Each name will use wildcard matches,
+    but they both must match.
+
+    If more or less than two words are given, the terms  will be searched for in all of
+    the prefix categories and any matching Users will be returned.
+
     When combined with prefixed search terms, the final result will contain
     Users matching any of the non-prefixed terms and all of the prefixed terms.
 
@@ -62,6 +68,8 @@ class Api::V1::UsersController < Api::V1::ApiController
     `username:ric` &ndash; returns Users for 'richb' and 'ricardo' Users.
 
     `username:ric name:"Van Buren"` &ndash; returns the Users for the 'Ricardo Van Buren' User.
+
+    `j son` &ndash; returns Users for 'Jimmy Richardson', 'James Sonny', and 'Jenny Sonders', but not "Bob Richardson" Users.
 
     `ric` &ndash; returns Users for 'richb', 'ricardo', and 'Jimmy Rich' Users.
   EOS
