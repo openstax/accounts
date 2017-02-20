@@ -10,17 +10,26 @@ class UpdateUserSalesforceInfo
   end
 
   def call
-    return if !SalesforceUser.any? && !is_real_production?
+    return if !OpenStax::Salesforce.ready_for_api_usage?
+    return if !Rails.application.is_real_production?
 
     contacts_by_email = {}
     contacts_by_id = {}
+    colliding_emails = []
 
     # Store a map of contacts by primary email
 
     contacts.each do |contact|
       next if contact.email.nil?
-      contacts_by_email[contact.email] = contact
-      contacts_by_id[contact.id] = contact
+
+      if (colliding_contact = contacts_by_email[contact.email]).present?
+        colliding_emails.push(contact.email)
+        error!(message: "#{contact.email} is a PRIMARY email on contact #{contact.id} and a " \
+                        "PRIMARY email on contact #{colliding_contact.id}")
+      else
+        contacts_by_email[contact.email] = contact
+        contacts_by_id[contact.id] = contact
+      end
     end
 
     # Add contacts by alt email if they don't already exist in the map; error if they do.
@@ -28,14 +37,24 @@ class UpdateUserSalesforceInfo
     contacts.each do |contact|
       next if contact.email_alt.nil?
 
-      if contacts_by_email[contact.email_alt].present?
-        error!(message: "#{contact.email_alt} is an alt email on contact #{contact.id} but a " \
-                        "primary email on contact #{contacts_by_email[contact.email_alt].id}")
+      if (colliding_contact = contacts_by_email[contact.email_alt]).present?
+        colliding_emails.push(contact.email_alt)
+        error!(message: "#{contact.email_alt} is an ALT email on contact #{contact.id} and a " \
+                        "either a PRIMARY or ALT email on contact #{colliding_contact.id}")
       else
         contacts_by_email[contact.email_alt] = contact
         # only necessary for old Contacts that may have an alt email but not a primary
         contacts_by_id[contact.id] = contact
       end
+    end
+
+    # Go through colliding emails and clear their Contacts out of our hashes so that
+    # we don't assign these Contacts to users until a human resolves the collisions
+
+    colliding_emails.uniq.each do |colliding_email|
+      contact = contacts_by_email[colliding_email]
+      contacts_by_id[contact.id] = nil
+      contacts_by_email[colliding_email] = nil
     end
 
     # Go through all users that have already have a Salesforce ID and make sure
@@ -111,9 +130,7 @@ class UpdateUserSalesforceInfo
 
         next if leads.size == 0
 
-        # TODO maybe we can set rejected state too based on lead status
-        # TODO write real specs for all of this
-        user.pending!
+        user.faculty_status = :pending_faculty
         user.save!
       rescue StandardError => ee
         error!(exception: ee, user: user)
@@ -154,13 +171,13 @@ class UpdateUserSalesforceInfo
     # User record).
     #
     # Here's one example query as a starting point:
-    #   Salesforce::Contact.order("LastModifiedDate").where("LastModifiedDate >= #{1.day.ago.utc.iso8601}")
+    #   ...Contact.order("LastModifiedDate").where("LastModifiedDate >= #{1.day.ago.utc.iso8601}")
 
-    @contacts ||= Salesforce::Contact.select(:id, :email, :email_alt, :faculty_verified).to_a
+    @contacts ||= OpenStax::Salesforce::Remote::Contact.select(:id, :email, :email_alt, :faculty_verified).to_a
   end
 
   def leads
-    @leads ||= Salesforce::Lead.select(:id, :email).to_a
+    @leads ||= OpenStax::Salesforce::Remote::Lead.select(:id, :email).to_a
   end
 
   def error!(exception: nil, message: nil, user: nil)
@@ -181,17 +198,13 @@ class UpdateUserSalesforceInfo
     return if @errors.empty?
     Rails.logger.warn("UpdateUserSalesforceInfo errors: " + @errors.inspect)
 
-    if @allow_error_email && is_real_production?
+    if @allow_error_email && Rails.application.is_real_production?
       DevMailer.inspect_object(
         object: @errors,
         subject: "UpdateUserSalesforceInfo errors",
         to: Rails.application.secrets[:salesforce]['mail_recipients']
       ).deliver_later
     end
-  end
-
-  def is_real_production?
-    Rails.application.secrets.exception['environment_name'] == "prodtutor"
   end
 
 end

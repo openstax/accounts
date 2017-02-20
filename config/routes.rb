@@ -190,16 +190,13 @@ Rails.application.routes.draw do
     post :verify_contact_info, path: '/contact_infos/:id/verify',
          controller: :contact_infos, action: :verify
 
-    # resource :salesforce, only: [:show], controller: :salesforce do
-    #   collection do
-    #     delete :destroy_user
-    #     put :update_users
-    #   end
-    # end
+    resource :salesforce, only: [], controller: :salesforce do
+      collection do
+        put :update_users
+      end
+    end
 
     mount RailsSettingsUi::Engine, at: 'settings'
-
-
   end
 
   namespace 'dev' do
