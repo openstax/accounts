@@ -5,7 +5,7 @@ http_interactions:
     uri: https://cs50.salesforce.com/services/data/v37.0/sobjects/Contact
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Zachary","LastName":"Schmeler1ed1276133d0781c5f3c","Email":"98f5f8@7d87c2.53855d","Faculty_Verified__c":"Confirmed","AccountId":"0013B000009vJrCQAU"}'
+      string: '{"FirstName":"Kianna","LastName":"Huel_unique_token","Email":"f@f.com","Faculty_Verified__c":"Confirmed","AccountId":"0013B000009vJrCQAU"}'
     headers:
       User-Agent:
       - Faraday v0.9.2
@@ -23,21 +23,21 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Mon, 20 Feb 2017 08:30:29 GMT
+      - Mon, 20 Feb 2017 20:53:01 GMT
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
       - referrer origin-when-cross-origin
       - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
       Set-Cookie:
-      - BrowserId=RQMloj9xRg2UnBrJabPwsQ;Path=/;Domain=.salesforce.com;Expires=Fri,
-        21-Apr-2017 08:30:29 GMT
+      - BrowserId=DZgI5cFdSAaMQwEM9DNhtw;Path=/;Domain=.salesforce.com;Expires=Fri,
+        21-Apr-2017 20:53:01 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=512/48000
+      - api-usage=179/48000
       Location:
-      - "/services/data/v37.0/sobjects/Contact/0033B0000095N9ZQAU"
+      - "/services/data/v37.0/sobjects/Contact/0033B0000095WoOQAU"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -46,12 +46,12 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"0033B0000095N9ZQAU","success":true,"errors":[]}'
+      string: '{"id":"0033B0000095WoOQAU","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Mon, 20 Feb 2017 08:30:30 GMT
+  recorded_at: Mon, 20 Feb 2017 20:53:02 GMT
 - request:
     method: get
-    uri: https://cs50.salesforce.com/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%251ed1276133d0781c5f3c%27)
+    uri: https://cs50.salesforce.com/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)
     body:
       encoding: US-ASCII
       string: ''
@@ -70,19 +70,19 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Feb 2017 08:30:30 GMT
+      - Mon, 20 Feb 2017 20:53:03 GMT
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
       - referrer origin-when-cross-origin
       - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
       Set-Cookie:
-      - BrowserId=QovpVYt1SKCFBdYIxcQZNg;Path=/;Domain=.salesforce.com;Expires=Fri,
-        21-Apr-2017 08:30:30 GMT
+      - BrowserId=t3lPF77USa2TjA8oesKZ-A;Path=/;Domain=.salesforce.com;Expires=Fri,
+        21-Apr-2017 20:53:03 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=510/48000
+      - api-usage=184/48000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -91,12 +91,12 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0033B0000095N9ZQAU"},"Id":"0033B0000095N9ZQAU","Email":"98f5f8@7d87c2.53855d","Email_alt__c":null,"Faculty_Verified__c":"Confirmed"}]}'
+      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0033B0000095WoOQAU"},"Id":"0033B0000095WoOQAU","Email":"f@f.com","Email_alt__c":null,"Faculty_Verified__c":"Confirmed"}]}'
     http_version: 
-  recorded_at: Mon, 20 Feb 2017 08:30:30 GMT
+  recorded_at: Mon, 20 Feb 2017 20:53:03 GMT
 - request:
     method: get
-    uri: https://cs50.salesforce.com/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead
+    uri: https://cs50.salesforce.com/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)
     body:
       encoding: US-ASCII
       string: ''
@@ -115,19 +115,19 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Feb 2017 08:30:31 GMT
+      - Mon, 20 Feb 2017 20:53:03 GMT
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
       - referrer origin-when-cross-origin
       - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
       Set-Cookie:
-      - BrowserId=RzngZxdIQzaJ9uH9ffeixQ;Path=/;Domain=.salesforce.com;Expires=Fri,
-        21-Apr-2017 08:30:31 GMT
+      - BrowserId=6Q4I9M28Q3eLdjCZVhEZ7Q;Path=/;Domain=.salesforce.com;Expires=Fri,
+        21-Apr-2017 20:53:03 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=508/48000
+      - api-usage=183/48000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -136,7 +136,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":28,"done":true,"records":[{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kezjUAA"},"Id":"00Q3B000003kezjUAA","Email":"c8fb1a@60c0be.75ca9a"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfAwUAI"},"Id":"00Q3B000003kfAwUAI","Email":"ba4258@79b9a5.e80f33"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfB1UAI"},"Id":"00Q3B000003kfB1UAI","Email":"3b36a9@fadb1e.e2ad65"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kezyUAA"},"Id":"00Q3B000003kezyUAA","Email":"e3bbf0@57338b.f30c78"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kf03UAA"},"Id":"00Q3B000003kf03UAA","Email":"06b4d9@956f01.af8187"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kezUUAQ"},"Id":"00Q3B000003kezUUAQ","Email":"6b952f@e4cd1c.15cdae"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfAcUAI"},"Id":"00Q3B000003kfAcUAI","Email":"22fac5@e4e88c.984e60"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfAdUAI"},"Id":"00Q3B000003kfAdUAI","Email":"1bf602@8aeee3.1e9b1b"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfAeUAI"},"Id":"00Q3B000003kfAeUAI","Email":"3b46da@2b0345.804dfa"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfBBUAY"},"Id":"00Q3B000003kfBBUAY","Email":"d33e10@c74103.04e230"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kezFUAQ"},"Id":"00Q3B000003kezFUAQ","Email":"919891@19c9e0.7bfa87"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfAhUAI"},"Id":"00Q3B000003kfAhUAI","Email":"5068d6@05bb46.85f1ff"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003keztUAA"},"Id":"00Q3B000003keztUAA","Email":"1184c4@ac9708.04e1b0"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kf9tUAA"},"Id":"00Q3B000003kf9tUAA","Email":"47fd98@e8e03f.a6318a"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfASUAY"},"Id":"00Q3B000003kfASUAY","Email":"74f8a3@9d37d6.32b566"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kezeUAA"},"Id":"00Q3B000003kezeUAA","Email":"fb2006@388f7d.3c9f16"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfB6UAI"},"Id":"00Q3B000003kfB6UAI","Email":"7a88b4@f0850f.8b3262"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kezoUAA"},"Id":"00Q3B000003kezoUAA","Email":"f6ce0b@5037c7.0dc511"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfA8UAI"},"Id":"00Q3B000003kfA8UAI","Email":"25a9a4@bbe363.b3b190"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfBGUAY"},"Id":"00Q3B000003kfBGUAY","Email":"056e09@efa3f6.9f2fb3"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfAmUAI"},"Id":"00Q3B000003kfAmUAI","Email":"2a4d5b@7129a5.46a34b"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kezZUAQ"},"Id":"00Q3B000003kezZUAQ","Email":"374d93@570e29.53b6f9"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kezKUAQ"},"Id":"00Q3B000003kezKUAQ","Email":"2abd85@713f3e.4e764b"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kezPUAQ"},"Id":"00Q3B000003kezPUAQ","Email":"b2fb7a@415314.f0df8e"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfANUAY"},"Id":"00Q3B000003kfANUAY","Email":"e77605@f9ab0b.6c8ced"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfArUAI"},"Id":"00Q3B000003kfArUAI","Email":"019d6a@29e73a.0e49b8"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfBLUAY"},"Id":"00Q3B000003kfBLUAY","Email":"19ac2a@98dc60.b30bd0"},{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q3B000003kfAIUAY"},"Id":"00Q3B000003kfAIUAY","Email":"c93905@d1cd7f.4a4635"}]}'
+      string: '{"totalSize":0,"done":true,"records":[]}'
     http_version: 
-  recorded_at: Mon, 20 Feb 2017 08:30:31 GMT
+  recorded_at: Mon, 20 Feb 2017 20:53:03 GMT
 recorded_with: VCR 3.0.3

@@ -13,13 +13,24 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
 
   before(:each) do
     load_salesforce_user
-    @unique_token = @proxy.reset_unique_token
+    static_unique_token = '_unique_token'
+
+    if VCR.current_cassette.recording?
+      @unique_token = @proxy.reset_unique_token
+
+      VCR.configure do |config|
+        config.define_cassette_placeholder(static_unique_token) { @unique_token           }
+      end
+    else
+      @unique_token = @proxy.reset_unique_token(static_unique_token)
+    end
+
     limit_salesforce_queries(OpenStax::Salesforce::Remote::Contact, last_name: "%#{@unique_token}")
     limit_salesforce_queries(OpenStax::Salesforce::Remote::Lead, last_name: "%#{@unique_token}")
   end
 
   context "user with verified email" do
-    let!(:email_address) { FactoryGirl.create(:email_address, verified: true) }
+    let!(:email_address) { FactoryGirl.create(:email_address, value: 'f@f.com', verified: true) }
     let!(:user) { email_address.user }
 
     context "contact exists" do
@@ -65,7 +76,7 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
   end
 
   context "user with unverified email" do
-    let!(:email_address) { FactoryGirl.create(:email_address, verified: false) }
+    let!(:email_address) { FactoryGirl.create(:email_address, value: 'f@f.com', verified: false) }
     let!(:user) { email_address.user }
 
     context "contact exists" do
@@ -98,7 +109,7 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
   end
 
   context "email collisions" do
-    let!(:email_address) { FactoryGirl.create(:email_address, verified: true) }
+    let!(:email_address) { FactoryGirl.create(:email_address, value: 'f@f.com', verified: true) }
     let!(:user) { email_address.user }
     after(:each) { expect(user.reload.salesforce_contact_id).to be_nil }
 
@@ -129,9 +140,9 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
   end
 
   it 'errors when multiple SF contacts exist for one user' do
-    email_address_1 = FactoryGirl.create(:email_address, verified: true)
+    email_address_1 = FactoryGirl.create(:email_address, value: 'a@a.com', verified: true)
     user = email_address_1.user
-    email_address_2 = FactoryGirl.create(:email_address, verified: true, user: user)
+    email_address_2 = FactoryGirl.create(:email_address, value: 'b@b.com', verified: true, user: user)
 
     @proxy.new_contact(email: email_address_1.value)
     @proxy.new_contact(email: email_address_2.value)
