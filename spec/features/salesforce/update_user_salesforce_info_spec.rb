@@ -13,20 +13,21 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
 
   before(:each) do
     load_salesforce_user
-    static_unique_token = '_unique_token'
+
+    # We use the proxy's `unique_token` feature to limit our SF queries to only those
+    # records created inside each spec.  Because this token changes on each run, we
+    # store `_unique_token` in its place in the cassettes.  When we are playing back
+    # the cassettes, we force the unique token to be `_unique_token` to match the cassette.
 
     if VCR.current_cassette.recording?
       @unique_token = @proxy.reset_unique_token
-
-      VCR.configure do |config|
-        config.define_cassette_placeholder(static_unique_token) { @unique_token           }
-      end
+      VCR.configuration.define_cassette_placeholder('_unique_token') { @unique_token }
     else
-      @unique_token = @proxy.reset_unique_token(static_unique_token)
+      @unique_token = @proxy.reset_unique_token('_unique_token')
     end
 
-    limit_salesforce_queries(OpenStax::Salesforce::Remote::Contact, last_name: "%#{@unique_token}")
-    limit_salesforce_queries(OpenStax::Salesforce::Remote::Lead, last_name: "%#{@unique_token}")
+    limit_salesforce_queries_by_token(OpenStax::Salesforce::Remote::Contact, @unique_token)
+    limit_salesforce_queries_by_token(OpenStax::Salesforce::Remote::Lead, @unique_token)
   end
 
   context "user with verified email" do
