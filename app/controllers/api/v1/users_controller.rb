@@ -54,7 +54,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     You can also add search terms without prefixes, separated by spaces.
 
     If there are two uprefixed search terms, they will be treated as
-    a search for <first name> <last name>. Each name will use wildcard matches,
+    a search for (first-name AND last-name). Each name will use wildcard matches,
     but they both must match.
 
     If more or less than two words are given, the terms  will be searched for in all of
