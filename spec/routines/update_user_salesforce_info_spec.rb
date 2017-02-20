@@ -4,7 +4,7 @@ describe UpdateUserSalesforceInfo do
   let!(:user) { FactoryGirl.create :user }
 
   before(:each) {
-    allow(Rails.application).to receive(:is_real_production?) { true }
+    allow(Settings::Salesforce).to receive(:user_info_error_emails_enabled) { true }
     allow(OpenStax::Salesforce).to receive(:ready_for_api_usage?) { true }
   }
 

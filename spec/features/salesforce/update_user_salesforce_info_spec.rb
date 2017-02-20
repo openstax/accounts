@@ -15,6 +15,7 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
     load_salesforce_user
     @unique_token = @proxy.reset_unique_token
     limit_salesforce_queries(OpenStax::Salesforce::Remote::Contact, last_name: "%#{@unique_token}")
+    limit_salesforce_queries(OpenStax::Salesforce::Remote::Lead, last_name: "%#{@unique_token}")
   end
 
   context "user with verified email" do
@@ -141,7 +142,7 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
   end
 
   def call
-    allow(Rails.application).to receive(:is_real_production?) { true }
+    allow(Settings::Salesforce).to receive(:user_info_error_emails_enabled) { true }
     UpdateUserSalesforceInfo.call(allow_error_email: true)
   end
 

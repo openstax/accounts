@@ -11,7 +11,6 @@ class UpdateUserSalesforceInfo
 
   def call
     return if !OpenStax::Salesforce.ready_for_api_usage?
-    return if !Rails.application.is_real_production?
 
     contacts_by_email = {}
     contacts_by_id = {}
@@ -198,10 +197,10 @@ class UpdateUserSalesforceInfo
     return if @errors.empty?
     Rails.logger.warn("UpdateUserSalesforceInfo errors: " + @errors.inspect)
 
-    if @allow_error_email && Rails.application.is_real_production?
+    if @allow_error_email && Settings::Salesforce.user_info_error_emails_enabled
       DevMailer.inspect_object(
         object: @errors,
-        subject: "UpdateUserSalesforceInfo errors",
+        subject: "(#{Rails.application.secrets[:environment_name]}) UpdateUserSalesforceInfo errors",
         to: Rails.application.secrets[:salesforce]['mail_recipients']
       ).deliver_later
     end

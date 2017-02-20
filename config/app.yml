@@ -7,6 +7,7 @@
 
 defaults: &defaults
   push_salesforce_lead_enabled: false
+  user_info_error_emails_enabled: false
   subjects:
     ap_macro_econ:
       title: Principles of Macroeconomics for AP® Courses
