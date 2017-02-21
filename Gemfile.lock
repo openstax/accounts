@@ -254,7 +254,7 @@ GEM
     jquery-rails (3.1.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
-    json (1.8.3)
+    json (1.8.6)
     jwt (1.5.6)
     key_struct (0.4.2)
     keyword_search (1.5.0)
