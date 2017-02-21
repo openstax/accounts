@@ -3,6 +3,10 @@ class UpdateUserSalesforceInfo
   def initialize(allow_error_email:)
     @allow_error_email = allow_error_email
     @errors = []
+    @contacts_by_email = {}
+    @contacts_by_id = {}
+    @colliding_emails = []
+    @leads_by_email = {}
   end
 
   def self.call(allow_error_email: false)
@@ -12,56 +16,14 @@ class UpdateUserSalesforceInfo
   def call
     return if !OpenStax::Salesforce.ready_for_api_usage?
 
-    contacts_by_email = {}
-    contacts_by_id = {}
-    colliding_emails = []
-
-    # Store a map of contacts by primary email
-
-    contacts.each do |contact|
-      next if contact.email.nil?
-
-      if (colliding_contact = contacts_by_email[contact.email]).present?
-        colliding_emails.push(contact.email)
-        error!(message: "#{contact.email} is a PRIMARY email on contact #{contact.id} and a " \
-                        "PRIMARY email on contact #{colliding_contact.id}")
-      else
-        contacts_by_email[contact.email] = contact
-        contacts_by_id[contact.id] = contact
-      end
-    end
-
-    # Add contacts by alt email if they don't already exist in the map; error if they do.
-
-    contacts.each do |contact|
-      next if contact.email_alt.nil?
-
-      if (colliding_contact = contacts_by_email[contact.email_alt]).present?
-        colliding_emails.push(contact.email_alt)
-        error!(message: "#{contact.email_alt} is an ALT email on contact #{contact.id} and a " \
-                        "either a PRIMARY or ALT email on contact #{colliding_contact.id}")
-      else
-        contacts_by_email[contact.email_alt] = contact
-        # only necessary for old Contacts that may have an alt email but not a primary
-        contacts_by_id[contact.id] = contact
-      end
-    end
-
-    # Go through colliding emails and clear their Contacts out of our hashes so that
-    # we don't assign these Contacts to users until a human resolves the collisions
-
-    colliding_emails.uniq.each do |colliding_email|
-      contact = contacts_by_email[colliding_email]
-      contacts_by_id[contact.id] = nil
-      contacts_by_email[colliding_email] = nil
-    end
+    prepare_contacts
 
     # Go through all users that have already have a Salesforce ID and make sure
     # their SF information is stil the same.
 
     User.where{salesforce_contact_id != nil}.find_each do |user|
       begin
-        contact = contacts_by_id[user.salesforce_contact_id]
+        contact = @contacts_by_id[user.salesforce_contact_id]
         cache_contact_data_in_user(contact, user)
         user.save! if user.changed?
       rescue StandardError => ee
@@ -72,11 +34,10 @@ class UpdateUserSalesforceInfo
     # Go through all users that don't yet have a Salesforce ID and populate their
     # salesforce info when they have verified emails that match SF data.
 
-    sf_emails = contacts_by_email.keys
-
     User.eager_load(:contact_infos)
         .where(salesforce_contact_id: nil)
-        .where(contact_infos: { value: sf_emails, verified: true })
+        .where{lower(contact_infos.value).in my{@contacts_by_email.keys}}
+        .where(contact_infos: { verified: true })
         .find_each do |user|
 
       begin
@@ -87,7 +48,7 @@ class UpdateUserSalesforceInfo
 
         contacts = user.contact_infos
                        .select(&:verified?)
-                       .map{|ci| contacts_by_email[ci.value]}
+                       .map{|ci| @contacts_by_email[ci.value.downcase]}
                        .uniq
 
         next if contacts.size == 0
@@ -105,31 +66,59 @@ class UpdateUserSalesforceInfo
     end
 
     # Now that we've done all we can with Contacts, see if any Users who still don't
-    # have a salesforce_contact_id might have a Lead in SF, and if so mark them as pending
+    # have a salesforce_contact_id might have Leads in SF, and if so mark them as pending
+    # or rejected based on the info in those Leads.
 
-    leads_by_email = {}
+    prepare_leads
 
-    leads.each do |lead|
-      next if lead.email.nil?
-      leads_by_email[lead.email] = lead
-    end
-
-    lead_emails = leads_by_email.keys
+    user_ids_that_were_looked_at_for_leads = []
 
     User.eager_load(:contact_infos)
         .where(salesforce_contact_id: nil)
-        .where(contact_infos: { value: lead_emails, verified: true })
+        .where(contact_infos: { verified: true })
+        .where{lower(contact_infos.value).in my{@leads_by_email.keys}}
         .find_each do |user|
 
       begin
+        user_ids_that_were_looked_at_for_leads.push(user.id)
+
         leads = user.contact_infos
                     .select(&:verified?)
-                    .map{|ci| leads_by_email[ci.value]}
+                    .map{|ci| @leads_by_email[ci.value.downcase]}
+                    .flatten
                     .uniq
 
-        next if leads.size == 0
+        statuses = leads.map(&:status).uniq
 
-        user.faculty_status = :pending_faculty
+        # Whenever a lead is processed (in our case when it is either used to
+        # confirm or reject a faculty application), its status is set to
+        # 'Converted'.  If any of the statuses we have now are not 'Converted',
+        # we know that the user has a lead that is still under review, so they
+        # are set to `pending_faculty`.  If the statuses only consist of
+        # 'Converted' statuses, we know the user has been rejected as faculty.
+
+        user.faculty_status =
+          if statuses.empty?
+            :no_faculty_info
+          elsif statuses.one? && statuses[0] == "Converted"
+            :rejected_faculty
+          else
+            :pending_faculty
+          end
+
+        user.save! if user.changed?
+      rescue StandardError => ee
+        error!(exception: ee, user: user)
+      end
+    end
+
+    User.where(salesforce_contact_id: nil)
+        .where(faculty_status: User.faculty_statuses.except("no_faculty_info").values)
+        .where{id.not_in my{user_ids_that_were_looked_at_for_leads}}
+        .find_each do |user|
+
+      begin
+        user.faculty_status = :no_faculty_info
         user.save!
       rescue StandardError => ee
         error!(exception: ee, user: user)
@@ -137,10 +126,67 @@ class UpdateUserSalesforceInfo
     end
 
     notify_errors
+
+    self
+  end
+
+  def prepare_leads
+    leads.each do |lead|
+      email = lead.email.try(&:downcase).try(:strip)
+
+      next if email.nil?
+
+      # Leads don't normally get deleted after they are processed, so there may
+      # be multiple per email.
+
+      @leads_by_email[email] ||= []
+      @leads_by_email[email].push(lead)
+    end
+  end
+
+  def prepare_contacts
+    colliding_emails = []
+
+    # Store each contact in our internal maps; keep track of which contacts have
+    # colliding emails so we can clear them out below (don't want to clear out
+    # until all contacts have been examined so that we don't miss a collision)
+
+    contacts.each do |contact|
+      emails = [contact.email, contact.email_alt].compact
+                                                 .map(&:downcase)
+                                                 .map(&:strip)
+                                                 .uniq
+
+      emails.each do |email|
+        if (colliding_contact = @contacts_by_email[email])
+          colliding_emails.push(email)
+          error!(
+            message: "#{email} is listed on contact #{contact.id} and contact #{colliding_contact.id}" \
+                     "; neither contact will be synched to an OpenStax Account until this is resolved."
+          )
+        else
+          @contacts_by_email[email] = contact
+          @contacts_by_id[contact.id] = contact
+        end
+      end
+    end
+
+    # Go through colliding emails and clear their Contacts out of our hashes so that
+    # we don't assign these Contacts to users until a human resolves the collisions
+
+    colliding_emails.uniq.each do |colliding_email|
+      contact = @contacts_by_email[colliding_email]
+      @contacts_by_id[contact.id] = nil
+      @contacts_by_email[colliding_email] = nil
+    end
   end
 
   def cache_contact_data_in_user(contact, user)
     if contact.nil?
+      log(
+        "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but" \
+        " that contact is no longer present; resetting user's faculty status and contact ID"
+      )
       user.salesforce_contact_id = nil
       user.faculty_status = User::DEFAULT_FACULTY_STATUS
     else
@@ -172,11 +218,19 @@ class UpdateUserSalesforceInfo
     # Here's one example query as a starting point:
     #   ...Contact.order("LastModifiedDate").where("LastModifiedDate >= #{1.day.ago.utc.iso8601}")
 
-    @contacts ||= OpenStax::Salesforce::Remote::Contact.select(:id, :email, :email_alt, :faculty_verified).to_a
+    @contacts ||= OpenStax::Salesforce::Remote::Contact
+                    .select(:id, :email, :email_alt, :faculty_verified)
+                    .to_a
   end
 
   def leads
-    @leads ||= OpenStax::Salesforce::Remote::Lead.select(:id, :email).to_a
+    # Leads come from many sources; we only care about those created for faculty
+    # verification ("OSC Faculty")
+
+    @leads ||= OpenStax::Salesforce::Remote::Lead
+                 .where(source: "OSC Faculty")
+                 .select(:id, :email)
+                 .to_a
   end
 
   def error!(exception: nil, message: nil, user: nil)
@@ -191,6 +245,10 @@ class UpdateUserSalesforceInfo
     error[:user] = user.id if user.present?
 
     @errors.push(error)
+  end
+
+  def log(message)
+    Rails.logger.warn("UpdateUserSalesforceInfo: " + message)
   end
 
   def notify_errors
