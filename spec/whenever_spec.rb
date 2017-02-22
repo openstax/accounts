@@ -46,7 +46,8 @@ describe 'whenever schedule' do
       end
 
       it 'is sent in production' do
-        allow(Rails.application.secrets).to receive(:exception) { { 'environment_name' => 'prodtutor' } }
+        allow(Rails.application).to receive(:is_real_production?) { true }
+        allow(OpenStax::Salesforce).to receive(:ready_for_api_usage?) { true }
         expect{
           eval_runner_tasks("UpdateUserSalesforceInfo")
         }.to change { ActionMailer::Base.deliveries.count }.by(1)

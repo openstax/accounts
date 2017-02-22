@@ -5,8 +5,8 @@ Rails.application.routes.draw do
   # More often used routes should appear first
   root to: 'static_pages#home'
 
-  match '/auth/salesforce/callback', to: 'admin/salesforce#callback',
-                                     via: [:get, :post]
+  mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
+  OpenStax::Salesforce.set_top_level_routes(self)
 
   scope controller: 'sessions' do
     get 'login', action: :new
@@ -190,9 +190,8 @@ Rails.application.routes.draw do
     post :verify_contact_info, path: '/contact_infos/:id/verify',
          controller: :contact_infos, action: :verify
 
-    resource :salesforce, only: [:show], controller: :salesforce do
+    resource :salesforce, only: [], controller: :salesforce do
       collection do
-        delete :destroy_user
         put :update_users
       end
     end

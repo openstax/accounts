@@ -31,4 +31,14 @@ module OpenStax::RescueFrom
   def self.default_friendly_message
     "We had some unexpected trouble with your request."
   end
+
+  def self.do_reraise
+    original = configuration.raise_exceptions
+    begin
+      configuration.raise_exceptions = true
+      yield
+    ensure
+      configuration.raise_exceptions = original
+    end
+  end
 end

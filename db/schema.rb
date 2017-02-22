@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161205215339) do
+ActiveRecord::Schema.define(version: 20170217210246) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -195,12 +195,14 @@ ActiveRecord::Schema.define(version: 20161205215339) do
     t.string   "scopes",               :default=>"", :null=>false
   end
 
-  create_table "salesforce_users", force: :cascade do |t|
-    t.string "name"
-    t.string "uid",           :null=>false
-    t.string "oauth_token",   :null=>false
-    t.string "refresh_token", :null=>false
-    t.string "instance_url",  :null=>false
+  create_table "openstax_salesforce_users", force: :cascade do |t|
+    t.string   "name"
+    t.string   "uid",           :null=>false
+    t.string   "oauth_token",   :null=>false
+    t.string   "refresh_token", :null=>false
+    t.string   "instance_url",  :null=>false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "security_logs", force: :cascade do |t|

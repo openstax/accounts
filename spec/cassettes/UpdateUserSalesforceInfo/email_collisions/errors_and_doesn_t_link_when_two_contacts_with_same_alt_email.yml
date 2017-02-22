@@ -1,0 +1,191 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://cs50.salesforce.com/services/data/v37.0/sobjects/Contact
+    body:
+      encoding: UTF-8
+      string: '{"FirstName":"Allan","LastName":"Kunze_unique_token","Email_alt__c":"f@f.com","AccountId":"0013B000009vJrCQAU"}'
+    headers:
+      User-Agent:
+      - Faraday v0.9.2
+      Content-Type:
+      - application/json
+      Authorization:
+      - OAuth <tutor_specs_oauth_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Wed, 22 Feb 2017 01:32:18 GMT
+      X-Xss-Protection:
+      - 1; mode=block
+      Content-Security-Policy:
+      - referrer origin-when-cross-origin
+      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      Set-Cookie:
+      - BrowserId=wUK0C5C6RGi1Ht3H4sA96Q;Path=/;Domain=.salesforce.com;Expires=Sun,
+        23-Apr-2017 01:32:18 GMT
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Sforce-Limit-Info:
+      - api-usage=71/48000
+      Location:
+      - "/services/data/v37.0/sobjects/Contact/0033B00000AgLVDQA3"
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"0033B00000AgLVDQA3","success":true,"errors":[]}'
+    http_version: 
+  recorded_at: Wed, 22 Feb 2017 01:32:19 GMT
+- request:
+    method: post
+    uri: https://cs50.salesforce.com/services/data/v37.0/sobjects/Contact
+    body:
+      encoding: UTF-8
+      string: '{"FirstName":"Al","LastName":"Schimmel_unique_token","Email_alt__c":"f@f.com","AccountId":"0013B000009vJrCQAU"}'
+    headers:
+      User-Agent:
+      - Faraday v0.9.2
+      Content-Type:
+      - application/json
+      Authorization:
+      - OAuth <tutor_specs_oauth_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Wed, 22 Feb 2017 01:32:19 GMT
+      X-Xss-Protection:
+      - 1; mode=block
+      Content-Security-Policy:
+      - referrer origin-when-cross-origin
+      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      Set-Cookie:
+      - BrowserId=LiykzhS3TSu_a5VijYPRJQ;Path=/;Domain=.salesforce.com;Expires=Sun,
+        23-Apr-2017 01:32:19 GMT
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Sforce-Limit-Info:
+      - api-usage=68/48000
+      Location:
+      - "/services/data/v37.0/sobjects/Contact/0033B00000AgLL9QAN"
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"0033B00000AgLL9QAN","success":true,"errors":[]}'
+    http_version: 
+  recorded_at: Wed, 22 Feb 2017 01:32:20 GMT
+- request:
+    method: get
+    uri: https://cs50.salesforce.com/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.9.2
+      Authorization:
+      - OAuth <tutor_specs_oauth_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 22 Feb 2017 01:32:21 GMT
+      X-Xss-Protection:
+      - 1; mode=block
+      Content-Security-Policy:
+      - referrer origin-when-cross-origin
+      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      Set-Cookie:
+      - BrowserId=4oIVtYWaSTWAzMgeQKf9Rw;Path=/;Domain=.salesforce.com;Expires=Sun,
+        23-Apr-2017 01:32:21 GMT
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Sforce-Limit-Info:
+      - api-usage=69/48000
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0033B00000AgLVDQA3"},"Id":"0033B00000AgLVDQA3","Email":null,"Email_alt__c":"f@f.com","Faculty_Verified__c":null},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0033B00000AgLL9QAN"},"Id":"0033B00000AgLL9QAN","Email":null,"Email_alt__c":"f@f.com","Faculty_Verified__c":null}]}'
+    http_version: 
+  recorded_at: Wed, 22 Feb 2017 01:32:21 GMT
+- request:
+    method: get
+    uri: https://cs50.salesforce.com/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.9.2
+      Authorization:
+      - OAuth <tutor_specs_oauth_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 22 Feb 2017 01:32:21 GMT
+      X-Xss-Protection:
+      - 1; mode=block
+      Content-Security-Policy:
+      - referrer origin-when-cross-origin
+      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      Set-Cookie:
+      - BrowserId=LNy06BHfRAuO9-NUCJcwtw;Path=/;Domain=.salesforce.com;Expires=Sun,
+        23-Apr-2017 01:32:21 GMT
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Sforce-Limit-Info:
+      - api-usage=70/48000
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"totalSize":0,"done":true,"records":[]}'
+    http_version: 
+  recorded_at: Wed, 22 Feb 2017 01:32:21 GMT
+recorded_with: VCR 3.0.3

@@ -16,6 +16,9 @@ require 'rspec/rails'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
+require 'openstax/salesforce/spec_helpers'
+include OpenStax::Salesforce::SpecHelpers
+
 require 'shoulda/matchers'
 
 require 'capybara'

@@ -51,5 +51,9 @@ module Accounts
       namespace: redis_secrets['namespaces']['cache'],
       expires_in: 90.minutes
     }
+
+    def is_real_production?
+      secrets[:environment_name] == "prodtutor"
+    end
   end
 end

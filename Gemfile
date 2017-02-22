@@ -110,8 +110,7 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'restforce'
-gem 'omniauth-salesforce'
+gem 'openstax_salesforce'
 # Fork that supports Ruby >= 2.1
 gem 'active_force', git: 'https://github.com/openstax/active_force', ref: '9695896f5'
 
@@ -168,6 +167,12 @@ group :development, :test do
   gem 'spring-commands-rspec'
   gem 'guard-rspec'
   gem 'guard-livereload', '~> 2.5', require: false
+
+  # Stubs HTTP requests
+  gem 'webmock'
+
+  # Records HTTP requests
+  gem 'vcr'
 end
 
 group :development do
