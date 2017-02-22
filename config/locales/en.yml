@@ -272,7 +272,6 @@ en:
       used_this_method_last_time: >-
         It looks like you used this the last time you signed in.
       email: Email
-      blank: Email or username can't be blank.
       email_placeholder: Email or username
       username_placeholder: Username
       next: Next
@@ -412,7 +411,6 @@ en:
       check_your_email: Check your inbox for %{email}!
       you_will_have_received: We sent you a six-digit PIN. Enter it below.
       pin_not_correct: This PIN is incorrect.  Please enter the correct PIN.
-      blank: cannot be blank.
       no_pin_confirmation_attempts_remaining:
         content_html: >-
           You have run out of attempts at confirming this email using a PIN.  Please

@@ -61,10 +61,12 @@ describe 'Apply for faculty access', type: :feature, js: true do
 
       screenshot!
       expect(page).to have_content(t :"faculty_access.apply.page_heading")
-      expect(page).to have_content("can't be blank", count: 7)
+      [:first_name, :last_name, :email, :phone_number, :school, :url, :using_openstax].each do |var|
+        expect(pag).to have_content(error_msg FacultyAccessApply, var, :blank, scope: :activemodel)
+      end
       expect(find('#apply_first_name').value).not_to eq @user.first_name
       expect(find('#apply_last_name').value).not_to eq @user.last_name
-      expect(page).to have_content("is not a number")
+      expect(page).to have_content(error_msg FacultyAccessApply, :num_students, :not_a_number, scope: :activemodel)
     end
 
     scenario "email taken" do
@@ -148,8 +150,10 @@ describe 'Apply for faculty access', type: :feature, js: true do
 
       screenshot!
       expect(page).to have_content(t :"faculty_access.apply.page_heading")
-      expect(page).to have_content("can't be blank", count: 6)
-      expect(page).not_to have_content("is not a number")
+      [:first_name, :last_name, :email, :phone_number, :school, :url].each do |var|
+        expect(page).to have_content(error_msg FacultyAccessApply, var, :blank, scope: :activemodel)
+      end
+      expect(page).not_to have_content(error_msg FacultyAccessApply, :num_students, :not_a_number)
     end
 
     scenario "email taken" do

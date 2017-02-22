@@ -327,7 +327,9 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     scenario 'fields blank' do
       complete_signup_password_screen('', '')
       expect(page).to have_no_missing_translations
-      expect(page).to have_content("can't be blank")
+      [:password, :password_confirmation].each do |var|
+        expect(page).to have_content(error_msg SignupPassword, var, :blank)
+      end
       screenshot!
     end
 
@@ -391,9 +393,11 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
         agree: true
       )
 
-      expect(page).to have_content("can't be blank", count: 6)
-      expect(page).to have_content("is not a number")
-      expect(page).to have_content("Subjects must have at least one selection")
+      [:first_name, :last_name, :phone_number, :school, :url, :using_openstax].each do |var|
+        expect(page).to have_content(error_msg SignupProfileInstructor, var, :blank)
+      end
+      expect(page).to have_content(error_msg SignupProfileInstructor, :num_students, :not_a_number)
+      expect(page).to have_content(error_msg SignupProfileInstructor, :subjects, :blank_selection)
 
       screenshot!
     end
@@ -415,7 +419,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
           agree: true,
         )
       )
-      expect(page).to have_content("must be greater than or equal to 0")
+      expect(page).to have_content(error_msg SignupProfileInstructor, :num_students, :greater_than_or_equal_to, count: 0)
       attrs.each do |key, value|
         expect(page).to have_field(t("signup.profile.#{key}"), with: value)
       end
@@ -467,7 +471,9 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
         agree: true
       )
 
-      expect(page).to have_content("can't be blank", count: 3)
+      [:first_name, :last_name, :school].each do |var|
+        expect(page).to have_content(error_msg SignupProfileStudent, var, :blank)
+      end
 
       screenshot!
     end
@@ -509,7 +515,9 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       )
 
       screenshot!
-      expect(page).to have_content("can't be blank", count: 5)
+      [:first_name, :last_name, :phone_number, :school, :url].each do |var|
+        expect(page).to have_content(error_msg SignupProfileOther, var, :blank)
+      end
     end
   end
 

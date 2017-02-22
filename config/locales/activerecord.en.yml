@@ -41,6 +41,82 @@ en:
         one: "%{attribute} is the wrong length (should be 1 character)"
         other: "%{attribute} is the wrong length (should be %{count} characters)"
 
+  activemodel:
+    errors:
+      models:
+        faculty_access_apply/apply_paramifier: &faculty_access_apply
+          attributes:
+            first_name:
+              blank: This field can't be blank
+            last_name:
+              blank: This field can't be blank
+            email:
+              blank: This field can't be blank
+            school:
+              blank: This field can't be blank
+            phone_number:
+              blank: This field can't be blank
+            url:
+              blank: This field can't be blank
+            num_students:
+              blank: This field can't be blank
+              not_a_number: This field is not a number
+              greater_than_or_equal_to: This field must be greater than or equal to %{count}
+            using_openstax:
+              blank: Subjects must have at least one selection
+        faculty_access_apply_instructor/apply_paramifier:
+          <<: *faculty_access_apply
+        identities_set_password/set_password_paramifier:
+          attributes:
+            password:
+              blank: Password can't be blank
+            password_confirmation:
+              blank: Password confirmation can't be blank
+        sessions_lookup_login/login_paramifier:
+          attributes:
+            username_or_email:
+              blank: Username or email can't be blank
+        signup_password/signup_paramifier:
+          attributes:
+            password:
+              blank: Password can't be blank
+            password_confirmation:
+              blank: Password confirmation can't be blank
+        signup_profile/profile_paramifier: &signup_profile
+          attributes:
+            first_name:
+              blank: This field can't be blank
+            last_name:
+              blank: This field can't be blank
+            school:
+              blank: This field can't be blank
+            phone_number:
+              blank: This field can't be blank
+            url:
+              blank: This field can't be blank
+            num_students:
+              blank: This field can't be blank
+              not_a_number: This field is not a number
+              greater_than_or_equal_to: This field must be greater than or equal to %{count}
+            using_openstax:
+              blank: Subjects must have at least one selection
+            subjects:
+              blank_selection: Subjects must have at least one selection
+        signup_profile_instructor/profile_paramifier:
+          <<: *signup_profile
+        signup_profile_other/profile_paramifier:
+          <<: *signup_profile
+        signup_start/signup_paramifier:
+          attributes:
+            email:
+              blank: Email can't be blank
+            role:
+              blank: Role can't be blank
+        signup_verify_email/pin_paramifier:
+          attributes:
+            pin:
+              blank: Pin can't be blank
+
   activerecord:
     errors:
       models:
@@ -55,7 +131,7 @@ en:
         email_address:
           attributes:
             # Marking &email_address for reference later.
-            value: &email_address
+            value: &email_addres_validations
               invalid: “%{value}” is not a valid email address
               too_many_dots: This email has too many dots in a row
               ends_with_dot: An email cannot end with a dot
@@ -82,7 +158,7 @@ en:
               # This is a virtual field corresponding to EmailAddress#value.
               # To avoid redefining messages for that field we include them from
               # activerecord.errors.models.email_address.attributes.value
-              <<: *email_address
+              <<: *email_addres_validations
 
         user:
           attributes:

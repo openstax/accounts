@@ -58,7 +58,7 @@ describe IdentitiesController, type: :controller do
           expect(response.code).to eq('400')
           expect(response.body).to have_no_missing_translations
           expect(response.body).not_to include(t :"identities.set.there_was_a_problem_with_password_link")
-          expect(response.body).to include("Password can't be blank")
+          expect(response.body).to include(error_msg IdentitiesSetPassword, :password, :blank) # TODO: get error message from activemodel
           expect(response.body).to include(t :"identities.reset.submit")
           identity.reload
           expect(identity.authenticate('password')).to be_truthy
