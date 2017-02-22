@@ -1,0 +1,42 @@
+en:
+  errors:
+    # By default all error messages are formatted as “%{attribute} %{message}”,
+    # where “%{attribute}” is name of the attribute having erroneous value, and
+    # “%{message}” is a generic error message. While this format works
+    # for English, it will not work for any language in which “%{message}”
+    # depends on “%{attribute}” (one example of such dependency is gender
+    # agreement). We therefore change message format to “%{message}” and
+    # redefine all default messages.
+    format: "%{message}"
+
+    messages:
+      accepted: "%{attribute} must be accepted"
+      blank: "%{attribute} can't be blank"
+      confirmation: "%{attribute} doesn't match %{attribute}"
+      empty: "%{attribute} can't be empty"
+      equal_to: "%{attribute} must be equal to %{count}"
+      even: "%{attribute} must be even"
+      exclusion: "%{attribute} is reserved"
+      greater_than: "%{attribute} must be greater than %{count}"
+      greater_than_or_equal_to: "%{attribute} must be greater than or equal to %{count}"
+      inclusion: "%{attribute} is not included in the list"
+      invalid: "%{attribute} is invalid"
+      less_than: "%{attribute} must be less than %{count}"
+      less_than_or_equal_to: "%{attribute} must be less than or equal to %{count}"
+      model_invalid: "%{attribute} Validation failed: %{errors}"
+      not_a_number: "%{attribute} is not a number"
+      not_an_integer: "%{attribute} must be an integer"
+      odd: "%{attribute} must be odd"
+      other_than: "%{attribute} must be other than %{count}"
+      present: "%{attribute} must be blank"
+      required: "%{attribute} must exist"
+      taken: "%{attribute} has already been taken"
+      too_long:
+        one: "%{attribute} is too long (maximum is 1 character)"
+        other: "%{attribute} is too long (maximum is %{count} characters)"
+      too_short:
+        one: "%{attribute} is too short (minimum is 1 character)"
+        other: "%{attribute} is too short (minimum is %{count} characters)"
+      wrong_length:
+        one: "%{attribute} is the wrong length (should be 1 character)"
+        other: "%{attribute} is the wrong length (should be %{count} characters)"
