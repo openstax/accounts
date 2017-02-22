@@ -100,7 +100,7 @@ class UpdateUserSalesforceInfo
         user.faculty_status =
           if statuses.empty?
             :no_faculty_info
-          elsif statuses.one? && statuses[0] == "Converted"
+          elsif statuses == ["Converted"]
             :rejected_faculty
           else
             :pending_faculty

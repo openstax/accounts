@@ -289,7 +289,7 @@ describe UpdateUserSalesforceInfo do
     end
 
     stub_salesforce(contacts: contacts)
-    expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 4)
+    expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 5)
   end
 
   it 'logs an error when an email alt is a different contact\'s primary email' do

@@ -21,19 +21,19 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 20 Feb 2017 21:14:45 GMT
+      - Wed, 22 Feb 2017 01:31:43 GMT
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
       - referrer origin-when-cross-origin
       - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
       Set-Cookie:
-      - BrowserId=SOfBTXspQ-Sk5c2-gTVrTQ;Path=/;Domain=.salesforce.com;Expires=Fri,
-        21-Apr-2017 21:14:45 GMT
+      - BrowserId=8KR49OSHQ4KknQsITKXdTA;Path=/;Domain=.salesforce.com;Expires=Sun,
+        23-Apr-2017 01:31:43 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=324/48000
+      - api-usage=62/48000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -45,5 +45,5 @@ http_interactions:
       string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0013B000009vJrCQAU"},"Id":"0013B000009vJrCQAU","Name":"JP
         University"}]}'
     http_version: 
-  recorded_at: Mon, 20 Feb 2017 21:14:45 GMT
+  recorded_at: Wed, 22 Feb 2017 01:31:44 GMT
 recorded_with: VCR 3.0.3

@@ -54,7 +54,7 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
     end
 
     context "lead exists" do
-      let!(:lead) { @proxy.new_lead(email: email_address.value) }
+      let!(:lead) { @proxy.new_lead(email: email_address.value, source: "OSC Faculty") }
 
       it "updates user status when not previously linked" do
         call_expecting_no_errors
@@ -100,7 +100,7 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
     end
 
     context "lead exists" do
-      let!(:lead) { @proxy.new_lead(email: email_address.value) }
+      let!(:lead) { @proxy.new_lead(email: email_address.value, source: "OSC Faculty") }
 
       it "does not cache info when not previously linked" do
         call_expecting_no_errors
