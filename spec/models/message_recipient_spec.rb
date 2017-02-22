@@ -9,8 +9,7 @@ describe MessageRecipient do
     it 'must have a valid message' do
       message_recipient.message = nil
       expect(message_recipient).not_to be_valid
-      expect(message_recipient.errors.messages[:message]).to(
-        eq(["can't be blank"]))
+      expect(message_recipient).to have_error(:message, :blank)
     end
 
     it 'must have a unique user' do
@@ -18,8 +17,7 @@ describe MessageRecipient do
       message_recipient2 = FactoryGirl.build(:message_recipient,
         user: message_recipient.user, message: message_recipient.message)
       expect(message_recipient2).not_to be_valid
-      expect(message_recipient2.errors.messages[:user_id]).to(
-        eq(["has already been taken"]))
+      expect(message_recipient2).to have_error(:user_id, :taken)
     end
 
     it 'must have a unique contact_info' do
@@ -28,8 +26,7 @@ describe MessageRecipient do
         contact_info: message_recipient.contact_info,
         message: message_recipient.message)
       expect(message_recipient2).not_to be_valid
-      expect(message_recipient2.errors.messages[:contact_info_id]).to(
-        eq(["has already been taken"]))
+      expect(message_recipient2).to have_error(:contact_info_id, :taken)
     end
 
     it 'validates if it has a message and unique contact_info and user' do

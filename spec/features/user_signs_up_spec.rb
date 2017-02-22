@@ -320,7 +320,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     scenario 'passwords do not match' do
       complete_signup_password_screen('password', 'blah')
       expect(page).to have_no_missing_translations
-      expect(page).to have_content('confirmation doesn\'t match')
+      expect(page).to have_content(error_msg Identity, :password_confirmation, :confirmation)
       screenshot!
     end
 
@@ -334,7 +334,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     scenario 'password too short' do
       complete_signup_password_screen('p', 'p')
       expect(page).to have_no_missing_translations
-      expect(page).to have_content('too short')
+      expect(page).to have_content(error_msg Identity, :password, :too_short, count: 8)
       screenshot!
     end
 

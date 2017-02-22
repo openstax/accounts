@@ -54,7 +54,7 @@ feature 'User resets password', js: true do
         visit start_path(type: type, token: @login_token)
         expect_page(type: type)
         click_button (t :"identities.#{type}.submit")
-        expect(page).to have_content("Password can't be blank")
+        expect(page).to have_content(error_msg Identity, :password, :blank)
         screenshot!
       end
 
@@ -65,7 +65,7 @@ feature 'User resets password', js: true do
         fill_in (t :"identities.set.password"), with: 'pass'
         fill_in (t :"identities.set.confirm_password"), with: 'pass'
         click_button (t :"identities.#{type}.submit")
-        expect(page).to have_content('Password is too short')
+        expect(page).to have_content(error_msg Identity, :password, :too_short, count: 8)
         screenshot!
       end
 
@@ -76,7 +76,7 @@ feature 'User resets password', js: true do
         fill_in (t :"identities.set.password"), with: 'password!'
         fill_in (t :"identities.set.confirm_password"), with: 'password!!'
         click_button (t :"identities.#{type}.submit")
-        expect(page).to have_content("Password confirmation doesn't match Password")
+        expect(page).to have_content(error_msg Identity, :password_confirmation, :confirmation)
         screenshot!
       end
 

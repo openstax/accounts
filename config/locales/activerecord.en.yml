@@ -40,3 +40,59 @@ en:
       wrong_length:
         one: "%{attribute} is the wrong length (should be 1 character)"
         other: "%{attribute} is the wrong length (should be %{count} characters)"
+
+  activerecord:
+    errors:
+      models:
+        contact_info:
+          attributes:
+            user:
+              last_verified: Unable to delete last verified email address
+            value:
+              already_confirmed: Value already confirmed on another account
+              blank: Value can't be blank
+
+        email_address:
+          attributes:
+            # Marking &email_address for reference later.
+            value: &email_address
+              invalid: “%{value}” is not a valid email address
+              too_many_dots: This email has too many dots in a row
+              ends_with_dot: An email cannot end with a dot
+              contains_tick: An email should not contain a tick (`)
+              contains_colon: An email should not contain a colon
+              contains_comma: An email should not contain a comma
+
+        identity:
+          attributes:
+            password:
+              blank: Password can't be blank
+              too_short:
+                one: Password is too short (minimum is 1 character)
+                other: Password is too short (minimum is %{count} characters)
+              too_long:
+                one: Password is too long (maximum is 1 character)
+                other: Password is too short (minimum is %{count} characters)
+            password_confirmation:
+              confirmation: Password confirmation doesn't match password
+
+        signup_state:
+          attributes:
+            contact_info_value:
+              # This is a virtual field corresponding to EmailAddress#value.
+              # To avoid redefining messages for that field we include them from
+              # activerecord.errors.models.email_address.attributes.value
+              <<: *email_address
+
+        user:
+          attributes:
+            username:
+              too_short: Username is too short (minimum is %{count} characters)
+              too_long: Username is too long (maximum is %{count} characters)
+              invalid: >-
+                Username can only contain letters, numbers, and underscores.
+              taken: Username has already been taken
+            first_name:
+              blank: First name can't be blank
+            last_name:
+              blank: Last name can't be blank

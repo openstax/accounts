@@ -68,7 +68,7 @@ describe IdentitiesController, type: :controller do
           reset_password('pass','pass')
           expect(response.code).to eq('400')
           expect(response.body).to have_no_missing_translations
-          expect(response.body).to include('Password is too short')
+          expect(response.body).to include(error_msg Identity, :password, :too_short, count: 8)
           expect(response.body).to include(t :"identities.reset.submit")
           identity.reload
           expect(identity.authenticate('password')).to be_truthy
@@ -78,7 +78,7 @@ describe IdentitiesController, type: :controller do
           reset_password('password', 'passwordd')
           expect(response.code).to eq('400')
           expect(response.body).to have_no_missing_translations
-          expect(response.body).to include("Password confirmation doesn't match Password")
+          expect(response.body).to include(error_msg Identity, :password_confirmation, :confirmation)
           expect(response.body).to include(t :"identities.reset.submit")
           identity.reload
           expect(identity.authenticate('password')).to be_truthy

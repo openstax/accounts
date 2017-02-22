@@ -15,17 +15,17 @@ describe GroupNesting do
 
       group_nesting_2.member_group = nil
       expect(group_nesting_2).not_to be_valid
-      expect(group_nesting_2.errors.messages[:member_group]).to eq(["can't be blank"])
+      expect(group_nesting_2).to have_error(:member_group, :blank)
 
       group_nesting_2.member_group = group_nesting_1.member_group
       expect(group_nesting_2).not_to be_valid
-      expect(group_nesting_2.errors.messages[:member_group_id]).to eq(["has already been taken"])
+      expect(group_nesting_2).to have_error(:member_group_id, :taken)
     end
 
     it 'must have a container_group' do
       group_nesting_2.container_group = nil
       expect(group_nesting_2).not_to be_valid
-      expect(group_nesting_2.errors.messages[:container_group]).to eq(["can't be blank"])
+      expect(group_nesting_2).to have_error(:container_group, :blank)
     end
 
     it 'cannot nest groups in loops' do

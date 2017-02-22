@@ -47,7 +47,6 @@ class User < ActiveRecord::Base
                                  maximum: USERNAME_MAX_LENGTH,
                                  allow_blank: true },
                        format: { with: USERNAME_VALID_REGEX,
-                                 message: "can only contain letters, numbers, and underscores.",
                                  allow_blank: true }
 
   validates :username, uniqueness: { case_sensitive: false, allow_nil: true },
@@ -246,7 +245,7 @@ class User < ActiveRecord::Base
       was = change[0]
       is = change[1]
 
-      errors.add(attr.to_sym, "can't be blank") if !was.blank? && is.blank?
+      errors.add(attr.to_sym, :blank) if !was.blank? && is.blank?
     end
   end
 

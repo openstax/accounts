@@ -6,32 +6,32 @@ module EmailAddressValidations
       [
         {
           with: /\A[^@ ]+@[^@. ]+\.[^@ ]+\z/,
-          message: "\"%{value}\" is not a valid email address"
+          message: :invalid
         },
         {
           # AWS::SES::ResponseError InvalidParameterValue - Domain contains dot-dot
           without: /.*\.{2,}.*/,
-          message: "This email has too many dots in a row"
+          message: :too_many_dots
         },
         {
           # AWS::SES::ResponseError InvalidParameterValue - Domain ends with dot
           without: /.*\.\z/,
-          message: "An email cannot end with a dot"
+          message: :ends_with_dot
         },
         {
           # AWS::SES::ResponseError InvalidParameterValue - Domain contains illegal character
           without: /`/,
-          message: "An email should not contain a tick (`)"
+          message: :contains_tick
         },
         {
           # AWS::SES::ResponseError InvalidParameterValue - Domain contains illegal character
           without: /:/,
-          message: "An email should not contain a colon"
+          message: :contains_colon
         },
         {
           # AWS::SES::ResponseError InvalidParameterValue - Domain contains illegal character
           without: /,/,
-          message: "An email should not contain a comma"
+          message: :contains_comma
         }
       ]
     end

@@ -58,13 +58,13 @@ class ContactInfo < ActiveRecord::Base
 
   def check_if_last_verified
     if verified? and not user.contact_infos.verified.many? and not destroyed_by_association
-      errors.add(:user, 'unable to delete last verified email address')
+      errors.add(:user, :last_verified)
       return false
     end
   end
 
   def check_for_verified_collision
-    errors.add(:value, 'already confirmed on another account') \
+    errors.add(:value, :already_confirmed) \
       if value.present? &&
          verified? &&
          ContactInfo.verified

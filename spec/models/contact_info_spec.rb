@@ -12,9 +12,8 @@ describe ContactInfo do
     it 'does not accept empty value or type' do
       info = ContactInfo.new
       expect(info).not_to be_valid
-      expect(info.errors.messages[:value]).to eq(["can't be blank"])
-      expect(info.errors.messages[:type]).to eq(
-        ["can't be blank"])
+      expect(info).to have_error(:value, :blank)
+      expect(info).to have_error(:type, :blank)
     end
 
     it 'does not accept invalid types' do
@@ -42,10 +41,10 @@ describe ContactInfo do
       email2.user = email1.user
       email2.value = email1.value.upcase
       expect(email2).not_to be_valid
-      expect(email2.errors.types[:value]).to include(:taken)
+      expect(email2).to have_error(:value, :taken)
       email2.verified = false
       expect(email2).not_to be_valid
-      expect(email2.errors.types[:value]).to include(:taken)
+      expect(email2).to have_error(:value, :taken)
     end
 
     it 'does not allow two users to have the same verified email with different case' do
@@ -63,7 +62,7 @@ describe ContactInfo do
       expect(email1.destroyed?).to be true
       email2.destroy
       expect(email2.destroyed?).to be false
-      expect(email2.errors[:user].to_s).to include('unable to delete')
+      expect(email2).to have_error(:user, :last_verified)
     end
 
     context 'when altering email value' do
@@ -79,7 +78,7 @@ describe ContactInfo do
         expect(newemail.save).to be true
         newemail.verified = true
         expect(newemail.save).to be false
-        expect(newemail.errors[:value].to_s).to include('already confirmed on another account')
+        expect(newemail).to have_error(:value, :already_confirmed)
       end
 
       it 'does allow a user to add an already used unverified email and to verify it' do
@@ -97,7 +96,7 @@ describe ContactInfo do
         email2.save!
         email1.value = email2.value
         expect(email1.save).to be false
-        expect(email1.errors[:value].to_s).to include('already confirmed on another account')
+        expect(email1).to have_error(:value, :already_confirmed)
       end
 
       it 'does allow a user to update their email to be a dupe of an unverified email' do
