@@ -39,7 +39,7 @@ class PushSalesforceLead
     if lead.errors.any?
       handle_errors(lead, user, role)
     else
-      Rails.logger.info("PushSalesforceLead: pushed #{lead.id} for user #{user.id}")
+      log_success(lead, user)
       user.faculty_status = :pending_faculty if !user.confirmed_faculty?
       user.save if user.changed?
       transfer_errors_from(user, {type: :verbatim}, true)
@@ -48,6 +48,10 @@ class PushSalesforceLead
     outputs[:lead] = lead
 
     # TODO write spec that SF User Missing makes BG job retry and sends email
+  end
+
+  def log_success(lead, user)
+    Rails.logger.info("PushSalesforceLead: pushed #{lead.id} for user #{user.id}")
   end
 
   def handle_errors(lead, user, role)
