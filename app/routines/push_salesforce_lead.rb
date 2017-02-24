@@ -1,6 +1,6 @@
 class PushSalesforceLead
 
-  lev_routine
+  lev_routine express_output: :lead
 
   protected
 
@@ -17,11 +17,11 @@ class PushSalesforceLead
 
     source = (role || "").match(/instructor/i) ? "OSC Faculty" : "OSC User"
 
-    lead = Salesforce::Lead.new(
+    lead = OpenStax::Salesforce::Remote::Lead.new(
       first_name: user.first_name,
       last_name: user.last_name,
       salutation: user.title,
-      school: user.self_reported_school,
+      school: school || user.self_reported_school,
       email: email,
       source: source,
       subject: subject,
@@ -39,13 +39,19 @@ class PushSalesforceLead
     if lead.errors.any?
       handle_errors(lead, user, role)
     else
-      Rails.logger.info("PushSalesforceLead: pushed #{lead.id} for user #{user.id}")
-      user.pending_faculty! if !user.confirmed_faculty?
+      log_success(lead, user)
+      user.faculty_status = :pending_faculty if !user.confirmed_faculty?
       user.save if user.changed?
       transfer_errors_from(user, {type: :verbatim}, true)
     end
 
+    outputs[:lead] = lead
+
     # TODO write spec that SF User Missing makes BG job retry and sends email
+  end
+
+  def log_success(lead, user)
+    Rails.logger.info("PushSalesforceLead: pushed #{lead.id} for user #{user.id}")
   end
 
   def handle_errors(lead, user, role)

@@ -1,15 +1,65 @@
 # coding: utf-8
 require 'rails_helper'
+require 'vcr_helper'
 
-feature 'User signs up', js: true do
+feature 'User signs up', js: true, vcr: VCR_OPTS do
 
   background do
     load 'db/seeds.rb'
     create_application
   end
 
+  context "connected to salesforce" do
+    scenario 'happy path success with password' do
+      load_salesforce_user
+
+      allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
+
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen("Instructor","bob@bob.edu", screenshot_after_role: true)
+      complete_signup_verify_screen(pass: true)
+      complete_signup_password_screen('password')
+
+      expect_any_instance_of(PushSalesforceLead)
+        .to receive(:exec)
+        .with(hash_including(subject: "Biology;Macro Econ"))
+        .and_call_original
+
+      # Check that the Lead actually gets written to Salesforce and not auto deleted by SF
+      expect_any_instance_of(PushSalesforceLead).to receive(:log_success).and_wrap_original do |method, *args|
+        lead_in_sf = OpenStax::Salesforce::Remote::Lead.where(id: args[0].id).first
+        expect(lead_in_sf).not_to be_nil
+
+        method.call(*args)
+      end
+
+      complete_signup_profile_screen(
+        role: :instructor,
+        first_name: "Bob",
+        last_name: "Armstrong",
+        phone_number: "634-5789",
+        school: "Rice University",
+        url: "http://www.ece.rice.edu/boba",
+        num_students: 30,
+        using_openstax: "primary",
+        newsletter: true,
+        subjects: ["Biology", "Principles of Macroeconomics"],
+        agree: true
+      )
+
+      expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
+      expect(SignupState.count).to eq 0
+
+      complete_instructor_access_pending_screen
+
+      expect_back_at_app
+    end
+  end
+
   scenario 'happy path success with password' do
     disable_sfdc_client
+
     allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
 
     arrive_from_app
