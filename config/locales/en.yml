@@ -107,7 +107,7 @@ en:
         # %{reset_password}   a hyperlink pointing to password reset page. Label
         #                     of the link is defined by the .reset_password key.
         content: >-
-          You have made too many log in attempts recently. Please
+          You have made too many login attempts recently. Please
           %{reset_password} or try again later.
         reset_password: reset your password
       way_to_login_cannot_be_added: >-
