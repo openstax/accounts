@@ -95,13 +95,13 @@ en:
       several_accounts_for_one_email: >-
         We found multiple accounts for the information provided. Please try again.
       incorrect_password: The password you provided is incorrect.
-      new_sign_in_option_added: Your new log in option as been added!
+      new_sign_in_option_added: Your new login option as been added!
       same_provider_already_linked: >-
         You are logged in as %{user_name}. A different %{authentication} account
         is already linked to your OpenStax account. Only one %{authentication}
         account can be linked to your OpenStax account at a time.
       sign_in_option_already_used: >-
-        That log in option is already used by someone else. If that someone is
+        That login option is already used by someone else. If that someone is
         you, remove it from your other account and try again.
       too_many_login_attempts:
         # %{reset_password}   a hyperlink pointing to password reset page. Label
@@ -384,7 +384,7 @@ en:
         Note that other OpenStax sites may have terms of their own.
       show_title_and_suffix: Show title and suffix
       suffix: Suffix
-      take_me_back_to_sign_in_page: Take me back to the log in page.
+      take_me_back_to_sign_in_page: Take me back to the login page.
       title: Title
       username: Username *
       wait_a_second: Wait a second!
@@ -615,10 +615,10 @@ en:
     edit:
       add_email_address: Add an email
       email_addresses: Emails
-      enable_other_sign_in_options: Enable other log in options
+      enable_other_sign_in_options: Enable other login options
       how_you_sign_in_html: How you<br class="wide"> log in
       name: Name
-      other_sign_in_options_html: Other log in<br class="wide"> options
+      other_sign_in_options_html: Other login<br class="wide"> options
       page_heading: Your Account
       username: Username
       sign_out: Log out
