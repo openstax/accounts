@@ -12,6 +12,9 @@ ActionController::Base.class_exec do
   include LocaleSelector
   include RequireRecentSignin
 
+  include ContractsNotRequired
+  helper_method :contracts_not_required
+
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
   before_filter :save_redirect
@@ -45,11 +48,9 @@ ActionController::Base.class_exec do
 
   def disable_fine_print
     request.options? ||
-    contracts_not_required(client_id: params[:client_id] || session[:client_id]) ||
+    contracts_not_required ||
     current_user.is_anonymous?
   end
-
-  include ContractsNotRequired
 
   def complete_signup_profile
     return true if request.format != :html || request.options?

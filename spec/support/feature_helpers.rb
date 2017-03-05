@@ -94,8 +94,8 @@ def link_in_last_email
   /http:\/\/[^\/]*(\/[^\s]*)/.match(mail.body.encoded)[1]
 end
 
-def create_application
-  @app = FactoryGirl.create(:doorkeeper_application, :trusted)
+def create_application(skip_terms: false)
+  app = FactoryGirl.create(:doorkeeper_application, :trusted, skip_terms: skip_terms)
 
   # We want to provide a local "external" redirect uri so our specs aren't actually
   # making HTTP calls against real external URLs like "example.com"
@@ -103,11 +103,15 @@ def create_application
   redirect_uri = server.present? ?
                  "http://#{server.host}:#{server.port}/#{external_app_for_specs_path}" :
                  external_app_for_specs_url
-  @app.update_column(:redirect_uri, redirect_uri)
+  app.update_column(:redirect_uri, redirect_uri)
 
   FactoryGirl.create(:doorkeeper_access_token,
-                     application: @app, resource_owner_id: nil)
-  @app
+                     application: app, resource_owner_id: nil)
+  app
+end
+
+def create_default_application
+  @app = create_application
 end
 
 def capybara_url(path)
@@ -144,8 +148,8 @@ def visit_authorize_uri(app: @app, params: {})
                          "#{'&' + params.to_query if params.any?}"
 end
 
-def app_callback_url
-  /^#{@app.redirect_uri}\?code=.+$/
+def app_callback_url(app: nil)
+  /^#{(app || @app).redirect_uri}\?code=.+$/
 end
 
 def with_error_pages
@@ -235,14 +239,14 @@ def agree_and_click_create
   click_button (t :"signup.new_account.create_account")
 end
 
-def arrive_from_app(params: {}, do_expect: true)
-  create_application unless @app.present?
-  visit_authorize_uri(params: params)
+def arrive_from_app(app: nil, params: {}, do_expect: true)
+  create_default_application unless app.present? || @app.present?
+  visit_authorize_uri(app: app || @app, params: params)
   expect_sign_in_page if do_expect
 end
 
-def expect_back_at_app
-  expect(page.current_url).to match(app_callback_url)
+def expect_back_at_app(app: nil)
+  expect(page.current_url).to match(app_callback_url(app: app || @app))
 end
 
 def expect_profile_screen
