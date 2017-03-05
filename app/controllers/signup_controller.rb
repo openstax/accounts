@@ -86,9 +86,7 @@ class SignupController < ApplicationController
       end
 
       handle_with(handler,
-                  contracts_required: !contracts_not_required(
-                    client_id: request['client_id'] || session['client_id']
-                  ),
+                  contracts_required: !contracts_not_required,
                   success: lambda do
                     clear_signup_state
 

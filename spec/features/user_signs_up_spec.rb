@@ -6,7 +6,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
   background do
     load 'db/seeds.rb'
-    create_application
+    create_default_application
   end
 
   context "connected to salesforce" do
