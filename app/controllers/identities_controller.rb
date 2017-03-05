@@ -47,12 +47,11 @@ class IdentitiesController < ApplicationController
                 kind: kind,
                 user: user,
                 success: lambda do
-                  security_log :help_requested
+                  security_log :help_requested, user: user
                 end,
                 failure: lambda do
-                  # TODO get this security log in (copied from old sessions#help)
-                  # security_log :help_request_failed, username_or_email: params[:username_or_email]
-                  redirect_to authenticate_path # TODO spec this or remove and switch success to complete
+                  security_log :help_request_failed, user: user
+                  redirect_to authenticate_path
                 end)
   end
 
@@ -96,15 +95,6 @@ class IdentitiesController < ApplicationController
       end
     end
 
-    # MAJOR TODO: figure out where this password expired stuff fits in
-    #
-    # if !current_user.is_anonymous?
-    #   if current_user.identity.password_expired?
-    #     security_log :password_expired
-    #     store_fallback key: :password_return_to
-    #     flash[:alert] = I18n.t :"controllers.identities.password_expired"
-    #   end
-    # end
   end
 
 end
