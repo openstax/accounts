@@ -28,12 +28,14 @@ ActionController::Base.class_exec do
   protected
 
   def security_log(event_type, event_data = {})
+    user = event_data[:user]
+
     if respond_to?(:current_api_user)
       api_user = current_api_user
-      user = api_user.human_user
+      user ||= api_user.human_user
       application = api_user.application
     else
-      user = current_user
+      user ||= current_user
       application = nil
     end
 

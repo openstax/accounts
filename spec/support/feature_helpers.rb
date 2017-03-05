@@ -232,6 +232,7 @@ end
 def expect_profile_page
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"users.edit.page_heading")
+  expect(page).to have_current_path profile_path
 end
 
 def agree_and_click_create
@@ -247,10 +248,6 @@ end
 
 def expect_back_at_app(app: nil)
   expect(page.current_url).to match(app_callback_url(app: app || @app))
-end
-
-def expect_profile_screen
-  expect(page).to have_content(t :"users.edit.page_heading")
 end
 
 def expect_signup_verify_screen
@@ -273,11 +270,6 @@ def complete_login_username_or_email_screen(username_or_email)
   click_button (t :"sessions.new.next")
   expect(page).to have_no_missing_translations
 
-end
-
-
-def expect_profile_page
-  expect(page).to have_current_path profile_path
 end
 
 def complete_login_password_screen(password)
@@ -496,4 +488,10 @@ end
 def get_path_from_absolute_link(node, xpath)
   uri = URI(node.find(xpath)['href'])
   "#{uri.path}?#{uri.query}"
+end
+
+def expect_security_log(*args)
+  expect_any_instance_of(ActionController::Base).to receive(:security_log)
+                                                .with(*args)
+                                                .and_call_original
 end

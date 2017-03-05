@@ -193,7 +193,7 @@ feature 'User logs in', js: true do
       complete_login_username_or_email_screen 'user   '
       complete_login_password_screen 'password'
 
-      expect_profile_screen
+      expect_profile_page
     end
   end
 
@@ -207,7 +207,7 @@ feature 'User logs in', js: true do
       complete_login_username_or_email_screen ' user@example.com   '
       complete_login_password_screen 'password'
 
-      expect_profile_screen
+      expect_profile_page
     end
   end
 
@@ -219,7 +219,7 @@ feature 'User logs in', js: true do
     complete_login_username_or_email_screen 'UsER'
     complete_login_password_screen 'password'
 
-    expect_profile_screen
+    expect_profile_page
   end
 
   scenario 'with an email with different case' do
@@ -230,7 +230,7 @@ feature 'User logs in', js: true do
     complete_login_username_or_email_screen 'USER@example.com'
     complete_login_password_screen 'password'
 
-    expect_profile_screen
+    expect_profile_page
   end
 
   scenario 'anonymous user GETs `/auth/identity/callback` directly' do
