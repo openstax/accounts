@@ -13,13 +13,10 @@ module OmniAuth
 
       NullSession = ActionController::RequestForgeryProtection::ProtectionMethods::NullSession
 
-      LOGIN_ATTEMPTS_PERIOD = 1.hour
-      MAX_LOGIN_ATTEMPTS_PER_USER = 12
-      MAX_LOGIN_ATTEMPTS_PER_IP = 10000
-
       include OmniAuth::Strategy
       include UserSessionManagement
       include ContractsNotRequired
+      include RateLimiting
 
       # Request forgery protection
       include ActiveSupport::Configurable
@@ -53,28 +50,8 @@ module OmniAuth
       info { identity.info }
 
       def too_many_login_attempts?
-        ip_attempts_time = Time.now - LOGIN_ATTEMPTS_PERIOD
-
-        remote_ip = request.ip
-        ip_attempts = SecurityLog.sign_in_failed.where{created_at > ip_attempts_time}
-                                                .where(remote_ip: remote_ip).count
-
-        return true if ip_attempts >= MAX_LOGIN_ATTEMPTS_PER_IP
-
-        user = locate_conditions[:user]
-        if user.nil?
-          user_attempts = 0
-        else
-          last_login_time = SecurityLog.sign_in_successful.where(user: user).maximum(:created_at)
-          user_attempts_time = last_login_time.nil? ? ip_attempts_time :
-                                                      [ip_attempts_time, last_login_time].max
-          user_attempts = SecurityLog.sign_in_failed.where{created_at > user_attempts_time}
-                                                    .where(user: user).count
-        end
-
-        return true if user_attempts >= MAX_LOGIN_ATTEMPTS_PER_USER
-
-        false
+        too_many_log_in_attempts_by_ip?(ip: request.ip) ||
+        too_many_log_in_attempts_by_user?(user: locate_conditions[:user])
       end
 
       def fail_with_log!(reason)
