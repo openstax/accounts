@@ -113,6 +113,8 @@ en:
       way_to_login_cannot_be_added: >-
         That way to log in cannot be added because it is associated to an email
         address that is already in use!
+      mismatched_authentication: >-
+        You logged in with a different third-party account than we expected.  Please try again.
 
     signup:
       already_have_username_and_password: >-

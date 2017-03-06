@@ -102,8 +102,8 @@ class SessionsController < ApplicationController
                                                    user_name: current_user.name,
                                                    authentication: authentication.display_name)
         when :mismatched_authentication
-          # TODO new security log entry
-          redirect_to action: :authenticate, alert: "Mismatched login!" # TODO need feature spec!
+          security_log :sign_in_failed, reason: "mismatched authentication"
+          redirect_to authenticate_path, alert: (I18n.t :"controllers.sessions.mismatched_authentication")
         when :email_already_in_use
           redirect_to profile_path,
                       alert: (I18n.t :"controllers.sessions.way_to_login_cannot_be_added")
