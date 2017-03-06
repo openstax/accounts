@@ -3,7 +3,12 @@ module ContractsNotRequired
   def contracts_not_required(client_id: nil)
     @contracts_not_required ||=
       api_call? ||
-      arriving_from_app_that_skips_terms?(client_id) ||
+      arriving_from_app_that_skips_terms?(
+        client_id ||
+        params[:client_id] ||
+        session[:client_id] ||
+        get_client_app.try(:uid)
+      ) ||
       all_user_apps_skip_terms?
   end
 

@@ -65,7 +65,7 @@
     </div>
 
     <div class="agree">
-      <% unless @contracts_not_required %>
+      <% unless contracts_not_required %>
         <%
           contracts = [FinePrint.get_contract(:general_terms_of_use),
                        FinePrint.get_contract(:privacy_policy)]
@@ -95,7 +95,7 @@
 
 <% end %>
 
-<% unless @contracts_not_required %>
+<% unless contracts_not_required %>
   <script type="text/javascript">
     Accounts.Ui.enableOnChecked('#create_account_submit', '#profile_i_agree');
     $(document).ready(function() {

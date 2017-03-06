@@ -5,7 +5,7 @@ xfeature 'Login inside an iframe', js: true do
   let(:valid_iframe_origins) { Rails.application.secrets[:valid_iframe_origins] }
 
   scenario 'a user signs in' do
-    create_application
+    create_default_application
     user = create_user 'user'
     origin = valid_iframe_origins.last
     visit "/remote/iframe?parent=#{origin}"

@@ -5,10 +5,8 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
   let(:max_attempts_per_ip)   { max_attempts_per_user + 3 }
 
   background do
-    stub_const 'OmniAuth::Strategies::CustomIdentity::MAX_LOGIN_ATTEMPTS_PER_USER',
-               max_attempts_per_user
-    stub_const 'OmniAuth::Strategies::CustomIdentity::MAX_LOGIN_ATTEMPTS_PER_IP',
-               max_attempts_per_ip
+    stub_const 'RateLimiting::MAX_LOGIN_ATTEMPTS_PER_USER', max_attempts_per_user
+    stub_const 'RateLimiting::MAX_LOGIN_ATTEMPTS_PER_IP', max_attempts_per_ip
   end
 
   context 'with a known username' do
@@ -56,7 +54,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
+        Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
           expect_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
@@ -112,7 +110,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
+        Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_email
           expect_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
@@ -121,33 +119,23 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
     end
   end
 
-  xcontext 'with random usernames' do
-    # TODO the spec as written doesn't work because a bad username is not something we
-    # take special note of any more (since we only test password/social auth after
-    # user has already gotten past the username/email screen).  We could potentially
-    # add a security_log event to detect when a bad username is entered and then test
-    # that the IP address gets locked out here.
-    #
-    # If we do bring this spec back, we will need to update log_in_bad_everything
-    # because that method expects to see the password page even tho the username is bad.
+  context 'with random usernames' do
     scenario 'getting their ip unblocked after 1 hour' do
       with_forgery_protection do
         create_user 'user'
 
         max_attempts_per_ip.times do
-          log_in_bad_everything
-          expect(page).to have_content(t :"controllers.sessions.no_account_for_username_or_email")
+          enter_bad_username
+          expect(page).to have_content("We don’t recognize")
         end
 
-        log_in_bad_everything
-        expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
-                                       reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
+        enter_bad_username
+        expect(page).to have_content(t :"controllers.sessions.too_many_lookup_attempts")
 
-        log_in_correctly_with_username
-        expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
-                                       reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
+        enter_good_username
+        expect(page).to have_content(t :"controllers.sessions.too_many_lookup_attempts")
 
-        Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
+        Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
           expect_profile_page
         end
@@ -163,8 +151,14 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
     log_in('user@example.com', SecureRandom.hex)
   end
 
-  def log_in_bad_everything
-    log_in(SecureRandom.hex, SecureRandom.hex)
+  def enter_bad_username
+    visit '/'
+    complete_login_username_or_email_screen(SecureRandom.hex)
+  end
+
+  def enter_good_username
+    visit '/'
+    complete_login_username_or_email_screen('user')
   end
 
   def log_in_correctly_with_username(password: 'password')

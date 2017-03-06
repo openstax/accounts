@@ -6,7 +6,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
   background do
     load 'db/seeds.rb'
-    create_application
+    create_default_application
   end
 
   context "connected to salesforce" do
@@ -355,7 +355,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       scenario 'redirects to profile screen if fully activated' do
         complete_signup_profile_screen_with_whatever
         visit '/signup/password'
-        expect_profile_screen
+        expect_profile_page
       end
     end
 

@@ -163,4 +163,21 @@ feature "User can't sign in", js: true do
     end
   end
 
+  scenario 'user has a linked google auth but uses a different google account to login' do
+    user = create_user 'user'
+    authentication = FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+
+    arrive_from_app
+    complete_login_username_or_email_screen('user')
+
+    expect_security_log(:sign_in_failed, reason: "mismatched authentication")
+
+    with_omniauth_test_mode(uid: "different_than_#{authentication.uid}") do
+      click_link('google-login-button')
+    end
+
+    screenshot!
+    expect(page).to have_content(t(:"controllers.sessions.mismatched_authentication"))
+  end
+
 end

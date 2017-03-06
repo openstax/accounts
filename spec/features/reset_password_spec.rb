@@ -183,6 +183,24 @@ feature 'User resets password', js: true do
     end
   end
 
+  scenario 'failure to send reset email sends user back to authenticate page' do
+    user = create_user 'user'
+    visit '/'
+    complete_login_username_or_email_screen('user')
+
+    # Cause an error to occur in the handler that sends the email
+    allow_any_instance_of(User).to receive(:save).and_wrap_original do |original_method, *args, &block|
+      original_method.call(*args, &block)
+      original_method.receiver.errors.add(:base, "Fake spec error")
+    end
+
+    expect_security_log(:help_request_failed, user: user)
+
+    click_link(t :"sessions.authenticate_options.reset_password")
+
+    expect_authenticate_page
+  end
+
   def expect_reset_password_page(code = @login_token)
     expect(page).to have_current_path password_reset_path(token: code)
     expect(page).to have_no_missing_translations
