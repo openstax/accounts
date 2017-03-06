@@ -110,6 +110,8 @@ en:
           You have made too many login attempts recently. Please
           %{reset_password} or try again later.
         reset_password: reset your password
+      too_many_lookup_attempts: >-
+        You have made too many login attempts recently.  Please try again later.
       way_to_login_cannot_be_added: >-
         That way to log in cannot be added because it is associated to an email
         address that is already in use!
