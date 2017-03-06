@@ -10,10 +10,10 @@ require 'contracts_not_required'
 require 'require_recent_signin'
 require 'json_serialize'
 require 'lookup_users'
+require 'rate_limiting'
 require 'omniauth/strategies/custom_identity'
 require 'email_address_validations'
 require 'subjects_utils'
-require 'rate_limiting'
 
 SITE_NAME = 'OpenStax Accounts'
 PAGE_TITLE_SUFFIX = SITE_NAME

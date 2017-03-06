@@ -5,14 +5,8 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
   let(:max_attempts_per_ip)   { max_attempts_per_user + 3 }
 
   background do
-    stub_const 'OmniAuth::Strategies::CustomIdentity::MAX_LOGIN_ATTEMPTS_PER_USER',
-               max_attempts_per_user
-    stub_const 'OmniAuth::Strategies::CustomIdentity::MAX_LOGIN_ATTEMPTS_PER_IP',
-               max_attempts_per_ip
-    stub_const 'RateLimiting::MAX_LOGIN_ATTEMPTS_PER_USER',
-               max_attempts_per_user
-    stub_const 'RateLimiting::MAX_LOGIN_ATTEMPTS_PER_IP',
-               max_attempts_per_ip
+    stub_const 'RateLimiting::MAX_LOGIN_ATTEMPTS_PER_USER', max_attempts_per_user
+    stub_const 'RateLimiting::MAX_LOGIN_ATTEMPTS_PER_IP', max_attempts_per_ip
   end
 
   context 'with a known username' do
@@ -60,7 +54,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
+        Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
           expect_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
@@ -116,7 +110,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
                                        reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
 
-        Timecop.freeze(Time.now + OmniAuth::Strategies::CustomIdentity::LOGIN_ATTEMPTS_PERIOD) do
+        Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_email
           expect_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
