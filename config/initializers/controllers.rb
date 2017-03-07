@@ -89,4 +89,9 @@ ActionController::Base.class_exec do
     store_url(url: url)
   end
 
+  def return_url_specified_and_allowed?
+    # This returns true iff `save_redirect` actually saved the URL
+    params[:r] && params[:r] == stored_url
+  end
+
 end

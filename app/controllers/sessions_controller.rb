@@ -145,28 +145,32 @@ class SessionsController < ApplicationController
 
   # Destroy session (logout)
   def destroy
-    if params[:parent]
-      url = iframe_after_logout_url(parent: params[:parent])
-    end
-    session[ActionInterceptor.config.default_key] = nil
-
     sign_out!
 
-    # Hack to find root of referer; also send back any query parameters on the logout
-    # request (a way for the logging out application to communicate state back to itself)
-    # This will be a problem if we have to redirect back to apps
-    # that are not at the root of their host after logout
-    # TODO: Replace with signed or registered return urls
-    #       Need to provide web views to sign or register those urls
-    url ||= begin
-      referrer_uri = URI(request.referer)
-      request_uri = URI(request.url)
-      "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
-    rescue # in case the referer is bad (see #179)
-      root_url
-    end
+    # Now figure out where we should redirect the user...
 
-    redirect_to url
+    if return_url_specified_and_allowed?
+      redirect_back
+    else
+      if params[:parent]
+        url = iframe_after_logout_url(parent: params[:parent])
+      end
+
+      session[ActionInterceptor.config.default_key] = nil
+
+      # Compute a default redirect based on the referrer's scheme, host, and port.
+      # Add the request's query onto this URL (a way for the logging-out app to
+      # communicate state back to itself).
+      url ||= begin
+        referrer_uri = URI(request.referer)
+        request_uri = URI(request.url)
+        "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
+      rescue # in case the referer is bad (see #179)
+        root_url
+      end
+
+      redirect_to url
+    end
   end
 
   # This is an official action so that fine_print can check to see if terms need to be signed
