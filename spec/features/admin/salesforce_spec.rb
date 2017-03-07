@@ -13,5 +13,13 @@ feature 'Admin salesforce pages', js: true do
       visit '/admin/salesforce/actions'
       expect(page).not_to have_content("We had some unexpected")
     end
+
+    it 'can trigger a user info update' do
+      visit '/admin/salesforce/actions'
+      expect(UpdateUserSalesforceInfo).to receive(:call)
+      click_button 'Refresh'
+      expect(page).not_to have_content("We had some unexpected")
+      expect(page).to have_content("Refresh Salesforce User Info")
+    end
   end
 end
