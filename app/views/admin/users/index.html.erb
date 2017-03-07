@@ -80,7 +80,7 @@
             <% sf_id = user.salesforce_contact_id %>
 
             <% if sf_id.present? %>
-              <% sf_user = SalesforceUser.first %>
+              <% sf_user = OpenStax::Salesforce::User.first %>
               <span class="sf">
                 <i>Salesforce:</i>
 

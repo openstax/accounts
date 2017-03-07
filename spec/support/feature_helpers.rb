@@ -31,6 +31,7 @@ def create_admin_user
   user = create_user 'admin'
   user.is_administrator = true
   user.save
+  user
 end
 
 def create_nonlocal_user(username, provider='facebook')
