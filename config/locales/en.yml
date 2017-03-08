@@ -490,7 +490,6 @@ en:
         how: How are you using OpenStax?
         fully: Fully adopted and using it as the primary textbook
         recommended: Recommending the book – my students buy a different book
-        piloting: Piloting the book
         interested: Interested in using OpenStax in the future
         nope: Not using OpenStax
       # %{terms_of_use}     a hyperlink to text of the Terms of Use.
@@ -551,7 +550,6 @@ en:
         how: How are you using OpenStax?
         fully: Fully adopted and using it as the primary textbook
         recommended: Recommending the book – my students buy a different book
-        piloting: Piloting the book
         interested: Interested in using OpenStax in the future
         nope: Not using OpenStax
       phone_number: Phone number
