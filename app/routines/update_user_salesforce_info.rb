@@ -16,6 +16,8 @@ class UpdateUserSalesforceInfo
   def call
     return if !OpenStax::Salesforce.ready_for_api_usage?
 
+    info("Starting")
+
     prepare_contacts
 
     # Go through all users that have already have a Salesforce ID and make sure
@@ -127,6 +129,8 @@ class UpdateUserSalesforceInfo
 
     notify_errors
 
+    info("Finished")
+
     self
   end
 
@@ -183,7 +187,7 @@ class UpdateUserSalesforceInfo
 
   def cache_contact_data_in_user(contact, user)
     if contact.nil?
-      log(
+      warn(
         "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but" \
         " that contact is no longer present; resetting user's faculty status and contact ID"
       )
@@ -247,13 +251,17 @@ class UpdateUserSalesforceInfo
     @errors.push(error)
   end
 
-  def log(message)
+  def info(message)
+    Rails.logger.info("UpdateUserSalesforceInfo: " + message)
+  end
+
+  def warn(message)
     Rails.logger.warn("UpdateUserSalesforceInfo: " + message)
   end
 
   def notify_errors
     return if @errors.empty?
-    Rails.logger.warn("UpdateUserSalesforceInfo errors: " + @errors.inspect)
+    warn("errors: " + @errors.inspect)
 
     if @allow_error_email && Settings::Salesforce.user_info_error_emails_enabled
       DevMailer.inspect_object(

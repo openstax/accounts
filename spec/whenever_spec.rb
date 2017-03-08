@@ -30,9 +30,16 @@ describe 'whenever schedule' do
         end
       end
 
-      it 'does send error emails in the midnight hour' do
-        Timecop.freeze(Chronic.parse("12:30 am")) do
+      it 'does send error emails in the midnight hour\'s first run' do
+        Timecop.freeze(Chronic.parse("12:09 am")) do
           expect(::UpdateUserSalesforceInfo).to receive(:call).with(allow_error_email: true)
+          schedule.jobs[:runner].each { |job| eval job[:task] }
+        end
+      end
+
+      it 'does not send error emails in the midnight hour after the first run' do
+        Timecop.freeze(Chronic.parse("12:11 am")) do
+          expect(::UpdateUserSalesforceInfo).to receive(:call).with(allow_error_email: false)
           schedule.jobs[:runner].each { |job| eval job[:task] }
         end
       end
