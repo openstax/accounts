@@ -445,7 +445,6 @@ pl:
         fully: Używam OpenStax jako mojego głównego podręcznika.
         recommended: >-
           Polecam podręcznik OpenStax, ale moi uczniowie kupują inny.
-        piloting: Testuję podręcznik.
         interested: Jestem zainteresowany/a używaniem podręcznika OpenStax.
         nope: Nie używam OpenStax.
       have_read_terms_and_agree_html: >-
@@ -507,7 +506,6 @@ pl:
         fully: Używam OpenStax jako mojego głównego podręcznika.
         recommended: >-
           Polecam podręcznik OpenStax, ale moi uczniowie kupują inny.
-        piloting: Testuję podręcznik OpenStax.
         interested: Jestem zainteresowany/a używaniem podręcznika OpenStax.
         nope: Nie używam OpenStax.
       phone_number: Numer telefonu
