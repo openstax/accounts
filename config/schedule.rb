@@ -9,10 +9,10 @@ set :runner_command, "#{bundle_command} rails runner"
 #   * https://github.com/javan/whenever/issues/481
 #   * https://github.com/javan/whenever/pull/239
 
-every 1.hour, at: 45 do
+every '5,25,45 * * * *' do
   runner <<-CMD
     OpenStax::RescueFrom.this{
-      UpdateUserSalesforceInfo.call(allow_error_email: Time.zone.now.hour == 0)
+      UpdateUserSalesforceInfo.call(allow_error_email: Time.zone.now.hour == 0 && Time.zone.now.min < 10)
     }
   CMD
 end
