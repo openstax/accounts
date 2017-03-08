@@ -52,8 +52,10 @@
       <section class="footer">
         <input type="submit" value="<%= t '.next' %>" class="primary" />
         <p class="extra-info">
-          <%= t '.no_account_q' %>
-          <%= link_to(t('.sign_up'), get_alternate_signup_url || signup_path) %>.
+          <% if !params.has_key?(:no_signup) %>
+            <%= t '.no_account_q' %>
+            <%= link_to(t('.sign_up'), get_alternate_signup_url || signup_path) %>.
+          <% end %>
         </p>
       </section>
   <% end %>

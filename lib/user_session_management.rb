@@ -44,7 +44,7 @@ module UserSessionManagement
     return if signed_in?
 
     store_url
-    redirect_to main_app.login_path(params.slice(:client_id, :signup_at, :go))
+    redirect_to main_app.login_path(params.slice(:client_id, :signup_at, :go, :no_signup))
   end
 
   def authenticate_admin!
