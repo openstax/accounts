@@ -65,9 +65,13 @@ pl:
           Limit nieudanych prób logowania na Twoje konto został przekroczony.
           %{reset_password} albo spróbuj ponownie później.
         reset_password: Zmień hasło
+      too_many_lookup_attempts: >-
+        Wyczerpany limit prób logowania do konta. Spróbuj ponownie później
       way_to_login_cannot_be_added: >-
         Ta metoda logowania nie może zostać użyta, ponieważ jest powiązana
         z już wykorzystanym adresem e-mail.
+      mismatched_authentication: >-
+        Nie rozpoznano tej tożsamości; przedstaw się jeszcze raz
 
     signup:
       already_have_username_and_password: >-
@@ -175,6 +179,7 @@ pl:
         Niestety wystąpił problem z użytym przez Ciebie linkiem. Jeżeli problem
         będzie się powtarzał, skontaktuj się z działem pomocy.
       expired_password_link: Użyty przez ciebie link wygasł.
+      cancel: Anuluj
     reset:
       page_heading: Zmień hasło
       submit: Ustaw hasło
@@ -269,7 +274,6 @@ pl:
       no_account_q: Nie masz konta?
       used_this_method_last_time: Tej metody użyłeś/aś poprzednim razem.
       email: Adres e-mail
-      blank: Musisz podać adres e-mail lub nazwę użytkownika
       email_placeholder: Adres e-mail lub nazwa użytkownika
       username_placeholder: Nazwa użytkownika
       next: Przejdź dalej

@@ -1,0 +1,200 @@
+pl:
+  errors:
+    format: "%{message}"
+
+    messages:
+      accepted: "Pole %{attribute} musi być zaakceptowane"
+      blank: "Pole %{attribute} nie może być puste"
+      confirmation: "Pola %{attribute} i %{attribute} nie są zgodne"
+      empty: "Pole %{attribute} nie może być puste"
+      equal_to: "Wartość pola %{attribute} musi równać się %{count}"
+      even: "Wartość pola %{attribute} musi być parzysta"
+      exclusion: "Wartość pola %{attribute} jest zastrzeżona"
+      greater_than: "Wartość pola %{attribute} musi być większa niż %{count}"
+      greater_than_or_equal_to: >-
+        Wartość pola %{attribute} musi wynosić co najmniej %{count}
+      inclusion: "Wartość pola %{attribute} nie zawiera się w liście"
+      invalid: "Wartość pola %{attribute} jest nieprawidłowa"
+      less_than: "Wartość pola %{attribute} musi być mniejsza niż %{count}"
+      less_than_or_equal_to: >-
+        Wartość pola %{attribute} nie może przekraczać %{count}
+      model_invalid: "Wprowadzone dane są niepoprawne: %{errors}"
+      not_a_number: "Wartość pola %{attribute} nie jest liczbą"
+      not_an_integer: "Wartość pola %{attribute} musi być liczbą całkowitą"
+      odd: Wartość pola "%{attribute} musi być nieparzysta"
+      other_than: "Wartość pola %{attribute} nie może wynosić %{count}"
+      present: "Pole %{attribute} musi być puste"
+      required: "Wartość pola %{attribute} musi istnieć"
+      taken: "Wartość pola %{attribute} jest już zajęta"
+      too_long:
+        one: "Wartość pola %{attribute} jest za długa (najwyżej 1 znak)"
+        few: "Wartość pola %{attribute} jest za długa (najwyżej %{count} znaki)"
+        many: "Wartość pola %{attribute} jest za długa (najwyżej %{count} znaków)"
+        other: "Wartość pola %{attribute} jest za długa (najwyżej %{count} znaku)"
+      too_short:
+        one: "Wartość pola %{attribute} jest za krótka (co najmniej 1 znak)"
+        few: "Wartość pola %{attribute} jest za krótka (co najmniej %{count} znaki)"
+        many: "Wartość pola %{attribute} jest za krótka (co najmniej %{count} znaków)"
+        other: "Wartość pola %{attribute} jest za krótka (co najmniej %{count} znaku)"
+      wrong_length:
+        one: "Wartość pola %{attribute} ma nieprawidłową długość (powinien być 1 znak)"
+        few: "Wartość pola %{attribute} ma nieprawidłową długość (powinny być %{count} znaki)"
+        many: "Wartość pola %{attribute} ma nieprawidłową długość (powinno być %{count} znaków)"
+        other: "Wartość pola %{attribute} ma nieprawidłową długość (powinno być %{count} znaku)"
+
+  activemodel:
+    errors:
+      models:
+        faculty_access_apply/apply_paramifier: &faculty_access_apply
+          attributes:
+            first_name:
+              blank: Wpisz imię
+            last_name:
+              blank: Wpisz nazwisko
+            email:
+              blank: Wpisz adres e-mail
+            school:
+              blank: Wpisz nazwę szkoły
+            phone_number:
+              blank: Wpisz numer telefonu
+            url:
+              blank: Wpisz adres strony
+            num_students:
+              blank: Podaj liczbę uczniów
+              not_a_number: Podana wartość nie jest liczbą
+              greater_than_or_equal_to: >-
+                Liczba uczniów musi wynosić co najmniej %{count}
+            using_openstax:
+              blank: Proszę wybrać jedną z opcji
+        faculty_access_apply_instructor/apply_paramifier:
+          <<: *faculty_access_apply
+        identities_set_password/set_password_paramifier:
+          attributes:
+            password:
+              blank: Wpisz hasło
+            password_confirmation:
+              blank: Wpisz hasło ponownie
+        sessions_lookup_login/login_paramifier:
+          attributes:
+            username_or_email:
+              blank: Wpisz adres e-mail lub nazwę użytkownika
+        signup_password/signup_paramifier:
+          attributes:
+            password:
+              blank: Wpisz hasło
+            password_confirmation:
+              blank: Wpisz hasło ponownie
+        signup_profile/profile_paramifier: &signup_profile
+          attributes:
+            first_name:
+              blank: Wpisz imię
+            last_name:
+              blank: Wpisz nazwisko
+            school:
+              blank: Wpisz nazwę szkoły
+            phone_number:
+              blank: Wpisz numer telefonu
+            url:
+              blank: Wpisz adres strony
+            num_students:
+              blank: Podaj liczbę uczniów
+              not_a_number: Podana wartość nie jest liczbą
+              greater_than_or_equal_to: >-
+                Liczba uczniów musi wynosić co najmniej %{count}
+            using_openstax:
+              blank: Proszę wybrać jedną z opcji
+            subjects:
+              blank_selection: Zaznacz co najmniej jedną opcję
+        signup_profile_instructor/profile_paramifier:
+          <<: *signup_profile
+        signup_profile_other/profile_paramifier:
+          <<: *signup_profile
+        signup_start/signup_paramifier:
+          attributes:
+            email:
+              blank: Wpisz adres e-mail
+            role:
+              blank: Wybierz funkcję
+        signup_verify_email/pin_paramifier:
+          attributes:
+            pin:
+              blank: Wpisz PIN
+
+  activerecord:
+    errors:
+      models:
+        contact_info:
+          attributes:
+            user:
+              last_verified: >-
+                Nie można usunąć ostatniego zweryfikowanego adresu e-mail
+            value:
+              already_confirmed: Wartość jest już zatwierdzona dla innego konta
+              blank: Pole nie może być puste
+
+        email_address:
+          attributes:
+            value: &email_address_validations
+              invalid: „%{value}” nie jest poprawnym adresem e-mail
+              too_many_dots: Adres e-mail ma zbyt wiele kropek pod rząd
+              ends_with_dot: Adres e-mail nie może kończyć się kropką
+              contains_tick: Adres e-mail nie może zawierać znaku „`”
+              contains_colon: Adres e-mail nie może zawierać dwukropka
+              contains_comma: Adres e-mail nie może zawierać przecinka
+
+        identity:
+          attributes:
+            password:
+              blank: Wpisz hasło
+              too_short:
+                one: Hasło jest za krótkie (wymagany co najmniej jeden znak)
+                few: Hasło jest za krótkie (wymagane co najmniej %{count} znaki)
+                many: >-
+                  Hasło jest za krótkie (wymaganych co najmniej %{count} znaków)
+              too_long:
+                one: Hasło jest za długie (wymagany co najwyżej jeden znak)
+                few: >-
+                  Hasło jest za długie (wymagane co najwyżej %{count} znaki)
+                many: >-
+                  Hasło jest za długie (wymaganych co najwyżej %{count} znaków)
+            password_confirmation:
+              confirmation: Weryfikacja hasła nie powiodła się
+
+        signup_state:
+          attributes:
+            contact_info_value:
+              <<: *email_address_validations
+
+        user:
+          attributes:
+            username:
+              too_short:
+                one: >-
+                  Nazwa użytkownika jest za krótka
+                  (wymagany co najmniej jeden znak).
+                few: >-
+                  Nazwa użytkownika jest za krótka
+                  (wymagane co najmniej %{count} znaki)
+                many: >-
+                  Nazwa użytkownika jest za krótka
+                  (wymaganych co najmniej %{count} znaków)
+                other:
+              too_long:
+                one: >-
+                  Nazwa użytkownika jest zbyt długa
+                  (wymagany co najwyżej jeden znak).
+                few: >-
+                  Nazwa użytkownika jest zbyt długa
+                  (wymagane co najwyżej %{count} znaki).
+                many: >-
+                  Nazwa użytkownika jest zbyt długa
+                  (wymaganych co najwyżej %{count} znaków).
+                other:
+              invalid: >-
+                Nazwa użytkownika może składać się jedynie z liter, cyfr oraz
+                podkreślników.
+              taken: Ta nazwa użytkownika jest już zajęta.
+            first_name:
+              blank: Wpisz imię
+            last_name:
+              blank: Wpisz nazwisko
