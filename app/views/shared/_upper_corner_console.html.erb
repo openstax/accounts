@@ -5,9 +5,11 @@
 
     <% if !Rails.env.production? %>
       Current user: <%= current_user.username %><br/>
-      <%= link_to "Dev Console", main_app.admin_path, remote: true %><br/>
+      <%= link_to "Popup Console", main_app.admin_path, remote: true %><br/>
+      <%= link_to "Full Console", main_app.admin_console_path %><br/>
     <% elsif current_user.is_administrator? %>
-      <%= link_to "Admin Console", main_app.admin_path, remote: true %><br/>
+      <%= link_to "Popup Console", main_app.admin_path, remote: true %><br/>
+      <%= link_to "Full Console", main_app.admin_console_path %><br/>
     <% end %>
 
     <% clock_is_normally_enabled = @clock_enabled && signed_in? %>
