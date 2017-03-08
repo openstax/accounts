@@ -136,13 +136,15 @@ body, p, ol, ul, td, a {
   top: 0;
   left: 0;
   color: white;
+  padding: 4px;
 
   a {
     text-decoration: underline;
+    color: white;
   }
 
   #clock.highlight {
-    color: #ff00ff;
+    color: rgba(255,255,255,0.5);
   }
 }
 
