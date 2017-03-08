@@ -1,5 +1,7 @@
 class FacultyAccessController < ApplicationController
 
+  prepend_before_filter :disallow_signup, only: :apply
+
   helper_method :instructor_has_selected_subject
 
   def apply
@@ -36,6 +38,11 @@ class FacultyAccessController < ApplicationController
 
   def instructor_has_selected_subject(key)
     params[:apply] && params[:apply][:subjects] && params[:apply][:subjects][key] == '1'
+  end
+
+  def disallow_signup
+    # value doesn't really matter, if set at all, signup hidden
+    params[:no_signup] = 1
   end
 
 end

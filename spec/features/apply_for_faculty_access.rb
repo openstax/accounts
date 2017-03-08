@@ -8,9 +8,33 @@ describe 'Apply for faculty access', type: :feature, js: true do
     @user.save!
   end
 
-  scenario "anonymous user rejected" do
+  scenario "anonymous user asked to log in" do
     visit faculty_access_apply_path(r: capybara_url(external_app_for_specs_path))
+
+    screenshot!
+
     expect_sign_in_page
+    expect(page).not_to have_content("Sign up")
+
+    complete_login_username_or_email_screen('user')
+    complete_login_password_screen('password')
+
+    complete_faculty_access_apply_screen(
+      role: :other,
+      first_name: "Jimmy",
+      last_name: "Tudeski",
+      email: "howdy@ho.com",
+      phone_number: "000-0000",
+      school: "Rice University",
+      url: "http://www.rice.edu",
+      subjects: ["Biology", "Principles of Macroeconomics"],
+      newsletter: true,
+    )
+
+    expect(page).to have_content(t :"faculty_access.pending.page_heading")
+    click_button(t :"faculty_access.pending.ok")
+
+    expect(page.current_url).to eq(capybara_url(external_app_for_specs_path))
   end
 
   context "chooses instructor role" do
