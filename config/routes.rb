@@ -192,6 +192,7 @@ Rails.application.routes.draw do
 
     resource :salesforce, only: [], controller: :salesforce do
       collection do
+        get :actions
         put :update_users
       end
     end
