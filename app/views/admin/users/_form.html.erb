@@ -164,7 +164,7 @@
     <%= f.label :security_log, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
       <p class="form-control-static">
-        <%= link_to "Security Log", admin_security_log_path(search: { query: "user:#{@user.id}" }) %>
+        <%= link_to "Security Log", admin_security_log_path(search: { query: "user_id:#{@user.id}" }) %>
       </p>
     </div>
   </div>

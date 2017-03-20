@@ -21,6 +21,11 @@ describe Admin::SearchSecurityLog, type: :routine do
     @type_sl = FactoryGirl.create :security_log, user: @another_user,
                                                  application: @another_app,
                                                  event_type: :admin_created
+
+    @user_with_name_like_other_id = FactoryGirl.create :user, first_name: @user.id
+    @user_with_name_like_other_id_sl = FactoryGirl.create :security_log,
+                                                          user: @user_with_name_like_other_id,
+                                                          application: @another_app
   end
 
   it "matches based on id" do
@@ -28,8 +33,8 @@ describe Admin::SearchSecurityLog, type: :routine do
     expect(items).to match_array [@anon_sl]
   end
 
-  it "matches based on user id" do
-    items = described_class.call(query: "user:\"#{@user.id}\"").outputs.items.to_a
+  it "matches based on user id only" do
+    items = described_class.call(query: "user_id:#{@user.id}").outputs.items.to_a
     expect(items).to match_array [@app_and_user_sl, @user_sl]
   end
 
@@ -80,7 +85,8 @@ describe Admin::SearchSecurityLog, type: :routine do
 
   it "matches based on time" do
     items = described_class.call(query: "time:\"today\"").outputs.items.to_a
-    expect(items).to match_array [@type_sl, @ip_sl, @app_and_user_sl, @app_sl, @user_sl, @anon_sl]
+    expect(items).to match_array [@type_sl, @ip_sl, @app_and_user_sl, @app_sl, @user_sl, @anon_sl,
+                                  @user_with_name_like_other_id_sl]
   end
 
   it "matches any fields when no prefix given" do
@@ -90,7 +96,8 @@ describe Admin::SearchSecurityLog, type: :routine do
 
   it "returns all results in reverse creation order if the query is empty" do
     items = described_class.call(query: '').outputs.items.to_a
-    expect(items).to match_array [@type_sl, @ip_sl, @app_and_user_sl, @app_sl, @user_sl, @anon_sl]
+    expect(items).to match_array [@user_with_name_like_other_id_sl, @type_sl, @ip_sl,
+                                  @app_and_user_sl, @app_sl, @user_sl, @anon_sl]
   end
 
 end
