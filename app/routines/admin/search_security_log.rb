@@ -79,9 +79,16 @@ module Admin
           end
         end
 
+        with.keyword :user_id do |user_ids_array|
+          user_ids_array.each do |user_ids|
+            sanitized_ids = to_number_array(user_ids)
+
+            @items = @items.where { user.id.in sanitized_ids }
+          end
+        end
+
         with.keyword :user do |users_array|
           users_array.each do |users|
-            sanitized_ids = to_number_array(users)
             sanitized_names = to_string_array(users, prepend_wildcard: true, append_wildcard: true)
             has_anonymous = sanitized_names.any? do |name|
               'anonymous'.include?(name.downcase.gsub('%', ''))
@@ -91,8 +98,7 @@ module Admin
             end
 
             @items = @items.where do
-              query = (        user.id.in       sanitized_ids  ) |
-                      (  user.username.like_any sanitized_names) |
+              query = (  user.username.like_any sanitized_names) |
                       (user.first_name.like_any sanitized_names) |
                       ( user.last_name.like_any sanitized_names)
               query = query | ((user.id.eq nil) & (application.id.eq     nil)) if has_anonymous
