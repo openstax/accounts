@@ -9,10 +9,28 @@ namespace :accounts do
         apps = Doorkeeper::Application
       end
       apps = apps.order(:name)
-      apps.each do |application|
-        puts "#{application.name}: #{application.uid} #{application.secret}"
+      result = []
+      apps.select('name, uid, secret').order(:name).each do |row|
+        result << {
+          'name'   => row.name,
+          'uid'    => row.uid,
+          'secret' => row.secret,
+        }
       end
-      puts 'No applications found.' if apps.empty?
+      if result.empty?
+        puts 'No applications found.' if apps.empty?
+        exit 0
+      end
+      output = ENV.fetch('OUTPUT', '').downcase
+      if output.eql? 'yaml'
+        puts result.to_yaml
+      elsif output.eql? 'json'
+        puts result.to_json
+      else
+        result.each do |o|
+          puts "#{o['name']}: #{o['uid']} #{o['secret']}"
+        end
+      end
     end
   end
 end
