@@ -31,5 +31,9 @@ class AddEmailToUser
     run(SendContactInfoConfirmation, contact_info: email_address)
 
     outputs.email = email_address
+
+    # Ensure we get updated contact_infos if we try to use them
+    user.contact_infos.reset
+    user.email_addresses.reset
   end
 end
