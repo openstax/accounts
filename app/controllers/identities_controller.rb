@@ -9,6 +9,8 @@ class IdentitiesController < ApplicationController
                   only: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add,
                          :reset_success, :add_success]
 
+  before_filter :allow_iframe_access
+
   def reset
     set_password(kind: :reset)
   end
