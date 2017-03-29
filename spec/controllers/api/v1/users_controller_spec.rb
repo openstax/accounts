@@ -103,7 +103,7 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
     it "should return a properly formatted JSON response for low-info user" do
       api_get :show, user_1_token
       expected_response = user_matcher(user_1, include_private_data: true)
-      expect(response.body_as_hash).to eq(expected_response)
+      expect(response.body_as_hash).to match(expected_response)
     end
 
     it "should return a properly formatted JSON response for user with name" do
