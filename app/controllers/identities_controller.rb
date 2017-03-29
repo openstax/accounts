@@ -31,7 +31,7 @@ class IdentitiesController < ApplicationController
   def sent_add; end
 
   def continue
-    redirect_back
+    redirect_to profile_url
   end
 
   protected
