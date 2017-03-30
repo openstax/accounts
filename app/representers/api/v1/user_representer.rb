@@ -80,5 +80,13 @@ module Api::V1
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
                decorator: ContactInfoRepresenter
 
+    collection :applications,
+               readable: true,
+               writeable: false,
+               decorator: ApplicationRepresenter,
+               schema_info: {
+                 description: "A list of the applications the user has accessed",
+                 required: false
+               }
   end
 end
