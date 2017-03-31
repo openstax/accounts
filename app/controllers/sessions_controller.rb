@@ -17,6 +17,9 @@ class SessionsController < ApplicationController
   before_filter :store_authorization_url_as_fallback, only: [:new, :create]
   before_filter :maybe_skip_to_sign_up, only: [:new]
 
+  before_filter :allow_iframe_access, only: :reauthenticate
+
+
   # If the user arrives to :new already logged in, this means they got linked to
   # the login page somehow; attempt to redirect to the authorization url stored
   # earlier
