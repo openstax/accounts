@@ -27,13 +27,13 @@ describe User, type: :model do
       it 'is invalid for the first name to become blank' do
         user.first_name = "   "
         expect(user).not_to be_valid
-        expect(user.errors[:first_name]).to include("can't be blank")
+        expect(user).to have_error(:first_name, :blank)
       end
 
       it 'is invalid for the last name to become blank' do
         user.last_name = "\t   "
         expect(user).not_to be_valid
-        expect(user.errors[:last_name]).to include("can't be blank")
+        expect(user).to have_error(:last_name, :blank)
       end
     end
   end
@@ -101,7 +101,7 @@ describe User, type: :model do
       user_3 = FactoryGirl.build :user, username: user_1.username
       expect(user_3).not_to be_valid
       expect(user_3.errors).to include(:username)
-      expect(user_3.errors[:username]).to include('has already been taken')
+      expect(user_3).to have_error(:username, :taken)
 
       user_4 = FactoryGirl.build :user, username: user_1.username.upcase
       expect(user_4).not_to be_valid

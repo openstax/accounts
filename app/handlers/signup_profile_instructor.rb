@@ -15,7 +15,7 @@ class SignupProfileInstructor < SignupProfile
     validates :using_openstax, presence: true
     validate :subjects, lambda { |profile|
       unless profile.subjects.detect{|_, checked| checked == '1'}
-        profile.errors.add(:subjects, 'must have at least one selection')
+        profile.errors.add(:subjects, :blank_selection)
       end
     }
   end

@@ -1,0 +1,174 @@
+en:
+  errors:
+    # By default all error messages are formatted as “%{attribute} %{message}”,
+    # where “%{attribute}” is name of the attribute having erroneous value, and
+    # “%{message}” is a generic error message. While this format works
+    # for English, it will not work for any language in which “%{message}”
+    # depends on “%{attribute}” (one example of such dependency is gender
+    # agreement). We therefore change message format to “%{message}” and
+    # redefine all default messages.
+    format: "%{message}"
+
+    messages:
+      accepted: "%{attribute} must be accepted"
+      blank: "%{attribute} can't be blank"
+      confirmation: "%{attribute} doesn't match %{attribute}"
+      empty: "%{attribute} can't be empty"
+      equal_to: "%{attribute} must be equal to %{count}"
+      even: "%{attribute} must be even"
+      exclusion: "%{attribute} is reserved"
+      greater_than: "%{attribute} must be greater than %{count}"
+      greater_than_or_equal_to: "%{attribute} must be greater than or equal to %{count}"
+      inclusion: "%{attribute} is not included in the list"
+      invalid: "%{attribute} is invalid"
+      less_than: "%{attribute} must be less than %{count}"
+      less_than_or_equal_to: "%{attribute} must be less than or equal to %{count}"
+      model_invalid: "%{attribute} Validation failed: %{errors}"
+      not_a_number: "%{attribute} is not a number"
+      not_an_integer: "%{attribute} must be an integer"
+      odd: "%{attribute} must be odd"
+      other_than: "%{attribute} must be other than %{count}"
+      present: "%{attribute} must be blank"
+      required: "%{attribute} must exist"
+      taken: "%{attribute} has already been taken"
+      too_long:
+        one: "%{attribute} is too long (maximum is 1 character)"
+        other: "%{attribute} is too long (maximum is %{count} characters)"
+      too_short:
+        one: "%{attribute} is too short (minimum is 1 character)"
+        other: "%{attribute} is too short (minimum is %{count} characters)"
+      wrong_length:
+        one: "%{attribute} is the wrong length (should be 1 character)"
+        other: "%{attribute} is the wrong length (should be %{count} characters)"
+
+  activemodel:
+    errors:
+      models:
+        faculty_access_apply/apply_paramifier: &faculty_access_apply
+          attributes:
+            first_name:
+              blank: This field can't be blank
+            last_name:
+              blank: This field can't be blank
+            email:
+              blank: This field can't be blank
+            school:
+              blank: This field can't be blank
+            phone_number:
+              blank: This field can't be blank
+            url:
+              blank: This field can't be blank
+            num_students:
+              blank: This field can't be blank
+              not_a_number: This field is not a number
+              greater_than_or_equal_to: This field must be greater than or equal to %{count}
+            using_openstax:
+              blank: Subjects must have at least one selection
+        faculty_access_apply_instructor/apply_paramifier:
+          <<: *faculty_access_apply
+        identities_set_password/set_password_paramifier:
+          attributes:
+            password:
+              blank: Password can't be blank
+            password_confirmation:
+              blank: Password confirmation can't be blank
+        sessions_lookup_login/login_paramifier:
+          attributes:
+            username_or_email:
+              blank: Username or email can't be blank
+        signup_password/signup_paramifier:
+          attributes:
+            password:
+              blank: Password can't be blank
+            password_confirmation:
+              blank: Password confirmation can't be blank
+        signup_profile/profile_paramifier: &signup_profile
+          attributes:
+            first_name:
+              blank: This field can't be blank
+            last_name:
+              blank: This field can't be blank
+            school:
+              blank: This field can't be blank
+            phone_number:
+              blank: This field can't be blank
+            url:
+              blank: This field can't be blank
+            num_students:
+              blank: This field can't be blank
+              not_a_number: This field is not a number
+              greater_than_or_equal_to: This field must be greater than or equal to %{count}
+            using_openstax:
+              blank: Subjects must have at least one selection
+            subjects:
+              blank_selection: Subjects must have at least one selection
+        signup_profile_instructor/profile_paramifier:
+          <<: *signup_profile
+        signup_profile_other/profile_paramifier:
+          <<: *signup_profile
+        signup_start/signup_paramifier:
+          attributes:
+            email:
+              blank: Email can't be blank
+            role:
+              blank: Role can't be blank
+        signup_verify_email/pin_paramifier:
+          attributes:
+            pin:
+              blank: Pin can't be blank
+
+  activerecord:
+    errors:
+      models:
+        contact_info:
+          attributes:
+            user:
+              last_verified: Unable to delete last verified email address
+            value:
+              already_confirmed: Value already confirmed on another account
+              blank: Value can't be blank
+
+        email_address:
+          attributes:
+            # Marking &email_address for reference later.
+            value: &email_addres_validations
+              invalid: “%{value}” is not a valid email address
+              too_many_dots: This email has too many dots in a row
+              ends_with_dot: An email cannot end with a dot
+              contains_tick: An email should not contain a tick (`)
+              contains_colon: An email should not contain a colon
+              contains_comma: An email should not contain a comma
+
+        identity:
+          attributes:
+            password:
+              blank: Password can't be blank
+              too_short:
+                one: Password is too short (minimum is 1 character)
+                other: Password is too short (minimum is %{count} characters)
+              too_long:
+                one: Password is too long (maximum is 1 character)
+                other: Password is too short (minimum is %{count} characters)
+            password_confirmation:
+              confirmation: Password confirmation doesn't match password
+
+        signup_state:
+          attributes:
+            contact_info_value:
+              # This is a virtual field corresponding to EmailAddress#value.
+              # To avoid redefining messages for that field we include them from
+              # activerecord.errors.models.email_address.attributes.value
+              <<: *email_addres_validations
+
+        user:
+          attributes:
+            username:
+              too_short: Username is too short (minimum is %{count} characters)
+              too_long: Username is too long (maximum is %{count} characters)
+              invalid: >-
+                Username can only contain letters, numbers, and underscores.
+              taken: Username has already been taken
+            first_name:
+              blank: First name can't be blank
+            last_name:
+              blank: Last name can't be blank

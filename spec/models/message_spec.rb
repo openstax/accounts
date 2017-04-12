@@ -34,32 +34,31 @@ describe Message do
     it 'must have a valid body' do
       message.body = nil
       expect(message).not_to be_valid
-      expect(message.errors.messages[:body]).to eq(["can't be blank"])
+      expect(message).to have_error(:body, :blank)
     end
 
     it 'must have a valid application' do
       message.application = nil
       expect(message).not_to be_valid
-      expect(message.errors.messages[:application]).to eq(["can't be blank"])
+      expect(message).to have_error(:application, :blank)
     end
 
     it 'must have message_recipients' do
       message.message_recipients = []
       expect(message).not_to be_valid
-      expect(message.errors.messages[:message_recipients]).to(
-        eq(["can't be blank"]))
+      expect(message).to have_error(:message_recipients, :blank)
     end
 
     it 'must have a valid subject' do
       message.subject = ''
       expect(message).not_to be_valid
-      expect(message.errors.messages[:subject]).to eq(["can't be blank"])
+      expect(message).to have_error(:subject, :blank)
     end
 
     it 'must have a valid subject_prefix' do
       message.subject_prefix = ''
       expect(message).not_to be_valid
-      expect(message.errors.messages[:subject_prefix]).to eq(["can't be blank"])
+      expect(message).to have_error(:subject_prefix, :blank)
     end
 
     it 'validates if it has all the required fields' do

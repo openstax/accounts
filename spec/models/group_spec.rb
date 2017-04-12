@@ -17,7 +17,7 @@ describe Group do
 
       group_3 = FactoryGirl.build(:group, name: group_1.name)
       expect(group_3).not_to be_valid
-      expect(group_3.errors.messages[:name]).to eq(["has already been taken"])
+      expect(group_3).to have_error(:name, :taken)
 
       group_3.name = nil
       expect(group_3).to be_valid

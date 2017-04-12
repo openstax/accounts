@@ -49,7 +49,7 @@ class SignupController < ApplicationController
                   end,
                   failure: lambda do
                     @handler_result.errors.each do | error |  # TODO move to view?
-                      error.message = I18n.t("signup.verify_email.#{error.code}")
+                      error.message = I18n.t(:"signup.verify_email.#{error.code}", default: error.message)
                     end
                     render :verify_email
                   end)

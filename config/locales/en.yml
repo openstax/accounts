@@ -1,45 +1,4 @@
 en:
-  activemodel:
-    attributes:
-      sessions_lookup_login/login_paramifier:
-        username_or_email: Email or username
-      signup_profile_instructor/profile_paramifier:
-        first_name: This field
-        last_name: This field
-        phone_number: This field
-        school: This field
-        num_students: This field
-        url: This field
-        using_openstax: This field
-      signup_profile_other/profile_paramifier:
-        first_name: This field
-        last_name: This field
-        phone_number: This field
-        school: This field
-        url: This field
-      signup_profile_student/profile_paramifier:
-        first_name: This field
-        last_name: This field
-        school: This field
-      faculty_access_apply_instructor/apply_paramifier:
-        first_name: This field
-        last_name: This field
-        phone_number: This field
-        school: This field
-        num_students: This field
-        url: This field
-        using_openstax: This field
-      faculty_access_apply_other/apply_paramifier:
-        first_name: This field
-        last_name: This field
-        phone_number: This field
-        school: This field
-        url: This field
-  activerecord:
-    attributes:
-      signup_state:
-        contact_info_value: Email address
-
   # Strings in this section are intended for use from within JavaScript files.
   # They are reproduced as a global `window.OX.I18n`. For example the key
   # `javascript.alert.close` would be accessible as `window.OX.I18n.alert.close`.
@@ -313,7 +272,6 @@ en:
       used_this_method_last_time: >-
         It looks like you used this the last time you signed in.
       email: Email
-      blank: Email or username can't be blank.
       email_placeholder: Email or username
       username_placeholder: Username
       next: Next
@@ -453,7 +411,6 @@ en:
       check_your_email: Check your inbox for %{email}!
       you_will_have_received: We sent you a six-digit PIN. Enter it below.
       pin_not_correct: This PIN is incorrect.  Please enter the correct PIN.
-      blank: cannot be blank.
       no_pin_confirmation_attempts_remaining:
         content_html: >-
           You have run out of attempts at confirming this email using a PIN.  Please

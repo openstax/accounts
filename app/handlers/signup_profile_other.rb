@@ -9,7 +9,7 @@ class SignupProfileOther < SignupProfile
     validates :url, presence: true
     validate :subjects, lambda { |profile|
       unless profile.subjects.detect{|_, checked| checked == '1'}
-        profile.errors.add(:subjects, 'must have at least one selection')
+        profile.errors.add(:subjects, :blank_selection)
       end
     }
   end

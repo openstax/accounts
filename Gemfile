@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 # Rails framework
 gem 'rails', '4.2.7.1'
+gem 'rails-i18n', '~> 4'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.1.1'

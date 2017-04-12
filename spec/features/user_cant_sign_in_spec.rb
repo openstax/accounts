@@ -21,7 +21,7 @@ feature "User can't sign in", js: true do
 
     scenario "username or email blank" do
       complete_login_username_or_email_screen('')
-      expect(page).to have_content("Email or username can't be blank") # TODO put in en.yml and reverse username/email
+      expect(page).to have_content(error_msg SessionsLookupLogin, :username_or_email, :blank)
       screenshot!
     end
 

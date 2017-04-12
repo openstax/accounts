@@ -22,14 +22,14 @@ describe ApplicationUser do
       expect(application_user).to be_valid
       application_user.application = nil
       expect(application_user).not_to be_valid
-      expect(application_user.errors.messages[:application]).to eq(["can't be blank"])
+      expect(application_user).to have_error(:application, :blank)
 
       application_user.application = application
 
       expect(application_user).to be_valid
       application_user.user = nil
       expect(application_user).not_to be_valid
-      expect(application_user.errors.messages[:user]).to eq(["can't be blank"])
+      expect(application_user).to have_error(:user, :blank)
     end
 
     it 'cannot have the same application and user' do
@@ -39,7 +39,7 @@ describe ApplicationUser do
       expect(application_user2).to be_valid
       application_user2.user = application_user.user
       expect(application_user2).not_to be_valid
-      expect(application_user2.errors.messages[:user_id]).to eq(["has already been taken"])
+      expect(application_user2).to have_error(:user_id, :taken)
     end
   end
 

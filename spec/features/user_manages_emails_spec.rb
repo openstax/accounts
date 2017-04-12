@@ -71,7 +71,7 @@ feature 'User manages emails', js: true do
         find('input').set('user')
         find('.glyphicon-ok').click
       }
-      expect(page).to have_content('Value "user" is not a valid email address')
+      expect(page).to have_content(error_msg EmailAddress, :value, :invalid, value: 'user')
     end
 
     scenario 'toggles searchable field' do
