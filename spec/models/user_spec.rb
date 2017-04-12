@@ -173,11 +173,46 @@ describe User, type: :model do
     expect(user.name).to eq('Dr User One Second')
   end
 
-  it 'returns the first name as casual name' do
-    user = FactoryGirl.create :user, first_name: 'Nikola', last_name: 'Tesla'
-    expect(user.casual_name).to eq('Nikola')
+  context "#casual_name" do
+    it 'returns the first name when present' do
+      user = FactoryGirl.create :user, first_name: 'Nikola', last_name: 'Tesla'
+      expect(user.casual_name).to eq('Nikola')
+    end
+
+    it 'returns the username if no first_name' do
+      user = FactoryGirl.create :user, username: 'bob', first_name: ''
+      expect(user.casual_name).to eq('bob')
+    end
+
+    it 'returns last name if first and username not present' do
+      user = FactoryGirl.create :user, username: '', first_name: '', last_name: 'Last'
+      expect(user.last_name).to eq 'Last'
+    end
   end
 
+  context "#formal_name" do
+    it "returns nil for missing title (can't be formal without title)" do
+      user = FactoryGirl.create :user, title: '', first_name: "Bob", last_name: "Smith", suffix: "Sr."
+      expect(user.formal_name).to be_nil
+    end
+
+    it "returns if title and lastname present" do
+      user = FactoryGirl.create :user, title: 'Dr.  ', first_name: "", last_name: "Smith ", suffix: ""
+      expect(user.formal_name).to eq "Dr. Smith"
+    end
+  end
+
+  context "#standard_name" do
+    it "gives the formal name if present" do
+      user = FactoryGirl.create :user, title: 'Dr.  ', first_name: "", last_name: "Smith ", suffix: ""
+      expect(user.standard_name).to eq "Dr. Smith"
+    end
+
+    it "gives the casual name if no formal name" do
+      user = FactoryGirl.create :user, title: '', first_name: "Yikes ", last_name: "Smith ", suffix: ""
+      expect(user.standard_name).to eq "Yikes"
+    end
+  end
 
   context "state" do
     it "defaults to needs_profile" do
