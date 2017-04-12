@@ -3,7 +3,7 @@
                         :".page_heading.success")) do %>
 
   <% if @handler_result.errors.any? %>
-    <% if @handler_result.errors.first.code == :"already confirmed on another account" %>
+    <% if @handler_result.errors.first.code == :"already_confirmed" %>
       <p><%= t :".email_already_in_use" %></p>
     <% else %>
       <p><%= t :".verification_code_not_found" %></p>
