@@ -22,7 +22,7 @@ module Admin
       was_administrator = @user.is_administrator
 
       respond_to do |format|
-        if change_user_password && add_email_to_user && update_user
+        if change_user_password && add_email_to_user && change_salesforce_contact && update_user
           security_log :user_updated_by_admin, user_id: params[:id], username: @user.username,
                                                user_params: request.filtered_parameters['user']
 
@@ -76,10 +76,37 @@ module Admin
       return false
     end
 
+    def change_salesforce_contact
+      new_id = params[:user][:salesforce_contact_id]
+
+      return true if new_id.blank? || new_id == @user.salesforce_contact_id
+
+      new_id = nil if new_id == "remove"
+
+      check_really_exists = new_id.present?
+
+      if check_really_exists && !OpenStax::Salesforce.ready_for_api_usage?
+        flash[:alert] = "Can't connect to Salesforce to verify changed contact ID"
+        return false
+      end
+
+      begin
+        contact = OpenStax::Salesforce::Remote::Contact.find(new_id) if check_really_exists
+        # if didn't explode, we found it, let cron job update other info
+        @user.salesforce_contact_id = new_id
+        return @user.save
+      rescue
+        flash[:alert] = "Can't find a Salesforce contact with ID #{new_id}"
+        return false
+      end
+    end
+
     def update_user
       @user.is_administrator = params[:user][:is_administrator]
       @user.faculty_status = params[:user][:faculty_status] if params[:user][:faculty_status]
+
       user_params = params[:user].slice(:first_name, :last_name, :username)
+
       @user.update_attributes(user_params)
     end
   end

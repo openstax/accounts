@@ -55,6 +55,14 @@
   </div>
 
   <div class="form-group">
+    <%= f.label "New Salesforce contact", class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <%= f.text_field :salesforce_contact_id, class: "form-control" %>
+      <span class="help-block">Enter 'remove' to get rid of an existing SF contact ID.</span>
+    </div>
+  </div>
+
+  <div class="form-group">
     <%= f.label :faculty_status, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
       <% if sf_id.nil? %>
@@ -63,7 +71,7 @@
       <% else %>
         <p class="form-control-static">
           <%= @user.faculty_status.humanize %>
-          <span class="help-block">This is a Salesforce user. You must change this setting in Salesforce.</span>
+          <span class="help-block">This is a Salesforce user. You must change this setting in Salesforce.  If you just changed the Salesforce contact ID, this field will update within 20 minutes.</span>
         </p>
       <% end %>
     </div>
