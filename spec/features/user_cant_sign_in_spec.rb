@@ -180,4 +180,22 @@ feature "User can't sign in", js: true do
     expect(page).to have_content(t(:"controllers.sessions.mismatched_authentication"))
   end
 
+  scenario 'social login fails with invalid_credentials notifies devs' do
+    user = create_user 'user'
+    authentication = FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+
+    arrive_from_app
+    complete_login_username_or_email_screen('user')
+
+    with_omniauth_failure_message(:invalid_credentials) do
+      click_link('google-login-button')
+    end
+
+    screenshot!
+    expect(page).to have_content(t(:"controllers.sessions.trouble_with_provider"))
+
+    open_email('recipients@example.org')
+    expect(current_email.subject).to eq "[OpenStax] (test) google_oauth2 social login is DOWN!"
+  end
+
 end

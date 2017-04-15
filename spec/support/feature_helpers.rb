@@ -193,6 +193,21 @@ def with_omniauth_test_mode(options={})
   end
 end
 
+def with_omniauth_failure_message(message)
+  begin
+    OmniAuth.config.test_mode = true
+
+    [:facebook, :google_oauth2, :twitter, :identity].each do |provider|
+      OmniAuth.config.mock_auth[provider] = message
+    end
+
+    yield
+  ensure
+    OmniAuth.config.test_mode = false
+  end
+
+end
+
 def make_new_contract_version(contract = FinePrint::Contract.first)
   new_contract_version = contract.new_version
   raise "New contract version didn't save" unless new_contract_version.save

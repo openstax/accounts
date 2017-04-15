@@ -76,6 +76,11 @@ en:
         address that is already in use!
       mismatched_authentication: >-
         You logged in with a different third-party account than we expected.  Please try again.
+      trouble_with_provider: >-
+        We are having difficulties communicating with the login provider you selected.  Our technical
+        team has been notified and we will get to work fixing this problem.  In the meantime you can
+        log in with a password if you have already set one up, or you can add one if you haven't.
+        If you need help, please contact support.
 
     signup:
       already_have_username_and_password: >-
