@@ -81,7 +81,7 @@ module Admin
 
       return true if new_id.blank? || new_id == @user.salesforce_contact_id
 
-      new_id = nil if new_id == "remove"
+      new_id = nil if new_id.downcase == "remove"
 
       check_really_exists = new_id.present?
 
