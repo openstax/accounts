@@ -208,6 +208,21 @@ class SessionsController < ApplicationController
                                I18n.t :"controllers.sessions.too_many_login_attempts.reset_password"
                              }</a>".html_safe
       render :authenticate
+    when 'invalid_credentials'
+      flash[:alert] = I18n.t :"controllers.sessions.trouble_with_provider"
+
+      # A social login can fail with an `invalid_credentials` message for
+      # any number of reasons (deprecated APIs, TOS needs to be signed, etc)
+      # -- it is a pretty generic message, but it is something we need to
+      # deal with immediately, so alert devs.
+
+      DevMailer.inspect_object(
+        object: params,
+        subject: "(#{Rails.application.secrets[:environment_name]}) #{params[:strategy]} social login is DOWN!",
+        to: Rails.application.secrets[:exception]['recipients']
+      ).deliver_later
+
+      render :authenticate
     else
       flash[:alert] = params[:message]
       render :new
