@@ -138,6 +138,7 @@ en:
               contains_tick: An email should not contain a tick (`)
               contains_colon: An email should not contain a colon
               contains_comma: An email should not contain a comma
+              contains_semicolon: An email should not contain a semicolon
 
         identity:
           attributes:
