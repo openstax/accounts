@@ -55,6 +55,10 @@ describe EmailAddressValidations do
     expect_invalid('bob,by@gmail.com')
   end
 
+  it 'returns errors when email address contains a semicolon' do
+    expect_invalid('ggg;jsmith@yahoo.com')
+  end
+
   def expect_valid(value)
     email_objects(value).each do |email|
       expect(email).to be_valid

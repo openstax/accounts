@@ -32,6 +32,11 @@ module EmailAddressValidations
           # AWS::SES::ResponseError InvalidParameterValue - Domain contains illegal character
           without: /,/,
           message: :contains_comma
+        },
+        {
+          # AWS::SES::ResponseError InvalidParameterValue - Missing final '@domain'
+          without: /;/,
+          message: :contains_semicolon
         }
       ]
     end
