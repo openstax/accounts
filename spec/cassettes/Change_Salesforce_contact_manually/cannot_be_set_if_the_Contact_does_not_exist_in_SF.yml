@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name%20FROM%20Account"
+    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20Faculty_Verified__c,%20LastModifiedDate,%20AccountId%20FROM%20Contact%20WHERE%20(Id%20=%20%27somethingNewNotInSF%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
@@ -17,11 +17,11 @@ http_interactions:
       - "*/*"
   response:
     status:
-      code: 200
-      message: OK
+      code: 400
+      message: Bad Request
     headers:
       Date:
-      - Sat, 15 Apr 2017 22:35:49 GMT
+      - Sat, 15 Apr 2017 22:33:48 GMT
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
@@ -30,22 +30,21 @@ http_interactions:
       - referrer origin-when-cross-origin
       - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
       Set-Cookie:
-      - BrowserId=REBRrxZOS9-b6jwvkRnqIA;Path=/;Domain=.salesforce.com;Expires=Wed,
-        14-Jun-2017 22:35:49 GMT
+      - BrowserId=ug1qldYuQMC4VaEwfbC67g;Path=/;Domain=.salesforce.com;Expires=Wed,
+        14-Jun-2017 22:33:48 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=30/48000
+      - api-usage=24/48000
       Content-Type:
       - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
       Transfer-Encoding:
       - chunked
     body:
-      encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0014B00000DaY04QAF"},"Id":"0014B00000DaY04QAF","Name":"JP
-        University"}]}'
+      encoding: UTF-8
+      string: '[{"message":"\nAccountId FROM Contact WHERE (Id = ''somethingNewNotInSF'')
+        LIMIT\n                              ^\nERROR at Row:1:Column:156\ninvalid
+        ID field: somethingNewNotInSF","errorCode":"INVALID_QUERY_FILTER_OPERATOR"}]'
     http_version: 
-  recorded_at: Sat, 15 Apr 2017 22:35:49 GMT
+  recorded_at: Sat, 15 Apr 2017 22:33:48 GMT
 recorded_with: VCR 3.0.3
