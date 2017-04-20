@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Admin::SearchUsers, type: :routine do
+RSpec.describe Admin::SearchUsers, type: :routine do
 
   let!(:user_1)          { FactoryGirl.create :user_with_emails,
                                               first_name: 'John',

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SearchUsers, type: :routine do
+RSpec.describe SearchUsers, type: :routine do
 
   let!(:user_1)          { FactoryGirl.create :user_with_emails,
                                               first_name: 'John',
@@ -34,6 +34,22 @@ describe SearchUsers, type: :routine do
     MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.order(:value).first)
     user_4.contact_infos.email_addresses.order(:value).first.update_attribute(:value, 'jstoly292929@hotmail.com')
     user_1.reload
+  end
+
+  it "returns empty results when given empty search strings" do
+    wildcard_fields = [:username, :first_name, :last_name, :full_name, :name, :any]
+    wildcard_fields.each do |field|
+      outputs = described_class.call("#{field}:\"\"").outputs
+      expect(outputs.items).to be_empty # Because more than 10 results are returned
+      expect(outputs.total_count).to be > SearchUsers::MAX_MATCHING_USERS
+    end
+
+    exact_fields = [:id, :email]
+    exact_fields.each do |field|
+      outputs = described_class.call("#{field}:\"\"").outputs
+      expect(outputs.items).to be_empty
+      expect(outputs.total_count).to eq 0
+    end
   end
 
   it "should match based on username" do

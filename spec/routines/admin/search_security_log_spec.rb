@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Admin::SearchSecurityLog, type: :routine do
+RSpec.describe Admin::SearchSecurityLog, type: :routine do
 
   before(:each) do
     @user = FactoryGirl.create :user, first_name: 'Test', last_name: 'User', username: 'TestUser'
@@ -26,6 +26,14 @@ describe Admin::SearchSecurityLog, type: :routine do
     @user_with_name_like_other_id_sl = FactoryGirl.create :security_log,
                                                           user: @user_with_name_like_other_id,
                                                           application: @another_app
+  end
+
+  it "returns empty results when given empty search strings" do
+    [:id, :user_id, :user, :app, :ip, :type, :time, :any].each do |field|
+      outputs = described_class.call(query: "#{field}:\"\"").outputs
+      expect(outputs.items).to be_empty
+      expect(outputs.total_count).to eq 0
+    end
   end
 
   it "matches based on id" do
