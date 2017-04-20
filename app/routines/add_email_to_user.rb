@@ -11,8 +11,8 @@ class AddEmailToUser
     return if email_address_text.blank?
 
     # If the email address already exists and is attached to the user, nothing to do
-    email_address = user.email_addresses.where(value: email_address_text).first
-    return if email_address.try(:verified)
+    email_address = user.email_addresses.find_by(value: email_address_text)
+    return if email_address.try!(:verified)
 
     # If it is a brand new email address, make it
     if email_address.nil?
@@ -31,5 +31,9 @@ class AddEmailToUser
     run(SendContactInfoConfirmation, contact_info: email_address)
 
     outputs.email = email_address
+
+    # Ensure we get updated contact_infos if we try to use them
+    user.contact_infos.reset
+    user.email_addresses.reset
   end
 end

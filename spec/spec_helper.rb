@@ -113,3 +113,5 @@ def capture_output(&blk)
     $stderr = old_stderr
   end
 end
+
+RSpec::Matchers.define_negated_matcher :not_change, :change

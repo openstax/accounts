@@ -27,7 +27,7 @@ class TransferOmniauthData
     user.save
     transfer_errors_from(user, {type: :verbatim}, true)
 
-    run(AddEmailToUser, data.email, user, {already_verified: true})
+    run(AddEmailToUser, data.email, user, already_verified: true)
   end
 
   def guessed_first_name(full_name)
