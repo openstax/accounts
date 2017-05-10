@@ -221,11 +221,8 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     context 'normal user' do
-      it 'authenticate_admin! redirects to the login page' do
-        expect(controller).to receive(:store_url)
-        expect(controller).to receive(:redirect_to)
-        expect(main_app).to receive(:login_path)
-        controller.authenticate_admin!
+      it 'authenticate_admin! raises SecurityTransgression' do
+        expect{controller.authenticate_admin!}.to raise_error(SecurityTransgression)
       end
     end
 

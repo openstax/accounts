@@ -22,3 +22,8 @@ COPYRIGHT_HOLDER = 'Rice University'
 
 # Initialize the Rails application
 Rails.application.initialize!
+
+# Remove when openstax_salesforce 0.12.0+ installed and configured
+class OpenStax::Salesforce::ApplicationController < ActionController::Base
+  before_filter :authenticate_admin!
+end

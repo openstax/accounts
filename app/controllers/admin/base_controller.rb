@@ -6,15 +6,8 @@ module Admin
 
     include FakeExceptionHelper
 
-    if Rails.env.development?
-      skip_before_filter :authenticate_user!
-      skip_before_filter :complete_signup_profile
-
-      fine_print_skip :general_terms_of_use, :privacy_policy
-    else
-      before_filter :authenticate_admin!
-      before_filter :log_out_inactive_admins
-    end
+    before_filter :authenticate_admin!
+    before_filter :log_out_inactive_admins
 
     def log_out_inactive_admins
       if current_user.is_administrator? && is_real_production_site?

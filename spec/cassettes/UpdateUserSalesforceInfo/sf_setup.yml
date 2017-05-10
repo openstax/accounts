@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://cs50.salesforce.com/services/data/v37.0/query?q=SELECT%20Id,%20Name%20FROM%20Account
+    uri: <tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name%20FROM%20Account
     body:
       encoding: US-ASCII
       string: ''
@@ -44,6 +44,6 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0013B000009vJrCQAU"},"Id":"0013B000009vJrCQAU","Name":"JP
         University"}]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 22 Feb 2017 01:31:44 GMT
 recorded_with: VCR 3.0.3

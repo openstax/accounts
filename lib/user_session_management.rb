@@ -48,10 +48,11 @@ module UserSessionManagement
   end
 
   def authenticate_admin!
-    return if current_user.is_administrator?
-
-    store_url
-    redirect_to main_app.login_path(params.slice(:client_id))
+    if signed_in?
+      raise SecurityTransgression if !current_user.is_administrator?
+    else
+      authenticate_user!
+    end
   end
 
   # Doorkeeper controllers define authenticate_admin!, so we need another name

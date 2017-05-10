@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: https://cs50.salesforce.com/services/data/v37.0/sobjects/Lead
+    uri: <tutor_specs_instance_url>/services/data/v37.0/sobjects/Lead
     body:
       encoding: UTF-8
       string: '{"FirstName":"Logan","LastName":"Lakin","Subject__c":"","Company":"JP
@@ -54,11 +54,11 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":"00Q3B000004EQUbUAO","success":true,"errors":[]}'
-    http_version: 
+    http_version:
   recorded_at: Fri, 24 Feb 2017 21:54:19 GMT
 - request:
     method: get
-    uri: https://cs50.salesforce.com/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700Q3B000004EQUbUAO%27)%20LIMIT%201
+    uri: <tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700Q3B000004EQUbUAO%27)%20LIMIT%201
     body:
       encoding: US-ASCII
       string: ''
@@ -107,6 +107,6 @@ http_interactions:
         University","Phone":null,"Website":"http://www.rice.edu","Status":"Needs Opportunity","Email":"f@f.com","LeadSource":"OSC
         Faculty","Newsletter__c":true,"Newsletter_Opt_In__c":true,"Adoption_Status__c":"Confirmed
         Adoption Won","Number_of_Students__c":0.0,"OS_Accounts_ID__c":"1"}]}'
-    http_version: 
+    http_version:
   recorded_at: Fri, 24 Feb 2017 21:54:19 GMT
 recorded_with: VCR 3.0.3

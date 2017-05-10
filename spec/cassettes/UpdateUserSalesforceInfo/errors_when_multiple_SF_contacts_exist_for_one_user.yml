@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: https://cs50.salesforce.com/services/data/v37.0/sobjects/Contact
+    uri: <tutor_specs_instance_url>/services/data/v37.0/sobjects/Contact
     body:
       encoding: UTF-8
       string: '{"FirstName":"Alexzander","LastName":"Daniel_unique_token","Email":"a@a.com","AccountId":"0013B000009vJrCQAU"}'
@@ -47,11 +47,11 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":"0033B00000AgL4RQAV","success":true,"errors":[]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 22 Feb 2017 01:31:45 GMT
 - request:
     method: post
-    uri: https://cs50.salesforce.com/services/data/v37.0/sobjects/Contact
+    uri: <tutor_specs_instance_url>/services/data/v37.0/sobjects/Contact
     body:
       encoding: UTF-8
       string: '{"FirstName":"Neoma","LastName":"Nikolaus_unique_token","Email":"b@b.com","AccountId":"0013B000009vJrCQAU"}'
@@ -96,11 +96,11 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":"0033B00000AgL7kQAF","success":true,"errors":[]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 22 Feb 2017 01:31:47 GMT
 - request:
     method: get
-    uri: https://cs50.salesforce.com/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)
+    uri: <tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)
     body:
       encoding: US-ASCII
       string: ''
@@ -141,11 +141,11 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0033B00000AgL4RQAV"},"Id":"0033B00000AgL4RQAV","Email":"a@a.com","Email_alt__c":null,"Faculty_Verified__c":null},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0033B00000AgL7kQAF"},"Id":"0033B00000AgL7kQAF","Email":"b@b.com","Email_alt__c":null,"Faculty_Verified__c":null}]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 22 Feb 2017 01:31:48 GMT
 - request:
     method: get
-    uri: https://cs50.salesforce.com/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)
+    uri: <tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)
     body:
       encoding: US-ASCII
       string: ''
@@ -186,6 +186,6 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"totalSize":0,"done":true,"records":[]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 22 Feb 2017 01:31:48 GMT
 recorded_with: VCR 3.0.3
