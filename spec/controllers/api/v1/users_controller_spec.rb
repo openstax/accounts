@@ -160,6 +160,16 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       )
     end
 
+    it 'should include self_reported_role when present' do
+      user_2.role = :instructor
+      user_2.save
+
+      api_get :show, user_2_token
+      expect(response.body_as_hash).to include(
+        self_reported_role: "instructor",
+      )
+    end
+
   end
 
   describe "update" do
