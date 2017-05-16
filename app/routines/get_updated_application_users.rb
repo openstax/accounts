@@ -1,5 +1,5 @@
 # Routine for listing users that use a certain app
-# 
+#
 # Caller provides the Doorkeeper::Application
 
 class GetUpdatedApplicationUsers
@@ -12,10 +12,11 @@ class GetUpdatedApplicationUsers
 
   protected
 
-  def exec(application)
+  def exec(application, limit)
     return if application.nil?
     outputs[:application_users] = application.application_users
                                              .where{unread_updates.not_eq 0}
+                                             .limit(limit)
   end
 
 end

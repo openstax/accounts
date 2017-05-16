@@ -170,9 +170,15 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
 
     #{json_schema(Api::V1::ApplicationUsersRepresenter, include: :readable)}
   EOS
+  param :limit, :number, desc: <<-EOS
+    Limits the number of returned results.  While this is optional, it is recommended.
+    The default behavior returns all updates and since admins can now force updates
+    for all users, this could be all users.  If your app calls this frequently, it may
+    not be done processing the first call before it makes the next call.
+  EOS
   def updates
     OSU::AccessPolicy.require_action_allowed!(:updates, current_api_user, ApplicationUser)
-    outputs = GetUpdatedApplicationUsers.call(current_application).outputs
+    outputs = GetUpdatedApplicationUsers.call(current_application, params[:limit]).outputs
     respond_with outputs[:application_users],
                  represent_with: Api::V1::ApplicationUsersRepresenter,
                  user_options: { include_private_data: current_application.trusted? },

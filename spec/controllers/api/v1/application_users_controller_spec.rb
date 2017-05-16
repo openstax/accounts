@@ -181,6 +181,18 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
       expect(response).to have_http_status :forbidden
     end
 
+    it "should return all updated users by default" do
+      ApplicationUser.update_all('unread_updates = unread_updates + 1')
+      api_get :updates, untrusted_application_token
+      expect(response.body_as_hash.count).to eq 50
+    end
+
+    it "should let the calling app limit the number of users" do
+      ApplicationUser.update_all('unread_updates = unread_updates + 1')
+      api_get :updates, untrusted_application_token, parameters: {limit: 3}
+      expect(response.body_as_hash.count).to eq 3
+    end
+
   end
 
   describe "updated" do

@@ -1,0 +1,14 @@
+<% @page_header = "User Actions" %>
+
+<h3>Mark User Records As Updated</h3>
+
+<p>Some OpenStax apps frequently poll Accounts to see which users have had their info updated.  Accounts keeps track
+of which users have had updates and which applications have read them.  When you click the button below, it is as
+if all users have been updated in Accounts.  Accounts will increment an "unread counter" for each user for each
+OpenStax app, so that when they next ask for updated users, they'll get all users.</p>
+
+<%= form_tag(mark_users_updated_admin_users_path, method: :put, style: 'margin: 30px 0') do %>
+  <%= submit_tag 'Mark Users Updated', class: 'btn btn-primary', disable_with: "Working..." %>
+<% end %>
+
+
