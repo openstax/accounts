@@ -5,7 +5,7 @@ http_interactions:
     uri: "<tutor_specs_instance_url>/services/data/v37.0/sobjects/Contact"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Abigail","LastName":"King_unique_token","Email":"f@f.com","AccountId":"0014B00000DaY04QAF"}'
+      string: '{"FirstName":"Elta","LastName":"Kunde_unique_token","Email":"f@f.com","AccountId":"0010S0000057qMUQAY"}'
     headers:
       User-Agent:
       - Faraday v0.9.2
@@ -23,23 +23,29 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Sat, 15 Apr 2017 22:36:25 GMT
+      - Wed, 17 May 2017 17:38:32 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Content-Security-Policy-Report-Only:
+      - 'default-src https:; script-src https: ''unsafe-inline'' ''unsafe-eval'';
+        style-src https: ''unsafe-inline''; img-src https: data:; frame-ancestors
+        ''self'' *.salesforce.com *.force.com; font-src https: data:; connect-src
+        ''self'' https:; report-uri /_/ContentDomainCSP?type=appserver'
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      - referrer origin-when-cross-origin; upgrade-insecure-requests
       Set-Cookie:
-      - BrowserId=OcDsJTATStCzUPNOLZ_osw;Path=/;Domain=.salesforce.com;Expires=Wed,
-        14-Jun-2017 22:36:25 GMT
+      - BrowserId=5iFeYb0ITka43pw29u8wQg;Path=/;Domain=.salesforce.com;Expires=Sun,
+        16-Jul-2017 17:38:32 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=37/48000
+      - api-usage=3/48000
       Location:
-      - "/services/data/v37.0/sobjects/Contact/0034B00000FjMlzQAF"
+      - "/services/data/v37.0/sobjects/Contact/0030S000005P2lZQAS"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -48,15 +54,15 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"0034B00000FjMlzQAF","success":true,"errors":[]}'
+      string: '{"id":"0030S000005P2lZQAS","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Sat, 15 Apr 2017 22:36:26 GMT
+  recorded_at: Wed, 17 May 2017 17:38:33 GMT
 - request:
     method: post
     uri: "<tutor_specs_instance_url>/services/data/v37.0/sobjects/Contact"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Vicente","LastName":"Rice_unique_token","Email":"f@f.com","AccountId":"0014B00000DaY04QAF"}'
+      string: '{"FirstName":"Adolfo","LastName":"Harvey_unique_token","Email":"f@f.com","AccountId":"0010S0000057qMUQAY"}'
     headers:
       User-Agent:
       - Faraday v0.9.2
@@ -74,23 +80,24 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Sat, 15 Apr 2017 22:36:26 GMT
+      - Wed, 17 May 2017 17:38:33 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      - referrer origin-when-cross-origin; upgrade-insecure-requests
       Set-Cookie:
-      - BrowserId=vhWAlHlaTper0tZC8uwtJw;Path=/;Domain=.salesforce.com;Expires=Wed,
-        14-Jun-2017 22:36:26 GMT
+      - BrowserId=6cussJJlRM-TUy6B3aeJvQ;Path=/;Domain=.salesforce.com;Expires=Sun,
+        16-Jul-2017 17:38:33 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=39/48000
+      - api-usage=3/48000
       Location:
-      - "/services/data/v37.0/sobjects/Contact/0034B00000FjMm4QAF"
+      - "/services/data/v37.0/sobjects/Contact/0030S000005P2leQAC"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -99,15 +106,15 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"0034B00000FjMm4QAF","success":true,"errors":[]}'
+      string: '{"id":"0030S000005P2leQAC","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Sat, 15 Apr 2017 22:36:27 GMT
+  recorded_at: Wed, 17 May 2017 17:38:34 GMT
 - request:
     method: post
     uri: "<tutor_specs_instance_url>/services/data/v37.0/sobjects/Contact"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Candida","LastName":"Brekke_unique_token","Email":"f@f.com","AccountId":"0014B00000DaY04QAF"}'
+      string: '{"FirstName":"Joshua","LastName":"Brakus_unique_token","Email":"f@f.com","AccountId":"0010S0000057qMUQAY"}'
     headers:
       User-Agent:
       - Faraday v0.9.2
@@ -125,23 +132,24 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Sat, 15 Apr 2017 22:36:28 GMT
+      - Wed, 17 May 2017 17:38:34 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      - referrer origin-when-cross-origin; upgrade-insecure-requests
       Set-Cookie:
-      - BrowserId=gFfycg8WRp2tLclfFsTzgA;Path=/;Domain=.salesforce.com;Expires=Wed,
-        14-Jun-2017 22:36:28 GMT
+      - BrowserId=VMognnWjSUCESXRHzdVd0w;Path=/;Domain=.salesforce.com;Expires=Sun,
+        16-Jul-2017 17:38:34 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=41/48000
+      - api-usage=4/48000
       Location:
-      - "/services/data/v37.0/sobjects/Contact/0034B00000FjMm0QAF"
+      - "/services/data/v37.0/sobjects/Contact/0030S000005P2ljQAC"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -150,9 +158,9 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"0034B00000FjMm0QAF","success":true,"errors":[]}'
+      string: '{"id":"0030S000005P2ljQAC","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Sat, 15 Apr 2017 22:36:29 GMT
+  recorded_at: Wed, 17 May 2017 17:38:35 GMT
 - request:
     method: get
     uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)"
@@ -174,21 +182,22 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 15 Apr 2017 22:36:29 GMT
+      - Wed, 17 May 2017 17:38:35 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      - referrer origin-when-cross-origin; upgrade-insecure-requests
       Set-Cookie:
-      - BrowserId=zk-ai6M4TIe8k8YbMoEegQ;Path=/;Domain=.salesforce.com;Expires=Wed,
-        14-Jun-2017 22:36:29 GMT
+      - BrowserId=x5GkmtQdSM2Ho22Ld-04Tg;Path=/;Domain=.salesforce.com;Expires=Sun,
+        16-Jul-2017 17:38:35 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=40/48000
+      - api-usage=2/48000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -197,9 +206,9 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":3,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0034B00000FjMm0QAF"},"Id":"0034B00000FjMm0QAF","Email":"f@f.com","Email_alt__c":null,"Faculty_Verified__c":null},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0034B00000FjMlzQAF"},"Id":"0034B00000FjMlzQAF","Email":"f@f.com","Email_alt__c":null,"Faculty_Verified__c":null},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0034B00000FjMm4QAF"},"Id":"0034B00000FjMm4QAF","Email":"f@f.com","Email_alt__c":null,"Faculty_Verified__c":null}]}'
+      string: '{"totalSize":3,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0030S000005P2ljQAC"},"Id":"0030S000005P2ljQAC","Email":"f@f.com","Email_alt__c":null,"Faculty_Verified__c":null},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0030S000005P2leQAC"},"Id":"0030S000005P2leQAC","Email":"f@f.com","Email_alt__c":null,"Faculty_Verified__c":null},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0030S000005P2lZQAS"},"Id":"0030S000005P2lZQAS","Email":"f@f.com","Email_alt__c":null,"Faculty_Verified__c":null}]}'
     http_version: 
-  recorded_at: Sat, 15 Apr 2017 22:36:29 GMT
+  recorded_at: Wed, 17 May 2017 17:38:35 GMT
 - request:
     method: get
     uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)"
@@ -221,21 +230,22 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 15 Apr 2017 22:36:29 GMT
+      - Wed, 17 May 2017 17:38:35 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      - referrer origin-when-cross-origin; upgrade-insecure-requests
       Set-Cookie:
-      - BrowserId=e9uPrylgRgOU1ugV8Z4SdQ;Path=/;Domain=.salesforce.com;Expires=Wed,
-        14-Jun-2017 22:36:29 GMT
+      - BrowserId=HojF8ZyxSs2a0nvf-wqHaw;Path=/;Domain=.salesforce.com;Expires=Sun,
+        16-Jul-2017 17:38:35 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=45/48000
+      - api-usage=5/48000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -246,5 +256,5 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"totalSize":0,"done":true,"records":[]}'
     http_version: 
-  recorded_at: Sat, 15 Apr 2017 22:36:29 GMT
+  recorded_at: Wed, 17 May 2017 17:38:35 GMT
 recorded_with: VCR 3.0.3

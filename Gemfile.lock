@@ -349,7 +349,7 @@ GEM
     openstax_rescue_from (1.8.0)
       exception_notification (>= 4.1, < 5.0)
       rails (>= 3.1, < 5.0)
-    openstax_salesforce (0.11.0)
+    openstax_salesforce (0.12.0)
       active_force
       omniauth-salesforce (~> 1.0.5)
       rails (~> 4.2.0)
@@ -650,7 +650,7 @@ DEPENDENCIES
   omniauth-twitter
   openstax_api (~> 8.1.0)
   openstax_rescue_from (~> 1.8.0)
-  openstax_salesforce
+  openstax_salesforce (~> 0.12.0)
   openstax_utilities (~> 4.2.0)
   p3p
   parallel_tests

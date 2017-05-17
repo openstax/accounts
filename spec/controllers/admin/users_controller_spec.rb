@@ -31,4 +31,16 @@ RSpec.describe Admin::UsersController, type: :controller do
       expect(user.identity.authenticate('si4eeSai')).to eq user.identity
     end
   end
+
+  describe "PUT #mark_users_updated" do
+    it "should update unread_updates at a button push" do
+      FactoryGirl.create :application_user, unread_updates: 1
+      FactoryGirl.create :application_user, unread_updates: 3
+
+      put :mark_users_updated
+
+      expect(ApplicationUser.all.map(&:unread_updates)).to contain_exactly(2,4)
+    end
+  end
+
 end

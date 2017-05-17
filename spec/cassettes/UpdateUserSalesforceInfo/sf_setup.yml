@@ -21,21 +21,22 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 15 Apr 2017 22:35:49 GMT
+      - Wed, 17 May 2017 17:38:23 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      - referrer origin-when-cross-origin; upgrade-insecure-requests
       Set-Cookie:
-      - BrowserId=REBRrxZOS9-b6jwvkRnqIA;Path=/;Domain=.salesforce.com;Expires=Wed,
-        14-Jun-2017 22:35:49 GMT
+      - BrowserId=BZANd_h7RiWoZywPP6He4g;Path=/;Domain=.salesforce.com;Expires=Sun,
+        16-Jul-2017 17:38:23 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=30/48000
+      - api-usage=3/48000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -44,8 +45,8 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0014B00000DaY04QAF"},"Id":"0014B00000DaY04QAF","Name":"JP
+      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0010S0000057qMUQAY"},"Id":"0010S0000057qMUQAY","Name":"JP
         University"}]}'
     http_version: 
-  recorded_at: Sat, 15 Apr 2017 22:35:49 GMT
+  recorded_at: Wed, 17 May 2017 17:38:23 GMT
 recorded_with: VCR 3.0.3

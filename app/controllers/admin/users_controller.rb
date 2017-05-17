@@ -53,6 +53,11 @@ module Admin
       redirect_to request.referrer
     end
 
+    def mark_users_updated
+      ApplicationUser.update_all('unread_updates = unread_updates + 1')
+      redirect_to actions_admin_users_path, notice: 'Incremented unread update count'
+    end
+
     protected
 
     def get_user
