@@ -40,5 +40,10 @@ module Api::V1
              if: ->(*) { !verified },
              getter: ->(*) { ConfirmByPin.sequential_failure_for(self).attempts_remaining }
 
+    property :is_guessed_preferred,
+             readable: true,
+             writeable: false,
+             getter: ->(*) { guessed_preferred_confirmed_email == value }
+
   end
 end

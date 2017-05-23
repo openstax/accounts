@@ -38,18 +38,22 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
       let!(:contact) { @proxy.new_contact(email: email_address.value, faculty_verified: "Confirmed") }
 
       it 'caches info in user when not previously linked' do
+        expect(contact.send_faculty_verification_to).to be_blank
         call_expecting_no_errors
         user.reload
         expect(user.salesforce_contact_id).to eq contact.id
         expect(user).to be_confirmed_faculty
+        expect(contact.reload.send_faculty_verification_to).to eq "f@f.com"
       end
 
       it 'updates info in user when previously linked' do
+        expect(contact.send_faculty_verification_to).to be_blank
         user.update_attribute(:salesforce_contact_id, contact.id)
         call_expecting_no_errors
         user.reload
         expect(user.salesforce_contact_id).to eq contact.id
         expect(user).to be_confirmed_faculty
+        expect(contact.reload.send_faculty_verification_to).to eq "f@f.com"
       end
     end
 

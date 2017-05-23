@@ -248,4 +248,25 @@ describe User, type: :model do
       }.to raise_error(ActiveRecord::RecordNotUnique)
     end
   end
+
+  context '#guessed_preferred_confirmed_email' do
+    let(:user) { FactoryGirl.create :user }
+
+    before(:each) {
+      Timecop.freeze(3.minutes.ago)  {
+        @email_a = AddEmailToUser['a@a.com', user]
+      }
+      Timecop.freeze(0.minutes.ago)  { AddEmailToUser['b@b.com', user, already_verified: true] }
+      Timecop.freeze(-3.minutes.ago) { AddEmailToUser['c@c.com', user, already_verified: true] }
+    }
+
+    it 'chooses earliest manually entered emails' do
+      ConfirmContactInfo[@email_a]
+      expect(user.guessed_preferred_confirmed_email).to eq 'a@a.com'
+    end
+
+    it 'chooses earliest auto confirmed if no manually entered emails' do
+      expect(user.guessed_preferred_confirmed_email).to eq 'b@b.com'
+    end
+  end
 end

@@ -1,6 +1,6 @@
 class AddEmailToUser
 
-  lev_routine
+  lev_routine express_output: :email
 
   uses_routine SendContactInfoConfirmation
 

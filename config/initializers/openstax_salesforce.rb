@@ -24,8 +24,15 @@ OpenStax::Salesforce.configure do |config|
 
   if Rails.env.test?
     config.sandbox_oauth_token = secrets['tutor_specs_oauth_token']
-    config.sandbox_refresh_token = secrets['tutor_specs_refresh_token']
     config.sandbox_instance_url = secrets['tutor_specs_instance_url']
+
+    # DO NOT set the refresh token, because if the oauth token has expired the
+    # specs will use the refresh token to get a new oauth token, but then recorded
+    # cassettes will contain that unfiltered token and future spec runs may end up
+    # having the "unused interactions" messages because they don't expect the refresh
+    # token interactions.
+    #
+    #config.sandbox_refresh_token = secrets['tutor_specs_refresh_token']
   end
 
   config.page_heading_proc = ->(view, text) { view.content_for(:page_header, text) }

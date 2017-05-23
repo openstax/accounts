@@ -210,6 +210,23 @@ class User < ActiveRecord::Base
     known_roles - ["student"]
   end
 
+  def guessed_preferred_confirmed_email
+    # A heuristic for guessing the user's preferred confirmed email.  Assumes that
+    # emails that were manually entered are more preferred than those that were
+    # added via a social login. Manually-entered emails trigger confirmation emails,
+    # so those emails have the confirmation sent at timestamp.
+
+    (
+      email_addresses.verified
+                     .where{confirmation_sent_at != nil} # manually verified
+                     .order{created_at.asc}
+                     .first ||
+      email_addresses.verified
+                     .order{created_at.asc}
+                     .first
+    ).try(:value)
+  end
+
   protected
 
   def generate_uuid
