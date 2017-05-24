@@ -235,37 +235,41 @@ describe UpdateUserSalesforceInfo do
     end
   end
 
-  context '#cache_contact_data_in_user' do
+  context '#cache_contact_data_in_user!' do
+    before(:each) {
+      disable_sfdc_client
+    }
+
     it 'handles nil contacts' do
-      described_class.new(allow_error_email: true).cache_contact_data_in_user(nil, user)
+      described_class.new(allow_error_email: true).cache_contact_data_in_user!(nil, user)
       expect(user.salesforce_contact_id).to be_nil
       expect(user.faculty_status).to eq 'no_faculty_info'
     end
 
     it 'handles Confirmed faculty status' do
       contact = new_contact(id: 'foo', faculty_verified: "Confirmed")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'confirmed_faculty'
     end
 
     it 'handles Pending faculty status' do
       contact = new_contact(id: 'foo', faculty_verified: "Pending")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'pending_faculty'
     end
 
     it 'handles Rejected faculty status' do
       contact = new_contact(id: 'foo', faculty_verified: "Rejected")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'rejected_faculty'
     end
 
     it 'handles Rejected2 faculty status' do
       contact = new_contact(id: 'foo', faculty_verified: "Rejected2")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'rejected_faculty'
     end
@@ -273,7 +277,7 @@ describe UpdateUserSalesforceInfo do
     it 'raises for unknown faculty status' do
       contact = new_contact(id: 'foo', faculty_verified: "Diddly")
       expect{
-        described_class.new(allow_error_email: true).cache_contact_data_in_user(contact, user)
+        described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
       }.to raise_error(RuntimeError)
     end
   end
@@ -289,7 +293,10 @@ describe UpdateUserSalesforceInfo do
     end
 
     stub_salesforce(contacts: contacts)
-    expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 5)
+    allow_any_instance_of(OpenStax::Salesforce::Remote::Contact).to receive(:update_attributes!) { true }
+
+    # The +10 is for getting the guessed preferred email per user
+    expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 5 + 10)
   end
 
   it 'logs an error when an email alt is a different contact\'s primary email' do

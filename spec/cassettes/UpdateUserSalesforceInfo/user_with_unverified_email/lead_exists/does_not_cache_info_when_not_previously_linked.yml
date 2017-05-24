@@ -5,7 +5,7 @@ http_interactions:
     uri: "<tutor_specs_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"LastName":"Glover_unique_token","Company":"JP University","Email":"f@f.com","LeadSource":"OSC
+      string: '{"LastName":"Hansen_unique_token","Company":"JP University","Email":"f@f.com","LeadSource":"OSC
         Faculty"}'
     headers:
       User-Agent:
@@ -24,24 +24,23 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Wed, 17 May 2017 17:38:41 GMT
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
+      - Tue, 23 May 2017 20:28:52 GMT
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
-      - referrer origin-when-cross-origin; upgrade-insecure-requests
+      - referrer origin-when-cross-origin
+      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
       Set-Cookie:
-      - BrowserId=2QKvAInjTriDKfA2BfKJiQ;Path=/;Domain=.salesforce.com;Expires=Sun,
-        16-Jul-2017 17:38:41 GMT
+      - BrowserId=d4oNy5pBRKqSOuriNf1jAg;Path=/;Domain=.salesforce.com;Expires=Sat,
+        22-Jul-2017 20:28:52 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=3/48000
+      - api-usage=84/48000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q0S000001OpgrUAC"
+      - "/services/data/v37.0/sobjects/Lead/00Q0v0000010Sa3EAE"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -50,9 +49,9 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00Q0S000001OpgrUAC","success":true,"errors":[]}'
+      string: '{"id":"00Q0v0000010Sa3EAE","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Wed, 17 May 2017 17:38:45 GMT
+  recorded_at: Tue, 23 May 2017 20:28:53 GMT
 - request:
     method: get
     uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)"
@@ -74,22 +73,21 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 17 May 2017 17:38:45 GMT
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
+      - Tue, 23 May 2017 20:28:53 GMT
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
-      - referrer origin-when-cross-origin; upgrade-insecure-requests
+      - referrer origin-when-cross-origin
+      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
       Set-Cookie:
-      - BrowserId=PpJU6_g6QuKVuwmmNQL1sA;Path=/;Domain=.salesforce.com;Expires=Sun,
-        16-Jul-2017 17:38:45 GMT
+      - BrowserId=Kl3ey-S1TsapoW_AmVk5og;Path=/;Domain=.salesforce.com;Expires=Sat,
+        22-Jul-2017 20:28:53 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=4/48000
+      - api-usage=85/48000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -100,7 +98,7 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"totalSize":0,"done":true,"records":[]}'
     http_version: 
-  recorded_at: Wed, 17 May 2017 17:38:45 GMT
+  recorded_at: Tue, 23 May 2017 20:28:53 GMT
 - request:
     method: get
     uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)"
@@ -122,22 +120,21 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 17 May 2017 17:38:45 GMT
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
+      - Tue, 23 May 2017 20:28:54 GMT
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
       Content-Security-Policy:
-      - referrer origin-when-cross-origin; upgrade-insecure-requests
+      - referrer origin-when-cross-origin
+      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
       Set-Cookie:
-      - BrowserId=XsYPBC1iR4WZ2Y4ZktthBw;Path=/;Domain=.salesforce.com;Expires=Sun,
-        16-Jul-2017 17:38:45 GMT
+      - BrowserId=8Wls7-06Tt2n6tPyXMucSQ;Path=/;Domain=.salesforce.com;Expires=Sat,
+        22-Jul-2017 20:28:54 GMT
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=4/48000
+      - api-usage=85/48000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -146,7 +143,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q0S000001OpgrUAC"},"Id":"00Q0S000001OpgrUAC","Email":"f@f.com"}]}'
+      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q0v0000010Sa3EAE"},"Id":"00Q0v0000010Sa3EAE","Email":"f@f.com"}]}'
     http_version: 
-  recorded_at: Wed, 17 May 2017 17:38:45 GMT
+  recorded_at: Tue, 23 May 2017 20:28:54 GMT
 recorded_with: VCR 3.0.3

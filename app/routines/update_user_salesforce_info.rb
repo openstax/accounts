@@ -26,8 +26,7 @@ class UpdateUserSalesforceInfo
     User.where{salesforce_contact_id != nil}.find_each do |user|
       begin
         contact = @contacts_by_id[user.salesforce_contact_id]
-        cache_contact_data_in_user(contact, user)
-        user.save! if user.changed?
+        cache_contact_data_in_user!(contact, user)
       rescue StandardError => ee
         error!(exception: ee, user: user)
       end
@@ -59,8 +58,8 @@ class UpdateUserSalesforceInfo
           error!(message: "More than one SF contact (#{contacts.map(&:id).join(', ')}) " \
                           "for user #{user.id}")
         else
-          cache_contact_data_in_user(contacts.first, user)
-          user.save!
+          contact = contacts.first
+          cache_contact_data_in_user!(contact, user)
         end
       rescue StandardError => ee
         error!(exception: ee, user: user)
@@ -185,7 +184,7 @@ class UpdateUserSalesforceInfo
     end
   end
 
-  def cache_contact_data_in_user(contact, user)
+  def cache_contact_data_in_user!(contact, user)
     if contact.nil?
       warn(
         "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but" \
@@ -208,6 +207,16 @@ class UpdateUserSalesforceInfo
       else
         raise "Unknown faculty_verified field: '#{contact.faculty_verified}'' on contact #{contact.id}"
       end
+    end
+
+    let_sf_know_to_send_fac_ver_email = user.faculty_status_changed? && user.confirmed_faculty?
+
+    user.save! if user.changed?
+
+    if let_sf_know_to_send_fac_ver_email
+      contact.update_attributes!(
+        send_faculty_verification_to: user.guessed_preferred_confirmed_email
+      )
     end
   end
 
