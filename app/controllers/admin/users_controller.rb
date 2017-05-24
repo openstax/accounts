@@ -97,10 +97,15 @@ module Admin
 
       begin
         contact = OpenStax::Salesforce::Remote::Contact.find(new_id) if check_really_exists
-        # if didn't explode, we found it, let cron job update other info
-        @user.salesforce_contact_id = new_id
-        return @user.save
+
+        if contact.present? || new_id.nil?
+          @user.salesforce_contact_id = new_id
+          return @user.save
+        end
       rescue
+        # exploded, probably due to badly formed SF ID
+      ensure
+        # either exploded or contact was `nil`
         flash[:alert] = "Can't find a Salesforce contact with ID #{new_id}"
         return false
       end

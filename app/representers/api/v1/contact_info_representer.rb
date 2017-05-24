@@ -43,7 +43,7 @@ module Api::V1
     property :is_guessed_preferred,
              readable: true,
              writeable: false,
-             getter: ->(*) { guessed_preferred_confirmed_email == value }
+             getter: ->(*) { user.guessed_preferred_confirmed_email == value }
 
   end
 end

@@ -132,20 +132,23 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
           type: "EmailAddress",
           value: "unconfirmed@example.com",
           is_verified: false,
-          num_pin_verification_attempts_remaining: ConfirmByPin.max_pin_failures
+          num_pin_verification_attempts_remaining: ConfirmByPin.max_pin_failures,
+          is_guessed_preferred: false
         },
         {
           id: confirmed_email.id,
           type: "EmailAddress",
           value: "confirmed@example.com",
-          is_verified: true
+          is_verified: true,
+          is_guessed_preferred: true
         },
         {
           id: over_pinned_email.id,
           type: "EmailAddress",
           value: "over_pinned@example.com",
           is_verified: false,
-          num_pin_verification_attempts_remaining: 0
+          num_pin_verification_attempts_remaining: 0,
+          is_guessed_preferred: false
         }
       )
     end
