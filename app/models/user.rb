@@ -219,7 +219,7 @@ class User < ActiveRecord::Base
     (
       email_addresses.verified
                      .where{confirmation_sent_at != nil} # manually verified
-                     .order{created_at.asc}
+                     .order{created_at.desc}
                      .first ||
       email_addresses.verified
                      .order{created_at.asc}

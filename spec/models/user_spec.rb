@@ -257,12 +257,14 @@ describe User, type: :model do
         @email_a = AddEmailToUser['a@a.com', user]
       }
       Timecop.freeze(0.minutes.ago)  { AddEmailToUser['b@b.com', user, already_verified: true] }
-      Timecop.freeze(-3.minutes.ago) { AddEmailToUser['c@c.com', user, already_verified: true] }
+      Timecop.freeze(-1.minutes.ago) { @email_c = AddEmailToUser['c@c.com', user] }
+      Timecop.freeze(-3.minutes.ago) { AddEmailToUser['d@d.com', user, already_verified: true] }
     }
 
-    it 'chooses earliest manually entered emails' do
+    it 'chooses latest manually entered emails' do
       ConfirmContactInfo[@email_a]
-      expect(user.guessed_preferred_confirmed_email).to eq 'a@a.com'
+      ConfirmContactInfo[@email_c]
+      expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
     end
 
     it 'chooses earliest auto confirmed if no manually entered emails' do
