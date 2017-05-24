@@ -84,31 +84,37 @@ module Admin
     def change_salesforce_contact
       new_id = params[:user][:salesforce_contact_id]
 
-      return true if new_id.blank? || new_id == @user.salesforce_contact_id
+      if new_id.blank? || new_id == @user.salesforce_contact_id
+        return true
+      end
 
-      new_id = nil if new_id.downcase == "remove"
+      if new_id.downcase == "remove"
+        flash[:notice] = "Removed the Salesforce Contact ID"
+        @user.salesforce_contact_id = nil
+        return @user.save
+      end
 
-      check_really_exists = new_id.present?
-
-      if check_really_exists && !OpenStax::Salesforce.ready_for_api_usage?
+      if !OpenStax::Salesforce.ready_for_api_usage?
         flash[:alert] = "Can't connect to Salesforce to verify changed contact ID"
         return false
       end
 
       begin
-        contact = OpenStax::Salesforce::Remote::Contact.find(new_id) if check_really_exists
+        contact = OpenStax::Salesforce::Remote::Contact.find(new_id)
 
-        if contact.present? || new_id.nil?
+        if contact.present?
+          # The contact really exists, so save its ID to the User
+          flash[:notice] = "Updated Salesforce Contact"
           @user.salesforce_contact_id = new_id
           return @user.save
         end
       rescue
         # exploded, probably due to badly formed SF ID
-      ensure
-        # either exploded or contact was `nil`
-        flash[:alert] = "Can't find a Salesforce contact with ID #{new_id}"
-        return false
       end
+
+      # if haven't returned yet, either exploded or contact was `nil` (not found)
+      flash[:alert] = "Can't find a Salesforce contact with ID #{new_id}"
+      return false
     end
 
     def update_user
