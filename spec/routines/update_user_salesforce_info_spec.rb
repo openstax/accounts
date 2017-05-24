@@ -293,6 +293,8 @@ describe UpdateUserSalesforceInfo do
     end
 
     stub_salesforce(contacts: contacts)
+    allow_any_instance_of(OpenStax::Salesforce::Remote::Contact).to receive(:update_attributes!) { true }
+
     # The +10 is for getting the guessed preferred email per user
     expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 5 + 10)
   end
