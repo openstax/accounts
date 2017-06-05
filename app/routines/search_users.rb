@@ -82,6 +82,10 @@ class SearchUsers
         end
       end
 
+      with.keyword :uuid do |uuids|
+        users = users.where(uuid: uuids)
+      end
+
       with.keyword :id do |ids|
         users = users.where(id: ids)
       end

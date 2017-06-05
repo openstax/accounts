@@ -123,6 +123,11 @@ RSpec.describe SearchUsers, type: :routine do
     expect(outcome).to eq [user_1] # Not user_2 even though his first name is John
   end
 
+  it 'should match by UUID' do
+    outcome = described_class.call("uuid:#{user_3.uuid}").outputs.items.to_a
+    expect(outcome).to eq [user_3]
+  end
+
   context "sorting" do
 
     let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
