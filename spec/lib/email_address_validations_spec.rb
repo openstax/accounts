@@ -59,6 +59,10 @@ describe EmailAddressValidations do
     expect_invalid('ggg;jsmith@yahoo.com')
   end
 
+  it 'returns errors when start with unicode non-breaking space' do
+    expect_invalid("\ufeff\ufeffbob@bob.com")
+  end
+
   def expect_valid(value)
     email_objects(value).each do |email|
       expect(email).to be_valid

@@ -37,6 +37,10 @@ module EmailAddressValidations
           # AWS::SES::ResponseError InvalidParameterValue - Missing final '@domain'
           without: /;/,
           message: :contains_semicolon
+        },
+        {
+          without: /\A[\u007f-\ufeff]+/,
+          message: :leading_nonascii
         }
       ]
     end
