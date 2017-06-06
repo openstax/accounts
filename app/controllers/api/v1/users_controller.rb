@@ -50,6 +50,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     * `name` &ndash; Matches Users' first, last, or full names, case insensitive. (uses wildcard matching)
     * `id` &ndash; Matches Users' IDs exactly.
     * `email` &ndash; Matches Users' emails exactly.
+    * `uuid` &ndash; Mathces Users' UUIDs exactly.
 
     You can also add search terms without prefixes, separated by spaces.
 
@@ -92,7 +93,9 @@ class Api::V1::UsersController < Api::V1::ApiController
     outputs = SearchUsers.call(params[:q], options).outputs
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
                           location: nil,
-                          user_options: { include_private_data: current_application.trusted? }
+                          user_options: {
+                            include_private_data: current_application.try(:trusted?)
+                          }
   end
 
   ###############################################################
