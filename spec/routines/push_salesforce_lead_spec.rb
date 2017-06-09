@@ -25,10 +25,26 @@ RSpec.describe PushSalesforceLead, vcr: VCR_OPTS do
 
       expect(lead.errors).to be_empty
       expect(lead.id).not_to be_nil
+      expect(lead.source).to eq "OSC Faculty"
 
       lead_from_sf = OpenStax::Salesforce::Remote::Lead.where(id: lead.id).first
       expect(lead_from_sf).not_to be_nil
     end
+  end
+
+  it "raises an exception when role is student" do
+    expect{
+      described_class[user: user,
+                      email: email_address.value,
+                      role: "student",
+                      school: "JP University",
+                      using_openstax: "Confirmed Adoption Won",
+                      url: "http://www.rice.edu",
+                      newsletter: true,
+                      phone_number: nil,
+                      num_students: nil,
+                      subject: ""]
+    }.to raise_error(IllegalArgument)
   end
 
 end
