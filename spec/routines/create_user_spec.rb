@@ -17,6 +17,10 @@ describe CreateUser do
           CreateUser.call(username: "unclebob", first_name: "Robert", last_name: "Martin", ensure_no_errors: true, state: "activated")
         }.to change{User.count}.by 1
       end
+
+      it 'sets a specified role' do
+        expect(CreateUser[role: :instructor, ensure_no_errors: true, state: "activated"].role).to eq 'instructor'
+      end
     end
   end
 

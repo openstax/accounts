@@ -6,13 +6,13 @@
 # that will cause this routine to fail
 class CreateUser
 
-  lev_routine
+  lev_routine express_output: :user
 
   protected
 
   def exec(state:, username: nil,
            title: nil, first_name: nil, last_name: nil, suffix: nil,
-           salesforce_contact_id: nil, faculty_status: nil,
+           salesforce_contact_id: nil, faculty_status: nil, role: nil,
            ensure_no_errors: false)
 
     username = generate_unique_valid_username(username) if ensure_no_errors
@@ -27,6 +27,7 @@ class CreateUser
       user.suffix = suffix
       user.salesforce_contact_id = salesforce_contact_id
       user.faculty_status = faculty_status || :no_faculty_info
+      user.role = role || :unknown_role
     end
 
     transfer_errors_from(outputs[:user], {type: :verbatim})
