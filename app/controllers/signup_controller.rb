@@ -31,8 +31,8 @@ class SignupController < ApplicationController
                     redirect_to action: :verify_email
                   end,
                   failure: lambda do
-                    @role = params[:signup][:role]
-                    @signup_email = params[:signup][:email]
+                    @role = params[:signup].try(:[],:role)
+                    @signup_email = params[:signup].try(:[],:email)
                     render :start
                   end)
     else
