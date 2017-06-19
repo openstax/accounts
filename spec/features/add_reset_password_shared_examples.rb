@@ -87,6 +87,7 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     expect_profile_page
 
     click_link (t :"users.edit.sign_out")
+    visit '/'
     expect(page).to have_current_path login_path
 
     # try logging in with the old password
