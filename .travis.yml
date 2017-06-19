@@ -2,6 +2,7 @@ branches:
   only:
     - master
     - 2016-accounts-flow
+dist: trusty
 sudo: false
 env: DISPLAY=:99.0 OXA_DB_USER=postgres OXA_TEST_DB=travis_ci_test PARALLEL_TEST_PROCESSORS=2
 language: ruby
@@ -10,7 +11,13 @@ cache: bundler
 bundler_args: --without=production --retry=6
 addons:
   postgresql: "9.4"
-before_install: sh -e /etc/init.d/xvfb start
+before_install:
+  - sh -e /etc/init.d/xvfb start
+  - "export PATH=$PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64/bin:$PATH"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then rm -rf $PWD/travis_phantomjs; mkdir -p $PWD/travis_phantomjs; fi"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then wget https://assets.membergetmember.co/software/phantomjs-2.1.1-linux-x86_64.tar.bz2 -O $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2; fi"
+  - "if [ $(phantomjs --version) != '2.1.1' ]; then tar -xvf $PWD/travis_phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2 -C $PWD/travis_phantomjs; fi"
+  - "phantomjs --version"
 before_script: bundle exec rake --trace parallel:create parallel:load_schema parallel:seed
 script: bundle exec rake parallel:spec
 notifications:

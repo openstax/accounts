@@ -7,6 +7,11 @@ module Api::V1
              readable: true,
              writeable: false
 
+    property :uuid,
+             type: String,
+             readable: true,
+             writeable: false
+
     property :email,
              type: String,
              readable: false,
@@ -86,6 +91,16 @@ module Api::V1
                description: "Faculty status to assign to newly created user, one of #{
                  User.faculty_statuses.keys.map(&:to_s).inspect
                }"
+             }
+
+    property :role,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+                description: "The role to assign to the newly created user, one of #{
+                  User.roles.keys.map(&:to_s).inspect
+                }"
              }
 
   end

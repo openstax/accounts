@@ -228,8 +228,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
                  raw_post_data: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('201')
-      new_user_id = User.order(:id).last.id
-      expect(response.body).to eq({id: new_user_id}.to_json)
+      new_user = User.order(:id).last
+      expect(response.body_as_hash).to eq({id: new_user.id, uuid: new_user.uuid})
     end
 
     it 'creates a new user with first name, last name and full name if given' do
@@ -239,7 +239,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
                  raw_post_data: {
                    email: 'a-new-email@test.com',
                    first_name: 'Sarah',
-                   last_name: 'Test'
+                   last_name: 'Test',
+                   role: 'instructor'
                  }
       }.to change { User.count }.by(1)
       expect(response.code).to eq('201')
@@ -247,6 +248,8 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       expect(new_user.first_name).to eq 'Sarah'
       expect(new_user.last_name).to eq 'Test'
       expect(new_user.full_name).to eq 'Sarah Test'
+      expect(new_user.role).to eq 'instructor'
+      expect(new_user.uuid).not_to be_blank
     end
 
     it "should not create a new user for anonymous" do
@@ -267,19 +270,19 @@ describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
       expect(User.count).to eq user_count
     end
 
-    context "should return only an id for an user" do
+    context "should return only IDs for a user" do
       it "does so for unclaimed users" do
         api_post :find_or_create, trusted_application_token,
                  raw_post_data: {email: unclaimed_user.contact_infos.first.value}
         expect(response.code).to eq('201')
-        expect(response.body).to eq({id: unclaimed_user.id}.to_json)
+        expect(response.body_as_hash).to eq({id: unclaimed_user.id, uuid: unclaimed_user.uuid})
       end
       it "does so for claimed users" do
         api_post :find_or_create,
                  trusted_application_token,
                  raw_post_data: {email: user_2.contact_infos.first.value}
         expect(response.code).to eq('201')
-        expect(response.body).to eq({id: user_2.id}.to_json)
+        expect(response.body_as_hash).to eq({id: user_2.id, uuid: user_2.uuid})
       end
     end
 

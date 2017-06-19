@@ -35,6 +35,7 @@ class FindOrCreateUnclaimedUser
                last_name: options[:last_name],
                salesforce_contact_id: options[:salesforce_contact_id],
                faculty_status: options[:faculty_status],
+               role: options[:role],
                ensure_no_errors: true).outputs.user
 
     # routine is smart and gracefully handles case of missing options[:email]
