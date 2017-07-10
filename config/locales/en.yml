@@ -472,7 +472,7 @@ en:
       using_openstax: Already using OpenStax?
       create_account: Create Account
       titles_interested: Select all OpenStax subjects that interest you
-      keep_me_informed: Send me news about new titles, resources, and related information.
+      keep_me_informed: Send me the OpenStax newsletter.
       timeout: Please log in again to complete your sign up
 
     instructor_access_pending:
@@ -520,7 +520,7 @@ en:
       num_students: Number of students per semester
       using_openstax: Already using OpenStax?
       titles_interested: Select at least one OpenStax titles that interest you
-      keep_me_informed: Send me news about new titles, resources, and related information.
+      keep_me_informed: Send me the OpenStax newsletter.
       submit: Apply
 
     pending:
