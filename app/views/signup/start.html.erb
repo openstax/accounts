@@ -66,6 +66,10 @@ end
     </div>
     <section class="footer">
       <%= f.submit (t :".next"), class: 'primary' %>
+      <div class="sign-in">
+        <%= t :".already_have_an_account.content_html",
+            link: (link_to (t :".already_have_an_account.sign_in"), login_path) %>
+      </div>
     </section>
   <% end %>
 

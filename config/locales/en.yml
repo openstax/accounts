@@ -380,7 +380,7 @@ en:
       already_have_an_account:
         # %{link}   a hyperlink pointing to sign in page. Label of the link
         #           is defined by the .sign_in key.
-        content_html: <b>Already have an account?</b> %{link}.
+        content_html: Already have an account? %{link}.
         sign_in: Log in
       dont_want_to_remember_password_html: >-
         <b>Don't want to remember a password?</b><br/>
