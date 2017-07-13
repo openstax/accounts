@@ -230,6 +230,17 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       expect(page).to have_content "Email address is invalid"
       screenshot!
     end
+
+    scenario 'decides they want to sign in' do
+      visit signin_path(go: 'student_signup')
+      expect(page).to have_selector('#signup_role', visible: false)
+      expect(page.find('#signup_role', visible: false).value).to eq 'student'
+      click_link(t :'signup.start.already_have_an_account.sign_in')
+      expect(page).to have_content 'Log in'
+      screenshot!
+    end
+
+
   end
 
   context "verify PIN screen" do
