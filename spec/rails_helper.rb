@@ -154,27 +154,17 @@ RSpec.configure do |config|
   #   config.infer_spec_type_from_file_location!
   config.infer_spec_type_from_file_location!
 
-  config.before(:suite) do
+  config.prepend_before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.before(:all) do
-    DatabaseCleaner.strategy = :transaction
-  end
-
-  config.before(:all, js: true) do
-    DatabaseCleaner.strategy = :truncation
-  end
-
-  config.before(:all, truncation: true) do
-    DatabaseCleaner.strategy = :truncation
-  end
-
-  config.before(:all) do
+  config.prepend_before(:all) do
+    metadata = self.class.metadata
+    DatabaseCleaner.strategy = metadata[:js] || metadata[:truncation] ? :truncation : :transaction
     DatabaseCleaner.start
   end
 
-  config.before(:each) do
+  config.prepend_before(:each) do
     DatabaseCleaner.start
   end
 
