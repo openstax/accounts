@@ -20,5 +20,9 @@ body.signup {
       margin-top: 2px;
     }
   }
-
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
