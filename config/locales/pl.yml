@@ -370,7 +370,7 @@ pl:
         log_in: zalogować
       email_cannot_be_blank: Musisz podać adres e-mail
       already_have_an_account:
-        content_html: <b>Masz już konto?</b> %{link}.
+        content_html: Masz już konto? %{link}.
         sign_in: Zaloguj się
       dont_want_to_remember_password_html: >-
         <b>Nie chcesz zapamiętywać hasła?</b><br/>
