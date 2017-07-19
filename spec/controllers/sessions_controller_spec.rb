@@ -6,7 +6,7 @@ RSpec.describe SessionsController, type: :controller do
     context 'invalid_omniauth_data' do
       it 'sends the user back to the home page with a message' do
         expect(SessionsCreate).to receive(:handle).and_return(
-          Hashie::Mash.new(outputs: { status: :invalid_omniauth_data }, errors: ['Some error'])
+          Hashie::Mash.new(outputs: {}, errors: [code: :invalid_omniauth_data])
         )
         expect{ post :create, provider: 'identity' }.not_to(
           change{ ActionMailer::Base.deliveries.count }
@@ -19,7 +19,7 @@ RSpec.describe SessionsController, type: :controller do
     context 'unknown_callback_state' do
       it 'sends the user back to the home page with a message' do
         expect(SessionsCreate).to receive(:handle).and_return(
-          Hashie::Mash.new(outputs: { status: :unknown_callback_state }, errors: ['Some error'])
+          Hashie::Mash.new(outputs: {}, errors: [code: :unknown_callback_state])
         )
         expect{ post :create, provider: 'identity' }.not_to(
           change{ ActionMailer::Base.deliveries.count }
