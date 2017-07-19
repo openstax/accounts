@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217210246) do
+ActiveRecord::Schema.define(version: 20170719214431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20170217210246) do
     t.boolean  "is_searchable",        :default=>false
     t.string   "confirmation_pin",     :index=>{:name=>"index_contact_infos_on_confirmation_pin"}
   end
+  add_index "contact_infos", ["value", "verified"], :name=>"index_contact_infos_on_value_and_verified_case_insensitive", :case_sensitive=>false
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   :default=>0, :null=>false, :index=>{:name=>"delayed_jobs_priority", :with=>["run_at"]}
