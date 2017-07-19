@@ -75,7 +75,7 @@ class SessionsController < ApplicationController
       user_state: self,
       signup_state: signup_state,
       login_providers: get_login_state[:providers],
-      complete: lambda do
+      success: -> do
         authentication = @handler_result.outputs[:authentication]
         status = @handler_result.outputs[:status]
         case status
@@ -119,13 +119,35 @@ class SessionsController < ApplicationController
         when :email_already_in_use
           redirect_to profile_path,
                       alert: (I18n.t :"controllers.sessions.way_to_login_cannot_be_added")
-        when :unknown_callback_state, :invalid_omniauth_data
+        else
+          oauth = request.env['omniauth.auth']
+          errors = @handler_result.errors.inspect
+          last_exception = $!.inspect
+          exception_backtrace = $@.inspect
+
+          error_message = "[SessionsCreate] IllegalState on success: " +
+                          "OAuth data: #{oauth}; status: #{status}; " +
+                          "errors: #{errors}; last exception: #{last_exception}; " +
+                          "exception backtrace: #{exception_backtrace}"
+
+          # This will print the exception to the logs and send devs an exception email
+          raise IllegalState, error_message
+        end
+      end,
+      failure: -> do
+        errors = @handler_result.errors
+        lost_user = errors.any? do |error|
+          [:unknown_callback_state, :invalid_omniauth_data].include? error.code
+        end
+
+        if lost_user
           # Something weird happened to the user's session or omniauth data and we lost their info
           Rails.logger.warn do
             oauth = request.env['omniauth.auth']
             errors = @handler_result.errors.inspect
 
-            "Lost User: SessionsCreate: OAuth data: #{oauth}; status: #{status}; errors: #{errors}"
+            "[SessionsCreate] Lost User on failure: " +
+            "OAuth data: #{oauth}; status: #{status}; errors: #{errors}"
           end
 
           redirect_to root_path, alert: I18n.t(:'controllers.lost_user')
@@ -135,7 +157,8 @@ class SessionsController < ApplicationController
           last_exception = $!.inspect
           exception_backtrace = $@.inspect
 
-          error_message = "SessionsCreate: OAuth data: #{oauth}; status: #{status}; " +
+          error_message = "[SessionsCreate] IllegalState on failure: " +
+                          "OAuth data: #{oauth}; status: #{status}; " +
                           "errors: #{errors}; last exception: #{last_exception}; " +
                           "exception backtrace: #{exception_backtrace}"
 
