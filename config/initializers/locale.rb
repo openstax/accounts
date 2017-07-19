@@ -2,7 +2,7 @@ module I18n
   module Enumerators
     # A fallback enumerator which just returns all elements separated by ','
     module Simple
-      def self.enumerate list, options = {}
+      def self.enumerate kind, list, options = {}
         return list.join ', '
       end
     end
