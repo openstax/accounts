@@ -76,6 +76,8 @@ class SessionsController < ApplicationController
       signup_state: signup_state,
       login_providers: get_login_state[:providers],
       complete: lambda do
+        # TODO security_log mixed between here and user session management
+        # resulting in duplicate and out of order entries -- consolidate
         authentication = @handler_result.outputs[:authentication]
         status = @handler_result.outputs[:status]
         case status
@@ -89,14 +91,14 @@ class SessionsController < ApplicationController
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
         when :existing_user_signed_up_again
-          # TODO security_log that user signed up again and we merged
+          security_log :signed_up_again_and_merged
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
         when :no_action
           security_log :sign_in_successful, authentication_id: authentication.id
           redirect_to action: :redirect_back
         when :new_social_user
-          security_log :sign_in_successful, authentication_id: authentication.id
+          security_log :sign_up_successful, authentication_id: authentication.id
           redirect_to signup_profile_path
         when :authentication_added
           security_log :authentication_created,

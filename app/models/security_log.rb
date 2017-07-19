@@ -45,7 +45,8 @@ class SecurityLog < ActiveRecord::Base
     :admin_became_user,
     :contact_info_confirmed_by_admin,
     :authentication_transfer_failed,
-    :login_not_found
+    :login_not_found,
+    :signed_up_again_and_merged
   ]
 
   json_serialize :event_data, Hash

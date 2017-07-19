@@ -596,6 +596,10 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
         click_link('google-login-button')
       end
 
+      expect(SecurityLog.all.map(&:event_type)).to eq (
+        ["sign_up_successful", "signed_up_again_and_merged", "sign_in_successful"]
+      )
+
       expect(
         existing_user.contact_infos.verified.map(&:value)
       ).to contain_exactly("bob@bob.edu", "bob@gmail.com")

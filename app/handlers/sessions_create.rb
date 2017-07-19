@@ -99,6 +99,7 @@ class SessionsCreate
         receiving_user = identity.user
         status = :new_password_user  # TODO can this merge with new_social_user?
       else
+        debugger
         receiving_user = User.new
         run(TransferOmniauthData, @data, receiving_user)
         status = :new_social_user
