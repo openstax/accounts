@@ -21,7 +21,7 @@ class UpdateUserSalesforceInfo
     prepare_contacts
 
     # Go through all users that have already have a Salesforce ID and make sure
-    # their SF information is stil the same.
+    # their SF information is still the same.
 
     User.where{salesforce_contact_id != nil}.find_each do |user|
       begin
@@ -35,34 +35,35 @@ class UpdateUserSalesforceInfo
     # Go through all users that don't yet have a Salesforce ID and populate their
     # salesforce info when they have verified emails that match SF data.
 
-    User.eager_load(:contact_infos)
-        .where(salesforce_contact_id: nil)
-        .where{lower(contact_infos.value).in my{@contacts_by_email.keys}}
-        .where(contact_infos: { verified: true })
-        .find_each do |user|
+    @contacts_by_email.keys.each_slice(1000) do |emails|
+      # eager_load by default produces a LEFT OUTER JOIN
+      # But we can use an INNER JOIN here since we have a WHERE condition on contact_infos
+      # So we use joins to convert the LEFT OUTER JOIN to an INNER JOIN
+      User.joins(:contact_infos)
+          .eager_load(:contact_infos)
+          .where(salesforce_contact_id: nil)
+          .where{lower(contact_infos.value).in my{emails}}
+          .where(contact_infos: { verified: true })
+          .each do |user|
 
-      begin
-        # The query above really should be limiting us to only verified email addresses
-        # but in case there is some odd thing where a User has multiple addresses some
-        # of which are verified and some are not, and in case `user.contact_infos` gets
-        # those, add this extra `select(&:verified?)` call
+        begin
+          # The query above limits us to only verified email addresses
+          # eager_load ensures only the verified email addresses are returned
 
-        contacts = user.contact_infos
-                       .select(&:verified?)
-                       .map{|ci| @contacts_by_email[ci.value.downcase]}
-                       .uniq
+          contacts = user.contact_infos
+                         .map{|ci| @contacts_by_email[ci.value.downcase]}
+                         .uniq
 
-        next if contacts.size == 0
-
-        if contacts.size > 1
-          error!(message: "More than one SF contact (#{contacts.map(&:id).join(', ')}) " \
-                          "for user #{user.id}")
-        else
-          contact = contacts.first
-          cache_contact_data_in_user!(contact, user)
+          if contacts.size > 1
+            error!(message: "More than one SF contact (#{contacts.map(&:id).join(', ')}) " \
+                            "for user #{user.id}")
+          else
+            contact = contacts.first
+            cache_contact_data_in_user!(contact, user)
+          end
+        rescue StandardError => ee
+          error!(exception: ee, user: user)
         end
-      rescue StandardError => ee
-        error!(exception: ee, user: user)
       end
     end
 
@@ -74,57 +75,50 @@ class UpdateUserSalesforceInfo
 
     user_ids_that_were_looked_at_for_leads = []
 
-    User.eager_load(:contact_infos)
-        .where(salesforce_contact_id: nil)
-        .where(contact_infos: { verified: true })
-        .where{lower(contact_infos.value).in my{@leads_by_email.keys}}
-        .find_each do |user|
+    @leads_by_email.keys.each_slice(1000) do |emails|
+      User.joins(:contact_infos)
+          .eager_load(:contact_infos)
+          .where(salesforce_contact_id: nil)
+          .where(contact_infos: { verified: true })
+          .where{lower(contact_infos.value).in my{emails}}
+          .each do |user|
 
-      begin
-        user_ids_that_were_looked_at_for_leads.push(user.id)
+        begin
+          user_ids_that_were_looked_at_for_leads.push(user.id)
 
-        leads = user.contact_infos
-                    .select(&:verified?)
-                    .map{|ci| @leads_by_email[ci.value.downcase]}
-                    .flatten
-                    .uniq
+          leads = user.contact_infos
+                      .flat_map{|ci| @leads_by_email[ci.value.downcase]}
+                      .uniq
 
-        statuses = leads.map(&:status).uniq
+          statuses = leads.map(&:status).uniq
 
-        # Whenever a lead is processed (in our case when it is either used to
-        # confirm or reject a faculty application), its status is set to
-        # 'Converted'.  If any of the statuses we have now are not 'Converted',
-        # we know that the user has a lead that is still under review, so they
-        # are set to `pending_faculty`.  If the statuses only consist of
-        # 'Converted' statuses, we know the user has been rejected as faculty.
+          # Whenever a lead is processed (in our case when it is either used to
+          # confirm or reject a faculty application), its status is set to
+          # 'Converted'.  If any of the statuses we have now are not 'Converted',
+          # we know that the user has a lead that is still under review, so they
+          # are set to `pending_faculty`.  If the statuses only consist of
+          # 'Converted' statuses, we know the user has been rejected as faculty.
 
-        user.faculty_status =
-          if statuses.empty?
-            :no_faculty_info
-          elsif statuses == ["Converted"]
-            :rejected_faculty
-          else
-            :pending_faculty
-          end
+          user.faculty_status =
+            if statuses.empty?
+              :no_faculty_info
+            elsif statuses == ["Converted"]
+              :rejected_faculty
+            else
+              :pending_faculty
+            end
 
-        user.save! if user.changed?
-      rescue StandardError => ee
-        error!(exception: ee, user: user)
+          user.save! if user.changed?
+        rescue StandardError => ee
+          error!(exception: ee, user: user)
+        end
       end
     end
 
     User.where(salesforce_contact_id: nil)
         .where(faculty_status: User.faculty_statuses.except("no_faculty_info").values)
         .where{id.not_in my{user_ids_that_were_looked_at_for_leads}}
-        .find_each do |user|
-
-      begin
-        user.faculty_status = :no_faculty_info
-        user.save!
-      rescue StandardError => ee
-        error!(exception: ee, user: user)
-      end
-    end
+        .update_all(faculty_status: User.faculty_statuses[:no_faculty_info])
 
     notify_errors
 
@@ -135,7 +129,7 @@ class UpdateUserSalesforceInfo
 
   def prepare_leads
     leads.each do |lead|
-      email = lead.email.try(&:downcase).try(:strip)
+      email = lead.email.try!(&:downcase).try!(:strip)
 
       next if email.nil?
 
@@ -230,6 +224,13 @@ class UpdateUserSalesforceInfo
     #
     # Here's one example query as a starting point:
     #   ...Contact.order("LastModifiedDate").where("LastModifiedDate >= #{1.day.ago.utc.iso8601}")
+    #
+    # TODO: Need to move the duplicated email detection code to SF before we change anything
+    #       If we use timestamps to limit results returned, need to be very careful
+    #       to avoid race conditions such as missing records that were modified
+    #       while we were querying SF
+    #       If we don't use timestamps, should load the contacts in chunks of 1,000 or 10,000
+    #       Or maybe try https://github.com/gooddata/salesforce_bulk_query
 
     @contacts ||= OpenStax::Salesforce::Remote::Contact
                     .select(:id, :email, :email_alt, :faculty_verified)

@@ -216,15 +216,19 @@ class User < ActiveRecord::Base
     # added via a social login. Manually-entered emails trigger confirmation emails,
     # so those emails have the confirmation sent at timestamp.
 
-    (
-      email_addresses.verified
-                     .where{confirmation_sent_at != nil} # manually verified
-                     .order{created_at.desc}
-                     .first ||
-      email_addresses.verified
-                     .order{created_at.asc}
-                     .first
-    ).try(:value)
+    if email_addresses.loaded? || contact_infos.loaded?
+      emails = email_addresses.loaded? ? email_addresses : contact_infos.select(&:email?)
+      verified_emails = emails.select(&:verified?)
+      manual_emails = verified_emails.reject { |email| email.confirmation_sent_at.nil? }
+      manual_emails.any? ? manual_emails.max_by(&:created_at) : verified_emails.min_by(&:created_at)
+    else
+      email_addresses.verified.order(
+        <<-SQL.strip_heredoc
+          CASE WHEN "confirmation_sent_at" IS NULL THEN '-infinity' ELSE "created_at" END DESC,
+          "created_at" ASC
+        SQL
+      ).first
+    end.try!(:value)
   end
 
   protected
