@@ -295,8 +295,7 @@ describe UpdateUserSalesforceInfo do
     stub_salesforce(contacts: contacts)
     allow_any_instance_of(OpenStax::Salesforce::Remote::Contact).to receive(:update_attributes!) { true }
 
-    # The +10 is for getting the guessed preferred email per user
-    expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 5 + 10)
+    expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 2)
   end
 
   it 'logs an error when an email alt is a different contact\'s primary email' do

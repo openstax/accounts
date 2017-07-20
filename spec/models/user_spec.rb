@@ -252,23 +252,88 @@ describe User, type: :model do
   context '#guessed_preferred_confirmed_email' do
     let(:user) { FactoryGirl.create :user }
 
-    before(:each) {
+    before(:each) do
       Timecop.freeze(3.minutes.ago)  {
         @email_a = AddEmailToUser['a@a.com', user]
       }
       Timecop.freeze(0.minutes.ago)  { AddEmailToUser['b@b.com', user, already_verified: true] }
       Timecop.freeze(-1.minutes.ago) { @email_c = AddEmailToUser['c@c.com', user] }
       Timecop.freeze(-3.minutes.ago) { AddEmailToUser['d@d.com', user, already_verified: true] }
-    }
-
-    it 'chooses latest manually entered emails' do
-      ConfirmContactInfo[@email_a]
-      ConfirmContactInfo[@email_c]
-      expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
     end
 
-    it 'chooses earliest auto confirmed if no manually entered emails' do
-      expect(user.guessed_preferred_confirmed_email).to eq 'b@b.com'
+    context 'with no manually entered emails' do
+      context 'with the user\'s email_addresses and contact_infos not yet loaded' do
+        before do
+          user.email_addresses.reset
+          user.contact_infos.reset
+        end
+
+        it 'chooses earliest auto confirmed email' do
+          expect(user.guessed_preferred_confirmed_email).to eq 'b@b.com'
+        end
+      end
+
+      context 'with the user\'s contact_infos already loaded' do
+        before do
+          user.email_addresses.reset
+          user.contact_infos.reload
+        end
+
+        it 'chooses earliest auto confirmed email' do
+          expect(user.guessed_preferred_confirmed_email).to eq 'b@b.com'
+        end
+      end
+
+      context 'with the user\'s email_addresses and contact_infos already loaded' do
+        before do
+          user.email_addresses.reload
+          user.contact_infos.reload
+        end
+
+        it 'chooses earliest auto confirmed email' do
+          expect(user.guessed_preferred_confirmed_email).to eq 'b@b.com'
+        end
+      end
+    end
+
+    context 'with some manually entered emails' do
+      before do
+        ConfirmContactInfo[@email_a]
+        ConfirmContactInfo[@email_c]
+      end
+
+      context 'with the user\'s email_addresses and contact_infos not yet loaded' do
+        before do
+          user.email_addresses.reset
+          user.contact_infos.reset
+        end
+
+        it 'chooses latest manually entered email' do
+          expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
+        end
+      end
+
+      context 'with the user\'s contact_infos already loaded' do
+        before do
+          user.email_addresses.reset
+          user.contact_infos.reload
+        end
+
+        it 'chooses latest manually entered email' do
+          expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
+        end
+      end
+
+      context 'with the user\'s email_addresses and contact_infos already loaded' do
+        before do
+          user.email_addresses.reload
+          user.contact_infos.reload
+        end
+
+        it 'chooses latest manually entered email' do
+          expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
+        end
+      end
     end
   end
 end
