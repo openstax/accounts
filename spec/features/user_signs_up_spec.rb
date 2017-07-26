@@ -17,6 +17,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
       arrive_from_app
       click_sign_up
+      expect(page.evaluate_script("document.activeElement.id")).to eq "signup_role"
       complete_signup_email_screen("Instructor","bob@bob.edu", screenshot_after_role: true)
       complete_signup_verify_screen(pass: true)
       complete_signup_password_screen('password')
