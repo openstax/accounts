@@ -16,3 +16,7 @@ every '5,35 * * * *' do
     }
   CMD
 end
+
+every 1.day, at: Time.parse('2:30 AM CST').utc do
+  rake 'doorkeeper:cleanup'
+end
