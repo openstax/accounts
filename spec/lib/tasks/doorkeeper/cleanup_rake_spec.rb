@@ -16,7 +16,7 @@ RSpec.describe 'doorkeeper:cleanup' do
     FactoryGirl.create :doorkeeper_access_grant, expires_in: 10.minutes,
                                                  created_at: current_time - 3.months
     FactoryGirl.create :doorkeeper_access_grant, expires_in: 10.minutes,
-                                                 created_at: current_time - 1.month
+                                                 created_at: current_time - 30.days
     FactoryGirl.create :doorkeeper_access_grant, expires_in: 10.minutes,
                                                  created_at: current_time - 2.weeks
     FactoryGirl.create :doorkeeper_access_grant, expires_in: 10.minutes,
@@ -25,7 +25,7 @@ RSpec.describe 'doorkeeper:cleanup' do
     FactoryGirl.create :doorkeeper_access_grant, revoked_at: current_time - 1.year
     FactoryGirl.create :doorkeeper_access_grant, revoked_at: current_time - 6.months
     FactoryGirl.create :doorkeeper_access_grant, revoked_at: current_time - 3.months
-    FactoryGirl.create :doorkeeper_access_grant, revoked_at: current_time - 1.month
+    FactoryGirl.create :doorkeeper_access_grant, revoked_at: current_time - 30.days
     FactoryGirl.create :doorkeeper_access_grant, revoked_at: current_time - 2.weeks
     FactoryGirl.create :doorkeeper_access_grant, revoked_at: current_time
 
@@ -38,7 +38,7 @@ RSpec.describe 'doorkeeper:cleanup' do
     FactoryGirl.create :doorkeeper_access_token, expires_in: 10.minutes,
                                                  created_at: current_time - 3.months
     FactoryGirl.create :doorkeeper_access_token, expires_in: 10.minutes,
-                                                 created_at: current_time - 1.month
+                                                 created_at: current_time - 30.days
     FactoryGirl.create :doorkeeper_access_token, expires_in: 10.minutes,
                                                  created_at: current_time - 2.weeks
     FactoryGirl.create :doorkeeper_access_token, expires_in: 10.minutes,
@@ -47,7 +47,7 @@ RSpec.describe 'doorkeeper:cleanup' do
     FactoryGirl.create :doorkeeper_access_token, revoked_at: current_time - 1.year
     FactoryGirl.create :doorkeeper_access_token, revoked_at: current_time - 6.months
     FactoryGirl.create :doorkeeper_access_token, revoked_at: current_time - 3.months
-    FactoryGirl.create :doorkeeper_access_token, revoked_at: current_time - 1.month
+    FactoryGirl.create :doorkeeper_access_token, revoked_at: current_time - 30.days
     FactoryGirl.create :doorkeeper_access_token, revoked_at: current_time - 2.weeks
     FactoryGirl.create :doorkeeper_access_token, revoked_at: current_time
   end
