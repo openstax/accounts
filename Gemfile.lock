@@ -641,6 +641,7 @@ DEPENDENCIES
   lev (~> 7.0.3)
   lograge
   maruku
+  oauth (~> 0.5.1)
   oj
   oj_mimic_json
   omniauth
@@ -688,4 +689,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   1.14.4
+   1.14.5

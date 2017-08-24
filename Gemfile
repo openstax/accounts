@@ -28,6 +28,9 @@ gem 'bcrypt', '~> 3.1.7'
 # OAuth provider
 gem 'doorkeeper', '2.2.2'
 
+# OAuth gem for validating lti requests
+gem 'oauth', '~> 0.5.1'
+
 # OAuth clients
 gem 'omniauth'
 gem 'omniauth-identity'
