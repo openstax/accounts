@@ -50,7 +50,7 @@ module UserSessionManagement
       main_app.login_path(
         params.slice(
           :client_id, :signup_at, :go, :no_signup, :email, :name, :role,
-          :lti_signature, :timestamp,
+          :signature, :timestamp, :uuid
         )
       )
     )
@@ -167,8 +167,10 @@ module UserSessionManagement
   def set_trusted_parameters(params)
     session[:trusted] = {
       email: params[:email],
-      name: params[:name],
-      role: params[:role] == 'instructor' ? 'instructor' : 'student'
+      name:  params[:name],
+      uuid:  params[:uuid],
+      role:  params[:role] == 'instructor' ? 'instructor' : 'student'
     }
+
   end
 end
