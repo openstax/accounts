@@ -135,6 +135,12 @@ class User < ActiveRecord::Base
     guess.blank? ? nil : guess
   end
 
+  def full_name=(name)
+    names = name.split(/\s+/)
+    self.first_name = names.first
+    self.last_name = (names.length > 1 ? names[1..-1] : ['']).join(' ')
+  end
+
   def guessed_first_name
     full_name.present? ? full_name.split("\s")[0] : nil
   end
