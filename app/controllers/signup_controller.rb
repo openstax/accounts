@@ -3,7 +3,7 @@ class SignupController < ApplicationController
   PROFILE_TIMEOUT = 30.minutes
 
   skip_before_filter :authenticate_user!,
-                     only: [:start, :verify_email, :verify_by_token, :password, :social, :profile, :from_lms]
+                     only: [:start, :verify_email, :verify_by_token, :password, :social, :profile, :trusted]
 
   skip_before_filter :complete_signup_profile
 
@@ -102,8 +102,8 @@ class SignupController < ApplicationController
     end
   end
 
-  def from_lms
-    handle_with(SignupFromLms,
+  def trusted
+    handle_with(TrustedSignup,
                 user_state: self,
                 success: lambda do
                   clear_signup_state

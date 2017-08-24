@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
 
   before_filter :save_new_params_in_session, only: [:new]
   before_filter :store_authorization_url_as_fallback, only: [:new, :create]
-  before_filter :maybe_store_lms_params
+  before_filter :maybe_store_trusted_params
   before_filter :maybe_skip_to_sign_up, only: [:new]
 
   before_filter :allow_iframe_access, only: :reauthenticate
@@ -298,11 +298,11 @@ class SessionsController < ApplicationController
     redirect_to signup_path if %w{signup student_signup}.include?(params[:go])
   end
 
-  def maybe_store_lms_params
-    return unless params[:go] == 'lti_launch'
+  def maybe_store_trusted_params
+    return unless params[:signature]
 
     base_string = OAuth::Helper.normalize(
-      params.except(:controller, :action, :client_id, :lti_signature)
+      params.except(:controller, :action, :client_id, :signature)
     )
     secret_key = Doorkeeper::Application.find_by_uid!(params[:client_id]).secret
     signature = OpenSSL::HMAC.hexdigest('sha1', secret_key, base_string)
@@ -310,8 +310,8 @@ class SessionsController < ApplicationController
        !(2.minutes.ago..2.minutes.from_now).cover?(Time.at(params[:timestamp].to_i))
       throw "INVALID!"
     end
-    set_session_state_from_lms(params)
-    redirect_to signup_from_lms_url
+    set_trusted_parameters(params)
+    redirect_to signup_trusted_url
   end
 
 

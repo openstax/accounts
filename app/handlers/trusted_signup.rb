@@ -1,6 +1,6 @@
-class SignupFromLms
+class TrustedSignup
 
-  attr_reader :user_state, :lms
+  attr_reader :user_state, :attrs
 
   lev_handler
 
@@ -11,14 +11,14 @@ class SignupFromLms
   end
 
   def setup
-    @lms = request.session['lms']
+    @attrs = request.session['trusted_data']
     @user_state = options[:user_state]
   end
 
   def handle
     user = User.new
-    user.role = lms['role']
-    user.full_name = lms['name']
+    user.role = attrs['role']
+    user.full_name = attrs['name']
     if user.student?
       user.state = 'activated'
     end
@@ -28,8 +28,7 @@ class SignupFromLms
 
     ci = user.contact_infos.build(
       type: 'EmailAddress',
-      value: lms['email'],
-
+      value: attrs['email']
     )
     ci.verified = true
     ci.save

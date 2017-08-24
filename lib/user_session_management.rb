@@ -163,10 +163,9 @@ module UserSessionManagement
     session[:alt_signup]
   end
 
-  # called when the user is redirected from a LMS
-  def set_session_state_from_lms(params)
-    session[:return_to] = 'https://system.showmaker.com/'
-    session[:lms] = {
+  # called when the user has trusted paramters for creating or sign in
+  def set_trusted_parameters(params)
+    session[:trusted] = {
       email: params[:email],
       name: params[:name],
       role: params[:role] == 'instructor' ? 'instructor' : 'student'
