@@ -1,3 +1,5 @@
+require 'oauth'
+
 module UserSessionManagement
 
   # References:
@@ -44,7 +46,14 @@ module UserSessionManagement
     return if signed_in?
 
     store_url
-    redirect_to main_app.login_path(params.slice(:client_id, :signup_at, :go, :no_signup))
+    redirect_to(
+      main_app.login_path(
+        params.slice(
+          :client_id, :signup_at, :go, :no_signup, :email, :name, :role,
+          :lti_signature, :timestamp,
+        )
+      )
+    )
   end
 
   def authenticate_admin!
@@ -154,4 +163,13 @@ module UserSessionManagement
     session[:alt_signup]
   end
 
+  # called when the user is redirected from a LMS
+  def set_session_state_from_lms(params)
+    session[:return_to] = 'https://system.showmaker.com/'
+    session[:lms] = {
+      email: params[:email],
+      name: params[:name],
+      role: params[:role] == 'instructor' ? 'instructor' : 'student'
+    }
+  end
 end
