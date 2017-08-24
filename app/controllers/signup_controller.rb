@@ -25,10 +25,12 @@ class SignupController < ApplicationController
     if request.post?
       handle_with(SignupStart,
                   existing_signup_state: signup_state,
+                  trusted_state: session[:trusted],
                   return_to: session[:return_to],
+                  session: self,
                   success: lambda do
                     save_signup_state(@handler_result.outputs.signup_state)
-                    redirect_to action: :verify_email
+                    redirect_to action: @handler_result.outputs.redirect_action
                   end,
                   failure: lambda do
                     @role = params[:signup].try(:[],:role)
@@ -103,15 +105,6 @@ class SignupController < ApplicationController
   end
 
   def trusted
-    handle_with(TrustedSignup,
-                user_state: self,
-                success: lambda do
-                  clear_signup_state
-                  redirect_back
-                end,
-                failure: lambda do
-                  render :start
-                end)
 
   end
 
