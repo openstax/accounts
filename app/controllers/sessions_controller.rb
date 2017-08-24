@@ -295,7 +295,7 @@ class SessionsController < ApplicationController
   end
 
   def maybe_skip_to_sign_up
-    redirect_to signup_path if %w{signup student_signup lti_launch}.include?(params[:go])
+    redirect_to signup_path if %w{signup student_signup}.include?(params[:go])
   end
 
   def maybe_store_lms_params
@@ -305,13 +305,13 @@ class SessionsController < ApplicationController
       params.except(:controller, :action, :client_id, :lti_signature)
     )
     secret_key = Doorkeeper::Application.find_by_uid!(params[:client_id]).secret
-    signature = Base64.encode64(OpenSSL::HMAC.digest('sha1', secret_key, base_string)).gsub(/\W+$/,'')
-
+    signature = OpenSSL::HMAC.hexdigest('sha1', secret_key, base_string)
     if signature != params[:lti_signature] ||
        !(2.minutes.ago..2.minutes.from_now).cover?(Time.at(params[:timestamp].to_i))
       throw "INVALID!"
     end
-    set_lms_params(params)
+    set_session_state_from_lms(params)
+    redirect_to signup_from_lms_url
   end
 
 
