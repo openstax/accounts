@@ -9,14 +9,14 @@ class SessionsController < ApplicationController
   include RateLimiting
 
   skip_before_filter :authenticate_user!, :check_if_password_expired,
-                     only: [:new, :lookup_login, :authenticate,
+                     only: [:new, :lookup_login, :authenticate, :trusted_launch,
                             :create, :failure, :destroy, :email_usernames]
 
   skip_before_filter :complete_signup_profile, only: [:destroy]
 
   before_filter :save_new_params_in_session, only: [:new]
   before_filter :store_authorization_url_as_fallback, only: [:new, :create]
-  before_filter :maybe_store_trusted_params
+  before_filter :maybe_launch_with_trusted_params
   before_filter :maybe_skip_to_sign_up, only: [:new]
 
   before_filter :allow_iframe_access, only: :reauthenticate
@@ -67,6 +67,21 @@ class SessionsController < ApplicationController
 
   def authenticate
     redirect_to root_path if signed_in?
+  end
+
+  def trusted_launch
+    handle_with(TrustedParametersLaunch,
+                user_state: self,
+                success: lambda do
+                  if @handler_result.outputs.user
+                    redirect_back
+                  else
+                    redirect_to signup_url
+                  end
+                end,
+                failure: lambda do
+                  render :start
+                end)
   end
 
   # Handle OAuth callback (actual login)
@@ -298,20 +313,21 @@ class SessionsController < ApplicationController
     redirect_to signup_path if %w{signup student_signup}.include?(params[:go])
   end
 
-  def maybe_store_trusted_params
-    return unless params[:signature]
+  def maybe_launch_with_trusted_params
+    return unless params[:go] == 'trusted_launch'
 
     base_string = OAuth::Helper.normalize(
       params.except(:controller, :action, :client_id, :signature)
     )
     secret_key = Doorkeeper::Application.find_by_uid!(params[:client_id]).secret
     signature = OpenSSL::HMAC.hexdigest('sha1', secret_key, base_string)
-    if signature != params[:lti_signature] ||
+    if signature != params[:signature] ||
        !(2.minutes.ago..2.minutes.from_now).cover?(Time.at(params[:timestamp].to_i))
-      throw "INVALID!"
+
+      head :forbidden and return false
     end
     set_trusted_parameters(params)
-    redirect_to signup_trusted_url
+    redirect_to action: :trusted_launch
   end
 
 
