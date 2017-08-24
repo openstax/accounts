@@ -3,7 +3,7 @@ class SignupController < ApplicationController
   PROFILE_TIMEOUT = 30.minutes
 
   skip_before_filter :authenticate_user!,
-                     only: [:start, :verify_email, :verify_by_token, :password, :social, :profile]
+                     only: [:start, :verify_email, :verify_by_token, :password, :social, :profile, :from_lms]
 
   skip_before_filter :complete_signup_profile
 
@@ -100,6 +100,19 @@ class SignupController < ApplicationController
                     render :profile
                   end)
     end
+  end
+
+  def from_lms
+    handle_with(SignupFromLms,
+                user_state: self,
+                success: lambda do
+                  clear_signup_state
+                  redirect_back
+                end,
+                failure: lambda do
+                  render :start
+                end)
+
   end
 
   def instructor_access_pending
