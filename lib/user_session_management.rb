@@ -50,7 +50,7 @@ module UserSessionManagement
       main_app.login_path(
         params.slice(
           :client_id, :signup_at, :go, :no_signup, :email, :name, :role,
-          :signature, :timestamp, :uuid
+          :signature, :timestamp, :external_user_uuid
         )
       )
     )
@@ -168,8 +168,8 @@ module UserSessionManagement
     session[:trusted] = {
       email: params[:email],
       name:  params[:name],
-      uuid:  params[:uuid],
-      role:  params[:role] == 'instructor' ? 'instructor' : 'student'
+      uuid:  params[:external_user_uuid],
+      role:  User.roles[params[:role]] ? params[:role] : nil,
     }
 
   end

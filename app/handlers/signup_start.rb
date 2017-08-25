@@ -19,7 +19,6 @@ class SignupStart
     if !User.known_roles.include?(signup_params.role)
       fatal_error(code: :unknown_role, offending_inputs: [:signup, :role])
     end
-    outputs.redirect_action = :verify_email
     outputs.role = signup_params.role
 
     # Return if user went back, didn't change anything, and resubmitted
@@ -73,8 +72,6 @@ class SignupStart
 
     uuid = UserAlternativeUuid.create(user: user, uuid: trusted_state['uuid'])
     transfer_errors_from(uuid, {type: :verbatim}, true)
-
-    outputs.redirect_action = :password
   end
 
   def email

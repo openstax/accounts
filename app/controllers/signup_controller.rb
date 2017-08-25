@@ -30,7 +30,7 @@ class SignupController < ApplicationController
                   session: self,
                   success: lambda do
                     save_signup_state(@handler_result.outputs.signup_state)
-                    redirect_to action: @handler_result.outputs.redirect_action
+                    redirect_to action: :verify_email
                   end,
                   failure: lambda do
                     @role = params[:signup].try(:[],:role)
@@ -55,6 +55,8 @@ class SignupController < ApplicationController
                     end
                     render :verify_email
                   end)
+    else
+      debugger
     end
   end
 
