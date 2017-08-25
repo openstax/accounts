@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
   has_many :message_recipients, inverse_of: :user, dependent: :destroy
   has_many :received_messages, through: :message_recipients, source: :message
   has_many :sent_messages, class_name: 'Message'
-  has_many :alternative_uuids, class_name: 'UserAlternativeUuid', dependent: :destroy
+  has_many :external_uuids, class_name: 'UserExernalUuid', dependent: :destroy
   has_many :group_owners, dependent: :destroy, inverse_of: :user
   has_many :owned_groups, through: :group_owners, source: :group
 

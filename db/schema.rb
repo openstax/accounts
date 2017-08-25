@@ -246,9 +246,9 @@ ActiveRecord::Schema.define(version: 20170825201446) do
     t.json     "trusted_data",         :default=>{}
   end
 
-  create_table "user_alternative_uuids", force: :cascade do |t|
+  create_table "user_external_uuids", force: :cascade do |t|
     t.integer  "user_id",    :null=>false
-    t.string   "uuid",       :null=>false, :index=>{:name=>"index_user_alternative_uuids_on_uuid"}
+    t.string   "uuid",       :null=>false, :index=>{:name=>"index_user_external_uuids_on_uuid", :unique=>true}
     t.datetime "created_at", :null=>false
     t.datetime "updated_at", :null=>false
   end
