@@ -70,8 +70,9 @@ class SessionsController < ApplicationController
   end
 
   def trusted_launch
-    handle_with(TrustedParametersLaunch,
+    handle_with(SessionsTrustedLaunch,
                 user_state: self,
+                trusted_state: session[:trusted],
                 success: lambda do
                   if @handler_result.outputs.user
                     redirect_back
