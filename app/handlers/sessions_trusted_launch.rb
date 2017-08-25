@@ -1,7 +1,5 @@
 class SessionsTrustedLaunch
 
-  attr_reader :signup_state
-
   lev_handler
 
   protected
@@ -10,12 +8,8 @@ class SessionsTrustedLaunch
     true
   end
 
-  def setup
-    @signup_state = options[:signup_state]
-  end
-
   def handle
-
+    signup_state = options[:signup_state]
     uuid_link = UserAlternativeUuid.find_by_uuid(signup_state.trusted_data['uuid'])
     if uuid_link.present?
       outputs[:user] = uuid_link.user
