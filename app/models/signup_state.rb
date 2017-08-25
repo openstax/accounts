@@ -1,5 +1,5 @@
 class SignupState < ActiveRecord::Base
-  attr_accessible :contact_info_value, :role, :return_to
+  attr_accessible :contact_info_value, :role, :return_to, :trusted_data, :verified
 
   enum contact_info_kind: [:email_address]
 
@@ -18,8 +18,37 @@ class SignupState < ActiveRecord::Base
   scope :verified, -> { where(verified: true) }
   sifter :verified do verified.eq true end
 
+  def self.create_from_trusted_data(data)
+    role = User.roles[data[:role]] ? data[:role] : nil
+    SignupState.create!(
+      role: role,
+      verified: true,
+      contact_info_value: data[:email],
+      trusted_data: {
+        email: data[:email],
+        name:  data[:name],
+        uuid:  data[:external_user_uuid],
+        role:  role
+      }
+    )
+  end
+
+  def trusted?
+    trusted_data.present?
+  end
+
+  def skip_email_validation?
+    contact_info_value == trusted_data['email']
+  end
+
   def confirmed;  verified;  end
   def confirmed?; verified?; end
+
+  def full_name=(name)
+    names = name.split(/\s+/)
+    self.first_name = names.first
+    self.last_name = (names.length > 1 ? names[1..-1] : ['']).join(' ')
+  end
 
   protected
 

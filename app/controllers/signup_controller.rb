@@ -15,7 +15,7 @@ class SignupController < ApplicationController
   before_filter :restart_if_missing_signup_state, only: [:verify_email, :password, :social]
 
   # TODO spec this
-  before_filter :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
+  before_filter :exit_signup_if_logged_in, only: [:start, :social, :verify_by_token]
 
   before_filter :check_ready_for_password_or_social, only: [:password, :social]
 
@@ -47,7 +47,7 @@ class SignupController < ApplicationController
       handle_with(SignupVerifyEmail,
                   signup_state: signup_state,
                   success: lambda do
-                    redirect_to action: :password
+                    redirect_to action: @handler_result.outputs.redirect_action
                   end,
                   failure: lambda do
                     @handler_result.errors.each do | error |  # TODO move to view?
@@ -56,7 +56,7 @@ class SignupController < ApplicationController
                     render :verify_email
                   end)
     else
-      debugger
+      redirect_to action: :password if signup_state.skip_email_validation?
     end
   end
 

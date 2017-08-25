@@ -20,7 +20,11 @@ class SignupPassword
   end
 
   def handle
-    outputs.user = User.create
+    outputs.user = User.build
+    if signup_state.trusted?
+      outputs.user.full_name = signup_state.trusted_data['name']
+    end
+    outputs.user.save
     transfer_errors_from(outputs.user, {type: :verbatim}, true)
 
     # Create an Identity, but not an Authentication -- that is done in SessionsCreate
@@ -30,8 +34,11 @@ class SignupPassword
         user_id:               outputs.user.id
        )
     transfer_errors_from(outputs.identity, {type: :verbatim}, true)
+  end
 
 
+  def signup_state
+    options[:signup_state]
   end
 
 end

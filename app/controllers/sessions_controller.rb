@@ -71,8 +71,7 @@ class SessionsController < ApplicationController
 
   def trusted_launch
     handle_with(SessionsTrustedLaunch,
-                user_state: self,
-                trusted_state: session[:trusted],
+                signup_state: signup_state,
                 success: lambda do
                   if @handler_result.outputs.user
                     redirect_back
@@ -329,7 +328,7 @@ class SessionsController < ApplicationController
       Rails.logger.warn "Invalid signature for trusted parameters"
       head :forbidden and return false
     end
-    set_trusted_parameters(params)
+    save_signup_state( SignupState.create_from_trusted_data(params) )
     redirect_to action: :trusted_launch
   end
 

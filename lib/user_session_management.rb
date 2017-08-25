@@ -163,13 +163,4 @@ module UserSessionManagement
     session[:alt_signup]
   end
 
-  # called when the user has trusted paramters for creating or sign in
-  def set_trusted_parameters(params)
-    session[:trusted] = {
-      email: params[:email],
-      name:  params[:name],
-      uuid:  params[:external_user_uuid],
-      role:  User.roles[params[:role]] ? params[:role] : nil,
-    }
-  end
 end
