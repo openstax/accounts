@@ -106,10 +106,6 @@ class SignupController < ApplicationController
     end
   end
 
-  def trusted
-
-  end
-
   def instructor_access_pending
     redirect_back if request.post?
   end
