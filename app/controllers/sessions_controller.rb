@@ -81,6 +81,7 @@ class SessionsController < ApplicationController
                   end
                 end,
                 failure: lambda do
+                  flash[:alert] = I18n.t :"controllers.sessions.trusted_launch_failed"
                   render :start
                 end)
   end
@@ -322,9 +323,10 @@ class SessionsController < ApplicationController
     )
     secret_key = Doorkeeper::Application.find_by_uid!(params[:client_id]).secret
     signature = OpenSSL::HMAC.hexdigest('sha1', secret_key, base_string)
-    if signature != params[:signature] ||
+    if signature.blank? || signature != params[:signature] ||
        !(2.minutes.ago..2.minutes.from_now).cover?(Time.at(params[:timestamp].to_i))
 
+      Rails.logger.warn "Invalid signature for trusted parameters"
       head :forbidden and return false
     end
     set_trusted_parameters(params)

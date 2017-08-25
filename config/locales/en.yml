@@ -76,6 +76,8 @@ en:
         address that is already in use!
       mismatched_authentication: >-
         You logged in with a different third-party account than we expected.  Please try again.
+      trusted_launch_failed:
+        We could not log you in using the information provided. Please log in or create an account.
       trouble_with_provider: >-
         We are having difficulties communicating with the login provider you selected.  Our technical
         team has been notified and we will get to work fixing this problem.  In the meantime you can
