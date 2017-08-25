@@ -171,6 +171,5 @@ module UserSessionManagement
       uuid:  params[:external_user_uuid],
       role:  User.roles[params[:role]] ? params[:role] : nil,
     }
-
   end
 end
