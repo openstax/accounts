@@ -20,7 +20,7 @@ class SignupPassword
   end
 
   def handle
-    outputs.user = User.build
+    outputs.user = User.new
     if signup_state.trusted?
       outputs.user.full_name = signup_state.trusted_data['name']
     end
