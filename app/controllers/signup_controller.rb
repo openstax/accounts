@@ -43,21 +43,19 @@ class SignupController < ApplicationController
   end
 
   def verify_email
-    if request.post?
-      handle_with(SignupVerifyEmail,
-                  signup_state: signup_state,
-                  success: lambda do
-                    redirect_to action: @handler_result.outputs.redirect_action
-                  end,
-                  failure: lambda do
-                    @handler_result.errors.each do | error |  # TODO move to view?
-                      error.message = I18n.t(:"signup.verify_email.#{error.code}", default: error.message)
-                    end
-                    render :verify_email
-                  end)
-    else
-      #render action:
-    end
+    render and return if request.get?
+
+    handle_with(SignupVerifyEmail,
+                signup_state: signup_state,
+                success: lambda do
+                  redirect_to action: :password
+                end,
+                failure: lambda do
+                  @handler_result.errors.each do | error |  # TODO move to view?
+                    error.message = I18n.t(:"signup.verify_email.#{error.code}", default: error.message)
+                  end
+                  render :verify_email
+                end)
   end
 
   def verify_by_token
