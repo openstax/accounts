@@ -52,7 +52,6 @@ Rails.application.routes.draw do
 
   namespace 'signup' do
     get '/', action: :start
-    get 'trusted', action: :trusted
     post '/', action: :start
     get 'password'
     get 'social'
