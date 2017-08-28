@@ -60,7 +60,7 @@ describe SessionsCreate, type: :handler do
     context "oauth response already directly linked to a user" do
       let(:authentication) { FactoryGirl.create(:authentication, provider: 'google_oauth2') }
       let(:signup_state) {
-        FactoryGirl.create(:signup_state, contact_info_value: "bob@bob.com", verified: true)
+        FactoryGirl.create(:signup_state, :verified, contact_info_value: "bob@bob.com")
       }
       it "returns existing_user_signed_up_again status and transfers email" do
         result = handle(request: MockOmniauthRequest.new(authentication.provider, authentication.uid, {}))
@@ -72,7 +72,7 @@ describe SessionsCreate, type: :handler do
     context "oauth response already linked to user by email address" do
       let(:other_user_email) { FactoryGirl.create(:email_address, verified: true)}
       let(:signup_state) {
-        FactoryGirl.create(:signup_state, contact_info_value: "bob@bob.com", verified: true)
+        FactoryGirl.create(:signup_state, :verified, contact_info_value: "bob@bob.com")
       }
 
       it "returns existing_user_signed_up_again status and transfers auth" do
@@ -89,7 +89,7 @@ describe SessionsCreate, type: :handler do
     context "normal password sign up" do
       let(:identity) { FactoryGirl.create :identity }
       let(:signup_state) {
-        FactoryGirl.create(:signup_state, contact_info_value: "bob@bob.com", verified: true)
+        FactoryGirl.create(:signup_state, :verified, contact_info_value: "bob@bob.com")
       }
 
       it "adds authentication, logs in user, returns new_password_user" do
@@ -108,7 +108,7 @@ describe SessionsCreate, type: :handler do
 
     context "normal social sign up" do
       let(:signup_state) {
-        FactoryGirl.create(:signup_state, contact_info_value: "bob@bob.com", verified: true)
+        FactoryGirl.create(:signup_state, :verified, contact_info_value: "bob@bob.com")
       }
 
       it "adds authentication, logs in user, returns new_social_user" do
