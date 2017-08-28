@@ -10,7 +10,7 @@ class SessionsTrustedLaunch
 
   def handle
     signup_state = options[:signup_state]
-    uuid_link = UserAlternativeUuid.find_by_uuid(signup_state.trusted_data['uuid'])
+    uuid_link = UserExternalUuid.find_by_uuid(signup_state.trusted_data['uuid'])
     if uuid_link.present?
       outputs[:user] = uuid_link.user
       signup_state.sign_in!(outputs[:user])
