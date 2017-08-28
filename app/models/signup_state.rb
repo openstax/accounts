@@ -50,12 +50,6 @@ class SignupState < ActiveRecord::Base
   def confirmed;  verified;  end
   def confirmed?; verified?; end
 
-  def full_name=(name)
-    names = name.split(/\s+/)
-    self.first_name = names.first
-    self.last_name = (names.length > 1 ? names[1..-1] : ['']).join(' ')
-  end
-
   protected
 
   def prepare
