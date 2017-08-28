@@ -5,13 +5,14 @@ class UserFromSignupState
   protected
 
   def exec(signup_state)
-    outputs.user = User.new
+    user = User.new
     if signup_state.trusted?
-      outputs.user.role = signup_state.role
-      outputs.user.full_name = signup_state.trusted_data['name']
+      user.role = signup_state.role
+      user.full_name = signup_state.trusted_data['name']
     end
-    outputs.user.save
-    transfer_errors_from(outputs.user, {type: :verbatim}, true)
+    user.save
+    outputs.user = user
+    transfer_errors_from(user, {type: :verbatim}, true)
   end
 
 end
