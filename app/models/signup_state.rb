@@ -56,11 +56,6 @@ class SignupState < ActiveRecord::Base
     self.last_name = (names.length > 1 ? names[1..-1] : ['']).join(' ')
   end
 
-  def contact_info_value=(value)
-    super
-    self.verified = (value == trusted_data['email'])
-  end
-
   protected
 
   def prepare
