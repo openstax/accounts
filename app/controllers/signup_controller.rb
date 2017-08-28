@@ -11,12 +11,8 @@ class SignupController < ApplicationController
 
   before_filter :check_ready_for_profile, only: [:profile]
 
-  # TODO spec this
   before_filter :restart_if_missing_signup_state, only: [:verify_email, :password, :social]
-
-  # TODO spec this
   before_filter :exit_signup_if_logged_in, only: [:start, :social, :verify_by_token]
-
   before_filter :check_ready_for_password_or_social, only: [:password, :social]
 
   helper_method :signup_email, :instructor_has_selected_subject
