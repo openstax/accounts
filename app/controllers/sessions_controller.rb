@@ -1,7 +1,7 @@
+require 'signed_parameters';
 # References:
 #   https://gist.github.com/stefanobernardi/3769177
 require 'ostruct'
-require 'oauth'
 
 class SessionsController < ApplicationController
 
@@ -316,15 +316,7 @@ class SessionsController < ApplicationController
 
   def maybe_launch_with_trusted_params
     return unless params[:go] == 'trusted_launch'
-
-    base_string = OAuth::Helper.normalize(
-      params.except(:controller, :action, :client_id, :signature)
-    )
-    secret_key = Doorkeeper::Application.find_by_uid!(params[:client_id]).secret
-    signature = OpenSSL::HMAC.hexdigest('sha1', secret_key, base_string)
-    if signature.blank? || signature != params[:signature] ||
-       !(2.minutes.ago..2.minutes.from_now).cover?(Time.at(params[:timestamp].to_i))
-
+    unless SignedParameters.verify(params)
       Rails.logger.warn "Invalid signature for trusted parameters"
       head :forbidden and return false
     end
