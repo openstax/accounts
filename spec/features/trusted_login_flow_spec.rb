@@ -13,7 +13,7 @@ feature 'Sign in using trusted parameters', js: true do
       go: 'trusted_launch',
       timestamp: Time.now.to_i,
       role:  role,
-      uuid:  uuid,
+      external_user_uuid:  uuid,
       name:  'Tester McTesterson',
       email: 'test@test.com'
     }
@@ -36,15 +36,28 @@ feature 'Sign in using trusted parameters', js: true do
     expect(find(:css, '#signup_email').value).to eq(params[:email])
   end
 
-  it 'skips email validation and loads profile screen' do
-    visit url
-    click_button (t :"sessions.new.next")
-    wait_for_animations
-    click_button (t :"sessions.new.next")
-    expect_signup_profile_screen
-    # weird capybara bug? have_field doesn't work on first name, but does with last
-    # save_and_open_page does show it filled out
-    expect(page).to have_selector("input[value='Tester']")
-    expect(page).to have_field('profile_last_name', with: 'McTesterson')
+  describe 'instructors' do
+    it 'skips email validation and loads password for instructors screen' do
+      visit url
+      click_button (t :"sessions.new.next")
+      wait_for_animations
+      click_button (t :"sessions.new.next")
+      expect_signup_password_screen
+    end
+  end
+
+  describe 'students' do
+    let(:role) { 'student' }
+
+    it 'skips over password for students'  do
+      visit url
+      click_button (t :"sessions.new.next")
+
+      expect_signup_profile_screen
+      # weird capybara bug? have_field doesn't work on first name, but does with last
+      # save_and_open_page does show it filled out
+      expect(page).to have_selector("input[value='Tester']")
+      expect(page).to have_field('profile_last_name', with: 'McTesterson')
+    end
   end
 end

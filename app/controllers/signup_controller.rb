@@ -3,7 +3,7 @@ class SignupController < ApplicationController
   PROFILE_TIMEOUT = 30.minutes
 
   skip_before_filter :authenticate_user!,
-                     only: [:start, :verify_email, :verify_by_token, :password, :social, :profile, :trusted]
+                     only: [:start, :verify_email, :verify_by_token, :trusted_student, :password, :social, :profile, :trusted]
 
   skip_before_filter :complete_signup_profile
 
@@ -30,7 +30,7 @@ class SignupController < ApplicationController
                   session: self,
                   success: lambda do
                     save_signup_state(@handler_result.outputs.signup_state)
-                    redirect_to action: :verify_email
+                    redirect_to action: signup_state.after_email_action
                   end,
                   failure: lambda do
                     @role = params[:signup].try(:[],:role)
@@ -56,7 +56,7 @@ class SignupController < ApplicationController
                     render :verify_email
                   end)
     else
-      redirect_to action: :password if signup_state.skip_email_validation?
+      #render action:
     end
   end
 
@@ -71,6 +71,18 @@ class SignupController < ApplicationController
                 end,
                 failure: lambda do
                   # TODO spec this and set an error message
+                  redirect_to action: :start
+                end)
+  end
+
+  def trusted_student
+    handle_with(SignupTrustedStudent,
+                signup_state: signup_state,
+                session: self,
+                success: lambda do
+                  redirect_to action: :profile
+                end,
+                failure: lambda do
                   redirect_to action: :start
                 end)
   end

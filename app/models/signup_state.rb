@@ -37,9 +37,15 @@ class SignupState < ActiveRecord::Base
     trusted_data.present?
   end
 
-  def skip_email_validation?
-    contact_info_value == trusted_data['email']
+  def after_email_action
+    return :verify_email unless trusted?
+    if role == 'instructor'
+      :password
+    else
+      :trusted_student
+    end
   end
+
 
   def confirmed;  verified;  end
   def confirmed?; verified?; end
@@ -48,6 +54,11 @@ class SignupState < ActiveRecord::Base
     names = name.split(/\s+/)
     self.first_name = names.first
     self.last_name = (names.length > 1 ? names[1..-1] : ['']).join(' ')
+  end
+
+  def contact_info_value=(value)
+    super
+    self.verified = (value == trusted_data['email'])
   end
 
   protected

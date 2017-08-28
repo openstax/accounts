@@ -57,6 +57,7 @@ Rails.application.routes.draw do
     get 'password'
     get 'social'
 
+    get 'trusted_student'
     get 'verify_email'
     post 'verify_email'
 

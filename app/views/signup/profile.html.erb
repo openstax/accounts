@@ -38,7 +38,7 @@
                    selected: (params.try(:[], 'profile').try(:[], 'using_openstax') || ''),
                    disabled: "", hidden: "") %>
 
-    <% if role != :student %>
+    <% if role.to_sym != :student %>
 
       <h3><%= t('.titles_interested') %></h3>
 

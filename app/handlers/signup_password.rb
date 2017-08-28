@@ -9,6 +9,8 @@ class SignupPassword
     validates :password_confirmation, presence: true
   end
 
+  uses_routine UserFromSignupState
+
   uses_routine CreateIdentity,
                translations: { inputs:  {scope: :signup},
                                outputs: {type: :verbatim}  }
@@ -20,12 +22,7 @@ class SignupPassword
   end
 
   def handle
-    outputs.user = User.new
-    if signup_state.trusted?
-      outputs.user.full_name = signup_state.trusted_data['name']
-    end
-    outputs.user.save
-    transfer_errors_from(outputs.user, {type: :verbatim}, true)
+    run(UserFromSignupState, options[:signup_state])
 
     # Create an Identity, but not an Authentication -- that is done in SessionsCreate
     run(CreateIdentity,
@@ -34,11 +31,6 @@ class SignupPassword
         user_id:               outputs.user.id
        )
     transfer_errors_from(outputs.identity, {type: :verbatim}, true)
-  end
-
-
-  def signup_state
-    options[:signup_state]
   end
 
 end
