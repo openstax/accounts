@@ -71,7 +71,7 @@ describe User, type: :model do
 
     it 'populates first/last when set' do
       user = FactoryGirl.create :user
-      user.full_name = 'Bobby Jones'
+      user.full_name = '  Bobby Jones'
       expect(user.first_name).to eq 'Bobby'
       expect(user.last_name).to eq 'Jones'
 

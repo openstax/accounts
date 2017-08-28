@@ -136,7 +136,7 @@ class User < ActiveRecord::Base
   end
 
   def full_name=(name)
-    names = name.split(/\s+/)
+    names = name.strip.split(/\s+/)
     self.first_name = names.first
     self.last_name = (names.length > 1 ? names[1..-1] : ['']).join(' ')
   end
