@@ -19,15 +19,15 @@ class SignupState < ActiveRecord::Base
   sifter :verified do verified.eq true end
 
   def self.create_from_trusted_data(data)
-    role = User.roles[data[:role]] ? data[:role] : nil
+    role = User.roles[data[:role]] ? data['role'] : nil
     SignupState.create!(
       role: role,
       verified: true,
-      contact_info_value: data[:email],
+      contact_info_value: data['email'],
       trusted_data: {
-        email: data[:email],
-        name:  data[:name],
-        uuid:  data[:external_user_uuid],
+        email: data['email'],
+        name:  data['name'],
+        uuid:  data['external_user_uuid'],
         role:  role
       }
     )

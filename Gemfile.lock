@@ -7,6 +7,23 @@ GIT
       active_attr (~> 0.8)
       restforce (~> 2.1.0)
 
+GIT
+  remote: https://github.com/openstax/openstax_api
+  revision: 1ae1a5174ad93c311463c48e924e9bcfdc3f2e6f
+  branch: sign-params
+  specs:
+    openstax_api (8.1.1)
+      doorkeeper (>= 2.0)
+      exception_notification (>= 4.0)
+      lev (>= 1.0.0)
+      openstax_utilities (>= 4.2.0)
+      rails (>= 3.1, < 5.0)
+      representable (>= 2.4, < 4.0)
+      responders
+      roar (>= 1.0)
+      roar-rails (>= 1.0)
+      uber (< 0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -336,16 +353,6 @@ GEM
     omniauth-twitter (1.2.1)
       json (~> 1.3)
       omniauth-oauth (~> 1.1)
-    openstax_api (8.1.0)
-      doorkeeper (>= 2.0)
-      exception_notification (>= 4.0)
-      lev (>= 1.0.0)
-      openstax_utilities (>= 4.2.0)
-      rails (>= 3.1, < 5.0)
-      representable (>= 2.4, < 4.0)
-      responders
-      roar (>= 1.0)
-      roar-rails (>= 1.0)
     openstax_rescue_from (1.8.0)
       exception_notification (>= 4.1, < 5.0)
       rails (>= 3.1, < 5.0)
@@ -641,7 +648,6 @@ DEPENDENCIES
   lev (~> 7.0.3)
   lograge
   maruku
-  oauth (~> 0.5.1)
   oj
   oj_mimic_json
   omniauth
@@ -649,7 +655,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api (~> 8.1.0)
+  openstax_api!
   openstax_rescue_from (~> 1.8.0)
   openstax_salesforce (~> 0.15.0)
   openstax_utilities (~> 4.2.0)

@@ -5,12 +5,11 @@ feature 'Sign in using trusted parameters', js: true do
     load 'db/seeds.rb'
     create_default_application
   end
-
   let(:role) { 'instructor' }
   let(:uuid) { SecureRandom.uuid }
-  let(:params) {
+  let(:payload) {
     {
-      go: 'trusted_launch',
+
       timestamp: Time.now.to_i,
       role:  role,
       external_user_uuid:  uuid,
@@ -18,14 +17,15 @@ feature 'Sign in using trusted parameters', js: true do
       email: 'test@test.com'
     }
   }
-  let(:query_params) { OAuth::Helper.normalize(params) }
 
-  let(:signature) {
-    OpenSSL::HMAC.hexdigest('sha1', @app.secret, query_params)
+  let(:signed_params) {
+    OpenStax::Api::Params.sign(params: { signed_payload: payload }, secret: @app.secret).merge(
+      go: 'trusted_launch'
+    )
   }
 
   let(:url) {
-    "/oauth/authorize?client_id=#{@app.uid}&#{query_params}&signature=#{signature}"
+    "/oauth/authorize?client_id=#{@app.uid}&#{signed_params.to_param}"
   }
 
 
@@ -33,7 +33,7 @@ feature 'Sign in using trusted parameters', js: true do
     visit url
     expect(page).to have_content(t :"signup.start.page_heading")
     expect(find(:css, '#signup_role').value).to eq('instructor')
-    expect(find(:css, '#signup_email').value).to eq(params[:email])
+    expect(find(:css, '#signup_email').value).to eq(payload[:email])
   end
 
   describe 'instructors' do
@@ -46,7 +46,7 @@ feature 'Sign in using trusted parameters', js: true do
       complete_signup_password_screen('password')
 
       complete_signup_profile_screen_with_whatever
-      ensure_verified_email(params)
+      ensure_verified_email(payload)
     end
   end
 
@@ -63,13 +63,13 @@ feature 'Sign in using trusted parameters', js: true do
       expect(page).to have_selector("input[value='Tester']")
       expect(page).to have_field('profile_last_name', with: 'McTesterson')
       complete_signup_profile_screen(role: :student, school: 'Rice University')
-      ensure_verified_email(params)
+      ensure_verified_email(payload)
     end
   end
 
-  def ensure_verified_email(params)
+  def ensure_verified_email(payload)
     user = User.last
     expect(user.email_addresses.verified.count).to eq(1)
-    expect(user.email_addresses.verified.first.value).to eq(params[:email])
+    expect(user.email_addresses.verified.first.value).to eq(payload[:email])
   end
 end

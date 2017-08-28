@@ -28,9 +28,6 @@ gem 'bcrypt', '~> 3.1.7'
 # OAuth provider
 gem 'doorkeeper', '2.2.2'
 
-# OAuth gem for validating lti requests
-gem 'oauth', '~> 0.5.1'
-
 # OAuth clients
 gem 'omniauth'
 gem 'omniauth-identity'
@@ -51,7 +48,7 @@ gem 'quiet_assets'
 gem 'openstax_utilities', '~> 4.2.0'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 8.1.0'
+gem 'openstax_api', git: 'https://github.com/openstax/openstax_api', branch: 'sign-params'
 
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from', '~> 1.8.0'

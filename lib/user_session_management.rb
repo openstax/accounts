@@ -49,8 +49,8 @@ module UserSessionManagement
     redirect_to(
       main_app.login_path(
         params.slice(
-          :client_id, :signup_at, :go, :no_signup, :email, :name, :role,
-          :signature, :timestamp, :external_user_uuid
+          :client_id, :signup_at, :go, :no_signup,
+          :signed_payload, :signature, :timestamp
         )
       )
     )
