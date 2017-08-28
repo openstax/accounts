@@ -43,6 +43,10 @@ feature 'Sign in using trusted parameters', js: true do
       wait_for_animations
       click_button (t :"sessions.new.next")
       expect_signup_password_screen
+      complete_signup_password_screen('password')
+
+      complete_signup_profile_screen_with_whatever
+      ensure_verified_email(params)
     end
   end
 
@@ -58,6 +62,14 @@ feature 'Sign in using trusted parameters', js: true do
       # save_and_open_page does show it filled out
       expect(page).to have_selector("input[value='Tester']")
       expect(page).to have_field('profile_last_name', with: 'McTesterson')
+      complete_signup_profile_screen(role: :student, school: 'Rice University')
+      ensure_verified_email(params)
     end
+  end
+
+  def ensure_verified_email(params)
+    user = User.last
+    expect(user.email_addresses.verified.count).to eq(1)
+    expect(user.email_addresses.verified.first.value).to eq(params[:email])
   end
 end
