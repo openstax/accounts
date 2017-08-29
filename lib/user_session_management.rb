@@ -48,10 +48,7 @@ module UserSessionManagement
     store_url
     redirect_to(
       main_app.login_path(
-        params.slice(
-          :client_id, :signup_at, :go, :no_signup,
-          :signed_payload, :signature, :timestamp
-        )
+        params.slice(:client_id, :signup_at, :go, :no_signup, :sp)
       )
     )
   end

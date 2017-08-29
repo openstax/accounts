@@ -317,14 +317,14 @@ class SessionsController < ApplicationController
     return unless params[:go] == 'trusted_launch'
 
     unless OpenStax::Api::Params.signature_and_timestamp_valid?(
-             params: params.slice(:signature, :signed_payload, :timestamp),
+             params: params[:sp],
              secret: ::Doorkeeper::Application.find_by_uid!(params[:client_id]).secret)
 
       Rails.logger.warn "Invalid signature for trusted parameters"
       head :forbidden and return false
     end
 
-    save_signup_state(SignupState.create_from_trusted_data(params[:signed_payload]))
+    save_signup_state(SignupState.create_from_trusted_data(params[:sp]))
     redirect_to action: :trusted_launch
   end
 

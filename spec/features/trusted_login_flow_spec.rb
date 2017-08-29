@@ -9,8 +9,6 @@ feature 'Sign in using trusted parameters', js: true do
   let(:uuid) { SecureRandom.uuid }
   let(:payload) {
     {
-
-      timestamp: Time.now.to_i,
       role:  role,
       external_user_uuid:  uuid,
       name:  'Tester McTesterson',
@@ -19,13 +17,11 @@ feature 'Sign in using trusted parameters', js: true do
   }
 
   let(:signed_params) {
-    OpenStax::Api::Params.sign(params: { signed_payload: payload }, secret: @app.secret).merge(
-      go: 'trusted_launch'
-    )
+    { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
   }
 
   let(:url) {
-    "/oauth/authorize?client_id=#{@app.uid}&#{signed_params.to_param}"
+    "/oauth/authorize?client_id=#{@app.uid}&go=trusted_launch&#{signed_params.to_param}"
   }
 
 
