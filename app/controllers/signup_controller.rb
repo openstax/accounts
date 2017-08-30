@@ -109,6 +109,10 @@ class SignupController < ApplicationController
                   failure: lambda do
                     render :profile
                   end)
+    else
+      params[:profile] = {
+        school: current_user.self_reported_school
+      }
     end
   end
 

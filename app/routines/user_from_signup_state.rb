@@ -9,6 +9,7 @@ class UserFromSignupState
     if signup_state.trusted?
       user.role = signup_state.role
       user.full_name = signup_state.trusted_data['name']
+      user.self_reported_school = signup_state.trusted_data['school']
       if signup_state.trusted_data['uuid']
         user.external_uuids.build(uuid: signup_state.trusted_data['uuid'])
       end

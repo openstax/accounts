@@ -24,12 +24,7 @@ class SignupState < ActiveRecord::Base
       role: role,
       verified: true,
       contact_info_value: data['email'],
-      trusted_data: {
-        email: data['email'],
-        name:  data['name'],
-        uuid:  data['external_user_uuid'],
-        role:  role
-      }
+      trusted_data: data.merge(role: role)
     )
   end
 
