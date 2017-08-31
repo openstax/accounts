@@ -9,7 +9,7 @@ class SignupStart
     validates :role, presence: true
   end
 
-  uses_routine ConfirmContactInfo
+  uses_routine SignupTrustedStudent, translations: { outputs: { type: :verbatim } }
 
   def authorized?
     true
@@ -25,6 +25,12 @@ class SignupStart
     if existing_signup_state.try(:contact_info_value) == email
       existing_signup_state.update_attributes(role: signup_params.role)
       outputs.signup_state = existing_signup_state
+
+      if existing_signup_state.trusted_student?
+        run(SignupTrustedStudent, existing_signup_state)
+        options[:session].sign_in!(outputs.user)
+      end
+      outputs.next_action = next_action(existing_signup_state)
       return
     end
 
@@ -53,6 +59,18 @@ class SignupStart
     ).deliver_later
 
     outputs.signup_state = new_signup_state
+
+    outputs.next_action = next_action(new_signup_state)
+  end
+
+  def next_action(signup_state)
+    if signup_state.trusted_instructor?
+      :password
+    elsif signup_state.trusted_student? && signup_state.trusted_email?
+      :profile
+    else
+      :verify_email
+    end
   end
 
   def email

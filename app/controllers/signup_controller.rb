@@ -26,7 +26,7 @@ class SignupController < ApplicationController
                   session: self,
                   success: lambda do
                     save_signup_state(@handler_result.outputs.signup_state)
-                    redirect_to action: signup_state.after_email_action
+                    redirect_to action: @handler_result.outputs.next_action
                   end,
                   failure: lambda do
                     @role = params[:signup].try(:[],:role)

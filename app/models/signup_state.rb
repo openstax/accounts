@@ -32,13 +32,20 @@ class SignupState < ActiveRecord::Base
     trusted_data.present?
   end
 
-  def after_email_action
-    return :verify_email unless trusted?
-    if role == 'instructor'
-      :password
-    else
-      :trusted_student
-    end
+  def role_trusted?
+    trusted? && role == trusted_data['role']
+  end
+
+  def trusted_student?
+    role_trusted? && role == 'student'
+  end
+
+  def trusted_instructor?
+    role_trusted? && role == 'instructor'
+  end
+
+  def trusted_email?
+    trusted? && contact_info_value == trusted_data['email']
   end
 
 
