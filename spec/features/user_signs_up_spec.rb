@@ -768,4 +768,26 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
   end
 
+
+  describe 'when a user is already logged in and attempts to jump back to past urls' do
+
+    before(:each) do
+      create_email_address_for (create_user 'user'), 'user@example.com'
+      visit '/'
+      complete_login_username_or_email_screen 'USER@example.com'
+      complete_login_password_screen 'password'
+      expect_profile_page
+    end
+
+    ['', 'verify_email', 'password', 'social', 'verify_by_token'].each do | action |
+      path = "/signup/#{action}"
+
+      scenario "is redirected to profile when visiting #{path}" do
+        visit path
+        expect_profile_page
+      end
+    end
+
+  end
+
 end
