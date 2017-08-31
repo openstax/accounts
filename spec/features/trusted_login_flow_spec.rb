@@ -35,9 +35,9 @@ feature 'Sign in using trusted parameters', js: true do
   describe 'instructors' do
     it 'skips email validation and loads password for instructors screen' do
       visit url
-      click_button (t :"sessions.new.next")
+      click_button (t :"sessions.start.next")
       wait_for_animations
-      click_button (t :"sessions.new.next")
+      click_button (t :"sessions.start.next")
       expect_signup_password_screen
       complete_signup_password_screen('password')
 
@@ -51,7 +51,7 @@ feature 'Sign in using trusted parameters', js: true do
 
     it 'skips over password for students'  do
       visit url
-      click_button (t :"sessions.new.next")
+      click_button (t :"sessions.start.next")
 
       expect_signup_profile_screen
       # weird capybara bug? have_field doesn't work on first name, but does with last

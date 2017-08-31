@@ -1,9 +1,9 @@
 <%
-  message = t("sessions.new.sent_multiple_usernames",
+  message = t("sessions.start.sent_multiple_usernames",
               email: get_login_state[:username_or_email]).html_safe
 %>
 
 $('.alert').html('<%= message %>');
 $('#login_username_or_email').val('');
 $('#login_username_or_email').attr('placeholder',
-                                   '<%= t("sessions.new.username_placeholder") %>');
+                                   '<%= t("sessions.start.username_placeholder") %>');

@@ -41,7 +41,7 @@ feature 'User logs in', js: true do
     with_forgery_protection do
       arrive_from_app
       complete_login_username_or_email_screen 'user'
-      expect(page).to have_content(t :"sessions.new.unknown_username")
+      expect(page).to have_content(t :"sessions.start.unknown_username")
       screenshot!
     end
   end
@@ -152,7 +152,7 @@ feature 'User logs in', js: true do
       user = create_user 'user'
       create_email_address_for user, 'user@example.com', 'unverified'
       complete_login_username_or_email_screen 'user@example.com'
-      expect(page).to have_content(t :"sessions.new.unknown_email")
+      expect(page).to have_content(t :"sessions.start.unknown_email")
       screenshot!
       complete_login_username_or_email_screen 'user'
       complete_login_password_screen 'password'
@@ -174,7 +174,7 @@ feature 'User logs in', js: true do
       arrive_from_app
       complete_login_username_or_email_screen 'user@example.com'
       expect_sign_in_page
-      expect(page).to have_content(t("sessions.new.multiple_users.content_html").sub('<br/>', ' ').sub(' %{link}.', ''))
+      expect(page).to have_content(t("sessions.start.multiple_users.content_html").sub('<br/>', ' ').sub(' %{link}.', ''))
       screenshot!
 
       complete_login_username_or_email_screen 'user'
@@ -243,13 +243,13 @@ feature 'User logs in', js: true do
     user = create_user('mr_bojangles')
     visit '/'
     expect_sign_in_page
-    expect(page).to have_content(t :"sessions.new.having_trouble")
-    expect(page).not_to have_content(t :"sessions.new.help")
-    expect(page).not_to have_link(t :"sessions.new.knowledge_base")
+    expect(page).to have_content(t :"sessions.start.having_trouble")
+    expect(page).not_to have_content(t :"sessions.start.help")
+    expect(page).not_to have_link(t :"sessions.start.knowledge_base")
 
-    click_link t :"sessions.new.having_trouble"
-    expect(page).to have_content(t :"sessions.new.help")
-    expect(page).to have_link(t :"sessions.new.knowledge_base", target: "_blank")
+    click_link t :"sessions.start.having_trouble"
+    expect(page).to have_content(t :"sessions.start.help")
+    expect(page).to have_link(t :"sessions.start.knowledge_base", target: "_blank")
     screenshot!
   end
 

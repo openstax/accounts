@@ -28,13 +28,13 @@ feature "Params given on entry", js: true do
 
     scenario "arriving from app" do
       arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
-      click_link(t :"sessions.new.sign_up")
+      click_link(t :"sessions.start.sign_up")
       expect(page).to have_content(alt_signup_content)
     end
 
     scenario "straight to login" do
       visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
-      click_link(t :"sessions.new.sign_up")
+      click_link(t :"sessions.start.sign_up")
       expect(page).to have_content(alt_signup_content)
     end
   end

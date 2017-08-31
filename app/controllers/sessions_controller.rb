@@ -8,29 +8,46 @@ class SessionsController < ApplicationController
   include RateLimiting
 
   skip_before_filter :authenticate_user!, :check_if_password_expired,
-                     only: [:new, :lookup_login, :authenticate, :trusted_launch,
+                     only: [:start, :lookup_login, :authenticate,
                             :create, :failure, :destroy, :email_usernames]
 
   skip_before_filter :complete_signup_profile, only: [:destroy]
 
-  before_filter :save_new_params_in_session, only: [:new]
-  before_filter :store_authorization_url_as_fallback, only: [:new, :create]
-  before_filter :maybe_launch_with_trusted_params
-  before_filter :maybe_skip_to_sign_up, only: [:new]
+  before_filter :save_new_params_in_session, only: [:start]
+  before_filter :store_authorization_url_as_fallback, only: [:start, :create]
+
+  before_filter :maybe_skip_to_sign_up, only: [:start]
 
   before_filter :allow_iframe_access, only: :reauthenticate
 
 
-  # If the user arrives to :new already logged in, this means they got linked to
+  # If the user arrives to :start already logged in, this means they got linked to
   # the login page somehow; attempt to redirect to the authorization url stored
   # earlier
-  before_filter :redirect_back, if: -> { signed_in? }, only: :new
+  before_filter :redirect_back, if: -> { signed_in? }, only: :start
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :redirect_back, :email_usernames]
+                  only: [:start, :lookup_login, :authenticate, :create, :failure, :destroy, :redirect_back, :email_usernames]
 
   # Login form
-  def new; end
+  def start
+    handle_with(SessionsStart,
+                signup_state: signup_state,
+                session_management: self,
+                success: lambda do
+                  if @handler_result.outputs.user
+                    redirect_back
+                  elsif @handler_result.outputs.signup_state
+                    redirect_to signup_url
+                  else
+                    render :start
+                  end
+                end,
+                failure: lambda do
+                  flash[:alert] = I18n.t :"controllers.sessions.start_failed"
+                  render :start
+                end)
+  end
 
   def lookup_login
     # Most rate limiting happens in CustomIdentity; this separate check needs to be here
@@ -51,7 +68,7 @@ class SessionsController < ApplicationController
                     security_log :login_not_found, tried: @handler_result.outputs.username_or_email
                     set_login_state(username_or_email: @handler_result.outputs.username_or_email,
                                     matching_user_ids: @handler_result.outputs.user_ids)
-                    render :new
+                    render :start
                   end)
     end
   end
@@ -66,22 +83,6 @@ class SessionsController < ApplicationController
 
   def authenticate
     redirect_to root_path if signed_in?
-  end
-
-  def trusted_launch
-    handle_with(SessionsTrustedLaunch,
-                signup_state: signup_state,
-                success: lambda do
-                  if @handler_result.outputs.user
-                    redirect_back
-                  else
-                    redirect_to signup_url
-                  end
-                end,
-                failure: lambda do
-                  flash[:alert] = I18n.t :"controllers.sessions.trusted_launch_failed"
-                  render :start
-                end)
   end
 
   # Handle OAuth callback (actual login)
@@ -231,10 +232,10 @@ class SessionsController < ApplicationController
     case params[:message]
     when 'cannot_find_user'
       flash[:alert] = I18n.t :"controllers.sessions.no_account_for_username_or_email"
-      render :new
+      render :start
     when 'multiple_users'
       flash[:alert] = I18n.t :"controllers.sessions.several_accounts_for_one_email"
-      render :new
+      render :start
     when 'bad_authenticate_password'
       field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
       render :authenticate
@@ -265,7 +266,7 @@ class SessionsController < ApplicationController
       render :authenticate
     else
       flash[:alert] = params[:message]
-      render :new
+      render :start
     end
   end
 
@@ -312,21 +313,5 @@ class SessionsController < ApplicationController
   def maybe_skip_to_sign_up
     redirect_to signup_path if %w{signup student_signup}.include?(params[:go])
   end
-
-  def maybe_launch_with_trusted_params
-    return unless params[:go] == 'trusted_launch'
-
-    unless OpenStax::Api::Params.signature_and_timestamp_valid?(
-             params: params[:sp],
-             secret: ::Doorkeeper::Application.find_by_uid!(params[:client_id]).secret)
-
-      Rails.logger.warn "Invalid signature for trusted parameters"
-      head :forbidden and return false
-    end
-
-    save_signup_state(SignupState.create_from_trusted_data(params[:sp]))
-    redirect_to action: :trusted_launch
-  end
-
 
 end

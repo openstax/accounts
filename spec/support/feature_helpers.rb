@@ -55,7 +55,7 @@ end
 
 def signin_as username, password='password'
   fill_in 'login_username_or_email', with: username
-  click_button (t :"sessions.new.next")
+  click_button (t :"sessions.start.next")
   fill_in 'login_password', with: password
   click_button (t :"sessions.authenticate_options.login")
 end
@@ -216,18 +216,18 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
 end
 
 def click_password_sign_up  # TODO remove, bad name
-  click_on (t :"sessions.new.sign_up")
+  click_on (t :"sessions.start.sign_up")
 end
 
 def click_sign_up
-  click_on (t :"sessions.new.sign_up")
+  click_on (t :"sessions.start.sign_up")
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"signup.start.page_heading")
 end
 
 def expect_sign_in_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"sessions.new.page_heading")
+  expect(page).to have_content(t :"sessions.start.page_heading")
 end
 
 def expect_sign_up_page
@@ -282,7 +282,7 @@ def complete_login_username_or_email_screen(username_or_email)
   fill_in 'login_username_or_email', with: username_or_email
   expect_sign_in_page
   expect(page).to have_no_missing_translations
-  click_button (t :"sessions.new.next")
+  click_button (t :"sessions.start.next")
   expect(page).to have_no_missing_translations
 
 end
