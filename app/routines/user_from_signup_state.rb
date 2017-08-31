@@ -13,6 +13,7 @@ class UserFromSignupState
       if signup_state.trusted_data['uuid']
         user.external_uuids.build(uuid: signup_state.trusted_data['uuid'])
       end
+      user.trusted_signup_data = signup_state.trusted_data
     end
     user.save
     outputs.user = user

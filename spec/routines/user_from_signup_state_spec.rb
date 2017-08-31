@@ -20,6 +20,7 @@ describe UserFromSignupState do
       expect(user).to be_valid
       expect(user.role).to eq('instructor')
       expect(user.external_uuids.first.uuid).to eq(signup_state.trusted_data['uuid'])
+      expect(user.trusted_signup_data).to eq(signup_state.trusted_data)
     end
 
   end

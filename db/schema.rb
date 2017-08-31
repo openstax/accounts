@@ -243,7 +243,7 @@ ActiveRecord::Schema.define(version: 20170825201446) do
     t.datetime "updated_at",           :null=>false
     t.string   "role",                 :null=>false
     t.text     "return_to"
-    t.json     "trusted_data",         :default=>{}
+    t.jsonb    "trusted_data"
   end
 
   create_table "user_external_uuids", force: :cascade do |t|
@@ -269,6 +269,7 @@ ActiveRecord::Schema.define(version: 20170825201446) do
     t.string   "login_token",            :index=>{:name=>"index_users_on_login_token", :unique=>true}
     t.datetime "login_token_expires_at"
     t.integer  "role",                   :default=>0, :null=>false, :index=>{:name=>"index_users_on_role"}
+    t.jsonb    "trusted_signup_data"
   end
   add_index "users", ["username"], :name=>"index_users_on_username_case_insensitive", :case_sensitive=>false
 
