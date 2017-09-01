@@ -56,6 +56,7 @@ class SessionsCreate
       else
         fatal_error(code: :unknown_callback_state)
       end
+    options[:user_state].clear_signup_state # some of the flows will have a signup_state
   end
 
   def handle_during_login
@@ -110,7 +111,6 @@ class SessionsCreate
         user: receiving_user)
 
     run(TransferAuthentications, authentication, receiving_user)
-
     sign_in!(receiving_user)
     return status
   end
