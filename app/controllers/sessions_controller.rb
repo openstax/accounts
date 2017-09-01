@@ -37,7 +37,7 @@ class SessionsController < ApplicationController
                 success: lambda do
                   if @handler_result.outputs.user
                     redirect_back
-                  elsif @handler_result.outputs.signup_state
+                  elsif is_trusted_student_oauth_signup?
                     redirect_to signup_url
                   else
                     render :start
@@ -284,6 +284,14 @@ class SessionsController < ApplicationController
   end
 
   protected
+
+  # the request comes directly from an oauth request with secure params
+  # and we've examined it and determined it's a trusted student
+  # The student may choose to load /signup later while still being trusted,
+  # but that request will lack the :sp param
+  def is_trusted_student_oauth_signup?
+    params[:sp] && signup_state && signup_state.trusted_student?
+  end
 
   def store_authorization_url_as_fallback
     # In case we need to redirect_back, but don't have something to redirect back
