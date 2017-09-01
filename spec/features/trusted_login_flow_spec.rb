@@ -6,66 +6,88 @@ feature 'Sign in using trusted parameters', js: true do
     create_default_application
   end
   let(:role) { 'instructor' }
-  let(:uuid) { SecureRandom.uuid }
   let(:payload) {
     {
       role:  role,
-      external_user_uuid:  uuid,
+      external_user_uuid: SecureRandom.uuid,
       name:  'Tester McTesterson',
-      email: 'test@test.com'
+      email: 'test@test.com',
+      school: 'Testing U'
     }
   }
-
   let(:signed_params) {
     { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
   }
 
-  let(:url) {
-    "/oauth/authorize?client_id=#{@app.uid}&go=trusted_launch&#{signed_params.to_param}"
-  }
-
-
-  it 'starts flow with inputs populated' do
-    visit url
-    expect(page).to have_content(t :"signup.start.page_heading")
-    expect(find(:css, '#signup_role').value).to eq('instructor')
-    expect(find(:css, '#signup_email').value).to eq(payload[:email])
-  end
-
   describe 'instructors' do
-    it 'skips email validation and loads password for instructors screen' do
-      visit url
-      click_button (t :"sessions.start.next")
-      wait_for_animations
-      click_button (t :"sessions.start.next")
-      expect_signup_password_screen
-      complete_signup_password_screen('password')
+    it 'signs in and links' do
+      user = create_user 'user'
+      arrive_from_app(params: signed_params)
+      expect_sign_in_page
+      complete_login_username_or_email_screen 'user'
+      complete_login_password_screen 'password'
+      expect_back_at_app
+      expect_validated_records(params: payload, user: user)
+    end
 
+    it 'can sign up with trusted data' do
+      arrive_from_app(params: signed_params)
+      expect_sign_in_page
+      click_sign_up
+      expect_sign_up_page
+      expect(page).to have_field('signup_role', with: 'instructor')
+      expect(page).to have_field('signup_email', with: payload[:email])
+      click_button(t :"signup.start.next")
+      wait_for_animations
+      click_button(t :"signup.start.next")
+      complete_signup_password_screen('password')
+      expect_signup_profile_screen
+      expect(page).to have_field('profile_first_name', with: 'Tester')
+      expect(page).to have_field('profile_last_name', with: 'McTesterson')
+      expect(page).to have_field('profile_school', with: payload[:school])
       complete_signup_profile_screen_with_whatever
-      ensure_verified_email(payload)
+
+      expect_back_at_app # note, no "verification pending" step
+      expect_validated_records(params: payload)
     end
   end
 
   describe 'students' do
     let(:role) { 'student' }
 
-    it 'skips over password for students'  do
-      visit url
-      click_button (t :"sessions.start.next")
+    it 'signs in and links' do
+      arrive_from_app(params: signed_params, do_expect: false)
 
-      expect_signup_profile_screen
-      # weird capybara bug? have_field doesn't work on first name, but does with last
-      # save_and_open_page does show it filled out
-      expect(page).to have_selector("input[value='Tester']")
+      expect_sign_up_page # students default to sign-up vs the standard sign-in
+      expect(page).to have_field('signup_role', with: 'student')
+      expect(page).to have_field('signup_email', with: payload[:email])
+      click_button(t :"signup.start.next")
+      expect_signup_profile_screen # skipped password since it's trusted
+      expect(page).to have_field('profile_first_name', with: 'Tester')
       expect(page).to have_field('profile_last_name', with: 'McTesterson')
-      complete_signup_profile_screen(role: :student, school: 'Rice University')
-      ensure_verified_email(payload)
+      expect(page).to have_field('profile_school', with: payload[:school])
+      complete_signup_profile_screen_with_whatever(role: :student)
+      expect_back_at_app
+      expect_validated_records(params: payload)
+    end
+
+    it 'can switch to login and use that' do
+      user = create_user 'user'
+      arrive_from_app(params: signed_params, do_expect: false)
+      expect_sign_up_page
+      click_link(t :'signup.start.already_have_an_account.sign_in')
+      expect_sign_in_page
+      complete_login_username_or_email_screen 'user'
+      complete_login_password_screen 'password'
+      expect_back_at_app
+      expect_validated_records(params: payload, user: user)
     end
   end
 
-  def ensure_verified_email(payload)
-    user = User.last
+  def expect_validated_records(params:, user: User.last)
     expect(user.email_addresses.verified.count).to eq(1)
-    expect(user.email_addresses.verified.first.value).to eq(payload[:email])
+
+    expect(user.email_addresses.verified.first.value).to eq(params[:email])
+    expect(user.external_uuids.where(uuid: params[:external_user_uuid]).exists?).to be(true)
   end
 end
