@@ -31,7 +31,7 @@ class SessionsStart
     elsif secure_params['email'] # maybe there's a verified email that matches?
       user = LookupUsers.by_verified_email(secure_params['email']).first
       if user && secure_params['uuid']
-        UserAlternativeUuid.create!(user: user, uuid: secure_params['uuid'])
+        user.external_uuids.create!(uuid: secure_params['uuid'])
       end
     end
 
