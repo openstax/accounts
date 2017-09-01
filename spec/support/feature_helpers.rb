@@ -274,7 +274,6 @@ def expect_signup_password_screen
 end
 
 def expect_signup_profile_screen
-  fill_in 'profile_first_name', with: ''
   expect(page).to have_content(t :"signup.profile.page_heading")
 end
 
@@ -363,11 +362,11 @@ def complete_signup_profile_screen(role:, first_name: "", last_name: "", suffix:
   fill_in (t :"signup.profile.url"), with: url if role != :student
   fill_in (t :"signup.profile.num_students"), with: num_students if role == :instructor
   select using_openstax, from: "profile_using_openstax" if !using_openstax.blank? if role == :instructor
-
-  subjects.each do |subject|
-    find_field(subject).set("1")
+  if role != :student
+    subjects.each do |subject|
+      find_field(subject).set("1")
+    end
   end
-
   expect(page).to have_content(t :"signup.profile.page_heading")
   expect(page).to have_no_missing_translations
 
