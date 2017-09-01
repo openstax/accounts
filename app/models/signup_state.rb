@@ -48,6 +48,9 @@ class SignupState < ActiveRecord::Base
     trusted? && contact_info_value == trusted_data['email']
   end
 
+  def trusted_external_uuid
+    trusted? ? trusted_data['external_user_uuid'] : nil
+  end
 
   def confirmed;  verified;  end
   def confirmed?; verified?; end
