@@ -25,7 +25,6 @@ Rails.application.routes.draw do
     get 'redirect_back'
 
     get 'failure', path: 'auth/failure'
-    get 'trusted_launch', action: :trusted_launch
     post 'email_usernames'
 
     # Maintain these deprecated routes for a while until client code learns to
@@ -56,7 +55,6 @@ Rails.application.routes.draw do
     get 'password'
     get 'social'
 
-    get 'trusted_student'
     get 'verify_email'
     post 'verify_email'
 

@@ -3,7 +3,7 @@ class SignupController < ApplicationController
   PROFILE_TIMEOUT = 30.minutes
 
   skip_before_filter :authenticate_user!,
-                     only: [:start, :verify_email, :verify_by_token, :trusted_student, :password, :social, :profile, :trusted]
+                     only: [:start, :verify_email, :verify_by_token, :password, :social, :profile]
 
   skip_before_filter :complete_signup_profile
 
@@ -21,7 +21,6 @@ class SignupController < ApplicationController
     if request.post?
       handle_with(SignupStart,
                   existing_signup_state: signup_state,
-                  trusted_state: session[:trusted],
                   return_to: session[:return_to],
                   session: self,
                   success: lambda do
@@ -69,18 +68,6 @@ class SignupController < ApplicationController
                 end)
   end
 
-  def trusted_student
-    handle_with(SignupTrustedStudent,
-                signup_state: signup_state,
-                session: self,
-                success: lambda do
-                  redirect_to action: :profile
-                end,
-                failure: lambda do
-                  redirect_to action: :start
-                end)
-  end
-
   def password; end
   def social; end
 
@@ -98,13 +85,12 @@ class SignupController < ApplicationController
       handle_with(handler,
                   contracts_required: !contracts_not_required,
                   success: lambda do
-                    clear_signup_state
-
-                    if current_user.student?
+                    if current_user.student? || current_user.created_from_trusted_data?
                       redirect_back
                     else
                       redirect_to action: :instructor_access_pending
                     end
+                    clear_signup_state
                   end,
                   failure: lambda do
                     render :profile
