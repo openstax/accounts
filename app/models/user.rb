@@ -170,6 +170,9 @@ class User < ActiveRecord::Base
     email_addresses.any? && email_addresses.none?(&:verified)
   end
 
+  def created_from_trusted_data?
+    trusted_signup_data.present?
+  end
   ##########################
   # Access Control Helpers #
   ##########################
