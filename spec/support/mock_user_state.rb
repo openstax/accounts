@@ -1,4 +1,3 @@
-
 class MockUserState
 
   def sign_in!(user)
@@ -15,6 +14,9 @@ class MockUserState
 
   def current_user
     self.the_current_user
+  end
+
+  def clear_signup_state
   end
 
   protected
