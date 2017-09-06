@@ -2,9 +2,7 @@ require 'simplecov'
 require 'codecov'
 require 'parallel_tests'
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter, SimpleCov::Formatter::Codecov
-]) if ENV['CI'] == 'true'
+SimpleCov.formatter = SimpleCov::Formatter::Codecov if ENV['CI'] == 'true'
 
 SimpleCov.start 'rails'
 
