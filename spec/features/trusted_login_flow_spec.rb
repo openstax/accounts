@@ -35,7 +35,8 @@ feature 'Sign in using trusted parameters', js: true do
       expect_sign_in_page
       click_sign_up
       expect_sign_up_page
-      expect(page).to have_field('signup_role', with: 'instructor')
+
+      expect(page).not_to have_field('signup_role') # no changing the role
       expect(page).to have_field('signup_email', with: payload[:email])
       click_button(t :"signup.start.next")
       wait_for_animations
@@ -83,7 +84,7 @@ feature 'Sign in using trusted parameters', js: true do
       arrive_from_app(params: signed_params, do_expect: false)
 
       expect_sign_up_page # students default to sign-up vs the standard sign-in
-      expect(page).to have_field('signup_role', with: 'student')
+      expect(page).not_to have_field('signup_role') # no changing the role
       expect(page).to have_field('signup_email', with: payload[:email])
       click_button(t :"signup.start.next")
       expect_signup_profile_screen # skipped password since it's trusted

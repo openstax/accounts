@@ -40,6 +40,7 @@ class SessionsStart
       outputs[:user] = user
     else
       signup_state = SignupState.create_from_trusted_data(params[:sp])
+      session_management.session[:signup_role] = signup_state.role
       session_management.save_signup_state(signup_state)
       outputs[:signup_state] = signup_state
     end
