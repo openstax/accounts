@@ -5,6 +5,7 @@
 //= require_self
 
 $(document).ready(function(){
+  $('form:first *:input[type!=hidden]:first').focus();
   OX.Signup.TypeSelector.initialize();
   $('[data-toggle="tooltip"]').tooltip()
 });
