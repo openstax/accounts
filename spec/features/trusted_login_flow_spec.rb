@@ -50,6 +50,30 @@ feature 'Sign in using trusted parameters', js: true do
       expect_back_at_app # note, no "verification pending" step
       expect_validated_records(params: payload)
     end
+
+    it 'requires email validation when modified' do
+      arrive_from_app(params: signed_params)
+      expect_sign_in_page
+      click_sign_up
+      expect_sign_up_page
+
+      email = 'test-modified-teacher@test.com'
+
+      fill_in (t :"signup.start.email_placeholder"), with: email
+      click_button(t :"signup.start.next")
+      wait_for_animations
+      click_button(t :"signup.start.next")
+      expect_signup_verify_screen
+      ss = SignupState.find_by!(contact_info_value: email)
+      fill_in (t :"signup.verify_email.pin"), with: ss.confirmation_pin
+      click_button(t :"signup.verify_email.confirm")
+      complete_signup_password_screen('password')
+      expect_signup_profile_screen
+      complete_signup_profile_screen_with_whatever(role: :instructor)
+      expect_back_at_app
+      expect_validated_records(params: payload.merge(email: email))
+    end
+
   end
 
   describe 'students' do
@@ -81,6 +105,20 @@ feature 'Sign in using trusted parameters', js: true do
       complete_login_password_screen 'password'
       expect_back_at_app
       expect_validated_records(params: payload, user: user)
+    end
+
+    it 'requires email validation when edited' do
+      arrive_from_app(params: signed_params, do_expect: false)
+      fill_in (t :"signup.start.email_placeholder"), with: 'test-modified@test.com'
+      click_button(t :"signup.start.next")
+      expect_signup_verify_screen
+      ss = SignupState.find_by!(contact_info_value: 'test-modified@test.com')
+      fill_in (t :"signup.verify_email.pin"), with: ss.confirmation_pin
+      click_button(t :"signup.verify_email.confirm")
+      expect_signup_profile_screen # skipped password since it's a trusted student
+      complete_signup_profile_screen_with_whatever(role: :student)
+      expect_back_at_app
+      expect_validated_records(params: payload.merge(email: 'test-modified@test.com'))
     end
   end
 

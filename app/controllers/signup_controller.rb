@@ -42,8 +42,9 @@ class SignupController < ApplicationController
 
     handle_with(SignupVerifyEmail,
                 signup_state: signup_state,
+                session: self,
                 success: lambda do
-                  redirect_to action: :password
+                  redirect_to action: (signup_state.trusted_student? ? :profile : :password)
                 end,
                 failure: lambda do
                   @handler_result.errors.each do | error |  # TODO move to view?
@@ -55,12 +56,14 @@ class SignupController < ApplicationController
 
   def verify_by_token
     handle_with(SignupVerifyByToken,
+                signup_state: signup_state,
+                session: self,
                 success: lambda do
                   @handler_result.outputs.signup_state.tap do |state|
                     session[:return_to] = state.return_to
                     save_signup_state(state)
                   end
-                  redirect_to action: :password
+                  redirect_to action: (signup_state.trusted_student? ? :profile : :password)
                 end,
                 failure: lambda do
                   # TODO spec this and set an error message
@@ -85,12 +88,12 @@ class SignupController < ApplicationController
       handle_with(handler,
                   contracts_required: !contracts_not_required,
                   success: lambda do
+                    clear_signup_state
                     if current_user.student? || current_user.created_from_trusted_data?
                       redirect_back
                     else
                       redirect_to action: :instructor_access_pending
                     end
-                    clear_signup_state
                   end,
                   failure: lambda do
                     render :profile
