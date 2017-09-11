@@ -102,6 +102,31 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     expect_back_at_app
   end
 
+  scenario 'a student signs up with trusted params' do
+    params = {
+      role:  'student',
+      external_user_uuid: SecureRandom.uuid,
+      name:  'Tester McTesterson',
+      email: 'test@test.com',
+      school: 'Testing U'
+    }
+    arrive_from_app(do_expect: false, params: {sp: OpenStax::Api::Params.sign(secret: @app.secret, params: params)})
+
+    expect_sign_up_page # students default to sign-up vs the standard sign-in
+    expect(page).not_to have_field('signup_role') # no changing the role
+
+    fill_in (t :"signup.start.email_placeholder"), with: 'my-personal-email@test.com'
+    click_button(t :"signup.start.next")
+    open_email("my-personal-email@test.com")
+    verify_email_path = get_path_from_absolute_link(current_email, 'a')
+    visit verify_email_path
+    expect_signup_profile_screen # skipped password since it's a trusted student
+    expect(page).to have_field('profile_first_name', with: 'Tester')
+    expect(page).to have_field('profile_last_name', with: 'McTesterson')
+    expect(page).to have_field('profile_school', with: params[:school])
+    complete_signup_profile_screen_with_whatever(role: :student)
+  end
+
   scenario 'happy path success with email verification by link' do
     arrive_from_app
     click_sign_up

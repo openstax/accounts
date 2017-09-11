@@ -125,7 +125,6 @@ feature 'Sign in using trusted parameters', js: true do
 
   def expect_validated_records(params:, user: User.last)
     expect(user.email_addresses.verified.count).to eq(1)
-
     expect(user.email_addresses.verified.first.value).to eq(params[:email])
     expect(user.external_uuids.where(uuid: params[:external_user_uuid]).exists?).to be(true)
   end
