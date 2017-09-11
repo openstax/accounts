@@ -15,8 +15,9 @@ class SignupVerifyByToken
 
   def handle
     run(ConfirmByCode, params[:code])
-    if options[:signup_state].trusted_student?
-      run(SignupTrustedStudent, options[:signup_state])
+
+    if outputs[:signup_state].try(:trusted_student?)
+      run(SignupTrustedStudent, outputs[:signup_state])
       options[:session].sign_in!(outputs.user)
     end
   end

@@ -56,7 +56,6 @@ class SignupController < ApplicationController
 
   def verify_by_token
     handle_with(SignupVerifyByToken,
-                signup_state: signup_state,
                 session: self,
                 success: lambda do
                   @handler_result.outputs.signup_state.tap do |state|
