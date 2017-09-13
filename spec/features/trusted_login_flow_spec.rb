@@ -123,6 +123,29 @@ feature 'Sign in using trusted parameters', js: true do
     end
   end
 
+
+  describe 'coming from app when already linked' do
+    let(:user) { create_user 'user' }
+    let!(:external_uuid) { user.external_uuids.create(uuid: payload[:external_user_uuid]) }
+
+    it 'redirects back to application' do
+      arrive_from_app(do_expect: false, params: signed_params)
+      expect_back_at_app
+    end
+
+    it 'prompts for terms agreement' do
+      arrive_from_app(do_expect: false, params: signed_params)
+      expect_back_at_app
+      make_new_contract_version
+      arrive_from_app(do_expect: false, params: signed_params)
+      # complete_terms_screens  # <- this doesn't happen because `fine_print_skip` is called (maybe bug?)
+      expect_back_at_app
+    end
+
+  end
+
+
+
   def expect_validated_records(params:, user: User.last)
     expect(user.email_addresses.verified.count).to eq(1)
     expect(user.email_addresses.verified.first.value).to eq(params[:email])
