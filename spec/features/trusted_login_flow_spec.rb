@@ -80,7 +80,7 @@ feature 'Sign in using trusted parameters', js: true do
   describe 'students' do
     let(:role) { 'student' }
 
-    it 'signs in and links' do
+    it 'signs up by default and links account' do
       arrive_from_app(params: signed_params, do_expect: false)
 
       expect_sign_up_page # students default to sign-up vs the standard sign-in
@@ -96,7 +96,7 @@ feature 'Sign in using trusted parameters', js: true do
       expect_validated_records(params: payload)
     end
 
-    it 'can switch to login and use that' do
+    it 'can switch to sign in and use that' do
       user = create_user 'user'
       arrive_from_app(params: signed_params, do_expect: false)
       expect_sign_up_page
