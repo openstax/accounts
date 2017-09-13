@@ -36,7 +36,7 @@ class SessionsController < ApplicationController
                 session_management: self,
                 success: lambda do
                   if @handler_result.outputs.user
-                    redirect_back
+                    redirect_to action: :redirect_back
                   elsif is_trusted_student_oauth_signup?
                     redirect_to signup_url
                   else
