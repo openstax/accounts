@@ -27,7 +27,7 @@ class SessionsController < ApplicationController
   before_filter :redirect_back, if: -> { signed_in? }, only: :start
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:start, :lookup_login, :authenticate, :create, :failure, :destroy, :redirect_back, :email_usernames]
+                  only: [:start, :lookup_login, :authenticate, :create, :failure, :destroy, :email_usernames]
 
   # Login form
   def start
