@@ -416,15 +416,16 @@ def complete_add_password_success_screen
   click_button (t :"identities.add_success.continue")
 end
 
-def complete_terms_screens
+def complete_terms_screens(without_privacy_policy: false)
 
   find(:css, '#agreement_i_agree').set(true)
   expect(page).to have_content('Terms of Use')
   click_button (t :"terms.pose.agree")
-
-  expect(page).to have_content('Privacy Policy')
-  find(:css, '#agreement_i_agree').set(true)
-  click_button (t :"terms.pose.agree")
+  unless without_privacy_policy
+    expect(page).to have_content('Privacy Policy')
+    find(:css, '#agreement_i_agree').set(true)
+    click_button (t :"terms.pose.agree")
+  end
 end
 
 def complete_instructor_access_pending_screen
