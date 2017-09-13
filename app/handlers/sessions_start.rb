@@ -25,13 +25,13 @@ class SessionsStart
 
     user = nil
 
-    uuid_link = UserExternalUuid.find_by_uuid(secure_params['uuid'])
+    uuid_link = UserExternalUuid.find_by_uuid(secure_params['external_user_uuid'])
     if uuid_link.present?
       user = uuid_link.user
     elsif secure_params['email'] # maybe there's a verified email that matches?
       user = LookupUsers.by_verified_email(secure_params['email']).first
-      if user && secure_params['uuid']
-        user.external_uuids.create!(uuid: secure_params['uuid'])
+      if user && secure_params['external_user_uuid']
+        user.external_uuids.create!(uuid: secure_params['external_user_uuid'])
       end
     end
 
