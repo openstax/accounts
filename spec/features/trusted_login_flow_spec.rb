@@ -134,17 +134,14 @@ feature 'Sign in using trusted parameters', js: true do
     end
 
     it 'prompts for terms agreement' do
-      arrive_from_app(do_expect: false, params: signed_params)
-      expect_back_at_app
       make_new_contract_version
       arrive_from_app(do_expect: false, params: signed_params)
-      # complete_terms_screens  # <- this doesn't happen because `fine_print_skip` is called (maybe bug?)
+      save_and_open_page
+      complete_terms_screens(without_privacy_policy: true)
       expect_back_at_app
     end
 
   end
-
-
 
   def expect_validated_records(params:, user: User.last)
     expect(user.email_addresses.verified.count).to eq(1)

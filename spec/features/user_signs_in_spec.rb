@@ -253,4 +253,16 @@ feature 'User logs in', js: true do
     screenshot!
   end
 
+  scenario 'when terms need to be agreed to' do
+    user = create_user 'user'
+    create_email_address_for(user, 'user@example.com')
+    arrive_from_app
+    make_new_contract_version
+    complete_login_username_or_email_screen 'user@example.com'
+    complete_login_password_screen 'password'
+    screenshot!
+    complete_terms_screens(without_privacy_policy: true)
+    expect_back_at_app
+  end
+
 end
