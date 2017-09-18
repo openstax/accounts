@@ -76,6 +76,8 @@ en:
         address that is already in use!
       mismatched_authentication: >-
         You logged in with a different third-party account than we expected.  Please try again.
+      start_failed:
+        Please log in or create an account.
       trouble_with_provider: >-
         We are having difficulties communicating with the login provider you selected.  Our technical
         team has been notified and we will get to work fixing this problem.  In the meantime you can
@@ -262,7 +264,7 @@ en:
       submitting: Submitting...
       username_or_email: Username or Email
 
-    new:
+    start:
       cant_sign_in: Can’t log in?
       logout_reminder_html: >-
         If you're on a public computer, <b>be sure to sign out</b> when you're done!

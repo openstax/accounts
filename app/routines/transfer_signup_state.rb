@@ -7,7 +7,12 @@ class TransferSignupState
     fatal_error(code: :not_verified) if !signup_state.verified?
 
     run(AddEmailToUser, signup_state.contact_info_value, user, {already_verified: true})
-
+    if signup_state.trusted?
+      if signup_state.trusted_external_uuid
+        user.external_uuids.find_or_initialize_by(uuid: signup_state.trusted_external_uuid)
+      end
+      user.trusted_signup_data = signup_state.trusted_data
+    end
     user.role = signup_state.role
     user.save
     transfer_errors_from(user, {type: :verbatim}, true)

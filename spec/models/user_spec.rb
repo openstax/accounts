@@ -68,6 +68,21 @@ describe User, type: :model do
       user = FactoryGirl.create :user, title: "Mr.", first_name: "Bob", last_name: "Jones"
       expect(user.full_name).to eq "Mr. Bob Jones"
     end
+
+    it 'populates first/last when set' do
+      user = FactoryGirl.create :user
+      user.full_name = '  Bobby Jones'
+      expect(user.first_name).to eq 'Bobby'
+      expect(user.last_name).to eq 'Jones'
+
+      user.full_name = 'Bob'
+      expect(user.first_name).to eq 'Bob'
+      expect(user.last_name).to eq ''
+
+      user.full_name = 'Bob Smith Thomas Esq'
+      expect(user.first_name).to eq 'Bob'
+      expect(user.last_name).to eq 'Smith Thomas Esq'
+    end
   end
 
   context 'uuid' do

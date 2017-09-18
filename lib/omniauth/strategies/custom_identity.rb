@@ -4,7 +4,7 @@ module OmniAuth
     #
     # Notes:
     #   We could have implemented a `request_phase` method that displayed
-    #   a signup form (e.g. by delegating to `SessionsController.action(:new).call(env)`),
+    #   a signup form (e.g. by delegating to `SessionsController.action(:start).call(env)`),
     #   but instead we bypassed that step and just have our form post to
     #   `/auth/identity/signup`
     #
@@ -125,7 +125,7 @@ module OmniAuth
             if Rails.logger && log_warning_on_csrf_failure
 
           handle_unverified_request
-          SessionsController.action(:new).call(env)
+          SessionsController.action(:start).call(env)
         else
           @handler_result =
             SignupPassword.handle(

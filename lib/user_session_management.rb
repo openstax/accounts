@@ -1,3 +1,5 @@
+require 'oauth'
+
 module UserSessionManagement
 
   # References:
@@ -44,7 +46,11 @@ module UserSessionManagement
     return if signed_in?
 
     store_url
-    redirect_to main_app.login_path(params.slice(:client_id, :signup_at, :go, :no_signup))
+    redirect_to(
+      main_app.login_path(
+        params.slice(:client_id, :signup_at, :go, :no_signup, :sp)
+      )
+    )
   end
 
   def authenticate_admin!
@@ -58,7 +64,6 @@ module UserSessionManagement
   alias_method :admin_authentication!, :authenticate_admin!
 
   def set_login_state(username_or_email: nil, matching_user_ids: nil, names: nil, providers: nil)
-    clear_signup_state
     session[:login] = {
       'u' => username_or_email,
       'm' => matching_user_ids,

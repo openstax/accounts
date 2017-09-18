@@ -11,12 +11,8 @@ class SignupController < ApplicationController
 
   before_filter :check_ready_for_profile, only: [:profile]
 
-  # TODO spec this
   before_filter :restart_if_missing_signup_state, only: [:verify_email, :password, :social]
-
-  # TODO spec this
   before_filter :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
-
   before_filter :check_ready_for_password_or_social, only: [:password, :social]
 
   helper_method :signup_email, :instructor_has_selected_subject
@@ -26,9 +22,10 @@ class SignupController < ApplicationController
       handle_with(SignupStart,
                   existing_signup_state: signup_state,
                   return_to: session[:return_to],
+                  session: self,
                   success: lambda do
                     save_signup_state(@handler_result.outputs.signup_state)
-                    redirect_to action: :verify_email
+                    redirect_to action: @handler_result.outputs.next_action
                   end,
                   failure: lambda do
                     @role = params[:signup].try(:[],:role)
@@ -41,29 +38,31 @@ class SignupController < ApplicationController
   end
 
   def verify_email
-    if request.post?
-      handle_with(SignupVerifyEmail,
-                  signup_state: signup_state,
-                  success: lambda do
-                    redirect_to action: :password
-                  end,
-                  failure: lambda do
-                    @handler_result.errors.each do | error |  # TODO move to view?
-                      error.message = I18n.t(:"signup.verify_email.#{error.code}", default: error.message)
-                    end
-                    render :verify_email
-                  end)
-    end
+    render and return if request.get?
+
+    handle_with(SignupVerifyEmail,
+                signup_state: signup_state,
+                session: self,
+                success: lambda do
+                  redirect_to action: (signup_state.trusted_student? ? :profile : :password)
+                end,
+                failure: lambda do
+                  @handler_result.errors.each do | error |  # TODO move to view?
+                    error.message = I18n.t(:"signup.verify_email.#{error.code}", default: error.message)
+                  end
+                  render :verify_email
+                end)
   end
 
   def verify_by_token
     handle_with(SignupVerifyByToken,
+                session: self,
                 success: lambda do
                   @handler_result.outputs.signup_state.tap do |state|
                     session[:return_to] = state.return_to
                     save_signup_state(state)
                   end
-                  redirect_to action: :password
+                  redirect_to action: (signup_state.trusted_student? ? :profile : :password)
                 end,
                 failure: lambda do
                   # TODO spec this and set an error message
@@ -89,8 +88,7 @@ class SignupController < ApplicationController
                   contracts_required: !contracts_not_required,
                   success: lambda do
                     clear_signup_state
-
-                    if current_user.student?
+                    if current_user.student? || current_user.created_from_trusted_data?
                       redirect_back
                     else
                       redirect_to action: :instructor_access_pending
@@ -99,6 +97,10 @@ class SignupController < ApplicationController
                   failure: lambda do
                     render :profile
                   end)
+    else
+      params[:profile] = {
+        school: current_user.self_reported_school
+      }
     end
   end
 

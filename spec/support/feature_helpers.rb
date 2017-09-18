@@ -55,7 +55,7 @@ end
 
 def signin_as username, password='password'
   fill_in 'login_username_or_email', with: username
-  click_button (t :"sessions.new.next")
+  click_button (t :"sessions.start.next")
   fill_in 'login_password', with: password
   click_button (t :"sessions.authenticate_options.login")
 end
@@ -216,18 +216,18 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
 end
 
 def click_password_sign_up  # TODO remove, bad name
-  click_on (t :"sessions.new.sign_up")
+  click_on (t :"sessions.start.sign_up")
 end
 
 def click_sign_up
-  click_on (t :"sessions.new.sign_up")
+  click_on (t :"sessions.start.sign_up")
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"signup.start.page_heading")
 end
 
 def expect_sign_in_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"sessions.new.page_heading")
+  expect(page).to have_content(t :"sessions.start.page_heading")
 end
 
 def expect_sign_up_page
@@ -274,7 +274,6 @@ def expect_signup_password_screen
 end
 
 def expect_signup_profile_screen
-  fill_in 'profile_first_name', with: ''
   expect(page).to have_content(t :"signup.profile.page_heading")
 end
 
@@ -282,7 +281,7 @@ def complete_login_username_or_email_screen(username_or_email)
   fill_in 'login_username_or_email', with: username_or_email
   expect_sign_in_page
   expect(page).to have_no_missing_translations
-  click_button (t :"sessions.new.next")
+  click_button (t :"sessions.start.next")
   expect(page).to have_no_missing_translations
 
 end
@@ -363,11 +362,11 @@ def complete_signup_profile_screen(role:, first_name: "", last_name: "", suffix:
   fill_in (t :"signup.profile.url"), with: url if role != :student
   fill_in (t :"signup.profile.num_students"), with: num_students if role == :instructor
   select using_openstax, from: "profile_using_openstax" if !using_openstax.blank? if role == :instructor
-
-  subjects.each do |subject|
-    find_field(subject).set("1")
+  if role != :student
+    subjects.each do |subject|
+      find_field(subject).set("1")
+    end
   end
-
   expect(page).to have_content(t :"signup.profile.page_heading")
   expect(page).to have_no_missing_translations
 
@@ -417,15 +416,16 @@ def complete_add_password_success_screen
   click_button (t :"identities.add_success.continue")
 end
 
-def complete_terms_screens
+def complete_terms_screens(without_privacy_policy: false)
 
   find(:css, '#agreement_i_agree').set(true)
   expect(page).to have_content('Terms of Use')
   click_button (t :"terms.pose.agree")
-
-  expect(page).to have_content('Privacy Policy')
-  find(:css, '#agreement_i_agree').set(true)
-  click_button (t :"terms.pose.agree")
+  unless without_privacy_policy
+    expect(page).to have_content('Privacy Policy')
+    find(:css, '#agreement_i_agree').set(true)
+    click_button (t :"terms.pose.agree")
+  end
 end
 
 def complete_instructor_access_pending_screen

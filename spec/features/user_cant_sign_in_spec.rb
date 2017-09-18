@@ -9,13 +9,13 @@ feature "User can't sign in", js: true do
 
     scenario "email unknown" do
       complete_login_username_or_email_screen('bob@bob.com')
-      expect(page).to have_content(t :"sessions.new.unknown_email")
+      expect(page).to have_content(t :"sessions.start.unknown_email")
       screenshot!
     end
 
     scenario "username unknown" do
       complete_login_username_or_email_screen('bob')
-      expect(page).to have_content(t :"sessions.new.unknown_username")
+      expect(page).to have_content(t :"sessions.start.unknown_username")
       screenshot!
     end
 
@@ -34,20 +34,20 @@ feature "User can't sign in", js: true do
       ContactInfo.where(id: email2.id).update_all(value: email1.value)
 
       complete_login_username_or_email_screen(email_address)
-      expect(page).to have_content(t(:"sessions.new.multiple_users.content_html").split('.')[0])
+      expect(page).to have_content(t(:"sessions.start.multiple_users.content_html").split('.')[0])
 
       screenshot!
 
-      click_link t(:"sessions.new.multiple_users.click_here")
+      click_link t(:"sessions.start.multiple_users.click_here")
       expect(page).to have_content(
         ActionView::Base.full_sanitizer.sanitize(
-          t(:"sessions.new.sent_multiple_usernames", email: email_address)
+          t(:"sessions.start.sent_multiple_usernames", email: email_address)
         )
       )
 
       screenshot!
 
-      expect(page.first('input')["placeholder"]).to eq t(:"sessions.new.username_placeholder")
+      expect(page.first('input')["placeholder"]).to eq t(:"sessions.start.username_placeholder")
       expect(page.first('input').text).to be_blank
 
       open_email(email_address)
@@ -75,10 +75,10 @@ feature "User can't sign in", js: true do
 
       # Can't be an exact email match to trigger this scenario
       complete_login_username_or_email_screen('useR@example.com')
-      expect(page).to have_content(t(:"sessions.new.multiple_users_missing_usernames.content_html").split('.')[0])
+      expect(page).to have_content(t(:"sessions.start.multiple_users_missing_usernames.content_html").split('.')[0])
 
       expect(page.all('a')
-                 .select{|link| link.text == t(:"sessions.new.multiple_users_missing_usernames.help_link_text")}
+                 .select{|link| link.text == t(:"sessions.start.multiple_users_missing_usernames.help_link_text")}
                  .first["href"]).to eq "mailto:info@openstax.org"
 
       screenshot!

@@ -21,8 +21,20 @@ describe LookupUsers do
         expect(described_class.by_email_or_username('BOB@example.com')).to contain_exactly(@email1.user, @email2.user)
       end
 
+
+    end
+
+    context '#by_verfied_email' do
+      let!(:email) {
+        FactoryGirl.create(:email_address, value: 'bob@example.com', verified: true)
+      }
+
       it 'finds one user when there is a case sensitive match' do
-        expect(described_class.by_email_or_username('bob@EXAMPLE.com')).to contain_exactly(@email2.user)
+        expect(described_class.by_verified_email('bob@EXAMPLE.com')).to contain_exactly(email.user)
+      end
+
+      it 'returns empty array when not found' do
+        expect(described_class.by_verified_email('unknown@test.com')).to be_empty
       end
     end
 

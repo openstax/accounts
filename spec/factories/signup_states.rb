@@ -5,6 +5,16 @@ FactoryGirl.define do
     confirmation_sent_at { Time.now }
     role "instructor"
 
+    trait :trusted do
+      trusted_data {
+        {
+          external_user_uuid: SecureRandom.uuid,
+          name: Faker::Name.name,
+          email: Faker::Internet.email,
+        }
+      }
+    end
+
     trait :verified do
       after(:create) do |ss, evaluator|
         ss.verified = true

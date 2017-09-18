@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
   has_many :message_recipients, inverse_of: :user, dependent: :destroy
   has_many :received_messages, through: :message_recipients, source: :message
   has_many :sent_messages, class_name: 'Message'
-
+  has_many :external_uuids, class_name: 'UserExternalUuid', dependent: :destroy
   has_many :group_owners, dependent: :destroy, inverse_of: :user
   has_many :owned_groups, through: :group_owners, source: :group
 
@@ -135,6 +135,12 @@ class User < ActiveRecord::Base
     guess.blank? ? nil : guess
   end
 
+  def full_name=(name)
+    names = name.strip.split(/\s+/)
+    self.first_name = names.first
+    self.last_name = (names.length > 1 ? names[1..-1] : ['']).join(' ')
+  end
+
   def guessed_first_name
     full_name.present? ? full_name.split("\s")[0] : nil
   end
@@ -164,6 +170,9 @@ class User < ActiveRecord::Base
     email_addresses.any? && email_addresses.none?(&:verified)
   end
 
+  def created_from_trusted_data?
+    trusted_signup_data.present?
+  end
   ##########################
   # Access Control Helpers #
   ##########################

@@ -21,9 +21,13 @@ module LookupUsers
       return [matches.first] if matches.one?
     end
 
+    return self.by_verified_email(email_or_username)
+  end
+
+  def self.by_verified_email(email)
     # Case-sensitive email search
     ContactInfo.verified
-               .where(value: email_or_username)
+               .where(value: email)
                .preload(:user)
                .tap do |matches|
       return matches.map(&:user) if matches.any?
@@ -31,11 +35,12 @@ module LookupUsers
 
     # Case-insensitive email search
     ContactInfo.verified
-               .where('lower(value) = ?', email_or_username.downcase)
+               .where('lower(value) = ?', email.downcase)
                .preload(:user)
                .tap do |matches|
       return matches.map(&:user) if matches.any?
     end
+    return []
   end
 
 end

@@ -56,7 +56,6 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'set_login_state stores the given info in the session' do
-      expect(controller).to receive(:clear_signup_state).and_call_original
       expect(session).to receive(:[]=).with(
         :login, 'u' => 'username', 'm' => [1], 'n' => ['User'], 'p' => ['identity']
       )
@@ -241,7 +240,6 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'set_login_state stores the given info in the session' do
-      expect(controller).to receive(:clear_signup_state).and_call_original
       session = {}
       allow(controller).to receive(:session).and_return(session)
       expect(session).to receive(:[]=).with(

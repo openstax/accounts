@@ -132,7 +132,7 @@ GEM
       activerecord (>= 3.0, < 5.1)
       delayed_job (>= 3.0, < 5)
     diff-lcs (1.2.5)
-    diffy (3.1.0)
+    diffy (3.2.0)
     docile (1.1.5)
     doorkeeper (2.2.2)
       railties (>= 3.2)
@@ -336,7 +336,7 @@ GEM
     omniauth-twitter (1.2.1)
       json (~> 1.3)
       omniauth-oauth (~> 1.1)
-    openstax_api (8.1.0)
+    openstax_api (8.2.0)
       doorkeeper (>= 2.0)
       exception_notification (>= 4.0)
       lev (>= 1.0.0)
@@ -346,6 +346,7 @@ GEM
       responders
       roar (>= 1.0)
       roar-rails (>= 1.0)
+      uber (< 0.1.0)
     openstax_rescue_from (1.8.0)
       exception_notification (>= 4.1, < 5.0)
       rails (>= 3.1, < 5.0)
@@ -458,15 +459,15 @@ GEM
       faraday_middleware (>= 0.8.8)
       hashie (>= 1.2.0, < 4.0)
       json (>= 1.7.5, < 1.9.0)
-    roar (1.0.3)
-      representable (>= 2.0.1, <= 3.0.0)
-    roar-rails (1.0.1)
+    roar (1.1.0)
+      representable (~> 3.0.0)
+    roar-rails (1.1.0)
       actionpack
       railties (>= 3.0.0)
       responders
-      roar (>= 1.0.0, <= 1.1.0)
+      roar (~> 1.1.0)
       test_xml (>= 0.1.6)
-      uber (>= 0.0.5)
+      uber (< 0.2.0)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -648,7 +649,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openstax_api (~> 8.1.0)
+  openstax_api (~> 8.2.0)
   openstax_rescue_from (~> 1.8.0)
   openstax_salesforce (~> 0.15.0)
   openstax_utilities (~> 4.2.0)
@@ -688,4 +689,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   1.14.4
+   1.14.5

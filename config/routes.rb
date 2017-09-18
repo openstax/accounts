@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   OpenStax::Salesforce.set_top_level_routes(self)
 
   scope controller: 'sessions' do
-    get 'login', action: :new
+    get 'login', action: :start
 
     post 'lookup_login'
 
@@ -25,12 +25,11 @@ Rails.application.routes.draw do
     get 'redirect_back'
 
     get 'failure', path: 'auth/failure'
-
     post 'email_usernames'
 
     # Maintain these deprecated routes for a while until client code learns to
     # use /login and /logout
-    get 'signin', action: :new
+    get 'signin', action: :start
     get 'signout', action: :destroy
   end
 

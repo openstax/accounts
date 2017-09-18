@@ -8,28 +8,46 @@ class SessionsController < ApplicationController
   include RateLimiting
 
   skip_before_filter :authenticate_user!, :check_if_password_expired,
-                     only: [:new, :lookup_login, :authenticate,
+                     only: [:start, :lookup_login, :authenticate,
                             :create, :failure, :destroy, :email_usernames]
 
   skip_before_filter :complete_signup_profile, only: [:destroy]
 
-  before_filter :save_new_params_in_session, only: [:new]
-  before_filter :store_authorization_url_as_fallback, only: [:new, :create]
-  before_filter :maybe_skip_to_sign_up, only: [:new]
+  before_filter :save_new_params_in_session, only: [:start]
+  before_filter :store_authorization_url_as_fallback, only: [:start, :create]
+
+  before_filter :maybe_skip_to_sign_up, only: [:start]
 
   before_filter :allow_iframe_access, only: :reauthenticate
 
 
-  # If the user arrives to :new already logged in, this means they got linked to
+  # If the user arrives to :start already logged in, this means they got linked to
   # the login page somehow; attempt to redirect to the authorization url stored
   # earlier
-  before_filter :redirect_back, if: -> { signed_in? }, only: :new
+  before_filter :redirect_back, if: -> { signed_in? }, only: :start
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:new, :lookup_login, :authenticate, :create, :failure, :destroy, :redirect_back, :email_usernames]
+                  only: [:start, :lookup_login, :authenticate, :create, :failure, :destroy, :email_usernames]
 
   # Login form
-  def new; end
+  def start
+    handle_with(SessionsStart,
+                signup_state: signup_state,
+                session_management: self,
+                success: lambda do
+                  if @handler_result.outputs.user
+                    redirect_to action: :redirect_back
+                  elsif is_trusted_student_oauth_signup?
+                    redirect_to signup_url
+                  else
+                    render :start
+                  end
+                end,
+                failure: lambda do
+                  flash[:alert] = I18n.t :"controllers.sessions.start_failed"
+                  render :start
+                end)
+  end
 
   def lookup_login
     # Most rate limiting happens in CustomIdentity; this separate check needs to be here
@@ -50,7 +68,7 @@ class SessionsController < ApplicationController
                     security_log :login_not_found, tried: @handler_result.outputs.username_or_email
                     set_login_state(username_or_email: @handler_result.outputs.username_or_email,
                                     matching_user_ids: @handler_result.outputs.user_ids)
-                    render :new
+                    render :start
                   end)
     end
   end
@@ -214,10 +232,10 @@ class SessionsController < ApplicationController
     case params[:message]
     when 'cannot_find_user'
       flash[:alert] = I18n.t :"controllers.sessions.no_account_for_username_or_email"
-      render :new
+      render :start
     when 'multiple_users'
       flash[:alert] = I18n.t :"controllers.sessions.several_accounts_for_one_email"
-      render :new
+      render :start
     when 'bad_authenticate_password'
       field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
       render :authenticate
@@ -248,7 +266,7 @@ class SessionsController < ApplicationController
       render :authenticate
     else
       flash[:alert] = params[:message]
-      render :new
+      render :start
     end
   end
 
@@ -266,6 +284,14 @@ class SessionsController < ApplicationController
   end
 
   protected
+
+  # the request comes directly from an oauth request with secure params
+  # and we've examined it and determined it's a trusted student
+  # The student may choose to load /signup later while still being trusted,
+  # but that request will lack the :sp param
+  def is_trusted_student_oauth_signup?
+    params[:sp] && signup_state && signup_state.trusted_student?
+  end
 
   def store_authorization_url_as_fallback
     # In case we need to redirect_back, but don't have something to redirect back
