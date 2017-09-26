@@ -248,6 +248,12 @@ en:
       user_info_error_emails_enabled:
         name: 'Enable user info update error emails?'
         help_block: 'If checked (and SF configured), once-a-day user update error emails will go out'
+      send_google_analytics:
+        name: 'Send Google Analytics data?'
+        help_block: 'If checked Google Analytics data will be sent.'
+      google_analytics_code:
+        name: 'Google Analytics Code'
+        help_block: 'Example: UA-XXXXXXXX-X'
 
   sessions:
     help:

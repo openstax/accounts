@@ -61,7 +61,7 @@ coverage:
   status:
     project:                   # measuring the overall project coverage
       default:                 # context, you can create multiple ones with custom titles
-        # enabled: yes           # must be yes|true to enable this status
+        enabled: false           # must be yes|true to enable this status
         target: 0%               # specify the target coverage for each commit status
         #                        #   option: "auto" (must increase from parent commit or pull request base)
         #                        #   option: "X%" a static target percentage to hit
@@ -76,7 +76,7 @@ coverage:
                                # entire pull requests Coverage Diff. Checking if the lines
                                # adjusted are covered at least X%.
       default:
-        # enabled: yes             # must be yes|true to enable this status
+        enabled: false             # must be yes|true to enable this status
         target: 0%                 # specify the target "X%" coverage to hit
         # branches: null           # -> see "branch patterns" below
         threshold: 0%              # allowed to drop X% and still result in a "success" commit status
