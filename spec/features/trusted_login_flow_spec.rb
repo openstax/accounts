@@ -136,7 +136,6 @@ feature 'Sign in using trusted parameters', js: true do
     it 'prompts for terms agreement' do
       make_new_contract_version
       arrive_from_app(do_expect: false, params: signed_params)
-      save_and_open_page
       complete_terms_screens(without_privacy_policy: true)
       expect_back_at_app
     end
