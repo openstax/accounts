@@ -1,0 +1,5 @@
+<% if Settings::EmergencyBannerMessage.display_emergency_message == true and !Settings::EmergencyBannerMessage.emergency_banner_message.blank?  %>
+  <div class="top-level-alerts.danger">
+    <%= Settings::EmergencyBannerMessage.emergency_banner_message %>
+  </div>
+<% end %>

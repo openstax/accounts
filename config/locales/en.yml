@@ -254,6 +254,12 @@ en:
       google_analytics_code:
         name: 'Google Analytics Code'
         help_block: 'Example: UA-XXXXXXXX-X'
+      emergency_banner_message:
+        name: 'Emergency Banner Message'
+        help_block: 'Leave blank to prevent display'
+      display_emergency_message:
+        name: 'Display Emergency Message'
+        help_block: 'If checked, the Emergency Banner Message will display'
 
   sessions:
     help:
