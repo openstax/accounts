@@ -45,7 +45,7 @@ RSpec.describe 'ActionMailer::DeliveryJob error recovery' do
       expect{deliver_later}.not_to raise_error
 
       expect(@exception_email_subject).to eq \
-        "[Accounts] (TEST) (AWS::SES::ResponseError) \"InvalidParameterValue - Missing final '@domain'\""
+        "[Accounts] (test) (AWS::SES::ResponseError) \"InvalidParameterValue - Missing final '@domain'\""
     end
 
     def deliver_later
