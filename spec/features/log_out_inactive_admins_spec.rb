@@ -25,7 +25,6 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
         Timecop.travel(login_time + 29.minutes)
         visit admin_feature_url
 
-        expect(page).to have_http_status(:success)
         expect(page).to have_current_path(admin_feature_url)
       end
     end
@@ -48,7 +47,6 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
         Timecop.travel(login_time + 26.minutes)
         visit admin_feature_url
 
-        expect(page).to have_http_status(:success)
         expect(page).to have_current_path(admin_feature_url)
       end
     end
