@@ -1,7 +1,5 @@
 ActionController::Base.class_exec do
 
-  use_openstax_exception_rescue
-
   protect_from_forgery
 
   layout 'application'

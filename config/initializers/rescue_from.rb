@@ -27,6 +27,15 @@ OpenStax::RescueFrom.register_exception(
   status: :forbidden
 )
 
+# Exceptions in controllers might be reraised or not depending on the settings above
+ActionController::Base.use_openstax_exception_rescue
+
+# RescueFrom always reraises background exceptions so that the background job may properly fail
+ActiveJob::Base.use_openstax_exception_rescue
+
+# URL generation errors are caused by bad routes, for example, and should not be ignored
+ExceptionNotifier.ignored_exceptions.delete("ActionController::UrlGenerationError")
+
 module OpenStax::RescueFrom
   def self.default_friendly_message
     "We had some unexpected trouble with your request."
