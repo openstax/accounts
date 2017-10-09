@@ -37,8 +37,13 @@ end
                                 errors: @handler_result.try(:errors),
                                 error_field_classes: "alert alert-danger") %>
 
-    <% if session[:signup_role] %>
-      <%= f.hidden_field(:role, value: session[:signup_role]) %>
+    <%
+      known_role = session[:signup_role]
+      known_role ||= signup_state.role if signup_state.try(:role_trusted?)
+    %>
+
+    <% if known_role %>
+      <%= f.hidden_field(:role, value: known_role) %>
     <% else %>
       <%= fh.select name: :role,
           options: options_for_select(signup_roles.invert.to_a,

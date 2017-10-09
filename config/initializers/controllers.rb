@@ -9,6 +9,7 @@ ActionController::Base.class_exec do
   include OSU::OsuHelper
   include ApplicationHelper
   include UserSessionManagement
+  include UseSignedParams
   include LocaleSelector
   include RequireRecentSignin
 
@@ -16,6 +17,8 @@ ActionController::Base.class_exec do
   helper_method :contracts_not_required
 
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
+
+  prepend_before_filter :verify_signed_params
 
   before_filter :save_redirect
   before_filter :authenticate_user!
@@ -92,6 +95,20 @@ ActionController::Base.class_exec do
   def return_url_specified_and_allowed?
     # This returns true iff `save_redirect` actually saved the URL
     params[:r] && params[:r] == stored_url
+  end
+
+  def verify_signed_params
+    return true if params[:sp].nil?
+
+    app = ::Doorkeeper::Application.find_by_uid(params[:client_id])
+
+    if app.nil?
+      Rails.logger.warn { "Unknown app for signed parameters" }
+      head(:bad_request)
+    elsif !OpenStax::Api::Params.signature_and_timestamp_valid?(params: params[:sp], secret: app.secret)
+      Rails.logger.warn { "Invalid signature or timestamp for signed parameters" }
+      head(:bad_request)
+    end
   end
 
 end

@@ -22,7 +22,7 @@ module UserSessionManagement
 
     if @current_user.is_anonymous?
       session[:user_id] = nil
-      security_log :sign_out
+      security_log :sign_out, options[:security_log_data]
     else
       session[:user_id] = @current_user.id
       session[:last_admin_activity] = DateTime.now.to_s \
@@ -33,9 +33,9 @@ module UserSessionManagement
     @current_user
   end
 
-  def sign_out!
+  def sign_out!(options={})
     clear_signup_state
-    sign_in!(AnonymousUser.instance)
+    sign_in!(AnonymousUser.instance, options)
   end
 
   def signed_in?
@@ -43,14 +43,21 @@ module UserSessionManagement
   end
 
   def authenticate_user!
+    use_signed_params
+
     return if signed_in?
 
-    store_url
-    redirect_to(
-      main_app.login_path(
-        params.slice(:client_id, :signup_at, :go, :no_signup, :sp)
+    store_url(url: request_url_without_signed_params)
+
+    if signup_state && signup_state.trusted_student?
+      redirect_to main_app.signup_path
+    else
+      redirect_to(
+        main_app.login_path(
+          params.slice(:client_id, :signup_at, :go, :no_signup)
+        )
       )
-    )
+    end
   end
 
   def authenticate_admin!
@@ -157,6 +164,14 @@ module UserSessionManagement
 
   def get_alternate_signup_url
     session[:alt_signup]
+  end
+
+  protected
+
+  def request_url_without_signed_params
+    url = request.url || ""
+    query_hash = Rack::Utils.parse_nested_query(URI.parse(url).query).except("sp")
+    "#{url.split('?').first}#{'?' + query_hash.to_query if query_hash.present?}"
   end
 
 end

@@ -139,7 +139,32 @@ feature 'Sign in using trusted parameters', js: true do
       complete_terms_screens(without_privacy_policy: true)
       expect_back_at_app
     end
+  end
 
+  describe 'first arrival but already signed in' do
+    let!(:user) { create_user 'user' }
+
+    before(:each) do
+      log_in 'user', 'password'
+    end
+
+    context 'instructors' do
+      let(:role) { 'instructor' }
+
+      it 'sends to log in' do
+        arrive_from_app(params: signed_params, do_expect: false)
+        expect_sign_in_page
+      end
+    end
+
+    context 'students' do
+      let(:role) { 'student' }
+
+      it 'sends to sign up' do
+        arrive_from_app(params: signed_params, do_expect: false)
+        expect_sign_up_page
+      end
+    end
   end
 
   def expect_validated_records(params:, user: User.last)
