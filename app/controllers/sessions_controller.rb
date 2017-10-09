@@ -7,7 +7,11 @@ class SessionsController < ApplicationController
   include RequireRecentSignin
   include RateLimiting
 
-  skip_before_filter :authenticate_user!, :check_if_password_expired,
+  skip_before_filter :authenticate_user!,
+                     only: [:start, :lookup_login, :authenticate, :redirect_back,
+                            :create, :failure, :destroy, :email_usernames]
+
+  skip_before_filter :check_if_password_expired,
                      only: [:start, :lookup_login, :authenticate,
                             :create, :failure, :destroy, :email_usernames]
 
@@ -31,22 +35,6 @@ class SessionsController < ApplicationController
 
   # Login form
   def start
-    handle_with(SessionsStart,
-                signup_state: signup_state,
-                session_management: self,
-                success: lambda do
-                  if @handler_result.outputs.user
-                    redirect_to action: :redirect_back
-                  elsif is_trusted_student_oauth_signup?
-                    redirect_to signup_url
-                  else
-                    render :start
-                  end
-                end,
-                failure: lambda do
-                  flash[:alert] = I18n.t :"controllers.sessions.start_failed"
-                  render :start
-                end)
   end
 
   def lookup_login
@@ -284,14 +272,6 @@ class SessionsController < ApplicationController
   end
 
   protected
-
-  # the request comes directly from an oauth request with secure params
-  # and we've examined it and determined it's a trusted student
-  # The student may choose to load /signup later while still being trusted,
-  # but that request will lack the :sp param
-  def is_trusted_student_oauth_signup?
-    params[:sp] && signup_state && signup_state.trusted_student?
-  end
 
   def store_authorization_url_as_fallback
     # In case we need to redirect_back, but don't have something to redirect back

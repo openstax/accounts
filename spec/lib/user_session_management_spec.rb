@@ -41,20 +41,6 @@ RSpec.describe UserSessionManagement, type: :lib do
       expect(controller).not_to be_signed_in
     end
 
-    it 'authenticate_user! redirects to the login page' do
-      expect(controller).to receive(:store_url)
-      expect(controller).to receive(:redirect_to)
-      expect(main_app).to receive(:login_path)
-      controller.authenticate_user!
-    end
-
-    it 'authenticate_admin! redirects to the login page' do
-      expect(controller).to receive(:store_url)
-      expect(controller).to receive(:redirect_to)
-      expect(main_app).to receive(:login_path)
-      controller.authenticate_admin!
-    end
-
     it 'set_login_state stores the given info in the session' do
       expect(session).to receive(:[]=).with(
         :login, 'u' => 'username', 'm' => [1], 'n' => ['User'], 'p' => ['identity']
@@ -210,33 +196,6 @@ RSpec.describe UserSessionManagement, type: :lib do
 
     it 'signed_in returns true' do
       expect(controller).to be_signed_in
-    end
-
-    it 'authenticate_user! does nothing' do
-      expect(controller).not_to receive(:store_url)
-      expect(controller).not_to receive(:redirect_to)
-      expect(main_app).not_to receive(:login_path)
-      controller.authenticate_user!
-    end
-
-    context 'normal user' do
-      it 'authenticate_admin! redirects to the login page' do
-        expect(controller).to receive(:store_url)
-        expect(controller).to receive(:redirect_to)
-        expect(main_app).to receive(:login_path)
-        controller.authenticate_admin!
-      end
-    end
-
-    context 'admin user' do
-      before { user_1.update_attribute :is_administrator, true }
-
-      it 'authenticate_admin! does nothing' do
-        expect(controller).not_to receive(:store_url)
-        expect(controller).not_to receive(:redirect_to)
-        expect(main_app).not_to receive(:login_path)
-        controller.authenticate_admin!
-      end
     end
 
     it 'set_login_state stores the given info in the session' do

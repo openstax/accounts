@@ -22,7 +22,7 @@ module UserSessionManagement
 
     if @current_user.is_anonymous?
       session[:user_id] = nil
-      security_log :sign_out
+      security_log :sign_out, options[:security_log_data]
     else
       session[:user_id] = @current_user.id
       session[:last_admin_activity] = DateTime.now.to_s \
@@ -33,35 +33,14 @@ module UserSessionManagement
     @current_user
   end
 
-  def sign_out!
+  def sign_out!(options={})
     clear_signup_state
-    sign_in!(AnonymousUser.instance)
+    sign_in!(AnonymousUser.instance, options)
   end
 
   def signed_in?
     !current_user.is_anonymous?
   end
-
-  def authenticate_user!
-    return if signed_in?
-
-    store_url
-    redirect_to(
-      main_app.login_path(
-        params.slice(:client_id, :signup_at, :go, :no_signup, :sp)
-      )
-    )
-  end
-
-  def authenticate_admin!
-    return if current_user.is_administrator?
-
-    store_url
-    redirect_to main_app.login_path(params.slice(:client_id))
-  end
-
-  # Doorkeeper controllers define authenticate_admin!, so we need another name
-  alias_method :admin_authentication!, :authenticate_admin!
 
   def set_login_state(username_or_email: nil, matching_user_ids: nil, names: nil, providers: nil)
     session[:login] = {

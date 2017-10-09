@@ -16,7 +16,9 @@
 
     <%= yield :head if content_for?(:head) %>
 
+    <% if !Rails.env.test? %>
     <script src="https://cdn.optimizely.com/js/1345615444.js"></script>
+    <% end %>
 
     <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
