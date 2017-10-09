@@ -1,3 +1,5 @@
+require 'addressable/uri'
+
 module AuthenticateMethods
 
   def authenticate_user!
@@ -103,9 +105,13 @@ module AuthenticateMethods
   end
 
   def request_url_without_signed_params
-    url = request.url || ""
-    query_hash = Rack::Utils.parse_nested_query(URI.parse(url).query).except("sp")
-    "#{url.split('?').first}#{'?' + query_hash.to_query if query_hash.present?}"
+    uri = Addressable::URI.parse(request.url || "")
+
+    params = uri.query_values
+    params.try(:delete, 'sp')
+    uri.query_values = params
+
+    uri.to_s
   end
 
 end
