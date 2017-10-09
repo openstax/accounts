@@ -1,8 +1,38 @@
-module UseSignedParams
+module AuthenticateMethods
+
+  def authenticate_user!
+    use_signed_params if signed_params.present?
+
+    return if signed_in?
+
+    # Drop signed params from where we will go back after log in so we don't
+    # try to use them again.
+    store_url(url: request_url_without_signed_params)
+
+    if signup_state && signup_state.trusted_student?
+      redirect_to main_app.signup_path
+    else
+      redirect_to(
+        main_app.login_path(
+          params.slice(:client_id, :signup_at, :go, :no_signup)
+        )
+      )
+    end
+  end
+
+  def authenticate_admin!
+    return if current_user.is_administrator?
+
+    store_url
+    redirect_to main_app.login_path(params.slice(:client_id))
+  end
+
+  # Doorkeeper controllers define authenticate_admin!, so we need another name
+  alias_method :admin_authentication!, :authenticate_admin!
+
+  protected
 
   def use_signed_params
-    return if signed_params.blank?
-
     incoming_user = nil
     found_incoming_user_by = nil
 
@@ -60,8 +90,6 @@ module UseSignedParams
     end
   end
 
-  protected
-
   def signed_params
     params[:sp]
   end
@@ -72,6 +100,12 @@ module UseSignedParams
 
   def external_email
     signed_params['email']
+  end
+
+  def request_url_without_signed_params
+    url = request.url || ""
+    query_hash = Rack::Utils.parse_nested_query(URI.parse(url).query).except("sp")
+    "#{url.split('?').first}#{'?' + query_hash.to_query if query_hash.present?}"
   end
 
 end

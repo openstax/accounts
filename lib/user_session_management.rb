@@ -42,34 +42,6 @@ module UserSessionManagement
     !current_user.is_anonymous?
   end
 
-  def authenticate_user!
-    use_signed_params
-
-    return if signed_in?
-
-    store_url(url: request_url_without_signed_params)
-
-    if signup_state && signup_state.trusted_student?
-      redirect_to main_app.signup_path
-    else
-      redirect_to(
-        main_app.login_path(
-          params.slice(:client_id, :signup_at, :go, :no_signup)
-        )
-      )
-    end
-  end
-
-  def authenticate_admin!
-    return if current_user.is_administrator?
-
-    store_url
-    redirect_to main_app.login_path(params.slice(:client_id))
-  end
-
-  # Doorkeeper controllers define authenticate_admin!, so we need another name
-  alias_method :admin_authentication!, :authenticate_admin!
-
   def set_login_state(username_or_email: nil, matching_user_ids: nil, names: nil, providers: nil)
     session[:login] = {
       'u' => username_or_email,
@@ -164,14 +136,6 @@ module UserSessionManagement
 
   def get_alternate_signup_url
     session[:alt_signup]
-  end
-
-  protected
-
-  def request_url_without_signed_params
-    url = request.url || ""
-    query_hash = Rack::Utils.parse_nested_query(URI.parse(url).query).except("sp")
-    "#{url.split('?').first}#{'?' + query_hash.to_query if query_hash.present?}"
   end
 
 end

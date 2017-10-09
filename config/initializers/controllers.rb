@@ -9,7 +9,7 @@ ActionController::Base.class_exec do
   include OSU::OsuHelper
   include ApplicationHelper
   include UserSessionManagement
-  include UseSignedParams
+  include AuthenticateMethods
   include LocaleSelector
   include RequireRecentSignin
 
