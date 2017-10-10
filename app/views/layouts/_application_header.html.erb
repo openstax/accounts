@@ -5,11 +5,8 @@
 <div id="application-header">
 
   <div id="top-nav-logo">
-    <a href="<%= main_app.root_path %>"></a>
-  </div>
-
-  <div class="top-level-alerts">
     <%= render partial: "layouts/emergency_message" %>
+    <a href="<%= main_app.root_path %>"></a>
   </div>
 
   <% unless @hide_session_info || true %>
