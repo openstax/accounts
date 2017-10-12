@@ -53,7 +53,7 @@ module Accounts
     }
 
     def is_real_production?
-      secrets[:environment_name] == "prodtutor"
+      secrets.environment_name == "prodtutor"
     end
   end
 end

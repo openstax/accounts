@@ -276,8 +276,8 @@ class UpdateUserSalesforceInfo
     if @allow_error_email && Settings::Salesforce.user_info_error_emails_enabled
       DevMailer.inspect_object(
         object: @errors,
-        subject: "(#{Rails.application.secrets[:environment_name]}) UpdateUserSalesforceInfo errors",
-        to: Rails.application.secrets[:salesforce]['mail_recipients']
+        subject: "(#{Rails.application.secrets.environment_name}) UpdateUserSalesforceInfo errors",
+        to: Rails.application.secrets.salesforce['mail_recipients']
       ).deliver_later
     end
   end

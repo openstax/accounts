@@ -247,8 +247,8 @@ class SessionsController < ApplicationController
 
       DevMailer.inspect_object(
         object: params,
-        subject: "(#{Rails.application.secrets[:environment_name]}) #{params[:strategy]} social login is DOWN!",
-        to: Rails.application.secrets[:exception]['recipients']
+        subject: "(#{Rails.application.secrets.environment_name}) #{params[:strategy]} social login is DOWN!",
+        to: Rails.application.secrets.exception['recipients']
       ).deliver_later
 
       render :authenticate
