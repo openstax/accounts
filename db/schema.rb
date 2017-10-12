@@ -248,10 +248,11 @@ ActiveRecord::Schema.define(version: 20170925154213) do
 
   create_table "user_external_uuids", force: :cascade do |t|
     t.integer  "user_id",    :null=>false
-    t.string   "uuid",       :null=>false, :index=>{:name=>"index_user_external_uuids_on_uuid", :unique=>true}
+    t.string   "uuid",       :null=>false, :index=>{:name=>"index_user_external_uuids_on_uuid"}
     t.datetime "created_at", :null=>false
     t.datetime "updated_at", :null=>false
   end
+
   create_table "users", force: :cascade do |t|
     t.string   "username",               :index=>{:name=>"index_users_on_username", :unique=>true}
     t.datetime "created_at",             :null=>false
