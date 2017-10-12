@@ -52,6 +52,26 @@ feature 'Sign in using trusted parameters', js: true do
       expect_validated_records(params: payload)
     end
 
+    it 'does not give an error if the user takes a longish time to sign up' do
+      arrive_from_app(params: signed_params)
+      click_sign_up
+
+      click_button(t :"signup.start.next")
+      wait_for_animations
+      click_button(t :"signup.start.next")
+      complete_signup_password_screen('password')
+      expect_signup_profile_screen
+      expect(page).to have_field('profile_first_name', with: 'Tester')
+      expect(page).to have_field('profile_last_name', with: 'McTesterson')
+      expect(page).to have_field('profile_school', with: payload[:school])
+
+      Timecop.travel(6.minutes.from_now) do
+        complete_signup_profile_screen_with_whatever
+        expect(page.status_code).to eq 200
+        expect_back_at_app # note, no "verification pending" step
+      end
+    end
+
     it 'requires email validation when modified' do
       arrive_from_app(params: signed_params)
       expect_sign_in_page
