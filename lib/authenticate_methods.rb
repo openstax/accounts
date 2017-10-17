@@ -108,7 +108,7 @@ module AuthenticateMethods
     uri = Addressable::URI.parse(request.url || "")
 
     params = uri.query_values
-    params.try(:delete, 'sp')
+    params.delete_if{|key, _| key.starts_with?("sp[")} if params.present?
     uri.query_values = params
 
     uri.to_s
