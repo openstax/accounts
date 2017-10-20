@@ -63,8 +63,9 @@
       <%= f.hidden_field :source, value: source %>
     </section>
 
-  <section class="footer">
-    <input type="submit" class="primary" value="<%= t '.login' %>" />
+    <section class="footer">
+      <%= f.submit (t :".login"), data: { disable_with: (t :".submitting") }, class: 'primary' %>
+
     <p class="extra-info">
       <%= t(:'.forgot_password') %>
       <%= link_to(t(:'.reset_password'), password_send_reset_path, method: :post) %>.

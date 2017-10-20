@@ -50,7 +50,7 @@
       </div>
 
       <section class="footer">
-        <input type="submit" value="<%= t '.next' %>" class="primary" />
+        <%= f.submit (t :".next"), data: { disable_with: (t :".submitting") }, class: 'primary' %>
         <p class="extra-info">
           <% if !params.has_key?(:no_signup) %>
             <%= t '.no_account_q' %>
