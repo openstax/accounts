@@ -88,7 +88,7 @@
       <% end %>
     </div>
 
-    <%= f.submit (t :".create_account"), id: "create_account_submit", class: 'primary' %>
+    <%= f.submit (t :".create_account"), id: "create_account_submit", data: { disable_with: (t :".submitting") }, class: 'primary' %>
 
   <% end %>
 
