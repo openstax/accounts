@@ -25,7 +25,7 @@ class SignupController < ApplicationController
                   session: self,
                   success: lambda do
                     save_signup_state(@handler_result.outputs.signup_state)
-                    redirect_to action: @handler_result.outputs.next_action
+                    redirect_to action: :verify_email
                   end,
                   failure: lambda do
                     @role = params[:signup].try(:[],:role)
@@ -38,7 +38,14 @@ class SignupController < ApplicationController
   end
 
   def verify_email
-    render and return if request.get?
+    if request.get?
+      # a trusted signup will already have a valid signup state,
+      # all that's needed is to send the confirmation email
+      SignupConfirmationMailer
+        .instructions(signup_state: signup_state)
+        .deliver_later if signup_state.trusted?
+      return
+    end
 
     handle_with(SignupVerifyEmail,
                 signup_state: signup_state,

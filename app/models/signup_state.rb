@@ -22,7 +22,7 @@ class SignupState < ActiveRecord::Base
     role = User.roles[data[:role]] ? data['role'] : nil
     SignupState.create!(
       role: role,
-      verified: true,
+      verified: false,
       contact_info_value: data['email'],
       trusted_data: data.merge(role: role)
     )

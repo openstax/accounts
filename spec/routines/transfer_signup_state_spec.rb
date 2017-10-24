@@ -17,12 +17,9 @@ describe TransferSignupState do
   it 'does not transfer unverified info' do
     user = FactoryGirl.create :user
     ss = FactoryGirl.create :signup_state
-
-    expect(
-      TransferSignupState.call(signup_state: ss, user: user)
-    ).to have_routine_error(:not_verified)
-
-    expect(user.contact_infos(true)).to be_empty
+    TransferSignupState.call(signup_state: ss, user: user)
+    email = user.contact_infos.first
+    expect(email.verified).to be(false)
   end
 
 end

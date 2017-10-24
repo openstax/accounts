@@ -4,9 +4,9 @@ class TransferSignupState
 
   def exec(signup_state:, user:)
     fatal_error(code: :no_signup_email) if signup_state.nil?
-    fatal_error(code: :not_verified) if !signup_state.verified?
 
-    run(AddEmailToUser, signup_state.contact_info_value, user, {already_verified: true})
+    run(AddEmailToUser, signup_state.contact_info_value, user, {already_verified: signup_state.verified?})
+
     if signup_state.trusted?
       if signup_state.trusted_external_uuid
         user.external_uuids.find_or_initialize_by(uuid: signup_state.trusted_external_uuid)
