@@ -100,6 +100,10 @@
 
             <span class="state">
               <i>State:</i> <%= user.state %>
+            </span> |
+
+            <span class="uuid">
+              <i>UUID:</i> <%= user.uuid || '(no uuid)' %>
             </span>
 
             <% if user.self_reported_school.present? %>
