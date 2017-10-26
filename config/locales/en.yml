@@ -287,6 +287,7 @@ en:
       email: Email
       email_placeholder: Email or username
       username_placeholder: Username
+      submitting: Continuing…
       next: Next
       cannot_find_user: Cannot find user
       unknown_username: We don’t recognize this username.  Please try again or use your email address instead.
@@ -322,6 +323,7 @@ en:
       sign_in_with_google: Log in with Google
       sign_in_with_twitter: Log in with Twitter
       login: Log in
+      submitting: Logging in…
       password: Password
       forgot_password: Can’t remember your password?
       trouble_logging_in: Trouble logging in?
@@ -419,6 +421,7 @@ en:
       page_heading_token: Check your email
       pin: Enter PIN
       confirm: Confirm
+      submitting: Confirming…
       used_wrong_email: Used the wrong email?
       edit_email_address: Edit email address
       check_your_email: Check your inbox for %{email}!
@@ -436,6 +439,7 @@ en:
       page_heading: Choose your password
       password_requirements: Password must be at least 8 characters.
       password: Password
+      submitting: Submitting…
       password_confirmation: Confirm Password
       create_password: Submit
       dont_want_to_remember: Don’t want to remember another password?
@@ -471,6 +475,7 @@ en:
         I agree to the %{terms_of_use} and the %{privacy_policy}.
       first_name: First Name
       last_name: Last Name
+      submitting: Creating Account…
       suffix: Suffix
       more_things_heading: And a few more things...
       phone_number: Phone number
