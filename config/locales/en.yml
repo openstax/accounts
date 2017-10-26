@@ -200,11 +200,13 @@ en:
       use_form_below_to_reset_password: >-
         Use the form below to reset your password.
       submit: Reset Password
+      submitting: Resetting…
     add:
       page_heading: Add a password
       use_form_below_to_add_password: >-
         Use the form below to add a password to your account.
       submit: Add Password
+      submitting: Adding…
     add_success:
       page_heading: Success!
       message: Your password was added to your account.

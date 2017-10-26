@@ -183,12 +183,14 @@ pl:
     reset:
       page_heading: Zmień hasło
       submit: Ustaw hasło
+      submitting: Ustaw hasło
       use_form_below_to_reset_password: >-
         Aby zmienić swoje hasło, wypełnij poniższe pola.
     add:
       page_heading: Dodaj hasło
       use_form_below_to_add_password: Aby dodać hasło, wypełnij poniższe pola.
       submit: Dodaj hasło
+      submitting: Dodaj hasło
     add_success:
       page_heading: Sukces!
       message: Hasło zostało dowiązane do Twojego konta.
