@@ -1,4 +1,6 @@
 <%
+  submitting_text ||= submit_text
+
   error_codes = @handler_result.errors.map(&:code)
 
   big_time_error_message =
@@ -32,7 +34,7 @@
 
     <section class="footer">
       <%= link_to(t('.cancel'), profile_path, class: 'btn cancel') %>
-      <%= submit_tag submit_text, class: 'primary' %>
+      <%= f.submit submit_text, data: { disable_with: submitting_text }, class: 'primary' %>
     </section>
   <% end %>
 
