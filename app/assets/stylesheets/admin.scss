@@ -99,4 +99,27 @@ body.admin {
   }
 }
 
+#signup_states {
+  .searches {
+    float: right;
+    margin-bottom: 10px;
+  }
 
+  .desc {
+    clear: both;
+  }
+
+  .entry {
+    border: 1px solid #ddd;
+    background-color: #eee;
+    margin: 10px 0px;
+    padding: 8px;
+
+    .token {
+      font-size: 9px;
+    }
+  }
+
+
+
+}

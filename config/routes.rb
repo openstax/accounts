@@ -198,6 +198,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :signup_states, only: [:index]
+
     mount RailsSettingsUi::Engine, at: 'settings'
   end
 

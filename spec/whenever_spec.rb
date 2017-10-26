@@ -44,22 +44,6 @@ describe 'whenever schedule' do
         end
       end
     end
-
-    context 'missing SF user email' do
-      it 'is not sent in non-production' do
-        expect{
-          eval_runner_tasks("UpdateUserSalesforceInfo")
-        }.to change { ActionMailer::Base.deliveries.count }.by(0)
-      end
-
-      it 'is sent in production' do
-        allow(Rails.application).to receive(:is_real_production?) { true }
-        allow(OpenStax::Salesforce).to receive(:ready_for_api_usage?) { true }
-        expect{
-          eval_runner_tasks("UpdateUserSalesforceInfo")
-        }.to change { ActionMailer::Base.deliveries.count }.by(1)
-      end
-    end
   end
 
   def use_local_zone(example)
