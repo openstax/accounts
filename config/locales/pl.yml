@@ -255,10 +255,10 @@ pl:
         contact_customer_support: skontaktuj się z działem pomocy
       page_heading: Uzyskaj pomoc z logowaniem
       submit: Wyślij
-      submitting: Wysyłanie...
+      submitting: Wysyłanie…
       username_or_email: Nazwa użytkownika albo adres e-mail
 
-    new:
+    start:
       cant_sign_in: Nie możesz się zalogować?
       logout_reminder_html: >-
         Jeżeli używasz publicznego komputera, <b>pamiętaj, aby wylogować się</b>,
@@ -277,6 +277,7 @@ pl:
       email_placeholder: Adres e-mail lub nazwa użytkownika
       username_placeholder: Nazwa użytkownika
       next: Przejdź dalej
+      submitting: Przejdź dalej
       cannot_find_user: Nie znaleziono użytkownika
       unknown_username: >-
         Nie znaleziono użytkownika o takiej nazwie. Spróbuj ponownie albo użyj
@@ -317,6 +318,7 @@ pl:
       sign_in_with_google: Zaloguj się przez Google
       sign_in_with_twitter: Zaloguj się przez Twittera
       login: Zaloguj
+      submitting: Zaloguj
       password: Hasło
       forgot_password: Zapomniałeś/aś hasła?
       trouble_logging_in: Problemy z logowaniem?
@@ -403,6 +405,7 @@ pl:
       page_heading_token: Sprawdź skrzynkę e-mail
       pin: Wprowadź PIN
       confirm: Potwierdź
+      submitting: Potwierdź
       used_wrong_email: Źle wpisałeś/aś adres e-mail?
       edit_email_address: Zmień adres e-mail
       check_your_email: Sprawdź skrzynkę e-mail dla adresu %{email}!
@@ -424,6 +427,7 @@ pl:
       password: Hasło
       password_confirmation: Potwierdź hasło
       create_password: Zapisz
+      submitting: Zapisz
       dont_want_to_remember: Nie chcesz zapamiętywać kolejnego hasła?
       use_social: Zarejestruj się używając konta w serwisie społecznościowym
       separator_or: albo
@@ -463,6 +467,7 @@ pl:
       num_students: Ilu masz uczniów w semestrze?
       using_openstax: Czy używasz OpenStax?
       create_account: Utwórz konto
+      submitting: Utwórz konto
       titles_interested: Zaznacz wszystkie interesujące Cię podręczniki OpenStax
       keep_me_informed: >-
         Proszę o wysyłanie do mnie informacji o nowych podręcznikach, zasobach

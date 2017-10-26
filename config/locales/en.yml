@@ -267,7 +267,7 @@ en:
         contact_customer_support: contact Support
       page_heading: Get help logging in
       submit: Submit
-      submitting: Submitting...
+      submitting: Submitting…
       username_or_email: Username or Email
 
     start:
@@ -287,8 +287,8 @@ en:
       email: Email
       email_placeholder: Email or username
       username_placeholder: Username
-      submitting: Continuing…
       next: Next
+      submitting: Continuing…
       cannot_find_user: Cannot find user
       unknown_username: We don’t recognize this username.  Please try again or use your email address instead.
       unknown_email: We don’t recognize this email.  Please try again.
@@ -439,9 +439,9 @@ en:
       page_heading: Choose your password
       password_requirements: Password must be at least 8 characters.
       password: Password
-      submitting: Submitting…
       password_confirmation: Confirm Password
       create_password: Submit
+      submitting: Submitting…
       dont_want_to_remember: Don’t want to remember another password?
       use_social: Sign up with Google or Facebook instead
       separator_or: or
@@ -475,7 +475,6 @@ en:
         I agree to the %{terms_of_use} and the %{privacy_policy}.
       first_name: First Name
       last_name: Last Name
-      submitting: Creating Account…
       suffix: Suffix
       more_things_heading: And a few more things...
       phone_number: Phone number
@@ -484,6 +483,7 @@ en:
       num_students: Number of students per semester
       using_openstax: Already using OpenStax?
       create_account: Create Account
+      submitting: Creating Account…
       titles_interested: Select all OpenStax subjects that interest you
       keep_me_informed: Send me the OpenStax newsletter.
       timeout: Please log in again to complete your sign up
