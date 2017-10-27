@@ -69,6 +69,8 @@ module OmniAuth
         return fail_with_log!(:too_many_login_attempts) if too_many_login_attempts?
 
         if identity.present?
+          # Give signup_state a chance to record the link if one exists
+          signup_state.on_user_authentication(identity.user) if signup_state
           super
         else
           reason = if locate_conditions[:users_returned] == 0

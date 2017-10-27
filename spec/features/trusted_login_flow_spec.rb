@@ -9,7 +9,7 @@ feature 'Sign in using trusted parameters', js: true do
   let(:payload) {
     {
       role:  role,
-      external_user_uuid: SecureRandom.uuid,
+      uuid: SecureRandom.uuid,
       name:  'Tester McTesterson',
       email: 'test@test.com',
       school: 'Testing U'
@@ -18,6 +18,28 @@ feature 'Sign in using trusted parameters', js: true do
   let(:signed_params) {
     { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
   }
+
+  describe 'arriving with an existing account' do
+
+    it 'pre-fills email on sign in when there is a match' do
+      user = create_user 'user'
+      create_email_address_for(user, payload[:email])
+      arrive_from_app(params: signed_params)
+      expect(page).to have_field('login_username_or_email', with: payload[:email])
+      click_button(t :"signup.start.next")
+      complete_login_password_screen 'password'
+      expect_back_at_app
+      expect(user.external_uuids.where(uuid: payload[:uuid])).to exist
+    end
+
+    it 'auto signs in and returns when linked' do
+      user = create_user 'user'
+      user.external_uuids.create!(uuid: payload[:uuid])
+      arrive_from_app(params: signed_params, do_expect: false)
+      expect_back_at_app
+    end
+
+  end
 
   describe 'instructors' do
 
@@ -161,7 +183,7 @@ feature 'Sign in using trusted parameters', js: true do
 
   describe 'coming from app when already linked' do
     let(:user) { create_user 'user' }
-    let!(:external_uuid) { user.external_uuids.create(uuid: payload[:external_user_uuid]) }
+    let!(:external_uuid) { user.external_uuids.create(uuid: payload[:uuid]) }
 
     it 'redirects back to application' do
       arrive_from_app(do_expect: false, params: signed_params)
@@ -203,8 +225,7 @@ feature 'Sign in using trusted parameters', js: true do
   end
 
   def expect_validated_records(params:, user: User.last, email_is_verified: true)
-
-    expect(user.external_uuids.where(uuid: params[:external_user_uuid]).exists?).to be(true)
+    expect(user.external_uuids.where(uuid: params[:uuid]).exists?).to be(true)
     expect(user.email_addresses.count).to eq(1)
     email = user.email_addresses.first
     expect(email.verified).to be(email_is_verified)

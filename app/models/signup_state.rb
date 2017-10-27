@@ -49,11 +49,35 @@ class SignupState < ActiveRecord::Base
   end
 
   def trusted_external_uuid
-    trusted? ? trusted_data['external_user_uuid'] : nil
+    trusted? ? trusted_data['uuid'] : nil
   end
 
   def confirmed;  verified;  end
   def confirmed?; verified?; end
+
+  def linked_external_uuid
+    UserExternalUuid.find_by_uuid(trusted_external_uuid)
+  end
+
+  def suggested_username
+    if trusted_email? && LookupUsers.by_verified_email(trusted_data['email']).any?
+      trusted_data['email']
+    end
+  end
+
+  def on_user_authentication(user)
+    if trusted_external_uuid
+      existing_link = linked_external_uuid
+      # Update uuid to point to new account if it's linked to a different one
+      if existing_link
+        if existing_link.user_id != user.id
+          existing_link.update_attributes!(user: user)
+        end
+      else
+        UserExternalUuid.create!(user: user, uuid: trusted_external_uuid)
+      end
+    end
+  end
 
   protected
 
