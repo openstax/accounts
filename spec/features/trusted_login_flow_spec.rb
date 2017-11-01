@@ -19,26 +19,29 @@ feature 'Sign in using trusted parameters', js: true do
     { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
   }
 
-  describe 'arriving with an existing account' do
+  %w{ teacher student }.each do |role|
+    describe "arriving with an existing #{role} account" do
+      let(:user) {
+        u = create_user('user')
+        u.update_attributes(role: role)
+        u
+      }
+      it 'pre-fills email on sign in when there is a match' do
+        create_email_address_for(user, payload[:email])
+        arrive_from_app(params: signed_params)
+        expect(page).to have_field('login_username_or_email', with: payload[:email])
+        click_button(t :"signup.start.next")
+        complete_login_password_screen 'password'
+        expect_back_at_app
+        expect(user.external_uuids.where(uuid: payload[:uuid])).to exist
+      end
 
-    it 'pre-fills email on sign in when there is a match' do
-      user = create_user 'user'
-      create_email_address_for(user, payload[:email])
-      arrive_from_app(params: signed_params)
-      expect(page).to have_field('login_username_or_email', with: payload[:email])
-      click_button(t :"signup.start.next")
-      complete_login_password_screen 'password'
-      expect_back_at_app
-      expect(user.external_uuids.where(uuid: payload[:uuid])).to exist
+      it 'auto signs in and returns when linked' do
+        user.external_uuids.create!(uuid: payload[:uuid])
+        arrive_from_app(params: signed_params, do_expect: false)
+        expect_back_at_app
+      end
     end
-
-    it 'auto signs in and returns when linked' do
-      user = create_user 'user'
-      user.external_uuids.create!(uuid: payload[:uuid])
-      arrive_from_app(params: signed_params, do_expect: false)
-      expect_back_at_app
-    end
-
   end
 
   describe 'instructors' do
