@@ -19,11 +19,13 @@ class SignupStart
     end
     outputs.role = signup_params.role
 
-    # Return if has not changed email address
+    # is there a signup_state and it's email is unchanged
     if existing_signup_state.try(:contact_info_value) == email
       existing_signup_state.update_attributes(role: signup_params.role)
       outputs.signup_state = existing_signup_state
-
+      # signup_state may have beenn created in session start
+      # and the the confirmation email will not yet have been sent
+      deliver_validation_email if existing_signup_state.confirmation_sent_at.nil?
       return
     end
 
@@ -46,13 +48,16 @@ class SignupStart
                            scope: :signup },
                          true)
 
-    # Send the pin
-    SignupConfirmationMailer.instructions(
-      signup_state: new_signup_state
-    ).deliver_later
 
     outputs.signup_state = new_signup_state
+    deliver_validation_email # Send the pin
 
+  end
+
+  def deliver_validation_email
+    SignupConfirmationMailer.instructions(
+      signup_state: outputs.signup_state
+    ).deliver_later
   end
 
   def email

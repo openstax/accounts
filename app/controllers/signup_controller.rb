@@ -38,14 +38,7 @@ class SignupController < ApplicationController
   end
 
   def verify_email
-    if request.get?
-      # a trusted signup will already have a valid signup state,
-      # all that's needed is to send the confirmation email
-      SignupConfirmationMailer
-        .instructions(signup_state: signup_state)
-        .deliver_later if signup_state.trusted?
-      return
-    end
+    render and return if request.get?
 
     handle_with(SignupVerifyEmail,
                 signup_state: signup_state,
