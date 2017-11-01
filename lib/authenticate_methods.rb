@@ -56,7 +56,7 @@ module AuthenticateMethods
     incoming_user = UserExternalUuid.find_by_uuid(external_user_uuid).try(:user)
     if incoming_user.present?
       sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
-      sign_in!(incoming_user, security_log_data: {type: 'external email'})
+      sign_in!(incoming_user, security_log_data: {type: 'external uuid'})
       return true
     end
     false
