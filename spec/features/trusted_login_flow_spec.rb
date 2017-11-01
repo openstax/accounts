@@ -41,6 +41,15 @@ feature 'Sign in using trusted parameters', js: true do
         arrive_from_app(params: signed_params, do_expect: false)
         expect_back_at_app
       end
+
+      it 'prompts for terms agreement' do
+        user.external_uuids.create!(uuid: payload[:uuid])
+        make_new_contract_version
+        arrive_from_app(do_expect: false, params: signed_params)
+        complete_terms_screens(without_privacy_policy: true)
+        expect_back_at_app
+      end
+
     end
   end
 
@@ -180,24 +189,6 @@ feature 'Sign in using trusted parameters', js: true do
       complete_signup_profile_screen_with_whatever(role: :student)
       expect_back_at_app
       expect_validated_records(params: payload.merge(email: 'test-modified@test.com'))
-    end
-  end
-
-
-  describe 'coming from app when already linked' do
-    let(:user) { create_user 'user' }
-    let!(:external_uuid) { user.external_uuids.create(uuid: payload[:uuid]) }
-
-    it 'redirects back to application' do
-      arrive_from_app(do_expect: false, params: signed_params)
-      expect_back_at_app
-    end
-
-    it 'prompts for terms agreement' do
-      make_new_contract_version
-      arrive_from_app(do_expect: false, params: signed_params)
-      complete_terms_screens(without_privacy_policy: true)
-      expect_back_at_app
     end
   end
 
