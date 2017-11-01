@@ -4,6 +4,9 @@
 <%
   @hide_layout_errors = true
 
+  suggested_username = signup_state && signup_state.trusted? ?
+    signup_state.trusted_data['email'] : ''
+
   translate_error(code: :no_users) do
     gave_an_email = params["login"]["username_or_email"].match(/@/)
     gave_an_email ? t(:'.unknown_email') : t(:'.unknown_username')
@@ -35,7 +38,7 @@
 
       <div class="card-body">
         <%= fh.text_field name: :username_or_email,
-            value: signup_state ? signup_state.suggested_username : '',
+            value: suggested_login_username,
             label: '.email_placeholder', autofocus: true %>
         <a class="trouble" tabindex="-1" href="#">
           <%= t '.having_trouble' %>

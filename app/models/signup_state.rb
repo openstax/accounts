@@ -45,10 +45,6 @@ class SignupState < ActiveRecord::Base
     role_trusted? && role == 'instructor'
   end
 
-  def trusted_email?
-    trusted? && contact_info_value == trusted_data['email']
-  end
-
   def trusted_external_uuid
     trusted? ? trusted_data['external_user_uuid'] : nil
   end
@@ -58,12 +54,6 @@ class SignupState < ActiveRecord::Base
 
   def linked_external_uuid
     UserExternalUuid.find_by_uuid(trusted_external_uuid)
-  end
-
-  def suggested_username
-    if trusted_email? && LookupUsers.by_verified_email(trusted_data['email']).any?
-      trusted_data['email']
-    end
   end
 
   def on_user_authentication(user)
