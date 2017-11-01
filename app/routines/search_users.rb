@@ -83,7 +83,9 @@ class SearchUsers
       end
 
       with.keyword :uuid do |uuids|
-        users = users.where(uuid: uuids)
+        sanitized_uuids = sanitize_strings(uuids, append_wildcard: options[:admin],
+                                            prepend_wildcard: options[:admin])
+        users = users.where{uuid.like_any sanitized_uuids}
       end
 
       with.keyword :id do |ids|
