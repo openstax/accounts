@@ -34,30 +34,38 @@ module AuthenticateMethods
 
   protected
 
+
+  # When the external site provides secure params the're
+  # requesting the person either be
+  # (1) automatically logged in if their UUID is known to us
+  # (2) Their UUID is remembered after they login so they're automatically logged in on subsequent visits
+  # (3) directed through a partially pre-populated sign up process, with the UUID being remembered at the end.
   def use_signed_params
+    auto_login_external_user || prepare_new_external_user_signup
+  end
+
+  def auto_login_external_user
+    return false unless external_user_uuid.present?
+
     incoming_user = nil
     found_incoming_user_by = nil
 
     # Try to to find an existing user who has a matching external UUID
     # which indicates the account has been linked before
     # if found, we trust it and sign the user in automatically
-    if external_user_uuid.present?
-      incoming_user = UserExternalUuid.find_by_uuid(external_user_uuid).try(:user)
-      if incoming_user.present?
-        sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
-        sign_in!(incoming_user, security_log_data: {type: 'external email'})
-        return
-      end
+    incoming_user = UserExternalUuid.find_by_uuid(external_user_uuid).try(:user)
+    if incoming_user.present?
+      sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
+      sign_in!(incoming_user, security_log_data: {type: 'external email'})
+      return true
     end
+    false
+  end
 
-    # By providing secure params, we assume here that the site that sent this person to
-    # Accounts was asking that the person either be (1) automatically logged in, (2)
-    # automatically logged in on subsequent logins, or (3) directed through a partially
-    # pre-populated sign up process.  If we didn't find a user
-    # who had a linked account to automatically log in,
+  def prepare_new_external_user_signup
+    # If we didn't find a user with a linked account to automatically log in,
     # we do not want to assume that any already-logged-in user owns this secure
     # params information.  Therefore at this point we sign out whoever is signed in.
-
     sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
 
     # Save the secure params data to facilitate sign up if that's what the user
