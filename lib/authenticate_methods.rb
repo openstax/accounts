@@ -47,13 +47,9 @@ module AuthenticateMethods
   def auto_login_external_user
     return false unless external_user_uuid.present?
 
-    incoming_user = nil
-    found_incoming_user_by = nil
-
     # Try to to find an existing user who has a matching external UUID
     # which indicates the account has been linked before
     # if found, we trust it and sign the user in automatically
-    incoming_user = UserExternalUuid.find_by_uuid(external_user_uuid).try(:user)
     if incoming_user.present?
       sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
       sign_in!(incoming_user, security_log_data: {type: 'external uuid'})
@@ -65,15 +61,23 @@ module AuthenticateMethods
   def prepare_new_external_user_signup
     # If we didn't find a user with a linked account to automatically log in,
     # we do not want to assume that any already-logged-in user owns this secure
-    # params information.  Therefore at this point we sign out whoever is signed in.
-    sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
-
-    # Save the secure params data to facilitate sign up if that's what the user
-    # chooses to do
+    # params information.
+    # Therefore at this point we sign out whoever is signed in.
+    if signed_in?
+      type = incoming_user == current_user ?
+               'untrusted external user' : 'different external user'
+      sign_out!(security_log_data: { type: type })
+    end
+    # Save the secure params data to facilitate either sign in or up
+    # depending on the user's choices
     signup_state = SignupState.create_from_trusted_data(params[:sp])
     save_signup_state(signup_state)
   end
 
+    def incoming_user
+      return nil unless external_user_uuid.present?
+    @incoming_user ||= UserExternalUuid.find_by_uuid(external_user_uuid).try(:user)
+  end
 
   def signed_params
     params[:sp]
