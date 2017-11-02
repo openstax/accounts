@@ -8,7 +8,7 @@ FactoryGirl.define do
     trait :trusted do
       trusted_data {
         {
-          uuid: SecureRandom.uuid,
+          external_user_uuid: SecureRandom.uuid,
           name: Faker::Name.name,
           email: Faker::Internet.email,
         }
