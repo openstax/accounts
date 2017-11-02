@@ -56,20 +56,6 @@ class SignupState < ActiveRecord::Base
     UserExternalUuid.find_by_uuid(trusted_external_uuid)
   end
 
-  def on_user_authentication(user)
-    if trusted_external_uuid
-      existing_link = linked_external_uuid
-      # Update uuid to point to new account if it's linked to a different one
-      if existing_link
-        if existing_link.user_id != user.id
-          existing_link.update_attributes!(user: user)
-        end
-      else
-        UserExternalUuid.create!(user: user, uuid: trusted_external_uuid)
-      end
-    end
-  end
-
   protected
 
   def prepare
