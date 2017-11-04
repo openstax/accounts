@@ -9,7 +9,7 @@ feature 'Sign in using trusted parameters', js: true do
   let(:payload) {
     {
       role:  role,
-      external_user_uuid: SecureRandom.uuid,
+      uuid: SecureRandom.uuid,
       name:  'Tester McTesterson',
       email: 'test@test.com',
       school: 'Testing U'
@@ -19,7 +19,42 @@ feature 'Sign in using trusted parameters', js: true do
     { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
   }
 
+  %w{ teacher student }.each do |role|
+    describe "arriving with an existing #{role} account" do
+      let(:user) {
+        u = create_user('user')
+        u.update_attributes(role: role)
+        u
+      }
+      it 'pre-fills email on sign in when there is a match' do
+        create_email_address_for(user, payload[:email])
+        arrive_from_app(params: signed_params)
+        expect(page).to have_field('login_username_or_email', with: payload[:email])
+        click_button(t :"signup.start.next")
+        complete_login_password_screen 'password'
+        expect_back_at_app
+        expect(user.external_uuids.where(uuid: payload[:uuid])).to exist
+      end
+
+      it 'auto signs in and returns when linked' do
+        user.external_uuids.create!(uuid: payload[:uuid])
+        arrive_from_app(params: signed_params, do_expect: false)
+        expect_back_at_app
+      end
+
+      it 'prompts for terms agreement' do
+        user.external_uuids.create!(uuid: payload[:uuid])
+        make_new_contract_version
+        arrive_from_app(do_expect: false, params: signed_params)
+        complete_terms_screens(without_privacy_policy: true)
+        expect_back_at_app
+      end
+
+    end
+  end
+
   describe 'instructors' do
+
     it 'signs in and links' do
       user = create_user 'user'
       arrive_from_app(params: signed_params)
@@ -27,7 +62,7 @@ feature 'Sign in using trusted parameters', js: true do
       complete_login_username_or_email_screen 'user'
       complete_login_password_screen 'password'
       expect_back_at_app
-      expect_validated_records(params: payload, user: user)
+      expect_validated_records(params: payload, user: user, email_is_verified: false)
     end
 
     it 'can sign up with trusted data' do
@@ -41,6 +76,11 @@ feature 'Sign in using trusted parameters', js: true do
       click_button(t :"signup.start.next")
       wait_for_animations
       click_button(t :"signup.start.next")
+
+      open_email(payload[:email])
+      verify_email_path = get_path_from_absolute_link(current_email, 'a')
+      visit verify_email_path
+
       complete_signup_password_screen('password')
       expect_signup_profile_screen
       expect(page).to have_field('profile_first_name', with: 'Tester')
@@ -59,6 +99,11 @@ feature 'Sign in using trusted parameters', js: true do
       click_button(t :"signup.start.next")
       wait_for_animations
       click_button(t :"signup.start.next")
+
+      open_email(payload[:email])
+      verify_email_path = get_path_from_absolute_link(current_email, 'a')
+      visit verify_email_path
+
       complete_signup_password_screen('password')
       expect_signup_profile_screen
       expect(page).to have_field('profile_first_name', with: 'Tester')
@@ -102,11 +147,14 @@ feature 'Sign in using trusted parameters', js: true do
 
     it 'signs up by default and links account' do
       arrive_from_app(params: signed_params, do_expect: false)
-
       expect_sign_up_page # students default to sign-up vs the standard sign-in
       expect(page).not_to have_field('signup_role') # no changing the role
       expect(page).to have_field('signup_email', with: payload[:email])
       click_button(t :"signup.start.next")
+      expect_signup_verify_screen
+      ss = SignupState.find_by!(contact_info_value: payload[:email])
+      fill_in (t :"signup.verify_email.pin"), with: ss.confirmation_pin
+      click_button(t :"signup.verify_email.confirm")
       expect_signup_profile_screen # skipped password since it's trusted
       expect(page).to have_field('profile_first_name', with: 'Tester')
       expect(page).to have_field('profile_last_name', with: 'McTesterson')
@@ -122,10 +170,11 @@ feature 'Sign in using trusted parameters', js: true do
       expect_sign_up_page
       click_link(t :'signup.start.already_have_an_account.sign_in')
       expect_sign_in_page
+
       complete_login_username_or_email_screen 'user'
       complete_login_password_screen 'password'
       expect_back_at_app
-      expect_validated_records(params: payload, user: user)
+      expect_validated_records(params: payload, user: user, email_is_verified: false)
     end
 
     it 'requires email validation when edited' do
@@ -140,24 +189,6 @@ feature 'Sign in using trusted parameters', js: true do
       complete_signup_profile_screen_with_whatever(role: :student)
       expect_back_at_app
       expect_validated_records(params: payload.merge(email: 'test-modified@test.com'))
-    end
-  end
-
-
-  describe 'coming from app when already linked' do
-    let(:user) { create_user 'user' }
-    let!(:external_uuid) { user.external_uuids.create(uuid: payload[:external_user_uuid]) }
-
-    it 'redirects back to application' do
-      arrive_from_app(do_expect: false, params: signed_params)
-      expect_back_at_app
-    end
-
-    it 'prompts for terms agreement' do
-      make_new_contract_version
-      arrive_from_app(do_expect: false, params: signed_params)
-      complete_terms_screens(without_privacy_policy: true)
-      expect_back_at_app
     end
   end
 
@@ -187,9 +218,11 @@ feature 'Sign in using trusted parameters', js: true do
     end
   end
 
-  def expect_validated_records(params:, user: User.last)
-    expect(user.email_addresses.verified.count).to eq(1)
-    expect(user.email_addresses.verified.first.value).to eq(params[:email])
-    expect(user.external_uuids.where(uuid: params[:external_user_uuid]).exists?).to be(true)
+  def expect_validated_records(params:, user: User.last, email_is_verified: true)
+    expect(user.external_uuids.where(uuid: params[:uuid]).exists?).to be(true)
+    expect(user.email_addresses.count).to eq(1)
+    email = user.email_addresses.first
+    expect(email.verified).to be(email_is_verified)
   end
+
 end

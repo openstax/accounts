@@ -20,9 +20,10 @@ class SignupState < ActiveRecord::Base
 
   def self.create_from_trusted_data(data)
     role = User.roles[data[:role]] ? data['role'] : nil
+    data['external_user_uuid'] = data.delete('uuid')
     SignupState.create!(
       role: role,
-      verified: true,
+      verified: false,
       contact_info_value: data['email'],
       trusted_data: data.merge(role: role)
     )
@@ -44,16 +45,16 @@ class SignupState < ActiveRecord::Base
     role_trusted? && role == 'instructor'
   end
 
-  def trusted_email?
-    trusted? && contact_info_value == trusted_data['email']
-  end
-
   def trusted_external_uuid
     trusted? ? trusted_data['external_user_uuid'] : nil
   end
 
   def confirmed;  verified;  end
   def confirmed?; verified?; end
+
+  def linked_external_uuid
+    UserExternalUuid.find_by_uuid(trusted_external_uuid)
+  end
 
   protected
 

@@ -20,4 +20,15 @@ module SessionsHelper
 
     return I18n.enumerate kind, list, scope: scope
   end
+
+  def suggested_login_username
+    if !params[:username_or_email] &&
+       signup_state.try(:trusted?) &&
+       LookupUsers.by_verified_email(signup_state.trusted_data['email'])
+
+      return signup_state.trusted_data['email']
+    end
+    params[:username_or_email]
+  end
+
 end
