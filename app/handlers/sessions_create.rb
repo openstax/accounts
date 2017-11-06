@@ -47,12 +47,12 @@ class SessionsCreate
 
   def handle
     outputs[:status] =
-      if signing_up?
-        handle_during_signup
-      elsif signed_in?
+      if signed_in?
         handle_while_logged_in
       elsif logging_in?
         handle_during_login
+      elsif signing_up?
+        handle_during_signup
       else
         fatal_error(code: :unknown_callback_state)
       end
@@ -69,6 +69,10 @@ class SessionsCreate
          options[:login_providers][authentication.provider]['uid'] != authentication.uid
        )
       return :mismatched_authentication
+    end
+
+    if signup_state.present?
+      run(TransferSignupState, signup_state: signup_state, user: authentication_user)
     end
 
     sign_in!(authentication_user)
@@ -107,7 +111,7 @@ class SessionsCreate
     end
 
     run(TransferSignupState,
-        signup_state: options[:signup_state],
+        signup_state: signup_state,
         user: receiving_user)
 
     run(TransferAuthentications, authentication, receiving_user)
@@ -208,7 +212,11 @@ class SessionsCreate
   end
 
   def signing_up?
-    options[:signup_state].present?
+    signup_state.present?
+  end
+
+  def signup_state
+    options[:signup_state]
   end
 
   def logging_in?
