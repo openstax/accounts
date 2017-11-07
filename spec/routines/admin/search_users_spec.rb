@@ -46,6 +46,12 @@ RSpec.describe Admin::SearchUsers, type: :routine do
     expect(outcome).to eq [user_2]
   end
 
+  it "should match on partial uuid" do
+    partial_uuid = user_1.uuid.split('-')[0]
+    outcome = described_class.call("uuid:#{partial_uuid}").outputs.items.to_a
+    expect(outcome).to eq [user_1]
+  end
+
   it "should match based on a partial email address" do
     email = user_1.contact_infos.email_addresses.order(:value).first.value.split('@').first
     outcome = described_class.call("email:#{email}").outputs.items.to_a
