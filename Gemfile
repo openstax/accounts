@@ -132,6 +132,8 @@ gem 'oj_mimic_json'
 gem 'rails-settings-ui'
 gem 'rails-settings-cached'
 
+gem 'scout_apm', '~> 3.0.x'
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails'
