@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170925154213) do
+ActiveRecord::Schema.define(version: 20171113145312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "pgcrypto"
 
   create_table "application_groups", force: :cascade do |t|
     t.integer  "application_id", :null=>false, :index=>{:name=>"index_application_groups_on_application_id_and_unread_updates", :with=>["unread_updates"]}
@@ -261,7 +262,7 @@ ActiveRecord::Schema.define(version: 20170925154213) do
     t.string   "first_name",             :index=>{:name=>"index_users_on_first_name", :case_sensitive=>false}
     t.string   "last_name",              :index=>{:name=>"index_users_on_last_name", :case_sensitive=>false}
     t.string   "title"
-    t.string   "uuid",                   :index=>{:name=>"index_users_on_uuid", :unique=>true}
+    t.uuid     "uuid",                   :default=>"gen_random_uuid()", :null=>false, :index=>{:name=>"index_users_on_uuid", :unique=>true}
     t.string   "suffix"
     t.string   "state",                  :default=>"needs_profile", :null=>false
     t.string   "salesforce_contact_id",  :index=>{:name=>"index_users_on_salesforce_contact_id"}
