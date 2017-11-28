@@ -46,6 +46,12 @@ RSpec.describe Admin::SearchUsers, type: :routine do
     expect(outcome).to eq [user_2]
   end
 
+  it "should match on full uuid" do
+    uuid = user_1.uuid
+    outcome = described_class.call("uuid:#{uuid}").outputs.items.to_a
+    expect(outcome).to eq [user_1]
+  end
+
   it "should match on partial uuid" do
     partial_uuid = user_1.uuid.split('-')[0]
     outcome = described_class.call("uuid:#{partial_uuid}").outputs.items.to_a
