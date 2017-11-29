@@ -83,9 +83,13 @@ class SearchUsers
       end
 
       with.keyword :uuid do |uuids|
-        sanitized_uuids = sanitize_strings(uuids, append_wildcard: options[:admin],
-                                            prepend_wildcard: options[:admin])
-        users = users.where{uuid.like_any sanitized_uuids}
+        uuids_queries = uuids.map do |uuid|
+          partial_uuid = uuid.to_s.chomp('-')
+          next uuid if partial_uuid.include? '-' or partial_uuid.length != 8
+
+          partial_uuid + '-0000-0000-0000-000000000000'..partial_uuid + '-ffff-ffff-ffff-ffffffffffff'
+        end
+        users = users.where(uuid: uuids_queries)
       end
 
       with.keyword :id do |ids|
