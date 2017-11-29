@@ -10,6 +10,8 @@ defaults: &defaults
   user_info_error_emails_enabled: false
   send_google_analytics: true
   google_analytics_code: UA-73668038-2
+  emergency_banner_message: Test Message
+  display_emergency_message: false
   subjects:
     ap_macro_econ:
       title: Principles of Macroeconomics for AP® Courses
