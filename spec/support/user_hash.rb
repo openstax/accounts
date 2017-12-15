@@ -16,7 +16,8 @@ def user_hash(user, include_private_data: false)
     'last_name' => user.last_name,
     'full_name' => user.full_name,
     'uuid' => user.uuid,
-    'applications' => user.applications.order(:id).map{|app| {"id" => app.id, "name" => app.name}}
+    'support_identifier' => user.support_identifier,
+    'applications' => user.applications.order(:id).map {|app| {"id" => app.id, "name" => app.name}}
   }
 
   if include_private_data
@@ -33,7 +34,6 @@ def user_hash(user, include_private_data: false)
   base_hash
 end
 
-
 def user_matcher(user, include_private_data: false)
   base_hash = {
     id: user.id,
@@ -42,6 +42,7 @@ def user_matcher(user, include_private_data: false)
     last_name: user.last_name,
     full_name: user.full_name,
     uuid: user.uuid,
+    support_identifier: user.support_identifier,
     applications: a_collection_containing_exactly(
       *user.applications.map{|app|
         a_hash_including({id: app.id, name: app.name})

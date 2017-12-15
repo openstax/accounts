@@ -11,11 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171113145312) do
+ActiveRecord::Schema.define(version: 20171214225648) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pgcrypto"
+  enable_extension "citext"
 
   create_table "application_groups", force: :cascade do |t|
     t.integer  "application_id", :null=>false, :index=>{:name=>"index_application_groups_on_application_id_and_unread_updates", :with=>["unread_updates"]}
@@ -272,6 +273,7 @@ ActiveRecord::Schema.define(version: 20171113145312) do
     t.datetime "login_token_expires_at"
     t.integer  "role",                   :default=>0, :null=>false, :index=>{:name=>"index_users_on_role"}
     t.jsonb    "trusted_signup_data"
+    t.citext   "support_identifier",     :null=>false, :index=>{:name=>"index_users_on_support_identifier", :unique=>true}
   end
   add_index "users", ["username"], :name=>"index_users_on_username_case_insensitive", :case_sensitive=>false
 

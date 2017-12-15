@@ -1,35 +1,38 @@
 require 'rails_helper'
 
-describe Api::V1::ApplicationGroupsController, type: :controller, api: true, version: :v1 do
+RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: true, version: :v1 do
 
   let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
   let!(:trusted_application)   { FactoryGirl.create :doorkeeper_application, :trusted }
   let!(:user_1) { FactoryGirl.create :user }
-  let!(:user_2) { FactoryGirl.create :user_with_emails,
-                                     first_name: 'Bob',
-                                     last_name: 'Michaels' }
+  let!(:user_2) do
+    FactoryGirl.create :user_with_emails, first_name: 'Bob', last_name: 'Michaels'
+  end
 
-  let!(:user_2_token)    { FactoryGirl.create :doorkeeper_access_token,
-    application: untrusted_application,
-    resource_owner_id: user_2.id }
+  let!(:user_2_token) do
+    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+                                                 resource_owner_id: user_2.id
+  end
 
-  let!(:untrusted_application_token) { FactoryGirl.create :doorkeeper_access_token,
-    application: untrusted_application,
-    resource_owner_id: nil }
-  let!(:trusted_application_token)   { FactoryGirl.create :doorkeeper_access_token,
-    application: trusted_application,
-    resource_owner_id: nil }
+  let!(:untrusted_application_token) do
+    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+                                                 resource_owner_id: nil
+  end
+  let!(:trusted_application_token)   do
+    FactoryGirl.create :doorkeeper_access_token, application: trusted_application,
+                                                 resource_owner_id: nil
+  end
 
   let!(:group_1) { FactoryGirl.create :group, members_count: 0, owners_count: 0 }
   let!(:group_2) { FactoryGirl.create :group, members_count: 0, owners_count: 0 }
-  let!(:application_group_1) { FactoryGirl.create :application_group,
-                                                  application: untrusted_application,
-                                                  group: group_1 }
-  let!(:application_group_2) { FactoryGirl.create :application_group,
-                                                  application: trusted_application,
-                                                  group: group_2 }
+  let!(:application_group_1) do
+    FactoryGirl.create :application_group, application: untrusted_application, group: group_1
+  end
+  let!(:application_group_2) do
+    FactoryGirl.create :application_group, application: trusted_application, group: group_2
+  end
 
-  describe "updates" do
+  context "updates" do
 
     it "should return no results for an app without updated groups" do
       api_get :updates, untrusted_application_token
@@ -185,7 +188,7 @@ describe Api::V1::ApplicationGroupsController, type: :controller, api: true, ver
 
   end
 
-  describe "updated" do
+  context "updated" do
     it "should properly change unread_updates" do
       group_1.save!
       application_group_1.reload.unread_updates = 2

@@ -71,6 +71,8 @@ class ImportUsers
     @user.title = title
     @user.first_name = first_name
     @user.last_name = last_name
+    @user.generate_uuid
+    @user.generate_support_identifier
     @user.save(validate: false)
 
     identity = @user.build_identity

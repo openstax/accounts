@@ -57,15 +57,17 @@ class User < ActiveRecord::Base
 
   validate :ensure_names_continue_to_be_present
 
-  validates :login_token, uniqueness: {allow_nil: true}
+  validates :login_token, uniqueness: { allow_nil: true }
+
+  validates :uuid, :support_identifier, presence: true, uniqueness: true
 
   delegate_to_routine :destroy
 
   attr_accessible :title, :first_name, :last_name, :suffix, :username
 
-  attr_readonly :uuid
+  attr_readonly :uuid, :support_identifier
 
-  before_create :generate_uuid
+  before_validation :generate_uuid, :generate_support_identifier, on: :create
 
   before_create :make_first_user_an_admin
 
@@ -240,11 +242,15 @@ class User < ActiveRecord::Base
     end.try!(:value)
   end
 
-  protected
-
   def generate_uuid
     self.uuid ||= SecureRandom.uuid
   end
+
+  def generate_support_identifier(length: 4)
+    self.support_identifier ||= "cs#{SecureRandom.hex(length)}"
+  end
+
+  protected
 
   def make_first_user_an_admin
     return if Rails.env.production? || Rails.env.test?
