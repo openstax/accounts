@@ -92,6 +92,16 @@ class SearchUsers
         users = users.where(uuid: uuids_queries)
       end
 
+      if options[:admin]
+        with.keyword :support_identifier do |identifiers|
+          sanitized_identifiers = sanitize_strings(
+            identifiers, append_wildcard: true, prepend_wildcard: true
+          )
+
+          users = users.where { support_identifier.like_any(sanitized_identifiers) }
+        end
+      end
+
       with.keyword :id do |ids|
         users = users.where(id: ids)
       end

@@ -2,23 +2,26 @@ require 'rails_helper'
 
 RSpec.describe Admin::SearchUsers, type: :routine do
 
-  let!(:user_1)          { FactoryGirl.create :user_with_emails,
-                                              first_name: 'John',
-                                              last_name: 'Stravinsky',
-                                              username: 'jstrav' }
-  let!(:user_2)          { FactoryGirl.create :user,
-                                              first_name: 'Mary',
-                                              last_name: 'Mighty',
-                                              username: 'mary' }
-  let!(:user_3)          { FactoryGirl.create :user,
-                                              first_name: 'John',
-                                              last_name: 'Stead',
-                                              username: 'jstead' }
-
-  let!(:user_4)          { FactoryGirl.create :user_with_emails,
-                                              first_name: 'Bob',
-                                              last_name: 'JST',
-                                              username: 'bigbear' }
+  let!(:user_1)          do
+    FactoryGirl.create :user_with_emails, first_name: 'John',
+                                          last_name: 'Stravinsky',
+                                          username: 'jstrav'
+  end
+  let!(:user_2)          do
+    FactoryGirl.create :user, first_name: 'Mary',
+                              last_name: 'Mighty',
+                              username: 'mary'
+  end
+  let!(:user_3)          do
+    FactoryGirl.create :user, first_name: 'John',
+                              last_name: 'Stead',
+                              username: 'jstead'
+  end
+  let!(:user_4)          do
+    FactoryGirl.create :user_with_emails, first_name: 'Bob',
+                                          last_name: 'JST',
+                                          username: 'bigbear'
+  end
 
   before(:each) do
     user_4.contact_infos.email_addresses.order(:value).first.update_attribute(
@@ -58,6 +61,20 @@ RSpec.describe Admin::SearchUsers, type: :routine do
     expect(outcome).to eq [user_1]
   end
 
+  it "should match on full support_identifier" do
+    support_identifier = user_1.support_identifier
+    outcome = described_class.call("support_identifier:#{support_identifier}").outputs.items.to_a
+    expect(outcome).to eq [user_1]
+  end
+
+  it "should match on partial support_identifier" do
+    partial_support_identifier = user_1.support_identifier.first(9).last(8)
+    outcome = described_class.call(
+      "support_identifier:#{partial_support_identifier}"
+    ).outputs.items.to_a
+    expect(outcome).to eq [user_1]
+  end
+
   it "should match based on a partial email address" do
     email = user_1.contact_infos.email_addresses.order(:value).first.value.split('@').first
     outcome = described_class.call("email:#{email}").outputs.items.to_a
@@ -93,14 +110,14 @@ RSpec.describe Admin::SearchUsers, type: :routine do
 
   context "pagination and sorting" do
 
-    let!(:billy_users) {
-      (0..45).to_a.collect{|ii|
+    let!(:billy_users) do
+      (0..45).to_a.map do |ii|
         FactoryGirl.create :user,
                            first_name: "Billy#{ii.to_s.rjust(2, '0')}",
                            last_name: "Bob_#{(45-ii).to_s.rjust(2,'0')}",
                            username: "billy_#{ii.to_s.rjust(2, '0')}"
-      }
-    }
+      end
+    end
 
     it "should return the first page of values by default in default order" do
       outcome = described_class.call("username:billy").outputs.items.all
@@ -126,15 +143,25 @@ RSpec.describe Admin::SearchUsers, type: :routine do
 
   context "sorting" do
 
-    let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
-    let!(:bob_jones) { FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
-    let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
+    let!(:bob_brown) do
+      FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
+    end
+    let!(:bob_jones) do
+      FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
+    end
+    let!(:tim_jones) do
+      FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
+    end
 
     it "should allow sort by multiple fields in different directions" do
-      outcome = described_class.call("username:foo", order_by: "first_name, last_name DESC").outputs.items.to_a
+      outcome = described_class.call(
+        "username:foo", order_by: "first_name, last_name DESC"
+      ).outputs.items.to_a
       expect(outcome).to eq [bob_jones, bob_brown, tim_jones]
 
-      outcome = described_class.call("username:foo", order_by: "first_name, last_name ASC").outputs.items.to_a
+      outcome = described_class.call(
+        "username:foo", order_by: "first_name, last_name ASC"
+      ).outputs.items.to_a
       expect(outcome).to eq [bob_brown, bob_jones, tim_jones]
     end
 
