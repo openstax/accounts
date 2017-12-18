@@ -247,7 +247,7 @@ class User < ActiveRecord::Base
   end
 
   def generate_support_identifier(length: 4)
-    self.support_identifier ||= "cs#{SecureRandom.hex(length)}"
+    self.support_identifier ||= "cs_#{SecureRandom.hex(length)}"
   end
 
   protected

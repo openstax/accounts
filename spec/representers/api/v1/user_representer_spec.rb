@@ -23,7 +23,7 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
     end
 
     it 'cannot be written (attempts are silently ignored)' do
-      hash = { 'support_identifier' => "cs#{SecureRandom.hex(4)}" }
+      hash = { 'support_identifier' => "cs_#{SecureRandom.hex(4)}" }
 
       expect(user).not_to receive(:support_identifier=)
       expect { representer.from_hash(hash) }.not_to change { user.reload.support_identifier }

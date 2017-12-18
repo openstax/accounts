@@ -114,7 +114,7 @@ RSpec.describe User, type: :model do
     it 'is generated when created' do
       user = FactoryGirl.create :user
       expect(user.support_identifier).to start_with('cs')
-      expect(user.support_identifier.length).to eq(10)
+      expect(user.support_identifier.length).to eq(11)
     end
 
     it 'cannot be updated' do
@@ -124,7 +124,7 @@ RSpec.describe User, type: :model do
       expect(user.reload.first_name).to eq('New')
       expect(user.support_identifier).to eq(old_identifier)
 
-      new_identifier = "cs#{SecureRandom.hex(4)}"
+      new_identifier = "cs_#{SecureRandom.hex(4)}"
       user.support_identifier = new_identifier
       user.save
       expect(user.reload.support_identifier).to eq(old_identifier)

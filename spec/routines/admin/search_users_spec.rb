@@ -68,7 +68,7 @@ RSpec.describe Admin::SearchUsers, type: :routine do
   end
 
   it "should match on partial support_identifier" do
-    partial_support_identifier = user_1.support_identifier.first(9).last(8)
+    partial_support_identifier = user_1.support_identifier.first(10).last(9)
     outcome = described_class.call(
       "support_identifier:#{partial_support_identifier}"
     ).outputs.items.to_a
