@@ -89,11 +89,17 @@ RSpec.describe Admin::SearchUsers, type: :routine do
   end
 
   it "should match any fields when no prefix given" do
+    [ user_1, user_2, user_3, user_4 ].each_with_index do |user, index|
+      User.where(id: user.id).update_all(support_identifier: "cs_#{index}")
+    end
     outcome = described_class.call("jst").outputs.items.to_a
     expect(outcome).to eq [user_4, user_3, user_1]
   end
 
   it "should match any fields when no prefix given and intersect when prefix given" do
+    [ user_1, user_2, user_3, user_4 ].each_with_index do |user, index|
+      User.where(id: user.id).update_all(support_identifier: "cs_#{index}")
+    end
     outcome = described_class.call("jst username:jst").outputs.items.to_a
     expect(outcome).to eq [user_3, user_1]
   end
@@ -104,6 +110,9 @@ RSpec.describe Admin::SearchUsers, type: :routine do
   end
 
   it "should gather space-separated unprefixed search terms" do
+    [ user_1, user_2, user_3, user_4 ].each_with_index do |user, index|
+      User.where(id: user.id).update_all(support_identifier: "cs_#{index}")
+    end
     outcome = described_class.call("john strav").outputs.items.to_a
     expect(outcome).to eq [user_1]
   end
