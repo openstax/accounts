@@ -258,7 +258,7 @@ en:
         help_block: 'Example: UA-XXXXXXXX-X'
 
   sessions:
-    tutor: Log in or sign up for an account to access OpenStax Tutor
+    access_tutor: Log in or sign up for an account to access OpenStax Tutor
     help:
       if_you_know_username_or_email:
         # %{link}   an email hyperlink to info@openstax.org. Label of the link
