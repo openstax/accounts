@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::ContactInfosController, type: :controller, api: true, version: :v1 do
+RSpec.describe Api::V1::ContactInfosController, type: :controller, api: true, version: :v1 do
 
   let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
 

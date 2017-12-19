@@ -128,8 +128,18 @@ RSpec.describe SearchUsers, type: :routine do
     expect(outcome).to eq [user_1] # Not user_2 even though his first name is John
   end
 
+  it 'should match by full_name' do
+    outcome = described_class.call('full_name:"john stravinsky"').outputs.items.to_a
+    expect(outcome).to eq [user_1] # Not user_2 even though his first name is John
+  end
+
   it 'should match by UUID' do
     outcome = described_class.call("uuid:#{user_3.uuid}").outputs.items.to_a
+    expect(outcome).to eq [user_3]
+  end
+
+  it 'should match by id' do
+    outcome = described_class.call("id:#{user_3.id}").outputs.items.to_a
     expect(outcome).to eq [user_3]
   end
 
