@@ -35,6 +35,10 @@ class SessionsController < ApplicationController
 
   # Login form
   def start
+    referer = request.env['HTTP_REFERER']
+    if referer == "https://oscms-dev.openstax.org/openstax-tutor" || referer == "https://oscms-qa.openstax.org/openstax-tutor" || referer == "https://openstax.org/openstax-tutor"
+      flash[:notice] = "In order to access OpenStax Tutor, you must log in or sign up for an account."
+    end
   end
 
   def lookup_login
