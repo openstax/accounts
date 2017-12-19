@@ -26,7 +26,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'bcrypt', '~> 3.1.7'
 
 # OAuth provider
-gem 'doorkeeper', '2.2.2'
+gem 'doorkeeper'
 
 # OAuth clients
 gem 'omniauth'
