@@ -145,7 +145,9 @@ module Oauth
         redirect_uri: 'https://www.example.com',
         trusted: true
       }
-      expect(response).to redirect_to(oauth_application_path(assigns(:application)))
+      id = assigns(:application).id
+      expect(id).not_to be_nil
+      expect(response).to redirect_to(oauth_application_path(id))
       expect(assigns(:application).name).to eq('Some app')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
       expect(assigns(:application).trusted).to eq(true)
@@ -183,7 +185,7 @@ module Oauth
                      redirect_uri: 'https://www.example.net',
                      trusted: true
                    }
-      expect(response).to redirect_to(oauth_application_path(untrusted_application_user))
+      expect(response).to redirect_to(oauth_application_path(untrusted_application_user.id))
       expect(assigns(:application).name).to eq('Some other name')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.net')
       expect(assigns(:application).trusted).to eq(false)
@@ -208,7 +210,7 @@ module Oauth
                      redirect_uri: 'https://www.example.net',
                      trusted: true
                    }
-      expect(response).to redirect_to(oauth_application_path(untrusted_application_user))
+      expect(response).to redirect_to(oauth_application_path(untrusted_application_user.id))
       expect(assigns(:application).name).to eq('Some other name')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.net')
       expect(assigns(:application).trusted).to eq(true)

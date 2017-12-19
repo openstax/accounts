@@ -13,7 +13,7 @@ namespace :accounts do
       subject_prefix = ENV['EMAIL_SUBJECT_PREFIX']
 
       ActiveRecord::Base.transaction do
-        application = Doorkeeper::Application.find_or_create_by(name: name)
+        application = Doorkeeper::Application.find_or_initialize_by(name: name)
         application.redirect_uri = redirect_uri if redirect_uri.present?
         raise ArgumentError.new("User not found: #{ENV['USERNAME']}") \
           if application.owner.nil? && user.nil?
