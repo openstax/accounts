@@ -38,7 +38,7 @@
 
       <% if @client_app  %>
           <% if @client_app.name.downcase.include? "tutor" %>
-            <div class="tutor-message">Log in or sign up for an account to access OpenStax Tutor</div>
+            <div class="tutor-message"><%= t '.tutor' %></div>
           <% end %>
       <% end %>
 
