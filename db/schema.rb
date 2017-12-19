@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171214225648) do
+ActiveRecord::Schema.define(version: 20171219220114) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -172,14 +172,15 @@ ActiveRecord::Schema.define(version: 20171214225648) do
   end
 
   create_table "oauth_access_tokens", force: :cascade do |t|
-    t.integer  "resource_owner_id", :index=>{:name=>"index_oauth_access_tokens_on_resource_owner_id"}
+    t.integer  "resource_owner_id",      :index=>{:name=>"index_oauth_access_tokens_on_resource_owner_id"}
     t.integer  "application_id"
-    t.string   "token",             :null=>false, :index=>{:name=>"index_oauth_access_tokens_on_token", :unique=>true}
-    t.string   "refresh_token",     :index=>{:name=>"index_oauth_access_tokens_on_refresh_token", :unique=>true}
+    t.string   "token",                  :null=>false, :index=>{:name=>"index_oauth_access_tokens_on_token", :unique=>true}
+    t.string   "refresh_token",          :index=>{:name=>"index_oauth_access_tokens_on_refresh_token", :unique=>true}
     t.integer  "expires_in"
     t.datetime "revoked_at"
-    t.datetime "created_at",        :null=>false
+    t.datetime "created_at",             :null=>false
     t.string   "scopes"
+    t.string   "previous_refresh_token", :default=>"", :null=>false
   end
 
   create_table "oauth_applications", force: :cascade do |t|
