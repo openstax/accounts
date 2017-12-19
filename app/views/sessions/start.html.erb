@@ -36,11 +36,11 @@
                                   errors: @handler_result.try(:errors),
                                   error_field_classes: "alert alert-danger") %>
 
-        <% if @client_app  %>
-            <% if @client_app.name.include? "tutor" %>
-              <div class="tutor-message">Log in or sign up for an account to access OpenStax Tutor</div>
-            <% end %>
-        <% end %>
+      <% if @client_app  %>
+          <% if @client_app.name.downcase.include? "tutor" %>
+            <div class="tutor-message">Log in or sign up for an account to access OpenStax Tutor</div>
+          <% end %>
+      <% end %>
 
       <div class="card-body">
         <%= fh.text_field name: :username_or_email,
