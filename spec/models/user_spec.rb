@@ -1,11 +1,16 @@
 require 'rails_helper'
 
-describe User, type: :model do
+RSpec.describe User, type: :model do
+
+  subject(:user) { FactoryGirl.create :user }
 
   it { should have_many :security_logs }
 
+  it { should validate_uniqueness_of(:uuid).case_insensitive }
+  it { should validate_uniqueness_of(:support_identifier).case_insensitive }
+
   context 'when the user is activated' do
-    let(:user) { User.new.tap{|u| u.state = 'activated'} }
+    let(:user) { User.new.tap {|u| u.state = 'activated'} }
 
     context 'when the names start nil' do
       it 'is valid for the first name to stay blank' do
@@ -95,15 +100,34 @@ describe User, type: :model do
       user = FactoryGirl.create :user
       old_uuid = user.uuid
       user.update_attributes(first_name: 'New')
-      user.reload
-      expect(user.first_name).to eq('New')
+      expect(user.reload.first_name).to eq('New')
       expect(user.uuid).to eq(old_uuid)
 
       new_uuid = SecureRandom.uuid
       user.uuid = new_uuid
       user.save
-      user.reload
-      expect(user.uuid).to eq(old_uuid)
+      expect(user.reload.uuid).to eq(old_uuid)
+    end
+  end
+
+  context 'support_identifier' do
+    it 'is generated when created' do
+      user = FactoryGirl.create :user
+      expect(user.support_identifier).to start_with('cs')
+      expect(user.support_identifier.length).to eq(11)
+    end
+
+    it 'cannot be updated' do
+      user = FactoryGirl.create :user
+      old_identifier = user.support_identifier
+      user.update_attributes(first_name: 'New')
+      expect(user.reload.first_name).to eq('New')
+      expect(user.support_identifier).to eq(old_identifier)
+
+      new_identifier = "cs_#{SecureRandom.hex(4)}"
+      user.support_identifier = new_identifier
+      user.save
+      expect(user.reload.support_identifier).to eq(old_identifier)
     end
   end
 
@@ -157,18 +181,17 @@ describe User, type: :model do
 
     it 'does not interfere with updates if duplicated but not changed' do
       user_1 = FactoryGirl.create :user, username: "MyUs3Rn4M3"
-
-      user_2 = FactoryGirl.build :user, username: user_1.username.upcase
-      user_2.save!(validate: false)
-      expect(user_2).to be_valid
+      user_2 = FactoryGirl.create :user
+      user_2.update_column :username, user_1.username.upcase
+      expect(user_2.reload).to be_valid
       expect(user_2.errors).to be_empty
 
       user_2.first_name = SecureRandom.hex(3)
       user_2.save!
 
-      user_3 = FactoryGirl.build :user, username: user_1.username.downcase
-      user_3.save!(validate: false)
-      expect(user_3).to be_valid
+      user_3 = FactoryGirl.create :user
+      user_3.update_column :username, user_1.username.downcase
+      expect(user_3.reload).to be_valid
       expect(user_3.errors).to be_empty
 
       user_3.first_name = SecureRandom.hex(3)

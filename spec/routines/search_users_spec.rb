@@ -2,37 +2,42 @@ require 'rails_helper'
 
 RSpec.describe SearchUsers, type: :routine do
 
-  let!(:user_1)          { FactoryGirl.create :user_with_emails,
-                                              first_name: 'John',
-                                              last_name: 'Stravinsky',
-                                              username: 'jstrav' }
-  let!(:user_2)          { FactoryGirl.create :user,
-                                              first_name: 'Mary',
-                                              last_name: 'Mighty',
-                                              username: 'mary' }
-  let!(:user_3)          { FactoryGirl.create :user,
-                                              first_name: 'John',
-                                              last_name: 'Stead',
-                                              username: 'jstead' }
+  let!(:user_1)          do
+    FactoryGirl.create :user_with_emails, first_name: 'John',
+                                          last_name: 'Stravinsky',
+                                          username: 'jstrav'
+  end
+  let!(:user_2)          do
+    FactoryGirl.create :user, first_name: 'Mary',
+                              last_name: 'Mighty',
+                              username: 'mary'
+  end
+  let!(:user_3)          do
+    FactoryGirl.create :user, first_name: 'John',
+                              last_name: 'Stead',
+                              username: 'jstead'
+  end
+  let!(:user_4)          do
+    FactoryGirl.create :user_with_emails, first_name: 'Bob',
+                                          last_name: 'JST',
+                                          username: 'bigbear'
+  end
 
-  let!(:user_4)          { FactoryGirl.create :user_with_emails,
-                                              first_name: 'Bob',
-                                              last_name: 'JST',
-                                              username: 'bigbear' }
-
-  let!(:billy_users) {
-    (0..8).to_a.collect{|ii|
+  let!(:billy_users) do
+    (0..8).to_a.map do |ii|
       FactoryGirl.create :user,
                          first_name: "Billy#{ii.to_s.rjust(2, '0')}",
                          last_name: "Bob_#{(45-ii).to_s.rjust(2,'0')}",
                          username: "billy_#{ii.to_s.rjust(2, '0')}"
-    }
-  }
+    end
+  end
 
   before(:each) do
     MarkContactInfoVerified.call(user_1.contact_infos.email_addresses.order(:value).first)
     MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.order(:value).first)
-    user_4.contact_infos.email_addresses.order(:value).first.update_attribute(:value, 'jstoly292929@hotmail.com')
+    user_4.contact_infos.email_addresses.order(:value).first.update_attribute(
+      :value, 'jstoly292929@hotmail.com'
+    )
     user_1.reload
   end
 
@@ -41,7 +46,7 @@ RSpec.describe SearchUsers, type: :routine do
     wildcard_fields.each do |field|
       outputs = described_class.call("#{field}:\"\"").outputs
       expect(outputs.items).to be_empty # Because more than 10 results are returned
-      expect(outputs.total_count).to be > SearchUsers::MAX_MATCHING_USERS
+      expect(outputs.total_count).to be > described_class::MAX_MATCHING_USERS
     end
 
     exact_fields = [:id, :email]
@@ -123,22 +128,49 @@ RSpec.describe SearchUsers, type: :routine do
     expect(outcome).to eq [user_1] # Not user_2 even though his first name is John
   end
 
+  it 'should match by full_name' do
+    outcome = described_class.call('full_name:"john stravinsky"').outputs.items.to_a
+    expect(outcome).to eq [user_1] # Not user_2 even though his first name is John
+  end
+
   it 'should match by UUID' do
     outcome = described_class.call("uuid:#{user_3.uuid}").outputs.items.to_a
     expect(outcome).to eq [user_3]
   end
 
+  it 'should match by id' do
+    outcome = described_class.call("id:#{user_3.id}").outputs.items.to_a
+    expect(outcome).to eq [user_3]
+  end
+
+  it 'should not match by support_identifier' do
+    outcome = described_class.call(
+      "support_identifier:#{user_3.support_identifier}"
+    ).outputs.items.to_a
+    expect(outcome).to eq []
+  end
+
   context "sorting" do
 
-    let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
-    let!(:bob_jones) { FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
-    let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
+    let!(:bob_brown) do
+      FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
+    end
+    let!(:bob_jones) do
+      FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
+    end
+    let!(:tim_jones) do
+      FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
+    end
 
     it "should allow sort by multiple fields in different directions" do
-      outcome = described_class.call("username:foo", order_by: "first_name, last_name DESC").outputs.items.to_a
+      outcome = described_class.call(
+        "username:foo", order_by: "first_name, last_name DESC"
+      ).outputs.items.to_a
       expect(outcome).to eq [bob_jones, bob_brown, tim_jones]
 
-      outcome = described_class.call("username:foo", order_by: "first_name, last_name ASC").outputs.items.to_a
+      outcome = described_class.call(
+        "username:foo", order_by: "first_name, last_name ASC"
+      ).outputs.items.to_a
       expect(outcome).to eq [bob_brown, bob_jones, tim_jones]
     end
 

@@ -92,6 +92,16 @@ class SearchUsers
         users = users.where(uuid: uuids_queries)
       end
 
+      if options[:admin]
+        with.keyword :support_identifier do |identifiers|
+          sanitized_identifiers = sanitize_strings(
+            identifiers, append_wildcard: true, prepend_wildcard: true
+          )
+
+          users = users.where { support_identifier.like_any(sanitized_identifiers) }
+        end
+      end
+
       with.keyword :id do |ids|
         users = users.where(id: ids)
       end
@@ -111,7 +121,7 @@ class SearchUsers
 
       with.keyword :any do |terms|
         sanitized_names = sanitize_strings(terms, append_wildcard: true,
-                                           prepend_wildcard: options[:admin])
+                                                  prepend_wildcard: options[:admin])
 
         if sanitized_names.length == 2 # looks like a "firstname lastname" search
           users = users.joins{contact_infos.outer}.where do
@@ -119,18 +129,21 @@ class SearchUsers
           end
         else # otherwise try to match "all the things"
           sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin],
-                                             prepend_wildcard: options[:admin])
+                                                    prepend_wildcard: options[:admin])
           users = users.joins{contact_infos.outer}.where do
             contact_infos_query = contact_infos.value.like_any sanitized_terms
             contact_infos_query &= (contact_infos.type.eq('EmailAddress') &
                                     contact_infos.verified.eq(true) &
                                     contact_infos.is_searchable.eq(true)) unless options[:admin]
-            username.like_any(sanitized_names) |
+            query = username.like_any(sanitized_names) |
               first_name.like_any(sanitized_names) |
               last_name.like_any(sanitized_names) |
               first_name.op('||', ' ').op('||', last_name).like_any(sanitized_names) |
               contact_infos_query |
               id.in(terms)
+            next query unless options[:admin]
+
+            query | support_identifier.like_any(sanitized_names)
           end
         end
       end

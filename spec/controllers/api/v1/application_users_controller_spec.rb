@@ -1,27 +1,26 @@
 require 'rails_helper'
 
-describe Api::V1::ApplicationUsersController, type: :controller, api: true, version: :v1 do
+RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true, version: :v1 do
 
-  let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
-  let!(:trusted_application)     { FactoryGirl.create :doorkeeper_application, :trusted }
+  let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
+  let!(:trusted_application)   { FactoryGirl.create :doorkeeper_application, :trusted }
+
+  let!(:untrusted_application_token) do
+    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+                                                 resource_owner_id: nil
+  end
+  let!(:trusted_application_token) do
+    FactoryGirl.create :doorkeeper_access_token, application: trusted_application,
+                                                 resource_owner_id: nil
+  end
+
   let!(:user_1)          { FactoryGirl.create :user }
-  let!(:user_2)          { FactoryGirl.create :user_with_emails,
-                                              first_name: 'Bob',
-                                              last_name: 'Michaels' }
-
-  let!(:user_2_token)    { FactoryGirl.create :doorkeeper_access_token,
-    application: untrusted_application,
-    resource_owner_id: user_2.id }
-
-  let!(:untrusted_application_token) { FactoryGirl.create :doorkeeper_access_token,
-    application: untrusted_application,
-    resource_owner_id: nil }
-  let!(:trusted_application_token) { FactoryGirl.create :doorkeeper_access_token,
-    application: trusted_application,
-    resource_owner_id: nil }
-
-  let!(:billy_users) {
-    (0..45).to_a.collect{|ii|
+  let!(:user_2)          do
+    FactoryGirl.create :user_with_emails,
+                       first_name: 'Bob', last_name: 'Michaels', salesforce_contact_id: "somesfid"
+  end
+  let!(:billy_users) do
+    (0..45).to_a.map do |ii|
       user = FactoryGirl.create :user,
                                 first_name: "Billy#{ii.to_s.rjust(2, '0')}",
                                 last_name: "Fred_#{(45-ii).to_s.rjust(2,'0')}",
@@ -29,12 +28,22 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
       FactoryGirl.create :application_user, user: user,
                                             application: untrusted_application,
                                             unread_updates: 0
-    }
-  }
+    end
+  end
+  let!(:bob_brown) do
+    FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
+  end
+  let!(:bob_jones) do
+    FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
+  end
+  let!(:tim_jones) do
+    FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
+  end
 
-  let!(:bob_brown) { FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb" }
-  let!(:bob_jones) { FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj" }
-  let!(:tim_jones) { FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj" }
+  let!(:user_2_token)    do
+    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+                                                 resource_owner_id: user_2.id
+  end
 
   before(:each) do
     user_2.reload
@@ -45,7 +54,7 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
     end
   end
 
-  describe "find by username" do
+  context "find by username" do
     it "returns a single result when username matches" do
       api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo_bb' }
       expect(response.code).to eq('200')
@@ -76,7 +85,7 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
     end
   end
 
-  describe "index" do
+  context "index" do
 
     it "returns a single result well" do
       api_get :index, untrusted_application_token, parameters: {q: 'first_name:bob last_name:Michaels'}
@@ -162,7 +171,7 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
 
   end
 
-  describe "updates" do
+  context "updates" do
 
     it "should return no results for an app without updated users" do
       app_user = user_2.application_users.first
@@ -195,7 +204,7 @@ describe Api::V1::ApplicationUsersController, type: :controller, api: true, vers
 
   end
 
-  describe "updated" do
+  context "updated" do
 
     it "should not let an app mark another app's updates as read" do
       app_user = user_2.application_users.first

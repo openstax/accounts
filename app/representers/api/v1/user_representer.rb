@@ -40,6 +40,11 @@ module Api::V1
              readable: true,
              writeable: false
 
+    property :support_identifier,
+             type: String,
+             readable: true,
+             writeable: false
+
     property :salesforce_contact_id,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
              type: String,

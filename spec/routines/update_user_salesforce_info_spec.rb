@@ -1,38 +1,47 @@
 require 'rails_helper'
 
-describe UpdateUserSalesforceInfo do
+RSpec.describe UpdateUserSalesforceInfo, type: :routine do
 
   let!(:user) { FactoryGirl.create :user }
 
-  before(:each) {
+  before(:each) do
     allow(Settings::Salesforce).to receive(:user_info_error_emails_enabled) { true }
     allow(OpenStax::Salesforce).to receive(:ready_for_api_usage?) { true }
-  }
+  end
 
-  let!(:contact_info) {
-    email = AddEmailToUser.call("bOb@example.com", user).outputs.email
-    ConfirmContactInfo.call(email)
-    email
-  }
+  let!(:contact_info) do
+    AddEmailToUser.call("bOb@example.com", user).outputs.email.tap do |email|
+      ConfirmContactInfo.call(email)
+    end
+  end
 
   context 'contacts' do
 
     context 'user has no SF info yet' do
       it 'caches it when the SF info exists on SF' do
-        stub_salesforce(contacts: {id: 'foo', email: 'Bob@example.com', faculty_verified: "Confirmed"})
+        stub_salesforce(
+          contacts: {id: 'foo', email: 'Bob@example.com', faculty_verified: "Confirmed"}
+        )
         described_class.call
         expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
       end
 
       it 'caches it when the SF info exists on SF with whitespace around email' do
-        stub_salesforce(contacts: {id: 'foo', email: ' Bob@example.com ', faculty_verified: "Confirmed"})
+        stub_salesforce(
+          contacts: {id: 'foo', email: ' Bob@example.com ', faculty_verified: "Confirmed"}
+        )
         described_class.call
         expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
       end
 
       it 'caches it when the SF info exists on SF under an alt email' do
         stub_salesforce(
-          contacts: {id: 'foo', email: 'bobby@example.com', email_alt: "bob@example.com", faculty_verified: "Confirmed"}
+          contacts: {
+            id: 'foo',
+            email: 'bobby@example.com',
+            email_alt: "bob@example.com",
+            faculty_verified: "Confirmed"
+          }
         )
         described_class.call
         expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
@@ -53,7 +62,9 @@ describe UpdateUserSalesforceInfo do
       }
 
       it 'does not trigger a save on the user' do
-        stub_salesforce(contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed"})
+        stub_salesforce(
+          contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed"}
+        )
         expect_any_instance_of(User).not_to receive(:save!)
         described_class.call
       end
@@ -67,19 +78,25 @@ describe UpdateUserSalesforceInfo do
       }
 
       it 'corrects faculty status' do
-        stub_salesforce(contacts: {id: 'bar', email: 'bob@example.com', faculty_verified: "Pending"})
+        stub_salesforce(
+          contacts: {id: 'bar', email: 'bob@example.com', faculty_verified: "Pending"}
+        )
         described_class.call
         expect_user_sf_data(user, id: "bar", faculty_status: :pending_faculty)
       end
 
       it 'corrects sf ID' do
-        stub_salesforce(contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed"})
+        stub_salesforce(
+          contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed"}
+        )
         described_class.call
         expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
       end
 
       it 'corrects both' do
-        stub_salesforce(contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Pending"})
+        stub_salesforce(
+          contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Pending"}
+        )
         described_class.call
         expect_user_sf_data(user, id: "foo", faculty_status: :pending_faculty)
       end
@@ -104,7 +121,9 @@ describe UpdateUserSalesforceInfo do
       }
 
       it 'sends an error message if enabled' do
-        expect { described_class.call(allow_error_email: true) }.to change { ActionMailer::Base.deliveries.count }.by(1)
+        expect { described_class.call(allow_error_email: true) }.to(
+          change { ActionMailer::Base.deliveries.count }.by(1)
+        )
       end
 
       it 'does not send an error message by default' do
@@ -116,7 +135,16 @@ describe UpdateUserSalesforceInfo do
       before(:each) {
         email = AddEmailToUser.call("bobalt@example.com", user).outputs.email
         ConfirmContactInfo.call(email)
-        stub_salesforce(contacts: [{id: 'foo', email: 'bob@example.com', email_alt: 'bobalt@example.com', faculty_verified: "Pending"}])
+        stub_salesforce(
+          contacts: [
+            {
+              id: 'foo',
+              email: 'bob@example.com',
+              email_alt: 'bobalt@example.com',
+              faculty_verified: "Pending"
+            }
+          ]
+        )
       }
 
       it 'does not find that one contact twice and freak out' do
@@ -128,7 +156,9 @@ describe UpdateUserSalesforceInfo do
     context 'user matches SF info via unverified email' do
       it 'does not sync that SF info' do
         AddEmailToUser.call("unverified@example.com", user)
-        stub_salesforce(contacts: {id: 'foo', email: 'unverified@example.com', faculty_verified: "Confirmed"})
+        stub_salesforce(
+          contacts: {id: 'foo', email: 'unverified@example.com', faculty_verified: "Confirmed"}
+        )
         described_class.call
         expect_user_sf_data(user, id: nil, faculty_status: :no_faculty_info)
       end
@@ -136,13 +166,17 @@ describe UpdateUserSalesforceInfo do
 
     context 'user matches SF info via different case of email' do
       it 'syncs to a contact based on primary email' do
-        stub_salesforce(contacts: {id: 'foo', email: 'BOB@example.com', faculty_verified: "Confirmed"})
+        stub_salesforce(
+          contacts: {id: 'foo', email: 'BOB@example.com', faculty_verified: "Confirmed"}
+        )
         described_class.call
         expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
       end
 
       it 'syncs to a contact based on alt email' do
-        stub_salesforce(contacts: {id: 'foo', email_alt: 'BOB@example.com', faculty_verified: "Confirmed"})
+        stub_salesforce(
+          contacts: {id: 'foo', email_alt: 'BOB@example.com', faculty_verified: "Confirmed"}
+        )
         described_class.call
         expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
       end
@@ -154,8 +188,11 @@ describe UpdateUserSalesforceInfo do
         call_expecting_errors
       end
 
-      it 'errors when two contacts have the same (case-insensitive) email in primary and alt fields' do
-        stub_salesforce(contacts: [{email: 'BOB@example.com'}, {email_alt: 'Bob@example.com'}])
+      it 'errors when two contacts have the same (case-insensitive) email' +
+         'in primary and alt fields' do
+        stub_salesforce(
+          contacts: [{email: 'BOB@example.com'}, {email_alt: 'Bob@example.com'}]
+        )
         call_expecting_errors
       end
 
@@ -221,14 +258,18 @@ describe UpdateUserSalesforceInfo do
 
   context 'exceptions happen gracefully' do
     it 'rescues in the first pass' do
-      stub_salesforce(contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed"})
+      stub_salesforce(
+        contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed"}
+      )
       allow_any_instance_of(User).to receive(:salesforce_contact_id).and_raise("boom")
       expect_any_instance_of(described_class).to receive(:error!)
       expect{ described_class.call }.not_to raise_error
     end
 
     it 'rescues in the second pass' do
-      stub_salesforce(contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed"})
+      stub_salesforce(
+        contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed"}
+      )
       allow_any_instance_of(EmailAddress).to receive(:verified?).and_raise("boom")
       expect_any_instance_of(described_class).to receive(:error!)
       expect{ described_class.call }.not_to raise_error
@@ -282,7 +323,7 @@ describe UpdateUserSalesforceInfo do
     end
   end
 
-  it 'does not do an N+1 query on user contact infos' do
+  it 'does not do N queries on user contact infos' do
     contacts = []
 
     10.times do |ii|
@@ -293,16 +334,31 @@ describe UpdateUserSalesforceInfo do
     end
 
     stub_salesforce(contacts: contacts)
-    allow_any_instance_of(OpenStax::Salesforce::Remote::Contact).to receive(:update_attributes!) { true }
+    allow_any_instance_of(OpenStax::Salesforce::Remote::Contact).to(
+      receive(:update_attributes!) { true }
+    )
 
-    expect{described_class.call}.to make_database_queries(matching: /^SELECT/, count: 2)
+    expect{ described_class.call }.to(
+      make_database_queries(matching: /\ASELECT .* FROM .*"contact_infos"/, count: 1)
+    )
   end
 
   it 'logs an error when an email alt is a different contact\'s primary email' do
-    stub_salesforce(contacts: [
-      {id: "one", email: "bob@example.com", faculty_verified: "Confirmed"},
-      {id: "two", email: "bobby@example.com", email_alt: "bob@example.com", faculty_verified: "Confirmed"}
-    ])
+    stub_salesforce(
+      contacts: [
+        {
+          id: "one",
+          email: "bob@example.com",
+          faculty_verified: "Confirmed"
+        },
+        {
+          id: "two",
+          email: "bobby@example.com",
+          email_alt: "bob@example.com",
+          faculty_verified: "Confirmed"
+        }
+      ]
+    )
     expect_any_instance_of(described_class).to receive(:error!)
     described_class.call
   end
@@ -331,7 +387,9 @@ describe UpdateUserSalesforceInfo do
       end
     end
 
-    expect(OpenStax::Salesforce::Remote::Contact).to receive(:select).with(:id, :email, :email_alt, :faculty_verified)
+    expect(OpenStax::Salesforce::Remote::Contact).to(
+      receive(:select).with(:id, :email, :email_alt, :faculty_verified)
+    )
     allow(OpenStax::Salesforce::Remote::Contact).to receive(:select).and_return(contacts)
   end
 
