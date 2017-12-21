@@ -7,8 +7,8 @@
   contents = osu.action_list(
     records: users,
     list: {
-      headings: ['ID', 'Username', 'First Name', 'Last Name', 'Is Admin?', 'Actions'],
-      widths: ['10%', '20%', '20%', '20%', '10%', '20%'],
+      headings: ['ID', 'Username', 'First Name', 'Last Name', 'Is Admin?', 'Is Test?', 'Actions'],
+      widths: ['10%', '20%', '20%', '20%', '10%', '10%', '10%'],
       data_procs:
         [
           Proc.new { |user| user.id.to_s },
@@ -19,6 +19,7 @@
           Proc.new { |user| user.first_name || '---' },
           Proc.new { |user| user.last_name || '---' },
           Proc.new { |user| user.is_administrator ? 'Yes' : 'No' },
+          Proc.new { |user| user.is_test? ? 'Yes' : 'No' }
           Proc.new { |user|
             sign_in_link = link_to 'Sign in as',
                                    become_admin_user_path(user),
