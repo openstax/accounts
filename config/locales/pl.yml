@@ -247,6 +247,7 @@ pl:
       please_enable_javascript: Włącz obsługę JavaScript.
 
   sessions:
+    access_tutor: Zaloguj się lub zarejestruj, aby uzyskać dostęp do OpenStax Tutor
     help:
       if_you_know_username_or_email:
         content_html: >-
