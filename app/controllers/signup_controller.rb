@@ -86,6 +86,7 @@ class SignupController < ApplicationController
 
       handle_with(handler,
                   contracts_required: !contracts_not_required,
+                  client_app: get_client_app,
                   success: lambda do
                     clear_signup_state
                     if current_user.student? || current_user.created_from_trusted_data?

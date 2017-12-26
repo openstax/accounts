@@ -63,7 +63,8 @@ class SignupProfile
         using_openstax: profile_params.using_openstax,
         subject: SubjectsUtils.form_choices_to_salesforce_string(profile_params.subjects),
         url: profile_params.url,
-        newsletter: profile_params.newsletter
+        newsletter: profile_params.newsletter,
+        source_application: options[:client_app]
       )
     end
   end
