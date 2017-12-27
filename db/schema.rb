@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171219220114) do
+ActiveRecord::Schema.define(version: 20171226134252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -184,19 +184,20 @@ ActiveRecord::Schema.define(version: 20171219220114) do
   end
 
   create_table "oauth_applications", force: :cascade do |t|
-    t.string   "name",                 :null=>false
-    t.string   "uid",                  :null=>false, :index=>{:name=>"index_oauth_applications_on_uid", :unique=>true}
-    t.string   "secret",               :null=>false
-    t.text     "redirect_uri",         :null=>false
-    t.datetime "created_at",           :null=>false
-    t.datetime "updated_at",           :null=>false
-    t.boolean  "trusted",              :default=>false
-    t.integer  "owner_id",             :index=>{:name=>"index_oauth_applications_on_owner_id_and_owner_type", :with=>["owner_type"]}
+    t.string   "name",                    :null=>false
+    t.string   "uid",                     :null=>false, :index=>{:name=>"index_oauth_applications_on_uid", :unique=>true}
+    t.string   "secret",                  :null=>false
+    t.text     "redirect_uri",            :null=>false
+    t.datetime "created_at",              :null=>false
+    t.datetime "updated_at",              :null=>false
+    t.boolean  "trusted",                 :default=>false
+    t.integer  "owner_id",                :index=>{:name=>"index_oauth_applications_on_owner_id_and_owner_type", :with=>["owner_type"]}
     t.string   "owner_type"
-    t.string   "email_from_address",   :default=>"", :null=>false
-    t.string   "email_subject_prefix", :default=>"", :null=>false
-    t.boolean  "skip_terms",           :default=>false, :null=>false
-    t.string   "scopes",               :default=>"", :null=>false
+    t.string   "email_from_address",      :default=>"", :null=>false
+    t.string   "email_subject_prefix",    :default=>"", :null=>false
+    t.boolean  "skip_terms",              :default=>false, :null=>false
+    t.string   "scopes",                  :default=>"", :null=>false
+    t.string   "lead_application_source", :default=>"", :null=>false
   end
 
   create_table "openstax_salesforce_users", force: :cascade do |t|
