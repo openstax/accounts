@@ -76,7 +76,7 @@ module Oauth
 
     def admin_params
       params.require(:doorkeeper_application).permit(
-        :name, :redirect_uri, :scopes, :email_subject_prefix, :email_from_address, :trusted
+        :name, :redirect_uri, :scopes, :email_subject_prefix, :email_from_address, :trusted,
         :lead_application_source
       )
     end
