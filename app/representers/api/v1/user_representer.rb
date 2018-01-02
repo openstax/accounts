@@ -49,7 +49,11 @@ module Api::V1
              as: :is_test,
              type: :boolean,
              readable: true,
-             writeable: false
+             writeable: false,
+             schema_info: {
+                description: "If true, the user is an internal test user," +
+                             "not a real OpenStax end user"
+             }
 
     property :salesforce_contact_id,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
