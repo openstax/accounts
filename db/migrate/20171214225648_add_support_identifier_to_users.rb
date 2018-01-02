@@ -7,8 +7,7 @@ class AddSupportIdentifierToUsers < ActiveRecord::Migration
     add_index :users, :support_identifier, unique: true
 
     User.find_each do |user|
-      user.generate_support_identifier
-      user.save!
+      User.where(id: user.id).update_all(support_identifier: user.generate_support_identifier)
     end
 
     change_column_null :users, :support_identifier, false
