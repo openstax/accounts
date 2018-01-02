@@ -1,8 +1,6 @@
 require_relative 'doorkeeper'
 
 Doorkeeper::Application.class_eval do
-  attr_accessible :trusted, :email_from_address, :email_subject_prefix
-
   has_many :application_users, foreign_key: :application_id,
                                dependent: :destroy,
                                inverse_of: :application
