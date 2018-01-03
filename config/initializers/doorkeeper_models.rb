@@ -1,6 +1,7 @@
 require_relative 'doorkeeper'
 
 Doorkeeper::Application.class_eval do
+
   has_many :application_users, foreign_key: :application_id,
                                dependent: :destroy,
                                inverse_of: :application

@@ -83,7 +83,10 @@ class FacultyAccessApply
         using_openstax: apply_params.using_openstax,
         subject: SubjectsUtils.form_choices_to_salesforce_string(apply_params.subjects),
         url: apply_params.url,
-        newsletter: apply_params.newsletter
+        newsletter: apply_params.newsletter,
+        # do not set source_application because this faculty access endpoint does
+        # not have a strong indication of where the user is coming from
+        source_application: nil
       )
     end
 

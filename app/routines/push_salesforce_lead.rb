@@ -4,7 +4,8 @@ class PushSalesforceLead
 
   protected
 
-  def exec(user:, email: nil, role:, phone_number:, school:, num_students:, using_openstax:, url:, newsletter:, subject:)
+  def exec(user:, email: nil, role:, phone_number:, school:, num_students:,
+           using_openstax:, url:, newsletter:, subject:, source_application:)
 
     raise(IllegalArgument, "Cannot push SF Leads for student roles") if role.match(/student/i)
 
@@ -33,7 +34,8 @@ class PushSalesforceLead
       website: url,
       adoption_status: using_openstax,
       num_students: num_students.to_i,
-      os_accounts_id: user.id
+      os_accounts_id: user.id,
+      application_source: source_application.try(:lead_application_source) || ''
     )
 
     lead.save
