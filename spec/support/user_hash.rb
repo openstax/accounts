@@ -17,6 +17,7 @@ def user_hash(user, include_private_data: false)
     'full_name' => user.full_name,
     'uuid' => user.uuid,
     'support_identifier' => user.support_identifier,
+    'is_test' => user.is_test?,
     'applications' => user.applications.order(:id).map {|app| {"id" => app.id, "name" => app.name}}
   }
 
@@ -43,10 +44,11 @@ def user_matcher(user, include_private_data: false)
     full_name: user.full_name,
     uuid: user.uuid,
     support_identifier: user.support_identifier,
+    is_test: user.is_test?,
     applications: a_collection_containing_exactly(
-      *user.applications.map{|app|
+      *user.applications.map do |app|
         a_hash_including({id: app.id, name: app.name})
-      }
+      end
     )
   }
 

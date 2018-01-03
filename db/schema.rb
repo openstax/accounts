@@ -276,6 +276,7 @@ ActiveRecord::Schema.define(version: 20171226134252) do
     t.integer  "role",                   :default=>0, :null=>false, :index=>{:name=>"index_users_on_role"}
     t.jsonb    "trusted_signup_data"
     t.citext   "support_identifier",     :null=>false, :index=>{:name=>"index_users_on_support_identifier", :unique=>true}
+    t.boolean  "is_test"
   end
   add_index "users", ["username"], :name=>"index_users_on_username_case_insensitive", :case_sensitive=>false
 

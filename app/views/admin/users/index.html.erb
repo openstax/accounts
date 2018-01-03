@@ -77,6 +77,10 @@
               <span class="admin">Administrator</span> |
             <% end %>
 
+            <% if user.is_test? %>
+              <span class="test">Test User</span> |
+            <% end %>
+
             <% sf_id = user.salesforce_contact_id %>
 
             <% if sf_id.present? %>
@@ -103,7 +107,11 @@
             </span> |
 
             <span class="uuid">
-              <i>UUID:</i> <%= user.uuid || '(no uuid)' %>
+              <i>UUID:</i> <%= user.uuid %>
+            </span>
+
+            <span class="support_identifier">
+              <i>Support Identifier:</i> <%= user.support_identifier || '(no support_identifier)' %>
             </span>
 
             <% if user.self_reported_school.present? %>
