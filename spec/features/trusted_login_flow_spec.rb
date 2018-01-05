@@ -190,6 +190,16 @@ feature 'Sign in using trusted parameters', js: true do
       expect_back_at_app
       expect_validated_records(params: payload.merge(email: 'test-modified@test.com'))
     end
+
+    it 'handles email missing from signed params' do
+      payload[:email] = ""
+      arrive_from_app(params: signed_params, do_expect: false)
+      expect(page).not_to have_field('signup_role') # no changing the role
+      expect(page).to have_field('signup_email', with: '')
+      fill_in (t :"signup.start.email_placeholder"), with: "bob@example.com"
+      click_button(t :"signup.start.next")
+      expect_signup_verify_screen
+    end
   end
 
   describe 'first arrival but already signed in' do

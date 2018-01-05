@@ -18,13 +18,15 @@ class SignupState < ActiveRecord::Base
   scope :verified, -> { where(verified: true) }
   sifter :verified do verified.eq true end
 
+  DUMMY_TRUSTED_DATA_EMAIL = "fake_email@openstax.org"
+
   def self.create_from_trusted_data(data)
     role = User.roles[data[:role]] ? data['role'] : nil
     data['external_user_uuid'] = data.delete('uuid')
     SignupState.create!(
       role: role,
       verified: false,
-      contact_info_value: data['email'],
+      contact_info_value: data['email'].blank? ? DUMMY_TRUSTED_DATA_EMAIL : data['email'],
       trusted_data: data.merge(role: role)
     )
   end

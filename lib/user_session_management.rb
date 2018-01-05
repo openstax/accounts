@@ -89,7 +89,9 @@ module UserSessionManagement
   end
 
   def signup_email
-    signup_state.try(:contact_info_value)
+    signup_state.try(:contact_info_value).tap do |value|
+      return nil if value == SignupState::DUMMY_TRUSTED_DATA_EMAIL
+    end
   end
 
   def set_client_app(client_id)
