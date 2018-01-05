@@ -34,6 +34,7 @@ class SignupStart
 
     # Create a new one
     new_signup_state = SignupState.email_address.create(
+      is_partial_info_allowed: false,
       contact_info_value: email,
       role: signup_params.role,
       trusted_data: existing_signup_state.try(:trusted_data),

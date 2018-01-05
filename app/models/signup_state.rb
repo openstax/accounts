@@ -1,5 +1,5 @@
 class SignupState < ActiveRecord::Base
-  attr_accessible :contact_info_value, :role, :return_to, :trusted_data, :verified
+  attr_accessible :contact_info_value, :role, :return_to, :trusted_data, :verified, :is_partial_info_allowed
 
   enum contact_info_kind: [:email_address]
 
@@ -9,24 +9,23 @@ class SignupState < ActiveRecord::Base
   include EmailAddressValidations
 
   email_validation_formats.each do |format|
-    validates :contact_info_value, format: format, if: -> { email_address? }
+    validates :contact_info_value, format: format, if: -> { !is_partial_info_allowed && email_address? }
   end
 
-  validates :contact_info_kind, presence: true
-  validates :contact_info_value, presence: true
+  validates :contact_info_kind, presence: true, unless: -> { is_partial_info_allowed }
+  validates :contact_info_value, presence: true, unless: -> { is_partial_info_allowed }
 
   scope :verified, -> { where(verified: true) }
   sifter :verified do verified.eq true end
-
-  DUMMY_TRUSTED_DATA_EMAIL = "fake_email@openstax.org"
 
   def self.create_from_trusted_data(data)
     role = User.roles[data[:role]] ? data['role'] : nil
     data['external_user_uuid'] = data.delete('uuid')
     SignupState.create!(
+      is_partial_info_allowed: true,
       role: role,
       verified: false,
-      contact_info_value: data['email'].blank? ? DUMMY_TRUSTED_DATA_EMAIL : data['email'],
+      contact_info_value: data['email'],
       trusted_data: data.merge(role: role)
     )
   end
