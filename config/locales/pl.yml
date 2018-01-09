@@ -262,6 +262,7 @@ pl:
       username_or_email: Nazwa użytkownika albo adres e-mail
 
     start:
+      access_tutor: Zaloguj się lub zarejestruj, aby uzyskać dostęp do OpenStax Tutor
       cant_sign_in: Nie możesz się zalogować?
       logout_reminder_html: >-
         Jeżeli używasz publicznego komputera, <b>pamiętaj, aby wylogować się</b>,
