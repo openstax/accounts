@@ -237,17 +237,18 @@ ActiveRecord::Schema.define(version: 20180117215851) do
   end
 
   create_table "signup_states", force: :cascade do |t|
-    t.integer  "contact_info_kind",    :default=>0, :null=>false, :index=>{:name=>"index_signup_states_on_contact_info_kind"}
-    t.string   "contact_info_value",   :null=>false
-    t.boolean  "verified",             :default=>false
+    t.integer  "contact_info_kind",       :default=>0, :index=>{:name=>"index_signup_states_on_contact_info_kind"}
+    t.string   "contact_info_value"
+    t.boolean  "verified",                :default=>false
     t.string   "confirmation_code"
     t.string   "confirmation_pin"
     t.datetime "confirmation_sent_at"
-    t.datetime "created_at",           :null=>false
-    t.datetime "updated_at",           :null=>false
-    t.string   "role",                 :null=>false
+    t.datetime "created_at",              :null=>false
+    t.datetime "updated_at",              :null=>false
+    t.string   "role",                    :null=>false
     t.text     "return_to"
     t.jsonb    "trusted_data"
+    t.boolean  "is_partial_info_allowed", :default=>false, :null=>false
   end
 
   create_table "user_external_uuids", force: :cascade do |t|
