@@ -15,21 +15,39 @@ feature 'Admin user pages', js: true do
         @sf_user.update_attribute(:salesforce_contact_id, "booyah")
       end
 
-      it 'searches users and does not explode' do
-        visit '/admin/users'
-        click_button 'Search'
+      context 'full console' do
+        it 'searches users and does not explode' do
+          visit '/admin/users'
+          click_button 'Search'
 
-        expect(page).not_to have_content("We had some unexpected")
+          expect(page).not_to have_content("We had some unexpected")
 
-        page.all(:css, '.expand').each { |el| el.click }
+          page.all(:css, '.expand').each(&:click)
 
-        expect(page).to have_content("#{@admin_user.full_name} | Administrator |")
-        expect(page).to have_content("#{@sf_user.full_name} | Salesforce: booyah")
+          expect(page).to have_content("#{@admin_user.full_name} | Administrator |")
+          expect(page).to have_content("#{@sf_user.full_name} | Salesforce: booyah")
+        end
+
+        it "can bring up the edit page without exploding" do
+          visit "/admin/users/#{@sf_user.id}/edit"
+          expect(page).not_to have_content("We had some unexpected")
+        end
       end
 
-      it "can bring up the edit page without exploding" do
-        visit "/admin/users/#{@sf_user.id}/edit"
-        expect(page).not_to have_content("We had some unexpected")
+      context 'popup console' do
+        it 'searches users and does not explode' do
+          visit '/'
+          click_link 'Popup Console'
+          click_link 'Users'
+          click_button 'Search'
+
+          expect(page).not_to have_content("We had some unexpected")
+
+          page.all(:css, '.expand').each(&:click)
+
+          expect(page).to have_content("#{@admin_user.full_name} Yes No Sign in as | Edit")
+          expect(page).to have_content("#{@sf_user.full_name} No No Sign in as | Edit")
+        end
       end
     end
   end
