@@ -191,6 +191,7 @@ feature 'Sign in using trusted parameters', js: true do
       expect_validated_records(params: payload.merge(email: 'test-modified@test.com'))
     end
 
+
     it 'handles email missing from signed params' do
       payload[:email] = ""
       arrive_from_app(params: signed_params, do_expect: false)
@@ -199,6 +200,28 @@ feature 'Sign in using trusted parameters', js: true do
       fill_in (t :"signup.start.email_placeholder"), with: "bob@example.com"
       click_button(t :"signup.start.next")
       expect_signup_verify_screen
+    end
+
+    describe 'with a pre-existing account' do
+      before(:each) do
+        user = create_user 'user'
+        create_email_address_for(user, payload[:email])
+      end
+
+      it 'sends to log in' do
+        arrive_from_app(params: signed_params, do_expect: false)
+        expect_sign_in_page
+      end
+
+      it 'displays error if they attempt to sign up' do
+        arrive_from_app(params: signed_params, do_expect: false)
+        click_sign_up
+        expect_sign_up_page
+        expect(page).to have_field('signup_email', with: payload[:email])
+        click_button(t :"signup.start.next")
+        expect_sign_up_page
+        expect(page).to have_content('Email already in use')
+      end
     end
   end
 
