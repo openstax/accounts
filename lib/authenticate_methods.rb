@@ -11,7 +11,7 @@ module AuthenticateMethods
     # try to use them again.
     store_url(url: request_url_without_signed_params)
 
-    if signup_state && signup_state.trusted_student?
+    if signup_state && signup_state.trusted_student? && signup_state_email_available?
       redirect_to main_app.signup_path
     else
       redirect_to(
@@ -43,6 +43,13 @@ module AuthenticateMethods
   def use_signed_params
     auto_login_external_user || prepare_for_new_external_user
   end
+
+  def signup_state_email_available?
+    LookupUsers.by_verified_email(
+      signup_state.contact_info_value
+    ).none?
+  end
+
 
   def auto_login_external_user
     return false unless external_user_uuid.present?
