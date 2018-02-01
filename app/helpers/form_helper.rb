@@ -81,7 +81,7 @@ module FormHelper
 
       return "" if field_errors.empty?
 
-      c.content_tag :div, class: "errors" do
+      c.content_tag(:div, class: "errors", :'aria-live' => "polite") do
         error_divs = field_errors.map do |field_error|
           c.content_tag(:div, class: @error_field_classes) { field_error.translate.html_safe }
         end

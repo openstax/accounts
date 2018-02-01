@@ -29,6 +29,20 @@ link to sign up.
 
 In development, Accounts can be run as a normal Rails app on your machine, or you can run it in a Vagrant virtual machine that mimics our production setup.
 
+## Database setup
+
+If you don't have postgresql already installed (this section is a stub):
+Mac:
+
+```sh
+$ brew install postgresql
+$ brew services start postgresql
+$ psql postgres
+CREATE ROLE ox_accounts WITH LOGIN;
+ALTER USER ox_accounts WITH SUPERUSER;
+\q
+```
+
 ### Running as a normal Rails app on your machine
 
 First, ensure you have ruby 2.2.3 installed. You should use either rbenv or RVM to manage your ruby versions.
@@ -44,6 +58,11 @@ Just like with any Rails app, you need to migrate the database and then seed it 
 ```sh
 $ rake db:migrate
 $ rake db:seed
+```
+
+To populate with demo data:
+```sh
+$ rake demo:staff
 ```
 
 Then you can run:
