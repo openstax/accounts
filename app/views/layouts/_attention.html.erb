@@ -1,6 +1,6 @@
 <% errors = collect_errors %>
 
-<div class="errors" aria-live="polite">
+<div class="errors" role="alert">
   <%= alert_tag(errors[:alerts])   %>
   <%= notice_tag(errors[:notices]) %>
 </div>
