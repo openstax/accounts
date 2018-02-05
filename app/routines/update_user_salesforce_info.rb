@@ -192,6 +192,7 @@ class UpdateUserSalesforceInfo
       user.faculty_status = case contact.faculty_verified
       when "Confirmed"
         :confirmed_faculty
+        security_log :faculty_verified, user_params: user
       when "Pending"
         :pending_faculty
       when /Rejected/
