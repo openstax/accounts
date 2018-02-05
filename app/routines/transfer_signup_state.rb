@@ -7,7 +7,7 @@ class TransferSignupState
 
     run(AddEmailToUser, signup_state.contact_info_value, user, {already_verified: signup_state.verified?})
 
-    if signup_state.trusted?
+    if signup_state && signup_state.trusted?
       if signup_state.trusted_external_uuid
         user.external_uuids.find_or_initialize_by(uuid: signup_state.trusted_external_uuid)
       end
