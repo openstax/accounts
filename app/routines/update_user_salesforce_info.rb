@@ -191,8 +191,14 @@ class UpdateUserSalesforceInfo
 
       user.faculty_status = case contact.faculty_verified
       when "Confirmed"
+        SecurityLog.create!(
+            user: user.try(:is_anonymous?) ? nil : user,
+            application: nil,
+            remote_ip: '127.0.0.1',
+            event_type: :faculty_verified,
+            event_data: user
+        )
         :confirmed_faculty
-        security_log :faculty_verified, user_params: user
       when "Pending"
         :pending_faculty
       when /Rejected/
