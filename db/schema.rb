@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180117215851) do
+ActiveRecord::Schema.define(version: 20180208143136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -213,7 +213,7 @@ ActiveRecord::Schema.define(version: 20180117215851) do
   create_table "security_logs", force: :cascade do |t|
     t.integer  "user_id",        :index=>{:name=>"index_security_logs_on_user_id_and_created_at", :with=>["created_at"]}
     t.integer  "application_id", :index=>{:name=>"index_security_logs_on_application_id_and_created_at", :with=>["created_at"]}
-    t.string   "remote_ip",      :null=>false, :index=>{:name=>"index_security_logs_on_remote_ip_and_created_at", :with=>["created_at"]}
+    t.string   "remote_ip",      :index=>{:name=>"index_security_logs_on_remote_ip_and_created_at", :with=>["created_at"]}
     t.integer  "event_type",     :null=>false, :index=>{:name=>"index_security_logs_on_event_type_and_created_at", :with=>["created_at"]}
     t.text     "event_data",     :default=>"{}", :null=>false
     t.datetime "created_at",     :null=>false, :index=>{:name=>"index_security_logs_on_created_at"}
@@ -266,7 +266,7 @@ ActiveRecord::Schema.define(version: 20180117215851) do
     t.string   "first_name",             :index=>{:name=>"index_users_on_first_name", :case_sensitive=>false}
     t.string   "last_name",              :index=>{:name=>"index_users_on_last_name", :case_sensitive=>false}
     t.string   "title"
-    t.uuid     "uuid",                   :default=>"gen_random_uuid()", :null=>false, :index=>{:name=>"index_users_on_uuid", :unique=>true}
+    t.uuid     "uuid",                   :default=>"gen_random_uuid()", :index=>{:name=>"index_users_on_uuid", :unique=>true}
     t.string   "suffix"
     t.string   "state",                  :default=>"needs_profile", :null=>false
     t.string   "salesforce_contact_id",  :index=>{:name=>"index_users_on_salesforce_contact_id"}

@@ -194,7 +194,7 @@ class UpdateUserSalesforceInfo
         SecurityLog.create!(
             user: user.try(:is_anonymous?) ? nil : user,
             application: nil,
-            remote_ip: '127.0.0.1',
+            remote_ip: nil,
             event_type: :faculty_verified,
             event_data: user
         )
