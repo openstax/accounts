@@ -51,7 +51,7 @@ class SecurityLog < ActiveRecord::Base
 
   json_serialize :event_data, Hash
 
-  validates :remote_ip, :event_type, presence: true
+  validates :event_type, presence: true
 
   before_destroy { raise ActiveRecord::ReadOnlyRecord }
 
