@@ -88,9 +88,10 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, ApplicationUser)
     options = params.slice(:page, :per_page, :order_by)
     outputs = SearchApplicationUsers.call(current_application, params[:q], options).outputs
+    app = current_api_user.application
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
                           user_options: {
-                            include_private_data: current_api_user.application.trusted?
+                            include_private_data: app && app.trusted?
                           },
                           location: nil
   end
@@ -181,7 +182,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     outputs = GetUpdatedApplicationUsers.call(current_application, params[:limit]).outputs
     respond_with outputs[:application_users],
                  represent_with: Api::V1::ApplicationUsersRepresenter,
-                 user_options: { include_private_data: current_application.trusted? },
+                 user_options: { include_private_data: current_application && current_application.trusted? },
                  location: nil
   end
 
