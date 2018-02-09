@@ -17,7 +17,7 @@
 
       <% fh = FormHelper::One.new(f: f,
                                   context: self,
-                                  errors: @handler_result.try(:errors)) %>
+                                  errors: @handler_result.try('')) %>
 
       <%= fh.text_field name: :pin, autofocus: true %>
       <%= render(partial: "layouts/attention") %>
