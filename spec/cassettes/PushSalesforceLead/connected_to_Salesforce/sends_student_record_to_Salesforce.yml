@@ -5,11 +5,9 @@ http_interactions:
     uri: "<tutor_specs_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Alysson","LastName":"Balistreri","Subject__c":"","Company":"JP
-        University","Website":"http://www.rice.edu","Email":"f@f.com","LeadSource":"OSC
-        Faculty","Newsletter__c":true,"Newsletter_Opt_In__c":true,"Adoption_Status__c":"Confirmed
-        Adoption Won","Number_of_Students__c":0,"OS_Accounts_ID__c":3,"Application_Source__c":"Tutor
-        Signup"}'
+      string: '{"FirstName":"Ford","LastName":"McCullough","Subject__c":"","Company":"JP
+        University","Website":"http://www.rice.edu","Email":"f@f.com","LeadSource":"Student","Newsletter__c":true,"Newsletter_Opt_In__c":true,"Adoption_Status__c":"Confirmed
+        Adoption Won","Number_of_Students__c":0,"OS_Accounts_ID__c":2,"Application_Source__c":""}'
     headers:
       User-Agent:
       - Faraday v0.9.2
@@ -27,7 +25,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Mon, 12 Feb 2018 20:36:04 GMT
+      - Mon, 12 Feb 2018 20:36:01 GMT
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Content-Type-Options:
@@ -41,14 +39,14 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=uh8PVC4WTuGLPpg7FulwrQ;Path=/;Domain=.salesforce.com;Expires=Fri,
-        13-Apr-2018 20:36:04 GMT;Max-Age=5184000
+      - BrowserId=bAaYL_V5RaKWxMgI9DHszQ;Path=/;Domain=.salesforce.com;Expires=Fri,
+        13-Apr-2018 20:36:01 GMT;Max-Age=5184000
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
       - api-usage=5/48000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00QW0000006UrZwMAK"
+      - "/services/data/v37.0/sobjects/Lead/00QW0000006UrZrMAK"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -57,12 +55,12 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00QW0000006UrZwMAK","success":true,"errors":[]}'
+      string: '{"id":"00QW0000006UrZrMAK","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Mon, 12 Feb 2018 20:36:05 GMT
+  recorded_at: Mon, 12 Feb 2018 20:36:02 GMT
 - request:
     method: get
-    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c,%20accounts_uuid_c__c,%20Application_Source__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700QW0000006UrZwMAK%27)%20LIMIT%201"
+    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c,%20accounts_uuid_c__c,%20Application_Source__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700QW0000006UrZrMAK%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
@@ -81,7 +79,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Mon, 12 Feb 2018 20:36:05 GMT
+      - Mon, 12 Feb 2018 20:36:03 GMT
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Content-Type-Options:
@@ -95,12 +93,12 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=eG_T6hr8QMKoLm9OWfN2zQ;Path=/;Domain=.salesforce.com;Expires=Fri,
-        13-Apr-2018 20:36:05 GMT;Max-Age=5184000
+      - BrowserId=PwnxerOcR4u2Cex3DLO1Xg;Path=/;Domain=.salesforce.com;Expires=Fri,
+        13-Apr-2018 20:36:03 GMT;Max-Age=5184000
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=6/48000
+      - api-usage=5/48000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -109,12 +107,10 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00QW0000006UrZwMAK"},"Id":"00QW0000006UrZwMAK","Name":"Alysson
-        Balistreri","FirstName":"Alysson","LastName":"Balistreri","Salutation":null,"Subject__c":null,"Company":"JP
-        University","Phone":null,"Website":"http://www.rice.edu","Status":"Needs School","Email":"f@f.com","LeadSource":"OSC
-        Faculty","Newsletter__c":true,"Newsletter_Opt_In__c":true,"Adoption_Status__c":"Confirmed
-        Adoption Won","Number_of_Students__c":30.0,"OS_Accounts_ID__c":"3","accounts_uuid_c__c":null,"Application_Source__c":"Tutor
-        Signup"}]}'
+      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00QW0000006UrZrMAK"},"Id":"00QW0000006UrZrMAK","Name":"Ford
+        McCullough","FirstName":"Ford","LastName":"McCullough","Salutation":null,"Subject__c":null,"Company":"JP
+        University","Phone":null,"Website":"http://www.rice.edu","Status":"Needs School","Email":"f@f.com","LeadSource":"Student","Newsletter__c":true,"Newsletter_Opt_In__c":true,"Adoption_Status__c":"Confirmed
+        Adoption Won","Number_of_Students__c":30.0,"OS_Accounts_ID__c":"2","accounts_uuid_c__c":null,"Application_Source__c":null}]}'
     http_version: 
-  recorded_at: Mon, 12 Feb 2018 20:36:05 GMT
+  recorded_at: Mon, 12 Feb 2018 20:36:03 GMT
 recorded_with: VCR 3.0.3

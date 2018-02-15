@@ -7,8 +7,6 @@ class PushSalesforceLead
   def exec(user:, email: nil, role:, phone_number:, school:, num_students:,
            using_openstax:, url:, newsletter:, subject:, source_application:)
 
-    raise(IllegalArgument, "Cannot push SF Leads for student roles") if role.match(/student/i)
-
     status.set_job_name(self.class.name)
     status.set_job_args(user: user.to_global_id.to_s)
 
@@ -18,7 +16,11 @@ class PushSalesforceLead
 
     fatal_error(code: :email_missing) if email.nil?
 
-    source = "OSC Faculty"
+    if role.match(/student/i)
+      source = "Student"
+    else
+      source = "OSC Faculty"
+    end
 
     lead = OpenStax::Salesforce::Remote::Lead.new(
       first_name: user.first_name,
