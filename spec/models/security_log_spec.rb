@@ -6,7 +6,6 @@ RSpec.describe SecurityLog, type: :model do
   it { should belong_to :user }
   it { should belong_to :application }
 
-  it { should validate_presence_of :remote_ip }
   it { should validate_presence_of :event_type }
 
   it 'cannot be updated' do
