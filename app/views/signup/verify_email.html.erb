@@ -15,9 +15,7 @@
     <%= lev_form_for :pin, url: signup_verify_email_path, method: :post,
         html: {class: collect_errors.any? ? 'is-invalid' : ''} do |f| %>
 
-      <% fh = FormHelper::One.new(f: f,
-                                  context: self,
-                                  errors: @handler_result.try('')) %>
+      <% fh = FormHelper::One.new(f: f, context: self) %>
 
       <%= fh.text_field name: :pin, autofocus: true %>
       <%= render(partial: "layouts/attention") %>
