@@ -71,7 +71,7 @@ module OmniAuth
         if identity.present?
           super
         else
-          reason = if locate_conditions[:users_returned] == 0
+          reason = if locate_conditions.nil? || locate_conditions[:users_returned] == 0
             :cannot_find_user
           elsif locate_conditions[:users_returned] > 1
             :multiple_users

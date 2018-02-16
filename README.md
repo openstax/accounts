@@ -73,7 +73,18 @@ $ rails server
 
 which will start Accounts up on port 2999, i.e. http://localhost:2999.
 
-## Running Specs
+## Running Specs (Automated Tests)
+
+Specs require phantomjs. On a mac:
+```sh
+$ brew install phantomjs
+```
+
+To run specs,
+
+```sh
+$ rake spec
+```
 
 When running feature specs, the default behavior is for exceptions to be rescued and nice error pages to be shown.  This can make debugging difficult if you're not expecting an error.  To not rescue exceptions, do:
 
