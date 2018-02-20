@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SignupProfileInstructor, type: :handler do
+RSpec.describe SignupProfileStudent, type: :handler do
 
   before(:each) do
     load 'db/seeds.rb'
@@ -10,21 +10,15 @@ RSpec.describe SignupProfileInstructor, type: :handler do
 
   context "when the user has arrived well-formed" do
 
-    let(:user) { create_user('user').tap{ |uu| uu.update_attribute(:state, 'needs_profile') } }
+    let(:user) { create_user('user').tap { |uu| uu.update_attribute(:state, 'needs_profile') } }
 
     context "when required fields are missing" do
-      [:first_name, :last_name, :school, :phone_number,
-       :url, :num_students, :using_openstax].each do |required_field|
+      [:first_name, :last_name, :school].each do |required_field|
         it "errors if no #{required_field}" do
           outcome = handle(required_field => '')
           expect(outcome.errors).to have_offending_input(required_field)
         end
       end
-    end
-
-    it "requires a number >= 0 for num_students" do
-      outcome = handle(num_students: "-1")
-      expect(outcome.errors).to have_offending_input(:num_students)
     end
 
     context "when the fields are properly filled in" do
@@ -34,13 +28,13 @@ RSpec.describe SignupProfileInstructor, type: :handler do
       end
 
       context "salesforce lead gets pushed" do
-        it "sends the subject properly formatted" do
-          expect_lead_push(subject: "Macro Econ;Biology")
+        it "sends the school properly formatted" do
+          expect_lead_push(school: "rice")
           handle
         end
 
-        it "sends num_students as a number" do
-          expect_lead_push(num_students: 30)
+        it "sends nil for the subject" do
+          expect_lead_push(subject: nil)
           handle
         end
       end
@@ -70,10 +64,7 @@ RSpec.describe SignupProfileInstructor, type: :handler do
     end
   end
 
-  def handle(first_name: "joe", last_name: "bob", school: "rice", phone_number: "000-0000",
-             subjects: {"accounting"=>"0", "macro_econ"=>"1", "biology"=>"1", "calculus"=>"0"},
-             url: "www", num_students: "30", using_openstax: "primary")
-
+  def handle(first_name: "joe", last_name: "bob", school: "rice")
     contract_ids = FinePrint::Contract.all.map(&:id)
 
     described_class.handle(
@@ -82,11 +73,6 @@ RSpec.describe SignupProfileInstructor, type: :handler do
           first_name: first_name,
           last_name: last_name,
           school: school,
-          phone_number: phone_number,
-          subjects: subjects,
-          url: url,
-          num_students: num_students,
-          using_openstax: using_openstax,
           contract_1_id: contract_ids[0],
           contract_2_id: contract_ids[1]
         }
