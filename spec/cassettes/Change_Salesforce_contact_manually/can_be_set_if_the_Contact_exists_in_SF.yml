@@ -46,7 +46,7 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0010v000002Wo0qAAC"},"Id":"0010v000002Wo0qAAC","Name":"JP
         University"}]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 24 May 2017 04:56:08 GMT
 - request:
     method: post
@@ -97,11 +97,11 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":"0030v000001a9YuAAI","success":true,"errors":[]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 24 May 2017 04:56:09 GMT
 - request:
     method: get
-    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20Faculty_Verified__c,%20LastModifiedDate,%20AccountId,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c%20FROM%20Contact%20WHERE%20(Id%20=%20%270030v000001a9YuAAI%27)%20LIMIT%201"
+    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20Faculty_Verified__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c%20FROM%20Contact%20WHERE%20(Id%20=%20%270030v000001a9YuAAI%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
@@ -144,7 +144,7 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0030v000001a9YuAAI"},"Id":"0030v000001a9YuAAI","Name":"Alex
-        Hauck","FirstName":"Alex","LastName":"Hauck","Email":null,"Email_alt__c":null,"Faculty_Confirmed_Date__c":null,"Faculty_Verified__c":null,"LastModifiedDate":"2017-05-24T04:56:08.000+0000","AccountId":"0010v000002Wo0qAAC","SendFacultyVerificationTo__c":null,"All_Emails__c":null,"Confirmed_Emails__c":null}]}'
-    http_version: 
+        Hauck","FirstName":"Alex","LastName":"Hauck","Email":null,"Email_alt__c":null,"Faculty_Confirmed_Date__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"LastModifiedDate":"2017-05-24T04:56:08.000+0000","AccountId":"0010v000002Wo0qAAC","SendFacultyVerificationTo__c":null,"All_Emails__c":null,"Confirmed_Emails__c":null}]}'
+    http_version:
   recorded_at: Wed, 24 May 2017 04:56:09 GMT
 recorded_with: VCR 3.0.3
