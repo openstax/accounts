@@ -91,6 +91,15 @@ module Api::V1
                 required: false
              }
 
+    property :school_type,
+             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+             type: String,
+             readable: true,
+             writeable: false,
+             schema_info: {
+                description: "One of #{User.school_types.keys.map(&:to_s).inspect}"
+             }
+
     collection :contact_infos,
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
                decorator: ContactInfoRepresenter

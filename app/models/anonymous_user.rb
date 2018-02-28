@@ -104,4 +104,22 @@ class AnonymousUser
     raise AnonymousUserIsImmutableError, "Cannot set faculty status on the AnonymousUser."
   end
 
+  User.school_types.each do |type, value|
+    define_method "#{type}?" do
+      User::DEFAULT_SCHOOL_TYPE.to_s == type
+    end
+
+    define_method "#{type}!" do
+      raise AnonymousUserIsImmutableError, "Cannot set school type on the AnonymousUser."
+    end
+  end
+
+  def school_type
+    User::DEFAULT_SCHOOL_TYPE.to_s
+  end
+
+  def school_type=(type)
+    raise AnonymousUserIsImmutableError, "Cannot set school type on the AnonymousUser."
+  end
+
 end

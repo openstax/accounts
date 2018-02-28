@@ -25,6 +25,7 @@ def user_hash(user, include_private_data: false)
     base_hash['salesforce_contact_id'] = user.salesforce_contact_id
     base_hash['faculty_status'] = user.faculty_status.to_s
     base_hash['self_reported_role'] = user.role.to_s
+    base_hash['school_type'] = user.school_type.to_s
     base_hash['contact_infos'] = a_collection_including(
       user.contact_infos.order(:id).map{|ci|
         Api::V1::ContactInfoRepresenter.new(ci).to_hash
@@ -56,6 +57,7 @@ def user_matcher(user, include_private_data: false)
     base_hash[:salesforce_contact_id] = user.salesforce_contact_id
     base_hash[:faculty_status] = user.faculty_status.to_s
     base_hash[:self_reported_role] = user.role.to_s
+    base_hash[:school_type] = user.school_type.to_s
     base_hash[:contact_infos] =
       user.contact_infos.none? ?
         [] :  # for some reason `a_collection_containing_exactly` doesn't always work when no elements

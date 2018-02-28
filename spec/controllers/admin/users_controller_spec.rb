@@ -18,6 +18,7 @@ RSpec.describe Admin::UsersController, type: :controller do
                      email_address: 'malik@example.org',
                      is_administrator: '1',
                      faculty_status: 'rejected_faculty',
+                     school_type: 'college',
                      password: 'si4eeSai',
                      password_confirmation: 'si4eeSai'
                    }
@@ -28,6 +29,7 @@ RSpec.describe Admin::UsersController, type: :controller do
       expect(user.email_addresses.first.value).to eq 'malik@example.org'
       expect(user).to be_is_administrator
       expect(user).to be_rejected_faculty
+      expect(user).to be_college
       expect(user.identity.authenticate('si4eeSai')).to eq user.identity
     end
   end
