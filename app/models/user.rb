@@ -35,11 +35,12 @@ class User < ActiveRecord::Base
 
   enum faculty_status: [:no_faculty_info, :pending_faculty, :confirmed_faculty, :rejected_faculty]
   enum role: [:unknown_role, :student, :instructor, :administrator, :librarian, :designer, :other]
+  enum school_type: [:unknown_school_type, :other_school_type, :college]
 
   DEFAULT_FACULTY_STATUS = :no_faculty_info
-  validates :faculty_status, presence: true
+  DEFAULT_SCHOOL_TYPE = :unknown_school_type
 
-  validates :role, presence: true
+  validates :faculty_status, :role, :school_type, presence: true
 
   before_validation :strip_fields
 

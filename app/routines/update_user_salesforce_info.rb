@@ -1,4 +1,9 @@
 class UpdateUserSalesforceInfo
+  COLLEGE_TYPES = [
+    'College/University (4)',
+    'Technical/Community College (2)',
+    'Career School/For-Profit (2)'
+  ]
 
   def initialize(allow_error_email:)
     @allow_error_email = allow_error_email
@@ -181,11 +186,12 @@ class UpdateUserSalesforceInfo
   def cache_contact_data_in_user!(contact, user)
     if contact.nil?
       warn(
-        "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but" \
-        " that contact is no longer present; resetting user's faculty status and contact ID"
+        "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but that" \
+        " contact is no longer present; resetting user's faculty status, contact ID and school type"
       )
       user.salesforce_contact_id = nil
       user.faculty_status = User::DEFAULT_FACULTY_STATUS
+      user.school_type = User::DEFAULT_SCHOOL_TYPE
     else
       user.salesforce_contact_id = contact.id
 
@@ -203,10 +209,20 @@ class UpdateUserSalesforceInfo
         :pending_faculty
       when /Rejected/
         :rejected_faculty
-      when nil
+      when NilClass
         :no_faculty_info
       else
-        raise "Unknown faculty_verified field: '#{contact.faculty_verified}'' on contact #{contact.id}"
+        raise "Unknown faculty_verified field: '#{
+              contact.faculty_verified}'' on contact #{contact.id}"
+      end
+
+      user.school_type = case contact.school_type
+      when *COLLEGE_TYPES
+        :college
+      when NilClass
+        :unknown_school_type
+      else
+        :other_school_type
       end
     end
 
@@ -240,7 +256,7 @@ class UpdateUserSalesforceInfo
     #       Or maybe try https://github.com/gooddata/salesforce_bulk_query
 
     @contacts ||= OpenStax::Salesforce::Remote::Contact
-                    .select(:id, :email, :email_alt, :faculty_verified)
+                    .select(:id, :email, :email_alt, :faculty_verified, :school_type)
                     .to_a
   end
 

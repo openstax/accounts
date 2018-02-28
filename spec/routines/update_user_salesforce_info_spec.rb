@@ -20,18 +20,32 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     context 'user has no SF info yet' do
       it 'caches it when the SF info exists on SF' do
         stub_salesforce(
-          contacts: {id: 'foo', email: 'Bob@example.com', faculty_verified: "Confirmed"}
+          contacts: {
+            id: 'foo',
+            email: 'Bob@example.com',
+            faculty_verified: "Confirmed",
+            school_type: 'College/University (4)'
+          }
         )
         described_class.call
-        expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
+        expect_user_sf_data(
+          user, id: "foo", faculty_status: :confirmed_faculty, school_type: :college
+        )
       end
 
       it 'caches it when the SF info exists on SF with whitespace around email' do
         stub_salesforce(
-          contacts: {id: 'foo', email: ' Bob@example.com ', faculty_verified: "Confirmed"}
+          contacts: {
+            id: 'foo',
+            email: ' Bob@example.com ',
+            faculty_verified: "Confirmed",
+            school_type: 'Technical/Community College (2)'
+          }
         )
         described_class.call
-        expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
+        expect_user_sf_data(
+          user, id: "foo", faculty_status: :confirmed_faculty, school_type: :college
+        )
       end
 
       it 'caches it when the SF info exists on SF under an alt email' do
@@ -40,11 +54,14 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
             id: 'foo',
             email: 'bobby@example.com',
             email_alt: "bob@example.com",
-            faculty_verified: "Confirmed"
+            faculty_verified: "Confirmed",
+            school_type: 'Career School/For-Profit (2)'
           }
         )
         described_class.call
-        expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
+        expect_user_sf_data(
+          user, id: "foo", faculty_status: :confirmed_faculty, school_type: :college
+        )
       end
 
       it 'does not explode when the SF info does not exist on SF' do
@@ -55,15 +72,15 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     end
 
     context 'user has SF info that is up to date' do
-      before {
+      before do
         user.salesforce_contact_id = 'foo'
         user.faculty_status = :confirmed_faculty
         user.save!
-      }
+      end
 
       it 'does not trigger a save on the user' do
         stub_salesforce(
-          contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed"}
+          contacts: { id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed" }
         )
         expect_any_instance_of(User).not_to receive(:save!)
         described_class.call
@@ -71,18 +88,10 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     end
 
     context 'user has SF info that is out of date' do
-      before {
+      before do
         user.salesforce_contact_id = 'bar'
         user.faculty_status = :confirmed_faculty
         user.save!
-      }
-
-      it 'corrects faculty status' do
-        stub_salesforce(
-          contacts: {id: 'bar', email: 'bob@example.com', faculty_verified: "Pending"}
-        )
-        described_class.call
-        expect_user_sf_data(user, id: "bar", faculty_status: :pending_faculty)
       end
 
       it 'corrects sf ID' do
@@ -93,19 +102,51 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty)
       end
 
-      it 'corrects both' do
+      it 'corrects faculty status' do
         stub_salesforce(
-          contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Pending"}
+          contacts: { id: 'bar', email: 'bob@example.com', faculty_verified: "Pending" }
         )
         described_class.call
-        expect_user_sf_data(user, id: "foo", faculty_status: :pending_faculty)
+        expect_user_sf_data(user, id: "bar", faculty_status: :pending_faculty)
+      end
+
+      it 'corrects school type' do
+        stub_salesforce(
+          contacts: {
+            id: 'bar',
+            email: 'bob@example.com',
+            faculty_verified: "Confirmed",
+            school_type: 'High School'
+          }
+        )
+        described_class.call
+        expect_user_sf_data(
+          user, id: "bar", faculty_status: :confirmed_faculty, school_type: :other_school_type
+        )
+      end
+
+      it 'corrects all of them' do
+        stub_salesforce(
+          contacts: {
+            id: 'foo',
+            email: 'bob@example.com',
+            faculty_verified: "Pending",
+            school_type: 'Middle/Junior High School'
+          }
+        )
+        described_class.call
+        expect_user_sf_data(
+          user, id: "foo", faculty_status: :pending_faculty, school_type: :other_school_type
+        )
       end
 
       it 'clears out SF info if contact has gone missing' do
         stub_salesforce(contacts: [])
         expect(Rails.logger).to receive(:warn)
         described_class.call
-        expect_user_sf_data(user, id: nil, faculty_status: :no_faculty_info)
+        expect_user_sf_data(
+          user, id: nil, faculty_status: :no_faculty_info, school_type: :unknown_school_type
+        )
       end
     end
 
@@ -277,9 +318,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
   end
 
   context '#cache_contact_data_in_user!' do
-    before(:each) {
-      disable_sfdc_client
-    }
+    before(:each) { disable_sfdc_client }
 
     it 'handles nil contacts' do
       described_class.new(allow_error_email: true).cache_contact_data_in_user!(nil, user)
@@ -382,15 +421,16 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           id: contact[:id] || SecureRandom.hex(10),
           email: contact[:email],
           email_alt: contact[:email_alt],
-          faculty_verified: contact[:faculty_verified]
+          faculty_verified: contact[:faculty_verified],
+          school_type: contact[:school_type]
         )
       end
     end
 
     expect(OpenStax::Salesforce::Remote::Contact).to(
-      receive(:select).with(:id, :email, :email_alt, :faculty_verified)
+      receive(:select).with(:id, :email, :email_alt, :faculty_verified, :school_type)
+                      .and_return(contacts)
     )
-    allow(OpenStax::Salesforce::Remote::Contact).to receive(:select).and_return(contacts)
   end
 
   def stub_leads(leads)
@@ -415,10 +455,13 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     described_class.call
   end
 
-  def expect_user_sf_data(user, id: nil, faculty_status: :no_faculty_info)
+  def expect_user_sf_data(
+    user, id: nil, faculty_status: :no_faculty_info, school_type: :unknown_school_type
+  )
     user.reload
     expect(user.salesforce_contact_id).to eq id
     expect(user.faculty_status).to eq faculty_status.to_s
+    expect(user.school_type).to eq school_type.to_s
   end
 
 end
