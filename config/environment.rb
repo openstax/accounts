@@ -1,6 +1,7 @@
 # Load the Rails application
 require File.expand_path('../application', __FILE__)
 
+require 'scout_helper'
 require 'env_utilities'
 require 'token_maker'
 require 'locale_selector'
