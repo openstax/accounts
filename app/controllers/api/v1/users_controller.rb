@@ -109,6 +109,8 @@ class Api::V1::UsersController < Api::V1::ApiController
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}
   EOS
   def show
+    ScoutHelper.ignore!(0.999)
+
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user,
                                               current_human_user)
     respond_with current_human_user,
