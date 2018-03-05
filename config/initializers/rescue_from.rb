@@ -11,7 +11,35 @@ OpenStax::RescueFrom.configure do |config|
   config.app_env = secrets.environment_name
   config.contact_name = exception_secrets['contact_name'].html_safe
 
-  # config.notifier = ExceptionNotifier
+  # Notify devs using sentry-raven
+  config.notify_proc = ->(proxy, controller) do
+    extra = {
+      env: controller.request.env,
+      error_id: proxy.error_id,
+      class: proxy.name,
+      message: proxy.message,
+      first_line_of_backtrace: proxy.first_backtrace_line,
+      cause: proxy.cause,
+      dns_name: resolve_ip(controller.request.remote_ip)
+    }
+    extra.merge!(proxy.extras) if proxy.extras.is_a? Hash
+
+    Raven.capture_exception(proxy.exception, extra: extra)
+  end
+  config.notify_background_proc = ->(proxy) do
+    extra = {
+      error_id: proxy.error_id,
+      class: proxy.name,
+      message: proxy.message,
+      first_line_of_backtrace: proxy.first_backtrace_line,
+      cause: proxy.cause
+    }
+    extra.merge!(proxy.extras) if proxy.extras.is_a? Hash
+
+    Raven.capture_exception(proxy.exception, extra: extra)
+  end
+  require 'raven/integrations/rack'
+  config.notify_rack_middleware = Raven::Rack
 
   config.html_error_template_path = 'errors/any'
   config.html_error_template_layout_name = 'error'
@@ -27,14 +55,11 @@ OpenStax::RescueFrom.register_exception(
   status: :forbidden
 )
 
-# Exceptions in controllers might be reraised or not depending on the settings above
+# Exceptions in controllers are not automatically reraised in production-like environments
 ActionController::Base.use_openstax_exception_rescue
 
 # RescueFrom always reraises background exceptions so that the background job may properly fail
 ActiveJob::Base.use_openstax_exception_rescue
-
-# URL generation errors are caused by bad routes, for example, and should not be ignored
-ExceptionNotifier.ignored_exceptions.delete("ActionController::UrlGenerationError")
 
 module OpenStax::RescueFrom
   def self.default_friendly_message
