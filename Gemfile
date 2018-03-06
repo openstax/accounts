@@ -59,7 +59,7 @@ gem 'openstax_api', '~> 8.2.0'
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from', '~> 3.0.0'
 
-# Sentry integration (this require disables the automatic integration since we use rescue_from)
+# Sentry integration (the require disables automatic Rails integration since we use rescue_from)
 gem 'sentry-raven', require: 'raven/base'
 
 # Lev framework
