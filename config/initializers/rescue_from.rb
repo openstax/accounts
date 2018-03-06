@@ -8,7 +8,6 @@ OpenStax::RescueFrom.configure do |config|
                                                       default: Rails.env.development?)
 
   config.app_name = 'Accounts'
-  config.app_env = secrets.environment_name
   config.contact_name = exception_secrets['contact_name'].html_safe
 
   # Notify devs using sentry-raven
@@ -42,10 +41,6 @@ OpenStax::RescueFrom.configure do |config|
 
   config.html_error_template_path = 'errors/any'
   config.html_error_template_layout_name = 'error'
-
-  # config.email_prefix = "[#{config.app_name}] (#{config.app_env}) "
-  config.sender_address = exception_secrets['sender']
-  config.exception_recipients = exception_secrets['recipients']
 end
 
 OpenStax::RescueFrom.register_exception(
