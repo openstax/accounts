@@ -14,7 +14,6 @@ OpenStax::RescueFrom.configure do |config|
   # Notify devs using sentry-raven
   config.notify_proc = ->(proxy, controller) do
     extra = {
-      env: controller.request.env,
       error_id: proxy.error_id,
       class: proxy.name,
       message: proxy.message,
