@@ -350,7 +350,7 @@ GEM
       roar (>= 1.0)
       roar-rails (>= 1.0)
       uber (< 0.1.0)
-    openstax_healthcheck (0.0.2)
+    openstax_healthcheck (0.0.3)
       rails (>= 3.0)
     openstax_rescue_from (2.1.0)
       exception_notification (>= 4.1, < 5.0)
