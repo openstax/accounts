@@ -11,7 +11,7 @@ module AuthenticateMethods
     # try to use them again.
     store_url(url: request_url_without_signed_params)
 
-    if signup_state && signup_state.trusted_student? && signup_state_email_available?
+    if signup_state && signup_state.signed_student? && signup_state_email_available?
       redirect_to main_app.signup_path
     else
       redirect_to(
@@ -82,7 +82,7 @@ module AuthenticateMethods
 
     # Save the signed params data to facilitate either sign in or up
     # depending on the user's choices
-    signup_state = SignupState.create_from_trusted_data(params[:sp])
+    signup_state = SignupState.create_from_signed_data(params[:sp])
     save_signup_state(signup_state)
   end
 

@@ -37,7 +37,7 @@ class SignupStart
       is_partial_info_allowed: false,
       contact_info_value: email,
       role: signup_params.role,
-      trusted_data: existing_signup_state.try(:trusted_data),
+      signed_data: existing_signup_state.try!(:signed_data),
       return_to: options[:return_to]
     )
 

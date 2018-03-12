@@ -4,8 +4,8 @@
 <%
   @hide_layout_errors = true
 
-  suggested_username = signup_state && signup_state.trusted? ?
-    signup_state.trusted_data['email'] : ''
+  suggested_username = signup_state && signup_state.signed? ?
+    signup_state.signed_data['email'] : ''
 
   translate_error(code: :no_users) do
     gave_an_email = params["login"]["username_or_email"].match(/@/)

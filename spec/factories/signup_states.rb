@@ -5,8 +5,8 @@ FactoryGirl.define do
     confirmation_sent_at { Time.now }
     role "instructor"
 
-    trait :trusted do
-      trusted_data {
+    trait :signed do
+      signed_data {
         {
           external_user_uuid: SecureRandom.uuid,
           name: Faker::Name.name,

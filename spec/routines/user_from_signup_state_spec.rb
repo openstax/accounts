@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe UserFromSignupState do
+RSpec.describe UserFromSignupState, type: :routine do
 
-  context 'an untrusted state' do
+  context 'an unsigned state' do
     let(:signup_state) { FactoryGirl.create :signup_state }
 
     it 'builds a user account' do
@@ -12,16 +12,16 @@ describe UserFromSignupState do
     end
   end
 
-  context 'a trusted state' do
-    let(:signup_state) { FactoryGirl.create :signup_state, :trusted, role: 'instructor' }
+  context 'a signed state' do
+    let(:signup_state) { FactoryGirl.create :signup_state, :signed, role: 'instructor' }
 
-    it 'builds a user account with attributes set from tusted' do
+    it 'builds a user account with signed attributes' do
       user = UserFromSignupState[signup_state]
       expect(user).to be_valid
       expect(user.role).to eq('instructor')
       expect(user.external_uuids).not_to be_empty
-      expect(user.external_uuids.first.uuid).to eq(signup_state.trusted_data['external_user_uuid'])
-      expect(user.trusted_signup_data).to eq(signup_state.trusted_data)
+      expect(user.external_uuids.first.uuid).to eq(signup_state.signed_data['external_user_uuid'])
+      expect(user.signed_external_data).to eq(signup_state.signed_data)
     end
 
   end

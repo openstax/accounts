@@ -1,4 +1,4 @@
-class SignupTrustedStudent
+class SignupExternalStudent
 
   lev_routine express_output: :user
 

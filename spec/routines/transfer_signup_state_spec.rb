@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TransferSignupState do
+RSpec.describe TransferSignupState, type: :routine do
 
   it 'works on the happy path' do
     user = FactoryGirl.create :user
@@ -22,11 +22,11 @@ RSpec.describe TransferSignupState do
     expect(email.verified).to be(false)
   end
 
-  it 'does not explode when the user already has a trusted_external_uuid' do
+  it 'does not explode when the user already has a signed_external_uuid' do
     user = FactoryGirl.create :user
     user.external_uuids.create(uuid: SecureRandom.uuid)
     ss = FactoryGirl.create :signup_state, :verified, role: "designer",
-                            trusted_data: { 'external_user_uuid' => SecureRandom.uuid }
+                            signed_data: { 'external_user_uuid' => SecureRandom.uuid }
 
     TransferSignupState[signup_state: ss, user: user]
 

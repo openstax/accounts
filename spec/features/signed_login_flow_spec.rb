@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Sign in using trusted parameters', js: true do
+feature 'Sign in using signed parameters', js: true do
   background do
     load 'db/seeds.rb'
     create_default_application
@@ -65,7 +65,7 @@ feature 'Sign in using trusted parameters', js: true do
       expect_validated_records(params: payload, user: user, email_is_verified: false)
     end
 
-    it 'can sign up with trusted data' do
+    it 'can sign up with signed data' do
       arrive_from_app(params: signed_params)
       expect_sign_in_page
       click_sign_up

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180208143136) do
+ActiveRecord::Schema.define(version: 20180312223738) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -247,7 +247,7 @@ ActiveRecord::Schema.define(version: 20180208143136) do
     t.datetime "updated_at",              :null=>false
     t.string   "role",                    :null=>false
     t.text     "return_to"
-    t.jsonb    "trusted_data"
+    t.jsonb    "signed_data"
     t.boolean  "is_partial_info_allowed", :default=>false, :null=>false
   end
 
@@ -266,7 +266,7 @@ ActiveRecord::Schema.define(version: 20180208143136) do
     t.string   "first_name",             :index=>{:name=>"index_users_on_first_name", :case_sensitive=>false}
     t.string   "last_name",              :index=>{:name=>"index_users_on_last_name", :case_sensitive=>false}
     t.string   "title"
-    t.uuid     "uuid",                   :default=>"gen_random_uuid()", :index=>{:name=>"index_users_on_uuid", :unique=>true}
+    t.uuid     "uuid",                   :default=>"gen_random_uuid()", :null=>false, :index=>{:name=>"index_users_on_uuid", :unique=>true}
     t.string   "suffix"
     t.string   "state",                  :default=>"needs_profile", :null=>false
     t.string   "salesforce_contact_id",  :index=>{:name=>"index_users_on_salesforce_contact_id"}
@@ -275,7 +275,7 @@ ActiveRecord::Schema.define(version: 20180208143136) do
     t.string   "login_token",            :index=>{:name=>"index_users_on_login_token", :unique=>true}
     t.datetime "login_token_expires_at"
     t.integer  "role",                   :default=>0, :null=>false, :index=>{:name=>"index_users_on_role"}
-    t.jsonb    "trusted_signup_data"
+    t.jsonb    "signed_external_data"
     t.citext   "support_identifier",     :null=>false, :index=>{:name=>"index_users_on_support_identifier", :unique=>true}
     t.boolean  "is_test"
   end

@@ -44,7 +44,7 @@ class SignupController < ApplicationController
                 signup_state: signup_state,
                 session: self,
                 success: lambda do
-                  redirect_to action: (signup_state.trusted_student? ? :profile : :password)
+                  redirect_to action: (signup_state.signed_student? ? :profile : :password)
                 end,
                 failure: lambda do
                   @handler_result.errors.each do | error |  # TODO move to view?
@@ -62,7 +62,7 @@ class SignupController < ApplicationController
                     session[:return_to] = state.return_to
                     save_signup_state(state)
                   end
-                  redirect_to action: (signup_state.trusted_student? ? :profile : :password)
+                  redirect_to action: (signup_state.signed_student? ? :profile : :password)
                 end,
                 failure: lambda do
                   # TODO spec this and set an error message
@@ -89,7 +89,7 @@ class SignupController < ApplicationController
                   client_app: get_client_app,
                   success: lambda do
                     clear_signup_state
-                    if current_user.student? || current_user.created_from_trusted_data?
+                    if current_user.student? || current_user.created_from_signed_data?
                       redirect_back
                     else
                       redirect_to action: :instructor_access_pending

@@ -35,9 +35,9 @@
       <div class="token">
         <%= signup_verify_by_token_url(code: signup_state.confirmation_code) %>
       </div>
-      <% if signup_state.trusted_data %>
-        <div class="trusted_data">
-          <%= signup_state.trusted_data %>
+      <% if signup_state.signed_data %>
+        <div class="signed_data">
+          <%= signup_state.signed_data %>
         </div>
       <% end %>
     </div>
