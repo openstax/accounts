@@ -18,7 +18,7 @@ class SignupVerifyEmail
     run(ConfirmByPin, contact_info: options[:signup_state], pin: pin_params.pin)
     # lms students do not receive passwords so the account needs to be created now
     if options[:signup_state].signed_student?
-      run(SignupExternalStudent, options[:signup_state])
+      run(SignupExternalStudent, signup_state: options[:signup_state], already_verified: true)
       options[:session].sign_in!(outputs.user)
     end
   end

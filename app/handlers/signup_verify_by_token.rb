@@ -17,7 +17,7 @@ class SignupVerifyByToken
     run(ConfirmByCode, params[:code])
 
     if outputs[:signup_state].try!(:signed_student?)
-      run(SignupExternalStudent, outputs[:signup_state])
+      run(SignupExternalStudent, signup_state: outputs[:signup_state], already_verified: true)
       options[:session].sign_in!(outputs.user)
     end
   end
