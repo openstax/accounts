@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180312223738) do
+ActiveRecord::Schema.define(version: 20180313173756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -237,18 +237,18 @@ ActiveRecord::Schema.define(version: 20180312223738) do
   end
 
   create_table "signup_states", force: :cascade do |t|
-    t.integer  "contact_info_kind",       :default=>0, :index=>{:name=>"index_signup_states_on_contact_info_kind"}
+    t.integer  "contact_info_kind",        :default=>0, :index=>{:name=>"index_signup_states_on_contact_info_kind"}
     t.string   "contact_info_value"
-    t.boolean  "verified",                :default=>false
+    t.boolean  "is_contact_info_verified", :default=>false
     t.string   "confirmation_code"
     t.string   "confirmation_pin"
     t.datetime "confirmation_sent_at"
-    t.datetime "created_at",              :null=>false
-    t.datetime "updated_at",              :null=>false
-    t.string   "role",                    :null=>false
+    t.datetime "created_at",               :null=>false
+    t.datetime "updated_at",               :null=>false
+    t.string   "role",                     :null=>false
     t.text     "return_to"
     t.jsonb    "signed_data"
-    t.boolean  "is_partial_info_allowed", :default=>false, :null=>false
+    t.boolean  "is_partial_info_allowed",  :default=>false, :null=>false
   end
 
   create_table "user_external_uuids", force: :cascade do |t|

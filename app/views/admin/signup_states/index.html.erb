@@ -27,7 +27,7 @@
     <div class="entry">
       <div class="basics">
         <%= signup_state.contact_info_value || "No email yet" %> |
-        <%= signup_state.verified ? "Verified" : "Not Verified" %> |
+        <%= signup_state.is_contact_info_verified? ? "Verified" : "Not Verified" %> |
         PIN <b><%= signup_state.confirmation_pin %></b> |
         reports as <b><%= signup_state.role %></b> |
         created at <b><%= signup_state.created_at %></b>

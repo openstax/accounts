@@ -1,5 +1,6 @@
 class SignupState < ActiveRecord::Base
-  attr_accessible :contact_info_value, :role, :return_to, :signed_data, :verified, :is_partial_info_allowed
+  attr_accessible :contact_info_value, :role, :return_to,
+                  :signed_data, :is_contact_info_verified, :is_partial_info_allowed
 
   enum contact_info_kind: [:email_address]
 
@@ -9,14 +10,15 @@ class SignupState < ActiveRecord::Base
   include EmailAddressValidations
 
   email_validation_formats.each do |format|
-    validates :contact_info_value, format: format, if: -> { !is_partial_info_allowed && email_address? }
+    validates :contact_info_value, format: format,
+                                   if: -> { !is_partial_info_allowed && email_address? }
   end
 
   validates :contact_info_kind, presence: true, unless: -> { is_partial_info_allowed }
   validates :contact_info_value, presence: true, unless: -> { is_partial_info_allowed }
 
-  scope :verified, -> { where(verified: true) }
-  sifter :verified do verified.eq true end
+  scope :contact_info_verified, -> { where(is_contact_info_verified: true) }
+  sifter(:contact_info_verified) { is_contact_info_verified.eq true }
 
   def self.create_from_signed_data(data)
     role = User.roles[data[:role]] ? data['role'] : nil
@@ -24,7 +26,7 @@ class SignupState < ActiveRecord::Base
     SignupState.create!(
       is_partial_info_allowed: true,
       role: role,
-      verified: false,
+      is_contact_info_verified: false,
       contact_info_value: data['email'],
       signed_data: data.merge(role: role)
     )
@@ -50,8 +52,13 @@ class SignupState < ActiveRecord::Base
     signed? ? signed_data['external_user_uuid'] : nil
   end
 
-  def confirmed;  verified;  end
-  def confirmed?; verified?; end
+  def confirmed
+    is_contact_info_verified
+  end
+
+  def confirmed?
+    is_contact_info_verified?
+  end
 
   def linked_external_uuid
     UserExternalUuid.find_by_uuid(signed_external_uuid)

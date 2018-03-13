@@ -7,7 +7,7 @@ class TransferSignupState
 
     run(
       AddEmailToUser, signup_state.contact_info_value,
-      user, already_verified: signup_state.verified?
+      user, already_verified: signup_state.is_contact_info_verified?
     )
 
     if signup_state && signup_state.signed?

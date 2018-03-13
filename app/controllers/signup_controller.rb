@@ -137,7 +137,7 @@ class SignupController < ApplicationController
   def check_ready_for_password_or_social
     if signup_state.nil?
       redirect_to action: :start
-    elsif !signup_state.verified?
+    elsif !signup_state.is_contact_info_verified?
       redirect_to action: :verify_email
     else
       true
