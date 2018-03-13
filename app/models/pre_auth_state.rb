@@ -1,4 +1,4 @@
-class SignupState < ActiveRecord::Base
+class PreAuthState < ActiveRecord::Base
   attr_accessible :contact_info_value, :role, :return_to,
                   :signed_data, :is_contact_info_verified, :is_partial_info_allowed
 
@@ -23,7 +23,7 @@ class SignupState < ActiveRecord::Base
   def self.create_from_signed_data(data)
     role = User.roles[data[:role]] ? data['role'] : nil
     data['external_user_uuid'] = data.delete('uuid')
-    SignupState.create!(
+    PreAuthState.create!(
       is_partial_info_allowed: true,
       role: role,
       is_contact_info_verified: false,

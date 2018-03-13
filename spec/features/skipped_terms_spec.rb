@@ -58,7 +58,7 @@ feature 'Skipped terms are respected', js: true do
     )
 
     expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
-    expect(SignupState.count).to eq 0
+    expect(PreAuthState.count).to eq 0
 
     complete_instructor_access_pending_screen
 

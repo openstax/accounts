@@ -34,7 +34,7 @@ module UserSessionManagement
   end
 
   def sign_out!(options={})
-    clear_signup_state
+    clear_pre_auth_state
     sign_in!(AnonymousUser.instance, options)
   end
 
@@ -66,30 +66,30 @@ module UserSessionManagement
     session.delete(:login)
   end
 
-  def save_signup_state(signup_state)
+  def save_pre_auth_state(pre_auth_state)
     clear_login_state
     # There may be an old signup state object around, check for that
-    clear_signup_state if signup_state.id != session[:signup]
-    session[:signup] = signup_state.id
+    clear_pre_auth_state if pre_auth_state.id != session[:signup]
+    session[:signup] = pre_auth_state.id
   end
 
-  def clear_signup_state
-    signup_state.try(:destroy)
-    @signup_state = nil
+  def clear_pre_auth_state
+    pre_auth_state.try(:destroy)
+    @pre_auth_state = nil
     session.delete(:signup)
   end
 
-  def signup_state
+  def pre_auth_state
     id = session[:signup].to_i rescue nil
-    @signup_state ||= SignupState.find_by(id: id)
+    @pre_auth_state ||= PreAuthState.find_by(id: id)
   end
 
   def signup_role
-    signup_state.try(:role)
+    pre_auth_state.try(:role)
   end
 
   def signup_email
-    signup_state.try(:contact_info_value)
+    pre_auth_state.try(:contact_info_value)
   end
 
   def set_client_app(client_id)

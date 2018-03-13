@@ -7,7 +7,7 @@ class ConfirmByPin
     value_method = case contact_info
     when ContactInfo
       :value
-    when SignupState
+    when PreAuthState
       :contact_info_value
     end
 

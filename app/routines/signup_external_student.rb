@@ -3,14 +3,14 @@ class SignupExternalStudent
   lev_routine express_output: :user
 
   uses_routine AddEmailToUser, translations: { outputs: {type: :verbatim}  }
-  uses_routine UserFromSignupState, translations: { outputs: {type: :verbatim}  }
+  uses_routine UserFromPreAuthState, translations: { outputs: {type: :verbatim}  }
 
   protected
 
-  def exec(signup_state:, already_verified: false)
-    run(UserFromSignupState, signup_state)
+  def exec(pre_auth_state:, already_verified: false)
+    run(UserFromPreAuthState, pre_auth_state)
     run(
-      AddEmailToUser, signup_state.contact_info_value,
+      AddEmailToUser, pre_auth_state.contact_info_value,
       outputs.user, already_verified: already_verified
     )
   end

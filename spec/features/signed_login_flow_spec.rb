@@ -130,7 +130,7 @@ feature 'Sign in using signed parameters', js: true do
       wait_for_animations
       click_button(t :"signup.start.next")
       expect_signup_verify_screen
-      ss = SignupState.find_by!(contact_info_value: email)
+      ss = PreAuthState.find_by!(contact_info_value: email)
       fill_in (t :"signup.verify_email.pin"), with: ss.confirmation_pin
       click_button(t :"signup.verify_email.confirm")
       complete_signup_password_screen('password')
@@ -152,7 +152,7 @@ feature 'Sign in using signed parameters', js: true do
       expect(page).to have_field('signup_email', with: payload[:email])
       click_button(t :"signup.start.next")
       expect_signup_verify_screen
-      ss = SignupState.find_by!(contact_info_value: payload[:email])
+      ss = PreAuthState.find_by!(contact_info_value: payload[:email])
       fill_in (t :"signup.verify_email.pin"), with: ss.confirmation_pin
       click_button(t :"signup.verify_email.confirm")
       expect_signup_profile_screen # skipped password since it's trusted
@@ -182,7 +182,7 @@ feature 'Sign in using signed parameters', js: true do
       fill_in (t :"signup.start.email_placeholder"), with: 'test-modified@test.com'
       click_button(t :"signup.start.next")
       expect_signup_verify_screen
-      ss = SignupState.find_by!(contact_info_value: 'test-modified@test.com')
+      ss = PreAuthState.find_by!(contact_info_value: 'test-modified@test.com')
       fill_in (t :"signup.verify_email.pin"), with: ss.confirmation_pin
       click_button(t :"signup.verify_email.confirm")
       expect_signup_profile_screen # skipped password since it's a trusted student

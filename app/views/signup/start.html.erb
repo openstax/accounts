@@ -39,7 +39,7 @@ end
 
     <%
       known_role = session[:signup_role]
-      known_role ||= signup_state.role if signup_state.try!(:signed_role?)
+      known_role ||= pre_auth_state.role if pre_auth_state.try!(:signed_role?)
     %>
 
     <% if known_role %>

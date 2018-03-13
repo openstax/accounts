@@ -11,7 +11,7 @@ class SignupController < ApplicationController
 
   before_filter :check_ready_for_profile, only: [:profile]
 
-  before_filter :restart_if_missing_signup_state, only: [:verify_email, :password, :social]
+  before_filter :restart_if_missing_pre_auth_state, only: [:verify_email, :password, :social]
   before_filter :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
   before_filter :check_ready_for_password_or_social, only: [:password, :social]
 
@@ -20,11 +20,11 @@ class SignupController < ApplicationController
   def start
     if request.post?
       handle_with(SignupStart,
-                  existing_signup_state: signup_state,
+                  existing_pre_auth_state: pre_auth_state,
                   return_to: session[:return_to],
                   session: self,
                   success: lambda do
-                    save_signup_state(@handler_result.outputs.signup_state)
+                    save_pre_auth_state(@handler_result.outputs.pre_auth_state)
                     redirect_to action: :verify_email
                   end,
                   failure: lambda do
@@ -41,10 +41,10 @@ class SignupController < ApplicationController
     render and return if request.get?
 
     handle_with(SignupVerifyEmail,
-                signup_state: signup_state,
+                pre_auth_state: pre_auth_state,
                 session: self,
                 success: lambda do
-                  redirect_to action: (signup_state.signed_student? ? :profile : :password)
+                  redirect_to action: (pre_auth_state.signed_student? ? :profile : :password)
                 end,
                 failure: lambda do
                   @handler_result.errors.each do | error |  # TODO move to view?
@@ -58,11 +58,11 @@ class SignupController < ApplicationController
     handle_with(SignupVerifyByToken,
                 session: self,
                 success: lambda do
-                  @handler_result.outputs.signup_state.tap do |state|
+                  @handler_result.outputs.pre_auth_state.tap do |state|
                     session[:return_to] = state.return_to
-                    save_signup_state(state)
+                    save_pre_auth_state(state)
                   end
-                  redirect_to action: (signup_state.signed_student? ? :profile : :password)
+                  redirect_to action: (pre_auth_state.signed_student? ? :profile : :password)
                 end,
                 failure: lambda do
                   # TODO spec this and set an error message
@@ -88,7 +88,7 @@ class SignupController < ApplicationController
                   contracts_required: !contracts_not_required,
                   client_app: get_client_app,
                   success: lambda do
-                    clear_signup_state
+                    clear_pre_auth_state
                     if current_user.student? || current_user.created_from_signed_data?
                       redirect_back
                     else
@@ -126,18 +126,18 @@ class SignupController < ApplicationController
   end
 
   def fail_signup
-    clear_signup_state
+    clear_pre_auth_state
     raise SecurityTransgression
   end
 
-  def restart_if_missing_signup_state
-    redirect_to signup_path if signup_state.nil?
+  def restart_if_missing_pre_auth_state
+    redirect_to signup_path if pre_auth_state.nil?
   end
 
   def check_ready_for_password_or_social
-    if signup_state.nil?
+    if pre_auth_state.nil?
       redirect_to action: :start
-    elsif !signup_state.is_contact_info_verified?
+    elsif !pre_auth_state.is_contact_info_verified?
       redirect_to action: :verify_email
     else
       true

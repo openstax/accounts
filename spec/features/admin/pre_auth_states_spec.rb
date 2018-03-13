@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Admin signup state page' do
+feature 'Admin PreAuthStates page' do
 
   context 'as an admin user' do
     before(:each) do
@@ -11,12 +11,18 @@ feature 'Admin signup state page' do
     end
 
     it "works" do
-      Timecop.freeze(4.weeks.ago) { FactoryGirl.create :signup_state, contact_info_value: "a@a.com" }
-      Timecop.freeze(1.9.weeks.ago) { FactoryGirl.create :signup_state, contact_info_value: "b@b.com" }
-      Timecop.freeze(0.9.weeks.ago) { FactoryGirl.create :signup_state, contact_info_value: "c@c.com" }
-      FactoryGirl.create :signup_state, contact_info_value: "d@d.com"
+      Timecop.freeze(4.weeks.ago) do
+        FactoryGirl.create :pre_auth_state, contact_info_value: "a@a.com"
+      end
+      Timecop.freeze(1.9.weeks.ago) do
+        FactoryGirl.create :pre_auth_state, contact_info_value: "b@b.com"
+      end
+      Timecop.freeze(0.9.weeks.ago) do
+        FactoryGirl.create :pre_auth_state, contact_info_value: "c@c.com"
+      end
+      FactoryGirl.create :pre_auth_state, contact_info_value: "d@d.com"
 
-      visit '/admin/signup_states'
+      visit '/admin/pre_auth_states'
 
       expect(page).to have_content("d@d.com")
       expect(page).not_to have_content("c@c.com")

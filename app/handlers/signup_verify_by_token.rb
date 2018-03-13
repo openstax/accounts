@@ -3,7 +3,7 @@ class SignupVerifyByToken
   lev_handler
 
   uses_routine ConfirmByCode,
-               translations: { outputs: { map: { contact_info: :signup_state } },
+               translations: { outputs: { map: { contact_info: :pre_auth_state } },
                                inputs: { type: :verbatim } }
   uses_routine SignupExternalStudent, translations: { outputs: { type: :verbatim } }
 
@@ -16,8 +16,8 @@ class SignupVerifyByToken
   def handle
     run(ConfirmByCode, params[:code])
 
-    if outputs[:signup_state].try!(:signed_student?)
-      run(SignupExternalStudent, signup_state: outputs[:signup_state], already_verified: true)
+    if outputs[:pre_auth_state].try!(:signed_student?)
+      run(SignupExternalStudent, pre_auth_state: outputs[:pre_auth_state], already_verified: true)
       options[:session].sign_in!(outputs.user)
     end
   end

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe MarkContactInfoVerified, type: :routine do
   [
     [ :email_address, :verified? ],
-    [ :signup_state, :is_contact_info_verified? ]
+    [ :pre_auth_state, :is_contact_info_verified? ]
   ].each do |klass, method|
     context klass.to_s do
       let(:instance) { FactoryGirl.create klass }

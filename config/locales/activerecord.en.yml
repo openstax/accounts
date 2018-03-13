@@ -154,7 +154,7 @@ en:
             password_confirmation:
               confirmation: Password confirmation doesn't match password
 
-        signup_state:
+        pre_auth_state:
           attributes:
             contact_info_value:
               # This is a virtual field corresponding to EmailAddress#value.

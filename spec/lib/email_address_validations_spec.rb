@@ -78,7 +78,7 @@ describe EmailAddressValidations do
   def email_objects(value)
     [
       (FactoryGirl.create :email_address).tap{|obj| obj.value = value},
-      (FactoryGirl.create :signup_state, contact_info_kind: :email_address).tap{|obj| obj.contact_info_value = value}
+      (FactoryGirl.create :pre_auth_state, contact_info_kind: :email_address).tap{|obj| obj.contact_info_value = value}
     ]
   end
 

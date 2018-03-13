@@ -50,7 +50,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       )
 
       expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
-      expect(SignupState.count).to eq 0
+      expect(PreAuthState.count).to eq 0
 
       complete_instructor_access_pending_screen
 
@@ -95,7 +95,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     )
 
     expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
-    expect(SignupState.count).to eq 0
+    expect(PreAuthState.count).to eq 0
 
     screenshot!
     complete_instructor_access_pending_screen
@@ -142,7 +142,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     complete_signup_profile_screen_with_whatever
 
     expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
-    expect(SignupState.count).to eq 0
+    expect(PreAuthState.count).to eq 0
 
     complete_instructor_access_pending_screen
 
@@ -310,10 +310,10 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     end
 
     scenario 'user edits email to same value, PIN/token remains, no email' do
-      expect(SignupState.count).to eq 1
+      expect(PreAuthState.count).to eq 1
 
-      original_pin = SignupState.first.confirmation_pin
-      original_code = SignupState.first.confirmation_code
+      original_pin = PreAuthState.first.confirmation_pin
+      original_code = PreAuthState.first.confirmation_code
 
       click_link (t :'signup.verify_email.edit_email_address')
 
@@ -321,10 +321,10 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
         complete_signup_email_screen("Instructor","bob@bob.edu")
       }.to change { ActionMailer::Base.deliveries.count }.by(0)
 
-      expect(SignupState.count).to eq 1
+      expect(PreAuthState.count).to eq 1
 
-      expect(SignupState.first.confirmation_pin).to eq original_pin
-      expect(SignupState.first.confirmation_code).to eq original_code
+      expect(PreAuthState.first.confirmation_pin).to eq original_pin
+      expect(PreAuthState.first.confirmation_code).to eq original_code
     end
 
     scenario 'user gets PIN wrong' do
@@ -602,7 +602,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       end
 
       expect(existing_user.contact_infos.verified.map(&:value)).to include("bob@bob.edu")
-      expect(SignupState.count).to eq 0
+      expect(PreAuthState.count).to eq 0
 
       expect_back_at_app
     end
@@ -628,7 +628,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
       expect(existing_user.authentications.count).to eq 2
 
-      expect(SignupState.count).to eq 0
+      expect(PreAuthState.count).to eq 0
 
       expect_back_at_app
     end
@@ -658,7 +658,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     scenario 'to profile screen' do
       visit '/signup/profile'
       expect(page).to have_content("You are not allowed")
-      expect(SignupState.count).to eq 0
+      expect(PreAuthState.count).to eq 0
       expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 0
     end
 
@@ -667,7 +667,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       log_in('otheruser', 'password')
       visit '/signup/profile'
       expect(page).to have_content("You are not allowed")
-      expect(SignupState.count).to eq 0
+      expect(PreAuthState.count).to eq 0
       expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 0
     end
   end
