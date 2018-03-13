@@ -59,4 +59,26 @@ describe AuthenticationsController, type: :controller do
       end
     end
   end
+
+  context '#add' do
+    [ :facebook, :google ].each do |provider|
+      context 'with recent signin' do
+        before { controller.sign_in! user }
+
+        it "redirects to /auth/#{provider}?add=true" do
+          get 'add', provider: provider.to_s
+          expect(response).to redirect_to "/auth/#{provider}?add=true"
+        end
+      end
+
+      context 'with old signin' do
+        before { Timecop.freeze(11.minutes.ago) { controller.sign_in! user } }
+
+        it "prompts the user to login again" do
+          get 'add', provider: provider.to_s
+          expect(response).to redirect_to reauthenticate_path
+        end
+      end
+    end
+  end
 end
