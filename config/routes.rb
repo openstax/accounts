@@ -186,6 +186,8 @@ Rails.application.routes.draw do
       put 'mark_users_updated', on: :collection
     end
 
+    resource :reports, only: [:show]
+
     resource :security_log, only: [:show]
 
     post :verify_contact_info, path: '/contact_infos/:id/verify',
