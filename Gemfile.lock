@@ -7,6 +7,13 @@ GIT
       active_attr (~> 0.8)
       restforce (~> 2.1.0)
 
+GIT
+  remote: https://github.com/openstax/pattern-library.git
+  revision: 22faa71ead2da569a56c05d636bae15b5c0be583
+  branch: gemify
+  specs:
+    pattern-library (1.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -662,6 +669,7 @@ DEPENDENCIES
   openstax_utilities (~> 4.2.0)
   p3p
   parallel_tests
+  pattern-library!
   pg
   poltergeist
   premailer-rails

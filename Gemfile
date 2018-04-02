@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 # Rails framework
 gem 'rails', '4.2.7.1'
 gem 'rails-i18n', '~> 4'
-
+gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'gemify'
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.1.1'
 
