@@ -31,9 +31,9 @@ describe SendContactInfoConfirmation do
     end
 
     it 'has a confirmation email with url that matches record' do
-       expect {
+       expect do
          SendContactInfoConfirmation.call(contact_info: email)
-       }.to change { ActionMailer::Base.deliveries.count }.by(1)
+       end.to change { ActionMailer::Base.deliveries.count }.by(1)
        delivery = ActionMailer::Base.deliveries.last
        expect(delivery.body.encoded).to include("confirm?code=#{email.confirmation_code}")
     end

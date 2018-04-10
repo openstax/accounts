@@ -317,9 +317,9 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
       click_link (t :'signup.verify_email.edit_email_address')
 
-      expect{
+      expect do
         complete_signup_email_screen("Instructor","bob@bob.edu")
-      }.to change { ActionMailer::Base.deliveries.count }.by(0)
+      end.not_to change { ActionMailer::Base.deliveries.count }
 
       expect(PreAuthState.count).to eq 1
 

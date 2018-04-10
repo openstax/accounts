@@ -195,7 +195,9 @@ feature "User can't sign in", js: true do
     expect(page).to have_content(t(:"controllers.sessions.trouble_with_provider"))
 
     open_email('recipients@localhost')
-    expect(current_email.subject).to eq "[OpenStax] (test) google_oauth2 social login is DOWN!"
+    expect(current_email.subject).to(
+      eq "[OpenStax] [Accounts] (test) google_oauth2 social login is failing!"
+    )
   end
 
 end

@@ -14,42 +14,26 @@ RSpec.describe 'ActionMailer::DeliveryJob error recovery' do
       end
     end
 
-    it "should rescue it, log it, email it, not reraise it" do
-      # Only raise an exception when sending the intended email, not also when sending the email about
-      # that exception!
-
-      count = 0
-      @exception_email_subject = nil
-
-      allow_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now) { |*args|
-        count += 1
-
-        if count == 1
-          # https://github.com/drewblas/aws-ses/blob/e16be3a217395cf576ac0226a606378839f62a6c/lib/aws/ses/response.rb#L91
-          raise AWS::SES::ResponseError.new(
-            OpenStruct.new(
-              error: {
-                "Code" => "InvalidParameterValue",
-                "Message" => "Missing final '@domain'"
-              }
-            )
+    it "should rescue it, log it, send to sentry, not email it, not reraise it" do
+      allow_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now) do |*args|
+        raise AWS::SES::ResponseError.new(
+          OpenStruct.new(
+            error: {
+              "Code" => "InvalidParameterValue",
+              "Message" => "Missing final '@domain'"
+            }
           )
-        elsif count == 2
-          @exception_email_subject = args.first.subject
-        end
-      }
+        )
+      end
 
       expect(OpenStax::RescueFrom).to receive(:perform_rescue).and_call_original
       expect(Rails.logger).to receive(:error).once
-
-      expect{deliver_later}.not_to raise_error
-
-      expect(@exception_email_subject).to eq \
-        "[Accounts] (test) (AWS::SES::ResponseError) \"InvalidParameterValue - Missing final '@domain'\""
-    end
-
-    def deliver_later
-      DevMailer.inspect_object(object: "foo", subject: "bar").deliver_later
+      expect(Raven).to receive(:capture_exception) do |exception, *args|
+        expect(exception).to be_a(AWS::SES::ResponseError)
+      end
+      expect do
+        DevMailer.inspect_object(object: "foo", subject: "bar").deliver_later
+      end.not_to raise_error
     end
   end
 

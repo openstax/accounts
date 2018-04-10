@@ -127,7 +127,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       end
 
       it 'does not send an error message by default' do
-        expect { described_class.call }.to change { ActionMailer::Base.deliveries.count }.by(0)
+        expect { described_class.call }.not_to change { ActionMailer::Base.deliveries.count }
       end
     end
 
