@@ -83,6 +83,23 @@ feature "User can't sign in", js: true do
 
       screenshot!
     end
+
+    scenario "user tries to sign up with used oauth email" do
+      user = create_user 'user'
+      authentication = FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+
+      arrive_from_app
+      click_sign_up
+      complete_signup_email_screen "Instructor", "unverified@example.com", screenshot_after_role: true
+
+      with_omniauth_test_mode(uid: authentication.uid) do
+        # Found link from back button or some other shenanigans
+        visit '/auth/google_oauth2?login_hint='
+      end
+
+      screenshot!
+      expect(page).to have_content('This is a fake external application')
+    end
   end
 
   context "we find one user", js: true do
