@@ -46,17 +46,25 @@ class SessionsCreate
   end
 
   def handle
-    outputs[:status] =
-      if signed_in?
-        handle_while_logged_in
-      elsif logging_in?
-        handle_during_login
-      elsif signing_up?
-        handle_during_signup
-      else
-        fatal_error(code: :unknown_callback_state)
-      end
+    outputs[:status] = get_status
     options[:user_state].clear_pre_auth_state # some of the flows will have a pre_auth_state
+  end
+
+  def get_status
+    if signed_in?
+      status = handle_while_logged_in
+
+      # Return status if present or fallback to one of the other flows if status is nil
+      return status unless status.nil?
+    end
+
+    if logging_in?
+      handle_during_login
+    elsif signing_up?
+      handle_during_signup
+    else
+      fatal_error(code: :unknown_callback_state)
+    end
   end
 
   def handle_during_login
@@ -120,23 +128,33 @@ class SessionsCreate
   end
 
   def handle_while_logged_in
-    # Normally this happens when adding authentications on the profile screen.
+    # Attempt to login when already logged in
 
+    # Same user: don't do anything
     return :no_action if authentication_user == current_user
 
-    return :authentication_taken if authentication_user && authentication_user.is_activated?
+    # Check if they are trying to add a new authentication to their account
+    if request.env['omniauth.params'].try!(:[], 'add') == 'true'
+      # Add the new authentication
+      return :authentication_taken if authentication_user && authentication_user.is_activated?
 
-    return :same_provider \
-      if current_user.authentications.map(&:provider).include?(authentication.provider)
+      return :same_provider \
+        if current_user.authentications.map(&:provider).include?(authentication.provider)
 
-    return :new_signin_required if user_signin_is_too_old?
+      return :new_signin_required if user_signin_is_too_old?
 
-    return :email_already_in_use if ContactInfo.verified.where(value: @data.email)
-                                                        .where{user_id != my{current_user.id}}.any?
+      return :email_already_in_use if ContactInfo.verified.where(value: @data.email)
+                                                          .where{user_id != my{current_user.id}}
+                                                          .exists?
 
-    run(TransferAuthentications, authentication, current_user)
-    run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
-    return :authentication_added
+      run(TransferAuthentications, authentication, current_user)
+      run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
+
+      :authentication_added
+    else
+      # If no resolution, fallback to one of the other flows
+      nil
+    end
   end
 
   protected
