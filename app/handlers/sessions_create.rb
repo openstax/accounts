@@ -46,17 +46,25 @@ class SessionsCreate
   end
 
   def handle
-    outputs[:status] =
-      if signed_in?
-        handle_while_logged_in
-      elsif logging_in?
-        handle_during_login
-      elsif signing_up?
-        handle_during_signup
-      else
-        fatal_error(code: :unknown_callback_state)
-      end
+    outputs[:status] = get_status
     options[:user_state].clear_pre_auth_state # some of the flows will have a pre_auth_state
+  end
+
+  def get_status
+    if signed_in?
+      status = handle_while_logged_in
+
+      # Return status if present or fallback to one of the other flows if status is nil
+      return status unless status.nil?
+    end
+
+    if logging_in?
+      handle_during_login
+    elsif signing_up?
+      handle_during_signup
+    else
+      fatal_error(code: :unknown_callback_state)
+    end
   end
 
   def handle_during_login
@@ -141,14 +149,11 @@ class SessionsCreate
 
       run(TransferAuthentications, authentication, current_user)
       run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
-      return :authentication_added
-    # Fallback to one of the other flows
-    elsif logging_in?
-      handle_during_login
-    elsif signing_up?
-      handle_during_signup
+
+      :authentication_added
     else
-      fatal_error(code: :unknown_callback_state)
+      # If no resolution, fallback to one of the other flows
+      nil
     end
   end
 
