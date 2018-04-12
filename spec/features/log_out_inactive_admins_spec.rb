@@ -15,8 +15,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "logged-in admin user" do
     before(:each) do
       create_admin_user
-      visit login_path
-      signin_as 'admin'
+      log_in 'admin'
     end
 
     context "within 30mins from login" do
@@ -26,12 +25,15 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
         visit admin_feature_url
 
         expect(page).to have_current_path(admin_feature_url)
+        expect(page).to have_content('Accounts Admin Console')
       end
     end
     context "that HAS NOT accessed any admin features in the past 30mins" do
-      scenario "user IS redirected to login screen when admin feature is accessed" do # Security feature!
+      scenario "user IS redirected to login screen when admin feature is accessed" do
+        # Security feature!
         visit admin_feature_url
         expect(page).to have_current_path(admin_feature_url)
+        expect(page).to have_content('Accounts Admin Console')
         Timecop.travel(login_time + 5.minutes)
         visit non_admin_feature_url
         Timecop.travel(login_time + 31.minutes)
@@ -48,11 +50,13 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
         visit admin_feature_url
 
         expect(page).to have_current_path(admin_feature_url)
+        expect(page).to have_content('Accounts Admin Console')
       end
     end
 
     context "after 30mins from login" do
-      scenario "user IS redirected to login screen when admin feature is accessed" do # Security feature!
+      scenario "user IS redirected to login screen when admin feature is accessed" do
+        # Security feature!
         Timecop.travel(login_time + 31.minutes)
         visit admin_feature_url
 
@@ -68,7 +72,6 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
         Timecop.travel(login_time + 31.minutes)
         visit non_admin_feature_url
 
-        expect(page).to have_http_status(:success)
         expect(page).to have_current_path(non_admin_feature_url)
       end
     end
@@ -77,24 +80,28 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "logged-in non-admin user" do
     before(:each) do
       create_user 'user'
-      visit login_path
-      signin_as 'user'
+      log_in 'user'
     end
 
-    scenario "user IS NOT redirected to login" do
-      Timecop.travel(login_time + 5.minutes)
-      visit non_admin_feature_url
-      Timecop.travel(login_time + 26.minutes)
-      visit non_admin_feature_url
-      Timecop.travel(login_time + 31.minutes)
-      visit non_admin_feature_url
+    context "when accessing only non-admin features" do
+      scenario "user IS NOT redirected to login" do
+        Timecop.travel(login_time + 5.minutes)
+        visit non_admin_feature_url
+        Timecop.travel(login_time + 26.minutes)
+        visit non_admin_feature_url
+        Timecop.travel(login_time + 31.minutes)
+        visit non_admin_feature_url
 
-      expect(page).to have_current_path(non_admin_feature_url)
+        expect(page).to have_current_path(non_admin_feature_url)
+      end
     end
     scenario "cannot access admin features" do
       visit admin_feature_url
 
-      expect(page).not_to have_current_path(admin_feature_url)
+      expect(page).to have_current_path(admin_feature_url)
+      expect(page).to have_no_content('Accounts Admin Console')
+
+      visit '/' # Needed to prevent failures on specs after this one for some reason
     end
     scenario "can access visitor pages" do
       visit visitor_page_url
@@ -104,7 +111,6 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
     scenario "can access user features" do
       visit non_admin_feature_url
 
-      expect(page).to have_http_status(:success)
       expect(page).to have_current_path(non_admin_feature_url)
     end
   end
@@ -113,7 +119,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
     scenario "cannot access admin features" do
       visit admin_feature_url
 
-      expect(page).not_to have_current_path(admin_feature_url)
+      expect(page).to have_no_current_path(admin_feature_url)
     end
     scenario "cannot access user features" do
       visit non_admin_feature_url
@@ -130,8 +136,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
   context "non-admin user logs in" do
     scenario "later someone makes him/her an admin" do
       current_user = create_user 'user'
-      visit login_path
-      signin_as 'user'
+      log_in 'user'
       expect(current_user.is_administrator?).to eq false
 
       Timecop.travel(login_time + 31.minutes)
@@ -142,11 +147,11 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
       expect(current_user.is_administrator?).to eq true
 
       visit non_admin_feature_url
-      expect(page).to have_http_status(:success)
       expect(page).to have_current_path(non_admin_feature_url)
+
       visit admin_feature_url
-      expect(page).to have_http_status(:success)
       expect(page).to have_current_path(admin_feature_url)
+      expect(page).to have_content('Accounts Admin Console')
     end
   end
 

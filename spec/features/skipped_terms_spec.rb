@@ -38,7 +38,7 @@ feature 'Skipped terms are respected', js: true do
                       privacy_policy: 'Privacy Policy')
 
     if should_skip
-      expect(page).not_to have_content(terms_content)
+      expect(page).to have_no_content(terms_content)
     else
       expect(page).to have_content(terms_content)
     end

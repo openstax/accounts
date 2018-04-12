@@ -212,9 +212,6 @@ group :test do
 
   gem 'db-query-matchers'
 
-  # Headless Capybara driver
-  gem 'poltergeist'
-
   # Testing emails
   gem 'capybara-email'
 
@@ -222,6 +219,10 @@ group :test do
   gem 'fakeredis', require: 'fakeredis/rspec'
 
   gem 'launchy'
+
+  gem 'chromedriver-helper'
+
+  gem 'capybara-selenium'
 
   gem 'capybara-screenshot', require: false
 

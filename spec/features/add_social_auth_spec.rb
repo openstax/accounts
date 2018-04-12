@@ -39,7 +39,7 @@ feature 'Add social auth', js: true do
       find('.authentication[data-provider="facebook"] .add').click
       wait_for_ajax
       expect_profile_page
-      expect(page).not_to have_content("already in use")
+      expect(page).to have_no_content("already in use")
       expect(page).to have_content('Facebook')
     end
   end

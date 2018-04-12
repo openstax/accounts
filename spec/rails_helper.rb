@@ -44,82 +44,27 @@ include OpenStax::Salesforce::SpecHelpers
 
 require 'shoulda/matchers'
 
-require 'capybara'
-require 'capybara/poltergeist'
-Capybara.javascript_driver = :poltergeist
-window_size = [1920, 6000]
+require 'selenium/webdriver'
+
+# https://robots.thoughtbot.com/headless-feature-specs-with-chrome
+Capybara.register_driver :selenium_chrome do |app|
+  options = Selenium::WebDriver::Chrome::Options.new args: [ '--lang=en' ]
+
+  Capybara::Selenium::Driver.new app, browser: :chrome, options: options
+end
+
+# no-sandbox is required for it to work with Docker (Travis)
+Capybara.register_driver :selenium_chrome_headless do |app|
+  options = Selenium::WebDriver::Chrome::Options.new args: [ 'headless', 'no-sandbox', '--lang=en' ]
+
+  Capybara::Selenium::Driver.new app, browser: :chrome, options: options
+end
+
+Capybara.javascript_driver = :selenium_chrome_headless
 
 Capybara.asset_host = 'http://localhost:2999'
 
 require 'capybara/email/rspec'
-
-do_screenshots = EnvUtilities.load_boolean(name: 'SSHOT', default: false)
-
-if do_screenshots
-  require 'capybara-screenshot/rspec'
-  Capybara::Screenshot.autosave_on_failure = false
-  Capybara::Screenshot.append_timestamp = false
-  window_size = [1000, 6000] # narrower images
-
-  def screenshots_dir
-    $screenshots_dir ||= Rails.root.join "tmp/capybara/screenshots_#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
-  end
-
-  def screenshot!(suffix: nil)
-    include_html_screenshots = false
-
-    original_save_path = Capybara.save_path
-    begin
-      Capybara.save_path = screenshots_dir
-      saver = Capybara::Screenshot::Saver.new(
-        Capybara, Capybara.page, include_html_screenshots, screenshot_base(suffix)
-      )
-
-      wait_for_ajax
-      wait_for_animations
-
-      if saver.save
-        {:html => saver.html_path, :image => saver.screenshot_path}
-      end
-    ensure
-      Capybara.save_path = original_save_path
-    end
-  end
-
-  def capture_email!(address: nil, suffix: nil)
-    open_email(address) if address.present?
-
-    # Used to just call built-in `save_page`, but switched to below to add headers
-    # current_email.save_page("#{screenshots_dir}/#{screenshot_base(suffix)}.html")
-
-    path = "#{screenshots_dir}/#{screenshot_base(suffix)}.html"
-    FileUtils.mkdir_p(File.dirname(path))
-    File.open(path,'w') do |f|
-      f.write("Subject: #{current_email.subject}<br/>")
-      f.write("To: #{current_email.to.join(', ')}<br/>")
-      f.write("From: #{current_email.from.join(', ')}<br/>")
-      f.write("--------------------<br/><br/>")
-      f.write(current_email.body)
-    end
-  end
-
-  def screenshot_base(suffix=nil)
-    @screenshot_prefix_usage_counts ||= {}
-    prefix = "#{self.class.description}_#{RSpec.current_example.description}".gsub(/\W+/,'_')
-    @screenshot_prefix_usage_counts[prefix] ||= 0
-    next_available_index = (@screenshot_prefix_usage_counts[prefix] += 1)
-    "#{prefix}_#{next_available_index}#{'_' + suffix if suffix.present?}".gsub(/\W+/,'_')
-  end
-else
-  def screenshot!(*args); end
-  def capture_email!(*args); end
-end
-
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, {
-    :window_size => window_size
-  })
-end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -205,12 +150,6 @@ RSpec.configure do |config|
   # Some tests might change I18n.locale.
   config.before(:each) do |config|
     I18n.locale = :en
-  end
-
-  # For Capybara's poltergist tests ensure that request's locale is always set to English.
-  config.before(type: :feature, js: true) do |config|
-    # page.driver.header 'Accept-Language', 'en'
-    page.driver.add_header('Accept-Language', 'en')
   end
 
   config.before(:each) do
