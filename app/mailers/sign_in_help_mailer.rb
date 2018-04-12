@@ -1,4 +1,4 @@
-class SignInHelpMailer < SiteMailer
+class SignInHelpMailer < ApplicationMailer
 
   def multiple_accounts(email_address:, usernames:)
     @email_address = email_address

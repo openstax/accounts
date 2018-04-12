@@ -29,14 +29,14 @@ describe FindOrCreateUnclaimedUser do
       end
 
       it "sends an invitation email" do
-          expect {
+          expect do
             FindOrCreateUnclaimedUser.call(
               email:"anunusedemail@example.com",
               first_name: Faker::Name.first_name, last_name: Faker::Name.last_name
             ).outputs.user
             email = ActionMailer::Base.deliveries.last
             expect(email.subject).to match('You have been invited to join OpenStax')
-          }.to change { ActionMailer::Base.deliveries.count }.by(1)
+          end.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
 
     end

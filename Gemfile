@@ -1,5 +1,10 @@
 source 'https://rubygems.org'
 
+git_source(:github) do |repo_name|
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
+  "https://github.com/#{repo_name}.git"
+end
+
 # Rails framework
 gem 'rails', '4.2.7.1'
 gem 'rails-i18n', '~> 4'
@@ -52,7 +57,10 @@ gem 'openstax_utilities', '~> 4.2.0'
 gem 'openstax_api', '~> 8.2.0'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', '~> 2.1.0'
+gem 'openstax_rescue_from', '~> 3.0.0'
+
+# Sentry integration (the require disables automatic Rails integration since we use rescue_from)
+gem 'sentry-raven', require: 'raven/base'
 
 # Lev framework
 gem 'lev', '~> 7.0.3'
@@ -114,7 +122,7 @@ gem 'chronic'
 # Salesforce
 gem 'openstax_salesforce', '~> 1.0.0'
 # Fork that supports Ruby >= 2.1
-gem 'active_force', git: 'https://github.com/openstax/active_force', ref: '9695896f5'
+gem 'active_force', github: 'openstax/active_force', ref: '9695896f5'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'

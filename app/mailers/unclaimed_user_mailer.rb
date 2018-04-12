@@ -1,4 +1,4 @@
-class UnclaimedUserMailer < SiteMailer
+class UnclaimedUserMailer < ApplicationMailer
 
   def welcome(email_address)
     @email_address = email_address

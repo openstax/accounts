@@ -8,17 +8,39 @@ OpenStax::RescueFrom.configure do |config|
                                                       default: Rails.env.development?)
 
   config.app_name = 'Accounts'
-  config.app_env = secrets.environment_name
   config.contact_name = exception_secrets['contact_name'].html_safe
 
-  # config.notifier = ExceptionNotifier
+  # Notify devs using sentry-raven
+  config.notify_proc = ->(proxy, controller) do
+    extra = {
+      error_id: proxy.error_id,
+      class: proxy.name,
+      message: proxy.message,
+      first_line_of_backtrace: proxy.first_backtrace_line,
+      cause: proxy.cause,
+      dns_name: resolve_ip(controller.request.remote_ip)
+    }
+    extra.merge!(proxy.extras) if proxy.extras.is_a? Hash
+
+    Raven.capture_exception(proxy.exception, extra: extra)
+  end
+  config.notify_background_proc = ->(proxy) do
+    extra = {
+      error_id: proxy.error_id,
+      class: proxy.name,
+      message: proxy.message,
+      first_line_of_backtrace: proxy.first_backtrace_line,
+      cause: proxy.cause
+    }
+    extra.merge!(proxy.extras) if proxy.extras.is_a? Hash
+
+    Raven.capture_exception(proxy.exception, extra: extra)
+  end
+  require 'raven/integrations/rack'
+  config.notify_rack_middleware = Raven::Rack
 
   config.html_error_template_path = 'errors/any'
   config.html_error_template_layout_name = 'error'
-
-  # config.email_prefix = "[#{config.app_name}] (#{config.app_env}) "
-  config.sender_address = exception_secrets['sender']
-  config.exception_recipients = exception_secrets['recipients']
 end
 
 OpenStax::RescueFrom.register_exception(
@@ -27,14 +49,11 @@ OpenStax::RescueFrom.register_exception(
   status: :forbidden
 )
 
-# Exceptions in controllers might be reraised or not depending on the settings above
+# Exceptions in controllers are not automatically reraised in production-like environments
 ActionController::Base.use_openstax_exception_rescue
 
 # RescueFrom always reraises background exceptions so that the background job may properly fail
 ActiveJob::Base.use_openstax_exception_rescue
-
-# URL generation errors are caused by bad routes, for example, and should not be ignored
-ExceptionNotifier.ignored_exceptions.delete("ActionController::UrlGenerationError")
 
 module OpenStax::RescueFrom
   def self.default_friendly_message
