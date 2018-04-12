@@ -92,7 +92,7 @@ en:
       temporarily_unavailable: >-
         The terms are temporarily unavailable. Check back soon.
 
-    lost_user: 'Sorry, we lost you. Please try again.'
+    lost_user: Sorry, we lost you. Please try again.
 
   handlers:
     authentications_delete:
