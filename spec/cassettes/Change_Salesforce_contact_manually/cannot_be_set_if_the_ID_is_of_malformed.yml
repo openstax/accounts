@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20Faculty_Verified__c,%20LastModifiedDate,%20AccountId,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27somethingwonky%27)%20LIMIT%201"
+    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20Faculty_Verified__c,%20School_Type__c,%20LastModifiedDate,%20AccountId,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27somethingwonky%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''

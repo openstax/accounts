@@ -35,7 +35,9 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
     let!(:user) { email_address.user }
 
     context "contact exists" do
-      let!(:contact) { @proxy.new_contact(email: email_address.value, faculty_verified: "Confirmed") }
+      let!(:contact) do
+        @proxy.new_contact(email: email_address.value, faculty_verified: "Confirmed")
+      end
 
       it 'caches info in user when not previously linked' do
         expect(contact.send_faculty_verification_to).to be_blank
@@ -85,7 +87,9 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
     let!(:user) { email_address.user }
 
     context "contact exists" do
-      let!(:contact) { @proxy.new_contact(email: email_address.value, faculty_verified: "Confirmed") }
+      let!(:contact) do
+        @proxy.new_contact(email: email_address.value, faculty_verified: "Confirmed")
+      end
 
       it 'does not cache info when not previously linked' do
         call_expecting_no_errors

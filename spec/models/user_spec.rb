@@ -4,10 +4,14 @@ RSpec.describe User, type: :model do
 
   subject(:user) { FactoryGirl.create :user }
 
-  it { should have_many :security_logs }
+  it { is_expected.to have_many :security_logs }
 
-  it { should validate_uniqueness_of(:uuid).case_insensitive }
-  it { should validate_uniqueness_of(:support_identifier).case_insensitive }
+  it { is_expected.to validate_presence_of(:faculty_status) }
+  it { is_expected.to validate_presence_of(:role          ) }
+  it { is_expected.to validate_presence_of(:school_type   ) }
+
+  it { is_expected.to validate_uniqueness_of(:uuid              ).case_insensitive }
+  it { is_expected.to validate_uniqueness_of(:support_identifier).case_insensitive }
 
   context 'when the user is activated' do
     let(:user) { User.new.tap {|u| u.state = 'activated'} }

@@ -120,7 +120,8 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce', '~> 1.0.0'
+gem 'openstax_salesforce', '~> 1.3.0'
+
 # Fork that supports Ruby >= 2.1
 gem 'active_force', github: 'openstax/active_force', ref: '9695896f5'
 

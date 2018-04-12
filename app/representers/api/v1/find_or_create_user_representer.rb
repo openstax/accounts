@@ -88,7 +88,7 @@ module Api::V1
              readable: false,
              writeable: true,
              schema_info: {
-               description: "Faculty status to assign to newly created user, one of #{
+               description: "The faculty status to assign to newly created user, one of #{
                  User.faculty_statuses.keys.map(&:to_s).inspect
                }"
              }
@@ -101,6 +101,16 @@ module Api::V1
                 description: "The role to assign to the newly created user, one of #{
                   User.roles.keys.map(&:to_s).inspect
                 }"
+             }
+
+    property :school_type,
+             type: String,
+             readable: false,
+             writeable: true,
+             schema_info: {
+               description: "The school type to assign to newly created user, one of #{
+                 User.school_types.keys.map(&:to_s).inspect
+               }"
              }
 
   end
