@@ -23,10 +23,10 @@ module SessionsHelper
 
   def suggested_login_username
     if !params[:username_or_email] &&
-       signup_state.try(:trusted?) &&
-       LookupUsers.by_verified_email(signup_state.trusted_data['email'])
+       pre_auth_state.try!(:signed?) &&
+       LookupUsers.by_verified_email(pre_auth_state.signed_data['email'])
 
-      return signup_state.trusted_data['email']
+      return pre_auth_state.signed_data['email']
     end
     params[:username_or_email]
   end

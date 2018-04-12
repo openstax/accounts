@@ -1,8 +1,11 @@
 class ChangeSignupContactInfoToSignupState < ActiveRecord::Migration
+  class SignupState < ActiveRecord::Base
+  end
+
   def up
     rename_table :signup_contact_infos, :signup_states
 
-    SignupState.destroy_all
+    SignupState.delete_all
 
     add_column :signup_states, :role, :string
     change_column :signup_states, :role, :string, null: false

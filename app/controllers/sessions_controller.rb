@@ -79,7 +79,7 @@ class SessionsController < ApplicationController
     handle_with(
       SessionsCreate,
       user_state: self,
-      signup_state: signup_state,
+      pre_auth_state: pre_auth_state,
       login_providers: get_login_state[:providers],
       success: -> do
         authentication = @handler_result.outputs[:authentication]

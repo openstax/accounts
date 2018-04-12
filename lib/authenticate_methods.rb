@@ -11,7 +11,7 @@ module AuthenticateMethods
     # try to use them again.
     store_url(url: request_url_without_signed_params)
 
-    if signup_state && signup_state.trusted_student? && signup_state_email_available?
+    if pre_auth_state && pre_auth_state.signed_student? && pre_auth_state_email_available?
       redirect_to main_app.signup_path
     else
       redirect_to(
@@ -44,9 +44,9 @@ module AuthenticateMethods
     auto_login_external_user || prepare_for_new_external_user
   end
 
-  def signup_state_email_available?
+  def pre_auth_state_email_available?
     LookupUsers.by_verified_email(
-      signup_state.contact_info_value
+      pre_auth_state.contact_info_value
     ).none?
   end
 
@@ -82,8 +82,8 @@ module AuthenticateMethods
 
     # Save the signed params data to facilitate either sign in or up
     # depending on the user's choices
-    signup_state = SignupState.create_from_trusted_data(params[:sp])
-    save_signup_state(signup_state)
+    pre_auth_state = PreAuthState.create_from_signed_data(params[:sp])
+    save_pre_auth_state(pre_auth_state)
   end
 
   def signed_params

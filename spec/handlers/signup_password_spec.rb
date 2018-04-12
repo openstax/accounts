@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe SignupPassword, type: :handler do
 
-  let(:signup_state) {
-    FactoryGirl.create(:signup_state, :verified, contact_info_value: "bob@armstrong.com")
+  let(:pre_auth_state) {
+    FactoryGirl.create(:pre_auth_state, :contact_info_verified, contact_info_value: "bob@armstrong.com")
   }
 
   context "when the passwords don't match" do
@@ -15,7 +15,7 @@ RSpec.describe SignupPassword, type: :handler do
             password_confirmation: 'word',
           }
         },
-        signup_state: signup_state,
+        pre_auth_state: pre_auth_state,
         caller: AnonymousUser.instance
       )
     }.call }
@@ -44,7 +44,7 @@ RSpec.describe SignupPassword, type: :handler do
             password_confirmation: 'password',
           }
         },
-        signup_state: signup_state,
+        pre_auth_state: pre_auth_state,
         caller: AnonymousUser.instance
       )
     }.call }

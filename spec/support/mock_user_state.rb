@@ -16,7 +16,7 @@ class MockUserState
     self.the_current_user
   end
 
-  def clear_signup_state
+  def clear_pre_auth_state
   end
 
   protected

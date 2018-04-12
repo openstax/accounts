@@ -322,7 +322,7 @@ end
 
 def complete_signup_verify_screen(pin: nil, pass: nil)
   tries = 0
-  while (tries+=1) < 100 && (ss = SignupState.find_by(contact_info_value: @signup_email)).nil? do
+  while (tries+=1) < 100 && (ss = PreAuthState.find_by(contact_info_value: @signup_email)).nil? do
     sleep(0.1) # transaction from earlier step may not have committed
   end
   fail("unable to find email #{@signup_email}.  Did creation step fail silently?") if ss.nil?

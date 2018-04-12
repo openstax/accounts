@@ -31,7 +31,7 @@ class SessionsCreate
   uses_routine TransferAuthentications
   uses_routine TransferOmniauthData
   uses_routine ActivateUnclaimedUser
-  uses_routine TransferSignupState
+  uses_routine TransferPreAuthState
 
   protected
 
@@ -56,7 +56,7 @@ class SessionsCreate
       else
         fatal_error(code: :unknown_callback_state)
       end
-    options[:user_state].clear_signup_state # some of the flows will have a signup_state
+    options[:user_state].clear_pre_auth_state # some of the flows will have a pre_auth_state
   end
 
   def handle_during_login
@@ -71,8 +71,8 @@ class SessionsCreate
       return :mismatched_authentication
     end
 
-    if signup_state.present?
-      run(TransferSignupState, signup_state: signup_state, user: authentication_user)
+    if pre_auth_state.present?
+      run(TransferPreAuthState, pre_auth_state: pre_auth_state, user: authentication_user)
     end
 
     sign_in!(authentication_user)
@@ -110,8 +110,8 @@ class SessionsCreate
       end
     end
 
-    run(TransferSignupState,
-        signup_state: signup_state,
+    run(TransferPreAuthState,
+        pre_auth_state: pre_auth_state,
         user: receiving_user)
 
     run(TransferAuthentications, authentication, receiving_user)
@@ -212,11 +212,11 @@ class SessionsCreate
   end
 
   def signing_up?
-    signup_state.present?
+    pre_auth_state.present?
   end
 
-  def signup_state
-    options[:signup_state]
+  def pre_auth_state
+    options[:pre_auth_state]
   end
 
   def logging_in?

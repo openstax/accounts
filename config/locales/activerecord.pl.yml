@@ -160,7 +160,7 @@ pl:
             password_confirmation:
               confirmation: Weryfikacja hasła nie powiodła się
 
-        signup_state:
+        pre_auth_state:
           attributes:
             contact_info_value:
               <<: *email_address_validations
