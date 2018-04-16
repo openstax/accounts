@@ -1,13 +1,17 @@
 .ox-card {
-  $input-height: 50px;
   $input-border-color: darken($os_light_gray, 10%);
 
-  display: block;
-  margin: auto;
-  max-width: 570px;
   background-color: $os_light_gray;
-  padding: 30px 50px 50px 50px;
+  display: grid;
   font-size: 14px;
+  justify-content: center;
+  margin: auto;
+  padding: 30px 50px 50px 50px;
+
+  @include wider-than($phone-max) {
+    max-width: $text-content-max;
+    width: fit-content;
+  }
 
   h1, h2, h3, .minor-heading {
     font-family: $os_heading_font_family;
@@ -36,21 +40,24 @@
       margin-top: $os-section-spacing * 0.5;
     }
   }
-  input {
-    color: $os_gray;
-    font-size: 16px;
-    border-radius: 0px;
-    &:not([type="checkbox"]):not([type="radio"]){
-      height: $input-height;
-      &:not([type="submit"]) {
-        width: 100%;
-        padding-left: 5px;
-      }
-    }
-    &[type="text"],
-    &[type="password"] {
-      border: 1px solid $input-border-color;
-    }
+
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]):not([type="radio"]):not([type="checkbox"]) {
+    @include non-button-input();
+
+    height: $form-element-height;
+  }
+
+  .form-control-group,
+  .labeled-input {
+    min-height: 7rem;
+    margin: 1.5rem 0;
+    width: 100%;
+  }
+
+  .helper {
+    @include set-font(helper-label);
+
+    color: text-color(helper);
   }
 
   select:not([multiple]) {
@@ -61,7 +68,7 @@
     border-radius: 0px;
     padding: 1rem 0.8rem;
     font-size: 16px;
-    height: $input-height;
+    height: $form-element-height;
     // don't dispaly the selection arrow since we're using a SVG icon for it
     appearance: none;
     -webkit-appearance: none;
@@ -74,15 +81,6 @@
     &:active {
       border: 1px solid #000;
     }
-  }
-
-  input[type=submit],
-  .btn.cancel {
-    width: inherit;
-    padding: 0 20px;
-    line-height: $input-height;
-    display: inline-block;
-    margin-right: 1rem;
   }
 
   .is-invalid, .has-error {
@@ -109,7 +107,8 @@
   }
 
   a:not(.btn) {
-    color: $os_link_color;
+    color: text-color(link);
+    font-size: inherit;
     text-decoration: underline;
   }
 

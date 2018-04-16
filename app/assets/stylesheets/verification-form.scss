@@ -1,0 +1,172 @@
+@import "common";
+
+.verification-form {
+
+  > :first-child {
+    max-width: 47rem;
+  }
+
+  .subject-grid {
+    display: grid;
+    grid-gap: 1rem;
+
+    @include wider-than(99.1em * $scale-factor) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  h1 {
+    @include set-font(h4);
+
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  h2 {
+    @include set-font(body-large);
+  }
+
+  h3 {
+    @include set-font(h4);
+
+    padding: $normal-margin 0;
+  }
+
+  .get-verified-faster {
+    @include set-font(body-large);
+    margin-bottom: -1rem;
+    padding: 0;
+
+    em {
+      color: os-color(green);
+      font-style: normal;
+      font-weight: bold;
+    }
+  }
+
+  .already-using {
+    @include set-font(body-regular);
+  }
+
+  .labeled-radio {
+    color: text-color(helper);
+    display: grid;
+    font-weight: normal;
+    grid-gap: 0.5rem;
+    grid-template-columns: auto 1fr;
+
+    input {
+      height: 2rem;
+      width: 2rem;
+    }
+  }
+
+  .button-zone {
+    display: grid;
+    grid-gap: #{2 * $tight-margin};
+    grid-template-columns: repeat(5, auto) 1fr;
+    margin-top: 4rem;
+
+    button {
+      @include button();
+
+      &.primary {
+        @extend %primary;
+      }
+    }
+  }
+
+  .checkboxes {
+    margin-top: 3rem;
+
+    > label {
+      @include set-font(helper-label);
+      align-items: center;
+      color: text-color(helper);
+      display: grid;
+      grid-gap: $normal-margin;
+      grid-template-columns: auto auto 1fr;
+    }
+  }
+
+  .labeled-input {
+
+    .top-label {
+      @include wider-than($phone-max) {
+        height: 2rem;
+        transform: translateY(-0.6rem);
+      }
+    }
+
+    input {
+      @include non-button-input();
+
+      &[type="number"] {
+        max-width: 14rem;
+      }
+    }
+
+    .invalid-message {
+      @extend %invalid-message;
+
+      height: 0;
+    }
+  }
+
+  .big-label {
+    margin-top: 3rem;
+
+    .top-label {
+      @include set-font(body-large);
+
+      height: auto;
+      transform: none;
+    }
+  }
+}
+
+.book-checkbox {
+  @include form-border();
+
+  align-items: center;
+  background-color: ui-color(white);
+  display: grid;
+  grid-gap: $normal-margin;
+  grid-template-columns: $form-element-height 1fr auto;
+  height: $form-element-height;
+
+  &.checked {
+    background-color: ui-color(default);
+
+    > .indicator {
+      background-color: ui-color(white);
+      border: 0;
+      border-radius: 50%;
+      color: os-color(green);
+      height: 3rem;
+      width: 3rem;
+    }
+  }
+
+  > img {
+    width: 100%;
+  }
+
+  > label {
+    @include set-font(helper-label);
+    color: text-color(normal);
+  }
+
+  >.indicator {
+    @include form-border();
+
+    align-items: center;
+    display: flex;
+    color: ui-color(form-border);
+    font-size: 200%;
+    height: 2rem;
+    justify-content: center;
+    margin-right: $normal-margin;
+    width: 2rem;
+  }
+}

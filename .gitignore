@@ -22,6 +22,9 @@
 # Ignore the secrets file
 config/secrets.yml
 
+# Ignore Node modules
+node_modules
+
 # Ignore yaml_db database files
 /db/data.yml*
 

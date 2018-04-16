@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-rails": "^0.2.5",
+    "react-select": "^1.2.1"
+  }
+}

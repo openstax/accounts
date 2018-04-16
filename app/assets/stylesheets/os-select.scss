@@ -1,0 +1,28 @@
+$light-blue: #0dc0dc;
+
+.os-select {
+  font-size: 1.6rem;
+  height: 5rem;
+  margin: 1.5rem 0;
+
+  .Select,
+  .Select-control {
+    height: 100%;
+  }
+
+  .Select-control,
+  .Select-placeholder,
+  .Select-value {
+    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+  }
+
+  // Adapted from pattern-library
+  .Select.is-focused > .Select-control {
+    border: thin solid $light-blue;
+    box-shadow: 0 0 0.4rem 0 rgba($light-blue, 0.5);
+    outline: none;
+  }
+
+}
