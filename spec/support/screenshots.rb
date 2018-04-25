@@ -2,7 +2,7 @@ if EnvUtilities.load_boolean(name: 'SSHOT', default: false)
   require 'capybara-screenshot/rspec'
   Capybara::Screenshot.autosave_on_failure = false
   Capybara::Screenshot.append_timestamp = false
-  WINDOW_SIZE = [ 800, 600 ]
+  WINDOW_SIZE = [ 1024, 768 ]
   CURRENT_TIME = Time.now.strftime('%Y-%m-%d-%H-%M-%S')
 
   def screenshots_dir
