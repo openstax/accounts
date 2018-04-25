@@ -35,6 +35,10 @@ require 'rspec/rails'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
+# https://github.com/colszowka/simplecov/issues/369#issuecomment-313493152
+# Load rake tasks so they can be tested.
+Rails.application.load_tasks unless defined?(Rake::Task) && Rake::Task.task_defined?('environment')
+
 require 'openstax/salesforce/spec_helpers'
 include OpenStax::Salesforce::SpecHelpers
 
