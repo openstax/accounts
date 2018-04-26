@@ -48,14 +48,16 @@ require 'selenium/webdriver'
 
 # https://robots.thoughtbot.com/headless-feature-specs-with-chrome
 Capybara.register_driver :selenium_chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new args: [ '--lang=en' ]
+  options = Selenium::WebDriver::Chrome::Options.new args: [ 'lang=en' ]
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
 
-# no-sandbox is required for it to work with Docker (Travis)
+# no-sandbox and disable-dev-shm-usage are required for Chrome to work with Docker (Travis)
 Capybara.register_driver :selenium_chrome_headless do |app|
-  options = Selenium::WebDriver::Chrome::Options.new args: [ 'headless', 'no-sandbox', '--lang=en' ]
+  options = Selenium::WebDriver::Chrome::Options.new args: [
+    'headless', 'no-sandbox', 'disable-dev-shm-usage', 'lang=en'
+  ]
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end

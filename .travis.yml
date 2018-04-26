@@ -10,7 +10,7 @@ cache: bundler
 bundler_args: --without=production --retry=6
 addons:
   chrome: stable
-  postgresql: "9.5"
+  postgresql: 9.5
 before_script: bundle exec rake --trace parallel:create parallel:load_schema parallel:seed
 script: bundle exec rake parallel:spec
 notifications:
