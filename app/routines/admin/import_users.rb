@@ -20,7 +20,8 @@ module Admin
         unless identity_hash.nil?
           user.identity = mass_assign(Identity, identity_hash) unless identity_hash.nil?
 
-          # Necessary because we cannot normally save the identity without the password
+          # validate: false is necessary because we don't validate the identity without the password
+          # saving here is necessary so the authentications can use the identity's id
           user.identity.save validate: false
         end
 
