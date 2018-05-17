@@ -5,7 +5,7 @@ module Admin
     protected
 
     def exec(filename: 'users.json')
-      num_users = 0
+      outputs.users = []
       outputs.failures = []
       JSON.parse(File.read(filename)).each do |user_hash|
         user = mass_assign(
@@ -31,12 +31,19 @@ module Admin
           user.authentications << authentication
         end
 
-        outputs.failures << user unless user.save
+        if user.save
+          outputs.users << user
+        else
+          outputs.failures << user
+        end
       end
 
-      Rails.logger.info { "Imported #{num_users} user(s) with #{outputs.failures.size} error(s)." }
-      Rails.logger.info { "Errors: #{outputs.failures.map(&:errors).inspect}" } \
-        unless outputs.failures.empty?
+      Rails.logger.info do
+        "Imported #{outputs.users.size} user(s) with #{outputs.failures.size} error(s)."
+      end
+      Rails.logger.info do
+        "Errors: #{outputs.failures.map(&:errors).inspect}"
+      end unless outputs.failures.empty?
     end
 
     # Necessary because the calls to attr_accessible block all mass-assignment
