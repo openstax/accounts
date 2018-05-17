@@ -6,26 +6,44 @@ module Admin
 
     def exec(filename: 'users.json')
       num_users = 0
-      errors = []
+      outputs.failures = []
       JSON.parse(File.read(filename)).each do |user_hash|
-        user = User.new(user_hash.except('id', 'identity', 'authentications', 'contact_infos'))
+        user = mass_assign(
+          User, user_hash.except('id', 'identity', 'authentications', 'contact_infos')
+        )
+
+        user_hash['contact_infos'].each do |contact_info_hash|
+          user.contact_infos << mass_assign(ContactInfo, contact_info_hash)
+        end
 
         identity_hash = user_hash['identity']
-        user.identity = Identity.new(identity_hash) unless identity_hash.nil?
+        unless identity_hash.nil?
+          user.identity = mass_assign(Identity, identity_hash) unless identity_hash.nil?
 
-        user.authentications.concat user_hash['authentications'].map do |authentication_hash|
-          Authentication.new(authentication_hash)
+          # Necessary because we cannot normally save the identity without the password
+          user.identity.save validate: false
         end
 
-        user.contact_infos.concat user_hash['contact_infos'].map do |contact_info_hash|
-          ContactInfo.new(contact_info_hash)
+        user_hash['authentications'].each do |authentication_hash|
+          authentication = mass_assign(Authentication, authentication_hash)
+          authentication.uid = user.identity.id.to_s if authentication.provider == 'identity'
+          user.authentications << authentication
         end
 
-        errors.concat(user.errors) unless user.save
+        outputs.failures << user unless user.save
       end
 
-      Rails.logger.info { "Imported #{num_users} user(s) with #{errors.size} error(s)." }
-      Rails.logger.info { "Errors: #{errors.inspect}" } unless errors.empty?
+      Rails.logger.info { "Imported #{num_users} user(s) with #{outputs.failures.size} error(s)." }
+      Rails.logger.info { "Errors: #{outputs.failures.map(&:errors).inspect}" } \
+        unless outputs.failures.empty?
+    end
+
+    # Necessary because the calls to attr_accessible block all mass-assignment
+    # Remove when we get rid of attr_accessible
+    def mass_assign(klass, attribute_hash)
+      klass.new.tap do |instance|
+        attribute_hash.each { |attribute, value| instance.public_send("#{attribute}=", value) }
+      end
     end
   end
 end

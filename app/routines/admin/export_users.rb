@@ -9,7 +9,10 @@ module Admin
         user.attributes.except('id').merge(
           'identity' => user.identity.try!(:attributes).try!(:except, 'id', 'user_id'),
           'authentications' => user.authentications.map do |authentication|
-            authentication.attributes.except('id', 'user_id')
+            excluded_attributes = [ 'id', 'user_id' ]
+            excluded_attributes << 'uid' if authentication.provider == 'identity'
+
+            authentication.attributes.except(*excluded_attributes)
           end,
           'contact_infos' => user.contact_infos.map do |contact_info|
             contact_info.attributes.except('id', 'user_id')
