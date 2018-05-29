@@ -60,11 +60,6 @@ $ rake db:migrate
 $ rake db:seed
 ```
 
-To populate with demo data:
-```sh
-$ rake demo:staff
-```
-
 Then you can run:
 
 ```sh
