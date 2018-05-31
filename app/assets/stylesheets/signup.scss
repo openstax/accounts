@@ -1,3 +1,5 @@
+@import "pattern-library/headers";
+
 body.signup {
 
   // elements which are conditionally displayed depending on signup state
@@ -13,6 +15,10 @@ body.signup {
 
   .agree {
     margin-bottom: 16px;
+  }
+
+  .instructor-verification-help {
+    @include set-font(body-large);
   }
 
   .checkbox {

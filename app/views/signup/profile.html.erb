@@ -12,47 +12,34 @@
 
     <%= fh.text_field name: :first_name, value: current_user.first_name, autofocus: true %>
     <%= fh.text_field name: :last_name, value: current_user.last_name %>
-    <%= fh.text_field name: :suffix %>
+    <%= fh.text_field name: :phone_number, except: :student %>
+    <%= fh.text_field name: :school, label: f.label(t :'.school') %>
 
     <% if role != :student %>
-      <h3><%= t '.instructor_verification_heading' %></h3>
-      <p><%= t '.instructor_verification_help' %></p>
+      <h2 class="instructor-verification-help"><%= t '.instructor_verification_help' %></h2>
+      <%= fh.text_field name: :url, label: f.label(t :'.instructor_verification_heading'), except: :student %>
     <% end %>
 
-    <%= fh.text_field name: :phone_number, except: :student %>
-    <%= fh.text_field name: :school %>
-    <%= fh.text_field name: :num_students, only: :instructor %>
-    <%= fh.text_field name: :url, except: :student %>
+    <h2 class="instructor-verification-help"><%= t :'.using_openstax' %></h2>
+    <%= fh.radio_group name: :using_openstax,
+                       only: :instructor,
+                       options: [
+                           [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
+                           [t('.instructor_use.nope'), 'Not using']
+                       ] %>
 
-    <%# These dropdown option values are dictated by Salesforce and should not be changed %>
-    <%= fh.select name: :using_openstax,
-                  only: :instructor,
-                  options: options_for_select(
-                  [
-                    [t('.instructor_use.how'), ""],
-                    [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
-                    [t('.instructor_use.recommended'), 'Confirmed Will Recommend'],
-                    [t('.instructor_use.interested'), 'High Interest in Adopting'],
-                    [t('.instructor_use.nope'), 'Not using']
-                   ],
-                   selected: (params.try(:[], 'profile').try(:[], 'using_openstax') || ''),
-                   disabled: "", hidden: "") %>
+    <h2 class="instructor-verification-help">
+        <%= t('.titles_interested') %>
+    </h2>
 
-    <% if role.to_sym != :student %>
-
-      <h3><%= t('.titles_interested') %></h3>
-
-      <%= fh.wrapper_div(name: :subjects, class_name: 'subjects' ) do %>
-        <div class="scroll-pane">
-          <% Settings::Subjects.each(sorted: true) do | key, info | %>
-              <div class="subject">
-                <%= f.check_box("subjects[#{key}]", checked: instructor_has_selected_subject(key)) %>
-                <%= f.label "subjects[#{key}]", info['title'] %>
-              </div>
-            <% end %>
-        </div>
-      <% end %>
-    <% end %>
+    <h2 class="instructor-verification-help">
+        <%= t('.num_students') %>
+    </h2>
+    <%= fh.text_field name: :num_students,
+     label: 'Include classes taught by TAs that you oversee.',
+     type: 'number',
+     only: :instructor
+    %>
 
     <div class="newsletter">
       <div class="checkbox">
