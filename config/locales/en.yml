@@ -490,6 +490,7 @@ en:
       create_account: Create Account
       submitting: Creating Account…
       titles_interested: Select all OpenStax subjects that interest you
+      titles_using: Which book(s) are you using?
       keep_me_informed: Send me the OpenStax newsletter.
       timeout: Please log in again to complete your sign up
 

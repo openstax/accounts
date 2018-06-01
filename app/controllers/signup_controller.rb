@@ -100,7 +100,8 @@ class SignupController < ApplicationController
                   end)
     else
       params[:profile] = {
-        school: current_user.self_reported_school
+        school: current_user.self_reported_school,
+        newsletter: "1"
       }
     end
   end

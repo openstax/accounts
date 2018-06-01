@@ -10,35 +10,73 @@
                                 errors: @handler_result.try(:errors),
                                 error_field_classes: "alert alert-danger") %>
 
+    <div hidden data-params>
+      <%= params[:profile].to_json %>
+    </div>
+
     <div class="page-1" data-bind="visible: formPage() === 1">
-        <h1 class="title"><%= t :'.page_heading' %></h1>
-        <%= fh.text_field name: :first_name, value: current_user.first_name, autofocus: true %>
-        <%= fh.text_field name: :last_name, value: current_user.last_name %>
-        <%= fh.text_field name: :phone_number, except: :student %>
-        <%= fh.text_field name: :school, label: f.label(t :'.school') %>
+      <h1 class="title"><%= t :'.page_heading' %></h1>
 
-        <% if role != :student %>
-          <h2 class="instructor-verification-help"><%= t '.instructor_verification_help' %></h2>
-          <%= fh.text_field name: :url, label: f.label(t :'.instructor_verification_heading'), except: :student %>
-        <% end %>
+      <%= fh.text_field name: :first_name,
+                        value: current_user.first_name,
+                        autofocus: true
+      %>
+      <%= fh.text_field name: :last_name, value: current_user.last_name, options: { required: true } %>
+      <%= fh.text_field name: :phone_number, except: :student, options: { required: true } %>
+      <%= fh.text_field name: :school, options: { required: false } %>
 
-        <h2 class="instructor-verification-help"><%= t :'.using_openstax' %></h2>
-        <%= fh.radio_group name: :using_openstax,
-                           only: :instructor,
-                           options: [
-                               [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
-                               [t('.instructor_use.nope'), 'Not using']
-                           ] %>
+      <% if role != :student %>
+        <h2 class="instructor-verification-help"><%= t '.instructor_verification_help' %></h2>
+        <%= fh.text_field name: :url,
+                        label: f.label(t('.instructor_verification_heading'), for: 'profile_url'),
+                        except: :student
+        %>
+      <% end %>
 
-       <button class="primary" data-bind="click:nextPage">Next</button>
+      <h2 class="instructor-verification-help"><%= t :'.using_openstax' %></h2>
+      <%= fh.radio_group  name: :using_openstax,
+                          only: :instructor,
+                          options: [
+                            {
+                              'value' => 'Confirmed Adoption Won',
+                              'text' => t('.instructor_use.fully'),
+                              'label' => {
+                                'for' => 'profile_using_openstax_confirmed_adoption_won'
+                              },
+                              'radio' => {
+                                'data-bind' => 'checked: howUsing'
+                              }
+                            },
+                            {
+                              'value' => 'Not using',
+                              'text' => t('.instructor_use.nope'),
+                              'label' => {
+                                'for' => 'profile_using_openstax_not_using'
+                              },
+                              'radio' => {
+                                'data-bind' => 'checked: howUsing'
+                              }
+                            }
+                          ]
+       %>
+
+     <button class="primary" data-bind="enable:howUsing, click:nextPage">Next</button>
     </div>
 
     <div class="page-2" data-bind="visible: formPage() === 2">
-        <h2 class="instructor-verification-help">
+      <h2 class="instructor-verification-help">
+          <span data-bind="if: interested">
             <%= t('.titles_interested') %>
-        </h2>
+          </span>
+          <span data-bind="if: adopted">
+            <%= t('.titles_using') %>
+          </span>
+      </h2>
+
+      <%= fh.wrapper_div(name: :subjects) do %>
         <div data-bind="foreach: subjects">
             <h3 data-bind="text: $data"></h3>
+            <input type="hidden" name="profile[subjects[placeholder]]" value=0>
             <div class="two-column-grid" data-bind="foreach: $parent.bySubject()[$data]">
                 <div class="book-checkbox has-image" data-bind="css: {checked}">
                     <!-- ko if: checked -->
@@ -62,7 +100,61 @@
                 </div>
             </div>
         </div>
+      <% end %>
 
+      <div data-bind="if: adopted">
+        <div data-bind="foreach: selectedBooks">
+          <h2 class="instructor-verification-help">How are you using <span data-bind="text:text"></span>?</h2>
+          <%= fh.radio_group name: 'meh',
+                             only: :instructor,
+                             options: [
+                               {
+                                 'value' => 'Confirmed Adoption Won',
+                                 'text' => t('.instructor_use.fully'),
+                                 'label' => {
+                                   'data-bind' => "attr: {for: `how_using_book_${abbreviation}_adoption_won`}"
+                                 },
+                                 'radio' => {
+                                   'data-bind' => "attr: {name: `profile[how_using_book_${abbreviation}]`,"\
+                                    " id: `how_using_book_${abbreviation}_adoption_won`,"\
+                                    " checked: $root.howUsingBook()[abbreviation] === 'Confirmed Adoption Won'},",
+                                    required: true
+                                 }
+                               },
+                               {
+                                 'value' => 'Confirmed Will Recommend',
+                                 'text' => t('.instructor_use.recommended'),
+                                 'label' => {
+                                   'data-bind' => "attr: {for: `how_using_book_${abbreviation}_will_recommend`}"
+                                 },
+                                 'radio' => {
+                                   'data-bind' => "attr: {name: `profile[how_using_book_${abbreviation}]`,"\
+                                    " id: `how_using_book_${abbreviation}_will_recommend`,"\
+                                    " checked: $root.howUsingBook()[abbreviation] === 'Confirmed Will Recommend'}"
+                                 }
+                               }
+                             ]
+           %>
+           <h2 class="instructor-verification-help">
+               <%= t('.num_students') %>
+           </h2>
+           <%= fh.text_field name: :num_students_book,
+            label: 'Include classes taught by TAs that you oversee.',
+            type: 'number',
+            only: :instructor,
+            options: {
+                "data-bind": "attr: {"\
+                "   name: `profile[num_students_book_${abbreviation}]`,"\
+                "   id: `profile[num_students_book_${abbreviation}]`"\
+                "},"\
+                " value: $root.numStudentsBook()[abbreviation]",
+                "required": true
+            }
+           %>
+        </div>
+      </div>
+
+      <div data-bind="if: interested">
         <h2 class="instructor-verification-help">
             <%= t('.num_students') %>
         </h2>
@@ -71,62 +163,56 @@
          type: 'number',
          only: :instructor
         %>
+      </div>
 
-        <div class="newsletter">
+
+      <div class="newsletter">
+        <div class="checkbox">
+          <label>
+            <%= f.check_box :newsletter, 'data-bind': 'newsletter' %>
+            <%= t :".keep_me_informed" %>
+          </label>
+        </div>
+      </div>
+
+      <div class="agree">
+        <% unless contracts_not_required %>
+          <%
+            contracts = [FinePrint.get_contract(:general_terms_of_use),
+                         FinePrint.get_contract(:privacy_policy)]
+
+            contract_links = contracts.collect do |contract|
+              link_to contract.title, term_path(contract), remote: true
+            end
+          %>
+
           <div class="checkbox">
             <label>
-              <%= f.check_box :newsletter, checked: true %>
-              <%= t :".keep_me_informed" %>
+              <%= f.check_box :i_agree, 'data-bind': 'checked: agree' %>
+              <%= t :".have_read_terms_and_agree_html",
+                    terms_of_use: contract_links[0],
+                    privacy_policy: contract_links[1] %>
             </label>
           </div>
-        </div>
 
-        <div class="agree">
-          <% unless contracts_not_required %>
-            <%
-              contracts = [FinePrint.get_contract(:general_terms_of_use),
-                           FinePrint.get_contract(:privacy_policy)]
+          <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
+          <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
+        <% end %>
+      </div>
 
-              contract_links = contracts.collect do |contract|
-                link_to contract.title, term_path(contract), remote: true
-              end
-            %>
-
-            <div class="checkbox">
-              <label>
-                <%= f.check_box :i_agree %>
-                <%= t :".have_read_terms_and_agree_html",
-                      terms_of_use: contract_links[0],
-                      privacy_policy: contract_links[1] %>
-              </label>
-            </div>
-
-            <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
-            <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
-          <% end %>
-        </div>
-
-        <div class="button-row">
-            <button class="secondary" data-bind="click:prevPage">Back</button>
-            <%= f.submit (t :".create_account"), id: "create_account_submit", data: { disable_with: (t :".submitting") }, class: 'primary' %>
-        </div>
+      <div class="button-row">
+        <button class="secondary" data-bind="click:prevPage">Back</button>
+        <%= f.submit (t :".create_account"),
+                    id: "create_account_submit",
+                    data: { disable_with: (t :".submitting") },
+                    class: 'primary',
+                    "data-bind": "enable: agree, click: beforeSubmit"
+        %>
+      </div>
     </div>
 
   <% end %>
 
-<% end %>
-
-<% unless contracts_not_required %>
-  <script type="text/javascript">
-    Accounts.Ui.enableOnChecked('#create_account_submit', '#profile_i_agree');
-    $(document).ready(function() {
-      $('#show-more-fields').click(function(e) {
-        e.preventDefault();
-        $(this).hide();
-        $('#signup_title, #signup_suffix').parent().show();
-      })
-    });
-  </script>
 <% end %>
 
 <%= javascript_include_tag  "verify" %>

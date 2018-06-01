@@ -23,7 +23,7 @@ module FormHelper
       end
     end
 
-    def text_field(name:, label: nil, value: nil, type: nil, autofocus: false, except: nil, only: nil)
+    def text_field(name:, label: nil, value: nil, type: nil, autofocus: false, except: nil, only: nil, options: {})
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -34,20 +34,21 @@ module FormHelper
                                     type: type,
                                     class: "form-control wide",
                                     data: data(only: only, except: except),
-                                    autofocus: autofocus
+                                    autofocus: autofocus,
+                                    **options
 
         "#{label}\n#{input}\n#{errors_div}".html_safe
       end
     end
 
-    def radio_group(name:, label: nil, options:, except: nil, only: nil)
+    def radio_group(name:, options:, except: nil, only: nil)
         return if excluded?(except: except, only: only)
 
         errors_div = get_errors_div(name: name)
 
         c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
             options.map { |opt|
-                "<div>#{@f.radio_button name, opt[1]} #{@f.label opt[0]}</div>"
+              "<div>#{@f.radio_button name, opt['value'], opt['radio']} #{@f.label opt['text'], opt['label']}</div>"
             }.join("\n").html_safe
         end
     end
