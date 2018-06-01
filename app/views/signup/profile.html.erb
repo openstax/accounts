@@ -1,6 +1,6 @@
 <% role = current_user.role.downcase.to_sym %>
 
-<%= ox_card(classes: "login", heading: (t :'.page_heading')) do %>
+<%= ox_card(classes: "login") do %>
 
   <%= lev_form_for :profile, url: signup_profile_path, html: {class: 'full-width'} do |f| %>
 
@@ -10,72 +10,107 @@
                                 errors: @handler_result.try(:errors),
                                 error_field_classes: "alert alert-danger") %>
 
-    <%= fh.text_field name: :first_name, value: current_user.first_name, autofocus: true %>
-    <%= fh.text_field name: :last_name, value: current_user.last_name %>
-    <%= fh.text_field name: :phone_number, except: :student %>
-    <%= fh.text_field name: :school, label: f.label(t :'.school') %>
+    <div class="page-1" data-bind="visible: formPage() === 1">
+        <h1 class="title"><%= t :'.page_heading' %></h1>
+        <%= fh.text_field name: :first_name, value: current_user.first_name, autofocus: true %>
+        <%= fh.text_field name: :last_name, value: current_user.last_name %>
+        <%= fh.text_field name: :phone_number, except: :student %>
+        <%= fh.text_field name: :school, label: f.label(t :'.school') %>
 
-    <% if role != :student %>
-      <h2 class="instructor-verification-help"><%= t '.instructor_verification_help' %></h2>
-      <%= fh.text_field name: :url, label: f.label(t :'.instructor_verification_heading'), except: :student %>
-    <% end %>
+        <% if role != :student %>
+          <h2 class="instructor-verification-help"><%= t '.instructor_verification_help' %></h2>
+          <%= fh.text_field name: :url, label: f.label(t :'.instructor_verification_heading'), except: :student %>
+        <% end %>
 
-    <h2 class="instructor-verification-help"><%= t :'.using_openstax' %></h2>
-    <%= fh.radio_group name: :using_openstax,
-                       only: :instructor,
-                       options: [
-                           [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
-                           [t('.instructor_use.nope'), 'Not using']
-                       ] %>
+        <h2 class="instructor-verification-help"><%= t :'.using_openstax' %></h2>
+        <%= fh.radio_group name: :using_openstax,
+                           only: :instructor,
+                           options: [
+                               [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
+                               [t('.instructor_use.nope'), 'Not using']
+                           ] %>
 
-    <h2 class="instructor-verification-help">
-        <%= t('.titles_interested') %>
-    </h2>
-
-    <h2 class="instructor-verification-help">
-        <%= t('.num_students') %>
-    </h2>
-    <%= fh.text_field name: :num_students,
-     label: 'Include classes taught by TAs that you oversee.',
-     type: 'number',
-     only: :instructor
-    %>
-
-    <div class="newsletter">
-      <div class="checkbox">
-        <label>
-          <%= f.check_box :newsletter, checked: true %>
-          <%= t :".keep_me_informed" %>
-        </label>
-      </div>
+       <button class="primary" data-bind="click:nextPage">Next</button>
     </div>
 
-    <div class="agree">
-      <% unless contracts_not_required %>
-        <%
-          contracts = [FinePrint.get_contract(:general_terms_of_use),
-                       FinePrint.get_contract(:privacy_policy)]
-
-          contract_links = contracts.collect do |contract|
-            link_to contract.title, term_path(contract), remote: true
-          end
-        %>
-
-        <div class="checkbox">
-          <label>
-            <%= f.check_box :i_agree %>
-            <%= t :".have_read_terms_and_agree_html",
-                  terms_of_use: contract_links[0],
-                  privacy_policy: contract_links[1] %>
-          </label>
+    <div class="page-2" data-bind="visible: formPage() === 2">
+        <h2 class="instructor-verification-help">
+            <%= t('.titles_interested') %>
+        </h2>
+        <div data-bind="foreach: subjects">
+            <h3 data-bind="text: $data"></h3>
+            <div class="two-column-grid" data-bind="foreach: $parent.bySubject()[$data]">
+                <div class="book-checkbox has-image" data-bind="css: {checked}">
+                    <!-- ko if: checked -->
+                        <input
+                          data-bind="attr: {name, value}"
+                          type="hidden"
+                        >
+                    <!-- /ko -->
+                    <img data-bind="attr: {src: imageUrl}">
+                    <label data-bind="text: text"></label>
+                    <div
+                     class="indicator"
+                     tabindex="0"
+                     role="checkbox"
+                     data-bind="attr: {'aria-checked': checked}, click: toggle"
+                    >
+                        <!-- ko if: checked -->
+                            <span data-bind="if: checked" class="fa fa-check"></span>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
-        <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
-      <% end %>
-    </div>
+        <h2 class="instructor-verification-help">
+            <%= t('.num_students') %>
+        </h2>
+        <%= fh.text_field name: :num_students,
+         label: 'Include classes taught by TAs that you oversee.',
+         type: 'number',
+         only: :instructor
+        %>
 
-    <%= f.submit (t :".create_account"), id: "create_account_submit", data: { disable_with: (t :".submitting") }, class: 'primary' %>
+        <div class="newsletter">
+          <div class="checkbox">
+            <label>
+              <%= f.check_box :newsletter, checked: true %>
+              <%= t :".keep_me_informed" %>
+            </label>
+          </div>
+        </div>
+
+        <div class="agree">
+          <% unless contracts_not_required %>
+            <%
+              contracts = [FinePrint.get_contract(:general_terms_of_use),
+                           FinePrint.get_contract(:privacy_policy)]
+
+              contract_links = contracts.collect do |contract|
+                link_to contract.title, term_path(contract), remote: true
+              end
+            %>
+
+            <div class="checkbox">
+              <label>
+                <%= f.check_box :i_agree %>
+                <%= t :".have_read_terms_and_agree_html",
+                      terms_of_use: contract_links[0],
+                      privacy_policy: contract_links[1] %>
+              </label>
+            </div>
+
+            <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
+            <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
+          <% end %>
+        </div>
+
+        <div class="button-row">
+            <button class="secondary" data-bind="click:prevPage">Back</button>
+            <%= f.submit (t :".create_account"), id: "create_account_submit", data: { disable_with: (t :".submitting") }, class: 'primary' %>
+        </div>
+    </div>
 
   <% end %>
 
@@ -93,3 +128,5 @@
     });
   </script>
 <% end %>
+
+<%= javascript_include_tag  "verify" %>
