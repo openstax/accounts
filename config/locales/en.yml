@@ -172,8 +172,9 @@ en:
       you_can_now_sign_in:
         # %{link}   a hyperlink pointing to sing in page. Label of the link
         #           is defined by the .sign_up key.
-        content_html: You can now %{link} to your new account.
-        sign_in: log in
+        content_html: Please %{link} before you can sign into your new account.
+        reset_password: reset your password
+        add_password: set your password
 
   errors:
     please_enable_javascript: >-

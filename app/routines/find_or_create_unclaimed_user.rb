@@ -11,6 +11,7 @@ class FindOrCreateUnclaimedUser
   lev_routine
 
   uses_routine CreateUser, translations: { outputs: { type: :verbatim } }
+  uses_routine FindOrCreateApplicationUser
   uses_routine AddEmailToUser
   uses_routine CreateIdentity
 
@@ -41,6 +42,10 @@ class FindOrCreateUnclaimedUser
 
     # routine is smart and gracefully handles case of missing options[:email]
     run(AddEmailToUser, options[:email], user)
+
+    if options[:application]
+      FindOrCreateApplicationUser[options[:application].id, user.id]
+    end
 
     if options[:password]
       identity = run(CreateIdentity, {

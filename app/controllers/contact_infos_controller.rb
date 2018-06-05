@@ -75,21 +75,38 @@ class ContactInfosController < ApplicationController
 
   def confirm_unclaimed
     handle_with(ConfirmUnclaimedAccount,
+                user_state: self,
                 complete: lambda do
                   contact_info = @handler_result.outputs.contact_info
 
                   if @handler_result.errors.any?
                     contact_info_event_type = :contact_info_confirmation_by_code_failed
-                    status = 400
+                    render :bad_request
                   else
                     contact_info_event_type = :contact_info_confirmed_by_code
-                    status = 200
+                    sign_in!(contact_info.user)
+
+                    app = contact_info.user.applications.first
+                    # an app should always be present but there may be legacy invites that lack it
+                    if app
+
+                      # store the url of the app so they will be redirected
+                      # to it once the password reset and terms screens are finished
+                      store_url(
+                        url: oauth_authorization_url(
+                          client_id: app.uid,
+                          redirect_uri: app.redirect_uri.lines.last.chomp,
+                          response_type: 'code'
+                        )
+                      )
+                    end
+                    render :confirm_unclaimed
+
                     security_log :user_claimed, user_id: contact_info.user.id
                   end
                   security_log contact_info_event_type, contact_info_id: contact_info.try(:id),
                                                         contact_info_type: contact_info.try(:type),
                                                         contact_info_value: contact_info.try(:value)
-                  render :confirm_unclaimed, status: status
                 end)
   end
 

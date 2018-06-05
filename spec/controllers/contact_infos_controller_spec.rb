@@ -54,6 +54,7 @@ RSpec.describe ContactInfosController, type: :controller do
     it "returns error if no code given" do
       get 'confirm'
       expect(response.code).to eq('400')
+
       expect(response.body).to have_no_missing_translations
       expect(response.body).to have_content(t :"contact_infos.confirm.verification_code_not_found")
       expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
@@ -91,10 +92,6 @@ RSpec.describe ContactInfosController, type: :controller do
     it "returns error if no code given" do
       get 'confirm_unclaimed'
       expect(response.code).to eq('400')
-      expect(response.body).to have_no_missing_translations
-      expect(response.body).to(
-        have_content(t :"contact_infos.confirm_unclaimed.verification_code_not_found")
-      )
     end
 
     it "returns success if code matches" do
