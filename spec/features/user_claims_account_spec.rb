@@ -3,34 +3,63 @@ require 'rails_helper'
 feature 'User claims an unclaimed account' do
 
   background { load 'db/seeds.rb' }
+  let!(:app)   { create_default_application }
+  let(:user_email) { 'unclaimeduser@example.com' }
+  let(:user_options) {
+    {
+      email: user_email,
+      application: app,
+      username: 'therulerofallthings',
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name
+    }
+  }
 
-  xscenario 'a new user signs up and completes profile when an account is waiting' do
-    unclaimed_user = FindOrCreateUnclaimedUser.call(
-      email:'unclaimeduser@example.com', username: 'therulerofallthings',
-                                    first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
-                                    password: "apassword", password_confirmation: "apassword"
-    ).outputs[:user]
-    visit '/'
-    click_password_sign_up
-    fill_in (t :"signup.new_account.email_address"), with: 'unclaimedtestuser@example.com'
-    fill_in (t :"signup.new_account.username"), with: 'unclaimedtestuser'
-    fill_in (t :"signup.new_account.password"), with: 'password'
-    fill_in (t :"signup.new_account.confirm_password"), with: 'password'
-    fill_in (t :"signup.new_account.first_name"), with: 'Test'
-    fill_in (t :"signup.new_account.last_name"), with: 'User'
-    agree_and_click_create
+  def visit_invite_url
+    delivery = ActionMailer::Base.deliveries.last
+    match = delivery.body.encoded.match(/(confirm\/unclaimed\?code=\w+)/)
+    expect(match).to_not be_nil
+    visit match.captures.first
+  end
 
-    new_user = User.find_by_username('unclaimedtestuser')
-    expect(new_user).to_not be_nil
 
-    expect{
-      create_email_address_for new_user, "unclaimeduser@example.com", '4242'
-      visit '/confirm?code=4242'
-      expect(page).to have_content(t :"contact_infos.confirm.page_heading.success")
-    }.to change(User, :count).by(-1)
-    expect{
-        unclaimed_user.reload
-    }.to raise_error(ActiveRecord::RecordNotFound)
+  describe 'a new user recieves an invite' do
+
+    scenario 'without a pre-existing password' do
+      FindOrCreateUnclaimedUser.call(user_options).outputs[:user]
+
+      visit_invite_url
+
+      expect(page).to have_no_missing_translations
+      click_on t 'contact_infos.confirm_unclaimed.you_can_now_sign_in.add_password'
+      expect(page).to have_content(t :"identities.add.page_heading")
+      complete_add_password_screen
+
+      complete_add_password_success_screen
+      complete_terms_screens
+      expect_back_at_app
+    end
+
+    scenario 'and resets the password' do
+      arrive_from_app
+
+      FindOrCreateUnclaimedUser.call(
+        user_options.merge(
+          password: "apassword", password_confirmation: "apassword"
+        )
+      )
+
+      visit_invite_url
+
+      click_on t 'contact_infos.confirm_unclaimed.you_can_now_sign_in.reset_password'
+      expect(page).to have_content(t :"identities.reset.page_heading")
+      complete_reset_password_screen
+      complete_reset_password_success_screen
+      complete_terms_screens
+      expect_back_at_app
+    end
+
+
 
   end
 end

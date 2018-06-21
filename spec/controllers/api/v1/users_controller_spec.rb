@@ -256,6 +256,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(new_user.last_name).to eq 'Test'
       expect(new_user.full_name).to eq 'Sarah Test'
       expect(new_user.role).to eq 'instructor'
+      expect(new_user.applications).to eq [ trusted_application ]
       expect(new_user.uuid).not_to be_blank
     end
 

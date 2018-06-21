@@ -169,6 +169,8 @@ class Api::V1::UsersController < Api::V1::ApiController
     # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
     # Substitue a Hashie::Mash to read the JSON encoded body
     payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindOrCreateUserRepresenter)
+
+    payload.application = current_api_user.application
     result = FindOrCreateUnclaimedUser.call(payload)
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
