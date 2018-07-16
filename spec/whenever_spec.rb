@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe 'whenever schedule' do
-  before(:all) { load 'Rakefile' }
-
   let (:schedule) { Whenever::Test::Schedule.new(file: 'config/schedule.rb') }
 
   context 'basics' do
