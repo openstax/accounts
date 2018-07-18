@@ -202,6 +202,8 @@ Rails.application.routes.draw do
 
     resources :pre_auth_states, only: [:index]
 
+    resources :banners, only: [:index, :new, :create, :destroy]
+
     mount RailsSettingsUi::Engine, at: 'settings'
   end
 

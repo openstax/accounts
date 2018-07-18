@@ -27,7 +27,7 @@
   end
 %>
 
-<%= ox_card(classes: "login", heading: (t :".page_heading")) do %>
+<%= ox_card(classes: "login", heading: (t :".page_heading"), banner_message: @banner_message) do %>
 
   <%= lev_form_for :login, url: lookup_login_path do |f| %>
 
