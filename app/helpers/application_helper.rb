@@ -138,7 +138,7 @@ module ApplicationHelper
     error.message = yield
   end
 
-  def ox_card(classes: "", heading: "", banner_message: "", &block)
+  def ox_card(classes: "", heading: "", banners: [], &block)
     @hide_layout_errors = true
 
     content_tag :div, class: "ox-card #{classes}" do
@@ -155,10 +155,12 @@ module ApplicationHelper
         end
       end
 
-      banner = if banner_message.present?
-        content_tag :div, class: "top-level-alerts info" do
-          notice_tag(banner_message)
-        end
+      banners_divs = if banners.present?
+        banners.map do |banner|
+          content_tag :div, class: "top-level-alerts info" do
+            notice_tag(banner.message)
+          end
+        end.join("\n")
       end
 
       heading_div = if heading.present?
@@ -167,7 +169,7 @@ module ApplicationHelper
 
       body = capture(&block)
 
-      "#{danger_alerts}\n#{info_alerts}\n#{banner}\n#{heading_div}\n#{body}".html_safe
+      "#{danger_alerts}\n#{info_alerts}\n#{banners_divs}\n#{heading_div}\n#{body}".html_safe
     end
   end
 

@@ -35,7 +35,7 @@ class SessionsController < ApplicationController
 
   # Login form
   def start
-    @banner_message = Banner.where('expires_at > ?', DateTime.now).first.try(:message)
+    @banners = Banner.where('expires_at > ?', DateTime.now)
   end
 
   def lookup_login

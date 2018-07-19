@@ -1,9 +1,9 @@
 module Admin
-  class BannersCreate
+  class BannersManage
 
     lev_handler
 
-    paramify :create do
+    paramify :banner do
       attribute :message, type: String
       validates :message, presence: true
     end
@@ -15,14 +15,19 @@ module Admin
     end
 
     def handle
-      expires_at_central = string_from_date_select_params(params[:create], :expires_at)
+      expires_at_central = string_from_date_select_params(params[:banner], :expires_at)
       expires_at = central_to_utc(expires_at_central)
-      outputs[:banner] = Banner.create(message: create_params.message, expires_at: expires_at)
+
+      outputs[:banner] = Banner.where(id: params[:id]).first_or_initialize.tap { |banner|
+        banner.message = params[:banner][:message]
+        banner.expires_at = expires_at
+        banner.save
+      }
     end
 
-    # we could and perhaps should move this method into a shared location
+    # consider moving this method into a shared location
     # because it's something that Rails should've included
-    # as it's necessary for parsing dates from date_select tags
+    # as it is necessary for parsing dates from date_select tags
     def string_from_date_select_params(params, key)
       date_parts = params.select { |k,v| k.to_s =~ /\A#{key}\([1-6]{1}i\)/ }.values
       date_parts[0..2].join('-') + ' ' + date_parts[3..-1].join(':')
