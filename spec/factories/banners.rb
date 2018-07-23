@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :banner do
-    message "MyString"
-    expires_at "2018-07-17 17:30:39"
+    message "This is a banner."
+    expires_at DateTime.now + 1.day
   end
 end

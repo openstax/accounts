@@ -15,27 +15,22 @@ module Admin
     end
 
     def handle
-      expires_at_central = string_from_date_select_params(params[:banner], :expires_at)
-      expires_at = central_to_utc(expires_at_central)
+      expires_at = date_from_params_hash(params[:banner])
 
-      outputs[:banner] = Banner.where(id: params[:id]).first_or_initialize.tap { |banner|
+      outputs[:banner] = Banner.where(id: params[:id]).first_or_initialize.tap do |banner|
         banner.message = params[:banner][:message]
         banner.expires_at = expires_at
         banner.save
-      }
+      end
     end
 
-    # consider moving this method into a shared location
-    # because it's something that Rails should've included
-    # as it is necessary for parsing dates from date_select tags
-    def string_from_date_select_params(params, key)
-      date_parts = params.select { |k,v| k.to_s =~ /\A#{key}\([1-6]{1}i\)/ }.values
-      date_parts[0..2].join('-') + ' ' + date_parts[3..-1].join(':')
+    def date_from_params_hash(banner_params)
+      key = 'expires_at'
+      DateTime.new(*flatten_date_array(banner_params, key))
     end
 
-    def central_to_utc(date_string)
-      zone = "Central Time (US & Canada)"
-      ActiveSupport::TimeZone[zone].parse(date_string)
+    def flatten_date_array(hash, key)
+      %w(1 2 3 4 5).map { |e| hash["#{key}(#{e}i)"].to_i }
     end
   end
 end

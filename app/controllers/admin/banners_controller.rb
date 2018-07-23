@@ -1,9 +1,10 @@
 module Admin
   class BannersController < BaseController
     layout 'admin'
+    before_filter :delete_expired_banners, only: [:index]
 
     def index
-      @banners = Banner.where('expires_at > ?', DateTime.now)
+      @banners = Banner.active
     end
 
     def new; end
@@ -11,29 +12,25 @@ module Admin
     def create
       handle_with(BannersManage,
         success: lambda do
-          flash[:success] = 'Banner created'
-          redirect_to admin_banners_path
+          redirect_to admin_banners_path, notice: 'Banner created'
         end,
         failure: lambda do
-          flash[:alert] = 'Error in saving. Please try again.'
-          redirect_to :back
+          render :new
         end
       )
     end
 
     def edit
-      @banner = Banner.where(id: params[:id]).first
+      @banner = Banner.find_by(id: params[:id])
     end
 
     def update
       handle_with(BannersManage,
         success: lambda do
-          flash[:success] = 'Banner updated'
-          redirect_to admin_banners_path
+          redirect_to admin_banners_path, notice: 'Banner updated'
         end,
         failure: lambda do
-          flash[:alert] = 'Error in saving. Please try again.'
-          redirect_to :back
+          render :edit
         end
       )
     end
@@ -42,6 +39,13 @@ module Admin
       banner = Banner.where(id: params[:id]).first
       banner.destroy
       redirect_to :back
+    end
+
+    protected
+
+    def delete_expired_banners
+      expired_banners = Banner.where('expires_at < ?', DateTime.now)
+      expired_banners.delete_all
     end
   end
 end

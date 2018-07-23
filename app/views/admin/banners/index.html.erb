@@ -13,7 +13,7 @@
   <% @banners.each do |banner| %>
     <% zebra = cycle('odd', 'even') %>
     <tr class="<%= zebra %>">
-      <td><%= banner.expires_at.in_time_zone('Central Time (US & Canada)').strftime("%m/%d/%Y %I:%M%p") %></td>
+      <td><%= banner.expires_at.in_time_zone('UTC').strftime("%m/%d/%Y %I:%M%p") %></td>
       <td><%= banner.message %></td>
       <td><%= link_to('Edit', edit_admin_banner_path(banner.id)) %></td>
       <td><%= link_to('Delete', admin_banner_path(banner.id), method: :delete) %></td>

@@ -202,7 +202,7 @@ Rails.application.routes.draw do
 
     resources :pre_auth_states, only: [:index]
 
-    resources :banners
+    resources :banners, except: :show
 
     mount RailsSettingsUi::Engine, at: 'settings'
   end

@@ -2,13 +2,12 @@ require 'rails_helper'
 
 describe Admin::BannersManage, type: :handler do
 
-  # let!(:user) { FactoryGirl.create :user }
   let(:valid_params) {
     {
       banner: {
         message: 'This is a banner message.',
         # this is how expires_at datetime_select tag posts the params
-        "expires_at(1i)"=>"2018",
+        "expires_at(1i)"=>"2030",
         "expires_at(2i)"=>"7",
         "expires_at(3i)"=>"31",
         "expires_at(4i)"=>"11",

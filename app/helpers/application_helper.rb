@@ -155,13 +155,11 @@ module ApplicationHelper
         end
       end
 
-      banners_divs = if banners.present?
-        banners.map do |banner|
-          content_tag :div, class: "top-level-alerts info" do
-            notice_tag(banner.message)
-          end
-        end.join("\n")
-      end
+      banners_divs = banners.map do |banner|
+        content_tag :div, class: "top-level-alerts info" do
+          notice_tag(banner.message)
+        end
+      end.join("\n")
 
       heading_div = if heading.present?
         content_tag(:h1, class: "title") { heading }
