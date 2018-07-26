@@ -7,13 +7,13 @@ feature "Wildcard redirect URIs" do
     create_email_address_for(user, 'user@example.com')
   }
 
-  context "subdomain wildcard" do
+  context "subdomain wildcard on openstax.org" do
     let!(:app) {
-      FactoryGirl.create(:doorkeeper_application, :trusted, redirect_uri: "https://*.domain.com")
+      FactoryGirl.create(:doorkeeper_application, :trusted, redirect_uri: "https://*.openstax.org")
     }
 
     scenario "subdomain works" do
-      test(redirect_uri: "https://sub.domain.com", should_succeed: true)
+      test(redirect_uri: "https://sub.openstax.org", should_succeed: true)
     end
 
     scenario "random other domain doesn't work" do
@@ -21,21 +21,21 @@ feature "Wildcard redirect URIs" do
     end
 
     scenario "top level domain doesn't work" do
-      test(redirect_uri: "https://domain.com", should_succeed: false)
+      test(redirect_uri: "https://openstax.org", should_succeed: false)
     end
 
     scenario "scheme must match" do
-      test(redirect_uri: "http://sub.domain.com", should_succeed: false)
+      test(redirect_uri: "http://sub.openstax.org", should_succeed: false)
     end
   end
 
   context "a normal domain and a subdomain wildcard" do
     let!(:app) {
-      FactoryGirl.create(:doorkeeper_application, :trusted, redirect_uri: "https://domain.com https://*.domain.com")
+      FactoryGirl.create(:doorkeeper_application, :trusted, redirect_uri: "https://openstax.org https://*.openstax.org")
     }
 
     scenario "subdomain works" do
-      test(redirect_uri: "https://sub.domain.com", should_succeed: true)
+      test(redirect_uri: "https://sub.openstax.org", should_succeed: true)
     end
 
     scenario "random other domain doesn't work" do
@@ -43,21 +43,45 @@ feature "Wildcard redirect URIs" do
     end
 
     scenario "top level domain DOES work" do
-      test(redirect_uri: "https://domain.com", should_succeed: true)
+      test(redirect_uri: "https://openstax.org", should_succeed: true)
+    end
+  end
+
+  context "a non pre approved domain with wildcard" do
+    let!(:app) {
+      FactoryGirl.create(:doorkeeper_application, :trusted, redirect_uri: "https://*.other.org")
+    }
+
+    scenario "subdomain DOES NOT works" do
+      test(redirect_uri: "https://sub.other.org", should_succeed: false)
+    end
+  end
+
+  context "approved domains" do
+    let!(:app) {
+      FactoryGirl.create(:doorkeeper_application, :trusted, redirect_uri: "https://*.a15k.org https://*.cnx.org")
+    }
+
+    scenario "a15k subdomain works" do
+      test(redirect_uri: "https://sub.a15k.org", should_succeed: true)
+    end
+
+    scenario "cnx subdomain works" do
+      test(redirect_uri: "https://sub.cnx.org", should_succeed: true)
     end
   end
 
   context "a subdomain wildcard with a path" do
     let!(:app) {
-      FactoryGirl.create(:doorkeeper_application, :trusted, redirect_uri: "https://*.domain.com/howdy/")
+      FactoryGirl.create(:doorkeeper_application, :trusted, redirect_uri: "https://*.openstax.org/howdy/")
     }
 
     scenario "subdomain works with good path" do
-      test(redirect_uri: "https://sub.domain.com/howdy/", should_succeed: true)
+      test(redirect_uri: "https://sub.openstax.org/howdy/", should_succeed: true)
     end
 
     scenario "subdomain doesn't work with bad path" do
-      test(redirect_uri: "https://sub.domain.com/there/", should_succeed: false)
+      test(redirect_uri: "https://sub.openstax.org/there/", should_succeed: false)
     end
   end
 

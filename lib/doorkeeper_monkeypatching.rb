@@ -8,7 +8,12 @@ module Doorkeeper
           url = as_uri(url)
           client_url = as_uri(client_url)
           url.query = nil
-          urls_equal_with_wildcard(url, client_url) # was `url == client_url` in original
+
+          if client_url.host.match(/\.a15k\.org$|\.cnx\.org$|\.openstax\.org$/)
+            urls_equal_with_wildcard(url, client_url)
+          else
+            url == client_url # original behavior
+          end
         end
 
         def self.urls_equal_with_wildcard(url, client_url)
