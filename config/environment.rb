@@ -16,6 +16,7 @@ require 'rate_limiting'
 require 'omniauth/strategies/custom_identity'
 require 'email_address_validations'
 require 'subjects_utils'
+require 'doorkeeper_monkeypatching'
 
 SITE_NAME = 'OpenStax Accounts'
 PAGE_TITLE_SUFFIX = SITE_NAME
