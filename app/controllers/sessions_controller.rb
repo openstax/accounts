@@ -84,6 +84,13 @@ class SessionsController < ApplicationController
       success: -> do
         authentication = @handler_result.outputs[:authentication]
         status = @handler_result.outputs[:status]
+
+        # TODO move this to shared lib if this goes into production
+        session_config = Rails.application.secrets[:rdls_sessions]
+        cookie = { value: { user_uuid: current_user.uuid } }
+        cookie[:domain] = session_config['domain'] if session_config['domain'].present?
+        cookies.encrypted[session_config['name']] = cookie
+
         case status
         when :new_signin_required
           reauthenticate_user! # TODO maybe replace with static "session has expired" b/c hard to recover
