@@ -12,12 +12,12 @@
       <label class='col-sm-3 control-label'>Expires at</label>
       <div class='col-sm-9 input-group'>
         <%= f.datetime_select :expires_at,
-            default: DateTime.now.in_time_zone('Central Time (US & Canada)'),
+            default: DateTime.now.in_time_zone(Banner::TIME_ZONE),
             ampm: true,
             minute_step: 10,
             class: 'form-control'
         %>
-        Central Time (US & Canada)
+        <%= Banner::TIME_ZONE %>
       </div>
     </div>
     <div class='form-group'>
