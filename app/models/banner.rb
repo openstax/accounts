@@ -6,8 +6,7 @@ class Banner < ActiveRecord::Base
   validates :message, presence: true
   validates :expires_at, presence: true
 
-  def expires_at=(expires_at)
-    with_time_zone = ActiveSupport::TimeZone[TIME_ZONE].parse(expires_at.to_s)
-    super(with_time_zone)
+  def active_until
+    self.expires_at.strftime("%m/%d/%Y %I:%M%p")
   end
 end
