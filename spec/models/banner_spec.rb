@@ -13,11 +13,11 @@ RSpec.describe Banner, type: :model do
   end
 
   describe "timezone" do
-    it "saves UTC in the database" do
+    it "gives back time in the same timezone that was put in" do
       central_time = 'Wed, 01 Aug 2018 17:11:52 -0500'
       utc_time = 'Wed, 01 Aug 2018 22:11:52 UTC +00:00'
       banner = Banner.create(message: 'wtvr', expires_at: central_time)
-      expect(Banner.pluck(:expires_at)).to eq([central_time])
+      expect(Banner.last.expires_at).to eq(central_time)
     end
   end
 end
