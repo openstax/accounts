@@ -21,12 +21,13 @@ module Admin
         banner.message = params[:banner][:message]
         banner.expires_at = expires_at
         banner.save
+        transfer_errors_from(banner, { type: :verbatim })
       end
     end
 
     def date_from_params_hash(banner_params)
       key = 'expires_at'
-      DateTime.new(*flatten_date_array(banner_params, key))
+      ActiveSupport::TimeZone[Banner::TIME_ZONE].local(*flatten_date_array(banner_params, key))
     end
 
     def flatten_date_array(hash, key)

@@ -15,12 +15,17 @@ feature 'Create banners', js: true do
     end
 
     it 'displays same time (therefore in the same timezone) that it was assigned' do
+      time = DateTime.now.in_time_zone(Banner::TIME_ZONE) + 1.year
+
       visit '/admin/banners/new'
       fill_in 'banner[message]', with: 'whatever'
-      select "#{Time.current.year + 1}", from: 'banner[expires_at(1i)]'
-      select '05 PM', from: 'banner[expires_at(4i)]'
+      select "#{time.year}", from: 'banner[expires_at(1i)]'
+      select '05 PM', from: 'banner[expires_at(4i)]' # 5PM Central
+      select '00', from: 'banner[expires_at(5i)]'
       click_button 'Create'
-      expect(page).to have_content('05:00PM')
+
+      expect(page).to have_content('05:00PM') # 5PM Central
+      expect(Banner.last.expires_at).to eq(time.midnight + 17.hours)
     end
   end
 end

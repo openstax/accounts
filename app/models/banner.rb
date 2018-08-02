@@ -5,8 +5,14 @@ class Banner < ActiveRecord::Base
 
   validates :message, presence: true
   validates :expires_at, presence: true
+  validate :in_future
+
+  def in_future
+    return if expires_at.nil? || expires_at > Time.now
+    errors.add(:base, 'Active Until must be a future time')
+  end
 
   def active_until
-    self.expires_at.strftime("%m/%d/%Y %I:%M%p")
+    expires_at.in_time_zone(TIME_ZONE).strftime("%m/%d/%Y %I:%M%p %Z")
   end
 end
