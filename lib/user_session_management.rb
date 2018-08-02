@@ -35,6 +35,12 @@ module UserSessionManagement
 
   def sign_out!(options={})
     clear_pre_auth_state
+
+    # TODO move this to shared lib if this goes into production
+    session_config = Rails.application.secrets[:rdls_sessions]
+    opts = session_config['domain'] ? { domain: session_config['domain'] } : {}
+    cookies.delete(session_config['name'], opts)
+
     sign_in!(AnonymousUser.instance, options)
   end
 
