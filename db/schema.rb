@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180312223738) do
+ActiveRecord::Schema.define(version: 20180720141256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,13 @@ ActiveRecord::Schema.define(version: 20180312223738) do
     t.datetime "created_at", :null=>false
     t.datetime "updated_at", :null=>false
     t.string   "login_hint"
+  end
+
+  create_table "banners", force: :cascade do |t|
+    t.string   "message",    :null=>false
+    t.datetime "expires_at", :null=>false, :index=>{:name=>"index_banners_on_expires_at"}
+    t.datetime "created_at", :null=>false
+    t.datetime "updated_at", :null=>false
   end
 
   create_table "contact_infos", force: :cascade do |t|

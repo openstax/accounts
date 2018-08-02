@@ -2,6 +2,20 @@ require 'rails_helper'
 
 RSpec.describe SessionsController, type: :controller do
 
+  context '#start' do
+    it 'looks for active banners (ones whose expires_at is in the future)' do
+      expected = Banner.create!(expires_at: 1.hour.from_now, message: 'aoidfhllakdjf').message
+      get :start
+      expect(assigns(:banners).first.message).to eq expected
+    end
+
+    context 'with no banners in the database' do
+      it 'success' do
+        expect(response).to have_http_status(:success)
+      end
+    end
+  end
+
   context '#create' do
     context 'invalid_omniauth_data' do
       it 'sends the user back to the home page with a message' do

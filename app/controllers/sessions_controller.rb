@@ -35,6 +35,7 @@ class SessionsController < ApplicationController
 
   # Login form
   def start
+    @banners = Banner.active
   end
 
   def lookup_login
