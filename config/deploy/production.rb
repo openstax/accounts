@@ -7,8 +7,7 @@
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
 
-server 'ec2-18-219-186-0.us-east-2.compute.amazonaws.com', user: 'ubuntu', roles: %w{db web}
-
+server 'accounts.rdls.org', user: 'ubuntu', roles: %w{db web app}
 
 # role-based syntax
 # ==================
