@@ -37,6 +37,14 @@ feature 'User logs in', js: true do
     end
   end
 
+  scenario 'with wrong username or email' do
+    with_forgery_protection do
+      arrive_from_app
+      complete_login_username_or_email_screen 'user' # bad
+      expect(page).to_not have_content("We had some unexpected") # 500 error msg
+    end
+  end
+
   scenario 'with an unknown username' do
     with_forgery_protection do
       arrive_from_app
