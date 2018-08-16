@@ -12,14 +12,14 @@ describe ConfirmationMailer, type: :mailer do
 
       expect(mail.header['to'].to_s).to eq('"John Doe Jr." <to@example.org>')
       expect(mail.from).to eq(["noreply@openstax.org"])
-      expect(mail.body.encoded).to include("Hi #{user.casual_name}")
+      expect(mail.body.encoded).to include("You're almost there!")
     end
 
     it 'does not include PIN when directed not to' do
       mail = ConfirmationMailer.instructions email_address: email, send_pin: false
 
-      expect(mail.subject).to eq("[OpenStax] Confirm your email address")
-      expect(mail.body.encoded).not_to include('Your PIN')
+      expect(mail.subject).to eq("Please confirm you OpenStax account")
+      expect(mail.body.encoded).not_to include('six-digit PIN')
     end
 
     it "has PIN info when PIN attempts remain" do
@@ -27,9 +27,8 @@ describe ConfirmationMailer, type: :mailer do
 
       mail = ConfirmationMailer.instructions email_address: email, send_pin: true
 
-      expect(mail.subject).to eq("[OpenStax] Use PIN 123456 to confirm your email address")
-      expect(mail.body.encoded).to include('Enter your 6-digit')
-      expect(mail.body.encoded).to include('Your PIN: <b>123456</b>')
+      expect(mail.subject).to eq("Please confirm you OpenStax account")
+      expect(mail.body.encoded).to include('Enter your unique six-digit PIN in your browser to confirm: 123456')
     end
 
     it "has just link when no PIN attempts remain" do
@@ -37,9 +36,9 @@ describe ConfirmationMailer, type: :mailer do
 
       mail = ConfirmationMailer.instructions email_address: email, send_pin: true
 
-      expect(mail.subject).to eq("[OpenStax] Confirm your email address")
-      expect(mail.body.encoded).to include('Click on the link below')
-      expect(mail.body.encoded).not_to include('Your PIN')
+      expect(mail.subject).to eq("Please confirm you OpenStax account")
+      expect(mail.body.encoded).to include('Or, click the link below.')
+      expect(mail.body.encoded).not_to include('six-digit PIN')
     end
 
   end

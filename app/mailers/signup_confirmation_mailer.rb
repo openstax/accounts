@@ -6,7 +6,7 @@ class SignupConfirmationMailer < ApplicationMailer
 
     res = mail to: "#{pre_auth_state.contact_info_value}",
          subject: @show_pin ?
-                    "Use PIN #{pre_auth_state.confirmation_pin} to confirm your email address" :
+                    "Please confirm your OpenStax account" :
                     "Confirm your email address"
 
     pre_auth_state.update_column(:confirmation_sent_at, Time.now)

@@ -7,7 +7,7 @@ class ApplicationMailer < ActionMailer::Base
   default from: 'noreply@openstax.org'
 
   def mail(headers={}, &block)
-    headers[:subject] = "[OpenStax] #{headers[:subject]}"
+    headers[:subject] = "#{headers[:subject]}"
 
     super(headers, &block)
   end
