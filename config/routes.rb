@@ -167,7 +167,7 @@ Rails.application.routes.draw do
     end
   end
 
-  use_doorkeeper{ controllers applications: 'oauth/applications' }
+  use_doorkeeper { controllers applications: 'oauth/applications' }
 
   mount FinePrint::Engine => '/admin/fine_print'
 

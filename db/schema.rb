@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180720141256) do
+ActiveRecord::Schema.define(version: 20180927002206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -205,6 +205,7 @@ ActiveRecord::Schema.define(version: 20180720141256) do
     t.boolean  "skip_terms",              :default=>false, :null=>false
     t.string   "scopes",                  :default=>"", :null=>false
     t.string   "lead_application_source", :default=>"", :null=>false
+    t.boolean  "confidential",            :default=>true, :null=>false
   end
 
   create_table "openstax_salesforce_users", force: :cascade do |t|
@@ -289,4 +290,6 @@ ActiveRecord::Schema.define(version: 20180720141256) do
   end
   add_index "users", ["username"], :name=>"index_users_on_username_case_insensitive", :case_sensitive=>false
 
+  add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
+  add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
 end
