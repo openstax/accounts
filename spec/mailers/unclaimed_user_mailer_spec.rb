@@ -9,7 +9,7 @@ describe UnclaimedUserMailer, type: :mailer do
 
     it "sets headers properly" do
       expect(mail.to).to eq([contact_info.value])
-      expect(mail.subject).to eq("[OpenStax] You have been invited to join OpenStax")
+      expect(mail.subject).to eq("You have been invited to join OpenStax")
     end
 
     it "sets the link with the confirmation code" do

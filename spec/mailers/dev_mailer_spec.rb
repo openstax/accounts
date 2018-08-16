@@ -10,7 +10,7 @@ describe DevMailer, type: :mailer do
 
       expect(mail.header['to'].to_s).to eq('bob@example.com')
       expect(mail.from).to eq(['sender@localhost'])
-      expect(mail.subject).to eq "[OpenStax] [Accounts] (test) Howdy"
+      expect(mail.subject).to eq "[Accounts] (test) Howdy"
       expect(mail.body.encoded).to eq(
         "[\r\n  [0] {\r\n    :a => 2\r\n  },\r\n  [1] {\r\n    :b => \"yo yo yo\"\r\n  }\r\n]\r\n"
       )

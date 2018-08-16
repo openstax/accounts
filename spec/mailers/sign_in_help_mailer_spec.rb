@@ -6,7 +6,7 @@ describe SignInHelpMailer, type: :mailer do
     let(:mail) { SignInHelpMailer.multiple_accounts email_address: "bob@bob.com", usernames: ["bob", "bobby"] }
 
     it 'renders the headers' do
-      expect(mail.subject).to eq('[OpenStax] Your OpenStax usernames')
+      expect(mail.subject).to eq('Your OpenStax usernames')
       expect(mail.header['to'].to_s).to eq("bob@bob.com")
       expect(mail.from).to eq(['noreply@openstax.org'])
     end
@@ -22,7 +22,7 @@ describe SignInHelpMailer, type: :mailer do
     let(:mail) { SignInHelpMailer.reset_password user: user, email_address: "bob@bob.com" }
 
     it 'renders the headers' do
-      expect(mail.subject).to eq('[OpenStax] Reset your OpenStax password')
+      expect(mail.subject).to eq('Reset your OpenStax password')
       expect(mail.header['to'].value).to eq("\"Big Bob\" <bob@bob.com>")
       expect(mail.from).to eq(['noreply@openstax.org'])
     end
@@ -38,7 +38,7 @@ describe SignInHelpMailer, type: :mailer do
     let(:mail) { SignInHelpMailer.add_password user: user, email_address: "bob@bob.com" }
 
     it 'renders the headers' do
-      expect(mail.subject).to eq('[OpenStax] Add a password to your OpenStax account')
+      expect(mail.subject).to eq('Add a password to your OpenStax account')
       expect(mail.header['to'].value).to eq("\"Big Bob\" <bob@bob.com>")
       expect(mail.from).to eq(['noreply@openstax.org'])
     end

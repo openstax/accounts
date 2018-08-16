@@ -12,7 +12,7 @@ describe ConfirmationMailer, type: :mailer do
 
       expect(mail.header['to'].to_s).to eq('"John Doe Jr." <to@example.org>')
       expect(mail.from).to eq(["noreply@openstax.org"])
-      expect(mail.body.encoded).to include("You're almost there!")
+      expect(mail.body.encoded).to include("Hi #{user.casual_name}")
     end
 
     it 'does not include PIN when directed not to' do
