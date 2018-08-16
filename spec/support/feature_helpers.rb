@@ -424,10 +424,14 @@ def complete_instructor_access_pending_screen
   click_button (t :"signup.instructor_access_pending.ok")
 end
 
+def signin_as(username_or_email, password = 'password')
+  complete_login_username_or_email_screen username_or_email
+  complete_login_password_screen password
+end
+
 def log_in(username_or_email, password = 'password')
-  visit '/'
-  complete_login_username_or_email_screen(username_or_email)
-  complete_login_password_screen(password)
+  visit login_path
+  signin_as username_or_email, password
 end
 
 def log_out
