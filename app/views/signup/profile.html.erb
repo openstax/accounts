@@ -58,9 +58,12 @@
                               }
                             }
                           ]
-       %>
-
-     <button class="primary" data-bind="enable:howUsing, click:nextPage">Next</button>
+      %>
+      <% if role == :instructor %>
+        <button class="primary" data-bind="enable:howUsing, click:nextPage">Next</button>
+      <% else %>
+        <button class="primary" data-bind="click:nextPage">Next</button>
+      <% end %>
     </div>
 
     <div class="page-2" data-bind="visible: formPage() === 2">
@@ -115,7 +118,7 @@
                                    'data-bind' => "attr: {for: `how_using_book_${abbreviation}_adoption_won`}"
                                  },
                                  'radio' => {
-                                   'data-bind' => "attr: {name: `profile[how_using_book_${abbreviation}]`,"\
+                                   'data-bind' => "attr: {name: `profile[how_using_book[${abbreviation}]]`,"\
                                     " id: `how_using_book_${abbreviation}_adoption_won`,"\
                                     " checked: $root.howUsingBook()[abbreviation] === 'Confirmed Adoption Won'},",
                                     required: true
@@ -128,7 +131,7 @@
                                    'data-bind' => "attr: {for: `how_using_book_${abbreviation}_will_recommend`}"
                                  },
                                  'radio' => {
-                                   'data-bind' => "attr: {name: `profile[how_using_book_${abbreviation}]`,"\
+                                   'data-bind' => "attr: {name: `profile[how_using_book[${abbreviation}]]`,"\
                                     " id: `how_using_book_${abbreviation}_will_recommend`,"\
                                     " checked: $root.howUsingBook()[abbreviation] === 'Confirmed Will Recommend'}"
                                  }
@@ -138,16 +141,16 @@
            <h2 class="instructor-verification-help">
                <%= t('.num_students') %>
            </h2>
-           <%= fh.text_field name: :num_students_book,
+           <%= fh.text_field name: nil,
             label: 'Include classes taught by TAs that you oversee.',
             type: 'number',
             only: :instructor,
             options: {
                 "data-bind": "attr: {"\
-                "   name: `profile[num_students_book_${abbreviation}]`,"\
-                "   id: `profile[num_students_book_${abbreviation}]`"\
+                "   name: `profile[num_students_book[${abbreviation}]]`,"\
+                "   id: `num_students_book[${abbreviation}]`"\
                 "},"\
-                " value: $root.numStudentsBook()[abbreviation]",
+                " value: `${$root.numStudentsBook()[abbreviation]}`",
                 "required": true
             }
            %>
@@ -203,10 +206,9 @@
       <div class="button-row">
         <button class="secondary" data-bind="click:prevPage">Back</button>
         <%= f.submit (t :".create_account"),
-                    id: "create_account_submit",
                     data: { disable_with: (t :".submitting") },
                     class: 'primary',
-                    "data-bind": "enable: agree, click: beforeSubmit"
+                    "data-bind": "enable: agree"
         %>
       </div>
     </div>

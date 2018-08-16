@@ -30,12 +30,14 @@ const vm = {
     const result = [];
 
     vm.subjects.forEach((s) => {
-      if (vm.bySubject()[s]) {
-        vm.bySubject()[s].forEach((b) => {
-          if (b.checked()) {
+      const books = vm.bySubject()[s];
+
+      if (books) {
+        books
+          .filter(b => b.checked())
+          .forEach(b => {
             result.push(b);
-          }
-        });
+          });
       }
     });
 
@@ -55,17 +57,6 @@ const vm = {
   },
   prevPage() {
     vm.formPage(vm.formPage() - 1);
-  },
-  beforeSubmit(data, event) {
-    const currentPage = event.target.parentNode;
-    const invalid = currentPage.querySelector(':invalid');
-
-    console.debug("Calling beforeSubmit", data);
-    if (invalid) {
-        console.debug("INVALID:", invalid);
-        return false;
-    }
-    return true;
   }
 };
 ko.applyBindings(vm);
