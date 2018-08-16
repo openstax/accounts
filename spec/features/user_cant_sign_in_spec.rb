@@ -213,7 +213,7 @@ feature "User can't sign in", js: true do
 
     open_email('recipients@localhost')
     expect(current_email.subject).to(
-      eq "[OpenStax] [Accounts] (test) google_oauth2 social login is failing!"
+      eq "[Accounts] (test) google_oauth2 social login is failing!"
     )
   end
 
