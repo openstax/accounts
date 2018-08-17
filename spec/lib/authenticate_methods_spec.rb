@@ -57,10 +57,11 @@ RSpec.describe AuthenticateMethods, type: :lib do
     end
 
     context 'normal user' do
-      it 'authenticate_admin! redirects to the login page' do
-        expect(controller).to receive(:store_url)
-        expect(controller).to receive(:redirect_to)
-        expect(main_app).to receive(:login_path)
+      it 'authenticate_admin! returns 403 Forbidden' do
+        expect(controller).to receive(:head).with(:forbidden)
+        expect(controller).not_to receive(:store_url)
+        expect(controller).not_to receive(:redirect_to)
+        expect(main_app).not_to receive(:login_path)
         controller.authenticate_admin!
       end
     end

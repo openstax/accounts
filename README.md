@@ -70,11 +70,6 @@ which will start Accounts up on port 2999, i.e. http://localhost:2999.
 
 ## Running Specs (Automated Tests)
 
-Specs require phantomjs. On a mac:
-```sh
-$ brew install phantomjs
-```
-
 To run specs,
 
 ```sh

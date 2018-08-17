@@ -25,17 +25,17 @@ feature 'Admin PreAuthStates page' do
       visit '/admin/pre_auth_states'
 
       expect(page).to have_content("d@d.com")
-      expect(page).not_to have_content("c@c.com")
+      expect(page).to have_no_content("c@c.com")
 
       click_link "1 week"
 
       expect(page).to have_content(/d@d\.com.*c@c\.com/)
-      expect(page).not_to have_content("b@b.com")
+      expect(page).to have_no_content("b@b.com")
 
       click_link "2 weeks"
 
       expect(page).to have_content(/d@d\.com.*c@c\.com.*b@b\.com/)
-      expect(page).not_to have_content("a@a.com")
+      expect(page).to have_no_content("a@a.com")
 
       click_link "All"
 

@@ -53,13 +53,6 @@ def create_nonlocal_user(username, provider='facebook')
   user
 end
 
-def signin_as username, password='password'
-  fill_in 'login_username_or_email', with: username
-  click_button (t :"sessions.start.next")
-  fill_in 'login_password', with: password
-  click_button (t :"sessions.authenticate_options.login")
-end
-
 def create_new_application(trusted = false)
   click_link 'New Application'
   fill_in 'Name', with: 'example'
@@ -251,7 +244,7 @@ def expect_profile_page
 end
 
 def agree_and_click_create
-  find(:css, '#signup_i_agree').set(true)
+  check 'signup_i_agree'
   click_button (t :"signup.new_account.create_account")
 end
 
@@ -283,7 +276,6 @@ def complete_login_username_or_email_screen(username_or_email)
   expect(page).to have_no_missing_translations
   click_button (t :"sessions.start.next")
   expect(page).to have_no_missing_translations
-
 end
 
 def complete_login_password_screen(password)
@@ -361,16 +353,15 @@ def complete_signup_profile_screen(role:, first_name: "", last_name: "", suffix:
   fill_in (t :"signup.profile.school"), with: school
   fill_in (t :"signup.profile.url"), with: url if role != :student
   fill_in (t :"signup.profile.num_students"), with: num_students if role == :instructor
-  select using_openstax, from: "profile_using_openstax" if !using_openstax.blank? if role == :instructor
+  select using_openstax, from: "profile_using_openstax" \
+    if role == :instructor && !using_openstax.blank?
   if role != :student
-    subjects.each do |subject|
-      find_field(subject).set("1")
-    end
+    subjects.each { |subject| check subject }
   end
   expect(page).to have_content(t :"signup.profile.page_heading")
   expect(page).to have_no_missing_translations
 
-  find(:css, '#profile_i_agree').trigger('click') if agree
+  check 'profile_i_agree' if agree
 
   click_button (t :"signup.profile.create_account")
   expect(page).to have_no_missing_translations
@@ -418,12 +409,12 @@ end
 
 def complete_terms_screens(without_privacy_policy: false)
 
-  find(:css, '#agreement_i_agree').set(true)
+  check 'agreement_i_agree'
   expect(page).to have_content('Terms of Use')
   click_button (t :"terms.pose.agree")
   unless without_privacy_policy
     expect(page).to have_content('Privacy Policy')
-    find(:css, '#agreement_i_agree').set(true)
+    check 'agreement_i_agree'
     click_button (t :"terms.pose.agree")
   end
 end
@@ -433,10 +424,14 @@ def complete_instructor_access_pending_screen
   click_button (t :"signup.instructor_access_pending.ok")
 end
 
-def log_in(username_or_email, password)
-  visit '/'
-  complete_login_username_or_email_screen(username_or_email)
-  complete_login_password_screen(password)
+def signin_as(username_or_email, password = 'password')
+  complete_login_username_or_email_screen username_or_email
+  complete_login_password_screen password
+end
+
+def log_in(username_or_email, password = 'password')
+  visit login_path
+  signin_as username_or_email, password
 end
 
 def log_out
@@ -481,9 +476,7 @@ def complete_faculty_access_apply_screen(role: nil, first_name: nil, last_name: 
   fill_in (t :"faculty_access.apply.num_students"), with: num_students if role == :instructor
   select using_openstax, from: "apply_using_openstax" if !using_openstax.blank? if role == :instructor
 
-  subjects.each do |subject|
-    find_field(subject).set("1")
-  end
+  subjects.each { |subject| check subject }
   page.check('apply[newsletter]') if newsletter
   click_button (t :"faculty_access.apply.submit")
   expect(page).to have_no_missing_translations

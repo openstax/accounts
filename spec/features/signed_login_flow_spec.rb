@@ -71,7 +71,7 @@ feature 'Sign in using signed parameters', js: true do
       click_sign_up
       expect_sign_up_page
 
-      expect(page).not_to have_field('signup_role') # no changing the role
+      expect(page).to have_no_field('signup_role') # no changing the role
       expect(page).to have_field('signup_email', with: payload[:email])
       click_button(t :"signup.start.next")
       wait_for_animations
@@ -112,7 +112,6 @@ feature 'Sign in using signed parameters', js: true do
 
       Timecop.travel(6.minutes.from_now) do
         complete_signup_profile_screen_with_whatever
-        expect(page.status_code).to eq 200
         expect_back_at_app # note, no "verification pending" step
       end
     end
@@ -148,7 +147,7 @@ feature 'Sign in using signed parameters', js: true do
     it 'signs up by default and links account' do
       arrive_from_app(params: signed_params, do_expect: false)
       expect_sign_up_page # students default to sign-up vs the standard sign-in
-      expect(page).not_to have_field('signup_role') # no changing the role
+      expect(page).to have_no_field('signup_role') # no changing the role
       expect(page).to have_field('signup_email', with: payload[:email])
       click_button(t :"signup.start.next")
       expect_signup_verify_screen
@@ -195,7 +194,7 @@ feature 'Sign in using signed parameters', js: true do
     it 'handles email missing from signed params' do
       payload[:email] = ""
       arrive_from_app(params: signed_params, do_expect: false)
-      expect(page).not_to have_field('signup_role') # no changing the role
+      expect(page).to have_no_field('signup_role') # no changing the role
       expect(page).to have_field('signup_email', with: '')
       fill_in (t :"signup.start.email_placeholder"), with: "bob@example.com"
       click_button(t :"signup.start.next")

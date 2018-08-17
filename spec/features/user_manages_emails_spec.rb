@@ -62,7 +62,7 @@ feature 'User manages emails', js: true do
         find('input').set('')
         find('.glyphicon-ok').click
       }
-      expect(page).to_not have_css('.email-entry.new input')
+      expect(page).to have_no_css('.email-entry.new input')
     end
 
     scenario 'with invalid value' do
@@ -75,7 +75,7 @@ feature 'User manages emails', js: true do
     end
 
     scenario 'toggles searchable field' do
-      expect(page).to_not have_content(t('users.edit.searchable'))
+      expect(page).to have_no_content(t('users.edit.searchable'))
       find(".email-entry[data-id=\"#{user.id}\"] .email").click
       expect(page).to have_content(t('users.edit.searchable'))
       screenshot!
@@ -107,15 +107,15 @@ feature 'User manages emails', js: true do
         within(:css, '.popover-content') {
           find('.confirm-dialog-btn-confirm').click
         }
-        expect(page).to_not have_content(email)
+        expect(page).to have_no_content(email)
         expect(page).to have_selector('.email')
-        expect(page).not_to have_selector('.email .delete')
+        expect(page).to have_no_selector('.email .delete')
       end
     end
 
     context 'when there is only one email' do
       scenario 'that email cannot be deleted' do
-        expect(page).not_to have_selector('.email .delete')
+        expect(page).to have_no_selector('.email .delete')
       end
     end
   end

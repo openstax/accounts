@@ -14,7 +14,7 @@ describe 'Apply for faculty access', type: :feature, js: true do
     screenshot!
 
     expect_sign_in_page
-    expect(page).not_to have_content("Sign up")
+    expect(page).to have_no_content("Sign up")
 
     complete_login_username_or_email_screen('user')
     complete_login_password_screen('password')
@@ -153,7 +153,7 @@ describe 'Apply for faculty access', type: :feature, js: true do
       [:first_name, :last_name, :email, :phone_number, :school, :url].each do |var|
         expect(page).to have_content(error_msg FacultyAccessApplyOther, var, :blank)
       end
-      expect(page).not_to have_content(error_msg FacultyAccessApplyOther, :num_students, :not_a_number)
+      expect(page).to have_no_content(error_msg FacultyAccessApplyOther, :num_students, :not_a_number)
     end
 
     scenario "email taken" do

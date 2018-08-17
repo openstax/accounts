@@ -243,7 +243,7 @@ feature 'User logs in', js: true do
 
   scenario 'anonymous user GETs `/auth/identity/callback` directly' do
     visit '/auth/identity/callback'
-    expect(page).not_to have_content(500)
+    expect(page).to have_no_content(500)
     expect(page).to have_content(I18n.t :"controllers.sessions.no_account_for_username_or_email")
   end
 
@@ -252,8 +252,8 @@ feature 'User logs in', js: true do
     visit '/'
     expect_sign_in_page
     expect(page).to have_content(t :"sessions.start.having_trouble")
-    expect(page).not_to have_content(t :"sessions.start.help")
-    expect(page).not_to have_link(t :"sessions.start.knowledge_base")
+    expect(page).to have_no_content(t :"sessions.start.help")
+    expect(page).to have_no_link(t :"sessions.start.knowledge_base")
 
     click_link t :"sessions.start.having_trouble"
     expect(page).to have_content(t :"sessions.start.help")
