@@ -365,6 +365,7 @@ pl:
       next: Przejdź dalej
       iama: Jestem
       instructor: Nauczycielem
+      adjunct: Adiunkt wydziału
       student: Uczniem
       administrator: Administratorem
       librarian: Archiwistą
@@ -498,6 +499,7 @@ pl:
       email: Twój szkolny adres e-mail
       iama: Jestem
       instructor: Nauczycielem
+      adjunct: Adiunkt wydziału
       administrator: Administratorem
       librarian: Archiwistą
       designer: Twórcą zasobów dydaktycznych
