@@ -76,7 +76,7 @@ $ brew install phantomjs
 To run specs,
 
 ```sh
-$ rspec
+$ rake
 ```
 
 When running feature specs, the default behavior is for exceptions to be rescued and nice error pages to be shown.  This can make debugging difficult if you're not expecting an error.  To not rescue exceptions, do:
