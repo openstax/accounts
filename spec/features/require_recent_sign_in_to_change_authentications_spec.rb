@@ -10,7 +10,7 @@ feature 'Require recent log in to change authentications', js: true do
     expect_profile_page
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      expect(page).not_to have_content('Facebook')
+      expect(page).to have_no_content('Facebook')
       screenshot!
       click_link (t :"users.edit.enable_other_sign_in_options")
       wait_for_animations
@@ -61,7 +61,7 @@ feature 'Require recent log in to change authentications', js: true do
         find('.authentication[data-provider="identity"] .edit').click
 
         # Don't have to reauthenticate since just did
-        expect(page).not_to have_content(t :"sessions.reauthenticate.page_heading")
+        expect(page).to have_no_content(t :"sessions.reauthenticate.page_heading")
 
         complete_reset_password_screen
         complete_reset_password_success_screen
@@ -119,7 +119,7 @@ feature 'Require recent log in to change authentications', js: true do
         find('.authentication[data-provider="twitter"] .delete').click
         screenshot!
         click_button 'OK'
-        expect(page).not_to have_content('Twitter')
+        expect(page).to have_no_content('Twitter')
       end
     end
   end

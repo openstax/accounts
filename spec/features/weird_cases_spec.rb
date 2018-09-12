@@ -25,7 +25,7 @@ feature 'Weird cases', js: true, vcr: VCR_OPTS do
     complete_login_username_or_email_screen 'other_user'
     complete_login_password_screen 'password'
 
-    expect(page).not_to have_content(500)
+    expect(page).to have_no_content(500)
     expect_back_at_app
   end
 

@@ -8,6 +8,7 @@ end
 # Rails framework
 gem 'rails', '4.2.7.1'
 gem 'rails-i18n', '~> 4'
+gem 'sprockets', '~> 2.12.5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git'
 
 # Bootstrap front-end framework
@@ -211,9 +212,6 @@ group :test do
 
   gem 'db-query-matchers'
 
-  # Headless Capybara driver
-  gem 'poltergeist'
-
   # Testing emails
   gem 'capybara-email'
 
@@ -221,6 +219,10 @@ group :test do
   gem 'fakeredis', require: 'fakeredis/rspec'
 
   gem 'launchy'
+
+  gem 'chromedriver-helper'
+
+  gem 'capybara-selenium'
 
   gem 'capybara-screenshot', require: false
 

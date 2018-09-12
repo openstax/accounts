@@ -380,6 +380,7 @@ en:
       next: Next
       iama: I am a
       instructor: Instructor
+      adjunct: Adjunct Faculty
       student: Student
       administrator: Administrator
       librarian: Librarian
@@ -510,6 +511,7 @@ en:
       email: Your school email address
       iama: I am a
       instructor: Instructor
+      adjunct: Adjunct Faculty
       administrator: Administrator
       librarian: Librarian
       designer: Instructional Designer

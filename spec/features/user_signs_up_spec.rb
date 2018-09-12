@@ -114,7 +114,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     arrive_from_app(do_expect: false, params: {sp: OpenStax::Api::Params.sign(secret: @app.secret, params: params)})
 
     expect_sign_up_page # students default to sign-up vs the standard sign-in
-    expect(page).not_to have_field('signup_role') # no changing the role
+    expect(page).to have_no_field('signup_role') # no changing the role
 
     fill_in (t :"signup.start.email_placeholder"), with: 'my-personal-email@test.com'
     click_button(t :"signup.start.next")
@@ -184,11 +184,11 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     scenario 'hiding/displaying edu email warning' do
       create_email_address_for(create_user('user'), "bob@bob.edu")
       visit signup_path
-      expect(page).not_to have_content t('signup.start.teacher_school_email')
+      expect(page).to have_no_content t('signup.start.teacher_school_email')
       select 'Instructor', from: "signup_role"
       expect(page).to have_content t('signup.start.teacher_school_email')
       select 'Student', from: "signup_role"
-      expect(page).not_to have_content t('signup.start.teacher_school_email')
+      expect(page).to have_no_content t('signup.start.teacher_school_email')
     end
 
     scenario 'profile selection is set to student role and hidden when coming from "student_signup"' do
@@ -237,7 +237,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       fill_in (t :"signup.start.email_placeholder"), with: "non@school.com"
       click_button(t :"signup.start.next")
       expect(page).to have_content 'To access faculty-only materials'
-      expect(page).not_to have_content 'Email already in use'
+      expect(page).to have_no_content 'Email already in use'
     end
 
     scenario 'failure because email blank' do
@@ -288,7 +288,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       complete_instructor_access_pending_screen
 
       expect(page).to have_content("bob2@bob.edu")
-      expect(page).not_to have_content("bob@bob.edu")
+      expect(page).to have_no_content("bob@bob.edu")
     end
 
     scenario 'user leaves verify screen to edit email and also changes role' do
@@ -296,8 +296,8 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       complete_signup_email_screen("Student","bob2@bob.com")
       complete_signup_verify_screen(pass: true)
       complete_signup_password_screen('password')
-      expect(page).to_not have_content(t('signup.profile.titles_interested'))
-      expect(page).to_not have_content(t('signup.profile.num_students'))
+      expect(page).to have_no_content(t('signup.profile.titles_interested'))
+      expect(page).to have_no_content(t('signup.profile.num_students'))
       complete_signup_profile_screen(
         role: :student,
         first_name: "Billy",
@@ -779,8 +779,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       # confirmation code was cleared and we got a 500
       visit confirm_link_path
 
-      expect(page.status_code).not_to eq 500
-      expect(page.body).not_to have_content("Sorry")
+      expect(page).to have_no_content("Sorry")
 
       complete_signup_password_screen('password')
       complete_signup_profile_screen_with_whatever(role: :instructor)

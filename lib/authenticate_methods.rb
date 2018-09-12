@@ -24,6 +24,7 @@ module AuthenticateMethods
 
   def authenticate_admin!
     return if current_user.is_administrator?
+    return head(:forbidden) if signed_in?
 
     store_url
     redirect_to main_app.login_path(params.slice(:client_id))

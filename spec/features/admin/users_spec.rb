@@ -20,7 +20,7 @@ feature 'Admin user pages', js: true do
           visit '/admin/users'
           click_button 'Search'
 
-          expect(page).not_to have_content("We had some unexpected")
+          expect(page).to have_no_content("We had some unexpected")
 
           page.all(:css, '.expand').each(&:click)
 
@@ -30,7 +30,7 @@ feature 'Admin user pages', js: true do
 
         it "can bring up the edit page without exploding" do
           visit "/admin/users/#{@sf_user.id}/edit"
-          expect(page).not_to have_content("We had some unexpected")
+          expect(page).to have_no_content("We had some unexpected")
         end
       end
 
@@ -41,7 +41,7 @@ feature 'Admin user pages', js: true do
           click_link 'Users'
           click_button 'Search'
 
-          expect(page).not_to have_content("We had some unexpected")
+          expect(page).to have_no_content("We had some unexpected")
 
           page.all(:css, '.expand').each(&:click)
 

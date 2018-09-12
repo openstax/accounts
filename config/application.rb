@@ -55,5 +55,15 @@ module Accounts
     def is_real_production?
       secrets.environment_name == "prodtutor"
     end
+
+    config.after_initialize do
+      Doorkeeper::TokensController.class_eval do
+        alias_method :original_create, :create # before_filter not available
+        def create
+          ScoutHelper.ignore!(0.99)
+          original_create
+        end
+      end
+    end
   end
 end

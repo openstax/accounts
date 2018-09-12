@@ -30,6 +30,6 @@ feature 'Add application to accounts', js: true do
     complete_login_password_screen('password')
 
     visit '/oauth/applications/new'
-    expect(page).to have_http_status :forbidden
+    expect(page).to have_content 'You are not allowed to do that. (403)'
   end
 end
