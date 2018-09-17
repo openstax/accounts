@@ -86,10 +86,10 @@ class SessionsController < ApplicationController
         status = @handler_result.outputs[:status]
 
         # TODO move this to shared lib if this goes into production
-        session_config = Rails.application.secrets[:rdls_sessions]
-        cookie = { value: { user_uuid: current_user.uuid } }
-        cookie[:domain] = session_config['domain'] if session_config['domain'].present?
-        cookies.encrypted[session_config['name']] = cookie
+        cookie = Rails.application.secrets[:rdls_sessions].symbolize_keys
+        cookie_name = cookie.delete(:name)
+        cookie[:value] = { user_uuid: current_user.uuid, user_name: current_user.name }
+        cookies.encrypted[cookie_name] = cookie
 
         case status
         when :new_signin_required
