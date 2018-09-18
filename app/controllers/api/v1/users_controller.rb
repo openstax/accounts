@@ -1,5 +1,7 @@
 class Api::V1::UsersController < Api::V1::ApiController
 
+  skip_before_filter :authenticate_user!, only: :show
+
   resource_description do
     api_versions "v1"
     short_description 'Represents a user of OpenStax'
@@ -109,11 +111,24 @@ class Api::V1::UsersController < Api::V1::ApiController
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}
   EOS
   def show
-    ScoutHelper.ignore!(0.999)
 
-    OSU::AccessPolicy.require_action_allowed!(:read, current_api_user,
-                                              current_human_user)
-    respond_with current_human_user,
+    ScoutHelper.ignore!(0.999)
+    # see if our shared session cookie is present
+    # in the future this may be the same as the accounts session cookie
+    user = current_human_user
+    if user.is_anonymous?
+      cookie_config = Rails.application.secrets[:rdls_sessions]
+      cookie = cookies.encrypted[cookie_config['name']]
+      unless cookie.present?
+        head :forbidden and return
+      end
+      Rails.logger.warn cookie.inspect
+      user = ::User.where(uuid: cookie['user_uuid']).first!
+    end
+
+#    OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, user)
+
+    respond_with user,
                  represent_with: Api::V1::UserRepresenter,
                  user_options: { include_private_data: true },
                  location: nil
