@@ -20,6 +20,10 @@ module UserSessionManagement
     @current_sso_user ||= AnonymousUser.instance
   end
 
+  def allow_sso_user!
+    @current_user = current_sso_user if current_user.is_anonymous?
+  end
+
   def sign_in!(user, options={})
     options[:security_log_data] ||= {}
 

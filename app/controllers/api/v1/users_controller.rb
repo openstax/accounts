@@ -1,6 +1,6 @@
 class Api::V1::UsersController < Api::V1::ApiController
 
-  skip_before_filter :authenticate_user!, only: :show
+  prepend_before_filter :allow_sso_user!, only: :show
 
   resource_description do
     api_versions "v1"
@@ -112,15 +112,8 @@ class Api::V1::UsersController < Api::V1::ApiController
   EOS
   def show
     ScoutHelper.ignore!(0.999)
-    user = current_human_user
-    if user.is_anonymous?
-      # No API token or session cookie, so check for SSO
-      user = current_sso_user
-      OSU::AccessPolicy.require_action_allowed!(:read, user, user)
-    else
-      # API token or session cookie present, so we have an ApiUser object
-      OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, user)
-    end
+
+    OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, current_human_user)
 
     respond_with user,
                  represent_with: Api::V1::UserRepresenter,
