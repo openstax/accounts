@@ -33,7 +33,7 @@ module Accounts
     # schema_plus_core and transaction_isolation monekeypatches conflict with each other,
     # but loading schema_plus_pg_indexes late seems to fix this
     # So we use require: false for it in the Gemfile
-    config.after_initialize{ require 'schema_plus_pg_indexes' }
+    config.after_initialize { require 'schema_plus_pg_indexes' }
 
     # Use the ExceptionsController to rescue routing/bad request exceptions
     # https://coderwall.com/p/w3ghqq/rails-3-2-error-handling-with-exceptions_app
@@ -54,6 +54,14 @@ module Accounts
 
     def is_real_production?
       secrets.environment_name == "prodtutor"
+    end
+
+    # Provides a separate key generator to be used by SSO cookies, with a different secret_key_base
+    # Based on https://github.com/rails/rails/blob/master/railties/lib/rails/application.rb
+    def sso_key_generator
+      @caching_sso_key_generator ||= ActiveSupport::CachingKeyGenerator.new(
+        ActiveSupport::KeyGenerator.new(secrets.sso['secret_key_base'], iterations: 1000)
+      )
     end
 
     config.after_initialize do

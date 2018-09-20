@@ -12,7 +12,7 @@ ActionController::Base.class_exec do
   include RequireRecentSignin
 
   include ContractsNotRequired
-  helper_method :contracts_not_required
+  helper_method :contracts_not_required, :sso_cookies
 
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
@@ -107,6 +107,10 @@ ActionController::Base.class_exec do
       Rails.logger.warn { "Invalid signature or timestamp for signed parameters" }
       head(:bad_request)
     end
+  end
+
+  def sso_cookies
+    request.sso_cookie_jar
   end
 
 end

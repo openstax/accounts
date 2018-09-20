@@ -199,11 +199,6 @@ group :development do
   gem 'web-console', '~> 2.0'
 
   gem  'i18n-tasks', '~> 0.9.6'
-  # Speedup and run specs when files change
-  gem "capistrano", "~> 3.10", require: false
-  gem "capistrano-rails", "~> 1.3", require: false
-  gem 'capistrano-passenger'
-  gem 'capistrano-rbenv'
 end
 
 group :test do

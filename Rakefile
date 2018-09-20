@@ -6,7 +6,7 @@ file 'config/secrets.yml' => 'config/secrets.yml.example' do |task|
   cp task.prerequisites.first, task.name
 end
 
-# Rake::Task['config/secrets.yml'].invoke
+Rake::Task['config/secrets.yml'].invoke
 
 begin
   require 'rspec/core/rake_task'

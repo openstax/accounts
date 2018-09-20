@@ -11,6 +11,15 @@ module UserSessionManagement
     @current_user ||= AnonymousUser.instance
   end
 
+  def current_sso_user
+    return @current_sso_user unless @current_sso_user.nil?
+
+    cookie_name = Rails.application.secrets.sso['cookie']['name']
+    cookie = sso_cookies.encrypted[cookie_name]
+    @current_sso_user = User.find_by(uuid: cookie.dig('user', 'uuid')) if cookie.present?
+    @current_sso_user ||= AnonymousUser.instance
+  end
+
   def sign_in!(user, options={})
     options[:security_log_data] ||= {}
 
@@ -37,9 +46,8 @@ module UserSessionManagement
     clear_pre_auth_state
 
     # TODO move this to shared lib if this goes into production
-    session_config = Rails.application.secrets[:rdls_sessions]
-    opts = session_config['domain'] ? { domain: session_config['domain'] } : {}
-    cookies.delete(session_config['name'], opts)
+    session_config = Rails.application.secrets.sso['cookie']
+    cookies.delete(session_config['name'], domain: session_config['domain'])
 
     sign_in!(AnonymousUser.instance, options)
   end

@@ -86,11 +86,11 @@ class SessionsController < ApplicationController
         authentication = @handler_result.outputs[:authentication]
         status = @handler_result.outputs[:status]
 
-        # TODO move this to shared lib if this goes into production
-        cookie = Rails.application.secrets[:rdls_sessions].symbolize_keys
-        cookie_name = cookie.delete(:name)
-        cookie[:value] = { user_uuid: current_user.uuid, user_name: current_user.name }
-        cookies.encrypted[cookie_name] = cookie
+        # Set the SSO cookie
+        session_config = Rails.application.secrets.sso['cookie']
+        sso_cookies.encrypted[session_config['name']] = {
+          value: { user: Api::V1::UserRepresenter.new(current_user).to_hash }
+        }.merge(session_config['options'].deep_symbolize_keys)
 
         case status
         when :new_signin_required
