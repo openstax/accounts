@@ -12,7 +12,6 @@ class RemoteController < ApplicationController
 
   # contains a bare-bones HTML file with an iframe proxy
   def iframe
-
   end
 
   # A bare page that's "displayed" inside an iframe after a logout has completed

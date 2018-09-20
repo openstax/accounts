@@ -115,7 +115,7 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, current_human_user)
 
-    respond_with user,
+    respond_with current_human_user,
                  represent_with: Api::V1::UserRepresenter,
                  user_options: { include_private_data: true },
                  location: nil

@@ -6,7 +6,7 @@ module UserSessionManagement
   #   http://railscasts.com/episodes/356-dangers-of-session-hijacking
 
   # Always return an object
-  def current_user
+  def current_session_user
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
     @current_user ||= AnonymousUser.instance
   end
@@ -20,8 +20,10 @@ module UserSessionManagement
     @current_sso_user ||= AnonymousUser.instance
   end
 
+  alias_method :current_user, :current_session_user
+
   def allow_sso_user!
-    @current_user = current_sso_user if current_user.is_anonymous?
+    @current_user = current_sso_user if current_session_user.is_anonymous?
   end
 
   def sign_in!(user, options={})
@@ -48,10 +50,6 @@ module UserSessionManagement
 
   def sign_out!(options={})
     clear_pre_auth_state
-
-    # TODO move this to shared lib if this goes into production
-    session_config = Rails.application.secrets.sso['cookie']
-    cookies.delete(session_config['name'], domain: session_config['domain'])
 
     sign_in!(AnonymousUser.instance, options)
   end

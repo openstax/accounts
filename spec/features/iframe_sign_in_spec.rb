@@ -2,13 +2,12 @@ require 'rails_helper'
 
 xfeature 'Login inside an iframe', js: true do
 
-  let(:valid_iframe_origins) { Rails.application.secrets[:valid_iframe_origins] }
+  let(:trusted_host) { "https://#{Rails.application.secrets.trusted_hosts.last}" }
 
   scenario 'a user signs in' do
     create_default_application
     user = create_user 'user'
-    origin = valid_iframe_origins.last
-    visit "/remote/iframe?parent=#{origin}"
+    visit "/remote/iframe?parent=#{trusted_host}"
     loaded = page.evaluate_script("OxAccount.Host.setUrl('/signin')")
     page.driver.within_frame 'content' do
       expect(page).to have_no_missing_translations

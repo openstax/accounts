@@ -75,17 +75,7 @@ ActionController::Base.class_exec do
 
     url = params["r"]
 
-    return true if url.blank?
-
-    uri = URI.parse(url)
-
-    return true if uri.host.blank?
-
-    valid_host_regexes = Rails.application.secrets.valid_redirect_host_regexes.map do |regex_string|
-      Regexp.new(regex_string)
-    end
-
-    return true if valid_host_regexes.none?{|regex| uri.host.match(regex)}
+    return true if url.blank? || !Host.trusted?(url)
 
     store_url(url: url)
   end

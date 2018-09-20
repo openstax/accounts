@@ -14,8 +14,7 @@ class ApplicationController < ActionController::Base
       return true
     end
 
-    valid_origins = Rails.application.secrets[:valid_iframe_origins] || []
-    if valid_origins.any?{|origin| @iframe_parent =~ /^#{origin}/ }
+    if Host.trusted? @iframe_parent
       response.headers.except! 'X-Frame-Options'
     else
       raise SecurityTransgression.new("#{@iframe_parent} is not allowed to iframe content")
