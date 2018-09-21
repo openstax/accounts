@@ -59,6 +59,9 @@ defaults: &defaults
     economics:
       title: Principles of Economics
       sf: Economics
+    introduction_to_business:
+      title: Introduction to Business
+      sf: Introduction to Business
     introduction_to_sociology:
       title: Introduction to Sociology 2e
       sf: Introduction to Sociology
