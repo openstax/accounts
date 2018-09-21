@@ -56,11 +56,11 @@ module Accounts
       secrets.environment_name == "prodtutor"
     end
 
-    # Provides a separate key generator to be used by SSO cookies, with a different secret_key_base
+    # Provides a separate key generator to be used by SSO cookies, with a different secret_token
     # Based on https://github.com/rails/rails/blob/master/railties/lib/rails/application.rb
     def sso_key_generator
       @caching_sso_key_generator ||= ActiveSupport::CachingKeyGenerator.new(
-        ActiveSupport::KeyGenerator.new(secrets.sso['secret_key_base'], iterations: 1000)
+        ActiveSupport::KeyGenerator.new(secrets.sso['secret_token'], iterations: 1000)
       )
     end
 

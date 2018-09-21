@@ -1,4 +1,4 @@
-# Provides a separate CookieJar for the SSO cookie, with a different secret_key_base
+# Provides a separate CookieJar for the SSO cookie, with a different secret_token
 # https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/cookies.rb
 class SsoCookieJar < ActionDispatch::Cookies::CookieJar
   def self.build(request)
