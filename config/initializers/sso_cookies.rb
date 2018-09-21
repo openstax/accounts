@@ -1,45 +1,52 @@
-# Provides a separate CookieJar for the SSO cookie, with a different secret_token
 # https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/cookies.rb
-class SsoCookieJar < ActionDispatch::Cookies::CookieJar
-  def self.build(request)
-    # We will need a new strategy in Rails 5, since the key generator will no longer be stored
-    # when the CookieJar is built and will instead be loaded directly from the Request object
-    previous_key_generator = request.env[ActionDispatch::Cookies::GENERATOR_KEY]
 
-    begin
-      request.env[ActionDispatch::Cookies::GENERATOR_KEY] = Rails.application.sso_key_generator
-      super(request)
-    ensure
-      request.env[ActionDispatch::Cookies::GENERATOR_KEY] = previous_key_generator
-    end
+# The base class in Rails 5 is EncryptedKeyRotatingCookieJar
+class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedCookieJar
+  # Rails 5: def initialize(parent_jar)
+  def initialize(parent_jar, key_generator, options = {})
+    super
+
+    @encryptor = ActiveSupport::MessageEncryptor.new(
+      Rails.application.secrets.sso['secret_token'],
+      cipher: 'aes-256-gcm',
+      serializer: ActiveSupport::MessageEncryptor::NullSerializer
+    )
+  end
+end
+
+# Provides a separate CookieJar for the SSO cookie, with a different secret_token
+class SsoCookieJar < ActionDispatch::Cookies::CookieJar
+  def encrypted
+    # Rails 5: @encrypted ||= SsoEncryptedCookieJar.new(self)
+    @encrypted ||= SsoEncryptedCookieJar.new(self, @key_generator, @options)
   end
 end
 
 ActionDispatch::Request.class_exec do
   # Rails 4:
   def have_cookie_jar?
-    env.key? "action_dispatch.cookies".freeze
+    env.key? 'action_dispatch.cookies'.freeze
   end
 
   def have_sso_cookie_jar?
-    env.key? "action_dispatch.sso_cookies".freeze
+    env.key? 'action_dispatch.sso_cookies'.freeze
   end
 
   def sso_cookie_jar
-    env["action_dispatch.sso_cookies".freeze] ||= SsoCookieJar.build(self)
+    env['action_dispatch.sso_cookies'.freeze] ||= SsoCookieJar.build(self)
   end
 
   # Rails 5:
   #def have_sso_cookie_jar?
-  #  has_header? "action_dispatch.sso_cookies".freeze
+  #  has_header? 'action_dispatch.sso_cookies'.freeze
   #end
   #
   #def sso_cookie_jar=(jar)
-  #  set_header "action_dispatch.sso_cookies".freeze, jar
+  #  set_header 'action_dispatch.sso_cookies'.freeze, jar
   #end
   #
   #def sso_cookie_jar
-  #  fetch_header("action_dispatch.sso_cookies".freeze) do
+  #  fetch_header('action_dispatch.sso_cookies'.freeze) do
   #    self.sso_cookie_jar = SsoCookieJar.build(self, cookies)
   #  end
   #end

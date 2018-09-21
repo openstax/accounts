@@ -1,4 +1,3 @@
-
 class MockOmniauthRequest
 
   def initialize(provider, uid, info, params = {})
@@ -11,7 +10,8 @@ class MockOmniauthRequest
   def env
     @env ||= {
       'omniauth.auth' => { provider: @provider, uid: @uid, info: @info },
-      'omniauth.params' => @params
+      'omniauth.params' => @params,
+      ActionDispatch::Cookies::GENERATOR_KEY => Rails.application.key_generator
     }
   end
 
@@ -20,7 +20,7 @@ class MockOmniauthRequest
   end
 
   def ssl?
-    false
+    true
   end
 
   def cookies

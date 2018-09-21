@@ -56,14 +56,6 @@ module Accounts
       secrets.environment_name == "prodtutor"
     end
 
-    # Provides a separate key generator to be used by SSO cookies, with a different secret_token
-    # Based on https://github.com/rails/rails/blob/master/railties/lib/rails/application.rb
-    def sso_key_generator
-      @caching_sso_key_generator ||= ActiveSupport::CachingKeyGenerator.new(
-        ActiveSupport::KeyGenerator.new(secrets.sso['secret_token'], iterations: 1000)
-      )
-    end
-
     config.after_initialize do
       Doorkeeper::TokensController.class_eval do
         alias_method :original_create, :create # before_filter not available
