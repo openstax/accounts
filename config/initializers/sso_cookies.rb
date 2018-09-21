@@ -7,14 +7,14 @@ class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedCookieJar
     super
 
     @encryptor = ActiveSupport::MessageEncryptor.new(
-      Rails.application.secrets.sso['secret_token'],
+      Rails.application.secrets.sso['shared_secret'],
       cipher: 'aes-256-gcm',
       serializer: ActiveSupport::MessageEncryptor::NullSerializer
     )
   end
 end
 
-# Provides a separate CookieJar for the SSO cookie, with a different secret_token
+# Provides a separate CookieJar for the SSO cookie, with a different shared_secret
 class SsoCookieJar < ActionDispatch::Cookies::CookieJar
   def encrypted
     # Rails 5: @encrypted ||= SsoEncryptedCookieJar.new(self)
