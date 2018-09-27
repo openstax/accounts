@@ -121,10 +121,10 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce', '~> 1.3.0'
+gem 'openstax_salesforce', '~> 2.0.1'
 
 # Fork that supports Ruby >= 2.1
-gem 'active_force', github: 'openstax/active_force', ref: '9695896f5'
+gem 'active_force', github: 'openstax/active_force', ref: '9efe1ba'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
