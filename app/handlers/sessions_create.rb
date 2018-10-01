@@ -171,12 +171,6 @@ class SessionsCreate
       run(ActivateUnclaimedUser, user)
     end
     @user_state.sign_in!(user)
-
-    # Set the SSO cookie
-    sso_config = Rails.application.secrets.sso['cookie']
-    request.sso_cookie_jar.encrypted[sso_config['name']] = {
-      value: { user: Api::V1::UserRepresenter.new(current_user).to_hash }
-    }.merge(sso_config['options'].deep_symbolize_keys)
   end
 
   def users_matching_oauth_data

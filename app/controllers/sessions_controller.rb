@@ -185,10 +185,6 @@ class SessionsController < ApplicationController
   def destroy
     sign_out!
 
-    # Clear the SSO cookie
-    sso_config = Rails.application.secrets.sso['cookie']
-    sso_cookies.delete(sso_config['name'], domain: sso_config['domain'])
-
     # Now figure out where we should redirect the user...
 
     if return_url_specified_and_allowed?

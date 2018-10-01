@@ -1,9 +1,14 @@
 require 'oauth'
 
+# This module must be included into a controller to work properly
 module UserSessionManagement
 
   # References:
   #   http://railscasts.com/episodes/356-dangers-of-session-hijacking
+
+  def sso_cookie_secrets
+    Rails.application.secrets.sso['cookie']
+  end
 
   # Always return an object
   def current_session_user
@@ -14,7 +19,7 @@ module UserSessionManagement
   def current_sso_user
     return @current_sso_user unless @current_sso_user.nil?
 
-    cookie_name = Rails.application.secrets.sso['cookie']['name']
+    cookie_name = sso_cookie_secrets['name']
     cookie = sso_cookies.encrypted[cookie_name]
     @current_sso_user = User.find_by(uuid: cookie.dig('user', 'uuid')) if cookie.present?
     @current_sso_user ||= AnonymousUser.instance
@@ -37,11 +42,21 @@ module UserSessionManagement
 
     if @current_user.is_anonymous?
       session[:user_id] = nil
+
+      # Clear the SSO cookie
+      sso_cookies.delete(sso_cookie_secrets['name'], domain: sso_cookie_secrets['domain'])
+
       security_log :sign_out, options[:security_log_data]
     else
       session[:user_id] = @current_user.id
       session[:last_admin_activity] = DateTime.now.to_s \
         if @current_user.is_administrator?
+
+      # Set the SSO cookie
+      request.sso_cookie_jar.encrypted[sso_cookie_secrets['name']] = {
+        value: { user: Api::V1::UserRepresenter.new(current_user).to_hash }
+      }.merge(sso_cookie_secrets['options'].deep_symbolize_keys)
+
       security_log :sign_in_successful, options[:security_log_data]
     end
 

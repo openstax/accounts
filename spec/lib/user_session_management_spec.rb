@@ -12,7 +12,7 @@ RSpec.describe UserSessionManagement, type: :lib do
       end
     end.new
   end
-  let(:request)    { OpenStruct.new(remote_ip: '127.0.0.1') }
+  let(:request)    { ActionController::TestRequest.new }
   let(:session)    { {} }
 
   before do

@@ -11,7 +11,7 @@ RSpec.describe AuthenticateMethods, type: :lib do
       end
     end.new
   end
-  let(:request)    { OpenStruct.new(remote_ip: '127.0.0.1') }
+  let(:request)    { ActionController::TestRequest.new }
   let(:session)    { {} }
 
   before do
@@ -21,10 +21,11 @@ RSpec.describe AuthenticateMethods, type: :lib do
   end
 
   it 'can remove signed params from a URL' do
-    request.url = "http://blah.com/oauth/authorize?redirect_uri=http://127.0.0.1:51873//" \
-                  "external_app_for_specs&response_type=code&client_id=blah&sp%5Bemail%5D=test%40test.com&" \
-                  "sp%5Bexternal_user_uuid%5D=blah&sp%5Bname%5D=Tester+McTesterson&sp%5Brole%5D=instructor&" \
-                  "sp%5Bschool%5D=Testing+U&sp%5Bsignature%5D=something&sp%5Btimestamp%5D=1507839964"
+    request.request_uri =
+      "http://blah.com/oauth/authorize?redirect_uri=http://127.0.0.1:51873//" \
+      "external_app_for_specs&response_type=code&client_id=blah&sp%5Bemail%5D=test%40test.com&" \
+      "sp%5Bexternal_user_uuid%5D=blah&sp%5Bname%5D=Tester+McTesterson&sp%5Brole%5D=instructor&" \
+      "sp%5Bschool%5D=Testing+U&sp%5Bsignature%5D=something&sp%5Btimestamp%5D=1507839964"
     processed_url = controller.send(:request_url_without_signed_params)
     query_hash = Rack::Utils.parse_nested_query(URI.parse(processed_url).query)
     expect(query_hash.has_key?("sp")).to eq false
