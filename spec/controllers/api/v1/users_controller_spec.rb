@@ -20,7 +20,9 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                        first_name: 'Bob', last_name: 'Michaels', salesforce_contact_id: "somesfid"
   end
   let!(:unclaimed_user)  { FactoryGirl.create :user_with_emails, state:'unclaimed' }
-  let!(:admin_user)      { FactoryGirl.create :user, :terms_agreed, :admin }
+  let!(:admin_user)      do
+    FactoryGirl.create :user, :terms_agreed, :admin, first_name: 'Joe', last_name: 'Admin'
+  end
   let!(:billy_users) do
     (0..45).to_a.map do |ii|
       FactoryGirl.create :user,
@@ -192,7 +194,8 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should not let id be specified" do
-      api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}, parameters: {id: admin_user.id}
+      api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"},
+                                     parameters: {id: admin_user.id}
       expect(response.code).to eq('200')
       user_2.reload
       admin_user.reload
