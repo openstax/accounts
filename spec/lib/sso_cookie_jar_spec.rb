@@ -18,12 +18,8 @@ RSpec.describe SsoCookieJar do
       value: { foo: :bar }
     }
 
-    # works
-    expect(sso_cookie_jar['some_name']).not_to be_blank
-
-    # fails - down in activesupport-4.2.7.1/lib/active_support/message_encryptor.rb:92,
-    # `cipher.final` raises a `OpenSSL::Cipher::CipherError`
-    expect(sso_cookie_jar.encrypted['some_name']).not_to be_blank
+    expect(sso_cookie_jar['some_name']).not_to be_blank # encrypted so hard to predict real value
+    expect(sso_cookie_jar.encrypted['some_name']).to eq ({ foo: :bar })
   end
 
 end

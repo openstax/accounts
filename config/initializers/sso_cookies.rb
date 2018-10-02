@@ -1,5 +1,7 @@
 # https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/cookies.rb
 
+# Note: when we upgrade to Rails 5, everyone will be logged out of SSO.
+
 # The base class in Rails 5 is EncryptedKeyRotatingCookieJar
 class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedCookieJar
   # Rails 5: def initialize(parent_jar)
@@ -8,7 +10,7 @@ class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedCookieJar
 
     @encryptor = ActiveSupport::MessageEncryptor.new(
       Rails.application.secrets.sso['shared_secret'],
-      cipher: 'aes-256-gcm',
+      cipher: 'aes-256-cbc',
       serializer: ActiveSupport::MessageEncryptor::NullSerializer
     )
   end

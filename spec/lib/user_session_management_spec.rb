@@ -175,7 +175,7 @@ RSpec.describe UserSessionManagement, type: :lib do
       expect(controller.get_alternate_signup_url).to be_nil
     end
 
-    it 'sets the SSO cookie' do
+    it 'can read the current SSO user' do
       controller.sign_in! user_1
       expect(controller.current_sso_user).to eq user_1
     end
