@@ -37,7 +37,8 @@ class PushSalesforceLead
       adoption_status: using_openstax,
       num_students: num_students.to_i,
       os_accounts_id: user.id,
-      application_source: source_application.try(:lead_application_source) || ''
+      application_source: source_application.try(:lead_application_source) || '',
+      role: 'Faculty'
     )
 
     lead.save
