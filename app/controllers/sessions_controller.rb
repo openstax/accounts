@@ -85,6 +85,7 @@ class SessionsController < ApplicationController
       success: -> do
         authentication = @handler_result.outputs[:authentication]
         status = @handler_result.outputs[:status]
+
         case status
         when :new_signin_required
           reauthenticate_user! # TODO maybe replace with static "session has expired" b/c hard to recover
@@ -111,21 +112,25 @@ class SessionsController < ApplicationController
                        authentication_provider: authentication.provider,
                        authentication_uid: authentication.uid
           security_log :sign_in_successful, authentication_id: authentication.id
-          redirect_to profile_path, notice: (I18n.t :"controllers.sessions.new_sign_in_option_added")
+          redirect_to profile_path,
+                      notice: I18n.t(:"controllers.sessions.new_sign_in_option_added")
         when :authentication_taken
           security_log :authentication_transfer_failed, authentication_id: authentication.id
-          redirect_to profile_path, alert: (I18n.t :"controllers.sessions.sign_in_option_already_used")
+          redirect_to profile_path,
+                      alert: I18n.t(:"controllers.sessions.sign_in_option_already_used")
         when :same_provider
           security_log :authentication_transfer_failed, authentication_id: authentication.id
-          redirect_to profile_path, alert: (I18n.t :"controllers.sessions.same_provider_already_linked",
-                                                   user_name: current_user.name,
-                                                   authentication: authentication.display_name)
+          redirect_to profile_path,
+                      alert: I18n.t(:"controllers.sessions.same_provider_already_linked",
+                                    user_name: current_user.name,
+                                    authentication: authentication.display_name)
         when :mismatched_authentication
           security_log :sign_in_failed, reason: "mismatched authentication"
-          redirect_to authenticate_path, alert: (I18n.t :"controllers.sessions.mismatched_authentication")
+          redirect_to authenticate_path,
+                      alert: I18n.t(:"controllers.sessions.mismatched_authentication")
         when :email_already_in_use
           redirect_to profile_path,
-                      alert: (I18n.t :"controllers.sessions.way_to_login_cannot_be_added")
+                      alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added")
         else
           oauth = request.env['omniauth.auth']
           errors = @handler_result.errors.inspect

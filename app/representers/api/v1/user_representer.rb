@@ -15,6 +15,11 @@ module Api::V1
              readable: true,
              writeable: true
 
+    property :name,
+             type: String,
+             readable: true,
+             writeable: false
+
     property :first_name,
              type: String,
              readable: true,
@@ -31,6 +36,11 @@ module Api::V1
              writeable: false
 
     property :title,
+             type: String,
+             readable: true,
+             writeable: true
+
+    property :suffix,
              type: String,
              readable: true,
              writeable: true

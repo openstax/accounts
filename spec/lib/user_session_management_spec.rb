@@ -12,7 +12,7 @@ RSpec.describe UserSessionManagement, type: :lib do
       end
     end.new
   end
-  let(:request)    { OpenStruct.new(remote_ip: '127.0.0.1') }
+  let(:request)    { ActionController::TestRequest.new }
   let(:session)    { {} }
 
   before do
@@ -173,6 +173,11 @@ RSpec.describe UserSessionManagement, type: :lib do
       expect(controller.get_alternate_signup_url).to be_nil
       controller.set_alternate_signup_url(nil)
       expect(controller.get_alternate_signup_url).to be_nil
+    end
+
+    it 'can read the current SSO user' do
+      controller.sign_in! user_1
+      expect(controller.current_sso_user).to eq user_1
     end
   end
 

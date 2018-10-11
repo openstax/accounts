@@ -12,6 +12,7 @@ def user_hash(user, include_private_data: false)
   base_hash = {
     'id' => user.id,
     'username' => user.username,
+    'name' => user.name,
     'first_name' => user.first_name,
     'last_name' => user.last_name,
     'full_name' => user.full_name,
@@ -20,6 +21,8 @@ def user_hash(user, include_private_data: false)
     'is_test' => user.is_test?,
     'applications' => user.applications.order(:id).map {|app| {"id" => app.id, "name" => app.name}}
   }
+  base_hash['title'] = user.title unless user.title.nil?
+  base_hash['suffix'] = user.suffix unless user.suffix.nil?
 
   if include_private_data
     base_hash['salesforce_contact_id'] = user.salesforce_contact_id
@@ -40,6 +43,7 @@ def user_matcher(user, include_private_data: false)
   base_hash = {
     id: user.id,
     username: user.username,
+    name: user.name,
     first_name: user.first_name,
     last_name: user.last_name,
     full_name: user.full_name,
@@ -52,6 +56,8 @@ def user_matcher(user, include_private_data: false)
       end
     )
   }
+  base_hash[:title] = user.title unless user.title.nil?
+  base_hash[:suffix] = user.suffix unless user.suffix.nil?
 
   if include_private_data
     base_hash[:salesforce_contact_id] = user.salesforce_contact_id

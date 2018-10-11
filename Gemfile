@@ -199,8 +199,6 @@ group :development do
   gem 'web-console', '~> 2.0'
 
   gem  'i18n-tasks', '~> 0.9.6'
-  # Speedup and run specs when files change
-
 end
 
 group :test do

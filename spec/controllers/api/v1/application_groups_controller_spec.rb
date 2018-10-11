@@ -157,8 +157,10 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
           id: group_2.id,
           is_public: false,
           owners: [
-            {group_id: group_2.id,
-             user: user_hash(user_1)}
+            {
+              group_id: group_2.id,
+              user: user_hash(user_1).deep_symbolize_keys
+            }
           ],
           members: [],
           nestings: [],
@@ -166,9 +168,9 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
           subtree_group_ids: [group_2.id],
           subtree_member_ids: []
         }, unread_updates: 1
-      }].to_json
+      }]
 
-      expect(response.body).to eq(expected_response)
+      expect(response.body_as_hash).to eq(expected_response)
 
       application_group_1.reload.unread_updates = 0
       application_group_1.save!
