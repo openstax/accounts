@@ -433,6 +433,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       [:first_name, :last_name, :phone_number, :school, :url, :using_openstax].each do |var|
         expect(page).to have_content(error_msg SignupProfileInstructor, var, :blank)
       end
+      save_and_open_page
       expect(page).to have_content(error_msg SignupProfileInstructor, :num_students, :not_a_number)
       expect(page).to have_content(error_msg SignupProfileInstructor, :subjects, :blank_selection)
 
