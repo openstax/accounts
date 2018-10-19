@@ -96,11 +96,15 @@ class SignupController < ApplicationController
                     end
                   end,
                   failure: lambda do
-                    render :profile
+                      Rails.logger.warn '=== Here is your problem ==='
+                      Rails.logger.warn all_errors
+                      Rails.logger.warn '=== end of error listing ==='
+                      render :profile
                   end)
     else
       params[:profile] = {
-        school: current_user.self_reported_school
+        school: current_user.self_reported_school,
+        newsletter: "1"
       }
     end
   end

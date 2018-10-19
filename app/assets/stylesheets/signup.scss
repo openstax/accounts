@@ -1,3 +1,5 @@
+@import "pattern-library/headers";
+
 body.signup {
 
   // elements which are conditionally displayed depending on signup state
@@ -5,7 +7,46 @@ body.signup {
     display: none;
   }
 
-  @import "controls/subjects_multi_select";
+  .ox-card {
+    max-width: none;
+    width: fit-content;
+  }
+
+  .page-1 {
+    width: 47rem;
+  }
+
+  .page-2 {
+    width: 67rem;
+  }
+
+  button,
+  [type="submit"] {
+    @extend %button;
+    text-transform: none;
+    width: fit-content;
+
+    &.primary {
+      @extend %primary
+
+
+    }
+
+    &.secondary {
+      @extend %secondary;
+    }
+  }
+
+  [type="submit"] {
+    @extend %primary;
+  }
+
+  .button-row {
+    @extend %tight-row;
+
+    // Fixed in later pattern-library
+    grid-template-columns: repeat(auto-fill, minmax(10rem, auto));
+  }
 
   .newsletter {
     margin: 20px 0px 20px;
@@ -13,6 +54,69 @@ body.signup {
 
   .agree {
     margin-bottom: 16px;
+  }
+
+  .instructor-verification-help {
+    @include set-font(body-large);
+  }
+
+  .two-column-grid {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .book-checkbox {
+    @include form-border();
+
+    align-items: center;
+    background-color: ui-color(white);
+    cursor: pointer;
+    display: grid;
+    grid-gap: $normal-margin;
+    grid-template-columns: 1fr auto;
+    height: $form-element-height;
+    padding-left: $normal-margin;
+
+    &.has-image {
+      grid-template-columns: $form-element-height 1fr auto;
+      padding-left: 0;
+    }
+
+    &.checked {
+      background-color: ui-color(default);
+
+      > .indicator {
+        background-color: ui-color(white);
+        border: 0;
+        border-radius: 50%;
+        color: os-color(green);
+        height: 3rem;
+        width: 3rem;
+      }
+    }
+
+    > img {
+      width: 100%;
+    }
+
+    > label {
+      @include set-font(helper-label);
+      color: text-color(normal);
+    }
+
+    >.indicator {
+      @include form-border();
+
+      align-items: center;
+      color: ui-color(form-border);
+      display: flex;
+      font-size: 200%;
+      height: 2rem;
+      justify-content: center;
+      margin-right: $normal-margin;
+      width: 2rem;
+    }
   }
 
   .checkbox {

@@ -21,6 +21,7 @@ class FacultyAccessApply
       attribute :subjects, type: Object
       attribute :url, type: String
       attribute :num_students, type: Integer
+      attribute :num_students_book, type: Object
       attribute :using_openstax, type: String
       attribute :newsletter, type: boolean
 
