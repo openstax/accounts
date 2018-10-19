@@ -48,6 +48,7 @@ RSpec.describe SignupProfileInstructor, type: :handler do
       it "updates the user and leaves him 'activated'" do
         handle
         user.reload
+        # debugger
         expect(user.first_name).to eq "joe"
         expect(user.last_name).to eq "bob"
         expect(user.self_reported_school).to eq "rice"

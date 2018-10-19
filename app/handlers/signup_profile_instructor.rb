@@ -15,9 +15,9 @@ class SignupProfileInstructor < SignupProfile
     # }
     validate :num_students, lambda { |profile|
         if profile.num_students_book.nil?
-            c = profile.num_students
+            c = profile.num_students.to_s
             as_i = c.to_i
-            if as_i.to_s != c or as_i < 0
+            if as_i.to_s != c or as_i <= 0
                 profile.errors.add(:num_students, "Not a good number #{c}")
             end
         end
