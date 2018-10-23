@@ -27,42 +27,40 @@
 
       <% if role != :student %>
         <h2 class="instructor-verification-help"><%= t '.instructor_verification_help' %></h2>
-        <%= fh.text_field name: :url,
-                        label: f.label(t('.instructor_verification_heading'), for: 'profile_url'),
-                        except: :student
+        <%= fh.text_field   name: :url,
+                            except: :student
         %>
       <% end %>
 
-      <h2 class="instructor-verification-help"><%= t :'.using_openstax' %></h2>
-      <%= fh.radio_group  name: :using_openstax,
-                          only: :instructor,
-                          options: [
-                            {
-                              'value' => 'Confirmed Adoption Won',
-                              'text' => t('.instructor_use.fully'),
-                              'label' => {
-                                'for' => 'profile_using_openstax_confirmed_adoption_won'
-                              },
-                              'radio' => {
-                                'data-bind' => 'checked: howUsing'
-                              }
-                            },
-                            {
-                              'value' => 'Not using',
-                              'text' => t('.instructor_use.nope'),
-                              'label' => {
-                                'for' => 'profile_using_openstax_not_using'
-                              },
-                              'radio' => {
-                                'data-bind' => 'checked: howUsing'
-                              }
-                            }
-                          ]
-      %>
       <% if role == :instructor %>
+        <h2 class="instructor-verification-help"><%= t :'.using_openstax' %></h2>
+        <%= fh.radio_group  name: :using_openstax,
+                            options: [
+                              {
+                                'value' => 'Confirmed Adoption Won',
+                                'text' => t('.instructor_use.fully'),
+                                'label' => {
+                                  'for' => 'profile_using_openstax_confirmed_adoption_won'
+                                },
+                                'radio' => {
+                                  'data-bind' => 'checked: howUsing'
+                                }
+                              },
+                              {
+                                'value' => 'Not using',
+                                'text' => t('.instructor_use.nope'),
+                                'label' => {
+                                  'for' => 'profile_using_openstax_not_using'
+                                },
+                                'radio' => {
+                                  'data-bind' => 'checked: howUsing'
+                                }
+                              }
+                            ]
+        %>
         <button class="primary" data-bind="enable:howUsing, click:nextPage">Next</button>
       <% else %>
-        <button class="primary" data-bind="click:nextPage">Next</button>
+        <button class="primary" data-bind="click:nextPage"><%= t('.next')%></button>
       <% end %>
     </div>
 
@@ -142,7 +140,7 @@
                <%= t('.num_students') %>
            </h2>
            <%= fh.text_field name: nil,
-            label: 'Include classes taught by TAs that you oversee.',
+            # label: 'Include classes taught by TAs that you oversee.',
             type: 'number',
             only: :instructor,
             options: {
@@ -162,7 +160,7 @@
             <%= t('.num_students') %>
         </h2>
         <%= fh.text_field name: :num_students,
-         label: 'Include classes taught by TAs that you oversee.',
+         # label: 'Include classes taught by TAs that you oversee.',
          type: 'number',
          only: :instructor
         %>
@@ -205,11 +203,18 @@
 
       <div class="button-row">
         <button class="secondary" data-bind="click:prevPage">Back</button>
-        <%= f.submit (t :".create_account"),
-                    data: { disable_with: (t :".submitting") },
-                    class: 'primary',
-                    "data-bind": "enable: agree"
-        %>
+        <% unless contracts_not_required %>
+          <%= f.submit (t :".create_account"),
+                      data: { disable_with: (t :".submitting") },
+                      class: 'primary',
+                      "data-bind": "enable: agree"
+          %>
+        <% else %>
+          <%= f.submit (t :".create_account"),
+                      data: { disable_with: (t :".submitting") },
+                      class: 'primary'
+          %>
+        <% end %>
       </div>
     </div>
 

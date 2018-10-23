@@ -128,5 +128,9 @@ body.signup {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    > :not(first-child) {
+      margin-left: $normal-margin;
+    }
   }
 }

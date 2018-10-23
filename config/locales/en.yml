@@ -493,6 +493,7 @@ en:
       titles_using: Which book(s) are you using?
       keep_me_informed: Send me the OpenStax newsletter.
       timeout: Please log in again to complete your sign up
+      next: Next
 
     instructor_access_pending:
       page_heading: Almost done...

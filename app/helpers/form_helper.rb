@@ -39,28 +39,6 @@ module FormHelper
         end
     end
 
-    def text_field2(name:, label: nil, value: nil, type: nil, autofocus: false, except: nil, only: nil, options: {})
-      return if excluded?(except: except, only: only)
-      errors_div = get_errors_div(name: name)
-      label ||= ".#{name}"
-      placeholder = c.t(label)
-      if placeholder.include? '<'
-          placeholder = ''
-      end
-      c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
-        input = @f.text_field name, value: value,
-                                    type: type,
-                                    class: "form-control wide",
-                                    data: data(only: only, except: except),
-                                    autofocus: autofocus,
-                                    placeholder: c.t(label.blank? ? ' ' : label),
-                                    **options
-
-        label2 = @f.label name
-        "#{label2}\n#{input}\n#{errors_div}".html_safe
-      end
-    end
-
     def radio_group(name:, options:, except: nil, only: nil)
         return if excluded?(except: except, only: only)
 
