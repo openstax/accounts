@@ -44,7 +44,7 @@ module UserSessionManagement
       session[:user_id] = nil
 
       # Clear the SSO cookie
-      sso_cookies.delete(sso_cookie_secrets['name'], domain: sso_cookie_secrets['domain'])
+      sso_cookies.delete(sso_cookie_secrets['name'], domain: sso_cookie_secrets['options']['domain'])
 
       security_log :sign_out, options[:security_log_data]
     else
