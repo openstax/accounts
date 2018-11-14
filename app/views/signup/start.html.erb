@@ -64,6 +64,9 @@ end
       <div class="audience-help" data-audience="student">
         <h3><%= t '.student_email' %></h3>
       </div>
+      <div class="audience-help" data-audience="other">
+        <h3><%= t '.your_email' %></h3>
+      </div>
 
       <%= fh.text_field name: :email, value: @signup_email || signup_email, label: :'.email_placeholder' %>
       <p class="warning edu">

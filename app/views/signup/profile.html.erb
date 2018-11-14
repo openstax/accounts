@@ -2,223 +2,223 @@
 
 <%= ox_card(classes: "login") do %>
 
-  <%= lev_form_for :profile, url: signup_profile_path, html: {class: 'full-width'} do |f| %>
+    <%= lev_form_for :profile, url: signup_profile_path, html: {class: 'full-width'} do |f| %>
 
-    <% fh = FormHelper::One.new(f: f,
-                                limit_to: role,
-                                context: self,
-                                errors: @handler_result.try(:errors),
-                                error_field_classes: "alert alert-danger") %>
+        <% fh = FormHelper::One.new(f: f,
+                                    limit_to: role,
+                                    context: self,
+                                    errors: @handler_result.try(:errors),
+                                    error_field_classes: "alert alert-danger") %>
 
-    <div hidden data-params>
-      <%= params[:profile].to_json %>
-    </div>
+        <div hidden data-params>
+          <%= params[:profile].to_json %>
+        </div>
 
-    <div class="page-1" data-bind="visible: formPage() === 1">
-      <h1 class="title"><%= t :'.page_heading' %></h1>
+        <div class="page-1" data-bind="visible: formPage() === 1">
+          <h1 class="title"><%= t :'.page_heading' %></h1>
 
-      <%= fh.text_field name: :first_name,
-                        value: current_user.first_name,
-                        autofocus: true
-      %>
-      <%= fh.text_field name: :last_name, value: current_user.last_name, options: { required: true } %>
-      <%= fh.text_field name: :phone_number, except: :student, options: { required: true } %>
-      <%= fh.text_field name: :school, options: { required: false } %>
+          <%= fh.text_field name: :first_name,
+                            value: current_user.first_name,
+                            autofocus: true
+          %>
+          <%= fh.text_field name: :last_name, value: current_user.last_name, options: { required: true } %>
+          <%= fh.text_field name: :phone_number, except: :student, options: { required: true } %>
+          <%= fh.text_field name: :school, options: { required: false } %>
 
-      <% if role != :student %>
-        <h2 class="instructor-verification-help"><%= t '.instructor_verification_help' %></h2>
-        <%= fh.text_field   name: :url,
-                            except: :student
-        %>
-      <% end %>
+          <% if role != :student %>
+              <h2 class="instructor-verification-help"><%= t '.instructor_verification_help' %></h2>
+              <%= fh.text_field   name: :url,
+                                  except: :student
+              %>
+          <% end %>
 
-      <% if role == :instructor %>
-        <h2 class="instructor-verification-help"><%= t :'.using_openstax' %></h2>
-        <%= fh.radio_group  name: :using_openstax,
-                            options: [
-                              {
-                                'value' => 'Confirmed Adoption Won',
-                                'text' => t('.instructor_use.fully'),
-                                'label' => {
-                                  'for' => 'profile_using_openstax_confirmed_adoption_won'
-                                },
-                                'radio' => {
-                                  'data-bind' => 'checked: howUsing'
-                                }
-                              },
-                              {
-                                'value' => 'Not using',
-                                'text' => t('.instructor_use.nope'),
-                                'label' => {
-                                  'for' => 'profile_using_openstax_not_using'
-                                },
-                                'radio' => {
-                                  'data-bind' => 'checked: howUsing'
-                                }
-                              }
-                            ]
-        %>
-        <button class="primary" data-bind="enable:howUsing, click:nextPage">Next</button>
-      <% else %>
-        <button class="primary" data-bind="click:nextPage"><%= t('.next')%></button>
-      <% end %>
-    </div>
+          <% if role == :instructor %>
+              <h2 class="instructor-verification-help"><%= t :'.using_openstax' %></h2>
+              <%= fh.radio_group  name: :using_openstax,
+                                  options: [
+                                      {
+                                          'value' => 'Confirmed Adoption Won',
+                                          'text' => t('.instructor_use.fully'),
+                                          'label' => {
+                                              'for' => 'profile_using_openstax_confirmed_adoption_won'
+                                          },
+                                          'radio' => {
+                                              'data-bind' => 'checked: howUsing'
+                                          }
+                                      },
+                                      {
+                                          'value' => 'Not using',
+                                          'text' => t('.instructor_use.nope'),
+                                          'label' => {
+                                              'for' => 'profile_using_openstax_not_using'
+                                          },
+                                          'radio' => {
+                                              'data-bind' => 'checked: howUsing'
+                                          }
+                                      }
+                                  ]
+              %>
+              <button class="primary" data-bind="enable:howUsing, click:nextPage">Next</button>
+          <% else %>
+              <button class="primary" data-bind="click:nextPage"><%= t('.next')%></button>
+          <% end %>
+        </div>
 
-    <div class="page-2" data-bind="visible: formPage() === 2">
-      <h2 class="instructor-verification-help">
+        <div class="page-2" data-bind="visible: formPage() === 2">
+          <h2 class="instructor-verification-help">
           <span data-bind="if: interested">
             <%= t('.titles_interested') %>
           </span>
-          <span data-bind="if: adopted">
+            <span data-bind="if: adopted">
             <%= t('.titles_using') %>
           </span>
-      </h2>
+          </h2>
 
-      <%= fh.wrapper_div(name: :subjects) do %>
-        <div data-bind="foreach: subjects">
-            <h3 data-bind="text: $data"></h3>
-            <input type="hidden" name="profile[subjects[placeholder]]" value=0>
-            <div class="two-column-grid" data-bind="foreach: $parent.bySubject()[$data]">
-                <div class="book-checkbox has-image" data-bind="css: {checked}, click: toggle">
+          <%= fh.wrapper_div(name: :subjects) do %>
+              <div data-bind="foreach: subjects">
+                <h3 data-bind="text: $data"></h3>
+                <input type="hidden" name="profile[subjects[placeholder]]" value=0>
+                <div class="two-column-grid" data-bind="foreach: $parent.bySubject()[$data]">
+                  <div class="book-checkbox has-image" data-bind="css: {checked}, click: toggle">
                     <!-- ko if: checked -->
-                        <input
-                          data-bind="attr: {name, value}"
-                          type="hidden"
-                        >
+                    <input
+                    data-bind="attr: {name, value}"
+                    type="hidden"
+                    >
                     <!-- /ko -->
                     <img data-bind="attr: {src: imageUrl}">
                     <label data-bind="text: text"></label>
                     <div
-                     class="indicator"
-                     tabindex="0"
-                     role="checkbox"
-                     data-bind="attr: {'aria-checked': checked}"
+                    class="indicator"
+                    tabindex="0"
+                    role="checkbox"
+                    data-bind="attr: {'aria-checked': checked}"
                     >
-                        <!-- ko if: checked -->
-                            <span data-bind="if: checked" class="fa fa-check"></span>
-                        <!-- /ko -->
+                      <!-- ko if: checked -->
+                      <span data-bind="if: checked" class="fa fa-check"></span>
+                      <!-- /ko -->
                     </div>
+                  </div>
                 </div>
-            </div>
-        </div>
-      <% end %>
+              </div>
+          <% end %>
 
-      <div data-bind="if: adopted">
-        <div data-bind="foreach: selectedBooks">
-          <h2 class="instructor-verification-help">How are you using <span data-bind="text:text"></span>?</h2>
-          <%= fh.radio_group name: 'meh',
-                             only: :instructor,
-                             options: [
-                               {
-                                 'value' => 'Confirmed Adoption Won',
-                                 'text' => t('.instructor_use.fully'),
-                                 'label' => {
-                                   'data-bind' => "attr: {for: `how_using_book_${abbreviation}_adoption_won`}"
-                                 },
-                                 'radio' => {
-                                   'data-bind' => "attr: {name: `profile[how_using_book[${abbreviation}]]`,"\
+          <div data-bind="if: adopted">
+            <div data-bind="foreach: selectedBooks">
+              <h2 class="instructor-verification-help">How are you using <span data-bind="text:text"></span>?</h2>
+              <%= fh.radio_group name: 'meh',
+                                 only: :instructor,
+                                 options: [
+                                     {
+                                         'value' => 'Confirmed Adoption Won',
+                                         'text' => t('.instructor_use.fully'),
+                                         'label' => {
+                                             'data-bind' => "attr: {for: `how_using_book_${abbreviation}_adoption_won`}"
+                                         },
+                                         'radio' => {
+                                             'data-bind' => "attr: {name: `profile[how_using_book[${abbreviation}]]`,"\
                                     " id: `how_using_book_${abbreviation}_adoption_won`,"\
                                     " checked: $root.howUsingBook()[abbreviation] === 'Confirmed Adoption Won'},",
-                                    required: true
-                                 }
-                               },
-                               {
-                                 'value' => 'Confirmed Will Recommend',
-                                 'text' => t('.instructor_use.recommended'),
-                                 'label' => {
-                                   'data-bind' => "attr: {for: `how_using_book_${abbreviation}_will_recommend`}"
-                                 },
-                                 'radio' => {
-                                   'data-bind' => "attr: {name: `profile[how_using_book[${abbreviation}]]`,"\
+                                             required: true
+                                         }
+                                     },
+                                     {
+                                         'value' => 'Confirmed Will Recommend',
+                                         'text' => t('.instructor_use.recommended'),
+                                         'label' => {
+                                             'data-bind' => "attr: {for: `how_using_book_${abbreviation}_will_recommend`}"
+                                         },
+                                         'radio' => {
+                                             'data-bind' => "attr: {name: `profile[how_using_book[${abbreviation}]]`,"\
                                     " id: `how_using_book_${abbreviation}_will_recommend`,"\
                                     " checked: $root.howUsingBook()[abbreviation] === 'Confirmed Will Recommend'}"
-                                 }
-                               }
-                             ]
-           %>
-           <h2 class="instructor-verification-help">
-               <%= t('.num_students') %>
-           </h2>
-           <%= fh.text_field name: nil,
-            # label: 'Include classes taught by TAs that you oversee.',
-            type: 'number',
-            only: :instructor,
-            options: {
-                "data-bind": "attr: {"\
+                                         }
+                                     }
+                                 ]
+              %>
+              <h2 class="instructor-verification-help">
+                <%= t('.num_students') %>
+              </h2>
+              <%= fh.text_field name: nil,
+                                # label: 'Include classes taught by TAs that you oversee.',
+                                type: 'number',
+                                only: :instructor,
+                                options: {
+                                    "data-bind": "attr: {"\
                 "   name: `profile[num_students_book[${abbreviation}]]`,"\
                 "   id: `num_students_book[${abbreviation}]`"\
                 "},"\
                 " value: `${$root.numStudentsBook()[abbreviation]}`",
-                "required": true
-            }
-           %>
-        </div>
-      </div>
-
-      <div data-bind="if: interested">
-        <h2 class="instructor-verification-help">
-            <%= t('.num_students') %>
-        </h2>
-        <%= fh.text_field name: :num_students,
-         # label: 'Include classes taught by TAs that you oversee.',
-         type: 'number',
-         only: :instructor
-        %>
-      </div>
-
-
-      <div class="newsletter">
-        <div class="checkbox">
-          <label>
-            <%= f.check_box :newsletter, 'data-bind': 'newsletter' %>
-            <%= t :".keep_me_informed" %>
-          </label>
-        </div>
-      </div>
-
-      <div class="agree">
-        <% unless contracts_not_required %>
-          <%
-            contracts = [FinePrint.get_contract(:general_terms_of_use),
-                         FinePrint.get_contract(:privacy_policy)]
-
-            contract_links = contracts.collect do |contract|
-              link_to contract.title, term_path(contract), remote: true
-            end
-          %>
-
-          <div class="checkbox">
-            <label>
-              <%= f.check_box :i_agree, 'data-bind': 'checked: agree' %>
-              <%= t :".have_read_terms_and_agree_html",
-                    terms_of_use: contract_links[0],
-                    privacy_policy: contract_links[1] %>
-            </label>
+                                    "required": true
+                                }
+              %>
+            </div>
           </div>
 
-          <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
-          <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
-        <% end %>
-      </div>
+          <div data-bind="if: interested">
+            <h2 class="instructor-verification-help">
+              <%= t('.num_students') %>
+            </h2>
+            <%= fh.text_field name: :num_students,
+                              # label: 'Include classes taught by TAs that you oversee.',
+                              type: 'number',
+                              only: :instructor
+            %>
+          </div>
 
-      <div class="button-row">
-        <button class="secondary" data-bind="click:prevPage">Back</button>
-        <% unless contracts_not_required %>
-          <%= f.submit (t :".create_account"),
-                      data: { disable_with: (t :".submitting") },
-                      class: 'primary',
-                      "data-bind": "enable: agree"
-          %>
-        <% else %>
-          <%= f.submit (t :".create_account"),
-                      data: { disable_with: (t :".submitting") },
-                      class: 'primary'
-          %>
-        <% end %>
-      </div>
-    </div>
 
-  <% end %>
+          <div class="newsletter">
+            <div class="checkbox">
+              <label>
+                <%= f.check_box :newsletter, 'data-bind': 'newsletter' %>
+                <%= t :".keep_me_informed" %>
+              </label>
+            </div>
+          </div>
+
+          <div class="agree">
+            <% unless contracts_not_required %>
+                <%
+                  contracts = [FinePrint.get_contract(:general_terms_of_use),
+                               FinePrint.get_contract(:privacy_policy)]
+
+                  contract_links = contracts.collect do |contract|
+                    link_to contract.title, term_path(contract), remote: true
+                  end
+                %>
+
+                <div class="checkbox">
+                  <label>
+                    <%= f.check_box :i_agree, 'data-bind': 'checked: agree' %>
+                    <%= t :".have_read_terms_and_agree_html",
+                          terms_of_use: contract_links[0],
+                          privacy_policy: contract_links[1] %>
+                  </label>
+                </div>
+
+                <%= f.hidden_field :contract_1_id, value: contracts[0].id %>
+                <%= f.hidden_field :contract_2_id, value: contracts[1].id %>
+            <% end %>
+          </div>
+
+          <div class="button-row">
+            <button class="secondary" data-bind="click:prevPage">Back</button>
+            <% unless contracts_not_required %>
+                <%= f.submit (t :".create_account"),
+                             data: { disable_with: (t :".submitting") },
+                             class: 'primary',
+                             "data-bind": "enable: agree"
+                %>
+            <% else %>
+                <%= f.submit (t :".create_account"),
+                             data: { disable_with: (t :".submitting") },
+                             class: 'primary'
+                %>
+            <% end %>
+          </div>
+        </div>
+
+    <% end %>
 
 <% end %>
 
