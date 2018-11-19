@@ -2,22 +2,22 @@ require 'import_users'
 
 def create_user(username, password='password', terms_agreed=nil)
   terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
-                          :terms_agreed :
-                          :terms_not_agreed
+                            :terms_agreed :
+                            :terms_not_agreed
 
   return if User.find_by_username(username).present?
 
   user = FactoryGirl.create :user, terms_agreed_option, username: username
   identity = FactoryGirl.create :identity, user: user, password: password
   authentication = FactoryGirl.create :authentication, user: user,
-                                                       provider: 'identity',
-                                                       uid: identity.uid
+                                      provider: 'identity',
+                                      uid: identity.uid
   return user
 end
 
 def imported_user username
   ImportUsers.new('some.csv', nil).create_user(
-    username, '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', 'Full', 'Name', 'user@example.com')
+      username, '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', 'Full', 'Name', 'user@example.com')
 end
 
 def create_user_with_plone_password
@@ -36,11 +36,11 @@ end
 
 def create_nonlocal_user(username, provider='facebook')
   auth_data =
-    case provider
-    when 'facebook' then {info: {name: username}, provider: 'facebook'}  # FB dropped nickname
-    when 'google' then {info: {nickname: username}, provider: 'google'}
-    when 'twitter' then {info: {nickname: username}, provider: 'twitter'}
-    end
+      case provider
+        when 'facebook' then {info: {name: username}, provider: 'facebook'}  # FB dropped nickname
+        when 'google' then {info: {nickname: username}, provider: 'google'}
+        when 'twitter' then {info: {nickname: username}, provider: 'twitter'}
+      end
   data = OmniauthData.new(auth_data)
 
   user = FactoryGirl.create(:user)
@@ -94,8 +94,8 @@ def create_application(skip_terms: false)
   # making HTTP calls against real external URLs like "example.com"
   server = Capybara.current_session.try(:server)
   redirect_uri = server.present? ?
-                 "http://#{server.host}:#{server.port}/#{external_app_for_specs_path}" :
-                 external_app_for_specs_url
+                     "http://#{server.host}:#{server.port}/#{external_app_for_specs_path}" :
+                     external_app_for_specs_url
   app.update_column(:redirect_uri, redirect_uri)
 
   FactoryGirl.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
@@ -165,18 +165,18 @@ def with_omniauth_test_mode(options={})
       identity_uid = options[:identity_user].identity.id.to_s
 
       OmniAuth.config.mock_auth[:identity] = OmniAuth::AuthHash.new({
-        uid: identity_uid,
-        provider: 'identity',
-        info: {}
-      })
+                                                                        uid: identity_uid,
+                                                                        provider: 'identity',
+                                                                        info: {}
+                                                                    })
     end
 
     [:facebook, :google_oauth2, :twitter].each do |provider|
       OmniAuth.config.mock_auth[provider] = OmniAuth::AuthHash.new({
-        uid: options[:uid],
-        provider: provider.to_s,
-        info: { nickname: options[:nickname], email: options[:email] }
-      })
+                                                                       uid: options[:uid],
+                                                                       provider: provider.to_s,
+                                                                       info: { nickname: options[:nickname], email: options[:email] }
+                                                                   })
     end
 
     yield
@@ -303,7 +303,7 @@ def complete_signup_email_screen(role, email, options={})
   expecting_institutional_email_warning = !(email =~ /\.edu$/) && !role.match(/student/i)
 
   click_button(t :"signup.start.next") unless !expecting_institutional_email_warning ||
-                                              options[:only_one_next]
+      options[:only_one_next]
 
   if !(options[:only_one_next] && expecting_institutional_email_warning)
     expect(page).to have_no_missing_translations
@@ -379,14 +379,14 @@ end
 
 def complete_signup_profile_screen_with_whatever(role: :instructor)
   complete_signup_profile_screen(
-    role: role,
-    first_name: "Bob",
-    last_name: "Armstrong",
-    phone_number: "634-5789",
-    school: "Rice University",
-    url: "http://www.ece.rice.edu/boba",
-    using_openstax: "primary",
-    agree: true
+      role: role,
+      first_name: "Bob",
+      last_name: "Armstrong",
+      phone_number: "634-5789",
+      school: "Rice University",
+      url: "http://www.ece.rice.edu/boba",
+      using_openstax: "primary",
+      agree: true
   )
 end
 
@@ -507,6 +507,6 @@ end
 
 def expect_security_log(*args)
   expect_any_instance_of(ActionController::Base).to receive(:security_log)
-                                                .with(*args)
-                                                .and_call_original
+                                                        .with(*args)
+                                                        .and_call_original
 end
