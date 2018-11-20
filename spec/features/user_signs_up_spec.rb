@@ -24,19 +24,19 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       complete_signup_verify_screen(pass: true)
       complete_signup_password_screen('password')
 
-      # TODO: What is this?
-      # expect_any_instance_of(PushSalesforceLead)
-      #   .to receive(:exec)
-      #   .with(hash_including(subject: "Biology;Macro Econ"))
-      #   .and_call_original
+      expect_any_instance_of(PushSalesforceLead)
+        .to receive(:exec)
+        .and_call_original
+        # Following line came above preceding line
+        # .with(hash_including(subject: "Biology;Macro Econ"))
 
       # Check that the Lead actually gets written to Salesforce and not auto deleted by SF
-      # expect_any_instance_of(PushSalesforceLead).to receive(:log_success).and_wrap_original do |method, *args|
-      #   lead_in_sf = OpenStax::Salesforce::Remote::Lead.where(id: args[0].id).first
-      #   expect(lead_in_sf).not_to be_nil
-      #
-      #   method.call(*args)
-      # end
+      expect_any_instance_of(PushSalesforceLead).to receive(:log_success).and_wrap_original do |method, *args|
+        lead_in_sf = OpenStax::Salesforce::Remote::Lead.where(id: args[0].id).first
+        expect(lead_in_sf).not_to be_nil
+
+        method.call(*args)
+      end
 
       complete_signup_profile_screen_with_whatever
 
@@ -66,10 +66,8 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
     screenshot!
 
-    # TODO: What is this?
-    # expect_any_instance_of(PushSalesforceLead)
-    #   .to receive(:exec)
-    #   .with(hash_including(subject: "Biology;Macro Econ"))
+    expect_any_instance_of(PushSalesforceLead)
+      .to receive(:exec)
 
     complete_signup_profile_screen(
       role: :instructor,
@@ -88,7 +86,6 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
     screenshot!
     complete_instructor_access_pending_screen
-
     expect_back_at_app
   end
 
@@ -407,7 +404,6 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     end
 
     scenario 'required fields blank' do
-      # TODO Cannot submit blank fields in new form. Remove this?
       complete_signup_profile_screen(
         role: :instructor,
         first_name: "",
