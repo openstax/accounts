@@ -18,22 +18,13 @@ class SignupProfileInstructor < SignupProfile
         end
       end
     }
-    # validates :num_students, numericality: {
-    #   only_integer: true,
-    #   greater_than_or_equal_to: 0
-    # }
 
     validate :num_students_book, lambda { |profile|
-      profile.subjects.select { |s, checked|
-        checked == '1'
-      }.each do |s, _|
-        unless profile.num_students_book.nil?
-          c = profile.num_students_book[s]
-          as_i = c.to_i
-          if as_i.to_s != c or as_i < 0
-            profile.errors.add(:num_students_book, "Not a good number #{s}: #{c} #{c.to_i}")
-          end
-        end
+      profile.subjects.each do |subject, checked|
+        profile.errors.add(:num_students_book, "#{subject} must be greater than or equal to 0") if
+          checked == '1' and
+            not profile.num_students_book.nil? and
+            profile.num_students_book[subject].to_i < 0
       end
     }
 
@@ -42,9 +33,6 @@ class SignupProfileInstructor < SignupProfile
         profile.errors.add(:subjects, :blank_selection)
       end
     }
-
-    # how_using_book is validated at form submission time
-    Rails.logger.warn '*** validated ***'
   end
 
   def push_lead

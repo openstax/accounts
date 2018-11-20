@@ -4,7 +4,6 @@ require 'vcr_helper'
 
 feature 'User signs up', js: true, vcr: VCR_OPTS do
 
-  # TODO: Figure out the vcr stuff
   VCR_OPTS[:allow_unused_http_interactions] = true
 
   background do
@@ -409,24 +408,18 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
     scenario 'required fields blank' do
       # TODO Cannot submit blank fields in new form. Remove this?
-      # complete_signup_profile_screen(
-      #   role: :instructor,
-      #   first_name: "",
-      #   last_name: "",
-      #   phone_number: "",
-      #   school: "",
-      #   url: "",
-      #   using_openstax: "",
-      #   agree: true
-      # )
-      #
-      # [:first_name, :last_name, :phone_number, :school, :url, :using_openstax].each do |var|
-      #   expect(page).to have_content(error_msg SignupProfileInstructor, var, :blank)
-      # end
-      # expect(page).to have_content(error_msg SignupProfileInstructor, :num_students, :not_a_number)
-      # expect(page).to have_content(error_msg SignupProfileInstructor, :subjects, :blank_selection)
-      #
-      # screenshot!
+      complete_signup_profile_screen(
+        role: :instructor,
+        first_name: "",
+        last_name: "",
+        phone_number: "",
+        school: "",
+        url: "",
+        using_openstax: "",
+        agree: true
+      )
+
+      screenshot!
     end
 
     scenario 'submit with invalid fields retains other values' do
@@ -479,30 +472,22 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
         last_name: "Budd",
         school: "Rice University"
       )
-      # TODO restore when above is complete
-      # expect_back_at_app
+      expect_back_at_app
     end
 
     scenario 'required fields blank' do
       # This is controlled by form required fields now
-      # TODO: Take this test out, or restore it if it make sense somehow
-      # complete_signup_profile_screen(
-      #   role: :student,
-      #   first_name: "",
-      #   last_name: "",
-      #   phone_number: "",
-      #   school: "",
-      #   url: "",
-      #   using_openstax: "",
-      #   agree: true
-      # )
-      #
-      # save_and_open_page
-      # [:first_name, :last_name, :school].each do |var|
-      #   expect(page).to have_content(error_msg SignupProfileStudent, var, :blank)
-      # end
-      #
-      # screenshot!
+      complete_signup_profile_screen(
+        role: :student,
+        first_name: "",
+        last_name: "",
+        phone_number: "",
+        school: "",
+        url: "",
+        using_openstax: "",
+        agree: true
+      )
+      screenshot!
     end
   end
 
@@ -532,20 +517,14 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     end
 
     scenario 'required fields blank' do
-    # TODO: See if this can be restored. Validation prevents submitting with required fields
-    #   complete_signup_profile_screen(
-    #     role: :other,
-    #     first_name: "",
-    #     last_name: "",
-    #     school: "",
-    #     phone_number: "",
-    #     url: ""
-    #   )
-    #
-    #   screenshot!
-    #   [:first_name, :last_name, :phone_number, :school, :url].each do |var|
-    #     expect(page).to have_content(error_msg SignupProfileOther, var, :blank)
-    #   end
+      complete_signup_profile_screen(
+        role: :other,
+        first_name: "",
+        last_name: "",
+        school: "",
+        phone_number: "",
+        url: ""
+      )
     end
   end
 
@@ -675,13 +654,12 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     scenario "gets redirected to home page but can recover" do
       Timecop.freeze(Time.now + SignupController::PROFILE_TIMEOUT) do
         complete_signup_profile_screen_with_whatever(role: :instructor)
-        # TODO: Restore lines below when complete_signup_profile gets there
-        # expect_sign_in_page
-        # expect(page).to have_content(t :"signup.profile.timeout")
-        # screenshot!
-        # complete_login_username_or_email_screen("bob@bob.edu")
-        # complete_login_password_screen('password')
-        # expect_signup_profile_screen
+        expect_sign_in_page
+        expect(page).to have_content(t :"signup.profile.timeout")
+        screenshot!
+        complete_login_username_or_email_screen("bob@bob.edu")
+        complete_login_password_screen('password')
+        expect_signup_profile_screen
       end
     end
   end
@@ -706,9 +684,8 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
       complete_signup_profile_screen_with_whatever(role: :instructor)
 
-      # TODO Test the rest of the pages
-      # complete_instructor_access_pending_screen
-      # expect_back_at_app
+      complete_instructor_access_pending_screen
+      expect_back_at_app
     end
   end
 
@@ -741,9 +718,8 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       expect_signup_password_screen
       complete_signup_password_screen('password')
       complete_signup_profile_screen_with_whatever(role: :instructor)
-      # TODO Restore this when above process is complete
-      # complete_instructor_access_pending_screen
-      # expect_back_at_app
+      complete_instructor_access_pending_screen
+      expect_back_at_app
     end
   end
 
@@ -778,10 +754,8 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
       complete_signup_password_screen('password')
       complete_signup_profile_screen_with_whatever(role: :instructor)
-      # TODO Restore below when complete_signup_profile gets to access pending screen
-      # complete_instructor_access_pending_screen
-      #
-      # expect_back_at_app
+      complete_instructor_access_pending_screen
+      expect_back_at_app
     end
   end
 

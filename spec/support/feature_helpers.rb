@@ -354,6 +354,16 @@ def complete_signup_profile_screen(role:, first_name: "", last_name: "", suffix:
   choose using_openstax if role == :instructor && !using_openstax.blank?
   expect(page).to have_content(t :"signup.profile.page_heading")
   expect(page).to have_no_missing_translations
+  if role == :instructor and (agree.nil? or first_name.blank? or last_name.blank?)
+    expect(page).to have_button('Next', disabled: true)
+    return
+  end
+  if first_name.blank? or last_name.blank?
+    click_button ('Next')
+    # Stuck on same page
+    expect(page).to have_field(t :"signup.profile.first_name")
+    return
+  end
   click_button ('Next')
   find(:xpath,"//label[normalize-space()='Calculus']").click
   if role == :instructor

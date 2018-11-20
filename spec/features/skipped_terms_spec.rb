@@ -51,13 +51,6 @@ feature 'Skipped terms are respected', js: true do
     expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
     expect(PreAuthState.count).to eq 0
 
-    #save_and_open_page
-    # if should_skip
-    #   expect(page).to have_no_content(terms_content)
-    # else
-    #   expect(page).to have_content(terms_content)
-    # end
-
     complete_instructor_access_pending_screen
     expect_back(app: app)
 
