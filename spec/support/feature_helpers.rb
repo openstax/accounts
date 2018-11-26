@@ -341,29 +341,40 @@ def complete_signup_password_screen(password, confirmation=nil)
 end
 
 def complete_signup_profile_screen(role:, first_name: "", last_name: "", suffix: nil,
-                                   phone_number: "", school: "", url: "", num_students: "",
-                                   using_openstax: "", newsletter: true, subjects: [], agree: true)
+                                   phone_number: "", school: "", url: "", num_students: '11',
+                                   using_openstax: "", subjects: [], agree: true)
 
   raise IllegalArgument unless [:student, :instructor, :other].include?(role)
 
   fill_in (t :"signup.profile.first_name"), with: first_name
   fill_in (t :"signup.profile.last_name"), with: last_name
-  fill_in (t :"signup.profile.suffix"), with: suffix if suffix.present?
   fill_in (t :"signup.profile.phone_number"), with: phone_number if role != :student
   fill_in (t :"signup.profile.school"), with: school
   fill_in (t :"signup.profile.url"), with: url if role != :student
-  fill_in (t :"signup.profile.num_students"), with: num_students if role == :instructor
-  select using_openstax, from: "profile_using_openstax" \
-    if role == :instructor && !using_openstax.blank?
-  if role != :student
-    subjects.each { |subject| check subject }
-  end
+  choose using_openstax if role == :instructor && !using_openstax.blank?
   expect(page).to have_content(t :"signup.profile.page_heading")
   expect(page).to have_no_missing_translations
-
-  check 'profile_i_agree' if agree
-
-  click_button (t :"signup.profile.create_account")
+  if role == :instructor and (agree.nil? or first_name.blank? or last_name.blank?)
+    expect(page).to have_button('Next', disabled: true)
+    return
+  end
+  if first_name.blank? or last_name.blank?
+    click_button ('Next')
+    # Stuck on same page
+    expect(page).to have_field(t :"signup.profile.first_name")
+    return
+  end
+  click_button ('Next')
+  find(:xpath,"//label[normalize-space()='Calculus']").click
+  if role == :instructor
+    choose('primary')
+    fill_in ('num_students_book[calculus]'), with: num_students
+  end
+  if agree
+    expect(page).to have_button(t(:"signup.profile.create_account"), disabled: true)
+    check('profile[i_agree]')
+  end
+  click_button(t(:"signup.profile.create_account"))
   expect(page).to have_no_missing_translations
 end
 
@@ -375,10 +386,7 @@ def complete_signup_profile_screen_with_whatever(role: :instructor)
     phone_number: "634-5789",
     school: "Rice University",
     url: "http://www.ece.rice.edu/boba",
-    num_students: 30,
-    subjects: ["Biology"],
     using_openstax: "primary",
-    newsletter: true,
     agree: true
   )
 end

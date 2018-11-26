@@ -9,7 +9,10 @@ end
 gem 'rails', '4.2.7.1'
 gem 'rails-i18n', '~> 4'
 gem 'sprockets', '~> 2.12.5'
-gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git'
+gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
+
+# Knockout
+gem 'knockoutjs-rails'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.1.1'
