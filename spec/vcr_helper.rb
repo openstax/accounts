@@ -19,6 +19,6 @@ VCR.configure do |c|
 end
 
 VCR_OPTS = {
-  record: ENV["VCR_OPTS_RECORD"].try(:to_sym) || :none, # This should default to :none before pushing
+  record: ENV.fetch('VCR_OPTS_RECORD', :none).to_sym, # This should default to :none
   allow_unused_http_interactions: false
 }

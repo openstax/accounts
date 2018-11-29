@@ -52,7 +52,7 @@ RSpec.describe PushSalesforceLead, vcr: VCR_OPTS do
 
       lead_from_sf = OpenStax::Salesforce::Remote::Lead.where(id: lead.id).first
       expect(lead_from_sf).not_to be_nil
-      expect(lead_from_sf.application_source).to eq nil
+      expect(lead_from_sf.application_source).to eq 'Accounts'
     end
 
     it "sends student record to Salesforce" do
@@ -74,6 +74,7 @@ RSpec.describe PushSalesforceLead, vcr: VCR_OPTS do
 
       lead_from_sf = OpenStax::Salesforce::Remote::Lead.where(id: lead.id).first
       expect(lead_from_sf).not_to be_nil
+      expect(lead_from_sf.application_source).to eq 'Accounts'
     end
   end
 

@@ -22,6 +22,9 @@ class PushSalesforceLead
       source = "OSC Faculty"
     end
 
+    application_source = source_application.try(:lead_application_source)
+    application_source = 'Accounts' if application_source.blank?
+
     lead = OpenStax::Salesforce::Remote::Lead.new(
       first_name: user.first_name,
       last_name: user.last_name,
@@ -37,7 +40,8 @@ class PushSalesforceLead
       adoption_status: using_openstax,
       num_students: num_students.to_i,
       os_accounts_id: user.id,
-      application_source: source_application.try(:lead_application_source) || ''
+      application_source: application_source,
+      role: role
     )
 
     lead.save

@@ -98,8 +98,7 @@ def create_application(skip_terms: false)
                  external_app_for_specs_url
   app.update_column(:redirect_uri, redirect_uri)
 
-  FactoryGirl.create(:doorkeeper_access_token,
-                     application: app, resource_owner_id: nil)
+  FactoryGirl.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
   app
 end
 
