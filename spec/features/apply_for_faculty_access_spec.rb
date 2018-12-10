@@ -23,9 +23,12 @@ describe 'Apply for faculty access', type: :feature, js: true do
         phone_number: "000-0000",
         school: "Rice University",
         url: "http://www.rice.edu",
+        num_students: 35,
+        using_openstax: "primary",
         subjects: ["Biology", "Principles of Macroeconomics"],
         newsletter: true,
     )
+    save_and_open_page
     expect(page).to have_content(t :"faculty_access.pending.page_heading")
     click_button(t :"faculty_access.pending.ok")
     expect(page.current_url).to eq(capybara_url(external_app_for_specs_path))
