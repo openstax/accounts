@@ -89,7 +89,7 @@ class SignupController < ApplicationController
                   client_app: get_client_app,
                   success: lambda do
                     clear_pre_auth_state
-                    if current_user.student? || current_user.created_from_signed_data?
+                    if current_user.student? || current_user.other? || current_user.created_from_signed_data?
                       redirect_back
                     else
                       redirect_to action: :instructor_access_pending
