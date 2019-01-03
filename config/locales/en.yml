@@ -383,6 +383,7 @@ en:
       adjunct: Adjunct Faculty
       student: Student
       administrator: Administrator
+      homeschool: Homeschool Instructor
       librarian: Librarian
       designer: Instructional Designer
       other: Other
@@ -515,6 +516,7 @@ en:
       adjunct: Adjunct Faculty
       administrator: Administrator
       librarian: Librarian
+      homeschool: Homeschool Instructor
       designer: Instructional Designer
       other: Other
       name_heading: Name
