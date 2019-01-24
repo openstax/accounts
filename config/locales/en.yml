@@ -462,9 +462,10 @@ en:
 
     profile:
       page_heading: Complete your account
-      instructor_verification_heading: Instructor-specific school page
+      instructor_verification_heading: Instructor verification
       instructor_verification_help: >-
-        Want to get verified faster? Fill this out.
+        We need information to help verify you’re an instructor and give you access
+        to materials like test banks and OpenStax Tutor course setup.
       instructor_use:
         how: How are you using OpenStax?
         fully: Fully adopted and using it as the primary textbook
@@ -478,22 +479,20 @@ en:
       # are not translatable.
       have_read_terms_and_agree_html: >-
         I agree to the %{terms_of_use} and the %{privacy_policy}.
-      first_name: First name
-      last_name: Last name
+      first_name: First Name
+      last_name: Last Name
       suffix: Suffix
       more_things_heading: And a few more things...
       phone_number: Phone number
-      school: School name
+      school: School
       url: A web page that shows you are faculty
       num_students: Number of students per semester
       using_openstax: Already using OpenStax?
       create_account: Create Account
       submitting: Creating Account…
       titles_interested: Select all OpenStax subjects that interest you
-      titles_using: Which book(s) are you using?
       keep_me_informed: Send me the OpenStax newsletter.
       timeout: Please log in again to complete your sign up
-      next: Next
 
     instructor_access_pending:
       page_heading: Almost done...
@@ -536,7 +535,7 @@ en:
         interested: Interested in using OpenStax in the future
         nope: Not using OpenStax
       phone_number: Phone number
-      school: School name
+      school: School
       url: A web page that shows you are faculty
       num_students: Number of students per semester
       using_openstax: Already using OpenStax?

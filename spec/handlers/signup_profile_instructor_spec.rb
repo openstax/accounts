@@ -14,7 +14,7 @@ RSpec.describe SignupProfileInstructor, type: :handler do
 
     context "when required fields are missing" do
       [:first_name, :last_name, :school, :phone_number,
-       :url, :using_openstax].each do |required_field|
+       :url, :num_students, :using_openstax].each do |required_field|
         it "errors if no #{required_field}" do
           outcome = handle(required_field => '')
           expect(outcome.errors).to have_offending_input(required_field)

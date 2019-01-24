@@ -23,32 +23,22 @@ module FormHelper
       end
     end
 
-    def text_field(name:, label: nil, value: nil, type: nil, autofocus: false, except: nil, only: nil, options: {})
-        return if excluded?(except: except, only: only)
-        errors_div = get_errors_div(name: name)
-        label ||= ".#{name}"
-        c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
-            input = @f.text_field name, placeholder: c.t(label.blank? ? ' ' : label),
-                value: value,
-                type: type,
-                class: "form-control wide",
-                data: data(only: only, except: except),
-                autofocus: autofocus,
-                **options
-            "#{input}\n#{errors_div}".html_safe
-        end
-    end
+    def text_field(name:, label: nil, value: nil, type: nil, autofocus: false, except: nil, only: nil)
+      return if excluded?(except: except, only: only)
 
-    def radio_group(name:, options:, except: nil, only: nil)
-        return if excluded?(except: except, only: only)
+      errors_div = get_errors_div(name: name)
 
-        errors_div = get_errors_div(name: name)
+      label ||= ".#{name}"
+      c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
+        input = @f.text_field name, placeholder: c.t(label),
+                                    value: value,
+                                    type: type,
+                                    class: "form-control wide",
+                                    data: data(only: only, except: except),
+                                    autofocus: autofocus
 
-        c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
-            options.map { |opt|
-              "<div>#{@f.radio_button name, opt['value'], opt['radio']} #{@f.label opt['text'], opt['label']}</div>"
-            }.join("\n").html_safe
-        end
+        "#{input}\n#{errors_div}".html_safe
+      end
     end
 
     def select(name:, options:, except: nil, only: nil, autofocus: nil)

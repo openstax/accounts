@@ -15,10 +15,8 @@ class SignupProfile
       attribute :school, type: String
       attribute :phone_number, type: String
       attribute :subjects, type: Object
-      attribute :how_using_book, type: Object
       attribute :url, type: String
       attribute :num_students, type: Integer
-      attribute :num_students_book, type: Object
       attribute :using_openstax, type: String
       attribute :newsletter, type: boolean
       attribute :contract_1_id, type: Integer
@@ -38,6 +36,7 @@ class SignupProfile
 
   def handle
     # Set profile info on user and set to activated
+
     caller.first_name           = profile_params.first_name
     caller.last_name            = profile_params.last_name
     caller.suffix               = profile_params.suffix      if !profile_params.suffix.blank?
