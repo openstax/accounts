@@ -280,8 +280,6 @@ GEM
     key_struct (0.4.2)
     keyword_search (1.5.0)
     kgio (2.10.0)
-    knockoutjs-rails (3.4.0.1)
-      railties (>= 3.1, < 6)
     launchy (2.4.3)
       addressable (~> 2.3)
     lev (7.0.3)
@@ -673,7 +671,6 @@ DEPENDENCIES
   jobba (~> 1.4.0)
   jquery-rails
   keyword_search (~> 1.5.0)
-  knockoutjs-rails
   launchy
   lev (~> 7.0.3)
   lograge

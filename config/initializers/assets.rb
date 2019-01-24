@@ -11,7 +11,6 @@ Rails.application.config.assets.precompile += %w(
   profile.js
   signup.js
   signin.js
-  verify.js
   faculty_access.js
   remote-access.js
   bootstrap-editable/loading.gif
