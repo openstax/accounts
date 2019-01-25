@@ -125,7 +125,13 @@
     <%= f.label :email_addresses, class: "col-sm-2 control-label" %>
     <ul class="col-sm-10 form-control-static">
     <% @user.email_addresses.each do |email| %>
-      <li style="margin-left: 20px;">
+    <li style="margin-left: 20px;">
+
+      <%= link_to raw('<i class="fa fa-trash" aria-hidden="false"></i>'),
+          admin_delete_contact_info_path(email),
+          method: :delete,
+          data: {confirm: "Are you sure you want to delete \"#{email.value}\" ?"}
+          %>
       <%= email.value %>
       <% if email.verified %>
         (Confirmed)
@@ -209,6 +215,17 @@
       </div>
     </div>
   </div>
+
+  <% if @user.external_uuids.any? %>
+  <div class="form-group">
+    <%= f.label :trusted_launch_user, 'Trusted Launch User?', class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <div class="checkbox">
+        <%= f.check_box :trusted_launch_user, checked: true, style: 'margin-left: 0px'  %>
+      </div>
+    </div>
+  </div>
+  <% end %>
 
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
