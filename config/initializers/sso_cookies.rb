@@ -3,14 +3,18 @@
 # The base class in Rails 5 is EncryptedKeyRotatingCookieJar
 class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedCookieJar
   # Rails 5: def initialize(parent_jar)
-  def initialize(parent_jar, key_generator, options = {})
-    super
-
-    @encryptor = ActiveSupport::MessageEncryptor.new(
-      Rails.application.secrets.sso['shared_secret'],
-      cipher: 'aes-256-cbc',
-      serializer: ActiveSupport::MessageEncryptor::NullSerializer
+  def initialize(parent_jar)
+    key_generator = ActiveSupport::CachingKeyGenerator.new(
+      ActiveSupport::KeyGenerator.new(Rails.application.secrets.sso['shared_secret'], iterations: 1000)
     )
+    salt = Rails.application.secrets.sso['shared_secret_salt']
+    options = {
+      encrypted_cookie_salt: salt,
+      encrypted_signed_cookie_salt: "signed encrypted #{salt}",
+      serializer: :json,
+      secret_key_base: Rails.application.secrets.sso['shared_secret']
+    }
+    super(parent_jar, key_generator, options)
   end
 end
 
@@ -18,7 +22,7 @@ end
 class SsoCookieJar < ActionDispatch::Cookies::CookieJar
   def encrypted
     # Rails 5: @encrypted ||= SsoEncryptedCookieJar.new(self)
-    @encrypted ||= SsoEncryptedCookieJar.new(self, @key_generator, @options)
+    @encrypted ||= SsoEncryptedCookieJar.new(self)
   end
 end
 
