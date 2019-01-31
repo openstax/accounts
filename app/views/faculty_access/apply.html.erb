@@ -68,11 +68,11 @@
 
       <%= fh.text_field name: :phone_number %>
       <%= fh.text_field name: :school %>
-      <%= fh.text_field name: :num_students, only: :instructor %>
+      <%= fh.text_field name: :num_students, only: [:instructor, :adjunct] %>
       <%= fh.text_field name: :url %>
 
       <%= fh.select name: :using_openstax,
-                    only: :instructor,
+                    only: [:instructor, :adjunct],
                     options: options_for_select(
                       [
                         [t('.instructor_use.how'), ""],
