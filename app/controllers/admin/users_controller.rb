@@ -32,7 +32,7 @@ module Admin
             if !@user.is_administrator && was_administrator
 
           security_log :trusted_launch_removed, user_id: params[:id], username: @user.username \
-            if params[:user][:trusted_launch_user] == '0'
+            if params[:user][:keep_external_uuids] == '0'
 
           format.html { redirect_to edit_admin_user_path(@user),
                         notice: 'User profile was successfully updated.' }
@@ -125,7 +125,7 @@ module Admin
       @user.is_test = params[:user][:is_test]
       @user.faculty_status = params[:user][:faculty_status] if params[:user][:faculty_status]
       @user.school_type = params[:user][:school_type] if params[:user][:school_type]
-      if @user.external_uuids.any? && params[:user][:trusted_launch_user] == '0'
+      if @user.external_uuids.any? && params[:user][:keep_external_uuids] == '0'
         @user.external_uuids.destroy_all
       end
       user_params = params[:user].slice(:first_name, :last_name, :username)

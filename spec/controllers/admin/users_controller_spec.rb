@@ -38,7 +38,7 @@ RSpec.describe Admin::UsersController, type: :controller do
     it 'removes all the external uuids' do
       user.external_uuids.create!({ uuid: SecureRandom.uuid })
       put :update, id: user.id,
-          user: { trusted_launch_user: '0' }
+          user: { keep_external_uuids: '0' }
 
       expect(user.external_uuids.reload.none?).to be true
     end
