@@ -218,10 +218,11 @@
 
   <% if @user.external_uuids.any? %>
   <div class="form-group">
-    <%= f.label :trusted_launch_user, 'Trusted Launch User?', class: "col-sm-2 control-label" %>
+    <%= f.label :trusted_launch_user, 'External authentications?', class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
       <div class="checkbox">
         <%= f.check_box :trusted_launch_user, checked: true, style: 'margin-left: 0px'  %>
+        <i style="margin-left: 1rem">(Unchecking will remove all links between this account and external systems such as LMS)</i>
       </div>
     </div>
   </div>
