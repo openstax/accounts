@@ -136,6 +136,7 @@ pl:
           attributes:
             value: &email_address_validations
               invalid: „%{value}” nie jest poprawnym adresem e-mail
+              missing_mx_records: „%{value}” nie jest poprawnym adresem e-mail
               too_many_dots: Adres e-mail ma zbyt wiele kropek pod rząd
               ends_with_dot: Adres e-mail nie może kończyć się kropką
               contains_tick: Adres e-mail nie może zawierać znaku „`”

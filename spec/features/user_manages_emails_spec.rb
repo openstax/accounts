@@ -3,6 +3,12 @@ require 'rails_helper'
 feature 'User manages emails', js: true do
   let(:verified_emails) { ["one@verified.com"] }
   let(:unverified_emails) { [] }
+  let(:invalid_provider_email) {
+    "invalidMX#{SecureRandom.hex(3)}.com"
+  }
+  let(:blacklisted_provider_email) {
+    EmailDomain.create!(value: "noMX#{SecureRandom.hex(3)}.com", has_mx: false).value
+  }
 
   let(:user) {
     create_user('user').tap do |user|
@@ -65,13 +71,45 @@ feature 'User manages emails', js: true do
       expect(page).to have_no_css('.email-entry.new input')
     end
 
-    scenario 'with invalid value' do
+    scenario 'with invalid email format' do
       click_link (t :"users.edit.add_email_address")
       within(:css, '.email-entry.new') {
         find('input').set('user')
         find('.glyphicon-ok').click
       }
       expect(page).to have_content(error_msg EmailAddress, :value, :invalid, value: 'user')
+    end
+
+    scenario 'with invalid email provider' do
+      email_address = "goodformat@#{invalid_provider_email}"
+      # makes a real DNS/HTTP request
+      EmailDomainMxValidator.strategy = EmailDomainMxValidator::DnsStrategy.new
+
+      click_link (t :"users.edit.add_email_address")
+      within(:css, '.email-entry.new') {
+        find('input').set(email_address)
+        find('.glyphicon-ok').click
+        wait_for_ajax
+      }
+      expect(page).to have_content(error_msg EmailAddress, :value, :missing_mx_records, value: email_address)
+    end
+
+    scenario 'with valid email provider' do
+      email_address = 'anyone@openstax.org'
+      # makes a real DNS/HTTP request
+      EmailDomainMxValidator.strategy = EmailDomainMxValidator::DnsStrategy.new
+
+      click_link (t :"users.edit.add_email_address")
+      within(:css, '.email-entry.new') {
+        find('input').set(email_address)
+        find('.glyphicon-ok').click
+        wait_for_ajax
+        find(".unconfirmed-warning").click
+      }
+      capture_email!(address: 'anyone@openstax.org')
+      expect(page).to have_no_missing_translations
+      expect(page).to have_button(t :"users.edit.resend_confirmation")
+      expect(page).to have_content('anyone@openstax.org')
     end
 
     scenario 'toggles searchable field' do
