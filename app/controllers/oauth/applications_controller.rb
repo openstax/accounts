@@ -4,7 +4,7 @@ module Oauth
     before_action :validate_role
 
     def validate_role
-      raise SecurityTransgression if !@user.is_administrator?
+      raise ActionController::RoutingError, 'not found' unless @user.is_administrator?
     end
 
     def index
