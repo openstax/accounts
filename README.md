@@ -85,6 +85,8 @@ When running feature specs, the default behavior is for exceptions to be rescued
 $ RAISE=true rspec
 ```
 
+If you encounter issues running features specs, check the version of chromedriver you have installed.  Version 2.38 is known to work.
+
 ## Background Jobs
 
 Accounts in production runs background jobs using `delayed_job`.
