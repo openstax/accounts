@@ -61,3 +61,30 @@
     padding: 0px 10px;
   }
 }
+
+.authorizations.new {
+    #application-body {
+        background-color: ui-color(white);
+        border-radius: 0.2rem;
+        padding-bottom: $normal-margin;
+
+        .actions {
+            display: flex;
+            flex-direction: row;
+            margin-top: $normal-margin;
+
+            > form {
+                margin-left: $normal-margin;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+        }
+
+        input[type="submit"] {
+            padding: 1rem 2rem;
+            width: auto;
+        }
+    }
+}
