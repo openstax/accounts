@@ -68,16 +68,10 @@ module Oauth
       expect(assigns :application).to be_nil
     end
 
-    it "should let a user get the list of his applications" do
+    it "should not let a user get the list of his applications" do
       controller.sign_in! user
       get :index
-      expect(response).to have_http_status :success
-      expect(assigns :applications).to include(untrusted_application_user)
-      expect(assigns :applications).to include(trusted_application_user)
-      expect(assigns :applications).not_to include(untrusted_application_user2)
-      expect(assigns :applications).not_to include(trusted_application_user2)
-      expect(assigns :applications).not_to include(untrusted_application_admin)
-      expect(assigns :applications).not_to include(trusted_application_admin)
+      expect(response).to have_http_status :forbidden
     end
 
     it "should let an admin get the list of all applications" do
@@ -92,13 +86,10 @@ module Oauth
       expect(assigns :applications).to include(trusted_application_admin)
     end
 
-    it "should let a user get his own application" do
+    it "should not let a user get his own application" do
       controller.sign_in! user
       get :show, id: untrusted_application_user.id
-      expect(response).to have_http_status :success
-      expect(assigns(:application).name).to eq(untrusted_application_user.name)
-      expect(assigns(:application).redirect_uri).to eq(untrusted_application_user.redirect_uri)
-      expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
+      expect(response).to have_http_status :forbidden
     end
 
     it "should not let a user get someone else's application" do
@@ -153,13 +144,10 @@ module Oauth
       expect(assigns(:application).trusted).to eq(true)
     end
 
-    it "should let a user edit his own application" do
+    it "should not let a user edit his own application" do
       controller.sign_in! user
       get :edit, id: untrusted_application_user.id
-      expect(response).to have_http_status :success
-      expect(assigns(:application).name).to eq(untrusted_application_user.name)
-      expect(assigns(:application).redirect_uri).to eq(untrusted_application_user.redirect_uri)
-      expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
+      expect(response).to have_http_status :forbidden
     end
 
     it "should not let a user edit someone else's application" do
@@ -177,18 +165,17 @@ module Oauth
       expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
     end
 
-    it "should let a user update his own untrusted application" do
+    it "should not let a user update his own untrusted application" do
       controller.sign_in! user
+
       put :update, id: untrusted_application_user.id,
                    doorkeeper_application: {
                      name: 'Some other name',
                      redirect_uri: 'https://www.example.net',
                      trusted: true
                    }
-      expect(response).to redirect_to(oauth_application_path(untrusted_application_user.id))
-      expect(assigns(:application).name).to eq('Some other name')
-      expect(assigns(:application).redirect_uri).to eq('https://www.example.net')
-      expect(assigns(:application).trusted).to eq(false)
+                          
+      expect(response).to have_http_status :forbidden     
     end
 
     it "should not let a user update someone else's application" do
