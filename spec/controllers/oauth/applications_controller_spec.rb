@@ -165,14 +165,16 @@ module Oauth
       expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
     end
 
-    it "should let a user update his own untrusted application" do
+    it "should not let a user update his own untrusted application" do
       controller.sign_in! user
+
       put :update, id: untrusted_application_user.id,
                    doorkeeper_application: {
                      name: 'Some other name',
                      redirect_uri: 'https://www.example.net',
                      trusted: true
                    }
+                          
       expect(response).to have_http_status :forbidden     
     end
 

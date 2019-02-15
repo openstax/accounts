@@ -1,11 +1,7 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
     before_action :set_user
-    before_action :validate_role
-
-    def validate_role
-      raise SecurityTransgression unless @user.is_administrator?
-    end
+    before_filter :admin_authentication!
 
     def index
       @applications = @user.is_administrator? ? Doorkeeper::Application.all :
