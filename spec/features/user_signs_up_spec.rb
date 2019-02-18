@@ -257,6 +257,16 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       screenshot!
     end
 
+    scenario 'failure because domain is not an email provider' do
+      EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new(expecting: false)
+
+      visit signup_path
+      select 'Instructor', from: "signup_role"
+      fill_in (t :"signup.start.email_placeholder"), with: "bob@missingmx99.edu"
+      click_button(t :"signup.start.next")
+      expect(page).to have_content "Email address is invalid"
+    end
+
     scenario 'decides they want to sign in' do
       visit signin_path(go: 'student_signup')
       expect(page).to have_selector('#signup_role', visible: false)

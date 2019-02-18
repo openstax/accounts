@@ -22,6 +22,8 @@ class SignupStart
     # If email in use, want users to login with that email, not create another account
     fatal_error(code: :email_in_use, offending_inputs: [:signup, :email]) if email_in_use?
 
+    fatal_error(code: :invalid, offending_inputs: [:signup, :email]) if invalid_email?
+
     # is there a pre_auth_state and it's email is unchanged
     if existing_pre_auth_state.try(:contact_info_value) == email
       existing_pre_auth_state.update_attributes(role: signup_params.role)
@@ -67,6 +69,17 @@ class SignupStart
 
   def email_in_use?
     ContactInfo.verified.where('lower(value) = ?', email.downcase).any?
+  end
+
+  def invalid_email?
+    e = EmailAddress.new(value: email)
+
+    begin
+      e.mx_domain_validation
+      return e.errors.any?
+    rescue Mail::Field::IncompleteParseError
+      return true
+    end
   end
 
   def existing_pre_auth_state

@@ -133,6 +133,7 @@ en:
             # Marking &email_address for reference later.
             value: &email_addres_validations
               invalid: “%{value}” is not a valid email address
+              missing_mx_records: “%{value}” is not a valid email address
               too_many_dots: This email has too many dots in a row
               ends_with_dot: An email cannot end with a dot
               contains_tick: An email should not contain a tick (`)

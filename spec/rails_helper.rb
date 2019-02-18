@@ -136,6 +136,7 @@ RSpec.configure do |config|
 
   config.prepend_before(:each) do
     DatabaseCleaner.start
+    EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new
   end
 
   # https://github.com/DatabaseCleaner/database_cleaner#rspec-with-capybara-example says:

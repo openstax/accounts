@@ -1,3 +1,5 @@
+require 'email_domain_mx_validator'
+
 module EmailAddressValidations
   extend ActiveSupport::Concern
 
@@ -44,6 +46,9 @@ module EmailAddressValidations
         }
       ]
     end
-  end
 
+    def is_domain_mx?(domain)
+      return EmailDomainMxValidator.check(domain)
+    end
+  end
 end
