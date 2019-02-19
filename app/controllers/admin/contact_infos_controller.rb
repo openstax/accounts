@@ -12,5 +12,10 @@ module Admin
       end
     end
 
+    def destroy
+      contact_info = ContactInfo.find(params[:id])
+      contact_info.delete
+      redirect_to edit_admin_user_path(contact_info.user)
+    end
   end
 end

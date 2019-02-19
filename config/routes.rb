@@ -190,6 +190,8 @@ Rails.application.routes.draw do
 
     resource :security_log, only: [:show]
 
+    delete :delete_contact_info, path: '/contact_infos/:id/verify',
+         controller: :contact_infos, action: :destroy
     post :verify_contact_info, path: '/contact_infos/:id/verify',
          controller: :contact_infos, action: :verify
 

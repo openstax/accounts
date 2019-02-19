@@ -34,6 +34,16 @@ RSpec.describe Admin::UsersController, type: :controller do
     end
   end
 
+  describe 'trusted lauch removal' do
+    it 'removes all the external uuids' do
+      user.external_uuids.create!({ uuid: SecureRandom.uuid })
+      put :update, id: user.id,
+          user: { keep_external_uuids: '0' }
+
+      expect(user.external_uuids.reload.none?).to be true
+    end
+  end
+
   describe "PUT #mark_users_updated" do
     it "should update unread_updates at a button push" do
       FactoryGirl.create :application_user, unread_updates: 1
