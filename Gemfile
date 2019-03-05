@@ -40,7 +40,7 @@ gem 'omniauth'
 gem 'omniauth-identity'
 gem 'omniauth-facebook', '~>4.0.0'
 gem 'omniauth-twitter'
-gem 'omniauth-google-oauth2'
+gem 'omniauth-google-oauth2', '~>0.6'
 
 # Key-value store for caching
 gem 'redis-rails'
