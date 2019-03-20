@@ -1,7 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-
+    
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -65,5 +65,10 @@ module Accounts
         end
       end
     end
+
+    # Recode urls with '/accounts'
+    require './lib/recode_url'
+    config.middleware.insert_after Rack::ETag, RecodeUrl 
+    
   end
 end
