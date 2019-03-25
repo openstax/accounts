@@ -218,7 +218,7 @@ group :test do
 
   gem 'launchy'
 
-  gem 'chromedriver-helper'
+  gem 'chromedriver-helper', '~> 2.1'
 
   gem 'capybara-selenium'
 
