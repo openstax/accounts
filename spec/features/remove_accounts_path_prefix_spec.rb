@@ -33,19 +33,19 @@ describe "Remove accounts path prefix" do
   end
 
   context "Request through /accounts should only be re routed when applicable" do
-    it "shouldn\'t replace /accounts" do
+    it "shouldn\'t replace /accounts when not at the start of the path" do
       app_object = DummyApp.new
       expect(app_object).to receive(:call).with({'PATH_INFO' => '/blah/accounts', 'REQUEST_METHOD'=>'GET'})
       RemoveAccountsPathPrefix.new(app_object).call({'PATH_INFO' => '/blah/accounts', 'REQUEST_METHOD'=>'GET'})
     end
 
-    it "should replace /accounts" do
+    it "should replace /accounts when at the start of the path" do
       app_object = DummyApp.new
       expect(app_object).to receive(:call).with({'PATH_INFO' => '/blah', 'REQUEST_METHOD'=>'GET'})
       RemoveAccountsPathPrefix.new(app_object).call({'PATH_INFO' => '/accounts/blah', 'REQUEST_METHOD'=>'GET'})
     end
 
-    it "should replace /accounts once given twice" do
+    it "should replace /accounts when not at the start of the path once given twice" do
       app_object = DummyApp.new
       expect(app_object).to receive(:call).with({'PATH_INFO' => '/blah/accounts', 'REQUEST_METHOD'=>'GET'})
       RemoveAccountsPathPrefix.new(app_object).call({'PATH_INFO' => '/accounts/blah/accounts', 'REQUEST_METHOD'=>'GET'})
@@ -55,14 +55,6 @@ describe "Remove accounts path prefix" do
       app_object = DummyApp.new
       expect(app_object).to receive(:call).with({'PATH_INFO' => '/assets/bg-login.jpg', 'REQUEST_METHOD'=>'GET'})
       RemoveAccountsPathPrefix.new(app_object).call({'PATH_INFO' => '/accounts/assets/bg-login.jpg', 'REQUEST_METHOD'=>'GET'})
-      #expect(page).to have_content("img[src*='/assets/bg-login.jpg']")
-    end
-
-    it "should render js" do
-      app_object = DummyApp.new
-      expect(app_object).to receive(:call).with({'PATH_INFO' => '/assets/admin.js', 'REQUEST_METHOD'=>'GET'})
-      RemoveAccountsPathPrefix.new(app_object).call({'PATH_INFO' => '/accounts/assets/admin.js', 'REQUEST_METHOD'=>'GET'})
-      #expect(page).to have_content("(function( global, factory )")
     end
   end
 end
