@@ -1,5 +1,4 @@
 require File.expand_path('../boot', __FILE__)
-
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -65,5 +64,9 @@ module Accounts
         end
       end
     end
+
+    # Recode urls with '/accounts'
+    require './lib/remove_accounts_path_prefix'
+    config.middleware.insert_after Rack::ETag, RemoveAccountsPathPrefix
   end
 end
