@@ -281,7 +281,7 @@ ActiveRecord::Schema.define(version: 20190206185243) do
     t.string   "first_name",             :index=>{:name=>"index_users_on_first_name", :case_sensitive=>false}
     t.string   "last_name",              :index=>{:name=>"index_users_on_last_name", :case_sensitive=>false}
     t.string   "title"
-    t.uuid     "uuid",                   :default=>"gen_random_uuid()", :index=>{:name=>"index_users_on_uuid", :unique=>true}
+    t.uuid     "uuid",                   :default=>"gen_random_uuid()", :null=>false, :index=>{:name=>"index_users_on_uuid", :unique=>true}
     t.string   "suffix"
     t.string   "state",                  :default=>"needs_profile", :null=>false
     t.string   "salesforce_contact_id",  :index=>{:name=>"index_users_on_salesforce_contact_id"}
