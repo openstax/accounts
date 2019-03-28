@@ -28,9 +28,7 @@ module UserSessionManagement
   alias_method :current_user, :current_session_user
 
   def allow_sso_user!
-    debugger
     @current_user = current_sso_user if current_session_user.is_anonymous?
-    debugger
   end
 
   def sign_in!(user, options={})
