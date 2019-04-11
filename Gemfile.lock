@@ -8,6 +8,14 @@ GIT
       restforce (>= 2.1.0)
 
 GIT
+  remote: https://github.com/openstax/path_prefixer.git
+  revision: eb239c532941f61c4060f89dc29a9ace825aca55
+  ref: eb239c532941f
+  specs:
+    openstax_path_prefixer (0.0.1)
+      rails (>= 3.0)
+
+GIT
   remote: https://github.com/openstax/pattern-library.git
   revision: 810c7ea897c093348203819fd306c3f2da9332c1
   branch: master
@@ -683,6 +691,7 @@ DEPENDENCIES
   omniauth-twitter
   openstax_api (~> 8.2.0)
   openstax_healthcheck
+  openstax_path_prefixer!
   openstax_rescue_from (~> 3.0.0)
   openstax_salesforce (~> 2.1.0)
   openstax_utilities (~> 4.2.0)

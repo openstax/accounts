@@ -148,6 +148,9 @@ gem 'scout_apm', '~> 3.0.x'
 # Respond to ELB healthchecks in /ping and /ping/
 gem 'openstax_healthcheck'
 
+# Allow Accounts routes to be accessed under an /accounts prefix (for use in CloudFront)
+gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "eb239c532941f"
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails'
