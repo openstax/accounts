@@ -32,29 +32,4 @@ describe "Remove accounts path prefix" do
     end
   end
 
-  context "Request through /accounts should only be re routed when applicable" do
-    it "shouldn\'t replace /accounts when not at the start of the path" do
-      app_object = DummyApp.new
-      expect(app_object).to receive(:call).with({'PATH_INFO' => '/blah/accounts', 'REQUEST_METHOD'=>'GET'})
-      RemoveAccountsPathPrefix.new(app_object).call({'PATH_INFO' => '/blah/accounts', 'REQUEST_METHOD'=>'GET'})
-    end
-
-    it "should replace /accounts when at the start of the path" do
-      app_object = DummyApp.new
-      expect(app_object).to receive(:call).with({'PATH_INFO' => '/blah', 'REQUEST_METHOD'=>'GET'})
-      RemoveAccountsPathPrefix.new(app_object).call({'PATH_INFO' => '/accounts/blah', 'REQUEST_METHOD'=>'GET'})
-    end
-
-    it "should replace /accounts when not at the start of the path once given twice" do
-      app_object = DummyApp.new
-      expect(app_object).to receive(:call).with({'PATH_INFO' => '/blah/accounts', 'REQUEST_METHOD'=>'GET'})
-      RemoveAccountsPathPrefix.new(app_object).call({'PATH_INFO' => '/accounts/blah/accounts', 'REQUEST_METHOD'=>'GET'})
-    end
-
-    it "should render image" do
-      app_object = DummyApp.new
-      expect(app_object).to receive(:call).with({'PATH_INFO' => '/assets/bg-login.jpg', 'REQUEST_METHOD'=>'GET'})
-      RemoveAccountsPathPrefix.new(app_object).call({'PATH_INFO' => '/accounts/assets/bg-login.jpg', 'REQUEST_METHOD'=>'GET'})
-    end
-  end
 end
