@@ -1,10 +1,5 @@
 require 'rails_helper'
 
-class DummyApp
-  def call(env)
-  end
-end
-
 describe "Remove accounts path prefix" do
   # Ensure that the config.ru gets loaded before these tests
   let(:app) {
@@ -29,6 +24,13 @@ describe "Remove accounts path prefix" do
     it "should be start to sign up" do
       expect_any_instance_of(SignupController).to receive(:start)
       request.get("/accounts/signup")
+    end
+  end
+
+  context "redirects work" do
+    it "should redirect home page to login page with prefix" do
+      response = request.get("/accounts")
+      expect(URI(response.location).path).to eq "/accounts/login"
     end
   end
 
