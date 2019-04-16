@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://github.com/openstax/path_prefixer.git
-  revision: b6d8f45d8b9e702ce6b9b941a83f17a311aed599
-  ref: b6d8f45d8
+  revision: 9d4f406935297f433834892dd18564cb416c50a2
+  ref: 9d4f40693529
   specs:
     openstax_path_prefixer (0.0.1)
       rails (>= 3.0)
