@@ -502,3 +502,23 @@ def expect_security_log(*args)
                                                 .with(*args)
                                                 .and_call_original
 end
+
+module Capybara
+  class Session
+    alias_method :original_visit, :visit
+    def visit(visit_uri)
+      # Note that the feature specs aren't yet modified to pass in a cloudfront simulation
+      # world.  Particularly, expectations on paths are hardcoded without the /accounts
+      # prefix and would need to be modified or taught how to expect during a cloudfront
+      # simulation
+
+      if ENV['SIMULATE_CLOUDFRONT'] == 'true'
+        uri = URI(visit_uri)
+        uri.path = "/#{OpenStax::PathPrefixer.configuration.prefix}#{uri.path}"
+        visit_uri = uri.to_s
+      end
+
+      original_visit(visit_uri)
+    end
+  end
+end
