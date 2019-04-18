@@ -31,7 +31,7 @@ module ProfileHelper
       </span>
     SNIPPET
 
-    "<div class='authentication' data-provider='#{provider}' data-script_name='#{request.script_name}'>#{snippet}</div>".html_safe
+    "<div class='authentication' data-provider='#{provider}'>#{snippet}</div>".html_safe
   end
 
   def email_entry(value:, id:, is_verified:, is_searchable:)

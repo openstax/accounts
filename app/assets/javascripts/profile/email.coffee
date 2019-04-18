@@ -1,7 +1,8 @@
 # The forms in this control are written with x-editable styling so that it looks
 # similar to the other controls.
 
-BASE_URL = "/contact_infos"
+BASE_URL = "#{OX.url_prefix}/contact_infos"
+
 class Email
 
   constructor: (@el) ->
