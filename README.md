@@ -87,6 +87,19 @@ $ RAISE=true rspec
 
 If you encounter issues running features specs, check the version of chromedriver you have installed.  Version 2.38 is known to work.
 
+## Cloudfront
+
+Accounts is able to run with all URLs using an `/accounts` path prefix.  This lets us put Accounts under a Cloudfront distribution and route
+all `/accounts/*` requests to it.  Test this out by adding `/accounts` to the start of any page's path -- navigating from that point forward
+should keep you in an `/accounts` path prefix.
+
+If for some reason Accounts ever causes you to leave the `/accounts` prefix and just return to normal routes, this will be a problem when
+Accounts is deployed to Cloudfront, because Cloudfront won't route that request to Accounts.  We added some middleware to Accounts that will
+freak out if this happens.  You can run the rails server with a `SIMULATE_CLOUDFRONT=true` environment variable and the server will raise an exception if it ever receives a URL without the `/accounts` prefix.  This is useful for clicking around and making sure we have accounted for all of the routes.
+
+You can also use this environment variable when running tests, but note that the expectations on paths ("expect page to have path blah") have
+not been updated to expect the `/accounts` prefix.
+
 ## Background Jobs
 
 Accounts in production runs background jobs using `delayed_job`.

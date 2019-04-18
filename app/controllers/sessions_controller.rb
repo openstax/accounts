@@ -202,7 +202,11 @@ class SessionsController < ApplicationController
       url ||= begin
         referrer_uri = URI(request.referer)
         request_uri = URI(request.url)
-        "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
+        if referrer_uri.host == request_uri.host
+          "#{root_url}?#{request_uri.query}"
+        else
+          "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
+        end
       rescue # in case the referer is bad (see #179)
         root_url
       end

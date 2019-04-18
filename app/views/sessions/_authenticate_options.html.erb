@@ -48,7 +48,7 @@
   </div>
 
   <% end %>
-    <%= lev_form_for :login, url: '/auth/identity/callback',
+    <%= lev_form_for :login, url: post_auth_callback_path(provider: :identity),
         html: {class: 'identity-password'} do |f| %>
 
     <% fh = FormHelper::One.new(f: f,

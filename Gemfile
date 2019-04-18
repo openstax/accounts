@@ -149,7 +149,7 @@ gem 'scout_apm', '~> 3.0.x'
 gem 'openstax_healthcheck'
 
 # Allow Accounts routes to be accessed under an /accounts prefix (for use in CloudFront)
-gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "b6d8f45d8"
+gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "c74c04fd6c1"
 
 group :development, :test do
   # Get env variables from .env file

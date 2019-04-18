@@ -1,3 +1,5 @@
+BASE_URL = "#{OX.url_prefix}"
+
 class AuthenticationOption
 
   constructor: (@el) ->
@@ -19,7 +21,7 @@ class AuthenticationOption
     this.$el.data('provider')
 
   delete: ->
-    $.ajax({type: "DELETE", url: "/auth/#{@getType()}"})
+    $.ajax({type: "DELETE", url: "#{BASE_URL}/auth/#{@getType()}"})
       .success( @handleDelete )
       .error(OX.Alert.display)
 
@@ -40,7 +42,7 @@ class AuthenticationOption
 
   add: ->
     # TODO: figure out a way for the BE to pass the url
-    window.location.href = "/add/#{@getType()}"
+    window.location.href = "#{BASE_URL}/add/#{@getType()}"
 
   handleDelete: (response) ->
     if response.location?
@@ -57,10 +59,10 @@ class Password extends AuthenticationOption
   # TODO we should just use normal links for edit and add, instead of these JS handlers
 
   editPassword: ->
-    window.location.href = "/password/reset"
+    window.location.href = "#{BASE_URL}/password/reset"
 
   add: ->
-    window.location.href = "/password/add"
+    window.location.href = "#{BASE_URL}/password/add"
 
 SPECIAL_TYPES =
   identity: Password
