@@ -17,14 +17,14 @@ Rails.application.routes.draw do
 
     get 'reauthenticate'
 
-    get 'auth/:provider/callback', action: :create
-    post 'auth/:provider/callback', action: :create
+    get 'auth/:provider/callback', action: :create, as: :get_auth_callback
+    post 'auth/:provider/callback', action: :create, as: :post_auth_callback
 
     get 'logout', action: :destroy
 
     get 'redirect_back'
 
-    get 'failure', path: 'auth/failure'
+    get 'failure', path: 'auth/failure', as: :auth_failure
     post 'email_usernames'
 
     # Maintain these deprecated routes for a while until client code learns to
@@ -34,8 +34,15 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'authentications' do
-    delete 'auth/:provider', action: :destroy
-    get 'add/:provider', action: :add
+    delete 'auth/:provider', action: :destroy, as: :destroy_authentication
+    get 'add/:provider', action: :add, as: :add_authentication
+  end
+
+  scope controller: 'signup' do
+    # Don't know if this is the right action; putting a route in here
+    # so we have a name for it and can use a url helper for it (which
+    # will prefix the route appropriately, e.g. for Cloudfront)
+    post 'auth/:provider/signup', action: :start, as: :post_auth_signup
   end
 
   # routes for access via an iframe
