@@ -197,13 +197,6 @@ class UpdateUserSalesforceInfo
 
       user.faculty_status = case contact.faculty_verified
       when "Confirmed"
-        SecurityLog.create!(
-            user: user,
-            application: nil,
-            remote_ip: nil,
-            event_type: :faculty_verified,
-            event_data: { user_id: user.id, salesforce_id: contact.id }
-        )
         :confirmed_faculty
       when "Pending"
         :pending_faculty
@@ -226,7 +219,17 @@ class UpdateUserSalesforceInfo
       end
     end
 
-    let_sf_know_to_send_fac_ver_email = user.faculty_status_changed? && user.confirmed_faculty?
+    if user.faculty_status_changed? && user.confirmed_faculty?
+      let_sf_know_to_send_fac_ver_email = true
+
+      SecurityLog.create!(
+          user: user,
+          application: nil,
+          remote_ip: nil,
+          event_type: :faculty_verified,
+          event_data: { user_id: user.id, salesforce_id: contact.id }
+      )
+    end
 
     user.save! if user.changed?
 
