@@ -22,6 +22,18 @@ RSpec.describe "Controllers affected by initializers/controllers.rb", type: :con
       get :index, r: "https://tutor.openstax.org/hi"
     end
 
+    it 'saves a redirect path from an approved referer' do
+      request.headers.merge!(referer: 'https://openstax.org/cool/page')
+      expect_to_save_redirect("https://openstax.org/hi")
+      get :index, r: "/hi"
+    end
+
+    it 'saves a redirect without a path from an approved referer' do
+      request.headers.merge!(referer: 'https://openstax.org/cool/page')
+      expect_to_save_redirect("https://openstax.org/")
+      get :index, r: "/"
+    end
+
     context "does not store a redirect if" do
       before(:each) { expect_not_to_save_redirect }
 
@@ -33,7 +45,7 @@ RSpec.describe "Controllers affected by initializers/controllers.rb", type: :con
         get :index, r: ""
       end
 
-      it 'has a param without a host' do
+      it 'has a param without a host or referer' do
         get :index, r: "/"
       end
 
@@ -51,6 +63,11 @@ RSpec.describe "Controllers affected by initializers/controllers.rb", type: :con
 
       it 'has a param for a bad site ending with openstax.org' do
         get :index, r: "https://pirateopenstax.org"
+      end
+
+      it 'does not save a redirect path for an unapproved referer' do
+        request.headers.merge!(referer: 'http://pirateopenstax.org')
+        get :index, r: "/hi"
       end
     end
   end
