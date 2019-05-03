@@ -1,0 +1,32 @@
+version: '3.5'
+services:
+  app:
+    build: .
+    ports:
+      - "2999:2999"
+    volumes:
+      - .:/code
+      - /code/tmp/pids
+    networks:
+      - openstax
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    environment:
+      - OXA_DB_HOST=postgres
+  postgres:
+    image: "postgres:9.5"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - openstax
+    environment:
+      - POSTGRES_USER=ox_accounts
+      - POSTGRES_PASSWORD=ox_accounts
+      - POSTGRES_DB=ox_accounts_dev
+networks:
+  openstax:
+    name: openstax
+volumes:
+  pgdata:

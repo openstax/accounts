@@ -1,5 +1,6 @@
 default: &default
   adapter: postgresql
+  host: <%= ENV['OXA_DB_HOST'] || nil %>
   username: <%= ENV['OXA_DB_USER'] || 'ox_accounts' %>
   password: <%= ENV['OXA_DB_PASS'] || 'ox_accounts' %>
 
