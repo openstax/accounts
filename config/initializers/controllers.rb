@@ -71,11 +71,11 @@ ActionController::Base.class_exec do
   end
 
   def save_redirect
-    return true if request.format != :html || request.options? || params["r"].blank?
+    return true if request.format != :html || request.options?
 
-    url = Host.default_host(params["r"], request.referer)
-    
-    return true if !Host.trusted?(url)
+    url = params["r"]
+
+    return true if url.blank? || !Host.trusted?(url)
 
     store_url(url: url)
   end
