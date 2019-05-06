@@ -22,6 +22,11 @@ RSpec.describe "Controllers affected by initializers/controllers.rb", type: :con
       get :index, r: "https://tutor.openstax.org/hi"
     end
 
+    it 'saves a redirect that has a param without a host' do
+      expect_to_save_redirect("/")
+      get :index, r: "/"
+    end
+
     context "does not store a redirect if" do
       before(:each) { expect_not_to_save_redirect }
 
@@ -33,10 +38,6 @@ RSpec.describe "Controllers affected by initializers/controllers.rb", type: :con
         get :index, r: ""
       end
 
-      it 'has a param without a host' do
-        get :index, r: "/"
-      end
-
       it 'has a param not matching valid iframe origins' do
         get :index, r: "https://openstax.badsite.org/hi"
       end
@@ -45,8 +46,12 @@ RSpec.describe "Controllers affected by initializers/controllers.rb", type: :con
         get :index, format: :json
       end
 
-      it 'has an badly formatted valid URL' do
-        get :index, r: "openstax.org/blah"
+      it 'doesn\'t start with a slash' do
+        get :index, r: "openstax"
+      end
+
+      it 'has a relative path' do
+        get :index, r: "../foo/bar"
       end
 
       it 'has a param for a bad site ending with openstax.org' do
