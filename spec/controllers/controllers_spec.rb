@@ -50,7 +50,7 @@ RSpec.describe "Controllers affected by initializers/controllers.rb", type: :con
         get :index, r: "openstax"
       end
 
-      it 'has an relative path' do
+      it 'has a relative path' do
         get :index, r: "../foo/bar"
       end
 
