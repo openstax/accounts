@@ -50,6 +50,10 @@ RSpec.describe "Controllers affected by initializers/controllers.rb", type: :con
         get :index, r: "openstax"
       end
 
+      it 'has an relative path' do
+        get :index, r: "../foo/bar"
+      end
+
       it 'has a param for a bad site ending with openstax.org' do
         get :index, r: "https://pirateopenstax.org"
       end
