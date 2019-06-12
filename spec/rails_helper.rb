@@ -1,6 +1,25 @@
-require 'simplecov'
+ENV['RAILS_ENV'] ||= 'test'
+
+require 'spec_helper'
+require File.expand_path('../../config/environment', __FILE__)
+require 'openstax/salesforce/spec_helpers'
+require 'rspec/rails'
+require 'webdrivers'
+require 'capybara/rails'
+require 'capybara/email/rspec'
+require 'shoulda/matchers'
 require 'parallel_tests'
+require 'simplecov'
 require 'codecov'
+require 'database_cleaner'
+
+include OpenStax::Salesforce::SpecHelpers
+
+Capybara.asset_host = 'http://localhost:2999'
+
+# Webdrivers.install_dir = '/usr/bin/google-chrome'
+# Selenium::WebDriver::Chrome.path = '/usr/bin/google-chrome'
+Webdrivers.logger.level = :DEBUG
 
 # Deactivate automatic result merging, because we use custom result merging code
 SimpleCov.use_merging false
@@ -27,46 +46,29 @@ end
 # Start calculating code coverage
 SimpleCov.start('rails') { merge_timeout 3600 }
 
-ENV['RAILS_ENV'] ||= 'test'
-
-require 'spec_helper'
-require File.expand_path('../../config/environment', __FILE__)
-require 'rspec/rails'
-
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # https://github.com/colszowka/simplecov/issues/369#issuecomment-313493152
 # Load rake tasks so they can be tested.
 Rails.application.load_tasks unless defined?(Rake::Task) && Rake::Task.task_defined?('environment')
 
-require 'openstax/salesforce/spec_helpers'
-include OpenStax::Salesforce::SpecHelpers
-
-require 'shoulda/matchers'
-
-require 'selenium/webdriver'
-
 # https://robots.thoughtbot.com/headless-feature-specs-with-chrome
-Capybara.register_driver :selenium_chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new args: [ 'lang=en' ]
+# Capybara.register_driver :selenium_chrome do |app|
+#   options = Selenium::WebDriver::Chrome::Options.new args: [ 'lang=en' ]
 
-  Capybara::Selenium::Driver.new app, browser: :chrome, options: options
-end
+#   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
+# end
 
-# no-sandbox and disable-dev-shm-usage are required for Chrome to work with Docker (Travis)
+# no-sandbox and disable-gpu are required for Chrome to work with Travis
 Capybara.register_driver :selenium_chrome_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new args: [
-    'headless', 'no-sandbox', 'disable-dev-shm-usage', 'lang=en'
+    'no-sandbox', 'headless', 'disable-dev-shm-usage', 'disable-gpu', 'disable-extensions', 'disable-infobars'
   ]
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
 
 Capybara.javascript_driver = :selenium_chrome_headless
-
-Capybara.asset_host = 'http://localhost:2999'
-
-require 'capybara/email/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
