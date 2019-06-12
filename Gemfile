@@ -213,6 +213,10 @@ group :test do
 
   gem 'db-query-matchers'
 
+# Run feature tests with Selenium
+  gem 'capybara-selenium'
+  gem 'webdrivers', '~> 4.0'
+
   # Testing emails
   gem 'capybara-email'
 
@@ -220,10 +224,6 @@ group :test do
   gem 'fakeredis', require: 'fakeredis/rspec'
 
   gem 'launchy'
-
-  gem 'chromedriver-helper', '~> 2.1'
-
-  gem 'capybara-selenium'
 
   gem 'capybara-screenshot', require: false
 
