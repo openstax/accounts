@@ -17,6 +17,72 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+
+  config.include I18nMacros
+
+  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
+  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
+  # If you're not using ActiveRecord, or you'd prefer not to run each of your
+  # examples within a transaction, remove the following line or assign false
+  # instead of true.
+  config.use_transactional_fixtures = false
+
+  # If true, the base class of anonymous controllers will be inferred
+  # automatically. This will be the default behavior in future versions of
+  # rspec-rails.
+  config.infer_base_class_for_anonymous_controllers = false
+
+  # rspec-rails 3 will no longer automatically infer an example group's spec type
+  # from the file location. You can explicitly opt-in to the feature using this
+  # config option.
+  # To explicitly tag specs without using automatic inference, set the `:type`
+  # metadata manually:
+  #
+  #     describe ThingsController, type: :controller do
+  #       # Equivalent to being in spec/controllers
+  #     end
+  # or set:
+  #   config.infer_spec_type_from_file_location!
+  config.infer_spec_type_from_file_location!
+
+  config.prepend_before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.prepend_before(:all) do
+    metadata = self.class.metadata
+    DatabaseCleaner.strategy = metadata[:js] || metadata[:truncation] ? :truncation : :transaction
+    DatabaseCleaner.start
+  end
+
+  config.prepend_before(:each) do
+    DatabaseCleaner.start
+    EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new
+  end
+
+  config.before(:each) do
+    # Get rid of possibly-shared config setting cache values between test and dev or any leftover
+    # cached values from other test runs. This is 15 seconds faster than `Rails.cache.clear`
+    Rails.cache.delete_matched("rails_settings_cached/*")
+  end
+
+  # Some tests might change I18n.locale.
+  config.before(:each) do |config|
+    I18n.locale = :en
+  end
+
+  # https://github.com/DatabaseCleaner/database_cleaner#rspec-with-capybara-example says:
+  #   "It's also recommended to use append_after to ensure DatabaseCleaner.clean
+  #    runs after the after-test cleanup capybara/rspec installs."
+  config.append_after(:each) do
+    DatabaseCleaner.clean
+  end
+
+  config.append_after(:all) do
+    DatabaseCleaner.clean
+  end
+
   # These two settings work together to allow you to limit a spec run
   # to individual examples or groups you care about by tagging them with
   # `:focus` metadata. When nothing is tagged with `:focus`, all examples
@@ -79,8 +145,13 @@ RSpec.configure do |config|
     expectations.syntax = :expect
   end
 
-  # rspec-mocks config goes here. You can use an alternate test double
-  # library (such as bogus or mocha) by changing the `mock_with` option here.
+  # ## Mock Framework
+  #
+  # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
+  #
+  # config.mock_with :mocha
+  # config.mock_with :flexmock
+  # config.mock_with :rr
   config.mock_with :rspec do |mocks|
     # Enable only the newer, non-monkey-patching expect syntax.
     # For more details, see:
@@ -94,24 +165,142 @@ RSpec.configure do |config|
   end
 end
 
-# http://stackoverflow.com/questions/16507067/testing-stdout-output-in-rspec
-require 'stringio'
+"""
+  Rspec matcher definitions
+"""
+RSpec::Matchers.define_negated_matcher :not_change, :change
 
-def capture_output(&blk)
-  old_stdout = $stdout
-  old_stderr = $stderr
+RSpec::Matchers.define :have_routine_error do |error_code|
+  include RSpec::Matchers::Composable
 
-  begin
-    $stdout = StringIO.new
-    $stderr = StringIO.new
+  match do |actual|
+    actual.errors.any?{|error| error.code == error_code}
+  end
 
-    blk.call
-
-    [$stdout.string, $stderr.string]
-  ensure
-    $stdout = old_stdout
-    $stderr = old_stderr
+  failure_message do |actual|
+    "expected that #{actual} would have error :#{error_code.to_s}"
   end
 end
 
-RSpec::Matchers.define_negated_matcher :not_change, :change
+RSpec::Matchers.define :have_api_error_code do |error_code|
+  include RSpec::Matchers::Composable
+
+  match do |actual|
+    actual.body_as_hash[:errors].any?{|error| error[:code] == error_code}
+  end
+
+  failure_message do |actual|
+    "expected that response would have error '#{error_code.to_s}' but had #{actual.body_as_hash[:errors].map{|error| error[:code]}}"
+  end
+end
+
+RSpec::Matchers.define :have_api_error_status do |error_status|
+  include RSpec::Matchers::Composable
+
+  match do |actual|
+    actual.body_as_hash[:status] == error_status.to_i
+  end
+
+  failure_message do |actual|
+    "expected that response would have status '#{
+    error_status}' but had #{actual.body_as_hash[:status]}"
+  end
+end
+
+RSpec::Matchers.define :have_error do |field, message|
+# Check a model instance for error presence. For example
+#
+#   model = Model.create(id: already_taken_value, name: 'Name')
+#   expect(model).to have_error(:id, :taken)
+#   expect(model).not_to have_error(:name, :blank)
+
+include RSpec::Matchers::Composable
+
+  match do |actual|
+    actual.errors.types.include? field and actual.errors.types[field].include? message
+  end
+
+  failure_message do |actual|
+    if actual.errors[field].empty?
+      "expected #{actual.model_name} to have errors on #{field}, but it had none"
+    else
+      msg = error_msg actual.class, field, message
+      "expected #{actual.errors[field]} to include #{msg.inspect}"
+    end
+  end
+
+  failure_message_when_negated do |actual|
+    msg = error_msg actual.class, field, message
+    "expected #{actual.errors[field]} not to include #{msg.inspect}"
+  end
+end
+
+"""
+  Custom helper methods
+"""
+# Utility for getting error messages for models. It's intended as a replacement
+# for have_error matcher to be used when there is no model instance. For example
+#
+#   visit '/redefine/model/instance'
+#   expect(page).to have_content(error_msg Model, :id, :taken)
+#
+# There two alternative signatures
+#
+# error_msg model, field, error, options = {}
+# error_msg model, group, field, error, options = {}
+#
+# First form expects model to be an ActiveRecord model, a Lev handler with
+# a single paramify block, or a symbol naming one.
+#
+# Second form expects a Lev handler with a paramify block named group, or
+# a symbol naming one.
+def error_msg model, *args
+  model_or_name = model
+  if model.is_a? Symbol
+    model = Object.const_get model.to_s.camelize
+  end
+
+  if model.include? Lev::Handler
+    if args[-1].is_a? Hash
+      options = args.pop
+    else
+      options = {}
+    end
+
+    if args.length == 3
+      group, field, error = args
+    elsif args.length == 2 and model.paramify_classes.keys.length == 1
+      field, error = args
+      group = model.paramify_classes.keys[0]
+    end
+
+    model = model.paramify_classes[group]
+
+    if model.nil?
+      raise "#{model_or_name} is a Lev handler but is not paramified"
+    end
+  else
+    field, error, options = args
+  end
+  options ||= {}
+
+  instance = model.new
+  if options.has_key? :value
+    instance[field] = options[:value]
+  end
+
+  options[:message] = error
+  Lev::BetterActiveModelErrors.generate_message instance, field, :invalid, options
+end
+
+# From: https://github.com/rspec/rspec-rails/issues/925#issuecomment-164094792
+# See also: https://github.com/codeforamerica/ohana-api/blob/master/spec/api/cors_spec.rb
+#
+# Add support for testing `options` requests in RSpec.
+# See: https://github.com/rspec/rspec-rails/issues/925
+def options(*args)
+  reset! unless integration_session
+  integration_session.__send__(:process, :options, *args).tap do
+    copy_session_variables!
+  end
+end
