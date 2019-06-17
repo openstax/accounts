@@ -1,7 +1,7 @@
 ENV['RAILS_ENV'] ||= 'test'
 
+require 'simplecov_helper'
 require File.expand_path('../../config/environment', __FILE__)
-# Add additional requires below this line. Rails is not loaded until this point!
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 require 'openstax/salesforce/spec_helpers'
 require 'rspec/rails'
@@ -10,8 +10,6 @@ require 'capybara/rails'
 require 'capybara/email/rspec'
 require 'shoulda/matchers'
 require 'parallel_tests'
-require 'simplecov'
-require 'codecov'
 require 'database_cleaner'
 require 'spec_helper'
 
@@ -62,37 +60,6 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
-
-"""
-  Config for Simplecov
-"""
-# Deactivate automatic result merging, because we use custom result merging code
-SimpleCov.use_merging false
-
-# Custom result merging code to avoid the many partial merges that SimpleCov usually creates
-# and send to codecov only once
-SimpleCov.at_exit do
-  # Store the result for later merging
-  SimpleCov::ResultMerger.store_result(SimpleCov.result)
-
-  # All processes except one will exit here
-  next unless ParallelTests.last_process?
-
-  # Wait for everyone else to finish
-  ParallelTests.wait_for_other_processes_to_finish
-
-  if ENV['CI'] == 'true'
-    # Send merged result to codecov only if on CI (will generate HTML report by default locally)
-    SimpleCov.formatter = SimpleCov::Formatter::Codecov
-    Rails.application.eager_load!
-  end
-
-  # Merge coverage reports (and maybe send to codecov)
-  SimpleCov::ResultMerger.merged_result.format!
-end
-
-# Start calculating code coverage
-SimpleCov.start('rails') { merge_timeout 3600 }
 
 """
   Custom helpers
