@@ -317,7 +317,7 @@ en:
         Please check <strong>%{email}</strong> for an email listing your usernames, and use one to log in.
 
     authenticate:
-      name_greeting: Hi %{name}!
+      name_greeting: Hello, %{name}!
 
     reauthenticate:
       page_heading: Please log in again before continuing.
