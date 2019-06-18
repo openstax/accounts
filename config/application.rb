@@ -48,7 +48,8 @@ module Accounts
     config.cache_store = :redis_store, {
       url: redis_secrets['url'],
       namespace: redis_secrets['namespaces']['cache'],
-      expires_in: 90.minutes
+      expires_in: 90.minutes,
+      compress: true,
     }
 
     def is_real_production?
