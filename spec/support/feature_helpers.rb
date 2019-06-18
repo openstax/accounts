@@ -228,7 +228,7 @@ def expect_sign_up_page
 end
 
 def expect_authenticate_page
-  expect(page.body).to match(/Hi.*!/)
+  expect(page.body).to match(/Hello.*!/)
 end
 
 def expect_social_sign_up_page

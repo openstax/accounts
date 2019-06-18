@@ -1,9 +1,9 @@
 <%
   login_state = get_login_state
-  names = login_state[:names] || []
+  username_or_email = login_state[:username_or_email]
 %>
 
-<%= ox_card(classes: "login", heading: (t :'.name_greeting', name: names.first)) do %>
+<%= ox_card(classes: "login", heading: (t :'.name_greeting', name: username_or_email)) do %>
 
   <%= render partial: 'authenticate_options', locals: {source: 'authenticate'} %>
 
