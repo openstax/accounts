@@ -12,7 +12,7 @@ gem 'sprockets', '~> 2.12.5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 
 # Bootstrap front-end framework
-gem 'bootstrap-sass', '~> 3.1.1'
+gem 'bootstrap-sass', '~> 3.4.1'
 
 # SCSS stylesheets
 gem 'sass-rails', '~> 5.0'
