@@ -4,7 +4,7 @@ describe EmailAddress, type: :model do
   # format validation specs in `email_address_validations_spec.rb`
   # email address provider validation specs in `domain_mx_validator_spec.rb`
 
-  INVALID_PROVIDER = "#{SecureRandom.hex(3)}.#{SecureRandom.hex(3)}"
+  let(:invalid_provider) { "#{SecureRandom.hex(3)}.#{SecureRandom.hex(3)}" }
 
   let(:strategy) { double('validator') }
 
@@ -26,24 +26,24 @@ describe EmailAddress, type: :model do
 
   describe 'when not whitelisted nor blacklisted' do
     it 'delegates responsibility of email provider validation' do
-      expect(strategy).to receive(:check).with(INVALID_PROVIDER)
+      expect(strategy).to receive(:check).with(invalid_provider)
 
       email = EmailAddress.new
       email.user = FactoryGirl.create(:user)
-      email.value = "WHATEVER@#{INVALID_PROVIDER}"
+      email.value = "WHATEVER@#{invalid_provider}"
       email.valid?
     end
   end
 
   describe 'when not valid email provider' do
     before do
-      expect(strategy).to receive(:check).with(INVALID_PROVIDER).and_return(false)
+      expect(strategy).to receive(:check).with(invalid_provider).and_return(false)
     end
 
     it 'adds an error missing_mx_records' do
       email = EmailAddress.new
       email.user = FactoryGirl.create(:user)
-      email.value = "WHATEVER@#{INVALID_PROVIDER}"
+      email.value = "WHATEVER@#{invalid_provider}"
       email.valid?
       expect(email).to have_error(:value, :missing_mx_records)
     end
@@ -51,12 +51,12 @@ describe EmailAddress, type: :model do
     it 'blacklists domain in the database' do
       email = EmailAddress.new
       email.user = FactoryGirl.create(:user)
-      email.value = "WHATEVER@#{INVALID_PROVIDER}"
+      email.value = "WHATEVER@#{invalid_provider}"
 
       expect{
         email.valid?
       }.to change {
-        EmailDomain.where(value: INVALID_PROVIDER, has_mx: false).count
+        EmailDomain.where(value: invalid_provider, has_mx: false).count
       }
     end
   end
