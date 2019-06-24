@@ -6,13 +6,13 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '4.2.7.1'
+gem 'rails', '4.2.11'
 gem 'rails-i18n', '~> 4'
 gem 'sprockets', '~> 2.12.5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 
 # Bootstrap front-end framework
-gem 'bootstrap-sass', '~> 3.1.1'
+gem 'bootstrap-sass', '~> 3.4.1'
 
 # SCSS stylesheets
 gem 'sass-rails', '~> 5.0'

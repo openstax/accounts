@@ -3,9 +3,7 @@ require 'rails_helper'
 RSpec.describe Admin::ExportUsers, type: :routine do
 
   before(:all) do
-    @user_1 = FactoryGirl.create :user_with_emails, first_name: 'John',
-                                                    last_name: 'Stravinsky',
-                                                    username: 'jstrav'
+    @user_1 = FactoryGirl.create :user_with_emails
     @user_2 = FactoryGirl.create :user, first_name: 'Mary',
                                         last_name: 'Mighty',
                                         username: 'mary'
