@@ -1,19 +1,19 @@
 FactoryBot.define do
   factory :user do
     username { SecureRandom.hex(3) }
-    state 'activated' # otherwise the default from DB will be to 'temp'
+    state { 'activated' } # otherwise the default from DB will be to 'temp'
     first_name { Faker::Name.first_name }
     last_name  { Faker::Name.last_name  }
     trait :admin do
-      is_administrator true
+      is_administrator { true }
     end
 
     factory :temp_user do
-      state 'temp'
+      state { 'temp' }
     end
 
     factory :new_social_user do
-      state 'new_social'
+      state { 'new_social' }
     end
 
     trait :terms_not_agreed do; end
@@ -28,7 +28,7 @@ FactoryBot.define do
 
     factory :user_with_emails do
       transient do
-        emails_count 2
+        emails_count { 2 }
       end
 
       # Leaving this here to show how to do :create instead of :build

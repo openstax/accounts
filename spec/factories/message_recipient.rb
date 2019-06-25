@@ -3,6 +3,6 @@ FactoryBot.define do
     message
     association :contact_info, factory: :email_address
     user { contact_info.user }
-    recipient_type 'to'
+    recipient_type { 'to' }
   end
 end
