@@ -2,12 +2,12 @@ FactoryBot.define do
   factory :message do
     association :application, factory: :doorkeeper_application
     user
-    send_externally_now false
-    subject 'Hello World!'
-    subject_prefix '[Testing]'
+    send_externally_now { false }
+    subject { 'Hello World!' }
+    subject_prefix { '[Testing]' }
 
     transient do
-      recipients_count 1
+      recipients_count { 1 }
     end
 
     after(:build) do |message, evaluator|
