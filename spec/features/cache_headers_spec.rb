@@ -27,11 +27,7 @@ describe "Cache-Control headers", :type => :request do
   }
   # test cached stuff
   before(:each) do
-    #get login_path
-    #signin_as(create_user('user'))
     mock_current_user(user)
-    #log_in('user', 'password')
-    #get '/profile'
   end
 
   context "Requests should get cached headers after a while" do
@@ -39,10 +35,6 @@ describe "Cache-Control headers", :type => :request do
       get '/profile'
       assert_response 200
       expect(response.headers["Cache-Control"]).to eq("no-cache, no-store")
-
-      #etag = response.headers["ETag"]
-      #abort etag.inspect
-      #request.env["HTTP_IF_NONE_MATCH"] = etag
     end
 
     it 'should not allow caching' do
@@ -52,8 +44,7 @@ describe "Cache-Control headers", :type => :request do
 
     it 'should not cache assets' do
       get '/assets/bg-login.jpg'
-      #assert_response 304
-      expect(response.headers["Cache-Control"]).to eq("no-cache")
+      expect(response.headers["Cache-Control"]).to match /public/
     end
   end
 end
