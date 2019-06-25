@@ -18,6 +18,16 @@ module Accounts
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+    config.i18n.default_locale = :en
+    config.i18n.fallbacks = {
+      en_us: :en,
+      en_ca: :en,
+      en_uk: :en,
+      fr_lu: :fr,
+      fr_ca: :fr,
+      fr:    :en,
+      es:    :en,
+    }
 
     config.accounts = ActiveSupport::OrderedOptions.new
     # configure how long a login token is valid for
