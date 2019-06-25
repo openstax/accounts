@@ -27,12 +27,12 @@ describe ContactInfo do
   end
 
   context 'verified user emails' do
-    let(:user1){ FactoryGirl.create :user }
-    let(:user2){ FactoryGirl.create :user }
+    let(:user1){ FactoryBot.create :user }
+    let(:user2){ FactoryBot.create :user }
 
-    let!(:email1) { FactoryGirl.build(:email_address, user: user1,
+    let!(:email1) { FactoryBot.build(:email_address, user: user1,
                                       verified: true, value: 'my1@email.com') }
-    let!(:email2) { FactoryGirl.build(:email_address, user: user2,
+    let!(:email2) { FactoryBot.build(:email_address, user: user2,
                                       verified: true, value: 'my2@email.com') }
 
     it 'does not allow the same user to have a repeated email address regardless of verification and case' do

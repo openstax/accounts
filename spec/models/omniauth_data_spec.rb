@@ -47,7 +47,7 @@ describe OmniauthData do
 
   context 'when auth provider is twitter' do
     it 'stores user information' do
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
       auth_hash = OmniAuth::AuthHash.new provider: 'twitter', uid: '12345678'
       auth_hash.extra = {
         oauth_token: '12345678-abcdefg',
@@ -97,7 +97,7 @@ describe OmniauthData do
 
   context 'when auth provider is google' do
     it 'stores user information' do
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
       auth_hash = OmniAuth::AuthHash.new provider: 'google_oauth2', uid: '12345678901234567890'
       auth_hash.extra = {
         id_token: 'SoMeLoNgRaNdOmStRiNg',

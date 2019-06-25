@@ -18,7 +18,7 @@ describe EmailAddress, type: :model do
       expect(strategy).to receive(:check).exactly(0).times
 
       email = EmailAddress.new
-      email.user = FactoryGirl.create(:user)
+      email.user = FactoryBot.create(:user)
       email.value = "WHATEVER@#{whitelisted_provider}"
       email.valid?
     end
@@ -29,7 +29,7 @@ describe EmailAddress, type: :model do
       expect(strategy).to receive(:check).with(invalid_provider)
 
       email = EmailAddress.new
-      email.user = FactoryGirl.create(:user)
+      email.user = FactoryBot.create(:user)
       email.value = "WHATEVER@#{invalid_provider}"
       email.valid?
     end
@@ -42,7 +42,7 @@ describe EmailAddress, type: :model do
 
     it 'adds an error missing_mx_records' do
       email = EmailAddress.new
-      email.user = FactoryGirl.create(:user)
+      email.user = FactoryBot.create(:user)
       email.value = "WHATEVER@#{invalid_provider}"
       email.valid?
       expect(email).to have_error(:value, :missing_mx_records)
@@ -50,7 +50,7 @@ describe EmailAddress, type: :model do
 
     it 'blacklists domain in the database' do
       email = EmailAddress.new
-      email.user = FactoryGirl.create(:user)
+      email.user = FactoryBot.create(:user)
       email.value = "WHATEVER@#{invalid_provider}"
 
       expect{
@@ -70,7 +70,7 @@ describe EmailAddress, type: :model do
 
     it 'whitelists email provider in the database' do
       email = EmailAddress.new
-      email.user = FactoryGirl.create(:user)
+      email.user = FactoryBot.create(:user)
       email.value = "WHATEVER@#{provider}"
 
       expect{

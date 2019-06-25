@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :message_recipient do
     message
     association :contact_info, factory: :email_address

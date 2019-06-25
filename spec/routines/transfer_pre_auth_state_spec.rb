@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe TransferPreAuthState, type: :routine do
 
   it 'works on the happy path' do
-    user = FactoryGirl.create :user
-    ss = FactoryGirl.create :pre_auth_state, :contact_info_verified, role: "designer"
+    user = FactoryBot.create :user
+    ss = FactoryBot.create :pre_auth_state, :contact_info_verified, role: "designer"
 
     TransferPreAuthState[pre_auth_state: ss, user: user]
 
@@ -15,17 +15,17 @@ RSpec.describe TransferPreAuthState, type: :routine do
   end
 
   it 'does not transfer unverified info' do
-    user = FactoryGirl.create :user
-    ss = FactoryGirl.create :pre_auth_state
+    user = FactoryBot.create :user
+    ss = FactoryBot.create :pre_auth_state
     TransferPreAuthState.call(pre_auth_state: ss, user: user)
     email = user.contact_infos.first
     expect(email.verified).to be(false)
   end
 
   it 'does not explode when the user already has a signed_external_uuid' do
-    user = FactoryGirl.create :user
+    user = FactoryBot.create :user
     user.external_uuids.create(uuid: SecureRandom.uuid)
-    ss = FactoryGirl.create :pre_auth_state, :contact_info_verified, role: "designer",
+    ss = FactoryBot.create :pre_auth_state, :contact_info_verified, role: "designer",
                             signed_data: { 'external_user_uuid' => SecureRandom.uuid }
 
     TransferPreAuthState[pre_auth_state: ss, user: user]

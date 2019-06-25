@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe MessageRecipient do
 
-  let!(:message_recipient) { FactoryGirl.build(:message_recipient) }
+  let!(:message_recipient) { FactoryBot.build(:message_recipient) }
 
   context 'validation' do
 
@@ -14,7 +14,7 @@ describe MessageRecipient do
 
     it 'must have a unique user' do
       message_recipient.save!
-      message_recipient2 = FactoryGirl.build(:message_recipient,
+      message_recipient2 = FactoryBot.build(:message_recipient,
         user: message_recipient.user, message: message_recipient.message)
       expect(message_recipient2).not_to be_valid
       expect(message_recipient2).to have_error(:user_id, :taken)
@@ -22,7 +22,7 @@ describe MessageRecipient do
 
     it 'must have a unique contact_info' do
       message_recipient.save!
-      message_recipient2 = FactoryGirl.build(:message_recipient,
+      message_recipient2 = FactoryBot.build(:message_recipient,
         contact_info: message_recipient.contact_info,
         message: message_recipient.message)
       expect(message_recipient2).not_to be_valid

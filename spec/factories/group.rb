@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :group do
     name nil
@@ -11,11 +11,11 @@ FactoryGirl.define do
 
     after(:build) do |group, evaluator|
       evaluator.members_count.times do
-        group.group_members << FactoryGirl.build(:group_member, group: group)
+        group.group_members << FactoryBot.build(:group_member, group: group)
       end
 
       evaluator.owners_count.times do
-        group.group_owners << FactoryGirl.build(:group_owner, group: group)
+        group.group_owners << FactoryBot.build(:group_owner, group: group)
       end
     end
   end

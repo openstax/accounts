@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user do
     username { SecureRandom.hex(3) }
     state 'activated' # otherwise the default from DB will be to 'temp'
@@ -33,13 +33,13 @@ FactoryGirl.define do
 
       # Leaving this here to show how to do :create instead of :build
       # after(:create) do |user, evaluator|
-      #   FactoryGirl.create_list(:email_address, evaluator.emails_count, user: user)
+      #   FactoryBot.create_list(:email_address, evaluator.emails_count, user: user)
       # end
 
       after(:build) do |user, evaluator|
         evaluator.emails_count.times do
           # make sure build email with nil user so don't make extra unexpected users
-          user.contact_infos << FactoryGirl.build(:email_address, user: nil)
+          user.contact_infos << FactoryBot.build(:email_address, user: nil)
         end
       end
     end

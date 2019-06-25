@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'accept_all_terms'
 
 describe AcceptAllTerms do
-  let!(:users) { (1..15).collect { |i| FactoryGirl.create(:user) } }
+  let!(:users) { (1..15).collect { |i| FactoryBot.create(:user) } }
 
   it 'accept all fine print contracts for users' do
     expect {

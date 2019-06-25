@@ -2,12 +2,12 @@ require 'rails_helper'
 
 RSpec.describe IdentityAccessPolicy do
 
-  let!(:identity)  { FactoryGirl.create :identity }
+  let!(:identity)  { FactoryBot.create :identity }
   let!(:anon)      { AnonymousUser.instance }
-  let!(:temp)      { FactoryGirl.create :temp_user }
-  let!(:user)      { FactoryGirl.create :user }
-  let!(:admin)     { FactoryGirl.create :user, :admin }
-  let!(:app)       { FactoryGirl.create :doorkeeper_application }
+  let!(:temp)      { FactoryBot.create :temp_user }
+  let!(:user)      { FactoryBot.create :user }
+  let!(:admin)     { FactoryBot.create :user, :admin }
+  let!(:app)       { FactoryBot.create :doorkeeper_application }
 
   context 'new, reset_password' do
     it 'cannot be accessed by applications' do

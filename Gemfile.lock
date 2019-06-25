@@ -205,11 +205,11 @@ GEM
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
     execjs (2.7.0)
-    factory_girl (4.7.0)
-      activesupport (>= 3.0.0)
-    factory_girl_rails (4.7.0)
-      factory_girl (~> 4.7.0)
-      railties (>= 3.0.0)
+    factory_bot (5.0.2)
+      activesupport (>= 4.2.0)
+    factory_bot_rails (5.0.2)
+      factory_bot (~> 5.0.2)
+      railties (>= 4.2.0)
     faker (1.6.6)
       i18n (~> 0.5)
     fakeredis (0.6.0)
@@ -668,7 +668,7 @@ DEPENDENCIES
   delayed_job_active_record
   doorkeeper
   dotenv-rails
-  factory_girl_rails
+  factory_bot_rails
   faker
   fakeredis
   fine_print (~> 3.1.0)

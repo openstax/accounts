@@ -3,8 +3,8 @@ require 'rails_helper'
 describe Identity do
   context 'password authentication' do
     before :each do
-      @bcrypt = FactoryGirl.create :identity, password: 'password'
-      @plone = FactoryGirl.create :identity
+      @bcrypt = FactoryBot.create :identity, password: 'password'
+      @plone = FactoryBot.create :identity
       @plone.update_attribute :password_digest, '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B'
     end
 

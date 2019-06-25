@@ -3,9 +3,9 @@ require 'vcr_helper'
 
 RSpec.describe PushSalesforceLead, vcr: VCR_OPTS do
 
-  let!(:email_address) { FactoryGirl.create(:email_address, value: 'f@f.com', verified: true) }
+  let!(:email_address) { FactoryBot.create(:email_address, value: 'f@f.com', verified: true) }
   let!(:user) { email_address.user }
-  let!(:app) { FactoryGirl.create :doorkeeper_application, lead_application_source: "Tutor Signup" }
+  let!(:app) { FactoryBot.create :doorkeeper_application, lead_application_source: "Tutor Signup" }
 
   context "connected to Salesforce" do
     before(:each) { load_salesforce_user }

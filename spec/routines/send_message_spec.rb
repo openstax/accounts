@@ -3,7 +3,7 @@ require 'rails_helper'
 describe SendMessage do
 
   let!(:message) {
-    FactoryGirl.build(:message)
+    FactoryBot.build(:message)
   }
 
   it 'sends the message' do

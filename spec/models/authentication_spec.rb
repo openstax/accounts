@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Authentication do
 
-  let!(:authentication) { FactoryGirl.create(:authentication) }
+  let!(:authentication) { FactoryBot.create(:authentication) }
 
   context "when an authentication exists" do
     it "is returned by by_provider_and_uid" do
@@ -48,7 +48,7 @@ describe Authentication do
     end
 
     it "is deleted when it isn't the user's last" do
-      FactoryGirl.create(:authentication, user: authentication.user, provider: 'blah')
+      FactoryBot.create(:authentication, user: authentication.user, provider: 'blah')
       expect{authentication.destroy}.to change{Authentication.count}.by(-1)
     end
   end

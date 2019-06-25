@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Admin::UsersController, type: :controller do
-  let!(:user) { FactoryGirl.create :user }
-  let!(:identity) { FactoryGirl.create :identity, user: user }
-  let(:admin) { FactoryGirl.create :user, :admin, :terms_agreed }
+  let!(:user) { FactoryBot.create :user }
+  let!(:identity) { FactoryBot.create :identity, user: user }
+  let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }
 
   before(:each) do
     controller.sign_in! admin
@@ -46,8 +46,8 @@ RSpec.describe Admin::UsersController, type: :controller do
 
   describe "PUT #mark_users_updated" do
     it "should update unread_updates at a button push" do
-      FactoryGirl.create :application_user, unread_updates: 1
-      FactoryGirl.create :application_user, unread_updates: 3
+      FactoryBot.create :application_user, unread_updates: 1
+      FactoryBot.create :application_user, unread_updates: 3
 
       put :mark_users_updated
 

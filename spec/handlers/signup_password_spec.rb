@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SignupPassword, type: :handler do
 
   let(:pre_auth_state) {
-    FactoryGirl.create(:pre_auth_state, :contact_info_verified, contact_info_value: "bob@armstrong.com")
+    FactoryBot.create(:pre_auth_state, :contact_info_verified, contact_info_value: "bob@armstrong.com")
   }
 
   context "when the passwords don't match" do

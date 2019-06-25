@@ -12,15 +12,15 @@ feature 'Admin PreAuthStates page' do
 
     it "works" do
       Timecop.freeze(4.weeks.ago) do
-        FactoryGirl.create :pre_auth_state, contact_info_value: "a@a.com"
+        FactoryBot.create :pre_auth_state, contact_info_value: "a@a.com"
       end
       Timecop.freeze(1.9.weeks.ago) do
-        FactoryGirl.create :pre_auth_state, contact_info_value: "b@b.com"
+        FactoryBot.create :pre_auth_state, contact_info_value: "b@b.com"
       end
       Timecop.freeze(0.9.weeks.ago) do
-        FactoryGirl.create :pre_auth_state, contact_info_value: "c@c.com"
+        FactoryBot.create :pre_auth_state, contact_info_value: "c@c.com"
       end
-      FactoryGirl.create :pre_auth_state, contact_info_value: "d@d.com"
+      FactoryBot.create :pre_auth_state, contact_info_value: "d@d.com"
 
       visit '/admin/pre_auth_states'
 

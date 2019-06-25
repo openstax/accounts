@@ -86,7 +86,7 @@ feature "User can't sign in", js: true do
 
     scenario "user tries to sign up with used oauth email" do
       user = create_user 'user'
-      authentication = FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+      authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
       arrive_from_app
       click_sign_up
@@ -138,7 +138,7 @@ feature "User can't sign in", js: true do
     scenario "just has social auth" do
       @user.identity.destroy
       password_authentication = @user.authentications.first
-      FactoryGirl.create :authentication, provider: 'google_oauth2', user: @user
+      FactoryBot.create :authentication, provider: 'google_oauth2', user: @user
       password_authentication.destroy
 
       complete_login_username_or_email_screen('user@example.com')
@@ -173,7 +173,7 @@ feature "User can't sign in", js: true do
     end
 
     scenario "has both password and social auths" do
-      FactoryGirl.create :authentication, provider: 'google_oauth2', user: @user
+      FactoryBot.create :authentication, provider: 'google_oauth2', user: @user
       complete_login_username_or_email_screen('user@example.com')
       expect(page).to have_content(t :"sessions.authenticate_options.reset_password")
       screenshot!
@@ -182,7 +182,7 @@ feature "User can't sign in", js: true do
 
   scenario 'user has a linked google auth but uses a different google account to login' do
     user = create_user 'user'
-    authentication = FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+    authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
     arrive_from_app
     complete_login_username_or_email_screen('user')
@@ -199,7 +199,7 @@ feature "User can't sign in", js: true do
 
   scenario 'social login fails with invalid_credentials notifies devs' do
     user = create_user 'user'
-    authentication = FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+    authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
     arrive_from_app
     complete_login_username_or_email_screen('user')

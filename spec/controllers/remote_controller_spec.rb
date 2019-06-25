@@ -3,7 +3,7 @@ require 'rails_helper'
 describe RemoteController, type: :controller do
 
   let(:trusted_host) { "https://#{Rails.application.secrets.trusted_hosts.last}" }
-  let(:user)         { FactoryGirl.create :user, :terms_agreed }
+  let(:user)         { FactoryBot.create :user, :terms_agreed }
 
   context 'loading iframe' do
     render_views

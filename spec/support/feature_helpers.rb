@@ -7,9 +7,9 @@ def create_user(username, password='password', terms_agreed=nil)
 
   return if User.find_by_username(username).present?
 
-  user = FactoryGirl.create :user, terms_agreed_option, username: username
-  identity = FactoryGirl.create :identity, user: user, password: password
-  authentication = FactoryGirl.create :authentication, user: user,
+  user = FactoryBot.create :user, terms_agreed_option, username: username
+  identity = FactoryBot.create :identity, user: user, password: password
+  authentication = FactoryBot.create :authentication, user: user,
                                                        provider: 'identity',
                                                        uid: identity.uid
   return user
@@ -43,7 +43,7 @@ def create_nonlocal_user(username, provider='facebook')
     end
   data = OmniauthData.new(auth_data)
 
-  user = FactoryGirl.create(:user)
+  user = FactoryBot.create(:user)
   result = TransferOmniauthData.call(data, user)
   raise "create_nonlocal_user for #{username} failed" if result.errors.any?
   user.save!
@@ -62,7 +62,7 @@ def create_new_application(trusted = false)
 end
 
 def create_email_address_for(user, email_address, confirmation_code=nil)
-  FactoryGirl.create(:email_address, user: user, value: email_address,
+  FactoryBot.create(:email_address, user: user, value: email_address,
                      confirmation_code: confirmation_code,
                      verified: confirmation_code.nil?)
 end
@@ -88,7 +88,7 @@ def link_in_last_email
 end
 
 def create_application(skip_terms: false)
-  app = FactoryGirl.create(:doorkeeper_application, :trusted, skip_terms: skip_terms)
+  app = FactoryBot.create(:doorkeeper_application, :trusted, skip_terms: skip_terms)
 
   # We want to provide a local "external" redirect uri so our specs aren't actually
   # making HTTP calls against real external URLs like "example.com"
@@ -98,7 +98,7 @@ def create_application(skip_terms: false)
                  external_app_for_specs_url
   app.update_column(:redirect_uri, redirect_uri)
 
-  FactoryGirl.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
+  FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
   app
 end
 

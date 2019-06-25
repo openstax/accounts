@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
 
-  let!(:user) { FactoryGirl.create :user, :terms_agreed }
+  let!(:user) { FactoryBot.create :user, :terms_agreed }
 
   context 'GET edit' do
     before(:each) { controller.sign_in! user }

@@ -2,9 +2,9 @@ require 'rails_helper'
 require 'unexpire_all_passwords'
 
 describe UnexpireAllPasswords do
-  let!(:users) { (1..5).collect { |i| FactoryGirl.create(:user) } }
+  let!(:users) { (1..5).collect { |i| FactoryBot.create(:user) } }
   let!(:identities) {
-    users.collect { |user| FactoryGirl.create(:identity, user: user,
+    users.collect { |user| FactoryBot.create(:identity, user: user,
                                               password_expires_at: 1.year.from_now) }
   }
 

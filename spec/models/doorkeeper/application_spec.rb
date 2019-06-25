@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Doorkeeper::Application, type: :model do
-  subject(:application) { FactoryGirl.create :doorkeeper_application }
+  subject(:application) { FactoryBot.create :doorkeeper_application }
 
   it { is_expected.to have_many(:application_users).dependent(:destroy) }
   it { is_expected.to have_many(:users) }

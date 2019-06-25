@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Admin::ContactInfosController, type: :controller do
-  let!(:user) { FactoryGirl.create :user_with_emails }
-  let(:admin) { FactoryGirl.create :user, :admin, :terms_agreed }
+  let!(:user) { FactoryBot.create :user_with_emails }
+  let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }
   let(:email) { user.email_addresses.first }
 
   before(:each) do

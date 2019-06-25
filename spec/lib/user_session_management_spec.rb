@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe UserSessionManagement, type: :lib do
-  let(:user_1)     { FactoryGirl.create(:user) }
-  let(:user_2)     { FactoryGirl.create(:user) }
+  let(:user_1)     { FactoryBot.create(:user) }
+  let(:user_2)     { FactoryBot.create(:user) }
 
   let(:controller) { ActionController::Base.new }
   let(:main_app)   do
@@ -77,8 +77,8 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'save_pre_auth_state clears login state and old signup records and stores new signup info' do
-      pre_auth_state_1 = FactoryGirl.create :pre_auth_state
-      pre_auth_state_2 = FactoryGirl.create :pre_auth_state
+      pre_auth_state_1 = FactoryBot.create :pre_auth_state
+      pre_auth_state_2 = FactoryBot.create :pre_auth_state
       controller.instance_variable_set '@pre_auth_state', pre_auth_state_1
       expect(controller).to receive(:clear_login_state)
       expect(controller).to receive(:clear_pre_auth_state)
@@ -87,25 +87,25 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'pre_auth_state returns the pre_auth_state record stored in the session' do
-      pre_auth_state = FactoryGirl.create :pre_auth_state
+      pre_auth_state = FactoryBot.create :pre_auth_state
       session[:signup] = pre_auth_state.id.to_s
       expect(controller.pre_auth_state).to eq pre_auth_state
     end
 
     it 'signup_role returns the role in the pre_auth_state' do
-      pre_auth_state = FactoryGirl.create :pre_auth_state
+      pre_auth_state = FactoryBot.create :pre_auth_state
       session[:signup] = pre_auth_state.id.to_s
       expect(controller.signup_role).to eq pre_auth_state.role
     end
 
     it 'signup_email returns the email in the pre_auth_state' do
-      pre_auth_state = FactoryGirl.create :pre_auth_state
+      pre_auth_state = FactoryBot.create :pre_auth_state
       session[:signup] = pre_auth_state.id.to_s
       expect(controller.signup_email).to eq pre_auth_state.contact_info_value
     end
 
     it 'clear_pre_auth_state removes the signup info stored in the session' do
-      pre_auth_state = FactoryGirl.create :pre_auth_state
+      pre_auth_state = FactoryBot.create :pre_auth_state
       session[:signup] = pre_auth_state.id.to_s
       controller.clear_pre_auth_state
       expect(controller.pre_auth_state).to be_nil
@@ -114,7 +114,7 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'set_client_app stores the client app in the session, if it exists' do
-      app = FactoryGirl.create :doorkeeper_application
+      app = FactoryBot.create :doorkeeper_application
       expect(session).to receive(:[]=).with(:client_app, app.id)
       controller.set_client_app(app.uid)
       expect(session).to receive(:[]=).with(:client_app, nil)
@@ -122,7 +122,7 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'get_client_app returns the client app stored in the session' do
-      app = FactoryGirl.create :doorkeeper_application
+      app = FactoryBot.create :doorkeeper_application
       controller.set_client_app(app.uid)
       expect(controller.get_client_app).to eq app
       controller.set_client_app(SecureRandom.hex)
@@ -131,7 +131,7 @@ RSpec.describe UserSessionManagement, type: :lib do
 
     context 'set_alternate_signup_url' do
       it 'stores the alt signup url if it is a registered redirect_uri for the stored app' do
-        app = FactoryGirl.create :doorkeeper_application
+        app = FactoryBot.create :doorkeeper_application
         controller.set_client_app(app.uid)
         expect(session).to receive(:[]=).with(:alt_signup, app.redirect_uri)
         controller.set_alternate_signup_url(app.redirect_uri)
@@ -151,7 +151,7 @@ RSpec.describe UserSessionManagement, type: :lib do
       end
 
       it 'decodes the provided redirect_uri as needed' do
-        app = FactoryGirl.create :doorkeeper_application
+        app = FactoryBot.create :doorkeeper_application
         controller.set_client_app(app.uid)
         expect(session).to receive(:[]=).with(:alt_signup, app.redirect_uri)
         controller.set_alternate_signup_url(app.redirect_uri)
@@ -163,7 +163,7 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'get_alternate_signup_url returns the alt signup url stored in the session' do
-      app = FactoryGirl.create :doorkeeper_application
+      app = FactoryBot.create :doorkeeper_application
       controller.set_client_app(app.uid)
       controller.set_alternate_signup_url(app.redirect_uri)
       expect(controller.get_alternate_signup_url).to eq app.redirect_uri
@@ -237,8 +237,8 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'save_pre_auth_state clears login state and old signup records and stores new signup info' do
-      pre_auth_state_1 = FactoryGirl.create :pre_auth_state
-      pre_auth_state_2 = FactoryGirl.create :pre_auth_state
+      pre_auth_state_1 = FactoryBot.create :pre_auth_state
+      pre_auth_state_2 = FactoryBot.create :pre_auth_state
       controller.instance_variable_set '@pre_auth_state', pre_auth_state_1
       expect(controller).to receive(:clear_login_state)
       expect(controller).to receive(:clear_pre_auth_state)
@@ -247,25 +247,25 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'pre_auth_state returns the pre_auth_state record stored in the session' do
-      pre_auth_state = FactoryGirl.create :pre_auth_state
+      pre_auth_state = FactoryBot.create :pre_auth_state
       session[:signup] = pre_auth_state.id.to_s
       expect(controller.pre_auth_state).to eq pre_auth_state
     end
 
     it 'signup_role returns the role in the pre_auth_state' do
-      pre_auth_state = FactoryGirl.create :pre_auth_state
+      pre_auth_state = FactoryBot.create :pre_auth_state
       session[:signup] = pre_auth_state.id.to_s
       expect(controller.signup_role).to eq pre_auth_state.role
     end
 
     it 'signup_email returns the email in the pre_auth_state' do
-      pre_auth_state = FactoryGirl.create :pre_auth_state
+      pre_auth_state = FactoryBot.create :pre_auth_state
       session[:signup] = pre_auth_state.id.to_s
       expect(controller.signup_email).to eq pre_auth_state.contact_info_value
     end
 
     it 'clear_pre_auth_state removes the signup info stored in the session' do
-      pre_auth_state = FactoryGirl.create :pre_auth_state
+      pre_auth_state = FactoryBot.create :pre_auth_state
       session[:signup] = pre_auth_state.id.to_s
       controller.clear_pre_auth_state
       expect(controller.pre_auth_state).to be_nil
@@ -274,7 +274,7 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'set_client_app stores the client app in the session, if it exists' do
-      app = FactoryGirl.create :doorkeeper_application
+      app = FactoryBot.create :doorkeeper_application
       expect(session).to receive(:[]=).with(:client_app, app.id)
       controller.set_client_app(app.uid)
       expect(session).to receive(:[]=).with(:client_app, nil)
@@ -282,7 +282,7 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'get_client_app returns the client app stored in the session' do
-      app = FactoryGirl.create :doorkeeper_application
+      app = FactoryBot.create :doorkeeper_application
       controller.set_client_app(app.uid)
       expect(controller.get_client_app).to eq app
       controller.set_client_app(SecureRandom.hex)
@@ -291,7 +291,7 @@ RSpec.describe UserSessionManagement, type: :lib do
 
     context 'set_alternate_signup_url' do
       it 'stores the alt signup url if it is a registered redirect_uri for the stored app' do
-        app = FactoryGirl.create :doorkeeper_application
+        app = FactoryBot.create :doorkeeper_application
         controller.set_client_app(app.uid)
         expect(session).to receive(:[]=).with(:alt_signup, app.redirect_uri)
         controller.set_alternate_signup_url(app.redirect_uri)
@@ -311,7 +311,7 @@ RSpec.describe UserSessionManagement, type: :lib do
       end
 
       it 'decodes the provided redirect_uri as needed' do
-        app = FactoryGirl.create :doorkeeper_application
+        app = FactoryBot.create :doorkeeper_application
         controller.set_client_app(app.uid)
         expect(session).to receive(:[]=).with(:alt_signup, app.redirect_uri)
         controller.set_alternate_signup_url(app.redirect_uri)
@@ -323,7 +323,7 @@ RSpec.describe UserSessionManagement, type: :lib do
     end
 
     it 'get_alternate_signup_url returns the alt signup url stored in the session' do
-      app = FactoryGirl.create :doorkeeper_application
+      app = FactoryBot.create :doorkeeper_application
       controller.set_client_app(app.uid)
       controller.set_alternate_signup_url(app.redirect_uri)
       expect(controller.get_alternate_signup_url).to eq app.redirect_uri

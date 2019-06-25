@@ -4,7 +4,7 @@ describe SetPassword do
   let(:user) { identity.user }
 
   context 'setting the password' do
-    let!(:identity) { FactoryGirl.create :identity, password: 'qwertyui' }
+    let!(:identity) { FactoryBot.create :identity, password: 'qwertyui' }
 
     it "sets user's password" do
       expect(identity.authenticate('qwertyui')).to eq identity
@@ -44,7 +44,7 @@ describe SetPassword do
   end
 
   context 'password expiration' do
-    let!(:identity) { FactoryGirl.create :identity }
+    let!(:identity) { FactoryBot.create :identity }
 
     it 'is set when password is changed' do
       expect(identity.password_expires_at).to be_nil

@@ -2,15 +2,15 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::ContactInfosController, type: :controller, api: true, version: :v1 do
 
-  let!(:untrusted_application)     { FactoryGirl.create :doorkeeper_application }
+  let!(:untrusted_application)     { FactoryBot.create :doorkeeper_application }
 
-  let!(:right_user) { FactoryGirl.create :user }
-  let!(:wrong_user) { FactoryGirl.create :user }
+  let!(:right_user) { FactoryBot.create :user }
+  let!(:wrong_user) { FactoryBot.create :user }
 
-  let!(:right_user_token)    { FactoryGirl.create :doorkeeper_access_token,
+  let!(:right_user_token)    { FactoryBot.create :doorkeeper_access_token,
                                                   application: untrusted_application,
                                                   resource_owner_id: right_user.id }
-  let!(:wrong_user_token)    { FactoryGirl.create :doorkeeper_access_token,
+  let!(:wrong_user_token)    { FactoryBot.create :doorkeeper_access_token,
                                                   application: untrusted_application,
                                                   resource_owner_id: wrong_user.id }
 

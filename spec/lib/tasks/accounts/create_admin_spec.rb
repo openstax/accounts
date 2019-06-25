@@ -4,7 +4,7 @@ require 'rake'
 describe 'accounts:create_admin' do
   include_context "rake"
 
-  before(:all) { FactoryGirl.create :user }
+  before(:all) { FactoryBot.create :user }
 
   it 'creates an admin user' do
     expect {
@@ -18,7 +18,7 @@ describe 'accounts:create_admin' do
   end
 
   it 'makes an existing user an admin user' do
-    user = FactoryGirl.create :user
+    user = FactoryBot.create :user
     expect {
       subject.invoke(user.username, 'passw0rd')
     }.to_not change { User.count }

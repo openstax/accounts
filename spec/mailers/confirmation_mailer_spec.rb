@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe ConfirmationMailer, type: :mailer do
-  let(:user) { FactoryGirl.create :user, first_name: 'John', last_name: 'Doe', suffix: 'Jr.' }
-  let(:email) { FactoryGirl.create :email_address, value: 'to@example.org',
+  let(:user) { FactoryBot.create :user, first_name: 'John', last_name: 'Doe', suffix: 'Jr.' }
+  let(:email) { FactoryBot.create :email_address, value: 'to@example.org',
                                    user_id: user.id, confirmation_code: '1234', confirmation_pin: '123456' }
 
   describe "instructions" do

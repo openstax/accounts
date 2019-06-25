@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe AddEmailToUser do
-  let(:user) { FactoryGirl.create :user }
+  let(:user) { FactoryBot.create :user }
 
   context 'when email address is valid' do
     it 'adds it to the user' do

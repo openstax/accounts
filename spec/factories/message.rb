@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :message do
     association :application, factory: :doorkeeper_application
     user
@@ -11,9 +11,9 @@ FactoryGirl.define do
     end
 
     after(:build) do |message, evaluator|
-      message.body ||= FactoryGirl.build(:message_body, message: message)
+      message.body ||= FactoryBot.build(:message_body, message: message)
       evaluator.recipients_count.times do
-        message.message_recipients << FactoryGirl.build(:message_recipient,
+        message.message_recipients << FactoryBot.build(:message_recipient,
                                                         message: message)
       end
     end

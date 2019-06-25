@@ -173,7 +173,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.5'
 
   # Fixture replacement
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
 
   # fake data generation
   gem 'faker'

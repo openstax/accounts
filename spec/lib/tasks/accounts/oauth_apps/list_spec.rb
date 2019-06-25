@@ -4,8 +4,8 @@ require 'rake'
 describe 'accounts:oauth_apps:list' do
   include_context 'rake'
 
-  let!(:tutor) { FactoryGirl.create :doorkeeper_application, name: 'OpenStax Tutor' }
-  let!(:biglearn) { FactoryGirl.create :doorkeeper_application, name: 'OpenStax Biglearn' }
+  let!(:tutor) { FactoryBot.create :doorkeeper_application, name: 'OpenStax Tutor' }
+  let!(:biglearn) { FactoryBot.create :doorkeeper_application, name: 'OpenStax Biglearn' }
 
   it 'lists all application names, tokens and secrets' do
     capture_output do
