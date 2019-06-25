@@ -4,7 +4,7 @@ describe ApplicationGroup do
 
   context 'validation' do
     it 'requires application and group' do
-      application_group = FactoryGirl.build :application_group
+      application_group = FactoryBot.build :application_group
       application = application_group.application
       group = application_group.group
 
@@ -22,8 +22,8 @@ describe ApplicationGroup do
     end
 
     it 'cannot have the same application and group' do
-      application_group = FactoryGirl.create :application_group
-      application_group2 = FactoryGirl.build :application_group,
+      application_group = FactoryBot.create :application_group
+      application_group2 = FactoryBot.build :application_group,
                             application: application_group.application
       expect(application_group2).to be_valid
       application_group2.group = application_group.group

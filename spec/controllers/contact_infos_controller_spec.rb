@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe ContactInfosController, type: :controller do
 
-  let!(:user)         { FactoryGirl.create :user, :terms_agreed }
-  let!(:another_user) { FactoryGirl.create :user, :terms_agreed }
-  let!(:contact_info) { FactoryGirl.build :email_address, user: user }
+  let!(:user)         { FactoryBot.create :user, :terms_agreed }
+  let!(:another_user) { FactoryBot.create :user, :terms_agreed }
+  let!(:contact_info) { FactoryBot.build :email_address, user: user }
 
   context 'POST create' do
     it 'creates a new ContactInfo' do
@@ -46,7 +46,7 @@ RSpec.describe ContactInfosController, type: :controller do
     render_views
 
     before :each do
-      @email = FactoryGirl.create(
+      @email = FactoryBot.create(
         :email_address, confirmation_code: '1234', verified: false, value: 'user@example.com'
       )
     end
@@ -82,10 +82,10 @@ RSpec.describe ContactInfosController, type: :controller do
 
   context "GET 'confirm/unclaimed'" do
     render_views
-    let(:user)  { FactoryGirl.create :user_with_emails, state: 'unclaimed', emails_count: 1 }
+    let(:user)  { FactoryBot.create :user_with_emails, state: 'unclaimed', emails_count: 1 }
 
     let(:email) do
-      FactoryGirl.create(:email_address, user: user,
+      FactoryBot.create(:email_address, user: user,
                         confirmation_code: '1234', verified: false, value: 'user@example.com' )
     end
 

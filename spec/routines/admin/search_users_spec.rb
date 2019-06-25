@@ -3,22 +3,22 @@ require 'rails_helper'
 RSpec.describe Admin::SearchUsers, type: :routine do
 
   let!(:user_1)          do
-    FactoryGirl.create :user_with_emails, first_name: 'John',
+    FactoryBot.create :user_with_emails, first_name: 'John',
                                           last_name: 'Stravinsky',
                                           username: 'jstrav'
   end
   let!(:user_2)          do
-    FactoryGirl.create :user, first_name: 'Mary',
+    FactoryBot.create :user, first_name: 'Mary',
                               last_name: 'Mighty',
                               username: 'mary'
   end
   let!(:user_3)          do
-    FactoryGirl.create :user, first_name: 'John',
+    FactoryBot.create :user, first_name: 'John',
                               last_name: 'Stead',
                               username: 'jstead'
   end
   let!(:user_4)          do
-    FactoryGirl.create :user_with_emails, first_name: 'Bob',
+    FactoryBot.create :user_with_emails, first_name: 'Bob',
                                           last_name: 'JST',
                                           username: 'bigbear'
   end
@@ -121,7 +121,7 @@ RSpec.describe Admin::SearchUsers, type: :routine do
 
     let!(:billy_users) do
       (0..45).to_a.map do |ii|
-        FactoryGirl.create :user,
+        FactoryBot.create :user,
                            first_name: "Billy#{ii.to_s.rjust(2, '0')}",
                            last_name: "Bob_#{(45-ii).to_s.rjust(2,'0')}",
                            username: "billy_#{ii.to_s.rjust(2, '0')}"
@@ -153,13 +153,13 @@ RSpec.describe Admin::SearchUsers, type: :routine do
   context "sorting" do
 
     let!(:bob_brown) do
-      FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
+      FactoryBot.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
     end
     let!(:bob_jones) do
-      FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
+      FactoryBot.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
     end
     let!(:tim_jones) do
-      FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
+      FactoryBot.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
     end
 
     it "should allow sort by multiple fields in different directions" do

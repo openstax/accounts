@@ -6,7 +6,7 @@ RSpec.describe MarkContactInfoVerified, type: :routine do
     [ :pre_auth_state, :is_contact_info_verified? ]
   ].each do |klass, method|
     context klass.to_s do
-      let(:instance) { FactoryGirl.create klass }
+      let(:instance) { FactoryBot.create klass }
       let(:method)   { method }
 
       it "marks the #{klass} as verified" do

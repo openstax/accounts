@@ -4,16 +4,16 @@ module Oauth
 
   describe ApplicationsController, type: :controller do
 
-    let!(:admin) { FactoryGirl.create :user, :terms_agreed, :admin }
-    let!(:user)  { FactoryGirl.create :user, :terms_agreed }
-    let!(:user2) { FactoryGirl.create :user }
+    let!(:admin) { FactoryBot.create :user, :terms_agreed, :admin }
+    let!(:user)  { FactoryBot.create :user, :terms_agreed }
+    let!(:user2) { FactoryBot.create :user }
 
-    let!(:trusted_application_admin)   { FactoryGirl.create :doorkeeper_application, :trusted }
-    let!(:untrusted_application_admin) { FactoryGirl.create :doorkeeper_application }
-    let!(:trusted_application_user)    { FactoryGirl.create :doorkeeper_application, :trusted }
-    let!(:untrusted_application_user)  { FactoryGirl.create :doorkeeper_application }
-    let!(:trusted_application_user2)   { FactoryGirl.create :doorkeeper_application, :trusted }
-    let!(:untrusted_application_user2) { FactoryGirl.create :doorkeeper_application }
+    let!(:trusted_application_admin)   { FactoryBot.create :doorkeeper_application, :trusted }
+    let!(:untrusted_application_admin) { FactoryBot.create :doorkeeper_application }
+    let!(:trusted_application_user)    { FactoryBot.create :doorkeeper_application, :trusted }
+    let!(:untrusted_application_user)  { FactoryBot.create :doorkeeper_application }
+    let!(:trusted_application_user2)   { FactoryBot.create :doorkeeper_application, :trusted }
+    let!(:untrusted_application_user2) { FactoryBot.create :doorkeeper_application }
 
     before(:each) do
       trusted_application_admin.owner.add_member(admin)
@@ -174,8 +174,8 @@ module Oauth
                      redirect_uri: 'https://www.example.net',
                      trusted: true
                    }
-                          
-      expect(response).to have_http_status :forbidden     
+
+      expect(response).to have_http_status :forbidden
     end
 
     it "should not let a user update someone else's application" do

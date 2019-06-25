@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :security_log do
     user
     application nil

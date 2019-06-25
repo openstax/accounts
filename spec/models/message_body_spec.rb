@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe MessageBody do
 
-  let!(:message_body) { FactoryGirl.build(:message_body) }
+  let!(:message_body) { FactoryBot.build(:message_body) }
 
   context 'validation' do
 
@@ -22,7 +22,7 @@ describe MessageBody do
 
     it 'must have a unique message' do
       message_body.save!
-      message_body2 = FactoryGirl.build(:message_body,
+      message_body2 = FactoryBot.build(:message_body,
                         message: message_body.message)
       expect(message_body2).not_to be_valid
       expect(message_body2).to have_error(:message_id, :taken)

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :application_user do
     transient do
       username { SecureRandom.hex(3) }
@@ -7,7 +7,7 @@ FactoryGirl.define do
     end
 
     association :application, factory: :doorkeeper_application
-    user { FactoryGirl.build(:user, :username => username,
+    user { FactoryBot.build(:user, :username => username,
                                     :first_name => first_name,
                                     :last_name => last_name) }
     unread_updates 1
@@ -20,13 +20,13 @@ FactoryGirl.define do
         emails_count 2
       end
 
-      user { FactoryGirl.build(:user, :username => username,
+      user { FactoryBot.build(:user, :username => username,
                                       :first_name => first_name,
                                       :last_name => last_name) }
 
       after(:build) do |application_user, evaluator|
         evaluator.emails_count.times do
-          application_user.user.contact_infos << FactoryGirl.build(:email_address)
+          application_user.user.contact_infos << FactoryBot.build(:email_address)
         end
       end
     end

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe AuthenticationsController, type: :controller do
-  let(:user)            { FactoryGirl.create :user, :terms_agreed }
-  let!(:authentication) { FactoryGirl.create :authentication, user: user, provider: 'facebook' }
+  let(:user)            { FactoryBot.create :user, :terms_agreed }
+  let!(:authentication) { FactoryBot.create :authentication, user: user, provider: 'facebook' }
 
   context '#destroy' do
     context 'with only 1 authentication' do
@@ -32,7 +32,7 @@ describe AuthenticationsController, type: :controller do
     end
 
     context 'with another authentication' do
-      before { FactoryGirl.create :authentication, user: user, provider: 'twitter' }
+      before { FactoryBot.create :authentication, user: user, provider: 'twitter' }
 
       context 'with recent signin' do
         before { controller.sign_in! user }

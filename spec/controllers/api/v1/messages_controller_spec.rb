@@ -3,32 +3,32 @@ require 'rails_helper'
 describe Api::V1::MessagesController, type: :controller, api: true, version: :v1 do
 
   let!(:untrusted_application) {
-    FactoryGirl.create :doorkeeper_application,
+    FactoryBot.create :doorkeeper_application,
                        email_from_address: 'app@example.com'
   }
   let!(:trusted_application)   {
-    FactoryGirl.create :doorkeeper_application, :trusted,
+    FactoryBot.create :doorkeeper_application, :trusted,
                        email_from_address: 'app@example.com'
   }
-  let!(:user_1)                { FactoryGirl.create :user }
+  let!(:user_1)                { FactoryBot.create :user }
 
   (2..13).each do |n|
-    let!("user_#{n}".to_sym)   { FactoryGirl.create :user_with_emails }
+    let!("user_#{n}".to_sym)   { FactoryBot.create :user_with_emails }
   end
 
-  let!(:user_1_trusted_token)   { FactoryGirl.create :doorkeeper_access_token,
+  let!(:user_1_trusted_token)   { FactoryBot.create :doorkeeper_access_token,
                                     application: trusted_application,
                                     resource_owner_id: user_1.id }
-  let!(:user_1_untrusted_token) { FactoryGirl.create :doorkeeper_access_token,
+  let!(:user_1_untrusted_token) { FactoryBot.create :doorkeeper_access_token,
                                     application: untrusted_application,
                                     resource_owner_id: user_1.id }
   let!(:untrusted_application_token) {
-    FactoryGirl.create :doorkeeper_access_token,
+    FactoryBot.create :doorkeeper_access_token,
                        application: untrusted_application,
                        resource_owner_id: nil
   }
   let!(:trusted_application_token) {
-    FactoryGirl.create :doorkeeper_access_token,
+    FactoryBot.create :doorkeeper_access_token,
                        application: trusted_application,
                        resource_owner_id: nil
   }

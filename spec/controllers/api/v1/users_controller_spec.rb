@@ -2,55 +2,55 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
-  let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
-  let!(:trusted_application)   { FactoryGirl.create :doorkeeper_application, :trusted }
+  let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
+  let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, :trusted }
 
   let!(:untrusted_application_token) do
-    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
                                                  resource_owner_id: nil
   end
   let!(:trusted_application_token) do
-    FactoryGirl.create :doorkeeper_access_token, application: trusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: trusted_application,
                                                  resource_owner_id: nil
   end
 
-  let!(:user_1)          { FactoryGirl.create :user, :terms_agreed }
+  let!(:user_1)          { FactoryBot.create :user, :terms_agreed }
   let!(:user_2)          do
-    FactoryGirl.create :user_with_emails, :terms_agreed,
+    FactoryBot.create :user_with_emails, :terms_agreed,
                        first_name: 'Bob', last_name: 'Michaels', salesforce_contact_id: "somesfid"
   end
-  let!(:unclaimed_user)  { FactoryGirl.create :user_with_emails, state:'unclaimed' }
+  let!(:unclaimed_user)  { FactoryBot.create :user_with_emails, state:'unclaimed' }
   let!(:admin_user)      do
-    FactoryGirl.create :user, :terms_agreed, :admin, first_name: 'Joe', last_name: 'Admin'
+    FactoryBot.create :user, :terms_agreed, :admin, first_name: 'Joe', last_name: 'Admin'
   end
   let!(:billy_users) do
     (0..45).to_a.map do |ii|
-      FactoryGirl.create :user,
+      FactoryBot.create :user,
                          first_name: "Billy#{ii.to_s.rjust(2, '0')}",
                          last_name: "Fred_#{(45-ii).to_s.rjust(2,'0')}",
                          username: "billy_#{ii.to_s.rjust(2, '0')}"
     end
   end
   let!(:bob_brown) do
-    FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
+    FactoryBot.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
   end
   let!(:bob_jones) do
-    FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
+    FactoryBot.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
   end
   let!(:tim_jones) do
-    FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
+    FactoryBot.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
   end
 
   let!(:user_1_token)    do
-    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
                                                  resource_owner_id: user_1.id
   end
   let!(:user_2_token)    do
-    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
                                                  resource_owner_id: user_2.id
   end
   let!(:admin_token) do
-    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
                                                  resource_owner_id: admin_user.id
   end
 

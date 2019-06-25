@@ -13,43 +13,43 @@ describe ArchiveTempUsers do
   end
 
   let!(:user_with_app) {
-    user = FactoryGirl.create(:temp_user)
-    FactoryGirl.create(:application_user, user: user)
+    user = FactoryBot.create(:temp_user)
+    FactoryBot.create(:application_user, user: user)
     user
   }
 
   let!(:user_with_messages) {
-    user = FactoryGirl.create(:temp_user)
-    FactoryGirl.create(:message, user: user)
-    email = FactoryGirl.create(:email_address, user: user)
-    FactoryGirl.create(:message_recipient, contact_info: email)
+    user = FactoryBot.create(:temp_user)
+    FactoryBot.create(:message, user: user)
+    email = FactoryBot.create(:email_address, user: user)
+    FactoryBot.create(:message_recipient, contact_info: email)
     user
   }
 
   let!(:user_with_groups) {
-    user = FactoryGirl.create(:temp_user)
-    FactoryGirl.create(:group_member, user: user)
-    FactoryGirl.create(:group_owner, user: user)
+    user = FactoryBot.create(:temp_user)
+    FactoryBot.create(:group_member, user: user)
+    FactoryBot.create(:group_owner, user: user)
     user
   }
 
   let!(:user_w_no_auths) {
-    user = FactoryGirl.create(:temp_user)
-    FactoryGirl.create(:email_address, value: 'temp@example.org', user: user, verified: true)
-    FactoryGirl.create(:email_address, value: 'user@example.org', user: user, verified: false)
+    user = FactoryBot.create(:temp_user)
+    FactoryBot.create(:email_address, value: 'temp@example.org', user: user, verified: true)
+    FactoryBot.create(:email_address, value: 'user@example.org', user: user, verified: false)
     user
   }
 
   let!(:user_w_facebook) {
-    user = FactoryGirl.create(:temp_user, username: 'facebook_user')
-    FactoryGirl.create(:authentication, provider: 'facebook', user: user, uid: "zuckerberg")
+    user = FactoryBot.create(:temp_user, username: 'facebook_user')
+    FactoryBot.create(:authentication, provider: 'facebook', user: user, uid: "zuckerberg")
     user
   }
 
   let!(:user_w_identity) {
-    user = FactoryGirl.create(:temp_user, username: 'identity_user')
-    @identity = FactoryGirl.create(:identity, user: user)
-    FactoryGirl.create(:authentication, provider: 'identity', user: user, uid: @identity.id)
+    user = FactoryBot.create(:temp_user, username: 'identity_user')
+    @identity = FactoryBot.create(:identity, user: user)
+    FactoryBot.create(:authentication, provider: 'identity', user: user, uid: @identity.id)
     user
   }
 

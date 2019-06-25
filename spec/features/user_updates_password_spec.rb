@@ -11,7 +11,7 @@ feature 'User updates password on profile screen', js: true do
 
   scenario "adds one" do
     # Get rid of password (have to add another auth first so things don't freak out)
-    FactoryGirl.create :authentication, user: @user, provider: 'facebook'
+    FactoryBot.create :authentication, user: @user, provider: 'facebook'
     @user.authentications.where(provider: 'identity').destroy_all
     @user.identity.destroy
     @user.authentications(true)
@@ -50,7 +50,7 @@ feature 'User updates password on profile screen', js: true do
   end
 
   scenario "deletes password" do
-    FactoryGirl.create :authentication, user: @user, provider: 'facebook'
+    FactoryBot.create :authentication, user: @user, provider: 'facebook'
     visit '/profile'
     expect(@user.identity(true)).to be_present
     expect(@user.authentications(true).count).to eq 2

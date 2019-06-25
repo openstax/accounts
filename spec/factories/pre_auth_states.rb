@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :pre_auth_state do
     contact_info_kind :email_address
     contact_info_value "#{SecureRandom.hex(4)}@#{SecureRandom.hex(4)}.com"

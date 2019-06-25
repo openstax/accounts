@@ -2,11 +2,11 @@ require 'rails_helper'
 
 describe Message do
 
-  let!(:message) { FactoryGirl.build(:message, recipients_count: 0) }
+  let!(:message) { FactoryBot.build(:message, recipients_count: 0) }
   let!(:user_1)  { message.user }
 
   (2..7).each do |n|
-    let!("user_#{n}".to_sym) { FactoryGirl.create :user_with_emails }
+    let!("user_#{n}".to_sym) { FactoryBot.create :user_with_emails }
   end
 
   before(:each) do

@@ -598,7 +598,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     scenario "detected by reusing social auth" do
       existing_user = create_user('existing')
       existing_social =
-        FactoryGirl.create :authentication, provider: 'google_oauth2', user: existing_user
+        FactoryBot.create :authentication, provider: 'google_oauth2', user: existing_user
 
       arrive_from_app
       click_sign_up

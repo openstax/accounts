@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe ContactInfosCreate, type: :handler do
 
-  let!(:user) { FactoryGirl.create :user }
+  let!(:user) { FactoryBot.create :user }
 
   context 'wrong params' do
     it 'validates the contact info value before creation' do

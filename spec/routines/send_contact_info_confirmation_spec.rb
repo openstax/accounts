@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe SendContactInfoConfirmation do
-  let(:email) { FactoryGirl.create(:email_address) }
+  let(:email) { FactoryBot.create(:email_address) }
 
   context 'when email address is already verified' do
     it 'does not send confirmation email' do

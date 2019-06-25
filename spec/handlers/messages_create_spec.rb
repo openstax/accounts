@@ -3,19 +3,19 @@ require 'rails_helper'
 describe MessagesCreate, type: :handler do
 
   let!(:trusted_application)   {
-    FactoryGirl.create :doorkeeper_application, :trusted,
+    FactoryBot.create :doorkeeper_application, :trusted,
                        email_from_address: 'app@example.com'
   }
-  let!(:trusted_application_token) { FactoryGirl.create :doorkeeper_access_token,
+  let!(:trusted_application_token) { FactoryBot.create :doorkeeper_access_token,
                                                 application: trusted_application,
                                                 resource_owner_id: nil }
   let!(:api_user)              { OpenStax::Api::ApiUser.new(
                                    trusted_application_token, nil) }
 
-  let!(:user_1)                { FactoryGirl.create :user }
+  let!(:user_1)                { FactoryBot.create :user }
 
   (2..13).each do |n|
-    let!("user_#{n}".to_sym)   { FactoryGirl.create :user_with_emails }
+    let!("user_#{n}".to_sym)   { FactoryBot.create :user_with_emails }
   end
 
   let!(:message_params)        {

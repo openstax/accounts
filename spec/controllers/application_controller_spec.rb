@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe ApplicationController, type: :controller do
 
-  let!(:user)               { FactoryGirl.create :user, :terms_agreed }
-  let!(:app_token)          { FactoryGirl.create :doorkeeper_access_token, resource_owner_id: nil }
+  let!(:user)               { FactoryBot.create :user, :terms_agreed }
+  let!(:app_token)          { FactoryBot.create :doorkeeper_access_token, resource_owner_id: nil }
   let!(:application)        { app_token.application }
-  let!(:user_token)         { FactoryGirl.create :doorkeeper_access_token,
+  let!(:user_token)         { FactoryBot.create :doorkeeper_access_token,
                                                  application: nil,
                                                  resource_owner_id: user.id }
-  let!(:app_and_user_token) { FactoryGirl.create :doorkeeper_access_token,
+  let!(:app_and_user_token) { FactoryBot.create :doorkeeper_access_token,
                                                  application: application,
                                                  resource_owner_id: user.id }
 

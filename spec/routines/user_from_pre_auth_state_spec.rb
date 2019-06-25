@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe UserFromPreAuthState, type: :routine do
 
   context 'an unsigned state' do
-    let(:pre_auth_state) { FactoryGirl.create :pre_auth_state }
+    let(:pre_auth_state) { FactoryBot.create :pre_auth_state }
 
     it 'builds a user account' do
       user = UserFromPreAuthState[pre_auth_state]
@@ -13,7 +13,7 @@ RSpec.describe UserFromPreAuthState, type: :routine do
   end
 
   context 'a signed state' do
-    let(:pre_auth_state) { FactoryGirl.create :pre_auth_state, :signed, role: 'instructor' }
+    let(:pre_auth_state) { FactoryBot.create :pre_auth_state, :signed, role: 'instructor' }
 
     it 'builds a user account with signed attributes' do
       user = UserFromPreAuthState[pre_auth_state]

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UnclaimedUserMailer, type: :mailer do
-  let(:user) { FactoryGirl.create :user_with_emails, emails_count:1, state: 'unclaimed' }
+  let(:user) { FactoryBot.create :user_with_emails, emails_count:1, state: 'unclaimed' }
   let(:contact_info){ user.contact_infos.first }
   let(:mail) { UnclaimedUserMailer.welcome user.contact_infos.first }
 

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TransferOmniauthData, type: :routine do
 
-  let(:user)      { FactoryGirl.build :user }
+  let(:user)      { FactoryBot.build :user }
   let(:auth_data) { OmniauthData.new auth_hash }
 
   subject         { described_class.call(auth_data, user) }
@@ -86,7 +86,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
         before do
           user.save!
 
-          FactoryGirl.create :email_address, user: user, value: 'user@example.com'
+          FactoryBot.create :email_address, user: user, value: 'user@example.com'
         end
 
         context 'when the existing email address is unverified' do
@@ -213,7 +213,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
         before do
           user.save!
 
-          FactoryGirl.create :email_address, user: user, value: 'user@example.com'
+          FactoryBot.create :email_address, user: user, value: 'user@example.com'
         end
 
         context 'when the existing email address is unverified' do

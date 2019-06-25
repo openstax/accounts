@@ -4,8 +4,8 @@ require 'rake'
 describe 'accounts:oauth_apps:create_or_update' do
   include_context 'rake'
 
-  let(:admin) { FactoryGirl.create :user, :admin }
-  let(:app) { FactoryGirl.create :doorkeeper_application }
+  let(:admin) { FactoryBot.create :user, :admin }
+  let(:app) { FactoryBot.create :doorkeeper_application }
 
   it 'creates an oauth application' do
     stub_const('ENV', ENV.to_hash.merge(
@@ -94,8 +94,8 @@ describe 'accounts:oauth_apps:create_or_update' do
     expect{ subject.invoke }.to raise_error(ArgumentError, 'User not found: random')
   end
 
-  let(:admin) { FactoryGirl.create :user, :admin }
-  let(:app) { FactoryGirl.create :doorkeeper_application }
+  let(:admin) { FactoryBot.create :user, :admin }
+  let(:app) { FactoryBot.create :doorkeeper_application }
 
   it 'updates an oauth application' do
     stub_const('ENV', ENV.to_hash.merge(

@@ -3,11 +3,11 @@ require 'rails_helper'
 RSpec.describe UserAccessPolicy do
 
   let!(:anon)       { AnonymousUser.instance }
-  let!(:temp)       { FactoryGirl.create :temp_user }
-  let!(:user)       { FactoryGirl.create :user }
-  let!(:new_social) { FactoryGirl.create :new_social_user }
-  let!(:admin)      { FactoryGirl.create :user, :admin }
-  let!(:app)        { FactoryGirl.create :doorkeeper_application }
+  let!(:temp)       { FactoryBot.create :temp_user }
+  let!(:user)       { FactoryBot.create :user }
+  let!(:new_social) { FactoryBot.create :new_social_user }
+  let!(:admin)      { FactoryBot.create :user, :admin }
+  let!(:app)        { FactoryBot.create :doorkeeper_application }
 
   context 'search' do
     it 'cannot be accessed by anonymous or temp users' do

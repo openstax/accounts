@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
 
-  subject(:user) { FactoryGirl.create :user }
+  subject(:user) { FactoryBot.create :user }
 
   it { is_expected.to have_many :security_logs }
 
@@ -48,38 +48,38 @@ RSpec.describe User, type: :model do
   end
 
   it 'strips whitespace off of title, first & last names, suffix, username' do
-    user = FactoryGirl.create :user, title: " Mr ", first_name: "Bob"
+    user = FactoryBot.create :user, title: " Mr ", first_name: "Bob"
     expect(user.title).to eq "Mr"
 
-    user = FactoryGirl.create :user, first_name: " Bob\n"
+    user = FactoryBot.create :user, first_name: " Bob\n"
     expect(user.first_name).to eq "Bob"
 
-    user = FactoryGirl.create :user, last_name: " Jo nes "
+    user = FactoryBot.create :user, last_name: " Jo nes "
     expect(user.last_name).to eq "Jo nes"
 
-    user = FactoryGirl.create :user, suffix: " Jr. ", first_name: "Bobs"
+    user = FactoryBot.create :user, suffix: " Jr. ", first_name: "Bobs"
     expect(user.suffix).to eq "Jr."
 
-    user = FactoryGirl.create :user, username: " user "
+    user = FactoryBot.create :user, username: " user "
     expect(user.username).to eq "user"
 
-    user = FactoryGirl.create :user, self_reported_school: " Rice University\t "
+    user = FactoryBot.create :user, self_reported_school: " Rice University\t "
     expect(user.self_reported_school).to eq "Rice University"
   end
 
   context 'full_name' do
     it 'puts all the pieces together' do
-      user = FactoryGirl.create :user, title: "Mr.", first_name: "Bob", last_name: "Jones", suffix: "Sr."
+      user = FactoryBot.create :user, title: "Mr.", first_name: "Bob", last_name: "Jones", suffix: "Sr."
       expect(user.full_name).to eq "Mr. Bob Jones Sr."
     end
 
     it 'includes the title if present' do
-      user = FactoryGirl.create :user, title: "Mr.", first_name: "Bob", last_name: "Jones"
+      user = FactoryBot.create :user, title: "Mr.", first_name: "Bob", last_name: "Jones"
       expect(user.full_name).to eq "Mr. Bob Jones"
     end
 
     it 'populates first/last when set' do
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
       user.full_name = '  Bobby Jones'
       expect(user.first_name).to eq 'Bobby'
       expect(user.last_name).to eq 'Jones'
@@ -96,12 +96,12 @@ RSpec.describe User, type: :model do
 
   context 'uuid' do
     it 'is generated when created' do
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
       expect(user.uuid.length).to eq(36)
     end
 
     it 'cannot be updated' do
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
       old_uuid = user.uuid
       user.update_attributes(first_name: 'New')
       expect(user.reload.first_name).to eq('New')
@@ -116,13 +116,13 @@ RSpec.describe User, type: :model do
 
   context 'support_identifier' do
     it 'is generated when created' do
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
       expect(user.support_identifier).to start_with('cs')
       expect(user.support_identifier.length).to eq(11)
     end
 
     it 'cannot be updated' do
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
       old_identifier = user.support_identifier
       user.update_attributes(first_name: 'New')
       expect(user.reload.first_name).to eq('New')
@@ -137,33 +137,33 @@ RSpec.describe User, type: :model do
 
   context 'username' do
     it 'must be unique (case-insensitive) on creation, if provided' do
-      user_1 = FactoryGirl.create :user, username: "MyUs3Rn4M3"
+      user_1 = FactoryBot.create :user, username: "MyUs3Rn4M3"
 
-      user_2 = FactoryGirl.create :user, username: nil
+      user_2 = FactoryBot.create :user, username: nil
 
-      user_3 = FactoryGirl.build :user, username: user_1.username
+      user_3 = FactoryBot.build :user, username: user_1.username
       expect(user_3).not_to be_valid
       expect(user_3.errors).to include(:username)
       expect(user_3).to have_error(:username, :taken)
 
-      user_4 = FactoryGirl.build :user, username: user_1.username.upcase
+      user_4 = FactoryBot.build :user, username: user_1.username.upcase
       expect(user_4).not_to be_valid
       expect(user_4.errors).to include(:username)
 
-      user_5 = FactoryGirl.build :user, username: user_1.username.downcase
+      user_5 = FactoryBot.build :user, username: user_1.username.downcase
       expect(user_5).not_to be_valid
       expect(user_5.errors).to include(:username)
 
-      user_6 = FactoryGirl.build :user, username: nil
+      user_6 = FactoryBot.build :user, username: nil
       expect(user_6).to be_valid
     end
 
     it 'cannot be updated to match (case-insensitive) an existing username' do
-      user_1 = FactoryGirl.create :user, username: "MyUs3Rn4M3"
+      user_1 = FactoryBot.create :user, username: "MyUs3Rn4M3"
 
-      user_2 = FactoryGirl.create :user, username: nil
+      user_2 = FactoryBot.create :user, username: nil
 
-      user_3 = FactoryGirl.create :user
+      user_3 = FactoryBot.create :user
       expect(user_3).to be_valid
       expect(user_3.errors).to be_empty
 
@@ -184,8 +184,8 @@ RSpec.describe User, type: :model do
     end
 
     it 'does not interfere with updates if duplicated but not changed' do
-      user_1 = FactoryGirl.create :user, username: "MyUs3Rn4M3"
-      user_2 = FactoryGirl.create :user
+      user_1 = FactoryBot.create :user, username: "MyUs3Rn4M3"
+      user_2 = FactoryBot.create :user
       user_2.update_column :username, user_1.username.upcase
       expect(user_2.reload).to be_valid
       expect(user_2.errors).to be_empty
@@ -193,7 +193,7 @@ RSpec.describe User, type: :model do
       user_2.first_name = SecureRandom.hex(3)
       user_2.save!
 
-      user_3 = FactoryGirl.create :user
+      user_3 = FactoryBot.create :user
       user_3.update_column :username, user_1.username.downcase
       expect(user_3.reload).to be_valid
       expect(user_3.errors).to be_empty
@@ -204,7 +204,7 @@ RSpec.describe User, type: :model do
   end
 
   it 'returns a name' do
-    user = FactoryGirl.create :user, first_name: 'User', last_name: 'One'
+    user = FactoryBot.create :user, first_name: 'User', last_name: 'One'
     expect(user.name).to eq('User One')
 
     user.title = 'Miss'
@@ -216,7 +216,7 @@ RSpec.describe User, type: :model do
   end
 
   it 'returns the first name as casual name' do
-    user = FactoryGirl.create :user, first_name: 'Nikola', last_name: 'Tesla'
+    user = FactoryBot.create :user, first_name: 'Nikola', last_name: 'Tesla'
     expect(user.casual_name).to eq('Nikola')
   end
 
@@ -228,14 +228,14 @@ RSpec.describe User, type: :model do
     end
 
     it "can be set to active" do
-      user = FactoryGirl.create(:user)
+      user = FactoryBot.create(:user)
       user.state = 'activated'
       expect(user.save).to be_truthy
       expect(user.reload.is_temp?).to be_falsey
     end
 
     it "relays it's value to helper methods" do
-      user = FactoryGirl.create(:user)
+      user = FactoryBot.create(:user)
       user.state = 'temp'
       expect(user.is_temp?).to    be_truthy
       expect(user.is_activated?).to be_falsey
@@ -245,7 +245,7 @@ RSpec.describe User, type: :model do
     end
 
     it "disallows invalid values" do
-      user = FactoryGirl.create(:user)
+      user = FactoryBot.create(:user)
       user.state = 'a-crazy-invalid-value'
       expect(user.save).to be_falsey
       expect(user.errors[:state]).not_to be_empty
@@ -253,7 +253,7 @@ RSpec.describe User, type: :model do
   end
 
   context "login_token" do
-    let(:user) { FactoryGirl.create :user }
+    let(:user) { FactoryBot.create :user }
 
     it 'starts nil' do
       expect(user.login_token).to be_nil
@@ -284,7 +284,7 @@ RSpec.describe User, type: :model do
       user.refresh_login_token
       user.save
 
-      user2 = FactoryGirl.create :user
+      user2 = FactoryBot.create :user
       expect{
         user2.update_attribute(:login_token, user.login_token)
       }.to raise_error(ActiveRecord::RecordNotUnique)
@@ -292,7 +292,7 @@ RSpec.describe User, type: :model do
   end
 
   context '#guessed_preferred_confirmed_email' do
-    let(:user) { FactoryGirl.create :user }
+    let(:user) { FactoryBot.create :user }
 
     before(:each) do
       Timecop.freeze(3.minutes.ago)  {

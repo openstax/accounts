@@ -20,7 +20,7 @@ RSpec.shared_examples 'sessions create shared examples' do
     end
 
     context "oauth response doesn't match log in username/email" do
-      let(:authentication) { FactoryGirl.create(:authentication, provider: 'google_oauth2') }
+      let(:authentication) { FactoryBot.create(:authentication, provider: 'google_oauth2') }
       let(:login_providers) { { 'google_oauth2' => {'uid' => 'some_other_uid'} } }
 
       it "returns mismatched_authentication status and does not log in" do
@@ -35,7 +35,7 @@ RSpec.shared_examples 'sessions create shared examples' do
     end
 
     context "happy path" do
-      let(:authentication) { FactoryGirl.create(:authentication, provider: 'google_oauth2') }
+      let(:authentication) { FactoryBot.create(:authentication, provider: 'google_oauth2') }
       let(:login_providers) { { 'google_oauth2' => { 'uid' => authentication.uid } } }
 
       it "returns returning_user status and logs in" do
@@ -59,9 +59,9 @@ RSpec.shared_examples 'sessions create shared examples' do
 
   context "signing up" do
     context "oauth response already directly linked to a user" do
-      let(:authentication) { FactoryGirl.create(:authentication, provider: 'google_oauth2') }
+      let(:authentication) { FactoryBot.create(:authentication, provider: 'google_oauth2') }
       let(:pre_auth_state) do
-        FactoryGirl.create(
+        FactoryBot.create(
           :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
         )
       end
@@ -76,9 +76,9 @@ RSpec.shared_examples 'sessions create shared examples' do
     end
 
     context "oauth response already linked to user by email address" do
-      let(:other_user_email) { FactoryGirl.create(:email_address, verified: true)}
+      let(:other_user_email) { FactoryBot.create(:email_address, verified: true)}
       let(:pre_auth_state) do
-        FactoryGirl.create(
+        FactoryBot.create(
           :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
         )
       end
@@ -95,9 +95,9 @@ RSpec.shared_examples 'sessions create shared examples' do
     end
 
     context "normal password sign up" do
-      let(:identity) { FactoryGirl.create :identity }
+      let(:identity) { FactoryBot.create :identity }
       let(:pre_auth_state) do
-        FactoryGirl.create(
+        FactoryBot.create(
           :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
         )
       end
@@ -118,7 +118,7 @@ RSpec.shared_examples 'sessions create shared examples' do
 
     context "normal social sign up" do
       let(:pre_auth_state) do
-        FactoryGirl.create(
+        FactoryBot.create(
           :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
         )
       end
