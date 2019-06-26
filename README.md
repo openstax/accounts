@@ -27,7 +27,11 @@ link to sign up.
 
 ## Development Setup
 
-In development, Accounts can be run as a normal Rails app on your machine, or you can run it in a Vagrant virtual machine that mimics our production setup.
+In development, Accounts can be run using Docker.
+
+```
+docker-compose up
+```
 
 ## Database setup
 
