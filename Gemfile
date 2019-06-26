@@ -46,7 +46,7 @@ gem 'omniauth-google-oauth2', '~>0.6'
 gem 'redis-rails'
 
 # Ruby dsl for SQL queries
-gem 'squeel'
+gem 'baby_squeel', '~>1.3.0'
 
 # Mute asset pipeline log messages
 gem 'quiet_assets'
@@ -91,7 +91,7 @@ gem 'representable', '~> 3.0.0'
 gem 'keyword_search', '~> 1.5.0'
 
 # ToS/PP management
-gem 'fine_print', '~> 3.1.0'
+gem 'fine_print'
 
 # Send users back to the correct page after login
 gem 'action_interceptor', '~> 1.1.0'

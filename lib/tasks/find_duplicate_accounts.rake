@@ -15,11 +15,13 @@ task find_duplicate_accounts: [:environment] do
             'Authentication Transfer Failed?'
           ]
 
-    where_names_match = User.joins{ User.unscoped.as(same)
-                    .on{
-                      (same.id != ~id) & (lower(same.first_name) == lower(~first_name)) & (lower(same.last_name) == lower(~last_name))
-                    }
-                  }.uniq.preload(:security_logs, :applications, :authentications, :contact_infos)
+    # self-join using baby_squeel :)
+    same = BabySqueel[:same]
+    where_names_match = User.joining{
+      on {
+        (id != same.id) & (first_name.lower == same.first_name.lower) & (last_name.lower == same.last_name.lower)
+      }.as('same')
+    }.uniq.preload(:security_logs, :applications, :authentications, :contact_infos)
 
     where_names_match.find_each do |user|
       csv << [user.first_name,
@@ -54,9 +56,11 @@ task find_duplicate_accounts: [:environment] do
             'Authentication Transfer Failed?'
            ]
 
-    where_email_addresses_match = ContactInfo.joins{ ContactInfo.unscoped.as(same)
-                                               .on{ (same.id != ~id) & (lower(same.value) == lower(value)) }
-                                    }.joins{ user.outer }.preload(user: [:security_logs, :applications, :authentications]).uniq
+    # self-join using baby_squeel :)
+    same = BabySqueel[:same]
+    where_email_addresses_match = ContactInfo.joining{
+        on{ (id != same.id) & (value.lower == same.value.lower) }.as('same')
+      }.joining{ user.outer }.preload(user: [:security_logs, :applications, :authentications]).uniq
 
     where_email_addresses_match.find_each do |contact_info|
       user = contact_info.user

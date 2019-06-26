@@ -268,7 +268,7 @@ class SessionsController < ApplicationController
   end
 
   def email_usernames
-    usernames = User.where{id.in my{get_login_state[:matching_user_ids]}}.map(&:username)
+    usernames = User.where.has{ |t| t.id.in get_login_state[:matching_user_ids]}.map(&:username)
 
     SignInHelpMailer.multiple_accounts(
       email_address: get_login_state[:username_or_email],

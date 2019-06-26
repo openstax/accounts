@@ -143,7 +143,7 @@ class SessionsCreate
       return :new_signin_required if user_signin_is_too_old?
 
       return :email_already_in_use if ContactInfo.verified.where(value: @data.email)
-                                                          .where{user_id != my{current_user.id}}
+                                                          .where.has{ |t| t.user_id != current_user.id}
                                                           .exists?
 
       run(TransferAuthentications, authentication, current_user)
@@ -192,7 +192,7 @@ class SessionsCreate
     return users.first if users.one?
 
     user_id_by_sign_in = SecurityLog.sign_in_successful
-                                    .where{user_id.in my{users.map(&:id)}}
+                                    .where.has{ |t| t.user_id.in users.map(&:id)}
                                     .first
                                     .try(&:user_id)
 

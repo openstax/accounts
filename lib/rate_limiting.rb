@@ -11,14 +11,14 @@ module RateLimiting
 
     sign_in_failed_attempts =
       SecurityLog.sign_in_failed
-                 .where{created_at > attempts_considered_since}
                  .where(remote_ip: ip)
+                 .where.has{ |t| t.created_at > attempts_considered_since}
                  .count
 
     login_not_found_attempts =
       SecurityLog.login_not_found
-                 .where{created_at > attempts_considered_since}
                  .where(remote_ip: ip)
+                 .where.has{ |t| t.created_at > attempts_considered_since}
                  .count
 
     sign_in_failed_attempts + login_not_found_attempts >= max_attempts
@@ -37,8 +37,8 @@ module RateLimiting
                                   [oldest_possible_attempts_considered_since, last_login_time].max
 
     user_attempts = SecurityLog.sign_in_failed
-                               .where{created_at > attempts_considered_since}
                                .where(user: user)
+                               .where.has{ |t| t.created_at > attempts_considered_since}
                                .count
 
     user_attempts >= max_attempts

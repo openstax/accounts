@@ -44,8 +44,13 @@ RSpec.describe Admin::SearchUsers, type: :routine do
     expect(outcome).to eq [user_3, user_1]
   end
 
-  it "should match based on one full name" do
+  it "should match based on name" do
     outcome = described_class.call('name:"Mary Mighty"').outputs.items.to_a
+    expect(outcome).to eq [user_2]
+  end
+
+  it "should match based on one full name" do
+    outcome = described_class.call('full_name:"Mary Mighty"').outputs.items.to_a
     expect(outcome).to eq [user_2]
   end
 
@@ -131,21 +136,21 @@ RSpec.describe Admin::SearchUsers, type: :routine do
     it "should return the first page of values by default in default order" do
       outcome = described_class.call("username:billy").outputs.items.all
       expect(outcome.length).to eq 20
-      expect(outcome[0]).to eq User.where{username.eq "billy_00"}.first
-      expect(outcome[19]).to eq User.where{username.eq "billy_19"}.first
+      expect(outcome[0]).to eq User.where(username: "billy_00").first
+      expect(outcome[19]).to eq User.where(username: "billy_19").first
     end
 
     it "should return the 2nd page when requested" do
       outcome = described_class.call("username:billy", page: 1).outputs.items.all
       expect(outcome.length).to eq 20
-      expect(outcome[0]).to eq User.where{username.eq "billy_20"}.first
-      expect(outcome[19]).to eq User.where{username.eq "billy_39"}.first
+      expect(outcome[0]).to eq User.where(username: "billy_20").first
+      expect(outcome[19]).to eq User.where(username: "billy_39").first
     end
 
     it "should return the incomplete 3rd page when requested" do
       outcome = described_class.call("username:billy", page: 2).outputs.items.all
       expect(outcome.length).to eq 6
-      expect(outcome[5]).to eq User.where{username.eq "billy_45"}.first
+      expect(outcome[5]).to eq User.where(username: "billy_45").first
     end
 
   end

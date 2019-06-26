@@ -107,11 +107,14 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
   EOS
   def find_by_username
     raise SecurityTransgression if current_application.nil?
-    application_user = ApplicationUser.preload(:user).joins(:user).where({
-      :user           => { :username => params[:username] },
-      :application_id => current_application.id
-    }).first!
+
+    application_user = ApplicationUser.preload(:user).joins(:user).where(
+      users: { username: params[:username] },
+      application_id: current_application.id
+    ).first!
+
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, application_user)
+
     respond_with application_user, represent_with: Api::V1::ApplicationUserRepresenter, location: nil
   end
 
@@ -213,8 +216,12 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
   EOS
   def updated
     OSU::AccessPolicy.require_action_allowed!(:updated, current_api_user, ApplicationUser)
-    errors = MarkApplicationUserUpdatesAsRead.call(current_application,
-               ActiveSupport::JSON.decode(request.body.string)).errors
+
+    errors = MarkApplicationUserUpdatesAsRead.call(
+      current_application,
+      ActiveSupport::JSON.decode(request.body.string)
+    ).errors
+
     head (errors.any? ? :internal_server_error : :no_content)
   end
 

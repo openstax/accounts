@@ -19,9 +19,11 @@ class GetUpdatedApplicationGroups
       .includes(:owners => :application_users)
       .includes(:members => :application_users)
       .references(:all)
-      .where{(is_public.eq true) |\
-             (owners.application_users.application_id.eq my{application.id}) |\
-             (members.application_users.application_id.eq my{application.id})}
+      .where.has{ |t|
+        (t.is_public.eq true) |\
+        (t.owners.application_users.application_id.eq application.id) |\
+        (t.members.application_users.application_id.eq application.id)
+      }
       .collect{|g| g.subtree_group_ids}.flatten.uniq
     application_groups = FindOrCreateApplicationGroups.call(application.id, visible_group_ids)
                                                       .outputs.application_groups

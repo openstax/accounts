@@ -31,9 +31,9 @@ class Group < ActiveRecord::Base
     next where(is_public: true) unless user.is_a? User
 
     eager_load(:group_members, :group_owners)
-    .where{((is_public.eq true) |\
-             (group_members.user_id.eq my{user.id}) |\
-             (group_owners.user_id.eq my{user.id}))}
+    .where.has{ |t|
+        (t.is_public == true) | (t.group_members.user_id == user.id) | (t.group_owners.user_id == user.id)
+    }
   }
 
   def has_owner?(user)
@@ -77,7 +77,7 @@ class Group < ActiveRecord::Base
     reload
 
     gids = [id] + (Group.joins(:member_group_nestings)
-                        .where(member_group_nestings: {member_group_id: id})
+                        .where(group_nestings: {member_group_id: id})
                         .first.try(:supertree_group_ids) || [])
     update_column(:cached_supertree_group_ids, gids)
     self.cached_supertree_group_ids = gids
@@ -89,7 +89,7 @@ class Group < ActiveRecord::Base
     reload
 
     gids = [id] + Group.joins(:container_group_nesting)
-                       .where(container_group_nesting: {container_group_id: id})
+                       .where(group_nestings: {container_group_id: id})
                        .collect{|g| g.subtree_group_ids}.flatten
     update_column(:cached_subtree_group_ids, gids)
     self.cached_subtree_group_ids = gids

@@ -20,10 +20,10 @@ class ContactInfo < ActiveRecord::Base
   before_destroy :check_if_last_verified
 
   scope :email_addresses, -> { where(type: 'EmailAddress') }
-  sifter :email_addresses do type.eq 'EmailAddress' end
+  sifter :email_addresses do type == 'EmailAddress' end
 
   scope :verified, -> { where(verified: true) }
-  sifter :verified do verified.eq true end
+  sifter :verified do verified == true end
   scope :unverified, -> { where(verified: false) }
 
   scope :with_users, lambda { joins(:user).eager_load(:user) }
@@ -69,7 +69,7 @@ class ContactInfo < ActiveRecord::Base
          verified? &&
          ContactInfo.verified
                     .where('lower(value) = ?', value.downcase)
-                    .where{id != my{id}}
+                    .where.has{ |t| t.id != id }
                     .any?
 
     errors.none?
