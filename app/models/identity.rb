@@ -5,8 +5,6 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
 
   belongs_to :user, inverse_of: :identity
 
-  attr_accessible :password, :password_confirmation
-
   # We need these validations because
   # omniauth-identity does not provide them by default
   # These attributes are (obviously) not saved in the database

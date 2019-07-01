@@ -64,8 +64,6 @@ class User < ActiveRecord::Base
 
   delegate_to_routine :destroy
 
-  attr_accessible :title, :first_name, :last_name, :suffix, :username
-
   attr_readonly :uuid, :support_identifier
 
   before_validation :generate_uuid, :generate_support_identifier, on: :create

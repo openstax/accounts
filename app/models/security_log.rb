@@ -56,8 +56,6 @@ class SecurityLog < ActiveRecord::Base
 
   before_destroy { raise ActiveRecord::ReadOnlyRecord }
 
-  attr_accessible :user, :application, :remote_ip, :event_type, :event_data
-
   scope :preloaded, ->{ preload(:user, :application) }
 
   default_scope { order(arel_table[:created_at].desc) }

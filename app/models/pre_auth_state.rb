@@ -1,7 +1,4 @@
 class PreAuthState < ActiveRecord::Base
-  attr_accessible :contact_info_value, :role, :return_to,
-                  :signed_data, :is_contact_info_verified, :is_partial_info_allowed
-
   enum contact_info_kind: [:email_address]
 
   before_validation :prepare

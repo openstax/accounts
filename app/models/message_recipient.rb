@@ -9,8 +9,6 @@ class MessageRecipient < ActiveRecord::Base
   validates_uniqueness_of :user_id, scope: :message_id,
                           allow_nil: true, if: :message_id
 
-  attr_accessible :message, :contact_info, :user, :recipient_type
-
   def value
     contact_info.try(:value)
   end

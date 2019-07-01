@@ -5,8 +5,6 @@ class SequentialFailure < ActiveRecord::Base
                         uniqueness: {scope: :kind}
   validates :length, presence: true
 
-  attr_accessible :kind, :reference, :length
-
   attr_accessor :num_failures_allowed
 
   def reset!
