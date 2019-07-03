@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '5.0.1'
+gem 'rails', '5.2.0'
 gem 'rails-i18n', '~> 5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 
@@ -20,7 +20,7 @@ gem 'sass-rails', '~> 5.0'
 gem 'compass-rails'
 
 # CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails'
+gem 'coffee-rails', '5.0.0'
 
 # JavaScript asset compiler
 gem 'therubyracer', platforms: :ruby
@@ -74,7 +74,7 @@ gem 'smarter_csv'
 gem 'apipie-rails', '~> 0.1.2'
 gem 'maruku'
 
-gem 'jbuilder', '~> 2.0'
+gem 'jbuilder'
 
 # Background job queueing
 gem 'delayed_job_active_record', '~> 4.1.3'
@@ -91,12 +91,6 @@ gem 'fine_print'
 
 # Send users back to the correct page after login
 gem 'action_interceptor', '~> 1.1.0'
-
-# Case-insensitive database indices for PostgreSQL
-# schema_plus_core and transaction_isolation monekeypatches conflict with each other,
-# but loading schema_plus_pg_indexes late seems to fix this
-# So we load it in an after_initialize block in config/application.rb
-gem 'schema_plus_pg_indexes', '0.3.2', require: false # BRYAN - should remove it after rails 5.0.0
 
 # PostgreSQL database
 gem 'pg'

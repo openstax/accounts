@@ -38,12 +38,6 @@ module Accounts
     # Suppress a warning
     config.i18n.enforce_available_locales = true
 
-    # Case-insensitive database indices for PostgreSQL
-    # schema_plus_core and transaction_isolation monekeypatches conflict with each other,
-    # but loading schema_plus_pg_indexes late seems to fix this
-    # So we use require: false for it in the Gemfile
-    config.after_initialize { require 'schema_plus_pg_indexes' }
-
     # Use the ExceptionsController to rescue routing/bad request exceptions
     # https://coderwall.com/p/w3ghqq/rails-3-2-error-handling-with-exceptions_app
     config.exceptions_app = ->(env) { ExceptionsController.action(:rescue_from).call(env) }
