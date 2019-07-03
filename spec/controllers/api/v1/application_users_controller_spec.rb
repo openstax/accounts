@@ -56,7 +56,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
 
   context "find by username" do
     it "returns a single result when username matches" do
-      api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo_bb' }
+      api_get :find_by_username, untrusted_application_token, params: { username: 'foo_bb' }
       expect(response.code).to eq('200')
       expected_response = {
         id: bob_brown.application_users.first.id,
@@ -67,12 +67,12 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
     end
 
     it "responds with http status not found when not found" do
-      api_get :find_by_username, untrusted_application_token, parameters: { username: 'foo' }
+      api_get :find_by_username, untrusted_application_token, params: { username: 'foo' }
       expect(response).to have_http_status :not_found
     end
 
     it "responds with http status forbidden when called by anonymous" do
-      api_get :find_by_username, nil, parameters: { username: 'foo' }
+      api_get :find_by_username, nil, params: { username: 'foo' }
       expect(response).to have_http_status :forbidden
     end
 
@@ -80,7 +80,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
       # bob_brown is not a member of the "trusted_application"
       expect(bob_brown.application_users.where(application_id: trusted_application.id)).to be_empty
       # therefore no results will be returned
-      api_get :find_by_username, trusted_application_token, parameters: {
+      api_get :find_by_username, trusted_application_token, params: {
         username: bob_brown.username
       }
       expect(response).to have_http_status :not_found
@@ -90,7 +90,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
   context "index" do
 
     it "returns a single result well" do
-      api_get :index, untrusted_application_token, parameters: {
+      api_get :index, untrusted_application_token, params: {
         q: 'first_name:bob last_name:Michaels'
       }
       expect(response.code).to eq('200')
@@ -104,7 +104,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
     end
 
     it "should return the 2nd page when requested" do
-      api_get :index, untrusted_application_token, parameters: {
+      api_get :index, untrusted_application_token, params: {
         q: 'username:billy', page: '1', per_page: '10'
       }
       expect(response.code).to eq('200')
@@ -118,7 +118,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
     end
 
     it "should return the incomplete 5th page when requested" do
-      api_get :index, untrusted_application_token, parameters: {
+      api_get :index, untrusted_application_token, params: {
         q: 'username:billy', page: '4', per_page: '10'
       }
       expect(response.code).to eq('200')
@@ -132,7 +132,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
     end
 
     it "should allow sort by multiple fields in different directions" do
-      api_get :index, untrusted_application_token, parameters: {q: 'username:foo', order_by: "first_name, last_name DESC"}
+      api_get :index, untrusted_application_token, params: {q: 'username:foo', order_by: "first_name, last_name DESC"}
       expect(response.code).to eq('200')
 
       outcome = JSON.parse(response.body)
@@ -149,7 +149,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
     end
 
     it "should return no users if no one uses an app" do
-      api_get :index, trusted_application_token, parameters: {
+      api_get :index, trusted_application_token, params: {
         q: 'first_name:bob last_name:Michaels'
       }
       expect(response.code).to eq('200')
@@ -168,7 +168,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
                                             application: trusted_application,
                                             user: user_2
 
-      api_get :index, trusted_application_token, parameters: {
+      api_get :index, trusted_application_token, params: {
         q: 'first_name:bob last_name:Michaels'
       }
       expect(response.code).to eq('200')
@@ -210,7 +210,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
 
     it "should let the calling app limit the number of users" do
       ApplicationUser.update_all('unread_updates = unread_updates + 1')
-      api_get :updates, untrusted_application_token, parameters: {limit: 3}
+      api_get :updates, untrusted_application_token, params: {limit: 3}
       expect(response.body_as_hash.count).to eq 3
     end
 

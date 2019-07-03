@@ -57,7 +57,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
   context "index" do
 
     it "returns a single result well" do
-      api_get :index, trusted_application_token, parameters: {q: 'first_name:bob last_name:Michaels'}
+      api_get :index, trusted_application_token, params: {q: 'first_name:bob last_name:Michaels'}
       expect(response.code).to eq('200')
 
       expected_response = {
@@ -69,7 +69,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should allow sort by multiple fields in different directions" do
-      api_get :index, trusted_application_token, parameters: {q: 'username:foo', order_by: "first_name, last_name DESC"}
+      api_get :index, trusted_application_token, params: {q: 'username:foo', order_by: "first_name, last_name DESC"}
 
       outcome = JSON.parse(response.body)
 
@@ -80,7 +80,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should return no results if the maximum number of results is exceeded" do
-      api_get :index, trusted_application_token, parameters: {q: ''}
+      api_get :index, trusted_application_token, params: {q: ''}
       expect(response.code).to eq('200')
 
       outcome = JSON.parse(response.body)
@@ -99,13 +99,13 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should not let id be specified" do
-      api_get :show, user_1_token, parameters: {id: admin_user.id}
+      api_get :show, user_1_token, params: {id: admin_user.id}
       expected_response = user_matcher(user_1, include_private_data: true)
       expect(response.body_as_hash).to match(expected_response)
     end
 
     it "should not let an application get a User without a token" do
-      api_get :show, trusted_application_token, parameters: {id: admin_user.id}
+      api_get :show, trusted_application_token, params: {id: admin_user.id}
       expect(response).to have_http_status :forbidden
     end
 
@@ -195,7 +195,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
 
     it "should not let id be specified" do
       api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"},
-                                     parameters: {id: admin_user.id}
+                                     params: {id: admin_user.id}
       expect(response.code).to eq('200')
       user_2.reload
       admin_user.reload
@@ -206,7 +206,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should not let an application update a User without a token" do
-      api_put :update, trusted_application_token, parameters: {id: admin_user.id}
+      api_put :update, trusted_application_token, params: {id: admin_user.id}
       expect(response).to have_http_status :forbidden
     end
 

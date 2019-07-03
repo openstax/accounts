@@ -19,7 +19,7 @@ feature 'Sign in using signed parameters', js: true do
     { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
   }
 
-  %w{ teacher student }.each do |role|
+  %w{ instructor student }.each do |role|
     describe "arriving with an existing #{role} account" do
       let(:user) {
         u = create_user('user')

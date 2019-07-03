@@ -71,13 +71,13 @@ describe Api::V1::MessagesController, type: :controller, api: true, version: :v1
     it "does not allow users or untrusted applications to send messages" do
       Mail::TestMailer.deliveries.clear
 
-      api_post :create, user_1_untrusted_token, parameters: message_params
+      api_post :create, user_1_untrusted_token, params: message_params
       expect(response).to have_http_status :forbidden
 
-      api_post :create, user_1_trusted_token, parameters: message_params
+      api_post :create, user_1_trusted_token, params: message_params
       expect(response).to have_http_status :forbidden
 
-      api_post :create, untrusted_application_token, parameters: message_params
+      api_post :create, untrusted_application_token, params: message_params
       expect(response).to have_http_status :forbidden
 
       # These exceptions are no longer "notified" out
@@ -88,7 +88,7 @@ describe Api::V1::MessagesController, type: :controller, api: true, version: :v1
       Mail::TestMailer.deliveries.clear
 
       expect{api_post :create, trusted_application_token,
-                      parameters: message_params}.not_to raise_error
+                      params: message_params}.not_to raise_error
       expect(response.code).to eq('201')
 
       outcome = JSON.parse(response.body)

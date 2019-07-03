@@ -221,34 +221,34 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
 
   context 'create' do
     it 'must not create a group_member without a token' do
-      api_post :create, nil, parameters: { group_id: group_3.id, user_id: user_2.id }
+      api_post :create, nil, params: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group_member for an app without a user token' do
       api_post :create, untrusted_application_token,
-                        parameters: { group_id: group_3.id, user_id: user_2.id }
+                        params: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group_member for an unauthorized user' do
-      api_post :create, user_1_token, parameters: { group_id: group_3.id, user_id: user_2.id }
+      api_post :create, user_1_token, params: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
 
       group_3.add_member(user_1)
       controller.current_human_user.reload
 
-      api_post :create, user_1_token, parameters: { group_id: group_3.id, user_id: user_2.id }
+      api_post :create, user_1_token, params: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must create group_members for authorized users' do
       group_3.add_owner(user_1)
-      api_post :create, user_1_token, parameters: { group_id: group_3.id, user_id: user_2.id }
+      api_post :create, user_1_token, params: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response.code).to eq('201')
       expected_response = {
@@ -278,7 +278,7 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
       expect(JSON.parse(response.body)).to eq(expected_response)
 
       group_1.add_owner(user_1)
-      api_post :create, user_1_token, parameters: { group_id: group_1.id, user_id: user_1.id }
+      api_post :create, user_1_token, params: { group_id: group_1.id, user_id: user_1.id }
 
       expect(response.code).to eq('201')
       expected_response = {
@@ -310,7 +310,7 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
 
   context 'destroy' do
     it 'must not destroy a group_member without a token' do
-      api_delete :destroy, nil, parameters: { group_id: group_2.id, user_id: user_2.id }
+      api_delete :destroy, nil, params: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupMember.where(id: group_member_1.id).first).not_to be_nil
@@ -318,21 +318,21 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
 
     it 'must not destroy a group_member for an app without a user token' do
       api_delete :destroy, untrusted_application_token,
-                          parameters: { group_id: group_2.id, user_id: user_2.id }
+                          params: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupMember.where(id: group_member_1.id).first).not_to be_nil
     end
 
     it 'must not destroy a group_member for an unauthorized user' do
-      api_delete :destroy, user_1_token, parameters: { group_id: group_2.id, user_id: user_2.id }
+      api_delete :destroy, user_1_token, params: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupMember.where(id: group_member_1.id).first).not_to be_nil
 
       group_2.add_member(user_1)
 
-      api_delete :destroy, user_1_token, parameters: { group_id: group_2.id, user_id: user_2.id }
+      api_delete :destroy, user_1_token, params: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupMember.where(id: group_member_1.id).first).not_to be_nil
@@ -341,14 +341,14 @@ describe Api::V1::GroupMembersController, type: :controller, api: true, version:
     it 'must destroy group_members for authorized users' do
       group_2.add_member(user_1)
       group_member_2 = GroupMember.last
-      api_delete :destroy, user_1_token, parameters: { group_id: group_2.id, user_id: user_1.id }
+      api_delete :destroy, user_1_token, params: { group_id: group_2.id, user_id: user_1.id }
 
       expect(response.code).to eq('204')
       expect(response.body).to be_blank
       expect(GroupMember.where(id: group_member_2.id).first).to be_nil
 
       group_2.add_owner(user_1)
-      api_delete :destroy, user_1_token, parameters: { group_id: group_2.id, user_id: user_2.id }
+      api_delete :destroy, user_1_token, params: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response.code).to eq('204')
       expect(response.body).to be_blank

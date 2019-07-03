@@ -18,7 +18,7 @@ Delayed::Worker.max_run_time = Rails.application.secrets['background_worker_time
 # Allows us to use this gem in tests instead of setting the ActiveJob adapter to :inline
 Delayed::Worker.delay_jobs = Rails.env.production? ||
                              ( Rails.env.development? &&
-                               ActiveRecord::Type::Boolean.new.type_cast_from_user(
+                               ActiveModel::Type::Boolean.new.cast(
                                  ENV['USE_REAL_BACKGROUND_JOBS'] || 'false'
                                )
                              )

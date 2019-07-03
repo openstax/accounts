@@ -6,9 +6,8 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '4.2.11'
-gem 'rails-i18n', '~> 4'
-gem 'sprockets', '~> 2.12.5'
+gem 'rails', '5.0.0'
+gem 'rails-i18n', '~> 5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 
 # Bootstrap front-end framework
@@ -21,7 +20,7 @@ gem 'sass-rails', '~> 5.0'
 gem 'compass-rails'
 
 # CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.1.0'
+gem 'coffee-rails'
 
 # JavaScript asset compiler
 gem 'therubyracer', platforms: :ruby
@@ -48,14 +47,11 @@ gem 'redis-rails'
 # Ruby dsl for SQL queries
 gem 'baby_squeel', '~>1.3.0'
 
-# Mute asset pipeline log messages
-gem 'quiet_assets'
-
 # Utilities for OpenStax websites
 gem 'openstax_utilities', '~> 4.2.0'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 8.2.0'
+gem 'openstax_api', '~> 9.0'
 
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from', '~> 3.0.0'
@@ -64,7 +60,7 @@ gem 'openstax_rescue_from', '~> 3.0.0'
 gem 'sentry-raven', require: 'raven/base'
 
 # Lev framework
-gem 'lev', '~> 7.0.3'
+gem 'lev', '~> 9.0.1'
 
 # Background job status store
 gem 'jobba', '~> 1.4.0'
@@ -81,7 +77,7 @@ gem 'maruku'
 gem 'jbuilder', '~> 2.0'
 
 # Background job queueing
-gem 'delayed_job_active_record'
+gem 'delayed_job_active_record', '~> 4.1.3'
 gem 'daemons'
 
 # JSON Api builder
@@ -100,7 +96,7 @@ gem 'action_interceptor', '~> 1.1.0'
 # schema_plus_core and transaction_isolation monekeypatches conflict with each other,
 # but loading schema_plus_pg_indexes late seems to fix this
 # So we load it in an after_initialize block in config/application.rb
-gem 'schema_plus_pg_indexes', require: false
+gem 'schema_plus_pg_indexes', '0.2.0', require: false # BRYAN - should remove it after rails 5.0.0
 
 # PostgreSQL database
 gem 'pg'
@@ -121,7 +117,7 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce', '~> 2.1.0'
+gem 'openstax_salesforce', '~> 3.0.0'
 
 # Fork that supports Ruby >= 2.1
 gem 'active_force', github: 'openstax/active_force', ref: '9efe1ba'
@@ -168,7 +164,7 @@ group :development, :test do
   gem 'byebug'
 
   # Use RSpec for tests
-  gem 'rspec-rails', '~> 3.5'
+  gem 'rspec-rails', '~> 3.8'
 
   # Fixture replacement
   gem 'factory_bot_rails'
@@ -197,7 +193,7 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0'
+  gem 'web-console', '~> 3.7'
 
   gem  'i18n-tasks', '~> 0.9.6'
 end

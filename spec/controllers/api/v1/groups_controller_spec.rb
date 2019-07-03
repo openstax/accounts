@@ -235,7 +235,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
   context 'show' do
     it 'must always show public groups' do
-      api_get :show, nil, parameters: {id: group_3.id}
+      api_get :show, nil, params: {id: group_3.id}
 
       expect(response.code).to eq('200')
       expected_response = {
@@ -251,26 +251,26 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
     end
 
     it 'must not show a private group without a token' do
-    api_get :show, nil, parameters: {id: group_1.id}
+    api_get :show, nil, params: {id: group_1.id}
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must not show a private group to an app without a user token' do
-      api_get :show, untrusted_application_token, parameters: {id: group_1.id}
+      api_get :show, untrusted_application_token, params: {id: group_1.id}
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must not show a private group to an unauthorized user' do
-      api_get :show, user_1_token, parameters: {id: group_1.id}
+      api_get :show, user_1_token, params: {id: group_1.id}
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must show private groups to authorized users' do
       group_1.add_member(user_1)
-      api_get :show, user_1_token, parameters: {id: group_1.id}
+      api_get :show, user_1_token, params: {id: group_1.id}
 
       expect(response.code).to eq('200')
 
@@ -296,7 +296,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       GroupMember.last.destroy
       group_1.add_owner(user_1)
 
-      api_get :show, user_1_token, parameters: {id: group_1.id}
+      api_get :show, user_1_token, params: {id: group_1.id}
 
       expect(response.code).to eq('200')
 
@@ -363,7 +363,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
   context 'update' do
     it 'must not update a group without a token' do
       api_put :update, nil,
-                     parameters: {id: group_3.id},
+                     params: {id: group_3.id},
                      raw_post_data: {name: 'MyGroup'}
 
       expect(response).to have_http_status :forbidden
@@ -372,7 +372,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
     it 'must not update a group for an app without a user token' do
       api_put :update, untrusted_application_token,
-                     parameters: {id: group_3.id},
+                     params: {id: group_3.id},
                      raw_post_data: {name: 'MyGroup'}
 
       expect(response).to have_http_status :forbidden
@@ -381,7 +381,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
     it 'must not update a group for an unauthorized user' do
       api_put :update, user_1_token,
-                     parameters: {id: group_3.id},
+                     params: {id: group_3.id},
                      raw_post_data: {name: 'MyGroup'}
 
       expect(response).to have_http_status :forbidden
@@ -390,7 +390,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       group_3.add_member(user_1)
 
       api_put :update, user_1_token,
-                     parameters: {id: group_3.id},
+                     params: {id: group_3.id},
                      raw_post_data: {name: 'MyGroup'}
 
       expect(response).to have_http_status :forbidden
@@ -401,7 +401,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       group_2.add_owner(user_1)
 
       api_put :update, user_1_token,
-                     parameters: {id: group_3.id},
+                     params: {id: group_3.id},
                      raw_post_data: {name: 'MyGroup'}
 
       expect(response).to have_http_status :forbidden
@@ -411,7 +411,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
     it 'must update groups for authorized users' do
       group_3.add_owner(user_1)
       api_put :update, user_1_token,
-              parameters: {id: group_3.id},
+              params: {id: group_3.id},
               raw_post_data: {name: 'MyGroup'}
 
       expect(response.code).to eq('200')
@@ -423,7 +423,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
   context 'destroy' do
     it 'must not destroy a group without a token' do
       api_delete :destroy, nil,
-                        parameters: {id: group_3.id}
+                        params: {id: group_3.id}
 
       expect(response).to have_http_status :forbidden
       expect(Group.where(id: group_3.id).first).not_to be_nil
@@ -431,7 +431,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
     it 'must not destroy a group for an app without a user token' do
       api_delete :destroy, untrusted_application_token,
-                        parameters: {id: group_3.id}
+                        params: {id: group_3.id}
 
       expect(response).to have_http_status :forbidden
       expect(Group.where(id: group_3.id).first).not_to be_nil
@@ -439,7 +439,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
     it 'must not destroy a group for an unauthorized user' do
       api_delete :destroy, user_1_token,
-                        parameters: {id: group_3.id}
+                        params: {id: group_3.id}
 
       expect(response).to have_http_status :forbidden
       expect(Group.where(id: group_3.id).first).not_to be_nil
@@ -447,7 +447,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       group_3.add_member(user_1)
 
       api_delete :destroy, user_1_token,
-                        parameters: {id: group_3.id}
+                        params: {id: group_3.id}
 
       expect(response).to have_http_status :forbidden
       expect(Group.where(id: group_3.id).first).not_to be_nil
@@ -456,7 +456,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       group_2.add_owner(user_1)
 
       api_delete :destroy, user_1_token,
-                        parameters: {id: group_3.id}
+                        params: {id: group_3.id}
 
       expect(response).to have_http_status :forbidden
       expect(Group.where(id: group_3.id).first).not_to be_nil
@@ -465,7 +465,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
     it 'must destroy groups for authorized users' do
       group_3.add_owner(user_1)
       api_delete :destroy, user_1_token,
-                 parameters: {id: group_3.id}
+                 params: {id: group_3.id}
 
       expect(response).to have_http_status(:success)
 
