@@ -5,14 +5,14 @@ class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedCookieJar
   # Rails 5: def initialize(parent_jar)
   def initialize(parent_jar)
     key_generator = ActiveSupport::CachingKeyGenerator.new(
-      ActiveSupport::KeyGenerator.new(Rails.application.secrets.sso['shared_secret'], iterations: 1000)
+      ActiveSupport::KeyGenerator.new(Rails.application.secrets.sso[:shared_secret], iterations: 1000)
     )
-    salt = Rails.application.secrets.sso['shared_secret_salt'] || 'cookie'
+    salt = Rails.application.secrets.sso[:shared_secret_salt] || 'cookie'
     options = {
       encrypted_cookie_salt: salt,
       encrypted_signed_cookie_salt: "signed encrypted #{salt}",
       serializer: :json,
-      secret_key_base: Rails.application.secrets.sso['shared_secret']
+      secret_key_base: Rails.application.secrets.sso[:shared_secret]
     }
     super(parent_jar, key_generator, options)
   end

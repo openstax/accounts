@@ -1,7 +1,7 @@
 class DevMailer < ApplicationMailer
 
-  default from: Rails.application.secrets.exception['sender'],
-          to: Rails.application.secrets.exception['recipients']
+  default from: Rails.application.secrets.exception[:sender],
+          to: Rails.application.secrets.exception[:recipients]
 
   def inspect_object(object:, from: nil, to: nil, subject:)
     @object = object

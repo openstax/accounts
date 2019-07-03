@@ -303,7 +303,7 @@ class UpdateUserSalesforceInfo
       DevMailer.inspect_object(
         object: @errors,
         subject: "(#{Rails.application.secrets.environment_name}) UpdateUserSalesforceInfo errors",
-        to: Rails.application.secrets.salesforce['mail_recipients']
+        to: Rails.application.secrets.salesforce[:mail_recipients]
       ).deliver_later
     end
   end

@@ -13,7 +13,7 @@
 Delayed::Worker.destroy_failed_jobs = false
 
 # Should be longer than the longest background job (that actually uses this gem)
-Delayed::Worker.max_run_time = Rails.application.secrets['background_worker_timeout']
+Delayed::Worker.max_run_time = Rails.application.secrets[:background_worker_timeout]
 
 # Allows us to use this gem in tests instead of setting the ActiveJob adapter to :inline
 Delayed::Worker.delay_jobs = Rails.env.production? ||

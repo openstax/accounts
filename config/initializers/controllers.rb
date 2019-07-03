@@ -16,13 +16,13 @@ ActionController::Base.class_exec do
 
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
-  prepend_before_filter :verify_signed_params
+  prepend_before_action :verify_signed_params
 
-  before_filter :save_redirect
-  before_filter :authenticate_user!
-  before_filter :complete_signup_profile
-  before_filter :check_if_password_expired
-  before_filter :set_locale
+  before_action :save_redirect
+  before_action :authenticate_user!
+  before_action :complete_signup_profile
+  before_action :check_if_password_expired
+  before_action :set_locale
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 

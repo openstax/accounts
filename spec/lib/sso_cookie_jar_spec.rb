@@ -27,9 +27,9 @@ RSpec.describe SsoCookieJar do
       value: { 'test-answer' => 4242 }
     }
 
-    secret_key_base = Rails.application.secrets.sso['shared_secret']
+    secret_key_base = Rails.application.secrets.sso[:shared_secret]
     cookie          = sso_cookie_jar['ox']
-    salt            = Rails.application.secrets.sso['shared_secret_salt']
+    salt            = Rails.application.secrets.sso[:shared_secret_salt]
     signed_salt     = "signed encrypted #{salt}"
     key_generator   = ActiveSupport::KeyGenerator.new(secret_key_base, iterations: 1000)
     secret          = key_generator.generate_key(salt)[0, OpenSSL::Cipher.new('aes-256-cbc').key_len]

@@ -45,13 +45,10 @@ module Accounts
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
 
-    # Opting in to future behavior to get rid of deprecation warnings
-    config.active_record.raise_in_transactional_callbacks = true
-
-    redis_secrets = secrets['redis']
+    redis_secrets = secrets[:redis]
     config.cache_store = :redis_store, {
-      url: redis_secrets['url'],
-      namespace: redis_secrets['namespaces']['cache'],
+      url: redis_secrets[:url],
+      namespace: redis_secrets[:namespaces][:cache],
       expires_in: 90.minutes,
       compress: true,
     }
@@ -62,11 +59,11 @@ module Accounts
 
     config.after_initialize do
       Doorkeeper::TokensController.class_eval do
-        alias_method :original_create, :create # before_filter not available
         def create
           ScoutHelper.ignore!(0.99)
           original_create
         end
+        alias_method :original_create, :create # before_action not available
       end
     end
 

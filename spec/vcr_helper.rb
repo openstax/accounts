@@ -17,7 +17,7 @@ VCR.configure do |c|
     tutor_specs_refresh_token
     tutor_specs_instance_url
   ).each do |salesforce_secret_name|
-    Rails.application.secrets['salesforce'][salesforce_secret_name].tap do |value|
+    Rails.application.secrets[:salesforce][salesforce_secret_name.to_sym].tap do |value|
       c.filter_sensitive_data("<#{salesforce_secret_name}>") { value } if value.present?
     end
   end
