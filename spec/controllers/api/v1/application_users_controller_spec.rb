@@ -223,7 +223,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
 
       expect(app_user.reload.unread_updates).to eq 1
 
-      api_put :updated, trusted_application_token, raw_post_data: [
+      api_put :updated, trusted_application_token, body: [
         {id: app_user.id, read_updates: 1}
       ].to_json
 

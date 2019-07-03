@@ -208,21 +208,21 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
 
       expect(application_group_1.reload.unread_updates).to eq 4
 
-      api_put :updated, untrusted_application_token, raw_post_data: [
+      api_put :updated, untrusted_application_token, body: [
         {group_id: group_1.id, read_updates: 2}].to_json
 
       expect(response.status).to eq(204)
 
       expect(application_group_1.reload.unread_updates).to eq 4
 
-      api_put :updated, untrusted_application_token, raw_post_data: [
+      api_put :updated, untrusted_application_token, body: [
         {group_id: group_1.id, read_updates: 1}].to_json
 
       expect(response.status).to eq(204)
 
       expect(application_group_1.reload.unread_updates).to eq 4
 
-      api_put :updated, untrusted_application_token, raw_post_data: [
+      api_put :updated, untrusted_application_token, body: [
         {group_id: group_1.id, read_updates: 4}].to_json
 
       expect(response.status).to eq(204)
@@ -234,7 +234,7 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
       expect(application_group_1.reload.unread_updates).to eq 1
 
       api_put :updated, trusted_application_token,
-              raw_post_data: [{id: application_group_1.id, read_updates: 1}].to_json
+              body: [{id: application_group_1.id, read_updates: 1}].to_json
 
       expect(application_group_1.reload.unread_updates).to eq 1
     end

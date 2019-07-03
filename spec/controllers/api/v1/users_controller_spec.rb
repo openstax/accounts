@@ -186,7 +186,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
 
   context "update" do
     it "should let User update his own User" do
-      api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}
+      api_put :update, user_2_token, body: {first_name: "Jerry", last_name: "Mouse"}
       expect(response.code).to eq('200')
       user_2.reload
       expect(user_2.first_name).to eq 'Jerry'
@@ -194,7 +194,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should not let id be specified" do
-      api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"},
+      api_put :update, user_2_token, body: {first_name: "Jerry", last_name: "Mouse"},
                                      params: {id: admin_user.id}
       expect(response.code).to eq('200')
       user_2.reload
@@ -213,7 +213,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     it "should not let a user's contact info be modified through the users API" do
       original_contact_infos = user_2.reload.contact_infos
       api_put :update, user_2_token,
-                       raw_post_data: {
+                       body: {
                          first_name: "Jerry",
                          last_name: "Mouse",
                          contact_infos: [
@@ -235,7 +235,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect{
         api_post :find_or_create,
                  trusted_application_token,
-                 raw_post_data: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
+                 body: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('201')
       new_user = User.order(:id).last
@@ -248,7 +248,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect {
         api_post :find_or_create,
                  trusted_application_token,
-                 raw_post_data: {
+                 body: {
                    email: 'a-new-email@test.com',
                    first_name: 'Sarah',
                    last_name: 'Test',
@@ -269,7 +269,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       user_count = User.count
       api_post :find_or_create,
                nil,
-               raw_post_data: {email: 'a-new-email@test.com'}
+               body: {email: 'a-new-email@test.com'}
       expect(response).to have_http_status :forbidden
       expect(User.count).to eq user_count
     end
@@ -278,7 +278,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       user_count = User.count
       api_post :find_or_create,
                user_2_token,
-               raw_post_data: {email: 'a-new-email@test.com'}
+               body: {email: 'a-new-email@test.com'}
        expect(response).to have_http_status :forbidden
       expect(User.count).to eq user_count
     end
@@ -286,7 +286,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     context "should return only IDs for a user" do
       it "does so for unclaimed users" do
         api_post :find_or_create, trusted_application_token,
-                 raw_post_data: {email: unclaimed_user.contact_infos.first.value}
+                 body: {email: unclaimed_user.contact_infos.first.value}
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: unclaimed_user.id,
@@ -297,7 +297,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       it "does so for claimed users" do
         api_post :find_or_create,
                  trusted_application_token,
-                 raw_post_data: {email: user_2.contact_infos.first.value}
+                 body: {email: user_2.contact_infos.first.value}
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: user_2.id, uuid: user_2.uuid, support_identifier: user_2.support_identifier

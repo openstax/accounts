@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '5.0.0'
+gem 'rails', '5.0.1'
 gem 'rails-i18n', '~> 5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 
@@ -96,7 +96,7 @@ gem 'action_interceptor', '~> 1.1.0'
 # schema_plus_core and transaction_isolation monekeypatches conflict with each other,
 # but loading schema_plus_pg_indexes late seems to fix this
 # So we load it in an after_initialize block in config/application.rb
-gem 'schema_plus_pg_indexes', '0.2.0', require: false # BRYAN - should remove it after rails 5.0.0
+gem 'schema_plus_pg_indexes', '0.3.2', require: false # BRYAN - should remove it after rails 5.0.0
 
 # PostgreSQL database
 gem 'pg'

@@ -41,14 +41,14 @@ RSpec.describe Api::V1::ContactInfosController, type: :controller, api: true, ve
     it "sends the confirmation if all good and `send_pin` false" do
       expect(SendContactInfoConfirmation).to receive(:call).with(contact_info: contact_info, send_pin: false)
       api_put :resend_confirmation, right_user_token, params: {id: contact_info.id},
-                                                      raw_post_data: {send_pin: false}.to_json
+                                                      body: {send_pin: false}.to_json
       expect(response).to have_http_status(:no_content)
     end
 
     it "sends the confirmation if all good and `send_pin` true" do
       expect(SendContactInfoConfirmation).to receive(:call).with(contact_info: contact_info, send_pin: true)
       api_put :resend_confirmation, right_user_token, params: {id: contact_info.id},
-                                                      raw_post_data: {send_pin: true}.to_json
+                                                      body: {send_pin: true}.to_json
       expect(response).to have_http_status(:no_content)
     end
   end
@@ -56,7 +56,7 @@ RSpec.describe Api::V1::ContactInfosController, type: :controller, api: true, ve
   describe "#confirm_by_pin" do
     it "204s if the pin matches and all stars align" do
       api_put :confirm_by_pin, right_user_token, params: {id: contact_info.id},
-                                                 raw_post_data: {pin: contact_info.confirmation_pin}.to_json
+                                                 body: {pin: contact_info.confirmation_pin}.to_json
       expect(contact_info.reload).to be_confirmed
       expect(response).to have_http_status(:no_content)
     end
@@ -74,7 +74,7 @@ RSpec.describe Api::V1::ContactInfosController, type: :controller, api: true, ve
 
     it "422s if incorrect pin" do
       api_put :confirm_by_pin, right_user_token, params: {id: contact_info.id},
-                                                 raw_post_data: {pin: 'blah'}.to_json
+                                                 body: {pin: 'blah'}.to_json
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response).to have_api_error_status(422)
       expect(response).to have_api_error_code('pin_not_correct')
@@ -84,7 +84,7 @@ RSpec.describe Api::V1::ContactInfosController, type: :controller, api: true, ve
       ConfirmByPin.max_pin_failures.times { ConfirmByPin.call(contact_info: contact_info, pin: "whatever") }
 
       api_put :confirm_by_pin, right_user_token, params: {id: contact_info.id},
-                                                 raw_post_data: {pin: 'blah'}.to_json
+                                                 body: {pin: 'blah'}.to_json
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response).to have_api_error_status(422)

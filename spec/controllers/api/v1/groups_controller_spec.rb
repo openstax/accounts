@@ -340,7 +340,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
     end
 
     it 'must create groups for users' do
-      api_post :create, user_1_token, raw_post_data: {name: 'MyGroup'}
+      api_post :create, user_1_token, body: {name: 'MyGroup'}
 
       expect(response.code).to eq('201')
       expected_response = {
@@ -364,7 +364,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
     it 'must not update a group without a token' do
       api_put :update, nil,
                      params: {id: group_3.id},
-                     raw_post_data: {name: 'MyGroup'}
+                     body: {name: 'MyGroup'}
 
       expect(response).to have_http_status :forbidden
       expect(group_3.reload.name).to eq('Group 3')
@@ -373,7 +373,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
     it 'must not update a group for an app without a user token' do
       api_put :update, untrusted_application_token,
                      params: {id: group_3.id},
-                     raw_post_data: {name: 'MyGroup'}
+                     body: {name: 'MyGroup'}
 
       expect(response).to have_http_status :forbidden
       expect(group_3.reload.name).to eq('Group 3')
@@ -382,7 +382,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
     it 'must not update a group for an unauthorized user' do
       api_put :update, user_1_token,
                      params: {id: group_3.id},
-                     raw_post_data: {name: 'MyGroup'}
+                     body: {name: 'MyGroup'}
 
       expect(response).to have_http_status :forbidden
       expect(group_3.reload.name).to eq('Group 3')
@@ -391,7 +391,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
       api_put :update, user_1_token,
                      params: {id: group_3.id},
-                     raw_post_data: {name: 'MyGroup'}
+                     body: {name: 'MyGroup'}
 
       expect(response).to have_http_status :forbidden
       expect(group_3.reload.name).to eq('Group 3')
@@ -402,7 +402,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
       api_put :update, user_1_token,
                      params: {id: group_3.id},
-                     raw_post_data: {name: 'MyGroup'}
+                     body: {name: 'MyGroup'}
 
       expect(response).to have_http_status :forbidden
       expect(group_3.reload.name).to eq('Group 3')
@@ -412,7 +412,7 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       group_3.add_owner(user_1)
       api_put :update, user_1_token,
               params: {id: group_3.id},
-              raw_post_data: {name: 'MyGroup'}
+              body: {name: 'MyGroup'}
 
       expect(response.code).to eq('200')
       expect(response.body).not_to be_blank
