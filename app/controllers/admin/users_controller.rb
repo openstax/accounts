@@ -2,7 +2,7 @@ module Admin
   class UsersController < BaseController
     layout 'admin', except: :js_search
 
-    before_filter :get_user, only: [:edit, :update, :destroy, :become]
+    before_action :get_user, only: [:edit, :update, :destroy, :become]
 
     # Used by dialog
     def js_search

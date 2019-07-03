@@ -1,7 +1,7 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
     before_action :set_user
-    before_filter :admin_authentication!
+    before_action :admin_authentication!
 
     def index
       @applications = @user.is_administrator? ? Doorkeeper::Application.all :

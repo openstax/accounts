@@ -1,6 +1,6 @@
 class Api::V1::UsersController < Api::V1::ApiController
 
-  prepend_before_filter :allow_sso_user!, only: :show
+  prepend_before_action :allow_sso_user!, only: :show
 
   resource_description do
     api_versions "v1"

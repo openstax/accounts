@@ -2,7 +2,7 @@ class ExceptionsController < ActionController::Base
 
   skip_filter *_process_action_callbacks.map(&:filter)
 
-  before_filter :set_locale
+  before_action :set_locale
 
   def rescue_from
     @exception = env["action_dispatch.exception"]

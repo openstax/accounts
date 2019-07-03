@@ -1,5 +1,5 @@
 class Api::V1::ApplicationUsersController < Api::V1::ApiController
-  #before_filter :get_app_user, :only => [:show, :update, :destroy]
+  #before_action :get_app_user, :only => [:show, :update, :destroy]
 
   resource_description do
     api_versions "v1"

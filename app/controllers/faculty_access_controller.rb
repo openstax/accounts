@@ -1,6 +1,6 @@
 class FacultyAccessController < ApplicationController
 
-  prepend_before_filter :disallow_signup, only: :apply
+  prepend_before_action :disallow_signup, only: :apply
 
   helper_method :instructor_has_selected_subject
 

@@ -9,6 +9,7 @@ end
 gem 'rails', '5.2.0'
 gem 'rails-i18n', '~> 5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
+gem 'bootsnap', require: false
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.4.1'
