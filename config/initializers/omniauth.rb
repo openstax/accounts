@@ -6,8 +6,8 @@ secrets = Rails.application.secrets
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :facebook, secrets[:facebook_app_id], secrets[:facebook_app_secret],
            client_options: {
-             site: 'https://graph.facebook.com/v2.10',
-             authorize_url: "https://www.facebook.com/v2.10/dialog/oauth"
+             site: 'https://graph.facebook.com/v3.3',
+             authorize_url: "https://www.facebook.com/v3.3/dialog/oauth"
            }
   provider :twitter, secrets[:twitter_consumer_key], secrets[:twitter_consumer_secret]
   provider :google_oauth2, secrets[:google_client_id], secrets[:google_client_secret]
