@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
   has_many :security_logs
 
   enum faculty_status: [:no_faculty_info, :pending_faculty, :confirmed_faculty, :rejected_faculty]
-  enum role: [:unknown_role, :student, :instructor, :administrator, :librarian, :designer, :other, :adjunct]
+  enum role: [:unknown_role, :student, :instructor, :administrator, :librarian, :designer, :other, :adjunct, :homeschool]
   enum school_type: [:unknown_school_type, :other_school_type, :college]
 
   DEFAULT_FACULTY_STATUS = :no_faculty_info
