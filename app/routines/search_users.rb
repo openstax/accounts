@@ -186,7 +186,7 @@ class SearchUsers
     users = users.includes(:contact_infos)
 
     # Select only distinct records
-    users = users.uniq
+    users = users.distinct
 
     if options[:return_all]
       outputs[:items] = users

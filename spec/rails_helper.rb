@@ -9,7 +9,7 @@ require 'webdrivers'
 require 'capybara/rails'
 require 'capybara/email/rspec'
 require 'shoulda/matchers'
-require 'parallel_tests'
+# require 'parallel_tests' # TODO: BRYAN - remove this?
 require 'database_cleaner'
 require 'spec_helper'
 
@@ -97,8 +97,9 @@ def disable_sfdc_client
     .to receive(:sfdc_client)
     .and_return(double('null object').as_null_object)
 end
+
 class ExternalAppForSpecsController < ActionController::Base
-  skip_filter *_process_action_callbacks.map(&:filter)
+  # skip_filter *_process_action_callbacks.map(&:filter)
   layout false
 
   def index

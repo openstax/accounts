@@ -23,7 +23,17 @@ Delayed::Worker.delay_jobs = Rails.env.production? ||
                                )
                              )
 
-# https://github.com/smartinez87/exception_notification/issues/195#issuecomment-31257207
+module HandleFailedJobInstantly
+  # Based on https://github.com/smartinez87/exception_notification/issues/195#issuecomment-31257207
+  def handle_failed_job(job, exception)
+    fail_proc = INSTANT_FAILURE_PROCS[exception.class.name]
+    job.fail! if fail_proc.present? && fail_proc.call(exception) ||
+                 exception.try(:instantly_fail_if_in_background_job?)
+
+    super(job, exception)
+  end
+end
+
 Delayed::Worker.class_exec do
   ALWAYS_FAIL = ->(exception) { true }
 
@@ -50,12 +60,5 @@ Delayed::Worker.class_exec do
     end
   }
 
-  def handle_failed_job_with_instant_failures(job, exception)
-    fail_proc = INSTANT_FAILURE_PROCS[exception.class.name]
-    job.fail! if fail_proc.present? && fail_proc.call(exception)
-
-    handle_failed_job_without_instant_failures(job, exception)
-  end
-
-  alias_method_chain :handle_failed_job, :instant_failures
+  prepend HandleFailedJobInstantly
 end

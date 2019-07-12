@@ -1,20 +1,25 @@
 version: '3.5'
 services:
   app:
-    build: .
+    build:
+      context: .
+    image: accounts
     ports:
       - "2999:2999"
     volumes:
       - .:/code
       - /code/tmp/pids
+      - bundle_cache:/bundle_cache
     networks:
       - openstax
     links:
       - postgres
     depends_on:
       - postgres
+      - bundler
     environment:
       - OXA_DB_HOST=postgres
+      - GEM_HOME=/bundle_cache
   postgres:
     image: "postgres:9.5"
     volumes:
@@ -25,8 +30,13 @@ services:
       - POSTGRES_USER=ox_accounts
       - POSTGRES_PASSWORD=ox_accounts
       - POSTGRES_DB=ox_accounts_dev
+  bundler:
+    image: busybox
+    volumes:
+      - bundle_cache:/bundle_cache
 networks:
   openstax:
     name: openstax
 volumes:
   pgdata:
+  bundle_cache:

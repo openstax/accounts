@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '5.2.0'
+gem 'rails', '5.2.3'
 gem 'rails-i18n', '~> 5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 gem 'bootsnap', require: false
@@ -55,7 +55,7 @@ gem 'openstax_utilities', '~> 4.2.0'
 gem 'openstax_api', '~> 9.0'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', '~> 3.0.0'
+gem 'openstax_rescue_from'
 
 # Sentry integration (the require disables automatic Rails integration since we use rescue_from)
 gem 'sentry-raven', require: 'raven/base'
@@ -91,7 +91,7 @@ gem 'keyword_search', '~> 1.5.0'
 gem 'fine_print'
 
 # Send users back to the correct page after login
-gem 'action_interceptor', '~> 1.1.0'
+gem 'action_interceptor'
 
 # PostgreSQL database
 gem 'pg'
@@ -123,14 +123,15 @@ gem 'awesome_print'
 gem 'whenever', require: false
 
 # Fast JSON parsing
-gem 'oj'
+gem 'oj', '3.7.12' # TODO: BRYAN
 
 # Replace JSON with Oj
 gem 'oj_mimic_json'
 
 # Admin toggles
 gem 'rails-settings-ui'
-gem 'rails-settings-cached'
+gem 'rails-settings-cached', '2.1.0' # TODO: BRYAN - update ruby or add a note why we need this VERY specific, older, version.
+gem 'dry-validation', '0.12.0'
 
 gem 'scout_apm', '~> 3.0.x'
 
@@ -152,8 +153,8 @@ group :development, :test do
   # Show failing parallel specs instantly
   gem 'rspec-instafail'
 
-  # Thin development server
-  gem 'thin'
+  # Development server
+  gem 'puma', '~> 3.11'
 
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

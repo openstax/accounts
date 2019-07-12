@@ -8,7 +8,8 @@ FinePrint.configure do |config|
 
   # Array of custom helpers for FinePrint's controllers
   # Default: [] (no custom helpers)
-  config.helpers = []
+  config.helpers = [] # BRYAN  - copied from tutor-server
+  # config.helpers = [::ApplicationHelper]
 
   # Proc called with a controller as self. Returns the current user.
   # Default: lambda { current_user }
@@ -22,9 +23,7 @@ FinePrint.configure do |config|
   # accepted agreements. The default renders 403 Forbidden for all users.
   # Note: Proc must account for nil users, if current_user_proc returns nil.
   # Default: lambda { |user| head(:forbidden) }
-  config.authenticate_manager_proc = lambda { |user| !user.nil? && \
-                                                     user.is_administrator? || \
-                                                     head(:forbidden) }
+  config.authenticate_manager_proc = lambda { |user| user }
 
   # Proc called with a user as argument and a controller as self.
   # This proc is called before FinePrint determines if contracts need to be

@@ -3,6 +3,12 @@ secrets = Rails.application.secrets
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
+  # Forgery Protection with Origin Check
+   # -- In Rails 5 you can now configure your application to check if the HTTP Origin header
+    # should be checked against the site's origin as an additional CSRF defense.
+  # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#forgery-protection-with-origin-check
+  # config.action_controller.forgery_protection_origin_check = false
+
   # Code is not reloaded between requests
   config.cache_classes = true
 

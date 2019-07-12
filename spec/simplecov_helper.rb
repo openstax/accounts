@@ -1,5 +1,6 @@
 require 'simplecov'
 require 'codecov'
+require 'parallel_tests'
 
 """
   Config for Simplecov

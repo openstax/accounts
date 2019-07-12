@@ -63,6 +63,7 @@ class SessionsController < ApplicationController
   end
 
   def reauthenticate
+    debugger
     handle_with(SessionsReauthenticate,
                 complete: lambda do
                   @username_or_email = @handler_result.outputs.username_or_email
@@ -71,6 +72,7 @@ class SessionsController < ApplicationController
   end
 
   def authenticate
+    debugger
     redirect_to root_path if signed_in?
   end
 

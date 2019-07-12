@@ -1,7 +1,7 @@
 # https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/cookies.rb
 
 # The base class in Rails 5 is EncryptedKeyRotatingCookieJar
-class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedCookieJar
+class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedKeyRotatingCookieJar
   # Rails 5: def initialize(parent_jar)
   def initialize(parent_jar)
     key_generator = ActiveSupport::CachingKeyGenerator.new(
@@ -28,32 +28,32 @@ end
 
 ActionDispatch::Request.class_exec do
   # Rails 4:
-  def have_cookie_jar?
-    env.key? 'action_dispatch.cookies'.freeze
+  # def have_cookie_jar?
+  #   env.key? 'action_dispatch.cookies'.freeze
+  # end
+
+  # def have_sso_cookie_jar?
+  #   env.key? 'action_dispatch.sso_cookies'.freeze
+  # end
+
+  # def sso_cookie_jar
+  #   env['action_dispatch.sso_cookies'.freeze] ||= SsoCookieJar.build(self)
+  # end
+
+  # Rails 5:
+  def have_sso_cookie_jar?
+   has_header? 'action_dispatch.sso_cookies'.freeze
   end
 
-  def have_sso_cookie_jar?
-    env.key? 'action_dispatch.sso_cookies'.freeze
+  def sso_cookie_jar=(jar)
+   set_header 'action_dispatch.sso_cookies'.freeze, jar
   end
 
   def sso_cookie_jar
-    env['action_dispatch.sso_cookies'.freeze] ||= SsoCookieJar.build(self)
+   fetch_header('action_dispatch.sso_cookies'.freeze) do
+     self.sso_cookie_jar = SsoCookieJar.build(self, cookies)
+   end
   end
-
-  # Rails 5:
-  #def have_sso_cookie_jar?
-  #  has_header? 'action_dispatch.sso_cookies'.freeze
-  #end
-  #
-  #def sso_cookie_jar=(jar)
-  #  set_header 'action_dispatch.sso_cookies'.freeze, jar
-  #end
-  #
-  #def sso_cookie_jar
-  #  fetch_header('action_dispatch.sso_cookies'.freeze) do
-  #    self.sso_cookie_jar = SsoCookieJar.build(self, cookies)
-  #  end
-  #end
 end
 
 ActionDispatch::Cookies.class_exec do
