@@ -1,4 +1,4 @@
-class AllowPartialSignupState < ActiveRecord::Migration
+class AllowPartialSignupState < ActiveRecord::Migration[4.2]
   def change
     change_column_null :signup_states, :contact_info_value, true
     change_column_null :signup_states, :contact_info_kind, true

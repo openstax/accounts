@@ -1,4 +1,4 @@
-class CreateContactInfosSalesforceIndex < ActiveRecord::Migration
+class CreateContactInfosSalesforceIndex < ActiveRecord::Migration[4.2]
   def change
     add_index :contact_infos,
               [:value, :verified],

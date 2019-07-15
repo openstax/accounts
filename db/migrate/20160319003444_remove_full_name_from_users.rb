@@ -1,4 +1,4 @@
-class RemoveFullNameFromUsers < ActiveRecord::Migration
+class RemoveFullNameFromUsers < ActiveRecord::Migration[4.2]
   def up
     remove_column :users, :full_name
   end

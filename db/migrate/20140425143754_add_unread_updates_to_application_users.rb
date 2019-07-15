@@ -1,4 +1,4 @@
-class AddUnreadUpdatesToApplicationUsers < ActiveRecord::Migration
+class AddUnreadUpdatesToApplicationUsers < ActiveRecord::Migration[4.2]
   def change
     # default: 1 - To be safe and send this user on the next update
     #              after a new application user is created

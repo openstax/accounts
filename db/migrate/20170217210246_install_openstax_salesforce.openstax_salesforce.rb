@@ -1,5 +1,5 @@
 # This migration comes from openstax_salesforce (originally 0)
-class InstallOpenStaxSalesforce < ActiveRecord::Migration
+class InstallOpenStaxSalesforce < ActiveRecord::Migration[4.2]
   def change
     create_table :openstax_salesforce_users do |t|
       t.string :name

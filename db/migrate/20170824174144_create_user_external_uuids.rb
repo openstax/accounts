@@ -1,4 +1,4 @@
-class CreateUserExternalUuids < ActiveRecord::Migration
+class CreateUserExternalUuids < ActiveRecord::Migration[4.2]
   def change
     create_table :user_external_uuids do |t|
       t.references :user, null: false

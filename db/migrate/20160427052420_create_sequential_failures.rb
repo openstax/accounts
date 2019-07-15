@@ -1,4 +1,4 @@
-class CreateSequentialFailures < ActiveRecord::Migration
+class CreateSequentialFailures < ActiveRecord::Migration[4.2]
   def change
     create_table :sequential_failures do |t|
       t.integer :kind, null: false

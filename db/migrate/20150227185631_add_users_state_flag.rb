@@ -1,4 +1,4 @@
-class AddUsersStateFlag < ActiveRecord::Migration
+class AddUsersStateFlag < ActiveRecord::Migration[4.2]
   def up
 
     add_column :users, :state, :string, null: false, default: 'temp'

@@ -1,6 +1,6 @@
 require 'schema_plus_pg_indexes'
 
-class AddUserSearchIndices < ActiveRecord::Migration
+class AddUserSearchIndices < ActiveRecord::Migration[4.2]
   def change
     add_index :users, :username, case_sensitive: false,
                                  name: 'index_users_on_username_case_insensitive'

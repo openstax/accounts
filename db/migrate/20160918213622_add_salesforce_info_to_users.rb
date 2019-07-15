@@ -1,4 +1,4 @@
-class AddSalesforceInfoToUsers < ActiveRecord::Migration
+class AddSalesforceInfoToUsers < ActiveRecord::Migration[4.2]
   def change
     add_column :users, :salesforce_contact_id, :string
     add_column :users, :faculty_status, :integer, default: 0, null: false

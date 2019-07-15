@@ -1,4 +1,4 @@
-class BetterApplicationUsersIndexes < ActiveRecord::Migration
+class BetterApplicationUsersIndexes < ActiveRecord::Migration[4.2]
   def change
     remove_index :application_users, column: [:unread_updates]
 

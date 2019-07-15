@@ -1,4 +1,4 @@
-class ChangeApplicationOwnersToGroups < ActiveRecord::Migration
+class ChangeApplicationOwnersToGroups < ActiveRecord::Migration[4.2]
   def up
     Doorkeeper::Application.all.each do |app|
       user = app.owner
