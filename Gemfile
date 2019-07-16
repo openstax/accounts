@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '5.2.3'
+gem 'rails', '5.2.0'
 gem 'rails-i18n', '~> 5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 gem 'bootsnap', require: false
@@ -72,7 +72,7 @@ gem 'jquery-rails'
 gem 'smarter_csv'
 
 # API documentation
-gem 'apipie-rails', '~> 0.1.2'
+gem 'apipie-rails'
 gem 'maruku'
 
 gem 'jbuilder'
@@ -145,8 +145,6 @@ group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails'
 
-  gem 'rails-erd'
-
   # Run specs in parallel
   gem 'parallel_tests'
 
@@ -161,6 +159,9 @@ group :development, :test do
 
   # Use RSpec for tests
   gem 'rspec-rails', '~> 3.8'
+
+  # Because `assigns` has been extracted from RSpec to a gem
+  gem 'rails-controller-testing'
 
   # Fixture replacement
   gem 'factory_bot_rails'
@@ -191,7 +192,10 @@ group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 3.7'
 
-  gem  'i18n-tasks', '~> 0.9.6'
+  gem  'i18n-tasks'
+
+  # Generate Entity-Relationship Diagrams for Rails applications
+  gem 'rails-erd'
 end
 
 group :test do
