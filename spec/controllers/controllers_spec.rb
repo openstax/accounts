@@ -1,12 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe "Controllers affected by initializers/controllers.rb", type: :controller do
+  # TODO: BRYAN - improve description
 
   context "#save_redirect" do
 
     controller do
-      skip_filter *(_process_action_callbacks.map(&:filter) - [:save_redirect])
-
       def index
         head :ok
       end

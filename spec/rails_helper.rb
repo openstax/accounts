@@ -99,7 +99,6 @@ def disable_sfdc_client
 end
 
 class ExternalAppForSpecsController < ActionController::Base
-  # skip_filter *_process_action_callbacks.map(&:filter)
   layout false
 
   def index

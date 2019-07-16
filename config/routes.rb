@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  # More often used routes should appear first
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
   scope controller: 'sessions' do
@@ -225,4 +225,5 @@ Rails.application.routes.draw do
     get '/external_app_for_specs' => 'external_app_for_specs#index'
   end
 
+  get :'*other', controller: :exceptions, action: :missing_route
 end
