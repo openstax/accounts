@@ -4,7 +4,6 @@ module RequireRecentSignin
 
   def reauthenticate_user!
     store_url
-debugger
     location = main_app.reauthenticate_path params.slice(:client_id)
 
     respond_to do |format|

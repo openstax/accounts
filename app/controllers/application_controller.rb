@@ -4,17 +4,10 @@ class ApplicationController < ActionController::Base
 
   layout 'application'
 
-  include OSU::OsuHelper
   include AuthenticateMethods
-  include LocaleSelector
-  include RequireRecentSignin
-
-  include ContractsNotRequired
-  helper_method :contracts_not_required, :sso_cookies
 
   prepend_before_action :verify_signed_params
 
-  before_action :save_redirect
   before_action :authenticate_user!
   before_action :complete_signup_profile
   before_action :check_if_password_expired
@@ -69,16 +62,6 @@ class ApplicationController < ActionController::Base
     redirect_to password_reset_path
   end
 
-  def save_redirect
-    return true if request.format != :html || request.options?
-
-    url = params["r"]
-
-    return true if url.blank? || !Host.trusted?(url)
-
-    store_url(url: url)
-  end
-
   def return_url_specified_and_allowed?
     # This returns true iff `save_redirect` actually saved the URL
     params[:r] && params[:r] == stored_url
@@ -107,10 +90,9 @@ class ApplicationController < ActionController::Base
   respond_to :html
 
     # TODO # BRYAN - REMOVE THIS. ADDED TEMPORARILY.
-  # def params
-  #   debugger
-  #   request.parameters.to_h
-  # end
+  def params
+    request.parameters.to_h
+  end
 
   protected
 
