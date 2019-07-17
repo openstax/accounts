@@ -5,7 +5,7 @@ RSpec.describe SessionsController, type: :controller do
   context '#start' do
     it 'looks for active banners (ones whose expires_at is in the future)' do
       expected = Banner.create!(expires_at: 1.hour.from_now, message: 'aoidfhllakdjf').message
-      get :start
+      get(:start)
       expect(assigns(:banners).first.message).to eq expected
     end
 
@@ -23,7 +23,7 @@ RSpec.describe SessionsController, type: :controller do
           Hashie::Mash.new(outputs: {}, errors: [code: :invalid_omniauth_data])
         )
         expect(Raven).not_to receive(:capture_exception)
-        expect{ post :create, provider: 'identity' }.not_to(
+        expect{ post(:create, params: { provider: 'identity' }) }.not_to(
           change{ ActionMailer::Base.deliveries.count }
         )
         expect(response).to redirect_to root_path
@@ -37,7 +37,7 @@ RSpec.describe SessionsController, type: :controller do
           Hashie::Mash.new(outputs: {}, errors: [code: :unknown_callback_state])
         )
         expect(Raven).not_to receive(:capture_exception)
-        expect{ post :create, provider: 'identity' }.not_to(
+        expect{ post(:create, params: { provider: 'identity' })) }.not_to(
           change{ ActionMailer::Base.deliveries.count }
         )
         expect(response).to redirect_to root_path
@@ -56,7 +56,7 @@ RSpec.describe SessionsController, type: :controller do
         expect(Raven).to receive(:capture_exception) do |exception, *args|
           expect(exception).to be_a(IllegalState)
         end
-        expect{ post :create, provider: 'identity' }.not_to(
+        expect{ post(:create, params: { provider: 'identity' }) }.not_to(
           change{ ActionMailer::Base.deliveries.count }
         )
         expect(response).to have_http_status(:internal_server_error)
@@ -66,12 +66,12 @@ RSpec.describe SessionsController, type: :controller do
 
   context '#destroy' do
     it 'redirects to caller-specified URL if in whitelist' do
-      delete :destroy, r: "https://something.openstax.org/howdy?blah=true"
+      delete(:destroy, params: { r: "https://something.openstax.org/howdy?blah=true" })
       expect(response).to redirect_to("https://something.openstax.org/howdy?blah=true")
     end
 
     it 'does not redirect to a caller-specified URL if not in whitelist' do
-      delete :destroy, r: "http://www.google.com"
+      delete(:destroy, params: { r: "http://www.google.com" })
       expect(response).to redirect_to("/")
     end
   end

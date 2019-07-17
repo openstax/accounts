@@ -12,7 +12,8 @@ module Accounts
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    # -- all .rb files in that directory are automatically loaded after loading
+    # the framework and any gems in your application.
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -74,5 +75,8 @@ module Accounts
     # config.web_console.permissions = '192.168.128.1'
 
     # config.railties_order = [:main_app, :all]
+
+    # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
+    config.active_record.belongs_to_required_by_default = false
   end
 end

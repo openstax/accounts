@@ -14,7 +14,7 @@ RailsSettingsUi.setup do |config|
   # Specify a controller for RailsSettingsUi::ApplicationController to inherit from:
   config.parent_controller = 'Admin::BaseController' # default: '::ApplicationController'
 
-  config.settings_class = 'adfasf'
+  config.settings_class = 'Settings::Db::Store'
 end
 
 Rails.application.config.to_prepare do

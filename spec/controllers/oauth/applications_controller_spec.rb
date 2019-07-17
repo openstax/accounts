@@ -31,7 +31,7 @@ module Oauth
       expect(FinePrint::Contract.count).to eq 1
 
       controller.sign_in! user2
-      get :index
+      get(:index)
       expect(response).to redirect_to pose_terms_path(terms: FinePrint::Contract.pluck(:id))
       expect(assigns :applications).to be_nil
 
@@ -39,7 +39,7 @@ module Oauth
       expect(response).to redirect_to pose_terms_path(terms: FinePrint::Contract.pluck(:id))
       expect(assigns :application).to be_nil
 
-      get :new
+      get(:new)
       expect(response).to redirect_to pose_terms_path(terms: FinePrint::Contract.pluck(:id))
       expect(assigns :application).to be_nil
 
@@ -70,13 +70,13 @@ module Oauth
 
     it "should not let a user get the list of his applications" do
       controller.sign_in! user
-      get :index
+      get(:index)
       expect(response).to have_http_status :forbidden
     end
 
     it "should let an admin get the list of all applications" do
       controller.sign_in! admin
-      get :index
+      get(:index)
       expect(response).to have_http_status :success
       expect(assigns :applications).to include(untrusted_application_user)
       expect(assigns :applications).to include(trusted_application_user)
@@ -109,13 +109,13 @@ module Oauth
 
     it "should not let a user get new" do
       controller.sign_in! user
-      get :new
+      get(:new)
       expect(response).to have_http_status :forbidden
     end
 
     it "should let an admin get new" do
       controller.sign_in! admin
-      get :new
+      get(:new)
       expect(response).to have_http_status :success
     end
 

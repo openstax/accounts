@@ -130,7 +130,7 @@ gem 'oj_mimic_json'
 
 # Admin toggles
 gem 'rails-settings-ui'
-gem 'rails-settings-cached', '2.1.0' # TODO: BRYAN - update ruby or add a note why we need this VERY specific, older, version.
+gem 'rails-settings-cached', '0.7.2' # TODO: BRYAN - update ruby or add a note why we need this VERY specific, older, version.
 gem 'dry-validation', '0.12.0'
 
 gem 'scout_apm', '~> 3.0.x'

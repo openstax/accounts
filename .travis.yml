@@ -23,6 +23,6 @@ before_script:
   - bundle exec rake webdrivers:chromedriver:version
   - google-chrome --version
   - bundle exec rake --trace parallel:create parallel:load_schema parallel:seed
-script: bundle exec parallel_rspec ./spec
+script: bundle exec parallel_rspec ./spec/controllers ./spec/handlers  ./spec/models  ./spec/routines  ./spec/routing
 notifications:
   email: false
