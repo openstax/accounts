@@ -13,6 +13,27 @@ ActionController::Base.class_exec do
 
   before_action :save_redirect
 
+  def security_log(event_type, event_data = {})
+    user = event_data[:user]
+
+    if respond_to?(:current_api_user)
+      api_user = current_api_user
+      user ||= api_user.human_user
+      application = api_user.application
+    else
+      user ||= current_user
+      application = nil
+    end
+
+    SecurityLog.create!(
+      user: user.try(:is_anonymous?) ? nil : user,
+      application: application,
+      remote_ip: request.remote_ip,
+      event_type: event_type,
+      event_data: event_data
+    )
+  end
+
   def save_redirect
     return true if request.format != :html || request.options?
 

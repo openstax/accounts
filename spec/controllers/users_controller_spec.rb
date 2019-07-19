@@ -8,12 +8,12 @@ RSpec.describe UsersController, type: :controller do
     before(:each) { controller.sign_in! user }
 
     it 'renders the edit profile page' do
-      get 'edit'
+      get(:edit)
       expect(response.status).to eq 200
     end
 
     it 'sets headers to prevent caching' do
-      get 'edit'
+      get(:edit)
       expect(response.headers['Pragma']).to eq 'no-cache'
       expect(response.headers['Cache-Control']).to eq('no-cache, no-store')
     end
@@ -22,7 +22,7 @@ RSpec.describe UsersController, type: :controller do
   context 'PUT update' do
     it "updates the user's profile" do
       controller.sign_in! user
-      put('update', params: {
+      put(:update, params: {
         name: 'username',
         value: 'newusername',
         format: 'json'
@@ -33,16 +33,18 @@ RSpec.describe UsersController, type: :controller do
 
     it "updates the user's profile for all fields" do
       controller.sign_in! user
-      put 'update', {
-        name: 'name',
-        value: {
-          title: 'Dr',
-          first_name: 'NewFirst',
-          last_name: 'NewLast',
-          suffix: 'NewSuffix'
-        },
-        format: 'json'
-      }
+      put(:update,
+        params: {
+          name: 'name',
+          value: {
+            title: 'Dr',
+            first_name: 'NewFirst',
+            last_name: 'NewLast',
+            suffix: 'NewSuffix'
+          },
+          format: 'json'
+        }
+      )
       expect(response.status).to eq 200
       user.reload
       expect(user.title).to eq 'Dr'

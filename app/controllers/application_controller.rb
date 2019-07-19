@@ -20,27 +20,6 @@ class ApplicationController < ActionController::Base
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
-  def security_log(event_type, event_data = {})
-    user = event_data[:user]
-
-    if respond_to?(:current_api_user)
-      api_user = current_api_user
-      user ||= api_user.human_user
-      application = api_user.application
-    else
-      user ||= current_user
-      application = nil
-    end
-
-    SecurityLog.create!(
-      user: user.try(:is_anonymous?) ? nil : user,
-      application: application,
-      remote_ip: request.remote_ip,
-      event_type: event_type,
-      event_data: event_data
-    )
-  end
-
   def disable_fine_print
     request.options? ||
     contracts_not_required ||

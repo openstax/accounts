@@ -23,7 +23,7 @@ FinePrint.configure do |config|
   # accepted agreements. The default renders 403 Forbidden for all users.
   # Note: Proc must account for nil users, if current_user_proc returns nil.
   # Default: lambda { |user| head(:forbidden) }
-  config.authenticate_manager_proc = lambda { |user| user }
+  config.authenticate_manager_proc = lambda { true }
 
   # Proc called with a user as argument and a controller as self.
   # This proc is called before FinePrint determines if contracts need to be
@@ -55,7 +55,7 @@ FinePrint.configure do |config|
   #            ))
   #          }
   config.redirect_to_contracts_proc = lambda { |user, contracts|
-    redirect_to main_app.pose_terms_path(terms: contracts)
+    true
   }
 
 end
