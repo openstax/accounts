@@ -4,8 +4,6 @@ class ApplicationController < ActionController::Base
 
   layout 'application'
 
-  include AuthenticateMethods
-
   prepend_before_action :verify_signed_params
 
   before_action :authenticate_user!

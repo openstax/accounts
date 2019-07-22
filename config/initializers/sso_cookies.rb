@@ -15,6 +15,7 @@ class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedKeyRotatingCooki
 
     secret = key_generator.generate_key(salt, key_len)
     sign_secret = key_generator.generate_key(encrypted_signed_cookie_salt)
+    # @encryptor = ActiveSupport::MessageEncryptor.new(secret, sign_secret, cipher: "aes-256-cbc", serializer: JsonSerializer) # BRYAN - https://github.com/rails/rails/blob/98a57aa5f610bc66af31af409c72173cdeeb3c9e/actionpack/lib/action_dispatch/middleware/cookies.rb#L505
     @encryptor = ActiveSupport::MessageEncryptor.new(secret, sign_secret, cipher: "aes-256-cbc", serializer: JSON)
   end
 end

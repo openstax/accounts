@@ -6,12 +6,16 @@ ActionController::Base.class_exec do
   include LocaleSelector
   include RequireRecentSignin
 
+  include AuthenticateMethods
+
   include ContractsNotRequired
   helper_method :contracts_not_required, :sso_cookies
 
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
   before_action :save_redirect
+
+  fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
   def security_log(event_type, event_data = {})
     user = event_data[:user]
@@ -42,5 +46,11 @@ ActionController::Base.class_exec do
     return true if url.blank? || !Host.trusted?(url)
 
     store_url(url: url)
+  end
+
+  def disable_fine_print
+    request.options? ||
+    contracts_not_required ||
+    current_user.is_anonymous?
   end
 end
