@@ -10,7 +10,7 @@ RSpec.describe SsoCookieJar do
   }
 
   it "can write a cookie and read it back" do
-    sso_cookie_jar = SsoCookieJar.build(mock_request)
+    sso_cookie_jar = SsoCookieJar.build(mock_request, {})
 
     sso_cookie_jar.encrypted['some_name'] = {
       value: { foo: :bar }
@@ -21,7 +21,7 @@ RSpec.describe SsoCookieJar do
   end
 
   it 'cookie jar can be decoded using key' do
-    sso_cookie_jar = SsoCookieJar.build(mock_request)
+    sso_cookie_jar = SsoCookieJar.build(mock_request, {})
 
     sso_cookie_jar.encrypted['ox'] = {
       value: { 'test-answer' => 4242 }

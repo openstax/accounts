@@ -10,7 +10,7 @@ RSpec.describe Admin::ContactInfosController, type: :controller do
   end
 
   it 'marks contact info as verified' do
-    post :verify, id: email.id
+    post :verify, params: { id: email.id }
     expect(email.reload.verified).to be true
     expect(response.body).to eq '(Confirmed)'
   end
@@ -18,7 +18,7 @@ RSpec.describe Admin::ContactInfosController, type: :controller do
   describe '#delete contact_info' do
     it 'removes a contact info' do
       MarkContactInfoVerified.call(email)
-      delete :destroy, id: email.id
+      delete :destroy, params: { id: email.id }
       expect{ email.reload }.to raise_error ActiveRecord::RecordNotFound
     end
   end

@@ -37,7 +37,11 @@ RSpec.describe SessionsController, type: :controller do
           Hashie::Mash.new(outputs: {}, errors: [code: :unknown_callback_state])
         )
         expect(Raven).not_to receive(:capture_exception)
-        expect{ post(:create, params: { provider: 'identity' })) }.not_to(
+        expect{
+          post(:create,
+            params: { provider: 'identity' }
+          )
+        }.not_to(
           change{ ActionMailer::Base.deliveries.count }
         )
         expect(response).to redirect_to root_path

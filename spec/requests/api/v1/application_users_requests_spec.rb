@@ -111,23 +111,33 @@ RSpec.describe 'Api::V1::ApplicationUsers multiple requests',
 
       expect(app_user.reload.unread_updates).to eq 4
 
-      api_put updated_endpoint, untrusted_application_token, body: [
-        {user_id: user_2.id, read_updates: 2}].to_json
+      api_put(updated_endpoint,
+        untrusted_application_token,
+        params: [
+          {user_id: user_2.id, read_updates: 1}
+        ].to_json
+      )
 
       expect(response.status).to eq(204)
 
       expect(app_user.reload.unread_updates).to eq 4
 
-      api_put updated_endpoint, untrusted_application_token, body: [
-        {user_id: user_2.id, read_updates: 1}].to_json
+      api_put(updated_endpoint,
+        untrusted_application_token,
+        params: [
+          {user_id: user_2.id, read_updates: 1}
+        ].to_json
+      )
 
       expect(response.status).to eq(204)
 
       expect(app_user.reload.unread_updates).to eq 4
 
-      api_put updated_endpoint, untrusted_application_token, body: [
-        {user_id: user_2.id, read_updates: 4}].to_json
-
+      api_put(updated_endpoint, untrusted_application_token,
+        params: [
+          {user_id: user_2.id, read_updates: 4}
+        ].to_json
+      )
       expect(response.status).to eq(204)
 
       expect(app_user.reload.unread_updates).to eq 0

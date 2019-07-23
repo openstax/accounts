@@ -5,14 +5,13 @@ RSpec.describe AuthenticateMethods, type: :lib do
 
   let(:controller) { ActionController::Base.new }
   let(:main_app)   do
-    # BRYAN - we shouldn't have stubbed this.
     Class.new do
       def login_path(params = {})
         'https://localhost/login'
       end
     end.new
   end
-  let(:request)    { ActionController::TestRequest.new }
+  let(:request)    { ActionController::TestRequest.create(:test) }
   let(:session)    { {} }
 
   before do

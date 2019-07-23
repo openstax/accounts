@@ -31,11 +31,6 @@ class ContactInfo < ActiveRecord::Base
 
   def email?; type == 'EmailAddress' end
 
-  def to_subclass
-    return self unless valid?
-    becomes(type.constantize)
-  end
-
   def add_unread_update
     user.add_unread_update
   end
@@ -57,7 +52,7 @@ class ContactInfo < ActiveRecord::Base
   def check_if_last_verified
     if verified? and not user.contact_infos.verified.many? and not destroyed_by_association
       errors.add(:user, :last_verified)
-      return false
+      throw(:abort)
     end
   end
 

@@ -8,11 +8,15 @@ describe 'OPTIONS request', type: :request do
 
   it 'does not explode' do
     expect{
-      options '/api/options', {},
-              'HTTP_ORIGIN' => 'http://cors.example.com',
-              'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Content-Type',
-              'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'GET',
-              'REQUEST_METHOD' => 'OPTIONS'
+      options('/api/options',
+        params: {},
+        headers: {
+          'HTTP_ORIGIN' => 'http://cors.example.com',
+          'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Content-Type',
+          'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'GET',
+          'REQUEST_METHOD' => 'OPTIONS'
+        }
+      )
     }.not_to raise_error
   end
 

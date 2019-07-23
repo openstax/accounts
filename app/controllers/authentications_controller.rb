@@ -15,11 +15,11 @@ class AuthenticationsController < ApplicationController
                      authentication_provider: authentication.provider,
                      authentication_uid: authentication.uid
         render status: :ok,
-               text: (I18n.t :"controllers.authentications.authentication_removed",
+               plain: (I18n.t :"controllers.authentications.authentication_removed",
                              authentication: params[:provider].titleize)
       end,
       failure: lambda do
-        render status: 422, text: @handler_result.errors.map(&:message).to_sentence
+        render status: 422, plain: @handler_result.errors.map(&:message).to_sentence
       end
     )
   end

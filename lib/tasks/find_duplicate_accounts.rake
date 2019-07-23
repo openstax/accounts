@@ -21,7 +21,7 @@ task find_duplicate_accounts: [:environment] do
       on {
         (id != same.id) & (first_name.lower == same.first_name.lower) & (last_name.lower == same.last_name.lower)
       }.as('same')
-    }.uniq.preload(:security_logs, :applications, :authentications, :contact_infos)
+    }.distinct.preload(:security_logs, :applications, :authentications, :contact_infos)
 
     where_names_match.find_each do |user|
       csv << [user.first_name,
@@ -60,7 +60,7 @@ task find_duplicate_accounts: [:environment] do
     same = BabySqueel[:same]
     where_email_addresses_match = ContactInfo.joining{
         on{ (id != same.id) & (value.lower == same.value.lower) }.as('same')
-      }.joining{ user.outer }.preload(user: [:security_logs, :applications, :authentications]).uniq
+      }.joining{ user.outer }.preload(user: [:security_logs, :applications, :authentications]).distinct
 
     where_email_addresses_match.find_each do |contact_info|
       user = contact_info.user

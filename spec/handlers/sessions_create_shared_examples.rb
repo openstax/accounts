@@ -128,7 +128,7 @@ RSpec.shared_examples 'sessions create shared examples' do
         expect(result.outputs.status).to eq :new_social_user
         expect(user_state).to be_signed_in
         user = user_state.current_user
-        authentication = user.authentications(true).first
+        authentication = user.authentications.reload.first
         expect(authentication.provider).to eq "facebook"
         expect(authentication.uid).to eq "zuckerberg"
         expect(user.contact_infos.size).to eq 1

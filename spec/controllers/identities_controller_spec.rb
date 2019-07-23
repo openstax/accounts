@@ -95,7 +95,9 @@ describe IdentitiesController, type: :controller do
       end
 
       def reset_password(password, confirmation)
-        post('reset', params: { set_password: {
+        post(:reset,
+          params: {
+            set_password: {
               password: password, password_confirmation: confirmation
             }
           }

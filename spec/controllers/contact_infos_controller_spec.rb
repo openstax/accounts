@@ -42,7 +42,7 @@ RSpec.describe ContactInfosController, type: :controller do
     it "deletes the given ContactInfo" do
       contact_info.save!
       controller.sign_in! user
-      expect { delete 'destroy', id: contact_info.id }.to(
+      expect { delete(:destroy, params: { id: contact_info.id }) }.to(
         change{ContactInfo.count}.by(-1))
       expect(response.status).to eq 200
     end
@@ -119,7 +119,7 @@ RSpec.describe ContactInfosController, type: :controller do
       before { controller.sign_in! another_user }
 
       it 'returns 403 forbidden' do
-        put(:resend_confirmation, id: contact_info.id)
+        put(:resend_confirmation, params: { id: contact_info.id })
         expect(response).to have_http_status :forbidden
       end
     end
@@ -129,7 +129,7 @@ RSpec.describe ContactInfosController, type: :controller do
 
       it 'returns an `already_confirmed` error when confirmed' do
         ConfirmContactInfo.call(contact_info)
-        put(:resend_confirmation, id: contact_info.id)
+        put(:resend_confirmation, params: { id: contact_info.id })
         expect(response).to have_http_status :success
         expect(response.body).to include(I18n.t :"controllers.contact_infos.already_verified")
       end
@@ -138,7 +138,7 @@ RSpec.describe ContactInfosController, type: :controller do
         expect_any_instance_of(SendContactInfoConfirmation).to(
           receive(:call).with(contact_info: contact_info).and_call_original
         )
-        put(:resend_confirmation, id: contact_info.id)
+        put(:resend_confirmation, params: { id: contact_info.id })
         expect(response).to have_http_status :success
         expect(response.body_as_hash[:message]).to include(
           I18n.t :"controllers.contact_infos.verification_sent", address: contact_info.value

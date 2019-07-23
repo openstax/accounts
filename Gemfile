@@ -8,6 +8,7 @@ end
 # Rails framework
 gem 'rails', '5.2.0'
 gem 'rails-i18n', '~> 5'
+gem 'i18n', '>= 1.6.0'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 gem 'bootsnap', require: false
 
@@ -115,7 +116,7 @@ gem 'chronic'
 gem 'openstax_salesforce', '~> 3.0.0'
 
 # Fork that supports Ruby >= 2.1
-gem 'active_force', github: 'openstax/active_force', ref: '9efe1ba'
+gem 'active_force', github: 'openstax/active_force', ref: '3ba3421'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'

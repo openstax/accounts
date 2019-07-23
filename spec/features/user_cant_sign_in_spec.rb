@@ -158,14 +158,14 @@ feature "User can't sign in", js: true do
       visit password_add_path
       screenshot!
 
-      expect(@user.identity(true)).to be_nil
+      expect(@user.reload.identity).to be_nil
 
       complete_add_password_screen
       screenshot!
       complete_add_password_success_screen
 
-      expect(@user.identity(true)).not_to be_nil
-      expect(@user.authentications(true).map(&:provider)).to contain_exactly(
+      expect(@user.reload.identity).not_to be_nil
+      expect(@user.authentications.reload.map(&:provider)).to contain_exactly(
         "google_oauth2", "identity"
       )
 

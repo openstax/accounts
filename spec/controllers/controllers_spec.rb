@@ -6,6 +6,8 @@ RSpec.describe 'Controllers affected by initializers/controllers.rb', type: :con
   context '#save_redirect' do
 
     controller do
+      skip_before_action :authenticate_user!
+
       def index
         head(:ok)
       end

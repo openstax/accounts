@@ -8,7 +8,7 @@ RSpec.describe TransferPreAuthState, type: :routine do
 
     TransferPreAuthState[pre_auth_state: ss, user: user]
 
-    expect(user.contact_infos(true).size).to eq 1
+    expect(user.contact_infos.reload.size).to eq 1
     expect(user.role).to eq "designer"
 
     expect{ss.reload}.to raise_error(ActiveRecord::RecordNotFound)
@@ -30,7 +30,7 @@ RSpec.describe TransferPreAuthState, type: :routine do
 
     TransferPreAuthState[pre_auth_state: ss, user: user]
 
-    expect(user.contact_infos(true).size).to eq 1
+    expect(user.contact_infos.reload.size).to eq 1
     expect(user.role).to eq "designer"
 
     expect{ss.reload}.to raise_error(ActiveRecord::RecordNotFound)

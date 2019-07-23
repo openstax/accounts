@@ -112,11 +112,11 @@ module OmniAuth
       end
 
       def handle_unverified_request
-        rq = ActionDispatch::Request.new(request.env)
-        rq.session = NullSession::NullSessionHash.new(rq.env)
+        rq = ActionDispatch::Request.new(request)
+        rq.session = NullSession::NullSessionHash.new(rq)
         rq.env['action_dispatch.request.flash_hash'] = nil
         rq.env['rack.session.options'] = { skip: true }
-        rq.env['action_dispatch.cookies'] = NullSession::NullCookieJar.build(rq)
+        rq.env['action_dispatch.cookies'] = NullSession::NullCookieJar.build(rq, {})
       end
 
       def handle_signup

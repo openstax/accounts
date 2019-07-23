@@ -11,17 +11,19 @@ RSpec.describe Admin::UsersController, type: :controller do
 
   describe 'PUT #update' do
     it 'updates a user' do
-      put :update, id: user.id,
-                   user: {
-                     first_name: 'Malik',
-                     last_name: 'Kristensen',
-                     email_address: 'malik@example.org',
-                     is_administrator: '1',
-                     faculty_status: 'rejected_faculty',
-                     school_type: 'college',
-                     password: 'si4eeSai',
-                     password_confirmation: 'si4eeSai'
-                   }
+      put :update, params: {
+        id: user.id,
+        user: {
+          first_name: 'Malik',
+          last_name: 'Kristensen',
+          email_address: 'malik@example.org',
+          is_administrator: '1',
+          faculty_status: 'rejected_faculty',
+          school_type: 'college',
+          password: 'si4eeSai',
+          password_confirmation: 'si4eeSai'
+        }
+      }
       user.reload
       expect(user.first_name).to eq 'Malik'
       expect(user.last_name).to eq 'Kristensen'
@@ -37,8 +39,10 @@ RSpec.describe Admin::UsersController, type: :controller do
   describe 'trusted lauch removal' do
     it 'removes all the external uuids' do
       user.external_uuids.create!({ uuid: SecureRandom.uuid })
-      put :update, id: user.id,
-          user: { keep_external_uuids: '0' }
+      put :update, params: {
+        id: user.id,
+        user: { keep_external_uuids: '0' }
+      }
 
       expect(user.external_uuids.reload.none?).to be true
     end

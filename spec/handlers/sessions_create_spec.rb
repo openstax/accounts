@@ -86,7 +86,7 @@ RSpec.describe SessionsCreate, type: :handler do
             )
           )
           expect(result.outputs.status).to eq :authentication_added
-          authentication = current_user.authentications(true).first
+          authentication = current_user.authentications.reload.first
           expect(authentication.provider).to eq "google_oauth2"
           expect(authentication.uid).to eq "uid"
           expect(current_user.contact_infos.verified.map(&:value)).to contain_exactly("joe@joe.com")

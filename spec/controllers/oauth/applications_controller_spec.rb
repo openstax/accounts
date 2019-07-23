@@ -79,6 +79,7 @@ module Oauth
             }
         }
       )
+
       id = assigns(:application).id
       expect(id).not_to be_nil
       expect(response).to redirect_to(oauth_application_path(id))

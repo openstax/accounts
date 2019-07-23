@@ -14,8 +14,8 @@ feature 'User updates password on profile screen', js: true do
     FactoryBot.create :authentication, user: @user, provider: 'facebook'
     @user.authentications.where(provider: 'identity').destroy_all
     @user.identity.destroy
-    @user.authentications(true)
-    @user.identity(true)
+    @user.authentications.reload
+    @user.reload.identity
     visit '/profile'
 
     screenshot!
@@ -52,13 +52,13 @@ feature 'User updates password on profile screen', js: true do
   scenario "deletes password" do
     FactoryBot.create :authentication, user: @user, provider: 'facebook'
     visit '/profile'
-    expect(@user.identity(true)).to be_present
-    expect(@user.authentications(true).count).to eq 2
+    expect(@user.reload.identity).to be_present
+    expect(@user.authentications.reload.count).to eq 2
     expect(page).to have_css('[data-provider=identity]')
     find('[data-provider=identity] .delete').click
     find('.confirm-dialog-btn-confirm').click
     expect(page).to have_no_css('[data-provider=identity]')
-    expect(@user.identity(true)).to be_nil
-    expect(@user.authentications(true).count).to eq 1
+    expect(@user.reload.identity).to be_nil
+    expect(@user.authentications.reload.count).to eq 1
   end
 end

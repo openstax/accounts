@@ -12,7 +12,7 @@ RSpec.describe UserSessionManagement, type: :lib do
       end
     end.new
   end
-  let(:request)    { ActionController::TestRequest.new }
+  let(:request)    { ActionController::TestRequest.create(:test) }
   let(:session)    { {} }
 
   before do
