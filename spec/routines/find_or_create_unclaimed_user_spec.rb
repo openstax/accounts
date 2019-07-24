@@ -103,6 +103,20 @@ describe FindOrCreateUnclaimedUser do
 
       end
 
+      context 'and is_test' do
+        it 'sets is_test' do
+          is_test = [true, false].sample
+          new_user = FindOrCreateUnclaimedUser.call(
+            email:"anunusedemail@example.com",
+            username: 'bobsmith', email: 'anunusedemail@example.com',
+            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
+            is_test: is_test
+          ).outputs.user
+          expect(new_user.is_test).to eq is_test
+          expect(new_user.reload.is_test).to eq is_test
+        end
+      end
+
     end
 
   end

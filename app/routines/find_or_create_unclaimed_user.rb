@@ -38,6 +38,7 @@ class FindOrCreateUnclaimedUser
                faculty_status: options[:faculty_status],
                role: options[:role],
                school_type: options[:school_type],
+               is_test: options[:is_test],
                ensure_no_errors: true).outputs.user
 
     # routine is smart and gracefully handles case of missing options[:email]

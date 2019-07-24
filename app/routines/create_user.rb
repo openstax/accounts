@@ -13,7 +13,7 @@ class CreateUser
   def exec(state:, username: nil,
            title: nil, first_name: nil, last_name: nil, suffix: nil,
            salesforce_contact_id: nil, faculty_status: nil, role: nil,
-           school_type: nil, ensure_no_errors: false)
+           school_type: nil, is_test: nil, ensure_no_errors: false)
 
     username = generate_unique_valid_username(username) if ensure_no_errors
     create_method = ensure_no_errors ? :create! : :create
@@ -29,6 +29,7 @@ class CreateUser
       user.faculty_status = faculty_status || :no_faculty_info
       user.role = role || :unknown_role
       user.school_type = school_type || :unknown_school_type
+      user.is_test = is_test
     end
 
     transfer_errors_from(outputs[:user], type: :verbatim)

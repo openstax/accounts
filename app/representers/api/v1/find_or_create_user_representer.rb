@@ -113,5 +113,13 @@ module Api::V1
                }"
              }
 
+  property :is_test,
+           type: :boolean,
+           readable: false,
+           writeable: true,
+           schema_info: {
+             description: 'Whether or not this is a test user'
+           }
+
   end
 end
