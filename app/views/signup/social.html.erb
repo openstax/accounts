@@ -1,11 +1,11 @@
 <%= ox_card(heading: (t :'.page_heading')) do %>
 
     <div class="button-form-group">
-      <%= link_to "/auth/facebook", class: 'btn btn-block btn-social btn-facebook', id: 'facebook-login-button' do %>
+      <%= link_to oauth_path(:facebook), class: 'btn btn-block btn-social btn-facebook', id: 'facebook-login-button' do %>
         <span class="fa fa-facebook"></span> <%= t :".facebook" %>
       <% end %>
 
-      <%= link_to "/auth/google_oauth2", class: 'btn btn-block btn-social btn-google', id: 'google-login-button' do %>
+      <%= link_to oauth_path(:google_oauth2), class: 'btn btn-block btn-social btn-google', id: 'google-login-button' do %>
         <span class="fa fa-google"></span> <%= t :".google" %>
       <% end %>
     </div>
