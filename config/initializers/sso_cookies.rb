@@ -1,51 +1,20 @@
-# Creates a separate cookie jar on top of Rails' internal ones
-# ... magically because Rails doesn't really provide a way to do so.
 # https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/cookies.rb
 
-# Rails.application.configure do
-#   config.action_dispatch.use_authenticated_cookie_encryption = false
-#   config.action_dispatch.use_authenticated_message_encryption = false
-#   config.active_support.use_authenticated_message_encryption = false
+Rails.application.configure do
+  config.action_dispatch.use_authenticated_cookie_encryption = false
+  config.action_dispatch.use_authenticated_message_encryption = false
+  config.active_support.use_authenticated_message_encryption = false
 
-#   salt = Rails.application.secrets.sso[:shared_secret_salt] || 'cookie'
-#   config.action_dispatch.encrypted_cookie_salt = salt
-#   config.action_dispatch.encrypted_signed_cookie_salt = "signed encrypted #{salt}"
+  salt = Rails.application.secrets.sso[:shared_secret_salt] || 'cookie'
+  config.action_dispatch.encrypted_cookie_salt = salt
+  config.action_dispatch.encrypted_signed_cookie_salt = "signed encrypted #{salt}"
 
-#   config.action_dispatch.cookies_serializer = ActionDispatch::Cookies::JsonSerializer
-# end
-
-# Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = false
-
-# Rails.application.config.active_support.use_authenticated_message_encryption = false
-
-Rails.application.config.action_dispatch.cookies_serializer = ActionDispatch::Cookies::JsonSerializer
-# Rails.application.config.action_dispatch.cookies_serializer = ActiveSupport::MessageEncryptor::NullSerializer
+  config.action_dispatch.cookies_serializer = ActionDispatch::Cookies::JsonSerializer
+end
 
 class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedKeyRotatingCookieJar
   def initialize(parent_jar)
-    @parent_jar = parent_jar
-
-    previous_key_generator = self.request.key_generator
-    previous_encrypted_cookie_salt = self.request.encrypted_cookie_salt
-    previous_encrypted_signed_cookie_salt = self.request.encrypted_signed_cookie_salt
-
-    begin
-      sso_secret = Rails.application.secrets.sso[:shared_secret]
-      sso_salt = Rails.application.secrets.sso[:shared_secret_salt]
-
-      self.request.key_generator = ActiveSupport::CachingKeyGenerator.new(
-        ActiveSupport::KeyGenerator.new(sso_secret, iterations: 1000)
-      )
-      self.request.encrypted_cookie_salt = sso_salt
-      self.request.encrypted_signed_cookie_salt = "signed encrypted #{sso_salt}"
-
-      super
-
-    ensure
-      self.request.key_generator = previous_key_generator
-      self.request.encrypted_cookie_salt = previous_encrypted_cookie_salt
-      self.request.encrypted_signed_cookie_salt = previous_encrypted_signed_cookie_salt
-    end
+    super
   end
 end
 
