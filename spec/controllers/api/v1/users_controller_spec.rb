@@ -239,7 +239,9 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       }.to change{User.count}.by(1)
       expect(response.code).to eq('201')
       new_user = User.order(:id).last
-      expect(response.body_as_hash).to eq({id: new_user.id, uuid: new_user.uuid})
+      expect(response.body_as_hash).to eq(
+        id: new_user.id, uuid: new_user.uuid, support_identifier: new_user.support_identifier
+      )
     end
 
     it 'creates a new user with first name, last name and full name if given' do
@@ -286,14 +288,20 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
         api_post :find_or_create, trusted_application_token,
                  raw_post_data: {email: unclaimed_user.contact_infos.first.value}
         expect(response.code).to eq('201')
-        expect(response.body_as_hash).to eq({id: unclaimed_user.id, uuid: unclaimed_user.uuid})
+        expect(response.body_as_hash).to eq(
+          id: unclaimed_user.id,
+          uuid: unclaimed_user.uuid,
+          support_identifier: unclaimed_user.support_identifier
+        )
       end
       it "does so for claimed users" do
         api_post :find_or_create,
                  trusted_application_token,
                  raw_post_data: {email: user_2.contact_infos.first.value}
         expect(response.code).to eq('201')
-        expect(response.body_as_hash).to eq({id: user_2.id, uuid: user_2.uuid})
+        expect(response.body_as_hash).to eq(
+          id: user_2.id, uuid: user_2.uuid, support_identifier: user_2.support_identifier
+        )
       end
     end
 

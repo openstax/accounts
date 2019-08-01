@@ -12,6 +12,11 @@ module Api::V1
              readable: true,
              writeable: false
 
+    property :support_identifier,
+             type: String,
+             readable: true,
+             writeable: false
+
     property :email,
              type: String,
              readable: false,
@@ -112,6 +117,14 @@ module Api::V1
                  User.school_types.keys.map(&:to_s).inspect
                }"
              }
+
+  property :is_test,
+           type: :boolean,
+           readable: false,
+           writeable: true,
+           schema_info: {
+             description: 'Whether or not this is a test user'
+           }
 
   end
 end
