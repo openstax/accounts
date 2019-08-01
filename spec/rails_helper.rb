@@ -104,6 +104,12 @@ end
 class ExternalAppForSpecsController < ActionController::Base
   layout false
 
+  skip_before_action :save_redirect # it's being
+
+  # ActionController::Base.before_actions.each { |action|
+  #   skip_before_action action
+  # }
+
   def index
     render plain: 'This is a fake external application'
   end

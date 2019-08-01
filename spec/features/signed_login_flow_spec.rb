@@ -124,8 +124,8 @@ feature 'Sign in using signed parameters', js: true do
 
       email = 'test-modified-teacher@test.com'
 
-      fill_in (t :"signup.start.email_placeholder"), with: email
       click_button(t :"signup.start.next")
+      fill_in (t :"signup.start.email_placeholder"), with: email
       wait_for_animations
       click_button(t :"signup.start.next")
       expect_signup_verify_screen

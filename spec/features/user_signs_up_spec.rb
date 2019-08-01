@@ -577,7 +577,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     create_email_address_for(create_user('otheruser'), "bob@bob.edu")
     arrive_from_app
     click_sign_up
-    complete_signup_email_screen("Instructor", "somebody@somewhere.com")
+    complete_signup_email_screen("Instructor", "somebody@somewhere.edu")
 
     visit '/'
     click_sign_up

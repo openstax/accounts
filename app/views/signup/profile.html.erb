@@ -20,7 +20,7 @@
     <% end %>
 
     <%= fh.text_field name: :phone_number, except: :student %>
-    <%= fh.text_field name: :school %>
+    <%= fh.text_field name: :school, value: current_user.self_reported_school %>
     <%= fh.text_field name: :num_students, only: [:instructor, :adjunct] %>
     <%= fh.text_field name: :url, except: :student %>
 

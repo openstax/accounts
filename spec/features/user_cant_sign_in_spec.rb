@@ -90,7 +90,7 @@ feature "User can't sign in", js: true do
 
       arrive_from_app
       click_sign_up
-      complete_signup_email_screen "Instructor", "unverified@example.com", screenshot_after_role: true
+      complete_signup_email_screen "Student", "unverified@example.com", screenshot_after_role: true
 
       with_omniauth_test_mode(uid: authentication.uid) do
         # Found link from back button or some other shenanigans

@@ -92,15 +92,17 @@ module AuthenticateMethods
   end
 
   def external_user_uuid
-    signed_params['uuid']
+    signed_params[:uuid]
   end
 
   def external_email
-    signed_params['email']
+    signed_params[:email]
   end
 
   def request_url_without_signed_params
     uri = Addressable::URI.parse(request.url || "")
+
+    # BRYAN
 
     params = uri.query_values
     params.delete_if{|key, _| key.starts_with?("sp[")} if params.present?
