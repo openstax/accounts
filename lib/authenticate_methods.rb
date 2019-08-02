@@ -26,7 +26,7 @@ module AuthenticateMethods
     return if current_user.is_administrator?
     return head(:forbidden) if signed_in?
     store_url
-    redirect_to main_app.login_path(params.permit(:client_id).to_h[:client_id])
+    redirect_to main_app.login_path(params.permit(:client_id).to_h)
   end
 
   # Doorkeeper controllers define authenticate_admin!, so we need another name
@@ -87,15 +87,15 @@ module AuthenticateMethods
   end
 
   def signed_params
-    params[:sp].to_h
+    params[:sp].present? ? params[:sp].permit!.to_h.with_indifferent_access : {}
   end
 
   def external_user_uuid
-    signed_params[:uuid]
+    signed_params['uuid']
   end
 
   def external_email
-    signed_params[:email]
+    signed_params['email']
   end
 
   def request_url_without_signed_params

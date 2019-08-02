@@ -94,7 +94,7 @@ def create_application(skip_terms: false)
   # making HTTP calls against real external URLs like "example.com"
   server = Capybara.current_session.try(:server)
   redirect_uri = server.present? ?
-                 "http://#{server.host}:#{server.port}/#{external_app_for_specs_path}" :
+                 "http://#{server.host}:#{server.port}#{external_app_for_specs_path}" :
                  external_app_for_specs_url
   app.update_column(:redirect_uri, redirect_uri)
 
@@ -270,6 +270,7 @@ def expect_signup_profile_screen
 end
 
 def complete_login_username_or_email_screen(username_or_email)
+  # debugger # BRYAN - I think this is the culprit of ALL of the remaining failed specs
   fill_in 'login_username_or_email', with: username_or_email
   expect_sign_in_page
   expect(page).to have_no_missing_translations

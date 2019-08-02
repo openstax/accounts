@@ -28,7 +28,7 @@ class MockOmniauthRequest
   end
 
   def sso_cookie_jar
-    env["action_dispatch.sso_cookies".freeze] ||= SsoCookieJar.build(self)
+    env["action_dispatch.sso_cookies".freeze] ||= SsoCookieJar.build(self, cookies)
   end
 
 end

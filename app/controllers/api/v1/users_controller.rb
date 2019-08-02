@@ -91,7 +91,6 @@ class Api::V1::UsersController < Api::V1::ApiController
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
-    params = params.permit!.to_h
     query = params[:q]
     options = params.slice(:order_by, :q)
     outputs = SearchUsers.call(query, options).outputs

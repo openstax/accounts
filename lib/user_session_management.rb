@@ -21,6 +21,7 @@ module UserSessionManagement
 
     cookie_name = sso_cookie_secrets[:name]
     cookie = sso_cookies.encrypted[cookie_name]
+    # BRYAN - how do I know if it's a cookie's keys are string or symbols?
     @current_sso_user = User.find_by(uuid: cookie.dig('user', 'uuid')) if cookie.present?
     @current_sso_user ||= AnonymousUser.instance
   end

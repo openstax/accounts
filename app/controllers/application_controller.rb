@@ -21,7 +21,9 @@ class ApplicationController < ActionController::Base
 
   def complete_signup_profile
     return true if request.format != :html || request.options?
-    redirect_to main_app.signup_profile_path if current_user.is_needs_profile?
+    redirect_to '/signup/profile' if current_user.is_needs_profile?
+    # TODO: uncomment this line after fixing openstax_path_prefixer
+    # redirect_to main_app.signup_profile_path if current_user.is_needs_profile?
   end
 
   def check_if_password_expired
@@ -40,7 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def verify_signed_params
-    return true if params[:sp].nil?
+    return true if signed_params.empty? # BRYAN
 
     app = ::Doorkeeper::Application.find_by_uid(params[:client_id])
 

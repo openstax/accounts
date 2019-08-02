@@ -36,7 +36,7 @@ module OmniAuth
       option :fields, [:username, :first_name, :last_name]
       option(:locate_conditions, lambda do |req|
         users = LookupUsers.by_email_or_username(
-          req.params[:login].try(:[], :username_or_email)
+          req.params['login'].try(:[], 'username_or_email')
         )
         users_returned = users.size
         user = users.first if users_returned == 1
@@ -76,7 +76,7 @@ module OmniAuth
           elsif locate_conditions[:users_returned] > 1
             :multiple_users
           else
-            source = request.params.try(:[],"login").try(:[],"source")
+            source = request.params.try(:[],'login').try(:[],'source')
 
             case source
             when "authenticate"
@@ -114,9 +114,9 @@ module OmniAuth
       def handle_unverified_request
         rq = ActionDispatch::Request.new(request)
         rq.session = NullSession::NullSessionHash.new(rq)
-        rq.env['action_dispatch.request.flash_hash'] = nil
-        rq.env['rack.session.options'] = { skip: true }
-        rq.env['action_dispatch.cookies'] = NullSession::NullCookieJar.build(rq, {})
+        rq.flash = nil
+        rq.session_options = { skip: true }
+        rq.cookie_jar = NullSession::NullCookieJar.build(rq, {})
       end
 
       def handle_signup
@@ -129,7 +129,7 @@ module OmniAuth
         else
           @handler_result =
             SignupPassword.handle(
-              params: request,
+              params: request.params,
               caller: current_user,
               pre_auth_state: pre_auth_state
             )
@@ -161,7 +161,7 @@ module OmniAuth
       def identity
         @identity ||= model.authenticate(
           locate_conditions.slice(:user_id),
-          request.params[:login].try(:[], :password)
+          request.params['login'].try(:[], 'password')
         )
       end
 

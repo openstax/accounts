@@ -7,7 +7,7 @@ RSpec.shared_examples 'sessions create shared examples' do
 
   context "logging in" do
     context "no user linked to oauth response" do
-      let(:login_providers) { { 'does_not' => {'uid' => 'matter'} } }
+      let(:login_providers) { { does_not: {uid: 'matter'} } }
 
       it "returns mismatched_authentication status and does not log in" do
         result = nil
@@ -21,7 +21,7 @@ RSpec.shared_examples 'sessions create shared examples' do
 
     context "oauth response doesn't match log in username/email" do
       let(:authentication) { FactoryBot.create(:authentication, provider: 'google_oauth2') }
-      let(:login_providers) { { 'google_oauth2' => {'uid' => 'some_other_uid'} } }
+      let(:login_providers) { { google_oauth2: { uid: 'some_other_uid'} } }
 
       it "returns mismatched_authentication status and does not log in" do
         result = nil
@@ -36,7 +36,7 @@ RSpec.shared_examples 'sessions create shared examples' do
 
     context "happy path" do
       let(:authentication) { FactoryBot.create(:authentication, provider: 'google_oauth2') }
-      let(:login_providers) { { 'google_oauth2' => { 'uid' => authentication.uid } } }
+      let(:login_providers) { { google_oauth2: { uid: authentication.uid } } }
 
       it "returns returning_user status and logs in" do
         result = handle(
@@ -90,7 +90,7 @@ RSpec.shared_examples 'sessions create shared examples' do
                                                            {email: other_user_email.value}))
           expect(result.outputs.status).to eq :existing_user_signed_up_again
           expect(PreAuthState.count).to eq 0
-        end.to change{other_user_email.user.authentications.count}.by 1
+        end.to change{other_user_email.user.reload.authentications.count}.by 1
       end
     end
 

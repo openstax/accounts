@@ -9,7 +9,7 @@ require 'bundler/setup' if File.exist?(ENV['BUNDLE_GEMFILE'])
 
 DEV_PORT = 2999
 DEV_HOST = 'localhost'
-DEV_URL_OPTIONS = { host: DEV_HOST, port: DEV_PORT }
+DEV_URL_OPTIONS = { host: DEV_HOST, port: DEV_PORT, protocol: 'http' }
 
 # module Rails
 #   class Server

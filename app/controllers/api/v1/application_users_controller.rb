@@ -86,8 +86,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, ApplicationUser)
-    params = params.permit!.to_h
-    options = params.permit(:page, :per_page, :order_by)
+    options = params.slice(:page, :per_page, :order_by)
     outputs = SearchApplicationUsers.call(current_application, params[:q], options).outputs
     app = current_api_user.application
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
@@ -110,7 +109,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     raise SecurityTransgression if current_application.nil?
 
     application_user = ApplicationUser.preload(:user).joins(:user).where(
-      users: { username: params.permit(:username)[:username] },
+      users: { username: params[:username] },
       application_id: current_application.id
     ).first!
 
