@@ -22,11 +22,13 @@ RSpec.describe UsersController, type: :controller do
   context 'PUT update' do
     it "updates the user's profile" do
       controller.sign_in! user
-      put(:update, params: {
-        name: 'username',
-        value: 'newusername',
-        format: 'json'
-      })
+      put(:update,
+        params: {
+          name: 'username',
+          value: 'newusername',
+          format: 'json'
+        }
+      )
       expect(response.status).to eq 200
       expect(user.reload.username).to eq "newusername"
     end

@@ -109,7 +109,7 @@ module Oauth
     end
 
     def app_params
-      params[:doorkeeper_application].slice(
+      params.require(:doorkeeper_application).permit(
         :name, :redirect_uri, :scopes, :email_subject_prefix, :lead_application_source,
         :trusted, :email_from_address, :confidential
       )

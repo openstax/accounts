@@ -128,7 +128,7 @@ module Admin
       if @user.external_uuids.any? && params[:user][:keep_external_uuids] == '0'
         @user.external_uuids.destroy_all
       end
-      user_params = params[:user].slice(:first_name, :last_name, :username)
+      user_params = params[:user].permit(:first_name, :last_name, :username)
 
       @user.update_attributes(user_params)
     end

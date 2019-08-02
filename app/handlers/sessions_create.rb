@@ -73,7 +73,7 @@ class SessionsCreate
     if (
          authentication_user.nil? ||
          options[:login_providers][authentication.provider].nil? ||
-         options[:login_providers][authentication.provider]['uid'] != authentication.uid
+         options[:login_providers][authentication.provider][:uid] != authentication.uid
        )
       return :mismatched_authentication
     end

@@ -87,8 +87,12 @@ describe Api::V1::MessagesController, type: :controller, api: true, version: :v1
     it "creates and sends messages for trusted applications" do
       Mail::TestMailer.deliveries.clear
 
-      expect{api_post :create, trusted_application_token,
-                      params: message_params}.not_to raise_error
+      expect {
+        api_post(:create,
+          trusted_application_token,
+          params: message_params
+        )
+      }.not_to raise_error
       expect(response.code).to eq('201')
 
       outcome = JSON.parse(response.body)

@@ -183,7 +183,7 @@ Doorkeeper.configure do
   # after_successful_authorization do |controller|
   #   controller.session[:logout_urls] <<
   #     Doorkeeper::Application
-  #       .find_by(controller.request.params.slice(:redirect_uri))
+  #       .find_by(controller.request.params.permit(:redirect_uri))
   #       .logout_uri
   # end
 

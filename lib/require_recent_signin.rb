@@ -4,7 +4,7 @@ module RequireRecentSignin
 
   def reauthenticate_user!
     store_url
-    location = main_app.reauthenticate_path params.slice(:client_id)
+    location = main_app.reauthenticate_path(params.permit(:client_id)[:client_id])
 
     respond_to do |format|
       format.json{ render json: { location: location } }

@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
     if app.nil?
       Rails.logger.warn { "Unknown app for signed parameters" }
       head(:bad_request)
-    elsif !OpenStax::Api::Params.signature_and_timestamp_valid?(params: params[:sp], secret: app.secret)
+    elsif !OpenStax::Api::Params.signature_and_timestamp_valid?(params: signed_params, secret: app.secret)
       Rails.logger.warn { "Invalid signature or timestamp for signed parameters" }
       head(:bad_request)
     end

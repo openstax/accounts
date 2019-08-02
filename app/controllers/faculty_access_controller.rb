@@ -6,7 +6,7 @@ class FacultyAccessController < ApplicationController
 
   def apply
     if request.post?
-      handler = case params["apply"]["role"]
+      handler = case params[:apply][:role]
       when "instructor"
         FacultyAccessApplyInstructor
       else

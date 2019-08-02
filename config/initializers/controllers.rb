@@ -17,11 +17,6 @@ ActionController::Base.class_exec do
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
-    # TODO # BRYAN - REMOVE THIS. ADDED TEMPORARILY.
-  def params
-    request.parameters.with_indifferent_access
-  end
-
   def sso_cookies
     request.sso_cookie_jar
   end
@@ -50,7 +45,7 @@ ActionController::Base.class_exec do
   def save_redirect
     return true if request.format != :html || request.options?
 
-    url = params["r"]
+    url = params[:r]
 
     return true if url.blank? || !Host.trusted?(url)
 

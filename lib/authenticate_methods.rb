@@ -16,7 +16,7 @@ module AuthenticateMethods
     else
       redirect_to(
         main_app.login_path(
-          params.slice(:client_id, :signup_at, :go, :no_signup)
+          params.permit(:client_id, :signup_at, :go, :no_signup).to_h
         )
       )
     end
@@ -25,9 +25,8 @@ module AuthenticateMethods
   def authenticate_admin!
     return if current_user.is_administrator?
     return head(:forbidden) if signed_in?
-
     store_url
-    redirect_to main_app.login_path(params.slice(:client_id))
+    redirect_to main_app.login_path(params.permit(:client_id).to_h[:client_id])
   end
 
   # Doorkeeper controllers define authenticate_admin!, so we need another name
@@ -83,12 +82,12 @@ module AuthenticateMethods
 
     # Save the signed params data to facilitate either sign in or up
     # depending on the user's choices
-    pre_auth_state = PreAuthState.create_from_signed_data(params[:sp])
+    pre_auth_state = PreAuthState.create_from_signed_data(signed_params)
     save_pre_auth_state(pre_auth_state)
   end
 
   def signed_params
-    params[:sp]
+    params[:sp].to_h
   end
 
   def external_user_uuid
@@ -101,8 +100,6 @@ module AuthenticateMethods
 
   def request_url_without_signed_params
     uri = Addressable::URI.parse(request.url || "")
-
-    # BRYAN
 
     params = uri.query_values
     params.delete_if{|key, _| key.starts_with?("sp[")} if params.present?

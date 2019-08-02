@@ -51,7 +51,9 @@ class Api::V1::MessagesController < Api::V1::ApiController
     #{json_schema(Api::V1::MessageRepresenter, include: [:writeable])}
   EOS
   def create
-    handle_with(MessagesCreate, caller: current_api_user,
+    handle_with(MessagesCreate,
+                caller: current_api_user,
+                params: message_params,
                 success: lambda {
                            respond_with @handler_result.outputs[:message],
                                         status: :created, location: nil
@@ -62,4 +64,10 @@ class Api::V1::MessagesController < Api::V1::ApiController
                 })
   end
 
+  private
+
+  def message_params
+    # too nested for rails to handle otherwise, yet okay because we `slice`
+    params.permit!.to_h
+  end
 end
