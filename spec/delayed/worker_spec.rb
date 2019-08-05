@@ -13,7 +13,8 @@ RSpec.describe Delayed::Worker, type: :lib do
       JSON::ParserError,
       NameError,
       NoMethodError,
-      NotYetImplemented
+      NotYetImplemented,
+      ActiveJob::DeserializationError
     ].each do |exception|
       context exception.name do
         it 'fails the job instantly' do
@@ -28,26 +29,6 @@ RSpec.describe Delayed::Worker, type: :lib do
   end
 
   context 'exceptions with arguments' do
-    context 'ActiveJob::DeserializationError' do
-      let(:exception) { ActiveJob::DeserializationError }
-
-      it 'fails the job instantly if it is an ActiveRecord::RecordNotFound' do
-        expect(job).to receive(:perform) { raise exception, ActiveRecord::RecordNotFound.new }
-
-        expect(delayed_job.failed?).to eq false
-        delayed_worker.run(delayed_job)
-        expect(delayed_job.failed?).to eq true
-      end
-
-      it 'does not fail the job instantly if it is some other exception' do
-        expect(job).to receive(:perform) { raise exception, OpenStruct.new }
-
-        expect(delayed_job.failed?).to eq false
-        delayed_worker.run(delayed_job)
-        expect(delayed_job.failed?).to eq false
-      end
-    end
-
     context 'ActiveRecord::RecordInvalid' do
       let(:exception) { ActiveRecord::RecordInvalid }
 

@@ -24,7 +24,7 @@ feature 'Unknown route used' do
   end
 
   scenario "with non-utf-8 characters" do
-    visit "/%E2%EF%BF%BD%A6"
+    visit Rack::Utils.escape("/😁")
     expect(page).to have_http_status :not_found
   end
 

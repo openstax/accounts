@@ -198,6 +198,7 @@ feature "User can't sign in", js: true do
   end
 
   scenario 'social login fails with invalid_credentials notifies devs' do
+    skip 'we should use Sentry instead' # TODO (after upgrading Rails)
     user = create_user 'user'
     authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
@@ -211,7 +212,7 @@ feature "User can't sign in", js: true do
     screenshot!
     expect(page).to have_content(t(:"controllers.sessions.trouble_with_provider"))
 
-    open_email('recipients@localhost')
+    open_email(devs_email)
     expect(current_email.subject).to(
       eq "[OpenStax] [Accounts] (test) google_oauth2 social login is failing!"
     )

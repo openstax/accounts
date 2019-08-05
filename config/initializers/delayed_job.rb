@@ -30,7 +30,7 @@ module HandleFailedJobInstantly
     job.fail! if fail_proc.present? && fail_proc.call(exception) ||
                  exception.try(:instantly_fail_if_in_background_job?)
 
-    super(job, exception)
+                 super(job, exception)
   end
 end
 
@@ -46,10 +46,7 @@ Delayed::Worker.class_exec do
     'NameError' => ALWAYS_FAIL,
     'NoMethodError' => ALWAYS_FAIL,
     'NotYetImplemented' => ALWAYS_FAIL,
-    # http://stackoverflow.com/a/31928089
-    'ActiveJob::DeserializationError' => ->(exception) do
-      exception.original_exception.is_a? ActiveRecord::RecordNotFound
-    end,
+    'ActiveJob::DeserializationError' => ALWAYS_FAIL,
     'OAuth2::Error'       => ->(exception) do
       status = exception.response.status
       400 <= status && status < 500

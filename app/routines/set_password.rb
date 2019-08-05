@@ -17,7 +17,6 @@ class SetPassword
     # about the password not matching its confirmation, so error out immediately.
 
     fatal_error(code: :password_cannot_be_blank) if password.blank?
-
     identity.password = password
     identity.password_confirmation = password_confirmation
     identity.password_expires_at = \

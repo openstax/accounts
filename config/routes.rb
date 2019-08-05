@@ -225,5 +225,5 @@ Rails.application.routes.draw do
     get '/external_app_for_specs' => 'external_app_for_specs#index'
   end
 
-  get '*', controller: :exceptions, action: :missing_route
+  get '*other', controller: :exceptions, action: :missing_route
 end

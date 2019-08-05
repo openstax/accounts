@@ -129,7 +129,7 @@ module OmniAuth
         else
           @handler_result =
             SignupPassword.handle(
-              params: request.params,
+              params: request,
               caller: current_user,
               pre_auth_state: pre_auth_state
             )

@@ -54,7 +54,6 @@ class SignupStart
 
     outputs.pre_auth_state = new_pre_auth_state
     deliver_validation_email # Send the pin
-
   end
 
   def deliver_validation_email

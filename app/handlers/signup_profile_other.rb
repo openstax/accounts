@@ -8,7 +8,8 @@ class SignupProfileOther < SignupProfile
     validates :phone_number, presence: true
     validates :url, presence: true
     validate :subjects, lambda { |profile|
-      unless profile.subjects.detect{|_, checked| checked == '1'}
+      subj = profile.subjects.is_a?(Hash) ? profile.subjects : profile.subjects.permit!.to_h
+      unless subj.detect{|_, checked| checked == '1'}
         profile.errors.add(:subjects, :blank_selection)
       end
     }

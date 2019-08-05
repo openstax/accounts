@@ -101,7 +101,7 @@ def disable_sfdc_client
     .and_return(double('null object').as_null_object)
 end
 
-class ExternalAppForSpecsController < ActionController::Base
+class ExternalAppForSpecsController < ApplicationController
   layout false
 
   skip_before_action :save_redirect # it's being

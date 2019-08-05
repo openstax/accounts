@@ -124,11 +124,12 @@ feature 'Sign in using signed parameters', js: true do
 
       email = 'test-modified-teacher@test.com'
 
-      click_button(t :"signup.start.next")
       fill_in (t :"signup.start.email_placeholder"), with: email
+      click_button(t :"signup.start.next")
       wait_for_animations
       click_button(t :"signup.start.next")
       expect_signup_verify_screen
+
       ss = PreAuthState.find_by!(contact_info_value: email)
       fill_in (t :"signup.verify_email.pin"), with: ss.confirmation_pin
       click_button(t :"signup.verify_email.confirm")
