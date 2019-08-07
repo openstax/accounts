@@ -7,9 +7,7 @@ FinePrint.configure do |config|
   config.layout = 'admin'
 
   # Array of custom helpers for FinePrint's controllers
-  # Default: [] (no custom helpers)
-  config.helpers = [] # BRYAN  - copied from tutor-server
-  # config.helpers = [::ApplicationHelper]
+  config.helpers = []
 
   # Proc called with a controller as self. Returns the current user.
   # Default: lambda { current_user }

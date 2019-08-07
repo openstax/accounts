@@ -31,6 +31,11 @@ class ContactInfo < ActiveRecord::Base
 
   def email?; type == 'EmailAddress' end
 
+  def to_subclass
+    return self unless valid?
+    becomes(type.constantize)
+  end
+
   def add_unread_update
     user.add_unread_update
   end

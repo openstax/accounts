@@ -69,7 +69,7 @@ class SessionsCreate
   def handle_during_login
     # The incoming authentication must match an existing user and match the
     # authentications corresponding to the username/email provided during login.
-    options[:login_providers].deep_stringify_keys! # BRYAN - arghhhhhhh!
+    options[:login_providers].deep_stringify_keys!
     if (
          authentication_user.nil? ||
          options[:login_providers][authentication.provider].nil? ||

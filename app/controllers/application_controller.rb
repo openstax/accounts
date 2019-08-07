@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def verify_signed_params
-    return true if signed_params.empty? # BRYAN
+    return true if signed_params.empty?
 
     app = ::Doorkeeper::Application.find_by_uid(params[:client_id])
 

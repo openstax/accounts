@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require_relative 'boot'
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -70,11 +70,6 @@ module Accounts
         alias_method :original_create, :create # before_action not available
       end
     end
-
-    # https://github.com/rails/web-console/tree/v3.7.0#configweb_consolewhitelisted_ips
-    # config.web_console.permissions = '192.168.128.1'
-
-    # config.railties_order = [:main_app, :all]
 
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
     config.active_record.belongs_to_required_by_default = false

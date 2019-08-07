@@ -14,6 +14,7 @@ class ContactInfosCreate
   def setup
     @contact_info = ContactInfo.new(contact_info_params.as_hash(:type, :value))
     @contact_info.user = caller
+    @contact_info = @contact_info.to_subclass
   end
 
   def authorized?

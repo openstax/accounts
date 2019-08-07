@@ -9,7 +9,7 @@ require 'webdrivers'
 require 'capybara/rails'
 require 'capybara/email/rspec'
 require 'shoulda/matchers'
-# require 'parallel_tests' # TODO: BRYAN - remove this?
+require 'parallel_tests'
 require 'database_cleaner'
 require 'spec_helper'
 

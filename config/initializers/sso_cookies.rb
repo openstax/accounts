@@ -2,34 +2,12 @@
 # ... magically because Rails doesn't really provide a way to do so.
 # https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/cookies.rb
 
-# Rails.application.configure do
-#   config.action_dispatch.use_authenticated_cookie_encryption = false
-#   config.action_dispatch.use_authenticated_message_encryption = false
-#   config.active_support.use_authenticated_message_encryption = false
-
-#   salt = Rails.application.secrets.sso[:shared_secret_salt] || 'cookie'
-#   config.action_dispatch.encrypted_cookie_salt = salt
-#   config.action_dispatch.encrypted_signed_cookie_salt = "signed encrypted #{salt}"
-
-#   config.action_dispatch.cookies_serializer = ActionDispatch::Cookies::JsonSerializer
-# end
-
-# Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = false
-
-# Rails.application.config.active_support.use_authenticated_message_encryption = false
-
 Rails.application.config.action_dispatch.cookies_serializer = ActionDispatch::Cookies::JsonSerializer
-# Rails.application.config.action_dispatch.cookies_serializer = ActiveSupport::MessageEncryptor::NullSerializer
-Rails.application.config.action_dispatch.encrypted_cookie_cipher = 'aes-256-cbc'
-
-
-
 Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = false
+Rails.application.config.action_dispatch.encrypted_cookie_cipher = 'aes-256-cbc'
 
 class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedKeyRotatingCookieJar
   def initialize(parent_jar)
-    @parent_jar = parent_jar
-
     super
 
     sso_shared_secret = Rails.application.secrets.sso[:shared_secret]
@@ -47,14 +25,14 @@ class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedKeyRotatingCooki
     json_serializer = ActionDispatch::Cookies::JsonSerializer
     sso_encryptor = ActiveSupport::MessageEncryptor.new(secret, sign_secret, serializer: json_serializer)
 
-    self.instance_variable_set(:@encryptor, sso_encryptor)
+    @encryptor = sso_encryptor
   end
 end
 
 # Provides a separate CookieJar for the SSO cookie, with a different shared_secret
 class SsoCookieJar < ActionDispatch::Cookies::CookieJar
   def encrypted
-    @encrypted = SsoEncryptedCookieJar.new(self)
+    @encrypted ||= SsoEncryptedCookieJar.new(self)
   end
 end
 
@@ -72,11 +50,6 @@ ActionDispatch::Request.class_exec do
      self.sso_cookie_jar = SsoCookieJar.build(self, cookies)
    end
   end
-
-  # def encrypted_cookie_cipher
-  # should probably set the Rails config instead
-  #   'aes-256-cbc'
-  # end
 end
 
 ActionDispatch::Cookies.class_exec do

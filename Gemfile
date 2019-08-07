@@ -12,6 +12,10 @@ gem 'i18n', '>= 1.6.0'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 gem 'bootsnap', require: false
 
+# Lev framework
+# - introduces two new concepts: Routines and Handlers
+gem 'lev', '~> 9.0.1'
+
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.4.1'
 
@@ -60,9 +64,6 @@ gem 'openstax_rescue_from'
 
 # Sentry integration (the require disables automatic Rails integration since we use rescue_from)
 gem 'sentry-raven', require: 'raven/base'
-
-# Lev framework
-gem 'lev', '~> 9.0.1'
 
 # Background job status store
 gem 'jobba', '~> 1.4.0'
@@ -124,14 +125,14 @@ gem 'awesome_print'
 gem 'whenever', require: false
 
 # Fast JSON parsing
-gem 'oj', '3.7.12' # TODO: BRYAN
+gem 'oj', '~> 3.7.12'
 
 # Replace JSON with Oj
 gem 'oj_mimic_json'
 
 # Admin toggles
 gem 'rails-settings-ui'
-gem 'rails-settings-cached', '0.7.2' # TODO: BRYAN - update ruby or add a note why we need this VERY specific, older, version.
+gem 'rails-settings-cached', '0.7.2'
 gem 'dry-validation', '0.12.0'
 
 gem 'scout_apm', '~> 3.0.x'
