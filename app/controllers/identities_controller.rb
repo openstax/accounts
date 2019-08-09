@@ -50,6 +50,7 @@ class IdentitiesController < ApplicationController
                 user: user,
                 success: lambda do
                   security_log :help_requested, user: user
+                  sign_out!
                 end,
                 failure: lambda do
                   security_log :help_request_failed, user: user
