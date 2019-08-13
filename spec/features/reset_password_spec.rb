@@ -11,6 +11,7 @@ feature 'Password reset', js: true do
     # issue: https://github.com/openstax/business-intel/issues/550
     user = create_user 'user'
     create_email_address_for user, 'user@example.com'
+    login_token = generate_login_token_for 'user'
     log_in('user','password')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
@@ -22,7 +23,9 @@ feature 'Password reset', js: true do
       open_email('user@example.com')
       password_reset_link = get_path_from_absolute_link(current_email, 'a')
       visit password_reset_link
+
       expect(page).not_to(have_current_path(reauthenticate_path))
+      expect(page).to(have_current_path(password_reset_path(token: login_token)))
     end
   end
 
