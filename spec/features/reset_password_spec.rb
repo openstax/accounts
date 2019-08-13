@@ -2,9 +2,32 @@ require 'rails_helper'
 
 require_relative './add_reset_password_shared_examples'
 
-feature 'User resets password', js: true do
+feature 'Password reset', js: true do
 
   it_behaves_like "add_reset_password_shared_examples", :reset
+
+  scenario 'while still logged in – user is not stuck in a loop' do
+    # shouldn't ask to reauthenticate when they forgot their password and are trying to reset it
+    # issue: https://github.com/openstax/business-intel/issues/550
+    user = create_user 'user'
+    create_email_address_for user, 'user@example.com'
+    login_token = generate_login_token_for 'user'
+    log_in('user','password')
+
+    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+      find('[data-provider=identity] .edit').click
+      expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
+      click_link(t :"sessions.authenticate_options.reset_password")
+      expect(page).to have_content(t(:'identities.send_reset.we_sent_email', emails: 'user@example.com'))
+
+      open_email('user@example.com')
+      password_reset_link = get_path_from_absolute_link(current_email, 'a')
+      visit password_reset_link
+
+      expect(page).not_to(have_current_path(reauthenticate_path))
+      expect(page).to(have_current_path(password_reset_path(token: login_token)))
+    end
+  end
 
   scenario 'with identity gets redirected to reset password' do
     @user = create_user 'user'
