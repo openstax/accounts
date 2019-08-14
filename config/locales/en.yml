@@ -422,6 +422,10 @@ en:
       teacher_school_email_warning:
         Is this your school email address?  If yes, click %{button} below.
         If not, please enter your school email address.
+      did_you_mean:
+        Did you mean
+      proceed_with_likely_mistyped_email:
+        If yes, please edit your email. If not, click %{button} below.
 
     verify_email:
       page_heading_pin: Check your email

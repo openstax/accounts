@@ -1,8 +1,12 @@
 body.signup {
 
   // elements which are conditionally displayed depending on signup state
-  #signup_email:not([value]), .audience-help, .edu.warning {
+  #signup_email:not([value]), .audience-help, .warning {
     display: none;
+  }
+
+  .warning.mistype #suggestion {
+    font-weight: bold;
   }
 
   @import "controls/subjects_multi_select";
