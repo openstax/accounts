@@ -108,7 +108,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       role:  'student',
       external_user_uuid: SecureRandom.uuid,
       name:  'Tester McTesterson',
-      email: 'test@test.com',
+      email: 'test@gmail.com',
       school: 'Testing U'
     }
     arrive_from_app(do_expect: false, params: {sp: OpenStax::Api::Params.sign(secret: @app.secret, params: params)})
@@ -116,9 +116,9 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     expect_sign_up_page # students default to sign-up vs the standard sign-in
     expect(page).to have_no_field('signup_role') # no changing the role
 
-    fill_in (t :"signup.start.email_placeholder"), with: 'my-personal-email@test.com'
+    fill_in (t :"signup.start.email_placeholder"), with: 'my-personal-email@gmail.com'
     click_button(t :"signup.start.next")
-    open_email("my-personal-email@test.com")
+    open_email("my-personal-email@gmail.com")
     verify_email_path = get_path_from_absolute_link(current_email, 'a')
     visit verify_email_path
     expect_signup_profile_screen # skipped password since it's a trusted student
@@ -223,7 +223,28 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
       select 'Instructor', from: "signup_role"
       fill_in (t :"signup.start.email_placeholder"), with: "bob@gmail.com"
       click_button(t :"signup.start.next")
-      expect(page).to have_content 'To access faculty-only materials'
+      # suspected non-school email warning is shown
+      expect(page).to have_content 'Is this your school email address?'
+      # confirm
+      click_button(t :"signup.start.next")
+      # success
+      expect(page).not_to have_current_path(signup_path)
+      expect(page).to have_current_path(signup_verify_email_path)
+      screenshot!
+    end
+
+    scenario 'failure because likely mistyped email then success' do
+      visit signup_path
+      select 'Student', from: "signup_role"
+      fill_in (t :"signup.start.email_placeholder"), with: "bob@gnail.com"
+      click_button(t :"signup.start.next")
+      # likely mistyped email address warning is shown
+      expect(page).to have_content 'Did you mean gmail.com?'
+      # confirm
+      click_button(t :"signup.start.next")
+      # success
+      expect(page).not_to have_current_path(signup_path)
+      expect(page).to have_current_path(signup_verify_email_path)
       screenshot!
     end
 
@@ -303,7 +324,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
 
     scenario 'user leaves verify screen to edit email and also changes role' do
       click_link (t :'signup.verify_email.edit_email_address')
-      complete_signup_email_screen("Student","bob2@bob.com")
+      complete_signup_email_screen("Student","bob2@gmail.com")
       complete_signup_verify_screen(pass: true)
       complete_signup_password_screen('password')
       expect(page).to have_no_content(t('signup.profile.titles_interested'))
@@ -314,7 +335,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
         last_name: "Budd",
         school: "Rice University"
       )
-      ci = ContactInfo.where(value: "bob2@bob.com").first
+      ci = ContactInfo.where(value: "bob2@gmail.com").first
       expect(ci).to be_present
       expect(ci.user.role).to eq 'student'
     end
@@ -488,7 +509,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     before(:each) do
       arrive_from_app
       click_sign_up
-      complete_signup_email_screen("Student","bob@myspace.com")
+      complete_signup_email_screen("Student","bob@gmail.com")
       complete_signup_verify_screen(pass: true)
       complete_signup_password_screen('password')
     end

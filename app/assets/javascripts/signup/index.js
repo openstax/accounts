@@ -1,4 +1,5 @@
 //= require ../vendor/underscore
+//= require ../vendor/mailcheck
 //= require ./namespace
 //= require ./type-selector
 //= require ./email-value

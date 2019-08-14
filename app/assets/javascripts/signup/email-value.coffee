@@ -12,19 +12,42 @@ class OX.Signup.EmailValue
 
   onChange: ->
     if @showing_warning
-      @group.removeClass('has-error')
-      @group.find(".edu.warning").hide()
-      @showing_warning = false
+      @clearWarnings()
 
   onSubmit: (ev) ->
-    if @userType is 'instructor' and not ((@email.val() == '') or @showing_warning or IS_EDU.test(@email.val()))
-      @showing_warning = true
-      @group.addClass('has-error')
-      @group.find(".errors").empty()
-      @group.find(".edu.warning").show()
-      @email.focus()
-      ev.preventDefault()
+    if not ((@email.val() == '') or @showing_warning or IS_EDU.test(@email.val()))
+      if @userType is 'instructor'
+        @showing_warning = true
+        @group.addClass('has-error')
+        @group.find(".errors").empty()
+        @group.find(".edu.warning").show()
+        @email.focus()
+        ev.preventDefault()
+      else
+        $("#signup_email").mailcheck(
+          domains: [
+              'gmail.com', 'outlook.com', 'yahoo.com', 'icloud.com',
+              'hotmail.com', 'aol.com', 'googlemail.com',
+            ]
 
+          suggested: (element, suggestion) =>
+            @showing_warning = true
+            @group.addClass('has-error')
+            @group.find(".errors").empty()
+            @group.find("#suggestion").text(suggestion.domain)
+            @group.find(".mistype.warning").show()
+            $('#signup_email').focus()
+            ev.preventDefault()
+
+          empty: (element) ->
+            $(".mistype.warning").hide()
+        )
+
+  clearWarnings: () ->
+    @group.removeClass('has-error')
+    @group.find(".edu.warning").hide()
+    @group.find(".mistype.warning").hide()
+    @showing_warning = false
 
   setType: (newUserType) ->
     newUserType = if newUserType == "student" then "student" else "instructor"

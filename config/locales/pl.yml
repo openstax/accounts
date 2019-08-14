@@ -404,6 +404,10 @@ pl:
       teacher_school_email_warning: >-
         Czy to na pewno Twój szkolny adres-email? Jeżeli tak, wciśnij %{button} poniżej.
         Jeżeli nie, wpisz adres e-mail przyznany Ci przez Twoją szkołę.
+      did_you_mean:
+        TODO Did you mean
+      proceed_with_likely_mistyped_email:
+        TODO If yes, please edit your email. If not, click %{button} below.
 
     verify_email:
       page_heading_pin: Sprawdź skrzynkę e-mail

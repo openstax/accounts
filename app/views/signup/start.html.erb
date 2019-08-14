@@ -67,10 +67,22 @@ end
       </div>
 
       <%= fh.text_field name: :email, value: @signup_email || signup_email, label: :'.email_placeholder' %>
+
+      <%# shows up only when faculty tries wants to use a non-edu email %>
       <p class="warning edu">
-        <%= t '.teacher_school_email_warning', button: (t :'.next'), data: { disable_with: false } %>
+        <%= t '.teacher_school_email_warning', button: (t :'.next') %>
       </p>
+
+      <%# shows up only if we think that non-faculty might've mistyped their email address,
+              using mailcheck.js %>
+      <p class="warning mistype">
+        <%= t '.did_you_mean' %> <span id="suggestion"></span>?
+        <br />
+        <%= t '.proceed_with_likely_mistyped_email', button: (t :'.next') %>
+      </p>
+
     </div>
+
     <section class="footer">
       <%= f.submit (t :".next"), class: 'primary', data: { disable_with: false } %>
       <div class="sign-in">
@@ -78,6 +90,7 @@ end
             link: (link_to (t :".already_have_an_account.sign_in"), login_path) %>
       </div>
     </section>
+
   <% end %>
 
 <% end %>
