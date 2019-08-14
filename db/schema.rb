@@ -113,8 +113,8 @@ ActiveRecord::Schema.define(version: 2019_02_06_185243) do
 
   create_table "fine_print_signatures", id: :serial, force: :cascade do |t|
     t.integer "contract_id", null: false
-    t.integer "user_id", null: false
     t.string "user_type", null: false
+    t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_implicit", default: false, null: false
@@ -339,8 +339,8 @@ ActiveRecord::Schema.define(version: 2019_02_06_185243) do
     t.citext "support_identifier", null: false
     t.boolean "is_test"
     t.integer "school_type", default: 0, null: false
-    t.index "lower((first_name)::text)", name: "index_users_on_first_name"
-    t.index "lower((last_name)::text)", name: "index_users_on_last_name"
+    t.index "lower((first_name)::text)", name: "index_users_on_lower_first_name"
+    t.index "lower((last_name)::text)", name: "index_users_on_lower_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
