@@ -63,11 +63,11 @@ module Accounts
 
     config.after_initialize do
       Doorkeeper::TokensController.class_eval do
+        alias_method :original_create, :create # before_action not available
         def create
           ScoutHelper.ignore!(0.99)
           original_create
         end
-        alias_method :original_create, :create # before_action not available
       end
     end
 

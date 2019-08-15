@@ -8,13 +8,12 @@ end
 # Rails framework
 gem 'rails', '5.2.0'
 gem 'rails-i18n', '~> 5'
-gem 'i18n', '>= 1.6.0'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 gem 'bootsnap', require: false
 
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
-gem 'lev', '~> 9.0.1'
+gem 'lev', '~> 9.0.2'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.4.1'
@@ -57,7 +56,7 @@ gem 'baby_squeel', '~>1.3.0'
 gem 'openstax_utilities', '~> 4.2.0'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 9.0'
+gem 'openstax_api', '~> 9.0.1'
 
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from'

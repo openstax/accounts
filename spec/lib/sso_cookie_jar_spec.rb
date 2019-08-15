@@ -20,18 +20,7 @@ RSpec.describe SsoCookieJar do
     )
   }
 
-  let(:request) {
-    OpenStruct.new(
-      key_generator: key_generator,
-      encrypted_cookie_salt: sso_shared_salt,
-      encrypted_signed_cookie_salt: "signed encrypted #{sso_shared_salt}",
-      cookies_rotations: Rails.application.config.action_dispatch.cookies_rotations,
-      cookies_serializer: json_serializer,
-      # use_authenticated_cookie_encryption: Rails.application.config.action_dispatch.use_authenticated_cookie_encryption,
-      use_authenticated_cookie_encryption: false,
-      secret_key_base: sso_shared_secret,
-    )
-  }
+  let(:request)    { ActionController::TestRequest.create(:test) }
 
   let(:cookies) { {} }
 
@@ -52,20 +41,6 @@ RSpec.describe SsoCookieJar do
     sso_cookie_jar.encrypted['ox'] = {
       value: { 'test-answer' => 4242 }
     }
-
-    # salt = request.encrypted_cookie_salt
-    # secret = request.key_generator.generate_key(salt)[0, OpenSSL::Cipher.new('aes-256-cbc').key_len]
-
-    # signed_salt = request.encrypted_signed_cookie_salt
-    # sign_secret = request.key_generator.generate_key(signed_salt)
-
-    # encryptor = ActiveSupport::MessageEncryptor.new(
-    #   secret,
-    #   sign_secret,
-    #   cipher: 'aes-256-cbc',
-    #   serializer: ActiveSupport::MessageEncryptor::NullSerializer,
-    #   )
-
 
     sso_shared_secret = Rails.application.secrets.sso[:shared_secret]
     sso_shared_salt = Rails.application.secrets.sso[:shared_secret_salt]

@@ -339,8 +339,8 @@ ActiveRecord::Schema.define(version: 2019_02_06_185243) do
     t.citext "support_identifier", null: false
     t.boolean "is_test"
     t.integer "school_type", default: 0, null: false
-    t.index "lower((first_name)::text)", name: "index_users_on_lower_first_name"
-    t.index "lower((last_name)::text)", name: "index_users_on_lower_last_name"
+    t.index "lower((first_name)::text)", name: "index_users_on_first_name"
+    t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
     t.index ["faculty_status"], name: "index_users_on_faculty_status"
     t.index ["login_token"], name: "index_users_on_login_token", unique: true

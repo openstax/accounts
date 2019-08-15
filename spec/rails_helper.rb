@@ -100,17 +100,3 @@ def disable_sfdc_client
     .to receive(:sfdc_client)
     .and_return(double('null object').as_null_object)
 end
-
-class ExternalAppForSpecsController < ApplicationController
-  layout false
-
-  skip_before_action :save_redirect # it's being
-
-  # ActionController::Base.before_actions.each { |action|
-  #   skip_before_action action
-  # }
-
-  def index
-    render plain: 'This is a fake external application'
-  end
-end

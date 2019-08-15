@@ -667,14 +667,13 @@ DEPENDENCIES
   font-awesome-rails
   guard-livereload (~> 2.5)
   guard-rspec
-  i18n (>= 1.6.0)
   i18n-tasks
   jbuilder
   jobba (~> 1.4.0)
   jquery-rails
   keyword_search (~> 1.5.0)
   launchy
-  lev (~> 9.0.1)
+  lev (~> 9.0.2)
   lograge
   maruku
   oj (~> 3.7.12)
@@ -684,7 +683,7 @@ DEPENDENCIES
   omniauth-google-oauth2 (~> 0.6)
   omniauth-identity
   omniauth-twitter
-  openstax_api (~> 9.0)
+  openstax_api (~> 9.0.1)
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from

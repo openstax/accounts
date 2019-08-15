@@ -3,14 +3,9 @@ module Admin
     layout 'admin'
 
     def show
-      items = SearchSecurityLog.call(search_params[:search] || {}).outputs.items || SecurityLog.none
-      @security_log = items.paginate(page: search_params[:page], per_page: search_params[:per_page] || 20)
-    end
-
-  private
-
-    def search_params
-      params.permit!.to_h # safe because only admins can access this page
+      search_params = params[:search] ? params[:search].permit!.to_h : {}
+      items = SearchSecurityLog.call(search_params).outputs.items || SecurityLog.none
+      @security_log = items.paginate(page: params[:page], per_page: params[:per_page] || 20)
     end
   end
 end
