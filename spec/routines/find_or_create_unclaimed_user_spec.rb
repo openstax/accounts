@@ -22,7 +22,7 @@ describe FindOrCreateUnclaimedUser do
         expect {
           newuser = FindOrCreateUnclaimedUser.call(
             email:"anunusedemail@example.com",
-            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name
+            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
           ).outputs.user
           expect(newuser.contact_infos.first.value).to eq("anunusedemail@example.com")
         }.to change(User,:count).by(1)
@@ -32,7 +32,7 @@ describe FindOrCreateUnclaimedUser do
           expect do
             FindOrCreateUnclaimedUser.call(
               email:"anunusedemail@example.com",
-              first_name: Faker::Name.first_name, last_name: Faker::Name.last_name
+              first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
             ).outputs.user
             email = ActionMailer::Base.deliveries.last
             expect(email.subject).to match('You have been invited to join OpenStax')
@@ -71,7 +71,7 @@ describe FindOrCreateUnclaimedUser do
         expect {
           new_user = FindOrCreateUnclaimedUser.call(
             username: "bobsmith", email:"anunusedemail@example.com",
-            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name
+            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
           ).outputs.user
           expect(new_user.username).to eq("bobsmith")
           expect(new_user.contact_infos.first.value).to eq("anunusedemail@example.com")
@@ -96,7 +96,7 @@ describe FindOrCreateUnclaimedUser do
           new_user = FindOrCreateUnclaimedUser.call(
             email:"anunusedemail@example.com",
             password:'password123', password_confirmation: 'password123', username: "bobsmith",
-            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name
+            first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
           ).outputs.user
           expect(new_user.reload.identity.authenticate('password123')).to be_truthy
         end
