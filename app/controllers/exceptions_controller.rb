@@ -1,7 +1,5 @@
 class ExceptionsController < ActionController::Base
 
-  before_action :set_locale
-
   def rescue_from
     # render 500 error page
     @exception = request.env["action_dispatch.exception"]

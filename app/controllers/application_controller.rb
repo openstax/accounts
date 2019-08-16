@@ -1,7 +1,5 @@
 class ApplicationController < ActionController::Base
 
-  protect_from_forgery
-
   layout 'application'
 
   prepend_before_action :verify_signed_params
@@ -9,7 +7,6 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :complete_signup_profile
   before_action :check_if_password_expired
-  before_action :set_locale
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 

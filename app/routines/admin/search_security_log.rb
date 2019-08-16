@@ -167,7 +167,7 @@ module Admin
                 query = query.nil? ? new_query : query | new_query
               end
 
-              query || '0=1'
+              query || SecurityLog.none
             }
           end
         end

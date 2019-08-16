@@ -14,8 +14,11 @@ ActionController::Base.class_exec do
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
   before_action :save_redirect
+  before_action :set_locale
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
+
+  protected
 
   def sso_cookies
     request.sso_cookie_jar

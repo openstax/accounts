@@ -25,5 +25,4 @@ Rails.application.config.to_prepare do
     # (set to 'application' to use app layout, default is RailsSettingsUi's own layout)
     layout 'admin'
   end
-
 end

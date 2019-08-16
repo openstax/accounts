@@ -92,7 +92,7 @@ class Api::V1::UsersController < Api::V1::ApiController
   def index
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
     query = params[:q]
-    options = params.slice(:order_by, :q)
+    options = params.permit(:admin, :order_by, :return_all)
     outputs = SearchUsers.call(query, options).outputs
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
                           location: nil,

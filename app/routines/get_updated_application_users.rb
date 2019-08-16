@@ -15,8 +15,7 @@ class GetUpdatedApplicationUsers
   def exec(application, limit)
     return if application.nil?
     outputs[:application_users] = application.application_users
-                                             .where.has{unread_updates != 0}
+                                             .where.not(unread_updates: 0)
                                              .limit(limit)
   end
-
 end

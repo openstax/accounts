@@ -20,7 +20,7 @@ class Authentication < ActiveRecord::Base
   protected
 
   def check_not_last
-    unless user.nil? || (user.authentications.size > 1 || !user.is_activated?)
+    if user.present? && user.authentications.size <= 1 && user.is_activated?
       throw(:abort)
     end
   end

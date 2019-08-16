@@ -2,7 +2,6 @@
 # ... magically because Rails doesn't really provide a way to do so.
 # https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/cookies.rb
 
-Rails.application.config.action_dispatch.cookies_serializer = ActionDispatch::Cookies::JsonSerializer
 Rails.application.config.action_dispatch.use_authenticated_cookie_encryption = false
 Rails.application.config.action_dispatch.encrypted_cookie_cipher = 'aes-256-cbc'
 
@@ -23,7 +22,7 @@ class SsoEncryptedCookieJar < ActionDispatch::Cookies::EncryptedKeyRotatingCooki
     sign_secret = sso_keygen.generate_key(sso_signed_salt)
 
     json_serializer = ActionDispatch::Cookies::JsonSerializer
-    sso_encryptor = ActiveSupport::MessageEncryptor.new(secret, sign_secret, serializer: json_serializer)
+    sso_encryptor = ActiveSupport::MessageEncryptor.new(secret, sign_secret, serializer: json_serializer, cipher: 'aes-256-cbc')
 
     @encryptor = sso_encryptor
   end

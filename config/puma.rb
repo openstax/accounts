@@ -9,7 +9,7 @@ threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests.
 #
-port        ENV.fetch("PORT") { 2999 }
+port        ENV.fetch("PORT") { DEV_URL_OPTIONS[:port] }
 
 # Specifies the `environment` that Puma will run in.
 #
