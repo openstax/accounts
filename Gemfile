@@ -144,7 +144,7 @@ gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "0ed5cdba6b
 
 group :development, :test do
   # Get env variables from .env file
-  gem 'dotenv-rails'
+  gem 'dotenv-rails', '2.7.2'
 
   # Run specs in parallel
   gem 'parallel_tests'
@@ -226,6 +226,11 @@ group :test do
   gem 'whenever-test'
 end
 
+group :production, :test do
+  # AWS SES integration
+  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
+end
+
 group :production do
   # Unicorn production server
   gem 'unicorn'
@@ -235,9 +240,4 @@ group :production do
 
   # Consistent logging
   gem 'lograge'
-end
-
-group :production, :test do
-  # AWS SES integration
-  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
 end

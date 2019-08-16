@@ -18,10 +18,10 @@ class ContactInfo < ActiveRecord::Base
   before_destroy :check_if_last_verified
 
   scope :email_addresses, -> { where(type: 'EmailAddress') }
-  sifter :email_addresses do; type == 'EmailAddress' end
+  sifter(:email_addresses) { type == 'EmailAddress' }
 
   scope :verified, -> { where(verified: true) }
-  sifter :verified do; verified == true; end
+  sifter(:verified) { verified == true }
   scope :unverified, -> { where(verified: false) }
 
   scope :with_users, lambda { joins(:user).eager_load(:user) }

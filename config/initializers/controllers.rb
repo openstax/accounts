@@ -9,7 +9,7 @@ ActionController::Base.class_exec do
   include AuthenticateMethods
 
   include ContractsNotRequired
-  helper_method :contracts_not_required, :sso_cookies
+  helper_method :contracts_not_required
 
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
@@ -19,10 +19,6 @@ ActionController::Base.class_exec do
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
   protected
-
-  def sso_cookies
-    request.sso_cookie_jar
-  end
 
   def security_log(event_type, event_data = {})
     user = event_data[:user]

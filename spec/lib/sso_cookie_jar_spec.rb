@@ -1,68 +1,38 @@
 require 'rails_helper'
 
-RSpec.describe SsoCookieJar do
-
-  let(:json_serializer) {
-    ActionDispatch::Cookies::JsonSerializer
-  }
-
-  let(:sso_shared_secret) {
-    Rails.application.secrets.sso[:shared_secret]
-  }
-
-  let(:sso_shared_salt) {
-    Rails.application.secrets.sso[:shared_secret_salt] # || 'cookie'
-  }
-
-  let(:key_generator) {
+RSpec.describe SsoCookieJar, type: :lib do
+  let(:secrets)       { Rails.application.secrets.sso }
+  let(:key_generator) do
     ActiveSupport::CachingKeyGenerator.new(
-      ActiveSupport::KeyGenerator.new(sso_shared_secret, iterations: 1000)
+      ActiveSupport::KeyGenerator.new(
+        secrets[:shared_secret], iterations: secrets.fetch(:iterations, 1000)
+      )
     )
-  }
-
-  let(:request)    { ActionController::TestRequest.create(:test) }
-
-  let(:cookies) { {} }
-
-  it "can write a cookie and read it back" do
-    sso_cookie_jar = SsoCookieJar.build(request, cookies)
-    sso_cookie_jar.encrypted['some_name'] = {
-      value: { foo: :bar }
-    }
-
-    expect(sso_cookie_jar['some_name']).not_to be_blank # it's encrypted, so it's hard to predict its value
-    expect(sso_cookie_jar.encrypted['some_name']).to eq ({ 'foo' => 'bar' }) # json means string keys
+  end
+  let(:salt)          { secrets[:shared_secret_salt] }
+  let(:cipher)        { secrets.fetch(:cipher, 'aes-256-cbc') }
+  let(:encryptor)     do
+    ActiveSupport::MessageEncryptor.new(
+      key_generator.generate_key(salt, OpenSSL::Cipher.new(cipher).key_len),
+      key_generator.generate_key("signed encrypted #{salt}"),
+      cipher: cipher, serializer: ActiveSupport::MessageEncryptor::NullSerializer
+    )
   end
 
-  it 'cookie jar can be decoded using key' do
-    # request['cookie_jar'] = sso_cookie_jar
-    sso_cookie_jar = SsoCookieJar.build(request, cookies)
+  let(:request)       { ActionController::TestRequest.create(:test) }
+  let(:cookies)       { request.cookie_jar }
 
-    sso_cookie_jar.encrypted['ox'] = {
-      value: { 'test-answer' => 4242 }
-    }
+  it 'can write a cookie and read it back' do
+    cookies.sso[:some_name] = { value: { foo: :bar } }
 
-    sso_shared_secret = Rails.application.secrets.sso[:shared_secret]
-    sso_shared_salt = Rails.application.secrets.sso[:shared_secret_salt]
-    sso_signed_salt = "signed encrypted #{sso_shared_salt}"
+    expect(cookies[:some_name]).not_to be_blank # it's encrypted, so it's hard to predict its value
+    expect(cookies.sso[:some_name]).to eq('foo' => 'bar') # json means string keys
+  end
 
-    key_length = OpenSSL::Cipher.new('aes-256-cbc').key_len
+  it 'sso cookies can be decoded using the sso secrets' do
+    value = { 'test-answer': 42 }
+    cookies.sso['ox'] = { value: value }
 
-    sso_keygen = ActiveSupport::CachingKeyGenerator.new(
-      ActiveSupport::KeyGenerator.new(sso_shared_secret, iterations: 1000)
-    )
-    secret = sso_keygen.generate_key(sso_shared_salt)[0, key_length]
-    sign_secret = sso_keygen.generate_key(sso_signed_salt)
-
-    json_serializer = ActionDispatch::Cookies::JsonSerializer
-    sso_encryptor = ActiveSupport::MessageEncryptor.new(secret, sign_secret, serializer: json_serializer)
-
-    cookie = sso_cookie_jar['ox']
-
-    expect(
-      sso_encryptor.decrypt_and_verify(cookie)
-    ).to eq(
-      { 'test-answer' => 4242 }.to_json
-    )
+    expect(encryptor.decrypt_and_verify(cookies['ox'])).to eq value.to_json
   end
 end

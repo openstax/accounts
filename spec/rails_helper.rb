@@ -41,7 +41,8 @@ end
 # no-sandbox and disable-gpu are required for Chrome to work with Travis
 Capybara.register_driver :selenium_chrome_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new args: [
-    'no-sandbox', 'headless', 'disable-dev-shm-usage', 'disable-gpu', 'disable-extensions', 'disable-infobars'
+    'no-sandbox', 'headless', 'disable-dev-shm-usage',
+    'disable-gpu', 'disable-extensions', 'disable-infobars'
   ]
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
