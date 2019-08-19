@@ -11,6 +11,7 @@ RSpec.describe ExportUsersLastLoginDate, type: :routine do
     let!(:security_log_entry){
         FactoryGirl.create :security_log, user: user_1, event_type: :sign_in_successful
     }
+    let!(:auth){ FactoryGirl.create :authentication, user: user_1 }
 
     let!(:outputs){ described_class.call.outputs }
     let!(:first_output){ outputs.info[0] }
@@ -25,6 +26,10 @@ RSpec.describe ExportUsersLastLoginDate, type: :routine do
 
     context "as csv file with student information" do
       it "includes all the information it should" do
+        Timecop.freeze(1.week.ago) do
+          FactoryGirl.create :security_log, user: user_1, event_type: :sign_in_successful
+        end
+
         with_csv_rows_to_match_w_consent_forms do |rows|
           headers = rows.first
           values = rows.second

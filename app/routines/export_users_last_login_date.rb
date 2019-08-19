@@ -16,7 +16,8 @@ class ExportUsersLastLoginDate
       output_users << Hashie::Mash.new({
         emails: user.contact_infos.map(&:value).join(", "),
         last_login_at: SecurityLog.sign_in_successful
-                                    .where(user_id: user.id).try(:last).try(:created_at).try(:strftime, "%m/%d/%Y %I:%M%p %Z")
+                                    .where(user_id: user.id)
+                                    .first&.created_at&.strftime("%m/%d/%Y %I:%M%p %Z")
       })
     end
     output_users
@@ -43,7 +44,7 @@ class ExportUsersLastLoginDate
   end
 
   def exports_folder
-    File.join 'tmp'
+    'tmp'
   end
 
   def remove_exported_files
