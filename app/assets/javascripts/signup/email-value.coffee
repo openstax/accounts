@@ -25,11 +25,6 @@ class OX.Signup.EmailValue
         ev.preventDefault()
       else
         $("#signup_email").mailcheck(
-          domains: [
-              'gmail.com', 'outlook.com', 'yahoo.com', 'icloud.com',
-              'hotmail.com', 'aol.com', 'googlemail.com',
-            ]
-
           suggested: (element, suggestion) =>
             @showing_warning = true
             @group.addClass('has-error')
