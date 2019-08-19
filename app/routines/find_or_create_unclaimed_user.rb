@@ -42,7 +42,8 @@ class FindOrCreateUnclaimedUser
                ensure_no_errors: true).outputs.user
 
     # routine is smart and gracefully handles case of missing options[:email]
-    run(AddEmailToUser, options[:email], user)
+    options[:already_verified] = true if options[:already_verified].nil?
+    run(AddEmailToUser, options[:email], user, already_verified: options[:already_verified])
 
     if options[:application]
       FindOrCreateApplicationUser[options[:application].id, user.id]

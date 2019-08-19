@@ -26,6 +26,14 @@ module Api::V1
                description: "Email address to search by or assign to newly created user"
              }
 
+    property :already_verified,
+             type: :boolean,
+             readable: false,
+             writeable: true,
+             schema_info: {
+                 description: "Controls wheather email should be marked as verified"
+             }
+
     property :username,
              type: String,
              readable: false,
