@@ -143,8 +143,12 @@ module Admin
         end
 
         with.keyword :time do |times_array|
-          times_array.each do |times|
-            time_strings = to_string_array(times)
+          time_strings = to_string_array(times_array)
+          unless time_strings.any?
+            @items = SecurityLog.none
+          end
+
+          time_strings.each do |times|
             now = Time.now
             beginning_of_hour = now.beginning_of_hour
             midnight = now.midnight
