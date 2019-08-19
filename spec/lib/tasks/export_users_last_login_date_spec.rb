@@ -5,8 +5,9 @@ RSpec.describe ExportUsersLastLoginDate, type: :routine do
   context "as a Lev output with student information" do
     let!(:user_1){ FactoryGirl.create :user }
     # let!(:some_other_user){ FactoryGirl.create :user }
-    let!(:email_1){ FactoryGirl.create :email_address, user: user_1 }
-    let!(:email_2){ FactoryGirl.create :email_address, user: user_1 }
+    let!(:email_1){ FactoryGirl.create :email_address, user: user_1, verified: true }
+    let!(:email_2){ FactoryGirl.create :email_address, user: user_1, verified: true }
+    let!(:email_unverified){ FactoryGirl.create :email_address, user: user_1, verified: false }
     let!(:auth){ FactoryGirl.create :authentication, user: user_1 }
     let!(:security_log_entry){
         FactoryGirl.create :security_log, user: user_1, event_type: :sign_in_successful
@@ -20,7 +21,7 @@ RSpec.describe ExportUsersLastLoginDate, type: :routine do
       expect(first_output.last_login_at).to eq security_log_entry.created_at.strftime("%m/%d/%Y %I:%M%p %Z")
     end
 
-    it "includes user's email addresses" do
+    it "includes user's verified email addresses" do
       expect(first_output.emails).to eq "#{email_1.value}, #{email_2.value}"
     end
 
@@ -36,7 +37,7 @@ RSpec.describe ExportUsersLastLoginDate, type: :routine do
           data = Hash[headers.zip(values)]
 
           expect(rows.count).to eq 2
-          expect(data["Email(s)"].split(", ")).to match_array user_1.contact_infos.map(&:value)
+          expect(data["Email(s)"].split(", ")).to match_array [email_1.value, email_2.value]
           expect(data["Last login date"]).to eq security_log_entry.created_at.strftime("%m/%d/%Y %I:%M%p %Z")
         end
       end

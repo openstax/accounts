@@ -14,7 +14,7 @@ class ExportUsersLastLoginDate
     output_users = []
     User.preload(:contact_infos).find_each do |user|
       output_users << Hashie::Mash.new({
-        emails: user.contact_infos.map(&:value).join(", "),
+        emails: user.contact_infos.verified.map(&:value).join(", "),
         last_login_at: SecurityLog.sign_in_successful
                                     .where(user_id: user.id)
                                     .first&.created_at&.strftime("%m/%d/%Y %I:%M%p %Z")
