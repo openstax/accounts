@@ -31,6 +31,11 @@ Rails.application.routes.draw do
 
   mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
   OpenStax::Salesforce.set_top_level_routes(self)
+  
+  # Create a named path for links like `/auth/facebook` so that the path prefixer gem
+  # will appropriately prefix the path.  https://stackoverflow.com/a/40125738/1664216
+  get "/auth/:provider", to: lambda{ |env| [404, {}, ["Not Found"]] }, as: :oauth
+
 
   scope controller: 'authentications' do
     delete 'auth/:provider', action: :destroy, as: :destroy_authentication
