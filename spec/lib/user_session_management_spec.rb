@@ -15,7 +15,6 @@ RSpec.describe UserSessionManagement, type: :lib do
     end.new
   end
 
-
   before do
     allow(controller).to receive(:main_app).and_return(main_app)
     allow(controller).to receive(:request).and_return(request)
