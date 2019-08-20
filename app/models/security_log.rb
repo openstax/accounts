@@ -1,6 +1,6 @@
 class SecurityLog < ActiveRecord::Base
-  belongs_to :user
-  belongs_to :application, class_name: 'Doorkeeper::Application', inverse_of: :security_logs
+  belongs_to :user, optional: true
+  belongs_to :application, class_name: 'Doorkeeper::Application', inverse_of: :security_logs, optional: true
 
   enum event_type: [
     :unknown,
@@ -55,8 +55,6 @@ class SecurityLog < ActiveRecord::Base
   validates :event_type, presence: true
 
   before_destroy { raise ActiveRecord::ReadOnlyRecord }
-
-  attr_accessible :user, :application, :remote_ip, :event_type, :event_data
 
   scope :preloaded, ->{ preload(:user, :application) }
 

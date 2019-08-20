@@ -1,4 +1,4 @@
-class CreateApplicationGroups < ActiveRecord::Migration
+class CreateApplicationGroups < ActiveRecord::Migration[4.2]
   def change
     create_table :application_groups do |t|
       t.references :application, null: false

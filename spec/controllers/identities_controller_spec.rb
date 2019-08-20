@@ -5,10 +5,10 @@ describe IdentitiesController, type: :controller do
   describe 'reset_password' do
     render_views
 
-    let!(:user)     { FactoryGirl.create :user, :terms_agreed, username: 'user_one' }
-    let!(:identity) { FactoryGirl.create(:identity, user: user, password: 'password') }
+    let!(:user)     { FactoryBot.create :user, :terms_agreed, username: 'user_one' }
+    let!(:identity) { FactoryBot.create(:identity, user: user, password: 'password') }
     let!(:user_no_identity) {
-      FactoryGirl.create :user, :terms_agreed, username: 'user_no_identity'
+      FactoryBot.create :user, :terms_agreed, username: 'user_no_identity'
     }
 
     context "reset_password" do
@@ -17,19 +17,19 @@ describe IdentitiesController, type: :controller do
       context 'GET logged in' do
         it 'renders reset_password if has a password' do
           controller.sign_in! user
-          get 'reset'
+          get(:reset)
           expect(response.body).to include(t :"identities.reset.page_heading")
         end
 
         it 'redirects to add_password if does not have a password' do
           controller.sign_in! user_no_identity
-          expect(get 'reset').to redirect_to password_add_path
+          expect(get(:reset)).to redirect_to password_add_path
         end
       end
 
       context "GET not logged in" do
         it 'errors if the login token is bad' do
-          get :reset, token: '123'
+          get(:reset, params: { token: '123' })
           expect(response.code).to eq('400')
           expect(response.body).to include(t :"identities.set.there_was_a_problem_with_password_link")
         end
@@ -37,7 +37,7 @@ describe IdentitiesController, type: :controller do
         it 'errors if the login token is expired' do
           user.refresh_login_token(expiration_period: -1.year)
           user.save!
-          get :reset, token: user.login_token
+          get(:reset, params: { token: user.login_token })
           expect(response.code).to eq('400')
           expect(response.body).to include(t :"identities.set.expired_password_link")
         end
@@ -95,9 +95,13 @@ describe IdentitiesController, type: :controller do
       end
 
       def reset_password(password, confirmation)
-        post('reset', set_password: {
-          password: password, password_confirmation: confirmation
-        })
+        post(:reset,
+          params: {
+            set_password: {
+              password: password, password_confirmation: confirmation
+            }
+          }
+        )
       end
 
     end
@@ -105,7 +109,7 @@ describe IdentitiesController, type: :controller do
     context 'send_add' do
 
       it 'redirects to the home page with a message if the user is not found' do
-        post :send_add
+        post(:send_add)
         expect(response).to redirect_to root_path
         expect(flash.alert).to eq I18n.t(:'controllers.lost_user')
       end
@@ -118,7 +122,7 @@ describe IdentitiesController, type: :controller do
           expect(options[:kind]).to eq :add
           original_handle.call(options)
         end
-        post :send_add
+        post(:send_add)
         expect(response).to have_http_status(:success)
       end
 
@@ -127,7 +131,7 @@ describe IdentitiesController, type: :controller do
     context 'send_reset' do
 
       it 'redirects to the home page with a message if the user is not found' do
-        post :send_reset
+        post(:send_reset)
         expect(response).to redirect_to root_path
         expect(flash.alert).to eq I18n.t(:'controllers.lost_user')
       end
@@ -140,7 +144,7 @@ describe IdentitiesController, type: :controller do
           expect(options[:kind]).to eq :reset
           original_handle.call(options)
         end
-        post :send_reset
+        post(:send_reset)
         expect(response).to have_http_status(:success)
       end
 

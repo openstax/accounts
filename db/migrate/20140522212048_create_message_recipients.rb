@@ -1,4 +1,4 @@
-class CreateMessageRecipients < ActiveRecord::Migration
+class CreateMessageRecipients < ActiveRecord::Migration[4.2]
   def change
     create_table :message_recipients do |t|
       t.integer :message_id, null: false

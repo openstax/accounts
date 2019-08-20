@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe 'ActionMailer::DeliveryJob error recovery' do
 
   context 'when get an AWS::SES::ResponseError with Code "InvalidParameterValue"' do
+    around(:all) { |all| perform_enqueued_jobs { all.run } }
+
     # Turn on reraising so that we test that we do not reraise these
     around(:each) do |example|
       original = OpenStax::RescueFrom.configuration.raise_exceptions
@@ -27,14 +29,17 @@ RSpec.describe 'ActionMailer::DeliveryJob error recovery' do
       end
 
       expect(OpenStax::RescueFrom).to receive(:perform_rescue).and_call_original
-      expect(Rails.logger).to receive(:error).once
+      # having the repeat is not ideal but... good enough
+      # - The Dante (@Dantemss)
+      expect(Rails.logger).to receive(:error).twice
+
       expect(Raven).to receive(:capture_exception) do |exception, *args|
         expect(exception).to be_a(AWS::SES::ResponseError)
       end
+
       expect do
         DevMailer.inspect_object(object: "foo", subject: "bar").deliver_later
       end.not_to raise_error
     end
   end
-
 end

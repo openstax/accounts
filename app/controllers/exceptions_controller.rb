@@ -1,13 +1,18 @@
 class ExceptionsController < ActionController::Base
 
-  skip_filter *_process_action_callbacks.map(&:filter)
-
-  before_filter :set_locale
-
   def rescue_from
-    @exception = env["action_dispatch.exception"]
+    # render 500 error page
+    @exception = request.env["action_dispatch.exception"]
 
     OpenStax::RescueFrom.perform_rescue @exception, self
   end
 
+  def missing_route
+    # render 404 error page
+    @exception = ActionController::RoutingError.new(
+      "No route matches [#{request.env['REQUEST_METHOD']}] #{request.env['PATH_INFO'].inspect}"
+    )
+
+    OpenStax::RescueFrom.perform_rescue @exception, self
+  end
 end

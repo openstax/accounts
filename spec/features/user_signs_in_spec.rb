@@ -182,7 +182,7 @@ feature 'User logs in', js: true do
       arrive_from_app
       complete_login_username_or_email_screen 'user@example.com'
       expect_sign_in_page
-      expect(page).to have_content(t("sessions.start.multiple_users.content_html").sub('<br/>', ' ').sub(' %{link}.', ''))
+      expect(page).to have_content(t("sessions.start.multiple_users.content_html").sub('<br/>', '').sub(' %{link}.', ''))
       screenshot!
 
       complete_login_username_or_email_screen 'user'

@@ -5,8 +5,6 @@ class MessageBody < ActiveRecord::Base
   validates_uniqueness_of :message_id, allow_nil: true
   validate :not_empty
 
-  attr_accessible :html, :text, :short_text
-
   protected
 
   def not_empty

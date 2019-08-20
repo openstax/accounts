@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe IdentitiesSetPassword, type: :handler do
   let!(:identity) {
-    FactoryGirl.create :identity, password: 'password'
+    FactoryBot.create :identity, password: 'password'
   }
 
   before :each do

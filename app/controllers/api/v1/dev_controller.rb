@@ -1,6 +1,6 @@
 class Api::V1::DevController < Api::V1::ApiController
 
-  before_filter Proc.new{ 
+  before_action Proc.new{
     raise SecurityTransgression if Rails.env.production?
   }
 

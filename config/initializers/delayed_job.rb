@@ -13,18 +13,18 @@
 Delayed::Worker.destroy_failed_jobs = false
 
 # Should be longer than the longest background job (that actually uses this gem)
-Delayed::Worker.max_run_time = Rails.application.secrets['background_worker_timeout']
+Delayed::Worker.max_run_time = Rails.application.secrets[:background_worker_timeout]
 
 # Allows us to use this gem in tests instead of setting the ActiveJob adapter to :inline
 Delayed::Worker.delay_jobs = Rails.env.production? ||
                              ( Rails.env.development? &&
-                               ActiveRecord::Type::Boolean.new.type_cast_from_user(
+                               ActiveModel::Type::Boolean.new.cast(
                                  ENV['USE_REAL_BACKGROUND_JOBS'] || 'false'
                                )
                              )
 
-# https://github.com/smartinez87/exception_notification/issues/195#issuecomment-31257207
-Delayed::Worker.class_exec do
+module HandleFailedJobInstantly
+  # Based on https://github.com/smartinez87/exception_notification/issues/195#issuecomment-31257207
   ALWAYS_FAIL = ->(exception) { true }
 
   INSTANT_FAILURE_PROCS = {
@@ -36,10 +36,7 @@ Delayed::Worker.class_exec do
     'NameError' => ALWAYS_FAIL,
     'NoMethodError' => ALWAYS_FAIL,
     'NotYetImplemented' => ALWAYS_FAIL,
-    # http://stackoverflow.com/a/31928089
-    'ActiveJob::DeserializationError' => ->(exception) do
-      exception.original_exception.is_a? ActiveRecord::RecordNotFound
-    end,
+    'ActiveJob::DeserializationError' => ALWAYS_FAIL,
     'OAuth2::Error'       => ->(exception) do
       status = exception.response.status
       400 <= status && status < 500
@@ -50,12 +47,13 @@ Delayed::Worker.class_exec do
     end
   }
 
-  def handle_failed_job_with_instant_failures(job, exception)
+  def handle_failed_job(job, exception)
     fail_proc = INSTANT_FAILURE_PROCS[exception.class.name]
-    job.fail! if fail_proc.present? && fail_proc.call(exception)
+    job.fail! if fail_proc.present? && fail_proc.call(exception) ||
+                 exception.try(:instantly_fail_if_in_background_job?)
 
-    handle_failed_job_without_instant_failures(job, exception)
+                 super(job, exception)
   end
-
-  alias_method_chain :handle_failed_job, :instant_failures
 end
+
+Delayed::Worker.prepend(HandleFailedJobInstantly)

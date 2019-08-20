@@ -2,62 +2,62 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: :v1 do
 
-  let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
-  let!(:trusted_application)   { FactoryGirl.create :doorkeeper_application, :trusted }
+  let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
+  let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, :trusted }
 
   let!(:untrusted_application_token) do
-    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
                                                  resource_owner_id: nil
   end
   let!(:trusted_application_token) do
-    FactoryGirl.create :doorkeeper_access_token, application: trusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: trusted_application,
                                                  resource_owner_id: nil
   end
 
-  let!(:user_1)          { FactoryGirl.create :user, :terms_agreed }
+  let!(:user_1)          { FactoryBot.create :user, :terms_agreed }
   let!(:user_2)          do
-    FactoryGirl.create :user_with_emails, :terms_agreed,
+    FactoryBot.create :user_with_emails, :terms_agreed,
                        first_name: 'Bob', last_name: 'Michaels', salesforce_contact_id: "somesfid"
   end
-  let!(:unclaimed_user)  { FactoryGirl.create :user_with_emails, state:'unclaimed' }
+  let!(:unclaimed_user)  { FactoryBot.create :user_with_emails, state:'unclaimed' }
   let!(:admin_user)      do
-    FactoryGirl.create :user, :terms_agreed, :admin, first_name: 'Joe', last_name: 'Admin'
+    FactoryBot.create :user, :terms_agreed, :admin, first_name: 'Joe', last_name: 'Admin'
   end
   let!(:billy_users) do
     (0..45).to_a.map do |ii|
-      FactoryGirl.create :user,
+      FactoryBot.create :user,
                          first_name: "Billy#{ii.to_s.rjust(2, '0')}",
                          last_name: "Fred_#{(45-ii).to_s.rjust(2,'0')}",
                          username: "billy_#{ii.to_s.rjust(2, '0')}"
     end
   end
   let!(:bob_brown) do
-    FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
+    FactoryBot.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
   end
   let!(:bob_jones) do
-    FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
+    FactoryBot.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
   end
   let!(:tim_jones) do
-    FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
+    FactoryBot.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
   end
 
   let!(:user_1_token)    do
-    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
                                                  resource_owner_id: user_1.id
   end
   let!(:user_2_token)    do
-    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
                                                  resource_owner_id: user_2.id
   end
   let!(:admin_token) do
-    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
                                                  resource_owner_id: admin_user.id
   end
 
   context "index" do
 
     it "returns a single result well" do
-      api_get :index, trusted_application_token, parameters: {q: 'first_name:bob last_name:Michaels'}
+      api_get :index, trusted_application_token, params: {q: 'first_name:bob last_name:Michaels'}
       expect(response.code).to eq('200')
 
       expected_response = {
@@ -69,7 +69,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should allow sort by multiple fields in different directions" do
-      api_get :index, trusted_application_token, parameters: {q: 'username:foo', order_by: "first_name, last_name DESC"}
+      api_get :index, trusted_application_token, params: {q: 'username:foo', order_by: "first_name, last_name DESC"}
 
       outcome = JSON.parse(response.body)
 
@@ -80,7 +80,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should return no results if the maximum number of results is exceeded" do
-      api_get :index, trusted_application_token, parameters: {q: ''}
+      api_get :index, trusted_application_token, params: {q: ''}
       expect(response.code).to eq('200')
 
       outcome = JSON.parse(response.body)
@@ -99,13 +99,13 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should not let id be specified" do
-      api_get :show, user_1_token, parameters: {id: admin_user.id}
+      api_get :show, user_1_token, params: {id: admin_user.id}
       expected_response = user_matcher(user_1, include_private_data: true)
       expect(response.body_as_hash).to match(expected_response)
     end
 
     it "should not let an application get a User without a token" do
-      api_get :show, trusted_application_token, parameters: {id: admin_user.id}
+      api_get :show, trusted_application_token, params: {id: admin_user.id}
       expect(response).to have_http_status :forbidden
     end
 
@@ -186,7 +186,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
 
   context "update" do
     it "should let User update his own User" do
-      api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"}
+      api_put :update, user_2_token, body: {first_name: "Jerry", last_name: "Mouse"}
       expect(response.code).to eq('200')
       user_2.reload
       expect(user_2.first_name).to eq 'Jerry'
@@ -194,8 +194,8 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should not let id be specified" do
-      api_put :update, user_2_token, raw_post_data: {first_name: "Jerry", last_name: "Mouse"},
-                                     parameters: {id: admin_user.id}
+      api_put :update, user_2_token, body: {first_name: "Jerry", last_name: "Mouse"},
+                                     params: {id: admin_user.id}
       expect(response.code).to eq('200')
       user_2.reload
       admin_user.reload
@@ -206,14 +206,14 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "should not let an application update a User without a token" do
-      api_put :update, trusted_application_token, parameters: {id: admin_user.id}
+      api_put :update, trusted_application_token, params: {id: admin_user.id}
       expect(response).to have_http_status :forbidden
     end
 
     it "should not let a user's contact info be modified through the users API" do
       original_contact_infos = user_2.reload.contact_infos
       api_put :update, user_2_token,
-                       raw_post_data: {
+                       body: {
                          first_name: "Jerry",
                          last_name: "Mouse",
                          contact_infos: [
@@ -235,7 +235,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect{
         api_post :find_or_create,
                  trusted_application_token,
-                 raw_post_data: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
+                 body: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('201')
       new_user = User.order(:id).last
@@ -248,7 +248,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect {
         api_post :find_or_create,
                  trusted_application_token,
-                 raw_post_data: {
+                 body: {
                    email: 'a-new-email@test.com',
                    first_name: 'Sarah',
                    last_name: 'Test',
@@ -269,7 +269,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       user_count = User.count
       api_post :find_or_create,
                nil,
-               raw_post_data: {email: 'a-new-email@test.com'}
+               body: {email: 'a-new-email@test.com'}
       expect(response).to have_http_status :forbidden
       expect(User.count).to eq user_count
     end
@@ -278,7 +278,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       user_count = User.count
       api_post :find_or_create,
                user_2_token,
-               raw_post_data: {email: 'a-new-email@test.com'}
+               body: {email: 'a-new-email@test.com'}
        expect(response).to have_http_status :forbidden
       expect(User.count).to eq user_count
     end
@@ -286,7 +286,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     context "should return only IDs for a user" do
       it "does so for unclaimed users" do
         api_post :find_or_create, trusted_application_token,
-                 raw_post_data: {email: unclaimed_user.contact_infos.first.value}
+                 body: {email: unclaimed_user.contact_infos.first.value}
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: unclaimed_user.id,
@@ -297,7 +297,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       it "does so for claimed users" do
         api_post :find_or_create,
                  trusted_application_token,
-                 raw_post_data: {email: user_2.contact_infos.first.value}
+                 body: {email: user_2.contact_infos.first.value}
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: user_2.id, uuid: user_2.uuid, support_identifier: user_2.support_identifier

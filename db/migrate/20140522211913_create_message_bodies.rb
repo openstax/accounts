@@ -1,4 +1,4 @@
-class CreateMessageBodies < ActiveRecord::Migration
+class CreateMessageBodies < ActiveRecord::Migration[4.2]
   def change
     create_table :message_bodies do |t|
       t.integer :message_id, null: false

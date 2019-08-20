@@ -1,7 +1,5 @@
 class Api::V1::UsersController < Api::V1::ApiController
 
-  prepend_before_filter :allow_sso_user!, only: :show
-
   resource_description do
     api_versions "v1"
     short_description 'Represents a user of OpenStax'
@@ -91,8 +89,9 @@ class Api::V1::UsersController < Api::V1::ApiController
   EOS
   def index
     OSU::AccessPolicy.require_action_allowed!(:search, current_api_user, User)
-    options = params.slice(:order_by)
-    outputs = SearchUsers.call(params[:q], options).outputs
+    query = params[:q]
+    options = params.permit(:order_by)
+    outputs = SearchUsers.call(query, options).outputs
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
                           location: nil,
                           user_options: {

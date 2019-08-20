@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UpdateUserSalesforceInfo, type: :routine do
 
-  let!(:user) { FactoryGirl.create :user }
+  let!(:user) { FactoryBot.create :user }
 
   before(:each) do
     allow(Settings::Salesforce).to receive(:user_info_error_emails_enabled) { true }
@@ -366,7 +366,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     contacts = []
 
     10.times do |ii|
-      user = FactoryGirl.create :user
+      user = FactoryBot.create :user
       email = AddEmailToUser.call("bob#{ii}@example.com", user).outputs.email
       ConfirmContactInfo.call(email)
       contacts.push({id: "foo#{ii}", email: "bob#{ii}@example.com", faculty_verified: "Confirmed"})

@@ -1,4 +1,4 @@
-class NotNullUuid < ActiveRecord::Migration
+class NotNullUuid < ActiveRecord::Migration[4.2]
   def change
     enable_extension 'pgcrypto'
 

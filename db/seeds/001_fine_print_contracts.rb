@@ -15,5 +15,5 @@
 ].each do |contract_data|
   # This is idempotent because the creation fails if the contract already exists
   # Also forces the seeded contract version to be 1
-  FinePrint::Contract.create contract_data.merge(version: 1), without_protection: true
+  FinePrint::Contract.create contract_data.merge(version: 1)
 end

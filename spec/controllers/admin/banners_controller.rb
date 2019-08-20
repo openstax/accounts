@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Admin::BannersController, type: :controller do
-  let(:admin) { FactoryGirl.create :user, :admin, :terms_agreed }
+  let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }
 
   before(:each) do
     controller.sign_in! admin

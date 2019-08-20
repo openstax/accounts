@@ -1,4 +1,4 @@
-class RenameLmsLoginRecords < ActiveRecord::Migration
+class RenameLmsLoginRecords < ActiveRecord::Migration[4.2]
   def change
     rename_column :users, :trusted_signup_data, :signed_external_data
 

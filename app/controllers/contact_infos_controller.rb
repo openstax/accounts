@@ -1,14 +1,14 @@
 class ContactInfosController < ApplicationController
 
-  skip_before_filter :authenticate_user!, only: [:confirm, :confirm_unclaimed, :resend_confirmation]
+  skip_before_action :authenticate_user!, only: [:confirm, :confirm_unclaimed, :resend_confirmation]
 
-  skip_before_filter :complete_signup_profile, only: [:confirm_unclaimed]
+  skip_before_action :complete_signup_profile, only: [:confirm_unclaimed]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:create, :destroy, :set_searchable, :confirm,
                          :confirm_unclaimed, :resend_confirmation]
 
-  before_filter :get_contact_info, only: [:destroy, :set_searchable]
+  before_action :get_contact_info, only: [:destroy, :set_searchable]
 
   def create
     handle_with(ContactInfosCreate,

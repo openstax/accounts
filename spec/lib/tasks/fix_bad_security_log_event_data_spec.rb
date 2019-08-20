@@ -35,9 +35,9 @@ RSpec.describe "fix_bad_security_log_event_data" do
 
 
   def good_and_bad(reason:)
-    good = FactoryGirl.create :security_log, event_data: { reason: reason.to_s }
+    good = FactoryBot.create :security_log, event_data: { reason: reason.to_s }
 
-    bad = FactoryGirl.create :security_log
+    bad = FactoryBot.create :security_log
     ActiveRecord::Base.connection.execute(
       "update security_logs set event_data='---\n:reason: #{reason}\n' where id=#{bad.id}"
     )

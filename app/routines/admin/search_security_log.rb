@@ -65,7 +65,7 @@ module Admin
     def exec(params = {}, options = {})
 
       params[:ob] ||= [{ created_at: :desc }, { id: :desc }]
-      relation = SecurityLog.joins{[user.outer, application.outer]}.preloaded.reorder(nil)
+      relation = SecurityLog.joining{[user.outer, application.outer]}.preloaded.reorder(nil)
 
       run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|
 
@@ -75,7 +75,7 @@ module Admin
           ids_array.each do |ids|
             sanitized_ids = to_number_array(ids)
 
-            @items = @items.where { id.in sanitized_ids }
+            @items = @items.where.has{ |t| t.id.in sanitized_ids }
           end
         end
 
@@ -83,7 +83,7 @@ module Admin
           user_ids_array.each do |user_ids|
             sanitized_ids = to_number_array(user_ids)
 
-            @items = @items.where { user.id.in sanitized_ids }
+            @items = @items.where.has{ |t| t.user.id.in sanitized_ids }
           end
         end
 
@@ -97,18 +97,19 @@ module Admin
               'application'.include?(name.downcase.gsub('%', ''))
             end
 
-            @items = @items.where do
-              query = (  user.username.like_any sanitized_names) |
-                      (user.first_name.like_any sanitized_names) |
-                      ( user.last_name.like_any sanitized_names)
-              query = query | ((user.id.eq nil) & (application.id.eq     nil)) if has_anonymous
-              query = query | ((user.id.eq nil) & (application.id.not_eq nil)) if has_application
+            @items = @items.where.has { |t|
+              query = (   t.user.username.like_any(sanitized_names)  ) |
+                            (   t.user.first_name.like_any(sanitized_names)  ) |
+                            (   t.user.last_name.like_any(sanitized_names)  )
+              query = query | (  t.user.id.eq(nil) & t.application.id.eq(nil)  ) if has_anonymous
+              query = query | (  t.user.id.eq(nil) & t.application.id.not_eq(nil)  ) if has_application
               query
-            end
+            }
           end
         end
 
         with.keyword :app do |apps_array|
+
           apps_array.each do |apps|
             sanitized_ids = to_number_array(apps)
             sanitized_names = to_string_array(apps, prepend_wildcard: true, append_wildcard: true)
@@ -116,12 +117,11 @@ module Admin
               'openstax accounts'.include?(name.downcase.gsub('%', ''))
             end
 
-            @items = @items.where do
-              query = (  application.id.in       sanitized_ids  ) |
-                      (application.name.like_any sanitized_names)
-              query = query | (application.id.eq nil) if has_accounts
+            @items = @items.where.has { |t|
+              query = t.application.id.in(sanitized_ids) | t.application.name.like_any(sanitized_names)
+              query = query | (  t.application.id.eq(nil)  ) if has_accounts
               query
-            end
+            }
           end
         end
 
@@ -129,7 +129,7 @@ module Admin
           ips_array.each do |ips|
             sanitized_ips = to_string_array(ips, prepend_wildcard: true, append_wildcard: true)
 
-            @items = @items.where { remote_ip.like_any sanitized_ips }
+            @items = @items.where.has { |t| t.remote_ip.like_any(sanitized_ips) }
           end
         end
 
@@ -144,13 +144,14 @@ module Admin
 
         with.keyword :time do |times_array|
           times_array.each do |times|
-            time_strings = to_string_array(times)
+            time_strings = to_string_array(times_array)
+
             now = Time.now
             beginning_of_hour = now.beginning_of_hour
             midnight = now.midnight
             sanitized_time_ranges = Admin::SearchSecurityLog.sanitize_times(time_strings, now)
 
-            @items = @items.where do
+            @items = @items.where.has { |t|
               query = nil
 
               sanitized_time_ranges.each do |sanitized_time_range|
@@ -158,17 +159,17 @@ module Admin
                 # ends before the actual current time, depending on the string given
                 if sanitized_time_range.last == beginning_of_hour ||
                    sanitized_time_range.last == midnight
-                  new_query = (created_at > sanitized_time_range.first)
+                  new_query = (t.created_at > sanitized_time_range.first)
                 else
-                  new_query = ((created_at > sanitized_time_range.first) &
-                               (created_at < sanitized_time_range.last))
+                  new_query = ((t.created_at > sanitized_time_range.first) &
+                                          (t.created_at < sanitized_time_range.last))
                 end
 
                 query = query.nil? ? new_query : query | new_query
               end
 
-              query || `0=1`
-            end
+              query || '0=1'
+            }
           end
         end
 
@@ -194,32 +195,34 @@ module Admin
               'openstax accounts'.include?(name.downcase)
             end
 
-            @items = @items.where do
-              query = (              id.in       sanitized_ids                 ) |
-                      (         user.id.in       sanitized_ids                 ) |
-                      (  application.id.in       sanitized_ids                 ) |
-                      (   user.username.like_any sanitized_names_with_wildcards) |
-                      ( user.first_name.like_any sanitized_names_with_wildcards) |
-                      (  user.last_name.like_any sanitized_names_with_wildcards) |
-                      (application.name.like_any sanitized_names_with_wildcards) |
-                      (       remote_ip.like_any sanitized_names_with_wildcards) |
-                      (      event_type.in       sanitized_event_types)
+            @items = @items.where.has { |t|
+              query = (                             t.id.in(sanitized_ids)    ) |
+                            (                     t.user.id.in(sanitized_ids)    ) |
+                            (            t.application.id.in(sanitized_ids)    ) |
+                            (       t.user.username.like_any(sanitized_names_with_wildcards)  ) |
+                            (      t.user.first_name.like_any(sanitized_names_with_wildcards)  ) |
+                            (      t.user.last_name.like_any(sanitized_names_with_wildcards)  ) |
+                            (  t.application.name.like_any(sanitized_names_with_wildcards)  ) |
+                            (              t.remote_ip.like_any(sanitized_names_with_wildcards)  ) |
+                            (            t.event_type.in(sanitized_event_types)    )
+
               sanitized_time_ranges.each do |sanitized_time_range|
                 # This check is a workaround for the fact that context: :past in Chronic
                 # ends before the actual current time, depending on the string given
                 if sanitized_time_range.last == beginning_of_hour ||
                    sanitized_time_range.last == midnight
-                  query = query | (created_at > sanitized_time_range.first)
+                  query = query | (t.created_at > sanitized_time_range.first)
                 else
-                  query = query | ((created_at > sanitized_time_range.first) &
-                                   (created_at < sanitized_time_range.last))
+                  query = query | ((t.created_at > sanitized_time_range.first) &
+                                              (t.created_at < sanitized_time_range.last))
                 end
               end
-              query = query | ((user.id.eq nil) & (application.id.eq     nil)) if has_anonymous
-              query = query | ((user.id.eq nil) & (application.id.not_eq nil)) if has_application
-              query = query | (application.id.eq nil)                          if has_accounts
+
+              query = query | (  t.user.id.eq(nil) & t.application.id.eq(nil)  ) if has_anonymous
+              query = query | (  t.user.id.eq(nil) & t.application.id.not_eq(nil)  ) if has_application
+              query = query | (  t.application.id.eq(nil)  ) if has_accounts
               query
-            end
+            }
           end
         end
 

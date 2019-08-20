@@ -2,27 +2,27 @@ require 'rails_helper'
 
 describe Api::V1::GroupOwnersController, type: :controller, api: true, version: :v1 do
 
-  let!(:group_1) { FactoryGirl.create :group, name: 'Group 1',
+  let!(:group_1) { FactoryBot.create :group, name: 'Group 1',
                                       members_count: 0, owners_count: 0 }
-  let!(:group_2) { FactoryGirl.create :group, name: 'Group 2',
+  let!(:group_2) { FactoryBot.create :group, name: 'Group 2',
                                       members_count: 0, owners_count: 0 }
-  let!(:group_3) { FactoryGirl.create :group, name: 'Group 3',
+  let!(:group_3) { FactoryBot.create :group, name: 'Group 3',
                                       members_count: 0, owners_count: 0, is_public: true }
 
-  let!(:user_1)       { FactoryGirl.create :user, :terms_agreed }
-  let!(:user_2)       { FactoryGirl.create :user, :terms_agreed }
+  let!(:user_1)       { FactoryBot.create :user, :terms_agreed }
+  let!(:user_2)       { FactoryBot.create :user, :terms_agreed }
 
-  let!(:group_owner_1) { FactoryGirl.create :group_owner, group: group_2, user: user_2 }
+  let!(:group_owner_1) { FactoryBot.create :group_owner, group: group_2, user: user_2 }
 
-  let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
+  let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
 
-  let!(:user_1_token) { FactoryGirl.create :doorkeeper_access_token,
+  let!(:user_1_token) { FactoryBot.create :doorkeeper_access_token,
                         application: untrusted_application,
                         resource_owner_id: user_1.id }
-  let!(:user_2_token) { FactoryGirl.create :doorkeeper_access_token,
+  let!(:user_2_token) { FactoryBot.create :doorkeeper_access_token,
                         application: untrusted_application,
                         resource_owner_id: user_2.id }
-  let!(:untrusted_application_token) { FactoryGirl.create :doorkeeper_access_token,
+  let!(:untrusted_application_token) { FactoryBot.create :doorkeeper_access_token,
                                        application: untrusted_application,
                                        resource_owner_id: nil }
 
@@ -77,7 +77,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
 
       expect(JSON.parse(response.body)).to eq(expected_response)
 
-      FactoryGirl.create(:group_nesting, container_group: group_1, member_group: group_2)
+      FactoryBot.create(:group_nesting, container_group: group_1, member_group: group_2)
       controller.current_human_user.reload
 
       api_get :index, user_1_token
@@ -191,34 +191,34 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
 
   context 'create' do
     it 'must not create a group_owner without a token' do
-      api_post :create, nil, parameters: {group_id: group_3.id, user_id: user_2.id}
+      api_post :create, nil, params: {group_id: group_3.id, user_id: user_2.id}
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group_owner for an app without a user token' do
       api_post :create, untrusted_application_token,
-                        parameters: { group_id: group_3.id, user_id: user_2.id }
+                        params: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must not create a group_owner for an unauthorized user' do
-      api_post :create, user_1_token, parameters: { group_id: group_3.id, user_id: user_2.id }
+      api_post :create, user_1_token, params: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
 
       group_3.add_member(user_1)
       controller.current_human_user.reload
 
-      api_post :create, user_1_token, parameters: { group_id: group_3.id, user_id: user_2.id }
+      api_post :create, user_1_token, params: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
     end
 
     it 'must create group_owners for authorized users' do
       group_3.add_owner(user_1)
-      api_post :create, user_1_token, parameters: { group_id: group_3.id, user_id: user_2.id }
+      api_post :create, user_1_token, params: { group_id: group_3.id, user_id: user_2.id }
 
       expect(response.code).to eq('201')
       expected_response = {
@@ -248,7 +248,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
       expect(group_3.owners).to include(user_2)
 
       group_1.add_owner(user_1)
-      api_post :create, user_1_token, parameters: { group_id: group_1.id, user_id: user_2.id }
+      api_post :create, user_1_token, params: { group_id: group_1.id, user_id: user_2.id }
 
       expect(response.code).to eq('201')
       expected_response = {
@@ -280,7 +280,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
 
   context 'destroy' do
     it 'must not destroy a group_owner without a token' do
-      api_delete :destroy, nil, parameters: { group_id: group_2.id, user_id: user_2.id }
+      api_delete :destroy, nil, params: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupOwner.where(id: group_owner_1.id).first).not_to be_nil
@@ -288,21 +288,21 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
 
     it 'must not destroy a group_owner for an app without a user token' do
       api_delete :destroy, untrusted_application_token,
-                           parameters: { group_id: group_2.id, user_id: user_2.id }
+                           params: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupOwner.where(id: group_owner_1.id).first).not_to be_nil
     end
 
     it 'must not destroy a group_owner for an unauthorized user' do
-      api_delete :destroy, user_1_token, parameters: { group_id: group_2.id, user_id: user_2.id }
+      api_delete :destroy, user_1_token, params: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupOwner.where(id: group_owner_1.id).first).not_to be_nil
 
       group_2.add_member(user_1)
 
-      api_delete :destroy, user_1_token, parameters: { group_id: group_2.id, user_id: user_2.id }
+      api_delete :destroy, user_1_token, params: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response).to have_http_status :forbidden
       expect(GroupOwner.where(id: group_owner_1.id).first).not_to be_nil
@@ -312,7 +312,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
       group_2.add_owner(user_1)
       group_owner_2 = GroupOwner.last
       api_delete :destroy, user_1_token,
-                 parameters: { group_id: group_2.id, user_id: user_1.id }
+                 params: { group_id: group_2.id, user_id: user_1.id }
 
       expect(response.code).to eq('204')
       expect(response.body).to be_blank
@@ -320,7 +320,7 @@ describe Api::V1::GroupOwnersController, type: :controller, api: true, version: 
 
       group_2.add_owner(user_1)
       api_delete :destroy, user_1_token,
-                 parameters: { group_id: group_2.id, user_id: user_2.id }
+                 params: { group_id: group_2.id, user_id: user_2.id }
 
       expect(response.code).to eq('204')
       expect(response.body).to be_blank

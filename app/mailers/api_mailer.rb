@@ -4,8 +4,8 @@
 class ApiMailer < ActionMailer::Base
   def mail(html_body, text_body, headers={})
     super(headers) do |format|
-      format.html { render text: html_body }
-      format.text { render text: text_body }
+      format.html { render plain: html_body }
+      format.text { render plain: text_body }
     end
   end
 end

@@ -2,14 +2,14 @@ require 'rails_helper'
 
 describe FindOrCreateUnclaimedUser do
 
-  let(:user) { FactoryGirl.create :user, state: 'unclaimed' }
+  let(:user) { FactoryBot.create :user, state: 'unclaimed' }
 
   context "Given an email" do
 
     context "of existing user" do
 
       it "returns the existing user" do
-        user = FactoryGirl.create :user_with_emails, emails_count: 1
+        user = FactoryBot.create :user_with_emails, emails_count: 1
         found = FindOrCreateUnclaimedUser.call(email:user.contact_infos.first.value).outputs.user
         expect(found).to eq(user)
       end
@@ -107,7 +107,6 @@ describe FindOrCreateUnclaimedUser do
         it 'sets is_test' do
           is_test = [true, false].sample
           new_user = FindOrCreateUnclaimedUser.call(
-            email:"anunusedemail@example.com",
             username: 'bobsmith', email: 'anunusedemail@example.com',
             first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
             is_test: is_test

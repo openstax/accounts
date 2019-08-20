@@ -6,10 +6,14 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '4.2.11'
-gem 'rails-i18n', '~> 4'
-gem 'sprockets', '~> 2.12.5'
+gem 'rails', '5.2.0'
+gem 'rails-i18n', '~> 5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
+gem 'bootsnap', require: false
+
+# Lev framework
+# - introduces two new concepts: Routines and Handlers
+gem 'lev', '~> 9.0.2'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.4.1'
@@ -21,7 +25,7 @@ gem 'sass-rails', '~> 5.0'
 gem 'compass-rails'
 
 # CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.1.0'
+gem 'coffee-rails', '5.0.0'
 
 # JavaScript asset compiler
 gem 'therubyracer', platforms: :ruby
@@ -46,25 +50,19 @@ gem 'omniauth-google-oauth2', '~>0.6'
 gem 'redis-rails'
 
 # Ruby dsl for SQL queries
-gem 'squeel'
-
-# Mute asset pipeline log messages
-gem 'quiet_assets'
+gem 'baby_squeel', '~>1.3.0'
 
 # Utilities for OpenStax websites
 gem 'openstax_utilities', '~> 4.2.0'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 8.2.0'
+gem 'openstax_api', '~> 9.0.1'
 
 # Notify developers of Exceptions in production
-gem 'openstax_rescue_from', '~> 3.0.0'
+gem 'openstax_rescue_from'
 
 # Sentry integration (the require disables automatic Rails integration since we use rescue_from)
 gem 'sentry-raven', require: 'raven/base'
-
-# Lev framework
-gem 'lev', '~> 7.0.3'
 
 # Background job status store
 gem 'jobba', '~> 1.4.0'
@@ -75,13 +73,13 @@ gem 'jquery-rails'
 gem 'smarter_csv'
 
 # API documentation
-gem 'apipie-rails', '~> 0.1.2'
+gem 'apipie-rails'
 gem 'maruku'
 
-gem 'jbuilder', '~> 2.0'
+gem 'jbuilder'
 
 # Background job queueing
-gem 'delayed_job_active_record'
+gem 'delayed_job_active_record', '~> 4.1.3'
 gem 'daemons'
 
 # JSON Api builder
@@ -91,16 +89,10 @@ gem 'representable', '~> 3.0.0'
 gem 'keyword_search', '~> 1.5.0'
 
 # ToS/PP management
-gem 'fine_print', '~> 3.1.0'
+gem 'fine_print'
 
 # Send users back to the correct page after login
-gem 'action_interceptor', '~> 1.1.0'
-
-# Case-insensitive database indices for PostgreSQL
-# schema_plus_core and transaction_isolation monekeypatches conflict with each other,
-# but loading schema_plus_pg_indexes late seems to fix this
-# So we load it in an after_initialize block in config/application.rb
-gem 'schema_plus_pg_indexes', require: false
+gem 'action_interceptor'
 
 # PostgreSQL database
 gem 'pg'
@@ -121,27 +113,26 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce', '~> 2.1.0'
+gem 'openstax_salesforce', '~> 3.0.0'
 
 # Fork that supports Ruby >= 2.1
-gem 'active_force', github: 'openstax/active_force', ref: '9efe1ba'
+gem 'active_force', github: 'openstax/active_force', ref: '3ba3421'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
 
 gem 'whenever', require: false
 
-gem 'protected_attributes'
-
 # Fast JSON parsing
-gem 'oj'
+gem 'oj', '~> 3.7.12'
 
 # Replace JSON with Oj
 gem 'oj_mimic_json'
 
 # Admin toggles
 gem 'rails-settings-ui'
-gem 'rails-settings-cached'
+gem 'rails-settings-cached', '0.7.2'
+gem 'dry-validation', '0.12.0'
 
 gem 'scout_apm', '~> 3.0.x'
 
@@ -153,9 +144,7 @@ gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "0ed5cdba6b
 
 group :development, :test do
   # Get env variables from .env file
-  gem 'dotenv-rails'
-
-  gem 'rails-erd'
+  gem 'dotenv-rails', '2.7.2'
 
   # Run specs in parallel
   gem 'parallel_tests'
@@ -163,17 +152,20 @@ group :development, :test do
   # Show failing parallel specs instantly
   gem 'rspec-instafail'
 
-  # Thin development server
-  gem 'thin'
+  # Development server
+  gem 'puma', '~> 3.11'
 
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
   # Use RSpec for tests
-  gem 'rspec-rails', '~> 3.5'
+  gem 'rspec-rails', '~> 3.8'
+
+  # Because `assigns` has been extracted from RSpec to a gem
+  gem 'rails-controller-testing'
 
   # Fixture replacement
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
 
   # fake data generation
   gem 'faker'
@@ -199,9 +191,12 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0'
+  gem 'web-console', '~> 3.7'
 
-  gem  'i18n-tasks', '~> 0.9.6'
+  gem  'i18n-tasks'
+
+  # Generate Entity-Relationship Diagrams for Rails applications
+  gem 'rails-erd'
 end
 
 group :test do
@@ -213,8 +208,9 @@ group :test do
 
   gem 'db-query-matchers'
 
-# Run feature tests with Selenium
-  gem 'capybara-selenium'
+# Run feature tests with Capybara + Selenium
+  gem 'capybara'
+  gem 'selenium-webdriver', '>= 3.141.0'
   gem 'webdrivers', '~> 4.0'
 
   # Testing emails
@@ -230,6 +226,11 @@ group :test do
   gem 'whenever-test'
 end
 
+group :production, :test do
+  # AWS SES integration
+  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
+end
+
 group :production do
   # Unicorn production server
   gem 'unicorn'
@@ -239,9 +240,4 @@ group :production do
 
   # Consistent logging
   gem 'lograge'
-end
-
-group :production, :test do
-  # AWS SES integration
-  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
 end

@@ -4,14 +4,14 @@ describe LookupUsers do
 
   context '#by_email_or_username' do
     it 'returns nothing for nil username lookup' do
-      FactoryGirl.create(:user, username: nil)
+      FactoryBot.create(:user, username: nil)
       expect(described_class.by_email_or_username(nil)).to eq []
     end
 
     context 'when two of the same email with different case, both verified' do
       before(:each) {
-        @email1 = FactoryGirl.create(:email_address, value: 'bob@example.com', verified: true)
-        @email2 = FactoryGirl.create(:email_address, value: 'bob@EXAMPLE.com')
+        @email1 = FactoryBot.create(:email_address, value: 'bob@example.com', verified: true)
+        @email2 = FactoryBot.create(:email_address, value: 'bob@EXAMPLE.com')
         # No longer allowed to have same address different case both verified, but used to be able
         # to, so update `verified` without validations to simulate old data.
         @email2.update_attribute(:verified, true)
@@ -26,7 +26,7 @@ describe LookupUsers do
 
     context '#by_verfied_email' do
       let!(:email) {
-        FactoryGirl.create(:email_address, value: 'bob@example.com', verified: true)
+        FactoryBot.create(:email_address, value: 'bob@example.com', verified: true)
       }
 
       it 'finds one user when there is a case sensitive match' do
@@ -40,8 +40,8 @@ describe LookupUsers do
 
     context 'when have two of the same username with different case' do
       before(:each) {
-        @user1 = FactoryGirl.create(:user, username: 'bob')
-        @user2 = FactoryGirl.create(:user, username: 'temp')
+        @user1 = FactoryBot.create(:user, username: 'bob')
+        @user2 = FactoryBot.create(:user, username: 'temp')
         # Used to be able to have case-insensitive dupes, but can't now, so skip validations
         @user2.update_attribute(:username, 'BOB')
       }
@@ -58,7 +58,7 @@ describe LookupUsers do
     end
 
     it 'finds a user when there is only one case insensitive match by username' do
-      @user = FactoryGirl.create(:user, username: 'BOB')
+      @user = FactoryBot.create(:user, username: 'BOB')
       expect(described_class.by_email_or_username('bob')).to eq [@user]
     end
   end

@@ -19,7 +19,7 @@ feature 'Sign in using signed parameters', js: true do
     { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
   }
 
-  %w{ teacher student }.each do |role|
+  %w{ instructor student }.each do |role|
     describe "arriving with an existing #{role} account" do
       let(:user) {
         u = create_user('user')
@@ -129,6 +129,7 @@ feature 'Sign in using signed parameters', js: true do
       wait_for_animations
       click_button(t :"signup.start.next")
       expect_signup_verify_screen
+
       ss = PreAuthState.find_by!(contact_info_value: email)
       fill_in (t :"signup.verify_email.pin"), with: ss.confirmation_pin
       click_button(t :"signup.verify_email.confirm")

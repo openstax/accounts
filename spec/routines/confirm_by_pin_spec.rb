@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ConfirmByPin do
-  let!(:user) { FactoryGirl.create :user }
+  let!(:user) { FactoryBot.create :user }
 
   let!(:contact_info) {
     AddEmailToUser.call("bob@example.com", user)
@@ -52,7 +52,7 @@ describe ConfirmByPin do
 
     it 'fails even if multiple contact_infos are used' do
       contact_info.destroy
-      contact_info = FactoryGirl.create :email_address, value: "bob@example.com"
+      contact_info = FactoryBot.create :email_address, value: "bob@example.com"
 
       expect(
         described_class.call(contact_info: contact_info, pin: "whatever")
@@ -60,7 +60,7 @@ describe ConfirmByPin do
     end
 
     it 'fails by code after other contact info with same value is confirmed' do
-      other_user = FactoryGirl.create(:user)
+      other_user = FactoryBot.create(:user)
 
       AddEmailToUser.call("bob-2@example.com", other_user)
       other_contact_info = other_user.contact_infos.last

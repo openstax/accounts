@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Admin::UsersController, type: :controller do
-  let!(:user) { FactoryGirl.create :user }
-  let!(:identity) { FactoryGirl.create :identity, user: user }
-  let(:admin) { FactoryGirl.create :user, :admin, :terms_agreed }
+  let!(:user) { FactoryBot.create :user }
+  let!(:identity) { FactoryBot.create :identity, user: user }
+  let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }
 
   before(:each) do
     controller.sign_in! admin
@@ -11,17 +11,19 @@ RSpec.describe Admin::UsersController, type: :controller do
 
   describe 'PUT #update' do
     it 'updates a user' do
-      put :update, id: user.id,
-                   user: {
-                     first_name: 'Malik',
-                     last_name: 'Kristensen',
-                     email_address: 'malik@example.org',
-                     is_administrator: '1',
-                     faculty_status: 'rejected_faculty',
-                     school_type: 'college',
-                     password: 'si4eeSai',
-                     password_confirmation: 'si4eeSai'
-                   }
+      put :update, params: {
+        id: user.id,
+        user: {
+          first_name: 'Malik',
+          last_name: 'Kristensen',
+          email_address: 'malik@example.org',
+          is_administrator: '1',
+          faculty_status: 'rejected_faculty',
+          school_type: 'college',
+          password: 'si4eeSai',
+          password_confirmation: 'si4eeSai'
+        }
+      }
       user.reload
       expect(user.first_name).to eq 'Malik'
       expect(user.last_name).to eq 'Kristensen'
@@ -37,8 +39,10 @@ RSpec.describe Admin::UsersController, type: :controller do
   describe 'trusted lauch removal' do
     it 'removes all the external uuids' do
       user.external_uuids.create!({ uuid: SecureRandom.uuid })
-      put :update, id: user.id,
-          user: { keep_external_uuids: '0' }
+      put :update, params: {
+        id: user.id,
+        user: { keep_external_uuids: '0' }
+      }
 
       expect(user.external_uuids.reload.none?).to be true
     end
@@ -46,8 +50,8 @@ RSpec.describe Admin::UsersController, type: :controller do
 
   describe "PUT #mark_users_updated" do
     it "should update unread_updates at a button push" do
-      FactoryGirl.create :application_user, unread_updates: 1
-      FactoryGirl.create :application_user, unread_updates: 3
+      FactoryBot.create :application_user, unread_updates: 1
+      FactoryBot.create :application_user, unread_updates: 3
 
       put :mark_users_updated
 

@@ -94,7 +94,7 @@ feature 'Require recent log in to change authentications', js: true do
   scenario 'removing an authentication' do
     with_forgery_protection do
       user = create_user 'user'
-      FactoryGirl.create :authentication, user: user, provider: 'twitter'
+      FactoryBot.create :authentication, user: user, provider: 'twitter'
 
       log_in('user', 'password')
 

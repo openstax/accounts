@@ -14,10 +14,10 @@ class MergeUnclaimedUsers
 
     living_user = email.user
 
-    unclaimed_contacts = EmailAddress.with_users.where{
-        value.eq(my{email.value}) &
-        user.state.eq('unclaimed') &
-        id.not_eq(email.id)
+    unclaimed_contacts = EmailAddress.with_users.where.has{ |t|
+        (t.value == email.value) &
+        (t.user.state == 'unclaimed') &
+        (t.id != email.id)
     }
 
     unclaimed_contacts.each do | contact |

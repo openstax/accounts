@@ -2,11 +2,11 @@ require 'rails_helper'
 
 describe Group do
 
-  let!(:user_1) { FactoryGirl.create(:user) }
-  let!(:user_2) { FactoryGirl.create(:user) }
+  let!(:user_1) { FactoryBot.create(:user) }
+  let!(:user_2) { FactoryBot.create(:user) }
 
-  let!(:group_1) { FactoryGirl.create(:group) }
-  let!(:group_2) { FactoryGirl.create(:group) }
+  let!(:group_1) { FactoryBot.create(:group) }
+  let!(:group_2) { FactoryBot.create(:group) }
 
   context 'validation' do
     it 'must have a unique name, if present' do
@@ -15,7 +15,7 @@ describe Group do
       group_1.name = 'MyGroup'
       group_1.save!
 
-      group_3 = FactoryGirl.build(:group, name: group_1.name)
+      group_3 = FactoryBot.build(:group, name: group_1.name)
       expect(group_3).not_to be_valid
       expect(group_3).to have_error(:name, :taken)
 
@@ -46,7 +46,7 @@ describe Group do
     expect(group_1.has_member?(user_2)).to eq(false)
     expect(group_2.has_member?(user_2)).to eq(true)
 
-    FactoryGirl.create(:group_nesting, container_group: group_1, member_group: group_2)
+    FactoryBot.create(:group_nesting, container_group: group_1, member_group: group_2)
     group_1.reload
 
     expect(group_1.has_member?(user_1)).to eq(false)

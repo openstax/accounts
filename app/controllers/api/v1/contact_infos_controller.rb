@@ -1,6 +1,6 @@
 class Api::V1::ContactInfosController < Api::V1::ApiController
 
-  before_filter :get_contact_info, only: [:resend_confirmation, :confirm_by_pin]
+  before_action :get_contact_info, only: [:resend_confirmation, :confirm_by_pin]
 
   resource_description do
     api_versions "v1"

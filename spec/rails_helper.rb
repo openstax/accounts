@@ -41,7 +41,8 @@ end
 # no-sandbox and disable-gpu are required for Chrome to work with Travis
 Capybara.register_driver :selenium_chrome_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new args: [
-    'no-sandbox', 'headless', 'disable-dev-shm-usage', 'disable-gpu', 'disable-extensions', 'disable-infobars'
+    'no-sandbox', 'headless', 'disable-dev-shm-usage',
+    'disable-gpu', 'disable-extensions', 'disable-infobars'
   ]
 
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
@@ -50,6 +51,9 @@ end
 Capybara.javascript_driver = :selenium_chrome_headless
 
 Capybara.asset_host = 'http://localhost:2999'
+
+# Normalize whitespaces
+Capybara.default_normalize_ws = true
 
 """
   Config for Shoulda Matchers
@@ -96,12 +100,4 @@ def disable_sfdc_client
   allow(ActiveForce)
     .to receive(:sfdc_client)
     .and_return(double('null object').as_null_object)
-end
-class ExternalAppForSpecsController < ActionController::Base
-  skip_filter *_process_action_callbacks.map(&:filter)
-  layout false
-
-  def index
-    render plain: 'This is a fake external application'
-  end
 end

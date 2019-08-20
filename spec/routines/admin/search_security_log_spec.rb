@@ -3,27 +3,27 @@ require 'rails_helper'
 RSpec.describe Admin::SearchSecurityLog, type: :routine do
 
   before(:each) do
-    @user = FactoryGirl.create :user, first_name: 'Test', last_name: 'User', username: 'TestUser'
-    @app = FactoryGirl.create :doorkeeper_application, name: 'Some Test App'
+    @user = FactoryBot.create :user, first_name: 'Test', last_name: 'User', username: 'TestUser'
+    @app = FactoryBot.create :doorkeeper_application, name: 'Some Test App'
 
-    @anon_sl = FactoryGirl.create :security_log, user: nil
-    @user_sl = FactoryGirl.create :security_log, user: @user
-    @app_sl = FactoryGirl.create :security_log, user: nil, application: @app
-    @app_and_user_sl = FactoryGirl.create :security_log, user: @user, application: @app
+    @anon_sl = FactoryBot.create :security_log, user: nil
+    @user_sl = FactoryBot.create :security_log, user: @user
+    @app_sl = FactoryBot.create :security_log, user: nil, application: @app
+    @app_and_user_sl = FactoryBot.create :security_log, user: @user, application: @app
 
-    @another_user = FactoryGirl.create :user, first_name: 'Another',
+    @another_user = FactoryBot.create :user, first_name: 'Another',
                                               last_name: 'User',
                                               username: 'AnotherUser'
-    @another_app = FactoryGirl.create :doorkeeper_application, name: 'Another Test App'
-    @ip_sl = FactoryGirl.create :security_log, user: @another_user,
+    @another_app = FactoryBot.create :doorkeeper_application, name: 'Another Test App'
+    @ip_sl = FactoryBot.create :security_log, user: @another_user,
                                                application: @another_app,
                                                remote_ip: '192.168.0.1'
-    @type_sl = FactoryGirl.create :security_log, user: @another_user,
+    @type_sl = FactoryBot.create :security_log, user: @another_user,
                                                  application: @another_app,
                                                  event_type: :admin_created
 
-    @user_with_name_like_other_id = FactoryGirl.create :user, first_name: @user.id
-    @user_with_name_like_other_id_sl = FactoryGirl.create :security_log,
+    @user_with_name_like_other_id = FactoryBot.create :user, first_name: @user.id
+    @user_with_name_like_other_id_sl = FactoryBot.create :security_log,
                                                           user: @user_with_name_like_other_id,
                                                           application: @another_app
   end

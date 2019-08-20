@@ -31,7 +31,7 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
   end
 
   context "user with verified email" do
-    let!(:email_address) { FactoryGirl.create(:email_address, value: 'f@f.com', verified: true) }
+    let!(:email_address) { FactoryBot.create(:email_address, value: 'f@f.com', verified: true) }
     let!(:user) { email_address.user }
 
     context "contact exists" do
@@ -83,7 +83,7 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
   end
 
   context "user with unverified email" do
-    let!(:email_address) { FactoryGirl.create(:email_address, value: 'f@f.com', verified: false) }
+    let!(:email_address) { FactoryBot.create(:email_address, value: 'f@f.com', verified: false) }
     let!(:user) { email_address.user }
 
     context "contact exists" do
@@ -118,7 +118,7 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
   end
 
   context "email collisions" do
-    let!(:email_address) { FactoryGirl.create(:email_address, value: 'f@f.com', verified: true) }
+    let!(:email_address) { FactoryBot.create(:email_address, value: 'f@f.com', verified: true) }
     let!(:user) { email_address.user }
     after(:each) { expect(user.reload.salesforce_contact_id).to be_nil }
 
@@ -149,9 +149,9 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
   end
 
   it 'errors when multiple SF contacts exist for one user' do
-    email_address_1 = FactoryGirl.create(:email_address, value: 'a@a.com', verified: true)
+    email_address_1 = FactoryBot.create(:email_address, value: 'a@a.com', verified: true)
     user = email_address_1.user
-    email_address_2 = FactoryGirl.create(:email_address, value: 'b@b.com', verified: true, user: user)
+    email_address_2 = FactoryBot.create(:email_address, value: 'b@b.com', verified: true, user: user)
 
     @proxy.new_contact(email: email_address_1.value)
     @proxy.new_contact(email: email_address_2.value)

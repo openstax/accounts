@@ -51,7 +51,7 @@ describe CreateUser do
 
       context "when username is already taken" do
         it "fails with an error" do
-          FactoryGirl.create(:user, username: "bubba")
+          FactoryBot.create(:user, username: "bubba")
           outcome = nil
           expect {
             outcome = CreateUser.call(username: "bubba",
@@ -81,7 +81,7 @@ describe CreateUser do
 
       context "when username is already taken" do
         it "creates a new user" do
-          FactoryGirl.create(:user, username: "bubba")
+          FactoryBot.create(:user, username: "bubba")
           expect { CreateUser.call(username: "bubba",
                                    first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
                                    ensure_no_errors: true, state: 'activated')
@@ -89,7 +89,7 @@ describe CreateUser do
         end
 
         it "assigns a unique username" do
-          FactoryGirl.create(:user, username: "bubba")
+          FactoryBot.create(:user, username: "bubba")
           outcome = CreateUser.call(username: "bubba",
                                     first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
                                     ensure_no_errors: true, state: 'activated')
@@ -97,7 +97,7 @@ describe CreateUser do
         end
 
         it "returns no errors" do
-          FactoryGirl.create(:user, username: "bubba")
+          FactoryBot.create(:user, username: "bubba")
           outcome = CreateUser.call(username: "bubba",
                                     first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
                                     ensure_no_errors: true, state: 'activated')
@@ -107,7 +107,7 @@ describe CreateUser do
 
       context "when sanitized downcased username is already taken" do
         it "still creates a new user" do
-          FactoryGirl.create(:user, username: "Userone")
+          FactoryBot.create(:user, username: "Userone")
           expect { CreateUser.call(username: "User One",
                                    first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
                                    ensure_no_errors: true, state: 'activated')
@@ -115,7 +115,7 @@ describe CreateUser do
         end
 
         it "assigns a unique username" do
-          FactoryGirl.create(:user, username: "bubba")
+          FactoryBot.create(:user, username: "bubba")
           outcome = CreateUser.call(username: "bubba",
                                     first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
                                     ensure_no_errors: true, state: 'activated')
@@ -123,7 +123,7 @@ describe CreateUser do
         end
 
         it "returns no errors" do
-          FactoryGirl.create(:user, username: "Usertwo")
+          FactoryBot.create(:user, username: "Usertwo")
           user_two = CreateUser.call(username: "User Two",
                                      first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
                                      ensure_no_errors: true, state: 'activated')

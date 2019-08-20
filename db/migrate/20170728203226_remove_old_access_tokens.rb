@@ -1,4 +1,4 @@
-class RemoveOldAccessTokens < ActiveRecord::Migration
+class RemoveOldAccessTokens < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up

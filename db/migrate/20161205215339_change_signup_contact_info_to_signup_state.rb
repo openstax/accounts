@@ -1,4 +1,4 @@
-class ChangeSignupContactInfoToSignupState < ActiveRecord::Migration
+class ChangeSignupContactInfoToSignupState < ActiveRecord::Migration[4.2]
   class SignupState < ActiveRecord::Base
   end
 

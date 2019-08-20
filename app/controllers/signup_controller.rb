@@ -2,18 +2,18 @@ class SignupController < ApplicationController
 
   PROFILE_TIMEOUT = 30.minutes
 
-  skip_before_filter :authenticate_user!,
+  skip_before_action :authenticate_user!,
                      only: [:start, :verify_email, :verify_by_token, :password, :social, :profile]
 
-  skip_before_filter :complete_signup_profile
+  skip_before_action :complete_signup_profile
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  before_filter :check_ready_for_profile, only: [:profile]
+  before_action :check_ready_for_profile, only: [:profile]
 
-  before_filter :restart_if_missing_pre_auth_state, only: [:verify_email, :password, :social]
-  before_filter :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
-  before_filter :check_ready_for_password_or_social, only: [:password, :social]
+  before_action :restart_if_missing_pre_auth_state, only: [:verify_email, :password, :social]
+  before_action :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
+  before_action :check_ready_for_password_or_social, only: [:password, :social]
 
   helper_method :signup_email, :instructor_has_selected_subject
 

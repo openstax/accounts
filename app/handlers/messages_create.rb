@@ -44,5 +44,4 @@ class MessagesCreate
     # Send the message or rollback the transaction if it wasn't sent
     run(:send_message, msg)
   end
-
 end

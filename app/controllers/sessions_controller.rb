@@ -7,28 +7,28 @@ class SessionsController < ApplicationController
   include RequireRecentSignin
   include RateLimiting
 
-  skip_before_filter :authenticate_user!,
+  skip_before_action :authenticate_user!,
                      only: [:start, :lookup_login, :authenticate, :redirect_back,
                             :create, :failure, :destroy, :email_usernames]
 
-  skip_before_filter :check_if_password_expired,
+  skip_before_action :check_if_password_expired,
                      only: [:start, :lookup_login, :authenticate,
                             :create, :failure, :destroy, :email_usernames]
 
-  skip_before_filter :complete_signup_profile, only: [:destroy]
+  skip_before_action :complete_signup_profile, only: [:destroy]
 
-  before_filter :save_new_params_in_session, only: [:start]
-  before_filter :store_authorization_url_as_fallback, only: [:start, :create]
+  before_action :save_new_params_in_session, only: [:start]
+  before_action :store_authorization_url_as_fallback, only: [:start, :create]
 
-  before_filter :maybe_skip_to_sign_up, only: [:start]
+  before_action :maybe_skip_to_sign_up, only: [:start]
 
-  before_filter :allow_iframe_access, only: :reauthenticate
+  before_action :allow_iframe_access, only: :reauthenticate
 
 
   # If the user arrives to :start already logged in, this means they got linked to
   # the login page somehow; attempt to redirect to the authorization url stored
   # earlier
-  before_filter :redirect_back, if: -> { signed_in? }, only: :start
+  before_action :redirect_back, if: -> { signed_in? }, only: :start
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:start, :lookup_login, :authenticate, :create, :failure, :destroy, :email_usernames]
@@ -268,7 +268,7 @@ class SessionsController < ApplicationController
   end
 
   def email_usernames
-    usernames = User.where{id.in my{get_login_state[:matching_user_ids]}}.map(&:username)
+    usernames = User.where.has{ |t| t.id.in get_login_state[:matching_user_ids]}.map(&:username)
 
     SignInHelpMailer.multiple_accounts(
       email_address: get_login_state[:username_or_email],

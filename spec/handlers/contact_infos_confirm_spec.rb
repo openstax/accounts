@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe ContactInfosConfirm, type: :handler do
-  let(:email) { FactoryGirl.create :email_address, confirmation_code: '01234' }
+  let(:email) { FactoryBot.create :email_address, confirmation_code: '01234' }
 
   it 'returns error if no confirmation code is given' do
-    FactoryGirl.create :email_address
+    FactoryBot.create :email_address
     params = {}
     allow_any_instance_of(ContactInfosConfirm).to receive(:params).and_return(params)
     result = ContactInfosConfirm.handle

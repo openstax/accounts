@@ -2,14 +2,14 @@ require 'rails_helper'
 
 describe AddRecipientsToMessage do
 
-  let!(:user_1)                { FactoryGirl.create :user }
+  let!(:user_1)                { FactoryBot.create :user }
 
   (2..14).each do |n|
-    let!("user_#{n}".to_sym)   { FactoryGirl.create :user_with_emails }
+    let!("user_#{n}".to_sym)   { FactoryBot.create :user_with_emails }
   end
 
   let!(:message) {
-    FactoryGirl.build(:message, user: user_1)
+    FactoryBot.build(:message, user: user_1)
   }
 
   it 'adds recipients to message' do

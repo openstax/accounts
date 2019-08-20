@@ -2,12 +2,12 @@ require 'rails_helper'
 
 RSpec.describe ContactInfoAccessPolicy do
 
-  let!(:contact_info) { FactoryGirl.create :email_address }
+  let!(:contact_info) { FactoryBot.create :email_address }
   let!(:anon)         { AnonymousUser.instance }
-  let!(:temp)         { FactoryGirl.create :temp_user }
-  let!(:user)         { FactoryGirl.create :user }
-  let!(:admin)        { FactoryGirl.create :user, :admin }
-  let!(:app)          { FactoryGirl.create :doorkeeper_application }
+  let!(:temp)         { FactoryBot.create :temp_user }
+  let!(:user)         { FactoryBot.create :user }
+  let!(:admin)        { FactoryBot.create :user, :admin }
+  let!(:app)          { FactoryBot.create :doorkeeper_application }
 
   context 'read, create, destroy, set_searchable, resend_confirmation' do
     it 'cannot be accessed by applications or unauthorized users' do

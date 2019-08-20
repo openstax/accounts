@@ -14,7 +14,7 @@ describe 'Apply for faculty access', type: :feature, js: true do
     screenshot!
 
     expect_sign_in_page
-    expect(page).to have_no_content("Sign up")
+     expect(page).to have_no_content("Sign up")
 
     complete_login_username_or_email_screen('user')
     complete_login_password_screen('password')

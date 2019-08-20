@@ -1,4 +1,4 @@
-class AddUserIdToIdentities < ActiveRecord::Migration
+class AddUserIdToIdentities < ActiveRecord::Migration[4.2]
   def change
     add_column :identities, :user_id, :integer
     change_column :identities, :user_id, :integer, null: false

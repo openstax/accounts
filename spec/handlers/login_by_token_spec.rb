@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LogInByToken, type: :handler do
-  let!(:user) { FactoryGirl.create :user }
+  let!(:user) { FactoryBot.create :user }
 
   let(:user_state) do
     class SpecUserState; def sign_in!(*args); end; end

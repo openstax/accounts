@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe ExportUsersInfoToMatchWithConsentForms, type: :routine do
 
   context "as a Lev output with student information" do
-    let!(:user_1){ FactoryGirl.create :user, username: "TonyStark", first_name: "Tony", last_name: "Stark" }
-    let!(:some_other_user){ FactoryGirl.create :user }
-    let!(:email_1){ FactoryGirl.create :email_address, user: user_1 }
-    let!(:email_2){ FactoryGirl.create :email_address, user: user_1 }
+    let!(:user_1){ FactoryBot.create :user, username: "TonyStark", first_name: "Tony", last_name: "Stark" }
+    let!(:some_other_user){ FactoryBot.create :user }
+    let!(:email_1){ FactoryBot.create :email_address, user: user_1 }
+    let!(:email_2){ FactoryBot.create :email_address, user: user_1 }
 
     let!(:outputs){ described_class.call.outputs }
     let!(:first_output){ outputs.info[0] }

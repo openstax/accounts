@@ -1,32 +1,32 @@
 require 'rails_helper'
 
 RSpec.describe SearchApplicationUsers do
-  let!(:application) { FactoryGirl.create :doorkeeper_application }
+  let!(:application) { FactoryBot.create :doorkeeper_application }
 
   let!(:user_1)          do
-    FactoryGirl.create :user_with_emails, first_name: 'John',
+    FactoryBot.create :user_with_emails, first_name: 'John',
                                           last_name: 'Stravinsky',
                                           username: 'jstrav'
   end
   let!(:user_2)          do
-    FactoryGirl.create :user, first_name: 'Mary',
+    FactoryBot.create :user, first_name: 'Mary',
                               last_name: 'Mighty',
                               username: 'mary'
   end
   let!(:user_3)          do
-    FactoryGirl.create :user, first_name: 'John',
+    FactoryBot.create :user, first_name: 'John',
                               last_name: 'Stead',
                               username: 'jstead'
   end
   let!(:user_4)          do
-    FactoryGirl.create :user_with_emails, first_name: 'Bob',
+    FactoryBot.create :user_with_emails, first_name: 'Bob',
                                           last_name: 'JST',
                                           username: 'bigbear'
   end
 
   before(:each) do
     [user_1, user_2, user_3].each do |user|
-      FactoryGirl.create :application_user, application: application, user: user
+      FactoryBot.create :application_user, application: application, user: user
     end
     MarkContactInfoVerified.call(user_1.contact_infos.email_addresses.order(:value).first)
     MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.order(:value).first)
@@ -102,12 +102,12 @@ RSpec.describe SearchApplicationUsers do
 
     let!(:billy_users) do
       (0..45).to_a.map do |ii|
-        FactoryGirl.create(
+        FactoryBot.create(
           :user, first_name: "Billy#{ii.to_s.rjust(2, '0')}",
                  last_name: "Bob_#{(45-ii).to_s.rjust(2,'0')}",
                  username: "billy_#{ii.to_s.rjust(2, '0')}"
         ).tap do |user|
-          FactoryGirl.create :application_user, application: application, user: user
+          FactoryBot.create :application_user, application: application, user: user
         end
       end
     end
@@ -115,21 +115,21 @@ RSpec.describe SearchApplicationUsers do
     it "should return the first page of values by default in default order" do
       outcome = described_class.call(application, "username:billy").outputs.items.to_a
       expect(outcome.length).to eq 20
-      expect(outcome[0]).to eq User.where{username.eq "billy_00"}.first
-      expect(outcome[19]).to eq User.where{username.eq "billy_19"}.first
+      expect(outcome[0]).to eq User.where(username: "billy_00").first
+      expect(outcome[19]).to eq User.where(username: "billy_19").first
     end
 
     it "should return the 2nd page when requested" do
       outcome = described_class.call(application, "username:billy", page: 1).outputs.items.to_a
       expect(outcome.length).to eq 20
-      expect(outcome[0]).to eq User.where{username.eq "billy_20"}.first
-      expect(outcome[19]).to eq User.where{username.eq "billy_39"}.first
+      expect(outcome[0]).to eq User.where(username: "billy_20").first
+      expect(outcome[19]).to eq User.where(username: "billy_39").first
     end
 
     it "should return the incomplete 3rd page when requested" do
       outcome = described_class.call(application, "username:billy", page: 2).outputs.items.to_a
       expect(outcome.length).to eq 6
-      expect(outcome[5]).to eq User.where{username.eq "billy_45"}.first
+      expect(outcome[5]).to eq User.where(username: "billy_45").first
     end
 
   end
@@ -137,18 +137,18 @@ RSpec.describe SearchApplicationUsers do
   context "sorting" do
 
     let!(:bob_brown) do
-      FactoryGirl.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
+      FactoryBot.create :user, first_name: "Bob", last_name: "Brown", username: "foo_bb"
     end
     let!(:bob_jones) do
-      FactoryGirl.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
+      FactoryBot.create :user, first_name: "Bob", last_name: "Jones", username: "foo_bj"
     end
     let!(:tim_jones) do
-      FactoryGirl.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
+      FactoryBot.create :user, first_name: "Tim", last_name: "Jones", username: "foo_tj"
     end
 
     before(:each) do
       [bob_brown, bob_jones, tim_jones].each do |user|
-        FactoryGirl.create :application_user, application: application, user: user
+        FactoryBot.create :application_user, application: application, user: user
       end
     end
 

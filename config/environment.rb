@@ -1,5 +1,5 @@
 # Load the Rails application
-require File.expand_path('../application', __FILE__)
+require_relative 'application'
 
 require 'scout_helper'
 require 'env_utilities'
@@ -17,6 +17,7 @@ require 'omniauth/strategies/custom_identity'
 require 'email_address_validations'
 require 'subjects_utils'
 require 'host'
+require 'sso_cookie_jar'
 
 SITE_NAME = 'OpenStax Accounts'
 PAGE_TITLE_SUFFIX = SITE_NAME

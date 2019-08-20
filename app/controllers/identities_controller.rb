@@ -2,14 +2,14 @@ class IdentitiesController < ApplicationController
 
   include RequireRecentSignin
 
-  skip_before_filter :authenticate_user!, :check_if_password_expired, :complete_signup_profile,
+  skip_before_action :authenticate_user!, :check_if_password_expired, :complete_signup_profile,
                      only: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add,
                          :reset_success, :add_success]
 
-  before_filter :allow_iframe_access
+  before_action :allow_iframe_access
 
   def reset
     set_password(kind: :reset)

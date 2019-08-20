@@ -1,4 +1,4 @@
-class UpgradeDoorkeeper < ActiveRecord::Migration
+class UpgradeDoorkeeper < ActiveRecord::Migration[4.2]
   def up
     # This migration is the result of comparing
     # db/migrate/20130717010545_create_doorkeeper_tables.rb

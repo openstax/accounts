@@ -2,8 +2,8 @@ class UsersController < ApplicationController
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 
-  before_filter :allow_iframe_access, only: [:edit, :update]
-  before_filter :prevent_caching, only: [:edit, :update]
+  before_action :allow_iframe_access, only: [:edit, :update]
+  before_action :prevent_caching, only: [:edit, :update]
 
   def edit
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
@@ -13,16 +13,14 @@ class UsersController < ApplicationController
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
 
     respond_to do |format|
-      if current_user.update_attributes(user_params)
-        security_log :user_updated, user_params: user_params
+      format.json do
+        if current_user.update_attributes(user_params)
+          security_log :user_updated, user_params: user_params
 
-        format.json {
           render json: { full_name: current_user.full_name }, status: :ok
-        }
-      else
-        format.json {
+        else
           render json: current_user.errors.full_messages.first, status: :unprocessable_entity
-        }
+        end
       end
     end
   end
@@ -36,7 +34,8 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params[:value].is_a?(Hash) ? params[:value] : {params[:name] => params[:value]}
+    params[:value].is_a?(String) ? \
+      {params[:name] => params[:value]} : \
+      params.require(:value).permit(:title, :first_name, :last_name, :suffix).to_h
   end
-
 end

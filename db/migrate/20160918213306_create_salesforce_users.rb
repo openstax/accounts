@@ -1,4 +1,4 @@
-class CreateSalesforceUsers < ActiveRecord::Migration
+class CreateSalesforceUsers < ActiveRecord::Migration[4.2]
   def change
     create_table :salesforce_users do |t|
       t.string :name

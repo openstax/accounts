@@ -1,6 +1,4 @@
 class Authentication < ActiveRecord::Base
-  attr_accessible :provider, :uid, :user_id
-
   belongs_to :user, inverse_of: :authentications
 
   validates :provider, presence: true,
@@ -22,7 +20,8 @@ class Authentication < ActiveRecord::Base
   protected
 
   def check_not_last
-    user.nil? ||
-    (user.authentications.size > 1 || !user.is_activated?)
+    if user.present? && user.authentications.size <= 1 && user.is_activated?
+      throw(:abort)
+    end
   end
 end

@@ -1,4 +1,4 @@
-class CreateGroupOwners < ActiveRecord::Migration
+class CreateGroupOwners < ActiveRecord::Migration[4.2]
   def change
     create_table :group_owners do |t|
       t.references :group, null: false

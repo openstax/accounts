@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AuthenticateMethods, type: :lib do
-  let(:user_1)     { FactoryGirl.create(:user) }
+  let(:user_1)     { FactoryBot.create(:user) }
 
   let(:controller) { ActionController::Base.new }
   let(:main_app)   do
@@ -11,7 +11,7 @@ RSpec.describe AuthenticateMethods, type: :lib do
       end
     end.new
   end
-  let(:request)    { ActionController::TestRequest.new }
+  let(:request)    { ActionController::TestRequest.create(:test) }
   let(:session)    { {} }
 
   before do

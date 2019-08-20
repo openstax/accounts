@@ -1,6 +1,17 @@
 Lev.configure do |config|
   config.raise_fatal_errors = false
   config.job_class = ActiveJob::Base
-  config.create_status_proc = ->(*) { Jobba.create! }
-  config.find_status_proc = ->(id) { Jobba.find!(id) }
+end
+
+###
+# 🐒 patch until we define `copy!` in Lev
+###
+Lev::BetterActiveModelErrors.class_exec do
+  def copy!(other)
+    ActiveModel::Errors.new(nil).copy!(other)
+  end
+
+  def details
+    {}
+  end
 end

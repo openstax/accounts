@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::UserRepresenter, type: :representer do
-  let(:user)            { FactoryGirl.create :user  }
+  let(:user)            { FactoryBot.create :user  }
   subject(:representer) { described_class.new(user) }
 
   context 'uuid' do

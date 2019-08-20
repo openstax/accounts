@@ -4,10 +4,10 @@ Doorkeeper.configure do
 
   # This block will be called to check whether the resource owner is authenticated or not.
   resource_owner_authenticator do
-    # Because ActionController::Base has a `before_filter :authenticate_user!`, this will
+    # Because ActionController::Base has a `before_action :authenticate_user!`, this will
     # normally only be called when the user is already signed in, which is ok because that's what
     # lets us get to the authorization part of oauth, or when we skip the `:authenticate_user!`
-    # before_filter, which we don't normally do in the oauth flow where this matters
+    # before_action, which we don't normally do in the oauth flow where this matters
     authenticate_user!
     current_user
   end
@@ -183,7 +183,7 @@ Doorkeeper.configure do
   # after_successful_authorization do |controller|
   #   controller.session[:logout_urls] <<
   #     Doorkeeper::Application
-  #       .find_by(controller.request.params.slice(:redirect_uri))
+  #       .find_by(controller.request.params.permit(:redirect_uri))
   #       .logout_uri
   # end
 

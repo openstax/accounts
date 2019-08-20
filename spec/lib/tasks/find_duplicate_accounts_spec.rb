@@ -10,57 +10,57 @@ RSpec.describe "find_duplicate_accounts" do
 
   context "when it finds users with the same name (first name AND last name)" do
     let!(:user_1)          do
-      FactoryGirl.create :user, first_name: "Robert", last_name: "Martin", username: "RubyMaster"
+      FactoryBot.create :user, first_name: "Robert", last_name: "Martin", username: "RubyMaster"
     end
     let!(:same_name)       do
-      FactoryGirl.create :user, first_name: "robert", last_name: "martin", username: "RailsMaster"
+      FactoryBot.create :user, first_name: "robert", last_name: "martin", username: "RailsMaster"
     end
 
     let!(:same_first_name) do
-      FactoryGirl.create :user, first_name: user_1.first_name, last_name: "Ernser"
+      FactoryBot.create :user, first_name: user_1.first_name, last_name: "Ernser"
     end
     let!(:same_last_name)  do
-      FactoryGirl.create :user, first_name: "Kaci", last_name: user_1.last_name
+      FactoryBot.create :user, first_name: "Kaci", last_name: user_1.last_name
     end
     let!(:different_name)  do
-      FactoryGirl.create :user, first_name: "Sandi", last_name: "Metz"
+      FactoryBot.create :user, first_name: "Sandi", last_name: "Metz"
     end
 
-    let!(:app_1_user_1)           { FactoryGirl.create :application_user, user: user_1 }
-    let!(:app_2_user_1)           { FactoryGirl.create :application_user, user: user_1 }
+    let!(:app_1_user_1)           { FactoryBot.create :application_user, user: user_1 }
+    let!(:app_2_user_1)           { FactoryBot.create :application_user, user: user_1 }
 
-    let!(:email_1_user_1)         { FactoryGirl.create :email_address, user: user_1 }
+    let!(:email_1_user_1)         { FactoryBot.create :email_address, user: user_1 }
     let!(:email_2_user_1)         do
-      FactoryGirl.create :email_address, user: user_1, verified: true
+      FactoryBot.create :email_address, user: user_1, verified: true
     end
     let!(:email_1_user_same_name) do
-      FactoryGirl.create :email_address, user: same_name, verified: true
+      FactoryBot.create :email_address, user: same_name, verified: true
     end
 
     let!(:authentications_1) do
-      FactoryGirl.create :authentication, user: user_1, provider: "google"
+      FactoryBot.create :authentication, user: user_1, provider: "google"
     end
     let!(:authentications_2) do
-      FactoryGirl.create :authentication, user: user_1, provider: "facebook"
+      FactoryBot.create :authentication, user: user_1, provider: "facebook"
     end
 
     let!(:sus_user_1)                        do
-      FactoryGirl.create :security_log, event_type: :sign_up_successful, user: user_1
+      FactoryBot.create :security_log, event_type: :sign_up_successful, user: user_1
     end
     let!(:help_req_1_user_1)                 do
-      FactoryGirl.create :security_log, event_type: :help_requested, user: user_1
+      FactoryBot.create :security_log, event_type: :help_requested, user: user_1
     end
     let!(:help_req_2_user_1)                 do
-      FactoryGirl.create :security_log, event_type: :help_requested, user: user_1
+      FactoryBot.create :security_log, event_type: :help_requested, user: user_1
     end
     let!(:help_req_fail_user_1)              do
-      FactoryGirl.create :security_log, event_type: :help_request_failed, user: user_1
+      FactoryBot.create :security_log, event_type: :help_request_failed, user: user_1
     end
     let!(:sus_user_same_name)                do
-      FactoryGirl.create :security_log, event_type: :sign_up_successful, user: same_name
+      FactoryBot.create :security_log, event_type: :sign_up_successful, user: same_name
     end
     let!(:auth_transfer_fail_user_same_name) do
-      FactoryGirl.create :security_log, event_type: :authentication_transfer_failed,
+      FactoryBot.create :security_log, event_type: :authentication_transfer_failed,
                                         user: same_name
     end
 
@@ -102,8 +102,8 @@ RSpec.describe "find_duplicate_accounts" do
   end
 
   context "when it finds 0 users with the same name" do
-    let!(:a_user) { FactoryGirl.create :user, first_name: "Robert", last_name: "Martin" }
-    let!(:another_user) { FactoryGirl.create :user }
+    let!(:a_user) { FactoryBot.create :user, first_name: "Robert", last_name: "Martin" }
+    let!(:another_user) { FactoryBot.create :user }
 
     it "creates a csv file with 0 results" do
       call
@@ -117,46 +117,46 @@ RSpec.describe "find_duplicate_accounts" do
 
   context "when it finds users with the same email address" do
     let!(:user_1) do
-      FactoryGirl.create :user, first_name: "John", last_name: "Lock", username: "RubyKing"
+      FactoryBot.create :user, first_name: "John", last_name: "Lock", username: "RubyKing"
     end
     let!(:user_2) do
-      FactoryGirl.create :user, first_name: "Jack", last_name: "Shepherd", username: "RailsKing"
+      FactoryBot.create :user, first_name: "Jack", last_name: "Shepherd", username: "RailsKing"
     end
     let!(:email_1) do
-      FactoryGirl.create :email_address, user: user_1, verified: true
+      FactoryBot.create :email_address, user: user_1, verified: true
     end
     let!(:same_email_diff_user) do
-      email = FactoryGirl.create :email_address, user: user_2
+      email = FactoryBot.create :email_address, user: user_2
       ContactInfo.where(id: email.id).update_all(value: email_1.value)
       email.reload
     end
 
-    let!(:authentication) { FactoryGirl.create :authentication, user: user_1, provider: "facebook" }
+    let!(:authentication) { FactoryBot.create :authentication, user: user_1, provider: "facebook" }
 
-    let!(:cool)   { FactoryGirl.create :user }
-    let!(:person) { FactoryGirl.create :user }
+    let!(:cool)   { FactoryBot.create :user }
+    let!(:person) { FactoryBot.create :user }
 
     let!(:sus_user_1) do
-      FactoryGirl.create :security_log, event_type: :sign_up_successful, user: user_1
+      FactoryBot.create :security_log, event_type: :sign_up_successful, user: user_1
     end
     let!(:help_req_1_user_1) do
-      FactoryGirl.create :security_log, event_type: :help_requested, user: user_1
+      FactoryBot.create :security_log, event_type: :help_requested, user: user_1
     end
     let!(:help_req_2_user_1) do
-      FactoryGirl.create :security_log, event_type: :help_requested, user: user_1
+      FactoryBot.create :security_log, event_type: :help_requested, user: user_1
     end
     let!(:help_req_fail_user_1) do
-      FactoryGirl.create :security_log, event_type: :help_request_failed, user: user_1
+      FactoryBot.create :security_log, event_type: :help_request_failed, user: user_1
     end
     let!(:sus_user_2) do
-      FactoryGirl.create :security_log, event_type: :sign_up_successful, user: user_2
+      FactoryBot.create :security_log, event_type: :sign_up_successful, user: user_2
     end
     let!(:auth_transfer_fail_user_2) do
-      FactoryGirl.create :security_log, event_type: :authentication_transfer_failed, user: user_2
+      FactoryBot.create :security_log, event_type: :authentication_transfer_failed, user: user_2
     end
 
-    let!(:app_1_user_1) { FactoryGirl.create :application_user, user: user_1 }
-    let!(:app_2_user_1) { FactoryGirl.create :application_user, user: user_1 }
+    let!(:app_1_user_1) { FactoryBot.create :application_user, user: user_1 }
+    let!(:app_2_user_1) { FactoryBot.create :application_user, user: user_1 }
 
     it "creates a csv file with the results" do
       call
@@ -197,8 +197,8 @@ RSpec.describe "find_duplicate_accounts" do
   end
 
   context "when it finds 0 users with the same email" do
-    let!(:email_1) { FactoryGirl.create :email_address }
-    let!(:email_2) { FactoryGirl.create :email_address }
+    let!(:email_1) { FactoryBot.create :email_address }
+    let!(:email_2) { FactoryBot.create :email_address }
 
     it "creates a csv file with 0 results" do
       call

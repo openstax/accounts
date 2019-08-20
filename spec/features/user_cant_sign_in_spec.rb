@@ -86,11 +86,11 @@ feature "User can't sign in", js: true do
 
     scenario "user tries to sign up with used oauth email" do
       user = create_user 'user'
-      authentication = FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+      authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
       arrive_from_app
       click_sign_up
-      complete_signup_email_screen "Instructor", "unverified@example.com", screenshot_after_role: true
+      complete_signup_email_screen "Student", "unverified@example.com", screenshot_after_role: true
 
       with_omniauth_test_mode(uid: authentication.uid) do
         # Found link from back button or some other shenanigans
@@ -138,7 +138,7 @@ feature "User can't sign in", js: true do
     scenario "just has social auth" do
       @user.identity.destroy
       password_authentication = @user.authentications.first
-      FactoryGirl.create :authentication, provider: 'google_oauth2', user: @user
+      FactoryBot.create :authentication, provider: 'google_oauth2', user: @user
       password_authentication.destroy
 
       complete_login_username_or_email_screen('user@example.com')
@@ -158,14 +158,14 @@ feature "User can't sign in", js: true do
       visit password_add_path
       screenshot!
 
-      expect(@user.identity(true)).to be_nil
+      expect(@user.reload.identity).to be_nil
 
       complete_add_password_screen
       screenshot!
       complete_add_password_success_screen
 
-      expect(@user.identity(true)).not_to be_nil
-      expect(@user.authentications(true).map(&:provider)).to contain_exactly(
+      expect(@user.reload.identity).not_to be_nil
+      expect(@user.authentications.reload.map(&:provider)).to contain_exactly(
         "google_oauth2", "identity"
       )
 
@@ -173,7 +173,7 @@ feature "User can't sign in", js: true do
     end
 
     scenario "has both password and social auths" do
-      FactoryGirl.create :authentication, provider: 'google_oauth2', user: @user
+      FactoryBot.create :authentication, provider: 'google_oauth2', user: @user
       complete_login_username_or_email_screen('user@example.com')
       expect(page).to have_content(t :"sessions.authenticate_options.reset_password")
       screenshot!
@@ -182,7 +182,7 @@ feature "User can't sign in", js: true do
 
   scenario 'user has a linked google auth but uses a different google account to login' do
     user = create_user 'user'
-    authentication = FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+    authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
     arrive_from_app
     complete_login_username_or_email_screen('user')
@@ -198,8 +198,9 @@ feature "User can't sign in", js: true do
   end
 
   scenario 'social login fails with invalid_credentials notifies devs' do
+    skip 'we should use Sentry instead' # TODO (after upgrading Rails)
     user = create_user 'user'
-    authentication = FactoryGirl.create :authentication, provider: 'google_oauth2', user: user
+    authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
     arrive_from_app
     complete_login_username_or_email_screen('user')
@@ -211,7 +212,7 @@ feature "User can't sign in", js: true do
     screenshot!
     expect(page).to have_content(t(:"controllers.sessions.trouble_with_provider"))
 
-    open_email('recipients@localhost')
+    open_email(devs_email)
     expect(current_email.subject).to(
       eq "[OpenStax] [Accounts] (test) google_oauth2 social login is failing!"
     )

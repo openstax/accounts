@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe Admin::SecurityLogsController, type: :controller do
-  let(:no_results) { OpenStruct.new(outputs: OpenStruct.new(items: SecurityLog.where('1=0'))) }
-  let(:admin) { FactoryGirl.create :user, :admin, :terms_agreed }
+  let(:no_results) { OpenStruct.new(outputs: OpenStruct.new(items: SecurityLog.none)) }
+  let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }
 
   before(:each) do
     controller.sign_in! admin
@@ -12,13 +12,13 @@ describe Admin::SecurityLogsController, type: :controller do
     it 'passes an empty hash to Admin::SearchSecurityLog if there is no search query' do
       expect(Admin::SearchSecurityLog).to receive(:call).with({}).and_return(no_results)
 
-      get :show
+      get(:show)
     end
 
     it 'passes search parameters to Admin::SearchSecurityLog' do
       expect(Admin::SearchSecurityLog).to receive(:call).with(query: 'test').and_return(no_results)
 
-      get :show, search: {query: 'test'}
+      get(:show, params: { search: {query: 'test'} })
     end
   end
 end

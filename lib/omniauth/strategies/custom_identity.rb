@@ -76,7 +76,7 @@ module OmniAuth
           elsif locate_conditions[:users_returned] > 1
             :multiple_users
           else
-            source = request.params.try(:[],"login").try(:[],"source")
+            source = request.params.try(:[],'login').try(:[],'source')
 
             case source
             when "authenticate"
@@ -112,11 +112,11 @@ module OmniAuth
       end
 
       def handle_unverified_request
-        rq = ActionDispatch::Request.new(request.env)
-        rq.session = NullSession::NullSessionHash.new(rq.env)
-        rq.env['action_dispatch.request.flash_hash'] = nil
-        rq.env['rack.session.options'] = { skip: true }
-        rq.env['action_dispatch.cookies'] = NullSession::NullCookieJar.build(rq)
+        rq = ActionDispatch::Request.new(request)
+        rq.session = NullSession::NullSessionHash.new(rq)
+        rq.flash = nil
+        rq.session_options = { skip: true }
+        rq.cookie_jar = NullSession::NullCookieJar.build(rq, {})
       end
 
       def handle_signup

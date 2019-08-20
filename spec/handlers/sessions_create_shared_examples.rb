@@ -7,7 +7,7 @@ RSpec.shared_examples 'sessions create shared examples' do
 
   context "logging in" do
     context "no user linked to oauth response" do
-      let(:login_providers) { { 'does_not' => {'uid' => 'matter'} } }
+      let(:login_providers) { { does_not: {uid: 'matter'} } }
 
       it "returns mismatched_authentication status and does not log in" do
         result = nil
@@ -20,8 +20,8 @@ RSpec.shared_examples 'sessions create shared examples' do
     end
 
     context "oauth response doesn't match log in username/email" do
-      let(:authentication) { FactoryGirl.create(:authentication, provider: 'google_oauth2') }
-      let(:login_providers) { { 'google_oauth2' => {'uid' => 'some_other_uid'} } }
+      let(:authentication) { FactoryBot.create(:authentication, provider: 'google_oauth2') }
+      let(:login_providers) { { google_oauth2: { uid: 'some_other_uid'} } }
 
       it "returns mismatched_authentication status and does not log in" do
         result = nil
@@ -35,8 +35,8 @@ RSpec.shared_examples 'sessions create shared examples' do
     end
 
     context "happy path" do
-      let(:authentication) { FactoryGirl.create(:authentication, provider: 'google_oauth2') }
-      let(:login_providers) { { 'google_oauth2' => { 'uid' => authentication.uid } } }
+      let(:authentication) { FactoryBot.create(:authentication, provider: 'google_oauth2') }
+      let(:login_providers) { { google_oauth2: { uid: authentication.uid } } }
 
       it "returns returning_user status and logs in" do
         result = handle(
@@ -59,9 +59,9 @@ RSpec.shared_examples 'sessions create shared examples' do
 
   context "signing up" do
     context "oauth response already directly linked to a user" do
-      let(:authentication) { FactoryGirl.create(:authentication, provider: 'google_oauth2') }
+      let(:authentication) { FactoryBot.create(:authentication, provider: 'google_oauth2') }
       let(:pre_auth_state) do
-        FactoryGirl.create(
+        FactoryBot.create(
           :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
         )
       end
@@ -76,9 +76,9 @@ RSpec.shared_examples 'sessions create shared examples' do
     end
 
     context "oauth response already linked to user by email address" do
-      let(:other_user_email) { FactoryGirl.create(:email_address, verified: true)}
+      let(:other_user_email) { FactoryBot.create(:email_address, verified: true)}
       let(:pre_auth_state) do
-        FactoryGirl.create(
+        FactoryBot.create(
           :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
         )
       end
@@ -90,14 +90,14 @@ RSpec.shared_examples 'sessions create shared examples' do
                                                            {email: other_user_email.value}))
           expect(result.outputs.status).to eq :existing_user_signed_up_again
           expect(PreAuthState.count).to eq 0
-        end.to change{other_user_email.user.authentications.count}.by 1
+        end.to change{other_user_email.user.reload.authentications.count}.by 1
       end
     end
 
     context "normal password sign up" do
-      let(:identity) { FactoryGirl.create :identity }
+      let(:identity) { FactoryBot.create :identity }
       let(:pre_auth_state) do
-        FactoryGirl.create(
+        FactoryBot.create(
           :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
         )
       end
@@ -118,7 +118,7 @@ RSpec.shared_examples 'sessions create shared examples' do
 
     context "normal social sign up" do
       let(:pre_auth_state) do
-        FactoryGirl.create(
+        FactoryBot.create(
           :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
         )
       end
@@ -128,7 +128,7 @@ RSpec.shared_examples 'sessions create shared examples' do
         expect(result.outputs.status).to eq :new_social_user
         expect(user_state).to be_signed_in
         user = user_state.current_user
-        authentication = user.authentications(true).first
+        authentication = user.authentications.reload.first
         expect(authentication.provider).to eq "facebook"
         expect(authentication.uid).to eq "zuckerberg"
         expect(user.contact_infos.size).to eq 1

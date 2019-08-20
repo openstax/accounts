@@ -5,27 +5,27 @@ require 'rails_helper'
 RSpec.describe 'Api::V1::ApplicationUsers multiple requests',
                type: :request, api: true, version: :v1 do
 
-  let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
-  let!(:trusted_application)   { FactoryGirl.create :doorkeeper_application, :trusted }
+  let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
+  let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, :trusted }
   let!(:user_2)       do
-    FactoryGirl.create :user_with_emails,
+    FactoryBot.create :user_with_emails,
                        first_name: 'Bob',
                        last_name: 'Michaels'
   end
 
   let!(:user_2_token) do
-    FactoryGirl.create :doorkeeper_access_token,
+    FactoryBot.create :doorkeeper_access_token,
                        application: untrusted_application,
                        resource_owner_id: user_2.id
   end
 
   let!(:untrusted_application_token) do
-    FactoryGirl.create :doorkeeper_access_token,
+    FactoryBot.create :doorkeeper_access_token,
                        application: untrusted_application,
                        resource_owner_id: nil
   end
   let!(:trusted_application_token) do
-    FactoryGirl.create :doorkeeper_access_token,
+    FactoryBot.create :doorkeeper_access_token,
                        application: trusted_application,
                        resource_owner_id: nil
   end
@@ -111,23 +111,33 @@ RSpec.describe 'Api::V1::ApplicationUsers multiple requests',
 
       expect(app_user.reload.unread_updates).to eq 4
 
-      api_put updated_endpoint, untrusted_application_token, raw_post_data: [
-        {user_id: user_2.id, read_updates: 2}].to_json
+      api_put(updated_endpoint,
+        untrusted_application_token,
+        params: [
+          {user_id: user_2.id, read_updates: 1}
+        ].to_json
+      )
 
       expect(response.status).to eq(204)
 
       expect(app_user.reload.unread_updates).to eq 4
 
-      api_put updated_endpoint, untrusted_application_token, raw_post_data: [
-        {user_id: user_2.id, read_updates: 1}].to_json
+      api_put(updated_endpoint,
+        untrusted_application_token,
+        params: [
+          {user_id: user_2.id, read_updates: 1}
+        ].to_json
+      )
 
       expect(response.status).to eq(204)
 
       expect(app_user.reload.unread_updates).to eq 4
 
-      api_put updated_endpoint, untrusted_application_token, raw_post_data: [
-        {user_id: user_2.id, read_updates: 4}].to_json
-
+      api_put(updated_endpoint, untrusted_application_token,
+        params: [
+          {user_id: user_2.id, read_updates: 4}
+        ].to_json
+      )
       expect(response.status).to eq(204)
 
       expect(app_user.reload.unread_updates).to eq 0

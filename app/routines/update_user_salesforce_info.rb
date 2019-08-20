@@ -28,7 +28,7 @@ class UpdateUserSalesforceInfo
     # Go through all users that have already have a Salesforce ID and make sure
     # their SF information is still the same.
 
-    User.where{salesforce_contact_id != nil}.find_each do |user|
+    User.where.not(salesforce_contact_id: nil).find_each do |user|
       begin
         contact = @contacts_by_id[user.salesforce_contact_id]
         cache_contact_data_in_user!(contact, user)
@@ -47,7 +47,7 @@ class UpdateUserSalesforceInfo
       User.joins(:contact_infos)
           .eager_load(:contact_infos)
           .where(salesforce_contact_id: nil)
-          .where{lower(contact_infos.value).in my{emails}}
+          .where.has{ |t| t.contact_infos.value.lower.in emails}
           .where(contact_infos: { verified: true })
           .each do |user|
 
@@ -85,7 +85,7 @@ class UpdateUserSalesforceInfo
           .eager_load(:contact_infos)
           .where(salesforce_contact_id: nil)
           .where(contact_infos: { verified: true })
-          .where{lower(contact_infos.value).in my{emails}}
+          .where.has{ |t| t.contact_infos.value.lower.in emails}
           .each do |user|
 
         begin
@@ -122,7 +122,7 @@ class UpdateUserSalesforceInfo
 
     User.where(salesforce_contact_id: nil)
         .where(faculty_status: User.faculty_statuses.except("no_faculty_info").values)
-        .where{id.not_in my{user_ids_that_were_looked_at_for_leads}}
+        .where.has{ |t| t.id.not_in user_ids_that_were_looked_at_for_leads}
         .update_all(faculty_status: User.faculty_statuses[:no_faculty_info])
 
     notify_errors
@@ -303,7 +303,7 @@ class UpdateUserSalesforceInfo
       DevMailer.inspect_object(
         object: @errors,
         subject: "(#{Rails.application.secrets.environment_name}) UpdateUserSalesforceInfo errors",
-        to: Rails.application.secrets.salesforce['mail_recipients']
+        to: Rails.application.secrets.salesforce[:mail_recipients]
       ).deliver_later
     end
   end

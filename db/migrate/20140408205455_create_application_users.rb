@@ -1,4 +1,4 @@
-class CreateApplicationUsers < ActiveRecord::Migration
+class CreateApplicationUsers < ActiveRecord::Migration[4.2]
   def change
     create_table :application_users do |t|
       t.references :application, null: false

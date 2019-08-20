@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe ContactInfosResendConfirmation, type: :handler do
 
-  let!(:contact_info) { FactoryGirl.create :email_address }
+  let!(:contact_info) { FactoryBot.create :email_address }
   let!(:user)         { contact_info.user }
 
   context 'success' do

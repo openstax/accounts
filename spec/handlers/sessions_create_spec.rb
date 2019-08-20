@@ -7,12 +7,12 @@ RSpec.describe SessionsCreate, type: :handler do
   include_examples 'sessions create shared examples'
 
   context "logged in" do
-    let(:current_user) { FactoryGirl.create :user }
+    let(:current_user) { FactoryBot.create :user }
     before(:each) { user_state.sign_in!(current_user) }
 
     context "authentication already on current user" do
       before do
-        FactoryGirl.create(
+        FactoryBot.create(
           :authentication, provider: "facebook", uid: "blahuid", user: current_user
         )
       end
@@ -30,9 +30,9 @@ RSpec.describe SessionsCreate, type: :handler do
     context "adding new authentication to account" do
       context "authentication is for a different user" do
         before do
-          FactoryGirl.create(:authentication, provider: "facebook",
+          FactoryBot.create(:authentication, provider: "facebook",
                                               uid: "blahuid",
-                                              user: FactoryGirl.create(:user))
+                                              user: FactoryBot.create(:user))
         end
 
         it "returns :authentication_taken" do
@@ -45,7 +45,7 @@ RSpec.describe SessionsCreate, type: :handler do
 
       context "authentication provider already on current user" do
         before do
-          FactoryGirl.create(:authentication, provider: "google_oauth2",
+          FactoryBot.create(:authentication, provider: "google_oauth2",
                                               uid: "uid_one",
                                               user: current_user)
         end
@@ -86,7 +86,7 @@ RSpec.describe SessionsCreate, type: :handler do
             )
           )
           expect(result.outputs.status).to eq :authentication_added
-          authentication = current_user.authentications(true).first
+          authentication = current_user.authentications.reload.first
           expect(authentication.provider).to eq "google_oauth2"
           expect(authentication.uid).to eq "uid"
           expect(current_user.contact_infos.verified.map(&:value)).to contain_exactly("joe@joe.com")
@@ -108,19 +108,19 @@ RSpec.describe SessionsCreate, type: :handler do
 
     context "multiple users" do
       before(:each) {
-        @user1 = FactoryGirl.create :user, created_at: 1.year.ago
-        @user2 = FactoryGirl.create :user, created_at: 1.year.ago
+        @user1 = FactoryBot.create :user, created_at: 1.year.ago
+        @user2 = FactoryBot.create :user, created_at: 1.year.ago
 
         @user1.update_attribute(:updated_at, 1.month.ago)
         @user2.update_attribute(:updated_at, 1.year.ago)
 
-        @user3 = FactoryGirl.create :user
+        @user3 = FactoryBot.create :user
         Timecop.freeze(2.months.ago) do
           SecurityLog.create! user: @user3, remote_ip: '127.0.0.1',
                               event_type: :sign_in_successful, event_data: {}
         end
 
-        @user4 = FactoryGirl.create :user, created_at: 2.years.ago, updated_at: 2.years.ago
+        @user4 = FactoryBot.create :user, created_at: 2.years.ago, updated_at: 2.years.ago
         Timecop.freeze(1.day.ago) do
           SecurityLog.create! user: @user4, remote_ip: '127.0.0.1',
                               event_type: :sign_in_successful, event_data: {}

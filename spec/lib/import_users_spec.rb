@@ -89,7 +89,7 @@ describe ImportUsers do
       csv << [1, 'appuser1', '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', '', 'App', 'User', 'appuser1@example.com']
     end
 
-    app = FactoryGirl.create(:doorkeeper_application)
+    app = FactoryBot.create(:doorkeeper_application)
 
     ImportUsers.new(@file.path, app.id).read
     expect(app.users).to eq([User.last])
@@ -107,7 +107,7 @@ describe ImportUsers do
   end
 
   it 'does not create a new user if email address is found' do
-    email = FactoryGirl.create(:email_address,
+    email = FactoryBot.create(:email_address,
                                value: 'kailey.goodwin@example.com',
                                verified: true)
     db_user = email.user
@@ -123,7 +123,7 @@ describe ImportUsers do
   end
 
   it 'does not link users to unverified email' do
-    email = FactoryGirl.create :email_address, value: 'kailey.goodwin@example.com'
+    email = FactoryBot.create :email_address, value: 'kailey.goodwin@example.com'
     db_user = email.user
 
     headers = [:first_name, :last_name, :email_address, :password_digest]

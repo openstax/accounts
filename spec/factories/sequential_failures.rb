@@ -1,9 +1,9 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
+# Read about factories at https://github.com/thoughtbot/factory_bot
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :sequential_failure do
-    type 1
-    reference "MyString"
-    length 1
+    type { 1 }
+    reference { "MyString" }
+    length { 1 }
   end
 end

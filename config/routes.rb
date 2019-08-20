@@ -1,15 +1,9 @@
 Rails.application.routes.draw do
-
-  mount OpenStax::Api::Engine, at: '/'
-
-  # More often used routes should appear first
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
-  mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
-  OpenStax::Salesforce.set_top_level_routes(self)
-
   scope controller: 'sessions' do
-    get 'login', action: :start
+    get 'login', action: :start, as: :login
 
     post 'lookup_login'
 
@@ -24,7 +18,7 @@ Rails.application.routes.draw do
 
     get 'redirect_back'
 
-    get 'failure', path: 'auth/failure', as: :auth_failure
+    get :failure, path: 'auth/failure', as: :auth_failure
     post 'email_usernames'
 
     # Maintain these deprecated routes for a while until client code learns to
@@ -32,6 +26,11 @@ Rails.application.routes.draw do
     get 'signin', action: :start
     get 'signout', action: :destroy
   end
+
+  mount OpenStax::Api::Engine, at: '/'
+
+  mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
+  OpenStax::Salesforce.set_top_level_routes(self)
 
   scope controller: 'authentications' do
     delete 'auth/:provider', action: :destroy, as: :destroy_authentication
@@ -226,4 +225,5 @@ Rails.application.routes.draw do
     get '/external_app_for_specs' => 'external_app_for_specs#index'
   end
 
+  get '*other', controller: :exceptions, action: :missing_route
 end

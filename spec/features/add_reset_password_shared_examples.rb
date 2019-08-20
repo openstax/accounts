@@ -7,7 +7,7 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
 
     if :add == type
       identity_authentication = @user.authentications.first
-      FactoryGirl.create :authentication, user: @user, provider: 'facebook'
+      FactoryBot.create :authentication, user: @user, provider: 'facebook'
       @user.identity.destroy!
       identity_authentication.destroy!
     end

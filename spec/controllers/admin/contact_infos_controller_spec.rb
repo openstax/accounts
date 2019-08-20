@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Admin::ContactInfosController, type: :controller do
-  let!(:user) { FactoryGirl.create :user_with_emails }
-  let(:admin) { FactoryGirl.create :user, :admin, :terms_agreed }
+  let!(:user) { FactoryBot.create :user_with_emails }
+  let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }
   let(:email) { user.email_addresses.first }
 
   before(:each) do
@@ -10,7 +10,7 @@ RSpec.describe Admin::ContactInfosController, type: :controller do
   end
 
   it 'marks contact info as verified' do
-    post :verify, id: email.id
+    post :verify, params: { id: email.id }
     expect(email.reload.verified).to be true
     expect(response.body).to eq '(Confirmed)'
   end
@@ -18,7 +18,7 @@ RSpec.describe Admin::ContactInfosController, type: :controller do
   describe '#delete contact_info' do
     it 'removes a contact info' do
       MarkContactInfoVerified.call(email)
-      delete :destroy, id: email.id
+      delete :destroy, params: { id: email.id }
       expect{ email.reload }.to raise_error ActiveRecord::RecordNotFound
     end
   end

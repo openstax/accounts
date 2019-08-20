@@ -2,7 +2,7 @@ module Admin
   class UsersController < BaseController
     layout 'admin', except: :js_search
 
-    before_filter :get_user, only: [:edit, :update, :destroy, :become]
+    before_action :get_user, only: [:edit, :update, :destroy, :become]
 
     # Used by dialog
     def js_search
@@ -71,7 +71,7 @@ module Admin
       result = AddEmailToUser.call(params[:user][:email_address], @user)
       return true unless result.errors.any?
       flash[:alert] = "Failed to add new email address: #{result.errors.collect(&:translate)}"
-      return false
+      throw(:abort)
     end
 
     def change_user_password
@@ -81,7 +81,7 @@ module Admin
       @user.identity.password_confirmation = params[:user][:password]
       return true if @user.identity.save
       flash[:alert] = "Failed to change password: #{@user.identity.errors.full_messages}"
-      return false
+      throw(:abort)
     end
 
     def change_salesforce_contact
@@ -99,7 +99,7 @@ module Admin
 
       if !OpenStax::Salesforce.ready_for_api_usage?
         flash[:alert] = "Can't connect to Salesforce to verify changed contact ID"
-        return false
+        throw(:abort)
       end
 
       begin
@@ -117,7 +117,7 @@ module Admin
 
       # if haven't returned yet, either exploded or contact was `nil` (not found)
       flash[:alert] = "Can't find a Salesforce contact with ID #{new_id}"
-      return false
+      throw(:abort)
     end
 
     def update_user
@@ -128,7 +128,7 @@ module Admin
       if @user.external_uuids.any? && params[:user][:keep_external_uuids] == '0'
         @user.external_uuids.destroy_all
       end
-      user_params = params[:user].slice(:first_name, :last_name, :username)
+      user_params = params.require(:user).permit(:first_name, :last_name, :username)
 
       @user.update_attributes(user_params)
     end

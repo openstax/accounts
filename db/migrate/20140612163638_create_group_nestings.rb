@@ -1,4 +1,4 @@
-class CreateGroupNestings < ActiveRecord::Migration
+class CreateGroupNestings < ActiveRecord::Migration[4.2]
   def change
     create_table :group_nestings do |t|
       t.references :member_group, null: false

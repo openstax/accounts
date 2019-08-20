@@ -4,8 +4,6 @@ class ContactInfo < ActiveRecord::Base
   has_many :application_users, foreign_key: :default_contact_info_id
   has_many :message_recipients, inverse_of: :contact_info
 
-  attr_accessible :type, :value
-
   before_validation :strip
 
   validates :user, presence: true
@@ -20,10 +18,10 @@ class ContactInfo < ActiveRecord::Base
   before_destroy :check_if_last_verified
 
   scope :email_addresses, -> { where(type: 'EmailAddress') }
-  sifter :email_addresses do type.eq 'EmailAddress' end
+  sifter(:email_addresses) { type == 'EmailAddress' }
 
   scope :verified, -> { where(verified: true) }
-  sifter :verified do verified.eq true end
+  sifter(:verified) { verified == true }
   scope :unverified, -> { where(verified: false) }
 
   scope :with_users, lambda { joins(:user).eager_load(:user) }
@@ -59,7 +57,7 @@ class ContactInfo < ActiveRecord::Base
   def check_if_last_verified
     if verified? and not user.contact_infos.verified.many? and not destroyed_by_association
       errors.add(:user, :last_verified)
-      return false
+      throw(:abort)
     end
   end
 
@@ -69,7 +67,7 @@ class ContactInfo < ActiveRecord::Base
          verified? &&
          ContactInfo.verified
                     .where('lower(value) = ?', value.downcase)
-                    .where{id != my{id}}
+                    .where.has{ |t| t.id != id }
                     .any?
 
     errors.none?

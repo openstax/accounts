@@ -1,4 +1,4 @@
-class CreateSignupContactInfos < ActiveRecord::Migration
+class CreateSignupContactInfos < ActiveRecord::Migration[4.2]
   def change
     create_table :signup_contact_infos do |t|
       t.integer :kind, null: false, default: 0

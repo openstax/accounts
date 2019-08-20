@@ -2,34 +2,34 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: true, version: :v1 do
 
-  let!(:untrusted_application) { FactoryGirl.create :doorkeeper_application }
-  let!(:trusted_application)   { FactoryGirl.create :doorkeeper_application, :trusted }
-  let!(:user_1) { FactoryGirl.create :user }
+  let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
+  let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, :trusted }
+  let!(:user_1) { FactoryBot.create :user }
   let!(:user_2) do
-    FactoryGirl.create :user_with_emails, first_name: 'Bob', last_name: 'Michaels'
+    FactoryBot.create :user_with_emails, first_name: 'Bob', last_name: 'Michaels'
   end
 
   let!(:user_2_token) do
-    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
                                                  resource_owner_id: user_2.id
   end
 
   let!(:untrusted_application_token) do
-    FactoryGirl.create :doorkeeper_access_token, application: untrusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: untrusted_application,
                                                  resource_owner_id: nil
   end
   let!(:trusted_application_token)   do
-    FactoryGirl.create :doorkeeper_access_token, application: trusted_application,
+    FactoryBot.create :doorkeeper_access_token, application: trusted_application,
                                                  resource_owner_id: nil
   end
 
-  let!(:group_1) { FactoryGirl.create :group, members_count: 0, owners_count: 0 }
-  let!(:group_2) { FactoryGirl.create :group, members_count: 0, owners_count: 0 }
+  let!(:group_1) { FactoryBot.create :group, members_count: 0, owners_count: 0 }
+  let!(:group_2) { FactoryBot.create :group, members_count: 0, owners_count: 0 }
   let!(:application_group_1) do
-    FactoryGirl.create :application_group, application: untrusted_application, group: group_1
+    FactoryBot.create :application_group, application: untrusted_application, group: group_1
   end
   let!(:application_group_2) do
-    FactoryGirl.create :application_group, application: trusted_application, group: group_2
+    FactoryBot.create :application_group, application: trusted_application, group: group_2
   end
 
   context "updates" do
@@ -116,7 +116,7 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
 
       expect(response.body).to eq(expected_response)
 
-      FactoryGirl.create :group_nesting, container_group: group_1,
+      FactoryBot.create :group_nesting, container_group: group_1,
                                          member_group: group_2
 
       expect(application_group_1.reload.unread_updates).to eq 3
@@ -208,21 +208,21 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
 
       expect(application_group_1.reload.unread_updates).to eq 4
 
-      api_put :updated, untrusted_application_token, raw_post_data: [
+      api_put :updated, untrusted_application_token, body: [
         {group_id: group_1.id, read_updates: 2}].to_json
 
       expect(response.status).to eq(204)
 
       expect(application_group_1.reload.unread_updates).to eq 4
 
-      api_put :updated, untrusted_application_token, raw_post_data: [
+      api_put :updated, untrusted_application_token, body: [
         {group_id: group_1.id, read_updates: 1}].to_json
 
       expect(response.status).to eq(204)
 
       expect(application_group_1.reload.unread_updates).to eq 4
 
-      api_put :updated, untrusted_application_token, raw_post_data: [
+      api_put :updated, untrusted_application_token, body: [
         {group_id: group_1.id, read_updates: 4}].to_json
 
       expect(response.status).to eq(204)
@@ -234,7 +234,7 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
       expect(application_group_1.reload.unread_updates).to eq 1
 
       api_put :updated, trusted_application_token,
-              raw_post_data: [{id: application_group_1.id, read_updates: 1}].to_json
+              body: [{id: application_group_1.id, read_updates: 1}].to_json
 
       expect(application_group_1.reload.unread_updates).to eq 1
     end

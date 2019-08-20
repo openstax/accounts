@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require_relative 'boot'
 require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
@@ -7,9 +7,13 @@ Bundler.require(*Rails.groups)
 
 module Accounts
   class Application < Rails::Application
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 5.2
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    # -- all .rb files in that directory are automatically loaded after loading
+    # the framework and any gems in your application.
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -38,12 +42,6 @@ module Accounts
     # Suppress a warning
     config.i18n.enforce_available_locales = true
 
-    # Case-insensitive database indices for PostgreSQL
-    # schema_plus_core and transaction_isolation monekeypatches conflict with each other,
-    # but loading schema_plus_pg_indexes late seems to fix this
-    # So we use require: false for it in the Gemfile
-    config.after_initialize { require 'schema_plus_pg_indexes' }
-
     # Use the ExceptionsController to rescue routing/bad request exceptions
     # https://coderwall.com/p/w3ghqq/rails-3-2-error-handling-with-exceptions_app
     config.exceptions_app = ->(env) { ExceptionsController.action(:rescue_from).call(env) }
@@ -51,13 +49,10 @@ module Accounts
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
 
-    # Opting in to future behavior to get rid of deprecation warnings
-    config.active_record.raise_in_transactional_callbacks = true
-
-    redis_secrets = secrets['redis']
+    redis_secrets = secrets[:redis]
     config.cache_store = :redis_store, {
-      url: redis_secrets['url'],
-      namespace: redis_secrets['namespaces']['cache'],
+      url: redis_secrets[:url],
+      namespace: redis_secrets[:namespaces][:cache],
       expires_in: 90.minutes,
       compress: true,
     }
@@ -68,7 +63,7 @@ module Accounts
 
     config.after_initialize do
       Doorkeeper::TokensController.class_eval do
-        alias_method :original_create, :create # before_filter not available
+        alias_method :original_create, :create # before_action not available
         def create
           ScoutHelper.ignore!(0.99)
           original_create
@@ -76,5 +71,7 @@ module Accounts
       end
     end
 
+    # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
+    config.active_record.belongs_to_required_by_default = false
   end
 end
