@@ -143,12 +143,9 @@ module Admin
         end
 
         with.keyword :time do |times_array|
-          time_strings = to_string_array(times_array)
-          unless time_strings.any?
-            @items = SecurityLog.none
-          end
+          times_array.each do |times|
+            time_strings = to_string_array(times_array)
 
-          time_strings.each do |times|
             now = Time.now
             beginning_of_hour = now.beginning_of_hour
             midnight = now.midnight
@@ -171,7 +168,7 @@ module Admin
                 query = query.nil? ? new_query : query | new_query
               end
 
-              query || SecurityLog.none
+              query || '0=1'
             }
           end
         end
