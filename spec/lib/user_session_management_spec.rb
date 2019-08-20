@@ -4,7 +4,9 @@ RSpec.describe UserSessionManagement, type: :lib do
   let(:user_1)     { FactoryBot.create(:user) }
   let(:user_2)     { FactoryBot.create(:user) }
 
-  let(:controller) { ActionController::Base.new }
+  let(:request)    { ActionController::TestRequest.create(:test) }
+  let(:session)    { request.session }
+  let(:controller) { ActionController::Base.new.tap { |controller| controller.request = request } }
   let(:main_app)   do
     Class.new do
       def login_path(params = {})
@@ -12,8 +14,6 @@ RSpec.describe UserSessionManagement, type: :lib do
       end
     end.new
   end
-  let(:request)    { ActionController::TestRequest.create(:test) }
-  let(:session)    { {} }
 
   before do
     allow(controller).to receive(:main_app).and_return(main_app)
@@ -175,9 +175,14 @@ RSpec.describe UserSessionManagement, type: :lib do
       expect(controller.get_alternate_signup_url).to be_nil
     end
 
-    it 'can read the current SSO user' do
+    it 'can set and then read the current SSO user' do
       controller.sign_in! user_1
-      expect(controller.current_sso_user).to eq user_1
+      expect(controller.current_user).to eq user_1
+      controller.reset_session
+      expect(controller.current_user).to eq user_1
+
+      controller = ActionController::Base.new.tap { |controller| controller.request = request }
+      expect(controller.current_user).to eq user_1
     end
   end
 

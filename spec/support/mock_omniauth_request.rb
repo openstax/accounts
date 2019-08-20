@@ -1,5 +1,4 @@
 class MockOmniauthRequest
-
   def initialize(provider, uid, info, params = {})
     @provider = provider
     @uid = uid
@@ -24,11 +23,6 @@ class MockOmniauthRequest
   end
 
   def cookies
-    {}
+    ActionController::TestRequest.create(:test).cookie_jar
   end
-
-  def sso_cookie_jar
-    env["action_dispatch.sso_cookies".freeze] ||= SsoCookieJar.build(self, cookies)
-  end
-
 end

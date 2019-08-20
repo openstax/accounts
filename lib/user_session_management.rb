@@ -6,58 +6,69 @@ module UserSessionManagement
   # References:
   #   http://railscasts.com/episodes/356-dangers-of-session-hijacking
 
-  def sso_cookie_secrets
-    Rails.application.secrets.sso[:cookie]
+  def sso_cookies
+    if respond_to?(:cookies, true)
+      cookies
+    elsif request.respond_to?(:cookie_jar)
+      request.cookie_jar
+    else
+      ActionDispatch::Cookies::CookieJar.build(
+        ActionDispatch::Request.new(Rails.application.env_config), request.cookies
+      )
+    end.sso
+  end
+
+  def sso_cookie_name
+    Rails.application.secrets.sso[:cookie][:name]
   end
 
   # Always return an object
-  def current_session_user
-    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
-    @current_user ||= AnonymousUser.instance
+  def current_user
+    @current_user ||= begin
+      current_session_user = User.find_by(id: session[:user_id]) if session[:user_id].present?
+
+      sso_cookie = sso_cookies[sso_cookie_name]
+      current_sso_user = User.find_by(uuid: sso_cookie.dig('user', 'uuid')) if sso_cookie.present?
+
+      if current_session_user.nil?
+        # Use the SSO user if the session user is not set
+        # Use the AnonymousUser if neither is set
+        current_sso_user.nil? ? AnonymousUser.instance : current_sso_user
+      elsif current_sso_user.nil? || current_session_user == current_sso_user
+        # Use the session user if the SSO user is not yet set
+        # For users that are still logged in since before we had SSO
+        # If the session user and the SSO user match, we can return either so we do it here too
+        current_session_user
+      else
+        # Both the session and SSO users are set and different from each other
+        # Log them out and return the AnonymousUser
+        sign_out!
+      end
+    end
   end
 
-  def current_sso_user
-    return @current_sso_user unless @current_sso_user.nil?
-
-    cookie_name = sso_cookie_secrets[:name]
-    cookie = sso_cookies.encrypted[cookie_name]
-    @current_sso_user = User.find_by(uuid: cookie.dig('user', 'uuid')) if cookie.present?
-    @current_sso_user ||= AnonymousUser.instance
-  end
-
-  alias_method :current_user, :current_session_user
-
-  def allow_sso_user!
-    @current_user = current_sso_user if current_session_user.is_anonymous?
-  end
-
-  def sign_in!(user, options={})
-    options[:security_log_data] ||= {}
-
-    session[:client_id] = nil
-    session[:alt_signup] = nil
-
+  def sign_in!(user, security_log_data: {})
     clear_login_state
+
     @current_user = user || AnonymousUser.instance
 
     if @current_user.is_anonymous?
       session[:user_id] = nil
 
       # Clear the SSO cookie
-      sso_cookies.delete(sso_cookie_secrets[:name], domain: sso_cookie_secrets[:options][:domain])
+      sso_cookies.delete(sso_cookie_name)
 
-      security_log :sign_out, options[:security_log_data]
+      security_log :sign_out, security_log_data
     else
       session[:user_id] = @current_user.id
-      session[:last_admin_activity] = DateTime.now.to_s \
-        if @current_user.is_administrator?
+      session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator?
 
       # Set the SSO cookie
-      request.sso_cookie_jar.encrypted[sso_cookie_secrets[:name]] = {
-        value: { user: Api::V1::UserRepresenter.new(current_user).to_hash }
-      }.merge(sso_cookie_secrets[:options].deep_symbolize_keys)
+      sso_cookies.permanent[sso_cookie_name] = {
+        value: { 'user' => Api::V1::UserRepresenter.new(@current_user).to_hash }
+      }
 
-      security_log :sign_in_successful, options[:security_log_data]
+      security_log :sign_in_successful, security_log_data
     end
 
     @current_user

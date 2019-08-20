@@ -107,7 +107,6 @@ describe FindOrCreateUnclaimedUser do
         it 'sets is_test' do
           is_test = [true, false].sample
           new_user = FindOrCreateUnclaimedUser.call(
-            email:"anunusedemail@example.com",
             username: 'bobsmith', email: 'anunusedemail@example.com',
             first_name: Faker::Name.first_name, last_name: Faker::Name.last_name,
             is_test: is_test
