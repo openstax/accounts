@@ -3,16 +3,16 @@ require 'rails_helper'
 RSpec.describe ExportUsersLastLoginDate, type: :routine do
 
   context "as a Lev output with student information" do
-    let!(:user_1){ FactoryGirl.create :user }
-    # let!(:some_other_user){ FactoryGirl.create :user }
-    let!(:email_1){ FactoryGirl.create :email_address, user: user_1, verified: true }
-    let!(:email_2){ FactoryGirl.create :email_address, user: user_1, verified: true }
-    let!(:email_unverified){ FactoryGirl.create :email_address, user: user_1, verified: false }
-    let!(:auth){ FactoryGirl.create :authentication, user: user_1 }
+    let!(:user_1){ FactoryBot.create :user }
+    # let!(:some_other_user){ FactoryBot.create :user }
+    let!(:email_1){ FactoryBot.create :email_address, user: user_1, verified: true }
+    let!(:email_2){ FactoryBot.create :email_address, user: user_1, verified: true }
+    let!(:email_unverified){ FactoryBot.create :email_address, user: user_1, verified: false }
+    let!(:auth){ FactoryBot.create :authentication, user: user_1 }
     let!(:security_log_entry){
-        FactoryGirl.create :security_log, user: user_1, event_type: :sign_in_successful
+        FactoryBot.create :security_log, user: user_1, event_type: :sign_in_successful
     }
-    let!(:auth){ FactoryGirl.create :authentication, user: user_1 }
+    let!(:auth){ FactoryBot.create :authentication, user: user_1 }
 
     let!(:outputs){ described_class.call.outputs }
     let!(:first_output){ outputs.info[0] }
@@ -28,7 +28,7 @@ RSpec.describe ExportUsersLastLoginDate, type: :routine do
     context "as csv file with student information" do
       it "includes all the information it should" do
         Timecop.freeze(1.week.ago) do
-          FactoryGirl.create :security_log, user: user_1, event_type: :sign_in_successful
+          FactoryBot.create :security_log, user: user_1, event_type: :sign_in_successful
         end
 
         with_csv_rows_to_match_w_consent_forms do |rows|
