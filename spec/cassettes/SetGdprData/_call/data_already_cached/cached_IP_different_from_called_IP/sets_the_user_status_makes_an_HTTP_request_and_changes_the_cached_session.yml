@@ -1,0 +1,37 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://pro.ip-api.com/json/8.8.8.8?key=<ip_api_key>
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - pro.ip-api.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 24 Aug 2019 22:44:16 GMT
+      Content-Length:
+      - '288'
+    body:
+      encoding: UTF-8
+      string: '{"as":"AS15169 Google LLC","city":"Ashburn","country":"United States","countryCode":"US","isp":"Level
+        3 Communications","lat":39.0438,"lon":-77.4874,"org":"Google Inc.","query":"8.8.8.8","region":"VA","regionName":"Virginia","status":"success","timezone":"America/New_York","zip":"20149"}'
+    http_version: 
+  recorded_at: Sat, 24 Aug 2019 22:44:16 GMT
+recorded_with: VCR 3.0.3

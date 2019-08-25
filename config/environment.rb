@@ -18,6 +18,7 @@ require 'email_address_validations'
 require 'subjects_utils'
 require 'host'
 require 'sso_cookie_jar'
+require 'set_gdpr_data'
 
 SITE_NAME = 'OpenStax Accounts'
 PAGE_TITLE_SUFFIX = SITE_NAME

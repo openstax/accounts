@@ -66,6 +66,8 @@ class User < ActiveRecord::Base
 
   attr_readonly :uuid, :support_identifier
 
+  attribute :is_not_gdpr_location, :boolean, default: nil
+
   before_validation :generate_uuid, :generate_support_identifier, on: :create
 
   before_create :make_first_user_an_admin
