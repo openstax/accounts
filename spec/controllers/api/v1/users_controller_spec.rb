@@ -54,6 +54,8 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                                                  resource_owner_id: admin_user.id
   end
 
+  let(:is_not_gdpr_location) { nil }
+
   context "index" do
 
     it "returns a single result well" do
@@ -92,6 +94,11 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
   end
 
   context "show" do
+    before(:each) do
+      allow(SetGdprData).to receive(:call) do |args|
+        args[:user].is_not_gdpr_location = is_not_gdpr_location
+      end
+    end
 
     it "should let a User get his info" do
       api_get :show, user_1_token
@@ -181,6 +188,17 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
         self_reported_role: "instructor",
       )
     end
+
+    context "gdpr location" do
+      let(:is_not_gdpr_location) { true }
+
+      it "reports gdpr location flag" do
+        api_get :show, user_1_token
+        # expected_response = user_matcher(user_1, include_private_data: true)
+        expect(response.body_as_hash).to include(is_not_gdpr_location: true)
+      end
+    end
+
 
   end
 

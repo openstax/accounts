@@ -42,4 +42,15 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
       expect { representer.from_hash(hash) }.not_to change { user.reload.is_test? }
     end
   end
+
+  context 'is_not_gdpr_location' do
+    it 'is not there normally' do
+      expect(representer.to_hash).not_to have_key('is_not_gdpr_location')
+    end
+
+    it "is there when set and private data included" do
+      user.is_not_gdpr_location = false
+      expect(representer.to_hash(user_options: {include_private_data: true})['is_not_gdpr_location']).to eq false
+    end
+  end
 end

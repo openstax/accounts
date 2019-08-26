@@ -1,0 +1,37 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://pro.ip-api.com/json/82.216.111.122?key=<ip_api_key>
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - pro.ip-api.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 24 Aug 2019 22:44:16 GMT
+      Content-Length:
+      - '279'
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJhcyI6IkFTMjE1MDIgU0ZSIFNBIiwiY2l0eSI6Ik5ldWlsbHktc3VyLVNlaW5lIiwiY291bnRyeSI6IkZyYW5jZSIsImNvdW50cnlDb2RlIjoiRlIiLCJpc3AiOiJOVU1FUklDQUJMRSIsImxhdCI6NDguODg3MSwibG9uIjoyLjI3NDUsIm9yZyI6IlNGUiBTQSIsInF1ZXJ5IjoiODIuMjE2LjExMS4xMjIiLCJyZWdpb24iOiJJREYiLCJyZWdpb25OYW1lIjoiw45sZS1kZS1GcmFuY2UiLCJzdGF0dXMiOiJzdWNjZXNzIiwidGltZXpvbmUiOiJFdXJvcGUvUGFyaXMiLCJ6aXAiOiI5MjIwMCJ9
+    http_version: 
+  recorded_at: Sat, 24 Aug 2019 22:44:16 GMT
+recorded_with: VCR 3.0.3

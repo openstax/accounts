@@ -21,6 +21,14 @@ VCR.configure do |c|
       c.filter_sensitive_data("<#{salesforce_secret_name}>") { value } if value.present?
     end
   end
+
+  %w(
+    ip_api_key
+  ).each do |secret_name|
+    Rails.application.secrets[secret_name.to_sym].tap do |value|
+      c.filter_sensitive_data("<#{secret_name}>") { value } if value.present?
+    end
+  end
 end
 
 VCR_OPTS = {

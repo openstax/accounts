@@ -110,3 +110,7 @@ set the environment variable `USE_REAL_BACKGROUND_JOBS=true` in your `.env` file
 and then start the `delayed_job` daemon:
 
 `bin/rake jobs:work`
+
+## GDPR
+
+For logged-in users, Accounts reports GDPR status in the `/api/user` endpoint via a `is_not_gdpr_location` flag.  When this value is `true`, the user is not in a GDPR location.  Otherwise (`false` or `nil` or not in the response), the user may be in a GDPR location.  To test this functionality in development, you can specify an IP address via the `IP_ADDRESS_FOR_GDPR` environment variable, which will override the normal localhost request IP address.
