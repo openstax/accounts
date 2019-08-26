@@ -31,7 +31,7 @@ Rails.application.routes.draw do
 
   mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
   OpenStax::Salesforce.set_top_level_routes(self)
-  
+
   # Create a named path for links like `/auth/facebook` so that the path prefixer gem
   # will appropriately prefix the path.  https://stackoverflow.com/a/40125738/1664216
   get "/auth/:provider", to: lambda{ |env| [404, {}, ["Not Found"]] }, as: :oauth
@@ -229,6 +229,4 @@ Rails.application.routes.draw do
   if Rails.env.test?
     get '/external_app_for_specs' => 'external_app_for_specs#index'
   end
-
-  get '*other', controller: :exceptions, action: :missing_route
 end
