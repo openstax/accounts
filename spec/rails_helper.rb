@@ -52,8 +52,6 @@ Capybara.javascript_driver = :selenium_chrome_headless
 
 Capybara.asset_host = 'http://localhost:2999'
 
-Capybara.default_max_wait_time = 15
-
 # Normalize whitespaces
 Capybara.default_normalize_ws = true
 
