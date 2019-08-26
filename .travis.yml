@@ -13,8 +13,7 @@ services:
 before_script:
   - which google-chrome
   - google-chrome --version
-  - bundle exec rake webdrivers:chromedriver:version
-  - bundle exec rake webdrivers:chromedriver:update[73.0.3683.68]
+  - bundle exec rake assets:precompile
   - bundle exec rake webdrivers:chromedriver:version
   - google-chrome --version
   - bundle exec rake --trace parallel:create parallel:load_schema parallel:seed
