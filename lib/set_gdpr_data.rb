@@ -66,7 +66,7 @@ module SetGdprData
     uri = URI("https://pro.ip-api.com/json/#{ip}?key=#{Rails.application.secrets.ip_api_key}")
 
     begin
-      Net::HTTP.start(uri.host, uri.port, use_ssl: true, read_timeout: lookup_timeout) do |http|
+      Net::HTTP.start(uri.host, uri.port, use_ssl: true, read_timeout: LOOKUP_TIMEOUT) do |http|
         response = Net::HTTP.get_response uri
         body = JSON.parse(response.body)
 
@@ -87,9 +87,7 @@ module SetGdprData
     end
   end
 
-  def self.lookup_timeout
-    1
-  end
+  LOOKUP_TIMEOUT = 1
 
   GDPR_COUNTRY_CODES = [
     'AT', # Austria
