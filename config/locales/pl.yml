@@ -405,7 +405,7 @@ pl:
         Czy to na pewno Twój szkolny adres-email? Jeżeli tak, wciśnij %{button} poniżej.
         Jeżeli nie, wpisz adres e-mail przyznany Ci przez Twoją szkołę.
       did_you_mean:
-        Czy to literówka?
+        Czy to literówka
       proceed_with_likely_mistyped_email:
         Jeśli tak, popraw adres e-mail. Jeśli nie ma błędu, kliknij %{button}.
 
