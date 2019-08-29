@@ -17,4 +17,6 @@ Rails.application.config.assets.precompile += %w(
   bootstrap-editable/clear.png
   application_body_api_docs.css
   syntax_highlight.css
+  newflow_layout.css
+  newflow.js
 )
