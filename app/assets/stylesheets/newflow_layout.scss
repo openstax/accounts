@@ -10,6 +10,17 @@ body {
     background-color: #fff;
 }
 
+.main-menu {
+    box-shadow: none;
+    height: 4.6em;
+
+    .logo-wrapper {
+         @include width-up-to($phone-max) {
+            margin: auto;
+        }
+    }
+}
+
 .content form, form.content {
     background-color: white;
 }
