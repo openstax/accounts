@@ -53,6 +53,12 @@ body {
         border-width: 0.1rem;
         border-top: 0;
 
+        // placeholder text
+        [type=text], [type=email], [type=password] {
+            color: var(--placeholder-text);
+            font-weight: 300;
+        }
+
         .role-button {
             @include width-up-to($phone-max) {
                 line-height: 2.78;
