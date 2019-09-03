@@ -9,6 +9,7 @@ class OX.Signup.EmailValue
     @email.change(@onChange)
     @group.closest('form').submit(@onSubmit)
     @userType = ''
+    Mailcheck.defaultTopLevelDomains.concat(['pl']) # extend TLDs for our Polish users
 
   onChange: ->
     if @showing_warning
