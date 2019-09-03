@@ -198,13 +198,44 @@ body {
     }
 }
 
-// temporary styling for the social buttons until the styling is added to the pattern-library
-.btn-facebook {
+// Social buttons
+
+// .social-buttons a {
+//     @include width-up-to($phone-max) {
+//         display: inline;
+//         width: 49%;
+//     }
+// }
+
+.social-buttons > div {
+    display: inline-block;
+}
+
+.social-buttons .btn {
+    @include wider-than($phone-max) {
+        width: 172px;
+    }
+    padding: 1rem 0;
+    text-align: left;
+
+    border: 0;
+    display: inline-block;
+    touch-action: manipulation;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.social-icon {
+    padding-left: 25px;
+    padding-right: 16px;
+}
+
+.fb-share-button a {
     background-color: #3b5998;
     color: white;
 }
 
-.btn-google {
+.google-share-button a {
     color: #fff;
     background-color: #dd4b39;
 }
