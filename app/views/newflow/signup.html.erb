@@ -11,14 +11,16 @@
         <form>
                 <h1>Set up your account</h1>
 
-                <div>
-                    <i class="fa fa-arrow-left"></i>
-                    <input type="button" value="Student" class="role-button">
+                <div class="content role-section">
+                    <div>
+                        <div class="back-arrow"><i class="fa fa-arrow-left"></i></div>
+                        <input type="button" value="Student" class="role-button">
+                    </div>
                 </div>
 
                 <div class="content">
                     <div>Sign up with:</div>
-                    <div>
+                    <div class="social-buttons">
                         <a class="btn btn-social btn-facebook">
                             <i class="fa fa-facebook"></i> Facebook
                         </a>
@@ -30,35 +32,35 @@
 
                 <div class="divider">OR SIGN UP BELOW</div>
 
-                <div class="control-group">
+                <div class="content control-group">
                     <label class="field-label">First name *</label>
                     <input type="text" name="first_name"
                                 placeholder="First name" class="delay-validation" required>
                     <!-- <div class="invalid-message">You surely have a first name</div> -->
                 </div>
 
-                <div class="control-group">
+                <div class="content control-group">
                     <label class="field-label">Last name *</label>
                     <input type="text" name="last_name"
                                 placeholder="Last name" class="delay-validation" required>
                     <!-- <div class="invalid-message">You surely have a last name</div> -->
                 </div>
 
-                <div class="control-group">
+                <div class="content control-group">
                     <label class="field-label">Email *</label>
                     <input type="text" name="email"
                                 placeholder="Email" class="delay-validation" required>
                     <!-- <div class="invalid-message">Your email address or login with social</div> -->
                 </div>
 
-                <div class="control-group">
+                <div class="content control-group">
                     <label class="field-label">Password *</label>
                     <input type="password" name="password"
                                 placeholder="Password" class="delay-validation" required>
                     <!-- <div class="invalid-message">A secure password</div> -->
                 </div>
 
-                <div class="control-group">
+                <div class="content control-group">
                     <input type="checkbox" name="newsletter" checked>
                     <span>Send me the OpenStax newsletter</span>
                     <br>
@@ -67,7 +69,7 @@
                     <span>I agree to the Terms of Use and Privacy Policy</span>
                 </div>
 
-                <span><input type="submit" value="Continue" class="primary"></span>
+                <div class="content"><input type="submit" value="Continue" class="primary"></div>
         </form>
     </div>
 </div>

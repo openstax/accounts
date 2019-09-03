@@ -53,6 +53,30 @@ body {
         border-width: 0.1rem;
         border-top: 0;
 
+        > .content {
+            max-width: 555px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .role-section {
+            max-width: 100%;
+
+            > div {
+                @include width-up-to($phone-max) {
+                    display: grid;
+                    grid-template-columns: 3.5rem 1fr;
+                    align-items: center;
+                }
+
+                @include wider-than($tablet-max) {
+                    display: inline;
+                }
+
+                // max-width: 555px;
+            }
+        }
+
         // placeholder text
         [type=text], [type=email], [type=password] {
             color: var(--placeholder-text);
@@ -61,18 +85,43 @@ body {
 
         .role-button {
             @include width-up-to($phone-max) {
-                line-height: 2.78;
                 letter-spacing: -0.72px;
+                line-height: 2;
+                margin-right: 3.5rem;
+                font-size: 1.8rem;
+                height: 3.5rem;
             }
 
-            color: #c1c1c1;
-            font-size: 1.4em;
-            line-height: 2.08;
+            @include width-between($phone-max, $tablet-max) {
+                margin-left: 38px;
+            }
+
+            @include wider-than($phone-max) {
+                width: 82%;
+                margin-left: 1.98em;
+                // margin-right: 9.7rem; // this is not applying
+                line-height: 2.08;
+                font-size: 2.4rem;
+                height: 5rem;
+            }
+
+            max-width: 555px;
+            padding-left: 0;
+            padding-right: 0;
+
+            text-align: center;
             letter-spacing: -0.96px;
             font-weight: bold;
-            line-height: 2.08;
-            letter-spacing: -0.96px;
-            text-align: center;
+            color: #c1c1c1;
+        }
+
+        .back-arrow {
+            display: inline-block;
+
+            @include width-up-to($phone-max) {
+                text-align: right;
+                margin-right: 1rem;
+            }
         }
 
         h1 {
