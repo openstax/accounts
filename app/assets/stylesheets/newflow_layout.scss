@@ -207,6 +207,16 @@ body {
 //     }
 // }
 
+@include width-up-to($phone-max) {
+    .social-buttons {
+        height: 35px;
+
+        .btn {
+            height: 35px;
+        }
+    }
+}
+
 .social-buttons > div {
     display: inline-block;
 }
