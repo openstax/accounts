@@ -20,7 +20,9 @@ body {
 
 .main-menu {
     box-shadow: none;
-    height: 4.6em;
+    height: 2rem;
+    margin-top: 0.8rem;
+
 
     .logo-wrapper {
          @include width-up-to($phone-max) {
@@ -39,6 +41,8 @@ body {
     border-top: 0;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 3rem;
+    margin-top: 4rem;
     padding-left: 14px;
     padding-right: 14px;
 
