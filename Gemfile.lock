@@ -288,7 +288,7 @@ GEM
     kgio (2.10.0)
     launchy (2.4.3)
       addressable (~> 2.3)
-    lev (9.0.2)
+    lev (9.0.3)
       actionpack (>= 4.2)
       active_attr
       activejob
@@ -670,7 +670,7 @@ DEPENDENCIES
   jquery-rails
   keyword_search (~> 1.5.0)
   launchy
-  lev (~> 9.0.2)
+  lev (~> 9.0.3)
   lograge
   maruku
   oj (~> 3.7.12)

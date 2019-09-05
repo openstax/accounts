@@ -13,7 +13,7 @@ gem 'bootsnap', require: false
 
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
-gem 'lev', '~> 9.0.2'
+gem 'lev', '~> 9.0.3'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.4.1'
