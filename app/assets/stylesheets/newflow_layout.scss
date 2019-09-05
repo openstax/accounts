@@ -46,16 +46,74 @@ body {
     padding-left: 14px;
     padding-right: 14px;
 
+    .tab-group {
+        padding: 0;
+
+        .tab {
+            @include width-up-to($phone-max) {
+                width: 50%;
+            }
+
+            width: 150px;
+            font-size: 1.8rem;
+            font-weight: 700;
+
+            border-bottom: 0.1rem solid #d5d5d5;
+            padding: 1.2rem 0;
+            border-style: solid;
+            border-color: #d5d5d5;
+            border-width: 0.1rem;
+
+            &:first-child {
+                border-right: 0;
+            }
+
+            &.active {
+                border-bottom-width: 0;
+                border-bottom-color: #fff;
+            }
+
+            &.inactive {
+                background-color: #f6f8fa;
+            }
+        }
+
+        .tab.tab--placeholder {
+            @include width-up-to($phone-max) {
+                display: none;
+            }
+
+            cursor: default;
+            border: 0;
+            border-bottom: 0.1rem solid #d5d5d5;
+            background-color: #fff; // TODO: same as html or body background color OR transparent
+        }
+    }
+
     form {
         @include width-up-to($phone-max) {
-            padding-left: 1em;
-            padding-right: 1em;
+            padding-left: 1.4rem;
+            padding-right: 1.4rem;
+            padding-top: 1.6rem;
         }
 
         border-color: #d5d5d5;
         border-style: solid;
         border-width: 0.1rem;
         border-top: 0;
+        border-bottom-left-radius: .3rem;
+        border-bottom-right-radius: .3rem;
+
+        h1 {
+            @include width-up-to($phone-max) {
+                font-size: 18px;
+            }
+
+            font-size: 2em;
+            text-align: center;
+            letter-spacing: -0.72px;
+            line-height: 1.67;
+        }
 
         > .content {
             max-width: 555px;
@@ -76,15 +134,16 @@ body {
                 @include wider-than($tablet-max) {
                     display: inline;
                 }
-
-                // max-width: 555px;
             }
         }
 
-        // placeholder text
-        [type=text], [type=email], [type=password] {
-            color: var(--placeholder-text);
-            font-weight: 300;
+        .back-arrow {
+            display: inline-block;
+
+            @include width-up-to($phone-max) {
+                text-align: right;
+                margin-right: 1rem;
+            }
         }
 
         .role-button {
@@ -119,78 +178,23 @@ body {
             color: #c1c1c1;
         }
 
-        .back-arrow {
-            display: inline-block;
-
-            @include width-up-to($phone-max) {
-                text-align: right;
-                margin-right: 1rem;
-            }
-        }
-
-        h1 {
-            @include width-up-to($phone-max) {
-                font-size: 18px;
-            }
-
-            font-size: 2em;
-            text-align: center;
-            letter-spacing: -0.72px;
-            line-height: 1.67;
-        }
-
         label {
             font-weight: bold;
             color: var(--greyish-brown);
         }
+
+        // placeholder text
+        [type=text], [type=email], [type=password] {
+            color: var(--placeholder-text);
+            font-weight: 300;
+        }
+
     }
 
     .divider {
         font-weight: bold;
-        font-size: 12px;
+        font-size: 1.2rem;
         text-align: center;
-    }
-
-    .tab-group {
-        padding: 0;
-    }
-
-    .tab {
-        @include width-up-to($phone-max) {
-            width: 50%;
-        }
-
-        border-bottom: 0.1rem solid #d5d5d5;
-        width: 150px;
-        padding: 1.2rem 0;
-        border-style: solid;
-        border-color: #d5d5d5;
-        border-width: 0.1rem;
-        font-size: 1.8rem;
-        font-weight: 700;
-
-        &:first-child {
-            border-right: 0;
-        }
-
-        &.active {
-            border-bottom-width: 0;
-            border-bottom-color: #fff;
-        }
-
-        &.inactive {
-            background-color: #f6f8fa;
-        }
-    }
-
-    .tab.tab--placeholder {
-        @include width-up-to($phone-max) {
-            display: none;
-        }
-
-        border: 0;
-        border-bottom: 0.1rem solid #d5d5d5;
-        background-color: #fff; // TODO: same as html or body background color OR transparent
     }
 
     [type="submit"] {
