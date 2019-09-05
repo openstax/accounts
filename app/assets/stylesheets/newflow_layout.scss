@@ -213,9 +213,15 @@ body {
             font-weight: 300;
         }
 
-        .checkboxes-section input[type=checkbox] {
+        .checkboxes-section {
+            input[type=checkbox] {
             width:  1.4rem;
             height: 1.4rem;
+
+                + span {
+                    margin-left: 1rem;
+        }
+    }
         }
     }
 
