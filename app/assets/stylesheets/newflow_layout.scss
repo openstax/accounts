@@ -204,13 +204,6 @@ body {
 
 // Social buttons
 
-// .social-buttons a {
-//     @include width-up-to($phone-max) {
-//         display: inline;
-//         width: 49%;
-//     }
-// }
-
 @include width-up-to($phone-max) {
     .social-buttons {
         height: 35px;
@@ -219,6 +212,22 @@ body {
             height: 35px;
         }
     }
+
+    .social-buttons a {
+        width: 100%;
+    }
+
+    .social-buttons > div {
+        width: 49%;
+        max-width: 13rem;
+    }
+
+    .social-buttons i.social-icon {
+        width: 33px;
+        height: 35px;
+        text-align: center;
+        padding-top: .8rem;
+    }
 }
 
 .social-buttons > div {
@@ -226,6 +235,10 @@ body {
 }
 
 .social-buttons .btn {
+    @include width-up-to($phone-max) {
+        padding: 0;
+    }
+
     @include wider-than($phone-max) {
         width: 172px;
     }
@@ -240,8 +253,10 @@ body {
 }
 
 .social-icon {
-    padding-left: 25px;
-    padding-right: 16px;
+    @include wider-than($phone-max) {
+        padding-left: 25px;
+        padding-right: 16px;
+    }
 }
 
 .fb-share-button a {
