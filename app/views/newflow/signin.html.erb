@@ -7,36 +7,57 @@
             <div class="tab tab--placeholder"></div>
             <div class="tab tab--placeholder"></div>
         </div>
+
         <form>
-            <h1>Log in to your OpenStax account</h1>
+                <div><!-- placeholder for the step-counter in signup.html.erb --></div>
 
-            <div class="content">
-                <div>Login with:</div>
-                <div>
-                    <a class="btn btn-social btn-facebook">
-                        <i class="fa fa-facebook"></i> Facebook
-                    </a>
-                    <a class="btn btn-social btn-google">
-                        <i class="fa fa-google"></i> Google
-                    </a>
+                <h1>Log in to your OpenStax account</h1>
+
+                <div class="content" style="margin-top: -3rem">
+                    <div>Log in with:</div>
+
+                    <div class="social-buttons">
+
+                        <div class="fb-share-button">
+                            <a class="facebook btn" href="#">
+                                <i class="social-icon fa fa-facebook"></i>
+                                <span>Facebook</span>
+                            </a>
+                        </div>
+
+                        <div class="google-share-button">
+                            <a href="#" class="google btn">
+                                <i class="social-icon fa fa-google"></i>
+                                <span>Google</span>
+                            </a>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
 
-            <div class="control-group">
-                <label class="field-label">Email *</label>
-                <input type="text" name="email"
-                            placeholder="Email" class="delay-validation" required>
-                <!-- <div class="invalid-message">Your email address or login with social</div> -->
-            </div>
+                <div class="divider">OR LOG IN BELOW</div>
 
-            <div class="control-group">
-                <label class="field-label">Password *</label>
-                <input type="password" name="password"
-                            placeholder="Password" class="delay-validation" required>
-                <!-- <div class="invalid-message">A secure password</div> -->
-            </div>
+                <div class="content control-group">
+                    <label class="field-label">Email *</label>
+                    <input type="text" name="email"
+                                placeholder="me@myemail.com" class="delay-validation" required>
+                    <!-- <div class="invalid-message">Your email address or login with social</div> -->
+                </div>
 
-            <span><input type="submit" value="Continue" class="primary"></span>
+                <div class="content control-group">
+                    <label class="field-label">Password *</label>
+                    <input type="password" name="password"
+                                placeholder="Password" class="delay-validation" required>
+                    <!-- <div class="invalid-message">A secure password</div> -->
+                </div>
+
+                <div class="content" style="margin-top: -2rem">
+                    <input type="submit" value="Continue" class="primary">
+                </div>
+
+                <div style="margin-top: -2rem;">
+                    <a href="#">Forgot your password?</a>
+                </div>
         </form>
-    </input>
+    </div>
 </div>

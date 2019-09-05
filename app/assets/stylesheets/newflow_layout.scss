@@ -18,6 +18,11 @@ body {
     color: var(--greyish-brown);
 }
 
+// utility classes
+.hidden {
+    display: none !important;
+}
+
 .main-menu {
     box-shadow: none;
     height: 2rem;
