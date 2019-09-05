@@ -215,13 +215,13 @@ body {
 
         .checkboxes-section {
             input[type=checkbox] {
-            width:  1.4rem;
-            height: 1.4rem;
+                width:  1.4rem;
+                height: 1.4rem;
 
                 + span {
                     margin-left: 1rem;
-        }
-    }
+                }
+            }
         }
     }
 
@@ -270,6 +270,22 @@ body {
         &.checkboxes-section {
             margin-top: -2.5rem;
         }
+    }
+}
+
+// Improve the look of Terms of Use section in very narrow views
+@include width-up-to(24em) {
+    .toc input {
+        float: left;
+    }
+
+    .toc span {
+        float: left;
+        height: auto;
+        width: auto;
+        max-width: 75%;
+        overflow: unset;
+        line-height: normal;
     }
 }
 
