@@ -126,6 +126,8 @@ body {
         border-bottom-left-radius: .3rem;
         border-bottom-right-radius: .3rem;
 
+        font-size: 1.4rem;
+
         h1 {
             @include width-up-to($phone-max) {
                 font-size: 18px;
@@ -211,6 +213,10 @@ body {
             font-weight: 300;
         }
 
+        .checkboxes-section input[type=checkbox] {
+            width:  1.4rem;
+            height: 1.4rem;
+        }
     }
 
     .divider {
@@ -225,6 +231,39 @@ body {
 
     [type="checkbox"] {
         height: auto;
+    }
+}
+
+// Improve vertical spacing even more
+
+#signinup-form  form {
+    h1 {
+        margin-top: -2rem;
+        margin-bottom: 0;
+    }
+
+    .role-section {
+        margin-top: -3rem;
+
+        + div.content {
+            margin-top: -2rem;
+        }
+    }
+
+    .divider {
+        margin-top: -4.2rem;
+
+        + .content.control-group {
+            margin-top: -4.2rem;
+        }
+    }
+
+    .content.control-group {
+        margin-top: -1rem;
+
+        &.checkboxes-section {
+            margin-top: -2.5rem;
+        }
     }
 }
 
