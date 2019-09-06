@@ -293,70 +293,72 @@ body {
 
 // Social buttons
 
+.social-buttons {
+    > div {
+        display: inline-block;
+    }
+
+    .fb-share-button a {
+        background-color: #3b5998;
+        color: white;
+    }
+
+    .google-share-button a {
+        color: #fff;
+        background-color: #dd4b39;
+    }
+
+    .btn {
+        text-align: left;
+
+        border: 0;
+        display: inline-block;
+        touch-action: manipulation;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+    }
+}
+
 @include width-up-to($phone-max) {
     .social-buttons {
         .btn {
             height: 35px;
+            padding: 0;
+        }
+
+        a {
+            width: 100%;
+        }
+
+        > div {
+            width: 48%;
+            max-width: 13rem;
+            min-width: 12rem;
+        }
+
+        i.social-icon {
+            width: 33px;
+            height: 35px;
+            text-align: center;
+            padding-top: .8rem;
+        }
+
+        .fb-share-button {
+            margin-right: .6rem;
         }
     }
-
-    .social-buttons a {
-        width: 100%;
-    }
-
-    .social-buttons > div {
-        width: 48%;
-        max-width: 13rem;
-        min-width: 12rem;
-    }
-
-    .social-buttons i.social-icon {
-        width: 33px;
-        height: 35px;
-        text-align: center;
-        padding-top: .8rem;
-    }
-
-    .fb-share-button {
-        margin-right: .6rem;
-    }
 }
 
-.social-buttons > div {
-    display: inline-block;
-}
+@include wider-than($phone-max) {
+    .social-buttons {
+        .btn {
+            width: 172px;
+            padding: 1rem 0;
+        }
 
-.social-buttons .btn {
-    @include width-up-to($phone-max) {
-        padding: 0;
+        .social-icon {
+            padding-left: 25px;
+            padding-right: 16px;
+        }
     }
-
-    @include wider-than($phone-max) {
-        width: 172px;
-    }
-    padding: 1rem 0;
-    text-align: left;
-
-    border: 0;
-    display: inline-block;
-    touch-action: manipulation;
-    font-weight: 500;
-    transition: all 0.2s ease-in-out;
-}
-
-.social-icon {
-    @include wider-than($phone-max) {
-        padding-left: 25px;
-        padding-right: 16px;
-    }
-}
-
-.fb-share-button a {
-    background-color: #3b5998;
-    color: white;
-}
-
-.google-share-button a {
-    color: #fff;
-    background-color: #dd4b39;
 }
