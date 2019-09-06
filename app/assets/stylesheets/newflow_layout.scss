@@ -231,6 +231,10 @@ body {
     }
 
     .divider {
+        @include width-up-to($phone-max) {
+            margin-top: -1.5rem;
+        }
+
         font-weight: bold;
         font-size: 1.2rem;
         text-align: center;
@@ -283,8 +287,6 @@ body {
 
 @include width-up-to($phone-max) {
     .social-buttons {
-        height: 35px;
-
         .btn {
             height: 35px;
         }
@@ -295,8 +297,9 @@ body {
     }
 
     .social-buttons > div {
-        width: 49%;
+        width: 48%;
         max-width: 13rem;
+        min-width: 12rem;
     }
 
     .social-buttons i.social-icon {
@@ -304,6 +307,10 @@ body {
         height: 35px;
         text-align: center;
         padding-top: .8rem;
+    }
+
+    .fb-share-button {
+        margin-right: .6rem;
     }
 }
 
