@@ -262,8 +262,16 @@ body {
         margin-bottom: 2rem;
     }
 
+    .divider + .content.control-group {
+        margin-top: .9rem;
+    }
+
     .role-section {
         margin-bottom: .8rem;
+    }
+
+    .checkboxes-section {
+        margin-top: -2rem;
     }
 }
 
