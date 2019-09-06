@@ -245,36 +245,21 @@ body {
     }
 }
 
-// Improve vertical spacing even more
+// Improve vertical spacing
 
 #signinup-form  form {
+    row-gap: 2rem;
+
     h1 {
-        margin-top: -2rem;
         margin-bottom: 0;
     }
 
-    .role-section {
-        margin-top: -3rem;
-
-        + div.content {
-            margin-top: -2rem;
-        }
-    }
-
-    .divider {
-        margin-top: -4.2rem;
-
-        + .content.control-group {
-            margin-top: -4.2rem;
-        }
-    }
-
     .content.control-group {
-        margin-top: -1rem;
+        margin-bottom: 2rem;
+    }
 
-        &.checkboxes-section {
-            margin-top: -2.5rem;
-        }
+    .role-section {
+        margin-bottom: .8rem;
     }
 }
 
