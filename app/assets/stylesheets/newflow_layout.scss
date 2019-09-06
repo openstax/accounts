@@ -81,7 +81,7 @@ body {
                 width: 50%;
             }
 
-            width: 15rem;
+            width: 18rem;
             font-size: 1.8rem;
             font-weight: 700;
 
@@ -93,6 +93,10 @@ body {
 
             &:first-child {
                 border-right: 0;
+            }
+
+            &:last-child {
+                width: 10rem;
             }
 
             &.active {
