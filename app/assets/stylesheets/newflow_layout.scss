@@ -66,7 +66,7 @@ body {
         }
 
         span {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: bold;
             letter-spacing: -0.56px;
             // padding: 1rem;
@@ -81,7 +81,7 @@ body {
                 width: 50%;
             }
 
-            width: 150px;
+            width: 15rem;
             font-size: 1.8rem;
             font-weight: 700;
 
@@ -119,9 +119,15 @@ body {
 
     form {
         @include width-up-to($phone-max) {
+            row-gap: 2rem;
             padding-left: 1.4rem;
             padding-right: 1.4rem;
             padding-top: 1.6rem;
+        }
+
+        @include wider-than($phone-max) {
+            row-gap: 1rem;
+            padding-top: 3rem;
         }
 
         border-color: #d5d5d5;
@@ -138,7 +144,12 @@ body {
                 font-size: 18px;
             }
 
-            font-size: 2em;
+            @include wider-than($phone-max) {
+                margin: 0;
+                letter-spacing: -1.44px;
+            }
+
+            font-size: 3.6rem;
             text-align: center;
             letter-spacing: -0.72px;
             line-height: 1.67;
@@ -192,7 +203,7 @@ body {
             @include wider-than($tablet-max) {
                 width: 100%;
                 height: 5rem;
-                margin-left: 1.56em;
+                margin-left: 3.8rem;
                 line-height: 2.08;
             }
 
@@ -252,18 +263,28 @@ body {
 // Improve vertical spacing
 
 #signinup-form  form {
-    row-gap: 2rem;
-
     h1 {
         margin-bottom: 0;
     }
 
     .content.control-group {
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
     }
 
-    .divider + .content.control-group {
-        margin-top: .9rem;
+    @include width-up-to($phone-max) {
+        .divider + .content.control-group {
+            margin-top: .9rem;
+        }
+    }
+
+    @include wider-than($phone-max) {
+        .divider + .content.control-group {
+            margin-top: 2.5rem;
+        }
+
+        .social-buttons {
+            margin-top: .9rem;
+        }
     }
 
     .role-section {
@@ -296,6 +317,10 @@ body {
 .social-buttons {
     > div {
         display: inline-block;
+    }
+
+    .fb-share-button {
+        margin-right: .6rem;
     }
 
     .fb-share-button a {
@@ -341,10 +366,6 @@ body {
             height: 35px;
             text-align: center;
             padding-top: .8rem;
-        }
-
-        .fb-share-button {
-            margin-right: .6rem;
         }
     }
 }
