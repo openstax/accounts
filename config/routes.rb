@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
+  mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
+  OpenStax::Salesforce.set_top_level_routes(self)
+
   scope controller: 'sessions' do
     get 'login', action: :start, as: :login
 
@@ -28,9 +31,6 @@ Rails.application.routes.draw do
   end
 
   mount OpenStax::Api::Engine, at: '/'
-
-  mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
-  OpenStax::Salesforce.set_top_level_routes(self)
 
   # Create a named path for links like `/auth/facebook` so that the path prefixer gem
   # will appropriately prefix the path.  https://stackoverflow.com/a/40125738/1664216
