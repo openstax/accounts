@@ -301,7 +301,7 @@ body {
 
     @include width-up-to($phone-max) {
         .divider + .content.control-group {
-            margin-top: .9rem;
+            margin-top: 0.9rem;
         }
 
         .terms {
@@ -309,7 +309,7 @@ body {
         }
 
         .role-section {
-            margin-bottom: .8rem;
+            margin-bottom: 0.8rem;
         }
     }
 
@@ -319,7 +319,7 @@ body {
         }
 
         .social-buttons {
-            margin-top: .9rem;
+            margin-top: 0.9rem;
         }
 
         .content.control-group {
@@ -376,7 +376,7 @@ body {
     }
 
     .fb-share-button {
-        margin-right: .6rem;
+        margin-right: 0.6rem;
     }
 
     .fb-share-button a {
@@ -421,7 +421,7 @@ body {
             width: 3.3rem;
             height: 3.5rem;
             text-align: center;
-            padding-top: .8rem;
+            padding-top: 0.8rem;
         }
     }
 }
