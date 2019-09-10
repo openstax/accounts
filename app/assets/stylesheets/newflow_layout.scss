@@ -47,8 +47,8 @@ body {
     margin-right: auto;
     margin-bottom: 3rem;
     margin-top: 4rem;
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: 1.4rem;
+    padding-right: 1.4rem;
 
     .step-counter {
         @include width-up-to($phone-max) {
@@ -59,13 +59,13 @@ body {
             margin-bottom: -1rem;
         }
 
-        height: 30px;
+        height: 3rem;
 
         > div {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 94px;
+            width: 9.4rem;
             height: 100%;
 
             background-color: #f5f5f5;
@@ -75,7 +75,7 @@ body {
         span {
             font-size: 1.4rem;
             font-weight: bold;
-            letter-spacing: -0.56px;
+            letter-spacing: -0.056rem;
         }
     }
 
@@ -152,21 +152,21 @@ body {
         header {
             @include width-up-to($phone-max) {
                 @include set-font(h4);
-                line-height: 1.67;
+                line-height: 3rem;
             }
 
             @include wider-than($phone-max) {
                 @include set-font(h2);
                 line-height: 7.5rem;
                 margin: 0;
-                letter-spacing: -1.44px;
+                letter-spacing: -0.144rem;
             }
 
             text-align: center;
         }
 
         > .content {
-            max-width: 555px;
+            max-width: 55.5rem;
             margin-left: auto;
             margin-right: auto;
         }
@@ -198,7 +198,7 @@ body {
 
         .role-button {
             @include width-up-to($phone-max) {
-                letter-spacing: -0.72px;
+                letter-spacing: -0.072rem;
                 line-height: 2;
                 margin-right: 3.5rem;
                 font-size: 1.8rem;
@@ -206,7 +206,7 @@ body {
             }
 
             @include width-between($phone-max, $tablet-max) {
-                margin-left: 38px;
+                margin-left: 3.8rem;
                 width: 85%;
                 border: none;
             }
@@ -219,13 +219,13 @@ body {
                 border: none;
             }
 
-            max-width: 555px;
+            max-width: 55.5rem;
             padding-left: 0;
             padding-right: 0;
 
             font-size: 2.4rem;
             text-align: center;
-            letter-spacing: -0.96px;
+            letter-spacing: -0.096rem;
             font-weight: bold;
             color: #c1c1c1;
         }
@@ -280,7 +280,7 @@ body {
     }
 
     [type="submit"] {
-        width: 172px;
+        width: 17.2rem;
     }
 
     [type="checkbox"] {
@@ -403,7 +403,7 @@ body {
 @include width-up-to($phone-max) {
     .social-buttons {
         .btn {
-            height: 35px;
+            height: 3.5rem;
             padding: 0;
         }
 
@@ -418,8 +418,8 @@ body {
         }
 
         i.social-icon {
-            width: 33px;
-            height: 35px;
+            width: 3.3rem;
+            height: 3.5rem;
             text-align: center;
             padding-top: .8rem;
         }
@@ -429,13 +429,13 @@ body {
 @include wider-than($phone-max) {
     .social-buttons {
         .btn {
-            width: 172px;
+            width: 17.2rem;
             padding: 1rem 0;
         }
 
         .social-icon {
-            padding-left: 25px;
-            padding-right: 16px;
+            padding-left: 2.5rem;
+            padding-right: 1.6rem;
         }
     }
 }
