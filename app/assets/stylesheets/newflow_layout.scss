@@ -55,6 +55,10 @@ body {
             margin-bottom: 1rem;
         }
 
+        @include wider-than($phone-max) {
+            margin-bottom: -1rem;
+        }
+
         height: 30px;
 
         > div {
@@ -231,6 +235,22 @@ body {
             color: var(--greyish-brown);
         }
 
+        .social-section {
+            @include wider-than($phone-max) {
+                > div {
+                    line-height: normal;
+                }
+            }
+        }
+
+        .role-section + .social-section {
+            @include wider-than($phone-max) {
+                > div {
+                    line-height: unset; // don't want `line-height: normal` in sign up form, desktop view
+                }
+            }
+        }
+
         // placeholder text
         [type=text], [type=email], [type=password] {
             color: var(--placeholder-text);
@@ -287,6 +307,10 @@ body {
         .terms {
             margin-top: 1rem;
         }
+
+        .role-section {
+            margin-bottom: .8rem;
+        }
     }
 
     @include wider-than($phone-max) {
@@ -302,13 +326,13 @@ body {
             margin-bottom: 1rem;
         }
 
-        header + .content {
-            margin-top: 2rem;
+        .social-section {
+            margin-top: 3rem;
         }
-    }
 
-    .role-section {
-        margin-bottom: .8rem;
+        .role-section + .social-section {
+            margin-top: 0;
+        }
     }
 
     .content.control-group.checkboxes-section {
