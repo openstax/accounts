@@ -88,7 +88,9 @@ def link_in_last_email
 end
 
 def create_application(skip_terms: false)
-  app = FactoryBot.create(:doorkeeper_application, :trusted, skip_terms: skip_terms)
+  app = FactoryBot.create(:doorkeeper_application, skip_terms: skip_terms,
+                          can_access_private_user_data: true,
+                          can_skip_oauth_screen: true)
 
   # We want to provide a local "external" redirect uri so our specs aren't actually
   # making HTTP calls against real external URLs like "example.com"

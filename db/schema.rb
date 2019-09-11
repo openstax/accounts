@@ -113,8 +113,8 @@ ActiveRecord::Schema.define(version: 2019_09_11_171944) do
 
   create_table "fine_print_signatures", id: :serial, force: :cascade do |t|
     t.integer "contract_id", null: false
-    t.integer "user_id", null: false
     t.string "user_type", null: false
+    t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_implicit", default: false, null: false
