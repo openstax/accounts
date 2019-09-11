@@ -91,7 +91,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     app = current_api_user.application
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
                           user_options: {
-                            include_private_data: app && app.trusted?
+                            include_private_data: app && app.can_access_private_user_data?
                           },
                           location: nil
   end
@@ -185,7 +185,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     outputs = GetUpdatedApplicationUsers.call(current_application, params[:limit]).outputs
     respond_with outputs[:application_users],
                  represent_with: Api::V1::ApplicationUsersRepresenter,
-                 user_options: { include_private_data: current_application && current_application.trusted? },
+                 user_options: { include_private_data: current_application && current_application.can_access_private_user_data? },
                  location: nil
   end
 

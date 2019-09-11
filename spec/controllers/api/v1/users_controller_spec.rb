@@ -64,6 +64,19 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
 
       expected_response = {
         total_count: 1,
+        items: [ user_matcher(user_2, include_private_data: false) ]
+      }
+
+      expect(response.body_as_hash).to match(expected_response)
+    end
+
+    it "returns a single result well with private data" do
+      trusted_application.update_attribute(:can_access_private_user_data, true)
+      api_get :index, trusted_application_token, params: {q: 'first_name:bob last_name:Michaels'}
+      expect(response.code).to eq('200')
+
+      expected_response = {
+        total_count: 1,
         items: [ user_matcher(user_2, include_private_data: true) ]
       }
 
@@ -249,10 +262,16 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
   end
 
   context "find or create" do
+    let!(:foc_trusted_application)   { FactoryBot.create :doorkeeper_application, can_find_or_create_accounts: true }
+    let!(:foc_trusted_application_token) do
+      FactoryBot.create :doorkeeper_access_token, application: foc_trusted_application,
+                                                   resource_owner_id: nil
+    end
+
     it "should create a new user for an app" do
       expect{
         api_post :find_or_create,
-                 trusted_application_token,
+                 foc_trusted_application_token,
                  body: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
       }.to change{User.count}.by(1)
       expect(response.code).to eq('201')
@@ -265,7 +284,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     it 'creates a new user with first name, last name and full name if given' do
       expect {
         api_post :find_or_create,
-                 trusted_application_token,
+                 foc_trusted_application_token,
                  body: {
                    email: 'a-new-email@test.com',
                    first_name: 'Sarah',
@@ -279,7 +298,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(new_user.last_name).to eq 'Test'
       expect(new_user.full_name).to eq 'Sarah Test'
       expect(new_user.role).to eq 'instructor'
-      expect(new_user.applications).to eq [ trusted_application ]
+      expect(new_user.applications).to eq [ foc_trusted_application ]
       expect(new_user.uuid).not_to be_blank
     end
 
@@ -303,7 +322,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
 
     context "should return only IDs for a user" do
       it "does so for unclaimed users" do
-        api_post :find_or_create, trusted_application_token,
+        api_post :find_or_create, foc_trusted_application_token,
                  body: {email: unclaimed_user.contact_infos.first.value}
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
@@ -314,7 +333,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       end
       it "does so for claimed users" do
         api_post :find_or_create,
-                 trusted_application_token,
+                 foc_trusted_application_token,
                  body: {email: user_2.contact_infos.first.value}
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(

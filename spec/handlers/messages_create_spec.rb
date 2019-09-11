@@ -3,7 +3,7 @@ require 'rails_helper'
 describe MessagesCreate, type: :handler do
 
   let!(:trusted_application)   {
-    FactoryBot.create :doorkeeper_application, :trusted,
+    FactoryBot.create :doorkeeper_application, can_message_users: true,
                        email_from_address: 'app@example.com'
   }
   let!(:trusted_application_token) { FactoryBot.create :doorkeeper_access_token,

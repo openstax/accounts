@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_06_185243) do
+ActiveRecord::Schema.define(version: 2019_09_11_171944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -113,8 +113,8 @@ ActiveRecord::Schema.define(version: 2019_02_06_185243) do
 
   create_table "fine_print_signatures", id: :serial, force: :cascade do |t|
     t.integer "contract_id", null: false
-    t.string "user_type", null: false
     t.integer "user_id", null: false
+    t.string "user_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_implicit", default: false, null: false
@@ -247,6 +247,10 @@ ActiveRecord::Schema.define(version: 2019_02_06_185243) do
     t.string "scopes", default: "", null: false
     t.string "lead_application_source", default: "", null: false
     t.boolean "confidential", default: true, null: false
+    t.boolean "can_access_private_user_data", default: false
+    t.boolean "can_find_or_create_accounts", default: false
+    t.boolean "can_message_users", default: false
+    t.boolean "can_skip_oauth_screen", default: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end

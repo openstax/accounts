@@ -95,7 +95,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
                           location: nil,
                           user_options: {
-                            include_private_data: current_application.try(:trusted?)
+                            include_private_data: current_application.try(:can_access_private_user_data?)
                           }
   end
 

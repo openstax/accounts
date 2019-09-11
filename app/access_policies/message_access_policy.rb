@@ -3,8 +3,8 @@ class MessageAccessPolicy
   # with which Message objects.
 
   def self.action_allowed?(action, requestor, msg)
-    # Only trusted apps can access this API
-    return false unless requestor.is_application? && requestor.trusted
+    # Only selected apps can access this API
+    return false unless requestor.is_application? && requestor.can_message_users
 
     # Create is currently the only available action
     [:create].include?(action)

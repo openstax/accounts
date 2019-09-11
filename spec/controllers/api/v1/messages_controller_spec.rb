@@ -7,7 +7,7 @@ describe Api::V1::MessagesController, type: :controller, api: true, version: :v1
                        email_from_address: 'app@example.com'
   }
   let!(:trusted_application)   {
-    FactoryBot.create :doorkeeper_application, :trusted,
+    FactoryBot.create :doorkeeper_application, can_message_users: true,
                        email_from_address: 'app@example.com'
   }
   let!(:user_1)                { FactoryBot.create :user }
