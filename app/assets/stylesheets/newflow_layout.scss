@@ -73,9 +73,7 @@ body {
         }
 
         span {
-            font-size: 1.4rem;
-            font-weight: bold;
-            letter-spacing: -0.056rem;
+            @include title-font(1.4rem);
         }
     }
 
@@ -88,14 +86,10 @@ body {
             }
 
             width: 18rem;
-            font-size: 1.8rem;
-            font-weight: 700;
-
-            border-bottom: 0.1rem solid #d5d5d5;
             padding: 1.2rem 0;
-            border-style: solid;
-            border-color: #d5d5d5;
-            border-width: 0.1rem;
+
+            @include set-font(h4);
+            border: 0.1rem solid #d5d5d5;
 
             &:first-child {
                 border-right: 0;
@@ -159,7 +153,6 @@ body {
                 @include set-font(h2);
                 line-height: 7.5rem;
                 margin: 0;
-                letter-spacing: -0.144rem;
             }
 
             text-align: center;
@@ -198,10 +191,8 @@ body {
 
         .role-button {
             @include width-up-to($phone-max) {
-                letter-spacing: -0.072rem;
-                line-height: 2;
+                @include title-font(1.8rem);
                 margin-right: 3.5rem;
-                font-size: 1.8rem;
                 height: 3.5rem;
             }
 
@@ -215,7 +206,6 @@ body {
                 width: 100%;
                 height: 5rem;
                 margin-left: 3.8rem;
-                line-height: 2.08;
                 border: none;
             }
 
@@ -223,10 +213,8 @@ body {
             padding-left: 0;
             padding-right: 0;
 
-            font-size: 2.4rem;
+            @include title-font(2.4rem);
             text-align: center;
-            letter-spacing: -0.096rem;
-            font-weight: bold;
             color: #c1c1c1;
         }
 
