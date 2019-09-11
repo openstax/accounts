@@ -18,5 +18,6 @@ Rails.application.config.assets.precompile += %w(
   application_body_api_docs.css
   syntax_highlight.css
   newflow_layout.css
+  newflow_colors.css
   newflow.js
 )
