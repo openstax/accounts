@@ -12,9 +12,9 @@ class ExportUsersLastLoginDate
 
   def info
     output_users = []
-    User.preload(:contact_infos).find_each do |user|
+    User.find_each do |user|
       output_users << Hashie::Mash.new({
-        emails: user.contact_infos.verified.map(&:value).join(", "),
+        id: user.uuid,
         last_login_at: SecurityLog.sign_in_successful
                                     .where(user_id: user.id)
                                     .first&.created_at&.strftime("%m/%d/%Y %I:%M%p %Z")
@@ -26,13 +26,13 @@ class ExportUsersLastLoginDate
   def generate_csv
     CSV.open(filename, 'w') do |file|
       file.add_row ([
-          "Email(s)",
+          "ID",
           "Last login date",
       ])
 
       info.each do |hashie|
         file.add_row([
-          hashie.emails,
+          hashie.id,
           hashie.last_login_at,
         ])
       end

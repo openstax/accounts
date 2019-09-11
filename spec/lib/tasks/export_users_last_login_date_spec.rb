@@ -22,7 +22,7 @@ RSpec.describe ExportUsersLastLoginDate, type: :routine do
     end
 
     it "includes user's verified email addresses" do
-      expect(first_output.emails.split(', ')).to match_array [email_1.value, email_2.value]
+      expect(first_output.id).to eq user_1.uuid
     end
 
     context "as csv file with student information" do
@@ -37,8 +37,8 @@ RSpec.describe ExportUsersLastLoginDate, type: :routine do
           data = Hash[headers.zip(values)]
 
           expect(rows.count).to eq 2
-          expect(data["Email(s)"].split(', ')).to match_array [email_1.value, email_2.value]
-          expect(data["Last login date"]).to eq security_log_entry.created_at.strftime("%m/%d/%Y %I:%M%p %Z")
+          expect(data['ID']).to eq user_1.uuid
+          expect(data['Last login date']).to eq security_log_entry.created_at.strftime("%m/%d/%Y %I:%M%p %Z")
         end
       end
     end
