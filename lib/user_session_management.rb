@@ -24,26 +24,11 @@ module UserSessionManagement
 
   # Always return an object
   def current_user
+    # The SSO cookie has sole responsbility for managing the current user
     @current_user ||= begin
-      current_session_user = User.find_by(id: session[:user_id]) if session[:user_id].present?
-
       sso_cookie = sso_cookies[sso_cookie_name]
       current_sso_user = User.find_by(uuid: sso_cookie.dig('user', 'uuid')) if sso_cookie.present?
-
-      if current_session_user.nil?
-        # Use the SSO user if the session user is not set
-        # Use the AnonymousUser if neither is set
-        current_sso_user.nil? ? AnonymousUser.instance : current_sso_user
-      elsif current_sso_user.nil? || current_session_user == current_sso_user
-        # Use the session user if the SSO user is not yet set
-        # For users that are still logged in since before we had SSO
-        # If the session user and the SSO user match, we can return either so we do it here too
-        current_session_user
-      else
-        # Both the session and SSO users are set and different from each other
-        # Log them out and return the AnonymousUser
-        sign_out!
-      end
+      current_sso_user.nil? ? AnonymousUser.instance : current_sso_user
     end
   end
 
@@ -53,14 +38,11 @@ module UserSessionManagement
     @current_user = user || AnonymousUser.instance
 
     if @current_user.is_anonymous?
-      session[:user_id] = nil
-
       # Clear the SSO cookie
       sso_cookies.delete(sso_cookie_name)
 
       security_log :sign_out, security_log_data
     else
-      session[:user_id] = @current_user.id
       session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator?
 
       # Set the SSO cookie
