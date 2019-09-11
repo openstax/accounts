@@ -3,66 +3,95 @@
         <div class="tab-group">
             <div class="tab inactive">Log in</div>
             <div class="tab active">Sign up</div>
-            <div class="tab tab__placeholder"></div>
-            <div class="tab tab__placeholder"></div>
-            <div class="tab tab__placeholder"></div>
+            <div class="tab tab--placeholder"></div>
+            <div class="tab tab--placeholder"></div>
+            <div class="tab tab--placeholder"></div>
         </div>
+
         <form>
-                <h1>Set up your account</h1>
-
-                <input type="button" value="Student" class="disabled">
-
-                <div class="content">
-                    <div>Sign up with:</div>
+                <div class="step-counter">
                     <div>
-                        <a class="btn btn-social btn-facebook">
-                            <i class="fa fa-facebook"></i> Facebook
-                        </a>
-                        <a class="btn btn-social btn-google">
-                            <i class="fa fa-google"></i> Google
-                        </a>
+                        <span>Step 2 of 3</span>
+                    </div>
+                </div>
+
+                <header>Set up your account</header>
+
+                <div class="content role-section">
+                    <div>
+                        <div class="back-arrow"><i class="fa fa-arrow-left"></i></div>
+                        <input type="button" value="Student" class="role-button">
+                    </div>
+                </div>
+
+                <div class="content social-section">
+                    <div>Sign up with:</div>
+
+                    <div class="social-buttons">
+
+                        <div class="fb-share-button">
+                            <a class="facebook btn" href="#">
+                                <i class="social-icon fa fa-facebook"></i>
+                                <span>Facebook</span>
+                            </a>
+                        </div>
+
+                        <div class="google-share-button">
+                            <a href="#" class="google btn">
+                                <i class="social-icon fa fa-google"></i>
+                                <span>Google</span>
+                            </a>
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="divider">OR SIGN UP BELOW</div>
 
-                <div class="control-group">
+                <div class="content control-group">
                     <label class="field-label">First name *</label>
                     <input type="text" name="first_name"
                                 placeholder="First name" class="delay-validation" required>
                     <!-- <div class="invalid-message">You surely have a first name</div> -->
                 </div>
 
-                <div class="control-group">
+                <div class="content control-group">
                     <label class="field-label">Last name *</label>
                     <input type="text" name="last_name"
                                 placeholder="Last name" class="delay-validation" required>
                     <!-- <div class="invalid-message">You surely have a last name</div> -->
                 </div>
 
-                <div class="control-group">
+                <div class="content control-group">
                     <label class="field-label">Email *</label>
                     <input type="text" name="email"
-                                placeholder="Email" class="delay-validation" required>
+                                placeholder="me@myemail.com" class="delay-validation" required>
                     <!-- <div class="invalid-message">Your email address or login with social</div> -->
                 </div>
 
-                <div class="control-group">
+                <div class="content control-group">
                     <label class="field-label">Password *</label>
                     <input type="password" name="password"
                                 placeholder="Password" class="delay-validation" required>
                     <!-- <div class="invalid-message">A secure password</div> -->
                 </div>
 
-                <div class="control-group">
-                    <input type="checkbox" name="newsletter" checked><span>Send me the OpenStax newsletter</span>
-                    <br>
+                <div class="content control-group checkboxes-section">
+                    <div>
+                        <input type="checkbox" name="newsletter" checked>
+                        <span>Send me the OpenStax newsletter</span>
+                        <br>
+                    </div>
 
-                    <input type="checkbox" name="toc">
-                    <span>I agree to the Terms of Use and Privacy Policy</span>
+                    <div class="terms">
+                        <input type="checkbox" name="terms">
+                        <span>I agree to the Terms of Use and Privacy Policy</span>
+                    </div>
                 </div>
 
-                <span><input type="submit" value="Continue" class="primary"></span>
+                <div class="content">
+                    <input type="submit" value="Continue" class="primary">
+                </div>
         </form>
-    </input>
+    </div>
 </div>
