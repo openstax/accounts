@@ -360,6 +360,11 @@ body {
         text-align: center;
     }
 
+    // informational messages shows to users, for example on email confirmation screen
+    .info-message {
+        @include set-font(body-regular);
+    }
+
     [type="submit"] {
         width: 17.2rem;
     }
