@@ -1,12 +1,6 @@
 <div id="signinup-form">
     <div class="content">
-        <div class="tab-group">
-            <div class="tab active">Log in</div>
-            <div class="tab inactive">Sign up</div>
-            <div class="tab tab--placeholder"></div>
-            <div class="tab tab--placeholder"></div>
-            <div class="tab tab--placeholder"></div>
-        </div>
+        <%= render partial: 'tab_group' , locals: { active_class: 'login--active' } %>
 
         <form>
                 <header style="margin-top: 3rem">Log in to your OpenStax account</header>
