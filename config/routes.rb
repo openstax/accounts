@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     get 'newflow/signin', action: :signin
     get 'newflow/signup', action: :signup
     get 'newflow/welcome', action: :welcome
+    get 'newflow/confirm', action: :confirm
   end
 
   scope controller: 'sessions' do
