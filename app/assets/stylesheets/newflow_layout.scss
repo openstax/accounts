@@ -50,6 +50,96 @@ body {
     padding-left: 1.4rem;
     padding-right: 1.4rem;
 
+    .join-as {
+        @include width-up-to($phone-max) {
+            display: flex;
+            flex-direction: column;
+            margin-top: 1rem;
+
+            > div {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .join-as__role {
+                height: 15rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .join-as__description {
+                margin-top: 3rem;
+                margin-bottom: 3rem;
+                @include set-font(body-regular);
+            }
+        }
+
+        @include wider-than($phone-max) {
+            display: flex;
+
+            > div {
+                display: flex;
+                flex-direction: column;
+                width: 26.2rem;
+                margin-top: 2.5rem;
+
+                &:first-child {
+                    margin-right: 3rem;
+                }
+            }
+
+            .join-as__role {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+
+                height: 26rem;
+            }
+
+            .join-as__description {
+                margin-top: 3rem;
+                @include set-font(body-regular);
+            }
+        }
+
+        .join-as__role {
+            @include title-font(2.4rem);
+            text-align: center;
+            position: relative;
+            border: 0.1rem solid #d5d5d5;
+            box-sizing: border-box;
+            border-bottom: 1rem solid green;
+
+            &.student {
+                border-bottom: 1rem solid #007297;
+            }
+
+            &.educator {
+                border-bottom: 1rem solid #0c9372;
+            }
+        }
+
+        a {
+            color: unset;
+            text-decoration: none;
+            // bcus `box-sizing: border-box` on hover isn't doing the job:
+            border: 0.1rem solid #fff;
+
+            &:hover {
+                border: 0.1rem solid #0dc0dc;
+                box-shadow: 0 0 .4rem rgba(13, 192, 220, 0.4);
+            }
+        }
+
+        .join-as__role img {
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+        }
+    }
+
     .step-counter {
         @include width-up-to($phone-max) {
             margin-bottom: 1rem;
@@ -88,8 +178,13 @@ body {
             width: 18rem;
             padding: 1.2rem 0;
 
-            @include set-font(h4);
+            color: unset;
+            text-decoration: inherit;
+            background-color: #f6f8fa;
+            border-bottom-width: 0;
+            border-bottom-color: #fff;
             border: 0.1rem solid #d5d5d5;
+            @include set-font(h4);
 
             &:first-child {
                 border-right: 0;
@@ -99,13 +194,9 @@ body {
                 width: 10rem;
             }
 
-            &.active {
+            &.login.login--active, &.signup.signup--active {
+                background-color: #fff;
                 border-bottom-width: 0;
-                border-bottom-color: #fff;
-            }
-
-            &.inactive {
-                background-color: #f6f8fa;
             }
         }
 
@@ -182,6 +273,8 @@ body {
 
         .back-arrow {
             display: inline-block;
+            color: unset;
+            font-size: 1.8rem;
 
             @include width-up-to($phone-max) {
                 text-align: right;
