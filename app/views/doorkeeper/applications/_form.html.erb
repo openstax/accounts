@@ -78,14 +78,24 @@
       </div>
     <% end %>
 
+    <% [
+      :trusted,
+      :can_access_private_user_data,
+      :can_find_or_create_accounts,
+      :can_message_users,
+      :can_skip_oauth_screen,
+    ].each do |priviledge| %>
+
     <%= content_tag :div,
-        class: "form-group#{' has-error' if application.errors[:trusted].present?}" do %>
-      <%= f.label :trusted?, class: 'col-sm-2 control-label',
-                             for: 'doorkeeper_application_trusted' %>
+        class: "form-group#{' has-error' if application.errors[priviledge].present?}" do %>
+      <%= f.label priviledge.to_s.humanize + "?", class: 'col-sm-2 control-label',
+                             for: "doorkeeper_application_#{priviledge}" %>
       <div class="col-sm-10">
-        <%= f.check_box :trusted %>
-        <%= doorkeeper_errors_for application, :trusted %>
+        <%= f.check_box priviledge %>
+        <%= doorkeeper_errors_for application, priviledge %>
       </div>
+    <% end %>
+
     <% end %>
   <% end %>
 

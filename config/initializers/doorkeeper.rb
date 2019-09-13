@@ -192,7 +192,7 @@ Doorkeeper.configure do
   # For example if dealing with a trusted application.
   #
   skip_authorization do |resource_owner, client|
-    client.application.trusted
+    client.application.can_skip_oauth_screen
   end
 
   # WWW-Authenticate Realm (default "Doorkeeper").

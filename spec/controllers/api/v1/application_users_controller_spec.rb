@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true, version: :v1 do
 
   let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
-  let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, :trusted }
+  let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, can_access_private_user_data: true }
 
   let!(:untrusted_application_token) do
     FactoryBot.create :doorkeeper_access_token, application: untrusted_application,

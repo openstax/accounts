@@ -44,9 +44,20 @@
 
     <p><%= @application.lead_application_source %></p>
 
-    <h4>Trusted?</h4>
+  <% [
+    :trusted,
+    :can_access_private_user_data,
+    :can_find_or_create_accounts,
+    :can_message_users,
+    :can_skip_oauth_screen,
+  ].each do |priviledge| %>
 
-    <p><%= @application.trusted ? 'Yes' : 'No' %></p>
+    <h4><%= priviledge.to_s.humanize %>?</h4>
+
+    <p><%= @application.send(priviledge) ? 'Yes' : 'No' %></p>
+
+  <% end %>
+
   </div>
 
   <div class="col-md-4">

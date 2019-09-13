@@ -7,7 +7,7 @@ class Api::V1::MessagesController < Api::V1::ApiController
     description <<-EOS
       All actions in this controller require an Oauth token
       obtained through the Client Credentials flow.
-      Only trusted applications can currently access this API.
+      Only selected applications can currently access this API.
 
       Messages belong to applications.
       They represent messages sent to Users through their ContactInfos.
@@ -44,7 +44,7 @@ class Api::V1::MessagesController < Api::V1::ApiController
   api :POST, '/messages', 'Creates and sends a new Message.'
   description <<-EOS
     Creates and sends a new Message to the given users.
-    Can only be called by a trusted application, using a token
+    Can only be called by a selected application, using a token
     obtained via the Client Credentials Oauth flow.
     Returns a JSON representation of the sent message.
 
