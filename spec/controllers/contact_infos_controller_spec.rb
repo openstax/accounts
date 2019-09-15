@@ -76,7 +76,7 @@ RSpec.describe ContactInfosController, type: :controller do
 
     it "returns success if code matches" do
       get(:confirm, params: { code: @email.confirmation_code })
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response.body).to have_no_missing_translations
       expect(response.body).to have_content(t :"contact_infos.confirm.page_heading.success")
       expect(response.body).to(
@@ -103,7 +103,7 @@ RSpec.describe ContactInfosController, type: :controller do
 
     it "returns success if code matches" do
       get(:confirm_unclaimed, params: { code: email.confirmation_code })
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(response.body).to have_no_missing_translations
       expect(response.body).to(
         have_content(t :"contact_infos.confirm_unclaimed.thanks_for_validating")

@@ -132,7 +132,7 @@ gem 'oj_mimic_json'
 # Admin toggles
 gem 'rails-settings-ui'
 gem 'rails-settings-cached', '0.7.2'
-gem 'dry-validation', '0.12.0'
+gem 'dry-validation', '0.12.3'
 
 gem 'scout_apm', '~> 3.0.x'
 
