@@ -20,6 +20,6 @@ feature 'Add application to accounts', js: true do
     expect(page).to have_content('Callback urls: https://localhost/')
     expect(page.text).to match(/Application UID:\n[a-z0-9]+/)
     expect(page.text).to match(/Secret:\n[a-z0-9]+/)
-    expect(page).to have_content('Trusted? Yes')
+    expect(page).to have_content('Can access private user data? Yes')
   end
 end

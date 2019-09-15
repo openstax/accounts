@@ -29,7 +29,7 @@ describe 'accounts:oauth_apps:create_or_update' do
     expect(new_app.owner.has_owner? admin).to be true
     expect(new_app.email_from_address).to eq('new-app@example.org')
     expect(new_app.email_subject_prefix).to eq('[new-app]')
-    expect(new_app.trusted).to be true
+    expect(new_app.can_access_private_user_data).to be true
   end
 
   it 'creates an untrusted oauth application' do
@@ -50,7 +50,7 @@ describe 'accounts:oauth_apps:create_or_update' do
     expect(new_app.owner.has_owner? admin).to be true
     expect(new_app.email_from_address).to eq('new-app@example.org')
     expect(new_app.email_subject_prefix).to eq('[new-app]')
-    expect(new_app.trusted).to be false
+    expect(new_app.can_access_private_user_data).to be false
   end
 
   it 'raises an error if APP_NAME is missing' do

@@ -31,14 +31,14 @@ module Oauth
           doorkeeper_application: {
             name: 'Some other name',
             redirect_uri: 'https://www.example.net',
-            trusted: true
+            can_access_private_user_data: true
           }
         }
       )
       expect(response).to redirect_to(oauth_application_path(untrusted_application_user.id))
       expect(assigns(:application).name).to eq('Some other name')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.net')
-      expect(assigns(:application).trusted).to eq(true)
+      expect(assigns(:application).can_access_private_user_data).to eq(true)
     end
 
     it "should let an admin get the list of all applications" do
@@ -59,7 +59,7 @@ module Oauth
       expect(response).to have_http_status :success
       expect(assigns(:application).name).to eq(untrusted_application_user.name)
       expect(assigns(:application).redirect_uri).to eq(untrusted_application_user.redirect_uri)
-      expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
+      expect(assigns(:application).can_access_private_user_data).to eq(untrusted_application_user.can_access_private_user_data)
     end
 
     it "should let an admin get new" do
@@ -75,7 +75,7 @@ module Oauth
             doorkeeper_application: {
               name: 'Some app',
               redirect_uri: 'https://www.example.com',
-              trusted: true
+              can_message_users: true
             }
         }
       )
@@ -85,7 +85,7 @@ module Oauth
       expect(response).to redirect_to(oauth_application_path(id))
       expect(assigns(:application).name).to eq('Some app')
       expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
-      expect(assigns(:application).trusted).to eq(true)
+      expect(assigns(:application).can_message_users).to eq(true)
     end
 
     it "should let an admin edit someone else's application" do
@@ -94,7 +94,7 @@ module Oauth
       expect(response).to have_http_status :success
       expect(assigns(:application).name).to eq(untrusted_application_user.name)
       expect(assigns(:application).redirect_uri).to eq(untrusted_application_user.redirect_uri)
-      expect(assigns(:application).trusted).to eq(untrusted_application_user.trusted)
+      expect(assigns(:application).can_message_users).to eq(untrusted_application_user.can_message_users)
     end
 
     it "should let an admin destroy an application" do
@@ -128,7 +128,7 @@ module Oauth
           doorkeeper_application: {
             name: 'Some app',
             redirect_uri: 'https://www.example.com',
-            trusted: true
+            can_skip_oauth_screen: true
           }
         }
       )
@@ -145,7 +145,7 @@ module Oauth
           application: {
             name: 'Some other name',
             redirect_uri: 'https://www.example.net',
-            trusted: true
+            can_skip_oauth_screen: true
           }
         }
       )
@@ -187,8 +187,7 @@ module Oauth
         params: {
           doorkeeper_application: {
             name: 'Some app',
-            redirect_uri: 'https://www.example.com',
-            trusted: true
+            redirect_uri: 'https://www.example.com'
           }
         }
       )
@@ -215,7 +214,7 @@ module Oauth
           doorkeeper_application: {
             name: 'Some other name',
             redirect_uri: 'https://www.example.net',
-            trusted: true
+            can_access_private_user_data: true
           }
         }
       )

@@ -23,29 +23,6 @@ Doorkeeper::Application.class_eval do
     Doorkeeper::OAuth::Helpers::URIChecker.valid_for_authorization?(url, redirect_uri)
   end
 
-  ## TODO REMOVE THE FOLLOWING AFTER THESE NEW PERMISSIONS FIELDS ARE DEPLOYED
-
-  def respond_to_missing?(method, include_private=false)
-    [
-      :can_access_private_user_data,
-      :can_find_or_create_accounts,
-      :can_message_users,
-      :can_skip_oauth_screen,
-    ].include?(method.to_s.gsub(/\?/,'').to_sym) || super
-  end
-
-  def method_missing(method, *args, &block)
-    if [
-      :can_access_private_user_data,
-      :can_find_or_create_accounts,
-      :can_message_users,
-      :can_skip_oauth_screen,
-    ].include?(method.to_s.gsub(/\?/,'').to_sym)
-      trusted
-    else
-      super
-    end
-  end
 end
 
 Doorkeeper::AccessToken.class_eval do
