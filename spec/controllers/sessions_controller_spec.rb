@@ -74,6 +74,11 @@ RSpec.describe SessionsController, type: :controller do
       expect(response).to redirect_to("https://something.openstax.org/howdy?blah=true")
     end
 
+    it 'redirect accepts non-ascii URIs' do
+      delete(:destroy, params: { r: "https://something.openstax.org/errata/form?book=Biology for AP\u00AE Courses" })
+      expect(response).to redirect_to("https://something.openstax.org/errata/form?book=Biology for AP\u00AE Courses")
+    end
+
     it 'does not redirect to a caller-specified URL if not in whitelist' do
       delete(:destroy, params: { r: "http://www.google.com" })
       expect(response).to redirect_to("/")

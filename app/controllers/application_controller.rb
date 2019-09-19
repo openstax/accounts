@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
 
   def return_url_specified_and_allowed?
     # This returns true if `save_redirect` actually saved the URL
-    params[:r] && params[:r] == stored_url
+    params[:r] && URI.encode(params[:r]) == stored_url
   end
 
   def verify_signed_params
