@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
   end
 
   def return_url_specified_and_allowed?
-    # This returns true iff `save_redirect` actually saved the URL
+    # This returns true if `save_redirect` actually saved the URL
     params[:r] && params[:r] == stored_url
   end
 

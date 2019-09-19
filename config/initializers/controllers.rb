@@ -48,7 +48,7 @@ ActionController::Base.class_exec do
 
     return true if url.blank? || !Host.trusted?(url)
 
-    store_url(url: url)
+    store_url(url: URI.encode(url))
   end
 
   def disable_fine_print
