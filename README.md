@@ -24,6 +24,7 @@ default_transaction_isolation = 'repeatable read'
 * OAuth requests that arrive with query param `go=signup` will skip log in and go straight to signup. `go=student_signup` will skip to signup and force the signup to have the "student" role.
 * OAuth requests that arrive with query param `signup_at=blah` will redirect users to `blah` if they click the
 link to sign up.
+* A salesforce user must be signed in through the admin console for the Salesforce stuff to work — Salesforce > Setup > Set Salesforce User.
 
 ## Development Setup
 
