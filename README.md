@@ -4,12 +4,12 @@
 [![Code Climate](https://codeclimate.com/github/openstax/accounts.png)](https://codeclimate.com/github/openstax/accounts)
 [![Coverage Status](https://img.shields.io/codecov/c/github/openstax/accounts.svg)](https://codecov.io/gh/openstax/accounts)
 
-OpenStax Accounts is a centralized provider of account-related services for OpenStax products, including:
+OpenStax Accounts is a centralized User Account services provider for various OpenStax products, including:
 
-* User authentication
-* User profile data
-* User messaging and notifications
-* User groups
+* Authentication and authorization
+* Profile/personal data
+* Email notifications
+* OAuth Application privileges
 
 It uses OAuth mechanisms and API keys to provide these services to OpenStax products and their users.
 
@@ -19,17 +19,18 @@ Accounts requires the repeatable read isolation level to work properly. If using
 default_transaction_isolation = 'repeatable read'
 ```
 
-## Using
+## Usage — topics
+* [GDPR](#gdpr)
+For compliance with the General Data Protection Regulation (a regulation in the European Union to protect their citizens' data and privacy).
+* [Special Parameters](#special-parameters)
+The app behavior changes depending on the value of these parameters.
+* [Salesforce](#salesforce)
 
-* OAuth requests that arrive with query param `go=signup` will skip log in and go straight to signup. `go=student_signup` will skip to signup and force the signup to have the "student" role.
-* OAuth requests that arrive with query param `signup_at=blah` will redirect users to `blah` if they click the
-link to sign up.
+## Dev Environment Setup
 
-## Development Setup
+Accounts can be run as a normal Rails app on your machine, in a Docker container, or in a Vagrant virtual machine that mimics our production setup.
 
-In development, Accounts can be run as a normal Rails app on your machine, or you can run it in a Vagrant virtual machine that mimics our production setup.
-
-## Database setup
+### Database setup
 
 If you don't have postgresql already installed, on Mac:
 
@@ -55,16 +56,33 @@ $ bundle install --without production
 Just like with any Rails app, you need to create, migrate, and then seed the database with some default records:
 
 ```sh
-$ rake db:setup
+$ rake db:create db:setup
 ```
 
-Then you can run:
+Before starting the server, you'll need to create a  `secrets.yml` file based off of the example:
+
+```sh
+$ cp config/secrets.yml.example config/secrets.yml
+```
+
+Now you can run:
 
 ```sh
 $ rails server
 ```
 
-which will start Accounts up on port 2999, i.e. http://localhost:2999.
+which will start Accounts up on port 2999. Visit http://localhost:2999.
+
+### Running background jobs
+
+Accounts in production runs background jobs using `delayed_job`.
+In the development environment, however, background jobs are run "inline", i.e. in the foreground.
+
+To actually run these jobs in the background in the development environment,
+set the environment variable `USE_REAL_BACKGROUND_JOBS=true` in your `.env` file
+and then start the `delayed_job` daemon:
+
+`bin/rake jobs:work`
 
 ## Running Specs (Automated Tests)
 
@@ -87,6 +105,8 @@ $ RAISE=true rspec
 
 If you encounter issues running features specs, check the version of chromedriver you have installed.  Version 2.38 is known to work.
 
+# Usage — topics
+
 ## Cloudfront
 
 Accounts is able to run with all URLs using an `/accounts` path prefix.  This lets us put Accounts under a Cloudfront distribution and route
@@ -100,17 +120,21 @@ freak out if this happens.  You can run the rails server with a `SIMULATE_CLOUDF
 You can also use this environment variable when running tests, but note that the expectations on paths ("expect page to have path blah") have
 not been updated to expect the `/accounts` prefix.
 
-## Background Jobs
+## Salesforce
 
-Accounts in production runs background jobs using `delayed_job`.
-In the development environment, however, background jobs are run "inline", i.e. in the foreground.
-
-To actually run these jobs in the background in the development environment,
-set the environment variable `USE_REAL_BACKGROUND_JOBS=true` in your `.env` file
-and then start the `delayed_job` daemon:
-
-`bin/rake jobs:work`
+A salesforce user must be signed in through the admin console for the Salesforce stuff to work — Salesforce > Setup > Set Salesforce User
 
 ## GDPR
 
 For logged-in users, Accounts reports GDPR status in the `/api/user` endpoint via a `is_not_gdpr_location` flag.  When this value is `true`, the user is not in a GDPR location.  Otherwise (`false` or `nil` or not in the response), the user may be in a GDPR location.  To test this functionality in development, you can specify an IP address via the `IP_ADDRESS_FOR_GDPR` environment variable, which will override the normal localhost request IP address.
+
+## Special parameters
+The app behavior changes depending on the value of these parameters.
+
+### `go` parameter
+
+* OAuth requests that arrive with query param `go=signup` will skip log in and go straight to signup.
+* OAuth requests that arrive with query param `go=student_signup` will skip to signup and cause the signup form to have the "student" role.
+
+### `signup` parameter
+OAuth requests that arrive with query param `signup_at=some_page` will redirect users to `some_page` if they click the link to sign up.
