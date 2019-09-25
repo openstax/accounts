@@ -4,8 +4,7 @@
 
 class SessionStoreCookieName
   def self.to_s
-    environment_name = Rails.application.secrets.environment_name
-    "_accounts_session#{'_' + environment_name if environment_name != 'prodtutor'}"
+    "_accounts_session_#{Rails.application.secrets.environment_name}"
   end
 end
 
