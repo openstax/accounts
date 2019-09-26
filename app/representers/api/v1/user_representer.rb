@@ -72,7 +72,7 @@ module Api::V1
              }
 
     property :salesforce_contact_id,
-             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) }
              type: String,
              readable: true,
              writeable: false
@@ -85,6 +85,11 @@ module Api::V1
              schema_info: {
                 description: "One of #{User.faculty_statuses.keys.map(&:to_s).inspect}"
              }
+
+   property :adoption_status,
+            type: String,
+            readable: true,
+            writeable: false
 
     property :role,
              as: :self_reported_role,

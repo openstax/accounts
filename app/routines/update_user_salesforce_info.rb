@@ -113,6 +113,8 @@ class UpdateUserSalesforceInfo
               :pending_faculty
             end
 
+          user.adoption_status = leads.map[&:adoption_status].uniq
+
           user.save! if user.changed?
         rescue StandardError => ee
           error!(exception: ee, user: user)
