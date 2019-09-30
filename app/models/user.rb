@@ -238,12 +238,12 @@ class User < ActiveRecord::Base
       manual_emails = verified_emails.reject { |email| email.confirmation_sent_at.nil? }
       manual_emails.any? ? manual_emails.max_by(&:created_at) : verified_emails.min_by(&:created_at)
     else
-      email_addresses.verified.order(
+      email_addresses.verified.order(Arel.sql(
         <<-SQL.strip_heredoc
           CASE WHEN "confirmation_sent_at" IS NULL THEN '-infinity' ELSE "created_at" END DESC,
           "created_at" ASC
         SQL
-      ).first
+      )).first
     end.try!(:value)
   end
 
