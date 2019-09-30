@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_11_171944) do
+ActiveRecord::Schema.define(version: 2019_09_15_203826) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -238,7 +238,6 @@ ActiveRecord::Schema.define(version: 2019_09_11_171944) do
     t.text "redirect_uri", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "trusted", default: false
     t.integer "owner_id"
     t.string "owner_type"
     t.string "email_from_address", default: "", null: false

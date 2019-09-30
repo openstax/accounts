@@ -111,7 +111,7 @@ module Oauth
     def app_params
       params.require(:doorkeeper_application).permit(
         :name, :redirect_uri, :scopes, :email_subject_prefix, :lead_application_source,
-        :trusted, :email_from_address, :confidential,
+        :email_from_address, :confidential,
         :can_access_private_user_data, :can_find_or_create_accounts, :can_message_users,
         :can_skip_oauth_screen,
       )

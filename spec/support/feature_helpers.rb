@@ -57,7 +57,14 @@ def create_new_application(trusted = false)
   click_link 'New Application'
   fill_in 'Name', with: 'example'
   fill_in 'Redirect URI', with: 'https://localhost/'
-  check 'Trusted?' if trusted
+
+  if trusted
+    check 'Can access private user data?'
+    check 'Can find or create accounts?'
+    check 'Can message users?'
+    check 'Can skip oauth screen?'
+  end
+
   click_button 'Submit'
 end
 
