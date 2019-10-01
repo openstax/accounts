@@ -25,7 +25,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    action_interceptor (1.1.2)
+    action_interceptor (1.2.0)
+      addressable
       rails (>= 3.1)
     actioncable (5.2.0)
       actionpack (= 5.2.0)
