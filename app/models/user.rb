@@ -270,6 +270,7 @@ class User < ActiveRecord::Base
     self.username.try(:strip!)
     self.username = nil if self.username.blank?
     self.self_reported_school.try(:strip!)
+    self.using_openstax.try(:strip!)
     true
   end
 

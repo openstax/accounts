@@ -86,7 +86,7 @@ module Api::V1
                 description: "One of #{User.faculty_statuses.keys.map(&:to_s).inspect}"
              }
 
-   property :adoption_status,
+   property :using_openstax,
             type: String,
             readable: true,
             writeable: false
