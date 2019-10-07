@@ -11,4 +11,16 @@ class SignupConfirmationMailer < ApplicationMailer
 
     pre_auth_state.update_column(:confirmation_sent_at, Time.now)
   end
+
+# primarily used for testing the deliverability of the PIN confirmation emails
+  def pin_confirmation_email(email_address:, confirmation_pin:, confirmation_token:, user_full_name:)
+    @email_address = email_address
+    @user_full_name = user_full_name
+    @confirmation_pin = confirmation_pin
+    @confirmation_token = confirmation_token
+
+    mail(to: "\"#{@user_full_name}\" <#{@email_address}>",
+      subject: "Use PIN #{@confirmation_pin} to confirm your email address"
+    )
+  end
 end

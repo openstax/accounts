@@ -1,0 +1,18 @@
+<p>Welcome!</p>
+
+  <p>Enter your 6-digit PIN in your browser to confirm your email address:</p>
+
+  <p>Your PIN: <b><%= @confirmation_pin %></b></p>
+
+  <p>If you have any trouble using this PIN, you can also click the link below to confirm your email address:</p>
+
+<%
+  token_url = signup_verify_by_token_url(code: @confirmation_token)
+%>
+
+<p><%= link_to token_url, token_url %></p>
+
+<p>We sent this message because someone is trying to use '<%= @email_address %>' to create an OpenStax account.  If this wasn't you, please disregard this message.</p>
+
+
+<%= render :partial => 'shared/email_closing' %>
