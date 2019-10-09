@@ -176,4 +176,52 @@ module ApplicationHelper
     (@errors || []) + (@handler_result.try(:errors) || [])
   end
 
+  #############
+  # NEW FLOW #
+  #############
+
+  def newflow_login_signup_card(classes: "", header: "", banners: nil, current_step: nil, &block)
+    @hide_layout_errors = true
+
+    content_tag :div, class: "login-signup-form #{classes}" do
+
+      danger_alerts = if flash[:alert].present?
+        content_tag :div, class: "top-level-alerts danger" do
+          alert_tag(flash[:alert])
+        end
+      end
+
+      info_alerts = if flash[:notice].present?
+        content_tag :div, class: "top-level-alerts info" do
+          notice_tag(flash[:notice])
+        end
+      end
+
+      banners ||= []
+      banners_divs = banners.map do |banner|
+        content_tag :div, class: "top-level-alerts info" do
+          notice_tag(banner.message)
+        end
+      end.join("\n")
+
+      step_counter = if current_step.present?
+       content_tag(:div, class:  'step-counter') {
+         content_tag(:div) {
+           content_tag(:span) {
+             current_step
+           }
+         }
+        }
+      end
+
+      header = if header.present?
+        content_tag(:header, class: "page-header") { header }
+      end
+
+      body = capture(&block)
+
+      "#{danger_alerts}\n#{info_alerts}\n#{banners_divs}\n#{step_counter}\n#{header}\n#{body}".html_safe
+    end
+  end
+
 end
