@@ -72,7 +72,7 @@ module Api::V1
              }
 
     property :salesforce_contact_id,
-             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) }
+             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
              type: String,
              readable: true,
              writeable: false
@@ -87,6 +87,7 @@ module Api::V1
              }
 
    property :using_openstax,
+            if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
             type: String,
             readable: true,
             writeable: false

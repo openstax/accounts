@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_15_203826) do
+ActiveRecord::Schema.define(version: 2019_09_30_192109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -342,6 +342,7 @@ ActiveRecord::Schema.define(version: 2019_09_15_203826) do
     t.citext "support_identifier", null: false
     t.boolean "is_test"
     t.integer "school_type", default: 0, null: false
+    t.string "using_openstax"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

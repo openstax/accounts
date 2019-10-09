@@ -113,7 +113,14 @@ class UpdateUserSalesforceInfo
               :pending_faculty
             end
 
-          user.using_openstax = leads.map[&:adoption_status].uniq
+          adoption = leads.map[&:adoption_status].uniq
+          user.using_openstax =
+           if adoption.empty?
+             nil
+           else
+             adoption[0]
+           end
+
 
           user.save! if user.changed?
         rescue StandardError => ee
