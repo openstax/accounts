@@ -5,6 +5,13 @@ class UpdateUserSalesforceInfo
     'Career School/For-Profit (2)'
   ]
 
+  ADOPTION_STATUSES = {
+    "Current Adopter" => "Yes",
+    "Future Adopter" => "Yes",
+    "Past Adopter" => "No",
+    "Not Adopter" => "No"
+  }
+
   def initialize(allow_error_email:)
     @allow_error_email = allow_error_email
     @errors = []
@@ -113,15 +120,6 @@ class UpdateUserSalesforceInfo
               :pending_faculty
             end
 
-          adoption = leads.map[&:adoption_status].uniq
-          user.using_openstax =
-           if adoption.empty?
-             nil
-           else
-             adoption[0]
-           end
-
-
           user.save! if user.changed?
         rescue StandardError => ee
           error!(exception: ee, user: user)
@@ -225,6 +223,10 @@ class UpdateUserSalesforceInfo
         :unknown_school_type
       else
         :other_school_type
+      end
+
+      if contact.adoption_status != nil
+        user.using_openstax = ADOPTION_STATUSES[contact.adoption_status]
       end
     end
 
