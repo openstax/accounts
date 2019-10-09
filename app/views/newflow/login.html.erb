@@ -1,0 +1,91 @@
+<%
+  suggested_username = pre_auth_state && pre_auth_state.signed? ?
+    pre_auth_state.signed_data['email'] : ''
+%>
+
+<div id="login-signup-form">
+    <div class="content">
+        <%= render partial: 'tab_group' , locals: { active_class: 'login--active' } %>
+
+        <%= newflow_login_signup_card(
+                    classes: "login-page",
+                    header: (I18n.t('signinup_form.login_page_header')),
+                    banners: @banners) do %>
+            <% lev_form_for :login, url: newflow_callback_path(:loginstrategy) do |f| %>
+                <% fh = FormHelper::NewFlow.new(f: f,
+                                            context: self,
+                                            errors: @handler_result.try(:errors),
+                                            error_field_classes: "alert alert-danger") %>
+                    <div class="content social-section">
+                        <div><%= I18n.t('signinup_form.login_with') %></div>
+
+                        <div class="social-buttons">
+
+                            <div class="fb-share-button">
+                                <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn' do %>
+                                    <i class="social-icon fa fa-facebook"></i>
+                                    <span>Facebook</span>
+                                <% end %>
+                            </div>
+
+                            <div class="google-share-button">
+                                <%= link_to newflow_auth_path(:google), class: 'google btn' do %>
+                                    <i class="social-icon fa fa-google"></i>
+                                    <span>Google</span>
+                                <% end %>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="content form-divider">
+                        <%= I18n.t('signinup_form.or_login_below') %>
+                    </div>
+
+                    <div class="content control-group">
+                        <%= label_tag :username_or_email, I18n.t('signinup_form.email_label'),
+                                    class: 'field-label required'
+                        %>
+                        <%= fh.text_field name: :username_or_email,
+                                    value: suggested_login_username,
+                                    placeholder: I18n.t('signinup_form.email_placeholder'),
+                                    autofocus: true
+                        %>
+                        <!--
+                        <input type="text" name="email"
+                                    placeholder="me@myemail.com" class="delay-validation" required>
+                        -->
+                        <!-- <div class="invalid-message">Your email address or login with social</div> -->
+                    </div>
+
+                    <div class="content control-group">
+                        <%= label_tag :password, I18n.t('signinup_form.password_label'),
+                                    class: 'field-label required'
+                        %>
+                        <%= fh.text_field name: :password,
+                                    type: :password,
+                                    placeholder: I18n.t('signinup_form.password_label')
+                        %>
+                        <!--
+                        <input type="password" name="password"
+                                    placeholder="Password" class="delay-validation" required>
+                        -->
+                        <!-- <div class="invalid-message">A secure password</div> -->
+                    </div>
+
+                    <%= f.hidden_field :source, value: 'authenticate' %>
+
+                    <div class="content">
+                        <%= f.submit I18n.t('signinup_form.continue_button'),
+                                    disable_with: I18n.t('signinup_form.continue_button'),
+                                    class: 'primary'
+                        %>
+                    </div>
+
+                    <div class="content">
+                        <%= link_to I18n.t('signinup_form.forgot_password'), '#TODO' %>
+                    </div>
+            <% end  %>
+        <% end  %>
+    </div>
+</div>

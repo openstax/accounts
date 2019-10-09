@@ -1,91 +1,109 @@
-<div id="signinup-form">
+<div id="login-signup-form">
     <div class="content">
         <%= render partial: 'tab_group', locals: { active_class: 'signup--active'} %>
 
-        <form>
-                <div class="step-counter">
-                    <div>
-                        <span>Step 2 of 3</span>
-                    </div>
-                </div>
-
-                <header>Set up your account</header>
-
+        <%= newflow_login_signup_card(
+                    classes: "signup-page",
+                    header: (I18n.t('signinup_form.signup_page_header')),
+                    current_step: I18n.t('signinup_form.step_counter', current_step: 2, total_steps: 3),
+                    banners: @banners) do %>
+            <% lev_form_for :login, url: newflow_callback_path(:loginstrategy) do |f| %>
+                <% fh = FormHelper::NewFlow.new(f: f,
+                                            context: self,
+                                            errors: @handler_result.try(:errors),
+                                            error_field_classes: "alert alert-danger") %>
                 <div class="content role-section">
                     <div>
-                        <a href="/newflow/welcome" class="back-arrow"><i class="fa fa-arrow-left"></i></a>
+                        <a href=<%= newflow_welcome_path %> class="back-arrow"><i class="fa fa-arrow-left"></i></a>
                         <input type="button" value="Student" class="role-button">
                     </div>
                 </div>
 
                 <div class="content social-section">
-                    <div>Sign up with:</div>
+                    <div><%= I18n.t('signinup_form.signup_with') %></div>
 
                     <div class="social-buttons">
 
                         <div class="fb-share-button">
-                            <a class="facebook btn" href="#">
+                            <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn' do %>
                                 <i class="social-icon fa fa-facebook"></i>
                                 <span>Facebook</span>
-                            </a>
+                            <% end %>
                         </div>
 
                         <div class="google-share-button">
-                            <a href="#" class="google btn">
+                            <%= link_to '#TODO', class: 'google btn' do %>
                                 <i class="social-icon fa fa-google"></i>
                                 <span>Google</span>
-                            </a>
+                            <% end %>
                         </div>
 
                     </div>
                 </div>
 
-                <div class="divider">OR SIGN UP BELOW</div>
+                <div class="content form-divider">
+                    <%= I18n.t('signinup_form.or_sign_up_below') %>
+                </div>
 
                 <div class="content control-group">
-                    <label class="field-label">First name *</label>
-                    <input type="text" name="first_name"
-                                placeholder="First name" class="delay-validation" required>
+                    <%= label_tag :first_name, I18n.t('signinup_form.first_name_label'),
+                                class: 'field-label required'
+                    %>
+                    <%= fh.text_field name: :first_name,
+                                placeholder: I18n.t('signinup_form.first_name_label'),
+                                autofocus: true
+                    %>
                     <!-- <div class="invalid-message">You surely have a first name</div> -->
                 </div>
 
                 <div class="content control-group">
-                    <label class="field-label">Last name *</label>
-                    <input type="text" name="last_name"
-                                placeholder="Last name" class="delay-validation" required>
+                    <%= label_tag :last_name, I18n.t('signinup_form.last_name_label'),
+                                class: 'field-label required'
+                    %>
+                    <%= fh.text_field name: :last_name,
+                                placeholder: I18n.t('signinup_form.last_name_label')
+                    %>
                     <!-- <div class="invalid-message">You surely have a last name</div> -->
                 </div>
 
                 <div class="content control-group">
-                    <label class="field-label">Email *</label>
-                    <input type="text" name="email"
-                                placeholder="me@myemail.com" class="delay-validation" required>
+                    <%= label_tag :username_or_email, I18n.t('signinup_form.email_label'), class: 'field-label required' %>
+                    <%= fh.text_field name: :username_or_email,
+                                value: suggested_login_username,
+                                placeholder: I18n.t('signinup_form.email_placeholder')
+                    %>
                     <!-- <div class="invalid-message">Your email address or login with social</div> -->
                 </div>
 
                 <div class="content control-group">
-                    <label class="field-label">Password *</label>
-                    <input type="password" name="password"
-                                placeholder="Password" class="delay-validation" required>
+                    <%= label_tag :password, I18n.t('signinup_form.password_label'),
+                                class: 'field-label required'
+                    %>
+                    <%= fh.text_field name: :password,
+                                placeholder: I18n.t('signinup_form.password_label')
+                    %>
                     <!-- <div class="invalid-message">A secure password</div> -->
                 </div>
 
                 <div class="content control-group checkboxes-section">
                     <div>
                         <input type="checkbox" name="newsletter" checked>
-                        <span>Send me the OpenStax newsletter</span>
+                        <span><%= I18n.t('signinup_form.send_me_newsletter') %></span>
                         <br>
                     </div>
 
                     <div class="terms">
                         <input type="checkbox" name="terms">
-                        <span>I agree to the Terms of Use and Privacy Policy</span>
+                        <span><%= I18n.t('signinup_form.agree_to_terms_of_use') %></span>
                     </div>
                 </div>
 
                 <div class="content">
-                    <input type="submit" value="Continue" class="primary">
+                    <%= f.submit I18n.t('signinup_form.continue_button'),
+                                        disable_with: I18n.t('signinup_form.continue_button'),
+                                        class: 'primary' %>
                 </div>
-        </form>
+            <% end %>
+        <% end %>
     </div>
 </div>

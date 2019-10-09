@@ -23,6 +23,35 @@ body {
     display: none !important;
 }
 
+.form-divider {
+    text-align: center;
+    position: relative;
+
+    &:after {
+        border-top: 0.1rem solid #d5d5d5;
+        content: '';
+        display: block;
+        width: calc(50% - 7rem);
+        right: 0px;
+        position: absolute;
+        top: 50%;
+    }
+
+    &:before {
+        border-top: 0.1rem solid #d5d5d5;
+        content: '';
+        display: block;
+        width: calc(50% - 7rem);
+        left: 0px;
+        position: absolute;
+        top: 50%;
+    }
+}
+
+label.required::after {
+    content: " *";
+}
+
 .main-menu {
     box-shadow: none;
     height: 2rem;
@@ -39,8 +68,33 @@ body {
     background-color: white;
 }
 
-// sign in/up form
-#signinup-form {
+.step-counter {
+    height: 3rem;
+    border-left: 0.1rem solid #d5d5d5;
+    border-right: 0.1rem solid #d5d5d5;
+    padding: 1.5rem 0 0 1.5rem;
+
+    @include wider-than($phone-max) {
+        padding: 2.9rem 0 0 2.9rem;
+    }
+
+    > div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 9.4rem;
+        height: 100%;
+
+        background-color: #f5f5f5;
+        border-radius: 1.5rem;
+    }
+
+    span {
+        @include title-font(1.4rem);
+    }
+}
+
+#login-signup-form {
     max-width: 75rem;
     border-top: 0;
     margin-left: auto;
@@ -83,7 +137,7 @@ body {
                 display: flex;
                 flex-direction: column;
                 width: 26.2rem;
-                margin-top: 2.5rem;
+                margin-top: 3.5rem;
 
                 &:first-child {
                     margin-right: 3rem;
@@ -140,33 +194,6 @@ body {
         }
     }
 
-    .step-counter {
-        @include width-up-to($phone-max) {
-            margin-bottom: 1rem;
-        }
-
-        @include wider-than($phone-max) {
-            margin-bottom: -1rem;
-        }
-
-        height: 3rem;
-
-        > div {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 9.4rem;
-            height: 100%;
-
-            background-color: #f5f5f5;
-            border-radius: 1.5rem;
-        }
-
-        span {
-            @include title-font(1.4rem);
-        }
-    }
-
     .tab-group {
         padding: 0;
 
@@ -187,7 +214,12 @@ body {
             @include set-font(h4);
 
             &:first-child {
+                border-top-left-radius: 0.3rem;
                 border-right: 0;
+            }
+
+            &:nth-child(2) {
+                border-top-right-radius: 0.3rem;
             }
 
             &:last-child {
@@ -212,12 +244,28 @@ body {
         }
     }
 
+    .page-header {
+        border-left: 0.1rem solid #d5d5d5;
+        border-right: 0.1rem solid #d5d5d5;
+        text-align: center;
+
+        @include width-up-to($phone-max) {
+            @include set-font(h4);
+            line-height: 3rem;
+        }
+
+        @include wider-than($phone-max) {
+            @include set-font(h2);
+            margin: 0;
+        }
+    }
+
     form {
         @include width-up-to($phone-max) {
             row-gap: 2rem;
             padding-left: 1.4rem;
             padding-right: 1.4rem;
-            padding-top: 1.6rem;
+            padding-top: 2.2rem;
         }
 
         @include wider-than($phone-max) {
@@ -233,21 +281,6 @@ body {
         border-bottom-right-radius: 0.3rem;
 
         font-size: 1.4rem;
-
-        header {
-            @include width-up-to($phone-max) {
-                @include set-font(h4);
-                line-height: 3rem;
-            }
-
-            @include wider-than($phone-max) {
-                @include set-font(h2);
-                line-height: 7.5rem;
-                margin: 0;
-            }
-
-            text-align: center;
-        }
 
         > .content {
             max-width: 55.5rem;
@@ -350,7 +383,7 @@ body {
         }
     }
 
-    .divider {
+    .form-divider {
         @include width-up-to($phone-max) {
             margin-top: -1.5rem;
         }
@@ -376,9 +409,10 @@ body {
 
 // Improve vertical spacing
 
-#signinup-form  form {
-    header {
+#login-signup-form  {
+    .page-header {
         margin-bottom: 0;
+        padding-top: 2.85rem;
     }
 
     .content.control-group {
@@ -386,7 +420,7 @@ body {
     }
 
     @include width-up-to($phone-max) {
-        .divider + .content.control-group {
+        .form-divider + .content.control-group {
             margin-top: 0.9rem;
         }
 
@@ -400,7 +434,7 @@ body {
     }
 
     @include wider-than($phone-max) {
-        .divider + .content.control-group {
+        .form-divider + .content.control-group {
             margin-top: 2.5rem;
         }
 
@@ -419,6 +453,26 @@ body {
         .role-section + .social-section {
             margin-top: 0;
         }
+
+        .page-header {
+            padding-top: 2rem;
+        }
+
+        .login-page {
+            .page-header {
+                padding-top: 6rem;
+            }
+
+            form {
+                padding-top: 1rem;
+            }
+        }
+
+        .welcome-page {
+            form {
+                padding-top: 1.6rem;
+            }
+        }
     }
 
     .content.control-group.checkboxes-section {
@@ -427,14 +481,14 @@ body {
 
     [type=submit] {
         @include width-up-to($phone-max) {
+            margin-top: 2rem;
             margin-bottom: 1rem;
         }
 
         @include wider-than($phone-max) {
             margin-bottom: 2rem;
+            margin-top: 1.2rem;
         }
-
-        margin-top: 1.2rem;
     }
 }
 
