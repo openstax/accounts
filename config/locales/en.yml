@@ -2,6 +2,39 @@ en:
   # Strings in this section are intended for use from within JavaScript files.
   # They are reproduced as a global `window.OX.I18n`. For example the key
   # `javascript.alert.close` would be accessible as `window.OX.I18n.alert.close`.
+
+  signinup_form:
+    login_tab: Log in
+    signup_tab: Sign up
+    student: Student
+    educator: Educator
+    step_counter: Step %{current_step} of %{total_steps}
+    login_page_header: Log in to your OpenStax account
+    login_with: 'Log in with:'
+    signup_with: 'Sign up with:'
+    signup_page_header: Set up your account
+    welcome_page_header: Welcome! Join OpenStax as
+    email_placeholder: me@myemail.com
+    first_name_label: First name
+    last_name_label: Last name
+    email_label: Email
+    password_label: Password
+    continue_button: Continue
+    forgot_password: Forgot your password?
+    or_login_below: OR LOG IN BELOW
+    or_sign_up_below: OR SIGN UP BELOW
+    send_me_newsletter: Send me the OpenStax newsletter
+    agree_to_terms_of_use: I agree to the Terms of Use and Privacy Policy
+    join_as_student_description: >-
+      Sign up for a <b>Student</b> account to access Tutor assignments,
+      highlight study materials, and more.
+    join_as_educator_description: >-
+      Sign up for an <b>Educator</b> account to adopt a book and access locked
+      instructor content and free resources integrated with your book.
+  student_profile:
+    enable_other_sign_in_options: Enable other login options
+    other_sign_in_options_html: Other login<br class="wide"> options
+
   javascript:
     alert:
       close: Close
