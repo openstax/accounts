@@ -1,6 +1,6 @@
 <div class="tab-group">
-    <a href="/newflow/signin" class="tab login <%= active_class %>">Log in</a>
-    <a href="/newflow/welcome" class="tab signup <%= active_class %>">Sign up</a>
+    <a href=<%= newflow_login_path %> class="tab login <%= active_class %>"><%= I18n.t('signinup_form.login_tab') %></a>
+    <a href=<%= newflow_welcome_path %> class="tab signup <%= active_class %>"><%= I18n.t('signinup_form.signup_tab') %></a>
 
     <a class="tab tab--placeholder"></a>
     <a class="tab tab--placeholder"></a>

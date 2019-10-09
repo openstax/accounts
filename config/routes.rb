@@ -4,11 +4,28 @@ Rails.application.routes.draw do
 
   mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
   OpenStax::Salesforce.set_top_level_routes(self)
+
   scope controller: 'newflow' do
-    get 'newflow/signin', action: :signin
-    get 'newflow/signup', action: :signup
-    get 'newflow/welcome', action: :welcome
-    get 'newflow/confirm', action: :confirm
+    get 'i/login_raw', action: :login_raw
+    get 'i/login', action: :login, as: :newflow_login
+    post 'i/login', action: :newflow_login_post
+    get 'i/login_failed', action: :login_failed, as: :newflow_login_failed
+
+    get 'i/signup_raw', action: :signup_raw
+    get 'i/signup', action: :signup, as: :newflow_signup
+
+    get 'i/welcome', action: :welcome, as: :newflow_welcome
+    get 'i/confirm', action: :confirm
+    get 'i/done', action: :done
+
+    get 'i/auth/:provider', action: :newflow_login_callback, as: :newflow_auth
+    post 'i/auth/:provider', action: :newflow_login_callback
+
+    get 'i/auth/:provider/callback', action: :newflow_login_callback
+    post 'i/auth/:provider/callback', action: :newflow_login_callback, as: :newflow_callback
+
+    get 'i/profile', action: :profile_newflow, as: :profile_newflow
+    get 'i/newflow_logout', action: :logout, as: :newflow_logout
   end
 
   scope controller: 'sessions' do
@@ -39,9 +56,11 @@ Rails.application.routes.draw do
   mount OpenStax::Api::Engine, at: '/'
 
   # Create a named path for links like `/auth/facebook` so that the path prefixer gem
-  # will appropriately prefix the path.  https://stackoverflow.com/a/40125738/1664216
+  #     will appropriately prefix the path. https://stackoverflow.com/a/40125738/1664216
+  # The actual request, however, is handled by the omniauth middleware when it detects
+  #     that the current_url is the callback_path, using `OmniAuth::Strategy#on_callback_path?`
+  #     So, admittedly, this route is deceiving.
   get "/auth/:provider", to: lambda{ |env| [404, {}, ["Not Found"]] }, as: :oauth
-
 
   scope controller: 'authentications' do
     delete 'auth/:provider', action: :destroy, as: :destroy_authentication

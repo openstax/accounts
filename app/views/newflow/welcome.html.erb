@@ -1,43 +1,45 @@
-<div id="signinup-form">
+<div id="login-signup-form">
     <div class="content">
         <%= render partial: 'tab_group', locals: { active_class: 'signup--active'} %>
 
-        <form>
-                <div class="step-counter">
-                    <div>
-                        <span>Step 1 of 3</span>
-                    </div>
-                </div>
-
-                <header>Welcome! Join OpenStax as</header>
-
+        <%= newflow_login_signup_card(
+                    classes: "welcome-page",
+                    header: (I18n.t('signinup_form.welcome_page_header')),
+                    current_step: I18n.t('signinup_form.step_counter', current_step: 1, total_steps: 3),
+                    banners: @banners) do %>
+            <% lev_form_for :login, url: newflow_callback_path(:loginstrategy) do |f| %>
+                <% fh = FormHelper::NewFlow.new(f: f,
+                                            context: self,
+                                            errors: @handler_result.try(:errors),
+                                            error_field_classes: "alert alert-danger") %>
                 <div class="content">
                     <div class="join-as">
 
                         <div>
-                            <a href="/newflow/signup">
+                            <%= link_to newflow_signup_path do%>
                                 <div class="join-as__role student">
-                                    <span>Student</span>
-                                    <img src="https://d1icd6shlvmxi6.cloudfront.net/gsc/T48YSQ/20/4c/d7/204cd7ff52cb404d89cd588f5d4b6c6f/images/1_-_welcome__join_openstax_as/p_u89.png?token=76e7bf2b360484c3dc67aca07b4f092062ea293fe9312caf7d36ecb0b50a937c">
+                                    <span><%= I18n.t('signinup_form.student') %></span>
+                                    <%= image_tag('student-icon.svg') %>
                                 </div>
-                            </a>
+                            <% end %>
 
-                            <div class="join-as__description">Sign up for a <b>Student</b> account to access Tutor assignments, highlight study materials, and more.</div>
+                            <div class="join-as__description"><%= I18n.t('signinup_form.join_as_student_description').html_safe %></div>
                         </div>
 
                         <div>
-                            <a href="/newflow/signup">
+                            <%= link_to newflow_signup_path  do%>
                                 <div class="join-as__role educator">
-                                    <span>Educator</span>
-                                    <img src="https://d1icd6shlvmxi6.cloudfront.net/gsc/T48YSQ/20/4c/d7/204cd7ff52cb404d89cd588f5d4b6c6f/images/1_-_welcome__join_openstax_as/c_u97.png?token=aaef6196ce8ffe7de490a72c2a3c877650ccbad06a4a4704e89e77a48f3b1424">
+                                    <span><%= I18n.t('signinup_form.educator') %></span>
+                                    <%= image_tag('educator-icon.svg') %>
                                 </div>
-                            </a>
+                            <% end %>
 
-                            <div class="join-as__description">Sign up for an <b>Educator</b> account to adopt a book and access locked instructor content and free resources integrated with your book.</div>
+                            <div class="join-as__description"><%= I18n.t('signinup_form.join_as_educator_description').html_safe %></div>
                         </div>
 
                     </div>
                 </div>
-        </form>
+            <% end %>
+        <% end %>
     </div>
 </div>
