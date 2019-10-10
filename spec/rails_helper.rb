@@ -52,6 +52,8 @@ Capybara.javascript_driver = :selenium_chrome_headless
 
 Capybara.asset_host = 'http://localhost:2999'
 
+Capybara.server = :puma, { Silent: true } # To clean up your test output
+
 # Normalize whitespaces
 Capybara.default_normalize_ws = true
 

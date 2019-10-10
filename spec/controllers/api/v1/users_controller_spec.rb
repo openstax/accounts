@@ -64,7 +64,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
 
       expected_response = {
         total_count: 1,
-        items: [ user_matcher(user_2, include_private_data: false) ]
+        items: [ user_matcher(user_2, include_private_data: true) ]
       }
 
       expect(response.body_as_hash).to match(expected_response)

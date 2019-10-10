@@ -22,7 +22,10 @@ namespace :accounts do
           group.add_owner(user)
           application.owner = group
         end
-        application.trusted = trusted
+        application.can_access_private_user_data = trusted
+        application.can_find_or_create_accounts = trusted
+        application.can_message_users = trusted
+        application.can_skip_oauth_screen = trusted
         application.email_from_address = from_address if from_address.present?
         application.email_subject_prefix = subject_prefix if subject_prefix.present?
         action = application.new_record? ? 'Created' : 'Updated'

@@ -76,7 +76,10 @@ namespace :accounts do
             Doorkeeper::Application.find_or_create_by(name: app[:name]) do |application|
               application.redirect_uri = redirect_urls
               application.owner = app_owner_group
-              application.trusted = true
+              application.can_access_private_user_data = true
+              application.can_find_or_create_accounts = true
+              application.can_message_users = true
+              application.can_skip_oauth_screen = true
               application.email_from_address = "noreply@#{app[:prefix]}.openstax.org"
               application.email_subject_prefix = "[#{app[:name]}]"
               application.skip_terms = app[:skip_terms] || false

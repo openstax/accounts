@@ -238,7 +238,6 @@ ActiveRecord::Schema.define(version: 2019_09_30_192109) do
     t.text "redirect_uri", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "trusted", default: false
     t.integer "owner_id"
     t.string "owner_type"
     t.string "email_from_address", default: "", null: false
