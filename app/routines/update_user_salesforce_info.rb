@@ -225,7 +225,7 @@ class UpdateUserSalesforceInfo
         :other_school_type
       end
 
-      if contact.adoption_status != nil
+      unless contact.adoption_status.nil? || contact.adoption_status.empty?
         user.using_openstax = ADOPTION_STATUSES[contact.adoption_status]
       end
     end
