@@ -19,27 +19,22 @@
         <![endif]-->
     </head>
     <body>
+        <div class="main-menu" role="menubar" aria-label="Main menu">
+            <span class="logo-wrapper">
+                <span class="logo">
+                    <a href="https://openstax.org" aria-label="Home Page">
+                        <img class="logo-color" src="http://openstax.org/images/logo.svg" alt="OpenStax logo">
+                    </a>
+                </span>
+            </span>
+            <ul class="nav-menu">
+                <li class="nav-menu-item">
+                </li>
+            </ul>
+        </div>
+
         <div class="content">
-            <div>
-                <div class="main-menu" role="menubar" aria-label="Main menu">
-                    <div class="content">
-                        <span class="logo-wrapper">
-                            <span class="logo">
-                                <a href="/" aria-label="Home Page">
-                                    <img class="logo-color" src="http://openstax.org/images/logo.svg" alt="OpenStax logo">
-                                </a>
-                            </span>
-                        </span>
-                        <ul class="nav-menu">
-                            <li class="nav-menu-item">
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
             <%= render 'layouts/attention' %>
-
             <%= yield %>
         </div>
 
