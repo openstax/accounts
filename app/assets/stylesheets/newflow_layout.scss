@@ -58,6 +58,8 @@ label.required::after {
     margin: 2rem 0 0 2rem;
 
     .logo-wrapper {
+        padding: 0;
+
          @include width-up-to($phone-max) {
             margin: auto;
         }
