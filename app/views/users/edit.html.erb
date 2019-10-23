@@ -47,7 +47,8 @@
   </div>
 
   <%
-    all_providers = %w(facebook google_oauth2 identity twitter)
+    # all_providers = %w(facebook google_oauth2 identity twitter)
+    all_providers = OmniauthData::VALID_PROVIDERS
 
     # The `all providers &` enforces a standard sort order
     current_providers = all_providers & current_user.authentications.collect(&:provider)

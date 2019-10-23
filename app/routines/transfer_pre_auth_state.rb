@@ -1,3 +1,5 @@
+# Transfers email address (with `AddEmailToUser`), `verified` status, and  `role` information
+# from PreAuthState to the user.
 class TransferPreAuthState
 
   lev_routine
