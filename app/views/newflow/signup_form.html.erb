@@ -1,0 +1,138 @@
+<%
+    contracts = [FinePrint.get_contract(:general_terms_of_use),
+                         FinePrint.get_contract(:privacy_policy)]
+
+    contract_links = contracts.collect { |contract|
+        link_to(contract.title, term_path(contract), target: '_blank')
+        # TODO: show them in a modal instead of new tab
+        # link_to contract.title, term_path(contract), remote: true
+    }
+%>
+
+<div id="login-signup-form">
+    <div class="content">
+        <%= render partial: 'tab_group', locals: { active_class: 'signup--active'} %>
+
+        <%= newflow_login_signup_card(
+                    classes: "signup-page",
+                    header: (I18n.t(:"login_signup_form.signup_page_header")),
+                    current_step: I18n.t(:"login_signup_form.step_counter", current_step: 2, total_steps: 3),
+                    banners: @banners) do %>
+            <% lev_form_for :signup, url: newflow_signup_post_path do |f| %>
+                <% fh = NewflowFormHelper::Newflow.new(f: f,
+                                            context: self,
+                                            errors: @handler_result&.errors) %>
+                <div class="content role-section">
+                    <div>
+                        <a href=<%= newflow_welcome_path %> class="back-arrow"><i class="fa fa-arrow-left"></i></a>
+                        <div class="role-button"><%= I18n.t(:"login_signup_form.student") %></div>
+                    </div>
+                </div>
+
+                <div class="content social-section">
+                    <div><%= I18n.t(:"login_signup_form.signup_with") %></div>
+
+                    <div class="social-buttons">
+
+                        <div class="fb-share-button">
+                            <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn' do %>
+                                <i class="social-icon fa fa-facebook"></i>
+                                <span>Facebook</span>
+                            <% end %>
+                        </div>
+
+                        <div class="google-share-button">
+                            <%= link_to '#TODO', class: 'google btn' do %>
+                                <i class="social-icon fa fa-google"></i>
+                                <span>Google</span>
+                            <% end %>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="content form-divider">
+                    <%= I18n.t(:"login_signup_form.or_sign_up_below") %>
+                </div>
+
+                <div class="content control-group">
+                    <%= label_tag :first_name, I18n.t(:"login_signup_form.first_name_label"),
+                                class: 'field-label required'
+                    %>
+                    <%= fh.text_field name: :first_name,
+                                placeholder: I18n.t(:"login_signup_form.first_name_label"),
+                                autofocus: true
+                    %>
+                </div>
+
+                <div class="content control-group">
+                    <%= label_tag :last_name, I18n.t(:"login_signup_form.last_name_label"),
+                                class: 'field-label required'
+                    %>
+                    <%= fh.text_field name: :last_name,
+                                placeholder: I18n.t(:"login_signup_form.last_name_label")
+                    %>
+                </div>
+
+                <div class="content control-group">
+                    <%= label_tag :email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
+                    <%= fh.text_field name: :email,
+                                value: suggested_login_username,
+                                placeholder: I18n.t(:"login_signup_form.email_placeholder")
+                    %>
+                </div>
+
+                <div class="content control-group">
+                    <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                                class: 'field-label required'
+                    %>
+                    <%= fh.text_field name: :password,
+                                type: :password,
+                                placeholder: I18n.t(:"login_signup_form.password_label")
+                    %>
+                </div>
+
+                <div class="content control-group checkboxes-section">
+                    <div>
+                        <%= f.check_box :newsletter, checked: true %>
+                        <span><%= I18n.t(:"login_signup_form.send_me_newsletter") %></span>
+                        <br>
+                    </div>
+
+                    <div class="terms">
+                        <%= f.check_box :terms_accepted %>
+                        <%= f.hidden_field :contract_1_id, value: contracts.first.id %>
+                        <%= f.hidden_field :contract_2_id, value: contracts.second.id %>
+                        <span>
+                            <%= I18n.t(:"login_signup_form.agree_to_terms_of_use",
+                                        terms_of_use: contract_links.first,
+                                        privacy_policy: contract_links.second).html_safe
+                            %>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="content">
+                    <%= f.submit I18n.t(:"login_signup_form.continue_button"),
+                                        data: { disable_with: I18n.t(:"login_signup_form.continue_button") },
+                                        class: 'primary', id: 'signup_form_submit_button' %>
+                </div>
+            <% end %>
+        <% end %>
+    </div>
+</div>
+
+<script type="text/javascript">
+    Accounts.Ui.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
+</script>
+
+<%# TODO: move this to some CSS file %>
+<style>
+    .ui-state-disabled, .ui-button-disabled {
+        opacity: 0.75;
+    }
+
+    .ui-state-disabled:hover, .ui-button-disabled:hover {
+        cursor: not-allowed;
+    }
+</style>

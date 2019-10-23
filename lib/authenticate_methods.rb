@@ -32,7 +32,7 @@ module AuthenticateMethods
   # Doorkeeper controllers define authenticate_admin!, so we need another name
   alias_method :admin_authentication!, :authenticate_admin!
 
-  protected
+  protected ###################################################################
 
   # When the external site provides signed params they're
   # requesting the person either be

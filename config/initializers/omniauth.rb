@@ -9,6 +9,17 @@ Rails.application.config.middleware.use OmniAuth::Builder do
              site: 'https://graph.facebook.com/v3.3',
              authorize_url: "https://www.facebook.com/v3.3/dialog/oauth"
            }
+
+  provider(
+    'facebooknewflow',
+    secrets[:facebook_app_id],
+    secrets[:facebook_app_secret],
+    client_options: {
+      site: 'https://graph.facebook.com/v3.3',
+      authorize_url: "https://www.facebook.com/v3.3/dialog/oauth"
+    }
+  )
+
   provider :twitter, secrets[:twitter_consumer_key], secrets[:twitter_consumer_secret]
   provider :google_oauth2, secrets[:google_client_id], secrets[:google_client_secret]
   provider :custom_identity
