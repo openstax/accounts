@@ -268,6 +268,7 @@ ActiveRecord::Schema.define(version: 2019_12_04_193412) do
     t.text "return_to"
     t.jsonb "signed_data"
     t.boolean "is_partial_info_allowed", default: false, null: false
+    t.string "first_name", default: ""
     t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
   end
 

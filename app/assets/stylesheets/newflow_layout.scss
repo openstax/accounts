@@ -96,6 +96,15 @@ label.required::after {
     }
 }
 
+input.has-error {
+    background-color: var(--input-error-background-color) !important;
+    border: thin solid var(--input-error-border-color) !important;
+}
+
+.invalid-message {
+    color: var(--input-error-message-color);
+}
+
 #login-signup-form {
     max-width: 75rem;
     border-top: 0;
