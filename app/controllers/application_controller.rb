@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
 
   layout 'application'
 
-  prepend_before_action :verify_signed_params
+  prepend_before_action :validate_signed_params_if_present
 
   before_action :authenticate_user!
   before_action :complete_signup_profile
@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
     params[:r] && params[:r] == stored_url
   end
 
-  def verify_signed_params
+  def validate_signed_params_if_present
     return true if signed_params.empty?
 
     app = ::Doorkeeper::Application.find_by_uid(params[:client_id])

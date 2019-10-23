@@ -1,5 +1,30 @@
 require 'import_users'
 
+def create_newflow_user(username, password='password', terms_agreed=nil, provider='newflow_strategy')
+  terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
+                          :terms_agreed :
+                          :terms_not_agreed
+
+  return if User.find_by_username(username).present?
+
+  user = FactoryBot.create :user, terms_agreed_option, username: username
+  identity = FactoryBot.create :identity, user: user, password: password
+  authentication = FactoryBot.create :authentication, user: user,
+                                                       provider: provider,
+                                                       uid: identity.uid
+  return user
+end
+
+def newflow_log_in_user(username_or_email, password, provider='newflow_strategy')
+  fill_in 'login_username_or_email', with: username_or_email
+  expect(page).to have_no_missing_translations
+
+  fill_in 'login_password', with: password
+  expect(page).to have_no_missing_translations
+  click_button (t :"login_signup_form.continue_button")
+  expect(page).to have_no_missing_translations
+end
+
 def create_user(username, password='password', terms_agreed=nil)
   terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
                           :terms_agreed :

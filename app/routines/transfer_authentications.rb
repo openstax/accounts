@@ -1,3 +1,4 @@
+# Creates an `Authentication` for the user via `update_attributes`
 class TransferAuthentications
 
   lev_routine
