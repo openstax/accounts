@@ -5,6 +5,10 @@ en:
 
   login_signup_form:
     cant_be_blank: can't be blank
+    cannot_find_user: >-
+      We could not find your account. Please try again.
+    multiple_users: We found several accounts with this email
+    incorrect_password: The password you provided is incorrect.
     login_tab: Log in
     signup_tab: Sign up
     student: Student
@@ -25,7 +29,6 @@ en:
     pin_placeholder: Enter 6-PIN here
     pin_not_correct: This PIN is incorrect. Please enter the correct PIN.
     continue_button: Continue
-    invalid_login_credentials: Invalid Email or Password
     forgot_password: Forgot your password?
     or_login_below: OR LOG IN BELOW
     or_sign_up_below: OR SIGN UP BELOW
