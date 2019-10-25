@@ -11,7 +11,9 @@ class NewflowController < ApplicationController
         redirect_to profile_newflow_path
       },
       failure: -> {
-        render :login_form }
+        security_log :login_not_found, tried: @handler_result.outputs.email
+        render :login_form
+      }
     )
   end
 
