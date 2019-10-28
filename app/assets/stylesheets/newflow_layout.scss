@@ -498,11 +498,15 @@ input.has-error {
 
         .login-page {
             .page-header {
-                padding-top: 6rem;
+                padding-top: 8rem;
             }
 
             form {
-                padding-top: 1rem;
+                padding-top: 2.2rem;
+            }
+
+            .form-divider {
+                padding-top: 0.3rem;
             }
         }
 
