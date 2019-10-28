@@ -1,7 +1,11 @@
+# Handles log in form submission.
+# Tries to find a user by email (or username for legacy reasons),
+# then checks the password for the user.
+# If successful, outputs the user. Otherwise, fails and logs the error.
 class AuthenticateUser
     lev_handler
 
-    paramify :login do
+    paramify :login_form do
         attribute :email, type: String
         attribute :password, type: String
 
@@ -9,18 +13,18 @@ class AuthenticateUser
         validates :password, presence: true
     end
 
-protected
+    protected ##########################
 
     def authorized?
         true
     end
 
     def handle
-        outputs.email = login_params.email
+        outputs.email = login_form_params.email
 
         # We should be searching by email,
-        #   but we'd like to continue to support users who only have a username.
-        users = LookupUsers.by_email_or_username(login_params.email)
+        # but we'd like to continue to support users who only have a username.
+        users = LookupUsers.by_email_or_username(login_form_params.email)
 
         if users.size == 0
             fail_with_log!('cannot_find_user', :email)
@@ -29,7 +33,7 @@ protected
         end
 
         user = users.first
-        identity = Identity.authenticate({ user_id: user&.id }, login_params.password)
+        identity = Identity.authenticate({ user_id: user&.id }, login_form_params.password)
         unless identity.present?
             fail_with_log!('incorrect_password', :password, user)
             # TODO: MAYBE add the error state (like in custom_identity):
@@ -38,6 +42,8 @@ protected
 
         outputs.user = user
     end
+
+    private ##########################
 
     def fail_with_log!(reason, input_field, user = nil)
         SecurityLog.create!(
