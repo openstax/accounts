@@ -26,8 +26,29 @@ class NewflowSocialCallback
       authentication = Authentication.find_by(
         provider: social_provider, uid: @data.uid.to_s
       )
-      outputs[:user] = authentication.user
-    outputs[:user] = authentication.user
+      outputs.user = authentication.user
+    elsif signing_up?
+      # Create user
+      user = User.create!(
+        state: 'activated',
+        first_name: @data.name.split("\s")[0],
+        last_name: @data.name.split("\s").drop(1).join(' ')
+      )
+      # Create authentication provider
+      authentication = Authentication.create(
+        provider: social_provider, uid: @data.uid.to_s, user_id: user.id
+      )
+      transfer_errors_from(authentication, { scope: :authentication }, true) # TODO: correct scope?
+      # Create email address
+      email_address = EmailAddress.find_or_create_by(value: @data.email)
+      # email_address = EmailAddress.create(value: @data.email)
+      email_address.user = user
+      email_address.verified = true # we trust facebook and google
+      email_address.save
+      transfer_errors_from(email_address, { scope: :email_address }, true)
+      outputs.user = authentication.user
+    else
+      raise('edge case')
     end
   end
 
@@ -37,11 +58,7 @@ class NewflowSocialCallback
     @came_from == newflow_login_path
   end
 
-  def authentication
-    # We don't use fatal_errors in this handler (we could, but we don't), so just build
-    # don't create an authentication here because we don't want to leave orphaned
-    # records lying around if we return a error-ish status
-    outputs[:authentication] ||= Authentication.find_or_initialize_by(
-                                                    provider: @data.provider, uid: @data.uid.to_s)
+  def signing_up?
+    @came_from == newflow_signup_path
   end
 end

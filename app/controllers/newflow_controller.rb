@@ -30,6 +30,7 @@ class NewflowController < ApplicationController
     )
   end
 
+  # Log in or sign up using a social provider (an OAuth provider)
   def oauth_callback
     handle_with(
       NewflowSocialCallback,
@@ -54,6 +55,7 @@ class NewflowController < ApplicationController
     )
   end
 
+  # TODO: require a PreAuthState present in the session OR  a logged in user.
   def signup_done
     @first_name = current_user.first_name
     @email_address = current_user.email_addresses.first.value
@@ -64,7 +66,7 @@ class NewflowController < ApplicationController
   end
 
   def login_failed
-    render plain: 'LOGIN FAILED'
+    render plain: 'SOCIAL LOGIN FAILED'
   end
 
   def logout
