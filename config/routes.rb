@@ -22,7 +22,16 @@ Rails.application.routes.draw do
     post 'i/auth/:provider', action: :newflow_callback
 
     get 'i/auth/:provider/callback', action: :oauth_callback
-    post 'i/auth/:provider/callback', action: :oauth_callback, as: :newflow_callback
+
+    # Sign up with a social provider
+    get 'i/auth/:provider/social_signup',
+        action: :social_signup,
+        as: :social_signup
+
+    post 'i/auth/:provider/social_signup', action: :social_signup, as: :social_signup_post
+    # Log in with a social provider
+    get 'i/auth/:provider/social_login', action: :social_login
+    post 'i/auth/:provider/social_login', action: :social_login, as: :newflow_callback
 
     get 'i/profile', action: :profile_newflow, as: :profile_newflow
     get 'i/logout', action: :logout, as: :newflow_logout
