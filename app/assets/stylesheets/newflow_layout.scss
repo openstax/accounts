@@ -60,13 +60,18 @@ label.required::after {
     #show-hide-button {
         position: absolute;
         top: 50%;
-        right: 3.2rem;
+        right: 1.8rem;
         transform: translateY(-50%);
         line-height: 100%;
 
         color: #027EB5;
         font-weight: bold;
         cursor: pointer;
+
+        @include wider-than($phone-max) {
+            // more space to the right on desktop for users who use a password manager
+            right: 3.2rem;
+        }
     }
 }
 
@@ -468,6 +473,24 @@ input.has-error {
 
         .role-section {
             margin-bottom: 0.8rem;
+        }
+
+        .login-page {
+            .page-header {
+                padding-top: 4.5rem;
+            }
+
+            form {
+                padding-top: 2rem;
+            }
+
+            .form-divider {
+                padding-top: 0.3rem;
+            }
+
+            [type="submit"] {
+                margin-top: 1rem;
+            }
         }
     }
 
