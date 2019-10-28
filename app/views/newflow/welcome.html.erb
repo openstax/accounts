@@ -7,7 +7,7 @@
                     header: (I18n.t(:"login_signup_form.welcome_page_header")),
                     current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 3),
                     banners: @banners) do %>
-            <% lev_form_for :login, url: newflow_callback_path(:newflow_strategy) do |f| %>
+            <% lev_form_for :login, url: '' do |f| %>
                 <% fh = NewflowFormHelper::Newflow.new(f: f,
                                             context: self,
                                             errors: @handler_result&.errors ) %>
