@@ -48,8 +48,26 @@ body {
     }
 }
 
+// Add a star * to form fields that are required
 label.required::after {
     content: " *";
+}
+
+// Show/hide password link
+#password-field-container {
+    position: relative;
+
+    #show-hide-button {
+        position: absolute;
+        top: 50%;
+        right: 3.2rem;
+        transform: translateY(-50%);
+        line-height: 100%;
+
+        color: #027EB5;
+        font-weight: bold;
+        cursor: pointer;
+    }
 }
 
 .main-menu {
@@ -251,7 +269,7 @@ input.has-error {
             cursor: default;
             border: 0;
             border-bottom: 0.1rem solid #d5d5d5;
-            background-color: #fff; // TODO: same as html or body background color OR transparent
+            background-color: #fff; // TODO: use a shared variable
         }
     }
 
