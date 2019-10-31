@@ -217,7 +217,7 @@ class SessionsController < ApplicationController
 
   # This is an official action so that fine_print can check to see if terms need to be signed
   def redirect_back
-    super
+    super # Rails defines this
   end
 
   # OAuth failure (e.g. wrong password)
