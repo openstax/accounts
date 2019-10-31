@@ -6,10 +6,10 @@ class UpdateUserSalesforceInfo
   ]
 
   ADOPTION_STATUSES = {
-    "Current Adopter" => "Yes",
-    "Future Adopter" => "Yes",
-    "Past Adopter" => "No",
-    "Not Adopter" => "No"
+    "Current Adopter" => true,
+    "Future Adopter" => true,
+    "Past Adopter" => false,
+    "Not Adopter" => false
   }
 
   def initialize(allow_error_email:)
@@ -225,7 +225,7 @@ class UpdateUserSalesforceInfo
         :other_school_type
       end
       
-      unless contact.adoption_status.nil? || contact.adoption_status.empty?
+      unless contact.adoption_status.blank?
         user.using_openstax = ADOPTION_STATUSES[contact.adoption_status]
       end
     end

@@ -384,10 +384,10 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.0.0)
       rails (>= 3.1, < 6.0)
-    openstax_salesforce (3.0.0)
+    openstax_salesforce (3.1.0)
       active_force
       omniauth-salesforce
-      rails
+      rails (~> 5.0)
       restforce
     openstax_utilities (4.2.3)
       keyword_search
@@ -685,7 +685,7 @@ DEPENDENCIES
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce (~> 3.0.0)
+  openstax_salesforce (~> 3.1.0)
   openstax_utilities (~> 4.2.0)
   p3p
   parallel_tests
