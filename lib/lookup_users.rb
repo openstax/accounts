@@ -1,4 +1,6 @@
 module LookupUsers
+  # Case-sensitive searches because legacy reasons...
+  # we planned to migrate CNX users which had case-sensitive accounts.
 
   def self.by_email_or_username(email_or_username)
     email_or_username = email_or_username.try(:strip)
