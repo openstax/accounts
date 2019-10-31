@@ -46,6 +46,8 @@ class OauthCallback
       authentication = create_authentication(user, @oauth_provider)
       security_log(:sign_up_successful, user, authentication_id: authentication.id)
       outputs.user = user
+      # TODO: redirect to page where users can confirm their info we got from social provider
+      # outputs.destination_path = confirm_social_info_path or something like that
     else
       # perhaps create a sec log entry
       fatal_error(code: :unknown_callback_state)
