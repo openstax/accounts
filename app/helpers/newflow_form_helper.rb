@@ -79,7 +79,6 @@ module NewflowFormHelper
 
       return '' if field_errors.empty?
 
-      # c.content_tag(:div, class: "errors", role: "alert") do
       c.content_tag(:div, class: "errors") do
         error_divs = field_errors.map do |field_error|
           c.content_tag(:div, class: 'invalid-message') { field_error.translate.html_safe }

@@ -73,7 +73,7 @@ class NewflowStudentSignup
       state: 'unclaimed',
       role: 'student'
     )
-    transfer_errors_from(outputs.user, { type: :verbatim }, fail_if_errors=true)
+    transfer_errors_from(outputs.user, { type: :verbatim }, :fail_if_errors)
   end
 
   def agree_to_terms
@@ -81,7 +81,6 @@ class NewflowStudentSignup
       run(AgreeToTerms, signup_params.contract_1_id, outputs.user, no_error_if_already_signed: true)
       run(AgreeToTerms, signup_params.contract_2_id, outputs.user, no_error_if_already_signed: true)
     end
-    # fatal_error(code: :TODO, message)
   end
 
   def create_email_address
