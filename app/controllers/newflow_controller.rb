@@ -8,7 +8,8 @@ class NewflowController < ApplicationController
     handle_with(AuthenticateUser,
       success: -> {
         sign_in!(@handler_result.outputs.user)
-        redirect_to profile_newflow_path
+        # redirect_to profile_newflow_path
+        redirect_back(fallback_location: profile_newflow_path)
       },
       failure: -> {
         security_log :login_not_found, tried: @handler_result.outputs.email
@@ -36,7 +37,8 @@ class NewflowController < ApplicationController
       OauthCallback,
       success: -> {
         sign_in!(@handler_result.outputs.user)
-        redirect_to profile_newflow_path
+        # redirect_to profile_newflow_path
+        redirect_back(fallback_location: profile_newflow_path)
       },
       failure: -> {
         redirect_to newflow_login_failed_path

@@ -43,6 +43,7 @@
                         <%= label_tag :email, I18n.t(:"login_signup_form.email_label"),
                                     class: 'field-label required'
                         %>
+                        <%# input type is text instead of email bc we also support usernames %>
                         <%= fh.text_field name: :email,
                                     value: suggested_username,
                                     placeholder: I18n.t(:"login_signup_form.email_placeholder"),
