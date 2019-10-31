@@ -145,7 +145,7 @@ class User < ActiveRecord::Base
   def full_name=(name)
     names = name.strip.split(/\s+/)
     self.first_name = names.first
-    self.last_name = (names.length > 1 ? names[1..-1] : ['']).join(' ')
+    self.last_name = names.length > 1 ? names[1..-1].join(' ') : ''
   end
 
   def guessed_first_name
