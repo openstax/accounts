@@ -30,12 +30,12 @@ class NewflowController < ApplicationController
     )
   end
 
-  # Log in or sign up using a social provider (an OAuth provider)
+  # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
     handle_with(
-      NewflowSocialCallback,
+      OauthCallback,
       success: -> {
-        sign_in!(@handler_result.outputs[:user])
+        sign_in!(@handler_result.outputs.user)
         redirect_to profile_newflow_path
       },
       failure: -> {
