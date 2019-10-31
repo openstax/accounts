@@ -14,11 +14,14 @@ module AuthenticateMethods
     if pre_auth_state && pre_auth_state.signed_student? && pre_auth_state_email_available?
       redirect_to main_app.signup_path
     else
-      redirect_to(
-        main_app.login_path(
-          params.permit(:client_id, :signup_at, :go, :no_signup).to_h
-        )
-      )
+      # Note that the following means that users must arrive with the newflow param
+      # when they arrive at the oauth_authorization path in order for them to be redirected to the
+      # newflow login instead of the old login page.
+      # We might want to undo this when we release the new flow.
+      permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :newflow).to_h
+      destination =  params[:newflow].present? ? newflow_login_path(permitted_params) : main_app.login_path(permitted_params)
+
+      redirect_to(destination)
     end
   end
 
@@ -32,7 +35,7 @@ module AuthenticateMethods
   # Doorkeeper controllers define authenticate_admin!, so we need another name
   alias_method :admin_authentication!, :authenticate_admin!
 
-  protected ###################################################################
+  protected #################
 
   # When the external site provides signed params they're
   # requesting the person either be
