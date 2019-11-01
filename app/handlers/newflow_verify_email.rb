@@ -15,7 +15,8 @@ class NewflowVerifyEmail
     email = EmailAddress.where(confirmation_pin: confirm_params.pin).first
     if email
       email.update_attributes(verified: true)
-        outputs.user = email.user
+      email.user.update_attributes(state: 'activated')
+      outputs.user = email.user
     else
         fatal_error(
             code: :invalid_confirmation_pin,

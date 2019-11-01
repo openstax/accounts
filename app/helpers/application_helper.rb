@@ -183,7 +183,7 @@ module ApplicationHelper
   def newflow_login_signup_card(classes: "", header: "", banners: nil, current_step: nil, &block)
     @hide_layout_errors = true
 
-    content_tag :div, class: "login-signup-form #{classes}" do
+    content_tag :div, class: "#{classes}" do
 
       danger_alerts = if flash[:alert].present?
         content_tag :div, class: "top-level-alerts danger" do
