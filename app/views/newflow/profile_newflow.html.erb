@@ -4,11 +4,39 @@
   <%= javascript_include_tag  "profile" %>
 <% end %>
 
+<div id="temporary-logo-within-my-account">
+  <%= render(partial: 'layouts/main_menu') %>
+</div>
+
+<%# This styling here is temporary, WIP. %>
+<style>
+  body {
+    background: none;
+  }
+
+  #application-header {
+    display: none;
+  }
+
+  a, .editable-click, #enable-other-sign-in, a.sign-out, #add-an-email {
+    color: #027eb5 !important;
+  }
+
+  .ox-card {
+    background-color: #fff;
+    border: 0.1rem solid #d5d5d5;
+  }
+
+  #profile .ox-card .category {
+    color: var(--greyish-brown);
+  }
+</style>
+
 <%= ox_card do %>
 
   <div class="profile-title">
-    <%= link_to ('Sign me out ✌🏼'), newflow_logout_path, class: 'sign-out' %>
-    <h1 class="title"><%= 'My Profile 😎' %></h1>
+    <%= link_to ('Log out'), newflow_logout_path, class: 'sign-out' %>
+    <h1 class="title"><%= 'My Account' %></h1>
   </div>
 
   <div class="row name">
@@ -57,7 +85,7 @@
 
   <div class="row enabled-providers">
     <div class="col-sm-2 category">
-      <%= 'My login methods 😎' %>
+      <%= 'My login methods' %>
     </div>
     <div class="col-sm-10 info providers">
       <% current_providers.each do |provider| %>

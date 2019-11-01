@@ -70,7 +70,7 @@ class NewflowStudentSignup
     outputs.user = User.create(
       first_name: signup_params.first_name.camelize,
       last_name: signup_params.last_name.camelize,
-      state: 'unclaimed',
+      state: 'activated', # TODO: or unclaimed?
       role: 'student'
     )
     transfer_errors_from(outputs.user, { type: :verbatim }, :fail_if_errors)
