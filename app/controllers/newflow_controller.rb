@@ -4,12 +4,17 @@ class NewflowController < ApplicationController
   skip_before_action :check_if_password_expired
   fine_print_skip :general_terms_of_use, :privacy_policy
 
+  def login_form
+    # go to the newflow profile on successful login
+    store_url(url: profile_newflow_url)
+  end
+
   def login
     handle_with(AuthenticateUser,
       success: -> {
         sign_in!(@handler_result.outputs.user)
         # redirect_to profile_newflow_path
-        redirect_back(fallback_location: profile_newflow_path)
+        redirect_back(fallback_location: profile_newflow_url)
       },
       failure: -> {
         security_log :login_not_found, tried: @handler_result.outputs.email
