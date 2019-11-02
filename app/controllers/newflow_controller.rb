@@ -5,15 +5,14 @@ class NewflowController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   def login_form
-    # go to the newflow profile on successful login
-    store_url(url: profile_newflow_url)
+    # Send to profile upon login unless in the middle of authorizing an oauth app
+    store_url(url: profile_newflow_url) unless params[:client_id]
   end
 
   def login
     handle_with(AuthenticateUser,
       success: -> {
         sign_in!(@handler_result.outputs.user)
-        # redirect_to profile_newflow_path
         redirect_back(fallback_location: profile_newflow_url)
       },
       failure: -> {
