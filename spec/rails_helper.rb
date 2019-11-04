@@ -50,6 +50,11 @@ end
 
 Capybara.javascript_driver = :selenium_chrome_headless
 
+if ENV['NOT_HEADLESS']
+  # Run the feature specs in a full browser (note, this takes over your computer's focus)
+  Capybara.javascript_driver = :selenium_chrome
+end
+
 Capybara.asset_host = 'http://localhost:2999'
 
 Capybara.server = :puma, { Silent: true } # To clean up your test output
