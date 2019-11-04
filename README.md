@@ -23,7 +23,7 @@ default_transaction_isolation = 'repeatable read'
 * [Different ways to create a user account](#different-ways-to-create-a-user-account)
 * [What happens during sign up](#what-happens-during-sign-up)
 Which records need to be created and why.
-* Logging in
+* [Logging in](#logging-in)
 How we check a user's credentials.
 * [GDPR](#gdpr)
 For compliance with the General Data Protection Regulation (a regulation in the European Union to protect their citizens' data and privacy).
@@ -130,6 +130,10 @@ An OAuth application consumer may send users to `/oauth/authorize` url endpoint 
 ### Via the API
 An OAuth (doorkeeper) application may make a request to an API endpoint (POST `/user/find-or-create`) to create users.
 
+### Imported via a rake task
+
+See [import_users.rake](lib/tasks/accounts/import_users.rake).
+
 ## What happens during sign up
 Which records need to be created and why.
 
@@ -139,6 +143,14 @@ Which records need to be created and why.
 * An `ApplicationUser` if the user is signing up as they authorize a doorkeeper/OAuth application at the same time basically. See [config/initializers/doorkeeper_models.rb](config/initializers/doorkeeper_models.rb), calls `FindOrCreateApplicationUser` on `before_create`. Also, if the user account is being created by an application via the api (`/user/find-or-create`) an `ApplicationUser` is created. `FindOrCreateUnclaimedUser` calls `FindOrCreateApplicationUser`. This is in order to associate a user with an applicaiton. An application may only handle its own users, unless it's one of our own, trusted, applications.
 * A `ContactInfo` record which essentially stores email addresses for users.
 
+## Logging in
+How we check a user's credentials.
+
+Under the hood, we use `BCrypt`'s `authenticate` method to safely compare users' provided password against the `password_digest` we've stored on sign up.
+
+One thing we do differently from what is advised as the most secure way of authenticating users is: we let our users know whether they've just entered the wrong password for an account which in fact does exist in our database, or if there is not a (verified) account associated with the provided email or username. This is a tradeoff we make in order to be more friendly with our users but at the same time, we do have rate limiting in place so the security risk is minimal.
+
+There is a feature that allows authenticating against a password which was created in CNX—which is a web application we own and use for editing our books' content. See [app/models/identity](app/models/identity) to see how we do this.
 
 ## Cloudfront
 
