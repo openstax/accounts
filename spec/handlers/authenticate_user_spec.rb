@@ -1,12 +1,7 @@
 require 'rails_helper'
 
 describe AuthenticateUser, type: :handler do
-  let!(:user) { create_newflow_user 'user@openstax.org', 'password', confirmation_code: '01234' }
-
-  before do
-    # Emails aren't immediately verified on sign up
-    email.update_attributes(verified: true)
-  end
+  let!(:user) { create_newflow_user 'user@openstax.org', 'password' }
 
   context 'when correct credentials (success)' do
     it 'outputs the user' do
