@@ -1,4 +1,4 @@
-class NewflowStudentSignup
+class StudentSignup
   lev_handler
 
   paramify :signup do
@@ -19,7 +19,7 @@ class NewflowStudentSignup
     validates :terms_accepted, presence: true
   end
 
-  protected
+  protected #################
 
   def authorized?
     true
@@ -35,7 +35,7 @@ class NewflowStudentSignup
     send_confirmation_email
   end
 
-  #####################################################################
+  private ###################
 
   def create_authentication
     Authentication.create(

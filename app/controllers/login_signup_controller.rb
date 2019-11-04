@@ -1,4 +1,5 @@
-class NewflowController < ApplicationController
+# Contains every action for login and signup
+class LoginSignupController < ApplicationController
   layout 'newflow_layout'
   skip_before_action :authenticate_user!, except: [:profile_newflow]
   skip_before_action :check_if_password_expired
@@ -6,6 +7,7 @@ class NewflowController < ApplicationController
 
   def login_form
     # Send to profile upon login unless in the middle of authorizing an oauth app
+    # in which case they'll go back to the oauth authorization path
     store_url(url: profile_newflow_url) unless params[:client_id]
   end
 
@@ -23,7 +25,7 @@ class NewflowController < ApplicationController
   end
 
   def signup
-    handle_with(NewflowStudentSignup,
+    handle_with(StudentSignup,
       contracts_required: !contracts_not_required,
       success: -> {
         # clear_login_state
@@ -45,7 +47,7 @@ class NewflowController < ApplicationController
         redirect_back(fallback_location: profile_newflow_path)
       },
       failure: -> {
-        redirect_to newflow_login_failed_path
+        redirect_to newflow_social_login_failed_path
       }
     )
   end
@@ -71,7 +73,7 @@ class NewflowController < ApplicationController
     render layout: 'application'
   end
 
-  def login_failed
+  def social_login_failed
     render plain: 'SOCIAL LOGIN FAILED'
   end
 
