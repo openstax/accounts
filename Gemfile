@@ -192,8 +192,11 @@ group :development, :test do
   # Records HTTP requests
   gem 'vcr'
 
-  # lint ruby files
+  # Lint ruby files
   gem 'rubocop', '~> 0.76.0', require: false
+
+  # Lint RSpec files
+  gem 'rubocop-rspec'
 end
 
 group :development do

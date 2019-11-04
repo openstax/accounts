@@ -41,3 +41,20 @@ Style/CommentedKeyword:
 # allow multiline {} if the return value is used, clearer then begin/end
 Style/BlockDelimiters:
   EnforcedStyle: semantic
+
+# Specs tend to be rather large blocks, but that's okay.
+Metrics/BlockLength:
+  ExcludedMethods: ['describe', 'context', 'feature']
+
+#################################
+# Linting rules specificallly for RSpec #
+#################################
+require: rubocop-rspec
+
+# It's common for params hashes to make test examples a bit long but still legible
+RSpec/ExampleLength:
+  Max: 13
+
+# allow us to use `feature` instead of `describe` in feature specs
+Capybara/FeatureMethods:
+  Enabled: false
