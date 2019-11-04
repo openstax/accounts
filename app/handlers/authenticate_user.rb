@@ -35,7 +35,6 @@ class AuthenticateUser
     user = users.first
     identity = Identity.authenticate({ user_id: user&.id }, login_form_params.password)
     fail_with_log!('incorrect_password', :password, user) unless identity.present?
-
     outputs.user = user
   end
 
@@ -46,7 +45,7 @@ class AuthenticateUser
       event_type: :sign_in_failed,
       event_data: { reason: reason },
       user: user,
-      remote_ip: request.ip
+      remote_ip: request&.ip
     )
 
     fatal_error(

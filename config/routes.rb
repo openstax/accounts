@@ -5,10 +5,10 @@ Rails.application.routes.draw do
   mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
   OpenStax::Salesforce.set_top_level_routes(self)
 
-  scope controller: 'newflow' do
+  scope controller: 'login_signup' do
     get 'i/login', action: :login_form, as: :newflow_login
     post 'i/login', action: :login
-    get 'i/login_failed', action: :login_failed, as: :newflow_login_failed
+    get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
 
     get 'i/signup', action: :signup_form, as: :newflow_signup
     post 'i/signup', action: :signup, as: :newflow_signup_post
