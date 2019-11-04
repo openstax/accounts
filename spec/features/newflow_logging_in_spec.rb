@@ -1,20 +1,15 @@
 require 'rails_helper'
 
-feature 'User logs in', js: true do
-  Capybara.javascript_driver = :selenium_chrome
-
-  background do load 'db/seeds.rb' end
-
-  let!(:user) do
-    user = create_newflow_user 'bryaneli', 'password', nil
-    create_email_address_for(user, 'user@openstax.org')
-    user
+feature 'Log in', js: true do
+  before do
+    load 'db/seeds.rb' # creates terms of use and privacy policy contracts
+    create_newflow_user('user@openstax.org', 'password')
   end
 
-  context 'using email and password' do
-    context 'succesful login' do
+  context 'with email and password' do
+    context 'when succesfully' do
       context 'when user arrives at login path directly and with no parameters' do
-        scenario 'user is redirected to their profile' do
+        it 'user is redirected to their profile' do
           with_forgery_protection do
             visit newflow_login_path
             newflow_log_in_user('user@openstax.org', 'password')
@@ -23,11 +18,11 @@ feature 'User logs in', js: true do
         end
       end
 
-      # when user arrives at login path with signed parameters – is tested in a different file
-      # TODO: when user arrives at login path w certain special params – is tested in controller specs
+      # when user arrives at login path with signed parameters is tested in a different file
+      # TODO: when user arrives at login path w certain special params is tested in controller specs
 
       context 'when user is sent to `oauth_authorization_path` (by an OAuth application)' do
-        scenario 'user is sent back to the external (oauth) application\' s url' do
+        it 'user is sent back to the external (oauth) application\' s url' do
           with_forgery_protection do
             arrive_from_app(params: { newflow: true })
 
@@ -40,8 +35,8 @@ feature 'User logs in', js: true do
       end
     end
 
-    context 'unsuccessful login attempt' do
-      scenario 'there is a problem with the email address' do
+    context 'when unsuccessfully' do
+      it 'there is a problem with the email address' do
         with_forgery_protection do
           visit newflow_login_path
           newflow_log_in_user('NO_USER@openstax.org', 'password')
@@ -54,7 +49,7 @@ feature 'User logs in', js: true do
         end
       end
 
-      scenario 'there is a problem with the password' do
+      it 'there is a problem with the password' do
         with_forgery_protection do
           visit newflow_login_path
           newflow_log_in_user('user@openstax.org', 'WRONGPASSWORD')
@@ -68,4 +63,6 @@ feature 'User logs in', js: true do
       end
     end
   end
+
+  # using facebook and google is tested in the lev handler as well as manually
 end
