@@ -545,6 +545,8 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-rspec (1.36.0)
+      rubocop (>= 0.68.1)
     ruby-debug-ide (0.7.0)
       rake (>= 0.8.1)
     ruby-graphviz (1.2.3)
@@ -719,6 +721,7 @@ DEPENDENCIES
   rspec-instafail
   rspec-rails (~> 3.8)
   rubocop (~> 0.76.0)
+  rubocop-rspec
   ruby-debug-ide
   sass-rails (~> 5.0)
   scout_apm (~> 3.0.x)
