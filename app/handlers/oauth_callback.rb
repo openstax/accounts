@@ -29,15 +29,19 @@ class OauthCallback
 
   # rubocop:disable Metrics/AbcSize
   def handle
-    if logging_in?
-      authentication = Authentication.find_by(provider: @oauth_provider, uid: @data.uid.to_s)
+    authentication = Authentication.find_by(provider: @oauth_provider, uid: @data.uid.to_s)
 
+    if logging_in?
       unless authentication
         # user has not signed up or added facebook as authentication
         security_log(:sign_in_failed, nil, reason: 'mismatched authentication')
-        fatal_error(code: :wtvr)
+        fatal_error(code: :TODO)
       end
 
+      security_log(:sign_in_successful, authentication.user, authentication_id: authentication.id)
+      outputs.user = authentication.user
+    elsif signing_up? && authentication # trying to sign up but already did so before
+      # just log them in
       security_log(:sign_in_successful, authentication.user, authentication_id: authentication.id)
       outputs.user = authentication.user
     elsif signing_up?

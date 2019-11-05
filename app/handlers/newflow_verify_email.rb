@@ -18,12 +18,11 @@ class NewflowVerifyEmail
       email.user.update_attributes(state: 'activated')
       outputs.user = email.user
     else
-        fatal_error(
-            code: :invalid_confirmation_pin,
-            offending_inputs: [:pin],
-            message: I18n.t(:"login_signup_form.invalid_confirmation_pin")
-        )
+      fatal_error(
+        code: :invalid_confirmation_pin,
+        offending_inputs: [:pin],
+        message: I18n.t(:"login_signup_form.invalid_confirmation_pin")
+      )
     end
-
   end
 end
