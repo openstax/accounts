@@ -256,7 +256,7 @@ class SessionsController < ApplicationController
       # deal with immediately, so alert devs.
 
       DevMailer.inspect_object(
-        object: params,
+        object: params.permit!.to_h,
         subject: "#{params[:strategy]} social login is failing!"
       ).deliver_later
 
