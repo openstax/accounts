@@ -29,7 +29,24 @@ class OauthCallback
   # rubocop:disable Metrics/AbcSize
   def handle
     authentication = Authentication.find_by(provider: @oauth_provider, uid: @data.uid.to_s)
-    if authentication
+
+    if logging_in?
+      unless authentication # if no Authentication found
+        existing_user = LookupUsers.by_verified_email(@data.email).first
+        if existing_user
+          # if user is trying to login with social, but they didn't signup with social, look them
+          # up by email address and if found, add the social auth strategy to their account
+          new_auth = Authentication.new(provider: @oauth_provider, uid: @data.uid.to_s)
+          new_auth.user = existing_user
+          new_auth.save! # TODO: `save` instead
+          authentication = new_auth
+        else
+          # if user has not signed up or added facebook as authentication
+          security_log(:sign_in_failed, nil, reason: 'mismatched authentication')
+          fatal_error(code: :TODO)
+        end
+      end
+
       security_log(:sign_in_successful, authentication.user, authentication_id: authentication.id)
     elsif (existing_user = LookupUsers.by_verified_email(@data.email).first)
       authentication = Authentication.new(provider: @oauth_provider, uid: @data.uid.to_s)
@@ -41,6 +58,11 @@ class OauthCallback
       create_email_address(user)
       authentication = create_authentication(user, @oauth_provider)
       security_log(:sign_up_successful, user, authentication_id: authentication.id)
+      outputs.user = user
+      # TODO: redirect to page where users can confirm their info we got from social provider
+      # outputs.destination_path = confirm_social_info_path or something like that
+
+      # elsif # adding an authentication (while logged in) to their account
     end
 
     outputs.user = authentication.user
