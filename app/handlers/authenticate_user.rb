@@ -45,7 +45,7 @@ class AuthenticateUser
       event_type: :sign_in_failed,
       event_data: { reason: reason },
       user: user,
-      remote_ip: request&.ip
+      remote_ip: request.ip
     )
 
     fatal_error(
