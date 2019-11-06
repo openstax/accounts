@@ -22,6 +22,10 @@ class MockOmniauthRequest
     true
   end
 
+  def remote_ip
+    Faker::Internet.ip_v4_address
+  end
+
   def cookies
     ActionController::TestRequest.create(:test).cookie_jar
   end
