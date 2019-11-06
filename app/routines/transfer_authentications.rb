@@ -1,14 +1,13 @@
-# TLDR: Persists or updates an `Authentication` for the given user (using `update_attributes`).
+# Firstly, persists or updates (with `update_attributes`) an `Authentication` for the given user.
 #
-# For each `Authentication`, if it's a new `Authentication`, then we persist it for the given user.
-# But if it's an EXISTING `Authentication` belonging to another user,
-# first we transfer it to the given user.
-# Then, we destroy the previous user if it can be destroyed.
+# Secondly, if the authentication(s) already belonged to a user, and
+# that user can be destroyed, then we destroy that user.
+# Otherwise, that user will have their authentication taken away.
 class TransferAuthentications
   lev_routine
   uses_routine DestroyUser
 
-  protected ####################
+  protected #################
 
   def exec(authentications, newer_user)
     authentications = [authentications] if !(authentications.is_a?(Array))
@@ -24,7 +23,7 @@ class TransferAuthentications
     end
   end
 
-  private ####################
+  private ###################
 
   # The user must have already tried to signup with the given authentication.
   def can_be_destroyed?(user)
