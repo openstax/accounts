@@ -55,6 +55,10 @@ require: rubocop-rspec
 RSpec/ExampleLength:
   Max: 13
 
-# allow us to use `feature` instead of `describe` in feature specs
+# Allow us to use `feature` instead of `describe` in feature specs
 Capybara/FeatureMethods:
+  Enabled: false
+
+# `expect_any_instance_of` is super useful for testing, although, easy to misuse
+RSpec/AnyInstance:
   Enabled: false
