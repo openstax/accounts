@@ -42,9 +42,7 @@ RSpec.describe OauthCallback, type: :handler do
     end
 
     it 'transfers the authentication to the user' do
-      skip 'The Lev gem doesn\' provide a good way to simply test that a routine gets called'
-      # expect(TransferAuthentications).to receive(:call)
-      # expect_any_instance_of(TransferAuthentications).to receive(:call)
+      expect_any_instance_of(TransferAuthentications).to receive(:call).and_call_original
       described_class.call(request: request)
     end
 
