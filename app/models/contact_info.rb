@@ -5,6 +5,7 @@ class ContactInfo < ActiveRecord::Base
   has_many :message_recipients, inverse_of: :contact_info
 
   before_validation :strip
+  before_save :initialize_tokens
 
   validates :user, presence: true
   validates :type, presence: true
@@ -49,6 +50,11 @@ class ContactInfo < ActiveRecord::Base
   end
 
   protected
+
+  def initialize_tokens
+    self.init_confirmation_pin!
+    self.init_confirmation_code!
+  end
 
   def strip
     self.value = self.value.try(:strip)

@@ -1,13 +1,12 @@
-module FormHelper
-
-  class One
-    def initialize(f:, limit_to: nil, context:, errors: nil, params: nil, error_field_classes: "error")
+module NewflowFormHelper
+  class Newflow
+    def initialize(f:, header: nil, limit_to: nil, context:, params: nil, errors: nil)
       @f = f
+      @header = header
       @limit_to = limit_to
       @context = context
-      @errors = errors
       @params = params
-      @error_field_classes = error_field_classes
+      @errors = errors
     end
 
     def c
@@ -23,17 +22,16 @@ module FormHelper
       end
     end
 
-    def text_field(name:, label: nil, value: nil, type: nil, autofocus: false, except: nil, only: nil)
+    def text_field(name:, placeholder:, value: nil, type: nil, autofocus: false, except: nil, only: nil)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
 
-      label ||= ".#{name}"
-      c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
-        input = @f.text_field name, placeholder: c.t(label),
+      c.content_tag :div, class: "form-group" do
+        input = @f.text_field name, placeholder: placeholder,
                                     value: value,
                                     type: type,
-                                    class: "form-control wide",
+                                    class: "form-control wide #{'has-error' if errors_div.present?}",
                                     data: data(only: only, except: except),
                                     autofocus: autofocus
 
@@ -46,7 +44,7 @@ module FormHelper
 
       errors_div = get_errors_div(name: name)
 
-      html_options = {data: data(only: only, except: except)}
+      html_options = { data: data(only: only, except: except) }
       html_options[:autofocus] = autofocus if !autofocus.nil?
 
       c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
@@ -71,23 +69,22 @@ module FormHelper
     end
 
     def data(only:, except:)
-      {only: only, except: except}.delete_if{|k,v| v.nil?}
+      { only: only, except: except}.delete_if{|k,v| v.nil? }
     end
 
     def get_errors_div(name:)
       field_errors = @errors.present? ?
-                       @errors.select{|error| error.offending_inputs == [@f.object_name, name]} :
+                       @errors.select{ |error| [error.offending_inputs].flatten.include?(name) } :
                       []
 
-      return "" if field_errors.empty?
+      return '' if field_errors.empty?
 
-      c.content_tag(:div, class: "errors", role: "alert") do
+      c.content_tag(:div, class: "errors") do
         error_divs = field_errors.map do |field_error|
-          c.content_tag(:div, class: @error_field_classes) { field_error.translate.html_safe }
+          c.content_tag(:div, class: 'invalid-message') { field_error.translate.html_safe }
         end
         error_divs.join.html_safe
       end
     end
-
   end
 end

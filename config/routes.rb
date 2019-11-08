@@ -5,27 +5,36 @@ Rails.application.routes.draw do
   mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
   OpenStax::Salesforce.set_top_level_routes(self)
 
-  scope controller: 'newflow' do
-    get 'i/login_raw', action: :login_raw
-    get 'i/login', action: :login, as: :newflow_login
-    post 'i/login', action: :newflow_login_post
-    get 'i/login_failed', action: :login_failed, as: :newflow_login_failed
+  scope controller: 'login_signup' do
+    get 'i/login', action: :login_form, as: :newflow_login
+    post 'i/login', action: :login
+    get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
 
-    get 'i/signup_raw', action: :signup_raw
-    get 'i/signup', action: :signup, as: :newflow_signup
+    get 'i/signup', action: :signup_form, as: :newflow_signup
+    post 'i/signup', action: :signup, as: :newflow_signup_post
 
     get 'i/welcome', action: :welcome, as: :newflow_welcome
-    get 'i/confirm', action: :confirm
-    get 'i/done', action: :done
+    get 'i/confirmation_form', action: :confirmation_form, as: :confirmation_form
+    post 'i/verify_pin', action: :verify_pin, as: :newflow_verify_pin
+    get 'i/done', action: :signup_done, as: :signup_done
 
-    get 'i/auth/:provider', action: :newflow_login_callback, as: :newflow_auth
-    post 'i/auth/:provider', action: :newflow_login_callback
+    get 'i/auth/:provider', action: :newflow_callback, as: :newflow_auth
+    post 'i/auth/:provider', action: :newflow_callback
 
-    get 'i/auth/:provider/callback', action: :newflow_login_callback
-    post 'i/auth/:provider/callback', action: :newflow_login_callback, as: :newflow_callback
+    get 'i/auth/:provider/callback', action: :oauth_callback
+
+    # Sign up with a social provider
+    get 'i/auth/:provider/social_signup',
+        action: :social_signup,
+        as: :social_signup
+
+    post 'i/auth/:provider/social_signup', action: :social_signup, as: :social_signup_post
+    # Log in with a social provider
+    get 'i/auth/:provider/social_login', action: :social_login
+    post 'i/auth/:provider/social_login', action: :social_login, as: :newflow_callback
 
     get 'i/profile', action: :profile_newflow, as: :profile_newflow
-    get 'i/newflow_logout', action: :logout, as: :newflow_logout
+    get 'i/logout', action: :logout, as: :newflow_logout
   end
 
   scope controller: 'sessions' do

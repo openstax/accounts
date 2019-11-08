@@ -48,8 +48,31 @@ body {
     }
 }
 
+// Add a star * to form fields that are required
 label.required::after {
     content: " *";
+}
+
+// Show/hide password link
+#password-field-container {
+    position: relative;
+
+    #show-hide-button {
+        position: absolute;
+        top: 50%;
+        right: 1.8rem;
+        transform: translateY(-50%);
+        line-height: 100%;
+
+        color: #027EB5;
+        font-weight: bold;
+        cursor: pointer;
+
+        @include wider-than($phone-max) {
+            // more space to the right on desktop for users who use a password manager
+            right: 3.2rem;
+        }
+    }
 }
 
 .main-menu {
@@ -94,6 +117,15 @@ label.required::after {
     span {
         @include title-font(1.4rem);
     }
+}
+
+input.has-error {
+    background-color: var(--input-error-background-color) !important;
+    border: thin solid var(--input-error-border-color) !important;
+}
+
+.invalid-message {
+    color: var(--input-error-message-color);
 }
 
 #login-signup-form {
@@ -242,7 +274,7 @@ label.required::after {
             cursor: default;
             border: 0;
             border-bottom: 0.1rem solid #d5d5d5;
-            background-color: #fff; // TODO: same as html or body background color OR transparent
+            background-color: #fff; // TODO: use a shared variable
         }
     }
 
@@ -442,6 +474,24 @@ label.required::after {
         .role-section {
             margin-bottom: 0.8rem;
         }
+
+        .login-page {
+            .page-header {
+                padding-top: 4.5rem;
+            }
+
+            form {
+                padding-top: 2rem;
+            }
+
+            .form-divider {
+                padding-top: 0.3rem;
+            }
+
+            [type="submit"] {
+                margin-top: 1rem;
+            }
+        }
     }
 
     @include wider-than($phone-max) {
@@ -471,11 +521,15 @@ label.required::after {
 
         .login-page {
             .page-header {
-                padding-top: 6rem;
+                padding-top: 8rem;
             }
 
             form {
-                padding-top: 1rem;
+                padding-top: 2.2rem;
+            }
+
+            .form-divider {
+                padding-top: 0.3rem;
             }
         }
 

@@ -1,11 +1,14 @@
+# Parses and then represents the response from authenticating with a social provider.
 class OmniauthData
 
-  VALID_PROVIDERS = ['identity', 'facebook', 'twitter', 'google_oauth2']
+  VALID_PROVIDERS = [
+    'identity', 'facebook', 'twitter', 'google_oauth2', 'facebooknewflow'
+  ]
 
   def initialize(auth_data)
     @auth_data = auth_data
     @info = @auth_data[:info] || {}
-    raise IllegalArgument unless VALID_PROVIDERS.include? provider
+    raise IllegalArgument unless VALID_PROVIDERS.include?(provider)
   end
 
   def provider

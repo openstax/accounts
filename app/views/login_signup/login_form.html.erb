@@ -1,0 +1,85 @@
+<%
+  suggested_username = pre_auth_state && pre_auth_state.signed? ?
+        pre_auth_state.signed_data['email'] : nil
+%>
+
+<div id="login-signup-form">
+    <div class="content">
+        <%= render partial: 'tab_group' , locals: { active_class: 'login--active' } %>
+
+        <%= newflow_login_signup_card(
+                    classes: "login-page",
+                    header: (I18n.t(:"login_signup_form.login_page_header")),
+                    banners: @banners) do %>
+            <% lev_form_for :login_form, url: newflow_login_path do |f| %>
+                <% fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors) %>
+                    <div class="content social-section">
+                        <div><%= I18n.t(:"login_signup_form.login_with") %></div>
+
+                        <div class="social-buttons">
+
+                            <div class="fb-share-button">
+                                <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn' do %>
+                                    <i class="social-icon fa fa-facebook"></i>
+                                    <span>Facebook</span>
+                                <% end %>
+                            </div>
+
+                            <div class="google-share-button">
+                                <%= link_to newflow_auth_path(:google), class: 'google btn' do %>
+                                    <i class="social-icon fa fa-google"></i>
+                                    <span>Google</span>
+                                <% end %>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="content form-divider">
+                        <%= I18n.t(:"login_signup_form.or_login_below") %>
+                    </div>
+
+                    <div class="content control-group">
+                        <%= label_tag :email, I18n.t(:"login_signup_form.email_label"),
+                                    class: 'field-label required'
+                        %>
+                        <%# input type is text instead of email bc we also support usernames %>
+                        <%= fh.text_field name: :email,
+                                    value: suggested_username,
+                                    placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                                    autofocus: true
+                        %>
+                    </div>
+
+                    <div class="content control-group">
+                        <div id="password-field-container">
+                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                                    class: 'field-label required'
+                            %>
+                            <%= fh.text_field name: :password,
+                                        type: :password,
+                                        placeholder: I18n.t(:"login_signup_form.password_label")
+                            %>
+                            <span id="show-hide-button">
+                                <span class="toggle-show-hide">SHOW</span>
+                                <span class="toggle-show-hide" style="display: none">HIDE</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <%= f.hidden_field :source, value: 'authenticate' %>
+
+                    <div class="content">
+                        <%= f.submit I18n.t(:"login_signup_form.continue_button"),
+                                    disable_with: I18n.t(:"login_signup_form.continue_button"),
+                                    class: 'primary'
+                        %>
+                    </div>
+
+                    <div class="content">
+                        <%= link_to I18n.t(:"login_signup_form.forgot_password"), '#TODO' %>
+                    </div>
+            <% end  %>
+        <% end  %>
+    </div>
+</div>

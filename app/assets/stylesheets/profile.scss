@@ -1,4 +1,19 @@
 @import "bootstrap-editable";
+@import "pattern-library/elements/menus"; /* TODO: BRYAN - double check this decision */
+
+.main-menu {
+    box-shadow: none;
+    height: 2rem;
+    margin: 2rem 0 0 2rem;
+
+    .logo-wrapper {
+        padding: 0;
+
+         @include width-up-to($phone-max) {
+            margin: auto;
+        }
+    }
+}
 
 #profile .ox-card {
   .alert { margin: 10px; }

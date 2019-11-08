@@ -3,7 +3,12 @@ en:
   # They are reproduced as a global `window.OX.I18n`. For example the key
   # `javascript.alert.close` would be accessible as `window.OX.I18n.alert.close`.
 
-  signinup_form:
+  login_signup_form:
+    cant_be_blank: can't be blank
+    cannot_find_user: >-
+      We could not find your account. Please try again.
+    multiple_users: We found several accounts with this email
+    incorrect_password: The password you provided is incorrect.
     login_tab: Log in
     signup_tab: Sign up
     student: Student
@@ -13,24 +18,33 @@ en:
     login_with: 'Log in with:'
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
+    confirm_page_header: Hi, %{first_name}! Confirm your email.
     welcome_page_header: Welcome! Join OpenStax as
     email_placeholder: me@myemail.com
     first_name_label: First name
     last_name_label: Last name
     email_label: Email
     password_label: Password
+    pin_label: Confirm PIN
+    pin_placeholder: Enter 6-PIN here
+    pin_not_correct: This PIN is incorrect. Please enter the correct PIN.
     continue_button: Continue
     forgot_password: Forgot your password?
     or_login_below: OR LOG IN BELOW
     or_sign_up_below: OR SIGN UP BELOW
     send_me_newsletter: Send me the OpenStax newsletter
-    agree_to_terms_of_use: I agree to the Terms of Use and Privacy Policy
+    agree_to_terms_of_use: I agree to the %{terms_of_use} and %{privacy_policy}
+    invalid_confirmation_pin: Invalid confirmation pin
+    youre_done: You're done, %{first_name}!
     join_as_student_description: >-
       Sign up for a <b>Student</b> account to access Tutor assignments,
       highlight study materials, and more.
     join_as_educator_description: >-
       Sign up for an <b>Educator</b> account to adopt a book and access locked
       instructor content and free resources integrated with your book.
+    youre_done_description: >-
+      Your account has been confirmed for <b>%{email_address}</b>!
+      To start exploring, check out some of the features you now have access to.
   student_profile:
     enable_other_sign_in_options: Enable other login options
     other_sign_in_options_html: Other login<br class="wide"> options

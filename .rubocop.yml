@@ -1,0 +1,60 @@
+#######################################################
+## This is intended to be a living document                                  ##
+##                                                                                                       ##
+## If anyone feels that things are too strict:                                  ##
+##                                                                                                       ##
+## Ask "Is the code clearer with or without the rule?"                 ##
+## Then find the rule online and read the rational for it               ##
+## If you still belive that the code is easier to read,                     ##
+## Disable it below, ALONG WITH A COMMENT SAYING WHY  ##
+#######################################################
+
+AllCops:
+  Exclude:
+    - config/**/*.rb
+
+# modern dev screens are large
+Metrics/LineLength:
+  Max: 100
+
+# Too short methods lead to extraction of single-use methods, which can make
+# the code easier to read (by naming things), but can also clutter the class
+Metrics/MethodLength:
+  Max: 20
+
+# will probably be the default in ruby 3, so don't bother adding
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# don't need to require documenting everything
+Documentation:
+  Enabled: false
+
+# while %i and friends are nice, [] is universally known
+Style/SymbolArray:
+  Enabled: false
+
+# this way the comment is explicitly linked to the line it's referring to
+Style/CommentedKeyword:
+  Enabled: false
+
+# allow multiline {} if the return value is used, clearer then begin/end
+Style/BlockDelimiters:
+  EnforcedStyle: semantic
+
+# Specs tend to be rather large blocks, but that's okay.
+Metrics/BlockLength:
+  ExcludedMethods: ['describe', 'context', 'feature']
+
+#################################
+# Linting rules specificallly for RSpec #
+#################################
+require: rubocop-rspec
+
+# It's common for params hashes to make test examples a bit long but still legible
+RSpec/ExampleLength:
+  Max: 13
+
+# allow us to use `feature` instead of `describe` in feature specs
+Capybara/FeatureMethods:
+  Enabled: false
