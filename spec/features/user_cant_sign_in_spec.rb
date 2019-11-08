@@ -98,7 +98,7 @@ feature "User can't sign in", js: true do
       end
 
       screenshot!
-      expect(page).to have_content('This is a fake external application')
+      expect(page).to have_content('External application loaded successfully.')
     end
   end
 

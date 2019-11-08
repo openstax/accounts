@@ -9,7 +9,7 @@ feature 'Log in', js: true do
   context 'with email and password' do
     context 'when succesfully' do
       context 'when user arrives at login path directly and with no parameters' do
-        it 'user is redirected to their profile' do
+        it 'redirects user to their profile' do
           with_forgery_protection do
             visit newflow_login_path
             newflow_log_in_user('user@openstax.org', 'password')
