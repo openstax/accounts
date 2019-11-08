@@ -35,6 +35,12 @@ Rails.application.routes.draw do
 
     get 'i/profile', action: :profile_newflow, as: :profile_newflow
     get 'i/logout', action: :logout, as: :newflow_logout
+
+    post 'send_password_setup_instructions',
+         action: :send_password_setup_instructions,
+         as: :send_password_setup_instructions
+
+    get 'check_your_email', as: :check_your_email
   end
 
   scope controller: 'sessions' do
@@ -69,7 +75,7 @@ Rails.application.routes.draw do
   # The actual request, however, is handled by the omniauth middleware when it detects
   #     that the current_url is the callback_path, using `OmniAuth::Strategy#on_callback_path?`
   #     So, admittedly, this route is deceiving.
-  get "/auth/:provider", to: lambda{ |env| [404, {}, ["Not Found"]] }, as: :oauth
+  get '/auth/:provider', to: ->(_env) { [404, {}, ['Not Found']] }, as: :oauth
 
   scope controller: 'authentications' do
     delete 'auth/:provider', action: :destroy, as: :destroy_authentication
@@ -207,12 +213,10 @@ Rails.application.routes.draw do
       end
     end
 
-    unless Rails.env.production?
-      get 'raise_exception/:type', to: 'dev#raise_exception'
-    end
+    get 'raise_exception/:type', to: 'dev#raise_exception' unless Rails.env.production?
   end
 
-  use_doorkeeper { controllers applications: 'oauth/applications' }
+  use_doorkeeper do controllers applications: 'oauth/applications' end
 
   mount FinePrint::Engine => '/admin/fine_print'
 
@@ -236,9 +240,9 @@ Rails.application.routes.draw do
     resource :security_log, only: [:show]
 
     delete :delete_contact_info, path: '/contact_infos/:id/verify',
-         controller: :contact_infos, action: :destroy
+                                 controller: :contact_infos, action: :destroy
     post :verify_contact_info, path: '/contact_infos/:id/verify',
-         controller: :contact_infos, action: :verify
+                               controller: :contact_infos, action: :verify
 
     resource :salesforce, only: [], controller: :salesforce do
       collection do
@@ -260,7 +264,5 @@ Rails.application.routes.draw do
     end
   end
 
-  if Rails.env.test?
-    get '/external_app_for_specs' => 'external_app_for_specs#index'
-  end
+  get '/external_app_for_specs' => 'external_app_for_specs#index' if Rails.env.test?
 end

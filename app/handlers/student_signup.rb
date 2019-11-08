@@ -37,24 +37,6 @@ class StudentSignup
 
   private ###################
 
-  def create_authentication
-    Authentication.create(
-      provider: 'identity',
-      # because of the way that user signup used to work in the old flow,
-      # `user_id` and `uid` are both required and the same.
-       user_id: outputs.user.id, uid: outputs.user.id
-    )
-    # TODO: catch errorr states like - if auth already exists for this user
-  end
-
-  def create_identity
-    Identity.create(
-      password: signup_params.password,
-      password_confirmation: signup_params.password,
-      user: outputs.user
-    )
-  end
-
   def create_pre_auth_state
     outputs.pre_auth_state = PreAuthState.email_address.create(
       is_partial_info_allowed: true,
@@ -74,6 +56,24 @@ class StudentSignup
       role: 'student'
     )
     transfer_errors_from(outputs.user, { type: :verbatim }, :fail_if_errors)
+  end
+
+  def create_authentication
+    Authentication.create(
+      provider: 'identity',
+      # because of the way that user signup used to work in the old flow,
+      # `user_id` and `uid` are both required and the same.
+       user_id: outputs.user.id, uid: outputs.user.id
+    )
+    # TODO: catch errorr states like - if auth already exists for this user
+  end
+
+  def create_identity
+    Identity.create(
+      password: signup_params.password,
+      password_confirmation: signup_params.password,
+      user: outputs.user
+    )
   end
 
   def agree_to_terms
