@@ -282,6 +282,7 @@ def complete_login_username_or_email_screen(username_or_email)
   fill_in 'login_username_or_email', with: username_or_email
   expect_sign_in_page
   expect(page).to have_no_missing_translations
+  screenshot!
   click_button (t :"sessions.start.next")
   expect(page).to have_no_missing_translations
 end
@@ -290,6 +291,7 @@ def complete_login_password_screen(password)
   # TODO expect login password screen
   fill_in (t :"sessions.authenticate_options.password"), with: password
   expect(page).to have_no_missing_translations
+  screenshot!
   click_button (t :"sessions.authenticate_options.login")
   expect(page).to have_no_missing_translations
 end

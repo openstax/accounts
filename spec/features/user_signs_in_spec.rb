@@ -10,11 +10,12 @@ feature 'User logs in', js: true do
       create_email_address_for(user, 'user@example.com')
 
       arrive_from_app
-
       screenshot!
+
       complete_login_username_or_email_screen 'user@example.com'
       screenshot!
       complete_login_password_screen 'password'
+      screenshot!
 
       expect_back_at_app
     end
