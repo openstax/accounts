@@ -1,0 +1,18 @@
+<div id="login-signup-form">
+    <div class="content">
+        <%= render partial: 'tab_group' , locals: { active_class: 'login--active' } %>
+
+        <%= newflow_login_signup_card(
+                    classes: "login-page",
+                    header: I18n.t(:"login_signup_form.check_your_email",
+                        first_name: @first_name)) do %>
+            <form>
+                <div class="content control-group info-message">
+                    <%= I18n.t(:"login_signup_form.check_your_email_description",
+                                    email: @email_address).html_safe
+                    %>
+                </div>
+            </form>
+        <% end  %>
+    </div>
+</div>

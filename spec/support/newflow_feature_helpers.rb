@@ -1,3 +1,4 @@
+# Creates a verified user, an email address, and a password
 def create_newflow_user(email, password='password', terms_agreed=nil, confirmation_code=nil)
   terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
                           :terms_agreed :
