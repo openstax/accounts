@@ -463,12 +463,17 @@ input.has-error {
         @include set-font(body-regular);
     }
 
-    [type="submit"] {
+    [type=submit] {
         width: 17.2rem;
     }
 
-    [type="checkbox"] {
+    [type=checkbox] {
         height: auto;
+    }
+
+    input[type=text]:disabled {
+        background-color: #f1f1f1;
+        cursor: not-allowed;
     }
 }
 
