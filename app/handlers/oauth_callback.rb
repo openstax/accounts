@@ -24,6 +24,7 @@ class OauthCallback
     @data = parse_oauth_data(request.env['omniauth.auth'])
     # TODO: undo the following line when we deploy to production
     @oauth_provider = @data.provider == 'facebooknewflow' ? 'facebook' : @data.provider
+    outputs.email = @data.email
   end
 
   # rubocop:disable Metrics/AbcSize

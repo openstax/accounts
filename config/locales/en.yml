@@ -45,6 +45,16 @@ en:
     youre_done_description: >-
       Your account has been confirmed for <b>%{email_address}</b>!
       To start exploring, check out some of the features you now have access to.
+    send_me_instructions: Send me instructions
+    return: Return
+    login_unsuccessful: Login unsuccessful
+    login_unsuccessful_description: >-
+      We were not able to authenticate the account associated with <b>%{email}</b>.
+      If you are unable to use your social login, we can send instructions for setting up
+      an account password to <b>%{email}</b>. You can also return to the login page and try again.
+    check_your_email: Check your email
+    check_your_email_description: >-
+      An email containing password setup instructions has been sent to <b>%{email}</b>.
   student_profile:
     enable_other_sign_in_options: Enable other login options
     other_sign_in_options_html: Other login<br class="wide"> options
