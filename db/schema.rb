@@ -269,7 +269,10 @@ ActiveRecord::Schema.define(version: 2019_12_18_192109) do
     t.jsonb "signed_data"
     t.boolean "is_partial_info_allowed", default: false, null: false
     t.string "first_name", default: ""
+    t.string "last_name", default: ""
+    t.bigint "user_id"
     t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
+    t.index ["user_id"], name: "index_pre_auth_states_on_user_id"
   end
 
   create_table "security_logs", id: :serial, force: :cascade do |t|
