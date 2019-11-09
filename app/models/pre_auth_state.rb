@@ -1,4 +1,6 @@
 class PreAuthState < ActiveRecord::Base
+  belongs_to :user
+
   enum contact_info_kind: [:email_address]
 
   before_validation :prepare

@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_user!
   before_action :complete_signup_profile
+  # before_action :confirm_oauth_info # I don't think I need this because of the way OauthCallback works
   before_action :check_if_password_expired
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
@@ -22,6 +23,12 @@ class ApplicationController < ActionController::Base
     # TODO: uncomment this line after fixing openstax_path_prefixer
     # redirect_to main_app.signup_profile_path if current_user.is_needs_profile?
   end
+
+  # def confirm_oauth_info
+  #   return true if request.format != :html || request.options?
+  #   redirect_to confirm_your_info_path if current_user.state == 'unverified'
+  # end
+
 
   def check_if_password_expired
     return true if request.format != :html || request.options?
