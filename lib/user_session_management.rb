@@ -101,7 +101,7 @@ module UserSessionManagement
   def save_pre_auth_state(pre_auth_state)
     clear_login_state
     # There may be an old signup state object around, check for that
-    clear_pre_auth_state if pre_auth_state.id != session[:signup]
+    clear_pre_auth_state if pre_auth_state&.id != session[:signup]
     session[:signup] = pre_auth_state.id
   end
 

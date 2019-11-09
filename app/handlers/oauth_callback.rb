@@ -34,25 +34,26 @@ class OauthCallback
       security_log(:sign_in_successful, authentication.user, authentication_id: authentication.id)
     elsif (existing_user = LookupUsers.by_verified_email(@data.email).first)
       authentication = Authentication.new(provider: @oauth_provider, uid: @data.uid.to_s)
-      # TransferAuthentications.call(authentication, existing_user) # TODO: does this raise fatally?
       run(TransferAuthentications, authentication, existing_user) # TODO: does this raise fatally?
+      create_pre_auth_state(existing_user) unless existing_user.pre_auth_state
       security_log(:sign_in_successful, authentication.user, authentication_id: authentication.id)
     else # sign up new user
       user = create_user_instance
       create_email_address(user)
       authentication = create_authentication(user, @oauth_provider)
+      create_pre_auth_state(user)
       security_log(:sign_up_successful, user, authentication_id: authentication.id)
     end
 
     outputs.user = authentication.user
+    outputs.pre_auth_state = outputs.user.pre_auth_state
   end
   # rubocop:enable Metrics/AbcSize
 
   private ###########################
 
   def create_user_instance
-    state = 'activated' # b/c we trust emails from oauth providers to be already verified
-    user = User.new(state: state)
+    user = User.new(state: 'unverified')
     user.full_name = @data.name
     user
   end
@@ -72,6 +73,16 @@ class OauthCallback
     email = EmailAddress.create(value: @data.email, user: user, verified: true)
     transfer_errors_from(email, { scope: :email_address }, :fail_if_errors)
     email
+  end
+
+  def create_pre_auth_state(user)
+    PreAuthState.create!(
+      first_name: user.first_name,
+      last_name: user.last_name,
+      user_id: user.id,
+      contact_info_value: @data.email,
+      role: 'student'
+    )
   end
 
   def parse_oauth_data(oauth_response)

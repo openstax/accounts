@@ -7,11 +7,13 @@ class User < ActiveRecord::Base
     'temp', # deprecated but still could exist for old accounts
     'new_social',
     'unclaimed',
-    'needs_profile',
-    'activated' # means their user info is in place and the email is verified
+    'needs_profile', # has yet to fill out their user info
+    'activated', # means their user info is in place and the email is verified
+    'unverified' # means their user info is in place but the email is not yet verified
   ]
 
   has_one :identity, dependent: :destroy, inverse_of: :user
+  has_one :pre_auth_state
 
   has_many :authentications, dependent: :destroy, inverse_of: :user
   has_many :application_users, dependent: :destroy, inverse_of: :user

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_04_193412) do
+ActiveRecord::Schema.define(version: 2019_11_09_194244) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -269,7 +269,10 @@ ActiveRecord::Schema.define(version: 2019_12_04_193412) do
     t.jsonb "signed_data"
     t.boolean "is_partial_info_allowed", default: false, null: false
     t.string "first_name", default: ""
+    t.string "last_name", default: ""
+    t.bigint "user_id"
     t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
+    t.index ["user_id"], name: "index_pre_auth_states_on_user_id"
   end
 
   create_table "security_logs", id: :serial, force: :cascade do |t|
