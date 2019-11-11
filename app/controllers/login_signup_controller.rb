@@ -1,9 +1,10 @@
 # Contains every action for login and signup
 class LoginSignupController < ApplicationController
   layout 'newflow_layout'
-  skip_before_action :authenticate_user!, except: [:profile_newflow]
+  skip_before_action :authenticate_user!, except: [:profile_newflow, :signup_done]
   skip_before_action :check_if_password_expired
-  fine_print_skip :general_terms_of_use, :privacy_policy
+  fine_print_skip :general_terms_of_use, :privacy_policy,
+                  except: [:profile_newflow, :verify_pin, :signup_done]
 
   def login_form
     # Send to profile upon login unless in the middle of authorizing an oauth app
@@ -12,12 +13,16 @@ class LoginSignupController < ApplicationController
   end
 
   def login
-    handle_with(AuthenticateUser,
-      success: -> {
+    # if too_many_log_in_attempts_by_ip?(ip: request.ip)
+    #   redirect_to root_url, alert: (I18n.t :"controllers.sessions.too_many_lookup_attempts")
+    # end
+    handle_with(
+      AuthenticateUser,
+      success: lambda {
         sign_in!(@handler_result.outputs.user)
         redirect_back(fallback_location: profile_newflow_url)
       },
-      failure: -> {
+      failure: lambda {
         security_log :login_not_found, tried: @handler_result.outputs.email
         render :login_form
       }
@@ -25,45 +30,31 @@ class LoginSignupController < ApplicationController
   end
 
   def signup
-    handle_with(StudentSignup,
+    handle_with(
+      StudentSignup,
       contracts_required: !contracts_not_required,
-      success: -> {
-        # clear_login_state
+      success: lambda {
         save_pre_auth_state(@handler_result.outputs.pre_auth_state)
         redirect_to confirmation_form_path
-      }, failure: -> {
+      }, failure: lambda {
         render :signup_form
       }
     )
   end
 
-  # Log in (or sign up and then log in) a user using a social (OAuth) provider
-  def oauth_callback
-    handle_with(
-      OauthCallback,
-      success: -> {
-        sign_in!(@handler_result.outputs.user)
-        # redirect_to profile_newflow_path
-        redirect_back(fallback_location: profile_newflow_path)
-      },
-      failure: -> {
-        redirect_to newflow_social_login_failed_path
-      }
-    )
-  end
-
   def verify_pin
-    handle_with(NewflowVerifyEmail,
-      success: -> {
+    handle_with(
+      NewflowVerifyEmail,
+      success: lambda {
         sign_in!(@handler_result.outputs.user)
         redirect_to signup_done_path
-      }, failure: -> {
+      }, failure: lambda {
         render :confirmation_form
       }
     )
   end
 
-  # TODO: require a PreAuthState present in the session OR  a logged in user.
+  # TODO: require a logged in user
   def signup_done
     @first_name = current_user.first_name
     @email_address = current_user.email_addresses.first.value
@@ -73,8 +64,43 @@ class LoginSignupController < ApplicationController
     render layout: 'application'
   end
 
+  # Log in (or sign up and then log in) a user using a social (OAuth) provider
+  def oauth_callback
+    handle_with(
+      OauthCallback,
+      success: lambda {
+        sign_in!(@handler_result.outputs.user)
+        # redirect_to profile_newflow_path
+        redirect_back(fallback_location: profile_newflow_path)
+      },
+      failure: lambda {
+        @email = @handler_result.outputs.email
+        # TODO: rate-limit this
+        # TODO: create a security log
+        render :social_login_failed
+      }
+    )
+  end
+
   def social_login_failed
-    render plain: 'SOCIAL LOGIN FAILED'
+    # TODO: rate-limit this
+    # TODO: create a security log
+    fallback_email = current_user&.email unless is_real_production_site? # for testing purposes
+    @email ||= fallback_email
+  end
+
+  def send_password_setup_instructions
+    # TODO: rate-limit this
+    @email_address = params[:send_instructions][:email]
+    email = EmailAddress.verified.find_by(value: @email_address)
+    # TODO: I may wanna raise an exception if there's no verified email found
+    return unless email && (user = email.user)
+
+    user.refresh_login_token
+    user.save
+    NewflowMailer.newflow_setup_password(user: email.user, email: @email_address).deliver_later
+    # TODO: create a security log
+    render :check_your_email
   end
 
   def logout

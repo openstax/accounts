@@ -21,48 +21,37 @@ class OauthCallback
   end
 
   def setup
-    @came_from = parse_oauth_origin(request.env['omniauth.origin'])
-    @data = parse_oauth_response(request.env['omniauth.auth'])
+    @data = parse_oauth_data(request.env['omniauth.auth'])
     # TODO: undo the following line when we deploy to production
     @oauth_provider = @data.provider == 'facebooknewflow' ? 'facebook' : @data.provider
+    outputs.email = @data.email
   end
 
   # rubocop:disable Metrics/AbcSize
   def handle
     authentication = Authentication.find_by(provider: @oauth_provider, uid: @data.uid.to_s)
-
-    if logging_in?
-      unless authentication
-        # user has not signed up or added facebook as authentication
-        security_log(:sign_in_failed, nil, reason: 'mismatched authentication')
-        fatal_error(code: :TODO)
-      end
-
+    if authentication
       security_log(:sign_in_successful, authentication.user, authentication_id: authentication.id)
-      outputs.user = authentication.user
-    elsif signing_up? && authentication # trying to sign up but already did so before
-      # just log them in
+    elsif (existing_user = LookupUsers.by_verified_email(@data.email).first)
+      authentication = Authentication.new(provider: @oauth_provider, uid: @data.uid.to_s)
+      # TransferAuthentications.call(authentication, existing_user) # TODO: does this raise fatally?
+      run(TransferAuthentications, authentication, existing_user) # TODO: does this raise fatally?
       security_log(:sign_in_successful, authentication.user, authentication_id: authentication.id)
-      outputs.user = authentication.user
-    elsif signing_up?
+    else # sign up new user
       user = create_user_instance
       create_email_address(user)
       authentication = create_authentication(user, @oauth_provider)
       security_log(:sign_up_successful, user, authentication_id: authentication.id)
-      outputs.user = user
-      # TODO: redirect to page where users can confirm their info we got from social provider
-      # outputs.destination_path = confirm_social_info_path or something like that
-    else
-      # perhaps create a sec log entry
-      fatal_error(code: :unknown_callback_state)
     end
+
+    outputs.user = authentication.user
   end
   # rubocop:enable Metrics/AbcSize
 
   private ###########################
 
   def create_user_instance
-    state = 'activated' # b/c emails from oauth providers are already verified
+    state = 'activated' # b/c we trust emails from oauth providers to be already verified
     user = User.new(state: state)
     user.full_name = @data.name
     user
@@ -70,8 +59,7 @@ class OauthCallback
 
   def create_authentication(user, oauth_provider)
     auth = Authentication.new(provider: oauth_provider, uid: @data.uid.to_s)
-    # Note that this persists the user and the authentication
-    run(TransferAuthentications, auth, user)
+    run(TransferAuthentications, auth, user) # This persists the user and the authentication
     auth
   end
 
@@ -86,22 +74,10 @@ class OauthCallback
     email
   end
 
-  def parse_oauth_origin(oauth_origin)
-    URI.parse(oauth_origin).path
-  end
-
-  def parse_oauth_response(oauth_response)
+  def parse_oauth_data(oauth_response)
     OmniauthData.new(oauth_response)
   rescue StandardError
     fatal_error(code: :invalid_omniauth_data)
-  end
-
-  def logging_in?
-    @came_from == newflow_login_path
-  end
-
-  def signing_up?
-    @came_from == newflow_signup_path
   end
 
   def security_log(event, user, data = {})
