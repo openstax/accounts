@@ -39,6 +39,21 @@ class LoginSignupController < ApplicationController
       })
   end
 
+  def change_signup_email
+    handle_with(
+      ChangeSignupEmail,
+      pre_auth_state: pre_auth_state,
+      success: lambda {
+        # render :confirmation_form
+        redirect_to confirmation_form_path
+      },
+      failure: lambda {
+        # make sure that the email's format is MX validated
+        render :confirmation_form
+      }
+    )
+  end
+
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
     handle_with(
