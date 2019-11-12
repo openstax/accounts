@@ -18,6 +18,8 @@ Rails.application.routes.draw do
     get 'i/welcome', action: :welcome, as: :newflow_welcome
     get 'i/confirmation_form', action: :confirmation_form, as: :confirmation_form
     post 'i/verify_pin', action: :verify_pin, as: :newflow_verify_pin
+    get 'i/change_your_email', action: :change_your_email, as: :change_your_email
+    post 'i/change_signup_email', action: :change_signup_email, as: :change_signup_email
     get 'i/done', action: :signup_done, as: :signup_done
 
     # Sig in/up with an oauth provider
@@ -35,14 +37,16 @@ Rails.application.routes.draw do
     get 'i/auth/:provider/social_login', action: :social_login
     post 'i/auth/:provider/social_login', action: :social_login, as: :newflow_callback
 
+    get 'i/confirm_your_info', action: :confirm_your_info
+    post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
+
+    get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
+
     post 'send_password_setup_instructions',
          action: :send_password_setup_instructions,
          as: :send_password_setup_instructions
 
     get 'check_your_email', as: :check_your_email
-    get 'i/confirm_your_info', action: :confirm_your_info
-    post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
-    get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
   end
 
   scope controller: 'sessions' do
