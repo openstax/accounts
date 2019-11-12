@@ -17,6 +17,7 @@ class NewflowVerifyEmail
       email.update_attributes(verified: true)
       email.user.update_attributes(state: 'activated')
       outputs.user = email.user
+      # TODO: destroy the PreAuthState
     else
       fatal_error(
         code: :invalid_confirmation_pin,

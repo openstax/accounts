@@ -197,7 +197,7 @@ https://accounts-dev.openstax.org/login?signup_at=https://tutor-dev.openstax.org
 Description here.
 
 ## Lev handlers
-Practically, they process user-submitted forms. Example:
+Practically, they process user-submitted forms. For example:
 
 ```Ruby
 class FindUser
@@ -220,11 +220,22 @@ protected
       outputs.user = user
       outputs[:foo] = 'bar'
 
-    # Add errors to the `errors` object, if any,
+    # Add errors to the `errors` object, if any.
     errors.add(true, code: :foo)
   end
 end
 ```
+
+We use them in all controllers with `handle_with` which takes lambdas in `success` and `failure` keys, like so:
+
+```Ruby
+handle_with(
+  sucess: lambda { do_something },
+  failure: lambda { do_something_else }
+)
+```
+
+Inside of the context of success and failure lambdas, is a `@handler_result` variable which contains `outputs` set inside of the handler (like `outputs.user = user`), if any, or an `errors` object, if any, which can be populated with `fatal_error` or `transfer_errors_from`.
 
 ## Lev routines
 
