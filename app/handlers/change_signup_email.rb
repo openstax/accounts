@@ -14,44 +14,24 @@ class ChangeSignupEmail
   end
 
   def handle
-    email = change_signup_email_params.email
+    email_param = change_signup_email_params.email
 
-    if LookupUsers.by_verified_email(email).first
+    if LookupUsers.by_verified_email(email_param).first
       fatal_error(code: :email_taken, message: 'Email address taken', offending_inputs: :email)
     end
 
-    pas = options[:pre_auth_state]
-    user = pas.user
+    @email_address = EmailAddress.where(user_id: options[:user].id).first
+    @email_address.value = email_param
+    @email_address.reset_pin_code
+    @email_address.save
+    transfer_errors_from(@email_address, { scope: :email }, :fail_if_errors)
 
-    fatal_error(email: :is_not_the_only_one) if user.email_addresses.count > 1
-
-    new_email_address = EmailAddress.create(value: email, user_id: user.id)
-    transfer_errors_from(new_email_address, { scope: :email }, :fail_if_errors)
-
-    # Destroy the previous email, although we could keep it since it's not verified.
-    user.email_addresses.first.destroy
-
-    # reset the PAS's confirmation pin/code
-    pas.send :initialize_tokens
-    pas.contact_info_value = email
-    pas.save
-    transfer_errors_from(pas, { scope: :email }, :fail_if_errors)
-    # transer the PAS's confirmation pin/code over to the email address
-    new_email_address.confirmation_pin = pas.confirmation_pin
-    new_email_address.confirmation_code = pas.confirmation_code
-    new_email_address.save
-    transfer_errors_from(new_email_address, { scope: :email }, :fail_if_errors)
-
-    send_confirmation_email(pas)
-
-    outputs.pre_auth_state = pas
+    send_confirmation_email
   end
 
   private ###################
 
-  def send_confirmation_email(pre_auth_state)
-    SignupConfirmationMailer.instructions(
-      pre_auth_state: pre_auth_state
-    ).deliver_later
+  def send_confirmation_email
+    NewflowMailer.signup_email_confirmation(email_address: @email_address).deliver_later
   end
 end

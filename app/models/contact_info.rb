@@ -15,6 +15,7 @@ class ContactInfo < ActiveRecord::Base
   validate :check_for_verified_collision
 
   before_save :add_unread_update
+  before_create :reset_pin_code
   before_destroy :check_if_last_verified
 
   scope :email_addresses, -> { where(type: 'EmailAddress') }
@@ -46,6 +47,12 @@ class ContactInfo < ActiveRecord::Base
 
   def init_confirmation_code!
     self.confirmation_code ||= TokenMaker.contact_info_confirmation_code
+  end
+
+  def reset_pin_code
+    # TODO: should I assert that both in fact changed and no other records have the same values?
+    self.confirmation_pin = TokenMaker.contact_info_confirmation_pin
+    self.confirmation_code = TokenMaker.contact_info_confirmation_code
   end
 
   protected

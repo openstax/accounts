@@ -11,13 +11,15 @@ class NewflowVerifyEmail
     true
   end
 
+  # TODO: rate-limit this action here (or in the controller?)
   def handle
-    email = EmailAddress.where(confirmation_pin: confirm_params.pin).first
+    email = EmailAddress.where(confirmation_pin: confirm_params.pin, verified: false).first
+    # OR get the email from the user stored in the session[:unverified_user]
+    # OR check both and make sure that the emails are the same? probably not necessary.
     if email
       email.update_attributes(verified: true)
       email.user.update_attributes(state: 'activated')
       outputs.user = email.user
-      # TODO: destroy the PreAuthState
     else
       fatal_error(
         code: :invalid_confirmation_pin,
