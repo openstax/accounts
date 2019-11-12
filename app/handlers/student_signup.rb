@@ -30,7 +30,6 @@ class StudentSignup
     end
 
     create_user
-    create_pre_auth_state
     create_authentication
     create_identity
     agree_to_terms
@@ -40,25 +39,12 @@ class StudentSignup
 
   private ###################
 
-  def create_pre_auth_state
-    outputs.pre_auth_state = PreAuthState.email_address.create(
-      is_partial_info_allowed: true,
-      contact_info_value: signup_params.email.downcase,
-      first_name: signup_params.first_name.camelize,
-      last_name: signup_params.last_name.camelize,
-      role: 'student',
-      user_id: outputs.user.id
-      # signed_data: existing_pre_auth_state.try!(:signed_data),
-      # return_to: options[:return_to]
-    )
-  end
-
   def create_user
     outputs.user = User.create(
-      first_name: signup_params.first_name.camelize,
-      last_name: signup_params.last_name.camelize,
       state: 'unverified',
-      role: 'student'
+      role: 'student',
+      first_name: signup_params.first_name.camelize,
+      last_name: signup_params.last_name.camelize
     )
     transfer_errors_from(outputs.user, { type: :verbatim }, :fail_if_errors)
   end
@@ -66,8 +52,7 @@ class StudentSignup
   def create_authentication
     authentication = Authentication.create(
       provider: 'identity',
-      # because of the way that user signup used to work in the old flow,
-      # `user_id` and `uid` are both required and the same.
+      # For legacy reasons, `user_id` and `uid` are the same but still both are required.
       user_id: outputs.user.id, uid: outputs.user.id
     )
     transfer_errors_from(authentication, { scope: :email_address }, :fail_if_errors)
@@ -83,23 +68,20 @@ class StudentSignup
   end
 
   def agree_to_terms
-    if options[:contracts_required]
-      run(AgreeToTerms, signup_params.contract_1_id, outputs.user, no_error_if_already_signed: true)
-      run(AgreeToTerms, signup_params.contract_2_id, outputs.user, no_error_if_already_signed: true)
-    end
+    return unless options[:contracts_required]
+
+    run(AgreeToTerms, signup_params.contract_1_id, outputs.user, no_error_if_already_signed: true)
+    run(AgreeToTerms, signup_params.contract_2_id, outputs.user, no_error_if_already_signed: true)
   end
 
   def create_email_address
-    email = EmailAddress.create(
-      value: signup_params.email.downcase, user_id: outputs.user.id,
-      confirmation_pin: outputs.pre_auth_state.confirmation_pin # TODO: is this okay and necessary?
+    @email_address = EmailAddress.create(
+      value: signup_params.email.downcase, user_id: outputs.user.id
     )
-    transfer_errors_from(email, { scope: :email_adress }, :fail_if_errors)
+    transfer_errors_from(@email_address, { scope: :email_adress }, :fail_if_errors)
   end
 
   def send_confirmation_email
-    SignupConfirmationMailer.instructions(
-      pre_auth_state: outputs.pre_auth_state
-    ).deliver_later
+    NewflowMailer.signup_email_confirmation(email_address: @email_address).deliver_later
   end
 end
