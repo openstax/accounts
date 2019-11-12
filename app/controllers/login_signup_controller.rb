@@ -2,6 +2,7 @@
 class LoginSignupController < ApplicationController
   layout 'newflow_layout'
   # before_action :exit_if_logged_in, only: [:login_form, :signup_form]
+  before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :signup_form, :welcome]
   skip_before_action :authenticate_user!, except: [:profile_newflow]
   skip_before_action :check_if_password_expired
   fine_print_skip :general_terms_of_use, :privacy_policy,
@@ -18,6 +19,7 @@ class LoginSignupController < ApplicationController
     handle_with(
       AuthenticateUser,
       success: lambda {
+        clear_unverified_user
         sign_in!(@handler_result.outputs.user)
         redirect_back(fallback_location: profile_newflow_url)
       },
@@ -32,24 +34,32 @@ class LoginSignupController < ApplicationController
       StudentSignup,
       contracts_required: !contracts_not_required,
       success: lambda {
-        save_pre_auth_state(@handler_result.outputs.pre_auth_state)
+        save_unverified_user(@handler_result.outputs.user)
         redirect_to confirmation_form_path
       }, failure: lambda {
+        @first_name = unverified_user.first_name
+        @email = unverified_user.email_addresses.first.value
         render :signup_form
       })
+  end
+
+  def confirmation_form
+    redirect_to newflow_signup_path and return unless unverified_user.present?
+
+    @first_name = unverified_user.first_name
+    @email = unverified_user.email_addresses.first.value
   end
 
   def change_signup_email
     handle_with(
       ChangeSignupEmail,
-      pre_auth_state: pre_auth_state,
+      user: unverified_user,
       success: lambda {
-        # render :confirmation_form
         redirect_to confirmation_form_path
       },
       failure: lambda {
-        # make sure that the email's format is MX validated
-        render :confirmation_form
+        # TODO: make sure that the email's format is MX validated
+        render :change_your_email
       }
     )
   end
@@ -84,7 +94,7 @@ class LoginSignupController < ApplicationController
       pre_auth_state: pre_auth_state,
       contracts_required: !contracts_not_required,
       success: lambda {
-        clear_pre_auth_state
+        clear_unverified_user
         sign_in!(@handler_result.outputs.user)
         redirect_back(fallback_location: profile_newflow_url)
       },
@@ -98,10 +108,14 @@ class LoginSignupController < ApplicationController
     handle_with(
       NewflowVerifyEmail,
       success: lambda {
+        clear_unverified_user
         sign_in!(@handler_result.outputs.user)
         redirect_to signup_done_path
       },
       failure: lambda {
+        @first_name = unverified_user.first_name
+        @email = unverified_user.email_addresses.first.value
+        # create a security log
         render :confirmation_form
       })
   end
@@ -142,10 +156,25 @@ class LoginSignupController < ApplicationController
     redirect_to newflow_login_path
   end
 
-  # private ###################
+  private ###################
 
-  # def exit_if_logged_in
-  #   store_url(url: profile_newflow_path)
-  #   redirect_back(fallback_location: profile_newflow_path) if signed_in?
-  # end
+  def save_unverified_user(user)
+    session[:unverified_user] = user.id
+  end
+
+  def unverified_user
+    id = session[:unverified_user]&.to_i
+    return unless id.present?
+    @unverified_user ||= User.find_by(id: id, state: 'unverified') # or don't specify `state`?
+  end
+
+  def clear_unverified_user
+    session.delete(:unverified_user)
+  end
+
+  def exit_newflow_signup_if_logged_in
+    if signed_in?
+      redirect_to(profile_newflow_path)
+    end
+  end
 end

@@ -112,7 +112,8 @@ module UserSessionManagement
   end
 
   def pre_auth_state
-    id = session[:signup].to_i rescue nil
+    id = session[:signup]&.to_i
+    return unless id.present?
     @pre_auth_state ||= PreAuthState.find_by(id: id)
   end
 
