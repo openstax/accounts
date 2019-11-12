@@ -18,7 +18,15 @@ en:
     login_with: 'Log in with:'
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
-    confirm_page_header: Hi, %{first_name}! Confirm your email.
+    confirmation_page_header: Hi, %{first_name}! Confirm your email.
+    confirmation_form_decription: >-
+      An email has been sent to <b>%{email}</b>.
+      Please enter the PIN you received below.
+      You can also %{edit_your_email}
+    change_your_email_page_header: Change your email
+    change_your_email_page_description: >-
+      Change your email below so we can send your PIN.
+      You will need to use this updated email to log in.
     welcome_page_header: Welcome! Join OpenStax as
     email_placeholder: me@myemail.com
     first_name_label: First name
@@ -56,6 +64,8 @@ en:
     check_your_email_description: >-
       An email containing password setup instructions has been sent to <b>%{email}</b>.
     confirm_your_info: Confirm your information
+    edit_your_email: edit your email
+    send_my_pin: Send my PIN
   student_profile:
     enable_other_sign_in_options: Enable other login options
     other_sign_in_options_html: Other login<br class="wide"> options

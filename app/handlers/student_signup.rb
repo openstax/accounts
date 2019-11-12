@@ -29,8 +29,8 @@ class StudentSignup
       fatal_error(code: :email_taken, message: 'Email address taken', offending_inputs: :email)
     end
 
-    create_pre_auth_state
     create_user
+    create_pre_auth_state
     create_authentication
     create_identity
     agree_to_terms
@@ -43,9 +43,11 @@ class StudentSignup
   def create_pre_auth_state
     outputs.pre_auth_state = PreAuthState.email_address.create(
       is_partial_info_allowed: true,
-      contact_info_value: signup_params.email,
+      contact_info_value: signup_params.email.downcase,
       first_name: signup_params.first_name.camelize,
-      role: 'student'
+      last_name: signup_params.last_name.camelize,
+      role: 'student',
+      user_id: outputs.user.id
       # signed_data: existing_pre_auth_state.try!(:signed_data),
       # return_to: options[:return_to]
     )
@@ -88,11 +90,10 @@ class StudentSignup
   end
 
   def create_email_address
-    email = EmailAddress.new(
-      value: signup_params.email, user_id: outputs.user.id,
-      confirmation_pin: outputs.pre_auth_state.confirmation_pin
+    email = EmailAddress.create(
+      value: signup_params.email.downcase, user_id: outputs.user.id,
+      confirmation_pin: outputs.pre_auth_state.confirmation_pin # TODO: is this okay and necessary?
     )
-    email.save
     transfer_errors_from(email, { scope: :email_adress }, :fail_if_errors)
   end
 
