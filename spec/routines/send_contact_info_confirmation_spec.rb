@@ -48,12 +48,6 @@ describe SendContactInfoConfirmation do
     end
 
     context 'confirmation_pin' do
-      it 'is blank when send_pin nil' do
-        SendContactInfoConfirmation.call(contact_info: email, send_pin: nil)
-        refetched_email = EmailAddress.find(email.id)
-        expect(refetched_email.confirmation_pin).to be_blank
-      end
-
       it 'is populated with send_pin true' do
         SendContactInfoConfirmation.call(contact_info: email, send_pin: true)
         refetched_email = EmailAddress.find(email.id)
@@ -61,5 +55,4 @@ describe SendContactInfoConfirmation do
       end
     end
   end
-
 end
