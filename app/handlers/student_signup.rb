@@ -60,11 +60,12 @@ class StudentSignup
   end
 
   def create_identity
-    Identity.create(
+    identity = Identity.create(
       password: signup_params.password,
       password_confirmation: signup_params.password,
       user: outputs.user
     )
+    transfer_errors_from(identity, { scope: :password }, :fail_if_errors)
   end
 
   def agree_to_terms
