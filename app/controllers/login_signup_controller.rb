@@ -37,8 +37,6 @@ class LoginSignupController < ApplicationController
         save_unverified_user(@handler_result.outputs.user)
         redirect_to confirmation_form_path
       }, failure: lambda {
-        @first_name = unverified_user.first_name
-        @email = unverified_user.email_addresses.first.value
         render :signup_form
       })
   end
@@ -159,17 +157,17 @@ class LoginSignupController < ApplicationController
   private ###################
 
   def save_unverified_user(user)
-    session[:unverified_user] = user.id
+    session[:unverified_user_id] = user.id
   end
 
   def unverified_user
-    id = session[:unverified_user]&.to_i
+    id = session[:unverified_user_id]&.to_i
     return unless id.present?
     @unverified_user ||= User.find_by(id: id, state: 'unverified') # or don't specify `state`?
   end
 
   def clear_unverified_user
-    session.delete(:unverified_user)
+    session.delete(:unverified_user_id)
   end
 
   def exit_newflow_signup_if_logged_in
