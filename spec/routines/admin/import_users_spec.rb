@@ -49,7 +49,6 @@ RSpec.describe Admin::ImportUsers, type: :routine do
     expect(user_1.contact_infos.first.type).to eq 'EmailAddress'
     expect(user_1.contact_infos.first.value).to eq '8f30b4@7cc1fa.223256'
     expect(user_1.contact_infos.first.verified).to eq false
-    expect(user_1.contact_infos.first.confirmation_code).to be_nil
     expect(user_1.contact_infos.first.created_at).to eq '2018-05-17T19:49:42.477Z'
     expect(user_1.contact_infos.first.updated_at).to eq '2018-05-17T19:49:42.477Z'
     expect(user_1.contact_infos.first.confirmation_sent_at).to be_nil
@@ -58,7 +57,6 @@ RSpec.describe Admin::ImportUsers, type: :routine do
     expect(user_1.contact_infos.second.type).to eq 'EmailAddress'
     expect(user_1.contact_infos.second.value).to eq 'a467a2@4634bc.981344'
     expect(user_1.contact_infos.second.verified).to eq false
-    expect(user_1.contact_infos.second.confirmation_code).to be_nil
     expect(user_1.contact_infos.second.created_at).to eq '2018-05-17T19:49:42.485Z'
     expect(user_1.contact_infos.second.updated_at).to eq '2018-05-17T19:49:42.485Z'
     expect(user_1.contact_infos.second.confirmation_sent_at).to be_nil
