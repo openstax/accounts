@@ -1,7 +1,7 @@
 # Contains every action for login and signup
 class LoginSignupController < ApplicationController
   layout 'newflow_layout'
-  # before_action :exit_if_logged_in, only: [:login_form, :signup_form]
+  before_action :restart_if_missing_unverified_user, only: [:verify_email, :verify_pin]
   before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :signup_form, :welcome]
   skip_before_action :authenticate_user!, except: [:profile_newflow]
   skip_before_action :check_if_password_expired
@@ -118,7 +118,8 @@ class LoginSignupController < ApplicationController
       })
   end
 
-  # TODO: require a PreAuthState present in the session OR a logged in user.
+  # TODO: verify by token (url sent in the confirmation email)
+
   def signup_done
     @first_name = current_user.first_name
     @email_address = current_user.email_addresses.first.value
@@ -129,8 +130,6 @@ class LoginSignupController < ApplicationController
   end
 
   def social_login_failed
-    # TODO: rate-limit this
-    # TODO: create a security log
     fallback_email = current_user&.email unless is_real_production_site? # for testing purposes
     @email ||= fallback_email
   end
@@ -174,5 +173,9 @@ class LoginSignupController < ApplicationController
     if signed_in?
       redirect_to(profile_newflow_path)
     end
+  end
+
+  def restart_if_missing_unverified_user
+    redirect_to signup_path unless unverified_user.present?
   end
 end
