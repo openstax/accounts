@@ -27,6 +27,11 @@ en:
     change_your_email_page_description: >-
       Change your email below so we can send your PIN.
       You will need to use this updated email to log in.
+    didnt_receive_email: Didn't receive an email? You can %{sign_up_with_different_email_link}.
+    sign_up_with_different_email: sign up with a different email
+    check_your_updated_email: Check your updated email
+    havent_received_message: Still haven't received an email? %{contact_us}
+    contact_us: Contact us
     welcome_page_header: Welcome! Join OpenStax as
     email_placeholder: me@myemail.com
     first_name_label: First name
@@ -63,6 +68,8 @@ en:
     check_your_email: Check your email
     check_your_email_description: >-
       An email containing password setup instructions has been sent to <b>%{email}</b>.
+    confirm_my_account_button:
+      Confirm my account
     confirm_your_info: Confirm your information
     edit_your_email: edit your email
     send_my_pin: Send my PIN
