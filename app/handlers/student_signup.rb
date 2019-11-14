@@ -55,7 +55,7 @@ class StudentSignup
       # For legacy reasons, `user_id` and `uid` are the same but still both are required.
       user_id: outputs.user.id, uid: outputs.user.id
     )
-    transfer_errors_from(authentication, { scope: :email_address }, :fail_if_errors)
+    transfer_errors_from(authentication, { scope: :email }, :fail_if_errors)
     # TODO: catch error states like if auth already exists for this user
   end
 
@@ -76,13 +76,18 @@ class StudentSignup
   end
 
   def create_email_address
-    @email_address = EmailAddress.create(
+    @email = EmailAddress.create(
       value: signup_params.email.downcase, user_id: outputs.user.id
     )
-    transfer_errors_from(@email_address, { scope: :email_adress }, :fail_if_errors)
+    # Customize the error message about having an invalid email domain
+    if @email.errors && @email.errors.types.fetch(:value, {}).include?(:missing_mx_records)
+      domain = @email.send(:domain)
+      @email.errors.messages[:value][0] = "\"#{domain}\" is not a valid email provider"
+      transfer_errors_from(@email, { scope: :email }, :fail_if_errors)
+    end
   end
 
   def send_confirmation_email
-    NewflowMailer.signup_email_confirmation(email_address: @email_address).deliver_later
+    NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
   end
 end
