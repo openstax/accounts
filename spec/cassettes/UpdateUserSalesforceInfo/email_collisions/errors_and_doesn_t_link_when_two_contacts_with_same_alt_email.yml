@@ -1,108 +1,6 @@
 ---
 http_interactions:
 - request:
-    method: post
-    uri: "<tutor_specs_instance_url>/services/data/v37.0/sobjects/Contact"
-    body:
-      encoding: UTF-8
-      string: '{"FirstName":"Nicola","LastName":"Rogahn_unique_token","Email_alt__c":"f@f.com","AccountId":"0010v000002Wo0qAAC"}'
-    headers:
-      User-Agent:
-      - Faraday v0.9.2
-      Content-Type:
-      - application/json
-      Authorization:
-      - OAuth <tutor_specs_oauth_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 201
-      message: Created
-    headers:
-      Date:
-      - Tue, 23 May 2017 20:29:10 GMT
-      X-Content-Type-Options:
-      - nosniff
-      X-Xss-Protection:
-      - 1; mode=block
-      Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
-      Set-Cookie:
-      - BrowserId=APseNbbhR8-CuaRX0kluyA;Path=/;Domain=.salesforce.com;Expires=Sat,
-        22-Jul-2017 20:29:10 GMT
-      Expires:
-      - Thu, 01 Jan 1970 00:00:00 GMT
-      Sforce-Limit-Info:
-      - api-usage=89/48000
-      Location:
-      - "/services/data/v37.0/sobjects/Contact/0030v000001ZXdFAAW"
-      Content-Type:
-      - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: ASCII-8BIT
-      string: '{"id":"0030v000001ZXdFAAW","success":true,"errors":[]}'
-    http_version: 
-  recorded_at: Tue, 23 May 2017 20:29:11 GMT
-- request:
-    method: post
-    uri: "<tutor_specs_instance_url>/services/data/v37.0/sobjects/Contact"
-    body:
-      encoding: UTF-8
-      string: '{"FirstName":"Zion","LastName":"Volkman_unique_token","Email_alt__c":"f@f.com","AccountId":"0010v000002Wo0qAAC"}'
-    headers:
-      User-Agent:
-      - Faraday v0.9.2
-      Content-Type:
-      - application/json
-      Authorization:
-      - OAuth <tutor_specs_oauth_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 201
-      message: Created
-    headers:
-      Date:
-      - Tue, 23 May 2017 20:29:11 GMT
-      X-Content-Type-Options:
-      - nosniff
-      X-Xss-Protection:
-      - 1; mode=block
-      Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
-      Set-Cookie:
-      - BrowserId=hByklNekSJSJlhfkh2PDog;Path=/;Domain=.salesforce.com;Expires=Sat,
-        22-Jul-2017 20:29:11 GMT
-      Expires:
-      - Thu, 01 Jan 1970 00:00:00 GMT
-      Sforce-Limit-Info:
-      - api-usage=90/48000
-      Location:
-      - "/services/data/v37.0/sobjects/Contact/0030v000001ZXdGAAW"
-      Content-Type:
-      - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: ASCII-8BIT
-      string: '{"id":"0030v000001ZXdGAAW","success":true,"errors":[]}'
-    http_version: 
-  recorded_at: Tue, 23 May 2017 20:29:12 GMT
-- request:
     method: get
     uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c,%20School_Type__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)"
     body:
@@ -110,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.15.4
       Authorization:
       - OAuth <tutor_specs_oauth_token>
       Accept-Encoding:
@@ -123,21 +21,30 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 23 May 2017 20:29:12 GMT
+      - Thu, 14 Nov 2019 18:58:49 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Public-Key-Pins-Report-Only:
+      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
+        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/nullm";
+      Expect-Ct:
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/nullm"
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
-      Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=_EUQj88gRuSCcF8sAo5RhQ;Path=/;Domain=.salesforce.com;Expires=Sat,
-        22-Jul-2017 20:29:12 GMT
+      - BrowserId=yzx2vAcQEeqVhl1HZmt9Qw;Path=/;Domain=.salesforce.com;Expires=Mon,
+        13-Jan-2020 18:58:49 GMT;Max-Age=5184000
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=85/48000
+      - api-usage=236/51000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -146,9 +53,9 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0030v000001ZXdFAAW"},"Id":"0030v000001ZXdFAAW","Email":null,"Email_alt__c":"f@f.com","Faculty_Verified__c":null},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0030v000001ZXdGAAW"},"Id":"0030v000001ZXdGAAW","Email":null,"Email_alt__c":"f@f.com","Faculty_Verified__c":null}]}'
+      string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/003R000001Plu7fIAB"},"Id":"003R000001Plu7fIAB","Email":null,"Email_alt__c":"courtney@jaskolskisteuber.biz","Faculty_Verified__c":null,"School_Type__c":null},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/003R000001Plu7kIAB"},"Id":"003R000001Plu7kIAB","Email":null,"Email_alt__c":"courtney@jaskolskisteuber.biz","Faculty_Verified__c":null,"School_Type__c":null}]}'
     http_version: 
-  recorded_at: Tue, 23 May 2017 20:29:12 GMT
+  recorded_at: Thu, 14 Nov 2019 18:58:50 GMT
 - request:
     method: get
     uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)"
@@ -157,7 +64,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.15.4
       Authorization:
       - OAuth <tutor_specs_oauth_token>
       Accept-Encoding:
@@ -170,21 +77,30 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 23 May 2017 20:29:13 GMT
+      - Thu, 14 Nov 2019 18:58:50 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Public-Key-Pins-Report-Only:
+      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
+        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/nullm";
+      Expect-Ct:
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/nullm"
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
-      Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=oIFnTJvISreIx5PJw2NNGQ;Path=/;Domain=.salesforce.com;Expires=Sat,
-        22-Jul-2017 20:29:13 GMT
+      - BrowserId=y2DHswcQEeqJK0OG-CtftQ;Path=/;Domain=.salesforce.com;Expires=Mon,
+        13-Jan-2020 18:58:50 GMT;Max-Age=5184000
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=87/48000
+      - api-usage=235/51000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -195,5 +111,349 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"totalSize":0,"done":true,"records":[]}'
     http_version: 
-  recorded_at: Tue, 23 May 2017 20:29:13 GMT
+  recorded_at: Thu, 14 Nov 2019 18:58:50 GMT
+- request:
+    method: get
+    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c,%20School_Type__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.4
+      Authorization:
+      - OAuth <tutor_specs_oauth_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 14 Nov 2019 18:59:49 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Public-Key-Pins-Report-Only:
+      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
+        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/nullm";
+      Expect-Ct:
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/nullm"
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Set-Cookie:
+      - BrowserId=7o4P2wcQEeqVhl1HZmt9Qw;Path=/;Domain=.salesforce.com;Expires=Mon,
+        13-Jan-2020 18:59:49 GMT;Max-Age=5184000
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Sforce-Limit-Info:
+      - api-usage=274/51000
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/003R000001Plu5uIAB"},"Id":"003R000001Plu5uIAB","Email":null,"Email_alt__c":"francine@mertz.name","Faculty_Verified__c":null,"School_Type__c":null},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/003R000001Plu8nIAB"},"Id":"003R000001Plu8nIAB","Email":null,"Email_alt__c":"francine@mertz.name","Faculty_Verified__c":null,"School_Type__c":null}]}'
+    http_version: 
+  recorded_at: Thu, 14 Nov 2019 18:59:49 GMT
+- request:
+    method: get
+    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.4
+      Authorization:
+      - OAuth <tutor_specs_oauth_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 14 Nov 2019 18:59:49 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Public-Key-Pins-Report-Only:
+      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
+        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/nullm";
+      Expect-Ct:
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/nullm"
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Set-Cookie:
+      - BrowserId=7rVGTwcQEeqNUOPOIl-ZRg;Path=/;Domain=.salesforce.com;Expires=Mon,
+        13-Jan-2020 18:59:49 GMT;Max-Age=5184000
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Sforce-Limit-Info:
+      - api-usage=270/51000
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"totalSize":0,"done":true,"records":[]}'
+    http_version: 
+  recorded_at: Thu, 14 Nov 2019 18:59:49 GMT
+- request:
+    method: post
+    uri: "<tutor_specs_instance_url>/services/data/v37.0/sobjects/Contact"
+    body:
+      encoding: UTF-8
+      string: '{"FirstName":"Hubert","LastName":"Casper_unique_token","Email_alt__c":"realowe@mertzhamill.com","AccountId":"001R000001PP7oCIAT"}'
+    headers:
+      User-Agent:
+      - Faraday v0.15.4
+      Content-Type:
+      - application/json
+      Authorization:
+      - OAuth <tutor_specs_oauth_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Thu, 14 Nov 2019 19:07:39 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Public-Key-Pins-Report-Only:
+      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
+        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/nullm";
+      Expect-Ct:
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/nullm"
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Set-Cookie:
+      - BrowserId=BtdytQcSEeqVhl1HZmt9Qw;Path=/;Domain=.salesforce.com;Expires=Mon,
+        13-Jan-2020 19:07:39 GMT;Max-Age=5184000
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Sforce-Limit-Info:
+      - api-usage=348/51000
+      Location:
+      - "/services/data/v37.0/sobjects/Contact/003R000001PluAZIAZ"
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"003R000001PluAZIAZ","success":true,"errors":[]}'
+    http_version: 
+  recorded_at: Thu, 14 Nov 2019 19:07:40 GMT
+- request:
+    method: post
+    uri: "<tutor_specs_instance_url>/services/data/v37.0/sobjects/Contact"
+    body:
+      encoding: UTF-8
+      string: '{"FirstName":"Marion","LastName":"Trantow_unique_token","Email_alt__c":"realowe@mertzhamill.com","AccountId":"001R000001PP7oCIAT"}'
+    headers:
+      User-Agent:
+      - Faraday v0.15.4
+      Content-Type:
+      - application/json
+      Authorization:
+      - OAuth <tutor_specs_oauth_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Thu, 14 Nov 2019 19:07:40 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Public-Key-Pins-Report-Only:
+      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
+        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/nullm";
+      Expect-Ct:
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/nullm"
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Set-Cookie:
+      - BrowserId=B5FNXgcSEeq2n5sD4LgElw;Path=/;Domain=.salesforce.com;Expires=Mon,
+        13-Jan-2020 19:07:40 GMT;Max-Age=5184000
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Sforce-Limit-Info:
+      - api-usage=345/51000
+      Location:
+      - "/services/data/v37.0/sobjects/Contact/003R000001PluAeIAJ"
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"003R000001PluAeIAJ","success":true,"errors":[]}'
+    http_version: 
+  recorded_at: Thu, 14 Nov 2019 19:07:41 GMT
+- request:
+    method: get
+    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c,%20School_Type__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.4
+      Authorization:
+      - OAuth <tutor_specs_oauth_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 14 Nov 2019 19:07:41 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Public-Key-Pins-Report-Only:
+      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
+        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/nullm";
+      Expect-Ct:
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/nullm"
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Set-Cookie:
+      - BrowserId=CE8eeQcSEeqxh-l3QunFUQ;Path=/;Domain=.salesforce.com;Expires=Mon,
+        13-Jan-2020 19:07:41 GMT;Max-Age=5184000
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Sforce-Limit-Info:
+      - api-usage=348/51000
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/003R000001PluAZIAZ"},"Id":"003R000001PluAZIAZ","Email":null,"Email_alt__c":"realowe@mertzhamill.com","Faculty_Verified__c":null,"School_Type__c":null},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/003R000001PluAeIAJ"},"Id":"003R000001PluAeIAJ","Email":null,"Email_alt__c":"realowe@mertzhamill.com","Faculty_Verified__c":null,"School_Type__c":null}]}'
+    http_version: 
+  recorded_at: Thu, 14 Nov 2019 19:07:42 GMT
+- request:
+    method: get
+    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.15.4
+      Authorization:
+      - OAuth <tutor_specs_oauth_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 14 Nov 2019 19:07:42 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      Public-Key-Pins-Report-Only:
+      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
+        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/nullm";
+      Expect-Ct:
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/nullm"
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Set-Cookie:
+      - BrowserId=CHOWOQcSEeqmnkG9qy6Lvg;Path=/;Domain=.salesforce.com;Expires=Mon,
+        13-Jan-2020 19:07:42 GMT;Max-Age=5184000
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Sforce-Limit-Info:
+      - api-usage=349/51000
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"totalSize":0,"done":true,"records":[]}'
+    http_version: 
+  recorded_at: Thu, 14 Nov 2019 19:07:42 GMT
 recorded_with: VCR 3.0.3
