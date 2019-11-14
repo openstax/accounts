@@ -1,43 +1,14 @@
-<div id="login-signup-form">
-    <div class="content">
-        <%= render partial: 'tab_group', locals: { active_class: 'signup--active'} %>
-
-        <%= newflow_login_signup_card(
-                    classes: "signup-page",
-                    header: I18n.t(:'login_signup_form.confirmation_page_header', first_name: @first_name),
-                    current_step: I18n.t(:'login_signup_form.step_counter', current_step: 3, total_steps: 3)) do %>
-            <% lev_form_for :confirm, url: newflow_verify_pin_path do |f| %>
-                <% fh = NewflowFormHelper::Newflow.new(f: f,
-                                            context: self,
-                                            errors: @handler_result&.errors) %>
-
-                <div class="content control-group info-message">
-                    <%= I18n.t(:"login_signup_form.confirmation_form_decription",
-                                email: @email,
-                                edit_your_email: link_to(
-                                    I18n.t(:"login_signup_form.edit_your_email"), change_your_email_path
-                                )
-                            ).html_safe
-                    %>
-                </div>
-
-                <div class="content control-group">
-                    <%= label_tag :pin, I18n.t(:'login_signup_form.pin_label'),
-                                class: 'field-label required'
-                    %>
-                    <%= fh.text_field name: :pin,
-                                placeholder: I18n.t(:'login_signup_form.pin_placeholder'),
-                                autofocus: true
-                    %>
-                </div>
-
-                <div class="content">
-                    <%= f.submit I18n.t(:'login_signup_form.continue_button'),
-                                        disable_with: I18n.t(:'login_signup_form.continue_button'),
-                                        class: 'primary' %>
-                </div>
-
-            <% end %>
-        <% end %>
-    </div>
-</div>
+<%=
+render(
+  partial: 'confirmation_form_template',
+  locals: {
+    header: I18n.t(:"login_signup_form.confirmation_page_header", first_name: @first_name),
+    help_message: I18n.t(
+      :"login_signup_form.didnt_receive_email",
+      sign_up_with_different_email_link: link_to(
+        I18n.t(:"login_signup_form.sign_up_with_different_email"), change_your_email_path
+      )
+    ).html_safe
+  }
+)
+%>

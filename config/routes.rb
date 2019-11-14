@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
@@ -20,6 +21,10 @@ Rails.application.routes.draw do
     post 'i/verify_pin', action: :verify_pin, as: :newflow_verify_pin
     get 'i/change_your_email', action: :change_your_email, as: :change_your_email
     post 'i/change_signup_email', action: :change_signup_email, as: :change_signup_email
+    get 'i/check_your_email', action: :check_your_email, as: :check_your_email
+    get 'i/confirmation_form_updated_email',
+        action: :confirmation_form_updated_email,
+        as: :confirmation_form_updated_email
     get 'i/done', action: :signup_done, as: :signup_done
 
     # Sig in/up with an oauth provider
@@ -45,8 +50,6 @@ Rails.application.routes.draw do
     post 'send_password_setup_instructions',
          action: :send_password_setup_instructions,
          as: :send_password_setup_instructions
-
-    get 'check_your_email', as: :check_your_email
   end
 
   scope controller: 'sessions' do
@@ -272,3 +275,4 @@ Rails.application.routes.draw do
 
   get '/external_app_for_specs' => 'external_app_for_specs#index' if Rails.env.test?
 end
+# rubocop:enable Metrics/BlockLength
