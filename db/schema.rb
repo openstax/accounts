@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_11_211119) do
+ActiveRecord::Schema.define(version: 2019_11_09_194244) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -246,10 +246,10 @@ ActiveRecord::Schema.define(version: 2019_10_11_211119) do
     t.string "scopes", default: "", null: false
     t.string "lead_application_source", default: "", null: false
     t.boolean "confidential", default: true, null: false
-    t.boolean "can_access_private_user_data", default: false
-    t.boolean "can_find_or_create_accounts", default: false
-    t.boolean "can_message_users", default: false
-    t.boolean "can_skip_oauth_screen", default: false
+    t.boolean "can_access_private_user_data", default: false, null: false
+    t.boolean "can_find_or_create_accounts", default: false, null: false
+    t.boolean "can_message_users", default: false, null: false
+    t.boolean "can_skip_oauth_screen", default: false, null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
@@ -278,7 +278,10 @@ ActiveRecord::Schema.define(version: 2019_10_11_211119) do
     t.jsonb "signed_data"
     t.boolean "is_partial_info_allowed", default: false, null: false
     t.string "first_name", default: ""
+    t.string "last_name", default: ""
+    t.bigint "user_id"
     t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
+    t.index ["user_id"], name: "index_pre_auth_states_on_user_id"
   end
 
   create_table "security_logs", id: :serial, force: :cascade do |t|

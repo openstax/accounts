@@ -1,7 +1,8 @@
 # Contains every action for login and signup
 class LoginSignupController < ApplicationController
   layout 'newflow_layout'
-  skip_before_action :authenticate_user!, except: [:profile_newflow, :signup_done]
+  # before_action :exit_if_logged_in, only: [:login_form, :signup_form]
+  skip_before_action :authenticate_user!, except: [:profile_newflow]
   skip_before_action :check_if_password_expired
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   except: [:profile_newflow, :verify_pin, :signup_done]
@@ -9,13 +10,11 @@ class LoginSignupController < ApplicationController
   def login_form
     # Send to profile upon login unless in the middle of authorizing an oauth app
     # in which case they'll go back to the oauth authorization path
+    # TODO: actually, I don't think I want to do this. Will have to test with tutor.
     store_url(url: profile_newflow_url) unless params[:client_id]
   end
 
   def login
-    # if too_many_log_in_attempts_by_ip?(ip: request.ip)
-    #   redirect_to root_url, alert: (I18n.t :"controllers.sessions.too_many_lookup_attempts")
-    # end
     handle_with(
       AuthenticateUser,
       success: lambda {
@@ -25,8 +24,7 @@ class LoginSignupController < ApplicationController
       failure: lambda {
         security_log :login_not_found, tried: @handler_result.outputs.email
         render :login_form
-      }
-    )
+      })
   end
 
   def signup
@@ -38,6 +36,45 @@ class LoginSignupController < ApplicationController
         redirect_to confirmation_form_path
       }, failure: lambda {
         render :signup_form
+      })
+  end
+
+  # Log in (or sign up and then log in) a user using a social (OAuth) provider
+  def oauth_callback
+    handle_with(
+      OauthCallback,
+      success: lambda {
+        user = @handler_result.outputs.user
+        unless user.is_activated?
+          save_pre_auth_state(@handler_result.outputs.pre_auth_state)
+          @pre_auth_state = pre_auth_state
+          render :confirm_social_info and return
+        end
+        sign_in!(user)
+        redirect_back(fallback_location: profile_newflow_path)
+      },
+      failure: lambda {
+        @email = @handler_result.outputs.email
+        # TODO: rate-limit this
+        # TODO: create a security log
+        security_log :login_not_found, tried: @handler_result.outputs.email
+        render :social_login_failed
+      }
+    )
+  end
+
+  def confirm_oauth_info
+    handle_with(
+      ConfirmOauthInfo,
+      pre_auth_state: pre_auth_state,
+      contracts_required: !contracts_not_required,
+      success: lambda {
+        clear_pre_auth_state
+        sign_in!(@handler_result.outputs.user)
+        redirect_back(fallback_location: profile_newflow_url)
+      },
+      failure: lambda {
+        render :confirm_social_info
       }
     )
   end
@@ -48,13 +85,13 @@ class LoginSignupController < ApplicationController
       success: lambda {
         sign_in!(@handler_result.outputs.user)
         redirect_to signup_done_path
-      }, failure: lambda {
+      },
+      failure: lambda {
         render :confirmation_form
-      }
-    )
+      })
   end
 
-  # TODO: require a logged in user
+  # TODO: require a PreAuthState present in the session OR a logged in user.
   def signup_done
     @first_name = current_user.first_name
     @email_address = current_user.email_addresses.first.value
@@ -62,24 +99,6 @@ class LoginSignupController < ApplicationController
 
   def profile_newflow
     render layout: 'application'
-  end
-
-  # Log in (or sign up and then log in) a user using a social (OAuth) provider
-  def oauth_callback
-    handle_with(
-      OauthCallback,
-      success: lambda {
-        sign_in!(@handler_result.outputs.user)
-        # redirect_to profile_newflow_path
-        redirect_back(fallback_location: profile_newflow_path)
-      },
-      failure: lambda {
-        @email = @handler_result.outputs.email
-        # TODO: rate-limit this
-        # TODO: create a security log
-        render :social_login_failed
-      }
-    )
   end
 
   def social_login_failed
@@ -107,4 +126,11 @@ class LoginSignupController < ApplicationController
     sign_out!
     redirect_to newflow_login_path
   end
+
+  # private ###################
+
+  # def exit_if_logged_in
+  #   store_url(url: profile_newflow_path)
+  #   redirect_back(fallback_location: profile_newflow_path) if signed_in?
+  # end
 end
