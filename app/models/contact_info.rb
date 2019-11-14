@@ -2,7 +2,6 @@ class ContactInfo < ActiveRecord::Base
   before_validation :strip
   before_save :add_unread_update
   before_create :set_confirmation_pin_code
-  before_update :change_confirmation_pin_code
   before_destroy :check_if_last_verified
 
   validates :user, presence: true
@@ -52,11 +51,6 @@ class ContactInfo < ActiveRecord::Base
   def set_confirmation_pin_code
     self.confirmation_pin ||= TokenMaker.contact_info_confirmation_pin
     self.confirmation_code ||= TokenMaker.contact_info_confirmation_code
-  end
-
-  def change_confirmation_pin_code
-    self.confirmation_pin = TokenMaker.contact_info_confirmation_pin
-    self.confirmation_code = TokenMaker.contact_info_confirmation_code
   end
 
   protected
