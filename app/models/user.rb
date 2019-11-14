@@ -257,12 +257,6 @@ class User < ActiveRecord::Base
     self.support_identifier ||= "cs_#{SecureRandom.hex(length)}"
   end
 
-  def email
-    raise('Multiple emails') if email_addresses.many?
-    raise('No verified emails') if has_emails_but_none_verified?
-    guessed_preferred_confirmed_email
-  end
-
   protected
 
   def make_first_user_an_admin
