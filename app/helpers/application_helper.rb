@@ -2,6 +2,10 @@ module ApplicationHelper
 
   include AlertHelper
 
+  def knowledge_base_url
+    'http://openstax.force.com/support/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
+  end
+
   def unless_errors(options={}, &block)
     errors = @handler_result.errors.each do |error|
       add_local_error_alert now: true, content: error.translate
