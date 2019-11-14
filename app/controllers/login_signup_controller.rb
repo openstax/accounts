@@ -105,6 +105,7 @@ class LoginSignupController < ApplicationController
   def verify_pin
     handle_with(
       NewflowVerifyEmail,
+      email_address: unverified_user.email_addresses.first,
       success: lambda {
         clear_unverified_user
         sign_in!(@handler_result.outputs.user)
