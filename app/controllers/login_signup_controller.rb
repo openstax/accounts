@@ -53,13 +53,18 @@ class LoginSignupController < ApplicationController
       ChangeSignupEmail,
       user: unverified_user,
       success: lambda {
-        redirect_to confirmation_form_path
+        redirect_to confirmation_form_updated_email_path
       },
       failure: lambda {
-        # TODO: make sure that the email's format is MX validated
         render :change_your_email
       }
     )
+  end
+
+  def confirmation_form_updated_email
+    redirect_to newflow_signup_path and return unless unverified_user.present?
+
+    @email = unverified_user.email_addresses.first.value
   end
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
@@ -138,6 +143,7 @@ class LoginSignupController < ApplicationController
   def send_password_setup_instructions
     # TODO: rate-limit this
     @email_address = params[:send_instructions][:email]
+    # I think I actually want to CREATE the email address for them
     email = EmailAddress.verified.find_by(value: @email_address)
     # TODO: I may wanna raise an exception if there's no verified email found
     return unless email && (user = email.user)
