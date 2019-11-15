@@ -4,6 +4,8 @@
 secrets = Rails.application.secrets
 
 Rails.application.config.middleware.use OmniAuth::Builder do
+  provider :custom_identity
+
   provider :facebook, secrets[:facebook_app_id], secrets[:facebook_app_secret],
            client_options: {
              site: 'https://graph.facebook.com/v3.3',
@@ -20,9 +22,11 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     }
   )
 
-  provider :twitter, secrets[:twitter_consumer_key], secrets[:twitter_consumer_secret]
   provider :google_oauth2, secrets[:google_client_id], secrets[:google_client_secret]
-  provider :custom_identity
+
+  provider 'googlenewflow', secrets[:google_client_id], secrets[:google_client_secret]
+
+  provider :twitter, secrets[:twitter_consumer_key], secrets[:twitter_consumer_secret]
 end
 
 OmniAuth.config.logger = Rails.logger
