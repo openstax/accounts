@@ -78,6 +78,10 @@ en:
       Please enter your email below so that we can send instructions for password recovery.
     cant_remember_email: Can't remember your email? %{contact_us_link}.
     reset_my_password_button: Reset my password
+    password_reset_email_sent: Password reset email sent
+    password_reset_email_sent_description: >-
+      Password reset instructions successfully sent to <b>%{email}</b>.
+    password_reset_email_sent_help: Still having trouble logging in? %{contact_us_link}.
   student_profile:
     enable_other_sign_in_options: Enable other login options
     other_sign_in_options_html: Other login<br class="wide"> options
