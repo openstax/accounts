@@ -20,11 +20,13 @@ class LoginSignupController < ApplicationController
       AuthenticateUser,
       success: lambda {
         clear_unverified_user
+        clear_login_failed_email
         sign_in!(@handler_result.outputs.user)
         redirect_back(fallback_location: profile_newflow_url)
       },
       failure: lambda {
         security_log :login_not_found, tried: @handler_result.outputs.email
+        save_login_failed_email(@handler_result.outputs.email)
         render :login_form
       })
   end
@@ -155,6 +157,25 @@ class LoginSignupController < ApplicationController
     render :check_your_email
   end
 
+  def reset_password_form
+    @email = login_failed_email
+  end
+
+  def reset_password
+    handle_with(
+      ResetPasswordForm,
+      success: lambda {
+        security_log :help_requested, user: @handler_result.outputs.user
+        clear_login_failed_email
+        sign_out!
+      },
+      failure: lambda {
+        security_log :help_request_failed, user: @handler_result.outputs.user
+        redirect_to newflow_login_path
+      }
+    )
+  end
+
   def logout
     sign_out!
     redirect_to newflow_login_path
@@ -169,7 +190,7 @@ class LoginSignupController < ApplicationController
   def unverified_user
     id = session[:unverified_user_id]&.to_i
     return unless id.present?
-    @unverified_user ||= User.find_by(id: id, state: 'unverified') # or don't specify `state`?
+    @unverified_user ||= User.find_by(id: id, state: 'unverified')
   end
 
   def clear_unverified_user
@@ -184,5 +205,17 @@ class LoginSignupController < ApplicationController
 
   def restart_if_missing_unverified_user
     redirect_to signup_path unless unverified_user.present?
+  end
+
+  def save_login_failed_email(email)
+      session[:login_failed_email] = email
+  end
+
+  def login_failed_email
+    session[:login_failed_email]
+  end
+
+  def clear_login_failed_email
+    session.delete(:login_failed_email)
   end
 end
