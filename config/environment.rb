@@ -15,6 +15,7 @@ require 'lookup_users'
 require 'rate_limiting'
 require 'omniauth/strategies/custom_identity'
 require "omniauth/strategies/facebooknewflow"
+require "omniauth/strategies/googlenewflow"
 require 'email_address_validations'
 require 'subjects_utils'
 require 'host'
