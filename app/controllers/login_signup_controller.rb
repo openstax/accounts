@@ -168,10 +168,13 @@ class LoginSignupController < ApplicationController
         security_log :help_requested, user: @handler_result.outputs.user
         clear_login_failed_email
         sign_out!
+
+        @email = login_failed_email.dup
+        render :reset_password_email_sent
       },
       failure: lambda {
         security_log :help_request_failed, user: @handler_result.outputs.user
-        redirect_to newflow_login_path
+        render :reset_password_form
       }
     )
   end
