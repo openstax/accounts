@@ -73,6 +73,11 @@ en:
     confirm_your_info: Confirm your information
     edit_your_email: edit your email
     send_my_pin: Send my PIN
+    reset_my_password: Reset my password
+    reset_my_password_description: >-
+      Please enter your email below so that we can send instructions for password recovery.
+    cant_remember_email: Can't remember your email? %{contact_us_link}.
+    reset_my_password_button: Reset my password
   student_profile:
     enable_other_sign_in_options: Enable other login options
     other_sign_in_options_html: Other login<br class="wide"> options
