@@ -165,11 +165,11 @@ class LoginSignupController < ApplicationController
     handle_with(
       ResetPasswordForm,
       success: lambda {
-        security_log :help_requested, user: @handler_result.outputs.user
+        @email = login_failed_email.dup
         clear_login_failed_email
         sign_out!
 
-        @email = login_failed_email.dup
+        security_log :help_requested, user: @handler_result.outputs.user
         render :reset_password_email_sent
       },
       failure: lambda {
