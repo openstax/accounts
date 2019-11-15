@@ -50,6 +50,9 @@ Rails.application.routes.draw do
     post 'send_password_setup_instructions',
          action: :send_password_setup_instructions,
          as: :send_password_setup_instructions
+
+    get 'reset_password_form', action: :reset_password_form, as: :reset_password_form
+    post 'reset_password', action: :reset_password, as: :reset_password
   end
 
   scope controller: 'sessions' do
