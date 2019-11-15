@@ -458,7 +458,7 @@ input.has-error {
         text-align: center;
     }
 
-    // informational messages shows to users, for example on email confirmation screen
+    // informational messages shown to users, for example on email confirmation screen
     .info-message {
         @include set-font(body-regular);
     }
@@ -474,6 +474,10 @@ input.has-error {
     input[type=text]:disabled {
         background-color: #f1f1f1;
         cursor: not-allowed;
+    }
+
+    input[type=submit]:disabled {
+        opacity: 0.85;
     }
 }
 
