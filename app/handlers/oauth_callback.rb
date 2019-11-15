@@ -23,7 +23,15 @@ class OauthCallback
   def setup
     @data = parse_oauth_data(request.env['omniauth.auth'])
     # TODO: undo the following line when we deploy to production
-    @oauth_provider = @data.provider == 'facebooknewflow' ? 'facebook' : @data.provider
+    @oauth_provider = case @data.provider
+                      when 'facebooknewflow'
+                        'facebook'
+                      when 'googlenewflow'
+                        'google_oauth2'
+                      else
+                        @data.provider
+                      end
+
     outputs.email = @data.email
   end
 
