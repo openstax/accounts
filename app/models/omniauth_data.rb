@@ -2,7 +2,7 @@
 class OmniauthData
 
   VALID_PROVIDERS = [
-    'identity', 'facebook', 'twitter', 'google_oauth2', 'facebooknewflow'
+    'identity', 'facebook', 'twitter', 'google_oauth2', 'facebooknewflow', 'googlenewflow'
   ]
 
   def initialize(auth_data)
