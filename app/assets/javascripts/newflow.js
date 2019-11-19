@@ -12,7 +12,7 @@ $(document).ready(function () {
     $("#show-hide-button").click(function (e) {
         $(".toggle-show-hide").toggle();
 
-        var password_field = "input#login_form_password";
+        var password_field = $('[name$="[password]"]')[0];
         if ($(password_field).attr("type") == "password") {
             $(password_field).attr("type", "text");
         } else {
