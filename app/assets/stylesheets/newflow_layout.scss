@@ -703,3 +703,20 @@ input.has-error {
         }
     }
 }
+
+#newflow-footer {
+    text-align: center;
+
+    #footer-rice-logo-image {
+      margin-bottom: 1.2rem;
+    }
+
+    #newflow-footer--copyright {
+        font-size: 1rem;
+
+        a {
+            color: #000;
+            text-decoration: none;
+        }
+    }
+}
