@@ -25,6 +25,19 @@
             <%= yield %>
         </div>
 
+        <div class="content" id="newflow-footer">
+            <div>
+                <%= link_to "http://www.rice.edu" do %>
+                    <%= image_tag 'rice_logo_4.png', id: "footer-rice-logo-image" %>
+                <% end %>
+            </div>
+
+            <div id="newflow-footer--copyright">
+                <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
+                <%= link_to (t :".terms_of_use"), main_app.terms_path %>
+            </div>
+        </div>
+
         <%= yield :javascript %>
     </body>
 </html>
