@@ -6,6 +6,18 @@ module ApplicationHelper
     'http://openstax.force.com/support/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
+  def openstax_url
+    environment = Rails.application.secrets[:environment_name]
+    server = case environment
+                    when 'development', 'test', 'prodtutor'
+                      ''
+                    else
+                      '-' + environment
+                    end
+
+    "https://openstax#{server}.org"
+  end
+
   def unless_errors(options={}, &block)
     errors = @handler_result.errors.each do |error|
       add_local_error_alert now: true, content: error.translate
