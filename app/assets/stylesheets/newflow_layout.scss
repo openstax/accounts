@@ -683,3 +683,23 @@ input.has-error {
         }
     }
 }
+
+// Tooltip on form inputs
+
+.input-with-tooltip {
+    @include input-with-tooltip();
+
+    input:focus {
+        @extend %active;
+    }
+
+    .tooltip {
+        @extend %tooltip;
+
+        max-width: 25rem;
+
+        @include width-up-to($phone-max) {
+            max-width: 100%;
+        }
+    }
+}
