@@ -22,7 +22,7 @@ class OauthCallback
 
   def setup
     @data = parse_oauth_data(request.env['omniauth.auth'])
-    # TODO: undo the following line when we deploy to production
+    # TODO: remove the case switch when we deploy to production
     @oauth_provider = case @data.provider
                       when 'facebooknewflow'
                         'facebook'
@@ -43,13 +43,11 @@ class OauthCallback
     elsif (existing_user = LookupUsers.by_verified_email(@data.email).first)
       authentication = Authentication.new(provider: @oauth_provider, uid: @data.uid.to_s)
       run(TransferAuthentications, authentication, existing_user) # TODO: does this raise fatally?
-      create_pre_auth_state(existing_user) unless existing_user.pre_auth_state
       security_log(:sign_in_successful, authentication.user, authentication_id: authentication.id)
     else # sign up new user
       user = create_user_instance
       create_email_address(user)
       authentication = create_authentication(user, @oauth_provider)
-      create_pre_auth_state(user)
       security_log(:sign_up_successful, user, authentication_id: authentication.id)
     end
 
@@ -63,6 +61,7 @@ class OauthCallback
   def create_user_instance
     user = User.new(state: 'unverified')
     user.full_name = @data.name
+    transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
     user
   end
 
@@ -81,16 +80,6 @@ class OauthCallback
     email = EmailAddress.create(value: @data.email, user: user, verified: true)
     transfer_errors_from(email, { scope: :email_address }, :fail_if_errors)
     email
-  end
-
-  def create_pre_auth_state(user)
-    PreAuthState.create!(
-      first_name: user.first_name,
-      last_name: user.last_name,
-      user_id: user.id,
-      contact_info_value: @data.email,
-      role: 'student'
-    )
   end
 
   def parse_oauth_data(oauth_response)

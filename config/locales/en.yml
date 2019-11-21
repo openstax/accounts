@@ -9,8 +9,8 @@ en:
       We could not find your account. Please try again.
     multiple_users: We found several accounts with this email
     incorrect_password: The password you provided is incorrect.
-    login_tab: Log in
-    signup_tab: Sign up
+    log_in: Log in
+    sign_up: Sign up
     student: Student
     educator: Educator
     step_counter: Step %{current_step} of %{total_steps}
@@ -82,6 +82,8 @@ en:
     password_reset_email_sent_description: >-
       Password reset instructions successfully sent to <b>%{email}</b>.
     password_reset_email_sent_help: Still having trouble logging in? %{contact_us_link}.
+    setup_your_new_password: Set up your new password
+    setup_your_new_password_description: Please finish setting up the password for %{email} below.
   student_profile:
     enable_other_sign_in_options: Enable other login options
     other_sign_in_options_html: Other login<br class="wide"> options
