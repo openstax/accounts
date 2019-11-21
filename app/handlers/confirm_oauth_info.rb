@@ -5,13 +5,14 @@ class ConfirmOauthInfo
   paramify :info do
     attribute :first_name
     attribute :last_name
+    attribute :email
     attribute :terms_accepted, type: boolean
     attribute :contract_1_id, type: Integer
     attribute :contract_2_id, type: Integer
 
     validates :first_name, presence: true
     validates :last_name, presence: true
-    validates :terms_accepted, presence: true
+    validates :email, presence: true
   end
 
   protected #################
@@ -20,13 +21,14 @@ class ConfirmOauthInfo
     true
   end
 
-  def handle
-    pre_auth_state = PreAuthState.find(options[:pre_auth_state].id)
-    user = pre_auth_state.user
-    user.update_attributes(state: 'activated')
-    agree_to_terms(user)
-    pre_auth_state.destroy
+  def setup
+    @user = options[:user]
+  end
 
+  def handle
+    @user.update_attributes(state: 'activated')
+    agree_to_terms(@user)
+    # TODO: sign 'em up for the newsletter if checked
     outputs.user = user
   end
 
