@@ -29,7 +29,7 @@ class ConfirmOauthInfo
     @user.update_attributes(state: 'activated')
     agree_to_terms(@user)
     # TODO: sign 'em up for the newsletter if checked
-    outputs.user = user
+    outputs.user = @user
   end
 
   private ###################

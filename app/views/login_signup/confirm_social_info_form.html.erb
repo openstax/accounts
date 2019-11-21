@@ -53,10 +53,10 @@
                     <%= label_tag :email, I18n.t(:'login_signup_form.email_label'),
                                 class: 'field-label required'
                     %>
-                    <%= text_field_tag :email, 'pulledfrom@socialmedia.com',
+                    <%= fh.text_field name: :email,
                                 placeholder: I18n.t(:'login_signup_form.email_label'),
-                                disabled: true,
-                                value: @email
+                                value: @email,
+                                readonly: true
                     %>
                 </div>
 
