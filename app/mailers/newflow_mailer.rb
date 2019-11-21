@@ -1,7 +1,11 @@
 class NewflowMailer < ApplicationMailer
+  include Rails.application.routes.url_helpers
+
   def newflow_setup_password(user:, email:)
-    # @show_pin = ConfirmByPin.sequential_failure_for().attempts_remaining?
+    # @show_pin = ConfirmByPin.sequential_failure_for().attempts_remaining? # TODO
     @user = user
+    @casual_name = user.casual_name
+
     mail to: email, subject: 'Set up a password for your OpenStax account'
   end
 

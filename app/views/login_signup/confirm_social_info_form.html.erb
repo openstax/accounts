@@ -35,7 +35,7 @@
                     <%= fh.text_field name: :first_name,
                                 placeholder: I18n.t(:'login_signup_form.first_name_label'),
                                 autofocus: true,
-                                value: @pre_auth_state.first_name
+                                value: @first_name
                     %>
                 </div>
 
@@ -45,8 +45,7 @@
                     %>
                     <%= fh.text_field name: :last_name,
                                 placeholder: I18n.t(:'login_signup_form.last_name_label'),
-                                autofocus: true,
-                                value: @pre_auth_state.last_name
+                                value: @last_name
                     %>
                 </div>
 
@@ -56,9 +55,8 @@
                     %>
                     <%= text_field_tag :email, 'pulledfrom@socialmedia.com',
                                 placeholder: I18n.t(:'login_signup_form.email_label'),
-                                autofocus: true,
                                 disabled: true,
-                                value: @pre_auth_state.contact_info_value
+                                value: @email
                     %>
                 </div>
 
