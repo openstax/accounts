@@ -526,6 +526,11 @@ input.has-error {
     }
 
     @include wider-than($phone-max) {
+        form {
+            height: 80rem;
+            align-content: start;
+        }
+
         .form-divider + .content.control-group {
             margin-top: 2.5rem;
         }
