@@ -471,7 +471,7 @@ input.has-error {
         height: auto;
     }
 
-    input[type=text]:disabled {
+    input[type=text]:disabled, input[readonly=readonly] {
         background-color: #f1f1f1;
         cursor: not-allowed;
     }

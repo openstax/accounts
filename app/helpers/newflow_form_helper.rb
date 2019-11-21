@@ -22,7 +22,7 @@ module NewflowFormHelper
       end
     end
 
-    def text_field(name:, placeholder:, value: nil, type: nil, autofocus: false, except: nil, only: nil)
+    def text_field(name:, placeholder:, value: nil, type: nil, autofocus: false, except: nil, only: nil, readonly: false)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -33,7 +33,8 @@ module NewflowFormHelper
                                     type: type,
                                     class: "form-control wide #{'has-error' if errors_div.present?}",
                                     data: data(only: only, except: except),
-                                    autofocus: autofocus
+                                    autofocus: autofocus,
+                                    readonly: readonly
 
         "#{input}\n#{errors_div}".html_safe
       end
