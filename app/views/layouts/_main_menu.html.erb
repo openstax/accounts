@@ -1,13 +1,9 @@
 <div class="main-menu" role="menubar" aria-label="Main menu">
     <span class="logo-wrapper">
         <span class="logo">
-            <a href="https://openstax.org" aria-label="Home Page">
-                <img class="logo-color" src="http://openstax.org/images/logo.svg" alt="OpenStax logo">
-            </a>
+            <%= link_to openstax_url, 'aria-label': 'OpenStax Home Page' do %>
+                <%= image_tag 'openstax-logo.svg', class: 'logo-color', alt: 'OpenStax logo' %>
+            <% end %>
         </span>
     </span>
-    <ul class="nav-menu">
-        <li class="nav-menu-item">
-        </li>
-    </ul>
 </div>
