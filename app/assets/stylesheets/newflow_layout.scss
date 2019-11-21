@@ -709,6 +709,24 @@ input.has-error {
     }
 }
 
+.input-with-tooltip-on-hover {
+    @include input-with-tooltip();
+
+    input:hover {
+        @extend %active;
+    }
+
+    .tooltip {
+        @extend %tooltip;
+
+        max-width: 25rem;
+
+        @include width-up-to($phone-max) {
+            max-width: 100%;
+        }
+    }
+}
+
 #newflow-footer {
     text-align: center;
 

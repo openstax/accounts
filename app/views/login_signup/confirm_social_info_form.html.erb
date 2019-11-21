@@ -53,11 +53,20 @@
                     <%= label_tag :email, I18n.t(:'login_signup_form.email_label'),
                                 class: 'field-label required'
                     %>
-                    <%= fh.text_field name: :email,
-                                placeholder: I18n.t(:'login_signup_form.email_label'),
-                                value: @email,
-                                readonly: true
-                    %>
+                    <div class="input-with-tooltip-on-hover">
+                        <%
+                            # Note the f.text_field instead of fh.text_field – to not create a wrapper div
+                            # which would break the tooltip
+                        %>
+                        <%= f.text_field :email,
+                                    placeholder: I18n.t(:'login_signup_form.email_label'),
+                                    value: @email,
+                                    readonly: true
+                        %>
+                        <div class="tooltip">
+                            <%= I18n.t(:"login_signup_form.confirm_social_info_tooltip").html_safe %>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="content control-group checkboxes-section">
