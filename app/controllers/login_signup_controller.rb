@@ -69,46 +69,6 @@ class LoginSignupController < ApplicationController
     @email = unverified_user.email_addresses.first.value
   end
 
-  # Log in (or sign up and then log in) a user using a social (OAuth) provider
-  def oauth_callback
-    handle_with(
-      OauthCallback,
-      success: lambda {
-        user = @handler_result.outputs.user
-        unless user.is_activated?
-          save_pre_auth_state(@handler_result.outputs.pre_auth_state)
-          @pre_auth_state = pre_auth_state
-          render :confirm_social_info and return
-        end
-        sign_in!(user)
-        redirect_back(fallback_location: profile_newflow_path)
-      },
-      failure: lambda {
-        @email = @handler_result.outputs.email
-        # TODO: rate-limit this
-        # TODO: create a security log
-        security_log :login_not_found, tried: @handler_result.outputs.email
-        render :social_login_failed
-      }
-    )
-  end
-
-  def confirm_oauth_info
-    handle_with(
-      ConfirmOauthInfo,
-      pre_auth_state: pre_auth_state,
-      contracts_required: !contracts_not_required,
-      success: lambda {
-        clear_unverified_user
-        sign_in!(@handler_result.outputs.user)
-        redirect_back(fallback_location: profile_newflow_url)
-      },
-      failure: lambda {
-        render :confirm_social_info
-      }
-    )
-  end
-
   def verify_pin
     handle_with(
       NewflowVerifyEmail,
@@ -137,26 +97,6 @@ class LoginSignupController < ApplicationController
     render layout: 'application'
   end
 
-  def social_login_failed
-    fallback_email = current_user&.email unless is_real_production_site? # for testing purposes
-    @email ||= fallback_email
-  end
-
-  def send_password_setup_instructions
-    # TODO: rate-limit this
-    @email_address = params[:send_instructions][:email]
-    # I think I actually want to CREATE the email address for them
-    email = EmailAddress.verified.find_by(value: @email_address)
-    # TODO: I may wanna raise an exception if there's no verified email found
-    return unless email && (user = email.user)
-
-    user.refresh_login_token
-    user.save
-    NewflowMailer.newflow_setup_password(user: email.user, email: @email_address).deliver_later
-    # TODO: create a security log
-    render :check_your_email
-  end
-
   def reset_password_form
     @email = login_failed_email
   end
@@ -182,6 +122,93 @@ class LoginSignupController < ApplicationController
   def logout
     sign_out!
     redirect_to newflow_login_path
+  end
+
+  # Log in (or sign up and then log in) a user using a social (OAuth) provider
+  def oauth_callback
+    handle_with(
+      OauthCallback,
+      success: lambda {
+        user = @handler_result.outputs.user
+        unless user.is_activated?
+          user = @handler_result.outputs.user
+          save_unverified_user(user)
+          @first_name = user.first_name
+          @last_name = user.last_name
+          @email = @handler_result.outputs.email
+          render :confirm_social_info_form and return
+        end
+        sign_in!(user)
+        redirect_back(fallback_location: profile_newflow_path)
+      },
+      failure: lambda {
+        @email = @handler_result.outputs.email
+        save_login_failed_email(@handler_result.outputs.email)
+        # TODO: rate-limit this
+        # TODO: is this the appropriate security log?
+        security_log :login_not_found, tried: @handler_result.outputs.email
+        render :social_login_failed
+      }
+    )
+  end
+
+  def confirm_oauth_info
+    handle_with(
+      ConfirmOauthInfo,
+      user: unverified_user,
+      contracts_required: !contracts_not_required,
+      success: lambda {
+        # clear_login_failed_email # maybe?
+        clear_unverified_user
+        sign_in!(@handler_result.outputs.user)
+        redirect_back(fallback_location: profile_newflow_url)
+      },
+      failure: lambda {
+        render :confirm_social_info_form
+      }
+    )
+  end
+
+  def send_password_setup_instructions
+    handle_with(
+      SocialLoginFailedSetupPassword,
+      email: login_failed_email,
+      success: lambda {
+        # TODO: create a security log
+        @email = login_failed_email
+        clear_login_failed_email
+        render :check_your_email
+      },
+      failure: lambda {
+        oauth = request.env['omniauth.auth']
+        errors = @handler_result.errors.inspect
+        last_exception = $!.inspect
+        exception_backtrace = $@.inspect
+
+        error_message = "[send_password_setup_instructions] IllegalState on failure: " +
+                                       "OAuth data: #{oauth}; errors: #{errors}; " +
+                                       "last exception: #{last_exception}; " +
+                                       "exception backtrace: #{exception_backtrace}"
+
+        # This will print the exception to the logs and send devs an exception email
+        raise IllegalState, error_message
+      }
+    )
+  end
+
+  def setup_password
+    handle_with(
+      NewflowSetupPassword,
+      success: lambda {
+        # TODO: security_log :sign_in_successful {security_log_data: {type: 'token'}} or something
+        sign_in!(@handler_result.outputs.user)
+        # redirect_to signup_done_path
+        redirect_back(fallback_location: profile_newflow_url)
+      },
+      failure: lambda {
+        # TODO: security_log :sign_in_failed or something
+      }
+    )
   end
 
   private ###################

@@ -7,16 +7,14 @@ Rails.application.routes.draw do
   OpenStax::Salesforce.set_top_level_routes(self)
 
   scope controller: 'login_signup' do
+    # Login form
     get 'i/login', action: :login_form, as: :newflow_login
     post 'i/login', action: :login
 
-    get 'i/profile', action: :profile_newflow, as: :profile_newflow
-    get 'i/logout', action: :logout, as: :newflow_logout
-
+    # Routes for all the steps/forms of the sign up flow
+    get 'i/welcome', action: :welcome, as: :newflow_welcome
     get 'i/signup', action: :signup_form, as: :newflow_signup
     post 'i/signup', action: :signup, as: :newflow_signup_post
-
-    get 'i/welcome', action: :welcome, as: :newflow_welcome
     get 'i/confirmation_form', action: :confirmation_form, as: :confirmation_form
     post 'i/verify_pin', action: :verify_pin, as: :newflow_verify_pin
     get 'i/change_your_email', action: :change_your_email, as: :change_your_email
@@ -27,35 +25,33 @@ Rails.application.routes.draw do
         as: :confirmation_form_updated_email
     get 'i/done', action: :signup_done, as: :signup_done
 
-    # Sig in/up with an oauth provider
+    # Begin the login/signup process with an oauth provider using omniauth middleware
     get 'i/auth/:provider', action: :newflow_callback, as: :newflow_auth
     post 'i/auth/:provider', action: :newflow_callback
     get 'i/auth/:provider/callback', action: :oauth_callback
 
-    # Sign up with a social provider
-    get 'i/auth/:provider/social_signup',
-        action: :social_signup,
-        as: :social_signup
-
-    post 'i/auth/:provider/social_signup', action: :social_signup, as: :social_signup_post
-    # Log in with a social provider
-    get 'i/auth/:provider/social_login', action: :social_login
-    post 'i/auth/:provider/social_login', action: :social_login, as: :newflow_callback
-
+    # For when you sign up with a social provider
     get 'i/confirm_your_info', action: :confirm_your_info
     post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
 
+    # When social login fails
     get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
-
+    # ... but we managed to capture your email, send an email
     post 'send_password_setup_instructions',
          action: :send_password_setup_instructions,
          as: :send_password_setup_instructions
+    # ... with a link to create a password
+    get 'i/setup_password/:token', action: :setup_password_form, as: :newflow_setup_password
+    post 'i/setup_password/:token', action: :setup_password, as: :newflow_setup_password_post
 
     get 'i/reset_password_form', action: :reset_password_form, as: :reset_password_form
     post 'i/reset_password', action: :reset_password, as: :reset_password
     get 'i/reset_password_email_sent',
           action: :reset_password_email_sent,
           as: :reset_password_email_sent
+
+    get 'i/profile', action: :profile_newflow, as: :profile_newflow
+    get 'i/signout', action: :logout, as: :newflow_logout
   end
 
   scope controller: 'sessions' do
