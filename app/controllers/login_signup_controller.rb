@@ -105,7 +105,7 @@ class LoginSignupController < ApplicationController
     handle_with(
       ResetPasswordForm,
       success: lambda {
-        @email = login_failed_email.dup
+        @email = @handler_result.outputs.email
         clear_login_failed_email
         sign_out!
 
@@ -115,6 +115,41 @@ class LoginSignupController < ApplicationController
       failure: lambda {
         security_log :help_request_failed, user: @handler_result.outputs.user
         render :reset_password_form
+      }
+    )
+  end
+
+  def change_password_form
+    handle_with(
+      FindUserByToken,
+      success: lambda {
+        sign_in!(@handler_result.outputs.user)
+        render :change_password_form
+      },
+      failure: lambda {
+        # security log?
+        debugger
+        render status: 400
+      }
+    )
+  end
+
+  def set_new_password
+    # TODO: This check again here in case a long time elapsed between the GET and the POST
+    # user_signin_is_too_old?
+    # reauthenticate_user_if_signin_is_too_old!
+
+    handle_with(
+      ChangePassword,
+      user: current_user,
+      success: lambda {
+        security_log :password_reset
+        redirect_back(fallback_location: profile_newflow_url)
+},
+      failure: lambda {
+        security_log :password_reset_failed
+        debugger
+        render :change_password_form, status: 400
       }
     )
   end
@@ -198,7 +233,7 @@ class LoginSignupController < ApplicationController
 
   def setup_password
     handle_with(
-      NewflowSetupPassword,
+      FindUserByToken,
       success: lambda {
         # TODO: security_log :sign_in_successful {security_log_data: {type: 'token'}} or something
         sign_in!(@handler_result.outputs.user)

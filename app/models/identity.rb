@@ -3,14 +3,14 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
   DEFAULT_PASSWORD_EXPIRATION_PERIOD = \
     Rails.configuration.accounts.default_password_expiration_period
 
-  MIN_PASSWOROD_LENGTH = 8
+  MIN_PASSWORD_LENGTH = 8
 
   belongs_to :user, inverse_of: :identity
 
   # We need these validations because
   # omniauth-identity does not provide them by default
   # These attributes are (obviously) not saved in the database
-  validates :password, presence: true, length: { minimum: MIN_PASSWOROD_LENGTH, maximum: 50 }
+  validates :password, presence: true, length: { maximum: 50 }
   validates :user, presence: true
   validates :user_id, uniqueness: true
 
