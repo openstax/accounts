@@ -1,11 +1,5 @@
-class NewflowSetupPassword
+class FindUserByToken
   lev_handler
-
-  paramify :setup_password_form do
-    attribute :password
-
-    validates :password, length: { minimum: Identity::MIN_PASSWOROD_LENGTH }
-  end
 
   protected #################
 
@@ -14,8 +8,6 @@ class NewflowSetupPassword
   end
 
   def handle
-    fatal_error(code: :token_blank) if params[:token].blank?
-
     user = User.find_by(login_token: params[:token])
 
     fatal_error(code: :unknown_login_token) unless user.present?
