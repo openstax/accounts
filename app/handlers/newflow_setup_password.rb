@@ -4,7 +4,7 @@ class NewflowSetupPassword
   paramify :setup_password_form do
     attribute :password
 
-    validates :password, length: { minimum: Identity::MIN_PASSWOROD_LENGTH }
+    validates :password, length: { minimum: Identity::MIN_PASSWORD_LENGTH }
   end
 
   protected #################
