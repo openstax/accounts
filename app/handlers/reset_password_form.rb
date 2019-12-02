@@ -18,7 +18,8 @@ class ResetPasswordForm
   end
 
   def handle
-    user = LookupUsers.by_verified_email(reset_password_form_params.email).first
+    outputs.email = reset_password_form_params.email
+    user = LookupUsers.by_verified_email(outputs.email).first
     outputs.user = user
 
     return unless user.present?
@@ -29,11 +30,7 @@ class ResetPasswordForm
     email_addresses = user.email_addresses.verified.map(&:value)
 
     email_addresses.each do |email_address|
-      SignInHelpMailer.send(
-        :reset_password,
-        user: user,
-        email_address: email_address
-      ).deliver_later
+      NewflowMailer.reset_password_email(user: user, email_address: email_address).deliver_later
     end
   end
 end
