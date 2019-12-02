@@ -5,7 +5,7 @@ require File.expand_path('../../config/environment', __FILE__)
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 require 'openstax/salesforce/spec_helpers'
 require 'rspec/rails'
-require 'webdrivers'
+require 'webdrivers/chromedriver'
 require 'capybara/rails'
 require 'capybara/email/rspec'
 require 'shoulda/matchers'
