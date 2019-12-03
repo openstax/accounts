@@ -90,6 +90,18 @@ module Newflow
       )
     end
 
+    def verify_email_by_code
+      handle_with(
+        VerifyEmailByCode,
+        success: lambda {
+          sign_in!(@handler_result.outputs.user)
+        },
+        failure: lambda {
+          redirect_to newflow_signup_path
+        }
+      )
+    end
+
     def signup_done
       @first_name = current_user.first_name
       @email_address = current_user.email_addresses.first.value
@@ -271,7 +283,7 @@ module Newflow
     end
 
     def restart_if_missing_unverified_user
-      redirect_to signup_path unless unverified_user.present?
+      redirect_to newflow_signup_path unless unverified_user.present?
     end
 
     def save_login_failed_email(email)
