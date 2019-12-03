@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     post 'i/signup', action: :signup, as: :newflow_signup_post
     get 'i/confirmation_form', action: :confirmation_form, as: :confirmation_form
     post 'i/verify_email_by_pin', action: :verify_email_by_pin, as: :newflow_verify_pin
+    get 'i/verify_email_by_code', action: :verify_email_by_code, as: :newflow_verify_code
     get 'i/change_your_email', action: :change_your_email, as: :change_your_email
     post 'i/change_signup_email', action: :change_signup_email, as: :change_signup_email
     get 'i/check_your_email', action: :check_your_email, as: :check_your_email
