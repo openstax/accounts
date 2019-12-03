@@ -31,18 +31,18 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       expect(response.code).to eq('200')
 
       group_3_json = {
-        'id' => group_3.id,
-        'name' => 'Group 3',
-        'is_public' => true,
-        'members' => [], 'owners' => [], 'nestings' => [],
-        'supertree_group_ids' => [group_3.id],
-        'subtree_group_ids' => [group_3.id],
-        'subtree_member_ids' => []
+        id: group_3.id,
+        name: 'Group 3',
+        is_public: true,
+        members: [], owners: [], nestings: [],
+        supertree_group_ids: [group_3.id],
+        subtree_group_ids: [group_3.id],
+        subtree_member_ids: []
       }
 
       expected_response = [group_3_json]
 
-      expect(JSON.parse(response.body)).to eq(expected_response)
+      expect(response.body_as_hash).to eq(expected_response)
 
       group_1.add_member(user_1)
 
@@ -52,20 +52,20 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
       group_1.reload
       group_1_json = {
-        'id' => group_1.id,
-        'name' => 'Group 1',
-        'is_public' => false,
-        'members' => [
-          { 'group_id' => group_1.id,
-            'user' => user_hash(user_1) }
-        ], 'owners' => [], 'nestings' => [],
-        'supertree_group_ids' => [group_1.id],
-        'subtree_group_ids' => [group_1.id],
-        'subtree_member_ids' => [user_1.id]
+        id: group_1.id,
+        name: 'Group 1',
+        is_public: false,
+        members: [
+          { group_id: group_1.id,
+            user: user_matcher(user_1) }
+        ], owners: [], nestings: [],
+        supertree_group_ids: [group_1.id],
+        subtree_group_ids: [group_1.id],
+        subtree_member_ids: [user_1.id]
       }
 
-      expect(JSON.parse(response.body)).to include(group_3_json)
-      expect(JSON.parse(response.body)).to include(group_1_json)
+      expect(response.body_as_hash).to include(group_3_json)
+      expect(response.body_as_hash).to include(group_1_json)
 
       FactoryBot.create(:group_nesting, container_group: group_2,
                                          member_group: group_3)
@@ -77,17 +77,17 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       group_2.reload
       group_3.reload
       group_3_json = {
-        'id' => group_3.id,
-        'name' => 'Group 3',
-        'is_public' => true,
-        'members' => [], 'owners' => [], 'nestings' => [],
-        'supertree_group_ids' => group_3.supertree_group_ids,
-        'subtree_group_ids' => [group_3.id],
-        'subtree_member_ids' => []
+        id: group_3.id,
+        name: 'Group 3',
+        is_public: true,
+        members: [], owners: [], nestings: [],
+        supertree_group_ids: group_3.supertree_group_ids,
+        subtree_group_ids: [group_3.id],
+        subtree_member_ids: []
       }
 
-      expect(JSON.parse(response.body)).to include(group_3_json)
-      expect(JSON.parse(response.body)).to include(group_1_json)
+      expect(response.body_as_hash).to include(group_3_json)
+      expect(response.body_as_hash).to include(group_1_json)
       expect(group_3.supertree_group_ids).to include(group_3.id)
       expect(group_3.supertree_group_ids).to include(group_2.id)
 
@@ -105,20 +105,20 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       group_2.reload
       group_3.reload
       group_3_json = {
-        'id' => group_3.id,
-        'name' => 'Group 3',
-        'is_public' => true,
-        'members' => [], 'owners' => [], 'nestings' => [
-          'container_group_id' => group_3.id,
-          'member_group_id' => group_2.id
+        id: group_3.id,
+        name: 'Group 3',
+        is_public: true,
+        members: [], owners: [], nestings: [
+          container_group_id: group_3.id,
+          member_group_id: group_2.id
         ],
-        'supertree_group_ids' => [group_3.id],
-        'subtree_group_ids' => group_3.subtree_group_ids,
-        'subtree_member_ids' => []
+        supertree_group_ids: [group_3.id],
+        subtree_group_ids: group_3.subtree_group_ids,
+        subtree_member_ids: []
       }
 
-      expect(JSON.parse(response.body)).to include(group_3_json)
-      expect(JSON.parse(response.body)).to include(group_1_json)
+      expect(response.body_as_hash).to include(group_3_json)
+      expect(response.body_as_hash).to include(group_1_json)
       expect(group_3.subtree_group_ids).to include(group_3.id)
       expect(group_3.subtree_group_ids).to include(group_2.id)
 
@@ -130,23 +130,23 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
       group_3.reload
       group_3_json = {
-        'id' => group_3.id,
-        'name' => 'Group 3',
-        'is_public' => true,
-        'members' => [
-          {'group_id' => group_3.id,
-           'user' => user_hash(user_2)}
-        ], 'owners' => [], 'nestings' => [
-          'container_group_id' => group_3.id,
-          'member_group_id' => group_2.id
+        id: group_3.id,
+        name: 'Group 3',
+        is_public: true,
+        members: [
+          {group_id: group_3.id,
+           user: user_matcher(user_2)}
+        ], owners: [], nestings: [
+          container_group_id: group_3.id,
+          member_group_id: group_2.id
         ],
-        'supertree_group_ids' => [group_3.id],
-        'subtree_group_ids' => group_3.subtree_group_ids,
-        'subtree_member_ids' => [user_2.id]
+        supertree_group_ids: [group_3.id],
+        subtree_group_ids: group_3.subtree_group_ids,
+        subtree_member_ids: [user_2.id]
       }
 
-      expect(JSON.parse(response.body)).to include(group_3_json)
-      expect(JSON.parse(response.body)).to include(group_1_json)
+      expect(response.body_as_hash).to include(group_3_json)
+      expect(response.body_as_hash).to include(group_1_json)
 
       group_2.add_member(user_1)
 
@@ -156,38 +156,38 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
       group_2.reload
       group_2_json = {
-        'id' => group_2.id,
-        'name' => 'Group 2',
-        'is_public' => false,
-        'members' => [
-          {'group_id' => group_2.id,
-           'user' => user_hash(user_1)}
-        ], 'owners' => [], 'nestings' => [],
-        'supertree_group_ids' => group_2.supertree_group_ids,
-        'subtree_group_ids' => [group_2.id],
-        'subtree_member_ids' => [user_1.id]
+        id: group_2.id,
+        name: 'Group 2',
+        is_public: false,
+        members: [
+          {group_id: group_2.id,
+           user: user_matcher(user_1)}
+        ], owners: [], nestings: [],
+        supertree_group_ids: group_2.supertree_group_ids,
+        subtree_group_ids: [group_2.id],
+        subtree_member_ids: [user_1.id]
       }
 
       group_3.reload
       group_3_json = {
-        'id' => group_3.id,
-        'name' => 'Group 3',
-        'is_public' => true,
-        'members' => [
-          {'group_id' => group_3.id,
-           'user' => user_hash(user_2)}
-        ], 'owners' => [], 'nestings' => [
-          'container_group_id' => group_3.id,
-          'member_group_id' => group_2.id
+        id: group_3.id,
+        name: 'Group 3',
+        is_public: true,
+        members: [
+          {group_id: group_3.id,
+           user: user_matcher(user_2)}
+        ], owners: [], nestings: [
+          container_group_id: group_3.id,
+          member_group_id: group_2.id
         ],
-        'supertree_group_ids' => [group_3.id],
-        'subtree_group_ids' => group_3.subtree_group_ids,
-        'subtree_member_ids' => group_3.subtree_member_ids
+        supertree_group_ids: [group_3.id],
+        subtree_group_ids: group_3.subtree_group_ids,
+        subtree_member_ids: group_3.subtree_member_ids
       }
 
-      expect(JSON.parse(response.body)).to include(group_3_json)
-      expect(JSON.parse(response.body)).to include(group_1_json)
-      expect(JSON.parse(response.body)).to include(group_2_json)
+      expect(response.body_as_hash).to include(group_3_json)
+      expect(response.body_as_hash).to include(group_1_json)
+      expect(response.body_as_hash).to include(group_2_json)
       expect(group_2.supertree_group_ids).to include(group_2.id)
       expect(group_2.supertree_group_ids).to include(group_3.id)
       expect(group_3.subtree_member_ids).to include(user_2.id)
@@ -201,35 +201,35 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
       group_2.reload
       group_2_json = {
-        'id' => group_2.id,
-        'name' => 'Group 2',
-        'is_public' => false,
-        'members' => [
-          {'group_id' => group_2.id,
-           'user' => user_hash(user_1)}
-        ], 'owners' => [], 'nestings' => [],
-        'supertree_group_ids' => [group_2.id],
-        'subtree_group_ids' => [group_2.id],
-        'subtree_member_ids' => [user_1.id]
+        id: group_2.id,
+        name: 'Group 2',
+        is_public: false,
+        members: [
+          {group_id: group_2.id,
+           user: user_matcher(user_1)}
+        ], owners: [], nestings: [],
+        supertree_group_ids: [group_2.id],
+        subtree_group_ids: [group_2.id],
+        subtree_member_ids: [user_1.id]
       }
 
       group_3.reload
       group_3_json = {
-        'id' => group_3.id,
-        'name' => 'Group 3',
-        'is_public' => true,
-        'members' => [
-          {'group_id' => group_3.id,
-           'user' => user_hash(user_2)}
-        ], 'owners' => [], 'nestings' => [],
-        'supertree_group_ids' => [group_3.id],
-        'subtree_group_ids' => [group_3.id],
-        'subtree_member_ids' => [user_2.id]
+        id: group_3.id,
+        name: 'Group 3',
+        is_public: true,
+        members: [
+          {group_id: group_3.id,
+           user: user_matcher(user_2)}
+        ], owners: [], nestings: [],
+        supertree_group_ids: [group_3.id],
+        subtree_group_ids: [group_3.id],
+        subtree_member_ids: [user_2.id]
       }
 
-      expect(JSON.parse(response.body)).to include(group_3_json)
-      expect(JSON.parse(response.body)).to include(group_1_json)
-      expect(JSON.parse(response.body)).to include(group_2_json)
+      expect(response.body_as_hash).to include(group_3_json)
+      expect(response.body_as_hash).to include(group_1_json)
+      expect(response.body_as_hash).to include(group_2_json)
     end
   end
 
@@ -239,15 +239,15 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
       expect(response.code).to eq('200')
       expected_response = {
-        'id' => group_3.id,
-        'name' => 'Group 3',
-        'is_public' => true,
-        'members' => [], 'owners' => [], 'nestings' => [],
-        'supertree_group_ids' => [group_3.id],
-        'subtree_group_ids' => [group_3.id],
-        'subtree_member_ids' => []
+        id: group_3.id,
+        name: 'Group 3',
+        is_public: true,
+        members: [], owners: [], nestings: [],
+        supertree_group_ids: [group_3.id],
+        subtree_group_ids: [group_3.id],
+        subtree_member_ids: []
       }
-      expect(JSON.parse(response.body)).to eq(expected_response)
+      expect(response.body_as_hash).to eq(expected_response)
     end
 
     it 'must not show a private group without a token' do
@@ -277,19 +277,19 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       group_1.reload
 
       expected_response = {
-        'id' => group_1.id,
-        'name' => 'Group 1',
-        'is_public' => false,
-        'members' => [
-          {'group_id' => group_1.id,
-           'user' => user_hash(user_1)}
+        id: group_1.id,
+        name: 'Group 1',
+        is_public: false,
+        members: [
+          {group_id: group_1.id,
+           user: user_matcher(user_1)}
         ],
-        'owners' => [], 'nestings' => [],
-        'supertree_group_ids' => [group_1.id],
-        'subtree_group_ids' => [group_1.id],
-        'subtree_member_ids' => [user_1.id]
+        owners: [], nestings: [],
+        supertree_group_ids: [group_1.id],
+        subtree_group_ids: [group_1.id],
+        subtree_member_ids: [user_1.id]
       }
-      expect(JSON.parse(response.body)).to eq(expected_response)
+      expect(response.body_as_hash).to match(expected_response)
 
       FactoryBot.create(:group_nesting, container_group: group_1,
                                          member_group: group_2)
@@ -303,24 +303,24 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       group_1.reload
 
       expected_response = {
-        'id' => group_1.id,
-        'name' => 'Group 1',
-        'is_public' => false,
-        'members' => [], 'owners' => [
-          {'group_id' => group_1.id,
-           'user' => user_hash(user_1)}
-        ], 'nestings' => [
+        id: group_1.id,
+        name: 'Group 1',
+        is_public: false,
+        members: [], owners: [
+          {group_id: group_1.id,
+           user: user_matcher(user_1)}
+        ], nestings: [
           {
-            'container_group_id' => group_1.id,
-            'member_group_id' => group_2.id
+            container_group_id: group_1.id,
+            member_group_id: group_2.id
           }
         ],
-        'supertree_group_ids' => [group_1.id],
-        'subtree_group_ids' => group_1.subtree_group_ids,
-        'subtree_member_ids' => []
+        supertree_group_ids: [group_1.id],
+        subtree_group_ids: group_1.subtree_group_ids,
+        subtree_member_ids: []
       }
 
-      expect(JSON.parse(response.body)).to eq(expected_response)
+      expect(response.body_as_hash).to match(expected_response)
       expect(group_1.subtree_group_ids).to include(group_1.id)
       expect(group_1.subtree_group_ids).to include(group_2.id)
     end
@@ -344,19 +344,19 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
 
       expect(response.code).to eq('201')
       expected_response = {
-        'id' => Group.last.id,
-        'name' => 'MyGroup',
-        'is_public' => false,
-        'members' => [],
-        'owners' => [
-          {'group_id' => Group.last.id,
-           'user' => user_hash(user_1)}
-        ], 'nestings' => [],
-        'supertree_group_ids' => [Group.last.id],
-        'subtree_group_ids' => [Group.last.id],
-        'subtree_member_ids' => []
+        id: Group.last.id,
+        name: 'MyGroup',
+        is_public: false,
+        members: [],
+        owners: [
+          {group_id: Group.last.id,
+           user: user_matcher(user_1)}
+        ], nestings: [],
+        supertree_group_ids: [Group.last.id],
+        subtree_group_ids: [Group.last.id],
+        subtree_member_ids: []
       }
-      expect(JSON.parse(response.body)).to eq(expected_response)
+      expect(response.body_as_hash).to match(expected_response)
     end
   end
 
@@ -470,15 +470,15 @@ describe Api::V1::GroupsController, type: :controller, api: true, version: :v1 d
       expect(response).to have_http_status(:success)
 
       expected_response = {
-        'id' => group_3.id,
-        'name' => 'Group 3',
-        'is_public' => true,
-        'members' => [], 'owners' => [], 'nestings' => [],
-        'supertree_group_ids' => [],
-        'subtree_group_ids' => [],
-        'subtree_member_ids' => []
+        id: group_3.id,
+        name: 'Group 3',
+        is_public: true,
+        members: [], owners: [], nestings: [],
+        supertree_group_ids: [],
+        subtree_group_ids: [],
+        subtree_member_ids: []
       }
-      expect(JSON.parse(response.body)).to eq(expected_response)
+      expect(response.body_as_hash).to eq(expected_response)
 
       expect(Group.where(id: group_3.id).first).to be_nil
     end

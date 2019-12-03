@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SsoCookieJar, type: :lib do
+RSpec.describe OldSsoCookieJar, type: :lib do
   let(:secrets)       { Rails.application.secrets.sso }
   let(:key_generator) do
     ActiveSupport::CachingKeyGenerator.new(
@@ -23,15 +23,15 @@ RSpec.describe SsoCookieJar, type: :lib do
   let(:cookies)       { request.cookie_jar }
 
   it 'can write a cookie and read it back' do
-    cookies.sso[:some_name] = { value: { foo: :bar } }
+    cookies.old_sso[:some_name] = { value: { foo: :bar } }
 
     expect(cookies[:some_name]).not_to be_blank # it's encrypted, so it's hard to predict its value
-    expect(cookies.sso[:some_name]).to eq('foo' => 'bar') # json means string keys
+    expect(cookies.old_sso[:some_name]).to eq('foo' => 'bar') # json means string keys
   end
 
   it 'sso cookies can be decoded using the sso secrets' do
     value = { 'test-answer': 42 }
-    cookies.sso['ox'] = { value: value }
+    cookies.old_sso['ox'] = { value: value }
 
     expect(encryptor.decrypt_and_verify(cookies['ox'])).to eq value.to_json
   end

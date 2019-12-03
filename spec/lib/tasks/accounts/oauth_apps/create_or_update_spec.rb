@@ -74,7 +74,7 @@ describe 'accounts:oauth_apps:create_or_update' do
   end
 
   it 'raises an error if USERNAME is missing' do
-    stub_const('ENV', ENV.to_hash.merge(
+    stub_const('ENV', ENV.to_hash.except('USERNAME').merge(
       'APP_NAME' => 'new app',
       'REDIRECT_URI' => 'https://localhost:4000/,https://localhost:8000',
       'EMAIL_FROM_ADDRESS' => 'new-app@example.org',

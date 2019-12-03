@@ -1,13 +1,12 @@
 require 'oauth'
 
+# References:
+#   http://railscasts.com/episodes/356-dangers-of-session-hijacking
+
 # This module must be included into a controller to work properly
 module UserSessionManagement
-
-  # References:
-  #   http://railscasts.com/episodes/356-dangers-of-session-hijacking
-
-  def sso_cookies
-    if respond_to?(:cookies, true)
+  def cookie_jar
+    @cookie_jar ||= if respond_to?(:cookies, true)
       cookies
     elsif request.respond_to?(:cookie_jar)
       request.cookie_jar
@@ -15,19 +14,27 @@ module UserSessionManagement
       ActionDispatch::Cookies::CookieJar.build(
         ActionDispatch::Request.new(Rails.application.env_config), request.cookies
       )
-    end.sso
+    end
   end
 
-  def sso_cookie_name
-    Rails.application.secrets.sso[:cookie][:name]
+  def old_sso_cookie_jar
+    OldSsoCookieJar.new cookie_jar
+  end
+
+  def sso_cookie_jar
+    SsoCookieJar.new cookie_jar
+  end
+
+  def old_sso_cookie_name
+    Rails.application.secrets.sso[:cookie][:old_name]
   end
 
   # Always return an object
   def current_user
-    # The SSO cookie has sole responsbility for managing the current user
+    # The SSO cookie has sole responsibility for managing the current user
     @current_user ||= begin
-      sso_cookie = sso_cookies[sso_cookie_name]
-      current_sso_user = User.find_by(uuid: sso_cookie.dig('user', 'uuid')) if sso_cookie.present?
+      user_hash = sso_cookie_jar.subject || old_sso_cookie_jar[old_sso_cookie_name]&.[]('user')
+      current_sso_user = User.find_by(uuid: user_hash['uuid']) if user_hash.present?
       current_sso_user.nil? ? AnonymousUser.instance : current_sso_user
     end
   end
@@ -39,16 +46,17 @@ module UserSessionManagement
 
     if @current_user.is_anonymous?
       # Clear the SSO cookie
-      sso_cookies.delete(sso_cookie_name)
+      sso_cookie_jar.delete
+      old_sso_cookie_jar.delete old_sso_cookie_name
 
       security_log :sign_out, security_log_data
     else
       session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator?
 
       # Set the SSO cookie
-      sso_cookies.permanent[sso_cookie_name] = {
-        value: { 'user' => Api::V1::UserRepresenter.new(@current_user).to_hash }
-      }
+      user_hash = Api::V1::UserRepresenter.new(@current_user).to_hash
+      sso_cookie_jar.subject = user_hash
+      old_sso_cookie_jar.permanent[old_sso_cookie_name] = { value: { 'user' => user_hash } }
 
       security_log :sign_in_successful, security_log_data
     end

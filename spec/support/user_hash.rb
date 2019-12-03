@@ -1,44 +1,4 @@
-# user_hash is the old way of checking user controller responses; it can fail
-# on out of order contact_infos and also doesn't clear failure output since
-# it is normally a global string comparison.
-#
-#   expect(response.body).to eq(user_hash(blah).to_json)
-#
-# user_matcher is the newer way to go.
-#
-#   expect(response.body_as_hash).to match(user_matcher(blah))
-
-def user_hash(user, include_private_data: false)
-  base_hash = {
-    'id' => user.id,
-    'username' => user.username,
-    'name' => user.name,
-    'first_name' => user.first_name,
-    'last_name' => user.last_name,
-    'full_name' => user.full_name,
-    'uuid' => user.uuid,
-    'support_identifier' => user.support_identifier,
-    'is_test' => user.is_test?,
-    'applications' => user.applications.order(:id).map {|app| {"id" => app.id, "name" => app.name}}
-  }
-  base_hash['title'] = user.title unless user.title.nil?
-  base_hash['suffix'] = user.suffix unless user.suffix.nil?
-
-  if include_private_data
-    base_hash['salesforce_contact_id'] = user.salesforce_contact_id
-    base_hash['faculty_status'] = user.faculty_status.to_s
-    base_hash['self_reported_role'] = user.role.to_s
-    base_hash['school_type'] = user.school_type.to_s
-    base_hash['contact_infos'] = a_collection_including(
-      user.contact_infos.order(:id).map do |ci|
-        Api::V1::ContactInfoRepresenter.new(ci).to_hash
-      end
-    )
-  end
-
-  base_hash
-end
-
+# expect(response.body_as_hash).to match(user_matcher(blah))
 def user_matcher(user, include_private_data: false)
   base_hash = {
     id: user.id,
@@ -47,21 +7,19 @@ def user_matcher(user, include_private_data: false)
     first_name: user.first_name,
     last_name: user.last_name,
     full_name: user.full_name,
+    title: user.title,
+    suffix: user.suffix,
     uuid: user.uuid,
     support_identifier: user.support_identifier,
     is_test: user.is_test?,
     applications: a_collection_containing_exactly(
-      *user.applications.map do |app|
-        a_hash_including(id: app.id, name: app.name)
-      end
-    )
+      *user.applications.map { |app| { id: app.id, name: app.name } }
+    ),
+    faculty_status: user.faculty_status.to_s
   }
-  base_hash[:title] = user.title unless user.title.nil?
-  base_hash[:suffix] = user.suffix unless user.suffix.nil?
 
   if include_private_data
     base_hash[:salesforce_contact_id] = user.salesforce_contact_id
-    base_hash[:faculty_status] = user.faculty_status.to_s
     base_hash[:self_reported_role] = user.role.to_s
     base_hash[:school_type] = user.school_type.to_s
     base_hash[:contact_infos] =

@@ -74,9 +74,11 @@ describe Api::V1::GroupNestingsController, type: :controller, api: true, version
                                                    member_group_id: group_1.id}
 
       expect(response.code).to eq('201')
-      expected_response = {'container_group_id' => group_3.id,
-                           'member_group_id' => group_1.id}
-      expect(JSON.parse(response.body)).to eq(expected_response)
+      expected_response = {
+        container_group_id: group_3.id,
+        member_group_id: group_1.id
+      }
+      expect(response.body_as_hash).to eq(expected_response)
     end
   end
 
