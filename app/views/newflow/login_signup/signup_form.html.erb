@@ -26,7 +26,7 @@
                                             errors: @handler_result&.errors) %>
                 <div class="content role-section">
                     <div>
-                        <a href=<%= newflow_welcome_path %> class="back-arrow"><i class="fa fa-arrow-left"></i></a>
+                        <%= render partial: 'back_arrow', locals: { path: newflow_signup_path } %>
                         <div class="role-button"><%= I18n.t(:"login_signup_form.student") %></div>
                     </div>
                 </div>
