@@ -121,6 +121,7 @@ def capybara_url(path)
   "http://#{server.host}:#{server.port}/#{path.starts_with?('/') ? path[1..-1] : path}"
 end
 
+# to make sure that the plumbing is all working for forgery protection
 def with_forgery_protection
   begin
     allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
