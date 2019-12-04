@@ -3,16 +3,20 @@ require 'rails_helper'
 require 'vcr_helper'
 
 feature 'User signs up', js: true, vcr: VCR_OPTS do
-
   background do
     load 'db/seeds.rb'
     create_default_application
   end
 
   context "connected to salesforce" do
-    scenario 'happy path success with password' do
-      load_salesforce_user
+    before(:all) do
+      VCR.use_cassette('User_signs_up/connected_to_salesforce/sf_setup', VCR_OPTS) do
+        @proxy = SalesforceProxy.new
+        @proxy.setup_cassette
+      end
+    end
 
+    scenario 'happy path success with password' do
       allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
 
       arrive_from_app

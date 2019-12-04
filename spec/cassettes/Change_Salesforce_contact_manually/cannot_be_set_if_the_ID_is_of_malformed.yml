@@ -2,15 +2,15 @@
 http_interactions:
 - request:
     method: get
-    uri: "<tutor_specs_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20Faculty_Verified__c,%20School_Type__c,%20LastModifiedDate,%20AccountId,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27somethingwonky%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url_lower>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20Faculty_Verified__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c,%20Adoption_Status__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27somethingwonky%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.9.2
+      - Faraday v0.15.4
       Authorization:
-      - OAuth <tutor_specs_oauth_token>
+      - OAuth <salesforce_access_token>
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,30 +21,35 @@ http_interactions:
       message: Bad Request
     headers:
       Date:
-      - Wed, 24 May 2017 04:56:07 GMT
-      X-Content-Type-Options:
-      - nosniff
-      X-Xss-Protection:
-      - 1; mode=block
-      Content-Security-Policy:
-      - referrer origin-when-cross-origin
-      - reflected-xss block;report-uri /_/ContentDomainCSPNoAuth?type=xss
+      - Wed, 04 Dec 2019 01:40:09 GMT
+      Strict-Transport-Security:
+      - max-age=31536002; includeSubDomains
+      Public-Key-Pins-Report-Only:
+      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
+        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00DR0000001zq0Zm";
+      Expect-Ct:
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00DR0000001zq0Zm"
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=GAEZjmZBS5CnyQAejr3NeQ;Path=/;Domain=.salesforce.com;Expires=Sun,
-        23-Jul-2017 04:56:07 GMT
+      - BrowserId=AY7PGxY3EeqwPnla7AuLYA;Path=/;Domain=.salesforce.com;Expires=Sun,
+        02-Feb-2020 01:40:09 GMT;Max-Age=5184000
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Sforce-Limit-Info:
-      - api-usage=225/48000
+      - api-usage=2681/51000
       Content-Type:
       - application/json;charset=UTF-8
       Transfer-Encoding:
       - chunked
     body:
       encoding: UTF-8
-      string: '[{"message":"\nConfirmed_Emails__c FROM Contact WHERE (Id = ''somethingwonky'')
-        LIMIT 1\n                                        ^\nERROR at Row:1:Column:222\ninvalid
+      string: '[{"message":"\nAdoption_Status__c FROM Contact WHERE (Id = ''somethingwonky'')
+        LIMIT 1\n                                       ^\nERROR at Row:1:Column:258\ninvalid
         ID field: somethingwonky","errorCode":"INVALID_QUERY_FILTER_OPERATOR"}]'
     http_version: 
-  recorded_at: Wed, 24 May 2017 04:56:07 GMT
+  recorded_at: Wed, 04 Dec 2019 01:40:09 GMT
 recorded_with: VCR 3.0.3

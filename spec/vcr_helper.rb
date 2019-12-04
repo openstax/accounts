@@ -1,6 +1,38 @@
 require 'vcr'
 require 'uri'
 
+VCR::Configuration.class_exec do
+  def filter_secret(path_to_secret)
+    secret_name = path_to_secret.join("_")
+
+    secret_value = Rails.application.secrets
+    path_to_secret.each do |key|
+      secret_value = secret_value[key.to_sym]
+    end
+    secret_value = secret_value.to_s
+
+    if secret_value.present?
+      filter_sensitive_data("<#{secret_name}>") { secret_value }
+
+      # If the secret value is a URL, it may be used without its protocol
+      if secret_value.starts_with?("http")
+        secret_value_without_protocol = secret_value.sub(/^https?\:\/\//,'')
+        filter_sensitive_data("<#{secret_name}_without_protocol>") do
+          secret_value_without_protocol
+        end
+      end
+
+
+      # If the secret value is inside a URL, it will be URL encoded which means it
+      # may be different from value.  Handle this.
+      url_secret_value = CGI::escape(secret_value.to_s)
+      if secret_value != url_secret_value
+        filter_sensitive_data("<#{secret_name}_url>") { url_secret_value }
+      end
+    end
+  end
+end
+
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/cassettes'
   c.hook_into :webmock
@@ -13,22 +45,17 @@ VCR.configure do |c|
   c.ignore_hosts(*driver_hosts)
 
   %w(
-    tutor_specs_oauth_token
-    tutor_specs_refresh_token
-    tutor_specs_instance_url
-  ).each do |salesforce_secret_name|
-    Rails.application.secrets[:salesforce][salesforce_secret_name.to_sym].tap do |value|
-      c.filter_sensitive_data("<#{salesforce_secret_name}>") { value } if value.present?
-    end
-  end
+    instance_url
+    username
+    password
+    security_token
+    consumer_key
+    consumer_secret
+  ).each { |salesforce_secret_name| c.filter_secret(['salesforce', salesforce_secret_name]) }
 
   %w(
     ip_api_key
-  ).each do |secret_name|
-    Rails.application.secrets[secret_name.to_sym].tap do |value|
-      c.filter_sensitive_data("<#{secret_name}>") { value } if value.present?
-    end
-  end
+  ).each { |secret_name| c.filter_secret([secret_name]) }
 end
 
 VCR_OPTS = {

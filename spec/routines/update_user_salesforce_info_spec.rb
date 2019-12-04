@@ -1,12 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe UpdateUserSalesforceInfo, type: :routine do
-
   let!(:user) { FactoryBot.create :user }
 
   before(:each) do
     allow(Settings::Salesforce).to receive(:user_info_error_emails_enabled) { true }
-    allow(OpenStax::Salesforce).to receive(:ready_for_api_usage?) { true }
   end
 
   let!(:contact_info) do
