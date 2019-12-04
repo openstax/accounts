@@ -11,6 +11,7 @@ feature 'Create banners', js: true do
 
     it 'can visit the banners page' do
       visit '/admin/banners'
+      screenshot!
       expect(page).not_to have_content("We had some unexpected")
     end
 
