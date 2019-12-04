@@ -14,7 +14,7 @@ class NewflowMailer < ApplicationMailer
     @confirmation_pin = email_address.confirmation_pin
     @confirmation_code = email_address.confirmation_code
     # TODO: create my own newflow url
-    @confirmation_url = signup_verify_by_token_url(code: @confirmation_code)
+    @confirmation_url = verify_email_by_code_url(@confirmation_code)
 
     mail to: @email_value,
          subject: if @should_show_pin
