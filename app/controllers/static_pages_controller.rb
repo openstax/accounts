@@ -17,7 +17,8 @@ class StaticPagesController < ApplicationController
     flash.keep # keep notices and errors through to the redirects below
 
     if signed_in?
-      redirect_to profile_path
+      came_from = request.headers['Referer']
+      came_from == newflow_login_url ? (redirect_to profile_newflow_path) : (redirect_to profile_path)
     else
       authenticate_user!
     end
@@ -27,5 +28,4 @@ class StaticPagesController < ApplicationController
   def status
     head :ok
   end
-
 end
