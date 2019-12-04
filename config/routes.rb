@@ -6,17 +6,18 @@ Rails.application.routes.draw do
   mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
   OpenStax::Salesforce.set_top_level_routes(self)
 
-  scope controller: 'login_signup' do
+  scope controller: 'newflow/login_signup' do
     # Login form
     get 'i/login', action: :login_form, as: :newflow_login
     post 'i/login', action: :login
 
     # Routes for all the steps/forms of the sign up flow
-    get 'i/welcome', action: :welcome, as: :newflow_welcome
-    get 'i/signup', action: :signup_form, as: :newflow_signup
+    get 'i/signup', action: :welcome, as: :newflow_signup
+    get 'i/signup/student', action: :signup_form, as: :newflow_signup_student
     post 'i/signup', action: :signup, as: :newflow_signup_post
     get 'i/confirmation_form', action: :confirmation_form, as: :confirmation_form
-    post 'i/verify_pin', action: :verify_pin, as: :newflow_verify_pin
+    post 'i/verify_email_by_pin', action: :verify_email_by_pin, as: :newflow_verify_pin
+    get 'i/verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
     get 'i/change_your_email', action: :change_your_email, as: :change_your_email
     post 'i/change_signup_email', action: :change_signup_email, as: :change_signup_email
     get 'i/check_your_email', action: :check_your_email, as: :check_your_email
