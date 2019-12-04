@@ -25,5 +25,6 @@ def newflow_log_in_user(username_or_email, password)
   expect(page).to have_no_missing_translations
   screenshot!
   click_button(I18n.t(:"login_signup_form.continue_button"))
+  screenshot!
   expect(page).to have_no_missing_translations
 end
