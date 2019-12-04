@@ -144,7 +144,7 @@ en:
       several_accounts_for_one_email: >-
         We found multiple accounts for the information provided. Please try again.
       incorrect_password: The password you provided is incorrect.
-      new_sign_in_option_added: Your new login option as been added!
+      new_sign_in_option_added: Your new login option has been added!
       same_provider_already_linked: >-
         You are logged in as %{user_name}. A different %{authentication} account
         is already linked to your OpenStax account. Only one %{authentication}

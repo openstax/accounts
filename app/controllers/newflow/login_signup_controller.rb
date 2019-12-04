@@ -11,9 +11,10 @@ module Newflow
 
     def login_form
       # Send to profile upon login unless in the middle of authorizing an oauth app
-      # in which case they'll go back to the oauth authorization path
-      # TODO: actually, I don't think I want to do this. Will have to test with tutor.
-      store_url(url: profile_newflow_url) unless params[:client_id]
+      # in which case they'll go back to the oauth authorization path OR another url was specified
+      # with the `r` parameter, and stored by `before_action :save_redirect`. We can't just
+      # pass-in a `fallback_location` to `redirect_back` because ActionInterceptor overwrites it.
+      # store_url(url: profile_newflow_url) unless params[:client_id] || (stored_url &&  stored_url != profile_url)
     end
 
     def login
@@ -23,7 +24,7 @@ module Newflow
           clear_unverified_user
           clear_login_failed_email
           sign_in!(@handler_result.outputs.user)
-          redirect_back(fallback_location: profile_newflow_url)
+          redirect_back
         },
         failure: lambda {
           security_log :login_not_found, tried: @handler_result.outputs.email
@@ -95,6 +96,7 @@ module Newflow
         VerifyEmailByCode,
         success: lambda {
           sign_in!(@handler_result.outputs.user)
+          redirect_to profile_newflow_path # TODO: should redirect back to app they came from
         },
         failure: lambda {
           redirect_to newflow_signup_path
