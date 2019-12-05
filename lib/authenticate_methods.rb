@@ -2,6 +2,20 @@ require 'addressable/uri'
 
 module AuthenticateMethods
 
+  def newflow_authenticate_user!
+    # TODO: use_signed_params if signed_params.present?
+
+    return if signed_in?
+
+    # Drop signed params from where we will go back after log in so we don't
+    # try to use them again.
+    store_url(url: request_url_without_signed_params)
+
+    permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :newflow).to_h
+
+    redirect_to(newflow_login_path(permitted_params))
+  end
+
   def authenticate_user!
     use_signed_params if signed_params.present?
 

@@ -2,9 +2,10 @@ module Newflow
     # Contains every action for login and signup
     class LoginSignupController < ApplicationController
     layout 'newflow_layout'
+    skip_before_action :authenticate_user!
+    before_action :newflow_authenticate_user!, only: [:profile_newflow]
     before_action :restart_if_missing_unverified_user, only: [:verify_email, :verify_pin]
     before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :signup_form, :welcome]
-    skip_before_action :authenticate_user!, except: [:profile_newflow]
     skip_before_action :check_if_password_expired
     fine_print_skip :general_terms_of_use, :privacy_policy,
                     except: [:profile_newflow, :verify_pin, :signup_done]
