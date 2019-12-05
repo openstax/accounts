@@ -33,7 +33,13 @@
 </style>
 
 <%= ox_card do %>
-
+<%=
+  content_tag(:div, id: 'exit-icon', style: 'height: 50px') {
+    content_tag(:a, href: redirect_back_path, style: 'float: right; color: #424242 !important;') {
+      content_tag(:i, class: 'fa fa-times') { }
+    }
+  }
+%>
   <div class="profile-title">
     <%= link_to ('Log out'), newflow_logout_path, class: 'sign-out' %>
     <h1 class="title"><%= 'My Account' %></h1>
