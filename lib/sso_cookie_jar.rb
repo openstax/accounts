@@ -9,8 +9,10 @@ class SsoCookieJar < ActionDispatch::Cookies::AbstractCookieJar
     @signature_public_key = OpenSSL::PKey::RSA.new secrets[:signature_public_key]
     @signature_algorithm = secrets[:signature_algorithm].to_sym
 
-    @encryption_private_key = OpenSSL::PKey::RSA.new secrets[:encryption_private_key]
-    @encryption_public_key = OpenSSL::PKey::RSA.new secrets[:encryption_public_key]
+    @encryption_private_key = OpenSSL::PKey::RSA.new(secrets[:encryption_private_key]) \
+      rescue secrets[:encryption_private_key]
+    @encryption_public_key = OpenSSL::PKey::RSA.new(secrets[:encryption_public_key]) \
+      rescue secrets[:encryption_public_key]
     @encryption_algorithm = secrets[:encryption_algorithm]
     @encryption_method = secrets[:encryption_method]
 

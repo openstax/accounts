@@ -6,7 +6,7 @@ RSpec.describe SsoCookieJar, type: :lib do
   let(:signature_public_key)   { OpenSSL::PKey::RSA.new secrets[:signature_public_key] }
   let(:signature_algorithm)    { secrets[:signature_algorithm].to_sym }
 
-  let(:encryption_private_key) { OpenSSL::PKey::RSA.new secrets[:encryption_private_key] }
+  let(:encryption_private_key) { secrets[:encryption_private_key] }
   let(:encryption_algorithm)   { secrets[:encryption_algorithm].to_s }
   let(:encryption_method)      { secrets[:encryption_method].to_s }
 
