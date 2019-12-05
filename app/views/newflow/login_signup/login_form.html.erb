@@ -10,7 +10,8 @@
         <%= newflow_login_signup_card(
                     classes: "login-page",
                     header: (I18n.t(:"login_signup_form.login_page_header")),
-                    banners: @banners) do %>
+                    banners: @banners,
+                    show_exit_icon: true) do %>
             <% lev_form_for :login_form, url: newflow_login_path do |f| %>
                 <% fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors) %>
                     <div class="content social-section">

@@ -119,6 +119,19 @@ label.required::after {
     }
 }
 
+#exit-icon {
+    border-left: 0.1rem solid #d5d5d5;
+    border-right: 0.1rem solid #d5d5d5;
+    padding: 1.5rem 0 0 1.5rem;
+
+    a {
+        float: right;
+        padding-right: 3rem;
+        padding-top: 1rem;
+        color: var(--greyish-brown);
+    }
+}
+
 input.has-error {
     background-color: var(--input-error-background-color) !important;
     border: thin solid var(--input-error-border-color) !important;
