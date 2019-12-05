@@ -5,9 +5,13 @@ class SsoCookieJar < ActionDispatch::Cookies::AbstractCookieJar
     super
 
     secrets = Rails.application.secrets.sso
-    @private_key = OpenSSL::PKey::RSA.new secrets[:private_key]
-    @public_key = OpenSSL::PKey::RSA.new secrets[:public_key]
-    @algorithm = secrets[:algorithm]
+    @signature_private_key = OpenSSL::PKey::RSA.new secrets[:signature_private_key]
+    @signature_public_key = OpenSSL::PKey::RSA.new secrets[:signature_public_key]
+    @signature_algorithm = secrets[:signature_algorithm].to_sym
+
+    @encryption_private_key = OpenSSL::PKey::RSA.new secrets[:encryption_private_key]
+    @encryption_public_key = OpenSSL::PKey::RSA.new secrets[:encryption_public_key]
+    @encryption_algorithm = secrets[:encryption_algorithm]
     @encryption_method = secrets[:encryption_method]
 
     cookie_secrets = secrets[:cookie]
@@ -33,8 +37,11 @@ class SsoCookieJar < ActionDispatch::Cookies::AbstractCookieJar
   def parse(name, encrypted_message, purpose: nil)
     JSON::JWT.decode(
       JSON::JWT.decode(
-        encrypted_message, @private_key, @algorithm.to_s, @encryption_method.to_s
-      ).plain_text
+        encrypted_message,
+        @encryption_private_key,
+        @encryption_algorithm.to_s,
+        @encryption_method.to_s
+      ).plain_text, @signature_public_key, @signature_algorithm
     )
   rescue JSON::JWT::Exception, OpenSSL::Cipher::CipherError
     nil
@@ -53,7 +60,8 @@ class SsoCookieJar < ActionDispatch::Cookies::AbstractCookieJar
         iat: current_time.to_i,
         jti: SecureRandom.uuid
       )
-    ).encrypt(@public_key, @algorithm.to_sym, @encryption_method.to_sym).to_s
+    ).sign(@signature_private_key, @signature_algorithm)
+     .encrypt(@encryption_public_key, @encryption_algorithm.to_sym, @encryption_method.to_sym).to_s
 
     raise CookieOverflow if options[:value].bytesize > ActionDispatch::Cookies::MAX_COOKIE_SIZE
   end
