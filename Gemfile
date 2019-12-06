@@ -153,7 +153,7 @@ group :development, :test do
   gem 'rspec-instafail'
 
   # Development server
-  gem 'puma', '~> 3.11'
+  gem 'puma', '~> 3.12'
 
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
