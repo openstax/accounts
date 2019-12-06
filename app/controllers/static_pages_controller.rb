@@ -15,13 +15,13 @@ class StaticPagesController < ApplicationController
 
   def home
     flash.keep # keep notices and errors through to the redirects below
+    referer = Addressable::URI.parse(request.headers['Referer'])
+    is_newflow = referer && referer.path.starts_with?('/i')
 
     if signed_in?
-      came_from = Addressable::URI.parse(request.headers['Referer'])
-      came_from && came_from.path.starts_with?('/i') ? redirect_to(profile_newflow_path) : redirect_to(profile_path)
+      is_newflow ? redirect_to(profile_newflow_path) : redirect_to(profile_path)
     else
-      came_from = Addressable::URI.parse(request.headers['Referer'])
-      came_from && came_from.path.starts_with?('/i') ? newflow_authenticate_user! : authenticate_user!
+      is_newflow ? newflow_authenticate_user! : authenticate_user!
     end
   end
 

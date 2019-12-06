@@ -4,7 +4,7 @@ module Newflow
     layout 'newflow_layout'
     skip_before_action :authenticate_user!
     before_action :newflow_authenticate_user!, only: [:profile_newflow]
-    before_action :restart_if_missing_unverified_user, only: [:verify_email, :verify_pin]
+    before_action :restart_if_missing_unverified_user, only: [:verify_email, :verify_pin, :change_your_email]
     before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :signup_form, :welcome]
     skip_before_action :check_if_password_expired
     fine_print_skip :general_terms_of_use, :privacy_policy,
@@ -31,7 +31,8 @@ module Newflow
           security_log :login_not_found, tried: @handler_result.outputs.email
           save_login_failed_email(@handler_result.outputs.email)
           render :login_form
-        })
+        }
+      )
     end
 
     def signup
@@ -80,6 +81,7 @@ module Newflow
         email_address: unverified_user.email_addresses.first,
         success: lambda {
           clear_unverified_user
+          clear_login_failed_email
           sign_in!(@handler_result.outputs.user)
           redirect_to signup_done_path
         },
@@ -96,8 +98,10 @@ module Newflow
       handle_with(
         VerifyEmailByCode,
         success: lambda {
+          clear_unverified_user
+          clear_login_failed_email
           sign_in!(@handler_result.outputs.user)
-          redirect_to profile_newflow_path # TODO: should redirect back to app they came from
+          redirect_to signup_done_path
         },
         failure: lambda {
           redirect_to newflow_signup_path
@@ -210,8 +214,8 @@ module Newflow
         user: unverified_user,
         contracts_required: !contracts_not_required,
         success: lambda {
-          # clear_login_failed_email # maybe?
           clear_unverified_user
+          clear_login_failed_email
           sign_in!(@handler_result.outputs.user)
           redirect_back(fallback_location: profile_newflow_url)
         },
