@@ -43,7 +43,9 @@ class SsoCookieJar < ActionDispatch::Cookies::AbstractCookieJar
         @encryption_private_key,
         @encryption_algorithm.to_s,
         @encryption_method.to_s
-      ).plain_text, @signature_public_key, @signature_algorithm
+      ).plain_text,
+      @signature_public_key,
+      @signature_algorithm
     )
   rescue JSON::JWT::Exception, OpenSSL::Cipher::CipherError
     nil
@@ -62,10 +64,15 @@ class SsoCookieJar < ActionDispatch::Cookies::AbstractCookieJar
         iat: current_time.to_i,
         jti: SecureRandom.uuid
       )
-    ).sign(@signature_private_key, @signature_algorithm)
-     .encrypt(@encryption_public_key, @encryption_algorithm.to_sym, @encryption_method.to_sym).to_s
+    ).sign(
+      @signature_private_key, @signature_algorithm
+    ).encrypt(
+      @encryption_public_key, @encryption_algorithm.to_sym, @encryption_method.to_sym
+    ).to_s
 
-    raise CookieOverflow if options[:value].bytesize > ActionDispatch::Cookies::MAX_COOKIE_SIZE
+    if options[:value].bytesize > ActionDispatch::Cookies::MAX_COOKIE_SIZE
+      raise CookieOverflow
+    end
   end
 end
 

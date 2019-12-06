@@ -1,4 +1,5 @@
-# expect(response.body_as_hash).to match(user_matcher(blah))
+# Usage:
+#   `expect(response.body_as_hash).to match(user_matcher(blah))`
 def user_matcher(user, include_private_data: false)
   base_hash = {
     id: user.id,
