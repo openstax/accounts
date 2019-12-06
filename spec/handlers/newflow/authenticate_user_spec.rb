@@ -9,15 +9,16 @@ module Newflow
     }
 
     context 'when correct credentials (success)' do
-      it 'outputs the user' do
-        params = {
+      let(:params) {
+        {
           login_form: { email: user.email_addresses.first.value, password: 'password' }
         }
+      }
+
+      it 'outputs the user' do
         result = described_class.handle(params: params, request: request)
         expect(result.outputs.user).to be_present
       end
-
-      it 'creates a security log'
     end
 
     context 'when incorrect credentials (failure)' do
@@ -31,7 +32,7 @@ module Newflow
 
       it 'contains errors when wrong password' do
         params = {
-          login_form: { email: user.email_addresses.first.value, password: 'incorrect_one' }
+          login_form: { email: user.email_addresses.first.value, password: 'wrongpassword' }
         }
         result = described_class.handle(params: params, request: request)
         expect(result.errors).to be_present
