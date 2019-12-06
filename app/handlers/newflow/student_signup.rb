@@ -53,8 +53,7 @@ module Newflow
     def create_authentication
       authentication = Authentication.create(
         provider: 'identity',
-        # For legacy reasons, `user_id` and `uid` are the same but still both are required.
-        user_id: outputs.user.id, uid: outputs.user.id
+        user_id: outputs.user.id, uid: outputs.user.identity.id
       )
       transfer_errors_from(authentication, { scope: :email }, :fail_if_errors)
       # TODO: catch error states like if auth already exists for this user
