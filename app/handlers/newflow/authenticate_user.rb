@@ -28,27 +28,21 @@ module Newflow
       users = LookupUsers.by_email_or_username(login_form_params.email)
 
       if users.empty?
-        fail_with_log!('cannot_find_user', :email)
+        failure('cannot_find_user', :email)
       elsif users.size > 1
-        fail_with_log!('multiple_users', :email) # should user really be nil? why not the email value?
+        failure('multiple_users', :email) # should user really be nil? why not the email value?
       end
 
       user = users.first
       identity = Identity.authenticate({ user_id: user&.id }, login_form_params.password)
-      fail_with_log!('incorrect_password', :password, user) unless identity.present?
+      failure('incorrect_password', :password, user) unless identity.present?
+
       outputs.user = user
     end
 
     private #################
 
-    def fail_with_log!(reason, input_field, user = nil)
-      SecurityLog.create!(
-        event_type: :sign_in_failed,
-        event_data: { reason: reason },
-        user: user,
-        remote_ip: request.ip
-      )
-
+    def failure(reason, input_field, user = nil)
       fatal_error(
         code: reason.to_sym,
         offending_inputs: input_field,

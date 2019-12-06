@@ -25,11 +25,13 @@ module Newflow
           clear_unverified_user
           clear_login_failed_email
           sign_in!(@handler_result.outputs.user)
+          security_log(:sign_in_successful)
           redirect_back
         },
         failure: lambda {
           security_log :login_not_found, tried: @handler_result.outputs.email
           save_login_failed_email(@handler_result.outputs.email)
+          security_log :sign_in_failed
           render :login_form
         }
       )
@@ -83,12 +85,13 @@ module Newflow
           clear_unverified_user
           clear_login_failed_email
           sign_in!(@handler_result.outputs.user)
+          security_log :sign_up_successful
           redirect_to signup_done_path
         },
         failure: lambda {
           @first_name = unverified_user.first_name
           @email = unverified_user.email_addresses.first.value
-          # create a security log
+          security_log :sign_up_successful
           render :confirmation_form
         }
       )
@@ -101,6 +104,7 @@ module Newflow
           clear_unverified_user
           clear_login_failed_email
           sign_in!(@handler_result.outputs.user)
+          security_log :sign_up_successful
           redirect_to signup_done_path
         },
         failure: lambda {
@@ -217,6 +221,8 @@ module Newflow
           clear_unverified_user
           clear_login_failed_email
           sign_in!(@handler_result.outputs.user)
+          # security_log :sign_up_successful
+          # security_log :authentication_created
           redirect_back(fallback_location: profile_newflow_url)
         },
         failure: lambda {
