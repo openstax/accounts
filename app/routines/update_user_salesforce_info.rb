@@ -19,8 +19,6 @@ class UpdateUserSalesforceInfo
   end
 
   def call
-    return if !OpenStax::Salesforce.ready_for_api_usage?
-
     info("Starting")
 
     prepare_contacts

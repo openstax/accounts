@@ -86,14 +86,14 @@
             <% sf_id = user.salesforce_contact_id %>
 
             <% if sf_id.present? %>
-              <% sf_user = OpenStax::Salesforce::User.first %>
               <span class="sf">
                 <i>Salesforce:</i>
 
-                <% if sf_user.nil? %>
+                <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+                <% if instance_url.nil? %>
                   <%= sf_id %>
                 <% else %>
-                  <%= link_to sf_id, sf_user.instance_url + "/" + sf_id, target: '_blank' %>
+                  <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
                 <% end %>
               </span> |
             <% end %>

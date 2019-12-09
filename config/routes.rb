@@ -2,9 +2,6 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
-  mount OpenStax::Salesforce::Engine, at: '/admin/salesforce'
-  OpenStax::Salesforce.set_top_level_routes(self)
-
   scope controller: 'sessions' do
     get 'login', action: :start, as: :login
 

@@ -1,13 +1,4 @@
 GIT
-  remote: https://github.com/openstax/active_force.git
-  revision: 3ba34211b6f2387b5e05512b9561076894c5fa2d
-  ref: 3ba3421
-  specs:
-    active_force (1.0.0)
-      active_attr
-      restforce
-
-GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: 0ed5cdba6be65dbf1d07fd7580e2311a2f42cdfd
   ref: 0ed5cdba6be
@@ -369,12 +360,13 @@ GEM
     omniauth-oauth2 (1.6.0)
       oauth2 (~> 1.1)
       omniauth (~> 1.9)
-    omniauth-salesforce (1.0.5)
-      omniauth (~> 1.0)
-      omniauth-oauth2 (~> 1.0)
     omniauth-twitter (1.2.1)
       json (~> 1.3)
       omniauth-oauth (~> 1.1)
+    openstax_active_force (1.0.0)
+      active_attr
+      rails (< 6.0)
+      restforce
     openstax_api (9.0.1)
       doorkeeper (>= 2.0)
       exception_notification (>= 4.0)
@@ -390,10 +382,9 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.0.0)
       rails (>= 3.1, < 6.0)
-    openstax_salesforce (3.0.0)
-      active_force
-      omniauth-salesforce
-      rails
+    openstax_salesforce (4.0.1)
+      openstax_active_force
+      rails (~> 5.0)
       restforce
     openstax_utilities (4.2.3)
       keyword_search
@@ -503,11 +494,12 @@ GEM
     responders (2.4.1)
       actionpack (>= 4.2.0, < 6.0)
       railties (>= 4.2.0, < 6.0)
-    restforce (3.1.0)
+    restforce (4.2.1)
       faraday (>= 0.9.0, <= 1.0)
       faraday_middleware (>= 0.8.8, <= 1.0)
-      hashie (>= 1.2.0, < 4.0)
+      hashie (>= 1.2.0, < 5.0)
       json (>= 1.7.5)
+      jwt (>= 1.5.6)
     roar (1.1.0)
       representable (~> 3.0.0)
     roar-rails (1.1.0)
@@ -641,7 +633,6 @@ PLATFORMS
 
 DEPENDENCIES
   action_interceptor
-  active_force!
   apipie-rails
   awesome_print
   aws-ses (~> 0.6.0)
@@ -692,7 +683,7 @@ DEPENDENCIES
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce (~> 3.0.0)
+  openstax_salesforce (~> 4.0.1)
   openstax_utilities (~> 4.2.0)
   p3p
   parallel_tests

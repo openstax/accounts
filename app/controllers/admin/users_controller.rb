@@ -97,11 +97,6 @@ module Admin
         return @user.save
       end
 
-      if !OpenStax::Salesforce.ready_for_api_usage?
-        flash[:alert] = "Can't connect to Salesforce to verify changed contact ID"
-        throw(:abort)
-      end
-
       begin
         contact = OpenStax::Salesforce::Remote::Contact.find(new_id)
 

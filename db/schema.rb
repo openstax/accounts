@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_19_210310) do
+ActiveRecord::Schema.define(version: 2019_12_04_193412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -253,16 +253,6 @@ ActiveRecord::Schema.define(version: 2019_11_19_210310) do
     t.boolean "can_skip_oauth_screen", default: false, null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
-  end
-
-  create_table "openstax_salesforce_users", id: :serial, force: :cascade do |t|
-    t.string "name"
-    t.string "uid", null: false
-    t.string "oauth_token", null: false
-    t.string "refresh_token", null: false
-    t.string "instance_url", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "pre_auth_states", id: :serial, force: :cascade do |t|

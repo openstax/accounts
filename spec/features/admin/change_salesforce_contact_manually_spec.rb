@@ -2,14 +2,14 @@ require 'rails_helper'
 require 'vcr_helper'
 
 RSpec.describe "Change Salesforce contact manually", vcr: VCR_OPTS do
-
   before(:all) do
-    @proxy = SalesforceProxy.new
+    VCR.use_cassette('Change_Salesforce_contact_manually/sf_setup', VCR_OPTS) do
+      @proxy = SalesforceProxy.new
+      @proxy.setup_cassette
+    end
   end
 
   before(:each) do
-    load_salesforce_user
-
     @admin_user = create_admin_user
     visit '/'
     complete_login_username_or_email_screen('admin')
@@ -51,5 +51,4 @@ RSpec.describe "Change Salesforce contact manually", vcr: VCR_OPTS do
     @target_user.reload
     expect(@target_user.salesforce_contact_id).to eq "original"
   end
-
 end
