@@ -1,5 +1,5 @@
 module Newflow
-    class StudentSignup
+  class StudentSignup
     lev_handler
     uses_routine AgreeToTerms
 
@@ -19,7 +19,7 @@ module Newflow
       validates :password, presence: true
     end
 
-    protected #################
+  protected #################
 
     def authorized?
       true
@@ -31,14 +31,14 @@ module Newflow
       end
 
       create_user
-      create_authentication
       create_identity
+      create_authentication
       agree_to_terms
       create_email_address
       send_confirmation_email
     end
 
-    private ###################
+  private ###################
 
     def create_user
       outputs.user = User.create(
