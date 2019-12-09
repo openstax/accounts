@@ -78,7 +78,6 @@ module Api::V1
              writeable: false
 
     property :faculty_status,
-             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
              type: String,
              readable: true,
              writeable: false,

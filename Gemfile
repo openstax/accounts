@@ -123,12 +123,6 @@ gem 'awesome_print'
 
 gem 'whenever', require: false
 
-# Fast JSON parsing
-gem 'oj', '~> 3.7.12'
-
-# Replace JSON with Oj
-gem 'oj_mimic_json'
-
 # Admin toggles
 gem 'rails-settings-ui'
 gem 'rails-settings-cached', '0.7.2'
@@ -141,6 +135,15 @@ gem 'openstax_healthcheck'
 
 # Allow Accounts routes to be accessed under an /accounts prefix (for use in CloudFront)
 gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "0ed5cdba6be"
+
+# JWE library used by the SSO cookie
+gem 'json-jwt'
+
+# Fast JSON parsing
+gem 'oj', '~> 3.7.12'
+
+# Replace JSON with Oj
+gem 'oj_mimic_json'
 
 group :development, :test do
   # Get env variables from .env file

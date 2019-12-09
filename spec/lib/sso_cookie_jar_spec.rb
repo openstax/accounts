@@ -1,38 +1,35 @@
 require 'rails_helper'
 
 RSpec.describe SsoCookieJar, type: :lib do
-  let(:secrets)       { Rails.application.secrets.sso }
-  let(:key_generator) do
-    ActiveSupport::CachingKeyGenerator.new(
-      ActiveSupport::KeyGenerator.new(
-        secrets[:shared_secret], iterations: secrets.fetch(:iterations, 1000)
-      )
-    )
-  end
-  let(:salt)          { secrets[:shared_secret_salt] }
-  let(:cipher)        { secrets.fetch(:cipher, 'aes-256-cbc') }
-  let(:encryptor)     do
-    ActiveSupport::MessageEncryptor.new(
-      key_generator.generate_key(salt, OpenSSL::Cipher.new(cipher).key_len),
-      key_generator.generate_key("signed encrypted #{salt}"),
-      cipher: cipher, serializer: ActiveSupport::MessageEncryptor::NullSerializer
-    )
-  end
+  let(:secrets)                { Rails.application.secrets.sso }
 
-  let(:request)       { ActionController::TestRequest.create(:test) }
-  let(:cookies)       { request.cookie_jar }
+  let(:signature_public_key)   { OpenSSL::PKey::RSA.new secrets[:signature_public_key] }
+  let(:signature_algorithm)    { secrets[:signature_algorithm].to_sym }
+
+  let(:encryption_private_key) { secrets[:encryption_private_key] }
+  let(:encryption_algorithm)   { secrets[:encryption_algorithm].to_s }
+  let(:encryption_method)      { secrets[:encryption_method].to_s }
+
+  let(:request)                { ActionController::TestRequest.create(:test) }
+  let(:cookies)                { request.cookie_jar }
 
   it 'can write a cookie and read it back' do
-    cookies.sso[:some_name] = { value: { foo: :bar } }
+    cookies.sso.subject = { foo: :bar }
 
-    expect(cookies[:some_name]).not_to be_blank # it's encrypted, so it's hard to predict its value
-    expect(cookies.sso[:some_name]).to eq('foo' => 'bar') # json means string keys
+    expect(cookies['oxa']).not_to be_blank # it's encrypted, so it's hard to predict its value
+    expect(cookies.sso.subject).to eq('foo' => 'bar') # json means string keys
   end
 
   it 'sso cookies can be decoded using the sso secrets' do
     value = { 'test-answer': 42 }
-    cookies.sso['ox'] = { value: value }
+    cookies.sso.subject = value
 
-    expect(encryptor.decrypt_and_verify(cookies['ox'])).to eq value.to_json
+    expect(
+      JSON::JWT.decode(
+        JSON::JWT.decode(
+          cookies['oxa'], encryption_private_key, encryption_algorithm, encryption_method
+        ).plain_text, signature_public_key, signature_algorithm
+      )['sub'].deep_symbolize_keys
+    ).to eq value
   end
 end
