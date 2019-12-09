@@ -10,23 +10,14 @@ module Newflow
     fine_print_skip :general_terms_of_use, :privacy_policy,
                     except: [:profile_newflow, :verify_pin, :signup_done]
 
-    def login_form
-      # Send to profile upon login unless in the middle of authorizing an oauth app
-      # in which case they'll go back to the oauth authorization path OR another url was specified
-      # with the `r` parameter, and stored by `before_action :save_redirect`. We can't just
-      # pass-in a `fallback_location` to `redirect_back` because ActionInterceptor overwrites it.
-      # store_url(url: profile_newflow_url) unless params[:client_id] || (stored_url &&  stored_url != profile_url)
-    end
-
     def login
       handle_with(
         AuthenticateUser,
         success: lambda {
-          clear_unverified_user
-          clear_login_failed_email
+          clear_newflow_state
           sign_in!(@handler_result.outputs.user)
           security_log(:sign_in_successful)
-          redirect_back
+          redirect_back # back to `r`eturn parameter, see `before_action :save_redirect`
         },
         failure: lambda {
           security_log :login_not_found, tried: @handler_result.outputs.email
@@ -43,9 +34,11 @@ module Newflow
         contracts_required: !contracts_not_required,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user)
+          security_log :sign_up_successful, event_data: { user: @handler_result.outputs.user }
           redirect_to confirmation_form_path
         },
         failure: lambda {
+          # TODO: create some kind of security log?
           render :signup_form
         }
       )
@@ -82,8 +75,7 @@ module Newflow
         VerifyEmailByPin,
         email_address: unverified_user.email_addresses.first,
         success: lambda {
-          clear_unverified_user
-          clear_login_failed_email
+          clear_newflow_state
           sign_in!(@handler_result.outputs.user)
           security_log :sign_up_successful
           redirect_to signup_done_path
@@ -101,8 +93,7 @@ module Newflow
       handle_with(
         VerifyEmailByCode,
         success: lambda {
-          clear_unverified_user
-          clear_login_failed_email
+          clear_newflow_state
           sign_in!(@handler_result.outputs.user)
           security_log :sign_up_successful
           redirect_to signup_done_path
@@ -131,7 +122,7 @@ module Newflow
         ResetPasswordForm,
         success: lambda {
           @email = @handler_result.outputs.email
-          clear_login_failed_email
+          clear_newflow_state
           sign_out!
 
           security_log :help_requested, user: @handler_result.outputs.user
@@ -218,8 +209,7 @@ module Newflow
         user: unverified_user,
         contracts_required: !contracts_not_required,
         success: lambda {
-          clear_unverified_user
-          clear_login_failed_email
+          clear_newflow_state
           sign_in!(@handler_result.outputs.user)
           # security_log :sign_up_successful
           # security_log :authentication_created
@@ -285,10 +275,6 @@ module Newflow
       @unverified_user ||= User.find_by(id: id, state: 'unverified')
     end
 
-    def clear_unverified_user
-      session.delete(:unverified_user_id)
-    end
-
     def exit_newflow_signup_if_logged_in
       if signed_in?
         redirect_to(profile_newflow_path)
@@ -307,8 +293,17 @@ module Newflow
       session[:login_failed_email]
     end
 
+    def clear_unverified_user
+      session.delete(:unverified_user_id)
+    end
+
     def clear_login_failed_email
       session.delete(:login_failed_email)
+    end
+
+    def clear_newflow_state
+        clear_login_failed_email
+        clear_unverified_user
     end
   end
 end
