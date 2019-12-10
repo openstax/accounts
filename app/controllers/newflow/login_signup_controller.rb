@@ -140,17 +140,17 @@ module Newflow
         FindUserByToken,
         success: lambda {
           sign_in!(@handler_result.outputs.user)
+          security_log :help_requested, user: @handler_result.outputs.user
           render :change_password_form
         },
         failure: lambda {
-          # security log?
-          debugger
+          security_log :help_request_failed, token: params[:token]
           render status: 400
         }
       )
     end
 
-    def set_new_password
+    def change_password
       # TODO: This check again here in case a long time elapsed between the GET and the POST
       # user_signin_is_too_old?
       # reauthenticate_user_if_signin_is_too_old!
@@ -164,7 +164,6 @@ module Newflow
         },
         failure: lambda {
           security_log :password_reset_failed
-          debugger
           render :change_password_form, status: 400
         }
       )
@@ -172,7 +171,7 @@ module Newflow
 
     def logout
       sign_out!
-      redirect_to newflow_login_path
+      redirect_to newflow_login_path # or redirect back?
     end
 
     # Log in (or sign up and then log in) a user using a social (OAuth) provider

@@ -11,6 +11,7 @@ RSpec.describe SessionsController, type: :controller do
 
     context 'with no banners in the database' do
       it 'success' do
+        get(:start)
         expect(response).to have_http_status(:success)
       end
     end
