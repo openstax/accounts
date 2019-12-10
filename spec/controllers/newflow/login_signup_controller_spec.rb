@@ -221,11 +221,11 @@ module Newflow
       it ''
     end
 
-    describe 'signup_done' do
-
+    describe 'GET #signup_done' do
+      it ''
     end
 
-    describe 'profile_newflow' do
+    describe 'GET #profile_newflow' do
       context 'when logged in' do
         before do
           mock_current_user(create_newflow_user('user@openstax.org'))
@@ -248,14 +248,6 @@ module Newflow
           expect(response).to redirect_to newflow_login_path
         end
       end
-    end
-
-    describe 'change_password_form' do
-      it ''
-    end
-
-    describe 'set_new_password' do
-      it ''
     end
 
     describe 'logout' do
@@ -345,12 +337,110 @@ module Newflow
             }
           end
 
-          it 'renders reset_password_form' do
+          it 'renders reset_password_form with errors' do
             post('reset_password', params: params)
             expect(response).to render_template(:reset_password_form)
+            expect(assigns(:"handler_result").errors).to  be_present
           end
       end
     end
 
+    describe 'GET #change_password_form' do
+      context 'success - when valid token' do
+        let(:params) do
+          user = create_newflow_user('user@openstax.org')
+          user.refresh_login_token
+          user.save
+
+          { token:  user.login_token }
+        end
+
+        it 'has a 200 status code' do
+          get('change_password_form', params: params)
+          expect(response.status).to eq(200)
+        end
+
+        it 'creates a security log' do
+          expect {
+            get('change_password_form', params: params)
+          }.to change {
+            SecurityLog.where(event_type: :help_requested).count
+          }
+        end
+      end
+
+      context 'failure - when invalid token' do
+        let(:params) do
+          { token: SecureRandom.hex(16) } # token is invalid because it doesn't match up with the user's
+        end
+
+        it 'has a 400 status code' do
+          get('change_password_form', params: params)
+          expect(response.status).to eq(400)
+        end
+
+        it 'creates a security log' do
+          expect {
+            get('change_password_form', params: params)
+          }.to change {
+            SecurityLog.where(event_type: :help_request_failed).count
+          }
+        end
+      end
+    end
+
+    describe 'POST #change_password' do
+      context 'success' do
+        before do
+          user = create_newflow_user('user@openstax.org', 'password')
+          mock_current_user(user)
+        end
+
+        let(:new_password) do
+          Faker::Internet.password(min_length: 8)
+        end
+
+        let(:params) do
+          {
+            change_password_form: {
+              password: new_password
+            }
+          }
+        end
+
+        it 'sets the new password for the user' do
+          expect(User.last.identity.authenticate(new_password)).to be_falsey
+          post(:change_password, params: params)
+          expect(response.status).to eq(302)
+          expect(User.last.identity.authenticate(new_password)).to be_truthy
+        end
+
+        it 'creates a security log' do
+          expect {
+            post('change_password', params: params)
+          }.to change {
+            SecurityLog.where(event_type: :password_reset).count
+          }
+        end
+      end
+
+      context 'failure' do
+        let(:params) do
+          {
+            change_password_form: {
+              password: ''
+            }
+          }
+        end
+
+        it 'creates a security log' do
+          expect {
+            post('change_password', params: params)
+          }.to change {
+            SecurityLog.where(event_type: :password_reset_failed).count
+          }
+        end
+      end
+    end
   end
 end
