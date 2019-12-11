@@ -5,7 +5,7 @@ module Newflow
     skip_before_action :authenticate_user!
     before_action :newflow_authenticate_user!, only: [:profile_newflow]
     before_action :restart_if_missing_unverified_user, only: [:verify_email, :verify_pin, :change_your_email]
-    before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :signup_form, :welcome]
+    before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :signup_form, :student_signup_form, :welcome]
     before_action :set_active_banners
     skip_before_action :check_if_password_expired
     fine_print_skip :general_terms_of_use, :privacy_policy,
@@ -40,7 +40,7 @@ module Newflow
         },
         failure: lambda {
           # TODO: create some kind of security log?
-          render :signup_form
+          render :student_signup_form
         }
       )
     end
@@ -282,7 +282,7 @@ module Newflow
 
     def exit_newflow_signup_if_logged_in
       if signed_in?
-        redirect_to(profile_newflow_path)
+        redirect_to(profile_newflow_path) # TODO: should probably redirect back
       end
     end
 

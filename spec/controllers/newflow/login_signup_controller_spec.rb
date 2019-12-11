@@ -77,8 +77,8 @@ module Newflow
 
     describe 'GET #signup_form' do
       it 'renders (student!) signup_form' do
-        get(:signup_form)
-        expect(response).to  render_template(:signup_form)
+        get(:student_signup_form)
+        expect(response).to  render_template(:student_signup_form)
       end
     end
 
@@ -150,9 +150,9 @@ module Newflow
           }
         end
 
-        it 'renders signup form with errors' do
+        it 'renders student signup form with errors' do
           post(:signup, params: params)
-          expect(response).to render_template(:signup_form)
+          expect(response).to render_template(:student_signup_form)
           expect(assigns(:"handler_result").errors).to  be_present
         end
       end
