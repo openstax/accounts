@@ -6,7 +6,7 @@ module Newflow
     before_action :newflow_authenticate_user!, only: [:profile_newflow]
     before_action :restart_if_missing_unverified_user, only: [:verify_email, :verify_pin, :change_your_email]
     before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :signup_form, :welcome]
-    before_action :set_active_banner
+    before_action :set_active_banners
     skip_before_action :check_if_password_expired
     fine_print_skip :general_terms_of_use, :privacy_policy,
                     except: [:profile_newflow, :verify_pin, :signup_done]
@@ -311,9 +311,9 @@ module Newflow
         clear_unverified_user
     end
 
-    def set_active_banner
+    def set_active_banners
       return unless request.method == 'GET'
-      @banner ||= Banner.active.last
+      @banners ||= Banner.active
     end
   end
 end
