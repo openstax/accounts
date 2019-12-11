@@ -21,12 +21,6 @@ module Newflow
         result = described_class.call(request: request)
         expect(result.outputs.user).to eq User.last
       end
-
-      it 'creates a security log' do
-        expect {
-          described_class.call(request: request)
-        }.to change(SecurityLog.where(event_type: :sign_in_successful), :count)
-      end
     end
 
     context 'when no authentication found, but verified user found' do
@@ -51,12 +45,6 @@ module Newflow
         result = described_class.call(request: request)
         expect(result.outputs.user).to eq User.last
       end
-
-      it 'creates a security log' do
-        expect {
-          described_class.call(request: request)
-        }.to change(SecurityLog.where(event_type: :sign_in_successful), :count)
-      end
     end
 
     context 'when no authentication found, and no verified user found' do
@@ -79,12 +67,6 @@ module Newflow
         end
 
         it 'adds the user as a "lead" to salesforce'
-
-        it 'creates a security log' do
-          expect {
-            described_class.call(request: request)
-          }.to change(SecurityLog.where(event_type: :sign_up_successful), :count)
-        end
       end
     end
   end
