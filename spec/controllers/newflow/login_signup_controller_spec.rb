@@ -254,19 +254,95 @@ module Newflow
       it ''
     end
 
-    describe 'oauth_callback' do
+    describe 'GET #oauth_callback' do
+      let(:info) do
+        { email: Faker::Internet.free_email, name: Faker::Name.name }
+      end
+
+      before do
+        allow_any_instance_of(OauthCallback).to receive(:oauth_response)  do
+          # TODO: refactor this?
+          MockOmniauthRequest.new(params[:provider], params[:uid], info).env['omniauth.auth']
+        end
+      end
+
+      it 'calls OauthCallback handler' do
+        expect_any_instance_of(OauthCallback).to receive(:call).once.and_call_original
+        get(:oauth_callback, params: { provider: 'facebook' })
+      end
+
+      context 'social login (login means user.state == activated) - success' do
+        let(:user) do
+          create_newflow_user('user@openstax.org')
+        end
+
+        let(:params) do
+          { provider: 'facebook', uid: Faker::Internet.uuid }
+        end
+
+        before do
+          FactoryBot.create :authentication, user: user, provider: params[:provider], uid: params[:uid]
+        end
+
+        it 'responds with 302 redirect' do
+          get(:oauth_callback, params: params)
+          assert_response :redirect
+        end
+
+        it 'signs in the user' do
+          expect_any_instance_of(described_class).to receive(:sign_in!).once.and_call_original
+          get(:oauth_callback, params: params)
+        end
+      end
+
+      context 'social signup (signup means user.state != activated) - success' do
+        it 'saves unverified user'
+      end
+
+      context 'failure' do
+        before do
+          # cause a failure
+          allow_any_instance_of(OauthCallback).to receive(:create_user_instance) { nil }
+        end
+
+        let(:params) do
+          { provider: 'facebook', uid: 'nonexistent' }
+        end
+
+        it 'renders social_login_failed' do
+          get(:oauth_callback, params: params)
+          expect(response).to render_template(:social_login_failed)
+        end
+
+        it 'saves login failed email' do
+          expect_any_instance_of(described_class).to receive(:save_login_failed_email).and_call_original
+          get(:oauth_callback, params: params)
+          expect(session[:login_failed_email]).to eq(info[:email])
+        end
+
+        it 'creates a security log login_not_found' do
+          expect {
+            get(:oauth_callback, params: params)
+          }.to change {
+            SecurityLog.where(event_type: :login_not_found).count
+          }
+        end
+      end
+    end
+
+    describe 'GET #confirm_oauth_info' do
       it ''
     end
 
-    describe 'confirm_oauth_info' do
+    describe 'POST #send_password_setup_instructions' do
       it ''
     end
 
-    describe 'send_password_setup_instructions' do
+    describe 'GET #setup_password' do
       it ''
     end
 
-    describe 'setup_password' do
+    describe 'POST #setup_password' do
       it ''
     end
 

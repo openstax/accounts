@@ -179,21 +179,26 @@ module Newflow
       handle_with(
         OauthCallback,
         success: lambda {
+          authentication = @handler_result.outputs.authentication
           user = @handler_result.outputs.user
           unless user.is_activated?
-            user = @handler_result.outputs.user
+            # not activated means signup
             save_unverified_user(user)
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email
+            security_log(:sign_up_successful, user: user, authentication_id: authentication.id)
+            # must confirm their social info on signup
             render :confirm_social_info_form and return
           end
           sign_in!(user)
+          # we should perhaps create a more specific security log
+          security_log(:sign_in_successful, user: user, authentication_id: authentication.id)
           redirect_back(fallback_location: profile_newflow_path)
         },
         failure: lambda {
           @email = @handler_result.outputs.email
-          save_login_failed_email(@handler_result.outputs.email)
+          save_login_failed_email(@email)
           # TODO: rate-limit this
           # TODO: is this the appropriate security log?
           security_log :login_not_found, tried: @handler_result.outputs.email
@@ -285,7 +290,7 @@ module Newflow
     end
 
     def save_login_failed_email(email)
-        session[:login_failed_email] = email
+      session[:login_failed_email] = email
     end
 
     def login_failed_email
