@@ -19,6 +19,12 @@
         <![endif]-->
     </head>
     <body>
+        <% if @banner.present? %>
+            <div class="banner">
+                <%= @banner.message %>
+            </div>
+        <% end %>
+
         <%= render(partial: 'layouts/main_menu') %>
 
         <div class="content">
