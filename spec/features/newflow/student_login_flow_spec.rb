@@ -59,8 +59,10 @@ feature 'student login flow', js: true do
 
       example 'banners show up when there are any' do
         Banner.create(message: 'This is a banner.', expires_at: 1.day.from_now)
+        Banner.create(message: 'This is another banner.', expires_at: 1.day.from_now)
         visit newflow_login_path
         expect(page).to have_text('This is a banner.')
+        expect(page).to have_text('This is another banner.')
         screenshot!
       end
     end

@@ -19,10 +19,12 @@
         <![endif]-->
     </head>
     <body>
-        <% if @banner.present? %>
-            <div class="banner">
-                <%= @banner.message %>
-            </div>
+        <% if @banners.present? %>
+            <% @banners.each do |banner| %>
+                <div class="banner">
+                    <%= banner.message %>
+                </div>
+            <% end %>
         <% end %>
 
         <%= render(partial: 'layouts/main_menu') %>
