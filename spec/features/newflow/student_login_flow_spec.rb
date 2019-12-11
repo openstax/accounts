@@ -56,6 +56,13 @@ feature 'student login flow', js: true do
         find('#show-hide-button').click
         expect(find('#login_form_password')['type']).to eq('password')
       end
+
+      example 'banners show up when there are any' do
+        Banner.create(message: 'This is a banner.', expires_at: 1.day.from_now)
+        visit newflow_login_path
+        expect(page).to have_text('This is a banner.')
+        screenshot!
+      end
     end
   end
 
