@@ -18,6 +18,14 @@ body {
     color: var(--greyish-brown);
 }
 
+.banner {
+    background-color: #d9edf7;
+    padding: 1rem;
+    padding-left: 2rem;
+    border-bottom: 0.1rem solid #bce8f1;
+    color: #31708f;
+}
+
 // utility classes
 .hidden {
     display: none !important;
