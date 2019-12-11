@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
     # Routes for all the steps/forms of the sign up flow
     get 'i/signup', action: :welcome, as: :newflow_signup
-    get 'i/signup/student', action: :signup_form, as: :newflow_signup_student
+    get 'i/signup/student', action: :student_signup_form, as: :newflow_signup_student
     post 'i/signup', action: :signup, as: :newflow_signup_post
     get 'i/confirmation_form', action: :confirmation_form, as: :confirmation_form
     post 'i/verify_email_by_pin', action: :verify_email_by_pin, as: :newflow_verify_pin
