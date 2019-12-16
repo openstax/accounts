@@ -43,7 +43,7 @@ module Newflow
 
         it 'checks `r`eturn parameter is whitelisted' do
           expect(Host).to receive(:trusted?).once.and_call_original
-          # GET login_form with `?r=URL` may store a safe url to return to after login
+          # GET login_form with `?r=URL` may store a SAFE url to return to after login
           get('login_form', params: { r: 'https://maliciousdomain.com' })
 
           post('login', params: params)
