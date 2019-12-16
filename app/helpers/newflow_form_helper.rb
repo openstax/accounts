@@ -26,18 +26,18 @@ module NewflowFormHelper
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
+      input = (
+        @f.text_field name,
+        placeholder: placeholder,
+        value: value,
+        type: type,
+        class: "form-control wide #{'has-error' if errors_div.present?}",
+        data: data(only: only, except: except),
+        autofocus: autofocus,
+        readonly: readonly
+      )
 
-      c.content_tag :div, class: "form-group" do
-        input = @f.text_field name, placeholder: placeholder,
-                                    value: value,
-                                    type: type,
-                                    class: "form-control wide #{'has-error' if errors_div.present?}",
-                                    data: data(only: only, except: except),
-                                    autofocus: autofocus,
-                                    readonly: readonly
-
-        "#{input}\n#{errors_div}".html_safe
-      end
+      "#{input}\n#{errors_div}".html_safe
     end
 
     def select(name:, options:, except: nil, only: nil, autofocus: nil)
