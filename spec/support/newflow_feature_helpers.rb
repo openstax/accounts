@@ -28,3 +28,7 @@ def newflow_log_in_user(username_or_email, password)
   screenshot!
   expect(page).to have_no_missing_translations
 end
+
+def strip_html(text)
+  ActionView::Base.full_sanitizer.sanitize(text)
+end
