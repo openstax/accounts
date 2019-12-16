@@ -125,7 +125,7 @@ gem 'rails-settings-ui'
 gem 'rails-settings-cached', '0.7.2'
 gem 'dry-validation', '0.12.3'
 
-gem 'scout_apm', '~> 3.0.x'
+gem 'scout_apm', '~> 3.0.0.pre28'
 
 # Respond to ELB healthchecks in /ping and /ping/
 gem 'openstax_healthcheck'

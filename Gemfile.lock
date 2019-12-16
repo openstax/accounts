@@ -721,7 +721,7 @@ DEPENDENCIES
   rubocop-rspec
   ruby-debug-ide
   sass-rails (~> 5.0)
-  scout_apm (~> 3.0.x)
+  scout_apm (~> 3.0.0.pre28)
   selenium-webdriver (>= 3.141.0)
   sentry-raven
   shoulda-matchers (~> 3.1)
