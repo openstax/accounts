@@ -21,13 +21,12 @@
                                 class: 'field-label required'
                     %>
                     <div class="input-with-tooltip">
-                        <%
-                            # Note the f.text_field instead of fh.text_field – to not create a wrapper div
-                            # which would break the tooltip
-                        %>
-                        <%= f.text_field :email,
+                        <%=
+                                fh.text_field(
+                                    name: :email,
                                     placeholder: I18n.t(:'login_signup_form.email_placeholder'),
                                     autofocus: true
+                                )
                         %>
                         <div class="tooltip">
                             <%= I18n.t(:"login_signup_form.change_your_email_tooltip").html_safe %>
