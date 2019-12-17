@@ -30,6 +30,36 @@
   #profile .ox-card .category {
     color: var(--greyish-brown);
   }
+
+  #application-footer {
+    display: none;
+  }
+
+  #newflow-footer {
+      font-size: 10px;
+      text-align: center;
+      margin-top: 8rem;
+  }
+
+  #newflow-footer--copyright a {
+    font-size: 10px;
+    color: #000 !important;
+  }
+
+  #footer-rice-logo-image {
+    margin-bottom: 1.2rem;
+  }
+
+  .ox-card {
+    height: 90rem;
+    width: 111rem;
+  }
+
+  .btn-primary {
+    background-color: #f36b32;
+    border: 0;
+  }
+
 </style>
 
 <%= ox_card do %>
@@ -76,7 +106,7 @@
       <% current_user.email_addresses.order(:created_at).each do |email| %>
         <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
       <% end %>
-      <%= link_to 'Add email address', '#', {id: 'add-an-email'} %>
+      <%= link_to 'Add email address', '', {id: 'add-an-email'} %>
     </div>
   </div>
 
@@ -86,7 +116,7 @@
 
     # The `all providers &` enforces a standard sort order
     current_providers = all_providers & current_user.authentications.collect(&:provider)
-    other_providers   = all_providers - current_providers - ['twitter']
+    other_providers   = all_providers - current_providers - ['twitter', 'facebooknewflow', 'googlenewflow']
   %>
 
   <div class="row enabled-providers">
@@ -106,7 +136,7 @@
 
   <div class="row other-sign-in">
     <div class="col-sm-2 category">
-      <%= I18n.t("student_profile.other_sign_in_options_html") %>
+      <%= t("student_profile.other_sign_in_options_html") %>
     </div>
     <div class="col-sm-10 info providers">
       <% other_providers.each do |provider| %>
@@ -116,6 +146,8 @@
   </div>
 
 <% end %>
+
+<%= render partial: 'layouts/newflow_footer' %>
 
 <%= content_for :javascript do %>
 <script type="text/javascript">
