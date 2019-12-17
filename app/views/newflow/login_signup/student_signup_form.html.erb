@@ -16,10 +16,9 @@
         <%= render partial: 'tab_group', locals: { active_class: 'signup--active'} %>
 
         <%= newflow_login_signup_card(
-                    classes: "signup-page",
                     header: (I18n.t(:"login_signup_form.signup_page_header")),
-                    current_step: I18n.t(:"login_signup_form.step_counter", current_step: 2, total_steps: 3),
-                    banners: @banners) do %>
+                    current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
+                    classes: 'signup-page') do %>
             <% lev_form_for :signup, url: newflow_signup_post_path do |f| %>
                 <% fh = NewflowFormHelper::Newflow.new(f: f,
                                             context: self,

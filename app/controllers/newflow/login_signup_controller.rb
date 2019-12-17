@@ -218,7 +218,7 @@ module Newflow
           sign_in!(@handler_result.outputs.user)
           # security_log :sign_up_successful
           # security_log :authentication_created
-          redirect_back(fallback_location: profile_newflow_url)
+          redirect_to signup_done_path
         },
         failure: lambda {
           render :confirm_social_info_form
