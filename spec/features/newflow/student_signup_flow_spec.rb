@@ -16,14 +16,16 @@ module Newflow
 
     context 'signup happy path' do
       before do
-        visit newflow_signup_path
+        visit newflow_signup_path(r: '/external_app_for_specs')
         find('.join-as__role.student').click
         fill_in 'signup_first_name',	with: 'Bryan'
         fill_in 'signup_last_name',	with: 'Dimas'
         fill_in 'signup_email',	with: email
         fill_in 'signup_password',	with: password
         check 'signup_terms_accepted'
+        screenshot!
         find('#signup_form_submit_button').click
+        screenshot!
 
         # sends an email address confirmation email
         expect(page.current_path).to eq confirmation_form_path
@@ -38,31 +40,47 @@ module Newflow
         visit verify_email_url
         # ... which sends you to "sign up done page"
         expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+        screenshot!
+
+        # can exit and go back to the app they came from
+        find('#exit-icon a').click
+        expect(page.current_path).to eq('/external_app_for_specs')
+        screenshot!
       end
 
       example 'verify email by entering PIN sent in the email' do
         # ... with a link
         pin = current_email.find('b').text
         fill_in('confirm_pin', with: pin)
+        screenshot!
         click_on('commit')
         # ... which sends you to "sign up done page"
         expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
         expect(page).to have_text(
           strip_html(t(:"login_signup_form.youre_done_description", email_address: email))
         )
+        screenshot!
+
+        # can exit and go back to the app they came from
+        find('#exit-icon a').click
+        expect(page.current_path).to eq('/external_app_for_specs')
+        screenshot!
       end
     end
 
     context 'change signup email' do
       example 'user can change their initial email during the signup flow' do
-        visit newflow_signup_path
+        visit newflow_signup_path(r: '/external_app_for_specs')
         find('.join-as__role.student').click
         fill_in 'signup_first_name',	with: 'Bryan'
         fill_in 'signup_last_name',	with: 'Dimas'
         fill_in 'signup_email',	with: email
         fill_in 'signup_password',	with: password
         check 'signup_terms_accepted'
+        screenshot!
         find('#signup_form_submit_button').click
+        screenshot!
+
         # an email gets sent
         open_email email
         # capture_email!(address: email)
@@ -73,13 +91,15 @@ module Newflow
 
         # edit email
         click_on('edit your email')
-
+        screenshot!
         # page contains tooltip
         expect(page).to have_text(t('login_signup_form.change_your_email_tooltip'))
 
         new_email = Faker::Internet::free_email
         fill_in('change_signup_email_email', with: new_email)
+        screenshot!
         click_on('commit')
+        screenshot!
         expect(page).to have_text(t('login_signup_form.check_your_updated_email'))
 
         # a different pin is sent in the edited email
@@ -93,8 +113,10 @@ module Newflow
 
         # finally finish signup
         fill_in('confirm_pin', with: pin)
+        screenshot!
         click_on('commit')
         # ... which sends you to "sign up done page"
+        screenshot!
         expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
         expect(page).to(
           have_text(
@@ -103,6 +125,11 @@ module Newflow
             )
           )
         )
+
+        # can exit and go back to the app they came from
+        find('#exit-icon a').click
+        expect(page.current_path).to eq('/external_app_for_specs')
+        screenshot!
       end
     end
   end
