@@ -29,7 +29,7 @@ module Newflow
       )
     end
 
-    def signup
+    def student_signup
       handle_with(
         StudentSignup,
         contracts_required: !contracts_not_required,
