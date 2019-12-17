@@ -2,6 +2,14 @@ require 'rails_helper'
 
 module Newflow
   RSpec.describe LoginSignupController, type: :controller do
+
+    describe 'GET #welcome' do
+      it 'renders welcome form/page' do
+        get(:welcome)
+        expect(response).to render_template(:welcome)
+      end
+    end
+
     describe 'GET #login_form' do
       example 'success' do
         get(:login_form)
@@ -79,13 +87,6 @@ module Newflow
       it 'renders (student!) signup_form' do
         get(:student_signup_form)
         expect(response).to  render_template(:student_signup_form)
-      end
-    end
-
-    describe 'GET #welcome' do
-      it 'renders welcome form/page' do
-        get(:welcome)
-        expect(response).to render_template(:welcome)
       end
     end
 
