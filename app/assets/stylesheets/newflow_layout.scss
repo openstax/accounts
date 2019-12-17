@@ -591,6 +591,10 @@ input.has-error {
         }
 
         .welcome-page {
+            .page-header {
+                padding-top: 8rem;
+            }
+
             form {
                 padding-top: 1.6rem;
             }
