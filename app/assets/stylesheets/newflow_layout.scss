@@ -182,6 +182,16 @@ input.has-error {
     padding-right: 1.4rem;
 
     .join-as {
+        .blue-bar {
+            height: 1rem;
+            background-color: #007297;
+        }
+
+        .green-bar {
+            height: 1rem;
+            background-color: #0c9372;
+        }
+
         @include width-up-to($phone-max) {
             display: flex;
             flex-direction: column;
@@ -240,16 +250,8 @@ input.has-error {
             text-align: center;
             position: relative;
             border: 0.1rem solid #d5d5d5;
+            border-bottom: 0;
             box-sizing: border-box;
-            border-bottom: 1rem solid green;
-
-            &.student {
-                border-bottom: 1rem solid #007297;
-            }
-
-            &.educator {
-                border-bottom: 1rem solid #0c9372;
-            }
         }
 
         a {
