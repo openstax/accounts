@@ -103,9 +103,7 @@
                             <div class="tooltip">
                                 <h4>Password requirements</h4>
                                 <div>
-                                    <i id="password-requirements-check"
-                                        class="fa fa-check-circle"
-                                        style="font-size: 2rem; color: #c1c1c1">
+                                    <i id="password-requirements-checkmark" class="fa fa-check-circle">
                                     </i>
                                     <%= @min_passw_length&.to_s %> characters minimum
                                 </div>
@@ -153,13 +151,13 @@
     Accounts.Ui.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
 
     var pwd_input = document.getElementById('signup_password');
-    var pwd_checkmark = document.getElementById('password-requirements-check');
+    var pwd_checkmark = document.getElementById('password-requirements-checkmark');
 
     pwd_input.oninput = function(event){
         if (pwd_input.value.length >= <%= @min_passw_length %>) {
-            pwd_checkmark.style.color = 'green';
+            pwd_checkmark.classList.add("success");
         } else {
-            pwd_checkmark.style.color = '#c1c1c1';
+            pwd_checkmark.classList.remove("success");
         }
     }
 </script>
