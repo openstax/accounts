@@ -754,6 +754,15 @@ input.has-error {
     }
 }
 
+#password-requirements-checkmark {
+    font-size: 2rem;
+    color: #c1c1c1;
+
+    &.success {
+        color:  #63A524;
+    }
+}
+
 #newflow-footer {
     text-align: center;
 
