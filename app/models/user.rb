@@ -88,6 +88,10 @@ class User < ActiveRecord::Base
     !!is_test
   end
 
+  def using_openstax?
+    false
+  end
+
   def is_anonymous?
     false
   end
