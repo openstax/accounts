@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  describe StudentSignup, type: :handler do
+  describe ResetPasswordForm, type: :handler do
 
   end
 end
