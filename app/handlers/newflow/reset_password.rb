@@ -2,7 +2,7 @@ module Newflow
   # If a user with the given email address is found, we send (to each of their verified
   # email addresses) an email to reset their password.
   # Otherwise, for security reasons, it returns early with no errors.
-  class ResetPasswordForm
+  class ResetPassword
     lev_handler
 
     LOGIN_TOKEN_EXPIRATION = 2.days
