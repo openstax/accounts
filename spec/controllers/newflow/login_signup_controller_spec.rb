@@ -363,7 +363,7 @@ module Newflow
     describe 'POST #reset_password' do
       context 'success' do
           before do
-            expect_any_instance_of(ResetPasswordForm).to receive(:call).once.and_call_original
+            expect_any_instance_of(ResetPassword).to receive(:call).once.and_call_original
           end
 
           let(:params) do

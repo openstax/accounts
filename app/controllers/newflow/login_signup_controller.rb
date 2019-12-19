@@ -120,7 +120,7 @@ module Newflow
 
     def reset_password
       handle_with(
-        ResetPasswordForm,
+        ResetPassword,
         success: lambda {
           @email = @handler_result.outputs.email
           clear_newflow_state
