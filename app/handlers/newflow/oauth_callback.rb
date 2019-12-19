@@ -38,11 +38,14 @@ module Newflow
     def handle
       authentication = Authentication.find_by(provider: @oauth_provider, uid: oauth_data.uid.to_s)
       if authentication
-        # success
+        # User found with the given authentication.
+        # We will log them in.
       elsif (existing_user = LookupUsers.by_verified_email(oauth_data.email).first)
+        # No user found with the given authentication, but a user *was* found with the given email address.
+        # We will add the authentication to their existing account and then log them in.
         authentication = Authentication.new(provider: @oauth_provider, uid: oauth_data.uid.to_s)
         run(TransferAuthentications, authentication, existing_user) # TODO: does this raise fatally?
-      else # sign up new user
+      else # sign up new user, then log them in.
         user = create_user_instance
         create_email_address(user)
         authentication = create_authentication(user, @oauth_provider)
