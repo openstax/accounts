@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_04_193412) do
+ActiveRecord::Schema.define(version: 2019_12_18_192109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -247,10 +247,10 @@ ActiveRecord::Schema.define(version: 2019_12_04_193412) do
     t.string "scopes", default: "", null: false
     t.string "lead_application_source", default: "", null: false
     t.boolean "confidential", default: true, null: false
-    t.boolean "can_access_private_user_data", default: false, null: false
-    t.boolean "can_find_or_create_accounts", default: false, null: false
-    t.boolean "can_message_users", default: false, null: false
-    t.boolean "can_skip_oauth_screen", default: false, null: false
+    t.boolean "can_access_private_user_data", default: false
+    t.boolean "can_find_or_create_accounts", default: false
+    t.boolean "can_message_users", default: false
+    t.boolean "can_skip_oauth_screen", default: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
@@ -333,6 +333,7 @@ ActiveRecord::Schema.define(version: 2019_12_04_193412) do
     t.citext "support_identifier", null: false
     t.boolean "is_test"
     t.integer "school_type", default: 0, null: false
+    t.boolean "using_openstax", default: false
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

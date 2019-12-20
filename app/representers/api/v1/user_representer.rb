@@ -75,7 +75,7 @@ module Api::V1
             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
             type: :boolean,
             readable: true,
-            writeable: false,
+            writeable: false
             
     property :salesforce_contact_id,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
