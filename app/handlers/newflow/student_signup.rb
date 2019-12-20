@@ -50,15 +50,6 @@ module Newflow
       transfer_errors_from(outputs.user, { type: :verbatim }, :fail_if_errors)
     end
 
-    def create_authentication
-      authentication = Authentication.create(
-        provider: 'identity',
-        user_id: outputs.user.id, uid: outputs.user.identity.id
-      )
-      transfer_errors_from(authentication, { scope: :email }, :fail_if_errors)
-      # TODO: catch error states like if auth already exists for this user
-    end
-
     def create_identity
       identity = Identity.create(
         password: signup_params.password,
@@ -66,6 +57,15 @@ module Newflow
         user: outputs.user
       )
       transfer_errors_from(identity, { scope: :password }, :fail_if_errors)
+    end
+
+    def create_authentication
+      authentication = Authentication.create(
+        provider: 'identity',
+        user_id: outputs.user.id, uid: outputs.user.identity.id
+      )
+      transfer_errors_from(authentication, { scope: :email }, :fail_if_errors)
+      # TODO: catch error states like if auth already exists for this user
     end
 
     def agree_to_terms
