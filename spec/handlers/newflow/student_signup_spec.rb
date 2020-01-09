@@ -70,10 +70,36 @@ module Newflow
 
       it 'sends a confirmation email' do
         expect_any_instance_of(NewflowMailer).to(
-          receive(:signup_email_confirmation) # `#with(email_address: [TODO, if possible at all]`
+          receive(:signup_email_confirmation).with(
+            hash_including({ email_address: an_instance_of(EmailAddress) })
+          )
         )
         result
       end
+
+      context 'interacts with salesforce' do
+        before(:each) do
+          disable_sfdc_client
+          allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
+        end
+
+        it 'uploads leads to salesforce' do
+          expect_any_instance_of(PushSalesforceLead).to receive(:exec)
+          result
+        end
+
+        it 'signs up user for the newsletter when checked' do
+          expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including({ newsletter: true }))
+          result
+        end
+
+        it 'does NOT sign up user for the newsletter when NOT checked' do
+          expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including({ newsletter: false }))
+          params[:signup][:newsletter] = false
+          result
+        end
+      end
+    end
 
     context 'failure because a user with the given email address already exists' do
       before do
