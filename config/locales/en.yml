@@ -89,6 +89,7 @@ en:
     enter_new_password: Enter your new password
     enter_new_password_description: Finish resetting your password by entering the new one below.
     email_address_taken: Email address taken
+    invalid_email_provider: '"%{domain}" is not a valid email provider'
 
   student_profile:
     enable_other_sign_in_options: Enable other login options
