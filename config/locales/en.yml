@@ -88,6 +88,8 @@ en:
     change_your_email_tooltip: You will need to use this updated email to log in.
     enter_new_password: Enter your new password
     enter_new_password_description: Finish resetting your password by entering the new one below.
+    email_address_taken: Email address taken
+
   student_profile:
     enable_other_sign_in_options: Enable other login options
     other_sign_in_options_html: Other login<br class="wide"> options
