@@ -33,6 +33,7 @@ module Newflow
       handle_with(
         StudentSignup,
         contracts_required: !contracts_not_required,
+        client_app: get_client_app,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user)
           security_log :sign_up_successful, event_data: { user: @handler_result.outputs.user }

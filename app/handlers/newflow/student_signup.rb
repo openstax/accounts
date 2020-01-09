@@ -40,6 +40,7 @@ module Newflow
       agree_to_terms
       create_email_address
       send_confirmation_email
+      push_lead_to_salesforce
     end
 
   private ###################
@@ -93,6 +94,19 @@ module Newflow
 
     def send_confirmation_email
       NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
+    end
+
+    def push_lead_to_salesforce
+      if Settings::Salesforce.push_leads_enabled
+        PushSalesforceLead.perform_later(
+          user: outputs.user,
+          role: 'student',
+          newsletter: signup_params.newsletter, # optionally subscribe to newsletter
+          source_application: options[:client_app],
+          # params req'd by the class but not by our business logic for students:
+          url: nil, school: nil, using_openstax: nil, subject: nil, phone_number: nil, num_students: nil
+        )
+      end
     end
   end
 end
