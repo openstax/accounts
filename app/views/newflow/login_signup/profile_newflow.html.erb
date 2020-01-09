@@ -106,7 +106,7 @@
       <% current_user.email_addresses.order(:created_at).each do |email| %>
         <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
       <% end %>
-      <%= link_to 'Add email address', '', {id: 'add-an-email'} %>
+      <%= link_to 'Add email address', '#', {id: 'add-an-email'} %>
     </div>
   </div>
 
