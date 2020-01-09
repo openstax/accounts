@@ -8,11 +8,10 @@ module Admin
       end
   
       def get_number_of_accounts
-        #UpdateUserSalesforceInfo.call(allow_error_email: true)
         days_num = get_number_of_days
         accounts_num = query(days_num)
         flash[:notice] = "The number of student acccounts created since July 1 is " + accounts_num.to_s
-        #redirect_to actions_admin_salesforce_path
+        redirect_to actions_admin_student_accounts_path
       end
 
       def get_number_of_days
