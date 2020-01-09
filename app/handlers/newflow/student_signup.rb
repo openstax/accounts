@@ -27,7 +27,11 @@ module Newflow
 
     def handle
       if LookupUsers.by_verified_email(signup_params.email).first
-        fatal_error(code: :email_taken, message: 'Email address taken', offending_inputs: :email)
+        fatal_error(
+          code: :email_taken,
+          message: I18n.t(:"login_signup_form.email_address_taken"),
+          offending_inputs: :email
+        )
       end
 
       create_user

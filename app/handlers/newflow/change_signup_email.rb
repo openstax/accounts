@@ -18,7 +18,11 @@ module Newflow
       email_param = change_signup_email_params.email
 
       if LookupUsers.by_verified_email(email_param).first
-        fatal_error(code: :email_taken, message: 'Email address taken', offending_inputs: :email)
+        fatal_error(
+          code: :email_taken,
+          message: I18n.t(:"login_signup_form.email_address_taken"),
+          offending_inputs: :email
+        )
       end
 
       @email_address = EmailAddress.where(user_id: options[:user].id).first
