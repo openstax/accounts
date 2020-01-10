@@ -5,13 +5,15 @@ module Newflow
   # we just need to identify users by their `uid`.
   class OauthCallback
     lev_handler
-    uses_routine TransferAuthentications,
-                translations: {
-                  inputs: {
-                    map: { authentication: :email_address }
-                  }
-                },
-                raise_fatal_errors: true
+    uses_routine(
+      TransferAuthentications,
+      translations: {
+        inputs: {
+          map: { authentication: :email_address }
+        }
+      },
+      raise_fatal_errors: true
+    )
 
     include Rails.application.routes.url_helpers
 
@@ -23,14 +25,7 @@ module Newflow
 
     def setup
       # TODO: remove the case switch when we deploy to production
-      @oauth_provider = case oauth_data.provider
-                        when 'facebooknewflow'
-                          'facebook'
-                        when 'googlenewflow'
-                          'google_oauth2'
-                        else
-                          oauth_data.provider
-                        end
+      @oauth_provider = oauth_data.provider
       outputs.email = oauth_data.email
     end
 
