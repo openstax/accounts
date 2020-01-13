@@ -109,7 +109,7 @@ module Newflow
 
     def signup_done
       @first_name = current_user.first_name
-      @email_address = current_user.email_addresses.first.value
+      @email_address = current_user.email_addresses.first&.value
     end
 
     def profile_newflow
