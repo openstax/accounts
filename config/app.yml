@@ -95,6 +95,7 @@ defaults: &defaults
     university_physics_calc:
       title: University Physics
       sf: University Physics (Calc)
+  newflow_feature_flag: false
 
 development:
   <<: *defaults
