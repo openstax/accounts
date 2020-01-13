@@ -24,7 +24,6 @@ module Newflow
     end
 
     def setup
-      # TODO: remove the case switch when we deploy to production
       @oauth_provider = oauth_data.provider
       outputs.email = oauth_data.email
     end
