@@ -15,6 +15,8 @@ class SignupController < ApplicationController
   before_action :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
   before_action :check_ready_for_password_or_social, only: [:password, :social]
 
+  before_action :newflow_feature_flag, only: [:start]
+
   helper_method :signup_email, :instructor_has_selected_subject
 
   def start
