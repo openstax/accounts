@@ -5,7 +5,6 @@
         <%= newflow_login_signup_card(
                     classes: "welcome-page",
                     header: (I18n.t(:"login_signup_form.welcome_page_header")),
-                    current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 3),
                     banners: @banners) do %>
             <% lev_form_for :login, url: '' do |f| %>
                 <% fh = NewflowFormHelper::Newflow.new(f: f,
@@ -20,6 +19,7 @@
                                     <span><%= I18n.t(:"login_signup_form.student") %></span>
                                     <%= image_tag('student-icon.svg') %>
                                 </div>
+                                <div class="blue-bar"></div>
                             <% end %>
 
                             <div class="join-as__description">
@@ -28,11 +28,12 @@
                         </div>
 
                         <div>
-                            <%= link_to '#COMING-SOON'  do%>
+                            <%= link_to signup_path  do%>
                                 <div class="join-as__role educator">
                                     <span><%= I18n.t(:"login_signup_form.educator") %></span>
                                     <%= image_tag('educator-icon.svg') %>
                                 </div>
+                                <div class="green-bar"></div>
                             <% end %>
 
                             <div class="join-as__description">

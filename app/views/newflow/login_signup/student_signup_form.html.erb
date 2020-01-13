@@ -16,10 +16,9 @@
         <%= render partial: 'tab_group', locals: { active_class: 'signup--active'} %>
 
         <%= newflow_login_signup_card(
-                    classes: "signup-page",
                     header: (I18n.t(:"login_signup_form.signup_page_header")),
-                    current_step: I18n.t(:"login_signup_form.step_counter", current_step: 2, total_steps: 3),
-                    banners: @banners) do %>
+                    current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
+                    classes: 'signup-page') do %>
             <% lev_form_for :signup, url: newflow_signup_post_path do |f| %>
                 <% fh = NewflowFormHelper::Newflow.new(f: f,
                                             context: self,
@@ -79,9 +78,12 @@
 
                 <div class="content control-group">
                     <%= label_tag :email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
-                    <%= fh.text_field name: :email,
-                                value: suggested_login_username,
-                                placeholder: I18n.t(:"login_signup_form.email_placeholder")
+                    <%=
+                        fh.text_field(
+                            name: :email,
+                            value: suggested_login_username,
+                            placeholder: I18n.t(:"login_signup_form.email_placeholder")
+                        )
                     %>
                 </div>
 
@@ -91,21 +93,17 @@
                                                   class: 'field-label required'
                         %>
                         <div class="input-with-tooltip">
-                            <%
-                                # Note the f.text_field instead of fh.text_field – to not create a wrapper div
-                                # which would break the tooltip
+                            <%=
+                                fh.text_field(
+                                    name: :password,
+                                    type: :password,
+                                    placeholder: I18n.t(:"login_signup_form.password_label")
+                                )
                             %>
-                            <%= f.text_field :password,
-                                                        type: :password,
-                                                        placeholder: I18n.t(:"login_signup_form.password_label")
-                            %>
-
                             <div class="tooltip">
                                 <h4>Password requirements</h4>
                                 <div>
-                                    <i id="password-requirements-check"
-                                        class="fa fa-check-circle"
-                                        style="font-size: 2rem; color: #c1c1c1">
+                                    <i id="password-requirements-checkmark" class="fa fa-check-circle">
                                     </i>
                                     <%= @min_passw_length&.to_s %> characters minimum
                                 </div>
@@ -153,13 +151,13 @@
     Accounts.Ui.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
 
     var pwd_input = document.getElementById('signup_password');
-    var pwd_checkmark = document.getElementById('password-requirements-check');
+    var pwd_checkmark = document.getElementById('password-requirements-checkmark');
 
     pwd_input.oninput = function(event){
         if (pwd_input.value.length >= <%= @min_passw_length %>) {
-            pwd_checkmark.style.color = 'green';
+            pwd_checkmark.classList.add("success");
         } else {
-            pwd_checkmark.style.color = '#c1c1c1';
+            pwd_checkmark.classList.remove("success");
         }
     }
 </script>

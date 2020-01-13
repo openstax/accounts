@@ -7,6 +7,7 @@ class AuthenticationOption
     this.$el = $(@el)
     this.$el.find('.delete').click(@confirmDelete)
     this.$el.find('.add').click(@add)
+    this.$el.find('.add--newflow').click(@addNewflow)
 
   confirmDelete: (ev) ->
     new OX.ConfirmationPopover(
@@ -44,6 +45,10 @@ class AuthenticationOption
     # TODO: figure out a way for the BE to pass the url
     window.location.href = "#{BASE_URL}/add/#{@getType()}"
 
+  addNewflow: ->
+    # TODO: figure out a way for the BE to pass the url
+    window.location.href = "#{BASE_URL}/i/auth/#{@getType()}"
+
   handleDelete: (response) ->
     if response.location?
       window.location.href = response.location
@@ -54,15 +59,23 @@ class Password extends AuthenticationOption
 
   constructor: (@el) ->
     super
-    this.$el.find('.edit').click @editPassword
+    this.$el.find('.edit').click(@editPassword)
+    this.$el.find('.edit--newflow').click(@editPasswordNewflow)
+    this.$el.find('.add--newflow').click(@addPasswordNewflow)
 
   # TODO we should just use normal links for edit and add, instead of these JS handlers
 
   editPassword: ->
     window.location.href = "#{BASE_URL}/password/reset"
 
+  editPasswordNewflow: ->
+    window.location.href = "#{BASE_URL}/i/change_password_form"
+
   add: ->
     window.location.href = "#{BASE_URL}/password/add"
+
+  addPasswordNewflow: ->
+    window.location.href = "#{BASE_URL}/i/setup_password"
 
 SPECIAL_TYPES =
   identity: Password

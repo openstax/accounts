@@ -5,13 +5,15 @@ module Newflow
   # we just need to identify users by their `uid`.
   class OauthCallback
     lev_handler
-    uses_routine TransferAuthentications,
-                translations: {
-                  inputs: {
-                    map: { authentication: :email_address }
-                  }
-                },
-                raise_fatal_errors: true
+    uses_routine(
+      TransferAuthentications,
+      translations: {
+        inputs: {
+          map: { authentication: :email_address }
+        }
+      },
+      raise_fatal_errors: true
+    )
 
     include Rails.application.routes.url_helpers
 
@@ -23,14 +25,7 @@ module Newflow
 
     def setup
       # TODO: remove the case switch when we deploy to production
-      @oauth_provider = case oauth_data.provider
-                        when 'facebooknewflow'
-                          'facebook'
-                        when 'googlenewflow'
-                          'google_oauth2'
-                        else
-                          oauth_data.provider
-                        end
+      @oauth_provider = oauth_data.provider
       outputs.email = oauth_data.email
     end
 
@@ -38,11 +33,14 @@ module Newflow
     def handle
       authentication = Authentication.find_by(provider: @oauth_provider, uid: oauth_data.uid.to_s)
       if authentication
-        # success
+        # User found with the given authentication.
+        # We will log them in.
       elsif (existing_user = LookupUsers.by_verified_email(oauth_data.email).first)
+        # No user found with the given authentication, but a user *was* found with the given email address.
+        # We will add the authentication to their existing account and then log them in.
         authentication = Authentication.new(provider: @oauth_provider, uid: oauth_data.uid.to_s)
         run(TransferAuthentications, authentication, existing_user) # TODO: does this raise fatally?
-      else # sign up new user
+      else # sign up new user, then log them in.
         user = create_user_instance
         create_email_address(user)
         authentication = create_authentication(user, @oauth_provider)

@@ -4,8 +4,8 @@
 
         <%= newflow_login_signup_card(
                     classes: "signup-page",
-                    header: I18n.t(:"login_signup_form.youre_done",
-                        first_name: @first_name)) do %>
+                    header: I18n.t(:"login_signup_form.youre_done", first_name: @first_name),
+                    show_exit_icon: true) do %>
             <form>
                 <div class="content control-group info-message">
                     <%= I18n.t(:"login_signup_form.youre_done_description",

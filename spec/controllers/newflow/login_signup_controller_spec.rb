@@ -2,6 +2,14 @@ require 'rails_helper'
 
 module Newflow
   RSpec.describe LoginSignupController, type: :controller do
+
+    describe 'GET #welcome' do
+      it 'renders welcome form/page' do
+        get(:welcome)
+        expect(response).to render_template(:welcome)
+      end
+    end
+
     describe 'GET #login_form' do
       example 'success' do
         get(:login_form)
@@ -43,7 +51,7 @@ module Newflow
 
         it 'checks `r`eturn parameter is whitelisted' do
           expect(Host).to receive(:trusted?).once.and_call_original
-          # GET login_form with `?r=URL` may store a safe url to return to after login
+          # GET login_form with `?r=URL` may store a SAFE url to return to after login
           get('login_form', params: { r: 'https://maliciousdomain.com' })
 
           post('login', params: params)
@@ -82,21 +90,14 @@ module Newflow
       end
     end
 
-    describe 'GET #welcome' do
-      it 'renders welcome form/page' do
-        get(:welcome)
-        expect(response).to render_template(:welcome)
-      end
-    end
-
-    describe 'POST #signup' do
+    describe 'POST #student_signup' do
       before do
         load('db/seeds.rb') # create the FinePrint contracts
       end
 
       it 'calls Handlers::StudentSignup' do
         expect_any_instance_of(StudentSignup).to receive(:call).once.and_call_original
-        post(:signup)
+        post(:student_signup)
       end
 
       context 'success' do
@@ -117,19 +118,19 @@ module Newflow
 
         it 'saves unverified user in the session' do
           expect_any_instance_of(described_class).to receive(:save_unverified_user).and_call_original
-          post(:signup, params: params)
+          post(:student_signup, params: params)
         end
 
         it 'creates a security log' do
           expect {
-            post(:signup, params: params)
+            post(:student_signup, params: params)
           }.to change {
             SecurityLog.where(event_type: :sign_up_successful, user: User.last)
           }
         end
 
         it 'redirects to confirmation_form_path' do
-          post(:signup, params: params)
+          post(:student_signup, params: params)
           expect(response).to  redirect_to(confirmation_form_path)
         end
       end
@@ -151,7 +152,7 @@ module Newflow
         end
 
         it 'renders student signup form with errors' do
-          post(:signup, params: params)
+          post(:student_signup, params: params)
           expect(response).to render_template(:student_signup_form)
           expect(assigns(:"handler_result").errors).to  be_present
         end
@@ -362,7 +363,7 @@ module Newflow
     describe 'POST #reset_password' do
       context 'success' do
           before do
-            expect_any_instance_of(ResetPasswordForm).to receive(:call).once.and_call_original
+            expect_any_instance_of(ResetPassword).to receive(:call).once.and_call_original
           end
 
           let(:params) do

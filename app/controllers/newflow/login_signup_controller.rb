@@ -7,6 +7,7 @@ module Newflow
     before_action :restart_if_missing_unverified_user, only: [:verify_email, :verify_pin, :change_your_email]
     before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :signup_form, :student_signup_form, :welcome]
     before_action :set_active_banners
+    before_action :cache_client_app, only: [:login, :welcome]
     skip_before_action :check_if_password_expired
     fine_print_skip :general_terms_of_use, :privacy_policy,
                     except: [:profile_newflow, :verify_pin, :signup_done]
@@ -29,10 +30,11 @@ module Newflow
       )
     end
 
-    def signup
+    def student_signup
       handle_with(
         StudentSignup,
         contracts_required: !contracts_not_required,
+        client_app: get_client_app,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user)
           security_log :sign_up_successful, event_data: { user: @handler_result.outputs.user }
@@ -120,7 +122,7 @@ module Newflow
 
     def reset_password
       handle_with(
-        ResetPasswordForm,
+        ResetPassword,
         success: lambda {
           @email = @handler_result.outputs.email
           clear_newflow_state
@@ -141,7 +143,7 @@ module Newflow
         FindUserByToken,
         success: lambda {
           sign_in!(@handler_result.outputs.user)
-          security_log :help_requested, user: @handler_result.outputs.user
+          security_log :help_requested, user: @handler_result.outputs.user # TODO: 'help_requested'??
           render :change_password_form
         },
         failure: lambda {
@@ -213,12 +215,13 @@ module Newflow
         ConfirmOauthInfo,
         user: unverified_user,
         contracts_required: !contracts_not_required,
+        client_app: get_client_app,
         success: lambda {
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)
           # security_log :sign_up_successful
           # security_log :authentication_created
-          redirect_back(fallback_location: profile_newflow_url)
+          redirect_to signup_done_path
         },
         failure: lambda {
           render :confirm_social_info_form
@@ -255,20 +258,25 @@ module Newflow
 
     def setup_password
       handle_with(
-        FindUserByToken,
+        SetupPassword,
+        user: current_user,
         success: lambda {
           # TODO: security_log :sign_in_successful {security_log_data: {type: 'token'}} or something
-          sign_in!(@handler_result.outputs.user)
-          # redirect_to signup_done_path
           redirect_back(fallback_location: profile_newflow_url)
         },
         failure: lambda {
           # TODO: security_log :sign_in_failed or something
+          render :setup_password_form
+          # TODO: add an error msg to the form, if not happening already.
         }
       )
     end
 
     private #################
+
+    def cache_client_app
+      set_client_app(params[:client_id])
+    end
 
     def save_unverified_user(user)
       session[:unverified_user_id] = user.id

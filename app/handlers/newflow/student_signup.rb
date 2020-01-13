@@ -27,7 +27,11 @@ module Newflow
 
     def handle
       if LookupUsers.by_verified_email(signup_params.email).first
-        fatal_error(code: :email_taken, message: 'Email address taken', offending_inputs: :email)
+        fatal_error(
+          code: :email_taken,
+          message: I18n.t(:"login_signup_form.email_address_taken"),
+          offending_inputs: :email
+        )
       end
 
       create_user
@@ -36,6 +40,7 @@ module Newflow
       agree_to_terms
       create_email_address
       send_confirmation_email
+      push_lead_to_salesforce
     end
 
   private ###################
@@ -50,15 +55,6 @@ module Newflow
       transfer_errors_from(outputs.user, { type: :verbatim }, :fail_if_errors)
     end
 
-    def create_authentication
-      authentication = Authentication.create(
-        provider: 'identity',
-        user_id: outputs.user.id, uid: outputs.user.identity.id
-      )
-      transfer_errors_from(authentication, { scope: :email }, :fail_if_errors)
-      # TODO: catch error states like if auth already exists for this user
-    end
-
     def create_identity
       identity = Identity.create(
         password: signup_params.password,
@@ -66,6 +62,15 @@ module Newflow
         user: outputs.user
       )
       transfer_errors_from(identity, { scope: :password }, :fail_if_errors)
+    end
+
+    def create_authentication
+      authentication = Authentication.create(
+        provider: 'identity',
+        user_id: outputs.user.id, uid: outputs.user.identity.id
+      )
+      transfer_errors_from(authentication, { scope: :email }, :fail_if_errors)
+      # TODO: catch error states like if auth already exists for this user
     end
 
     def agree_to_terms
@@ -82,13 +87,26 @@ module Newflow
       # Customize the error message about having an invalid email domain
       if @email.errors && @email.errors.types.fetch(:value, {}).include?(:missing_mx_records)
         domain = @email.send(:domain)
-        @email.errors.messages[:value][0] = "\"#{domain}\" is not a valid email provider"
+        @email.errors.messages[:value][0] = I18n.t(:"login_signup_form.invalid_email_provider", domain: domain)
         transfer_errors_from(@email, { scope: :email }, :fail_if_errors)
       end
     end
 
     def send_confirmation_email
       NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
+    end
+
+    def push_lead_to_salesforce
+      if Settings::Salesforce.push_leads_enabled
+        PushSalesforceLead.perform_later(
+          user: outputs.user,
+          role: 'student',
+          newsletter: signup_params.newsletter, # optionally subscribe to newsletter
+          source_application: options[:client_app],
+          # params req'd by the class but not by our business logic for students:
+          url: nil, school: nil, using_openstax: nil, subject: nil, phone_number: nil, num_students: nil
+        )
+      end
     end
   end
 end
