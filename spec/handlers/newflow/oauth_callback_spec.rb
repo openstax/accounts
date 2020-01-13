@@ -66,7 +66,11 @@ module Newflow
           }.to change(Authentication, :count)
         end
 
-        it 'adds the user as a "lead" to salesforce'
+        it 'creates an email address as verified' do
+          expect {
+            described_class.call(request: request)
+          }.to change { EmailAddress.where(verified: true).count }
+        end
       end
     end
   end

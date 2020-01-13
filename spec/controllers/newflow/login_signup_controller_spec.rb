@@ -226,7 +226,7 @@ module Newflow
       it ''
     end
 
-    describe 'GET #profile_newflow' do
+    describe 'GET #profile' do
       context 'when logged in' do
         before do
           mock_current_user(create_newflow_user('user@openstax.org'))

@@ -13,7 +13,6 @@ class NewflowMailer < ApplicationMailer
     @email_value = email_address.value
     @confirmation_pin = email_address.confirmation_pin
     @confirmation_code = email_address.confirmation_code
-    # TODO: create my own newflow url
     @confirmation_url = verify_email_by_code_url(@confirmation_code)
 
     mail to: @email_value,
