@@ -6,11 +6,16 @@
                     classes: "signup-page",
                     header: I18n.t(:"login_signup_form.youre_done", first_name: @first_name),
                     show_exit_icon: true) do %>
-            <form>
+            <form action="<%= redirect_back_path %>">
                 <div class="content control-group info-message">
                     <%= I18n.t(:"login_signup_form.youre_done_description",
                                     email_address: @email_address).html_safe
                     %>
+                    <br />
+                    <br />
+                    <%= image_tag('highlighting_and_note_taking.png', style: 'width: inherit;' ) %>
+
+                    <%= button_tag('Finish') %>
                 </div>
             </form>
         <% end  %>
