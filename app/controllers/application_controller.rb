@@ -11,6 +11,16 @@ class ApplicationController < ActionController::Base
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
+  def newflow_feature_flag
+    if Settings::Db.store.newflow_feature_flag
+      if request.url == login_url
+        redirect_to(newflow_login_path)
+      elsif request.url == signup_url
+        redirect_to(newflow_signup_path)
+      end
+    end
+  end
+
   def disable_fine_print
     request.options? ||
     contracts_not_required ||

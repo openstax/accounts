@@ -24,6 +24,7 @@ class SessionsController < ApplicationController
 
   before_action :allow_iframe_access, only: :reauthenticate
 
+  before_action :newflow_feature_flag, only: [:start]
 
   # If the user arrives to :start already logged in, this means they got linked to
   # the login page somehow; attempt to redirect to the authorization url stored
