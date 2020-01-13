@@ -9,9 +9,6 @@ module ProfileHelper
       has_authentication = user_authentications.any?{|auth| auth.provider == provider}
     end
 
-    # provider = provider == 'googlenewflow' ? 'google_oauth2' : provider
-    # provider = provider == 'facebooknewflow' ? 'facebook' : provider
-
     icon_class, display_name =
       case provider
       when 'identity' then ['key', (I18n.t :"users.edit.password")]
