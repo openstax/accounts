@@ -46,7 +46,6 @@ class AuthenticationOption
     window.location.href = "#{BASE_URL}/add/#{@getType()}"
 
   addNewflow: ->
-    # TODO: figure out a way for the BE to pass the url
     window.location.href = "#{BASE_URL}/i/auth/#{@getType()}"
 
   handleDelete: (response) ->
