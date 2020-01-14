@@ -122,9 +122,6 @@ gem 'whenever', require: false
 
 # Admin toggles
 gem 'rails-settings-ui'
-# rails-settings-ui depends on nokogiri
-# ... and because version 1.10.7 fails to deploy, let's force using 1.10.5
-gem 'nokogiri', '1.10.5'
 
 gem 'rails-settings-cached', '0.7.2'
 gem 'dry-validation', '0.12.3'

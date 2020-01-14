@@ -688,7 +688,6 @@ DEPENDENCIES
   lev (~> 9.0.3)
   lograge
   maruku
-  nokogiri (= 1.10.5)
   oj (~> 3.7.12)
   oj_mimic_json
   omniauth
