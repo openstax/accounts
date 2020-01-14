@@ -13,7 +13,9 @@ class ApplicationController < ActionController::Base
 
   def newflow_feature_flag
     if Settings::Db.store.newflow_feature_flag
-      if request.path == login_path
+      if URI(request.url).query&.include?('bpff') # if "bypass feature flag" param is present
+        return # continue to the old flow. This is temporary to send Educators to the old flow.
+      elsif request.path == login_path
         redirect_to newflow_login_path(request.query_parameters)
       elsif request.path == signup_path
         redirect_to newflow_signup_path(request.query_parameters)
