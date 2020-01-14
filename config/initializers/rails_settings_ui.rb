@@ -1,14 +1,16 @@
 require 'rails-settings-ui'
 
-# Compatibility with newer versions of rails-settings-cached
-module RailsSettingsUi
-  class << self
-    def default_settings
-      settings = RailsSettingsUi.settings_klass.get_all
-      settings.reject { |name, _description| ignored_settings.include?(name.to_sym) }
-    end
-  end
-end
+# Uncomment the following once we upgrade to a newer version of rails-settings-cached:
+#
+# # Compatibility with newer versions of rails-settings-cached
+# module RailsSettingsUi
+#   class << self
+#     def default_settings
+#       settings = RailsSettingsUi.settings_klass.defaults
+#       settings.reject { |name, _description| ignored_settings.include?(name.to_sym) }
+#     end
+#   end
+# end
 
 RailsSettingsUi.setup do |config|
   # Specify a controller for RailsSettingsUi::ApplicationController to inherit from:
