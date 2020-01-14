@@ -13,10 +13,10 @@ class ApplicationController < ActionController::Base
 
   def newflow_feature_flag
     if Settings::Db.store.newflow_feature_flag
-      if request.url == login_url
-        redirect_to(newflow_login_path)
-      elsif request.url == signup_url
-        redirect_to(newflow_signup_path)
+      if request.path == login_path
+        redirect_to newflow_login_path(request.query_parameters)
+      elsif request.path == signup_path
+        redirect_to newflow_signup_path(request.query_parameters)
       end
     end
   end
