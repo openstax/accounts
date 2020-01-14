@@ -331,7 +331,7 @@ GEM
     multipart-post (2.1.1)
     nenv (0.3.0)
     nio4r (2.5.2)
-    nokogiri (1.10.7)
+    nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
     notiffany (0.1.0)
       nenv (~> 0.1)
@@ -688,6 +688,7 @@ DEPENDENCIES
   lev (~> 9.0.3)
   lograge
   maruku
+  nokogiri (= 1.10.5)
   oj (~> 3.7.12)
   oj_mimic_json
   omniauth
