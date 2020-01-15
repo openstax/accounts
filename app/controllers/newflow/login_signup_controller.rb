@@ -19,12 +19,11 @@ module Newflow
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)
           security_log(:sign_in_successful)
-          redirect_back # back to `r`eturn parameter, see `before_action :save_redirect`
+          redirect_back # back to `r`eturn parameter. See `before_action :save_redirect`.
         },
         failure: lambda {
-          security_log :login_not_found, tried: @handler_result.outputs.email
+          security_log :sign_in_failed, event_data: { reason: @handler_result.errors.first.code }
           save_login_failed_email(@handler_result.outputs.email)
-          security_log :sign_in_failed
           render :login_form
         }
       )
@@ -204,7 +203,6 @@ module Newflow
           save_login_failed_email(@email)
           # TODO: rate-limit this
           # TODO: is this the appropriate security log?
-          security_log :login_not_found, tried: @handler_result.outputs.email
           render :social_login_failed
         }
       )
