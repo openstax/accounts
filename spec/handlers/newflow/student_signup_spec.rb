@@ -20,8 +20,8 @@ module Newflow
             password: Faker::Internet.password(min_length: 8),
             terms_accepted: true,
             newsletter: true,
-            contract_1_id: 1,
-            contract_2_id: 2
+            contract_1_id: FinePrint::Contract.first.id,
+            contract_2_id: FinePrint::Contract.second.id
           }
         }
       end
