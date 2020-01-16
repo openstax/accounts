@@ -53,6 +53,11 @@ class ContactInfo < ActiveRecord::Base
     self.confirmation_code ||= TokenMaker.contact_info_confirmation_code
   end
 
+  def reset_confirmation_pin_code
+    self.confirmation_pin = TokenMaker.contact_info_confirmation_pin
+    self.confirmation_code = TokenMaker.contact_info_confirmation_code
+  end
+
   protected
 
   def strip

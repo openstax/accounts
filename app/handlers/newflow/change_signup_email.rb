@@ -27,12 +27,7 @@ module Newflow
 
       @email_address = EmailAddress.where(user_id: options[:user].id).first
       @email_address.value = email_param
-
-      # reset confirmation pin and code
-      @email_address.confirmation_pin = nil
-      @email_address.confirmation_code = nil
-      @email_address.set_confirmation_pin_code
-
+      @email_address.reset_confirmation_pin_code
       @email_address.save
       transfer_errors_from(@email_address, { scope: :email }, :fail_if_errors)
 
