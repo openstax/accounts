@@ -226,33 +226,6 @@ module Newflow
       )
     end
 
-    def send_password_setup_instructions
-      handle_with(
-        SocialLoginFailedSetupPassword,
-        email: login_failed_email,
-        success: lambda {
-          # TODO: create a security log
-          @email = login_failed_email
-          clear_login_failed_email
-          render :check_your_email
-        },
-        failure: lambda {
-          oauth = request.env['omniauth.auth']
-          errors = @handler_result.errors.inspect
-          last_exception = $!.inspect
-          exception_backtrace = $@.inspect
-
-          error_message = "[send_password_setup_instructions] IllegalState on failure: " +
-                                        "OAuth data: #{oauth}; errors: #{errors}; " +
-                                        "last exception: #{last_exception}; " +
-                                        "exception backtrace: #{exception_backtrace}"
-
-          # This will print the exception to the logs and send devs an exception email
-          raise IllegalState, error_message
-        }
-      )
-    end
-
     def setup_password
       handle_with(
         SetupPassword,
