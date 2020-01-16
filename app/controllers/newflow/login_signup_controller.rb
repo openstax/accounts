@@ -40,7 +40,6 @@ module Newflow
           redirect_to confirmation_form_path
         },
         failure: lambda {
-          # TODO: create some kind of security log?
           render :student_signup_form
         }
       )

@@ -14,7 +14,7 @@ module Newflow
     end
 
     def authorized?
-      true # TODO: only users with NO password
+      Identity.where(user: user).none?
     end
 
     def handle
@@ -37,7 +37,6 @@ module Newflow
         user_id: @user.id, uid: @user.identity.id
       )
       transfer_errors_from(@authentication, { scope: :email }, :fail_if_errors)
-      # TODO: catch error states like if auth already exists for this user
     end
   end
 end
