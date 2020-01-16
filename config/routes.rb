@@ -227,7 +227,7 @@ Rails.application.routes.draw do
     get 'raise_exception/:type', to: 'dev#raise_exception' unless Rails.env.production?
   end
 
-  use_doorkeeper do controllers applications: 'oauth/applications' end
+  use_doorkeeper { controllers applications: 'oauth/applications' }
 
   mount FinePrint::Engine => '/admin/fine_print'
 
