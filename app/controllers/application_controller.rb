@@ -11,14 +11,8 @@ class ApplicationController < ActionController::Base
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
   def newflow_feature_flag
-    if Settings::Db.store.newflow_feature_flag
-      if URI(request.url).query&.include?('bpff') # if "bypass feature flag" param is present
-        return # continue to the old flow. This is temporary to send Educators to the old flow.
-      elsif request.path == login_path
-        redirect_to newflow_login_path(request.query_parameters)
-      elsif request.path == signup_path
-        redirect_to newflow_signup_path(request.query_parameters)
-      end
+    if Settings::Db.store.newflow_feature_flag && !params[:bpff].present? # bpff = bypass feature flag
+      redirect_to newflow_login_path(request.query_parameters)
     end
   end
 
