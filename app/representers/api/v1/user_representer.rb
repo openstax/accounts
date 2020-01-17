@@ -71,6 +71,12 @@ module Api::V1
                              "not a real OpenStax end user"
              }
 
+   property :using_openstax,
+            if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+            type: :boolean,
+            readable: true,
+            writeable: false
+            
     property :salesforce_contact_id,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
              type: String,

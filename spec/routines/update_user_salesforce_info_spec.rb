@@ -322,6 +322,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       described_class.new(allow_error_email: true).cache_contact_data_in_user!(nil, user)
       expect(user.salesforce_contact_id).to be_nil
       expect(user.faculty_status).to eq 'no_faculty_info'
+      expect(user.using_openstax).to eq false
     end
 
     it 'handles Confirmed faculty status' do
@@ -357,6 +358,34 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       expect{
         described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
       }.to raise_error(RuntimeError)
+    end
+
+    it 'handles Current Adopter status' do
+      contact = new_contact(id: 'foo', adoption_status: "Current Adopter")
+      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      expect(user.salesforce_contact_id).to eq 'foo'
+      expect(user.using_openstax).to eq true
+    end
+
+    it 'handles Future Adopter status' do
+      contact = new_contact(id: 'foo', adoption_status: "Future Adopter")
+      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      expect(user.salesforce_contact_id).to eq 'foo'
+      expect(user.using_openstax).to eq true
+    end
+
+    it 'handles Past Adopter status' do
+      contact = new_contact(id: 'foo', adoption_status: "Past Adopter")
+      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      expect(user.salesforce_contact_id).to eq 'foo'
+      expect(user.using_openstax).to eq false
+    end
+
+    it 'handles Not Adopter status' do
+      contact = new_contact(id: 'foo', adoption_status: "Not Adopter")
+      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      expect(user.salesforce_contact_id).to eq 'foo'
+      expect(user.using_openstax).to eq false
     end
   end
 
