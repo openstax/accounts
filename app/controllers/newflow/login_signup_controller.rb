@@ -172,7 +172,7 @@ module Newflow
 
     def logout
       sign_out!
-      redirect_to newflow_login_path # or redirect back?
+      redirect_back(fallback_location: newflow_login_path)
     end
 
     # Log in (or sign up and then log in) a user using a social (OAuth) provider
