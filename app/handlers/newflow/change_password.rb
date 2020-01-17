@@ -12,16 +12,16 @@ module Newflow
 
     protected #################
 
+    def setup
+      @user = options[:user]
+    end
+
     def authorized?
-      true
+      Identity.where(user: @user).any?
     end
 
     def handle
-      user = options[:user]
-
-      # TODO: I borrowed this from Routines::SetPassword
-      #    I think I shouldn't `build_identity` b/c there should already be one. Instead, error out.
-      identity = user.identity || user.build_identity
+      identity = @user.identity
 
       identity.password = change_password_form_params.password
       identity.password_confirmation = change_password_form_params.password
