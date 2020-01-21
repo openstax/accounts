@@ -35,6 +35,8 @@ class User < ActiveRecord::Base
 
   has_many :security_logs
 
+  belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
+
   enum faculty_status: [:no_faculty_info, :pending_faculty, :confirmed_faculty, :rejected_faculty]
   enum role: [:unknown_role, :student, :instructor, :administrator, :librarian, :designer, :other, :adjunct, :homeschool]
   enum school_type: [:unknown_school_type, :other_school_type, :college]
