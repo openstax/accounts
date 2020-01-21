@@ -22,7 +22,7 @@ module Newflow
           redirect_back # back to `r`eturn parameter. See `before_action :save_redirect`.
         },
         failure: lambda {
-          security_log :sign_in_failed, event_data: { reason: @handler_result.errors.first.code }
+          security_log :sign_in_failed, { reason: @handler_result.errors.first.code }
           save_login_failed_email(@handler_result.outputs.email)
           render :login_form
         }
@@ -36,7 +36,7 @@ module Newflow
         client_app: get_client_app,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user)
-          security_log :sign_up_successful, event_data: { user: @handler_result.outputs.user }
+          security_log :sign_up_successful, { user: @handler_result.outputs.user }
           redirect_to confirmation_form_path
         },
         failure: lambda {
