@@ -320,14 +320,6 @@ module Newflow
           get(:oauth_callback, params: params)
           expect(session[:login_failed_email]).to eq(info[:email])
         end
-
-        it 'creates a security log login_not_found' do
-          expect {
-            get(:oauth_callback, params: params)
-          }.to change {
-            SecurityLog.where(event_type: :login_not_found).count
-          }
-        end
       end
     end
 
@@ -467,12 +459,12 @@ module Newflow
     end
 
     describe 'POST #change_password' do
-      context 'success' do
-        before do
-          user = create_newflow_user('user@openstax.org', 'password')
-          mock_current_user(user)
-        end
+      before do
+        user = create_newflow_user('user@openstax.org', 'password')
+        mock_current_user(user)
+      end
 
+      context 'success' do
         let(:new_password) do
           Faker::Internet.password(min_length: 8)
         end
