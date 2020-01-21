@@ -12,9 +12,9 @@ module Newflow
       true
     end
 
-    # TODO: rate-limit this action here (or in the controller?)
     def handle
       run(ConfirmByCode, params[:code])
+      run(ActivateUser, outputs.contact_info.user) # TODO: a user could be just adding another email
 
       outputs.user = outputs.contact_info.user
     end
