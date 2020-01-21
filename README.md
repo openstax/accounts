@@ -187,10 +187,6 @@ The app behavior changes depending on the value of these parameters.
 ### `sp` parameter
 Short for "signed parameters", requests that arrive with a valid `sp` parameter may force Accounts to automatically log in a user with the given ID. "Valid" meaning: signed by a `Doorkeeper::Application` configured in Accounts.
 
-
-### `signup_at` parameter
-OAuth requests that arrive with query param `signup_at=some_page` will redirect users to `some_page` if they click the link to sign up.
-
 ### `signup_at` parameter along with `client_id`, only on `/login` page
 When a request comes with both `signup_at` and `client_id` parameters in the login page, the **Sign up here** link points to `signup_at` which has to listed as a callback urls in the client (OAuth) application with ID equal to `client_id`.
 
