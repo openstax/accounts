@@ -32,7 +32,11 @@ feature 'student login flow', js: true do
       end
     end
 
-    describe 'with no return parameter specified' do
+    describe 'with no return parameter specified, when feature flag is on' do
+      before do
+        Settings::Db.store.newflow_feature_flag = true
+      end
+
       it 'sends the student to their profile' do
         with_forgery_protection do
           visit newflow_login_path
