@@ -1,6 +1,6 @@
 module Newflow
-    # Contains every action for login and signup
-    class LoginSignupController < ApplicationController
+  # Contains every action for login and signup
+  class LoginSignupController < ApplicationController
     layout 'newflow_layout'
     skip_before_action :authenticate_user!
     before_action :newflow_authenticate_user!, only: [:profile_newflow]
@@ -242,7 +242,7 @@ module Newflow
       )
     end
 
-    private #################
+  private #################
 
     def cache_client_app
       set_client_app(params[:client_id])
@@ -255,6 +255,7 @@ module Newflow
     def unverified_user
       id = session[:unverified_user_id]&.to_i
       return unless id.present?
+
       @unverified_user ||= User.find_by(id: id, state: 'unverified')
     end
 
@@ -285,13 +286,14 @@ module Newflow
     end
 
     def clear_newflow_state
-        clear_login_failed_email
-        clear_unverified_user
+      clear_login_failed_email
+      clear_unverified_user
     end
 
     def set_active_banners
       return unless request.method == 'GET'
+
       @banners ||= Banner.active
     end
-  end
+end
 end
