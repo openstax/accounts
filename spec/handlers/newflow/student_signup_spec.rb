@@ -77,27 +77,10 @@ module Newflow
         result
       end
 
-      context 'interacts with salesforce' do
-        before(:each) do
-          disable_sfdc_client
-          allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
-        end
-
-        it 'uploads leads to salesforce' do
-          expect_any_instance_of(PushSalesforceLead).to receive(:exec)
-          result
-        end
-
-        it 'signs up user for the newsletter when checked' do
-          expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including({ newsletter: true }))
-          result
-        end
-
-        it 'does NOT sign up user for the newsletter when NOT checked' do
-          expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including({ newsletter: false }))
-          params[:signup][:newsletter] = false
-          result
-        end
+      it 'stores selection in User whether to receive newsletter or not' do
+        expect(User.new.receive_newsletter).to be_falsey
+        result
+        expect(User.last.receive_newsletter).to be(true)
       end
     end
 
