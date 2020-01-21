@@ -70,14 +70,14 @@ module Newflow
       describe 'failure' do
         it 'creates a security log' do
           expect {
-            post('login', params: { login_form: { email: 'user@openstax.org', password: 'wrongpassword' } })
+            post('login', params: { login_form: { email: 'noone@openstax.org', password: 'password' } })
           }.to change {
-            SecurityLog.where(event_type: :login_not_found, event_data: { tried: 'user@openstax.org' }).count
+            SecurityLog.where(event_type: :sign_in_failed, event_data: { reason: 'cannot_find_user'}).count
           }
         end
 
         it 'saves the email to the session' do
-          post('login', params: { login_form: { email: 'noone@openstax.org', password: 'wrongpassword' } })
+          post('login', params: { login_form: { email: 'noone@openstax.org', password: 'wrongZpassword' } })
           expect(session[:login_failed_email]).to  eq('noone@openstax.org')
         end
       end
