@@ -1,9 +1,7 @@
 module Newflow
-  # TODO: unit test this.
+  # Changes the user's password if they have one, otherwise creates a password (an `Identity`).
   class ChangePassword
     lev_handler
-
-    LOGIN_TOKEN_EXPIRES_AFTER = 2.days
 
     paramify :change_password_form do
       attribute :password, type: String
@@ -17,18 +15,16 @@ module Newflow
     end
 
     def authorized?
-      Identity.where(user: @user).any?
+      !@user.is_anonymous?
     end
 
     def handle
-      identity = @user.identity
-
-      identity.password = change_password_form_params.password
-      identity.password_confirmation = change_password_form_params.password
-
-      identity.save
-
-      transfer_errors_from(identity, { scope: :password }, :fail_if_errors)
+      run(
+        ::SetPassword,
+        user: @user,
+        password: change_password_form_params.password,
+        password_confirmation: change_password_form_params.password
+      )
     end
   end
 end
