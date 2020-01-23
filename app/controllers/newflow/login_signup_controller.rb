@@ -47,6 +47,8 @@ module Newflow
           redirect_to confirmation_form_path
         },
         failure: lambda {
+          email = @handler_result.outputs.email
+          security_log(:sign_up_failed, reason: @handler_result.errors.map(&:code), email: email)
           render :student_signup_form
         }
       )
