@@ -22,8 +22,15 @@ module Newflow
           redirect_back # back to `r`eturn parameter. See `before_action :save_redirect`.
         },
         failure: lambda {
-          security_log :sign_in_failed, { reason: @handler_result.errors.first.code }
           save_login_failed_email(@handler_result.outputs.email)
+
+          code = @handler_result.errors.first.code
+          case code
+          when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
+            @handler_result.outputs.user
+            security_log(:sign_in_failed, { reason: code, user: @handler_result.outputs.user })
+          end
+
           render :login_form
         }
       )
