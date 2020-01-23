@@ -87,13 +87,13 @@ module Newflow
         success: lambda {
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)
-          security_log :sign_up_successful
+          security_log(:user_actived_email_verified)
           redirect_to signup_done_path
         },
         failure: lambda {
           @first_name = unverified_user.first_name
           @email = unverified_user.email_addresses.first.value
-          security_log :sign_up_successful
+          security_log(:user_actived_email_verified_failed, email: email, user: user) # TODO: test this
           render :confirmation_form
         }
       )
@@ -105,10 +105,13 @@ module Newflow
         success: lambda {
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)
-          security_log :sign_up_successful
+          security_log(:user_actived_email_verified)
           redirect_to signup_done_path
         },
         failure: lambda {
+          email = @handler_result.outputs.contact_info&.value
+          user = @handler_result.outputs.user
+          security_log(:user_actived_email_verified_failed, email: email, user: user) # TODO: test this
           redirect_to newflow_signup_path
         }
       )
@@ -134,7 +137,6 @@ module Newflow
           @email = @handler_result.outputs.email
           clear_newflow_state
           sign_out!
-
           security_log :help_requested, user: @handler_result.outputs.user
           render :reset_password_email_sent
         },
@@ -150,7 +152,7 @@ module Newflow
         FindUserByToken,
         success: lambda {
           sign_in!(@handler_result.outputs.user)
-          security_log :help_requested, user: @handler_result.outputs.user # TODO: 'help_requested'??
+          # security_log :help_requested, user: @handler_result.outputs.user # TODO: 'help_requested'??
           render :change_password_form
         },
         failure: lambda {
@@ -197,7 +199,7 @@ module Newflow
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email
-            security_log(:sign_up_successful, user: user, authentication_id: authentication.id)
+            security_log(:sign_up_successful, user: user, authentication_id: authentication.id) # social signup successful sec log?
             # must confirm their social info on signup
             render :confirm_social_info_form and return
           end
