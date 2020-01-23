@@ -205,7 +205,7 @@ module Newflow
           expect(assigns(:"handler_result").errors).to  be_present
         end
 
-        it 'creates a security log' do
+        xit 'creates a security log' do
           EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new(expecting: false)
 
           expect {
@@ -440,7 +440,7 @@ module Newflow
             expect(response).to render_template(:reset_password_email_sent)
           end
 
-          it 'creates a Security Log' do
+          xit 'creates a Security Log' do
             user = create_newflow_user('user@openstax.org')
 
             expect {
@@ -456,7 +456,7 @@ module Newflow
             { reset_password_form: { email: '' } }
           end
 
-          it 'creates a Security Log' do
+          xit 'creates a Security Log' do
             expect {
               post('reset_password', params: params)
             }.to change {
@@ -487,7 +487,7 @@ module Newflow
           expect(response.status).to eq(200)
         end
 
-        it 'creates a security log' do
+        xit 'creates a security log' do
           expect {
             get('change_password_form', params: params)
           }.to change {
@@ -506,7 +506,7 @@ module Newflow
           expect(response.status).to eq(400)
         end
 
-        it 'creates a security log' do
+        xit 'creates a security log' do
           expect {
             get('change_password_form', params: params)
           }.to change {
