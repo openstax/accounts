@@ -5,6 +5,7 @@ module Newflow
   # If successful, outputs the user. Otherwise, fails and logs the error.
   class AuthenticateUser
     lev_handler
+    include RateLimiting
 
     paramify :login_form do
       attribute :email, type: String
@@ -27,27 +28,34 @@ module Newflow
       # but we'd like to continue to support users who only have a username.
       users = LookupUsers.by_email_or_username(login_form_params.email)
 
+      outputs.user = user = users.first
+
+      failure(:too_many_login_attempts, :email) if user && too_many_login_attempts?(user)
+
       if users.empty?
-        failure('cannot_find_user', :email)
+        failure(:cannot_find_user, :email)
       elsif users.size > 1
-        failure('multiple_users', :email) # should user really be nil? why not the email value?
+        failure(:multiple_users, :email) # should user really be nil? why not the email value?
       end
 
-      user = users.first
       identity = Identity.authenticate({ user_id: user&.id }, login_form_params.password)
-      failure('incorrect_password', :password, user) unless identity.present?
+      failure(:incorrect_password, :password) unless identity.present?
 
-      outputs.user = user
     end
 
     private #################
 
-    def failure(reason, input_field, user = nil)
+    def failure(reason, input_field)
       fatal_error(
-        code: reason.to_sym,
+        code: reason,
         offending_inputs: input_field,
-        message: I18n.t("login_signup_form.#{reason}".to_sym)
+        message: I18n.t(:"login_signup_form.#{reason}")
       )
+    end
+
+    def too_many_login_attempts?(user)
+      too_many_log_in_attempts_by_ip?(ip: request.ip) ||
+      too_many_log_in_attempts_by_user?(user: user)
     end
   end
 end
