@@ -7,6 +7,8 @@ class SessionsController < ApplicationController
   include RequireRecentSignin
   include RateLimiting
 
+  before_action :newflow_feature_flag, only: [:start]
+
   skip_before_action :authenticate_user!,
                      only: [:start, :lookup_login, :authenticate, :redirect_back,
                             :create, :failure, :destroy, :email_usernames]
@@ -23,8 +25,6 @@ class SessionsController < ApplicationController
   before_action :maybe_skip_to_sign_up, only: [:start]
 
   before_action :allow_iframe_access, only: :reauthenticate
-
-  before_action :newflow_feature_flag, only: [:start]
 
   # If the user arrives to :start already logged in, this means they got linked to
   # the login page somehow; attempt to redirect to the authorization url stored
