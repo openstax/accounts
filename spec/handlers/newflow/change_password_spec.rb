@@ -34,12 +34,6 @@ module Newflow
       }
     end
 
-      it 'fails if user does not have a password to begin with' do
-        expect {
-          described_class.call(user: user, params: params).errors
-        }.to  raise_error(Lev::SecurityTransgression)
-      end
-
       it 'fails if password is too short' do
         # create the password to begin with
         FactoryBot.create(:identity, user: user, password: 'password')

@@ -228,7 +228,7 @@ module Newflow
 
     def setup_password
       handle_with(
-        SetupPassword,
+        SetPassword,
         user: current_user,
         success: lambda {
           # TODO: security_log :sign_in_successful {security_log_data: {type: 'token'}} or something
