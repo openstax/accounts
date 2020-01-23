@@ -390,7 +390,7 @@ module Newflow
     end
 
     describe 'GET #setup_password' do
-      it ''
+      it 'TODO'
     end
 
     describe 'POST #setup_password' do

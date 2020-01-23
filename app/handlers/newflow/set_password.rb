@@ -25,6 +25,8 @@ module Newflow
         password: setup_password_form_params.password,
         password_confirmation: setup_password_form_params.password
       )
+
+      outputs.user = @user
     end
   end
 end
