@@ -48,6 +48,8 @@ class SecurityLog < ActiveRecord::Base
     :login_not_found,
     :faculty_verified,
     :trusted_launch_removed,
+    :user_actived_email_verified,
+    :user_actived_email_verified_failed,
   ]
 
   json_serialize :event_data, Hash
