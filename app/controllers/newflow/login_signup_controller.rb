@@ -43,12 +43,13 @@ module Newflow
         client_app: get_client_app,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user)
-          security_log :sign_up_successful, { user: @handler_result.outputs.user }
+          security_log :student_signed_up, { user: @handler_result.outputs.user }
           redirect_to confirmation_form_path
         },
         failure: lambda {
           email = @handler_result.outputs.email
-          security_log(:sign_up_failed, reason: @handler_result.errors.map(&:code), email: email)
+          error_codes = @handler_result.errors.map(&:code)
+          security_log(:student_sign_up_failed, { reason: error_codes, email: email })
           render :student_signup_form
         }
       )
@@ -87,13 +88,13 @@ module Newflow
         success: lambda {
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)
-          security_log(:user_actived_email_verified)
+          security_log(:student_verified_email)
           redirect_to signup_done_path
         },
         failure: lambda {
           @first_name = unverified_user.first_name
           @email = unverified_user.email_addresses.first.value
-          security_log(:user_actived_email_verified_failed, email: email, user: user) # TODO: test this
+          security_log(:student_verified_email_failed, email: email, user: user)
           render :confirmation_form
         }
       )
@@ -105,13 +106,13 @@ module Newflow
         success: lambda {
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)
-          security_log(:user_actived_email_verified)
+          security_log(:student_verified_email)
           redirect_to signup_done_path
         },
         failure: lambda {
           email = @handler_result.outputs.contact_info&.value
           user = @handler_result.outputs.user
-          security_log(:user_actived_email_verified_failed, email: email, user: user) # TODO: test this
+          security_log(:student_verified_email_failed, email: email, user: user)
           redirect_to newflow_signup_path
         }
       )
@@ -137,11 +138,11 @@ module Newflow
           @email = @handler_result.outputs.email
           clear_newflow_state
           sign_out!
-          security_log :help_requested, user: @handler_result.outputs.user
+          security_log :reset_password_success, user: @handler_result.outputs.user
           render :reset_password_email_sent
         },
         failure: lambda {
-          security_log :help_request_failed, user: @handler_result.outputs.user
+          security_log :reset_password_failed, user: @handler_result.outputs.user
           render :reset_password_form
         }
       )
@@ -152,11 +153,11 @@ module Newflow
         FindUserByToken,
         success: lambda {
           sign_in!(@handler_result.outputs.user)
-          # security_log :help_requested, user: @handler_result.outputs.user # TODO: 'help_requested'??
+          security_log(:change_password_form_loaded)
           render :change_password_form
         },
         failure: lambda {
-          security_log :help_request_failed, token: params[:token]
+          security_log(:change_password_form_not_loaded, token: params[:token])
           render status: 400
         }
       )
@@ -199,20 +200,20 @@ module Newflow
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email
-            security_log(:sign_up_successful, user: user, authentication_id: authentication.id) # social signup successful sec log?
+            security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
             # must confirm their social info on signup
             render :confirm_social_info_form and return
           end
           sign_in!(user)
           # we should perhaps create a more specific security log
-          security_log(:sign_in_successful, user: user, authentication_id: authentication.id)
+          security_log(:student_authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back(fallback_location: profile_newflow_path)
         },
         failure: lambda {
+          # TODO: rate-limit this
           @email = @handler_result.outputs.email
           save_login_failed_email(@email)
-          # TODO: rate-limit this
-          # TODO: is this the appropriate security log?
+          security_log(:student_auth_with_social_failed)
           render :social_login_failed
         }
       )
@@ -227,11 +228,11 @@ module Newflow
         success: lambda {
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)
-          # security_log :sign_up_successful
-          # security_log :authentication_created
+          security_log(:student_social_auth_confirmation_success)
           redirect_to signup_done_path
         },
         failure: lambda {
+          security_log(:student_social_auth_confirmation_failed)
           render :confirm_social_info_form
         }
       )
@@ -242,13 +243,12 @@ module Newflow
         SetPassword,
         user: current_user,
         success: lambda {
-          # TODO: security_log :sign_in_successful {security_log_data: {type: 'token'}} or something
+          security_log(:student_setup_password)
           redirect_back(fallback_location: profile_newflow_url)
         },
         failure: lambda {
-          # TODO: security_log :sign_in_failed or something
+          security_log(:student_setup_password_failed, { user: @handler_result.outputs.user })
           render :setup_password_form
-          # TODO: add an error msg to the form, if not happening already.
         }
       )
     end
