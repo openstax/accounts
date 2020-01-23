@@ -90,6 +90,9 @@ en:
     enter_new_password_description: Finish resetting your password by entering the new one below.
     email_address_taken: Email address taken
     invalid_email_provider: '"%{domain}" is not a valid email provider'
+    too_many_login_attempts: >-
+      You have made too many login attempts recently. Please
+      reset your password or try again later.
 
   student_profile:
     enable_other_sign_in_options: Enable other login options

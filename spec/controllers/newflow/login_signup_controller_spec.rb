@@ -68,12 +68,60 @@ module Newflow
       end
 
       describe 'failure' do
-        it 'creates a security log' do
-          expect {
-            post('login', params: { login_form: { email: 'noone@openstax.org', password: 'password' } })
-          }.to change {
-            SecurityLog.where(event_type: :sign_in_failed, event_data: { reason: 'cannot_find_user'}).count
-          }
+        describe 'when cannot_find_user' do
+          it 'creates a security log' do
+            expect {
+              post('login', params: { login_form: { email: 'noone@openstax.org', password: 'password' } })
+            }.to change {
+              SecurityLog.sign_in_failed.where(event_data: { reason: :cannot_find_user, user: nil}).count
+            }
+          end
+        end
+
+        describe 'when multiple_users' do
+          before do
+            user1 = create_user 'user1'
+            email1 = create_email_address_for(user1, email_address)
+            user2 = create_user 'user2'
+            email2 = create_email_address_for(user2, 'user-2@example.com')
+            ContactInfo.where(id: email2.id).update_all(value: email1.value)
+          end
+
+          let(:email_address) do
+            'user@example.com'
+          end
+
+          it 'creates a security log' do
+            expect {
+              post('login', params: { login_form: { email: email_address, password: 'password' } })
+            }.to change {
+              SecurityLog.where(event_type: :sign_in_failed, event_data: { reason: :multiple_users, user: User.first }).count
+            }
+          end
+        end
+
+        describe 'when too_many_login_attempts' do
+          before do
+            stub_const 'RateLimiting::MAX_LOGIN_ATTEMPTS_PER_USER', max_attempts_per_user
+          end
+
+          let(:email) { FactoryBot.create(:email_address, user: user, verified: true) }
+          let(:user) { FactoryBot.create(:user) }
+          let(:max_attempts_per_user) { 0 }
+
+          it 'creates a security log' do
+            expect {
+              post('login', params: { login_form: { email: email.value, password: 'wrongpassword' } })
+            }.to change {
+              SecurityLog.where(
+                event_type: :sign_in_failed,
+                event_data: {
+                  reason: :too_many_login_attempts,
+                  user: user
+                }
+              ).count
+            }
+          end
         end
 
         it 'saves the email to the session' do
