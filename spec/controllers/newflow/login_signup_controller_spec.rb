@@ -189,7 +189,7 @@ module Newflow
             signup: {
               first_name: 'Bryan',
               last_name: 'Dimas',
-              email: '', # cause it to fail
+              email: '1', # cause it to fail
               password: 'password',
               newsletter: false,
               terms_accepted: true,
@@ -203,6 +203,16 @@ module Newflow
           post(:student_signup, params: params)
           expect(response).to render_template(:student_signup_form)
           expect(assigns(:"handler_result").errors).to  be_present
+        end
+
+        it 'creates a security log' do
+          EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new(expecting: false)
+
+          expect {
+            post(:student_signup, params: params)
+          }.to change {
+            SecurityLog.sign_up_failed.count
+          }
         end
       end
     end

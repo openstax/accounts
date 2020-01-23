@@ -26,6 +26,8 @@ module Newflow
     end
 
     def handle
+      outputs.email = signup_params.email
+
       if LookupUsers.by_verified_email(signup_params.email).first
         fatal_error(
           code: :email_taken,
@@ -85,12 +87,14 @@ module Newflow
       @email = EmailAddress.create(
         value: signup_params.email.downcase, user_id: outputs.user.id
       )
+
       # Customize the error message about having an invalid email domain
       if @email.errors && @email.errors.types.fetch(:value, {}).include?(:missing_mx_records)
         domain = @email.send(:domain)
         @email.errors.messages[:value][0] = I18n.t(:"login_signup_form.invalid_email_provider", domain: domain)
-        transfer_errors_from(@email, { scope: :email }, :fail_if_errors)
       end
+
+      transfer_errors_from(@email, { scope: :email }, :fail_if_errors)
     end
 
     def send_confirmation_email
