@@ -1,12 +1,11 @@
 module Newflow
-    # Marks an `EmailAddress` as `verified` if it matches the passed-in `EmailAddress`'s pin
-    # and then marks the owner of the email address as 'activated'.
-    class VerifyEmailByCode
+  # Marks an `EmailAddress` as `verified` if it matches the passed-in `EmailAddress`'s pin
+  # and then marks the owner of the email address as 'activated'.
+  class VerifyEmailByCode
     lev_handler
     uses_routine ConfirmByCode,
-               translations: { outputs: { type: :verbatim },
-                               inputs: { type: :verbatim } }
-
+                 translations: { outputs: { type: :verbatim },
+                                 inputs: { type: :verbatim } }
 
     def authorized?
       true
