@@ -4,7 +4,7 @@ module Admin
     class StudentAccountsController < BaseController
       layout 'admin'
   
-      def show
+      def actions
       end
   
       def get_number_of_accounts
@@ -30,7 +30,7 @@ module Admin
       def query(days_num)
         role_type = :student
         user_ids = User.where(role: role_type)
-        return SecurityLog.where(event_type: :sign_up_successful, user_id: user_ids).where('created_at > ?', (days_num.inspect).days.ago).count
+        return SecurityLog.where(event_type: :sign_up_successful, user_id: user_ids).where('created_at > ?', days_num.days.ago).count
       end
   
     end
