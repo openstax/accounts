@@ -9,6 +9,9 @@
     }
 
     @min_passw_length ||= Identity::MIN_PASSWORD_LENGTH
+
+    user_from_signed_params = session[:user_from_signed_params] || {}
+
 %>
 
 <div id="login-signup-form">
@@ -63,16 +66,20 @@
                     %>
                     <%= fh.text_field name: :first_name,
                                 placeholder: I18n.t(:"login_signup_form.first_name_label"),
+                                value: user_from_signed_params['first_name'],
                                 autofocus: true
                     %>
                 </div>
 
                 <div class="content control-group">
-                    <%= label_tag :last_name, I18n.t(:"login_signup_form.last_name_label"),
-                                class: 'field-label required'
+                    <%=
+                        label_tag :last_name, I18n.t(:"login_signup_form.last_name_label"),
+                        class: 'field-label required'
                     %>
-                    <%= fh.text_field name: :last_name,
-                                placeholder: I18n.t(:"login_signup_form.last_name_label")
+                    <%=
+                        fh.text_field name: :last_name,
+                        placeholder: I18n.t(:"login_signup_form.last_name_label"),
+                        value: user_from_signed_params['last_name']
                     %>
                 </div>
 
@@ -81,7 +88,7 @@
                     <%=
                         fh.text_field(
                             name: :email,
-                            value: suggested_login_username,
+                            value: user_from_signed_params.dig('signed_external_data', 'email'),
                             placeholder: I18n.t(:"login_signup_form.email_placeholder")
                         )
                     %>

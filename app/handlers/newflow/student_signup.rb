@@ -16,7 +16,7 @@ module Newflow
       validates :first_name, presence: true
       validates :last_name, presence: true
       validates :email, presence: true
-      validates :password, presence: true
+      # note: password is not req'd when STUDENT arrives with signed parameters (unlike Educators)
     end
 
   protected #################
@@ -36,18 +36,27 @@ module Newflow
         )
       end
 
-      create_user
-      create_identity
-      create_authentication
-      agree_to_terms
+      if options[:user_from_signed_params].present?
+        outputs.user = User.find_by!(id: options[:user_from_signed_params]['id'])
+      else
+        outputs.user = create_user
+
+        run(::SetPassword,
+          user: outputs.user,
+          password: signup_params.password,
+          password_confirmation: signup_params.password
+        )
+      end
+
       create_email_address
+      agree_to_terms
       send_confirmation_email
     end
 
   private ###################
 
     def create_user
-      outputs.user = User.create(
+      user = User.create(
         state: 'unverified',
         role: 'student',
         first_name: signup_params.first_name.camelize,
@@ -55,25 +64,8 @@ module Newflow
         receive_newsletter: signup_params.newsletter,
         source_application: options[:client_app]
       )
-      transfer_errors_from(outputs.user, { type: :verbatim }, :fail_if_errors)
-    end
-
-    def create_identity
-      identity = Identity.create(
-        password: signup_params.password,
-        password_confirmation: signup_params.password,
-        user: outputs.user
-      )
-      transfer_errors_from(identity, { scope: :password }, :fail_if_errors)
-    end
-
-    def create_authentication
-      authentication = Authentication.create(
-        provider: 'identity',
-        user_id: outputs.user.id, uid: outputs.user.identity.id
-      )
-      transfer_errors_from(authentication, { scope: :email }, :fail_if_errors)
-      # TODO: catch error states like if auth already exists for this user
+      transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
+      user
     end
 
     def agree_to_terms

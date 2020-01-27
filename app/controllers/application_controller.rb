@@ -86,4 +86,40 @@ class ApplicationController < ActionController::Base
     @errors.add(false, offending_inputs: on, code: code, message: message)
   end
 
+  def save_new_params_in_session
+    # Store these params in the session so they are available if the lookup_login
+    # fails.  Also these methods perform checks on the alternate signup URL.
+    set_client_app(params[:client_id])
+    set_alternate_signup_url(params[:signup_at])
+
+    # TODO: if feature flag is ON, this is actually doing a redirect, not saving params in session.
+    set_student_signup_role(params[:go] == 'student_signup')
+  end
+
+  def maybe_skip_to_sign_up
+    if %w{signup student_signup}.include?(params[:go])
+      if Settings::Db.store.newflow_feature_flag
+        redirect_to newflow_signup_student_path
+      else
+        redirect_to signup_path
+      end
+    end
+  end
+
+  def store_authorization_url_as_fallback
+    # In case we need to redirect_back, but don't have something to redirect back
+    # to (e.g. no authorization url or referrer), form and store as the fallback
+    # an authorization URL.  Handles the case where the user got sent straight to
+    # the login page.  Only works if we have know the client app.
+
+    client_app = get_client_app
+    return if client_app.nil?
+
+    redirect_uri = client_app.redirect_uri.lines.first.chomp
+    authorization_url = oauth_authorization_url(client_id: client_app.uid,
+                                                redirect_uri: redirect_uri,
+                                                response_type: 'code')
+
+    store_fallback(url: authorization_url) unless authorization_url.nil?
+  end
 end
