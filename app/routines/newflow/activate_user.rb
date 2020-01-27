@@ -2,7 +2,7 @@ module Newflow
   class ActivateUser
     lev_routine
 
-    protected
+    protected ###############
 
     def exec(user)
       push_lead_to_salesforce(user)

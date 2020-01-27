@@ -132,5 +132,72 @@ module Newflow
         screenshot!
       end
     end
+
+    context 'happy path with signed params and feature flag ON' do
+      before do
+        # TURN ON FEATURE FLAG
+        Settings::Db.store.newflow_feature_flag = true
+      end
+
+      background do
+        load 'db/seeds.rb'
+        create_default_application
+      end
+
+      let(:role) do
+        'student'
+      end
+
+      let(:payload) do
+        {
+          role:  role,
+          uuid: SecureRandom.uuid,
+          name:  'Tester McTesterson',
+          email: 'test@example.com',
+          school: 'Testing U'
+        }
+      end
+
+      let(:signed_params) do
+        { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
+      end
+
+      example 'uses the signed parameters' do
+        arrive_from_app(params: signed_params, do_expect: false)
+
+        # expect_sign_up_page # students default to sign-up vs the standard sign-in
+
+        expect(page).to have_field('signup_first_name', with: 'Tester')
+        expect(page).to have_field('signup_last_name', with: 'McTesterson')
+        expect(page).to have_field('signup_email', with: payload[:email])
+        # skip password since it's trusted # fill_in 'signup_password',	with: 'password'
+        check 'signup_newsletter'
+        check 'signup_terms_accepted'
+        screenshot!
+        find('#signup_form_submit_button').click
+        screenshot!
+
+        expect(User.last.external_uuids.where(uuid: payload[:uuid]).exists?).to be(true)
+        expect(User.last.self_reported_school).to eq(payload[:school])
+
+        email = EmailAddress.find_by!(value: payload[:email])
+        fill_in('confirm_pin', with: email.confirmation_pin)
+
+        find('[type=submit]').click
+
+        find('[type=submit]').click
+
+        expect_back_at_app
+
+        expect_validated_records(params: payload)
+      end
+    end
+
+    def expect_validated_records(params:, user: User.last, email_is_verified: true)
+      expect(user.external_uuids.where(uuid: params[:uuid]).exists?).to be(true)
+      expect(user.email_addresses.count).to eq(1)
+      email = user.email_addresses.first
+      expect(email.verified).to be(email_is_verified)
+    end
   end
 end

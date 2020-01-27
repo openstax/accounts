@@ -3,7 +3,17 @@ require 'addressable/uri'
 module AuthenticateMethods
 
   def newflow_authenticate_user!
-    # TODO: use_signed_params if signed_params.present?
+    if signed_params.present?
+      newflow_use_signed_params
+
+      store_url(url: request_url_without_signed_params)
+
+      if signed_params['role'] == 'student'
+        redirect_to newflow_signup_student_path(request.query_parameters) and return
+      else
+        redirect_to newflow_signup_path and return # TODO: this will change when we create the Educator flow
+      end
+    end
 
     return if signed_in?
 
@@ -11,7 +21,7 @@ module AuthenticateMethods
     # try to use them again.
     store_url(url: request_url_without_signed_params)
 
-    permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :newflow).to_h
+    permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :newflow, :bpff).to_h
 
     redirect_to(newflow_login_path(permitted_params))
   end
@@ -59,6 +69,31 @@ module AuthenticateMethods
   #     with signed params with this UUID can be automatically logged in
   def use_signed_params
     auto_login_external_user || prepare_for_new_external_user
+  end
+
+  # When the external site provides signed params they're
+  # requesting the person either be
+  # (1) automatically logged in if their UUID is known to us, or
+  # (2) allowed to log in or sign up where we pre-populate some fields using
+  #     the signed data and remember their external UUID so that future requests
+  #     with signed params with this UUID can be automatically logged in
+  def newflow_use_signed_params
+    auto_login_external_user || newflow_prepare_for_new_external_user
+  end
+
+  def newflow_prepare_for_new_external_user
+    # If we didn't find a user with a linked account to automatically log in,
+    # we do not want to assume that any already-logged-in user owns this signed
+    # params information.
+    # Therefore at this point we sign out whoever is signed in.
+
+    sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
+
+    # Save the signed params data to facilitate either sign in or up
+    # depending on the user's choices
+
+    user = Newflow::UserFromSignedParams.call(signed_params).outputs.user
+    session[:user_from_signed_params] = user
   end
 
   def pre_auth_state_email_available?

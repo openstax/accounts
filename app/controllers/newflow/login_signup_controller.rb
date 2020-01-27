@@ -4,6 +4,10 @@ module Newflow
     layout 'newflow_layout'
     skip_before_action :authenticate_user!
     before_action :newflow_authenticate_user!, only: [:profile_newflow]
+    before_action :save_new_params_in_session, only: [:login_form]
+    before_action :maybe_skip_to_sign_up, only: [:login_form]
+    before_action :store_authorization_url_as_fallback, only: [:login_form, :login, :signup_form, :signup]
+    before_action :known_signup_role_redirect, only: [:login_form]
     before_action :restart_if_missing_unverified_user, only: [:verify_email, :verify_pin, :change_your_email]
     before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :signup_form, :student_signup_form, :welcome]
     before_action :set_active_banners
@@ -41,6 +45,7 @@ module Newflow
         StudentSignup,
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
+        user_from_signed_params: session[:user_from_signed_params],
         success: lambda {
           save_unverified_user(@handler_result.outputs.user)
           security_log :student_signed_up, { user: @handler_result.outputs.user }
@@ -254,6 +259,14 @@ module Newflow
     end
 
   private #################
+
+    def known_signup_role_redirect
+      known_role = session.fetch(:signup_role, nil)
+
+      if known_role && known_role == 'student'
+        redirect_to newflow_signup_student_path(request.query_parameters) # TODO: when we create the Educator flow, redirect to there.
+      end
+    end
 
     def cache_client_app
       set_client_app(params[:client_id])
