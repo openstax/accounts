@@ -6,6 +6,7 @@ module Newflow
     uses_routine ConfirmByCode,
                  translations: { outputs: { type: :verbatim },
                                  inputs: { type: :verbatim } }
+    uses_routine ActivateUser
 
     def authorized?
       true
