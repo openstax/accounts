@@ -2,6 +2,7 @@ module Newflow
   class ConfirmOauthInfo
     lev_handler
     uses_routine AgreeToTerms
+    uses_routine ActivateUser
 
     paramify :info do
       attribute :first_name
@@ -29,7 +30,7 @@ module Newflow
 
     def handle
       agree_to_terms(@user)
-      @user.update_attributes(state: 'activated')
+      run(ActivateUser, @user)
       push_lead_to_salesforce(@user)
 
       outputs.user = @user
