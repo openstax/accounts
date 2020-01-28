@@ -8,12 +8,17 @@ module AuthenticateMethods
 
       store_url(url: request_url_without_signed_params)
 
-      if session[:user_from_signed_params]
-        redirect_to newflow_login_path(request.query_parameters) and return
+      # Redirect based on the user's role and whether they are trying login or sign up
+      # TODO: of course, this will change when we create the Educator flow.
+      if (sp_user = session[:user_from_signed_params])
+        if sp_user['state'] == 'unverified'
+          redirect_to newflow_signup_student_path(request.query_parameters) and return
+        else
+          redirect_to newflow_login_path(request.query_parameters) and return
+        end
       elsif signed_params['role'] == 'student'
         redirect_to newflow_signup_student_path(request.query_parameters) and return
       else
-        # TODO: this will change when we create the Educator flow
         redirect_to newflow_signup_path(request.query_parameters) and return
       end
     end
