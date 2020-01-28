@@ -228,4 +228,20 @@ module ApplicationHelper
     end
   end
 
+  def suggested_login_username
+    if !params[:username_or_email] &&
+       pre_auth_state.try!(:signed?) &&
+       LookupUsers.by_verified_email(pre_auth_state.signed_data['email'])
+
+      return pre_auth_state.signed_data['email']
+    end
+    params[:username_or_email]
+  end
+
+  def newflow_suggested_login_username
+    signed_email = session[:user_from_signed_params].try(:dig, 'signed_external_data', 'email')
+    if signed_email && LookupUsers.by_verified_email(signed_email)
+      return signed_email
+    end
+  end
 end

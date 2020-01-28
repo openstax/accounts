@@ -1,8 +1,3 @@
-<%
-  suggested_username = pre_auth_state && pre_auth_state.signed? ?
-        pre_auth_state.signed_data['email'] : nil
-%>
-
 <div id="login-signup-form">
     <div class="content">
         <%= render partial: 'tab_group' , locals: { active_class: 'login--active' } %>
@@ -46,7 +41,7 @@
                         %>
                         <%# input type is text instead of email bc we also support usernames %>
                         <%= fh.text_field name: :email,
-                                    value: suggested_username,
+                                    value: newflow_suggested_login_username,
                                     placeholder: I18n.t(:"login_signup_form.email_placeholder"),
                                     autofocus: true
                         %>
