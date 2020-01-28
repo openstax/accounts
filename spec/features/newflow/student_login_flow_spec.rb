@@ -33,6 +33,53 @@ feature 'student login flow', js: true do
           screenshot!
         end
       end
+
+      describe 'arrivinng with "signed parameters" and feature flag is ON' do
+        before do
+          # TURN ON FEATURE FLAG
+          Settings::Db.store.newflow_feature_flag = true
+        end
+
+        background do
+          load 'db/seeds.rb'
+          create_default_application
+        end
+
+        let(:user) do
+          u = create_newflow_user(payload[:email])
+          # u.update_attributes(role: role)
+          u
+        end
+
+        let(:role) do
+          'student'
+        end
+
+        let(:payload) do
+          {
+            role:  role,
+            uuid: SecureRandom.uuid,
+            name:  'Tester McTesterson',
+            email: 'test@example.com',
+            school: 'Testing U'
+          }
+        end
+
+        let(:signed_params) do
+          { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
+        end
+
+        it 'pre-fills the email address field and links user with external uuid' do
+          user # create it
+          arrive_from_app(params: signed_params, do_expect: false)
+          expect(page).to have_field('login_form_email', with: payload[:email])
+          fill_in('login_form_password', with: 'password')
+          find('[type=submit]').click
+          expect_back_at_app
+          expect(user.external_uuids.where(uuid: payload[:uuid])).to exist
+        end
+      end
+
     end
 
     describe 'with no return parameter specified, when feature flag is on' do

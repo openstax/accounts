@@ -8,10 +8,13 @@ module AuthenticateMethods
 
       store_url(url: request_url_without_signed_params)
 
-      if signed_params['role'] == 'student'
+      if session[:user_from_signed_params]
+        redirect_to newflow_login_path(request.query_parameters) and return
+      elsif signed_params['role'] == 'student'
         redirect_to newflow_signup_student_path(request.query_parameters) and return
       else
-        redirect_to newflow_signup_path and return # TODO: this will change when we create the Educator flow
+        # TODO: this will change when we create the Educator flow
+        redirect_to newflow_signup_path(request.query_parameters) and return
       end
     end
 
@@ -91,8 +94,7 @@ module AuthenticateMethods
 
     # Save the signed params data to facilitate either sign in or up
     # depending on the user's choices
-
-    user = Newflow::UserFromSignedParams.call(signed_params).outputs.user
+    user = Newflow::FindOrCreateUserFromSignedParams.call(signed_params).outputs.user
     session[:user_from_signed_params] = user
   end
 
