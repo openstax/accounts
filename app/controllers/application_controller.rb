@@ -97,12 +97,14 @@ class ApplicationController < ActionController::Base
   end
 
   def maybe_skip_to_sign_up
-    if %w{signup student_signup}.include?(params[:go])
-      if Settings::Db.store.newflow_feature_flag
+    if Settings::Db.store.newflow_feature_flag
+      if %w{student_signup}.include?(params[:go])
         redirect_to newflow_signup_student_path
-      else
-        redirect_to signup_path
+      elsif %w{signup}.include?(params[:go])
+        redirect_to newflow_signup_path
       end
+    elsif %w{signup student_signup}.include?(params[:go])
+        redirect_to signup_path
     end
   end
 
