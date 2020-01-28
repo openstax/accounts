@@ -30,7 +30,7 @@ module Newflow
 
     def handle
       agree_to_terms(@user)
-      run(ActivateUser, @user)
+      @user.update_attributes(state: 'activated')
       push_lead_to_salesforce(@user)
 
       outputs.user = @user
