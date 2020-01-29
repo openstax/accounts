@@ -19,7 +19,7 @@ module ProfileHelper
       end
 
     icons = [
-      'glyphicon-pencil edit--newflow', 'glyphicon-trash delete', 'glyphicon-plus add--newflow',
+      'glyphicon-pencil edit--newflow', 'glyphicon-trash delete--newflow', 'glyphicon-plus add--newflow',
     ]
 
     snippet = <<-SNIPPET
@@ -49,6 +49,8 @@ module ProfileHelper
       case provider
       when 'identity' then ['key', (I18n.t :"users.edit.password")]
       when 'google_oauth2' then ['google', 'Google']
+      when 'facebooknewflow' then ['facebook', 'Facebook']
+      when 'googlenewflow' then ['google', 'Google']
       else [ provider, provider.capitalize ]
       end
 
