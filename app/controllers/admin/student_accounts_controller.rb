@@ -1,5 +1,3 @@
-require 'date'
-
 module Admin
     class StudentAccountsController < BaseController
       layout 'admin'
