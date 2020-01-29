@@ -25,5 +25,4 @@ bundle install --without development test
 rbenv rehash
 
 RAILS_ENV=production bundle exec rake assets:precompile
-
 echo Done!
