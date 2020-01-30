@@ -210,13 +210,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resource :student_accounts, only: [], controller: :student_accounts do
-      collection do
-        get :actions
-        put :get_number_of_accounts
-      end
-    end
-
     resources :pre_auth_states, only: [:index]
 
     resources :banners, except: :show

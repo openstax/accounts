@@ -15,5 +15,9 @@
   Pending Faculty: <%= User.pending_faculty.count %> <br>
   Rejected Faculty: <%= User.rejected_faculty.count %> <br>
   Confirmed Faculty with Unknown Roles: <%= User.unknown_role.confirmed_faculty.count %> <br>
+  <hr>
 </p>
+
+<h3>Students</h3>
+<p>Student accounts created since July 1: <%= User.student.where(created_at: DateTime.beginning_of_rice_fiscal_year..DateTime.now).count %>
 
