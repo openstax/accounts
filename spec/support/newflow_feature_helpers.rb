@@ -29,6 +29,32 @@ def newflow_log_in_user(username_or_email, password)
   expect(page).to have_no_missing_translations
 end
 
+def fill_in_signup_form(email: nil, password: nil, first_name: nil, last_name: nil, newsletter: false)
+  fill_in('signup_email', with: email) if email
+  fill_in('signup_password', with: password) if password
+  fill_in('signup_first_name', with: password) if first_name
+  fill_in('signup_last_name', with: password) if last_name
+  check('signup_newsletter') if newsletter
+  check('signup_terms_accepted')
+end
+
+
 def strip_html(text)
   ActionView::Base.full_sanitizer.sanitize(text)
+end
+
+def turn_on_feature_flag # TODO: move into general spec helpers, not just feature spec helpers
+  Settings::Db.store.newflow_feature_flag = true
+end
+
+def expect_sign_up_welcome_tab
+  expect(page).to have_no_missing_translations
+  expect(page).to have_content(t :"login_signup_form.welcome_page_header")
+end
+
+def newflow_click_sign_up(role:)
+  click_on (t :"login_signup_form.sign_up") # unless already there
+  expect(page).to have_no_missing_translations
+  expect(page).to have_content(t :"login_signup_form.welcome_page_header")
+  find(".join-as__role.#{role}").click
 end
