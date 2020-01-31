@@ -5,8 +5,7 @@ feature 'student login flow', js: true do
     load 'db/seeds.rb' # creates terms of use and privacy policy contracts
     create_newflow_user('user@openstax.org', 'password')
 
-    # TURN ON FEATURE FLAG
-    Settings::Db.store.newflow_feature_flag = true
+    turn_of_feature_flag
   end
 
   context 'happy path' do
@@ -36,8 +35,7 @@ feature 'student login flow', js: true do
 
       describe 'arrivinng with "signed parameters" and feature flag is ON' do
         before do
-          # TURN ON FEATURE FLAG
-          Settings::Db.store.newflow_feature_flag = true
+          turn_on_feature_flag
         end
 
         background do
