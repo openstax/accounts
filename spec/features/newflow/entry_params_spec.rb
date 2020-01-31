@@ -1,16 +1,19 @@
 require 'rails_helper'
 
 feature "Params given on entry", js: true do
+  before do
+    turn_on_feature_flag
+  end
 
   context "go=signup" do
     scenario "arriving from app" do
       arrive_from_app(params: {go: "signup"}, do_expect: false)
-      expect_sign_up_page
+      expect_sign_up_welcome_tab
     end
 
     scenario "straight to login" do
-      visit 'i/login?go=signup'
-      expect_sign_up_page
+      visit 'login?go=signup'
+      expect_sign_up_welcome_tab
     end
   end
 
@@ -33,7 +36,7 @@ feature "Params given on entry", js: true do
     end
 
     scenario "straight to login" do
-      visit "i/login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
+      visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
       click_link(t :"login_signup_form.sign_up")
       expect(page).to have_content(alt_signup_content)
     end
