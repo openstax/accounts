@@ -135,8 +135,7 @@ module Newflow
 
     context 'happy path with signed params and feature flag ON' do
       before do
-        # TURN ON FEATURE FLAG
-        Settings::Db.store.newflow_feature_flag = true
+        turn_on_feature_flag
       end
 
       background do
