@@ -5,22 +5,6 @@ module AuthenticateMethods
   def newflow_authenticate_user!
     if signed_params.present?
       newflow_use_signed_params
-
-      store_url(url: request_url_without_signed_params)
-
-      # Redirect based on the user's role and whether they are trying login or sign up
-      # TODO: of course, this will change when we create the Educator flow.
-      if (sp_user = session[:user_from_signed_params])
-        if sp_user['state'] == 'unverified'
-          redirect_to newflow_signup_student_path(request.query_parameters) and return
-        else
-          redirect_to newflow_login_path(request.query_parameters) and return
-        end
-      elsif signed_params['role'] == 'student'
-        redirect_to newflow_signup_student_path(request.query_parameters) and return
-      else
-        redirect_to newflow_signup_path(request.query_parameters) and return
-      end
     end
 
     return if signed_in?
@@ -28,6 +12,23 @@ module AuthenticateMethods
     # Drop signed params from where we will go back after log in so we don't
     # try to use them again.
     store_url(url: request_url_without_signed_params)
+
+    # Redirect based on the user's role and whether they are trying login or sign up
+    # TODO: of course, this will change when we create the Educator flow.
+    if (sp_user = session[:user_from_signed_params])
+      if sp_user['state'] == 'unverified'
+        redirect_to newflow_signup_path(request.query_parameters) and return
+      else
+        redirect_to newflow_login_path(request.query_parameters) and return
+      end
+    elsif signed_params['role'] == 'student'
+      redirect_to newflow_signup_student_path(request.query_parameters) and return
+    else
+      redirect_to newflow_signup_path(request.query_parameters) and return
+    end
+
+    # Drop signed params from where we will go back after log in so we don't
+    # try to use them again.
 
     permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :newflow, :bpff).to_h
 
@@ -50,7 +51,7 @@ module AuthenticateMethods
       # when they arrive at the oauth_authorization path in order for them to be redirected to the
       # newflow login instead of the old login page.
       # We might want to undo this when we release the new flow.
-      permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :newflow).to_h
+      permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup).to_h
       destination =  params[:newflow].present? ? newflow_login_path(permitted_params) : main_app.login_path(permitted_params)
 
       redirect_to(destination)
@@ -95,7 +96,7 @@ module AuthenticateMethods
     # params information.
     # Therefore at this point we sign out whoever is signed in.
 
-    sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
+    prepare_for_new_external_user
 
     # Save the signed params data to facilitate either sign in or up
     # depending on the user's choices
