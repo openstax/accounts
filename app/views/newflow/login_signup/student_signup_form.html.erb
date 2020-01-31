@@ -94,35 +94,39 @@
                     %>
                 </div>
 
-                <div class="content control-group">
-                    <div id="password-field-container">
-                        <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
-                                                  class: 'field-label required'
-                        %>
-                        <div class="input-with-tooltip">
-                            <%=
-                                fh.text_field(
-                                    name: :password,
-                                    type: :password,
-                                    placeholder: I18n.t(:"login_signup_form.password_label")
-                                )
+                <%# Hide the password field if student contains signed parameters %>
+                <%#     which means they're coming from an LMS %>
+                <% unless user_from_signed_params['role'] == 'student' && user_from_signed_params['signed_external_data'].present? %>
+                    <div class="content control-group">
+                        <div id="password-field-container">
+                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                                                    class: 'field-label required'
                             %>
-                            <div class="tooltip">
-                                <h4>Password requirements</h4>
-                                <div>
-                                    <i id="password-requirements-checkmark" class="fa fa-check-circle">
-                                    </i>
-                                    <%= @min_passw_length&.to_s %> characters minimum
+                            <div class="input-with-tooltip">
+                                <%=
+                                    fh.text_field(
+                                        name: :password,
+                                        type: :password,
+                                        placeholder: I18n.t(:"login_signup_form.password_label")
+                                    )
+                                %>
+                                <div class="tooltip">
+                                    <h4>Password requirements</h4>
+                                    <div>
+                                        <i id="password-requirements-checkmark" class="fa fa-check-circle">
+                                        </i>
+                                        <%= @min_passw_length&.to_s %> characters minimum
+                                    </div>
                                 </div>
-                            </div>
 
-                            <span id="show-hide-button">
-                                <span class="toggle-show-hide">SHOW</span>
-                                <span class="toggle-show-hide" style="display: none">HIDE</span>
-                            </span>
+                                <span id="show-hide-button">
+                                    <span class="toggle-show-hide">SHOW</span>
+                                    <span class="toggle-show-hide" style="display: none">HIDE</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <% end  %>
 
                 <div class="content control-group checkboxes-section">
                     <div>
