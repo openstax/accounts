@@ -5,7 +5,7 @@ feature 'student login flow', js: true do
     load 'db/seeds.rb' # creates terms of use and privacy policy contracts
     create_newflow_user('user@openstax.org', 'password')
 
-    turn_of_feature_flag
+    turn_on_feature_flag
   end
 
   context 'happy path' do
