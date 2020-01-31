@@ -4,7 +4,11 @@ module AuthenticateMethods
 
   def newflow_authenticate_user!
     if signed_params.present?
-      newflow_use_signed_params
+      if signed_params['role'] != 'student'
+        use_signed_params
+      else
+        newflow_use_signed_params
+      end
     end
 
     return if signed_in?
