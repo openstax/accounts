@@ -39,7 +39,7 @@ en:
     email_label: Email
     password_label: Password
     pin_label: Confirm PIN
-    pin_placeholder: Enter 6-PIN here
+    pin_placeholder: Enter 6-digit PIN here
     pin_not_correct: This PIN is incorrect. Please enter the correct PIN.
     continue_button: Continue
     forgot_password: Forgot your password?
