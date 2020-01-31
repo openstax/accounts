@@ -4,7 +4,7 @@ module Newflow
     layout 'newflow_layout'
     skip_before_action :authenticate_user!
     before_action :newflow_authenticate_user!, only: [:profile_newflow]
-    before_action :save_new_params_in_session, only: [:login_form]
+    before_action :save_new_params_in_session, only: [:login_form, :welcome]
     before_action :maybe_skip_to_sign_up, only: [:login_form]
     before_action :store_authorization_url_as_fallback, only: [:login_form, :login, :signup_form, :signup]
     before_action :known_signup_role_redirect, only: [:login_form]
