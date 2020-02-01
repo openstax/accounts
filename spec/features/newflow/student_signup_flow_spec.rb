@@ -164,7 +164,8 @@ module Newflow
       example 'uses the signed parameters' do
         arrive_from_app(params: signed_params, do_expect: false)
 
-        # expect_sign_up_page # students default to sign-up vs the standard sign-in
+        # TODO: Future feature: go straight to the STUDENT signup form
+        find('.join-as__role.student').click
 
         expect(page).to have_field('signup_first_name', with: 'Tester')
         expect(page).to have_field('signup_last_name', with: 'McTesterson')
