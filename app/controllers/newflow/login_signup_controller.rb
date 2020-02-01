@@ -154,18 +154,12 @@ module Newflow
     end
 
     def change_password_form
-      handle_with(
-        FindUserByToken,
-        success: lambda {
-          sign_in!(@handler_result.outputs.user)
-          security_log(:change_password_form_loaded)
-          render :change_password_form
-        },
-        failure: lambda {
-          security_log(:change_password_form_not_loaded, token: params[:token])
-          render status: 400
-        }
-      )
+      if user_signin_is_too_old? # reauthenticate user
+        @email = current_users_resetting_password_email
+        render :login_form
+      else
+        render :change_password_form
+      end
     end
 
     def change_password
