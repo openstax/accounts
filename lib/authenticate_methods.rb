@@ -28,7 +28,7 @@ module AuthenticateMethods
     elsif signed_params['role'] == 'student'
       redirect_to newflow_signup_student_path(request.query_parameters) and return
     else
-      redirect_to newflow_signup_path(request.query_parameters) and return
+      redirect_to newflow_login_path(request.query_parameters) and return
     end
 
     # Drop signed params from where we will go back after log in so we don't
