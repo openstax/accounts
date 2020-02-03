@@ -413,6 +413,7 @@ module Newflow
     describe 'POST #reset_password' do
       context 'success' do
           before do
+            create_newflow_user('user@openstax.org')
             expect_any_instance_of(ResetPassword).to receive(:call).once.and_call_original
           end
 
