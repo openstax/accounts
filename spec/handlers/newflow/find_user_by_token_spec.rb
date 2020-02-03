@@ -5,7 +5,9 @@ module Newflow
     context 'when success' do
       before do
         user = create_newflow_user('user@openstax.org')
-        @token = user.refresh_login_token
+        user.refresh_login_token
+        user.save
+        @token = user.login_token
       end
 
       let(:params) do
