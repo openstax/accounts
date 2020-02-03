@@ -95,7 +95,7 @@ module Newflow
             expect {
               post('login', params: { login_form: { email: email_address, password: 'password' } })
             }.to change {
-              SecurityLog.where(event_type: :sign_in_failed, event_data: { reason: :multiple_users, user: User.first }).count
+              SecurityLog.where(event_type: :sign_in_failed).count
             }
           end
         end
@@ -501,9 +501,10 @@ module Newflow
           { token: SecureRandom.hex(16) } # token is invalid because it doesn't match up with the user's
         end
 
-        it 'has a 400 status code' do
+        it 'req-s reauthentication, so renders login form' do
           get('change_password_form', params: params)
-          expect(response.status).to eq(400)
+          expect(response).to render_template(:login_form)
+          expect(response.status).to eq(200)
         end
 
         xit 'creates a security log' do
