@@ -147,7 +147,9 @@ module Newflow
           render :reset_password_email_sent
         },
         failure: lambda {
-          security_log :reset_password_failed, user: @handler_result.outputs.user
+          user = @handler_result.outputs.user
+          code = @handler_result.errors.first.code
+          security_log :reset_password_failed, { user: user, reason: code }
           render :reset_password_form
         }
       )

@@ -21,6 +21,12 @@ module Newflow
     def handle
       outputs.email = reset_password_form_params.email
       user = LookupUsers.by_verified_email(outputs.email).first
+
+      fatal_error(code: :cannot_find_user,
+        offending_inputs: :email,
+        message: I18n.t(:"login_signup_form.cannot_find_user")
+      ) unless user.present?
+
       outputs.user = user
 
       return unless user.present?
