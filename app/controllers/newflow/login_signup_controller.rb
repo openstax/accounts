@@ -31,8 +31,8 @@ module Newflow
           code = @handler_result.errors.first.code
           case code
           when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
-            @handler_result.outputs.user
-            security_log(:sign_in_failed, { reason: code, user: @handler_result.outputs.user })
+            user = @handler_result.outputs.user
+            security_log(:sign_in_failed, { reason: code, user: user }) # also store email?
           end
 
           render :login_form
@@ -154,6 +154,10 @@ module Newflow
     end
 
     def change_password_form
+      if (user = FindUserByToken.call(params: params).outputs.user )
+        sign_in!(user)
+      end
+
       if user_signin_is_too_old? # reauthenticate user
         @email = current_users_resetting_password_email
         render :login_form
