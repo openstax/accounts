@@ -5,13 +5,15 @@ module Newflow
 
     paramify :change_password_form do
       attribute :password, type: String
+      attribute :token, type: String
+
       validates :password, presence: true
     end
 
     protected #################
 
     def setup
-      @user = options[:user]
+      @user = options[:user] || User.find_by(login_token: change_password_form_params.token)
     end
 
     def authorized?
