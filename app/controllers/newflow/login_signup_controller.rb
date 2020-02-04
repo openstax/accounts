@@ -347,5 +347,22 @@ module Newflow
 
       @banners ||= Banner.active
     end
+
+    def store_authorization_url_as_fallback
+      # In case we need to redirect_back, but don't have something to redirect back
+      # to (e.g. no authorization url or referrer), form and store as the fallback
+      # an authorization URL.  Handles the case where the user got sent straight to
+      # the login page.  Only works if we have know the client app.
+
+      client_app = get_client_app
+      return if client_app.nil?
+
+      redirect_uri = client_app.redirect_uri.lines.first.chomp
+      authorization_url = oauth_authorization_url(client_id: client_app.uid,
+                                                  redirect_uri: redirect_uri,
+                                                  response_type: 'code')
+
+      store_fallback(url: authorization_url) unless authorization_url.nil?
+    end
 end
 end
