@@ -442,8 +442,6 @@ module Newflow
           end
 
           xit 'creates a Security Log' do
-            user = create_newflow_user('user@openstax.org')
-
             expect {
               post('reset_password', params: params)
             }.to change {

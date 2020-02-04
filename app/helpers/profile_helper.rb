@@ -19,7 +19,7 @@ module ProfileHelper
       end
 
     icons = [
-      'glyphicon-pencil edit--newflow', 'glyphicon-trash delete', 'glyphicon-plus add--newflow',
+      'glyphicon-pencil edit--newflow', 'glyphicon-trash delete--newflow', 'glyphicon-plus add--newflow',
     ]
 
     snippet = <<-SNIPPET

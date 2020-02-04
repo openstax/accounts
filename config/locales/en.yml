@@ -93,6 +93,8 @@ en:
     too_many_login_attempts: >-
       You have made too many login attempts recently. Please
       reset your password or try again later.
+    profile_newflow_page_header: My Account
+    how_you_log_in: How you log in
 
   student_profile:
     enable_other_sign_in_options: Enable other login options

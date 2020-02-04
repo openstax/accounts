@@ -258,6 +258,35 @@ module Newflow
       )
     end
 
+    def remove_auth_strategy
+      if user_signin_is_too_old? # then: reauthenticate user
+        store_url
+        location = main_app.reauthenticate_form_path(request.query_parameters)
+
+        respond_to do |format|
+          format.json{ render json: { location: location } }
+          format.any{ redirect_to :reauthenticate_form_path }
+        end
+      else
+        handle_with(
+          AuthenticationsDelete,
+          success: lambda do
+            authentication = @handler_result.outputs.authentication
+            security_log :authentication_deleted,
+                        authentication_id: authentication.id,
+                        authentication_provider: authentication.provider,
+                        authentication_uid: authentication.uid
+            render status: :ok,
+                  plain: (I18n.t :"controllers.authentications.authentication_removed",
+                                authentication: params[:provider].titleize)
+          end,
+          failure: lambda do
+            render status: 422, plain: @handler_result.errors.map(&:message).to_sentence
+          end
+        )
+      end
+    end
+
   private #################
 
     def known_signup_role_redirect
