@@ -62,7 +62,7 @@ module Newflow
           expect {
             post('login', params: params)
           }.to change {
-            SecurityLog.where(event_type: :sign_in_successful, user: User.last).count
+            SecurityLog.where(event_type: :sign_in_successful).count
           }
         end
       end

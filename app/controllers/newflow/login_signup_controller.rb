@@ -8,7 +8,8 @@ module Newflow
     before_action :store_authorization_url_as_fallback, only: [:login_form, :login, :student_signup_form, :student_signup]
     before_action :maybe_skip_to_sign_up, only: [:login_form]
     before_action :known_signup_role_redirect, only: [:login_form]
-    before_action :restart_if_missing_unverified_user, only: [:verify_email, :verify_pin, :change_your_email]
+    before_action :restart_if_missing_unverified_user,
+      only: [:verify_email, :verify_pin, :change_your_email, :confirmation_form, :confirmation_form_updated_email]
     before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :student_signup_form, :welcome]
     before_action :set_active_banners
     before_action :cache_client_app, only: [:login, :welcome]
@@ -61,8 +62,6 @@ module Newflow
     end
 
     def confirmation_form
-      redirect_to newflow_signup_path and return unless unverified_user.present?
-
       @first_name = unverified_user.first_name
       @email = unverified_user.email_addresses.first.value
     end
@@ -81,8 +80,6 @@ module Newflow
     end
 
     def confirmation_form_updated_email
-      redirect_to newflow_signup_path and return unless unverified_user.present?
-
       @email = unverified_user.email_addresses.first.value
     end
 
