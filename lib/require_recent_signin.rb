@@ -4,7 +4,11 @@ module RequireRecentSignin
 
   def reauthenticate_user!
     store_url
-    location = main_app.reauthenticate_path(params.permit(:client_id).to_h)
+    location = if Settings::Db.store.newflow_feature_flag
+        main_app.reauthenticate_form_path(request.query_parameters)
+      else
+        main_app.reauthenticate_path(params.permit(:client_id).to_h)
+      end
 
     respond_to do |format|
       format.json{ render json: { location: location } }

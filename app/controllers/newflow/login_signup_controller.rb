@@ -158,11 +158,9 @@ module Newflow
     def change_password_form
       if (user = FindUserByToken.call(params: params).outputs.user )
         sign_in!(user)
-      end
-
-      if user_signin_is_too_old? # reauthenticate user
-        @email = current_users_resetting_password_email
-        render :login_form
+        render :change_password_form
+      elsif user_signin_is_too_old?
+        reauthenticate_user_if_signin_is_too_old!
       else
         render :change_password_form
       end
@@ -170,21 +168,22 @@ module Newflow
 
     def change_password
       # TODO: This check again here in case a long time elapsed between the GET and the POST
-      # user_signin_is_too_old?
-      # reauthenticate_user_if_signin_is_too_old!
-
-      handle_with(
-        ChangePassword,
-        user: current_user,
-        success: lambda {
-          security_log :password_reset
-          redirect_back(fallback_location: profile_newflow_url)
-        },
-        failure: lambda {
-          security_log :password_reset_failed
-          render :change_password_form, status: 400
-        }
-      )
+      if user_signin_is_too_old?
+        reauthenticate_user_if_signin_is_too_old!
+      else
+        handle_with(
+          ChangePassword,
+          user: current_user,
+          success: lambda {
+            security_log :password_reset
+            redirect_back(fallback_location: profile_newflow_url)
+          },
+          failure: lambda {
+            security_log :password_reset_failed
+            render :change_password_form, status: 400
+          }
+        )
+      end
     end
 
     def logout
