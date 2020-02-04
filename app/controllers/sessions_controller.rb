@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
   include RequireRecentSignin
   include RateLimiting
 
-  before_action :newflow_feature_flag, only: [:start]
+  before_action :redirect_to_newflow_if_enabled, only: [:start]
 
   skip_before_action :authenticate_user!,
                      only: [:start, :lookup_login, :authenticate, :redirect_back,
