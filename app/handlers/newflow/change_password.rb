@@ -13,7 +13,7 @@ module Newflow
     protected #################
 
     def setup
-      @user = options[:user] || User.find_by(login_token: change_password_form_params.token)
+      @user = options[:user] || User.find_by(login_token: params[:token])
     end
 
     def authorized?

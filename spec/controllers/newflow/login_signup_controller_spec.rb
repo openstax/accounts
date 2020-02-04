@@ -474,11 +474,21 @@ module Newflow
     describe 'GET #change_password_form' do
       context 'success - when valid token' do
         let(:params) do
-          user = create_newflow_user('user@openstax.org')
           user.refresh_login_token
           user.save
 
           { token:  user.login_token }
+        end
+
+        let(:user) do
+          create_newflow_user('user@openstax.org')
+        end
+
+        it 'logs in the user found by token or whateva' do
+          some_other_user = FactoryBot.create(:user)
+          get('change_password_form', params: params)
+          expect(controller.current_user.id).to eq(user.id)
+          expect(controller.current_user.id).not_to eq(some_other_user.id)
         end
 
         it 'has a 200 status code' do
@@ -500,10 +510,10 @@ module Newflow
           { token: SecureRandom.hex(16) } # token is invalid because it doesn't match up with the user's
         end
 
-        it 'req-s reauthentication, so renders login form' do
+        it 'req-s reauthentication' do
           get('change_password_form', params: params)
-          expect(response).to render_template(:login_form)
-          expect(response.status).to eq(200)
+          expect(response.status).to eq(302)
+          expect(response).to redirect_to(reauthenticate_path)
         end
 
         xit 'creates a security log' do
@@ -518,8 +528,13 @@ module Newflow
 
     describe 'POST #change_password' do
       before do
-        user = create_newflow_user('user@openstax.org', 'password')
+        # bypass re-authentication
+        allow_any_instance_of(RequireRecentSignin).to receive(:user_signin_is_too_old?).and_return(false)
         mock_current_user(user)
+      end
+
+      let(:user) do
+        create_newflow_user('user@openstax.org', 'password')
       end
 
       context 'success' do
@@ -552,6 +567,11 @@ module Newflow
       end
 
       context 'failure' do
+        before do
+          # bypass re-authentication
+          allow_any_instance_of(RequireRecentSignin).to receive(:user_signin_is_too_old?).and_return(false)
+        end
+
         let(:params) do
           {
             change_password_form: {
