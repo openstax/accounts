@@ -1,7 +1,4 @@
 class AuthenticationsController < ApplicationController
-
-  include RequireRecentSignin
-
   before_action :reauthenticate_user_if_signin_is_too_old!
 
   # Remove authentication method (OAuth provider) from account

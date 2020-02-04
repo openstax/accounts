@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   scope controller: 'newflow/login_signup' do
     # Login form
     get 'i/login', action: :login_form, as: :newflow_login
+    get 'i/reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
     post 'i/login', action: :login
 
     # Routes for all the steps/forms of the sign up flow
@@ -27,6 +28,7 @@ Rails.application.routes.draw do
     get 'i/auth/:provider', action: :oauth_callback, as: :newflow_auth
     post 'i/auth/:provider', action: :oauth_callback
     get 'i/auth/:provider/callback', action: :oauth_callback
+    delete 'i/auth/:provider', action: :remove_auth_strategy
 
     # For when you sign up with a social provider
     get 'i/confirm_your_info', action: :confirm_your_info

@@ -6,6 +6,7 @@ class AuthenticationOption
     _.bindAll(@, _.functions(@)...)
     this.$el = $(@el)
     this.$el.find('.delete').click(@confirmDelete)
+    this.$el.find('.delete--newflow').click(@confirmDeleteNewflow)
     this.$el.find('.add').click(@add)
     this.$el.find('.add--newflow').click(@addNewflow)
 
@@ -18,11 +19,25 @@ class AuthenticationOption
       onConfirm: @delete
     )
 
+  confirmDeleteNewflow: (ev) ->
+    new OX.ConfirmationPopover(
+      title: false
+      message: OX.I18n.authentication.confirm_delete
+      target: ev.target
+      placement: 'top'
+      onConfirm: @deleteNewflow
+    )
+
   getType: ->
     this.$el.data('provider')
 
   delete: ->
     $.ajax({type: "DELETE", url: "#{BASE_URL}/auth/#{@getType()}"})
+      .success( @handleDelete )
+      .error(OX.Alert.display)
+
+  deleteNewflow: ->
+    $.ajax({type: "DELETE", url: "#{BASE_URL}/i/auth/#{@getType()}"})
       .success( @handleDelete )
       .error(OX.Alert.display)
 

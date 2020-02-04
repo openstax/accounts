@@ -18,6 +18,7 @@ def create_newflow_user(email, password='password', terms_agreed=nil, confirmati
 end
 
 def newflow_log_in_user(username_or_email, password)
+  visit(newflow_login_path) unless page.current_url == newflow_login_path
   fill_in 'login_form_email', with: username_or_email
   expect(page).to have_no_missing_translations
 
@@ -25,6 +26,8 @@ def newflow_log_in_user(username_or_email, password)
   expect(page).to have_no_missing_translations
   screenshot!
   click_button(I18n.t(:"login_signup_form.continue_button"))
+  wait_for_animations
+  wait_for_ajax
   screenshot!
   expect(page).to have_no_missing_translations
 end
