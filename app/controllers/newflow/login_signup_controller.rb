@@ -167,7 +167,7 @@ module Newflow
     end
 
     def change_password
-      # TODO: This check again here in case a long time elapsed between the GET and the POST
+      # This check again here in case a long time elapsed between the GET and the POST
       if user_signin_is_too_old?
         reauthenticate_user_if_signin_is_too_old!
       else
