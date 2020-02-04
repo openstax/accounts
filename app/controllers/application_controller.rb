@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
-  def newflow_feature_flag
+  def redirect_to_newflow_if_enabled
     if request.get? && Settings::Db.store.newflow_feature_flag && !params[:bpff].present?
       # "bpff" stands for "bypass feature flag"
       if request.path == signup_path

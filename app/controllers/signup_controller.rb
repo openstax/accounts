@@ -2,7 +2,7 @@ class SignupController < ApplicationController
 
   PROFILE_TIMEOUT = 30.minutes
 
-  before_action :newflow_feature_flag, only: [:start]
+  before_action :redirect_to_newflow_if_enabled, only: [:start]
 
   skip_before_action :authenticate_user!,
                      only: [:start, :verify_email, :verify_by_token, :password, :social, :profile]

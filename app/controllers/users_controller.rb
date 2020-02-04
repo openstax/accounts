@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  before_action :newflow_feature_flag, only: [:edit]
+  before_action :redirect_to_newflow_if_enabled, only: [:edit]
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 
