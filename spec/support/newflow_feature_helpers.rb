@@ -18,7 +18,7 @@ def create_newflow_user(email, password='password', terms_agreed=nil, confirmati
 end
 
 def newflow_log_in_user(username_or_email, password)
-  visit(newflow_login_path) unless page.current_url == newflow_login_path
+  visit(newflow_login_path) unless page.current_url == newflow_login_url
   fill_in 'login_form_email', with: username_or_email
   expect(page).to have_no_missing_translations
 
@@ -30,6 +30,16 @@ def newflow_log_in_user(username_or_email, password)
   wait_for_ajax
   screenshot!
   expect(page).to have_no_missing_translations
+end
+
+def newflow_reauthenticate_user(email, password)
+  wait_for_animations
+  wait_for_ajax
+  expect(page.current_path).to eq(reauthenticate_form_path)
+  expect(find('#login_form_email').value).to eq(email) # email should be pre-populated
+  fill_in('login_form_password', with: password)
+  screenshot!
+  find('[type=submit]').click
 end
 
 def fill_in_signup_form(email: nil, password: nil, first_name: nil, last_name: nil, newsletter: false)
@@ -60,4 +70,10 @@ def newflow_click_sign_up(role:)
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"login_signup_form.welcome_page_header")
   find(".join-as__role.#{role}").click
+end
+
+def newflow_expect_profile_page
+  expect(page).to have_no_missing_translations
+  # expect(page).to have_content(t :"users.edit.page_heading")
+  expect(page).to have_current_path profile_newflow_path
 end
