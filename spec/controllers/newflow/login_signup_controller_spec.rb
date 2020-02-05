@@ -506,6 +506,11 @@ module Newflow
       end
 
       context 'failure - when invalid token' do
+        before do
+          user = FactoryBot.create(:user)
+          controller.sign_in! user
+        end
+
         let(:params) do
           { token: SecureRandom.hex(16) } # token is invalid because it doesn't match up with the user's
         end
