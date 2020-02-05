@@ -16,14 +16,10 @@ class StaticPagesController < ApplicationController
   def home
     flash.keep # keep notices and errors through to the redirects below
 
-    if signed_in? && Settings::Db.store.newflow_feature_flag
-      redirect_to profile_newflow_path
-    elsif Settings::Db.store.newflow_feature_flag
-      newflow_authenticate_user!
-    elsif signed_in?
-      redirect_to profile_path
+    if Settings::Db.store.newflow_feature_flag
+      signed_in? ? redirect_to(profile_newflow_path) : newflow_authenticate_user!
     else
-      authenticate_user!
+      signed_in? ? redirect_to(profile_path) : authenticate_user!
     end
   end
 
