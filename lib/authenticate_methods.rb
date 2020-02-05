@@ -3,11 +3,12 @@ require 'addressable/uri'
 module AuthenticateMethods
 
   def newflow_authenticate_user!
+    # Note to self: remember that SessionsController#start calls `save_new_params_in_session`
     if signed_params.present?
-      if signed_params['role'] != 'student'
-        use_signed_params
-      else
+      if signed_params['role'] == 'student'
         newflow_use_signed_params
+      else
+        use_signed_params
       end
     end
 
@@ -17,24 +18,24 @@ module AuthenticateMethods
     # try to use them again.
     store_url(url: request_url_without_signed_params)
 
-    # Redirect based on the user's role and whether they are trying login or sign up
-    # TODO: of course, this will change when we create the Educator flow.
-    if (sp_user = session[:user_from_signed_params])
+    if (sp_user = session[:user_from_signed_params]) # student
       if sp_user['state'] == 'unverified'
         redirect_to newflow_signup_path(request.query_parameters) and return
       else
         redirect_to newflow_login_path(request.query_parameters) and return
       end
-    elsif signed_params['role'] == 'student'
-      redirect_to newflow_signup_student_path(request.query_parameters) and return
-    else
-      redirect_to newflow_login_path(request.query_parameters) and return
+    else # instructor
+      if pre_auth_state && !pre_auth_state.signed_student? && pre_auth_state_email_available? # existing instructor
+        redirect_to main_app.signup_path(request.query_parameters.merge({bpff: true})) and return
+      else
+        redirect_to newflow_login_path(request.query_parameters) and return
+      end
     end
 
     # Drop signed params from where we will go back after log in so we don't
     # try to use them again.
 
-    permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :newflow, :bpff).to_h
+    permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :bpff).to_h
 
     redirect_to(newflow_login_path(permitted_params))
   end
@@ -55,10 +56,8 @@ module AuthenticateMethods
       # when they arrive at the oauth_authorization path in order for them to be redirected to the
       # newflow login instead of the old login page.
       # We might want to undo this when we release the new flow.
-      permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup).to_h
-      destination =  params[:newflow].present? ? newflow_login_path(permitted_params) : main_app.login_path(permitted_params)
-
-      redirect_to(destination)
+      permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :bpff).to_h
+      redirect_to(main_app.login_path(permitted_params))
     end
   end
 
@@ -108,6 +107,20 @@ module AuthenticateMethods
     session[:user_from_signed_params] = user
   end
 
+  def prepare_for_new_external_user
+    # If we didn't find a user with a linked account to automatically log in,
+    # we do not want to assume that any already-logged-in user owns this signed
+    # params information.
+    # Therefore at this point we sign out whoever is signed in.
+
+    sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
+
+    # Save the signed params data to facilitate either sign in or up
+    # depending on the user's choices
+    pre_auth_state = PreAuthState.create_from_signed_data(signed_params)
+    save_pre_auth_state(pre_auth_state)
+  end
+
   def pre_auth_state_email_available?
     LookupUsers.by_verified_email(
       pre_auth_state.contact_info_value
@@ -134,20 +147,6 @@ module AuthenticateMethods
 
     sign_in!(incoming_user, security_log_data: {type: 'external uuid'})
     true
-  end
-
-  def prepare_for_new_external_user
-    # If we didn't find a user with a linked account to automatically log in,
-    # we do not want to assume that any already-logged-in user owns this signed
-    # params information.
-    # Therefore at this point we sign out whoever is signed in.
-
-    sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
-
-    # Save the signed params data to facilitate either sign in or up
-    # depending on the user's choices
-    pre_auth_state = PreAuthState.create_from_signed_data(signed_params)
-    save_pre_auth_state(pre_auth_state)
   end
 
   def signed_params
