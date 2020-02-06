@@ -61,7 +61,7 @@ class SignupController < ApplicationController
                 session: self,
                 success: lambda do
                   @handler_result.outputs.pre_auth_state.tap do |state|
-                    session[:return_to] = state.return_to
+                    session[:return_to] ||= state.return_to
                     save_pre_auth_state(state)
                   end
                   redirect_to action: (pre_auth_state.signed_student? ? :profile : :password)
