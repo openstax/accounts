@@ -47,7 +47,6 @@ en:
     or_sign_up_below: OR SIGN UP BELOW
     send_me_newsletter: Send me the OpenStax newsletter
     agree_to_terms_of_use: I agree to the %{terms_of_use} and %{privacy_policy}
-    invalid_confirmation_pin: Invalid confirmation pin
     youre_done: You're done, %{first_name}!
     youre_done_description: >-
       Your account has been confirmed for <b>%{email_address}</b>!

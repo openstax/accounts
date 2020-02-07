@@ -96,7 +96,7 @@ module Newflow
         failure: lambda {
           @first_name = unverified_user.first_name
           @email = unverified_user.email_addresses.first.value
-          security_log(:student_verified_email_failed, email: email, user: user)
+          security_log(:student_verified_email_failed, email: @email)
           render :confirmation_form
         }
       )

@@ -21,7 +21,7 @@ module Newflow
         fatal_error(
           code: :invalid_confirmation_pin,
           offending_inputs: [:pin],
-          message: I18n.t(:"login_signup_form.invalid_confirmation_pin")
+          message: I18n.t(:"login_signup_form.pin_not_correct")
         )
       end
 

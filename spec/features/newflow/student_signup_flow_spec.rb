@@ -68,6 +68,27 @@ module Newflow
       end
     end
 
+    context 'not happy path' do
+      example 'user gets PIN wrong' do
+        visit newflow_signup_path(r: '/external_app_for_specs')
+        find('.join-as__role.student').click
+        fill_in 'signup_first_name',	with: 'Bryan'
+        fill_in 'signup_last_name',	with: 'Dimas'
+        fill_in 'signup_email',	with: email
+        fill_in 'signup_password',	with: password
+        check 'signup_terms_accepted'
+        screenshot!
+        find('#signup_form_submit_button').click
+        screenshot!
+
+        # TARGET
+        fill_in('confirm_pin', with: '123456') # wrong pin
+        click_on('commit')
+        screenshot!
+        expect(page).to have_text(t(:"login_signup_form.pin_not_correct"))
+      end
+    end
+
     context 'change signup email' do
       example 'user can change their initial email during the signup flow' do
         visit newflow_signup_path(r: '/external_app_for_specs')
