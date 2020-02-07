@@ -42,7 +42,7 @@ def newflow_reauthenticate_user(email, password)
   find('[type=submit]').click
 end
 
-def fill_in_signup_form(email: nil, password: nil, first_name: nil, last_name: nil, newsletter: false)
+def complete_student_signup_form(email: nil, password: nil, first_name: nil, last_name: nil, newsletter: false)
   fill_in('signup_email', with: email) if email
   fill_in('signup_password', with: password) if password
   fill_in('signup_first_name', with: password) if first_name
@@ -51,6 +51,14 @@ def fill_in_signup_form(email: nil, password: nil, first_name: nil, last_name: n
   check('signup_terms_accepted')
 end
 
+def newflow_complete_student_signup_with_whatever
+  complete_student_signup_form(
+    email: Faker::Internet.free_email,
+    password: Faker::Internet.password(min_length: 8),
+    first_name: Faker::Name.first_name,
+    last_name: Faker::Name.last_name,
+  )
+end
 
 def strip_html(text)
   ActionView::Base.full_sanitizer.sanitize(text)

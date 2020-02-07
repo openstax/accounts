@@ -20,12 +20,13 @@ module AuthenticateMethods
 
     if (sp_user = session[:user_from_signed_params]) # student
       if sp_user['state'] == 'unverified'
-        redirect_to newflow_signup_path(request.query_parameters) and return
+        redirect_to newflow_signup_student_path(request.query_parameters) and return
       else
         redirect_to newflow_login_path(request.query_parameters) and return
       end
     else # instructor
-      if pre_auth_state && !pre_auth_state.signed_student? && pre_auth_state_email_available? # existing instructor
+      if pre_auth_state && !pre_auth_state.signed_student? && pre_auth_state_email_available?
+        # goes to "old flow"
         redirect_to main_app.signup_path(request.query_parameters.merge({bpff: true})) and return
       else
         redirect_to newflow_login_path(request.query_parameters) and return

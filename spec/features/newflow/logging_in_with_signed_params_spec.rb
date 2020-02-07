@@ -23,7 +23,7 @@ feature 'Sign in using signed parameters', js: true do
     { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
   }
 
-  # %w{ instructor student }.each do |role|
+  # TODO: instructors flow # %w{ instructor student }.each do |role|
   %w{ student }.each do |role|
     let(:role) do
       role
@@ -83,9 +83,6 @@ feature 'Sign in using signed parameters', js: true do
       # expect sign in page
       # ... or not. At least in the new flow, we already know when they're trying to sign up,
       # so just take 'em there.
-
-      # click educator sign up
-      # newflow_click_sign_up(role: 'educator')
 
       expect_sign_up_page
       expect(page).to have_no_field('signup_role') # no changing the role
