@@ -181,8 +181,11 @@ feature 'Sign in using signed parameters', js: true do
     it 'can switch to sign in and use that' do
       user = create_user 'user'
       arrive_from_app(params: signed_params, do_expect: false)
-      expect_sign_up_page
-      click_link(t :'signup.start.already_have_an_account.sign_in')
+      # expect student signup page
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"login_signup_form.signup_page_header")
+
+      click_link(t :"login_signup_form.log_in")
 
       newflow_log_in_user('user', 'password')
       expect_back_at_app
