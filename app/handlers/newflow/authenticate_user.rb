@@ -40,10 +40,30 @@ module Newflow
 
       identity = Identity.authenticate({ user_id: user&.id }, login_form_params.password)
       failure(:incorrect_password, :password) unless identity.present?
-
+      # Link the user to the external uuid at this point (after successfully logging in)
+      transfer_signed_data(user)
     end
 
     private #################
+
+    # transfer signed params data from 'unverified' user that was created
+    # and then delete that user
+    def transfer_signed_data(user)
+      return unless (sp_user = options[:user_from_signed_params])
+
+      sp = sp_user['signed_external_data'] # I want/need the signed params, essentially. How do I get store and get 'em?
+      user.self_reported_school = sp['school']
+
+      # link uuid from signed params
+      uuid_record = UserExternalUuid.find_by(uuid: sp['uuid'])
+      user.external_uuids << uuid_record
+      # link email from signed params
+      run(AddEmailToUser, sp['email'], user, already_verified: false)
+      user.save
+      transfer_errors_from(user, {type: :verbatim}, true)
+
+      # delete the user_from_signed_params (aka.  unverified user) which was created initially
+    end
 
     def failure(reason, input_field)
       fatal_error(

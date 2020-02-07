@@ -20,6 +20,7 @@ module Newflow
     def login
       handle_with(
         AuthenticateUser,
+        user_from_signed_params: session[:user_from_signed_params],
         success: lambda {
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)

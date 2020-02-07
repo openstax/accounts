@@ -118,6 +118,3 @@ module Oauth
     end
   end
 end
-
-
-

@@ -26,6 +26,7 @@ feature 'Sign in using signed parameters', js: true do
         u.update_attributes(role: role)
         u
       }
+
       it 'pre-fills email on sign in when there is a match' do
         create_email_address_for(user, payload[:email])
         arrive_from_app(params: signed_params)

@@ -31,7 +31,9 @@ feature 'Sign in using signed parameters', js: true do
 
     describe "arriving with an existing #{role} account" do
       let(:user) do
-        create_newflow_user(payload[:email], 'password')
+        u = create_newflow_user(payload[:email], 'password')
+        u.update_attributes(role: role)
+        u
       end
 
       before do
@@ -181,6 +183,7 @@ feature 'Sign in using signed parameters', js: true do
     it 'can switch to sign in and use that' do
       user = create_user 'user'
       arrive_from_app(params: signed_params, do_expect: false)
+
       # expect student signup page
       expect(page).to have_no_missing_translations
       expect(page).to have_content(t :"login_signup_form.signup_page_header")
