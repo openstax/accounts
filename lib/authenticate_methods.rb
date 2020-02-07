@@ -5,7 +5,7 @@ module AuthenticateMethods
   def newflow_authenticate_user!
     # Note to self: remember that SessionsController#start calls `save_new_params_in_session`
     if signed_params.present?
-      if signed_params['role'] == 'student'
+      if signed_params['role'] == 'student' || account_exists_with_same_email?
         newflow_use_signed_params
       else
         use_signed_params
@@ -73,6 +73,10 @@ module AuthenticateMethods
 
   protected #################
 
+  def account_exists_with_same_email?
+      LookupUsers.by_verified_email(external_email).any?
+  end
+
   # When the external site provides signed params they're
   # requesting the person either be
   # (1) automatically logged in if their UUID is known to us, or
@@ -98,8 +102,6 @@ module AuthenticateMethods
     # we do not want to assume that any already-logged-in user owns this signed
     # params information.
     # Therefore at this point we sign out whoever is signed in.
-
-    prepare_for_new_external_user
 
     # Save the signed params data to facilitate either sign in or up
     # depending on the user's choices

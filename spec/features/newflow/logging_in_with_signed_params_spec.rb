@@ -10,8 +10,6 @@ feature 'Sign in using signed parameters', js: true do
     create_default_application
   end
 
-  let(:role) { 'instructor' }
-
   let(:payload) {
     {
       role:  role,
@@ -27,6 +25,10 @@ feature 'Sign in using signed parameters', js: true do
 
   # %w{ instructor student }.each do |role|
   %w{ student }.each do |role|
+    let(:role) do
+      role
+    end
+
     describe "arriving with an existing #{role} account" do
       let(:user) do
         create_newflow_user(payload[:email], 'password')
@@ -68,7 +70,7 @@ feature 'Sign in using signed parameters', js: true do
     end
 
     it 'signs in and links' do
-      user = create_newflow_user payload[:email]
+      user = create_newflow_user(payload[:email])
       arrive_from_app(params: signed_params)
       newflow_log_in_user(payload[:email], 'password')
       expect_back_at_app
