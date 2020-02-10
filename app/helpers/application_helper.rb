@@ -7,15 +7,7 @@ module ApplicationHelper
   end
 
   def openstax_url
-    environment = Rails.application.secrets[:environment_name]
-    server = case environment
-                    when 'development', 'test', 'prodtutor'
-                      ''
-                    else
-                      '-' + environment
-                    end
-
-    "https://openstax#{server}.org"
+    'https://openstax.org'
   end
 
   def unless_errors(options={}, &block)
