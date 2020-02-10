@@ -129,22 +129,27 @@
                 <% end  %>
 
                 <div class="content control-group checkboxes-section">
-                    <div>
-                        <%= f.check_box :newsletter, checked: true %>
-                        <span><%= I18n.t(:"login_signup_form.send_me_newsletter") %></span>
+                    <div class="terms">
+                        <label>
+                            <%= f.check_box :newsletter, checked: true %>
+                            <span><%= I18n.t(:"login_signup_form.send_me_newsletter") %></span>
+                        </label>
                         <br>
                     </div>
 
                     <div class="terms">
-                        <%= f.check_box :terms_accepted %>
+                        <label>
+                            <%= f.check_box :terms_accepted %>
+
+                            <span>
+                                <%= I18n.t(:"login_signup_form.agree_to_terms_of_use",
+                                            terms_of_use: contract_links.first,
+                                            privacy_policy: contract_links.second).html_safe
+                                %>
+                            </span>
+                        </label>
                         <%= f.hidden_field :contract_1_id, value: contracts.first.id %>
                         <%= f.hidden_field :contract_2_id, value: contracts.second.id %>
-                        <span>
-                            <%= I18n.t(:"login_signup_form.agree_to_terms_of_use",
-                                        terms_of_use: contract_links.first,
-                                        privacy_policy: contract_links.second).html_safe
-                            %>
-                        </span>
                     </div>
                 </div>
 

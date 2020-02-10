@@ -623,6 +623,11 @@ input.has-error {
     }
 }
 
+.terms label > * {
+    font-weight: normal;
+    display: inline;
+}
+
 // Improve the look of Terms of Use section in very narrow views
 @include width-up-to(24em) {
     .terms input {
