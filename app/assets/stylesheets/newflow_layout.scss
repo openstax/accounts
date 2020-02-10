@@ -85,8 +85,11 @@ label.required::after {
 
 .main-menu {
     box-shadow: none;
-    height: 2rem;
     margin: 2rem 0 0 2rem;
+
+    @include wider-than($phone-max) {
+        height: 2rem;
+    }
 
     .logo-wrapper {
         padding: 0;
@@ -177,7 +180,6 @@ input.has-error {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 3rem;
-    margin-top: 4rem;
     padding-left: 1.4rem;
     padding-right: 1.4rem;
 
