@@ -726,6 +726,10 @@ input.has-error {
 
 // Tooltip on form inputs
 
+.tooltip {
+    z-index: 1;
+}
+
 .input-with-tooltip {
     @include input-with-tooltip();
 
