@@ -78,7 +78,7 @@ label.required::after {
 
         @include wider-than($phone-max) {
             // more space to the right on desktop for users who use a password manager
-            right: 3.2rem;
+            right: 3.6rem;
         }
     }
 }
