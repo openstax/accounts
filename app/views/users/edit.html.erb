@@ -52,7 +52,7 @@
 
     # The `all providers &` enforces a standard sort order
     current_providers = all_providers & current_user.authentications.collect(&:provider)
-    other_providers   = all_providers - current_providers - ['twitter']
+    other_providers   = all_providers - current_providers - ['twitter', 'facebooknewflow', 'googlenewflow']
   %>
 
   <div class="row enabled-providers">
