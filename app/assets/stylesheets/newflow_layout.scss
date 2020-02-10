@@ -497,8 +497,11 @@ input.has-error {
         cursor: not-allowed;
     }
 
-    input[type=submit]:disabled {
-        opacity: 0.85;
+    input[type=submit] {
+        &:disabled {
+            opacity: 0.85;
+        }
+
         -webkit-appearance: none;
         border-radius: 0;
     }
