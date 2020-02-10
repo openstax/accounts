@@ -497,9 +497,10 @@ input.has-error {
         cursor: not-allowed;
     }
 
-    input[type=submit]:disabled {
-        opacity: 0.85;
-    }
+    // Commented out b/c causes a bug on mobile
+    // input[type=submit]:disabled {
+    //     opacity: 0.85;
+    // }
 }
 
 // Improve vertical spacing
