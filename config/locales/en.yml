@@ -94,6 +94,9 @@ en:
       reset your password or try again later.
     profile_newflow_page_header: My Account
     how_you_log_in: How you log in
+    sign_in_option_already_used: >-
+        That login option is already used by someone else. If that someone is
+        you, remove it from your other account and try again.
 
   student_profile:
     enable_other_sign_in_options: Enable other login options

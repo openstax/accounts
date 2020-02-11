@@ -10,12 +10,15 @@ module Newflow
     before_action :known_signup_role_redirect, only: [:login_form]
     before_action :restart_if_missing_unverified_user,
       only: [:verify_email, :verify_pin, :change_your_email, :confirmation_form, :confirmation_form_updated_email]
-    before_action :exit_newflow_signup_if_logged_in, only: [:login_form, :student_signup_form, :welcome]
+    before_action :exit_newflow_signup_if_logged_in, only: [:student_signup_form, :welcome]
+    before_action :exit_newflow_signup_if_logged_in, only: [:student_signup_form, :welcome]
     before_action :set_active_banners
     before_action :cache_client_app, only: [:login, :welcome]
     skip_before_action :check_if_password_expired
     fine_print_skip :general_terms_of_use, :privacy_policy,
                     except: [:profile_newflow, :verify_pin, :signup_done]
+
+  before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
     def login
       handle_with(
@@ -157,8 +160,8 @@ module Newflow
       if (user = FindUserByToken.call(params: params).outputs.user )
         sign_in!(user)
         render :change_password_form
-      elsif user_signin_is_too_old?
-        reauthenticate_user_if_signin_is_too_old!
+      elsif signed_in? && user_signin_is_too_old?
+        reauthenticate_user!
       else
         render :change_password_form
       end
@@ -166,8 +169,8 @@ module Newflow
 
     def change_password
       # This check again here in case a long time elapsed between the GET and the POST
-      if user_signin_is_too_old?
-        reauthenticate_user_if_signin_is_too_old!
+      if signed_in? && user_signin_is_too_old?
+        reauthenticate_user!
       else
         handle_with(
           ChangePassword,
@@ -191,34 +194,54 @@ module Newflow
 
     # Log in (or sign up and then log in) a user using a social (OAuth) provider
     def oauth_callback
-      handle_with(
-        OauthCallback,
-        success: lambda {
-          authentication = @handler_result.outputs.authentication
-          user = @handler_result.outputs.user
-          unless user.is_activated?
-            # not activated means signup
-            save_unverified_user(user)
-            @first_name = user.first_name
-            @last_name = user.last_name
+      if signed_in? && user_signin_is_too_old?
+        reauthenticate_user!
+      else
+        handle_with(
+          OauthCallback,
+          logged_in_user: signed_in? && current_user,
+          success: lambda {
+            authentication = @handler_result.outputs.authentication
+            user = @handler_result.outputs.user
+
+            unless user.is_activated?
+              # not activated means signup
+              save_unverified_user(user)
+              @first_name = user.first_name
+              @last_name = user.last_name
+              @email = @handler_result.outputs.email
+              security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
+              # must confirm their social info on signup
+              render :confirm_social_info_form and return
+            end
+
+            sign_in!(user)
+            security_log(:student_authenticated_with_social, user: user, authentication_id: authentication.id)
+            redirect_back(fallback_location: profile_newflow_path)
+          },
+          failure: lambda {
+            # TODO: rate-limit this
             @email = @handler_result.outputs.email
-            security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
-            # must confirm their social info on signup
-            render :confirm_social_info_form and return
-          end
-          sign_in!(user)
-          # we should perhaps create a more specific security log
-          security_log(:student_authenticated_with_social, user: user, authentication_id: authentication.id)
-          redirect_back(fallback_location: profile_newflow_path)
-        },
-        failure: lambda {
-          # TODO: rate-limit this
-          @email = @handler_result.outputs.email
-          save_login_failed_email(@email)
-          security_log(:student_auth_with_social_failed)
-          render :social_login_failed
-        }
-      )
+            save_login_failed_email(@email)
+
+            code = @handler_result.errors.first.code
+            case code
+            when :authentication_taken
+              security_log :authentication_taken, authentication_id: authentication&.id
+              redirect_to profile_newflow_path,
+                          alert: I18n.t(:"controllers.sessions.sign_in_option_already_used")
+              security_log(:student_auth_with_social_failed)
+            when :email_already_in_use
+              redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
+            else
+              # TODO: catch edge case
+              raise IllegalState
+            end
+
+            render :social_login_failed
+          }
+        )
+      end
     end
 
     def confirm_oauth_info
@@ -311,7 +334,7 @@ module Newflow
 
     def exit_newflow_signup_if_logged_in
       if signed_in?
-        redirect_to(profile_newflow_path) # TODO: should probably redirect back
+        redirect_back(fallback_location: profile_newflow_path(request.query_parameters))
       end
     end
 

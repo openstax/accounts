@@ -242,6 +242,6 @@ module ApplicationHelper
   # So we use this function to pre-populate their email field in the login form.
   def current_users_resetting_password_email
     # by_email_or_username
-    !current_user.is_anonymous? && EmailAddress.where(verified: true, user: current_user).first.try(:value)
+    !current_user.is_anonymous? && EmailAddress.verified.where(user: current_user).first.try(:value)
   end
 end

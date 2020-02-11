@@ -63,6 +63,7 @@ class SecurityLog < ActiveRecord::Base
     :student_social_auth_confirmation_failed,
     :student_setup_password,
     :student_setup_password_failed,
+    :authentication_taken,
   ]
 
   json_serialize :event_data, Hash
