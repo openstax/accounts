@@ -53,10 +53,10 @@
                     </div>
 
                     <div class="content control-group">
+                        <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                                class: 'field-label required'
+                        %>
                         <div id="password-field-container">
-                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
-                                    class: 'field-label required'
-                            %>
                             <%= fh.text_field name: :password,
                                         type: :password,
                                         placeholder: I18n.t(:"login_signup_form.password_label")

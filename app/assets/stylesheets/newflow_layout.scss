@@ -516,7 +516,7 @@ input.has-error {
     }
 
     .content.control-group {
-        margin-top: 2rem;
+        margin-top: 0;
     }
 
     @include width-up-to($phone-max) {
@@ -555,10 +555,6 @@ input.has-error {
         form {
             height: 80rem;
             align-content: start;
-        }
-
-        .form-divider + .content.control-group {
-            margin-top: 2.5rem;
         }
 
         .social-buttons {
@@ -725,10 +721,6 @@ input.has-error {
 }
 
 // Tooltip on form inputs
-
-.tooltip {
-    z-index: 1;
-}
 
 .input-with-tooltip {
     @include input-with-tooltip();
