@@ -80,6 +80,16 @@ def newflow_click_sign_up(role:)
   find(".join-as__role.#{role}").click
 end
 
+def newflow_complete_add_password_screen(password=nil)
+  password ||= 'Passw0rd!'
+  fill_in('setup_password_form_password', with: password)
+  # fill_in (t :"identities.set.password"), with: password
+  # fill_in (t :"identities.set.confirm_password"), with: password
+  # click_button (t :"identities.add.submit")
+  find('[type=submit]').click
+  expect(page).to have_content(t :"login_signup_form.profile_newflow_page_header")
+end
+
 def newflow_expect_profile_page
   expect(page).to have_no_missing_translations
   # expect(page).to have_content(t :"users.edit.page_heading")
