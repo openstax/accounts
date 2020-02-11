@@ -80,7 +80,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
 
       it 'does not trigger a save on the user' do
         stub_salesforce(
-          contacts: { id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed", adoption_status: "Future Adopter" }
+          contacts: { id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed" }
         )
         expect_any_instance_of(User).not_to receive(:save!)
         described_class.call
@@ -462,7 +462,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     end
 
     expect(OpenStax::Salesforce::Remote::Contact).to(
-      receive(:select).with(:id, :email, :email_alt, :faculty_verified, :school_type)
+      receive(:select).with(:id, :email, :email_alt, :faculty_verified, :school_type, :adoption_status)
                       .and_return(contacts)
     )
   end
@@ -490,7 +490,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
   end
 
   def expect_user_sf_data(
-    user, id: nil, faculty_status: :no_faculty_info, school_type: :unknown_school_type
+    user, id: nil, faculty_status: :no_faculty_info, school_type: :unknown_school_type, using_openstax: false
   )
     user.reload
     expect(user.salesforce_contact_id).to eq id
