@@ -109,11 +109,13 @@ feature 'Sign in using signed parameters', js: true do
       expect_validated_records(params: payload)
     end
 
-    xit 'does not give an error if the user takes a longish time to sign up' do
+    it 'does not give an error if the user takes a longish time to sign up' do # i need The Dante
       arrive_from_app(params: signed_params)
-      newflow_click_sign_up(role: role)
+      click_sign_up
 
+      click_button(t :"signup.start.next")
       wait_for_animations
+      click_button(t :"signup.start.next")
 
       open_email(payload[:email])
       verify_email_path = get_path_from_absolute_link(current_email, 'a')
@@ -131,15 +133,18 @@ feature 'Sign in using signed parameters', js: true do
       end
     end
 
-    xit 'requires email validation when modified' do
+    it 'requires email validation when modified' do # i need The Dante
       arrive_from_app(params: signed_params)
-      newflow_click_sign_up(role: role)
+      expect_sign_in_page
+      click_sign_up
       expect_sign_up_page
 
       email = 'test-modified-teacher@example.com'
 
       fill_in (t :"signup.start.email_placeholder"), with: email
+      click_button(t :"signup.start.next")
       wait_for_animations
+      click_button(t :"signup.start.next")
       expect_signup_verify_screen
 
       ss = PreAuthState.find_by!(contact_info_value: email)
@@ -194,7 +199,7 @@ feature 'Sign in using signed parameters', js: true do
       expect_validated_records(params: payload, user: user, email_is_verified: false)
     end
 
-    it 'handles email missing from signed params' do
+    it 'handles email missing from signed params' do # I need dante's help
       payload[:email] = ''
       arrive_from_app(params: signed_params, do_expect: false)
       expect(page).to have_field('signup_email', with: '')
