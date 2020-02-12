@@ -87,7 +87,7 @@ label.required::after {
     box-shadow: none;
     margin: 2rem 0 0 2rem;
 
-    @include wider-than($phone-max) {
+    @include wider-than($tablet-max + ($one-pixel-in-em * 90)) {
         height: 2rem;
     }
 
