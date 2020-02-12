@@ -232,7 +232,8 @@
     .mod-holder .add--newflow { display: none; }
     .authentication {
       &:only-child {
-        .mod-holder .delete{ display: none; }
+        .mod-holder .delete { display: none; }
+        .mod-holder .delete--newflow { display: none; }
       }
     }
   }
