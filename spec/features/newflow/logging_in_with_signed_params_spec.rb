@@ -199,8 +199,11 @@ feature 'Sign in using signed parameters', js: true do
       payload[:email] = ''
       arrive_from_app(params: signed_params, do_expect: false)
       expect(page).to have_field('signup_email', with: '')
-      fill_in (t :"signup.start.email_placeholder"), with: "bob@example.com"
-      expect_signup_verify_screen
+      fill_in('signup_email', with: "bob@example.com")
+      check('signup_terms_accepted')
+      find('[type=submit]').click
+
+      newflow_expect_signup_verify_screen
     end
 
     describe 'with a pre-existing account' do
