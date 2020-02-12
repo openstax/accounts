@@ -22,9 +22,7 @@ module Newflow
         fill_in 'signup_last_name',	with: 'Dimas'
         fill_in 'signup_email',	with: email
         fill_in 'signup_password',	with: password
-        check 'signup_terms_accepted'
-        screenshot!
-        find('#signup_form_submit_button').click
+        submit_signup_form
         screenshot!
 
         # sends an email address confirmation email
@@ -76,9 +74,7 @@ module Newflow
         fill_in 'signup_last_name',	with: 'Dimas'
         fill_in 'signup_email',	with: email
         fill_in 'signup_password',	with: password
-        check 'signup_terms_accepted'
-        screenshot!
-        find('#signup_form_submit_button').click
+        submit_signup_form
         screenshot!
 
         # TARGET
@@ -97,9 +93,7 @@ module Newflow
         fill_in 'signup_last_name',	with: 'Dimas'
         fill_in 'signup_email',	with: email
         fill_in 'signup_password',	with: password
-        check 'signup_terms_accepted'
-        screenshot!
-        find('#signup_form_submit_button').click
+        submit_signup_form
         screenshot!
 
         # an email gets sent
@@ -189,10 +183,7 @@ module Newflow
         expect(page).to have_field('signup_last_name', with: 'McTesterson')
         expect(page).to have_field('signup_email', with: payload[:email])
         # skip password since it's trusted # fill_in 'signup_password',	with: 'password'
-        check 'signup_newsletter'
-        check 'signup_terms_accepted'
-        screenshot!
-        find('#signup_form_submit_button').click
+        submit_signup_form
         screenshot!
 
         expect(User.last.external_uuids.where(uuid: payload[:uuid]).exists?).to be(true)
