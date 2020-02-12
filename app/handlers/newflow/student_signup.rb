@@ -59,8 +59,8 @@ module Newflow
       user = User.create(
         state: 'unverified',
         role: 'student',
-        first_name: signup_params.first_name.camelize,
-        last_name: signup_params.last_name.camelize,
+        first_name: signup_params.first_name,
+        last_name: signup_params.last_name,
         receive_newsletter: signup_params.newsletter,
         source_application: options[:client_app]
       )

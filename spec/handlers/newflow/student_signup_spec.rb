@@ -43,9 +43,6 @@ module Newflow
       end
 
       it 'agrees to terms of use and privacy policy when contracts_required' do
-        # TODO: ideally would do this but it fails with an error:
-        # expect_any_instance_of(AgreeToTerms).to receive(:call).twice.and_call_original
-
         expect {
           described_class.call(params: params, contracts_required: true)
         }.to change {
@@ -54,9 +51,6 @@ module Newflow
       end
 
       it 'doesnt agrees to terms of use and privacy policy when contracts NOT required' do
-        # TODO: ideally would do this but it fails with an error:
-        # expect_any_instance_of(AgreeToTerms).not_to receive(:call)
-
         expect {
           described_class.call(params: params, contracts_required: false)
         }.not_to change {

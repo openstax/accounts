@@ -15,7 +15,6 @@ class TransferAuthentications
       existing_user = authentication.user
       authentication.update_attributes(user_id: newer_user.id)
       transfer_errors_from(authentication, {type: :verbatim}, :fail_if_errors)
-      # transfer_errors_from(authentication, {scope: :user_or_something}, :fail_if_errors)
 
       if existing_user && can_be_destroyed?(existing_user)
         run(DestroyUser, existing_user) # to avoid orphaned User records.
