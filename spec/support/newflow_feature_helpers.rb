@@ -73,6 +73,11 @@ def expect_sign_up_welcome_tab
   expect(page).to have_content(t :"login_signup_form.welcome_page_header")
 end
 
+def expect_student_sign_up_page
+  expect(page.current_path).to eq(newflow_signup_student_path)
+  expect(page).to have_no_missing_translations
+end
+
 def newflow_click_sign_up(role:)
   click_on (t :"login_signup_form.sign_up") # unless already there
   expect(page).to have_no_missing_translations
@@ -94,4 +99,22 @@ def newflow_expect_profile_page
   expect(page).to have_no_missing_translations
   # expect(page).to have_content(t :"users.edit.page_heading")
   expect(page).to have_current_path profile_newflow_path
+end
+
+def newflow_expect_signup_verify_screen
+  expect(page.current_path).to eq(confirmation_form_path)
+end
+
+def newflow_expect_sign_up_page
+  expect(page.current_path).to eq(newflow_signup_path)
+  expect(page).to have_no_missing_translations
+end
+
+def submit_signup_form
+  find('#login-signup-form').click # to hide the password tooltip
+  check('signup_terms_accepted')
+  wait_for_animations
+  wait_for_ajax
+  screenshot!
+  find('[type=submit]').click
 end
