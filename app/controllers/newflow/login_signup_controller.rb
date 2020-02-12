@@ -220,7 +220,6 @@ module Newflow
             redirect_back(fallback_location: profile_newflow_path)
           },
           failure: lambda {
-            # TODO: rate-limit this
             @email = @handler_result.outputs.email
             save_login_failed_email(@email)
 
