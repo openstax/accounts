@@ -87,7 +87,7 @@ en:
     change_your_email_tooltip: You will need to use this updated email to log in.
     enter_new_password: Enter your new password
     enter_new_password_description: Finish resetting your password by entering the new one below.
-    email_address_taken: Email address taken
+    email_address_taken: Email already in use
     invalid_email_provider: '"%{domain}" is not a valid email provider'
     too_many_login_attempts: >-
       You have made too many login attempts recently. Please

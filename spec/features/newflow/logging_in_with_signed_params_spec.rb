@@ -165,8 +165,7 @@ feature 'Sign in using signed parameters', js: true do
       expect(page).to have_content(t :"login_signup_form.signup_page_header")
 
       expect(page).to have_field('signup_email', with: payload[:email])
-      check('signup_terms_accepted')
-      find('[type=submit]').click
+      submit_signup_form
       expect(page).to have_content(
         t :"login_signup_form.confirmation_page_header", first_name: 'Tester'
       )
@@ -200,8 +199,7 @@ feature 'Sign in using signed parameters', js: true do
       arrive_from_app(params: signed_params, do_expect: false)
       expect(page).to have_field('signup_email', with: '')
       fill_in('signup_email', with: "bob@example.com")
-      check('signup_terms_accepted')
-      find('[type=submit]').click
+      submit_signup_form
 
       newflow_expect_signup_verify_screen
     end
@@ -218,10 +216,11 @@ feature 'Sign in using signed parameters', js: true do
       it 'displays error if they attempt to sign up' do
         arrive_from_app(params: signed_params, do_expect: false)
         newflow_click_sign_up(role: role)
-        expect_sign_up_page
+        expect_student_sign_up_page
         expect(page).to have_field('signup_email', with: payload[:email])
-        expect_sign_up_page
-        expect(page).to have_content('Email already in use')
+        submit_signup_form
+        expect_student_sign_up_page
+        expect(page).to have_content(t(:"login_signup_form.email_address_taken"))
       end
     end
   end
