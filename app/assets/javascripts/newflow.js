@@ -9,7 +9,7 @@
 
 $(document).ready(function () {
     // Toggle show/hide password field
-    $("#show-hide-button").click(function (e) {
+    $("#password-show-hide-button").click(function (e) {
         $(".toggle-show-hide").toggle();
 
         var password_field = $('[name$="[password]"]')[0];

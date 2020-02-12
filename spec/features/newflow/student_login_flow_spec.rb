@@ -103,9 +103,9 @@ feature 'student login flow', js: true do
       example 'SHOW/HIDE link for password field shows and hides password' do
         visit newflow_login_path
         expect(find('#login_form_password')['type']).to eq('password')
-        find('#show-hide-button').click
+        find('#password-show-hide-button').click
         expect(find('#login_form_password')['type']).to eq('text')
-        find('#show-hide-button').click
+        find('#password-show-hide-button').click
         expect(find('#login_form_password')['type']).to eq('password')
       end
 
