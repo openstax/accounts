@@ -243,9 +243,9 @@ feature 'Sign in using signed parameters', js: true do
     context 'students' do
       let(:role) { 'student' }
 
-      it 'sends to sign up' do
+      it 'sends to STUDENT sign up form' do
         arrive_from_app(params: signed_params, do_expect: false)
-        expect_sign_up_page
+        expect_student_sign_up_page
       end
     end
   end
