@@ -195,22 +195,8 @@ feature 'Sign in using signed parameters', js: true do
       expect_validated_records(params: payload, user: user, email_is_verified: false)
     end
 
-    it 'requires email validation when edited' do
-      arrive_from_app(params: signed_params, do_expect: false)
-      fill_in (t :"signup.start.email_placeholder"), with: 'test-modified@example.com'
-      expect_signup_verify_screen
-      ss = PreAuthState.find_by!(contact_info_value: 'test-modified@example.com')
-      fill_in (t :"signup.verify_email.pin"), with: ss.confirmation_pin
-      click_button(t :"signup.verify_email.confirm")
-      expect_signup_profile_screen # skipped password since it's a trusted student
-      complete_signup_profile_screen_with_whatever(role: :student)
-      expect_back_at_app
-      expect_validated_records(params: payload.merge(email: 'test-modified@example.com'))
-    end
-
-
     it 'handles email missing from signed params' do
-      payload[:email] = ""
+      payload[:email] = ''
       arrive_from_app(params: signed_params, do_expect: false)
       expect(page).to have_field('signup_email', with: '')
       fill_in (t :"signup.start.email_placeholder"), with: "bob@example.com"
