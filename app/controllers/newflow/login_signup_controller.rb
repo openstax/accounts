@@ -237,8 +237,6 @@ module Newflow
               # TODO: catch edge case
               raise IllegalState
             end
-
-            render :social_login_failed
           }
         )
       end
