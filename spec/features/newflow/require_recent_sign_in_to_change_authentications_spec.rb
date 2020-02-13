@@ -53,6 +53,8 @@ feature 'Require recent log in to change authentications', js: true do
 
         fill_in('change_password_form_password', with: 'newpassword')
         screenshot!
+        find('#login-signup-form').click
+        wait_for_animations
         find('[type=submit]').click
         screenshot!
 
@@ -63,6 +65,8 @@ feature 'Require recent log in to change authentications', js: true do
         find('.authentication[data-provider="identity"] .edit--newflow').click
         expect(page).to have_content(t(:"login_signup_form.enter_new_password_description"))
         fill_in('change_password_form_password', with: 'newpassword2')
+        find('#login-signup-form').click
+        wait_for_animations
         find('[type=submit]').click
         newflow_expect_profile_page
       end
