@@ -262,7 +262,7 @@ module Newflow
 
     def setup_password
       handle_with(
-        SetPassword,
+        CreatePassword,
         user: current_user,
         success: lambda {
           security_log(:student_setup_password)

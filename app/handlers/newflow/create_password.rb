@@ -1,5 +1,5 @@
 module Newflow
-  class SetPassword
+  class CreatePassword
     lev_handler
     uses_routine ::SetPassword
 
