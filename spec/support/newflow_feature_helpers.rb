@@ -112,9 +112,8 @@ end
 
 def submit_signup_form
   find('#login-signup-form').click # to hide the password tooltip
-  check('signup_terms_accepted')
   wait_for_animations
-  wait_for_ajax
+  check('signup_terms_accepted')
   screenshot!
   find('[type=submit]').click
 end
