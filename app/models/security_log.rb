@@ -48,6 +48,7 @@ class SecurityLog < ActiveRecord::Base
     :login_not_found,
     :faculty_verified,
     :trusted_launch_removed,
+    # New ones created for the new student flow...
     :student_signed_up,
     :student_sign_up_failed,
     :student_verified_email,
