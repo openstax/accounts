@@ -19,7 +19,9 @@ feature 'User updates password on profile screen', js: true do
     visit '/profile'
 
     screenshot!
+    expect(page).not_to have_css('[data-provider=identity]')
     find('#enable-other-sign-in').click
+    expect(page).to have_css('[data-provider=identity]')
 
     screenshot!
     wait_for_animations # wait for slide-down effect
@@ -30,7 +32,9 @@ feature 'User updates password on profile screen', js: true do
     screenshot!
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t(:"login_signup_form.how_you_log_in"))
-    expect(page).to have_css('[data-provider=facebook]')
+
+    find('#enable-other-sign-in').click
+    expect(page).to have_css('[data-provider=facebooknewflow]')
     expect(page).to have_css('[data-provider=identity]')
   end
 
