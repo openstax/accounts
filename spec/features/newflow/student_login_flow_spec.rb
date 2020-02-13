@@ -172,6 +172,8 @@ feature 'student login flow', js: true do
         expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
         fill_in('change_password_form_password', with: 'NEWpassword')
         screenshot!
+        find('#login-signup-form').click
+        wait_for_animations
         click_button('Log in')
         screenshot!
 
