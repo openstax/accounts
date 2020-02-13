@@ -133,10 +133,8 @@ feature 'Sign in using signed parameters', js: true do
       end
     end
 
-    it 'requires email validation when modified' do # i need The Dante
-      arrive_from_app(params: signed_params)
-      expect_sign_in_page
-      click_sign_up
+    it 'requires email validation when modified' do
+      arrive_from_app(params: signed_params, do_expect: false)
       expect_sign_up_page
 
       email = 'test-modified-teacher@example.com'
