@@ -110,8 +110,8 @@ feature 'Sign in using signed parameters', js: true do
     end
 
     it 'does not give an error if the user takes a longish time to sign up' do # i need The Dante
-      arrive_from_app(params: signed_params)
-      click_sign_up
+      arrive_from_app(params: signed_params, do_expect: false)
+      expect_sign_up_page
 
       click_button(t :"signup.start.next")
       wait_for_animations
@@ -199,7 +199,7 @@ feature 'Sign in using signed parameters', js: true do
       expect_validated_records(params: payload, user: user, email_is_verified: false)
     end
 
-    it 'handles email missing from signed params' do # I need dante's help
+    it 'handles email missing from signed params' do
       payload[:email] = ''
       arrive_from_app(params: signed_params, do_expect: false)
       expect(page).to have_field('signup_email', with: '')
