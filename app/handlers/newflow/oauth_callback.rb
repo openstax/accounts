@@ -32,30 +32,29 @@ module Newflow
     # rubocop:disable Metrics/AbcSize
     def handle
       if options[:logged_in_user]
-        authentication = newflow_handle_while_logged_in
-      elsif (authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
+        newflow_handle_while_logged_in
+      elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
         # User found with the given authentication.
         # We will log them in.
       elsif (existing_user = user_most_recently_used(users_matching_oauth_data))
         # No user found with the given authentication, but a user *was* found with the given email address.
         # We will add the authentication to their existing account and then log them in.
-        authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
-        run(TransferAuthentications, authentication, existing_user) # TODO: does this raise fatally?
+        outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
+        run(TransferAuthentications, authentication, existing_user)
       else # sign up new user, then we will log them in.
         user = create_user_instance
         create_email_address(user)
-        authentication = create_authentication(user, @oauth_provider)
+        outputs.authentication = create_authentication(user, @oauth_provider)
       end
 
-      outputs.authentication = authentication
-      outputs.user = authentication.user
+      outputs.user = outputs.authentication.user
     end
     # rubocop:enable Metrics/AbcSize
 
     private ###########################
 
     def newflow_handle_while_logged_in
-      authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
+      outputs.authentication = authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
 
       if authentication.user && authentication.user.is_activated?
         fatal_error(

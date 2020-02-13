@@ -224,16 +224,16 @@ module Newflow
             save_login_failed_email(@email)
 
             code = @handler_result.errors.first.code
+            authentication = @handler_result.outputs.authentication
             case code
             when :authentication_taken
-              security_log :authentication_taken, authentication_id: authentication&.id
+              security_log(:authentication_transfer_failed, authentication_id: authentication.id)
               redirect_to profile_newflow_path,
                           alert: I18n.t(:"controllers.sessions.sign_in_option_already_used")
-              security_log(:student_auth_with_social_failed)
             when :email_already_in_use
+              security_log(:email_already_in_use, email: @email, authentication_id: authentication.id)
               redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
             else
-              # TODO: catch edge case
               raise IllegalState
             end
           }
@@ -276,14 +276,8 @@ module Newflow
     end
 
     def remove_auth_strategy
-      if user_signin_is_too_old? # then: reauthenticate user
-        store_url
-        location = main_app.reauthenticate_form_path(request.query_parameters)
-
-        respond_to do |format|
-          format.json{ render json: { location: location } }
-          format.any{ redirect_to :reauthenticate_form_path }
-        end
+      if signed_in? && user_signin_is_too_old?
+        reauthenticate_user!(redirect_back_to: profile_newflow_path)
       else
         handle_with(
           AuthenticationsDelete,
