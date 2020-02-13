@@ -113,6 +113,8 @@ module Newflow
         new_email = Faker::Internet::free_email
         fill_in('change_signup_email_email', with: new_email)
         screenshot!
+        find('#login-signup-form').click
+        wait_for_animations
         click_on('commit')
         screenshot!
         expect(page).to have_text(t('login_signup_form.check_your_updated_email'))
