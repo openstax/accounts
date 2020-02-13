@@ -23,4 +23,17 @@ feature 'User reports page', js: true do
     visit '/admin/reports'
     expect(page).to have_content("Student accounts created since July 1: 0")
   end
+
+  it 'counts student users created in the last week' do
+    # Set up data with a student and instructor in two separate weeks
+    Timecop.freeze(DateTime.now - 2.day)
+    User.student.create
+    User.instructor.create
+    Timecop.freeze(DateTime.now - 2.week)
+    User.student.create
+    User.instructor.create
+    # run report
+    visit '/admin/reports'
+    expect(page).to have_content("Student accounts created in the past week: 1")
+  end
 end
