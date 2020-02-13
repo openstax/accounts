@@ -40,7 +40,7 @@ module Newflow
         # No user found with the given authentication, but a user *was* found with the given email address.
         # We will add the authentication to their existing account and then log them in.
         outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
-        run(TransferAuthentications, authentication, existing_user)
+        run(TransferAuthentications, outputs.authentication, existing_user)
       else # sign up new user, then we will log them in.
         user = create_user_instance
         create_email_address(user)
