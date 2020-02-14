@@ -141,6 +141,8 @@ feature "User can't sign in", js: true do
     end
 
     scenario "just has social auth" do
+      skip 'TODO: remove this test unless UX decides to keep this feature in the new flow'
+
       @user.identity.destroy
       password_authentication = @user.authentications.first
       FactoryBot.create :authentication, provider: 'google_oauth2', user: @user
@@ -176,13 +178,6 @@ feature "User can't sign in", js: true do
 
       expect_back_at_app
     end
-
-    scenario "has both password and social auths" do
-      FactoryBot.create :authentication, provider: 'google_oauth2', user: @user
-      complete_login_username_or_email_screen('user@example.com')
-      expect(page).to have_content(t :"sessions.authenticate_options.reset_password")
-      screenshot!
-    end
   end
 
   scenario 'user has a linked google auth but uses a different google account to login' do
@@ -201,26 +196,4 @@ feature "User can't sign in", js: true do
     screenshot!
     expect(page).to have_content(t(:"controllers.sessions.mismatched_authentication"))
   end
-
-  scenario 'social login fails with invalid_credentials notifies devs' do
-    skip 'we should use Sentry instead' # TODO (after upgrading Rails)
-    user = create_user 'user'
-    authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
-
-    arrive_from_app
-    complete_login_username_or_email_screen('user')
-
-    with_omniauth_failure_message(:invalid_credentials) do
-      click_link('google-login-button')
-    end
-
-    screenshot!
-    expect(page).to have_content(t(:"controllers.sessions.trouble_with_provider"))
-
-    open_email(devs_email)
-    expect(current_email.subject).to(
-      eq "[OpenStax] [Accounts] (test) google_oauth2 social login is failing!"
-    )
-  end
-
 end
