@@ -12,20 +12,14 @@ feature "User can't sign in", js: true do
     end
 
     scenario "email unknown" do
-      complete_login_username_or_email_screen('bob@bob.com')
-      expect(page).to have_content(t :"sessions.start.unknown_email")
+      newflow_log_in_user('noone@openstax.org', 'password')
+      expect(page).to have_content(t :"login_signup_form.cannot_find_user")
       screenshot!
     end
 
-    scenario "username unknown" do
-      complete_login_username_or_email_screen('bob')
-      expect(page).to have_content(t :"sessions.start.unknown_username")
-      screenshot!
-    end
-
-    scenario "username or email blank" do
-      complete_login_username_or_email_screen('')
-      expect(page).to have_content(error_msg SessionsLookupLogin, :username_or_email, :blank)
+    scenario "email blank" do
+      newflow_log_in_user('', 'password')
+      expect(page).to have_content(error_msg Newflow::AuthenticateUser, :email, :blank)
       screenshot!
     end
 
@@ -37,30 +31,31 @@ feature "User can't sign in", js: true do
       email2 = create_email_address_for(user2, 'user-2@example.com')
       ContactInfo.where(id: email2.id).update_all(value: email1.value)
 
-      complete_login_username_or_email_screen(email_address)
-      expect(page).to have_content(t(:"sessions.start.multiple_users.content_html").split('.')[0])
+      newflow_log_in_user(email_address, 'password')
+      expect(page).to have_content(t(:"login_signup_form.multiple_users"))
 
       screenshot!
 
-      click_link t(:"sessions.start.multiple_users.click_here")
-      expect(page).to have_content(
-        ActionView::Base.full_sanitizer.sanitize(
-          t(:"sessions.start.sent_multiple_usernames", email: email_address)
-        )
-      )
+      # TODO
+      # click_link t(:"sessions.start.multiple_users.click_here")
+      # expect(page).to have_content(
+      #   ActionView::Base.full_sanitizer.sanitize(
+      #     t(:"sessions.start.sent_multiple_usernames", email: email_address)
+      #   )
+      # )
 
-      screenshot!
+      # screenshot!
 
-      expect(page.first('input')["placeholder"]).to eq t(:"sessions.start.username_placeholder")
-      expect(page.first('input').text).to be_blank
+      # expect(page.first('input')["placeholder"]).to eq t(:"sessions.start.username_placeholder")
+      # expect(page.first('input').text).to be_blank
 
-      open_email(email_address)
-      expect(current_email).to have_content('used on more than one')
-      expect(current_email).to have_content('user1 and user2')
-      capture_email!
+      # open_email(email_address)
+      # expect(current_email).to have_content('used on more than one')
+      # expect(current_email).to have_content('user1 and user2')
+      # capture_email!
 
-      complete_login_username_or_email_screen('user2')
-      expect_authenticate_page
+      # complete_login_username_or_email_screen('user2')
+      # expect_authenticate_page
     end
 
     scenario "multiple accounts match email but no usernames" do
