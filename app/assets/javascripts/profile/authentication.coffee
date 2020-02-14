@@ -12,7 +12,7 @@ class AuthenticationOption
 
   confirmDelete: (ev) ->
     new OX.ConfirmationPopover(
-      title: false
+      title: ''
       message: OX.I18n.authentication.confirm_delete
       target: ev.target
       placement: 'top'

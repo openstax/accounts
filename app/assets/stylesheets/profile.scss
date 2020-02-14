@@ -154,12 +154,15 @@
         display: block;
       }
     }
+
     .resend-confirmation {
       margin-left: 7px;
+
       form {
         display: inline;
         div { display: inline; }
       }
+
       input {
         color: $os_link_color;
         padding: 0;
@@ -168,8 +171,11 @@
         border: 0;
         background: transparent;
         height: 20px;
-        text-decoration: underline;
         margin-left: 3px;
+      }
+
+      input[type=submit] {
+        line-height: unset;
       }
     }
     &.new {

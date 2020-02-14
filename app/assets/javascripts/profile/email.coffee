@@ -69,7 +69,7 @@ class Email
 
   confirmDelete: (ev) ->
     new OX.ConfirmationPopover(
-      title: false
+      title: ''
       message: OX.I18n.email.confirm_delete
       target: ev.target
       placement: 'top'
