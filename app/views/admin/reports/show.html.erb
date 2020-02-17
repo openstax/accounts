@@ -19,5 +19,8 @@
 </p>
 
 <h3>Students</h3>
-<p>Student accounts created since July 1: <%= User.student.where(created_at: DateTime.beginning_of_rice_fiscal_year..DateTime.now).count %>
+<p>
+  Student accounts created since July 1: <%= User.student.where(created_at: DateTime.beginning_of_rice_fiscal_year..DateTime.now).count %> <br>
+  Student accounts created in the past week: <%= User.student.where(created_at: DateTime.now - 1.week..DateTime.now).count %>
+</p>
 
