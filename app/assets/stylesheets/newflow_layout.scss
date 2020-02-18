@@ -26,6 +26,14 @@ body {
     color: #31708f;
 }
 
+.newflow-layout-alert {
+    background-color: #f2dede;
+    padding: 1rem;
+    padding-left: 2rem;
+    border-bottom: 0.1rem solid var(--input-error-border-color);
+    color: var(--input-error-message-color);
+}
+
 // utility classes
 .hidden {
     display: none !important;

@@ -27,6 +27,12 @@
             <% end %>
         <% end %>
 
+        <% if flash[:alert].present? %>
+            <div class="newflow-layout-alert">
+                <%= flash[:alert] %>
+            </div>
+        <% end %>
+
         <%= render(partial: 'layouts/main_menu') %>
 
         <div class="content">

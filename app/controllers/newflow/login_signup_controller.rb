@@ -160,10 +160,13 @@ module Newflow
     def change_password_form
       if (user = FindUserByToken.call(params: params).outputs.user )
         sign_in!(user)
+        security_log :help_requested, user: current_user
         render :change_password_form
       elsif signed_in? && user_signin_is_too_old?
+        store_url # TODO: maybe?
         reauthenticate_user!
       else
+        security_log :help_request_failed, user: user
         redirect_to reauthenticate_form_path
       end
     end
