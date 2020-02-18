@@ -16,7 +16,6 @@ module Newflow
       validates :first_name, presence: true
       validates :last_name, presence: true
       validates :email, presence: true
-      # note: password is not req'd when STUDENT arrives with signed parameters (unlike Educators)
     end
 
   protected #################
@@ -39,6 +38,13 @@ module Newflow
       if options[:user_from_signed_params].present?
         outputs.user = User.find_by!(id: options[:user_from_signed_params]['id'])
       else
+        # password is not req'd when students signup with signed params
+        fatal_error(
+          code: :password_is_blank,
+          message: I18n.t(:".activerecord.errors.models.identity.attributes.password.blank"),
+          offending_inputs: :password
+        ) if !signup_params.password.present?
+
         outputs.user = create_user
 
         run(::SetPassword,
