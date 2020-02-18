@@ -55,33 +55,58 @@ feature 'Password reset', js: true do
   end
 
   scenario 'reset password links stay constant for a fixed time' do
-    user = create_user 'user'
-    create_email_address_for user, 'user@example.com'
+    load 'db/seeds.rb' # creates terms of use and privacy policy contracts
+    create_newflow_user('user@openstax.org', 'password')
 
-    visit '/'
-    complete_login_username_or_email_screen('user@example.com')
-    click_link(t :"sessions.authenticate_options.reset_password")
-    open_email('user@example.com')
-    reset_link_path_1 = get_path_from_absolute_link(current_email, 'a')
+    visit newflow_login_path
+    screenshot!
+    newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+    screenshot!
+
+    click_on(I18n.t(:"login_signup_form.forgot_password"))
+    # pre-populates the email for them since they already typed it in the login form
+    expect(find('#reset_password_form_email')['value']).to  eq('user@openstax.org')
+    screenshot!
+    click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+    screenshot!
+
+    expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
+    screenshot!
+
+    open_email('user@openstax.org')
+    change_password_link_1 = get_path_from_absolute_link(current_email, 'a')
     clear_emails
 
-    visit '/'
-    complete_login_username_or_email_screen('user@example.com')
-    click_link(t :"sessions.authenticate_options.reset_password")
-    open_email('user@example.com')
-    reset_link_path_2 = get_path_from_absolute_link(current_email, 'a')
+    visit newflow_login_path
+    newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+    click_on(I18n.t(:"login_signup_form.forgot_password"))
+    # pre-populates the email for them since they already typed it in the login form
+    expect(find('#reset_password_form_email')['value']).to  eq('user@openstax.org')
+
+    click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+    expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
+
+    open_email('user@openstax.org')
+    change_password_link_2 = get_path_from_absolute_link(current_email, 'a')
     clear_emails
 
-    expect(reset_link_path_2).to eq reset_link_path_1
+    expect(change_password_link_1).to eq(change_password_link_2)
 
     Timecop.freeze(Time.now + IdentitiesSendPasswordEmail::LOGIN_TOKEN_EXPIRES_AFTER) do
-      visit '/'
-      complete_login_username_or_email_screen('user@example.com')
-      click_link(t :"sessions.authenticate_options.reset_password")
-      open_email('user@example.com')
-      reset_link_path_3 = get_path_from_absolute_link(current_email, 'a')
+      visit newflow_login_path
+      newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+      click_on(I18n.t(:"login_signup_form.forgot_password"))
+      # pre-populates the email for them since they already typed it in the login form
+      expect(find('#reset_password_form_email')['value']).to  eq('user@openstax.org')
 
-      expect(reset_link_path_3).not_to eq reset_link_path_1
+      click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+      expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
+
+      open_email('user@openstax.org')
+      change_password_link_3 = get_path_from_absolute_link(current_email, 'a')
+      clear_emails
+
+      expect(change_password_link_2).not_to eq(change_password_link_3)
     end
   end
 
