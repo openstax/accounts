@@ -520,7 +520,7 @@ module Newflow
           expect(response).to redirect_to reauthenticate_form_path
         end
 
-        xit 'creates a security log' do
+        it 'creates a security log' do
           expect {
             get('change_password_form', params: params)
           }.to change {
