@@ -81,10 +81,11 @@ module NewflowFormHelper
       return '' if field_errors.empty?
 
       c.content_tag(:div, class: "errors") do
-        error_divs = field_errors.map do |field_error|
-          c.content_tag(:div, class: 'invalid-message') { field_error.translate.html_safe }
-        end
-        error_divs.join.html_safe
+        # TODO: show multiple error messages per field when the pattern-library is fixed.
+        # error_divs = field_errors.map do |field_error|
+        #   error_divs.join.html_safe
+        # end
+        c.content_tag(:div, class: 'invalid-message') { field_errors.first.translate.html_safe }
       end
     end
   end
