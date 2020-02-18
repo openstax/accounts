@@ -138,7 +138,7 @@ feature 'student login flow', js: true do
           visit newflow_login_path
           newflow_log_in_user('user@openstax.org', 'WRONGpassword')
           expect(page.current_url).to match(newflow_login_path)
-          field_text = find('#login_form_password + .errors .invalid-message').text
+          field_text = find('#login_form_password + .errors.invalid-message').text
           expect(field_text).to  eq(I18n.t(:"login_signup_form.incorrect_password"))
         end
     end
