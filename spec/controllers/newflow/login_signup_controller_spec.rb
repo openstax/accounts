@@ -517,8 +517,7 @@ module Newflow
 
         it 'req-s reauthentication' do
           get('change_password_form', params: params)
-          expect(response.status).to eq(302)
-          expect(response).to redirect_to(reauthenticate_path)
+          expect(response).to redirect_to reauthenticate_form_path
         end
 
         xit 'creates a security log' do

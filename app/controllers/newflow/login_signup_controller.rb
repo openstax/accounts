@@ -164,7 +164,7 @@ module Newflow
       elsif signed_in? && user_signin_is_too_old?
         reauthenticate_user!
       else
-        render :change_password_form
+        redirect_to reauthenticate_form_path
       end
     end
 

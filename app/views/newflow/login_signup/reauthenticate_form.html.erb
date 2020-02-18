@@ -48,7 +48,7 @@
                         <%= fh.text_field name: :email,
                                     value: email_prefill_value,
                                     placeholder: I18n.t(:"login_signup_form.email_placeholder"),
-                                    readonly: true
+                                    readonly: email_prefill_value.present?
                         %>
 
                     </div>
