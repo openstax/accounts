@@ -55,7 +55,6 @@ feature 'Password reset', js: true do
   end
 
   scenario 'reset password links stay constant for a fixed time' do
-    load 'db/seeds.rb' # creates terms of use and privacy policy contracts
     create_newflow_user('user@openstax.org', 'password')
 
     visit newflow_login_path
@@ -111,9 +110,10 @@ feature 'Password reset', js: true do
   end
 
   scenario 'failure to send reset email sends user back to authenticate page' do
-    user = create_user 'user'
-    visit '/'
-    complete_login_username_or_email_screen('user')
+    create_newflow_user('user@openstax.org', 'password')
+    visit newflow_login_path
+    newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+    click_on(I18n.t(:"login_signup_form.forgot_password"))
 
     # Cause an error to occur in the handler that sends the email
     allow_any_instance_of(User).to receive(:save).and_wrap_original do |original_method, *args, &block|
@@ -121,11 +121,10 @@ feature 'Password reset', js: true do
       original_method.receiver.errors.add(:base, "Fake spec error")
     end
 
-    expect_security_log(:help_request_failed, user: user)
+    click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
 
-    click_link(t :"sessions.authenticate_options.reset_password")
-
-    expect_authenticate_page
+    expect(page.current_path).to eq(newflow_login_path)
+    # expect a security log as well
+    expect(SecurityLog.where(reason: :reset_password_failed, user: User.last))
   end
-
 end

@@ -151,7 +151,7 @@ module Newflow
           user = @handler_result.outputs.user
           code = @handler_result.errors.first.code
           security_log :reset_password_failed, { user: user, reason: code }
-          render :reset_password_form
+          redirect_to newflow_login_path
         }
       )
     end

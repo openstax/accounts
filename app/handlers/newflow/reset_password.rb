@@ -32,7 +32,8 @@ module Newflow
       return unless user.present?
 
       user.refresh_login_token(expiration_period: LOGIN_TOKEN_EXPIRATION)
-      user.save!
+      user.save
+      transfer_errors_from(user, {type: :verbatim}, true)
 
       email_addresses = user.email_addresses.verified.map(&:value)
 
