@@ -14,6 +14,7 @@ module Newflow
       },
       raise_fatal_errors: true
     )
+    uses_routine(TransferOmniauthData)
 
     include Rails.application.routes.url_helpers
 
@@ -33,6 +34,8 @@ module Newflow
     def handle
       if options[:logged_in_user]
         newflow_handle_while_logged_in
+      elsif mismatched_authentication?
+        fatal_error(code: :mismatched_authentication)
       elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
         # User found with the given authentication.
         # We will log them in.
@@ -43,7 +46,7 @@ module Newflow
         run(TransferAuthentications, outputs.authentication, existing_user)
       else # sign up new user, then we will log them in.
         user = create_user_instance
-        create_email_address(user)
+        run(TransferOmniauthData, oauth_data, user)
         outputs.authentication = create_authentication(user, @oauth_provider)
       end
 
@@ -52,6 +55,15 @@ module Newflow
     # rubocop:enable Metrics/AbcSize
 
     private ###########################
+
+    # somebody already owns this oauth email adddress,
+    # and it's not the same user that that own this Authentication (found by uid)
+    def mismatched_authentication?
+      incoming_auth = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid)
+      existing_email_owner = LookupUsers.by_verified_email(oauth_data.email).first
+      existing_auth = Authentication.where(user_id: existing_email_owner.id, provider: @oauth_provider).pluck(:uid).first
+      existing_auth != incoming_auth.uid
+    end
 
     def newflow_handle_while_logged_in
       outputs.authentication = authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
@@ -126,17 +138,6 @@ module Newflow
       auth = Authentication.new(provider: oauth_provider, uid: @oauth_uid)
       run(TransferAuthentications, auth, user) # This persists the user and the authentication
       auth
-    end
-
-    def create_email_address(user)
-      if EmailAddress.verified.where(value: oauth_data.email).exists?
-        fatal_error(code: :email_already_in_use)
-      end
-      # Note: omniauth checks that Google emails are verified
-      # while the facebook API only returns verified emails
-      email = EmailAddress.create(value: oauth_data.email, user: user, verified: true)
-      transfer_errors_from(email, { scope: :email_address }, :fail_if_errors)
-      email
     end
 
     def parse_oauth_data(oauth_response)
