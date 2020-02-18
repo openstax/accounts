@@ -140,6 +140,7 @@ module Newflow
     def reset_password
       handle_with(
         ResetPassword,
+        user: current_user,
         success: lambda {
           @email = @handler_result.outputs.email
           clear_newflow_state

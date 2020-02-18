@@ -78,11 +78,16 @@
                     </div>
 
                     <div class="content">
+                        <%# This is one difference from the login form...
+                             #  POST request to reset_password_path
+                             #  instead of GET request to reset_password_form_path
+                        %>
                         <%=
                             link_to(
                                 I18n.t(:"login_signup_form.forgot_password"),
-                                reset_password_form_path,
-                                id: 'forgot-passwork-link'
+                                reset_password_path,
+                                id: 'forgot-passwork-link',
+                                method: :post
                             )
                         %>
                     </div>

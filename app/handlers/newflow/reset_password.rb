@@ -9,18 +9,17 @@ module Newflow
 
     paramify :reset_password_form do
       attribute :email
-      validates :email, presence: true
     end
 
     protected #################
 
     def authorized?
-      true
+      reset_password_form_params.email.present? || (options[:user].present? && !options[:user].is_anonymous?)
     end
 
     def handle
       outputs.email = reset_password_form_params.email
-      user = LookupUsers.by_verified_email(outputs.email).first
+      user = (!options[:user].is_anonymous? && options[:user]) || LookupUsers.by_verified_email(outputs.email).first
 
       fatal_error(code: :cannot_find_user,
         offending_inputs: :email,
@@ -36,6 +35,7 @@ module Newflow
       transfer_errors_from(user, {type: :verbatim}, true)
 
       email_addresses = user.email_addresses.verified.map(&:value)
+      outputs.email ||= email_addresses.first
 
       email_addresses.each do |email_address|
         NewflowMailer.reset_password_email(user: user, email_address: email_address).deliver_later

@@ -39,17 +39,20 @@ feature 'Password reset', js: true do
     expect(page).to have_current_path password_reset_path
   end
 
-  xscenario 'reset from reauthenticate page sends email' do
-    user = create_user 'user'
-    create_email_address_for user, 'user@example.com'
-    log_in('user','password')
+  scenario "'Forgot password?' link from reauthenticate page sends email (bypassing Reset Password Form)" do
+    create_newflow_user('user@openstax.org', 'password')
+    newflow_log_in_user('user@openstax.org', 'password')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      find('[data-provider=identity] .edit').click
-      expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
-      click_link(t :"sessions.authenticate_options.reset_password")
-      expect(page).to have_content(t(:'identities.send_reset.we_sent_email', emails: 'user@example.com'))
-      open_email('user@example.com')
+      find('[data-provider=identity] .edit--newflow').click
+      expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
+      click_link(t(:"login_signup_form.forgot_password"))
+      expect(page).to have_content(
+        strip_html(
+          t(:'login_signup_form.password_reset_email_sent_description', email: 'user@openstax.org')
+        )
+      )
+      open_email('user@openstax.org')
       expect(current_email).to have_content('reset')
     end
   end
