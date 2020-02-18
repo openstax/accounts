@@ -723,6 +723,10 @@ input.has-error {
 
 // Tooltip on form inputs
 
+.tooltip {
+    padding-bottom: 2rem !important;
+}
+
 .input-with-tooltip {
     @include input-with-tooltip();
 
