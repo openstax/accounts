@@ -368,9 +368,9 @@ module Newflow
           { provider: 'facebook', uid: 'nonexistent' }
         end
 
-        it 'renders social_login_failed' do
+        it 'redirects to login' do
           get(:oauth_callback, params: params)
-          expect(response).to render_template(:social_login_failed)
+          expect(response).to redirect_to(newflow_login_path)
         end
 
         it 'saves login failed email' do
