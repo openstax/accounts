@@ -452,14 +452,14 @@ module Newflow
 
       context 'failure' do
           let(:params) do
-            { reset_password_form: { email: '' } }
+            { reset_password_form: { email: 'rubbish' } }
           end
 
-          xit 'creates a Security Log' do
+          it 'creates a Security Log' do
             expect {
               post('reset_password', params: params)
             }.to change {
-              SecurityLog.where(event_type: :help_request_failed).count
+              SecurityLog.where(event_type: :reset_password_failed).count
             }
           end
 
