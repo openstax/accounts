@@ -59,10 +59,10 @@ module Newflow
     # somebody already owns this oauth email adddress,
     # and it's not the same user that that own this Authentication (found by uid)
     def mismatched_authentication?
-      incoming_auth = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid)
-      existing_email_owner = LookupUsers.by_verified_email(oauth_data.email).first
-      existing_auth = Authentication.where(user_id: existing_email_owner.id, provider: @oauth_provider).pluck(:uid).first
-      existing_auth != incoming_auth.uid
+      incoming_auth_uid = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).first&.uid
+      existing_email_owner_id = LookupUsers.by_verified_email(oauth_data.email).first&.id
+      existing_auth_uid = Authentication.where(user_id: existing_email_owner_id, provider: @oauth_provider).pluck(:uid).first
+      existing_auth_uid != incoming_auth_uid
     end
 
     def newflow_handle_while_logged_in
