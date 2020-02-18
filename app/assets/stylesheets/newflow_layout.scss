@@ -493,6 +493,7 @@ input.has-error {
     }
 
     input[type=text]:disabled, input[readonly=readonly] {
+        color: #C1C1C1;
         background-color: #f1f1f1;
         cursor: not-allowed;
     }
