@@ -360,8 +360,7 @@ module Newflow
 
       context 'failure' do
         before do
-          # cause a failure
-          allow_any_instance_of(OauthCallback).to receive(:create_user_instance) { nil }
+          allow_any_instance_of(OauthCallback).to receive(:mismatched_authentication?).and_return(true)
         end
 
         let(:params) do

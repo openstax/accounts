@@ -238,7 +238,7 @@ module Newflow
               redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
             when :mismatched_authentication
               security_log(:sign_in_failed, reason: "mismatched authentication")
-              redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
+              redirect_to(newflow_login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
             else
               raise IllegalState
             end
