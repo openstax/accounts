@@ -3,6 +3,7 @@ require 'rails_helper'
 module Newflow
   RSpec.describe ConfirmOauthInfo, type: :handler do
     before do
+      load 'db/seeds.rb'
       FactoryBot.create(:user, state: 'unverified')
 
       disable_sfdc_client
@@ -17,8 +18,8 @@ module Newflow
           email: Faker::Internet.password(min_length: 8),
           newsletter: '1',
           terms_accepted: '1',
-          contract_1_id: '1',
-          contract_2_id: '2'
+          contract_1_id: FinePrint::Contract.first.id,
+          contract_2_id: FinePrint::Contract.last.id
         }
       }
     end
@@ -34,26 +35,26 @@ module Newflow
       expect(User.last.state).to eq('activated')
     end
 
-    xit 'agrees to terms of use and privacy policy when contracts_required' do # TODO
+    it 'agrees to terms of use and privacy policy when contracts_required' do
       # TODO: ideally would do this but it fails with an error:
       # expect_any_instance_of(AgreeToTerms).to receive(:call).twice.and_call_original
 
       expect {
-        described_class.call(params: params, contracts_required: true)
+        described_class.call(params: params, contracts_required: true, user: User.last)
       }.to change {
         FinePrint::Signature.count
       }.by(2)
     end
 
-    xit 'signs up user for the newsletter when checked' do # TODO
+    it 'signs up user for the newsletter when checked' do
       expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including({ newsletter: true }))
-      result
+      described_class.call(params: params, contracts_required: true, user: User.last)
     end
 
-    xit 'does NOT sign up user for the newsletter when NOT checked' do # TODO
+    it 'does NOT sign up user for the newsletter when NOT checked' do
       expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including({ newsletter: false }))
-      params[:signup][:newsletter] = false
-      result
+      params[:info][:newsletter] = false
+      described_class.call(params: params, contracts_required: true, user: User.last)
     end
   end
 end
