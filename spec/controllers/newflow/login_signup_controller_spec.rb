@@ -315,7 +315,7 @@ module Newflow
 
     describe 'GET #oauth_callback' do
       let(:info) do
-        { email: Faker::Internet.free_email, name: Faker::Name.name }
+        { email: 'user@openstax.org', name: Faker::Name.name }
       end
 
       before do
@@ -349,7 +349,7 @@ module Newflow
         end
 
         it 'signs in the user' do
-          expect_any_instance_of(described_class).to receive(:sign_in!).once.and_call_original
+          expect_any_instance_of(described_class).to receive(:sign_in!).and_call_original
           get(:oauth_callback, params: params)
         end
       end
