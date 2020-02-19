@@ -19,7 +19,7 @@ module Newflow
 
     def handle
       outputs.email = reset_password_form_params.email
-      user = (!options[:user].is_anonymous? && options[:user]) || LookupUsers.by_verified_email(outputs.email).first
+      user = options[:user] || LookupUsers.by_verified_email(outputs.email).first
 
       fatal_error(code: :cannot_find_user,
         offending_inputs: :email,
@@ -27,8 +27,6 @@ module Newflow
       ) unless user.present?
 
       outputs.user = user
-
-      return unless user.present?
 
       user.refresh_login_token(expiration_period: LOGIN_TOKEN_EXPIRATION)
       user.save
