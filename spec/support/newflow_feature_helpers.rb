@@ -40,6 +40,7 @@ def newflow_reauthenticate_user(email, password)
   fill_in('login_form_password', with: password)
   screenshot!
   find('[type=submit]').click
+  wait_for_animations
 end
 
 def complete_student_signup_form(email: nil, password: nil, first_name: nil, last_name: nil, newsletter: false)
