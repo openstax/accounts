@@ -506,16 +506,15 @@ module Newflow
       context 'failure - when invalid token' do
         before do
           user = FactoryBot.create(:user)
-          controller.sign_in! user
         end
 
         let(:params) do
           { token: SecureRandom.hex(16) } # token is invalid because it doesn't match up with the user's
         end
 
-        it 'req-s reauthentication' do
+        it 'req-s logging in' do
           get('change_password_form', params: params)
-          expect(response).to redirect_to reauthenticate_form_path
+          expect(response).to redirect_to(newflow_login_path)
         end
 
         it 'creates a security log' do
