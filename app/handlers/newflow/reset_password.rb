@@ -14,12 +14,12 @@ module Newflow
     protected #################
 
     def authorized?
-      reset_password_form_params.email.present? || (options[:user].present? && !options[:user].is_anonymous?)
+      reset_password_form_params.email.present? || verified_user
     end
 
     def handle
       outputs.email = reset_password_form_params.email
-      user = options[:user] || LookupUsers.by_verified_email(outputs.email).first
+      user = verified_user || LookupUsers.by_verified_email(outputs.email).first
 
       fatal_error(code: :cannot_find_user,
         offending_inputs: :email,
@@ -38,6 +38,12 @@ module Newflow
       email_addresses.each do |email_address|
         NewflowMailer.reset_password_email(user: user, email_address: email_address).deliver_later
       end
+    end
+
+    private #################
+
+    def verified_user
+      return options[:user] if options[:user].present? && !options[:user].is_anonymous?
     end
   end
 end
