@@ -462,10 +462,9 @@ module Newflow
             }
           end
 
-          it 'renders reset_password_form with errors' do
+          it 'redirects to login path' do
             post('reset_password', params: params)
-            expect(response).to render_template(:reset_password_form)
-            expect(assigns(:"handler_result").errors).to  be_present
+            expect(response).to redirect_to(newflow_login_path)
           end
       end
     end
