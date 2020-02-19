@@ -43,14 +43,15 @@ feature 'Require recent log in to change authentications', js: true do
       expect(page).to have_no_missing_translations
 
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-        visit '/profile'
+        visit profile_newflow_path
 
         screenshot!
         find('.authentication[data-provider="identity"] .edit--newflow').click
 
+        expect(page.current_path).to eq(reauthenticate_form_path)
         newflow_reauthenticate_user('user@example.com', 'password')
         screenshot!
-
+        expect(page.current_path).to eq(change_password_form_path)
         fill_in('change_password_form_password', with: 'newpassword')
         screenshot!
         find('#login-signup-form').click

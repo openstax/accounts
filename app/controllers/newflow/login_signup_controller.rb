@@ -163,11 +163,12 @@ module Newflow
         security_log :help_requested, user: current_user
         render :change_password_form
       elsif signed_in? && user_signin_is_too_old?
-        store_url # TODO: maybe?
-        reauthenticate_user!
+        reauthenticate_user!(redirect_back_to: change_password_form_path)
+      elsif signed_in?
+        render :change_password_form
       else
         security_log :help_request_failed, user: user
-        redirect_to reauthenticate_form_path
+        redirect_to newflow_login_path
       end
     end
 
