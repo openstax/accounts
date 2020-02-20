@@ -8,6 +8,15 @@ class NewflowMailer < ApplicationMailer
     mail to: email, subject: 'Set up a password for your OpenStax account'
   end
 
+  def reset_password_email(user:, email_address:)
+    @user = user
+
+    raise "No valid login token" if user.login_token.nil? || user.login_token_expired?
+
+    mail to: "\"#{user.full_name}\" <#{email_address}>",
+         subject: "Reset your OpenStax password"
+  end
+
   def signup_email_confirmation(email_address:)
     @should_show_pin = ConfirmByPin.sequential_failure_for(email_address).attempts_remaining?
     @email_value = email_address.value
@@ -23,14 +32,5 @@ class NewflowMailer < ApplicationMailer
                   end
 
     email_address.update_column(:confirmation_sent_at, Time.now)
-  end
-
-  def reset_password_email(user:, email_address:)
-    @user = user
-
-    raise "No valid login token" if user.login_token.nil? || user.login_token_expired?
-
-    mail to: "\"#{user.full_name}\" <#{email_address}>",
-         subject: "Reset your OpenStax password"
   end
 end

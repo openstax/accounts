@@ -11,7 +11,7 @@ module Newflow
     protected #################
 
     def setup
-      @user = options[:user]
+      @user = caller
     end
 
     def authorized?

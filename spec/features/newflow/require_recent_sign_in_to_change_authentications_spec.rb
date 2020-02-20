@@ -59,7 +59,7 @@ feature 'Require recent log in to change authentications', js: true do
         find('[type=submit]').click
         screenshot!
 
-        newflow_expect_profile_page
+        expect_newflow_profile_page
         screenshot!
 
         # Don't have to reauthenticate since just did
@@ -69,7 +69,7 @@ feature 'Require recent log in to change authentications', js: true do
         find('#login-signup-form').click
         wait_for_animations
         find('[type=submit]').click
-        newflow_expect_profile_page
+        expect_newflow_profile_page
       end
     end
   end
@@ -106,7 +106,7 @@ feature 'Require recent log in to change authentications', js: true do
       expect(page).to have_no_missing_translations
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
         visit '/profile'
-        newflow_expect_profile_page
+        expect_newflow_profile_page
         expect(page).to have_content('Twitter')
         screenshot!
 
@@ -116,7 +116,7 @@ feature 'Require recent log in to change authentications', js: true do
         screenshot!
 
         newflow_reauthenticate_user('user@example.com', 'password')
-        newflow_expect_profile_page
+        expect_newflow_profile_page
         screenshot!
 
         find('.authentication[data-provider="twitter"] .delete--newflow').click

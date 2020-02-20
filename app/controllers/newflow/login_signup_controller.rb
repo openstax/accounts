@@ -146,7 +146,7 @@ module Newflow
           clear_newflow_state
           sign_out!
           security_log :reset_password_success, user: @handler_result.outputs.user
-          render :reset_password_email_sent
+          render :reset_password_email_sent, notice: t(:"identities.add_success.message")
         },
         failure: lambda {
           user = @handler_result.outputs.user
@@ -157,32 +157,27 @@ module Newflow
       )
     end
 
+    def newflow_setup_password
+      create_or_change_password
+    end
+
     def change_password_form
-      if (user = FindUserByToken.call(params: params).outputs.user )
-        sign_in!(user)
-        security_log :help_requested, user: current_user
-        render :change_password_form
-      elsif signed_in? && user_signin_is_too_old?
-        reauthenticate_user!(redirect_back_to: change_password_form_path)
-      elsif signed_in?
-        render :change_password_form
-      else
-        security_log :help_request_failed, user: user
-        redirect_to newflow_login_path
-      end
+      create_or_change_password
     end
 
     def change_password
-      # This check again here in case a long time elapsed between the GET and the POST
       if signed_in? && user_signin_is_too_old?
+        # This check again here in case a long time elapsed between the GET and the POST
         reauthenticate_user!
+      elsif current_user.is_anonymous?
+        raise Lev::SecurityTransgression
       else
         handle_with(
           ChangePassword,
           user: current_user,
           success: lambda {
             security_log :password_reset
-            redirect_back(fallback_location: profile_newflow_url)
+            redirect_back(fallback_location: profile_newflow_url, notice: t(:"identities.reset_success.message"))
           },
           failure: lambda {
             security_log :password_reset_failed
@@ -270,7 +265,6 @@ module Newflow
     def setup_password
       handle_with(
         CreatePassword,
-        user: current_user,
         success: lambda {
           security_log(:student_setup_password)
           redirect_back(fallback_location: profile_newflow_url)
@@ -383,5 +377,21 @@ module Newflow
 
       store_fallback(url: authorization_url) unless authorization_url.nil?
     end
-end
+
+    private #################
+
+    def create_or_change_password
+      if (user = FindUserByToken.call(params: params).outputs.user )
+        sign_in!(user, { security_log_data: { type: 'token' } })
+        security_log :help_requested, user: current_user
+        render :change_password_form
+      elsif signed_in? && user_signin_is_too_old?
+        reauthenticate_user!(redirect_back_to: change_password_form_path)
+      elsif signed_in?
+        render :change_password_form
+      elsif current_user.is_anonymous?
+        raise Lev::SecurityTransgression
+      end
+    end
+  end
 end

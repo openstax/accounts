@@ -80,27 +80,24 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
   scenario 'successful' do
     visit start_path(type: type, token: @login_token)
     expect(page).to have_no_missing_translations
-    fill_in (t :"identities.set.password"), with: '1234abcd'
-    fill_in (t :"identities.set.confirm_password"), with: '1234abcd'
-    click_button (t :"identities.#{type}.submit")
-    expect(page).to have_content(t :"identities.#{type}_success.message")
-    click_button (t :"identities.#{type}_success.continue")
+    fill_in(t(:"login_signup_form.password_label"), with: '1234abcd')
+    find('[type=submit]').click
+    expect(page).to have_content(t(:"identities.#{type}_success.message"))
 
-    expect_profile_page
+    expect_newflow_profile_page
 
     click_link (t :"users.edit.sign_out")
     visit '/'
-    expect(page).to have_current_path login_path
+    expect(page).to have_current_path newflow_login_path
 
     # try logging in with the old password
-    complete_login_username_or_email_screen 'user'
-    complete_login_password_screen 'password'
-    expect(page).to have_content(t :"controllers.sessions.incorrect_password")
+    newflow_log_in_user('user', 'password')
+    expect(page).to have_content(t(:"login_signup_form.incorrect_password"))
 
     # try logging in with the new password
-    complete_login_password_screen '1234abcd'
+    newflow_log_in_user('user', '1234abcd')
 
-    expect_profile_page
+    expect_newflow_profile_page
     expect(page).to have_no_missing_translations
     expect(page).to have_content(@user.full_name)
   end
