@@ -70,6 +70,8 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     visit start_path(type: type, token: @login_token)
     expect(page).to have_no_missing_translations
     fill_in(t(:"login_signup_form.password_label"), with: '1234abcd')
+    find('#login-signup-form').click # to hide the password tooltip
+    wait_for_animations
     find('[type=submit]').click
     expect(page).to have_content(t(:"identities.#{type}_success.message"))
 
@@ -115,9 +117,9 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
   def start_path(type:, token: nil)
     case type
     when :reset
-      token.present? ? password_reset_path(token: token) : password_reset_path
+      token.present? ? change_password_form_path(token: token) : reset_password_form_path
     when :add
-      token.present? ? password_add_path(token: token) : password_add_path
+      token.present? ? newflow_setup_password_path(token: token) : newflow_setup_password_path
     end
   end
 
