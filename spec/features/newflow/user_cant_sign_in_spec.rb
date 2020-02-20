@@ -180,12 +180,25 @@ feature "User can't sign in", js: true do
     end
   end
 
-  scenario 'user has a linked google auth but uses a different google account to login' do
-    user = create_user 'user'
-    authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
+  scenario 'user has a linked google auth but then the uid changes' do # Dante
+    # scenario explained:
+    # User has a google auth with a certain email...
+    # then the same User (or another user) tries to login with a google auth that has the same email adddress...
+    # but different `uid`.
+    # This means that someone could've taken away User's google email address,
+    # then tries to use it to log in to Accounts.
+    #
+    # Technically: same user, same provider, different `uid`.
+
+    email_address = Faker::Internet.free_email
+    user = create_newflow_user(email_address)
+    authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
+    # how do
 
     arrive_from_app
-    complete_login_username_or_email_screen('user')
+
+
+    newflow_log_in_user('user')
 
     expect_security_log(:sign_in_failed, reason: "mismatched authentication")
 

@@ -5,8 +5,6 @@ module Newflow
 
     paramify :change_password_form do
       attribute :password, type: String
-      attribute :token, type: String
-
       validates :password, presence: true
     end
 

@@ -9,7 +9,7 @@ module Newflow
     end
 
     def handle
-      fatal_error(code: :missing_token_param) unless params[:token].present?
+      fatal_error(code: :token_blank) unless params[:token].present?
 
       user = User.find_by(login_token: params[:token])
 

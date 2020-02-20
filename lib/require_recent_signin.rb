@@ -26,14 +26,14 @@ module RequireRecentSignin
   end
 
   def last_login_is_older_than?(time)
-    if time.is_a?(ActiveSupport::Duration)
-      time = Time.now - time
-    end
-
     return true if !signed_in?
 
     last_signin_time = SecurityLog.sign_in_successful.where(user: current_user).maximum(:created_at)
     return true if last_signin_time.nil?
+
+    if time.is_a?(ActiveSupport::Duration)
+      time = Time.now - time
+    end
 
     last_signin_time <= time
   end

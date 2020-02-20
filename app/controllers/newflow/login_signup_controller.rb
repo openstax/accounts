@@ -381,16 +381,22 @@ module Newflow
     private #################
 
     def create_or_change_password
-      if (user = FindUserByToken.call(params: params).outputs.user )
-        sign_in!(user, { security_log_data: { type: 'token' } })
-        security_log :help_requested, user: current_user
-        render :change_password_form
-      elsif signed_in? && user_signin_is_too_old?
-        reauthenticate_user!(redirect_back_to: change_password_form_path)
-      elsif signed_in?
-        render :change_password_form
-      elsif current_user.is_anonymous?
-        raise Lev::SecurityTransgression
+      result = FindUserByToken.call(params: params)
+
+      if result.errors.any?
+        @error = result.errors.first.code
+      else
+        if (user = result.outputs.user)
+          sign_in!(user, { security_log_data: { type: 'token' } })
+          security_log :help_requested, user: current_user
+          render :change_password_form
+        elsif signed_in? && user_signin_is_too_old?
+          reauthenticate_user!(redirect_back_to: change_password_form_path)
+        elsif request.post? && current_user.is_anonymous?
+          raise Lev::SecurityTransgression
+        else
+          render :change_password_form # which will just show a friendly error message
+        end
       end
     end
   end

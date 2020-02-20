@@ -5,12 +5,13 @@ feature 'Require recent log in to change authentications', js: true do
     turn_on_feature_flag
   end
 
-  xscenario 'adding Facebook' do
-    user = create_user 'user'
+  scenario 'adding Facebook' do
+    create_newflow_user 'user@example.com'
+      visit '/'
+      newflow_log_in_user('user@example.com', 'password')
 
-    log_in('user', 'password')
-
-    expect_profile_page
+    # expect_profile_page
+    expect(page.current_path).to eq(newflow_profile_path)
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       expect(page).to have_no_content('Facebook')
@@ -74,7 +75,7 @@ feature 'Require recent log in to change authentications', js: true do
     end
   end
 
-  xscenario 'bad password on reauthentication' do
+  scenario 'bad password on reauthentication' do
     create_user 'user'
     log_in('user', 'password')
 
