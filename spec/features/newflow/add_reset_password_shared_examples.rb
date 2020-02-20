@@ -66,17 +66,6 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     screenshot!
   end
 
-  scenario "password and password confirmation don't match" do
-    visit start_path(type: type, token: @login_token)
-    expect(page).to have_no_missing_translations
-    expect_page(type: type)
-    fill_in (t :"identities.set.password"), with: 'password!'
-    fill_in (t :"identities.set.confirm_password"), with: 'password!!'
-    click_button (t :"identities.#{type}.submit")
-    expect(page).to have_content(error_msg Identity, :password_confirmation, :confirmation)
-    screenshot!
-  end
-
   scenario 'successful' do
     visit start_path(type: type, token: @login_token)
     expect(page).to have_no_missing_translations
