@@ -14,13 +14,14 @@ module Newflow
       let(:params) do
         {
           new_password_form: {
-            password: 'newpassword',
+            password: 'newpassword'
           }
         }
       end
 
       it "changes the user's identity's password" do
-        described_class.call(user: user, params: params)
+        described_class.call(caller: user, params: params)
+        user.identity.reload
         expect(user.identity.password).to eq('newpassword')
       end
     end
@@ -38,7 +39,7 @@ module Newflow
         # create the password to begin with
         FactoryBot.create(:identity, user: user, password: 'password')
 
-        expect(described_class.call(user: user, params: params).errors.any?).to be(true)
+        expect(described_class.call(caller: user, params: params).errors.any?).to be(true)
       end
     end
   end

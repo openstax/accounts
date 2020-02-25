@@ -11,7 +11,7 @@ module Newflow
     protected #################
 
     def setup
-      @user = (!caller.is_anonymous? && caller) || User.find_by(login_token: params[:token])
+      @user = logged_in_user || User.find_by(login_token: params[:token])
     end
 
     def authorized?
@@ -25,6 +25,12 @@ module Newflow
         password: new_password_form_params.password,
         password_confirmation: new_password_form_params.password
       )
+    end
+
+    private #################
+
+    def logged_in_user
+      return caller if !caller.is_anonymous?
     end
   end
 end
