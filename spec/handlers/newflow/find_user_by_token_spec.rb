@@ -6,7 +6,7 @@ module Newflow
       before do
         user = create_newflow_user('user@openstax.org')
         user.refresh_login_token
-        user.save
+        user.save!
         @token = user.login_token
       end
 
