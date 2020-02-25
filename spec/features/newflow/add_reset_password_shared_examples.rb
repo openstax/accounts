@@ -104,12 +104,6 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
   end
 
   def start_path(type:, token: nil)
-    case type
-    when :reset
-      token.present? ? new_password_form_path(token: token) : new_password_form_path
-    when :add
-      token.present? ? newflow_setup_password_path(token: token) : newflow_setup_password_path
-    end
+    token.present? ? new_password_form_path(token: token) : new_password_form_path
   end
-
 end

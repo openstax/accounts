@@ -393,7 +393,7 @@ module Newflow
         elsif request.post? && current_user.is_anonymous?
           raise Lev::SecurityTransgression
         else
-          render :new_password_form # which will just show a friendly error message
+          render :new_password_form # which could show a friendly error message OR the form if all good
         end
       end
     end
