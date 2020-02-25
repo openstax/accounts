@@ -44,7 +44,7 @@ Rails.application.routes.draw do
     get 'i/setup_password', action: :setup_password_form, as: :newflow_setup_password
     post 'i/setup_password', action: :setup_password, as: :newflow_setup_password_post
 
-    get 'i/reset_password_form', action: :reset_password_form, as: :reset_password_form
+    get 'i/forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
     post 'i/reset_password', action: :reset_password, as: :reset_password
     get 'i/reset_password_email_sent',
           action: :reset_password_email_sent,

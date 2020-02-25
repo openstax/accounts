@@ -67,7 +67,7 @@ feature 'Password reset', js: true do
 
     click_on(I18n.t(:"login_signup_form.forgot_password"))
     # pre-populates the email for them since they already typed it in the login form
-    expect(find('#reset_password_form_email')['value']).to  eq('user@openstax.org')
+    expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
     screenshot!
     click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
     screenshot!
@@ -83,7 +83,7 @@ feature 'Password reset', js: true do
     newflow_log_in_user('user@openstax.org', 'WRONGpassword')
     click_on(I18n.t(:"login_signup_form.forgot_password"))
     # pre-populates the email for them since they already typed it in the login form
-    expect(find('#reset_password_form_email')['value']).to  eq('user@openstax.org')
+    expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
 
     click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
     expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
@@ -99,7 +99,7 @@ feature 'Password reset', js: true do
       newflow_log_in_user('user@openstax.org', 'WRONGpassword')
       click_on(I18n.t(:"login_signup_form.forgot_password"))
       # pre-populates the email for them since they already typed it in the login form
-      expect(find('#reset_password_form_email')['value']).to  eq('user@openstax.org')
+      expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
 
       click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
       expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))

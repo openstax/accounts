@@ -8,7 +8,7 @@ module Newflow
 
     let(:params) do
       {
-        reset_password_form: {
+        forgot_password_form: {
           email: 'user@openstax.org'
         }
       }
@@ -43,7 +43,7 @@ module Newflow
     context 'when no user found' do
       let(:params) do
       {
-        reset_password_form: {
+        forgot_password_form: {
           email: 'noone@openstax.org'
         }
       }

@@ -115,7 +115,7 @@ feature "User can't sign in", js: true do
 
       click_link(t :"login_signup_form.forgot_password")
       # pre-populates the email for them since they already typed it in the login form
-      expect(find('#reset_password_form_email')['value']).to  eq('user@example.com')
+      expect(find('#forgot_password_form_email')['value']).to  eq('user@example.com')
       screenshot!
       click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
       expect(page).to have_content(t(:"login_signup_form.password_reset_email_sent"))

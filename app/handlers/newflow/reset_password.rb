@@ -7,18 +7,18 @@ module Newflow
 
     LOGIN_TOKEN_EXPIRATION = 2.days
 
-    paramify :reset_password_form do
+    paramify :forgot_password_form do
       attribute :email
     end
 
     protected #################
 
     def authorized?
-      reset_password_form_params.email.present? || verified_user
+      forgot_password_form_params.email.present? || verified_user
     end
 
     def handle
-      outputs.email = reset_password_form_params.email
+      outputs.email = forgot_password_form_params.email
       user = verified_user || LookupUsers.by_verified_email(outputs.email).first
 
       fatal_error(code: :cannot_find_user,

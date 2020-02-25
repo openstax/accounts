@@ -133,7 +133,7 @@ module Newflow
       render layout: 'application'
     end
 
-    def reset_password_form
+    def forgot_password_form
       @email = login_failed_email
     end
 

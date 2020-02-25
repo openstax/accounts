@@ -97,7 +97,7 @@ feature 'student login flow', js: true do
     context 'user interface' do
       example 'Forgot your password? link takes user to reset password form' do
         visit newflow_login_path
-        expect(find('#forgot-passwork-link')['href']).to match(reset_password_form_path)
+        expect(find('#forgot-passwork-link')['href']).to match(forgot_password_form_path)
       end
 
       example 'SHOW/HIDE link for password field shows and hides password' do
@@ -154,7 +154,7 @@ feature 'student login flow', js: true do
 
         click_on(I18n.t(:"login_signup_form.forgot_password"))
         # pre-populates the email for them since they already typed it in the login form
-        expect(find('#reset_password_form_email')['value']).to  eq('user@openstax.org')
+        expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
         screenshot!
         click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
         screenshot!

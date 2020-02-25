@@ -109,7 +109,7 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
   end
 
   def expect_reset_password_page(code = @login_token)
-    expect(page).to have_current_path reset_password_form_path(token: code)
+    expect(page).to have_current_path forgot_password_form_path(token: code)
     expect(page).to have_no_missing_translations
   end
 

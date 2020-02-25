@@ -396,15 +396,15 @@ module Newflow
       it ''
     end
 
-    describe 'GET #reset_password_form' do
+    describe 'GET #forgot_password_form' do
       it 'has a 200 status code' do
-        get('reset_password_form')
+        get('forgot_password_form')
         expect(response.status).to eq(200)
       end
 
       it 'assigns the email value from what is stored in the session' do
         session[:login_failed_email] = 'someone@openstax.org'
-        get('reset_password_form')
+        get('forgot_password_form')
         expect(assigns(:email)).to eq('someone@openstax.org')
       end
     end
@@ -417,7 +417,7 @@ module Newflow
           end
 
           let(:params) do
-            { reset_password_form: { email: 'user@openstax.org' } }
+            { forgot_password_form: { email: 'user@openstax.org' } }
           end
 
           it 'has a 200 status code' do
@@ -451,7 +451,7 @@ module Newflow
 
       context 'failure' do
           let(:params) do
-            { reset_password_form: { email: 'rubbish' } }
+            { forgot_password_form: { email: 'rubbish' } }
           end
 
           it 'creates a Security Log' do
