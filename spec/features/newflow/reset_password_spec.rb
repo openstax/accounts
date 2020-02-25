@@ -9,26 +9,30 @@ feature 'Password reset', js: true do
 
   it_behaves_like "add_reset_password_shared_examples", :reset
 
-  xscenario 'while still logged in – user is not stuck in a loop' do
+  scenario 'while still logged in – user is not stuck in a loop' do
     # shouldn't ask to reauthenticate when they forgot their password and are trying to reset it
     # issue: https://github.com/openstax/business-intel/issues/550
-    user = create_user 'user'
-    create_email_address_for user, 'user@example.com'
-    login_token = generate_login_token_for 'user'
-    log_in('user','password')
+    user = create_newflow_user('user@openstax.org', 'password')
+    login_token = generate_login_token_for_user(user)
+    newflow_log_in_user('user@openstax.org', 'password')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      find('[data-provider=identity] .edit').click
-      expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
-      click_link(t :"sessions.authenticate_options.reset_password")
-      expect(page).to have_content(t(:'identities.send_reset.we_sent_email', emails: 'user@example.com'))
+      find('[data-provider=identity] .edit--newflow').click
+      expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
 
-      open_email('user@example.com')
+      click_link(t(:"login_signup_form.forgot_password"))
+      expect(page).to have_content(
+        strip_html(
+          t(:'login_signup_form.password_reset_email_sent_description', email: 'user@openstax.org')
+        )
+      )
+
+      open_email('user@openstax.org')
       password_reset_link = get_path_from_absolute_link(current_email, 'a')
       visit password_reset_link
 
-      expect(page).not_to(have_current_path(reauthenticate_path))
-      expect(page).to(have_current_path(password_reset_path(token: login_token)))
+      expect(page).not_to(have_current_path(reauthenticate_form_path))
+      expect(page).to(have_current_path(new_password_form_path(token: login_token)))
     end
   end
 

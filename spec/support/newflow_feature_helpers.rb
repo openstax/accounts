@@ -117,3 +117,9 @@ def submit_signup_form
   screenshot!
   find('[type=submit]').click
 end
+
+def generate_login_token_for_user(user)
+  user.refresh_login_token
+  user.save!
+  user.login_token
+end
