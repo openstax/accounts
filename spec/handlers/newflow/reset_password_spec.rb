@@ -17,7 +17,7 @@ module Newflow
     context 'when user is passed-in' do
       it 'sends a password reset email' do
         expect_any_instance_of(NewflowMailer).to receive(:reset_password_email).and_call_original
-        described_class.call(params: {}, user: user)
+        described_class.call(params: {}, caller: user)
       end
     end
 
@@ -25,18 +25,18 @@ module Newflow
       it 'updates the password for the user found by email address' do
         user # create it
         expect_any_instance_of(NewflowMailer).to receive(:reset_password_email).and_call_original
-        described_class.call(params: params, user: nil)
+        described_class.call(params: params, caller: AnonymousUser.instance)
       end
     end
 
     it 'creates a login token for user' do
       expect_any_instance_of(User).to receive(:refresh_login_token).and_call_original
-      described_class.call(user: user, params: {})
+      described_class.call(caller: user, params: {})
     end
 
     it 'resets the login token for user when it has one' do
       expect(user.login_token).to be(nil)
-      described_class.call(params: {}, user: user)
+      described_class.call(params: {}, caller: user)
       expect(user.login_token).to be_a(String)
     end
 
@@ -50,7 +50,7 @@ module Newflow
     end
 
       it 'adds error cannot_find_user' do
-        result = described_class.handle(user: nil, params: params)
+        result = described_class.handle(caller: nil, params: params)
         expect(result).to have_routine_error(:cannot_find_user)
       end
     end
