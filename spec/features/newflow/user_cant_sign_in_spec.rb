@@ -124,12 +124,12 @@ feature "User can't sign in", js: true do
       open_email('user@example.com')
       capture_email!
       change_password_link = get_path_from_absolute_link(current_email, 'a')
-      expect(change_password_link).to include(change_password_form_path)
+      expect(change_password_link).to include(new_password_form_path)
 
       # set the new password
       visit change_password_link
       expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
-      fill_in('change_password_form_password', with: 'NEWpassword')
+      fill_in('new_password_form_password', with: 'NEWpassword')
       screenshot!
       find('#login-signup-form').click
       wait_for_animations

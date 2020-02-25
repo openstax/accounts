@@ -469,7 +469,7 @@ module Newflow
       end
     end
 
-    describe 'GET #change_password_form' do
+    describe 'GET #new_password_form' do
       context 'success - when valid token' do
         let(:params) do
           user.refresh_login_token
@@ -484,19 +484,19 @@ module Newflow
 
         it 'logs in the user found by token or whateva' do
           some_other_user = FactoryBot.create(:user)
-          get('change_password_form', params: params)
+          get('new_password_form', params: params)
           expect(controller.current_user.id).to eq(user.id)
           expect(controller.current_user.id).not_to eq(some_other_user.id)
         end
 
         it 'has a 200 status code' do
-          get('change_password_form', params: params)
+          get('new_password_form', params: params)
           expect(response.status).to eq(200)
         end
 
         xit 'creates a security log' do
           expect {
-            get('change_password_form', params: params)
+            get('new_password_form', params: params)
           }.to change {
             SecurityLog.where(event_type: :help_requested).count
           }
@@ -513,13 +513,13 @@ module Newflow
         end
 
         it 'req-s logging in' do
-          get('change_password_form', params: params)
+          get('new_password_form', params: params)
           expect(response).to redirect_to(newflow_login_path)
         end
 
         it 'creates a security log' do
           expect {
-            get('change_password_form', params: params)
+            get('new_password_form', params: params)
           }.to change {
             SecurityLog.where(event_type: :help_request_failed).count
           }
@@ -545,7 +545,7 @@ module Newflow
 
         let(:params) do
           {
-            change_password_form: {
+            new_password_form: {
               password: new_password
             }
           }
@@ -575,7 +575,7 @@ module Newflow
 
         let(:params) do
           {
-            change_password_form: {
+            new_password_form: {
               password: ''
             }
           }

@@ -49,7 +49,7 @@ Rails.application.routes.draw do
     get 'i/reset_password_email_sent',
           action: :reset_password_email_sent,
           as: :reset_password_email_sent
-    get 'i/change_password_form', action: :change_password_form, as: :change_password_form #
+    get 'i/new_password_form', action: :new_password_form, as: :new_password_form
     post 'i/change_password', action: :change_password, as: :change_password #
 
     get 'i/profile', action: :profile_newflow, as: :profile_newflow

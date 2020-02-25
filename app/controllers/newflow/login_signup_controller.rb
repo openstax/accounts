@@ -161,7 +161,7 @@ module Newflow
       create_or_change_password
     end
 
-    def change_password_form
+    def new_password_form
       create_or_change_password
     end
 
@@ -181,7 +181,7 @@ module Newflow
           },
           failure: lambda {
             security_log :password_reset_failed
-            render :change_password_form, status: 400
+            render :new_password_form, status: 400
           }
         )
       end
@@ -389,13 +389,13 @@ module Newflow
         if (user = result.outputs.user)
           sign_in!(user, { security_log_data: { type: 'token' } })
           security_log :help_requested, user: current_user
-          render :change_password_form
+          render :new_password_form
         elsif signed_in? && user_signin_is_too_old?
-          reauthenticate_user!(redirect_back_to: change_password_form_path)
+          reauthenticate_user!(redirect_back_to: new_password_form_path)
         elsif request.post? && current_user.is_anonymous?
           raise Lev::SecurityTransgression
         else
-          render :change_password_form # which will just show a friendly error message
+          render :new_password_form # which will just show a friendly error message
         end
       end
     end

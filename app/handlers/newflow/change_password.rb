@@ -3,7 +3,7 @@ module Newflow
   class ChangePassword
     lev_handler
 
-    paramify :change_password_form do
+    paramify :new_password_form do
       attribute :password, type: String
       validates :password, presence: true
     end
@@ -22,8 +22,8 @@ module Newflow
       run(
         ::SetPassword,
         user: @user,
-        password: change_password_form_params.password,
-        password_confirmation: change_password_form_params.password
+        password: new_password_form_params.password,
+        password_confirmation: new_password_form_params.password
       )
     end
   end

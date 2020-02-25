@@ -13,7 +13,7 @@ module Newflow
 
       let(:params) do
         {
-          change_password_form: {
+          new_password_form: {
             password: 'newpassword',
           }
         }
@@ -28,7 +28,7 @@ module Newflow
     context 'failure' do
     let(:params) do
       {
-        change_password_form: {
+        new_password_form: {
           password: 'pwd',
         }
       }
