@@ -9,6 +9,8 @@ module Newflow
     end
 
     def handle
+      return if !options[:user].is_anonymous? # return if user is already logged in
+
       fatal_error(code: :token_blank) unless params[:token].present?
 
       user = User.find_by(login_token: params[:token])

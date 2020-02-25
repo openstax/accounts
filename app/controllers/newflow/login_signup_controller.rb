@@ -140,7 +140,6 @@ module Newflow
     def reset_password
       handle_with(
         ResetPassword,
-        user: current_user,
         success: lambda {
           @email = @handler_result.outputs.email
           clear_newflow_state
@@ -174,7 +173,6 @@ module Newflow
       else
         handle_with(
           ChangePassword,
-          user: current_user,
           success: lambda {
             security_log :password_reset
             redirect_back(fallback_location: profile_newflow_url, notice: t(:"identities.reset_success.message"))
@@ -381,7 +379,7 @@ module Newflow
     private #################
 
     def create_or_change_password
-      result = FindUserByToken.call(params: params)
+      result = FindUserByToken.call(params: params, user: current_user)
 
       if result.errors.any?
         @error = result.errors.first.code

@@ -43,7 +43,7 @@ module Newflow
     private #################
 
     def verified_user
-      return options[:user] if options[:user].present? && !options[:user].is_anonymous?
+      @verified_user ||= caller if caller.present? && !caller.is_anonymous?
     end
   end
 end
