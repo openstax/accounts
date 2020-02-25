@@ -93,21 +93,6 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     expect(page).to have_content(@user.full_name)
   end
 
-  xscenario 'cancels reset' do
-    visit start_path(type: type, token: @login_token)
-    debugger
-    # expect(page).to have_no_missing_translations
-    # fill_in (t :"identities.set.password"), with: '1234abcd'
-    # fill_in (t :"identities.set.confirm_password"), with: '1234abcd'
-    # fill_in (t :"identities.set.confirm_password"), with: '1234abcd'
-    # click_link (t :"identities.set.cancel")
-    # expect_profile_page
-    fill_in()
-    visit profile_newflow_path
-    expect(page).to have_no_missing_translations
-    expect(@user.identity.authenticate '1234abcd').to eq(false)
-  end
-
   def expect_reset_password_page(code = @login_token)
     expect(page).to have_current_path forgot_password_form_path(token: code)
     expect(page).to have_no_missing_translations
