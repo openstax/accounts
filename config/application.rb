@@ -14,11 +14,6 @@ module Accounts
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
-    config.assets.enabled = false
-
-    # Don't spin up the app just to precomplie; avoiding that lets us
-    # not have a configured database when building an image
-    config.assets.initialize_on_precompile = false
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -53,14 +48,15 @@ module Accounts
 
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
-
-    redis_secrets = secrets[:redis]
-    config.cache_store = :redis_store, {
-      url: redis_secrets[:url],
-      namespace: redis_secrets[:namespaces][:cache],
-      expires_in: 90.minutes,
-      compress: true,
-    }
+    if ARGV[0] != "assets:precompile"
+      redis_secrets = secrets[:redis]
+      config.cache_store = :redis_store, {
+        url: redis_secrets[:url],
+        namespace: redis_secrets[:namespaces][:cache],
+        expires_in: 90.minutes,
+        compress: true,
+      }
+    end 
 
     def is_real_production?
       secrets.environment_name == "prodtutor"
