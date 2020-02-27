@@ -310,9 +310,9 @@ module Newflow
             security_log :help_requested, user: current_user
           end
 
-          if kind == :change
+          if kind == :change && current_user.identity.present?
             render(:change_password_form) and return
-          elsif kind == :create
+          elsif kind == :create || current_user.identity.nil?
             render(:create_password_form) and return
           end
         },
