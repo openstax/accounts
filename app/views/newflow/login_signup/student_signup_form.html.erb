@@ -99,10 +99,14 @@
                 <% unless user_from_signed_params['role'] == 'student' && user_from_signed_params['signed_external_data'].present? %>
                     <div class="content control-group">
                         <div id="password-field-container">
-                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
-                                                    class: 'field-label required'
-                            %>
                             <div class="input-with-tooltip">
+                                <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                                                        class: 'field-label required'
+                                %>
+                                <span id="password-show-hide-button">
+                                    <span class="toggle-show-hide">SHOW</span>
+                                    <span class="toggle-show-hide" style="display: none">HIDE</span>
+                                </span>
                                 <%=
                                     fh.text_field(
                                         name: :password,
@@ -118,11 +122,6 @@
                                         <%= @min_passw_length&.to_s %> characters minimum
                                     </div>
                                 </div>
-
-                                <span id="password-show-hide-button">
-                                    <span class="toggle-show-hide">SHOW</span>
-                                    <span class="toggle-show-hide" style="display: none">HIDE</span>
-                                </span>
                             </div>
                         </div>
                     </div>
