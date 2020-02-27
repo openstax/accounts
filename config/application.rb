@@ -48,7 +48,7 @@ module Accounts
 
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
-    if ARGV[0] != "assets:precompile"
+    if ! is_assets_precompile?
       redis_secrets = secrets[:redis]
       config.cache_store = :redis_store, {
         url: redis_secrets[:url],
@@ -60,6 +60,10 @@ module Accounts
 
     def is_real_production?
       secrets.environment_name == "prodtutor"
+    end
+
+    def is_assets_precompile?
+      ARGV[0] != "assets:precompile"
     end
 
     config.after_initialize do
