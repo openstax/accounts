@@ -140,8 +140,7 @@ feature "User can't sign in", js: true do
       click_button('Log in')
       screenshot!
 
-      # on success, redirect back to app
-      expect_back_at_app
+      expect(page.current_path).to eq(profile_newflow_path)
     end
 
     scenario "just has social auth" do
