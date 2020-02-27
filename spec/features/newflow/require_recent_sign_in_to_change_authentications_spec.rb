@@ -25,7 +25,7 @@ feature 'Require recent log in to change authentications', js: true do
       with_omniauth_test_mode(identity_user: user) do
         find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
         wait_for_ajax
-        expect(page).to have_content(t :"login_signup_form.login_page_header")
+        expect_reauthenticate_form_page
         screenshot!
         fill_in(t(:"login_signup_form.password_label"), with: 'password')
         find('[type=submit]').click
@@ -76,24 +76,26 @@ feature 'Require recent log in to change authentications', js: true do
   end
 
   scenario 'bad password on reauthentication' do
-    create_user 'user'
-    log_in('user', 'password')
+    create_newflow_user 'user@example.com'
+    newflow_log_in_user('user@example.com', 'password')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      visit '/profile'
-      expect_profile_page
+      visit profile_newflow_path
+      expect_newflow_profile_page
 
-      find('.authentication[data-provider="identity"] .edit').click
+      find('.authentication[data-provider="identity"] .edit--newflow').click
 
-      expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
-      complete_login_password_screen('wrongpassword')
+      expect_reauthenticate_form_page
+      fill_in(t(:"login_signup_form.password_label"), with: 'wrongpassword')
+      find('[type=submit]').click
       screenshot!
 
-      expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
-      complete_login_password_screen('password')
+      expect_reauthenticate_form_page
+      fill_in(t(:"login_signup_form.password_label"), with: 'password')
+      find('[type=submit]').click
 
-      complete_reset_password_screen
-      complete_reset_password_success_screen
+      newflow_complete_add_password_screen
+      expect(page).to have_content(t :"identities.reset_success.message")
     end
   end
 

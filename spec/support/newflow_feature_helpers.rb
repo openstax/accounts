@@ -123,3 +123,7 @@ def generate_login_token_for_user(user)
   user.save!
   user.login_token
 end
+
+def expect_reauthenticate_form_page
+  expect(page).to have_content(t :"login_signup_form.login_page_header")
+end
