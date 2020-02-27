@@ -269,7 +269,18 @@ module Newflow
     end
 
     describe 'confirmation_form_updated_email' do
-      it ''
+      it 'renders OK' do
+        user = create_newflow_user('user@openstax.org')
+        allow_any_instance_of(LoginSignupController).to receive(:unverified_user) { user }
+        get('confirmation_form_updated_email')
+        expect(response.status).to eq(200)
+        expect(response).to render_template(:confirmation_form_updated_email)
+      end
+
+      it 'redirects when there is no unverified_user present' do
+        get('confirmation_form_updated_email')
+        expect(response.status).to eq(302)
+      end
     end
 
     describe 'verify_email_by_pin' do
