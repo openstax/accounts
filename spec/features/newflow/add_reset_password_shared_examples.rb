@@ -40,28 +40,26 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     expect_page(type: type)
   end
 
-  xscenario 'using a link with a valid code' do
+  scenario 'using a link with a valid code' do
     visit start_path(type: type, token: @login_token)
     expect(page).to have_no_missing_translations
-    expect(page.first('#set_password_password_confirmation')["placeholder"]).to eq t :"identities.set.confirm_password"
     expect_page(type: type)
   end
 
-  xscenario 'with a blank password' do
+  scenario 'with a blank password' do
     visit start_path(type: type, token: @login_token)
+    expect(page).to have_no_missing_translations
     expect_page(type: type)
-    click_button (t :"identities.#{type}.submit")
+    find('[type=submit]').click
     expect(page).to have_content(error_msg Identity, :password, :blank)
     screenshot!
   end
 
-  xscenario 'password is too short' do
+  scenario 'password is too short' do
     visit start_path(type: type, token: @login_token)
-    expect(page).to have_no_missing_translations
     expect_page(type: type)
-    fill_in (t :"identities.set.password"), with: 'pass'
-    fill_in (t :"identities.set.confirm_password"), with: 'pass'
-    click_button (t :"identities.#{type}.submit")
+    fill_in (t :"login_signup_form.password_label"), with: 'pass'
+    find('[type=submit]').click
     expect(page).to have_content(error_msg Identity, :password, :too_short, count: 8)
     screenshot!
   end
