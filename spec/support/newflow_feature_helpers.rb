@@ -124,6 +124,13 @@ def generate_login_token_for_user(user)
   user.login_token
 end
 
+def generate_expired_login_token_for_user(user)
+  user.refresh_login_token
+  user.login_token_expires_at = 1.year.ago
+  user.save!
+  user.login_token
+end
+
 def expect_reauthenticate_form_page
   expect(page).to have_content(t :"login_signup_form.login_page_header")
 end

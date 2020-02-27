@@ -31,8 +31,8 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     expect_page(type: type, token: '1234')
   end
 
-  xscenario 'using a link with an expired code' do
-    @login_token = generate_expired_login_token_for 'user'
+  scenario 'using a link with an expired code' do
+    @login_token = generate_expired_login_token_for_user(User.last)
     visit start_path(type: type, token: @login_token)
     screenshot!
     expect(page).to have_no_missing_translations
