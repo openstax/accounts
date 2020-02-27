@@ -243,7 +243,7 @@ module Newflow
           clear_newflow_state
           security_log :help_requested, user: current_user, email: @email
           sign_out!
-          redirect_to :reset_password_email_sent
+          render :reset_password_email_sent
         },
         failure: lambda {
           user = @handler_result.outputs.user
@@ -303,11 +303,11 @@ module Newflow
       handle_with(
         FindUserByToken,
         success: lambda {
-          if (user = @handler_result.outputs.user)
+          if signed_in? && user_signin_is_too_old?
+            reauthenticate_user!(redirect_back_to: change_password_form_path) and return
+          elsif (user = @handler_result.outputs.user)
             sign_in!(user, { security_log_data: { type: 'token' } })
             security_log :help_requested, user: current_user
-          elsif signed_in? && user_signin_is_too_old?
-            reauthenticate_user!(redirect_back_to: change_password_form_path) and return
           end
 
           if kind == :change
