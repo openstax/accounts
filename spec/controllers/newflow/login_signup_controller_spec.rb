@@ -428,14 +428,15 @@ module Newflow
 
           it 'redirects to reset_password_email_sent' do
             post('send_reset_password_email', params: params)
-            expect(response).to redirect_to(:reset_password_email_sent)
+            expect(response).to render_template(:reset_password_email_sent)
           end
 
-          xit 'creates a Security Log' do
+          it 'creates a Security Log' do
+            mock_current_user(User.last)
             expect {
               post('send_reset_password_email', params: params)
             }.to change {
-              SecurityLog.where(event_type: :help_requested, user: user).count
+              SecurityLog.where(event_type: :help_requested, user: User.last).count
             }
           end
       end
