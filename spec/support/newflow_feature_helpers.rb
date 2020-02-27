@@ -88,7 +88,7 @@ end
 
 def newflow_complete_add_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in('create_password_form_password', with: password)
+  fill_in(t(:"login_signup_form.password_label"), with: password)
   find('#login-signup-form').click
   wait_for_animations
   find('[type=submit]').click
