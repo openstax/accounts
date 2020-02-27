@@ -34,7 +34,7 @@ module Settings
 
   module Redis
     mattr_accessor :store
-    if ARGV[0] != "assets:precompile"
+    if ! is_assets_precompile?
       redis_secrets = Rails.application.secrets[:redis]
       self.store = ::Redis::Store.new(
         url: redis_secrets[:url],
