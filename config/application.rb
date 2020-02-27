@@ -57,10 +57,14 @@ module Accounts
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
 <<<<<<< HEAD
+<<<<<<< HEAD
     if Rails.application.is_assets_precompile?
 =======
     if ! is_assets_precompile?
 >>>>>>> creating and using utility method
+=======
+    if ARGV[0] != "assets:precompile"
+>>>>>>> remove util method for now
       redis_secrets = secrets[:redis]
       config.cache_store = :redis_store, {
         url: redis_secrets[:url],
