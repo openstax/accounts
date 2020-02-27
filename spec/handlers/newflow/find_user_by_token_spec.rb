@@ -15,7 +15,7 @@ module Newflow
       end
 
       let(:result) do
-        described_class.call(params: params)
+        described_class.call(params: params, caller: AnonymousUser.instance)
       end
 
       it 'outputs the user found by token' do
@@ -26,7 +26,7 @@ module Newflow
     context 'when failure' do
       example 'because no user found' do
         params = { token: '000' }
-        result = described_class.call(params: params)
+        result = described_class.call(params: params, caller: AnonymousUser.instance)
         expect(result).to have_routine_error(:unknown_login_token)
       end
 
@@ -36,7 +36,7 @@ module Newflow
         user.login_token_expires_at = 1.days.ago
         user.save!
         params = { token: user.login_token }
-        result = described_class.call(params: params)
+        result = described_class.call(params: params, caller: AnonymousUser.instance)
 
         expect(result).to have_routine_error(:expired_login_token)
       end

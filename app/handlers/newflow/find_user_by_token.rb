@@ -14,7 +14,6 @@ module Newflow
         return
       end
 
-
       fatal_error(code: :token_blank) unless params[:token].present?
 
       user = User.find_by(login_token: params[:token])
