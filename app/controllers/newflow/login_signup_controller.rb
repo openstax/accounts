@@ -263,7 +263,7 @@ module Newflow
         CreatePassword,
         success: lambda {
           security_log(:student_created_password, user: @handler_result.outputs.user)
-          redirect_back(fallback_location: profile_newflow_url)
+          redirect_to profile_newflow_url, notice: t(:"identities.add_success.message")
         },
         failure: lambda {
           security_log(:student_create_password_failed, user: @handler_result.outputs.user)

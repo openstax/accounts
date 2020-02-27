@@ -9,7 +9,11 @@ module Newflow
     end
 
     def handle
-      return if already_logged_in?
+      if already_logged_in?
+        outputs.user = caller
+        return
+      end
+
 
       fatal_error(code: :token_blank) unless params[:token].present?
 

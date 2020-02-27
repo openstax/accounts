@@ -10,23 +10,19 @@ module Newflow
 
     protected #################
 
-    def setup
-      @user = caller
-    end
-
     def authorized?
-      !@user.is_anonymous?
+      !caller.is_anonymous?
     end
 
     def handle
       run(
         ::SetPassword,
-        user: @user,
+        user: caller,
         password: create_password_form_params.password,
         password_confirmation: create_password_form_params.password
       )
 
-      outputs.user = @user
+      outputs.user = caller
     end
   end
 end
