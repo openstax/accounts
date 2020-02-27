@@ -15,8 +15,8 @@ class SetPassword
     # Note: If `password` is blank, it will not be set on the identity object (there's a
     # check for this in ActiveModel::SecurePassword).  This leads to confusing errors
     # about the password not matching its confirmation, so error out immediately.
-
     fatal_error(code: :password_cannot_be_blank) if password.blank?
+
     identity.password = password
     identity.password_confirmation = password_confirmation
     identity.password_expires_at = \

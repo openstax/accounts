@@ -4,12 +4,13 @@ Rails.application.routes.draw do
   root to: 'static_pages#home'
 
   scope controller: 'newflow/login_signup' do
-    # Login form
+    # Login process
     get 'i/login', action: :login_form, as: :newflow_login
-    get 'i/reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
     post 'i/login', action: :login
+    get 'i/reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
+    get 'i/signout', action: :logout, as: :newflow_logout
 
-    # Routes for all the steps/forms of the sign up flow
+    # Signup process
     get 'i/signup', action: :welcome, as: :newflow_signup
     get 'i/signup/student', action: :student_signup_form, as: :newflow_signup_student
     post 'i/signup/student', action: :student_signup, as: :newflow_signup_post
@@ -24,36 +25,37 @@ Rails.application.routes.draw do
         as: :confirmation_form_updated_email
     get 'i/done', action: :signup_done, as: :signup_done
 
-    # Begin the login/signup process with an oauth provider using omniauth middleware
+    # Login and signup process (with a social provider)
     get 'i/auth/:provider', action: :oauth_callback, as: :newflow_auth
     post 'i/auth/:provider', action: :oauth_callback
     get 'i/auth/:provider/callback', action: :oauth_callback
     delete 'i/auth/:provider', action: :remove_auth_strategy
-
-    # For when you sign up with a social provider
+    #   When you sign up with a social provider, you must confirm your info first
     get 'i/confirm_your_info', action: :confirm_your_info
     post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
 
-    # When social login fails
-    get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
-
-    post 'send_password_setup_instructions',
-         action: :send_password_setup_instructions,
-         as: :send_password_setup_instructions
-
-    get 'i/setup_password', action: :setup_password_form, as: :newflow_setup_password
-    post 'i/setup_password', action: :setup_password, as: :newflow_setup_password_post
-
+    # Password management process (forgot,  change, or create password)
     get 'i/forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
-    post 'i/reset_password', action: :reset_password, as: :reset_password
+    post 'i/send_reset_password_email',
+      action: :send_reset_password_email,
+      as: :send_reset_password_email
     get 'i/reset_password_email_sent',
           action: :reset_password_email_sent,
           as: :reset_password_email_sent
-    get 'i/new_password_form', action: :new_password_form, as: :new_password_form
-    post 'i/change_password', action: :change_password, as: :change_password #
+    get 'i/create_password_form', action: :create_password_form, as: :create_password_form
+    post 'i/create_password', action: :create_password, as: :create_password
+    get 'i/change_password_form', action: :change_password_form, as: :change_password_form
+    post 'i/change_password', action: :change_password, as: :change_password
 
+    # Profile access
     get 'i/profile', action: :profile_newflow, as: :profile_newflow
-    get 'i/signout', action: :logout, as: :newflow_logout
+
+    # TODO: remove because we determined that this use case is unreachable
+    # When social login fails
+    # get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
+    # post 'send_password_setup_instructions',
+    #      action: :send_password_setup_instructions,
+    #      as: :send_password_setup_instructions
   end
 
   scope controller: 'sessions' do

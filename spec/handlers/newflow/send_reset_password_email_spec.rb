@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  describe ResetPassword, type: :handler do
+  describe SendResetPasswordEmail, type: :handler do
     let(:user) do
       create_newflow_user('user@openstax.org', 'password')
     end
@@ -50,7 +50,7 @@ module Newflow
     end
 
       it 'adds error cannot_find_user' do
-        result = described_class.handle(caller: nil, params: params)
+        result = described_class.handle(caller: AnonymousUser.instance, params: params)
         expect(result).to have_routine_error(:cannot_find_user)
       end
     end

@@ -1,8 +1,8 @@
 module Newflow
-  # If a user with the given email address is found, we send (to each of their verified
-  # email addresses) an email to reset their password.
-  # Otherwise, for security reasons, it returns early with no errors.
-  class ResetPassword
+  # If a user with the given email address is found, OR if there is a logged in user,
+  #  we send (to each of their verified email addresses)
+  # an email to reset their password.
+  class SendResetPasswordEmail
     lev_handler
 
     LOGIN_TOKEN_EXPIRATION = 2.days
@@ -14,12 +14,12 @@ module Newflow
     protected #################
 
     def authorized?
-      forgot_password_form_params.email.present? || verified_user
+      forgot_password_form_params.email.present? || logged_in_user
     end
 
     def handle
       outputs.email = forgot_password_form_params.email
-      user = verified_user || LookupUsers.by_verified_email(outputs.email).first
+      user = logged_in_user || LookupUsers.by_verified_email(outputs.email).first
 
       fatal_error(code: :cannot_find_user,
         offending_inputs: :email,
@@ -42,8 +42,8 @@ module Newflow
 
     private #################
 
-    def verified_user
-      @verified_user ||= caller if caller.present? && !caller.is_anonymous?
+    def logged_in_user
+      @logged_in_user ||= !caller.is_anonymous? && caller
     end
   end
 end

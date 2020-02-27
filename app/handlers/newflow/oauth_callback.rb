@@ -143,6 +143,7 @@ module Newflow
     def parse_oauth_data(oauth_response)
       OmniauthData.new(oauth_response)
     rescue StandardError
+      debugger
       fatal_error(code: :invalid_omniauth_data)
     end
   end

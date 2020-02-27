@@ -32,11 +32,11 @@ feature 'Password reset', js: true do
       visit password_reset_link
 
       expect(page).not_to(have_current_path(reauthenticate_form_path))
-      expect(page).to(have_current_path(new_password_form_path(token: login_token)))
+      expect(page).to(have_current_path(change_password_form_path(token: login_token)))
     end
   end
 
-  xscenario 'with identity gets redirected to reset password' do
+  scenario 'with identity gets redirected to reset password' do
     @user = create_user 'user'
     @login_token = generate_login_token_for 'user'
     visit password_add_path(token: @login_token)

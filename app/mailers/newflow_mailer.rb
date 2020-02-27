@@ -1,7 +1,7 @@
 class NewflowMailer < ApplicationMailer
   include Rails.application.routes.url_helpers
 
-  def newflow_setup_password(user:, email:)
+  def create_password_email(user:, email:)
     @user = user
     @casual_name = user.casual_name
 

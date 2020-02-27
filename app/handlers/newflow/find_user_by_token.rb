@@ -24,7 +24,7 @@ module Newflow
     private #################
 
     def already_logged_in?
-      options[:user] && !options[:user].is_anonymous?
+      !caller.is_anonymous?
     end
   end
 end

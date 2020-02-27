@@ -88,7 +88,7 @@ feature "User can't sign in", js: true do
       authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
       arrive_from_app
-      click_sign_up
+      newflow_click_sign_up(role: 'student')
       complete_signup_email_screen "Student", "unverified@example.com", screenshot_after_role: true
 
       with_omniauth_test_mode(uid: authentication.uid) do
@@ -124,12 +124,12 @@ feature "User can't sign in", js: true do
       open_email('user@example.com')
       capture_email!
       change_password_link = get_path_from_absolute_link(current_email, 'a')
-      expect(change_password_link).to include(new_password_form_path)
+      expect(change_password_link).to include(change_password_form_path)
 
       # set the new password
       visit change_password_link
       expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
-      fill_in('new_password_form_password', with: 'NEWpassword')
+      fill_in('change_password_form_password', with: 'NEWpassword')
       screenshot!
       find('#login-signup-form').click
       wait_for_animations
@@ -193,17 +193,13 @@ feature "User can't sign in", js: true do
     email_address = Faker::Internet.free_email
     user = create_newflow_user(email_address)
     authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
-    # how do
 
     arrive_from_app
-
-
-    newflow_log_in_user('user')
 
     expect_security_log(:sign_in_failed, reason: "mismatched authentication")
 
     with_omniauth_test_mode(uid: "different_than_#{authentication.uid}") do
-      click_link('google-login-button')
+      find('.google.btn').click
     end
 
     screenshot!

@@ -3,7 +3,7 @@ module Newflow
     lev_handler
     uses_routine ::SetPassword
 
-    paramify :setup_password_form do
+    paramify :create_password_form do
       attribute :password
       validates :password, presence: true
     end
@@ -22,8 +22,8 @@ module Newflow
       run(
         ::SetPassword,
         user: @user,
-        password: setup_password_form_params.password,
-        password_confirmation: setup_password_form_params.password
+        password: create_password_form_params.password,
+        password_confirmation: create_password_form_params.password
       )
 
       outputs.user = @user

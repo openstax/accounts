@@ -83,13 +83,13 @@ class Password extends AuthenticationOption
     window.location.href = "#{BASE_URL}/password/reset"
 
   editPasswordNewflow: ->
-    window.location.href = "#{BASE_URL}/i/new_password_form"
+    window.location.href = "#{BASE_URL}/i/change_password_form"
 
   add: ->
     window.location.href = "#{BASE_URL}/password/add"
 
   addPasswordNewflow: ->
-    window.location.href = "#{BASE_URL}/i/new_password_form"
+    window.location.href = "#{BASE_URL}/i/change_password_form"
 
 SPECIAL_TYPES =
   identity: Password

@@ -52,8 +52,8 @@ feature 'Require recent log in to change authentications', js: true do
         expect(page.current_path).to eq(reauthenticate_form_path)
         newflow_reauthenticate_user('user@example.com', 'password')
         screenshot!
-        expect(page.current_path).to eq(new_password_form_path)
-        fill_in('new_password_form_password', with: 'newpassword')
+        expect(page.current_path).to eq(change_password_form_path)
+        fill_in('change_password_form_password', with: 'newpassword')
         screenshot!
         find('#login-signup-form').click
         wait_for_animations
@@ -66,7 +66,7 @@ feature 'Require recent log in to change authentications', js: true do
         # Don't have to reauthenticate since just did
         find('.authentication[data-provider="identity"] .edit--newflow').click
         expect(page).to have_content(t(:"login_signup_form.enter_new_password_description"))
-        fill_in('new_password_form_password', with: 'newpassword2')
+        fill_in('change_password_form_password', with: 'newpassword2')
         find('#login-signup-form').click
         wait_for_animations
         find('[type=submit]').click

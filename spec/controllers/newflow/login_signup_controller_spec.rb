@@ -384,15 +384,11 @@ module Newflow
       it ''
     end
 
-    describe 'POST #send_password_setup_instructions' do
-      it ''
-    end
-
-    describe 'GET #setup_password' do
+    describe 'GET #create_password' do
       it 'TODO'
     end
 
-    describe 'POST #setup_password' do
+    describe 'POST #create_password' do
       it ''
     end
 
@@ -409,40 +405,35 @@ module Newflow
       end
     end
 
-    describe 'POST #reset_password' do
+    describe 'POST #send_reset_password_email' do
       context 'success' do
           before do
             create_newflow_user('user@openstax.org')
-            expect_any_instance_of(ResetPassword).to receive(:call).once.and_call_original
+            expect_any_instance_of(SendResetPasswordEmail).to receive(:call).once.and_call_original
           end
 
           let(:params) do
             { forgot_password_form: { email: 'user@openstax.org' } }
           end
 
-          it 'has a 200 status code' do
-            post('reset_password', params: params)
-            expect(response.status).to eq(200)
-          end
-
           it 'assigns the email value from the handler\'s outputs' do
-            post('reset_password', params: params)
+            post('send_reset_password_email', params: params)
             expect(assigns(:email)).to eq('user@openstax.org')
           end
 
           it 'calls sign_out!' do
             expect_any_instance_of(described_class).to receive(:sign_out!).once
-            post('reset_password', params: params)
+            post('send_reset_password_email', params: params)
           end
 
-          it 'renders reset_password_email_sent' do
-            post('reset_password', params: params)
-            expect(response).to render_template(:reset_password_email_sent)
+          it 'redirects to reset_password_email_sent' do
+            post('send_reset_password_email', params: params)
+            expect(response).to redirect_to(:reset_password_email_sent)
           end
 
           xit 'creates a Security Log' do
             expect {
-              post('reset_password', params: params)
+              post('send_reset_password_email', params: params)
             }.to change {
               SecurityLog.where(event_type: :help_requested, user: user).count
             }
@@ -456,20 +447,20 @@ module Newflow
 
           it 'creates a Security Log' do
             expect {
-              post('reset_password', params: params)
+              post('send_reset_password_email', params: params)
             }.to change {
               SecurityLog.where(event_type: :reset_password_failed).count
             }
           end
 
           it 'redirects to login path' do
-            post('reset_password', params: params)
+            post('send_reset_password_email', params: params)
             expect(response).to redirect_to(newflow_login_path)
           end
       end
     end
 
-    describe 'GET #new_password_form' do
+    describe 'GET #change_password_form' do
       context 'success - when valid token' do
         let(:params) do
           user.refresh_login_token
@@ -484,19 +475,19 @@ module Newflow
 
         it 'logs in the user found by token or whateva' do
           some_other_user = FactoryBot.create(:user)
-          get('new_password_form', params: params)
+          get('change_password_form', params: params)
           expect(controller.current_user.id).to eq(user.id)
           expect(controller.current_user.id).not_to eq(some_other_user.id)
         end
 
         it 'has a 200 status code' do
-          get('new_password_form', params: params)
+          get('change_password_form', params: params)
           expect(response.status).to eq(200)
         end
 
         xit 'creates a security log' do
           expect {
-            get('new_password_form', params: params)
+            get('change_password_form', params: params)
           }.to change {
             SecurityLog.where(event_type: :help_requested).count
           }
@@ -512,14 +503,14 @@ module Newflow
           { token: SecureRandom.hex(16) } # token is invalid because it doesn't match up with the user's
         end
 
-        it 'req-s logging in' do
-          get('new_password_form', params: params)
-          expect(response).to redirect_to(newflow_login_path)
+        it 'responds with 400 error' do
+          get('change_password_form', params: params)
+          expect(response.code).to eq('400')
         end
 
         it 'creates a security log' do
           expect {
-            get('new_password_form', params: params)
+            get('change_password_form', params: params)
           }.to change {
             SecurityLog.where(event_type: :help_request_failed).count
           }
@@ -545,7 +536,7 @@ module Newflow
 
         let(:params) do
           {
-            new_password_form: {
+            change_password_form: {
               password: new_password
             }
           }
@@ -575,7 +566,7 @@ module Newflow
 
         let(:params) do
           {
-            new_password_form: {
+            change_password_form: {
               password: ''
             }
           }
