@@ -50,6 +50,7 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     visit start_path(type: type, token: @login_token)
     expect(page).to have_no_missing_translations
     expect_page(type: type)
+    find('#login-signup-form').click # to hide the password tooltip
     find('[type=submit]').click
     expect(page).to have_content(error_msg Identity, :password, :blank)
     screenshot!
@@ -59,6 +60,7 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     visit start_path(type: type, token: @login_token)
     expect_page(type: type)
     fill_in (t :"login_signup_form.password_label"), with: 'pass'
+    find('#login-signup-form').click # to hide the password tooltip
     find('[type=submit]').click
     expect(page).to have_content(error_msg Identity, :password, :too_short, count: 8)
     screenshot!

@@ -287,7 +287,7 @@ module Newflow
           ChangePassword,
           success: lambda {
             security_log :password_reset
-            redirect_back(fallback_location: profile_newflow_url, notice: t(:"identities.reset_success.message"))
+            redirect_to profile_newflow_url, notice: t(:"identities.reset_success.message")
           },
           failure: lambda {
             security_log :password_reset_failed
