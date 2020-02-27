@@ -6,12 +6,11 @@ feature 'Require recent log in to change authentications', js: true do
   end
 
   scenario 'adding Facebook' do
-    create_newflow_user 'user@example.com'
-      visit '/'
-      newflow_log_in_user('user@example.com', 'password')
+    user = create_newflow_user 'user@example.com'
+    visit '/'
+    newflow_log_in_user('user@example.com', 'password')
 
-    # expect_profile_page
-    expect(page.current_path).to eq(newflow_profile_path)
+    expect(page.current_path).to eq(profile_newflow_path)
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       expect(page).to have_no_content('Facebook')
@@ -24,12 +23,13 @@ feature 'Require recent log in to change authentications', js: true do
       expect(page).to have_content('Facebook')
 
       with_omniauth_test_mode(identity_user: user) do
-        find('.authentication[data-provider="facebook"] .add').click
+        find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
         wait_for_ajax
-        expect(page).to have_content(t :"sessions.reauthenticate.page_heading")
+        expect(page).to have_content(t :"login_signup_form.login_page_header")
         screenshot!
-        complete_login_password_screen('password')
-        expect_profile_page
+        fill_in(t(:"login_signup_form.password_label"), with: 'password')
+        find('[type=submit]').click
+        expect(page.current_path).to eq(profile_newflow_path)
         expect(page).to have_content('Facebook')
         screenshot!
       end
