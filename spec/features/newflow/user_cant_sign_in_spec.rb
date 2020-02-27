@@ -4,6 +4,7 @@ require 'rails_helper'
 feature "User can't sign in", js: true do
   before do
     turn_on_feature_flag
+    load('db/seeds.rb')
   end
 
   context "problems finding log in user" do
@@ -84,16 +85,19 @@ feature "User can't sign in", js: true do
     end
 
     scenario "user tries to sign up with used oauth email" do
+      skip('I dont think this test is correct in the currrent flow to begin with')
       user = create_user 'user'
-      authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
+      authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
 
       arrive_from_app
       newflow_click_sign_up(role: 'student')
-      complete_signup_email_screen "Student", "unverified@example.com", screenshot_after_role: true
+      # complete_signup_email_screen "Student", "unverified@example.com", screenshot_after_role: true
+      newflow_complete_student_signup_with_whatever
+
 
       with_omniauth_test_mode(uid: authentication.uid) do
         # Found link from back button or some other shenanigans
-        visit '/auth/google_oauth2?login_hint='
+        visit 'i/auth/googlenewflow'
       end
 
       screenshot!
@@ -180,7 +184,8 @@ feature "User can't sign in", js: true do
     end
   end
 
-  scenario 'user has a linked google auth but then the uid changes' do # Dante
+  # scenario 'user has a linked google auth but uses a different google account to login'
+  scenario 'user has a linked google auth but then the uid changes' do
     # scenario explained:
     # User has a google auth with a certain email...
     # then the same User (or another user) tries to login with a google auth that has the same email adddress...
@@ -198,7 +203,7 @@ feature "User can't sign in", js: true do
 
     expect_security_log(:sign_in_failed, reason: "mismatched authentication")
 
-    with_omniauth_test_mode(uid: "different_than_#{authentication.uid}") do
+    with_omniauth_test_mode(uid: "different_than_#{authentication.uid}", email: email_address) do
       find('.google.btn').click
     end
 

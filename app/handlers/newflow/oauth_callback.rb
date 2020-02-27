@@ -56,8 +56,9 @@ module Newflow
 
     private ###########################
 
-    # somebody already owns this oauth email adddress,
-    # and it's not the same user that that own this Authentication (found by uid)
+    # users can only have one login per social provider, so if user is trying to log in with
+    # the same provider but it has a different uid, then they might've gotten the social account hacked,
+    # so we want to prevent the hacker from logging in with the stolen social provider auth.
     def mismatched_authentication?
       incoming_auth_uid = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).first&.uid
       existing_email_owner_id = LookupUsers.by_verified_email(oauth_data.email).first&.id
