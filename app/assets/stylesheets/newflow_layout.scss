@@ -64,6 +64,10 @@ body {
     }
 }
 
+input.has-error {
+    @extend %has-error;
+}
+
 // Add a star * to form fields that are required
 label.required::after {
     content: " *";

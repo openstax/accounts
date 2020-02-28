@@ -8,10 +8,10 @@ GIT
 
 GIT
   remote: https://github.com/openstax/pattern-library.git
-  revision: 030c30c7a273542f7332c34dbfed37bade2a5ad4
-  branch: bug-fixes-for-accounts-flow
+  revision: bc629a806dc278f8c8c3886b0ba4c9877dbf1ca4
+  branch: tooltip-appears-above-input-on-mobile
   specs:
-    pattern-library (1.1.13)
+    pattern-library (1.1.15)
 
 GEM
   remote: https://rubygems.org/
