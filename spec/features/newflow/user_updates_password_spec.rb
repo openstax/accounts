@@ -38,10 +38,9 @@ feature 'User updates password on profile screen', js: true do
     expect(page).to have_css('[data-provider=identity]')
   end
 
-  xscenario "changes existing" do
-    find('[data-provider=identity] .edit').click
-    complete_reset_password_screen
-    complete_reset_password_success_screen
+  scenario "changes existing" do
+    find('[data-provider=identity] .edit--newflow').click
+    newflow_complete_add_password_screen
     expect(page).to have_no_missing_translations
     expect(page).to have_content(
       ActionView::Base.full_sanitizer.sanitize t(:"users.edit.how_you_sign_in_html")
@@ -49,13 +48,12 @@ feature 'User updates password on profile screen', js: true do
     expect(page).to have_css('[data-provider=identity]')
   end
 
-  xscenario "deletes password" do
-    FactoryBot.create :authentication, user: @user, provider: 'facebook'
-    visit '/profile'
+  scenario "deletes password" do
+    FactoryBot.create :authentication, user: @user, provider: 'facebooknewflow'
+    visit profile_newflow_path
     expect(@user.reload.identity).to be_present
     expect(@user.authentications.reload.count).to eq 2
     expect(page).to have_css('[data-provider=identity]')
-    # find('[data-provider=identity] .delete').click
     find('[data-provider=identity] .delete--newflow').click
     find('.confirm-dialog-btn-confirm').click
     expect(page).to have_no_css('[data-provider=identity]')
