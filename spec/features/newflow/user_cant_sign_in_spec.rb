@@ -59,7 +59,7 @@ feature "User can't sign in", js: true do
       # expect_authenticate_page
     end
 
-    xscenario "multiple accounts match email but no usernames" do
+    scenario "multiple accounts match email but no usernames" do
       # For a brief window in 2017 users could sign up with jimbo@gmail.com and Jimbo@gmail.com
       # and also not have a username.  So the "you can't sign in with email you must use your
       # username" approach won't work for them.  We need to give them some other "contact support"
@@ -74,7 +74,7 @@ feature "User can't sign in", js: true do
       user1.update_attribute(:username, nil)
 
       # Can't be an exact email match to trigger this scenario
-      complete_login_username_or_email_screen('useR@example.com')
+      newflow_log_in_user('useR@example.com', 'whatever')
       expect(page).to have_content(t(:"sessions.start.multiple_users_missing_usernames.content_html").split('.')[0])
 
       expect(page.all('a')

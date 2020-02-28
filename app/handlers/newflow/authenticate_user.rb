@@ -6,6 +6,7 @@ module Newflow
   class AuthenticateUser
     lev_handler
     include RateLimiting
+    include ActionView::Helpers::UrlHelper
 
     paramify :login_form do
       attribute :email, type: String
@@ -34,8 +35,24 @@ module Newflow
 
       if users.empty?
         failure(:cannot_find_user, :email)
-      elsif users.size > 1
-        failure(:multiple_users, :email) # should user really be nil? why not the email value?
+      elsif users.many?
+        if users.map(&:username).any?(&:nil?)
+          fatal_error(
+            code: :multiple_users_missing_usernames,
+            offending_inputs: :email,
+            message: I18n.t(
+              :"sessions.start.multiple_users_missing_usernames.content_html",
+              help_link: (
+                mail_to(
+                  "info@openstax.org",
+                  I18n.t(:"sessions.start.multiple_users_missing_usernames.help_link_text")
+                )
+              )
+            )
+          )
+        else
+          failure(:multiple_users, :email)
+        end
       end
 
       identity = Identity.authenticate({ user_id: user&.id }, login_form_params.password)
