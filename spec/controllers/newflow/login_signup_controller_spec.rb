@@ -205,13 +205,13 @@ module Newflow
           expect(assigns(:"handler_result").errors).to  be_present
         end
 
-        xit 'creates a security log' do
+        it 'creates a security log' do
           EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new(expecting: false)
 
           expect {
             post(:student_signup, params: params)
           }.to change {
-            SecurityLog.sign_up_failed.count
+            SecurityLog.student_sign_up_failed.count
           }
         end
       end
@@ -292,7 +292,10 @@ module Newflow
     end
 
     describe 'GET #signup_done' do
-      it ''
+      it 'renders' do
+        get(:signup_done)
+        expect(response).to render_template(:signup_done)
+      end
     end
 
     describe 'GET #profile' do
@@ -320,8 +323,16 @@ module Newflow
       end
     end
 
-    describe 'logout' do
-      it ''
+    describe 'GET #logout' do
+      it 'redirects to caller-specified URL if in whitelist' do
+        get(:logout, params: { r: "https://something.openstax.org/howdy?blah=true" })
+        expect(response).to redirect_to("https://something.openstax.org/howdy?blah=true")
+      end
+
+      it 'does not redirect to a caller-specified URL if not in whitelist' do
+        get(:logout, params: { r: "http://www.google.com" })
+        expect(response).to redirect_to("/")
+      end
     end
 
     describe 'GET #oauth_callback' do
@@ -366,7 +377,19 @@ module Newflow
       end
 
       context 'social signup (signup means user.state != activated) - success' do
-        it 'saves unverified user'
+        let(:params) do
+          { provider: 'facebook', uid: Faker::Internet.uuid }
+        end
+
+        it 'saves unverified user' do
+          expect_any_instance_of(LoginSignupController).to receive(:save_unverified_user)
+          get(:oauth_callback, params: params)
+        end
+
+        it 'renders confirm_social_info_form' do
+          get(:oauth_callback, params: params)
+          expect(response).to render_template(:confirm_social_info_form)
+        end
       end
 
       context 'failure' do
@@ -395,12 +418,39 @@ module Newflow
       it ''
     end
 
-    describe 'GET #create_password' do
-      it 'TODO'
+    describe 'GET #create_password_form' do
+      context 'without a token' do
+        it 'renders create_password_form but with status 400' do
+          get(:create_password_form)
+          expect(response).to render_template(:create_password_form)
+          expect(response.status).to eq(400)
+        end
+      end
+
+      context 'with an invalid token' do
+        it 'renders create_password_form but with status 400' do
+          get(:create_password_form, params: { token: '123' })
+          expect(response).to render_template(:create_password_form)
+          expect(response.status).to eq(400)
+        end
+      end
+
+      context 'with a valid token' do
+        before do
+          user = create_newflow_user('user@openstax.org')
+          @token = generate_login_token_for_user(user)
+        end
+
+        it 'renders create_password_form with status 200' do
+          get(:create_password_form, params: { token: @token })
+          expect(response).to render_template(:create_password_form)
+          expect(response.status).to eq(200)
+        end
+      end
     end
 
     describe 'POST #create_password' do
-      it ''
+      it 'creates a password for logged in user'
     end
 
     describe 'GET #forgot_password_form' do
