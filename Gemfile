@@ -8,7 +8,7 @@ end
 # Rails framework
 gem 'rails', '5.2.0'
 gem 'rails-i18n', '~> 5'
-gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'tooltip-appears-above-input-on-mobile'
+gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 gem 'bootsnap', require: false
 
 # Lev framework

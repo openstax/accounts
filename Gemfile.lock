@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/openstax/pattern-library.git
-  revision: bc629a806dc278f8c8c3886b0ba4c9877dbf1ca4
-  branch: tooltip-appears-above-input-on-mobile
+  revision: 8aa9a6167db7c5a6a0c4f96bc428d84dd6f1139b
+  branch: master
   specs:
     pattern-library (1.1.15)
 
