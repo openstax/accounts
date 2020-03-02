@@ -22,7 +22,7 @@
       <section class="footer">
         <%= f.submit (t :".confirm"), data: { disable_with: (t :".submitting") }, class: 'primary' %>
         <p class="extra-info">
-          <%= t :".used_wrong_email" %> <%= link_to (t :".edit_email_address"), signup_path %>.
+          <%= t :".used_wrong_email" %> <%= link_to (t :".edit_email_address"), signup_path(bpff: 9) %>.
         </p>
       </section>
     <% end %>

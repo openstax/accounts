@@ -133,7 +133,7 @@ class SignupController < ApplicationController
   end
 
   def restart_if_missing_pre_auth_state
-    redirect_to signup_path if pre_auth_state.nil?
+    redirect_to signup_path(bpff: 9) if pre_auth_state.nil?
   end
 
   def check_ready_for_password_or_social

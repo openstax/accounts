@@ -109,7 +109,7 @@ class ApplicationController < ActionController::Base
         redirect_to newflow_signup_path
       end
     elsif %w{signup student_signup}.include?(params[:go])
-        redirect_to signup_path
+        redirect_to signup_path(bpff: 9)
     end
   end
 end

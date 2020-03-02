@@ -165,7 +165,9 @@ module UserSessionManagement
       current_url, url = url, URI.decode(url) until url == current_url
 
       if get_client_app.try!(:is_redirect_url?, url)
-        session[:alt_signup] = url
+        url = Addressable::URI.parse(url)
+        url.query_values = url&.query_values&.merge(bpff: 9) # "bpff" = bypass feature flag
+        session[:alt_signup] = url.to_s
       else
         session[:alt_signup] = nil
 
