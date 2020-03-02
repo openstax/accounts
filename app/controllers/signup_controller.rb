@@ -2,6 +2,8 @@ class SignupController < ApplicationController
 
   PROFILE_TIMEOUT = 30.minutes
 
+  before_action :redirect_to_newflow_if_enabled, only: [:start]
+
   skip_before_action :authenticate_user!,
                      only: [:start, :verify_email, :verify_by_token, :password, :social, :profile]
 
@@ -59,7 +61,7 @@ class SignupController < ApplicationController
                 session: self,
                 success: lambda do
                   @handler_result.outputs.pre_auth_state.tap do |state|
-                    session[:return_to] = state.return_to
+                    session[:return_to] ||= state.return_to
                     save_pre_auth_state(state)
                   end
                   redirect_to action: (pre_auth_state.signed_student? ? :profile : :password)
@@ -131,7 +133,7 @@ class SignupController < ApplicationController
   end
 
   def restart_if_missing_pre_auth_state
-    redirect_to signup_path if pre_auth_state.nil?
+    redirect_to signup_path(bpff: 9) if pre_auth_state.nil?
   end
 
   def check_ready_for_password_or_social

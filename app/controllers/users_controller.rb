@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
 
+  before_action :redirect_to_newflow_if_enabled, only: [:edit]
+
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 
   before_action :allow_iframe_access, only: [:edit, :update]

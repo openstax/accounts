@@ -8,13 +8,14 @@ describe ContactInfosResendConfirmation, type: :handler do
   context 'success' do
     it 'resends the confirmation message' do
       cc = contact_info.confirmation_code
-      expect_any_instance_of(ConfirmationMailer).to(
-        receive(:instructions).with(email_address: contact_info, send_pin: false))
-      ContactInfosResendConfirmation.call(caller: user,
-                                          params: { id: contact_info.id })
 
-      expect(contact_info.reload.confirmation_code).not_to be_blank
-      expect(contact_info.confirmation_code).not_to eq cc
+      expect(contact_info.confirmation_code).not_to be_blank
+      expect_any_instance_of(ConfirmationMailer).to(
+        receive(:instructions).with(email_address: contact_info, send_pin: false)
+      )
+
+        ContactInfosResendConfirmation.call(caller: user,
+                                          params: { id: contact_info.id })
     end
   end
 

@@ -4,6 +4,6 @@ class ExternalAppForSpecsController < ApplicationController
   skip_before_action :save_redirect # it gets magically added in initializers/controllers.rb
 
   def index
-    render plain: 'This is a fake external application'
+    render plain: 'External application loaded successfully.'
   end
 end

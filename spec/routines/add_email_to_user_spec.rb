@@ -13,7 +13,6 @@ describe AddEmailToUser do
       expect(email).not_to be_nil
       expect(email.user).to eq(user)
       expect(email.verified).to be_truthy
-      expect(email.confirmation_code).to be_nil
 
       expect(EmailAddress.find_by_value('user2@example.com')).to be_nil
 

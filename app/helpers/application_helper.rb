@@ -2,6 +2,14 @@ module ApplicationHelper
 
   include AlertHelper
 
+  def knowledge_base_url
+    'http://openstax.force.com/support/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
+  end
+
+  def openstax_url
+    'https://openstax.org'
+  end
+
   def unless_errors(options={}, &block)
     errors = @handler_result.errors.each do |error|
       add_local_error_alert now: true, content: error.translate
@@ -176,4 +184,64 @@ module ApplicationHelper
     (@errors || []) + (@handler_result.try(:errors) || [])
   end
 
+   ###########
+  # NEW FLOW  #
+   ###########
+
+  def newflow_login_signup_card(classes: "", header: "", banners: nil, current_step: nil, show_exit_icon: false, &block)
+    @hide_layout_errors = true
+
+    content_tag :div, class: "#{classes}" do
+      step_counter = if current_step.present?
+        content_tag(:div, class:  'step-counter') {
+          content_tag(:div) {
+            content_tag(:span) {
+              current_step
+            }
+          }
+        }
+      end
+
+      exit_icon = if show_exit_icon
+        content_tag(:div, id: 'exit-icon') {
+          content_tag(:a, href: redirect_back_path) {
+            content_tag(:i, class: 'fa fa-times') { }
+          }
+        }
+      end
+
+      header = if header.present?
+        content_tag(:header, class: "page-header") { header }
+      end
+
+      body = capture(&block)
+
+      "#{step_counter}\n#{exit_icon}\n#{header}\n#{body}".html_safe
+    end
+  end
+
+  def suggested_login_username
+    if !params[:username_or_email] &&
+       pre_auth_state.try!(:signed?) &&
+       LookupUsers.by_verified_email(pre_auth_state.signed_data['email'])
+
+      return pre_auth_state.signed_data['email']
+    end
+    params[:username_or_email]
+  end
+
+  def newflow_suggested_login_username
+    signed_email = session[:user_from_signed_params].try(:dig, 'signed_external_data', 'email')
+    if signed_email && LookupUsers.by_verified_email(signed_email)
+      return signed_email
+    end
+  end
+
+  # When currrent user wants to change their password,
+  # but hasn't logged in in a while, we ask them to re-authenticate.
+  # So we use this function to pre-populate their email field in the login form.
+  def current_users_resetting_password_email
+    # by_email_or_username
+    !current_user.is_anonymous? && EmailAddress.verified.where(user: current_user).first.try(:value)
+  end
 end

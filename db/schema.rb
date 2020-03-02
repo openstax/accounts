@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_18_192109) do
+ActiveRecord::Schema.define(version: 2020_01_21_195848) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -268,7 +268,11 @@ ActiveRecord::Schema.define(version: 2019_12_18_192109) do
     t.text "return_to"
     t.jsonb "signed_data"
     t.boolean "is_partial_info_allowed", default: false, null: false
+    t.string "first_name", default: ""
+    t.string "last_name", default: ""
+    t.bigint "user_id"
     t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
+    t.index ["user_id"], name: "index_pre_auth_states_on_user_id"
   end
 
   create_table "security_logs", id: :serial, force: :cascade do |t|
@@ -334,6 +338,8 @@ ActiveRecord::Schema.define(version: 2019_12_18_192109) do
     t.boolean "is_test"
     t.integer "school_type", default: 0, null: false
     t.boolean "using_openstax", default: false
+    t.boolean "receive_newsletter"
+    t.bigint "source_application_id"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
@@ -342,6 +348,7 @@ ActiveRecord::Schema.define(version: 2019_12_18_192109) do
     t.index ["role"], name: "index_users_on_role"
     t.index ["salesforce_contact_id"], name: "index_users_on_salesforce_contact_id"
     t.index ["school_type"], name: "index_users_on_school_type"
+    t.index ["source_application_id"], name: "index_users_on_source_application_id"
     t.index ["support_identifier"], name: "index_users_on_support_identifier", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
@@ -349,4 +356,5 @@ ActiveRecord::Schema.define(version: 2019_12_18_192109) do
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "users", "oauth_applications", column: "source_application_id"
 end

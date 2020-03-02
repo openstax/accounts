@@ -1,10 +1,8 @@
 class ContactInfo < ActiveRecord::Base
-  belongs_to :user, inverse_of: :contact_infos
-
-  has_many :application_users, foreign_key: :default_contact_info_id
-  has_many :message_recipients, inverse_of: :contact_info
-
   before_validation :strip
+  before_save :add_unread_update
+  before_create :set_confirmation_pin_code
+  before_destroy :check_if_last_verified
 
   validates :user, presence: true
   validates :type, presence: true
@@ -14,8 +12,10 @@ class ContactInfo < ActiveRecord::Base
 
   validate :check_for_verified_collision
 
-  before_save :add_unread_update
-  before_destroy :check_if_last_verified
+  belongs_to :user, inverse_of: :contact_infos
+
+  has_many :application_users, foreign_key: :default_contact_info_id
+  has_many :message_recipients, inverse_of: :contact_info
 
   scope :email_addresses, -> { where(type: 'EmailAddress') }
   sifter(:email_addresses) { type == 'EmailAddress' }
@@ -46,6 +46,16 @@ class ContactInfo < ActiveRecord::Base
 
   def init_confirmation_code!
     self.confirmation_code ||= TokenMaker.contact_info_confirmation_code
+  end
+
+  def set_confirmation_pin_code
+    self.confirmation_pin ||= TokenMaker.contact_info_confirmation_pin
+    self.confirmation_code ||= TokenMaker.contact_info_confirmation_code
+  end
+
+  def reset_confirmation_pin_code
+    self.confirmation_pin = TokenMaker.contact_info_confirmation_pin
+    self.confirmation_code = TokenMaker.contact_info_confirmation_code
   end
 
   protected

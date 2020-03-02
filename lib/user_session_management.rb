@@ -108,7 +108,7 @@ module UserSessionManagement
   def save_pre_auth_state(pre_auth_state)
     clear_login_state
     # There may be an old signup state object around, check for that
-    clear_pre_auth_state if pre_auth_state.id != session[:signup]
+    clear_pre_auth_state if pre_auth_state&.id != session[:signup]
     session[:signup] = pre_auth_state.id
   end
 
@@ -119,7 +119,8 @@ module UserSessionManagement
   end
 
   def pre_auth_state
-    id = session[:signup].to_i rescue nil
+    id = session[:signup]&.to_i
+    return unless id.present?
     @pre_auth_state ||= PreAuthState.find_by(id: id)
   end
 
@@ -148,7 +149,11 @@ module UserSessionManagement
   # note we're also clearning the session[:signup_role], that's important
   # so the session var doesn't stick around if user later comes from a different origin
   def set_student_signup_role(is_student)
-      session[:signup_role] = is_student ? 'student' : nil
+    session[:signup_role] = is_student ? 'student' : nil
+
+      if Settings::Db.store.newflow_feature_flag && is_student
+        redirect_to newflow_signup_student_path(request.query_parameters)
+      end
   end
 
   def set_alternate_signup_url(url)
@@ -160,7 +165,9 @@ module UserSessionManagement
       current_url, url = url, URI.decode(url) until url == current_url
 
       if get_client_app.try!(:is_redirect_url?, url)
-        session[:alt_signup] = url
+        url = Addressable::URI.parse(url)
+        url.query_values = url&.query_values&.merge(bpff: 9) # "bpff" = bypass feature flag
+        session[:alt_signup] = url.to_s
       else
         session[:alt_signup] = nil
 

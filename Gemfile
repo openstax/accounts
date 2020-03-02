@@ -122,6 +122,7 @@ gem 'whenever', require: false
 
 # Admin toggles
 gem 'rails-settings-ui'
+
 gem 'rails-settings-cached', '0.7.2'
 gem 'dry-validation', '0.12.3'
 
@@ -158,6 +159,10 @@ group :development, :test do
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
+  # Debug in VS Code
+  gem 'ruby-debug-ide'
+  gem 'debase'
+
   # Use RSpec for tests
   gem 'rspec-rails', '~> 3.8'
 
@@ -187,6 +192,12 @@ group :development, :test do
 
   # Records HTTP requests
   gem 'vcr'
+
+  # Lint ruby files
+  gem 'rubocop', '~> 0.76.0', require: false
+
+  # Lint RSpec files
+  gem 'rubocop-rspec'
 end
 
 group :development do

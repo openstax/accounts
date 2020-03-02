@@ -12,6 +12,9 @@
   <p class="desc">Signup states record transient information users provide as they are going through the sign up process.  These
     states are deleted once sign up is complete, so the data on this page is only useful for helping a user who is
     stuck in the middle of the sign up process.</p>
+  <p class="desc">There are lists compiled for users that go through the old accounts flow (should only be educators) and the
+    new account flow (should only be students). You can also use these to check that users are going to the proper flows.
+  These lists will be combined when the new flow is rolled out for all users (and this messaging should be removed).</p>
 
   <h4>Notes</h4>
 
@@ -22,8 +25,9 @@
   </ol>
 
   <h4 style="margin-top:20px">Records created within last <%= pluralize((params[:since] || 1).to_i, "day") %>, newest records first</h4>
-
-  <% @pre_auth_states.each do |pre_auth_state| %>
+  <hr>
+  <h5>Old Flow Users</h5>
+  <% if @pre_auth_states.each do |pre_auth_state| %>
     <div class="entry">
       <div class="basics">
         <%= pre_auth_state.contact_info_value || "No email yet" %> |
@@ -41,6 +45,30 @@
         </div>
       <% end %>
     </div>
+  <% end.empty? %>
+    <i>There are no users in an unverified state</i>
+  <% end %>
+
+  <hr>
+  <h5>New Flow Users</h5>
+
+
+  <% if @unverified_contacts.each do |unverified_contact| %>
+    <div class="entry">
+      <div class="basics">
+        <%= unverified_contact.value || "No email yet" %> |
+        <%= unverified_contact.verified? ? "Verified" : "Not Verified" %> |
+        PIN <b><%= unverified_contact.confirmation_pin %></b> |
+        reports as <b><%= unverified_contact.user.role %></b> |
+        created at <b><%= unverified_contact.created_at %></b>
+      </div>
+      <div class="token">
+        <%= signup_verify_by_token_url(code: unverified_contact.confirmation_code) %>
+      </div>
+
+    </div>
+  <% end.empty? %>
+    <i>There are no emails in an unverified state</i>
   <% end %>
 
 </div>

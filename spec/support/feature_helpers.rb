@@ -121,6 +121,7 @@ def capybara_url(path)
   "http://#{server.host}:#{server.port}/#{path.starts_with?('/') ? path[1..-1] : path}"
 end
 
+# to make sure that the plumbing is all working for forgery protection
 def with_forgery_protection
   begin
     allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
@@ -180,7 +181,7 @@ def with_omniauth_test_mode(options={})
       })
     end
 
-    [:facebook, :google_oauth2, :twitter].each do |provider|
+    [:facebook, :google_oauth2, :twitter, :googlenewflow, :facebooknewflow].each do |provider|
       OmniAuth.config.mock_auth[provider] = OmniAuth::AuthHash.new({
         uid: options[:uid],
         provider: provider.to_s,
@@ -282,6 +283,7 @@ def complete_login_username_or_email_screen(username_or_email)
   fill_in 'login_username_or_email', with: username_or_email
   expect_sign_in_page
   expect(page).to have_no_missing_translations
+  screenshot!
   click_button (t :"sessions.start.next")
   expect(page).to have_no_missing_translations
 end
@@ -290,6 +292,7 @@ def complete_login_password_screen(password)
   # TODO expect login password screen
   fill_in (t :"sessions.authenticate_options.password"), with: password
   expect(page).to have_no_missing_translations
+  screenshot!
   click_button (t :"sessions.authenticate_options.login")
   expect(page).to have_no_missing_translations
 end

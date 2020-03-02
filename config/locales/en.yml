@@ -2,6 +2,105 @@ en:
   # Strings in this section are intended for use from within JavaScript files.
   # They are reproduced as a global `window.OX.I18n`. For example the key
   # `javascript.alert.close` would be accessible as `window.OX.I18n.alert.close`.
+
+  login_signup_form:
+    cant_be_blank: can't be blank
+    cannot_find_user: We could not find your account. Please try again.
+    multiple_users: We found several accounts with this email
+    incorrect_password: The password you provided is incorrect.
+    log_in: Log in
+    sign_up: Sign up
+    student: Student
+    educator: Educator
+    step_counter: Step %{current_step} of %{total_steps}
+    login_page_header: Log in to your OpenStax account
+    login_with: 'Log in with:'
+    signup_with: 'Sign up with:'
+    signup_page_header: Set up your account
+    confirmation_page_header: Hi, %{first_name}! Confirm your email.
+    confirmation_form_decription: >-
+      An email has been sent to <b>%{email}</b>.
+      Please enter the PIN you received below.
+      You can also %{edit_your_email}
+    change_your_email_page_header: Change your email
+    change_your_email_page_description: >-
+      Change your email below so we can send your PIN.
+      You will need to use this updated email to log in.
+    didnt_receive_email: Didn't receive an email? You can %{sign_up_with_different_email_link}.
+    sign_up_with_different_email: sign up with a different email
+    check_your_updated_email: Check your updated email
+    havent_received_message: Still haven't received an email? %{contact_us}
+    contact_us: Contact us
+    welcome_page_header: Welcome! Join OpenStax as
+    email_placeholder: me@myemail.com
+    first_name_label: First name
+    last_name_label: Last name
+    email_label: Email
+    password_label: Password
+    pin_label: Confirm PIN
+    pin_placeholder: Enter 6-digit PIN here
+    pin_not_correct: This PIN is incorrect. Please enter the correct PIN.
+    continue_button: Continue
+    forgot_password: Forgot your password?
+    or_login_below: OR LOG IN BELOW
+    or_sign_up_below: OR SIGN UP BELOW
+    send_me_newsletter: Send me the OpenStax newsletter
+    agree_to_terms_of_use: I agree to the %{terms_of_use} and %{privacy_policy}
+    youre_done: You're done, %{first_name}!
+    youre_done_description: >-
+      Your account has been confirmed for <b>%{email_address}</b>!
+      To start exploring, check out some of the features you now have access to.
+    join_as_student_description: >-
+      Sign up for a <b>Student</b> account to access Tutor assignments,
+      highlight study materials, and more.
+    join_as_educator_description: >-
+      Sign up for an <b>Educator</b> account to adopt a book and access locked
+      instructor content and free resources integrated with your book.
+    send_me_instructions: Send me instructions
+    return: Return
+    login_unsuccessful: Login unsuccessful
+    login_unsuccessful_description: >-
+      We were not able to authenticate the account associated with <b>%{email}</b>.
+      If you are unable to use your social login, we can send instructions for setting up
+      an account password to <b>%{email}</b>. You can also return to the login page and try again.
+    check_your_email: Check your email
+    check_your_email_description: >-
+      An email containing password setup instructions has been sent to <b>%{email}</b>.
+    confirm_my_account_button:
+      Confirm my account
+    confirm_your_info: Confirm your information
+    edit_your_email: edit your email
+    send_my_pin: Send my PIN
+    reset_my_password: Reset my password
+    reset_my_password_description: >-
+      Please enter your email below so that we can send instructions for password recovery.
+    cant_remember_email: Can't remember your email? %{contact_us_link}.
+    reset_my_password_button: Reset my password
+    password_reset_email_sent: Password reset email sent
+    password_reset_email_sent_description: >-
+      Password reset instructions successfully sent to <b>%{email}</b>.
+    password_reset_email_sent_help: Still having trouble logging in? %{contact_us_link}.
+    setup_your_new_password: Set up your new password
+    setup_your_new_password_description: Please finish setting up the password for %{email} below.
+    confirm_social_info_tooltip: You can add a different email via your <b>Account Profile</b> later.
+    change_your_email_tooltip: You will need to use this updated email to log in.
+    enter_new_password: Enter your new password
+    enter_new_password_description: Finish resetting your password by entering the new one below.
+    email_address_taken: Email already in use
+    invalid_email_provider: '"%{domain}" is not a valid email provider'
+    too_many_login_attempts: >-
+      You have made too many login attempts recently. Please
+      reset your password or try again later.
+    profile_newflow_page_header: My Account
+    how_you_log_in: How you log in
+    sign_in_option_already_used: >-
+        That login option is already used by someone else. If that someone is
+        you, remove it from your other account and try again.
+
+  student_profile:
+    enable_other_sign_in_options: Enable other login options
+    other_sign_in_options_html: Other login<br class="wide"> options
+
   javascript:
     alert:
       close: Close
@@ -54,7 +153,7 @@ en:
       several_accounts_for_one_email: >-
         We found multiple accounts for the information provided. Please try again.
       incorrect_password: The password you provided is incorrect.
-      new_sign_in_option_added: Your new login option as been added!
+      new_sign_in_option_added: Your new login option has been added!
       same_provider_already_linked: >-
         You are logged in as %{user_name}. A different %{authentication} account
         is already linked to your OpenStax account. Only one %{authentication}
@@ -257,6 +356,9 @@ en:
       google_analytics_code:
         name: 'Google Analytics Code'
         help_block: 'Example: UA-XXXXXXXX-X'
+      newflow_feature_flag:
+        name: New student flow feature flag
+        help_block: New student flow activated?
 
   sessions:
     access_tutor: Log in or sign up for an account to access OpenStax Tutor

@@ -1,0 +1,97 @@
+<%
+    email_prefill_value = (newflow_suggested_login_username || current_users_resetting_password_email)
+    email_prefill_value ||= nil # because otherwise it literally shows "false" in the form's input field
+%>
+
+<div id="login-signup-form">
+    <div class="content">
+        <%= render partial: 'tab_group' , locals: { active_class: 'login--active' } %>
+
+        <%= newflow_login_signup_card(
+                    classes: "login-page",
+                    header: (I18n.t(:"login_signup_form.login_page_header")),
+                    banners: @banners,
+                    show_exit_icon: true) do %>
+            <% lev_form_for :login_form, url: newflow_login_path do |f| %>
+                <% fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors) %>
+                    <div class="content social-section">
+                        <div><%= I18n.t(:"login_signup_form.login_with") %></div>
+
+                        <div class="social-buttons">
+
+                            <div class="fb-share-button">
+                                <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn' do %>
+                                    <i class="social-icon fa fa-facebook"></i>
+                                    <span>Facebook</span>
+                                <% end %>
+                            </div>
+
+                            <div class="google-share-button">
+                                <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn' do %>
+                                    <i class="social-icon fa fa-google"></i>
+                                    <span>Google</span>
+                                <% end %>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="content form-divider">
+                        <%= I18n.t(:"login_signup_form.or_login_below") %>
+                    </div>
+
+                    <div class="content control-group">
+                        <%= label_tag :email, I18n.t(:"login_signup_form.email_label"),
+                                    class: 'field-label required'
+                        %>
+                        <%# input type is text instead of email bc we also support usernames %>
+                        <%= fh.text_field name: :email,
+                                    value: email_prefill_value,
+                                    placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                                    readonly: email_prefill_value.present?
+                        %>
+
+                    </div>
+
+                    <div class="content control-group">
+                        <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                                class: 'field-label required'
+                        %>
+                        <div id="password-field-container">
+                            <%= fh.text_field name: :password,
+                                        type: :password,
+                                        placeholder: I18n.t(:"login_signup_form.password_label"),
+                                        autofocus: true
+                            %>
+                            <span id="password-show-hide-button">
+                                <span class="toggle-show-hide">SHOW</span>
+                                <span class="toggle-show-hide" style="display: none">HIDE</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="content">
+                        <%= f.submit I18n.t(:"login_signup_form.continue_button"),
+                                    disable_with: I18n.t(:"login_signup_form.continue_button"),
+                                    class: 'primary'
+                        %>
+                    </div>
+
+                    <div class="content">
+                        <%# This is one difference from the login form...
+                             #  POST request to send_reset_password_email_path
+                             #  instead of GET request to forgot_password_form_path
+                        %>
+                        <%=
+                            link_to(
+                                I18n.t(:"login_signup_form.forgot_password"),
+                                send_reset_password_email_path,
+                                id: 'forgot-passwork-link',
+                                method: :post
+                            )
+                        %>
+                    </div>
+            <% end  %>
+        <% end  %>
+    </div>
+</div>

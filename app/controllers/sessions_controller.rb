@@ -7,6 +7,8 @@ class SessionsController < ApplicationController
   include RequireRecentSignin
   include RateLimiting
 
+  before_action :redirect_to_newflow_if_enabled, only: [:start]
+
   skip_before_action :authenticate_user!,
                      only: [:start, :lookup_login, :authenticate, :redirect_back,
                             :create, :failure, :destroy, :email_usernames]
@@ -23,7 +25,6 @@ class SessionsController < ApplicationController
   before_action :maybe_skip_to_sign_up, only: [:start]
 
   before_action :allow_iframe_access, only: :reauthenticate
-
 
   # If the user arrives to :start already logged in, this means they got linked to
   # the login page somehow; attempt to redirect to the authorization url stored
@@ -215,9 +216,8 @@ class SessionsController < ApplicationController
     end
   end
 
-  # This is an official action so that fine_print can check to see if terms need to be signed
   def redirect_back
-    super
+    super # defined in action_interceptor gem
   end
 
   # OAuth failure (e.g. wrong password)
@@ -256,7 +256,7 @@ class SessionsController < ApplicationController
       # deal with immediately, so alert devs.
 
       DevMailer.inspect_object(
-        object: params,
+        object: params.permit!.to_h,
         subject: "#{params[:strategy]} social login is failing!"
       ).deliver_later
 
@@ -280,7 +280,7 @@ class SessionsController < ApplicationController
     end
   end
 
-  protected
+  private #################
 
   def store_authorization_url_as_fallback
     # In case we need to redirect_back, but don't have something to redirect back
@@ -298,17 +298,4 @@ class SessionsController < ApplicationController
 
     store_fallback(url: authorization_url) unless authorization_url.nil?
   end
-
-  def save_new_params_in_session
-    # Store these params in the session so they are available if the lookup_login
-    # fails.  Also these methods perform checks on the alternate signup URL.
-    set_client_app(params[:client_id])
-    set_alternate_signup_url(params[:signup_at])
-    set_student_signup_role(params[:go] == 'student_signup')
-  end
-
-  def maybe_skip_to_sign_up
-    redirect_to signup_path if %w{signup student_signup}.include?(params[:go])
-  end
-
 end

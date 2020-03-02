@@ -44,20 +44,24 @@
 <% end %>
 
 <% if providers.keys.include?('identity') %>
+
   <% if providers.many? %>
-
-  <div class="ox-separator-line" data-text="">
-    <%= t '.separator_or' %>
-  </div>
-
+    <div class="ox-separator-line" data-text="">
+      <%= t '.separator_or' %>
+    </div>
   <% end %>
-    <%= lev_form_for :login, url: post_auth_callback_path(provider: :identity),
+
+  <%= lev_form_for :login, url: post_auth_callback_path(provider: :identity),
         html: {class: 'identity-password'} do |f| %>
 
-    <% fh = FormHelper::One.new(f: f,
-                                context: self,
-                                errors: @errors || @handler_result.try(:errors),
-                                error_field_classes: "alert alert-danger") %>
+    <%
+      fh = FormHelper::One.new(
+        f: f,
+        context: self,
+        errors: @errors || @handler_result.try(:errors),
+        error_field_classes: "alert alert-danger"
+      )
+    %>
 
     <section>
       <%= fh.text_field name: :password, type: :password, autofocus: true %>

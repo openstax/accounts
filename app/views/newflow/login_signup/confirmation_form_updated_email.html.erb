@@ -1,0 +1,14 @@
+<%=
+render(
+  partial: 'confirmation_form_template',
+  locals: {
+    header: I18n.t(:"login_signup_form.check_your_updated_email"),
+    help_message: I18n.t(
+        :"login_signup_form.havent_received_message",
+        contact_us: link_to(
+          I18n.t(:"login_signup_form.contact_us"), knowledge_base_url, target: '_blank'
+        )
+    ).html_safe
+  }
+)
+%>

@@ -1,4 +1,103 @@
 pl:
+  login_signup_form:
+    cant_be_blank: nie może być puste
+    cannot_find_user: Nie znaleziono użytkownika
+    multiple_users: Znaleźliśmy kilka kont przypisanych do tego adresu e-mail
+    incorrect_password: Podane hasło nie jest prawidłowe.
+    log_in: Zaloguj się
+    sign_up: Zarejestruj się
+    student: Student
+    educator: Nauczyciel
+    step_counter: Krok %{current_step} z %{total_steps}
+    login_page_header: Zaloguj się na swoje konto OpenStax
+    login_with: 'Zaloguj się przez:'
+    signup_with: 'Zarejestruj się przez:'
+    signup_page_header: Utwórz konto
+    confirmation_page_header: Cześć %{first_name}! Potwierdź swój adres e-mail.
+    confirmation_form_decription: >-
+      Wysłaliśmy e-mail na adres <b>%{email}</b>.
+      Poniżej wprowadź otrzymany PIN.
+      Możesz też %{edit_your_email}
+    change_your_email_page_header: Zmień adres e-mail
+    change_your_email_page_description: >-
+      Zmień adres e-mail poniżej, wyślemy na niego PIN.
+      Do zalogowania się potrzebny Ci będzie właśnie ten adres e-mail
+    didnt_receive_email: Wiadomość nie dotarła? Zarejestruj się %{sign_up_with_different_email_link}.
+    sign_up_with_different_email: podając inny adres e-mail
+    check_your_updated_email: Sprawdź nowy adres e-mail
+    havent_received_message: Still haven't received an email? %{contact_us}
+    contact_us: Skontaktuj się z nami
+    welcome_page_header: Witamy! Dołącz do OpenStax jako
+    email_placeholder: ja@moj-email.com
+    first_name_label: Imię
+    last_name_label: Nazwisko
+    email_label: Adres e-mail
+    password_label: Hasło
+    pin_label: Potwierdź PIN
+    pin_placeholder: Wprowadź 6-cyfrowy PIN
+    pin_not_correct: Podany kod PIN nie jest prawidłowy. Wprowadź właściwy.
+    continue_button: Dalej
+    forgot_password: Nie pamiętasz hasła?
+    or_login_below: ALBO WPROWADŹ DANE PONIŻEJ
+    or_sign_up_below: ALBO ZAREJESTRUJ SIĘ PONIŻEJ
+    send_me_newsletter: Zapisz mnie na newsletter OpenStax
+    agree_to_terms_of_use: Akceptuję %{terms_of_use} oraz %{privacy_policy}
+    youre_done: Zrobione, %{first_name}!
+    youre_done_description: >-
+      Potwierdzamy założenie konta na <b>%{email_address}</b>.
+      Wypróbuj możliwości naszego serwisu!
+    join_as_student_description: >-
+      Zarejestruj się jako <b>Student</b> i uzyskaj dostęp do aplikacji Tutor,
+      materiałów edukacyjnych, funkcji komentarzy i wielu innych.
+    join_as_educator_description: >-
+      Zarejestruj się jako <b>Nauczyciel</b>, by zgłosić nam, że korzystasz z podręcznika,
+      uzyskać dostęp do treści zastrzeżonej dla nauczycieli oraz do bezpłatnych materiałów dodatkowych.
+    send_me_instructions: Wyślij instrukcje
+    return: Powrót
+    login_unsuccessful: Nieudane logowanie
+    login_unsuccessful_description: >-
+      Nie mogliśmy potwierdzić konta powiązanego z adresem <b>%{email}</b>.
+      Jeśli nie możesz zalogować się loginem z portalu społecznościowego, możemy
+      wysłać Ci instrukcje ustawienia hasła na adres <b>%{email}</b>.
+      Możesz też wrócić do strony logowania i spróbować ponownie.
+    check_your_email: Sprawdź pocztę
+    check_your_email_description: >-
+      Wysłaliśmy e-mail z instrukcjami ustawienia hasła na adres <b>%{email}</b>.
+    confirm_my_account_button:
+      Confirm my account
+    confirm_your_info: Potwierdź moje konto
+    edit_your_email: edytować adres email.
+    send_my_pin: Wyślij mi PIN
+    reset_my_password: Zmień hasło
+    reset_my_password_description: >-
+      Wpisz poniżej swój e-mail, prześlemy Ci instrukcje do odzyskania hasła
+    cant_remember_email: Nie pamiętasz adresu e-mail do logowania? %{contact_us_link}.
+    reset_my_password_button: Zmień hasło
+    password_reset_email_sent: Wysłaliśmy e-mail do zmiany hasła
+    password_reset_email_sent_description: >-
+      Wysłaliśmy instrukcję do zmiany hasła na <b>%{email}</b>.
+    password_reset_email_sent_help: Nadal nie możesz się zalogować? %{contact_us_link}.
+    setup_your_new_password: Ustaw nowe hasło
+    setup_your_new_password_description: Ukończ ustawianie hasła dla adresu %{email} poniżej.
+    confirm_social_info_tooltip: Do swojego profilu na OpenStax możesz później dodać inny adres e-mail <b> profilu na OpenStax</b>.
+    change_your_email_tooltip: do zalogowania się potrzebny Ci będzie właśnie ten adres e-mail.
+    enter_new_password: Wpisz swoje nowe hasło
+    enter_new_password_description: Zakończ resetowanie hasła, wprowadzając nowe poniżej.
+    email_address_taken: Ten adres e-mail jest już w użyciu
+    invalid_email_provider: '"%{domain}" nie jest poprawnym adresem e-mail'
+    too_many_login_attempts: >-
+      Limit nieudanych prób logowania na Twoje konto został przekroczony.
+      Zmień hasło albo spróbuj ponownie później.
+    profile_newflow_page_header: Moje konto
+    how_you_log_in: Jak się logujesz
+    sign_in_option_already_used: >-
+        Ta metoda logowania jest już używana przez kogoś innego. Jeżeli jesteś
+        tą osobą, usuń wpierw tę metodę logowania ze swojego innego konta.
+
+  student_profile:
+    enable_other_sign_in_options: Zezwól na inne opcje logowania
+    other_sign_in_options_html: Dodatkowe metody<br class="wide"> logowania
+
   javascript:
     alert:
       close: Zamknij

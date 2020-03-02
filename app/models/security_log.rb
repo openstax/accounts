@@ -48,6 +48,23 @@ class SecurityLog < ActiveRecord::Base
     :login_not_found,
     :faculty_verified,
     :trusted_launch_removed,
+    # New ones created for the new student flow...
+    :student_signed_up,
+    :student_sign_up_failed,
+    :student_verified_email,
+    :student_verified_email_failed,
+    :reset_password_success,
+    :reset_password_failed,
+    :change_password_form_loaded,
+    :change_password_form_not_loaded,
+    :student_social_sign_up,
+    :student_authenticated_with_social,
+    :student_auth_with_social_failed,
+    :student_social_auth_confirmation_success,
+    :student_social_auth_confirmation_failed,
+    :student_created_password,
+    :student_create_password_failed,
+    :email_already_in_use,
   ]
 
   json_serialize :event_data, Hash

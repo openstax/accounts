@@ -2,9 +2,18 @@ module RequireRecentSignin
 
   REAUTHENTICATE_AFTER = 10.minutes
 
-  def reauthenticate_user!
-    store_url
-    location = main_app.reauthenticate_path(params.permit(:client_id).to_h)
+  def reauthenticate_user!(redirect_back_to: nil)
+    if redirect_back_to.nil?
+      store_url
+    else
+      store_url(url: redirect_back_to)
+    end
+
+    location = if Settings::Db.store.newflow_feature_flag
+        main_app.reauthenticate_form_path(request.query_parameters)
+      else
+        main_app.reauthenticate_path(params.permit(:client_id).to_h)
+      end
 
     respond_to do |format|
       format.json{ render json: { location: location } }
@@ -17,14 +26,14 @@ module RequireRecentSignin
   end
 
   def last_login_is_older_than?(time)
-    if time.is_a?(ActiveSupport::Duration)
-      time = Time.now - time
-    end
-
     return true if !signed_in?
 
     last_signin_time = SecurityLog.sign_in_successful.where(user: current_user).maximum(:created_at)
     return true if last_signin_time.nil?
+
+    if time.is_a?(ActiveSupport::Duration)
+      time = Time.now - time
+    end
 
     last_signin_time <= time
   end

@@ -5,7 +5,7 @@ require File.expand_path('../../config/environment', __FILE__)
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 require 'openstax/salesforce/spec_helpers'
 require 'rspec/rails'
-require 'webdrivers'
+require 'webdrivers/chromedriver'
 require 'capybara/rails'
 require 'capybara/email/rspec'
 require 'shoulda/matchers'
@@ -49,6 +49,11 @@ Capybara.register_driver :selenium_chrome_headless do |app|
 end
 
 Capybara.javascript_driver = :selenium_chrome_headless
+
+if ENV['NOT_HEADLESS']
+  # Run the feature specs in a full browser (note, this takes over your computer's focus)
+  Capybara.javascript_driver = :selenium_chrome
+end
 
 Capybara.asset_host = 'http://localhost:2999'
 

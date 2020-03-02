@@ -2,13 +2,24 @@ class ApplicationController < ActionController::Base
 
   layout 'application'
 
-  prepend_before_action :verify_signed_params
+  prepend_before_action :validate_signed_params_if_present
 
   before_action :authenticate_user!
   before_action :complete_signup_profile
   before_action :check_if_password_expired
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
+
+  def redirect_to_newflow_if_enabled
+    if request.get? && Settings::Db.store.newflow_feature_flag && !params[:bpff].present?
+      # "bpff" stands for "bypass feature flag"
+      if request.path == signup_path
+        redirect_to newflow_signup_path(request.query_parameters)
+      else
+        redirect_to newflow_login_path(request.query_parameters)
+      end
+    end
+  end
 
   def disable_fine_print
     request.options? ||
@@ -34,11 +45,11 @@ class ApplicationController < ActionController::Base
   end
 
   def return_url_specified_and_allowed?
-    # This returns true iff `save_redirect` actually saved the URL
+    # This returns true if `save_redirect` actually saved the URL
     params[:r] && params[:r] == stored_url
   end
 
-  def verify_signed_params
+  def validate_signed_params_if_present
     return true if signed_params.empty?
 
     app = ::Doorkeeper::Application.find_by_uid(params[:client_id])
@@ -80,4 +91,25 @@ class ApplicationController < ActionController::Base
     @errors.add(false, offending_inputs: on, code: code, message: message)
   end
 
+  def save_new_params_in_session
+    # Store these params in the session so they are available if the lookup_login
+    # fails.  Also these methods perform checks on the alternate signup URL.
+    set_client_app(params[:client_id])
+    set_alternate_signup_url(params[:signup_at])
+
+    # TODO: if feature flag is ON, this is actually doing a redirect, not saving params in session.
+    set_student_signup_role(params[:go] == 'student_signup')
+  end
+
+  def maybe_skip_to_sign_up
+    if Settings::Db.store.newflow_feature_flag
+      if %w{student_signup}.include?(params[:go])
+        redirect_to newflow_signup_student_path
+      elsif %w{signup}.include?(params[:go])
+        redirect_to newflow_signup_path
+      end
+    elsif %w{signup student_signup}.include?(params[:go])
+        redirect_to signup_path(bpff: 9)
+    end
+  end
 end

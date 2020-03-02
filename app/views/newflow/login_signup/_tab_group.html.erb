@@ -1,0 +1,11 @@
+<div class="tab-group">
+    <%= link_to I18n.t(:"login_signup_form.log_in"), newflow_login_path,
+                    class: "tab login #{active_class}"
+    %>
+    <%= link_to I18n.t(:"login_signup_form.sign_up"), (get_alternate_signup_url || newflow_signup_path),
+                    class: "tab signup #{active_class}"
+    %>
+    <a class="tab tab--placeholder"></a>
+    <a class="tab tab--placeholder"></a>
+    <a class="tab tab--placeholder"></a>
+</div>

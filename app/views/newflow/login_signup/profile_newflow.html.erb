@@ -1,0 +1,167 @@
+<% @parent_col_id = "profile" %>
+
+<% content_for :head do %>
+  <%= javascript_include_tag  "profile" %>
+<% end %>
+
+<div id="temporary-logo-within-my-account">
+  <%= render(partial: 'layouts/main_menu') %>
+</div>
+
+<style>
+  body {
+    background: none;
+  }
+
+  #application-header {
+    display: none;
+  }
+
+  a, .editable-click, #enable-other-sign-in, a.sign-out, #add-an-email, .resend-confirmation input[type=submit] {
+    color: #027eb5 !important;
+  }
+
+  .ox-card {
+    background-color: #fff;
+    border: 0.1rem solid #d5d5d5;
+  }
+
+  #profile .ox-card .category {
+    color: var(--greyish-brown);
+  }
+
+  #application-footer {
+    display: none;
+  }
+
+  #newflow-footer {
+      font-size: 10px;
+      text-align: center;
+      margin-top: 8rem;
+  }
+
+  #newflow-footer--copyright a {
+    font-size: 10px;
+    color: #000 !important;
+  }
+
+  #footer-rice-logo-image {
+    margin-bottom: 1.2rem;
+  }
+
+  .ox-card {
+    height: 90rem;
+  }
+
+  .btn-primary {
+    background-color: #f36b32;
+    border: 0;
+  }
+
+</style>
+
+<%= ox_card do %>
+  <div class="profile-title">
+    <%= link_to ('Log out'), newflow_logout_path, class: 'sign-out' %>
+    <h1 class="title"><%= t(:"login_signup_form.profile_newflow_page_header") %></h1>
+  </div>
+
+  <div class="row name">
+    <div class="col-sm-2 category">
+      Name
+    </div>
+    <div class="col-sm-10 info">
+      <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></a>
+    </div>
+  </div>
+
+  <% if current_user.username.present? %>
+  <div class="row">
+    <div class="col-sm-2 category">
+      Username
+    </div>
+    <div class="col-sm-10 info">
+      <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
+    </div>
+  </div>
+  <% end %>
+
+  <div class="row">
+    <div class="col-sm-2 category">
+      Email addresses
+    </div>
+    <div id="email-template" style="display:none">
+      <%= email_entry(value: "", id: "", is_verified: false, is_searchable: "") %>
+    </div>
+    <div class="col-sm-10 info">
+      <% current_user.email_addresses.order(:created_at).each do |email| %>
+        <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
+      <% end %>
+      <%= link_to 'Add email address', '#', {id: 'add-an-email'} %>
+    </div>
+  </div>
+
+  <%
+    all_providers = OmniauthData::VALID_PROVIDERS
+    oldflow_providers = %w(facebook google_oauth2)
+    newflow_providers = %w(facebooknewflow googlenewflow)
+
+    # The `all providers &` enforces a standard sort order
+    current_providers = all_providers & current_user.authentications.collect(&:provider) - oldflow_providers
+    other_available_providers = all_providers - current_providers - ['twitter', oldflow_providers].flatten
+  %>
+
+  <div class="row enabled-providers">
+    <div class="col-sm-2 category">
+      <%= t(:"login_signup_form.how_you_log_in") %>
+    </div>
+    <div class="col-sm-10 info providers">
+      <% current_providers.each do |provider| %>
+        <%= newflow_way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
+      <% end %>
+    </div>
+    <% if other_available_providers.any? %>
+    <div class="col-sm-offset-2 info col-sm-10"><%= link_to (I18n.t("student_profile.enable_other_sign_in_options")), nil, id: 'enable-other-sign-in' %></div>
+    <% end %>
+
+  </div>
+
+  <div class="row other-sign-in">
+    <div class="col-sm-2 category">
+      <%= t("student_profile.other_sign_in_options_html") %>
+    </div>
+    <div class="col-sm-10 info providers">
+      <% other_available_providers.each do |provider| %>
+        <%= newflow_way_to_login(provider: provider, has_authentication: false, current_providers: current_providers) %>
+      <% end %>
+    </div>
+  </div>
+
+<% end %>
+
+<%= render partial: 'layouts/newflow_footer' %>
+
+<%= content_for :javascript do %>
+<script type="text/javascript">
+
+$.fn.editable.defaults.mode = 'inline';
+$.fn.editable.defaults.send = "always";
+$.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+$.fn.editable.defaults.url = "<%= profile_path %>";
+
+$('#username').editable({
+  success: function(response, newValue) {
+    $('#session-info .username').text(newValue);
+  }
+});
+
+OX.Profile.Name.editable($('#name'), {
+    title: "<%= current_user.title %>",
+    first_name: "<%= current_user.first_name %>",
+    last_name: "<%= current_user.last_name %>",
+    suffix: "<%= current_user.suffix %>"
+});
+
+
+</script>
+<% end # javscript content block %>

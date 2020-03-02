@@ -7,11 +7,13 @@ class User < ActiveRecord::Base
     'temp', # deprecated but still could exist for old accounts
     'new_social',
     'unclaimed',
-    'needs_profile',
-    'activated'
+    'needs_profile', # has yet to fill out their user info
+    'activated', # means their user info is in place and the email is verified
+    'unverified' # means their user info is in place but the email is not yet verified
   ]
 
   has_one :identity, dependent: :destroy, inverse_of: :user
+  has_one :pre_auth_state
 
   has_many :authentications, dependent: :destroy, inverse_of: :user
   has_many :application_users, dependent: :destroy, inverse_of: :user
@@ -32,6 +34,8 @@ class User < ActiveRecord::Base
   has_many :oauth_applications, through: :member_groups
 
   has_many :security_logs
+
+  belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
 
   enum faculty_status: [:no_faculty_info, :pending_faculty, :confirmed_faculty, :rejected_faculty]
   enum role: [:unknown_role, :student, :instructor, :administrator, :librarian, :designer, :other, :adjunct, :homeschool]
@@ -145,7 +149,7 @@ class User < ActiveRecord::Base
   def full_name=(name)
     names = name.strip.split(/\s+/)
     self.first_name = names.first
-    self.last_name = (names.length > 1 ? names[1..-1] : ['']).join(' ')
+    self.last_name = names.length > 1 ? names[1..-1].join(' ') : ''
   end
 
   def guessed_first_name
@@ -289,5 +293,4 @@ class User < ActiveRecord::Base
       errors.add(attr.to_sym, :blank) if !was.blank? && is.blank?
     end
   end
-
 end
