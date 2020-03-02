@@ -46,6 +46,14 @@ module Accounts
     # https://coderwall.com/p/w3ghqq/rails-3-2-error-handling-with-exceptions_app
     config.exceptions_app = ->(env) { ExceptionsController.action(:rescue_from).call(env) }
 
+    def self.is_assets_precompile?
+      ARGV[0] != "assets:precompile"
+    end
+
+    def is_assets_precompile?
+      self.class.is_assets_precompile?
+    end
+
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
     if Rails.application.is_assets_precompile?
