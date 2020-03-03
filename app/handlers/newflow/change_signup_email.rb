@@ -1,5 +1,4 @@
 module Newflow
-  # Delete previous email, add new one to the user, update pre_auth_state's email value.
   class ChangeSignupEmail
     lev_handler
 
