@@ -1,8 +1,4 @@
 en:
-  # Strings in this section are intended for use from within JavaScript files.
-  # They are reproduced as a global `window.OX.I18n`. For example the key
-  # `javascript.alert.close` would be accessible as `window.OX.I18n.alert.close`.
-
   login_signup_form:
     cant_be_blank: can't be blank
     cannot_find_user: We could not find your account. Please try again.
@@ -85,7 +81,10 @@ en:
     confirm_social_info_tooltip: You can add a different email via your <b>Account Profile</b> later.
     change_your_email_tooltip: You will need to use this updated email to log in.
     enter_new_password: Enter your new password
-    enter_new_password_description: Finish resetting your password by entering the new one below.
+    enter_new_password_description: >-
+      Finish resetting your password by entering the new one below.
+      Your new password cannot be the same as your current password.
+    same_password_error: Your new password cannot be the same as your current password
     email_address_taken: Email already in use
     invalid_email_provider: '"%{domain}" is not a valid email provider'
     too_many_login_attempts: >-

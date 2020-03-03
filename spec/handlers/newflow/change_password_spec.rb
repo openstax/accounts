@@ -27,19 +27,33 @@ module Newflow
     end
 
     context 'failure' do
-    let(:params) do
-      {
-        change_password_form: {
-          password: 'pwd',
-        }
-      }
-    end
+      before do
+        FactoryBot.create(:identity, user: user, password: 'password')
+      end
 
       it 'fails if password is too short' do
-        # create the password to begin with
-        FactoryBot.create(:identity, user: user, password: 'password')
+        params = {
+          change_password_form: {
+            password: 'pwd',
+          }
+        }
 
-        expect(described_class.call(caller: user, params: params).errors.any?).to be(true)
+        result = described_class.call(caller: user, params: params)
+
+        expect(result.errors.any?).to be(true)
+        expect(result).to have_routine_error(:too_short)
+      end
+
+      it 'fails if password is the same as before' do
+        params = {
+          change_password_form: {
+            password: 'password',
+          }
+        }
+
+        result = described_class.call(caller: user, params: params)
+        expect(result.errors.any?).to be(true)
+        expect(result).to have_routine_error(:same_password)
       end
     end
   end
