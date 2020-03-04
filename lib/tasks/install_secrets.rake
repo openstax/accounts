@@ -102,6 +102,9 @@ end
 def cast_string(string)
   if /\A[+-]?\d+(\.[\d]+)?\z/.match(string)
     (string.to_f % 1) > 0 ? string.to_f : string.to_i
+  elsif /\A\[.*\]\z/.match(string)
+    a = eval(string)
+    a.map{ |item| item.to_s }
   else
     string
   end
