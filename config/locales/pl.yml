@@ -84,8 +84,8 @@ pl:
     enter_new_password: Wpisz swoje nowe hasło
     enter_new_password_description: >-
       Zakończ resetowanie hasła, wprowadzając nowe poniżej.
-      Twoje nowe hasło nie może być takie samo jak bieżące hasło.
-    same_password_error: Twoje nowe hasło nie może być takie samo jak bieżące hasło
+      Twoje nowe hasło nie może być takie samo jak Twoje aktualne hasło.
+    same_password_error: Twoje nowe hasło nie może być takie samo jak Twoje aktualne hasło
     email_address_taken: Ten adres e-mail jest już w użyciu
     invalid_email_provider: '"%{domain}" nie jest poprawnym adresem e-mail'
     too_many_login_attempts: >-
