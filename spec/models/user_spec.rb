@@ -378,4 +378,20 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '.cleanup_unverified_users' do
+    before do
+      FactoryBot.create(:user, created_at: 10.years.ago, state: User::ACTIVATED)
+      @older_unverified_user = FactoryBot.create(:user, created_at: 10.years.ago, state: User::UNVERIFIED)
+      FactoryBot.create(:user, created_at: 1.month.ago, state: User::ACTIVATED)
+      FactoryBot.create(:user, created_at: 1.month.ago, state: User::UNVERIFIED)
+    end
+
+    it 'removes the unverified users older than a year' do
+      expect(User.count).to eq 4
+      described_class.cleanup_unverified_users
+      expect(User.count).to eq 3
+      expect(User.find_by(id: @older_unverified_user.id)).to be_nil
+    end
+  end
 end

@@ -4,12 +4,12 @@ class User < ActiveRecord::Base
   USERNAME_MIN_LENGTH = 3
   USERNAME_MAX_LENGTH = 50
   VALID_STATES = [
-    'temp', # deprecated but still could exist for old accounts
-    'new_social',
-    'unclaimed',
-    'needs_profile', # has yet to fill out their user info
-    'activated', # means their user info is in place and the email is verified
-    'unverified' # means their user info is in place but the email is not yet verified
+    TEMP = 'temp',                   # deprecated but still could exist for old accounts
+    NEW_SOCIAL = 'new_social',
+    UNCLAIMED = 'unclaimed',
+    NEEDS_PROFILE = 'needs_profile', # has yet to fill out their user info
+    ACTIVATED = 'activated',         # means their user info is in place and the email is verified
+    UNVERIFIED = 'unverified'        # means their user info is in place but the email is not yet verified
   ]
 
   has_one :identity, dependent: :destroy, inverse_of: :user
@@ -78,6 +78,9 @@ class User < ActiveRecord::Base
 
   before_save :add_unread_update
 
+  scope :by_unverified, -> { where(state: UNVERIFIED) }
+  scope :older_than_one_year, -> { where("created_at < ?", 1.year.ago) }
+
   def self.username_is_valid?(username)
     user = User.new(username: username)
     user.valid?
@@ -86,6 +89,10 @@ class User < ActiveRecord::Base
 
   def self.create_random_username(base:, num_digits_in_suffix:)
     "#{base}#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
+  end
+
+  def self.cleanup_unverified_users
+    by_unverified.older_than_one_year.destroy_all
   end
 
   def is_test?
