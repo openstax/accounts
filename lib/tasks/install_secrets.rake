@@ -41,7 +41,7 @@ task :install_secrets, [] do
     response.parameters.each do |parameter|
       # break out the flattened keys and ignore the env name and namespace
       keys = parameter.name.split('/').reject(&:blank?)[num_ignored_key_levels..-1]
-      deep_populate(secrets, keys, parameter.value)
+      deep_populate(secrets, keys, cast_string(parameter.value))
     end
   end
 
@@ -96,5 +96,13 @@ def deep_populate(hash, keys, value)
   else
     hash[keys[0]] ||= {}
     deep_populate(hash[keys[0]], keys[1..-1], value)
+  end
+end
+
+def cast_string(string)
+  if /\A[+-]?\d+(\.[\d]+)?\z/.match(string)
+    (string.to_f % 1) > 0 ? string.to_f : string.to_i
+  else
+    string
   end
 end
