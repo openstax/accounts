@@ -99,13 +99,15 @@ def deep_populate(hash, keys, value)
   end
 end
 
-def cast_string(string)
-  if /\A[+-]?\d+(\.[\d]+)?\z/.match(string)
-    (string.to_f % 1) > 0 ? string.to_f : string.to_i
-  elsif /\A\[.*\]\z/.match(string)
-    a = eval(string)
-    a.map{ |item| item.to_s }
+def cast_to_number_if_number(string_or_array)
+  if string_or_array.is_a?(Array)
+    string_or_array.map{|string| cast_to_number_if_number(string)}
   else
-    string
+    string = string_or_array
+    if /\A[+-]?\d+(\.[\d]+)?\z/.match(string)
+       (string.to_f % 1) > 0 ? string.to_f : string.to_i
+    else
+      string
+    end
   end
 end
