@@ -79,7 +79,7 @@ class User < ActiveRecord::Base
   before_save :add_unread_update
 
   scope :by_unverified, -> { where(state: UNVERIFIED) }
-  scope :older_than_one_year, -> { where("created_at > ?", 1.year.ago) }
+  scope :older_than_one_year, -> { where("created_at < ?", 1.year.ago) }
 
   def self.username_is_valid?(username)
     user = User.new(username: username)
