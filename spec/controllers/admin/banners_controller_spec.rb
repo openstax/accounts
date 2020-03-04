@@ -8,10 +8,10 @@ describe Admin::BannersController, type: :controller do
   end
 
   it 'finds active (unexpired) banners' do
-    2.times {
-      Banner.create!(expires_at: 8.hours.from_now, message: 'This is a banner.')
-    }
-    Banner.create!(expires_at: 1.second.ago, message: 'This is an inactive/expired banner.')
+    2.times { Banner.create!(expires_at: 8.hours.from_now, message: 'banner') }
+    expired_banner = Banner.create(expires_at: 8.hours.from_now, message: 'expired banner')
+    expired_banner.update_attribute(:expires_at, 1.second.ago)
+
     get :index
     expect(assigns(:banners).count).to eq 2
   end
