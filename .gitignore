@@ -41,5 +41,8 @@ brakeman.html
 # Ignore OS X's Desktop Service Store files
 *.DS_Store
 
+.generators
+.rakeTasks
+
 # Ignore unix editor temp files
 *~
