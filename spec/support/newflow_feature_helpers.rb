@@ -66,7 +66,7 @@ def strip_html(text)
 end
 
 def turn_on_feature_flag # TODO: move into general spec helpers, not just feature spec helpers
-  Settings::Db.store.newflow_feature_flag = true
+  Settings::Db.store.student_feature_flag = true
 end
 
 def expect_sign_up_welcome_tab

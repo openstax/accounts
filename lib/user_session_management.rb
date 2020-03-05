@@ -151,7 +151,7 @@ module UserSessionManagement
   def set_student_signup_role(is_student)
     session[:signup_role] = is_student ? 'student' : nil
 
-      if Settings::Db.store.newflow_feature_flag && is_student
+      if Settings::Db.store.student_feature_flag && is_student
         redirect_to newflow_signup_student_path(request.query_parameters)
       end
   end

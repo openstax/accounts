@@ -9,7 +9,7 @@ module RequireRecentSignin
       store_url(url: redirect_back_to)
     end
 
-    location = if Settings::Db.store.newflow_feature_flag
+    location = if Settings::Db.store.student_feature_flag
         main_app.reauthenticate_form_path(request.query_parameters)
       else
         main_app.reauthenticate_path(params.permit(:client_id).to_h)

@@ -355,9 +355,12 @@ en:
       google_analytics_code:
         name: 'Google Analytics Code'
         help_block: 'Example: UA-XXXXXXXX-X'
-      newflow_feature_flag:
+      student_feature_flag:
         name: New student flow feature flag
         help_block: New student flow activated?
+      educator_feature_flag:
+        name: New educator flow feature flag
+        help_block: New educator flow activated?
 
   sessions:
     access_tutor: Log in or sign up for an account to access OpenStax Tutor
