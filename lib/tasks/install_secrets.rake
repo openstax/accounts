@@ -41,7 +41,8 @@ task :install_secrets, [] do
     response.parameters.each do |parameter|
       # break out the flattened keys and ignore the env name and namespace
       keys = parameter.name.split('/').reject(&:blank?)[num_ignored_key_levels..-1]
-      deep_populate(secrets, keys, cast_to_number_if_number(parameter.value))
+      value = parameter.type == "StringList" ? parameter.value.split(",") : parameter.value
+      deep_populate(secrets, keys, cast_to_number_if_number(value))
     end
   end
 
