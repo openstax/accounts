@@ -1,4 +1,4 @@
-<% if Rails.env.production? and Settings::GoogleAnalytics.send_google_analytics == true and !Settings::GoogleAnalytics.google_analytics_code.blank?  %>
+
 <script>
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -7,5 +7,51 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 
 ga('create', '<%= Settings::GoogleAnalytics.google_analytics_code %>', 'auto');
 ga('send', 'pageview');
+
+$('[data-ga-category]').on('click', function() {
+  var category = $(this).data('ga-category');
+  var action = $(this).data('ga-action');
+  var label = $(this).data('ga-label');
+  ga('send', {
+    hitType: 'event',
+    eventCategory: category,
+    eventAction: action,
+    eventLabel: label
+  });
+});
+
+window.addEventListener('beforeunload', (event) => {
+  //event.preventDefault();
+  if((window.location.href.indexOf("signup") > -1) || (window.location.href.indexOf("profile") > -1)) {
+    var category = 'Account Creation';
+    var action = 'Click';
+    var label = '5-Close Window';
+    if (window.location.href.indexOf("profile") > -1){
+      category = 'My Account'
+      label = 'Close Window'
+    }
+    ga('send', {
+      hitType: 'event',
+      eventCategory: category,
+      eventAction: action,
+      eventLabel: label
+    });
+  } 
+  return;
+});
+
+var gaShowHide = function(buttonText){
+  var location = 'Login'
+  if(window.location.href.indexOf("signup") > -1) {
+    location = 'Sign Up';
+  }
+  ga('send', {
+      hitType: 'event',
+      eventCategory: 'SHOW/HIDE password',
+      eventAction: 'show/hide',
+      eventLabel: buttonText + ' - ' + location
+    });
+}
+
 </script>
-<% end %>
+

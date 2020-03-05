@@ -20,14 +20,14 @@
                         <div class="social-buttons">
 
                             <div class="fb-share-button">
-                                <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn' do %>
+                                <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn', :data => {:ga_category => 'Login', ga_action: 'Click', ga_label: 'Facebook'} do %>
                                     <i class="social-icon fa fa-facebook"></i>
                                     <span>Facebook</span>
                                 <% end %>
                             </div>
 
                             <div class="google-share-button">
-                                <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn' do %>
+                                <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn', :data => {:ga_category => 'Login', ga_action: 'Click', ga_label: 'Google'} do %>
                                     <i class="social-icon fa fa-google"></i>
                                     <span>Google</span>
                                 <% end %>
@@ -58,7 +58,7 @@
                                     class: 'field-label required'
                             %>
                             <span id="password-show-hide-button">
-                                <span class="toggle-show-hide">SHOW</span>
+                                <span class="toggle-show-hide" data-ga_category='SHOW/HIDE password', data-ga_action='Click', data-ga_label='SHOW - Logon'>SHOW</span>
                                 <span class="toggle-show-hide" style="display: none">HIDE</span>
                             </span>
                             <%= fh.text_field name: :password,
@@ -71,7 +71,8 @@
                     <div class="content">
                         <%= f.submit I18n.t(:"login_signup_form.continue_button"),
                                     disable_with: I18n.t(:"login_signup_form.continue_button"),
-                                    class: 'primary'
+                                    class: 'primary', 
+                                    :data => {:ga_category => 'Login & Account Creation', ga_action: 'Continue', ga_label: 'Continue '}
                         %>
                     </div>
 
@@ -80,7 +81,8 @@
                             link_to(
                                 I18n.t(:"login_signup_form.forgot_password"),
                                 forgot_password_form_path,
-                                id: 'forgot-passwork-link'
+                                id: 'forgot-passwork-link',
+                                :data => {:ga_category => 'Login', ga_action: 'Click', ga_label: 'Password Reset'}
                             )
                         %>
                     </div>
