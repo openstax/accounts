@@ -15,6 +15,11 @@ signup_roles = {
   other: t('.other')
 }
 
+# hide student role option when feature flag is on.
+if Settings::Db.store.newflow_feature_flag
+  signup_roles.delete(:student)
+end
+
 translate_error(code: :email_in_use) do
   t :'.email_in_use.content_html',
     link: (link_to (t :'.email_in_use.log_in'),
