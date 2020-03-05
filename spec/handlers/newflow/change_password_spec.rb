@@ -31,29 +31,33 @@ module Newflow
         FactoryBot.create(:identity, user: user, password: 'password')
       end
 
-      it 'fails if password is too short' do
-        params = {
+      let(:params) do
+        {
           change_password_form: {
-            password: 'pwd',
+            password: password,
           }
         }
-
-        result = described_class.call(caller: user, params: params)
-
-        expect(result.errors.any?).to be(true)
-        expect(result).to have_routine_error(:too_short)
       end
 
-      it 'fails if password is the same as before' do
-        params = {
-          change_password_form: {
-            password: 'password',
-          }
-        }
+      describe 'fails if password is too short' do
+        let(:password) { 'pwd' }
 
-        result = described_class.call(caller: user, params: params)
-        expect(result.errors.any?).to be(true)
-        expect(result).to have_routine_error(:same_password)
+        example do
+          result = described_class.call(caller: user, params: params)
+
+          expect(result.errors.any?).to be(true)
+          expect(result).to have_routine_error(:too_short)
+        end
+      end
+
+      describe 'fails if password is the same as before' do
+        let(:password) { 'password' }
+
+        example do
+          result = described_class.call(caller: user, params: params)
+          expect(result.errors.any?).to be(true)
+          expect(result).to have_routine_error(:same_password)
+        end
       end
     end
   end
