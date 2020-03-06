@@ -33,5 +33,7 @@
     <%= "#{year}:  #{pas} started / #{users} finished = #{ ((users > 0 ? (pas / Float(users)) : 0) * 100).round(2) }%" %>
     <br>
   <% end %>
+  What's the average time someone spends signing up (started the process but did not finish)? <br>
+  <%= average_time_for_users_to_become_activated() %>
 
 </p>

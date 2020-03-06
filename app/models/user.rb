@@ -78,6 +78,8 @@ class User < ActiveRecord::Base
 
   before_save :add_unread_update
 
+  validate :save_activated_at_if_became_activated, on: :update
+
   scope :by_unverified, -> { where(state: UNVERIFIED) }
   scope :older_than_one_year, -> { where("created_at < ?", 1.year.ago) }
 
@@ -300,4 +302,11 @@ class User < ActiveRecord::Base
       errors.add(attr.to_sym, :blank) if !was.blank? && is.blank?
     end
   end
+
+  def save_activated_at_if_became_activated
+    if state_changed?(to: ACTIVATED)
+      self.touch(:activated_at)
+    end
+  end
+
 end
