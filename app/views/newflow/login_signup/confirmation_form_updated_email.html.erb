@@ -6,7 +6,8 @@ render(
     help_message: I18n.t(
         :"login_signup_form.havent_received_message",
         contact_us: link_to(
-          I18n.t(:"login_signup_form.contact_us"), knowledge_base_url, target: '_blank'
+          I18n.t(:"login_signup_form.contact_us"), knowledge_base_url, target: '_blank',
+          :data => {:'ga-category' => 'Login', 'ga-action': 'Click', 'ga-label': 'Contact Us'}
         )
     ).html_safe
   }

@@ -62,7 +62,7 @@
 
 <%= ox_card do %>
   <div class="profile-title">
-    <%= link_to ('Log out'), newflow_logout_path, class: 'sign-out' %>
+    <%= link_to ('Log out'), newflow_logout_path, class: 'sign-out', :data => {:'ga-category' => 'Logout', 'ga-action': 'Click', 'ga-label': 'Logout'} %>
     <h1 class="title"><%= t(:"login_signup_form.profile_newflow_page_header") %></h1>
   </div>
 
