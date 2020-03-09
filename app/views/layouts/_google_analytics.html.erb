@@ -21,7 +21,6 @@ $('[data-ga-category]').on('click', function() {
 });
 
 window.addEventListener('beforeunload', (event) => {
-  //event.preventDefault();
   if((window.location.href.indexOf("signup") > -1) || (window.location.href.indexOf("profile") > -1)) {
     var category = 'Account Creation';
     var action = 'Click';
@@ -40,7 +39,7 @@ window.addEventListener('beforeunload', (event) => {
   return;
 });
 
-var gaShowHide = function(buttonText){
+var gaShowHide = function(){
   var location = 'Login'
   if(window.location.href.indexOf("signup") > -1) {
     location = 'Sign Up';
@@ -52,6 +51,18 @@ var gaShowHide = function(buttonText){
       eventLabel: buttonText + ' - ' + location
     });
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+  if(window.location.href.indexOf("login") > -1) {
+    ga('send', {
+      hitType: 'event',
+      eventCategory: 'Login &amp; Account Creation',
+      eventAction: 'open',
+      eventLabel: Referrer + ' - ' + document.referrer
+    });
+    
+  }
+});
 
 </script>
 
