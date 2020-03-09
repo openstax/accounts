@@ -6,7 +6,7 @@
                     classes: "signup-page",
                     header: I18n.t(:"login_signup_form.youre_done", first_name: @first_name),
                     show_exit_icon: true) do %>
-            <form action="<%= redirect_back_path :data => {:'ga-category' => 'Account Creation', 'ga-action': 'Click', 'ga-label': 'Finish'}%>">
+            <form action="<%= redirect_back_path %>">
                 <div class="content control-group info-message">
                     <%= I18n.t(:"login_signup_form.youre_done_description",
                                     email_address: @email_address).html_safe
@@ -15,7 +15,7 @@
                     <br />
                     <%= image_tag('highlighting_and_note_taking.png', style: 'width: inherit;' ) %>
 
-                    <%= button_tag('Finish') %>
+                    <%= button_tag('Finish', :data => {:'ga-category' => 'Account Creation', 'ga-action': 'Click', 'ga-label': '5-Finish'}) %>
                 </div>
             </form>
         <% end  %>
