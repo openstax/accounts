@@ -96,6 +96,11 @@ pl:
     sign_in_option_already_used: >-
         Ta metoda logowania jest już używana przez kogoś innego. Jeżeli jesteś
         tą osobą, usuń wpierw tę metodę logowania ze swojego innego konta.
+    # signup page
+    first_name_is_blank: Wpisz imię
+    last_name_is_blank: Wpisz nazwisko
+    email_is_blank: Musisz podać adres e-mail
+    password_is_blank: Wpisz hasło
 
   student_profile:
     enable_other_sign_in_options: Zezwól na inne opcje logowania
