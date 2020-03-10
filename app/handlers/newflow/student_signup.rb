@@ -66,7 +66,7 @@ module Newflow
 
     def missing_param_error(field)
       code = "#{field}_is_blank".to_sym
-      message = I18n.t(:".activerecord.errors.models.identity.attributes.#{field}.blank")
+      message = I18n.t(:"login_signup_form.#{code}")
       nonfatal_error(
         code: code,
         message: message,

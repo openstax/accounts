@@ -95,6 +95,11 @@ en:
     sign_in_option_already_used: >-
         That login option is already used by someone else. If that someone is
         you, remove it from your other account and try again.
+    # signup page
+    first_name_is_blank: First name can't be blank
+    last_name_is_blank: Last name can't be blank
+    email_is_blank: Email can't be blank
+    password_is_blank: Password can't be blank
 
   student_profile:
     enable_other_sign_in_options: Enable other login options
