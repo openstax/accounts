@@ -144,6 +144,12 @@ en:
 
         identity:
           attributes:
+            last_name:
+              blank: Last name can't be blank
+            first_name:
+              blank: First name can't be blank
+            email:
+              blank: Email can't be blank
             password:
               blank: Password can't be blank
               too_short:
