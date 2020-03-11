@@ -111,6 +111,42 @@ module Newflow
       end
     end
 
+    context 'all signup fields empty' do
+      before do
+        create_newflow_user(email)
+      end
+
+      let(:email) do
+        Faker::Internet.free_email
+      end
+
+      let(:params) do
+        {
+          signup: {
+            first_name: nil,
+            last_name: nil,
+            email: nil,
+            password: nil,
+            terms_accepted: true,
+            newsletter: true,
+            contract_1_id: 1,
+            contract_2_id: 2
+          }
+        }
+      end
+
+      let(:result) do
+        described_class.call(params: params)
+      end
+
+      example do
+        expect(result.errors).to have_offending_input(:email)
+        expect(result.errors).to have_offending_input(:password)
+        expect(result.errors).to have_offending_input(:last_name)
+        expect(result.errors).to have_offending_input(:first_name)
+      end
+    end
+
     describe 'failure because the domain provider is invalid' do
       before do
         EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new(expecting: false)
