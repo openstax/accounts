@@ -278,3 +278,61 @@ When someone signs up, especially if they are Educators, we want to keep track o
 Keeping the above in mind will help you make sense of the signup form and related business logic such as [PushSalesforceLead](app/routines/push_salesforce_lead.rb).
 
 In short, new users become sales leads in Salesforce.
+
+## Google Analaytics
+The following data is sent to Google Analytics
+
+When user lands on Login Page Send Referrer
+| Category | Action | Label |
+|----------|--------|-------|
+|Login & Account Creation|open|Referrer - [referrer URL]|
+
+When user logs in with Facebook
+| Category | Action | Label |
+|----------|--------|-------|
+|Login|Click|Facebook|
+
+When user logs in with Google
+| Category | Action | Label |
+|----------|--------|-------|
+|Login|Click|Google|
+
+When user logs in with Email and Password
+| Category | Action | Label |
+|----------|--------|-------|
+|Login|Click|Email|
+
+When a user reaches the Profile page via login (/login) or signup (/done)
+| Category | Action | Label |
+|----------|--------|-------|
+|Profile|Referrer|Referrer - [Referrer URL]|
+
+Account Creation Steps
+| Category | Action | Label |Description|
+|----------|--------|-------|-----------|
+|Account Creation|Click|1-Sign Up|Click the Sign Up tab|
+|Account Creation|Click|2A-Student|Click the Student card|
+|Account Creation|Click|2B-Educator|Click the Educator card|
+|Account Creation|Click|3A-Email|Enters an email and password|
+|Account Creation|Click|3B-Facebook|Clicks Facebook button|
+|Account Creation|Click|3C-Google|Clicks Google button|
+|Account Creation|Click|4-Confirm My Account|Clicks Confirm button after entering pin|
+|Account Creation|Click|5-Finish|Click the Finish button|
+|Account Creation|Click|5-Close Window|User closes the tab. This is somewhat unreliable since it can be triggered by other actions such as refeshing the page|
+
+Password Reset
+| Category | Action | Label |
+|----------|--------|-------|
+|Login|Click|Password Reset|
+
+Add Email Address
+| Category | Action | Label |
+|----------|--------|-------|
+|My Account|Click|Add Email Address|
+
+Close the Profile Page
+| Category | Action | Label |Description|
+|----------|--------|-------|-----------|
+|My Account|Click|Close Window|User closes the tab. This is somewhat unreliable since it can be triggered by other actions such as refeshing the page|
+
+

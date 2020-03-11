@@ -41,7 +41,8 @@
                 <div class="content">
                     <%= f.submit I18n.t(:"login_signup_form.confirm_my_account_button"),
                                         disable_with: I18n.t(:"login_signup_form.confirm_my_account_button"),
-                                        class: 'primary' %>
+                                        class: 'primary',
+                                        :data => {:'ga-category' => 'Account Creation', 'ga-action': 'Click', 'ga-label': '4A-Confirm My Account'} %>
                 </div>
 
             <% end %>

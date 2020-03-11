@@ -40,14 +40,16 @@
 
                         <div class="fb-share-button">
                             <%= link_to newflow_auth_path(:facebooknewflow),
-                                        class: 'facebook btn' do %>
+                                        class: 'facebook btn',
+                                        :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3B-Facebook'} do %>
                                 <i class="social-icon fa fa-facebook"></i>
                                 <span>Facebook</span>
                             <% end %>
                         </div>
 
                         <div class="google-share-button">
-                            <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn' do %>
+                            <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn',
+                                    :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3C-Google'} do %>
                                 <i class="social-icon fa fa-google"></i>
                                 <span>Google</span>
                             <% end %>
@@ -155,7 +157,8 @@
                 <div class="content">
                     <%= f.submit I18n.t(:"login_signup_form.continue_button"),
                                         data: { disable_with: I18n.t(:"login_signup_form.continue_button") },
-                                        class: 'primary', id: 'signup_form_submit_button' %>
+                                        class: 'primary', id: 'signup_form_submit_button',
+                                        :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email'} %>
                 </div>
             <% end %>
         <% end %>

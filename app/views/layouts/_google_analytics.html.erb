@@ -7,5 +7,79 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 
 ga('create', '<%= Settings::GoogleAnalytics.google_analytics_code %>', 'auto');
 ga('send', 'pageview');
+
+$('[data-ga-category]').on('click', function() {
+  var category = $(this).data('ga-category');
+  var action = $(this).data('ga-action');
+  var label = $(this).data('ga-label');
+  ga('send', {
+    hitType: 'event',
+    eventCategory: category,
+    eventAction: action,
+    eventLabel: label
+  });
+});
+
+window.addEventListener('beforeunload', (event) => {
+  if((window.location.href.indexOf('<%= newflow_signup_path %>') > -1) || (window.location.href.indexOf('<%= profile_newflow_path %>') > -1)) {
+    var category = 'Account Creation';
+    var action = 'Click';
+    var label = '5-Close Window';
+    if (window.location.href.indexOf("/i/profile") > -1){
+      category = 'My Account'
+      label = 'Close Window'
+    }
+    ga('send', {
+      hitType: 'event',
+      eventCategory: category,
+      eventAction: action,
+      eventLabel: label
+    });
+  } 
+  return;
+});
+
+var gaShowHide = function(buttonText){
+  var location = 'Login'
+  if(window.location.href.indexOf('<%= newflow_signup_path %>') > -1) {
+    location = 'Sign Up';
+  }
+  ga('send', {
+      hitType: 'event',
+      eventCategory: 'SHOW/HIDE password',
+      eventAction: 'show/hide',
+      eventLabel: buttonText + ' - ' + location
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  if(window.location.href.indexOf('<%= newflow_login_path %>') > -1) {
+    ga('send', {
+      hitType: 'event',
+      eventCategory: 'Login & Account Creation',
+      eventAction: 'open',
+      eventLabel: 'Referrer - ' + document.referrer
+    });
+    
+  } else if(window.location.href.indexOf('<%= profile_newflow_path %>') > -1) {
+    ga('send', {
+      hitType: 'event',
+      eventCategory: 'Profile',
+      eventAction: 'Referrer',
+      eventLabel: 'Referrer - ' + document.referrer
+    });
+
+  } else if(window.location.href.indexOf('<%= newflow_signup_path %>') > -1) {
+    ga('send', {
+      hitType: 'event',
+      eventCategory: 'Account Creation',
+      eventAction: 'Click',
+      eventLabel: '1-Sign Up'
+    });
+
+  }
+});
+
 </script>
 <% end %>
+
