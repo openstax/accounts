@@ -394,4 +394,18 @@ RSpec.describe User, type: :model do
       expect(User.find_by(id: @older_unverified_user.id)).to be_nil
     end
   end
+
+  describe 'activated_at gets updated when user changes state to activated' do
+    let(:user) do
+      FactoryBot.create(:user, state: User::UNVERIFIED)
+    end
+
+    example do
+      expect(user.activated_at).to be_nil
+      user.state = User::ACTIVATED
+      user.save
+      user.reload
+      expect(user.activated_at).not_to be_nil
+    end
+  end
 end
