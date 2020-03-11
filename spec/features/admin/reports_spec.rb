@@ -27,15 +27,22 @@ feature 'User reports page', js: true do
 
   it 'counts student users created in the last week' do
     # Set up data with a student and instructor in two separate weeks
-    Timecop.freeze(DateTime.now - 2.day)
-    User.student.create
-    User.instructor.create
-    Timecop.freeze(DateTime.now - 2.week)
-    User.student.create
-    User.instructor.create
+    Timecop.freeze(DateTime.now - (1.week - 1.second)) do
+      User.student.create
+      User.student.create
+      User.instructor.create
+    end
+
+    Timecop.freeze(DateTime.now - (1.week + 1.second)) do
+      User.student.create
+      User.student.create
+      User.student.create
+      User.instructor.create
+    end
+
     # run report
     visit admin_reports_path
-    expect(page).to have_content("Student accounts created in the past week: 1")
+    expect(page).to have_content("Student accounts created in the past week: 2")
   end
 
   example 'How many people start the account creation process versus how many finish it?' do
