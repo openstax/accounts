@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
   def redirect_to_newflow_if_enabled
-    if request.get? && Settings::Db.store.newflow_feature_flag && !params[:bpff].present?
+    if request.get? && Settings::Db.store.student_feature_flag && !params[:bpff].present?
       # "bpff" stands for "bypass feature flag"
       if request.path == signup_path
         redirect_to newflow_signup_path(request.query_parameters)
@@ -102,7 +102,7 @@ class ApplicationController < ActionController::Base
   end
 
   def maybe_skip_to_sign_up
-    if Settings::Db.store.newflow_feature_flag
+    if Settings::Db.store.student_feature_flag
       if %w{student_signup}.include?(params[:go])
         redirect_to newflow_signup_student_path
       elsif %w{signup}.include?(params[:go])

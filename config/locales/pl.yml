@@ -82,7 +82,10 @@ pl:
     confirm_social_info_tooltip: Do swojego profilu na OpenStax możesz później dodać inny adres e-mail <b> profilu na OpenStax</b>.
     change_your_email_tooltip: do zalogowania się potrzebny Ci będzie właśnie ten adres e-mail.
     enter_new_password: Wpisz swoje nowe hasło
-    enter_new_password_description: Zakończ resetowanie hasła, wprowadzając nowe poniżej.
+    enter_new_password_description: >-
+      Zakończ resetowanie hasła, wprowadzając nowe poniżej.
+      Twoje nowe hasło nie może być takie samo jak Twoje aktualne hasło.
+    same_password_error: Twoje nowe hasło nie może być takie samo jak Twoje aktualne hasło
     email_address_taken: Ten adres e-mail jest już w użyciu
     invalid_email_provider: '"%{domain}" nie jest poprawnym adresem e-mail'
     too_many_login_attempts: >-
@@ -93,6 +96,11 @@ pl:
     sign_in_option_already_used: >-
         Ta metoda logowania jest już używana przez kogoś innego. Jeżeli jesteś
         tą osobą, usuń wpierw tę metodę logowania ze swojego innego konta.
+    # signup page
+    first_name_is_blank: Wpisz imię
+    last_name_is_blank: Wpisz nazwisko
+    email_is_blank: Musisz podać adres e-mail
+    password_is_blank: Wpisz hasło
 
   student_profile:
     enable_other_sign_in_options: Zezwól na inne opcje logowania

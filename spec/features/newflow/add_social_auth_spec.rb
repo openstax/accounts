@@ -1,23 +1,27 @@
 require 'rails_helper'
 
 feature 'Add social auth', js: true do
+  before do
+    turn_on_feature_flag
+  end
+
   scenario "email collides with a different existing user's verified email" do
     create_email_address_for(create_user('other_user'), 'user@example.com')
 
     user = create_user 'user'
-    log_in('user', 'password')
+    newflow_log_in_user('user', 'password')
 
-    expect_profile_page
+    expect_newflow_profile_page
 
     click_link (t :"users.edit.enable_other_sign_in_options")
     wait_for_animations
     expect(page).to have_content('Facebook')
 
     with_omniauth_test_mode(email: 'user@example.com') do
-      find('.authentication[data-provider="facebook"] .add').click
+      find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
       wait_for_ajax
       screenshot!
-      expect_profile_page
+      expect_newflow_profile_page
       expect(page).to have_content("already in use")
     end
   end
@@ -26,18 +30,18 @@ feature 'Add social auth', js: true do
     user = create_user 'user'
     create_email_address_for(user, 'user@example.com')
 
-    log_in('user', 'password')
+    newflow_log_in_user('user', 'password')
 
-    expect_profile_page
+    expect_newflow_profile_page
 
     click_link (t :"users.edit.enable_other_sign_in_options")
     wait_for_animations
     expect(page).to have_content('Facebook')
 
     with_omniauth_test_mode(email: 'user@example.com') do
-      find('.authentication[data-provider="facebook"] .add').click
+      find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
       wait_for_ajax
-      expect_profile_page
+      expect_newflow_profile_page
       expect(page).to have_no_content("already in use")
       expect(page).to have_content('Facebook')
     end
@@ -47,19 +51,19 @@ feature 'Add social auth', js: true do
     create_email_address_for(create_user('other_user'), 'user@example.com', 'token')
 
     user = create_user 'user'
-    log_in('user', 'password')
+    newflow_log_in_user('user', 'password')
 
-    expect_profile_page
+    expect_newflow_profile_page
 
     click_link (t :"users.edit.enable_other_sign_in_options")
     wait_for_animations
     expect(page).to have_content('Facebook')
 
     with_omniauth_test_mode(email: 'user@example.com') do
-      find('.authentication[data-provider="facebook"] .add').click
+      find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
       wait_for_ajax
       screenshot!
-      expect_profile_page
+      expect_newflow_profile_page
       expect(page).to have_content('Facebook')
     end
   end

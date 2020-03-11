@@ -244,4 +244,12 @@ module ApplicationHelper
     # by_email_or_username
     !current_user.is_anonymous? && EmailAddress.verified.where(user: current_user).first.try(:value)
   end
+
+  def average_time_for_users_to_become_activated
+    query = "SELECT AVG(EXTRACT('EPOCH' FROM AGE(created_at, activated_at))) FROM users WHERE activated_at IS NOT NULL"
+    diff_in_seconds = ActiveRecord::Base.connection.execute(query)[0]['avg']
+    return 'unknown' unless diff_in_seconds.present?
+    distance_of_time_in_words(diff_in_seconds)
+  end
+
 end

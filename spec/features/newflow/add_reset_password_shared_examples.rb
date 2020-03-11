@@ -66,10 +66,26 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     screenshot!
   end
 
+  scenario 'password is the same as before' do
+    if type == :reset
+      ident = @user.identity
+      ident.password = 'password'
+      ident.password_confirmation = 'password'
+      ident.save!
+
+      visit start_path(type: type, token: @login_token)
+      expect_page(type: type)
+      fill_in (t :"login_signup_form.password_label"), with: 'password'
+      find('[type=submit]').click
+      expect(page).to have_content(I18n.t(:"login_signup_form.same_password_error"))
+      screenshot!
+    end
+  end
+
   scenario 'successful' do
     visit start_path(type: type, token: @login_token)
     expect(page).to have_no_missing_translations
-    fill_in(t(:"login_signup_form.password_label"), with: '1234abcd')
+    fill_in(t(:"login_signup_form.password_label"), with: 'newpassword')
     find('#login-signup-form').click # to hide the password tooltip
     wait_for_animations
     find('[type=submit]').click
@@ -86,7 +102,7 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     expect(page).to have_content(t(:"login_signup_form.incorrect_password"))
 
     # try logging in with the new password
-    newflow_log_in_user('user', '1234abcd')
+    newflow_log_in_user('user', 'newpassword')
 
     expect_newflow_profile_page
     expect(page).to have_no_missing_translations

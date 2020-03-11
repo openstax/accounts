@@ -182,6 +182,21 @@ input.has-error {
         background-color: #fff;
     }
 }
+
+.forgot-password-form {
+    .back-arrow-container {
+        position: relative;
+
+        .back-arrow {
+            position: absolute;
+            top: 10rem;
+
+            @include wider-than($phone-max) {
+                top: 14rem;
+            }
+        }
+    }
+}
 // END per-page styles
 
 #login-signup-form {

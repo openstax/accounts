@@ -68,7 +68,7 @@
 
   <div class="row name">
     <div class="col-sm-2 category">
-      Name
+      <%= t(:"users.edit.name") %>
     </div>
     <div class="col-sm-10 info">
       <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></a>
@@ -78,7 +78,7 @@
   <% if current_user.username.present? %>
   <div class="row">
     <div class="col-sm-2 category">
-      Username
+      <%= t(:"users.edit.username") %>
     </div>
     <div class="col-sm-10 info">
       <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
@@ -88,7 +88,7 @@
 
   <div class="row">
     <div class="col-sm-2 category">
-      Email addresses
+      <%= t(:"users.edit.email_addresses") %>
     </div>
     <div id="email-template" style="display:none">
       <%= email_entry(value: "", id: "", is_verified: false, is_searchable: "") %>
@@ -97,7 +97,7 @@
       <% current_user.email_addresses.order(:created_at).each do |email| %>
         <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
       <% end %>
-      <%= link_to 'Add email address', '#', {id: 'add-an-email', :data => {:'ga-category' => 'My Account', 'ga-action': 'Click', 'ga-label': 'Add Email Address'}} %>
+      <%= link_to t(:"users.edit.add_email_address"), '#', { id: 'add-an-email', data: { 'ga-category': 'My Account', 'ga-action': 'Click', 'ga-label': 'Add Email Address' } } %>
     </div>
   </div>
 

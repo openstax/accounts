@@ -262,6 +262,10 @@ module Newflow
         }
 
         it 'renders change_your_email' do
+          user = User.last
+          user.update_attribute('state', 'unverified')
+          session[:unverified_user_id] = user.id
+
           post(:change_signup_email, params: params)
           expect(response).to render_template(:change_your_email)
         end

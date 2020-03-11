@@ -12,10 +12,6 @@ module Newflow
       attribute :terms_accepted, type: boolean
       attribute :contract_1_id, type: Integer
       attribute :contract_2_id, type: Integer
-
-      validates :first_name, presence: true
-      validates :last_name, presence: true
-      validates :email, presence: true
     end
 
   protected #################
@@ -25,6 +21,9 @@ module Newflow
     end
 
     def handle
+      new_login_credential_check
+      return if errors?
+
       outputs.email = signup_params.email
 
       if LookupUsers.by_verified_email(signup_params.email).first
@@ -38,13 +37,6 @@ module Newflow
       if options[:user_from_signed_params].present?
         outputs.user = User.find_by!(id: options[:user_from_signed_params]['id'])
       else
-        # password is not req'd when students signup with signed params
-        fatal_error(
-          code: :password_is_blank,
-          message: I18n.t(:".activerecord.errors.models.identity.attributes.password.blank"),
-          offending_inputs: :password
-        ) if !signup_params.password.present?
-
         outputs.user = create_user
 
         run(::SetPassword,
@@ -59,7 +51,28 @@ module Newflow
       send_confirmation_email
     end
 
-  private ###################
+    private ###################
+    def new_login_credential_check
+      [:email, :first_name, :last_name, :password].each do |param|
+        if signup_params.send(param).blank?
+          if param == :password
+            missing_param_error(param) if options[:user_from_signed_params].blank?
+          else
+            missing_param_error(param)
+          end
+        end
+      end
+    end
+
+    def missing_param_error(field)
+      code = "#{field}_is_blank".to_sym
+      message = I18n.t(:"login_signup_form.#{code}")
+      nonfatal_error(
+        code: code,
+        message: message,
+        offending_inputs: field
+      )
+    end
 
     def create_user
       user = User.create(

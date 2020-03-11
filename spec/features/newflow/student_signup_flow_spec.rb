@@ -67,6 +67,17 @@ module Newflow
     end
 
     context 'not happy path' do
+      example 'All fields blank' do
+        visit newflow_signup_path
+        find('.join-as__role.student').click
+        check('signup_terms_accepted')
+        find('[type=submit]').click
+        screenshot!
+        [:email, :first_name, :last_name, :password].each do |field|
+          expect(page).to have_text(t(:"login_signup_form.#{field}_is_blank"))
+        end
+      end
+
       example 'user gets PIN wrong' do
         visit newflow_signup_path(r: '/external_app_for_specs')
         find('.join-as__role.student').click
