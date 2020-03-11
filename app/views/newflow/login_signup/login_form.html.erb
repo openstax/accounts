@@ -20,14 +20,14 @@
                         <div class="social-buttons">
 
                             <div class="fb-share-button">
-                                <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn', :data => {:ga_category => 'Login', ga_action: 'Click', ga_label: 'Facebook'} do %>
+                                <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn', data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Facebook' }  do %>
                                     <i class="social-icon fa fa-facebook"></i>
                                     <span>Facebook</span>
                                 <% end %>
                             </div>
 
                             <div class="google-share-button">
-                                <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn', :data => {:ga_category => 'Login', ga_action: 'Click', ga_label: 'Google'} do %>
+                                <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn', data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Google' } do %>
                                     <i class="social-icon fa fa-google"></i>
                                     <span>Google</span>
                                 <% end %>
@@ -71,8 +71,8 @@
                     <div class="content">
                         <%= f.submit I18n.t(:"login_signup_form.continue_button"),
                                     disable_with: I18n.t(:"login_signup_form.continue_button"),
-                                    class: 'primary', 
-                                    :data => {:ga_category => 'Login & Account Creation', ga_action: 'Continue', ga_label: 'Continue '}
+                                    class: 'primary',
+                                    data: { ga_category: 'Login & Account Creation', ga_action: 'Continue', ga_label: 'Continue ' }
                         %>
                     </div>
 
@@ -82,7 +82,7 @@
                                 I18n.t(:"login_signup_form.forgot_password"),
                                 forgot_password_form_path,
                                 id: 'forgot-passwork-link',
-                                :data => {:ga_category => 'Login', ga_action: 'Click', ga_label: 'Password Reset'}
+                                data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Password Reset' }
                             )
                         %>
                     </div>
