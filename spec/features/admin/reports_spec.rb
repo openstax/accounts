@@ -42,7 +42,7 @@ feature 'User reports page', js: true do
 
     # run report
     visit admin_reports_path
-    expect(page).to have_content("Student accounts created in the past week: 1")
+    expect(page).to have_content("Student accounts created in the past week: 2")
   end
 
   example 'How many people start the account creation process versus how many finish it?' do
