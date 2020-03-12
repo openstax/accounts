@@ -337,7 +337,7 @@ ActiveRecord::Schema.define(version: 2020_03_12_165835) do
     t.boolean "receive_newsletter"
     t.bigint "source_application_id"
     t.datetime "activated_at"
-    t.boolean "is_newflow", default: false
+    t.boolean "is_newflow", default: false, null: false
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
