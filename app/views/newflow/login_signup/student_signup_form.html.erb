@@ -156,9 +156,8 @@
 
                 <div class="content">
                     <%= f.submit I18n.t(:"login_signup_form.continue_button"),
-                                        data: { disable_with: I18n.t(:"login_signup_form.continue_button") },
-                                        class: 'primary', id: 'signup_form_submit_button',
-                                        :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email'} %>
+                                        data: { disable_with: I18n.t(:"login_signup_form.continue_button"),ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email' },
+                                        class: 'primary', id: 'signup_form_submit_button' %>
                 </div>
             <% end %>
         <% end %>
