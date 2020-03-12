@@ -62,6 +62,14 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :role, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <% roles = User.roles.keys.sort.map{ |key| [key.humanize, key] } %>
+      <%= f.select :role, roles, {:selected => @user.role}, {class: "form-control"} %>
+    </div>
+  </div>
+  
+  <div class="form-group">
     <%= f.label :faculty_status, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
       <% if sf_id.nil? %>
@@ -236,6 +244,5 @@
   <div class="actions">
 
   </div>
-
 
 <% end %>
