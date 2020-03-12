@@ -16,14 +16,15 @@ What's the average time someone spends signing up (started the process but did n
   <% years.each do |year| %>
     <% time_range = Time.local(year)..Time.local(year + 1) %>
     <% pas = PreAuthState.where(created_at: time_range).count %>
-    <% users = User.where(state: User::ACTIVATED, created_at: time_range).count %>
+    <% users = User.where(state: User::ACTIVATED, created_at: time_range, is_newflow: false).count %>
 
     <%= "#{year}:  #{pas} started / #{users} finished = #{ ((users > 0 ? (pas / Float(users)) : 0) * 100).round(2) }%" %>
 
     <% if year >= 2020 %>
       <br>
       <% unverified_users = User.where(state: 'unverified').count %>
-      <%= "New flow #{year}:  #{unverified_users} started / #{users} finished = #{ ((users > 0 ? (unverified_users / Float(users)) : 0) * 100).round(2) }%" %>
+      <% newflow_users = User.where(state: User::ACTIVATED, created_at: time_range, is_newflow: true).count %>
+      <%= "New flow #{year}:  #{unverified_users} started / #{newflow_users} finished = #{ ((newflow_users > 0 ? (unverified_users / Float(newflow_users)) : 0) * 100).round(2) }%" %>
     <% end %>
 
     <br>

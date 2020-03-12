@@ -81,7 +81,8 @@ module Newflow
         first_name: signup_params.first_name,
         last_name: signup_params.last_name,
         receive_newsletter: signup_params.newsletter,
-        source_application: options[:client_app]
+        source_application: options[:client_app],
+        is_newflow: true
       )
       transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
       user
