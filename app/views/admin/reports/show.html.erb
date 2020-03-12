@@ -6,6 +6,30 @@
   Student Users: <%= User.student.count %> <br>
   Instructor Users: <%= User.instructor.count %> <br>
   Unknown Role Users: <%= User.unknown_role.count %> <br>
+<br>
+What's the average time someone spends signing up (started the process but did not finish)? <br>
+  <%= average_time_for_users_to_become_activated() %><br><br>
+  How many people start the account creation process versus how many finish it?
+<br>
+  <% since_year = 2018 %>
+  <% years = since_year..Time.now.year %>
+  <% years.each do |year| %>
+    <% time_range = Time.local(year)..Time.local(year + 1) %>
+    <% pas = PreAuthState.where(created_at: time_range).count %>
+    <% users = User.where(state: User::ACTIVATED, created_at: time_range, is_newflow: false).count %>
+
+    <%= "#{year}:  #{pas} started / #{users} finished = #{ ((users > 0 ? (pas / Float(users)) : 0) * 100).round(2) }%" %>
+
+    <% if year >= 2020 %>
+      <br>
+      <% unverified_users = User.where(state: 'unverified').count %>
+      <% newflow_users = User.where(state: User::ACTIVATED, created_at: time_range, is_newflow: true).count %>
+      <%= "New flow #{year}:  #{unverified_users} started / #{newflow_users} finished = #{ ((newflow_users > 0 ? (unverified_users / Float(newflow_users)) : 0) * 100).round(2) }%" %>
+    <% end %>
+
+    <br>
+  <% end %>
+
   <hr>
 </p>
 
@@ -22,18 +46,4 @@
 <p>
   Student accounts created since July 1: <%= User.student.where(created_at: DateTime.beginning_of_rice_fiscal_year..DateTime.now).count %> <br>
   Student accounts created in the past week: <%= User.student.where(created_at: DateTime.now - 1.week..DateTime.now).count %> <br>
-  How many people start the account creation process versus how many finish it? <br>
-  <% since_year = 2018 %>
-  <% years = since_year..Time.now.year %>
-  <% years.each do |year| %>
-    <% time_range = Time.local(year)..Time.local(year + 1) %>
-    <% pas = PreAuthState.where(created_at: time_range).count %>
-    <% users = User.where(state: User::ACTIVATED, created_at: time_range).count %>
-
-    <%= "#{year}:  #{pas} started / #{users} finished = #{ ((users > 0 ? (pas / Float(users)) : 0) * 100).round(2) }%" %>
-    <br>
-  <% end %>
-  What's the average time someone spends signing up (started the process but did not finish)? <br>
-  <%= average_time_for_users_to_become_activated() %>
-
 </p>
