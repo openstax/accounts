@@ -78,7 +78,7 @@ module Newflow
       end
     end
 
-    context 'failure because a user with the given email address already exists' do
+    context 'when failure because a user with the given email address already exists' do
       before do
         create_newflow_user(email)
       end
@@ -107,19 +107,12 @@ module Newflow
       end
 
       example do
+        expect(result.errors.first.message).to eq(I18n.t(:"login_signup_form.email_address_taken"))
         expect(result.errors).to have_offending_input(:email)
       end
     end
 
-    context 'all signup fields empty' do
-      before do
-        create_newflow_user(email)
-      end
-
-      let(:email) do
-        Faker::Internet.free_email
-      end
-
+    context 'when all signup fields empty' do
       let(:params) do
         {
           signup: {
@@ -147,7 +140,7 @@ module Newflow
       end
     end
 
-    describe 'failure because the domain provider is invalid' do
+    context 'when failure because the domain provider is invalid' do
       before do
         EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new(expecting: false)
       end
@@ -169,6 +162,7 @@ module Newflow
 
       example do
         result = described_class.call(params: params)
+        expect(result.errors.first.message).to eq(I18n.t(:"login_signup_form.invalid_email_provider", domain: 'baddomain.com'))
         expect(result.errors).to have_offending_input(:email)
       end
     end
