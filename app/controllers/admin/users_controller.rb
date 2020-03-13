@@ -118,6 +118,7 @@ module Admin
     def update_user
       @user.is_administrator = params[:user][:is_administrator]
       @user.is_test = params[:user][:is_test]
+      @user.role = params[:user][:role] if params[:user][:role]
       @user.faculty_status = params[:user][:faculty_status] if params[:user][:faculty_status]
       @user.school_type = params[:user][:school_type] if params[:user][:school_type]
       if @user.external_uuids.any? && params[:user][:keep_external_uuids] == '0'
