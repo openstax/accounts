@@ -3,6 +3,7 @@
 //= require ./namespace
 //= require ./type-selector
 //= require ./email-value
+//= require ./phone-number
 //= require_self
 
 $(document).ready(function(){
