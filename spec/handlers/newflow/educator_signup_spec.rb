@@ -32,7 +32,7 @@ module Newflow
         Faker::Internet.free_email
       end
 
-      it 'creates an (unverified) user with role = student' do
+      it 'creates an (unverified) user with role = instructor' do
         expect { result }.to change { User.where(state: 'unverified', role: :instructor).count }
       end
 

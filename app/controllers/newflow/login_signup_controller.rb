@@ -48,6 +48,23 @@ module Newflow
       )
     end
 
+    def educator_signup
+      handle_with(
+        EducatorSignup,
+        success: lambda {
+          save_unverified_user(@handler_result.outputs.user)
+          security_log :educator_signed_up, { user: @handler_result.outputs.user }
+          redirect_to confirmation_form_path
+        },
+        failure: lambda {
+          email = @handler_result.outputs.email
+          error_codes = @handler_result.errors.map(&:code)
+          security_log(:educator_sign_up_failed, { reason: error_codes, email: email })
+          render :educator_signup_form
+        }
+      )
+    end
+
     def student_signup
       handle_with(
         StudentSignup,

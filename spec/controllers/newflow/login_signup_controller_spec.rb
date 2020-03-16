@@ -159,7 +159,8 @@ module Newflow
               newsletter: false,
               terms_accepted: true,
               contract_1_id: FinePrint::Contract.first.id,
-              contract_2_id: FinePrint::Contract.second.id
+              contract_2_id: FinePrint::Contract.second.id,
+              role: :student
             }
           }
         end
@@ -194,13 +195,15 @@ module Newflow
               newsletter: false,
               terms_accepted: true,
               contract_1_id: FinePrint::Contract.first.id,
-              contract_2_id: FinePrint::Contract.second.id
+              contract_2_id: FinePrint::Contract.second.id,
+              role: :student
             }
           }
         end
 
         it 'renders student signup form with errors' do
           post(:student_signup, params: params)
+
           expect(response).to render_template(:student_signup_form)
           expect(assigns(:"handler_result").errors).to  be_present
         end
