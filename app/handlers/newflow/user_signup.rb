@@ -13,12 +13,20 @@ module Newflow
         attribute :terms_accepted, type: boolean
         attribute :contract_1_id, type: Integer
         attribute :contract_2_id, type: Integer
-        attribute :role, type: Integer
+        attribute :role, type: String
         attribute :phone_number, type: String
       }))
     end
 
     protected #################
+
+    def authorized?
+      true
+    end
+
+    def required_params
+      raise('Must override')
+    end
 
     def handle
       new_login_credential_check

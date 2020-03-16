@@ -23,7 +23,7 @@ module Newflow
           phone_number: user.phone_number,
           # params req'd by `PushSalesforceLead` but  which we don't have yet
           # (consider changing the method signature instead, set defaults):
-          school: nil, using_openstax: nil, subject: nil, num_students: nil
+          school: nil, using_openstax: nil, subject: nil, num_students: nil, url: nil
         )
       end
     end
