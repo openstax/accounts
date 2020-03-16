@@ -138,6 +138,90 @@ module Newflow
       end
     end
 
+    describe 'POST #educator_signup' do
+      before do
+        load('db/seeds.rb') # create the FinePrint contracts
+      end
+
+      it 'calls Handlers::EducatorSignup' do
+        expect_any_instance_of(EducatorSignup).to receive(:call).once.and_call_original
+        post(:educator_signup)
+      end
+
+      context 'success' do
+        let(:params) do
+          {
+            signup: {
+              first_name: 'Bryan',
+              last_name: 'Dimas',
+              email: 'user2@openstax.org',
+              password: 'password',
+              phone_number: Faker::PhoneNumber.phone_number_with_country_code,
+              newsletter: false,
+              terms_accepted: true,
+              contract_1_id: FinePrint::Contract.first.id,
+              contract_2_id: FinePrint::Contract.second.id,
+              role: :instructor
+            }
+          }
+        end
+
+        it 'saves unverified user in the session' do
+          expect_any_instance_of(described_class).to receive(:save_unverified_user).and_call_original
+          post(:educator_signup, params: params)
+        end
+
+        it 'creates a security log' do
+          expect {
+            post(:educator_signup, params: params)
+          }.to change {
+            SecurityLog.where(event_type: :sign_up_successful, user: User.last)
+          }
+        end
+
+        it 'redirects to confirmation_form_path' do
+          post(:educator_signup, params: params)
+          expect(response).to  redirect_to(confirmation_form_path)
+        end
+      end
+
+      context 'failure' do
+        let(:params) do
+          {
+            signup: {
+              first_name: 'Bryan',
+              last_name: 'Dimas',
+              email: '1', # cause it to fail
+              password: 'password',
+              phone_number: Faker::PhoneNumber.phone_number_with_country_code,
+              newsletter: false,
+              terms_accepted: true,
+              contract_1_id: FinePrint::Contract.first.id,
+              contract_2_id: FinePrint::Contract.second.id,
+              role: :instructor
+            }
+          }
+        end
+
+        it 'renders instructor signup form with errors' do
+          post(:educator_signup, params: params)
+
+          expect(response).to render_template(:educator_signup_form)
+          expect(assigns(:"handler_result").errors).to  be_present
+        end
+
+        it 'creates a security log' do
+          EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new(expecting: false)
+
+          expect {
+            post(:educator_signup, params: params)
+          }.to change {
+            SecurityLog.educator_sign_up_failed.count
+          }
+        end
+      end
+    end
+
     describe 'POST #student_signup' do
       before do
         load('db/seeds.rb') # create the FinePrint contracts
