@@ -23,15 +23,22 @@ en:
       Change your email below so we can send your PIN.
       You will need to use this updated email to log in.
     didnt_receive_email: Didn't receive an email? You can %{sign_up_with_different_email_link}.
+    all_fields_required: '* All fields are required'
     sign_up_with_different_email: sign up with a different email
     check_your_updated_email: Check your updated email
     havent_received_message: Still haven't received an email? %{contact_us}
     contact_us: Contact us
     welcome_page_header: Welcome! Join OpenStax as
     email_placeholder: me@myemail.com
+    phone_number_placeholder: '(555) 555-5555'
+    school_issued_email_placeholder: email@myschool.edu
     first_name_label: First name
     last_name_label: Last name
+    legal_first_name_label: Legal first name
+    legal_last_name_label: Legal last name
     email_label: Email
+    school_issued_email_label: School-issued email address
+    phone_number_label: Phone number
     password_label: Password
     pin_label: Confirm PIN
     pin_placeholder: Enter 6-digit PIN here
@@ -457,6 +464,8 @@ en:
       create_account: Create account
       email_address: Email Address *
       first_name: First Name *
+      legal_first_name: Legal first name
+      Legal_last_name: Legal last name
       # %{terms_of_use}     a hyperlink to text of the Terms of Use.
       # %{privacy_policy}   a hyperlink to text of the Privacy Policy.
       # Labels of both hyperlinks are English titles of appropriate documents.
@@ -476,6 +485,7 @@ en:
       show_title_and_suffix: Show title and suffix
       suffix: Suffix
       take_me_back_to_sign_in_page: Take me back to the login page.
+      all_fields_required: All fields are required
       title: Title
       username: Username *
       wait_a_second: Wait a second!
