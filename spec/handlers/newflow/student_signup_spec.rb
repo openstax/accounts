@@ -129,14 +129,13 @@ module Newflow
       end
 
       let(:result) do
+        allow(described_class).to receive(:required_params).and_return([:email, :whatever])
         described_class.call(params: params)
       end
 
       example do
         expect(result.errors).to have_offending_input(:email)
-        expect(result.errors).to have_offending_input(:password)
-        expect(result.errors).to have_offending_input(:last_name)
-        expect(result.errors).to have_offending_input(:first_name)
+        expect(result.errors).to have_offending_input(:whatever)
       end
     end
 
@@ -162,7 +161,9 @@ module Newflow
 
       example do
         result = described_class.call(params: params)
-        expect(result.errors.first.message).to eq(I18n.t(:"login_signup_form.invalid_email_provider", domain: 'baddomain.com'))
+        expect(result.errors.first.message).to eq(
+          I18n.t(:"login_signup_form.invalid_email_provider", domain: 'baddomain.com')
+        )
         expect(result.errors).to have_offending_input(:email)
       end
     end

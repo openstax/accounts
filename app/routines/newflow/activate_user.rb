@@ -7,7 +7,7 @@ module Newflow
     def exec(user)
       push_lead_to_salesforce(user)
 
-      user.update_attributes(state: 'activated')
+      user.update(state: 'activated')
     end
 
     private
@@ -19,8 +19,11 @@ module Newflow
           role: user.role,
           newsletter: user.receive_newsletter?, # optionally subscribe to newsletter
           source_application: user.source_application,
-          # params req'd by `PushSalesforceLead` but not by our business logic for students:
-          url: nil, school: nil, using_openstax: nil, subject: nil, phone_number: nil, num_students: nil
+          # params for instructors
+          phone_number: user.phone_number,
+          # params req'd by `PushSalesforceLead` but  which we don't have yet
+          # (consider changing the method signature instead, set defaults):
+          school: nil, using_openstax: nil, subject: nil, num_students: nil
         )
       end
     end

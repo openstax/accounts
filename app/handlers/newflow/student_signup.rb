@@ -14,7 +14,7 @@ module Newflow
     end
 
     def required_params
-      [:email, :first_name, :last_name, :password]
+      @required_params ||= [:email, :first_name, :last_name, :password, :role]
     end
 
     def handle

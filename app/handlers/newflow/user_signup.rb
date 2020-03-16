@@ -13,7 +13,7 @@ module Newflow
         attribute :terms_accepted, type: boolean
         attribute :contract_1_id, type: Integer
         attribute :contract_2_id, type: Integer
-
+        attribute :role, type: Integer
         attribute :phone_number, type: String
       }))
     end
@@ -78,9 +78,10 @@ module Newflow
     def create_user
       user = User.create(
         state: 'unverified',
-        role: 'student',
+        role: signup_params.role,
         first_name: signup_params.first_name,
         last_name: signup_params.last_name,
+        phone_number: signup_params.phone_number,
         receive_newsletter: signup_params.newsletter,
         source_application: options[:client_app],
         is_newflow: true
