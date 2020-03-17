@@ -1,6 +1,7 @@
 @import "pattern-library";
 @import "font-awesome";
 @import "newflow_colors";
+@import "intlTelInput";
 
 html {
     font-family: 'Helvetica Neue';
@@ -32,6 +33,10 @@ body {
     padding-left: 2rem;
     border-bottom: 0.1rem solid var(--input-error-border-color);
     color: var(--input-error-message-color);
+}
+
+.iti {
+  display: block !important;
 }
 
 // utility classes

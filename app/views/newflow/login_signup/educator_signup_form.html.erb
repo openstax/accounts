@@ -22,7 +22,7 @@
           header: (I18n.t(:"login_signup_form.signup_page_header")),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
           classes: 'signup-page') do %>
-      <% lev_form_for :signup, url: newflow_signup_post_path do |f| %>
+      <% lev_form_for :signup, url: educator_signup_post_path do |f| %>
         <% fh = NewflowFormHelper::Newflow.new(f: f,
                                                context: self,
                                                errors: @handler_result&.errors) %>
@@ -61,15 +61,15 @@
         </div>
 
         <div class="content control-group">
-          <%= label_tag :email, I18n.t(:"login_signup_form.phone_number_label"), class: 'field-label' %>
+          <%= label_tag :phone_number, I18n.t(:"login_signup_form.phone_number_label"), class: 'field-label' %>
           <%=
-            fh.text_field(
-              name: :phone_number,
-              value: user_from_signed_params.dig('signed_external_data', 'phone_number'),
-              placeholder: I18n.t(:"login_signup_form.phone_number_placeholder"),
-              onkeydown: "javascript:backspacerDOWN(this,event);",
-              onkeyup: "javascript:backspacerUP(this,event);"
-            )
+            f.text_field :phone_number,
+                         type: 'tel',
+                         class: 'int-country-code form-control wide',
+                         placeholder:  I18n.t(:'login_signup_form.phone_number_placeholder'),
+                         onkeydown: 'javascript:backspacerDOWN(this,event);',
+                         onkeyup: 'javascript:backspacerUP(this,event);'
+
           %>
         </div>
 
