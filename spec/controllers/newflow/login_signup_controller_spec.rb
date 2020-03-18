@@ -15,6 +15,30 @@ module Newflow
         get(:login_form)
         expect(response).to have_http_status(:success)
       end
+
+      context 'stores client app' do
+        before(:each) do
+          app_name = 'OpenStax CMS Dev'
+          @app_uid = FactoryBot.create(:doorkeeper_application, name: app_name).uid
+        end
+
+        let(:url) do
+          'https://openstax.org/'
+        end
+
+        it 'stores the referring app from `next` parameter' do
+          expect_any_instance_of(LoginSignupController).to(
+            receive(:set_client_app).at_least(1).times.and_call_original
+          )
+
+          get(:login_form, params: { next: url })
+        end
+
+        it 'stores the referring oauth app that matches the referrer' do
+          controller.request.headers.merge({ 'HTTP_REFERER': url })
+          get(:login_form)
+        end
+      end
     end
 
     describe 'POST #login' do

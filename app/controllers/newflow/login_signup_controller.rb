@@ -22,6 +22,7 @@ module Newflow
     before_action :set_active_banners
     before_action :cache_client_app, only: [:login, :welcome]
     before_action :redirect_back, if: -> { signed_in? }, only: :login_form
+    before_action :store_referring_app, only: [:login_form]
 
     def login
       handle_with(
@@ -423,6 +424,14 @@ module Newflow
                                                   response_type: 'code')
 
       store_fallback(url: authorization_url) unless authorization_url.nil?
+    end
+
+    def store_referring_app
+      osweb_regex = /https:\/\/openstax\.org/
+      if osweb_regex.match(params[:next]) || osweb_regex.match(request.referrer)
+        app = Doorkeeper::Application.where('name ilike ?', 'openstax cms%').first
+        set_client_app(app&.uid)
+      end
     end
   end
 end
