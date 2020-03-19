@@ -1,7 +1,6 @@
 module Newflow
-  class StudentSignup < UserSignup
+  class EducatorSignup < UserSignup
     lev_handler
-    uses_routine AgreeToTerms
 
     paramify :signup do
       UserSignup.include_common_params_in(self)
@@ -14,7 +13,7 @@ module Newflow
     end
 
     def required_params
-      @required_params ||= [:email, :first_name, :last_name, :password, :role]
+      @required_params ||= [:email, :first_name, :last_name, :password, :phone_number, :role]
     end
 
     def handle

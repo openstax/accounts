@@ -65,6 +65,8 @@ class SecurityLog < ActiveRecord::Base
     :student_created_password,
     :student_create_password_failed,
     :email_already_in_use,
+    :educator_signed_up,
+    :educator_sign_up_failed,
   ]
 
   json_serialize :event_data, Hash

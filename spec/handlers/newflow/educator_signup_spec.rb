@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  describe StudentSignup, type: :handler do
+  describe EducatorSignup, type: :handler do
     context 'when success' do
       before(:all) do
         load('db/seeds.rb')
@@ -18,11 +18,12 @@ module Newflow
             last_name: 'Dimas',
             email: email,
             password: Faker::Internet.password(min_length: 8),
+            phone_number: Faker::PhoneNumber.phone_number_with_country_code,
             terms_accepted: true,
             newsletter: true,
             contract_1_id: FinePrint::Contract.first.id,
             contract_2_id: FinePrint::Contract.second.id,
-            role: 'student'
+            role: :instructor
           }
         }
       end
@@ -31,8 +32,8 @@ module Newflow
         Faker::Internet.free_email
       end
 
-      it 'creates an (unverified) user with role = student' do
-        expect { result }.to change { User.where(state: 'unverified', role: 'student').count }
+      it 'creates an (unverified) user with role = instructor' do
+        expect { result }.to change { User.where(state: 'unverified', role: :instructor).count }
       end
 
       it 'creates an identity' do
@@ -95,11 +96,12 @@ module Newflow
             last_name: 'Dimas',
             email: email,
             password: Faker::Internet.password(min_length: 8),
+            phone_number: Faker::PhoneNumber.phone_number_with_country_code,
             terms_accepted: true,
             newsletter: true,
             contract_1_id: 1,
             contract_2_id: 2,
-            role: 'student'
+            role: :instructor
           }
         }
       end
@@ -122,11 +124,12 @@ module Newflow
             last_name: nil,
             email: nil,
             password: nil,
+            phone_number: '',
             terms_accepted: true,
             newsletter: true,
             contract_1_id: 1,
             contract_2_id: 2,
-            role: 'student'
+            role: :instructor
           }
         }
       end
@@ -153,11 +156,12 @@ module Newflow
             last_name: 'Dimas',
             email: 'user@baddomain.com',
             password: Faker::Internet.password(min_length: 8),
+            phone_number: Faker::PhoneNumber.phone_number_with_country_code,
             terms_accepted: true,
             newsletter: true,
             contract_1_id: 1,
             contract_2_id: 2,
-            role: 'student'
+            role: :instructor
           }
         }
       end

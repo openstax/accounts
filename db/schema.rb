@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_12_165835) do
+ActiveRecord::Schema.define(version: 2020_03_16_154958) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -337,7 +337,8 @@ ActiveRecord::Schema.define(version: 2020_03_12_165835) do
     t.boolean "receive_newsletter"
     t.bigint "source_application_id"
     t.datetime "activated_at"
-    t.boolean "is_newflow", default: false
+    t.boolean "is_newflow", default: false, null: false
+    t.string "phone_number"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
