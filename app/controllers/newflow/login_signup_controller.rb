@@ -20,14 +20,14 @@ module Newflow
       ]
     before_action :exit_newflow_signup_if_logged_in, only: [:student_signup_form, :welcome]
     before_action :set_active_banners
-    before_action :cache_client_app, only: [:login, :welcome]
+    before_action :cache_client_app, only: [:login_form, :welcome, :student_signup_form] # TODO:  educator_signup_form
     before_action :redirect_back, if: -> { signed_in? }, only: :login_form
-    before_action :store_referring_app, only: [:login_form]
 
     def login
       handle_with(
         AuthenticateUser,
         user_from_signed_params: session[:user_from_signed_params],
+        client_app: get_client_app,
         success: lambda {
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)
@@ -358,7 +358,19 @@ module Newflow
     end
 
     def cache_client_app
-      set_client_app(params[:client_id])
+      if params[:client_id]
+        set_client_app(params[:client_id])
+      else
+        if came_from_osweb?
+          app = Doorkeeper::Application.where('name ilike ?', 'openstax cms%').first
+          set_client_app(app&.uid)
+        end
+      end
+    end
+
+    def came_from_osweb?
+      osweb_regex = /https:\/\/openstax\.org/
+      osweb_regex.match(params[:next]) || osweb_regex.match(request.referrer)
     end
 
     def save_unverified_user(user)
@@ -424,14 +436,6 @@ module Newflow
                                                   response_type: 'code')
 
       store_fallback(url: authorization_url) unless authorization_url.nil?
-    end
-
-    def store_referring_app
-      osweb_regex = /https:\/\/openstax\.org/
-      if osweb_regex.match(params[:next]) || osweb_regex.match(request.referrer)
-        app = Doorkeeper::Application.where('name ilike ?', 'openstax cms%').first
-        set_client_app(app&.uid)
-      end
     end
   end
 end
