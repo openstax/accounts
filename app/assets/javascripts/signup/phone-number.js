@@ -1,8 +1,7 @@
-// main.js
-<!-- This script is based on the javascript code of Roman Feldblum (web.developer@programmer.net) -->
-<!-- Original script : http://javascript.internet.com/forms/format-phone-number.html -->
-<!-- Original script is revised by Eralper Yilmaz (http://www.eralper.com) -->
-<!-- Revised script : http://www.kodyaz.com -->
+/* This script is based on the javascript code of Roman Feldblum (web.developer@programmer.net) */
+/* Original script : http://javascript.internet.com/forms/format-phone-number.html */
+/* Original script is revised by Eralper Yilmaz (http://www.eralper.com) */
+/* Revised script : http://www.kodyaz.com */
 
 var zChar = new Array(' ', '(', ')', '-', '.');
 var maxphonelength = 13;
@@ -174,12 +173,3 @@ function ParseChar(sStr, sChar) {
 
   return sNewStr;
 }
-var clipboard = new Clipboard('.btn');
-
-clipboard.on('success', function(e) {
-  console.log(e);
-});
-
-clipboard.on('error', function(e) {
-  console.log(e);
-});
