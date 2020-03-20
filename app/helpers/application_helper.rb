@@ -6,8 +6,8 @@ module ApplicationHelper
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
-  def openstax_url
-    'https://openstax.org'
+  def logo_url
+    Rails.application.secrets.openstax_url
   end
 
   def unless_errors(options={}, &block)
