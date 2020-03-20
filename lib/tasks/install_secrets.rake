@@ -72,6 +72,7 @@ task :install_secrets, [] do
   })
 
   secrets[:loadtesting_active] = (/loadtesting/.match?(env_name)).to_s
+  secrets[:sso_signature_public_key] = :sso_signature_private_key.public_key
 
   write_yaml_file("config/secrets.yml", {
     production: secrets
