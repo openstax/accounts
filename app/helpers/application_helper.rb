@@ -3,7 +3,7 @@ module ApplicationHelper
   include AlertHelper
 
   def knowledge_base_url
-    'http://openstax.force.com/support/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
+    'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
   def openstax_url
