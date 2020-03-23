@@ -72,7 +72,7 @@ task :install_secrets, [] do
   })
 
   secrets[:loadtesting_active] = (/loadtesting/.match?(env_name)).to_s
-  secrets[:sso_signature_public_key] = :sso_signature_private_key.public_key
+  secrets[:sso][:signature_public_key] = OpenSSL::PKey::RSA.new(secrets[:sso][:signature_private_key]).public_key.to_s
 
   write_yaml_file("config/secrets.yml", {
     production: secrets
