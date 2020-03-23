@@ -14,6 +14,7 @@ gem 'bootsnap', require: false
 # New Deployments
 gem 'aws-sdk-ssm'
 gem 'dotenv'
+gem 'openssl'
 
 # Lev framework
 # - introduces two new concepts: Routines and Handlers

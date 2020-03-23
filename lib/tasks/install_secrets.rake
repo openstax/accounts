@@ -1,4 +1,5 @@
 require 'aws-sdk-ssm'
+require 'openssl'
 
 desc <<-DESC.strip_heredoc
   Pull the secrets for this environment and application from the AWS Parameter
