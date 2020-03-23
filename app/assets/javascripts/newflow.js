@@ -15,10 +15,17 @@ $(document).ready(function () {
         var password_field = $('[name$="[password]"]')[0];
         if ($(password_field).attr("type") == "password") {
             $(password_field).attr("type", "text");
-            gaShowHide('Show');
+            if (typeof gaShowHide === "function")
+            {
+                gaShowHide('Show');
+            }
+            
         } else {
             $(password_field).attr("type", "password");
-            gaShowHide('Hide');
+            if (typeof gaShowHide === "function")
+            {
+                gaShowHide('Hide');
+            }
         }
     });
 });
