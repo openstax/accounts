@@ -12,9 +12,11 @@ $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip()
 
   var input = document.querySelector(".int-country-code");
-  window.intlTelInput(input, {
-    formatOnInit: true,
-    separateDialCode: true,
-    preferredCountries: ['us', 'pl']
-  });
+  if ( input !== null ) {
+    window.intlTelInput(input, {
+      formatOnInit: true,
+      separateDialCode: true,
+      preferredCountries: ['us', 'pl']
+    });
+  }
 });
