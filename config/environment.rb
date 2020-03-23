@@ -14,8 +14,8 @@ require 'json_serialize'
 require 'lookup_users'
 require 'rate_limiting'
 require 'omniauth/strategies/custom_identity'
-require "omniauth/strategies/facebooknewflow"
-require "omniauth/strategies/googlenewflow"
+require 'omniauth/strategies/facebooknewflow'
+require 'omniauth/strategies/googlenewflow'
 require 'email_address_validations'
 require 'subjects_utils'
 require 'host'
@@ -23,6 +23,7 @@ require 'old_sso_cookie_jar'
 require 'sso_cookie_jar'
 require 'set_gdpr_data'
 require 'date_time'
+require 'os_web_string'
 
 SITE_NAME = 'OpenStax Accounts'
 PAGE_TITLE_SUFFIX = SITE_NAME

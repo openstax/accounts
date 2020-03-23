@@ -361,16 +361,15 @@ module Newflow
       if params[:client_id]
         set_client_app(params[:client_id])
       else
-        if came_from_osweb?
+        # when apps don't provide a client_id param, but they include a `next` param with OSWeb's url
+        # OR the request referrer is from OSWeb,
+        # THEN cache OSWeb as the client app
+        if (OsWebString.new(params[:next]).came_from_osweb? ||
+             OsWebString.new(request.referrer).came_from_osweb?)
           app = Doorkeeper::Application.where('name ilike ?', 'openstax cms%').first
           set_client_app(app&.uid)
         end
       end
-    end
-
-    def came_from_osweb?
-      osweb_regex = /https:\/\/openstax\.org/
-      osweb_regex.match(params[:next]) || osweb_regex.match(request.referrer)
     end
 
     def save_unverified_user(user)
