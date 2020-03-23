@@ -1,6 +1,7 @@
 @import "pattern-library";
 @import "font-awesome";
 @import "newflow_colors";
+@import "intlTelInput";
 
 html {
     font-family: 'Helvetica Neue';
@@ -34,9 +35,19 @@ body {
     color: var(--input-error-message-color);
 }
 
+.iti {
+  display: block !important;
+}
+
 // utility classes
 .hidden {
     display: none !important;
+}
+
+.required-fields-notice {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: -20px;
 }
 
 .form-divider {

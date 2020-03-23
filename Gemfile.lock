@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/openstax/intl-tel-input-rails.git
+  revision: d401e07c1a5e85fb5128d50ad9a09177dde98572
+  branch: master
+  specs:
+    intl-tel-input-rails (12.3.0)
+      railties (>= 3.1)
+      sass-rails
+
+GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: 0ed5cdba6be65dbf1d07fd7580e2311a2f42cdfd
   ref: 0ed5cdba6be
@@ -679,6 +688,7 @@ DEPENDENCIES
   guard-livereload (~> 2.5)
   guard-rspec
   i18n-tasks
+  intl-tel-input-rails!
   jbuilder
   jobba (~> 1.4.0)
   jquery-rails
@@ -742,4 +752,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   2.0.2
+   2.1.4

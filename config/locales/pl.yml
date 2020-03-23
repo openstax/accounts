@@ -23,15 +23,22 @@ pl:
       Zmień adres e-mail poniżej, wyślemy na niego PIN.
       Do zalogowania się potrzebny Ci będzie właśnie ten adres e-mail
     didnt_receive_email: Wiadomość nie dotarła? Zarejestruj się %{sign_up_with_different_email_link}.
+    all_fields_required: '* Wszystkie pola są wymagane'
     sign_up_with_different_email: podając inny adres e-mail
     check_your_updated_email: Sprawdź nowy adres e-mail
     havent_received_message: Still haven't received an email? %{contact_us}
     contact_us: Skontaktuj się z nami
     welcome_page_header: Witamy! Dołącz do OpenStax jako
     email_placeholder: ja@moj-email.com
+    phone_number_placeholder: '(555) 555-5555'
+    school_issued_email_placeholder: email@myschool.edu
     first_name_label: Imię
     last_name_label: Nazwisko
+    legal_first_name_label: Urzędowe pierwsze imię
+    legal_last_name_label: Prawne nazwisko
     email_label: Adres e-mail
+    school_issued_email_label: Adres e-mail wydany przez szkołę
+    phone_number_label: Numer telefonu
     password_label: Hasło
     pin_label: Potwierdź PIN
     pin_placeholder: Wprowadź 6-cyfrowy PIN
@@ -446,6 +453,8 @@ pl:
       create_account: Utwórz konto
       email_address: Adres e-mail *
       first_name: Imię *
+      legal_first_name: Urzędowe pierwsze imię
+      Legal_last_name: Prawne nazwisko
       have_read_terms_and_agree_html: >-
         Oświadczam, że zapoznałem/am się z dokumentami: %{terms_of_use} oraz %{privacy_policy}.
       last_name: Nazwisko *
@@ -459,6 +468,7 @@ pl:
       show_title_and_suffix: Pokaż tytuł i dopisek
       suffix: Dopisek
       take_me_back_to_sign_in_page: Powróć do strony logowania.
+      all_fields_required: Wszystkie pola są wymagane
       title: Tytuł
       username: Nazwa użytkownika *
       wait_a_second: Zaczekaj chwilę!
