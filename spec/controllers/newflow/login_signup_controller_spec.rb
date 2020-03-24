@@ -11,6 +11,37 @@ module Newflow
     end
 
     describe 'GET #login_form' do
+      # OSWeb URL is either a CMS URL or an OpenStax URL
+      describe 'stores client app when it matches the OSWeb URL' do
+        before do
+          @app = FactoryBot.create(:doorkeeper_application, name: 'OpenStax CMS Dev')
+          @cms_url = Rails.application.secrets.cms_url = "CMS_#{SecureRandom.hex(4)}"
+          @openstax_url = Rails.application.secrets.openstax_url = "OpenStax_#{SecureRandom.hex(4)}"
+        end
+
+        example 'Referer is a CMS URL' do
+          controller.request.headers.merge({ 'HTTP_REFERER': @cms_url })
+          expect_any_instance_of(described_class).to receive(:set_client_app).at_least(1).times.and_call_original
+          get(:login_form)
+        end
+
+        example 'Referer is an OpenStax URL' do
+          controller.request.headers.merge({ 'HTTP_REFERER': @openstax_url })
+          expect_any_instance_of(described_class).to receive(:set_client_app).at_least(1).times.and_call_original
+          get(:login_form)
+        end
+
+        example 'when `?next=` is a CMS URL' do
+          expect_any_instance_of(described_class).to receive(:set_client_app).at_least(1).times.and_call_original
+          get(:login_form, params: { next: @cms_url })
+        end
+
+        example 'when `?next=` is an OpenStax URL' do
+          expect_any_instance_of(described_class).to receive(:set_client_app).at_least(1).times.and_call_original
+          get(:login_form, params: { next: @openstax_url })
+        end
+      end
+
       example 'success' do
         get(:login_form)
         expect(response).to have_http_status(:success)
@@ -756,24 +787,6 @@ module Newflow
             SecurityLog.where(event_type: :password_reset_failed).count
           }
         end
-      end
-    end
-
-    describe '#is_osweb_user?' do
-      example 'true when Referer is a CMS URL' do
-        skip 'TODO'
-        # Rails.application.secrets.cms_url = "CMS_#{SecureRandom.hex(4)}"
-        controller.request.headers.merge({ 'HTTP_REFERER': 'sfd' })
-        expect_any_instance_of(described_class).to receive(:set_client_app).and_call_original
-
-        get(:login_form)
-      end
-
-      example 'true when `?next=` is an OpenStax URL' do
-        skip 'TODO'
-        Rails.application.secrets.openstax_url = "CMS_#{SecureRandom.hex(4)}"
-
-        is_osweb_user?()
       end
     end
   end
