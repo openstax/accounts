@@ -10,6 +10,11 @@ module ApplicationHelper
     Rails.application.secrets.openstax_url
   end
 
+  def is_osweb_url?(url)
+    secrets = Rails.application.secrets
+    url.include?(secrets.openstax_url)  || url.include?(secrets.cms_url)
+  end
+
   def unless_errors(options={}, &block)
     errors = @handler_result.errors.each do |error|
       add_local_error_alert now: true, content: error.translate

@@ -20,7 +20,7 @@ module Newflow
       ]
     before_action :exit_newflow_signup_if_logged_in, only: [:student_signup_form, :welcome]
     before_action :set_active_banners
-    before_action :cache_client_app, only: [:login_form, :welcome, :student_signup_form] # TODO:  educator_signup_form
+    before_action :cache_client_app, only: [:login_form, :welcome, :student_signup_form, :educator_signup_form]
     before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
     def login
@@ -364,12 +364,18 @@ module Newflow
         # when apps don't provide a client_id param, but they include a `next` param with OSWeb's url
         # OR the request referrer is from OSWeb,
         # THEN cache OSWeb as the client app
-        if (OsWebString.new(params[:next]).came_from_osweb? ||
-             OsWebString.new(request.referrer).came_from_osweb?)
-          app = Doorkeeper::Application.where('name ilike ?', 'openstax cms%').first
-          set_client_app(app&.uid)
+        # debugger
+        if is_osweb_user?
+          debugger
+          osweb_app = Doorkeeper::Application.where('name ilike ?', 'openstax cms%').first
+          set_client_app(osweb_app&.uid)
         end
       end
+    end
+
+    def is_osweb_user?
+      return is_osweb_url?(params[:next]) if params[:next].present?
+      return is_osweb_url?(request.referer) if request.referer.present?
     end
 
     def save_unverified_user(user)

@@ -758,5 +758,23 @@ module Newflow
         end
       end
     end
+
+    describe '#is_osweb_user?' do
+      example 'true when Referer is a CMS URL' do
+        skip 'TODO'
+        # Rails.application.secrets.cms_url = "CMS_#{SecureRandom.hex(4)}"
+        controller.request.headers.merge({ 'HTTP_REFERER': 'sfd' })
+        expect_any_instance_of(described_class).to receive(:set_client_app).and_call_original
+
+        get(:login_form)
+      end
+
+      example 'true when `?next=` is an OpenStax URL' do
+        skip 'TODO'
+        Rails.application.secrets.openstax_url = "CMS_#{SecureRandom.hex(4)}"
+
+        is_osweb_user?()
+      end
+    end
   end
 end
