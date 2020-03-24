@@ -364,9 +364,7 @@ module Newflow
         # when apps don't provide a client_id param, but they include a `next` param with OSWeb's url
         # OR the request referrer is from OSWeb,
         # THEN cache OSWeb as the client app
-        # debugger
         if is_osweb_user?
-          debugger
           osweb_app = Doorkeeper::Application.where('name ilike ?', 'openstax cms%').first
           set_client_app(osweb_app&.uid)
         end
