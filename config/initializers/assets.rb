@@ -21,6 +21,4 @@ Rails.application.config.assets.precompile += %w(
   newflow_layout.css
   newflow_colors.css
   newflow.js
-  flags.png
-  flags@2x.png
 )

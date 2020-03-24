@@ -138,7 +138,7 @@ gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "0ed5cdba6b
 gem 'json-jwt'
 
 # international country codes javascript plugin
-gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rails.git', branch: 'master'
+gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rails.git', branch: 'sb/add-png-precompile-for-engine'
 
 # Fast JSON parsing
 gem 'oj', '~> 3.7.12'
