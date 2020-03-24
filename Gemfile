@@ -11,6 +11,11 @@ gem 'rails-i18n', '~> 5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 gem 'bootsnap', require: false
 
+# New Deployments
+gem 'aws-sdk-ssm'
+gem 'dotenv'
+gem 'openssl'
+
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
 gem 'lev', '~> 9.0.3'
@@ -136,9 +141,6 @@ gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "0ed5cdba6b
 
 # JWE library used by the SSO cookie
 gem 'json-jwt'
-
-# international country codes javascript plugin
-gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rails.git', branch: 'master'
 
 # Fast JSON parsing
 gem 'oj', '~> 3.7.12'

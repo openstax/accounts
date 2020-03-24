@@ -46,19 +46,32 @@ module Accounts
     # https://coderwall.com/p/w3ghqq/rails-3-2-error-handling-with-exceptions_app
     config.exceptions_app = ->(env) { ExceptionsController.action(:rescue_from).call(env) }
 
+    def self.is_assets_precompile?
+      ARGV[0] != "assets:precompile"
+    end
+
+    def is_assets_precompile?
+      self.class.is_assets_precompile?
+    end
+
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
-
-    redis_secrets = secrets[:redis]
-    config.cache_store = :redis_store, {
-      url: redis_secrets[:url],
-      namespace: redis_secrets[:namespaces][:cache],
-      expires_in: 90.minutes,
-      compress: true,
-    }
+    if Rails.application.is_assets_precompile?
+      redis_secrets = secrets[:redis]
+      config.cache_store = :redis_store, {
+        url: redis_secrets[:url],
+        namespace: redis_secrets[:namespaces][:cache],
+        expires_in: 90.minutes,
+        compress: true,
+      }
+    end 
 
     def is_real_production?
       secrets.environment_name == "prodtutor"
+    end
+
+    def is_assets_precompile? 
+      ARGV[0] != "assets:precompile"
     end
 
     config.after_initialize do
