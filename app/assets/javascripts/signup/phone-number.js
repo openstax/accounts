@@ -142,12 +142,17 @@ function ValidatePhone(object) {
       cursorposition = cursorposition
     }
 
-    var txtRange = object.createTextRange();
-    txtRange.moveStart("character", cursorposition);
-    txtRange.moveEnd("character", cursorposition - object.value.length);
-    txtRange.select();
+    if (document.selection) { //IE
+      var range = object.createTextRange();
+      range.moveStart("character", cursorposition);
+      range.moveEnd("character", cursorposition - object.value.length);
+      range.select();
+    } else if (window.getSelection) { //others
+      var range = document.createRange();
+      range.selectNode(document.getElementById(object.id)); //todo fix this for cursorposition
+      window.getSelection().addRange(range);
+    }
   }
-
 }
 
 function ParseChar(sStr, sChar) {

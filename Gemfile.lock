@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/openstax/intl-tel-input-rails.git
-  revision: d401e07c1a5e85fb5128d50ad9a09177dde98572
+  revision: 3a63a495822d90bc9ca93e9541ef252fd7a0b50b
   branch: master
   specs:
     intl-tel-input-rails (12.3.0)
