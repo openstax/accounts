@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/openstax/intl-tel-input-rails.git
-  revision: b3de8d03bab8b7d25c2773b0b53d3644cda136d3
-  branch: sb/add-png-precompile-for-engine
+  revision: 3a63a495822d90bc9ca93e9541ef252fd7a0b50b
+  branch: master
   specs:
     intl-tel-input-rails (12.3.0)
       railties (>= 3.1)
