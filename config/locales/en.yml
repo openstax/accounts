@@ -106,6 +106,8 @@ en:
     first_name_is_blank: First name can't be blank
     last_name_is_blank: Last name can't be blank
     email_is_blank: Email can't be blank
+    phone_number_is_blank: Phone number can't be blank
+    role_is_blank: Role can't be blank
     password_is_blank: Password can't be blank
     password_requirements: Password requirements
     min_characters: "%{number} characters minimum"
