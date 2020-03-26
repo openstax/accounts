@@ -1,3 +1,7 @@
+<%
+conditional_educator_signup_path = Settings::Db.store.educator_feature_flag ? educator_signup_path : signup_path(bpff: 9)
+%>
+
 <div id="login-signup-form">
     <div class="content">
         <%= render partial: 'tab_group', locals: { active_class: 'signup--active'} %>
@@ -14,7 +18,7 @@
                     <div class="join-as">
 
                         <div>
-                            <%= link_to newflow_signup_student_path, :data => {:'ga-category' => 'Account Creation', 'ga-action': 'Click', 'ga-label': '2A-Student'} do%>
+                            <%= link_to newflow_signup_student_path, data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2A-Student' } do %>
                                 <div class="join-as__role student">
                                     <span><%= I18n.t(:"login_signup_form.student") %></span>
                                     <%= image_tag('student-icon.svg') %>
@@ -28,7 +32,7 @@
                         </div>
 
                         <div>
-                            <%= link_to educator_signup_path, :data => {:'ga-category' => 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator'} do%>
+                            <%= link_to conditional_educator_signup_path, data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator' } do %>
                                 <div class="join-as__role educator">
                                     <span><%= I18n.t(:"login_signup_form.educator") %></span>
                                     <%= image_tag('educator-icon.svg') %>
