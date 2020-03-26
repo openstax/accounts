@@ -52,8 +52,10 @@ module Newflow
           role: user.role,
           newsletter: info_params.newsletter, # optionally subscribe to newsletter
           source_application: options[:client_app],
-          # params req'd by the class but not in actuality FOR STUDENTS:
-          school: nil, url: nil, using_openstax: nil, subject: nil, phone_number: nil, num_students: nil
+          # params for educators:
+          phone_number: user.phone_number,
+          # params for students:
+          school: nil, url: nil, using_openstax: nil, subject: nil, num_students: nil # todo also send phone number for faculty
         )
       end
     end
