@@ -11,6 +11,11 @@ gem 'rails-i18n', '~> 5'
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'master'
 gem 'bootsnap', require: false
 
+# New Deployments
+gem 'aws-sdk-ssm'
+gem 'dotenv'
+gem 'openssl'
+
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
 gem 'lev', '~> 9.0.3'
