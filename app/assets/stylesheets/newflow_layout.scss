@@ -1,10 +1,11 @@
 @import "pattern-library";
+@import "pattern-library/headers";
 @import "font-awesome";
 @import "newflow_colors";
 @import "intlTelInput";
 
 html {
-    font-family: 'Helvetica Neue';
+    font-family: 'Neue Helvetica W01', sans-serif;
 }
 
 body {
@@ -15,6 +16,7 @@ body {
         }
     }
 
+    @include set-font(body-regular);
     background-color: #fff;
     color: var(--greyish-brown);
 }
