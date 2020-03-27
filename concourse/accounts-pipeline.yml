@@ -5,14 +5,12 @@ resources:
     source:
       uri: git@github.com:/openstax/devops
       branch: tutor-deployment-update
-      private_key: ((github-private-key))
 
   - name: accounts-git
     type: git
     source:
       uri: git@github.com:openstax/accounts.git
       private_key: ((github-private-key))
-      branch: new-deployment
 
   - name: accounts-deployment-docker-image
     type: docker-image
