@@ -36,6 +36,7 @@
                 _this.showing_warning = true;
                 _this.group.addClass('has-error');
                 _this.group.find(".errors").empty();
+                _this.group.find(".edu.warning").show();
                 _this.group.find("#suggestion").text(suggestion.domain);
                 _this.group.find(".mistype.warning").show();
                 $('#signup_email').focus();
@@ -65,7 +66,6 @@
     };
 
     return EmailValue;
-
   })();
 
 }).call(this);
