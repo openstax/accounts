@@ -30,7 +30,6 @@ module Newflow
         success: lambda {
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)
-          security_log(:sign_in_successful)
           redirect_back # back to `r`eturn parameter. See `before_action :save_redirect`.
         },
         failure: lambda {
