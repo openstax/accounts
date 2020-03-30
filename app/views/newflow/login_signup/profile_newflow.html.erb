@@ -98,7 +98,6 @@
       <% current_user.email_addresses.order(:created_at).each do |email| %>
         <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
       <% end %>
-      <% @using_os = current_user.using_openstax %>
       <%= link_to t(:"users.edit.add_email_address"), '#', { id: 'add-an-email', data: { 'ga-category': 'My Account', 'ga-action': 'Click', 'ga-label': 'Add Email Address', 'using-openstax': @using_os } } %>
     </div>
   </div>
