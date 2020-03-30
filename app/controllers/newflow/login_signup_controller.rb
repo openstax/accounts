@@ -6,7 +6,7 @@ module Newflow
     skip_before_action :authenticate_user!
     skip_before_action :check_if_password_expired
     fine_print_skip :general_terms_of_use, :privacy_policy,
-      except: [:profile_newflow, :verify_pin, :signup_done]
+      except: [:profile_newflow, :signup_done, :verify_email_by_code]
 
     before_action :newflow_authenticate_user!, only: [:profile_newflow]
     before_action :save_new_params_in_session, only: [:login_form, :welcome]
@@ -15,7 +15,7 @@ module Newflow
     before_action :known_signup_role_redirect, only: [:login_form]
     before_action :restart_if_missing_unverified_user,
       only: [
-        :verify_email, :verify_pin, :change_your_email, :confirmation_form,
+        :verify_email_by_pin, :change_your_email, :confirmation_form,
         :confirmation_form_updated_email, :change_signup_email
       ]
     before_action :exit_newflow_signup_if_logged_in, only: [:student_signup_form, :welcome]
