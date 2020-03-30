@@ -73,15 +73,20 @@
           %>
         </div>
 
-        <div class="content control-group">
+        <div class="content control-group email-input-group">
           <%= label_tag :email, I18n.t(:"login_signup_form.school_issued_email_label"), class: 'field-label' %>
           <%=
             fh.text_field(
               name: :email,
+              supplemental_class: 'signup_email',
               value: user_from_signed_params.dig('signed_external_data', 'email'),
               placeholder: I18n.t(:"login_signup_form.school_issued_email_placeholder")
             )
           %>
+          <%# shows up only when faculty tries wants to use a non-edu email %>
+          <div class="warning edu">
+            <%= t 'login_signup_form.teacher_school_email_warning', button: (t :'login_signup_form.continue_button') %>
+          </div>
         </div>
 
         <%# Hide the password field if student contains signed parameters %>
@@ -140,6 +145,10 @@
       <% end %>
     <% end %>
   </div>
+
+  <% content_for :page_specific do %>
+    <%= javascript_include_tag 'signup/email-value2' %>
+  <% end %>
 </div>
 
 <script type="text/javascript">

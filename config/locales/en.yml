@@ -45,6 +45,9 @@ en:
     pin_not_correct: This PIN is incorrect. Please enter the correct PIN.
     continue_button: Continue
     forgot_password: Forgot your password?
+    teacher_school_email_warning:
+      Is this your school email address?  If yes, click %{button} below.
+      If not, please enter your school email address.
     or_login_below: OR LOG IN BELOW
     or_sign_up_below: OR SIGN UP BELOW
     send_me_newsletter: Send me the OpenStax newsletter
