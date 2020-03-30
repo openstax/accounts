@@ -16,6 +16,7 @@ class OX.Signup.EmailValue
     if @showing_warning
       @clearWarnings()
 
+
   onSubmit: (ev) ->
     if not ((@email.val() == '') or @showing_warning or IS_EDU.test(@email.val()))
       if @userType is 'instructor'
@@ -45,6 +46,7 @@ class OX.Signup.EmailValue
     @group.find(".edu.warning").hide()
     @group.find(".mistype.warning").hide()
     @showing_warning = false
+    Accounts.Ui.checkCheckedButton('#signup_form_submit_button', '#signup_terms_accepted')
 
   setType: (newUserType) ->
     newUserType = if newUserType == "student" then "student" else "instructor"
