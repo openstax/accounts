@@ -1,71 +1,54 @@
-(function() {
-  var IS_EDU;
+IS_EDU = new RegExp('\.edu\s*$', 'i')
 
-  IS_EDU = new RegExp('\.edu\s*$', 'i');
+class OX.Signup.EmailValue
 
-  OX.Signup.EmailValue = (function() {
-    function EmailValue() {
-      _.bindAll(this, 'onChange', 'onSubmit');
-      this.group = $('.email-input-group');
-      this.email = this.group.find('.signup_email').show();
-      this.email.change(this.onChange);
-      this.group.closest('form').submit(this.onSubmit);
-      this.userType = '';
-      Mailcheck.defaultTopLevelDomains.concat(['pl']);
-    }
+  constructor: ->
+    _.bindAll(@, 'onChange', 'onSubmit')
+    @group = $('.email-input-group')
+    @email = @group.find('.signup_email').show()
+    @group.find(".edu.warning").hide();
+    @email.change(@onChange)
+    @group.closest('form').submit(@onSubmit)
+    @userType = ''
+    Mailcheck.defaultTopLevelDomains.concat(['pl']) # extend TLDs for our Polish users
 
-    EmailValue.prototype.onChange = function() {
-      if (this.showing_warning) {
-        return this.clearWarnings();
-      }
-    };
+  onChange: ->
+    if @showing_warning
+      @clearWarnings()
 
-    EmailValue.prototype.onSubmit = function(ev) {
-      if (!((this.email.val() === '') || this.showing_warning || IS_EDU.test(this.email.val()))) {
-        if (this.userType === 'instructor') {
-          this.showing_warning = true;
-          this.group.addClass('has-error');
-          this.group.find(".errors").empty();
-          this.group.find(".edu.warning").show();
-          this.email.focus();
-          return ev.preventDefault();
-        } else {
-          return $("#signup_email").mailcheck({
-            suggested: (function(_this) {
-              return function(element, suggestion) {
-                _this.showing_warning = true;
-                _this.group.addClass('has-error');
-                _this.group.find(".errors").empty();
-                _this.group.find(".edu.warning").show();
-                _this.group.find("#suggestion").text(suggestion.domain);
-                _this.group.find(".mistype.warning").show();
-                $('#signup_email').focus();
-                return ev.preventDefault();
-              };
-            })(this),
-            empty: function(element) {
-              return $(".mistype.warning").hide();
-            }
-          });
-        }
-      }
-    };
+  onSubmit: (ev) ->
+    if not ((@email.val() == '') or @showing_warning or IS_EDU.test(@email.val()))
+      if @userType is 'instructor'
+        @showing_warning = true
+        @group.addClass('has-error')
+        @group.find(".errors").empty()
+        @group.find(".edu.warning").show()
+        @email.focus()
+        ev.preventDefault()
+      else
+        $("#signup_email").mailcheck(
+          suggested: (element, suggestion) =>
+            @showing_warning = true
+            @group.addClass('has-error')
+            @group.find(".errors").empty()
+            @group.find("#suggestion").text(suggestion.domain)
+            @group.find(".mistype.warning").show()
+            $('#signup_email').focus()
+            ev.preventDefault()
 
-    EmailValue.prototype.clearWarnings = function() {
-      this.group.removeClass('has-error');
-      this.group.find(".edu.warning").hide();
-      this.group.find(".mistype.warning").hide();
-      return this.showing_warning = false;
-    };
+          empty: (element) ->
+            $(".mistype.warning").hide()
+        )
 
-    EmailValue.prototype.setType = function(newUserType) {
-      newUserType = newUserType === "student" ? "student" : "instructor";
-      this.group.find("[data-audience=\"" + this.userType + "\"]").hide();
-      this.userType = newUserType;
-      return this.group.find("[data-audience=\"" + this.userType + "\"]").show();
-    };
+  clearWarnings: () ->
+    @group.removeClass('has-error')
+    @group.find(".edu.warning").hide()
+    @group.find(".mistype.warning").hide()
+    @showing_warning = false
 
-    return EmailValue;
-  })();
+  setType: (newUserType) ->
+    newUserType = if newUserType == "student" then "student" else "instructor"
+    @group.find("[data-audience=\"#{@userType}\"]").hide()
+    @userType = newUserType
+    @group.find("[data-audience=\"#{@userType}\"]").show()
 
-}).call(this);
