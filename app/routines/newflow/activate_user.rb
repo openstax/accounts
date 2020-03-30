@@ -1,3 +1,6 @@
+# Sets the passed-in user's `state` to `'activated'`
+# and pushes the user to salesforce as a new lead
+# If the user is already `activated`, then it does nothing.
 module Newflow
   class ActivateUser
     lev_routine
@@ -5,8 +8,9 @@ module Newflow
     protected ###############
 
     def exec(user)
-      push_lead_to_salesforce(user)
+      return if user.state.is_activated?
 
+      push_lead_to_salesforce(user)
       user.update(state: 'activated')
     end
 
