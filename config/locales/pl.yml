@@ -37,6 +37,9 @@ pl:
     legal_first_name_label: Urzędowe pierwsze imię
     legal_last_name_label: Prawne nazwisko
     email_label: Adres e-mail
+    teacher_school_email_warning: >-
+      Czy to na pewno Twój szkolny adres-email? Jeżeli tak, wciśnij %{button} poniżej.
+      Jeżeli nie, wpisz adres e-mail przyznany Ci przez Twoją szkołę.
     school_issued_email_label: Adres e-mail wydany przez szkołę
     phone_number_label: Numer telefonu
     password_label: Hasło

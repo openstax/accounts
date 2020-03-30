@@ -80,6 +80,10 @@ input.has-error {
     @extend %has-error;
 }
 
+.email-input-group .warning.edu {
+   color: #c22032;
+}
+
 // Add a star * to form fields that are required
 label.required::after {
     content: " *";
