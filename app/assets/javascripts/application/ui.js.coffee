@@ -27,15 +27,18 @@ Ui = do () ->
       modalDialog.css('margin-top', #center it if it does fit
                       ((userScreenHeight / 2) - (modalHeight / 2)))
 
+  checkCheckedButton: (targetSelector, sourceSelector) ->
+    if $(sourceSelector).is(':checked')
+      @enableButton(targetSelector)
+    else
+      @disableButton(targetSelector)
+
   enableOnChecked: (targetSelector, sourceSelector) ->
     $(document).ready =>
       @disableButton(targetSelector) if !$(sourceSelector).is(':checked')
 
-    $(sourceSelector).on 'click', =>
-      if $(sourceSelector).is(':checked')
-        @enableButton(targetSelector)
-      else
-        @disableButton(targetSelector)
+      $(sourceSelector).on 'click', =>
+        this.checkCheckedButton(targetSelector, sourceSelector)
 
   syntaxHighlight: (code) ->
     json = if typeof code is not 'string' then JSON.stringify(code, undefined, 2) else code
