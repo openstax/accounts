@@ -15,6 +15,7 @@ $(document).ready(function(){
   if ( input !== null ) {
     window.intlTelInput(input, {
       formatOnInit: true,
+      utilsScript: "libphonenumber/utils.js",
       separateDialCode: true,
       preferredCountries: ['us', 'pl']
     });
