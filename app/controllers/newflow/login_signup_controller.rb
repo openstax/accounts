@@ -16,7 +16,8 @@ module Newflow
     before_action :restart_if_missing_unverified_user,
       only: [
         :verify_email_by_pin, :change_your_email, :confirmation_form,
-        :confirmation_form_updated_email, :change_signup_email
+        :confirmation_form_updated_email, :change_signup_email,
+        :confirm_oauth_info, :confirm_social_info_form
       ]
     before_action :exit_newflow_signup_if_logged_in, only: [:student_signup_form, :welcome]
     before_action :set_active_banners
