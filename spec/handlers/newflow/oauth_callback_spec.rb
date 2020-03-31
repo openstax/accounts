@@ -73,5 +73,18 @@ module Newflow
         end
       end
     end
+
+    context 'when authentication found, but the response from social provider does not include email' do
+      let(:request) {
+        create_newflow_user(email)
+        info = { email: nil, name: Faker::Name.name }
+        MockOmniauthRequest.new 'facebook', Faker::Internet.uuid, info
+      }
+
+      it 'doesn\'t blow up' do
+        result = described_class.call(request: request)
+        expect(result.outputs.user).to eq User.last
+      end
+    end
   end
 end
