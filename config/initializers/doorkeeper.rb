@@ -12,6 +12,7 @@ Doorkeeper.configure do
       newflow_authenticate_user!
     else
       authenticate_user!
+      redirect_to '/signup/profile' if current_user.is_needs_profile?
     end
 
     current_user
