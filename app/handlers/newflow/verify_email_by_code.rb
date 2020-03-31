@@ -14,7 +14,7 @@ module Newflow
 
     def handle
       run(ConfirmByCode, params[:code])
-      run(ActivateUser, outputs.contact_info.user) # TODO: a user could be just adding another email
+      run(ActivateUser, outputs.contact_info.user)
 
       outputs.user = outputs.contact_info.user
     end
