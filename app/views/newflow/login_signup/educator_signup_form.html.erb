@@ -65,15 +65,16 @@
           <%=
             fh.text_field name: :phone_number,
                           type: 'tel',
+                          # value: "(541)420-7890",
                           supplemental_class: 'int-country-code form-control wide',
-                           placeholder:  I18n.t(:'login_signup_form.phone_number_placeholder'),
-                           onkeydown: 'javascript:backspacerDOWN(this,event);',
-                           onkeyup: 'javascript:backspacerUP(this,event);'
+                          placeholder:  I18n.t(:'login_signup_form.phone_number_placeholder'),
+                          onkeydown: 'javascript:backspacerDOWN(this,event);',
+                          onkeyup: 'javascript:backspacerUP(this,event);'
 
           %>
         </div>
 
-        <div class="content control-group email-input-group">
+        <div class="content control-group email-input-group newform">
           <%= label_tag :email, I18n.t(:"login_signup_form.school_issued_email_label"), class: 'field-label' %>
           <%=
             fh.text_field(
@@ -84,6 +85,7 @@
             )
           %>
           <%# shows up only when faculty tries wants to use a non-edu email %>
+          </br>
           <div class="warning edu">
             <%= t 'login_signup_form.teacher_school_email_warning', button: (t :'login_signup_form.continue_button') %>
           </div>

@@ -4,7 +4,7 @@ class OX.Signup.EmailValue
 
   constructor: ->
     _.bindAll(@, 'onChange', 'onSubmit')
-    @group = $('.email-input-group')
+    @group = $('.email-input-group.newflow')
     @email = @group.find('.signup_email').show()
     @group.find(".edu.warning").hide();
     @email.change(@onChange)
