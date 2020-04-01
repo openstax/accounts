@@ -328,7 +328,7 @@ Password Reset
 Add Email Address
 | Category | Action | Label |Dimension|
 |----------|--------|-------|---------|
-|My Account|Click|Add Email Address| Adoption Status: Adopter or Not An Adopter|
+|My Account|Click|Add Email Address| dimension2: Adopter or Not An Adopter|
 
 Close the Profile Page
 | Category | Action | Label |Description|
@@ -338,5 +338,5 @@ Close the Profile Page
 User logs out of Accounts Profile page
 | Category | Action | Label |Dimension|
 |----------|--------|-------|---------|
-|Logout|Click|Logout| Adoption Status: Adopter or Not An Adopter|
+|Logout|Click|Logout| dimension2: Adopter or Not An Adopter|
 
