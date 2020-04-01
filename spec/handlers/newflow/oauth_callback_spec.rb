@@ -2,54 +2,77 @@ require 'rails_helper'
 
 module Newflow
   RSpec.describe OauthCallback, type: :handler do
-    before do
+    before(:all) do
       load 'db/seeds.rb' # creates terms of use and privacy policy contracts
     end
 
     let(:email) { Faker::Internet.email }
 
     context 'when existing authentication found' do
-      let(:request) {
-        user = create_newflow_user(email)
-        auth = FactoryBot.create(:authentication, user: user, provider: 'facebook')
+      let(:info) {
+        { email: email, name: Faker::Name.name }
+      }
 
-        info = { email: email, name: Faker::Name.name }
+      let(:user) {
+        create_newflow_user(email)
+      }
+
+      let(:auth) {
+        FactoryBot.create(:authentication, user: user, provider: 'facebook')
+      }
+
+      let(:request) {
         MockOmniauthRequest.new 'facebook', auth.uid, info
       }
 
+      let(:subject) {
+        described_class.call(request: request)
+      }
+
       it 'simply outputs the user' do
-        result = described_class.call(request: request)
-        expect(result.outputs.user).to eq User.last
+        expect(subject.outputs.user).to eq User.last
       end
     end
 
     context 'when no authentication found, but verified user found' do
-      let(:request) {
+      before do
         create_newflow_user(email)
-        info = { email: email, name: Faker::Name.name }
+      end
+
+      let(:info) {
+        { email: email, name: Faker::Name.name }
+      }
+
+      let(:request) {
         MockOmniauthRequest.new 'facebook', Faker::Internet.uuid, info
+      }
+
+      let(:subject) {
+        described_class.call(request: request)
       }
 
       it 'creates an authentication' do
         expect {
-          described_class.call(request: request)
+          subject
         }.to change(Authentication, :count)
       end
 
       it 'transfers the authentication to the user' do
         expect_any_instance_of(TransferAuthentications).to receive(:call).and_call_original
-        described_class.call(request: request)
+        subject
       end
 
       it 'outputs the user' do
-        result = described_class.call(request: request)
-        expect(result.outputs.user).to eq User.last
+        expect(subject.outputs.user).to eq User.last
       end
     end
 
     context 'when no authentication found, and no verified user found' do
+      let(:info) {
+        { email: email, name: Faker::Name.name }
+      }
+
       let(:request) {
-        info = { email: email, name: Faker::Name.name }
         MockOmniauthRequest.new 'facebook', Faker::Internet.uuid, info
       }
 
@@ -75,15 +98,24 @@ module Newflow
     end
 
     context 'when authentication found, but the response from social provider does not include email' do
-      let(:request) {
+      before do
         create_newflow_user(email)
-        info = { email: nil, name: Faker::Name.name }
+      end
+
+      let(:info) {
+        { email: nil, name: Faker::Name.name }
+      }
+
+      let(:request) {
         MockOmniauthRequest.new 'facebook', Faker::Internet.uuid, info
       }
 
-      it 'doesn\'t blow up' do
-        result = described_class.call(request: request)
-        expect(result.outputs.user).to eq User.last
+      let(:subject) {
+        described_class.call(request: request)
+      }
+
+      it 'processes the omniauth request without error' do
+        expect(subject.outputs.user).to eq User.last
       end
     end
   end
