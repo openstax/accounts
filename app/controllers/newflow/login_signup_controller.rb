@@ -67,6 +67,16 @@ module Newflow
       )
     end
 
+    def educator_complete
+      handle_with(
+        EducatorSignup, #to be EducatorComplete
+        success: lambda {
+        },
+        failure: lambda {
+        }
+      )
+    end
+
     def student_signup
       handle_with(
         StudentSignup,

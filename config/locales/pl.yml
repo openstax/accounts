@@ -13,6 +13,7 @@ pl:
     login_with: 'Zaloguj się przez:'
     signup_with: 'Zarejestruj się przez:'
     signup_page_header: Utwórz konto
+    complete_page_header: Uzupełnij swój profil
     confirmation_page_header: Cześć %{first_name}! Potwierdź swój adres e-mail.
     confirmation_form_decription: >-
       Wysłaliśmy e-mail na adres <b>%{email}</b>.

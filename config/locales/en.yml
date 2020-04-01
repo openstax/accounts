@@ -1,4 +1,10 @@
 en:
+  educator_complete_form:
+    describe_role: Which of the following best describes your role?
+    instructor: Instructor
+    administrator: Administrator
+    other: Other educational staff
+
   login_signup_form:
     cant_be_blank: can't be blank
     cannot_find_user: We could not find your account. Please try again.
@@ -13,6 +19,7 @@ en:
     login_with: 'Log in with:'
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
+    complete_page_header: Complete your profile
     confirmation_page_header: Hi, %{first_name}! Confirm your email.
     confirmation_form_decription: >-
       An email has been sent to <b>%{email}</b>.

@@ -1,0 +1,15 @@
+/*
+ * Todo: This should be moved into the pattern library.
+ */
+.control-group,
+.radio-control-group {
+  break-inside: avoid;
+  > label {
+    align-items: center;
+    display: flex;
+    [type="radio"],
+    [type="checkbox"] {
+      margin: 0.5rem 0.5rem 1.0rem 0;
+    }
+  }
+}

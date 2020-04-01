@@ -4,6 +4,8 @@ $font-path: '/accounts/fonts';
 @import "font-awesome";
 @import "newflow_colors";
 @import "intlTelInput";
+@import "radio_button";
+@import "radio_buttons";
 
 html {
     font-family: 'Neue Helvetica W01', sans-serif;
@@ -78,6 +80,16 @@ body {
 
 input.has-error {
     @extend %has-error;
+}
+
+.completed-role {
+  .custom-control-label {
+    font-weight: lighter !important;
+  }
+}
+
+.block_radio_button_collection {
+  display: block;
 }
 
 // Add a star * to form fields that are required

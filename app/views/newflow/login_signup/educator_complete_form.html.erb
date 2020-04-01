@@ -1,0 +1,51 @@
+<div id="login-signup-form">
+  <div class="content">
+    <%
+      educator_complete_roles = [
+        I18n.t(:'educator_complete_form.instructor'),
+        I18n.t(:'educator_complete_form.administrator'),
+        I18n.t(:'educator_complete_form.other')]
+    %>
+
+    <%= render partial: 'tab_group', locals: { active_class: 'signup--active'} %>
+
+    <%= newflow_login_signup_card(
+          header: (I18n.t(:"login_signup_form.signup_page_header")),
+          current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
+          classes: 'signup-page') do %>
+      <% lev_form_for :signup, url: educator_complete_post_path do |f| %>
+        <% fh = NewflowFormHelper::Newflow.new(f: f,
+                                               context: self,
+                                               errors: @handler_result&.errors) %>
+
+        <div class="content required-fields-notice">
+          <%= I18n.t(:"login_signup_form.all_fields_required") %>
+        </div>
+        </br>
+
+        <div class="content">
+
+          <div class="form-group completed-role">
+            <div class="radio-control-group">
+              <%= label_tag :completed_role, I18n.t(:"educator_complete_form.describe_role"), class: 'field-label' %>
+              <% educator_complete_roles.each do |role| %>
+                <label>
+                  <% label_name = "completed_role_#{role.downcase}".to_sym %>
+                  <%= f.radio_button :completed_role, role, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= label label_name, role, class: 'custom-control-label' %>
+                </label>
+              <% end %>
+            </div>
+          </div>
+
+          </br>
+            <%= f.submit I18n.t(:"login_signup_form.continue_button"),
+                         data: { disable_with: I18n.t(:"login_signup_form.continue_button") },
+                         class: 'primary', id: 'signup_form_submit_button',
+                         :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email'} %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+

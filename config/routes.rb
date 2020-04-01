@@ -16,6 +16,8 @@ Rails.application.routes.draw do
     post 'i/signup/student', action: :student_signup, as: :newflow_signup_post
     get 'i/signup/educator', action: :educator_signup_form, as: :educator_signup
     post 'i/signup/educator', action: :educator_signup, as: :educator_signup_post
+    get 'i/signup/educator_complete', action: :educator_complete_form, as: :educator_complete
+    post 'i/signup/educator_complete', action: :educator_complete, as: :educator_complete_post
     get 'i/confirmation_form', action: :confirmation_form, as: :confirmation_form
     post 'i/verify_email_by_pin', action: :verify_email_by_pin, as: :newflow_verify_pin
     get 'i/verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
