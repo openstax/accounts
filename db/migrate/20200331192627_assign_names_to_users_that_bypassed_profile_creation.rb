@@ -1,9 +1,16 @@
 class AssignNamesToUsersThatBypassedProfileCreation < ActiveRecord::Migration[5.2]
   def up
     User.joins(:application_users).where(state: :needs_profile).distinct.find_each do |user|
-      user.first_name ||= 'Unknown'
-      user.last_name ||= user.email_addresses.verified.first&.value || 'Unknown'
-      user.save!
+      next unless user.username.blank?
+
+      email = user.email_addresses.verified.first
+      username = if email.nil?
+        SecureRandom.urlsafe_base64
+      else
+        email.value.split('@').first.gsub(/[^a-zA-Z\d]+/, '_')
+      end
+
+      user.update_attribute :username, username
     end
   end
 
