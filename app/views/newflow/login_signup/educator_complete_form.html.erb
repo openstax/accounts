@@ -2,17 +2,18 @@
   <div class="content">
     <%
       educator_complete_roles = [
-        I18n.t(:'educator_complete_form.instructor'),
-        I18n.t(:'educator_complete_form.administrator'),
-        I18n.t(:'educator_complete_form.other')]
+        [ I18n.t(:'educator_complete_form.instructor'), false ],
+        [ I18n.t(:'educator_complete_form.administrator'), true ],
+        [ I18n.t(:'educator_complete_form.other'), false ]
+      ]
     %>
 
     <%= render partial: 'tab_group', locals: { active_class: 'signup--active'} %>
 
     <%= newflow_login_signup_card(
-          header: (I18n.t(:"login_signup_form.signup_page_header")),
-          current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
-          classes: 'signup-page') do %>
+          header: (I18n.t(:"educator_complete_form.complete_page_header")),
+          current_step: I18n.t(:"login_signup_form.step_counter", current_step: 4, total_steps: 4),
+          classes: 'signup-page completed-step') do %>
       <% lev_form_for :signup, url: educator_complete_post_path do |f| %>
         <% fh = NewflowFormHelper::Newflow.new(f: f,
                                                context: self,
@@ -21,28 +22,102 @@
         <div class="content required-fields-notice">
           <%= I18n.t(:"login_signup_form.all_fields_required") %>
         </div>
-        </br>
 
         <div class="content">
-
-          <div class="form-group completed-role">
+          <div class="questions">
+            <div class="form-group question completed-role">
             <div class="radio-control-group">
               <%= label_tag :completed_role, I18n.t(:"educator_complete_form.describe_role"), class: 'field-label' %>
-              <% educator_complete_roles.each do |role| %>
+              <% educator_complete_roles.each do |(role, selected)| %>
                 <label>
                   <% label_name = "completed_role_#{role.downcase}".to_sym %>
-                  <%= f.radio_button :completed_role, role, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :completed_role, role, checked: selected, class: 'completed-role custom-control-input' %>
                   <%= label label_name, role, class: 'custom-control-label' %>
                 </label>
               <% end %>
             </div>
+
+            <div class="other-specify">
+              <%= label_tag :first_name, I18n.t(:"educator_complete_form.other_please_specify"),
+                            class: 'field-label'
+              %>
+              <%= fh.text_field name: :first_name,
+                                placeholder: I18n.t(:"educator_complete_form.other_please_specify"),
+                                autofocus: true
+              %>
+            </div>
           </div>
 
-          </br>
-            <%= f.submit I18n.t(:"login_signup_form.continue_button"),
-                         data: { disable_with: I18n.t(:"login_signup_form.continue_button") },
-                         class: 'primary', id: 'signup_form_submit_button',
-                         :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email'} %>
+            <div class="form-group question how-using">
+              <div class="radio-control-group">
+                <%= label_tag :completed_role, I18n.t(:"educator_complete_form.how_using"), class: 'field-label' %>
+                <label>
+                  <%= f.radio_button :using_as_primary, I18n.t(:"educator_complete_form.using_primary_textbook"), checked: false, class: 'completed-role custom-control-input' %>
+                  <%= label :using_primary_textbook, I18n.t(:"educator_complete_form.using_primary_textbook"), class: 'custom-control-label' %>
+                </label>
+                <label>
+                  <%= f.radio_button :using_as_recommending, I18n.t(:"educator_complete_form.using_recommending_openstax"), checked: false, class: 'completed-role custom-control-input' %>
+                  <%= label :using_recommending_openstax, I18n.t(:"educator_complete_form.using_recommending_openstax"), class: 'custom-control-label' %>
+                </label>
+                <label>
+                  <%= f.radio_button :using_as_future, I18n.t(:"educator_complete_form.using_future"), checked: true, class: 'completed-role custom-control-input' %>
+                  <%= label :using_future, I18n.t(:"educator_complete_form.using_future"), class: 'custom-control-label' %>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group question how-choose">
+            <div class="radio-control-group">
+              <%= label_tag :completed_role, I18n.t(:"educator_complete_form.how_textbooks_chosen"), class: 'field-label' %>
+              <label>
+                <%= f.radio_button :using_as_primary, I18n.t(:"educator_complete_form.chosen_by_instructor"), checked: true, class: 'completed-role custom-control-input' %>
+                <%= label :using_primary_textbook, I18n.t(:"educator_complete_form.chosen_by_instructor"), class: 'custom-control-label' %>
+              </label>
+              <label>
+                <%= f.radio_button :using_as_recommending, I18n.t(:"educator_complete_form.chosen_by_committee"), checked: false, class: 'completed-role custom-control-input' %>
+                <%= label :using_recommending_openstax, I18n.t(:"educator_complete_form.chosen_by_committee"), class: 'custom-control-label' %>
+              </label>
+              <label>
+                <%= f.radio_button :using_as_future, I18n.t(:"educator_complete_form.chosen_by_coordinator"), checked: false, class: 'completed-role custom-control-input' %>
+                <%= label :using_future, I18n.t(:"educator_complete_form.chosen_by_coordinator"), class: 'custom-control-label' %>
+              </label>
+            </div>
+          </div>
+
+            <div class="form-group question total-num-students">
+              <%= label_tag :first_name, I18n.t(:"educator_complete_form.num_students_taught"),
+                            class: 'field-label'
+              %>
+              <%= fh.text_field name: :num_students_per_semester_taught,
+                                placeholder: I18n.t(:"educator_complete_form.num_students_taught"),
+                                autofocus: true,
+                                numberonly: true
+              %>
+            </div>
+
+            <div class="form-group question subjects-of-interest">
+              <%= label_tag :subjects_of_interest, I18n.t(:"educator_complete_form.subjects_of_interest"),
+                            class: 'field-label'
+              %>
+              <%= fh.select name: :subjects_of_interest, options: Settings::Subjects.map {|(short_name, info)| [  info["sf"], short_name] },
+                                autofocus: true, multiple: true
+              %>
+            </div>
+
+            <div class="form-group question books_used">
+              <%= label_tag :books_used, I18n.t(:"educator_complete_form.books_used"),
+                            class: 'field-label'
+              %>
+              <%= fh.select name: :books_used, options: Settings::Subjects.map {|(short_name, info)| [  info["title"], short_name] },
+                            autofocus: true, multiple: true
+              %>
+            </div>
+          </div>
+
+          <%= f.submit I18n.t(:"login_signup_form.continue_button"),
+                       data: { disable_with: I18n.t(:"login_signup_form.continue_button") },
+                       class: 'primary', id: 'signup_form_submit_button',
+                       :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email'} %>
         </div>
       <% end %>
     <% end %>

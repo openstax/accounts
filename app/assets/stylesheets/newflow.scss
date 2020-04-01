@@ -82,9 +82,21 @@ input.has-error {
     @extend %has-error;
 }
 
-.completed-role {
+.completed-step {
   .custom-control-label {
     font-weight: lighter !important;
+  }
+
+  .other-specify {
+    margin-left: 2em;
+  }
+
+  .question {
+    margin-top: 25px;
+  }
+
+  .questions {
+    margin-bottom: 25px;
   }
 }
 
