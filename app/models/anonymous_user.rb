@@ -21,7 +21,7 @@ class AnonymousUser
     false
   end
 
-  def is_activated?
+  def activated?
     false
   end
 

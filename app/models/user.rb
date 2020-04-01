@@ -126,7 +126,7 @@ class User < ActiveRecord::Base
   # that were assigned to it in the interm.
   #
   # Once a User model is cleared for use, the state is set to "activated"
-  def is_activated?
+  def activated?
     'activated' == state
   end
 

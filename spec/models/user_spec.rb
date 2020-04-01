@@ -238,9 +238,9 @@ RSpec.describe User, type: :model do
       user = FactoryBot.create(:user)
       user.state = 'temp'
       expect(user.is_temp?).to    be_truthy
-      expect(user.is_activated?).to be_falsey
+      expect(user.activated?).to be_falsey
       user.state = 'activated'
-      expect(user.is_activated?).to be_truthy
+      expect(user.activated?).to be_truthy
       expect(user.is_temp?).to    be_falsey
     end
 

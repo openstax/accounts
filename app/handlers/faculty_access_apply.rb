@@ -36,7 +36,7 @@ class FacultyAccessApply
   end
 
   def authorized?
-    caller.is_activated?
+    caller.activated?
   end
 
   def handle

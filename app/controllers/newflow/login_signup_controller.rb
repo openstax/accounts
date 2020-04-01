@@ -175,7 +175,7 @@ module Newflow
             authentication = @handler_result.outputs.authentication
             user = @handler_result.outputs.user
 
-            if !user.is_activated?
+            if !user.activated?
               # not activated means signup
               save_unverified_user(user)
               @first_name = user.first_name

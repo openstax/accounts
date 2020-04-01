@@ -10,7 +10,7 @@ class DestroyUser
     # Make sure object up to date, esp before dependent destroy stuff kicks in
     user.reload
 
-    fatal_error(code: :cannot_destroy_activated_user, data: user) if user.is_activated?
+    fatal_error(code: :cannot_destroy_activated_user, data: user) if user.activated?
 
     user.destroy_original
   end

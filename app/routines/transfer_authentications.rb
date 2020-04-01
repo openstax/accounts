@@ -26,6 +26,6 @@ class TransferAuthentications
 
   # The user must have already tried to signup with the given authentication.
   def can_be_destroyed?(user)
-    !user.is_activated? && user.reload.authentications.empty?
+    !user.activated? && user.reload.authentications.empty?
   end
 end

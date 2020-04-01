@@ -8,7 +8,7 @@ module Newflow
     protected ###############
 
     def exec(user)
-      return if user.is_activated?
+      return if user.activated?
 
       push_lead_to_salesforce(user)
       user.update(state: 'activated')
