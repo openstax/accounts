@@ -25,7 +25,7 @@ module Newflow
     end
 
     def authorized?
-      !@user.is_activated?
+      !@user.activated?
     end
 
     def handle

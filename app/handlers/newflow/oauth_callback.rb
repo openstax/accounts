@@ -69,7 +69,7 @@ module Newflow
     def newflow_handle_while_logged_in
       outputs.authentication = authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
 
-      if authentication.user && authentication.user.is_activated?
+      if authentication.user && authentication.user.activated?
         fatal_error(
           code: :authentication_taken,
           message: I18n.t(:"controllers.sessions.sign_in_option_already_used")

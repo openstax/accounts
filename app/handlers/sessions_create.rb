@@ -135,7 +135,7 @@ class SessionsCreate
     # Check if they are trying to add a new authentication to their account
     if request.env['omniauth.params'].try!(:[], 'add') == 'true'
       # Add the new authentication
-      return :authentication_taken if authentication_user && authentication_user.is_activated?
+      return :authentication_taken if authentication_user && authentication_user.activated?
 
       return :same_provider \
         if current_user.authentications.map(&:provider).include?(authentication.provider)

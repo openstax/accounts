@@ -26,7 +26,7 @@ module Newflow
       end
 
       claiming_user = options[:email_address].user
-      run(ActivateUser, claiming_user) # TODO: a user could be just adding another email
+      run(ActivateUser, claiming_user)
 
       outputs.user = claiming_user
     end
