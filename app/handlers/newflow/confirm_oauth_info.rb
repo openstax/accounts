@@ -18,7 +18,7 @@ module Newflow
       validates :email, presence: true
     end
 
-    protected #################
+    protected ###############
 
     def setup
       @user = options[:user]
@@ -29,32 +29,25 @@ module Newflow
     end
 
     def handle
+      @user.update_attributes(
+        first_name: info_params.first_name,
+        last_name: info_params.last_name,
+        receive_newsletter: info_params.newsletter
+      )
+      transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
+
       agree_to_terms(@user)
-      @user.update_attributes(state: 'activated')
-      push_lead_to_salesforce(@user)
+      run(ActivateUser, @user)
 
       outputs.user = @user
     end
 
-    private ###################
+    private #################
 
     def agree_to_terms(user)
       if options[:contracts_required]
         run(AgreeToTerms, info_params.contract_1_id, user, no_error_if_already_signed: true)
         run(AgreeToTerms, info_params.contract_2_id, user, no_error_if_already_signed: true)
-      end
-    end
-
-    def push_lead_to_salesforce(user)
-      if Settings::Salesforce.push_leads_enabled
-        PushSalesforceLead.perform_later(
-          user: user,
-          role: user.role,
-          newsletter: info_params.newsletter, # optionally subscribe to newsletter
-          source_application: options[:client_app],
-          # params req'd by the class but not in actuality FOR STUDENTS:
-          school: nil, url: nil, using_openstax: nil, subject: nil, phone_number: nil, num_students: nil
-        )
       end
     end
   end

@@ -77,7 +77,7 @@ module Newflow
       # link email from signed params
       run(AddEmailToUser, sp['email'], user, already_verified: false)
       user.save
-      transfer_errors_from(user, {type: :verbatim}, true)
+      transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
       # delete the user_from_signed_params (aka.  unverified user) which was created initially
     end
