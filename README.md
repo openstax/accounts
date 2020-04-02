@@ -339,4 +339,3 @@ User logs out of Accounts Profile page
 | Category | Action | Label |Dimension|
 |----------|--------|-------|---------|
 |Logout|Click|Logout| dimension2: Adopter or Not An Adopter|
-
