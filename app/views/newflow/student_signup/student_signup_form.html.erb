@@ -1,0 +1,162 @@
+<%
+    contracts = [FinePrint.get_contract(:general_terms_of_use),
+                         FinePrint.get_contract(:privacy_policy)]
+
+    contract_links = contracts.collect { |contract|
+        link_to(contract.title, term_path(contract), target: '_blank')
+        # TODO: show them in a modal instead of new tab
+        # link_to contract.title, term_path(contract), remote: true
+    }
+
+    user_from_signed_params = session[:user_from_signed_params] || {}
+%>
+
+<div id="login-signup-form">
+    <div class="content">
+        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
+
+        <%= newflow_login_signup_card(
+                    header: (I18n.t(:"login_signup_form.signup_page_header")),
+                    current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
+                    classes: 'signup-page') do %>
+            <% lev_form_for :signup, url: newflow_signup_post_path do |f| %>
+                <% fh = NewflowFormHelper::Newflow.new(f: f,
+                                            context: self,
+                                            errors: @handler_result&.errors) %>
+                <div class="content role-section">
+                    <div>
+                        <%= render partial: 'newflow/back_arrow', locals: { path: newflow_signup_path } %>
+                        <div class="role-button"><%= I18n.t(:"login_signup_form.student") %></div>
+                    </div>
+                </div>
+
+                <div class="content social-section">
+                    <div><%= I18n.t(:"login_signup_form.signup_with") %></div>
+
+                    <div class="social-buttons">
+
+                        <div class="fb-share-button">
+                            <%= link_to newflow_auth_path(:facebooknewflow),
+                                        class: 'facebook btn',
+                                        :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3B-Facebook'} do %>
+                                <i class="social-icon fa fa-facebook"></i>
+                                <span>Facebook</span>
+                            <% end %>
+                        </div>
+
+                        <div class="google-share-button">
+                            <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn',
+                                    :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3C-Google'} do %>
+                                <i class="social-icon fa fa-google"></i>
+                                <span>Google</span>
+                            <% end %>
+                        </div>
+
+                    </div>
+                </div>
+
+                <%=
+                    render(
+                        partial: 'newflow/form_divider',
+                        locals: {
+                            dividing_text: I18n.t(:"login_signup_form.or_sign_up_below")
+                        }
+                    )
+                %>
+
+                <div class="content control-group">
+                    <%= label_tag :first_name, I18n.t(:"login_signup_form.first_name_label"),
+                                class: 'field-label required'
+                    %>
+                    <%= fh.text_field name: :first_name,
+                                placeholder: I18n.t(:"login_signup_form.first_name_label"),
+                                value: user_from_signed_params['first_name'],
+                                autofocus: true
+                    %>
+                </div>
+
+                <div class="content control-group">
+                    <%=
+                        label_tag :last_name, I18n.t(:"login_signup_form.last_name_label"),
+                        class: 'field-label required'
+                    %>
+                    <%=
+                        fh.text_field name: :last_name,
+                        placeholder: I18n.t(:"login_signup_form.last_name_label"),
+                        value: user_from_signed_params['last_name']
+                    %>
+                </div>
+
+                <div class="content control-group">
+                    <%= label_tag :email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
+                    <%=
+                        fh.text_field(
+                            name: :email,
+                            value: user_from_signed_params.dig('signed_external_data', 'email'),
+                            placeholder: I18n.t(:"login_signup_form.email_placeholder")
+                        )
+                    %>
+                </div>
+
+                <%# Hide the password field if student contains signed parameters %>
+                <%#     which means they're coming from an LMS %>
+                <% unless user_from_signed_params['role'] == 'student' && user_from_signed_params['signed_external_data'].present? %>
+                    <div class="content control-group">
+                        <div id="password-field-container">
+                            <div class="input-with-tooltip">
+                                <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                                                        class: 'field-label required'
+                                %>
+                                <%= render partial: 'newflow/password_show_hide'  %>
+                                <%=
+                                    fh.text_field(
+                                        name: :password,
+                                        type: :password,
+                                        placeholder: I18n.t(:"login_signup_form.password_label")
+                                    )
+                                %>
+                                <%= render partial: 'newflow/password_tooltip' %>
+                            </div>
+                        </div>
+                    </div>
+                <% end  %>
+
+                <div class="content control-group checkboxes-section">
+                    <div class="terms">
+                        <label>
+                            <%= f.check_box :newsletter, checked: true %>
+                            <span><%= I18n.t(:"login_signup_form.send_me_newsletter") %></span>
+                        </label>
+                        <br>
+                    </div>
+
+                    <div class="terms">
+                        <label>
+                            <%= f.check_box :terms_accepted %>
+
+                            <span>
+                                <%= I18n.t(:"login_signup_form.agree_to_terms_of_use",
+                                            terms_of_use: contract_links.first,
+                                            privacy_policy: contract_links.second).html_safe
+                                %>
+                            </span>
+                        </label>
+                        <%= f.hidden_field :contract_1_id, value: contracts.first.id %>
+                        <%= f.hidden_field :contract_2_id, value: contracts.second.id %>
+                        <%= f.hidden_field :role, value: :student %>
+                    </div>
+                </div>
+
+                <div class="content">
+                    <%= f.submit I18n.t(:"login_signup_form.continue_button"),
+                                        data: { disable_with: I18n.t(:"login_signup_form.continue_button"),ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email' },
+                                        class: 'primary', id: 'signup_form_submit_button' %>
+                </div>
+            <% end %>
+        <% end %>
+    </div>
+</div>
+
+<script type="text/javascript">
+    NewflowUi.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
+</script>

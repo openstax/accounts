@@ -19,7 +19,7 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     visit start_path(type: type)
     screenshot!
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"identities.set.there_was_a_problem_with_password_link")
+    expect(page).to have_content(t :"legacy.identities.set.there_was_a_problem_with_password_link")
     expect(page).to have_current_path start_path(type: type)
   end
 
@@ -27,7 +27,7 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     visit start_path(type: type, token: '1234')
     screenshot!
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"identities.set.there_was_a_problem_with_password_link")
+    expect(page).to have_content(t :"legacy.identities.set.there_was_a_problem_with_password_link")
     expect_page(type: type, token: '1234')
   end
 
@@ -36,7 +36,7 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     visit start_path(type: type, token: @login_token)
     screenshot!
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"identities.set.expired_password_link")
+    expect(page).to have_content(t :"legacy.identities.set.expired_password_link")
     expect_page(type: type)
   end
 
@@ -89,11 +89,11 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
     find('#login-signup-form').click # to hide the password tooltip
     wait_for_animations
     find('[type=submit]').click
-    expect(page).to have_content(t(:"identities.#{type}_success.message"))
+    expect(page).to have_content(t(:"legacy.identities.#{type}_success.message"))
 
     expect_newflow_profile_page
 
-    click_link (t :"users.edit.sign_out")
+    click_link (t :"legacy.users.edit.sign_out")
     visit '/'
     expect(page).to have_current_path newflow_login_path
 

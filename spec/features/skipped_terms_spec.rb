@@ -33,7 +33,7 @@ feature 'Skipped terms are respected', js: true do
     complete_signup_verify_screen(pass: true)
     complete_signup_password_screen('password')
 
-    terms_content = t(:"signup.new_account.have_read_terms_and_agree_html",
+    terms_content = t(:"legacy.signup.new_account.have_read_terms_and_agree_html",
                       terms_of_use: 'Terms of Use',
                       privacy_policy: 'Privacy Policy')
 

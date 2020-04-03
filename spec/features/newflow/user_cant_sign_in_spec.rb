@@ -37,16 +37,16 @@ feature "User can't sign in", js: true do
       screenshot!
 
       # TODO
-      # click_link t(:"sessions.start.multiple_users.click_here")
+      # click_link t(:"legacy.sessions.start.multiple_users.click_here")
       # expect(page).to have_content(
       #   ActionView::Base.full_sanitizer.sanitize(
-      #     t(:"sessions.start.sent_multiple_usernames", email: email_address)
+      #     t(:"legacy.sessions.start.sent_multiple_usernames", email: email_address)
       #   )
       # )
 
       # screenshot!
 
-      # expect(page.first('input')["placeholder"]).to eq t(:"sessions.start.username_placeholder")
+      # expect(page.first('input')["placeholder"]).to eq t(:"legacy.sessions.start.username_placeholder")
       # expect(page.first('input').text).to be_blank
 
       # open_email(email_address)
@@ -74,10 +74,10 @@ feature "User can't sign in", js: true do
 
       # Can't be an exact email match to trigger this scenario
       newflow_log_in_user('useR@example.com', 'whatever')
-      expect(page).to have_content(t(:"sessions.start.multiple_users_missing_usernames.content_html").split('.')[0])
+      expect(page).to have_content(t(:"legacy.sessions.start.multiple_users_missing_usernames.content_html").split('.')[0])
 
       expect(page.all('a')
-                 .select{|link| link.text == t(:"sessions.start.multiple_users_missing_usernames.help_link_text")}
+                 .select{|link| link.text == t(:"legacy.sessions.start.multiple_users_missing_usernames.help_link_text")}
                  .first["href"]).to eq "mailto:info@openstax.org"
 
       screenshot!
@@ -117,6 +117,7 @@ feature "User can't sign in", js: true do
       screenshot!
 
       click_link(t :"login_signup_form.forgot_password")
+      expect(page.current_path).to eq(forgot_password_form_path)
       # pre-populates the email for them since they already typed it in the login form
       expect(find('#forgot_password_form_email')['value']).to  eq('user@example.com')
       screenshot!
@@ -155,8 +156,8 @@ feature "User can't sign in", js: true do
 
       # TODO somehow simulate oauth failure so we see error message
 
-      click_link(t :"sessions.authenticate_options.add_password")
-      expect(page).to have_content(t(:'identities.send_add.we_sent_email', emails: 'user@example.com'))
+      click_link(t :"legacy.sessions.authenticate_options.add_password")
+      expect(page).to have_content(t(:"legacy.identities.send_add.we_sent_email", emails: 'user@example.com'))
       screenshot!
 
       open_email('user@example.com')

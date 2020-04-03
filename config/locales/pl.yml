@@ -1,5 +1,5 @@
 pl:
-  educator_complete_form:
+  educator_profile_form:
     complete_page_header: Uzupełnij swój profil
     describe_role: Które z poniższych najlepiej opisuje twoją rolę?
     instructor: Instruktor
@@ -39,10 +39,6 @@ pl:
     signup_with: 'Zarejestruj się przez:'
     signup_page_header: Utwórz konto
     confirmation_page_header: Cześć %{first_name}! Potwierdź swój adres e-mail.
-    email_verification_form_decription: >-
-      Wysłaliśmy e-mail na adres <b>%{email}</b>.
-      Poniżej wprowadź otrzymany PIN.
-      Możesz też %{edit_your_email}
     change_signup_email_form_page_header: Zmień adres e-mail
     change_signup_email_form_page_description: >-
       Zmień adres e-mail poniżej, wyślemy na niego PIN.
@@ -142,6 +138,19 @@ pl:
     min_characters: "%{number} znaków minimum"
     show_password_btn: POKAZAĆ
     hide_password_btn: UKRYĆ
+
+    student_email_verification_form_decription: >-
+      An email has been sent to <b>%{email}</b>.
+      Please enter the PIN you received below.
+      You can also %{edit_your_email}
+
+    educator_email_verification_form_decription: >-
+      An email has been sent to <b>%{email}</b>.
+      Please enter the PIN you received below.
+      Once your email has been confirmed, you will need to complete
+      the remaining steps to verify your instructor status.
+    educator_email_verification_help_msg: See a typo in your email address? %{edit_it_here}. Didn't receive a message? %{contact_us_link}.
+    edit_it_here: Edit it here
 
   student_profile:
     enable_other_sign_in_options: Zezwól na inne opcje logowania
@@ -319,69 +328,6 @@ pl:
         Jeśli potrzebujesz pomocy, skontaktuj się z %{contact_info} podając
         rodzaj błędu: %{error_id}.
 
-  identities:
-    set:
-      confirm_password: Powtórz hasło
-      password: Hasło
-      there_was_a_problem_with_password_link: >-
-        Niestety wystąpił problem z użytym przez Ciebie linkiem. Jeżeli problem
-        będzie się powtarzał, skontaktuj się z działem pomocy.
-      expired_password_link: Użyty przez ciebie link wygasł.
-      cancel: Anuluj
-    reset:
-      page_heading: Zmień hasło
-      submit: Ustaw hasło
-      submitting: Ustawianie hasła…
-      use_form_below_to_reset_password: >-
-        Aby zmienić swoje hasło, wypełnij poniższe pola.
-    add:
-      page_heading: Dodaj hasło
-      use_form_below_to_add_password: Aby dodać hasło, wypełnij poniższe pola.
-      submit: Dodaj hasło
-      submitting: Dodawanie hasła…
-    add_success:
-      page_heading: Sukces!
-      message: Hasło zostało dowiązane do Twojego konta.
-      continue: Przejdź dalej
-    reset_success:
-      page_heading: Sukces!
-      message: Hasło zostało zmienione.
-      continue: Przejdź dalej
-
-    send_reset:
-      page_heading: Sprawdź e-mail
-      we_sent_email:
-        one: >-
-          Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
-          aby zmienić hasło.
-        few: >-
-          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-          wiadomości, aby zmienić hasło.
-        many: >-
-          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-          wiadomości, aby zmienić hasło.
-        other: >-
-          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-          wiadomości, aby zmienić hasło.
-      close_this_window: Możesz teraz zamknąć okno.
-
-    send_add:
-      page_heading: Sprawdź e-maile
-      we_sent_email:
-        one: >-
-          Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
-          aby dodać nowe hasło.
-        few: >-
-          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-          wiadomości, aby dodać nowe hasło.
-        many: >-
-          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-          wiadomości, aby dodać nowe hasło.
-        other: >-
-          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-          wiadomości, aby dodać nowe hasło.
-      close_this_window: Możesz teraz zamknąć okno.
-
   layouts:
     application_footer:
       terms_of_use: Warunki użytkowania
@@ -393,257 +339,6 @@ pl:
 
     attention:
       please_enable_javascript: Włącz obsługę JavaScript.
-
-  sessions:
-    access_tutor: Zaloguj się lub zarejestruj, aby uzyskać dostęp do OpenStax Tutor
-    help:
-      if_you_know_username_or_email:
-        content_html: >-
-          Jeżeli pamiętasz swoją nazwę użytkownika lub adres e-mail,
-          wpisz go poniżej. Wyślemy Ci wiadomość e-mail z instrukcją, jak
-          możesz odzyskać dostęp do swojego konta. Jeżeli nie pamiętasz
-          nazwy ani adresu, %{link}.
-        contact_customer_support: skontaktuj się z działem pomocy
-      page_heading: Uzyskaj pomoc z logowaniem
-      submit: Wyślij
-      submitting: Wysyłanie…
-      username_or_email: Nazwa użytkownika albo adres e-mail
-
-    start:
-      access_tutor: Zaloguj się lub zarejestruj, aby uzyskać dostęp do OpenStax Tutor
-      cant_sign_in: Nie możesz się zalogować?
-      logout_reminder_html: >-
-        Jeżeli używasz publicznego komputera, <b>pamiętaj, aby wylogować się</b>,
-        gdy skończysz!
-      openstax_wont_use_social_media_without_permission_html: >-
-        <i>Nie obawiaj się.</i> OpenStax <b>nie zamieści niczego</b> w
-        twoich kontach społecznościowych bez twojej zgody.
-      page_heading: Zaloguj się do OpenStax
-      page_sub_heading: >-
-        Zyskaj dostęp do wszystkich funkcji i zasobów OpenStax
-      sign_in: Zaloguj się
-      sign_up: Zarejestruj się
-      no_account_q: Nie masz konta?
-      used_this_method_last_time: Tej metody użyłeś/aś poprzednim razem.
-      email: Adres e-mail
-      email_placeholder: Adres e-mail lub nazwa użytkownika
-      username_placeholder: Nazwa użytkownika
-      next: Przejdź dalej
-      submitting: Sprawdzanie…
-      cannot_find_user: Nie znaleziono użytkownika
-      unknown_username: >-
-        Nie znaleziono użytkownika o takiej nazwie. Spróbuj ponownie albo użyj
-        adresu e-mail.
-      unknown_email: >-
-        Nie znaleziono użytkownika o takim adresie e-mail. Spróbuj ponownie.
-      having_trouble: Problemy z logowaniem?
-      help: >-
-        Podaj adres e-mail lub nazwę użytkownika powiązaną z Twoim kontem, a
-        pomożemy Ci się zalogować.
-      cant_remember_email: Nie pamiętasz, jak się rejestrowałeś/aś?
-      knowledge_base: Odwiedź nasze centrum pomocy
-      multiple_users_missing_usernames:
-        content_html: >-
-          Znaleźliśmy kilka kont przypisanych do tego adresu e-mail i nie
-          jesteśmy w stanie stwierdzić, którego powinniśmy użyć. %{help_link}.
-        help_link_text: Skontaktuj się z naszym działem pomocy
-      multiple_users:
-        content_html: >-
-          Znaleźliśmy kilka kont przypisanych do tego adresu e-mail. Zaloguj się
-          używając swojej nazwy użytkownika.
-          <br/>
-          Zapomniałeś/aś ją? %{link}.
-        click_here: Kliknij tu, a wyślemy ci ich listę.
-      sent_multiple_usernames: >-
-        Wysłaliśmy listę Twoich nazw użytkownika na adres <strong>%{email}</strong>.
-        Użyj jednej z nich, aby się zalogować.
-
-    authenticate:
-      name_greeting: Witaj, %{name}!
-
-    reauthenticate:
-      page_heading: Zanim przejdziesz dalej, zaloguj się ponownie.
-
-    authenticate_options:
-      separator_or: albo
-      sign_in_with_facebook: Zaloguj się przez Facebooka
-      sign_in_with_google: Zaloguj się przez Google
-      sign_in_with_twitter: Zaloguj się przez Twittera
-      login: Zaloguj
-      submitting: Logowanie…
-      password: Hasło
-      forgot_password: Zapomniałeś/aś hasła?
-      trouble_logging_in: Problemy z logowaniem?
-      reset_password: Zmień hasło
-      add_password: Dodaj hasło
-
-  signup:
-    exit_if_logged_in:
-      already_logged_in: Jesteś już zalogowany/a
-
-    new_account:
-      cancel: Anuluj
-      confirm_password: Powtórz hasło *
-      create_account: Utwórz konto
-      email_address: Adres e-mail *
-      first_name: Imię *
-      legal_first_name: Urzędowe pierwsze imię
-      Legal_last_name: Prawne nazwisko
-      have_read_terms_and_agree_html: >-
-        Oświadczam, że zapoznałem/am się z dokumentami: %{terms_of_use} oraz %{privacy_policy}.
-      last_name: Nazwisko *
-      might_already_have_an_account: Możliwe, że mam już konto.
-      password: Hasło *
-      password_managed_by: Hasłem zarządza %{manager}
-      please_verify_your_email: Prosimy o potwierdzenie adresu e-mail.
-      policies_notice: >-
-        Uwaga: inne strony OpenStax mogą mieć dodatkowe
-        regulaminy.
-      show_title_and_suffix: Pokaż tytuł i dopisek
-      suffix: Dopisek
-      take_me_back_to_sign_in_page: Powróć do strony logowania.
-      all_fields_required: Wszystkie pola są wymagane
-      title: Tytuł
-      username: Nazwa użytkownika *
-      wait_a_second: Zaczekaj chwilę!
-      you_will_receive_verification_email: >-
-        Wkrótce otrzymasz wiadomość e-mail z potwierdzeniem rejestracji. Kliknij
-        link zawarty w wiadomości, aby potwierdzić swój adres e-mail.
-
-    start:
-      instructor_email: Twój szkolny adres e-mail
-      student_email: Adres e-mail
-      next: Przejdź dalej
-      iama: Jestem
-      instructor: Nauczycielem
-      adjunct: Adiunkt wydziału
-      student: Uczniem
-      administrator: Administratorem
-      librarian: Archiwistą
-      designer: Twórcą materiałów dydaktycznych
-      other: Inne
-      email_address_invalid: Adres e-mail nie jest prawidłowy
-      email_in_use:
-        content_html: Ten adres e-mail jest już w użyciu. Czy próbujesz się %{link}?
-        log_in: zalogować
-      email_cannot_be_blank: Musisz podać adres e-mail
-      already_have_an_account:
-        content_html: Masz już konto? %{link}.
-        sign_in: Zaloguj się
-      dont_want_to_remember_password_html: >-
-        <b>Nie chcesz zapamiętywać hasła?</b><br/>
-        Zarejestruj się przez Facebooka, Google lub Twittera.
-      logout_reminder_html: >-
-        Jeżeli używasz publicznego komputera, <b>pamiętaj, aby wylogować się</b>,
-        gdy skończysz!
-      openstax_wont_use_social_media_without_permission_html: >-
-        <i>Nie obawiaj się.</i> OpenStax <b>nie zamieści niczego</b> w
-        twoich kontach społecznościowych bez twojej zgody.
-      page_heading: Zarejestruj się w OpenStax
-      page_sub_heading: >-
-        Zyskaj dostęp do wszystkich funkcji i zasobów OpenStax
-      email_placeholder: ja@mojaszkoła.edu.pl
-      sign_up_with_facebook: Zarejestruj się przez Facebooka
-      sign_up_with_google: Zarejestruj się przez Google
-      sign_up_with_password: Zarejestruj konto z hasłem
-      sign_up_with_twitter: Zarejestruj się przez Twittera
-      teacher_school_email: >-
-        Aby uzyskać dostęp do materiałów zastrzeżonych Twojej szkoły, takich
-        jak zbiory zadań czy kursy OpenStax Tutor, musisz podać adres
-        e-mail przyznany Ci przez szkołę. Jeśli chcesz, będziesz mógł/mogła
-        dodać kolejny adres e-mail później.
-      teacher_school_email_warning: >-
-        Czy to na pewno Twój szkolny adres-email? Jeżeli tak, wciśnij %{button} poniżej.
-        Jeżeli nie, wpisz adres e-mail przyznany Ci przez Twoją szkołę.
-      did_you_mean:
-        Czy to literówka
-      proceed_with_likely_mistyped_email:
-        Jeśli tak, popraw adres e-mail. Jeśli nie ma błędu, kliknij %{button}.
-
-    verify_email:
-      page_heading_pin: Sprawdź skrzynkę e-mail
-      page_heading_token: Sprawdź skrzynkę e-mail
-      pin: Wprowadź PIN
-      confirm: Potwierdź
-      submitting: Autoryzacja…
-      used_wrong_email: Źle wpisałeś/aś adres e-mail?
-      edit_email_address: Zmień adres e-mail
-      check_your_email: Sprawdź skrzynkę e-mail dla adresu %{email}!
-      you_will_have_received: >-
-        Wysłaliśmy sześciocyfrowy kod PIN. Wprowadź go poniżej.
-      pin_not_correct: >-
-        Podany kod PIN nie jest prawidłowy. Wprowadź właściwy.
-      no_pin_confirmation_attempts_remaining:
-        content_html: >-
-          Wykorzystałeś/aś już limit prób rejestracji za pomocą kodu PIN.
-          Aby potwierdzić adres, użyj linku znajdującego się w wiadomości e-mail
-          z kodem PIN. Jeżeli nie widzisz wiadomości w swojej skrzynce, sprawdź
-          folder „Spam”. Jeżeli wciąż potrzebujesz pomocy, %{help_link}.
-        help_link_text: skontaktuj się z obsługą
-
-    password:
-      page_heading: Wybierz hasło
-      password_requirements: Hasło musi mieć co najmniej 8 znaków
-      password: Hasło
-      password_confirmation: Potwierdź hasło
-      create_password: Zapisz
-      submitting: Zapisywanie hasła…
-      dont_want_to_remember: Nie chcesz zapamiętywać kolejnego hasła?
-      use_social: Zarejestruj się używając konta w serwisie społecznościowym
-      separator_or: albo
-
-    social:
-      page_heading: Wybierz serwis społecznościowy
-      facebook: Facebook
-      google: Google
-      openstax_wont_use_social_media_without_permission_html: >-
-        OpenStax nie zamieści niczego w Twoich kontach społecznościowych bez
-        Twojej zgody.
-      use_password: Wolę używać hasła
-
-    profile:
-      page_heading: Zakończ rejestrację
-      instructor_verification_heading: Potwierdzenie statusu nauczyciela
-      instructor_verification_help: >-
-        Aby potwierdzić Twój status nauczyciela i przyznać Ci dostęp do
-        zastrzeżonych materiałów, takich jak zbiory zadań czy kursy
-        OpenStax Tutor, potrzebujemy dodatkowych informacji.
-      instructor_use:
-        how: W jaki sposób korzystasz z OpenStax?
-        fully: Używam OpenStax jako mojego głównego podręcznika.
-        recommended: >-
-          Polecam podręcznik OpenStax, ale moi uczniowie kupują inny.
-        interested: Jestem zainteresowany/a używaniem podręcznika OpenStax.
-        nope: Nie używam OpenStax.
-      have_read_terms_and_agree_html: >-
-        Oświadczam, że zapoznałem/am się z dokumentami %{terms_of_use} oraz %{privacy_policy}.
-      first_name: Imię
-      last_name: Nazwisko
-      suffix: Dopisek
-      more_things_heading: Jeszcze tylko kilka rzeczy
-      phone_number: Numer telefonu
-      school: Szkoła
-      url: Strona internetowa szkoły, która potwierdza, że jesteś nauczycielem
-      num_students: Ilu masz uczniów w semestrze?
-      using_openstax: Czy używasz OpenStax?
-      create_account: Utwórz konto
-      submitting: Tworzenie konta…
-      titles_interested: Zaznacz wszystkie interesujące Cię podręczniki OpenStax
-      titles_using: Którą książkę (lub książki) używasz?
-      keep_me_informed: >-
-        Proszę o wysyłanie do mnie informacji o nowych podręcznikach, zasobach
-        i związanych z nimi kwestiach.
-      timeout: Zaloguj się ponownie, aby ukończyć rejestrację
-
-    instructor_access_pending:
-      page_heading: Już niemal skończyliśmy
-      message: >-
-        Zarejestrowałeś/aś się jako nauczyciel. Otrzymasz dostęp do zastrzeżonych
-        materiałów, gdy potwierdzimy Twój status, co nie powinno zając dłużej niż 3-4 dni
-        robocze. W międzyczasie możesz już zapoznać się ze wszystkimi podręcznikami
-        i zasobami, które nie są zastrzeżone dla nauczycieli.
-      check_box: Proszę o e-mail z powiadomieniem o przyznaniu dostępu.
-      ok: OK
 
   faculty_access:
     apply:
@@ -740,21 +435,336 @@ pl:
         Zapoznałem/am się z przedstawionymi powyżej regulaminami i zgadzam
         się na zawarte w nich warunki.
 
-  users:
-    edit:
-      add_email_address: Dodaj nowy adres
-      email_addresses: Adresy e-mail
-      enable_other_sign_in_options: Włącz dodatkowe metody logowania
-      how_you_sign_in_html: Jak się<br class="wide"> logujesz
-      name: Imię
-      other_sign_in_options_html: Dodatkowe metody<br class="wide"> logowania
-      username: Nazwa użytkownika
-      page_heading: Twój profil
-      sign_out: Wyloguj się
-      check_searchable_if_you_want_to_be_searchable: >-
-        Zaznacz pole „Publiczny”, jeżeli chcesz, aby inni użytkownicy OpenStax
-        mogli Cię znaleźć używając tego adresu e-mail.
-      resend_confirmation: 'Wyślij ponownie e-mail potwierdzający'
-      unconfirmed_warning: niepotwierdzony
-      password: Hasło
-      searchable: Pozwól innym wyszukać mnie po tym adresie e-mail
+  legacy:
+    users:
+      edit:
+        add_email_address: Dodaj nowy adres
+        email_addresses: Adresy e-mail
+        enable_other_sign_in_options: Włącz dodatkowe metody logowania
+        how_you_sign_in_html: Jak się<br class="wide"> logujesz
+        name: Imię
+        other_sign_in_options_html: Dodatkowe metody<br class="wide"> logowania
+        username: Nazwa użytkownika
+        page_heading: Twój profil
+        sign_out: Wyloguj się
+        check_searchable_if_you_want_to_be_searchable: >-
+          Zaznacz pole „Publiczny”, jeżeli chcesz, aby inni użytkownicy OpenStax
+          mogli Cię znaleźć używając tego adresu e-mail.
+        resend_confirmation: 'Wyślij ponownie e-mail potwierdzający'
+        unconfirmed_warning: niepotwierdzony
+        password: Hasło
+        searchable: Pozwól innym wyszukać mnie po tym adresie e-mail
+
+    signup:
+      exit_if_logged_in:
+        already_logged_in: Jesteś już zalogowany/a
+
+      new_account:
+        cancel: Anuluj
+        confirm_password: Powtórz hasło *
+        create_account: Utwórz konto
+        email_address: Adres e-mail *
+        first_name: Imię *
+        legal_first_name: Urzędowe pierwsze imię
+        Legal_last_name: Prawne nazwisko
+        have_read_terms_and_agree_html: >-
+          Oświadczam, że zapoznałem/am się z dokumentami: %{terms_of_use} oraz %{privacy_policy}.
+        last_name: Nazwisko *
+        might_already_have_an_account: Możliwe, że mam już konto.
+        password: Hasło *
+        password_managed_by: Hasłem zarządza %{manager}
+        please_verify_your_email: Prosimy o potwierdzenie adresu e-mail.
+        policies_notice: >-
+          Uwaga: inne strony OpenStax mogą mieć dodatkowe
+          regulaminy.
+        show_title_and_suffix: Pokaż tytuł i dopisek
+        suffix: Dopisek
+        take_me_back_to_sign_in_page: Powróć do strony logowania.
+        all_fields_required: Wszystkie pola są wymagane
+        title: Tytuł
+        username: Nazwa użytkownika *
+        wait_a_second: Zaczekaj chwilę!
+        you_will_receive_verification_email: >-
+          Wkrótce otrzymasz wiadomość e-mail z potwierdzeniem rejestracji. Kliknij
+          link zawarty w wiadomości, aby potwierdzić swój adres e-mail.
+
+      start:
+        instructor_email: Twój szkolny adres e-mail
+        student_email: Adres e-mail
+        next: Przejdź dalej
+        iama: Jestem
+        instructor: Nauczycielem
+        adjunct: Adiunkt wydziału
+        student: Uczniem
+        administrator: Administratorem
+        librarian: Archiwistą
+        designer: Twórcą materiałów dydaktycznych
+        other: Inne
+        email_address_invalid: Adres e-mail nie jest prawidłowy
+        email_in_use:
+          content_html: Ten adres e-mail jest już w użyciu. Czy próbujesz się %{link}?
+          log_in: zalogować
+        email_cannot_be_blank: Musisz podać adres e-mail
+        already_have_an_account:
+          content_html: Masz już konto? %{link}.
+          sign_in: Zaloguj się
+        dont_want_to_remember_password_html: >-
+          <b>Nie chcesz zapamiętywać hasła?</b><br/>
+          Zarejestruj się przez Facebooka, Google lub Twittera.
+        logout_reminder_html: >-
+          Jeżeli używasz publicznego komputera, <b>pamiętaj, aby wylogować się</b>,
+          gdy skończysz!
+        openstax_wont_use_social_media_without_permission_html: >-
+          <i>Nie obawiaj się.</i> OpenStax <b>nie zamieści niczego</b> w
+          twoich kontach społecznościowych bez twojej zgody.
+        page_heading: Zarejestruj się w OpenStax
+        page_sub_heading: >-
+          Zyskaj dostęp do wszystkich funkcji i zasobów OpenStax
+        email_placeholder: ja@mojaszkoła.edu.pl
+        sign_up_with_facebook: Zarejestruj się przez Facebooka
+        sign_up_with_google: Zarejestruj się przez Google
+        sign_up_with_password: Zarejestruj konto z hasłem
+        sign_up_with_twitter: Zarejestruj się przez Twittera
+        teacher_school_email: >-
+          Aby uzyskać dostęp do materiałów zastrzeżonych Twojej szkoły, takich
+          jak zbiory zadań czy kursy OpenStax Tutor, musisz podać adres
+          e-mail przyznany Ci przez szkołę. Jeśli chcesz, będziesz mógł/mogła
+          dodać kolejny adres e-mail później.
+        teacher_school_email_warning: >-
+          Czy to na pewno Twój szkolny adres-email? Jeżeli tak, wciśnij %{button} poniżej.
+          Jeżeli nie, wpisz adres e-mail przyznany Ci przez Twoją szkołę.
+        did_you_mean:
+          Czy to literówka
+        proceed_with_likely_mistyped_email:
+          Jeśli tak, popraw adres e-mail. Jeśli nie ma błędu, kliknij %{button}.
+
+      verify_email:
+        page_heading_pin: Sprawdź skrzynkę e-mail
+        page_heading_token: Sprawdź skrzynkę e-mail
+        pin: Wprowadź PIN
+        confirm: Potwierdź
+        submitting: Autoryzacja…
+        used_wrong_email: Źle wpisałeś/aś adres e-mail?
+        edit_email_address: Zmień adres e-mail
+        check_your_email: Sprawdź skrzynkę e-mail dla adresu %{email}!
+        you_will_have_received: >-
+          Wysłaliśmy sześciocyfrowy kod PIN. Wprowadź go poniżej.
+        pin_not_correct: >-
+          Podany kod PIN nie jest prawidłowy. Wprowadź właściwy.
+        no_pin_confirmation_attempts_remaining:
+          content_html: >-
+            Wykorzystałeś/aś już limit prób rejestracji za pomocą kodu PIN.
+            Aby potwierdzić adres, użyj linku znajdującego się w wiadomości e-mail
+            z kodem PIN. Jeżeli nie widzisz wiadomości w swojej skrzynce, sprawdź
+            folder „Spam”. Jeżeli wciąż potrzebujesz pomocy, %{help_link}.
+          help_link_text: skontaktuj się z obsługą
+
+      password:
+        page_heading: Wybierz hasło
+        password_requirements: Hasło musi mieć co najmniej 8 znaków
+        password: Hasło
+        password_confirmation: Potwierdź hasło
+        create_password: Zapisz
+        submitting: Zapisywanie hasła…
+        dont_want_to_remember: Nie chcesz zapamiętywać kolejnego hasła?
+        use_social: Zarejestruj się używając konta w serwisie społecznościowym
+        separator_or: albo
+
+      social:
+        page_heading: Wybierz serwis społecznościowy
+        facebook: Facebook
+        google: Google
+        openstax_wont_use_social_media_without_permission_html: >-
+          OpenStax nie zamieści niczego w Twoich kontach społecznościowych bez
+          Twojej zgody.
+        use_password: Wolę używać hasła
+
+      profile:
+        page_heading: Zakończ rejestrację
+        instructor_verification_heading: Potwierdzenie statusu nauczyciela
+        instructor_verification_help: >-
+          Aby potwierdzić Twój status nauczyciela i przyznać Ci dostęp do
+          zastrzeżonych materiałów, takich jak zbiory zadań czy kursy
+          OpenStax Tutor, potrzebujemy dodatkowych informacji.
+        instructor_use:
+          how: W jaki sposób korzystasz z OpenStax?
+          fully: Używam OpenStax jako mojego głównego podręcznika.
+          recommended: >-
+            Polecam podręcznik OpenStax, ale moi uczniowie kupują inny.
+          interested: Jestem zainteresowany/a używaniem podręcznika OpenStax.
+          nope: Nie używam OpenStax.
+        have_read_terms_and_agree_html: >-
+          Oświadczam, że zapoznałem/am się z dokumentami %{terms_of_use} oraz %{privacy_policy}.
+        first_name: Imię
+        last_name: Nazwisko
+        suffix: Dopisek
+        more_things_heading: Jeszcze tylko kilka rzeczy
+        phone_number: Numer telefonu
+        school: Szkoła
+        url: Strona internetowa szkoły, która potwierdza, że jesteś nauczycielem
+        num_students: Ilu masz uczniów w semestrze?
+        using_openstax: Czy używasz OpenStax?
+        create_account: Utwórz konto
+        submitting: Tworzenie konta…
+        titles_interested: Zaznacz wszystkie interesujące Cię podręczniki OpenStax
+        titles_using: Którą książkę (lub książki) używasz?
+        keep_me_informed: >-
+          Proszę o wysyłanie do mnie informacji o nowych podręcznikach, zasobach
+          i związanych z nimi kwestiach.
+        timeout: Zaloguj się ponownie, aby ukończyć rejestrację
+
+      instructor_access_pending:
+        page_heading: Już niemal skończyliśmy
+        message: >-
+          Zarejestrowałeś/aś się jako nauczyciel. Otrzymasz dostęp do zastrzeżonych
+          materiałów, gdy potwierdzimy Twój status, co nie powinno zając dłużej niż 3-4 dni
+          robocze. W międzyczasie możesz już zapoznać się ze wszystkimi podręcznikami
+          i zasobami, które nie są zastrzeżone dla nauczycieli.
+        check_box: Proszę o e-mail z powiadomieniem o przyznaniu dostępu.
+        ok: OK
+
+    identities:
+      set:
+        confirm_password: Powtórz hasło
+        password: Hasło
+        there_was_a_problem_with_password_link: >-
+          Niestety wystąpił problem z użytym przez Ciebie linkiem. Jeżeli problem
+          będzie się powtarzał, skontaktuj się z działem pomocy.
+        expired_password_link: Użyty przez ciebie link wygasł.
+        cancel: Anuluj
+      reset:
+        page_heading: Zmień hasło
+        submit: Ustaw hasło
+        submitting: Ustawianie hasła…
+        use_form_below_to_reset_password: >-
+          Aby zmienić swoje hasło, wypełnij poniższe pola.
+      add:
+        page_heading: Dodaj hasło
+        use_form_below_to_add_password: Aby dodać hasło, wypełnij poniższe pola.
+        submit: Dodaj hasło
+        submitting: Dodawanie hasła…
+      add_success:
+        page_heading: Sukces!
+        message: Hasło zostało dowiązane do Twojego konta.
+        continue: Przejdź dalej
+      reset_success:
+        page_heading: Sukces!
+        message: Hasło zostało zmienione.
+        continue: Przejdź dalej
+
+      send_reset:
+        page_heading: Sprawdź e-mail
+        we_sent_email:
+          one: >-
+            Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
+            aby zmienić hasło.
+          few: >-
+            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+            wiadomości, aby zmienić hasło.
+          many: >-
+            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+            wiadomości, aby zmienić hasło.
+          other: >-
+            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+            wiadomości, aby zmienić hasło.
+        close_this_window: Możesz teraz zamknąć okno.
+
+      send_add:
+        page_heading: Sprawdź e-maile
+        we_sent_email:
+          one: >-
+            Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
+            aby dodać nowe hasło.
+          few: >-
+            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+            wiadomości, aby dodać nowe hasło.
+          many: >-
+            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+            wiadomości, aby dodać nowe hasło.
+          other: >-
+            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+            wiadomości, aby dodać nowe hasło.
+        close_this_window: Możesz teraz zamknąć okno.
+
+    sessions:
+      access_tutor: Zaloguj się lub zarejestruj, aby uzyskać dostęp do OpenStax Tutor
+      help:
+        if_you_know_username_or_email:
+          content_html: >-
+            Jeżeli pamiętasz swoją nazwę użytkownika lub adres e-mail,
+            wpisz go poniżej. Wyślemy Ci wiadomość e-mail z instrukcją, jak
+            możesz odzyskać dostęp do swojego konta. Jeżeli nie pamiętasz
+            nazwy ani adresu, %{link}.
+          contact_customer_support: skontaktuj się z działem pomocy
+        page_heading: Uzyskaj pomoc z logowaniem
+        submit: Wyślij
+        submitting: Wysyłanie…
+        username_or_email: Nazwa użytkownika albo adres e-mail
+
+      start:
+        access_tutor: Zaloguj się lub zarejestruj, aby uzyskać dostęp do OpenStax Tutor
+        cant_sign_in: Nie możesz się zalogować?
+        logout_reminder_html: >-
+          Jeżeli używasz publicznego komputera, <b>pamiętaj, aby wylogować się</b>,
+          gdy skończysz!
+        openstax_wont_use_social_media_without_permission_html: >-
+          <i>Nie obawiaj się.</i> OpenStax <b>nie zamieści niczego</b> w
+          twoich kontach społecznościowych bez twojej zgody.
+        page_heading: Zaloguj się do OpenStax
+        page_sub_heading: >-
+          Zyskaj dostęp do wszystkich funkcji i zasobów OpenStax
+        sign_in: Zaloguj się
+        sign_up: Zarejestruj się
+        no_account_q: Nie masz konta?
+        used_this_method_last_time: Tej metody użyłeś/aś poprzednim razem.
+        email: Adres e-mail
+        email_placeholder: Adres e-mail lub nazwa użytkownika
+        username_placeholder: Nazwa użytkownika
+        next: Przejdź dalej
+        submitting: Sprawdzanie…
+        cannot_find_user: Nie znaleziono użytkownika
+        unknown_username: >-
+          Nie znaleziono użytkownika o takiej nazwie. Spróbuj ponownie albo użyj
+          adresu e-mail.
+        unknown_email: >-
+          Nie znaleziono użytkownika o takim adresie e-mail. Spróbuj ponownie.
+        having_trouble: Problemy z logowaniem?
+        help: >-
+          Podaj adres e-mail lub nazwę użytkownika powiązaną z Twoim kontem, a
+          pomożemy Ci się zalogować.
+        cant_remember_email: Nie pamiętasz, jak się rejestrowałeś/aś?
+        knowledge_base: Odwiedź nasze centrum pomocy
+        multiple_users_missing_usernames:
+          content_html: >-
+            Znaleźliśmy kilka kont przypisanych do tego adresu e-mail i nie
+            jesteśmy w stanie stwierdzić, którego powinniśmy użyć. %{help_link}.
+          help_link_text: Skontaktuj się z naszym działem pomocy
+        multiple_users:
+          content_html: >-
+            Znaleźliśmy kilka kont przypisanych do tego adresu e-mail. Zaloguj się
+            używając swojej nazwy użytkownika.
+            <br/>
+            Zapomniałeś/aś ją? %{link}.
+          click_here: Kliknij tu, a wyślemy ci ich listę.
+        sent_multiple_usernames: >-
+          Wysłaliśmy listę Twoich nazw użytkownika na adres <strong>%{email}</strong>.
+          Użyj jednej z nich, aby się zalogować.
+
+      authenticate:
+        name_greeting: Witaj, %{name}!
+
+      reauthenticate:
+        page_heading: Zanim przejdziesz dalej, zaloguj się ponownie.
+
+      authenticate_options:
+        separator_or: albo
+        sign_in_with_facebook: Zaloguj się przez Facebooka
+        sign_in_with_google: Zaloguj się przez Google
+        sign_in_with_twitter: Zaloguj się przez Twittera
+        login: Zaloguj
+        submitting: Logowanie…
+        password: Hasło
+        forgot_password: Zapomniałeś/aś hasła?
+        trouble_logging_in: Problemy z logowaniem?
+        reset_password: Zmień hasło
+        add_password: Dodaj hasło

@@ -33,8 +33,8 @@ class ApplicationController < ActionController::Base
     identity = current_user.identity
     return unless identity.try(:password_expired?)
 
-    flash[:alert] = I18n.t :"controllers.identities.password_expired"
-    redirect_to password_reset_path
+    flash[:alert] = I18n.t(:"controllers.identities.password_expired")
+    redirect_to(password_reset_path)
   end
 
   def return_url_specified_and_allowed?

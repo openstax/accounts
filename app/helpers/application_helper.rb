@@ -2,12 +2,27 @@ module ApplicationHelper
 
   include AlertHelper
 
-  def knowledge_base_url
-    'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
+  def contact_us_link
+    link_to(
+      I18n.t(:"login_signup_form.contact_us"),
+      salesforce_knowledge_base_url,
+      target: '_blank',
+      data: {
+        # Google Analytics
+        'ga-category': 'Login',
+        'ga-action': 'Click',
+        'ga-label': 'Contact Us'
+      }
+    ).html_safe
   end
 
   def logo_url
     Rails.application.secrets.openstax_url
+  end
+
+  def extract_params(url)
+    return {} if url.blank?
+    Addressable::URI.parse(url).query_values.to_h.with_indifferent_access
   end
 
   def unless_errors(options={}, &block)

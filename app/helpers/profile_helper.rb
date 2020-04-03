@@ -11,7 +11,7 @@ module ProfileHelper
 
     icon_class, display_name =
       case provider
-      when 'identity' then ['key', (I18n.t :"users.edit.password")]
+      when 'identity' then ['key', (I18n.t :"legacy.users.edit.password")]
       when 'google_oauth2' then ['google', 'Google']
       when 'facebooknewflow' then ['facebook', 'Facebook']
       when 'googlenewflow' then ['google', 'Google']
@@ -47,7 +47,7 @@ module ProfileHelper
 
     icon_class, display_name =
       case provider
-      when 'identity' then ['key', (I18n.t :"users.edit.password")]
+      when 'identity' then ['key', (I18n.t :"legacy.users.edit.password")]
       when 'google_oauth2' then ['google', 'Google']
       when 'facebooknewflow' then ['facebook', 'Facebook']
       when 'googlenewflow' then ['google', 'Google']
@@ -76,7 +76,7 @@ module ProfileHelper
     verify_link = is_verified ? '' : ""
     unconfirmed_link = is_verified ? '' : <<-EOV
       <span class='unconfirmed-warning'>[<span class='msg editable-click'>
-        #{I18n.t :'users.edit.unconfirmed_warning'}
+        #{I18n.t(:"legacy.users.edit.unconfirmed_warning")}
       </span>]</span>
     EOV
 
@@ -88,13 +88,13 @@ module ProfileHelper
           <div class="controls">
             <div class='resend-confirmation'>
               <i class='fa fa-envelope-o'></i>
-              #{button_to((I18n.t :"users.edit.resend_confirmation"), resend_confirmation_contact_info_path(id: id), method: :put )}
+              #{button_to((I18n.t :"legacy.users.edit.resend_confirmation"), resend_confirmation_contact_info_path(id: id), method: :put )}
             </div>
             <div class="delete">
               <span class="glyphicon glyphicon-trash"></span><a href="#">Delete</a>
             </div>
             <div class="searchable-toggle">
-              <label><input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"users.edit.searchable"}</label>
+              <label><input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"legacy.users.edit.searchable"}</label>
             </div>
           </div>
           <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>

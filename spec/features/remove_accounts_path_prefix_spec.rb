@@ -22,7 +22,7 @@ describe "Remove accounts path prefix" do
     end
 
     it "should be start to sign up" do
-      expect_any_instance_of(SignupController).to receive(:start)
+      expect_any_instance_of(Legacy::SignupController).to receive(:start)
       request.get("/accounts/signup")
     end
   end

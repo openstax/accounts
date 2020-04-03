@@ -1,0 +1,9 @@
+<%=
+    render(
+        partial: 'newflow/signup/change_signup_email_form_template',
+        locals: {
+            submit_to_path: educator_change_signup_email_path,
+            email_address_value: @email
+        }
+    )
+%>

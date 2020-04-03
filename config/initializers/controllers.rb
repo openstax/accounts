@@ -60,8 +60,9 @@ ActionController::Base.class_exec do
   end
 
   def disable_fine_print
+    api_call? ||
+    current_user.is_anonymous? ||
     request.options? ||
-    contracts_not_required ||
-    current_user.is_anonymous?
+    contracts_not_required
   end
 end
