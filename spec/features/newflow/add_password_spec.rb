@@ -4,7 +4,7 @@ require_relative './add_reset_password_shared_examples'
 
 feature 'User adds password', js: true do
   before do
-    turn_on_feature_flag
+    turn_on_student_feature_flag
   end
 
   it_behaves_like "add_reset_password_shared_examples", :add

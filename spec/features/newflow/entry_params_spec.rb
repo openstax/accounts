@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature "Params given on entry", js: true do
   before do
-    turn_on_feature_flag
+    turn_on_student_feature_flag
     turn_on_educator_feature_flag
   end
 

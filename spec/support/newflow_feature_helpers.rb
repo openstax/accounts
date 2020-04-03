@@ -65,7 +65,7 @@ def strip_html(text)
   ActionView::Base.full_sanitizer.sanitize(text)
 end
 
-def turn_on_feature_flag
+def turn_on_student_feature_flag
   Settings::Db.store.student_feature_flag = true
 end
 

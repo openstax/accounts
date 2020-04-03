@@ -2,7 +2,7 @@ RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
   let(:type) { parameter }
 
   before(:each) do
-    turn_on_feature_flag
+    turn_on_student_feature_flag
 
     @user = create_user 'user'
     @login_token = generate_login_token_for 'user'

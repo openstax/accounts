@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Sign in using signed parameters', js: true do
   before do
-    turn_on_feature_flag
+    turn_on_student_feature_flag
   end
 
   background do
