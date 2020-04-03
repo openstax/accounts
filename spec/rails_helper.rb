@@ -50,7 +50,7 @@ end
 
 Capybara.javascript_driver = :selenium_chrome_headless
 
-if ENV['NOT_HEADLESS']
+if EnvUtilities.load_boolean(name: 'HEADLESS', default: false)
   # Run the feature specs in a full browser (note, this takes over your computer's focus)
   Capybara.javascript_driver = :selenium_chrome
 end
