@@ -9,7 +9,7 @@ module Newflow
       except: [:profile_newflow, :verify_pin, :signup_done]
 
     before_action :newflow_authenticate_user!, only: [:profile_newflow]
-    before_action :save_new_params_in_session, only: [:login_form, :welcome]
+    before_action :save_new_params_in_session, only: [:login_form]
     before_action :store_authorization_url_as_fallback, only: [:login_form, :login, :student_signup_form, :student_signup]
     before_action :maybe_skip_to_sign_up, only: [:login_form]
     before_action :known_signup_role_redirect, only: [:login_form]
