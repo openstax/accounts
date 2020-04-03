@@ -3,6 +3,7 @@ require 'rails_helper'
 feature "Params given on entry", js: true do
   before do
     turn_on_feature_flag
+    turn_on_educator_feature_flag
   end
 
   context "go=signup" do
@@ -29,16 +30,36 @@ feature "Params given on entry", js: true do
       @app.update_attribute :redirect_uri, "#{@app.redirect_uri}\n#{alt_signup_url}"
     end
 
-    scenario "arriving from app" do
-      arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
-      click_link(t :"login_signup_form.sign_up")
-      expect(page).to have_content(alt_signup_content)
+    context 'student' do
+      scenario 'arriving from app gets redirected to alternate signup url' do
+        arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
+        click_link(t :"login_signup_form.sign_up")
+        click_link(t :"login_signup_form.student")
+        expect(page).to have_content(alt_signup_content)
+      end
+
+      scenario 'student straight to login gets redirected to alternate signup url' do
+        visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
+        click_link(t :"login_signup_form.sign_up")
+        click_link(t :"login_signup_form.student")
+        expect(page).to have_content(alt_signup_content)
+      end
     end
 
-    scenario "straight to login" do
-      visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
-      click_link(t :"login_signup_form.sign_up")
-      expect(page).to have_content(alt_signup_content)
+    context 'educator' do
+      scenario 'arriving from app proceeds to signup form' do
+        arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
+        click_link(t :"login_signup_form.sign_up")
+        click_link(t :"login_signup_form.educator")
+        expect(page.current_path).to eq(educator_signup_path)
+      end
+
+      scenario 'straight to login proceeds to signup form' do
+        visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
+        click_link(t :"login_signup_form.sign_up")
+        click_link(t :"login_signup_form.educator")
+        expect(page.current_path).to eq(educator_signup_path)
+      end
     end
   end
 end
