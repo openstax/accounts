@@ -65,8 +65,12 @@ def strip_html(text)
   ActionView::Base.full_sanitizer.sanitize(text)
 end
 
-def turn_on_feature_flag # TODO: move into general spec helpers, not just feature spec helpers
+def turn_on_feature_flag
   Settings::Db.store.student_feature_flag = true
+end
+
+def turn_on_educator_feature_flag
+  Settings::Db.store.educator_feature_flag = true
 end
 
 def expect_sign_up_welcome_tab
