@@ -176,6 +176,7 @@ module Newflow
 
             if !user.activated?
               # not activated means signup
+              # NOTE: not necessarily "unverified" user, just not activated 😣. # TODO: refactor
               save_unverified_user(user)
               @first_name = user.first_name
               @last_name = user.last_name
@@ -368,7 +369,7 @@ module Newflow
       id = session[:unverified_user_id]&.to_i
       return unless id.present?
 
-      @unverified_user ||= User.find_by(id: id, state: 'unverified')
+      @unverified_user ||= User.find_by(id: id)
     end
 
     def exit_newflow_signup_if_logged_in
