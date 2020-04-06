@@ -7,7 +7,7 @@ module Newflow
         load('db/seeds.rb')
       end
 
-      let(:result) do
+      let(:subject) do
         described_class.call(params: params)
       end
 
@@ -22,7 +22,7 @@ module Newflow
             newsletter: true,
             contract_1_id: FinePrint::Contract.first.id,
             contract_2_id: FinePrint::Contract.second.id,
-            role: 'student'
+            role: :student
           }
         }
       end
@@ -32,15 +32,15 @@ module Newflow
       end
 
       it 'creates an (unverified) user with role = student' do
-        expect { result }.to change { User.where(state: 'unverified', role: 'student').count }
+        expect { subject }.to change { User.where(state: 'unverified', role: 'student').count }
       end
 
       it 'creates an identity' do
-        expect { result }.to change { Identity.count }
+        expect { subject }.to change { Identity.count }
       end
 
       it 'creates an authentication with provider = identity' do
-        expect { result }.to change { Authentication.where(provider: 'identity').count }
+        expect { subject }.to change { Authentication.where(provider: 'identity').count }
       end
 
       it 'agrees to terms of use and privacy policy when contracts_required' do
@@ -60,7 +60,7 @@ module Newflow
       end
 
       it 'creates an email address' do
-        expect { result }.to change { EmailAddress.count }
+        expect { subject }.to change { EmailAddress.count }
       end
 
       it 'sends a confirmation email' do
@@ -69,13 +69,71 @@ module Newflow
             hash_including({ email_address: an_instance_of(EmailAddress) })
           )
         )
-        result
+        subject
       end
 
       it 'stores selection in User whether to receive newsletter or not' do
         expect(User.new.receive_newsletter).to be_falsey
-        result
+        subject
         expect(User.last.receive_newsletter).to be(true)
+      end
+
+      it 'outputs a user' do
+        expect(subject.outputs.user).to be_present
+      end
+    end
+
+    context 'success -- when a user that already had an account, then tries to sign up using signed params (so via an LMS)' do
+      before(:all) do
+        load('db/seeds.rb')
+      end
+
+      let(:email) do
+        Faker::Internet.free_email
+      end
+
+      let(:signed_params) do
+        {
+          uuid: Faker::Internet.uuid,
+          email: email,
+          school: 'some school',
+          role: 'student',
+          name: 'Bryan Dimas'
+        }.with_indifferent_access
+      end
+
+      let(:params) do
+        {
+          signup: {
+            first_name: 'Bryan',
+            last_name: 'Dimas',
+            email: email,
+            school: 'Rice University',
+            password: Faker::Internet.password(min_length: 8),
+            terms_accepted: true,
+            newsletter: true,
+            contract_1_id: FinePrint::Contract.first.id,
+            contract_2_id: FinePrint::Contract.second.id,
+            role: :student
+          }
+        }
+      end
+
+      let(:user_from_signed_params) do
+        Newflow::FindOrCreateUserFromSignedParams.call(signed_params).outputs.user
+      end
+
+      let(:subject) do
+        described_class.call(params: params, user_from_signed_params: user_from_signed_params)
+      end
+
+      it 'outputs a user' do
+        expect(subject.outputs.user).to be_present
+      end
+
+      it 'only creates one user' do
+        subject
+        expect(User.count).to eq(1)
       end
     end
 
