@@ -176,14 +176,9 @@ module Newflow
 
             if !user.activated?
               # not activated means signup
-              # Users could have started signing up in the old flow in which case their state is 'needs_profile'
-              # ... in the new flow, that translates to 'unverified'. So update the user state:
-              if user.state == 'needs_profile'
-                user.update_attributes(state: 'unverified', is_newflow: true)
-                security_log(:user_updated, user: user, state_was: 'needs_profile', state_changed_to: 'unverified')
-              end
+              unverified_user = EnsureUnverifiedUser.call(user).outputs.user
 
-              save_unverified_user(user)
+              save_unverified_user(unverified_user)
               @first_name = user.first_name
               @last_name = user.last_name
               @email = @handler_result.outputs.email
