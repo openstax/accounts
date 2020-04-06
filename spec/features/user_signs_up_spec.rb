@@ -67,7 +67,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     options = find_all('#signup_role option').map(&:value)
     expect(options).to include('student')
 
-    turn_on_feature_flag
+    turn_on_student_feature_flag
     visit signup_path(bpff: 9) # "bpff" = "bypass feature flag" so we can get to the old flow
     options = find_all('#signup_role option').map(&:value)
     expect(options).not_to include('student')

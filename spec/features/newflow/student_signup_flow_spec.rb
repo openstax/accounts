@@ -163,7 +163,7 @@ module Newflow
 
     context 'happy path with signed params and feature flag ON' do
       before do
-        turn_on_feature_flag
+        turn_on_student_feature_flag
       end
 
       background do

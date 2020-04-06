@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'User updates password on profile screen', js: true do
   before(:each) do
-    turn_on_feature_flag
+    turn_on_student_feature_flag
 
     @user = create_user('user')
     visit '/'

@@ -61,6 +61,9 @@ RSpec.configure do |config|
     EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new
   end
 
+  config.before(:all) do
+    load('db/seeds.rb')
+  end
   config.before(:each) do
     # Get rid of possibly-shared config setting cache values between test and dev or any leftover
     # cached values from other test runs. This is 15 seconds faster than `Rails.cache.clear`
