@@ -12,6 +12,17 @@ $('[data-ga-category]').on('click', function() {
   var category = $(this).data('ga-category');
   var action = $(this).data('ga-action');
   var label = $(this).data('ga-label');
+  if(typeof $(this).data('using-openstax') !== 'undefined')
+  {
+    var adopter = 'Not An Adopter';
+    if($(this).data('using-openstax') == true)
+    {
+       adopter = 'Adopter';
+    }
+
+    ga('set', {'dimension2': adopter});
+  }
+  
   ga('send', {
     hitType: 'event',
     eventCategory: category,

@@ -61,8 +61,9 @@
 </style>
 
 <%= ox_card do %>
+  <% @using_os = current_user.using_openstax %>
   <div class="profile-title">
-    <%= link_to ('Log out'), newflow_logout_path, class: 'sign-out', :data => {:'ga-category' => 'Logout', 'ga-action': 'Click', 'ga-label': 'Logout'} %>
+    <%= link_to ('Log out'), newflow_logout_path, class: 'sign-out', :data => {:'ga-category' => 'Logout', 'ga-action': 'Click', 'ga-label': 'Logout', 'using-openstax': @using_os } %>
     <h1 class="title"><%= t(:"login_signup_form.profile_newflow_page_header") %></h1>
   </div>
 
@@ -97,7 +98,7 @@
       <% current_user.email_addresses.order(:created_at).each do |email| %>
         <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
       <% end %>
-      <%= link_to t(:"users.edit.add_email_address"), '#', { id: 'add-an-email', data: { 'ga-category': 'My Account', 'ga-action': 'Click', 'ga-label': 'Add Email Address' } } %>
+      <%= link_to t(:"users.edit.add_email_address"), '#', { id: 'add-an-email', data: { 'ga-category': 'My Account', 'ga-action': 'Click', 'ga-label': 'Add Email Address', 'using-openstax': @using_os } } %>
     </div>
   </div>
 

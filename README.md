@@ -326,13 +326,16 @@ Password Reset
 |Login|Click|Password Reset|
 
 Add Email Address
-| Category | Action | Label |
-|----------|--------|-------|
-|My Account|Click|Add Email Address|
+| Category | Action | Label |Dimension|
+|----------|--------|-------|---------|
+|My Account|Click|Add Email Address| dimension2: Adopter or Not An Adopter|
 
 Close the Profile Page
 | Category | Action | Label |Description|
 |----------|--------|-------|-----------|
 |My Account|Click|Close Window|User closes the tab. This is somewhat unreliable since it can be triggered by other actions such as refeshing the page|
 
-
+User logs out of Accounts Profile page
+| Category | Action | Label |Dimension|
+|----------|--------|-------|---------|
+|Logout|Click|Logout| dimension2: Adopter or Not An Adopter|
