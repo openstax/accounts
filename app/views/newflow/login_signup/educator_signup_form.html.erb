@@ -11,7 +11,6 @@
   @min_passw_length ||= Identity::MIN_PASSWORD_LENGTH
 
   user_from_signed_params = session[:user_from_signed_params] || {}
-
 %>
 
 <div id="login-signup-form">
@@ -65,7 +64,6 @@
           <%=
             fh.text_field name: :phone_number,
                           type: 'tel',
-                          # value: "(541)420-7890",
                           supplemental_class: 'int-country-code form-control wide',
                           placeholder:  I18n.t(:'login_signup_form.phone_number_placeholder'),
                           onkeydown: 'javascript:backspacerDOWN(this,event);',
@@ -74,7 +72,7 @@
           %>
         </div>
 
-        <div class="content control-group email-input-group newform">
+        <div class="content control-group email-input-group newflow">
           <%= label_tag :email, I18n.t(:"login_signup_form.school_issued_email_label"), class: 'field-label' %>
           <%=
             fh.text_field(

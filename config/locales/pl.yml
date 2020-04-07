@@ -30,7 +30,7 @@ pl:
     contact_us: Skontaktuj się z nami
     welcome_page_header: Witamy! Dołącz do OpenStax jako
     email_placeholder: ja@moj-email.com
-    phone_number_placeholder: '(555) 555-5555'
+    phone_number_placeholder: '+1(555)555-5555'
     school_issued_email_placeholder: email@myschool.edu
     first_name_label: Imię
     last_name_label: Nazwisko

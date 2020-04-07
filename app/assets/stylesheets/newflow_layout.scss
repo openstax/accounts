@@ -80,10 +80,6 @@ input.has-error {
     @extend %has-error;
 }
 
-.email-input-group .warning.edu {
-   color: #c22032;
-}
-
 // Add a star * to form fields that are required
 label.required::after {
     content: " *";
@@ -542,7 +538,15 @@ input.has-error {
 // Improve vertical spacing
 
 #login-signup-form  {
-    .page-header {
+  .email-input-group .warning.edu {
+    color: #c22032;
+  }
+
+  input.int-country-code {
+    padding-left: 50px;
+  }
+
+  .page-header {
         margin-bottom: 0;
         padding-top: 2.85rem;
     }
