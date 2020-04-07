@@ -92,10 +92,7 @@
               <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
                             class: 'field-label'
               %>
-              <span id="password-show-hide-button">
-                                    <span class="toggle-show-hide">SHOW</span>
-                                    <span class="toggle-show-hide" style="display: none">HIDE</span>
-                                </span>
+              <%= render partial: 'password_show_hide'  %>
               <%=
                 fh.text_field(
                   name: :password,
@@ -103,14 +100,7 @@
                   placeholder: I18n.t(:"login_signup_form.password_label")
                 )
               %>
-              <div class="tooltip">
-                <h4>Password requirements</h4>
-                <div>
-                  <i id="password-requirements-checkmark" class="fa fa-check-circle">
-                  </i>
-                  <%= @min_passw_length&.to_s %> characters minimum
-                </div>
-              </div>
+              <%= render partial: 'password_tooltip' %>
             </div>
           </div>
         </div>
@@ -154,15 +144,4 @@
 
 <script type="text/javascript">
   Accounts.Ui.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
-
-  var pwd_input = document.getElementById('signup_password');
-  var pwd_checkmark = document.getElementById('password-requirements-checkmark');
-
-  pwd_input.oninput = function(event){
-    if (pwd_input.value.length >= <%= @min_passw_length %>) {
-      pwd_checkmark.classList.add("success");
-    } else {
-      pwd_checkmark.classList.remove("success");
-    }
-  }
 </script>

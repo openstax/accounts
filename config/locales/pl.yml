@@ -108,6 +108,8 @@ pl:
     last_name_is_blank: Wpisz nazwisko
     email_is_blank: Musisz podać adres e-mail
     password_is_blank: Wpisz hasło
+    password_requirements: Wymagania dotyczące hasła
+    min_characters: "%{number} znaków minimum"
 
   student_profile:
     enable_other_sign_in_options: Zezwól na inne opcje logowania
