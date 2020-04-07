@@ -11,12 +11,19 @@ $(document).ready(function(){
   OX.Signup.TypeSelector.initialize();
   $('[data-toggle="tooltip"]').tooltip()
 
-  var input = document.querySelector(".int-country-code");
+  let input = document.querySelector(".int-country-code");
   if ( input !== null ) {
-    window.intlTelInput(input, {
+    let form = input.closest('form');
+    let telInput = intlTelInput(input, {
       formatOnInit: true,
-      separateDialCode: true,
       preferredCountries: ['us', 'pl']
     });
+
+    function step1_submit(event) {
+      let phone_num = telInput.getNumber();
+      $(".int-country-code").val(phone_num);
+      return true;
+    }
+    form.addEventListener('submit', step1_submit);
   }
 });
