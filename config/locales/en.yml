@@ -109,6 +109,8 @@ en:
     password_is_blank: Password can't be blank
     password_requirements: Password requirements
     min_characters: "%{number} characters minimum"
+    show_password_btn: SHOW
+    hide_password_btn: HIDE
 
   student_profile:
     enable_other_sign_in_options: Enable other login options
