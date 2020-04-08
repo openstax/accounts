@@ -17,7 +17,22 @@ function ParseForNumber2(object) {
   phonevalue2 = ParseChar(object.value, zChar);
 }
 
+function isUSA() {
+  /* Testing for USA because this formatting JS is USA format only. The   */
+  /* iti__ selector is from the intlTelInput plugin (a coupling)          */
+  if ( $('#login-signup-form .iti__selected-flag').attr( "title") === "United States: +1" ) {
+    return true
+  }
+  else {
+    return false
+  }
+}
+
 function backspacerUP(object, e) {
+  if ( !isUSA() ) {
+    return true;
+  }
+
   if (e) {
     e = e
   } else {
@@ -37,6 +52,10 @@ function backspacerUP(object, e) {
 }
 
 function backspacerDOWN(object, e) {
+  if ( !isUSA() ) {
+    return true;
+  }
+
   if (e) {
     e = e
   } else {
@@ -47,6 +66,7 @@ function backspacerDOWN(object, e) {
   } else {
     var keycode = e.keyCode
   }
+
   ParseForNumber2(object)
 }
 
