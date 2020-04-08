@@ -271,9 +271,10 @@ module Newflow
         },
         failure: lambda {
           user = @handler_result.outputs.user
+          email = @handler_result.outputs.email
           code = @handler_result.errors.first.code
-          security_log :reset_password_failed, user: user, reason: code
-          redirect_to newflow_login_path
+          security_log :reset_password_failed, user: user, email: email, reason: code
+          render :forgot_password_form
         }
       )
     end

@@ -14,11 +14,17 @@ module Newflow
     protected #################
 
     def authorized?
-      forgot_password_form_params.email.present? || logged_in_user
+      true
     end
 
     def handle
       outputs.email = forgot_password_form_params.email
+
+      fatal_error(code: :blank,
+        offending_inputs: :email,
+        message: I18n.t(:"login_signup_form.email_is_blank")
+      ) unless outputs.email.present? || logged_in_user
+
       user = logged_in_user || LookupUsers.by_verified_email(outputs.email).first
 
       fatal_error(code: :cannot_find_user,
