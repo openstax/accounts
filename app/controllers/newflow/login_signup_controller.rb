@@ -51,6 +51,8 @@ module Newflow
     def educator_signup
       handle_with(
         EducatorSignup,
+        contracts_required: !contracts_not_required,
+        client_app: get_client_app,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user)
           security_log :educator_signed_up, { user: @handler_result.outputs.user }
