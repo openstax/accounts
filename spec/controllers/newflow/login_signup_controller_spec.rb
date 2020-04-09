@@ -433,7 +433,6 @@ module Newflow
 
       before do
         allow_any_instance_of(OauthCallback).to receive(:oauth_response)  do
-          # TODO: refactor this?
           MockOmniauthRequest.new(params[:provider], params[:uid], info).env['omniauth.auth']
         end
       end
@@ -516,7 +515,6 @@ module Newflow
 
           before do
             allow_any_instance_of(OauthCallback).to receive(:oauth_response)  do
-              # TODO: refactor this?
               MockOmniauthRequest.new(params[:provider], params[:uid], info).env['omniauth.auth']
             end
           end
