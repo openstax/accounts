@@ -138,7 +138,7 @@
 
         <div class="content">
           <%= f.submit I18n.t(:"login_signup_form.continue_button"),
-                       data: { disable_with: I18n.t(:"login_signup_form.continue_button") },
+                       data: { disable_with: false },
                        class: 'primary', id: 'signup_form_submit_button',
                        :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email'} %>
         </div>
@@ -147,7 +147,7 @@
   </div>
 
   <% content_for :page_specific do %>
-    <%= javascript_include_tag 'signup/email-value2' %>
+    <%= javascript_include_tag 'newflow_signup/email-value' %>
   <% end %>
 </div>
 

@@ -22,5 +22,6 @@ Rails.application.config.assets.precompile += %w(
   newflow_layout.css
   newflow_colors.css
   newflow.js
-  signup/email-value2.coffee
+  signup/email-value.coffee
+  newflow_signup/email-value.coffee
 )
