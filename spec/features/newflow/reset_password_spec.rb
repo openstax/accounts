@@ -116,7 +116,7 @@ feature 'Password reset', js: true do
     end
   end
 
-  scenario 'failure to send reset email sends user back to authenticate page' do
+  scenario 'failure to send reset email (re-) renders the forgot password form' do
     create_newflow_user('user@openstax.org', 'password')
     visit newflow_login_path
     newflow_log_in_user('user@openstax.org', 'WRONGpassword')
@@ -130,7 +130,7 @@ feature 'Password reset', js: true do
 
     click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
 
-    expect(page.current_path).to eq(newflow_login_path)
+    expect(page.current_path).to eq(send_reset_password_email_path)
     # expect a security log as well
     expect(SecurityLog.where(reason: :reset_password_failed, user: User.last))
   end

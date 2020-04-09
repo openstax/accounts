@@ -20,7 +20,7 @@ module Newflow
     def handle
       outputs.email = forgot_password_form_params.email
 
-      fatal_error(code: :blank,
+      fatal_error(code: :email_is_blank,
         offending_inputs: :email,
         message: I18n.t(:"login_signup_form.email_is_blank")
       ) unless outputs.email.present? || logged_in_user

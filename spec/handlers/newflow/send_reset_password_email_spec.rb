@@ -54,5 +54,23 @@ module Newflow
         expect(result).to have_routine_error(:cannot_find_user)
       end
     end
+
+    context 'when no email present and no logged in user' do
+      let(:params) do
+        {
+          forgot_password_form: {
+            email: ''
+          }
+        }
+      end
+
+      let(:subject) do
+        described_class.call(params: params, caller: AnonymousUser.instance)
+      end
+
+      it 'returns fatal error email is blank' do
+        expect(subject).to have_routine_error(:email_is_blank)
+      end
+    end
   end
 end
