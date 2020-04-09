@@ -53,27 +53,25 @@ body {
 }
 
 .form-divider {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #424242;
+    display: grid;
+    grid-column-gap: 2rem;
+    grid-template-columns: 1fr auto 1fr;
+    justify-items: center;
     text-align: center;
-    position: relative;
 
-    &:after {
-        border-top: 0.1rem solid #d5d5d5;
-        content: '';
-        display: block;
-        width: calc(50% - 7rem);
-        right: 0px;
-        position: absolute;
-        top: 50%;
+    .line {
+        border-bottom: 0.1rem solid #d5d5d5;
+        width: 100%;
+        height: 0.1rem;
+        transform: translateY(1rem);
     }
 
-    &:before {
-        border-top: 0.1rem solid #d5d5d5;
-        content: '';
-        display: block;
-        width: calc(50% - 7rem);
-        left: 0px;
-        position: absolute;
-        top: 50%;
+    .the-content {
+        max-width: calc(100vw - 18rem);
+        text-align: center;
     }
 }
 
@@ -505,16 +503,6 @@ input.has-error {
                 height: 1.4rem;
             }
         }
-    }
-
-    .form-divider {
-        @include width-up-to($phone-max) {
-            margin-top: -1.5rem;
-        }
-
-        font-weight: bold;
-        font-size: 1.2rem;
-        text-align: center;
     }
 
     // informational messages shown to users, for example on email confirmation screen
