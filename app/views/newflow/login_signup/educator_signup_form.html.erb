@@ -83,10 +83,17 @@
             )
           %>
           <%# shows up only when faculty tries wants to use a non-edu email %>
-          </br>
+          <br/>
           <div class="warning edu">
             <%= t 'login_signup_form.teacher_school_email_warning', button: (t :'login_signup_form.continue_button') %>
           </div>
+
+        <%# shows up only if we think that non-faculty might've mistyped their email address,
+                using mailcheck.js %>
+        <div class="warning mistype">
+          placeholder for mistype warning
+        </div>
+
         </div>
 
         <%# Hide the password field if student contains signed parameters %>
@@ -147,10 +154,11 @@
   </div>
 
   <% content_for :page_specific do %>
-    <%= javascript_include_tag 'newflow_signup/email-value' %>
+    <%= javascript_include_tag 'newflow/signup_email_validations' %>
   <% end %>
 </div>
 
 <script type="text/javascript">
-  Accounts.Ui.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
+  NewflowUi.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
+  new NewflowUi.SignupEmailValidations();
 </script>

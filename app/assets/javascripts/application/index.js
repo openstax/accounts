@@ -17,5 +17,3 @@
 //= require ./ui
 //= require ./remote-access-helpers
 //= require_self
-//= require intlTelInput
-//= require libphonenumber/utils

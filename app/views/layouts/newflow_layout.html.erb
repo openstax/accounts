@@ -6,11 +6,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
+        <% if @redirect_url %>
+        <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
+        <% end %>
+
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
         <title>OpenStax Accounts</title>
-        <%= stylesheet_link_tag 'newflow_layout', media: 'all', 'data-turbolinks-track' => true %>
+        <%= stylesheet_link_tag 'newflow', media: 'all', 'data-turbolinks-track' => true %>
         <%= javascript_include_tag 'newflow', 'data-turbolinks-track' => true %>
         <%= csrf_meta_tags %>
 
+        <% if !Rails.env.test? %>
+            <script src="https://cdn.optimizely.com/js/1345615444.js"></script>
+        <% end %>
 
       <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
