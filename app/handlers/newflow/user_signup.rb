@@ -86,6 +86,7 @@ module Newflow
     def create_user
       user = User.create(
         state: 'unverified',
+        return_to: options[:return_to],
         role: signup_params.role,
         first_name: signup_params.first_name,
         last_name: signup_params.last_name,

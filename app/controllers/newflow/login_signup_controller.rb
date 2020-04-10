@@ -70,6 +70,7 @@ module Newflow
         StudentSignup,
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
+        return_to: session[:return_to],
         user_from_signed_params: session[:user_from_signed_params],
         success: lambda {
           save_unverified_user(@handler_result.outputs.user)
