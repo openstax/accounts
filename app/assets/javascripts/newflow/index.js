@@ -4,7 +4,7 @@
 //= require ../vendor/underscore
 //= require ../vendor/mailcheck
 //= require ./newflow_ui
-//= require ./signup_email_validations
+//= require ./educator_signup_email_validations
 //= require intlTelInput
 //= require libphonenumber/utils
 //= require ./phone-number

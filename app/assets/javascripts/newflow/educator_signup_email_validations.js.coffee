@@ -37,8 +37,6 @@ class NewflowUi.SignupEmailValidations
             @group.find("#suggestion").text(suggestion.domain)
             @group.find(".mistype.warning").show()
             $('#signup_email').focus()
-            # $('#signup_form_submit_button').removeAttr('disabled');
-            NewflowUi.enableButton('#signup_form_submit_button');
             ev.preventDefault()
 
           empty: (element) ->

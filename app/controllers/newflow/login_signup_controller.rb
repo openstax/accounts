@@ -62,7 +62,6 @@ module Newflow
           email = @handler_result.outputs.email
           error_codes = @handler_result.errors.map(&:code)
           security_log(:educator_sign_up_failed, { reason: error_codes, email: email })
-          # redirect_to educator_signup_path
           render :educator_signup_form
         }
       )

@@ -77,7 +77,7 @@
           <%=
             fh.text_field(
               name: :email,
-              supplemental_class: 'signup_email',
+              supplemental_class: 'myschool_email',
               value: user_from_signed_params.dig('signed_external_data', 'email'),
               placeholder: I18n.t(:"login_signup_form.school_issued_email_placeholder")
             )
@@ -145,7 +145,7 @@
 
         <div class="content">
           <%= f.submit I18n.t(:"login_signup_form.continue_button"),
-                       data: { disable_with: false },
+                       data: { disable_with: I18n.t(:"login_signup_form.continue_button") },
                        class: 'primary', id: 'signup_form_submit_button',
                        :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email'} %>
         </div>
@@ -154,7 +154,7 @@
   </div>
 
   <% content_for :page_specific do %>
-    <%= javascript_include_tag 'newflow/signup_email_validations' %>
+    <%= javascript_include_tag 'newflow/educator_signup_email_validations' %>
   <% end %>
 </div>
 
