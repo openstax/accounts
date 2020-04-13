@@ -617,7 +617,7 @@ module Newflow
 
       context 'failure' do
           let(:params) do
-            { forgot_password_form: { email: 'rubbish' } }
+            { forgot_password_form: { email: '' } }
           end
 
           it 'creates a Security Log' do
@@ -628,9 +628,9 @@ module Newflow
             }
           end
 
-          it 'redirects to login path' do
+          it 'renders forgot password form' do
             post('send_reset_password_email', params: params)
-            expect(response).to redirect_to(newflow_login_path)
+            expect(response).to render_template(:forgot_password_form)
           end
       end
     end
