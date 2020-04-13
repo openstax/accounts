@@ -281,6 +281,9 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/external_app_for_specs' => 'external_app_for_specs#index' if Rails.env.test?
+  if Rails.env.test?
+    get '/external_app_for_specs' => 'external_app_for_specs#index'
+    get '/external_app_for_specs/public' => 'external_app_for_specs#public'
+  end
 end
 # rubocop:enable Metrics/BlockLength

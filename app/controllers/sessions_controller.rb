@@ -20,7 +20,9 @@ class SessionsController < ApplicationController
   skip_before_action :complete_signup_profile, only: [:destroy]
 
   before_action :save_new_params_in_session, only: [:start]
-  before_action :store_authorization_url_as_fallback, only: [:start, :create]
+  before_action :store_authorization_url_as_fallback,
+    only: [:start, :create],
+    unless: -> { Settings::Db.store.student_feature_flag }
 
   before_action :maybe_skip_to_sign_up, only: [:start]
 

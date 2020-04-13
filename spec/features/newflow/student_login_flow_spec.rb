@@ -139,6 +139,41 @@ feature 'student login flow', js: true do
         expect(page).to have_text('This is another banner.')
         screenshot!
       end
+
+      context 'when user clicks X icon' do
+        context "when user arrived from oauth app" do
+          let(:app) do
+            app = FactoryBot.create(:doorkeeper_application, skip_terms: true,
+                          can_access_private_user_data: true,
+                          can_skip_oauth_screen: true)
+            FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
+            app.update_column(:redirect_uri, external_public_url)
+            app
+          end
+
+          it 'takes user back to app' do
+            with_forgery_protection do
+              arrive_from_app(app: app)
+              find('#exit-icon a').click
+              wait_for_animations
+              wait_for_ajax
+              expect(page.current_url).to match(external_public_url)
+            end
+          end
+        end
+
+        context "when user arrived with `r`eturn param" do
+          it 'takes user back to `r`eturn url' do
+            with_forgery_protection do
+              visit(newflow_login_path(r: external_public_url))
+              find('#exit-icon a').click
+              wait_for_animations
+              wait_for_ajax
+              expect(page.current_url).to match(external_public_url)
+            end
+          end
+        end
+      end
     end
   end
 
