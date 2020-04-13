@@ -1,21 +1,19 @@
 IS_EDU = new RegExp('\.edu\s*$', 'i')
 
-class OX.Signup.EmailValue
+class NewflowUi.SignupEmailValidations
 
   constructor: ->
     _.bindAll(@, 'onChange', 'onSubmit')
     @group = $('.email-input-group.newflow')
     @email = @group.find('.signup_email').show()
-    @group.find(".edu.warning").hide();
     @email.change(@onChange)
     @group.closest('form').submit(@onSubmit)
-    @userType = ''
+    @userType = 'instructor'
     Mailcheck.defaultTopLevelDomains.concat(['pl']) # extend TLDs for our Polish users
 
   onChange: ->
     if @showing_warning
       @clearWarnings()
-
 
   onSubmit: (ev) ->
     if not ((@email.val() == '') or @showing_warning or IS_EDU.test(@email.val()))
@@ -26,6 +24,10 @@ class OX.Signup.EmailValue
         @group.find(".edu.warning").show()
         @email.focus()
         ev.preventDefault()
+        window.setTimeout ( ->
+          if ($('#signup_terms_accepted').is(':checked'))
+            $('#signup_form_submit_button').prop('disabled', false)
+        ), 100
       else
         $("#signup_email").mailcheck(
           suggested: (element, suggestion) =>
@@ -35,6 +37,8 @@ class OX.Signup.EmailValue
             @group.find("#suggestion").text(suggestion.domain)
             @group.find(".mistype.warning").show()
             $('#signup_email').focus()
+            # $('#signup_form_submit_button').removeAttr('disabled');
+            NewflowUi.enableButton('#signup_form_submit_button');
             ev.preventDefault()
 
           empty: (element) ->
@@ -46,11 +50,10 @@ class OX.Signup.EmailValue
     @group.find(".edu.warning").hide()
     @group.find(".mistype.warning").hide()
     @showing_warning = false
-    Accounts.Ui.checkCheckedButton('#signup_form_submit_button', '#signup_terms_accepted')
+    @checkCheckedButton('#signup_form_submit_button', '#signup_terms_accepted')
 
-  setType: (newUserType) ->
-    newUserType = if newUserType == "student" then "student" else "instructor"
-    @group.find("[data-audience=\"#{@userType}\"]").hide()
-    @userType = newUserType
-    @group.find("[data-audience=\"#{@userType}\"]").show()
-
+  checkCheckedButton: (targetSelector, sourceSelector) ->
+    if $(sourceSelector).is(':checked')
+      @enableButton(targetSelector)
+    else
+      @disableButton(targetSelector)

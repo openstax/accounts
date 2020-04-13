@@ -19,8 +19,9 @@ Rails.application.config.assets.precompile += %w(
   intTelInput.css
   libphonenumber/utils.js
   syntax_highlight.css
-  newflow_layout.css
+  newflow.css
   newflow_colors.css
   newflow.js
-  signup/email-value2.coffee
+  signup/email-value.coffee
+  newflow/signup_email_validations.coffee
 )
