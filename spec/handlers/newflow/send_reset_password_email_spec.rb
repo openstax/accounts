@@ -59,17 +59,17 @@ module Newflow
       let(:params) do
         {
           forgot_password_form: {
-            email: ''
+            email: nil
           }
         }
       end
 
-      let(:subject) do
+      subject(:result) do
         described_class.call(params: params, caller: AnonymousUser.instance)
       end
 
       it 'returns fatal error email is blank' do
-        expect(subject).to have_routine_error(:email_is_blank)
+        expect(result).to have_routine_error(:email_is_blank)
       end
     end
   end
