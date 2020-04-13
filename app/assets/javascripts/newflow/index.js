@@ -1,5 +1,5 @@
 //= require jquery
-// TEMPORARILY COMMENTED OUT require jquery_ujs
+//= require jquery_ujs
 //= require bootstrap
 //= require ../vendor/underscore
 //= require ../vendor/mailcheck
@@ -50,5 +50,4 @@ $(document).ready(function(){
     }
     form.addEventListener('submit', step1_submit);
   }
-
 });

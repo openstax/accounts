@@ -24,6 +24,10 @@ class NewflowUi.SignupEmailValidations
         @group.find(".edu.warning").show()
         @email.focus()
         ev.preventDefault()
+        window.setTimeout ( ->
+          if ($('#signup_terms_accepted').is(':checked'))
+            $('#signup_form_submit_button').prop('disabled', false)
+        ), 100
       else
         $("#signup_email").mailcheck(
           suggested: (element, suggestion) =>
