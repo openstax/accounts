@@ -110,6 +110,8 @@ pl:
     password_is_blank: Wpisz hasło
     password_requirements: Wymagania dotyczące hasła
     min_characters: "%{number} znaków minimum"
+    show_password_btn: POKAZAĆ
+    hide_password_btn: UKRYĆ
 
   student_profile:
     enable_other_sign_in_options: Zezwól na inne opcje logowania
