@@ -48,10 +48,10 @@ Capybara.register_driver :selenium_chrome_headless do |app|
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
 
-Capybara.javascript_driver = :selenium_chrome_headless
-
 if EnvUtilities.load_boolean(name: 'HEADLESS', default: false)
   # Run the feature specs in a full browser (note, this takes over your computer's focus)
+  Capybara.javascript_driver = :selenium_chrome_headless
+else
   Capybara.javascript_driver = :selenium_chrome
 end
 

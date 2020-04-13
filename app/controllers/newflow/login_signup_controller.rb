@@ -176,7 +176,9 @@ module Newflow
 
             if !user.activated?
               # not activated means signup
-              save_unverified_user(user)
+              unverified_user = ensure_unverified_user(user)
+
+              save_unverified_user(unverified_user)
               @first_name = user.first_name
               @last_name = user.last_name
               @email = @handler_result.outputs.email
@@ -354,6 +356,10 @@ module Newflow
         # TODO: when we create the Educator flow, redirect to there.
         redirect_to newflow_signup_student_path(request.query_parameters)
       end
+    end
+
+    def ensure_unverified_user(user)
+      EnsureUnverifiedUser.call(user).outputs.user
     end
 
     def cache_client_app

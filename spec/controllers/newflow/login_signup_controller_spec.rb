@@ -433,7 +433,6 @@ module Newflow
 
       before do
         allow_any_instance_of(OauthCallback).to receive(:oauth_response)  do
-          # TODO: refactor this?
           MockOmniauthRequest.new(params[:provider], params[:uid], info).env['omniauth.auth']
         end
       end
@@ -484,23 +483,46 @@ module Newflow
       end
 
       context 'failure' do
-        before do
-          allow_any_instance_of(OauthCallback).to receive(:mismatched_authentication?).and_return(true)
+        context 'with mismatched_authentication' do
+          before do
+            allow_any_instance_of(OauthCallback).to receive(:mismatched_authentication?).and_return(true)
+          end
+
+          let(:params) do
+            { provider: 'facebook', uid: 'nonexistent' }
+          end
+
+          it 'redirects to login' do
+            get(:oauth_callback, params: params)
+            expect(response).to redirect_to(newflow_login_path)
+          end
+
+          it 'saves login failed email' do
+            expect_any_instance_of(described_class).to receive(:save_login_failed_email).and_call_original
+            get(:oauth_callback, params: params)
+            expect(session[:login_failed_email]).to eq(info[:email])
+          end
         end
 
-        let(:params) do
-          { provider: 'facebook', uid: 'nonexistent' }
-        end
+        context 'when no email address is returned' do
+          let(:info) do
+            { email: nil, name: Faker::Name.name }
+          end
 
-        it 'redirects to login' do
-          get(:oauth_callback, params: params)
-          expect(response).to redirect_to(newflow_login_path)
-        end
+          let(:params) do
+            { provider: 'facebook', uid: Faker::Internet.uuid }
+          end
 
-        it 'saves login failed email' do
-          expect_any_instance_of(described_class).to receive(:save_login_failed_email).and_call_original
-          get(:oauth_callback, params: params)
-          expect(session[:login_failed_email]).to eq(info[:email])
+          before do
+            allow_any_instance_of(OauthCallback).to receive(:oauth_response)  do
+              MockOmniauthRequest.new(params[:provider], params[:uid], info).env['omniauth.auth']
+            end
+          end
+
+          it 'fails gracefully - not returning a 500' do
+            get(:oauth_callback, params: params)
+            expect(response).not_to have_http_status(:server_error)
+          end
         end
       end
     end

@@ -118,6 +118,7 @@ def submit_signup_form
   find('#login-signup-form').click # to hide the password tooltip
   wait_for_animations
   check('signup_terms_accepted')
+  wait_for_animations
   screenshot!
   find('[type=submit]').click
 end
