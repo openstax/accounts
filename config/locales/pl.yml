@@ -30,13 +30,16 @@ pl:
     contact_us: Skontaktuj się z nami
     welcome_page_header: Witamy! Dołącz do OpenStax jako
     email_placeholder: ja@moj-email.com
-    phone_number_placeholder: '(555) 555-5555'
+    phone_number_placeholder: '+1(555)555-5555'
     school_issued_email_placeholder: email@myschool.edu
     first_name_label: Imię
     last_name_label: Nazwisko
     legal_first_name_label: Urzędowe pierwsze imię
     legal_last_name_label: Prawne nazwisko
     email_label: Adres e-mail
+    teacher_school_email_warning: >-
+      Czy to na pewno Twój szkolny adres-email? Jeżeli tak, wciśnij %{button} poniżej.
+      Jeżeli nie, wpisz adres e-mail przyznany Ci przez Twoją szkołę.
     school_issued_email_label: Adres e-mail wydany przez szkołę
     phone_number_label: Numer telefonu
     password_label: Hasło
@@ -107,6 +110,8 @@ pl:
     first_name_is_blank: Wpisz imię
     last_name_is_blank: Wpisz nazwisko
     email_is_blank: Musisz podać adres e-mail
+    phone_number_is_blank: Numer telefonu nie może być pusty
+    role_is_blank: Rola nie może być pusta
     password_is_blank: Wpisz hasło
     password_requirements: Wymagania dotyczące hasła
     min_characters: "%{number} znaków minimum"

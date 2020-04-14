@@ -538,7 +538,18 @@ input.has-error {
 // Improve vertical spacing
 
 #login-signup-form  {
-    .page-header {
+  .warning {
+    &.edu, &.mistype {
+        color: #c22032;
+        display: none;
+    }
+  }
+
+  input.int-country-code {
+    padding-left: 50px;
+  }
+
+  .page-header {
         margin-bottom: 0;
         padding-top: 2.85rem;
     }

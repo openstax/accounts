@@ -11,7 +11,6 @@
   @min_passw_length ||= Identity::MIN_PASSWORD_LENGTH
 
   user_from_signed_params = session[:user_from_signed_params] || {}
-
 %>
 
 <div id="login-signup-form">
@@ -20,7 +19,7 @@
 
     <%= newflow_login_signup_card(
           header: (I18n.t(:"login_signup_form.signup_page_header")),
-          current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
+          current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 4),
           classes: 'signup-page') do %>
       <% lev_form_for :signup, url: educator_signup_post_path do |f| %>
         <% fh = NewflowFormHelper::Newflow.new(f: f,
@@ -63,25 +62,38 @@
         <div class="content control-group">
           <%= label_tag :phone_number, I18n.t(:"login_signup_form.phone_number_label"), class: 'field-label' %>
           <%=
-            f.text_field :phone_number,
-                         type: 'tel',
-                         class: 'int-country-code form-control wide',
-                         placeholder:  I18n.t(:'login_signup_form.phone_number_placeholder'),
-                         onkeydown: 'javascript:backspacerDOWN(this,event);',
-                         onkeyup: 'javascript:backspacerUP(this,event);'
+            fh.text_field name: :phone_number,
+                          type: 'tel',
+                          supplemental_class: 'int-country-code form-control wide',
+                           placeholder:  I18n.t(:'login_signup_form.phone_number_placeholder'),
+                           onkeydown: 'javascript:backspacerDOWN(this,event);',
+                           onkeyup: 'javascript:backspacerUP(this,event);'
 
           %>
         </div>
 
-        <div class="content control-group">
+        <div class="content control-group email-input-group newflow">
           <%= label_tag :email, I18n.t(:"login_signup_form.school_issued_email_label"), class: 'field-label' %>
           <%=
             fh.text_field(
               name: :email,
+              supplemental_class: 'myschool_email',
               value: user_from_signed_params.dig('signed_external_data', 'email'),
               placeholder: I18n.t(:"login_signup_form.school_issued_email_placeholder")
             )
           %>
+          <%# shows up only when faculty tries wants to use a non-edu email %>
+          <br/>
+          <div class="warning edu">
+            <%= t 'login_signup_form.teacher_school_email_warning', button: (t :'login_signup_form.continue_button') %>
+          </div>
+
+        <%# shows up only if we think that non-faculty might've mistyped their email address,
+                using mailcheck.js %>
+        <div class="warning mistype">
+          placeholder for mistype warning
+        </div>
+
         </div>
 
         <%# Hide the password field if student contains signed parameters %>
@@ -140,8 +152,13 @@
       <% end %>
     <% end %>
   </div>
+
+  <% content_for :page_specific do %>
+    <%= javascript_include_tag 'newflow/educator_signup_email_validations' %>
+  <% end %>
 </div>
 
 <script type="text/javascript">
-  Accounts.Ui.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
+  NewflowUi.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
+  new NewflowUi.SignupEmailValidations();
 </script>

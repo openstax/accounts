@@ -29,18 +29,25 @@ module NewflowFormHelper
                    autofocus: false,
                    except: nil,
                    only: nil,
+                   supplemental_class: nil,
                    readonly: false,
                    onkeyup: nil,
                    onkeydown: nil)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
+
+      desired_class_name = "form-control wide #{'has-error' if errors_div.present?}"
+      if supplemental_class.present?
+        desired_class_name = "#{desired_class_name} #{supplemental_class}"
+      end
+
       input = (
         @f.text_field name,
         placeholder: placeholder,
         value: value,
         type: type,
-        class: "form-control wide #{'has-error' if errors_div.present?}",
+        class: desired_class_name,
         data: data(only: only, except: except),
         autofocus: autofocus,
         readonly: readonly,

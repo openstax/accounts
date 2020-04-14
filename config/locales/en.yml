@@ -30,7 +30,7 @@ en:
     contact_us: Contact us
     welcome_page_header: Welcome! Join OpenStax as
     email_placeholder: me@myemail.com
-    phone_number_placeholder: '(555) 555-5555'
+    phone_number_placeholder: '(555)555-5555'
     school_issued_email_placeholder: email@myschool.edu
     first_name_label: First name
     last_name_label: Last name
@@ -45,6 +45,9 @@ en:
     pin_not_correct: This PIN is incorrect. Please enter the correct PIN.
     continue_button: Continue
     forgot_password: Forgot your password?
+    teacher_school_email_warning:
+      Is this your school email address?  If yes, click %{button} below.
+      If not, please enter your school email address.
     or_login_below: OR LOG IN BELOW
     or_sign_up_below: OR SIGN UP BELOW
     send_me_newsletter: Send me the OpenStax newsletter
@@ -106,6 +109,8 @@ en:
     first_name_is_blank: First name can't be blank
     last_name_is_blank: Last name can't be blank
     email_is_blank: Email can't be blank
+    phone_number_is_blank: Phone number can't be blank
+    role_is_blank: Role can't be blank
     password_is_blank: Password can't be blank
     password_requirements: Password requirements
     min_characters: "%{number} characters minimum"
