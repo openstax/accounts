@@ -27,13 +27,6 @@ class ApplicationController < ActionController::Base
     current_user.is_anonymous?
   end
 
-  def complete_signup_profile
-    return true if request.format != :html || request.options?
-    redirect_to '/signup/profile' if current_user.is_needs_profile?
-    # TODO: uncomment this line after fixing openstax_path_prefixer
-    # redirect_to main_app.signup_profile_path if current_user.is_needs_profile?
-  end
-
   def check_if_password_expired
     return true if request.format != :html || request.options?
 
