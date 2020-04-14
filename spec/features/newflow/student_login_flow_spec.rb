@@ -23,13 +23,35 @@ feature 'student login flow', js: true do
     end
 
     describe 'arriving from an OAuth app' do
-      it 'sends the student back to the app' do
-        with_forgery_protection do
-          arrive_from_app(params: { newflow: true })
-          screenshot!
-          newflow_log_in_user('user@openstax.org', 'password')
-          expect_back_at_app
-          screenshot!
+      describe 'when student has signed the terms of use' do
+        it 'sends the student back to the app' do
+          with_forgery_protection do
+            arrive_from_app
+            screenshot!
+            newflow_log_in_user('user@openstax.org', 'password')
+            expect_back_at_app
+            screenshot!
+          end
+        end
+      end
+
+      describe 'when student has NOT signed the terms of use' do
+        let(:user) do
+          create_newflow_user('needs_profile_user@openstax.org', 'password', false)
+        end
+
+        before do
+          user.update(state: User::NEEDS_PROFILE)
+        end
+
+        it 'requires the student to fill out their profile (and thus sign the terms of use)' do
+          with_forgery_protection do
+            arrive_from_app
+            screenshot!
+            newflow_log_in_user('needs_profile_user@openstax.org', 'password')
+            screenshot!
+            expect(page.current_path).to match(signup_profile_path)
+          end
         end
       end
 
