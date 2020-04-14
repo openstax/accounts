@@ -1,10 +1,11 @@
 module Newflow
   class ConfirmOauthInfo
     lev_handler
+    uses_routine CreateEmailForUser
     uses_routine AgreeToTerms
     uses_routine ActivateUser
 
-    paramify :info do
+    paramify :signup do
       attribute :first_name
       attribute :last_name
       attribute :email
@@ -20,19 +21,23 @@ module Newflow
 
     protected ###############
 
-    def setup
-      @user = options[:user]
-    end
-
     def authorized?
       !@user.activated?
     end
 
+    def setup
+      @user = options[:user]
+    end
+
     def handle
+      if @user.email_addresses.none?
+        run(CreateEmailForUser, email: signup_params.email, user: @user)
+      end
+
       @user.update_attributes(
-        first_name: info_params.first_name,
-        last_name: info_params.last_name,
-        receive_newsletter: info_params.newsletter
+        first_name: signup_params.first_name,
+        last_name: signup_params.last_name,
+        receive_newsletter: signup_params.newsletter
       )
       transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
 
@@ -46,8 +51,8 @@ module Newflow
 
     def agree_to_terms(user)
       if options[:contracts_required]
-        run(AgreeToTerms, info_params.contract_1_id, user, no_error_if_already_signed: true)
-        run(AgreeToTerms, info_params.contract_2_id, user, no_error_if_already_signed: true)
+        run(AgreeToTerms, signup_params.contract_1_id, user, no_error_if_already_signed: true)
+        run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
       end
     end
   end

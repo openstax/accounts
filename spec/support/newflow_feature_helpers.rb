@@ -115,12 +115,13 @@ def newflow_expect_sign_up_page
 end
 
 def submit_signup_form
-  find('#login-signup-form').click # to hide the password tooltip
-  wait_for_animations
   check('signup_terms_accepted')
+  wait_for_ajax
   wait_for_animations
   screenshot!
   find('[type=submit]').click
+  wait_for_ajax
+  wait_for_animations
 end
 
 def generate_login_token_for_user(user)
@@ -138,4 +139,37 @@ end
 
 def expect_reauthenticate_form_page
   expect(page).to have_content(t :"login_signup_form.login_page_header")
+end
+
+# Call this method with a block to test login/signup with a social network
+def simulate_login_signup_with_social(options={})
+  options[:name] ||= 'Elon Musk'
+  options[:nickname] ||= 'elonmusk'
+  options[:uid] ||= '1234UID'
+
+  begin
+    OmniAuth.config.test_mode = true
+
+    if options[:identity_user].present?
+      identity_uid = options[:identity_user].identity.id.to_s
+
+      OmniAuth.config.mock_auth[:identity] = OmniAuth::AuthHash.new({
+        uid: identity_uid,
+        provider: 'identity',
+        info: {}
+      })
+    end
+
+    [:googlenewflow, :facebooknewflow].each do |provider|
+      OmniAuth.config.mock_auth[provider] = OmniAuth::AuthHash.new({
+        uid: options[:uid],
+        provider: provider.to_s,
+        info: { name: options[:name], nickname: options[:nickname], email: options[:email] }
+      })
+    end
+
+    yield
+  ensure
+    OmniAuth.config.test_mode = false
+  end
 end

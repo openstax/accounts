@@ -18,8 +18,8 @@
                     header: I18n.t(:"login_signup_form.confirm_your_info"),
                     current_step: I18n.t(:'login_signup_form.step_counter', current_step: 1, total_steps: 2),
                     banners: @banners) do %>
-            <% lev_form_for :info, url: confirm_oauth_info_path do |f| %>
-                <% fh = NewflowFormHelper::Newflow.new(f: f, context: self) %>
+            <% lev_form_for :signup, url: confirm_oauth_info_path do |f| %>
+                <% fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors) %>
 
                 <div class="content role-section">
                     <div>
@@ -59,12 +59,14 @@
                                     name: :email,
                                     placeholder: I18n.t(:'login_signup_form.email_label'),
                                     value: @email,
-                                    readonly: true
+                                    readonly: @email.present?
                                 )
                         %>
-                        <div class="tooltip">
-                            <%= I18n.t(:"login_signup_form.confirm_social_info_tooltip").html_safe %>
-                        </div>
+                        <% if @email.present? %>
+                            <div class="tooltip">
+                                <%= I18n.t(:"login_signup_form.confirm_social_info_tooltip").html_safe %>
+                            </div>
+                        <% end %>
                     </div>
                 </div>
 
@@ -100,7 +102,7 @@
 </div>
 
 <script type="text/javascript">
-    NewflowUi.enableOnChecked('#confirm_social_info_submit_button', '#info_terms_accepted');
+    NewflowUi.enableOnChecked('#confirm_social_info_submit_button', '#signup_terms_accepted');
 </script>
 
 <%# TODO: move this to some CSS file %>
