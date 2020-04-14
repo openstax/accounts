@@ -67,5 +67,4 @@ feature 'Add social auth', js: true do
       expect(page).to have_content('Facebook')
     end
   end
-
 end

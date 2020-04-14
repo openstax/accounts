@@ -54,9 +54,8 @@ module Newflow
         )
       end
 
-      create_email_address
       agree_to_terms
-      send_confirmation_email
+      run(CreateEmailForUser, email: signup_params.email, user: outputs.user)
     end
 
   private ###################
@@ -103,24 +102,6 @@ module Newflow
 
       run(AgreeToTerms, signup_params.contract_1_id, outputs.user, no_error_if_already_signed: true)
       run(AgreeToTerms, signup_params.contract_2_id, outputs.user, no_error_if_already_signed: true)
-    end
-
-    def create_email_address
-      @email = EmailAddress.create(
-        value: signup_params.email.downcase, user_id: outputs.user.id
-      )
-
-      # Customize the error message about having an invalid email domain
-      if @email.errors && @email.errors.types.fetch(:value, {}).include?(:missing_mx_records)
-        domain = @email.send(:domain)
-        @email.errors.messages[:value][0] = I18n.t(:"login_signup_form.invalid_email_provider", domain: domain)
-      end
-
-      transfer_errors_from(@email, { scope: :email }, :fail_if_errors)
-    end
-
-    def send_confirmation_email
-      NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
     end
   end
 end
