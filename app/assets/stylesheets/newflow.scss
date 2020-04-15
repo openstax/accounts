@@ -89,9 +89,13 @@ input.has-error {
 
   .other-specify {
     margin-left: 2em;
+    display: none;
   }
 
   .question {
+    .how-using, .how-chosen, .total-num-students, .subjects-of-interest, .books-used  {
+       display: none;
+    }
     margin-top: 25px;
   }
 
