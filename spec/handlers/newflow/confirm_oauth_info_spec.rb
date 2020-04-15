@@ -69,9 +69,7 @@ module Newflow
       it 'creates an email address for the user' do
         expect {
           described_class.call(params: params, user: User.last)
-        }.to(
-          change(EmailAddress, :count)
-        )
+        }.to(change(EmailAddress, :count))
       end
 
       it 'adds the user as a "lead" to salesforce' do
@@ -101,10 +99,15 @@ module Newflow
         described_class.call(params: params, contracts_required: true, user: User.last)
       end
 
-      it 'does NOT sign up user for the newsletter when NOT checked' do
-        expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including({ newsletter: false }))
-        params[:signup][:newsletter] = false
-        described_class.call(params: params, contracts_required: true, user: User.last)
+      context 'when newsletter is not checked' do
+        before do
+          params[:signup][:newsletter] = false
+        end
+
+        it 'does not sign up user for the newsletter' do
+          expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including({ newsletter: false }))
+          described_class.call(params: params, contracts_required: true, user: User.last)
+        end
       end
     end
   end
