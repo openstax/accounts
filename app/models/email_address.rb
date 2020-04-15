@@ -32,6 +32,12 @@ class EmailAddress < ContactInfo
     end
   end
 
+  def customize_value_error_message(error:, message:)
+    if self.errors && self.errors.types.fetch(:value, {}).include?(error)
+      self.errors.messages[:value][0] = message
+    end
+  end
+
   protected
 
   def is_domain_trusted?
