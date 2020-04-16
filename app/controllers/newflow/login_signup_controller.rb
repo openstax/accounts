@@ -10,7 +10,6 @@ module Newflow
 
     before_action :newflow_authenticate_user!, only: [:profile_newflow]
     before_action :save_new_params_in_session, only: [:login_form]
-    before_action :store_url_for_exit_icon, only: [:login_form]
     before_action :maybe_skip_to_sign_up, only: [:login_form]
     before_action :known_signup_role_redirect, only: [:login_form]
     before_action :restart_if_missing_unverified_user,
@@ -326,6 +325,22 @@ module Newflow
       end
     end
 
+    def exit_accounts
+      referrer_params = Addressable::URI.parse(request.referrer).query_values.to_h
+
+      if (return_to = referrer_params['r'])
+        if Host.trusted?(return_to)
+          redirect_to(return_to)
+        else
+          raise Lev::SecurityTransgression
+        end
+      elsif (return_to = referrer_params['redirect_uri'])
+        redirect_to(return_to)
+      else
+        redirect_back # defined in action_interceptor gem
+      end
+    end
+
     private #################
 
     def create_or_change_password_form(kind:)
@@ -415,15 +430,6 @@ module Newflow
       return unless request.method == 'GET'
 
       @banners ||= Banner.active
-    end
-
-    # Stores the URL to return to when user clicks 'X' icon (exit icon)
-    def store_url_for_exit_icon
-      if params[:redirect_uri] # OAuth apps
-        store_url(url: params[:redirect_uri])
-      elsif params[:r] # SSO apps
-        store_url(url: params[:r])
-      end
     end
   end
 end

@@ -175,5 +175,5 @@ def simulate_login_signup_with_social(options={})
 end
 
 def external_public_url
-  external_app_for_specs_url + '/public'
+  capybara_url(external_app_for_specs_path) + '/public'
 end

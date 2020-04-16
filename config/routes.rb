@@ -52,6 +52,9 @@ Rails.application.routes.draw do
     # Profile access
     get 'i/profile', action: :profile_newflow, as: :profile_newflow
 
+    # Exit accounts back to app they came from
+    get 'i/exit_accounts', action: :exit_accounts, as: :exit_accounts
+
     # TODO: remove because we determined that this use case is unreachable
     # When social login fails
     # get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
