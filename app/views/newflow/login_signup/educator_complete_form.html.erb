@@ -104,7 +104,8 @@
               <%= fh.select name: :subjects_of_interest,
                             options: Settings::Subjects.map {|(short_name, info)| [  info["sf"], short_name] },
                             autofocus: true,
-                            multiple: true
+                            multiple: true,
+                            custom_class: 'os-multiselect'
               %>
             </div>
 
@@ -115,7 +116,8 @@
               <%= fh.select name: :books_used,
                             options: Settings::Subjects.map {|(short_name, info)| [  info["title"], short_name] },
                             autofocus: true,
-                            multiple: true
+                            multiple: true,
+                            custom_class: 'os-multiselect'
               %>
             </div>
           </div>
@@ -131,5 +133,6 @@
 </div>
 
 <script type="text/javascript">
+  //this needs to be done at bottom of the file so that the dom above is already constructed
   new NewflowUi.EducatorComplete();
 </script>

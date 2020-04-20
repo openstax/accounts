@@ -7,6 +7,7 @@
 //= require ./educator_signup_email_validations
 //= require ./educator_complete_dynamic
 //= require intlTelInput
+//= require multiselect
 //= require libphonenumber/utils
 //= require ./phone-number
 //= require_self

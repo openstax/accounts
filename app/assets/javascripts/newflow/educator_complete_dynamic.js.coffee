@@ -14,6 +14,13 @@ class NewflowUi.EducatorComplete
     @books_used = @form.find('.books-used')
     this.onRoleChange()
     this.onHowUsingChange()
+    this.initMultiSelect()
+
+  initMultiSelect: ->
+    subjects_interest = document.getElementById('signup_subjects_of_interest')
+    osMultiSelect(subjects_interest)
+    books_used = document.getElementById('signup_books_used')
+    osMultiSelect(books_used)
 
   onRoleChange: ->
     if ( $('#signup_completed_role_educator').is(':checked') )

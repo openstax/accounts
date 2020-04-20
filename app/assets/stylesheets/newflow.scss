@@ -102,6 +102,15 @@ input.has-error {
   .questions {
     margin-bottom: 25px;
   }
+
+  // extend the multiselect just for the complete form for now
+  .os-multiselect {
+    @extend %os-multiselect;
+  }
+
+  form {
+    height: auto !important;
+  }
 }
 
 .block_radio_button_collection {

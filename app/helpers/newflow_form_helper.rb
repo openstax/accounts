@@ -73,7 +73,7 @@ module NewflowFormHelper
       "#{input}\n#{errors_div}".html_safe
     end
 
-    def select(name:, options:, except: nil, only: nil, autofocus: nil, multiple: false)
+    def select(name:, options:, except: nil, only: nil, autofocus: nil, multiple: false, custom_class: nil)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -81,6 +81,7 @@ module NewflowFormHelper
       html_options = { data: data(only: only, except: except) }
       html_options[:autofocus] = autofocus if !autofocus.nil?
       html_options[:multiple] = multiple
+      html_options[:class] = custom_class if custom_class
 
       c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
         "#{@f.select name, options, {}, html_options}#{errors_div}".html_safe
