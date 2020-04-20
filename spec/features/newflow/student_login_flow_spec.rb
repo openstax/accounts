@@ -143,12 +143,14 @@ feature 'student login flow', js: true do
       context 'when user clicks X icon' do
         context "when user arrived from oauth app" do
           let(:app) do
-            app = FactoryBot.create(:doorkeeper_application, skip_terms: true,
-                          can_access_private_user_data: true,
-                          can_skip_oauth_screen: true)
+            FactoryBot.create(:doorkeeper_application, skip_terms: true,
+              can_access_private_user_data: true,
+              can_skip_oauth_screen: true)
+          end
+
+          before do
             FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
             app.update_column(:redirect_uri, external_public_url)
-            app
           end
 
           it 'takes user back to app' do

@@ -1,6 +1,7 @@
 module Newflow
   # Contains every action for login and signup
   class LoginSignupController < ApplicationController
+    include LoginSignupHelper
     layout 'newflow_layout'
 
     skip_before_action :authenticate_user!
@@ -326,16 +327,16 @@ module Newflow
     end
 
     def exit_accounts
-      referrer_params = Addressable::URI.parse(request.referrer).query_values.to_h
+      referrer_params = extract_params(request.referrer)
 
-      if (return_to = referrer_params['r'])
-        if Host.trusted?(return_to)
-          redirect_to(return_to)
+      if (r = referrer_params[:r])
+        if Host.trusted?(r)
+          redirect_to(r)
         else
           raise Lev::SecurityTransgression
         end
-      elsif (return_to = referrer_params['redirect_uri'])
-        redirect_to(return_to)
+      elsif (redirect_uri = referrer_params[:redirect_uri])
+        redirect_to(redirect_uri)
       else
         redirect_back # defined in action_interceptor gem
       end
