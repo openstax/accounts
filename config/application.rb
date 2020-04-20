@@ -33,6 +33,8 @@ module Accounts
       es:    :en,
     }
 
+    config.assets.paths << Rails.root.join("app", "assets", "fonts")
+
     config.accounts = ActiveSupport::OrderedOptions.new
     # configure how long a login token is valid for
     config.accounts.default_login_token_expiration_period = 2.days
