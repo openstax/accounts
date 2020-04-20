@@ -204,7 +204,7 @@ module ApplicationHelper
 
       exit_icon = if show_exit_icon
         content_tag(:div, id: 'exit-icon') {
-          content_tag(:a, href: redirect_back_path) {
+          content_tag(:a, href: exit_accounts_path) {
             content_tag(:i, class: 'fa fa-times') { }
           }
         }

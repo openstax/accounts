@@ -173,3 +173,7 @@ def simulate_login_signup_with_social(options={})
     OmniAuth.config.test_mode = false
   end
 end
+
+def external_public_url
+  capybara_url(external_app_for_specs_path) + '/public'
+end

@@ -756,5 +756,63 @@ module Newflow
         end
       end
     end
+
+    describe "GET #exit_accounts" do
+      context 'when Referer is present' do
+        before do
+          request.headers.merge!({ Referer: subject })
+        end
+
+        let(:host) { Rails.application.secrets.trusted_hosts.first }
+        let(:target_url) { Faker::Internet.url }
+
+        context 'when Referer includes `r` param' do
+          subject do
+            "#{host}?r=#{target_url}"
+          end
+
+          context 'when `r` is trusted' do
+            before do
+              allow(Host).to receive(:trusted?).with(target_url).once.and_return(true)
+            end
+
+            it 'redirects to `r`' do
+              get(:exit_accounts)
+              expect(response).to redirect_to(target_url)
+            end
+          end
+
+          context 'when `r` is not trusted' do
+            before do
+              allow(Host).to receive(:trusted?).with(target_url).once.and_return(false)
+            end
+
+            it 'is forbidden' do
+              get(:exit_accounts)
+              expect(response).to have_http_status(:forbidden)
+            end
+          end
+        end
+
+        context 'when Referer includes `redirect_uri` param' do
+          subject do
+            "#{host}?redirect_uri=#{target_url}"
+          end
+
+          it 'redirects to `redirect_uri`' do
+            get(:exit_accounts)
+            expect(response).to redirect_to(target_url)
+          end
+        end
+      end
+
+      context 'when Referer is nil' do
+        it 'redirects back' do
+          expect_any_instance_of(described_class).to receive(:redirect_back).and_call_original
+          get(:exit_accounts)
+          expect(response).to redirect_to(root_url)
+        end
+      end
+    end
   end
 end

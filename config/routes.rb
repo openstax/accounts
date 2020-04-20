@@ -52,6 +52,9 @@ Rails.application.routes.draw do
     # Profile access
     get 'i/profile', action: :profile_newflow, as: :profile_newflow
 
+    # Exit accounts back to app they came from
+    get 'i/exit_accounts', action: :exit_accounts, as: :exit_accounts
+
     # TODO: remove because we determined that this use case is unreachable
     # When social login fails
     # get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
@@ -281,6 +284,9 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/external_app_for_specs' => 'external_app_for_specs#index' if Rails.env.test?
+  if Rails.env.test?
+    get '/external_app_for_specs' => 'external_app_for_specs#index'
+    get '/external_app_for_specs/public' => 'external_app_for_specs#public'
+  end
 end
 # rubocop:enable Metrics/BlockLength

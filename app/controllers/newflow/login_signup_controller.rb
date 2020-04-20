@@ -1,6 +1,7 @@
 module Newflow
   # Contains every action for login and signup
   class LoginSignupController < ApplicationController
+    include LoginSignupHelper
     layout 'newflow_layout'
 
     skip_before_action :authenticate_user!
@@ -10,7 +11,6 @@ module Newflow
 
     before_action :newflow_authenticate_user!, only: [:profile_newflow]
     before_action :save_new_params_in_session, only: [:login_form]
-    before_action :store_authorization_url_as_fallback, only: [:login_form, :login, :student_signup_form, :student_signup]
     before_action :maybe_skip_to_sign_up, only: [:login_form]
     before_action :known_signup_role_redirect, only: [:login_form]
     before_action :restart_if_missing_unverified_user,
@@ -326,6 +326,22 @@ module Newflow
       end
     end
 
+    def exit_accounts
+      referrer_params = extract_params(request.referrer)
+
+      if (r = referrer_params[:r])
+        if Host.trusted?(r)
+          redirect_to(r)
+        else
+          raise Lev::SecurityTransgression
+        end
+      elsif (redirect_uri = referrer_params[:redirect_uri])
+        redirect_to(redirect_uri)
+      else
+        redirect_back # defined in action_interceptor gem
+      end
+    end
+
     private #################
 
     def create_or_change_password_form(kind:)
@@ -415,23 +431,6 @@ module Newflow
       return unless request.method == 'GET'
 
       @banners ||= Banner.active
-    end
-
-    def store_authorization_url_as_fallback
-      # In case we need to redirect_back, but don't have something to redirect back
-      # to (e.g. no authorization url or referrer), form and store as the fallback
-      # an authorization URL.  Handles the case where the user got sent straight to
-      # the login page.  Only works if we have know the client app.
-
-      client_app = get_client_app
-      return if client_app.nil?
-
-      redirect_uri = client_app.redirect_uri.lines.first.chomp
-      authorization_url = oauth_authorization_url(client_id: client_app.uid,
-                                                  redirect_uri: redirect_uri,
-                                                  response_type: 'code')
-
-      store_fallback(url: authorization_url) unless authorization_url.nil?
     end
   end
 end
