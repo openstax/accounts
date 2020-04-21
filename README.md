@@ -193,6 +193,14 @@ When a request comes with both `signup_at` and `client_id` parameters in the log
 For example:
 https://accounts-dev.openstax.org/login?signup_at=https://tutor-dev.openstax.org/signup&client_id=1234
 
+### `r` parameter
+Short for `r`edirect parameter, if present and trusted, we store it in order to redirect users back to the OpenStax app they came from – at the end of the login/signup process. See [save_redirect](https://github.com/openstax/accounts/blob/e48dd5d4a4bdb7bf4b1e6caa808243432ecd4f57/config/initializers/controllers.rb#L52-L60) which happens as a `before_action` in all controllers.
+
+Also, note that OSWeb/the CMS may use the `next` parameter instead of `r` [(link)](https://github.com/openstax/openstax-cms/blob/81904f6b115fc280745c01316e3f478668893efa/oxauth/views.py#L14-L16) but it rewrites it as `r` for usage in Accounts.
+
+### `redirect_uri` parameter
+Part of the OAuth protocol, we also take advantage of its presence in the Referrer when users wish to exit Accounts and go back to the OAuth app they came from. See the controller action `exit_accounts` [here](https://github.com/openstax/accounts/blob/e48dd5d4a4bdb7bf4b1e6caa808243432ecd4f57/app/controllers/newflow/login_signup_controller.rb#L338-L339).
+
 # Concepts
 These are things that are specific to Accounts and/or will help you learn and understand the codebase better.
 

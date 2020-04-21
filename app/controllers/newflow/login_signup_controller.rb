@@ -31,7 +31,7 @@ module Newflow
         success: lambda {
           clear_newflow_state
           sign_in!(@handler_result.outputs.user)
-          redirect_back # back to `r`eturn parameter. See `before_action :save_redirect`.
+          redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
         },
         failure: lambda {
           save_login_failed_email(@handler_result.outputs.email)
@@ -329,9 +329,9 @@ module Newflow
     def exit_accounts
       referrer_params = extract_params(request.referrer)
 
-      if (r = referrer_params[:r])
-        if Host.trusted?(r)
-          redirect_to(r)
+      if (redirect_param = referrer_params[:r])
+        if Host.trusted?(redirect_param)
+          redirect_to(redirect_param)
         else
           raise Lev::SecurityTransgression
         end
