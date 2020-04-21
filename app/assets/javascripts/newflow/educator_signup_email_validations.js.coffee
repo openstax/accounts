@@ -5,7 +5,7 @@ class NewflowUi.SignupEmailValidations
   constructor: ->
     _.bindAll(@, 'onChange', 'onSubmit')
     @group = $('.email-input-group.newflow')
-    @email = @group.find('.signup_email').show()
+    @email = @group.find('.myschool_email').show()
     @email.change(@onChange)
     @group.closest('form').submit(@onSubmit)
     @userType = 'instructor'
