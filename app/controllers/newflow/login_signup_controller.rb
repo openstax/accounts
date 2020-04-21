@@ -329,9 +329,9 @@ module Newflow
     def exit_accounts
       referrer_params = extract_params(request.referrer)
 
-      if (r = referrer_params[:r]) # `r`edirect parameter. See `before_action :save_redirect`.
-        if Host.trusted?(r)
-          redirect_to(r)
+      if (redirect_param = referrer_params[:r])
+        if Host.trusted?(redirect_param)
+          redirect_to(redirect_param)
         else
           raise Lev::SecurityTransgression
         end
