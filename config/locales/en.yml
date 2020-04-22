@@ -17,6 +17,7 @@ en:
     chosen_by_instructor: Instructors choose textbooks for their courses
     chosen_by_committee: A committee chooses the textbook
     chosen_by_coordinator: Course/district coordinator choose the textbook
+    select_option: Please select one of these options
 
   login_signup_form:
     cant_be_blank: can't be blank

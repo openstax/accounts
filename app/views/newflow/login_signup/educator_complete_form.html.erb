@@ -3,7 +3,7 @@
     <%
       educator_complete_roles = [
         [ I18n.t(:'educator_complete_form.instructor'), 'educator', false ],
-        [ I18n.t(:'educator_complete_form.administrator'), 'admin', true ],
+        [ I18n.t(:'educator_complete_form.administrator'), 'admin', false ],
         [ I18n.t(:'educator_complete_form.other'), 'other', false ]
       ]
     %>
@@ -28,6 +28,9 @@
             <div class="form-group question completed-role">
               <div class="radio-control-group">
                 <%= label_tag :completed_role, I18n.t(:"educator_complete_form.describe_role"), class: 'field-label' %>
+                <div class="role newflow-mustdo-alert">
+                  <%= I18n.t(:"educator_complete_form.select_option") %>
+                </div>
                 <% educator_complete_roles.each do |(role, id, selected)| %>
                   <label>
                     <% label_name = "completed_role_#{id}".to_sym %>
@@ -48,9 +51,33 @@
               </div>
             </div>
 
+            <div class="form-group question how-chosen">
+              <div class="radio-control-group">
+                <%= label_tag :choosen, I18n.t(:"educator_complete_form.how_textbooks_chosen"), class: 'field-label' %>
+                <div class="chosen newflow-mustdo-alert">
+                  <%= I18n.t(:"educator_complete_form.select_option") %>
+                </div>
+                <label>
+                  <%= f.radio_button :choosen, :by_instructor, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= label :using_primary_textbook, I18n.t(:"educator_complete_form.chosen_by_instructor"), class: 'custom-control-label' %>
+                </label>
+                <label>
+                  <%= f.radio_button :choosen, :by_recommendation, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= label :using_recommending_openstax, I18n.t(:"educator_complete_form.chosen_by_committee"), class: 'custom-control-label' %>
+                </label>
+                <label>
+                  <%= f.radio_button :choosen, :by_coordinator, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= label :using_future, I18n.t(:"educator_complete_form.chosen_by_coordinator"), class: 'custom-control-label' %>
+                </label>
+              </div>
+            </div>
+
             <div class="form-group question how-using">
               <div class="radio-control-group">
                 <%= label_tag :using, I18n.t(:"educator_complete_form.how_using"), class: 'field-label' %>
+                <div class="using newflow-mustdo-alert">
+                  <%= I18n.t(:"educator_complete_form.select_option") %>
+                </div>
                 <label>
                   <%= f.radio_button :using, :as_primary, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_primary_textbook, I18n.t(:"educator_complete_form.using_primary_textbook"), class: 'custom-control-label' %>
@@ -60,29 +87,11 @@
                   <%= label :using_recommending_openstax, I18n.t(:"educator_complete_form.using_recommending_openstax"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :using, :as_future, checked: true, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :using, :as_future, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_future, I18n.t(:"educator_complete_form.using_future"), class: 'custom-control-label' %>
                 </label>
               </div>
             </div>
-
-            <div class="form-group question how-chosen">
-            <div class="radio-control-group">
-              <%= label_tag :choosen, I18n.t(:"educator_complete_form.how_textbooks_chosen"), class: 'field-label' %>
-              <label>
-                <%= f.radio_button :choosen, :by_instructor, checked: true, class: 'completed-role custom-control-input' %>
-                <%= label :using_primary_textbook, I18n.t(:"educator_complete_form.chosen_by_instructor"), class: 'custom-control-label' %>
-              </label>
-              <label>
-                <%= f.radio_button :choosen, :by_recommendation, checked: false, class: 'completed-role custom-control-input' %>
-                <%= label :using_recommending_openstax, I18n.t(:"educator_complete_form.chosen_by_committee"), class: 'custom-control-label' %>
-              </label>
-              <label>
-                <%= f.radio_button :choosen, :by_coordinator, checked: false, class: 'completed-role custom-control-input' %>
-                <%= label :using_future, I18n.t(:"educator_complete_form.chosen_by_coordinator"), class: 'custom-control-label' %>
-              </label>
-            </div>
-          </div>
 
             <div class="form-group question total-num-students">
               <%= label_tag :first_name,
@@ -102,7 +111,7 @@
                             class: 'field-label'
               %>
               <%= fh.select name: :subjects_of_interest,
-                            options: Settings::Subjects.map {|(short_name, info)| [  info["sf"], short_name] },
+                            options: ['Math', 'Science', 'Social Science', 'Humanities', 'Business', 'Essentials', 'College Success', 'High School'],
                             autofocus: true,
                             multiple: true,
                             custom_class: 'os-multiselect'
