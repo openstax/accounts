@@ -4,7 +4,7 @@ resources:
     type: git
     source:
       uri: git@github.com:/openstax/devops
-      branch: tutor-deployment-update
+      private_key: ((github-private-key))      
 
   - name: accounts-git
     type: git
