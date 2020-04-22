@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
 
   enum faculty_status: [:no_faculty_info, :pending_faculty, :confirmed_faculty, :rejected_faculty]
   enum role: [:unknown_role, :student, :instructor, :administrator, :librarian, :designer, :other, :adjunct, :homeschool]
-  enum school_type: [:unknown_school_type, :other_school_type, :college]
+  enum school_type: [:unknown_school_type, :other_school_type, :college, :high_school, :k12_school]
 
   DEFAULT_FACULTY_STATUS = :no_faculty_info
   DEFAULT_SCHOOL_TYPE = :unknown_school_type

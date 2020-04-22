@@ -5,6 +5,14 @@ class UpdateUserSalesforceInfo
     'Career School/For-Profit (2)'
   ]
 
+  HIGH_SCHOOL_TYPES = [
+    'High School'
+  ]
+
+  K12_TYPES = [
+    'K-12 School'
+  ]
+
   ADOPTION_STATUSES = {
     "Current Adopter" => true,
     "Future Adopter" => true,
@@ -217,15 +225,21 @@ class UpdateUserSalesforceInfo
       user.school_type = case contact.school_type
       when *COLLEGE_TYPES
         :college
+      when *HIGH_SCHOOL_TYPES
+        :high_school
+      when *K12_TYPES
+        :k12_school
       when NilClass
         :unknown_school_type
       else
         :other_school_type
       end
-      
+
       unless contact.adoption_status.blank?
         user.using_openstax = ADOPTION_STATUSES[contact.adoption_status]
       end
+
+      user.is_kip = contact.school&.is_kip
     end
 
     if user.faculty_status_changed? && user.confirmed_faculty?
@@ -269,6 +283,7 @@ class UpdateUserSalesforceInfo
 
     @contacts ||= OpenStax::Salesforce::Remote::Contact
                     .select(:id, :email, :email_alt, :faculty_verified, :school_type, :adoption_status)
+                    .includes(:school)
                     .to_a
   end
 
