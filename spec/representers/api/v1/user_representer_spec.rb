@@ -53,4 +53,17 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
       expect(representer.to_hash(user_options: {include_private_data: true})['is_not_gdpr_location']).to eq false
     end
   end
+
+  context 'is_kip' do
+    it 'can be read' do
+      expect(representer.to_hash['is_kip']).to eq user.is_kip
+    end
+
+    it 'cannot be written (attempts are silently ignored)' do
+      hash = { 'is_kip' => true }
+
+      expect(user).not_to receive(:is_kip=)
+      expect { representer.from_hash(hash) }.not_to change { user.reload.is_kip }
+    end
+  end
 end
