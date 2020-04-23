@@ -333,7 +333,7 @@ module Newflow
         else
           raise Lev::SecurityTransgression
         end
-      elsif (redirect_uri = extract_params(stored_url)[:redirect_uri])
+      elsif !signed_in? && (redirect_uri = extract_params(stored_url)[:redirect_uri])
         redirect_to(redirect_uri)
       else
         redirect_back # defined in action_interceptor gem
