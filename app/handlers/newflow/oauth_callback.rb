@@ -60,6 +60,8 @@ module Newflow
     # the same provider but it has a different uid, then they might've gotten the social account hacked,
     # so we want to prevent the hacker from logging in with the stolen social provider auth.
     def mismatched_authentication?
+      return false if oauth_data.email.blank?
+
       incoming_auth_uid = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).first&.uid
       existing_email_owner_id = LookupUsers.by_email_or_username(oauth_data.email).first&.id
       existing_auth_uid = Authentication.where(user_id: existing_email_owner_id, provider: @oauth_provider).pluck(:uid).first
