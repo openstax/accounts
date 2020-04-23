@@ -287,7 +287,7 @@ Keeping the above in mind will help you make sense of the signup form and relate
 
 In short, new users become sales leads in Salesforce.
 
-## Google Analaytics
+## Google Analytics
 The following data is sent to Google Analytics
 
 When user lands on Login Page Send Referrer
