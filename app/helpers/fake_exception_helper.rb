@@ -16,6 +16,9 @@ module FakeExceptionHelper
       raise NotYetImplemented
     when 'illegal_argument'
       raise IllegalArgument
+      raise NotYetImplemented
+    when 'illegal_state'
+      raise IllegalState
     end
   end
 

@@ -95,7 +95,7 @@ defaults: &defaults
     university_physics_calc:
       title: University Physics
       sf: University Physics (Calc)
-  student_feature_flag: false
+  student_feature_flag: true
   educator_feature_flag: false
 
 development:
@@ -103,6 +103,7 @@ development:
 
 test:
   <<: *defaults
+  student_feature_flag: false # until we get rid of the old flow code and tests, to make life simpler.
 
 production:
   <<: *defaults

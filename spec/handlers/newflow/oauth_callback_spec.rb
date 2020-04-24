@@ -2,14 +2,10 @@ require 'rails_helper'
 
 module Newflow
   RSpec.describe OauthCallback, type: :handler do
-    before(:all) do
-      load 'db/seeds.rb' # creates terms of use and privacy policy contracts
-    end
-
     let(:email) { Faker::Internet.email }
 
     context 'when existing authentication found' do
-      let(:info) {
+      let(:oauth_user_info) {
         { email: email, name: Faker::Name.name }
       }
 
@@ -22,7 +18,7 @@ module Newflow
       }
 
       let(:request) {
-        MockOmniauthRequest.new 'facebook', auth.uid, info
+        MockOmniauthRequest.new 'facebook', auth.uid, oauth_user_info
       }
 
       let(:subject) {
@@ -39,12 +35,12 @@ module Newflow
         create_newflow_user(email)
       end
 
-      let(:info) {
+      let(:oauth_user_info) {
         { email: email, name: Faker::Name.name }
       }
 
       let(:request) {
-        MockOmniauthRequest.new 'facebook', Faker::Internet.uuid, info
+        MockOmniauthRequest.new 'facebook', Faker::Internet.uuid, oauth_user_info
       }
 
       let(:subject) {
@@ -68,12 +64,12 @@ module Newflow
     end
 
     context 'when no authentication found, and no verified user found' do
-      let(:info) {
+      let(:oauth_user_info) {
         { email: email, name: Faker::Name.name }
       }
 
       let(:request) {
-        MockOmniauthRequest.new 'facebook', Faker::Internet.uuid, info
+        MockOmniauthRequest.new 'facebook', Faker::Internet.uuid, oauth_user_info
       }
 
       describe 'sign up a new user' do
@@ -84,38 +80,113 @@ module Newflow
         end
 
         it 'creates an authentication' do
-          expect {
-            described_class.call(request: request)
-          }.to change(Authentication, :count)
+          expect { described_class.call(request: request) }.to(
+            change { Authentication.count }.by(1)
+          )
         end
 
         it 'creates an email address as verified' do
-          expect {
-            described_class.call(request: request)
-          }.to change { EmailAddress.where(verified: true).count }
+          expect { described_class.call(request: request) }.to(
+            change { EmailAddress.where(verified: true).count }.by(1)
+          )
         end
       end
     end
 
-    context 'when authentication found, but the response from social provider does not include email' do
+    context 'when no authentication found and the response from social provider does not include email' do
       before do
         create_newflow_user(email)
       end
 
-      let(:info) {
+      let(:oauth_user_info) {
         { email: nil, name: Faker::Name.name }
       }
 
       let(:request) {
-        MockOmniauthRequest.new 'facebook', Faker::Internet.uuid, info
+        MockOmniauthRequest.new 'facebook', Faker::Internet.uuid, oauth_user_info
       }
 
-      let(:subject) {
+      let(:process_request) {
         described_class.call(request: request)
       }
 
-      it 'processes the omniauth request without error' do
-        expect(subject.outputs.user).to eq User.last
+      it 'creates a new user' do
+        expect { process_request }.to(
+          change { User.count }.by(1)
+        )
+      end
+
+      describe 'the new user' do
+        subject(:the_new_user) { process_request.outputs.user }
+
+        it 'has its state set to UNVERIFIED' do
+          expect(the_new_user.state).to eq(User::UNVERIFIED)
+        end
+      end
+
+      it 'creates an authentication' do
+        expect { process_request }.to(
+          change { Authentication.count }.by(1)
+        )
+      end
+
+      it 'does not create an email address' do
+        expect { process_request }.to_not(
+          change { EmailAddress.count }
+        )
+      end
+    end
+
+    context 'when there is a logged in user' do
+      before do
+        FactoryBot.create(:identity, user: user)
+        FactoryBot.create(:email_address, user: user, value: email)
+      end
+
+      let(:oauth_user_info) do
+        { email: email, name: Faker::Name.name }
+      end
+
+      let(:user) do
+        FactoryBot.create(:user, :terms_agreed)
+      end
+
+      let(:process_request) do
+        described_class.call(request: request, logged_in_user: user)
+      end
+
+      let(:request) do
+        MockOmniauthRequest.new 'googlenewflow', Faker::Internet.uuid, oauth_user_info
+      end
+
+      subject(:user_authentications) { user.authentications }
+
+      context 'when the email address is same as the one the user already owns' do
+        it 'adds the authentication to the user' do
+          expect { process_request }.to change(user_authentications, :count).by(1)
+        end
+      end
+
+      context 'when the email address is different than the one the user already owns' do
+        before do
+          oauth_user_info[:email] = Faker::Internet.email
+        end
+
+        let(:email) { Faker::Internet.email }
+
+        it 'adds the authentication to the user' do
+          expect { process_request }.to change(user_authentications, :count).by(1)
+        end
+      end
+
+      context 'when the email address from the social provider is blank' do
+        before do
+          oauth_user_info[:email] = nil
+        end
+
+        it 'adds the authentication to the user' do
+          expect { process_request }.to change(user_authentications, :count).by(1)
+        end
       end
     end
   end

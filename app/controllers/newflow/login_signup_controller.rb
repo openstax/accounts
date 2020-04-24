@@ -210,7 +210,18 @@ module Newflow
               security_log(:sign_in_failed, reason: "mismatched authentication")
               redirect_to(newflow_login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
             else
-              raise IllegalState
+              oauth = request.env['omniauth.auth']
+              errors = @handler_result.errors.inspect
+              last_exception = $!.inspect
+              exception_backtrace = $@.inspect
+
+              error_message = "[LoginSignupController#oauth_callback] IllegalState on failure: " +
+                              "OAuth data: #{oauth}; error code: #{code}; " +
+                              "handler errors: #{errors}; last exception: #{last_exception}; " +
+                              "exception backtrace: #{exception_backtrace}"
+
+              # This will print the exception to the logs and send devs an exception email
+              raise IllegalState, error_message
             end
           }
         )

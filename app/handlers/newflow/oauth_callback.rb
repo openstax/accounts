@@ -25,15 +25,16 @@ module Newflow
     end
 
     def setup
+      @logged_in_user = options[:logged_in_user]
+
       @oauth_provider = oauth_data.provider
       @oauth_uid = oauth_data.uid.to_s
       outputs.email = oauth_data.email
     end
 
-    # rubocop:disable Metrics/AbcSize
-    def handle
-      if options[:logged_in_user]
-        newflow_handle_while_logged_in
+    def handle # rubocop:disable Metrics/AbcSize
+      if @logged_in_user
+        newflow_handle_while_logged_in(@logged_in_user.id)
       elsif mismatched_authentication?
         fatal_error(code: :mismatched_authentication)
       elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
@@ -52,7 +53,6 @@ module Newflow
 
       outputs.user = outputs.authentication.user
     end
-    # rubocop:enable Metrics/AbcSize
 
     private ###########################
 
@@ -62,26 +62,32 @@ module Newflow
     def mismatched_authentication?
       return false if oauth_data.email.blank?
 
-      incoming_auth_uid = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).first&.uid
-      existing_email_owner_id = LookupUsers.by_email_or_username(oauth_data.email).first&.id
+      existing_email_owner_id = LookupUsers.by_email_or_username(oauth_data.email).last&.id
       existing_auth_uid = Authentication.where(user_id: existing_email_owner_id, provider: @oauth_provider).pluck(:uid).first
-      existing_auth_uid != incoming_auth_uid
+      incoming_auth_uid = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).last&.uid
+
+      if existing_auth_uid != incoming_auth_uid
+        Raven.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
+        return true
+      else
+        return false
+      end
     end
 
-    def newflow_handle_while_logged_in
+    def newflow_handle_while_logged_in(logged_in_user_id)
       outputs.authentication = authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
 
-      if authentication.user && authentication.user.activated?
+      if authentication.user&.activated?
         fatal_error(
           code: :authentication_taken,
           message: I18n.t(:"controllers.sessions.sign_in_option_already_used")
         )
       end
 
-      if ContactInfo.verified.where(value: oauth_data.email).where.has { |t| t.user_id != options[:logged_in_user].id }.exists?
+      if is_email_taken?(oauth_data.email, logged_in_user_id)
         fatal_error(
-          code: :email_already_in_use,
-          # offending_inputs: input_field,
+          code: :email_taken,
+          offending_inputs: :email,
           message: I18n.t(:"login_signup_form.sign_in_option_already_used")
         )
       end
@@ -131,7 +137,7 @@ module Newflow
     end
 
     def create_user_instance
-      user = User.new(state: 'unverified')
+      user = User.new(state: 'unverified', is_newflow: true)
       user.full_name = oauth_data.name
       transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
       user
@@ -139,7 +145,7 @@ module Newflow
 
     def create_authentication(user, oauth_provider)
       auth = Authentication.new(provider: oauth_provider, uid: @oauth_uid)
-      run(TransferAuthentications, auth, user) # This persists the user and the authentication
+      run(TransferAuthentications, auth, user)
       auth
     end
 
@@ -147,6 +153,12 @@ module Newflow
       OmniauthData.new(oauth_response)
     rescue StandardError
       fatal_error(code: :invalid_omniauth_data)
+    end
+
+    def is_email_taken?(email, logged_in_user_id)
+      ContactInfo.verified
+        .where(value: email)
+        .where.has { |t| t.user_id != logged_in_user_id }.exists?
     end
   end
 end

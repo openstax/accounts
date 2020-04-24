@@ -30,6 +30,8 @@ module Newflow
     end
 
     def handle
+      return email_taken_error!(@user.id) if is_email_taken?(signup_params.email)
+
       if @user.email_addresses.none?
         run(CreateEmailForUser, email: signup_params.email, user: @user)
       end
@@ -48,6 +50,26 @@ module Newflow
     end
 
     private #################
+
+    def is_email_taken?(email)
+      user_who_owns_email_address = LookupUsers.by_verified_email(email).first
+      return false if user_who_owns_email_address.nil?
+
+      user_who_owns_email_address.id != @user.id
+    end
+
+    def email_taken_error!(user_id)
+      Raven.capture_message(
+        'Email address taken during ConfirmOauthInfo',
+        extra: { user_id: user_id }
+      )
+
+      fatal_error(
+        code: :email_taken,
+        message: I18n.t(:"login_signup_form.email_address_taken"),
+        offending_inputs: :email
+      )
+    end
 
     def agree_to_terms(user)
       if options[:contracts_required]
