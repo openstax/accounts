@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 feature 'Create banners', js: true do
+  before do
+    Settings::Db.store.student_feature_flag = false
+  end
+
   context 'as an admin user' do
     before(:each) do
       @admin_user = create_admin_user

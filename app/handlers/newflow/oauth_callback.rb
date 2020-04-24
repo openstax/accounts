@@ -37,7 +37,7 @@ module Newflow
         newflow_handle_while_logged_in(@logged_in_user.id)
       elsif mismatched_authentication?
         fatal_error(code: :mismatched_authentication)
-      elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
+      elsif (outputs.authentication = Authentication.having_provider(@oauth_provider).where(uid: @oauth_uid).first)
         # User found with the given authentication.
         # We will log them in.
       elsif (existing_user = user_most_recently_used(users_matching_oauth_data))
