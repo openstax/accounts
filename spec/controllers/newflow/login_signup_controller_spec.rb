@@ -805,10 +805,10 @@ module Newflow
 
       context 'when the stored url includes `redirect_uri` param' do
         before do
-          allow_any_instance_of(described_class).to receive(:stored_url).and_return(subject)
+          allow_any_instance_of(described_class).to receive(:stored_url).and_return(redirect_uri)
         end
 
-        subject do
+        let(:redirect_uri) do
           "#{host}?redirect_uri=#{target_url}"
         end
 
