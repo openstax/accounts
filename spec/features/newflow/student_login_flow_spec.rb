@@ -162,6 +162,20 @@ feature 'student login flow', js: true do
               expect(page.current_url).to match(external_public_url)
             end
           end
+
+          context 'when user goes to signup tab, then back to login tab' do
+            scenario 'takes user back to the app' do
+              with_forgery_protection do
+                arrive_from_app(app: app)
+                click_on(I18n.t(:"login_signup_form.sign_up"))
+                click_on(I18n.t(:"login_signup_form.log_in"))
+                find('#exit-icon a').click
+                wait_for_animations
+                wait_for_ajax
+                expect(page.current_url).to match(external_public_url)
+              end
+            end
+          end
         end
 
         context "when user arrived with `r`eturn param" do
