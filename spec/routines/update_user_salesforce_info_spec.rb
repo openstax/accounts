@@ -60,7 +60,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         )
         described_class.call
         expect_user_sf_data(
-          user, id: "foo", faculty_status: :confirmed_faculty, school_type: :college, using_openstax: true 
+          user, id: "foo", faculty_status: :confirmed_faculty, school_type: :college, using_openstax: true
         )
       end
 
@@ -122,7 +122,24 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         )
         described_class.call
         expect_user_sf_data(
-          user, id: "bar", faculty_status: :confirmed_faculty, school_type: :other_school_type, using_openstax: false
+          user, id: "bar", faculty_status: :confirmed_faculty, school_type: :high_school, using_openstax: false
+        )
+      end
+
+      it 'corrects is_kip' do
+        stub_salesforce(
+          contacts: {
+            id: 'bar',
+            email: 'bob@example.com',
+            faculty_verified: "Confirmed",
+            school_type: 'K-12 School',
+            adoption_status: "Past Adopter",
+            school: { is_kip: true }
+          }
+        )
+        described_class.call
+        expect_user_sf_data(
+          user, id: "bar", faculty_status: :confirmed_faculty, school_type: :k12_school, is_kip: true, using_openstax: false
         )
       end
 
@@ -436,8 +453,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     described_class.call
   end
 
-  def new_contact(*args)
-    OpenStax::Salesforce::Remote::Contact.new(*args)
+  def new_contact(**args)
+    OpenStax::Salesforce::Remote::Contact.new({ school: nil }.merge(args))
   end
 
   def stub_salesforce(contacts: [], leads: [])
@@ -456,15 +473,19 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           email: contact[:email],
           email_alt: contact[:email_alt],
           faculty_verified: contact[:faculty_verified],
-          school_type: contact[:school_type]
+          school_type: contact[:school_type],
+          school: OpenStax::Salesforce::Remote::School.new(is_kip: contact.dig(:school, :is_kip))
         )
       end
     end
 
+    assoc = instance_double(ActiveForce::ActiveQuery)
     expect(OpenStax::Salesforce::Remote::Contact).to(
-      receive(:select).with(:id, :email, :email_alt, :faculty_verified, :school_type, :adoption_status)
-                      .and_return(contacts)
+      receive(:select).with(
+        :id, :email, :email_alt, :faculty_verified, :school_type, :adoption_status
+      ).and_return(assoc)
     )
+    expect(assoc).to receive(:includes).with(:school).and_return(contacts)
   end
 
   def stub_leads(leads)
@@ -490,12 +511,12 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
   end
 
   def expect_user_sf_data(
-    user, id: nil, faculty_status: :no_faculty_info, school_type: :unknown_school_type, using_openstax: false
+    user, id: nil, faculty_status: :no_faculty_info, school_type: :unknown_school_type, is_kip: nil, using_openstax: false
   )
     user.reload
     expect(user.salesforce_contact_id).to eq id
     expect(user.faculty_status).to eq faculty_status.to_s
     expect(user.school_type).to eq school_type.to_s
+    expect(user.is_kip).to eq is_kip
   end
-
 end

@@ -76,7 +76,7 @@ module Api::V1
             type: :boolean,
             readable: true,
             writeable: false
-            
+
     property :salesforce_contact_id,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
              type: String,
@@ -119,6 +119,14 @@ module Api::V1
              writeable: false,
              schema_info: {
                 description: "One of #{User.school_types.keys.map(&:to_s).inspect}"
+             }
+
+    property :is_kip,
+             type: :boolean,
+             readable: true,
+             writeable: false,
+             schema_info: {
+               description: 'Whether the user is part of a Key Institutional Partner school'
              }
 
     collection :contact_infos,
