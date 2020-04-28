@@ -44,6 +44,9 @@
                 <%= label_tag :first_name, I18n.t(:"educator_complete_form.other_please_specify"),
                               class: 'field-label'
                 %>
+                <div class="other newflow-mustdo-alert">
+                  <%= I18n.t(:"educator_complete_form.fill_out") %>
+                </div>
                 <%= fh.text_field name: :first_name,
                                   placeholder: I18n.t(:"educator_complete_form.other_please_specify"),
                                   autofocus: true
@@ -53,20 +56,20 @@
 
             <div class="form-group question how-chosen">
               <div class="radio-control-group">
-                <%= label_tag :choosen, I18n.t(:"educator_complete_form.how_textbooks_chosen"), class: 'field-label' %>
+                <%= label_tag :chosen, I18n.t(:"educator_complete_form.how_textbooks_chosen"), class: 'field-label' %>
                 <div class="chosen newflow-mustdo-alert">
                   <%= I18n.t(:"educator_complete_form.select_option") %>
                 </div>
                 <label>
-                  <%= f.radio_button :choosen, :by_instructor, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :chosen, :by_instructor, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_primary_textbook, I18n.t(:"educator_complete_form.chosen_by_instructor"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :choosen, :by_recommendation, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :chosen, :by_recommendation, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_recommending_openstax, I18n.t(:"educator_complete_form.chosen_by_committee"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :choosen, :by_coordinator, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :chosen, :by_coordinator, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_future, I18n.t(:"educator_complete_form.chosen_by_coordinator"), class: 'custom-control-label' %>
                 </label>
               </div>
@@ -98,6 +101,9 @@
                             I18n.t(:"educator_complete_form.num_students_taught"),
                             class: 'field-label'
               %>
+              <div class="total-num newflow-mustdo-alert">
+                <%= I18n.t(:"educator_complete_form.fill_out") %>
+              </div>
               <%= fh.text_field name: :num_students_per_semester_taught,
                                 placeholder: I18n.t(:"educator_complete_form.num_students_taught"),
                                 autofocus: true,
@@ -110,6 +116,9 @@
                             I18n.t(:"educator_complete_form.subjects_of_interest"),
                             class: 'field-label'
               %>
+              <div class="subjects-of-interest newflow-mustdo-alert">
+                <%= I18n.t(:"educator_complete_form.select_option") %>
+              </div>
               <%= fh.select name: :subjects_of_interest,
                             options: ['Math', 'Science', 'Social Science', 'Humanities', 'Business', 'Essentials', 'College Success', 'High School'],
                             autofocus: true,
@@ -122,6 +131,9 @@
               <%= label_tag :books_used, I18n.t(:"educator_complete_form.books_used"),
                             class: 'field-label'
               %>
+              <div class="books-used newflow-mustdo-alert">
+                <%= I18n.t(:"educator_complete_form.select_option") %>
+              </div>
               <%= fh.select name: :books_used,
                             options: Settings::Subjects.map {|(short_name, info)| [  info["title"], short_name] },
                             autofocus: true,
