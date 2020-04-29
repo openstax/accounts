@@ -1,11 +1,11 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
     before_action :set_user
-    before_action :admin_authentication!
+    #before_action :admin_authentication!
 
     def index
       @applications = @user.is_administrator? ? Doorkeeper::Application.all :
-                                                @user.oauth_applications
+                                                @user.applications
       @applications = @applications.ordered_by(:created_at)
 
       respond_to do |format|
@@ -109,12 +109,18 @@ module Oauth
     end
 
     def app_params
-      params.require(:doorkeeper_application).permit(
-        :name, :redirect_uri, :scopes, :email_subject_prefix, :lead_application_source,
-        :email_from_address, :confidential,
-        :can_access_private_user_data, :can_find_or_create_accounts, :can_message_users,
-        :can_skip_oauth_screen,
-      )
+      if @user.is_administrator?
+        params.require(:doorkeeper_application).permit(
+          :name, :redirect_uri, :scopes, :email_subject_prefix, :lead_application_source,
+          :email_from_address, :confidential,
+          :can_access_private_user_data, :can_find_or_create_accounts, :can_message_users,
+          :can_skip_oauth_screen,
+        )
+      elsif !@user.applications.empty?
+        params.require(:doorkeeper_application).permit(
+          :redirect_uri
+        )
+      end
     end
   end
 end
