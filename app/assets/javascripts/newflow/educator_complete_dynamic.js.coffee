@@ -11,8 +11,8 @@ class NewflowUi.EducatorComplete
     @please_select_chosen = @form.find('.how-chosen .chosen.newflow-mustdo-alert')
     @please_fill_out_total_num = @form.find('.total-num.newflow-mustdo-alert')
     @please_fill_out_other = @form.find('.other.newflow-mustdo-alert')
-    @please_select_subjects_interest = @form.find('.subjects-of-interest.newflow-mustdo-alert')
-    @please_select_books_used = @form.find('.books-used.newflow-mustdo-alert')
+    @please_select_subjects_interest = @form.find('.subjects.newflow-mustdo-alert')
+    @please_select_books_used = @form.find('.used.newflow-mustdo-alert')
     @form.find('form').submit(@onSubmit)
     @how_chosen = @form.find('.how-chosen')
     @how_chosen_radio = @how_chosen.find("input")
@@ -105,7 +105,7 @@ class NewflowUi.EducatorComplete
       false
 
   checkSubjectsInterestValid: () ->
-    return true if @subjects_interest_select.is(":hidden")
+    return true if @subjects_interest.is(":hidden")
 
     if @subjects_interest_select.val()
       @please_select_subjects_interest.hide()
@@ -115,7 +115,7 @@ class NewflowUi.EducatorComplete
       false
 
   checkBooksUsedValid: () ->
-    return true if @books_used_select.is(":hidden")
+    return true if @books_used.is(":hidden")
 
     if @books_used_select.val()
       @please_select_books_used.hide()
