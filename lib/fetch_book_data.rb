@@ -6,13 +6,18 @@ class FetchBookData
   SUBJECTS_URL = "#{CMS_API_URL}snippets/subjects/?format=json"
   TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&fields=title,book_subjects,book_state"
   TIMEOUT = 1
+  CACHE_DURATION = 1.day
 
   def subjects
-    @subjects ||= fetch_subjects
+    @subjects ||= Rails.cache.fetch('BookData.subjects', expires_in: CACHE_DURATION) do
+      fetch_subjects
+    end
   end
 
   def titles
-    @titles ||= fetch_titles
+    @titles ||= Rails.cache.fetch('BookData.titles', expires_in: CACHE_DURATION) do
+      fetch_titles
+    end
   end
 
   def fetch_subjects
