@@ -17,10 +17,10 @@ GIT
 
 GIT
   remote: https://github.com/openstax/pattern-library.git
-  revision: ec6c7009d407b80f4b80a1191cd078dacea1efb2
-  ref: master
+  revision: e91043662f207a86d682e6ec0520ac87f126978f
+  branch: add-multiselect-styling
   specs:
-    pattern-library (1.1.17)
+    pattern-library (1.1.18)
 
 GEM
   remote: https://rubygems.org/
@@ -310,6 +310,8 @@ GEM
     jwt (2.1.0)
     keyword_search (1.5.0)
     kgio (2.10.0)
+    knockoutjs-rails (3.5.0)
+      railties (>= 3.1, < 6)
     launchy (2.4.3)
       addressable (~> 2.3)
     lev (9.0.3)
@@ -712,6 +714,7 @@ DEPENDENCIES
   jquery-rails
   json-jwt
   keyword_search (~> 1.5.0)
+  knockoutjs-rails
   launchy
   lev (~> 9.0.3)
   lograge

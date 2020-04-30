@@ -32,7 +32,8 @@ module NewflowFormHelper
                    supplemental_class: nil,
                    readonly: false,
                    onkeyup: nil,
-                   onkeydown: nil)
+                   onkeydown: nil,
+                   numberonly: false)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -42,29 +43,45 @@ module NewflowFormHelper
         desired_class_name = "#{desired_class_name} #{supplemental_class}"
       end
 
-      input = (
+      if numberonly
+        input = (
+        @f.number_field name,
+                      placeholder: placeholder,
+                      value: value,
+                      type: type,
+                      class: desired_class_name,
+                      data: data(only: only, except: except),
+                      autofocus: autofocus,
+                      readonly: readonly,
+                      onkeyup: onkeyup,
+                      onkeydown: onkeydown
+        )
+      else
+        input = (
         @f.text_field name,
-        placeholder: placeholder,
-        value: value,
-        type: type,
-        class: desired_class_name,
-        data: data(only: only, except: except),
-        autofocus: autofocus,
-        readonly: readonly,
-        onkeyup: onkeyup,
-        onkeydown: onkeydown
-      )
-
+                      placeholder: placeholder,
+                      value: value,
+                      type: type,
+                      class: desired_class_name,
+                      data: data(only: only, except: except),
+                      autofocus: autofocus,
+                      readonly: readonly,
+                      onkeyup: onkeyup,
+                      onkeydown: onkeydown
+        )
+      end
       "#{input}\n#{errors_div}".html_safe
     end
 
-    def select(name:, options:, except: nil, only: nil, autofocus: nil)
+    def select(name:, options:, except: nil, only: nil, autofocus: nil, multiple: false, custom_class: nil)
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
 
       html_options = { data: data(only: only, except: except) }
       html_options[:autofocus] = autofocus if !autofocus.nil?
+      html_options[:multiple] = multiple
+      html_options[:class] = custom_class if custom_class
 
       c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
         "#{@f.select name, options, {}, html_options}#{errors_div}".html_safe

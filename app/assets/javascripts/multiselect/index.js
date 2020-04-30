@@ -1,0 +1,2 @@
+//= require knockout
+//= require ./multiselect

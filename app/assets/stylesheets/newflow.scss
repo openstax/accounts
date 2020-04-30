@@ -4,6 +4,8 @@ $font-path: '/accounts/fonts';
 @import "font-awesome";
 @import "newflow_colors";
 @import "intlTelInput";
+@import "radio_button";
+@import "radio_buttons";
 
 html {
     font-family: 'Neue Helvetica W01', sans-serif;
@@ -36,6 +38,10 @@ body {
     padding-left: 2rem;
     border-bottom: 0.1rem solid var(--input-error-border-color);
     color: var(--input-error-message-color);
+}
+
+.newflow-mustdo-alert {
+  color: var(--input-error-message-color);
 }
 
 .iti {
@@ -78,6 +84,41 @@ body {
 
 input.has-error {
     @extend %has-error;
+}
+
+.completed-step {
+  .custom-control-label {
+    font-weight: lighter !important;
+  }
+
+  .other-specify {
+    margin-left: 2em;
+    display: none;
+  }
+
+  .question {
+    .how-using, .how-chosen, .total-num-students, .subjects-of-interest, .books-used  {
+       display: none;
+    }
+    margin-top: 25px;
+  }
+
+  .questions {
+    margin-bottom: 25px;
+  }
+
+  // extend the multiselect just for the complete form for now
+  .os-multiselect {
+    @extend %os-multiselect;
+  }
+
+  form {
+    height: auto !important;
+  }
+}
+
+.block_radio_button_collection {
+  display: block;
 }
 
 // Add a star * to form fields that are required

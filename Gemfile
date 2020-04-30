@@ -8,7 +8,14 @@ end
 # Rails framework
 gem 'rails', '5.2.0'
 gem 'rails-i18n', '~> 5'
-gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'master'
+
+# Knockout for embedded widgets
+gem 'knockoutjs-rails'
+
+# Using this branch in pattern library due to multiselect (until it's merged to master)
+# gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'master'
+gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'add-multiselect-styling'
+
 gem 'bootsnap', require: false
 
 # New Deployments

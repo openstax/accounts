@@ -1,4 +1,25 @@
 en:
+  educator_complete_form:
+    complete_page_header: Complete your profile
+    describe_role: Which of the following best describes your role?
+    instructor: Instructor
+    administrator: Administrator
+    other: Other educational staff
+    other_please_specify: Other (please specify)
+    how_using: How are you using OpenStax?
+    how_textbooks_chosen: How are textbooks chosen at your institution?
+    num_students_taught: Total number of students you teach per semester
+    subjects_of_interest: Subjects of interest
+    books_used: Books you've used in your courses
+    using_primary_textbook: Using an OpenStax book as our primary textbook
+    using_recommending_openstax: Recommending the book -- my students buy a different one
+    using_future: Interested in using OpenStax in the future
+    chosen_by_instructor: Instructors choose textbooks for their courses
+    chosen_by_committee: A committee chooses the textbook
+    chosen_by_coordinator: Course/district coordinator choose the textbook
+    select_option: Please select one of these options
+    fill_out: Please enter a value for this field
+
   login_signup_form:
     cant_be_blank: can't be blank
     cannot_find_user: We could not find your account. Please try again.

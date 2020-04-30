@@ -1,4 +1,25 @@
 pl:
+  educator_complete_form:
+    complete_page_header: Uzupełnij swój profil
+    describe_role: Które z poniższych najlepiej opisuje twoją rolę?
+    instructor: Instruktor
+    administrator: Administrator
+    other: Inni pracownicy edukacyjni
+    other_please_specify: Inne (proszę określić)
+    how_using: Jak korzystasz z OpenStax?
+    how_textbooks_chosen: Jak wybierane są podręczniki w twojej instytucji?
+    num_students_taught: Łączna liczba studentów uczysz w semestrze
+    subjects_of_interest: Przedmioty zainteresowania
+    books_using: Książki, które wykorzystałeś na swoich kursach
+    using_primary_textbook: Używanie książki OpenStax jako naszego głównego podręcznika
+    using_recommending_openstax: Polecanie książki - moi uczniowie kupują inną
+    using_future: Zainteresowany wykorzystaniem OpenStax w przyszłości
+    chosen_by_instructor: Instruktorzy wybierają podręczniki do swoich kursów
+    chosen_by_committee: Komitet wybiera podręcznik
+    chosen_by_coordinator: Koordynator kursu / dystryktu wybierz podręcznik
+    select_option: Wybierz jedną z tych opcji
+    fill_out: Podaj wartość dla tego pola
+
   login_signup_form:
     cant_be_blank: nie może być puste
     cannot_find_user: Nie znaleziono użytkownika
