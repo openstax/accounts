@@ -68,7 +68,6 @@ module Newflow
     end
 
     def educator_complete_form
-      book_data = FetchBookData.new
       @book_subjects = book_data.subjects
       @book_titles = book_data.titles
     end
@@ -357,6 +356,11 @@ module Newflow
     end
 
     private #################
+
+    def book_data
+      @book_data ||= FetchBookData.new
+    end
+
 
     def create_or_change_password_form(kind:)
       handle_with(

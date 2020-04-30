@@ -23,7 +23,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Wed, 29 Apr 2020 20:50:30 GMT
+      - Thu, 30 Apr 2020 20:58:21 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -54,6 +54,6 @@ http_interactions:
         SEO Title","search_description":"This is business search meta"},{"id":6,"name":"Essentials","page_content":"","seo_title":null,"search_description":null},{"id":7,"name":"College
         Success","page_content":"","seo_title":null,"search_description":null},{"id":8,"name":"High
         School","page_content":"","seo_title":null,"search_description":null}]'
-    http_version: null
-  recorded_at: Wed, 29 Apr 2020 20:50:30 GMT
-recorded_with: VCR 5.1.0
+    http_version: 
+  recorded_at: Thu, 30 Apr 2020 20:58:21 GMT
+recorded_with: VCR 3.0.3

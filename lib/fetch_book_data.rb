@@ -19,7 +19,7 @@ class FetchBookData
     results = cms_fetch(SUBJECTS_URL)
     return [] if results.blank?
 
-    results.collect { |subject| subject.fetch('name', nil) }
+    results.map  { |subject| subject.fetch('name', nil) }
   end
 
   def fetch_titles
@@ -27,7 +27,7 @@ class FetchBookData
     return [] if results.blank?
 
     items = results.fetch('items', [])
-    items.collect{ |book| book.fetch('title', nil) }
+    items.map { |book| book.fetch('title', nil) }
   end
 
   private ###################
