@@ -65,6 +65,8 @@ class NewflowUi.EducatorComplete
       false
 
   checkTotalNumValid: () ->
+    return true if @total_num_students_input.is(":hidden")
+
     if @total_num_students_input.val()
       @please_fill_out_total_num.hide()
       true
@@ -73,6 +75,8 @@ class NewflowUi.EducatorComplete
       false
 
   checkChosenValid: () ->
+    return true if @how_chosen_radio.is(":hidden")
+
     if @how_chosen_radio.is(":checked")
       @please_select_chosen.hide()
       true
@@ -81,6 +85,8 @@ class NewflowUi.EducatorComplete
       false
 
   checkUsingValid: () ->
+    return true if @how_using_radio.is(":hidden")
+
     if @how_using_radio.is(":checked")
       @please_select_using.hide()
       true
@@ -89,6 +95,8 @@ class NewflowUi.EducatorComplete
       false
 
   checkOtherValid: () ->
+    return true if @other_input.is(":hidden")
+
     if @other_input.val()
       @please_fill_out_other.hide()
       true
@@ -97,6 +105,8 @@ class NewflowUi.EducatorComplete
       false
 
   checkSubjectsInterestValid: () ->
+    return true if @subjects_interest_select.is(":hidden")
+
     if @subjects_interest_select.val()
       @please_select_subjects_interest.hide()
       true
@@ -105,6 +115,8 @@ class NewflowUi.EducatorComplete
       false
 
   checkBooksUsedValid: () ->
+    return true if @books_used_select.is(":hidden")
+
     if @books_used_select.val()
       @please_select_books_used.hide()
       true
