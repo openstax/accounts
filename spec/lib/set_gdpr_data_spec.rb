@@ -113,7 +113,5 @@ describe SetGdprData, vcr: VCR_OPTS do
         end
       end
     end
-
   end
-
 end

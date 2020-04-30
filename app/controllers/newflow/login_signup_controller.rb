@@ -67,6 +67,12 @@ module Newflow
       )
     end
 
+    def educator_complete_form
+      book_data = FetchBookData.new
+      @book_subjects = book_data.subjects
+      @book_titles = book_data.titles
+    end
+
     def educator_complete
       handle_with(
         EducatorSignup, #to be EducatorComplete
