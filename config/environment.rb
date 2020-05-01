@@ -19,7 +19,6 @@ require "omniauth/strategies/googlenewflow"
 require 'email_address_validations'
 require 'subjects_utils'
 require 'host'
-require 'old_sso_cookie_jar'
 require 'sso_cookie_jar'
 require 'set_gdpr_data'
 require 'date_time'

@@ -17,23 +17,15 @@ module UserSessionManagement
     end
   end
 
-  def old_sso_cookie_jar
-    OldSsoCookieJar.new cookie_jar
-  end
-
   def sso_cookie_jar
     SsoCookieJar.new cookie_jar
-  end
-
-  def old_sso_cookie_name
-    Rails.application.secrets.sso[:cookie][:old_name]
   end
 
   # Always return an object
   def current_user
     # The SSO cookie has sole responsibility for managing the current user
     @current_user ||= begin
-      user_hash = sso_cookie_jar.subject || old_sso_cookie_jar[old_sso_cookie_name]&.[]('user')
+      user_hash = sso_cookie_jar.subject
       current_sso_user = User.find_by(uuid: user_hash['uuid']) if user_hash.present?
 
       if current_sso_user.nil?
@@ -54,16 +46,14 @@ module UserSessionManagement
     if @current_user.is_anonymous?
       # Clear the SSO cookie
       sso_cookie_jar.delete
-      old_sso_cookie_jar.delete old_sso_cookie_name
 
-      security_log :sign_out, security_log_data
+      security_log(:sign_out, security_log_data)
     else
       session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator?
 
       # Set the SSO cookie
       user_hash = Api::V1::UserRepresenter.new(@current_user).to_hash
       sso_cookie_jar.subject = user_hash
-      old_sso_cookie_jar.permanent[old_sso_cookie_name] = { value: { 'user' => user_hash } }
 
       security_log :sign_in_successful, security_log_data
     end
