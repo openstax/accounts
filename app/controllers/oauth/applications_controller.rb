@@ -59,6 +59,7 @@ module Oauth
 
     def edit
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
+      @member_ids = @application.owner.member_ids
     end
 
     def update
@@ -114,9 +115,9 @@ module Oauth
           :name, :redirect_uri, :scopes, :email_subject_prefix, :lead_application_source,
           :email_from_address, :confidential,
           :can_access_private_user_data, :can_find_or_create_accounts, :can_message_users,
-          :can_skip_oauth_screen,
+          :can_skip_oauth_screen,:member_ids
         )
-      elsif !@user.applications.empty?
+      elsif @application.owner.member_ids.include?(@user.id)
         params.require(:doorkeeper_application).permit(
           :redirect_uri
         )
