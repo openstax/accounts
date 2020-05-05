@@ -63,8 +63,6 @@ RSpec.configure do |config|
 
   config.before(:all) do
     load('db/seeds.rb')
-    # Turn off the student feature flag by default in the tests (it is ON by default in dev and prod)
-    Settings::Db.store.student_feature_flag = false
   end
 
   config.before(:each) do

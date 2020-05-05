@@ -95,7 +95,7 @@ defaults: &defaults
     university_physics_calc:
       title: University Physics
       sf: University Physics (Calc)
-  student_feature_flag: true
+  student_feature_flag: false
   educator_feature_flag: false
 
 development:
