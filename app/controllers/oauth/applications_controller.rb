@@ -5,7 +5,7 @@ module Oauth
 
     def index
       @applications = @user.is_administrator? ? Doorkeeper::Application.all :
-                                                @user.applications
+                                                @user.oauth_applications
       @applications = @applications.ordered_by(:created_at)
 
       respond_to do |format|
@@ -64,6 +64,7 @@ module Oauth
 
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
+      handle_member_ids(params["member_ids"])
 
       if @application.update_attributes(app_params)
         security_log :application_updated, application_id: @application.id,
@@ -115,13 +116,30 @@ module Oauth
           :name, :redirect_uri, :scopes, :email_subject_prefix, :lead_application_source,
           :email_from_address, :confidential,
           :can_access_private_user_data, :can_find_or_create_accounts, :can_message_users,
-          :can_skip_oauth_screen,:member_ids
+          :can_skip_oauth_screen, :member_ids
         )
       elsif @application.owner.member_ids.include?(@user.id)
         params.require(:doorkeeper_application).permit(
           :redirect_uri
         )
       end
+    end
+
+    def handle_member_ids(member_ids)
+      if @user.is_administrator?
+        if valid_member_ids(member_ids)
+          mi_array = member_ids.split(" ")
+          @application.owner.member_ids = mi_array if @application.owner.member_ids != mi_array
+          @application.owner.save
+        else
+          puts "***Member Ids Validation Failed!!!"
+        end
+      end
+    end
+
+    def valid_member_ids(member_ids)
+      re = '^(?=.*\d)[\s\d]+$'
+      !!member_ids.match(re)
     end
   end
 end

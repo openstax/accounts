@@ -99,12 +99,16 @@
       </div>
     <% end %>
   <% end %>
-  <div>
-    <%= label_tag(@member_ids, "OAuth Admins", class: 'col-sm-2 control-label') %>
-    <div class="col-sm-10">
-      <%= text_field_tag "member_ids", @member_ids, class: 'form-control', placeholder: 'space separated user ids' %>
-    </div>
-  </div >
+  
+  <% if @user.is_administrator? %>
+    <div>
+      <%= label_tag(@member_ids, "OAuth Admins", class: 'col-sm-2 control-label') %>
+      <div class="col-sm-10">
+        <%= text_field_tag "member_ids", @member_ids, class: 'form-control', placeholder: 'space separated user ids' %>
+        <p>Space separated list of integer user ids. ex: 1 10 7</p>
+      </div>
+    </div >
+    <% end %>
   <% end %>
 
   <div class="form-group">

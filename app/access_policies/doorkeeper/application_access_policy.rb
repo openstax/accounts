@@ -9,7 +9,7 @@ module Doorkeeper
       case action
       when :read, :update
         application.owner.has_member?(requestor) ||\
-          requestor.is_administrator? || application.owner.members_ids.includes?(requestor.id)
+          requestor.is_administrator? || application.owner.member_ids.include?(requestor.id)
       when :create, :destroy
         requestor.is_administrator?
       else
