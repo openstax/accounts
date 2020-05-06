@@ -59,8 +59,7 @@ module Oauth
 
     def edit
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      @member_ids = @application.owner.member_ids
-      @member_ids.delete(@application.owner.owner_ids[0])
+      @member_ids = set_member_ids
     end
 
     def update
@@ -79,6 +78,7 @@ module Oauth
             format.json { render json: @application }
           end
         else
+          @member_ids = set_member_ids
           respond_to do |format|
             format.html { render :edit }
             format.json do
@@ -133,6 +133,7 @@ module Oauth
       if @user.is_administrator?
         if valid_member_ids(member_ids)
           mi_array = member_ids.split(" ")
+          #add the owner back to the member_ids array
           mi_array.unshift(@application.owner.owner_ids[0])
           @application.owner.member_ids = mi_array if @application.owner.member_ids != mi_array
           return true
@@ -151,6 +152,14 @@ module Oauth
       end
       re = '^(?=.*\d)[\s\d]+$'
       !!member_ids.match(re)
+    end
+
+    def set_member_ids
+      #remove the owner from the array since it cannot be removed by users
+      ids = @application.owner.member_ids
+      owner_id = @application.owner.owner_ids[0]
+      ids.delete(owner_id)
+      return ids
     end
   end
 end
