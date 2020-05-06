@@ -89,7 +89,7 @@ class ApplicationController < ActionController::Base
     # fails.  Also these methods perform checks on the alternate signup URL.
     set_client_app(params[:client_id])
 
-    set_alternate_signup_url(params[:signup_at]) if request.query_parameters.include?(:signup_at)
+    set_alternate_signup_url(params[:signup_at])
 
     # TODO: if feature flag is ON, this is actually doing a redirect, not saving params in session.
     set_student_signup_role(params[:go] == 'student_signup')
