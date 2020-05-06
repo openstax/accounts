@@ -18,9 +18,6 @@ Doorkeeper::Application.class_eval do
 
   delegate :member_ids, to: :owner
 
-  MEMBER_IDS_REGEX = /(^|[=\s])\K\d+(?=\s|)/m
-  validates :member_ids, format: {with: MEMBER_IDS_REGEX}, allow_blank: true
-
   def is_redirect_url?(url)
     return false if url.nil?
 

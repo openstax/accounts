@@ -64,25 +64,30 @@ module Oauth
 
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      handle_member_ids(params["member_ids"])
-
-      if @application.update_attributes(app_params)
-        security_log :application_updated, application_id: @application.id,
-                                           application_params: app_params
-        flash[:notice] = I18n.t(
-          :notice, scope: %i[doorkeeper flash applications update]
-        )
-        respond_to do |format|
-          format.html { redirect_to oauth_application_url(@application) }
-          format.json { render json: @application }
-        end
-      else
-        respond_to do |format|
-          format.html { render :edit }
-          format.json do
-            render json: { errors: @application.errors.full_messages },
-                   status: :unprocessable_entity
+      
+      Doorkeeper::Application.transaction do
+        if handle_member_ids(params["member_ids"]) && @application.update_attributes(app_params)
+          puts "***HERE in if of update"
+          @application.owner.save
+          security_log :application_updated, application_id: @application.id,
+                                            application_params: app_params
+          flash[:notice] = I18n.t(
+            :notice, scope: %i[doorkeeper flash applications update]
+          )
+          respond_to do |format|
+            format.html { redirect_to oauth_application_url(@application) }
+            format.json { render json: @application }
           end
+        else
+          puts "***HERE in else of update"
+          respond_to do |format|
+            format.html { render :edit }
+            format.json do
+              render json: { errors: @application.errors.full_messages },
+                    status: :unprocessable_entity
+            end
+          end
+          raise ActiveRecord::Rollback
         end
       end
     end
@@ -128,18 +133,27 @@ module Oauth
     def handle_member_ids(member_ids)
       if @user.is_administrator?
         if valid_member_ids(member_ids)
+          puts "--- In valid member ids if ----"
           mi_array = member_ids.split(" ")
+          puts "--- array created ----" + mi_array.to_s
           @application.owner.member_ids = mi_array if @application.owner.member_ids != mi_array
-          @application.owner.save
+          puts "***WOW Member Ids Updated!!!"
+          return true
         else
-          puts "***Member Ids Validation Failed!!!"
+          puts "***In else of handle member ids"
+          @application.errors.add(:owner, 'Member Ids must be a space separated list of integers')
+          return false
         end
+      else
+        return false
       end
     end
 
     def valid_member_ids(member_ids)
       re = '^(?=.*\d)[\s\d]+$'
-      !!member_ids.match(re)
+      result = !!member_ids.match(re)
+      puts "***Valid Member Ids result!! " + result.to_s
+      return result
     end
   end
 end
