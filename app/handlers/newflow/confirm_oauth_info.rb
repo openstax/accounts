@@ -55,8 +55,12 @@ module Newflow
       user_who_owns_email_address = LookupUsers.by_verified_email(email).first
       return false if user_who_owns_email_address.nil?
 
-      Raven.capture_message('Email address taken during ConfirmOauthInfo', extra: { user_id: @user.id })
-      user_who_owns_email_address.id != @user.id
+      if user_who_owns_email_address.id != @user.id
+        Raven.capture_message('Email address taken during ConfirmOauthInfo', extra: { user_id: @user.id })
+        return true
+      else
+        return false
+      end
     end
 
     def email_taken_error!(user_id)

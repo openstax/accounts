@@ -37,7 +37,8 @@ module Newflow
         newflow_handle_while_logged_in(@logged_in_user.id)
       elsif mismatched_authentication?
         fatal_error(code: :mismatched_authentication)
-      elsif (outputs.authentication = Authentication.having_provider(@oauth_provider).where(uid: @oauth_uid).first)
+      elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
+      # elsif (outputs.authentication = Authentication.having_provider(@oauth_provider).where(uid: @oauth_uid).first)
         # User found with the given authentication.
         # We will log them in.
       elsif (existing_user = user_most_recently_used(users_matching_oauth_data))
@@ -91,7 +92,7 @@ module Newflow
         )
       end
 
-      if is_email_taken?(oauth_data.email, logged_in_user_id)
+      if email_already_in_use?(oauth_data.email, logged_in_user.id)
         fatal_error(
           code: :email_already_in_use,
           offending_inputs: :email,
@@ -194,7 +195,7 @@ module Newflow
       fatal_error(code: :invalid_omniauth_data)
     end
 
-    def is_email_taken?(email, logged_in_user_id)
+    def email_already_in_use?(email, logged_in_user_id)
       ContactInfo.verified
         .where(value: email)
         .where.has { |t| t.user_id != logged_in_user_id }.exists?
