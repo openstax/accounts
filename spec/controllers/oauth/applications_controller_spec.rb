@@ -227,6 +227,28 @@ module Oauth
       expect(response).to have_http_status :forbidden
     end
 
+    it "should let an admin create an application with Oauth Admins" do
+      controller.sign_in! admin
+      post(:create,
+        params: {
+            doorkeeper_application: {
+              name: 'Some app',
+              redirect_uri: 'https://www.example.com',
+              can_message_users: true,
+              member_ids: user2.id.to_s
+            }
+        }
+      )
+
+      id = assigns(:application).id
+      expect(id).not_to be_nil
+      expect(response).to redirect_to(oauth_application_path(id))
+      expect(assigns(:application).name).to eq('Some app')
+      expect(assigns(:application).redirect_uri).to eq('https://www.example.com')
+      expect(assigns(:application).can_message_users).to eq(true)
+      expect(assigns(:application).member_ids).to eq(user2.id.to_s)
+    end
+
   end
 
 end
