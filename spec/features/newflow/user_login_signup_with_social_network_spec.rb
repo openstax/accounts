@@ -64,7 +64,12 @@ feature 'User logs in or signs up with a social network', js: true do
       end
 
       describe 'enters invalid email' do
-        subject(:invalid_email) { 'someinvalidemail' }
+        # subject(:invalid_email) { 'someinvalidemail' }
+        let(:email){ Faker::Internet.email }
+
+        before do
+          FactoryBot.create(:email_address, value: email, verified: true)
+        end
 
         scenario 'the form shows a friendly error message' do
           visit(newflow_login_path)
@@ -84,8 +89,9 @@ feature 'User logs in or signs up with a social network', js: true do
             expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
             expect(page).to have_content(t(:"login_signup_form.email_is_blank"))
 
-            fill_in('signup_email',	with: invalid_email)
+            fill_in('signup_email',	with: email)
             submit_signup_form
+            # debugger
             screenshot!
             expect(page).to have_content(t(:".activerecord.errors.models.email_address.attributes.value.invalid", value: invalid_email))
           end
@@ -129,6 +135,8 @@ feature 'User logs in or signs up with a social network', js: true do
             wait_for_ajax
             screenshot!
             expect(page.current_path).to match(profile_newflow_path)
+            # AND the new Authentication is listed in their profile
+            # debugger
           end
         end
       end
@@ -219,4 +227,7 @@ feature 'User logs in or signs up with a social network', js: true do
       end
     end
   end
+
+  # TODO: test 'when user starts the signup process (gets to the Confirm your info form), doesnt complete it, then logs in so as to not create another/second account, then logs in and tries to add it to their existing account'
+  # ... currently it gives an error: "That way to log in cannot be added because it is associated to an email address that is already in use!" but it probably shouldn't
 end
