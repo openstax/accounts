@@ -1,7 +1,7 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
     before_action :set_user
-    #before_action :admin_authentication!
+    before_action :admin_authentication!
 
     def index
       @applications = @user.is_administrator? ? Doorkeeper::Application.all :
@@ -36,23 +36,27 @@ module Oauth
 
       OSU::AccessPolicy.require_action_allowed!(:create, @user, @application)
 
-      if @application.save
-        security_log :application_created, application_id: @application.id,
-                                           application_name: @application.name
-        flash[:notice] = I18n.t(
-          :notice, scope: %i[doorkeeper flash applications create]
-        )
-        respond_to do |format|
-          format.html { redirect_to oauth_application_url(@application) }
-          format.json { render json: @application }
-        end
-      else
-        respond_to do |format|
-          format.html { render :new }
-          format.json do
-            render json: { errors: @application.errors.full_messages },
-                   status: :unprocessable_entity
+      Doorkeeper::Application.transaction do
+        if handle_member_ids(params["member_ids"]) && @application.save
+          @application.owner.save
+          security_log :application_created, application_id: @application.id,
+                                            application_name: @application.name
+          flash[:notice] = I18n.t(
+            :notice, scope: %i[doorkeeper flash applications create]
+          )
+          respond_to do |format|
+            format.html { redirect_to oauth_application_url(@application) }
+            format.json { render json: @application }
           end
+        else
+          respond_to do |format|
+            format.html { render :new }
+            format.json do
+              render json: { errors: @application.errors.full_messages },
+                    status: :unprocessable_entity
+            end
+          end
+          raise ActiveRecord::Rollback
         end
       end
     end
@@ -130,24 +134,23 @@ module Oauth
     end
 
     def handle_member_ids(member_ids)
-      if @user.is_administrator?
-        if valid_member_ids(member_ids)
-          mi_array = member_ids.split(" ")
+      if valid_member_ids(member_ids)
+        if !member_ids.nil?
+          str_array = member_ids.split(" ")
+          mi_array = str_array.map(&:to_i)
           #add the owner back to the member_ids array
           mi_array.unshift(@application.owner.owner_ids[0])
           @application.owner.member_ids = mi_array if @application.owner.member_ids != mi_array
-          return true
-        else
-          @application.errors.add(:owner, 'Member Ids must be a space separated list of integers')
-          return false
         end
+        return true
       else
+        @application.errors.add(:owner, 'Member Ids must be a space separated list of integers')
         return false
       end
     end
 
     def valid_member_ids(member_ids)
-      if member_ids.empty?
+      if member_ids.nil? || member_ids.empty?
         return true
       end
       re = '^(?=.*\d)[\s\d]+$'
