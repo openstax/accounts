@@ -30,4 +30,7 @@ SimpleCov.at_exit do
 end
 
 # Start calculating code coverage
-SimpleCov.start('rails') { merge_timeout 3600 }
+SimpleCov.start('rails') do
+  add_filter '/spec'
+  merge_timeout 3600
+end

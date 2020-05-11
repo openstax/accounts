@@ -8,8 +8,8 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 
   provider :facebook, secrets[:facebook_app_id], secrets[:facebook_app_secret],
            client_options: {
-             site: 'https://graph.facebook.com/v3.3',
-             authorize_url: "https://www.facebook.com/v3.3/dialog/oauth"
+             site: 'https://graph.facebook.com/v7.0',
+             authorize_url: "https://www.facebook.com/v7.0/dialog/oauth"
            }
 
   provider(
@@ -17,8 +17,8 @@ Rails.application.config.middleware.use OmniAuth::Builder do
     secrets[:facebook_app_id],
     secrets[:facebook_app_secret],
     client_options: {
-      site: 'https://graph.facebook.com/v3.3',
-      authorize_url: "https://www.facebook.com/v3.3/dialog/oauth"
+      site: 'https://graph.facebook.com/v7.0',
+      authorize_url: "https://www.facebook.com/v7.0/dialog/oauth"
     }
   )
 

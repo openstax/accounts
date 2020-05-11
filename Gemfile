@@ -54,9 +54,9 @@ gem 'doorkeeper'
 # OAuth clients
 gem 'omniauth'
 gem 'omniauth-identity'
-gem 'omniauth-facebook', '~>4.0.0'
+gem 'omniauth-facebook'
 gem 'omniauth-twitter'
-gem 'omniauth-google-oauth2', '~>0.6'
+gem 'omniauth-google-oauth2'
 
 # Key-value store for caching
 gem 'redis-rails'
@@ -223,6 +223,9 @@ group :development do
 
   # Generate Entity-Relationship Diagrams for Rails applications
   gem 'rails-erd'
+
+  # "RailsPanel" — Chrome/Firefox extension for Rails development
+  gem 'meta_request'
 end
 
 group :test do
