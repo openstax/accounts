@@ -6,7 +6,7 @@ class FixIsNewflowFlagForSocialUsers
     def call
       ActiveRecord::Base.transaction do
         begin
-          users_missed.update_all(is_newflow: true)
+          puts users_missed.update_all(is_newflow: true)
         rescue Exception => e
           puts e
           Raven.capture_exception(e)
