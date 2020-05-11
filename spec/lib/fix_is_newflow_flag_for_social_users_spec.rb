@@ -15,9 +15,9 @@ describe FixIsNewflowFlagForSocialUsers do
 
     context 'who have not created a password' do
       it 'switches `is_newflow` from false to true' do
-        expect(User.pluck(:is_newflow)).to match([false, false])
+        expect(User.pluck(:is_newflow)).to contain_exactly(false, false)
         subject
-        expect(User.pluck(:is_newflow)).to match([true, true])
+        expect(User.pluck(:is_newflow)).to contain_exactly(true, true)
       end
     end
 
@@ -30,9 +30,9 @@ describe FixIsNewflowFlagForSocialUsers do
       end
 
       it 'switches `is_newflow` from false to true' do
-        expect(User.pluck(:is_newflow)).to match([false, false])
+        expect(User.pluck(:is_newflow)).to contain_exactly(false, false)
         subject
-        expect(User.pluck(:is_newflow)).to match([true, true])
+        expect(User.pluck(:is_newflow)).to contain_exactly(true, true)
       end
     end
   end
@@ -82,7 +82,7 @@ describe FixIsNewflowFlagForSocialUsers do
         ['facebooknewflow', 'googlenewflow'].each_with_index do |provider, index|
           FactoryBot.create(:authentication, user: users[index], provider: provider)
           expect(users[index].authentications.count).to eq(2)
-          expect(users[index].authentications.pluck(:provider)).to match(['identity', provider])
+          expect(users[index].authentications.pluck(:provider)).to contain_exactly('identity', provider)
         end
       end
 
