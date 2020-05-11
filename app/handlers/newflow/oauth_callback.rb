@@ -86,7 +86,7 @@ module Newflow
 
       if is_email_taken?(oauth_data.email, logged_in_user_id)
         fatal_error(
-          code: :email_taken,
+          code: :email_already_in_use,
           offending_inputs: :email,
           message: I18n.t(:"login_signup_form.sign_in_option_already_used")
         )
