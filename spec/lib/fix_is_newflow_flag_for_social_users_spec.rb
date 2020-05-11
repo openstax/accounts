@@ -15,9 +15,9 @@ describe FixIsNewflowFlagForSocialUsers do
 
     context 'who have not created a password' do
       it 'switches `is_newflow` from false to true' do
-        expect(users.pluck(:is_newflow)).to match([false, false])
+        expect(User.pluck(:is_newflow)).to match([false, false])
         subject
-        expect(users.pluck(:is_newflow)).to match([true, true])
+        expect(User.pluck(:is_newflow)).to match([true, true])
       end
     end
 
@@ -30,9 +30,9 @@ describe FixIsNewflowFlagForSocialUsers do
       end
 
       it 'switches `is_newflow` from false to true' do
-        expect(users.pluck(:is_newflow)).to match([false, false])
+        expect(User.pluck(:is_newflow)).to match([false, false])
         subject
-        expect(users.pluck(:is_newflow)).to match([true, true])
+        expect(User.pluck(:is_newflow)).to match([true, true])
       end
     end
   end

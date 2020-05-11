@@ -186,7 +186,7 @@ module Newflow
               @email = @handler_result.outputs.email
               security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
               # must confirm their social info on signup
-              render :confirm_social_info_form and return
+              render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
             end
 
             sign_in!(user)
