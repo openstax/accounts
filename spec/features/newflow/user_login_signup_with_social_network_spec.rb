@@ -196,6 +196,9 @@ feature 'User logs in or signs up with a social network', js: true do
             wait_for_ajax
             screenshot!
             expect(page.current_path).to match(profile_newflow_path)
+
+            # A `facebooknewflow` auth was created since the user already had a `facebook` one
+            expect(user.authentications.count).to eq(2)
           end
         end
       end

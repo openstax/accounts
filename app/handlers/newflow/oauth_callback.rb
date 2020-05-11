@@ -45,6 +45,13 @@ module Newflow
         # We will add the authentication to their existing account and then log them in.
         outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
         run(TransferAuthentications, outputs.authentication, existing_user)
+      elsif (old_flow_user = find_old_flow_user(provider: @oauth_provider, uid: @oauth_uid))
+        # create a corresponding new flow Authentication
+        outputs.authentication = create_newflow_auth_for_user(
+          user: old_flow_user,
+          provider: @oauth_provider,
+          uid: @oauth_uid
+        )
       else # sign up new user, then we will log them in.
         user = create_user_instance
         run(TransferOmniauthData, oauth_data, user)
@@ -126,6 +133,38 @@ module Newflow
       end
 
       return users.sort_by{ |uu| [uu.updated_at, uu.created_at] }.last
+    end
+
+    def find_old_flow_user(provider:, uid:)
+      providers_mapping = {
+        'facebooknewflow': 'facebook',
+        'googlenewflow': 'google'
+      }.with_indifferent_access
+
+      corresponding_provider = providers_mapping.fetch(provider, nil)
+      return unless corresponding_provider
+
+      Authentication.find_by(provider: corresponding_provider, uid: uid)&.user
+    end
+
+    # Create a corresponding new flow Authentication for old flow Authentication owner
+    def create_newflow_auth_for_user(user:, provider:, uid:)
+      authentication = Authentication.new(provider: provider, uid: uid)
+
+      run(TransferAuthentications, authentication, user)
+
+      SecurityLog.create!(
+        event_type: :authentication_transferred,
+        user: user,
+        remote_ip: request.remote_ip,
+        event_data: {
+          authentication_id: authentication.id,
+          authentication_provider: authentication.provider,
+          authentication_uid: authentication.uid
+        }
+      )
+
+      authentication
     end
 
     def oauth_response
