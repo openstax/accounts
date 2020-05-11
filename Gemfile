@@ -47,7 +47,7 @@ gem 'doorkeeper'
 # OAuth clients
 gem 'omniauth'
 gem 'omniauth-identity'
-gem 'omniauth-facebook', '~>4.0.0'
+gem 'omniauth-facebook'
 gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
