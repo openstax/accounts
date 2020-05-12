@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe LookupUsers do
+describe LookupUsers, type: :lib do
 
   context '#by_email_or_username' do
     it 'returns nothing for nil username lookup' do
@@ -62,5 +62,4 @@ describe LookupUsers do
       expect(described_class.by_email_or_username('bob')).to eq [@user]
     end
   end
-
 end

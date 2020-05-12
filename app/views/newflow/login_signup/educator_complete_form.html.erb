@@ -120,7 +120,7 @@
                 <%= I18n.t(:"educator_complete_form.select_option") %>
               </div>
               <%= fh.select name: :subjects_of_interest,
-                            options: ['Math', 'Science', 'Social Science', 'Humanities', 'Business', 'Essentials', 'College Success', 'High School'],
+                            options: @book_subjects,
                             autofocus: true,
                             multiple: true,
                             custom_class: 'os-multiselect'
@@ -135,7 +135,7 @@
                 <%= I18n.t(:"educator_complete_form.select_option") %>
               </div>
               <%= fh.select name: :books_used,
-                            options: Settings::Subjects.map {|(short_name, info)| [  info["title"], short_name] },
+                            options: @book_titles,
                             autofocus: true,
                             multiple: true,
                             custom_class: 'os-multiselect'
