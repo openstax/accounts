@@ -3,6 +3,8 @@ module Oauth
     before_action :set_user
     before_action :admin_authentication!
 
+    NUMBERS_ONLY_REGEX = '^(?=.*\d)[\s\d]+$'.freeze
+
     def index
       @applications = @user.is_administrator? ? Doorkeeper::Application.all :
                                                 @user.oauth_applications
@@ -153,8 +155,7 @@ module Oauth
       if member_ids.nil? || member_ids.empty?
         return true
       end
-      re = '^(?=.*\d)[\s\d]+$'
-      !!member_ids.match(re)
+      !!member_ids.match(NUMBERS_ONLY_REGEX)
     end
 
     def set_member_ids
