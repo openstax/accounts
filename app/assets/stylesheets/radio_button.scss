@@ -22,6 +22,7 @@ $custom-radio-disabled-pip-color:   transparentize(os-color(light-blue), 0.40);
 [type="radio"] {
   -webkit-appearance: none;
   border-radius: 100%;
+  border-width: 0;
   display: inline-block;
   height: 2rem;
   max-width: $custom-radio-size;
