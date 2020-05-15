@@ -74,10 +74,12 @@ module Newflow
 
     def educator_complete
       handle_with(
-        EducatorSignup, #to be EducatorComplete
+        EducatorCompleteProfile,
         success: lambda {
+          redirect_to signup_done_path
         },
         failure: lambda {
+          render :educator_complete_form
         }
       )
     end
