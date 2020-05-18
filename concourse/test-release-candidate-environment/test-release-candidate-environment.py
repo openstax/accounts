@@ -28,7 +28,7 @@ data = {"build_parameters":
     {
         "CIRCLE_JOB": CIRCLE_JOB,
 	"INSTANCE": "unique",
-	"ADMIN_USER": "scott",
+	"ADMIN_USER": "sandbox",
 	"ADMIN_PASSWORD_UNIQUE": os.environ["TEST_PASSWORD"],
 	"TEACHER_USER": "teacher@sandbox.openstax.org",
 	"TEACHER_PASSWORD_UNIQUE": os.environ["CIRCLE_API_TOKEN"],
