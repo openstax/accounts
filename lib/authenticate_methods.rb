@@ -63,7 +63,7 @@ module AuthenticateMethods
   end
 
   def authenticate_admin!
-    return if current_user.is_administrator? || !current_user.oauth_applications.empty?
+    return if current_user.is_administrator?
     return head(:forbidden) if signed_in?
     store_url
     redirect_to main_app.login_path(params.permit(:client_id).to_h)

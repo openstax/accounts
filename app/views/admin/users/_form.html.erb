@@ -244,8 +244,6 @@
   </div>
   <% end %>
 
-  <% if !@user.is_administrator? %>
-
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <%= f.submit 'Save', class: 'btn btn-primary' %>
@@ -255,6 +253,4 @@
   <div class="actions">
 
   </div>
-  <% end %>
-
 <% end %>
