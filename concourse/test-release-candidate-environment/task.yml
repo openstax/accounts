@@ -4,5 +4,17 @@ platform: linux
 inputs:
 - name: accounts-git
 
+outputs:
+- name: circleci-output
+
+params:
+  CIRCLE_API_TOKEN: ((os-auto-circleci-api-token))
+  CIRCLE_BRANCH: ((os-auto-circleci-branch))
+  TEST_PASSWORD: ((test-password))
+
 run:
-  path: accounts-git/concourse/test-release-candidate-environment/test-release-candidate-environment.sh
+  path: bash
+  args:
+    - -exc
+    - |
+      python accounts-git/concourse/test-release-candidate-environment/test-release-candidate-environment.py

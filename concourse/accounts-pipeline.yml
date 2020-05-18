@@ -43,6 +43,10 @@ jobs:
         image: accounts-deployment-docker-image
         file: accounts-git/concourse/create-release-candidate-environment/task.yml
 
+      - task: test-release-candidate-environment
+        image: accounts-deployment-docker-image
+        file: accounts-git/concourse/test-release-candidate-environment/task.yml
+
       - task: delete-release-candidate-environment
         image: accounts-deployment-docker-image
         file: accounts-git/concourse/delete-release-candidate-environment/task.yml
