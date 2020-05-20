@@ -74,6 +74,14 @@ class User < ActiveRecord::Base
   validates_presence_of(:faculty_status, :role, :school_type)
 
   validates(
+    :state,
+    inclusion: {
+      in: VALID_STATES,
+      message: "must be one of #{VALID_STATES.join(',')}"
+    }
+  )
+
+  validates(
     :username,
     length: {
       minimum: USERNAME_MIN_LENGTH,
@@ -92,14 +100,6 @@ class User < ActiveRecord::Base
     uniqueness: {
       case_sensitive: false,
       allow_nil: true
-    }
-  )
-
-  validates(
-    :state,
-    inclusion: {
-      in: VALID_STATES,
-      message: "must be one of #{VALID_STATES.join(',')}"
     }
   )
 

@@ -27,17 +27,33 @@
           <div class="questions">
             <div class="form-group question completed-role">
               <div class="radio-control-group">
-                <%= label_tag :educator_specific_role, I18n.t(:"educator_complete_form.describe_role"), class: 'field-label' %>
+                <%=
+                  label_tag(
+                    :educator_specific_role,
+                    I18n.t(:"educator_complete_form.describe_role"),
+                    class: 'field-label'
+                  )
+                %>
+
                 <div class="role newflow-mustdo-alert">
                   <%= I18n.t(:"educator_complete_form.select_option") %>
                 </div>
+
                 <% educator_complete_roles.each do |(role, id, selected)| %>
                   <label>
                     <% label_name = "educator_specific_role_#{id}".to_sym %>
-                    <%= f.radio_button :educator_specific_role, id, checked: selected, class: 'completed-role custom-control-input' %>
-                    <%= label label_name, role, class: 'custom-control-label' %>
+                    <%=
+                      f.radio_button(
+                        :educator_specific_role,
+                        id,
+                        checked: selected,
+                        class: 'completed-role custom-control-input'
+                      )
+                    %>
+                    <%= label(label_name, role, class: 'custom-control-label') %>
                   </label>
                 <% end %>
+
               </div>
 
               <div class="other-specify">
@@ -47,9 +63,12 @@
                 <div class="other newflow-mustdo-alert">
                   <%= I18n.t(:"educator_complete_form.fill_out") %>
                 </div>
-                <%= fh.text_field name: :other_role_name,
-                                  placeholder: I18n.t(:"educator_complete_form.other_please_specify"),
-                                  autofocus: true
+                <%=
+                  fh.text_field(
+                    name: :other_role_name,
+                    placeholder: I18n.t(:"educator_complete_form.other_please_specify"),
+                    autofocus: true
+                  )
                 %>
               </div>
             </div>
@@ -61,15 +80,36 @@
                   <%= I18n.t(:"educator_complete_form.select_option") %>
                 </div>
                 <label>
-                  <%= f.radio_button :how_are_books_chosen, :by_instructor, checked: false, class: 'completed-role custom-control-input' %>
+                  <%=
+                    f.radio_button(
+                      :how_are_books_chosen,
+                      :by_instructor,
+                      checked: false,
+                      class: 'completed-role custom-control-input'
+                    )
+                  %>
                   <%= label :using_primary_textbook, I18n.t(:"educator_complete_form.chosen_by_instructor"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :how_are_books_chosen, :by_recommendation, checked: false, class: 'completed-role custom-control-input' %>
+                  <%=
+                    f.radio_button(
+                      :how_are_books_chosen,
+                      :by_recommendation,
+                      checked: false,
+                      class: 'completed-role custom-control-input'
+                    )
+                  %>
                   <%= label :using_recommending_openstax, I18n.t(:"educator_complete_form.chosen_by_committee"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :how_are_books_chosen, :by_coordinator, checked: false, class: 'completed-role custom-control-input' %>
+                  <%=
+                    f.radio_button(
+                      :how_are_books_chosen,
+                      :by_coordinator,
+                      checked: false,
+                      class: 'completed-role custom-control-input'
+                    )
+                  %>
                   <%= label :using_future, I18n.t(:"educator_complete_form.chosen_by_coordinator"), class: 'custom-control-label' %>
                 </label>
               </div>
@@ -82,15 +122,36 @@
                   <%= I18n.t(:"educator_complete_form.select_option") %>
                 </div>
                 <label>
-                  <%= f.radio_button :using_openstax_how, :as_primary, checked: false, class: 'completed-role custom-control-input' %>
+                  <%=
+                    f.radio_button(
+                      :using_openstax_how,
+                      :as_primary,
+                      checked: false,
+                      class: 'completed-role custom-control-input'
+                    )
+                  %>
                   <%= label :using_primary_textbook, I18n.t(:"educator_complete_form.using_primary_textbook"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :using_openstax_how, :as_recommending, checked: false, class: 'completed-role custom-control-input' %>
+                  <%=
+                    f.radio_button(
+                      :using_openstax_how,
+                      :as_recommending,
+                      checked: false,
+                      class: 'completed-role custom-control-input'
+                    )
+                  %>
                   <%= label :using_recommending_openstax, I18n.t(:"educator_complete_form.using_recommending_openstax"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :using_openstax_how, :as_future, checked: false, class: 'completed-role custom-control-input' %>
+                  <%=
+                    f.radio_button(
+                      :using_openstax_how,
+                      :as_future,
+                      checked: false,
+                      class: 'completed-role custom-control-input'
+                    )
+                  %>
                   <%= label :using_future, I18n.t(:"educator_complete_form.using_future"), class: 'custom-control-label' %>
                 </label>
               </div>
@@ -115,24 +176,34 @@
             </div>
 
             <div class="form-group question subjects-of-interest">
-              <%= label_tag :subjects_of_interest,
-                            I18n.t(:"educator_complete_form.subjects_of_interest"),
-                            class: 'field-label'
+              <%=
+                label_tag(
+                  :subjects_of_interest,
+                  I18n.t(:"educator_complete_form.subjects_of_interest"),
+                  class: 'field-label'
+                )
               %>
               <div class="subjects newflow-mustdo-alert">
                 <%= I18n.t(:"educator_complete_form.select_option") %>
               </div>
-              <%= fh.select name: :subjects_of_interest,
-                            options: @book_subjects,
-                            autofocus: true,
-                            multiple: true,
-                            custom_class: 'os-multiselect'
+              <%=
+                fh.select(
+                  name: :subjects_of_interest,
+                  options: @book_subjects,
+                  autofocus: true,
+                  multiple: true,
+                  custom_class: 'os-multiselect'
+                )
               %>
             </div>
 
             <div class="form-group question books-used">
-              <%= label_tag :books_used, I18n.t(:"educator_complete_form.books_used"),
-                            class: 'field-label'
+              <%=
+                label_tag(
+                  :books_used,
+                  I18n.t(:"educator_complete_form.books_used"),
+                  class: 'field-label'
+                )
               %>
               <div class="used newflow-mustdo-alert">
                 <%= I18n.t(:"educator_complete_form.select_option") %>
@@ -145,6 +216,7 @@
                             custom_class: 'os-multiselect'
               %>
             </div>
+
           </div>
 
           <%=
