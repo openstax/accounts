@@ -339,7 +339,7 @@ ActiveRecord::Schema.define(version: 2020_05_14_211443) do
     t.datetime "activated_at"
     t.boolean "is_newflow", default: false, null: false
     t.string "phone_number"
-    t.boolean "is_kip", comment: "is the User's school a Key Institutional Partner?"
+    t.boolean "is_kip", comment: "is the User-s school a Key Institutional Partner?"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

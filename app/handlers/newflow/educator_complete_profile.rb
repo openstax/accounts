@@ -8,13 +8,30 @@ module Newflow
       attribute :how_are_books_chosen, type: String
       attribute :using_openstax_how, type: String
       attribute :num_students_per_semester_taught, type: Integer
-      attribute :subjects_of_interest, type: String
-      attribute :books_used, type: String
+      attribute :subjects_of_interest #, type: Array[String]
+      attribute :books_used #, type: Array[String]
+
+      validates(
+        :educator_specific_role,
+        inclusion: {
+          in: %w(instructor administrator other),
+        }
+      )
+
+      validates(
+        :num_students_per_semester_taught,
+        numericality: {
+          only_integer: true,
+          # greater_than_or_equal_to: 0,
+          # less_than: 1_000
+        }
+      )
     end
 
     protected ###############
 
     def authorized?
+      # !caller.is_anonymous? && caller.state == User::EDUCATOR_INCOMPLETE_PROFILE
       true
     end
 
@@ -32,10 +49,12 @@ module Newflow
         PushSalesforceLead.perform_later(
           user: caller,
           salesforce_contact_id: caller.salesforce_contact_id, # Note: this is expected to trigger an update on an existing SalesForce Contact, as opposed to creating a new lead.
-          more_specific_educator_role: signup_params.educator_specific_role,
           num_students: signup_params.num_students_per_semester_taught,
           using_openstax: signup_params.using_openstax_how,
           subject: SubjectsUtils.form_choices_to_salesforce_string(signup_params.subjects_of_interest),
+
+          # TODO: salesforce must be ready to accept these before we try to push them
+          # more_specific_educator_role: signup_params.educator_specific_role || signup_params.other_role_name,
 
           # do not set source_application because this faculty access endpoint does
           # not have a strong indication of where the user is coming from
