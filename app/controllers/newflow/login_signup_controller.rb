@@ -69,7 +69,8 @@ module Newflow
 
     def educator_complete_form
       @book_subjects = book_data.subjects
-      @book_titles = book_data.titles
+      # @book_titles = book_data.titles
+      @book_titles = BookData.latest_titles
     end
 
     def educator_complete

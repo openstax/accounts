@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_14_211443) do
+ActiveRecord::Schema.define(version: 2020_05_20_030849) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -59,6 +59,13 @@ ActiveRecord::Schema.define(version: 2020_05_14_211443) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["expires_at"], name: "index_banners_on_expires_at"
+  end
+
+  create_table "book_data", force: :cascade do |t|
+    t.json "titles", null: false
+    t.json "subjects", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "contact_infos", id: :serial, force: :cascade do |t|
