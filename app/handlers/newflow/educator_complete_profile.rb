@@ -8,8 +8,10 @@ module Newflow
       attribute :how_are_books_chosen, type: String
       attribute :using_openstax_how, type: String
       attribute :num_students_per_semester_taught, type: Integer
-      attribute :subjects_of_interest #, type: Array[String]
-      attribute :books_used #, type: Array[String]
+      attribute :subjects_of_interest, type: Object
+      attribute :books_used, type: Object
+      # attribute :subjects_of_interest #, type: Array[String]
+      # attribute :books_used #, type: Array[String]
 
       validates(
         :educator_specific_role,
@@ -31,30 +33,30 @@ module Newflow
     protected ###############
 
     def authorized?
-      # !caller.is_anonymous? && caller.state == User::EDUCATOR_INCOMPLETE_PROFILE
-      true
+      !caller.is_anonymous?
     end
 
     def handle
       caller.update(state: User::EDUCATOR_COMPLETE_PROFILE)
       transfer_errors_from(caller, {type: :verbatim}, true)
 
-      push_lead_to_salesforce(user)
+      push_lead_to_salesforce
     end
 
     private #################
 
-    def push_lead_to_salesforce(user)
+    def push_lead_to_salesforce
       if Settings::Salesforce.push_leads_enabled
         PushSalesforceLead.perform_later(
           user: caller,
           salesforce_contact_id: caller.salesforce_contact_id, # Note: this is expected to trigger an update on an existing SalesForce Contact, as opposed to creating a new lead.
           num_students: signup_params.num_students_per_semester_taught,
           using_openstax: signup_params.using_openstax_how,
-          subject: SubjectsUtils.form_choices_to_salesforce_string(signup_params.subjects_of_interest),
+          subject: books_or_subjects,
 
           # TODO: salesforce must be ready to accept these before we try to push them
           # more_specific_educator_role: signup_params.educator_specific_role || signup_params.other_role_name,
+          # titles: signup_params.books_used.join(';'),
 
           # do not set source_application because this faculty access endpoint does
           # not have a strong indication of where the user is coming from
@@ -63,6 +65,24 @@ module Newflow
         )
       end
     end
+
+    def books_or_subjects
+      subjects = signup_params.subjects_of_interest.reject{ |s| s == '' }
+      titles = signup_params.books_used.reject{ |b| b == '' }
+
+      if subjects.size >  0
+        return subjects.join(';')
+      elsif titles.size > 0
+        return titles.join(';')
+      end
+    end
+
+
+    # def salesforce_string_for_using_openstax_how
+      # t('.instructor_use.fully'), 'Confirmed Adoption Won'],
+      # t('.instructor_use.recommended'), 'Confirmed Will Recommend'],
+      # t('.instructor_use.interested'), 'High Interest in Adopting'],
+    # end
 
     # def validate_params_presence(required_params)
     #   begin

@@ -35,12 +35,12 @@ en:
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
     confirmation_page_header: Hi, %{first_name}! Confirm your email.
-    confirmation_form_decription: >-
+    email_verification_form_decription: >-
       An email has been sent to <b>%{email}</b>.
       Please enter the PIN you received below.
       You can also %{edit_your_email}
-    change_your_email_page_header: Change your email
-    change_your_email_page_description: >-
+    change_signup_email_form_page_header: Change your email
+    change_signup_email_form_page_description: >-
       Change your email below so we can send your PIN.
       You will need to use this updated email to log in.
     didnt_receive_email: Didn't receive an email? You can %{sign_up_with_different_email_link}.
@@ -110,7 +110,7 @@ en:
     setup_your_new_password: Set up your new password
     setup_your_new_password_description: Please finish setting up the password for %{email} below.
     confirm_social_info_tooltip: You can add a different email via your <b>Account Profile</b> later.
-    change_your_email_tooltip: You will need to use this updated email to log in.
+    change_signup_email_form_tooltip: You will need to use this updated email to log in.
     enter_new_password: Enter your new password
     enter_new_password_description: >-
       Finish resetting your password by entering the new one below.
