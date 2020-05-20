@@ -3,10 +3,11 @@ require 'rails_helper'
 module Oauth
 
   describe ApplicationsController, type: :controller do
+
     let!(:admin) { FactoryBot.create :user, :terms_agreed, :admin }
     let!(:user)  { FactoryBot.create :user, :terms_agreed }
     let!(:user2) { FactoryBot.create :user }
-    let!(:user3) { FactoryBot.create :user, :terms_agreed }
+    let!(:not_oauth_admin_user) { FactoryBot.create :user, :terms_agreed }
 
     let!(:trusted_application_admin)   { FactoryBot.create :doorkeeper_application, :trusted }
     let!(:untrusted_application_admin) { FactoryBot.create :doorkeeper_application }
@@ -160,17 +161,9 @@ module Oauth
     end
 
     it "should not let a user get the list of his applications" do
-      controller.sign_in! user
+      controller.sign_in! not_oauth_admin_user
       get(:index)
-      expect(response).to have_http_status :success
-      expect(response.body).to eq('')
-    end
-
-    it "should not let a user get his own application" do
-      controller.sign_in! user
-      get(:show, params: { id: untrusted_application_user.id })
-      expect(response).to have_http_status :success
-      expect(response.body).to eq('')
+      expect(response).to have_http_status :forbidden
     end
 
     it "should not let a user get someone else's application" do
@@ -186,7 +179,7 @@ module Oauth
     end
 
     it "should not let a user create an application" do
-      controller.sign_in! user3
+      controller.sign_in! user
       post(:create,
         params: {
           doorkeeper_application: {
@@ -196,13 +189,6 @@ module Oauth
         }
       )
       expect(response).to have_http_status :forbidden
-    end
-
-    it "should not let a user edit his own application" do
-      controller.sign_in! user
-      get(:edit, params: { id: untrusted_application_user.id })
-      expect(response).to have_http_status :success
-      expect(response.body).to eq('')
     end
 
     it "should not let a user edit someone else's application" do
@@ -299,6 +285,64 @@ module Oauth
       expect(assigns(:application).owner.member_ids).to include(user2.id)
     end
 
+    it "should not let an oauth admin update an application except redirect_uri" do
+      controller.sign_in! user
+      put(:update,
+        params: {
+          id: trusted_application_admin.id,
+          doorkeeper_application: {
+            name: 'Some app edited',
+            redirect_uri: 'https://www.example.org',
+            can_message_users: false,
+          }
+        }
+      )
+      expect(response).to redirect_to(oauth_application_path(trusted_application_admin.id))
+      expect(assigns(:application).name).not_to eq('Some app edited')
+      expect(assigns(:application).redirect_uri).to eq('https://www.example.org')
+      expect(assigns(:application).can_message_users).not_to eq(false)
+    end
+
+    context "with render_views" do
+      render_views
+      it "should only allow numbers and spaces in Oauth Admin field" do
+        controller.sign_in! admin
+        post(:update,
+          params: {
+            id: untrusted_application_user.id,
+            doorkeeper_application: {
+              name: 'Some app',
+              redirect_uri: 'https://www.example.com',
+              can_message_users: true,
+            },
+            member_ids: user2.id.to_s + " uteq"
+          }
+        )
+        
+        id = assigns(:application).id
+        expect(id).not_to be_nil
+        expect(response.body).to include "Member ids must be a space separated list of integers"
+      end
+
+      it "should only allow valid user ids in Oauth Admin field" do
+        controller.sign_in! admin
+        post(:update,
+          params: {
+            id: untrusted_application_user.id,
+            doorkeeper_application: {
+              name: 'Some app',
+              redirect_uri: 'https://www.example.com',
+              can_message_users: true,
+            },
+            member_ids: user2.id.to_s + "12345"
+          }
+        )
+        
+        id = assigns(:application).id
+        expect(id).not_to be_nil
+        expect(response.body).to include "12345 is not a valid user id"
+      end
+    end
   end
 
 end

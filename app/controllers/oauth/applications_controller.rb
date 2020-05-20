@@ -3,7 +3,7 @@ module Oauth
     before_action :set_user
     before_action :authenticate_admin_or_oauth_application_owner!
 
-    NUMBERS_AND_SPACES_REGEX = '^(?=.*\d)[\s\d]+$'.freeze
+    SPACE_SEPARATED_NUMBERS_REGEX = '^(?=.*\d)[\s\d]+$'.freeze
 
     def index
       @applications = @user.is_administrator? ? Doorkeeper::Application.all :
@@ -135,22 +135,6 @@ module Oauth
       end
     end
 
-    #def handle_member_ids(member_ids)
-    #  if valid_member_ids(member_ids)
-    #    if !member_ids.nil?
-    #      str_array = member_ids.split(" ")
-    #      mi_array = str_array.map(&:to_i)
-    #      #add the owner back to the member_ids array
-    #      mi_array.unshift(@application.owner.owner_ids[0])
-    #      @application.owner.member_ids = mi_array if @application.owner.member_ids != mi_array
-    #    end
-    #    return true
-    #  else
-    #    @application.errors.add(:owner, 'Member Ids must be a space separated list of integers')
-    #    return false
-    #  end
-    #end
-
     def add_application_owners
       member_ids = validated_member_ids
       return false if @application.errors.any?
@@ -159,22 +143,21 @@ module Oauth
       @application.owner.update_attributes(member_ids: member_ids)
     end
 
-    #def valid_member_ids(member_ids)
-    #  if member_ids.nil? || member_ids.empty?
-    #    return true
-    #  end
-    #  !!member_ids.match(NUMBERS_AND_SPACES_REGEX)
-    #end
-
     def validated_member_ids
       return [] if !params[:member_ids].present?
     
-      if !params[:member_ids].match(NUMBERS_AND_SPACES_REGEX)
+      if !params[:member_ids].match(SPACE_SEPARATED_NUMBERS_REGEX)
         @application.errors.add(:owner, 'Member Ids must be a space separated list of integers')
         return false
       end
     
       member_ids = params[:member_ids].split.map(&:to_i)
+      member_ids.each do |member|
+        if !User.where(id: member).exists?
+          @application.errors.add(:owner, "#{member} is not a valid user id")
+          return false
+        end
+      end
       return member_ids.unshift(@application.owner.owner_ids[0])
     end
 
@@ -188,7 +171,7 @@ module Oauth
 
     def authenticate_admin_or_oauth_application_owner!
       return if current_user.oauth_applications.any?
-      authenticate_admin! 
+      admin_authentication! 
     end
   end
 end
