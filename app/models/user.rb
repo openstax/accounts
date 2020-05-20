@@ -1,16 +1,117 @@
 class User < ActiveRecord::Base
-
-  USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
-  USERNAME_MIN_LENGTH = 3
-  USERNAME_MAX_LENGTH = 50
   VALID_STATES = [
-    TEMP = 'temp',                   # deprecated but still could exist for old accounts
+    TEMP = 'temp', # deprecated but still could exist for old accounts
     NEW_SOCIAL = 'new_social',
     UNCLAIMED = 'unclaimed',
     NEEDS_PROFILE = 'needs_profile', # has yet to fill out their user info
-    ACTIVATED = 'activated',         # means their user info is in place and the email is verified
-    UNVERIFIED = 'unverified'        # means their user info is in place but the email is not yet verified
+    ACTIVATED = 'activated', # means their user info is in place and the email is verified
+    UNVERIFIED = 'unverified', # means their user info is in place but the email is not yet verified
+    EDUCATOR_INCOMPLETE_PROFILE = 'educator_incomplete_profile', # means that they have not completed the last step of the Educator signup flow
+    EDUCATOR_COMPLETE_PROFILE = 'educator_complete_profile' # Educator signup flow complete
   ]
+  USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
+  USERNAME_MIN_LENGTH = 3
+  USERNAME_MAX_LENGTH = 50
+  DEFAULT_FACULTY_STATUS = :no_faculty_info
+  DEFAULT_SCHOOL_TYPE = :unknown_school_type
+
+  enum(
+    faculty_status: [
+      :no_faculty_info,
+      :pending_faculty,
+      :confirmed_faculty,
+      :rejected_faculty
+    ]
+  )
+
+  enum(
+    role: [
+      :unknown_role,
+      :student,
+      :instructor,
+      :administrator,
+      :librarian,
+      :designer,
+      :other,
+      :adjunct,
+      :homeschool
+    ]
+  )
+
+  enum(
+    school_type: [
+      :unknown_school_type,
+      :other_school_type,
+      :college,
+      :high_school,
+      :k12_school
+    ]
+  )
+
+  scope(
+    :by_unverified, -> {
+      where(state: UNVERIFIED)
+    }
+  )
+  scope(
+    :older_than_one_year, -> {
+      where("created_at < ?", 1.year.ago)
+    }
+  )
+
+  before_validation(:strip_fields)
+  before_validation(
+    :generate_uuid, :generate_support_identifier,
+    on: :create
+  )
+
+  validate(:ensure_names_continue_to_be_present)
+  validate(
+    :save_activated_at_if_became_activated,
+    on: :update
+  )
+
+  validates_presence_of(:faculty_status, :role, :school_type)
+
+  validates(
+    :username,
+    length: {
+      minimum: USERNAME_MIN_LENGTH,
+      maximum: USERNAME_MAX_LENGTH,
+      allow_blank: true
+    },
+    format: {
+      with: USERNAME_VALID_REGEX,
+      allow_blank: true
+    }
+  )
+
+  validates(
+    :username,
+    if: :username_changed?,
+    uniqueness: {
+      case_sensitive: false,
+      allow_nil: true
+    }
+  )
+
+  validates(
+    :state,
+    inclusion: {
+      in: VALID_STATES,
+      message: "must be one of #{VALID_STATES.join(',')}"
+    }
+  )
+
+  validates(:login_token, uniqueness: { allow_nil: true })
+
+  validates(:uuid, :support_identifier, presence: true, uniqueness: true)
+
+  before_save(:add_unread_update)
+
+  before_create(:make_first_user_an_admin)
+
+  belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
 
   has_one :identity, dependent: :destroy, inverse_of: :user
   has_one :pre_auth_state
@@ -20,68 +121,22 @@ class User < ActiveRecord::Base
   has_many :applications, through: :application_users
   has_many :contact_infos, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, inverse_of: :user
-
   has_many :message_recipients, inverse_of: :user, dependent: :destroy
   has_many :received_messages, through: :message_recipients, source: :message
   has_many :sent_messages, class_name: 'Message'
   has_many :external_uuids, class_name: 'UserExternalUuid', dependent: :destroy
   has_many :group_owners, dependent: :destroy, inverse_of: :user
   has_many :owned_groups, through: :group_owners, source: :group
-
   has_many :group_members, dependent: :destroy, inverse_of: :user
   has_many :member_groups, through: :group_members, source: :group
-
   has_many :oauth_applications, through: :member_groups
-
   has_many :security_logs
-
-  belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
-
-  enum faculty_status: [:no_faculty_info, :pending_faculty, :confirmed_faculty, :rejected_faculty]
-  enum role: [:unknown_role, :student, :instructor, :administrator, :librarian, :designer, :other, :adjunct, :homeschool]
-  enum school_type: [:unknown_school_type, :other_school_type, :college, :high_school, :k12_school]
-
-  DEFAULT_FACULTY_STATUS = :no_faculty_info
-  DEFAULT_SCHOOL_TYPE = :unknown_school_type
-
-  validates :faculty_status, :role, :school_type, presence: true
-
-  before_validation :strip_fields
-
-  validates :username, length: { minimum: USERNAME_MIN_LENGTH,
-                                 maximum: USERNAME_MAX_LENGTH,
-                                 allow_blank: true },
-                       format: { with: USERNAME_VALID_REGEX,
-                                 allow_blank: true }
-
-  validates :username, uniqueness: { case_sensitive: false, allow_nil: true },
-                       if: :username_changed?
-
-  validates :state, inclusion: { in: VALID_STATES,
-                                 message: "must be one of #{VALID_STATES.join(',')}" }
-
-  validate :ensure_names_continue_to_be_present
-
-  validates :login_token, uniqueness: { allow_nil: true }
-
-  validates :uuid, :support_identifier, presence: true, uniqueness: true
 
   delegate_to_routine :destroy
 
   attr_readonly :uuid, :support_identifier
 
   attribute :is_not_gdpr_location, :boolean, default: nil
-
-  before_validation :generate_uuid, :generate_support_identifier, on: :create
-
-  before_create :make_first_user_an_admin
-
-  before_save :add_unread_update
-
-  validate :save_activated_at_if_became_activated, on: :update
-
-  scope :by_unverified, -> { where(state: UNVERIFIED) }
-  scope :older_than_one_year, -> { where("created_at < ?", 1.year.ago) }
 
   def self.username_is_valid?(username)
     user = User.new(username: username)
@@ -193,6 +248,7 @@ class User < ActiveRecord::Base
   def created_from_signed_data?
     signed_external_data.present?
   end
+
   ##########################
   # Access Control Helpers #
   ##########################
@@ -308,5 +364,4 @@ class User < ActiveRecord::Base
       self.touch(:activated_at)
     end
   end
-
 end

@@ -2,7 +2,7 @@
   <div class="content">
     <%
       educator_complete_roles = [
-        [ I18n.t(:'educator_complete_form.instructor'), 'educator', false ],
+        [ I18n.t(:'educator_complete_form.instructor'), 'instructor', false ],
         [ I18n.t(:'educator_complete_form.administrator'), 'admin', false ],
         [ I18n.t(:'educator_complete_form.other'), 'other', false ]
       ]
@@ -27,27 +27,27 @@
           <div class="questions">
             <div class="form-group question completed-role">
               <div class="radio-control-group">
-                <%= label_tag :completed_role, I18n.t(:"educator_complete_form.describe_role"), class: 'field-label' %>
+                <%= label_tag :educator_specific_role, I18n.t(:"educator_complete_form.describe_role"), class: 'field-label' %>
                 <div class="role newflow-mustdo-alert">
                   <%= I18n.t(:"educator_complete_form.select_option") %>
                 </div>
                 <% educator_complete_roles.each do |(role, id, selected)| %>
                   <label>
-                    <% label_name = "completed_role_#{id}".to_sym %>
-                    <%= f.radio_button :completed_role, id, checked: selected, class: 'completed-role custom-control-input' %>
+                    <% label_name = "educator_specific_role_#{id}".to_sym %>
+                    <%= f.radio_button :educator_specific_role, id, checked: selected, class: 'completed-role custom-control-input' %>
                     <%= label label_name, role, class: 'custom-control-label' %>
                   </label>
                 <% end %>
               </div>
 
               <div class="other-specify">
-                <%= label_tag :first_name, I18n.t(:"educator_complete_form.other_please_specify"),
+                <%= label_tag :other_role_name, I18n.t(:"educator_complete_form.other_please_specify"),
                               class: 'field-label'
                 %>
                 <div class="other newflow-mustdo-alert">
                   <%= I18n.t(:"educator_complete_form.fill_out") %>
                 </div>
-                <%= fh.text_field name: :first_name,
+                <%= fh.text_field name: :other_role_name,
                                   placeholder: I18n.t(:"educator_complete_form.other_please_specify"),
                                   autofocus: true
                 %>
@@ -56,20 +56,20 @@
 
             <div class="form-group question how-chosen">
               <div class="radio-control-group">
-                <%= label_tag :chosen, I18n.t(:"educator_complete_form.how_textbooks_chosen"), class: 'field-label' %>
+                <%= label_tag :how_are_books_chosen, I18n.t(:"educator_complete_form.how_textbooks_chosen"), class: 'field-label' %>
                 <div class="chosen newflow-mustdo-alert">
                   <%= I18n.t(:"educator_complete_form.select_option") %>
                 </div>
                 <label>
-                  <%= f.radio_button :chosen, :by_instructor, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :how_are_books_chosen, :by_instructor, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_primary_textbook, I18n.t(:"educator_complete_form.chosen_by_instructor"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :chosen, :by_recommendation, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :how_are_books_chosen, :by_recommendation, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_recommending_openstax, I18n.t(:"educator_complete_form.chosen_by_committee"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :chosen, :by_coordinator, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :how_are_books_chosen, :by_coordinator, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_future, I18n.t(:"educator_complete_form.chosen_by_coordinator"), class: 'custom-control-label' %>
                 </label>
               </div>
@@ -77,37 +77,40 @@
 
             <div class="form-group question how-using">
               <div class="radio-control-group">
-                <%= label_tag :using, I18n.t(:"educator_complete_form.how_using"), class: 'field-label' %>
+                <%= label_tag :using_openstax_how, I18n.t(:"educator_complete_form.how_using"), class: 'field-label' %>
                 <div class="using newflow-mustdo-alert">
                   <%= I18n.t(:"educator_complete_form.select_option") %>
                 </div>
                 <label>
-                  <%= f.radio_button :using, :as_primary, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :using_openstax_how, :as_primary, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_primary_textbook, I18n.t(:"educator_complete_form.using_primary_textbook"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :using, :as_recommending, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :using_openstax_how, :as_recommending, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_recommending_openstax, I18n.t(:"educator_complete_form.using_recommending_openstax"), class: 'custom-control-label' %>
                 </label>
                 <label>
-                  <%= f.radio_button :using, :as_future, checked: false, class: 'completed-role custom-control-input' %>
+                  <%= f.radio_button :using_openstax_how, :as_future, checked: false, class: 'completed-role custom-control-input' %>
                   <%= label :using_future, I18n.t(:"educator_complete_form.using_future"), class: 'custom-control-label' %>
                 </label>
               </div>
             </div>
 
             <div class="form-group question total-num-students">
-              <%= label_tag :first_name,
+              <%= label_tag :num_students_per_semester_taught,
                             I18n.t(:"educator_complete_form.num_students_taught"),
                             class: 'field-label'
               %>
               <div class="total-num newflow-mustdo-alert">
                 <%= I18n.t(:"educator_complete_form.fill_out") %>
               </div>
-              <%= fh.text_field name: :num_students_per_semester_taught,
-                                placeholder: I18n.t(:"educator_complete_form.num_students_taught"),
-                                autofocus: true,
-                                numberonly: true
+              <%=
+                fh.text_field(
+                  name: :num_students_per_semester_taught,
+                  placeholder: I18n.t(:"educator_complete_form.num_students_taught"),
+                  autofocus: true,
+                  numberonly: true
+                )
               %>
             </div>
 
@@ -134,6 +137,7 @@
               <div class="used newflow-mustdo-alert">
                 <%= I18n.t(:"educator_complete_form.select_option") %>
               </div>
+
               <%= fh.select name: :books_used,
                             options: @book_titles,
                             autofocus: true,
@@ -143,10 +147,20 @@
             </div>
           </div>
 
-          <%= f.submit I18n.t(:"login_signup_form.continue_button"),
-                       data: { disable_with: I18n.t(:"login_signup_form.continue_button") },
-                       class: 'primary', id: 'signup_form_submit_button',
-                       :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email'} %>
+          <%=
+            f.submit(
+              I18n.t(:"login_signup_form.continue_button"),
+              id: 'signup_form_submit_button',
+              class: 'primary',
+              data: {
+                disable_with: I18n.t(:"login_signup_form.continue_button"),
+                #  Google Analytics
+                ga_category: 'Account Creation',
+                ga_action: 'Click',
+                ga_label: '3A-Email'
+              }
+            )
+          %>
         </div>
       <% end %>
     <% end %>

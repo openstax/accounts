@@ -5,5 +5,9 @@ module Newflow
     context 'when success' do
 
     end
+
+    context 'when failure' do
+
+    end
   end
 end
