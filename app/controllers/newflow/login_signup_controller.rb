@@ -106,11 +106,11 @@ module Newflow
     end
 
     def email_verification_form
-      @current_step = if unverified_user.student?
-        I18n.t(:"login_signup_form.step_counter", current_step: 2, total_steps: 2)
-      elsif unverified_user.instructor?
-        I18n.t(:"login_signup_form.step_counter", current_step: 2, total_steps: 4)
-      end
+      @current_step = I18n.t(
+        :"login_signup_form.step_counter",
+        current_step: 2,
+        total_steps: (unverified_user.student?) ? 2 : 4
+      )
 
       @first_name = unverified_user.first_name
       @email = unverified_user.email_addresses.first.value
@@ -134,12 +134,13 @@ module Newflow
     end
 
     def email_verification_form_updated_email
+      @current_step = I18n.t(
+        :"login_signup_form.step_counter",
+        current_step: 2,
+        total_steps: (unverified_user.student?) ? 2 : 4
+      )
+
       @email = unverified_user.email_addresses.first.value
-      @current_step = if unverified_user.student?
-          I18n.t(:"login_signup_form.step_counter", current_step: 2, total_steps: 2)
-        elsif unverified_user.instructor?
-          I18n.t(:"login_signup_form.step_counter", current_step: 2, total_steps: 4)
-        end
     end
 
     def verify_email_by_pin
@@ -153,9 +154,9 @@ module Newflow
           security_log(:student_verified_email)
 
           if user.student?
-            redirect_to signup_done_path and return
+            redirect_to(signup_done_path)
           elsif user.instructor?
-            redirect_to educator_profile_form_path and return
+            redirect_to(educator_profile_form_path)
           end
         },
         failure: lambda {

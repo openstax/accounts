@@ -68,12 +68,12 @@ module Newflow
     end
 
     def books_or_subjects
-      subjects = signup_params.subjects_of_interest&.reject { |s| s == '' }
-      titles = signup_params.books_used&.reject { |b| b == '' }
+      subjects = signup_params.subjects_of_interest&.reject(&:empty?)
+      titles = signup_params.books_used&.reject(&:empty?)
 
-      if subjects && subjects.size >  0
+      if subjects&.any?
         return subjects.join(';')
-      elsif titles && titles.size > 0
+      elsif titles&.any?
         return titles.join(';')
       end
     end
