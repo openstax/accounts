@@ -14,7 +14,7 @@ module Newflow
       user.update(state: 'activated')
     end
 
-    private
+    private ###############
 
     def push_lead_to_salesforce(user)
       if Settings::Salesforce.push_leads_enabled

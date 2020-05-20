@@ -15,8 +15,8 @@ module Newflow
     before_action :known_signup_role_redirect, only: [:login_form]
     before_action :restart_if_missing_unverified_user,
       only: [
-        :verify_email_by_pin, :change_your_email, :confirmation_form,
-        :confirmation_form_updated_email, :change_signup_email,
+        :verify_email_by_pin, :change_signup_email_form, :email_verification_form,
+        :email_verification_form_updated_email, :change_signup_email,
         :confirm_oauth_info, :confirm_social_info_form
       ]
     before_action :exit_newflow_signup_if_logged_in, only: [:student_signup_form, :welcome]
@@ -55,8 +55,9 @@ module Newflow
         client_app: get_client_app,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user)
-          security_log :educator_signed_up, { user: @handler_result.outputs.user }
-          redirect_to confirmation_form_path
+          security_log(:educator_signed_up, { user: @handler_result.outputs.user })
+          redirect_to(email_verification_form_path)
+
         },
         failure: lambda {
           email = @handler_result.outputs.email
@@ -67,17 +68,19 @@ module Newflow
       )
     end
 
-    def educator_complete_form
+    def educator_profile_form
       @book_subjects = book_data.subjects
       @book_titles = book_data.titles
     end
 
     def educator_complete
       handle_with(
-        EducatorSignup, #to be EducatorComplete
+        EducatorCompleteProfile,
         success: lambda {
+          redirect_to signup_done_path
         },
         failure: lambda {
+          render :educator_profile_form
         }
       )
     end
@@ -91,7 +94,7 @@ module Newflow
         success: lambda {
           save_unverified_user(@handler_result.outputs.user)
           security_log :student_signed_up, { user: @handler_result.outputs.user }
-          redirect_to confirmation_form_path
+          redirect_to email_verification_form_path
         },
         failure: lambda {
           email = @handler_result.outputs.email
@@ -102,12 +105,18 @@ module Newflow
       )
     end
 
-    def confirmation_form
+    def email_verification_form
+      @current_step = I18n.t(
+        :"login_signup_form.step_counter",
+        current_step: 2,
+        total_steps: (unverified_user.student?) ? 2 : 4
+      )
+
       @first_name = unverified_user.first_name
       @email = unverified_user.email_addresses.first.value
     end
 
-    def change_your_email
+    def change_signup_email_form
       @email = unverified_user.email_addresses.first.value
     end
 
@@ -116,15 +125,21 @@ module Newflow
         ChangeSignupEmail,
         user: unverified_user,
         success: lambda {
-          redirect_to confirmation_form_updated_email_path
+          redirect_to email_verification_form_updated_email_path
         },
         failure: lambda {
-          render :change_your_email
+          render :change_signup_email_form
         }
       )
     end
 
-    def confirmation_form_updated_email
+    def email_verification_form_updated_email
+      @current_step = I18n.t(
+        :"login_signup_form.step_counter",
+        current_step: 2,
+        total_steps: (unverified_user.student?) ? 2 : 4
+      )
+
       @email = unverified_user.email_addresses.first.value
     end
 
@@ -134,15 +149,21 @@ module Newflow
         email_address: unverified_user.email_addresses.first,
         success: lambda {
           clear_newflow_state
-          sign_in!(@handler_result.outputs.user)
+          user ||= @handler_result.outputs.user
+          sign_in!(user)
           security_log(:student_verified_email)
-          redirect_to signup_done_path
+
+          if user.student?
+            redirect_to(signup_done_path)
+          elsif user.instructor?
+            redirect_to(educator_profile_form_path)
+          end
         },
         failure: lambda {
           @first_name = unverified_user.first_name
           @email = unverified_user.email_addresses.first.value
           security_log(:student_verified_email_failed, email: @email)
-          render :confirmation_form
+          render :email_verification_form
         }
       )
     end
@@ -152,9 +173,15 @@ module Newflow
         VerifyEmailByCode,
         success: lambda {
           clear_newflow_state
-          sign_in!(@handler_result.outputs.user)
+          user ||= @handler_result.outputs.user
+          sign_in!(user)
           security_log(:student_verified_email)
-          redirect_to signup_done_path
+
+          if user.student?
+            redirect_to signup_done_path and return
+          elsif user.instructor?
+            redirect_to educator_profile_form_path and return
+          end
         },
         failure: lambda {
           email = @handler_result.outputs.contact_info&.value

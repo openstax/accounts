@@ -26,6 +26,7 @@ class PushSalesforceLead
     application_source = 'Accounts' if application_source.blank?
 
     lead = OpenStax::Salesforce::Remote::Lead.new(
+      salesforce_contact_id: user.salesforce_contact_id,
       first_name: user.first_name,
       last_name: user.last_name,
       salutation: user.title,
@@ -33,15 +34,17 @@ class PushSalesforceLead
       email: email,
       source: source,
       subject: subject,
-      newsletter: newsletter,           # we were asked to
-      newsletter_opt_in: newsletter,    # set both of these
       phone: phone_number,
       website: url,
       adoption_status: using_openstax,
       num_students: num_students.to_i,
       os_accounts_id: user.id,
       application_source: application_source,
-      role: role
+      role: role,
+
+      # Salesforce needs both of these for the newsletter
+      newsletter: newsletter,
+      newsletter_opt_in: newsletter,
     )
 
     lead.save

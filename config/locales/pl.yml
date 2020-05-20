@@ -35,12 +35,12 @@ pl:
     signup_with: 'Zarejestruj się przez:'
     signup_page_header: Utwórz konto
     confirmation_page_header: Cześć %{first_name}! Potwierdź swój adres e-mail.
-    confirmation_form_decription: >-
+    email_verification_form_decription: >-
       Wysłaliśmy e-mail na adres <b>%{email}</b>.
       Poniżej wprowadź otrzymany PIN.
       Możesz też %{edit_your_email}
-    change_your_email_page_header: Zmień adres e-mail
-    change_your_email_page_description: >-
+    change_signup_email_form_page_header: Zmień adres e-mail
+    change_signup_email_form_page_description: >-
       Zmień adres e-mail poniżej, wyślemy na niego PIN.
       Do zalogowania się potrzebny Ci będzie właśnie ten adres e-mail
     didnt_receive_email: Wiadomość nie dotarła? Zarejestruj się %{sign_up_with_different_email_link}.
@@ -111,7 +111,7 @@ pl:
     setup_your_new_password: Ustaw nowe hasło
     setup_your_new_password_description: Ukończ ustawianie hasła dla adresu %{email} poniżej.
     confirm_social_info_tooltip: Do swojego profilu na OpenStax możesz później dodać inny adres e-mail <b> profilu na OpenStax</b>.
-    change_your_email_tooltip: do zalogowania się potrzebny Ci będzie właśnie ten adres e-mail.
+    change_signup_email_form_tooltip: do zalogowania się potrzebny Ci będzie właśnie ten adres e-mail.
     enter_new_password: Wpisz swoje nowe hasło
     enter_new_password_description: >-
       Zakończ resetowanie hasła, wprowadzając nowe poniżej.

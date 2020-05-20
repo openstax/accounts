@@ -106,7 +106,7 @@ def expect_newflow_profile_page
 end
 
 def newflow_expect_signup_verify_screen
-  expect(page.current_path).to eq(confirmation_form_path)
+  expect(page.current_path).to eq(email_verification_form_path)
 end
 
 def newflow_expect_sign_up_page

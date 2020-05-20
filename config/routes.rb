@@ -16,17 +16,17 @@ Rails.application.routes.draw do
     post 'i/signup/student', action: :student_signup, as: :newflow_signup_post
     get 'i/signup/educator', action: :educator_signup_form, as: :educator_signup
     post 'i/signup/educator', action: :educator_signup, as: :educator_signup_post
-    get 'i/signup/educator_complete', action: :educator_complete_form, as: :educator_complete
+    get 'i/signup/educator_profile_form', action: :educator_profile_form, as: :educator_profile_form
     post 'i/signup/educator_complete', action: :educator_complete, as: :educator_complete_post
-    get 'i/confirmation_form', action: :confirmation_form, as: :confirmation_form
+    get 'i/email_verification_form', action: :email_verification_form, as: :email_verification_form
     post 'i/verify_email_by_pin', action: :verify_email_by_pin, as: :newflow_verify_pin
     get 'i/verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
-    get 'i/change_your_email', action: :change_your_email, as: :change_your_email
+    get 'i/change_signup_email_form', action: :change_signup_email_form, as: :change_signup_email_form
     post 'i/change_signup_email', action: :change_signup_email, as: :change_signup_email
     get 'i/check_your_email', action: :check_your_email, as: :check_your_email
-    get 'i/confirmation_form_updated_email',
-        action: :confirmation_form_updated_email,
-        as: :confirmation_form_updated_email
+    get 'i/email_verification_form_updated_email',
+        action: :email_verification_form_updated_email,
+        as: :email_verification_form_updated_email
     get 'i/done', action: :signup_done, as: :signup_done
 
     # Login and signup process (with a social provider)

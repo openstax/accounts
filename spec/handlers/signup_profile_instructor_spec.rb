@@ -10,7 +10,11 @@ RSpec.describe SignupProfileInstructor, type: :handler do
 
   context "when the user has arrived well-formed" do
 
-    let(:user) { create_user('user').tap{ |uu| uu.update_attribute(:state, 'needs_profile') } }
+    let(:user) do
+      create_user('user').tap do |uu|
+        uu.update_attribute(:state, User::NEEDS_PROFILE)
+      end
+    end
 
     context "when required fields are missing" do
       [:first_name, :last_name, :school, :phone_number,
@@ -51,7 +55,7 @@ RSpec.describe SignupProfileInstructor, type: :handler do
         expect(user.first_name).to eq "joe"
         expect(user.last_name).to eq "bob"
         expect(user.self_reported_school).to eq "rice"
-        expect(user.state).to eq "activated"
+        expect(user.state).to eq User::ACTIVATED
       end
 
       it "agrees to terms for the user" do

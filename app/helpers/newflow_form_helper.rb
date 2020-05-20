@@ -50,6 +50,7 @@ module NewflowFormHelper
                       value: value,
                       type: type,
                       class: desired_class_name,
+                      min: 0,
                       data: data(only: only, except: except),
                       autofocus: autofocus,
                       readonly: readonly,

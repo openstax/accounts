@@ -23,7 +23,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Thu, 30 Apr 2020 20:58:21 GMT
+      - Fri, 15 May 2020 19:57:00 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -55,5 +55,5 @@ http_interactions:
         Success","page_content":"","seo_title":null,"search_description":null},{"id":8,"name":"High
         School","page_content":"","seo_title":null,"search_description":null}]'
     http_version: 
-  recorded_at: Thu, 30 Apr 2020 20:58:21 GMT
+  recorded_at: Fri, 15 May 2020 19:57:00 GMT
 recorded_with: VCR 3.0.3

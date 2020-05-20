@@ -26,7 +26,7 @@ module Newflow
         screenshot!
 
         # sends an email address confirmation email
-        expect(page.current_path).to eq confirmation_form_path
+        expect(page.current_path).to eq email_verification_form_path
         open_email email
         capture_email!(address: email)
         expect(current_email).to be_truthy
@@ -119,7 +119,7 @@ module Newflow
         click_on('edit your email')
         screenshot!
         # page contains tooltip
-        expect(page).to have_text(t('login_signup_form.change_your_email_tooltip'))
+        expect(page).to have_text(t('login_signup_form.change_signup_email_form_tooltip'))
 
         new_email = Faker::Internet::free_email
         fill_in('change_signup_email_email', with: new_email)

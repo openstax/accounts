@@ -179,9 +179,9 @@ module Newflow
           }
         end
 
-        it 'redirects to confirmation_form_path' do
+        it 'redirects to email_verification_form_path' do
           post(:educator_signup, params: params)
-          expect(response).to  redirect_to(confirmation_form_path)
+          expect(response).to  redirect_to(email_verification_form_path)
         end
       end
 
@@ -262,9 +262,9 @@ module Newflow
           }
         end
 
-        it 'redirects to confirmation_form_path' do
+        it 'redirects to email_verification_form_path' do
           post(:student_signup, params: params)
-          expect(response).to  redirect_to(confirmation_form_path)
+          expect(response).to  redirect_to(email_verification_form_path)
         end
       end
 
@@ -304,17 +304,17 @@ module Newflow
       end
     end
 
-    describe 'GET #confirmation_form' do
-      it 'renders confirmation_form unless missing unverified_user' do
-        get(:confirmation_form)
+    describe 'GET #email_verification_form' do
+      it 'renders email_verification_form unless missing unverified_user' do
+        get(:email_verification_form)
         expect(response).to redirect_to newflow_signup_path
 
         user = create_newflow_user('user@openstax.org')
         user.update_attribute('state', 'unverified')
         session[:unverified_user_id] = user.id
 
-        get(:confirmation_form)
-        expect(response).to render_template(:confirmation_form)
+        get(:email_verification_form)
+        expect(response).to render_template(:email_verification_form)
       end
     end
 
@@ -332,12 +332,12 @@ module Newflow
           }
         }
 
-        it 'redirects to confirmation_form_updated_email_path' do
+        it 'redirects to email_verification_form_updated_email_path' do
           user = User.last
           user.update_attribute('state', 'unverified')
           session[:unverified_user_id] = user.id
           post(:change_signup_email, params: params)
-          expect(response).to redirect_to confirmation_form_updated_email_path
+          expect(response).to redirect_to email_verification_form_updated_email_path
         end
       end
 
@@ -348,28 +348,28 @@ module Newflow
           }
         }
 
-        it 'renders change_your_email' do
+        it 'renders change_signup_email_form' do
           user = User.last
           user.update_attribute('state', 'unverified')
           session[:unverified_user_id] = user.id
 
           post(:change_signup_email, params: params)
-          expect(response).to render_template(:change_your_email)
+          expect(response).to render_template(:change_signup_email_form)
         end
       end
     end
 
-    describe 'confirmation_form_updated_email' do
+    describe 'email_verification_form_updated_email' do
       it 'renders OK' do
         user = create_newflow_user('user@openstax.org')
         allow_any_instance_of(LoginSignupController).to receive(:unverified_user) { user }
-        get('confirmation_form_updated_email')
+        get('email_verification_form_updated_email')
         expect(response.status).to eq(200)
-        expect(response).to render_template(:confirmation_form_updated_email)
+        expect(response).to render_template(:email_verification_form_updated_email)
       end
 
       it 'redirects when there is no unverified_user present' do
-        get('confirmation_form_updated_email')
+        get('email_verification_form_updated_email')
         expect(response.status).to eq(302)
       end
     end

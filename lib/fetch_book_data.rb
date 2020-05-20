@@ -4,7 +4,7 @@ require 'net/http'
 class FetchBookData
   CMS_API_URL = Rails.application.secrets.cms_api_url
   SUBJECTS_URL = "#{CMS_API_URL}snippets/subjects/?format=json"
-  TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&fields=title,book_subjects,book_state"
+  TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&fields=_,title,book_subjects,book_state"
   TIMEOUT = 1
   CACHE_DURATION = 1.day
 
@@ -32,7 +32,23 @@ class FetchBookData
     return [] if results.blank?
 
     items = results.fetch('items', [])
-    items.map { |book| book.fetch('title', nil) }
+    # All books except for "retired" ones
+    books = items.select{ |i| i['book_state'] != 'retired' }
+
+    books_with_subject = []
+
+    books.each { |book|
+      subjects = book.fetch('book_subjects', [])
+
+      subjects.each { |subject|
+        subject_name = subject.fetch('subject_name', 'missing subject_name')
+        book_name = book.fetch('title', 'missing book_title')
+
+        books_with_subject << [subject_name, [book_name]]
+      }
+    }
+
+    books_with_subject
   end
 
   private ###################

@@ -145,6 +145,40 @@ class UpdateUserSalesforceInfo
     self
   end
 
+  def contacts
+    # The query below is not particularly fast, takes around a minute.  We could
+    # try to do something fancier, like only query contacts modified in the last day
+    # or keep track of when the SF data was last updated and use those timestamps
+    # to limit what data we pull from Salesforce (could have a global field in redis
+    # or could copy SF contact "LastModifiedAt" to a "sf_refreshed_at" field on each
+    # User record).
+    #
+    # Here's one example query as a starting point:
+    #   ...Contact.order("LastModifiedDate").where("LastModifiedDate >= #{1.day.ago.utc.iso8601}")
+    #
+    # TODO: Need to move the duplicated email detection code to SF before we change anything
+    #       If we use timestamps to limit results returned, need to be very careful
+    #       to avoid race conditions such as missing records that were modified
+    #       while we were querying SF
+    #       If we don't use timestamps, should load the contacts in chunks of 1,000 or 10,000
+    #       Or maybe try https://github.com/gooddata/salesforce_bulk_query
+
+    @contacts ||= OpenStax::Salesforce::Remote::Contact
+                    .select(:id, :email, :email_alt, :faculty_verified, :school_type, :adoption_status)
+                    .includes(:school)
+                    .to_a
+  end
+
+  def leads
+    # Leads come from many sources; we only care about those created for faculty
+    # verification ("OSC Faculty")
+
+    @leads ||= OpenStax::Salesforce::Remote::Lead
+                 .where(source: "OSC Faculty")
+                 .select(:id, :email)
+                 .to_a
+  end
+
   def prepare_leads
     leads.each do |lead|
       email = lead.email.try!(&:downcase).try!(:strip)
@@ -261,40 +295,6 @@ class UpdateUserSalesforceInfo
         send_faculty_verification_to: user.guessed_preferred_confirmed_email
       )
     end
-  end
-
-  def contacts
-    # The query below is not particularly fast, takes around a minute.  We could
-    # try to do something fancier, like only query contacts modified in the last day
-    # or keep track of when the SF data was last updated and use those timestamps
-    # to limit what data we pull from Salesforce (could have a global field in redis
-    # or could copy SF contact "LastModifiedAt" to a "sf_refreshed_at" field on each
-    # User record).
-    #
-    # Here's one example query as a starting point:
-    #   ...Contact.order("LastModifiedDate").where("LastModifiedDate >= #{1.day.ago.utc.iso8601}")
-    #
-    # TODO: Need to move the duplicated email detection code to SF before we change anything
-    #       If we use timestamps to limit results returned, need to be very careful
-    #       to avoid race conditions such as missing records that were modified
-    #       while we were querying SF
-    #       If we don't use timestamps, should load the contacts in chunks of 1,000 or 10,000
-    #       Or maybe try https://github.com/gooddata/salesforce_bulk_query
-
-    @contacts ||= OpenStax::Salesforce::Remote::Contact
-                    .select(:id, :email, :email_alt, :faculty_verified, :school_type, :adoption_status)
-                    .includes(:school)
-                    .to_a
-  end
-
-  def leads
-    # Leads come from many sources; we only care about those created for faculty
-    # verification ("OSC Faculty")
-
-    @leads ||= OpenStax::Salesforce::Remote::Lead
-                 .where(source: "OSC Faculty")
-                 .select(:id, :email)
-                 .to_a
   end
 
   def error!(exception: nil, message: nil, user: nil)
