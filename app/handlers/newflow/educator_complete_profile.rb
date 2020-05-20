@@ -45,10 +45,21 @@ module Newflow
       if Settings::Salesforce.push_leads_enabled
         PushSalesforceLead.perform_later(
           user: caller,
-          salesforce_contact_id: caller.salesforce_contact_id,
           num_students: signup_params.num_students_per_semester_taught,
           using_openstax: signup_params.using_openstax_how,
           subject: books_or_subjects,
+
+          role: caller.role,
+          phone_number: caller.phone_number,
+          school: caller.self_reported_school,
+          url: '',
+          newsletter: caller.receive_newsletter?,
+
+          # TODO: salesforce must be ready to accept these before we try to push them
+          # more_specific_educator_role: signup_params.educator_specific_role || signup_params.other_role_name,
+          # titles: signup_params.books_used.join(';'),
+          # salesforce_contact_id: caller.salesforce_contact_id,
+
           # do not set source_application because this faculty access endpoint does
           # not have a strong indication of where the user is coming from
           source_application: nil
@@ -57,12 +68,12 @@ module Newflow
     end
 
     def books_or_subjects
-      subjects = signup_params.subjects_of_interest.reject{ |s| s == '' }
-      titles = signup_params.books_used.reject{ |b| b == '' }
+      subjects = signup_params.subjects_of_interest&.reject { |s| s == '' }
+      titles = signup_params.books_used&.reject { |b| b == '' }
 
-      if subjects.size >  0
+      if subjects && subjects.size >  0
         return subjects.join(';')
-      elsif titles.size > 0
+      elsif titles && titles.size > 0
         return titles.join(';')
       end
     end
