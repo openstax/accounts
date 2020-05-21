@@ -114,6 +114,11 @@ module Newflow
 
       @first_name = unverified_user.first_name
       @email = unverified_user.email_addresses.first.value
+
+      role = (unverified_user.student?) ? 'student' : 'educator'
+      @role_based_form_decription_name = "email_verification_form_decription_#{role}"
+
+      @role_based_help_msg_name = "email_verification_help_msg_#{role}"
     end
 
     def change_signup_email_form

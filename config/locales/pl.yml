@@ -43,7 +43,7 @@ pl:
     change_signup_email_form_page_description: >-
       Zmień adres e-mail poniżej, wyślemy na niego PIN.
       Do zalogowania się potrzebny Ci będzie właśnie ten adres e-mail
-    didnt_receive_email: Wiadomość nie dotarła? Zarejestruj się %{sign_up_with_different_email_link}.
+    email_verification_help_msg_student: Wiadomość nie dotarła? Zarejestruj się %{sign_up_with_different_email_link}.
     all_fields_required: '* Wszystkie pola są wymagane'
     sign_up_with_different_email: podając inny adres e-mail
     check_your_updated_email: Sprawdź nowy adres e-mail
@@ -138,6 +138,10 @@ pl:
     min_characters: "%{number} znaków minimum"
     show_password_btn: POKAZAĆ
     hide_password_btn: UKRYĆ
+
+    email_verification_help_msg_student: Didn't receive an email? You can %{sign_up_with_different_email_link}.
+    email_verification_help_msg_educator: See a typo in your email address? %{edit_it_here}. Didn't receive a message? Contact us.
+    edit_it_here: Edit it here
 
   student_profile:
     enable_other_sign_in_options: Zezwól na inne opcje logowania

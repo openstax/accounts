@@ -35,15 +35,19 @@ en:
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
     confirmation_page_header: Hi, %{first_name}! Confirm your email.
-    email_verification_form_decription: >-
+    email_verification_form_decription_student: >-
       An email has been sent to <b>%{email}</b>.
       Please enter the PIN you received below.
       You can also %{edit_your_email}
+    email_verification_form_decription_educator: >-
+      An email has been sent to <b>%{email}</b>.
+      Please enter the PIN you received below.
+      Once your email has been confirmed, you will need to complete
+      the remaining steps to verify your instructor status.
     change_signup_email_form_page_header: Change your email
     change_signup_email_form_page_description: >-
       Change your email below so we can send your PIN.
       You will need to use this updated email to log in.
-    didnt_receive_email: Didn't receive an email? You can %{sign_up_with_different_email_link}.
     all_fields_required: '* All fields are required'
     sign_up_with_different_email: sign up with a different email
     check_your_updated_email: Check your updated email
@@ -137,6 +141,10 @@ en:
     min_characters: "%{number} characters minimum"
     show_password_btn: SHOW
     hide_password_btn: HIDE
+
+    email_verification_help_msg_student: Didn't receive an email? You can %{sign_up_with_different_email_link}.
+    email_verification_help_msg_educator: See a typo in your email address? %{edit_it_here}. Didn't receive a message? %{contact_us_link}.
+    edit_it_here: Edit it here
 
   student_profile:
     enable_other_sign_in_options: Enable other login options
