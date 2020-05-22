@@ -110,6 +110,10 @@ input.has-error {
   // extend the multiselect just for the complete form for now
   .os-multiselect {
     @extend %os-multiselect;
+
+    input[type=text] {
+      min-width: 100%;
+    }
   }
 
   form {
