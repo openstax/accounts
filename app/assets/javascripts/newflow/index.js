@@ -48,6 +48,8 @@ $(document).ready(function(){
     function step1_submit(event) {
       let phone_num = telInput.getNumber();
       $(".int-country-code").val(phone_num);
+      let country_code = telInput.getSelectedCountryData().dialCode;
+      $('#signup_country_code').val(country_code)
       return true;
     }
     form.addEventListener('submit', step1_submit);
