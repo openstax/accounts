@@ -152,7 +152,7 @@ class User < ActiveRecord::Base
     by_unverified.older_than_one_year.destroy_all
   end
 
-  def sheer_supported?
+  def sheerid_supported?
     {
       '1'   => 'United States & Canada',
       '27'  => 'South Africa',

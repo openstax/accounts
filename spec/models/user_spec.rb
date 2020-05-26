@@ -409,14 +409,14 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#sheer_supported?' do
+  describe '#sheerid_supported?' do
     context 'is sheer supported' do
       subject(:user) do
         FactoryBot.create(:user, country_code: '1')
       end
 
       it 'returns sheer supported' do
-        expect(user.sheer_supported?).to be_truthy
+        expect(user.sheerid_supported?).to be_truthy
       end
     end
 
@@ -426,7 +426,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'returns not sheer supported' do
-        expect(user.sheer_supported?).to be_falsey
+        expect(user.sheerid_supported?).to be_falsey
       end
     end
 
@@ -436,7 +436,7 @@ RSpec.describe User, type: :model do
       end
 
       it 'returns not sheer supported' do
-        expect(user.sheer_supported?).to be_falsey
+        expect(user.sheerid_supported?).to be_falsey
       end
     end
   end
