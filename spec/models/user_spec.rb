@@ -408,4 +408,36 @@ RSpec.describe User, type: :model do
       expect(user.activated_at).not_to be_nil
     end
   end
+
+  describe '#sheerid_supported?' do
+    context 'is sheer supported' do
+      subject(:user) do
+        FactoryBot.create(:user, country_code: '1')
+      end
+
+      it 'returns sheer supported' do
+        expect(user.sheerid_supported?).to be_truthy
+      end
+    end
+
+    context 'is not sheer supported' do
+      subject(:user) do
+        FactoryBot.create(:user, country_code: '111')
+      end
+
+      it 'returns not sheer supported' do
+        expect(user.sheerid_supported?).to be_falsey
+      end
+    end
+
+    context 'country code not set' do
+      subject(:user) do
+        FactoryBot.create(:user, country_code: nil)
+      end
+
+      it 'returns not sheer supported' do
+        expect(user.sheerid_supported?).to be_falsey
+      end
+    end
+  end
 end

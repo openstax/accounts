@@ -152,6 +152,17 @@ class User < ActiveRecord::Base
     by_unverified.older_than_one_year.destroy_all
   end
 
+  def sheerid_supported?
+    {
+      '1'   => 'United States & Canada',
+      '27'  => 'South Africa',
+      '44'  => 'United Kingdom',
+      '61'  => 'Australia',
+      '64'  => 'New Zealand',
+      '353' => 'Ireland',
+    }.key?(country_code&.strip)
+  end
+
   def is_test?
     !!is_test
   end
