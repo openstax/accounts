@@ -16,8 +16,6 @@ Doorkeeper::Application.class_eval do
 
   has_many :security_logs, inverse_of: :application
 
-  delegate :member_ids, to: :owner
-
   def is_redirect_url?(url)
     return false if url.nil?
 

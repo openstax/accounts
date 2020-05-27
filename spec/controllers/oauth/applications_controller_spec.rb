@@ -166,6 +166,12 @@ module Oauth
       expect(response).to have_http_status :forbidden
     end
 
+    it "should let a user get his own application" do
+      controller.sign_in! user
+      get(:show, params: { id: untrusted_application_user.id })
+      expect(response).to have_http_status :success
+    end
+
     it "should not let a user get someone else's application" do
       controller.sign_in! user
       get(:show, params: { id: untrusted_application_admin.id })
@@ -176,6 +182,12 @@ module Oauth
       controller.sign_in! user
       get(:new)
       expect(response).to have_http_status :forbidden
+    end
+
+    it "should let a user edit his own application" do
+      controller.sign_in! user
+      get(:edit, params: { id: untrusted_application_user.id })
+      expect(response).to have_http_status :success
     end
 
     it "should not let a user create an application" do

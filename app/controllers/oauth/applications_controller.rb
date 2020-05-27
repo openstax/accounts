@@ -40,7 +40,6 @@ module Oauth
 
       Doorkeeper::Application.transaction do
         if add_application_owners && @application.save
-          @application.owner.save
           security_log :application_created, application_id: @application.id,
                                             application_name: @application.name
           flash[:notice] = I18n.t(
@@ -73,7 +72,6 @@ module Oauth
       
       Doorkeeper::Application.transaction do
         if add_application_owners && @application.update_attributes(app_params)
-          @application.owner.save
           security_log :application_updated, application_id: @application.id,
                                             application_params: app_params
           flash[:notice] = I18n.t(
@@ -138,7 +136,7 @@ module Oauth
     def add_application_owners
       member_ids = validated_member_ids
       return false if @application.errors.any?
-      return true if !current_user.is_administrator?
+      return true if !current_user.is_administrator? && current_user.oauth_applications.include?(@application)
     
       @application.owner.update_attributes(member_ids: member_ids)
     end
@@ -152,21 +150,22 @@ module Oauth
       end
     
       member_ids = params[:member_ids].split.map(&:to_i)
-      member_ids.each do |member|
-        if !User.where(id: member).exists?
-          @application.errors.add(:owner, "#{member} is not a valid user id")
+      member_ids.each do |member_id|
+        if !User.where(id: member_id).exists?
+          @application.errors.add(:owner, "#{member_id} is not a valid user id")
           return false
         end
       end
-      return member_ids.unshift(@application.owner.owner_ids[0])
+      # add the owner back to the member ids. It was removed from the array for editing.
+      return member_ids << @application.owner.owner_ids[0]
     end
 
     def get_current_member_ids
-      #remove the owner from the array since it cannot be removed by users
+      #remove the owner from the array so it cannot be removed during editing 
       ids = @application.owner.member_ids.dup
       owner_id = @application.owner.owner_ids[0]
       ids.delete(owner_id)
-      return ids
+      @member_ids = ids
     end
 
     def authenticate_admin_or_oauth_application_owner!
