@@ -156,8 +156,7 @@ module Oauth
           return false
         end
       end
-      # add the owner back to the member ids. It was removed from the array for editing.
-      return member_ids << @application.owner.owner_ids[0]
+      return member_ids
     end
 
     def get_current_member_ids
