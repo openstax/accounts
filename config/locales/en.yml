@@ -19,6 +19,9 @@ en:
     chosen_by_coordinator: Course/district coordinator choose the textbook
     select_option: Please select one of these options
     fill_out: Please enter a value for this field
+    other_must_be_entered: Please enter other role name
+    books_used_must_be_entered: Please enter books used
+    subjects_of_interest_must_be_entered: Please enter subjects of interest
 
   login_signup_form:
     cant_be_blank: can't be blank

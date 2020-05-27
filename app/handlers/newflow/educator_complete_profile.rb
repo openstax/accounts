@@ -1,5 +1,10 @@
 module Newflow
   class EducatorCompleteProfile
+    OTHER = 'other'
+    INSTRUCTOR = 'instructor'
+    AS_PRIMARY = 'as_primary'
+    AS_FUTURE = 'as_future'
+
     lev_handler
 
     paramify :signup do
@@ -26,6 +31,9 @@ module Newflow
     end
 
     def handle
+      educator_params_check
+      return if errors?
+
       caller.update(state: User::EDUCATOR_COMPLETE_PROFILE)
       transfer_errors_from(caller, {type: :verbatim}, true)
 
@@ -33,6 +41,37 @@ module Newflow
     end
 
     private #################
+
+    def educator_params_check
+      if signup_params.educator_specific_role == OTHER &&
+        signup_params.other_role_name.blank?
+
+        param_error(:other_role_name, "other_must_be_entered")
+      end
+
+      if signup_params.educator_specific_role == INSTRUCTOR &&
+        signup_params.using_openstax_how == AS_PRIMARY &&
+        signup_params.books_used.blank?
+
+        param_error(:books_used, "books_used_must_be_entered")
+      end
+
+      if signup_params.educator_specific_role == INSTRUCTOR &&
+        signup_params.using_openstax_how == AS_FUTURE &&
+        signup_params.subjects_of_interest.blank?
+
+        param_error(:books_used, "subjects_of_interest_must_be_entered")
+      end
+    end
+
+    def param_error(field, error_key)
+      message = I18n.t(:"educator_complete_form.#{error_key}")
+      nonfatal_error(
+        code: field,
+        message: message,
+        offending_inputs: field
+      )
+    end
 
     def push_lead_to_salesforce
       if Settings::Salesforce.push_leads_enabled
@@ -61,7 +100,7 @@ module Newflow
     end
 
     def kind_of_educator
-      signup_params.educator_specific_role == 'other' ? signup_params.other_role_name : signup_params.educator_specific_role
+      signup_params.educator_specific_role == OTHER ? signup_params.other_role_name : signup_params.educator_specific_role
     end
 
     def books_or_subjects
