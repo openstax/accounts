@@ -17,13 +17,6 @@ module Newflow
           in: %w(instructor administrator other),
         }
       )
-
-      validates(
-        :num_students_per_semester_taught,
-        numericality: {
-          only_integer: true,
-        }
-      )
     end
 
     protected ###############
@@ -49,7 +42,7 @@ module Newflow
           using_openstax: signup_params.using_openstax_how,
           subject: books_or_subjects,
 
-          role: caller.role,
+          role: kind_of_educator,
           phone_number: caller.phone_number,
           school: caller.self_reported_school,
           url: '',
@@ -65,6 +58,10 @@ module Newflow
           source_application: nil
         )
       end
+    end
+
+    def kind_of_educator
+      signup_params.educator_specific_role == 'other' ? signup_params.other_role_name : signup_params.educator_specific_role
     end
 
     def books_or_subjects

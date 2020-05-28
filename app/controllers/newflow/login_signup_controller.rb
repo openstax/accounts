@@ -80,6 +80,9 @@ module Newflow
           redirect_to signup_done_path
         },
         failure: lambda {
+          @book_subjects = book_data.subjects
+          @book_titles = book_data.titles
+
           render :educator_profile_form
         }
       )
