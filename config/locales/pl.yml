@@ -19,6 +19,10 @@ pl:
     chosen_by_coordinator: Koordynator kursu / dystryktu wybierz podręcznik
     select_option: Wybierz jedną z tych opcji
     fill_out: Podaj wartość dla tego pola
+    other_must_be_entered: Wpisz inną nazwę roli
+    books_used_must_be_entered: Wpisz używane książki
+    subjects_of_interest_must_be_entered: Wpisz interesujące cię tematy
+    num_students_must_be_entered: Podaj liczbę uczniów nauczanych
 
   login_signup_form:
     cant_be_blank: nie może być puste

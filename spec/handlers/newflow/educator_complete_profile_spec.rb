@@ -2,44 +2,96 @@ require 'rails_helper'
 
 module Newflow
   describe EducatorCompleteProfile, type: :handler do
-    before(:each) do
-      disable_sfdc_client
-      allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
+    let(:handle) { described_class.handle( params.merge(caller: user)) }
+    let(:books_used) { ['Algebra and Trigonometry', 'Physics'] }
+    let(:subjects_of_interest) { ['Economics'] }
+    let(:num_students_per_semester_taught) { 10 }
+    let(:educator_specific_role) { 'instructor' }
+    let(:using_openstax_how) { 'as_primary' }
+    let(:params) do {
+      params: {
+        signup: {
+          books_used: books_used,
+          subjects_of_interest: subjects_of_interest,
+          num_students_per_semester_taught: num_students_per_semester_taught,
+          using_openstax_how: using_openstax_how,
+          educator_specific_role: educator_specific_role,
+        }
+      }
+    }
     end
-
     let(:user) do
       create_user('user').tap do |uu|
         uu.update_attribute(:state, User::EDUCATOR_INCOMPLETE_PROFILE)
       end
     end
 
-    context 'when success' do
-      it "updates the user and switches state to educator complete profile" do
-        handle
-        user.reload
-        expect(user.state).to eq(User::EDUCATOR_COMPLETE_PROFILE)
+    before(:each) do
+      disable_sfdc_client
+      allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
+    end
+
+    context 'with invalid params' do
+      context 'other must be filled out' do
+        let(:educator_specific_role) { Newflow::EducatorCompleteProfile::OTHER }
+
+        it "should return correct error" do
+          result = handle
+          expect(result.errors.count).to eq 1
+          expect(result.errors.first.message).to eq 'Please enter other role name'
+        end
       end
 
-      context "salesforce lead gets pushed" do
-        it "sends the subject properly formatted" do
-          expect_lead_push(subject: "Algebra and Trigonometry;Physics")
-          handle
+      context 'books used must be filled out' do
+        let(:educator_specific_role) { Newflow::EducatorCompleteProfile::INSTRUCTOR }
+        let(:using_openstax_how) { Newflow::EducatorCompleteProfile::AS_PRIMARY }
+        let(:books_used) { [] }
+
+        it "should return correct error" do
+          result = handle
+          expect(result.errors.count).to eq 1
+          expect(result.errors.first.message).to eq 'Please enter books used'
+        end
+      end
+
+      context 'subjects of interest must be filled out' do
+        let(:educator_specific_role) { Newflow::EducatorCompleteProfile::INSTRUCTOR }
+        let(:using_openstax_how) { Newflow::EducatorCompleteProfile::AS_FUTURE }
+        let(:subjects_of_interest) { [] }
+
+        it "should return correct error" do
+          result = handle
+          expect(result.errors.count).to eq 1
+          expect(result.errors.first.message).to eq 'Please enter subjects of interest'
+        end
+      end
+
+      context 'number of students taught must be filled out' do
+        let(:educator_specific_role) { Newflow::EducatorCompleteProfile::INSTRUCTOR }
+        let(:num_students_per_semester_taught) { nil }
+
+        it "should return correct error" do
+          result = handle
+          expect(result.errors.count).to eq 1
+          expect(result.errors.first.message).to eq 'Please enter number of students taught'
         end
       end
     end
 
-    def handle(books_used: ["Algebra and Trigonometry", "Physics"], num_students_per_semester_taught: "30", using_openstax_how: "as_primary", educator_specific_role: 'instructor')
-      described_class.handle(
-        params: {
-          signup: {
-            books_used: books_used,
-            num_students_per_semester_taught: num_students_per_semester_taught,
-            using_openstax_how: using_openstax_how,
-            educator_specific_role: educator_specific_role,
-          }
-        },
-        caller: user,
-      )
+    context 'when success' do
+      it "updates the user and switches state to educator complete profile" do
+        result = handle
+        user.reload
+        expect(user.state).to eq(User::EDUCATOR_COMPLETE_PROFILE)
+        expect(result.errors.count).to eq 0
+      end
+
+      context "salesforce lead gets pushed" do
+        it "sends the subject properly formatted" do
+          expect_lead_push(subject: subjects_of_interest.join(';'))
+          handle
+        end
+      end
     end
 
     def expect_lead_push(options={})
