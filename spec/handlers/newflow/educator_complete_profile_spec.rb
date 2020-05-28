@@ -65,6 +65,17 @@ module Newflow
           expect(result.errors.first.message).to eq 'Please enter subjects of interest'
         end
       end
+
+      context 'number of students taught must be filled out' do
+        let(:educator_specific_role) { Newflow::EducatorCompleteProfile::INSTRUCTOR }
+        let(:num_students_per_semester_taught) { nil }
+
+        it "should return correct error" do
+          result = handle
+          expect(result.errors.count).to eq 1
+          expect(result.errors.first.message).to eq 'Please enter number of students taught'
+        end
+      end
     end
 
     context 'when success' do
@@ -77,7 +88,7 @@ module Newflow
 
       context "salesforce lead gets pushed" do
         it "sends the subject properly formatted" do
-          expect_lead_push(subject: "Algebra and Trigonometry;Physics")
+          expect_lead_push(subject: subjects_of_interest.join(';'))
           handle
         end
       end

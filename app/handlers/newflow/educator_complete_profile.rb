@@ -43,24 +43,30 @@ module Newflow
     private #################
 
     def educator_params_check
-      if signup_params.educator_specific_role == OTHER &&
+      if signup_params.educator_specific_role.strip.downcase == OTHER &&
         signup_params.other_role_name.blank?
 
         param_error(:other_role_name, "other_must_be_entered")
       end
 
-      if signup_params.educator_specific_role == INSTRUCTOR &&
+      if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
         signup_params.using_openstax_how == AS_PRIMARY &&
         signup_params.books_used.blank?
 
         param_error(:books_used, "books_used_must_be_entered")
       end
 
-      if signup_params.educator_specific_role == INSTRUCTOR &&
+      if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
         signup_params.using_openstax_how == AS_FUTURE &&
         signup_params.subjects_of_interest.blank?
 
-        param_error(:books_used, "subjects_of_interest_must_be_entered")
+        param_error(:subjects_of_interest, "subjects_of_interest_must_be_entered")
+      end
+
+      if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
+        signup_params.num_students_per_semester_taught.blank?
+
+        param_error(:num_students_per_semester_taught, "num_students_must_be_entered")
       end
     end
 
