@@ -44,9 +44,12 @@ class User < ActiveRecord::Base
       :other_school_type,
       :college,
       :high_school,
-      :k12_school
+      :k12_school,
+      :home_school
     ]
   )
+
+  enum school_location: [ :unknown_school_location, :domestic_school, :foreign_school ]
 
   scope(
     :by_unverified, -> {
