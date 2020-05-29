@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.15.4
+      - Faraday v0.17.3
       Authorization:
       - OAuth <salesforce_access_token>
       Accept-Encoding:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 22 Apr 2020 23:29:23 GMT
+      - Fri, 29 May 2020 15:00:31 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Public-Key-Pins-Report-Only:
@@ -35,10 +35,10 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=GTfmOITxEeqGig1hVQhK0g; domain=.salesforce.com; path=/; expires=Thu,
-        22-Apr-2021 23:29:23 GMT; Max-Age=31536000
+      - BrowserId=JGjy_aG9Eeq58CtDyt2eYA; domain=.salesforce.com; path=/; expires=Sat,
+        29-May-2021 15:00:31 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=7400/51000
+      - api-usage=3760/51000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -49,5 +49,5 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"totalSize":0,"done":true,"records":[]}'
     http_version: 
-  recorded_at: Wed, 22 Apr 2020 23:29:23 GMT
+  recorded_at: Fri, 29 May 2020 15:09:20 GMT
 recorded_with: VCR 3.0.3
