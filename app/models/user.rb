@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   USERNAME_MAX_LENGTH = 50
   DEFAULT_FACULTY_STATUS = :no_faculty_info
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
+  DEFAULT_SCHOOL_LOCATION = :unknown_school_location
 
   enum(
     faculty_status: [

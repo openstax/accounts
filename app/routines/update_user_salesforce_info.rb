@@ -237,6 +237,7 @@ class UpdateUserSalesforceInfo
       user.salesforce_contact_id = nil
       user.faculty_status = User::DEFAULT_FACULTY_STATUS
       user.school_type = User::DEFAULT_SCHOOL_TYPE
+      user.school_location = User::DEFAULT_SCHOOL_LOCATION
     else
       user.salesforce_contact_id = contact.id
 

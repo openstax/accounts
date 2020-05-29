@@ -121,6 +121,7 @@ module Admin
       @user.role = params[:user][:role] if params[:user][:role]
       @user.faculty_status = params[:user][:faculty_status] if params[:user][:faculty_status]
       @user.school_type = params[:user][:school_type] if params[:user][:school_type]
+      @user.school_location = params[:user][:school_location] if params[:user][:school_location]
       @user.is_kip = params[:user][:is_kip]
       if @user.external_uuids.any? && params[:user][:keep_external_uuids] == '0'
         @user.external_uuids.destroy_all
