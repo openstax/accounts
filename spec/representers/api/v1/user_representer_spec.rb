@@ -54,6 +54,34 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
     end
   end
 
+  context 'school_type' do
+    before { user.school_type = :home_school }
+
+    it 'is not there normally' do
+      expect(representer.to_hash).not_to have_key('school_type')
+    end
+
+    it 'is there when set and private data included' do
+      expect(
+        representer.to_hash(user_options: {include_private_data: true})['school_type']
+      ).to eq 'home_school'
+    end
+  end
+
+  context 'school_location' do
+    before { user.school_location = :domestic_school }
+
+    it 'is not there normally' do
+      expect(representer.to_hash).not_to have_key('school_location')
+    end
+
+    it 'is there when set and private data included' do
+      expect(
+        representer.to_hash(user_options: {include_private_data: true})['school_location']
+      ).to eq 'domestic_school'
+    end
+  end
+
   context 'is_kip' do
     it 'can be read' do
       expect(representer.to_hash['is_kip']).to eq user.is_kip

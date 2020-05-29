@@ -118,7 +118,16 @@ module Api::V1
              readable: true,
              writeable: false,
              schema_info: {
-                description: "One of #{User.school_types.keys.map(&:to_s).inspect}"
+               description: "One of #{User.school_types.keys.map(&:to_s).inspect}"
+             }
+
+    property :school_location,
+             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+             type: String,
+             readable: true,
+             writeable: false,
+             schema_info: {
+               description: "One of #{User.school_locations.keys.map(&:to_s).inspect}"
              }
 
     property :is_kip,
