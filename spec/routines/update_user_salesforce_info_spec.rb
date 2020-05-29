@@ -96,18 +96,38 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
 
       it 'corrects sf ID' do
         stub_salesforce(
-          contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed", adoption_status: "Current Adopter"}
+          contacts: {
+            id: 'foo',
+            email: 'bob@example.com',
+            faculty_verified: "Confirmed",
+            adoption_status: "Current Adopter"
+          }
         )
         described_class.call
-        expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty, using_openstax: true)
+        expect_user_sf_data(
+          user,
+          id: "foo",
+          faculty_status: :confirmed_faculty,
+          using_openstax: true
+        )
       end
 
       it 'corrects faculty status' do
         stub_salesforce(
-          contacts: { id: 'bar', email: 'bob@example.com', faculty_verified: "Pending", adoption_status: "Not Adopter" }
+          contacts: {
+            id: 'bar',
+            email: 'bob@example.com',
+            faculty_verified: "Pending",
+            adoption_status: "Not Adopter"
+          }
         )
         described_class.call
-        expect_user_sf_data(user, id: "bar", faculty_status: :pending_faculty, using_openstax: false)
+        expect_user_sf_data(
+          user,
+          id: "bar",
+          faculty_status: :pending_faculty,
+          using_openstax: false
+        )
       end
 
       it 'corrects school type' do
@@ -122,7 +142,34 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         )
         described_class.call
         expect_user_sf_data(
-          user, id: "bar", faculty_status: :confirmed_faculty, school_type: :high_school, using_openstax: false
+          user,
+          id: "bar",
+          faculty_status: :confirmed_faculty,
+          school_type: :high_school,
+          using_openstax: false
+        )
+      end
+
+      it 'corrects school location' do
+        stub_salesforce(
+          contacts: {
+            id: 'bar',
+            email: 'bob@example.com',
+            faculty_verified: "Confirmed",
+            school_type: 'K-12 School',
+            adoption_status: "Past Adopter",
+            school: { school_location: 'Domestic', is_kip: false, is_child_of_kip: false }
+          }
+        )
+        described_class.call
+        expect_user_sf_data(
+          user,
+          id: "bar",
+          faculty_status: :confirmed_faculty,
+          school_type: :k12_school,
+          school_location: :domestic_school,
+          is_kip: false,
+          using_openstax: false
         )
       end
 
@@ -132,14 +179,19 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
             id: 'bar',
             email: 'bob@example.com',
             faculty_verified: "Confirmed",
-            school_type: 'K-12 School',
+            school_type: 'Home School',
             adoption_status: "Past Adopter",
             school: { is_kip: true }
           }
         )
         described_class.call
         expect_user_sf_data(
-          user, id: "bar", faculty_status: :confirmed_faculty, school_type: :k12_school, is_kip: true, using_openstax: false
+          user,
+          id: "bar",
+          faculty_status: :confirmed_faculty,
+          school_type: :home_school,
+          is_kip: true,
+          using_openstax: false
         )
       end
 
@@ -150,12 +202,19 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
             email: 'bob@example.com',
             faculty_verified: "Pending",
             school_type: 'Middle/Junior High School',
-            adoption_status: "Not Adopter"
+            adoption_status: "Not Adopter",
+            school: { school_location: 'Foreign', is_kip: false, is_child_of_kip: true }
           }
         )
         described_class.call
         expect_user_sf_data(
-          user, id: "foo", faculty_status: :pending_faculty, school_type: :other_school_type, using_openstax: false
+          user,
+          id: "foo",
+          faculty_status: :pending_faculty,
+          school_type: :other_school_type,
+          school_location: :foreign_school,
+          is_kip: true,
+          using_openstax: false
         )
       end
 
@@ -474,7 +533,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           email_alt: contact[:email_alt],
           faculty_verified: contact[:faculty_verified],
           school_type: contact[:school_type],
-          school: OpenStax::Salesforce::Remote::School.new(is_kip: contact.dig(:school, :is_kip))
+          school: OpenStax::Salesforce::Remote::School.new(contact[:school])
         )
       end
     end
@@ -511,12 +570,19 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
   end
 
   def expect_user_sf_data(
-    user, id: nil, faculty_status: :no_faculty_info, school_type: :unknown_school_type, is_kip: nil, using_openstax: false
+    user,
+    id: nil,
+    faculty_status: :no_faculty_info,
+    school_type: :unknown_school_type,
+    school_location: :unknown_school_location,
+    is_kip: nil,
+    using_openstax: false
   )
     user.reload
     expect(user.salesforce_contact_id).to eq id
     expect(user.faculty_status).to eq faculty_status.to_s
     expect(user.school_type).to eq school_type.to_s
+    expect(user.school_location).to eq school_location.to_s
     expect(user.is_kip).to eq is_kip
   end
 end
