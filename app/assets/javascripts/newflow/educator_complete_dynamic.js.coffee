@@ -9,7 +9,7 @@ class NewflowUi.EducatorComplete
     @please_select_role = @findOrLogNotFound(@form, '.completed-role .role.newflow-mustdo-alert')
     @please_select_using = @findOrLogNotFound(@form, '.how-using .using.newflow-mustdo-alert')
     @please_select_chosen = @findOrLogNotFound(@form, '.how-chosen .chosen.newflow-mustdo-alert')
-    @please_fill_out_total_num = @findOrLogNotFound(@form, '.total-num.newflow-mustdo-alert')
+    @please_fill_out_total_num = @findOrLogNotFound(@form, '.total-num-students .errors.invalid-message')
     @please_fill_out_other = @findOrLogNotFound(@form, '.other.newflow-mustdo-alert')
     @please_select_subjects_interest = @findOrLogNotFound(@form, '.subjects.newflow-mustdo-alert')
     @please_select_books_used = @findOrLogNotFound(@form, '.used.newflow-mustdo-alert')
@@ -196,6 +196,7 @@ class NewflowUi.EducatorComplete
 
   onTotalNumChange: ->
     @please_fill_out_total_num.hide()
+    @total_num_students_input.removeClass('has-error')
     @continue.prop('disabled', false)
 
   onOtherChange: ->
