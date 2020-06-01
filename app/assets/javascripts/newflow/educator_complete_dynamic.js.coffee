@@ -60,7 +60,13 @@ class NewflowUi.EducatorComplete
     subjects_interest_valid = @checkSubjectsInterestValid()
     books_used_valid = @checkBooksUsedValid()
 
-    if not (role_valid and chosen_valid and using_valid and other_valid and subjects_interest_valid and books_used_valid)
+    if not (role_valid and
+            chosen_valid and
+            using_valid and
+            other_valid and
+            total_num_valid and
+            subjects_interest_valid and
+            books_used_valid)
       ev.preventDefault()
 
   checkRoleValid: () ->
