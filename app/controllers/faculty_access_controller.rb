@@ -1,7 +1,7 @@
 class FacultyAccessController < ApplicationController
 
   prepend_before_action :disallow_signup, only: :apply
-  # before_action :redirect_to_sheerid_if_newflow, only: [:apply]
+  before_action :redirect_to_sheerid_if_newflow, only: [:apply]
 
   helper_method :instructor_has_selected_subject
 
@@ -37,11 +37,11 @@ class FacultyAccessController < ApplicationController
 
   protected
 
-  # def redirect_to_sheerid_if_newflow
-  #   if request.get? && Settings::Db.store.educator_feature_flag && !params[:bpff].present?
-  #     redirect_to(educator_sheerid_form)
-  #   end
-  # end
+  def redirect_to_sheerid_if_newflow
+    if Settings::Db.store.educator_feature_flag
+      redirect_to(educator_sheerid_form_path)
+    end
+  end
 
   def instructor_has_selected_subject(key)
     params[:apply] && params[:apply][:subjects] && params[:apply][:subjects][key] == '1'
