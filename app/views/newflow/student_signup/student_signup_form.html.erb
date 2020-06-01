@@ -19,10 +19,14 @@
                     header: (I18n.t(:"login_signup_form.signup_page_header")),
                     current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
                     classes: 'signup-page') do %>
-            <% lev_form_for :signup, url: newflow_signup_post_path do |f| %>
-                <% fh = NewflowFormHelper::Newflow.new(f: f,
-                                            context: self,
-                                            errors: @handler_result&.errors) %>
+            <% lev_form_for :signup, url: newflow_signup_post_path do |form| %>
+                <%
+                    form_helper = NewflowFormHelper::Newflow.new(
+                        f: form,
+                        context: self,
+                        errors: @handler_result&.errors
+                    )
+                %>
                 <div class="content role-section">
                     <div>
                         <%= render partial: 'newflow/back_arrow', locals: { path: newflow_signup_path } %>
@@ -45,8 +49,16 @@
                         </div>
 
                         <div class="google-share-button">
-                            <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn',
-                                    :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3C-Google'} do %>
+                            <%=
+                                link_to(
+                                    newflow_auth_path(:googlenewflow),
+                                    class: 'google btn',
+                                    data: {
+                                        ga_category: 'Account Creation',
+                                        ga_action: 'Click',
+                                        ga_label: '3C-Google'
+                                    }
+                                ) do %>
                                 <i class="social-icon fa fa-google"></i>
                                 <span>Google</span>
                             <% end %>
@@ -68,7 +80,7 @@
                     <%= label_tag :first_name, I18n.t(:"login_signup_form.first_name_label"),
                                 class: 'field-label required'
                     %>
-                    <%= fh.text_field name: :first_name,
+                    <%= form_helper.text_field name: :first_name,
                                 placeholder: I18n.t(:"login_signup_form.first_name_label"),
                                 value: user_from_signed_params['first_name'],
                                 autofocus: true
@@ -81,7 +93,7 @@
                         class: 'field-label required'
                     %>
                     <%=
-                        fh.text_field name: :last_name,
+                        form_helper.text_field name: :last_name,
                         placeholder: I18n.t(:"login_signup_form.last_name_label"),
                         value: user_from_signed_params['last_name']
                     %>
@@ -90,7 +102,7 @@
                 <div class="content control-group">
                     <%= label_tag :email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
                     <%=
-                        fh.text_field(
+                        form_helper.text_field(
                             name: :email,
                             value: user_from_signed_params.dig('signed_external_data', 'email'),
                             placeholder: I18n.t(:"login_signup_form.email_placeholder")
@@ -109,7 +121,7 @@
                                 %>
                                 <%= render partial: 'newflow/password_show_hide'  %>
                                 <%=
-                                    fh.text_field(
+                                    form_helper.text_field(
                                         name: :password,
                                         type: :password,
                                         placeholder: I18n.t(:"login_signup_form.password_label")
@@ -124,7 +136,7 @@
                 <div class="content control-group checkboxes-section">
                     <div class="terms">
                         <label>
-                            <%= f.check_box :newsletter, checked: true %>
+                            <%= form.check_box :newsletter, checked: true %>
                             <span><%= I18n.t(:"login_signup_form.send_me_newsletter") %></span>
                         </label>
                         <br>
@@ -132,7 +144,7 @@
 
                     <div class="terms">
                         <label>
-                            <%= f.check_box :terms_accepted %>
+                            <%= form.check_box :terms_accepted %>
 
                             <span>
                                 <%= I18n.t(:"login_signup_form.agree_to_terms_of_use",
@@ -141,16 +153,26 @@
                                 %>
                             </span>
                         </label>
-                        <%= f.hidden_field :contract_1_id, value: contracts.first.id %>
-                        <%= f.hidden_field :contract_2_id, value: contracts.second.id %>
-                        <%= f.hidden_field :role, value: :student %>
+                        <%= form.hidden_field :contract_1_id, value: contracts.first.id %>
+                        <%= form.hidden_field :contract_2_id, value: contracts.second.id %>
+                        <%= form.hidden_field :role, value: :student %>
                     </div>
                 </div>
 
                 <div class="content">
-                    <%= f.submit I18n.t(:"login_signup_form.continue_button"),
-                                        data: { disable_with: I18n.t(:"login_signup_form.continue_button"),ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3A-Email' },
-                                        class: 'primary', id: 'signup_form_submit_button' %>
+                    <%=
+                        form.submit(
+                            I18n.t(:"login_signup_form.continue_button"),
+                            id: 'signup_form_submit_button',
+                            class: 'primary',
+                            data: {
+                                disable_with: I18n.t(:"login_signup_form.continue_button"),
+                                ga_category: 'Account Creation',
+                                ga_action: 'Click',
+                                ga_label: '3A-Email'
+                            }
+                        )
+                    %>
                 </div>
             <% end %>
         <% end %>

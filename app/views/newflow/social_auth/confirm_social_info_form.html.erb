@@ -18,8 +18,14 @@
                     header: I18n.t(:"login_signup_form.confirm_your_info"),
                     current_step: I18n.t(:'login_signup_form.step_counter', current_step: 1, total_steps: 2),
                     banners: @banners) do %>
-            <% lev_form_for :signup, url: confirm_oauth_info_path do |f| %>
-                <% fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors) %>
+            <% lev_form_for :signup, url: confirm_oauth_info_path do |form| %>
+                <%
+                    form_helper = NewflowFormHelper::Newflow.new(
+                    f: form,
+                    context: self,
+                    errors: @handler_result&.errors
+                    )
+                %>
 
                 <div class="content role-section">
                     <div>
@@ -32,10 +38,13 @@
                     <%= label_tag :first_name, I18n.t(:'login_signup_form.first_name_label'),
                                 class: 'field-label required'
                     %>
-                    <%= fh.text_field name: :first_name,
-                                placeholder: I18n.t(:'login_signup_form.first_name_label'),
-                                autofocus: true,
-                                value: @first_name
+                    <%=
+                        form_helper.text_field(
+                            name: :first_name,
+                            placeholder: I18n.t(:'login_signup_form.first_name_label'),
+                            autofocus: true,
+                            value: @first_name
+                        )
                     %>
                 </div>
 
@@ -43,9 +52,12 @@
                     <%= label_tag :last_name, I18n.t(:'login_signup_form.last_name_label'),
                                 class: 'field-label required'
                     %>
-                    <%= fh.text_field name: :last_name,
-                                placeholder: I18n.t(:'login_signup_form.last_name_label'),
-                                value: @last_name
+                    <%=
+                        form_helper.text_field(
+                            name: :last_name,
+                            placeholder: I18n.t(:'login_signup_form.last_name_label'),
+                            value: @last_name
+                        )
                     %>
                 </div>
 
@@ -55,7 +67,7 @@
                     %>
                     <div class="input-with-tooltip-on-hover">
                         <%=
-                                fh.text_field(
+                                form_helper.text_field(
                                     name: :email,
                                     placeholder: I18n.t(:'login_signup_form.email_label'),
                                     value: @email,
@@ -72,14 +84,14 @@
 
                 <div class="content control-group checkboxes-section">
                     <div>
-                        <%= f.check_box :newsletter, checked: true %>
+                        <%= form.check_box :newsletter, checked: true %>
                         <span><%= I18n.t(:"login_signup_form.send_me_newsletter") %></span>
                         <br>
                     </div>
 
                     <div class="terms">
                         <label>
-                            <%= f.check_box :terms_accepted %>
+                            <%= form.check_box :terms_accepted %>
                             <span>
                                 <%= I18n.t(:"login_signup_form.agree_to_terms_of_use",
                                             terms_of_use: contract_links.first,
@@ -87,14 +99,14 @@
                                 %>
                             </span>
                         </label>
-                        <%= f.hidden_field :contract_1_id, value: contracts.first.id %>
-                        <%= f.hidden_field :contract_2_id, value: contracts.second.id %>
-                        <%= f.hidden_field :role, value: :student %>
+                        <%= form.hidden_field :contract_1_id, value: contracts.first.id %>
+                        <%= form.hidden_field :contract_2_id, value: contracts.second.id %>
+                        <%= form.hidden_field :role, value: :student %>
                     </div>
                 </div>
 
                 <div class="content">
-                    <%= f.submit I18n.t(:"login_signup_form.continue_button"),
+                    <%= form.submit I18n.t(:"login_signup_form.continue_button"),
                                         data: { disable_with: I18n.t(:"login_signup_form.continue_button") },
                                         id: 'confirm_social_info_submit_button',
                                         class: 'primary' %>

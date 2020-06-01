@@ -10,10 +10,14 @@ conditional_educator_signup_path = Settings::Db.store.educator_feature_flag ? ed
                     classes: "welcome-page",
                     header: (I18n.t(:"login_signup_form.welcome_page_header")),
                     banners: @banners) do %>
-            <% lev_form_for :login, url: '' do |f| %>
-                <% fh = NewflowFormHelper::Newflow.new(f: f,
-                                            context: self,
-                                            errors: @handler_result&.errors ) %>
+            <% lev_form_for :login, url: '' do |form| %>
+                <%
+                    fh = NewflowFormHelper::Newflow.new(
+                        f: form,
+                        context: self,
+                        errors: @handler_result&.errors
+                    )
+                %>
                 <div class="content">
                     <div class="join-as">
 
