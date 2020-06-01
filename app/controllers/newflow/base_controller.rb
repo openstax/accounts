@@ -2,6 +2,7 @@ module Newflow
   class BaseController < ApplicationController
     include ApplicationHelper
 
+    skip_forgery_protection(only: :sheerid_webhook)
     skip_before_action :authenticate_user!, :check_if_password_expired
 
     before_action :newflow_authenticate_user!, only: :profile_newflow
@@ -9,6 +10,19 @@ module Newflow
 
     def profile_newflow
       render layout: 'application'
+    end
+
+    # SheerID makes a POST request to this endpoint when it verifies an educator
+    # http://developer.sheerid.com/program-settings#webhooks
+    def sheerid_webhook
+      handle_with(
+        SheeridWebhook,
+        success: lambda {
+          render(status: :ok)
+        }, failure: lambda {
+          render(status: :unprocessable_entity)
+        }
+      )
     end
 
     def exit_accounts

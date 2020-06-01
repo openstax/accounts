@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'vcr_helper'
 
-RSpec.describe PushSalesforceLead, vcr: VCR_OPTS do
+RSpec.describe PushSalesforceLead, type: :routine, vcr: VCR_OPTS do
   let!(:email_address) { FactoryBot.create(:email_address, value: 'f@f.com', verified: true) }
   let!(:user) { email_address.user }
   let!(:app) { FactoryBot.create :doorkeeper_application, lead_application_source: "Tutor Signup" }

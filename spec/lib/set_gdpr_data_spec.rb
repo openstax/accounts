@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'vcr_helper'
 require 'webmock/rspec'
 
-describe SetGdprData, vcr: VCR_OPTS do
+describe SetGdprData, type: :lib, vcr: VCR_OPTS do
 
   let(:eu_ip) { "82.216.111.122" } # Paris DNS
   let(:us_ip) { "8.8.8.8" } # Google Public DNS

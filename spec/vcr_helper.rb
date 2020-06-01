@@ -55,6 +55,7 @@ VCR.configure do |c|
 
   %w(
     ip_api_key
+    sheerid_api_secret
   ).each { |secret_name| c.filter_secret([secret_name]) }
 end
 
