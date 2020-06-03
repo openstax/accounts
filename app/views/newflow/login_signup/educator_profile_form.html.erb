@@ -162,6 +162,9 @@
                             I18n.t(:"educator_complete_form.num_students_taught"),
                             class: 'field-label'
               %>
+              <div class="total-num newflow-mustdo-alert">
+                <%= I18n.t(:"educator_complete_form.fill_out") %>
+              </div>
               <%=
                 fh.text_field(
                   name: :num_students_per_semester_taught,

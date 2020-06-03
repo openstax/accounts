@@ -9,10 +9,10 @@ class NewflowUi.EducatorComplete
     @please_select_role = @findOrLogNotFound(@form, '.completed-role .role.newflow-mustdo-alert')
     @please_select_using = @findOrLogNotFound(@form, '.how-using .using.newflow-mustdo-alert')
     @please_select_chosen = @findOrLogNotFound(@form, '.how-chosen .chosen.newflow-mustdo-alert')
-    @please_fill_out_total_num = @findOrLogNotFound(@form, '.total-num-students .errors.invalid-message')
     @please_fill_out_other = @findOrLogNotFound(@form, '.other.newflow-mustdo-alert')
     @please_select_subjects_interest = @findOrLogNotFound(@form, '.subjects.newflow-mustdo-alert')
     @please_select_books_used = @findOrLogNotFound(@form, '.used.newflow-mustdo-alert')
+    @please_fill_out_total_num = @findOrLogNotFound(@form, '.total-num-students .total-num.newflow-mustdo-alert')
     @findOrLogNotFound(@form, 'form').submit(@onSubmit)
     @how_chosen = @findOrLogNotFound(@form, '.how-chosen')
     @how_chosen_radio = @findOrLogNotFound(@how_chosen, "input")
@@ -43,6 +43,7 @@ class NewflowUi.EducatorComplete
     @how_using.hide()
     @other_specify.hide()
     @please_select_role.hide()
+    @please_fill_out_total_num.hide()
 
   findOrLogNotFound: (parent, selector) ->
     if (found = parent.find(selector))
@@ -155,6 +156,7 @@ class NewflowUi.EducatorComplete
       @please_select_chosen.hide()
       @total_num_students.show()
       @please_fill_out_total_num.hide()
+      @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_admin').is(':checked') )
       @other_specify.hide()
       @books_used.hide()
@@ -163,6 +165,7 @@ class NewflowUi.EducatorComplete
       @please_select_chosen.hide()
       @how_using.show()
       @please_select_using.hide()
+      @onHowUsingChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked') )
       @books_used.hide()
       @how_chosen.hide()
@@ -196,7 +199,6 @@ class NewflowUi.EducatorComplete
 
   onTotalNumChange: ->
     @please_fill_out_total_num.hide()
-    @total_num_students_input.removeClass('has-error')
     @continue.prop('disabled', false)
 
   onOtherChange: ->
