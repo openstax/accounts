@@ -27,7 +27,7 @@ module Newflow
     end
 
     def handle
-      new_login_credential_check
+      validate_presence_of_required_params
       return if errors?
 
       outputs.email = signup_params.email
@@ -56,9 +56,9 @@ module Newflow
       run(CreateEmailForUser, email: signup_params.email, user: outputs.user)
     end
 
-  private ###################
+    private ###################
 
-    def new_login_credential_check
+    def validate_presence_of_required_params
       required_params.each do |param|
         if signup_params.send(param).blank?
           if param == :password

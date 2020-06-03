@@ -101,12 +101,12 @@ end
 
 def expect_newflow_profile_page
   expect(page).to have_no_missing_translations
-  # expect(page).to have_content(t :"users.edit.page_heading")
+  # expect(page).to have_content(t :"legacy.users.edit.page_heading")
   expect(page).to have_current_path profile_newflow_path
 end
 
 def newflow_expect_signup_verify_screen
-  expect(page.current_path).to eq(email_verification_form_path)
+  expect(page.current_path).to eq(student_email_verification_form_path)
 end
 
 def newflow_expect_sign_up_page

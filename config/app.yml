@@ -97,6 +97,7 @@ defaults: &defaults
       sf: University Physics (Calc)
   student_feature_flag: true
   educator_feature_flag: false
+  sheer_id_base_url: https://offers.sheerid.com/openstax/staging/teacher/?env=dev
 
 development:
   <<: *defaults

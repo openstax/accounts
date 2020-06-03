@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe UsersController, :type => :routing do
+RSpec.describe Legacy::UsersController, :type => :routing do
   describe "routing" do
 
     it "routes to #edit" do
-      expect(get("/profile")).to route_to("users#edit")
+      expect(get('/profile')).to route_to('legacy/users#edit')
     end
 
     it "routes to #update" do
-      expect(put("/profile")).to route_to("users#update")
+      expect(put('/profile')).to route_to('legacy/users#update')
     end
 
     # it "routes to #destroy" do

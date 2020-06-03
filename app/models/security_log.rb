@@ -52,7 +52,7 @@ class SecurityLog < ActiveRecord::Base
     :student_signed_up,
     :student_sign_up_failed,
     :student_verified_email,
-    :student_verified_email_failed,
+    :student_verify_email_failed,
     :reset_password_success,
     :reset_password_failed,
     :change_password_form_loaded,
@@ -67,6 +67,10 @@ class SecurityLog < ActiveRecord::Base
     :email_already_in_use,
     :educator_signed_up,
     :educator_sign_up_failed,
+    # New ones created for the new educator flow...
+    :educator_verified_email,
+    :educator_verify_email_failed,
+    :user_viewed_sheer_id_form,
   ]
 
   json_serialize :event_data, Hash

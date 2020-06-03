@@ -15,11 +15,11 @@ feature 'Require recent log in to change authentications', js: true do
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       expect(page).to have_no_content('Facebook')
       screenshot!
-      click_link (t :"users.edit.enable_other_sign_in_options")
+      click_link (t :"legacy.users.edit.enable_other_sign_in_options")
       wait_for_animations
       screenshot!
-      expect(page).to have_no_content(t :"users.edit.enable_other_sign_in_options")
-      expect(page).to have_content((t :"users.edit.other_sign_in_options_html")[0..7])
+      expect(page).to have_no_content(t :"legacy.users.edit.enable_other_sign_in_options")
+      expect(page).to have_content((t :"legacy.users.edit.other_sign_in_options_html")[0..7])
       expect(page).to have_content('Facebook')
 
       with_omniauth_test_mode(identity_user: user) do
@@ -95,7 +95,7 @@ feature 'Require recent log in to change authentications', js: true do
       find('[type=submit]').click
 
       newflow_complete_add_password_screen
-      expect(page).to have_content(t :"identities.reset_success.message")
+      expect(page).to have_content(t :"legacy.identities.reset_success.message")
     end
   end
 

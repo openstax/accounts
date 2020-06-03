@@ -1,0 +1,9 @@
+<%= ox_card(classes: "reset-password", heading: (t :".page_heading")) do %>
+
+  <%= render partial: 'set', locals: {
+    message: (t :".use_form_below_to_reset_password"),
+    submit_text: (t :"legacy.identities.reset.submit"),
+    submitting_text: (t :"legacy.identities.reset.submitting")
+  } %>
+
+<% end %>

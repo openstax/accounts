@@ -226,8 +226,9 @@ feature 'student login flow', js: true do
         screenshot!
 
         click_on(I18n.t(:"login_signup_form.forgot_password"))
+        expect(page.current_path).to eq(forgot_password_form_path)
         # pre-populates the email for them since they already typed it in the login form
-        expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
+        expect(find('#forgot_password_form_email')['value']).to eq('user@openstax.org')
         screenshot!
         click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
         screenshot!

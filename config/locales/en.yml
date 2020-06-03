@@ -1,5 +1,5 @@
 en:
-  educator_complete_form:
+  educator_profile_form:
     complete_page_header: Complete your profile
     describe_role: Which of the following best describes your role?
     instructor: Instructor
@@ -39,10 +39,6 @@ en:
     signup_with: 'Sign up with:'
     signup_page_header: Set up your account
     confirmation_page_header: Hi, %{first_name}! Confirm your email.
-    email_verification_form_decription: >-
-      An email has been sent to <b>%{email}</b>.
-      Please enter the PIN you received below.
-      You can also %{edit_your_email}
     change_signup_email_form_page_header: Change your email
     change_signup_email_form_page_description: >-
       Change your email below so we can send your PIN.
@@ -141,6 +137,19 @@ en:
     min_characters: "%{number} characters minimum"
     show_password_btn: SHOW
     hide_password_btn: HIDE
+
+    student_email_verification_form_decription: >-
+      An email has been sent to <b>%{email}</b>.
+      Please enter the PIN you received below.
+      You can also %{edit_your_email}
+
+    educator_email_verification_form_decription: >-
+      An email has been sent to <b>%{email}</b>.
+      Please enter the PIN you received below.
+      Once your email has been confirmed, you will need to complete
+      the remaining steps to verify your instructor status.
+    educator_email_verification_help_msg: See a typo in your email address? %{edit_it_here}. Didn't receive a message? %{contact_us_link}.
+    edit_it_here: Edit it here
 
   student_profile:
     enable_other_sign_in_options: Enable other login options
@@ -330,46 +339,6 @@ en:
       appology_message_long_html: >-
         If you need help, please contact %{contact_info} and reference error %{error_id}.
 
-  identities:
-    set:
-      confirm_password: Confirm Password
-      password: Password
-      there_was_a_problem_with_password_link: >-
-        Unfortunately, there was a problem with your password link. If you
-        continue to have problems, please contact Support.
-      expired_password_link: >-
-        The password link you used has expired.
-      cancel: Cancel
-    reset:
-      page_heading: Reset your password
-      use_form_below_to_reset_password: >-
-        Use the form below to reset your password.
-      submit: Reset Password
-      submitting: Resetting…
-    add:
-      page_heading: Add a password
-      use_form_below_to_add_password: >-
-        Use the form below to add a password to your account.
-      submit: Add Password
-      submitting: Adding…
-    add_success:
-      page_heading: Success!
-      message: Your password was added to your account.
-      continue: Continue
-    reset_success:
-      page_heading: Success!
-      message: Your password has been reset.
-      continue: Continue
-    send_reset:
-      page_heading: Check your email
-      we_sent_email: We sent an email to %{emails}. Click the link in that email to reset your password.
-      close_this_window: You can close this window.
-
-    send_add:
-      page_heading: Check your email
-      we_sent_email: We sent an email to %{emails}. Click the link in that email to add a password.
-      close_this_window: You can close this window.
-
   layouts:
     application_footer:
       terms_of_use: Terms of Use
@@ -407,260 +376,12 @@ en:
       educator_feature_flag:
         name: New educator flow feature flag
         help_block: New educator flow activated?
-
-  sessions:
-    access_tutor: Log in or sign up for an account to access OpenStax Tutor
-    help:
-      if_you_know_username_or_email:
-        # %{link}   an email hyperlink to info@openstax.org. Label of the link
-        #           is defined by the .contact_customer_support key.
-        content_html: >-
-          If you know your account's username or email address, please enter it
-          below and we'll send you an email about how to regain access to your
-          account. If you do not have this information, please %{link}.
-        contact_customer_support: contact Support
-      page_heading: Get help logging in
-      submit: Submit
-      submitting: Submitting…
-      username_or_email: Username or Email
-
-    start:
-      access_tutor: Log in or sign up for an account to access OpenStax Tutor
-      cant_sign_in: Can’t log in?
-      logout_reminder_html: >-
-        If you're on a public computer, <b>be sure to sign out</b> when you're done!
-      openstax_wont_use_social_media_without_permission_html: >-
-        <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
-        network without your permission.
-      page_heading: Log in to your OpenStax account
-      page_sub_heading: Access all OpenStax tools and resources
-      sign_in: Log in
-      sign_up: Sign up here
-      no_account_q: Need an account?
-      used_this_method_last_time: >-
-        It looks like you used this the last time you signed in.
-      email: Email
-      email_placeholder: Email or username
-      username_placeholder: Username
-      next: Next
-      submitting: Continuing…
-      cannot_find_user: Cannot find user
-      unknown_username: We don’t recognize this username. Please try again or use your email address instead.
-      unknown_email: We don’t recognize this email. Please try again.
-      having_trouble: Trouble logging in?
-      help: Enter the email or username associated with your OpenStax account, and we will help you log in.
-      cant_remember_email: Don’t know how you signed up?
-      knowledge_base: Visit our knowledge base for help
-      multiple_users_missing_usernames:
-        content_html: >-
-          We found several accounts with this email and unfortunately we can't tell which to use.
-          Please %{help_link}.
-        help_link_text: contact our Support team for assistance
-      multiple_users:
-        # %{link}   a hyperlink that sends usernames to the email being used for log in.
-        #           The label is defined by the .click_here key.
-        content_html: >-
-          We found several accounts with this email. Please log in using your username.<br/>
-          Forgot your usernames? %{link}.
-        click_here: Click here and we’ll email them to you
-      sent_multiple_usernames: >-
-        Please check <strong>%{email}</strong> for an email listing your usernames, and use one to log in.
-
-    authenticate:
-      name_greeting: Hello, %{name}!
-
-    reauthenticate:
-      page_heading: Please log in again before continuing.
-
-    authenticate_options:
-      separator_or: or
-      sign_in_with_facebook: Log in with Facebook
-      sign_in_with_google: Log in with Google
-      sign_in_with_twitter: Log in with Twitter
-      login: Log in
-      submitting: Logging in…
-      password: Password
-      forgot_password: Can’t remember your password?
-      trouble_logging_in: Trouble logging in?
-      reset_password: Click here to reset it
-      add_password: Click here to add a password
-
-  signup:
-    # In fields `first_name`, `last_name`, `email_address` and `username`
-    # the asterisk on the end indicated that appropriate field on sign up page
-    # must be filled in.
-    exit_if_logged_in:
-      already_logged_in: You have already signed up
-
-    new_account:
-      cancel: Cancel
-      confirm_password: Confirm Password *
-      create_account: Create account
-      email_address: Email Address *
-      first_name: First Name *
-      legal_first_name: Legal first name
-      Legal_last_name: Legal last name
-      # %{terms_of_use}     a hyperlink to text of the Terms of Use.
-      # %{privacy_policy}   a hyperlink to text of the Privacy Policy.
-      # Labels of both hyperlinks are English titles of appropriate documents.
-      # There is no ability to translate titles, as the documents themselves
-      # are not translatable.
-      have_read_terms_and_agree_html: >-
-        I agree to the %{terms_of_use} and the %{privacy_policy}.
-      last_name: Last Name *
-      might_already_have_an_account: I might already have an account.
-      password: Password *
-      # %{manager}  one of 'Password', 'Google', 'Facebook' or 'Twitter',
-      #             depending on how the user signs in/
-      password_managed_by: Password managed by %{manager}
-      please_verify_your_email: Please confirm your email!
-      policies_notice: >-
-        Note that other OpenStax sites may have terms of their own.
-      show_title_and_suffix: Show title and suffix
-      suffix: Suffix
-      take_me_back_to_sign_in_page: Take me back to the login page.
-      all_fields_required: All fields are required
-      title: Title
-      username: Username *
-      wait_a_second: Wait a second!
-      you_will_receive_verification_email: >-
-        You'll receive a confirmation email shortly. Please take a moment and
-        confirm your email address.
-
-    start:
-      instructor_email: Your school email address
-      student_email: Email
-      next: Next
-      iama: I am a
-      instructor: Instructor
-      adjunct: Adjunct Faculty
-      student: Student
-      administrator: Administrator
-      homeschool: Homeschool Instructor
-      librarian: Librarian
-      designer: Instructional Designer
-      other: Other
-      email_address_invalid: Email address is invalid
-      email_in_use:
-        # %{link}   a hyperlink pointing to log in page. Label of the link is
-        #           defined by the .log_in key.
-        content_html: Email already in use. Are you trying to %{link}?
-        log_in: log in
-      email_cannot_be_blank: Email address cannot be left blank
-      already_have_an_account:
-        # %{link}   a hyperlink pointing to sign in page. Label of the link
-        #           is defined by the .sign_in key.
-        content_html: Already have an account? %{link}.
-        sign_in: Log in
-      dont_want_to_remember_password_html: >-
-        <b>Don't want to remember a password?</b><br/>
-        Sign up with Facebook, Google, or Twitter.
-      logout_reminder_html: >-
-        If you're on a public computer, <b>be sure to sign out</b> when
-        you're done!
-      openstax_wont_use_social_media_without_permission_html: >-
-        <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
-        network without your permission.
-      page_heading: Sign up for an OpenStax account
-      page_sub_heading: Access all OpenStax tools and resources
-      email_placeholder: me@myschool.edu
-      sign_up_with_facebook: Sign up with Facebook
-      sign_up_with_google: Sign up with Google
-      sign_up_with_password: Sign up with a password
-      sign_up_with_twitter: Sign up with Twitter
-      teacher_school_email: >-
-        To access faculty-only materials like test banks and OpenStax Tutor course setup,
-        you must provide the email address given to you by your school. You can add an alternate email
-        address later if necessary.
-      teacher_school_email_warning:
-        Is this your school email address?  If yes, click %{button} below.
-        If not, please enter your school email address.
-      did_you_mean:
-        Did you mean
-      proceed_with_likely_mistyped_email:
-        If yes, please edit your email. If not, click %{button} below.
-
-    verify_email:
-      page_heading_pin: Check your email
-      page_heading_token: Check your email
-      pin: Enter PIN
-      confirm: Confirm
-      submitting: Confirming…
-      used_wrong_email: Used the wrong email?
-      edit_email_address: Edit email address
-      check_your_email: Check your inbox for %{email}!
-      you_will_have_received: We sent you a six-digit PIN. Enter it below.
-      pin_not_correct: This PIN is incorrect. Please enter the correct PIN.
-      no_pin_confirmation_attempts_remaining:
-        content_html: >-
-          You have run out of attempts at confirming this email using a PIN. Please
-          click the link in the email that contains your PIN. This will confirm your
-          email. If you did not receive the email, please check your spam folder.
-          Need help?  %{help_link}.
-        help_link_text: Contact our Support team
-
-    password:
-      page_heading: Choose your password
-      password_requirements: Password must be at least 8 characters.
-      password: Password
-      password_confirmation: Confirm Password
-      create_password: Submit
-      submitting: Submitting…
-      dont_want_to_remember: Don’t want to remember another password?
-      use_social: Sign up with Google or Facebook instead
-      separator_or: or
-
-    social:
-      page_heading: Choose the social account you want to use
-      facebook: Facebook
-      google: Google
-      openstax_wont_use_social_media_without_permission_html: >-
-        OpenStax won't post to your social network without your permission.
-      use_password: Set up a password instead
-
-    profile:
-      page_heading: Complete your account
-      instructor_verification_heading: Instructor-specific school page
-      instructor_verification_help: >-
-        Want to get verified faster? Fill this out.
-      instructor_use:
-        how: How are you using OpenStax?
-        fully: Fully adopted and using it as the primary textbook
-        recommended: Recommending the book – my students buy a different book
-        interested: Interested in using OpenStax in the future
-        nope: Not using OpenStax
-      # %{terms_of_use}     a hyperlink to text of the Terms of Use.
-      # %{privacy_policy}   a hyperlink to text of the Privacy Policy.
-      # Labels of both hyperlinks are English titles of appropriate documents.
-      # There is no ability to translate titles, as the documents themselves
-      # are not translatable.
-      have_read_terms_and_agree_html: >-
-        I agree to the %{terms_of_use} and the %{privacy_policy}.
-      first_name: First name
-      last_name: Last name
-      suffix: Suffix
-      more_things_heading: And a few more things...
-      phone_number: Phone number
-      school: School name
-      url: A web page that shows you are faculty
-      num_students: Number of students per semester
-      using_openstax: Already using OpenStax?
-      create_account: Create Account
-      submitting: Creating Account…
-      titles_interested: Select all OpenStax subjects that interest you
-      titles_using: Which book(s) are you using?
-      keep_me_informed: Send me the OpenStax newsletter.
-      timeout: Please log in again to complete your sign up
-      next: Next
-
-    instructor_access_pending:
-      page_heading: Almost done...
-      message: >-
-        Your instructor access is pending. We will verify your instructor status
-        within 3-4 business days. In the meantime, you can access all books and
-        resources except those that require instructor verification.
-      check_box: Send me an email when my instructor access is approved.
-      ok: OK
+      sheer_id_base_url:
+        name: SheerID base URL
+        help_block: >-
+          ie. https://offers.sheerid.com/openstax/staging/teacher/?env=dev
+          With the parameters that pre-populate the SheerID form, the full URL will look like
+          ie. https://offers.sheerid.com/openstax/staging/teacher/?env=dev&first_name=Elon&last_name=Musk&email=ceo@spacex.com
 
   faculty_access:
     apply:
@@ -755,21 +476,316 @@ en:
       have_read_terms_and_agree: >-
         I have read and agree to the terms listed above.
 
-  users:
-    edit:
-      add_email_address: Add an email
-      email_addresses: Emails
-      enable_other_sign_in_options: Enable other login options
-      how_you_sign_in_html: How you<br class="wide"> log in
-      name: Name
-      other_sign_in_options_html: Other login<br class="wide"> options
-      page_heading: My Account
-      username: Username
-      sign_out: Log out
-      check_searchable_if_you_want_to_be_searchable: >-
-        Check the Searchable box if you want other OpenStax users to find you
-        using this email address.
-      resend_confirmation: 'Resend confirmation email'
-      unconfirmed_warning: unconfirmed
-      password: Password
-      searchable: Let other users find me by this email.
+  legacy:
+    users:
+      edit:
+        add_email_address: Add an email
+        email_addresses: Emails
+        enable_other_sign_in_options: Enable other login options
+        how_you_sign_in_html: How you<br class="wide"> log in
+        name: Name
+        other_sign_in_options_html: Other login<br class="wide"> options
+        page_heading: My Account
+        username: Username
+        sign_out: Log out
+        check_searchable_if_you_want_to_be_searchable: >-
+          Check the Searchable box if you want other OpenStax users to find you
+          using this email address.
+        resend_confirmation: 'Resend confirmation email'
+        unconfirmed_warning: unconfirmed
+        password: Password
+        searchable: Let other users find me by this email.
+
+    signup:
+      # In fields `first_name`, `last_name`, `email_address` and `username`
+      # the asterisk on the end indicated that appropriate field on sign up page
+      # must be filled in.
+      exit_if_logged_in:
+        already_logged_in: You have already signed up
+
+      new_account:
+        cancel: Cancel
+        confirm_password: Confirm Password *
+        create_account: Create account
+        email_address: Email Address *
+        first_name: First Name *
+        legal_first_name: Legal first name
+        Legal_last_name: Legal last name
+        # %{terms_of_use}     a hyperlink to text of the Terms of Use.
+        # %{privacy_policy}   a hyperlink to text of the Privacy Policy.
+        # Labels of both hyperlinks are English titles of appropriate documents.
+        # There is no ability to translate titles, as the documents themselves
+        # are not translatable.
+        have_read_terms_and_agree_html: >-
+          I agree to the %{terms_of_use} and the %{privacy_policy}.
+        last_name: Last Name *
+        might_already_have_an_account: I might already have an account.
+        password: Password *
+        # %{manager}  one of 'Password', 'Google', 'Facebook' or 'Twitter',
+        #             depending on how the user signs in/
+        password_managed_by: Password managed by %{manager}
+        please_verify_your_email: Please confirm your email!
+        policies_notice: >-
+          Note that other OpenStax sites may have terms of their own.
+        show_title_and_suffix: Show title and suffix
+        suffix: Suffix
+        take_me_back_to_sign_in_page: Take me back to the login page.
+        all_fields_required: All fields are required
+        title: Title
+        username: Username *
+        wait_a_second: Wait a second!
+        you_will_receive_verification_email: >-
+          You'll receive a confirmation email shortly. Please take a moment and
+          confirm your email address.
+
+      start:
+        instructor_email: Your school email address
+        student_email: Email
+        next: Next
+        iama: I am a
+        instructor: Instructor
+        adjunct: Adjunct Faculty
+        student: Student
+        administrator: Administrator
+        homeschool: Homeschool Instructor
+        librarian: Librarian
+        designer: Instructional Designer
+        other: Other
+        email_address_invalid: Email address is invalid
+        email_in_use:
+          # %{link}   a hyperlink pointing to log in page. Label of the link is
+          #           defined by the .log_in key.
+          content_html: Email already in use. Are you trying to %{link}?
+          log_in: log in
+        email_cannot_be_blank: Email address cannot be left blank
+        already_have_an_account:
+          # %{link}   a hyperlink pointing to sign in page. Label of the link
+          #           is defined by the .sign_in key.
+          content_html: Already have an account? %{link}.
+          sign_in: Log in
+        dont_want_to_remember_password_html: >-
+          <b>Don't want to remember a password?</b><br/>
+          Sign up with Facebook, Google, or Twitter.
+        logout_reminder_html: >-
+          If you're on a public computer, <b>be sure to sign out</b> when
+          you're done!
+        openstax_wont_use_social_media_without_permission_html: >-
+          <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
+          network without your permission.
+        page_heading: Sign up for an OpenStax account
+        page_sub_heading: Access all OpenStax tools and resources
+        email_placeholder: me@myschool.edu
+        sign_up_with_facebook: Sign up with Facebook
+        sign_up_with_google: Sign up with Google
+        sign_up_with_password: Sign up with a password
+        sign_up_with_twitter: Sign up with Twitter
+        teacher_school_email: >-
+          To access faculty-only materials like test banks and OpenStax Tutor course setup,
+          you must provide the email address given to you by your school. You can add an alternate email
+          address later if necessary.
+        teacher_school_email_warning:
+          Is this your school email address?  If yes, click %{button} below.
+          If not, please enter your school email address.
+        did_you_mean:
+          Did you mean
+        proceed_with_likely_mistyped_email:
+          If yes, please edit your email. If not, click %{button} below.
+
+      verify_email:
+        page_heading_pin: Check your email
+        page_heading_token: Check your email
+        pin: Enter PIN
+        confirm: Confirm
+        submitting: Confirming…
+        used_wrong_email: Used the wrong email?
+        edit_email_address: Edit email address
+        check_your_email: Check your inbox for %{email}!
+        you_will_have_received: We sent you a six-digit PIN. Enter it below.
+        pin_not_correct: This PIN is incorrect. Please enter the correct PIN.
+        no_pin_confirmation_attempts_remaining:
+          content_html: >-
+            You have run out of attempts at confirming this email using a PIN. Please
+            click the link in the email that contains your PIN. This will confirm your
+            email. If you did not receive the email, please check your spam folder.
+            Need help?  %{help_link}.
+          help_link_text: Contact our Support team
+
+      password:
+        page_heading: Choose your password
+        password_requirements: Password must be at least 8 characters.
+        password: Password
+        password_confirmation: Confirm Password
+        create_password: Submit
+        submitting: Submitting…
+        dont_want_to_remember: Don’t want to remember another password?
+        use_social: Sign up with Google or Facebook instead
+        separator_or: or
+
+      social:
+        page_heading: Choose the social account you want to use
+        facebook: Facebook
+        google: Google
+        openstax_wont_use_social_media_without_permission_html: >-
+          OpenStax won't post to your social network without your permission.
+        use_password: Set up a password instead
+
+      profile:
+        page_heading: Complete your account
+        instructor_verification_heading: Instructor-specific school page
+        instructor_verification_help: >-
+          Want to get verified faster? Fill this out.
+        instructor_use:
+          how: How are you using OpenStax?
+          fully: Fully adopted and using it as the primary textbook
+          recommended: Recommending the book – my students buy a different book
+          interested: Interested in using OpenStax in the future
+          nope: Not using OpenStax
+        # %{terms_of_use}     a hyperlink to text of the Terms of Use.
+        # %{privacy_policy}   a hyperlink to text of the Privacy Policy.
+        # Labels of both hyperlinks are English titles of appropriate documents.
+        # There is no ability to translate titles, as the documents themselves
+        # are not translatable.
+        have_read_terms_and_agree_html: >-
+          I agree to the %{terms_of_use} and the %{privacy_policy}.
+        first_name: First name
+        last_name: Last name
+        suffix: Suffix
+        more_things_heading: And a few more things...
+        phone_number: Phone number
+        school: School name
+        url: A web page that shows you are faculty
+        num_students: Number of students per semester
+        using_openstax: Already using OpenStax?
+        create_account: Create Account
+        submitting: Creating Account…
+        titles_interested: Select all OpenStax subjects that interest you
+        titles_using: Which book(s) are you using?
+        keep_me_informed: Send me the OpenStax newsletter.
+        timeout: Please log in again to complete your sign up
+        next: Next
+
+      instructor_access_pending:
+        page_heading: Almost done...
+        message: >-
+          Your instructor access is pending. We will verify your instructor status
+          within 3-4 business days. In the meantime, you can access all books and
+          resources except those that require instructor verification.
+        check_box: Send me an email when my instructor access is approved.
+        ok: OK
+
+    identities:
+      set:
+        confirm_password: Confirm Password
+        password: Password
+        there_was_a_problem_with_password_link: >-
+          Unfortunately, there was a problem with your password link. If you
+          continue to have problems, please contact Support.
+        expired_password_link: >-
+          The password link you used has expired.
+        cancel: Cancel
+      reset:
+        page_heading: Reset your password
+        use_form_below_to_reset_password: >-
+          Use the form below to reset your password.
+        submit: Reset Password
+        submitting: Resetting…
+      add:
+        page_heading: Add a password
+        use_form_below_to_add_password: >-
+          Use the form below to add a password to your account.
+        submit: Add Password
+        submitting: Adding…
+      add_success:
+        page_heading: Success!
+        message: Your password was added to your account.
+        continue: Continue
+      reset_success:
+        page_heading: Success!
+        message: Your password has been reset.
+        continue: Continue
+      send_reset:
+        page_heading: Check your email
+        we_sent_email: We sent an email to %{emails}. Click the link in that email to reset your password.
+        close_this_window: You can close this window.
+
+      send_add:
+        page_heading: Check your email
+        we_sent_email: We sent an email to %{emails}. Click the link in that email to add a password.
+        close_this_window: You can close this window.
+
+    sessions:
+      access_tutor: Log in or sign up for an account to access OpenStax Tutor
+      help:
+        if_you_know_username_or_email:
+          # %{link}   an email hyperlink to info@openstax.org. Label of the link
+          #           is defined by the .contact_customer_support key.
+          content_html: >-
+            If you know your account's username or email address, please enter it
+            below and we'll send you an email about how to regain access to your
+            account. If you do not have this information, please %{link}.
+          contact_customer_support: contact Support
+        page_heading: Get help logging in
+        submit: Submit
+        submitting: Submitting…
+        username_or_email: Username or Email
+
+      start:
+        access_tutor: Log in or sign up for an account to access OpenStax Tutor
+        cant_sign_in: Can’t log in?
+        logout_reminder_html: >-
+          If you're on a public computer, <b>be sure to sign out</b> when you're done!
+        openstax_wont_use_social_media_without_permission_html: >-
+          <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
+          network without your permission.
+        page_heading: Log in to your OpenStax account
+        page_sub_heading: Access all OpenStax tools and resources
+        sign_in: Log in
+        sign_up: Sign up here
+        no_account_q: Need an account?
+        used_this_method_last_time: >-
+          It looks like you used this the last time you signed in.
+        email: Email
+        email_placeholder: Email or username
+        username_placeholder: Username
+        next: Next
+        submitting: Continuing…
+        cannot_find_user: Cannot find user
+        unknown_username: We don’t recognize this username. Please try again or use your email address instead.
+        unknown_email: We don’t recognize this email. Please try again.
+        having_trouble: Trouble logging in?
+        help: Enter the email or username associated with your OpenStax account, and we will help you log in.
+        cant_remember_email: Don’t know how you signed up?
+        knowledge_base: Visit our knowledge base for help
+        multiple_users_missing_usernames:
+          content_html: >-
+            We found several accounts with this email and unfortunately we can't tell which to use.
+            Please %{help_link}.
+          help_link_text: contact our Support team for assistance
+        multiple_users:
+          # %{link}   a hyperlink that sends usernames to the email being used for log in.
+          #           The label is defined by the .click_here key.
+          content_html: >-
+            We found several accounts with this email. Please log in using your username.<br/>
+            Forgot your usernames? %{link}.
+          click_here: Click here and we’ll email them to you
+        sent_multiple_usernames: >-
+          Please check <strong>%{email}</strong> for an email listing your usernames, and use one to log in.
+
+      authenticate:
+        name_greeting: Hello, %{name}!
+
+      reauthenticate:
+        page_heading: Please log in again before continuing.
+
+      authenticate_options:
+        separator_or: or
+        sign_in_with_facebook: Log in with Facebook
+        sign_in_with_google: Log in with Google
+        sign_in_with_twitter: Log in with Twitter
+        login: Log in
+        submitting: Logging in…
+        password: Password
+        forgot_password: Can’t remember your password?
+        trouble_logging_in: Trouble logging in?
+        reset_password: Click here to reset it
+        add_password: Click here to add a password
