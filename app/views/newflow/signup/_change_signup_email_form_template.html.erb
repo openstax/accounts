@@ -5,7 +5,7 @@
         <%= newflow_login_signup_card(
                     classes: "signup-page",
                     header: I18n.t(:"login_signup_form.change_signup_email_form_page_header"),
-                    current_step: I18n.t(:"login_signup_form.step_counter", current_step: 2, total_steps: 2),
+                    current_step: current_step,
                     banners: @banners) do %>
             <% lev_form_for :change_signup_email, url: submit_to_path do |f| %>
                 <% fh = NewflowFormHelper::Newflow.new(f: f,
