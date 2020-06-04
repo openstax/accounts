@@ -34,7 +34,14 @@ NewflowUi = do () ->
 
   enableOnChecked: (targetSelector, sourceSelector) ->
     $(document).ready =>
-      @disableButton(targetSelector) if !$(sourceSelector).is(':checked')
+
+      enable_disable_continue = () ->
+        if $(sourceSelector).is(':checked')
+          @enableButton(targetSelector)
+        else
+          @disableButton(targetSelector)
+
+      setTimeout(enable_disable_continue, 500)
 
       $(sourceSelector).on 'click', =>
         this.checkCheckedButton(targetSelector, sourceSelector)
