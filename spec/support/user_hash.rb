@@ -23,6 +23,7 @@ def user_matcher(user, include_private_data: false)
     base_hash[:salesforce_contact_id] = user.salesforce_contact_id
     base_hash[:self_reported_role] = user.role.to_s
     base_hash[:school_type] = user.school_type.to_s
+    base_hash[:school_location] = user.school_location.to_s
     base_hash[:using_openstax] = user.using_openstax
     base_hash[:contact_infos] =
       user.contact_infos.none? ?

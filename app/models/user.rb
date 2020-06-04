@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   USERNAME_MAX_LENGTH = 50
   DEFAULT_FACULTY_STATUS = :no_faculty_info
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
+  DEFAULT_SCHOOL_LOCATION = :unknown_school_location
 
   enum(
     faculty_status: [
@@ -44,9 +45,12 @@ class User < ActiveRecord::Base
       :other_school_type,
       :college,
       :high_school,
-      :k12_school
+      :k12_school,
+      :home_school
     ]
   )
+
+  enum school_location: [ :unknown_school_location, :domestic_school, :foreign_school ]
 
   scope(
     :by_unverified, -> {

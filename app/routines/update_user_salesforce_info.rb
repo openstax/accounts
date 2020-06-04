@@ -4,14 +4,12 @@ class UpdateUserSalesforceInfo
     'Technical/Community College (2)',
     'Career School/For-Profit (2)'
   ]
+  HIGH_SCHOOL_TYPES = [ 'High School' ]
+  K12_TYPES = [ 'K-12 School' ]
+  HOME_SCHOOL_TYPES = [ 'Home School' ]
 
-  HIGH_SCHOOL_TYPES = [
-    'High School'
-  ]
-
-  K12_TYPES = [
-    'K-12 School'
-  ]
+  DOMESTIC_SCHOOL_LOCATIONS = [ 'Domestic' ]
+  FOREIGN_SCHOOL_LOCATIONS = [ 'Foreign' ]
 
   ADOPTION_STATUSES = {
     "Current Adopter" => true,
@@ -239,6 +237,7 @@ class UpdateUserSalesforceInfo
       user.salesforce_contact_id = nil
       user.faculty_status = User::DEFAULT_FACULTY_STATUS
       user.school_type = User::DEFAULT_SCHOOL_TYPE
+      user.school_location = User::DEFAULT_SCHOOL_LOCATION
     else
       user.salesforce_contact_id = contact.id
 
@@ -263,17 +262,29 @@ class UpdateUserSalesforceInfo
         :high_school
       when *K12_TYPES
         :k12_school
+      when *HOME_SCHOOL_TYPES
+        :home_school
       when NilClass
         :unknown_school_type
       else
         :other_school_type
       end
 
+      school = contact.school
+      user.school_location = case school&.school_location
+      when *DOMESTIC_SCHOOL_LOCATIONS
+        :domestic_school
+      when *FOREIGN_SCHOOL_LOCATIONS
+        :foreign_school
+      else
+        :unknown_school_location
+      end
+
       unless contact.adoption_status.blank?
         user.using_openstax = ADOPTION_STATUSES[contact.adoption_status]
       end
 
-      user.is_kip = contact.school&.is_kip
+      user.is_kip = school&.is_kip || school&.is_child_of_kip
     end
 
     if user.faculty_status_changed? && user.confirmed_faculty?

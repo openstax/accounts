@@ -122,4 +122,21 @@ class AnonymousUser
     raise AnonymousUserIsImmutableError, "Cannot set school type on the AnonymousUser."
   end
 
+  User.school_locations.each do |location, value|
+    define_method "#{location}?" do
+      User::DEFAULT_SCHOOL_LOCATION.to_s == location
+    end
+
+    define_method "#{location}!" do
+      raise AnonymousUserIsImmutableError, "Cannot set school location on the AnonymousUser."
+    end
+  end
+
+  def school_location
+    User::DEFAULT_SCHOOL_LOCATION.to_s
+  end
+
+  def school_location=(type)
+    raise AnonymousUserIsImmutableError, "Cannot set school location on the AnonymousUser."
+  end
 end

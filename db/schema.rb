@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_20_214028) do
+ActiveRecord::Schema.define(version: 2020_05_28_203734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -341,6 +341,7 @@ ActiveRecord::Schema.define(version: 2020_05_20_214028) do
     t.string "phone_number"
     t.boolean "is_kip", comment: "is the User-s school a Key Institutional Partner?"
     t.string "country_code"
+    t.integer "school_location", default: 0, null: false
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
