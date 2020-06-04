@@ -33,6 +33,7 @@ module Newflow
 
     def educator_change_signup_email_form
       @email = unverified_user.email_addresses.first.value
+      @total_steps = 4
     end
 
     def educator_change_signup_email
