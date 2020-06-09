@@ -23,11 +23,7 @@ module Newflow
       end
 
       it 'creates a security log' do
-        expect {
-          run
-        }.to(
-          change(SecurityLog, :count).by(1)
-        )
+        expect { run }.to change(SecurityLog, :count).by(1)
       end
 
       it 'updates their first name' do

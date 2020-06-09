@@ -2,8 +2,6 @@ module Newflow
   class LoginController < BaseController
     include LoginSignupHelper
 
-    layout 'newflow_layout'
-
     fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile_newflow
 
     before_action :save_new_params_in_session

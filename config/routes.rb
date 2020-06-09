@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
-  scope controller: 'newflow/base' do
+  scope controller: 'newflow/other' do
     # Profile access
     get 'i/profile', action: :profile_newflow, as: :profile_newflow
 
@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     get 'i/exit_accounts', action: :exit_accounts, as: :exit_accounts
 
     # Webhook URL for SheerID to post updates to
-    post 'i/sheerid/webhook', action: 'sheerid_webhook', as: :sheerid_webhook
+    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
   end
 
   scope controller: 'newflow/login' do

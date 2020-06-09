@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe BaseController, type: :controller do
+  RSpec.describe OtherController, type: :controller do
     describe 'GET #profile_newflow' do
       context 'when logged in' do
         before do
@@ -31,9 +31,7 @@ module Newflow
       let(:handler) { SheeridWebhook }
 
       let(:params) do
-        {
-          'verificationId': Faker::Alphanumeric.alphanumeric(number: 24)
-        }
+        { 'verificationId': Faker::Alphanumeric.alphanumeric(number: 24) }
       end
 
       it 'is processed by the lev handler' do

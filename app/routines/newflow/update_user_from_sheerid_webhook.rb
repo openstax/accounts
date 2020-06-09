@@ -12,46 +12,48 @@ module Newflow
 
       last_response = details.fetch('lastResponse')
       sheer_id_status = last_response.fetch('currentStep')
-      user_sheerid_info = details.fetch('personInfo')
+      sheerid_person_info = details.fetch('personInfo')
 
-      email = user_sheerid_info.fetch('email')
-      outputs[:user] = user = User.find_by(sheerid_verification_id: verification_id)
+      outputs.sheerid_email = sheerid_person_info.fetch('email')
+      outputs.existing_email = EmailAddress.find_by(value: outputs.sheerid_email)
+      outputs.user = user = User.find_by(sheerid_verification_id: verification_id)
 
-      fatal_error(code: :email_mismatch) if email_mismatch?(email, user)
+      capture_mismatch_error! if email_mismatch?
 
-      user.update!(
-        first_name: user_sheerid_info.fetch('firstName'),
-        last_name: user_sheerid_info.fetch('lastName'),
-        sheerid_reported_school: user_sheerid_info.fetch('organization').fetch('name'),
+      outputs.user.update!(
+        first_name: sheerid_person_info.fetch('firstName'),
+        last_name: sheerid_person_info.fetch('lastName'),
+        sheerid_reported_school: sheerid_person_info.fetch('organization').fetch('name'),
         faculty_status: (sheer_id_status == 'success' ? :confirmed_faculty : :pending_faculty),
       )
-      create_security_log(user, details)
+      create_security_log(details)
     end
 
     private #################
 
-    # true if no user found with such email or if that email email address belongs to someone else
-    def email_mismatch?(email, user)
-      existing_email = EmailAddress.find_by(value: email)
+    def capture_mismatch_error!
+      error_message = 'verification id and email mismatch'
 
-      if !user.present? || !existing_email.present? || existing_email.user_id != user.id
-        Raven.capture_message(
-          'verification id and email mismatch',
-          extra: {
-            email: email, existing_email: existing_email,  user_id: user&.id
-          }
-        )
-        return true
-      else
-        return false
-      end
+      Raven.capture_message(
+        error_message,
+        extra: {
+          sheerid_email: outputs.sheerid_email,
+          existing_email: outputs.existing_email,
+          user_id: outputs.user&.id
+        }
+      )
+      fatal_error(code: :email_mismatch, message: error_message)
     end
 
-    def create_security_log(user, data)
+    def email_mismatch?
+      outputs.user.blank? || outputs.existing_email.blank? || outputs.existing_email.user_id != outputs.user.id
+    end
+
+    def create_security_log(data)
       SecurityLog.create!(
         event_type: :user_updated_using_sheerid_data,
         event_data: data,
-        user: user
+        user: outputs.user
       )
     end
   end
