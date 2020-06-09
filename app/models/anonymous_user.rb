@@ -9,6 +9,10 @@ class AnonymousUser
     false
   end
 
+  def oauth_applications
+    []
+  end
+
   def is_anonymous?
     true
   end
