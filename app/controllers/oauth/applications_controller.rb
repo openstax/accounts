@@ -160,11 +160,7 @@ module Oauth
     end
 
     def get_current_member_ids
-      #remove the owner from the array so it cannot be removed during editing 
-      ids = @application.owner.member_ids.dup
-      owner_id = @application.owner.owner_ids[0]
-      ids.delete(owner_id)
-      @member_ids = ids
+      @member_ids = @application.owner.member_ids
     end
 
     def authenticate_admin_or_oauth_application_owner!
