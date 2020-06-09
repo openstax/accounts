@@ -64,7 +64,7 @@ module Oauth
 
     def edit
       OSU::AccessPolicy.require_action_allowed!(:update, @user, @application)
-      get_current_member_ids
+      set_current_member_ids
     end
 
     def update
@@ -82,7 +82,7 @@ module Oauth
             format.json { render json: @application }
           end
         else
-          get_current_member_ids
+          set_current_member_ids
           respond_to do |format|
             format.html { render :edit }
             format.json do
@@ -159,7 +159,7 @@ module Oauth
       return member_ids
     end
 
-    def get_current_member_ids
+    def set_current_member_ids
       @member_ids = @application.owner.member_ids
     end
 
