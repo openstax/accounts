@@ -71,6 +71,7 @@ class SecurityLog < ActiveRecord::Base
     :educator_verified_email,
     :educator_verify_email_failed,
     :user_viewed_sheer_id_form,
+    :user_updated_using_sheerid_data,
   ]
 
   json_serialize :event_data, Hash

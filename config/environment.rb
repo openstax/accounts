@@ -13,6 +13,7 @@ require 'require_recent_signin'
 require 'json_serialize'
 require 'lookup_users'
 require 'fetch_book_data'
+require 'sheerid_api'
 require 'rate_limiting'
 require 'omniauth/strategies/custom_identity'
 require "omniauth/strategies/facebooknewflow"

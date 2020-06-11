@@ -1,7 +1,5 @@
 module Newflow
   class StudentSignupController < SignupController
-    layout 'newflow_layout'
-
     skip_before_action :restart_signup_if_missing_unverified_user, only: [
       :student_signup_form, :student_signup
     ]

@@ -2,8 +2,6 @@ module Newflow
   class SignupController < BaseController
     include LoginSignupHelper
 
-    layout 'newflow_layout'
-
     fine_print_skip :general_terms_of_use, :privacy_policy
 
     before_action :restart_signup_if_missing_unverified_user, except: [
