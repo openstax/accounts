@@ -13,6 +13,7 @@ def user_matcher(user, include_private_data: false)
     uuid: user.uuid,
     support_identifier: user.support_identifier,
     is_test: user.is_test?,
+    opt_out_of_cookies: user.opt_out_of_cookies?,
     applications: a_collection_containing_exactly(
       *user.applications.map { |app| { id: app.id, name: app.name } }
     ),
