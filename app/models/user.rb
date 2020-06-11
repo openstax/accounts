@@ -170,11 +170,7 @@ class User < ActiveRecord::Base
   def is_test?
     !!is_test
   end
-
-  def opt_out_of_cookies?
-    !!opt_out_of_cookies
-  end
-
+  
   def is_anonymous?
     false
   end

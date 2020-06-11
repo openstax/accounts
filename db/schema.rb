@@ -10,7 +10,6 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
 ActiveRecord::Schema.define(version: 2020_06_10_181353) do
 
   # These are extensions that must be enabled in order to support this database
@@ -248,10 +247,10 @@ ActiveRecord::Schema.define(version: 2020_06_10_181353) do
     t.string "scopes", default: "", null: false
     t.string "lead_application_source", default: "", null: false
     t.boolean "confidential", default: true, null: false
-    t.boolean "can_access_private_user_data", default: false
-    t.boolean "can_find_or_create_accounts", default: false
-    t.boolean "can_message_users", default: false
-    t.boolean "can_skip_oauth_screen", default: false
+    t.boolean "can_access_private_user_data", default: false, null: false
+    t.boolean "can_find_or_create_accounts", default: false, null: false
+    t.boolean "can_message_users", default: false, null: false
+    t.boolean "can_skip_oauth_screen", default: false, null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
