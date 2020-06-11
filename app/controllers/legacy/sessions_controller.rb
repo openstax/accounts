@@ -20,7 +20,10 @@ module Legacy
 
     skip_before_action :complete_signup_profile, only: [:destroy]
 
-    before_action :save_new_params_in_session, only: [:start]
+    before_action :save_new_params_in_session,
+      only: [:start],
+      unless: -> { Settings::Db.store.student_feature_flag || Settings::Db.store.educator_feature_flag }
+
     before_action :store_authorization_url_as_fallback,
       only: [:start, :create],
       unless: -> { Settings::Db.store.student_feature_flag }
@@ -285,6 +288,22 @@ module Legacy
 
     private #################
 
+    def save_new_params_in_session
+      # Store these params in the session so they are available if the lookup_login
+      # fails.  Also these methods perform checks on the alternate signup URL.
+      set_client_app(params[:client_id])
+
+      set_alternate_signup_url(params[:signup_at])
+
+      set_student_signup_role(params[:go] == 'student_signup')
+    end
+
+    def maybe_skip_to_sign_up
+      if %w{signup student_signup}.include?(params[:go])
+        redirect_to signup_path(bpff: 9)
+      end
+    end
+
     def store_authorization_url_as_fallback
       # In case we need to redirect_back, but don't have something to redirect back
       # to (e.g. no authorization url or referrer), form and store as the fallback
@@ -300,6 +319,12 @@ module Legacy
                                                   response_type: 'code')
 
       store_fallback(url: authorization_url) unless authorization_url.nil?
+    end
+
+    def field_error!(on:, code:, message:)
+      @errors ||= Lev::Errors.new
+      message = I18n.t(message) if message.is_a?(Symbol)
+      @errors.add(false, offending_inputs: on, code: code, message: message)
     end
   end
 end

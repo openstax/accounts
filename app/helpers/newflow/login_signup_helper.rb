@@ -16,11 +16,12 @@ module Newflow
     end
 
     def known_signup_role_redirect
-      known_role = session.fetch(:signup_role, nil)
+      known_signup_role = session.fetch(:signup_role, nil)
 
-      if known_role && known_role == 'student'
-        # TODO: when we create the Educator flow, redirect to there.
-        redirect_to newflow_signup_student_path(request.query_parameters)
+      if known_signup_role && known_signup_role == 'student'
+        redirect_to(newflow_signup_student_path(request.query_parameters))
+      elsif known_signup_role && known_signup_role == 'instructor'
+        redirect_to(educator_signup_path(request.query_parameters))
       end
     end
 

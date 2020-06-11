@@ -4,11 +4,11 @@ module Newflow
 
     fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile_newflow
 
-    before_action :save_new_params_in_session
-    before_action :maybe_skip_to_sign_up
-    before_action :known_signup_role_redirect
+    before_action :redirect_to_signup_if_go_param_present, only: :login_form
+    before_action :known_signup_role_redirect, only: :login_form
+    before_action :cache_client_app, only: :login_form
+    before_action :cache_alternate_signup_url, only: :login_form
     before_action :redirect_back, if: -> { signed_in? }, only: :login_form
-    before_action :cache_client_app, only: [:login_form]
 
     def login
       handle_with(
@@ -41,8 +41,24 @@ module Newflow
 
     protected ###############
 
+    def redirect_to_signup_if_go_param_present
+      if 'student_signup' == params[:go] && Settings::Db.store.student_feature_flag
+        redirect_to newflow_signup_student_path(request.query_parameters)
+      elsif 'signup' == params[:go] && (Settings::Db.store.student_feature_flag || Settings::Db.store.educator_feature_flag)
+        redirect_to newflow_signup_path(request.query_parameters)
+      end
+    end
+
+    # save (in the seession) or clear the client_app that sent the user here
     def cache_client_app
       set_client_app(params[:client_id])
+    end
+
+    # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.
+    # -- Tutor uses this to send students who want to sign up, back to Tutor which
+    # has a message for students just letting them know how to sign up (they must receive an email invitation).
+    def cache_alternate_signup_url
+      set_alternate_signup_url(params[:signup_at])
     end
   end
 end

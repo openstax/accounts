@@ -80,6 +80,60 @@ module Newflow
       end
     end
 
+    context 'success -- when a user that already had an account, then tries to sign up using signed params (so via an LMS)' do
+      before(:all) do
+        load('db/seeds.rb')
+      end
+
+      let(:email) do
+        Faker::Internet.free_email
+      end
+
+      let(:signed_params) do
+        {
+          uuid: Faker::Internet.uuid,
+          email: email,
+          school: 'some school',
+          role: :instructor,
+          name: 'Bryan Dimas'
+        }.with_indifferent_access
+      end
+
+      let(:params) do
+        {
+          signup: {
+            first_name: 'Bryan',
+            last_name: 'Dimas',
+            email: email,
+            school: 'Rice University',
+            password: Faker::Internet.password(min_length: 8),
+            terms_accepted: true,
+            newsletter: true,
+            contract_1_id: FinePrint::Contract.first.id,
+            contract_2_id: FinePrint::Contract.second.id,
+            role: :instructor
+          }
+        }
+      end
+
+      let(:user_from_signed_params) do
+        Newflow::FindOrCreateUserFromSignedParams.call(signed_params).outputs.user
+      end
+
+      let(:subject) do
+        described_class.call(params: params, user_from_signed_params: user_from_signed_params)
+      end
+
+      it 'outputs a user' do
+        expect(subject.outputs.user).to be_present
+      end
+
+      it 'only creates one user' do
+        subject
+        expect(User.count).to eq(1)
+      end
+    end
+
     context 'when failure because a user with the given email address already exists' do
       before do
         create_newflow_user(email)

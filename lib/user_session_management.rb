@@ -140,10 +140,6 @@ module UserSessionManagement
   # so the session var doesn't stick around if user later comes from a different origin
   def set_student_signup_role(is_student)
     session[:signup_role] = is_student ? 'student' : nil
-
-      if Settings::Db.store.student_feature_flag && is_student
-        redirect_to newflow_signup_student_path(request.query_parameters)
-      end
   end
 
   def set_alternate_signup_url(url)

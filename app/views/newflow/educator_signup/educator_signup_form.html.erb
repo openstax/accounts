@@ -101,15 +101,11 @@
 
         </div>
 
-        <%# Hide the password field if student contains signed parameters %>
-        <%#     which means they're coming from an LMS %>
         <div class="content control-group">
           <div id="password-field-container">
             <div class="input-with-tooltip">
-              <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
-                            class: 'field-label'
-              %>
-              <%= render partial: 'newflow/password_show_hide'  %>
+              <%= label_tag(:password, I18n.t(:"login_signup_form.password_label"), class: 'field-label') %>
+              <%= render(partial: 'newflow/password_show_hide') %>
               <%=
                 fh.text_field(
                   name: :password,

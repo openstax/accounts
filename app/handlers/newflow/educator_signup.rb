@@ -2,6 +2,7 @@ module Newflow
   class EducatorSignup
     lev_handler
     uses_routine AgreeToTerms
+    uses_routine CreateEmailForUser
 
     paramify :signup do
       attribute :first_name, type: String
@@ -14,6 +15,7 @@ module Newflow
       attribute :contract_2_id, type: Integer
       attribute :role, type: String
       attribute :phone_number, type: String
+      attribute :country_code, type: String
     end
 
     protected #################
@@ -61,11 +63,7 @@ module Newflow
     def validate_presence_of_required_params
       required_params.each do |param|
         if signup_params.send(param).blank?
-          if param == :password
-            missing_param_error(param) if options[:user_from_signed_params].blank?
-          else
-            missing_param_error(param)
-          end
+          missing_param_error(param)
         end
       end
     end
@@ -87,6 +85,7 @@ module Newflow
         first_name: signup_params.first_name,
         last_name: signup_params.last_name,
         phone_number: signup_params.phone_number,
+        country_code: signup_params.country_code,
         receive_newsletter: signup_params.newsletter,
         source_application: options[:client_app],
         is_newflow: true
