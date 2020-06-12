@@ -41,11 +41,11 @@ body {
 }
 
 .newflow-mustdo-alert {
-  color: var(--input-error-message-color);
+    color: var(--input-error-message-color);
 }
 
 .iti {
-  display: block !important;
+    display: block !important;
 }
 
 // utility classes
@@ -54,9 +54,9 @@ body {
 }
 
 .required-fields-notice {
-  text-align: center;
-  font-size: 1.2rem;
-  margin-bottom: -20px;
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: -20px;
 }
 
 .form-divider {
@@ -87,42 +87,42 @@ input.has-error {
 }
 
 .completed-step {
-  .custom-control-label {
-    font-weight: lighter !important;
-  }
-
-  .other-specify {
-    margin-left: 2em;
-    display: none;
-  }
-
-  .question {
-    .how-using, .how-chosen, .total-num-students, .subjects-of-interest, .books-used  {
-       display: none;
+    .custom-control-label {
+        font-weight: lighter !important;
     }
-    margin-top: 25px;
-  }
 
-  .questions {
-    margin-bottom: 25px;
-  }
-
-  // extend the multiselect just for the complete form for now
-  .os-multiselect {
-    @extend %os-multiselect;
-
-    input[type=text] {
-      min-width: 100%;
+    .other-specify {
+        margin-left: 2em;
+        display: none;
     }
-  }
 
-  form {
-    height: auto !important;
-  }
+    .question {
+        .how-using, .how-chosen, .total-num-students, .subjects-of-interest, .books-used  {
+            display: none;
+        }
+        margin-top: 25px;
+    }
+
+    .questions {
+        margin-bottom: 25px;
+    }
+
+    // extend the multiselect just for the complete form for now
+    .os-multiselect {
+        @extend %os-multiselect;
+
+        input[type=text] {
+            min-width: 100%;
+        }
+    }
+
+    form {
+        height: auto !important;
+    }
 }
 
 .block_radio_button_collection {
-  display: block;
+    display: block;
 }
 
 // Add a star * to form fields that are required
@@ -161,7 +161,7 @@ label.required::after {
     .logo-wrapper {
         padding: 0;
 
-         @include width-up-to($phone-max) {
+        @include width-up-to($phone-max) {
             margin: auto;
         }
     }
@@ -583,18 +583,18 @@ input.has-error {
 // Improve vertical spacing
 
 #login-signup-form  {
-  .warning {
-    &.edu, &.mistype {
-        color: #c22032;
-        display: none;
+    .warning {
+        &.edu, &.mistype {
+            color: #c22032;
+            display: none;
+        }
     }
-  }
 
-  input.int-country-code {
-    padding-left: 50px;
-  }
+    input.int-country-code {
+        padding-left: 50px;
+    }
 
-  .page-header {
+    .page-header {
         margin-bottom: 0;
         padding-top: 2.85rem;
     }
@@ -859,7 +859,8 @@ input.has-error {
     text-align: center;
 
     #footer-rice-logo-image {
-      margin-bottom: 1.2rem;
+        max-height: 3.7rem;
+        margin-bottom: 1.2rem;
     }
 
     #newflow-footer--copyright {
