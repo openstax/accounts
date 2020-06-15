@@ -43,6 +43,19 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
     end
   end
 
+  context 'opt_out_of_cookies' do
+
+    it 'is not there normally' do
+      expect(representer.to_hash).not_to have_key('opt_out_of_cookies')
+    end
+
+    it 'is there when set and private data included' do
+      expect(
+          representer.to_hash(user_options: {include_private_data: true})['opt_out_of_cookies']
+      ).to eq false
+    end
+  end
+
   context 'is_not_gdpr_location' do
     it 'is not there normally' do
       expect(representer.to_hash).not_to have_key('is_not_gdpr_location')

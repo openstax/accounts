@@ -25,6 +25,7 @@ def user_matcher(user, include_private_data: false)
     base_hash[:school_type] = user.school_type.to_s
     base_hash[:school_location] = user.school_location.to_s
     base_hash[:using_openstax] = user.using_openstax
+    base_hash[:opt_out_of_cookies] = user.opt_out_of_cookies
     base_hash[:contact_infos] =
       user.contact_infos.none? ?
         [] :  # for some reason `a_collection_containing_exactly` doesn't always work when no elements

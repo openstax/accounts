@@ -232,6 +232,15 @@
     </div>
   </div>
 
+  <div class="form-group">
+    <%= f.label :opt_out_of_cookies, 'Opt Out of Cookies?', class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <div class="checkbox">
+        <%= f.check_box :opt_out_of_cookies, style: 'margin-left: 0px' %>
+      </div>
+    </div>
+  </div>
+
   <% if @user.external_uuids.any? %>
   <div class="form-group">
     <%= f.label :trusted_launch_user, 'External authentications?', class: "col-sm-2 control-label" %>

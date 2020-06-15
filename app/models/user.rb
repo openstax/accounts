@@ -170,7 +170,7 @@ class User < ActiveRecord::Base
   def is_test?
     !!is_test
   end
-
+  
   def is_anonymous?
     false
   end
