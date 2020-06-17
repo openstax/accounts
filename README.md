@@ -288,5 +288,5 @@ Keeping the above in mind will help you make sense of the signup form and relate
 In short, new users become sales leads in Salesforce.
 
 ## Additional Documentation
-Additional documentation can be found in the [repo wiki](https://github.com/openstax/accounts/wiki)
+Additional documentation can be found in the [Accounts repo wiki](https://github.com/openstax/accounts/wiki)
 
