@@ -2,6 +2,9 @@ module Newflow
   class LoginController < BaseController
     include LoginSignupHelper
 
+    GO_TO_STUDENT_SIGNUP = 'student_signup'
+    GO_TO_SIGNUP = 'signup'
+
     fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile_newflow
 
     before_action :redirect_to_signup_if_go_param_present, only: :login_form
@@ -42,11 +45,19 @@ module Newflow
     protected ###############
 
     def redirect_to_signup_if_go_param_present
-      if 'student_signup' == params[:go] && Settings::Db.store.student_feature_flag
+      if should_redirect_to_student_signup?
         redirect_to newflow_signup_student_path(request.query_parameters)
-      elsif 'signup' == params[:go] && (Settings::Db.store.student_feature_flag || Settings::Db.store.educator_feature_flag)
+      elsif should_redirect_to_signup_welcome?
         redirect_to newflow_signup_path(request.query_parameters)
       end
+    end
+
+    def should_redirect_to_student_signup?
+      params[:go] == GO_TO_STUDENT_SIGNUP && Settings::Db.store.student_feature_flag
+    end
+
+    def should_redirect_to_signup_welcome?
+      params[:go] == GO_TO_SIGNUP && (Settings::Db.store.student_feature_flag || Settings::Db.store.educator_feature_flag)
     end
 
     # save (in the seession) or clear the client_app that sent the user here

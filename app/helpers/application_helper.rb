@@ -2,6 +2,19 @@ module ApplicationHelper
 
   include AlertHelper
 
+  # Permit legacy flow is a url parameter that, when present, allows us to bypass the newflow feature flag redirects.
+  def get_param_permit_legacy_flow
+    # bpff in short stands for "bypass feature flag"
+    params[:bpff]
+  end
+
+  # Permit legacy flow is a url parameter that, when present, allows us to bypass the newflow feature flag redirects.
+  def set_param_permit_legacy_flow
+    # bpff in short stands for "bypass feature flag"
+    # — Intentionally made a little obscure. There is no magic to the number nine, just a truthy value.
+    { bpff: 9 }
+  end
+
   def contact_us_link
     link_to(
       I18n.t(:"login_signup_form.contact_us"),

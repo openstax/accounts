@@ -170,7 +170,7 @@ class User < ActiveRecord::Base
   def is_test?
     !!is_test
   end
-  
+
   def is_anonymous?
     false
   end
@@ -198,6 +198,10 @@ class User < ActiveRecord::Base
   # Once a User model is cleared for use, the state is set to "activated"
   def activated?
     'activated' == state
+  end
+
+  def unverified?
+    'unverified' == state
   end
 
   def is_temp?

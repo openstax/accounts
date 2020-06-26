@@ -9,12 +9,11 @@ module AuthenticateMethods
       # Drop signed params from where we will go back after log in so we don't
       # try to use them again.
       store_url(url: request_url_without_signed_params)
-      return true
     elsif signed_in?
-      return true
+      return
     elsif pre_auth_state && !pre_auth_state.signed_student? && pre_auth_state_email_available?
       # goes to "old flow"
-      redirect_to main_app.signup_path(request.query_parameters.merge({bpff: 9}))
+      redirect_to main_app.signup_path(request.query_parameters.merge(set_param_permit_legacy_flow))
     else
       store_url(url: request_url_without_signed_params)
       redirect_to newflow_login_path(request.query_parameters)
@@ -67,7 +66,6 @@ module AuthenticateMethods
     if signed_in? && !known_LMS_user && current_user.student?
       sign_out!(security_log_data: {reason: 'LMS student'})
       redirect_to(newflow_signup_student_path(request.query_parameters))
-      return true
     end
   end
 
@@ -78,7 +76,6 @@ module AuthenticateMethods
 
     if known_LMS_user
       sign_in!(known_LMS_user, security_log_data: {type: 'external uuid'})
-      # redirect_to(newflow_login_path(request_url_without_signed_params))
       return true
     end
 
@@ -90,11 +87,11 @@ module AuthenticateMethods
     session[:user_from_signed_params] = user
 
     if (new_lms_user = session[:user_from_signed_params])
-      if new_lms_user['role'] == 'student' && new_lms_user['state'] != 'activated'
+      if new_lms_user.student? && !new_lms_user.activated?
         redirect_to newflow_signup_student_path(request.query_parameters)
-      elsif new_lms_user['role'] == 'student' && new_lms_user['state'] == 'activated'
+      elsif new_lms_user.student? && new_lms_user.activated?
         redirect_to newflow_login_path(request.query_parameters)
-      elsif new_lms_user['role'] == 'instructor' && new_lms_user['state'] == 'unverified'
+      elsif new_lms_user.instructor? && new_lms_user.unverified?
         redirect_to educator_signup_path(request.query_parameters)
       else
         redirect_to newflow_login_path(request.query_parameters)

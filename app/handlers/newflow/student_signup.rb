@@ -26,10 +26,7 @@ module Newflow
     def required_params
       @required_params ||= [
         :email, :first_name, :last_name,
-
-        if options[:user_from_signed_params].blank?
-          :password
-        end
+        options[:user_from_signed_params].blank? ? :password : nil
       ].compact
     end
 

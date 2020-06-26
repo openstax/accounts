@@ -7,6 +7,7 @@ module Legacy
 
     include RequireRecentSignin
     include RateLimiting
+    include LegacyHelper
 
     before_action :redirect_to_newflow_if_enabled, only: [:start]
 
@@ -292,15 +293,13 @@ module Legacy
       # Store these params in the session so they are available if the lookup_login
       # fails.  Also these methods perform checks on the alternate signup URL.
       set_client_app(params[:client_id])
-
       set_alternate_signup_url(params[:signup_at])
-
       set_student_signup_role(params[:go] == 'student_signup')
     end
 
     def maybe_skip_to_sign_up
       if %w{signup student_signup}.include?(params[:go])
-        redirect_to signup_path(bpff: 9)
+        redirect_to signup_path(set_param_permit_legacy_flow)
       end
     end
 

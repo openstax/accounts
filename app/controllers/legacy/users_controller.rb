@@ -1,5 +1,6 @@
 module Legacy
   class UsersController < ApplicationController
+    include LegacyHelper
 
     before_action :redirect_to_newflow_if_enabled, only: [:edit]
 

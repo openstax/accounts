@@ -10,19 +10,6 @@ class ApplicationController < ActionController::Base
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
-  def redirect_to_newflow_if_enabled
-    return false unless request.get?
-
-    if (Settings::Db.store.student_feature_flag || Settings::Db.store.educator_feature_flag) && params[:bpff].blank?
-      # "bpff" stands for "bypass feature flag"
-      if request.path == signup_path
-        redirect_to newflow_signup_path(request.query_parameters)
-      else
-        redirect_to newflow_login_path(request.query_parameters)
-      end
-    end
-  end
-
   def disable_fine_print
     request.options? ||
     contracts_not_required ||
@@ -62,7 +49,7 @@ class ApplicationController < ActionController::Base
 
   respond_to :html
 
-  protected
+  protected #################
 
   def allow_iframe_access
     @iframe_parent = params[:parent]
@@ -79,4 +66,5 @@ class ApplicationController < ActionController::Base
     end
     true
   end
+
 end
