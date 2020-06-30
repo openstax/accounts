@@ -6,12 +6,14 @@ module Newflow
       context 'when success' do
         before do
           disable_sfdc_client
-          # allow(Settings::Salesforce).to receive(:push_leads_enabled).and_return(true)
         end
 
         let(:source_app) { FactoryBot.create(:doorkeeper_application) }
         let(:user) do
-          FactoryBot.create(:user, state: 'unverified', role: 'student', receive_newsletter: true, source_application: source_app)
+          FactoryBot.create(
+            :user, state: 'unverified', role: 'student',
+            receive_newsletter: true, source_application: source_app
+          )
         end
 
         it 'marks the user as activated' do

@@ -112,6 +112,7 @@ module Newflow
               email: email,
               school: 'Rice University',
               password: Faker::Internet.password(min_length: 8),
+              phone_number: Faker::PhoneNumber.phone_number_with_country_code,
               terms_accepted: true,
               newsletter: true,
               contract_1_id: FinePrint::Contract.first.id,
@@ -125,16 +126,16 @@ module Newflow
           Newflow::FindOrCreateUserFromSignedParams.call(signed_params).outputs.user
         end
 
-        let(:subject) do
+        subject(:result) do
           described_class.call(params: params, user_from_signed_params: user_from_signed_params)
         end
 
         it 'outputs a user' do
-          expect(subject.outputs.user).to be_present
+          expect(result.outputs.user).to be_present
         end
 
         it 'only creates one user' do
-          subject
+          result
           expect(User.count).to eq(1)
         end
       end

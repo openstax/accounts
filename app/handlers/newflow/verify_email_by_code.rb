@@ -14,9 +14,15 @@ module Newflow
 
     def handle
       run(ConfirmByCode, params[:code])
-      run(ActivateStudent, outputs.contact_info.user)
+      user = outputs.contact_info.user
 
-      outputs.user = outputs.contact_info.user
+      if user.student?
+        run(ActivateStudent, user)
+      else
+        run(EducatorSignup::ActivateAccount, user)
+      end
+
+      outputs.user = user
     end
   end
 end
