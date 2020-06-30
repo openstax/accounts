@@ -3,7 +3,7 @@ module Newflow
     lev_handler
     uses_routine CreateEmailForUser
     uses_routine AgreeToTerms
-    uses_routine ActivateUser
+    uses_routine ActivateStudent
 
     paramify :signup do
       attribute :first_name
@@ -17,6 +17,7 @@ module Newflow
       validates :first_name, presence: true
       validates :last_name, presence: true
       validates :email, presence: true
+      validates :terms_accepted, presence: true
     end
 
     protected ###############
@@ -36,15 +37,15 @@ module Newflow
         run(CreateEmailForUser, email: signup_params.email, user: @user)
       end
 
-      @user.update_attributes(
+      @user.update(
         first_name: signup_params.first_name,
         last_name: signup_params.last_name,
         receive_newsletter: signup_params.newsletter
       )
       transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
 
-      agree_to_terms(@user)
-      run(ActivateUser, @user)
+      agree_to_terms(@user) if options[:contracts_required] && signup_params.terms_accepted
+      run(ActivateStudent, @user)
 
       outputs.user = @user
     end
@@ -72,10 +73,8 @@ module Newflow
     end
 
     def agree_to_terms(user)
-      if options[:contracts_required]
-        run(AgreeToTerms, signup_params.contract_1_id, user, no_error_if_already_signed: true)
-        run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
-      end
+      run(AgreeToTerms, signup_params.contract_1_id, user, no_error_if_already_signed: true)
+      run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
     end
   end
 end

@@ -14,8 +14,8 @@ module Newflow
         load('db/seeds.rb') # create the FinePrint contracts
       end
 
-      it 'calls Handlers::StudentSignup' do
-        expect_any_instance_of(StudentSignup).to receive(:call).once.and_call_original
+      it 'calls Handlers::StudentSignup::SignupForm' do
+        expect_any_instance_of(StudentSignup::SignupForm).to receive(:call).once.and_call_original
         post(:student_signup)
       end
 

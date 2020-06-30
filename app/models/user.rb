@@ -6,8 +6,6 @@ class User < ActiveRecord::Base
     NEEDS_PROFILE = 'needs_profile', # has yet to fill out their user info
     ACTIVATED = 'activated', # means their user info is in place and the email is verified
     UNVERIFIED = 'unverified', # means their user info is in place but the email is not yet verified
-    EDUCATOR_INCOMPLETE_PROFILE = 'educator_incomplete_profile', # means that they have not completed the last step of the Educator signup flow
-    EDUCATOR_COMPLETE_PROFILE = 'educator_complete_profile' # Educator signup flow complete
   ]
   USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
   USERNAME_MIN_LENGTH = 3

@@ -1,0 +1,41 @@
+# Changes the passed-in user's state to activated and creates a new Sealesforce lead
+# No-op if the user is already activated
+module Newflow
+  class ActivateStudent
+    lev_routine
+
+    protected ###############
+
+    def exec(user)
+      return if user.activated?
+
+      push_lead_to_salesforce(user)
+      user.update!(state: User::ACTIVATED)
+      SecurityLog.create!(
+        user: user,
+        event_type: :user_updated,
+        event_data: {
+          user_became_activated: 'true'
+        }
+      )
+    end
+
+    private ###############
+
+    def push_lead_to_salesforce(user)
+      if Settings::Salesforce.push_leads_enabled
+        PushSalesforceLead.perform_later(
+          user: user,
+          role: user.role,
+          newsletter: user.receive_newsletter?,
+          source_application: user.source_application,
+          phone_number: user.phone_number,
+          # params req'd by `PushSalesforceLead` but  which we don't have yet
+          # (consider changing the method signature instead, set defaults):
+          school: nil, using_openstax: nil, subject: nil, num_students: nil, url: nil
+        )
+      end
+    end
+
+  end
+end

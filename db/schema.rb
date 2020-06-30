@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_10_181353) do
+ActiveRecord::Schema.define(version: 2020_06_18_191456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -304,6 +304,15 @@ ActiveRecord::Schema.define(version: 2020_06_10_181353) do
     t.index ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true
   end
 
+  create_table "sheerid_verifications", force: :cascade do |t|
+    t.string "verification_id", null: false
+    t.string "email", null: false
+    t.string "current_step", null: false
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "organization_name", null: false
+  end
+
   create_table "user_external_uuids", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "uuid", null: false
@@ -345,6 +354,7 @@ ActiveRecord::Schema.define(version: 2020_06_10_181353) do
     t.string "sheerid_reported_school"
     t.string "sheerid_verification_id"
     t.boolean "opt_out_of_cookies", default: false
+    t.string "salesforce_lead_id"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

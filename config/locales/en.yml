@@ -132,6 +132,7 @@ en:
     email_is_blank: Email can't be blank
     phone_number_is_blank: Phone number can't be blank
     role_is_blank: Role can't be blank
+    terms_accepted_is_blank: You must agree to the terms to create your account
     password_is_blank: Password can't be blank
     password_requirements: Password requirements
     min_characters: "%{number} characters minimum"

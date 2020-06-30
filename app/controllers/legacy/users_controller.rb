@@ -31,12 +31,6 @@ module Legacy
 
     private
 
-    def prevent_caching
-      response.headers["Cache-Control"] = "no-cache, no-store"
-      response.headers["Pragma"] = "no-cache"
-      response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-    end
-
     def user_params
       params[:value].is_a?(String) ? \
         {params[:name] => params[:value]} : \

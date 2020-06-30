@@ -115,14 +115,14 @@ class UpdateUserSalesforceInfo
           # are set to `pending_faculty`.  If the statuses only consist of
           # 'Converted' statuses, we know the user has been rejected as faculty.
 
-          user.faculty_status =
-            if statuses.empty?
-              :no_faculty_info
-            elsif statuses == ["Converted"]
-              :rejected_faculty
-            else
-              :pending_faculty
-            end
+          unless user.is_newflow? # because the new Accounts flow works differently; don't mess with it.
+            user.faculty_status =
+              if statuses == ["Converted"]
+                :rejected_faculty
+              else
+                :pending_faculty
+              end
+          end
 
           user.save! if user.changed?
         rescue StandardError => ee
