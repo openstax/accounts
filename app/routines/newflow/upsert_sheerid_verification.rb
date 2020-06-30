@@ -18,8 +18,6 @@ module Newflow
         model.first_name = details.first_name
         model.last_name = details.last_name
         model.organization_name = details.organization_name
-
-        Rails.logger.info("bryan_sheerid_verify — Response from SheeridAPI: #{details.inspect}")
       end
 
       transfer_errors_from(outputs.verification, {type: :verbatim}, :fail_if_errors)

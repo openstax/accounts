@@ -30,8 +30,7 @@ module Newflow
     end
 
     def update_salesforce_lead!(lead, user)
-      Rails.logger.info("bryan_sheerid_verify #{self.class.name} NOW RUNNING update_salesforce_lead lead (#{lead.id}) user (#{user.id})")
-      succeeded = lead.update(
+      lead.update(
         # sheerid_verification_status: 'verified' # TODO: future feature that must be enabled by SF
         first_name: user.first_name,
         last_name: user.last_name,
@@ -40,8 +39,6 @@ module Newflow
         # num_students: user.num_students
         # adoption_status: user.adoption_status,
       )
-      Rails.logger.info("bryan_sheerid_verify #{self.class.name} update_salesforce_lead lead (#{lead.id} user (#{user.id})) — succeeded? #{succeeded}")
-      succeeded
     end
 
     def log_success(user, lead)

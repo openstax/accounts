@@ -97,11 +97,9 @@ module Newflow
       handle_with(
         EducatorSignup::SheeridWebhook,
         success: lambda {
-          Rails.logger.info("bryan_sheerid_verify. Reached sheerid_webhook success lambda. verification_id: #{@handler_result.outputs.verification_id}")
           render(status: :ok, plain: 'Success')
         },
         failure: lambda {
-          Rails.logger.warn("bryan_sheerid_verify. Reached sheerid_webhook failure lambda. verification_id: #{@handler_result.outputs.verification_id}.")
 
           Raven.capture_message(
             'SheerID webhook is failing!',

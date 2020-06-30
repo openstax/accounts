@@ -33,16 +33,13 @@ module Newflow
     private #################
 
     def update_user(user, verification)
-      Rails.logger.info("bryan_sheerid_verify #{self.class.name} #{user.inspect}")
-      succeeded = user.update(
+      user.update(
         first_name: verification.first_name,
         last_name: verification.last_name,
         sheerid_reported_school: verification.organization_name,
         faculty_status: verification.current_step_to_faculty_status,
         sheerid_verification_id: verification.verification_id
       )
-      Rails.logger.info("bryan_sheerid_verify #{self.class.name} #{user.inspect}")
-      succeeded
     end
 
     def fetch_verification(verification_id)
@@ -59,7 +56,6 @@ module Newflow
 
     def capture_mismatch_error!(verification_id, email, user)
       message = 'verification id and email mismatch'
-      Rails.logger.warn("bryan_sheerid_verify. Email (#{email&.id}) mismatch! User (#{user&.id}) Verification (#{verification_id})")
 
       Raven.capture_message(
         message,
@@ -74,7 +70,6 @@ module Newflow
 
     def log_success(verification_id, user)
       lead_id = user.salesforce_lead_id
-      Rails.logger.info("bryan_sheerid_verify #{self.class.name}: success for user (#{user.id}) with lead (#{lead_id})")
 
       SecurityLog.create!(
         user: user,
@@ -84,7 +79,6 @@ module Newflow
     end
 
     def handle_error(verification_id, user)
-      message = "bryan_sheerid_verify #{self.class.name} error!; " \
         "User (#{user.id}) verification_id (#{verification_id}); User errors (#{user.errors.full_messages})"
 
         Rails.logger.warn(message)

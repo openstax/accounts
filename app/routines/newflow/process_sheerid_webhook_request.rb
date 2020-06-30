@@ -15,9 +15,7 @@ module Newflow
       if verification.errors.none? && verification.verified? && (user = EmailAddress.verified.find_by(value: verification.email)&.user)
         VerifyEducator.perform_later(verification_id: verification&.verification_id, user: user)
       elsif verification.errors.present?
-        Rails.logger.warn("bryan_sheerid_verify — verification ERRORs — #{verification.errors.full_messages}")
-      else
-        Rails.logger.warn("bryan_sheerid_verify REACHED ELSE STATEMENT IN #{self.class.name}")
+        Rails.logger.warn("#{self.class.name} ERROR! verification.errors.full_messages")
       end
 
       outputs.verification = verification
