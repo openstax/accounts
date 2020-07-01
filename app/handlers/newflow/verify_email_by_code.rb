@@ -6,7 +6,7 @@ module Newflow
     uses_routine ConfirmByCode,
                  translations: { outputs: { type: :verbatim },
                                  inputs: { type: :verbatim } }
-    uses_routine ActivateStudent
+    uses_routine StudentSignup::ActivateStudent
 
     def authorized?
       true
@@ -17,9 +17,9 @@ module Newflow
       user = outputs.contact_info.user
 
       if user.student?
-        run(ActivateStudent, user)
+        run(StudentSignup::ActivateStudent, user)
       else
-        run(EducatorSignup::ActivateAccount, user)
+        run(EducatorSignup::ActivateAccount, user: user)
       end
 
       outputs.user = user

@@ -75,16 +75,13 @@ module Newflow
       end
 
       context 'when success' do
-        context "salesforce lead gets pushed" do
-          it "sends the subject properly formatted" do
-            expect_lead_push(subject: subjects_of_interest.join(';'))
+        context 'salesforce' do
+          it 'calls UpdateSalesforceLead' do
+            skip 'TODO'
+            expect_any_instance_of(UpdateSalesforceLead).to receive(:exec).with(user: user)
             handle
           end
         end
-      end
-
-      def expect_lead_push(options={})
-        expect_any_instance_of(UpdateSalesforceLead).to receive(:exec).with(hash_including(options))
       end
     end
   end

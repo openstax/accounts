@@ -25,7 +25,7 @@ module Newflow
         end
 
         it 'runs ActivateStudent' do
-          expect_any_instance_of(ActivateStudent).to receive(:call).and_call_original
+          expect_any_instance_of(ActivateStudent).to receive(:exec)
           described_class.call(params: params, email_address: email)
         end
 

@@ -1,6 +1,6 @@
 module Newflow
   module StudentSignup
-    class VerifyEmailByPin < Newflow::VerifyEmailByPin
+    class VerifyEmailByPin < Newflow::VerifyUserEmailByPin
       lev_handler
       uses_routine ConfirmByPin
       uses_routine ActivateStudent

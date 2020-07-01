@@ -1,4 +1,4 @@
-RSpec.shared_examples "add_reset_password_shared_examples" do |parameter|
+RSpec.shared_examples 'adding and resetting password from profile' do |parameter|
   let(:type) { parameter }
 
   before(:each) do

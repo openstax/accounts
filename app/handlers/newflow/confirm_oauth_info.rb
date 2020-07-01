@@ -3,7 +3,7 @@ module Newflow
     lev_handler
     uses_routine CreateEmailForUser
     uses_routine AgreeToTerms
-    uses_routine ActivateStudent
+    uses_routine StudentSignup::ActivateStudent
 
     paramify :signup do
       attribute :first_name
@@ -45,7 +45,7 @@ module Newflow
       transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
 
       agree_to_terms(@user) if options[:contracts_required] && signup_params.terms_accepted
-      run(ActivateStudent, @user)
+      run(StudentSignup::ActivateStudent, @user)
 
       outputs.user = @user
     end

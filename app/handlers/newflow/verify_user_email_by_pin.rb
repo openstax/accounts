@@ -1,17 +1,7 @@
 module Newflow
   # Marks an `EmailAddress` as `verified` if it matches the passed-in `EmailAddress`'s pin
   # and then marks the owner of the email address as 'activated'.
-  class VerifyEmailByPin
-    lev_handler
-    uses_routine ConfirmByPin
-    uses_routine ActivateStudent
-
-    paramify :confirm do
-      attribute :pin, type: String
-      validates :pin, presence: true
-    end
-
-    protected ###############
+  class VerifyUserEmailByPin
 
     def handle
       result = ConfirmByPin.call(contact_info: options[:email_address], pin: confirm_params.pin)
