@@ -1,3 +1,4 @@
+<% if Rails.env.production? and Settings::GoogleAnalytics.send_google_analytics == true and !Settings::GoogleAnalytics.google_tag_manager_code.blank?  %>
 <script>
   //Code from Google
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -6,3 +7,4 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','<%= Settings::GoogleAnalytics.google_tag_manager_code %>');
 </script>
+<% end %>
