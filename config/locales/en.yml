@@ -370,6 +370,9 @@ en:
       google_analytics_code:
         name: 'Google Analytics Code'
         help_block: 'Example: UA-XXXXXXXX-X'
+      google_tag_manager_code:
+        name: 'Google Tag Manager Code'
+        help_block: 'Example: GTM-XXXX'
       student_feature_flag:
         name: New student flow feature flag
         help_block: New student flow activated?

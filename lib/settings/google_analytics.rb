@@ -11,6 +11,10 @@ module Settings
         Settings::Db.store.google_analytics_code
       end
 
+      def google_tag_manager_code
+        Settings::Db.store.google_tag_manager_code
+      end
+
     end
 
   end

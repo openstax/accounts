@@ -8,6 +8,8 @@
       OX.url_prefix = "<%= request.script_name %>";
     </script>
 
+    <%= render partial: "layouts/google_tag_manager" %>
+
     <% if @redirect_url %>
       <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
     <% end %>
@@ -33,7 +35,7 @@
   </head>
 
   <body class="<%= controller_name %> <%= action_name %>">
-
+    <%= render partial: "layouts/tag_manager_snippet" %>
     <%= render partial: "layouts/application_js_hooks" %>
     <%= render "shared/upper_corner_console" %>
     <%= render partial: "layouts/application_header" %>
