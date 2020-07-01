@@ -64,7 +64,7 @@
         <p class="extra-info">
           <% if !params.has_key?(:no_signup) %>
             <%= t '.no_account_q' %>
-            <%= link_to(t('.sign_up'), get_alternate_signup_url || signup_path(set_param_permit_legacy_flow)) %>.
+            <%= link_to(t('.sign_up'), get_alternate_signup_url || signup_path(set_param_to_permit_legacy_flow)) %>.
           <% end %>
         </p>
       </section>

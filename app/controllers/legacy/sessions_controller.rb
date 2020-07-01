@@ -297,7 +297,7 @@ module Legacy
 
     def maybe_skip_to_sign_up
       if %w{signup student_signup}.include?(params[:go])
-        redirect_to signup_path(set_param_permit_legacy_flow)
+        redirect_to signup_path(set_param_to_permit_legacy_flow)
       end
     end
 

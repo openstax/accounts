@@ -136,7 +136,7 @@ module Legacy
     end
 
     def restart_if_missing_pre_auth_state
-      redirect_to signup_path(set_param_permit_legacy_flow) if pre_auth_state.nil?
+      redirect_to signup_path(set_param_to_permit_legacy_flow) if pre_auth_state.nil?
     end
 
     def check_ready_for_password_or_social

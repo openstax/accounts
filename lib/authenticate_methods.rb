@@ -13,7 +13,7 @@ module AuthenticateMethods
       return
     elsif pre_auth_state && !pre_auth_state.signed_student? && pre_auth_state_email_available?
       # goes to "old flow"
-      redirect_to main_app.signup_path(request.query_parameters.merge(set_param_permit_legacy_flow))
+      redirect_to main_app.signup_path(request.query_parameters.merge(set_param_to_permit_legacy_flow))
     else
       store_url(url: request_url_without_signed_params)
       redirect_to newflow_login_path(request.query_parameters)
