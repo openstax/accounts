@@ -307,11 +307,11 @@ class User < ActiveRecord::Base
   end
 
   def self.known_roles
-    roles.except("unknown_role").keys
+    roles.except(:unknown_role).keys
   end
 
   def self.non_student_known_roles
-    known_roles - ["student"]
+    known_roles - ['student']
   end
 
   def guessed_preferred_confirmed_email
