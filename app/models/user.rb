@@ -197,27 +197,27 @@ class User < ActiveRecord::Base
   #
   # Once a User model is cleared for use, the state is set to "activated"
   def activated?
-    'activated' == state
+    state == ACTIVATED
   end
 
   def unverified?
-    'unverified' == state
+     state == UNVERIFIED
   end
 
   def is_temp?
-    'temp' == state
+    state == TEMP
   end
 
   def is_unclaimed?
-    'unclaimed' == state
+    state == UNCLAIMED
   end
 
   def is_new_social?
-    'new_social' == state
+    state == NEW_SOCIAL
   end
 
   def is_needs_profile?
-    'needs_profile' == state
+    state == NEEDS_PROFILE
   end
 
   def name

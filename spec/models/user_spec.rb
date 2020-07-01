@@ -236,10 +236,10 @@ RSpec.describe User, type: :model do
 
     it "relays it's value to helper methods" do
       user = FactoryBot.create(:user)
-      user.state = 'temp'
+      user.state = User::TEMP
       expect(user.is_temp?).to    be_truthy
       expect(user.activated?).to be_falsey
-      user.state = 'activated'
+      user.state = User::ACTIVATED
       expect(user.activated?).to be_truthy
       expect(user.is_temp?).to    be_falsey
     end
