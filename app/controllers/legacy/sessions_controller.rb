@@ -23,11 +23,11 @@ module Legacy
 
     before_action :save_new_params_in_session,
       only: [:start],
-      unless: -> { Settings::Db.store.student_feature_flag || Settings::Db.store.educator_feature_flag }
+      unless: -> { Settings::FeatureFlags.any_newflow_feature_flags? }
 
     before_action :store_authorization_url_as_fallback,
       only: [:start, :create],
-      unless: -> { Settings::Db.store.student_feature_flag }
+      unless: -> { Settings::FeatureFlags.any_newflow_feature_flags? }
 
     before_action :maybe_skip_to_sign_up, only: [:start]
 

@@ -38,7 +38,7 @@ class FacultyAccessController < ApplicationController
   protected
 
   def redirect_to_sheerid_if_newflow
-    if Settings::Db.store.educator_feature_flag
+    if Settings::FeatureFlags.educator_feature_flag
       redirect_to(educator_sheerid_form_path)
     end
   end

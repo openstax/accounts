@@ -66,11 +66,11 @@ def strip_html(text)
 end
 
 def turn_on_student_feature_flag
-  Settings::Db.store.student_feature_flag = true
+  Settings::FeatureFlags.student_feature_flag = true
 end
 
 def turn_on_educator_feature_flag
-  Settings::Db.store.educator_feature_flag = true
+  Settings::FeatureFlags.educator_feature_flag = true
 end
 
 def newflow_click_sign_up(role:)

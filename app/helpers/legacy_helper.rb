@@ -3,8 +3,7 @@ module LegacyHelper
   def redirect_to_newflow_if_enabled
     return unless request.get?
 
-    is_student_or_educator_feature_flag_on = Settings::Db.store.student_feature_flag || Settings::Db.store.educator_feature_flag
-    should_redirect_to_newflow = is_student_or_educator_feature_flag_on && get_param_permit_legacy_flow.blank?
+    should_redirect_to_newflow = Settings::FeatureFlags.any_newflow_feature_flags? && get_param_permit_legacy_flow.blank?
 
     if should_redirect_to_newflow
       if request.path == signup_path

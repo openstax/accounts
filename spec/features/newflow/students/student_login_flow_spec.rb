@@ -104,7 +104,7 @@ feature 'student login flow', js: true do
 
     describe 'with no return parameter specified, when feature flag is on' do
       before do
-        Settings::Db.store.student_feature_flag = true
+        turn_on_student_feature_flag
       end
 
       it 'sends the student to their profile' do
