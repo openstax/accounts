@@ -10,6 +10,7 @@ defaults: &defaults
   user_info_error_emails_enabled: false
   send_google_analytics: false
   google_analytics_code: UA-73668038-2
+  google_tag_manager_code: GTM-W6N7PB
   subjects:
     ap_macro_econ:
       title: Principles of Macroeconomics for AP® Courses
