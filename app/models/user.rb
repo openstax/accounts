@@ -170,7 +170,7 @@ class User < ActiveRecord::Base
   def is_test?
     !!is_test
   end
-  
+
   def is_anonymous?
     false
   end
@@ -197,23 +197,27 @@ class User < ActiveRecord::Base
   #
   # Once a User model is cleared for use, the state is set to "activated"
   def activated?
-    'activated' == state
+    state == ACTIVATED
   end
 
-  def is_temp?
-    'temp' == state
+  def unverified?
+     state == UNVERIFIED
+  end
+
+  def temporary?
+    state == TEMP
   end
 
   def is_unclaimed?
-    'unclaimed' == state
+    state == UNCLAIMED
   end
 
   def is_new_social?
-    'new_social' == state
+    state == NEW_SOCIAL
   end
 
   def is_needs_profile?
-    'needs_profile' == state
+    state == NEEDS_PROFILE
   end
 
   def name
@@ -303,11 +307,11 @@ class User < ActiveRecord::Base
   end
 
   def self.known_roles
-    roles.except("unknown_role").keys
+    roles.except(:unknown_role).keys
   end
 
   def self.non_student_known_roles
-    known_roles - ["student"]
+    known_roles - ['student']
   end
 
   def guessed_preferred_confirmed_email

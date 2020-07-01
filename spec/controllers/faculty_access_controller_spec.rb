@@ -9,9 +9,9 @@ RSpec.describe FacultyAccessController, type: :controller do
     controller.sign_in!(user)
   end
 
-  context 'when the educator feature flag is ON' do
+  context 'when the educator feature flag is OFF' do
     before do
-      Settings::Db.store.educator_feature_flag = false
+      Settings::FeatureFlags.educator_feature_flag = false
     end
 
     it 'renders apply form' do
@@ -22,7 +22,7 @@ RSpec.describe FacultyAccessController, type: :controller do
 
   context 'when the educator feature flag is ON' do
     before do
-      Settings::Db.store.educator_feature_flag = true
+      Settings::FeatureFlags.educator_feature_flag = true
     end
 
     it 'redirects to the SheerID form' do

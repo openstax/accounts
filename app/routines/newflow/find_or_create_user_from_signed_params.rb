@@ -9,6 +9,7 @@ module Newflow
         # transfer signed params to user
         existing_user.signed_external_data = sp
         existing_user.self_reported_school = sp['school']
+        existing_user.role = sp['role']
         existing_user.external_uuids.find_or_initialize_by(uuid: sp['uuid'])
         existing_user.save
 
@@ -20,7 +21,7 @@ module Newflow
 
       user = User.new(state: 'unverified', role: role, self_reported_school: sp['school'])
       user.external_uuids.find_or_initialize_by(uuid: sp['uuid'])
-      user.signed_external_data = sp.merge(role: role) # I think `sp.merge(role: role)` may correct/update the role but otherwise is the same as just doing `sp`
+      user.signed_external_data = sp.merge(role: role)
       user.full_name = sp['name']
 
       user.save

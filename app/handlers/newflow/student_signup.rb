@@ -2,6 +2,7 @@ module Newflow
   class StudentSignup
     lev_handler
     uses_routine AgreeToTerms
+    uses_routine CreateEmailForUser
 
     paramify :signup do
       attribute :first_name, type: String
@@ -23,7 +24,10 @@ module Newflow
     end
 
     def required_params
-      @required_params ||= [:email, :first_name, :last_name, :password]
+      @required_params ||= [
+        :email, :first_name, :last_name,
+        options[:user_from_signed_params].blank? ? :password : nil
+      ].compact
     end
 
     def handle
@@ -61,11 +65,7 @@ module Newflow
     def validate_presence_of_required_params
       required_params.each do |param|
         if signup_params.send(param).blank?
-          if param == :password
-            missing_param_error(param) if options[:user_from_signed_params].blank?
-          else
-            missing_param_error(param)
-          end
+          missing_param_error(param)
         end
       end
     end

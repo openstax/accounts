@@ -7,6 +7,7 @@ module Legacy
 
     include RequireRecentSignin
     include RateLimiting
+    include LegacyHelper
 
     before_action :redirect_to_newflow_if_enabled, only: [:start]
 
@@ -20,10 +21,13 @@ module Legacy
 
     skip_before_action :complete_signup_profile, only: [:destroy]
 
-    before_action :save_new_params_in_session, only: [:start]
+    before_action :save_new_params_in_session,
+      only: [:start],
+      unless: -> { Settings::FeatureFlags.any_newflow_feature_flags? }
+
     before_action :store_authorization_url_as_fallback,
       only: [:start, :create],
-      unless: -> { Settings::Db.store.student_feature_flag }
+      unless: -> { Settings::FeatureFlags.any_newflow_feature_flags? }
 
     before_action :maybe_skip_to_sign_up, only: [:start]
 
@@ -285,6 +289,18 @@ module Legacy
 
     private #################
 
+    def save_new_params_in_session
+      set_client_app(params[:client_id])
+      set_alternate_signup_url(params[:signup_at])
+      set_student_signup_role(params[:go] == 'student_signup')
+    end
+
+    def maybe_skip_to_sign_up
+      if %w{signup student_signup}.include?(params[:go])
+        redirect_to signup_path(set_param_to_permit_legacy_flow)
+      end
+    end
+
     def store_authorization_url_as_fallback
       # In case we need to redirect_back, but don't have something to redirect back
       # to (e.g. no authorization url or referrer), form and store as the fallback
@@ -300,6 +316,12 @@ module Legacy
                                                   response_type: 'code')
 
       store_fallback(url: authorization_url) unless authorization_url.nil?
+    end
+
+    def field_error!(on:, code:, message:)
+      @errors ||= Lev::Errors.new
+      message = I18n.t(message) if message.is_a?(Symbol)
+      @errors.add(false, offending_inputs: on, code: code, message: message)
     end
   end
 end

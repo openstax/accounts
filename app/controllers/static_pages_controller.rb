@@ -16,7 +16,7 @@ class StaticPagesController < ApplicationController
   def home
     flash.keep # keep notices and errors through to the redirects below
 
-    if Settings::Db.store.student_feature_flag
+    if Settings::FeatureFlags.any_newflow_feature_flags?
       signed_in? ? redirect_to(profile_newflow_path) : newflow_authenticate_user!
     else
       signed_in? ? redirect_to(profile_path) : authenticate_user!

@@ -104,7 +104,7 @@ feature 'student login flow', js: true do
 
     describe 'with no return parameter specified, when feature flag is on' do
       before do
-        Settings::Db.store.student_feature_flag = true
+        turn_on_student_feature_flag
       end
 
       it 'sends the student to their profile' do
@@ -226,7 +226,7 @@ feature 'student login flow', js: true do
         screenshot!
 
         click_on(I18n.t(:"login_signup_form.forgot_password"))
-        expect(page.current_path).to eq(forgot_password_form_path)
+        expect(page).to have_content(I18n.t(:"login_signup_form.reset_my_password_description"))
         # pre-populates the email for them since they already typed it in the login form
         expect(find('#forgot_password_form_email')['value']).to eq('user@openstax.org')
         screenshot!

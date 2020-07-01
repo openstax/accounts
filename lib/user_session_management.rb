@@ -140,10 +140,6 @@ module UserSessionManagement
   # so the session var doesn't stick around if user later comes from a different origin
   def set_student_signup_role(is_student)
     session[:signup_role] = is_student ? 'student' : nil
-
-      if Settings::Db.store.student_feature_flag && is_student
-        redirect_to newflow_signup_student_path(request.query_parameters)
-      end
   end
 
   def set_alternate_signup_url(url)
@@ -156,7 +152,7 @@ module UserSessionManagement
 
       if get_client_app.try!(:is_redirect_url?, url)
         url = Addressable::URI.parse(url)
-        url.query_values = url&.query_values&.merge(bpff: 9) # "bpff" = bypass feature flag
+        url.query_values = url&.query_values&.merge(set_param_to_permit_legacy_flow)
         session[:alt_signup] = url.to_s
       else
         session[:alt_signup] = nil

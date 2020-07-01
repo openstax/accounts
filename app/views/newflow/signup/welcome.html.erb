@@ -1,5 +1,5 @@
 <%
-conditional_educator_signup_path = Settings::Db.store.educator_feature_flag ? educator_signup_path : signup_path(bpff: 9)
+    conditional_educator_signup_path = Settings::FeatureFlags.educator_feature_flag ? educator_signup_path : signup_path(set_param_to_permit_legacy_flow)
 %>
 
 <div id="login-signup-form">

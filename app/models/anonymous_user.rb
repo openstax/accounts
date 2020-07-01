@@ -45,7 +45,7 @@ class AnonymousUser
     nil
   end
 
-  def is_temp?
+  def temporary?
     false
   end
 

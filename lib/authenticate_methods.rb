@@ -3,42 +3,21 @@ require 'addressable/uri'
 module AuthenticateMethods
 
   def newflow_authenticate_user!
-    # Note to self: remember that SessionsController#start calls `save_new_params_in_session`
     if signed_params.present?
-      if signed_params['role'] == 'student' || account_exists_with_same_email?
-        newflow_use_signed_params
-      else
-        use_signed_params
-      end
+      use_signed_params_and_redirect
+
+      # Drop signed params from where we will go back after log in so we don't
+      # try to use them again.
+      store_url(url: request_url_without_signed_params)
+    elsif signed_in?
+      return
+    elsif pre_auth_state && !pre_auth_state.signed_student? && pre_auth_state_email_available?
+      # goes to "old flow"
+      redirect_to main_app.signup_path(request.query_parameters.merge(set_param_to_permit_legacy_flow))
+    else
+      store_url(url: request_url_without_signed_params)
+      redirect_to newflow_login_path(request.query_parameters)
     end
-
-    return if signed_in?
-
-    # Drop signed params from where we will go back after log in so we don't
-    # try to use them again.
-    store_url(url: request_url_without_signed_params)
-
-    if (sp_user = session[:user_from_signed_params]) # student
-      if sp_user['state'] == 'unverified'
-        redirect_to newflow_signup_student_path(request.query_parameters) and return
-      else
-        redirect_to newflow_login_path(request.query_parameters) and return
-      end
-    else # instructor
-      if pre_auth_state && !pre_auth_state.signed_student? && pre_auth_state_email_available?
-        # goes to "old flow"
-        redirect_to main_app.signup_path(request.query_parameters.merge({bpff: true})) and return
-      else
-        redirect_to newflow_login_path(request.query_parameters) and return
-      end
-    end
-
-    # Drop signed params from where we will go back after log in so we don't
-    # try to use them again.
-
-    permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :bpff).to_h
-
-    redirect_to(newflow_login_path(permitted_params))
   end
 
   def authenticate_user!
@@ -74,6 +53,52 @@ module AuthenticateMethods
 
   protected #################
 
+  def use_signed_params_and_redirect
+    log_out_unlinked_student || log_in_known_LMS_user || prepare_for_new_LMS_user
+  end
+
+  def known_LMS_user
+    @known_LMS_user ||= UserExternalUuid.find_by_uuid(signed_params['uuid'])&.user
+  end
+
+  # If a student is already logged in, but their account is not yet linked with the LMS, log them out.
+  def log_out_unlinked_student
+    if signed_in? && !known_LMS_user && current_user.student?
+      sign_out!(security_log_data: {reason: 'LMS student'})
+      redirect_to(newflow_signup_student_path(request.query_parameters))
+    end
+  end
+
+  def log_in_known_LMS_user
+    if signed_in? && known_LMS_user != current_user
+      sign_out!(security_log_data: {type: 'different external user'})
+    end
+
+    if known_LMS_user
+      sign_in!(known_LMS_user, security_log_data: {type: 'external uuid'})
+      return true
+    end
+
+    false
+  end
+
+  def prepare_for_new_LMS_user
+    user = Newflow::FindOrCreateUserFromSignedParams.call(signed_params).outputs.user
+    session[:user_from_signed_params] = user
+
+    if (new_lms_user = session[:user_from_signed_params])
+      if new_lms_user.student? && !new_lms_user.activated?
+        redirect_to newflow_signup_student_path(request.query_parameters)
+      elsif new_lms_user.student? && new_lms_user.activated?
+        redirect_to newflow_login_path(request.query_parameters)
+      elsif new_lms_user.instructor? && new_lms_user.unverified?
+        redirect_to educator_signup_path(request.query_parameters)
+      else
+        redirect_to newflow_login_path(request.query_parameters)
+      end
+    end
+  end
+
   def account_exists_with_same_email?
       LookupUsers.by_verified_email(external_email).any?
   end
@@ -86,28 +111,6 @@ module AuthenticateMethods
   #     with signed params with this UUID can be automatically logged in
   def use_signed_params
     auto_login_external_user || prepare_for_new_external_user
-  end
-
-  # When the external site provides signed params they're
-  # requesting the person either be
-  # (1) automatically logged in if their UUID is known to us, or
-  # (2) allowed to log in or sign up where we pre-populate some fields using
-  #     the signed data and remember their external UUID so that future requests
-  #     with signed params with this UUID can be automatically logged in
-  def newflow_use_signed_params
-    auto_login_external_user || newflow_prepare_for_new_external_user
-  end
-
-  def newflow_prepare_for_new_external_user
-    # If we didn't find a user with a linked account to automatically log in,
-    # we do not want to assume that any already-logged-in user owns this signed
-    # params information.
-    # Therefore at this point we sign out whoever is signed in.
-
-    # Save the signed params data to facilitate either sign in or up
-    # depending on the user's choices
-    user = Newflow::FindOrCreateUserFromSignedParams.call(signed_params).outputs.user
-    session[:user_from_signed_params] = user
   end
 
   def prepare_for_new_external_user
@@ -173,5 +176,4 @@ module AuthenticateMethods
 
     uri.to_s
   end
-
 end

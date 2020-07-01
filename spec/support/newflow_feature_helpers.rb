@@ -66,21 +66,11 @@ def strip_html(text)
 end
 
 def turn_on_student_feature_flag
-  Settings::Db.store.student_feature_flag = true
+  Settings::FeatureFlags.student_feature_flag = true
 end
 
 def turn_on_educator_feature_flag
-  Settings::Db.store.educator_feature_flag = true
-end
-
-def expect_sign_up_welcome_tab
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"login_signup_form.welcome_page_header")
-end
-
-def expect_student_sign_up_page
-  expect(page.current_path).to eq(newflow_signup_student_path)
-  expect(page).to have_no_missing_translations
+  Settings::FeatureFlags.educator_feature_flag = true
 end
 
 def newflow_click_sign_up(role:)
@@ -172,6 +162,26 @@ def simulate_login_signup_with_social(options={})
   ensure
     OmniAuth.config.test_mode = false
   end
+end
+
+def expect_login_form_page
+  expect(page).to have_no_missing_translations
+  expect(page).to have_content(t :"login_signup_form.login_page_header")
+end
+
+def expect_sign_up_welcome_tab
+  expect(page).to have_no_missing_translations
+  expect(page).to have_content(t :"login_signup_form.welcome_page_header")
+end
+
+def expect_student_sign_up_page
+  expect(page).to have_no_missing_translations
+  expect(page.current_path).to eq(newflow_signup_student_path)
+end
+
+def expect_educator_sign_up_page
+  expect(page).to have_no_missing_translations
+  expect(page.current_path).to eq(educator_signup_path)
 end
 
 def external_public_url
