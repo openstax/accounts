@@ -290,8 +290,6 @@ module Legacy
     private #################
 
     def save_new_params_in_session
-      # Store these params in the session so they are available if the lookup_login
-      # fails.  Also these methods perform checks on the alternate signup URL.
       set_client_app(params[:client_id])
       set_alternate_signup_url(params[:signup_at])
       set_student_signup_role(params[:go] == 'student_signup')
