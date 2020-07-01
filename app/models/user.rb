@@ -204,7 +204,7 @@ class User < ActiveRecord::Base
      state == UNVERIFIED
   end
 
-  def is_temp?
+  def temporary?
     state == TEMP
   end
 
