@@ -54,11 +54,11 @@ module Newflow
     end
 
     def should_redirect_to_student_signup?
-      params[:go]&.trim&.downcase == GO_TO_STUDENT_SIGNUP && Settings::FeatureFlags.student_feature_flag
+      params[:go]&.strip&.downcase == GO_TO_STUDENT_SIGNUP && Settings::FeatureFlags.student_feature_flag
     end
 
     def should_redirect_to_signup_welcome?
-      params[:go]&.trim&.downcase == GO_TO_SIGNUP && (Settings::FeatureFlags.any_newflow_feature_flags?)
+      params[:go]&.strip&.downcase == GO_TO_SIGNUP && (Settings::FeatureFlags.any_newflow_feature_flags?)
     end
 
     # save (in the seession) or clear the client_app that sent the user here
