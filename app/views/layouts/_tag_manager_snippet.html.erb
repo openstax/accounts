@@ -1,6 +1,8 @@
+<% if Rails.env.production? and Settings::GoogleAnalytics.send_google_analytics == true and !Settings::GoogleAnalytics.google_tag_manager_code.blank?  %>
 <noscript>
   <iframe src="https://www.googletagmanager.com/ns.html?id=<%= Settings::GoogleAnalytics.google_tag_manager_code %>"
                   height="0" width="0" style="display:none;visibility:hidden">
 
   </iframe>
 </noscript>
+<% end %>
