@@ -3,6 +3,12 @@ module Newflow
     class UpdateSalesforceLead
       lev_routine
 
+      ADOPTION_STATUS_FROM_USER = {
+        fully: 'Confirmed Adoption Won',
+        recommended: 'Confirmed Will Recommend',
+        interested: 'High Interest in Adopting'
+      }.with_indifferent_access.freeze
+
       protected #################
 
       def exec(user:)
@@ -32,13 +38,15 @@ module Newflow
 
       def update_salesforce_lead!(lead, user)
         lead.update(
-          # sheerid_verification_status: 'verified' # TODO: future feature that must be enabled by SF
           first_name: user.first_name,
           last_name: user.last_name,
-          school: user.sheerid_reported_school || user.self_reported_school || 'unknown',
-          # role: user.role,
-          # num_students: user.num_students
-          # adoption_status: user.adoption_status,
+          school: user.sheerid_reported_school || user.self_reported_school,
+          role: User.roles[user.role] == User.roles[User::OTHER_ROLE] ? user.other_role_name : user.role,
+          num_students: user.how_many_students,
+          adoption_status: ADOPTION_STATUS_FROM_USER.fetch(user.using_openstax_how),
+          who_chooses_books: user.who_chooses_books,
+          subject: user.which_books,
+          finalize_signup: user.confirmed_faculty?
         )
       end
 

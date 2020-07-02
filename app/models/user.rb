@@ -6,7 +6,30 @@ class User < ActiveRecord::Base
     NEEDS_PROFILE = 'needs_profile', # has yet to fill out their user info
     ACTIVATED = 'activated', # means their user info is in place and the email is verified
     UNVERIFIED = 'unverified', # means their user info is in place but the email is not yet verified
-  ]
+  ].freeze
+
+  VALID_ROLES = [
+    UNKNOWN_ROLE = :unknown_role,
+    STUDENT_ROLE = :student,
+    INSTRUCTOR_ROLE = :instructor,
+    ADMINISTRATOR_ROLE = :administrator,
+    LIBRARIAN_ROLE = :librarian,
+    DESIGNER_ROLE = :designer,
+    OTHER_ROLE = :other,
+    ADJUNCT_ROLE = :adjunct,
+    HOMESCHOOL_ROLE = :homeschool
+  ].freeze
+
+  FACULTY_STATUSES = [
+    NO_FACULTY_INFO = 'no_faculty_info',
+    PENDING_FACULTY = 'pending_faculty',
+    CONFIRMED_FACULTY = 'confirmed_faculty',
+    REJECTED_FACULTY = 'rejected_faculty'
+  ].freeze
+
+  VALID_USING_OPENSTAX_HOW = [:fully, :recommended, :interested]
+  VALID_SCHOOL_LOCATIONS = [:unknown_school_location, :domestic_school, :foreign_school]
+
   USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
   USERNAME_MIN_LENGTH = 3
   USERNAME_MAX_LENGTH = 50
@@ -14,28 +37,10 @@ class User < ActiveRecord::Base
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
   DEFAULT_SCHOOL_LOCATION = :unknown_school_location
 
-  enum(
-    faculty_status: [
-      :no_faculty_info,
-      :pending_faculty,
-      :confirmed_faculty,
-      :rejected_faculty
-    ]
-  )
-
-  enum(
-    role: [
-      :unknown_role,
-      :student,
-      :instructor,
-      :administrator,
-      :librarian,
-      :designer,
-      :other,
-      :adjunct,
-      :homeschool
-    ]
-  )
+  enum(faculty_status: FACULTY_STATUSES)
+  enum(role: VALID_ROLES)
+  enum(using_openstax_how: VALID_USING_OPENSTAX_HOW)
+  enum(school_location: VALID_SCHOOL_LOCATIONS)
 
   enum(
     school_type: [
@@ -47,8 +52,6 @@ class User < ActiveRecord::Base
       :home_school
     ]
   )
-
-  enum school_location: [ :unknown_school_location, :domestic_school, :foreign_school ]
 
   scope(
     :by_unverified, -> {
@@ -216,6 +219,10 @@ class User < ActiveRecord::Base
 
   def is_needs_profile?
     state == NEEDS_PROFILE
+  end
+
+  def confirmed_faculty?
+    faculty_status == CONFIRMED_FACULTY
   end
 
   def name

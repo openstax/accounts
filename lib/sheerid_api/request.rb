@@ -19,11 +19,14 @@ module SheeridAPI
         response = Faraday.send(@http_method, @url, @request_body, HEADERS)
         return Response.new(parse_body(response.body))
       rescue Net::ReadTimeout => ee
-        Raven.capture_message("SheeridAPI: timeout")
+        message = 'SheeridAPI: timeout'
+        Raven.capture_message(message)
+        Rails.logger.warn(message)
         return NullResponse.instance
       rescue => ee
         # We don't want explosions here to trickle out and impact callers
         Raven.capture_exception(ee)
+        Rails.logger.warn(ee)
         return NullResponse.instance
       end
     end
