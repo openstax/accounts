@@ -61,11 +61,13 @@ module Newflow
 
       describe 'failure' do
         describe 'when cannot_find_user' do
+          let(:noones_email){ 'noone@openstax.org' }
+
           it 'creates a security log' do
             expect {
-              post('login', params: { login_form: { email: 'noone@openstax.org', password: 'password' } })
+              post('login', params: { login_form: { email: noones_email, password: 'password' } })
             }.to change {
-              SecurityLog.sign_in_failed.where(event_data: { reason: :cannot_find_user, user: nil}).count
+              SecurityLog.sign_in_failed.where(event_data: { reason: :cannot_find_user, email: noones_email}).count
             }
           end
         end
@@ -109,7 +111,7 @@ module Newflow
                 event_type: :sign_in_failed,
                 event_data: {
                   reason: :too_many_login_attempts,
-                  user: user
+                  email: email.value
                 }
               ).count
             }
