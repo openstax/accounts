@@ -519,7 +519,16 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
 
     before {
       FactoryBot.create(:email_address, value: email_value, user: user)
-      stub_salesforce(leads: {email: email_value, status: ''})
+      stub_salesforce(
+        leads: {email: email_value, status: ''},
+        contacts: {
+          id: 'whatever',
+          email: email_value,
+          faculty_verified: "Confirmed",
+          adoption_status: "Current Adopter",
+          school_type: 'College/University (4)'
+        }
+      )
     }
 
       it 'does not override a user\'s confirmed_faculty status' do
