@@ -512,6 +512,21 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     described_class.call
   end
 
+  context 'with the new flow in play' do
+    let(:user) { FactoryBot.create(:user, faculty_status: :confirmed_faculty) }
+    let(:routine_call) { described_class.call }
+    let(:email_value) { 'someone@example.com' }
+
+    before {
+      FactoryBot.create(:email_address, value: email_value, user: user)
+      stub_salesforce(leads: {email: email_value, status: ''})
+    }
+
+      it 'does not override a user\'s confirmed_faculty status' do
+        expect{ routine_call }.not_to change(user, :faculty_status)
+      end
+  end
+
   def new_contact(**args)
     OpenStax::Salesforce::Remote::Contact.new({ school: nil }.merge(args))
   end
