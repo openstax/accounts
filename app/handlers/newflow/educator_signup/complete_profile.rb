@@ -12,7 +12,7 @@ module Newflow
       paramify :signup do
         attribute :educator_specific_role, type: String
         attribute :other_role_name, type: String
-        attribute :how_are_books_chosen, type: String
+        attribute :who_chooses_books, type: String
         attribute :using_openstax_how, type: String
         attribute :num_students_per_semester_taught, type: Integer
         attribute :subjects_of_interest, type: Object
@@ -40,7 +40,7 @@ module Newflow
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
           using_openstax_how: signup_params.using_openstax_how,
-          who_chooses_books: signup_params.how_are_books_chosen,
+          who_chooses_books: signup_params.who_chooses_books,
           how_many_students: signup_params.num_students_per_semester_taught,
           which_books: books_or_subjects
         )

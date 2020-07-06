@@ -44,9 +44,10 @@ module Newflow
           role: User.roles[user.role] == User.roles[User::OTHER_ROLE] ? user.other_role_name : user.role,
           num_students: user.how_many_students,
           adoption_status: ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
+          verification_status: user.faculty_status,
           who_chooses_books: user.who_chooses_books,
           subject: user.which_books,
-          finalize_signup: user.confirmed_faculty?
+          finalize_educator_signup: user.confirmed_faculty?
         )
       end
 

@@ -33,7 +33,7 @@ module Newflow
           accounts_uuid: user.uuid,
           school: DEFAULT_SCHOOL_NAME,
           salesforce_contact_id: nil,
-          # Salesforce needs both of these fields to subscribe users to our newsletter
+          verification_status: user.faculty_status,
           newsletter: user.receive_newsletter?,
           newsletter_opt_in: user.receive_newsletter?
         )

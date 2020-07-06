@@ -75,15 +75,15 @@
 
             <div class="form-group question how-chosen">
               <div class="radio-control-group">
-                <%= label_tag :how_are_books_chosen, I18n.t(:"educator_profile_form.how_textbooks_chosen"), class: 'field-label' %>
+                <%= label_tag :who_chooses_books, I18n.t(:"educator_profile_form.how_textbooks_chosen"), class: 'field-label' %>
                 <div class="chosen newflow-mustdo-alert">
                   <%= I18n.t(:"educator_profile_form.select_option") %>
                 </div>
                 <label>
                   <%=
                     f.radio_button(
-                      :how_are_books_chosen,
-                      :by_instructor,
+                      :who_chooses_books,
+                      :instructor,
                       checked: false,
                       class: 'completed-role custom-control-input'
                     )
@@ -93,8 +93,8 @@
                 <label>
                   <%=
                     f.radio_button(
-                      :how_are_books_chosen,
-                      :by_recommendation,
+                      :who_chooses_books,
+                      :committee,
                       checked: false,
                       class: 'completed-role custom-control-input'
                     )
@@ -104,8 +104,8 @@
                 <label>
                   <%=
                     f.radio_button(
-                      :how_are_books_chosen,
-                      :by_coordinator,
+                      :who_chooses_books,
+                      :coordinator,
                       checked: false,
                       class: 'completed-role custom-control-input'
                     )

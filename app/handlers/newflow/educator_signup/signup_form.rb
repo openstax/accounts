@@ -1,7 +1,15 @@
 module Newflow
   module EducatorSignup
     class SignupForm
+
+      USER_DEFAULT_STATE = :unverified
+      USER_FACULTY_STATUS = :pending_faculty
+      USER_ROLE = :instructor
+      USER_IS_NEWFLOW = true
+      private_constant(:USER_DEFAULT_STATE, :USER_FACULTY_STATUS, :USER_ROLE, :USER_IS_NEWFLOW)
+
       lev_handler
+
       uses_routine AgreeToTerms
       uses_routine CreateEmailForUser
       uses_routine SetPassword, translations: {
@@ -87,16 +95,16 @@ module Newflow
 
       def create_user
         user = User.create(
-          state: 'unverified',
-          role: :instructor,
+          is_newflow: USER_IS_NEWFLOW,
+          state: USER_DEFAULT_STATE,
+          role: USER_ROLE,
+          faculty_status: USER_FACULTY_STATUS,
           first_name: signup_params.first_name,
           last_name: signup_params.last_name,
           phone_number: signup_params.phone_number,
           country_code: signup_params.country_code,
           receive_newsletter: signup_params.newsletter,
           source_application: options[:client_app],
-          faculty_status: :pending_faculty,
-          is_newflow: true
         )
         transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
         user

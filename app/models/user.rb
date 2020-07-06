@@ -20,38 +20,36 @@ class User < ActiveRecord::Base
     HOMESCHOOL_ROLE = :homeschool
   ].freeze
 
-  FACULTY_STATUSES = [
+  VALID_FACULTY_STATUSES = [
     NO_FACULTY_INFO = 'no_faculty_info',
     PENDING_FACULTY = 'pending_faculty',
     CONFIRMED_FACULTY = 'confirmed_faculty',
     REJECTED_FACULTY = 'rejected_faculty'
   ].freeze
 
-  VALID_USING_OPENSTAX_HOW = [:fully, :recommended, :interested]
-  VALID_SCHOOL_LOCATIONS = [:unknown_school_location, :domestic_school, :foreign_school]
+  VALID_USING_OPENSTAX_HOW = [:fully, :recommended, :interested].freeze
+  VALID_SCHOOL_LOCATIONS = [:unknown_school_location, :domestic_school, :foreign_school].freeze
+  VALID_SCHOOL_TYPES = [
+    :unknown_school_type,
+    :other_school_type,
+    :college,
+    :high_school,
+    :k12_school,
+    :home_school
+  ].freeze
 
   USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
   USERNAME_MIN_LENGTH = 3
   USERNAME_MAX_LENGTH = 50
-  DEFAULT_FACULTY_STATUS = :no_faculty_info
+  DEFAULT_FACULTY_STATUS = VALID_FACULTY_STATUSES[0]
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
-  DEFAULT_SCHOOL_LOCATION = :unknown_school_location
+  DEFAULT_SCHOOL_LOCATION = VALID_SCHOOL_LOCATIONS[0]
 
-  enum(faculty_status: FACULTY_STATUSES)
+  enum(faculty_status: VALID_FACULTY_STATUSES)
   enum(role: VALID_ROLES)
   enum(using_openstax_how: VALID_USING_OPENSTAX_HOW)
   enum(school_location: VALID_SCHOOL_LOCATIONS)
-
-  enum(
-    school_type: [
-      :unknown_school_type,
-      :other_school_type,
-      :college,
-      :high_school,
-      :k12_school,
-      :home_school
-    ]
-  )
+  enum(school_type: VALID_SCHOOL_TYPES)
 
   scope(
     :by_unverified, -> {

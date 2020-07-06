@@ -232,7 +232,7 @@ class UpdateUserSalesforceInfo
     if contact.nil?
       warn(
         "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but that" \
-        " contact is no longer present; resetting user's faculty status, contact ID and school type"
+        " contact is no longer present; resetting user's contact ID, faculty status, school type, and school location"
       )
       user.salesforce_contact_id = nil
       user.faculty_status = User::DEFAULT_FACULTY_STATUS
