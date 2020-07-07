@@ -116,7 +116,6 @@ module Newflow
     end
 
     def educator_profile_form
-      store_url
       @book_subjects = book_data.subjects
       @book_titles = book_data.titles
       security_log(:user_viewed_signup_form, form_name: 'educator_profile_form')
