@@ -1,6 +1,7 @@
 en:
   educator_profile_form:
     complete_page_header: Complete your profile
+    school_name: School name
     describe_role: Which of the following best describes your role?
     instructor: Instructor
     administrator: Administrator

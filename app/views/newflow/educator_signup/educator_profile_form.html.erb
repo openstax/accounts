@@ -25,6 +25,24 @@
 
         <div class="content">
           <div class="questions">
+          <div class="form-group question school-name<%= (params[:school].present?) ? ' school-name-visible' : '' %>">
+              <div class="school-name">
+                <%= label_tag :school_name, I18n.t(:"educator_profile_form.school_name"),
+                              class: 'field-label'
+                %>
+                <div class="school-name newflow-mustdo-alert">
+                  <%= I18n.t(:"educator_profile_form.fill_out") %>
+                </div>
+                <%=
+                  fh.text_field(
+                    name: :school_name,
+                    placeholder: I18n.t(:"educator_profile_form.school_name"),
+                    autofocus: true
+                  )
+                %>
+              </div>
+            </div>
+
             <div class="form-group question completed-role">
               <div class="radio-control-group">
                 <%=
@@ -240,6 +258,7 @@
 </div>
 
 <script type="text/javascript">
+
   //this needs to be done at bottom of the file so that the dom above is already constructed
   new NewflowUi.EducatorComplete();
 </script>
