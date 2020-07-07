@@ -1,6 +1,7 @@
 en:
   educator_profile_form:
     complete_page_header: Complete your profile
+    school_name: School name
     describe_role: Which of the following best describes your role?
     instructor: Instructor
     administrator: Administrator
@@ -11,6 +12,7 @@ en:
     num_students_taught: Total number of students you teach per semester
     subjects_of_interest: Subjects of interest
     books_used: Books you've used in your courses
+    books_of_interest: Books of interest
     using_primary_textbook: Using an OpenStax book as our primary textbook
     using_recommending_openstax: Recommending the book -- my students buy a different one
     using_future: Interested in using OpenStax in the future
@@ -132,6 +134,7 @@ en:
     email_is_blank: Email can't be blank
     phone_number_is_blank: Phone number can't be blank
     role_is_blank: Role can't be blank
+    terms_accepted_is_blank: You must agree to the terms to create your account
     password_is_blank: Password can't be blank
     password_requirements: Password requirements
     min_characters: "%{number} characters minimum"

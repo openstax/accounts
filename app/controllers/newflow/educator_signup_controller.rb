@@ -1,18 +1,22 @@
 module Newflow
   class EducatorSignupController < SignupController
+    skip_forgery_protection(only: :sheerid_webhook)
+
     skip_before_action :restart_signup_if_missing_unverified_user, only: [
       :educator_signup_form, :educator_signup, :educator_sheerid_form,
       :educator_change_signup_email_form, :educator_change_signup_email,
-      :educator_profile_form
+      :educator_profile_form, :educator_complete_profile, :sheerid_webhook
     ]
 
     before_action :newflow_authenticate_user!, only: [
       :educator_sheerid_form, :educator_profile_form, :educator_complete_profile
     ]
+    before_action :prevent_caching, only: :sheerid_webhook
+    before_action :prevent_double_submission_to_sheerid, only: :educator_sheerid_form
 
     def educator_signup
       handle_with(
-        EducatorSignup,
+        EducatorSignup::SignupForm,
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
         user_from_signed_params: session[:user_from_signed_params],
@@ -62,7 +66,7 @@ module Newflow
 
     def educator_verify_email_by_pin
       handle_with(
-        VerifyEmailByPin,
+        EducatorSignup::VerifyEmailByPin,
         email_address: unverified_user.email_addresses.first,
         success: lambda {
           clear_newflow_state
@@ -85,32 +89,60 @@ module Newflow
 
     def educator_sheerid_form
       @sheerid_url = generate_sheer_id_url(user: current_user)
-      security_log(:user_viewed_sheer_id_form)
-      # Practically, this allows the sheerID success flow to be environment-agnostic
-      session[:after_faculty_verified] = educator_profile_form_url
+      security_log(:user_viewed_signup_form, form_name: 'educator_sheerid_form')
+    end
+
+    # SheerID makes a POST request to this endpoint when it verifies an educator
+    # http://developer.sheerid.com/program-settings#webhooks
+    def sheerid_webhook
+      handle_with(
+        EducatorSignup::SheeridWebhook,
+        success: lambda {
+          render(status: :ok, plain: 'Success')
+        },
+        failure: lambda {
+
+          Raven.capture_message(
+            'SheerID webhook is failing!',
+            extra: {
+              request_ip: request.remote_ip,
+              verificationid: params['verificationId'],
+              reason: @handler_result.errors.first.code
+            }
+          )
+          render(status: :unprocessable_entity)
+        }
+      )
     end
 
     def educator_profile_form
+      store_url
       @book_subjects = book_data.subjects
       @book_titles = book_data.titles
+      security_log(:user_viewed_signup_form, form_name: 'educator_profile_form')
     end
 
     def educator_complete_profile
       handle_with(
-        EducatorCompleteProfile,
+        EducatorSignup::CompleteProfile,
         success: lambda {
-          security_log(:completed_educator_profile)
+          security_log(:user_updated, message: 'Completed Educator Profile')
           redirect_to(signup_done_path)
         },
         failure: lambda {
           @book_subjects = book_data.subjects
           @book_titles = book_data.titles
+          security_log(:educator_sign_up_failed, reason: "Error in educator_complete_profile: #{@handler_result&.errors&.full_messages}")
           render :educator_profile_form
         }
       )
     end
 
-    protected ###############
+    private #################
+
+    def prevent_double_submission_to_sheerid
+      redirect_to(:educator_profile_form) if current_user.confirmed_faculty?
+    end
 
     def book_data
       @book_data ||= FetchBookData.new

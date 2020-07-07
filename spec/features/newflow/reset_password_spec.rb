@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-require_relative './add_reset_password_shared_examples'
+require_relative './adding_and_resetting_password_from_profile'
 
 feature 'Password reset', js: true do
   before do
     turn_on_student_feature_flag
   end
 
-  it_behaves_like "add_reset_password_shared_examples", :reset
+  it_behaves_like 'adding and resetting password from profile', :reset
 
   scenario 'while still logged in – user is not stuck in a loop' do
     # shouldn't ask to reauthenticate when they forgot their password and are trying to reset it

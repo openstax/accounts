@@ -2,7 +2,7 @@ class PushSalesforceLead
 
   lev_routine express_output: :lead
 
-  protected
+  protected #################
 
   def exec(user:, email: nil, role:, phone_number:, school:, num_students:,
            using_openstax:, url:, newsletter:, subject:, source_application:)
@@ -62,6 +62,8 @@ class PushSalesforceLead
 
     # TODO write spec that SF User Missing makes BG job retry and sends email
   end
+
+  private ###################
 
   def log_success(lead, user)
     Rails.logger.info("PushSalesforceLead: pushed #{lead.id} for user #{user.id}")

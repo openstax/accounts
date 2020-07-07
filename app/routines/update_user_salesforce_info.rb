@@ -115,14 +115,14 @@ class UpdateUserSalesforceInfo
           # are set to `pending_faculty`.  If the statuses only consist of
           # 'Converted' statuses, we know the user has been rejected as faculty.
 
-          user.faculty_status =
-            if statuses.empty?
-              :no_faculty_info
-            elsif statuses == ["Converted"]
-              :rejected_faculty
-            else
-              :pending_faculty
-            end
+          unless user.is_newflow? # because the new Accounts flow works differently; don't mess with it.
+            user.faculty_status =
+              if statuses == ["Converted"]
+                :rejected_faculty
+              else
+                :pending_faculty
+              end
+          end
 
           user.save! if user.changed?
         rescue StandardError => ee
@@ -232,7 +232,7 @@ class UpdateUserSalesforceInfo
     if contact.nil?
       warn(
         "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but that" \
-        " contact is no longer present; resetting user's faculty status, contact ID and school type"
+        " contact is no longer present; resetting user's contact ID, faculty status, school type, and school location"
       )
       user.salesforce_contact_id = nil
       user.faculty_status = User::DEFAULT_FACULTY_STATUS

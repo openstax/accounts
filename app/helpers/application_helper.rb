@@ -34,6 +34,12 @@ module ApplicationHelper
     Addressable::URI.parse(url).query_values.to_h.with_indifferent_access
   end
 
+  def prevent_caching
+    response.headers["Cache-Control"] = "no-cache, no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+  end
+
   def unless_errors(options={}, &block)
     errors = @handler_result.errors.each do |error|
       add_local_error_alert now: true, content: error.translate

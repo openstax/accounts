@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'Educator signed params flow', js: true do
   before do
     turn_on_educator_feature_flag
+    allow_any_instance_of(Newflow::EducatorSignup::CreateSalesforceLead).to receive(:exec).and_return(true)
   end
 
   background do

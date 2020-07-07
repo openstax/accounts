@@ -6,7 +6,7 @@ module Newflow
 
     def student_signup
       handle_with(
-        StudentSignup,
+        StudentSignup::SignupForm,
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
         user_from_signed_params: session[:user_from_signed_params],
@@ -53,7 +53,7 @@ module Newflow
 
     def student_verify_email_by_pin
       handle_with(
-        VerifyEmailByPin,
+        StudentSignup::VerifyEmailByPin,
         email_address: unverified_user.email_addresses.first,
         success: lambda {
           clear_newflow_state

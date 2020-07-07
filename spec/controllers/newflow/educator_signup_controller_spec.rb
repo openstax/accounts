@@ -14,8 +14,8 @@ module Newflow
         load('db/seeds.rb') # create the FinePrint contracts
       end
 
-      it 'calls Handlers::EducatorSignup' do
-        expect_any_instance_of(EducatorSignup).to receive(:call).once.and_call_original
+      it 'calls Handlers::EducatorSignup::SignupForm' do
+        expect_any_instance_of(EducatorSignup::SignupForm).to receive(:call).once.and_call_original
         post(:educator_signup)
       end
 
@@ -165,6 +165,34 @@ module Newflow
 
     describe 'GET #educator_sheerid_form' do
       it 'requires a logged in user'
+    end
+
+    describe 'POST #sheerid_webhook' do
+      let(:handler) { EducatorSignup::SheeridWebhook }
+
+      let(:params) do
+        { 'verificationId': Faker::Alphanumeric.alphanumeric(number: 24) }
+      end
+
+      it 'is processed by the lev handler' do
+        expect(handler).to receive(:handle)
+
+        post(:sheerid_webhook, params: params)
+      end
+
+      describe 'must be externally available' do
+        before(:each) do
+          allow(handler).to receive(:handle).and_return(true)
+        end
+
+        it 'is not forgery protected' do
+          with_forgery_protection do
+            expect_any_instance_of(ActionController::Base).not_to receive(:verify_authenticity_token)
+
+            post(:sheerid_webhook, params: params)
+          end
+        end
+      end
     end
 
     describe 'GET #educator_profile_form' do

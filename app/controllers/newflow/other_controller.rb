@@ -1,25 +1,10 @@
 module Newflow
   class OtherController < BaseController
-    skip_forgery_protection(only: :sheerid_webhook)
-
     before_action :newflow_authenticate_user!, only: :profile_newflow
+    before_action :prevent_caching, only: :profile_newflow
 
     def profile_newflow
       render layout: 'application'
-    end
-
-    # SheerID makes a POST request to this endpoint when it verifies an educator
-    # http://developer.sheerid.com/program-settings#webhooks
-    def sheerid_webhook
-      handle_with(
-        SheeridWebhook,
-        success: lambda {
-          render(status: :ok)
-        },
-        failure: lambda {
-          render(status: :unprocessable_entity)
-        }
-      )
     end
 
     def exit_accounts
@@ -34,14 +19,6 @@ module Newflow
       else
         redirect_back # defined in the `action_interceptor` gem
       end
-    end
-
-    private #################
-
-    def set_active_banners
-      return unless request.get?
-
-      @banners ||= Banner.active
     end
   end
 end

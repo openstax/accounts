@@ -70,8 +70,9 @@ class SecurityLog < ActiveRecord::Base
     # New ones created for the new educator flow...
     :educator_verified_email,
     :educator_verify_email_failed,
-    :user_viewed_sheer_id_form,
+    :user_viewed_signup_form,
     :user_updated_using_sheerid_data,
+    :educator_verified_using_sheerid
   ]
 
   json_serialize :event_data, Hash

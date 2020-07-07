@@ -13,9 +13,6 @@ Rails.application.routes.draw do
 
     # Exit accounts back to app they came from
     get 'i/exit_accounts', action: :exit_accounts, as: :exit_accounts
-
-    # Webhook URL for SheerID to post updates to
-    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
   end
 
   scope controller: 'newflow/login' do
@@ -59,6 +56,9 @@ Rails.application.routes.draw do
       as: :educator_email_verification_form_updated_email
 
     get 'i/signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
+
+    # Webhook URL for SheerID to post updates to
+    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     get 'i/signup/educator/email_verification_form', action: :educator_email_verification_form, as: :educator_email_verification_form
     post 'i/signup/educator/verify_email_by_pin', action: :educator_verify_email_by_pin, as: :educator_verify_pin

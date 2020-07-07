@@ -22,8 +22,8 @@ module Newflow
 
           if user.student?
             redirect_to signup_done_path
-          elsif user.instructor?
-            redirect_to educator_profile_form_path
+          else
+            redirect_to(educator_sheerid_form_path)
           end
         },
         failure: lambda {
@@ -33,10 +33,7 @@ module Newflow
     end
 
     def signup_done
-      if params[:verificationid]
-        redirect_to(session[:after_faculty_verified] || educator_profile_form_path) and return
-      end
-
+      security_log(:user_viewed_signup_form, form_name: 'signup_done')
       @first_name = current_user.first_name
       @email_address = current_user.email_addresses.first&.value
     end

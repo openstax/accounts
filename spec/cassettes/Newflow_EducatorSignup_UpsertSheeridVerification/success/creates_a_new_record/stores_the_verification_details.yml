@@ -1,0 +1,52 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://services.sheerid.com/rest/v2/verification/5ef42cfaeddfdd1bd961c088/details
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.17.3
+      Authorization:
+      - Bearer <sheerid_api_secret>
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 30 Jun 2020 17:34:09 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - AWSALB=y+oEQCOfgPfVx8ISyrBHQyWH4nwPgUG8oC0eZlCMSw+vgTPfyWtMDYHAlHK3s4x68cCYm4gOnsVGGc8fWQOzhQXf8qTusH1cGQBcdmYEYhXnIp5B8z4J0EESVVR+;
+        Expires=Tue, 07 Jul 2020 17:34:09 GMT; Path=/
+      - AWSALBCORS=y+oEQCOfgPfVx8ISyrBHQyWH4nwPgUG8oC0eZlCMSw+vgTPfyWtMDYHAlHK3s4x68cCYm4gOnsVGGc8fWQOzhQXf8qTusH1cGQBcdmYEYhXnIp5B8z4J0EESVVR+;
+        Expires=Tue, 07 Jul 2020 17:34:09 GMT; Path=/; SameSite=None; Secure
+      Server:
+      - Apache-Coyote/1.1
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, POST, DELETE, PUT
+      Access-Control-Allow-Headers:
+      - Content-Type, Cookie
+    body:
+      encoding: UTF-8
+      string: '{"programId":"5e150b86ce2a5a1d94874660","trackingId":null,"created":1593060602978,"updated":1593060611778,"lastResponse":{"verificationId":"5ef42cfaeddfdd1bd961c088","currentStep":"success","errorIds":[],"segment":"teacher","subSegment":null,"locale":"en-US","rewardCode":"EXAMPLE-CODE"},"personInfo":{"firstName":"Bryan47dev","lastName":"Dimas","email":"bed1+bryan47dev@rice.edu","birthDate":null,"deviceFingerprintHash":null,"phoneNumber":null,"country":null,"locale":"en-US","metadata":{"marketConsentValue":"false"},"organization":{"id":2681,"name":"Rice
+        University (Houston, TX)"},"postalCode":"77005","ipAddress":"73.155.240.73"},"docUploadRejectionCount":0,"docUploadRejectionReasons":[]}'
+    http_version: 
+  recorded_at: Tue, 30 Jun 2020 17:34:09 GMT
+recorded_with: VCR 3.0.3

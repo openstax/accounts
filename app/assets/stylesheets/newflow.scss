@@ -44,6 +44,14 @@ body {
     color: var(--input-error-message-color);
 }
 
+.question.school-name {
+    display: none;
+
+    &.school-name-visible {
+        display: block;
+    }
+}
+
 .iti {
     display: block !important;
 }

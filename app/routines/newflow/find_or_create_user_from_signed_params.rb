@@ -25,8 +25,8 @@ module Newflow
       user.full_name = sp['name']
 
       user.save
-      transfer_errors_from(user, {type: :verbatim}, true)
       outputs.user = user
+      transfer_errors_from(user, {type: :verbatim}, true)
     end
   end
 end
