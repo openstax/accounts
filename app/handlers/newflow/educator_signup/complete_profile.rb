@@ -15,7 +15,6 @@ module Newflow
         attribute :who_chooses_books, type: String
         attribute :using_openstax_how, type: String
         attribute :num_students_per_semester_taught, type: Integer
-        attribute :subjects_of_interest, type: Object
         attribute :books_used, type: Object
 
         validates(
@@ -42,7 +41,7 @@ module Newflow
           using_openstax_how: signup_params.using_openstax_how,
           who_chooses_books: signup_params.who_chooses_books,
           how_many_students: signup_params.num_students_per_semester_taught,
-          which_books: books_or_subjects
+          which_books: signup_params.books_used&.reject(&:empty?)&.join(';')
         )
         transfer_errors_from(caller, {type: :verbatim}, :fail_if_errors)
 
@@ -59,17 +58,6 @@ module Newflow
         signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil
       end
 
-      def books_or_subjects
-        subjects = signup_params.subjects_of_interest&.reject(&:empty?)
-        titles = signup_params.books_used&.reject(&:empty?)
-
-        if subjects&.any?
-          subjects.join(';')
-        elsif titles&.any?
-          titles.join(';')
-        end
-      end
-
       def check_params
         if signup_params.educator_specific_role.strip.downcase == OTHER &&
           signup_params.other_role_name.blank?
@@ -82,13 +70,6 @@ module Newflow
           signup_params.books_used.blank?
 
           param_error(:books_used, "books_used_must_be_entered")
-        end
-
-        if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-          signup_params.using_openstax_how == AS_FUTURE &&
-          signup_params.subjects_of_interest.blank?
-
-          param_error(:subjects_of_interest, "subjects_of_interest_must_be_entered")
         end
 
         if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&

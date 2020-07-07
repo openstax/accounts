@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
     REJECTED_FACULTY = 'rejected_faculty'
   ].freeze
 
-  VALID_USING_OPENSTAX_HOW = [:fully, :recommended, :interested].freeze
+  VALID_USING_OPENSTAX_HOW = [:as_primary, :as_recommending, :as_future].freeze
   VALID_SCHOOL_LOCATIONS = [:unknown_school_location, :domestic_school, :foreign_school].freeze
   VALID_SCHOOL_TYPES = [
     :unknown_school_type,
