@@ -8,7 +8,7 @@ module Newflow
           load('db/seeds.rb')
         end
 
-        let(:subject) do
+        let(:handler_call) do
           described_class.call(params: params)
         end
 
@@ -33,15 +33,15 @@ module Newflow
         end
 
         it 'creates an (unverified) user with role = student' do
-          expect { subject }.to change { User.where(state: 'unverified', role: 'student').count }
+          expect { handler_call }.to change { User.where(state: 'unverified', role: 'student').count }
         end
 
         it 'creates an identity' do
-          expect { subject }.to change { Identity.count }
+          expect { handler_call }.to change { Identity.count }
         end
 
         it 'creates an authentication with provider = identity' do
-          expect { subject }.to change { Authentication.where(provider: 'identity').count }
+          expect { handler_call }.to change { Authentication.where(provider: 'identity').count }
         end
 
         it 'agrees to terms of use and privacy policy when contracts_required' do
@@ -61,7 +61,7 @@ module Newflow
         end
 
         it 'creates an email address' do
-          expect { subject }.to change { EmailAddress.count }
+          expect { handler_call }.to change { EmailAddress.count }
         end
 
         it 'sends a confirmation email' do
@@ -70,17 +70,17 @@ module Newflow
               hash_including({ email_address: an_instance_of(EmailAddress) })
             )
           )
-          subject
+          handler_call
         end
 
         it 'stores selection in User whether to receive newsletter or not' do
           expect(User.new.receive_newsletter).to be_falsey
-          subject
+          handler_call
           expect(User.last.receive_newsletter).to be(true)
         end
 
         it 'outputs a user' do
-          expect(subject.outputs.user).to be_present
+          expect(handler_call.outputs.user).to be_present
         end
       end
 
@@ -124,16 +124,16 @@ module Newflow
           Newflow::FindOrCreateUserFromSignedParams.call(signed_params).outputs.user
         end
 
-        let(:subject) do
+        let(:handler_call) do
           described_class.call(params: params, user_from_signed_params: user_from_signed_params)
         end
 
         it 'outputs a user' do
-          expect(subject.outputs.user).to be_present
+          expect(handler_call.outputs.user).to be_present
         end
 
         it 'only creates one user' do
-          subject
+          handler_call
           expect(User.count).to eq(1)
         end
       end
