@@ -18,7 +18,7 @@ module Newflow
         lead_id = user.salesforce_lead_id
         lead = fetch_lead(lead_id)
 
-        if not lead.present?
+        if lead.blank?
           nonfatal_error(code: :lead_missing_in_salesforce)
           log_error(user, lead)
         elsif update_salesforce_lead!(lead, user)
