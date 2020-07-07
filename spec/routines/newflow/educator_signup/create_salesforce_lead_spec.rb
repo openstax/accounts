@@ -5,16 +5,6 @@ module Newflow
   module EducatorSignup
 
     describe CreateSalesforceLead, type: :routine, vcr: VCR_OPTS do
-      let!(:app) { FactoryBot.create :doorkeeper_application, lead_application_source: "Tutor Signup" }
-
-      let!(:user_email) { FactoryBot.create(:email_address, user: user, value: email_address, verified: true) }
-      let!(:user) do
-        FactoryBot.create(
-          :user, state: 'unverified', role: 'instructor', receive_newsletter: true, is_newflow: true, source_application: app
-        )
-      end
-      let(:email_address) { 'f@f.com' }
-
       before(:all) do
         VCR.use_cassette('Newflow/EducatorSignup/CreateSalesforceLead/sf_setup', VCR_OPTS) do
           @proxy = SalesforceProxy.new
@@ -22,19 +12,50 @@ module Newflow
         end
       end
 
-      it 'works on the happy path' do
-        lead = described_class.call(user: user).outputs.lead
+      before(:each) do
+        FactoryBot.create(:email_address, user: user, value: email_value, verified: true)
+      end
 
-        expect(user.salesforce_lead_id).not_to be_empty
-        expect(user.errors).to be_empty
+      let!(:routine_call) { described_class.call(user: user) }
+      let(:lead) { routine_call.outputs.lead }
+      let(:app) { FactoryBot.create :doorkeeper_application, lead_application_source: "Tutor Signup" }
+      let(:user) do
+        FactoryBot.create(
+          :user, state: User::UNVERIFIED, role: User::INSTRUCTOR_ROLE, faculty_status: User::PENDING_FACULTY,
+          receive_newsletter: false, is_newflow: true, source_application: app
+        )
+      end
+      let(:email_value) { 'f@f.com' }
+      let(:sf_lead_by_id) { OpenStax::Salesforce::Remote::Lead.find(lead.id) }
 
-        expect(lead.errors).to be_empty
-        expect(lead.id).not_to be_nil
-        expect(lead.source).to eq "OSC Faculty"
+      context 'on success' do
+        it 'creates a lead which can be found by ID' do
+          expect(sf_lead_by_id).not_to be_nil
+        end
 
-        lead_from_sf = OpenStax::Salesforce::Remote::Lead.find(lead.id)
-        expect(lead_from_sf).not_to be_nil
-        expect(lead_from_sf.application_source).to eq "Tutor Signup"
+        it 'stores the application source' do
+          expect(sf_lead_by_id.application_source).to eq "Tutor Signup"
+        end
+
+        it 'updates the salesforce lead id' do
+          expect(user.salesforce_lead_id).not_to be_blank
+        end
+
+        example 'user has no errors' do
+          expect(user.errors).to be_empty
+        end
+
+        example 'lead has no errors' do
+          expect(lead.errors).to be_empty
+        end
+
+        it 'sets the lead id' do
+          expect(lead.id).not_to be_nil
+        end
+
+        it 'sets the lead source' do
+          expect(lead.source).to eq "OSC Faculty"
+        end
       end
     end
 

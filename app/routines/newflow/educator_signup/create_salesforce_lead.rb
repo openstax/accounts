@@ -32,7 +32,6 @@ module Newflow
           os_accounts_id: user.id,
           accounts_uuid: user.uuid,
           school: DEFAULT_SCHOOL_NAME,
-          salesforce_contact_id: nil,
           verification_status: user.faculty_status,
           newsletter: user.receive_newsletter?,
           newsletter_opt_in: user.receive_newsletter?
@@ -87,7 +86,7 @@ module Newflow
         message = "#{self.class.name} error! #{lead.inspect}; User: #{user.id}; Error: #{lead.errors.full_messages}"
 
         Rails.logger.warn(message)
-        fatal_error(code: :lead_error) # TODO write spec to show this fails background job
+        fatal_error(code: :lead_error)
       end
 
     end
