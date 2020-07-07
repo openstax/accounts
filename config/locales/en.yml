@@ -1,6 +1,7 @@
 en:
   educator_profile_form:
     complete_page_header: Complete your profile
+    school_name: School name
     describe_role: Which of the following best describes your role?
     instructor: Instructor
     administrator: Administrator
@@ -11,6 +12,7 @@ en:
     num_students_taught: Total number of students you teach per semester
     subjects_of_interest: Subjects of interest
     books_used: Books you've used in your courses
+    books_of_interest: Books of interest
     using_primary_textbook: Using an OpenStax book as our primary textbook
     using_recommending_openstax: Recommending the book -- my students buy a different one
     using_future: Interested in using OpenStax in the future

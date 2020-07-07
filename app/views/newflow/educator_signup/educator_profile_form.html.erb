@@ -25,6 +25,24 @@
 
         <div class="content">
           <div class="questions">
+          <div class="form-group question school-name<%= (params[:school].present?) ? ' school-name-visible' : '' %>">
+              <div class="school-name">
+                <%= label_tag :school_name, I18n.t(:"educator_profile_form.school_name"),
+                              class: 'field-label'
+                %>
+                <div class="school-name newflow-mustdo-alert">
+                  <%= I18n.t(:"educator_profile_form.fill_out") %>
+                </div>
+                <%=
+                  fh.text_field(
+                    name: :school_name,
+                    placeholder: I18n.t(:"educator_profile_form.school_name"),
+                    autofocus: true
+                  )
+                %>
+              </div>
+            </div>
+
             <div class="form-group question completed-role">
               <div class="radio-control-group">
                 <%=
@@ -175,33 +193,16 @@
               %>
             </div>
 
-            <div class="form-group question subjects-of-interest">
-              <%=
-                label_tag(
-                  :subjects_of_interest,
-                  I18n.t(:"educator_profile_form.subjects_of_interest"),
-                  class: 'field-label'
-                )
-              %>
-              <div class="subjects newflow-mustdo-alert">
-                <%= I18n.t(:"educator_profile_form.select_option") %>
-              </div>
-              <%=
-                fh.select(
-                  name: :subjects_of_interest,
-                  options: @book_subjects,
-                  autofocus: true,
-                  multiple: true,
-                  custom_class: 'os-multiselect'
-                )
-              %>
-            </div>
-
             <div class="form-group question books-used">
               <%=
                 label_tag(
                   :books_used,
                   I18n.t(:"educator_profile_form.books_used"),
+                  class: 'field-label'
+                )
+                label_tag(
+                  :books_used,
+                  I18n.t(:"educator_profile_form.books_of_interest"),
                   class: 'field-label'
                 )
               %>
@@ -240,6 +241,7 @@
 </div>
 
 <script type="text/javascript">
+
   //this needs to be done at bottom of the file so that the dom above is already constructed
   new NewflowUi.EducatorComplete();
 </script>

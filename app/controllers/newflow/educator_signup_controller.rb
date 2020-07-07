@@ -12,6 +12,7 @@ module Newflow
       :educator_sheerid_form, :educator_profile_form, :educator_complete_profile
     ]
     before_action :prevent_caching, only: :sheerid_webhook
+    before_action :prevent_double_submission_to_sheerid, only: :educator_sheerid_form
 
     def educator_signup
       handle_with(
@@ -115,6 +116,7 @@ module Newflow
     end
 
     def educator_profile_form
+      store_url
       @book_subjects = book_data.subjects
       @book_titles = book_data.titles
       security_log(:user_viewed_signup_form, form_name: 'educator_profile_form')
@@ -137,6 +139,10 @@ module Newflow
     end
 
     private #################
+
+    def prevent_double_submission_to_sheerid
+      redirect_to(:educator_profile_form) if current_user.confirmed_faculty?
+    end
 
     def book_data
       @book_data ||= FetchBookData.new
