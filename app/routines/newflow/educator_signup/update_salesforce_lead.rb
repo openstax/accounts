@@ -4,9 +4,9 @@ module Newflow
       lev_routine
 
       ADOPTION_STATUS_FROM_USER = {
-        fully: 'Confirmed Adoption Won',
-        recommended: 'Confirmed Will Recommend',
-        interested: 'High Interest in Adopting'
+        as_primary: 'Confirmed Adoption Won',
+        as_recommending: 'Confirmed Will Recommend',
+        as_future: 'High Interest in Adopting'
       }.with_indifferent_access.freeze
 
       protected #################

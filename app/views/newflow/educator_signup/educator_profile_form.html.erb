@@ -193,28 +193,6 @@
               %>
             </div>
 
-            <div class="form-group question subjects-of-interest">
-              <%=
-                label_tag(
-                  :subjects_of_interest,
-                  I18n.t(:"educator_profile_form.subjects_of_interest"),
-                  class: 'field-label'
-                )
-              %>
-              <div class="subjects newflow-mustdo-alert">
-                <%= I18n.t(:"educator_profile_form.select_option") %>
-              </div>
-              <%=
-                fh.select(
-                  name: :subjects_of_interest,
-                  options: @book_subjects,
-                  autofocus: true,
-                  multiple: true,
-                  custom_class: 'os-multiselect'
-                )
-              %>
-            </div>
-
             <div class="form-group question books-used">
               <%=
                 label_tag(
