@@ -3,7 +3,7 @@ module Newflow
     class SignupForm
 
       USER_DEFAULT_STATE = :unverified
-      USER_FACULTY_STATUS = :pending_faculty
+      USER_FACULTY_STATUS = User::PENDING_FACULTY
       USER_ROLE = :instructor
       USER_IS_NEWFLOW = true
       private_constant(:USER_DEFAULT_STATE, :USER_FACULTY_STATUS, :USER_ROLE, :USER_IS_NEWFLOW)
@@ -75,24 +75,6 @@ module Newflow
 
       private ###################
 
-      def validate_presence_of_required_params
-        required_params.each do |param|
-          if signup_params.send(param).blank?
-            missing_param_error(param)
-          end
-        end
-      end
-
-      def missing_param_error(field)
-        code = "#{field}_is_blank".to_sym
-        message = I18n.t(:"login_signup_form.#{code}")
-        nonfatal_error(
-          code: code,
-          message: message,
-          offending_inputs: field
-        )
-      end
-
       def create_user
         user = User.create(
           is_newflow: USER_IS_NEWFLOW,
@@ -116,6 +98,25 @@ module Newflow
         run(AgreeToTerms, signup_params.contract_1_id, outputs.user, no_error_if_already_signed: true)
         run(AgreeToTerms, signup_params.contract_2_id, outputs.user, no_error_if_already_signed: true)
       end
+
+      def validate_presence_of_required_params
+        required_params.each do |param|
+          if signup_params.send(param).blank?
+            missing_param_error(param)
+          end
+        end
+      end
+
+      def missing_param_error(field)
+        code = "#{field}_is_blank".to_sym
+        message = I18n.t(:"login_signup_form.#{code}")
+        nonfatal_error(
+          code: code,
+          message: message,
+          offending_inputs: field
+        )
+      end
+
     end
   end
 end

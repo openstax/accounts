@@ -25,9 +25,7 @@ Rails.application.routes.draw do
   scope controller: 'newflow/signup' do
     get 'i/signup', action: :welcome, as: :newflow_signup
     get 'i/done', action: :signup_done, as: :signup_done
-
     get 'i/verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
-
     get 'i/check_your_email', action: :check_your_email, as: :check_your_email
   end
 
@@ -45,24 +43,24 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'newflow/educator_signup' do
+    # Step 1
     get 'i/signup/educator', action: :educator_signup_form, as: :educator_signup
     post 'i/signup/educator', action: :educator_signup, as: :educator_signup_post
-
     get 'i/signup/educator/change_signup_email_form', action: :educator_change_signup_email_form, as: :educator_change_signup_email_form
     post 'i/signup/educator/change_signup_email', action: :educator_change_signup_email, as: :educator_change_signup_email
 
+    # Step 2
+    get 'i/signup/educator/email_verification_form', action: :educator_email_verification_form, as: :educator_email_verification_form
     get 'i/signup/educator/email_verification_form_updated_email',
       action: :educator_email_verification_form_updated_email,
       as: :educator_email_verification_form_updated_email
-
-    get 'i/signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
-
-    # Webhook URL for SheerID to post updates to
-    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
-
-    get 'i/signup/educator/email_verification_form', action: :educator_email_verification_form, as: :educator_email_verification_form
     post 'i/signup/educator/verify_email_by_pin', action: :educator_verify_email_by_pin, as: :educator_verify_pin
 
+    # Step 3
+    get 'i/signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
+    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
+
+    # Step 4
     get 'i/signup/educator/profile_form', action: :educator_profile_form, as: :educator_profile_form
     post 'i/signup/educator/complete_profile', action: :educator_complete_profile, as: :educator_complete_profile
   end

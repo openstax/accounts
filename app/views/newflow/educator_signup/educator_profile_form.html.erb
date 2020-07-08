@@ -31,7 +31,7 @@
                               class: 'field-label'
                 %>
                 <div class="school-name newflow-mustdo-alert">
-                  <%= I18n.t(:"educator_profile_form.fill_out") %>
+                  <%= I18n.t(:"educator_profile_form.school_name_must_be_entered") %>
                 </div>
                 <%=
                   fh.text_field(
@@ -219,6 +219,8 @@
             </div>
 
           </div>
+
+          <%= f.hidden_field :is_school_not_supported_by_sheerid, value: params[:school].present? %>
 
           <%=
             f.submit(

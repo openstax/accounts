@@ -12,8 +12,8 @@ module Newflow
       def exec(user:)
         return if user.activated?
 
-        create_salesforce_lead_for(user)
         user.update!(state: User::ACTIVATED)
+        create_salesforce_lead_for(user)
         SecurityLog.create!(
           user: user,
           event_type: :user_updated,

@@ -10,6 +10,8 @@ module Newflow
       lev_handler
 
       paramify :signup do
+        attribute :is_school_not_supported_by_sheerid, type: String
+        attribute :school_name, type: String
         attribute :educator_specific_role, type: String
         attribute :other_role_name, type: String
         attribute :who_chooses_books, type: String
@@ -41,7 +43,8 @@ module Newflow
           using_openstax_how: signup_params.using_openstax_how,
           who_chooses_books: signup_params.who_chooses_books,
           how_many_students: signup_params.num_students_per_semester_taught,
-          which_books: signup_params.books_used&.reject(&:empty?)&.join(';')
+          which_books: signup_params.books_used&.reject(&:empty?)&.join(';'),
+          self_reported_school: signup_params.school_name
         )
         transfer_errors_from(caller, {type: :verbatim}, :fail_if_errors)
 
@@ -59,23 +62,29 @@ module Newflow
       end
 
       def check_params
+        if signup_params.is_school_not_supported_by_sheerid == 'true' &&
+          signup_params.school_name.blank?
+
+          param_error(:school_name, :school_name_must_be_entered)
+        end
+
         if signup_params.educator_specific_role.strip.downcase == OTHER &&
           signup_params.other_role_name.blank?
 
-          param_error(:other_role_name, "other_must_be_entered")
+          param_error(:other_role_name, :other_must_be_entered)
         end
 
         if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
           signup_params.using_openstax_how == AS_PRIMARY &&
           signup_params.books_used.blank?
 
-          param_error(:books_used, "books_used_must_be_entered")
+          param_error(:books_used, :books_used_must_be_entered)
         end
 
         if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
           signup_params.num_students_per_semester_taught.blank?
 
-          param_error(:num_students_per_semester_taught, "num_students_must_be_entered")
+          param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
         end
       end
 

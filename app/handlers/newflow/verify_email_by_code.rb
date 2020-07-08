@@ -7,6 +7,7 @@ module Newflow
                  translations: { outputs: { type: :verbatim },
                                  inputs: { type: :verbatim } }
     uses_routine StudentSignup::ActivateStudent
+    uses_routine EducatorSignup::ActivateAccount
 
     def authorized?
       true
