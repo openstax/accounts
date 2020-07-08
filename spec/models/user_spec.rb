@@ -71,8 +71,8 @@ RSpec.describe User, type: :model do
     user = FactoryBot.create :user, first_name: "Brièle"
     expect(user.first_name).to eq "Briele"
 
-    user = FactoryBot.create :user, first_name: "J()hn"
-    expect(user.first_name).to eq "Jhn"
+    user = FactoryBot.create :user, first_name: "J(o)hn"
+    expect(user.first_name).to eq "John"
 
     user = FactoryBot.create :user, last_name: "Maève"
     expect(user.last_name).to eq "Maeve"
