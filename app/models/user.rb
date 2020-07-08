@@ -378,8 +378,8 @@ class User < ActiveRecord::Base
 
   def remove_special_chars
     if self.first_name && self.last_name
-      self.first_name.gsub!(/[^0-9A-Za-z]/, '')
-      self.last_name.gsub!(/[^0-9A-Za-z]/, '')
+      self.first_name.gsub!(/[^0-9A-Za-z. ]/, '')
+      self.last_name.gsub!(/[^0-9A-Za-z. ]/, '')
     end
   end
 
