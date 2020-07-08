@@ -38,24 +38,21 @@ $(document).ready(function(){
 
   // Validate name for unallowed chars
   var errorDiv = '<div class="errors invalid-message">Name cannot contain special characters</div>';
-  $("#signup_first_name").blur(function (e) {
-      if(/^[a-zA-Z0-9- ]*$/.test(this.value) == false) {
-          $(this).addClass('has-error');
-          $(this).closest('.control-group').append(errorDiv);
+  function check_for_specialness(obj) {
+      if(/^[a-zA-Z0-9- ]*$/.test(obj.value) == false) {
+          $(obj).addClass('has-error');
+          $(obj).closest('.control-group').append(errorDiv);
       }else{
-          $(this).removeClass('has-error');
-          $(this).closest('.control-group').remove(errorDiv);
+          $(obj).removeClass('has-error');
+          $(obj).closest('.control-group').remove(errorDiv);
       }
+  }
+  $("#signup_first_name").blur(function (e) {
+      check_for_specialness(this);
   });
 
     $("#signup_last_name").blur(function (e) {
-        if(/^[a-zA-Z0-9- ]*$/.test(this.value) == false) {
-            $(this).addClass('has-error');
-            $(this).closest('.control-group').append(errorDiv);
-        }else{
-            $(this).removeClass('has-error');
-            $(this).closest('.control-group').remove(errorDiv);
-        }
+        check_for_specialness(this);
     });
 
 
