@@ -1,3 +1,5 @@
+require "i18n"
+
 class User < ActiveRecord::Base
   VALID_STATES = [
     TEMP = 'temp', # deprecated but still could exist for old accounts
@@ -63,6 +65,9 @@ class User < ActiveRecord::Base
   )
 
   before_validation(:strip_fields)
+  before_validation(:convert_accents)
+  before_validation(:remove_special_chars)
+
   before_validation(
     :generate_uuid, :generate_support_identifier,
     on: :create
@@ -362,6 +367,20 @@ class User < ActiveRecord::Base
     self.username = nil if self.username.blank?
     self.self_reported_school.try(:strip!)
     true
+  end
+
+  def convert_accents
+    if self.first_name && self.last_name
+      self.first_name=I18n.transliterate(self.first_name)
+      self.last_name=I18n.transliterate(self.last_name)
+    end
+  end
+
+  def remove_special_chars
+    if self.first_name && self.last_name
+      self.first_name.gsub!(/[^0-9A-Za-z]/, '')
+      self.last_name.gsub!(/[^0-9A-Za-z]/, '')
+    end
   end
 
   # there are existing users without names

@@ -55,7 +55,7 @@ RSpec.describe User, type: :model do
     expect(user.first_name).to eq "Bob"
 
     user = FactoryBot.create :user, last_name: " Jo nes "
-    expect(user.last_name).to eq "Jo nes"
+    expect(user.last_name).to eq "Jones"
 
     user = FactoryBot.create :user, suffix: " Jr. ", first_name: "Bobs"
     expect(user.suffix).to eq "Jr."
@@ -65,6 +65,20 @@ RSpec.describe User, type: :model do
 
     user = FactoryBot.create :user, self_reported_school: " Rice University\t "
     expect(user.self_reported_school).to eq "Rice University"
+  end
+
+  it 'removes accents and special chars from first and last name' do
+    user = FactoryBot.create :user, first_name: "Brièle"
+    expect(user.first_name).to eq "Briele"
+
+    user = FactoryBot.create :user, first_name: "J()hn"
+    expect(user.first_name).to eq "Jhn"
+
+    user = FactoryBot.create :user, last_name: "Maève"
+    expect(user.last_name).to eq "Maeve"
+
+    user = FactoryBot.create :user, last_name: "Smit&h"
+    expect(user.last_name).to eq "Smith"
   end
 
   context 'full_name' do
