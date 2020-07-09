@@ -53,7 +53,7 @@ class PushSalesforceLead
       handle_errors(lead, user, role)
     else
       log_success(lead, user)
-      user.faculty_status = :pending_faculty if !user.confirmed_faculty?
+      user.faculty_status = :pending_faculty if !user.student? && !user.confirmed_faculty?
       user.save if user.changed?
       transfer_errors_from(user, {type: :verbatim}, true)
     end

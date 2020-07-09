@@ -219,8 +219,16 @@ class User < ActiveRecord::Base
     state == NEEDS_PROFILE
   end
 
+  def pending_faculty?
+    faculty_status == PENDING_FACULTY
+  end
+
   def confirmed_faculty?
     faculty_status == CONFIRMED_FACULTY
+  end
+
+  def rejected_faculty?
+    faculty_status == REJECTED_FACULTY
   end
 
   def name

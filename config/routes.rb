@@ -63,6 +63,7 @@ Rails.application.routes.draw do
     # Step 4
     get 'i/signup/educator/profile_form', action: :educator_profile_form, as: :educator_profile_form
     post 'i/signup/educator/complete_profile', action: :educator_complete_profile, as: :educator_complete_profile
+    get 'i/signup/educator/pending_cs_verification', action: :educator_pending_cs_verification, as: :educator_pending_cs_verification
   end
 
   scope controller: 'newflow/password_management' do

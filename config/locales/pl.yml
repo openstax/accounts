@@ -78,6 +78,13 @@ pl:
     youre_done_description: >-
       Potwierdzamy założenie konta na <b>%{email_address}</b>.
       Wypróbuj możliwości naszego serwisu!
+    educator_pending_cs_verification: Przetwarzamy Twoją prośbę
+    educator_pending_cs_verification_description: >-
+      Twój dostęp do instruktora jest w toku.
+       Sprawdzimy Twój status instruktora w ciągu 3-4 dni roboczych.
+       Aktualizacje Twojego statusu weryfikacji zostaną wysłane na adres <b>% {email_addess} </b>.
+       W międzyczasie możesz uzyskać dostęp do wszystkich książek i zasobów
+       z wyjątkiem tych, które wymagają weryfikacji instruktora.
     join_as_student_description: >-
       Zarejestruj się jako <b>Student</b> i uzyskaj dostęp do aplikacji Tutor,
       materiałów edukacyjnych, funkcji komentarzy i wielu innych.

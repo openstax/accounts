@@ -13,6 +13,10 @@ class SheeridVerification < ActiveRecord::Base
     self.current_step == VERIFIED
   end
 
+  def rejected?
+    self.current_step == REJECTED
+  end
+
   # Translate SheerID nomenclature to `User#faculty_status` nomenclature
   def current_step_to_faculty_status
     case self.current_step

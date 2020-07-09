@@ -5,6 +5,7 @@ module Newflow
     class ProcessSheeridWebhookRequest
       lev_routine
       uses_routine UpsertSheeridVerification
+      uses_routine SheeridRejectedEducator
 
       protected ###############
 
@@ -17,6 +18,8 @@ module Newflow
           VerifyEducator.perform_later(verification_id: verification&.verification_id, user: user)
         elsif verification.errors.present?
           Rails.logger.warn("#{self.class.name} ERROR! verification.errors.full_messages")
+        elsif verification.rejected? && (user = EmailAddress.verified.find_by(value: verification.email)&.user)
+          run(SheeridRejectedEducator, user: user)
         end
 
         outputs.verification = verification

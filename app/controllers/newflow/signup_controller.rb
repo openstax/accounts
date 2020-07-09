@@ -7,9 +7,7 @@ module Newflow
     before_action :restart_signup_if_missing_unverified_user, except: [
       :welcome, :verify_email_by_code, :signup_done
     ]
-    before_action :exit_newflow_signup_if_logged_in, only: [
-      :welcome, :student_signup_form, :educator_signup_form
-    ]
+    before_action :exit_newflow_signup_if_logged_in, only: :welcome
 
     def verify_email_by_code
       handle_with(

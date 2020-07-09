@@ -48,6 +48,8 @@ module Newflow
         )
         transfer_errors_from(caller, {type: :verbatim}, :fail_if_errors)
 
+        outputs.is_educator_pending_cs_verification = caller.rejected_faculty?
+
         update_salesforce_lead
       end
 

@@ -1,18 +1,37 @@
 module Newflow
   class EducatorSignupController < SignupController
+
+    include EducatorSignupHelper
+
     skip_forgery_protection(only: :sheerid_webhook)
 
-    skip_before_action :restart_signup_if_missing_unverified_user, only: [
-      :educator_signup_form, :educator_signup, :educator_sheerid_form,
-      :educator_change_signup_email_form, :educator_change_signup_email,
-      :educator_profile_form, :educator_complete_profile, :sheerid_webhook
-    ]
+    skip_before_action(:restart_signup_if_missing_unverified_user, only: %i[
+        educator_signup_form
+        educator_signup
+        educator_sheerid_form
+        educator_change_signup_email_form
+        educator_change_signup_email
+        educator_profile_form
+        educator_complete_profile
+        sheerid_webhook
+        educator_pending_cs_verification
+      ]
+    )
 
-    before_action :newflow_authenticate_user!, only: [
-      :educator_sheerid_form, :educator_profile_form, :educator_complete_profile
-    ]
-    before_action :prevent_caching, only: :sheerid_webhook
-    before_action :prevent_double_submission_to_sheerid, only: :educator_sheerid_form
+    before_action(:prevent_caching, only: :sheerid_webhook)
+    before_action(:newflow_authenticate_user!, only: %i[
+        educator_sheerid_form
+        educator_profile_form
+        educator_complete_profile
+      ]
+    )
+    before_action(:stepwise_signup_flow_triggers, only: %i[
+        educator_email_verification_form
+        educator_email_verification_form_updated_email
+        educator_sheerid_form
+        educator_profile_form
+      ]
+    )
 
     def educator_signup
       handle_with(
@@ -126,7 +145,12 @@ module Newflow
         EducatorSignup::CompleteProfile,
         success: lambda {
           security_log(:user_updated, message: 'Completed Educator Profile')
-          redirect_to(signup_done_path)
+
+          if @handler_result.outputs.is_educator_pending_cs_verification
+            redirect_to(educator_pending_cs_verification_path)
+          else
+            redirect_to(signup_done_path)
+          end
         },
         failure: lambda {
           @book_subjects = book_data.subjects
@@ -137,14 +161,16 @@ module Newflow
       )
     end
 
-    private #################
-
-    def prevent_double_submission_to_sheerid
-      redirect_to(:educator_profile_form) if current_user.confirmed_faculty?
+    def educator_pending_cs_verification
+      security_log(:user_viewed_signup_form, form_name: action_name)
+      @email_address = current_user.email_addresses.first&.value
     end
+
+    private #################
 
     def book_data
       @book_data ||= FetchBookData.new
     end
+
   end
 end

@@ -80,6 +80,13 @@ en:
     youre_done_description: >-
       Your account has been confirmed for <b>%{email_address}</b>!
       To start exploring, check out some of the features you now have access to.
+    educator_pending_cs_verification: We're processing your request
+    educator_pending_cs_verification_description: >-
+      You instructor access is pending.
+      We will verify your instructor status withing 3-4 business days.
+      Updates on your verification status will be sent to <b>%{email_address}</b>.
+      In the meantime, you can access all books and resources
+      except those that require instructor verification.
     join_as_student_description: >-
       Sign up for a <b>Student</b> account to access Tutor assignments,
       highlight study materials, and more.
