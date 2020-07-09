@@ -33,14 +33,14 @@ module Newflow
         attribute :country_code, type: String
       end
 
+      def required_params
+        @required_params ||= [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
+      end
+
       protected #################
 
       def authorized?
         true
-      end
-
-      def required_params
-        @required_params ||= [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
       end
 
       def handle
@@ -58,16 +58,16 @@ module Newflow
         end
 
         if options[:user_from_signed_params].present?
-          outputs.user = User.find_by!(id: options[:user_from_signed_params]['id'])
+          outputs.user = User.find_by!(id: options[:user_from_signed_params].id)
         else
           outputs.user = create_user
-
-          run(::SetPassword,
-            user: outputs.user,
-            password: signup_params.password,
-            password_confirmation: signup_params.password
-          )
         end
+
+        run(::SetPassword,
+          user: outputs.user,
+          password: signup_params.password,
+          password_confirmation: signup_params.password
+        )
 
         agree_to_terms
         run(CreateEmailForUser, email: signup_params.email, user: outputs.user)

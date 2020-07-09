@@ -3,14 +3,10 @@ require 'rails_helper'
 module Newflow
   module EducatorSignup
     describe SignupForm, type: :handler do
-      context 'when success' do
-        before(:all) do
-          load('db/seeds.rb')
-        end
+      before(:all) { load('db/seeds.rb') }
 
-        let(:result) do
-          described_class.call(params: params)
-        end
+      context 'when success' do
+        subject(:handler_call) {  described_class.call(params: params) }
 
         let(:params) do
           {
@@ -34,39 +30,28 @@ module Newflow
         end
 
         it 'creates an (unverified) user with role = instructor' do
-          expect { result }.to change { User.where(state: 'unverified', role: :instructor).count }
+          expect { handler_call }.to change { User.where(state: 'unverified', role: :instructor).count }
         end
 
         it 'sets the new user\'s faculty status to pending_faculty' do
-          expect { result }.to change { User.where(faculty_status: :pending_faculty).count }
-        end
-
-        it 'creates an identity' do
-          expect { result }.to change { Identity.count }
+          expect { handler_call }.to change { User.where(faculty_status: :pending_faculty).count }
         end
 
         it 'creates an authentication with provider = identity' do
-          expect { result }.to change { Authentication.where(provider: 'identity').count }
-        end
-
-        it 'agrees to terms of use and privacy policy when contracts_required' do
-          expect {
-            described_class.call(params: params, contracts_required: true)
-          }.to change {
-            FinePrint::Signature.count
-          }.by(2)
-        end
-
-        it 'doesnt agrees to terms of use and privacy policy when contracts NOT required' do
-          expect {
-            described_class.call(params: params, contracts_required: false)
-          }.not_to change {
-            FinePrint::Signature.count
-          }
+          expect { handler_call }.to change { Authentication.where(provider: 'identity').count }
         end
 
         it 'creates an email address' do
-          expect { result }.to change { EmailAddress.count }
+          expect { handler_call }.to change { EmailAddress.count }
+        end
+
+        it 'creates a password (aka Identity)' do
+          expect { handler_call }.to change { Identity.count }
+        end
+
+        it 'adds the password to the user' do
+          user = handler_call.outputs.user
+          expect(user.identity.password).to eq(params[:signup][:password])
         end
 
         it 'sends a confirmation email' do
@@ -75,20 +60,52 @@ module Newflow
               hash_including({ email_address: an_instance_of(EmailAddress) })
             )
           )
-          result
+          handler_call
+        end
+
+        it 'outputs a user' do
+          expect(handler_call.outputs.user).to be_present
         end
 
         it 'stores selection in User whether to receive newsletter or not' do
           expect(User.new.receive_newsletter).to be_falsey
-          result
+          handler_call
           expect(User.last.receive_newsletter).to be(true)
+        end
+
+        context 'terms of use' do
+          it 'agrees to terms of use and privacy policy when contracts_required' do
+            expect {
+              described_class.call(params: params, contracts_required: true)
+            }.to change {
+              FinePrint::Signature.count
+            }.by(2)
+          end
+
+          it 'doesnt agrees to terms of use and privacy policy when contracts NOT required' do
+            expect {
+              described_class.call(params: params, contracts_required: false)
+            }.not_to change {
+              FinePrint::Signature.count
+            }
+          end
+        end
+
+        context 'required params' do
+          subject(:required_params){ [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted] }
+
+          it 'responds to required_params' do
+            expect(described_class.new).to respond_to(:required_params)
+          end
+
+          it 'requires all the correct params' do
+            expect(described_class.new.required_params).to contain_exactly(*required_params)
+          end
         end
       end
 
-      context 'success -- when a user that already had an account, then tries to sign up using signed params (so via an LMS)' do
-        before(:all) do
-          load('db/seeds.rb')
-        end
+      context 'success with user_from_signed_params' do
+        let(:result) {  described_class.call(params: params) }
 
         let(:email) do
           Faker::Internet.free_email
@@ -126,17 +143,38 @@ module Newflow
           Newflow::FindOrCreateUserFromSignedParams.call(signed_params).outputs.user
         end
 
-        subject(:result) do
+        subject(:handler_call) do
           described_class.call(params: params, user_from_signed_params: user_from_signed_params)
         end
 
         it 'outputs a user' do
-          expect(result.outputs.user).to be_present
+          expect(handler_call.outputs.user).to be_present
         end
 
-        it 'only creates one user' do
-          result
+        it 'creates one user' do
+          handler_call
           expect(User.count).to eq(1)
+        end
+
+        it 'creates a password (aka Identity)' do
+          expect { handler_call }.to change { Identity.count }
+        end
+
+        it 'adds the password to the user' do
+          user = handler_call.outputs.user
+          expect(user.identity.password).to eq(params[:signup][:password])
+        end
+
+        context 'required params' do
+          subject(:required_params){ [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted] }
+
+          it 'responds to required_params' do
+            expect(described_class.new).to respond_to(:required_params)
+          end
+
+          it 'requires all the correct params' do
+            expect(described_class.new.required_params).to contain_exactly(*required_params)
+          end
         end
       end
 
@@ -166,13 +204,13 @@ module Newflow
           }
         end
 
-        let(:result) do
+        let(:handler_call) do
           described_class.call(params: params)
         end
 
         example do
-          expect(result.errors.first.message).to eq(I18n.t(:"login_signup_form.email_address_taken"))
-          expect(result.errors).to have_offending_input(:email)
+          expect(handler_call.errors.first.message).to eq(I18n.t(:"login_signup_form.email_address_taken"))
+          expect(handler_call.errors).to have_offending_input(:email)
         end
       end
 
@@ -194,13 +232,13 @@ module Newflow
           }
         end
 
-        let(:result) do
+        subject(:handler_call) do
           allow_any_instance_of(described_class).to receive(:required_params).and_return([:email])
           described_class.call(params: params)
         end
 
         example do
-          expect(result.errors).to have_offending_input(:email)
+          expect(handler_call.errors).to have_offending_input(:email)
         end
       end
 
