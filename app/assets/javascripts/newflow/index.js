@@ -35,27 +35,7 @@ $(document).ready(function(){
       }
     }
   });
-
-  // Validate name for unallowed chars
-  var errorDiv = '<div class="errors invalid-message">Name cannot contain special characters</div>';
-  function check_for_specialness(obj) {
-      if(/^[a-zA-Z0-9- ]*$/.test(obj.value) == false) {
-          $(obj).addClass('has-error');
-          $(obj).closest('.control-group').append(errorDiv);
-      }else{
-          $(obj).removeClass('has-error');
-          $(obj).closest('.control-group').remove(errorDiv);
-      }
-  }
-  $("#signup_first_name").blur(function (e) {
-      check_for_specialness(this);
-  });
-
-    $("#signup_last_name").blur(function (e) {
-        check_for_specialness(this);
-    });
-
-
+  
   // Validate phone number
   let input = document.querySelector(".int-country-code");
   if ( input !== null ) {
