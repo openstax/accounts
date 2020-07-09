@@ -6,6 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
+        <%= render partial: "layouts/google_tag_manager" %>
+
         <% if @redirect_url %>
         <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
         <% end %>
@@ -32,6 +34,7 @@
       <%= content_for :page_specific %>
     </head>
     <body>
+        <%= render partial: "layouts/tag_manager_snippet" %>
         <% if @banners.present? %>
             <% @banners.each do |banner| %>
                 <div class="banner">
