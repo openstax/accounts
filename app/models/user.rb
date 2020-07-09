@@ -359,27 +359,27 @@ class User < ActiveRecord::Base
   end
 
   def strip_fields
-    self.title.try(:strip!)
-    self.first_name.try(:strip!)
-    self.last_name.try(:strip!)
-    self.suffix.try(:strip!)
-    self.username.try(:strip!)
-    self.username = nil if self.username.blank?
-    self.self_reported_school.try(:strip!)
+    title.try(:strip!)
+    first_name.try(:strip!)
+    last_name.try(:strip!)
+    suffix.try(:strip!)
+    username.try(:strip!)
+    self.username = nil if username.blank?
+    self_reported_school.try(:strip!)
     true
   end
 
   def convert_accents
-    if self.first_name && self.last_name
-      self.first_name=I18n.transliterate(self.first_name)
-      self.last_name=I18n.transliterate(self.last_name)
+    if first_name && last_name
+      self.first_name=I18n.transliterate(first_name)
+      self.last_name=I18n.transliterate(last_name)
     end
   end
 
   def remove_special_chars
-    if self.first_name && self.last_name
-      self.first_name.gsub!(/[^0-9A-Za-z. ]/, '')
-      self.last_name.gsub!(/[^0-9A-Za-z. ]/, '')
+    if first_name && last_name
+      first_name.gsub!(/[^0-9A-Za-z. ]/, '')
+      last_name.gsub!(/[^0-9A-Za-z. ]/, '')
     end
   end
 
