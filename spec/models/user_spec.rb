@@ -67,6 +67,28 @@ RSpec.describe User, type: :model do
     expect(user.self_reported_school).to eq "Rice University"
   end
 
+  it 'removes certain unallowed special characters from first and last name' do
+    user = FactoryBot.create :user, first_name: "J(o)hn"
+    expect(user.first_name).to eq "John"
+
+    user = FactoryBot.create :user, last_name: "Smit&h"
+    expect(user.last_name).to eq "Smith"
+
+    user = FactoryBot.create :user, last_name: "D'Amore"
+    expect(user.last_name).to eq "D'Amore"
+
+    user = FactoryBot.create :user, first_name: "Mary-Ann"
+    expect(user.first_name).to eq "Mary-Ann"
+  end
+
+  it 'transliterates accented characters to ascii in first and last name' do
+    user = FactoryBot.create :user, last_name: "Maève"
+    expect(user.last_name).to eq "Maeve"
+
+    user = FactoryBot.create :user, first_name: "Brièle"
+    expect(user.first_name).to eq "Briele"
+  end
+
   context 'full_name' do
     it 'puts all the pieces together' do
       user = FactoryBot.create :user, title: "Mr.", first_name: "Bob", last_name: "Jones", suffix: "Sr."

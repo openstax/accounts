@@ -35,7 +35,7 @@ $(document).ready(function(){
       }
     }
   });
-
+  
   // Validate phone number
   let input = document.querySelector(".int-country-code");
   if ( input !== null ) {
