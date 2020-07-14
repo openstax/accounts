@@ -18,6 +18,8 @@ module Newflow
         when 'educator_profile_form'
           if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
             EducatorSignup::SheeridRejectedEducator.call(user: current_incomplete_educator)
+          elsif params[:verificationId].present?
+            current_incomplete_educator.update_attribute(:sheerid_verification_id, params[:verificationId])
           end
         end
       end
