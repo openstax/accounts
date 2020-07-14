@@ -3,7 +3,7 @@
 # If the user is already `activated`, then it does nothing.
 module Newflow
   module EducatorSignup
-    class ActivateAccount
+    class ActivateEducator
       lev_routine
       uses_routine CreateSalesforceLead
 

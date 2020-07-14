@@ -7,7 +7,7 @@ module Newflow
                  translations: { outputs: { type: :verbatim },
                                  inputs: { type: :verbatim } }
     uses_routine StudentSignup::ActivateStudent
-    uses_routine EducatorSignup::ActivateAccount
+    uses_routine EducatorSignup::ActivateEducator
 
     def authorized?
       true
@@ -20,7 +20,7 @@ module Newflow
       if user.student?
         run(StudentSignup::ActivateStudent, user)
       else
-        run(EducatorSignup::ActivateAccount, user: user)
+        run(EducatorSignup::ActivateEducator, user: user)
       end
 
       outputs.user = user

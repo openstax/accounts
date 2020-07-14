@@ -1,7 +1,12 @@
 module Newflow
   class StudentSignupController < SignupController
-    skip_before_action :restart_signup_if_missing_unverified_user, only: [
-      :student_signup_form, :student_signup
+
+    before_action :restart_signup_if_missing_unverified_user, except: %i[
+      welcome
+      verify_email_by_code
+      signup_done
+      student_signup_form
+      student_signup
     ]
 
     def student_signup
@@ -56,7 +61,7 @@ module Newflow
         StudentSignup::VerifyEmailByPin,
         email_address: unverified_user.email_addresses.first,
         success: lambda {
-          clear_newflow_state
+          clear_signup_state
           user = @handler_result.outputs.user
           sign_in!(user)
           security_log(:student_verified_email)

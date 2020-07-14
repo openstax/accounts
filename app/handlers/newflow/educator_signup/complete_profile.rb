@@ -11,6 +11,7 @@ module Newflow
 
       paramify :signup do
         attribute :is_school_not_supported_by_sheerid, type: String
+        attribute :is_country_not_supported_by_sheerid, type: String
         attribute :school_name, type: String
         attribute :educator_specific_role, type: String
         attribute :other_role_name, type: String
@@ -29,26 +30,34 @@ module Newflow
 
       protected ###############
 
+      attr_reader :user
+
+      def setup
+        @user = options[:user]
+      end
+
       def authorized?
-        !caller.is_anonymous?
+        user && !user.is_anonymous?
       end
 
       def handle
         check_params
         return if errors?
 
-        caller.update(
+        user.update(
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
           using_openstax_how: signup_params.using_openstax_how,
           who_chooses_books: signup_params.who_chooses_books,
           how_many_students: signup_params.num_students_per_semester_taught,
           which_books: signup_params.books_used&.reject(&:empty?)&.join(';'),
-          self_reported_school: signup_params.school_name
+          self_reported_school: signup_params.school_name,
+          is_profile_complete: true
         )
-        transfer_errors_from(caller, {type: :verbatim}, :fail_if_errors)
+        transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
-        outputs.is_educator_pending_cs_verification = caller.rejected_faculty?
+        outputs.is_educator_pending_cs_verification = user.rejected_faculty?
+        outputs.user = user
 
         update_salesforce_lead
       end
@@ -56,7 +65,7 @@ module Newflow
       private #################
 
       def update_salesforce_lead
-        UpdateSalesforceLead.perform_later(user: caller)
+        UpdateSalesforceLead.perform_later(user: user)
       end
 
       def other_role_name
@@ -64,7 +73,8 @@ module Newflow
       end
 
       def check_params
-        if signup_params.is_school_not_supported_by_sheerid == 'true' &&
+        if (signup_params.is_school_not_supported_by_sheerid == 'true' ||
+          signup_params.is_country_not_supported_by_sheerid == 'true') &&
           signup_params.school_name.blank?
 
           param_error(:school_name, :school_name_must_be_entered)

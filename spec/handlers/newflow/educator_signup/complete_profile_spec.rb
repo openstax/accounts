@@ -5,7 +5,7 @@ module Newflow
 
     describe CompleteProfile, type: :handler do
       let(:user) { create_user('user') }
-      let(:handle) { described_class.handle( params: params, caller: user) }
+      let(:handle) { described_class.handle( params: params, user: user) }
       let(:books_used) { ['Algebra and Trigonometry', 'Physics'] }
       let(:num_students_per_semester_taught) { 10 }
       let(:educator_specific_role) { 'instructor' }

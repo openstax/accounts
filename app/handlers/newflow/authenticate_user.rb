@@ -58,14 +58,14 @@ module Newflow
       identity = Identity.authenticate({ user_id: user&.id }, login_form_params.password)
       failure(:incorrect_password, :password) unless identity.present?
       # Link the user to the external uuid at this point (after successfully logging in)
-      transfer_signed_data(user)
+      transfer_signed_data_if_present(user)
     end
 
     private #################
 
     # transfer signed params data from 'unverified' user that was created
     # and then delete that user
-    def transfer_signed_data(user)
+    def transfer_signed_data_if_present(user)
       return unless (sp_user = options[:user_from_signed_params])
 
       sp = sp_user['signed_external_data'] # I want/need the signed params, essentially. How do I get store and get 'em?

@@ -1,5 +1,6 @@
 module Newflow
   class BaseController < ApplicationController
+
     include ApplicationHelper
 
     layout 'newflow_layout'
@@ -10,10 +11,15 @@ module Newflow
 
     protected #################
 
+    def restart_signup_if_missing_unverified_user
+      redirect_to newflow_signup_path unless unverified_user.present?
+    end
+
     def set_active_banners
       return unless request.get?
 
       @banners ||= Banner.active
     end
+
   end
 end

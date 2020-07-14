@@ -1,5 +1,6 @@
 module Newflow
   module LoginSignupHelper
+
     def generate_sheer_id_url(user:)
       url = standard_parse_url(Settings::Db.store.sheer_id_base_url)
       url.query_values = url.query_values.merge(
@@ -25,10 +26,6 @@ module Newflow
       end
     end
 
-    def restart_signup_if_missing_unverified_user
-      redirect_to newflow_signup_path unless unverified_user.present?
-    end
-
     def save_unverified_user(user)
       session[:unverified_user_id] = user.id
     end
@@ -48,7 +45,7 @@ module Newflow
       session.delete(:login_failed_email)
     end
 
-    def clear_newflow_state
+    def clear_signup_state
       clear_login_failed_email
       clear_unverified_user
     end
@@ -60,5 +57,19 @@ module Newflow
     def login_failed_email
       session.delete(:login_failed_email)
     end
+
+    def save_incomplete_educator(user)
+      session[:current_incomplete_educator_uuid] = user.uuid
+    end
+
+    def current_incomplete_educator
+      return if session[:current_incomplete_educator_uuid].blank?
+      @current_incomplete_educator ||= User.find_by(uuid: session[:current_incomplete_educator_uuid])
+    end
+
+    def clear_incomplete_educator
+      session.delete(:current_incomplete_educator_uuid)
+    end
+
   end
 end

@@ -5,33 +5,22 @@ module Newflow
 
     skip_forgery_protection(only: :sheerid_webhook)
 
-    skip_before_action(:restart_signup_if_missing_unverified_user, only: %i[
-        educator_signup_form
-        educator_signup
-        educator_sheerid_form
+    before_action(:prevent_caching, only: :sheerid_webhook)
+    before_action(:restart_signup_if_missing_unverified_user, only: %i[
         educator_change_signup_email_form
         educator_change_signup_email
-        educator_profile_form
-        educator_complete_profile
-        sheerid_webhook
-        educator_pending_cs_verification
-      ]
-    )
-
-    before_action(:prevent_caching, only: :sheerid_webhook)
-    before_action(:newflow_authenticate_user!, only: %i[
-        educator_sheerid_form
-        educator_profile_form
-        educator_complete_profile
-      ]
-    )
-    before_action(:stepwise_signup_flow_triggers, only: %i[
         educator_email_verification_form
         educator_email_verification_form_updated_email
-        educator_sheerid_form
-        educator_profile_form
+        educator_verify_email_by_pin
       ]
     )
+    before_action(:restart_signup_if_missing_incomplete_educator, only: %i[
+        educator_sheerid_form
+        educator_profile_form
+        educator_complete_profile
+      ]
+    )
+    before_action(:stepwise_signup_flow_triggers)
 
     def educator_signup
       handle_with(
@@ -88,11 +77,10 @@ module Newflow
         EducatorSignup::VerifyEmailByPin,
         email_address: unverified_user.email_addresses.first,
         success: lambda {
-          clear_newflow_state
           user = @handler_result.outputs.user
-          sign_in!(user)
+          clear_unverified_user
+          save_incomplete_educator(user)
           security_log(:educator_verified_email)
-
           redirect_to(educator_sheerid_form_path)
         },
         failure: lambda {
@@ -107,8 +95,8 @@ module Newflow
     end
 
     def educator_sheerid_form
-      @sheerid_url = generate_sheer_id_url(user: current_user)
-      security_log(:user_viewed_signup_form, form_name: 'educator_sheerid_form')
+      @sheerid_url = generate_sheer_id_url(user: current_incomplete_educator)
+      security_log(:user_viewed_signup_form, form_name: action_name)
     end
 
     # SheerID makes a POST request to this endpoint when it verifies an educator
@@ -137,14 +125,19 @@ module Newflow
     def educator_profile_form
       @book_subjects = book_data.subjects
       @book_titles = book_data.titles
-      security_log(:user_viewed_signup_form, form_name: 'educator_profile_form')
+      security_log(:user_viewed_signup_form, user: current_incomplete_educator, form_name: action_name)
     end
 
     def educator_complete_profile
       handle_with(
         EducatorSignup::CompleteProfile,
+        user: current_incomplete_educator,
         success: lambda {
-          security_log(:user_updated, message: 'Completed Educator Profile')
+          user = @handler_result.outputs.user
+          security_log(:user_updated, user: user, message: 'Completed Educator Profile')
+          sign_in!(user)
+          clear_incomplete_educator
+          clear_unverified_user
 
           if @handler_result.outputs.is_educator_pending_cs_verification
             redirect_to(educator_pending_cs_verification_path)
@@ -155,7 +148,7 @@ module Newflow
         failure: lambda {
           @book_subjects = book_data.subjects
           @book_titles = book_data.titles
-          security_log(:educator_sign_up_failed, reason: "Error in educator_complete_profile: #{@handler_result&.errors&.full_messages}")
+          security_log(:educator_sign_up_failed, user: current_incomplete_educator, reason: "Error in educator_complete_profile: #{@handler_result&.errors&.full_messages}")
           render :educator_profile_form
         }
       )

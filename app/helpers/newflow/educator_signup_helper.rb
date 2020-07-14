@@ -4,21 +4,19 @@ module Newflow
       def stepwise_signup_flow_triggers
         case action_name
         when 'educator_email_verification_form', 'educator_email_verification_form_updated_email'
-          if current_user.activated? && current_user.pending_faculty?
+          if unverified_user.activated? && unverified_user.pending_faculty?
             redirect_to(:educator_sheerid_form)
-          elsif current_user.activated? && current_user.confirmed_faculty?
+          elsif unverified_user.activated?
             redirect_to(:educator_profile_form)
           end
         when 'educator_sheerid_form'
-          if current_user.confirmed_faculty? || current_user.rejected_faculty?  # || already viewed it
+          if current_incomplete_educator.confirmed_faculty? || current_incomplete_educator.rejected_faculty?
             redirect_to(educator_profile_form_path(request.query_parameters))
           end
         when 'educator_profile_form'
           if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
-            EducatorSignup::SheeridRejectedEducator.call(user: current_user)
+            EducatorSignup::SheeridRejectedEducator.call(user: current_incomplete_educator)
           end
-        else
-          raise('unexpected action name for stepwise_signup_flow_triggers')
         end
       end
 

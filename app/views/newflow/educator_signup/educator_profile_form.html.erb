@@ -25,7 +25,7 @@
 
         <div class="content">
           <div class="questions">
-          <div class="form-group question school-name<%= (params[:school].present?) ? ' school-name-visible' : '' %>">
+          <div class="form-group question school-name<%= (params[:school].present? || current_incomplete_educator&.rejected_faculty?) ? ' school-name-visible' : '' %>">
               <div class="school-name">
                 <%= label_tag :school_name, I18n.t(:"educator_profile_form.school_name"),
                               class: 'field-label'
@@ -220,7 +220,8 @@
 
           </div>
 
-          <%= f.hidden_field :is_school_not_supported_by_sheerid, value: params[:school].present? %>
+          <%= f.hidden_field :is_school_not_supported_by_sheerid, value: is_school_not_supported_by_sheerid? || current_incomplete_educator&.rejected_faculty? %>
+          <%= f.hidden_field :is_country_not_supported_by_sheerid, value: is_country_not_supported_by_sheerid? || current_incomplete_educator&.rejected_faculty? %>
 
           <%=
             f.submit(
