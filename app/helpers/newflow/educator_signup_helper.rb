@@ -3,10 +3,12 @@ module Newflow
 
       def stepwise_signup_flow_triggers
         case action_name
+        when 'educator_signup_form'
+          redirect_to(educator_email_verification_form_path) if current_incomplete_educator.present?
         when 'educator_email_verification_form', 'educator_email_verification_form_updated_email'
-          if unverified_user.activated? && unverified_user.pending_faculty?
+          if current_incomplete_educator.activated? && current_incomplete_educator.pending_faculty?
             redirect_to(:educator_sheerid_form)
-          elsif unverified_user.activated?
+          elsif current_incomplete_educator.activated?
             redirect_to(:educator_profile_form)
           end
         when 'educator_sheerid_form'
