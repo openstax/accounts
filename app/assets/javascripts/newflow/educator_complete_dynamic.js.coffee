@@ -162,7 +162,7 @@ class NewflowUi.EducatorComplete
   onRoleChange: ->
     @please_select_role.hide()
 
-    if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked') && @checkSchoolNameValid() )
+    if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked'))
       @other_specify.hide()
       @books_used.hide()
       @how_using.show()
@@ -172,7 +172,7 @@ class NewflowUi.EducatorComplete
       @total_num_students.show()
       @please_fill_out_total_num.hide()
       @onHowUsingChange()
-    else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_admin').is(':checked') && @checkSchoolNameValid() )
+    else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_admin').is(':checked'))
       @other_specify.hide()
       @books_used.hide()
       @total_num_students.hide()
@@ -181,7 +181,7 @@ class NewflowUi.EducatorComplete
       @how_using.show()
       @please_select_using.hide()
       @onHowUsingChange()
-    else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked') )
+    else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked'))
       @other_specify.show()
       @books_used.hide()
       @how_chosen.hide()
