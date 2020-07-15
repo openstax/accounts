@@ -18,6 +18,7 @@ module Newflow
       ]
     )
     before_action(:stepwise_signup_flow_triggers)
+    before_action(:exit_newflow_signup_if_logged_in, only: :educator_signup_form)
 
     def educator_signup
       handle_with(
