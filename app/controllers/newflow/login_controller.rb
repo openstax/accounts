@@ -23,13 +23,13 @@ module Newflow
 
           user = @handler_result.outputs.user
 
-          if user.student? || user.is_profile_complete?
-            sign_in!(@handler_result.outputs.user)
-            redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
-          else
+          if !user.student? && !user.is_profile_complete?
             save_incomplete_educator(user)
             security_log(:educator_resumed_signup_flow, user: user)
             redirect_to(educator_sheerid_form_path)
+          else
+            sign_in!(@handler_result.outputs.user)
+            redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
           end
         },
         failure: lambda {
