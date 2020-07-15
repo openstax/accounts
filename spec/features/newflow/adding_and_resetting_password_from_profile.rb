@@ -5,6 +5,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     turn_on_student_feature_flag
 
     @user = create_user 'user'
+    @user.update!(role: User.roles[User::STUDENT_ROLE])
     @login_token = generate_login_token_for 'user'
 
     if :add == type

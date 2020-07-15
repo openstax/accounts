@@ -1,12 +1,12 @@
 # Creates a verified user, an email address, and a password
-def create_newflow_user(email, password='password', terms_agreed=nil, confirmation_code=nil)
+def create_newflow_user(email, password='password', terms_agreed=nil, confirmation_code=nil, role='student')
   terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
                           :terms_agreed :
                           :terms_not_agreed
 
   # return if User.find_by_username(username).present?
 
-  user = FactoryBot.create :user, terms_agreed_option
+  user = FactoryBot.create :user, terms_agreed_option, role: role
   FactoryBot.create(:email_address, user: user, value: email,
                      confirmation_code: confirmation_code,
                      verified: confirmation_code.nil?)
