@@ -27,7 +27,7 @@ GIT
 
 GIT
   remote: https://github.com/openstax/pattern-library.git
-  revision: bba7dfd7c302dea479a61574240cc49cd4a942a4
+  revision: 0e6f2ebd3b026f33042e22c6f872f33d3df4cdb2
   branch: add-multiselect-styling
   specs:
     pattern-library (1.1.18)

@@ -158,6 +158,7 @@ class NewflowUi.EducatorComplete
   onSchoolNameChange: ->
     @please_fill_out_school.hide()
     @continue.prop('disabled', false)
+    @onRoleChange()
 
   onRoleChange: ->
     @please_select_role.hide()
