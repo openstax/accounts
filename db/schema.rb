@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_01_233800) do
+ActiveRecord::Schema.define(version: 2020_07_14_021802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -360,6 +360,7 @@ ActiveRecord::Schema.define(version: 2020_07_01_233800) do
     t.string "which_books"
     t.string "who_chooses_books"
     t.integer "using_openstax_how"
+    t.boolean "is_profile_complete"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

@@ -5,10 +5,14 @@ feature 'Add social auth', js: true do
     turn_on_student_feature_flag
   end
 
-  scenario "email collides with a different existing user's verified email" do
-    create_email_address_for(create_user('other_user'), 'user@example.com')
+  let(:email_value){ 'user@example.com' }
 
-    user = create_user 'user'
+  scenario "email collides with a different existing user's verified email" do
+    other_user = create_user('other_user')
+    create_email_address_for(other_user, email_value)
+
+    user = create_user('user')
+    user.update(role: User::STUDENT_ROLE)
     newflow_log_in_user('user', 'password')
 
     expect_newflow_profile_page
@@ -17,7 +21,7 @@ feature 'Add social auth', js: true do
     wait_for_animations
     expect(page).to have_content('Facebook')
 
-    with_omniauth_test_mode(email: 'user@example.com') do
+    with_omniauth_test_mode(email: email_value) do
       find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
       wait_for_ajax
       screenshot!
@@ -28,7 +32,8 @@ feature 'Add social auth', js: true do
 
   scenario "email collides with the current user's verified email" do
     user = create_user 'user'
-    create_email_address_for(user, 'user@example.com')
+    user.update(role: User::STUDENT_ROLE)
+    create_email_address_for(user, email_value)
 
     newflow_log_in_user('user', 'password')
 
@@ -38,7 +43,7 @@ feature 'Add social auth', js: true do
     wait_for_animations
     expect(page).to have_content('Facebook')
 
-    with_omniauth_test_mode(email: 'user@example.com') do
+    with_omniauth_test_mode(email: email_value) do
       find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
       wait_for_ajax
       expect_newflow_profile_page
@@ -48,9 +53,10 @@ feature 'Add social auth', js: true do
   end
 
   scenario "email collides with existing user's UNverified email" do
-    create_email_address_for(create_user('other_user'), 'user@example.com', 'token')
+    create_email_address_for(create_user('other_user'), email_value, 'token')
 
     user = create_user 'user'
+    user.update(role: User::STUDENT_ROLE)
     newflow_log_in_user('user', 'password')
 
     expect_newflow_profile_page
@@ -59,7 +65,7 @@ feature 'Add social auth', js: true do
     wait_for_animations
     expect(page).to have_content('Facebook')
 
-    with_omniauth_test_mode(email: 'user@example.com') do
+    with_omniauth_test_mode(email: email_value) do
       find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
       wait_for_ajax
       screenshot!

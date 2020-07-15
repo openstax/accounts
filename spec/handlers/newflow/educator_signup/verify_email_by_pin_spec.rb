@@ -27,7 +27,7 @@ module Newflow
         end
 
         it 'activates their account' do
-          expect_any_instance_of(ActivateAccount).to receive(:exec).with(hash_including(user: user))
+          expect_any_instance_of(ActivateEducator).to receive(:exec).with(hash_including(user: user))
           described_class.call(params: params, email_address: email)
         end
 

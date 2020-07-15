@@ -17,8 +17,8 @@ module Newflow
         SendResetPasswordEmail,
         success: lambda {
           @email = @handler_result.outputs.email
-          clear_newflow_state
           security_log(:help_requested, email: @email)
+          clear_signup_state
           sign_out!
           render :reset_password_email_sent
         },

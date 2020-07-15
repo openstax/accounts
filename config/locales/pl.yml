@@ -19,6 +19,7 @@ pl:
     chosen_by_coordinator: Koordynator kursu / dystryktu wybierz podręcznik
     select_option: Wybierz jedną z tych opcji
     fill_out: Podaj wartość dla tego pola
+    school_name_must_be_entered: Proszę podać nazwę szkoły
     other_must_be_entered: Wpisz inną nazwę roli
     books_used_must_be_entered: Wpisz używane książki
     subjects_of_interest_must_be_entered: Wpisz interesujące cię tematy
@@ -77,6 +78,13 @@ pl:
     youre_done_description: >-
       Potwierdzamy założenie konta na <b>%{email_address}</b>.
       Wypróbuj możliwości naszego serwisu!
+    educator_pending_cs_verification: Przetwarzamy Twoją prośbę
+    educator_pending_cs_verification_description: >-
+      Twój dostęp do instruktora jest w toku.
+       Sprawdzimy Twój status instruktora w ciągu 3-4 dni roboczych.
+       Aktualizacje Twojego statusu weryfikacji zostaną wysłane na adres <b>% {email_addess} </b>.
+       W międzyczasie możesz uzyskać dostęp do wszystkich książek i zasobów
+       z wyjątkiem tych, które wymagają weryfikacji instruktora.
     join_as_student_description: >-
       Zarejestruj się jako <b>Student</b> i uzyskaj dostęp do aplikacji Tutor,
       materiałów edukacyjnych, funkcji komentarzy i wielu innych.
@@ -139,6 +147,7 @@ pl:
     min_characters: "%{number} znaków minimum"
     show_password_btn: POKAZAĆ
     hide_password_btn: UKRYĆ
+    finish: koniec
 
     student_email_verification_form_decription: >-
       An email has been sent to <b>%{email}</b>.

@@ -5,22 +5,28 @@ require_relative './adding_and_resetting_password_from_profile'
 feature 'Password reset', js: true do
   before do
     turn_on_student_feature_flag
+    user.update!(role: User::STUDENT_ROLE)
   end
+
+  let!(:user) {
+    create_newflow_user('user@openstax.org', 'password')
+  }
 
   it_behaves_like 'adding and resetting password from profile', :reset
 
   scenario 'while still logged in – user is not stuck in a loop' do
     # shouldn't ask to reauthenticate when they forgot their password and are trying to reset it
     # issue: https://github.com/openstax/business-intel/issues/550
-    user = create_newflow_user('user@openstax.org', 'password')
     login_token = generate_login_token_for_user(user)
     newflow_log_in_user('user@openstax.org', 'password')
+    expect(page).to have_current_path(profile_newflow_path)
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       find('[data-provider=identity] .edit--newflow').click
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
 
       click_link(t(:"login_signup_form.forgot_password"))
+      wait_for_animations
       expect(page).to have_content(
         strip_html(
           t(:'login_signup_form.password_reset_email_sent_description', email: 'user@openstax.org')
@@ -44,7 +50,6 @@ feature 'Password reset', js: true do
   end
 
   scenario "'Forgot password?' link from reauthenticate page sends email (bypassing Reset Password Form)" do
-    create_newflow_user('user@openstax.org', 'password')
     newflow_log_in_user('user@openstax.org', 'password')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
@@ -62,8 +67,6 @@ feature 'Password reset', js: true do
   end
 
   scenario 'reset password links stay constant for a fixed time' do
-    create_newflow_user('user@openstax.org', 'password')
-
     visit newflow_login_path
     screenshot!
     newflow_log_in_user('user@openstax.org', 'WRONGpassword')
@@ -120,7 +123,6 @@ feature 'Password reset', js: true do
   end
 
   scenario 'failure to send reset email (re-) renders the forgot password form' do
-    create_newflow_user('user@openstax.org', 'password')
     visit newflow_login_path
     newflow_log_in_user('user@openstax.org', 'WRONGpassword')
     click_on(I18n.t(:"login_signup_form.forgot_password"))
@@ -131,6 +133,7 @@ feature 'Password reset', js: true do
       original_method.receiver.errors.add(:base, "Fake spec error")
     end
 
+    wait_for_ajax
     click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
 
     expect(page.current_path).to eq(send_reset_password_email_path)

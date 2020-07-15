@@ -3,7 +3,7 @@
 # If the user is already `activated`, then it does nothing.
 module Newflow
   module EducatorSignup
-    class ActivateAccount
+    class ActivateEducator
       lev_routine
       uses_routine CreateSalesforceLead
 
@@ -12,8 +12,8 @@ module Newflow
       def exec(user:)
         return if user.activated?
 
-        create_salesforce_lead_for(user)
         user.update!(state: User::ACTIVATED)
+        create_salesforce_lead_for(user)
         SecurityLog.create!(
           user: user,
           event_type: :user_updated,

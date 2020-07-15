@@ -4,25 +4,22 @@ module Newflow
 
     fine_print_skip :general_terms_of_use, :privacy_policy
 
-    before_action :restart_signup_if_missing_unverified_user, except: [
-      :welcome, :verify_email_by_code, :signup_done
-    ]
-    before_action :exit_newflow_signup_if_logged_in, only: [
-      :welcome, :student_signup_form, :educator_signup_form
-    ]
+    before_action :exit_newflow_signup_if_logged_in, only: :welcome
 
     def verify_email_by_code
       handle_with(
         VerifyEmailByCode,
         success: lambda {
-          clear_newflow_state
+          clear_signup_state
           user ||= @handler_result.outputs.user
-          sign_in!(user)
-          security_log(:student_verified_email)
 
-          if user.student?
+          if user.student? || user.is_profile_complete?
+            sign_in!(user)
+            security_log(:student_verified_email)
             redirect_to signup_done_path
           else
+            security_log(:educator_verified_email, user: user)
+            save_incomplete_educator(user)
             redirect_to(educator_sheerid_form_path)
           end
         },
@@ -33,12 +30,16 @@ module Newflow
     end
 
     def signup_done
-      security_log(:user_viewed_signup_form, form_name: 'signup_done')
+      security_log(:user_viewed_signup_form, form_name: action_name)
       @first_name = current_user.first_name
       @email_address = current_user.email_addresses.first&.value
     end
 
     protected ###############
+
+    def restart_signup_if_missing_incomplete_educator
+      redirect_to newflow_signup_path unless current_incomplete_educator.present?
+    end
 
     def exit_newflow_signup_if_logged_in
       if signed_in?

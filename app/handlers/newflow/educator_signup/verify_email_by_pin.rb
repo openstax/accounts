@@ -2,7 +2,7 @@ module Newflow
   module EducatorSignup
     class VerifyEmailByPin < Newflow::VerifyUserEmailByPin
       lev_handler
-      uses_routine ActivateAccount
+      uses_routine ActivateEducator
 
       paramify :confirm do
         attribute :pin, type: String
@@ -22,7 +22,7 @@ module Newflow
       private #################
 
       def activate_user(claiming_user)
-        run(ActivateAccount, user: claiming_user)
+        run(ActivateEducator, user: claiming_user)
       end
 
     end

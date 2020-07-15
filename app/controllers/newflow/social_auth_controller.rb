@@ -79,7 +79,7 @@ module Newflow
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
         success: lambda {
-          clear_newflow_state
+          clear_signup_state
           sign_in!(@handler_result.outputs.user)
           security_log(:student_social_auth_confirmation_success)
           redirect_to signup_done_path

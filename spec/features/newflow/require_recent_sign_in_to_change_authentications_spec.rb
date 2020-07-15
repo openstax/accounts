@@ -5,10 +5,16 @@ feature 'Require recent log in to change authentications', js: true do
     turn_on_student_feature_flag
   end
 
+  let!(:user) do
+    user = create_newflow_user(email_value)
+    user.update(role: User::STUDENT_ROLE)
+    user
+  end
+  let(:email_value) { 'user@example.com' }
+
   scenario 'adding Facebook' do
-    user = create_newflow_user 'user@example.com'
     visit '/'
-    newflow_log_in_user('user@example.com', 'password')
+    newflow_log_in_user(email_value, 'password')
 
     expect(page.current_path).to eq(profile_newflow_path)
 
@@ -38,19 +44,19 @@ feature 'Require recent log in to change authentications', js: true do
 
   scenario 'changing the password' do
     with_forgery_protection do
-      create_newflow_user 'user@example.com'
       visit '/'
-      newflow_log_in_user('user@example.com', 'password')
+      newflow_log_in_user(email_value, 'password')
       expect(page).to have_no_missing_translations
 
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
         visit profile_newflow_path
+        expect(page.current_path).to eq(profile_newflow_path)
 
         screenshot!
         find('.authentication[data-provider="identity"] .edit--newflow').click
 
         expect(page.current_path).to eq(reauthenticate_form_path)
-        newflow_reauthenticate_user('user@example.com', 'password')
+        newflow_reauthenticate_user(email_value, 'password')
         screenshot!
         expect(page.current_path).to eq(change_password_form_path)
         fill_in('change_password_form_password', with: 'newpassword')
@@ -76,8 +82,7 @@ feature 'Require recent log in to change authentications', js: true do
   end
 
   scenario 'bad password on reauthentication' do
-    create_newflow_user 'user@example.com'
-    newflow_log_in_user('user@example.com', 'password')
+    newflow_log_in_user(email_value, 'password')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       visit profile_newflow_path
@@ -101,10 +106,9 @@ feature 'Require recent log in to change authentications', js: true do
 
   scenario 'removing an authentication' do
     with_forgery_protection do
-      user = create_newflow_user 'user@example.com'
       FactoryBot.create :authentication, user: user, provider: 'twitter'
 
-      newflow_log_in_user('user@example.com', 'password')
+      newflow_log_in_user(email_value, 'password')
 
       expect(page).to have_no_missing_translations
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
@@ -118,7 +122,7 @@ feature 'Require recent log in to change authentications', js: true do
         click_button 'OK'
         screenshot!
 
-        newflow_reauthenticate_user('user@example.com', 'password')
+        newflow_reauthenticate_user(email_value, 'password')
         expect_newflow_profile_page
         screenshot!
 
