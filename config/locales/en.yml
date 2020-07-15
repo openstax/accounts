@@ -148,6 +148,7 @@ en:
     min_characters: "%{number} characters minimum"
     show_password_btn: SHOW
     hide_password_btn: HIDE
+    finish: Finish
 
     student_email_verification_form_decription: >-
       An email has been sent to <b>%{email}</b>.

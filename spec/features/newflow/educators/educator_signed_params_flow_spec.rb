@@ -28,7 +28,7 @@ feature 'Educator signed params flow', js: true do
   describe "arriving with an existing instructor account" do
     let!(:user) do
       user = create_newflow_user(payload[:email], 'password')
-      user.update_attributes(role: 'instructor')
+      user.update!(role: 'instructor', is_profile_complete: true)
       user
     end
 
@@ -40,12 +40,6 @@ feature 'Educator signed params flow', js: true do
       expect(user.external_uuids.where(uuid: payload[:uuid])).to exist
     end
 
-    it 'auto signs in and returns when already linked' do
-      user.external_uuids.create!(uuid: payload[:uuid])
-      arrive_from_app(params: signed_params, do_expect: false)
-      expect_back_at_app
-    end
-
     it 'prompts for terms agreement when there is a new contract version' do
       user.external_uuids.create!(uuid: payload[:uuid])
       make_new_contract_version
@@ -55,15 +49,24 @@ feature 'Educator signed params flow', js: true do
       expect_back_at_app
     end
 
-  end
+    context 'when already linked' do
+      before { user.external_uuids.create!(uuid: payload[:uuid]) }
 
-  it 'signs in and links' do
-    user = create_newflow_user(payload[:email])
-    user.update!(role: 'instructor')
-    arrive_from_app(params: signed_params)
-    newflow_log_in_user(payload[:email], 'password')
-    expect_back_at_app
-    expect_validated_records(params: payload, user: user)
+      it 'auto signs in and sends user back to app they came from' do
+        arrive_from_app(params: signed_params, do_expect: false)
+        expect_back_at_app
+      end
+    end
+
+    context 'when not yet linked' do
+      it 'links after signing in' do
+        arrive_from_app(params: signed_params)
+        newflow_log_in_user(payload[:email], 'password')
+        expect_back_at_app
+        expect_validated_records(params: payload, user: user)
+      end
+    end
+
   end
 
   it 'can sign up with signed data' do
@@ -81,7 +84,8 @@ feature 'Educator signed params flow', js: true do
     fill_in(t(:"login_signup_form.pin_placeholder"), with: EmailAddress.last.confirmation_pin)
     click_button(t :"login_signup_form.confirm_my_account_button")
 
-    click_on(I18n.t(:"login_signup_form.log_in"))
+    simulate_successful_sheerid_instant_verification
+    complete_profile_form
     expect_back_at_app
     expect_validated_records(params: payload)
   end
@@ -114,7 +118,9 @@ feature 'Educator signed params flow', js: true do
       change(EmailAddress.verified, :count)
     )
 
-    click_on(I18n.t(:"login_signup_form.log_in"))
+    simulate_successful_sheerid_instant_verification
+    complete_profile_form
+
     expect_back_at_app
     expect_validated_records(params: payload)
   end
@@ -134,6 +140,18 @@ feature 'Educator signed params flow', js: true do
       arrive_from_app(params: signed_params, do_expect: false)
       expect_login_form_page
     end
+  end
+
+  def simulate_successful_sheerid_instant_verification
+    User.last.update!(faculty_status: User::CONFIRMED_FACULTY)
+    visit(educator_profile_form_path)
+  end
+
+  def complete_profile_form
+    find('#signup_educator_specific_role_other').click
+    fill_in('signup_other_role_name', with: 'some other educator role')
+    find('input[type=submit]').click
+    click_on(t(:"login_signup_form.finish"))
   end
 
   def expect_validated_records(params:, user: User.last, email_is_verified: true)

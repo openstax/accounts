@@ -147,6 +147,7 @@ pl:
     min_characters: "%{number} znaków minimum"
     show_password_btn: POKAZAĆ
     hide_password_btn: UKRYĆ
+    finish: koniec
 
     student_email_verification_form_decription: >-
       An email has been sent to <b>%{email}</b>.

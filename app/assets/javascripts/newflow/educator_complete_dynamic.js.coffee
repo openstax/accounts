@@ -47,7 +47,7 @@ class NewflowUi.EducatorComplete
     @please_fill_out_other = @findOrLogNotFound(@form, '.other.newflow-mustdo-alert')
     @other_input = @findOrLogNotFound(@other_specify, "input")
 
-    @school_name_input.change(@onSchoolNameChange)
+    @school_name_input.on('input', @onSchoolNameChange)
     @completed_role_radio.change(@onRoleChange)
     @other_input.change(@onOtherChange)
     @how_chosen_radio.change(@onHowChosenChange)
@@ -158,6 +158,7 @@ class NewflowUi.EducatorComplete
   onSchoolNameChange: ->
     @please_fill_out_school.hide()
     @continue.prop('disabled', false)
+    @onRoleChange()
 
   onRoleChange: ->
     @please_select_role.hide()

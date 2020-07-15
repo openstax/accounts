@@ -26,50 +26,5 @@ module Newflow
       end
     end
 
-    def save_unverified_user(user)
-      session[:unverified_user_id] = user.id
-    end
-
-    def unverified_user
-      id = session[:unverified_user_id]&.to_i
-      return unless id.present?
-
-      @unverified_user ||= User.find_by(id: id, state: 'unverified')
-    end
-
-    def clear_unverified_user
-      session.delete(:unverified_user_id)
-    end
-
-    def clear_login_failed_email
-      session.delete(:login_failed_email)
-    end
-
-    def clear_signup_state
-      clear_login_failed_email
-      clear_unverified_user
-    end
-
-    def save_login_failed_email(email)
-      session[:login_failed_email] = email
-    end
-
-    def login_failed_email
-      session.delete(:login_failed_email)
-    end
-
-    def save_incomplete_educator(user)
-      session[:current_incomplete_educator_uuid] = user.uuid
-    end
-
-    def current_incomplete_educator
-      return if session[:current_incomplete_educator_uuid].blank?
-      @current_incomplete_educator ||= User.find_by(uuid: session[:current_incomplete_educator_uuid])
-    end
-
-    def clear_incomplete_educator
-      session.delete(:current_incomplete_educator_uuid)
-    end
-
   end
 end

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 module Newflow
   module EducatorSignup
-    describe ActivateAccount, type: :routine  do
+    describe ActivateEducator, type: :routine  do
       context 'when success' do
         before do
           disable_sfdc_client
