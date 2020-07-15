@@ -12,13 +12,13 @@ module Newflow
             redirect_to(:educator_profile_form)
           end
         when 'educator_sheerid_form'
-          if current_incomplete_educator.confirmed_faculty? || current_incomplete_educator.rejected_faculty?
+          if current_incomplete_educator.confirmed_faculty? || current_incomplete_educator.rejected_faculty? || current_incomplete_educator.sheerid_verification_id.present?
             redirect_to(educator_profile_form_path(request.query_parameters))
           end
         when 'educator_profile_form'
           if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
             EducatorSignup::SheeridRejectedEducator.call(user: current_incomplete_educator)
-          elsif params[:verificationId].present?
+          elsif params[:verificationId].present? && current_incomplete_educator.sheerid_verification_id.blank?
             current_incomplete_educator.update_attribute(:sheerid_verification_id, params[:verificationId])
           end
         end
