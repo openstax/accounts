@@ -52,7 +52,7 @@ module Newflow
         lead.update(
           first_name: user.first_name,
           last_name: user.last_name,
-          school: user.sheerid_reported_school || user.self_reported_school || UNKNOWN_SCHOOL_NAME,
+          school: best_school_name_for(user),
           role: User.roles[user.role] == User.roles[User::OTHER_ROLE] ? user.other_role_name : user.role,
           num_students: user.how_many_students,
           adoption_status: ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
@@ -61,6 +61,16 @@ module Newflow
           subject: user.which_books,
           finalize_educator_signup: (user.confirmed_faculty? || user.rejected_faculty?) && user.is_profile_complete?
         )
+      end
+
+      def best_school_name_for(user)
+        if user.sheerid_reported_school.present?
+          user.sheerid_reported_school
+        elsif user.self_reported_school.present?
+          user.self_reported_school
+        else
+         UNKNOWN_SCHOOL_NAME
+        end
       end
 
       def log_success(user, lead)

@@ -1,5 +1,6 @@
 module Newflow
   module EducatorSignupHelper
+    VERIFICATION_ID_URL_PARAM = :verificationid
 
       def stepwise_signup_flow_triggers
         case action_name
@@ -18,10 +19,14 @@ module Newflow
         when 'educator_profile_form'
           if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
             EducatorSignup::SheeridRejectedEducator.call(user: current_incomplete_educator)
-          elsif params[:verificationId].present? && current_incomplete_educator.sheerid_verification_id.blank?
-            current_incomplete_educator.update_attribute(:sheerid_verification_id, params[:verificationId])
+          elsif sheerid_provided_verification_id_param.present? && current_incomplete_educator.sheerid_verification_id.blank?
+            current_incomplete_educator.update_attribute(:sheerid_verification_id, sheerid_provided_verification_id_param)
           end
         end
+      end
+
+      def sheerid_provided_verification_id_param
+        params[VERIFICATION_ID_URL_PARAM]
       end
 
       def is_school_not_supported_by_sheerid?
