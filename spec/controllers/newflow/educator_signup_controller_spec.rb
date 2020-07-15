@@ -38,7 +38,7 @@ module Newflow
         end
 
         it 'saves unverified user in the session' do
-          expect_any_instance_of(described_class).to receive(:save_unverified_user).and_call_original
+          expect_any_instance_of(described_class).to receive(:save_incomplete_educator).and_call_original
           post(:educator_signup, params: params)
         end
 
@@ -95,7 +95,9 @@ module Newflow
 
     describe 'POST #educator_change_signup_email' do
       before do
-        create_newflow_user('original@openstax.org')
+        user = create_newflow_user('original@openstax.org')
+        user.update_attribute('state', 'unverified')
+        allow_any_instance_of(described_class).to receive(:current_incomplete_educator).and_return(user)
       end
 
       context 'success' do
@@ -109,8 +111,6 @@ module Newflow
 
         it 'redirects to educator_email_verification_form_updated_email_path' do
           user = User.last
-          user.update_attribute('state', 'unverified')
-          session[:unverified_user_id] = user.id
           post(:educator_change_signup_email, params: params)
           expect(response).to redirect_to(educator_email_verification_form_updated_email_path)
         end
@@ -125,8 +125,6 @@ module Newflow
 
         it 'renders educator_change_signup_email_form' do
           user = User.last
-          user.update_attribute('state', 'unverified')
-          session[:unverified_user_id] = user.id
 
           post(:educator_change_signup_email, params: params)
           expect(response).to render_template(:educator_change_signup_email_form)
@@ -135,29 +133,29 @@ module Newflow
     end
 
     describe 'GET #educator_email_verification_form' do
-      it 'renders educator_email_verification_form unless missing unverified_user' do
-        get(:educator_email_verification_form)
-        expect(response).to redirect_to newflow_signup_path
+      context 'with current incomplete educator' do
+        before { allow_any_instance_of(described_class).to receive(:current_incomplete_educator).and_return(user) }
 
-        user = create_newflow_user('user@openstax.org')
-        user.update_attribute('state', 'unverified')
-        session[:unverified_user_id] = user.id
+        let(:user) { FactoryBot.create(:user_with_emails, state: User::UNVERIFIED) }
 
-        get(:educator_email_verification_form)
-        expect(response).to render_template(:educator_email_verification_form)
+        it 'renders correct template' do
+          get(:educator_email_verification_form)
+          expect(response).to render_template(:educator_email_verification_form)
+        end
       end
     end
 
     describe 'GET #educator_email_verification_form_updated_email' do
       it 'renders OK' do
         user = create_newflow_user('user@openstax.org')
-        allow_any_instance_of(described_class).to receive(:unverified_user) { user }
+        user.update(state: User::UNVERIFIED)
+        allow_any_instance_of(described_class).to receive(:current_incomplete_educator) { user }
         get('educator_email_verification_form_updated_email')
         expect(response.status).to eq(200)
         expect(response).to render_template(:educator_email_verification_form_updated_email)
       end
 
-      it 'redirects when there is no unverified_user present' do
+      it 'redirects when there is no current_incomplete_educator present' do
         get('educator_email_verification_form_updated_email')
         expect(response.status).to eq(302)
       end
