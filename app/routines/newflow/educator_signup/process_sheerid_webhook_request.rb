@@ -18,11 +18,11 @@ module Newflow
         existing_user = EmailAddress.verified.find_by(value: verification.email)&.user
 
         if verification.errors.none? && verification.verified? && existing_user
-          VerifyEducator.perform_later(verification_id: verification_id, user: user)
+          VerifyEducator.perform_later(verification_id: verification_id, user: existing_user)
         elsif verification.errors.present?
           Rails.logger.warn("#{self.class.name} ERROR! #{verification.errors.full_messages}")
         elsif verification.rejected? && existing_user
-          run(SheeridRejectedEducator, user: user, verification_id: verification_id)
+          run(SheeridRejectedEducator, user: existing_user, verification_id: verification_id)
         elsif verification.present? && existing_user.present?
           existing_user.faculty_status = verification.current_step_to_faculty_status
           existing_user.sheerid_verification_id = verification_id if existing_user.sheerid_verification_id.blank?
