@@ -23,7 +23,7 @@ module Newflow
 
           user = @handler_result.outputs.user
 
-          if !user.student? && !user.is_profile_complete?
+          if !user.student? && Settings::FeatureFlags::educator_feature_flag && user.is_newflow? && !user.is_profile_complete?
             save_incomplete_educator(user)
             security_log(:educator_resumed_signup_flow, user: user)
             redirect_to(educator_sheerid_form_path)
