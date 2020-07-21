@@ -8,12 +8,12 @@ def create_newflow_user(email, password='password', terms_agreed=nil, confirmati
 
   user = FactoryBot.create :user, terms_agreed_option, role: role
   FactoryBot.create(:email_address, user: user, value: email,
-                     confirmation_code: confirmation_code,
-                     verified: confirmation_code.nil?)
+                    confirmation_code: confirmation_code,
+                    verified: confirmation_code.nil?)
   identity = FactoryBot.create :identity, user: user, password: password
   authentication = FactoryBot.create :authentication, user: user,
-                                                       provider: 'identity',
-                                                       uid: identity.uid
+                                                      provider: 'identity',
+                                                      uid: identity.uid
   return user
 end
 
@@ -186,4 +186,34 @@ end
 
 def external_public_url
   capybara_url(external_app_for_specs_path) + '/public'
+end
+
+def expect_sheerid_iframe
+  within_frame do
+    expect(page).to have_text(sheerid_iframe_page_title)
+    expect(page.find('#sid-country')[:value]).to have_text('United States', exact: false)
+    expect(page.find('#sid-teacher-school')[:value]).to be_blank
+    expect(page.find('#sid-first-name')[:value]).to have_text(first_name)
+    expect(page.find('#sid-last-name')[:value]).to have_text(last_name)
+    expect(page.find('#sid-email')[:value]).to have_text(email_value)
+    expect(page).to have_text('Can\'t find your country in the list? Click here.')
+    expect(page).to have_text('Can\'t find your school in the list? Click here.')
+    expect(page).to have_text(iframe_submit_button_text)
+    visit(educator_profile_form_path)
+    expect(page.current_path).to eq(educator_profile_form_path)
+
+    # fill_in('First name', with: 'APPROVED')
+    # fill_in('School name', with: 'Rice University')
+    # find('#downshift-0-item-0').click
+    # expect(page).to have_text('Rice University (Houston, TX)')
+    # expect(page).not_to have_text('Verification Limit Exceeded', exact: false)
+    # click_on('Verify my instructor status')
+    # click_on('Continue')
+    # expect(page.current_path).to eq(educator_profile_form_path)
+
+    # find('#sid-teacher-school').click
+    # <div class="sid-organization-list__item sid-organization-list__item--highlighted" id="downshift-0-item-0" role="option" aria-selected="true" style="position: absolute; top: 0px; left: 0px; width: auto; height: 42px;">Rice University (Houston, TX)</div>
+    # downshift-0-item-0
+    # screenshot!
+  end
 end

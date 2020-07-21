@@ -6,7 +6,7 @@ module Newflow
     skip_forgery_protection(only: :sheerid_webhook)
 
     before_action(:prevent_caching, only: :sheerid_webhook)
-    before_action(:restart_signup_if_missing_incomplete_educator, only: %i[
+    before_action(:newflow_authenticate_user!, only: %i[
         educator_change_signup_email_form
         educator_change_signup_email
         educator_email_verification_form

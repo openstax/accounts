@@ -52,8 +52,8 @@ module Newflow
           provider: @oauth_provider,
           uid: @oauth_uid
         )
-      else # sign up new user, then we will log them in.
-        user = create_user_instance
+      else # sign up new student, then we will log them in.
+        user = create_student_user_instance
         run(TransferOmniauthData, oauth_data, user)
         outputs.authentication = create_authentication(user, @oauth_provider)
       end
@@ -175,8 +175,8 @@ module Newflow
       @oauth_data ||= parse_oauth_data(oauth_response)
     end
 
-    def create_user_instance
-      user = User.new(state: 'unverified', is_newflow: true)
+    def create_student_user_instance
+      user = User.new(state: 'unverified', role: User::STUDENT_ROLE, is_newflow: true)
       user.full_name = oauth_data.name
       transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
       user

@@ -11,7 +11,6 @@ module Newflow
         true
       end
 
-
       def exec(user)
         return if user.activated?
 

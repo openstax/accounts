@@ -57,7 +57,7 @@ class SecurityLog < ActiveRecord::Base
     change_password_form_loaded
     change_password_form_not_loaded
     student_social_sign_up
-    student_authenticated_with_social
+    authenticated_with_social
     student_auth_with_social_failed
     student_social_auth_confirmation_success
     student_social_auth_confirmation_failed

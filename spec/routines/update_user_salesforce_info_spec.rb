@@ -513,8 +513,9 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
   end
 
   context 'with the new flow in play' do
-    let(:user) { FactoryBot.create(:user, faculty_status: :confirmed_faculty) }
-    let(:routine_call) { described_class.call }
+    subject(:routine_call) { described_class.call }
+
+    let(:user) { FactoryBot.create(:user, faculty_status: user_faculty_status ) }
     let(:email_value) { 'someone@example.com' }
 
     before {
@@ -531,8 +532,20 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       )
     }
 
-      it 'does not override a user\'s confirmed_faculty status' do
-        expect{ routine_call }.not_to change(user, :faculty_status)
+      context 'when user has confirmed_faculty status' do
+        let(:user_faculty_status) { :confirmed_faculty }
+
+        it 'does not override a user\'s confirmed_faculty status' do
+          expect { routine_call }.not_to change(user, :faculty_status)
+        end
+      end
+
+      context 'when user has pending_faculty status' do
+        let(:user_faculty_status) { :pending_faculty }
+
+        it 'does not override a user\'s confirmed_faculty status' do
+          expect { routine_call }.not_to change(user, :faculty_status)
+        end
       end
   end
 
