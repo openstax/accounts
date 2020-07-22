@@ -20,15 +20,17 @@ class EducatorSignupFlowDecorator
 
   def next_step
     case true
-    when current_step == 'login' && user.sheerid_verification_id.blank?
+    when current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
       educator_sheerid_form_path
+    else
+      raise("Next step uncaught in #{self.class.name}")
     end
   end
 
   private ###################
 
   def shouldnt_proceed?
-    !user.student? || !Settings::FeatureFlags.educator_feature_flag
+    user.student? || !Settings::FeatureFlags.educator_feature_flag
   end
 
 end
