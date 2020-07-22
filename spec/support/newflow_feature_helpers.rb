@@ -6,7 +6,7 @@ def create_newflow_user(email, password='password', terms_agreed=nil, confirmati
 
   # return if User.find_by_username(username).present?
 
-  user = FactoryBot.create :user, terms_agreed_option, role: role
+  user = FactoryBot.create(:user, terms_agreed_option, role: role, is_newflow: true)
   FactoryBot.create(:email_address, user: user, value: email,
                     confirmation_code: confirmation_code,
                     verified: confirmation_code.nil?)

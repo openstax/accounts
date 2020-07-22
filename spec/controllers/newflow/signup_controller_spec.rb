@@ -18,6 +18,11 @@ module Newflow
     end
 
     describe 'GET #signup_done' do
+      before do
+        user = FactoryBot.create(:user)
+        mock_current_user(user)
+      end
+
       it 'renders' do
         get(:signup_done)
         expect(response).to render_template(:signup_done)
