@@ -38,7 +38,7 @@ module Newflow
         end
 
         it 'saves unverified user in the session' do
-          expect_any_instance_of(described_class).to receive(:save_incomplete_educator).and_call_original
+          expect_any_instance_of(described_class).to receive(:save_unverified_user).and_call_original
           post(:educator_signup, params: params)
         end
 
