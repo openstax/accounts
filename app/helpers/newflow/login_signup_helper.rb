@@ -1,6 +1,10 @@
 module Newflow
   module LoginSignupHelper
 
+    def decorated_user
+      EducatorSignupFlowDecorator.new(current_user, action_name)
+    end
+
     def generate_sheer_id_url(user:)
       url = standard_parse_url(Settings::Db.store.sheer_id_base_url)
       url.query_values = url.query_values.merge(

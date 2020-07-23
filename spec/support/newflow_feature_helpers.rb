@@ -218,6 +218,10 @@ def expect_sheerid_iframe
   end
 end
 
+def simulate_step_3_instant_verification(user, sheerid_verification_id)
+  Newflow::EducatorSignup::VerifyEducator.call(user: user, verification_id: sheerid_verification_id)
+end
+
 def expect_educator_step_4_page
   visit(educator_profile_form_path)
   expect(page.current_path).to eq(educator_profile_form_path)

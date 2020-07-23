@@ -120,6 +120,10 @@ module Newflow
     end
 
     context 'when educator stops signup flow, logs out, after completing step 2' do
+      let(:sheerid_verification) do
+        FactoryBot.create(:sheerid_verification, email: email_value)
+      end
+
       it 'redirects them to continue signup flow (step 3) after logging in' do
         visit(login_path(return_param))
         click_on(I18n.t(:"login_signup_form.sign_up"))
@@ -156,7 +160,7 @@ module Newflow
 
         # Step 3
         expect_sheerid_iframe
-        simulate_step_3_instant_verification
+        simulate_step_3_instant_verification(User.last, sheerid_verification.verification_id)
 
         # Step 4
         expect_educator_step_4_page
