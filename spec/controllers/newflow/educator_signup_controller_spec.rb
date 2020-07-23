@@ -2,6 +2,8 @@ require 'rails_helper'
 
 module Newflow
   RSpec.describe EducatorSignupController, type: :controller do
+    before { turn_on_educator_feature_flag }
+
     describe 'GET #educator_signup_form' do
       it 'renders educator signup_form' do
         get(:educator_signup_form)

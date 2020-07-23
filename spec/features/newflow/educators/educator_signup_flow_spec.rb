@@ -29,6 +29,7 @@ module Newflow
           click_on(I18n.t(:"login_signup_form.sign_up"))
           click_on(I18n.t(:"login_signup_form.educator"))
 
+          # Step 1
           fill_in 'signup_first_name',	with: first_name
           fill_in 'signup_last_name',	with: last_name
           fill_in 'signup_phone_number', with: phone_number
@@ -37,6 +38,7 @@ module Newflow
           submit_signup_form
           screenshot!
 
+          # Step 2
           # sends an email address confirmation email
           expect(page.current_path).to eq(educator_email_verification_form_path)
           open_email(email_value)
@@ -49,8 +51,11 @@ module Newflow
           # ... sends you to the SheerID form
           expect(page.current_path).to eq(educator_sheerid_form_path)
 
+          # Step 3
           expect_sheerid_iframe
 
+          # Step 4
+          expect_educator_step_4_page
           find('#signup_educator_specific_role_other').click
           fill_in('Other (please specify)', with: 'President')
           click_on('Continue')
@@ -72,6 +77,7 @@ module Newflow
           expect(page.current_path).to eq(newflow_signup_path)
           click_on(I18n.t(:"login_signup_form.educator"))
 
+          # Step 1
           fill_in 'signup_first_name',	with: first_name
           fill_in 'signup_last_name',	with: last_name
           fill_in 'signup_phone_number', with: phone_number
@@ -80,6 +86,7 @@ module Newflow
           submit_signup_form
           screenshot!
 
+          # Step 2
           # sends an email address confirmation email
           expect(page.current_path).to eq(educator_email_verification_form_path)
           open_email(email_value)
@@ -92,8 +99,11 @@ module Newflow
           # ... which sends you to the SheerID form
           expect(page.current_path).to eq(educator_sheerid_form_path)
 
+          # Step 3
           expect_sheerid_iframe
 
+          # Step 4
+          expect_educator_step_4_page
           find('#signup_educator_specific_role_other').click
           fill_in('Other (please specify)', with: 'President')
           click_on('Continue')
@@ -146,8 +156,10 @@ module Newflow
 
         # Step 3
         expect_sheerid_iframe
+        simulate_step_3_instant_verification
 
         # Step 4
+        expect_educator_step_4_page
         find('#signup_educator_specific_role_other').click
         fill_in('Other (please specify)', with: 'President')
         click_on('Continue')
@@ -167,16 +179,33 @@ module Newflow
     end
 
     context 'when legacy educator wants to request faculty verification' do
-      before(:each) { visit(login_path) }
+      before(:each) do
+        educator.update(
+          is_newflow: false,
+          role: User::INSTRUCTOR_ROLE,
+          first_name: first_name,
+          last_name: last_name
+        )
 
-      let(:educator) { FactoryBot.create(:user, role: User::INSTRUCTOR_ROLE) }
+        visit(login_path)
+        newflow_log_in_user(email_value, password)
+        visit faculty_access_apply_path(r: capybara_url(external_app_for_specs_path))
+      end
+
+      let!(:educator) { create_newflow_user(email_value, password) }
+      let(:email_value) { 'user@openstax.org' }
+      let(:password) { 'password' }
 
       context 'with faculty status as no_faculty_info' do
-        it 'sends them to step 3 — SheerID iframe'
+        it 'sends them to step 3 — SheerID iframe' do
+          expect_sheerid_iframe
+        end
       end
 
       context 'with faculty status as rejected' do
-        it 'sends them to step 4 — Educator Profile Form'
+        it 'sends them to step 4 — Educator Profile Form' do
+          expect_educator_step_4_page
+        end
       end
     end
 

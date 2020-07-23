@@ -5,7 +5,6 @@ module Newflow
 
     skip_forgery_protection(only: :sheerid_webhook)
 
-    before_action(:stepwise_signup_flow_triggers)
     before_action(:prevent_caching, only: :sheerid_webhook)
     before_action(:exit_newflow_signup_if_logged_in, only: :educator_signup_form)
     before_action(:restart_signup_if_missing_unverified_user, only: %i[
@@ -23,6 +22,7 @@ module Newflow
         educator_pending_cs_verification
       ]
     )
+    before_action(:stepwise_signup_flow_triggers)
 
     def educator_signup
       handle_with(

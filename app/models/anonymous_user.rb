@@ -9,6 +9,10 @@ class AnonymousUser
     false
   end
 
+  def student?
+    false
+  end
+
   def oauth_applications
     []
   end

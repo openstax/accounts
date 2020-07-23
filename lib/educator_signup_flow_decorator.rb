@@ -15,15 +15,30 @@ class EducatorSignupFlowDecorator
     case action
     when 'redirect_back_upon_login'
       user.is_newflow? && user.is_profile_complete?
+    when 'educator_sheerid_form'
+      user.no_faculty_info? || user.pending_faculty?
+    when 'educator_signup_form'
+      user.is_anonymous?
+    when 'educator_signup'
+      user.is_anonymous?
+    when 'educator_email_verification_form'
+      user.is_anonymous?
+    else
+      true
     end
   end
 
+  # The next path or page to go to
   def next_step
     case true
     when current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
       educator_sheerid_form_path
+    when current_step == 'educator_sheerid_form'
+      #
+    when current_step == 'educator_signup_form' && !user.is_anonymous?
+        educator_email_verification_form_path
     else
-      raise("Next step uncaught in #{self.class.name}")
+      raise("Next step (#{current_step}) uncaught in #{self.class.name}")
     end
   end
 

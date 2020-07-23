@@ -224,6 +224,10 @@ class User < ActiveRecord::Base
     state == NEEDS_PROFILE
   end
 
+  def no_faculty_info?
+    faculty_status == NO_FACULTY_INFO
+  end
+
   def pending_faculty?
     faculty_status == PENDING_FACULTY
   end

@@ -201,8 +201,6 @@ def expect_sheerid_iframe
     expect(page).to have_text('Can\'t find your country in the list? Click here.')
     expect(page).to have_text('Can\'t find your school in the list? Click here.')
     expect(page).to have_text(iframe_submit_button_text)
-    visit(educator_profile_form_path)
-    expect(page.current_path).to eq(educator_profile_form_path)
 
     # fill_in('First name', with: 'APPROVED')
     # fill_in('School name', with: 'Rice University')
@@ -218,4 +216,9 @@ def expect_sheerid_iframe
     # downshift-0-item-0
     # screenshot!
   end
+end
+
+def expect_educator_step_4_page
+  visit(educator_profile_form_path)
+  expect(page.current_path).to eq(educator_profile_form_path)
 end
