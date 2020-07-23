@@ -28,9 +28,8 @@ class EducatorSignupFlowDecorator
 
     case action
     when 'redirect_back_upon_login'
-      user.is_newflow? && user.is_profile_complete?
+      !user.is_newflow? || (user.is_newflow? && user.is_profile_complete?)
     when 'educator_sheerid_form'
-      # debugger
       (user.no_faculty_info? || user.pending_faculty?) && user.sheerid_verification_id.blank?
     when 'educator_signup_form'
       user.is_anonymous?
@@ -48,6 +47,8 @@ class EducatorSignupFlowDecorator
     case true
     when current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
       educator_sheerid_form_path
+    when current_step == 'login' && (user.sheerid_verification_id.present? || user.is_sheerid_unviable?)
+      educator_profile_form_path
     when current_step == 'educator_sheerid_form'
       if user.confirmed_faculty? || user.rejected_faculty? || user.sheerid_verification_id.present?
         # debugger # educator_profile_form_path(request.query_parameters)

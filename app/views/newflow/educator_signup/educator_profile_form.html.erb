@@ -27,7 +27,7 @@
 
         <div class="content">
           <div class="questions">
-          <div class="form-group question school-name<%= (params[:school].present? || current_incomplete_educator&.rejected_faculty?) ? ' school-name-visible' : '' %>">
+          <div class="form-group question school-name<%= should_show_school_name_field? ? ' school-name-visible' : '' %>">
               <div class="school-name">
                 <%= label_tag :school_name, I18n.t(:"educator_profile_form.school_name"),
                               class: 'field-label'
@@ -200,12 +200,12 @@
                 label_tag(
                   :books_used,
                   I18n.t(:"educator_profile_form.books_used"),
-                  class: 'field-label'
+                  class: 'field-label books_youve_used_label'
                 )
                 label_tag(
-                  :books_used,
+                  :books_of_interest,
                   I18n.t(:"educator_profile_form.books_of_interest"),
-                  class: 'field-label'
+                  class: 'field-label books_of_interest_label'
                 )
               %>
               <div class="used newflow-mustdo-alert">
