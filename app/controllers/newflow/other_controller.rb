@@ -33,9 +33,5 @@ module Newflow
       end
     end
 
-    def decorated_user
-      EducatorSignupFlowDecorator.new(current_user, action_name)
-    end
-
   end
 end

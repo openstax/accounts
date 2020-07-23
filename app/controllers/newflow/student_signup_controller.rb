@@ -3,10 +3,10 @@ module Newflow
 
     before_action :restart_signup_if_missing_unverified_user, only: %i[
       student_change_signup_email_form
-    student_change_signup_email
-    student_email_verification_form
-    student_email_verification_form_updated_email
-    student_verify_email_by_pin
+      student_change_signup_email
+      student_email_verification_form
+      student_email_verification_form_updated_email
+      student_verify_email_by_pin
     ]
 
     def student_signup

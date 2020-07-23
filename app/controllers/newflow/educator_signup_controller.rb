@@ -22,7 +22,6 @@ module Newflow
         educator_pending_cs_verification
       ]
     )
-    # before_action(:stepwise_signup_flow_triggers)
     before_action(:store_if_sheerid_is_unviable_for_user, only: :educator_profile_form)
     before_action(:store_sheerid_verification_for_user, only: :educator_profile_form)
     before_action(:exit_signup_if_steps_complete, only: %i[educator_sheerid_form educator_profile_form])
