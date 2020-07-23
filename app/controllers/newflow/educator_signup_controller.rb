@@ -139,7 +139,7 @@ module Newflow
           sign_in!(user)
           clear_incomplete_educator
 
-          if @handler_result.outputs.is_educator_pending_cs_verification
+          if user.is_educator_pending_cs_verification?
             redirect_to(educator_pending_cs_verification_path)
           else
             redirect_to(signup_done_path)

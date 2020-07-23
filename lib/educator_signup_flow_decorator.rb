@@ -16,7 +16,7 @@ class EducatorSignupFlowDecorator
     when 'redirect_back_upon_login'
       user.is_newflow? && user.is_profile_complete?
     when 'educator_sheerid_form'
-      user.no_faculty_info? || user.pending_faculty?
+      (user.no_faculty_info? || user.pending_faculty?) && user.sheerid_verification_id.blank?
     when 'educator_signup_form'
       user.is_anonymous?
     when 'educator_signup'
@@ -34,9 +34,16 @@ class EducatorSignupFlowDecorator
     when current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
       educator_sheerid_form_path
     when current_step == 'educator_sheerid_form'
-      #
+      if user.confirmed_faculty? || user.rejected_faculty? || user.sheerid_verification_id.present?
+      end
     when current_step == 'educator_signup_form' && !user.is_anonymous?
         educator_email_verification_form_path
+    when current_step == 'educator_email_verification_form' && user.activated?
+      if !user.student? && user.activated? && user.pending_faculty && user.sheerid_verification_id.blank?
+        educator_sheerid_form_path
+      elsif user.activated?
+        educator_profile_form_path
+      end
     else
       raise("Next step (#{current_step}) uncaught in #{self.class.name}")
     end
