@@ -4,6 +4,9 @@ FactoryBot.define do
     state { 'activated' } # otherwise the default from DB will be to 'temp'
     first_name { Faker::Name.first_name }
     last_name  { Faker::Name.last_name  }
+
+    is_profile_complete { true }
+
     trait :admin do
       is_administrator { true }
     end

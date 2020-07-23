@@ -147,6 +147,7 @@ module Newflow
         # ... with the correct PIN
         fill_in 'confirm_pin', with: correct_pin
         find('[type=submit]').click
+        wait_for_ajax
         # ... sends you to the SheerID form
         expect(page.current_path).to eq(educator_sheerid_form_path)
 
