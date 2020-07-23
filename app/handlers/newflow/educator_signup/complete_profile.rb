@@ -53,7 +53,7 @@ module Newflow
           which_books: signup_params.books_used&.reject(&:empty?)&.join(';'),
           self_reported_school: signup_params.school_name,
           is_profile_complete: true,
-          is_educator_pending_cs_verification: signup_params.is_school_not_supported_by_sheerid == 'true' || signup_params.is_country_not_supported_by_sheerid == 'true'
+          is_educator_pending_cs_verification: signup_params.is_school_not_supported_by_sheerid == 'true' || signup_params.is_country_not_supported_by_sheerid == 'true' || user.is_sheerid_unviable?
         )
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 

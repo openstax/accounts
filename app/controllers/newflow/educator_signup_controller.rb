@@ -22,7 +22,9 @@ module Newflow
         educator_pending_cs_verification
       ]
     )
-    before_action(:stepwise_signup_flow_triggers)
+    # before_action(:stepwise_signup_flow_triggers)
+    before_action(:store_if_sheerid_is_unviable_for_user, only: :educator_profile_form)
+    before_action(:store_sheerid_verification_for_user, only: :educator_profile_form)
 
     def educator_signup
       handle_with(
@@ -160,6 +162,19 @@ module Newflow
     end
 
     private #################
+
+    def store_if_sheerid_is_unviable_for_user
+      if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
+        current_user.update!(is_sheerid_unviable: true)
+      end
+    end
+
+    def store_sheerid_verification_for_user
+      if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
+        current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)
+        security_log(:user_updated, message: 'updated sheerid_verification_id', user: current_user)
+      end
+    end
 
     def book_data
       @book_data ||= FetchBookData.new
