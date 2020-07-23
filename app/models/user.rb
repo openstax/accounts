@@ -146,13 +146,6 @@ class User < ActiveRecord::Base
 
   attribute :is_not_gdpr_location, :boolean, default: nil
 
-  alias_method :og_faculty_status, :faculty_status
-  def faculty_status
-    return PENDING_FACULTY if is_newflow? && !is_profile_complete?
-
-    og_faculty_status
-  end
-
   def self.username_is_valid?(username)
     user = User.new(username: username)
     user.valid?

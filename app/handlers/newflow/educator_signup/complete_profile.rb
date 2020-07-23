@@ -57,6 +57,11 @@ module Newflow
         )
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
+        if user.is_sheerid_verified? && !user.confirmed_faculty?
+          user.update(faculty_status: User::CONFIRMED_FACULTY)
+          transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
+        end
+
         outputs.user = user
 
         update_salesforce_lead

@@ -34,13 +34,19 @@ module Newflow
       private #################
 
       def update_user(user, verification)
-        user.update(
+        first_update = user.update(
           first_name: verification.first_name,
           last_name: verification.last_name,
           sheerid_reported_school: verification.organization_name,
-          faculty_status: verification.current_step_to_faculty_status,
-          sheerid_verification_id: verification.verification_id
+          sheerid_verification_id: verification.verification_id,
+          is_sheerid_verified: verification.verified?,
         )
+
+        if first_update && user.is_sheerid_verified? && user.is_profile_complete?
+          user.update(faculty_status: User::CONFIRMED_FACULTY)
+        else
+          first_update
+        end
       end
 
       def fetch_verification(verification_id)
