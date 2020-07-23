@@ -147,9 +147,10 @@ module Newflow
         # ... with the correct PIN
         fill_in 'confirm_pin', with: correct_pin
         find('[type=submit]').click
+        expect(User.last.activated?).to be(true)
         wait_for_ajax
         # ... sends you to the SheerID form
-        expect(page.current_path).to eq(educator_sheerid_form_path)
+        expect(page).to have_current_path(educator_sheerid_form_path)
 
         # LOG OUT
         visit(signout_path)
@@ -170,6 +171,7 @@ module Newflow
         click_on('Continue')
         expect(page.current_path).to eq(signup_done_path)
         click_on('Finish')
+        wait_for_ajax
         expect(page.current_url).to eq(external_app_url)
 
         # # can exit and go back to the app they came from
