@@ -46,3 +46,6 @@ brakeman.html
 
 # Ignore unix editor temp files
 *~
+
+# Ignore binary created by redis-server
+dump.rdb
