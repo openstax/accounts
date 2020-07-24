@@ -56,7 +56,7 @@ module Newflow
 
           # Step 4
           expect_educator_step_4_page
-          find('#signup_educator_specific_role_other').click
+          select_role('other')
           fill_in('Other (please specify)', with: 'President')
           click_on('Continue')
           expect(page.current_path).to eq(signup_done_path)
@@ -115,6 +115,49 @@ module Newflow
           # find('#exit-icon a').click
           # expect(page.current_path).to eq('/external_app_for_specs')
           # screenshot!
+        end
+      end
+    end
+
+    context 'user interface' do
+      before { mock_current_user(user) }
+
+      let(:user) do
+        FactoryBot.create(
+          :user, is_newflow: true, role: User::INSTRUCTOR_ROLE,
+          is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
+        )
+      end
+
+      context 'step 4' do
+        before do
+          visit(educator_profile_form_path)
+          expect_educator_step_4_page
+          select_role('instructor')
+          find('#signup_who_chooses_books_instructor').click
+          fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
+        end
+
+        context 'label for books list' do
+          context 'when already using openstax book(s)' do
+            before do
+              find('#signup_using_openstax_how_as_primary').click
+            end
+
+            it 'shows "Books used"' do
+              expect(page).to have_text(I18n.t(:"educator_profile_form.books_used"))
+            end
+          end
+
+          context 'when NOT yet using openstax book(s)' do
+            before do
+              find('#signup_using_openstax_how_as_recommending').click
+            end
+
+            it 'shows "Books of interest"' do
+              expect(page).to have_text(I18n.t(:"educator_profile_form.books_of_interest"))
+            end
+          end
         end
       end
     end
@@ -238,6 +281,9 @@ module Newflow
       context 'after completing step 4' do
         it 'sends them back to the next, correct, step'
       end
+
+    def select_role(role)
+      find("#signup_educator_specific_role_#{role}").click
     end
 
   end

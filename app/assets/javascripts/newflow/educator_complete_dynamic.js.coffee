@@ -2,7 +2,8 @@ class NewflowUi.EducatorComplete
 
   constructor: ->
     _.bindAll(@, 'onRoleChange', 'onHowUsingChange', 'onHowChosenChange', 'onTotalNumChange', 'onOtherChange', 'onSubmit', 'onBooksUsedChange', 'onSchoolNameChange')
-    @initMultiSelect()
+    @initBooksUsedMultiSelect()
+    @initBooksOfInterestMultiSelect()
     @form = $('.signup-page.completed-step')
 
     @other_specify = @findOrLogNotFound(@form, '.other-specify')
@@ -10,12 +11,14 @@ class NewflowUi.EducatorComplete
     @how_using = @findOrLogNotFound(@form, '.how-using')
     @total_num_students = @findOrLogNotFound(@form, '.total-num-students')
     @books_used = @findOrLogNotFound(@form, '.books-used')
+    @books_of_interest = @findOrLogNotFound(@form, '.books-of-interest')
 
     @please_select_role = @findOrLogNotFound(@form, '.completed-role .role.newflow-mustdo-alert')
     @please_fill_out_school = @findOrLogNotFound(@form, '.school-name.newflow-mustdo-alert')
     @please_fill_out_total_num = @findOrLogNotFound(@form, '.total-num-students .total-num.newflow-mustdo-alert')
     @please_select_using = @findOrLogNotFound(@form, '.how-using .using.newflow-mustdo-alert')
     @please_select_books_used = @findOrLogNotFound(@form, '.used.newflow-mustdo-alert')
+    @please_select_books_of_interest = @findOrLogNotFound(@form, '.books-of-interest.newflow-mustdo-alert')
 
     @other_specify.hide()
     @how_chosen.hide()
@@ -39,8 +42,6 @@ class NewflowUi.EducatorComplete
     @how_using_radio = @findOrLogNotFound(@how_using, "input")
 
     @books_used_select = @findOrLogNotFound(@books_used, "select")
-    @books_used_label = @findOrLogNotFound(@form, '.books-used .books_youve_used_label')
-    @books_of_interest_label = @findOrLogNotFound(@form, '.books-used .books_of_interest_label')
 
     @total_num_students_input = @findOrLogNotFound(@total_num_students, "input")
 
@@ -65,9 +66,13 @@ class NewflowUi.EducatorComplete
       console.log('Couldn\'t find ', selector)
       return null
 
-  initMultiSelect: ->
+  initBooksUsedMultiSelect: ->
     books_used = document.getElementById('signup_books_used')
     osMultiSelect(books_used)
+
+  initBooksOfInterestMultiSelect: ->
+    books_of_interest = document.getElementById('signup_books_of_interest')
+    osMultiSelect(books_of_interest)
 
   onSubmit: (ev) ->
     school_name_valid = @checkSchoolNameValid()
@@ -206,14 +211,19 @@ class NewflowUi.EducatorComplete
 
     if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_primary').is(':checked') )
       @books_used.show()
+      @books_of_interest.hide()
       @please_select_books_used.hide()
+      @please_select_books_of_interest.hide()
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_recommending').is(':checked') )
-      @books_used.show()
+      @books_of_interest.show()
+      @books_used.hide()
       @please_select_books_used.hide()
+      @please_select_books_of_interest.hide()
     else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_future').is(':checked') )
       @books_used.show()
-      @books_used_label.hide()
       @books_of_interest.show()
+      @please_select_books_used.hide()
+      @please_select_books_of_interest.hide()
     @continue.prop('disabled', false)
 
   onTotalNumChange: ->

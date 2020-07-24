@@ -200,12 +200,7 @@
                 label_tag(
                   :books_used,
                   I18n.t(:"educator_profile_form.books_used"),
-                  class: 'field-label books_youve_used_label'
-                )
-                label_tag(
-                  :books_of_interest,
-                  I18n.t(:"educator_profile_form.books_of_interest"),
-                  class: 'field-label books_of_interest_label'
+                  class: 'field-label'
                 )
               %>
               <div class="used newflow-mustdo-alert">
@@ -213,6 +208,26 @@
               </div>
 
               <%= fh.select name: :books_used,
+                            options: @book_titles,
+                            autofocus: true,
+                            multiple: true,
+                            custom_class: 'os-multiselect'
+              %>
+            </div>
+
+            <div class="form-group question books-of-interest">
+              <%=
+                label_tag(
+                  :books_of_interest,
+                  I18n.t(:"educator_profile_form.books_of_interest"),
+                  class: 'field-label'
+                )
+              %>
+              <div class="books-of-interest newflow-mustdo-alert">
+                <%= I18n.t(:"educator_profile_form.select_option") %>
+              </div>
+
+              <%= fh.select name: :books_of_interest,
                             options: @book_titles,
                             autofocus: true,
                             multiple: true,
