@@ -56,7 +56,7 @@ module Newflow
 
           # Step 4
           expect_educator_step_4_page
-          select_role('other')
+          select_educator_role('other')
           fill_in('Other (please specify)', with: 'President')
           click_on('Continue')
           expect(page.current_path).to eq(signup_done_path)
@@ -133,7 +133,7 @@ module Newflow
         before do
           visit(educator_profile_form_path)
           expect_educator_step_4_page
-          select_role('instructor')
+          select_educator_role('instructor')
           find('#signup_who_chooses_books_instructor').click
           fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
         end
@@ -256,6 +256,10 @@ module Newflow
         it 'sends them to step 4 — Educator Profile Form' do
           expect_educator_step_4_page
         end
+
+        it 'shows a school name field'
+
+        it 'shows a school-issued email field'
       end
     end
 
@@ -263,27 +267,6 @@ module Newflow
       context 'and have been in the pending faculty status step for more than 4 days' do
         it 'will send them through the CS verification process (modified step 4)'
       end
-    end
-
-    context 'when educator uses the browser\'s built-in back-arrow' do
-      context 'after completing step 1' do
-        it 'sends them back to the next, correct, step'
-      end
-
-      context 'after completing step 2' do
-        it 'sends them back to the next, correct, step'
-      end
-
-      context 'after completing step 3' do
-        it 'sends them back to the next, correct, step'
-      end
-
-      context 'after completing step 4' do
-        it 'sends them back to the next, correct, step'
-      end
-
-    def select_role(role)
-      find("#signup_educator_specific_role_#{role}").click
     end
 
   end
