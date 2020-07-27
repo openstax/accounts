@@ -1,4 +1,5 @@
 class SheeridVerification < ActiveRecord::Base
+
   VERIFIED = 'success'
   REJECTED = 'rejected'
 
@@ -28,4 +29,5 @@ class SheeridVerification < ActiveRecord::Base
       User.faculty_statuses[:pending_faculty]
     end
   end
+
 end

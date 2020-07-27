@@ -20,16 +20,12 @@ module Newflow
         user_from_signed_params: session[:user_from_signed_params],
         success: lambda {
           clear_signup_state
+          sign_in!(@handler_result.outputs.user)
 
-          user = @handler_result.outputs.user
-
-          if !user.student? && !user.is_profile_complete?
-            save_incomplete_educator(user)
-            security_log(:educator_resumed_signup_flow, user: user)
-            redirect_to(educator_sheerid_form_path)
-          else
-            sign_in!(@handler_result.outputs.user)
+          if current_user.student? || decorated_user.can_do?('redirect_back_upon_login')
             redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
+          else
+            redirect_to(decorated_user.next_step)
           end
         },
         failure: lambda {

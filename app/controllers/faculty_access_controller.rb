@@ -35,7 +35,7 @@ class FacultyAccessController < ApplicationController
     redirect_back if request.post?
   end
 
-  protected
+  private
 
   def redirect_to_sheerid_if_newflow
     if Settings::FeatureFlags.educator_feature_flag

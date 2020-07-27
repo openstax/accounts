@@ -20,8 +20,9 @@ module Newflow
             authentication = @handler_result.outputs.authentication
             user = @handler_result.outputs.user
 
-            if !user.activated?
-              # not activated means signup
+            if user.student? && !user.activated?
+              # Not activated means signup.
+              # Only students can sign up with a social network.
               unverified_user = ensure_unverified_user(user)
 
               save_unverified_user(unverified_user)
@@ -34,7 +35,7 @@ module Newflow
             end
 
             sign_in!(user)
-            security_log(:student_authenticated_with_social, user: user, authentication_id: authentication.id)
+            security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
             redirect_back(fallback_location: profile_newflow_path)
           },
           failure: lambda {

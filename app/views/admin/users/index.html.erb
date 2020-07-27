@@ -100,7 +100,7 @@
               </span> |
             <% end %>
 
-            <% security_log_params = { query: "user:#{user.id}" } %>
+            <% security_log_params = { query: "user_id:#{user.id}" } %>
 
             <span class="security_log">
               <%= link_to "Security Log", admin_security_log_path(search: security_log_params), target: '_blank' %>

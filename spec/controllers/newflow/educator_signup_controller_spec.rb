@@ -2,6 +2,8 @@ require 'rails_helper'
 
 module Newflow
   RSpec.describe EducatorSignupController, type: :controller do
+    before { turn_on_educator_feature_flag }
+
     describe 'GET #educator_signup_form' do
       it 'renders educator signup_form' do
         get(:educator_signup_form)
@@ -38,7 +40,7 @@ module Newflow
         end
 
         it 'saves unverified user in the session' do
-          expect_any_instance_of(described_class).to receive(:save_incomplete_educator).and_call_original
+          expect_any_instance_of(described_class).to receive(:save_unverified_user).and_call_original
           post(:educator_signup, params: params)
         end
 
@@ -97,7 +99,7 @@ module Newflow
       before do
         user = create_newflow_user('original@openstax.org')
         user.update_attribute('state', 'unverified')
-        allow_any_instance_of(described_class).to receive(:current_incomplete_educator).and_return(user)
+        allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user)
       end
 
       context 'success' do
@@ -134,7 +136,7 @@ module Newflow
 
     describe 'GET #educator_email_verification_form' do
       context 'with current incomplete educator' do
-        before { allow_any_instance_of(described_class).to receive(:current_incomplete_educator).and_return(user) }
+        before { allow_any_instance_of(described_class).to receive(:unverified_user).and_return(user) }
 
         let(:user) { FactoryBot.create(:user_with_emails, state: User::UNVERIFIED) }
 
@@ -149,13 +151,13 @@ module Newflow
       it 'renders OK' do
         user = create_newflow_user('user@openstax.org')
         user.update(state: User::UNVERIFIED)
-        allow_any_instance_of(described_class).to receive(:current_incomplete_educator) { user }
+        allow_any_instance_of(described_class).to receive(:unverified_user) { user }
         get('educator_email_verification_form_updated_email')
         expect(response.status).to eq(200)
         expect(response).to render_template(:educator_email_verification_form_updated_email)
       end
 
-      it 'redirects when there is no current_incomplete_educator present' do
+      it 'redirects when there is no unverified_user present' do
         get('educator_email_verification_form_updated_email')
         expect(response.status).to eq(302)
       end

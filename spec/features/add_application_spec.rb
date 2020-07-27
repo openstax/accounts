@@ -15,6 +15,7 @@ feature 'Add application to accounts', js: true do
     visit '/oauth/applications'
     expect(page).to have_content('OAuth2 Provider')
     create_new_application(true)
+    expect(page.current_path).to match('/oauth/applications/')
     expect(page).to have_content('Application created.')
     expect(page).to have_content('Application: example')
     expect(page).to have_content('Callback urls: https://localhost/')

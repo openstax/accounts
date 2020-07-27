@@ -24,6 +24,7 @@ require 'host'
 require 'sso_cookie_jar'
 require 'set_gdpr_data'
 require 'date_time'
+require 'educator_signup_flow_decorator'
 
 SITE_NAME = 'OpenStax Accounts'
 PAGE_TITLE_SUFFIX = SITE_NAME

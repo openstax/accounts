@@ -187,6 +187,10 @@ class User < ActiveRecord::Base
     false
   end
 
+  def step_3_complete?
+    sheerid_verification_id.present? || is_sheerid_unviable? || is_profile_complete?
+  end
+
   # State helpers.
   #
   # A User model begins life in the "temp" state, and can then be claimed by another user
@@ -222,6 +226,10 @@ class User < ActiveRecord::Base
 
   def is_needs_profile?
     state == NEEDS_PROFILE
+  end
+
+  def no_faculty_info?
+    faculty_status == NO_FACULTY_INFO
   end
 
   def pending_faculty?

@@ -8,7 +8,7 @@ module Newflow
       protected ###############
 
       def exec(verification_id:)
-        nonfatal_error(code: :verification_id_blank) if verification_id.blank?
+        fatal_error(code: :verification_id_blank) if verification_id.blank?
 
         outputs.verification = SheeridVerification.find_or_create_by(verification_id: verification_id) do |model|
           details = SheeridAPI.get_verification_details(verification_id)

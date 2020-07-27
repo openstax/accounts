@@ -36,7 +36,7 @@ class UpdateUserSalesforceInfo
 
     prepare_contacts
 
-    # Go through all users that have already have a Salesforce ID and make sure
+    # Go through all users that have already have a Salesforce Contact ID and make sure
     # their SF information is still the same.
 
     User.where.not(salesforce_contact_id: nil).find_each do |user|
@@ -48,7 +48,7 @@ class UpdateUserSalesforceInfo
       end
     end
 
-    # Go through all users that don't yet have a Salesforce ID and populate their
+    # Go through all users that don't yet have a Salesforce Contact ID and populate their
     # salesforce info when they have verified emails that match SF data.
 
     @contacts_by_email.keys.each_slice(1000) do |emails|
@@ -132,9 +132,10 @@ class UpdateUserSalesforceInfo
     end
 
     User.where(salesforce_contact_id: nil)
-        .where(faculty_status: User.faculty_statuses.except("no_faculty_info").values)
+        .where(faculty_status: User.faculty_statuses.except(User::NO_FACULTY_INFO).values)
+        .where(is_newflow: false) # because the new Accounts flow works differently; don't mess with it.
         .where.has{ |t| t.id.not_in user_ids_that_were_looked_at_for_leads}
-        .update_all(faculty_status: User.faculty_statuses[:no_faculty_info])
+        .update_all(faculty_status: User::NO_FACULTY_INFO)
 
     notify_errors
 

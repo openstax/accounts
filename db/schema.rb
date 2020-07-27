@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_14_021802) do
+ActiveRecord::Schema.define(version: 2020_07_23_092402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -306,11 +306,11 @@ ActiveRecord::Schema.define(version: 2020_07_14_021802) do
 
   create_table "sheerid_verifications", force: :cascade do |t|
     t.string "verification_id", null: false
-    t.string "email", null: false
-    t.string "current_step", null: false
-    t.string "first_name", null: false
-    t.string "last_name", null: false
-    t.string "organization_name", null: false
+    t.string "email"
+    t.string "current_step"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "organization_name"
   end
 
   create_table "user_external_uuids", id: :serial, force: :cascade do |t|
@@ -361,6 +361,9 @@ ActiveRecord::Schema.define(version: 2020_07_14_021802) do
     t.string "who_chooses_books"
     t.integer "using_openstax_how"
     t.boolean "is_profile_complete"
+    t.boolean "is_educator_pending_cs_verification"
+    t.boolean "is_sheerid_unviable"
+    t.boolean "is_sheerid_verified"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
