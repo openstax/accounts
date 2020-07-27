@@ -226,3 +226,7 @@ def expect_educator_step_4_page
   visit(educator_profile_form_path)
   expect(page.current_path).to eq(educator_profile_form_path)
 end
+
+def select_educator_role(role)
+  find("#signup_educator_specific_role_#{role}").click
+end

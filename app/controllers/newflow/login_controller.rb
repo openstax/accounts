@@ -22,7 +22,7 @@ module Newflow
           clear_signup_state
           sign_in!(@handler_result.outputs.user)
 
-          if current_user.student? || decorated_user.can_do?('redirect_back_upon_login')
+          if current_user.student? || !current_user.is_newflow? || (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login'))
             redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
           else
             redirect_to(decorated_user.next_step)

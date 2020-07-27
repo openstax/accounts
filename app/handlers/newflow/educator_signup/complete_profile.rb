@@ -3,8 +3,8 @@ module Newflow
     class CompleteProfile
 
       OTHER = 'other'
-      INSTRUCTOR = 'instructor'
       AS_PRIMARY = 'as_primary'
+      INSTRUCTOR = 'instructor'
       AS_FUTURE = 'as_future'
 
       lev_handler
@@ -19,6 +19,7 @@ module Newflow
         attribute :using_openstax_how, type: String
         attribute :num_students_per_semester_taught, type: Integer
         attribute :books_used, type: Object
+        attribute :books_of_interest, type: Object
 
         validates(
           :educator_specific_role,
@@ -50,7 +51,7 @@ module Newflow
           using_openstax_how: signup_params.using_openstax_how,
           who_chooses_books: signup_params.who_chooses_books,
           how_many_students: signup_params.num_students_per_semester_taught,
-          which_books: signup_params.books_used&.reject(&:empty?)&.join(';'),
+          which_books: which_books,
           self_reported_school: signup_params.school_name,
           is_profile_complete: true,
           is_educator_pending_cs_verification: signup_params.is_school_not_supported_by_sheerid == 'true' || signup_params.is_country_not_supported_by_sheerid == 'true' || user.is_sheerid_unviable?
@@ -77,6 +78,18 @@ module Newflow
         signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil
       end
 
+      def which_books
+        if signup_params.books_used.present?
+          format_books_for_salesforce_string(signup_params.books_used)
+        elsif signup_params.books_of_interest.present?
+          format_books_for_salesforce_string(signup_params.books_of_interest)
+        end
+      end
+
+      def format_books_for_salesforce_string(books)
+        books.reject(&:empty?)&.join(';')
+      end
+
       def check_params
         if (signup_params.is_school_not_supported_by_sheerid == 'true' ||
           signup_params.is_country_not_supported_by_sheerid == 'true') &&
@@ -96,6 +109,13 @@ module Newflow
           signup_params.books_used.blank?
 
           param_error(:books_used, :books_used_must_be_entered)
+        end
+
+        if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
+          signup_params.using_openstax_how != AS_PRIMARY &&
+          signup_params.books_of_interest.blank?
+
+          param_error(:books_of_interest, :books_of_interest_must_be_entered)
         end
 
         if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&

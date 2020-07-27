@@ -2,6 +2,10 @@ module ApplicationHelper
 
   include AlertHelper
 
+  def edu_newflow_activated?
+    Settings::FeatureFlags.educator_feature_flag
+  end
+
   def get_param_to_permit_legacy_flow
     params[:bpff]
   end
