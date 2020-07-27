@@ -7,10 +7,10 @@ module Newflow
     background { load 'db/seeds.rb' }
     before(:each) { turn_on_educator_feature_flag }
 
-    let(:first_name) { Faker::Alphanumeric.unique.alphanumeric(number: 30) }
-    let(:last_name) { Faker::Alphanumeric.unique.alphanumeric(number: 30) }
+    let(:first_name) { Faker::Name.first_name  }
+    let(:last_name) { Faker::Name.last_name  }
     let(:phone_number) { Faker::PhoneNumber.phone_number }
-    let(:email_value) { "#{Faker::Alphanumeric.alphanumeric(number: 20)}@rice.edu" }
+    let(:email_value) { Faker::Internet.unique.email(domain: '@rice.edu') }
     let(:password) { Faker::Internet.password(min_length: 8) }
     let(:sheerid_iframe_page_title) { 'Verify your instructor status' }
     let(:iframe_submit_button_text) { 'Verify my instructor status' }
@@ -144,10 +144,10 @@ module Newflow
         open_email(email_value)
         capture_email!(address: email_value)
         expect(current_email).to be_truthy
-        # ... with a link
-        verify_email_url = get_path_from_absolute_link(current_email, 'a')
-        visit(verify_email_url)
-        # ... which sends you to the SheerID form
+        # ... with the correct PIN
+        fill_in 'confirm_pin', with: correct_pin
+        find('[type=submit]').click
+        # ... sends you to the SheerID form
         expect(page.current_path).to eq(educator_sheerid_form_path)
 
         # LOG OUT
