@@ -210,7 +210,8 @@ module Newflow
         # Step 4
         expect_educator_step_4_page
         find('#signup_educator_specific_role_other').click
-        fill_in('Other (please specify)', with: 'President')
+        expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
+        fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
         click_on('Continue')
         expect(page.current_path).to eq(signup_done_path)
         click_on('Finish')
