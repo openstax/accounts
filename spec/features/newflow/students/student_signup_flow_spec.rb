@@ -208,6 +208,7 @@ module Newflow
         find('[type=submit]').click
 
         find('[type=submit]').click
+        expect(page).to_not have_text(I18n.t(:"login_signup_form.youre_done", first_name: 'Tester'))
 
         expect_back_at_app
 

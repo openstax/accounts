@@ -219,6 +219,7 @@ class NewflowUi.EducatorComplete
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked') )
       @other_specify.show()
       @books_used.hide()
+      @books_of_interest.hide()
       @how_chosen.hide()
       @total_num_students.hide()
       @how_using.hide()
