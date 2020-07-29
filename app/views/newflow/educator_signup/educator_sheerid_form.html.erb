@@ -1,7 +1,7 @@
 <%= render 'newflow/educator_signup/refresh_upon_going_back' %>
 
 <div id="login-signup-form">
-  <div class="content">
+  <div class="content educator-sheerid-form-page">
     <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
     <%= newflow_login_signup_card(
@@ -20,9 +20,3 @@
     <% end %>
   </div>
 </div>
-
-<style>
-  form, iframe {
-    height: 100rem !important;
-  }
-</style>
