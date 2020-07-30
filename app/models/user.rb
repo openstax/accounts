@@ -47,6 +47,7 @@ class User < ActiveRecord::Base
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
   DEFAULT_SCHOOL_LOCATION = VALID_SCHOOL_LOCATIONS[0]
   UNKNOWN_SCHOOL_NAME = 'unknown to Accounts'
+  STALE_VERIFICATION_PERIOD = 4.days
 
   enum(faculty_status: VALID_FACULTY_STATUSES)
   enum(role: VALID_ROLES)
@@ -151,6 +152,8 @@ class User < ActiveRecord::Base
     return sheerid_reported_school if sheerid_reported_school.present?
     return self_reported_school if  self_reported_school.present?
     UNKNOWN_SCHOOL_NAME
+  def is_instructor_verification_stale?
+    pending_faculty? && activated? && (created_at <= STALE_VERIFICATION_PERIOD.ago)
   end
 
   def self.username_is_valid?(username)

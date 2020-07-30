@@ -97,6 +97,15 @@ module Api::V1
                 description: "One of #{User.faculty_statuses.keys.map(&:to_s).inspect}"
              }
 
+    property :is_instructor_verification_stale?,
+             as: :is_instructor_verification_stale,
+             type: String,
+             readable: true,
+             writeable: false,
+             schema_info: {
+                description: "Has this user been pending faculty verification for more than #{User::STALE_VERIFICATION_PERIOD.inspect}?"
+             }
+
     property :role,
              as: :self_reported_role,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
