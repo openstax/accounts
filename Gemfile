@@ -13,8 +13,7 @@ gem 'rails-i18n', '~> 5'
 gem 'knockoutjs-rails'
 
 # Using this branch in pattern library due to multiselect (until it's merged to master)
-# gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'master'
-gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', branch: 'add-multiselect-styling'
+gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'master'
 
 gem 'bootsnap', require: false
 

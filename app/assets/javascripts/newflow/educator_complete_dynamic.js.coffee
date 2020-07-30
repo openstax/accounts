@@ -40,8 +40,8 @@ class NewflowUi.EducatorComplete
 
     # event listeners
     @school_name_input.on('input', @onSchoolNameChange)
+    @other_input.on('input', @onOtherChange)
     @completed_role_radio.change(@onRoleChange)
-    @other_input.change(@onOtherChange)
     @how_chosen_radio.change(@onHowChosenChange)
     @how_using_radio.change(@onHowUsingChange)
     @total_num_students_input.change(@onTotalNumChange)
