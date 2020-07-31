@@ -8,16 +8,6 @@ GIT
       sass-rails
 
 GIT
-  remote: https://github.com/openstax/openstax_salesforce.git
-  revision: d3880cc7c81e16047c0fc4d2f518448c83d039df
-  ref: d3880cc7c81e16047c0fc4d2f518448c83d039df
-  specs:
-    openstax_salesforce (4.4.0)
-      openstax_active_force
-      rails (>= 5.0, < 7.0)
-      restforce
-
-GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: 0ed5cdba6be65dbf1d07fd7580e2311a2f42cdfd
   ref: 0ed5cdba6be
@@ -425,6 +415,10 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.0.0)
       rails (>= 3.1, < 6.0)
+    openstax_salesforce (4.5.1)
+      openstax_active_force
+      rails (>= 5.0, < 7.0)
+      restforce
     openstax_utilities (4.2.3)
       keyword_search
       lev
@@ -535,11 +529,10 @@ GEM
     responders (2.4.1)
       actionpack (>= 4.2.0, < 6.0)
       railties (>= 4.2.0, < 6.0)
-    restforce (4.2.2)
-      faraday (>= 0.9.0, <= 1.0)
-      faraday_middleware (>= 0.8.8, <= 1.0)
+    restforce (5.0.0)
+      faraday (>= 0.9.0, <= 2.0)
+      faraday_middleware (>= 0.8.8, <= 2.0)
       hashie (>= 1.2.0, < 5.0)
-      json (>= 1.7.5)
       jwt (>= 1.5.6)
     roar (1.1.0)
       representable (~> 3.0.0)
@@ -743,7 +736,7 @@ DEPENDENCIES
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce!
+  openstax_salesforce (~> 4.5.1)
   openstax_utilities (~> 4.2.0)
   p3p
   parallel_tests

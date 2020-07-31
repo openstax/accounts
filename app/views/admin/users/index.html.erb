@@ -40,6 +40,7 @@
       <th>Role</th>
       <th>School Type</th>
       <th>KIP?</th>
+      <th>Grant Tutor Access?</th>
       <th></th>
     </tr>
     <% @handler_result.outputs[:items].each do |user| %>
@@ -57,6 +58,7 @@
         <td><%= user.unknown_role? ? "Unknown" : user.role.capitalize %></td>
         <td><%= user.school_type %></td>
         <td><%= user.is_kip ? 'Yes' : 'No' %></td>
+        <td><%= user.grant_tutor_access ? 'Yes' : 'No' %></td>
         <td>
           <%= link_to become_admin_user_path(user),
                       method: :post,
