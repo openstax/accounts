@@ -103,7 +103,7 @@ pl:
     check_your_email_description: >-
       Wysłaliśmy e-mail z instrukcjami ustawienia hasła na adres <b>%{email}</b>.
     confirm_my_account_button:
-      Confirm my account
+      Potwierdź moje konto
     confirm_your_info: Potwierdź moje konto
     edit_your_email: edytować adres email.
     send_my_pin: Wyślij mi PIN
@@ -150,17 +150,17 @@ pl:
     finish: koniec
 
     student_email_verification_form_decription: >-
-      An email has been sent to <b>%{email}</b>.
-      Please enter the PIN you received below.
-      You can also %{edit_your_email}
+      E-mail został wysłany do <b>%{email} </b>.
+      Wprowadź poniżej otrzymany kod PIN.
+      Możesz także %{edit_your_email}
 
     educator_email_verification_form_decription: >-
-      An email has been sent to <b>%{email}</b>.
-      Please enter the PIN you received below.
-      Once your email has been confirmed, you will need to complete
-      the remaining steps to verify your instructor status.
-    educator_email_verification_help_msg: See a typo in your email address? %{edit_it_here}. Didn't receive a message? %{contact_us_link}.
-    edit_it_here: Edit it here
+      E-mail został wysłany do <b>% {email} </b>.
+      Wprowadź poniżej otrzymany kod PIN.
+      Po potwierdzeniu adresu e-mail musisz dokończyć
+      pozostałe kroki weryfikacji statusu instruktora.
+    educator_email_verification_help_msg: Widzisz literówkę w swoim adresie e-mail? %{edit_it_here}. Wiadomość nie dotarła? %{contact_us_link}.
+    edit_it_here: Edytuj go tutaj
 
   student_profile:
     enable_other_sign_in_options: Zezwól na inne opcje logowania
