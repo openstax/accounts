@@ -153,7 +153,7 @@ class User < ActiveRecord::Base
     return self_reported_school if  self_reported_school.present?
     UNKNOWN_SCHOOL_NAME
   def is_instructor_verification_stale?
-    pending_faculty? && activated? && (created_at <= STALE_VERIFICATION_PERIOD.ago)
+    pending_faculty? && activated? && (activated_at <= STALE_VERIFICATION_PERIOD.ago)
   end
 
   def self.username_is_valid?(username)
