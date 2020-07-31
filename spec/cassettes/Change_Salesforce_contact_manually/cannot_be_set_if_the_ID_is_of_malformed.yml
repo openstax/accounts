@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: "<salesforce_instance_url_lower>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20Faculty_Verified__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c,%20Adoption_Status__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27somethingwonky%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url_lower>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20Faculty_Verified__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c%20FROM%20Contact%20WHERE%20(Id%20=%20%27somethingwonky%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
@@ -21,7 +21,7 @@ http_interactions:
       message: Bad Request
     headers:
       Date:
-      - Fri, 29 May 2020 15:00:29 GMT
+      - Fri, 31 Jul 2020 18:48:04 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Public-Key-Pins-Report-Only:
@@ -32,22 +32,28 @@ http_interactions:
       - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00DR0000001zq0Zm"
       X-Robots-Tag:
       - none
+      X-B3-Traceid:
+      - 4634f486b03902ce
+      X-B3-Spanid:
+      - 4634f486b03902ce
+      X-B3-Sampled:
+      - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=Is1rtqG9Eeqs6Om9653FCw; domain=.salesforce.com; path=/; expires=Sat,
-        29-May-2021 15:00:29 GMT; Max-Age=31536000
+      - BrowserId=XjmVotNeEeqnsFUYvQISwQ; domain=.salesforce.com; path=/; expires=Sat,
+        31-Jul-2021 18:48:04 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=3755/51000
+      - api-usage=3061/51000
       Content-Type:
       - application/json;charset=UTF-8
       Transfer-Encoding:
       - chunked
     body:
       encoding: UTF-8
-      string: '[{"message":"\nAdoption_Status__c FROM Contact WHERE (Id = ''somethingwonky'')
-        LIMIT 1\n                                       ^\nERROR at Row:1:Column:258\ninvalid
+      string: '[{"message":"\nGrant_Tutor_Access__c FROM Contact WHERE (Id = ''somethingwonky'')
+        LIMIT 1\n                                          ^\nERROR at Row:1:Column:281\ninvalid
         ID field: somethingwonky","errorCode":"INVALID_QUERY_FILTER_OPERATOR"}]'
     http_version: 
-  recorded_at: Fri, 29 May 2020 15:09:20 GMT
+  recorded_at: Fri, 31 Jul 2020 18:48:05 GMT
 recorded_with: VCR 3.0.3
