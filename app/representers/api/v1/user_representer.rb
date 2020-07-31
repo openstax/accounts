@@ -106,6 +106,15 @@ module Api::V1
                 description: "Has this user been pending faculty verification for more than #{User::STALE_VERIFICATION_PERIOD.inspect}?"
              }
 
+    property :is_profile_complete?,
+             as: :is_profile_complete,
+             type: String,
+             readable: true,
+             writeable: false,
+             schema_info: {
+                description: "Has the user completed their instructor profile and thus finished signing up?"
+             }
+
     property :role,
              as: :self_reported_role,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
