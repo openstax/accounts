@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_23_092402) do
+ActiveRecord::Schema.define(version: 2020_07_31_172701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -364,6 +364,7 @@ ActiveRecord::Schema.define(version: 2020_07_23_092402) do
     t.boolean "is_educator_pending_cs_verification"
     t.boolean "is_sheerid_unviable"
     t.boolean "is_sheerid_verified"
+    t.boolean "grant_tutor_access"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

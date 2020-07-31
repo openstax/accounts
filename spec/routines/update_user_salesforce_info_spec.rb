@@ -195,6 +195,28 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         )
       end
 
+      it 'corrects grant_tutor_access' do
+        stub_salesforce(
+          contacts: {
+            id: 'bar',
+            email: 'bob@example.com',
+            faculty_verified: "Confirmed",
+            school_type: 'Home School',
+            adoption_status: "Past Adopter",
+            grant_tutor_access: false
+          }
+        )
+        described_class.call
+        expect_user_sf_data(
+          user,
+          id: "bar",
+          faculty_status: :confirmed_faculty,
+          school_type: :home_school,
+          grant_tutor_access: false,
+          using_openstax: false
+        )
+      end
+
       it 'corrects all of them' do
         stub_salesforce(
           contacts: {
@@ -203,7 +225,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
             faculty_verified: "Pending",
             school_type: 'Middle/Junior High School',
             adoption_status: "Not Adopter",
-            school: { school_location: 'Foreign', is_kip: false, is_child_of_kip: true }
+            school: { school_location: 'Foreign', is_kip: false, is_child_of_kip: true },
+            grant_tutor_access: true
           }
         )
         described_class.call
@@ -214,6 +237,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           school_type: :other_school_type,
           school_location: :foreign_school,
           is_kip: true,
+          grant_tutor_access: true,
           using_openstax: false
         )
       end
@@ -223,7 +247,11 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         expect(Rails.logger).to receive(:warn)
         described_class.call
         expect_user_sf_data(
-          user, id: nil, faculty_status: :no_faculty_info, school_type: :unknown_school_type, using_openstax: false
+          user,
+          id: nil,
+          faculty_status: :no_faculty_info,
+          school_type: :unknown_school_type,
+          using_openstax: false
         )
       end
     end
@@ -570,7 +598,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           email_alt: contact[:email_alt],
           faculty_verified: contact[:faculty_verified],
           school_type: contact[:school_type],
-          school: OpenStax::Salesforce::Remote::School.new(contact[:school])
+          school: OpenStax::Salesforce::Remote::School.new(contact[:school]),
+          grant_tutor_access: contact[:grant_tutor_access]
         )
       end
     end
@@ -613,6 +642,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     school_type: :unknown_school_type,
     school_location: :unknown_school_location,
     is_kip: nil,
+    grant_tutor_access: nil,
     using_openstax: false
   )
     user.reload
@@ -621,5 +651,6 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     expect(user.school_type).to eq school_type.to_s
     expect(user.school_location).to eq school_location.to_s
     expect(user.is_kip).to eq is_kip
+    expect(user.grant_tutor_access).to eq grant_tutor_access
   end
 end

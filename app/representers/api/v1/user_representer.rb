@@ -144,6 +144,14 @@ module Api::V1
                description: 'Whether the user is part of a Key Institutional Partner school'
              }
 
+    property :grant_tutor_access,
+             type: :boolean,
+             readable: true,
+             writeable: false,
+             schema_info: {
+               description: 'Whether the user should be granted Tutor access'
+             }
+
     collection :contact_infos,
                if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
                decorator: ContactInfoRepresenter

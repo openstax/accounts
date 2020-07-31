@@ -107,4 +107,17 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
       expect { representer.from_hash(hash) }.not_to change { user.reload.is_kip }
     end
   end
+
+  context 'grant_tutor_access' do
+    it 'can be read' do
+      expect(representer.to_hash['grant_tutor_access']).to eq user.grant_tutor_access
+    end
+
+    it 'cannot be written (attempts are silently ignored)' do
+      hash = { 'grant_tutor_access' => true }
+
+      expect(user).not_to receive(:grant_tutor_access=)
+      expect { representer.from_hash(hash) }.not_to change { user.reload.grant_tutor_access }
+    end
+  end
 end
