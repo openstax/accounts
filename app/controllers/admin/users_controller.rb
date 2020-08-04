@@ -61,6 +61,13 @@ module Admin
       redirect_to actions_admin_users_path, notice: 'Incremented unread update count'
     end
 
+    def update_domo
+      dscd = DailyStudentCountToDomo.new
+      dscd.call
+      flash[:notice] = "The update completed."
+      redirect_to actions_admin_users_path
+    end
+
     protected
 
     def get_user
