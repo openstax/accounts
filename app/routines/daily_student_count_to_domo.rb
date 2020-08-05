@@ -4,6 +4,10 @@ require 'base64'
 
 class DailyStudentCountToDomo
 
+  def self.call
+    new.call
+  end
+
   def call
     info('starting')
     begin
