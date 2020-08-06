@@ -4,7 +4,7 @@
 module Newflow
   module EducatorSignup
     class ActivateEducator
-      lev_routine
+      lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }, use_jobba: true
       uses_routine CreateSalesforceLead
 
       protected ###############
