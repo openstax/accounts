@@ -484,4 +484,53 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#best_email_address_for_CS_verification' do
+    let(:school_issued_email) { FactoryBot.create(:email_address, is_school_issued: true, verified: false) }
+    let(:verified_email) { FactoryBot.create(:email_address, is_school_issued: false, verified: true) }
+    let(:unverified_email) { FactoryBot.create(:email_address, is_school_issued: false, verified: false) }
+
+    context 'when user has a school-issued email (not verified), a verified email, and an unverified email' do
+      subject(:user) {
+        user = FactoryBot.create(:user)
+        user.email_addresses << school_issued_email
+        user.email_addresses << verified_email
+        user.email_addresses << unverified_email
+        user.save!
+        user
+      }
+
+      it 'returns the school-issued email' do
+        expect(user.best_email_address_for_CS_verification).to eq(school_issued_email.value)
+      end
+    end
+
+    context 'when user has a verified email, and an unverified email' do
+      subject(:user) {
+        user = FactoryBot.create(:user)
+        user.email_addresses << verified_email
+        user.email_addresses << unverified_email
+        user.save!
+        user
+      }
+
+      it 'returns the verified email' do
+        expect(user.best_email_address_for_CS_verification).to eq(verified_email.value)
+      end
+    end
+
+    context 'when user has only an unverified email' do
+      subject(:user) {
+        user = FactoryBot.create(:user)
+        user.email_addresses << unverified_email
+        user.save!
+        user
+      }
+
+      it 'returns the unverified email' do
+        expect(user.best_email_address_for_CS_verification).to eq(unverified_email.value)
+      end
+    end
+  end
+
 end

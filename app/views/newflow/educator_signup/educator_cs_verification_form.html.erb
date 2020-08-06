@@ -1,0 +1,154 @@
+<%= render 'newflow/educator_signup/refresh_upon_going_back' %>
+
+<div id="login-signup-form">
+    <div class="content">
+        <%
+            educator_complete_roles = [
+                [ I18n.t(:'educator_profile_form.instructor'), 'instructor', false ],
+                [ I18n.t(:'educator_profile_form.administrator'), 'administrator', false ],
+                [ I18n.t(:'educator_profile_form.other'), 'other', false ]
+            ]
+        %>
+
+        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
+
+        <%=
+            newflow_login_signup_card(
+                header: (I18n.t(:"educator_profile_form.complete_page_header")),
+                classes: 'signup-page cs-form-complete-profile'
+            ) do %>
+
+            <% lev_form_for :signup, url: educator_cs_verification_request_path do |f| %>
+                <% fh = NewflowFormHelper::Newflow.new(
+                        f: f,
+                        context: self,
+                        errors: @handler_result&.errors
+                    )
+                %>
+
+                <div class="content required-fields-notice">
+                    <%= I18n.t(:"login_signup_form.all_fields_required") %>
+                </div>
+
+                <div class="content">
+                    <div class="questions">
+
+                        <div class="form-group">
+                            <div class="school-name">
+                                <%=
+                                    label_tag(
+                                        :school_name,
+                                        I18n.t(:"educator_profile_form.school_name"),
+                                        class: 'field-label'
+                                    )
+                                %>
+
+                                <div class="school-name cs-form-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.school_name_must_be_entered") %>
+                                </div>
+
+                                <%=
+                                    fh.text_field(
+                                    name: :school_name,
+                                    placeholder: I18n.t(:"educator_profile_form.school_name"),
+                                    autofocus: true
+                                    )
+                                %>
+                            </div>
+                        </div>
+
+                        <div class="form-group question">
+                            <div class="school-issued-email">
+                                <%=
+                                    label_tag(
+                                        :school_issued_email,
+                                        I18n.t(:"educator_profile_form.school_issued_email"),
+                                        class: 'field-label'
+                                    )
+                                %>
+
+                                <div class="school-issued-email cs-form-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.school_issued_email_must_be_entered") %>
+                                </div>
+
+                                <%=
+                                    fh.text_field(
+                                    name: :school_issued_email,
+                                    placeholder: I18n.t(:"educator_profile_form.school_issued_email"),
+                                    autofocus: true
+                                    )
+                                %>
+                            </div>
+                        </div>
+
+                        <div class="form-group question completed-role">
+                            <div class="radio-control-group">
+                                <%=
+                                    label_tag(
+                                        :educator_specific_role,
+                                        I18n.t(:"educator_profile_form.describe_role"),
+                                        class: 'field-label'
+                                    )
+                                %>
+
+                                <div class="role cs-form-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.select_option") %>
+                                </div>
+
+                                <% educator_complete_roles.each do |(role, id, selected)| %>
+                                    <label>
+                                        <% label_name = "educator_specific_role_#{id}".to_sym %>
+                                        <%=
+                                            f.radio_button(
+                                                :educator_specific_role,
+                                                id,
+                                                checked: selected,
+                                                class: 'completed-role custom-control-input'
+                                            )
+                                        %>
+                                        <%= label(label_name, role, class: 'custom-control-label') %>
+                                    </label>
+                                <% end %>
+
+                            </div>
+
+                            <div class="other-specify">
+                                <%=
+                                    label_tag(
+                                        :other_role_name,
+                                        I18n.t(:"educator_profile_form.other_please_specify"),
+                                        class: 'field-label'
+                                    )
+                                %>
+                                <div class="other cs-form-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.fill_out") %>
+                                </div>
+                                <%=
+                                    fh.text_field(
+                                        name: :other_role_name,
+                                        placeholder: I18n.t(:"educator_profile_form.other_please_specify"),
+                                        autofocus: true
+                                    )
+                                %>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <%=
+                        f.submit(
+                            I18n.t(:"login_signup_form.continue_button"),
+                            id: 'signup_form_submit_button',
+                            class: 'primary',
+                        )
+                    %>
+                </div>
+            <% end %>
+        <% end %>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //this needs to be done at bottom of the file so that the dom above is already constructed
+    new NewflowUi.CsFormCompleteProfile();
+</script>

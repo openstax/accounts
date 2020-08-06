@@ -20,6 +20,8 @@ module Newflow
         educator_profile_form
         educator_complete_profile
         educator_pending_cs_verification
+        educator_cs_verification_form
+        educator_cs_verification_request
       ]
     )
     before_action(:store_if_sheerid_is_unviable_for_user, only: :educator_profile_form)
@@ -136,7 +138,6 @@ module Newflow
         success: lambda {
           user = @handler_result.outputs.user
           security_log(:user_updated, user: user, message: 'Completed Educator Profile')
-          sign_in!(user)
           clear_incomplete_educator
 
           if user.is_educator_pending_cs_verification?
@@ -156,6 +157,21 @@ module Newflow
     def educator_pending_cs_verification
       security_log(:user_viewed_signup_form, form_name: action_name)
       @email_address = current_user.email_addresses.first&.value
+    end
+
+    def educator_cs_verification_request
+      handle_with(
+        EducatorSignup::CsVerificationRequest,
+        user: current_user,
+        success: lambda {
+          security_log(:requested_manual_cs_verification)
+          redirect_to(educator_pending_cs_verification_path)
+        },
+        failure: lambda {
+          security_log(:educator_sign_up_failed, reason: "Error in #{action_name}: #{@handler_result&.errors&.full_messages}")
+          render :educator_cs_verification_form
+        }
+      )
     end
 
     private #################

@@ -14,7 +14,6 @@ module Newflow
         status.set_job_name(self.class.name)
         status.set_job_args(user: user.to_global_id.to_s)
 
-        best_email = user.email_addresses.verified.first&.value || user.email_addresses.first&.value
         fatal_error(code: :email_missing) if best_email.blank?
 
         salesforce_role_name = user.student? ? SALESFORCE_STUDENT_ROLE : SALESFORCE_INSTRUCTOR_ROLE
@@ -24,7 +23,7 @@ module Newflow
           first_name: user.first_name,
           last_name: user.last_name,
           phone: user.phone_number,
-          email: best_email,
+          email: user.best_email_address_for_CS_verification,
           source: salesforce_role_name,
           application_source: referring_app_name,
           role: user.role,

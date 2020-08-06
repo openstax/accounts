@@ -106,13 +106,13 @@ module Api::V1
                 description: "Has this user been pending faculty verification for more than #{User::STALE_VERIFICATION_PERIOD.inspect}?"
              }
 
-    property :is_profile_complete?,
-             as: :is_profile_complete,
+    property :needs_to_complete_educator_profile?,
+             as: :needs_complete_edu_profile,
              type: String,
              readable: true,
              writeable: false,
              schema_info: {
-                description: "Has the user completed their instructor profile and thus finished signing up?"
+                description: "New flow faculty user needs to finish signing up?"
              }
 
     property :role,

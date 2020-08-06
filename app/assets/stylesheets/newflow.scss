@@ -44,12 +44,8 @@ body {
     color: var(--input-error-message-color);
 }
 
-.question.school-name {
-    display: none;
-
-    &.school-name-visible {
-        display: block;
-    }
+.cs-form-mustdo-alert {
+    color: var(--input-error-message-color);
 }
 
 .iti {
@@ -95,6 +91,14 @@ input.has-error {
 }
 
 .completed-step {
+    .question.school-name {
+        display: none;
+
+        &.school-name-visible {
+            display: block;
+        }
+    }
+
     .custom-control-label {
         font-weight: lighter !important;
     }
@@ -127,6 +131,26 @@ input.has-error {
     form {
         height: auto !important;
     }
+}
+
+.cs-form-complete-profile {
+    .custom-control-label {
+        font-weight: lighter !important;
+    }
+
+    .other-specify {
+        margin-left: 2em;
+        display: none;
+    }
+
+    .question {
+        margin-top: 25px;
+    }
+
+    .questions {
+        margin-bottom: 25px;
+    }
+
 }
 
 .block_radio_button_collection {
@@ -228,6 +252,12 @@ input.has-error {
 }
 
 // per-page styles
+.cs-form-complete-profile {
+    header.page-header {
+        padding-top: 6rem !important;
+    }
+}
+
 .login-unsuccessful-page {
     a {
         text-decoration: none;

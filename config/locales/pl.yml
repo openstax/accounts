@@ -24,6 +24,10 @@ pl:
     books_used_must_be_entered: Wpisz używane książki
     books_of_interest_must_be_entered: Wprowadź interesujące książki
     num_students_must_be_entered: Podaj liczbę uczniów nauczanych
+    school_issued_email: Adres e-mail nadany przez szkołę
+    school_issued_email_must_be_entered: Wprowadź adres e-mail nadany przez szkołę
+    school_issued_email_is_invalid: Proszę wpisać aktualny adres e-mail
+    school_issued_email_is_taken: Adres e-mail jest już w użyciu
 
   login_signup_form:
     cant_be_blank: nie może być puste

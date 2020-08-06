@@ -51,6 +51,8 @@ module Newflow
           first_name: user.first_name,
           last_name: user.last_name,
           school: user.most_accurate_school_name,
+          email: user.best_email_address_for_CS_verification,
+          school: best_school_name_for(user),
           role: User.roles[user.role] == User.roles[User::OTHER_ROLE] ? user.other_role_name : user.role,
           num_students: user.how_many_students,
           adoption_status: ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
