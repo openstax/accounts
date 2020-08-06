@@ -159,11 +159,11 @@ class User < ActiveRecord::Base
   end
 
   def needs_to_complete_educator_profile?
-    role != STUDENT_ROLE && is_newflow && !is_profile_complete
+    (role != STUDENT_ROLE) && is_newflow && !is_profile_complete
   end
 
   def is_instructor_verification_stale?
-    pending_faculty? && activated? && (activated_at <= STALE_VERIFICATION_PERIOD.ago)
+    pending_faculty? && activated? && activated_at.present? && (activated_at <= STALE_VERIFICATION_PERIOD.ago)
   end
 
   def self.username_is_valid?(username)

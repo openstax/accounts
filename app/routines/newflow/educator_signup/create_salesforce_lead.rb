@@ -14,8 +14,6 @@ module Newflow
         status.set_job_name(self.class.name)
         status.set_job_args(user: user.to_global_id.to_s)
 
-        fatal_error(code: :email_missing) if best_email.blank?
-
         salesforce_role_name = user.student? ? SALESFORCE_STUDENT_ROLE : SALESFORCE_INSTRUCTOR_ROLE
         referring_app_name = user&.source_application&.lead_application_source || DEFAULT_REFERRING_APP_NAME
 

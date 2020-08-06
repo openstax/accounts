@@ -467,7 +467,7 @@ RSpec.describe User, type: :model do
     context "when faculty status has been pending for #{User::STALE_VERIFICATION_PERIOD.inspect}" do
       it 'returns true' do
         Timecop.freeze(DateTime.now - User::STALE_VERIFICATION_PERIOD) do
-          FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY)
+          FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY, activated_at: DateTime.now)
         end
 
         expect(User.last.is_instructor_verification_stale?).to be(true)
@@ -477,7 +477,7 @@ RSpec.describe User, type: :model do
     context "when faculty status has been pending for 3 days and 23 hours and 55 seconds" do
       it 'returns false' do
         Timecop.freeze(DateTime.now - 3.days - 23.hours - 55.seconds) do
-          FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY)
+          FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY, activated_at: DateTime.now)
         end
 
         expect(User.last.is_instructor_verification_stale?).to be(false)

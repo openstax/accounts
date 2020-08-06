@@ -22,6 +22,7 @@ module Newflow
           school: user.self_reported_school,
           email: user.best_email_address_for_CS_verification,
           role: user.role,
+          faculty_status: User::REJECTED_FACULTY, # SF needs it this way for the CS review queue
           finalize_educator_signup: true
         )
       end

@@ -57,7 +57,7 @@ module Newflow
           other_role_name: other_role_name,
           is_profile_complete: true,
           is_educator_pending_cs_verification: true,
-          faculty_status: User::PENDING_FACULTY,
+          faculty_status: User::REJECTED_FACULTY, # this sends them to the queue for CS to review
         )
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
