@@ -105,9 +105,6 @@ class NewflowUi.CsFormCompleteProfile
   onRoleChange: ->
     @please_select_role.hide()
 
-    # return unless @checkSchoolNameValid()
-    # return unless @checkSchoolEmailValid()
-
     if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_instructor').is(':checked') && @checkSchoolNameValid() )
       @other_specify.hide()
       @please_fill_out_total_num.hide()
