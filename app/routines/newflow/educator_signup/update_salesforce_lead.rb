@@ -91,7 +91,7 @@ module Newflow
         Rails.logger.warn(message)
         Raven.capture_message(message, extra: {
           user_id: user.id,
-          lead_id: lead.id,
+          lead_id: lead&.id,
           leader_errors_full_message: lead&.errors&.full_messages,
           error_code: code
         })

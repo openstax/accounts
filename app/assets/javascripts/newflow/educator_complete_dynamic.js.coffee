@@ -24,7 +24,7 @@ class NewflowUi.EducatorComplete
     @total_num_students_input = @findOrLogNotFound(@total_num_students, "input")
     @other_input = @findOrLogNotFound(@other_specify, "input")
 
-    # book selecitions
+    # book selections
     @books_used_select = @findOrLogNotFound(@books_used, "select")
     @books_of_interest_select = @findOrLogNotFound(@books_of_interest, "select")
 
@@ -51,6 +51,9 @@ class NewflowUi.EducatorComplete
 
     # Continue button
     @continue = @findOrLogNotFound(@form, '#signup_form_submit_button')
+
+    # Disable submitting initially
+    @continue.prop('disabled', true)
 
     # Hide these fields initially because they only show up depending on the form's state
     @other_specify.hide()
@@ -85,7 +88,6 @@ class NewflowUi.EducatorComplete
     role_valid = @checkRoleValid()
     chosen_valid = @checkChosenValid()
     books_using_valid = @checkBooksUsingValid()
-    books_interested_valid = @checkBooksInterestedValid()
     total_num_valid = @checkTotalNumValid()
     other_valid = @checkOtherValid()
     books_used_valid = @checkBooksUsedValid()
@@ -94,11 +96,11 @@ class NewflowUi.EducatorComplete
     if not (role_valid and
             chosen_valid and
             books_using_valid and
-            books_interested_valid and
             other_valid and
             school_name_valid and
             total_num_valid and
-            books_used_valid)
+            books_used_valid and
+            books_of_interest_valid)
       ev.preventDefault()
 
   checkSchoolNameValid: () ->
@@ -149,16 +151,6 @@ class NewflowUi.EducatorComplete
       @please_select_using.show()
       false
 
-  checkBooksInterestedValid: () ->
-    return true if @how_using_radio.is(":hidden")
-
-    if @how_using_radio.is(":checked")
-      @please_select_using.hide()
-      true
-    else
-      @please_select_using.show()
-      false
-
   checkOtherValid: () ->
     return true if @other_input.is(":hidden")
 
@@ -191,7 +183,6 @@ class NewflowUi.EducatorComplete
 
   onSchoolNameChange: ->
     @please_fill_out_school.hide()
-    @continue.prop('disabled', false)
     @onRoleChange()
 
   onRoleChange: ->
@@ -225,16 +216,12 @@ class NewflowUi.EducatorComplete
       @how_using.hide()
       @please_fill_out_other.hide()
 
-    if @checkSchoolNameValid()
-      @continue.prop('disabled', false)
-
   onOtherChange: ->
     @please_fill_out_other.hide()
     @continue.prop('disabled', false)
 
   onHowChosenChange: ->
     @please_select_chosen.hide()
-    @continue.prop('disabled', false)
 
   onHowUsingChange: ->
     @please_select_using.hide()
@@ -254,11 +241,9 @@ class NewflowUi.EducatorComplete
       @books_used.hide()
       @please_select_books_used.hide()
       @please_select_books_of_interest.hide()
-    @continue.prop('disabled', false)
 
   onTotalNumChange: ->
     @please_fill_out_total_num.hide()
-    @continue.prop('disabled', false)
 
   onBooksUsedChange: ->
     return false if !@checkTotalNumValid()
