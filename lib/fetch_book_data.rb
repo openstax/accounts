@@ -8,9 +8,9 @@ class FetchBookData
   CACHE_DURATION = 1.day
 
   def titles
-    # @titles ||= Rails.cache.fetch('BookData.titles', expires_in: CACHE_DURATION) do
+    @titles ||= Rails.cache.fetch('BookData.titles', expires_in: CACHE_DURATION) do
       fetch_titles
-    # end
+    end
   end
 
   def fetch_titles
