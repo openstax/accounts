@@ -79,9 +79,9 @@ module Newflow
       end
 
       def which_books
-        if signup_params.books_used.present?
+        if books_used.present?
           format_books_for_salesforce_string(signup_params.books_used)
-        elsif signup_params.books_of_interest.present?
+        elsif books_of_interest.present?
           format_books_for_salesforce_string(signup_params.books_of_interest)
         end
       end
@@ -105,15 +105,13 @@ module Newflow
         end
 
         if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-          signup_params.using_openstax_how == AS_PRIMARY &&
-          signup_params.books_used.blank?
+          signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
 
           param_error(:books_used, :books_used_must_be_entered)
         end
 
         if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-          signup_params.using_openstax_how != AS_PRIMARY &&
-          signup_params.books_of_interest.blank?
+          signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
 
           param_error(:books_of_interest, :books_of_interest_must_be_entered)
         end
@@ -123,6 +121,14 @@ module Newflow
 
           param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
         end
+      end
+
+      def books_used
+        signup_params.books_used.reject{ |b| b.blank? }
+      end
+
+      def books_of_interest
+        signup_params.books_of_interest.reject{ |b| b.blank? }
       end
 
       def param_error(field, error_key)
