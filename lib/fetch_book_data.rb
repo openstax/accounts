@@ -3,28 +3,14 @@ require 'net/http'
 # Service object for pulling in book data from the CMS
 class FetchBookData
   CMS_API_URL = Rails.application.secrets.cms_api_url
-  SUBJECTS_URL = "#{CMS_API_URL}snippets/subjects/?format=json"
-  TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&fields=_,title,book_subjects,book_state"
-  TIMEOUT = 1
+  TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&fields=_,title,book_subjects,book_state,salesforce_abbreviation"
+  TIMEOUT = 5
   CACHE_DURATION = 1.day
 
-  def subjects
-    @subjects ||= Rails.cache.fetch('BookData.subjects', expires_in: CACHE_DURATION) do
-      fetch_subjects
-    end
-  end
-
   def titles
-    @titles ||= Rails.cache.fetch('BookData.titles', expires_in: CACHE_DURATION) do
+    # @titles ||= Rails.cache.fetch('BookData.titles', expires_in: CACHE_DURATION) do
       fetch_titles
-    end
-  end
-
-  def fetch_subjects
-    results = cms_fetch(SUBJECTS_URL)
-    return [] if results.blank?
-
-    results.map  { |subject| subject.fetch('name', nil) }
+    # end
   end
 
   def fetch_titles
@@ -38,13 +24,16 @@ class FetchBookData
     books_with_subject = []
 
     books.each { |book|
+      book_name = book.fetch('title', nil)
+      book_salesforce_name = book.fetch('salesforce_abbreviation', nil)
+      next if book_name.nil? || book_salesforce_name.nil?
+
       subjects = book.fetch('book_subjects', [])
 
       subjects.each { |subject|
         subject_name = subject.fetch('subject_name', 'missing subject_name')
-        book_name = book.fetch('title', 'missing book_title')
 
-        books_with_subject << [subject_name, [book_name]]
+        books_with_subject << [subject_name, [[book_name, book_salesforce_name]]]
       }
     }
 

@@ -126,7 +126,6 @@ module Newflow
     end
 
     def educator_profile_form
-      @book_subjects = book_data.subjects
       @book_titles = book_data.titles
       security_log(:user_viewed_signup_form, user: current_user, form_name: action_name)
     end
@@ -148,7 +147,6 @@ module Newflow
           end
         },
         failure: lambda {
-          @book_subjects = book_data.subjects
           @book_titles = book_data.titles
           security_log(:educator_sign_up_failed, user: current_user, reason: "Error in #{action_name}: #{@handler_result&.errors&.full_messages}")
           render :educator_profile_form
