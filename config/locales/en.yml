@@ -24,7 +24,7 @@ en:
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name
     books_used_must_be_entered: Please enter books used
-    subjects_of_interest_must_be_entered: Please enter subjects of interest
+    books_of_interest_must_be_entered: Please enter books of interest
     num_students_must_be_entered: Please enter number of students taught
 
   login_signup_form:

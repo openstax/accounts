@@ -22,7 +22,7 @@ pl:
     school_name_must_be_entered: Proszę podać nazwę szkoły
     other_must_be_entered: Wpisz inną nazwę roli
     books_used_must_be_entered: Wpisz używane książki
-    subjects_of_interest_must_be_entered: Wpisz interesujące cię tematy
+    books_of_interest_must_be_entered: Wprowadź interesujące książki
     num_students_must_be_entered: Podaj liczbę uczniów nauczanych
 
   login_signup_form:

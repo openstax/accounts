@@ -74,19 +74,27 @@ module Newflow
       end
 
       def log_success(user, lead)
-        message = "#{self.class.name} SUCCESS (#{lead.id}) for user (#{user.id})"
-        Rails.logger.info(message)
+        logger_message = "#{self.class.name} SUCCESS (#{lead.id}) for user (#{user.id})"
+        Rails.logger.info(logger_message)
         SecurityLog.create!(
             user: user,
             event_type: :user_updated,
-            event_data: { message: "User's lead updated: #{lead.inspect}" }
+            event_data: {
+              message: "User's lead updated: #{lead.inspect}",
+              success_from: "#{self.class.name}"
+            }
         )
       end
 
       def log_error(user, lead, code=nil)
-        message = "#{self.class.name} ERROR; Lead (#{lead&.id}) for user (#{user.id}); Error: #{lead&.errors&.full_messages}; Code: #{code}"
+        message = "ERROR FROM #{self.class.name}"
         Rails.logger.warn(message)
-        Raven.capture_message(message)
+        Raven.capture_message(message, extra: {
+          user_id: user.id,
+          lead_id: lead&.id,
+          leader_errors_full_message: lead&.errors&.full_messages,
+          error_code: code
+        })
       end
 
     end
