@@ -607,7 +607,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     assoc = instance_double(ActiveForce::ActiveQuery)
     expect(OpenStax::Salesforce::Remote::Contact).to(
       receive(:select).with(
-        :id, :email, :email_alt, :faculty_verified, :school_type, :adoption_status
+        :id, :email, :email_alt, :faculty_verified,
+        :school_type, :adoption_status, :grant_tutor_access
       ).and_return(assoc)
     )
     expect(assoc).to receive(:includes).with(:school).and_return(contacts)

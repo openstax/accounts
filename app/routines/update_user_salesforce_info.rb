@@ -163,7 +163,10 @@ class UpdateUserSalesforceInfo
     #       Or maybe try https://github.com/gooddata/salesforce_bulk_query
 
     @contacts ||= OpenStax::Salesforce::Remote::Contact
-                    .select(:id, :email, :email_alt, :faculty_verified, :school_type, :adoption_status)
+                    .select(
+                      :id, :email, :email_alt, :faculty_verified,
+                      :school_type, :adoption_status, :grant_tutor_access
+                    )
                     .includes(:school)
                     .to_a
   end
@@ -344,5 +347,4 @@ class UpdateUserSalesforceInfo
       ).deliver_later
     end
   end
-
 end
