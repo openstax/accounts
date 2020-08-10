@@ -208,7 +208,7 @@
               </div>
 
               <%= fh.select name: :books_used,
-                            options: @book_titles,
+                            options: grouped_options_for_select(@book_titles),
                             autofocus: true,
                             multiple: true,
                             custom_class: 'os-multiselect'
