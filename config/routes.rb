@@ -288,6 +288,7 @@ Rails.application.routes.draw do
       get 'js_search', on: :collection
       get 'actions', on: :collection
       put 'mark_users_updated', on: :collection
+      put 'update_domo', on: :collection
     end
 
     resource :reports, only: [:show]
