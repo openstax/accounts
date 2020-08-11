@@ -18,7 +18,8 @@ class DailyStudentCountToDomo
       # update dataset in domo
       send_data_to_domo(query_results)
     rescue => e
-      warn('Error running query and updating Domo: ' + e.full_message.inspect)
+      Raven.capture_message('DailyStudentCountToDomo: Error running query and updating Domo')
+      Raven.capture_exception(e)
     end
   end
 
@@ -56,9 +57,5 @@ class DailyStudentCountToDomo
 
   def info(message)
     Rails.logger.info("DailyStudentCountToDomo: " + message)
-  end
-
-  def warn(message)
-    Rails.logger.warn("DailyStudentCountToDomo: " + message)
   end
 end
