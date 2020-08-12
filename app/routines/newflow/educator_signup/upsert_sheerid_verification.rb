@@ -7,7 +7,9 @@ module Newflow
 
       protected ###############
 
-      def exec(verification_id:, details:)
+      def exec(verification_id:, details: nil)
+        details ||= SheeridAPI.get_verification_details(verification_id)
+
         outputs.verification = SheeridVerification.find_or_create_by(verification_id: verification_id) do |record|
           record.email = details.email
           record.current_step = details.current_step
