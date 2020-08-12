@@ -88,9 +88,8 @@ module Newflow
       end
 
       def handle_error(verification_id, user)
-          "User (#{user.id}) verification_id (#{verification_id}); User errors (#{user.errors.full_messages})"
-
-          Rails.logger.warn(message)
+        message =  "User (#{user.id}) verification_id (#{verification_id}); User errors (#{user.errors&.full_messages})"
+        Rails.logger.warn(message)
         fatal_error(code: :error_updating_user, message: message)
       end
 
