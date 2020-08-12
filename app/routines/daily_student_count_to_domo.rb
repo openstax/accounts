@@ -17,9 +17,11 @@ class DailyStudentCountToDomo
 
       # update dataset in domo
       send_data_to_domo(query_results)
+      return true
     rescue => e
       Raven.capture_message('DailyStudentCountToDomo: Error running query and updating Domo')
       Raven.capture_exception(e)
+      return false
     end
   end
 

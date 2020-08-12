@@ -62,9 +62,13 @@ module Admin
     end
 
     def update_domo
-      dscd = DailyStudentCountToDomo.new
-      dscd.call
-      flash[:notice] = "The update completed."
+      send_count_to_domo = DailyStudentCountToDomo.new
+      successful = send_count_to_domo.call
+      if(successful)
+        flash[:notice] = "The Domo update completed."
+      else
+        flash[:alert] = "The Domo update was not successful."
+      end
       redirect_to actions_admin_users_path
     end
 
