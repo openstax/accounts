@@ -111,14 +111,13 @@ module Newflow
           render(status: :ok, plain: 'Success')
         },
         failure: lambda {
-
           Raven.capture_message(
-            'SheerID webhook is failing!',
+            'SheerID webhook FAILED',
             extra: {
-              request_ip: request.remote_ip,
               verificationid: params['verificationId'],
               reason: @handler_result.errors.first.code
-            }
+            },
+            user: { verificationid: params['verificationId'] }
           )
           render(status: :unprocessable_entity)
         }

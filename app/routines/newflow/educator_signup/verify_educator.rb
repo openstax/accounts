@@ -1,11 +1,13 @@
 module Newflow
   module EducatorSignup
-  # Verify their Educator status given their (SheerID) Verification ID
-  # Expects a user to already exist with that SheerID Verification ID
+    # Verify their Educator status given their (SheerID) Verification ID.
+    # Expects a user to already exist with that SheerID Verification ID.
     class VerifyEducator
-      lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }, use_jobba: true
+
+      lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
+
       uses_routine UpsertSheeridVerification
-      uses_routine UpdateSalesforceLead
+      uses_routine UpsertSalesforceLead
 
       protected ###############
 
@@ -24,7 +26,7 @@ module Newflow
 
         capture_mismatch_error!(verification_id, email, user) and return if email_mismatch?(user, email)
 
-        if update_user(user, verification_record) && update_salesforce_lead_for(user)
+        if update_user(user, verification_record) && upsert_salesforce_lead_for(user)
           log_success(verification_id, user)
         else
           handle_error(verification_id, user)
@@ -53,8 +55,8 @@ module Newflow
         @fetch_verification ||= run(UpsertSheeridVerification, verification_id: verification_id).outputs.verification
       end
 
-      def update_salesforce_lead_for(user)
-        run(UpdateSalesforceLead, user: user).outputs.lead.errors.none?
+      def upsert_salesforce_lead_for(user)
+        run(UpsertSalesforceLead, user: user)
       end
 
       def email_mismatch?(user, email)
@@ -91,6 +93,7 @@ module Newflow
           Rails.logger.warn(message)
         fatal_error(code: :error_updating_user, message: message)
       end
+
     end
   end
 end

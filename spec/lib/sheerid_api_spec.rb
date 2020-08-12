@@ -16,8 +16,17 @@ RSpec.describe SheeridAPI, type: :lib, vcr: VCR_OPTS do
       subject(:response) { described_class.get_verification_details(verification_id) }
       let(:verification_id) { 'gibberish' }
 
-      it 'returns a SheeridAPI::NullResponse' do
-        expect(response).to be_a(SheeridAPI::NullResponse)
+      it 'is not a relevant response' do
+        expect(response.relevant?).to be(false)
+      end
+    end
+
+    context 'when collectTeacherPersonalInfo' do
+      subject(:response) { described_class.get_verification_details(verification_id) }
+      let(:verification_id) { '5ef42cfaeddfdd1bd961c088' }
+
+      it 'is not a relevant response' do
+        expect(response.relevant?).to be(false)
       end
     end
   end
@@ -64,7 +73,6 @@ RSpec.describe SheeridAPI, type: :lib, vcr: VCR_OPTS do
     example 'public interface' do
       expect(instance).to respond_to(:success?)
       expect(instance).to respond_to(:current_step)
-      expect(instance).to respond_to(:person_info)
       expect(instance).to respond_to(:first_name)
       expect(instance).to respond_to(:last_name)
       expect(instance).to respond_to(:email)
@@ -82,7 +90,6 @@ RSpec.describe SheeridAPI, type: :lib, vcr: VCR_OPTS do
     example 'public interface' do
       expect(instance).to respond_to(:success?)
       expect(instance).to respond_to(:current_step)
-      expect(instance).to respond_to(:person_info)
       expect(instance).to respond_to(:first_name)
       expect(instance).to respond_to(:last_name)
       expect(instance).to respond_to(:email)
