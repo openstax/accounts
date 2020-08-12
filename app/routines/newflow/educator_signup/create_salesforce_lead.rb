@@ -2,9 +2,8 @@ module Newflow
   module EducatorSignup
     class CreateSalesforceLead
 
-      lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }, use_jobba: true
+      lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
 
-      DEFAULT_SCHOOL_NAME = 'not yet known'
       SALESFORCE_STUDENT_ROLE = 'Student'
       SALESFORCE_INSTRUCTOR_ROLE =  'OSC Faculty'
       DEFAULT_REFERRING_APP_NAME = 'Accounts'
@@ -31,8 +30,9 @@ module Newflow
           role: user.role,
           os_accounts_id: user.id,
           accounts_uuid: user.uuid,
-          school: DEFAULT_SCHOOL_NAME,
+          school: user.most_accurate_school_name,
           verification_status: user.faculty_status,
+          finalize_educator_signup: user.is_profile_complete?,
           newsletter: user.receive_newsletter?,
           newsletter_opt_in: user.receive_newsletter?
         )
@@ -60,8 +60,8 @@ module Newflow
         if user.save
           SecurityLog.create!(
             user: user,
-            event_type: :user_updated,
-            event_data: { created_salesforce_lead_with_id: lead_id }
+            event_type: :created_salesforce_lead,
+            event_data: { lead_id: lead_id }
           )
           return true
         else
@@ -69,7 +69,7 @@ module Newflow
             user: user,
             event_type: :educator_sign_up_failed,
             event_data: {
-              message: 'saving the user LEAD ID in store_salesforce_lead_id FAILED',
+              message: 'saving the user\'s lead id FAILED',
               lead_id: lead_id
             }
           )

@@ -16,7 +16,7 @@ module Newflow
       def handle
         verification_id = params.fetch(VERIFICATION_ID_PARAM_NAME, nil) || params.fetch(REQUEST_ID_PARAM)
         outputs.verification_id = verification_id
-        run(ProcessSheeridWebhookRequest, verification_id: verification_id)
+        ProcessSheeridWebhookRequest.perform_later(verification_id: verification_id)
       end
     end
   end

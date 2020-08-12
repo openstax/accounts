@@ -46,6 +46,7 @@ class User < ActiveRecord::Base
   DEFAULT_FACULTY_STATUS = VALID_FACULTY_STATUSES[0]
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
   DEFAULT_SCHOOL_LOCATION = VALID_SCHOOL_LOCATIONS[0]
+  UNKNOWN_SCHOOL_NAME = 'unknown to Accounts'
 
   enum(faculty_status: VALID_FACULTY_STATUSES)
   enum(role: VALID_ROLES)
@@ -145,6 +146,12 @@ class User < ActiveRecord::Base
   attr_readonly :uuid, :support_identifier
 
   attribute :is_not_gdpr_location, :boolean, default: nil
+
+  def most_accurate_school_name
+    return sheerid_reported_school if sheerid_reported_school.present?
+    return self_reported_school if  self_reported_school.present?
+    UNKNOWN_SCHOOL_NAME
+  end
 
   def self.username_is_valid?(username)
     user = User.new(username: username)

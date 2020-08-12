@@ -7,18 +7,15 @@ module Newflow
 
       protected ###############
 
-      def exec(verification_id:)
-        fatal_error(code: :verification_id_blank) if verification_id.blank?
+      def exec(verification_id:, details: nil)
+        details ||= SheeridAPI.get_verification_details(verification_id)
 
-        outputs.verification = SheeridVerification.find_or_create_by(verification_id: verification_id) do |model|
-          details = SheeridAPI.get_verification_details(verification_id)
-          fatal_error(code: :sheerid_api_call_failed) if !details.success?
-
-          model.email = details.email
-          model.current_step = details.current_step
-          model.first_name = details.first_name
-          model.last_name = details.last_name
-          model.organization_name = details.organization_name
+        outputs.verification = SheeridVerification.find_or_create_by(verification_id: verification_id) do |record|
+          record.email = details.email
+          record.current_step = details.current_step
+          record.first_name = details.first_name
+          record.last_name = details.last_name
+          record.organization_name = details.organization_name
         end
 
         transfer_errors_from(outputs.verification, {type: :verbatim}, :fail_if_errors)
