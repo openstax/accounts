@@ -127,6 +127,7 @@ module SetGdprData
     'ES', # Spain
     'SE', # Sweden
     'GB', # United Kingdom
+    'BR', # Brazil, hack to geofence it
   ];
 
 end
