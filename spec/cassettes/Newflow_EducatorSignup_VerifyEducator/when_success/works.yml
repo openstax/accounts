@@ -107,7 +107,7 @@ http_interactions:
       - Content-Type, Cookie
     body:
       encoding: UTF-8
-      string: '{"programId":"5e150b86ce2a5a1d94874660","trackingId":null,"created":1592897089250,"updated":1592897095538,"lastResponse":{"verificationId":"5ef1ae416b29ca1badac1210","currentStep":"success","errorIds":[],"segment":"teacher","subSegment":null,"locale":"en-US","rewardCode":"EXAMPLE-CODE","redirectUrl":"https://www.openstax.org/"},"personInfo":{"firstName":"Bryan36dev","lastName":"Dimas","email":"bed1+bryan36dev@rice.edu","birthDate":null,"deviceFingerprintHash":null,"phoneNumber":null,"country":null,"locale":"en-US","metadata":{"marketConsentValue":"false"},"organization":{"id":2681,"name":"Rice
+      string: '{"programId":"5e150b86ce2a5a1d94874660","trackingId":null,"created":1592897089250,"updated":1592897095538,"lastResponse":{"verificationId":"5ef1ae416b29ca1badac1210","currentStep":"success","errorIds":[],"segment":"teacher","subSegment":null,"locale":"en-US","rewardCode":"EXAMPLE-CODE","redirectUrl":"https://www.openstax.org/"},"personInfo":{"firstName":"Bryan36dev","lastName":"Dimas","email":"f@f.com","birthDate":null,"deviceFingerprintHash":null,"phoneNumber":null,"country":null,"locale":"en-US","metadata":{"marketConsentValue":"false"},"organization":{"id":2681,"name":"Rice
         University (Houston, TX)"},"postalCode":"77005","ipAddress":"73.155.240.73"},"docUploadRejectionCount":0,"docUploadRejectionReasons":[]}'
     http_version:
   recorded_at: Wed, 12 Aug 2020 16:21:31 GMT
