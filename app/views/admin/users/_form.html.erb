@@ -12,15 +12,6 @@
   <%= render "shared/error_messages", :target => @user %>
 
   <div class="form-group">
-    <%= f.label :username, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <%= f.text_field :username,
-                       value: params[:user].nil? ? @user.username : params[:user][:username],
-                       class: "form-control" %>
-    </div>
-  </div>
-
-  <div class="form-group">
     <%= f.label :name, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
       <p class="form-control-static">
@@ -30,6 +21,76 @@
                       data: {confirm: "Log in as user #{@user.id}, #{@user.full_name || '(no name)'}?"} do %>
             <i class="fa fa-key" aria-hidden="false"></i>
           <% end %>
+      </p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :email_addresses, class: "col-sm-2 control-label" %>
+    <ul class="col-sm-10 form-control-static">
+    <% @user.email_addresses.each do |email| %>
+    <li style="margin-left: 20px;">
+
+      <%= link_to raw('<i class="fa fa-trash" aria-hidden="false"></i>'),
+          admin_delete_contact_info_path(email),
+          method: :delete,
+          data: {confirm: "Are you sure you want to delete \"#{email.value}\" ?"}
+          %>
+      <%= email.value %>
+      <% if email.verified %>
+        (Confirmed)
+      <% else %>
+        <%= link_to 'Mark this email address as confirmed', admin_verify_contact_info_path(email),
+                    remote: true, method: :post,
+                    class: 'btn btn-default btn-xs verify-email',
+                    data: {confirm: "Are you sure you want to mark \"#{email.value}\" as confirmed? (You are saying you absolutely know this email address belongs to this user)"}
+        %>
+      <% end %>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :email_address, 'New email address', class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <%= text_field_tag 'user[email_address]', params[:user].try(:[], :email_address), class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :security_log, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <p class="form-control-static">
+        <%= link_to "Security Log", admin_security_log_path(search: { query: "user_id:#{@user.id}" }) %>
+      </p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :sheerid_verification_id, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <p class="form-control-static">
+        <%= @user.sheerid_verification_id %>
+      </p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :salesforce_lead, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <% sf_id = @user.salesforce_lead_id %>
+      <p class="form-control-static">
+        <% if sf_id.nil? %>
+          Not Set
+        <% else %>
+          <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+          <% if instance_url.nil? %>
+            <%= sf_id %>
+          <% else %>
+            <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
+          <% end %>
+        <% end %>
       </p>
     </div>
   </div>
@@ -85,45 +146,11 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :salesforce_lead, class: "col-sm-2 control-label" %>
+    <%= f.label :username, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
-      <% sf_id = @user.salesforce_lead_id %>
-      <p class="form-control-static">
-        <% if sf_id.nil? %>
-          Not Set
-        <% else %>
-          <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
-          <% if instance_url.nil? %>
-            <%= sf_id %>
-          <% else %>
-            <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
-          <% end %>
-        <% end %>
-      </p>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :sheerid_verification_id, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.sheerid_verification_id %>
-      </p>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :school_type, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <% if sf_id.nil? %>
-        <% school_types = User.school_types.keys.map{ |key| [key.humanize, key] } %>
-        <%= f.select :school_type, school_types, {}, {class: "form-control"} %>
-      <% else %>
-        <p class="form-control-static">
-          <%= @user.school_type.humanize %>
-          <span class="help-block">This is a Salesforce user. You must change this setting in Salesforce.  If you just changed the Salesforce contact ID, this field will update within 20 minutes.</span>
-        </p>
-      <% end %>
+      <%= f.text_field :username,
+                       value: params[:user].nil? ? @user.username : params[:user][:username],
+                       class: "form-control" %>
     </div>
   </div>
 
@@ -146,6 +173,20 @@
     </div>
   </div>
 
+  <div class="form-group">
+    <%= f.label :school_type, class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <% if sf_id.nil? %>
+        <% school_types = User.school_types.keys.map{ |key| [key.humanize, key] } %>
+        <%= f.select :school_type, school_types, {}, {class: "form-control"} %>
+      <% else %>
+        <p class="form-control-static">
+          <%= @user.school_type.humanize %>
+          <span class="help-block">This is a Salesforce user. You must change this setting in Salesforce.  If you just changed the Salesforce contact ID, this field will update within 20 minutes.</span>
+        </p>
+      <% end %>
+    </div>
+  </div>
 
   <% unless @user.identity.nil? %>
     <div class="form-group">
@@ -155,39 +196,6 @@
       </div>
     </div>
   <% end %>
-
-  <div class="form-group">
-    <%= f.label :email_addresses, class: "col-sm-2 control-label" %>
-    <ul class="col-sm-10 form-control-static">
-    <% @user.email_addresses.each do |email| %>
-    <li style="margin-left: 20px;">
-
-      <%= link_to raw('<i class="fa fa-trash" aria-hidden="false"></i>'),
-          admin_delete_contact_info_path(email),
-          method: :delete,
-          data: {confirm: "Are you sure you want to delete \"#{email.value}\" ?"}
-          %>
-      <%= email.value %>
-      <% if email.verified %>
-        (Confirmed)
-      <% else %>
-        <%= link_to 'Mark this email address as confirmed', admin_verify_contact_info_path(email),
-                    remote: true, method: :post,
-                    class: 'btn btn-default btn-xs verify-email',
-                    data: {confirm: "Are you sure you want to mark \"#{email.value}\" as confirmed? (You are saying you absolutely know this email address belongs to this user)"}
-        %>
-      <% end %>
-      </li>
-    <% end %>
-    </ul>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :email_address, 'New email address', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <%= text_field_tag 'user[email_address]', params[:user].try(:[], :email_address), class: 'form-control' %>
-    </div>
-  </div>
 
   <div class="form-group">
     <%= f.label :apps, class: "col-sm-2 control-label" %>
@@ -220,15 +228,6 @@
     <div class="col-sm-10">
       <p class="form-control-static">
         <%= @user.authentications.map(&:display_name).sort.join(', ') %>
-      </p>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :security_log, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= link_to "Security Log", admin_security_log_path(search: { query: "user_id:#{@user.id}" }) %>
       </p>
     </div>
   </div>
