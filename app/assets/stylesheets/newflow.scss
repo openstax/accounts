@@ -118,19 +118,6 @@ input.has-error {
     .questions {
         margin-bottom: 25px;
     }
-
-    // extend the multiselect just for the complete form for now
-    .os-multiselect {
-        @extend %os-multiselect;
-
-        input[type=text] {
-            min-width: 100%;
-        }
-    }
-
-    form {
-        height: auto !important;
-    }
 }
 
 .cs-form-complete-profile {
@@ -151,6 +138,19 @@ input.has-error {
         margin-bottom: 25px;
     }
 
+}
+
+// extend the multiselect just for the complete form for now
+.os-multiselect {
+    @extend %os-multiselect;
+
+    input[type=text] {
+        min-width: 100%;
+    }
+}
+
+form {
+    height: auto !important;
 }
 
 .block_radio_button_collection {
@@ -253,6 +253,12 @@ input.has-error {
 
 // per-page styles
 .cs-form-complete-profile {
+    @include wider-than($phone-max) {
+        form {
+            height: 99rem !important;
+        }
+    }
+
     header.page-header {
         padding-top: 6rem !important;
     }

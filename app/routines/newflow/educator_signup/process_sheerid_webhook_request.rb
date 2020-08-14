@@ -16,7 +16,7 @@ module Newflow
 
         verification_details = SheeridAPI.get_verification_details(verification_id)
         if !verification_details.success?
-          Raven.capture_message("[ProcessSheeridWebhookRequest] fetching verification details FAILED"
+          Raven.capture_message("[ProcessSheeridWebhookRequest] fetching verification details FAILED",
             extra: { verification_id: verification_id, verification_details: verification_details },
             user: { verification_id: verification_id }
           )

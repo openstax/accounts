@@ -133,6 +133,156 @@
                             </div>
                         </div>
 
+                        <div class="form-group question how-chosen">
+                            <div class="radio-control-group">
+                                <%= label_tag :who_chooses_books, I18n.t(:"educator_profile_form.how_textbooks_chosen"), class: 'field-label' %>
+                                <div class="chosen newflow-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.select_option") %>
+                                </div>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :who_chooses_books,
+                                        :instructor,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_primary_textbook, I18n.t(:"educator_profile_form.chosen_by_instructor"), class: 'custom-control-label' %>
+                                </label>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :who_chooses_books,
+                                        :committee,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_recommending_openstax, I18n.t(:"educator_profile_form.chosen_by_committee"), class: 'custom-control-label' %>
+                                </label>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :who_chooses_books,
+                                        :coordinator,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_future, I18n.t(:"educator_profile_form.chosen_by_coordinator"), class: 'custom-control-label' %>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group question how-using">
+                            <div class="radio-control-group">
+                                <%= label_tag :using_openstax_how, I18n.t(:"educator_profile_form.how_using"), class: 'field-label' %>
+                                <div class="using newflow-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.select_option") %>
+                                </div>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :using_openstax_how,
+                                        :as_primary,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_primary_textbook, I18n.t(:"educator_profile_form.using_primary_textbook"), class: 'custom-control-label' %>
+                                </label>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :using_openstax_how,
+                                        :as_recommending,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_recommending_openstax, I18n.t(:"educator_profile_form.using_recommending_openstax"), class: 'custom-control-label' %>
+                                </label>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :using_openstax_how,
+                                        :as_future,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_future, I18n.t(:"educator_profile_form.using_future"), class: 'custom-control-label' %>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group question total-num-students">
+                            <%=
+                                label_tag(
+                                    :num_students_per_semester_taught,
+                                    I18n.t(:"educator_profile_form.num_students_taught"),
+                                    class: 'field-label'
+                                )
+                            %>
+                            <div class="total-num newflow-mustdo-alert">
+                                <%= I18n.t(:"educator_profile_form.fill_out") %>
+                            </div>
+                            <%=
+                                fh.text_field(
+                                    name: :num_students_per_semester_taught,
+                                    placeholder: I18n.t(:"educator_profile_form.num_students_taught"),
+                                    autofocus: true,
+                                    numberonly: true
+                                )
+                            %>
+                        </div>
+
+                        <div class="form-group question books-used">
+                            <%=
+                                label_tag(
+                                    :books_used,
+                                    I18n.t(:"educator_profile_form.books_used"),
+                                    class: 'field-label'
+                                )
+                            %>
+                            <div class="used newflow-mustdo-alert">
+                                <%= I18n.t(:"educator_profile_form.select_option") %>
+                            </div>
+                            <%=
+                                fh.select(
+                                    name: :books_used,
+                                    options: grouped_options_for_select(@book_titles),
+                                    autofocus: true,
+                                    multiple: true,
+                                    custom_class: 'os-multiselect'
+                                )
+                            %>
+                        </div>
+
+                        <div class="form-group question books-of-interest">
+                            <%=
+                                label_tag(
+                                    :books_of_interest,
+                                    I18n.t(:"educator_profile_form.books_of_interest"),
+                                    class: 'field-label'
+                                )
+                            %>
+                            <div class="books-of-interest newflow-mustdo-alert">
+                                <%= I18n.t(:"educator_profile_form.select_option") %>
+                            </div>
+
+                            <%=
+                                fh.select(
+                                    name: :books_of_interest,
+                                    options: grouped_options_for_select(@book_titles),
+                                    autofocus: true,
+                                    multiple: true,
+                                    custom_class: 'os-multiselect'
+                                )
+                            %>
+                        </div>
+
                     </div>
 
                     <%=

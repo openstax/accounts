@@ -154,6 +154,11 @@ module Newflow
       )
     end
 
+    def educator_cs_verification_form
+      @book_titles = book_data.titles
+      security_log(:user_viewed_signup_form, user: current_user, form_name: action_name)
+    end
+
     def educator_pending_cs_verification
       security_log(:user_viewed_signup_form, form_name: action_name)
       @email_address = current_user.email_addresses.first&.value
