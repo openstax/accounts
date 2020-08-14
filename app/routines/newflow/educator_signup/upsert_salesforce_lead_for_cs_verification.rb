@@ -17,7 +17,7 @@ module Newflow
         @user = user
 
         if user.salesforce_lead_id.present? && has_lead_already_been_through_cs_review?
-          ResendToCsVerificationQueue.perform_later(user: user, lead_id: user.salesforce_lead_id)
+          run(ResendToCsVerificationQueue, user: user, lead: lead)
         else
           CreateSalesforceLead.perform_later(user: user)
         end

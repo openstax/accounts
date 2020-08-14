@@ -47,7 +47,7 @@ module Newflow
         check_params
         return if errors?
 
-        unless user.contact_infos.where(value: email_address_value)
+        if !users_existing_email.present?
           run(CreateEmailForUser, email: email_address_value, user: outputs.user)
         end
 
@@ -57,6 +57,7 @@ module Newflow
           other_role_name: other_role_name,
           is_profile_complete: true,
           is_educator_pending_cs_verification: true,
+          requested_cs_verification_at: DateTime.now,
           faculty_status: User::REJECTED_FACULTY, # this sends them to the queue for CS to review
         )
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
@@ -101,7 +102,11 @@ module Newflow
 
       def email_already_taken?
         email = email_address_value
-        user.contact_infos.where(value: email).none? && ContactInfo.verified.where(value: email).any?
+        users_existing_email.none? && ContactInfo.verified.where(value: email).any?
+      end
+
+      def users_existing_email
+        @users_existing_email ||= user.contact_infos.where(value: email_address_value)
       end
 
       def param_error(field, error_key)

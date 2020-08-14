@@ -8,13 +8,11 @@ module Newflow
 
       attr_reader :user
 
-      def exec(user:)
+      def exec(user:, lead:)
         status.set_job_name(self.class.name)
         status.set_job_args(user: user.to_global_id.to_s)
 
         @user = user
-
-        return unless has_lead_already_been_through_cs_review? # nothing to do
 
         lead.update(finalize_educator_signup: false)
 
@@ -25,16 +23,6 @@ module Newflow
           faculty_status: User::REJECTED_FACULTY, # SF needs it this way for the CS review queue
           finalize_educator_signup: true
         )
-      end
-
-      private ###############
-
-      def has_lead_already_been_through_cs_review?
-        lead.present? && lead.finalize_educator_signup
-      end
-
-      def lead
-        @lead ||= OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
       end
 
     end
