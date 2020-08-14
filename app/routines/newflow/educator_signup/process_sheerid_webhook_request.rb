@@ -15,15 +15,21 @@ module Newflow
         status.set_job_args(verification_id: verification_id)
 
         verification_details = SheeridAPI.get_verification_details(verification_id)
-        fatal_error(code: :sheerid_api_call_failed) if !verification_details.success?
+        if !verification_details.success?
+          Raven.capture_message("[ProcessSheeridWebhookRequest] fetching verification details FAILED"
+            extra: { verification_id: verification_id, verification_details: verification_details },
+            user: { verification_id: verification_id }
+          )
+          fatal_error(code: :sheerid_api_call_failed)
+        end
 
         verification = upsert_verification(verification_id, verification_details)
         existing_user = EmailAddress.verified.find_by(value: verification.email)&.user
 
         if !existing_user.present?
           Rails.logger.warn(
-            "[ProcessSheeridWebhookRequest] No user found with verification id #{verification_id} "\
-            "and email #{verification.email}"
+            "[ProcessSheeridWebhookRequest] No user found with verification id (#{verification_id}) "\
+            "and email (#{verification.email})"
           )
           return
         end
@@ -46,8 +52,8 @@ module Newflow
             existing_user.save
             transfer_errors_from(existing_user, {type: :verbatim}, :fail_if_errors)
             SecurityLog.create!(
-              user: existing_user,
               event_type: :user_updated_using_sheerid_data,
+              user: existing_user,
               event_data: { verification: verification.inspect }
             )
           end

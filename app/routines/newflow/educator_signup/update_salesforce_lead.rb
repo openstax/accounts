@@ -76,14 +76,18 @@ module Newflow
       end
 
       def log_error(user, lead, code=nil)
-        message = "ERROR FROM #{self.class.name}"
+        message = "[UpdateSalesforceLead] ERROR"
         Rails.logger.warn(message)
-        Raven.capture_message(message, extra: {
-          user_id: user.id,
-          lead_id: lead&.id,
-          leader_errors_full_message: lead&.errors&.full_messages,
-          error_code: code
-        })
+        Raven.capture_message(
+          message,
+          extra: {
+            user_id: user.id,
+            lead: lead&.inspect,
+            leader_errors: lead&.errors&.full_messages,
+            error_code: code
+          },
+          user: { id: user.id, lead: lead&.id }
+        )
       end
 
     end
