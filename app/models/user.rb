@@ -152,6 +152,8 @@ class User < ActiveRecord::Base
     return sheerid_reported_school if sheerid_reported_school.present?
     return self_reported_school if  self_reported_school.present?
     UNKNOWN_SCHOOL_NAME
+  end
+
   def best_email_address_for_CS_verification
     email_addresses.school_issued.first&.value || \
     email_addresses.verified.first&.value || \
