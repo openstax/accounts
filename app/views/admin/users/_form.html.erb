@@ -85,20 +85,30 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :is_kip, 'Key Institutional Partner?', class: "col-sm-2 control-label" %>
+    <%= f.label :salesforce_lead, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
-      <div class="checkbox">
-        <%= f.check_box :is_kip, style: 'margin-left: 0px' %>
-      </div>
+      <% sf_id = @user.salesforce_lead_id %>
+      <p class="form-control-static">
+        <% if sf_id.nil? %>
+          Not Set
+        <% else %>
+          <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+          <% if instance_url.nil? %>
+            <%= sf_id %>
+          <% else %>
+            <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
+          <% end %>
+        <% end %>
+      </p>
     </div>
   </div>
 
   <div class="form-group">
-    <%= f.label :grant_tutor_access, 'Grant Tutor Access?', class: "col-sm-2 control-label" %>
+    <%= f.label :sheerid_verification_id, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
-      <div class="checkbox">
-        <%= f.check_box :grant_tutor_access, style: 'margin-left: 0px' %>
-      </div>
+      <p class="form-control-static">
+        <%= @user.sheerid_verification_id %>
+      </p>
     </div>
   </div>
 
@@ -220,6 +230,24 @@
       <p class="form-control-static">
         <%= link_to "Security Log", admin_security_log_path(search: { query: "user_id:#{@user.id}" }) %>
       </p>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :is_kip, 'Key Institutional Partner?', class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <div class="checkbox">
+        <%= f.check_box :is_kip, style: 'margin-left: 0px' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :grant_tutor_access, 'Grant Tutor Access?', class: "col-sm-2 control-label" %>
+    <div class="col-sm-10">
+      <div class="checkbox">
+        <%= f.check_box :grant_tutor_access, style: 'margin-left: 0px' %>
+      </div>
     </div>
   </div>
 
