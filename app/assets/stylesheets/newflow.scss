@@ -253,12 +253,6 @@ input.has-error {
 
 // per-page styles
 .cs-form-complete-profile {
-    @include wider-than($phone-max) {
-        form {
-            height: 99rem !important;
-        }
-    }
-
     header.page-header {
         padding-top: 6rem !important;
     }

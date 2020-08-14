@@ -7,7 +7,7 @@ class NewflowUi.CsFormCompleteProfile
     @form = $('.signup-page.cs-form-complete-profile')
 
     # fields locators
-    @school_name = @findOrLogNotFound(@form, '.school-name')
+    @school_name = @findOrLogNotFound(@form, '.school-name-visible')
     @school_email = @findOrLogNotFound(@form, '.school-issued-email')
 
     @completed_role = @findOrLogNotFound(@form, '.completed-role')
