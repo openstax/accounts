@@ -32,7 +32,7 @@ module Newflow
           VerifyEducator.perform_later(verification_id: verification_id, user: existing_user)
         elsif verification.rejected?
           run(SheeridRejectedEducator, user: existing_user, verification_id: verification_id)
-        elsif verification.present?.present?
+        elsif verification.present?
           existing_user.sheerid_verification_id = verification_id if existing_user.sheerid_verification_id.blank?
 
           if verification_details.relevant?
