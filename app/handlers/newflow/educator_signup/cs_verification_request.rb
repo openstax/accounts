@@ -2,7 +2,7 @@ module Newflow
   module EducatorSignup
     class CsVerificationRequest
       lev_handler
-      uses_routine UpsertSalesforceLeadForCsVerification
+      uses_routine UpsertSalesforceInfoForCsVerification
       uses_routine CreateEmailForUser, translations: {
         outputs: {
           map: { email: :school_issued_email },
@@ -58,13 +58,13 @@ module Newflow
           is_profile_complete: true,
           is_educator_pending_cs_verification: true,
           requested_cs_verification_at: DateTime.now,
-          faculty_status: User::REJECTED_FACULTY, # this sends them to the queue for CS to review
+          faculty_status: User::PENDING_FACULTY
         )
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
         outputs.user = user
 
-        UpsertSalesforceLeadForCsVerification.perform_later(user: user)
+        UpsertSalesforceInfoForCsVerification.perform_later(user: user)
       end
 
       private #################

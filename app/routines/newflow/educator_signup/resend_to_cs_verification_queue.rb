@@ -2,7 +2,7 @@ module Newflow
   module EducatorSignup
     class ResendToCsVerificationQueue
 
-      lev_routine
+      lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
 
       protected #############
 
@@ -20,8 +20,9 @@ module Newflow
           school: user.self_reported_school,
           email: user.best_email_address_for_CS_verification,
           role: user.role,
-          faculty_status: User::REJECTED_FACULTY, # SF needs it this way for the CS review queue
-          finalize_educator_signup: true
+          faculty_status: User::PENDING_FACULTY,
+          finalize_educator_signup: true,
+          requested_cs_review: user.is_educator_pending_cs_verification?
         )
       end
 
