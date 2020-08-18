@@ -90,11 +90,11 @@ module Newflow
       end
 
       def invalid_email?
-        e = EmailAddress.new(value: email_address_value)
+        email = EmailAddress.new(value: email_address_value)
 
         begin
-          e.mx_domain_validation
-          return e.errors.any?
+          email.mx_domain_validation
+          return email.errors.any?
         rescue Mail::Field::IncompleteParseError
           return true
         end

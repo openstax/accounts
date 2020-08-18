@@ -18,7 +18,7 @@ module Newflow
         @user = user
 
         # upsert salesforce lead
-        if user.salesforce_lead_id.present? && has_lead_already_been_through_cs_review?
+        if user.salesforce_lead_id.present? && has_lead_already_been_finalized?
           run(ResendToCsVerificationQueue, user: user, lead: lead)
         elsif user.salesforce_lead_id.present?
           UpdateSalesforceLead.perform_later(user: user)
@@ -36,8 +36,8 @@ module Newflow
 
       private ###############
 
-      def has_lead_already_been_through_cs_review?
-        lead.present? && lead.finalize_educator_signup && lead.requested_cs_review
+      def has_lead_already_been_finalized?
+        lead.present? && lead.finalize_educator_signup
       end
 
       def lead

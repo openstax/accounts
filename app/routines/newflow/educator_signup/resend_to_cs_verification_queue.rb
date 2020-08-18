@@ -22,7 +22,7 @@ module Newflow
           role: user.role,
           faculty_status: User::PENDING_FACULTY,
           finalize_educator_signup: true,
-          requested_cs_review: user.is_educator_pending_cs_verification?
+          needs_cs_review: user.is_educator_pending_cs_verification?
         )
       end
 

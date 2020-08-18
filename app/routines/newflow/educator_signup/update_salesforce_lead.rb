@@ -59,7 +59,7 @@ module Newflow
           who_chooses_books: user.who_chooses_books,
           subject: user.which_books,
           finalize_educator_signup: user.is_profile_complete?,
-          requested_cs_review: user.is_educator_pending_cs_verification?
+          needs_cs_review: user.is_educator_pending_cs_verification?
         )
       end
 

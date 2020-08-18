@@ -165,7 +165,9 @@ class User < ActiveRecord::Base
   end
 
   def is_instructor_verification_stale?
-    pending_faculty? && activated? && activated_at.present? && (activated_at <= STALE_VERIFICATION_PERIOD.ago)
+    pending_faculty? && activated? && activated_at.present? && \
+    (activated_at <= STALE_VERIFICATION_PERIOD.ago) && \
+    !is_educator_pending_cs_verification
   end
 
   def self.username_is_valid?(username)

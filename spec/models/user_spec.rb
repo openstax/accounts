@@ -483,6 +483,19 @@ RSpec.describe User, type: :model do
         expect(User.last.is_instructor_verification_stale?).to be(false)
       end
     end
+
+    context "when faculty status has been pending for #{User::STALE_VERIFICATION_PERIOD.inspect}" do
+      context 'and pending cs verification' do
+        it 'returns true' do
+          Timecop.freeze(DateTime.now - User::STALE_VERIFICATION_PERIOD) do
+            FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY, activated_at: DateTime.now)
+          end
+
+          User.last.update(is_educator_pending_cs_verification: true)
+          expect(User.last.is_instructor_verification_stale?).to be(false)
+        end
+      end
+    end
   end
 
   describe '#best_email_address_for_CS_verification' do
