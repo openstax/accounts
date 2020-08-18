@@ -300,7 +300,7 @@ class UpdateUserSalesforceInfo
           application: nil,
           remote_ip: nil,
           event_type: :faculty_verified,
-          event_data: { user_id: user.id, salesforce_id: contact.id }
+          event_data: { user_id: user.id, salesforce_contact_id: contact.id }
       )
     end
 
