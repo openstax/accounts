@@ -3,7 +3,9 @@ require 'vcr_helper'
 
 module Newflow
   module EducatorSignup
+
     RSpec.describe VerifyEducator, type: :routine, vcr: VCR_OPTS do
+
       context 'when success' do
         subject(:routine) { described_class.call(verification_id: verification_id, user: user) }
         let!(:verification) { FactoryBot.create(:sheerid_verification, verification_id: verification_id, email: email_address) }
@@ -35,6 +37,8 @@ module Newflow
           expect(routine.errors.any?).to be_falsey
         end
       end
+
     end
+
   end
 end

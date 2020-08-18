@@ -97,6 +97,32 @@ module Api::V1
                 description: "One of #{User.faculty_statuses.keys.map(&:to_s).inspect}"
              }
 
+    property :is_newflow,
+             type: String,
+             readable: true,
+             writeable: false,
+             schema_info: {
+                description: "User signed up after releasing Accounts 2.0 (aka. the new flow?)"
+             }
+
+    property :is_instructor_verification_stale?,
+             as: :is_instructor_verification_stale,
+             type: String,
+             readable: true,
+             writeable: false,
+             schema_info: {
+                description: "Has this user been pending faculty verification for more than #{User::STALE_VERIFICATION_PERIOD.inspect}?"
+             }
+
+    property :needs_to_complete_educator_profile?,
+             as: :needs_complete_edu_profile,
+             type: String,
+             readable: true,
+             writeable: false,
+             schema_info: {
+                description: "New flow faculty user needs to finish signing up?"
+             }
+
     property :role,
              as: :self_reported_role,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },

@@ -6,6 +6,7 @@
 //= require ./newflow_ui
 //= require ./educator_signup_email_validations
 //= require ./educator_complete_dynamic
+//= require ./educator_cs_form_dynamic
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils
@@ -35,7 +36,7 @@ $(document).ready(function(){
       }
     }
   });
-  
+
   // Validate phone number
   let input = document.querySelector(".int-country-code");
   if ( input !== null ) {

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_31_172701) do
+ActiveRecord::Schema.define(version: 2020_08_14_190321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -72,9 +72,11 @@ ActiveRecord::Schema.define(version: 2020_07_31_172701) do
     t.datetime "confirmation_sent_at"
     t.boolean "is_searchable", default: false
     t.string "confirmation_pin"
+    t.boolean "is_school_issued", comment: "User claims to be a school-issued email address"
     t.index "lower((value)::text), verified", name: "index_contact_infos_on_value_and_verified_case_insensitive"
     t.index ["confirmation_code"], name: "index_contact_infos_on_confirmation_code", unique: true
     t.index ["confirmation_pin"], name: "index_contact_infos_on_confirmation_pin"
+    t.index ["is_school_issued"], name: "index_contact_infos_on_is_school_issued"
     t.index ["user_id"], name: "index_contact_infos_on_user_id"
     t.index ["value", "user_id", "type"], name: "index_contact_infos_on_value_user_id_type", unique: true
     t.index ["verified"], name: "index_contact_infos_on_verified"
@@ -365,6 +367,7 @@ ActiveRecord::Schema.define(version: 2020_07_31_172701) do
     t.boolean "is_sheerid_unviable"
     t.boolean "is_sheerid_verified"
     t.boolean "grant_tutor_access"
+    t.datetime "requested_cs_verification_at"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

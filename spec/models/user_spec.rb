@@ -462,4 +462,88 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#is_instructor_verification_stale?' do
+    context "when faculty status has been pending for #{User::STALE_VERIFICATION_PERIOD.inspect}" do
+      it 'returns true' do
+        Timecop.freeze(DateTime.now - User::STALE_VERIFICATION_PERIOD) do
+          FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY, activated_at: DateTime.now)
+        end
+
+        expect(User.last.is_instructor_verification_stale?).to be(true)
+      end
+    end
+
+    context "when faculty status has been pending for 3 days and 23 hours and 55 seconds" do
+      it 'returns false' do
+        Timecop.freeze(DateTime.now - 3.days - 23.hours - 55.seconds) do
+          FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY, activated_at: DateTime.now)
+        end
+
+        expect(User.last.is_instructor_verification_stale?).to be(false)
+      end
+    end
+
+    context "when faculty status has been pending for #{User::STALE_VERIFICATION_PERIOD.inspect}" do
+      context 'and pending cs verification' do
+        it 'returns true' do
+          Timecop.freeze(DateTime.now - User::STALE_VERIFICATION_PERIOD) do
+            FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY, activated_at: DateTime.now)
+          end
+
+          User.last.update(is_educator_pending_cs_verification: true)
+          expect(User.last.is_instructor_verification_stale?).to be(false)
+        end
+      end
+    end
+  end
+
+  describe '#best_email_address_for_CS_verification' do
+    let(:school_issued_email) { FactoryBot.create(:email_address, is_school_issued: true, verified: false) }
+    let(:verified_email) { FactoryBot.create(:email_address, is_school_issued: false, verified: true) }
+    let(:unverified_email) { FactoryBot.create(:email_address, is_school_issued: false, verified: false) }
+
+    context 'when user has a school-issued email (not verified), a verified email, and an unverified email' do
+      subject(:user) {
+        user = FactoryBot.create(:user)
+        user.email_addresses << school_issued_email
+        user.email_addresses << verified_email
+        user.email_addresses << unverified_email
+        user.save!
+        user
+      }
+
+      it 'returns the school-issued email' do
+        expect(user.best_email_address_for_CS_verification).to eq(school_issued_email.value)
+      end
+    end
+
+    context 'when user has a verified email, and an unverified email' do
+      subject(:user) {
+        user = FactoryBot.create(:user)
+        user.email_addresses << verified_email
+        user.email_addresses << unverified_email
+        user.save!
+        user
+      }
+
+      it 'returns the verified email' do
+        expect(user.best_email_address_for_CS_verification).to eq(verified_email.value)
+      end
+    end
+
+    context 'when user has only an unverified email' do
+      subject(:user) {
+        user = FactoryBot.create(:user)
+        user.email_addresses << unverified_email
+        user.save!
+        user
+      }
+
+      it 'returns the unverified email' do
+        expect(user.best_email_address_for_CS_verification).to eq(unverified_email.value)
+      end
+    end
+  end
+
 end

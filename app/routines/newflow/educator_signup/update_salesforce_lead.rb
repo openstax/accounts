@@ -51,13 +51,15 @@ module Newflow
           first_name: user.first_name,
           last_name: user.last_name,
           school: user.most_accurate_school_name,
+          email: user.best_email_address_for_CS_verification,
           role: User.roles[user.role] == User.roles[User::OTHER_ROLE] ? user.other_role_name : user.role,
           num_students: user.how_many_students,
           adoption_status: ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
           verification_status: user.faculty_status,
           who_chooses_books: user.who_chooses_books,
           subject: user.which_books,
-          finalize_educator_signup: user.is_profile_complete?
+          finalize_educator_signup: user.is_profile_complete?,
+          needs_cs_review: user.is_educator_pending_cs_verification?
         )
       end
 
@@ -75,14 +77,18 @@ module Newflow
       end
 
       def log_error(user, lead, code=nil)
-        message = "ERROR FROM #{self.class.name}"
+        message = "[UpdateSalesforceLead] ERROR"
         Rails.logger.warn(message)
-        Raven.capture_message(message, extra: {
-          user_id: user.id,
-          lead_id: lead&.id,
-          leader_errors_full_message: lead&.errors&.full_messages,
-          error_code: code
-        })
+        Raven.capture_message(
+          message,
+          extra: {
+            user_id: user.id,
+            lead: lead&.inspect,
+            leader_errors: lead&.errors&.full_messages,
+            error_code: code
+          },
+          user: { id: user.id, lead: lead&.id }
+        )
       end
 
     end

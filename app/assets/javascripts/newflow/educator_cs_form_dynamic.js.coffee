@@ -1,13 +1,14 @@
-class NewflowUi.EducatorComplete
+class NewflowUi.CsFormCompleteProfile
 
   constructor: ->
-    _.bindAll(@, 'onSchoolNameChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onTotalNumChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onSubmit')
+    _.bindAll(@, 'onSchoolNameChange', 'onSchoolEmailChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onTotalNumChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onSubmit')
     @initBooksUsedMultiSelect()
     @initBooksOfInterestMultiSelect()
-    @form = $('.signup-page.completed-step')
+    @form = $('.signup-page.cs-form-complete-profile')
 
     # fields locators
     @school_name = @findOrLogNotFound(@form, '.school-name-visible')
+    @school_email = @findOrLogNotFound(@form, '.school-issued-email')
 
     @completed_role = @findOrLogNotFound(@form, '.completed-role')
     @other_specify = @findOrLogNotFound(@form, '.other-specify')
@@ -21,6 +22,7 @@ class NewflowUi.EducatorComplete
 
     # input fields locators
     @school_name_input = @findOrLogNotFound(@school_name, 'input')
+    @school_email_input = @findOrLogNotFound(@school_email, 'input')
 
     @completed_role_radio = @findOrLogNotFound(@completed_role, "input")
     @other_input = @findOrLogNotFound(@other_specify, "input")
@@ -34,10 +36,11 @@ class NewflowUi.EducatorComplete
     @books_of_interest_select = @findOrLogNotFound(@books_of_interest, "select")
 
     # error messages locators
-    @please_fill_out_school = @findOrLogNotFound(@form, '.school-name.newflow-mustdo-alert')
+    @please_fill_out_school = @findOrLogNotFound(@form, '.school-name.cs-form-mustdo-alert')
+    @please_fill_out_school_email = @findOrLogNotFound(@form, '.school-issued-email.cs-form-mustdo-alert')
 
-    @please_select_role = @findOrLogNotFound(@form, '.completed-role .role.newflow-mustdo-alert')
-    @please_fill_out_other = @findOrLogNotFound(@form, '.other.newflow-mustdo-alert')
+    @please_select_role = @findOrLogNotFound(@form, '.completed-role .role.cs-form-mustdo-alert')
+    @please_fill_out_other = @findOrLogNotFound(@form, '.other.cs-form-mustdo-alert')
 
     @please_select_chosen = @findOrLogNotFound(@form, '.how-chosen .chosen.newflow-mustdo-alert')
     @please_select_using = @findOrLogNotFound(@form, '.how-using .using.newflow-mustdo-alert')
@@ -48,6 +51,7 @@ class NewflowUi.EducatorComplete
 
     # event listeners
     @school_name_input.on('input', @onSchoolNameChange)
+    @school_email_input.on('input', @onSchoolEmailChange)
 
     @completed_role_radio.change(@onRoleChange)
     @other_input.on('input', @onOtherChange)
@@ -64,9 +68,6 @@ class NewflowUi.EducatorComplete
     # Continue button
     @continue = @findOrLogNotFound(@form, '#signup_form_submit_button')
 
-    # Disable submitting initially
-    @continue.prop('disabled', true)
-
     # Hide these fields initially because they only show up depending on the form's state
     @other_specify.hide()
     @how_chosen.hide()
@@ -77,11 +78,16 @@ class NewflowUi.EducatorComplete
 
     # Hide all validations messages
     @please_fill_out_school.hide()
+    @please_fill_out_school_email.hide()
     @please_select_role.hide()
+
+    @please_select_chosen
+    @please_select_using
     @please_fill_out_total_num.hide()
 
     @please_select_books_used.hide()
     @please_select_books_of_interest.hide()
+
 
   findOrLogNotFound: (parent, selector) ->
     if (found = parent.find(selector))
@@ -100,6 +106,7 @@ class NewflowUi.EducatorComplete
 
   onSubmit: (ev) ->
     school_name_valid = @checkSchoolNameValid()
+    school_email_valid = @checkSchoolEmailValid()
 
     role_valid = @checkRoleValid()
     other_valid = @checkOtherValid()
@@ -111,24 +118,33 @@ class NewflowUi.EducatorComplete
     books_used_valid = @checkBooksUsedValid()
     books_of_interest_valid = @checkBooksOfInterestValid()
 
-    if not (role_valid and
-            chosen_valid and
-            using_how_valid and
-            other_valid and
-            school_name_valid and
-            total_num_valid and
-            books_used_valid and
-            books_of_interest_valid)
+    if not (
+      school_name_valid and
+      school_email_valid and
+      role_valid and
+      other_valid and
+      chosen_valid and
+      using_how_valid and
+      total_num_valid and
+      books_used_valid and
+      books_of_interest_valid
+    )
       ev.preventDefault()
 
   checkSchoolNameValid: () ->
-    return true if document.getElementsByClassName('school-name-visible')[0] == undefined
-
     if @school_name_input.val()
       @please_fill_out_school.hide()
       true
     else
       @please_fill_out_school.show()
+      false
+
+  checkSchoolEmailValid: () ->
+    if @school_email_input.val()
+      @please_fill_out_school_email.hide()
+      true
+    else
+      @please_fill_out_school_email.show()
       false
 
   checkRoleValid: () ->
@@ -137,6 +153,16 @@ class NewflowUi.EducatorComplete
       true
     else
       @please_select_role.show()
+      false
+
+  checkOtherValid: () ->
+    return true if @other_input.is(":hidden")
+
+    if @other_input.val()
+      @please_fill_out_other.hide()
+      true
+    else
+      @please_fill_out_other.show()
       false
 
   checkChosenValid: () ->
@@ -149,16 +175,6 @@ class NewflowUi.EducatorComplete
       @please_select_chosen.show()
       false
 
-  checkTotalNumValid: () ->
-    return true if @total_num_students_input.is(":hidden")
-
-    if @total_num_students_input.val()
-      @please_fill_out_total_num.hide()
-      true
-    else
-      @please_fill_out_total_num.show()
-      false
-
   checkUsingHowValid: () ->
     return true if @how_using_radio.is(":hidden")
 
@@ -169,14 +185,14 @@ class NewflowUi.EducatorComplete
       @please_select_using.show()
       false
 
-  checkOtherValid: () ->
-    return true if @other_input.is(":hidden")
+  checkTotalNumValid: () ->
+    return true if @total_num_students_input.is(":hidden")
 
-    if @other_input.val()
-      @please_fill_out_other.hide()
+    if @total_num_students_input.val()
+      @please_fill_out_total_num.hide()
       true
     else
-      @please_fill_out_other.show()
+      @please_fill_out_total_num.show()
       false
 
   checkBooksUsedValid: () ->
@@ -200,8 +216,13 @@ class NewflowUi.EducatorComplete
       false
 
   onSchoolNameChange: ->
-    @please_fill_out_school.hide()
-    @onRoleChange()
+    @checkSchoolNameValid()
+
+  onSchoolEmailChange: ->
+    @please_fill_out_school_email.hide()
+
+    if @checkSchoolEmailValid()
+      @continue.prop('disabled', false)
 
   onRoleChange: ->
     @please_select_role.hide()
@@ -217,7 +238,7 @@ class NewflowUi.EducatorComplete
       @please_select_chosen.hide()
       @please_fill_out_total_num.hide()
 
-      @onHowUsingChange()
+      @onSchoolEmailChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_administrator').is(':checked') && @checkSchoolNameValid() )
       @how_chosen.show()
       @how_using.show()
@@ -228,20 +249,47 @@ class NewflowUi.EducatorComplete
       @please_select_chosen.hide()
       @please_select_using.hide()
 
-      @onHowUsingChange()
+      @onSchoolEmailChange()
     else if ( @findOrLogNotFound($(document), '#signup_educator_specific_role_other').is(':checked') )
       @other_specify.show()
 
+      @please_fill_out_other.hide()
+      @how_chosen.hide()
+      @how_using.hide()
+      @total_num_students.hide()
       @books_used.hide()
       @books_of_interest.hide()
-      @how_chosen.hide()
-      @total_num_students.hide()
-      @how_using.hide()
-      @please_fill_out_other.hide()
+
+    if @checkSchoolNameValid() && @checkSchoolEmailValid()
+      @continue.prop('disabled', false)
 
   onOtherChange: ->
     @please_fill_out_other.hide()
-    @continue.prop('disabled', false)
+
+    if @checkSchoolNameValid() && @checkSchoolEmailValid() && @checkOtherValid()
+      @continue.prop('disabled', false)
+
+  onHowUsingChange: ->
+    @please_select_using.hide()
+
+    if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_primary').is(':checked') )
+      @books_used.show()
+
+      @books_of_interest.hide()
+      @please_select_books_used.hide()
+      @please_select_books_of_interest.hide()
+    else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_recommending').is(':checked') )
+      @books_of_interest.show()
+
+      @books_used.hide()
+      @please_select_books_used.hide()
+      @please_select_books_of_interest.hide()
+    else if ( @findOrLogNotFound($(document), '#signup_using_openstax_how_as_future').is(':checked') )
+      @books_of_interest.show()
+
+      @books_used.hide()
+      @please_select_books_used.hide()
+      @please_select_books_of_interest.hide()
 
   onHowChosenChange: ->
     @please_select_chosen.hide()

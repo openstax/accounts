@@ -24,6 +24,8 @@ class ContactInfo < ActiveRecord::Base
   sifter(:verified) { verified == true }
   scope :unverified, -> { where(verified: false) }
 
+  scope :school_issued, -> { where(is_school_issued: true) }
+
   scope :with_users, lambda { joins(:user).eager_load(:user) }
 
   def confirmed;  verified;  end

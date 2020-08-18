@@ -1,0 +1,304 @@
+<%= render 'newflow/educator_signup/refresh_upon_going_back' %>
+
+<div id="login-signup-form">
+    <div class="content">
+        <%
+            educator_complete_roles = [
+                [ I18n.t(:'educator_profile_form.instructor'), 'instructor', false ],
+                [ I18n.t(:'educator_profile_form.administrator'), 'administrator', false ],
+                [ I18n.t(:'educator_profile_form.other'), 'other', false ]
+            ]
+        %>
+
+        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
+
+        <%=
+            newflow_login_signup_card(
+                header: (I18n.t(:"educator_profile_form.complete_page_header")),
+                classes: 'signup-page cs-form-complete-profile'
+            ) do %>
+
+            <% lev_form_for :signup, url: educator_cs_verification_request_path do |f| %>
+                <% fh = NewflowFormHelper::Newflow.new(
+                        f: f,
+                        context: self,
+                        errors: @handler_result&.errors
+                    )
+                %>
+
+                <div class="content required-fields-notice">
+                    <%= I18n.t(:"login_signup_form.all_fields_required") %>
+                </div>
+
+                <div class="content">
+                    <div class="questions">
+
+                        <div class="form-group question">
+                            <div class="school-name-visible">
+                                <%=
+                                    label_tag(
+                                        :school_name,
+                                        I18n.t(:"educator_profile_form.school_name"),
+                                        class: 'field-label'
+                                    )
+                                %>
+
+                                <div class="school-name cs-form-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.school_name_must_be_entered") %>
+                                </div>
+
+                                <%=
+                                    fh.text_field(
+                                    name: :school_name,
+                                    placeholder: I18n.t(:"educator_profile_form.school_name"),
+                                    autofocus: true
+                                    )
+                                %>
+                            </div>
+                        </div>
+
+                        <div class="form-group question">
+                            <div class="school-issued-email">
+                                <%=
+                                    label_tag(
+                                        :school_issued_email,
+                                        I18n.t(:"educator_profile_form.school_issued_email"),
+                                        class: 'field-label'
+                                    )
+                                %>
+
+                                <div class="school-issued-email cs-form-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.school_issued_email_must_be_entered") %>
+                                </div>
+
+                                <%=
+                                    fh.text_field(
+                                    name: :school_issued_email,
+                                    placeholder: I18n.t(:"educator_profile_form.school_issued_email"),
+                                    autofocus: true
+                                    )
+                                %>
+                            </div>
+                        </div>
+
+                        <div class="form-group question completed-role">
+                            <div class="radio-control-group">
+                                <%=
+                                    label_tag(
+                                        :educator_specific_role,
+                                        I18n.t(:"educator_profile_form.describe_role"),
+                                        class: 'field-label'
+                                    )
+                                %>
+
+                                <div class="role cs-form-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.select_option") %>
+                                </div>
+
+                                <% educator_complete_roles.each do |(role, id, selected)| %>
+                                    <label>
+                                        <% label_name = "educator_specific_role_#{id}".to_sym %>
+                                        <%=
+                                            f.radio_button(
+                                                :educator_specific_role,
+                                                id,
+                                                checked: selected,
+                                                class: 'completed-role custom-control-input'
+                                            )
+                                        %>
+                                        <%= label(label_name, role, class: 'custom-control-label') %>
+                                    </label>
+                                <% end %>
+
+                            </div>
+
+                            <div class="other-specify">
+                                <%=
+                                    label_tag(
+                                        :other_role_name,
+                                        I18n.t(:"educator_profile_form.other_please_specify"),
+                                        class: 'field-label'
+                                    )
+                                %>
+                                <div class="other cs-form-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.fill_out") %>
+                                </div>
+                                <%=
+                                    fh.text_field(
+                                        name: :other_role_name,
+                                        placeholder: I18n.t(:"educator_profile_form.other_please_specify"),
+                                        autofocus: true
+                                    )
+                                %>
+                            </div>
+                        </div>
+
+                        <div class="form-group question how-chosen">
+                            <div class="radio-control-group">
+                                <%= label_tag :who_chooses_books, I18n.t(:"educator_profile_form.how_textbooks_chosen"), class: 'field-label' %>
+                                <div class="chosen newflow-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.select_option") %>
+                                </div>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :who_chooses_books,
+                                        :instructor,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_primary_textbook, I18n.t(:"educator_profile_form.chosen_by_instructor"), class: 'custom-control-label' %>
+                                </label>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :who_chooses_books,
+                                        :committee,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_recommending_openstax, I18n.t(:"educator_profile_form.chosen_by_committee"), class: 'custom-control-label' %>
+                                </label>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :who_chooses_books,
+                                        :coordinator,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_future, I18n.t(:"educator_profile_form.chosen_by_coordinator"), class: 'custom-control-label' %>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group question how-using">
+                            <div class="radio-control-group">
+                                <%= label_tag :using_openstax_how, I18n.t(:"educator_profile_form.how_using"), class: 'field-label' %>
+                                <div class="using newflow-mustdo-alert">
+                                    <%= I18n.t(:"educator_profile_form.select_option") %>
+                                </div>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :using_openstax_how,
+                                        :as_primary,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_primary_textbook, I18n.t(:"educator_profile_form.using_primary_textbook"), class: 'custom-control-label' %>
+                                </label>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :using_openstax_how,
+                                        :as_recommending,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_recommending_openstax, I18n.t(:"educator_profile_form.using_recommending_openstax"), class: 'custom-control-label' %>
+                                </label>
+                                <label>
+                                    <%=
+                                        f.radio_button(
+                                        :using_openstax_how,
+                                        :as_future,
+                                        checked: false,
+                                        class: 'completed-role custom-control-input'
+                                        )
+                                    %>
+                                    <%= label :using_future, I18n.t(:"educator_profile_form.using_future"), class: 'custom-control-label' %>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group question total-num-students">
+                            <%=
+                                label_tag(
+                                    :num_students_per_semester_taught,
+                                    I18n.t(:"educator_profile_form.num_students_taught"),
+                                    class: 'field-label'
+                                )
+                            %>
+                            <div class="total-num newflow-mustdo-alert">
+                                <%= I18n.t(:"educator_profile_form.fill_out") %>
+                            </div>
+                            <%=
+                                fh.text_field(
+                                    name: :num_students_per_semester_taught,
+                                    placeholder: I18n.t(:"educator_profile_form.num_students_taught"),
+                                    autofocus: true,
+                                    numberonly: true
+                                )
+                            %>
+                        </div>
+
+                        <div class="form-group question books-used">
+                            <%=
+                                label_tag(
+                                    :books_used,
+                                    I18n.t(:"educator_profile_form.books_used"),
+                                    class: 'field-label'
+                                )
+                            %>
+                            <div class="used newflow-mustdo-alert">
+                                <%= I18n.t(:"educator_profile_form.select_option") %>
+                            </div>
+                            <%=
+                                fh.select(
+                                    name: :books_used,
+                                    options: grouped_options_for_select(@book_titles),
+                                    autofocus: true,
+                                    multiple: true,
+                                    custom_class: 'os-multiselect'
+                                )
+                            %>
+                        </div>
+
+                        <div class="form-group question books-of-interest">
+                            <%=
+                                label_tag(
+                                    :books_of_interest,
+                                    I18n.t(:"educator_profile_form.books_of_interest"),
+                                    class: 'field-label'
+                                )
+                            %>
+                            <div class="books-of-interest newflow-mustdo-alert">
+                                <%= I18n.t(:"educator_profile_form.select_option") %>
+                            </div>
+
+                            <%=
+                                fh.select(
+                                    name: :books_of_interest,
+                                    options: grouped_options_for_select(@book_titles),
+                                    autofocus: true,
+                                    multiple: true,
+                                    custom_class: 'os-multiselect'
+                                )
+                            %>
+                        </div>
+
+                    </div>
+
+                    <%=
+                        f.submit(
+                            I18n.t(:"login_signup_form.continue_button"),
+                            id: 'signup_form_submit_button',
+                            class: 'primary',
+                        )
+                    %>
+                </div>
+            <% end %>
+        <% end %>
+    </div>
+</div>
+
+<script type="text/javascript">
+    //this needs to be done at bottom of the file so that the dom above is already constructed
+    new NewflowUi.CsFormCompleteProfile();
+</script>

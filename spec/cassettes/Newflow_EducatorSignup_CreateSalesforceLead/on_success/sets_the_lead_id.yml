@@ -5,9 +5,9 @@ http_interactions:
     uri: "<salesforce_instance_url_lower>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Porfirio","LastName":"Nikolaus","Company":"not yet known","Email":"f@f.com","LeadSource":"OSC
-        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":1,"accounts_uuid_c__c":"c5209632-5c5f-418b-9537-feb6f6b09008","Application_Source__c":"Tutor
-        Signup","Role__c":"instructor","FV_Status__c":"pending_faculty"}'
+      string: '{"FirstName":"Sherrill","LastName":"McDermott","Company":"unknown to
+        Accounts","Email":"f@f.com","LeadSource":"OSC Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":2,"accounts_uuid_c__c":"3fb5a9ab-cbd9-4e90-a5a6-6e259dd95301","Application_Source__c":"Tutor
+        Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false}'
     headers:
       User-Agent:
       - Faraday v0.17.3
@@ -25,7 +25,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 07 Jul 2020 09:09:10 GMT
+      - Tue, 18 Aug 2020 18:08:22 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Public-Key-Pins-Report-Only:
@@ -37,20 +37,20 @@ http_interactions:
       X-Robots-Tag:
       - none
       X-B3-Traceid:
-      - 1301a3e5b01338f6
+      - 9db759c4f5f764af
       X-B3-Spanid:
-      - 1301a3e5b01338f6
+      - 9db759c4f5f764af
       X-B3-Sampled:
       - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=hOHq5sAxEeqFkqtKcE4XuA; domain=.salesforce.com; path=/; expires=Wed,
-        07-Jul-2021 09:09:10 GMT; Max-Age=31536000
+      - BrowserId=zX0WRuF9EeqYgjVdBF9Rcw; domain=.salesforce.com; path=/; expires=Wed,
+        18-Aug-2021 18:08:22 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=3055/51000
+      - api-usage=5777/51000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00QR000000JNXYcMAP"
+      - "/services/data/v37.0/sobjects/Lead/00QR000000KBkvSMAT"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -59,7 +59,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00QR000000JNXYcMAP","success":true,"errors":[]}'
-    http_version: 
-  recorded_at: Tue, 07 Jul 2020 09:09:14 GMT
+      string: '{"id":"00QR000000KBkvSMAT","success":true,"errors":[]}'
+    http_version:
+  recorded_at: Tue, 18 Aug 2020 18:08:24 GMT
 recorded_with: VCR 3.0.3
