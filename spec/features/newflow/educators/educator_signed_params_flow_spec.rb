@@ -47,6 +47,7 @@ module Newflow
         screenshot!
         expect(page).to have_no_missing_translations
         expect_back_at_app
+        screenshot!
         expect(user.external_uuids.where(uuid: payload[:uuid])).to exist
       end
 

@@ -9,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/openstax/openstax_salesforce.git
-  revision: 58ee73640cbd33c1a8d00277566a2d30074d3657
-  ref: 58ee73640cbd33c1a8d00277566a2d30074d3657
+  revision: d27f4fed270e5c11a5b1cda5bac2a274359210f7
+  ref: v4.6.1
   specs:
-    openstax_salesforce (4.7.0)
+    openstax_salesforce (4.6.1)
       openstax_active_force
       rails (>= 5.0, < 7.0)
       restforce
@@ -134,7 +134,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (~> 1.5)
       xpath (~> 3.2)
-    capybara-email (3.0.1)
+    capybara-email (3.0.2)
       capybara (>= 2.4, < 4.0)
       mail
     capybara-screenshot (1.0.19)
@@ -431,8 +431,8 @@ GEM
       rails (>= 3.1)
     p3p (1.2.0)
       rack
-    parallel (1.18.0)
-    parallel_tests (2.29.2)
+    parallel (1.19.2)
+    parallel_tests (3.1.0)
       parallel
     parser (2.6.5.0)
       ast (~> 2.4.0)

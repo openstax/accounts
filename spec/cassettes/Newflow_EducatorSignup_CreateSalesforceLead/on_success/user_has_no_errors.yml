@@ -5,8 +5,8 @@ http_interactions:
     uri: "<salesforce_instance_url_lower>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Linwood","LastName":"Weber","Company":"unknown to Accounts","Email":"f@f.com","LeadSource":"OSC
-        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":7,"accounts_uuid_c__c":"93fcf6e9-905e-4a9b-bd3c-dc102fbba725","Application_Source__c":"Tutor
+      string: '{"FirstName":"Myles","LastName":"Skiles","Company":"unknown to Accounts","Email":"f@f.com","LeadSource":"OSC
+        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":1,"accounts_uuid_c__c":"a0d917b3-b0a9-4ca3-adb4-c427ff27188b","Application_Source__c":"Tutor
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false}'
     headers:
       User-Agent:
@@ -25,7 +25,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 18 Aug 2020 18:08:34 GMT
+      - Wed, 19 Aug 2020 22:57:35 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Public-Key-Pins-Report-Only:
@@ -37,20 +37,20 @@ http_interactions:
       X-Robots-Tag:
       - none
       X-B3-Traceid:
-      - 5995851cf0893447
+      - a951570beca29e37
       X-B3-Spanid:
-      - 5995851cf0893447
+      - a951570beca29e37
       X-B3-Sampled:
       - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=1LTtTuF9Eeq2JDE8y7QYHQ; domain=.salesforce.com; path=/; expires=Wed,
-        18-Aug-2021 18:08:34 GMT; Max-Age=31536000
+      - BrowserId=XxBrS-JvEeqSSVHF5ajMPA; domain=.salesforce.com; path=/; expires=Thu,
+        19-Aug-2021 22:57:35 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=5780/51000
+      - api-usage=6313/51000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00QR000000KBkvrMAD"
+      - "/services/data/v37.0/sobjects/Lead/00QR000000KBmC0MAL"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -59,7 +59,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00QR000000KBkvrMAD","success":true,"errors":[]}'
+      string: '{"id":"00QR000000KBmC0MAL","success":true,"errors":[]}'
     http_version:
-  recorded_at: Tue, 18 Aug 2020 18:08:36 GMT
+  recorded_at: Wed, 19 Aug 2020 22:57:37 GMT
 recorded_with: VCR 3.0.3

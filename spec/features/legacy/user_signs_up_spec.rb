@@ -134,6 +134,8 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     find('#signup_email').execute_script('this.value = ""')
     fill_in (t :"legacy.signup.start.email_placeholder"), with: 'my-personal-email@gmail.com'
     click_button(t :"legacy.signup.start.next")
+    wait_for_ajax
+    wait_for_animations
     open_email("my-personal-email@gmail.com")
     verify_email_path = get_path_from_absolute_link(current_email, 'a')
     visit verify_email_path
