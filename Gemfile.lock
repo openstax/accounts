@@ -27,8 +27,8 @@ GIT
 
 GIT
   remote: https://github.com/openstax/pattern-library.git
-  revision: d3e49d78f8e01ed33160abc088c27ff0ad8a2202
-  ref: master
+  revision: c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840
+  ref: c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840
   specs:
     pattern-library (1.1.18)
 
