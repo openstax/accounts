@@ -23,15 +23,7 @@ module Accounts
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.i18n.default_locale = :en
-    config.i18n.fallbacks = {
-      en_us: :en,
-      en_ca: :en,
-      en_uk: :en,
-      fr_lu: :fr,
-      fr_ca: :fr,
-      fr:    :en,
-      es:    :en,
-    }
+    config.i18n.fallbacks = true
 
     config.accounts = ActiveSupport::OrderedOptions.new
     # configure how long a login token is valid for
@@ -64,13 +56,13 @@ module Accounts
         expires_in: 90.minutes,
         compress: true,
       }
-    end 
+    end
 
     def is_real_production?
       secrets.environment_name == "prodtutor"
     end
 
-    def is_assets_precompile? 
+    def is_assets_precompile?
       ARGV[0] != "assets:precompile"
     end
 
