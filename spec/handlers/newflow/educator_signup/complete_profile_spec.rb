@@ -64,7 +64,7 @@ module Newflow
       context 'when success' do
         context 'salesforce' do
           it 'calls UpdateSalesforceLead' do
-            expect_any_instance_of(UpdateSalesforceLead).to receive(:exec).with(hash_including(user: user))
+            expect_any_instance_of(UpsertSalesforceLead).to receive(:exec).with(hash_including(user: user))
             handle
           end
         end

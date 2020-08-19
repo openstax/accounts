@@ -189,8 +189,6 @@ def external_public_url
 end
 
 def expect_sheerid_iframe
-  expect(page).to have_current_path(educator_sheerid_form_path)
-
   within_frame do
     expect(page).to have_text(sheerid_iframe_page_title)
     expect(page.find('#sid-country')[:value]).to have_text('United States', exact: false)

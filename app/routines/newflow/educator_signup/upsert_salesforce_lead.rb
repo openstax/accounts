@@ -3,8 +3,8 @@ module Newflow
     class UpsertSalesforceLead
 
       lev_routine
-      uses_routine CreateSalesforceLead
-      uses_routine UpdateSalesforceLead
+      uses_routine CreateSalesforceLead, translations: { outputs: { type: :verbatim } }
+      uses_routine UpdateSalesforceLead, translations: { outputs: { type: :verbatim } }
 
       protected #################
 
