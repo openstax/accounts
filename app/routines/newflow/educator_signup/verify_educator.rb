@@ -42,6 +42,8 @@ module Newflow
           sheerid_reported_school: verification.organization_name,
           sheerid_verification_id: verification.verification_id,
           is_sheerid_verified: verification.verified?,
+          # update role in case the user signed up as a student but then requested faculty verification and got approved.
+          role: (user.role == User::STUDENT_ROLE ? User::INSTRUCTOR_ROLE : user.role)
         )
 
         if first_update && user.is_sheerid_verified? && user.is_profile_complete?
