@@ -71,7 +71,7 @@ module Newflow
       private #################
 
       def update_salesforce_lead
-        UpdateSalesforceLead.perform_later(user: user)
+        UpsertSalesforceLead.perform_later(user: user)
       end
 
       def other_role_name

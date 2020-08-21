@@ -33,6 +33,7 @@ module Newflow
           school: user.most_accurate_school_name,
           verification_status: user.faculty_status,
           finalize_educator_signup: user.is_profile_complete?,
+          needs_cs_review: user.is_educator_pending_cs_verification?,
           newsletter: user.receive_newsletter?,
           newsletter_opt_in: user.receive_newsletter?
         )
