@@ -25,7 +25,8 @@ module Newflow
           fatal_error(code: :user_is_missing_salesforce_lead_id)
         end
 
-        lead = outputs.lead = fetch_lead(lead_id)
+
+        lead = fetch_lead(lead_id)
 
         if lead.blank?
           log_error(user, lead, :lead_missing_in_salesforce)
@@ -35,6 +36,8 @@ module Newflow
         else
           log_error(user, lead)
         end
+
+        outputs.lead = lead
       end
 
       private #################
@@ -54,8 +57,7 @@ module Newflow
           verification_status: user.faculty_status,
           who_chooses_books: user.who_chooses_books,
           subject: user.which_books,
-          finalize_educator_signup: user.is_profile_complete?,
-          needs_cs_review: user.is_educator_pending_cs_verification?
+          finalize_educator_signup: user.is_profile_complete?
         )
       end
 

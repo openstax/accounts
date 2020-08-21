@@ -16,16 +16,15 @@ module Newflow
     let(:iframe_submit_button_text) { 'Verify my instructor status' }
     let(:external_app_url) { capybara_url(external_app_for_specs_path) }
     let(:return_param) { { r: external_app_for_specs_path } }
+    let(:correct_pin) { EmailAddress.last.confirmation_pin }
 
     context 'happy path' do
       before(:each) do
-        expect_any_instance_of(EducatorSignup::UpsertSalesforceLead).to receive(:exec)
+        expect_any_instance_of(EducatorSignup::CreateSalesforceLead).to receive(:exec)
       end
 
       context 'when entering PIN code to verify email address' do
         it 'all works' do
-          expect_any_instance_of(Newflow::EducatorSignup::CreateSalesforceLead).to receive(:exec)
-
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
           click_on(I18n.t(:"login_signup_form.educator"))
@@ -47,16 +46,10 @@ module Newflow
           expect(current_email).to be_truthy
 
           # ... with the correct PIN
-          expect(EmailAddress.verified.count).to eq(0)
-          correct_pin = EmailAddress.find_by!(value: email_value).confirmation_pin
-          fill_in('confirm_pin', with: correct_pin)
-          wait_for_ajax
-          wait_for_animations
-          click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
-          wait_for_ajax
-          wait_for_animations
-          expect(page).to_not have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
-          expect(EmailAddress.verified.count).to eq(1)
+          fill_in 'confirm_pin', with: correct_pin
+          find('[type=submit]').click
+          # ... sends you to the SheerID form
+          expect(page.current_path).to eq(educator_sheerid_form_path)
 
           # Step 3
           expect_sheerid_iframe
@@ -79,8 +72,6 @@ module Newflow
 
       context 'when clicking on link sent in an email to verify email address' do
         it 'all works' do
-          expect_any_instance_of(Newflow::EducatorSignup::CreateSalesforceLead).to receive(:exec)
-
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
           expect(page.current_path).to eq(newflow_signup_path)
@@ -105,6 +96,8 @@ module Newflow
           # ... with a link
           verify_email_url = get_path_from_absolute_link(current_email, 'a')
           visit(verify_email_url)
+          # ... which sends you to the SheerID form
+          expect(page.current_path).to eq(educator_sheerid_form_path)
 
           # Step 3
           expect_sheerid_iframe
@@ -197,22 +190,10 @@ module Newflow
         capture_email!(address: email_value)
         expect(current_email).to be_truthy
         # ... with the correct PIN
-        correct_pin = EmailAddress.find_by!(value: email_value).confirmation_pin
-        fill_in('confirm_pin', with: correct_pin)
-        wait_for_ajax
-        wait_for_animations
-        expect(page).to have_content(correct_pin)
-        expect(page).to have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
-        click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
-        expect(page).to_not have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
-        wait_for_ajax
-        wait_for_animations
-        expect(EmailAddress.verified.count).to eq(1)
-
-        wait_for_ajax
-        wait_for_animations
+        fill_in 'confirm_pin', with: correct_pin
+        find('[type=submit]').click
         # ... sends you to the SheerID form
-        expect(page).to have_current_path(educator_sheerid_form_path)
+        expect(page.current_path).to eq(educator_sheerid_form_path)
 
         # LOG OUT
         visit(signout_path)

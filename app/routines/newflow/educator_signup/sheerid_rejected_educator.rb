@@ -18,7 +18,7 @@ module Newflow
         user.save
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
-        UpsertSalesforceLead.perform_later(user: user)
+        UpdateSalesforceLead.perform_later(user: user)
       end
 
     end
