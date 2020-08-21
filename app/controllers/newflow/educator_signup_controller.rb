@@ -161,7 +161,7 @@ module Newflow
 
     def educator_pending_cs_verification
       security_log(:user_viewed_signup_form, form_name: action_name)
-      @email_address = current_user.email_addresses.first&.value
+      @email_address = current_user.email_addresses.last&.value
     end
 
     def educator_cs_verification_request
@@ -173,6 +173,7 @@ module Newflow
           redirect_to(educator_pending_cs_verification_path)
         },
         failure: lambda {
+          @book_titles = book_data.titles
           security_log(:educator_sign_up_failed, reason: "Error in #{action_name}: #{@handler_result&.errors&.full_messages}")
           render :educator_cs_verification_form
         }
