@@ -11,17 +11,21 @@ module Newflow
       }
 
       OTHER = 'other'
-
+      AS_PRIMARY = 'as_primary'
+      INSTRUCTOR = 'instructor'
+      AS_FUTURE = 'as_future'
 
       paramify :signup do
         attribute :school_name, type: String
         attribute :school_issued_email, type: String
         attribute :educator_specific_role, type: String
         attribute :other_role_name, type: String
+        attribute :who_chooses_books, type: String
+        attribute :using_openstax_how, type: String
+        attribute :num_students_per_semester_taught, type: String
+        attribute :books_used, type: Object
+        attribute :books_of_interest, type: Object
 
-        validates :school_name, presence: true
-        validates :educator_specific_role, presence: true
-        validates :other_role_name, presence: true
         validates(
           :educator_specific_role,
           inclusion: {
@@ -47,14 +51,14 @@ module Newflow
         check_params
         return if errors?
 
-        if !users_existing_email.present?
-          run(CreateEmailForUser, email: email_address_value, user: outputs.user)
-        end
-
         user.update(
           self_reported_school: signup_params.school_name,
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
+          who_chooses_books: signup_params.who_chooses_books,
+          using_openstax_how: signup_params.using_openstax_how,
+          how_many_students: signup_params.num_students_per_semester_taught,
+          which_books: which_books,
           is_profile_complete: true,
           is_educator_pending_cs_verification: true,
           requested_cs_verification_at: DateTime.now,
@@ -64,20 +68,48 @@ module Newflow
 
         outputs.user = user
 
+        if !users_existing_email.present?
+          run(CreateEmailForUser, email: email_address_value, user: user)
+        end
+
         UpsertSalesforceInfoForCsVerification.perform_later(user: user)
       end
 
       private #################
+
+      def which_books
+        if books_used.present?
+          format_books_for_salesforce_string(signup_params.books_used)
+        elsif books_of_interest.present?
+          format_books_for_salesforce_string(signup_params.books_of_interest)
+        end
+      end
 
       def other_role_name
         signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil
       end
 
       def check_params
+        if signup_params.school_name.blank?
+          param_error(:school_name, :school_name_must_be_entered)
+        end
+
         if signup_params.educator_specific_role.strip.downcase == OTHER &&
           signup_params.other_role_name.blank?
 
           param_error(:other_role_name, :other_must_be_entered)
+        end
+
+        if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
+          signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
+
+          param_error(:books_used, :books_used_must_be_entered)
+        end
+
+        if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
+          signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
+
+          param_error(:books_of_interest, :books_of_interest_must_be_entered)
         end
 
         if email_address_value.blank?
@@ -87,6 +119,18 @@ module Newflow
         elsif email_address_value.present? && email_already_taken?
           param_error(:school_issued_email, :school_issued_email_is_taken)
         end
+      end
+
+      def books_used
+        signup_params.books_used.reject{ |b| b.blank? }
+      end
+
+      def books_of_interest
+        signup_params.books_of_interest.reject{ |b| b.blank? }
+      end
+
+      def format_books_for_salesforce_string(books)
+        books.reject(&:empty?)&.join(';')
       end
 
       def invalid_email?

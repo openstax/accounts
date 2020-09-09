@@ -60,8 +60,11 @@ feature 'Sign in using signed parameters', js: true do
       user = create_user 'user'
       arrive_from_app(params: signed_params)
       expect_sign_in_page
+      find('#login_username_or_email').execute_script('this.value = ""')
       complete_login_username_or_email_screen 'user'
+      screenshot!
       complete_login_password_screen 'password'
+      screenshot!
       expect_back_at_app
       expect_validated_records(params: payload, user: user, email_is_verified: false)
     end
