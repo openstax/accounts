@@ -131,6 +131,7 @@ feature 'User signs up', js: true, vcr: VCR_OPTS do
     expect_sign_up_page # students default to sign-up vs the standard sign-in
     expect(page).to have_no_field('signup_role') # no changing the role
 
+    find('#signup_email').execute_script('this.value = ""')
     fill_in (t :"legacy.signup.start.email_placeholder"), with: 'my-personal-email@gmail.com'
     click_button(t :"legacy.signup.start.next")
     open_email("my-personal-email@gmail.com")
