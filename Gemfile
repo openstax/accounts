@@ -256,7 +256,7 @@ end
 
 group :production, :test do
   # AWS SES integration
-  gem 'aws-ses', '~> 0.6.0', require: 'aws/ses'
+  gem 'aws-ses', '~> 0.7.0', require: 'aws/ses'
 end
 
 group :production do

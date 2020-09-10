@@ -36,9 +36,16 @@ module Newflow
       it 'prefills email on sign in when there is a match AND links user account to external user account' do
         arrive_from_app(params: signed_params, do_expect: false)
         expect(page).to have_field('login_form_email', with: payload[:email])
-        find('#login_form_email').execute_script('this.value = ""')
+        fill_in('login_form_password', with: 'password')
+        expect(page).to have_no_missing_translations
+        wait_for_animations
+        wait_for_ajax
         screenshot!
-        newflow_log_in_user(payload[:email], 'password')
+        click_button(I18n.t(:"login_signup_form.continue_button"))
+        wait_for_animations
+        wait_for_ajax
+        screenshot!
+        expect(page).to have_no_missing_translations
         expect_back_at_app
         expect(user.external_uuids.where(uuid: payload[:uuid])).to exist
       end
