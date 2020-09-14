@@ -25,8 +25,7 @@ module Newflow
           fatal_error(code: :user_is_missing_salesforce_lead_id)
         end
 
-
-        lead = fetch_lead(lead_id)
+        lead = outputs.lead = fetch_lead(lead_id)
 
         if lead.blank?
           log_error(user, lead, :lead_missing_in_salesforce)
@@ -36,8 +35,6 @@ module Newflow
         else
           log_error(user, lead)
         end
-
-        outputs.lead = lead
       end
 
       private #################
