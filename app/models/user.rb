@@ -56,10 +56,17 @@ class User < ActiveRecord::Base
   enum(school_type: VALID_SCHOOL_TYPES)
 
   scope(
+    :activated, -> {
+      where(state: ACTIVATED)
+    }
+  )
+
+  scope(
     :by_unverified, -> {
       where(state: UNVERIFIED)
     }
   )
+
   scope(
     :older_than_one_year, -> {
       where("created_at < ?", 1.year.ago)

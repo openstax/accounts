@@ -55,11 +55,11 @@ class UpdateUserSalesforceInfo
       # eager_load by default produces a LEFT OUTER JOIN
       # But we can use an INNER JOIN here since we have a WHERE condition on contact_infos
       # So we use joins to convert the LEFT OUTER JOIN to an INNER JOIN
-      User.joins(:contact_infos)
+      User.activated.joins(:contact_infos)
           .eager_load(:contact_infos)
           .where(salesforce_contact_id: nil)
-          .where.has{ |t| t.contact_infos.value.lower.in emails}
-          .where(contact_infos: { verified: true })
+          .where.has{ |t| t.contact_infos.value.lower.in emails }
+          .where.has{ |t| t.contact_infos.verified.eq(true).or(t.contact_infos.is_school_issued.eq(true)) }
           .each do |user|
 
         begin
