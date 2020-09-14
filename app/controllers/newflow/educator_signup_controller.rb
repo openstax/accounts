@@ -26,7 +26,12 @@ module Newflow
     )
     before_action(:store_if_sheerid_is_unviable_for_user, only: :educator_profile_form)
     before_action(:store_sheerid_verification_for_user, only: :educator_profile_form)
-    before_action(:exit_signup_if_steps_complete, only: %i[educator_sheerid_form educator_profile_form])
+    before_action(:exit_signup_if_steps_complete, only: %i[
+        educator_sheerid_form
+        educator_profile_form
+        educator_cs_verification_form
+      ]
+    )
 
     def educator_signup
       handle_with(
@@ -199,6 +204,10 @@ module Newflow
       return if !current_user.is_newflow?
 
       case true
+      when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
+        redirect_to(educator_pending_cs_verification_path)
+      when current_user.is_educator_pending_cs_verification && !current_user.pending_faculty?
+        redirect_back(fallback_location: profile_newflow_path)
       when action_name == 'educator_sheerid_form' && current_user.step_3_complete?
         redirect_to(educator_profile_form_path)
       when action_name == 'educator_profile_form' && current_user.is_profile_complete?

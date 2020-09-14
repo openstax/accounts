@@ -69,7 +69,7 @@ module Newflow
         outputs.user = user
 
         if !users_existing_email.present?
-          run(CreateEmailForUser, email: email_address_value, user: user)
+          run(CreateEmailForUser, email: email_address_value, user: user, is_school_issued: true)
         end
 
         UpsertSalesforceInfoForCsVerification.perform_later(user: user)

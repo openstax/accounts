@@ -4,8 +4,8 @@ module Newflow
 
     protected ###############
 
-    def exec(email:, user:)
-      @email = EmailAddress.create(value: email&.downcase, user_id: user.id)
+    def exec(email:, user:, is_school_issued: nil)
+      @email = EmailAddress.create(value: email&.downcase, user_id: user.id, is_school_issued: is_school_issued)
 
       @email.customize_value_error_message(
         error: :missing_mx_records,
