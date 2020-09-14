@@ -128,6 +128,7 @@ feature 'Sign in using signed parameters', js: true do
 
       email = 'test-modified-teacher@example.com'
 
+      find('#signup_email').execute_script('this.value = ""')
       fill_in (t :"legacy.signup.start.email_placeholder"), with: email
       click_button(t :"legacy.signup.start.next")
       wait_for_animations
@@ -183,6 +184,7 @@ feature 'Sign in using signed parameters', js: true do
 
     it 'requires email validation when edited' do
       arrive_from_app(params: signed_params, do_expect: false)
+      find('#signup_email').execute_script('this.value = ""')
       fill_in (t :"legacy.signup.start.email_placeholder"), with: 'test-modified@example.com'
       click_button(t :"legacy.signup.start.next")
       expect_signup_verify_screen
