@@ -4,7 +4,6 @@ module Newflow
 
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
 
-      SALESFORCE_STUDENT_ROLE = 'Student'
       SALESFORCE_INSTRUCTOR_ROLE =  'OSC Faculty'
       DEFAULT_REFERRING_APP_NAME = 'Accounts'
 
@@ -14,7 +13,6 @@ module Newflow
         status.set_job_name(self.class.name)
         status.set_job_args(user: user.to_global_id.to_s)
 
-        salesforce_role_name = user.student? ? SALESFORCE_STUDENT_ROLE : SALESFORCE_INSTRUCTOR_ROLE
         referring_app_name = user&.source_application&.lead_application_source || DEFAULT_REFERRING_APP_NAME
 
         lead = OpenStax::Salesforce::Remote::Lead.new(
@@ -22,7 +20,7 @@ module Newflow
           last_name: user.last_name,
           phone: user.phone_number,
           email: user.best_email_address_for_CS_verification,
-          source: salesforce_role_name,
+          source: SALESFORCE_INSTRUCTOR_ROLE,
           application_source: referring_app_name,
           role: user.role,
           os_accounts_id: user.id,
