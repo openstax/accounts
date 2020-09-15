@@ -2,7 +2,7 @@ module Newflow
   module EducatorSignup
     class UpsertSalesforceLead
 
-      lev_routine
+      lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
       uses_routine CreateSalesforceLead, translations: { outputs: { type: :verbatim } }
       uses_routine UpdateSalesforceLead, translations: { outputs: { type: :verbatim } }
 

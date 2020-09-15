@@ -3,7 +3,7 @@ ActionController::Base.class_exec do
   include UserSessionManagement
   include ApplicationHelper
   include OSU::OsuHelper
-  include LocaleSelector
+  include HttpAcceptLanguage::AutoLocale
   include RequireRecentSignin
 
   include AuthenticateMethods
@@ -64,5 +64,9 @@ ActionController::Base.class_exec do
     current_user.is_anonymous? ||
     request.options? ||
     contracts_not_required
+  end
+
+  def set_locale
+    I18n.locale = http_accept_language.compatible_language_from(I18n.available_locales)
   end
 end
