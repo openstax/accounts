@@ -151,6 +151,9 @@ gem 'json-jwt'
 # international country codes javascript plugin
 gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rails.git', branch: 'master'
 
+# internationalization based on the `HTTP_ACCEPT_LANGUAGE` header sent by browsers
+gem 'http_accept_language'
+
 # Fast JSON parsing
 gem 'oj', '~> 3.7.12'
 
