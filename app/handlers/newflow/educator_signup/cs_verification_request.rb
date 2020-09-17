@@ -65,6 +65,7 @@ module Newflow
           faculty_status: User::PENDING_FACULTY
         )
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
+        SecurityLog.create!(event_type: :user_updated, user: user)
 
         outputs.user = user
 
