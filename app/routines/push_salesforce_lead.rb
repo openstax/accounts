@@ -71,15 +71,23 @@ class PushSalesforceLead
   end
 
   def handle_errors(lead, user, role)
-    message = "PushSalesforceLead error! #{lead.inspect}; User: #{user.id}; " \
-              "Role: #{role}; Error: #{lead.errors.full_messages}"
+    message = '[PushSalesforceLead] ERROR'
+    full_error_message = lead&.errors&.full_messages
+    error_code = :lead_error
 
-    Rails.logger.warn(message)
+    Rails.logger.warn(message + "#{lead&.inspect}; User: #{user.id}; Role: #{role}; Error: #{full_error_message}")
+    Raven.capture_message(
+      message,
+      extra: {
+        user_id: user.id,
+        lead: lead&.inspect,
+        lead_errors: full_error_message,
+        error_code: error_code
+      },
+      user: { id: user.id, lead: lead&.id }
+    )
 
-    # TODO write the message as a DelayedNotification, sending to
-    # Rails.application.secrets[:salesforce]['mail_recipients']
-
-    fatal_error(code: :lead_error) # TODO write spec to show this fails background job
+    fatal_error(code: error_code)
   end
 
 end
