@@ -19,8 +19,8 @@ module Newflow
         transfer_errors_from(verification_record, {type: :verbatim}, :fail_if_errors)
         return if !verification_record.verified?
 
-        # If the user is already faculty verified, nothing to do. If they're a student, don't faculty verify.
-        return if user.confirmed_faculty? || user.student?
+        # If the user is already faculty verified, nothing to do.
+        return if user.confirmed_faculty?
 
         email = EmailAddress.verified.find_by(value: verification_record.email)
 
