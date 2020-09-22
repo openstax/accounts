@@ -10,7 +10,9 @@ outputs:
 params:
   CIRCLE_API_TOKEN: ((os-auto-circleci-api-token))
   CIRCLE_BRANCH: ((os-auto-circleci-branch))
-  TEST_PASSWORD: ((test-password))
+  STUDENT_PASSWORD: ((accounts-autoqa-student-password))
+  TEACHER_PASSWORD: ((accounts-autoqa-teacher-password))
+  ADMIN_PASSWORD: ((accounts-autoqa-admin-password))
 
 run:
   path: bash
