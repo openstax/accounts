@@ -12,7 +12,7 @@ class DailyStudentCountToDomo
     info('starting')
     begin
       query_date = Date.today - 1
-      results = User.where('role = :role and created_at = :query_date',{ role: 1, query_date: (Time.now - 1.day).strftime("%Y/%m/%d")}).count
+      results = User.student.where(:created_at => 1.days.ago.beginning_of_day..1.days.ago.end_of_day).count
       query_results = query_date.strftime('%Y/%m/%d') + ', ' + results.inspect
 
       # update dataset in domo
