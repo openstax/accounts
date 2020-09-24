@@ -58,6 +58,6 @@ class DailyStudentCountToDomo
   end
 
   def info(message)
-    Rails.logger.info("DailyStudentCountToDomo: " + message)
+    Rails.logger.info("[DailyStudentCountToDomo] " + message)
   end
 end
