@@ -152,6 +152,7 @@ pl:
     show_password_btn: POKAZAĆ
     hide_password_btn: UKRYĆ
     finish: koniec
+    should_social_signup: Nie ma żadnego zapisu tego konta. Czy ty próbujesz %{sign_up}?
 
     student_email_verification_form_decription: >-
       E-mail został wysłany do <b>%{email} </b>.

@@ -45,6 +45,14 @@ module Newflow
             code = @handler_result.errors.first.code
             authentication = @handler_result.outputs.authentication
             case code
+            when :should_redirect_to_signup
+              redirect_to(
+                newflow_login_path,
+                notice: I18n.t(
+                  :"login_signup_form.should_social_signup",
+                  sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
+                )
+              )
             when :authentication_taken
               security_log(:authentication_transfer_failed, authentication_id: authentication.id)
               redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))

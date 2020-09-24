@@ -153,6 +153,7 @@ en:
     show_password_btn: SHOW
     hide_password_btn: HIDE
     finish: Finish
+    should_social_signup: There is no record of this account. Are you trying to %{sign_up}?
 
     student_email_verification_form_decription: >-
       An email has been sent to <b>%{email}</b>.
