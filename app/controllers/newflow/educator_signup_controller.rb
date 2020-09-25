@@ -147,6 +147,8 @@ module Newflow
 
           if user.is_educator_pending_cs_verification?
             redirect_to(educator_pending_cs_verification_path)
+          elsif user.is_tutor_user?
+            redirect_back(fallback_location: profile_newflow_path)
           else
             redirect_to(signup_done_path)
           end
