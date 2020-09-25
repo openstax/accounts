@@ -16,6 +16,8 @@ module Newflow
     )
     uses_routine(TransferOmniauthData)
 
+    LOGIN_FORM_IS_ORIGIN = :login_form
+
     include Rails.application.routes.url_helpers
 
     protected #########################
@@ -52,6 +54,9 @@ module Newflow
           provider: @oauth_provider,
           uid: @oauth_uid
         )
+      elsif user_came_from&.to_sym == LOGIN_FORM_IS_ORIGIN
+        # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
+        fatal_error(code: :should_redirect_to_signup)
       else # sign up new student, then we will log them in.
         user = create_student_user_instance
         run(TransferOmniauthData, oauth_data, user)
@@ -167,10 +172,6 @@ module Newflow
       authentication
     end
 
-    def oauth_response
-      request.env['omniauth.auth']
-    end
-
     def oauth_data
       @oauth_data ||= parse_oauth_data(oauth_response)
     end
@@ -198,6 +199,14 @@ module Newflow
       ContactInfo.verified
         .where(value: email)
         .where.has { |t| t.user_id != logged_in_user_id }.exists?
+    end
+
+    def oauth_response
+      request.env['omniauth.auth']
+    end
+
+    def user_came_from
+      request.env['omniauth.origin']
     end
   end
 end

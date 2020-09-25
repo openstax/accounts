@@ -38,6 +38,14 @@ body {
     color: var(--input-error-message-color);
 }
 
+.newflow-layout-notice {
+    background-color: #d9edf7;
+    color: #31708f;
+    padding: 1rem;
+    padding-left: 2rem;
+    border-bottom: 0.1rem solid #bce8f1;
+}
+
 .newflow-mustdo-alert {
     color: var(--input-error-message-color);
 }

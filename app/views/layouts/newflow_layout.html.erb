@@ -49,6 +49,12 @@
             </div>
         <% end %>
 
+        <% if flash[:notice].present? %>
+            <div class="newflow-layout-notice">
+                <%= flash[:notice].html_safe %>
+            </div>
+        <% end %>
+
         <%= render(partial: 'layouts/main_menu') %>
 
         <div class="content">
