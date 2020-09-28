@@ -82,7 +82,6 @@ module Admin
       result = AddEmailToUser.call(params[:user][:email_address], @user)
       return true unless result.errors.any?
       flash[:alert] = "Failed to add new email address: #{result.errors.collect(&:translate)}"
-      throw(:abort)
     end
 
     def change_user_password
@@ -92,7 +91,6 @@ module Admin
       @user.identity.password_confirmation = params[:user][:password]
       return true if @user.identity.save
       flash[:alert] = "Failed to change password: #{@user.identity.errors.full_messages}"
-      throw(:abort)
     end
 
     def change_salesforce_contact
@@ -123,7 +121,6 @@ module Admin
 
       # if haven't returned yet, either exploded or contact was `nil` (not found)
       flash[:alert] = "Can't find a Salesforce contact with ID #{new_id}"
-      throw(:abort)
     end
 
     def update_user
