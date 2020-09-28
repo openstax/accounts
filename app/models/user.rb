@@ -177,6 +177,10 @@ class User < ActiveRecord::Base
     !is_educator_pending_cs_verification
   end
 
+  def is_tutor_user?
+    self.applications.where('name ilike ?', '%tutor%').any?
+  end
+
   def self.username_is_valid?(username)
     user = User.new(username: username)
     user.valid?

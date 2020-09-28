@@ -546,4 +546,44 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#is_tutor_user?' do
+    context 'when the app name includes tutor in the name' do
+      subject(:user) do
+        FactoryBot.create(:application_user, application: tutor_app).user
+      end
+
+      let(:tutor_app) do
+        FactoryBot.create(:doorkeeper_application, name: '123 Tutor Dev')
+      end
+
+      it 'returns true' do
+        expect(user.is_tutor_user?).to be_truthy
+      end
+    end
+
+    context 'when the app name does not include tutor in the name' do
+      subject(:user) do
+        FactoryBot.create(:application_user, application: tutor_app).user
+      end
+
+      let(:tutor_app) do
+        FactoryBot.create(:doorkeeper_application, name: '123 CMS Dev')
+      end
+
+      it 'returns false' do
+        expect(user.is_tutor_user?).to be_falsey
+      end
+    end
+
+    context 'country code not set' do
+      subject(:user) do
+        FactoryBot.create(:user, country_code: nil)
+      end
+
+      it 'returns not sheer supported' do
+        expect(user.sheerid_supported?).to be_falsey
+      end
+    end
+  end
+
 end
