@@ -549,7 +549,7 @@ RSpec.describe User, type: :model do
   describe '#is_tutor_user?' do
     context 'when the app name includes tutor in the name' do
       subject(:user) do
-        FactoryBot.create(:application_user, application: tutor_app).user
+        FactoryBot.create(:user, source_application: tutor_app)
       end
 
       let(:tutor_app) do
@@ -563,7 +563,7 @@ RSpec.describe User, type: :model do
 
     context 'when the app name does not include tutor in the name' do
       subject(:user) do
-        FactoryBot.create(:application_user, application: tutor_app).user
+        FactoryBot.create(:user, source_application: tutor_app)
       end
 
       let(:tutor_app) do

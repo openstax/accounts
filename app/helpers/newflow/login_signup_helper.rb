@@ -35,5 +35,18 @@ module Newflow
       end
     end
 
+    def cache_redirect_uri_if_tutor
+      uri = params[:redirect_uri]
+      app_id = params[:client_id]
+
+      return if app_id.blank? || uri.blank?
+
+      client_app = Doorkeeper::Application.find_by(uid: app_id)
+
+      if client_app&.name&.downcase&.include?('tutor') && client_app&.is_redirect_url?(URI.decode(uri))
+        store_url(url: uri)
+      end
+    end
+
   end
 end

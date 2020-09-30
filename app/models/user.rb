@@ -178,7 +178,7 @@ class User < ActiveRecord::Base
   end
 
   def is_tutor_user?
-    self.applications.where('name ilike ?', '%tutor%').any?
+    source_application&.name&.downcase&.include?('tutor')
   end
 
   def self.username_is_valid?(username)

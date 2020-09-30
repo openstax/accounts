@@ -24,7 +24,7 @@ module Newflow
         educator_cs_verification_request
       ]
     )
-    before_action(:cache_client_app, only: :educator_signup_form)
+    before_action(:cache_redirect_uri_if_tutor, only: :educator_signup_form)
     before_action(:store_if_sheerid_is_unviable_for_user, only: :educator_profile_form)
     before_action(:store_sheerid_verification_for_user, only: :educator_profile_form)
     before_action(:exit_signup_if_steps_complete, only: %i[

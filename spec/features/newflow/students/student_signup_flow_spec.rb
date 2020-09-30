@@ -4,6 +4,7 @@ module Newflow
   feature 'Student signup flow', js: true do
      before do
       load 'db/seeds.rb'
+      turn_on_student_feature_flag
     end
 
     let(:email) do
@@ -64,6 +65,33 @@ module Newflow
         expect(page.current_path).to eq('/external_app_for_specs')
         screenshot!
       end
+    end
+
+  example 'arriving from Tutor (a Doorkeeper app)' do
+      app = create_tutor_application
+      visit_authorize_uri(app: app, params: { go: 'student_signup' })
+      fill_in 'signup_first_name',	with: 'Bryan'
+      fill_in 'signup_last_name',	with: 'Dimas'
+      fill_in 'signup_email',	with: email
+      fill_in 'signup_password',	with: password
+      submit_signup_form
+      screenshot!
+
+      # sends an email address confirmation email
+      expect(page.current_path).to eq student_email_verification_form_path
+      open_email email
+      capture_email!(address: email)
+      expect(current_email).to be_truthy
+
+        # ... with a link
+        pin = current_email.find('b').text
+        fill_in('confirm_pin', with: pin)
+        screenshot!
+        click_on('commit')
+
+        # ... redirects you back to Tutor
+        expect(page).not_to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+        expect(page.current_path).to eq('/external_app_for_specs')
     end
 
     context 'not happy path' do
@@ -221,6 +249,21 @@ module Newflow
       expect(user.email_addresses.count).to eq(1)
       email = user.email_addresses.first
       expect(email.verified).to be(email_is_verified)
+    end
+
+    def create_tutor_application
+      app = FactoryBot.create(:doorkeeper_application, skip_terms: true,
+                          can_access_private_user_data: true,
+                          can_skip_oauth_screen: true, name: 'Tutor')
+
+    # We want to provide a local "external" redirect uri so our specs aren't actually
+    # making HTTP calls against real external URLs like "example.com"
+    server = Capybara.current_session.try(:server)
+    redirect_uri = "http://#{server.host}:#{server.port}#{external_app_for_specs_path}"
+    app.update_column(:redirect_uri, redirect_uri)
+
+    FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
+    app
     end
   end
 end

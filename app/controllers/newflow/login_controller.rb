@@ -8,10 +8,11 @@ module Newflow
 
     fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile_newflow
 
-    before_action :redirect_to_signup_if_go_param_present, only: :login_form
-    before_action :known_signup_role_redirect, only: :login_form
+    before_action :cache_redirect_uri_if_tutor, only: :login_form
     before_action :cache_client_app, only: :login_form
+    before_action :known_signup_role_redirect, only: :login_form
     before_action :cache_alternate_signup_url, only: :login_form
+    before_action :redirect_to_signup_if_go_param_present, only: :login_form
     before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
     def login
