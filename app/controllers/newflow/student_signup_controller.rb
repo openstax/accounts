@@ -66,7 +66,11 @@ module Newflow
           sign_in!(user)
           security_log(:student_verified_email)
 
-          redirect_to(signup_done_path)
+          if user.is_tutor_user?
+            redirect_back(fallback_location: profile_newflow_path)
+          else
+            redirect_to(signup_done_path)
+          end
         },
         failure: lambda {
           @first_name = unverified_user.first_name
