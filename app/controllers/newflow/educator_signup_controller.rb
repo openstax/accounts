@@ -24,6 +24,7 @@ module Newflow
         educator_cs_verification_request
       ]
     )
+    before_action(:cache_client_app, only: :educator_signup_form)
     before_action(:store_if_sheerid_is_unviable_for_user, only: :educator_profile_form)
     before_action(:store_sheerid_verification_for_user, only: :educator_profile_form)
     before_action(:exit_signup_if_steps_complete, only: %i[
@@ -147,8 +148,6 @@ module Newflow
 
           if user.is_educator_pending_cs_verification?
             redirect_to(educator_pending_cs_verification_path)
-          elsif user.is_tutor_user?
-            redirect_back(fallback_location: profile_newflow_path)
           else
             redirect_to(signup_done_path)
           end

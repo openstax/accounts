@@ -6,6 +6,7 @@ module Newflow
 
     before_action(:exit_newflow_signup_if_logged_in, only: :welcome)
     before_action(:newflow_authenticate_user!, only: :signup_done)
+    before_action(:skip_signup_done_for_tutor_users, only: :signup_done)
 
     def verify_email_by_code
       handle_with(
@@ -36,6 +37,22 @@ module Newflow
     end
 
     protected ###############
+
+    def skip_signup_done_for_tutor_users
+      return if !current_user.is_tutor_user?
+
+      if (redirect_uri = extract_params(stored_url)[:redirect_uri])
+        redirect_to(redirect_uri)
+      elsif get_client_app.present?
+        redirect_to(get_client_app.redirect_uri.lines.first.chomp)
+      elsif (redirect_param = extract_params(request.referrer)[:r])
+        if Host.trusted?(redirect_param)
+          redirect_to(redirect_param)
+        else
+          raise Lev::SecurityTransgression
+        end
+      end
+    end
 
     def exit_newflow_signup_if_logged_in
       if signed_in?

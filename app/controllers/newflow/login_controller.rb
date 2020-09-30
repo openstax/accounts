@@ -67,11 +67,6 @@ module Newflow
       params[:go]&.strip&.downcase == GO_TO_SIGNUP && (Settings::FeatureFlags.any_newflow_feature_flags?)
     end
 
-    # save (in the seession) or clear the client_app that sent the user here
-    def cache_client_app
-      set_client_app(params[:client_id])
-    end
-
     # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.
     # -- Tutor uses this to send students who want to sign up, back to Tutor which
     # has a message for students just letting them know how to sign up (they must receive an email invitation).

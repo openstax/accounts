@@ -1,13 +1,15 @@
 module Newflow
   class StudentSignupController < SignupController
 
-    before_action :restart_signup_if_missing_unverified_user, only: %i[
-      student_change_signup_email_form
-      student_change_signup_email
-      student_email_verification_form
-      student_email_verification_form_updated_email
-      student_verify_email_by_pin
-    ]
+    before_action(:restart_signup_if_missing_unverified_user, only: %i[
+        student_change_signup_email_form
+        student_change_signup_email
+        student_email_verification_form
+        student_email_verification_form_updated_email
+        student_verify_email_by_pin
+      ]
+    )
+    before_action(:cache_client_app, only: :student_signup_form)
 
     def student_signup
       handle_with(
@@ -65,12 +67,7 @@ module Newflow
           user = @handler_result.outputs.user
           sign_in!(user)
           security_log(:student_verified_email)
-
-          if user.is_tutor_user?
-            redirect_back(fallback_location: profile_newflow_path)
-          else
-            redirect_to(signup_done_path)
-          end
+          redirect_to(signup_done_path)
         },
         failure: lambda {
           @first_name = unverified_user.first_name

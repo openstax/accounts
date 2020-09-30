@@ -1,6 +1,11 @@
 module Newflow
   module LoginSignupHelper
 
+    # save (in the seession) or clear the client_app that sent the user here
+    def cache_client_app
+      set_client_app(params[:client_id])
+    end
+
     def should_show_school_name_field?
       params[:school].present? || current_user&.is_sheerid_unviable? || current_user&.rejected_faculty?
     end
