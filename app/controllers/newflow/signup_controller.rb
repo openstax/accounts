@@ -38,7 +38,6 @@ module Newflow
 
     protected ###############
 
-    # Redirect user to redirect uri, stored by `cache_redirect_uri_if_tutor`, if user is a Tutor user
     def skip_signup_done_for_tutor_users
       return if !current_user.is_tutor_user?
 

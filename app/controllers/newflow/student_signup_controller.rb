@@ -9,7 +9,6 @@ module Newflow
         student_verify_email_by_pin
       ]
     )
-    before_action(:cache_redirect_uri_if_tutor, only: :student_signup_form)
 
     def student_signup
       handle_with(
