@@ -6,6 +6,7 @@ module Newflow
 
     before_action(:exit_newflow_signup_if_logged_in, only: :welcome)
     before_action(:newflow_authenticate_user!, only: :signup_done)
+    before_action(:skip_signup_done_for_tutor_users, only: :signup_done)
 
     def verify_email_by_code
       handle_with(
@@ -36,6 +37,13 @@ module Newflow
     end
 
     protected ###############
+
+    # Redirect user to redirect uri, stored by `cache_redirect_uri_if_tutor`, if user is a Tutor user
+    def skip_signup_done_for_tutor_users
+      return if !current_user.is_tutor_user?
+
+      redirect_back(fallback_location: signup_done_path)
+    end
 
     def exit_newflow_signup_if_logged_in
       if signed_in?

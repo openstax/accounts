@@ -92,6 +92,8 @@ feature 'Require recent log in to change authentications', js: true do
 
       expect_reauthenticate_form_page
       fill_in(t(:"login_signup_form.password_label"), with: 'wrongpassword')
+      wait_for_ajax
+      wait_for_animations
       find('[type=submit]').click
       screenshot!
 

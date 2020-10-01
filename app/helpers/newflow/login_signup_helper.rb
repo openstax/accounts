@@ -1,6 +1,11 @@
 module Newflow
   module LoginSignupHelper
 
+    # save (in the seession) or clear the client_app that sent the user here
+    def cache_client_app
+      set_client_app(params[:client_id])
+    end
+
     def should_show_school_name_field?
       params[:school].present? || current_user&.is_sheerid_unviable? || current_user&.rejected_faculty?
     end
@@ -27,6 +32,19 @@ module Newflow
         redirect_to(newflow_signup_student_path(request.query_parameters))
       elsif known_signup_role && known_signup_role == 'instructor'
         redirect_to(educator_signup_path(request.query_parameters))
+      end
+    end
+
+    def cache_redirect_uri_if_tutor
+      uri = params[:redirect_uri]
+      app_id = params[:client_id]
+
+      return if app_id.blank? || uri.blank?
+
+      client_app = Doorkeeper::Application.find_by(uid: app_id)
+
+      if client_app&.name&.downcase&.include?('tutor') && client_app&.is_redirect_url?(URI.decode(uri))
+        store_url(url: uri)
       end
     end
 
