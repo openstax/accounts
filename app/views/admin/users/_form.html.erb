@@ -40,6 +40,13 @@
       <% if email.verified %>
         (Confirmed)
       <% else %>
+        <br>
+        Confirmation PIN: <%= email.confirmation_pin %>
+        <br>
+        Confirmation URL: <%= verify_email_by_code_url(email.confirmation_code) %>
+        <br>
+        OR
+        <br>
         <%= link_to 'Mark this email address as confirmed', admin_verify_contact_info_path(email),
                     remote: true, method: :post,
                     class: 'btn btn-default btn-xs verify-email',
