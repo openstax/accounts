@@ -128,10 +128,8 @@ module Newflow
       return nil if users.empty?
       return users.first if users.one?
 
-      user_id_by_sign_in = SecurityLog.sign_in_successful
-                                      .where.has{ |t| t.user_id.in users.map(&:id)}
-                                      .first
-                                      .try(&:user_id)
+      these_user_ids = SecurityLog.arel_table[:user_id].in(users.map(&:id))
+      user_id_by_sign_in = SecurityLog.sign_in_successful.where(these_user_ids).first&.user_id
 
       if user_id_by_sign_in.present?
         return users.select{|uu| uu.id == user_id_by_sign_in}.first
@@ -196,9 +194,7 @@ module Newflow
     end
 
     def is_email_taken?(email, logged_in_user_id)
-      ContactInfo.verified
-        .where(value: email)
-        .where.has { |t| t.user_id != logged_in_user_id }.exists?
+      ContactInfo.verified.where(value: email).where.not(user_id: logged_in_user_id).exists?
     end
 
     def oauth_response
