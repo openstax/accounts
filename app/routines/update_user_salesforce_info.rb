@@ -33,6 +33,8 @@ class UpdateUserSalesforceInfo
 
   def call
     info("Starting")
+    ci_table = ContactInfo.arel_table
+    t = User.arel_table
 
     prepare_contacts
 
@@ -58,8 +60,8 @@ class UpdateUserSalesforceInfo
       User.activated.joins(:contact_infos)
           .eager_load(:contact_infos)
           .where(salesforce_contact_id: nil)
-          .where.has{ |t| t.contact_infos.value.lower.in emails }
-          .where.has{ |t| t.contact_infos.verified.eq(true).or(t.contact_infos.is_school_issued.eq(true)) }
+          .where( ci_table[:value].lower.in(emails) )
+          .where( ci_table[:verified].eq(true).or(ci_table[:is_school_issued].eq(true)) )
           .each do |user|
 
         begin
@@ -96,9 +98,8 @@ class UpdateUserSalesforceInfo
           .eager_load(:contact_infos)
           .where(salesforce_contact_id: nil)
           .where(contact_infos: { verified: true })
-          .where.has{ |t| t.contact_infos.value.lower.in emails}
+          .where( ci_table[:value].lower.in(emails) )
           .each do |user|
-
         begin
           user_ids_that_were_looked_at_for_leads.push(user.id)
 
@@ -134,7 +135,7 @@ class UpdateUserSalesforceInfo
     User.where(salesforce_contact_id: nil)
         .where(faculty_status: User.faculty_statuses.except(User::NO_FACULTY_INFO).values)
         .where(is_newflow: false) # because the new Accounts flow works differently; don't mess with it.
-        .where.has{ |t| t.id.not_in user_ids_that_were_looked_at_for_leads}
+        .where( t[:id].not_in(user_ids_that_were_looked_at_for_leads) )
         .update_all(faculty_status: User::NO_FACULTY_INFO)
 
     notify_errors
