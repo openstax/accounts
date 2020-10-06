@@ -10,8 +10,12 @@ module Admin
         @unverified_contacts = ContactInfo.where(verified: 'false')
       else
         since = (params[:since] || 1).to_i
-        @pre_auth_states = PreAuthState.where.has { |t| t.created_at > since.days.ago }
-        @unverified_contacts = ContactInfo.where.has { |t| (t.verified == false) & (t.created_at > since.days.ago) }
+        ci_table = ContactInfo.arel_table
+        not_verified = ci_table[:verified].eq(false)
+        since_days_ago = ci_table[:created_at].gt(since.days.ago)
+
+        @pre_auth_states = PreAuthState.where(PreAuthState.arel_table[:created_at].gt(since.days.ago) )
+        @unverified_contacts = ContactInfo.where(not_verified.and(since_days_ago))
       end
 
       @pre_auth_states = @pre_auth_states.order(created_at: :desc)
