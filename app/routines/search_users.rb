@@ -163,25 +163,6 @@ class SearchUsers
           matches_support_identifier = table[:support_identifier].matches_any(sanitized_names)
           matches_contact_info = ContactInfo.where(contact_infos_query)
 
-          # users = User.includes(:contact_infos).where(
-          #   query = User.where(matches_username).or(
-          #     User.where(matches_first_name).or(
-          #       User.where(matches_last_name).or(
-          #         User.where(matches_full_name).or(
-          #             User.where(matches_id).or(
-          #               matches_contact_info
-          #             )
-          #           )
-          #       )
-          #     )
-          #   )
-
-          #   # next query unless options[:admin]
-
-          #   query = query.or(User.where(matches_support_identifier))
-          #   query
-          # )
-
           users = User.where(matches_username).or(
             User.where(matches_first_name)
           ).or(
