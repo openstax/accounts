@@ -155,19 +155,44 @@ class SearchUsers
             )
           end
 
-          users_query = User.where(table[:username].matches_any(sanitized_names)).or(
-            User.where(table[:first_name].matches_any(sanitized_names)).or(
-              User.where(table[:last_name].matches_any(sanitized_names)).or(
-                User.where(full_name.matches_any(sanitized_names)).or(
-                    User.where(table[:id].in(terms))
-                  )
-              )
-            )
+          matches_username = table[:username].matches_any(sanitized_names)
+          matches_first_name = table[:first_name].matches_any(sanitized_names)
+          matches_last_name = table[:last_name].matches_any(sanitized_names)
+          matches_full_name = full_name.matches_any(sanitized_names)
+          matches_id = table[:id].in(terms)
+          matches_support_identifier = table[:support_identifier].matches_any(sanitized_names)
+          matches_contact_info = ContactInfo.where(contact_infos_query)
+
+          # users = User.includes(:contact_infos).where(
+          #   query = User.where(matches_username).or(
+          #     User.where(matches_first_name).or(
+          #       User.where(matches_last_name).or(
+          #         User.where(matches_full_name).or(
+          #             User.where(matches_id).or(
+          #               matches_contact_info
+          #             )
+          #           )
+          #       )
+          #     )
+          #   )
+
+          #   # next query unless options[:admin]
+
+          #   query = query.or(User.where(matches_support_identifier))
+          #   query
+          # )
+
+          users = User.where(matches_username).or(
+            User.where(matches_first_name)
+          ).or(
+            User.where(matches_last_name)
+          ).or(
+            User.where(matches_full_name)
+          ).or(
+            User.where(matches_id)
+          ).or(
+            User.where(matches_support_identifier)
           )
-
-            next users_query unless options[:admin]
-
-            users_query.or(User.where(table[:support_identifier].matches_any(sanitized_names)))
         end
       end
     end
