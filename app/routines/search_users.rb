@@ -173,6 +173,8 @@ class SearchUsers
             User.where(matches_id)
           ).or(
             User.where(matches_support_identifier)
+          ).or(
+            User.where(contact_infos: matches_contact_info)
           )
         end
       end
