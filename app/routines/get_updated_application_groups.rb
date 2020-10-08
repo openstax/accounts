@@ -15,15 +15,15 @@ class GetUpdatedApplicationGroups
   def exec(application)
     return if application.nil?
 
-    visible_group_ids = Group
-      .includes(:owners => :application_users)
-      .includes(:members => :application_users)
-      .references(:all)
-      .where.has{ |t|
-        (t.is_public.eq true) |\
-        (t.owners.application_users.application_id.eq application.id) |\
-        (t.members.application_users.application_id.eq application.id)
-      }
+    group = Group.left_joins(owners: :application_users, members: :application_users)
+
+    visible_group_ids = group
+      .where(is_public: true)
+      .or(
+        group.where(application_users: { application_id: 1})
+      ).or(
+        group.where(application_users_users: { application_id: 1})
+      )
       .collect{|g| g.subtree_group_ids}.flatten.uniq
     application_groups = FindOrCreateApplicationGroups.call(application.id, visible_group_ids)
                                                       .outputs.application_groups

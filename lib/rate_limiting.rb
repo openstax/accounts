@@ -12,13 +12,13 @@ module RateLimiting
     sign_in_failed_attempts =
       SecurityLog.sign_in_failed
                  .where(remote_ip: ip)
-                 .where.has{ |t| t.created_at > attempts_considered_since}
+                 .where(SecurityLog.arel_table[:created_at].gt(attempts_considered_since))
                  .count
 
     login_not_found_attempts =
       SecurityLog.login_not_found
                  .where(remote_ip: ip)
-                 .where.has{ |t| t.created_at > attempts_considered_since}
+                 .where(SecurityLog.arel_table[:created_at].gt(attempts_considered_since))
                  .count
 
     sign_in_failed_attempts + login_not_found_attempts >= max_attempts
@@ -38,7 +38,7 @@ module RateLimiting
 
     user_attempts = SecurityLog.sign_in_failed
                                .where(user: user)
-                               .where.has{ |t| t.created_at > attempts_considered_since}
+                               .where(SecurityLog.arel_table[:created_at].gt(attempts_considered_since))
                                .count
 
     user_attempts >= max_attempts

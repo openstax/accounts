@@ -30,10 +30,11 @@ class Group < ActiveRecord::Base
   scope :visible_for, lambda { |user|
     next where(is_public: true) unless user.is_a? User
 
-    eager_load(:group_members, :group_owners)
-    .where.has{ |t|
-        (t.is_public == true) | (t.group_members.user_id == user.id) | (t.group_owners.user_id == user.id)
-    }
+    group = left_joins(:group_members, :group_owners)
+
+    group.where(is_public: true)
+    .or(group.where(group_members: { user_id: user.id }))
+    .or(group.where(group_owners: { user_id: user.id }))
   }
 
   def has_owner?(user)

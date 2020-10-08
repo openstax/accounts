@@ -36,9 +36,9 @@ class SearchApplicationUsers
     per_page = Integer(options[:per_page]) rescue 20
     page = Integer(options[:page]) rescue 0
 
-    users = users.preload(:application_users).joins(:application_users).where.has{ |t|
-      t.application_users.application_id == app_id
-    }.limit(per_page).offset(per_page*page)
+    users = users.preload(:application_users).joins(:application_users)
+      .where('application_users.application_id = ?', app_id)
+      .limit(per_page).offset(per_page*page)
 
     outputs[:items] = users
   end

@@ -79,7 +79,7 @@ class ContactInfo < ActiveRecord::Base
          verified? &&
          ContactInfo.verified
                     .where('lower(value) = ?', value.downcase)
-                    .where.has{ |t| t.id != id }
+                    .where.not(id: id)
                     .any?
 
     errors.none?

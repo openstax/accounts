@@ -142,9 +142,9 @@ class SessionsCreate
 
       return :new_signin_required if user_signin_is_too_old?
 
-      return :email_already_in_use if ContactInfo.verified.where(value: @data.email)
-                                                          .where.has{ |t| t.user_id != current_user.id}
-                                                          .exists?
+      if ContactInfo.verified.where(value: @data.email).where.not(user_id: current_user.id).exists?
+        return :email_already_in_use
+      end
 
       run(TransferAuthentications, authentication, current_user)
       run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
@@ -192,7 +192,7 @@ class SessionsCreate
     return users.first if users.one?
 
     user_id_by_sign_in = SecurityLog.sign_in_successful
-                                    .where.has{ |t| t.user_id.in users.map(&:id)}
+                                    .where(user_id: users.map(&:id))
                                     .first
                                     .try(&:user_id)
 

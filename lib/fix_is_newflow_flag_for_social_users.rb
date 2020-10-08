@@ -18,25 +18,23 @@ class FixIsNewflowFlagForSocialUsers
     private
 
     def users_missed
-      User.where.has { |u|
-        u.id.in(
-          u.sql(
-            <<~SQL
-            SELECT u.id
-            FROM users u
-            JOIN authentications a1
-            ON a1.user_id = u.id
-            WHERE a1.id IN (
-              SELECT min(a.id)
-              FROM authentications a
-              GROUP BY user_id
-            )
-            AND
-            provider ~ 'newflow'
-            SQL
+      User.where(
+        <<~SQL
+        id IN (
+          SELECT u.id
+          FROM users u
+          JOIN authentications a1
+          ON a1.user_id = u.id
+          WHERE a1.id IN (
+            SELECT min(a.id)
+            FROM authentications a
+            GROUP BY user_id
           )
+          AND
+          provider ~ 'newflow'
         )
-      }
+        SQL
+      )
     end
   end
 end

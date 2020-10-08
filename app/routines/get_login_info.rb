@@ -37,7 +37,7 @@ class GetLoginInfo
     # providers is hash where the keys are providers, and the values are product-
     # specific info.  E.g. for google, the value is a login hint that helps
     # google know which account is being targeted.
-    outputs.providers = Authentication.where.has{ |t| t.user_id == user.id}
+    outputs.providers = Authentication.where(user_id: user.id)
                                       .each_with_object({}) do |authentication, hash|
       provider = authentication.provider
 
