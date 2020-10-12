@@ -69,7 +69,7 @@ module Admin
       ap = Doorkeeper::Application.arel_table
 
       params[:ob] ||= [{ created_at: :desc }, { id: :desc }]
-      relation = SecurityLog.joining{[user.outer, application.outer]}.preloaded.reorder(nil)
+      relation = SecurityLog.left_joins([:user, :application]).preloaded.reorder(nil)
 
       run(:search, relation: relation, sortable_fields: SORTABLE_FIELDS, params: params) do |with|
 
