@@ -17,7 +17,6 @@ class PreAuthState < ActiveRecord::Base
   validates :contact_info_value, presence: true, unless: -> { is_partial_info_allowed }
 
   scope :contact_info_verified, -> { where(is_contact_info_verified: true) }
-  sifter(:contact_info_verified) { is_contact_info_verified.eq true }
 
   def self.create_from_signed_data(data)
     role = User.roles[data[:role]] ? data['role'] : nil

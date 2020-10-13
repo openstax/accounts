@@ -60,9 +60,6 @@ gem 'omniauth-google-oauth2'
 # Key-value store for caching
 gem 'redis-rails'
 
-# Ruby dsl for SQL queries
-gem 'baby_squeel', '~>1.3.0'
-
 # Utilities for OpenStax websites
 gem 'openstax_utilities', '~> 4.2.0'
 
