@@ -64,9 +64,9 @@ module Admin
 
     def exec(params = {}, options = {})
 
-      sec = SecurityLog.arel_table
-      usr = User.arel_table
-      ap = Doorkeeper::Application.arel_table
+      sec_t = SecurityLog.arel_table
+      user_t = User.arel_table
+      app_t = Doorkeeper::Application.arel_table
 
       params[:ob] ||= [{ created_at: :desc }, { id: :desc }]
       relation = SecurityLog.left_joins([:user, :application]).preloaded.reorder(nil)
@@ -103,18 +103,18 @@ module Admin
               'application'.include?(name.downcase.gsub('%', ''))
             end
 
-            query = usr[:username].matches_any(sanitized_names).or(
-              usr[:first_name].matches_any(sanitized_names)
+            query = user_t[:username].matches_any(sanitized_names).or(
+              user_t[:first_name].matches_any(sanitized_names)
             ).or(
-              usr[:last_name].matches_any(sanitized_names)
+              user_t[:last_name].matches_any(sanitized_names)
             )
 
             if has_anonymous
-              query = query.or( usr[:id].eq(nil).and(ap[:id].eq(nil)) )
+              query = query.or( user_t[:id].eq(nil).and(app_t[:id].eq(nil)) )
             end
 
             if has_application
-              query = query.or( usr[:id].eq(nil).and(ap[:id].not_eq(nil)) )
+              query = query.or( user_t[:id].eq(nil).and(app_t[:id].not_eq(nil)) )
             end
 
             @items = @items.where(query)
@@ -130,8 +130,8 @@ module Admin
               'openstax accounts'.include?(name.downcase.gsub('%', ''))
             end
 
-            query = ap[:id].in(sanitized_ids).or(ap[:name].matches_any(sanitized_names))
-            query = query.or( ap[:id].eq(nil) ) if has_accounts
+            query = app_t[:id].in(sanitized_ids).or(app_t[:name].matches_any(sanitized_names))
+            query = query.or( app_t[:id].eq(nil) ) if has_accounts
 
             @items = @items.where(query)
           end
@@ -141,7 +141,7 @@ module Admin
           ips_array.each do |ips|
             sanitized_ips = to_string_array(ips, prepend_wildcard: true, append_wildcard: true)
 
-            @items = @items.where(sec[:remote_ip].matches_any(sanitized_ips))
+            @items = @items.where(sec_t[:remote_ip].matches_any(sanitized_ips))
           end
         end
 
@@ -170,10 +170,10 @@ module Admin
               # ends before the actual current time, depending on the string given
               if sanitized_time_range.last == beginning_of_hour ||
                   sanitized_time_range.last == midnight
-                new_query = (sec[:created_at].gt(sanitized_time_range.first))
+                new_query = (sec_t[:created_at].gt(sanitized_time_range.first))
               else
-                new_query = (sec[:created_at].gt(sanitized_time_range.first))
-                  .and(sec[:created_at].lt(sanitized_time_range.last))
+                new_query = (sec_t[:created_at].gt(sanitized_time_range.first))
+                  .and(sec_t[:created_at].lt(sanitized_time_range.last))
               end
 
               query = query.nil? ? new_query : query.or(new_query)
@@ -205,20 +205,20 @@ module Admin
               'openstax accounts'.include?(name.downcase)
             end
 
-            query = sec[:id].in(sanitized_ids).or(
-              usr[:id].in(sanitized_ids)
+            query = sec_t[:id].in(sanitized_ids).or(
+              user_t[:id].in(sanitized_ids)
             ).or(
-              ap[:id].in(sanitized_ids)
+              app_t[:id].in(sanitized_ids)
             ).or(
-              usr[:first_name].matches_any(sanitized_names_with_wildcards)
+              user_t[:first_name].matches_any(sanitized_names_with_wildcards)
             ).or(
-              usr[:last_name].matches_any(sanitized_names_with_wildcards)
+              user_t[:last_name].matches_any(sanitized_names_with_wildcards)
             ).or(
-              ap[:name].matches_any(sanitized_names_with_wildcards)
+              app_t[:name].matches_any(sanitized_names_with_wildcards)
             ).or(
-              sec[:remote_ip].matches_any(sanitized_names_with_wildcards)
+              sec_t[:remote_ip].matches_any(sanitized_names_with_wildcards)
             ).or(
-              sec[:event_type].in(sanitized_event_types)
+              sec_t[:event_type].in(sanitized_event_types)
             )
 
             sanitized_time_ranges.each do |sanitized_time_range|
@@ -226,28 +226,28 @@ module Admin
               # ends before the actual current time, depending on the string given
               if sanitized_time_range.last == beginning_of_hour ||
                   sanitized_time_range.last == midnight
-                query = query.or(sec[:created_at].gt(sanitized_time_range.first))
+                query = query.or(sec_t[:created_at].gt(sanitized_time_range.first))
               else
                 query = query.or(
                    (
-                     sec[:created_at].gt(sanitized_time_range.first)
+                     sec_t[:created_at].gt(sanitized_time_range.first)
                    ).and(
-                     sec[:created_at].lt(sanitized_time_range.last)
+                     sec_t[:created_at].lt(sanitized_time_range.last)
                   )
                 )
               end
             end
 
             if has_anonymous
-              query = query.or( usr[:id].eq(nil).and(ap[:id].eq(nil)) )
+              query = query.or( user_t[:id].eq(nil).and(app_t[:id].eq(nil)) )
             end
 
             if has_application
-              query = query.or( usr[:id].eq(nil).and(ap[:id].not_eq(nil)) )
+              query = query.or( user_t[:id].eq(nil).and(app_t[:id].not_eq(nil)) )
             end
 
             if has_accounts
-              query = query.or( ap[:id].eq(nil) )
+              query = query.or( app_t[:id].eq(nil) )
             end
 
             @items = @items.where(query)

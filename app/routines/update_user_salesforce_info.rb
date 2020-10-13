@@ -34,7 +34,7 @@ class UpdateUserSalesforceInfo
   def call
     info("Starting")
     ci_table = ContactInfo.arel_table
-    t = User.arel_table
+    user_table = User.arel_table
 
     prepare_contacts
 
@@ -135,7 +135,7 @@ class UpdateUserSalesforceInfo
     User.where(salesforce_contact_id: nil)
         .where(faculty_status: User.faculty_statuses.except(User::NO_FACULTY_INFO).values)
         .where(is_newflow: false) # because the new Accounts flow works differently; don't mess with it.
-        .where( t[:id].not_in(user_ids_that_were_looked_at_for_leads) )
+        .where( user_table[:id].not_in(user_ids_that_were_looked_at_for_leads) )
         .update_all(faculty_status: User::NO_FACULTY_INFO)
 
     notify_errors
