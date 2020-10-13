@@ -4,7 +4,7 @@ namespace :accounts do
     task list: [:environment] do
       app_name = "#{ENV['APP_NAME']}".downcase
       apps = Doorkeeper::Application.select('name, uid, secret').order(:name)
-      apps = apps.where.has { |t| t.name.lower == app_name } if app_name.present?
+      apps = apps.where(Doorkeeper::Application.arel_table[:name].lower.eq(app_name)) if app_name.present?
 
       result = []
       apps.each do |row|

@@ -38,6 +38,15 @@ class SearchUsers
   def exec(query, options={})
 
     users = User.all
+    table = User.arel_table
+    contact_info_table = ContactInfo.arel_table
+    space = Arel::Nodes.build_quoted(' ')
+    full_name = Arel::Nodes::NamedFunction.new(
+      'concat',
+      [
+        table[:first_name], space, table[:last_name]
+      ]
+    )
 
     KeywordSearch.search(query) do |with|
 
@@ -47,39 +56,42 @@ class SearchUsers
         sanitized_names = sanitize_strings(usernames, append_wildcard: true,
                                                       prepend_wildcard: options[:admin])
 
-        users = users.where.has{ username.like_any(sanitized_names) }
+        users = users.where( table[:username].matches_any(sanitized_names) )
       end
 
       with.keyword :first_name do |first_names|
         sanitized_names = sanitize_strings(first_names, append_wildcard: true,
                                                         prepend_wildcard: options[:admin])
 
-        users = users.where.has{ first_name.like_any(sanitized_names) }
+        users = users.where( table[:first_name].matches_any(sanitized_names) )
       end
 
       with.keyword :last_name do |last_names|
         sanitized_names = sanitize_strings(last_names, append_wildcard: true,
                                                        prepend_wildcard: options[:admin])
 
-        users = users.where.has{ last_name.like_any(sanitized_names) }
+        users = users.where( table[:last_name].matches_any(sanitized_names) )
       end
 
       with.keyword :full_name do |full_names|
         sanitized_names = sanitize_strings(full_names, append_wildcard: true,
                                                        prepend_wildcard: options[:admin])
-
-        users = users.where.has{ first_name.op('||', quoted(' ')).op('||', last_name).like_any(sanitized_names) }
+        users = users.where( full_name.matches_any(sanitized_names) )
       end
 
       with.keyword :name do |names|
         sanitized_names = sanitize_strings(names, append_wildcard: true,
                                                   prepend_wildcard: options[:admin])
 
-        users = users.where.has {
-          first_name.op('||', quoted(' ')).op('||', last_name).like_any(sanitized_names) |
-                                            first_name.like_any(sanitized_names) |
-                                             last_name.like_any(sanitized_names)
-        }
+        users = users.where(
+          full_name.matches_any(
+            sanitized_names
+          ).or(
+            table[:first_name].matches_any(sanitized_names)
+          ).or(
+            table[:last_name].matches_any(sanitized_names)
+          )
+        )
       end
 
       with.keyword :uuid do |uuids|
@@ -98,7 +110,7 @@ class SearchUsers
             identifiers, append_wildcard: true, prepend_wildcard: true
           )
 
-          users = users.where.has{ support_identifier.like_any(sanitized_identifiers) }
+          users = users.where( table[:support_identifier].matches_any(sanitized_identifiers) )
         end
       end
 
@@ -107,49 +119,63 @@ class SearchUsers
       end
 
       with.keyword :email do |emails|
-        sanitized_emails = sanitize_strings(emails, append_wildcard: options[:admin],
-                                                    prepend_wildcard: options[:admin])
-
-        users = users.joins(:contact_infos).where.has{ |t| t.contact_infos.value.like_any(sanitized_emails)}
-        users = users.where(contact_infos: {type: 'EmailAddress',
-                                            verified: true,
-                                            is_searchable: true}) unless options[:admin]
+        sanitized_emails = sanitize_strings(emails, append_wildcard: options[:admin], prepend_wildcard: options[:admin])
+        users = users.joins(:contact_infos).where( contact_info_table[:value].matches_any(sanitized_emails) )
+        users = users.where(contact_infos: {type: 'EmailAddress', verified: true, is_searchable: true}) unless options[:admin]
       end
 
       # Rerun the queries above for 'any' terms (which are ones without a
       # prefix).
 
       with.keyword :any do |terms|
-        sanitized_names = sanitize_strings(terms, append_wildcard: true,
-                                                  prepend_wildcard: options[:admin])
+        next users_query if terms.blank?
+
+        sanitized_names = sanitize_strings(terms, append_wildcard: true, prepend_wildcard: options[:admin])
 
         if sanitized_names.length == 2 # looks like a "firstname lastname" search
-          users = users.joining{contact_infos.outer}.where.has { |t|
-            (t.first_name.like(sanitized_names.first) & t.last_name.like(sanitized_names.last))
-          }
+          users = users.where(
+            (
+              table[:first_name].matches(sanitized_names.first)
+            ).and(
+              table[:last_name].matches(sanitized_names.last)
+            )
+          )
         else # otherwise try to match "all the things"
-          sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin],
-                                                    prepend_wildcard: options[:admin])
-          users = users.joining{contact_infos.outer}.where.has { |t|
-            contact_infos_query = t.contact_infos.value.like_any(sanitized_terms)
+          sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin], prepend_wildcard: options[:admin])
 
-            contact_infos_query &= (
-              (t.contact_infos.type == 'EmailAddress') &
-              (t.contact_infos.verified == true) &
-              (t.contact_infos.is_searchable == true)
-            ) unless options[:admin]
+          contact_infos_query = contact_info_table[:value].matches_any(sanitized_terms)
 
-            query = t.username.like_any(sanitized_names) |
-              t.first_name.like_any(sanitized_names) |
-              t.last_name.like_any(sanitized_names) |
-              contact_infos_query |
-              t.first_name.op('||', t.quoted(' ')).op('||', t.last_name).like_any(sanitized_names) |
-              t.id.in(terms)
+          unless options[:admin]
+            contact_infos_query = contact_infos_query.and(
+              contact_info_table[:type].eq('EmailAddress')
+            ).and(
+              contact_info_table[:verified].eq(true)
+            ).and(
+              contact_info_table[:is_searchable].eq(true)
+            )
+          end
 
-            next query unless options[:admin]
+          matches_username = table[:username].matches_any(sanitized_names)
+          matches_first_name = table[:first_name].matches_any(sanitized_names)
+          matches_last_name = table[:last_name].matches_any(sanitized_names)
+          matches_full_name = full_name.matches_any(sanitized_names)
+          matches_id = table[:id].in(terms)
+          matches_support_identifier = table[:support_identifier].matches_any(sanitized_names)
+          matches_contact_info = ContactInfo.where(contact_infos_query)
 
-            query | t.support_identifier.like_any(sanitized_names)
-          }
+          users = User.where(matches_username).or(
+            User.where(matches_first_name)
+          ).or(
+            User.where(matches_last_name)
+          ).or(
+            User.where(matches_full_name)
+          ).or(
+            User.where(matches_id)
+          ).or(
+            User.where(matches_support_identifier)
+          ).or(
+            User.where(contact_infos: matches_contact_info)
+          )
         end
       end
     end

@@ -18,10 +18,8 @@ class ContactInfo < ActiveRecord::Base
   has_many :message_recipients, inverse_of: :contact_info
 
   scope :email_addresses, -> { where(type: 'EmailAddress') }
-  sifter(:email_addresses) { type == 'EmailAddress' }
 
   scope :verified, -> { where(verified: true) }
-  sifter(:verified) { verified == true }
   scope :unverified, -> { where(verified: false) }
 
   scope :school_issued, -> { where(is_school_issued: true) }
@@ -79,7 +77,7 @@ class ContactInfo < ActiveRecord::Base
          verified? &&
          ContactInfo.verified
                     .where('lower(value) = ?', value.downcase)
-                    .where.has{ |t| t.id != id }
+                    .where.not(id: id)
                     .any?
 
     errors.none?

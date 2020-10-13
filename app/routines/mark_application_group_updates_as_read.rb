@@ -14,16 +14,18 @@ class MarkApplicationGroupUpdatesAsRead
   def exec(application, application_group_hashes)
     return if application.blank? || application_group_hashes.blank?
 
-    application.application_groups.where.has{ |t|
-      cumulative_query = nil
+    cumulative_query = nil
+    app_groups = application.application_groups
+    table = app_groups.arel_table
 
-      application_group_hashes.each do |hash|
-        query = (t.group_id == hash['group_id']) & (t.unread_updates == hash['read_updates'])
-        cumulative_query = cumulative_query.nil? ? query : cumulative_query | query
-      end
+    application_group_hashes.each do |hash|
+      query = (table[:group_id].eq(hash['group_id'])).and(table[:unread_updates].eq(hash['read_updates']))
+      cumulative_query = cumulative_query.nil? ? query : cumulative_query.or(query)
+    end
 
+    app_groups.where(
       cumulative_query
-    }.update_all("unread_updates = 0")
+    ).update_all("unread_updates = 0")
   end
 
 end
