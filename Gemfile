@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '5.2.4'
+gem 'rails', '5.2.4.4'
 gem 'rails-i18n', '~> 5'
 
 # Knockout for embedded widgets
