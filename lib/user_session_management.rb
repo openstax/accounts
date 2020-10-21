@@ -174,8 +174,8 @@ module UserSessionManagement
 
   # New flow below
 
-    def save_unverified_user(user)
-      session[:unverified_user_id] = user.id
+    def save_unverified_user(user_id)
+      session[:unverified_user_id] = user_id
     end
 
     def unverified_user

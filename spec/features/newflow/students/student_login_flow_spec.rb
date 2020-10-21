@@ -194,6 +194,20 @@ module Newflow
       end
     end
 
+    context 'when student has not verified their only email address' do
+      let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED) }
+      let!(:email_address) { FactoryBot.create(:email_address, user: user) }
+      let!(:identity) { FactoryBot.create(:identity, user: user, password: 'password') }
+
+      it 'allows the student to log in and redirects them to the email verification form' do
+        visit(newflow_login_path)
+        fill_in('login_form_email', with: email_address.value)
+        fill_in('login_form_password', with: 'password')
+        find('[type=submit]').click
+        expect(page.current_path).to match(student_email_verification_form_path)
+      end
+    end
+
     context 'no user found with such email' do
       it 'adds a message to the email input field' do
         with_forgery_protection do

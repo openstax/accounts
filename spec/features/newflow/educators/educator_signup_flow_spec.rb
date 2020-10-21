@@ -126,6 +126,32 @@ module Newflow
       end
     end
 
+    context 'when educator has not verified their only email address' do
+      let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: User::INSTRUCTOR_ROLE) }
+      let!(:email_address) { FactoryBot.create(:email_address, user: user, verified: false) }
+      let!(:identity) { FactoryBot.create(:identity, user: user, password: password) }
+      let!(:password) { 'password' }
+
+      it 'allows the educator to log in and redirects them to the email verification form' do
+        visit(newflow_login_path)
+        fill_in('login_form_email', with: email_address.value)
+        fill_in('login_form_password', with: password)
+        find('[type=submit]').click
+        expect(page.current_path).to match(educator_email_verification_form_path)
+      end
+
+      it 'allows the educator to reset their password' do
+        visit(newflow_login_path)
+        newflow_log_in_user(email_address.value, 'WRONGpassword')
+        click_on(I18n.t(:"login_signup_form.forgot_password"))
+        expect(page.current_path).to eq(forgot_password_form_path)
+        expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
+        screenshot!
+        click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+        screenshot!
+      end
+    end
+
     context 'user interface' do
       before { mock_current_user(user) }
 

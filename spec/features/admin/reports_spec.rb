@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'User reports page', js: true do
   before(:each) do
-    create_admin_user
+    create_admin_user.update!(role: User::ADMINISTRATOR_ROLE)
     visit '/'
     complete_login_username_or_email_screen('admin')
     complete_login_password_screen('password')
