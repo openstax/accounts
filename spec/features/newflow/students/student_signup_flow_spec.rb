@@ -140,7 +140,6 @@ module Newflow
         # capture_email!(address: email)
         expect(current_email).to be_truthy
         old_pin = current_email.find('b').text
-        old_pin = EmailAddress.last.confirmation_pin
         old_confirmation_code_url = get_path_from_absolute_link(current_email, 'a')
 
         # edit email
@@ -163,29 +162,12 @@ module Newflow
         capture_email!(address: new_email)
         pin = current_email.find('b').text
         expect(pin).not_to eq(old_pin)
-        # ...as well as a different confirmation code url (which invalidates the old one -- right? bryan)
+        # ...as well as a different confirmation code url
         confirmation_code_url = get_path_from_absolute_link(current_email, 'a')
         expect(confirmation_code_url).not_to eq(old_confirmation_code_url)
 
-        # finally finish signup
-        fill_in('confirm_pin', with: pin)
         screenshot!
-        click_on('commit')
-        # ... which sends you to "sign up done page"
-        screenshot!
-        expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
-        expect(page).to(
-          have_text(
-            strip_html(
-              t(:"login_signup_form.youre_done_description", email_address: new_email)
-            )
-          )
-        )
-
-        # can exit and go back to the app they came from
-        find('#exit-icon a').click
-        expect(page.current_path).to eq('/external_app_for_specs')
-        screenshot!
+        expect(page.current_path).to eq(student_email_verification_form_updated_email_path)
       end
     end
 
