@@ -11,9 +11,6 @@ services:
 before_script:
   - which google-chrome
   - google-chrome --version
-  - bundle exec rake webdrivers:chromedriver:version
-  - bundle exec rake webdrivers:chromedriver:update
-  - google-chrome --version
   - bundle exec rake assets:precompile
   - bundle exec rake --trace parallel:create parallel:load_schema parallel:seed
 script: bundle exec parallel_rspec ./spec
