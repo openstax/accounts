@@ -13,7 +13,7 @@ class GetLoginInfo
           raise IllegalArgument, "One of user or username_or_email must be given"
         end
 
-        LookupUsers.by_email_or_username(username_or_email)
+        LookupUsers.by_verified_email_or_username(username_or_email)
       end
 
     fatal_error(code: :no_users, offending_inputs: :username_or_email) if users.empty?
