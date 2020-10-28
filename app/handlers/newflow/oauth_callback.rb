@@ -74,7 +74,7 @@ module Newflow
     def mismatched_authentication?
       return false if oauth_data.email.blank?
 
-      existing_email_owner_id = LookupUsers.by_email_or_username(oauth_data.email).last&.id
+      existing_email_owner_id = LookupUsers.by_verified_email_or_username(oauth_data.email).last&.id
       existing_auth_uid = Authentication.where(user_id: existing_email_owner_id, provider: @oauth_provider).pluck(:uid).first
       incoming_auth_uid = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).last&.uid
 

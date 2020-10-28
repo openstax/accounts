@@ -25,7 +25,7 @@ module Newflow
               # Only students can sign up with a social network.
               unverified_user = ensure_unverified_user(user)
 
-              save_unverified_user(unverified_user)
+              save_unverified_user(unverified_user.id)
               @first_name = user.first_name
               @last_name = user.last_name
               @email = @handler_result.outputs.email

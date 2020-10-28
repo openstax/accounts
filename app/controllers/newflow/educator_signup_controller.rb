@@ -40,7 +40,7 @@ module Newflow
         client_app: get_client_app,
         user_from_signed_params: session[:user_from_signed_params],
         success: lambda {
-          save_unverified_user(@handler_result.outputs.user)
+          save_unverified_user(@handler_result.outputs.user.id)
           security_log(:educator_signed_up, { user: @handler_result.outputs.user })
           redirect_to(educator_email_verification_form_path)
         },

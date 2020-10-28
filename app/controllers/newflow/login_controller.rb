@@ -20,7 +20,21 @@ module Newflow
         user_from_signed_params: session[:user_from_signed_params],
         success: lambda {
           clear_signup_state
-          sign_in!(@handler_result.outputs.user)
+          user = @handler_result.outputs.user
+
+          if user.unverified?
+            save_unverified_user(user.id)
+
+            if user.student?
+              redirect_to(student_email_verification_form_path)
+            else
+              redirect_to(educator_email_verification_form_path)
+            end
+
+            return
+          end
+
+          sign_in!(user)
 
           if current_user.student? || !current_user.is_newflow? || (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login'))
             redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
