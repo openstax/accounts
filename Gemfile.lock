@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://github.com/openstax/openstax_salesforce.git
-  revision: 6325ef68dd05078699ba85db6cec7f36504e819b
-  branch: other_role_name_field
+  revision: 63fdc161f8921e2163908f98c4c4f054e0393244
+  branch: master
   specs:
     openstax_salesforce (4.9.0)
       openstax_active_force

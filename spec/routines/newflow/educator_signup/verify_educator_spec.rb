@@ -13,7 +13,7 @@ module Newflow
         let(:app) { FactoryBot.create :doorkeeper_application, lead_application_source: "Tutor Signup" }
         let(:verification_id) { '5ef1ae416b29ca1badac1210' }
         let(:existing_lead) { CreateSalesforceLead.call(user: user).outputs.lead }
-        let(:email_address) { 'f@f.com' }
+        let(:email_address) { 'bed1+bryan36dev@rice.edu' }
         let(:user) do
           FactoryBot.create(
             :user,

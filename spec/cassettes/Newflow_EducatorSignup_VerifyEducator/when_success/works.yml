@@ -2,11 +2,11 @@
 http_interactions:
 - request:
     method: post
-    uri: "<salesforce_instance_url_lower>/services/data/v37.0/sobjects/Lead"
+    uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Bryan","LastName":"Eli","Company":"Bryan Eli University","Email":"f@f.com","LeadSource":"OSC
-        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":1,"accounts_uuid_c__c":"2a560dbe-62ca-41b2-a3e5-c5fe9c74f169","Application_Source__c":"Tutor
+      string: '{"FirstName":"Bryan","LastName":"Eli","Company":"Bryan Eli University","Email":"bed1+bryan36dev@rice.edu","LeadSource":"OSC
+        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":1,"accounts_uuid_c__c":"b98af9de-8f8b-49b4-a18a-a2f8a8070e43","Application_Source__c":"Tutor
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false}'
     headers:
       User-Agent:
@@ -25,32 +25,32 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Wed, 19 Aug 2020 22:50:10 GMT
+      - Thu, 29 Oct 2020 22:47:47 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Public-Key-Pins-Report-Only:
       - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
         pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
-        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00DR0000001zq0Zm";
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00D7X000000Gyi2m";
       Expect-Ct:
-      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00DR0000001zq0Zm"
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D7X000000Gyi2m"
       X-Robots-Tag:
       - none
       X-B3-Traceid:
-      - fe814a6732d523c5
+      - 20a8a1caf3dc7190
       X-B3-Spanid:
-      - fe814a6732d523c5
+      - 20a8a1caf3dc7190
       X-B3-Sampled:
       - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=VfEEfOJuEeqSSVHF5ajMPA; domain=.salesforce.com; path=/; expires=Thu,
-        19-Aug-2021 22:50:10 GMT; Max-Age=31536000
+      - BrowserId=w_d_vxo4Eeurx8ua9S1hag; domain=.salesforce.com; path=/; expires=Fri,
+        29-Oct-2021 22:47:47 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=6297/51000
+      - api-usage=1194/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00QR000000KBmAdMAL"
+      - "/services/data/v37.0/sobjects/Lead/00Q7X000006F2tmUAC"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -59,9 +59,9 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00QR000000KBmAdMAL","success":true,"errors":[]}'
+      string: '{"id":"00Q7X000006F2tmUAC","success":true,"errors":[]}'
     http_version:
-  recorded_at: Wed, 19 Aug 2020 22:50:13 GMT
+  recorded_at: Thu, 29 Oct 2020 22:47:48 GMT
 - request:
     method: get
     uri: https://services.sheerid.com/rest/v2/verification/5ef1ae416b29ca1badac1210/details
@@ -85,7 +85,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 19 Aug 2020 22:50:13 GMT
+      - Thu, 29 Oct 2020 22:47:49 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -93,10 +93,10 @@ http_interactions:
       Connection:
       - keep-alive
       Set-Cookie:
-      - AWSALB=jJTU9j714ztEFZcFrrVTtU3oM8b5xT4ZoIMq85orYvzDLVM3wwa7+uRKmUPGKClE1eR74Lf62QVnRR+ZIwEtDjmD4zDTmqQOB4/ePPA3XgmvmfQ54WbOFpPXKmh3;
-        Expires=Wed, 26 Aug 2020 22:50:13 GMT; Path=/
-      - AWSALBCORS=jJTU9j714ztEFZcFrrVTtU3oM8b5xT4ZoIMq85orYvzDLVM3wwa7+uRKmUPGKClE1eR74Lf62QVnRR+ZIwEtDjmD4zDTmqQOB4/ePPA3XgmvmfQ54WbOFpPXKmh3;
-        Expires=Wed, 26 Aug 2020 22:50:13 GMT; Path=/; SameSite=None; Secure
+      - AWSALB=n7TxX5BYZJbHe2VK52ujOBdGksVQaEI/1xm3AJ4Rdv2AqnzdpIAZmCB0TZtpNJ0fPxuhJnn/YNsRV0TTgRtlVErwAcqjwX2CJ9RGtnhzK/N3Yc3Lru6PiWl8dVHS;
+        Expires=Thu, 05 Nov 2020 22:47:49 GMT; Path=/
+      - AWSALBCORS=n7TxX5BYZJbHe2VK52ujOBdGksVQaEI/1xm3AJ4Rdv2AqnzdpIAZmCB0TZtpNJ0fPxuhJnn/YNsRV0TTgRtlVErwAcqjwX2CJ9RGtnhzK/N3Yc3Lru6PiWl8dVHS;
+        Expires=Thu, 05 Nov 2020 22:47:49 GMT; Path=/; SameSite=None; Secure
       Server:
       - Apache-Coyote/1.1
       Access-Control-Allow-Origin:
@@ -107,13 +107,13 @@ http_interactions:
       - Content-Type, Cookie
     body:
       encoding: UTF-8
-      string: '{"programId":"5e150b86ce2a5a1d94874660","trackingId":null,"created":1592897089250,"updated":1592897095538,"lastResponse":{"verificationId":"5ef1ae416b29ca1badac1210","currentStep":"success","errorIds":[],"segment":"teacher","subSegment":null,"locale":"en-US","rewardCode":"EXAMPLE-CODE","redirectUrl":"https://www.openstax.org/"},"personInfo":{"firstName":"Bryan36dev","lastName":"Dimas","email":"f@f.com","birthDate":null,"deviceFingerprintHash":null,"phoneNumber":null,"country":null,"locale":"en-US","metadata":{"marketConsentValue":"false"},"organization":{"id":2681,"name":"Rice
-        University (Houston, TX)"},"postalCode":"77005","ipAddress":"73.155.240.73"},"docUploadRejectionCount":0,"docUploadRejectionReasons":[]}'
+      string: '{"programId":"5e150b86ce2a5a1d94874660","trackingId":null,"created":1592897089250,"updated":1592897095538,"lastResponse":{"verificationId":"5ef1ae416b29ca1badac1210","currentStep":"success","errorIds":[],"segment":"teacher","subSegment":null,"locale":"en-US","rewardCode":"EXAMPLE-CODE","redirectUrl":"https://www.openstax.org/"},"personInfo":{"firstName":"Bryan36dev","lastName":"Dimas","email":"bed1+bryan36dev@rice.edu","birthDate":null,"deviceFingerprintHash":null,"phoneNumber":null,"country":null,"locale":"en-US","metadata":{"marketConsentValue":"false"},"organization":{"id":2681,"name":"Rice
+        University (Houston, TX)"},"postalCode":"77005","ipAddress":"73.155.240.73","ipAddressExtended":"73.155.240.73"},"docUploadRejectionCount":0,"docUploadRejectionReasons":[]}'
     http_version:
-  recorded_at: Wed, 19 Aug 2020 22:50:13 GMT
+  recorded_at: Thu, 29 Oct 2020 22:47:49 GMT
 - request:
     method: get
-    uri: "<salesforce_instance_url_lower>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c,%20accounts_uuid_c__c,%20Application_Source__c,%20Role__c,%20who_chooses_books__c,%20FV_Status__c,%20FV_Final__c,%20Needs_CS_Review__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700QR000000KBmAdMAL%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c,%20accounts_uuid_c__c,%20Application_Source__c,%20Role__c,%20other_role_name__c,%20who_chooses_books__c,%20FV_Status__c,%20FV_Final__c,%20Needs_CS_Review__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700Q7X000006F2tmUAC%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
@@ -132,30 +132,30 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 19 Aug 2020 22:50:14 GMT
+      - Thu, 29 Oct 2020 22:47:49 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Public-Key-Pins-Report-Only:
       - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
         pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
-        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00DR0000001zq0Zm";
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00D7X000000Gyi2m";
       Expect-Ct:
-      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00DR0000001zq0Zm"
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D7X000000Gyi2m"
       X-Robots-Tag:
       - none
       X-B3-Traceid:
-      - c98f3fe85d5b07b6
+      - 02daf8943185c27e
       X-B3-Spanid:
-      - c98f3fe85d5b07b6
+      - 02daf8943185c27e
       X-B3-Sampled:
       - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=WBLTH-JuEeq2JDE8y7QYHQ; domain=.salesforce.com; path=/; expires=Thu,
-        19-Aug-2021 22:50:14 GMT; Max-Age=31536000
+      - BrowserId=xXXinxo4Eeu-SN1DiB3LYg; domain=.salesforce.com; path=/; expires=Fri,
+        29-Oct-2021 22:47:49 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=6297/51000
+      - api-usage=1194/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -164,21 +164,21 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00QR000000KBmAdMAL"},"Id":"00QR000000KBmAdMAL","Name":"Bryan
+      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q7X000006F2tmUAC"},"Id":"00Q7X000006F2tmUAC","Name":"Bryan
         Eli","FirstName":"Bryan","LastName":"Eli","Salutation":null,"Subject__c":null,"Company":"Bryan
-        Eli University","Phone":null,"Website":null,"Status":"Converted","Email":"f@f.com","LeadSource":"OSC
+        Eli University","Phone":null,"Website":null,"Status":"Converted","Email":"bed1+bryan36dev@rice.edu","LeadSource":"OSC
         Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"Adoption_Status__c":"High
-        Interest in Adopting","Number_of_Students__c":30.0,"OS_Accounts_ID__c":"1","accounts_uuid_c__c":"2a560dbe-62ca-41b2-a3e5-c5fe9c74f169","Application_Source__c":"Tutor
-        Signup","Role__c":"Faculty","who_chooses_books__c":null,"FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false}]}'
+        Interest in Adopting","Number_of_Students__c":30.0,"OS_Accounts_ID__c":"1","accounts_uuid_c__c":"b98af9de-8f8b-49b4-a18a-a2f8a8070e43","Application_Source__c":"Tutor
+        Signup","Role__c":"Faculty","other_role_name__c":null,"who_chooses_books__c":null,"FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":true}]}'
     http_version:
-  recorded_at: Wed, 19 Aug 2020 22:50:14 GMT
+  recorded_at: Thu, 29 Oct 2020 22:47:49 GMT
 - request:
     method: patch
-    uri: "<salesforce_instance_url_lower>/services/data/v37.0/sobjects/Lead/00QR000000KBmAdMAL"
+    uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead/00Q7X000006F2tmUAC"
     body:
       encoding: UTF-8
       string: '{"FirstName":"Bryan36dev","LastName":"Dimas","Company":"Rice University
-        (Houston, TX)","Adoption_Status__c":null,"Number_of_Students__c":null,"Role__c":"instructor","FV_Status__c":"confirmed_faculty"}'
+        (Houston, TX)","Adoption_Status__c":null,"Number_of_Students__c":null,"Role__c":"instructor","FV_Status__c":"confirmed_faculty","Needs_CS_Review__c":false}'
     headers:
       User-Agent:
       - Faraday v0.17.3
@@ -196,33 +196,33 @@ http_interactions:
       message: No Content
     headers:
       Date:
-      - Wed, 19 Aug 2020 22:50:14 GMT
+      - Thu, 29 Oct 2020 22:47:50 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Public-Key-Pins-Report-Only:
       - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
         pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
-        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00DR0000001zq0Zm";
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00D7X000000Gyi2m";
       Expect-Ct:
-      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00DR0000001zq0Zm"
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D7X000000Gyi2m"
       X-Robots-Tag:
       - none
       X-B3-Traceid:
-      - 22fb07d1cb66113b
+      - 95bab0b27f323770
       X-B3-Spanid:
-      - 22fb07d1cb66113b
+      - 95bab0b27f323770
       X-B3-Sampled:
       - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=WD4o3eJuEeqtu0FwjEQnLg; domain=.salesforce.com; path=/; expires=Thu,
-        19-Aug-2021 22:50:14 GMT; Max-Age=31536000
+      - BrowserId=xb4PGBo4EeuuB7Fz6M5-lQ; domain=.salesforce.com; path=/; expires=Fri,
+        29-Oct-2021 22:47:50 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=6297/51000
+      - api-usage=1194/5000000
     body:
       encoding: UTF-8
       string: ''
     http_version:
-  recorded_at: Wed, 19 Aug 2020 22:50:14 GMT
+  recorded_at: Thu, 29 Oct 2020 22:47:52 GMT
 recorded_with: VCR 3.0.3
