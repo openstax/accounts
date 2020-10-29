@@ -121,7 +121,7 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', ref: 'v4.6.1'
+gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', branch: 'other_role_name_field'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
