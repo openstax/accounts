@@ -2,11 +2,11 @@
 http_interactions:
 - request:
     method: post
-    uri: "<salesforce_instance_url_lower>/services/data/v37.0/sobjects/Lead"
+    uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Santiago","LastName":"Oberbrunner","Company":"unknown
-        to Accounts","Email":"f@f.com","LeadSource":"OSC Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":2,"accounts_uuid_c__c":"a9655c67-247a-4ace-a9bf-ee302799f8f5","Application_Source__c":"Tutor
+      string: '{"FirstName":"Ivelisse","LastName":"Quitzon","Company":"unknown to
+        Accounts","Email":"f@f.com","LeadSource":"OSC Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":1,"accounts_uuid_c__c":"7cd8dc0e-1c66-43df-9a60-499f7364c89e","Application_Source__c":"Tutor
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false}'
     headers:
       User-Agent:
@@ -25,32 +25,32 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Wed, 19 Aug 2020 22:57:37 GMT
+      - Thu, 29 Oct 2020 21:12:28 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Public-Key-Pins-Report-Only:
       - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
         pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
-        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00DR0000001zq0Zm";
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00D7X000000Gyi2m";
       Expect-Ct:
-      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00DR0000001zq0Zm"
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D7X000000Gyi2m"
       X-Robots-Tag:
       - none
       X-B3-Traceid:
-      - 281ddcf99ff4358e
+      - 9cede0a1be893ceb
       X-B3-Spanid:
-      - 281ddcf99ff4358e
+      - 9cede0a1be893ceb
       X-B3-Sampled:
       - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=YHJreuJvEeqTV1F4Z2TYww; domain=.salesforce.com; path=/; expires=Thu,
-        19-Aug-2021 22:57:37 GMT; Max-Age=31536000
+      - BrowserId=c4GU2RorEeu-SN1DiB3LYg; domain=.salesforce.com; path=/; expires=Fri,
+        29-Oct-2021 21:12:28 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=6313/51000
+      - api-usage=1092/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00QR000000KBmC5MAL"
+      - "/services/data/v37.0/sobjects/Lead/00Q7X000006F2s0UAC"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -59,7 +59,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00QR000000KBmC5MAL","success":true,"errors":[]}'
+      string: '{"id":"00Q7X000006F2s0UAC","success":true,"errors":[]}'
     http_version:
-  recorded_at: Wed, 19 Aug 2020 22:57:39 GMT
+  recorded_at: Thu, 29 Oct 2020 21:12:30 GMT
 recorded_with: VCR 3.0.3
