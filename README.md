@@ -38,9 +38,25 @@ The app behavior changes depending on the value of these parameters.
 
 ## Dev Environment Setup
 
-Accounts can be run as a normal Rails app on your machine, in a Docker container, or in a Vagrant virtual machine that mimics our production setup.
+Accounts can be run as a normal Rails app on your machine or in a Docker container.
 
-### Database setup
+### Docker
+
+```bash
+# build the image
+$> docker-compose build
+# build the image selecting the byebug debugger; remember to rebuild without this before pushing
+# or run `DEBUGGER=vscode bundle install` so that the Gemfile.lock is in the default debugger config
+$> docker-compose build --build-arg DEBUGGER=byebug
+# run it; Accounts available at localhost:2999
+$> docker-compose up -d
+# run it allowing for debugging
+$> docker-compose up -d && docker attach accounts_app_1
+```
+
+### Directly on your machine
+
+#### Database setup
 
 If you don't have postgresql already installed, on Mac:
 
@@ -53,7 +69,7 @@ ALTER USER ox_accounts WITH SUPERUSER;
 \q
 ```
 
-### Running as a normal Rails app on your machine
+#### Running as a normal Rails app on your machine
 
 First, ensure you have a Ruby version manager installed, such as [rbenv](https://github.com/rbenv/rbenv#installation) or RVM to manage your ruby versions. Then, install the Ruby version specified in the `.ruby-version` file (2.3.3 at the time of this writing, or above).
 
@@ -83,7 +99,7 @@ $ rails server
 
 which will start Accounts up on port 2999. Visit http://localhost:2999.
 
-### Running background jobs
+#### Running background jobs
 
 Accounts in production runs background jobs using `delayed_job`.
 In the development environment, however, background jobs are run "inline", i.e. in the foreground.

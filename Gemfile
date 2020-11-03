@@ -158,6 +158,9 @@ gem 'oj', '~> 3.7.12'
 gem 'oj_mimic_json'
 
 group :development, :test do
+  # See updates in development to reload rails
+  gem 'listen'
+
   # Get env variables from .env file
   gem 'dotenv-rails', '2.7.2'
 
@@ -170,12 +173,14 @@ group :development, :test do
   # Development server
   gem 'puma', '~> 3.12'
 
-  # Call 'debugger' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
-
-  # Debug in VS Code
-  gem 'ruby-debug-ide'
-  gem 'debase'
+  if ENV['DEBUGGER'] == 'byebug'
+    # Call 'debugger' anywhere in the code to stop execution and get a debugger console
+    gem 'byebug'
+  else
+    # Debug in VS Code
+    gem 'ruby-debug-ide'
+    gem 'debase'
+  end
 
   # Use RSpec for tests
   gem 'rspec-rails', '~> 3.8'

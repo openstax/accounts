@@ -1,5 +1,8 @@
 FROM ruby:2.6.3
 
+# Options: vscode, byebug
+ARG DEBUGGER=vscode
+
 WORKDIR /code
 
 COPY Gemfile Gemfile.lock ./
@@ -9,10 +12,13 @@ ENV BUNDLE_PATH="/bundle_cache"\
         BUNDLE_APP_CONFIG="/bundle_cache"\
         GEM_HOME="/bundle_cache"\
         PATH=/bundle_cache/bin:/bundle_cache/gems/bin:$PATH\
-        PORT=2999
+        PORT=2999\
+        DEBUGGER=${DEBUGGER}
 
-RUN gem install bundler:2.0.2 \
-        && bundle _2.0.2_ install --without production --path /bundle_cache
+RUN gem install bundler:2.1.4 && \
+    bundle config set path '/bundle_cache' && \
+    bundle config set without 'production' && \
+    bundle _2.1.4_ install
 
 EXPOSE 2999
 

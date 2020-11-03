@@ -13,11 +13,14 @@ ActionController::Base.class_exec do
 
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
+  prepend_before_action :set_device_id
   before_action :save_redirect
   before_action :set_locale
   before_action :complete_signup_profile
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
+
+  UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
   protected
 
@@ -68,5 +71,22 @@ ActionController::Base.class_exec do
 
   def set_locale
     I18n.locale = http_accept_language.compatible_language_from(I18n.available_locales)
+  end
+
+  def set_device_id
+    cookies.delete(:oxdid) if cookies[:oxdid] && !(cookies[:oxdid] =~ UUID_REGEX)
+
+    if cookies[:oxdid].nil?
+      cookies[:oxdid] = {
+        value: SecureRandom.uuid,
+        expires: 20.years.from_now,
+        domain: :all,
+        secure: Rails.env.production?
+      }
+    end
+  end
+
+  def get_device_id
+    cookies[:oxdid]
   end
 end

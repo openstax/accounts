@@ -6,6 +6,9 @@ services:
     image: accounts
     ports:
       - "2999:2999"
+    command: bash -c "rm -f tmp/pids/server.pid && rake about && rake db:migrate && bin/rails server -b '0.0.0.0' -p 2999"
+    stdin_open: true  # allow for debugger
+    tty: true         # interaction
     volumes:
       - .:/code
       - /code/tmp/pids
