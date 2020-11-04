@@ -1,5 +1,6 @@
 module Newflow
   class CreateEmailForUser
+
     lev_routine
 
     protected ###############
@@ -15,5 +16,6 @@ module Newflow
 
       NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
     end
+
   end
 end

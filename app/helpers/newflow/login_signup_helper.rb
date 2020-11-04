@@ -1,9 +1,23 @@
 module Newflow
   module LoginSignupHelper
 
-    # save (in the seession) or clear the client_app that sent the user here
+    BRI_BOOK_PARAM_NAME = :bri_book
+
+    # save (in the session) or clear the client_app that sent the user here
     def cache_client_app
       set_client_app(params[:client_id])
+    end
+
+    def cache_BRI_marketing_if_present
+      params[BRI_BOOK_PARAM_NAME].present? ? cache_BRI_marketing : nil
+    end
+
+    def cache_BRI_marketing
+      session[BRI_BOOK_PARAM_NAME] = true
+    end
+
+    def is_BRI_book?
+      session[BRI_BOOK_PARAM_NAME] == true
     end
 
     def should_show_school_name_field?

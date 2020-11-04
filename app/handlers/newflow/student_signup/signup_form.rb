@@ -1,7 +1,9 @@
 module Newflow
   module StudentSignup
     class SignupForm
+
       lev_handler
+
       uses_routine AgreeToTerms
       uses_routine CreateEmailForUser
 
@@ -61,10 +63,15 @@ module Newflow
         end
 
         agree_to_terms
+        agree_to_BRI_marketing if options[:is_BRI_book]
         run(CreateEmailForUser, email: signup_params.email, user: outputs.user)
       end
 
       private ###############
+
+      def agree_to_BRI_marketing
+        outputs.user.update!(is_b_r_i_user: true)
+      end
 
       def validate_presence_of_required_params
         required_params.each do |param|

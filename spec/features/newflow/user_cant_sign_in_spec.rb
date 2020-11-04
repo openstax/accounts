@@ -19,7 +19,7 @@ feature "User can't sign in", js: true do
 
     scenario "email blank" do
       newflow_log_in_user('', 'password')
-      expect(page).to have_content(error_msg Newflow::AuthenticateUser, :email, :blank)
+      expect(page).to have_content(error_msg Newflow::LogInUser, :email, :blank)
       screenshot!
     end
 

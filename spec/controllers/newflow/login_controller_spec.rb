@@ -17,7 +17,7 @@ module Newflow
           before do
             user = create_newflow_user('user@openstax.org', 'password')
             user.update!(role: User::STUDENT_ROLE)
-            expect_any_instance_of(AuthenticateUser).to receive(:call).once.and_call_original
+            expect_any_instance_of(LogInUser).to receive(:call).once.and_call_original
           end
 
           let(:params) do

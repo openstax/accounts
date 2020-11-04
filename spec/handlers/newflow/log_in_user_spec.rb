@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  describe AuthenticateUser, type: :handler do
+  describe LogInUser, type: :handler do
     let!(:user) { create_newflow_user 'user@openstax.org', 'password' }
     let(:request) {
       # ip address needed for generating a security log
