@@ -16,7 +16,7 @@ module Newflow
       session[BRI_BOOK_PARAM_NAME] = true
     end
 
-    def is_BRI_book?
+    def is_BRI_book_adopter?
       session[BRI_BOOK_PARAM_NAME] == true
     end
 

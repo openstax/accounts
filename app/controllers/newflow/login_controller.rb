@@ -19,7 +19,7 @@ module Newflow
       handle_with(
         LogInUser,
         user_from_signed_params: session[:user_from_signed_params],
-        is_BRI_book: is_BRI_book?,
+        is_BRI_book: is_BRI_book_adopter?,
         success: lambda {
           clear_signup_state
           user = @handler_result.outputs.user
