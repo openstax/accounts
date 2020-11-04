@@ -67,6 +67,18 @@ module Newflow
       end
     end
 
+    context 'when user is a BRI (Bill of Rights Institute) book adopter' do
+      before do
+        visit newflow_login_path(Newflow::LoginSignupHelper::BRI_BOOK_PARAM_NAME => Faker::Book.title)
+      end
+
+      it 'shows a message informing the user about BRI marketing' do
+        click_on(t(:"login_signup_form.sign_up"))
+        find('.join-as__role.student').click
+        expect(page).to have_text(t(:"login_signup_form.b_r_i_marketing_msg"))
+      end
+    end
+
     context 'when student has not verified their only email address' do
       let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: User::STUDENT_ROLE) }
       let!(:email_address) { FactoryBot.create(:email_address, user: user, verified: false) }

@@ -154,6 +154,7 @@ en:
     hide_password_btn: HIDE
     finish: Finish
     should_social_signup: There is no record of this account. Are you trying to %{sign_up}?
+    b_r_i_marketing_msg: TODO TODO TODO TODO TODO TODO TODO
 
     student_email_verification_form_decription: >-
       An email has been sent to <b>%{email}</b>.
