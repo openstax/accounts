@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/openstax/openstax_salesforce.git
-  revision: 63fdc161f8921e2163908f98c4c4f054e0393244
+  revision: 4b331c0f149308a552962f22afcdc9c141b29b7d
   branch: master
   specs:
     openstax_salesforce (4.9.0)
