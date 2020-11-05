@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://github.com/openstax/openstax_salesforce.git
-  revision: 609fa4af8c411ed6222bb452dbee467f0b48a92b
-  branch: title_1_school_field
+  revision: 6de8fa2685cb8659de3b0e13b9efe2301a34bb92
+  branch: master
   specs:
     openstax_salesforce (4.9.0)
       openstax_active_force

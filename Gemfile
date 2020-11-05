@@ -121,7 +121,7 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', branch: 'title_1_school_field'
+gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', branch: 'master'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
