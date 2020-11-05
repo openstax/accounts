@@ -9,8 +9,8 @@ GIT
 
 GIT
   remote: https://github.com/openstax/openstax_salesforce.git
-  revision: 4b331c0f149308a552962f22afcdc9c141b29b7d
-  branch: master
+  revision: 3898a7853ecd864448db0f45f25374310d53041d
+  branch: bri_marketing_field_on_contacts
   specs:
     openstax_salesforce (4.9.0)
       openstax_active_force

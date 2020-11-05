@@ -121,7 +121,7 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', branch: 'master'
+gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', branch: 'bri_marketing_field_on_contacts'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
