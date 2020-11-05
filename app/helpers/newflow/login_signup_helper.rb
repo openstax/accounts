@@ -9,11 +9,15 @@ module Newflow
     end
 
     def cache_BRI_marketing_if_present
-      params[BRI_BOOK_PARAM_NAME].present? ? cache_BRI_marketing : nil
+      params[BRI_BOOK_PARAM_NAME].present? ? cache_BRI_marketing : clear_cache_BRI_marketing
     end
 
     def cache_BRI_marketing
       session[BRI_BOOK_PARAM_NAME] = true
+    end
+
+    def clear_cache_BRI_marketing
+      session[BRI_BOOK_PARAM_NAME] = nil
     end
 
     def is_BRI_book_adopter?

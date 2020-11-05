@@ -33,8 +33,10 @@ module Newflow
           verification_status: user.faculty_status,
           finalize_educator_signup: user.is_profile_complete?,
           needs_cs_review: user.is_educator_pending_cs_verification?,
+          b_r_i_marketing: user.is_b_r_i_user?,
+          title_1_school: user.title_1_school?,
           newsletter: user.receive_newsletter?,
-          newsletter_opt_in: user.receive_newsletter?
+          newsletter_opt_in: user.receive_newsletter?,
         )
 
         outputs.lead = lead

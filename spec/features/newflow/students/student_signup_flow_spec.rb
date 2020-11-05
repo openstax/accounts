@@ -70,12 +70,33 @@ module Newflow
     context 'when user is a BRI (Bill of Rights Institute) book adopter' do
       before do
         visit newflow_login_path(Newflow::LoginSignupHelper::BRI_BOOK_PARAM_NAME => Faker::Book.title)
-      end
-
-      it 'shows a message informing the user about BRI marketing' do
         click_on(t(:"login_signup_form.sign_up"))
         find('.join-as__role.student').click
-        expect(page).to have_text(t(:"login_signup_form.b_r_i_marketing_msg"))
+      end
+
+      it 'asks if their school is a Title 1 school' do
+        expect(page).to have_text(t(:"login_signup_form.is_title_1_school"))
+      end
+
+      context 'when their school is a Title 1 school' do
+        before do
+          fill_in 'signup_first_name',	with: 'Bryan'
+          fill_in 'signup_last_name',	with: 'Dimas'
+          fill_in 'signup_email',	with: email
+          fill_in 'signup_password',	with: password
+          check('signup_terms_accepted')
+          wait_for_ajax
+          wait_for_animations
+          check('signup_is_title_1_school')
+          find('[type=submit]').click
+          wait_for_ajax
+          wait_for_animations
+          screenshot!
+        end
+
+        it 'stores the response in the user model' do
+          expect(User.last.title_1_school?).to be_truthy
+        end
       end
     end
 

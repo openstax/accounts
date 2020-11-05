@@ -12,6 +12,7 @@ module Newflow
         attribute :last_name, type: String
         attribute :email, type: String
         attribute :password, type: String
+        attribute :is_title_1_school, type: boolean
         attribute :newsletter, type: boolean
         attribute :terms_accepted, type: boolean
         attribute :contract_1_id, type: Integer
@@ -63,6 +64,13 @@ module Newflow
         end
 
         agree_to_terms
+
+        if options[:is_BRI_book]
+          outputs.user.is_b_r_i_user = true
+          outputs.user.title_1_school = signup_params.is_title_1_school
+          outputs.user.save!
+        end
+
         agree_to_BRI_marketing if options[:is_BRI_book]
         run(CreateEmailForUser, email: signup_params.email, user: outputs.user)
       end
