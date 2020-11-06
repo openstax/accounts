@@ -3,6 +3,9 @@
 module Newflow
   module StudentSignup
     class ActivateStudent
+
+      SECURITY_LOG_EVENT_TYPE = :user_became_activated
+
       lev_routine
 
       protected ###############
@@ -14,31 +17,9 @@ module Newflow
       def exec(user)
         return if user.activated?
 
-        push_lead_to_salesforce(user)
         user.update!(state: User::ACTIVATED)
-        SecurityLog.create!(
-          user: user,
-          event_type: :user_updated,
-          event_data: {
-            user_became_activated: 'true'
-          }
-        )
-      end
-
-      private ###############
-
-      def push_lead_to_salesforce(user)
-        if Settings::Salesforce.push_leads_enabled
-          PushSalesforceLead.perform_later(
-            user: user,
-            role: user.role,
-            newsletter: user.receive_newsletter?,
-            source_application: user.source_application,
-            phone_number: user.phone_number,
-            school: User::UNKNOWN_SCHOOL_NAME,
-            using_openstax: nil, subject: nil, num_students: nil, url: nil
-          )
-        end
+        CreateSalesforceLead.perform_later(user: user)
+        SecurityLog.create!(user: user, event_type: SECURITY_LOG_EVENT_TYPE)
       end
 
     end

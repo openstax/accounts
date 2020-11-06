@@ -4,7 +4,9 @@ module Newflow
   # We don't need to act on users' behalf on social media,
   # we just need to identify users by their `uid`.
   class OauthCallback
+
     lev_handler
+
     uses_routine(
       TransferAuthentications,
       translations: {
@@ -177,6 +179,11 @@ module Newflow
     def create_student_user_instance
       user = User.new(state: 'unverified', role: User::STUDENT_ROLE, is_newflow: true)
       user.full_name = oauth_data.name
+
+      if options[:is_BRI_book]
+        user.is_b_r_i_user = true
+      end
+
       transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
       user
     end
@@ -204,5 +211,6 @@ module Newflow
     def user_came_from
       request.env['omniauth.origin']
     end
+
   end
 end
