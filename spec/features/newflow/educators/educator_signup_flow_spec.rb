@@ -24,7 +24,7 @@ module Newflow
 
       context 'when entering PIN code to verify email address' do
         it 'all works' do
-          expect_any_instance_of(Newflow::EducatorSignup::CreateSalesforceLead).to receive(:exec)
+          expect_any_instance_of(Newflow::CreateSalesforceLead).to receive(:exec)
 
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
@@ -79,7 +79,7 @@ module Newflow
 
       context 'when clicking on link sent in an email to verify email address' do
         it 'all works' do
-          expect_any_instance_of(Newflow::EducatorSignup::CreateSalesforceLead).to receive(:exec)
+          expect_any_instance_of(Newflow::CreateSalesforceLead).to receive(:exec)
 
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
