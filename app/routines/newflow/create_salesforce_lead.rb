@@ -29,7 +29,7 @@ module Newflow
         os_accounts_id: user.id,
         accounts_uuid: user.uuid,
         school: user.most_accurate_school_name,
-        verification_status: user.faculty_status,
+        verification_status: user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
         finalize_educator_signup: user.is_profile_complete?,
         needs_cs_review: user.is_educator_pending_cs_verification?,
         b_r_i_marketing: user.is_b_r_i_user?,

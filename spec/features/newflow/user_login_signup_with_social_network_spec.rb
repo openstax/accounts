@@ -34,6 +34,33 @@ feature 'User logs in or signs up with a social network', js: true do
         end
       end
 
+      scenario 'happy path – user is a BRI book adopter' do
+        expect_any_instance_of(Newflow::CreateSalesforceLead).to receive(:exec)
+
+        visit(newflow_login_path(bri_book: Faker::Book.title))
+        click_on(t(:"login_signup_form.sign_up"))
+        find('.join-as__role.student').click
+
+        simulate_login_signup_with_social(name: 'Elon Musk', email: email) do
+          click_on('Facebook')
+          wait_for_ajax
+          screenshot!
+          expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
+          expect(page).to have_field('signup_first_name', with: 'Elon')
+          expect(page).to have_field('signup_last_name', with: 'Musk')
+          expect(page).to have_field('signup_email', with: email)
+          check('signup_is_title_1_school')
+          check('signup_terms_accepted')
+          wait_for_animations
+          screenshot!
+          submit_signup_form
+          screenshot!
+          expect(page).to have_content(t(:"login_signup_form.youre_done", first_name: 'Elon'))
+          expect(User.last.is_b_r_i_user?).to be_truthy
+          expect(User.last.title_1_school?).to be_truthy
+        end
+      end
+
       context 'user denies us access to their email address, has to enter it manually' do
         describe 'success' do
           example do
@@ -119,6 +146,20 @@ feature 'User logs in or signs up with a social network', js: true do
               screenshot!
               expect(page.current_path).to match(profile_newflow_path)
             end
+        end
+      end
+
+      scenario 'happy path – user is a BRI book adopter' do
+        expect_any_instance_of(Newflow::UpdateSalesforceLead).to receive(:exec)
+
+        visit newflow_login_path(Newflow::LoginSignupHelper::BRI_BOOK_PARAM_NAME => Faker::Book.title)
+
+        simulate_login_signup_with_social(name: 'Elon Musk', email: email, uid: 'uid123') do
+          click_on('Facebook')
+          wait_for_ajax
+          wait_for_animations
+          screenshot!
+          expect(User.last.is_b_r_i_user?).to be_truthy
         end
       end
 
