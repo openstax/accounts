@@ -178,7 +178,7 @@ group :development, :test do
   gem 'debase'
 
   # Use RSpec for tests
-  gem 'rspec-rails', '~> 3.8'
+  gem 'rspec-rails'
 
   # Because `assigns` has been extracted from RSpec to a gem
   gem 'rails-controller-testing'
