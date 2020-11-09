@@ -1,0 +1,64 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
+    body:
+      encoding: UTF-8
+      string: '{"FirstName":"Toby","LastName":"King","Company":"unknown to Accounts","Email":"0975a8@uga.edu","LeadSource":"OSC
+        Faculty","Newsletter__c":true,"Newsletter_Opt_In__c":true,"OS_Accounts_ID__c":1,"accounts_uuid_c__c":"2a67a29c-6e2d-4088-9d83-42680f1907d0","Application_Source__c":"","Role__c":"student","FV_Final__c":true,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
+    headers:
+      User-Agent:
+      - Faraday v0.17.3
+      Content-Type:
+      - application/json
+      Authorization:
+      - OAuth <salesforce_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Mon, 09 Nov 2020 03:27:23 GMT
+      Strict-Transport-Security:
+      - max-age=31536002; includeSubDomains
+      Public-Key-Pins-Report-Only:
+      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
+        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
+        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00D7X000000Gyi2m";
+      Expect-Ct:
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D7X000000Gyi2m"
+      X-Robots-Tag:
+      - none
+      X-B3-Traceid:
+      - 700f17f1ca5784cf
+      X-B3-Spanid:
+      - 700f17f1ca5784cf
+      X-B3-Sampled:
+      - '0'
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Set-Cookie:
+      - BrowserId=e8MXuiI7Eeuo6GUfjKo3xw; domain=.salesforce.com; path=/; expires=Tue,
+        09-Nov-2021 03:27:23 GMT; Max-Age=31536000
+      Sforce-Limit-Info:
+      - api-usage=905/5000000
+      Location:
+      - "/services/data/v37.0/sobjects/Lead/00Q7X000006FDVeUAO"
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"00Q7X000006FDVeUAO","success":true,"errors":[]}'
+    http_version:
+  recorded_at: Mon, 09 Nov 2020 03:27:24 GMT
+recorded_with: VCR 3.0.3
