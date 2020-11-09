@@ -135,16 +135,6 @@
 
                 <div class="content control-group checkboxes-section">
 
-                    <% if is_BRI_book_adopter? %>
-                        <div class="terms">
-                            <label>
-                                <%= form.check_box :is_title_1_school %>
-                                <span><%= I18n.t(:"login_signup_form.is_title_1_school") %></span>
-                            </label>
-                            <br>
-                        </div>
-                    <% end %>
-
                     <div class="terms">
                         <label>
                             <%= form.check_box :newsletter, checked: true %>

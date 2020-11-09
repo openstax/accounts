@@ -24,6 +24,12 @@ module Newflow
       session[BRI_BOOK_PARAM_NAME] == true
     end
 
+  # If user is a BRI (Bill of Rights Institute) book adopter, we want to track that and do marketing
+  def BRI_marketing(user)
+    user.update!(is_b_r_i_user: true)
+    UpdateSalesforceLead.perform_later(user: user)
+  end
+
     def should_show_school_name_field?
       params[:school].present? || current_user&.is_sheerid_unviable? || current_user&.rejected_faculty?
     end

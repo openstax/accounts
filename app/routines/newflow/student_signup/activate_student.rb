@@ -4,8 +4,6 @@ module Newflow
   module StudentSignup
     class ActivateStudent
 
-      SECURITY_LOG_EVENT_TYPE = :user_became_activated
-
       lev_routine
 
       protected ###############
@@ -19,7 +17,7 @@ module Newflow
 
         user.update!(state: User::ACTIVATED)
         CreateSalesforceLead.perform_later(user: user)
-        SecurityLog.create!(user: user, event_type: SECURITY_LOG_EVENT_TYPE)
+        SecurityLog.create!(user: user, event_type: Constants::ACTIVATED_USER_SECURITY_LOG)
       end
 
     end
