@@ -1,6 +1,8 @@
 module Newflow
   class ConfirmOauthInfo
+
     lev_handler
+
     uses_routine CreateEmailForUser
     uses_routine AgreeToTerms
     uses_routine StudentSignup::ActivateStudent
@@ -9,6 +11,7 @@ module Newflow
       attribute :first_name
       attribute :last_name
       attribute :email
+      attribute :is_title_1_school, type: boolean
       attribute :newsletter, type: boolean
       attribute :terms_accepted, type: boolean
       attribute :contract_1_id, type: Integer
@@ -40,6 +43,7 @@ module Newflow
       @user.update(
         first_name: signup_params.first_name,
         last_name: signup_params.last_name,
+        title_1_school: signup_params.is_title_1_school,
         receive_newsletter: signup_params.newsletter
       )
       transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
@@ -76,5 +80,6 @@ module Newflow
       run(AgreeToTerms, signup_params.contract_1_id, user, no_error_if_already_signed: true)
       run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
     end
+
   end
 end

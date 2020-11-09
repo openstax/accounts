@@ -74,6 +74,7 @@ class SecurityLog < ActiveRecord::Base
     educator_resumed_signup_flow
     created_salesforce_lead
     requested_manual_cs_verification
+    user_became_activated
   ]
 
   json_serialize :event_data, Hash

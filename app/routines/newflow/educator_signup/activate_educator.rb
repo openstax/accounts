@@ -4,6 +4,7 @@
 module Newflow
   module EducatorSignup
     class ActivateEducator
+
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
       uses_routine CreateSalesforceLead
 
@@ -13,21 +14,10 @@ module Newflow
         return if user.activated?
 
         user.update!(state: User::ACTIVATED)
-        create_salesforce_lead_for(user)
-        SecurityLog.create!(
-          user: user,
-          event_type: :user_updated,
-          event_data: {
-            user_became_activated: 'true'
-          }
-        )
-      end
-
-      private ###############
-
-      def create_salesforce_lead_for(user)
         CreateSalesforceLead.perform_later(user: user)
+        SecurityLog.create!(user: user, event_type: Constants::ACTIVATED_USER_SECURITY_LOG)
       end
+
     end
   end
 end

@@ -3,10 +3,13 @@ module Newflow
   # Tries to find a user by email (or username for legacy reasons),
   # then checks the password for the user.
   # If successful, outputs the user. Otherwise, fails and logs the error.
-  class AuthenticateUser
-    lev_handler
+  class LogInUser
+
     include RateLimiting
+    include LoginSignupHelper
     include ActionView::Helpers::UrlHelper
+
+    lev_handler
 
     paramify :login_form do
       attribute :email, type: String
@@ -59,6 +62,7 @@ module Newflow
       failure(:incorrect_password, :password) unless identity.present?
       # Link the user to the external uuid at this point (after successfully logging in)
       transfer_signed_data_if_present(user)
+      BRI_marketing(user) if options[:is_BRI_book]
     end
 
     private #################

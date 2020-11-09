@@ -51,7 +51,6 @@ class EducatorSignupFlowDecorator
       educator_profile_form_path
     when current_step == 'educator_sheerid_form'
       if user.confirmed_faculty? || user.rejected_faculty? || user.sheerid_verification_id.present?
-        # debugger # educator_profile_form_path(request.query_parameters)
       end
     when current_step == 'educator_signup_form' && !user.is_anonymous?
         educator_email_verification_form_path

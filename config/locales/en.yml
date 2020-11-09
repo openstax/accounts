@@ -154,6 +154,7 @@ en:
     hide_password_btn: HIDE
     finish: Finish
     should_social_signup: There is no record of this account. Are you trying to %{sign_up}?
+    is_title_1_school: My school is designated as a Title-1 campus
 
     student_email_verification_form_decription: >-
       An email has been sent to <b>%{email}</b>.

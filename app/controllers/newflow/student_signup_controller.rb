@@ -16,9 +16,11 @@ module Newflow
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
         user_from_signed_params: session[:user_from_signed_params],
+        is_BRI_book: is_BRI_book_adopter?,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user.id)
-          security_log :student_signed_up, { user: @handler_result.outputs.user }
+          security_log(:student_signed_up, { user: @handler_result.outputs.user })
+          clear_cache_BRI_marketing
           redirect_to student_email_verification_form_path
         },
         failure: lambda {

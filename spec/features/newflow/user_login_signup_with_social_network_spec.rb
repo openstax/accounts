@@ -5,6 +5,7 @@ feature 'User logs in or signs up with a social network', js: true do
     turn_on_student_feature_flag
     turn_on_educator_feature_flag
     load('db/seeds.rb')
+    allow_any_instance_of(Newflow::CreateSalesforceLead).to receive(:exec)
   end
 
   let(:email) { 'user@example.com' }
@@ -119,6 +120,36 @@ feature 'User logs in or signs up with a social network', js: true do
               screenshot!
               expect(page.current_path).to match(profile_newflow_path)
             end
+        end
+      end
+
+      scenario 'happy path student is a BRI book adopter' do
+        expect(user.student?).to be_truthy
+        expect_any_instance_of(Newflow::UpdateSalesforceLead).to receive(:exec)
+
+        visit newflow_login_path(Newflow::LoginSignupHelper::BRI_BOOK_PARAM_NAME => Faker::Book.title)
+
+        simulate_login_signup_with_social(name: 'Elon Musk', email: email, uid: 'uid123') do
+          click_on('Facebook')
+          wait_for_ajax
+          wait_for_animations
+          screenshot!
+          expect(User.last.is_b_r_i_user?).to be_truthy
+        end
+      end
+
+      scenario 'happy path educator is a BRI book adopter' do
+        user.update!(role: User::INSTRUCTOR_ROLE)
+        expect_any_instance_of(Newflow::UpdateSalesforceLead).to receive(:exec)
+
+        visit newflow_login_path(Newflow::LoginSignupHelper::BRI_BOOK_PARAM_NAME => Faker::Book.title)
+
+        simulate_login_signup_with_social(name: 'Elon Musk', email: email, uid: 'uid123') do
+          click_on('Facebook')
+          wait_for_ajax
+          wait_for_animations
+          screenshot!
+          expect(User.last.is_b_r_i_user?).to be_truthy
         end
       end
 

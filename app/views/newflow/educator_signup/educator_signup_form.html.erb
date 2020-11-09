@@ -27,8 +27,8 @@
           header: (I18n.t(:"login_signup_form.signup_page_header")),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 4),
           classes: 'signup-page') do %>
-      <% lev_form_for :signup, url: educator_signup_post_path do |f| %>
-        <% fh = NewflowFormHelper::Newflow.new(f: f,
+      <% lev_form_for :signup, url: educator_signup_post_path do |form| %>
+        <% fh = NewflowFormHelper::Newflow.new(f: form,
                                                context: self,
                                                errors: @handler_result&.errors) %>
         <div class="content role-section">
@@ -76,7 +76,7 @@
                            onkeyup: 'javascript:backspacerUP(this,event);'
 
           %>
-          <%= f.hidden_field :country_code%>
+          <%= form.hidden_field :country_code%>
         </div>
 
         <div class="content control-group email-input-group newflow">
@@ -121,17 +121,22 @@
         </div>
 
         <div class="content control-group checkboxes-section">
+
           <div class="terms">
             <label>
-              <%= f.check_box :newsletter, checked: true %>
+              <%= form.check_box :newsletter, checked: true %>
               <span><%= I18n.t(:"login_signup_form.send_me_newsletter") %></span>
             </label>
             <br>
           </div>
 
+          <% if is_BRI_book_adopter? %>
+            <%= render partial: 'newflow/is_title_1_school_checkbox' %>
+          <% end %>
+
           <div class="terms">
             <label>
-              <%= f.check_box :terms_accepted %>
+              <%= form.check_box :terms_accepted %>
               <span>
                 <%=
                   I18n.t(
@@ -143,15 +148,16 @@
               </span>
             </label>
 
-            <%= f.hidden_field :contract_1_id, value: contracts.first.id %>
-            <%= f.hidden_field :contract_2_id, value: contracts.second.id %>
-            <%= f.hidden_field :role, value: :instructor %>
+            <%= form.hidden_field :contract_1_id, value: contracts.first.id %>
+            <%= form.hidden_field :contract_2_id, value: contracts.second.id %>
+            <%= form.hidden_field :role, value: :instructor %>
           </div>
+
         </div>
 
         <div class="content">
           <%=
-            f.submit(
+            form.submit(
               I18n.t(:"login_signup_form.continue_button"),
               id: 'signup_form_submit_button',
               class: 'primary',

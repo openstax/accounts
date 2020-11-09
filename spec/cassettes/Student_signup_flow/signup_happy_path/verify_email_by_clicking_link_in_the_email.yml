@@ -5,9 +5,8 @@ http_interactions:
     uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Ivelisse","LastName":"Quitzon","Company":"unknown to
-        Accounts","Email":"f@f.com","LeadSource":"OSC Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":1,"accounts_uuid_c__c":"7cd8dc0e-1c66-43df-9a60-499f7364c89e","Application_Source__c":"Tutor
-        Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false}'
+      string: '{"FirstName":"Bryan","LastName":"Dimas","Company":"unknown to Accounts","Email":"antonia@hotmail.com","LeadSource":"OSC
+        Faculty","Newsletter__c":true,"Newsletter_Opt_In__c":true,"OS_Accounts_ID__c":1,"accounts_uuid_c__c":"17b70f93-b37c-4b27-9fed-8943c1e7628f","Application_Source__c":"Accounts","Role__c":"student","FV_Final__c":false,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
     headers:
       User-Agent:
       - Faraday v0.17.3
@@ -25,7 +24,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Thu, 29 Oct 2020 21:12:28 GMT
+      - Mon, 09 Nov 2020 02:58:38 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Public-Key-Pins-Report-Only:
@@ -37,20 +36,20 @@ http_interactions:
       X-Robots-Tag:
       - none
       X-B3-Traceid:
-      - 9cede0a1be893ceb
+      - 243693fd9217804f
       X-B3-Spanid:
-      - 9cede0a1be893ceb
+      - 243693fd9217804f
       X-B3-Sampled:
       - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=c4GU2RorEeu-SN1DiB3LYg; domain=.salesforce.com; path=/; expires=Fri,
-        29-Oct-2021 21:12:28 GMT; Max-Age=31536000
+      - BrowserId=d2yzJCI3Eeua5LHvMekpbw; domain=.salesforce.com; path=/; expires=Tue,
+        09-Nov-2021 02:58:38 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=1092/5000000
+      - api-usage=905/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q7X000006F2s0UAC"
+      - "/services/data/v37.0/sobjects/Lead/00Q7X000006FDUWUA4"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -59,7 +58,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00Q7X000006F2s0UAC","success":true,"errors":[]}'
+      string: '{"id":"00Q7X000006FDUWUA4","success":true,"errors":[]}'
     http_version:
-  recorded_at: Thu, 29 Oct 2020 21:12:30 GMT
+  recorded_at: Mon, 09 Nov 2020 02:58:39 GMT
 recorded_with: VCR 3.0.3

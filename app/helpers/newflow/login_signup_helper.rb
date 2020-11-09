@@ -1,10 +1,34 @@
 module Newflow
   module LoginSignupHelper
 
-    # save (in the seession) or clear the client_app that sent the user here
+    BRI_BOOK_PARAM_NAME = :bri_book
+
+    # save (in the session) or clear the client_app that sent the user here
     def cache_client_app
       set_client_app(params[:client_id])
     end
+
+    def cache_BRI_marketing_if_present
+      params[BRI_BOOK_PARAM_NAME].present? ? cache_BRI_marketing : clear_cache_BRI_marketing
+    end
+
+    def cache_BRI_marketing
+      session[BRI_BOOK_PARAM_NAME] = true
+    end
+
+    def clear_cache_BRI_marketing
+      session[BRI_BOOK_PARAM_NAME] = nil
+    end
+
+    def is_BRI_book_adopter?
+      session[BRI_BOOK_PARAM_NAME] == true
+    end
+
+  # If user is a BRI (Bill of Rights Institute) book adopter, we want to track that and do marketing
+  def BRI_marketing(user)
+    user.update!(is_b_r_i_user: true)
+    UpdateSalesforceLead.perform_later(user: user)
+  end
 
     def should_show_school_name_field?
       params[:school].present? || current_user&.is_sheerid_unviable? || current_user&.rejected_faculty?

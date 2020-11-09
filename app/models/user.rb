@@ -1,6 +1,7 @@
 require "i18n"
 
 class User < ActiveRecord::Base
+
   VALID_STATES = [
     TEMP = 'temp', # deprecated but still could exist for old accounts
     NEW_SOCIAL = 'new_social',
@@ -456,4 +457,5 @@ class User < ActiveRecord::Base
       self.touch(:activated_at)
     end
   end
+
 end

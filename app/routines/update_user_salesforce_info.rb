@@ -291,6 +291,7 @@ class UpdateUserSalesforceInfo
 
       user.is_kip = school&.is_kip || school&.is_child_of_kip
       user.grant_tutor_access = contact.grant_tutor_access
+      user.is_b_r_i_user = contact.b_r_i_marketing
     end
 
     if user.faculty_status_changed? && user.confirmed_faculty?

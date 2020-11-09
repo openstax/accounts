@@ -496,6 +496,14 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.using_openstax).to eq false
     end
+
+    it 'handles b_r_i_marketing field' do
+      expected_value = true
+      contact = new_contact(id: 'foo', b_r_i_marketing: expected_value)
+      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      expect(user.salesforce_contact_id).to eq('foo')
+      expect(user.is_b_r_i_user?).to eq(expected_value)
+    end
   end
 
   it 'does not do N queries on user contact infos' do
