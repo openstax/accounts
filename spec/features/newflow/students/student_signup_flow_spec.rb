@@ -1,10 +1,18 @@
 require 'rails_helper'
+require 'vcr_helper'
 
 module Newflow
-  feature 'Student signup flow', js: true do
+  feature 'Student signup flow', js: true, vcr: VCR_OPTS do
      before do
       load 'db/seeds.rb'
       turn_on_student_feature_flag
+    end
+
+    before(:all) do
+      VCR.use_cassette('Newflow/Students/student_signup_flow/sf_setup', VCR_OPTS) do
+        @proxy = SalesforceProxy.new
+        @proxy.setup_cassette
+      end
     end
 
     let(:email) do
