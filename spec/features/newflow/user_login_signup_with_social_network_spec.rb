@@ -5,6 +5,7 @@ feature 'User logs in or signs up with a social network', js: true do
     turn_on_student_feature_flag
     turn_on_educator_feature_flag
     load('db/seeds.rb')
+    allow_any_instance_of(Newflow::CreateSalesforceLead).to receive(:exec)
   end
 
   let(:email) { 'user@example.com' }
