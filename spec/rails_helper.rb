@@ -5,7 +5,7 @@ require File.expand_path('../../config/environment', __FILE__)
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 require 'openstax/salesforce/spec_helpers'
 require 'rspec/rails'
-require 'webdrivers/chromedriver'
+# require 'webdrivers/chromedriver'
 require 'capybara/rails'
 require 'capybara/email/rspec'
 require 'shoulda/matchers'
@@ -31,7 +31,7 @@ end
 """
   Config for Capybara
 """
-# https://robots.thoughtbot.com/headless-feature-specs-with-chrome
+# # https://robots.thoughtbot.com/headless-feature-specs-with-chrome
 Capybara.register_driver :selenium_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new args: [ 'lang=en' ]
 
@@ -48,19 +48,52 @@ Capybara.register_driver :selenium_chrome_headless do |app|
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
 
-if EnvUtilities.load_boolean(name: 'HEADLESS', default: false)
+is_running_in_docker = ENV['HUB_URL'].present?
+
+if is_running_in_docker
+  Capybara.register_driver :selenium_chrome_headless_in_docker do |app|
+      chrome_capabilities = ::Selenium::WebDriver::Remote::Capabilities.chrome(
+        'goog:chromeOptions' => { 'args': %w[no-sandbox headless disable-gpu] }
+      )
+
+      Capybara::Selenium::Driver.new(app,
+                                     browser: :remote,
+                                     url: ENV['HUB_URL'],
+                                     desired_capabilities: chrome_capabilities)
+  end
+end
+
+if is_running_in_docker
+  Capybara.javascript_driver = :selenium_chrome_headless_in_docker
+elsif EnvUtilities.load_boolean(name: 'HEADLESS', default: false)
   # Run the feature specs in a full browser (note, this takes over your computer's focus)
   Capybara.javascript_driver = :selenium_chrome_headless
 else
   Capybara.javascript_driver = :selenium_chrome
 end
 
-Capybara.asset_host = 'http://localhost:2999'
-
 Capybara.server = :puma, { Silent: true } # To clean up your test output
+
+# Normally the Capybara host is 'localhost', but within Docker it may not be.
+capybara_host = IPSocket.getaddress(Socket.gethostname)
+capybara_port = ENV.fetch("PORT") { DEV_URL_OPTIONS[:port] }
+
+Capybara.asset_host = "http://#{capybara_host}:#{capybara_port}"
+Capybara.app_host = "http://#{capybara_host}:#{capybara_port}"
+Capybara.server_host = capybara_host
+Capybara.server_port = capybara_port
 
 # Normalize whitespaces
 Capybara.default_normalize_ws = true
+
+# Whitelist the capybara host (which can change)
+RSpec.configure do |config|
+  config.before(:each) do
+    allow(Host).to receive(:trusted_hosts).and_wrap_original do |m, *args|
+      m.call(*args).push(capybara_host)
+    end
+  end
+end
 
 """
   Config for Shoulda Matchers

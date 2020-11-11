@@ -121,6 +121,7 @@ GEM
       autoprefixer-rails (>= 5.2.1)
       sassc (>= 2.0.0)
     builder (3.2.4)
+    byebug (11.1.3)
     capybara (3.33.0)
       addressable
       mini_mime (>= 0.1.3)
@@ -175,9 +176,6 @@ GEM
     daemons (1.2.4)
     database_cleaner (1.7.0)
     db-query-matchers (0.6.0)
-    debase (0.2.4.1)
-      debase-ruby_core_source (>= 0.10.2)
-    debase-ruby_core_source (0.10.11)
     declarative (0.0.10)
     declarative-option (0.1.0)
     delayed_job (4.1.7)
@@ -572,8 +570,6 @@ GEM
       unicode-display_width (>= 1.4.0, < 1.7)
     rubocop-rspec (1.36.0)
       rubocop (>= 0.68.1)
-    ruby-debug-ide (0.7.2)
-      rake (>= 0.8.1)
     ruby-graphviz (1.2.3)
     ruby-progressbar (1.10.1)
     ruby_dep (1.3.1)
@@ -649,10 +645,6 @@ GEM
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
       railties (>= 5.0)
-    webdrivers (4.4.1)
-      nokogiri (~> 1.6)
-      rubyzip (>= 1.3.0)
-      selenium-webdriver (>= 3.0, < 4.0)
     webmock (3.6.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -681,6 +673,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap
   bootstrap-sass (~> 3.4.1)
+  byebug
   capybara
   capybara-email
   capybara-screenshot
@@ -691,7 +684,6 @@ DEPENDENCIES
   daemons
   database_cleaner
   db-query-matchers
-  debase
   delayed_job_active_record (~> 4.1.3)
   doorkeeper
   dotenv
@@ -751,7 +743,6 @@ DEPENDENCIES
   rspec-rails (~> 3.8)
   rubocop (~> 0.76.0)
   rubocop-rspec
-  ruby-debug-ide
   sass-rails (~> 5.0)
   scout_apm (~> 3.0.0.pre28)
   selenium-webdriver (>= 3.141.0)
@@ -767,7 +758,6 @@ DEPENDENCIES
   unicorn-worker-killer
   vcr
   web-console (~> 3.7)
-  webdrivers (~> 4.0)
   webmock
   whenever
   whenever-test
