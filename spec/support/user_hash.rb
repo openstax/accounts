@@ -16,6 +16,7 @@ def user_matcher(user, include_private_data: false)
     uuid: user.uuid,
     support_identifier: user.support_identifier,
     is_test: user.is_test?,
+    salesforce_contact_id: user.salesforce_contact_id,
     applications: a_collection_containing_exactly(
       *user.applications.map { |app| { id: app.id, name: app.name } }
     ),
@@ -23,7 +24,6 @@ def user_matcher(user, include_private_data: false)
   }
 
   if include_private_data
-    base_hash[:salesforce_contact_id] = user.salesforce_contact_id
     base_hash[:self_reported_role] = user.role.to_s
     base_hash[:school_type] = user.school_type.to_s
     base_hash[:school_location] = user.school_location.to_s
