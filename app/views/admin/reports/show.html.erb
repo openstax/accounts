@@ -44,6 +44,8 @@ What's the average time someone spends signing up (started the process but did n
 
 <h3>Students</h3>
 <p>
+  Student accounts created since July 1: <%= User.student.where(created_at: DateTime.beginning_of_rice_fiscal_year..DateTime.now).count %> <br>
+  Student accounts created in the past week: <%= User.student.where(created_at: DateTime.now - 1.week..DateTime.now).count %> <br>
   <table>
     <thead>
       <th>Date</th>
