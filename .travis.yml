@@ -9,8 +9,7 @@ addons:
 services:
   - xvfb
 before_script:
-  - which google-chrome
-  - google-chrome --version
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
   - bundle exec rake assets:precompile
   - bundle exec rake --trace parallel:create parallel:load_schema parallel:seed
 script: bundle exec parallel_rspec ./spec
