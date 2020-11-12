@@ -241,10 +241,9 @@ group :test do
 
   gem 'db-query-matchers'
 
-# Run feature tests with Capybara + Selenium
+  # Run feature tests with Capybara + Selenium
   gem 'capybara'
   gem 'selenium-webdriver', '>= 3.141.0'
-  # gem 'webdrivers', '~> 4.0'
 
   # Testing emails
   gem 'capybara-email'

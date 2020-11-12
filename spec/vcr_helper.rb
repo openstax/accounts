@@ -39,10 +39,6 @@ VCR.configure do |c|
   c.configure_rspec_metadata!
   c.allow_http_connections_when_no_cassette = false
   c.ignore_localhost = true
-  # To avoid issues with the gem `webdrivers`, we must ignore the driver hosts
-  # See https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock
-  # driver_hosts = Webdrivers::Common.subclasses.map { |driver| URI(driver.base_url).host }
-  # c.ignore_hosts(*driver_hosts)
   c.ignore_hosts(IPSocket.getaddress(Socket.gethostname), "chrome")
 
   %w(
