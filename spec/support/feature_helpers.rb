@@ -100,13 +100,19 @@ def create_application(skip_terms: false)
 
   # We want to provide a local "external" redirect uri so our specs aren't actually
   # making HTTP calls against real external URLs like "example.com"
-  redirect_uri =
-    if Capybara.server_host
-      host_and_port = [Capybara.server_host, Capybara.server_port].compact.join(":")
-      "http://#{host_and_port}#{external_app_for_specs_path}"
+
+  host_and_port =
+    if in_docker?
+      # We set these explicitly
+      [Capybara.server_host, Capybara.server_port].compact.join(":")
     else
-      external_app_for_specs_url
+      server = Capybara.current_session.try(:server)
+      server.present? ? "#{server.host}:#{server.port}" : nil
     end
+
+  redirect_uri = host_and_port.present? ?
+                 "http://#{host_and_port}#{external_app_for_specs_path}" :
+                 external_app_for_specs_url
 
   app.update_column(:redirect_uri, redirect_uri)
 
