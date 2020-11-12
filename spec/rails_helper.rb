@@ -30,7 +30,7 @@ end
 """
   Config for Capybara
 """
-# # https://robots.thoughtbot.com/headless-feature-specs-with-chrome
+# https://robots.thoughtbot.com/headless-feature-specs-with-chrome
 Capybara.register_driver :selenium_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new args: [ 'lang=en' ]
 

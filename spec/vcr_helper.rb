@@ -39,6 +39,8 @@ VCR.configure do |c|
   c.configure_rspec_metadata!
   c.allow_http_connections_when_no_cassette = false
   c.ignore_localhost = true
+  # Within docker, localhost can be different so add it here explicitly; also add
+  # 'chrome' for selenium via docker
   c.ignore_hosts(IPSocket.getaddress(Socket.gethostname), "chrome")
 
   %w(
