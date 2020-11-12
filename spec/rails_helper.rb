@@ -47,9 +47,14 @@ Capybara.register_driver :selenium_chrome_headless do |app|
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
 
-is_running_in_docker = ENV['HUB_URL'].present?
+# The webdrivers gem uses selenium-webdriver.  Our docker approach needs selenium-webdriver
+# but gets upset if webdriver is loaded.  So in the Gemfile, we `require: false` both of
+# these and explicitly require them based on where we're running.  We also only register
+# the docker flavor of the driver if we are indeed running in docker.
 
-if is_running_in_docker
+if in_docker?
+  require 'selenium-webdriver'
+
   Capybara.register_driver :selenium_chrome_headless_in_docker do |app|
       chrome_capabilities = ::Selenium::WebDriver::Remote::Capabilities.chrome(
         'goog:chromeOptions' => { 'args': %w[no-sandbox headless disable-gpu] }
@@ -60,15 +65,17 @@ if is_running_in_docker
                                      url: ENV['HUB_URL'],
                                      desired_capabilities: chrome_capabilities)
   end
-end
 
-if is_running_in_docker
   Capybara.javascript_driver = :selenium_chrome_headless_in_docker
-elsif EnvUtilities.load_boolean(name: 'HEADLESS', default: false)
-  # Run the feature specs in a full browser (note, this takes over your computer's focus)
-  Capybara.javascript_driver = :selenium_chrome_headless
 else
-  Capybara.javascript_driver = :selenium_chrome
+  require 'webdrivers/chromedriver'
+
+  if EnvUtilities.load_boolean(name: 'HEADLESS', default: false)
+    # Run the feature specs in a full browser (note, this takes over your computer's focus)
+    Capybara.javascript_driver = :selenium_chrome_headless
+  else
+    Capybara.javascript_driver = :selenium_chrome
+  end
 end
 
 Capybara.server = :puma, { Silent: true } # To clean up your test output

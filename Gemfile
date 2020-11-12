@@ -243,7 +243,8 @@ group :test do
 
   # Run feature tests with Capybara + Selenium
   gem 'capybara'
-  gem 'selenium-webdriver', '>= 3.141.0'
+  gem 'selenium-webdriver', '>= 3.141.0', require: false
+  gem 'webdrivers', '~> 4.0', require: false
 
   # Testing emails
   gem 'capybara-email'

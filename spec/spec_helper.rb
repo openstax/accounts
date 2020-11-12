@@ -308,3 +308,11 @@ def options(*args)
     copy_session_variables!
   end
 end
+
+def in_travis?
+  ENV['CI']
+end
+
+def in_docker?
+  ENV['HUB_URL'].present?
+end
