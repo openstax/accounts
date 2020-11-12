@@ -38,6 +38,7 @@ feature 'Admin user pages', js: true do
         it 'searches users and does not explode' do
           visit '/'
           click_link 'Popup Console'
+          wait_for_ajax(10) # for some reason this is slow
           click_link 'Users'
           click_button 'Search'
 

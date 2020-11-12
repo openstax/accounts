@@ -100,10 +100,14 @@ def create_application(skip_terms: false)
 
   # We want to provide a local "external" redirect uri so our specs aren't actually
   # making HTTP calls against real external URLs like "example.com"
-  server = Capybara.current_session.try(:server)
-  redirect_uri = server.present? ?
-                 "http://#{server.host}:#{server.port}#{external_app_for_specs_path}" :
-                 external_app_for_specs_url
+  redirect_uri =
+    if Capybara.server_host
+      host_and_port = [Capybara.server_host, Capybara.server_port].compact.join(":")
+      "http://#{host_and_port}#{external_app_for_specs_path}"
+    else
+      external_app_for_specs_url
+    end
+
   app.update_column(:redirect_uri, redirect_uri)
 
   FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
