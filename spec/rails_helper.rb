@@ -52,6 +52,8 @@ end
 # these and explicitly require them based on where we're running.  We also only register
 # the docker flavor of the driver if we are indeed running in docker.
 
+port =
+
 if in_docker?
   require 'selenium-webdriver'
 
@@ -67,6 +69,16 @@ if in_docker?
   end
 
   Capybara.javascript_driver = :selenium_chrome_headless_in_docker
+
+  # Normally the Capybara host is 'localhost', but within Docker it may not be.
+  capybara_host = IPSocket.getaddress(Socket.gethostname)
+  capybara_port = ENV.fetch("PORT") { DEV_URL_OPTIONS[:port] }
+
+  Capybara.asset_host = "http://#{capybara_host}:#{capybara_port}"
+  Capybara.app_host = "http://#{capybara_host}:#{capybara_port}"
+  Capybara.server_host = capybara_host
+  Capybara.server_port = capybara_port
+
 else
   require 'webdrivers/chromedriver'
 
@@ -76,18 +88,15 @@ else
   else
     Capybara.javascript_driver = :selenium_chrome
   end
+
+  # Normally the Capybara host is 'localhost', but within Docker it may not be.
+  capybara_host = "localhost"
+  capybara_port = ENV.fetch("PORT") { DEV_URL_OPTIONS[:port] }
+
+  Capybara.asset_host = "http://#{capybara_host}:#{capybara_port}"
 end
 
 Capybara.server = :puma, { Silent: true } # To clean up your test output
-
-# Normally the Capybara host is 'localhost', but within Docker it may not be.
-capybara_host = IPSocket.getaddress(Socket.gethostname)
-capybara_port = ENV.fetch("PORT") { DEV_URL_OPTIONS[:port] }
-
-Capybara.asset_host = "http://#{capybara_host}:#{capybara_port}"
-Capybara.app_host = "http://#{capybara_host}:#{capybara_port}"
-Capybara.server_host = capybara_host
-Capybara.server_port = capybara_port
 
 # Normalize whitespaces
 Capybara.default_normalize_ws = true
