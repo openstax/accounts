@@ -1,6 +1,6 @@
 module Host
-  TRUSTED_HOST_REGEXES = Rails.application.secrets.trusted_hosts.map do |host|
-    /\A(.*\.)?#{host.gsub('.', '\.')}\z/
+  def self.trusted_hosts
+    Rails.application.secrets.trusted_hosts
   end
 
   def self.trusted?(url)
@@ -8,6 +8,10 @@ module Host
 
     return true if not uri.host and url.chr == '/'
 
-    TRUSTED_HOST_REGEXES.any? { |regex| regex.match uri.host }
+    trusted_host_regexes = trusted_hosts.map do |host|
+      /\A(.*\.)?#{host.gsub('.', '\.')}\z/
+    end
+
+    trusted_host_regexes.any? { |regex| regex.match uri.host }
   end
 end

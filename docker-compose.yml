@@ -20,9 +20,11 @@ services:
     depends_on:
       - postgres
       - bundler
+      - chrome
     environment:
       - OXA_DB_HOST=postgres
       - GEM_HOME=/bundle_cache
+      - HUB_URL=http://chrome:4444/wd/hub
   postgres:
     image: "postgres:9.5"
     volumes:
@@ -37,6 +39,15 @@ services:
     image: busybox
     volumes:
       - bundle_cache:/bundle_cache
+  chrome:
+    # this version should match that of the selenium-webdriver gem (see Gemfile)
+    image: selenium/standalone-chrome:3.141.59-zirconium
+    volumes:
+      - /dev/shm:/dev/shm
+    networks:
+      - openstax
+    ports:
+      - "4444:4444"
 networks:
   openstax:
     name: openstax

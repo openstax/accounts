@@ -45,9 +45,6 @@ Accounts can be run as a normal Rails app on your machine or in a Docker contain
 ```bash
 # build the image
 $> docker-compose build
-# build the image selecting the byebug debugger; remember to rebuild without this before pushing
-# or run `DEBUGGER=vscode bundle install` so that the Gemfile.lock is in the default debugger config
-$> docker-compose build --build-arg DEBUGGER=byebug
 # run it; Accounts available at localhost:2999
 $> docker-compose up -d
 # run it allowing for debugging
@@ -112,6 +109,30 @@ and then start the `delayed_job` daemon:
 
 ## Running Specs (Automated Tests)
 
+Using Docker, you can
+
+```sh
+$> docker-compose run --rm app /bin/bash
+```
+
+to drop into a container with everything installed. Then before your first test run
+
+```sh
+$ /code> rake db:create
+$ /code> rake db:migrate # run again if add migrations later
+```
+
+Then to run tests...
+
+```sh
+$ /code> rspec
+$ /code> rspec ./spec/features
+$ /code> rspec ./spec/some/specific_spec.rb
+$ /code> rspec ./spec/some/specific_spec.rb:42 # the spec at line 42
+```
+
+Or if you want to install directly on your machine...
+
 Specs require phantomjs. On Mac:
 ```sh
 $ brew install phantomjs
@@ -130,6 +151,10 @@ $ RAISE=true rspec
 ```
 
 If you encounter issues running features specs, check the version of chromedriver you have installed.  Version 2.38 is known to work.
+
+## Debugging
+
+Set `DEBUGGER=byebug` to use byebug (e.g. in `.env`), otherwise defaults to the VS Code debugger.
 
 # Usage — topics
 
