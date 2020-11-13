@@ -115,7 +115,14 @@ Using Docker, you can
 $> docker-compose run --rm app /bin/bash
 ```
 
-To drop into a container with everything installed, then you can
+to drop into a container with everything installed. Then before your first test run
+
+```sh
+$ /code> rake db:create
+$ /code> rake db:migrate # run again if add migrations later
+```
+
+Then to run tests...
 
 ```sh
 $ /code> rspec
