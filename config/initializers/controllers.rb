@@ -20,8 +20,6 @@ ActionController::Base.class_exec do
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
-  UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
-
   protected
 
   def complete_signup_profile
@@ -74,19 +72,21 @@ ActionController::Base.class_exec do
   end
 
   def set_device_id
-    cookies.delete(:oxdid) if cookies[:oxdid] && !(cookies[:oxdid] =~ UUID_REGEX)
+    cookies.delete(:oxdid) if device_id_invalid?
 
-    if cookies[:oxdid].nil?
-      cookies[:oxdid] = {
-        value: SecureRandom.uuid,
-        expires: 20.years.from_now,
-        domain: :all,
-        secure: Rails.env.production?
-      }
-    end
+    cookies[:oxdid] ||= {
+      value: SecureRandom.uuid,
+      expires: 20.years.from_now,
+      domain: :all,
+      secure: Rails.env.production?
+    }
   end
 
   def get_device_id
     cookies[:oxdid]
+  end
+
+  def device_id_invalid?
+    cookies[:oxdid] && !(cookies[:oxdid] =~ UUID_REGEX)
   end
 end
