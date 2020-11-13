@@ -173,14 +173,13 @@ group :development, :test do
   # Development server
   gem 'puma', '~> 3.12'
 
-  if ENV['DEBUGGER'] == 'byebug'
-    # Call 'debugger' anywhere in the code to stop execution and get a debugger console
-    gem 'byebug'
-  else
-    # Debug in VS Code
-    gem 'ruby-debug-ide'
-    gem 'debase'
-  end
+  # See config/initializers/04-debugger.rb
+  #
+  # Call 'debugger' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug', require: false
+  # Debug in VS Code
+  gem 'ruby-debug-ide', require: false
+  gem 'debase', require: false
 
   # Use RSpec for tests
   gem 'rspec-rails', '~> 3.8'
@@ -241,7 +240,8 @@ group :test do
 
   gem 'db-query-matchers'
 
-  # Run feature tests with Capybara + Selenium
+  # Run feature tests with Capybara + Selenium; choose which driver gems to use
+  # based on test environment.
   gem 'capybara'
   gem 'selenium-webdriver', '>= 3.141.0', require: false
   gem 'webdrivers', '~> 4.0', require: false

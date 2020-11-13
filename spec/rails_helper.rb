@@ -76,7 +76,6 @@ if in_docker?
   Capybara.app_host = "http://#{capybara_host}:#{capybara_port}"
   Capybara.server_host = capybara_host
   Capybara.server_port = capybara_port
-
 else
   require 'webdrivers/chromedriver'
 
@@ -87,7 +86,6 @@ else
     Capybara.javascript_driver = :selenium_chrome
   end
 
-  # Normally the Capybara host is 'localhost', but within Docker it may not be.
   capybara_host = "localhost"
   capybara_port = ENV.fetch("PORT") { DEV_URL_OPTIONS[:port] }
 
