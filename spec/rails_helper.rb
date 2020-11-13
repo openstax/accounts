@@ -98,7 +98,7 @@ Capybara.server = :puma, { Silent: true } # To clean up your test output
 Capybara.default_normalize_ws = true
 
 Capybara.configure do |config|
-  config.default_max_wait_time = 10
+  config.default_max_wait_time = 15
 end
 
 # Whitelist the capybara host (which can change)
