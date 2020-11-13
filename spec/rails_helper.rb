@@ -52,8 +52,6 @@ end
 # these and explicitly require them based on where we're running.  We also only register
 # the docker flavor of the driver if we are indeed running in docker.
 
-port =
-
 if in_docker?
   require 'selenium-webdriver'
 
@@ -100,6 +98,10 @@ Capybara.server = :puma, { Silent: true } # To clean up your test output
 
 # Normalize whitespaces
 Capybara.default_normalize_ws = true
+
+Capybara.configure do |config|
+  config.default_max_wait_time = 10
+end
 
 # Whitelist the capybara host (which can change)
 RSpec.configure do |config|

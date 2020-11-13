@@ -298,7 +298,7 @@ def complete_login_username_or_email_screen(username_or_email)
 end
 
 def complete_login_password_screen(password)
-  # TODO expect login password screen
+  expect(page).to have_content(t :"legacy.sessions.authenticate_options.forgot_password")
   fill_in (t :"legacy.sessions.authenticate_options.password"), with: password
   expect(page).to have_no_missing_translations
   screenshot!
