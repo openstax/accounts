@@ -158,9 +158,6 @@ gem 'oj', '~> 3.7.12'
 gem 'oj_mimic_json'
 
 group :development, :test do
-  # See updates in development to reload rails
-  gem 'listen'
-
   # Get env variables from .env file
   gem 'dotenv-rails', '2.7.2'
 
@@ -219,6 +216,9 @@ group :development, :test do
 end
 
 group :development do
+  # See updates in development to reload rails
+  gem 'listen'
+
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 3.7'
 
