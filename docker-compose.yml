@@ -6,6 +6,9 @@ services:
     image: accounts
     ports:
       - "2999:2999"
+    command: bash -c "rm -f tmp/pids/server.pid && rake about && rake db:migrate && bin/rails server -b '0.0.0.0' -p 2999"
+    stdin_open: true  # allow for debugger
+    tty: true         # interaction
     volumes:
       - .:/code
       - /code/tmp/pids
@@ -17,9 +20,11 @@ services:
     depends_on:
       - postgres
       - bundler
+      - chrome
     environment:
       - OXA_DB_HOST=postgres
       - GEM_HOME=/bundle_cache
+      - HUB_URL=http://chrome:4444/wd/hub
   postgres:
     image: "postgres:9.5"
     volumes:
@@ -34,6 +39,15 @@ services:
     image: busybox
     volumes:
       - bundle_cache:/bundle_cache
+  chrome:
+    # this version should match that of the selenium-webdriver gem (see Gemfile)
+    image: selenium/standalone-chrome:3.141.59-zirconium
+    volumes:
+      - /dev/shm:/dev/shm
+    networks:
+      - openstax
+    ports:
+      - "4444:4444"
 networks:
   openstax:
     name: openstax

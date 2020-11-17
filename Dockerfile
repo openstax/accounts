@@ -11,8 +11,10 @@ ENV BUNDLE_PATH="/bundle_cache"\
         PATH=/bundle_cache/bin:/bundle_cache/gems/bin:$PATH\
         PORT=2999
 
-RUN gem install bundler:2.0.2 \
-        && bundle _2.0.2_ install --without production --path /bundle_cache
+RUN gem install bundler:2.1.4 && \
+    bundle config set path '/bundle_cache' && \
+    bundle config set without 'production' && \
+    bundle _2.1.4_ install
 
 EXPOSE 2999
 

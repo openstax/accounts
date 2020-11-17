@@ -5,7 +5,6 @@ require File.expand_path('../../config/environment', __FILE__)
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 require 'openstax/salesforce/spec_helpers'
 require 'rspec/rails'
-require 'webdrivers/chromedriver'
 require 'capybara/rails'
 require 'capybara/email/rspec'
 require 'shoulda/matchers'
@@ -48,19 +47,68 @@ Capybara.register_driver :selenium_chrome_headless do |app|
   Capybara::Selenium::Driver.new app, browser: :chrome, options: options
 end
 
-if EnvUtilities.load_boolean(name: 'HEADLESS', default: false)
-  # Run the feature specs in a full browser (note, this takes over your computer's focus)
-  Capybara.javascript_driver = :selenium_chrome_headless
-else
-  Capybara.javascript_driver = :selenium_chrome
-end
+# The webdrivers gem uses selenium-webdriver.  Our docker approach needs selenium-webdriver
+# but gets upset if webdriver is loaded.  So in the Gemfile, we `require: false` both of
+# these and explicitly require them based on where we're running.  We also only register
+# the docker flavor of the driver if we are indeed running in docker.
 
-Capybara.asset_host = 'http://localhost:2999'
+if in_docker?
+  require 'selenium-webdriver'
+
+  Capybara.register_driver :selenium_chrome_headless_in_docker do |app|
+      chrome_capabilities = ::Selenium::WebDriver::Remote::Capabilities.chrome(
+        'goog:chromeOptions' => { 'args': %w[no-sandbox headless disable-gpu] }
+      )
+
+      Capybara::Selenium::Driver.new(app,
+                                     browser: :remote,
+                                     url: ENV['HUB_URL'],
+                                     desired_capabilities: chrome_capabilities)
+  end
+
+  Capybara.javascript_driver = :selenium_chrome_headless_in_docker
+
+  # Normally the Capybara host is 'localhost', but within Docker it may not be.
+  capybara_host = IPSocket.getaddress(Socket.gethostname)
+  capybara_port = ENV.fetch("PORT") { DEV_URL_OPTIONS[:port] }
+
+  Capybara.asset_host = "http://#{capybara_host}:#{capybara_port}"
+  Capybara.app_host = "http://#{capybara_host}:#{capybara_port}"
+  Capybara.server_host = capybara_host
+  Capybara.server_port = capybara_port
+else
+  require 'webdrivers/chromedriver'
+
+  if EnvUtilities.load_boolean(name: 'HEADLESS', default: false)
+    # Run the feature specs in a full browser (note, this takes over your computer's focus)
+    Capybara.javascript_driver = :selenium_chrome_headless
+  else
+    Capybara.javascript_driver = :selenium_chrome
+  end
+
+  capybara_host = "localhost"
+  capybara_port = ENV.fetch("PORT") { DEV_URL_OPTIONS[:port] }
+
+  Capybara.asset_host = "http://#{capybara_host}:#{capybara_port}"
+end
 
 Capybara.server = :puma, { Silent: true } # To clean up your test output
 
 # Normalize whitespaces
 Capybara.default_normalize_ws = true
+
+Capybara.configure do |config|
+  config.default_max_wait_time = 15
+end
+
+# Whitelist the capybara host (which can change)
+RSpec.configure do |config|
+  config.before(:each) do
+    allow(Host).to receive(:trusted_hosts).and_wrap_original do |m, *args|
+      m.call(*args).push(capybara_host)
+    end
+  end
+end
 
 """
   Config for Shoulda Matchers
