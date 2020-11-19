@@ -87,7 +87,7 @@ module SetGdprData
     end
   end
 
-  LOOKUP_TIMEOUT = 1
+  LOOKUP_TIMEOUT = 2
 
   GDPR_COUNTRY_CODES = [
     'AT', # Austria
