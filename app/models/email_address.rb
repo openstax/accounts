@@ -49,6 +49,8 @@ class EmailAddress < ContactInfo
   end
 
   def domain
-    @domain ||= Mail::Address.new(self.value).domain
+    e = Mail::Address.new(value: self.value)
+
+    @domain ||= e.domain
   end
 end

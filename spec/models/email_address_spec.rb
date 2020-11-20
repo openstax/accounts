@@ -12,24 +12,6 @@ describe EmailAddress, type: :model do
     EmailDomainMxValidator.strategy = strategy
   end
 
-  describe 'when email is invalid' do
-    it 'does not allow two @ signs' do
-      email = EmailAddress.new
-      email.user = FactoryBot.create(:user)
-      email.value = "bad_email@rice@edu"
-      email.valid?
-      expect(email).to have_error()
-    end
-
-    it 'does not allow spaces' do
-      email = EmailAddress.new
-      email.user = FactoryBot.create(:user)
-      email.value = "bad_email@rice edu"
-      email.valid?
-      expect(email).to have_error()
-    end
-  end
-
   describe 'when email provider is whitelisted' do
     it 'does not call the strategy' do
       whitelisted_provider = EmailAddress::WHITELIST.sample
