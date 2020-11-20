@@ -13,6 +13,6 @@ before_script:
   - google-chrome --version
   - bundle exec rake assets:precompile
   - bundle exec rake --trace parallel:create parallel:load_schema parallel:seed
-script: bundle exec parallel_rspec ./spec
+script: bundle exec rspec ./spec
 notifications:
   email: false
