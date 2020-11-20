@@ -49,3 +49,5 @@ brakeman.html
 
 # Ignore binary created by redis-server
 dump.rdb
+
+.idea
