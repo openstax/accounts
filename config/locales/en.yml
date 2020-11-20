@@ -131,7 +131,7 @@ en:
       Your new password cannot be the same as your current password.
     same_password_error: Your new password cannot be the same as your current password
     email_address_taken: Email already in use
-    invalid_email_provider: '"%{domain}" is not a valid email provider'
+    invalid_email_provider: '"%{email}" is not a valid email'
     too_many_login_attempts: >-
       You have made too many login attempts recently. Please
       reset your password or try again later.

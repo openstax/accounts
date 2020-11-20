@@ -19,6 +19,7 @@ class EmailAddress < ContactInfo
   validate :mx_domain_validation
 
   def mx_domain_validation
+    return false if errors.any?
     return true if self.is_domain_trusted? # check in our DB first
 
     if self.class.is_domain_mx?(self.domain) # makes a DNS/HTTP request

@@ -10,7 +10,7 @@ module Newflow
 
       @email.customize_value_error_message(
         error: :missing_mx_records,
-        message: I18n.t(:"login_signup_form.invalid_email_provider", domain: @email.send(:domain))
+        message: I18n.t(:"login_signup_form.invalid_email_provider", email: @email.value)
       )
       transfer_errors_from(@email, { scope: :email }, :fail_if_errors)
 

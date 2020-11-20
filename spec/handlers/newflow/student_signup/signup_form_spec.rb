@@ -225,7 +225,7 @@ module Newflow
           result = described_class.call(params: params)
           expect(result.errors).to have_offending_input(:email)
           expect(result.errors.first.message).to eq(
-            I18n.t(:"login_signup_form.invalid_email_provider", domain: 'baddomain.com')
+            I18n.t(:"login_signup_form.invalid_email_provider", email: 'user@baddomain.com')
           )
         end
       end
