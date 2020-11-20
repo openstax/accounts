@@ -130,7 +130,7 @@ pl:
       Twoje nowe hasło nie może być takie samo jak Twoje aktualne hasło.
     same_password_error: Twoje nowe hasło nie może być takie samo jak Twoje aktualne hasło
     email_address_taken: Ten adres e-mail jest już w użyciu
-    invalid_email_provider: '"%{domain}" nie jest poprawnym adresem e-mail'
+    invalid_email_provider: '"%{email}" nie jest poprawnym adresem e-mail'
     too_many_login_attempts: >-
       Limit nieudanych prób logowania na Twoje konto został przekroczony.
       Zmień hasło albo spróbuj ponownie później.

@@ -19,6 +19,7 @@ class EmailAddress < ContactInfo
   validate :mx_domain_validation
 
   def mx_domain_validation
+    return false if errors.any?
     return true if self.is_domain_trusted? # check in our DB first
 
     if self.class.is_domain_mx?(self.domain) # makes a DNS/HTTP request
@@ -49,8 +50,6 @@ class EmailAddress < ContactInfo
   end
 
   def domain
-    e = Mail::Address.new(value: self.value)
-
-    @domain ||= e.domain
+    @domain ||= Mail::Address.new(self.value).domain
   end
 end
