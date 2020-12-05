@@ -8,9 +8,7 @@ class ContactInfo < ActiveRecord::Base
   validates :type, presence: true
   validates :value,
             presence: true,
-            uniqueness: {scope: [:user_id, :type], case_sensitive: false}
-
-  validate :check_for_verified_collision
+            uniqueness: { scope: :type, case_sensitive: false }
 
   belongs_to :user, inverse_of: :contact_infos
 
@@ -69,17 +67,5 @@ class ContactInfo < ActiveRecord::Base
       errors.add(:user, :last_verified)
       throw(:abort)
     end
-  end
-
-  def check_for_verified_collision
-    errors.add(:value, :already_confirmed) \
-      if value.present? &&
-         verified? &&
-         ContactInfo.verified
-                    .where('lower(value) = ?', value.downcase)
-                    .where.not(id: id)
-                    .any?
-
-    errors.none?
   end
 end
