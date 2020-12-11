@@ -83,10 +83,10 @@ RSpec.describe User, type: :model do
 
   it 'allows accented characters in first and last name' do
     user = FactoryBot.create :user, last_name: "Maève"
-    expect(user.last_name).to eq "Maève"
+    expect(user.last_name).to eq "Maeve"
 
     user = FactoryBot.create :user, first_name: "Brièle"
-    expect(user.first_name).to eq "Brièle"
+    expect(user.first_name).to eq "Briele"
   end
 
   context 'full_name' do
