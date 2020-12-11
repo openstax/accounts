@@ -75,6 +75,7 @@ class User < ActiveRecord::Base
   )
 
   before_validation(:strip_fields)
+  before_validation(:remove_special_chars)
 
   before_validation(
     :generate_uuid, :generate_support_identifier,
@@ -417,6 +418,13 @@ class User < ActiveRecord::Base
     self.username = nil if username.blank?
     self_reported_school.try(:strip!)
     true
+  end
+
+  def remove_special_chars
+    if first_name && last_name
+      first_name.gsub!(/[^0-9A-Za-z.'\- ]/, '')
+      last_name.gsub!(/[^0-9A-Za-z.'\- ]/, '')
+    end
   end
 
   # there are existing users without names
