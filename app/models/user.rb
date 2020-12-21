@@ -422,8 +422,8 @@ class User < ActiveRecord::Base
 
   def remove_special_chars
     if first_name && last_name
-      first_name.parameterize(preserve_case: true)
-      last_name.parameterize(preserve_case: true)
+      first_name.gsub(/[^\p{L}\s]/,'')
+      last_name.gsub(/[^\p{L}\s]/,'')
     end
   end
 

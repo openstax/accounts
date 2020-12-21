@@ -68,12 +68,6 @@ RSpec.describe User, type: :model do
   end
 
   it 'removes certain unallowed special characters from first and last name' do
-    user = FactoryBot.create :user, first_name: "J(o)hn"
-    expect(user.first_name).to eq "John"
-
-    user = FactoryBot.create :user, last_name: "Smit&h"
-    expect(user.last_name).to eq "Smith"
-
     user = FactoryBot.create :user, last_name: "D'Amore"
     expect(user.last_name).to eq "D'Amore"
 
@@ -81,12 +75,18 @@ RSpec.describe User, type: :model do
     expect(user.first_name).to eq "Mary-Ann"
   end
 
-  it 'allows accented characters in first and last name' do
+  it 'allows accented and non-english characters in first and last name' do
     user = FactoryBot.create :user, last_name: "Maève"
-    expect(user.last_name).to eq "Maeve"
+    expect(user.last_name).to eq "Maève"
 
     user = FactoryBot.create :user, first_name: "Brièle"
-    expect(user.first_name).to eq "Briele"
+    expect(user.first_name).to eq "Brièle"
+
+    user = FactoryBot.create :user, first_name: "Адам"
+    expect(user.first_name).to eq "Адам"
+
+    user = FactoryBot.create :user, last_name: "Екатерина"
+    expect(user.last_name).to eq "Екатерина"
   end
 
   context 'full_name' do
