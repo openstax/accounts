@@ -1,8 +1,8 @@
 class RemoveDuplicateEmails
-  def run(do_it: false, older_than: '1/10/2020' )
+  def run(do_it: false, older_than: '2020-10-01' )
     # find all duplicate contact infos, older than X
     all_dup_contact_infos = ContactInfo.
-      where("created_at < ?", Date.parse(older_than)).
+      where("created_at < ?", Date.strptime(older_than, "%Y-%m-%d")).
       select(:type, :value).group(:type, :value).
       having('count(*) > 1')
     users_to_remove = [], contactinfos_to_remove = []
