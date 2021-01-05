@@ -59,8 +59,8 @@ feature 'Add social auth', js: true do
       find('.authentication[data-provider="facebook"] .add').click
       wait_for_ajax
       screenshot!
-      expect_profile_page
-      expect(page).to have_content('Facebook')
+      expect(page).to have_content('already been taken')
+      expect(page).not_to have_content('Facebook')
     end
   end
 

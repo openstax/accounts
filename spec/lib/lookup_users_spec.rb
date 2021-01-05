@@ -8,22 +8,6 @@ describe LookupUsers, type: :lib do
       expect(described_class.by_verified_email_or_username(nil)).to eq []
     end
 
-    context 'when two of the same email with different case, both verified' do
-      before(:each) {
-        @email1 = FactoryBot.create(:email_address, value: 'bob@example.com', verified: true)
-        @email2 = FactoryBot.create(:email_address, value: 'bob@EXAMPLE.com')
-        # No longer allowed to have same address different case both verified, but used to be able
-        # to, so update `verified` without validations to simulate old data.
-        @email2.update_attribute(:verified, true)
-      }
-
-      it 'finds both email users when no case sensitive matches' do
-        expect(described_class.by_verified_email_or_username('BOB@example.com')).to contain_exactly(@email1.user, @email2.user)
-      end
-
-
-    end
-
     context '#by_verfied_email' do
       let!(:email) {
         FactoryBot.create(:email_address, value: 'bob@example.com', verified: true)
@@ -62,18 +46,4 @@ describe LookupUsers, type: :lib do
       expect(described_class.by_verified_email_or_username('bob')).to eq [@user]
     end
   end
-
-  context '#by_email_or_username' do
-    context 'when two of the same email one verified and one not' do
-      before(:each) {
-        @email1 = FactoryBot.create(:email_address, value: 'bob@example.com', verified: true)
-        @email2 = FactoryBot.create(:email_address, value: 'bob@EXAMPLE.com', verified: false)
-      }
-
-      it 'returns both users' do
-        expect(described_class.by_email_or_username('BOB@example.com')).to contain_exactly(@email1.user, @email2.user)
-      end
-    end
-  end
-
 end

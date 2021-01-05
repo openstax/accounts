@@ -180,13 +180,13 @@ module Newflow
       end
 
       context 'when the email address is already taken' do
-        before do
-          u = FactoryBot.create(:user)
-          FactoryBot.create(:email_address, user: u, value: oauth_user_info[:email], verified: true)
-        end
-
         it 'results in an error' do
-          expect(process_request).to have_routine_error(:email_already_in_use)
+          expect {
+            u = FactoryBot.create(:user)
+            FactoryBot.create(:email_address, user: u, value: oauth_user_info[:email], verified: true)
+            process_request
+            create_email_address_for(create_user('other_user'), 'user@example.com', '989188')
+          }.to raise_error(ActiveRecord::RecordInvalid, /already been taken/)
         end
       end
 

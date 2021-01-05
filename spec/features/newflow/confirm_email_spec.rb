@@ -34,21 +34,10 @@ feature 'Confirm email address', js: true do
   end
 
   context 'when another user has the email' do
-    scenario 'fails when the other email is verified' do
-      create_email_address_for(create_user('other_user'), 'user@example.com')
-      visit '/confirm?code=1111'
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"contact_infos.confirm.page_heading.error")
-      expect(page).to have_content(t :"contact_infos.confirm.email_already_in_use")
-    end
-
-    scenario 'succeeds when the other email is UNverified' do
-      create_email_address_for(create_user('other_user'), 'user@example.com', '98988')
-      visit '/confirm?code=1111'
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"contact_infos.confirm.page_heading.success")
-      expect(page).to have_content(t :"contact_infos.confirm.you_may_now_close_this_window")
+    scenario 'cannot create duplicate email' do
+      expect {
+        create_email_address_for(create_user('other_user'), 'user@example.com', '989188')
+      }.to raise_error(ActiveRecord::RecordInvalid, /already been taken/)
     end
   end
-
 end
