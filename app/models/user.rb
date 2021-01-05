@@ -75,7 +75,6 @@ class User < ActiveRecord::Base
   )
 
   before_validation(:strip_fields)
-  before_validation(:convert_accents)
   before_validation(:remove_special_chars)
 
   before_validation(
@@ -421,17 +420,10 @@ class User < ActiveRecord::Base
     true
   end
 
-  def convert_accents
-    if first_name && last_name
-      self.first_name=I18n.transliterate(first_name)
-      self.last_name=I18n.transliterate(last_name)
-    end
-  end
-
   def remove_special_chars
     if first_name && last_name
-      first_name.gsub!(/[^0-9A-Za-z.'\- ]/, '')
-      last_name.gsub!(/[^0-9A-Za-z.'\- ]/, '')
+      first_name.gsub(/[^\p{L}\s]/,'')
+      last_name.gsub(/[^\p{L}\s]/,'')
     end
   end
 
