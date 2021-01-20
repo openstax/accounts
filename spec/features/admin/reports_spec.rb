@@ -66,7 +66,7 @@ feature 'User reports page', js: true do
 
     expect(page).to have_content('2018: 2 started / 4 finished = 50.0%')
     expect(page).to have_content('2019: 3 started / 6 finished = 50.0%')
-    expect(page).to have_content('2020: 4 started / 9 finished = 44.44%') # 8 finished plus the admin
+    expect(page).to have_content('2020: 4 started / 8 finished = 50.0%')
   end
 
   context "What's the average time someone spends signing up (started the process but did not finish)?" do
