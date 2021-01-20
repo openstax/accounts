@@ -61,8 +61,9 @@ ActionController::Base.class_exec do
   end
 
   def disable_fine_print
+    user = respond_to?(:current_human_user) ? current_human_user : current_user
     api_call? ||
-    current_user.is_anonymous? ||
+    user&.is_anonymous? ||
     request.options? ||
     contracts_not_required
   end
