@@ -108,6 +108,19 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
     end
   end
 
+  context 'is_administrator' do
+    it 'can be read' do
+      expect(representer.to_hash['is_administrator']).to eq user.is_administrator
+    end
+
+    it 'cannot be written (attempts are silently ignored)' do
+      hash = { 'is_administrator' => true }
+
+      expect(user).not_to receive(:is_administrator=)
+      expect { representer.from_hash(hash) }.not_to change { user.reload.is_administrator }
+    end
+  end
+
   context 'grant_tutor_access' do
     it 'can be read' do
       expect(representer.to_hash['grant_tutor_access']).to eq user.grant_tutor_access
