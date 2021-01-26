@@ -169,6 +169,14 @@ module Api::V1
                description: 'Whether the user is part of a Key Institutional Partner school'
              }
 
+    property :is_administrator,
+             type: :boolean,
+             readable: true,
+             writeable: false,
+             schema_info: {
+               description: 'Whether the user is an Accounts admin'
+             }
+
     property :grant_tutor_access,
              type: :boolean,
              readable: true,

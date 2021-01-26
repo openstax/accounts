@@ -16,6 +16,7 @@ def user_matcher(user, include_private_data: false)
     uuid: user.uuid,
     support_identifier: user.support_identifier,
     is_test: user.is_test?,
+    is_administrator: user.is_administrator?,
     salesforce_contact_id: user.salesforce_contact_id,
     applications: a_collection_containing_exactly(
       *user.applications.map { |app| { id: app.id, name: app.name } }
