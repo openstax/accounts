@@ -7,7 +7,7 @@ describe 'whenever schedule' do
     before(:each) { expect(OpenStax::RescueFrom).not_to receive(:perform_rescue) }
 
     it 'makes sure `runner` statements exist' do
-      assert_equal 2, schedule.jobs[:runner].count
+      assert_equal 1, schedule.jobs[:runner].count
 
       expect_any_instance_of(UpdateUserSalesforceInfo).to receive(:call)
 

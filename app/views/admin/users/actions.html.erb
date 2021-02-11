@@ -11,13 +11,5 @@ OpenStax app, so that when they next ask for updated users, they'll get all user
   <%= submit_tag 'Mark Users Updated', class: 'btn btn-primary', disable_with: "Working..." %>
 <% end %>
 
-<h3>Send Daily Student Account Count To Domo </h3>
-
-<p>This will send the number of student accounts created the previous day to Domo. This is regularly scheduled (<a href="https://github.com/openstax/accounts/blob/master/config/schedule.rb">the schedule shown here.</a>), but
-this provides an option to run it manually if needed.</p>
-
-<%= form_tag(update_domo_admin_users_path, method: :put, style: 'margin: 30px 0') do %>
-  <%= submit_tag 'Update Domo', class: 'btn btn-primary', disable_with: "Updating..." %>
-<% end %>
 
 
