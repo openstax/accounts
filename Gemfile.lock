@@ -328,6 +328,7 @@ GEM
       transaction_isolation
       transaction_retry
     libv8 (3.16.14.19)
+    libv8 (3.16.14.19-x86_64-linux)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -672,6 +673,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   action_interceptor
