@@ -1,0 +1,84 @@
+name: Migrations
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+jobs:
+  migrations:
+    timeout-minutes: 30
+    runs-on: ubuntu-18.04
+    services:
+      postgres:
+        image: postgres:11
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      # Clone repo and checkout merge commit parent (PR target commit)
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - run: git checkout HEAD^
+
+      # Install ruby
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      # Retrieve gem cache for merge commit parent
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-parent-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-parent-
+
+      # Install gems, create data to be migrated and revert to PR merge commit
+      - name: Create data to be migrated
+        env:
+          OXA_DB_USER: postgres
+          OXA_DB_PASS: postgres
+        run: |
+          gem install bundler
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+          bundle exec rake db:create db:schema:load db:seed --trace
+          bundle exec rails runner '3.times { FactoryBot.create :user }'
+          git checkout --force -
+
+      # Retrieve gem cache for PR merge commit
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-pr-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-pr-
+
+      # Migrate the data
+      - name: Migrate
+        env:
+          OXA_DB_USER: postgres
+          OXA_DB_PASS: postgres
+        run: |
+          bundle install --jobs 4 --retry 3
+          bundle exec rake db:migrate

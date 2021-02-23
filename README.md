@@ -1,6 +1,7 @@
 # OpenStax Accounts
 
-[![Build Status](https://travis-ci.org/openstax/accounts.png?branch=master)](https://travis-ci.org/openstax/accounts)
+[![Tests](https://github.com/openstax/accounts/workflows/Tests/badge.svg)](https://github.com/openstax/accounts/actions?query=workflow:Tests)
+[![Migrations](https://github.com/openstax/accounts/workflows/Migrations/badge.svg)](https://github.com/openstax/accounts/actions?query=workflow:Migrations)
 [![Code Climate](https://codeclimate.com/github/openstax/accounts.png)](https://codeclimate.com/github/openstax/accounts)
 [![Coverage Status](https://img.shields.io/codecov/c/github/openstax/accounts.svg)](https://codecov.io/gh/openstax/accounts)
 
@@ -330,4 +331,3 @@ In short, new users become sales leads in Salesforce.
 
 ## Additional Documentation
 Additional documentation can be found in the [Accounts Wiki](https://github.com/openstax/accounts/wiki)
-
