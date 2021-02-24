@@ -1,4 +1,4 @@
-class Banner < ActiveRecord::Base
+class Banner < ApplicationRecord
   TIME_ZONE = 'Central Time (US & Canada)'
 
   scope :active, -> { where('expires_at > ?', DateTime.now) }

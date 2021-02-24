@@ -1,4 +1,4 @@
-class MessageRecipient < ActiveRecord::Base
+class MessageRecipient < ApplicationRecord
   belongs_to :message, inverse_of: :message_recipients
   belongs_to :contact_info, inverse_of: :message_recipients
   belongs_to :user, inverse_of: :message_recipients

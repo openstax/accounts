@@ -1,4 +1,4 @@
-class UserExternalUuid < ActiveRecord::Base
+class UserExternalUuid < ApplicationRecord
 
   belongs_to :user, inverse_of: :external_uuids
 

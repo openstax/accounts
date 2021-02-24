@@ -1,6 +1,6 @@
 require "i18n"
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
 
   VALID_STATES = [
     TEMP = 'temp', # deprecated but still could exist for old accounts
@@ -127,6 +127,8 @@ class User < ActiveRecord::Base
   before_save(:add_unread_update)
 
   before_create(:make_first_user_an_admin)
+
+  belongs_to :school, optional: true, inverse_of: :users
 
   belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
 

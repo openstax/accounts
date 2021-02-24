@@ -1,4 +1,4 @@
-class Message < ActiveRecord::Base
+class Message < ApplicationRecord
   belongs_to :application, class_name: 'Doorkeeper::Application',
                            inverse_of: :messages
   belongs_to :user, inverse_of: :sent_messages

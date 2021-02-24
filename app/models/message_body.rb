@@ -1,4 +1,4 @@
-class MessageBody < ActiveRecord::Base
+class MessageBody < ApplicationRecord
   belongs_to :message, inverse_of: :body
 
   validates_presence_of :message

@@ -1,4 +1,4 @@
-class ContactInfo < ActiveRecord::Base
+class ContactInfo < ApplicationRecord
   before_validation :strip
   before_save :add_unread_update
   before_create :set_confirmation_pin_code

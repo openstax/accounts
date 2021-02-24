@@ -1,4 +1,4 @@
-class GroupMember < ActiveRecord::Base
+class GroupMember < ApplicationRecord
   #sortable :user_id
 
   belongs_to :group, inverse_of: :group_members

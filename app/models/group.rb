@@ -1,4 +1,4 @@
-class Group < ActiveRecord::Base
+class Group < ApplicationRecord
 
   serialize :cached_supertree_group_ids
   serialize :cached_subtree_group_ids

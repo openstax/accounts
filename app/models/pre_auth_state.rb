@@ -1,4 +1,4 @@
-class PreAuthState < ActiveRecord::Base
+class PreAuthState < ApplicationRecord
   belongs_to :user
 
   enum contact_info_kind: [:email_address]

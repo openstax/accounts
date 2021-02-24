@@ -1,4 +1,4 @@
-class ApplicationGroup < ActiveRecord::Base
+class ApplicationGroup < ApplicationRecord
   belongs_to :application, class_name: 'Doorkeeper::Application',
                            inverse_of: :application_groups
   belongs_to :group, inverse_of: :application_groups

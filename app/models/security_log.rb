@@ -1,4 +1,4 @@
-class SecurityLog < ActiveRecord::Base
+class SecurityLog < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :application, class_name: 'Doorkeeper::Application', inverse_of: :security_logs, optional: true
 
