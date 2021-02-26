@@ -11,13 +11,24 @@ set :runner_command, "#{bundle_command} rails runner"
 
 every '5,35 * * * *' do
   runner <<-CMD
-    OpenStax::RescueFrom.this{
-      UpdateUserSalesforceInfo.call(allow_error_email: Time.zone.now.hour == 0 && Time.zone.now.min < 10)
-    }
+    OpenStax::RescueFrom.this do
+      UpdateUserSalesforceInfo.call(
+        allow_error_email: Time.zone.now.hour == 0 && Time.zone.now.min < 10
+      )
+    end
+  CMD
+end
+
+every '20,50 * * * *' do
+  runner <<-CMD
+    OpenStax::RescueFrom.this do
+      UpdateSchoolSalesforceInfo.call(
+        allow_error_email: Time.zone.now.hour == 0 && Time.zone.now.min < 30
+      )
+    end
   CMD
 end
 
 every 1.day, at: Time.parse('2:30 AM CST').utc do
   rake 'doorkeeper:cleanup'
 end
-

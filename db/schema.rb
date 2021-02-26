@@ -278,10 +278,13 @@ ActiveRecord::Schema.define(version: 2021_02_24_193753) do
     t.string "name", null: false
     t.string "type", null: false
     t.string "location", null: false
+    t.string "sheerid_school_name"
     t.boolean "is_kip", null: false
     t.boolean "is_child_of_kip", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["salesforce_id"], name: "index_schools_on_salesforce_id", unique: true
+    t.index ["sheerid_school_name"], name: "index_schools_on_sheerid_school_name"
   end
 
   create_table "security_logs", id: :serial, force: :cascade do |t|

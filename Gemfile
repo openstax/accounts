@@ -78,6 +78,9 @@ gem 'jobba', '~> 1.4.0'
 # jQuery library
 gem 'jquery-rails'
 
+# Upserts
+gem 'activerecord-import'
+
 gem 'smarter_csv'
 
 # API documentation
