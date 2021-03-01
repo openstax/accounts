@@ -20,7 +20,7 @@ class UpdateSchoolSalesforceInfo
   def call
     logger.info 'Starting'
 
-    # Go through all cached Schools and make sure their SF information is still the same or cache it
+    # Go through all SF Schools and cache their information, if it changed
 
     last_id = nil
     loop do

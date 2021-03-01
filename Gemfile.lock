@@ -9,10 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/openstax/openstax_salesforce.git
-  revision: 6de8fa2685cb8659de3b0e13b9efe2301a34bb92
-  branch: master
+  revision: c36d52402bba42dc52fc9bfa357b95ac462a74d2
+  ref: c36d52402bba42dc52fc9bfa357b95ac462a74d2
   specs:
-    openstax_salesforce (4.9.0)
+    openstax_salesforce (4.10.0)
       openstax_active_force
       rails (>= 5.0, < 7.0)
       restforce
@@ -534,7 +534,7 @@ GEM
     responders (2.4.1)
       actionpack (>= 4.2.0, < 6.0)
       railties (>= 4.2.0, < 6.0)
-    restforce (5.0.3)
+    restforce (5.0.5)
       faraday (>= 0.9.0, <= 2.0)
       faraday_middleware (>= 0.8.8, <= 2.0)
       hashie (>= 1.2.0, < 5.0)
