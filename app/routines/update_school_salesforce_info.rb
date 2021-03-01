@@ -9,16 +9,16 @@ class UpdateSchoolSalesforceInfo
     :sheerid_school_name
   ]
 
-  def logger
-    @logger ||= ActiveSupport::TaggedLogging.new(Rails.logger).tagged self.class.name
-  end
-
-  def self.call(
+  def self.call
     new.call
   end
 
+  def log(message, level = :info)
+    Rails.logger.tagged(self.class.name) { Rails.logger.public_send level, message }
+  end
+
   def call
-    logger.info 'Starting'
+    log 'Starting'
 
     # Go through all SF Schools and cache their information, if it changed
 
@@ -55,6 +55,6 @@ class UpdateSchoolSalesforceInfo
       break if sf_schools.length < BATCH_SIZE
     end
 
-    logger.info 'Finished'
+    log 'Finished'
   end
 end
