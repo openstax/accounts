@@ -158,8 +158,9 @@ class User < ApplicationRecord
   attribute :is_not_gdpr_location, :boolean, default: nil
 
   def most_accurate_school_name
+    return school.name if school.present?
     return sheerid_reported_school if sheerid_reported_school.present?
-    return self_reported_school if  self_reported_school.present?
+    return self_reported_school if self_reported_school.present?
     UNKNOWN_SCHOOL_NAME
   end
 

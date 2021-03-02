@@ -7,7 +7,20 @@ class School < ApplicationRecord
     'Career School/For-Profit (2)'
   ]
 
+  # Should match the index in the schools table
+  FUZZY_MATCH_INDEXED_EXPRESSION = "(name || ' (' || city || ', ' || state || ')')"
+
+  # 0.0 == perfect match; 1.0 == perfect non-match
+  MAX_FUZZY_MATCH_DISTANCE = 0.25
+
   has_many :users, inverse_of: :school
+
+  # Expects: Name (City, State)
+  def self.fuzzy_match(name)
+    expression = sanitize_sql ["? <-> #{FUZZY_MATCH_INDEXED_EXPRESSION}", name]
+    best_match = select(:id, "#{expression} AS match_distance").order(expression).first
+    best_match if best_match.match_distance <= MAX_FUZZY_MATCH_DISTANCE
+  end
 
   def user_school_type
     case type

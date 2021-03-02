@@ -415,7 +415,7 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.0.0)
       rails (>= 3.1, < 6.0)
-    openstax_salesforce (4.10.0)
+    openstax_salesforce (4.11.0)
       openstax_active_force
       rails (>= 5.0, < 7.0)
       restforce

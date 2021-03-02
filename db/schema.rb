@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(version: 2021_02_24_193753) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
+  enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -276,13 +277,16 @@ ActiveRecord::Schema.define(version: 2021_02_24_193753) do
   create_table "schools", force: :cascade do |t|
     t.string "salesforce_id", null: false
     t.string "name", null: false
-    t.string "type", null: false
-    t.string "location", null: false
+    t.string "city"
+    t.string "state"
+    t.string "type"
+    t.string "location"
     t.string "sheerid_school_name"
     t.boolean "is_kip", null: false
     t.boolean "is_child_of_kip", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index "(((((((name)::text || ' ('::text) || (city)::text) || ', '::text) || (state)::text) || ')'::text)) gist_trgm_ops", name: "index_schools_on_name_city_state_gist_trgm_ops", using: :gist
     t.index ["salesforce_id"], name: "index_schools_on_salesforce_id", unique: true
     t.index ["sheerid_school_name"], name: "index_schools_on_sheerid_school_name"
   end

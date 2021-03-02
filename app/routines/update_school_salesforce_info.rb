@@ -2,6 +2,8 @@ class UpdateSchoolSalesforceInfo
   BATCH_SIZE = 1000
 
   CACHE_COLUMNS = [
+    :city,
+    :state,
     :type,
     :location,
     :is_kip,

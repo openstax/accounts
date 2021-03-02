@@ -39,13 +39,24 @@ module Newflow
         elsif verification.rejected?
           run(SheeridRejectedEducator, user: existing_user, verification_id: verification_id)
         elsif verification.present?
-          existing_user.sheerid_verification_id = verification_id if existing_user.sheerid_verification_id.blank?
+          existing_user.sheerid_verification_id = verification_id \
+            if existing_user.sheerid_verification_id.blank?
 
           if verification_details.relevant?
             existing_user.first_name = verification.first_name
             existing_user.last_name = verification.last_name
             existing_user.sheerid_reported_school = verification.organization_name
             existing_user.faculty_status = verification.current_step_to_faculty_status
+
+            # Attempt to exactly match a school based on the sheerid_reported_school field
+            school = School.find_by sheerid_reported_school: existing_user.sheerid_reported_school
+
+            if school.nil?
+              # No exact match found, so attempt to fuzzy match the school name
+              school = School.fuzzy_match existing_user.sheerid_reported_school
+            end
+
+            existing_user.school = school
           end
 
           if existing_user.changed?
