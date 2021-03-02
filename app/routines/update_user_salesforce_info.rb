@@ -38,13 +38,18 @@ class UpdateUserSalesforceInfo
 
     prepare_contacts
 
+    schools_by_salesforce_id = School.select(:id, :salesforce_id).where(
+      salesforce_id: @contacts_by_id.values.map(&:school_id)
+    ).index_by(&:salesforce_id)
+
     # Go through all users that have already have a Salesforce Contact ID and make sure
     # their SF information is still the same.
 
     User.where.not(salesforce_contact_id: nil).find_each do |user|
       begin
         contact = @contacts_by_id[user.salesforce_contact_id]
-        cache_contact_data_in_user!(contact, user)
+        school = schools_by_salesforce_id[contact.school_id]
+        cache_contact_and_school_data_in_user!(contact, school, user)
       rescue StandardError => ee
         error!(exception: ee, user: user)
       end
@@ -77,7 +82,8 @@ class UpdateUserSalesforceInfo
                             "for user #{user.id}")
           else
             contact = contacts.first
-            cache_contact_data_in_user!(contact, user)
+            school = schools_by_salesforce_id[contact.school_id]
+            cache_contact_and_school_data_in_user!(contact, school, user)
           end
         rescue StandardError => ee
           error!(exception: ee, user: user)
@@ -233,7 +239,7 @@ class UpdateUserSalesforceInfo
     end
   end
 
-  def cache_contact_data_in_user!(contact, user)
+  def cache_contact_and_school_data_in_user!(contact, school, user)
     if contact.nil?
       warn(
         "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but that" \
@@ -260,6 +266,8 @@ class UpdateUserSalesforceInfo
               contact.faculty_verified}'' on contact #{contact.id}"
       end
 
+      # TODO: We can read school_type and school_location from the cached School records instead,
+      # but better wait 1 additional release to let the Schools be cached and linked
       user.school_type = case contact.school_type
       when *COLLEGE_TYPES
         :college
@@ -275,8 +283,8 @@ class UpdateUserSalesforceInfo
         :other_school_type
       end
 
-      school = contact.school
-      user.school_location = case school&.school_location
+      sf_school = contact.school
+      user.school_location = case sf_school&.school_location
       when *DOMESTIC_SCHOOL_LOCATIONS
         :domestic_school
       when *FOREIGN_SCHOOL_LOCATIONS
@@ -289,10 +297,14 @@ class UpdateUserSalesforceInfo
         user.using_openstax = ADOPTION_STATUSES[contact.adoption_status]
       end
 
-      user.is_kip = school&.is_kip || school&.is_child_of_kip
+      user.is_kip = sf_school&.is_kip || sf_school&.is_child_of_kip
       user.grant_tutor_access = contact.grant_tutor_access
       user.is_b_r_i_user = contact.b_r_i_marketing
     end
+
+    warn("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}") \
+      if school.nil? && !sf_school.nil?
+    user.school = school
 
     if user.faculty_status_changed? && user.confirmed_faculty?
       let_sf_know_to_send_fac_ver_email = true
