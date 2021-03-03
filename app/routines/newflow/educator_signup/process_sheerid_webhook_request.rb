@@ -4,6 +4,16 @@ module Newflow
     # save the verification id  and
     class ProcessSheeridWebhookRequest
 
+      # Extract name, city and state from SheerID response when possible
+      # 1. \A       - Beginning of string
+      # 2. (.*?)    - Capturing group for name can lazy match anything
+      # 3. (?: \(   - Optional non-capturing group for city and state with open parenthesis
+      # 4. ([^,)]+) - Capturing group for city can match anything without comma or close parenthesis
+      # 5. (?:,     - Optional non-capturing group for state with a comma and whitespace
+      # 6. ([^)]+)  - Capturing group for state can match anything without close parenthesis
+      # 7. )?       - Close optional non-capturing group for state
+      # 8. \))?     - Close optional non-capturing group for city and state
+      # 9. \z       - End of string
       SHEERID_REGEX = /\A(.*?)(?: \(([^,)]+)(?:, ([^)]+))?\))?\z/
 
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
