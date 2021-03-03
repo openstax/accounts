@@ -13,7 +13,7 @@ class CreateSchools < ActiveRecord::Migration[5.2]
       t.boolean :is_kip,             null: false
       t.boolean :is_child_of_kip,    null: false
 
-      t.index "(name || ' (' || city || ', ' || state || ')') gist_trgm_ops", using: :gist
+      t.index [ :name, :city, :state ], using: :gist, opclass: :gist_trgm_ops
 
       t.timestamps
     end

@@ -286,7 +286,7 @@ ActiveRecord::Schema.define(version: 2021_02_24_193753) do
     t.boolean "is_child_of_kip", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index "(((((((name)::text || ' ('::text) || (city)::text) || ', '::text) || (state)::text) || ')'::text)) gist_trgm_ops", name: "index_schools_on_name_city_state_gist_trgm_ops", using: :gist
+    t.index ["name", "city", "state"], name: "index_schools_on_name_and_city_and_state", opclass: :gist_trgm_ops, using: :gist
     t.index ["salesforce_id"], name: "index_schools_on_salesforce_id", unique: true
     t.index ["sheerid_school_name"], name: "index_schools_on_sheerid_school_name"
   end

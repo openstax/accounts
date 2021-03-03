@@ -4,6 +4,8 @@ module Newflow
     # save the verification id  and
     class ProcessSheeridWebhookRequest
 
+      SHEERID_REGEX = /\A(.*?)(?: \(([^,)]+)(?:, ([^)]+))?\))?\z/
+
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
       uses_routine UpsertSheeridVerification
       uses_routine SheeridRejectedEducator
@@ -53,7 +55,20 @@ module Newflow
 
             if school.nil?
               # No exact match found, so attempt to fuzzy match the school name
-              school = School.fuzzy_match existing_user.sheerid_reported_school
+              match = SHEERID_REGEX.match existing_user.sheerid_reported_school
+              name = match[1]
+              city = match[2]
+              state = match[3]
+
+              # Sometimes the city and/or state are duplicated, so remove them
+              name = name.chomp(" (#{city})") unless city.nil?
+              name = name.chomp(" (#{state})") unless state.nil?
+              name = name.chomp(" (#{city}, #{state})") unless city.nil? || state.nil?
+
+              # For Homeschool, the city is "Any" and the state is missing
+              city = nil if city == 'Any'
+
+              school = School.fuzzy_match name, city, state
             end
 
             existing_user.school = school

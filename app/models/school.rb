@@ -7,19 +7,39 @@ class School < ApplicationRecord
     'Career School/For-Profit (2)'
   ]
 
-  # Should match the index in the schools table
-  FUZZY_MATCH_INDEXED_EXPRESSION = "(name || ' (' || city || ', ' || state || ')')"
-
   # 0.0 == perfect match; 1.0 == perfect non-match
-  MAX_FUZZY_MATCH_DISTANCE = 0.25
+  MAX_NAME_MATCH_DISTANCE = 0.25
+
+  # Mispelling 'Houston' as 'Huston' gives a match distance of 0.5
+  MAX_CITY_MATCH_DISTANCE = 0.5
+
+  # The State match is very loose because of abbreviations
+  # 'North Carolina' <-> 'NC' == 'South Carolina' <-> 'SC' == 0.9411765
+  MAX_STATE_MATCH_DISTANCE = 0.95
 
   has_many :users, inverse_of: :school
 
-  # Expects: Name (City, State)
-  def self.fuzzy_match(name)
-    expression = sanitize_sql ["? <-> #{FUZZY_MATCH_INDEXED_EXPRESSION}", name]
-    best_match = select(:id, "#{expression} AS match_distance").order(expression).first
-    best_match if best_match.match_distance <= MAX_FUZZY_MATCH_DISTANCE
+  def self.fuzzy_match(name, city = nil, state = nil)
+    name_expression = sanitize_sql(["? <-> name", name])
+    match_rel = select(:id).where(
+      "#{name_expression} <= #{MAX_NAME_MATCH_DISTANCE}"
+    ).order(name_expression)
+
+    unless city.nil?
+      city_expression = sanitize_sql(["? <-> city", city])
+      match_rel = match_rel.where(
+        "#{city_expression} <= #{MAX_CITY_MATCH_DISTANCE}"
+      ).order(city_expression)
+    end
+
+    unless state.nil?
+      state_expression = sanitize_sql(["? <-> state", state])
+      match_rel = match_rel.where(
+        "#{state_expression} <= #{MAX_STATE_MATCH_DISTANCE}"
+      ).order(state_expression)
+    end
+
+    match_rel.first
   end
 
   def user_school_type
