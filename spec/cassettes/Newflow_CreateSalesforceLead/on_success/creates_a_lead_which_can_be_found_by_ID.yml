@@ -5,8 +5,8 @@ http_interactions:
     uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Ricky","LastName":"Nolan","Company":"unknown to Accounts","Email":"f@f.com","LeadSource":"OSC
-        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":2,"accounts_uuid_c__c":"7588c610-ee2e-40ec-8901-f233fc228cf8","Application_Source__c":"Tutor
+      string: '{"FirstName":"Felix","LastName":"Nienow","Company":"unknown to Accounts","Email":"f@f.com","LeadSource":"OSC
+        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":7,"accounts_uuid_c__c":"68918ce2-b624-43ad-a4db-ede4cf5fe471","Application_Source__c":"Tutor
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
     headers:
       User-Agent:
@@ -25,32 +25,22 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Sat, 07 Nov 2020 00:40:29 GMT
+      - Fri, 05 Mar 2021 19:15:35 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
-      Public-Key-Pins-Report-Only:
-      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
-        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
-        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00D7X000000Gyi2m";
       Expect-Ct:
-      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D7X000000Gyi2m"
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D0v0000005T7Um"
       X-Robots-Tag:
       - none
-      X-B3-Traceid:
-      - 117278283dfb3b9b
-      X-B3-Spanid:
-      - 117278283dfb3b9b
-      X-B3-Sampled:
-      - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=1ZeVVyCREeu4mMvT8fKoZg; domain=.salesforce.com; path=/; expires=Sun,
-        07-Nov-2021 00:40:29 GMT; Max-Age=31536000
+      - BrowserId=KerA4n3nEeuvS03Flb1d4A; domain=.salesforce.com; path=/; expires=Sat,
+        05-Mar-2022 19:15:35 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=1407/5000000
+      - api-usage=660/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q7X000006FAQvUAO"
+      - "/services/data/v37.0/sobjects/Lead/00Q0v000007Y9yeEAC"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -59,12 +49,12 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00Q7X000006FAQvUAO","success":true,"errors":[]}'
-    http_version:
-  recorded_at: Sat, 07 Nov 2020 00:40:32 GMT
+      string: '{"id":"00Q0v000007Y9yeEAC","success":true,"errors":[]}'
+    http_version: 
+  recorded_at: Fri, 05 Mar 2021 19:15:38 GMT
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c,%20accounts_uuid_c__c,%20Application_Source__c,%20Role__c,%20other_role_name__c,%20who_chooses_books__c,%20FV_Status__c,%20FV_Final__c,%20Needs_CS_Review__c,%20BRI_Marketing__c,%20Title_1_school__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700Q7X000006FAQvUAO%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20City,%20State,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c,%20accounts_uuid_c__c,%20Application_Source__c,%20Role__c,%20other_role_name__c,%20who_chooses_books__c,%20FV_Status__c,%20FV_Final__c,%20Needs_CS_Review__c,%20BRI_Marketing__c,%20Title_1_school__c,%20SheerID_School_Name__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700Q0v000007Y9yeEAC%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
@@ -83,30 +73,20 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 07 Nov 2020 00:40:32 GMT
+      - Fri, 05 Mar 2021 19:15:38 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
-      Public-Key-Pins-Report-Only:
-      - pin-sha256="9n0izTnSRF+W4W4JTq51avSXkWhQB8duS2bxVLfzXsY="; pin-sha256="5kJvNEMw0KjrCAu7eXY5HZdvyCS13BbA0VJG1RSP91w=";
-        pin-sha256="njN4rRG+22dNXAi+yb8e3UMypgzPUPHlv4+foULwl1g="; max-age=86400;
-        includeSubDomains; report-uri="https://a.forcesslreports.com/hpkp-report/00D7X000000Gyi2m";
       Expect-Ct:
-      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D7X000000Gyi2m"
+      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D0v0000005T7Um"
       X-Robots-Tag:
       - none
-      X-B3-Traceid:
-      - 60e828c226879ed4
-      X-B3-Spanid:
-      - 60e828c226879ed4
-      X-B3-Sampled:
-      - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=15ocsCCREeuKtolksxeoig; domain=.salesforce.com; path=/; expires=Sun,
-        07-Nov-2021 00:40:32 GMT; Max-Age=31536000
+      - BrowserId=K664AX3nEeuyFxUVTDLOIQ; domain=.salesforce.com; path=/; expires=Sat,
+        05-Mar-2022 19:15:38 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=1408/5000000
+      - api-usage=659/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -115,12 +95,12 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q7X000006FAQvUAO"},"Id":"00Q7X000006FAQvUAO","Name":"Ricky
-        Nolan","FirstName":"Ricky","LastName":"Nolan","Salutation":null,"Subject__c":null,"Company":"unknown
-        to Accounts","Phone":null,"Website":null,"Status":"Converted","Email":"f@f.com","LeadSource":"OSC
+      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Lead","url":"/services/data/v37.0/sobjects/Lead/00Q0v000007Y9yeEAC"},"Id":"00Q0v000007Y9yeEAC","Name":"Felix
+        Nienow","FirstName":"Felix","LastName":"Nienow","Salutation":null,"Subject__c":null,"Company":"unknown
+        to Accounts","City":null,"State":null,"Phone":null,"Website":null,"Status":"Converted","Email":"f@f.com","LeadSource":"OSC
         Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"Adoption_Status__c":"High
-        Interest in Adopting","Number_of_Students__c":30.0,"OS_Accounts_ID__c":"2","accounts_uuid_c__c":"7588c610-ee2e-40ec-8901-f233fc228cf8","Application_Source__c":"Tutor
-        Signup","Role__c":"Faculty","other_role_name__c":null,"who_chooses_books__c":null,"FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":true,"BRI_Marketing__c":false,"Title_1_school__c":false}]}'
-    http_version:
-  recorded_at: Sat, 07 Nov 2020 00:40:32 GMT
+        Interest in Adopting","Number_of_Students__c":30.0,"OS_Accounts_ID__c":"7","accounts_uuid_c__c":"68918ce2-b624-43ad-a4db-ede4cf5fe471","Application_Source__c":"Tutor
+        Signup","Role__c":"Faculty","other_role_name__c":null,"who_chooses_books__c":null,"FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":true,"BRI_Marketing__c":false,"Title_1_school__c":false,"SheerID_School_Name__c":null}]}'
+    http_version: 
+  recorded_at: Fri, 05 Mar 2021 19:15:38 GMT
 recorded_with: VCR 3.0.3

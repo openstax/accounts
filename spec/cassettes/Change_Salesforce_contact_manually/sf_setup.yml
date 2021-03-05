@@ -21,26 +21,18 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Thu, 05 Nov 2020 22:40:04 GMT
+      - Fri, 05 Mar 2021 19:19:13 GMT
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Content-Type-Options:
       - nosniff
       X-Xss-Protection:
       - 1; mode=block
-      X-B3-Traceid:
-      - 5a21d65953866c72
-      X-B3-Spanid:
-      - 68cf49e2a5187f38
-      X-B3-Parentspanid:
-      - 70b0e54162a76aea
-      X-B3-Sampled:
-      - '0'
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=2PVB1h-3Eeu19Ce3-xT5kw; domain=.salesforce.com; path=/; expires=Fri,
-        05-Nov-2021 22:40:04 GMT; Max-Age=31536000
+      - BrowserId=q6bhRH3nEeuSdfNOYs1pMA; domain=.salesforce.com; path=/; expires=Sat,
+        05-Mar-2022 19:19:13 GMT; Max-Age=31536000
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       X-Readonlymode:
@@ -53,7 +45,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"access_token":"<salesforce_access_token>","instance_url":"<salesforce_instance_url>","id":"<salesforce_id>","token_type":"Bearer","issued_at":"1604616004941","signature":"<salesforce_signature>"}'
-    http_version:
-  recorded_at: Thu, 05 Nov 2020 22:40:04 GMT
+      string: '{"access_token":"<salesforce_access_token>","instance_url":"<salesforce_instance_url>","id":"<salesforce_id>","token_type":"Bearer","issued_at":"1614971953962","signature":"<salesforce_signature>"}'
+    http_version: 
+  recorded_at: Fri, 05 Mar 2021 19:19:13 GMT
 recorded_with: VCR 3.0.3

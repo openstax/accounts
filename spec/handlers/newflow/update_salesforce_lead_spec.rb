@@ -2,8 +2,7 @@ require 'rails_helper'
 require 'vcr_helper'
 
 module Newflow
-  describe UpdateSalesforceLead, vcr: VCR_OPTS do
-
+  RSpec.describe UpdateSalesforceLead, vcr: VCR_OPTS do
     subject(:routine_call) { described_class.call(user: user) }
 
     let!(:user_email) { FactoryBot.create(:email_address, user: user, value: email_address, verified: true) }
@@ -36,8 +35,6 @@ module Newflow
       expect(routine_call.errors.any?).to be_falsey
       expect(routine_call.outputs.lead.first_name).to eq('updated')
       expect(routine_call.outputs.lead.last_name).to eq('updated')
-
     end
-
   end
 end
