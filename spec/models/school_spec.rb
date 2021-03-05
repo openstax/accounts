@@ -3,6 +3,20 @@ require 'rails_helper'
 RSpec.describe School, type: :model do
   subject(:school) { FactoryBot.create :school }
 
+  it 'can use fuzzy search to find matching cached Schools from SheerID data' do
+    rice = FactoryBot.create :school, name: 'Rice University', city: 'Houston', state: 'TX'
+
+    expect(described_class.fuzzy_search(school.name)).to eq school
+    expect(described_class.fuzzy_search(school.name, school.city)).to eq school
+    expect(described_class.fuzzy_search(school.name, school.city, school.state)).to eq school
+
+    expect(described_class.fuzzy_search('Ricee University', 'Huston', 'Texas')).to eq rice
+
+    expect(described_class.fuzzy_search(rice.name, rice.city, 'British Columbia')).to be_nil
+    expect(described_class.fuzzy_search(rice.name, 'Rio de Janeiro')).to be_nil
+    expect(described_class.fuzzy_search('OpenStax')).to be_nil
+  end
+
   it 'translates the school type to values used in the user record' do
     school.type = 'College/University (4)'
     expect(school.user_school_type).to eq :college

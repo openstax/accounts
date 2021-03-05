@@ -159,9 +159,25 @@ class User < ApplicationRecord
 
   def most_accurate_school_name
     return school.name if school.present?
-    return sheerid_reported_school if sheerid_reported_school.present?
+
+    return SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[1] \
+      if sheerid_reported_school.present?
+
     return self_reported_school if self_reported_school.present?
+
     UNKNOWN_SCHOOL_NAME
+  end
+
+  def most_accurate_school_city
+    return school.city if school.present?
+
+    SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[2] if sheerid_reported_school.present?
+  end
+
+  def most_accurate_school_state
+    return school.state if school.present?
+
+    SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[3] if sheerid_reported_school.present?
   end
 
   def best_email_address_for_CS_verification

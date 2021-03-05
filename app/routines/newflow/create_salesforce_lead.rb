@@ -13,6 +13,7 @@ module Newflow
       status.set_job_args(user: user.to_global_id.to_s)
 
       referring_app_name = user&.source_application&.lead_application_source || DEFAULT_REFERRING_APP_NAME
+      sf_school_id = user.school&.salesforce_id
 
       lead = OpenStax::Salesforce::Remote::Lead.new(
         first_name: user.first_name,
@@ -29,6 +30,8 @@ module Newflow
         os_accounts_id: user.id,
         accounts_uuid: user.uuid,
         school: user.most_accurate_school_name,
+        city: user.most_accurate_school_city,
+        state: user.most_accurate_school_state,
         verification_status: user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
         finalize_educator_signup: user.is_profile_complete?,
         needs_cs_review: user.is_educator_pending_cs_verification?,
@@ -36,6 +39,9 @@ module Newflow
         title_1_school: user.title_1_school?,
         newsletter: user.receive_newsletter?,
         newsletter_opt_in: user.receive_newsletter?,
+        sheerid_school_name: user.sheerid_reported_school,
+        account_id: sf_school_id,
+        school_id: sf_school_id
       )
 
       outputs.lead = lead

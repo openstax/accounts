@@ -39,7 +39,7 @@ class UpdateUserSalesforceInfo
     prepare_contacts
 
     schools_by_salesforce_id = School.select(:id, :salesforce_id).where(
-      salesforce_id: @contacts_by_id.values.map(&:school_id)
+      salesforce_id: @contacts_by_id.values.compact.map(&:school_id)
     ).index_by(&:salesforce_id)
 
     # Go through all users that have already have a Salesforce Contact ID and make sure
@@ -48,7 +48,7 @@ class UpdateUserSalesforceInfo
     User.where.not(salesforce_contact_id: nil).find_each do |user|
       begin
         contact = @contacts_by_id[user.salesforce_contact_id]
-        school = schools_by_salesforce_id[contact.school_id]
+        school = schools_by_salesforce_id[contact.school_id] unless contact.nil?
         cache_contact_and_school_data_in_user!(contact, school, user)
       rescue StandardError => ee
         error!(exception: ee, user: user)
@@ -82,7 +82,7 @@ class UpdateUserSalesforceInfo
                             "for user #{user.id}")
           else
             contact = contacts.first
-            school = schools_by_salesforce_id[contact.school_id]
+            school = schools_by_salesforce_id[contact.school_id] unless contact.nil?
             cache_contact_and_school_data_in_user!(contact, school, user)
           end
         rescue StandardError => ee

@@ -19,24 +19,24 @@ class School < ApplicationRecord
 
   has_many :users, inverse_of: :school
 
-  def self.fuzzy_match(name, city = nil, state = nil)
+  def self.fuzzy_search(name, city = nil, state = nil)
     name_expression = sanitize_sql(["? <-> name", name])
     match_rel = select(:id).where(
-      "#{name_expression} <= #{MAX_NAME_MATCH_DISTANCE}"
-    ).order(name_expression)
+      Arel.sql "#{name_expression} <= #{MAX_NAME_MATCH_DISTANCE}"
+    ).order(Arel.sql name_expression)
 
     unless city.nil?
       city_expression = sanitize_sql(["? <-> city", city])
       match_rel = match_rel.where(
-        "#{city_expression} <= #{MAX_CITY_MATCH_DISTANCE}"
-      ).order(city_expression)
+        Arel.sql "#{city_expression} <= #{MAX_CITY_MATCH_DISTANCE}"
+      ).order(Arel.sql city_expression)
     end
 
     unless state.nil?
       state_expression = sanitize_sql(["? <-> state", state])
       match_rel = match_rel.where(
-        "#{state_expression} <= #{MAX_STATE_MATCH_DISTANCE}"
-      ).order(state_expression)
+        Arel.sql "#{state_expression} <= #{MAX_STATE_MATCH_DISTANCE}"
+      ).order(Arel.sql state_expression)
     end
 
     match_rel.first

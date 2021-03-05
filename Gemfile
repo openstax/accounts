@@ -124,7 +124,8 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce'
+gem 'openstax_salesforce', github: 'openstax/openstax_salesforce',
+                           ref: 'faa47a99c6395fac4e573f0362a5ff83c31c7738'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
@@ -225,7 +226,7 @@ group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 3.7'
 
-  gem  'i18n-tasks'
+  gem 'i18n-tasks'
 
   # Generate Entity-Relationship Diagrams for Rails applications
   gem 'rails-erd'

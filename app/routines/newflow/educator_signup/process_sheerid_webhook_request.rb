@@ -4,18 +4,6 @@ module Newflow
     # save the verification id  and
     class ProcessSheeridWebhookRequest
 
-      # Extract name, city and state from SheerID response when possible
-      # 1. \A       - Beginning of string
-      # 2. (.*?)    - Capturing group for name can lazy match anything
-      # 3. (?: \(   - Optional non-capturing group for city and state with open parenthesis
-      # 4. ([^,)]+) - Capturing group for city can match anything without comma or close parenthesis
-      # 5. (?:,     - Optional non-capturing group for state with a comma and whitespace
-      # 6. ([^)]+)  - Capturing group for state can match anything without close parenthesis
-      # 7. )?       - Close optional non-capturing group for state
-      # 8. \))?     - Close optional non-capturing group for city and state
-      # 9. \z       - End of string
-      SHEERID_REGEX = /\A(.*?)(?: \(([^,)]+)(?:, ([^)]+))?\))?\z/
-
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
       uses_routine UpsertSheeridVerification
       uses_routine SheeridRejectedEducator
@@ -61,11 +49,11 @@ module Newflow
             existing_user.faculty_status = verification.current_step_to_faculty_status
 
             # Attempt to exactly match a school based on the sheerid_reported_school field
-            school = School.find_by sheerid_reported_school: existing_user.sheerid_reported_school
+            school = School.find_by sheerid_school_name: existing_user.sheerid_reported_school
 
             if school.nil?
               # No exact match found, so attempt to fuzzy match the school name
-              match = SHEERID_REGEX.match existing_user.sheerid_reported_school
+              match = SheeridAPI::SHEERID_REGEX.match existing_user.sheerid_reported_school
               name = match[1]
               city = match[2]
               state = match[3]
@@ -78,7 +66,7 @@ module Newflow
               # For Homeschool, the city is "Any" and the state is missing
               city = nil if city == 'Any'
 
-              school = School.fuzzy_match name, city, state
+              school = School.fuzzy_search name, city, state
             end
 
             existing_user.school = school

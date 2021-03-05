@@ -1,15 +1,17 @@
 class UpdateSchoolSalesforceInfo
   BATCH_SIZE = 1000
 
-  CACHE_COLUMNS = [
-    :city,
-    :state,
-    :type,
-    :location,
-    :is_kip,
-    :is_child_of_kip,
-    :sheerid_school_name
-  ]
+  SF_TO_DB_CACHE_COLUMNS_MAP = {
+    id: :salesforce_id,
+    name: :name,
+    city: :city,
+    state: :state,
+    type: :type,
+    school_location: :location,
+    is_kip: :is_kip,
+    is_child_of_kip: :is_child_of_kip,
+    sheerid_school_name: :sheerid_school_name
+  }
 
   def self.call
     new.call
@@ -40,16 +42,18 @@ class UpdateSchoolSalesforceInfo
           school = schools_by_sf_id[sf_school.id]
           school = School.new(salesforce_id: sf_school.id) if school.nil?
 
-          CACHE_COLUMNS.each do |column|
-            school.public_send "#{column}=", sf_school.public_send(column)
+          SF_TO_DB_CACHE_COLUMNS_MAP.each do |sf_column, db_column|
+            school.public_send "#{db_column}=", sf_school.public_send(sf_column)
           end
 
           school.changed? ? school : nil
         end.compact
 
-        School.import schools, validate: false, on_duplicate_key_update: {
-          conflict_target: [ :salesforce_id ], columns: CACHE_COLUMNS
-        }
+        School.import(
+          schools, validate: false, on_duplicate_key_update: {
+            conflict_target: [ :salesforce_id ], columns: SF_TO_DB_CACHE_COLUMNS_MAP.values
+          }
+        ) unless schools.empty?
       rescue StandardError => se
         Raven.capture_exception se
       end
