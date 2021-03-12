@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :school do
-    salesforce_id       { SecureRandom.urlsafe_base64 }
+    salesforce_id       { "0010v0#{SecureRandom.alphanumeric(9)}" }
     name                { Faker::Company.name }
     city                { Faker::Address.city }
     state               { [ Faker::Address.state, Faker::Address.state_abbr ].sample }

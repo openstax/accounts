@@ -1,7 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe UpdateSchoolSalesforceInfo, type: :routine do
-  let(:school) { FactoryBot.build :school }
+  let!(:school)                    { FactoryBot.build :school }
+  let!(:deleted_school)            { FactoryBot.create :school }
+  let!(:deleted_school_with_users) do
+    FactoryBot.create(:user, school: FactoryBot.create(:school)).school
+  end
 
   it 'creates new School records to match the Salesforce data' do
     stub_schools school
@@ -16,6 +20,16 @@ RSpec.describe UpdateSchoolSalesforceInfo, type: :routine do
 
   context 'existing School' do
     before { school.save! }
+
+    it "deletes schools that don't have users and are not present in Salesforce" do
+      stub_schools school
+
+      described_class.call
+
+      expect { school.reload }.not_to raise_error
+      expect { deleted_school_with_users.reload }.not_to raise_error
+      expect { deleted_school.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
 
     it 'updates existing Schools if the Salesforce data changed' do
       changed_school = FactoryBot.build :school, salesforce_id: school.salesforce_id
@@ -51,9 +65,17 @@ RSpec.describe UpdateSchoolSalesforceInfo, type: :routine do
       OpenStax::Salesforce::Remote::School.new attrs
     end
 
-    query = instance_double(ActiveForce::ActiveQuery)
-    expect(OpenStax::Salesforce::Remote::School).to receive(:order).with(:Id).and_return(query)
-    expect(query).to receive(:limit).with(described_class::BATCH_SIZE).and_return(sf_schools)
+    select_query = instance_double(ActiveForce::ActiveQuery)
+    expect(OpenStax::Salesforce::Remote::School).to(
+      receive(:select).with(:id).and_return(select_query)
+    )
+    expect(select_query).to receive(:where).with(id: kind_of(Array)).and_return(sf_schools)
+
+    order_query = instance_double(ActiveForce::ActiveQuery)
+    expect(OpenStax::Salesforce::Remote::School).to(
+      receive(:order).with(:Id).and_return(order_query)
+    )
+    expect(order_query).to receive(:limit).with(described_class::BATCH_SIZE).and_return(sf_schools)
   end
 
   def expect_school_attributes_match(school_a, school_b)

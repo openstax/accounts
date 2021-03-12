@@ -24,8 +24,22 @@ class UpdateSchoolSalesforceInfo
   def call
     log 'Starting'
 
-    # Go through all SF Schools and cache their information, if it changed
+    # Check if any Schools that have 0 users have been deleted from Salesforce and remove them
+    School.where(
+      'NOT EXISTS (SELECT * FROM "users" WHERE "users"."school_id" = "schools"."id")'
+    ).find_in_batches(batch_size: BATCH_SIZE) do |schools|
+      salesforce_ids = schools.map(&:salesforce_id)
 
+      existing_salesforce_ids = OpenStax::Salesforce::Remote::School.select(:id).where(
+        id: salesforce_ids
+      ).map(&:id)
+
+      deleted_salesforce_ids = salesforce_ids - existing_salesforce_ids
+
+      School.where(salesforce_id: deleted_salesforce_ids).delete_all
+    end
+
+    # Go through all SF Schools and cache their information, if it changed
     last_id = nil
     loop do
       sf_schools = OpenStax::Salesforce::Remote::School.order(:Id).limit(BATCH_SIZE)

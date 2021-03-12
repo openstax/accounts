@@ -302,9 +302,11 @@ class UpdateUserSalesforceInfo
       user.is_b_r_i_user = contact.b_r_i_marketing
     end
 
-    warn("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}") \
-      if school.nil? && !sf_school.nil?
-    user.school = school
+    if school.nil? && !sf_school.nil?
+      warn("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
+    else
+      user.school = school
+    end
 
     if user.faculty_status_changed? && user.confirmed_faculty?
       let_sf_know_to_send_fac_ver_email = true
