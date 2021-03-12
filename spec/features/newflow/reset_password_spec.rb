@@ -103,7 +103,7 @@ feature 'Password reset', js: true do
 
     expect(change_password_link_1).to eq(change_password_link_2)
 
-    Timecop.freeze(Time.now + IdentitiesSendPasswordEmail::LOGIN_TOKEN_EXPIRES_AFTER) do
+    Timecop.freeze(Time.now + IdentitiesSendPasswordEmail::LOGIN_TOKEN_EXPIRES_AFTER + 1.hour) do
       visit newflow_login_path
       newflow_log_in_user('user@openstax.org', 'WRONGpassword')
       click_on(I18n.t(:"login_signup_form.forgot_password"))
