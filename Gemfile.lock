@@ -8,16 +8,6 @@ GIT
       sass-rails
 
 GIT
-  remote: https://github.com/openstax/openstax_salesforce.git
-  revision: faa47a99c6395fac4e573f0362a5ff83c31c7738
-  ref: faa47a99c6395fac4e573f0362a5ff83c31c7738
-  specs:
-    openstax_salesforce (4.12.0)
-      openstax_active_force
-      rails (>= 5.0, < 7.0)
-      restforce
-
-GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: 0ed5cdba6be65dbf1d07fd7580e2311a2f42cdfd
   ref: 0ed5cdba6be
@@ -425,6 +415,10 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.0.0)
       rails (>= 3.1, < 6.0)
+    openstax_salesforce (5.0.0)
+      openstax_active_force
+      rails (>= 5.0, < 7.0)
+      restforce
     openstax_utilities (4.2.3)
       keyword_search
       lev
@@ -742,7 +736,7 @@ DEPENDENCIES
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce!
+  openstax_salesforce
   openstax_utilities (~> 4.2.0)
   p3p
   parallel_tests

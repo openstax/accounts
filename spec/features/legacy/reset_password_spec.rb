@@ -71,7 +71,7 @@ feature 'Password reset', js: true do
 
     expect(reset_link_path_2).to eq reset_link_path_1
 
-    Timecop.freeze(Time.now + IdentitiesSendPasswordEmail::LOGIN_TOKEN_EXPIRES_AFTER) do
+    Timecop.freeze(Time.now + IdentitiesSendPasswordEmail::LOGIN_TOKEN_EXPIRES_AFTER + 1.hour) do
       visit '/'
       complete_login_username_or_email_screen('user@example.com')
       click_link(t :"legacy.sessions.authenticate_options.reset_password")

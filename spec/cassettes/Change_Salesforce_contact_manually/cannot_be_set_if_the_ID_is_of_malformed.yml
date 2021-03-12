@@ -21,7 +21,7 @@ http_interactions:
       message: Bad Request
     headers:
       Date:
-      - Fri, 05 Mar 2021 19:19:17 GMT
+      - Fri, 12 Mar 2021 21:54:58 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Expect-Ct:
@@ -31,10 +31,10 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=rdl4j33nEeuP_EEhpnetPw; domain=.salesforce.com; path=/; expires=Sat,
-        05-Mar-2022 19:19:17 GMT; Max-Age=31536000
+      - BrowserId=lnWRNYN9Eeuts1dgTrf-Sw; domain=.salesforce.com; path=/; expires=Sat,
+        12-Mar-2022 21:54:58 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=670/5000000
+      - api-usage=946/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Transfer-Encoding:
@@ -45,5 +45,5 @@ http_interactions:
         LIMIT 1\n                                      ^\nERROR at Row:1:Column:318\ninvalid
         ID field: somethingwonky","errorCode":"INVALID_QUERY_FILTER_OPERATOR"}]'
     http_version: 
-  recorded_at: Fri, 05 Mar 2021 19:19:17 GMT
+  recorded_at: Fri, 12 Mar 2021 21:54:58 GMT
 recorded_with: VCR 3.0.3

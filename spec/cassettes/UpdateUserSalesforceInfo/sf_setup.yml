@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 05 Mar 2021 19:06:46 GMT
+      - Fri, 12 Mar 2021 21:53:39 GMT
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Content-Type-Options:
@@ -31,8 +31,8 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=7ksx1n3lEeuCsFc9PMY0IQ; domain=.salesforce.com; path=/; expires=Sat,
-        05-Mar-2022 19:06:46 GMT; Max-Age=31536000
+      - BrowserId=Z0Amb4N9EeuydROviGVqfA; domain=.salesforce.com; path=/; expires=Sat,
+        12-Mar-2022 21:53:39 GMT; Max-Age=31536000
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       X-Readonlymode:
@@ -45,12 +45,12 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"access_token":"<salesforce_access_token>","instance_url":"<salesforce_instance_url>","id":"<salesforce_id>","token_type":"Bearer","issued_at":"1614971207075","signature":"<salesforce_signature>"}'
+      string: '{"access_token":"<salesforce_access_token>","instance_url":"<salesforce_instance_url>","id":"<salesforce_id>","token_type":"Bearer","issued_at":"1615586019456","signature":"<salesforce_signature>"}'
     http_version: 
-  recorded_at: Fri, 05 Mar 2021 19:06:47 GMT
+  recorded_at: Fri, 12 Mar 2021 21:53:39 GMT
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c%20FROM%20Account%20WHERE%20(Name%20IN%20(%27JP%20University%27))"
+    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c%20FROM%20Account%20WHERE%20(RecordType.Name%20=%20%27School%27)%20AND%20(Name%20IN%20(%27JP%20University%27))"
     body:
       encoding: US-ASCII
       string: ''
@@ -69,7 +69,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 05 Mar 2021 19:06:47 GMT
+      - Fri, 12 Mar 2021 21:53:39 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Expect-Ct:
@@ -79,10 +79,10 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=7u1kq33lEeua1HeGSfxlpg; domain=.salesforce.com; path=/; expires=Sat,
-        05-Mar-2022 19:06:47 GMT; Max-Age=31536000
+      - BrowserId=Z6UCrYN9Eeub-WXAM5DA2A; domain=.salesforce.com; path=/; expires=Sat,
+        12-Mar-2022 21:53:39 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=588/5000000
+      - api-usage=912/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -94,5 +94,5 @@ http_interactions:
       string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0010v00000bM8kQAAS"},"Id":"0010v00000bM8kQAAS","Name":"JP
         University","BillingCity":null,"BillingState":null,"Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}]}'
     http_version: 
-  recorded_at: Fri, 05 Mar 2021 19:06:47 GMT
+  recorded_at: Fri, 12 Mar 2021 21:53:39 GMT
 recorded_with: VCR 3.0.3
