@@ -43,10 +43,14 @@ module Newflow
     end
 
     def update_salesforce_lead!(lead, user)
+      sf_school_id = user.school&.salesforce_id
+
       lead.update(
         first_name: user.first_name,
         last_name: user.last_name,
         school: user.most_accurate_school_name,
+        city: user.most_accurate_school_city,
+        state: user.most_accurate_school_state,
         email: user.best_email_address_for_CS_verification,
         role: user.role,
         other_role_name: user.other_role_name,
@@ -59,7 +63,10 @@ module Newflow
         needs_cs_review: user.is_educator_pending_cs_verification?,
         source: CreateSalesforceLead::SALESFORCE_INSTRUCTOR_ROLE,
         b_r_i_marketing: user.is_b_r_i_user?,
-        title_1_school: user.title_1_school?
+        title_1_school: user.title_1_school?,
+        sheerid_school_name: user.sheerid_reported_school,
+        account_id: sf_school_id,
+        school_id: sf_school_id
       )
     end
 

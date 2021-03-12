@@ -1,4 +1,4 @@
-class GroupNesting < ActiveRecord::Base
+class GroupNesting < ApplicationRecord
 
   belongs_to :container_group, class_name: 'Group', inverse_of: :member_group_nestings
   belongs_to :member_group, class_name: 'Group', inverse_of: :container_group_nesting

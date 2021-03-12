@@ -1,4 +1,4 @@
-class SheeridVerification < ActiveRecord::Base
+class SheeridVerification < ApplicationRecord
 
   VERIFIED = 'success'
   REJECTED = 'rejected'

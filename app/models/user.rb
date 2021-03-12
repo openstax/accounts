@@ -1,6 +1,6 @@
 require "i18n"
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
 
   VALID_STATES = [
     TEMP = 'temp', # deprecated but still could exist for old accounts
@@ -128,6 +128,8 @@ class User < ActiveRecord::Base
 
   before_create(:make_first_user_an_admin)
 
+  belongs_to :school, optional: true, inverse_of: :users
+
   belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
 
   has_one :identity, dependent: :destroy, inverse_of: :user
@@ -156,9 +158,26 @@ class User < ActiveRecord::Base
   attribute :is_not_gdpr_location, :boolean, default: nil
 
   def most_accurate_school_name
-    return sheerid_reported_school if sheerid_reported_school.present?
-    return self_reported_school if  self_reported_school.present?
+    return school.name if school.present?
+
+    return SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[1] \
+      if sheerid_reported_school.present?
+
+    return self_reported_school if self_reported_school.present?
+
     UNKNOWN_SCHOOL_NAME
+  end
+
+  def most_accurate_school_city
+    return school.city if school.present?
+
+    SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[2] if sheerid_reported_school.present?
+  end
+
+  def most_accurate_school_state
+    return school.state if school.present?
+
+    SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[3] if sheerid_reported_school.present?
   end
 
   def best_email_address_for_CS_verification

@@ -1,4 +1,4 @@
-class ApplicationUser < ActiveRecord::Base
+class ApplicationUser < ApplicationRecord
   belongs_to :application, class_name: 'Doorkeeper::Application',
                            inverse_of: :application_users
   belongs_to :user, inverse_of: :application_users

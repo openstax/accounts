@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_05_173220) do
+ActiveRecord::Schema.define(version: 2021_02_24_193753) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
+  enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -273,6 +274,23 @@ ActiveRecord::Schema.define(version: 2020_11_05_173220) do
     t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
   end
 
+  create_table "schools", force: :cascade do |t|
+    t.string "salesforce_id", null: false
+    t.string "name", null: false
+    t.string "city"
+    t.string "state"
+    t.string "type"
+    t.string "location"
+    t.string "sheerid_school_name"
+    t.boolean "is_kip", null: false
+    t.boolean "is_child_of_kip", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "city", "state"], name: "index_schools_on_name_and_city_and_state", opclass: :gist_trgm_ops, using: :gist
+    t.index ["salesforce_id"], name: "index_schools_on_salesforce_id", unique: true
+    t.index ["sheerid_school_name"], name: "index_schools_on_sheerid_school_name"
+  end
+
   create_table "security_logs", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "application_id"
@@ -370,6 +388,7 @@ ActiveRecord::Schema.define(version: 2020_11_05_173220) do
     t.datetime "requested_cs_verification_at"
     t.boolean "is_b_r_i_user"
     t.boolean "title_1_school"
+    t.bigint "school_id"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
@@ -377,6 +396,7 @@ ActiveRecord::Schema.define(version: 2020_11_05_173220) do
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"
     t.index ["salesforce_contact_id"], name: "index_users_on_salesforce_contact_id"
+    t.index ["school_id"], name: "index_users_on_school_id"
     t.index ["school_type"], name: "index_users_on_school_type"
     t.index ["source_application_id"], name: "index_users_on_source_application_id"
     t.index ["support_identifier"], name: "index_users_on_support_identifier", unique: true
@@ -387,4 +407,5 @@ ActiveRecord::Schema.define(version: 2020_11_05_173220) do
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "users", "oauth_applications", column: "source_application_id"
+  add_foreign_key "users", "schools"
 end

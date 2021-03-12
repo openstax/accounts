@@ -424,40 +424,58 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     end
   end
 
-  context '#cache_contact_data_in_user!' do
+  context '#cache_contact_and_school_data_in_user!' do
     before(:each) { disable_sfdc_client }
 
-    it 'handles nil contacts' do
-      described_class.new(allow_error_email: true).cache_contact_data_in_user!(nil, user)
+    it 'handles nil contacts and schools' do
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        nil, nil, user
+      )
       expect(user.salesforce_contact_id).to be_nil
       expect(user.faculty_status).to eq 'no_faculty_info'
       expect(user.using_openstax).to eq false
     end
 
+    it 'handles schools' do
+      school = FactoryBot.create :school
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        nil, school, user
+      )
+      expect(user.school).to eq school
+    end
+
     it 'handles Confirmed faculty status' do
       contact = new_contact(id: 'foo', faculty_verified: "Confirmed")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        contact, nil, user
+      )
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'confirmed_faculty'
     end
 
     it 'handles Pending faculty status' do
       contact = new_contact(id: 'foo', faculty_verified: "Pending")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        contact, nil, user
+      )
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'pending_faculty'
     end
 
     it 'handles Rejected faculty status' do
       contact = new_contact(id: 'foo', faculty_verified: "Rejected")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        contact, nil, user
+      )
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'rejected_faculty'
     end
 
     it 'handles Rejected2 faculty status' do
       contact = new_contact(id: 'foo', faculty_verified: "Rejected2")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        contact, nil, user
+      )
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.faculty_status).to eq 'rejected_faculty'
     end
@@ -465,34 +483,44 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     it 'raises for unknown faculty status' do
       contact = new_contact(id: 'foo', faculty_verified: "Diddly")
       expect{
-        described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+        described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+          contact, nil, user
+        )
       }.to raise_error(RuntimeError)
     end
 
     it 'handles Current Adopter status' do
       contact = new_contact(id: 'foo', adoption_status: "Current Adopter")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        contact, nil, user
+      )
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.using_openstax).to eq true
     end
 
     it 'handles Future Adopter status' do
       contact = new_contact(id: 'foo', adoption_status: "Future Adopter")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        contact, nil, user
+      )
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.using_openstax).to eq true
     end
 
     it 'handles Past Adopter status' do
       contact = new_contact(id: 'foo', adoption_status: "Past Adopter")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        contact, nil, user
+      )
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.using_openstax).to eq false
     end
 
     it 'handles Not Adopter status' do
       contact = new_contact(id: 'foo', adoption_status: "Not Adopter")
-      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        contact, nil, user
+      )
       expect(user.salesforce_contact_id).to eq 'foo'
       expect(user.using_openstax).to eq false
     end
@@ -500,7 +528,9 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     it 'handles b_r_i_marketing field' do
       expected_value = true
       contact = new_contact(id: 'foo', b_r_i_marketing: expected_value)
-      described_class.new(allow_error_email: true).cache_contact_data_in_user!(contact, user)
+      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
+        contact, nil, user
+      )
       expect(user.salesforce_contact_id).to eq('foo')
       expect(user.is_b_r_i_user?).to eq(expected_value)
     end
@@ -513,7 +543,12 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       user = FactoryBot.create :user
       email = AddEmailToUser.call("bob#{ii}@example.com", user).outputs.email
       ConfirmContactInfo.call(email)
-      contacts.push({id: "foo#{ii}", email: "bob#{ii}@example.com", faculty_verified: "Confirmed", adoption_status: "Current Adopter"})
+      contacts.push(
+        id: "foo#{ii}",
+        email: "bob#{ii}@example.com",
+        faculty_verified: "Confirmed",
+        adoption_status: "Current Adopter"
+      )
     end
 
     stub_salesforce(contacts: contacts)
@@ -544,7 +579,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         }
       ]
     )
-    expect_any_instance_of(described_class).to receive(:error!)
+    expect_any_instance_of(described_class).to receive(:error!).and_call_original
     described_class.call
   end
 
@@ -600,13 +635,16 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       when OpenStax::Salesforce::Remote::Contact
         contact
       when Hash
+        school = OpenStax::Salesforce::Remote::School.new(contact[:school]) \
+          unless contact[:school].nil?
+
         OpenStax::Salesforce::Remote::Contact.new(
           id: contact[:id] || SecureRandom.hex(10),
           email: contact[:email],
           email_alt: contact[:email_alt],
           faculty_verified: contact[:faculty_verified],
           school_type: contact[:school_type],
-          school: OpenStax::Salesforce::Remote::School.new(contact[:school]),
+          school: school,
           grant_tutor_access: contact[:grant_tutor_access]
         )
       end

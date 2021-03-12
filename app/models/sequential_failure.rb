@@ -1,4 +1,4 @@
-class SequentialFailure < ActiveRecord::Base
+class SequentialFailure < ApplicationRecord
   enum kind: [:confirm_by_pin]
 
   validates :reference, presence: true,
