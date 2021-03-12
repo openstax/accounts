@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c%20FROM%20Account%20WHERE%20(Name%20IN%20(%27JP%20University%27))"
+    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c%20FROM%20Account%20WHERE%20(RecordType.Name%20=%20%27School%27)%20AND%20(Name%20IN%20(%27JP%20University%27))"
     body:
       encoding: US-ASCII
       string: ''
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 05 Mar 2021 19:06:47 GMT
+      - Fri, 12 Mar 2021 21:53:40 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Expect-Ct:
@@ -31,10 +31,10 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=7x-_2X3lEeubki_jDZY20w; domain=.salesforce.com; path=/; expires=Sat,
-        05-Mar-2022 19:06:47 GMT; Max-Age=31536000
+      - BrowserId=Z_BjbYN9EeuzM2O0MQ-tFA; domain=.salesforce.com; path=/; expires=Sat,
+        12-Mar-2022 21:53:40 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=588/5000000
+      - api-usage=912/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -46,13 +46,13 @@ http_interactions:
       string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0010v00000bM8kQAAS"},"Id":"0010v00000bM8kQAAS","Name":"JP
         University","BillingCity":null,"BillingState":null,"Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}]}'
     http_version: 
-  recorded_at: Fri, 05 Mar 2021 19:06:47 GMT
+  recorded_at: Fri, 12 Mar 2021 21:53:40 GMT
 - request:
     method: post
     uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Contact"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Sanjuanita","LastName":"Pacocha_unique_token","Email":"a@a.com._unique_token","AccountId":"0010v00000bM8kQAAS"}'
+      string: '{"FirstName":"Meggan","LastName":"Romaguera_unique_token","Email":"a@a.com._unique_token","AccountId":"0010v00000bM8kQAAS"}'
     headers:
       User-Agent:
       - Faraday v0.17.3
@@ -70,7 +70,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Fri, 05 Mar 2021 19:06:48 GMT
+      - Fri, 12 Mar 2021 21:53:40 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Expect-Ct:
@@ -80,12 +80,12 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=70Ml4X3lEeuAEhuWDHv8Vw; domain=.salesforce.com; path=/; expires=Sat,
-        05-Mar-2022 19:06:48 GMT; Max-Age=31536000
+      - BrowserId=aB5R24N9Eeuts1dgTrf-Sw; domain=.salesforce.com; path=/; expires=Sat,
+        12-Mar-2022 21:53:40 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=588/5000000
+      - api-usage=913/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Contact/0030v00000UkFR7AAN"
+      - "/services/data/v37.0/sobjects/Contact/0030v00000UxuyAAAR"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -94,12 +94,12 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"0030v00000UkFR7AAN","success":true,"errors":[]}'
+      string: '{"id":"0030v00000UxuyAAAR","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Fri, 05 Mar 2021 19:06:49 GMT
+  recorded_at: Fri, 12 Mar 2021 21:53:41 GMT
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c%20FROM%20Account%20WHERE%20(Name%20IN%20(%27JP%20University%27))"
+    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c%20FROM%20Account%20WHERE%20(RecordType.Name%20=%20%27School%27)%20AND%20(Name%20IN%20(%27JP%20University%27))"
     body:
       encoding: US-ASCII
       string: ''
@@ -118,7 +118,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 05 Mar 2021 19:06:49 GMT
+      - Fri, 12 Mar 2021 21:53:42 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Expect-Ct:
@@ -128,10 +128,10 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=8CjyLX3lEeuAEhuWDHv8Vw; domain=.salesforce.com; path=/; expires=Sat,
-        05-Mar-2022 19:06:49 GMT; Max-Age=31536000
+      - BrowserId=aPZh8oN9EeuzM2O0MQ-tFA; domain=.salesforce.com; path=/; expires=Sat,
+        12-Mar-2022 21:53:42 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=589/5000000
+      - api-usage=913/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -143,13 +143,13 @@ http_interactions:
       string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0010v00000bM8kQAAS"},"Id":"0010v00000bM8kQAAS","Name":"JP
         University","BillingCity":null,"BillingState":null,"Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}]}'
     http_version: 
-  recorded_at: Fri, 05 Mar 2021 19:06:49 GMT
+  recorded_at: Fri, 12 Mar 2021 21:53:42 GMT
 - request:
     method: post
     uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Contact"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Enola","LastName":"Baumbach_unique_token","Email":"b@b.com._unique_token","AccountId":"0010v00000bM8kQAAS"}'
+      string: '{"FirstName":"Ulrike","LastName":"Spinka_unique_token","Email":"b@b.com._unique_token","AccountId":"0010v00000bM8kQAAS"}'
     headers:
       User-Agent:
       - Faraday v0.17.3
@@ -167,7 +167,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Fri, 05 Mar 2021 19:06:49 GMT
+      - Fri, 12 Mar 2021 21:53:42 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Expect-Ct:
@@ -177,12 +177,12 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=8FNdF33lEeuCQktSqTXlpQ; domain=.salesforce.com; path=/; expires=Sat,
-        05-Mar-2022 19:06:49 GMT; Max-Age=31536000
+      - BrowserId=aRhowoN9EeuUwyMmpHo8jA; domain=.salesforce.com; path=/; expires=Sat,
+        12-Mar-2022 21:53:42 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=589/5000000
+      - api-usage=912/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Contact/0030v00000UkFRCAA3"
+      - "/services/data/v37.0/sobjects/Contact/0030v00000UxuxhAAB"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -191,9 +191,9 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"0030v00000UkFRCAA3","success":true,"errors":[]}'
+      string: '{"id":"0030v00000UxuxhAAB","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Fri, 05 Mar 2021 19:06:50 GMT
+  recorded_at: Fri, 12 Mar 2021 21:53:43 GMT
 - request:
     method: get
     uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c,%20School_Type__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20Account.Id,%20Account.Name,%20Account.BillingCity,%20Account.BillingState,%20Account.Type,%20Account.School_Location__c,%20Account.SheerID_School_Name__c,%20Account.K_I_P__c,%20Account.child_of_kip__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)"
@@ -215,7 +215,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 05 Mar 2021 19:06:51 GMT
+      - Fri, 12 Mar 2021 21:53:43 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Expect-Ct:
@@ -225,10 +225,10 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=8SMxBn3lEeuyFxUVTDLOIQ; domain=.salesforce.com; path=/; expires=Sat,
-        05-Mar-2022 19:06:51 GMT; Max-Age=31536000
+      - BrowserId=afZGLoN9EeuDP4f7QYvr1A; domain=.salesforce.com; path=/; expires=Sat,
+        12-Mar-2022 21:53:43 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=590/5000000
+      - api-usage=912/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -237,13 +237,13 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0030v00000UkFR7AAN"},"Id":"0030v00000UkFR7AAN","Email":"a@a.com._unique_token","Email_alt__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"Adoption_Status__c":"Not
+      string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0030v00000UxuxhAAB"},"Id":"0030v00000UxuxhAAB","Email":"b@b.com._unique_token","Email_alt__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"Adoption_Status__c":"Not
         Adopter","Grant_Tutor_Access__c":false,"Account":{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0010v00000bM8kQAAS"},"Id":"0010v00000bM8kQAAS","Name":"JP
-        University","BillingCity":null,"BillingState":null,"Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0030v00000UkFRCAA3"},"Id":"0030v00000UkFRCAA3","Email":"b@b.com._unique_token","Email_alt__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"Adoption_Status__c":"Not
+        University","BillingCity":null,"BillingState":null,"Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}},{"attributes":{"type":"Contact","url":"/services/data/v37.0/sobjects/Contact/0030v00000UxuyAAAR"},"Id":"0030v00000UxuyAAAR","Email":"a@a.com._unique_token","Email_alt__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"Adoption_Status__c":"Not
         Adopter","Grant_Tutor_Access__c":false,"Account":{"attributes":{"type":"Account","url":"/services/data/v37.0/sobjects/Account/0010v00000bM8kQAAS"},"Id":"0010v00000bM8kQAAS","Name":"JP
         University","BillingCity":null,"BillingState":null,"Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}}]}'
     http_version: 
-  recorded_at: Fri, 05 Mar 2021 19:06:51 GMT
+  recorded_at: Fri, 12 Mar 2021 21:53:43 GMT
 - request:
     method: get
     uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)"
@@ -265,7 +265,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 05 Mar 2021 19:06:51 GMT
+      - Fri, 12 Mar 2021 21:53:44 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Expect-Ct:
@@ -275,10 +275,10 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=8Vptr33lEeuyFxUVTDLOIQ; domain=.salesforce.com; path=/; expires=Sat,
-        05-Mar-2022 19:06:51 GMT; Max-Age=31536000
+      - BrowserId=aidA7oN9EeuUwyMmpHo8jA; domain=.salesforce.com; path=/; expires=Sat,
+        12-Mar-2022 21:53:44 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=591/5000000
+      - api-usage=913/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -289,5 +289,5 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"totalSize":0,"done":true,"records":[]}'
     http_version: 
-  recorded_at: Fri, 05 Mar 2021 19:06:51 GMT
+  recorded_at: Fri, 12 Mar 2021 21:53:44 GMT
 recorded_with: VCR 3.0.3

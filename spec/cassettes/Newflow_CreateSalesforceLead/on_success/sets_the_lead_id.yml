@@ -5,8 +5,8 @@ http_interactions:
     uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Dustin","LastName":"Jast","Company":"unknown to Accounts","Email":"f@f.com","LeadSource":"OSC
-        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":3,"accounts_uuid_c__c":"d12ea6af-750f-4585-b733-0caa360594e4","Application_Source__c":"Tutor
+      string: '{"FirstName":"Jacinta","LastName":"Conroy","Company":"unknown to Accounts","Email":"f@f.com","LeadSource":"OSC
+        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":6,"accounts_uuid_c__c":"f8800fa8-a9fe-42ae-84fc-714028c4675f","Application_Source__c":"Tutor
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
     headers:
       User-Agent:
@@ -25,7 +25,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Fri, 05 Mar 2021 19:15:22 GMT
+      - Fri, 12 Mar 2021 21:56:24 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       Expect-Ct:
@@ -35,12 +35,12 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=Ii7tHX3nEeuAEhuWDHv8Vw; domain=.salesforce.com; path=/; expires=Sat,
-        05-Mar-2022 19:15:22 GMT; Max-Age=31536000
+      - BrowserId=yeJlToN9EeuzM2O0MQ-tFA; domain=.salesforce.com; path=/; expires=Sat,
+        12-Mar-2022 21:56:24 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=655/5000000
+      - api-usage=972/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q0v000007Y9yKEAS"
+      - "/services/data/v37.0/sobjects/Lead/00Q0v000007YL8XEAW"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -49,7 +49,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00Q0v000007Y9yKEAS","success":true,"errors":[]}'
+      string: '{"id":"00Q0v000007YL8XEAW","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Fri, 05 Mar 2021 19:15:25 GMT
+  recorded_at: Fri, 12 Mar 2021 21:56:27 GMT
 recorded_with: VCR 3.0.3
