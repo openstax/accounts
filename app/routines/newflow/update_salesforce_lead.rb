@@ -56,7 +56,7 @@ module Newflow
         other_role_name: user.other_role_name,
         num_students: user.how_many_students,
         adoption_status: ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
-        verification_status: user.faculty_status,
+        verification_status: user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
         who_chooses_books: user.who_chooses_books,
         subject: user.which_books,
         finalize_educator_signup: user.is_profile_complete?,
