@@ -8,7 +8,7 @@ http_interactions:
       string: grant_type=password&client_id=<salesforce_consumer_key>&client_secret=<salesforce_consumer_secret>&username=<salesforce_username_url>&password=<salesforce_password_url><salesforce_security_token>
     headers:
       User-Agent:
-      - Faraday v0.17.3
+      - Faraday v0.17.4
       Content-Type:
       - application/x-www-form-urlencoded
       Accept-Encoding:
@@ -21,7 +21,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 12 Mar 2021 21:52:17 GMT
+      - Thu, 01 Apr 2021 22:24:29 GMT
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Content-Type-Options:
@@ -31,8 +31,8 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=NsASjYN9Eeu3JbEO3WTFFw; domain=.salesforce.com; path=/; expires=Sat,
-        12-Mar-2022 21:52:17 GMT; Max-Age=31536000
+      - BrowserId=BkqNdZM5Eeu1z7duNeyThg; domain=.salesforce.com; path=/; expires=Fri,
+        01-Apr-2022 22:24:29 GMT; Max-Age=31536000
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       X-Readonlymode:
@@ -45,7 +45,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"access_token":"<salesforce_access_token>","instance_url":"<salesforce_instance_url>","id":"<salesforce_id>","token_type":"Bearer","issued_at":"1615585938102","signature":"<salesforce_signature>"}'
+      string: '{"access_token":"<salesforce_access_token>","instance_url":"<salesforce_instance_url>","id":"<salesforce_id>","token_type":"Bearer","issued_at":"1617315869561","signature":"<salesforce_signature>"}'
     http_version: 
-  recorded_at: Fri, 12 Mar 2021 21:52:18 GMT
+  recorded_at: Thu, 01 Apr 2021 22:24:29 GMT
 recorded_with: VCR 3.0.3

@@ -5,12 +5,12 @@ http_interactions:
     uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Ted","LastName":"Hettinger","Company":"unknown to Accounts","Email":"f@f.com","LeadSource":"OSC
-        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":1,"accounts_uuid_c__c":"1f15674c-efa4-4064-8f4f-35a01c6608ef","Application_Source__c":"Tutor
+      string: '{"FirstName":"Ninfa","LastName":"Watsica","Company":"unknown to Accounts","Email":"f@f.com","LeadSource":"OSC
+        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":5,"accounts_uuid_c__c":"73601169-d21e-4366-8481-f933d1fdff4f","Application_Source__c":"Tutor
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
     headers:
       User-Agent:
-      - Faraday v0.17.3
+      - Faraday v0.17.4
       Content-Type:
       - application/json
       Authorization:
@@ -25,22 +25,20 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Fri, 12 Mar 2021 21:56:07 GMT
+      - Thu, 01 Apr 2021 22:25:07 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
-      Expect-Ct:
-      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D0v0000005T7Um"
       X-Robots-Tag:
       - none
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=v5DKg4N9EeuN4_Va47v3UA; domain=.salesforce.com; path=/; expires=Sat,
-        12-Mar-2022 21:56:07 GMT; Max-Age=31536000
+      - BrowserId=HUgEapM5Eeu3jplyY1byOw; domain=.salesforce.com; path=/; expires=Fri,
+        01-Apr-2022 22:25:07 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=973/5000000
+      - api-usage=2045/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q0v000007YL83EAG"
+      - "/services/data/v37.0/sobjects/Lead/00Q0v000007YisYEAS"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -49,7 +47,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00Q0v000007YL83EAG","success":true,"errors":[]}'
+      string: '{"id":"00Q0v000007YisYEAS","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Fri, 12 Mar 2021 21:56:10 GMT
+  recorded_at: Thu, 01 Apr 2021 22:25:09 GMT
 recorded_with: VCR 3.0.3
