@@ -1,4 +1,6 @@
 class UpdateUserSalesforceInfo
+  BATCH_SIZE = 20
+
   COLLEGE_TYPES = [
     'College/University (4)',
     'Technical/Community College (2)',
@@ -151,7 +153,7 @@ class UpdateUserSalesforceInfo
     self
   end
 
-  def contacts
+  #def contacts
     # The query below is not particularly fast, takes around a minute.  We could
     # try to do something fancier, like only query contacts modified in the last day
     # or keep track of when the SF data was last updated and use those timestamps
@@ -169,14 +171,14 @@ class UpdateUserSalesforceInfo
     #       If we don't use timestamps, should load the contacts in chunks of 1,000 or 10,000
     #       Or maybe try https://github.com/gooddata/salesforce_bulk_query
 
-    @contacts ||= OpenStax::Salesforce::Remote::Contact
-                    .select(
-                      :id, :email, :email_alt, :faculty_verified,
-                      :school_type, :adoption_status, :grant_tutor_access
-                    )
-                    .includes(:school)
-                    .to_a
-  end
+  #   @contacts ||= OpenStax::Salesforce::Remote::Contact
+  #                   .select(
+  #                     :id, :email, :email_alt, :faculty_verified,
+  #                     :school_type, :adoption_status, :grant_tutor_access
+  #                   )
+  #                   .includes(:school)
+  #                   .to_a
+  # end
 
   def leads
     # Leads come from many sources; we only care about those created for faculty
@@ -203,39 +205,52 @@ class UpdateUserSalesforceInfo
   end
 
   def prepare_contacts
-    colliding_emails = []
+    last_id = nil
+    loop do
+      sf_contacts = OpenStax::Salesforce::Remote::Contact.select(
+          :id, :email, :email_alt, :faculty_verified,
+          :school_type, :adoption_status, :grant_tutor_access
+      ).order(:id).limit(BATCH_SIZE)
+      sf_contacts = sf_contacts.where("id > '#{last_id}'") unless last_id.nil?
+      sf_contacts = sf_contacts.to_a
+      last_id = sf_contacts.last.id
 
-    # Store each contact in our internal maps; keep track of which contacts have
-    # colliding emails so we can clear them out below (don't want to clear out
-    # until all contacts have been examined so that we don't miss a collision)
 
-    contacts.each do |contact|
-      emails = [contact.email, contact.email_alt].compact
-                                                 .map(&:downcase)
-                                                 .map(&:strip)
-                                                 .uniq
+      colliding_emails = []
 
-      emails.each do |email|
-        if (colliding_contact = @contacts_by_email[email])
-          colliding_emails.push(email)
-          error!(
-            message: "#{email} is listed on contact #{contact.id} and contact #{colliding_contact.id}" \
-                     "; neither contact will be synched to an OpenStax Account until this is resolved."
-          )
-        else
-          @contacts_by_email[email] = contact
-          @contacts_by_id[contact.id] = contact
+      # Store each contact in our internal maps; keep track of which contacts have
+      # colliding emails so we can clear them out below (don't want to clear out
+      # until all contacts have been examined so that we don't miss a collision)
+
+      sf_contacts.each do |contact|
+        emails = [contact.email, contact.email_alt].compact
+                                                   .map(&:downcase)
+                                                   .map(&:strip)
+                                                   .uniq
+
+        emails.each do |email|
+          if (colliding_contact = @contacts_by_email[email])
+            colliding_emails.push(email)
+            error!(
+              message: "#{email} is listed on contact #{contact.id} and contact #{colliding_contact.id}" \
+                       "; neither contact will be synched to an OpenStax Account until this is resolved."
+            )
+          else
+            @contacts_by_email[email] = contact
+            @contacts_by_id[contact.id] = contact
+          end
+          break if sf_contacts.length < BATCH_SIZE
         end
       end
-    end
 
-    # Go through colliding emails and clear their Contacts out of our hashes so that
-    # we don't assign these Contacts to users until a human resolves the collisions
+      # Go through colliding emails and clear their Contacts out of our hashes so that
+      # we don't assign these Contacts to users until a human resolves the collisions
 
-    colliding_emails.uniq.each do |colliding_email|
-      contact = @contacts_by_email[colliding_email]
-      @contacts_by_id[contact.id] = nil
-      @contacts_by_email[colliding_email] = nil
+      colliding_emails.uniq.each do |colliding_email|
+        contact = @contacts_by_email[colliding_email]
+        @contacts_by_id[contact.id] = nil
+        @contacts_by_email[colliding_email] = nil
+      end
     end
   end
 
