@@ -45,12 +45,11 @@ module Newflow
     def update_salesforce_lead!(lead, user)
       sf_school_id = user.school&.salesforce_id
 
-      lead.update(
+      update_hash = {
         first_name: user.first_name,
         last_name: user.last_name,
         school: user.most_accurate_school_name,
         city: user.most_accurate_school_city,
-        state: user.most_accurate_school_state,
         email: user.best_email_address_for_CS_verification,
         role: user.role,
         other_role_name: user.other_role_name,
@@ -67,7 +66,19 @@ module Newflow
         sheerid_school_name: user.sheerid_reported_school,
         account_id: sf_school_id,
         school_id: sf_school_id
-      )
+      }
+
+      state = user.most_accurate_school_state
+      unless state.nil?
+        # Figure out if the State is an abbreviation or the full name
+        if state == state.upcase
+          update_hash[:state_code] = state
+        else
+          update_hash[:state] = state
+        end
+      end
+
+      lead.update update_hash
     end
 
     def log_success(user, lead)

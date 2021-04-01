@@ -5,7 +5,7 @@ module Newflow
   describe CreateSalesforceLead, type: :routine, vcr: VCR_OPTS do
 
     before(:all) do
-      VCR.use_cassette('Newflow/CreateSalesforceLead/sf_setup', VCR_OPTS) do
+      VCR.use_cassette('Newflow_CreateSalesforceLead/sf_setup', VCR_OPTS) do
         @proxy = SalesforceProxy.new
         @proxy.setup_cassette
       end
