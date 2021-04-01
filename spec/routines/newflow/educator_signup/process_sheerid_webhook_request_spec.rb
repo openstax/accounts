@@ -10,6 +10,7 @@ RSpec.describe Newflow::EducatorSignup::ProcessSheeridWebhookRequest, type: :rou
   end
   let(:verification_details)    do
     SheeridAPI::Response.new(
+      'lastResponse' => { 'currentStep' => verification.current_step },
       'personInfo' => {
         'firstName' => user.first_name,
         'lastName' => user.last_name,
