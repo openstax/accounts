@@ -6,6 +6,7 @@ class UpdateSchoolSalesforceInfo
     name: :name,
     city: :city,
     state: :state,
+    country: :country,
     type: :type,
     school_location: :location,
     is_kip: :is_kip,

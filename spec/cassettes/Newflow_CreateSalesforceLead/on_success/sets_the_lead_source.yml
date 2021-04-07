@@ -5,8 +5,8 @@ http_interactions:
     uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Robbi","LastName":"Boyle","Company":"unknown to Accounts","Email":"f@f.com","LeadSource":"OSC
-        Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":3,"accounts_uuid_c__c":"441f2ec0-146b-44d2-9378-d211c96c690c","Application_Source__c":"Tutor
+      string: '{"FirstName":"Esmeralda","LastName":"Schuppe","Company":"unknown to
+        Accounts","Country":"United States","Email":"f@f.com","LeadSource":"OSC Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":42,"accounts_uuid_c__c":"8fd7ff04-2381-4c97-b82b-683b2340b9d8","Application_Source__c":"Tutor
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
     headers:
       User-Agent:
@@ -25,7 +25,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Thu, 01 Apr 2021 22:25:04 GMT
+      - Wed, 07 Apr 2021 17:26:24 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
       X-Robots-Tag:
@@ -33,12 +33,12 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=G0w045M5Eeu3jplyY1byOw; domain=.salesforce.com; path=/; expires=Fri,
-        01-Apr-2022 22:25:04 GMT; Max-Age=31536000
+      - BrowserId=YI_WgJfGEeuJmr-dn1jxAA; domain=.salesforce.com; path=/; expires=Thu,
+        07-Apr-2022 17:26:24 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=2044/5000000
+      - api-usage=1092/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q0v000007YisOEAS"
+      - "/services/data/v37.0/sobjects/Lead/00Q0v000007UFEYEA4"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -47,7 +47,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00Q0v000007YisOEAS","success":true,"errors":[]}'
+      string: '{"id":"00Q0v000007UFEYEA4","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Thu, 01 Apr 2021 22:25:05 GMT
+  recorded_at: Wed, 07 Apr 2021 17:34:35 GMT
 recorded_with: VCR 3.0.3

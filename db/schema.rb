@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_24_193753) do
+ActiveRecord::Schema.define(version: 2021_04_07_165954) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -286,6 +286,7 @@ ActiveRecord::Schema.define(version: 2021_02_24_193753) do
     t.boolean "is_child_of_kip", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "country", default: "United States", null: false
     t.index ["name", "city", "state"], name: "index_schools_on_name_and_city_and_state", opclass: :gist_trgm_ops, using: :gist
     t.index ["salesforce_id"], name: "index_schools_on_salesforce_id", unique: true
     t.index ["sheerid_school_name"], name: "index_schools_on_sheerid_school_name"

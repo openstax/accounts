@@ -50,6 +50,7 @@ module Newflow
         last_name: user.last_name,
         school: user.most_accurate_school_name,
         city: user.most_accurate_school_city,
+        country: user.most_accurate_school_country,
         email: user.best_email_address_for_CS_verification,
         role: user.role,
         other_role_name: user.other_role_name,

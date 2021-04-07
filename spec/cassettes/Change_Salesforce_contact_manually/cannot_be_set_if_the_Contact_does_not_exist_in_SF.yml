@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.17.3
+      - Faraday v0.17.4
       Authorization:
       - OAuth <salesforce_access_token>
       Accept-Encoding:
@@ -21,20 +21,18 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Fri, 12 Mar 2021 21:54:58 GMT
+      - Wed, 07 Apr 2021 17:25:32 GMT
       Strict-Transport-Security:
       - max-age=31536002; includeSubDomains
-      Expect-Ct:
-      - max-age=86400, report-uri="https://a.forcesslreports.com/Expect-CT-report/00D0v0000005T7Um"
       X-Robots-Tag:
       - none
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=ltdgYYN9Eeu3NbOraOQl7Q; domain=.salesforce.com; path=/; expires=Sat,
-        12-Mar-2022 21:54:58 GMT; Max-Age=31536000
+      - BrowserId=QakRypfGEeuwD7VAfM7TGQ; domain=.salesforce.com; path=/; expires=Thu,
+        07-Apr-2022 17:25:32 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=944/5000000
+      - api-usage=1091/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -45,5 +43,5 @@ http_interactions:
       encoding: ASCII-8BIT
       string: '{"totalSize":0,"done":true,"records":[]}'
     http_version: 
-  recorded_at: Fri, 12 Mar 2021 21:54:59 GMT
+  recorded_at: Wed, 07 Apr 2021 17:34:35 GMT
 recorded_with: VCR 3.0.3
