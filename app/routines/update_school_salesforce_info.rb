@@ -1,5 +1,5 @@
 class UpdateSchoolSalesforceInfo
-  BATCH_SIZE = 1000
+  BATCH_SIZE = 250
 
   SF_TO_DB_CACHE_COLUMNS_MAP = {
     id: :salesforce_id,
