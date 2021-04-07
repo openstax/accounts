@@ -180,6 +180,10 @@ class User < ApplicationRecord
     SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[3] if sheerid_reported_school.present?
   end
 
+  def most_accurate_school_country
+    school.present? ? school.country : 'United States'
+  end
+
   def best_email_address_for_CS_verification
     email_addresses.school_issued.first&.value || \
     email_addresses.verified.first&.value || \
