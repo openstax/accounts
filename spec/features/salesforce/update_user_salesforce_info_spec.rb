@@ -3,7 +3,7 @@ require 'vcr_helper'
 
 RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
   before(:all) do
-    VCR.use_cassette('UpdateUserSalesforceInfo/sf_setup', VCR_OPTS) do
+    VCR.use_cassette('UpdateUserSalesforceInfo/sf_setup', allow_unused_http_interactions: true) do
       @proxy = SalesforceProxy.new
       @proxy.setup_cassette
       @proxy.ensure_schools_exist(["JP University"])
