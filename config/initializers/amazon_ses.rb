@@ -6,6 +6,7 @@ if Rails.env.production?
     AWS::SES::Base,
     access_key_id:     secrets[:access_key_id],
     secret_access_key: secrets[:secret_access_key],
-    server:            secrets[:endpoint_server]
+    server:            secrets[:endpoint_server],
+    signature_version: 4
   )
 end
