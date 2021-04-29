@@ -264,7 +264,7 @@ end
 
 group :production, :test do
   # AWS SES integration
-  gem 'aws-sdk-rails'
+  gem "aws-ses-v4", "~> 0.8.1", :require => 'aws/ses'
 end
 
 group :production do
