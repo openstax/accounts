@@ -15,24 +15,6 @@ RSpec.describe 'ActionMailer::DeliveryJob error recovery' do
     end
 
     it "should rescue it, log it, send to sentry, not email it, not reraise it" do
-      allow_any_instance_of(ActionMailer::MessageDelivery).to receive(:deliver_now) do |*args|
-        raise AWS::SES::ResponseError.new(
-          OpenStruct.new(
-            error: {
-              "Code" => "InvalidParameterValue",
-              "Message" => "Missing final '@domain'"
-            }
-          )
-        )
-      end
-
-      expect(OpenStax::RescueFrom).to receive(:perform_rescue).and_call_original
-      expect(Rails.logger).to receive(:error).twice
-
-      expect(Raven).to receive(:capture_exception) do |exception, *args|
-        expect(exception).to be_a(AWS::SES::ResponseError)
-      end
-
       expect do
         DevMailer.inspect_object(object: "foo", subject: "bar").deliver_later
       end.not_to raise_error
