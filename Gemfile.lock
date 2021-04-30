@@ -548,7 +548,7 @@ GEM
       faraday_middleware (>= 0.8.8, <= 2.0)
       hashie (>= 1.2.0, < 5.0)
       jwt (>= 1.5.6)
-    rexml (3.2.4)
+    rexml (3.2.5)
     roar (1.1.0)
       representable (~> 3.0.0)
     roar-rails (1.1.0)
