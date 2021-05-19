@@ -10,7 +10,7 @@ class FixIsNewflowFlagForSocialUsers
           Rails.logger.info { "Updated #{num_updated} user(s)" }
         rescue Exception => e
           puts e
-          Raven.capture_exception(e)
+          Sentry.capture_exception(e)
           raise ActiveRecord::Rollback
         end
       end

@@ -73,16 +73,16 @@ module SetGdprData
         if body["status"] == "success"
           return body["countryCode"]
         else
-          Raven.capture_message("Failed IP address location lookup", extra: body)
+          Sentry.capture_message("Failed IP address location lookup", extra: body)
           return nil
         end
       end
     rescue Net::ReadTimeout => ee
-      Raven.capture_message("IP address location lookup timed out")
+      Sentry.capture_message("IP address location lookup timed out")
       return nil
     rescue => ee
       # We don't want explosions here to trickle out and impact callers
-      Raven.capture_exception(ee)
+      Sentry.capture_exception(ee)
       return nil
     end
   end

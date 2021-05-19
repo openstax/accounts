@@ -45,7 +45,7 @@ describe SetGdprData, type: :lib, vcr: VCR_OPTS do
     end
 
     it 'returns nil for bad IP' do
-      expect(Raven).to receive(:capture_message).with(/Failed IP/, any_args)
+      expect(Sentry).to receive(:capture_message).with(/Failed IP/, any_args)
       expect(described_class.country_code(ip: "howdy")).to eq nil
     end
 
@@ -53,13 +53,13 @@ describe SetGdprData, type: :lib, vcr: VCR_OPTS do
       # cannot really test read timeout b/c of how webmock inserts itself
       # https://github.com/bblimke/webmock/issues/286#issuecomment-19457387
       allow(Net::HTTP).to receive(:start).and_raise(Net::ReadTimeout)
-      expect(Raven).to receive(:capture_message).with(/timed out/)
+      expect(Sentry).to receive(:capture_message).with(/timed out/)
       expect(described_class.country_code(ip: us_ip)).to eq nil
     end
 
     it 'returns nil for any other problem' do
       allow(Net::HTTP).to receive(:start).and_raise(StandardError)
-      expect(Raven).to receive(:capture_exception)
+      expect(Sentry).to receive(:capture_exception)
       expect(described_class.country_code(ip: us_ip)).to eq nil
     end
   end

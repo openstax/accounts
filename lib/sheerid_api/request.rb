@@ -27,12 +27,12 @@ module SheeridAPI
       return Response.new(parse_body(http_response.body))
     rescue Net::ReadTimeout => ee
       message = 'SheeridAPI: timeout'
-      Raven.capture_message(message)
+      Sentry.capture_message(message)
       Rails.logger.warn(message)
       return NullResponse.instance
     rescue => ee
       # We don't want explosions here to trickle out and impact callers
-      Raven.capture_exception(ee)
+      Sentry.capture_exception(ee)
       Rails.logger.warn(ee)
       return NullResponse.instance
     end

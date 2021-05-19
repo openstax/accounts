@@ -10,7 +10,7 @@ OpenStax::RescueFrom.configure do |config|
   config.app_name = 'Accounts'
   config.contact_name = exception_secrets[:contact_name].html_safe
 
-  # Notify devs using sentry-raven
+  # Notify devs using sentry
   config.notify_proc = ->(proxy, controller) do
     extra = {
       error_id: proxy.error_id,
@@ -22,7 +22,7 @@ OpenStax::RescueFrom.configure do |config|
     }
     extra.merge!(proxy.extras) if proxy.extras.is_a? Hash
 
-    Raven.capture_exception(proxy.exception, extra: extra)
+    Sentry.capture_exception(proxy.exception, extra: extra)
   end
   config.notify_background_proc = ->(proxy) do
     extra = {
@@ -34,10 +34,8 @@ OpenStax::RescueFrom.configure do |config|
     }
     extra.merge!(proxy.extras) if proxy.extras.is_a? Hash
 
-    Raven.capture_exception(proxy.exception, extra: extra)
+    Sentry.capture_exception(proxy.exception, extra: extra)
   end
-  require 'raven/integrations/rack'
-  config.notify_rack_middleware = Raven::Rack
 
   config.html_error_template_path = 'errors/any'
   config.html_error_template_layout_name = 'error'

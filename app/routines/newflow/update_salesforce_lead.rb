@@ -98,7 +98,7 @@ module Newflow
     def log_error(user, lead, code=nil)
       message = "[UpdateSalesforceLead] ERROR"
       Rails.logger.warn(message)
-      Raven.capture_message(
+      Sentry.capture_message(
         message,
         extra: {
           user_id: user.id,
