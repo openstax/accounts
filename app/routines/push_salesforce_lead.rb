@@ -81,7 +81,7 @@ class PushSalesforceLead
     error_code = :lead_error
 
     Rails.logger.warn(message + "#{lead&.inspect}; User: #{user.id}; Role: #{role}; Error: #{full_error_message}")
-    Raven.capture_message(
+    Sentry.capture_message(
       message,
       extra: {
         user_id: user.id,

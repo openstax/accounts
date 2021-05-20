@@ -69,8 +69,9 @@ gem 'openstax_api', '~> 9.0.1'
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from'
 
-# Sentry integration (the require disables automatic Rails integration since we use rescue_from)
-gem 'sentry-raven', require: 'raven/base'
+# Sentry integration
+gem 'sentry-ruby'
+gem "sentry-rails"
 
 # Background job status store
 gem 'jobba', '~> 1.4.0'
@@ -216,6 +217,10 @@ group :development, :test do
 
   # Lint RSpec files
   gem 'rubocop-rspec'
+
+  gem 'faraday', '~> 1.0.0'
+
+  gem 'faraday_middleware', '~> 1.0.0'
 end
 
 group :development do

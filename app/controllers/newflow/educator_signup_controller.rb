@@ -120,7 +120,7 @@ module Newflow
           render(status: :ok, plain: 'Success')
         },
         failure: lambda {
-          Raven.capture_message(
+          Sentry.capture_message(
             'SheerID webhook FAILED',
             extra: {
               verificationid: params['verificationId'],

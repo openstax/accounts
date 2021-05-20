@@ -52,11 +52,11 @@ class FetchBookData
         return body
       end
     rescue Net::ReadTimeout => ee
-      Raven.capture_message("Fetching book data from the CMS timed out")
+      Sentry.capture_message("Fetching book data from the CMS timed out")
       return nil
     rescue => ee
       # We don't want explosions here to trickle out and impact callers
-      Raven.capture_exception(ee)
+      Sentry.capture_exception(ee)
       return nil
     end
   end

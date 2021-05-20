@@ -26,8 +26,8 @@ describe FetchBookData, type: :lib, vcr: VCR_OPTS do
         expect(actual_titles).to match_array([])
       end
 
-      it 'calls Raven with a timed out message' do
-        expect(Raven).to receive(:capture_message).with(/timed out/)
+      it 'calls Sentry with a timed out message' do
+        expect(Sentry).to receive(:capture_message).with(/timed out/)
         actual_titles
       end
     end
@@ -41,8 +41,8 @@ describe FetchBookData, type: :lib, vcr: VCR_OPTS do
         expect(actual_titles).to match_array([])
       end
 
-      it 'calls Raven with a timed out message' do
-        expect(Raven).to receive(:capture_exception)
+      it 'calls Sentry with a timed out message' do
+        expect(Sentry).to receive(:capture_exception)
         actual_titles
       end
     end

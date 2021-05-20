@@ -22,7 +22,7 @@ RSpec.describe Legacy::SessionsController, type: :controller do
         expect(SessionsCreate).to receive(:handle).and_return(
           Hashie::Mash.new(outputs: {}, errors: [code: :invalid_omniauth_data])
         )
-        expect(Raven).not_to receive(:capture_exception)
+        expect(Sentry).not_to receive(:capture_exception)
         expect{ post(:create, params: { provider: 'identity' }) }.not_to(
           change{ ActionMailer::Base.deliveries.count }
         )
@@ -36,7 +36,7 @@ RSpec.describe Legacy::SessionsController, type: :controller do
         expect(SessionsCreate).to receive(:handle).and_return(
           Hashie::Mash.new(outputs: {}, errors: [code: :unknown_callback_state])
         )
-        expect(Raven).not_to receive(:capture_exception)
+        expect(Sentry).not_to receive(:capture_exception)
         expect{
           post(:create,
             params: { provider: 'identity' }
@@ -57,7 +57,7 @@ RSpec.describe Legacy::SessionsController, type: :controller do
             errors: [code: :some_error, message: 'Some error']
           )
         )
-        expect(Raven).to receive(:capture_exception) do |exception, *args|
+        expect(Sentry).to receive(:capture_exception) do |exception, *args|
           expect(exception).to be_a(IllegalState)
         end
         expect{ post(:create, params: { provider: 'identity' }) }.not_to(

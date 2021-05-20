@@ -64,7 +64,7 @@ module Newflow
     end
 
     def email_taken_error!(user_id)
-      Raven.capture_message(
+      Sentry.capture_message(
         'Email address taken during ConfirmOauthInfo',
         extra: { user_id: user_id }
       )

@@ -86,7 +86,7 @@ module Newflow
       incoming_auth_uid = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).last&.uid
 
       if existing_auth_uid != incoming_auth_uid
-        Raven.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
+        Sentry.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
         return true
       else
         return false

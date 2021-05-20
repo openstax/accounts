@@ -70,7 +70,7 @@ class UpdateSchoolSalesforceInfo
           }
         ) unless schools.empty?
       rescue StandardError => se
-        Raven.capture_exception se
+        Sentry.capture_exception se
       end
 
       break if sf_schools.length < BATCH_SIZE

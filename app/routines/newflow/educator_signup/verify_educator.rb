@@ -68,7 +68,7 @@ module Newflow
       def capture_mismatch_error!(verification_id, email, user)
         message = 'verification id and email mismatch'
 
-        Raven.capture_message(
+        Sentry.capture_message(
           message,
           extra: {
             verification_id: verification_id,
