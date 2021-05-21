@@ -16,15 +16,8 @@ module Newflow
     def exec(user:)
       status.set_job_name(self.class.name)
       status.set_job_args(user: user.to_global_id.to_s)
-
-      lead_id = user.salesforce_lead_id
-
-      if lead_id.blank?
-        log_error(user, nil, :user_is_missing_salesforce_lead_id)
-        fatal_error(code: :user_is_missing_salesforce_lead_id)
-      end
-
-      lead = outputs.lead = fetch_lead(lead_id)
+      
+      lead = outputs.lead = fetch_lead(user)
 
       if lead.blank?
         log_error(user, lead, :lead_missing_in_salesforce)
@@ -38,8 +31,8 @@ module Newflow
 
     private #################
 
-    def fetch_lead(lead_id)
-      OpenStax::Salesforce::Remote::Lead.find(lead_id)
+    def fetch_lead(user)
+      OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
     end
 
     def update_salesforce_lead!(lead, user)
