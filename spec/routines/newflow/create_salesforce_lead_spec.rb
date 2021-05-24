@@ -25,7 +25,7 @@ module Newflow
       )
     end
     let(:email_value) { 'f@f.com' }
-    let(:sf_lead_by_id) { OpenStax::Salesforce::Remote::Lead.find(lead.id) }
+    let(:sf_lead_by_id) { OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid) }
 
     context 'on success' do
       it 'creates a lead which can be found by ID' do
@@ -53,7 +53,7 @@ module Newflow
       end
 
       it 'sets the lead source' do
-        expect(lead.source).to eq "OSC Faculty"
+        expect(lead.source).to eq "Instructor Verification"
       end
     end
 

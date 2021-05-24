@@ -16,7 +16,7 @@ module Newflow
     def exec(user:)
       status.set_job_name(self.class.name)
       status.set_job_args(user: user.to_global_id.to_s)
-      
+
       lead = outputs.lead = fetch_lead(user)
 
       if lead.blank?
