@@ -5,8 +5,8 @@ http_interactions:
     uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Angila","LastName":"Cremin","Company":"unknown to Accounts","Country":"United
-        States","Email":"f@f.com","LeadSource":"Instructor Verification","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":4,"accounts_uuid_c__c":"5f808190-8ff3-45c3-ace0-7d060d20e154","Application_Source__c":"Tutor
+      string: '{"FirstName":"Loris","LastName":"Leffler","Company":"unknown to Accounts","Country":"United
+        States","Email":"f@f.com","LeadSource":"Instructor Verification","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":5,"accounts_uuid_c__c":"e6320e31-11b7-4ff7-93bd-cb8361975411","Application_Source__c":"Tutor
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
     headers:
       User-Agent:
@@ -25,7 +25,7 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Mon, 24 May 2021 19:49:16 GMT
+      - Mon, 24 May 2021 19:49:20 GMT
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Robots-Tag:
@@ -33,14 +33,14 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=HyBwKbzJEeuZh1s_mJDF2A; domain=.salesforce.com; path=/; expires=Tue,
-        24-May-2022 19:49:16 GMT; Max-Age=31536000
-      - BrowserId_sec=HyBwKbzJEeuZh1s_mJDF2A; domain=.salesforce.com; path=/; expires=Tue,
-        24-May-2022 19:49:16 GMT; Max-Age=31536000; secure; SameSite=None
+      - BrowserId=IZZ5WbzJEeuJ_2k9a-m5LA; domain=.salesforce.com; path=/; expires=Tue,
+        24-May-2022 19:49:20 GMT; Max-Age=31536000
+      - BrowserId_sec=IZZ5WbzJEeuJ_2k9a-m5LA; domain=.salesforce.com; path=/; expires=Tue,
+        24-May-2022 19:49:20 GMT; Max-Age=31536000; secure; SameSite=None
       Sforce-Limit-Info:
-      - api-usage=1306/5000000
+      - api-usage=1308/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q7h000006zdACEAY"
+      - "/services/data/v37.0/sobjects/Lead/00Q7h000006zd7JEAQ"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -49,7 +49,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00Q7h000006zdACEAY","success":true,"errors":[]}'
+      string: '{"id":"00Q7h000006zd7JEAQ","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Mon, 24 May 2021 19:49:19 GMT
+  recorded_at: Mon, 24 May 2021 19:49:22 GMT
 recorded_with: VCR 3.0.3

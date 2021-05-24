@@ -72,6 +72,8 @@ module Newflow
         end
       end
 
+      user.salesforce_lead_id = lead.id
+
       lead.update update_hash
     end
 
