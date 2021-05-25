@@ -3,7 +3,7 @@ module Newflow
 
     lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
 
-    SALESFORCE_INSTRUCTOR_ROLE =  'OSC Faculty'
+    SALESFORCE_INSTRUCTOR_ROLE =  'Instructor Verification'
     DEFAULT_REFERRING_APP_NAME = 'Accounts'
 
     protected #################

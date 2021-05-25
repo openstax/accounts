@@ -5,12 +5,13 @@ http_interactions:
     uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Esmeralda","LastName":"Schuppe","Company":"unknown to
-        Accounts","Country":"United States","Email":"f@f.com","LeadSource":"OSC Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":42,"accounts_uuid_c__c":"8fd7ff04-2381-4c97-b82b-683b2340b9d8","Application_Source__c":"Tutor
+      string: '{"FirstName":"Magaret","LastName":"Pfannerstill","Company":"unknown
+        to Accounts","Country":"United States","Email":"f@f.com","LeadSource":"Instructor
+        Verification","Newsletter__c":false,"Newsletter_Opt_In__c":false,"OS_Accounts_ID__c":3,"accounts_uuid_c__c":"78182a22-c18c-473c-a4aa-fcb0556820b4","Application_Source__c":"Tutor
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
     headers:
       User-Agent:
-      - Faraday v0.17.4
+      - Faraday v1.0.1
       Content-Type:
       - application/json
       Authorization:
@@ -25,20 +26,22 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Wed, 07 Apr 2021 17:26:24 GMT
+      - Mon, 24 May 2021 19:49:12 GMT
       Strict-Transport-Security:
-      - max-age=31536002; includeSubDomains
+      - max-age=31536000; includeSubDomains
       X-Robots-Tag:
       - none
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Set-Cookie:
-      - BrowserId=YI_WgJfGEeuJmr-dn1jxAA; domain=.salesforce.com; path=/; expires=Thu,
-        07-Apr-2022 17:26:24 GMT; Max-Age=31536000
+      - BrowserId=HTkS5bzJEeuJ_2k9a-m5LA; domain=.salesforce.com; path=/; expires=Tue,
+        24-May-2022 19:49:12 GMT; Max-Age=31536000
+      - BrowserId_sec=HTkS5bzJEeuJ_2k9a-m5LA; domain=.salesforce.com; path=/; expires=Tue,
+        24-May-2022 19:49:12 GMT; Max-Age=31536000; secure; SameSite=None
       Sforce-Limit-Info:
-      - api-usage=1092/5000000
+      - api-usage=1306/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q0v000007UFEYEA4"
+      - "/services/data/v37.0/sobjects/Lead/00Q7h000006zdA2EAI"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -47,7 +50,7 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"00Q0v000007UFEYEA4","success":true,"errors":[]}'
+      string: '{"id":"00Q7h000006zdA2EAI","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Wed, 07 Apr 2021 17:34:35 GMT
+  recorded_at: Mon, 24 May 2021 19:49:15 GMT
 recorded_with: VCR 3.0.3
