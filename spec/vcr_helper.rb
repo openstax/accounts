@@ -40,6 +40,13 @@ VCR.configure do |c|
   c.allow_http_connections_when_no_cassette = false
   c.ignore_localhost = true
 
+  # The recorded cassettes cannot match on accounts_uuid in Salesforce because it changes each time FactoryBot creates a user.
+  # The responses from Salesforce otherwise are the same.
+  c.default_cassette_options = {
+    :match_requests_on => [:method,
+                           VCR.request_matchers.uri_without_param(:accounts_uuid_c__c)]
+  }
+
   if in_docker?
     # Within docker, localhost can be different so add it here explicitly; also add
     # 'chrome' for selenium via docker
