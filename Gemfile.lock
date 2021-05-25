@@ -456,7 +456,8 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     public_suffix (4.0.6)
-    puma (3.12.6)
+    puma (4.3.8)
+      nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
     rack-contrib (2.2.0)
@@ -766,7 +767,7 @@ DEPENDENCIES
   pattern-library!
   pg
   premailer-rails
-  puma (~> 3.12)
+  puma (~> 4.3)
   rails (= 5.2.4.4)
   rails-controller-testing
   rails-erd

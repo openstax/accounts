@@ -172,7 +172,7 @@ group :development, :test do
   gem 'rspec-instafail'
 
   # Development server
-  gem 'puma', '~> 3.12'
+  gem 'puma', '~> 4.3'
 
   # See config/initializers/04-debugger.rb
   #
