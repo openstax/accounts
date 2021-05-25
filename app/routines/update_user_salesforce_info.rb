@@ -54,6 +54,7 @@ class UpdateUserSalesforceInfo
         cache_contact_and_school_data_in_user!(contact, school, user)
       rescue StandardError => ee
         error!(exception: ee, user: user)
+        Sentry.capture_exception ee
       end
     end
 
@@ -89,6 +90,7 @@ class UpdateUserSalesforceInfo
           end
         rescue StandardError => ee
           error!(exception: ee, user: user)
+          Sentry.capture_exception ee
         end
       end
     end
@@ -136,6 +138,7 @@ class UpdateUserSalesforceInfo
           user.save! if user.changed?
         rescue StandardError => ee
           error!(exception: ee, user: user)
+          Sentry.capture_exception ee
         end
       end
     end
@@ -179,47 +182,52 @@ class UpdateUserSalesforceInfo
 
   def prepare_contacts
     last_id = nil
-    loop do
-      sf_contacts = OpenStax::Salesforce::Remote::Contact.select(:id, :email, :email_alt, :faculty_verified,:school_type, :adoption_status, :grant_tutor_access).includes(:school).order(:id).limit(BATCH_SIZE)
-      sf_contacts = sf_contacts.where("id > '#{last_id}'") unless last_id.nil?
-      sf_contacts = sf_contacts.to_a
-      last_id = sf_contacts.last.id unless sf_contacts.last.nil?
+    begin
+      loop do
+        sf_contacts = OpenStax::Salesforce::Remote::Contact.select(:id, :email, :email_alt, :faculty_verified,:school_type, :adoption_status, :grant_tutor_access).includes(:school).order(:id).limit(BATCH_SIZE)
+        sf_contacts = sf_contacts.where("id > '#{last_id}'") unless last_id.nil?
+        sf_contacts = sf_contacts.to_a
+        last_id = sf_contacts.last.id unless sf_contacts.last.nil?
 
-      colliding_emails = []
+        colliding_emails = []
 
-      # Store each contact in our internal maps; keep track of which contacts have
-      # colliding emails so we can clear them out below (don't want to clear out
-      # until all contacts have been examined so that we don't miss a collision)
+        # Store each contact in our internal maps; keep track of which contacts have
+        # colliding emails so we can clear them out below (don't want to clear out
+        # until all contacts have been examined so that we don't miss a collision)
 
-      sf_contacts.each do |contact|
-        emails = [contact.email, contact.email_alt].compact
-                     .map(&:downcase)
-                     .map(&:strip)
-                     .uniq
+        sf_contacts.each do |contact|
+          emails = [contact.email, contact.email_alt].compact
+                       .map(&:downcase)
+                       .map(&:strip)
+                       .uniq
 
-        emails.each do |email|
-          if (colliding_contact = @contacts_by_email[email])
-            colliding_emails.push(email)
-            error!(
-                message: "#{email} is listed on contact #{contact.id} and contact #{colliding_contact.id}" \
-                       "; neither contact will be synched to an OpenStax Account until this is resolved."
-            )
-          else
-            @contacts_by_email[email] = contact
-            @contacts_by_id[contact.id] = contact
+          emails.each do |email|
+            if (colliding_contact = @contacts_by_email[email])
+              colliding_emails.push(email)
+              error!(
+                  message: "#{email} is listed on contact #{contact.id} and contact #{colliding_contact.id}" \
+                         "; neither contact will be synched to an OpenStax Account until this is resolved."
+              )
+            else
+              @contacts_by_email[email] = contact
+              @contacts_by_id[contact.id] = contact
+            end
           end
         end
-      end
 
-      # Go through colliding emails and clear their Contacts out of our hashes so that
-      # we don't assign these Contacts to users until a human resolves the collisions
+        # Go through colliding emails and clear their Contacts out of our hashes so that
+        # we don't assign these Contacts to users until a human resolves the collisions
 
-      colliding_emails.uniq.each do |colliding_email|
-        contact = @contacts_by_email[colliding_email]
-        @contacts_by_id[contact.id] = nil
-        @contacts_by_email[colliding_email] = nil
+        colliding_emails.uniq.each do |colliding_email|
+          contact = @contacts_by_email[colliding_email]
+          @contacts_by_id[contact.id] = nil
+          @contacts_by_email[colliding_email] = nil
+        end
+        break if sf_contacts.length < BATCH_SIZE
       end
-      break if sf_contacts.length < BATCH_SIZE
+    rescue StandardError => ee
+      error!(exception: ee)
+      Sentry.capture_exception ee
     end
   end
 
