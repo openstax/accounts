@@ -75,7 +75,7 @@ module Newflow
     end
 
     it 'signs up by default and links account' do
-      expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
+      expect_any_instance_of(CreateSalesforceLead).not_to receive(:exec)
       arrive_from_app(params: signed_params, do_expect: false)
 
       # students default to sign-up vs the standard sign-in

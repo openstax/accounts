@@ -21,7 +21,7 @@ module Newflow
 
         it 'does NOT sign up user for the newsletter when NOT checked' do
           user.update(receive_newsletter: false)
-          expect_any_instance_of(Newflow::CreateSalesforceLead).to receive(:exec)
+          expect_any_instance_of(Newflow::CreateSalesforceLead).not_to receive(:exec)
           described_class.call(user)
         end
 
