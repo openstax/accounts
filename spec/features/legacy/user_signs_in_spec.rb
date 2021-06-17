@@ -169,29 +169,6 @@ feature 'User logs in', js: true do
     end
   end
 
-  scenario 'with an email address linked to several user accounts' do
-    with_forgery_protection do
-      # two users with the same email address, both verified
-      user = create_user 'user'
-      create_email_address_for(user, 'user@example.com')
-      another_user = create_user 'another_user'
-
-      email = create_email_address_for(another_user, 'temp@example.com')
-      # "update_attribute" skips model validation
-      ContactInfo.where(id: email.id).update_all(value: 'user@example.com')
-
-      arrive_from_app
-      complete_login_username_or_email_screen 'user@example.com'
-      expect_sign_in_page
-      expect(page).to have_content(t("legacy.sessions.start.multiple_users.content_html").sub('<br/>', '').sub(' %{link}.', ''))
-      screenshot!
-
-      complete_login_username_or_email_screen 'user'
-      complete_login_password_screen 'password'
-      expect_back_at_app
-    end
-  end
-
   scenario 'with an unstripped username' do
     with_forgery_protection do
       user = create_user 'user'

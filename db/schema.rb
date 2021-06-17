@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_07_165954) do
+ActiveRecord::Schema.define(version: 2021_06_16_152044) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 2021_04_07_165954) do
     t.index ["is_school_issued"], name: "index_contact_infos_on_is_school_issued"
     t.index ["user_id"], name: "index_contact_infos_on_user_id"
     t.index ["value", "user_id", "type"], name: "index_contact_infos_on_value_user_id_type", unique: true
+    t.index ["value"], name: "index_contact_infos_on_value", unique: true
     t.index ["verified"], name: "index_contact_infos_on_verified"
   end
 

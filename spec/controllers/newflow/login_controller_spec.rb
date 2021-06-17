@@ -157,13 +157,15 @@ module Newflow
         end
 
         describe 'when multiple_users' do
-          before do
-            user1 = create_user 'user1'
-            email1 = create_email_address_for(user1, email_address)
-            user2 = create_user 'user2'
-            email2 = create_email_address_for(user2, 'user-2@example.com')
-            ContactInfo.where(id: email2.id).update_all(value: email1.value)
-          end
+          # before do
+          #   user1 = create_user 'user1'
+          #   email1 = create_email_address_for(user1, email_address)
+          #   user2 = create_user 'user2'
+          #   email2 = create_email_address_for(user2, 'user-2@example.com')
+          #   ContactInfo.where(id: email2.id).update_all(value: email1.value)
+          # rescue ActiveRecord::RecordNotUnique => e
+          #   expect(e.cause.message.match('unique constraint "index_contact_infos_on_value"'))
+          # end
 
           let(:email_address) do
             'user@example.com'
@@ -206,6 +208,16 @@ module Newflow
           post('login', params: { login_form: { email: 'noone@openstax.org', password: 'wrongZpassword' } })
           expect(session[:login_failed_email]).to  eq('noone@openstax.org')
         end
+      end
+    end
+
+    describe 'when multiple_users use the same email' do
+      before do
+        user1 = create_user 'user1'
+        email1 = create_email_address_for(user1, email_address)
+        user2 = create_user 'user2'
+        email2 = create_email_address_for(user2, 'user-2@example.com')
+        expect { ContactInfo.where(id: email2.id).update_all(value: email1.value) }.to raise_error
       end
     end
 
