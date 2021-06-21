@@ -113,28 +113,6 @@ class UpdateUserSalesforceInfo
         begin
           user_ids_that_were_looked_at_for_leads.push(user.id)
 
-          leads = user.contact_infos
-                      .flat_map{|ci| @leads_by_email[ci.value.downcase]}
-                      .uniq
-
-          statuses = leads.map(&:status).uniq
-
-          # Whenever a lead is processed (in our case when it is either used to
-          # confirm or reject a faculty application), its status is set to
-          # 'Converted'.  If any of the statuses we have now are not 'Converted',
-          # we know that the user has a lead that is still under review, so they
-          # are set to `pending_faculty`.  If the statuses only consist of
-          # 'Converted' statuses, we know the user has been rejected as faculty.
-
-          unless user.is_newflow? # because the new Accounts flow works differently; don't mess with it.
-            user.faculty_status =
-                if statuses == ["Converted"]
-                  :rejected_faculty
-                else
-                  :pending_faculty
-                end
-          end
-
           user.save! if user.changed?
         rescue StandardError => ee
           error!(exception: ee, user: user)
@@ -314,7 +292,7 @@ class UpdateUserSalesforceInfo
 
     user.save! if user.changed?
 
-    if let_sf_know_to_send_fac_ver_email
+    if let_sf_know_to_send_fac_ver_email && SecurityLog.where(user: user, event_type: :faculty_verified).empty?
       contact.update_attributes!(
           send_faculty_verification_to: user.guessed_preferred_confirmed_email
       )
