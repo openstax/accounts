@@ -161,6 +161,9 @@ gem 'oj', '~> 3.7.12'
 # Replace JSON with Oj
 gem 'oj_mimic_json'
 
+# CORS for local testing/dev
+gem 'rack-cors'
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails', '2.7.2'
