@@ -8,6 +8,8 @@ RSpec.describe UpdateSchoolSalesforceInfo, type: :routine do
   end
 
   it 'creates new School records to match the Salesforce data' do
+    puts '***School: ' + school.inspect
+    puts '***before new School: ' + School.order(:created_at).last.inspect
     stub_schools school
 
     expect(School).to receive(:import).and_call_original
@@ -15,6 +17,7 @@ RSpec.describe UpdateSchoolSalesforceInfo, type: :routine do
     described_class.call
 
     new_school = School.order(:created_at).last
+    puts '***new School: ' + new_school.inspect
     expect_school_attributes_match new_school, school
   end
 
