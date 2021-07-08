@@ -9,6 +9,7 @@ RSpec.describe UpdateSchoolSalesforceInfo, type: :routine do
 
   it 'creates new School records to match the Salesforce data' do
     stub_schools school
+    dummy_school = School.order(:created_at).last
 
     expect(School).to receive(:import).and_call_original
 

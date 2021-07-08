@@ -29,10 +29,10 @@ feature "User can't sign in", js: true do
       email1 = create_email_address_for(user1, email_address)
       user2 = create_user 'user2'
       email2 = create_email_address_for(user2, 'user-2@example.com')
-      ContactInfo.where(id: email2.id).update_all(value: email1.value)
+      expect { ContactInfo.where(id: email2.id).update_all(value: email1.value) }.to raise_error
 
       newflow_log_in_user(email_address, 'password')
-      expect(page).to have_content(t(:"login_signup_form.multiple_users"))
+      expect(page).to have_content(t(:"student_profile.enable_other_sign_in_options"))
 
       screenshot!
 

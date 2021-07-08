@@ -25,40 +25,6 @@ feature "User can't sign in", js: true do
       screenshot!
     end
 
-    scenario "multiple accounts match email" do
-      email_address = 'user@example.com'
-      user1 = create_user 'user1'
-      email1 = create_email_address_for(user1, email_address)
-      user2 = create_user 'user2'
-      email2 = create_email_address_for(user2, 'user-2@example.com')
-      ContactInfo.where(id: email2.id).update_all(value: email1.value)
-
-      complete_login_username_or_email_screen(email_address)
-      expect(page).to have_content(t(:"legacy.sessions.start.multiple_users.content_html").split('.')[0])
-
-      screenshot!
-
-      click_link t(:"legacy.sessions.start.multiple_users.click_here")
-      expect(page).to have_content(
-        ActionView::Base.full_sanitizer.sanitize(
-          t(:"legacy.sessions.start.sent_multiple_usernames", email: email_address)
-        )
-      )
-
-      screenshot!
-
-      expect(page.first('input')["placeholder"]).to eq t(:"legacy.sessions.start.username_placeholder")
-      expect(page.first('input').text).to be_blank
-
-      open_email(email_address)
-      expect(current_email).to have_content('used on more than one')
-      expect(current_email).to have_content('user1 and user2')
-      capture_email!
-
-      complete_login_username_or_email_screen('user2')
-      expect_authenticate_page
-    end
-
     scenario "multiple accounts match email but no usernames" do
       # For a brief window in 2017 users could sign up with jimbo@gmail.com and Jimbo@gmail.com
       # and also not have a username.  So the "you can't sign in with email you must use your
