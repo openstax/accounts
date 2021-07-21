@@ -19,7 +19,7 @@ class PushSalesforceLead
     if role.match(/student/i)
       source = "Student"
     else
-      source = "Instructor Verification"
+      source = "OSC Faculty"
     end
 
     application_source = source_application.try(:lead_application_source)

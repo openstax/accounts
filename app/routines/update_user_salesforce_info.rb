@@ -158,10 +158,10 @@ class UpdateUserSalesforceInfo
 
   def leads
     # Leads come from many sources; we only care about those created for faculty
-    # verification ("Instructor Verification")
+    # verification ("OSC Faculty")
 
     @leads ||= OpenStax::Salesforce::Remote::Lead
-                   .where(source: "Instructor Verification")
+                   .where(source: "OSC Faculty")
                    .select(:id, :email)
                    .to_a
   end
