@@ -30,7 +30,7 @@ RSpec.describe PushSalesforceLead, type: :routine, vcr: VCR_OPTS do
 
     expect(lead.errors).to be_empty
     expect(lead.id).not_to be_nil
-    expect(lead.source).to eq "Instructor Verification"
+    expect(lead.source).to eq "OSC Faculty"
 
     lead_from_sf = OpenStax::Salesforce::Remote::Lead.where(id: lead.id).first
     expect(lead_from_sf).not_to be_nil
