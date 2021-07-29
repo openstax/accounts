@@ -41,9 +41,9 @@ module Newflow
         validate_presence_of_required_params
         return if errors?
 
-        outputs.email = signup_params.email
+        outputs.email = signup_params.email.squish!
 
-        if LookupUsers.by_verified_email(signup_params.email).first
+        if LookupUsers.by_verified_email(signup_params.email.squish!).first
           fatal_error(
             code: :email_taken,
             message: I18n.t(:"login_signup_form.email_address_taken"),

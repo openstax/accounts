@@ -14,7 +14,7 @@ module Newflow
     end
 
     def handle
-      email_param = change_signup_email_params.email
+      email_param = change_signup_email_params.email.squish!
 
       if LookupUsers.by_verified_email(email_param).first
         fatal_error(
