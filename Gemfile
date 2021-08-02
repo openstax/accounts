@@ -164,6 +164,11 @@ gem 'oj_mimic_json'
 # CORS for local testing/dev
 gem 'rack-cors'
 
+# Salesforce streaming API
+gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
+gem 'faye', '1.4.0'
+gem 'restforce', '~> 5.0.6'
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails', '2.7.2'

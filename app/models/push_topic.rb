@@ -1,0 +1,2 @@
+class PushTopic < ApplicationRecord
+end
