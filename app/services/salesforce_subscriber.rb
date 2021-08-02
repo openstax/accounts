@@ -26,7 +26,7 @@ class SalesforceSubscriber
 		                               Description: 'all contact records',
 		                               NotifyForOperations: 'All',
 		                               NotifyForFields: 'All',
-		                               Query: 'select Id, Email from Contact')
+		                               Query: 'select Id, Email, Faculty_Verified__c from Contact')
 
 		PushTopic.create(topic_salesforce_id: contact_topic, topic_name: CONTACT_PUSH_TOPIC_NAME) if contact_topic.present? && contact_topic.is_a?(String)
 		Logger.new(LOG_PATH).info('Contact Push Topic Id: ' + contact_topic)
@@ -36,9 +36,10 @@ class SalesforceSubscriber
 	end
 
 	def subscribe
+		authorization_hash = @client.authenticate!
+		@client.faye.set_header 'Authorization', "OAuth #{authorization_hash.access_token}"
 		EM.run do
-			# Subscribe to the contact PushTopic.
-			@client.subscription "/topic/#{CONTACT_PUSH_TOPIC_NAME}" do |message|
+			@client.subscription "/topic/#{CONTACT_PUSH_TOPIC_NAME}", replay: -1 do |message|
 				Logger.new(LOG_PATH).info('Contact Received')
 				ContactParser.new(message).save_contact
 			end

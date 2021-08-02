@@ -166,7 +166,7 @@ gem 'rack-cors'
 
 # Salesforce streaming API
 gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
-gem 'faye', '1.4.0'
+gem 'faye', '0.8.9'
 gem 'restforce', '~> 5.0.6'
 
 group :development, :test do
