@@ -10,7 +10,6 @@ class ContactParser
 		ci_table = ContactInfo.arel_table
 
 		contact = User.joins(:contact_infos).eager_load(:contact_infos).where(salesforce_contact_id: nil).where(ci_table[:value].lower.eq(contact_params[:email])).first
-		puts(contact_params.inspect)
 
 		if contact.present?
 			contact.salesforce_contact_id = contact_params[:sf_id]
