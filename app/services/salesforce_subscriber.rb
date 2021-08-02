@@ -29,7 +29,7 @@ class SalesforceSubscriber
 		                               Query: 'select Id, Email, Faculty_Verified__c from Contact')
 
 		PushTopic.create(topic_salesforce_id: contact_topic, topic_name: CONTACT_PUSH_TOPIC_NAME) if contact_topic.present? && contact_topic.is_a?(String)
-		Logger.new(LOG_PATH).info('Contact Push Topic Id: ' + contact_topic)
+		Logger.new(LOG_PATH).debug('Contact Push Topic Id: ' + contact_topic)
 	rescue Restforce::ErrorCode::DuplicateValue
 		delete_contact_topics
 		create_contact_push_topic
@@ -40,7 +40,7 @@ class SalesforceSubscriber
 		@client.faye.set_header 'Authorization', "OAuth #{authorization_hash.access_token}"
 		EM.run do
 			@client.subscription "/topic/#{CONTACT_PUSH_TOPIC_NAME}", replay: -1 do |message|
-				Logger.new(LOG_PATH).info('Contact Received')
+				Logger.new(LOG_PATH).debug('Contact Received')
 				ContactParser.new(message).save_contact
 			end
 		end
@@ -51,7 +51,7 @@ class SalesforceSubscriber
 		if topics.present?
 			topics.each do |topic|
 				@client.destroy('PushTopic', topic.topic_salesforce_id)
-				Logger.new(LOG_PATH).info('Contact PushTopic destroyed: ' + topic.topic_salesforce_id)
+				Logger.new(LOG_PATH).debug('Contact PushTopic destroyed: ' + topic.topic_salesforce_id)
 				topic.destroy
 			end
 		end
