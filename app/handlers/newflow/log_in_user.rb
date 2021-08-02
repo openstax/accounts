@@ -26,11 +26,11 @@ module Newflow
     end
 
     def handle
-      outputs.email = login_form_params.email
+      outputs.email = login_form_params.email.squish!
 
       # We should be searching by email
       # but we'd like to continue to support users who only have a username.
-      users = LookupUsers.by_email_or_username(login_form_params.email)
+      users = LookupUsers.by_email_or_username(login_form_params.email.squish!)
 
       outputs.user = user = users.first
 

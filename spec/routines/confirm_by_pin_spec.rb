@@ -58,5 +58,29 @@ describe ConfirmByPin do
         described_class.call(contact_info: contact_info, pin: "whatever")
       ).to have_routine_error(:no_pin_confirmation_attempts_remaining)
     end
+
+    it 'fails by code after other contact info with same value is confirmed' do
+      other_user = FactoryBot.create(:user)
+
+      AddEmailToUser.call("bob-2@example.com", other_user)
+      other_contact_info = other_user.contact_infos.last
+      ContactInfo.where(id: other_contact_info.id).update_all(value: 'bob@example.com')
+
+      other_contact_info.reload
+      expect(
+        described_class.call(contact_info: contact_info, pin: contact_info.confirmation_pin)
+      ).to have_routine_error(:no_pin_confirmation_attempts_remaining)
+
+      expect(
+        described_class.call(contact_info: other_contact_info, pin: other_contact_info.confirmation_pin)
+      ).to have_routine_error(:no_pin_confirmation_attempts_remaining)
+
+      ConfirmByCode.call(contact_info.confirmation_code)
+
+      described_class.call(contact_info: other_contact_info, pin: other_contact_info.confirmation_pin)
+      expect(other_contact_info.reload).not_to be_confirmed
+    end
   end
+
+
 end
