@@ -19,6 +19,7 @@ module Newflow
 
     def handle
       outputs.email = forgot_password_form_params.email
+      outputs.email.squish! if outputs.email.present?
 
       fatal_error(code: :email_is_blank,
         offending_inputs: :email,
