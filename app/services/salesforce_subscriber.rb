@@ -5,9 +5,8 @@ require 'faye'
 
 class SalesforceSubscriber
   attr_reader :client
-  LOG_PATH = "#{Rails.root}/log/#{Rails.env}_salesforce.log"
   CONTACT_PUSH_TOPIC_NAME = 'ContactChange'
-  # Initialize a client with your username/password/oauth token/etc.
+
   def initialize
     @client = Restforce.new(username: ENV['SALESFORCE_USERNAME'],
                             password: ENV['SALESFORCE_PASSWORD'],
@@ -18,7 +17,6 @@ class SalesforceSubscriber
   end
 
   def create_contact_push_topic
-    # Create a PushTopic for subscribing to Contact changes.
     delete_contact_topics
     contact_topic = @client.create('PushTopic',
                                    ApiVersion: '48.0',
@@ -29,7 +27,7 @@ class SalesforceSubscriber
                                    Query: 'select Id, Email, Faculty_Verified__c from Contact')
 
     PushTopic.create(topic_salesforce_id: contact_topic, topic_name: CONTACT_PUSH_TOPIC_NAME) if contact_topic.present? && contact_topic.is_a?(String)
-    Logger.new(LOG_PATH).debug('Contact Push Topic Id: ' + contact_topic)
+    Logger.logger.debug('Contact Push Topic Id: ' + contact_topic)
   rescue Restforce::ErrorCode::DuplicateValue
     delete_contact_topics
     create_contact_push_topic
@@ -40,7 +38,7 @@ class SalesforceSubscriber
     @client.faye.set_header 'Authorization', "OAuth #{authorization_hash.access_token}"
     EM.run do
       @client.subscription "/topic/#{CONTACT_PUSH_TOPIC_NAME}", replay: -1 do |message|
-        Logger.new(LOG_PATH).debug('Contact Received')
+        Logger.logger.debug('Contact Received')
         ContactParser.new(message).save_contact
       end
     end
@@ -51,7 +49,7 @@ class SalesforceSubscriber
     if topics.present?
       topics.each do |topic|
         @client.destroy('PushTopic', topic.topic_salesforce_id)
-        Logger.new(LOG_PATH).debug('Contact PushTopic destroyed: ' + topic.topic_salesforce_id)
+        Logger.logger.debug('Contact PushTopic destroyed: ' + topic.topic_salesforce_id)
         topic.destroy
       end
     end
