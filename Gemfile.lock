@@ -807,7 +807,6 @@ DEPENDENCIES
   rails-settings-ui
   redis-rails
   representable (~> 3.0.0)
-  restforce (~> 5.0.6)
   rspec-instafail
   rspec-rails
   rubocop (~> 0.76.0)

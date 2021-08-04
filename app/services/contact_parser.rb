@@ -29,9 +29,9 @@ class ContactParser
 
 
       contact.save
-      Logger.logger.debug('Contact saved ID: ' + contact.salesforce_contact_id)
+      Rails.logger.debug('Contact saved ID: ' + contact.salesforce_contact_id)
     else
-      Logger.logger.debug("No contact found for email #{contact_params[:email]}")
+      Rails.logger.debug("No contact found for email #{contact_params[:email]}")
       # this should not be happening for people we don't have emails for - let's log to sentry so we can investigate
       Sentry.capture_message("[SF streaming] No contact found for email #{contact_params[:email]}")
     end
