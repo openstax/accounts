@@ -27,8 +27,13 @@ class SalesforceSubscriber
                                    NotifyForFields: 'All',
                                    Query: 'select Id, Email, Faculty_Verified__c from Contact')
 
-    PushTopic.create(topic_salesforce_id: contact_topic, topic_name: CONTACT_PUSH_TOPIC_NAME) if contact_topic.present? && contact_topic.is_a?(String)
-    Rails.logger.debug('Contact Push Topic Id: ' + contact_topic)
+    if contact_topic.present? && contact_topic.is_a?(String)
+      PushTopic.create(topic_salesforce_id: contact_topic, topic_name: CONTACT_PUSH_TOPIC_NAME)
+      Rails.logger.debug('Contact Push Topic Id: ' + contact_topic)
+    else
+      Rails.logger.error('failed to create push topic: '+ CONTACT_PUSH_TOPIC_NAME)
+      Sentry.capture_message('failed to create push topic: '+ CONTACT_PUSH_TOPIC_NAME)
+    end
   rescue Restforce::ErrorCode::DuplicateValue
     delete_contact_topics
     create_contact_push_topic
