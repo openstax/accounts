@@ -8,12 +8,13 @@ class SalesforceSubscriber
   CONTACT_PUSH_TOPIC_NAME = 'ContactChange'
 
   def initialize
-    @client = Restforce.new(username: ENV['SALESFORCE_USERNAME'],
-                            password: ENV['SALESFORCE_PASSWORD'],
-                            security_token: ENV['SALESFORCE_SECURITY_TOKEN'],
-                            client_id: ENV['SALESFORCE_CONSUMER_KEY'],
-                            client_secret: ENV['SALESFORCE_CONSUMER_SECRET'],
-                            host: ENV['SALESFORCE_LOGIN_DOMAIN'])
+    secrets = Rails.application.secrets.salesforce
+    @client = Restforce.new(username: secrets[:username],
+                            password: secrets[:password],
+                            security_token: secrets[:security_token],
+                            client_id: secrets[:consumer_key],
+                            client_secret: secrets[:consumer_secret],
+                            host: secrets[:login_domain])
   end
 
   def create_contact_push_topic
