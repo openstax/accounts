@@ -14,6 +14,7 @@ module Newflow
         return if user.activated?
 
         user.update!(state: User::ACTIVATED)
+        user.update!(faculty_status: User::PENDING_FACULTY)
         CreateSalesforceLead.perform_later(user: user)
         SecurityLog.create!(user: user, event_type: Constants::ACTIVATED_USER_SECURITY_LOG)
       end
