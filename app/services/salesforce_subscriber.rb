@@ -18,7 +18,9 @@ class SalesforceSubscriber
                                    ApiVersion: '51.0',
                                    Name: CONTACT_PUSH_TOPIC_NAME,
                                    Description: 'all contact records',
-                                   NotifyForFields: 'All',
+                                   NotifyForOperationCreate: 'true',
+                                   NotifyForOperationUpdate: 'true',
+                                   NotifyForFields: 'Referenced',
                                    Query: 'select Id, Email, Faculty_Verified__c from Contact')
 
     if contact_topic.present? && contact_topic.is_a?(String)
