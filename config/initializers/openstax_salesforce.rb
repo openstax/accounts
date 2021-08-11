@@ -12,6 +12,6 @@ OpenStax::Salesforce.configure do |config|
   config.consumer_key    = salesforce_secrets[:consumer_key]
   config.consumer_secret = salesforce_secrets[:consumer_secret]
 
-  config.api_version  = salesforce_secrets.fetch :api_version, '37.0'
+  config.api_version  = salesforce_secrets.fetch :api_version, '51.0'
   config.login_domain = salesforce_secrets.fetch :login_domain, 'test.salesforce.com'
 end

@@ -9,15 +9,15 @@ class SalesforceSubscriber
 
   def initialize
     @client = OpenStax::Salesforce::Client.new
+    @authorization_hash = @client.authenticate!
   end
 
   def create_contact_push_topic
     delete_contact_topics
-    contact_topic = @client.create('PushTopic',
-                                   ApiVersion: '48.0',
+    contact_topic = @client.create!('PushTopic',
+                                   ApiVersion: '51.0',
                                    Name: CONTACT_PUSH_TOPIC_NAME,
                                    Description: 'all contact records',
-                                   NotifyForOperations: 'All',
                                    NotifyForFields: 'All',
                                    Query: 'select Id, Email, Faculty_Verified__c from Contact')
 
@@ -35,8 +35,7 @@ class SalesforceSubscriber
   end
 
   def subscribe
-    authorization_hash = @client.authenticate!
-    @client.faye.set_header 'Authorization', "OAuth #{authorization_hash.access_token}"
+    @client.faye.set_header 'Authorization', "OAuth #{@authorization_hash.access_token}"
     EM.run do
       @client.subscription "/topic/#{CONTACT_PUSH_TOPIC_NAME}", replay: -1 do |message|
         Rails.logger.debug('Contact Received')
