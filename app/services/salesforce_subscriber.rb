@@ -8,13 +8,7 @@ class SalesforceSubscriber
   CONTACT_PUSH_TOPIC_NAME = 'ContactChange'
 
   def initialize
-    secrets = Rails.application.secrets.salesforce
-    @client = Restforce.new(username: secrets[:username],
-                            password: secrets[:password],
-                            security_token: secrets[:security_token],
-                            client_id: secrets[:consumer_key],
-                            client_secret: secrets[:consumer_secret],
-                            host: secrets[:login_domain])
+    @client = OpenStax::Salesforce::Client.new
   end
 
   def create_contact_push_topic
