@@ -33,6 +33,7 @@ class SalesforceSubscriber
     else
       Rails.logger.error('failed to create push topic: '+ CONTACT_PUSH_TOPIC_NAME)
       Sentry.capture_message('failed to create push topic: '+ CONTACT_PUSH_TOPIC_NAME)
+      raise
     end
   rescue Restforce::ErrorCode::DuplicateValue
     delete_contact_topics
