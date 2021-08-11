@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
+    uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Lead"
     body:
       encoding: UTF-8
       string: '{"FirstName":"Retha","LastName":"Grant","Company":"unknown to Accounts","Country":"United
@@ -10,7 +10,7 @@ http_interactions:
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
     headers:
       User-Agent:
-      - Faraday v0.17.4
+      - Faraday v1.0.1
       Content-Type:
       - application/json
       Authorization:
@@ -38,7 +38,7 @@ http_interactions:
       Sforce-Limit-Info:
       - api-usage=1093/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q0v000007UFE9EAO"
+      - "/services/data/v51.0/sobjects/Lead/00Q0v000007UFE9EAO"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -48,7 +48,7 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":"00Q0v000007UFE9EAO","success":true,"errors":[]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 07 Apr 2021 17:34:35 GMT
 - request:
     method: get
@@ -96,6 +96,6 @@ http_interactions:
         to Accounts","City":null,"State":null,"StateCode":null,"Country":"United States","Phone":null,"Website":null,"Status":"Convert","Email":"f@f.com","LeadSource":"OSC
         Faculty","Newsletter__c":false,"Newsletter_Opt_In__c":false,"Adoption_Status__c":null,"Number_of_Students__c":null,"OS_Accounts_ID__c":"36","accounts_uuid_c__c":"68ecd361-6298-42b7-adb1-9bad69004335","Application_Source__c":"Tutor
         Signup","Role__c":"Instructor","other_role_name__c":null,"who_chooses_books__c":null,"FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":true,"BRI_Marketing__c":false,"Title_1_school__c":false,"SheerID_School_Name__c":null,"Account_ID__c":null,"School__c":null}]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 07 Apr 2021 17:34:35 GMT
 recorded_with: VCR 3.0.3
