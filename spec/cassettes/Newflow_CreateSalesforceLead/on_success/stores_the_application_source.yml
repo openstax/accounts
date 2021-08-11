@@ -52,7 +52,7 @@ http_interactions:
   recorded_at: Wed, 07 Apr 2021 17:34:35 GMT
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20City,%20State,%20StateCode,%20Country,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c,%20accounts_uuid_c__c,%20Application_Source__c,%20Role__c,%20other_role_name__c,%20who_chooses_books__c,%20FV_Status__c,%20FV_Final__c,%20Needs_CS_Review__c,%20BRI_Marketing__c,%20Title_1_school__c,%20SheerID_School_Name__c,%20Account_ID__c,%20School__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700Q0v000007UFE9EAO%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20City,%20State,%20StateCode,%20Country,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c,%20accounts_uuid_c__c,%20Application_Source__c,%20Role__c,%20other_role_name__c,%20who_chooses_books__c,%20FV_Status__c,%20FV_Final__c,%20Needs_CS_Review__c,%20BRI_Marketing__c,%20Title_1_school__c,%20SheerID_School_Name__c,%20Account_ID__c,%20School__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700Q0v000007UFE9EAO%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''

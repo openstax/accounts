@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
+    uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Lead"
     body:
       encoding: UTF-8
       string: '{"FirstName":"initial","LastName":"initial","Company":"not known yet","Country":"United
@@ -11,7 +11,7 @@ http_interactions:
         known yet"}'
     headers:
       User-Agent:
-      - Faraday v0.17.4
+      - Faraday v1.0.1
       Content-Type:
       - application/json
       Authorization:
@@ -39,7 +39,7 @@ http_interactions:
       Sforce-Limit-Info:
       - api-usage=1092/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q0v000007UFDuEAO"
+      - "/services/data/v51.0/sobjects/Lead/00Q0v000007UFDuEAO"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -49,17 +49,17 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":"00Q0v000007UFDuEAO","success":true,"errors":[]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 07 Apr 2021 17:34:35 GMT
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v37.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20City,%20State,%20StateCode,%20Country,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c,%20accounts_uuid_c__c,%20Application_Source__c,%20Role__c,%20other_role_name__c,%20who_chooses_books__c,%20FV_Status__c,%20FV_Final__c,%20Needs_CS_Review__c,%20BRI_Marketing__c,%20Title_1_school__c,%20SheerID_School_Name__c,%20Account_ID__c,%20School__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700Q0v000007UFDuEAO%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Salutation,%20Subject__c,%20Company,%20City,%20State,%20StateCode,%20Country,%20Phone,%20Website,%20Status,%20Email,%20LeadSource,%20Newsletter__c,%20Newsletter_Opt_In__c,%20Adoption_Status__c,%20Number_of_Students__c,%20OS_Accounts_ID__c,%20accounts_uuid_c__c,%20Application_Source__c,%20Role__c,%20other_role_name__c,%20who_chooses_books__c,%20FV_Status__c,%20FV_Final__c,%20Needs_CS_Review__c,%20BRI_Marketing__c,%20Title_1_school__c,%20SheerID_School_Name__c,%20Account_ID__c,%20School__c%20FROM%20Lead%20WHERE%20(Id%20=%20%2700Q0v000007UFDuEAO%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.17.4
+      - Faraday v1.0.1
       Authorization:
       - OAuth <salesforce_access_token>
       Accept-Encoding:
@@ -99,6 +99,6 @@ http_interactions:
         Interest in Adopting","Number_of_Students__c":30.0,"OS_Accounts_ID__c":"1","accounts_uuid_c__c":"e298e4b0-8225-4599-b8d2-506fb922d99e","Application_Source__c":"Tutor
         Signup","Role__c":"Faculty","other_role_name__c":null,"who_chooses_books__c":null,"FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":true,"BRI_Marketing__c":false,"Title_1_school__c":false,"SheerID_School_Name__c":"not
         known yet","Account_ID__c":null,"School__c":"0010v00000bM8kQAAS"}]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 07 Apr 2021 17:34:35 GMT
 recorded_with: VCR 3.0.3
