@@ -166,7 +166,7 @@ gem 'rack-cors'
 
 # Salesforce streaming API
 gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
-gem 'faye', '0.8.9'
+gem 'faye', '1.4.0'
 
 group :development, :test do
   # Get env variables from .env file

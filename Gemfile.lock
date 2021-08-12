@@ -249,7 +249,7 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
     erubi (1.10.0)
-    eventmachine (1.2.0.1)
+    eventmachine (1.2.7)
     exception_notification (4.3.0)
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
@@ -267,13 +267,14 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
-    faye (0.8.9)
+    faye (1.4.0)
       cookiejar (>= 0.3.0)
-      em-http-request (>= 0.3.0)
+      em-http-request (>= 1.1.6)
       eventmachine (>= 0.12.0)
-      faye-websocket (>= 0.4.0)
+      faye-websocket (>= 0.11.0)
+      multi_json (>= 1.0.0)
       rack (>= 1.0.0)
-      yajl-ruby (>= 1.0.0)
+      websocket-driver (>= 0.5.1)
     faye-websocket (0.11.1)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
@@ -719,7 +720,6 @@ GEM
     will_paginate (3.3.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yajl-ruby (1.4.1)
 
 PLATFORMS
   ruby
@@ -758,7 +758,7 @@ DEPENDENCIES
   fakeredis
   faraday (~> 1.0.0)
   faraday_middleware (~> 1.0.0)
-  faye (= 0.8.9)
+  faye (= 1.4.0)
   fine_print
   font-awesome-rails
   guard-livereload (~> 2.5)
