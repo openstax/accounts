@@ -8,7 +8,7 @@ http_interactions:
       string: grant_type=password&client_id=<salesforce_consumer_key>&client_secret=<salesforce_consumer_secret>&username=<salesforce_username_url>&password=<salesforce_password_url><salesforce_security_token>
     headers:
       User-Agent:
-      - Faraday v0.17.3
+      - Faraday v1.0.1
       Content-Type:
       - application/x-www-form-urlencoded
       Accept-Encoding:
@@ -46,6 +46,6 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"access_token":"<salesforce_access_token>","instance_url":"<salesforce_instance_url>","id":"<salesforce_id>","token_type":"Bearer","issued_at":"1614971146336","signature":"<salesforce_signature>"}'
-    http_version: 
+    http_version:
   recorded_at: Fri, 05 Mar 2021 19:05:46 GMT
 recorded_with: VCR 3.0.3

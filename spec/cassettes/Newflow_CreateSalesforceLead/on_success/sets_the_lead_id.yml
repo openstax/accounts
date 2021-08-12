@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
+    uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Lead"
     body:
       encoding: UTF-8
       string: '{"FirstName":"Tona","LastName":"Klocko","Company":"unknown to Accounts","Country":"United
@@ -10,7 +10,7 @@ http_interactions:
         Signup","Role__c":"instructor","FV_Status__c":"pending_faculty","FV_Final__c":true,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
     headers:
       User-Agent:
-      - Faraday v0.17.4
+      - Faraday v1.0.1
       Content-Type:
       - application/json
       Authorization:
@@ -38,7 +38,7 @@ http_interactions:
       Sforce-Limit-Info:
       - api-usage=1093/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q0v000007UFEEEA4"
+      - "/services/data/v51.0/sobjects/Lead/00Q0v000007UFEEEA4"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -48,6 +48,6 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":"00Q0v000007UFEEEA4","success":true,"errors":[]}'
-    http_version: 
+    http_version:
   recorded_at: Wed, 07 Apr 2021 17:34:35 GMT
 recorded_with: VCR 3.0.3

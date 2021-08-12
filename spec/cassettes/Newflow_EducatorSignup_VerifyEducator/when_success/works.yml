@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
+    uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Lead"
     body:
       encoding: UTF-8
       string: '{"FirstName":"Bryan","LastName":"Eli","Company":"Bryan Eli University","Email":"bed1+bryan36dev@rice.edu","LeadSource":"OSC
@@ -11,7 +11,7 @@ http_interactions:
         Eli University"}'
     headers:
       User-Agent:
-      - Faraday v0.17.3
+      - Faraday v1.0.1
       Content-Type:
       - application/json
       Authorization:
@@ -41,7 +41,7 @@ http_interactions:
       Sforce-Limit-Info:
       - api-usage=581/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q0v000007Y9wxEAC"
+      - "/services/data/v51.0/sobjects/Lead/00Q0v000007Y9wxEAC"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -51,7 +51,7 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"id":"00Q0v000007Y9wxEAC","success":true,"errors":[]}'
-    http_version: 
+    http_version:
   recorded_at: Fri, 05 Mar 2021 19:05:48 GMT
 - request:
     method: get
@@ -61,7 +61,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.17.3
+      - Faraday v1.0.1
       Authorization:
       - Bearer <sheerid_api_secret>
       Accept:
@@ -99,6 +99,6 @@ http_interactions:
     body:
       encoding: UTF-8
       string: '{"systemErrorMessage":"Provided API token is empty or invalid","errorIds":[]}'
-    http_version: 
+    http_version:
   recorded_at: Fri, 05 Mar 2021 19:05:48 GMT
 recorded_with: VCR 3.0.3

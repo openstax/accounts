@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_07_165954) do
+ActiveRecord::Schema.define(version: 2021_08_02_204828) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -274,6 +274,11 @@ ActiveRecord::Schema.define(version: 2021_04_07_165954) do
     t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
   end
 
+  create_table "push_topics", force: :cascade do |t|
+    t.string "topic_salesforce_id"
+    t.string "topic_name"
+  end
+
   create_table "schools", force: :cascade do |t|
     t.string "salesforce_id", null: false
     t.string "name", null: false
@@ -350,7 +355,7 @@ ActiveRecord::Schema.define(version: 2021_04_07_165954) do
     t.string "first_name"
     t.string "last_name"
     t.string "title"
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "uuid", default: -> { "public.gen_random_uuid()" }, null: false
     t.string "suffix"
     t.string "state", default: "needs_profile", null: false
     t.string "salesforce_contact_id"

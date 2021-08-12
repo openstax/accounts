@@ -2,14 +2,14 @@
 http_interactions:
 - request:
     method: post
-    uri: "<salesforce_instance_url>/services/data/v37.0/sobjects/Lead"
+    uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Lead"
     body:
       encoding: UTF-8
       string: '{"FirstName":"Toby","LastName":"King","Company":"unknown to Accounts","Email":"0975a8@uga.edu","LeadSource":"OSC
         Faculty","Newsletter__c":true,"Newsletter_Opt_In__c":true,"OS_Accounts_ID__c":1,"accounts_uuid_c__c":"2a67a29c-6e2d-4088-9d83-42680f1907d0","Application_Source__c":"","Role__c":"student","FV_Final__c":true,"Needs_CS_Review__c":false,"BRI_Marketing__c":false,"Title_1_school__c":false}'
     headers:
       User-Agent:
-      - Faraday v0.17.3
+      - Faraday v1.0.1
       Content-Type:
       - application/json
       Authorization:
@@ -49,7 +49,7 @@ http_interactions:
       Sforce-Limit-Info:
       - api-usage=905/5000000
       Location:
-      - "/services/data/v37.0/sobjects/Lead/00Q7X000006FDVeUAO"
+      - "/services/data/v51.0/sobjects/Lead/00Q7X000006FDVeUAO"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
