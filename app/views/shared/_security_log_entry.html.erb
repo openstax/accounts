@@ -5,7 +5,6 @@
    application = security_log_entry.application %>
 
 <tr>
-  <td class="text-nowrap"><%= security_log_entry.id %></td>
   <td class="text-nowrap"><%= security_log_entry.created_at.to_formatted_s(:short) %></td>
   <% if show_user %>
   <% user = security_log_entry.user
@@ -15,5 +14,5 @@
   <td class="text-nowrap"><%= application.try(:name) || 'Accounts' %></td>
   <td class="text-nowrap"><%= security_log_entry.remote_ip %></td>
   <td class="text-nowrap"><%= security_log_entry.event_type.to_s.humanize %></td>
-  <td><%= security_log_entry.event_data %></td>
+  <td><pre><%= raw JSON.pretty_generate(security_log_entry.event_data).gsub(" ","&nbsp;") %></pre></td>
 </tr>
