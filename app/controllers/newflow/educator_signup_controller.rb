@@ -42,7 +42,7 @@ module Newflow
         is_BRI_book: is_BRI_book_adopter?,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user.id)
-          security_log(:educator_signed_up, { user: @handler_result.outputs.user })
+          security_log(:educator_signed_up, { user: @handler_result.outputs.user, set_info: @handler_result.outputs.user.attributes.delete_if { |k,v| v.nil? } })
           clear_cache_BRI_marketing
           redirect_to(educator_email_verification_form_path)
         },
@@ -92,7 +92,7 @@ module Newflow
         success: lambda {
           clear_unverified_user
           sign_in!(@handler_result.outputs.user)
-          security_log(:educator_verified_email)
+          security_log(:educator_verified_email, email:@email)
           redirect_to(educator_sheerid_form_path)
         },
         failure: lambda {
@@ -117,6 +117,7 @@ module Newflow
       handle_with(
         EducatorSignup::SheeridWebhook,
         success: lambda {
+          security_log(:user_updated_using_sheerid_data, data: @handler_result)
           render(status: :ok, plain: 'Success')
         },
         failure: lambda {
@@ -176,12 +177,12 @@ module Newflow
         EducatorSignup::CsVerificationRequest,
         user: current_user,
         success: lambda {
-          security_log(:requested_manual_cs_verification)
+          security_log(:requested_manual_cs_verification, user: current_user)
           redirect_to(educator_pending_cs_verification_path)
         },
         failure: lambda {
           @book_titles = book_data.titles
-          security_log(:educator_sign_up_failed, reason: "Error in #{action_name}: #{@handler_result&.errors&.full_messages}")
+          security_log(:educator_sign_up_failed, user: current_user, reason: "Error in #{action_name}: #{@handler_result&.errors&.full_messages}")
           render :educator_cs_verification_form
         }
       )
@@ -207,12 +208,16 @@ module Newflow
 
       case true
       when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
+        security_log(:educator_signed_up, message: 'User pending CS verification and pending verification')
         redirect_to(educator_pending_cs_verification_path)
       when current_user.is_educator_pending_cs_verification && !current_user.pending_faculty?
+        security_log(:educator_signed_up, message: 'User pending CS verification and not pending verification')
         redirect_back(fallback_location: profile_newflow_path)
       when action_name == 'educator_sheerid_form' && current_user.step_3_complete?
+        security_log(:educator_signed_up, message: 'User redirected to finish profile information')
         redirect_to(educator_profile_form_path)
       when action_name == 'educator_profile_form' && current_user.is_profile_complete?
+        security_log(:educator_signed_up, message: 'User completed signup, sending to profile.')
         redirect_to(profile_newflow_path)
       end
     end

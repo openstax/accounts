@@ -15,7 +15,8 @@ module Newflow
 
         user.update!(state: User::ACTIVATED)
         CreateSalesforceLead.perform_later(user: user)
-        SecurityLog.create!(user: user, event_type: Constants::ACTIVATED_USER_SECURITY_LOG)
+        SecurityLog.create!(user: user, event_type: :created_salesforce_lead)
+        SecurityLog.create!(user: user, event_type: :user_became_activated)
       end
 
     end
