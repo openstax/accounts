@@ -90,6 +90,7 @@ module Newflow
         EducatorSignup::VerifyEmailByPin,
         email_address: unverified_user.email_addresses.first,
         success: lambda {
+          @email = unverified_user.email_addresses.first.value
           clear_unverified_user
           sign_in!(@handler_result.outputs.user)
           security_log(:educator_verified_email, email:@email)
@@ -149,8 +150,10 @@ module Newflow
           clear_incomplete_educator
 
           if user.is_educator_pending_cs_verification?
+            security_log(:sign_up_successful, user: user, message: "User marked for CS review")
             redirect_to(educator_pending_cs_verification_path)
           else
+            security_log(:sign_up_successful, user: user, message: "User signup complete and verified")
             redirect_to(signup_done_path)
           end
         },
