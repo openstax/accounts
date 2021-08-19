@@ -196,13 +196,14 @@ module Newflow
     def store_if_sheerid_is_unviable_for_user
       if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
         current_user.update!(is_sheerid_unviable: true)
+        security_log(:user_updated, message: 'user not viable for sheerid', user: current_user)
       end
     end
 
     def store_sheerid_verification_for_user
       if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
         current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)
-        security_log(:user_updated, message: 'updated sheerid_verification_id', user: current_user)
+        security_log(:user_updated, message: "updated sheerid_verification_id to #{sheerid_provided_verification_id_param}", user: current_user)
       end
     end
 

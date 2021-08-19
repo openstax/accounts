@@ -16,8 +16,9 @@ module Newflow
       handle_with(
         SendResetPasswordEmail,
         success: lambda {
+          user = @handler_result.outputs.user
           @email = @handler_result.outputs.email
-          security_log(:help_requested, email: @email)
+          security_log(:password_reset, {user: user, email: @email, message: "Sent password reset email"})
           clear_signup_state
           sign_out!
           render :reset_password_email_sent
@@ -26,7 +27,7 @@ module Newflow
           user = @handler_result.outputs.user
           @email = @handler_result.outputs.email
           code = @handler_result.errors.first.code
-          security_log :reset_password_failed, email: @email, reason: code
+          security_log(:reset_password_failed, {user: user, email: @email, reason: code})
           render :forgot_password_form
         }
       )
