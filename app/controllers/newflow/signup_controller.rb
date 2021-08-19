@@ -17,10 +17,10 @@ module Newflow
           sign_in!(user)
 
           if user.student?
-            security_log(:student_verified_email)
+            security_log(:student_verified_email, {user: user, message: "Student verified email."})
             redirect_to signup_done_path
           else
-            security_log(:educator_verified_email)
+            security_log(:educator_verified_email, {user: user, message: "Educator verified email."})
             redirect_to(educator_sheerid_form_path)
           end
         },

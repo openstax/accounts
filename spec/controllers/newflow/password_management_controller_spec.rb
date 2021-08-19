@@ -46,7 +46,7 @@ module Newflow
             expect {
               post('send_reset_password_email', params: params)
             }.to change {
-              SecurityLog.where(event_type: :help_requested, user: User.last).count
+              SecurityLog.where(event_type: :password_reset, user: User.last).count
             }
           end
       end

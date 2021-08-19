@@ -46,7 +46,7 @@ ActionController::Base.class_exec do
       application: application,
       remote_ip: request.remote_ip,
       event_type: event_type,
-      event_data: event_data
+      event_data: event_data.except!(:user)
     )
   end
 

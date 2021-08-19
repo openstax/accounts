@@ -16,8 +16,11 @@ module Newflow
         return if user.activated?
 
         user.update!(state: User::ACTIVATED)
-        CreateSalesforceLead.perform_later(user: user) if user.receive_newsletter?
-        SecurityLog.create!(user: user, event_type: Constants::ACTIVATED_USER_SECURITY_LOG)
+        if user.receive_newsletter?
+          CreateSalesforceLead.perform_later(user: user)
+          SecurityLog.create!(user: user, event_type: :created_salesforce_lead)
+        end
+        SecurityLog.create!(user: user, event_type: :user_became_activated)
       end
 
     end

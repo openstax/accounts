@@ -46,6 +46,12 @@ module Newflow
           role: (user.role == User::STUDENT_ROLE ? User::INSTRUCTOR_ROLE : user.role)
         )
 
+        SecurityLog.create!(
+          user: user,
+          event_type: :user_updated_using_sheerid_data,
+          event_data: { updated_data: first_update }
+        )
+
         if first_update && user.is_sheerid_verified? && user.is_profile_complete?
           user.update(faculty_status: User::CONFIRMED_FACULTY)
         else

@@ -36,7 +36,7 @@ module Newflow
             return
           end
 
-          sign_in!(user)
+          sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
           if current_user.student? || !current_user.is_newflow? || (edu_newflow_activated? && decorated_user.can_do?('redirect_back_upon_login'))
             redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
