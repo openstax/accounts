@@ -146,14 +146,12 @@ module Newflow
         user: current_user,
         success: lambda {
           user = @handler_result.outputs.user
-          security_log(:user_updated, user: user, message: 'Completed Educator Profile')
+          security_log(:user_updated, { user: user, set_info: user.attributes.delete_if { |k,v| v.nil? } })
           clear_incomplete_educator
 
           if user.is_educator_pending_cs_verification?
-            security_log(:sign_up_successful, user: user, message: "User marked for CS review")
             redirect_to(educator_pending_cs_verification_path)
           else
-            security_log(:sign_up_successful, user: user, message: "User signup complete and verified")
             redirect_to(signup_done_path)
           end
         },
