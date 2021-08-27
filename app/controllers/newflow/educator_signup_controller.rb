@@ -107,7 +107,7 @@ module Newflow
 
     def educator_sheerid_form
       @sheerid_url = generate_sheer_id_url(user: current_user)
-      security_log(:user_viewed_signup_form, { form_name: action_name, user: user, user_state: user.attributes.delete_if { |k,v| v.nil? } })
+      security_log(:user_viewed_signup_form, { form_name: action_name, user: current_user, user_state: current_user.attributes.delete_if { |k,v| v.nil? } })
     end
 
     # SheerID makes a POST request to this endpoint when it verifies an educator
@@ -116,7 +116,7 @@ module Newflow
       handle_with(
         EducatorSignup::SheeridWebhook,
         success: lambda {
-          security_log(:user_updated_using_sheerid_data, { data: @handler_result, user: user, user_state: user.attributes.delete_if { |k,v| v.nil? } })
+          security_log(:user_updated_using_sheerid_data, { data: @handler_result, user: current_user, user_state: current_user.attributes.delete_if { |k,v| v.nil? } })
           render(status: :ok, plain: 'Success')
         },
         failure: lambda {
