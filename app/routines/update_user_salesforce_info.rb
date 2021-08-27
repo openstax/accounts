@@ -161,7 +161,7 @@ class UpdateUserSalesforceInfo
     # verification ("OSC Faculty")
 
     @leads ||= OpenStax::Salesforce::Remote::Lead
-                   .where(source: "OSC Faculty")
+                   .where(source: "Account Creation")
                    .select(:id, :email)
                    .to_a
   end
