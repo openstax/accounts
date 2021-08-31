@@ -81,11 +81,19 @@ module Newflow
         elsif verification.rejected?
           run(SheeridRejectedEducator, user: existing_user, verification_id: verification_id)
         elsif verification.present?
-          SecurityLog.create!(
-            event_type: :user_updated_using_sheerid_data,
-            user: existing_user,
-            event_data: { verification: verification.inspect }
-          ) if user_changed
+          if verification.inspect == '#'
+            SecurityLog.create!(
+              event_type: :user_updated_using_sheerid_data,
+              user: existing_user,
+              event_data: { message: 'not instantly verified - document upload requested' }
+            ) if user_changed
+          else
+            SecurityLog.create!(
+              event_type: :user_updated_using_sheerid_data,
+              user: existing_user,
+              event_data: { verification: verification.inspect }
+            ) if user_changed
+          end
         end
 
         outputs.verification = verification
