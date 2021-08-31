@@ -302,13 +302,6 @@ Rails.application.routes.draw do
     post :verify_contact_info, path: '/contact_infos/:id/verify',
                                controller: :contact_infos, action: :verify
 
-    resource :salesforce, only: [], controller: :salesforce do
-      collection do
-        get :actions
-        put :update_users
-      end
-    end
-
     resources :pre_auth_states, only: [:index]
 
     resources :banners, except: :show
