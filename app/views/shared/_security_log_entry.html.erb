@@ -5,7 +5,7 @@
    application = security_log_entry.application %>
 
 <tr>
-  <td class="text-nowrap"><%= security_log_entry.created_at.to_formatted_s(:short) %></td>
+  <td class="text-nowrap"><%= security_log_entry.created_at.in_time_zone('Central Time (US & Canada)').to_formatted_s(:short) %></td>
   <% if show_user %>
   <% user = security_log_entry.user
      username = user.nil? ? (application.nil? ? 'Anonymous' : 'Application') : user.id %>

@@ -37,18 +37,8 @@ RSpec.describe SearchApplicationUsers do
   end
 
   it "should not return results if application is nil" do
-    outcome = described_class.call(nil, 'username:jstra').outputs.items
+    outcome = described_class.call(nil, 'last_name:Stravinsky').outputs.items
     expect(outcome).to eq nil
-  end
-
-  it "should match based on username" do
-    outcome = described_class.call(application, 'username:jstra').outputs.items
-    expect(outcome).to eq [user_1]
-  end
-
-  it "should ignore leading wildcards on username searches" do
-    outcome = described_class.call(application, 'username:%rav').outputs.items.to_a
-    expect(outcome).to eq []
   end
 
   it "should match based on one first name" do
@@ -75,21 +65,21 @@ RSpec.describe SearchApplicationUsers do
 
   it "should return all results if the query is empty" do
     outcome = described_class.call(application, "").outputs.items.to_a
-    expect(outcome).to eq [user_3, user_1, user_2]
+    expect(outcome).to eq [user_2, user_3, user_1]
   end
 
   it "should match any fields when no prefix given" do
-    outcome = described_class.call(application, "jst").outputs.items.to_a
+    outcome = described_class.call(application, "John").outputs.items.to_a
     expect(outcome).to eq [user_3, user_1]
   end
 
   it "should match any fields when no prefix given and intersect when prefix given" do
-    outcome = described_class.call(application, "jst username:jst").outputs.items.to_a
+    outcome = described_class.call(application, "John first_name:John").outputs.items.to_a
     expect(outcome).to eq [user_3, user_1]
   end
 
   it "shouldn't allow users to add their own wildcards" do
-    outcome = described_class.call(application, "username:'%ar'").outputs.items.to_a
+    outcome = described_class.call(application, "first_name:'%ohn'").outputs.items.to_a
     expect(outcome).to eq []
   end
 
@@ -113,23 +103,23 @@ RSpec.describe SearchApplicationUsers do
     end
 
     it "should return the first page of values by default in default order" do
-      outcome = described_class.call(application, "username:billy").outputs.items.to_a
+      outcome = described_class.call(application, "last_name:Bob").outputs.items.to_a
       expect(outcome.length).to eq 20
-      expect(outcome[0]).to eq User.where(username: "billy_00").first
-      expect(outcome[19]).to eq User.where(username: "billy_19").first
+      expect(outcome[0]).to eq User.where(last_name: "Bob_00").first
+      expect(outcome[19]).to eq User.where(last_name: "Bob_19").first
     end
 
     it "should return the 2nd page when requested" do
-      outcome = described_class.call(application, "username:billy", page: 1).outputs.items.to_a
+      outcome = described_class.call(application, "last_name:Bob", page: 1).outputs.items.to_a
       expect(outcome.length).to eq 20
-      expect(outcome[0]).to eq User.where(username: "billy_20").first
-      expect(outcome[19]).to eq User.where(username: "billy_39").first
+      expect(outcome[0]).to eq User.where(last_name: "Bob_20").first
+      expect(outcome[19]).to eq User.where(last_name: "Bob_39").first
     end
 
     it "should return the incomplete 3rd page when requested" do
-      outcome = described_class.call(application, "username:billy", page: 2).outputs.items.to_a
+      outcome = described_class.call(application, "last_name:Bob", page: 2).outputs.items.to_a
       expect(outcome.length).to eq 6
-      expect(outcome[5]).to eq User.where(username: "billy_45").first
+      expect(outcome[5]).to eq User.where(last_name: "Bob_45").first
     end
 
   end
@@ -154,14 +144,14 @@ RSpec.describe SearchApplicationUsers do
 
     it "should allow sort by multiple fields in different directions" do
       outcome = described_class.call(
-        application, "username:foo", order_by: "first_name, last_name DESC"
+        application, "last_name:jones", order_by: "first_name DESC"
       ).outputs.items.to_a
-      expect(outcome).to eq [bob_jones, bob_brown, tim_jones]
+      expect(outcome).to eq [tim_jones, bob_jones]
 
       outcome = described_class.call(
-        application, "username:foo", order_by: "first_name, last_name ASC"
+        application, "last_name:jones", order_by: "first_name ASC"
       ).outputs.items.to_a
-      expect(outcome).to eq [bob_brown, bob_jones, tim_jones]
+      expect(outcome).to eq [bob_jones, tim_jones]
     end
 
   end

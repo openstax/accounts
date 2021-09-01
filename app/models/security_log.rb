@@ -73,6 +73,7 @@ class SecurityLog < ApplicationRecord
     educator_verified_using_sheerid
     educator_resumed_signup_flow
     created_salesforce_lead
+    update_salesforce_lead
     requested_manual_cs_verification
     user_became_activated
   ]

@@ -105,7 +105,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
 
     it "should return the 2nd page when requested" do
       api_get :index, untrusted_application_token, params: {
-        q: 'username:billy', page: '1', per_page: '10'
+        q: 'last_name:fred', page: '1', per_page: '10'
       }
       expect(response.code).to eq('200')
 
@@ -113,13 +113,13 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
 
       expect(outcome["total_count"]).to eq 46
       expect(outcome["items"].length).to eq 10
-      expect(outcome["items"][0]["username"]).to eq "billy_10"
-      expect(outcome["items"][9]["username"]).to eq "billy_19"
+      expect(outcome["items"][0]["last_name"]).to eq "Fred_10"
+      expect(outcome["items"][9]["last_name"]).to eq "Fred_19"
     end
 
     it "should return the incomplete 5th page when requested" do
       api_get :index, untrusted_application_token, params: {
-        q: 'username:billy', page: '4', per_page: '10'
+        q: 'last_name:fred', page: '4', per_page: '10'
       }
       expect(response.code).to eq('200')
 
@@ -127,25 +127,19 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
 
       expect(outcome["total_count"]).to eq 46
       expect(outcome["items"].length).to eq 6
-      expect(outcome["items"][0]["username"]).to eq "billy_40"
-      expect(outcome["items"][5]["username"]).to eq "billy_45"
+      expect(outcome["items"][0]["last_name"]).to eq "Fred_40"
+      expect(outcome["items"][5]["last_name"]).to eq "Fred_45"
     end
 
     it "should allow sort by multiple fields in different directions" do
-      api_get :index, untrusted_application_token, params: {q: 'username:foo', order_by: "first_name, last_name DESC"}
+      api_get :index, untrusted_application_token, params: {q: 'last_name:jones', order_by: "first_name DESC"}
       expect(response.code).to eq('200')
 
       outcome = JSON.parse(response.body)
 
-      expect(outcome["items"].length).to eq 3
-      expect(outcome["items"][0]["username"]).to eq "foo_bj"
-      expect(outcome["items"][1]["username"]).to eq "foo_bb"
-      expect(outcome["items"][2]["username"]).to eq "foo_tj"
-
-      expect(outcome["items"].length).to eq 3
-      expect(outcome["items"][0]["username"]).to eq "foo_bj"
-      expect(outcome["items"][1]["username"]).to eq "foo_bb"
-      expect(outcome["items"][2]["username"]).to eq "foo_tj"
+      expect(outcome["items"].length).to eq 2
+      expect(outcome["items"][0]["first_name"]).to eq "Tim"
+      expect(outcome["items"][1]["first_name"]).to eq "Bob"
     end
 
     it "should return no users if no one uses an app" do

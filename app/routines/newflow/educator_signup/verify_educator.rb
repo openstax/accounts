@@ -46,16 +46,20 @@ module Newflow
           role: (user.role == User::STUDENT_ROLE ? User::INSTRUCTOR_ROLE : user.role)
         )
 
-        SecurityLog.create!(
-          user: user,
-          event_type: :user_updated_using_sheerid_data,
-          event_data: { updated_data: first_update }
-        )
-
         if first_update && user.is_sheerid_verified? && user.is_profile_complete?
           user.update(faculty_status: User::CONFIRMED_FACULTY)
+          SecurityLog.create!(
+            user: user,
+            event_type: :user_updated_using_sheerid_data,
+            message: "Educator verified by SheerID."
+          )
         else
           first_update
+          SecurityLog.create!(
+            user: user,
+            event_type: :user_updated_using_sheerid_data,
+            event_data: { updated_data: first_update }
+          )
         end
       end
 
@@ -65,6 +69,11 @@ module Newflow
 
       def upsert_salesforce_lead_for(user)
         run(UpsertSalesforceLead, user: user)
+        SecurityLog.create!(
+          user: user,
+          event_type: :update_salesforce_lead,
+          message: "Updating existing lead in Salesforce."
+        )
       end
 
       def email_mismatch?(user, email)

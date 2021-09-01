@@ -57,11 +57,6 @@ RSpec.describe SearchUsers, type: :routine do
     end
   end
 
-  it "should match based on username" do
-    outcome = described_class.call('username:jstra').outputs.items.to_a
-    expect(outcome).to eq [user_1]
-  end
-
   it "should ignore leading wildcards on username searches" do
     outcome = described_class.call('username:%rav').outputs.items.to_a
     expect(outcome).to eq []
@@ -109,17 +104,17 @@ RSpec.describe SearchUsers, type: :routine do
   end
 
   it "should match any fields when no prefix given" do
-    outcome = described_class.call("jst").outputs.items.to_a
-    expect(outcome).to eq [user_4, user_3, user_1]
+    outcome = described_class.call("John").outputs.items.to_a
+    expect(outcome).to eq [user_3, user_1]
   end
 
   it "should match any fields when no prefix given and intersect when prefix given" do
-    outcome = described_class.call("jst username:jst").outputs.items.to_a
+    outcome = described_class.call("John first_name:John").outputs.items.to_a
     expect(outcome).to eq [user_3, user_1]
   end
 
   it "shouldn't allow users to add their own wildcards" do
-    outcome = described_class.call("username:'%ar'").outputs.items.to_a
+    outcome = described_class.call("first_name:'%ohn'").outputs.items.to_a
     expect(outcome).to eq []
   end
 
@@ -164,14 +159,14 @@ RSpec.describe SearchUsers, type: :routine do
 
     it "should allow sort by multiple fields in different directions" do
       outcome = described_class.call(
-        "username:foo", order_by: "first_name, last_name DESC"
+        "last_name:jones", order_by: "first_name DESC"
       ).outputs.items.to_a
-      expect(outcome).to eq [bob_jones, bob_brown, tim_jones]
+      expect(outcome).to eq [tim_jones, bob_jones]
 
       outcome = described_class.call(
-        "username:foo", order_by: "first_name, last_name ASC"
+        "last_name:jones", order_by: "first_name ASC"
       ).outputs.items.to_a
-      expect(outcome).to eq [bob_brown, bob_jones, tim_jones]
+      expect(outcome).to eq [bob_jones, tim_jones]
     end
 
   end

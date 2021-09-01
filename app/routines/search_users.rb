@@ -3,10 +3,9 @@
 # Caller provides a query and some options.  The query follows the rules of
 # https://github.com/bruce/keyword_search , e.g.:
 #
-#   "username:jps,richb" --> returns the "jps" and "richb" users
 #   "name:John" --> returns Users with first or last starting with "John"
 #
-# Query terms can be combined, e.g. "username:jp first_name:john"
+# Query terms can be combined, e.g. "first_name:michael last_name: harrison"
 #
 # By default, the query will return an empty result set if the number of
 # results exceeds MAX_MATCHING_USERS
@@ -30,7 +29,7 @@ class SearchUsers
 
   protected
 
-  SORTABLE_FIELDS = ['username', 'first_name', 'last_name', 'id', 'role']
+  SORTABLE_FIELDS = ['first_name', 'last_name', 'id', 'role']
   SORT_ASCENDING = 'ASC'
   SORT_DESCENDING = 'DESC'
   MAX_MATCHING_USERS = 10
@@ -51,13 +50,6 @@ class SearchUsers
     KeywordSearch.search(query) do |with|
 
       with.default_keyword :any
-
-      with.keyword :username do |usernames|
-        sanitized_names = sanitize_strings(usernames, append_wildcard: true,
-                                                      prepend_wildcard: options[:admin])
-
-        users = users.where( table[:username].matches_any(sanitized_names) )
-      end
 
       with.keyword :first_name do |first_names|
         sanitized_names = sanitize_strings(first_names, append_wildcard: true,
@@ -155,7 +147,6 @@ class SearchUsers
             )
           end
 
-          matches_username = table[:username].matches_any(sanitized_names)
           matches_first_name = table[:first_name].matches_any(sanitized_names)
           matches_last_name = table[:last_name].matches_any(sanitized_names)
           matches_full_name = full_name.matches_any(sanitized_names)
@@ -163,9 +154,8 @@ class SearchUsers
           matches_support_identifier = table[:support_identifier].matches_any(sanitized_names)
           matches_contact_info = ContactInfo.where(contact_infos_query)
 
-          users = User.where(matches_username).or(
-            User.where(matches_first_name)
-          ).or(
+          users = User.where(matches_first_name)
+          .or(
             User.where(matches_last_name)
           ).or(
             User.where(matches_full_name)
@@ -183,7 +173,7 @@ class SearchUsers
     # Ordering
 
     # Parse the input
-    order_bys = (options[:order_by] || 'username').split(',').map{ |ob| ob.strip.split(' ') }
+    order_bys = (options[:order_by] || 'last_name').split(',').map{ |ob| ob.strip.split(' ') }
 
     # Toss out bad input, provide default direction
     order_bys = order_bys.map do |order_by|
@@ -197,7 +187,7 @@ class SearchUsers
     order_bys.compact!
 
     # Use a default sort if none provided
-    order_bys = [['username', SORT_ASCENDING]] if order_bys.empty?
+    order_bys = [['last_name', SORT_ASCENDING]] if order_bys.empty?
 
     # Convert to query style
     order_bys = order_bys.map{|order_by| "#{order_by[0]} #{order_by[1]}"}

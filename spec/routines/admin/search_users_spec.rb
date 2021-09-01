@@ -29,16 +29,6 @@ RSpec.describe Admin::SearchUsers, type: :routine do
     )
   end
 
-  it "should match based on username" do
-    outcome = described_class.call('username:jstra').outputs.items.to_a
-    expect(outcome).to eq [user_1]
-  end
-
-  it "should prepend leading wildcards on username searches" do
-    outcome = described_class.call('username:rav').outputs.items.to_a
-    expect(outcome).to eq [user_1]
-  end
-
   it "should match based on one first name" do
     outcome = described_class.call('first_name:"John"').outputs.items.to_a
     expect(outcome).to eq [user_3, user_1]
@@ -97,7 +87,7 @@ RSpec.describe Admin::SearchUsers, type: :routine do
     [ user_1, user_2, user_3, user_4 ].each_with_index do |user, index|
       User.where(id: user.id).update_all(support_identifier: "cs_#{index}")
     end
-    outcome = described_class.call("jst").outputs.items.to_a
+    outcome = described_class.call("st").outputs.items.to_a
     expect(outcome).to eq [user_4, user_3, user_1]
   end
 
@@ -105,12 +95,12 @@ RSpec.describe Admin::SearchUsers, type: :routine do
     [ user_1, user_2, user_3, user_4 ].each_with_index do |user, index|
       User.where(id: user.id).update_all(support_identifier: "cs_#{index}")
     end
-    outcome = described_class.call("jst username:jst").outputs.items.to_a
+    outcome = described_class.call("John first_name:John").outputs.items.to_a
     expect(outcome).to eq [user_3, user_1]
   end
 
   it "shouldn't allow users to add their own wildcards" do
-    outcome = described_class.call("username:'e%r'").outputs.items.to_a
+    outcome = described_class.call("first_name:'e%r'").outputs.items.to_a
     expect(outcome).to eq []
   end
 
@@ -134,23 +124,23 @@ RSpec.describe Admin::SearchUsers, type: :routine do
     end
 
     it "should return the first page of values by default in default order" do
-      outcome = described_class.call("username:billy").outputs.items.all
+      outcome = described_class.call("last_name:Bob").outputs.items.all
       expect(outcome.length).to eq 20
-      expect(outcome[0]).to eq User.where(username: "billy_00").first
-      expect(outcome[19]).to eq User.where(username: "billy_19").first
+      expect(outcome[0]).to eq User.where(last_name: "Bob_00").first
+      expect(outcome[19]).to eq User.where(last_name: "Bob_19").first
     end
 
     it "should return the 2nd page when requested" do
-      outcome = described_class.call("username:billy", page: 1).outputs.items.all
+      outcome = described_class.call("last_name:Bob", page: 1).outputs.items.all
       expect(outcome.length).to eq 20
-      expect(outcome[0]).to eq User.where(username: "billy_20").first
-      expect(outcome[19]).to eq User.where(username: "billy_39").first
+      expect(outcome[0]).to eq User.where(last_name: "Bob_20").first
+      expect(outcome[19]).to eq User.where(last_name: "Bob_39").first
     end
 
     it "should return the incomplete 3rd page when requested" do
-      outcome = described_class.call("username:billy", page: 2).outputs.items.all
+      outcome = described_class.call("last_name:Bob", page: 2).outputs.items.all
       expect(outcome.length).to eq 6
-      expect(outcome[5]).to eq User.where(username: "billy_45").first
+      expect(outcome[5]).to eq User.where(last_name: "Bob_45").first
     end
 
   end
@@ -169,14 +159,14 @@ RSpec.describe Admin::SearchUsers, type: :routine do
 
     it "should allow sort by multiple fields in different directions" do
       outcome = described_class.call(
-        "username:foo", order_by: "first_name, last_name DESC"
+        "last_name:jones", order_by: "first_name DESC"
       ).outputs.items.to_a
-      expect(outcome).to eq [bob_jones, bob_brown, tim_jones]
+      expect(outcome).to eq [tim_jones, bob_jones]
 
       outcome = described_class.call(
-        "username:foo", order_by: "first_name, last_name ASC"
+        "last_name:jones", order_by: "first_name ASC"
       ).outputs.items.to_a
-      expect(outcome).to eq [bob_brown, bob_jones, tim_jones]
+      expect(outcome).to eq [bob_jones, tim_jones]
     end
 
   end
