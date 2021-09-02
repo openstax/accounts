@@ -9,7 +9,7 @@ set :runner_command, "#{bundle_command} rails runner"
 #   * https://github.com/javan/whenever/issues/481
 #   * https://github.com/javan/whenever/pull/239
 
-every '5,35 * * * *' do
+every '5 * * * *' do
   runner <<~CMD
     OpenStax::RescueFrom.this do
       UpdateUserSalesforceInfo.call(
@@ -19,7 +19,7 @@ every '5,35 * * * *' do
   CMD
 end
 
-every '20,50 * * * *' do
+every '50 * * * *' do
   runner 'OpenStax::RescueFrom.this { UpdateSchoolSalesforceInfo.call }'
 end
 
