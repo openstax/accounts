@@ -1,5 +1,5 @@
 class UpdateUserSalesforceInfo
-  BATCH_SIZE = 1000
+  BATCH_SIZE = 250
 
   COLLEGE_TYPES = [
       'College/University (4)',
@@ -257,34 +257,11 @@ class UpdateUserSalesforceInfo
                               raise "Unknown faculty_verified field: '#{
                               contact.faculty_verified}'' on contact #{contact.id}"
                             end
-
-      # TODO: We can read school_type and school_location from the cached School records instead,
-      # but better wait 1 additional release to let the Schools be cached and linked
-      user.school_type = case contact.school_type
-                         when *COLLEGE_TYPES
-                           :college
-                         when *HIGH_SCHOOL_TYPES
-                           :high_school
-                         when *K12_TYPES
-                           :k12_school
-                         when *HOME_SCHOOL_TYPES
-                           :home_school
-                         when NilClass
-                           :unknown_school_type
-                         else
-                           :other_school_type
-                         end
+      
+      user.school_type = school.type
+      user.school_location = school.location
 
       sf_school = contact.school
-      user.school_location = case sf_school&.school_location
-                             when *DOMESTIC_SCHOOL_LOCATIONS
-                               :domestic_school
-                             when *FOREIGN_SCHOOL_LOCATIONS
-                               :foreign_school
-                             else
-                               :unknown_school_location
-                             end
-
       unless contact.adoption_status.blank?
         user.using_openstax = ADOPTION_STATUSES[contact.adoption_status]
       end
