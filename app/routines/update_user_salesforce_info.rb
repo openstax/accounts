@@ -1,5 +1,5 @@
 class UpdateUserSalesforceInfo
-  BATCH_SIZE = 250
+  BATCH_SIZE = 1000
 
   COLLEGE_TYPES = [
       'College/University (4)',
