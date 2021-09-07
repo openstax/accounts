@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_02_204828) do
+ActiveRecord::Schema.define(version: 2021_09_07_180921) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 2021_08_02_204828) do
     t.index ["is_school_issued"], name: "index_contact_infos_on_is_school_issued"
     t.index ["user_id"], name: "index_contact_infos_on_user_id"
     t.index ["value", "user_id", "type"], name: "index_contact_infos_on_value_user_id_type", unique: true
+    t.index ["value"], name: "index_contact_infos_on_value", unique: true
     t.index ["verified"], name: "index_contact_infos_on_verified"
   end
 
@@ -395,6 +396,7 @@ ActiveRecord::Schema.define(version: 2021_08_02_204828) do
     t.boolean "is_b_r_i_user"
     t.boolean "title_1_school"
     t.bigint "school_id"
+    t.boolean "faculty_verification_email_sent"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
