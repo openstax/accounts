@@ -15,7 +15,36 @@ class ContactParser
         salesforce_id: contact_params[:sf_id]
       ).index_by(&:salesforce_id)
 
-      if school.nil? && !user.school.nil?
+      puts school.inspect
+
+      if school.present?
+        user.school = school.id
+        user.school_type = case school&.type
+                             when *COLLEGE_TYPES
+                               :college
+                             when *HIGH_SCHOOL_TYPES
+                               :high_school
+                             when *K12_TYPES
+                               :k12_school
+                             when *HOME_SCHOOL_TYPES
+                               :home_school
+                             when NilClass
+                               :unknown_school_type
+                             else
+                               :other_school_type
+                           end
+
+        user.school_location = case school&.location
+                                 when *DOMESTIC_SCHOOL_LOCATIONS
+                                   :domestic_school
+                                 when *FOREIGN_SCHOOL_LOCATIONS
+                                   :foreign_school
+                                 else
+                                   :unknown_school_location
+                               end
+
+        user.is_kip = school&.is_kip || school&.is_child_of_kip
+      else
         warn("User #{user.id} has a school that is in SF but not cached yet #{contact_params[:school_id]}.")
       end
 
@@ -35,32 +64,7 @@ class ContactParser
                                 raise "Unknown faculty_verified field: '#{contact.faculty_verified}'' on contact #{contact.id}"
                             end
 
-      user.school_type = case school&.type
-                              when *COLLEGE_TYPES
-                                :college
-                              when *HIGH_SCHOOL_TYPES
-                                :high_school
-                              when *K12_TYPES
-                                :k12_school
-                              when *HOME_SCHOOL_TYPES
-                                :home_school
-                              when NilClass
-                                :unknown_school_type
-                              else
-                                :other_school_type
-                         end
-
-      user.school_location = case school&.location
-                               when *DOMESTIC_SCHOOL_LOCATIONS
-                                 :domestic_school
-                               when *FOREIGN_SCHOOL_LOCATIONS
-                                 :foreign_school
-                               else
-                                 :unknown_school_location
-                             end
-
       user.grant_tutor_access = contact_params[:grant_tutor_access]
-      user.is_kip = school&.is_kip || school&.is_child_of_kip
       user.save
       Rails.logger.debug('Contact saved ID: ' + user.salesforce_contact_id)
     else
