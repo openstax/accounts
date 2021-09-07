@@ -40,7 +40,7 @@ class UpdateUserSalesforceInfo
 
     prepare_contacts
 
-    schools_by_salesforce_id = School.select(:id, :salesforce_id).where(
+    schools_by_salesforce_id = School.select(:id, :salesforce_id, :location, :type).where(
         salesforce_id: @contacts_by_id.values.compact.map(&:school_id)
     ).index_by(&:salesforce_id)
 
@@ -258,9 +258,7 @@ class UpdateUserSalesforceInfo
                               contact.faculty_verified}'' on contact #{contact.id}"
                             end
 
-      # TODO: We can read school_type and school_location from the cached School records instead,
-      # but better wait 1 additional release to let the Schools be cached and linked
-      user.school_type = case contact.school_type
+      user.school_type = case school&.type
                          when *COLLEGE_TYPES
                            :college
                          when *HIGH_SCHOOL_TYPES
@@ -275,8 +273,7 @@ class UpdateUserSalesforceInfo
                            :other_school_type
                          end
 
-      sf_school = contact.school
-      user.school_location = case sf_school&.school_location
+      user.school_location = case school&.school_location
                              when *DOMESTIC_SCHOOL_LOCATIONS
                                :domestic_school
                              when *FOREIGN_SCHOOL_LOCATIONS
@@ -289,7 +286,7 @@ class UpdateUserSalesforceInfo
         user.using_openstax = ADOPTION_STATUSES[contact.adoption_status]
       end
 
-      user.is_kip = sf_school&.is_kip || sf_school&.is_child_of_kip
+      user.is_kip = school&.is_kip || school&.is_child_of_kip
       user.grant_tutor_access = contact.grant_tutor_access
       user.is_b_r_i_user = contact.b_r_i_marketing
     end
