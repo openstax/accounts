@@ -651,12 +651,13 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     end
 
     assoc = instance_double(ActiveForce::ActiveQuery)
-    expect(OpenStax::Salesforce::Remote::Contact).to receive(:select).and_return(assoc)
-    expect(assoc).to receive(:order).and_return(assoc)
-    expect(assoc).to receive(:limit).and_return(assoc)
-    expect(assoc).to receive(:includes).and_return(assoc)
-    allow(assoc).to receive(:where).and_return(assoc)
-    expect(assoc).to receive(:to_a).and_return(contacts)
+    expect(OpenStax::Salesforce::Remote::Contact).to(
+      receive(:select).with(
+        :id, :email, :email_alt, :faculty_verified,
+        :school_type, :adoption_status, :grant_tutor_access
+      ).and_return(assoc)
+    )
+    expect(assoc).to receive(:includes).with(:school).and_return(contacts)
   end
 
   def stub_leads(leads)
