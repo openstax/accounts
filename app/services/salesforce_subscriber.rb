@@ -16,26 +16,30 @@ class SalesforceSubscriber
     topic = PushTopic.where(topic_name: CONTACT_PUSH_TOPIC_NAME).first
 
     unless topic
-      contact_topic = @client.create!('PushTopic',
-                                      ApiVersion: '51.0',
-                                      Name: CONTACT_PUSH_TOPIC_NAME,
-                                      Description: 'all contact records',
-                                      NotifyForOperationCreate: 'true',
-                                      NotifyForOperationUpdate: 'true',
-                                      NotifyForFields: 'Referenced',
-                                      Query: 'select Id, AccountId, Email, Email_alt__c, Faculty_Verified__c, Adoption_Status__c, Grant_Tutor_Access__c from Contact')
+      begin
+        retries ||= 0
+        contact_topic = @client.create!('PushTopic',
+                                        ApiVersion: '51.0',
+                                        Name: CONTACT_PUSH_TOPIC_NAME,
+                                        Description: 'all contact records',
+                                        NotifyForOperationCreate: 'true',
+                                        NotifyForOperationUpdate: 'true',
+                                        NotifyForFields: 'Referenced',
+                                        Query: 'select Id, AccountId, Email, Email_alt__c, Faculty_Verified__c, Adoption_Status__c, Grant_Tutor_Access__c from Contact')
 
-      if contact_topic.present? && contact_topic.is_a?(String)
-        PushTopic.create(topic_salesforce_id: contact_topic, topic_name: CONTACT_PUSH_TOPIC_NAME)
-        warn('Contact Push Topic Id: ' + contact_topic)
-      else
-        Rails.logger.error('failed to create push topic: ' + CONTACT_PUSH_TOPIC_NAME)
-        Sentry.capture_message('failed to create push topic: ' + CONTACT_PUSH_TOPIC_NAME)
-        raise
+        if contact_topic.present? && contact_topic.is_a?(String)
+          PushTopic.create(topic_salesforce_id: contact_topic, topic_name: CONTACT_PUSH_TOPIC_NAME)
+          warn('Contact Push Topic Id: ' + contact_topic)
+        else
+          Rails.logger.error('failed to create push topic: ' + CONTACT_PUSH_TOPIC_NAME)
+          Sentry.capture_message('failed to create push topic: ' + CONTACT_PUSH_TOPIC_NAME)
+          raise
+        end
+      rescue Restforce::ErrorCode::DuplicateValue
+        Rails.logger.debug('Push topic duplicate found.')
+        retry if (retries += 1) < 3
       end
     end
-  rescue Restforce::ErrorCode::DuplicateValue
-    Rails.logger.debug('Push topic duplicate found.')
   end
 
   def subscribe
