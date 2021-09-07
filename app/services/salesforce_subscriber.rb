@@ -23,7 +23,7 @@ class SalesforceSubscriber
                                       NotifyForOperationCreate: 'true',
                                       NotifyForOperationUpdate: 'true',
                                       NotifyForFields: 'Referenced',
-                                      Query: 'select Id, Email, Email_alt__c, Faculty_Verified__c, Adoption_Status__c, Grant_Tutor_Access__c from Contact')
+                                      Query: 'select Id, AccountId, Email, Email_alt__c, Faculty_Verified__c, Adoption_Status__c, Grant_Tutor_Access__c from Contact')
 
       if contact_topic.present? && contact_topic.is_a?(String)
         PushTopic.create(topic_salesforce_id: contact_topic, topic_name: CONTACT_PUSH_TOPIC_NAME)

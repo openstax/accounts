@@ -15,6 +15,10 @@ class ContactParser
         salesforce_id: contact_params[:sf_id]
       ).index_by(&:salesforce_id)
 
+      if school.nil? && !user.school.nil?
+        warn("User #{user.id} has a school that is in SF but not cached yet #{contact_params[:school_id]}.")
+      end
+
       user.salesforce_contact_id = contact_params[:sf_id]
       user.using_openstax = contact_params[:adoption_status]
 
@@ -73,6 +77,7 @@ class ContactParser
     sobject = @event['sobject']
     {
       sf_id: sobject['Id'],
+      school_id: sobject['AccountId'],
       email: sobject['Email'],
       email_alt: sobject['Email_alt__c'],
       faculty_verified: sobject['Faculty_Verified__c'],
