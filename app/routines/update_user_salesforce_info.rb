@@ -325,12 +325,6 @@ class UpdateUserSalesforceInfo
     end
 
     user.save! if user.changed?
-
-    if let_sf_know_to_send_fac_ver_email
-      contact.update_attributes!(
-        send_faculty_verification_to: user.guessed_preferred_confirmed_email
-      )
-    end
   end
 
   def error!(exception: nil, message: nil, user: nil)
