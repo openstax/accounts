@@ -302,7 +302,7 @@ class UpdateUserSalesforceInfo
       user.is_b_r_i_user = contact.b_r_i_marketing
     end
 
-    if school.nil? && !contact.school.nil?
+    if school.nil? && !sf_school.nil?
       warn("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
     else
       user.school = school
