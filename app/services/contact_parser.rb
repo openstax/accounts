@@ -44,8 +44,9 @@ class ContactParser
         user.is_kip = school&.is_kip || school&.is_child_of_kip
       else
         warn("User #{user.id} has a school that is in SF but not cached yet #{contact_params[:school_id]}.")
-        # TODO: this is how we will be able to tell who needs to get synced during cron, after their school has synced
-        # a good idea to let this run for awhile like this before changing the cron.
+        # TODO: this is how we will be able to tell who needs to get synced during cron, after their school has synced.
+        # It'd be a good idea to let this run for awhile like this before changing the cron.
+        # Might also be worthwhile to add a streaming subscriber for SF schools?
         user.needs_sync = true
       end
 
