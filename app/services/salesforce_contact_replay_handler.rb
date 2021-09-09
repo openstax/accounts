@@ -31,12 +31,12 @@ class SalesforceContactReplayHandler
     puts "[#{channel}] Writing replay ID: #{replay_id}"
 
     @replay.replay_id = replay_id
-    @replay.save
+    @replay.save!
     @channels[channel] = replay_id
   end
 
   def old_replay_id?
     @replay.updated_at.is_a?(Time) && Time.now - @replay.updated_at > MAX_AGE
-    @replay.delete
+    @replay.destroy!
   end
 end
