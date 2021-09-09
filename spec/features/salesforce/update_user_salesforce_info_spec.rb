@@ -24,7 +24,6 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
     end
 
     limit_salesforce_queries_by_token(OpenStax::Salesforce::Remote::Contact, @unique_token)
-    limit_salesforce_queries_by_token(OpenStax::Salesforce::Remote::Lead, @unique_token)
   end
 
   context "user with verified email" do
@@ -57,28 +56,6 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
         expect(contact.reload.send_faculty_verification_to).to eq "f@f.com.#{@unique_token}"
       end
     end
-
-    context "lead exists" do
-      let!(:lead) { @proxy.new_lead(email: email_address.value, source: "OSC Faculty") }
-
-      it "updates user status when not previously linked" do
-        call_expecting_no_errors
-        expect(user.reload).to be_pending_faculty
-      end
-
-      it "does not update user to lead status if user already has SF contact ID" do
-        other_contact = @proxy.new_contact(email: email_address.value, faculty_verified: "Confirmed")
-        user.update_attribute(:salesforce_contact_id, other_contact.id)
-        call_expecting_no_errors
-        expect(user.reload).to be_confirmed_faculty
-      end
-
-      it "does not update if email doesn't match" do
-        email_address.update_attribute(:value, "yoyo@ma.com")
-        call_expecting_no_errors
-        expect(user.reload).to be_no_faculty_info
-      end
-    end
   end
 
   context "user with unverified email" do
@@ -105,15 +82,6 @@ RSpec.describe "UpdateUserSalesforceInfo", vcr: VCR_OPTS do
         user.reload
         expect(user.salesforce_contact_id).to eq contact.id
         expect(user).to be_confirmed_faculty
-      end
-    end
-
-    context "lead exists" do
-      let!(:lead) { @proxy.new_lead(email: email_address.value, source: "OSC Faculty") }
-
-      it "does not cache info when not previously linked" do
-        call_expecting_no_errors
-        expect(user.reload).to be_no_faculty_info
       end
     end
   end
