@@ -352,58 +352,6 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
 
   end # context 'contacts'
 
-  context 'leads' do
-    it 'marks a user pending when there is a lead with non converted status' do
-      stub_salesforce(leads: {email: "Bob@example.com", status: ""})
-      described_class.call
-      expect_user_sf_data(user, id: nil, faculty_status: :pending_faculty)
-    end
-
-    it 'marks a user pending when there is a lead with non converted status and whitespace' do
-      stub_salesforce(leads: {email: " Bob@example.com ", status: ""})
-      described_class.call
-      expect_user_sf_data(user, id: nil, faculty_status: :pending_faculty)
-    end
-
-    it 'marks a user pending there is a lead with converted and non converted status' do
-      stub_salesforce(leads: [
-        {email: "Bob@example.com", status: nil},
-        {email: "boB@example.com", status: "Converted"}
-      ])
-      described_class.call
-      expect_user_sf_data(user, id: nil, faculty_status: :pending_faculty)
-    end
-
-    it 'marks a user pending there is only a lead with converted status' do
-      stub_salesforce(leads: {email: "boB@example.com", status: "Converted"})
-      described_class.call
-      expect_user_sf_data(user, id: nil, faculty_status: :rejected_faculty)
-    end
-
-    it 'works when leads pulled from multiple emails on user' do
-      email = AddEmailToUser.call("otherBob@example.com", user).outputs.email
-      ConfirmContactInfo.call(email)
-
-      stub_salesforce(leads: [
-        {email: "otherBob@example.com", status: nil},
-        {email: "boB@example.com", status: "Converted"}
-      ])
-
-      described_class.call
-      expect_user_sf_data(user, id: nil, faculty_status: :pending_faculty)
-    end
-
-    it 'resets faculty status if lead that causes it gets deleted' do
-      stub_salesforce(leads: [])
-      user.faculty_status = :pending_faculty
-      user.save!
-      described_class.call
-      expect(user.reload).to be_no_faculty_info
-    end
-
-    # TODO test that we only look at OSC Faculty leads (feature spec)
-  end
-
   context 'exceptions happen gracefully' do
     it 'rescues in the first pass' do
       stub_salesforce(
@@ -592,7 +540,6 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     before {
       FactoryBot.create(:email_address, value: email_value, user: user)
       stub_salesforce(
-        leads: {email: email_value, status: ''},
         contacts: {
           id: 'whatever',
           email: email_value,
@@ -624,9 +571,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     OpenStax::Salesforce::Remote::Contact.new({ school: nil }.merge(args))
   end
 
-  def stub_salesforce(contacts: [], leads: [])
+  def stub_salesforce(contacts: [])
     stub_contacts(contacts)
-    stub_leads(leads)
   end
 
   def stub_contacts(contacts)
@@ -658,23 +604,6 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       ).and_return(assoc)
     )
     expect(assoc).to receive(:includes).with(:school).and_return(contacts)
-  end
-
-  def stub_leads(leads)
-    leads = [leads].flatten.map do |lead|
-      case lead
-      when OpenStax::Salesforce::Remote::Lead
-        lead
-      when Hash
-        OpenStax::Salesforce::Remote::Lead.new(
-          id: lead[:id] || SecureRandom.hex(10),
-          email: lead[:email],
-          status: lead[:status]
-        )
-      end
-    end
-
-    expect_any_instance_of(described_class).to receive(:leads) { leads }
   end
 
   def call_expecting_errors(num_times=1)
