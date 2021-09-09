@@ -14,7 +14,7 @@ RSpec.describe UpdateSchoolSalesforceInfo, type: :routine do
 
     described_class.call
 
-    new_school = School.order(:created_at).last
+    new_school = School.where(salesforce_id: school.id).first
     expect_school_attributes_match new_school, school
   end
 
