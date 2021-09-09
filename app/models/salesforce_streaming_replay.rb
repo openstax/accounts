@@ -1,0 +1,2 @@
+class SalesforceStreamingReplay < ApplicationRecord
+end
