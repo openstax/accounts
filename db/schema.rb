@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_08_172842) do
-
+ActiveRecord::Schema.define(version: 2021_09_09_204544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -287,6 +286,7 @@ ActiveRecord::Schema.define(version: 2021_09_08_172842) do
     t.bigint "push_topics_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "replay_id"
     t.index ["push_topics_id"], name: "index_salesforce_streaming_replays_on_push_topics_id"
   end
 

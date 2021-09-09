@@ -45,7 +45,7 @@ class SalesforceSubscriber
   def subscribe
     @client.faye.set_header 'Authorization', "OAuth #{@authorization_hash.access_token}"
     EM.run do
-      @client.subscription "/topic/#{CONTACT_PUSH_TOPIC_NAME}", replay: -1 do |message|
+      @client.subscription "/topic/#{CONTACT_PUSH_TOPIC_NAME}", replay: SalesforceContactReplayHandler.new do |message|
         Rails.logger.debug('Contact Received')
         ContactParser.new(message).save_contact
       end
