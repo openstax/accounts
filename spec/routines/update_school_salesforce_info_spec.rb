@@ -7,15 +7,17 @@ RSpec.describe UpdateSchoolSalesforceInfo, type: :routine do
     FactoryBot.create(:user, school: FactoryBot.create(:school)).school
   end
 
-  it 'creates new School records to match the Salesforce data' do
-    stub_schools school
+  context 'new School' do
+    it 'creates new School records to match the Salesforce data' do
+      stub_schools school
 
-    expect(School).to receive(:import).and_call_original
+      expect(School).to receive(:import).and_call_original
 
-    described_class.call
+      described_class.call
 
-    new_school = School.where(salesforce_id: school.id).first
-    expect_school_attributes_match new_school, school
+      new_school = School.order(:created_at).last
+      expect_school_attributes_match new_school, school
+    end
   end
 
   context 'existing School' do
