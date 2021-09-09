@@ -24,7 +24,6 @@ class UpdateUserSalesforceInfo
     @contacts_by_email = {}
     @contacts_by_id = {}
     @colliding_emails = []
-    @leads_by_email = {}
   end
 
   def self.call(allow_error_email: false)
@@ -91,59 +90,6 @@ class UpdateUserSalesforceInfo
       end
     end
 
-    # Now that we've done all we can with Contacts, see if any Users who still don't
-    # have a salesforce_contact_id might have Leads in SF, and if so mark them as pending
-    # or rejected based on the info in those Leads.
-
-    prepare_leads
-
-    user_ids_that_were_looked_at_for_leads = []
-
-    @leads_by_email.keys.each_slice(1000) do |emails|
-      User.joins(:contact_infos)
-          .eager_load(:contact_infos)
-          .where(salesforce_contact_id: nil)
-          .where(contact_infos: { verified: true })
-          .where( ci_table[:value].lower.in(emails) )
-          .each do |user|
-        begin
-          user_ids_that_were_looked_at_for_leads.push(user.id)
-
-          leads = user.contact_infos
-                      .flat_map{|ci| @leads_by_email[ci.value.downcase]}
-                      .uniq
-
-          statuses = leads.map(&:status).uniq
-
-          # Whenever a lead is processed (in our case when it is either used to
-          # confirm or reject a faculty application), its status is set to
-          # 'Converted'.  If any of the statuses we have now are not 'Converted',
-          # we know that the user has a lead that is still under review, so they
-          # are set to `pending_faculty`.  If the statuses only consist of
-          # 'Converted' statuses, we know the user has been rejected as faculty.
-
-          unless user.is_newflow? # because the new Accounts flow works differently; don't mess with it.
-            user.faculty_status =
-              if statuses == ["Converted"]
-                :rejected_faculty
-              else
-                :pending_faculty
-              end
-          end
-
-          user.save! if user.changed?
-        rescue StandardError => ee
-          error!(exception: ee, user: user)
-        end
-      end
-    end
-
-    User.where(salesforce_contact_id: nil)
-        .where(faculty_status: User.faculty_statuses.except(User::NO_FACULTY_INFO).values)
-        .where(is_newflow: false) # because the new Accounts flow works differently; don't mess with it.
-        .where( user_table[:id].not_in(user_ids_that_were_looked_at_for_leads) )
-        .update_all(faculty_status: User::NO_FACULTY_INFO)
-
     notify_errors
 
     info("Finished")
@@ -176,30 +122,6 @@ class UpdateUserSalesforceInfo
                     )
                     .includes(:school)
                     .to_a
-  end
-
-  def leads
-    # Leads come from many sources; we only care about those created for faculty
-    # verification ("OSC Faculty")
-
-    @leads ||= OpenStax::Salesforce::Remote::Lead
-                 .where(source: "OSC Faculty")
-                 .select(:id, :email)
-                 .to_a
-  end
-
-  def prepare_leads
-    leads.each do |lead|
-      email = lead.email.try!(&:downcase).try!(:strip)
-
-      next if email.nil?
-
-      # Leads don't normally get deleted after they are processed, so there may
-      # be multiple per email.
-
-      @leads_by_email[email] ||= []
-      @leads_by_email[email].push(lead)
-    end
   end
 
   def prepare_contacts
