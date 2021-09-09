@@ -37,5 +37,6 @@ class SalesforceContactReplayHandler
 
   def old_replay_id?
     @replay.updated_at.is_a?(Time) && Time.now - @replay.updated_at > MAX_AGE
+    @replay.delete
   end
 end
