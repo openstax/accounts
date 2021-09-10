@@ -53,7 +53,7 @@ module Newflow
       end
 
       it 'sets the lead source' do
-        expect(lead.source).to eq "OSC Faculty"
+        expect(lead.source).to eq "Account Creation"
       end
     end
 
