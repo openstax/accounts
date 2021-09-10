@@ -231,10 +231,7 @@ class UpdateUserSalesforceInfo
     end
 
     if user.faculty_status_changed? && user.confirmed_faculty? && !user.faculty_verification_email_sent
-      contact.update_attributes!(
-        send_faculty_verification_to: user.guessed_preferred_confirmed_email
-      )
-
+      let_sf_know_to_send_fac_ver_email = true
       user.faculty_verification_email_sent = true
 
       SecurityLog.create!(
@@ -247,6 +244,12 @@ class UpdateUserSalesforceInfo
     end
 
     user.save! if user.changed?
+
+    if let_sf_know_to_send_fac_ver_email
+      contact.update_attributes!(
+        send_faculty_verification_to: user.guessed_preferred_confirmed_email
+      )
+    end
   end
 
   def error!(exception: nil, message: nil, user: nil)
