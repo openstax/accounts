@@ -219,7 +219,7 @@ class UpdateUserSalesforceInfo
         user.using_openstax = ADOPTION_STATUSES[contact.adoption_status]
       end
 
-      user.is_kip = school&.is_kip || school&.is_child_of_kip
+      user.is_kip = sf_school&.is_kip || sf_school&.is_child_of_kip
       user.grant_tutor_access = contact.grant_tutor_access
       user.is_b_r_i_user = contact.b_r_i_marketing
     end
