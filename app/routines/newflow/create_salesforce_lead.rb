@@ -3,7 +3,7 @@ module Newflow
 
     lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
 
-    SALESFORCE_INSTRUCTOR_ROLE =  'OSC Faculty'
+    LEAD_SOURCE =  'Account Creation'
     DEFAULT_REFERRING_APP_NAME = 'Accounts'
 
     protected #################
@@ -20,7 +20,7 @@ module Newflow
         last_name: user.last_name,
         phone: user.phone_number,
         email: user.best_email_address_for_CS_verification,
-        source: SALESFORCE_INSTRUCTOR_ROLE,
+        source: LEAD_SOURCE,
         application_source: referring_app_name,
         role: user.role,
         other_role_name: user.other_role_name,
