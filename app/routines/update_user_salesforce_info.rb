@@ -188,8 +188,6 @@ class UpdateUserSalesforceInfo
                                   contact.faculty_verified}'' on contact #{contact.id}"
                             end
 
-      # TODO: We can read school_type and school_location from the cached School records instead,
-      # but better wait 1 additional release to let the Schools be cached and linked
       user.school_type = case contact.school_type
                            when *COLLEGE_TYPES
                              :college
