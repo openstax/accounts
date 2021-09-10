@@ -21,12 +21,12 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 07 Sep 2021 19:25:20 GMT
+      - Fri, 10 Sep 2021 15:35:17 GMT
       Set-Cookie:
-      - BrowserId=Vu0_TBAREeym6uXiRf_XAA; domain=.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:20 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:20 GMT; Max-Age=31536000
+      - BrowserId=sxbBJRJMEeywBK1s_ll7hQ; domain=.salesforce.com; path=/; expires=Sat,
+        10-Sep-2022 15:35:17 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Sat,
+        10-Sep-2022 15:35:17 GMT; Max-Age=31536000
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Robots-Tag:
@@ -34,7 +34,7 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=19355/5000000
+      - api-usage=1677/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -47,13 +47,13 @@ http_interactions:
         University","BillingCity":null,"BillingState":null,"BillingCountry":"United
         States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}]}'
     http_version: 
-  recorded_at: Tue, 07 Sep 2021 19:25:20 GMT
+  recorded_at: Fri, 10 Sep 2021 15:35:17 GMT
 - request:
     method: post
     uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Contact"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Olen","LastName":"Nolan_unique_token","Email":"a@a.com._unique_token","AccountId":"0014C00000aCkDUQA0"}'
+      string: '{"FirstName":"Cory","LastName":"Hegmann_unique_token","Email":"a@a.com._unique_token","AccountId":"0014C00000aCkDUQA0"}'
     headers:
       User-Agent:
       - Faraday v1.0.1
@@ -71,12 +71,12 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 07 Sep 2021 19:25:20 GMT
+      - Fri, 10 Sep 2021 15:35:18 GMT
       Set-Cookie:
-      - BrowserId=Vx_o2RAREeyIJTvfUxhJnw; domain=.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:20 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:20 GMT; Max-Age=31536000
+      - BrowserId=s50INRJMEeywBK1s_ll7hQ; domain=.salesforce.com; path=/; expires=Sat,
+        10-Sep-2022 15:35:18 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Sat,
+        10-Sep-2022 15:35:18 GMT; Max-Age=31536000
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Robots-Tag:
@@ -84,9 +84,9 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=19356/5000000
+      - api-usage=1678/5000000
       Location:
-      - "/services/data/v51.0/sobjects/Contact/0034C00000VBFtTQAX"
+      - "/services/data/v51.0/sobjects/Contact/0034C00000VDuSdQAL"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -95,9 +95,9 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"0034C00000VBFtTQAX","success":true,"errors":[]}'
+      string: '{"id":"0034C00000VDuSdQAL","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Tue, 07 Sep 2021 19:25:25 GMT
+  recorded_at: Fri, 10 Sep 2021 15:35:21 GMT
 - request:
     method: get
     uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20BillingCountry,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c%20FROM%20Account%20WHERE%20(RecordType.Name%20=%20%27School%27)%20AND%20(Name%20IN%20(%27JP%20University%27))"
@@ -119,12 +119,12 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 07 Sep 2021 19:25:25 GMT
+      - Fri, 10 Sep 2021 15:35:22 GMT
       Set-Cookie:
-      - BrowserId=WkMhZhAREeytthE8spGkbA; domain=.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:25 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:25 GMT; Max-Age=31536000
+      - BrowserId=thXQSxJMEeype23crCLEMA; domain=.salesforce.com; path=/; expires=Sat,
+        10-Sep-2022 15:35:22 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Sat,
+        10-Sep-2022 15:35:22 GMT; Max-Age=31536000
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Robots-Tag:
@@ -132,7 +132,7 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=19356/5000000
+      - api-usage=1676/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -145,13 +145,13 @@ http_interactions:
         University","BillingCity":null,"BillingState":null,"BillingCountry":"United
         States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}]}'
     http_version: 
-  recorded_at: Tue, 07 Sep 2021 19:25:25 GMT
+  recorded_at: Fri, 10 Sep 2021 15:35:22 GMT
 - request:
     method: post
     uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Contact"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Isaiah","LastName":"Hilll_unique_token","Email":"b@b.com._unique_token","AccountId":"0014C00000aCkDUQA0"}'
+      string: '{"FirstName":"Ok","LastName":"Osinski_unique_token","Email":"b@b.com._unique_token","AccountId":"0014C00000aCkDUQA0"}'
     headers:
       User-Agent:
       - Faraday v1.0.1
@@ -169,12 +169,12 @@ http_interactions:
       message: Created
     headers:
       Date:
-      - Tue, 07 Sep 2021 19:25:25 GMT
+      - Fri, 10 Sep 2021 15:35:22 GMT
       Set-Cookie:
-      - BrowserId=WmXEnhAREeytthE8spGkbA; domain=.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:25 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:25 GMT; Max-Age=31536000
+      - BrowserId=tjglZhJMEeyHXjNeWutEug; domain=.salesforce.com; path=/; expires=Sat,
+        10-Sep-2022 15:35:22 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Sat,
+        10-Sep-2022 15:35:22 GMT; Max-Age=31536000
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Robots-Tag:
@@ -182,9 +182,9 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=19357/5000000
+      - api-usage=1676/5000000
       Location:
-      - "/services/data/v51.0/sobjects/Contact/0034C00000VBFtYQAX"
+      - "/services/data/v51.0/sobjects/Contact/0034C00000VDuODQA1"
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -193,9 +193,9 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"id":"0034C00000VBFtYQAX","success":true,"errors":[]}'
+      string: '{"id":"0034C00000VDuODQA1","success":true,"errors":[]}'
     http_version: 
-  recorded_at: Tue, 07 Sep 2021 19:25:28 GMT
+  recorded_at: Fri, 10 Sep 2021 15:35:24 GMT
 - request:
     method: get
     uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c,%20School_Type__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20Account.Id,%20Account.Name,%20Account.BillingCity,%20Account.BillingState,%20Account.BillingCountry,%20Account.Type,%20Account.School_Location__c,%20Account.SheerID_School_Name__c,%20Account.K_I_P__c,%20Account.child_of_kip__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)"
@@ -217,12 +217,12 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 07 Sep 2021 19:25:28 GMT
+      - Fri, 10 Sep 2021 15:35:24 GMT
       Set-Cookie:
-      - BrowserId=XCdLQBAREeytthE8spGkbA; domain=.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:28 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:28 GMT; Max-Age=31536000
+      - BrowserId=t4c6nBJMEey_IMWST_aV1A; domain=.salesforce.com; path=/; expires=Sat,
+        10-Sep-2022 15:35:24 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Sat,
+        10-Sep-2022 15:35:24 GMT; Max-Age=31536000
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains
       X-Robots-Tag:
@@ -230,7 +230,7 @@ http_interactions:
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=19358/5000000
+      - api-usage=1676/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -239,353 +239,13 @@ http_interactions:
       - chunked
     body:
       encoding: ASCII-8BIT
-      string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v51.0/sobjects/Contact/0034C00000VBFtYQAX"},"Id":"0034C00000VBFtYQAX","Email":"b@b.com._unique_token","Email_alt__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"Adoption_Status__c":"Not
+      string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v51.0/sobjects/Contact/0034C00000VDuSdQAL"},"Id":"0034C00000VDuSdQAL","Email":"a@a.com._unique_token","Email_alt__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"Adoption_Status__c":"Not
         Adopter","Grant_Tutor_Access__c":false,"Account":{"attributes":{"type":"Account","url":"/services/data/v51.0/sobjects/Account/0014C00000aCkDUQA0"},"Id":"0014C00000aCkDUQA0","Name":"JP
         University","BillingCity":null,"BillingState":null,"BillingCountry":"United
-        States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}},{"attributes":{"type":"Contact","url":"/services/data/v51.0/sobjects/Contact/0034C00000VBFtTQAX"},"Id":"0034C00000VBFtTQAX","Email":"a@a.com._unique_token","Email_alt__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"Adoption_Status__c":"Not
-        Adopter","Grant_Tutor_Access__c":false,"Account":{"attributes":{"type":"Account","url":"/services/data/v51.0/sobjects/Account/0014C00000aCkDUQA0"},"Id":"0014C00000aCkDUQA0","Name":"JP
-        University","BillingCity":null,"BillingState":null,"BillingCountry":"United
-        States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}}]}'
-    http_version: 
-  recorded_at: Tue, 07 Sep 2021 19:25:28 GMT
-- request:
-    method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)"
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      User-Agent:
-      - Faraday v1.0.1
-      Authorization:
-      - OAuth <salesforce_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Tue, 07 Sep 2021 19:25:29 GMT
-      Set-Cookie:
-      - BrowserId=XFFAnhAREeyIJTvfUxhJnw; domain=.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:29 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Wed,
-        07-Sep-2022 19:25:29 GMT; Max-Age=31536000
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      X-Robots-Tag:
-      - none
-      Cache-Control:
-      - no-cache,must-revalidate,max-age=0,no-store,private
-      Sforce-Limit-Info:
-      - api-usage=19357/5000000
-      Content-Type:
-      - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: ASCII-8BIT
-      string: '{"totalSize":0,"done":true,"records":[]}'
-    http_version: 
-  recorded_at: Tue, 07 Sep 2021 19:25:29 GMT
-- request:
-    method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20BillingCountry,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c%20FROM%20Account%20WHERE%20(RecordType.Name%20=%20%27School%27)%20AND%20(Name%20IN%20(%27JP%20University%27))"
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      User-Agent:
-      - Faraday v1.0.1
-      Authorization:
-      - OAuth <salesforce_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 08 Sep 2021 16:29:48 GMT
-      Set-Cookie:
-      - BrowserId=_C8_hBDBEeyOwsdWc5JKlg; domain=.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:48 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:48 GMT; Max-Age=31536000
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      X-Robots-Tag:
-      - none
-      Cache-Control:
-      - no-cache,must-revalidate,max-age=0,no-store,private
-      Sforce-Limit-Info:
-      - api-usage=17486/5000000
-      Content-Type:
-      - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v51.0/sobjects/Account/0014C00000aCkDUQA0"},"Id":"0014C00000aCkDUQA0","Name":"JP
-        University","BillingCity":null,"BillingState":null,"BillingCountry":"United
-        States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}]}'
-    http_version: 
-  recorded_at: Wed, 08 Sep 2021 16:29:48 GMT
-- request:
-    method: post
-    uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Contact"
-    body:
-      encoding: UTF-8
-      string: '{"FirstName":"Luther","LastName":"Bauch_unique_token","Email":"a@a.com._unique_token","AccountId":"0014C00000aCkDUQA0"}'
-    headers:
-      User-Agent:
-      - Faraday v1.0.1
-      Content-Type:
-      - application/json
-      Authorization:
-      - OAuth <salesforce_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 201
-      message: Created
-    headers:
-      Date:
-      - Wed, 08 Sep 2021 16:29:48 GMT
-      Set-Cookie:
-      - BrowserId=_FIJIRDBEeyn_sk2mqZjdg; domain=.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:48 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:48 GMT; Max-Age=31536000
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      X-Robots-Tag:
-      - none
-      Cache-Control:
-      - no-cache,must-revalidate,max-age=0,no-store,private
-      Sforce-Limit-Info:
-      - api-usage=17486/5000000
-      Location:
-      - "/services/data/v51.0/sobjects/Contact/0034C00000VBPjfQAH"
-      Content-Type:
-      - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: ASCII-8BIT
-      string: '{"id":"0034C00000VBPjfQAH","success":true,"errors":[]}'
-    http_version: 
-  recorded_at: Wed, 08 Sep 2021 16:29:52 GMT
-- request:
-    method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20BillingCity,%20BillingState,%20BillingCountry,%20Type,%20School_Location__c,%20SheerID_School_Name__c,%20K_I_P__c,%20child_of_kip__c%20FROM%20Account%20WHERE%20(RecordType.Name%20=%20%27School%27)%20AND%20(Name%20IN%20(%27JP%20University%27))"
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      User-Agent:
-      - Faraday v1.0.1
-      Authorization:
-      - OAuth <salesforce_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 08 Sep 2021 16:29:53 GMT
-      Set-Cookie:
-      - BrowserId=_szNdBDBEeyOwsdWc5JKlg; domain=.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:53 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:53 GMT; Max-Age=31536000
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      X-Robots-Tag:
-      - none
-      Cache-Control:
-      - no-cache,must-revalidate,max-age=0,no-store,private
-      Sforce-Limit-Info:
-      - api-usage=17487/5000000
-      Content-Type:
-      - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: ASCII-8BIT
-      string: '{"totalSize":1,"done":true,"records":[{"attributes":{"type":"Account","url":"/services/data/v51.0/sobjects/Account/0014C00000aCkDUQA0"},"Id":"0014C00000aCkDUQA0","Name":"JP
-        University","BillingCity":null,"BillingState":null,"BillingCountry":"United
-        States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}]}'
-    http_version: 
-  recorded_at: Wed, 08 Sep 2021 16:29:53 GMT
-- request:
-    method: post
-    uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Contact"
-    body:
-      encoding: UTF-8
-      string: '{"FirstName":"Elden","LastName":"Stoltenberg_unique_token","Email":"b@b.com._unique_token","AccountId":"0014C00000aCkDUQA0"}'
-    headers:
-      User-Agent:
-      - Faraday v1.0.1
-      Content-Type:
-      - application/json
-      Authorization:
-      - OAuth <salesforce_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 201
-      message: Created
-    headers:
-      Date:
-      - Wed, 08 Sep 2021 16:29:53 GMT
-      Set-Cookie:
-      - BrowserId=_u_mNxDBEeyn_sk2mqZjdg; domain=.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:53 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:53 GMT; Max-Age=31536000
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      X-Robots-Tag:
-      - none
-      Cache-Control:
-      - no-cache,must-revalidate,max-age=0,no-store,private
-      Sforce-Limit-Info:
-      - api-usage=17487/5000000
-      Location:
-      - "/services/data/v51.0/sobjects/Contact/0034C00000VBPjkQAH"
-      Content-Type:
-      - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: ASCII-8BIT
-      string: '{"id":"0034C00000VBPjkQAH","success":true,"errors":[]}'
-    http_version: 
-  recorded_at: Wed, 08 Sep 2021 16:29:55 GMT
-- request:
-    method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20Faculty_Verified__c,%20School_Type__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20Account.Id,%20Account.Name,%20Account.BillingCity,%20Account.BillingState,%20Account.BillingCountry,%20Account.Type,%20Account.School_Location__c,%20Account.SheerID_School_Name__c,%20Account.K_I_P__c,%20Account.child_of_kip__c%20FROM%20Contact%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)"
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      User-Agent:
-      - Faraday v1.0.1
-      Authorization:
-      - OAuth <salesforce_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 08 Sep 2021 16:29:55 GMT
-      Set-Cookie:
-      - BrowserId=AHMqLBDCEey7WUHuhwni9A; domain=.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:55 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:55 GMT; Max-Age=31536000
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      X-Robots-Tag:
-      - none
-      Cache-Control:
-      - no-cache,must-revalidate,max-age=0,no-store,private
-      Sforce-Limit-Info:
-      - api-usage=17486/5000000
-      Content-Type:
-      - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: ASCII-8BIT
-      string: '{"totalSize":2,"done":true,"records":[{"attributes":{"type":"Contact","url":"/services/data/v51.0/sobjects/Contact/0034C00000VBPjfQAH"},"Id":"0034C00000VBPjfQAH","Email":"a@a.com._unique_token","Email_alt__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"Adoption_Status__c":"Not
-        Adopter","Grant_Tutor_Access__c":false,"Account":{"attributes":{"type":"Account","url":"/services/data/v51.0/sobjects/Account/0014C00000aCkDUQA0"},"Id":"0014C00000aCkDUQA0","Name":"JP
-        University","BillingCity":null,"BillingState":null,"BillingCountry":"United
-        States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}},{"attributes":{"type":"Contact","url":"/services/data/v51.0/sobjects/Contact/0034C00000VBPjkQAH"},"Id":"0034C00000VBPjkQAH","Email":"b@b.com._unique_token","Email_alt__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"Adoption_Status__c":"Not
+        States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}},{"attributes":{"type":"Contact","url":"/services/data/v51.0/sobjects/Contact/0034C00000VDuODQA1"},"Id":"0034C00000VDuODQA1","Email":"b@b.com._unique_token","Email_alt__c":null,"Faculty_Verified__c":null,"School_Type__c":null,"Adoption_Status__c":"Not
         Adopter","Grant_Tutor_Access__c":false,"Account":{"attributes":{"type":"Account","url":"/services/data/v51.0/sobjects/Account/0014C00000aCkDUQA0"},"Id":"0014C00000aCkDUQA0","Name":"JP
         University","BillingCity":null,"BillingState":null,"BillingCountry":"United
         States","Type":null,"School_Location__c":"Domestic","SheerID_School_Name__c":null,"K_I_P__c":false,"child_of_kip__c":false}}]}'
     http_version: 
-  recorded_at: Wed, 08 Sep 2021 16:29:55 GMT
-- request:
-    method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Email%20FROM%20Lead%20WHERE%20(LastName%20LIKE%20%27%25_unique_token%27)%20AND%20(LeadSource%20=%20%27OSC%20Faculty%27)"
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      User-Agent:
-      - Faraday v1.0.1
-      Authorization:
-      - OAuth <salesforce_access_token>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 08 Sep 2021 16:29:56 GMT
-      Set-Cookie:
-      - BrowserId=AK6s_BDCEeybXKdu1ltFqQ; domain=.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:56 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Thu,
-        08-Sep-2022 16:29:56 GMT; Max-Age=31536000
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
-      X-Robots-Tag:
-      - none
-      Cache-Control:
-      - no-cache,must-revalidate,max-age=0,no-store,private
-      Sforce-Limit-Info:
-      - api-usage=17486/5000000
-      Content-Type:
-      - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
-      Transfer-Encoding:
-      - chunked
-    body:
-      encoding: ASCII-8BIT
-      string: '{"totalSize":0,"done":true,"records":[]}'
-    http_version: 
-  recorded_at: Wed, 08 Sep 2021 16:29:56 GMT
+  recorded_at: Fri, 10 Sep 2021 15:35:24 GMT
 recorded_with: VCR 3.0.3
