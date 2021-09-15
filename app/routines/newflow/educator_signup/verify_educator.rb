@@ -60,7 +60,9 @@ module Newflow
           SecurityLog.create!(
             user: user,
             event_type: :user_updated_using_sheerid_data,
-            message: "Educator verified by SheerID."
+            event_data: {
+              message: 'Educator verified by SheerID.'
+            }
           )
         else
           first_update
@@ -82,7 +84,9 @@ module Newflow
         SecurityLog.create!(
           user: user,
           event_type: :update_salesforce_lead,
-          message: "Updating existing lead in Salesforce."
+          event_data: {
+            message: "Updating existing lead in Salesforce."
+          }
         )
       end
 
