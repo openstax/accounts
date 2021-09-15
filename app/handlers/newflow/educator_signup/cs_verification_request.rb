@@ -65,7 +65,7 @@ module Newflow
           faculty_status: User::PENDING_FACULTY
         )
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
-        SecurityLog.create!(event_type: :user_updated, user: user)
+        security_log(:user_updated, { user: user, user_state: user.attributes.delete_if { |k,v| v.nil? } })
 
         outputs.user = user
 
@@ -73,7 +73,7 @@ module Newflow
           run(CreateEmailForUser, email: email_address_value, user: user, is_school_issued: true)
         end
 
-        UpsertSalesforceInfoForCsVerification.perform_later(user: user)
+        CreateSalesforceLead.perform_later(user: user)
       end
 
       private #################

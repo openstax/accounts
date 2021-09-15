@@ -65,13 +65,13 @@ module Newflow
 
         outputs.user = user
 
-        update_salesforce_lead
+        create_salesforce_lead
       end
 
       private #################
 
-      def update_salesforce_lead
-        UpsertSalesforceLead.perform_later(user: user)
+      def create_salesforce_lead
+        CreateSalesforceLead.perform_later(user: user)
       end
 
       def other_role_name

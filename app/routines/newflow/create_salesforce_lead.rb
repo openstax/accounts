@@ -19,7 +19,7 @@ module Newflow
         first_name: user.first_name,
         last_name: user.last_name,
         phone: user.phone_number,
-        email: user.best_email_address_for_CS_verification,
+        email: user.best_email_address_for_salesforce,
         source: LEAD_SOURCE,
         application_source: referring_app_name,
         role: user.role,
@@ -58,49 +58,35 @@ module Newflow
       outputs.user = user
 
       if lead.save
-        store_salesforce_lead_id(user, lead.id) && log_success(lead, user)
+        log_success(lead, user)
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
       else
         handle_lead_errors(lead, user)
       end
     end
 
-    private ###################
-
-    def store_salesforce_lead_id(user, lead_id)
-      fatal_error(code: :lead_id_is_blank, message: :lead_id_is_blank.to_s.titleize) if lead_id.blank?
-
-      return true if user.salesforce_lead_id.present? # nothing to do
-
-      user.salesforce_lead_id = lead_id
-
-      if user.save
-        SecurityLog.create!(
-          user: user,
-          event_type: :created_salesforce_lead,
-          event_data: { lead_id: lead_id }
-        )
-        return true
-      else
-        SecurityLog.create!(
-          user: user,
-          event_type: :educator_sign_up_failed,
-          event_data: {
-            message: 'saving the user\'s lead id FAILED',
-            lead_id: lead_id
-          }
-        )
-        transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
-        return
-      end
-    end
+    private
 
     def log_success(lead, user)
       Rails.logger.info("#{self.class.name}: pushed #{lead.id} for user #{user.id}")
+
+      SecurityLog.create!(
+        user: user,
+        event_type: :created_salesforce_lead,
+        event_data: { lead_id: lead.id }
+      )
     end
 
     def handle_lead_errors(lead, user)
       message = "#{self.class.name} error! #{lead.inspect}; User: #{user.id}; Error: #{lead.errors.full_messages}"
+
+      SecurityLog.create!(
+        user: user,
+        event_type: :educator_sign_up_failed,
+        event_data: {
+          message: message,
+        }
+      )
 
       Rails.logger.warn(message)
       fatal_error(code: :lead_error)

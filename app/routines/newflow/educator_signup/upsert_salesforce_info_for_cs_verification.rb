@@ -41,7 +41,7 @@ module Newflow
       end
 
       def lead
-        @lead ||= OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
+        @lead ||= OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
       end
 
     end

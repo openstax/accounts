@@ -17,14 +17,15 @@ module Newflow
       status.set_job_name(self.class.name)
       status.set_job_args(user: user.to_global_id.to_s)
 
-      lead_id = user.salesforce_lead_id
+      #lead_id = user.salesforce_lead_id
+      user_email = user.best_email_address_for_salesforce
 
-      if lead_id.blank?
+      if user_email.blank?
         log_error(user, nil, :user_is_missing_salesforce_lead_id)
         fatal_error(code: :user_is_missing_salesforce_lead_id)
       end
 
-      lead = outputs.lead = fetch_lead(lead_id)
+      lead = outputs.lead = fetch_lead(user_email)
 
       if lead.blank?
         log_error(user, lead, :lead_missing_in_salesforce)
@@ -38,8 +39,12 @@ module Newflow
 
     private #################
 
-    def fetch_lead(lead_id)
-      OpenStax::Salesforce::Remote::Lead.find(lead_id)
+    def fetch_lead(lead_id=nil, user_email=nil)
+      if lead_id
+        OpenStax::Salesforce::Remote::Lead.find(lead_id)
+      else
+        OpenStax::Salesforce::Remote::Lead.find_by(email: user_email)
+      end
     end
 
     def update_salesforce_lead!(lead, user)
@@ -51,7 +56,7 @@ module Newflow
         school: user.most_accurate_school_name,
         city: user.most_accurate_school_city,
         country: user.most_accurate_school_country,
-        email: user.best_email_address_for_CS_verification,
+        email: user.best_email_address_for_salesforce,
         role: user.role,
         other_role_name: user.other_role_name,
         num_students: user.how_many_students,
