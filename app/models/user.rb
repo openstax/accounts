@@ -47,7 +47,7 @@ class User < ApplicationRecord
   DEFAULT_FACULTY_STATUS = VALID_FACULTY_STATUSES[0]
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
   DEFAULT_SCHOOL_LOCATION = VALID_SCHOOL_LOCATIONS[0]
-  UNKNOWN_SCHOOL_NAME = 'unknown to Accounts'
+  UNKNOWN_SCHOOL_NAME = 'unknown'
   STALE_VERIFICATION_PERIOD = 4.days
 
   enum(faculty_status: VALID_FACULTY_STATUSES)
@@ -184,7 +184,7 @@ class User < ApplicationRecord
     school.present? ? school.country : 'United States'
   end
 
-  def best_email_address_for_CS_verification
+  def best_email_address_for_salesforce
     email_addresses.school_issued.first&.value || \
     email_addresses.verified.first&.value || \
     email_addresses.first&.value
