@@ -12,23 +12,30 @@ module Newflow
       protected ###############
 
       def exec(verification_id:, user:)
+        Rails.logger.warn {'**---** VerifyEducator: 1 -----------------**'}
         status.set_job_name(self.class.name)
         status.set_job_args(verification_id: verification_id.to_s, user: user.to_global_id.to_s)
+        Rails.logger.warn {'**---** VerifyEducator: 2 -----------------**'}
 
         verification_record = fetch_verification(verification_id)
         transfer_errors_from(verification_record, {type: :verbatim}, :fail_if_errors)
         return if !verification_record.verified?
+        Rails.logger.warn {'**---** VerifyEducator: 3 -----------------**'}
 
         # If the user is already faculty verified, nothing to do.
         return if user.confirmed_faculty?
+        Rails.logger.warn {'**---** VerifyEducator: 4 -----------------**'}
 
         email = EmailAddress.verified.find_by(value: verification_record.email)
 
         capture_mismatch_error!(verification_id, email, user) and return if email_mismatch?(user, email)
+        Rails.logger.warn {'**---** VerifyEducator: 5 -----------------**'}
 
         if update_user(user, verification_record) && upsert_salesforce_lead_for(user)
+          Rails.logger.warn {'**---** VerifyEducator: 6 -----------------**'}
           log_success(verification_id, user)
         else
+          Rails.logger.warn {'**---** VerifyEducator: 7 -----------------**'}
           handle_error(verification_id, user)
         end
       end
