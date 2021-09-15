@@ -23,7 +23,7 @@ module Newflow
         Rails.logger.warn {'**---** VerifyEducator: 3 -----------------**'}
 
         # If the user is already faculty verified, nothing to do.
-        return if user.confirmed_faculty?
+        #return if user.confirmed_faculty?
         Rails.logger.warn {'**---** VerifyEducator: 4 -----------------**'}
 
         email = EmailAddress.verified.find_by(value: verification_record.email)
