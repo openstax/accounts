@@ -35,6 +35,7 @@ module Newflow
     end
 
     def generate_sheer_id_url(user:)
+      Rails.logger.warn {'**---** login_signup_helper: generate_sheer_id_url'}
       url = standard_parse_url(Settings::Db.store.sheer_id_base_url)
       url.query_values = url.query_values.merge(
         first_name: user.first_name,

@@ -71,6 +71,7 @@ module Newflow
       private #################
 
       def update_salesforce_lead
+        Rails.logger.warn {'**---** CompleteProfile: UpsertSalesforceLead called'}
         UpsertSalesforceLead.perform_later(user: user)
       end
 

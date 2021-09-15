@@ -34,6 +34,7 @@ class ConfirmByPin
       if contact_info.confirmation_pin == pin
         run(ConfirmContactInfo, contact_info)
         sequential_failure.reset!
+        Rails.logger.warn { '**---** email confirmed by pin: called' }
       else
         after_transaction do
           sequential_failure.increment!

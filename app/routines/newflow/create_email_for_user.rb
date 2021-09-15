@@ -13,6 +13,7 @@ module Newflow
         message: I18n.t(:"login_signup_form.invalid_email_provider", email: @email.value)
       )
       transfer_errors_from(@email, { scope: :email }, :fail_if_errors)
+      Rails.logger.warn { '**---** create_email_for_user: called' }
 
       NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
     end

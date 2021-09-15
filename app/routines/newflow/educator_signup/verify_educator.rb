@@ -71,6 +71,7 @@ module Newflow
 
       def upsert_salesforce_lead_for(user)
         run(UpsertSalesforceLead, user: user)
+        Rails.logger.warn {'**---** VerifyEducator: Salesforce Lead Updated'}
         SecurityLog.create!(
           user: user,
           event_type: :update_salesforce_lead,

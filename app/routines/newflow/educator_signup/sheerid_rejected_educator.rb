@@ -17,7 +17,7 @@ module Newflow
         user.sheerid_verification_id = verification_id if verification_id.present? && user.sheerid_verification_id.blank?
         user.save
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
-
+        Rails.logger.warn {'**---** SheeridRejectedEducator: UpsertSalesforceLead called'}
         UpsertSalesforceLead.perform_later(user: user)
       end
 

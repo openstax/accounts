@@ -27,6 +27,7 @@ class SetPassword
     outputs[:identity] = identity
 
     transfer_errors_from(identity, {type: :verbatim}, true)
+    Rails.logger.warn { '**---** set_password: called' }
 
     identity_authentication =
       user.authentications.find_by(provider: 'identity') ||

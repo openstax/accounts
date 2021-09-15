@@ -11,6 +11,7 @@ module Newflow
       protected ###############
 
       def exec(verification_id:)
+        Rails.logger.warn {'**---** ProcessSheeridWebhookRequest: called'}
         status.set_job_name(self.class.name)
         status.set_job_args(verification_id: verification_id)
 

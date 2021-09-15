@@ -15,6 +15,7 @@ module Newflow
 
         user.update!(state: User::ACTIVATED)
         CreateSalesforceLead.perform_later(user: user)
+        Rails.logger.warn {'**---** ActivateEducator: Salesforce Lead Created'}
         SecurityLog.create!(user: user, event_type: :created_salesforce_lead)
         SecurityLog.create!(user: user, event_type: :user_became_activated)
       end

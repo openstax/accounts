@@ -15,7 +15,7 @@ module Newflow
         @user = user
 
         lead.update(finalize_educator_signup: false)
-
+        Rails.logger.warn {'**---** ResendToCsVerificationQueue: Salesforce Lead Updated'}
         UpdateSalesforceLead.call(user: user)
       end
 

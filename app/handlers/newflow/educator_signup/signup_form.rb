@@ -97,6 +97,7 @@ module Newflow
           source_application: options[:client_app],
         )
         transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
+        Rails.logger.warn {'**---** signup_form: user created'}
         user
       end
 

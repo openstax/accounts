@@ -21,8 +21,10 @@ module Newflow
         if user.salesforce_lead_id.present? && has_lead_already_been_finalized?
           run(ResendToCsVerificationQueue, user: user, lead: lead)
         elsif user.salesforce_lead_id.present?
+          Rails.logger.warn {'**---** UpsertSalesforceInfoForCsVerification: Salesforce Lead Updated'}
           UpdateSalesforceLead.perform_later(user: user)
         else
+          Rails.logger.warn {'**---** UpsertSalesforceInfoForCsVerification: Salesforce Lead created'}
           CreateSalesforceLead.perform_later(user: user)
         end
 

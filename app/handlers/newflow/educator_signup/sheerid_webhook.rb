@@ -14,6 +14,7 @@ module Newflow
       end
 
       def handle
+        Rails.logger.warn {'**---** SheeridWebhook: called'}
         verification_id = params.fetch(VERIFICATION_ID_PARAM_NAME, nil) || params.fetch(REQUEST_ID_PARAM)
         outputs.verification_id = verification_id
         ProcessSheeridWebhookRequest.perform_later(verification_id: verification_id)
