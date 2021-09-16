@@ -18,9 +18,7 @@ module Newflow
         @user = user
 
         # upsert salesforce lead
-        if user.salesforce_lead_id.present? && has_lead_already_been_finalized?
-          run(ResendToCsVerificationQueue, user: user, lead: lead)
-        elsif user.salesforce_lead_id.present?
+        if user.lead.present?
           UpdateSalesforceLead.perform_later(user: user)
         else
           CreateSalesforceLead.perform_later(user: user)
@@ -32,16 +30,6 @@ module Newflow
           contact.faculty_verified = 'Pending'
           contact.save
         end
-      end
-
-      private ###############
-
-      def has_lead_already_been_finalized?
-        lead.present? && lead.finalize_educator_signup
-      end
-
-      def lead
-        @lead ||= OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
       end
 
     end

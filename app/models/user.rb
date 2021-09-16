@@ -157,6 +157,10 @@ class User < ApplicationRecord
 
   attribute :is_not_gdpr_location, :boolean, default: nil
 
+  def lead
+    OpenStax::Salesforce::Remote::Lead.find_by(email: user.best_email_address_for_salesforce)
+  end
+
   def most_accurate_school_name
     return school.name if school.present?
 

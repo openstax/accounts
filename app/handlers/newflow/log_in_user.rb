@@ -62,7 +62,6 @@ module Newflow
       failure(:incorrect_password, :password) unless identity.present?
       # Link the user to the external uuid at this point (after successfully logging in)
       transfer_signed_data_if_present(user)
-      BRI_marketing(user) if options[:is_BRI_book]
     end
 
     private #################
