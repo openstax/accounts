@@ -64,9 +64,24 @@ module Newflow
         end
 
         outputs.user = user
+
+        if user.is_sheerid_verified?
+          # create the lead if the user is verified, otherwise, it'll get created later
+          # either when rejected by sheer id, when manual CS verification is required,
+          # or if their account has been in a signup state for longer than 4 days
+          create_salesforce_lead
+        end
       end
 
       private #################
+
+      def create_salesforce_lead
+        run(CreateSalesforceLead, user: user)
+        SecurityLog.create!(
+          user: user,
+          event_type: :created_salesforce_lead
+        )
+      end
 
       def other_role_name
         signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil
