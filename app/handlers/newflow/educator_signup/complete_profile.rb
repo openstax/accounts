@@ -64,15 +64,9 @@ module Newflow
         end
 
         outputs.user = user
-
-        create_salesforce_lead
       end
 
       private #################
-
-      def create_salesforce_lead
-        CreateSalesforceLead.perform_later(user: user)
-      end
 
       def other_role_name
         signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil

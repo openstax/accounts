@@ -23,7 +23,7 @@ module Newflow
         source: LEAD_SOURCE,
         application_source: referring_app_name,
         role: user.role,
-        other_role_name: user.other_role_name,
+        title: user.other_role_name,
         who_chooses_books: user.who_chooses_books,
         subject: user.which_books,
         num_students: user.how_many_students,
@@ -38,7 +38,7 @@ module Newflow
         newsletter: user.receive_newsletter?,
         newsletter_opt_in: user.receive_newsletter?,
         sheerid_school_name: user.sheerid_reported_school,
-        instant_verification: !user.sheerid_reported_school.nil? && user.faculty_status == User::CONFIRMED_FACULTY ? true : false, # assume they are verified if we have a sheerid school and are confirmed
+        instant_verification: user.is_sheerid_verified,
         account_id: sf_school_id,
         school_id: sf_school_id
       )
@@ -72,7 +72,7 @@ module Newflow
       SecurityLog.create!(
         user: user,
         event_type: :created_salesforce_lead,
-        event_data: { lead_id: lead.id, lead_data: lead.inspect }
+        event_data: { lead_id: lead.id }
       )
     end
 

@@ -25,7 +25,7 @@ module Newflow
         fatal_error(code: :user_is_missing_salesforce_lead_id)
       end
 
-      lead = outputs.lead = fetch_lead(user_email)
+      lead = outputs.lead = user.lead
 
       if lead.blank?
         log_error(user, lead, :lead_missing_in_salesforce)
@@ -39,14 +39,6 @@ module Newflow
 
     private #################
 
-    def fetch_lead(lead_id=nil, user_email=nil)
-      if lead_id
-        OpenStax::Salesforce::Remote::Lead.find(lead_id)
-      else
-        OpenStax::Salesforce::Remote::Lead.find_by(email: user_email)
-      end
-    end
-
     def update_salesforce_lead!(lead, user)
       sf_school_id = user.school&.salesforce_id
 
@@ -58,7 +50,7 @@ module Newflow
         country: user.most_accurate_school_country,
         email: user.best_email_address_for_salesforce,
         role: user.role,
-        other_role_name: user.other_role_name,
+        title: user.other_role_name,
         num_students: user.how_many_students,
         adoption_status: ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
         verification_status: user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,

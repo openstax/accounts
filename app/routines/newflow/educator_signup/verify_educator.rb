@@ -26,7 +26,7 @@ module Newflow
 
         capture_mismatch_error!(verification_id, email, user) and return if email_mismatch?(user, email)
 
-        if update_user(user, verification_record) && upsert_salesforce_lead_for(user)
+        if update_user(user, verification_record) && create_salesforce_lead_for(user)
           log_success(verification_id, user)
         else
           handle_error(verification_id, user)
@@ -67,12 +67,11 @@ module Newflow
         @fetch_verification ||= run(UpsertSheeridVerification, verification_id: verification_id).outputs.verification
       end
 
-      def upsert_salesforce_lead_for(user)
-        run(UpsertSalesforceLead, user: user)
+      def create_salesforce_lead_for(user)
+        run(CreateSalesforceLead, user: user)
         SecurityLog.create!(
           user: user,
-          event_type: :update_salesforce_lead,
-          message: "Updating existing lead in Salesforce."
+          event_type: :created_salesforce_lead
         )
       end
 
@@ -95,8 +94,6 @@ module Newflow
       end
 
       def log_success(verification_id, user)
-        lead_id = user.salesforce_lead_id
-
         SecurityLog.create!(
           user: user,
           event_type: :educator_verified_using_sheerid,
