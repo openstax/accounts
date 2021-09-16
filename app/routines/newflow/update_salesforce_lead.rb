@@ -64,8 +64,6 @@ module Newflow
         verification_status: user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
         who_chooses_books: user.who_chooses_books,
         subject: user.which_books,
-        finalize_educator_signup: user.is_profile_complete?,
-        needs_cs_review: user.is_educator_pending_cs_verification?,
         source: CreateSalesforceLead::LEAD_SOURCE,
         b_r_i_marketing: user.is_b_r_i_user?,
         title_1_school: user.title_1_school?,

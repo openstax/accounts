@@ -33,13 +33,12 @@ module Newflow
         city: user.most_accurate_school_city,
         country: user.most_accurate_school_country,
         verification_status: user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
-        finalize_educator_signup: user.is_profile_complete?,
-        needs_cs_review: user.is_educator_pending_cs_verification?,
         b_r_i_marketing: user.is_b_r_i_user?,
         title_1_school: user.title_1_school?,
         newsletter: user.receive_newsletter?,
         newsletter_opt_in: user.receive_newsletter?,
         sheerid_school_name: user.sheerid_reported_school,
+        instant_verification: !user.sheerid_reported_school.nil? && user.faculty_status == User::CONFIRMED_FACULTY ? true : false, # assume they are verified if we have a sheerid school and are confirmed
         account_id: sf_school_id,
         school_id: sf_school_id
       )
