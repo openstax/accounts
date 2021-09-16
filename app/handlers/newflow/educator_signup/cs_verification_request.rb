@@ -73,7 +73,6 @@ module Newflow
           run(CreateEmailForUser, email: email_address_value, user: user, is_school_issued: true)
         end
 
-        CreateSalesforceLead.perform_later(user: user)
       end
 
       private #################
