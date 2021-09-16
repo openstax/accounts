@@ -72,7 +72,7 @@ module Newflow
       SecurityLog.create!(
         user: user,
         event_type: :created_salesforce_lead,
-        event_data: { lead_id: lead.id }
+        event_data: { lead_id: lead.id, lead_data: lead.inspect }
       )
     end
 

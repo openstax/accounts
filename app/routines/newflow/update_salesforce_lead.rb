@@ -90,7 +90,7 @@ module Newflow
       Rails.logger.info(logger_message)
       SecurityLog.create!(
           user: user,
-          event_type: :user_updated,
+          event_type: :update_salesforce_lead,
           event_data: {
             message: "User's lead updated: #{lead.inspect}",
             success_from: "#{self.class.name}"
