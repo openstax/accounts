@@ -88,14 +88,18 @@ module Newflow
       def log_success(verification_id, user)
         SecurityLog.create!(
           user: user,
-          event_type: :educator_verified_using_sheerid,
-          event_data: { verification_id: verification_id, lead_id: lead_id }
+          event_type: :educator_verified_using_sheerid
         )
       end
 
       def handle_error(verification_id, user)
         message =  "User (#{user.id}) verification_id (#{verification_id}); User errors (#{user.errors&.full_messages})"
         Rails.logger.warn(message)
+        SecurityLog.create!(
+          user: user,
+          event_type: :educator_sign_up_failed,
+          event_data: { error: message }
+        )
         fatal_error(code: :error_updating_user, message: message)
       end
 
