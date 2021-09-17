@@ -3,9 +3,7 @@ module Newflow
     class UpsertSalesforceInfoForCsVerification
 
       lev_routine
-      uses_routine ResendToCsVerificationQueue
-      uses_routine UpdateSalesforceLead
-      uses_routine CreateSalesforceLead
+      uses_routine UpsertSalesforceLead
 
       protected #################
 
@@ -17,19 +15,13 @@ module Newflow
 
         @user = user
 
-        # upsert salesforce lead
-        if user.lead.present?
-          UpdateSalesforceLead.perform_later(user: user)
-        else
-          CreateSalesforceLead.perform_later(user: user)
-        end
+        UpsertSalesforceLead.perform_later(user: user)
 
         # TODO: WHY??
         # update salesforce contact, if present
-        if user.salesforce_contact_id.present?
-          contact = OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id)
-          contact.faculty_verified = 'Pending'
-          contact.save
+        if user.contact.present?
+          user.contact.faculty_verified = 'Pending'
+          user.contact.save
         end
       end
 
