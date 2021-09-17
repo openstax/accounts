@@ -24,6 +24,7 @@ module Newflow
           CreateSalesforceLead.perform_later(user: user)
         end
 
+        # TODO: WHY??
         # update salesforce contact, if present
         if user.salesforce_contact_id.present?
           contact = OpenStax::Salesforce::Remote::Contact.find(user.salesforce_contact_id)

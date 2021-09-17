@@ -7,7 +7,6 @@ module Newflow
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
 
       uses_routine UpsertSheeridVerification
-      uses_routine UpsertSalesforceLead
 
       protected ###############
 
