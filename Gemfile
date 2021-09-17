@@ -125,7 +125,7 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', ref: '729d78a45be52ffe19c0eb5bcc342bc79aa6cb82'
+gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', ref: '406eff1693a7f473b06fbc34e52663c7f502c733'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
