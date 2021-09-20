@@ -13,7 +13,6 @@ module Newflow
         status.set_job_name(self.class.name)
         status.set_job_args(user: user.to_global_id.to_s)
 
-        referring_app_name = user&.source_application&.lead_application_source || DEFAULT_REFERRING_APP_NAME
         sf_school_id = user.school&.salesforce_id
 
         lead = OpenStax::Salesforce::Remote::Lead.new(
@@ -22,7 +21,7 @@ module Newflow
           phone: user.phone_number,
           email: user.best_email_address_for_salesforce,
           source: LEAD_SOURCE,
-          application_source: referring_app_name,
+          application_source: DEFAULT_REFERRING_APP_NAME,
           role: user.role,
           title: user.other_role_name,
           who_chooses_books: user.who_chooses_books,
@@ -60,8 +59,10 @@ module Newflow
         if lead.save
           log_success(lead, user)
           transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
+          outputs[:lead] = lead
         else
           handle_lead_errors(lead, user)
+          outputs[:lead] = lead
         end
       end
     end

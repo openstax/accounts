@@ -77,10 +77,6 @@ module Newflow
 
       def create_salesforce_lead
         run(CreateSalesforceLead, user: user)
-        SecurityLog.create!(
-          user: user,
-          event_type: :created_salesforce_lead
-        )
       end
 
       def other_role_name
