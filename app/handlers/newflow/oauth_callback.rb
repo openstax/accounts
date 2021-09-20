@@ -45,7 +45,7 @@ module Newflow
         fatal_error(code: :mismatched_authentication)
       elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
         # User found with the given authentication. We will log them in.
-        Rails.log.debug(outputs.authentication.user)
+        outputs.authentication.user
       elsif (existing_user = user_most_recently_used(users_matching_oauth_data))
         # No user found with the given authentication, but a user *was* found with the given email address.
         # We will add the authentication to their existing account and then log them in.
