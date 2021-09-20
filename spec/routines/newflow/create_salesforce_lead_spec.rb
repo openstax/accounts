@@ -1,6 +1,5 @@
 require 'rails_helper'
 require 'vcr_helper'
-require 'byebug'
 
 module Newflow
   RSpec.describe CreateSalesforceLead, type: :routine, vcr: VCR_OPTS do

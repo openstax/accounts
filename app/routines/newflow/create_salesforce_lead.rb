@@ -59,10 +59,8 @@ module Newflow
         if lead.save
           log_success(lead, user)
           transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
-          outputs[:lead] = lead
         else
           handle_lead_errors(lead, user)
-          outputs[:lead] = lead
         end
       end
     end
