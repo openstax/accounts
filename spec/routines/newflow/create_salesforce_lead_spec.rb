@@ -40,7 +40,7 @@ module Newflow
 
       lead = described_class[user: user]
       expect(lead.errors).to be_empty
-      
+
 
       lead_from_sf = user.lead
       expect(lead_from_sf).not_to be_nil
