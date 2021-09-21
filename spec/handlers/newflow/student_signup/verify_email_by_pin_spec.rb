@@ -21,7 +21,7 @@ module Newflow
         end
 
         let(:email) do
-          FactoryBot.create(:email_address, user: user)
+          FactoryBot.create(:email_address, user: user, value: 'test@openstax.org')
         end
 
         let(:params) do
