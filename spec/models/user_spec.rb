@@ -498,7 +498,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#best_email_address_for_CS_verification' do
+  describe '#best_email_address_for_salesforce' do
     let(:school_issued_email) { FactoryBot.create(:email_address, is_school_issued: true, verified: false) }
     let(:verified_email) { FactoryBot.create(:email_address, is_school_issued: false, verified: true) }
     let(:unverified_email) { FactoryBot.create(:email_address, is_school_issued: false, verified: false) }
@@ -514,7 +514,7 @@ RSpec.describe User, type: :model do
       }
 
       it 'returns the school-issued email' do
-        expect(user.best_email_address_for_CS_verification).to eq(school_issued_email.value)
+        expect(user.best_email_address_for_salesforce).to eq(school_issued_email.value)
       end
     end
 
@@ -528,7 +528,7 @@ RSpec.describe User, type: :model do
       }
 
       it 'returns the verified email' do
-        expect(user.best_email_address_for_CS_verification).to eq(verified_email.value)
+        expect(user.best_email_address_for_salesforce).to eq(verified_email.value)
       end
     end
 
@@ -541,7 +541,7 @@ RSpec.describe User, type: :model do
       }
 
       it 'returns the unverified email' do
-        expect(user.best_email_address_for_CS_verification).to eq(unverified_email.value)
+        expect(user.best_email_address_for_salesforce).to eq(unverified_email.value)
       end
     end
   end
