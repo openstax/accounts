@@ -9,7 +9,7 @@ module Newflow
     protected #################
 
     def exec(user:)
-      if Settings::Salesforce.push_leads_enabled
+      #if Settings::Salesforce.push_leads_enabled
         status.set_job_name(self.class.name)
         status.set_job_args(user: user.to_global_id.to_s)
 
@@ -62,7 +62,7 @@ module Newflow
         else
           handle_lead_errors(lead, user)
         end
-      end
+        #end
     end
 
     private
