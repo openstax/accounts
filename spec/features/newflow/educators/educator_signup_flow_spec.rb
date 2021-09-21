@@ -18,14 +18,8 @@ module Newflow
     let(:return_param) { { r: external_app_for_specs_path } }
 
     context 'happy path' do
-      before(:each) do
-        expect_any_instance_of(EducatorSignup::UpsertSalesforceLead).to receive(:exec)
-      end
-
       context 'when entering PIN code to verify email address' do
         it 'all works' do
-          expect_any_instance_of(Newflow::CreateSalesforceLead).to receive(:exec)
-
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
           click_on(I18n.t(:"login_signup_form.educator"))
@@ -69,18 +63,11 @@ module Newflow
           expect(page.current_path).to eq(signup_done_path)
           click_on('Finish')
           expect(page.current_url).to eq(external_app_url)
-
-          # # can exit and go back to the app they came from
-          # find('#exit-icon a').click
-          # expect(page.current_path).to eq('/external_app_for_specs')
-          # screenshot!
         end
       end
 
       context 'when clicking on link sent in an email to verify email address' do
         it 'all works' do
-          expect_any_instance_of(Newflow::CreateSalesforceLead).to receive(:exec)
-
           visit(login_path(return_param))
           click_on(I18n.t(:"login_signup_form.sign_up"))
           expect(page.current_path).to eq(newflow_signup_path)
@@ -117,45 +104,6 @@ module Newflow
           expect(page.current_path).to eq(signup_done_path)
           click_on('Finish')
           expect(page.current_url).to eq(external_app_url)
-
-          # # can exit and go back to the app they came from
-          # find('#exit-icon a').click
-          # expect(page.current_path).to eq('/external_app_for_specs')
-          # screenshot!
-        end
-      end
-    end
-
-    context 'when user is a BRI (Bill of Rights Institute) book adopter' do
-      before do
-        visit newflow_login_path(Newflow::LoginSignupHelper::BRI_BOOK_PARAM_NAME => Faker::Book.title)
-        click_on(t(:"login_signup_form.sign_up"))
-        find('.join-as__role.educator').click
-      end
-
-      it 'asks if their school is a Title 1 school' do
-        expect(page).to have_text(t(:"login_signup_form.is_title_1_school"))
-      end
-
-      context 'when their school is a Title 1 school' do
-        before do
-          fill_in 'signup_first_name',	with: 'Bryan'
-          fill_in 'signup_last_name',	with: 'Dimas'
-          fill_in 'signup_email',	with: email_value
-          fill_in 'signup_phone_number', with: phone_number
-          fill_in 'signup_password',	with: password
-          check('signup_terms_accepted')
-          wait_for_ajax
-          wait_for_animations
-          check('signup_is_title_1_school')
-          find('[type=submit]').click
-          wait_for_ajax
-          wait_for_animations
-          screenshot!
-        end
-
-        it 'stores the response in the user model' do
-          expect(User.last.title_1_school?).to be_truthy
         end
       end
     end
@@ -296,11 +244,6 @@ module Newflow
         click_on('Finish')
         wait_for_ajax
         expect(page.current_url).to eq(external_app_url)
-
-        # # can exit and go back to the app they came from
-        # find('#exit-icon a').click
-        # expect(page.current_path).to eq('/external_app_for_specs')
-        # screenshot!
       end
     end
 
