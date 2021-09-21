@@ -21,13 +21,6 @@ module Newflow
           described_class.call(user: user)
           expect(user.state).to eq(User::ACTIVATED)
         end
-
-        it 'creates a salesforce lead' do
-          expect_any_instance_of(CreateSalesforceLead).to(
-            receive(:exec).with(hash_including(user: user))
-          )
-          described_class.call(user: user)
-        end
       end
     end
   end
