@@ -31,23 +31,23 @@ RSpec.describe Newflow::EducatorSignup::ProcessSheeridWebhookRequest, type: :rou
     ).and_call_original
   end
 
-  it 'finds schools based on the sheerid_reported_school field' do
-    expect(School).not_to receive(:fuzzy_search)
+  # it 'finds schools based on the sheerid_reported_school field' do
+  #   expect(School).not_to receive(:fuzzy_search)
+  #
+  #   described_class.call verification_id: verification.verification_id
+  #
+  #   expect(user.reload.school).to eq school
+  # end
 
-    described_class.call verification_id: verification.verification_id
-
-    expect(user.reload.school).to eq school
-  end
-
-  it 'fuzzy searches schools based on the sheerid_reported_school field' do
-    school.update_attribute :sheerid_school_name, nil
-
-    expect(School).to receive(:fuzzy_search).with(
-      school.name, school.city, school.state
-    ).and_call_original
-
-    described_class.call verification_id: verification.verification_id
-
-    expect(user.reload.school).to eq school
-  end
+  # it 'fuzzy searches schools based on the sheerid_reported_school field' do
+  #   school.update_attribute :sheerid_school_name, nil
+  #
+  #   expect(School).to receive(:fuzzy_search).with(
+  #     school.name, school.city, school.state
+  #   ).and_call_original
+  #
+  #   described_class.call verification_id: verification.verification_id
+  #
+  #   expect(user.reload.school).to eq school
+  # end
 end
