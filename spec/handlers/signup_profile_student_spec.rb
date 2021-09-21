@@ -27,18 +27,6 @@ RSpec.describe SignupProfileStudent, type: :handler do
         expect(outcome.errors).to be_empty
       end
 
-      context "salesforce lead gets pushed" do
-        it "sends the school properly formatted" do
-          expect_lead_push(school: "rice")
-          handle
-        end
-
-        it "sends nil for the subject" do
-          expect_lead_push(subject: nil)
-          handle
-        end
-      end
-
       it "updates the user and leaves him 'activated'" do
         handle
         user.reload
@@ -80,10 +68,6 @@ RSpec.describe SignupProfileStudent, type: :handler do
       caller: user,
       contracts_required: true
     )
-  end
-
-  def expect_lead_push(options={})
-    expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including(options))
   end
 
 end

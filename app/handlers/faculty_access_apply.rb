@@ -72,23 +72,23 @@ class FacultyAccessApply
 
     # Send the lead off
 
-    if Settings::Salesforce.push_leads_enabled
-      PushSalesforceLead.perform_later(
-        user: caller,
-        email: email,
-        role: caller.role,
-        phone_number: apply_params.phone_number,
-        school: caller.self_reported_school,
-        num_students: apply_params.num_students,
-        using_openstax: apply_params.using_openstax,
-        subject: SubjectsUtils.form_choices_to_salesforce_string(apply_params.subjects),
-        url: apply_params.url,
-        newsletter: apply_params.newsletter,
-        # do not set source_application because this faculty access endpoint does
-        # not have a strong indication of where the user is coming from
-        source_application: nil
-      )
-    end
+    # if Settings::Salesforce.push_leads_enabled
+    #   PushSalesforceLead.perform_later(
+    #     user: caller,
+    #     email: email,
+    #     role: caller.role,
+    #     phone_number: apply_params.phone_number,
+    #     school: caller.self_reported_school,
+    #     num_students: apply_params.num_students,
+    #     using_openstax: apply_params.using_openstax,
+    #     subject: SubjectsUtils.form_choices_to_salesforce_string(apply_params.subjects),
+    #     url: apply_params.url,
+    #     newsletter: apply_params.newsletter,
+    #     # do not set source_application because this faculty access endpoint does
+    #     # not have a strong indication of where the user is coming from
+    #     source_application: nil
+    #   )
+    # end
 
   end
 
