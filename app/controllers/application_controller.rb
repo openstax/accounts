@@ -16,6 +16,10 @@ class ApplicationController < ActionController::Base
     current_user.is_anonymous?
   end
 
+  def check_if_admin
+    redirect_to root_path unless current_user && current_user.is_administrator?
+  end
+
   def check_if_password_expired
     return true if request.format != :html || request.options?
 

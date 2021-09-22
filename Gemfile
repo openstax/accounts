@@ -168,6 +168,9 @@ gem 'rack-cors'
 gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
 gem 'faye', '0.8.9'
 
+gem 'blazer'
+gem 'prophet-rb'
+
 group :development, :test do
   # Get env variables from .env file
   gem 'dotenv-rails', '2.7.2'
