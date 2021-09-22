@@ -2,8 +2,8 @@ require "erb"
 
 module DatabaseUrl
   def self.set_database_url
-    return if ENV["DATABASE_URL"]
-    ENV["DATABASE_URL"] = config_to_url(db_config)
+    return if ENV["BLAZER_DATABASE_URL"]
+    ENV["BLAZER_DATABASE_URL"] = config_to_url(db_config)
   end
 
   private
