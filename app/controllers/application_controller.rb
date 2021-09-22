@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_if_admin
-    redirect_to root_path unless @current_user && @current_user.is_administrator?
+    redirect_to newflow_login_path unless current_user.is_administrator?
   end
 
   def check_if_password_expired
