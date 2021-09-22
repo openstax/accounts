@@ -1,3 +1,4 @@
+require "cgi"
 require "erb"
 
 module DatabaseUrl
@@ -27,7 +28,7 @@ module DatabaseUrl
 
   def self.config_to_url(config)
     if config["username"] || config["password"]
-      user_info = [ config["username"], config["password"] ].join(":")
+      user_info = [ config["username"], URI.escape(config["password"]) ].join(":")
     else
       user_info = nil
     end
