@@ -47,7 +47,7 @@ user_method: current_user
 before_action_method: check_if_admin
 
 # email to send checks from
-# from_email: blazer@example.org
+# from_email: no-reply@openstax.org
 
 # webhook for Slack
 # slack_webhook_url: <%= ENV["BLAZER_SLACK_WEBHOOK_URL"] %>
@@ -67,11 +67,3 @@ anomaly_checks: prophet
 # forecasting: prophet / trend
 forecasting: prophet
 
-# enable map
-# mapbox_access_token: <%= ENV["MAPBOX_ACCESS_TOKEN"] %>
-
-# enable uploads
-# uploads:
-#   url: <%= ENV["BLAZER_UPLOADS_URL"] %>
-#   schema: uploads
-#   data_source: main
