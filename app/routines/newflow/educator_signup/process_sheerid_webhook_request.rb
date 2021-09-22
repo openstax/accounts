@@ -27,7 +27,7 @@ module Newflow
         existing_user = EmailAddress.verified.find_by(value: verification.email)&.user
 
         if !existing_user.present?
-          Rails.logger.warn(
+          Rails.logger.debug(
             "[ProcessSheeridWebhookRequest] No user found with verification id (#{verification_id}) "\
             "and email (#{verification.email})"
           )
@@ -36,8 +36,15 @@ module Newflow
 
         # Set the user's sheerid_verification_id only if they didn't already have one
         # VerifyEducator always sets it and we don't want to overwrite the approved one
-        existing_user.sheerid_verification_id = verification_id \
-          if verification_id.present? && existing_user.sheerid_verification_id.blank?
+        if verification_id.present? && existing_user.sheerid_verification_id.blank?
+          existing_user.sheerid_verification_id = verification_id
+          SecurityLog.create!(
+            event_type: :user_updated_using_sheerid_data,
+            user: existing_user,
+            event_data: { verification: verification.inspect }
+          )
+        end
+
 
         # Update the user account with the data returned from SheerID
         if verification_details.relevant?

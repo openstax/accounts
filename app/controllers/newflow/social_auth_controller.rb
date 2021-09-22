@@ -16,7 +16,6 @@ module Newflow
         handle_with(
           OauthCallback,
           logged_in_user: signed_in? && current_user,
-          is_BRI_book: is_BRI_book_adopter?,
           success: lambda {
             authentication = @handler_result.outputs.authentication
             user = @handler_result.outputs.user
@@ -37,7 +36,6 @@ module Newflow
 
             sign_in!(user)
             security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
-            clear_cache_BRI_marketing
             redirect_back(fallback_location: profile_newflow_path)
           },
           failure: lambda {
@@ -93,7 +91,6 @@ module Newflow
           clear_signup_state
           sign_in!(@handler_result.outputs.user)
           security_log(:student_social_auth_confirmation_success)
-          clear_cache_BRI_marketing
           redirect_to signup_done_path
         },
         failure: lambda {

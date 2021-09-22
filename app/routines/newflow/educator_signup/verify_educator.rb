@@ -7,7 +7,6 @@ module Newflow
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
 
       uses_routine UpsertSheeridVerification
-      uses_routine UpsertSalesforceLead
 
       protected ###############
 
@@ -26,7 +25,7 @@ module Newflow
 
         capture_mismatch_error!(verification_id, email, user) and return if email_mismatch?(user, email)
 
-        if update_user(user, verification_record) && upsert_salesforce_lead_for(user)
+        if update_user(user, verification_record)
           log_success(verification_id, user)
         else
           handle_error(verification_id, user)
@@ -67,15 +66,6 @@ module Newflow
         @fetch_verification ||= run(UpsertSheeridVerification, verification_id: verification_id).outputs.verification
       end
 
-      def upsert_salesforce_lead_for(user)
-        run(UpsertSalesforceLead, user: user)
-        SecurityLog.create!(
-          user: user,
-          event_type: :update_salesforce_lead,
-          message: "Updating existing lead in Salesforce."
-        )
-      end
-
       def email_mismatch?(user, email)
         user.blank? || email.blank? || email.user_id != user.id
       end
@@ -95,18 +85,20 @@ module Newflow
       end
 
       def log_success(verification_id, user)
-        lead_id = user.salesforce_lead_id
-
         SecurityLog.create!(
           user: user,
-          event_type: :educator_verified_using_sheerid,
-          event_data: { verification_id: verification_id, lead_id: lead_id }
+          event_type: :educator_verified_using_sheerid
         )
       end
 
       def handle_error(verification_id, user)
         message =  "User (#{user.id}) verification_id (#{verification_id}); User errors (#{user.errors&.full_messages})"
         Rails.logger.warn(message)
+        SecurityLog.create!(
+          user: user,
+          event_type: :educator_sign_up_failed,
+          event_data: { error: message }
+        )
         fatal_error(code: :error_updating_user, message: message)
       end
 

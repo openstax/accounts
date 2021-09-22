@@ -128,6 +128,8 @@ Rails.application.routes.draw do
 
   mount OpenStax::Api::Engine, at: '/'
 
+  mount Blazer::Engine, at: "blazer"
+
   # Create a named path for links like `/auth/facebook` so that the path prefixer gem
   #     will appropriately prefix the path. https://stackoverflow.com/a/40125738/1664216
   # The actual request, however, is handled by the omniauth middleware when it detects

@@ -188,8 +188,6 @@ class UpdateUserSalesforceInfo
                                   contact.faculty_verified}'' on contact #{contact.id}"
                             end
 
-      # TODO: We can read school_type and school_location from the cached School records instead,
-      # but better wait 1 additional release to let the Schools be cached and linked
       user.school_type = case contact.school_type
                            when *COLLEGE_TYPES
                              :college
@@ -230,8 +228,9 @@ class UpdateUserSalesforceInfo
       user.school = school
     end
 
-    if user.faculty_status_changed? && user.confirmed_faculty?
+    if user.faculty_status_changed? && user.confirmed_faculty? && !user.faculty_verification_email_sent
       let_sf_know_to_send_fac_ver_email = true
+      user.faculty_verification_email_sent = true
 
       SecurityLog.create!(
         user: user,

@@ -65,13 +65,18 @@ module Newflow
 
         outputs.user = user
 
-        update_salesforce_lead
+        if user.is_educator_pending_cs_verification? || !user.sheerid_verification_id.nil?
+          # create the lead if the user is verified, otherwise, it'll get created later
+          # either when rejected by sheer id, when manual CS verification is required,
+          # or if their account has been in a signup state for longer than 4 days
+          create_salesforce_lead
+        end
       end
 
       private #################
 
-      def update_salesforce_lead
-        UpsertSalesforceLead.perform_later(user: user)
+      def create_salesforce_lead
+        run(CreateSalesforceLead, user: user)
       end
 
       def other_role_name

@@ -65,17 +65,23 @@ class SecurityLog < ApplicationRecord
     student_create_password_failed
     email_already_in_use
     educator_signed_up
+    educator_began_signup
     educator_sign_up_failed
     educator_verified_email
     educator_verify_email_failed
     user_viewed_signup_form
+    user_viewed_sheerid_form
     user_updated_using_sheerid_data
     educator_verified_using_sheerid
+    user_not_viable_for_sheerid
+    user_viewed_profile_form
     educator_resumed_signup_flow
     created_salesforce_lead
     update_salesforce_lead
     requested_manual_cs_verification
+    user_sent_to_cs_for_review
     user_became_activated
+    user_profile_complete
   ]
 
   json_serialize :event_data, Hash

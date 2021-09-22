@@ -45,14 +45,12 @@ module Newflow
         fatal_error(code: :mismatched_authentication)
       elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
         # User found with the given authentication. We will log them in.
-        BRI_marketing(outputs.authentication.user) if options[:is_BRI_book]
+        outputs.authentication.user
       elsif (existing_user = user_most_recently_used(users_matching_oauth_data))
         # No user found with the given authentication, but a user *was* found with the given email address.
         # We will add the authentication to their existing account and then log them in.
         outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
         run(TransferAuthentications, outputs.authentication, existing_user)
-
-        BRI_marketing(existing_user) if options[:is_BRI_book]
       elsif (old_flow_user = find_old_flow_user(provider: @oauth_provider, uid: @oauth_uid))
         # create a corresponding new flow Authentication
         outputs.authentication = create_newflow_auth_for_user(
@@ -60,7 +58,6 @@ module Newflow
           provider: @oauth_provider,
           uid: @oauth_uid
         )
-        BRI_marketing(old_flow_user) if options[:is_BRI_book]
       elsif user_came_from&.to_sym == LOGIN_FORM_IS_ORIGIN
         # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
         fatal_error(code: :should_redirect_to_signup)
@@ -184,10 +181,6 @@ module Newflow
     def create_student_user_instance
       user = User.new(state: 'unverified', role: User::STUDENT_ROLE, is_newflow: true)
       user.full_name = oauth_data.name
-
-      if options[:is_BRI_book]
-        user.is_b_r_i_user = true
-      end
 
       transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
       user

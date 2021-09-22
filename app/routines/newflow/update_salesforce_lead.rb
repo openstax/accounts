@@ -17,14 +17,15 @@ module Newflow
       status.set_job_name(self.class.name)
       status.set_job_args(user: user.to_global_id.to_s)
 
-      lead_id = user.salesforce_lead_id
+      #lead_id = user.salesforce_lead_id
+      user_email = user.best_email_address_for_salesforce
 
-      if lead_id.blank?
+      if user_email.blank?
         log_error(user, nil, :user_is_missing_salesforce_lead_id)
         fatal_error(code: :user_is_missing_salesforce_lead_id)
       end
 
-      lead = outputs.lead = fetch_lead(lead_id)
+      lead = outputs.lead = user.lead
 
       if lead.blank?
         log_error(user, lead, :lead_missing_in_salesforce)
@@ -38,10 +39,6 @@ module Newflow
 
     private #################
 
-    def fetch_lead(lead_id)
-      OpenStax::Salesforce::Remote::Lead.find(lead_id)
-    end
-
     def update_salesforce_lead!(lead, user)
       sf_school_id = user.school&.salesforce_id
 
@@ -51,17 +48,15 @@ module Newflow
         school: user.most_accurate_school_name,
         city: user.most_accurate_school_city,
         country: user.most_accurate_school_country,
-        email: user.best_email_address_for_CS_verification,
+        email: user.best_email_address_for_salesforce,
         role: user.role,
-        other_role_name: user.other_role_name,
+        title: user.other_role_name,
         num_students: user.how_many_students,
         adoption_status: ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
         verification_status: user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
         who_chooses_books: user.who_chooses_books,
         subject: user.which_books,
-        finalize_educator_signup: user.is_profile_complete?,
-        needs_cs_review: user.is_educator_pending_cs_verification?,
-        source: CreateSalesforceLead::SALESFORCE_INSTRUCTOR_ROLE,
+        source: CreateSalesforceLead::LEAD_SOURCE,
         b_r_i_marketing: user.is_b_r_i_user?,
         title_1_school: user.title_1_school?,
         sheerid_school_name: user.sheerid_reported_school,
@@ -87,7 +82,7 @@ module Newflow
       Rails.logger.info(logger_message)
       SecurityLog.create!(
           user: user,
-          event_type: :user_updated,
+          event_type: :update_salesforce_lead,
           event_data: {
             message: "User's lead updated: #{lead.inspect}",
             success_from: "#{self.class.name}"

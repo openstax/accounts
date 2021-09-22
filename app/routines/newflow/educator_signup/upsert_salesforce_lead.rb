@@ -16,17 +16,11 @@ module Newflow
 
         @user = user
 
-        if user.salesforce_lead_id.present?
+        if user.lead.present?
           run(UpdateSalesforceLead, user: user)
         else
           run(CreateSalesforceLead, user: user)
         end
-      end
-
-      private ###############
-
-      def lead
-        @lead ||= OpenStax::Salesforce::Remote::Lead.find(user.salesforce_lead_id)
       end
 
     end

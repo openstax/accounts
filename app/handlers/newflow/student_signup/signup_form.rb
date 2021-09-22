@@ -65,21 +65,10 @@ module Newflow
 
         agree_to_terms
 
-        if options[:is_BRI_book]
-          outputs.user.is_b_r_i_user = true
-          outputs.user.title_1_school = signup_params.is_title_1_school
-          outputs.user.save!
-        end
-
-        agree_to_BRI_marketing if options[:is_BRI_book]
         run(CreateEmailForUser, email: signup_params.email, user: outputs.user)
       end
 
       private ###############
-
-      def agree_to_BRI_marketing
-        outputs.user.update!(is_b_r_i_user: true)
-      end
 
       def validate_presence_of_required_params
         required_params.each do |param|

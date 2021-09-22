@@ -13,27 +13,37 @@ class SalesforceSubscriber
   end
 
   def create_contact_push_topic
-    delete_contact_topics
-    contact_topic = @client.create!('PushTopic',
-                                   ApiVersion: '51.0',
-                                   Name: CONTACT_PUSH_TOPIC_NAME,
-                                   Description: 'all contact records',
-                                   NotifyForOperationCreate: 'true',
-                                   NotifyForOperationUpdate: 'true',
-                                   NotifyForFields: 'Referenced',
-                                   Query: 'select Id, Email, Faculty_Verified__c from Contact')
+    topic = PushTopic.where(topic_name: CONTACT_PUSH_TOPIC_NAME).first
 
-    if contact_topic.present? && contact_topic.is_a?(String)
-      PushTopic.create(topic_salesforce_id: contact_topic, topic_name: CONTACT_PUSH_TOPIC_NAME)
-      Rails.logger.debug('Contact Push Topic Id: ' + contact_topic)
-    else
-      Rails.logger.error('failed to create push topic: '+ CONTACT_PUSH_TOPIC_NAME)
-      Sentry.capture_message('failed to create push topic: '+ CONTACT_PUSH_TOPIC_NAME)
-      raise
+    unless topic
+      begin
+        retries ||= 0
+        begin
+          contact_topic = @client.create!('PushTopic',
+                                          ApiVersion: '51.0',
+                                          Name: CONTACT_PUSH_TOPIC_NAME,
+                                          Description: 'all contact records',
+                                          NotifyForOperationCreate: 'true',
+                                          NotifyForOperationUpdate: 'true',
+                                          NotifyForFields: 'Referenced',
+                                          Query: 'select Id, AccountId, Email, Email_alt__c, Faculty_Verified__c, Adoption_Status__c, Grant_Tutor_Access__c from Contact')
+        rescue
+          Rails.logger.debug('Salesforce stream already created.')
+        end
+
+        if contact_topic.present? && contact_topic.is_a?(String)
+          PushTopic.create(topic_salesforce_id: contact_topic, topic_name: CONTACT_PUSH_TOPIC_NAME)
+          warn('Contact Push Topic Id: ' + contact_topic)
+        else
+          Rails.logger.error('failed to create push topic: ' + CONTACT_PUSH_TOPIC_NAME)
+          Sentry.capture_message('failed to create push topic: ' + CONTACT_PUSH_TOPIC_NAME)
+          raise
+        end
+      rescue Restforce::ErrorCode::DuplicateValue
+        Rails.logger.debug('Push topic duplicate found.')
+        retry if (retries += 1) < 3
+      end
     end
-  rescue Restforce::ErrorCode::DuplicateValue
-    delete_contact_topics
-    create_contact_push_topic
   end
 
   def subscribe
@@ -42,17 +52,6 @@ class SalesforceSubscriber
       @client.subscription "/topic/#{CONTACT_PUSH_TOPIC_NAME}", replay: -1 do |message|
         Rails.logger.debug('Contact Received')
         ContactParser.new(message).save_contact
-      end
-    end
-  end
-
-  def delete_contact_topics
-    topics = PushTopic.where(topic_name: CONTACT_PUSH_TOPIC_NAME)
-    if topics.present?
-      topics.each do |topic|
-        @client.destroy('PushTopic', topic.topic_salesforce_id)
-        Rails.logger.debug('Contact PushTopic destroyed: ' + topic.topic_salesforce_id)
-        topic.destroy
       end
     end
   end

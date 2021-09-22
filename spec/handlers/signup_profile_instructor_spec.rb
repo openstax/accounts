@@ -37,18 +37,6 @@ RSpec.describe SignupProfileInstructor, type: :handler do
         expect(outcome.errors).to be_empty
       end
 
-      context "salesforce lead gets pushed" do
-        it "sends the subject properly formatted" do
-          expect_lead_push(subject: "Macro Econ;Biology")
-          handle
-        end
-
-        it "sends num_students as a number" do
-          expect_lead_push(num_students: 30)
-          handle
-        end
-      end
-
       it "updates the user and leaves him 'activated'" do
         handle
         user.reload
@@ -98,10 +86,6 @@ RSpec.describe SignupProfileInstructor, type: :handler do
       caller: user,
       contracts_required: true
     )
-  end
-
-  def expect_lead_push(options={})
-    expect_any_instance_of(PushSalesforceLead).to receive(:exec).with(hash_including(options))
   end
 
 end

@@ -5,7 +5,7 @@ module Newflow
     class SheeridRejectedEducator
 
       lev_routine
-      uses_routine UpdateSalesforceLead
+      uses_routine CreateSalesforceLead
 
       def exec(user:, verification_id: nil)
         status.set_job_name(self.class.name)
@@ -18,7 +18,7 @@ module Newflow
         user.save
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
-        UpsertSalesforceLead.perform_later(user: user)
+        CreateSalesforceLead.perform_later(user: user)
       end
 
     end

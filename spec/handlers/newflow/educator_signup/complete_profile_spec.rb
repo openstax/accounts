@@ -60,16 +60,6 @@ module Newflow
           end
         end
       end
-
-      context 'when success' do
-        context 'salesforce' do
-          it 'calls UpdateSalesforceLead' do
-            expect_any_instance_of(UpsertSalesforceLead).to receive(:exec).with(hash_including(user: user))
-            handle
-          end
-        end
-      end
     end
-
   end
 end

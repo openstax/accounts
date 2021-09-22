@@ -13,12 +13,6 @@ module Newflow
           FactoryBot.create(:user, state: 'unverified', role: 'student', receive_newsletter: true)
         end
 
-        it 'marks the user as activated' do
-          expect(user.state).not_to eq('activated')
-          described_class.call(user)
-          expect(user.state).to eq('activated')
-        end
-
         it 'does NOT sign up user for the newsletter when NOT checked' do
           user.update(receive_newsletter: false)
           expect_any_instance_of(Newflow::CreateSalesforceLead).not_to receive(:exec)

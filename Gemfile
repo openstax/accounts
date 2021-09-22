@@ -125,7 +125,7 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce'
+gem 'openstax_salesforce', github: 'openstax/openstax_salesforce', ref: 'ba17e6de2ae8e0aaecb140a2a9be0a3df64f91d7'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
@@ -167,6 +167,9 @@ gem 'rack-cors'
 # Salesforce streaming API
 gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
 gem 'faye', '0.8.9'
+
+gem 'blazer'
+gem 'prophet-rb'
 
 group :development, :test do
   # Get env variables from .env file
