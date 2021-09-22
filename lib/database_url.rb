@@ -34,10 +34,10 @@ module DatabaseUrl
     end
     URI::Generic.new(config["adapter"],
                      user_info,
-                     config["hostname"] || "localhost",
+                     config["host"] || "localhost",
                      config["port"],
                      nil,
-                     "/#{config["database"]}",
+                     "/#{config["database"]}?sslmode=#{config["sslmode"]}&sslrootcert=#{config["sslrootcert"]}",
                      nil,
                      nil,
                      nil).to_s
