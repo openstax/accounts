@@ -1,8 +1,8 @@
 require 'rails_helper'
-require 'vcr_helper'
+#require 'vcr_helper'
 
 module Newflow
-  RSpec.describe UpdateSalesforceLead, vcr: VCR_OPTS do
+  RSpec.describe UpdateSalesforceLead do
     subject(:routine_call) { described_class.call(user: user) }
 
     let!(:user_email) { FactoryBot.create(:email_address, user: user, value: email_address, verified: true) }
@@ -19,12 +19,12 @@ module Newflow
       )
     end
 
-    before(:all) do
-      VCR.use_cassette('Newflow_UpdateSalesforceLead/sf_setup', VCR_OPTS) do
-        @proxy = SalesforceProxy.new
-        @proxy.setup_cassette
-      end
-    end
+    # before(:all) do
+    #   VCR.use_cassette('Newflow_UpdateSalesforceLead/sf_setup', VCR_OPTS) do
+    #     @proxy = SalesforceProxy.new
+    #     @proxy.setup_cassette
+    #   end
+    # end
 
     before do
       expect(create_initial_lead.errors.any?).to be_falsey
@@ -73,6 +73,24 @@ module Newflow
           expect(hash[:school]).to eq school.name
           expect(hash[:city]).to eq school.city
           expect(hash[:state]).to eq school.state
+          expect(hash[:state_code]).to be_nil
+        end
+
+        routine_call
+        expect(routine_call.errors.any?).to be_falsey
+      end
+    end
+
+    context 'with a School with an incorrect State name' do
+      let(:school) { FactoryBot.create :school, state: 'Quebec' }
+
+      before { user.update_attribute :school, school }
+
+      it 'works' do
+        expect_any_instance_of(OpenStax::Salesforce::Remote::Lead).to receive(:update) do |_, hash|
+          expect(hash[:school]).to eq school.name
+          expect(hash[:city]).to eq school.city
+          expect(hash[:state]).to be_nil
           expect(hash[:state_code]).to be_nil
         end
 

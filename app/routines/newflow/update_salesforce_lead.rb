@@ -70,6 +70,9 @@ module Newflow
       }
 
       state = user.most_accurate_school_state
+      unless state.blank?
+        state = nil unless STATES.map(&:downcase).include? state.downcase
+      end
       unless state.nil?
         # Figure out if the State is an abbreviation or the full name
         if state == state.upcase
