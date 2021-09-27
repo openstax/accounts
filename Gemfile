@@ -144,7 +144,7 @@ gem 'scout_apm'
 gem 'openstax_healthcheck'
 
 # Allow Accounts routes to be accessed under an /accounts prefix (for use in CloudFront)
-gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "0ed5cdba6be"
+gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "8298c40ec38f132fc23ea946b2b20e855fe73a49"
 
 # JWE library used by the SSO cookie
 gem 'json-jwt'
