@@ -192,6 +192,26 @@ class User < ApplicationRecord
     school.present? ? school.country : 'United States'
   end
 
+  def school_location
+    return school.location if school.present?
+
+    return School.where(name: self_reported_school).to_a[0]['location'] if self_reported_school.present?
+
+    super if super.present?
+  end
+
+  def school_type
+    return school.type if school.present?
+    return School.where(name: self_reported_school).to_a[0]['type'] if self_reported_school.present?
+    super if super.present?
+  end
+
+  def self_reported_school
+    return super if super.present?
+
+    SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[1] if sheerid_reported_school.present?
+  end
+
   def best_email_address_for_salesforce
     email_addresses.school_issued.first&.value || \
     email_addresses.verified.first&.value || \
