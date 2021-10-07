@@ -193,21 +193,25 @@ class User < ApplicationRecord
   end
 
   def school_location
-    return school.location if school.present?
+    return school.location if school.present? && school.has_attribute?("location")
 
-    return School.where(name: self_reported_school).to_a[0]['location'] if self_reported_school.present?
+    lookedup_school = School.where(name: self_reported_school) if self_reported_school.present?
+    return lookedup_school.to_a[0]['location'] if lookedup_school.present?
 
     super if super.present?
   end
 
   def school_type
-    return school.type if school.present?
-    return School.where(name: self_reported_school).to_a[0]['type'] if self_reported_school.present?
+    return school.type if school.present? && school.has_attribute?("type")
+
+    lookedup_school = School.where(name: self_reported_school) if self_reported_school.present?
+    return lookedup_school.to_a[0]['type'] if lookedup_school.present?
+
     super if super.present?
   end
 
   def self_reported_school
-    return super if super.present?
+    return super.strip if super.present?
 
     SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[1] if sheerid_reported_school.present?
   end

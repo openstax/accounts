@@ -63,6 +63,7 @@ RSpec.describe User, type: :model do
     user = FactoryBot.create :user, username: " user "
     expect(user.username).to eq "user"
 
+    school = FactoryBot.create :school, name: "Rice University"
     user = FactoryBot.create :user, self_reported_school: " Rice University\t "
     expect(user.self_reported_school).to eq "Rice University"
   end
