@@ -15,8 +15,8 @@ GIT
 
 GIT
   remote: https://github.com/openstax/openstax_salesforce.git
-  revision: ba17e6de2ae8e0aaecb140a2a9be0a3df64f91d7
-  ref: ba17e6de2ae8e0aaecb140a2a9be0a3df64f91d7
+  revision: 2db69c3ae133e5f6c3aa6edc377add291d144125
+  ref: 2db69c3ae133e5f6c3aa6edc377add291d144125
   specs:
     openstax_salesforce (6.0.4)
       openstax_active_force

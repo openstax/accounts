@@ -23,6 +23,10 @@ every '20,50 * * * *' do
   runner 'OpenStax::RescueFrom.this { UpdateSchoolSalesforceInfo.call }'
 end
 
+every '10,40 * * * *' do
+  runner 'OpenStax::RescueFrom.this { UpdateSchoolSalesforceInfo.call }'
+end
+
 every 1.day, at: Time.parse('2:30 AM CST').utc do
   rake 'doorkeeper:cleanup'
 end
