@@ -193,19 +193,19 @@ class User < ApplicationRecord
   end
 
   def school_location
-    return school.location if school.present? && school.has_attribute?("location")
+    return UserHelper.convert_to_user_location(school.location) if school.present? && school.has_attribute?("location")
 
     lookedup_school = School.where(name: self_reported_school) if self_reported_school.present?
-    return lookedup_school.to_a[0]['location'] if lookedup_school.present?
+    return UserHelper.convert_to_user_location(lookedup_school.to_a[0]['location']) if lookedup_school.present?
 
     super if super.present?
   end
 
   def school_type
-    return school.type if school.present? && school.has_attribute?("type")
+    return UserHelper.convert_to_user_type(school.type) if school.present? && school.has_attribute?("type")
 
     lookedup_school = School.where(name: self_reported_school) if self_reported_school.present?
-    return lookedup_school.to_a[0]['type'] if lookedup_school.present?
+    return UserHelper.convert_to_user_type(lookedup_school.to_a[0]['type']) if lookedup_school.present?
 
     super if super.present?
   end
