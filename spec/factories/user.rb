@@ -5,7 +5,7 @@ FactoryBot.define do
     first_name { Faker::Name.first_name }
     last_name  { Faker::Name.last_name  }
     school_location { [:domestic_school, :foreign_school].sample }
-    school_type { [:college, :high_school, :k12_school, :home_school, :unknown_school_type].sample }
+    school_type { :unknown_school_type }
     role { User::STUDENT_ROLE }
 
     is_profile_complete { true }
