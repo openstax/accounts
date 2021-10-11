@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
 
-  subject(:user) { FactoryBot.create :user }
+  let!(:school) { FactoryBot.create :school, name: 'Great Northern University' }
+  subject(:user) { FactoryBot.create :user, school_id: school.id }
 
   it { is_expected.to have_many :security_logs }
 

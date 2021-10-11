@@ -193,7 +193,8 @@ class User < ApplicationRecord
   end
 
   def school_location
-    return UserHelper.convert_to_user_location(school.location) if school.present? && school.has_attribute?("location")
+    lookedup_school = School.where(salesforce_id: school_id) if school_id.present?
+    return UserHelper.convert_to_user_type(lookedup_school.to_a[0]['location']) if lookedup_school.present?
 
     lookedup_school = School.where(name: self_reported_school) if self_reported_school.present?
     return UserHelper.convert_to_user_location(lookedup_school.to_a[0]['location']) if lookedup_school.present?
@@ -202,7 +203,8 @@ class User < ApplicationRecord
   end
 
   def school_type
-    return UserHelper.convert_to_user_type(school.type) if school.present? && school.has_attribute?("type")
+    lookedup_school = School.where(salesforce_id: school_id) if school_id.present?
+    return UserHelper.convert_to_user_type(lookedup_school.to_a[0]['type']) if lookedup_school.present?
 
     lookedup_school = School.where(name: self_reported_school) if self_reported_school.present?
     return UserHelper.convert_to_user_type(lookedup_school.to_a[0]['type']) if lookedup_school.present?

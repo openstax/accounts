@@ -4,6 +4,8 @@ FactoryBot.define do
     state { User::ACTIVATED } # otherwise the default from DB will be to 'temp'
     first_name { Faker::Name.first_name }
     last_name  { Faker::Name.last_name  }
+    school_location { [:domestic_school, :foreign_school].sample }
+    school_type { [:college, :high_school, :k12_school, :home_school, :unknown_school_type].sample }
     role { User::STUDENT_ROLE }
 
     is_profile_complete { true }
