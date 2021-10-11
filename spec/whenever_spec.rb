@@ -11,6 +11,7 @@ RSpec.describe 'whenever schedule' do
 
       expect_any_instance_of(UpdateUserSalesforceInfo).to receive(:call)
       expect_any_instance_of(UpdateSchoolSalesforceInfo).to receive(:call)
+      expect_any_instance_of(UpdateUserSalesforceLeadInfo).to receive(:call)
 
       # Executes the actual ruby statement to make sure all constants and methods exist:
       schedule.jobs[:runner].each { |job| eval job[:task] }
