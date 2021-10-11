@@ -193,21 +193,13 @@ class User < ApplicationRecord
   end
 
   def school_location
-    lookedup_school = School.where(salesforce_id: school_id) if school_id.present?
-    return UserHelper.convert_to_user_type(lookedup_school.to_a[0]['location']) if lookedup_school.present?
-
-    lookedup_school = School.where(name: self_reported_school) if self_reported_school.present?
-    return UserHelper.convert_to_user_location(lookedup_school.to_a[0]['location']) if lookedup_school.present?
+    return UserHelper.convert_to_user_type(@school_by_query.to_a[0]['location']) if @school_by_query.present?
 
     super if super.present?
   end
 
   def school_type
-    lookedup_school = School.where(salesforce_id: school_id) if school_id.present?
-    return UserHelper.convert_to_user_type(lookedup_school.to_a[0]['type']) if lookedup_school.present?
-
-    lookedup_school = School.where(name: self_reported_school) if self_reported_school.present?
-    return UserHelper.convert_to_user_type(lookedup_school.to_a[0]['type']) if lookedup_school.present?
+    return UserHelper.convert_to_user_type(@school_by_query.to_a[0]['type']) if school_by_query.present?
 
     super if super.present?
   end
@@ -507,4 +499,9 @@ class User < ApplicationRecord
     end
   end
 
+  def school_by_query
+    @school_by_query ||= School.where(salesforce_id: school_id) if school_id.present?
+
+    @school_by_query ||= School.where(name: self_reported_school) if self_reported_school.present? && @school_by_query.blank?
+  end
 end
