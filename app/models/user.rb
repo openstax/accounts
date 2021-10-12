@@ -193,7 +193,7 @@ class User < ApplicationRecord
   end
 
   def school_location
-    return UserHelper.convert_to_user_type(@school_by_query.to_a[0]['location']) if @school_by_query.present?
+    return UserHelper.convert_to_user_location(@school_by_query.to_a[0]['location']) if @school_by_query.present?
 
     super if super.present?
   end
