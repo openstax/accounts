@@ -193,15 +193,19 @@ class User < ApplicationRecord
   end
 
   def school_location
+    return super if !super.nil? && super != DEFAULT_SCHOOL_LOCATION
+
     return UserHelper.convert_to_user_location(@school_by_query.to_a[0]['location']) if @school_by_query.present?
 
-    super if super.present?
+    DEFAULT_SCHOOL_LOCATION
   end
 
   def school_type
+    return super if !super.nil? && super != DEFAULT_SCHOOL_TYPE
+
     return UserHelper.convert_to_user_type(@school_by_query.to_a[0]['type']) if school_by_query.present?
 
-    super if super.present?
+    DEFAULT_SCHOOL_TYPE
   end
 
   def self_reported_school

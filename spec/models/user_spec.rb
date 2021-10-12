@@ -9,7 +9,6 @@ RSpec.describe User, type: :model do
 
   it { is_expected.to validate_presence_of(:faculty_status) }
   it { is_expected.to validate_presence_of(:role          ) }
-  it { is_expected.to validate_presence_of(:school_type   ) }
 
   it { is_expected.to validate_uniqueness_of(:uuid              ).case_insensitive }
   it { is_expected.to validate_uniqueness_of(:support_identifier).case_insensitive }
