@@ -1,4 +1,4 @@
-STATES = [ "AK",
+US_STATES = [ "AK",
            "Alaska",
            "AL",
            "Alabama",
