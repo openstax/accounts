@@ -155,7 +155,7 @@ module Newflow
         },
         failure: lambda {
           @book_titles = book_data.titles
-          security_log(:educator_sign_up_failed, user: current_user, reason: "Error in #{action_name}: #{@handler_result&.errors&.full_messages}")
+          security_log(:educator_sign_up_failed, user: current_user, reason: "Error in #{action_name}. Check Salesforce debug logs for details.")
           render :educator_profile_form
         }
       )
