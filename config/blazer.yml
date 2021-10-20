@@ -20,25 +20,33 @@ data_sources:
       # zone_id: "SELECT id, name FROM zones ORDER BY name ASC"
       # period: ["day", "week", "month"]
       # status: {0: "Active", 1: "Archived"}
-      state: { 0: "temp",
-               1: "social",
-               2: "unclaimed",
-               3: "needs_profile",
-               4: "activated",
-               5: "unverified" }
-      role: { 0: "unknown_role",
-              1: "student",
-              2: "instructor",
-              3: "administrator",
-              4: "librarian",
-              5: "designer",
-              6: "other",
-              7: "adjunct",
-              8: "homeschool" }
-      faculty_status: { 0: "no_faculty_info",
-                        1: "pending_faculty",
-                        2: "confirmed_faculty",
-                        3: "rejected_faculty" }
+      state: { 0: "Temporary",
+               1: "Social",
+               2: "Unclaimed",
+               3: "Needs Profile",
+               4: "Activated",
+               5: "Unverified" }
+      role: { 0: "Unknown",
+              1: "Student",
+              2: "Instructor",
+              3: "Administrator",
+              4: "Librarian",
+              5: "Designer",
+              6: "Other",
+              7: "Adjunct",
+              8: "Homeschool" }
+      faculty_status: { 0: "No Info",
+                        1: "Pending",
+                        2: "Confirmed",
+                        3: "Rejected" }
+      school_type: {
+                     0: "Unknown",
+                     1: "Other",
+                     2: "College",
+                     3: "High School",
+                     4: "K12",
+                     5: "Home School"
+      }
       event_type: {0: "unknown",
                    1: "sign_up_successful",
                    2: "sign_up_failed",
