@@ -14,6 +14,13 @@ module Newflow
 
       sf_school_id = user.school&.salesforce_id
 
+      if user.role == 'student'
+        sf_role = 'Student'
+      else
+        sf_role = 'Instructor'
+        sf_position = user.role
+      end
+
       lead = OpenStax::Salesforce::Remote::Lead.new(
         first_name: user.first_name,
         last_name: user.last_name,
@@ -21,7 +28,8 @@ module Newflow
         email: user.best_email_address_for_salesforce,
         source: LEAD_SOURCE,
         application_source: DEFAULT_REFERRING_APP_NAME,
-        role: user.role,
+        role: sf_role,
+        position: sf_position,
         title: user.other_role_name,
         who_chooses_books: user.who_chooses_books,
         subject: user.which_books,

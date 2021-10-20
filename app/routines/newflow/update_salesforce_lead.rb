@@ -42,6 +42,13 @@ module Newflow
     def update_salesforce_lead!(lead, user)
       sf_school_id = user.school&.salesforce_id
 
+      if user.role == 'student'
+        sf_role = 'Student'
+      else
+        sf_role = 'Instructor'
+        sf_position = user.role
+      end
+
       update_hash = {
         first_name: user.first_name,
         last_name: user.last_name,
@@ -49,7 +56,8 @@ module Newflow
         city: user.most_accurate_school_city,
         country: user.most_accurate_school_country,
         email: user.best_email_address_for_salesforce,
-        role: user.role,
+        role: sf_role,
+        position: sf_position,
         title: user.other_role_name,
         num_students: user.how_many_students,
         adoption_status: ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
