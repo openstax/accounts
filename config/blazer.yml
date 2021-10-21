@@ -11,9 +11,9 @@ data_sources:
     # caching settings
     # can greatly improve speed
     # off by default
-   cache:
-     mode: all
-     expires_in: 60
+    cache:
+      mode: all
+      expires_in: 60
 
     smart_variables:
       # zone_id: "SELECT id, name FROM zones ORDER BY name ASC"
