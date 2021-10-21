@@ -15,7 +15,7 @@ module Newflow
 
         @user = user
 
-        UpsertSalesforceLead.perform_later(user: user)
+        CreateSalesforceLead.perform_later(user: user)
 
         # TODO: WHY??
         # update salesforce contact, if present

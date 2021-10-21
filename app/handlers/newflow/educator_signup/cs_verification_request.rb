@@ -73,7 +73,7 @@ module Newflow
           run(CreateEmailForUser, email: email_address_value, user: user, is_school_issued: true)
         end
 
-        UpsertSalesforceLead.perform_later(user: user)
+        CreateSalesforceLead.perform_later(user: user)
       end
 
       private #################
