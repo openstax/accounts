@@ -89,7 +89,7 @@ module Newflow
     def handle_lead_errors(lead, user)
       SecurityLog.create!(
         user: user,
-        event_type: :educator_sign_up_failed,
+        event_type: :salesforce_error,
         event_data: {
           message: 'Error creating Salesforce lead!',
         }
