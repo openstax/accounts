@@ -76,7 +76,7 @@ module Newflow
       private #################
 
       def create_salesforce_lead
-        run(CreateSalesforceLead, user: user)
+        CreateSalesforceLead.perform_later(user: user)
       end
 
       def other_role_name
