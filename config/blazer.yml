@@ -125,7 +125,8 @@ data_sources:
                    75: "requested_manual_cs_verification",
                    76: "user_sent_to_cs_for_review",
                    77: "user_became_activated",
-                   78: "user_profile_complete"}
+                   78: "user_profile_complete",
+                   79: "salesforce_error"}
 
     linked_columns:
       user_id: "/admin/users/{value}/edit"

@@ -4,7 +4,6 @@ module Newflow
 
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
       uses_routine CreateSalesforceLead, translations: { outputs: { type: :verbatim } }
-      uses_routine UpdateSalesforceLead, translations: { outputs: { type: :verbatim } }
 
       protected #################
 
@@ -16,11 +15,7 @@ module Newflow
 
         @user = user
 
-        if user.lead.present?
-          run(UpdateSalesforceLead, user: user)
-        else
-          run(CreateSalesforceLead, user: user)
-        end
+        CreateSalesforceLead.perform_later(user: user)
       end
 
     end
