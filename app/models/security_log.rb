@@ -82,6 +82,7 @@ class SecurityLog < ApplicationRecord
     user_sent_to_cs_for_review
     user_became_activated
     user_profile_complete
+    salesforce_error
   ]
 
   json_serialize :event_data, Hash
