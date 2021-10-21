@@ -93,7 +93,6 @@ gem 'jbuilder'
 # Background job queueing
 gem 'delayed_job_active_record', '~> 4.1.3'
 gem 'daemons'
-gem "delayed_job_web"
 
 # JSON Api builder
 gem 'representable', '~> 3.0.0'
