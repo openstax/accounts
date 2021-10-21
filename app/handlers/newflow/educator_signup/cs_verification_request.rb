@@ -65,8 +65,6 @@ module Newflow
           faculty_status: User::PENDING_FACULTY
         )
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
-        security_log(:user_updated, { user: user, user_state: user.attributes.delete_if { |k,v| v.nil? } })
-
         outputs.user = user
 
         if !users_existing_email.present?
