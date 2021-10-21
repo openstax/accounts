@@ -1,6 +1,6 @@
 module Newflow
   module EducatorSignup
-    class UpsertSalesforceInfoForCsVerification
+    class InsertSalesforceInfoForCsVerification
 
       lev_routine
       uses_routine UpsertSalesforceLead
@@ -15,7 +15,7 @@ module Newflow
 
         @user = user
 
-        UpsertSalesforceLead.perform_later(user: user)
+        CreateSalesforceLead.perform_later(user: user)
 
         # TODO: WHY??
         # update salesforce contact, if present
