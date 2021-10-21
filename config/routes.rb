@@ -306,9 +306,8 @@ Rails.application.routes.draw do
 
     resources :banners, except: :show
 
-    mount Blazer::Engine, at: "blazer"
-
-    mount DelayedJobWeb, at: "delayed_job"
+    mount Blazer::Engine, at: "blazer", as: 'blazer_admin'
+    mount DelayedJobWeb, at: "delayed_job", as: 'delayed_job_admin'
 
     mount RailsSettingsUi::Engine, at: 'settings'
   end
