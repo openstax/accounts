@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::Base
-
   layout 'application'
 
   prepend_before_action :validate_signed_params_if_present
@@ -17,7 +16,9 @@ class ApplicationController < ActionController::Base
   end
 
   def check_if_admin
-    redirect_to newflow_login_path unless current_user.is_administrator?
+    unless @current_user && @current_user.is_administrator?
+      head :unauthorized
+    end
   end
 
   def check_if_password_expired
