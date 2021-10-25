@@ -9,11 +9,9 @@ RSpec.describe Admin::PreAuthStatesController, type: :controller do
 
   context '#index' do
     before do
-      FactoryBot.create(:pre_auth_state)
       FactoryBot.create(:contact_info)
 
       Timecop.freeze(9.days.ago) do
-        FactoryBot.create(:pre_auth_state)
         FactoryBot.create(:contact_info)
       end
     end
@@ -21,11 +19,6 @@ RSpec.describe Admin::PreAuthStatesController, type: :controller do
     it 'sends a message to User to clean up unverified uses' do
       expect(User).to receive(:cleanup_unverified_users).once
       get :index
-    end
-
-    it 'assigns pre_auth_states' do
-      get(:index, params: { since: 2 })
-      expect(assigns(:pre_auth_states).count).to eq(1)
     end
 
     it 'assigns unverified_contacts' do
