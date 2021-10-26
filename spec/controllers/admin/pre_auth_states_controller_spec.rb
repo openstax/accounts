@@ -16,11 +16,6 @@ RSpec.describe Admin::PreAuthStatesController, type: :controller do
       end
     end
 
-    it 'sends a message to User to clean up unverified uses' do
-      expect(User).to receive(:cleanup_unverified_users).once
-      get :index
-    end
-
     it 'assigns unverified_contacts' do
       get(:index, params: { since: 2 })
       expect(assigns(:unverified_contacts).count).to eq(1)
