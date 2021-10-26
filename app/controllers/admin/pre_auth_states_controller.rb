@@ -2,8 +2,6 @@ module Admin
   class PreAuthStatesController < BaseController
     layout 'admin'
 
-    before_action :cleanup_unverified_users, only: [:index]
-
     def index
       if params[:since] == "forever"
         @unverified_contacts = ContactInfo.where(verified: 'false')
@@ -17,12 +15,6 @@ module Admin
       end
 
       @unverified_contacts = @unverified_contacts.order(created_at: :desc)
-    end
-
-    protected
-
-    def cleanup_unverified_users
-      User.cleanup_unverified_users
     end
   end
 end
