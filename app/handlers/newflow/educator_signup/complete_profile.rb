@@ -65,7 +65,8 @@ module Newflow
 
         outputs.user = user
 
-        if user.is_educator_pending_cs_verification? || !user.sheerid_verification_id.nil?
+        if user.is_educator_pending_cs_verification? || (!user.sheerid_verification_id.nil? && user.faculty_status != 'pending_faculty') ||
+          (user.sheerid_verification_id.nil? && user.faculty_status == 'pending_faculty')
           # create the lead if the user is verified, otherwise, it'll get created later
           # either when rejected by sheer id, when manual CS verification is required,
           # or if their account has been in a signup state for longer than 4 days
@@ -98,31 +99,31 @@ module Newflow
       def check_params
         if (signup_params.is_school_not_supported_by_sheerid == 'true' ||
           signup_params.is_country_not_supported_by_sheerid == 'true') &&
-          signup_params.school_name.blank?
+           signup_params.school_name.blank?
 
           param_error(:school_name, :school_name_must_be_entered)
         end
 
         if signup_params.educator_specific_role.strip.downcase == OTHER &&
-          signup_params.other_role_name.blank?
+           signup_params.other_role_name.blank?
 
           param_error(:other_role_name, :other_must_be_entered)
         end
 
         if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-          signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
+           signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
 
           param_error(:books_used, :books_used_must_be_entered)
         end
 
         if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-          signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
+           signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
 
           param_error(:books_of_interest, :books_of_interest_must_be_entered)
         end
 
         if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-          signup_params.num_students_per_semester_taught.blank?
+           signup_params.num_students_per_semester_taught.blank?
 
           param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
         end
