@@ -65,12 +65,15 @@ module Newflow
 
         outputs.user = user
 
-        if user.is_educator_pending_cs_verification? || !user.sheerid_verification_id.nil?
-          # create the lead if the user is verified, otherwise, it'll get created later
-          # either when rejected by sheer id, when manual CS verification is required,
-          # or if their account has been in a signup state for longer than 4 days
-          create_salesforce_lead
+        unless user.is_educator_pending_cs_verification? || user.faculty_status == 'confirmed_faculty' || user.faculty_status == 'rejected_faculty'
+          # Can't find school wasn't selected and SheerId or manual verification didn't happen, don't create lead
+          return
         end
+        # create the lead if the user is verified, otherwise, it'll get created later
+        # either when rejected by sheer id, when manual CS verification is required,
+        # or if their account has been in a signup state for longer than 4 days
+        create_salesforce_lead
+
       end
 
       private #################
