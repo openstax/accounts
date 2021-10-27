@@ -53,18 +53,34 @@ class ContactParser
       user.salesforce_contact_id = contact_params[:sf_id]
       user.using_openstax = contact_params[:adoption_status]
 
-      user.faculty_status = case contact_params[:faculty_verified]
-                              when "Confirmed"
-                                :confirmed_faculty
-                              when "Pending"
-                                :pending_faculty
-                              when /Rejected/
-                                :rejected_faculty
-                              when NilClass
-                                :no_faculty_info
-                              else
-                                raise "Unknown faculty_verified field: '#{contact.faculty_verified}'' on contact #{contact.id}"
-                            end
+      # TODO: fix after data migration - we only need to use FV_Status__c
+      if contact_params[:faculty_verified]
+        user.faculty_status = case contact_params[:faculty_verified]
+                                when "confirmed_faculty"
+                                  :confirmed_faculty
+                                when "pending_faculty"
+                                  :pending_faculty
+                                when "rejected_faculty"
+                                  :rejected_faculty
+                                when NilClass
+                                  :no_faculty_info
+                                else
+                                  raise "Unknown faculty_verified field: '#{contact_params[:faculty_verified]}'' on lead #{contact_params[:sf_id]}"
+                              end
+      elsif contact_params[:faculty_verified_old]
+        user.faculty_status = case contact_params[:faculty_verified_old]
+                                when "Confirmed"
+                                  :confirmed_faculty
+                                when "Pending"
+                                  :pending_faculty
+                                when /Rejected/
+                                  :rejected_faculty
+                                when NilClass
+                                  :no_faculty_info
+                                else
+                                  raise "Unknown faculty_verified field: '#{contact_params[:faculty_verified]}'' on contact #{contact_params[:sf_id]}"
+                              end
+      end
 
       user.grant_tutor_access = contact_params[:grant_tutor_access]
       user.save!
@@ -85,8 +101,9 @@ class ContactParser
       sf_id: sobject['Id'],
       school_id: sobject['AccountId'],
       email: sobject['Email'],
-      email_alt: sobject['Email_alt__c'],
-      faculty_verified: sobject['Faculty_Verified__c'],
+      email_alt: sobject['All_Emails__c'],
+      faculty_verified: sobject['FV_Status__c'],
+      faculty_verified_old: sobject['Faculty_Verified__c'], # TODO: remove this after data migration in SF
       adoption_status: sobject['Adoption_Status__c'],
       grant_tutor_access: sobject['Grant_Tutor_Access__c']
     }
