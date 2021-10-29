@@ -32,6 +32,7 @@ class LeadParser
                             end
 
       user.save!
+      store_salesforce_lead_id(user, lead_params[:sf_id])
       Rails.logger.debug('Lead saved ID: ' + user.salesforce_lead_id)
     else
       Rails.logger.debug("No lead found for email #{lead_params[:email]}")
