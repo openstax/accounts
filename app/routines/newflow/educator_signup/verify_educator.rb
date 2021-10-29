@@ -7,10 +7,16 @@ module Newflow
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
 
       uses_routine UpsertSheeridVerification
+      uses_routine CreateSalesforceLead
 
       protected ###############
 
       def exec(verification_id:, user:)
+        SecurityLog.create!(
+          event_type: :sheerid_webhook_tracing,
+          user: user,
+          event_data: { verification_id: verification_id, message: "exec called in VerifyEducator" }
+        )
         status.set_job_name(self.class.name)
         status.set_job_args(verification_id: verification_id.to_s, user: user.to_global_id.to_s)
 
@@ -35,6 +41,11 @@ module Newflow
       private #################
 
       def update_user(user, verification)
+        SecurityLog.create!(
+          event_type: :sheerid_webhook_tracing,
+          user: user,
+          event_data: { verification_id: verification.verification_id, message: "update_user called in VerifyEducator" }
+        )
         first_update = user.update(
           first_name: verification.first_name,
           last_name: verification.last_name,
@@ -47,6 +58,7 @@ module Newflow
 
         if first_update && user.is_sheerid_verified? && user.is_profile_complete?
           user.update(faculty_status: User::CONFIRMED_FACULTY)
+          #CreateSalesforceLead.perform_later(user: user)
           SecurityLog.create!(
             user: user,
             event_type: :user_updated_using_sheerid_data,

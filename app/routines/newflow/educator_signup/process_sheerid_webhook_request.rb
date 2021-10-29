@@ -25,6 +25,11 @@ module Newflow
 
         verification = upsert_verification(verification_id, verification_details)
         existing_user = EmailAddress.verified.find_by(value: verification.email)&.user
+        SecurityLog.create!(
+          event_type: :sheerid_webhook_tracing,
+          user: existing_user,
+          event_data: { verification_id: verification_id, message: "exec called in ProcessSheerIdWebhook" }
+        )
 
         if !existing_user.present?
           Rails.logger.debug(
@@ -48,6 +53,11 @@ module Newflow
 
         # Update the user account with the data returned from SheerID
         if verification_details.relevant?
+          SecurityLog.create!(
+            event_type: :sheerid_webhook_tracing,
+            user: existing_user,
+            event_data: { verification_id: verification_id, message: "updating user with verification in ProcessSheerIdWebhook" }
+          )
           existing_user.first_name = verification.first_name
           existing_user.last_name = verification.last_name
           existing_user.sheerid_reported_school = verification.organization_name
@@ -79,11 +89,21 @@ module Newflow
 
         user_changed = existing_user.changed?
         if user_changed
+          SecurityLog.create!(
+            event_type: :sheerid_webhook_tracing,
+            user: existing_user,
+            event_data: { verification_id: verification_id, message: "saving user in ProcessSheerIdWebhook" }
+          )
           existing_user.save
           transfer_errors_from(existing_user, {type: :verbatim}, :fail_if_errors)
         end
 
         if verification.errors.none? && verification.verified?
+          SecurityLog.create!(
+            event_type: :sheerid_webhook_tracing,
+            user: existing_user,
+            event_data: { verification_id: verification_id, message: "calling VerifiyEducator in ProcessSheerIdWebhook" }
+          )
           VerifyEducator.perform_later(verification_id: verification_id, user: existing_user)
         elsif verification.rejected?
           run(SheeridRejectedEducator, user: existing_user, verification_id: verification_id)

@@ -15,6 +15,11 @@ module Newflow
 
       def handle
         verification_id = params.fetch(VERIFICATION_ID_PARAM_NAME, nil) || params.fetch(REQUEST_ID_PARAM)
+        SecurityLog.create!(
+          event_type: :sheerid_webhook_tracing,
+          user: "unknown",
+          event_data: { verification_id: verification_id, message: "handle called in SheerIdWebhook" }
+        )
         outputs.verification_id = verification_id
         ProcessSheeridWebhookRequest.perform_later(verification_id: verification_id)
       end
