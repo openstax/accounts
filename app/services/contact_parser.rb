@@ -8,7 +8,11 @@ class ContactParser
     contact_params = sanitize_contact
     ci_table = ContactInfo.arel_table
 
-    user = User.joins(:contact_infos).eager_load(:contact_infos).where(ci_table[:value].lower.eq(contact_params[:email])).first
+    user = User.find_by(uuid: contact_params[:accounts_uuid].to_s)
+    if !user.present?
+      user = User.joins(:contact_infos).eager_load(:contact_infos).where(ci_table[:value].lower.eq(contact_params[:email])).first
+      # TODO: lookup using all emails
+    end
 
     if user.present?
       school = School.select(:id, :salesforce_id, :location, :type).where(
@@ -105,7 +109,8 @@ class ContactParser
       faculty_verified: sobject['FV_Status__c'],
       faculty_verified_old: sobject['Faculty_Verified__c'], # TODO: remove this after data migration in SF
       adoption_status: sobject['Adoption_Status__c'],
-      grant_tutor_access: sobject['Grant_Tutor_Access__c']
+      grant_tutor_access: sobject['Grant_Tutor_Access__c'],
+      accounts_uuid: sobject['Accounts_UUID__c']
     }
   end
 end

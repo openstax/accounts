@@ -68,7 +68,7 @@ class SalesforceSubscriber
 
         if lead_topic.present? && lead_topic.is_a?(String)
           PushTopic.create(topic_salesforce_id: lead_topic, topic_name: LEAD_PUSH_TOPIC_NAME)
-          warn('Contact Push Topic Id: ' + lead_topic)
+          warn('Lead Push Topic Id: ' + lead_topic)
         else
           Rails.logger.error('failed to create push topic: ' + LEAD_PUSH_TOPIC_NAME)
           Sentry.capture_message('failed to create push topic: ' + LEAD_PUSH_TOPIC_NAME)
