@@ -22,10 +22,25 @@ module Newflow
 
         verification_record = fetch_verification(verification_id)
         transfer_errors_from(verification_record, {type: :verbatim}, :fail_if_errors)
+        SecurityLog.create!(
+          event_type: :sheerid_webhook_tracing,
+          user: user,
+          event_data: { verification_id: verification_id, message: "before return if verified in VerifyEducator: " + verification_record.to_s }
+        )
         return if !verification_record.verified?
+        SecurityLog.create!(
+          event_type: :sheerid_webhook_tracing,
+          user: user,
+          event_data: { verification_id: verification_id, message: "after return if verified in VerifyEducator" }
+        )
 
         # If the user is already faculty verified, nothing to do.
         return if user.confirmed_faculty?
+        SecurityLog.create!(
+          event_type: :sheerid_webhook_tracing,
+          user: user,
+          event_data: { verification_id: verification_id, message: "after return if user confirmed_faculty in VerifyEducator" }
+        )
 
         email = EmailAddress.verified.find_by(value: verification_record.email)
 
@@ -58,7 +73,6 @@ module Newflow
 
         if first_update && user.is_sheerid_verified? && user.is_profile_complete?
           user.update(faculty_status: User::CONFIRMED_FACULTY)
-          #CreateSalesforceLead.perform_later(user: user)
           SecurityLog.create!(
             user: user,
             event_type: :user_updated_using_sheerid_data,
