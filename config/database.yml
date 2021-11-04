@@ -1,15 +1,14 @@
 default: &default
   adapter: postgresql
   host: <%= ENV['OXA_DB_HOST'] || 'localhost' %>
+  port: <%= ENV['OXA_DB_PORT'] || 5432 %>
   username: <%= ENV['OXA_DB_USER'] || 'ox_accounts' %>
   password: <%= ENV['OXA_DB_PASS'] || 'ox_accounts' %>
+  pool: <%= ENV.fetch('RAILS_MAX_THREADS', 5).to_i %>
 
 development:
   <<: *default
   database: <%= ENV['OXA_DEV_DB'] || 'ox_accounts_dev' %>
-
-production:
-  <<: *default
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -18,3 +17,15 @@ test:
   <<: *default
   database: '<%= ENV['OXA_TEST_DB'] || 'ox_accounts_test' %><%=
                  "_#{ENV['TEST_ENV_NUMBER']}" if !ENV['TEST_ENV_NUMBER'].blank? %>'
+  reaping_frequency: 0 # 0 == disabled - incompatible with our DatabaseCleaner config
+
+production:
+  adapter: postgresql
+  host: <%= ENV['RDS_HOST'] %>
+  port: <%= ENV['RDS_PORT'] %>
+  username: <%= ENV['RDS_USERNAME'] %>
+  password: <%= ENV['RDS_PASSWORD'] %>
+  database: <%= ENV['RDS_DATABASE'] %>
+  pool: <%= ENV['RAILS_MAX_THREADS'] %>
+  sslmode: verify-full
+  sslrootcert: /etc/ssl/certs/rds.pem

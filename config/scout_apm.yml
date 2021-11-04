@@ -1,0 +1,37 @@
+---
+# This configuration file is used for Scout APM.
+# Environment variables can also be used to configure Scout. See our help docs at http://help.apm.scoutapp.com#environment-variables for more information.
+development:
+  monitor: false
+
+test:
+  monitor: false
+
+production:
+  # name: application name in APM Web UI
+  # - Default: the application names comes from the Rails or Sinatra class name
+  name: tutor (<%= ENV['ENVIRONMENT_NAME'] %>)
+
+  # key: Your Organization key for Scout APM. Found on the settings screen.
+  # - Default: none
+  key: <%= ENV['SCOUT_LICENSE_KEY'] %>
+
+  # monitor: Enable Scout APM or not
+  # - Default: false
+  # - Valid Options: true, false
+  monitor: <%= ActiveModel::Type::Boolean.new.cast(ENV.fetch('SCOUT_MONITOR', false)) %>
+
+  # log_level: Verboseness of logs.
+  # - Default: 'info'
+  # - Valid Options: debug, info, warn, error
+  # log_level: debug
+
+  # log_file_path: The path to the scout_apm.log log file directory. Use stdout to log to STDOUT.
+  # - Default: 'Environment#root+log/' or 'STDOUT' if running on Heroku.
+  log_file_path: <%= ENV['SCOUT_LOG_FILE_PATH'] %>
+
+  # ignore: An Array of web endpoints that Scout should not instrument.
+  # Routes that match the prefixed path (ex: ['/health', '/status']) will be ignored by the agent.
+  # - Default: []
+  ignore:
+    - /ping

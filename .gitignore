@@ -19,9 +19,6 @@
 !/log/.keep
 /tmp
 
-# Ignore the secrets file
-config/secrets.yml
-
 # Ignore yaml_db database files
 /db/data.yml*
 

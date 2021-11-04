@@ -333,8 +333,6 @@ ActiveRecord::Schema.define(version: 2021_09_22_024758) do
   create_table "push_topics", force: :cascade do |t|
     t.string "topic_salesforce_id"
     t.string "topic_name"
-    t.bigint "push_topics_id"
-    t.index ["push_topics_id"], name: "index_push_topics_on_push_topics_id"
   end
 
   create_table "salesforce_streaming_replays", force: :cascade do |t|
@@ -421,7 +419,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_024758) do
     t.string "first_name"
     t.string "last_name"
     t.string "title"
-    t.uuid "uuid", default: -> { "public.gen_random_uuid()" }, null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "suffix"
     t.string "state", default: "needs_profile", null: false
     t.string "salesforce_contact_id"
@@ -480,7 +478,6 @@ ActiveRecord::Schema.define(version: 2021_09_22_024758) do
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "push_topics", "push_topics", column: "push_topics_id"
   add_foreign_key "salesforce_streaming_replays", "push_topics", column: "push_topics_id"
   add_foreign_key "users", "oauth_applications", column: "source_application_id"
   add_foreign_key "users", "schools"

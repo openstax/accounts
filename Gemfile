@@ -92,7 +92,12 @@ gem 'jbuilder'
 
 # Background job queueing
 gem 'delayed_job_active_record', '~> 4.1.3'
-gem 'daemons'
+
+# Run delayed_job workers with a control process in the foreground
+gem 'delayed_job_worker_pool'
+
+# Ensure background jobs unlock if a delayed_job worker crashes
+gem 'delayed_job_heartbeat_plugin'
 
 # JSON Api builder
 gem 'representable', '~> 3.0.0'
@@ -108,6 +113,9 @@ gem 'action_interceptor'
 
 # PostgreSQL database
 gem 'pg'
+
+# Support systemd Type=notify services for puma and delayed_job
+gem 'sd_notify', require: false
 
 # Add P3P headers for IE
 gem 'p3p'
@@ -182,7 +190,7 @@ group :development, :test do
   gem 'rspec-instafail'
 
   # Development server
-  gem 'puma', '~> 4.3'
+  gem 'puma'
 
   # See config/initializers/04-debugger.rb
   #
