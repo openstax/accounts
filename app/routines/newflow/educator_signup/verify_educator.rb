@@ -76,8 +76,9 @@ module Newflow
           SecurityLog.create!(
             user: user,
             event_type: :user_updated_using_sheerid_data,
-            message: "Educator verified by SheerID."
+            event_data: { message: "Educator verified by SheerID." }
           )
+          CreateSalesforceLead.perform_later(user: user)
         else
           first_update
           SecurityLog.create!(
