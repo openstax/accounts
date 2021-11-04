@@ -35,12 +35,12 @@ module Newflow
         )
 
         # If the user is already faculty verified, nothing to do.
-        return if user.confirmed_faculty?
-        SecurityLog.create!(
-          event_type: :sheerid_webhook_tracing,
-          user: user,
-          event_data: { verification_id: verification_id, message: "after return if user confirmed_faculty in VerifyEducator" }
-        )
+        # return if user.confirmed_faculty?
+        # SecurityLog.create!(
+        #   event_type: :sheerid_webhook_tracing,
+        #   user: user,
+        #   event_data: { verification_id: verification_id, message: "after return if user confirmed_faculty in VerifyEducator" }
+        # )
 
         email = EmailAddress.verified.find_by(value: verification_record.email)
 
