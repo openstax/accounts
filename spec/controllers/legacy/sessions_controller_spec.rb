@@ -67,17 +67,4 @@ RSpec.describe Legacy::SessionsController, type: :controller do
       end
     end
   end
-
-  context '#destroy' do
-    it 'redirects to caller-specified URL if in whitelist' do
-      delete(:destroy, params: { r: "https://something.openstax.org/howdy?blah=true" })
-      expect(response).to redirect_to("https://something.openstax.org/howdy?blah=true")
-    end
-
-    it 'does not redirect to a caller-specified URL if not in whitelist' do
-      delete(:destroy, params: { r: "http://www.google.com" })
-      expect(response).to redirect_to("/")
-    end
-  end
-
 end

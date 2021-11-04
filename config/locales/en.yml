@@ -173,6 +173,8 @@ en:
     enable_other_sign_in_options: Enable other login options
     other_sign_in_options_html: Other login<br class="wide"> options
 
+  enable_other_sign_in_options: Enable other login options
+
   javascript:
     alert:
       close: Close

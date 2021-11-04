@@ -4,8 +4,8 @@ feature 'Add social auth', js: true do
   scenario "email collides with a different existing user's verified email" do
     create_email_address_for(create_user('other_user'), 'user@example.com')
 
-    user = create_user 'user'
-    log_in('user', 'password')
+    user = create_newflow_user 'user@rice.edu'
+    log_in('user@rice.edu')
 
     expect_profile_page
 
@@ -23,10 +23,10 @@ feature 'Add social auth', js: true do
   end
 
   scenario "email collides with the current user's verified email" do
-    user = create_user 'user'
+    user = create_newflow_user 'user@rice.edu'
     create_email_address_for(user, 'user@example.com')
 
-    log_in('user', 'password')
+    log_in('user@rice.edu')
 
     expect_profile_page
 
@@ -46,8 +46,8 @@ feature 'Add social auth', js: true do
   scenario "email collides with existing user's UNverified email" do
     create_email_address_for(create_user('other_user'), 'user@example.com', 'token')
 
-    user = create_user 'user'
-    log_in('user', 'password')
+    user = create_newflow_user 'user@rice.edu'
+    log_in('user@rice.edu')
 
     expect_profile_page
 

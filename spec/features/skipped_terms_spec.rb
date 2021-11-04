@@ -30,7 +30,6 @@ feature 'Skipped terms are respected', js: true do
     click_sign_up
     complete_signup_email_screen("Instructor","bob@bob.edu")
     capture_email!(address: "bob@bob.edu")
-    complete_signup_verify_screen(pass: true)
     complete_signup_password_screen('password')
 
     terms_content = t(:"legacy.signup.new_account.have_read_terms_and_agree_html",
@@ -58,7 +57,6 @@ feature 'Skipped terms are respected', js: true do
     )
 
     expect(ContactInfo.where(value: "bob@bob.edu").verified.count).to eq 1
-    expect(PreAuthState.count).to eq 0
 
     complete_instructor_access_pending_screen
 

@@ -9,10 +9,6 @@ class SignupPassword
     validates :password_confirmation, presence: true
   end
 
-  uses_routine UserFromPreAuthState,
-               translations: { inputs:  {scope: :signup},
-                               outputs: {type: :verbatim}  }
-
   uses_routine CreateIdentity,
                translations: { inputs:  {scope: :signup},
                                outputs: {type: :verbatim}  }
@@ -24,7 +20,6 @@ class SignupPassword
   end
 
   def handle
-    run(UserFromPreAuthState, options[:pre_auth_state])
     transfer_errors_from(outputs.user, {type: :verbatim}, true)
 
     # Create an Identity, but not an Authentication -- that is done in SessionsCreate

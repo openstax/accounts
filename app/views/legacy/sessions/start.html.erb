@@ -4,9 +4,6 @@
 <%
   @hide_layout_errors = true
 
-  suggested_username = pre_auth_state && pre_auth_state.signed? ?
-    pre_auth_state.signed_data['email'] : ''
-
   translate_error(code: :no_users) do
     gave_an_email = params['login']['username_or_email'].match(/@/)
     gave_an_email ? t(:'.unknown_email') : t(:'.unknown_username')

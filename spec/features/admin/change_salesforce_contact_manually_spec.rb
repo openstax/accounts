@@ -11,9 +11,8 @@ RSpec.describe "Change Salesforce contact manually", vcr: VCR_OPTS do
 
   before(:each) do
     @admin_user = create_admin_user
-    visit '/'
-    complete_login_username_or_email_screen('admin')
-    complete_login_password_screen('password')
+    visit '/i/login'
+    complete_login_username_or_email_screen('admin', 'password')
 
     @target_user = FactoryBot.create(:user)
 

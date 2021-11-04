@@ -2,10 +2,9 @@ require 'rails_helper'
 
 feature 'User updates password on profile screen', js: true do
   before(:each) do
-    @user = create_user('user')
-    visit '/'
-    complete_login_username_or_email_screen('user')
-    complete_login_password_screen('password')
+    @user = create_newflow_user 'user@rice.edu'
+    visit '/i/login'
+    complete_login_username_or_email_screen('admin', 'password')
     expect_profile_page
   end
 
@@ -16,7 +15,7 @@ feature 'User updates password on profile screen', js: true do
     @user.identity.destroy
     @user.authentications.reload
     @user.reload.identity
-    visit '/profile'
+    visit 'i/profile'
 
     screenshot!
     find('#enable-other-sign-in').click
@@ -51,7 +50,7 @@ feature 'User updates password on profile screen', js: true do
 
   scenario "deletes password" do
     FactoryBot.create :authentication, user: @user, provider: 'facebook'
-    visit '/profile'
+    visit 'i/profile'
     expect(@user.reload.identity).to be_present
     expect(@user.authentications.reload.count).to eq 2
     expect(page).to have_css('[data-provider=identity]')

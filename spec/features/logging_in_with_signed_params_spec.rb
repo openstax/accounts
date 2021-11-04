@@ -120,54 +120,10 @@ feature 'Sign in using signed parameters', js: true do
       end
     end
 
-    it 'requires email validation when modified' do
-      arrive_from_app(params: signed_params)
-      expect_sign_in_page
-      click_sign_up
-      expect_sign_up_page
-
-      email = 'test-modified-teacher@example.com'
-
-      find('#signup_email').execute_script('this.value = ""')
-      fill_in (t :"legacy.signup.start.email_placeholder"), with: email
-      click_button(t :"legacy.signup.start.next")
-      wait_for_animations
-      click_button(t :"legacy.signup.start.next")
-      expect_signup_verify_screen
-
-      ss = PreAuthState.find_by!(contact_info_value: email)
-      fill_in (t :"legacy.signup.verify_email.pin"), with: ss.confirmation_pin
-      click_button(t :"legacy.signup.verify_email.confirm")
-      complete_signup_password_screen('password')
-      expect_signup_profile_screen
-      complete_signup_profile_screen_with_whatever(role: :instructor)
-      expect_back_at_app
-      expect_validated_records(params: payload.merge(email: email))
-    end
-
   end
 
   describe 'students' do
     let(:role) { 'student' }
-
-    it 'signs up by default and links account' do
-      arrive_from_app(params: signed_params, do_expect: false)
-      expect_sign_up_page # students default to sign-up vs the standard sign-in
-      expect(page).to have_no_field('signup_role') # no changing the role
-      expect(page).to have_field('signup_email', with: payload[:email])
-      click_button(t :"legacy.signup.start.next")
-      expect_signup_verify_screen
-      ss = PreAuthState.find_by!(contact_info_value: payload[:email])
-      fill_in (t :"legacy.signup.verify_email.pin"), with: ss.confirmation_pin
-      click_button(t :"legacy.signup.verify_email.confirm")
-      expect_signup_profile_screen # skipped password since it's trusted
-      expect(page).to have_field('profile_first_name', with: 'Tester')
-      expect(page).to have_field('profile_last_name', with: 'McTesterson')
-      expect(page).to have_field('profile_school', with: payload[:school])
-      complete_signup_profile_screen_with_whatever(role: :student)
-      expect_back_at_app
-      expect_validated_records(params: payload)
-    end
 
     it 'can switch to sign in and use that' do
       user = create_user 'user'
@@ -180,21 +136,6 @@ feature 'Sign in using signed parameters', js: true do
       complete_login_password_screen 'password'
       expect_back_at_app
       expect_validated_records(params: payload, user: user, email_is_verified: false)
-    end
-
-    it 'requires email validation when edited' do
-      arrive_from_app(params: signed_params, do_expect: false)
-      find('#signup_email').execute_script('this.value = ""')
-      fill_in (t :"legacy.signup.start.email_placeholder"), with: 'test-modified@example.com'
-      click_button(t :"legacy.signup.start.next")
-      expect_signup_verify_screen
-      ss = PreAuthState.find_by!(contact_info_value: 'test-modified@example.com')
-      fill_in (t :"legacy.signup.verify_email.pin"), with: ss.confirmation_pin
-      click_button(t :"legacy.signup.verify_email.confirm")
-      expect_signup_profile_screen # skipped password since it's a trusted student
-      complete_signup_profile_screen_with_whatever(role: :student)
-      expect_back_at_app
-      expect_validated_records(params: payload.merge(email: 'test-modified@example.com'))
     end
 
 

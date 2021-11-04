@@ -1,11 +1,11 @@
 require 'rails_helper'
+require 'byebug'
 
 feature 'User reports page', js: true do
   before(:each) do
-    create_admin_user.update!(role: User::ADMINISTRATOR_ROLE)
-    visit '/'
-    complete_login_username_or_email_screen('admin')
-    complete_login_password_screen('password')
+    @admin_user = create_admin_user
+    visit '/i/login'
+    complete_login_username_or_email_screen('admin', 'password')
   end
 
   it 'counts student users since the start of the fiscal year' do
@@ -35,13 +35,13 @@ feature 'User reports page', js: true do
 
   it 'counts student users created in the last week' do
     # Set up data with a student and instructor in two separate weeks
-    Timecop.freeze(DateTime.now - (1.week - 1.second)) do
+    Timecop.freeze(DateTime.now - (5.day)) do
       User.student.create
       User.student.create
       User.instructor.create
     end
 
-    Timecop.freeze(DateTime.now - (1.week + 1.second)) do
+    Timecop.freeze(DateTime.now - (2.week)) do
       User.student.create
       User.student.create
       User.student.create

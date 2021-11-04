@@ -11,9 +11,6 @@ module AuthenticateMethods
       store_url(url: request_url_without_signed_params)
     elsif signed_in?
       return
-    elsif pre_auth_state && !pre_auth_state.signed_student? && pre_auth_state_email_available?
-      # goes to "old flow"
-      redirect_to main_app.signup_path(request.query_parameters.merge(set_param_to_permit_legacy_flow))
     else
       store_url(url: request_url_without_signed_params)
       redirect_to newflow_login_path(request.query_parameters)
@@ -29,16 +26,12 @@ module AuthenticateMethods
     # try to use them again.
     store_url(url: request_url_without_signed_params)
 
-    if pre_auth_state && pre_auth_state.signed_student? && pre_auth_state_email_available?
-      redirect_to main_app.signup_path
-    else
-      # Note that the following means that users must arrive with the newflow param
-      # when they arrive at the oauth_authorization path in order for them to be redirected to the
-      # newflow login instead of the old login page.
-      # We might want to undo this when we release the new flow.
-      permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :bpff).to_h
-      redirect_to(main_app.login_path(permitted_params))
-    end
+    # Note that the following means that users must arrive with the newflow param
+    # when they arrive at the oauth_authorization path in order for them to be redirected to the
+    # newflow login instead of the old login page.
+    # We might want to undo this when we release the new flow.
+    permitted_params = params.permit(:client_id, :signup_at, :go, :no_signup, :bpff).to_h
+    redirect_to(main_app.login_path(permitted_params))
   end
 
   def authenticate_admin!
@@ -120,19 +113,7 @@ module AuthenticateMethods
     # Therefore at this point we sign out whoever is signed in.
 
     sign_out!(security_log_data: {type: 'new external user'}) if signed_in?
-
-    # Save the signed params data to facilitate either sign in or up
-    # depending on the user's choices
-    pre_auth_state = PreAuthState.create_from_signed_data(signed_params)
-    save_pre_auth_state(pre_auth_state)
   end
-
-  def pre_auth_state_email_available?
-    LookupUsers.by_verified_email(
-      pre_auth_state.contact_info_value
-    ).none?
-  end
-
 
   def auto_login_external_user
     return false unless external_user_uuid.present?

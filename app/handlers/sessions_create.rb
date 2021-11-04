@@ -30,7 +30,6 @@ class SessionsCreate
   uses_routine TransferAuthentications
   uses_routine TransferOmniauthData
   uses_routine ActivateUnclaimedUser
-  uses_routine TransferPreAuthState
 
   protected
 
@@ -46,7 +45,6 @@ class SessionsCreate
 
   def handle
     outputs[:status] = get_status
-    options[:user_state].clear_pre_auth_state # some of the flows will have a pre_auth_state
   end
 
   def get_status
@@ -76,10 +74,6 @@ class SessionsCreate
          options[:login_providers][authentication.provider]['uid'] != authentication.uid
        )
       return :mismatched_authentication
-    end
-
-    if pre_auth_state.present?
-      run(TransferPreAuthState, pre_auth_state: pre_auth_state, user: authentication_user)
     end
 
     sign_in!(authentication_user)
@@ -116,10 +110,6 @@ class SessionsCreate
         status = :new_social_user
       end
     end
-
-    run(TransferPreAuthState,
-        pre_auth_state: pre_auth_state,
-        user: receiving_user)
 
     run(TransferAuthentications, authentication, receiving_user)
     sign_in!(receiving_user)
@@ -225,11 +215,7 @@ class SessionsCreate
   end
 
   def signing_up?
-    pre_auth_state.present?
-  end
-
-  def pre_auth_state
-    options[:pre_auth_state]
+    false
   end
 
   def logging_in?

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_22_024758) do
+ActiveRecord::Schema.define(version: 2021_10_26_224203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -312,22 +312,6 @@ ActiveRecord::Schema.define(version: 2021_09_22_024758) do
     t.boolean "can_skip_oauth_screen", default: false, null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
-  end
-
-  create_table "pre_auth_states", id: :serial, force: :cascade do |t|
-    t.integer "contact_info_kind", default: 0
-    t.string "contact_info_value"
-    t.boolean "is_contact_info_verified", default: false
-    t.string "confirmation_code"
-    t.string "confirmation_pin"
-    t.datetime "confirmation_sent_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "role", null: false
-    t.text "return_to"
-    t.jsonb "signed_data"
-    t.boolean "is_partial_info_allowed", default: false, null: false
-    t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
   end
 
   create_table "push_topics", force: :cascade do |t|

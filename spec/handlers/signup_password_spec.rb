@@ -2,10 +2,6 @@ require 'rails_helper'
 
 RSpec.describe SignupPassword, type: :handler do
 
-  let(:pre_auth_state) {
-    FactoryBot.create(:pre_auth_state, :contact_info_verified, contact_info_value: "bob@armstrong.com")
-  }
-
   context "when the passwords don't match" do
     let (:the_call) { -> {
       described_class.handle(
@@ -15,7 +11,7 @@ RSpec.describe SignupPassword, type: :handler do
             password_confirmation: 'word',
           }
         },
-        pre_auth_state: pre_auth_state,
+        pre_auth_state: nil,
         caller: AnonymousUser.instance
       )
     }.call }
@@ -44,7 +40,7 @@ RSpec.describe SignupPassword, type: :handler do
             password_confirmation: 'password',
           }
         },
-        pre_auth_state: pre_auth_state,
+        pre_auth_state: nil,
         caller: AnonymousUser.instance
       )
     }.call }

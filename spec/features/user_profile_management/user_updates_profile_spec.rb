@@ -2,8 +2,8 @@ require 'rails_helper'
 
 feature 'User updates profile', js: true do
   before(:each) do
-    mock_current_user(create_user('user'))
-    visit '/profile'
+    mock_current_user(create_newflow_user 'user@rice.edu')
+    visit 'i/profile'
   end
 
   describe 'Updating name' do

@@ -30,6 +30,7 @@ end
 def create_admin_user
   user = create_user 'admin'
   user.update_attributes!(is_administrator: true)
+  user.update_attributes!(role: :other)
   user
 end
 
@@ -258,7 +259,7 @@ end
 def expect_profile_page
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"legacy.users.edit.page_heading")
-  expect(page).to have_current_path profile_path
+  expect(page).to have_current_path 'i/profile'
 end
 
 def agree_and_click_create
@@ -288,12 +289,13 @@ def expect_signup_profile_screen
   expect(page).to have_content(t :"legacy.signup.profile.page_heading")
 end
 
-def complete_login_username_or_email_screen(username_or_email)
-  fill_in 'login_username_or_email', with: username_or_email
+def complete_login_username_or_email_screen(username_or_email, password)
+  fill_in 'login_form_email', with: username_or_email
+  fill_in 'login_form_password', with: password
   expect_sign_in_page
   expect(page).to have_no_missing_translations
   screenshot!
-  click_button (t :"legacy.sessions.start.next")
+  click_button (t :"login_signup_form.continue_button")
   expect(page).to have_no_missing_translations
 end
 
@@ -330,23 +332,6 @@ def complete_signup_email_screen(role, email, options={})
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t :"legacy.signup.verify_email.page_heading_pin")
   end
-end
-
-def complete_signup_verify_screen(pin: nil, pass: nil)
-  tries = 0
-  while (tries+=1) < 100 && (ss = PreAuthState.find_by(contact_info_value: @signup_email)).nil? do
-    sleep(0.1) # transaction from earlier step may not have committed
-  end
-  fail("unable to find email #{@signup_email}.  Did creation step fail silently?") if ss.nil?
-  if pin.nil?
-    raise "Must set either `pin` or `pass`" if pass.nil?
-    pin = ss.confirmation_pin
-    pin[0] = (9-pin[0].to_i).to_s if !pass
-  end
-  fill_in (t :"legacy.signup.verify_email.pin"), with: pin
-  expect(page).to have_no_missing_translations
-  click_button (t :"legacy.signup.verify_email.confirm")
-  expect(page).to have_no_missing_translations
 end
 
 def complete_signup_password_screen(password, confirmation=nil)
@@ -445,12 +430,11 @@ def complete_instructor_access_pending_screen
 end
 
 def signin_as(username_or_email, password = 'password')
-  complete_login_username_or_email_screen username_or_email
-  complete_login_password_screen password
+  complete_login_username_or_email_screen username_or_email, password
 end
 
 def log_in(username_or_email, password = 'password')
-  visit login_path
+  visit newflow_login_path
   signin_as username_or_email, password
 end
 

@@ -31,12 +31,6 @@ RSpec.describe UserSessionManagement, type: :lib do
       expect(controller.current_user).to eq user_1
     end
 
-    it 'sign_out! calls clear_pre_auth_state' do
-      expect(controller).to receive(:clear_pre_auth_state)
-      controller.sign_out!
-      expect(controller.current_user).to eq AnonymousUser.instance
-    end
-
     it 'signed_in returns false' do
       expect(controller).not_to be_signed_in
     end
@@ -74,43 +68,6 @@ RSpec.describe UserSessionManagement, type: :lib do
       )
       controller.clear_login_state
       expect(session).to be_empty
-    end
-
-    it 'save_pre_auth_state clears login state and old signup records and stores new signup info' do
-      pre_auth_state_1 = FactoryBot.create :pre_auth_state
-      pre_auth_state_2 = FactoryBot.create :pre_auth_state
-      controller.instance_variable_set '@pre_auth_state', pre_auth_state_1
-      expect(controller).to receive(:clear_login_state)
-      expect(controller).to receive(:clear_pre_auth_state)
-      expect(session).to receive(:[]=).with(:signup, pre_auth_state_2.id)
-      controller.save_pre_auth_state(pre_auth_state_2)
-    end
-
-    it 'pre_auth_state returns the pre_auth_state record stored in the session' do
-      pre_auth_state = FactoryBot.create :pre_auth_state
-      session[:signup] = pre_auth_state.id.to_s
-      expect(controller.pre_auth_state).to eq pre_auth_state
-    end
-
-    it 'signup_role returns the role in the pre_auth_state' do
-      pre_auth_state = FactoryBot.create :pre_auth_state
-      session[:signup] = pre_auth_state.id.to_s
-      expect(controller.signup_role).to eq pre_auth_state.role
-    end
-
-    it 'signup_email returns the email in the pre_auth_state' do
-      pre_auth_state = FactoryBot.create :pre_auth_state
-      session[:signup] = pre_auth_state.id.to_s
-      expect(controller.signup_email).to eq pre_auth_state.contact_info_value
-    end
-
-    it 'clear_pre_auth_state removes the signup info stored in the session' do
-      pre_auth_state = FactoryBot.create :pre_auth_state
-      session[:signup] = pre_auth_state.id.to_s
-      controller.clear_pre_auth_state
-      expect(controller.pre_auth_state).to be_nil
-      expect(controller.signup_role).to be_nil
-      expect(controller.signup_email).to be_nil
     end
 
     it 'set_client_app stores the client app in the session, if it exists' do
@@ -198,12 +155,6 @@ RSpec.describe UserSessionManagement, type: :lib do
       expect(controller.current_user).to eq user_2
     end
 
-    it 'sign_out! calls clear_pre_auth_state and can be used to sign out the user' do
-      expect(controller).to receive(:clear_pre_auth_state)
-      controller.sign_out!
-      expect(controller.current_user).to eq AnonymousUser.instance
-    end
-
     it 'signed_in returns true' do
       expect(controller).to be_signed_in
     end
@@ -239,43 +190,6 @@ RSpec.describe UserSessionManagement, type: :lib do
       expect(controller).to receive(:session).and_return(session)
       controller.clear_login_state
       expect(session).to be_empty
-    end
-
-    it 'save_pre_auth_state clears login state and old signup records and stores new signup info' do
-      pre_auth_state_1 = FactoryBot.create :pre_auth_state
-      pre_auth_state_2 = FactoryBot.create :pre_auth_state
-      controller.instance_variable_set '@pre_auth_state', pre_auth_state_1
-      expect(controller).to receive(:clear_login_state)
-      expect(controller).to receive(:clear_pre_auth_state)
-      expect(session).to receive(:[]=).with(:signup, pre_auth_state_2.id)
-      controller.save_pre_auth_state(pre_auth_state_2)
-    end
-
-    it 'pre_auth_state returns the pre_auth_state record stored in the session' do
-      pre_auth_state = FactoryBot.create :pre_auth_state
-      session[:signup] = pre_auth_state.id.to_s
-      expect(controller.pre_auth_state).to eq pre_auth_state
-    end
-
-    it 'signup_role returns the role in the pre_auth_state' do
-      pre_auth_state = FactoryBot.create :pre_auth_state
-      session[:signup] = pre_auth_state.id.to_s
-      expect(controller.signup_role).to eq pre_auth_state.role
-    end
-
-    it 'signup_email returns the email in the pre_auth_state' do
-      pre_auth_state = FactoryBot.create :pre_auth_state
-      session[:signup] = pre_auth_state.id.to_s
-      expect(controller.signup_email).to eq pre_auth_state.contact_info_value
-    end
-
-    it 'clear_pre_auth_state removes the signup info stored in the session' do
-      pre_auth_state = FactoryBot.create :pre_auth_state
-      session[:signup] = pre_auth_state.id.to_s
-      controller.clear_pre_auth_state
-      expect(controller.pre_auth_state).to be_nil
-      expect(controller.signup_role).to be_nil
-      expect(controller.signup_email).to be_nil
     end
 
     it 'set_client_app stores the client app in the session, if it exists' do

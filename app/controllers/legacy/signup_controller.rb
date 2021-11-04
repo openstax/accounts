@@ -16,7 +16,6 @@ module Legacy
 
     before_action :check_ready_for_profile, only: [:profile]
 
-    before_action :restart_if_missing_pre_auth_state, only: [:verify_email, :password, :social]
     before_action :exit_signup_if_logged_in, only: [:start, :verify_email, :password, :social, :verify_by_token]
     before_action :check_ready_for_password_or_social, only: [:password, :social]
 
@@ -25,11 +24,9 @@ module Legacy
     def start
       if request.post?
         handle_with(SignupStart,
-                    existing_pre_auth_state: pre_auth_state,
                     return_to: session[:return_to],
                     session: self,
                     success: lambda do
-                      save_pre_auth_state(@handler_result.outputs.pre_auth_state)
                       redirect_to action: :verify_email
                     end,
                     failure: lambda do
@@ -46,10 +43,9 @@ module Legacy
       render and return if request.get?
 
       handle_with(SignupVerifyEmail,
-                  pre_auth_state: pre_auth_state,
                   session: self,
                   success: lambda do
-                    redirect_to action: (pre_auth_state.signed_student? ? :profile : :password)
+                    return
                   end,
                   failure: lambda do
                     @handler_result.errors.each do | error |  # TODO move to view?
@@ -63,11 +59,7 @@ module Legacy
       handle_with(SignupVerifyByToken,
                   session: self,
                   success: lambda do
-                    @handler_result.outputs.pre_auth_state.tap do |state|
-                      session[:return_to] ||= state.return_to
-                      save_pre_auth_state(state)
-                    end
-                    redirect_to action: (pre_auth_state.signed_student? ? :profile : :password)
+                    return
                   end,
                   failure: lambda do
                     # TODO spec this and set an error message
@@ -93,7 +85,6 @@ module Legacy
                     contracts_required: !contracts_not_required,
                     client_app: get_client_app,
                     success: lambda do
-                      clear_pre_auth_state
                       if current_user.student? || current_user.created_from_signed_data?
                         redirect_back
                       else
@@ -131,22 +122,11 @@ module Legacy
     end
 
     def fail_signup
-      clear_pre_auth_state
       raise SecurityTransgression
     end
 
-    def restart_if_missing_pre_auth_state
-      redirect_to signup_path(set_param_to_permit_legacy_flow) if pre_auth_state.nil?
-    end
-
     def check_ready_for_password_or_social
-      if pre_auth_state.nil?
-        redirect_to action: :start
-      elsif !pre_auth_state.is_contact_info_verified?
-        redirect_to action: :verify_email
-      else
-        true
-      end
+      true
     end
 
     def instructor_has_selected_subject(key)

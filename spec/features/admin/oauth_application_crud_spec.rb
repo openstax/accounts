@@ -4,9 +4,8 @@ feature 'Admin oauth app create and edit', js: true do
   context 'as an admin user' do
     before(:each) do
       @admin_user = create_admin_user
-      visit '/'
-      complete_login_username_or_email_screen('admin')
-      complete_login_password_screen('password')
+      visit '/i/login'
+      complete_login_username_or_email_screen('admin', 'password')
     end
 
     it 'can create and edit applications' do
