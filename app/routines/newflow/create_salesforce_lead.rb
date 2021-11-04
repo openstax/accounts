@@ -6,6 +6,14 @@ module Newflow
     LEAD_SOURCE =  'Account Creation'
     DEFAULT_REFERRING_APP_NAME = 'Accounts'
 
+    ADOPTION_STATUS_FROM_USER = {
+      as_primary: 'Confirmed Adoption Won',
+      as_recommending: 'Confirmed Will Recommend',
+      as_future: 'High Interest in Adopting'
+    }.with_indifferent_access.freeze
+
+    private_constant(:ADOPTION_STATUS_FROM_USER)
+
     protected #################
 
     def exec(user:)
@@ -21,6 +29,10 @@ module Newflow
         sf_position = user.role
       end
 
+      if user.using_openstax_how != 'as_future' # as_future means they are interested, not adopting
+        adoption_json = build_book_adoption_json_for_salesforce(user)
+      end
+
       lead = OpenStax::Salesforce::Remote::Lead.new(
         first_name: user.first_name,
         last_name: user.last_name,
@@ -34,6 +46,8 @@ module Newflow
         who_chooses_books: user.who_chooses_books,
         subject: user.which_books,
         num_students: user.how_many_students,
+        adoption_status: ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
+        adoption_json: adoption_json,
         os_accounts_id: user.id,
         accounts_uuid: user.uuid,
         school: user.most_accurate_school_name,
@@ -72,6 +86,20 @@ module Newflow
       else
         handle_lead_errors(lead, user)
       end
+    end
+
+    def build_book_adoption_json_for_salesforce(user)
+      adoption_json = {}
+      books_json = []
+      books = user.which_books.split(';')
+
+      books.each do |book|
+        book_keywords = { name: book, students: user.how_many_students }
+        books_json << book_keywords
+      end
+
+      adoption_json['Books'] = books_json
+      adoption_json.to_json
     end
 
     def store_salesforce_lead_id(user, lead_id)

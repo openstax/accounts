@@ -15,10 +15,10 @@ GIT
 
 GIT
   remote: https://github.com/openstax/openstax_salesforce.git
-  revision: 144773eea22cbe6b5fd6132897711f33264fd941
-  ref: 144773eea22cbe6b5fd6132897711f33264fd941
+  revision: e919acb79e236a098f576e968983739d2d363e8b
+  ref: e919acb79e236a098f576e968983739d2d363e8b
   specs:
-    openstax_salesforce (6.0.4)
+    openstax_salesforce (6.0.6)
       openstax_active_force
       rails (>= 5.0, < 7.0)
       restforce
