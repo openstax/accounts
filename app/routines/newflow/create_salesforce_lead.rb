@@ -91,6 +91,8 @@ module Newflow
     def build_book_adoption_json_for_salesforce(user)
       adoption_json = {}
       books_json = []
+      return nil unless user.which_books
+
       books = user.which_books.split(';')
 
       books.each do |book|
