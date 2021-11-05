@@ -102,9 +102,10 @@ module Newflow
           SecurityLog.create!(
             event_type: :sheerid_webhook_tracing,
             user: existing_user,
-            event_data: { verification_id: verification_id, message: "calling VerifiyEducator in ProcessSheerIdWebhook" }
+            event_data: { verification_id: verification_id, message: "calling CreateLead in ProcessSheerIdWebhook" }
           )
-          VerifyEducator.perform_later(verification_id: verification_id, user: existing_user)
+          #VerifyEducator.perform_later(verification_id: verification_id, user: existing_user)
+          CreateSalesforceLead.perform_later(user: existing_user)
         elsif verification.rejected?
           run(SheeridRejectedEducator, user: existing_user, verification_id: verification_id)
         elsif verification.present?

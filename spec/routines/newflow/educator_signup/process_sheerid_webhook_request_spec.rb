@@ -4,7 +4,7 @@ require 'vcr_helper'
 RSpec.describe Newflow::EducatorSignup::ProcessSheeridWebhookRequest, type: :routine, vcr: VCR_OPTS do
   let(:email_address)           { FactoryBot.create :email_address, :verified }
   let(:user)                    { email_address.user }
-  let!(:school)                 { 
+  let!(:school)                 {
     FactoryBot.create :school,
                       salesforce_id: '0017h00000doU3RAAU',
                       name: 'University of Arkansas, Monticello',
@@ -14,8 +14,9 @@ RSpec.describe Newflow::EducatorSignup::ProcessSheeridWebhookRequest, type: :rou
   }
   let(:verification)            do
     FactoryBot.create :sheerid_verification, email: email_address.value,
-                                             organization_name: school.sheerid_school_name
+                                             organization_name: school.sheerid_school_name, current_step: 'verified'
   end
+
   let(:verification_details)    do
     SheeridAPI::Response.new(
       'lastResponse' => { 'currentStep' => verification.current_step },
@@ -46,23 +47,25 @@ RSpec.describe Newflow::EducatorSignup::ProcessSheeridWebhookRequest, type: :rou
     ).and_call_original
   end
 
-  it 'finds schools based on the sheerid_reported_school field' do
-    expect(School).not_to receive(:fuzzy_search)
+  context "user with verified verfication" do
+    it 'finds schools based on the sheerid_reported_school field' do
+      expect(School).not_to receive(:fuzzy_search)
 
-    described_class.call verification_id: verification.verification_id
+      described_class.call verification_id: verification.verification_id
 
-    expect(user.reload.school).to eq school
-  end
+      expect(user.reload.school).to eq school
+    end
 
-  it 'fuzzy searches schools based on the sheerid_reported_school field' do
-    school.update_attribute :sheerid_school_name, nil
+    it 'fuzzy searches schools based on the sheerid_reported_school field' do
+      school.update_attribute :sheerid_school_name, nil
 
-    expect(School).to receive(:fuzzy_search).with(
-      school.name, school.city, school.state
-    ).and_call_original
+      expect(School).to receive(:fuzzy_search).with(
+        school.name, school.city, school.state
+      ).and_call_original
 
-    described_class.call verification_id: verification.verification_id
+      described_class.call verification_id: verification.verification_id
 
-    expect(user.reload.school).to eq school
+      expect(user.reload.school).to eq school
+    end
   end
 end

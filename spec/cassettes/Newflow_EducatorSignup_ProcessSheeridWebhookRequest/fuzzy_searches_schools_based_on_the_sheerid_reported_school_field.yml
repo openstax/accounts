@@ -1,0 +1,113 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Lead"
+    body:
+      encoding: UTF-8
+      string: '{"FirstName":"Shaun","LastName":"Kohler","Company":"University of Arkansas,
+        Monticello","City":"Monticello","StateCode":"AR","Country":"United States","Email":"a2b5d1@bruinmail.slcc.edu","LeadSource":"Account
+        Creation","Newsletter__c":false,"Newsletter_Opt_In__c":false,"Accounts_ID__c":1,"Accounts_UUID__c":"a2fd0507-544c-4d68-89ce-ee2fb03295bb","Application_Source__c":"Accounts","Role__c":"Student","FV_Status__c":"confirmed_faculty","BRI_Marketing__c":false,"Title_1_school__c":false,"SheerID_School_Name__c":"University
+        of Arkansas, Monticello (Monticello, AR)","Account_ID__c":"0017h00000doU3RAAU","School__c":"0017h00000doU3RAAU"}'
+    headers:
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - OAuth <salesforce_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Fri, 05 Nov 2021 14:29:38 GMT
+      Set-Cookie:
+      - BrowserId=zjtl8D5EEeytvNkchiTGjg; domain=.salesforce.com; path=/; expires=Sat,
+        05-Nov-2022 14:29:38 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Sat,
+        05-Nov-2022 14:29:38 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/;
+        expires=Sat, 05-Nov-2022 14:29:38 GMT; Max-Age=31536000
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Sforce-Limit-Info:
+      - api-usage=4492/5000000
+      Location:
+      - "/services/data/v51.0/sobjects/Lead/00Q7h0000078AtXEAU"
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"00Q7h0000078AtXEAU","success":true,"errors":[]}'
+    http_version: 
+  recorded_at: Fri, 05 Nov 2021 14:29:51 GMT
+- request:
+    method: post
+    uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Lead"
+    body:
+      encoding: UTF-8
+      string: '{"FirstName":"Elois","LastName":"Stiedemann","Company":"University
+        of Arkansas, Monticello","City":"Monticello","StateCode":"AR","Country":"United
+        States","Email":"08c947@outlook.com","LeadSource":"Account Creation","Newsletter__c":false,"Newsletter_Opt_In__c":false,"Accounts_ID__c":1,"Accounts_UUID__c":"4819d746-bd9e-4f7e-815a-1bac8d32209b","Application_Source__c":"Accounts","Role__c":"Student","FV_Status__c":"confirmed_faculty","BRI_Marketing__c":false,"Title_1_school__c":false,"SheerID_School_Name__c":"University
+        of Arkansas, Monticello (Monticello, AR)","Account_ID__c":"0017h00000doU3RAAU","School__c":"0017h00000doU3RAAU"}'
+    headers:
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - OAuth <salesforce_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Fri, 05 Nov 2021 15:25:56 GMT
+      Set-Cookie:
+      - BrowserId=rBS_Jj5MEey7wZEnui30EQ; domain=.salesforce.com; path=/; expires=Sat,
+        05-Nov-2022 15:25:56 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Sat,
+        05-Nov-2022 15:25:56 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/;
+        expires=Sat, 05-Nov-2022 15:25:56 GMT; Max-Age=31536000
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Sforce-Limit-Info:
+      - api-usage=4677/5000000
+      Location:
+      - "/services/data/v51.0/sobjects/Lead/00Q7h0000078B41EAE"
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"id":"00Q7h0000078B41EAE","success":true,"errors":[]}'
+    http_version: 
+  recorded_at: Fri, 05 Nov 2021 15:25:50 GMT
+recorded_with: VCR 3.0.3
