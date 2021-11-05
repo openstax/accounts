@@ -53,7 +53,7 @@ end
 # the docker flavor of the driver if we are indeed running in docker.
 
 CAPYBARA_PROTOCOL = DEV_PROTOCOL
-CAPYBARA_PORT = ENV.fetch(PORT, DEV_PORT)
+CAPYBARA_PORT = ENV.fetch('PORT', DEV_PORT)
 
 if in_docker?
   require 'selenium-webdriver'
@@ -81,7 +81,7 @@ if in_docker?
 else
   require 'webdrivers/chromedriver'
 
-  if EnvUtilities.load_boolean(name: 'HEADLESS', default: false)
+  if EnvUtilities.load_boolean(name: 'HEADLESS', default: true)
     # Run the feature specs in a full browser (note, this takes over your computer's focus)
     Capybara.javascript_driver = :selenium_chrome_headless
   else

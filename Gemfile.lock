@@ -88,7 +88,7 @@ GEM
     apipie-rails (0.5.16)
       rails (>= 4.1)
     arel (9.0.0)
-    ast (2.4.0)
+    ast (2.4.2)
     autoprefixer-rails (9.6.0)
       execjs
     awesome_print (1.8.0)
@@ -96,6 +96,9 @@ GEM
     aws-partitions (1.366.0)
     aws-record (2.5.0)
       aws-sdk-dynamodb (~> 1.18)
+    aws-sdk-autoscaling (1.46.0)
+      aws-sdk-core (~> 3, >= 3.99.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-core (3.105.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
@@ -135,7 +138,7 @@ GEM
       chartkick (>= 3.2)
       railties (>= 5)
       safely_block (>= 0.1.1)
-    bootsnap (1.4.4)
+    bootsnap (1.9.1)
       msgpack (~> 1.0)
     bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
@@ -160,7 +163,7 @@ GEM
     childprocess (3.0.0)
     choice (0.2.0)
     chronic (0.10.2)
-    chunky_png (1.3.7)
+    chunky_png (1.4.0)
     cmdstan (0.1.7)
     codecov (0.2.12)
       json
@@ -185,7 +188,7 @@ GEM
       sass (>= 3.3.0, < 3.5)
     compass-import-once (1.0.5)
       sass (>= 3.2, < 3.5)
-    compass-rails (3.0.2)
+    compass-rails (3.1.0)
       compass (~> 1.0.0)
       sass-rails (< 5.1)
       sprockets (< 4.0)
@@ -200,7 +203,7 @@ GEM
     debase (0.2.4.1)
       debase-ruby_core_source (>= 0.10.2)
     debase-ruby_core_source (0.10.11)
-    declarative (0.0.10)
+    declarative (0.0.20)
     declarative-option (0.1.0)
     delayed_job (4.1.7)
       activesupport (>= 3.0, < 5.3)
@@ -213,10 +216,10 @@ GEM
     delayed_job_worker_pool (0.3.0)
       delayed_job (>= 3.0, < 4.2)
     diff-lcs (1.4.4)
-    diffy (3.3.0)
+    diffy (3.4.0)
     docile (1.3.2)
-    doorkeeper (5.0.3)
-      railties (>= 4.2)
+    doorkeeper (5.1.2)
+      railties (>= 5)
     dotenv (2.7.2)
     dotenv-rails (2.7.2)
       dotenv (= 2.7.2)
@@ -263,9 +266,9 @@ GEM
     errbase (0.2.1)
     erubi (1.10.0)
     eventmachine (1.2.0.1)
-    exception_notification (4.3.0)
-      actionmailer (>= 4.0, < 6)
-      activesupport (>= 4.0, < 6)
+    exception_notification (4.4.3)
+      actionmailer (>= 4.0, < 7)
+      activesupport (>= 4.0, < 7)
     execjs (2.7.0)
     factory_bot (5.0.2)
       activesupport (>= 4.2.0)
@@ -278,6 +281,8 @@ GEM
       redis (~> 3.2)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
+    faraday-http-cache (2.2.0)
+      faraday (>= 0.8)
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
     faye (0.8.9)
@@ -290,7 +295,7 @@ GEM
     faye-websocket (0.11.1)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
-    ffi (1.11.1)
+    ffi (1.15.4)
     fine_print (5.0.0)
       action_interceptor
       jquery-rails
@@ -363,7 +368,7 @@ GEM
       railties (>= 3.1, < 6)
     launchy (2.5.0)
       addressable (~> 2.7)
-    lev (9.0.3)
+    lev (10.1.0)
       actionpack (>= 4.2)
       active_attr
       activejob
@@ -400,12 +405,12 @@ GEM
     mimemagic (0.3.10)
       nokogiri (~> 1)
       rake
-    mini_mime (1.1.1)
+    mini_mime (1.1.2)
     mini_portile2 (2.6.1)
     mini_racer (0.4.0)
       libv8-node (~> 15.14.0.0)
     minitest (5.14.4)
-    msgpack (1.3.0)
+    msgpack (1.4.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
@@ -458,36 +463,41 @@ GEM
       active_attr
       rails (>= 5.0, < 7.0)
       restforce
-    openstax_api (9.0.1)
-      doorkeeper (>= 2.0)
-      exception_notification (>= 4.0)
-      lev (>= 1.0.0)
-      openstax_utilities (>= 4.2.0)
-      rails (>= 3.1)
-      representable (>= 2.4, < 4.0)
+    openstax_api (9.3.1)
+      addressable
+      doorkeeper
+      exception_notification
+      lev
+      openstax_utilities
+      rails (~> 5.2)
+      representable
       responders
-      roar (>= 1.0)
-      roar-rails (>= 1.0)
-      uber (< 0.1.0)
-    openstax_healthcheck (0.0.3)
+      roar
+      roar-rails
+      uber
+    openstax_healthcheck (1.0.1)
       rails (>= 3.0)
-    openstax_rescue_from (4.0.0)
-      rails (>= 3.1, < 6.0)
+    openstax_rescue_from (4.2.0)
+      rails (>= 3.1, < 7.0)
     openstax_salesforce (6.1.0)
       openstax_active_force
       rails (>= 5.0, < 7.0)
       restforce
-    openstax_utilities (4.2.3)
+    openstax_utilities (4.5.2)
+      aws-sdk-autoscaling
+      faraday
+      faraday-http-cache
       keyword_search
       lev
-      rails (>= 3.1)
+      rails (>= 5.0, < 7.0)
+      request_store
     p3p (1.2.0)
       rack
     parallel (1.19.2)
     parallel_tests (3.1.0)
       parallel
-    parser (2.6.5.0)
-      ast (~> 2.4.0)
+    parser (3.0.2.0)
+      ast (~> 2.4.1)
     pg (0.19.0)
     premailer (1.8.7)
       css_parser (>= 1.4.5)
@@ -506,7 +516,7 @@ GEM
     public_suffix (4.0.6)
     puma (5.5.2)
       nio4r (~> 2.0)
-    racc (1.5.2)
+    racc (1.6.0)
     rack (2.2.3)
     rack-contrib (2.2.0)
       rack (~> 2.0)
@@ -560,9 +570,9 @@ GEM
     rainbow (3.0.0)
     raindrops (0.17.0)
     rake (13.0.6)
-    rb-fsevent (0.9.8)
-    rb-inotify (0.9.7)
-      ffi (>= 0.5.0)
+    rb-fsevent (0.11.0)
+    rb-inotify (0.10.1)
+      ffi (~> 1.0)
     redis (3.3.5)
     redis-actionpack (5.0.2)
       actionpack (>= 4.0, < 6)
@@ -589,9 +599,9 @@ GEM
       uber (< 0.2.0)
     request_store (1.4.1)
       rack (>= 1.4)
-    responders (2.4.1)
-      actionpack (>= 4.2.0, < 6.0)
-      railties (>= 4.2.0, < 6.0)
+    responders (3.0.1)
+      actionpack (>= 5.0)
+      railties (>= 5.0)
     restforce (5.2.0)
       faraday (>= 0.9.0, <= 2.0)
       faraday_middleware (>= 0.8.8, <= 2.0)
@@ -650,8 +660,8 @@ GEM
     safely_block (0.3.0)
       errbase (>= 0.1.1)
     sass (3.4.25)
-    sass-rails (5.0.6)
-      railties (>= 4.0.0, < 6)
+    sass-rails (5.0.8)
+      railties (>= 5.2.0)
       sass (~> 3.1)
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
@@ -701,7 +711,7 @@ GEM
       nokogiri (>= 1.3.2)
     thor (1.1.0)
     thread_safe (0.3.6)
-    tilt (2.0.9)
+    tilt (2.0.10)
     timecop (0.8.1)
     transaction_isolation (1.0.5)
       activerecord (>= 3.0.11)
@@ -710,7 +720,7 @@ GEM
       transaction_isolation (>= 1.0.2)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
-    uber (0.0.15)
+    uber (0.1.0)
     uglifier (4.1.20)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.6.0)
@@ -769,7 +779,7 @@ DEPENDENCIES
   chronic
   codecov
   coffee-rails (= 5.0.0)
-  compass-rails
+  compass-rails (~> 3.1.0)
   cookiejar!
   database_cleaner
   db-query-matchers
@@ -777,7 +787,7 @@ DEPENDENCIES
   delayed_job_active_record (~> 4.1.3)
   delayed_job_heartbeat_plugin
   delayed_job_worker_pool
-  doorkeeper
+  doorkeeper (~> 5.1.0)
   dotenv
   dotenv-rails (= 2.7.2)
   dry-validation (= 0.12.3)
@@ -795,13 +805,13 @@ DEPENDENCIES
   i18n-tasks
   intl-tel-input-rails!
   jbuilder
-  jobba (~> 1.4.0)
+  jobba
   jquery-rails
   json-jwt
   keyword_search (~> 1.5.0)
   knockoutjs-rails
   launchy
-  lev (~> 9.0.3)
+  lev (~> 10.1.0)
   listen
   lograge
   maruku
@@ -815,12 +825,12 @@ DEPENDENCIES
   omniauth-identity
   omniauth-twitter
   openssl
-  openstax_api (~> 9.0.1)
+  openstax_api
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
   openstax_salesforce (= 6.1.0)
-  openstax_utilities (~> 4.2.0)
+  openstax_utilities
   p3p
   parallel_tests
   pattern-library!

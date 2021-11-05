@@ -24,7 +24,7 @@ gem 'openssl'
 
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
-gem 'lev', '~> 9.0.3'
+gem 'lev', '~> 10.1.0'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.4.1'
@@ -33,7 +33,7 @@ gem 'bootstrap-sass', '~> 3.4.1'
 gem 'sass-rails', '~> 5.0'
 
 # Compass stylesheets
-gem 'compass-rails'
+gem 'compass-rails', '~> 3.1.0'
 
 # CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '5.0.0'
@@ -48,7 +48,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'bcrypt', '~> 3.1.7'
 
 # OAuth provider
-gem 'doorkeeper'
+gem 'doorkeeper', '~> 5.1.0'
 
 # OAuth clients
 gem 'omniauth'
@@ -61,10 +61,10 @@ gem 'omniauth-google-oauth2'
 gem 'redis-rails'
 
 # Utilities for OpenStax websites
-gem 'openstax_utilities', '~> 4.2.0'
+gem 'openstax_utilities'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 9.0.1'
+gem 'openstax_api'
 
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from'
@@ -74,7 +74,7 @@ gem 'sentry-ruby'
 gem "sentry-rails"
 
 # Background job status store
-gem 'jobba', '~> 1.4.0'
+gem 'jobba'
 
 # jQuery library
 gem 'jquery-rails'

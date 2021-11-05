@@ -156,9 +156,11 @@ RSpec.describe UserSessionManagement, type: :lib do
         expect(session).to receive(:[]=).with(:alt_signup, app.redirect_uri)
         controller.set_alternate_signup_url(app.redirect_uri)
         expect(session).to receive(:[]=).with(:alt_signup, app.redirect_uri)
-        controller.set_alternate_signup_url(URI.encode(app.redirect_uri))
+        controller.set_alternate_signup_url(Addressable::URI.encode(app.redirect_uri))
         expect(session).to receive(:[]=).with(:alt_signup, app.redirect_uri)
-        controller.set_alternate_signup_url(URI.encode(URI.encode(app.redirect_uri)))
+        controller.set_alternate_signup_url(
+          Addressable::URI.encode(Addressable::URI.encode(app.redirect_uri))
+        )
       end
     end
 
@@ -321,9 +323,11 @@ RSpec.describe UserSessionManagement, type: :lib do
         expect(session).to receive(:[]=).with(:alt_signup, app.redirect_uri)
         controller.set_alternate_signup_url(app.redirect_uri)
         expect(session).to receive(:[]=).with(:alt_signup, app.redirect_uri)
-        controller.set_alternate_signup_url(URI.encode(app.redirect_uri))
+        controller.set_alternate_signup_url(Addressable::URI.encode(app.redirect_uri))
         expect(session).to receive(:[]=).with(:alt_signup, app.redirect_uri)
-        controller.set_alternate_signup_url(URI.encode(URI.encode(app.redirect_uri)))
+        controller.set_alternate_signup_url(
+          Addressable::URI.encode(Addressable::URI.encode(app.redirect_uri))
+        )
       end
     end
 

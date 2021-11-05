@@ -27,20 +27,19 @@ module DatabaseUrl
   end
 
   def self.config_to_url(config)
-    if config["username"] || config["password"]
-      user_info = [ config["username"], URI.escape(config["password"]) ].join(":")
-    else
-      user_info = nil
-    end
-    URI::Generic.new(config["adapter"],
-                     user_info,
-                     config["host"] || "localhost",
-                     config["port"],
-                     nil,
-                     "/#{config["database"]}?sslmode=#{config["sslmode"]}&sslrootcert=#{config["sslrootcert"]}",
-                     nil,
-                     nil,
-                     nil).to_s
+    query_values = {}
+    query_values[:sslmode] = config['sslmode'] unless config['sslmode'].blank?
+    query_values[:sslrootcert] = config['sslrootcert'] unless config['sslrootcert'].blank?
+    query_values = nil if query_values.blank?
+    Addressable::URI.new(
+      scheme: config['adapter'],
+      user: config['username'],
+      password: config['password'],
+      host: config['host'] || 'localhost',
+      port: config['port'],
+      path: config['database'],
+      query_values: query_values
+    ).to_s
   end
 end
 DatabaseUrl.set_database_url

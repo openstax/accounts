@@ -150,7 +150,7 @@ module UserSessionManagement
     else
       # http://stackoverflow.com/a/18355425
       # Just in case the url got encoded multiple times
-      current_url, url = url, URI.decode(url) until url == current_url
+      current_url, url = url, Addressable::URI.unencode(url) until url == current_url
 
       if get_client_app.try!(:is_redirect_url?, url)
         url = Addressable::URI.parse(url)
