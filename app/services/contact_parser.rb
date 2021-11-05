@@ -54,11 +54,11 @@ class ContactParser
       user.using_openstax = contact_params[:adoption_status]
 
       user.faculty_status = case contact_params[:faculty_verified]
-                              when "Confirmed"
+                              when "confirmed_faculty"
                                 :confirmed_faculty
-                              when "Pending"
+                              when "pending_faculty"
                                 :pending_faculty
-                              when /Rejected/
+                              when "rejected_faculty"
                                 :rejected_faculty
                               when NilClass
                                 :no_faculty_info
@@ -86,7 +86,7 @@ class ContactParser
       school_id: sobject['AccountId'],
       email: sobject['Email'],
       email_alt: sobject['Email_alt__c'],
-      faculty_verified: sobject['Faculty_Verified__c'],
+      faculty_verified: sobject['FV_Status__c'],
       adoption_status: sobject['Adoption_Status__c'],
       grant_tutor_access: sobject['Grant_Tutor_Access__c']
     }

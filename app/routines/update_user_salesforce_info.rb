@@ -175,11 +175,11 @@ class UpdateUserSalesforceInfo
       user.salesforce_contact_id = contact.id
 
       user.faculty_status = case contact.faculty_verified
-                              when "Confirmed"
+                              when "confirmed_faculty"
                                 :confirmed_faculty
-                              when "Pending"
+                              when "pending_faculty"
                                 :pending_faculty
-                              when /Rejected/
+                              when "rejected_faculty"
                                 :rejected_faculty
                               when NilClass
                                 :no_faculty_info
