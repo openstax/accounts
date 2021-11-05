@@ -1,9 +1,17 @@
 require 'rails_helper'
+require 'vcr_helper'
 
-RSpec.describe Newflow::EducatorSignup::ProcessSheeridWebhookRequest, type: :routine  do
+RSpec.describe Newflow::EducatorSignup::ProcessSheeridWebhookRequest, type: :routine, vcr: VCR_OPTS do
   let(:email_address)           { FactoryBot.create :email_address, :verified }
   let(:user)                    { email_address.user }
-  let!(:school)                 { FactoryBot.create :school }
+  let!(:school)                 { 
+    FactoryBot.create :school,
+                      salesforce_id: '0017h00000doU3RAAU',
+                      name: 'University of Arkansas, Monticello',
+                      city: 'Monticello',
+                      state: 'AR',
+                      sheerid_school_name: 'University of Arkansas, Monticello (Monticello, AR)'
+  }
   let(:verification)            do
     FactoryBot.create :sheerid_verification, email: email_address.value,
                                              organization_name: school.sheerid_school_name
@@ -18,6 +26,13 @@ RSpec.describe Newflow::EducatorSignup::ProcessSheeridWebhookRequest, type: :rou
         'organization' => { 'name' => school.sheerid_school_name }
       }
     )
+  end
+
+  before(:all) do
+    VCR.use_cassette('ProcessSheeridWebhookRequest/sf_setup', VCR_OPTS) do
+      @proxy = SalesforceProxy.new
+      @proxy.setup_cassette
+    end
   end
 
   before do
