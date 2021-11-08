@@ -83,7 +83,6 @@ class SecurityLog < ApplicationRecord
     user_became_activated
     user_profile_complete
     salesforce_error
-    sheerid_webhook_tracing
   ]
 
   json_serialize :event_data, Hash

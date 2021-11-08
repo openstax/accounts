@@ -113,7 +113,6 @@ module Newflow
     # SheerID makes a POST request to this endpoint when it verifies an educator
     # http://developer.sheerid.com/program-settings#webhooks
     def sheerid_webhook
-      security_log(:sheerid_webhook_tracing, user: current_user, message: "Webhook called in EducatorSignupController")
       handle_with(
         EducatorSignup::SheeridWebhook,
         success: lambda {
