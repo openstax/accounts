@@ -66,16 +66,6 @@ module Accounts
       ARGV[0] != "assets:precompile"
     end
 
-    config.after_initialize do
-      Doorkeeper::TokensController.class_eval do
-        alias_method :original_create, :create # before_action not available
-        def create
-          ScoutHelper.ignore!(0.99)
-          original_create
-        end
-      end
-    end
-
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
     config.active_record.belongs_to_required_by_default = false
     config.autoload_paths += %W(#{config.root}/lib)
