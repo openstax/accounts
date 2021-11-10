@@ -39,7 +39,8 @@ gem 'compass-rails', '~> 3.1.0'
 gem 'coffee-rails', '5.0.0'
 
 # JavaScript asset compiler
-gem 'mini_racer'
+# 0.4.0 crashes during our build, fixed in 0.5.0 (upgrade when it's out)
+gem 'mini_racer', '< 0.4.0'
 
 # JavaScript asset compressor
 gem 'uglifier', '>= 1.3.0'
