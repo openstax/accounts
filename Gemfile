@@ -9,17 +9,26 @@ end
 gem 'rails', '5.2.4.4'
 gem 'rails-i18n', '~> 5'
 
+# Reduces boot times through caching; required in config/boot.rb
+gem 'bootsnap', require: false
+
+# Get env variables from .env file
+gem 'dotenv-rails'
+
+# Threaded application server
+gem 'puma'
+
+# Prevent server memory from growing until OOM
+gem 'puma_worker_killer'
+
 # Knockout for embedded widgets
 gem 'knockoutjs-rails'
 
 # Using this branch in pattern library due to multiselect (until it's merged to master)
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840'
 
-gem 'bootsnap', require: false
-
 # New Deployments
 gem 'aws-sdk-ssm'
-gem 'dotenv'
 gem 'openssl'
 
 # Lev framework
@@ -181,17 +190,11 @@ gem 'blazer'
 gem 'prophet-rb'
 
 group :development, :test do
-  # Get env variables from .env file
-  gem 'dotenv-rails', '2.7.2'
-
   # Run specs in parallel
   gem 'parallel_tests'
 
   # Show failing parallel specs instantly
   gem 'rspec-instafail'
-
-  # Development server
-  gem 'puma'
 
   # See config/initializers/04-debugger.rb
   #
@@ -292,12 +295,6 @@ group :production, :test do
 end
 
 group :production do
-  # Unicorn production server
-  gem 'unicorn'
-
-  # Unicorn worker killer
-  gem 'unicorn-worker-killer'
-
   # Consistent logging
   gem 'lograge'
 end
