@@ -2,6 +2,8 @@ require 'rails'
 require 'active_model'
 require 'dotenv/rails-now'
 
+require_relative 'dev_url_options'
+
 APP_DIR = File.expand_path('..', __dir__)
 directory APP_DIR
 
@@ -51,11 +53,9 @@ threads ENV.fetch('RAILS_MIN_THREADS', max_threads).to_i, max_threads
 
 if ENV['SOCKET']
   # Specifies the `socket` to which Puma will bind to receive requests.
-  #
   bind ENV['SOCKET']
 else
-  # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
-  #
+  # Specifies the `port` that Puma will listen on to receive requests; default is DEV_PORT (2999).
   port ENV.fetch('PORT', DEV_PORT)
 end
 
