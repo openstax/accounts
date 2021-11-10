@@ -84,7 +84,7 @@ module Newflow
         end
 
         if verification.errors.none? && verification.verified?
-          VerifyEducator.perform_later(verification_id: verification_id, user: existing_user)
+          CreateSalesforceLead.perform_later(user: existing_user)
         elsif verification.rejected?
           run(SheeridRejectedEducator, user: existing_user, verification_id: verification_id)
         elsif verification.present?
