@@ -16,9 +16,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_if_admin
-    unless @current_user && @current_user.is_administrator?
-      head :unauthorized
-    end
+    is_admin?
   end
 
   def check_if_password_expired

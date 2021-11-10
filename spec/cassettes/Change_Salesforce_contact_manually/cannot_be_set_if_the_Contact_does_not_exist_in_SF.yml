@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20Faculty_Verified__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20BRI_Marketing__c,%20Title_1_school__c%20FROM%20Contact%20WHERE%20(Id%20=%20%270010v000002Wo0qAAC%27)%20LIMIT%201"
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Name,%20FirstName,%20LastName,%20Email,%20Email_alt__c,%20Faculty_Confirmed_Date__c,%20FV_Status__c,%20LastModifiedDate,%20AccountId,%20School_Type__c,%20SendFacultyVerificationTo__c,%20All_Emails__c,%20Confirmed_Emails__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20BRI_Marketing__c,%20Title_1_school__c%20FROM%20Contact%20WHERE%20(Id%20=%20%270010v000002Wo0qAAC%27)%20LIMIT%201"
     body:
       encoding: US-ASCII
       string: ''
@@ -21,18 +21,22 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 07 Apr 2021 17:25:32 GMT
+      - Wed, 10 Nov 2021 20:02:54 GMT
+      Set-Cookie:
+      - BrowserId=MPRyHkJhEeyL6zn_mZVkng; domain=.salesforce.com; path=/; expires=Thu,
+        10-Nov-2022 20:02:54 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Thu,
+        10-Nov-2022 20:02:54 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/;
+        expires=Thu, 10-Nov-2022 20:02:54 GMT; Max-Age=31536000
       Strict-Transport-Security:
-      - max-age=31536002; includeSubDomains
+      - max-age=31536000; includeSubDomains
       X-Robots-Tag:
       - none
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
-      Set-Cookie:
-      - BrowserId=QakRypfGEeuwD7VAfM7TGQ; domain=.salesforce.com; path=/; expires=Thu,
-        07-Apr-2022 17:25:32 GMT; Max-Age=31536000
       Sforce-Limit-Info:
-      - api-usage=1091/5000000
+      - api-usage=1337/5000000
       Content-Type:
       - application/json;charset=UTF-8
       Vary:
@@ -42,6 +46,6 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: '{"totalSize":0,"done":true,"records":[]}'
-    http_version:
-  recorded_at: Wed, 07 Apr 2021 17:34:35 GMT
+    http_version: 
+  recorded_at: Wed, 10 Nov 2021 20:02:54 GMT
 recorded_with: VCR 3.0.3

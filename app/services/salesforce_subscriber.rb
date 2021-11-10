@@ -27,7 +27,7 @@ class SalesforceSubscriber
                                           NotifyForOperationCreate: 'true',
                                           NotifyForOperationUpdate: 'true',
                                           NotifyForFields: 'Referenced',
-                                          Query: 'select Id, AccountId, Email, All_Emails__c, FV_Status__c, Faculty_Verified__c, Adoption_Status__c, Grant_Tutor_Access__c from Contact')
+                                          Query: 'select Id, AccountId, Email, Email_alt__c, FV_Status__c, Adoption_Status__c, Grant_Tutor_Access__c from Contact')
         rescue
           Rails.logger.debug('Salesforce contact stream already created.')
         end

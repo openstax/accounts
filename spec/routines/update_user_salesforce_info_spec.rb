@@ -21,7 +21,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           contacts: {
             id: 'foo',
             email: 'Bob@example.com',
-            faculty_verified: "Confirmed",
+            faculty_verified: "confirmed_faculty",
             school_type: 'College/University (4)'
           }
         )
@@ -36,7 +36,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           contacts: {
             id: 'foo',
             email: ' Bob@example.com ',
-            faculty_verified: "Confirmed",
+            faculty_verified: "confirmed_faculty",
             school_type: 'Technical/Community College (2)',
             adoption_status: "Current Adopter"
           }
@@ -53,7 +53,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
             id: 'foo',
             email: 'bobby@example.com',
             email_alt: "bob@example.com",
-            faculty_verified: "Confirmed",
+            faculty_verified: "confirmed_faculty",
             school_type: 'Career School/For-Profit (2)',
             adoption_status: "Future Adopter"
           }
@@ -80,7 +80,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
 
       it 'does not trigger a save on the user' do
         stub_salesforce(
-          contacts: { id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed" }
+          contacts: { id: 'foo', email: 'bob@example.com', faculty_verified: "confirmed_faculty" }
         )
         expect_any_instance_of(User).not_to receive(:save!)
         described_class.call
@@ -99,7 +99,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           contacts: {
             id: 'foo',
             email: 'bob@example.com',
-            faculty_verified: "Confirmed",
+            faculty_verified: "confirmed_faculty",
             adoption_status: "Current Adopter"
           }
         )
@@ -117,7 +117,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           contacts: {
             id: 'bar',
             email: 'bob@example.com',
-            faculty_verified: "Pending",
+            faculty_verified: "pending_faculty",
             adoption_status: "Not Adopter"
           }
         )
@@ -135,7 +135,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           contacts: {
             id: 'bar',
             email: 'bob@example.com',
-            faculty_verified: "Confirmed",
+            faculty_verified: "confirmed_faculty",
             school_type: 'High School',
             adoption_status: "Past Adopter"
           }
@@ -155,7 +155,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           contacts: {
             id: 'bar',
             email: 'bob@example.com',
-            faculty_verified: "Confirmed",
+            faculty_verified: "confirmed_faculty",
             school_type: 'K-12 School',
             adoption_status: "Past Adopter",
             school: { school_location: 'Domestic', is_kip: false, is_child_of_kip: false }
@@ -178,7 +178,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           contacts: {
             id: 'bar',
             email: 'bob@example.com',
-            faculty_verified: "Confirmed",
+            faculty_verified: "confirmed_faculty",
             school_type: 'Home School',
             adoption_status: "Past Adopter",
             school: { is_kip: true }
@@ -200,7 +200,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           contacts: {
             id: 'bar',
             email: 'bob@example.com',
-            faculty_verified: "Confirmed",
+            faculty_verified: "confirmed_faculty",
             school_type: 'Home School',
             adoption_status: "Past Adopter",
             grant_tutor_access: false
@@ -222,7 +222,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           contacts: {
             id: 'foo',
             email: 'bob@example.com',
-            faculty_verified: "Pending",
+            faculty_verified: "pending_faculty",
             school_type: 'Middle/Junior High School',
             adoption_status: "Not Adopter",
             school: { school_location: 'Foreign', is_kip: false, is_child_of_kip: true },
@@ -261,8 +261,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         email = AddEmailToUser.call("otherbob@example.com", user).outputs.email
         ConfirmContactInfo.call(email)
         stub_salesforce(contacts:
-          [{id: 'foo', email: 'BOB@example.com', faculty_verified: "Pending", adoption_status: "Not Adopter"},
-           {id: 'foo2', email: 'OTHERBOB@example.com', faculty_verified: "Pending", adoption_status: "Not Adopter"}]
+          [{id: 'foo', email: 'BOB@example.com', faculty_verified: "pending_faculty", adoption_status: "Not Adopter"},
+           {id: 'foo2', email: 'OTHERBOB@example.com', faculty_verified: "pending_faculty", adoption_status: "Not Adopter"}]
         )
         expect(Rails.logger).to receive(:warn)
       }
@@ -288,7 +288,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
               id: 'foo',
               email: 'bob@example.com',
               email_alt: 'bobalt@example.com',
-              faculty_verified: "Pending",
+              faculty_verified: "pending_faculty",
               adoption_status: "Not Adopter"
             }
           ]
@@ -305,7 +305,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       it 'does not sync that SF info' do
         AddEmailToUser.call("unverified@example.com", user)
         stub_salesforce(
-          contacts: {id: 'foo', email: 'unverified@example.com', faculty_verified: "Confirmed", adoption_status: "Not Adopter"}
+          contacts: {id: 'foo', email: 'unverified@example.com', faculty_verified: "confirmed_faculty", adoption_status: "Not Adopter"}
         )
         described_class.call
         expect_user_sf_data(user, id: nil, faculty_status: :no_faculty_info, using_openstax: false)
@@ -315,7 +315,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
     context 'user matches SF info via different case of email' do
       it 'syncs to a contact based on primary email' do
         stub_salesforce(
-          contacts: {id: 'foo', email: 'BOB@example.com', faculty_verified: "Confirmed", adoption_status: "Current Adopter"}
+          contacts: {id: 'foo', email: 'BOB@example.com', faculty_verified: "confirmed_faculty", adoption_status: "Current Adopter"}
         )
         described_class.call
         expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty, using_openstax: true)
@@ -323,7 +323,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
 
       it 'syncs to a contact based on alt email' do
         stub_salesforce(
-          contacts: {id: 'foo', email_alt: 'BOB@example.com', faculty_verified: "Confirmed", adoption_status: "Current Adopter"}
+          contacts: {id: 'foo', email_alt: 'BOB@example.com', faculty_verified: "confirmed_faculty", adoption_status: "Current Adopter"}
         )
         described_class.call
         expect_user_sf_data(user, id: "foo", faculty_status: :confirmed_faculty, using_openstax: true)
@@ -355,7 +355,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
   context 'exceptions happen gracefully' do
     it 'rescues in the first pass' do
       stub_salesforce(
-        contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed", adoption_status: "Current Adopter"}
+        contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "confirmed_faculty", adoption_status: "Current Adopter"}
       )
       allow_any_instance_of(User).to receive(:salesforce_contact_id).and_raise("boom")
       expect_any_instance_of(described_class).to receive(:error!)
@@ -364,7 +364,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
 
     it 'rescues in the second pass' do
       stub_salesforce(
-        contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "Confirmed", adoption_status: "Current Adopter"}
+        contacts: {id: 'foo', email: 'bob@example.com', faculty_verified: "confirmed_faculty", adoption_status: "Current Adopter"}
       )
       allow_any_instance_of(EmailAddress).to receive(:verified?).and_raise("boom")
       expect_any_instance_of(described_class).to receive(:error!)
@@ -392,8 +392,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       expect(user.school).to eq school
     end
 
-    it 'handles Confirmed faculty status' do
-      contact = new_contact(id: 'foo', faculty_verified: "Confirmed")
+    it 'handles confirmed_faculty faculty status' do
+      contact = new_contact(id: 'foo', faculty_verified: "confirmed_faculty")
       described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
         contact, nil, user
       )
@@ -401,8 +401,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       expect(user.faculty_status).to eq 'confirmed_faculty'
     end
 
-    it 'handles Pending faculty status' do
-      contact = new_contact(id: 'foo', faculty_verified: "Pending")
+    it 'handles pending_faculty faculty status' do
+      contact = new_contact(id: 'foo', faculty_verified: "pending_faculty")
       described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
         contact, nil, user
       )
@@ -410,17 +410,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       expect(user.faculty_status).to eq 'pending_faculty'
     end
 
-    it 'handles Rejected faculty status' do
-      contact = new_contact(id: 'foo', faculty_verified: "Rejected")
-      described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
-        contact, nil, user
-      )
-      expect(user.salesforce_contact_id).to eq 'foo'
-      expect(user.faculty_status).to eq 'rejected_faculty'
-    end
-
-    it 'handles Rejected2 faculty status' do
-      contact = new_contact(id: 'foo', faculty_verified: "Rejected2")
+    it 'handles rejected_faculty faculty status' do
+      contact = new_contact(id: 'foo', faculty_verified: "rejected_faculty")
       described_class.new(allow_error_email: true).cache_contact_and_school_data_in_user!(
         contact, nil, user
       )
@@ -494,7 +485,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       contacts.push(
         id: "foo#{ii}",
         email: "bob#{ii}@example.com",
-        faculty_verified: "Confirmed",
+        faculty_verified: "confirmed_faculty",
         adoption_status: "Current Adopter"
       )
     end
@@ -515,14 +506,14 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         {
           id: "one",
           email: "bob@example.com",
-          faculty_verified: "Confirmed",
+          faculty_verified: "confirmed_faculty",
           adoption_status: "Past Adopter"
         },
         {
           id: "two",
           email: "bobby@example.com",
           email_alt: "bob@example.com",
-          faculty_verified: "Confirmed",
+          faculty_verified: "confirmed_faculty",
           adoption_status: "Past Adopter"
         }
       ]
@@ -543,7 +534,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         contacts: {
           id: 'whatever',
           email: email_value,
-          faculty_verified: "Confirmed",
+          faculty_verified: "confirmed_faculty",
           adoption_status: "Current Adopter",
           school_type: 'College/University (4)'
         }
