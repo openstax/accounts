@@ -41,6 +41,10 @@ module AuthenticateMethods
     end
   end
 
+  def is_admin?
+    return head(:forbidden) unless current_user && current_user.is_administrator?
+  end
+
   def authenticate_admin!
     return if current_user.is_administrator?
     return head(:forbidden) if signed_in?
