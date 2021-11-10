@@ -12,17 +12,18 @@ feature 'Admin PreAuthStates page' do
 
     it "works" do
       Timecop.freeze(4.weeks.ago) do
-        FactoryBot.create :pre_auth_state, contact_info_value: "a@a.com"
+        FactoryBot.create :contact_info, value: "a@a.com", verified: false
       end
       Timecop.freeze(1.9.weeks.ago) do
-        FactoryBot.create :pre_auth_state, contact_info_value: "b@b.com"
+        FactoryBot.create :contact_info, value: "b@b.com", verified: false
       end
       Timecop.freeze(0.9.weeks.ago) do
-        FactoryBot.create :pre_auth_state, contact_info_value: "c@c.com"
+        FactoryBot.create :contact_info, value: "c@c.com", verified: false
       end
-      FactoryBot.create :pre_auth_state, contact_info_value: "d@d.com"
+      FactoryBot.create :contact_info, value: "d@d.com", verified: false
 
       visit '/admin/pre_auth_states'
+
 
       expect(page).to have_content("d@d.com")
       expect(page).to have_no_content("c@c.com")

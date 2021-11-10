@@ -81,14 +81,39 @@ module Newflow
       outputs.user = user
 
       if lead.save
-        log_success(lead, user)
+        store_salesforce_lead_id(user, lead.id) && log_success(lead, user)
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
       else
         handle_lead_errors(lead, user)
       end
     end
 
-    private
+    def store_salesforce_lead_id(user, lead_id)
+      fatal_error(code: :lead_id_is_blank, message: :lead_id_is_blank.to_s.titleize) if lead_id.blank?
+      return true if user.salesforce_lead_id.present?
+
+      user.salesforce_lead_id = lead_id
+
+      if user.save
+        SecurityLog.create!(
+          user: user,
+          event_type: :created_salesforce_lead,
+          event_data: { lead_id: lead_id }
+        )
+        return true
+      else
+        SecurityLog.create!(
+          user: user,
+          event_type: :educator_sign_up_failed,
+          event_data: {
+            message: 'saving the user\'s lead id FAILED',
+            lead_id: lead_id
+          }
+        )
+        transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
+        return
+      end
+    end
 
     def build_book_adoption_json_for_salesforce(user)
       adoption_json = {}

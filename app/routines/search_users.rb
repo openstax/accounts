@@ -132,7 +132,7 @@ class SearchUsers
               table[:last_name].matches(sanitized_names.last)
             )
           )
-        else # otherwise try to match "all the things"
+        elsif sanitized_names.any? { |term| term.include?('@') } # we'll assume this means they are searching by an email address
           sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin], prepend_wildcard: options[:admin])
 
           contact_infos_query = contact_info_table[:value].matches_any(sanitized_terms)
@@ -147,12 +147,15 @@ class SearchUsers
             )
           end
 
+          matches_contact_info = ContactInfo.where(contact_infos_query)
+          users = User.where(contact_infos: matches_contact_info)
+
+        else # otherwise try to match "all the things"
           matches_first_name = table[:first_name].matches_any(sanitized_names)
           matches_last_name = table[:last_name].matches_any(sanitized_names)
           matches_full_name = full_name.matches_any(sanitized_names)
           matches_id = table[:id].in(terms)
           matches_support_identifier = table[:support_identifier].matches_any(sanitized_names)
-          matches_contact_info = ContactInfo.where(contact_infos_query)
 
           users = User.where(matches_first_name)
           .or(
@@ -163,8 +166,6 @@ class SearchUsers
             User.where(matches_id)
           ).or(
             User.where(matches_support_identifier)
-          ).or(
-            User.where(contact_infos: matches_contact_info)
           )
         end
       end
