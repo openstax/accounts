@@ -27,10 +27,6 @@ gem 'knockoutjs-rails'
 # Using this branch in pattern library due to multiselect (until it's merged to master)
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840'
 
-# New Deployments
-gem 'aws-sdk-ssm'
-gem 'openssl'
-
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
 gem 'lev', '~> 10.1.0'
@@ -295,6 +291,9 @@ group :production, :test do
 end
 
 group :production do
+  # Used to send custom delayed_job metrics to Cloudwatch
+  gem 'aws-sdk-cloudwatch', require: false
+
   # Consistent logging
   gem 'lograge'
 end

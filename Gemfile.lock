@@ -99,6 +99,9 @@ GEM
     aws-sdk-autoscaling (1.46.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-cloudwatch (1.44.0)
+      aws-sdk-core (~> 3, >= 3.99.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-core (3.105.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
@@ -118,9 +121,6 @@ GEM
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-sqs (1.33.0)
-      aws-sdk-core (~> 3, >= 3.99.0)
-      aws-sigv4 (~> 1.1)
-    aws-sdk-ssm (1.89.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
     aws-sessionstore-dynamodb (2.0.1)
@@ -344,7 +344,6 @@ GEM
       rails-i18n
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
-    ipaddr (1.2.2)
     jaro_winkler (1.5.3)
     jbuilder (2.9.1)
       activesupport (>= 4.2.0)
@@ -455,8 +454,6 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
-    openssl (2.1.2)
-      ipaddr
     openstax_active_force (1.1.0)
       active_attr
       rails (>= 5.0, < 7.0)
@@ -762,8 +759,8 @@ DEPENDENCIES
   activerecord-import
   apipie-rails
   awesome_print
+  aws-sdk-cloudwatch
   aws-sdk-rails
-  aws-sdk-ssm
   bcrypt (~> 3.1.7)
   blazer
   bootsnap
@@ -819,7 +816,6 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-twitter
-  openssl
   openstax_api
   openstax_healthcheck
   openstax_path_prefixer!
