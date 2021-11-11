@@ -233,7 +233,7 @@ Short for "signed parameters", requests that arrive with a valid `sp` parameter 
 When a request comes with both `signup_at` and `client_id` parameters in the login page, the **Sign up here** link points to `signup_at` which has to listed as a callback urls in the client (OAuth) application with ID equal to `client_id`.
 
 For example:
-https://accounts-dev.openstax.org/login?signup_at=https://tutor-dev.openstax.org/signup&client_id=1234
+https://dev.accounts.openstax.org/login?signup_at=https://tutor-dev.openstax.org/signup&client_id=1234
 
 ### `r` parameter
 Short for `r`edirect parameter, if present and trusted, we store it in order to redirect users back to the OpenStax app they came from – at the end of the login/signup process. See [save_redirect](https://github.com/openstax/accounts/blob/e48dd5d4a4bdb7bf4b1e6caa808243432ecd4f57/config/initializers/controllers.rb#L52-L60) which happens as a `before_action` in all controllers.
