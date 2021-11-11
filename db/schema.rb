@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_22_024758) do
+ActiveRecord::Schema.define(version: 2021_11_11_122413) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -152,6 +152,14 @@ ActiveRecord::Schema.define(version: 2021_09_22_024758) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
+  end
+
+  create_table "delayed_workers", force: :cascade do |t|
+    t.string "name"
+    t.string "version"
+    t.datetime "last_heartbeat_at"
+    t.string "host_name"
+    t.string "label"
   end
 
   create_table "email_domains", id: :serial, force: :cascade do |t|
