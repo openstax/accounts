@@ -1,0 +1,18 @@
+<% content_for :stylesheet_tag do %>
+  <%= view.stylesheet_link_tag 'application' %>
+<% end %>
+
+<% content_for :application_body do %>
+  <div class="ox-card">
+    <h3 class='rescue-from'><%= message %> (<%= code %>)</h3>
+
+    <p class='rescue-form'>
+      <%= t :"errors.any.apology_message_html", code: code,
+                                                contact_info: openstax_rescue_from_contact_info %>
+    </p>
+  </div>
+<% end %>
+
+<% content_for :rice_logo do %>
+  <%= view.image_tag 'rice_logo_reversed.png', id: "footer-rice-logo-image" %>
+<% end %>

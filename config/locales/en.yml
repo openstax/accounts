@@ -352,9 +352,9 @@ en:
       Please enable JavaScript in your browser! Some site contet will not work
       properly without it.
     any:
-      appology_message_html: >-
+      apology_message_html: >-
         If you need help, please contact %{contact_info}.
-      appology_message_long_html: >-
+      apology_message_long_html: >-
         If you need help, please contact %{contact_info} and reference error %{error_id}.
 
   layouts:

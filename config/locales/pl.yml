@@ -337,9 +337,9 @@ pl:
       Włącz obsługę JavaScript w przeglądarce. Część treści wymaga jej do
       poprawnego działania.
     any:
-      appology_message_html: >-
+      apology_message_html: >-
         Jeśli potrzebujesz pomocy, skontaktuj się z %{contact_info}.
-      appology_message_long_html: >-
+      apology_message_long_html: >-
         Jeśli potrzebujesz pomocy, skontaktuj się z %{contact_info} podając
         rodzaj błędu: %{error_id}.
 

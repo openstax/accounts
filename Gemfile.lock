@@ -263,6 +263,7 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
     errbase (0.2.1)
+    error_page_assets (0.4)
     erubi (1.10.0)
     eventmachine (1.2.0.1)
     exception_notification (4.4.3)
@@ -590,6 +591,8 @@ GEM
     redis-store (1.4.1)
       redis (>= 2.2, < 5)
     regexp_parser (2.1.0)
+    render_anywhere (0.0.12)
+      rails (>= 3.0.7)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -783,6 +786,7 @@ DEPENDENCIES
   doorkeeper (~> 5.1.0)
   dotenv-rails
   dry-validation (= 0.12.3)
+  error_page_assets
   factory_bot_rails
   faker
   fakeredis
@@ -838,6 +842,7 @@ DEPENDENCIES
   rails-settings-cached (= 0.7.2)
   rails-settings-ui
   redis-rails
+  render_anywhere
   representable (~> 3.0.0)
   rspec-instafail
   rspec-rails
