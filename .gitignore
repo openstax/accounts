@@ -19,6 +19,9 @@
 !/log/.keep
 /tmp
 
+# Ignore public precompiled assets
+/public/assets
+
 # Ignore yaml_db database files
 /db/data.yml*
 
