@@ -25,9 +25,6 @@ module Accounts
     config.i18n.default_locale = :en
     config.i18n.available_locales = %w(en pl)
 
-    # add app/assets/html to the asset path
-    config.assets.paths << Rails.root.join('app', 'assets', 'html')
-
     config.accounts = ActiveSupport::OrderedOptions.new
     # configure how long a login token is valid for
     config.accounts.default_login_token_expiration_period = 2.days
