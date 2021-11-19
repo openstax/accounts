@@ -220,7 +220,6 @@ Rails.application.routes.draw do
 
   scope controller: 'static_pages' do
     get 'copyright'
-    get 'status'
     get 'api'
   end
 
@@ -277,6 +276,7 @@ Rails.application.routes.draw do
   use_doorkeeper { controllers applications: 'oauth/applications' }
 
   mount FinePrint::Engine => '/admin/fine_print'
+  mount OpenStax::Utilities::Engine => :status
 
   namespace 'admin' do
     get '/', to: 'base#index'
