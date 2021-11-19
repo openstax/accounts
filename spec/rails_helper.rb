@@ -89,6 +89,7 @@ else
   end
 
   CAPYBARA_HOST = DEV_HOST
+  CAPYBARA_HOST_REGEX = /\A(.*\.)?#{Regexp.escape CAPYBARA_HOST.sub('*.', '').chomp('.*')}\z/
 
   Capybara.asset_host = "#{CAPYBARA_PROTOCOL}://#{CAPYBARA_HOST}:#{CAPYBARA_PORT}"
 end
@@ -105,8 +106,10 @@ end
 # Whitelist the capybara host (which can change)
 RSpec.configure do |config|
   config.before(:each) do
-    allow(Host).to receive(:trusted_hosts).and_wrap_original do |m, *args|
-      m.call(*args).push(CAPYBARA_HOST)
+    allow(Host).to receive(:trusted_host_regexes).and_wrap_original do |m, *args|
+      m.call(*args).tap do |result|
+        result.push(CAPYBARA_HOST_REGEX) unless result.include?(CAPYBARA_HOST_REGEX)
+      end
     end
   end
 end

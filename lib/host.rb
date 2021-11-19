@@ -4,8 +4,8 @@ module Host
   def self.trusted?(url)
     uri = Addressable::URI.parse url
 
-    return true if not uri.host and url.chr == '/'
+    return true if not uri.host and url.starts_with?('/')
 
-    trusted_host_regexes.any? { |regex| regex.match uri.host }
+    trusted_host_regexes.any? { |regex| regex.match? uri.host }
   end
 end
