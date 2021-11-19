@@ -2,13 +2,12 @@ require 'cgi'
 require 'erb'
 
 module DatabaseUrl
-  # This method is not thread-safe. Do not call it after app initialization.
-  def self.set_database_url
-    return if ENV['BLAZER_DATABASE_URL']
-    ENV['BLAZER_DATABASE_URL'] = config_to_url(db_config)
+  def self.get_database_url
+    config_to_url(db_config)
   end
 
   private
+
   def self.rails_loaded?
     const_defined?(:Rails)
   end
@@ -44,5 +43,4 @@ module DatabaseUrl
   end
 end
 
-# This method is not thread-safe, but should be fine in an initializer.
-DatabaseUrl.set_database_url
+ENV['BLAZER_DATABASE_URL'] ||= DatabaseUrl.get_database_url
