@@ -1,5 +1,6 @@
 require 'etc'
 require 'sd_notify'
+require 'scout_apm'
 
 # Notify systemd that we are the main process
 SdNotify.mainpid Process.pid
@@ -81,5 +82,12 @@ DelayedJobWorkerPool::WorkerPool.class_exec do
       log("Telling worker #{child_pid} from group #{group} to shutdown with signal #{signal}")
       Process.kill(signal, child_pid)
     end
+  end
+end
+
+# Make sure scout_apm doesn't start until we fork
+::ScoutApm::BackgroundJobIntegrations::DelayedJob.class_exec do
+  def forking?
+    true
   end
 end

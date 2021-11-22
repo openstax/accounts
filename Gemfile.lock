@@ -669,7 +669,7 @@ GEM
     sassc (2.0.1)
       ffi (~> 1.9)
       rake
-    scout_apm (4.1.2)
+    scout_apm (5.1.0)
       parser
     sd_notify (0.1.1)
     selenium-webdriver (3.142.7)
