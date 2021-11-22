@@ -19,14 +19,14 @@ namespace :aws do
         ) AS "min_effective_run_at"
       SELECT
     ).each do |queue, min_effective_run_at|
-      min_effective_run_at_by_queue[queue.sub("tutor_#{Rails.env}_", '')] = min_effective_run_at
+      min_effective_run_at_by_queue[queue.sub("accounts_#{Rails.env}_", '')] = min_effective_run_at
     end
 
     require 'aws-sdk-cloudwatch'
 
     client = Aws::CloudWatch::Client.new
     default_dimensions = [
-      { name: 'Application', value: 'tutor' }, { name: 'Environment', value: environment_name }
+      { name: 'Application', value: 'Accounts' }, { name: 'Environment', value: environment_name }
     ]
 
     known_queues = Delayed::Worker.queue_attributes.keys.map(&:to_s)
