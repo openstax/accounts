@@ -46,7 +46,7 @@ class UpdateSchoolSalesforceInfo
       sf_schools = OpenStax::Salesforce::Remote::School.order(:Id).limit(BATCH_SIZE)
       sf_schools = sf_schools.where("Id > '#{last_id}'") unless last_id.nil?
       sf_schools = sf_schools.to_a
-      last_id = sf_schools.last.id
+      last_id = sf_schools.last&.id
 
       begin
         schools_by_sf_id = School.where(
