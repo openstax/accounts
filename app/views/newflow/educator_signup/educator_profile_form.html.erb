@@ -206,6 +206,9 @@
               <div class="used newflow-mustdo-alert">
                 <%= I18n.t(:"educator_profile_form.select_option") %>
               </div>
+              <div class="used-limit newflow-mustdo-alert">
+                <%= I18n.t(:"educator_profile_form.select_option_limit_5") %>
+              </div>
 
               <%= fh.select name: :books_used,
                             options: grouped_options_for_select(@book_titles),
@@ -225,6 +228,9 @@
               %>
               <div class="books-of-interest newflow-mustdo-alert">
                 <%= I18n.t(:"educator_profile_form.select_option") %>
+              </div>
+              <div class="books-of-interest-limit newflow-mustdo-alert">
+                <%= I18n.t(:"educator_profile_form.select_option_limit_5") %>
               </div>
 
               <%= fh.select name: :books_of_interest,
