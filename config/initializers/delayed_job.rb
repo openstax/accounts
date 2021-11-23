@@ -20,6 +20,13 @@ Delayed::Worker.max_run_time = Rails.application.secrets[:background_worker_time
 # Default queue name if not specified in the job class
 Delayed::Worker.default_queue_name = :default
 
+# Default queue priorities
+Delayed::Worker.queue_attributes = {
+  educator_signup_queue: { priority: -10 },
+  default:               { priority:   0 },
+  mailers:               { priority:  10 }
+}
+
 # Allows us to use this gem in tests instead of setting the ActiveJob adapter to :inline
 Delayed::Worker.delay_jobs = Rails.env.production? || (
                                Rails.env.development? && ActiveModel::Type::Boolean.new.cast(

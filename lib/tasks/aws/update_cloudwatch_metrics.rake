@@ -40,7 +40,7 @@ namespace :aws do
           min_effective_run_at = if queue.blank?
             min_effective_run_at_by_queue.values.compact.min
           elsif queue == 'other'
-            min_effective_run_at_by_queue.except(*known_queues).compact.min
+            min_effective_run_at_by_queue.except(*known_queues).values.compact.min
           else
             min_effective_run_at_by_queue[queue]
           end
