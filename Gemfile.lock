@@ -117,6 +117,9 @@ GEM
       aws-sessionstore-dynamodb (~> 2)
       concurrent-ruby (~> 1)
       railties (>= 5.2.0)
+    aws-sdk-rds (1.131.0)
+      aws-sdk-core (~> 3, >= 3.122.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-ses (1.35.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
@@ -762,8 +765,10 @@ DEPENDENCIES
   activerecord-import
   apipie-rails
   awesome_print
+  aws-sdk-autoscaling
   aws-sdk-cloudwatch
   aws-sdk-rails
+  aws-sdk-rds
   bcrypt (~> 3.1.7)
   blazer
   bootsnap

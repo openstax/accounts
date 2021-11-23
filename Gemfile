@@ -295,6 +295,12 @@ group :production, :test do
 end
 
 group :production do
+  # Used to backup the database before migrations
+  gem 'aws-sdk-rds', require: false
+
+  # Used to record a lifecycle action heartbeat after creating the RDS snapshot before migrating
+  gem 'aws-sdk-autoscaling', require: false
+
   # Used to send custom delayed_job metrics to Cloudwatch
   gem 'aws-sdk-cloudwatch', require: false
 
