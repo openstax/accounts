@@ -7,7 +7,7 @@ require_relative 'dev_url_options'
 APP_DIR = File.expand_path('..', __dir__)
 directory APP_DIR
 
-tag 'OpenStax Tutor Puma'
+tag 'OpenStax Accounts Puma'
 
 NUM_WORKERS = ENV.fetch('WEB_CONCURRENCY') { Etc.nprocessors }.to_i
 

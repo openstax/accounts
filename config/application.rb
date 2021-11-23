@@ -57,7 +57,7 @@ module Accounts
     }
 
     def is_real_production?
-      secrets.environment_name == "prodtutor"
+      [ 'production', 'prodtutor' ].include? secrets.environment_name
     end
 
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
