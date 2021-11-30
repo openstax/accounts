@@ -31,9 +31,7 @@ class NewflowUi.EducatorComplete
 
     # book selections
     @books_used_select = @findOrLogNotFound(@books_used, "select")
-#    @books_used_select_max = @findOrLogNotFound(@books_used, "select")
     @books_of_interest_select = @findOrLogNotFound(@books_of_interest, "select")
-#    @books_of_interest_select_max = @findOrLogNotFound(@books_of_interest, "select")
 
     # error messages locators
     @please_fill_out_school = @findOrLogNotFound(@form, '.school-name.newflow-mustdo-alert')
@@ -45,10 +43,10 @@ class NewflowUi.EducatorComplete
     @please_select_using = @findOrLogNotFound(@form, '.how-using .using.newflow-mustdo-alert')
     @please_fill_out_total_num = @findOrLogNotFound(@form, '.total-num-students .total-num.newflow-mustdo-alert')
 
-    @please_select_books_used = @findOrLogNotFound(@form, '.used.newflow-mustdo-alert')
-    @books_used_max = @findOrLogNotFound(@form, '.used-limit.newflow-mustdo-alert')
-    @please_select_books_of_interest = @findOrLogNotFound(@form, '.books-of-interest.newflow-mustdo-alert')
-    @books_of_interest_max = @findOrLogNotFound(@form, '.books-of-interest-limit.newflow-mustdo-alert')
+    @please_select_books_used = @findOrLogNotFound(@form, '.books-used .used.newflow-mustdo-alert')
+    @books_used_max = @findOrLogNotFound(@form, '.books-used .used-limit.newflow-mustdo-alert')
+    @please_select_books_of_interest = @findOrLogNotFound(@form, '.books-of-interest .books-of-interest.newflow-mustdo-alert')
+    @books_of_interest_max = @findOrLogNotFound(@form, '.books-of-interest .books-of-interest-limit.newflow-mustdo-alert')
 
     # event listeners
     @school_name_input.on('input', @onSchoolNameChange)
@@ -61,9 +59,7 @@ class NewflowUi.EducatorComplete
     @total_num_students_input.change(@onTotalNumChange)
 
     @books_used_select.change(@onBooksUsedChange)
-#    @books_used_select_max.change(@onBooksUsedChange)
     @books_of_interest_select.change(@onBooksOfInterestChange)
-#    @books_of_interest_select_max.change(@onBooksOfInterestChange)
 
     @findOrLogNotFound(@form, 'form').submit(@onSubmit)
 
@@ -202,13 +198,10 @@ class NewflowUi.EducatorComplete
       false
 
   checkBooksUsedValidMax: () ->
-    return true if @books_used.is(":hidden")
-    if @books_used_select.val().length < 6 || @books_used_select.val().length == undefined
-      console.log('*** if stmt selected books length: ' + @books_used_select.val().length)
+    if @books_used_select.val() == null || @books_used_select.val().length < 6
       @books_used_max.hide()
       true
     else
-      console.log('*** else stmt selected books length: ' + @books_used_select.val().length)
       @books_used_max.show()
       false
 
@@ -223,20 +216,10 @@ class NewflowUi.EducatorComplete
       false
 
   checkBooksOfInterestValidMax: () ->
-    console.log('*** checkBooksOfInterestValidMax called')
-    console.log('----- 1 ------')
-    console.dir(@books_of_interest_select)
-    console.log('Book of interest is hidden: ' + @books_of_interest.is(":hidden"))
-#    return true if @books_of_interest.is(":hidden")
-    console.log('----- 2 ------')
-    console.log('*** @books_of_interest_select.val(): ' + @books_of_interest_select.val())
-
-    if @books_of_interest_select.val().length < 6 || @books_of_interest_select.val().length == undefined
-      console.log('*** if stmt selected books interest length: ' + @books_of_interest_select.val().length)
+    if @books_of_interest_select.val() == null || @books_of_interest_select.val().length < 6
       @books_of_interest_max.hide()
       true
     else
-      console.log('*** else stmt selected books interest length: ' + @books_of_interest_select.val().length)
       @books_of_interest_max.show()
       false
 
@@ -313,19 +296,15 @@ class NewflowUi.EducatorComplete
     @please_fill_out_total_num.hide()
 
   onBooksUsedChange: ->
-    console.log('*** onBooksUsedChange called')
     @checkBooksUsedValidMax()
     return false if !@checkTotalNumValid()
-
 
     @please_select_books_used.hide()
     @continue.prop('disabled', false)
 
   onBooksOfInterestChange: ->
-    console.log('*** onBooksOfInterestChange called')
     @checkBooksOfInterestValidMax()
     return false if !@checkTotalNumValid()
-
 
     @please_select_books_of_interest.hide()
     @continue.prop('disabled', false)
