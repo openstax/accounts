@@ -1,9 +1,9 @@
 class StaticPagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:api, :copyright, :home, :status]
+  skip_before_action :authenticate_user!, only: [:api, :copyright, :home]
 
-  skip_before_action :complete_signup_profile, only: [:api, :copyright, :status]
+  skip_before_action :complete_signup_profile, only: [:api, :copyright]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:api, :copyright, :status]
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:api, :copyright]
 
   layout 'application'
 
@@ -21,10 +21,5 @@ class StaticPagesController < ApplicationController
     else
       signed_in? ? redirect_to(profile_path) : authenticate_user!
     end
-  end
-
-  # Used by AWS (and others) to make sure the site is still up.
-  def status
-    head :ok
   end
 end

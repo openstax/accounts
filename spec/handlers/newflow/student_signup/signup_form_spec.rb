@@ -5,8 +5,11 @@ module Newflow
     describe SignupForm, type: :handler do
       context 'when success' do
         before(:all) do
+          DatabaseCleaner.start
           load('db/seeds.rb')
         end
+
+        after(:all) { DatabaseCleaner.clean }
 
         let(:handler_call) do
           described_class.call(params: params)
@@ -86,8 +89,11 @@ module Newflow
 
       context 'success -- when a user that already had an account, then tries to sign up using signed params (so via an LMS)' do
         before(:all) do
+          DatabaseCleaner.start
           load('db/seeds.rb')
         end
+
+        after(:all) { DatabaseCleaner.clean }
 
         let(:email) do
           Faker::Internet.free_email

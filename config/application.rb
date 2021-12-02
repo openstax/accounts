@@ -38,42 +38,26 @@ module Accounts
     # https://coderwall.com/p/w3ghqq/rails-3-2-error-handling-with-exceptions_app
     config.exceptions_app = ->(env) { ExceptionsController.action(:rescue_from).call(env) }
 
-    def self.is_assets_precompile?
-      ARGV[0] != "assets:precompile"
-    end
-
-    def is_assets_precompile?
-      self.class.is_assets_precompile?
-    end
-
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
-    if Rails.application.is_assets_precompile?
-      redis_secrets = secrets[:redis]
-      config.cache_store = :redis_store, {
-        url: redis_secrets[:url],
-        namespace: redis_secrets[:namespaces][:cache],
-        expires_in: 90.minutes,
-        compress: true,
-      }
-    end
+
+    redis_secrets = secrets[:redis]
+
+    # Generate the Redis URL from the its components if unset
+    redis_secrets[:url] ||= "redis#{'s' unless redis_secrets[:password].blank?}://#{
+      ":#{redis_secrets[:password]}@" unless redis_secrets[:password].blank? }#{
+      redis_secrets[:host]}#{":#{redis_secrets[:port]}" unless redis_secrets[:port].blank?}/#{
+      "/#{redis_secrets[:db]}" unless redis_secrets[:db].blank?}"
+
+    config.cache_store = :redis_store, {
+      url: redis_secrets[:url],
+      namespace: redis_secrets[:namespaces][:cache],
+      expires_in: 90.minutes,
+      compress: true,
+    }
 
     def is_real_production?
-      secrets.environment_name == "prodtutor"
-    end
-
-    def is_assets_precompile?
-      ARGV[0] != "assets:precompile"
-    end
-
-    config.after_initialize do
-      Doorkeeper::TokensController.class_eval do
-        alias_method :original_create, :create # before_action not available
-        def create
-          ScoutHelper.ignore!(0.99)
-          original_create
-        end
-      end
+      [ 'production', 'prodtutor' ].include? secrets.environment_name
     end
 
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults

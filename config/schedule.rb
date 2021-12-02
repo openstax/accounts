@@ -9,20 +9,10 @@ set :runner_command, "#{bundle_command} rails runner"
 #   * https://github.com/javan/whenever/issues/481
 #   * https://github.com/javan/whenever/pull/239
 
-every '5,35 * * * *' do
-  runner <<~CMD
-    OpenStax::RescueFrom.this do
-      UpdateUserSalesforceInfo.call(
-        allow_error_email: Time.zone.now.hour == 0 && Time.zone.now.min < 10
-      )
-    end
-  CMD
-end
+every(1.minute) { rake 'cron:minute' }
 
-every '20,50 * * * *' do
-  runner 'OpenStax::RescueFrom.this { UpdateSchoolSalesforceInfo.call }'
-end
+every('5,35 * * * *') { rake 'cron:5-past-half-hour' }
 
-every 1.day, at: Time.parse('2:30 AM CST').utc do
-  rake 'doorkeeper:cleanup'
-end
+every('20,50 * * * *') { rake 'cron:10-to-half-hour' }
+
+every(1.day, at: Time.parse('2:30 AM CST').utc) { rake 'cron:day' }

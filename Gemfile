@@ -9,22 +9,27 @@ end
 gem 'rails', '5.2.4.4'
 gem 'rails-i18n', '~> 5'
 
+# Reduces boot times through caching; required in config/boot.rb
+gem 'bootsnap', require: false
+
+# Get env variables from .env file
+gem 'dotenv-rails'
+
+# Threaded application server
+gem 'puma'
+
+# Prevent server memory from growing until OOM
+gem 'puma_worker_killer'
+
 # Knockout for embedded widgets
 gem 'knockoutjs-rails'
 
 # Using this branch in pattern library due to multiselect (until it's merged to master)
 gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840'
 
-gem 'bootsnap', require: false
-
-# New Deployments
-gem 'aws-sdk-ssm'
-gem 'dotenv'
-gem 'openssl'
-
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
-gem 'lev', '~> 9.0.3'
+gem 'lev', '~> 10.1.0'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.4.1'
@@ -33,22 +38,27 @@ gem 'bootstrap-sass', '~> 3.4.1'
 gem 'sass-rails', '~> 5.0'
 
 # Compass stylesheets
-gem 'compass-rails'
+gem 'compass-rails', '~> 3.1.0'
 
 # CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '5.0.0'
 
 # JavaScript asset compiler
-gem 'mini_racer'
+# 0.4.0 crashes during our build, fixed in 0.5.0 (upgrade when it's out)
+gem 'mini_racer', '< 0.4.0'
 
 # JavaScript asset compressor
 gem 'uglifier', '>= 1.3.0'
+
+# Nicely-styled static error pages
+gem 'error_page_assets'
+gem 'render_anywhere', require: false
 
 # Password hashing
 gem 'bcrypt', '~> 3.1.7'
 
 # OAuth provider
-gem 'doorkeeper'
+gem 'doorkeeper', '~> 5.1.0'
 
 # OAuth clients
 gem 'omniauth'
@@ -61,10 +71,10 @@ gem 'omniauth-google-oauth2'
 gem 'redis-rails'
 
 # Utilities for OpenStax websites
-gem 'openstax_utilities', '~> 4.2.0'
+gem 'openstax_utilities'
 
 # API versioning and documentation
-gem 'openstax_api', '~> 9.0.1'
+gem 'openstax_api'
 
 # Notify developers of Exceptions in production
 gem 'openstax_rescue_from'
@@ -74,7 +84,7 @@ gem 'sentry-ruby'
 gem "sentry-rails"
 
 # Background job status store
-gem 'jobba', '~> 1.4.0'
+gem 'jobba'
 
 # jQuery library
 gem 'jquery-rails'
@@ -92,7 +102,12 @@ gem 'jbuilder'
 
 # Background job queueing
 gem 'delayed_job_active_record', '~> 4.1.3'
-gem 'daemons'
+
+# Run delayed_job workers with a control process in the foreground
+gem 'delayed_job_worker_pool'
+
+# Ensure background jobs unlock if a delayed_job worker crashes
+gem 'delayed_job_heartbeat_plugin'
 
 # JSON Api builder
 gem 'representable', '~> 3.0.0'
@@ -108,6 +123,9 @@ gem 'action_interceptor'
 
 # PostgreSQL database
 gem 'pg'
+
+# Support systemd Type=notify services for puma and delayed_job
+gem 'sd_notify', require: false
 
 # Add P3P headers for IE
 gem 'p3p'
@@ -172,17 +190,11 @@ gem 'blazer'
 gem 'prophet-rb'
 
 group :development, :test do
-  # Get env variables from .env file
-  gem 'dotenv-rails', '2.7.2'
-
   # Run specs in parallel
   gem 'parallel_tests'
 
   # Show failing parallel specs instantly
   gem 'rspec-instafail'
-
-  # Development server
-  gem 'puma', '~> 4.3'
 
   # See config/initializers/04-debugger.rb
   #
@@ -283,11 +295,14 @@ group :production, :test do
 end
 
 group :production do
-  # Unicorn production server
-  gem 'unicorn'
+  # Used to backup the database before migrations
+  gem 'aws-sdk-rds', require: false
 
-  # Unicorn worker killer
-  gem 'unicorn-worker-killer'
+  # Used to record a lifecycle action heartbeat after creating the RDS snapshot before migrating
+  gem 'aws-sdk-autoscaling', require: false
+
+  # Used to send custom delayed_job metrics to Cloudwatch
+  gem 'aws-sdk-cloudwatch', require: false
 
   # Consistent logging
   gem 'lograge'

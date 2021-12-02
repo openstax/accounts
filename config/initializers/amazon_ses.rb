@@ -1,4 +1,4 @@
-if Rails.env.production?
+if Rails.env.production? && !ActiveModel::Type::Boolean.new.cast(ENV.fetch('DISABLE_SES', false))
   secrets = Rails.application.secrets[:aws][:ses]
 
   creds = Aws::Credentials.new(secrets[:access_key_id], secrets[:secret_access_key])

@@ -1,5 +1,10 @@
 ActionController::Base.class_exec do
-  # TODO: add a descriptive comment and document this magic in the readme
+  # We need some of the methods added here in all controllers
+  # For example, `current_user` is used in the layout so it needs to exist everywhere
+  # OpenStax Accounts's controllers all inherit from ApplicationController,
+  # but gem controllers like FinePrint's and Blazer's do not, so adding them there wouldn't work
+  # However, all controllers inherit from ActionController::Base,
+  # so adding these methods to ActionController::Base directly here should work
   include UserSessionManagement
   include ApplicationHelper
   include OSU::OsuHelper

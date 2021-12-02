@@ -1,0 +1,38 @@
+<%# This file is the same as the application layout except that for whatever reason methods that use
+    the asset pipeline cannot be called here so tags are passed in from the static error template %>
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+    <%= yield :stylesheet_tag %>
+
+    <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body class="error">
+    <%= render partial: "layouts/application_header" %>
+
+    <div id="application-container" class="container">
+      <%= render partial: "layouts/application_body" %>
+
+      <div id="application-footer" class="row">
+        <div class="col-sm-12">
+          <div id="footer-rice-logo">
+            <%= link_to "http://www.rice.edu" do %>
+              <%= yield :rice_logo %>
+            <% end %>
+          </div>
+
+          <div id="footer-copyright">
+            <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
+            <%= link_to 'Terms of Use', main_app.terms_path %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -13,21 +13,21 @@ feature 'Signed parameters' do
   }
 
   it 'passes for correctly signed params' do
-    visit status_url(params)
+    visit copyright_url(params)
     expect(page).to have_http_status(:success)
   end
 
   it 'gives a 400 for bad app ID' do
     params[:client_id] = 'nothing_good'
     expect_any_instance_of(ActionController::Base).not_to receive(:authenticate_user!)
-    visit status_url(params)
+    visit copyright_url(params)
     expect(page).to have_http_status(:bad_request)
   end
 
   it 'gives a 400 for incorrectly signed params' do
     params[:sp][:signature] = 'nothing_good'
     expect_any_instance_of(ActionController::Base).not_to receive(:authenticate_user!)
-    visit status_url(params)
+    visit copyright_url(params)
     expect(page).to have_http_status(:bad_request)
   end
 end
