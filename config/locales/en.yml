@@ -20,6 +20,7 @@ en:
     chosen_by_committee: A committee chooses the textbook
     chosen_by_coordinator: Course/district coordinator choose the textbook
     select_option: Please select one of these options
+    select_option_limit_5: A maximum of 5 books may be selected
     fill_out: Please enter a value for this field
     school_name_must_be_entered: Please enter school name
     other_must_be_entered: Please enter other role name

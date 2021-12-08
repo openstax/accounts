@@ -125,7 +125,7 @@ module Newflow
         end
 
         if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-           signup_params.num_students_per_semester_taught.blank?
+          signup_params.num_students_per_semester_taught.blank?
 
           param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
         end

@@ -46,8 +46,10 @@ class NewflowUi.CsFormCompleteProfile
     @please_select_using = @findOrLogNotFound(@form, '.how-using .using.newflow-mustdo-alert')
     @please_fill_out_total_num = @findOrLogNotFound(@form, '.total-num-students .total-num.newflow-mustdo-alert')
 
-    @please_select_books_used = @findOrLogNotFound(@form, '.used.newflow-mustdo-alert')
-    @please_select_books_of_interest = @findOrLogNotFound(@form, '.books-of-interest.newflow-mustdo-alert')
+    @please_select_books_used = @findOrLogNotFound(@form, '.books-used .used.newflow-mustdo-alert')
+    @books_used_max = @findOrLogNotFound(@form, '.books-used .used-limit.newflow-mustdo-alert')
+    @please_select_books_of_interest = @findOrLogNotFound(@form, '.books-of-interest .books-of-interest.newflow-mustdo-alert')
+    @books_of_interest_max = @findOrLogNotFound(@form, '.books-of-interest .books-of-interest-limit.newflow-mustdo-alert')
 
     # event listeners
     @school_name_input.on('input', @onSchoolNameChange)
@@ -86,7 +88,9 @@ class NewflowUi.CsFormCompleteProfile
     @please_fill_out_total_num.hide()
 
     @please_select_books_used.hide()
+    @books_used_max.hide()
     @please_select_books_of_interest.hide()
+    @books_of_interest_max.hide()
 
 
   findOrLogNotFound: (parent, selector) ->
@@ -116,7 +120,9 @@ class NewflowUi.CsFormCompleteProfile
 
     total_num_valid = @checkTotalNumValid()
     books_used_valid = @checkBooksUsedValid()
+    books_used_valid_max = @checkBooksUsedValidMax()
     books_of_interest_valid = @checkBooksOfInterestValid()
+    books_of_interest_valid_max = @checkBooksOfInterestValidMax()
 
     if not (
       school_name_valid and
@@ -127,6 +133,8 @@ class NewflowUi.CsFormCompleteProfile
       using_how_valid and
       total_num_valid and
       books_used_valid and
+      books_used_valid_max and
+      books_of_interest_valid_max and
       books_of_interest_valid
     )
       ev.preventDefault()
@@ -205,6 +213,14 @@ class NewflowUi.CsFormCompleteProfile
       @please_select_books_used.show()
       false
 
+  checkBooksUsedValidMax: () ->
+    if @books_used_select.val() == null || @books_used_select.val().length < 6
+      @books_used_max.hide()
+      true
+    else
+      @books_used_max.show()
+      false
+
   checkBooksOfInterestValid: () ->
     return true if @books_of_interest.is(":hidden")
 
@@ -213,6 +229,14 @@ class NewflowUi.CsFormCompleteProfile
       true
     else
       @please_select_books_of_interest.show()
+      false
+
+  checkBooksOfInterestValidMax: () ->
+    if @books_of_interest_select.val() == null || @books_of_interest_select.val().length < 6
+      @books_of_interest_max.hide()
+      true
+    else
+      @books_of_interest_max.show()
       false
 
   onSchoolNameChange: ->
@@ -320,12 +344,14 @@ class NewflowUi.CsFormCompleteProfile
     @please_fill_out_total_num.hide()
 
   onBooksUsedChange: ->
+    @checkBooksUsedValidMax()
     return false if !@checkTotalNumValid()
 
     @please_select_books_used.hide()
     @continue.prop('disabled', false)
 
   onBooksOfInterestChange: ->
+    @checkBooksOfInterestValidMax()
     return false if !@checkTotalNumValid()
 
     @please_select_books_of_interest.hide()
