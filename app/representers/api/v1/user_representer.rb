@@ -143,6 +143,17 @@ module Api::V1
                 required: false
              }
 
+    property :most_accurate_school_name,
+             as: :school_name,
+             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+             type: String,
+             readable: true,
+             writeable: false,
+             schema_info: {
+               description: "school name determined by available data",
+               required: false
+             }
+
     property :school_type,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
              type: String,
