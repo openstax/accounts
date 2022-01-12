@@ -122,8 +122,14 @@ module Newflow
 
       books = user.which_books.split(';')
 
+      if user.how_many_students.blank?
+        number_of_students = nil
+      else
+        number_of_students = user.how_many_students
+      end
+
       books.each do |book|
-        book_keywords = { name: book, students: user.how_many_students }
+        book_keywords = { name: book, students: number_of_students }
         books_json << book_keywords
       end
 
