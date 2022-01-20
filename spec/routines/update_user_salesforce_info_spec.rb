@@ -241,19 +241,6 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           using_openstax: false
         )
       end
-
-      it 'clears out SF info if contact has gone missing' do
-        stub_salesforce(contacts: [])
-        expect(Rails.logger).to receive(:warn)
-        described_class.call
-        expect_user_sf_data(
-          user,
-          id: nil,
-          faculty_status: :no_faculty_info,
-          school_type: :unknown_school_type,
-          using_openstax: false
-        )
-      end
     end
 
     context 'user maps to multiple SF contacts case-insensitively' do
@@ -507,14 +494,16 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           id: "one",
           email: "bob@example.com",
           faculty_verified: "confirmed_faculty",
-          adoption_status: "Past Adopter"
+          adoption_status: "Past Adopter",
+          last_date_modified: Date.today
         },
         {
           id: "two",
           email: "bobby@example.com",
           email_alt: "bob@example.com",
           faculty_verified: "confirmed_faculty",
-          adoption_status: "Past Adopter"
+          adoption_status: "Past Adopter",
+          last_date_modified: Date.today
         }
       ]
     )
@@ -582,7 +571,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           faculty_verified: contact[:faculty_verified],
           school_type: contact[:school_type],
           school: school,
-          grant_tutor_access: contact[:grant_tutor_access]
+          grant_tutor_access: contact[:grant_tutor_access],
+          last_date_modified: Date.today
         )
       end
     end
@@ -594,6 +584,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         :school_type, :adoption_status, :grant_tutor_access
       ).and_return(assoc)
     )
+    expect(assoc).to receive(:where).and_return(assoc)
     expect(assoc).to receive(:includes).with(:school).and_return(contacts)
   end
 

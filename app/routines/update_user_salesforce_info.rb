@@ -115,11 +115,13 @@ class UpdateUserSalesforceInfo
     #       If we don't use timestamps, should load the contacts in chunks of 1,000 or 10,000
     #       Or maybe try https://github.com/gooddata/salesforce_bulk_query
 
+    contact_days = Settings::Db.store.number_of_days_contacts_modified
     @contacts ||= OpenStax::Salesforce::Remote::Contact
                     .select(
                       :id, :email, :email_alt, :faculty_verified,
                       :school_type, :adoption_status, :grant_tutor_access
                     )
+                    .where("LastModifiedDate >= #{contact_days.to_i.day.ago.utc.iso8601}")
                     .includes(:school)
                     .to_a
   end
@@ -163,14 +165,15 @@ class UpdateUserSalesforceInfo
 
   def cache_contact_and_school_data_in_user!(contact, school, user)
     if contact.nil?
-      warn(
-        "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but that" \
-        " contact is no longer present; resetting user's contact ID, faculty status, school type, and school location"
-      )
-      user.salesforce_contact_id = nil
-      user.faculty_status = User::DEFAULT_FACULTY_STATUS
-      user.school_type = User::DEFAULT_SCHOOL_TYPE
-      user.school_location = User::DEFAULT_SCHOOL_LOCATION
+      return
+      # warn(
+      #   "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but that" \
+      #   " contact is no longer present; resetting user's contact ID, faculty status, school type, and school location"
+      # )
+      # user.salesforce_contact_id = nil
+      # user.faculty_status = User::DEFAULT_FACULTY_STATUS
+      # user.school_type = User::DEFAULT_SCHOOL_TYPE
+      # user.school_location = User::DEFAULT_SCHOOL_LOCATION
     else
       user.salesforce_contact_id = contact.id
 
