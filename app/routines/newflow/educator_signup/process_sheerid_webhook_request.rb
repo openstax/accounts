@@ -83,9 +83,7 @@ module Newflow
           transfer_errors_from(existing_user, {type: :verbatim}, :fail_if_errors)
         end
 
-        if verification.errors.none? && verification.verified?
-          CreateSalesforceLead.perform_later(user: existing_user)
-        elsif verification.rejected?
+        if verification.rejected?
           run(SheeridRejectedEducator, user: existing_user, verification_id: verification_id)
         elsif verification.present?
           SecurityLog.create!(
