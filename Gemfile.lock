@@ -14,6 +14,16 @@ GIT
       sass-rails
 
 GIT
+  remote: https://github.com/openstax/openstax_salesforce.git
+  revision: b250271c38a06ce2957d20919f028099f69cf752
+  ref: b250271c38a06ce2957d20919f028099f69cf752
+  specs:
+    openstax_salesforce (6.3.0)
+      openstax_active_force
+      rails (>= 5.0, < 7.0)
+      restforce
+
+GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: 8298c40ec38f132fc23ea946b2b20e855fe73a49
   ref: 8298c40ec38f132fc23ea946b2b20e855fe73a49
@@ -478,10 +488,6 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.2.0)
       rails (>= 3.1, < 7.0)
-    openstax_salesforce (6.1.0)
-      openstax_active_force
-      rails (>= 5.0, < 7.0)
-      restforce
     openstax_utilities (5.0.0)
       aws-sdk-autoscaling
       faraday
@@ -605,10 +611,10 @@ GEM
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
-    restforce (5.2.0)
-      faraday (>= 0.9.0, <= 2.0)
+    restforce (5.2.3)
+      faraday (>= 0.9.0, < 1.9.0)
       faraday_middleware (>= 0.8.8, <= 2.0)
-      hashie (>= 1.2.0, < 5.0)
+      hashie (>= 1.2.0, < 6.0)
       jwt (>= 1.5.6)
     rexml (3.2.5)
     roar (1.1.0)
@@ -829,7 +835,7 @@ DEPENDENCIES
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce (= 6.1.0)
+  openstax_salesforce!
   openstax_utilities
   p3p
   parallel_tests

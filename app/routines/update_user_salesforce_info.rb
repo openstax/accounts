@@ -115,13 +115,11 @@ class UpdateUserSalesforceInfo
     #       If we don't use timestamps, should load the contacts in chunks of 1,000 or 10,000
     #       Or maybe try https://github.com/gooddata/salesforce_bulk_query
 
-    contact_days = Settings::Db.store.number_of_days_contacts_modified
     @contacts ||= OpenStax::Salesforce::Remote::Contact
                     .select(
                       :id, :email, :email_alt, :faculty_verified,
                       :school_type, :adoption_status, :grant_tutor_access
                     )
-                    .where("LastModifiedDate >= #{contact_days.to_i.day.ago.utc.iso8601}")
                     .includes(:school)
                     .to_a
   end
@@ -165,55 +163,54 @@ class UpdateUserSalesforceInfo
 
   def cache_contact_and_school_data_in_user!(contact, school, user)
     if contact.nil?
-      return
-      # warn(
-      #   "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but that" \
-      #   " contact is no longer present; resetting user's contact ID, faculty status, school type, and school location"
-      # )
-      # user.salesforce_contact_id = nil
-      # user.faculty_status = User::DEFAULT_FACULTY_STATUS
-      # user.school_type = User::DEFAULT_SCHOOL_TYPE
-      # user.school_location = User::DEFAULT_SCHOOL_LOCATION
+      warn(
+        "User #{user.id} previously linked to contact #{user.salesforce_contact_id} but that" \
+        " contact is no longer present; resetting user's contact ID, faculty status, school type, and school location"
+      )
+      user.salesforce_contact_id = nil
+      user.faculty_status = User::DEFAULT_FACULTY_STATUS
+      user.school_type = User::DEFAULT_SCHOOL_TYPE
+      user.school_location = User::DEFAULT_SCHOOL_LOCATION
     else
       user.salesforce_contact_id = contact.id
 
       user.faculty_status = case contact.faculty_verified
-                              when "confirmed_faculty"
-                                :confirmed_faculty
-                              when "pending_faculty"
-                                :pending_faculty
-                              when "rejected_faculty"
-                                :rejected_faculty
-                              when NilClass
-                                :no_faculty_info
-                              else
-                                raise "Unknown faculty_verified field: '#{
-                                  contact.faculty_verified}'' on contact #{contact.id}"
+                            when "confirmed_faculty"
+                              :confirmed_faculty
+                            when "pending_faculty"
+                              :pending_faculty
+                            when "rejected_faculty"
+                              :rejected_faculty
+                            when NilClass
+                              :no_faculty_info
+                            else
+                              raise "Unknown faculty_verified field: '#{
+                                contact.faculty_verified}'' on contact #{contact.id}"
                             end
 
       user.school_type = case contact.school_type
-                           when *COLLEGE_TYPES
-                             :college
-                           when *HIGH_SCHOOL_TYPES
-                             :high_school
-                           when *K12_TYPES
-                             :k12_school
-                           when *HOME_SCHOOL_TYPES
-                             :home_school
-                           when NilClass
-                             :unknown_school_type
-                           else
-                             :other_school_type
+                         when *COLLEGE_TYPES
+                           :college
+                         when *HIGH_SCHOOL_TYPES
+                           :high_school
+                         when *K12_TYPES
+                           :k12_school
+                         when *HOME_SCHOOL_TYPES
+                           :home_school
+                         when NilClass
+                           :unknown_school_type
+                         else
+                           :other_school_type
                          end
 
       sf_school = contact.school
       user.school_location = case sf_school&.school_location
-                               when *DOMESTIC_SCHOOL_LOCATIONS
-                                 :domestic_school
-                               when *FOREIGN_SCHOOL_LOCATIONS
-                                 :foreign_school
-                               else
-                                 :unknown_school_location
+                             when *DOMESTIC_SCHOOL_LOCATIONS
+                               :domestic_school
+                             when *FOREIGN_SCHOOL_LOCATIONS
+                               :foreign_school
+                             else
+                               :unknown_school_location
                              end
 
       unless contact.adoption_status.blank?

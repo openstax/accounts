@@ -241,6 +241,19 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           using_openstax: false
         )
       end
+
+      it 'clears out SF info if contact has gone missing' do
+        stub_salesforce(contacts: [])
+        expect(Rails.logger).to receive(:warn)
+        described_class.call
+        expect_user_sf_data(
+          user,
+          id: nil,
+          faculty_status: :no_faculty_info,
+          school_type: :unknown_school_type,
+          using_openstax: false
+        )
+      end
     end
 
     context 'user maps to multiple SF contacts case-insensitively' do
@@ -248,8 +261,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         email = AddEmailToUser.call("otherbob@example.com", user).outputs.email
         ConfirmContactInfo.call(email)
         stub_salesforce(contacts:
-          [{id: 'foo', email: 'BOB@example.com', faculty_verified: "pending_faculty", adoption_status: "Not Adopter"},
-           {id: 'foo2', email: 'OTHERBOB@example.com', faculty_verified: "pending_faculty", adoption_status: "Not Adopter"}]
+                          [{id: 'foo', email: 'BOB@example.com', faculty_verified: "pending_faculty", adoption_status: "Not Adopter"},
+                           {id: 'foo2', email: 'OTHERBOB@example.com', faculty_verified: "pending_faculty", adoption_status: "Not Adopter"}]
         )
         expect(Rails.logger).to receive(:warn)
       }
@@ -324,7 +337,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       end
 
       it 'errors when two contacts have the same (case-insensitive) email' +
-         'in primary and alt fields' do
+           'in primary and alt fields' do
         stub_salesforce(
           contacts: [{email: 'BOB@example.com'}, {email_alt: 'Bob@example.com'}]
         )
@@ -494,16 +507,14 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           id: "one",
           email: "bob@example.com",
           faculty_verified: "confirmed_faculty",
-          adoption_status: "Past Adopter",
-          last_date_modified: Date.today
+          adoption_status: "Past Adopter"
         },
         {
           id: "two",
           email: "bobby@example.com",
           email_alt: "bob@example.com",
           faculty_verified: "confirmed_faculty",
-          adoption_status: "Past Adopter",
-          last_date_modified: Date.today
+          adoption_status: "Past Adopter"
         }
       ]
     )
@@ -530,21 +541,21 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       )
     }
 
-      context 'when user has confirmed_faculty status' do
-        let(:user_faculty_status) { :confirmed_faculty }
+    context 'when user has confirmed_faculty status' do
+      let(:user_faculty_status) { :confirmed_faculty }
 
-        it 'does not override a user\'s confirmed_faculty status' do
-          expect { routine_call }.not_to change(user, :faculty_status)
-        end
+      it 'does not override a user\'s confirmed_faculty status' do
+        expect { routine_call }.not_to change(user, :faculty_status)
       end
+    end
 
-      context 'when user has pending_faculty status' do
-        let(:user_faculty_status) { :pending_faculty }
+    context 'when user has pending_faculty status' do
+      let(:user_faculty_status) { :pending_faculty }
 
-        it 'does not override a user\'s confirmed_faculty status' do
-          expect { routine_call }.not_to change(user, :faculty_status)
-        end
+      it 'does not override a user\'s confirmed_faculty status' do
+        expect { routine_call }.not_to change(user, :faculty_status)
       end
+    end
   end
 
   def new_contact(**args)
@@ -571,8 +582,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
           faculty_verified: contact[:faculty_verified],
           school_type: contact[:school_type],
           school: school,
-          grant_tutor_access: contact[:grant_tutor_access],
-          last_date_modified: Date.today
+          grant_tutor_access: contact[:grant_tutor_access]
         )
       end
     end
@@ -584,7 +594,6 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         :school_type, :adoption_status, :grant_tutor_access
       ).and_return(assoc)
     )
-    expect(assoc).to receive(:where).and_return(assoc)
     expect(assoc).to receive(:includes).with(:school).and_return(contacts)
   end
 
