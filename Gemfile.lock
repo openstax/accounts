@@ -378,9 +378,9 @@ GEM
       hashie
       transaction_isolation
       transaction_retry
-    libv8 (8.4.255.0)
-    libv8 (8.4.255.0-x86_64-darwin-20)
-    libv8 (8.4.255.0-x86_64-linux)
+    libv8-node (16.10.0.0)
+    libv8-node (16.10.0.0-x86_64-darwin)
+    libv8-node (16.10.0.0-x86_64-linux)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -408,8 +408,8 @@ GEM
       rake
     mini_mime (1.1.2)
     mini_portile2 (2.6.1)
-    mini_racer (0.3.1)
-      libv8 (~> 8.4.255)
+    mini_racer (0.6.2)
+      libv8-node (~> 16.10.0.0)
     minitest (5.14.4)
     msgpack (1.4.2)
     multi_json (1.15.0)
@@ -817,7 +817,7 @@ DEPENDENCIES
   lograge
   maruku
   meta_request
-  mini_racer (< 0.4.0)
+  mini_racer
   oj (~> 3.7.12)
   oj_mimic_json
   omniauth
