@@ -83,10 +83,10 @@ Just like with any Rails app, you need to create, migrate, and then seed the dat
 $ rake db:create db:setup
 ```
 
-Before starting the server, you'll need to create a  `secrets.yml` file based off of the example:
+Before starting the server, you'll need to create a  `.env` file based off of the example:
 
 ```sh
-$ cp config/secrets.yml.example config/secrets.yml
+$ cp .env.example .env
 ```
 
 Now you can run:
