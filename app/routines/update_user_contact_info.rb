@@ -113,6 +113,8 @@ class UpdateUserContactInfo
 
   def salesforce_contacts
     contact_days = Settings::Db.store.number_of_days_contacts_modified
+    c_date = contact_days.to_i.day.ago.strftime("%Y-%m-%d")
+    #puts 'Date: ' + DateTime.strptime(c_date,"%Y-%m-%d").utc.iso8601.inspect
     contacts ||= OpenStax::Salesforce::Remote::Contact
                    .select(
                      :id, :email, :email_alt, :faculty_verified,
@@ -120,7 +122,7 @@ class UpdateUserContactInfo
                      :accounts_uuid
                    )
                    .where("Accounts_UUID__c != null")
-                   .where("LastModifiedDate >= #{contact_days.to_i.day.ago.utc.iso8601}")
+                   .where("LastModifiedDate >= #{DateTime.strptime(c_date,"%Y-%m-%d").utc.iso8601}")
                    .includes(:school)
                    .to_a
   end

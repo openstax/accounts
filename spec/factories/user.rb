@@ -4,6 +4,7 @@ FactoryBot.define do
     state { User::ACTIVATED } # otherwise the default from DB will be to 'temp'
     first_name { Faker::Name.first_name }
     last_name  { Faker::Name.last_name  }
+    uuid { 'aaa560a1-e828-48fb-b9a8-d01e9aec71d0' }
     role { User::STUDENT_ROLE }
 
     is_profile_complete { true }
