@@ -1,0 +1,31 @@
+<div class="form-group question how-using" data-bind="visible: showChosenAndUsingSections">
+  <div class="radio-control-group">
+    <%= label_tag :using_openstax_how, I18n.t(:"educator_profile_form.how_using"), class: 'field-label' %>
+    <div class="using newflow-mustdo-alert" data-bind="visible: usingNoticeVisible">
+      <%= I18n.t(:"educator_profile_form.select_option") %>
+    </div>
+    <%
+      options = [
+        [ :as_primary, "using_primary_textbook" ],
+        [ :as_recommending, "using_recommending_openstax" ],
+        [ :as_future, "using_future" ]
+      ]
+    %>
+    <% options.each do |(value, label_key)| %>
+      <div>
+        <% id = "signup_using_openstax_how_#{value}".to_sym %>
+        <input type="radio"
+          value="<%= value %>"
+          id="<%= id %>"
+          class="custom-control-input"
+          name="signup[using_openstax_how]"
+          data-bind="checked: howUsing"
+        >
+        <label for="<%= id %>" class="custom-control-label">
+          <%= I18n.t(:"educator_profile_form.#{label_key}") %>
+        </label>
+      </div>
+    <% end %>
+
+  </div>
+</div>

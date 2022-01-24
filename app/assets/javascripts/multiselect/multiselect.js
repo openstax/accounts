@@ -1,15 +1,121 @@
-parcelRequire = function (e, r, t, n) { var i, o = "function" == typeof parcelRequire && parcelRequire, u = "function" == typeof require && require; function f(t, n) { if (!r[t]) { if (!e[t]) { var i = "function" == typeof parcelRequire && parcelRequire; if (!n && i) return i(t, !0); if (o) return o(t, !0); if (u && "string" == typeof t) return u(t); var c = new Error("Cannot find module '" + t + "'"); throw c.code = "MODULE_NOT_FOUND", c } p.resolve = function (r) { return e[t][1][r] || r }, p.cache = {}; var l = r[t] = new f.Module(t); e[t][0].call(l.exports, p, l, l.exports, this) } return r[t].exports; function p(e) { return f(p.resolve(e)) } } f.isParcelRequire = !0, f.Module = function (e) { this.id = e, this.bundle = f, this.exports = {} }, f.modules = e, f.cache = r, f.parent = o, f.register = function (r, t) { e[r] = [function (e, r) { r.exports = t }, {}] }; for (var c = 0; c < t.length; c++)try { f(t[c]) } catch (e) { i || (i = e) } if (t.length) { var l = f(t[t.length - 1]); "object" == typeof exports && "undefined" != typeof module ? module.exports = l : "function" == typeof define && define.amd ? define(function () { return l }) : n && (this[n] = l) } if (parcelRequire = f, i) throw i; return f }({
-  "f2rN": [function (require, module, exports) {
-    "use strict"; function e(e) { Object.assign(this, e); var t = this, r = ko.pureComputed(function () { return t.options().map(function (e) { return Object.assign({}, e, { groups: e.groups || [] }) }) }), n = ko.pureComputed(function () { var e = new Set(r().map(function (e) { return e.groups }).reduce(function (e, t) { return e.concat(t) }, [])); return Array.from(e.values()).filter(function (e) { return void 0 !== e }).sort() }); this.filteredResults = ko.pureComputed(function () { return r().filter(function (e) { return e.label.toLowerCase().includes(t.filter().toLowerCase()) }) }), this.filteredGroups = ko.pureComputed(function () { return n().map(function (e) { var n = e.toLowerCase().includes(t.filter().toLowerCase()); return { name: e, results: (n ? r() : t.filteredResults()).filter(function (t) { return t.groups.includes(e) }) } }).filter(function (e) { return e.results.length > 0 }) }), this.groupedResults = ko.pureComputed(function () { return n().length > 0 }) } Object.defineProperty(exports, "__esModule", { value: !0 }), exports.default = void 0; var t = { viewModel: e, template: '\n    <div class="filtered-results">\n        \x3c!-- ko if: groupedResults --\x3e\n            \x3c!-- ko foreach: filteredGroups --\x3e\n                <div class="group-heading" data-bind="text:name"></div>\n                <div class="results" data-bind="foreach: results">\n                    <div class="result" data-bind="text: $data.label, click: $parents[1].onClick, css: {selected: $data.selected}"></div>\n                </div>\n            \x3c!-- /ko --\x3e\n        \x3c!-- /ko --\x3e\n        \x3c!-- ko ifnot: groupedResults --\x3e\n            <div class="results" data-bind="foreach: filteredResults">\n                <div class="result" data-bind="text: $data.label, click: $parent.onClick, css: {selected: $data.selected}"></div>\n            </div>\n        \x3c!-- /ko --\x3e\n    </div>\n    ' }; exports.default = t;
-  }, {}], "JZil": [function (require, module, exports) {
-    "use strict"; function e(e) { var t = e.filter, n = e.selections, s = e.placeholder; this.filter = t, this.selections = n, this.placeholder = s, this.remove = function (e) { e.selected(!1) } } Object.defineProperty(exports, "__esModule", { value: !0 }), exports.default = void 0; var t = { viewModel: e, template: '\n        <div class="selections">\n            <input type="text" class="filter" data-bind="textInput: filter, attr: {placeholder: placeholder}">\n            \x3c!-- ko foreach: selections --\x3e\n                <div class="box">\n                    <span data-bind="text: label"></span>\n                    <span role="button" class="put-away" data-bind="click: $parent.remove">\n                        &times;\n                    </span>\n                </div>\n            \x3c!-- /ko --\x3e\n        </div>\n    ' }; exports.default = t;
-  }, {}], "R1Ae": [function (require, module, exports) {
-    "use strict"; function e(e) { var n = e.isOpen; return { isOpen: n, toggleOpen: function () { n(!n()) } } } Object.defineProperty(exports, "__esModule", { value: !0 }), exports.default = void 0; var n = { viewModel: e, template: '\n        <button type="button" data-bind="click: toggleOpen">\n            \x3c!-- ko if: isOpen --\x3e\n                <i class="fa fa-caret-up"></i>\n            \x3c!-- /ko --\x3e\n            \x3c!-- ko ifnot: isOpen --\x3e\n                <i class="fa fa-caret-down"></i>\n            \x3c!-- /ko --\x3e\n        </button>\n    ' }; exports.default = n;
-  }, {}], "MUnp": [function (require, module, exports) {
+//= require ./ms-filtered-results
+//= require ./ms-selections
+//= require ./ms-toggle-button
+/*
+import msFilteredResultsSpec from './ms-filtered-results'
+import msSelectionsSpec from './ms-selections'
+import msToggleButton from './ms-toggle-button'
+import './os-multi-select.scss'
+*/
+ko.options.deferUpdates = true
 
-  }, {}], "O63z": [function (require, module, exports) {
-    "use strict"; Object.defineProperty(exports, "__esModule", { value: !0 }), exports.default = i; var e = o(require("./ms-filtered-results")), t = o(require("./ms-selections")), n = o(require("./ms-toggle-button")); function o(e) { return e && e.__esModule ? e : { default: e } } function s() { s.isDone || (ko.components.register("ms-filtered-results", e.default), ko.components.register("ms-selections", t.default), ko.components.register("ms-toggle-button", n.default), s.isDone = !0) } function r(e) { var t = Array.from(e.querySelectorAll("optgroup")), n = Array.from(e.querySelectorAll("option")); function o(t) { var n = ko.observable(t.selected); return n.subscribe(function (n) { t.selected = n, e.dispatchEvent(new window.Event("change")) }), n } return t.length > 0 ? n.reduce(function (e, t) { var n = t.parentNode.label, s = e.find(function (e) { return t.value === e.value }); return s ? (s.groups.push(n), e) : e.concat({ label: t.textContent, value: t.value, selected: o(t), groups: [n] }) }, []) : n.map(function (e) { return { label: e.textContent, value: e.value, selected: o(e) } }) } function l(e) { var t = document.createElement("template"); return t.innerHTML = e.trim(), t.content.firstChild } function i(e) { ko.options.deferUpdates = !0; var t = ko.observable(""), n = ko.observableArray(r(e)), o = ko.pureComputed(function () { return n().filter(function (e) { return Boolean(e.selected()) }) }), i = ko.observable(!1), u = { options: n, filter: t, selections: o, placeholder: e.dataset.placeholder || "", toggleSelection: function (e) { e.selected(!e.selected()) }, resultsShown: i }, c = l('\n        <div class="os-multiselect">\n            <div class="selections-and-filter">\n                <ms-selections params="selections: selections, filter: filter, placeholder: placeholder"></ms-selections>\n                <ms-toggle-button params="isOpen: resultsShown"></ms-toggle-button>\n            </div>\n            \x3c!-- ko if: resultsShown --\x3e\n                <ms-filtered-results params="options: options, filter: filter, onClick: toggleSelection"></ms-filtered-results>\n            \x3c!-- /ko --\x3e\n        </div>\n    '); t.subscribe(function (e) { "" !== e && i(!0) }), e.parentNode.insertBefore(c, e), e.style.display = "none", s(), ko.applyBindings(u, c) } require("./os-multi-select.scss"), s.isDone = !1;
-  }, { "./ms-filtered-results": "f2rN", "./ms-selections": "JZil", "./ms-toggle-button": "R1Ae", "./os-multi-select.scss": "MUnp" }], "BERD": [function (require, module, exports) {
-    "use strict"; var e = t(require("./os-multi-select")); function t(e) { return e && e.__esModule ? e : { default: e } } window.osMultiSelect = e.default;
-  }, { "./os-multi-select": "O63z" }]
-}, {}, ["BERD"], null)
+ko.bindingHandlers.multiselect = (
+  function () {
+    function registerComponents () {
+      if (registerComponents.isDone) {
+        return
+      }
+      ko.components.register('ms-filtered-results', msFilteredResultsSpec)
+      ko.components.register('ms-selections', msSelectionsSpec)
+      ko.components.register('ms-toggle-button', msToggleButton)
+      registerComponents.isDone = true
+    }
+    registerComponents.isDone = false
+
+    function getValuesFrom (selector) {
+      const groups = Array.from(selector.querySelectorAll('optgroup'))
+      const options = Array.from(selector.querySelectorAll('option'))
+
+      function proxyForOptionSelected (opt) {
+        const selected = ko.observable(opt.selected)
+
+        selected.subscribe((newValue) => {
+          opt.selected = newValue
+          selector.dispatchEvent(new window.Event('change'))
+        })
+
+        return selected
+      }
+
+      if (groups.length > 0) {
+        return options.reduce((a, b) => {
+          const group = b.parentNode.label
+          const foundOpt = a.find((opt) => b.value === opt.value)
+
+          if (foundOpt) {
+            foundOpt.groups.push(group)
+            return a
+          }
+
+          return a.concat({
+            label: b.textContent,
+            value: b.value,
+            selected: proxyForOptionSelected(b),
+            groups: [group]
+          })
+        }, [])
+      }
+
+      return options.map((opt) => ({
+        label: opt.textContent,
+        value: opt.value,
+        selected: proxyForOptionSelected(opt)
+      }))
+    }
+
+    function htmlToElement (html) {
+      const template = document.createElement('template')
+
+      template.innerHTML = html.trim()
+      return template.content.firstChild
+    }
+
+    return ({
+      init: function (originalSelector, valueAccessor) {
+        const filter = ko.observable('')
+        const options = ko.observableArray(getValuesFrom(originalSelector))
+        const selections = ko.pureComputed(() =>
+          options().filter((opt) => Boolean(opt.selected()))
+        )
+        const resultsShown = ko.observable(false)
+        const vm = {
+          options,
+          filter,
+          selections,
+          placeholder: originalSelector.dataset.placeholder || '',
+          toggleSelection (item) {
+            item.selected(!item.selected())
+          },
+          resultsShown
+        }
+        const container = htmlToElement(`
+              <div class="os-multiselect">
+                  <div class="selections-and-filter">
+                      <ms-selections params="selections: selections, filter: filter, placeholder: placeholder"></ms-selections>
+                      <ms-toggle-button params="isOpen: resultsShown"></ms-toggle-button>
+                  </div>
+                  <!-- ko if: resultsShown -->
+                      <ms-filtered-results params="options: options, filter: filter, onClick: toggleSelection"></ms-filtered-results>
+                  <!-- /ko -->
+              </div>
+          `)
+
+        filter.subscribe((newValue) => {
+          if (newValue !== '') {
+            resultsShown(true)
+          }
+        })
+
+        selections.subscribe((arr) => {
+          const onChange = valueAccessor();
+
+          onChange(arr);
+        })
+        originalSelector.parentNode.insertBefore(container, originalSelector)
+        originalSelector.style.display = 'none'
+        registerComponents()
+        ko.applyBindings(vm, container)
+      }
+    })
+  }()
+)

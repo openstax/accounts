@@ -17,7 +17,7 @@ module Newflow
         attribute :other_role_name, type: String
         attribute :who_chooses_books, type: String
         attribute :using_openstax_how, type: String
-        attribute :num_students_per_semester_taught, type: Integer
+        attribute :num_students_per_semester_taught, type: Object
         attribute :books_used, type: Object
         attribute :books_of_interest, type: Object
 
