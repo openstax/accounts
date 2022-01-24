@@ -261,8 +261,8 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
         email = AddEmailToUser.call("otherbob@example.com", user).outputs.email
         ConfirmContactInfo.call(email)
         stub_salesforce(contacts:
-          [{id: 'foo', email: 'BOB@example.com', faculty_verified: "pending_faculty", adoption_status: "Not Adopter"},
-           {id: 'foo2', email: 'OTHERBOB@example.com', faculty_verified: "pending_faculty", adoption_status: "Not Adopter"}]
+                          [{id: 'foo', email: 'BOB@example.com', faculty_verified: "pending_faculty", adoption_status: "Not Adopter"},
+                           {id: 'foo2', email: 'OTHERBOB@example.com', faculty_verified: "pending_faculty", adoption_status: "Not Adopter"}]
         )
         expect(Rails.logger).to receive(:warn)
       }
@@ -337,7 +337,7 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       end
 
       it 'errors when two contacts have the same (case-insensitive) email' +
-         'in primary and alt fields' do
+           'in primary and alt fields' do
         stub_salesforce(
           contacts: [{email: 'BOB@example.com'}, {email_alt: 'Bob@example.com'}]
         )
@@ -541,21 +541,21 @@ RSpec.describe UpdateUserSalesforceInfo, type: :routine do
       )
     }
 
-      context 'when user has confirmed_faculty status' do
-        let(:user_faculty_status) { :confirmed_faculty }
+    context 'when user has confirmed_faculty status' do
+      let(:user_faculty_status) { :confirmed_faculty }
 
-        it 'does not override a user\'s confirmed_faculty status' do
-          expect { routine_call }.not_to change(user, :faculty_status)
-        end
+      it 'does not override a user\'s confirmed_faculty status' do
+        expect { routine_call }.not_to change(user, :faculty_status)
       end
+    end
 
-      context 'when user has pending_faculty status' do
-        let(:user_faculty_status) { :pending_faculty }
+    context 'when user has pending_faculty status' do
+      let(:user_faculty_status) { :pending_faculty }
 
-        it 'does not override a user\'s confirmed_faculty status' do
-          expect { routine_call }.not_to change(user, :faculty_status)
-        end
+      it 'does not override a user\'s confirmed_faculty status' do
+        expect { routine_call }.not_to change(user, :faculty_status)
       end
+    end
   end
 
   def new_contact(**args)
