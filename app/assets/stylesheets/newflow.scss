@@ -145,15 +145,6 @@ input.has-error {
 
 }
 
-// extend the multiselect just for the complete form for now
-.os-multiselect {
-    @extend %os-multiselect;
-
-    input[type=text] {
-        min-width: 100%;
-    }
-}
-
 form {
     height: auto !important;
 }
@@ -274,8 +265,6 @@ input.has-error {
         color: #fff;
         font-weight: bold;
         background-color: #f36b32;
-
-
     }
 
     #return-button {

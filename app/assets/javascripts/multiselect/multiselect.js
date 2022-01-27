@@ -1,16 +1,13 @@
 //= require ./ms-filtered-results
 //= require ./ms-selections
 //= require ./ms-toggle-button
-/*
-import msFilteredResultsSpec from './ms-filtered-results'
-import msSelectionsSpec from './ms-selections'
-import msToggleButton from './ms-toggle-button'
-import './os-multi-select.scss'
-*/
+
 ko.options.deferUpdates = true
 
 ko.bindingHandlers.multiselect = (
   function () {
+    const MAX_SELECTIONS = 5;
+
     function registerComponents () {
       if (registerComponents.isDone) {
         return
@@ -86,6 +83,7 @@ ko.bindingHandlers.multiselect = (
           toggleSelection (item) {
             item.selected(!item.selected())
           },
+          atMax: ko.computed(() => selections().length >= MAX_SELECTIONS),
           resultsShown
         }
         const container = htmlToElement(`
@@ -95,7 +93,9 @@ ko.bindingHandlers.multiselect = (
                       <ms-toggle-button params="isOpen: resultsShown"></ms-toggle-button>
                   </div>
                   <!-- ko if: resultsShown -->
-                      <ms-filtered-results params="options: options, filter: filter, onClick: toggleSelection"></ms-filtered-results>
+                      <ms-filtered-results
+                        params="options: options, filter: filter, atMax: atMax, onClick: toggleSelection"
+                      ></ms-filtered-results>
                   <!-- /ko -->
               </div>
           `)

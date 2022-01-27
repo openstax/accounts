@@ -81,7 +81,7 @@
     if (data.showChosenAndUsingSections()) {
       console.info('Chosen invalid?', data.chosenNoticeVisible());
       console.info('Using invalid?', data.usingNoticeVisible());
-      console.info('min/max books invalid?', data.minBooksNoticeVisible(), data.maxBooksNoticeVisible());
+      console.info('min/max books invalid?', data.minBooksNoticeVisible());
       console.info('Selected books', Reflect.ownKeys(data.studentCounts));
       console.info('Invalid student counts?', Reflect.ownKeys(data.studentCounts).map(
         (key) => data.studentCounts[key].invalid()
@@ -89,7 +89,7 @@
     }
     if (data.showChosenAndUsingSections() && (
       data.chosenNoticeVisible() || data.usingNoticeVisible() ||
-      data.minBooksNoticeVisible() || data.maxBooksNoticeVisible() ||
+      data.minBooksNoticeVisible() ||
       Reflect.ownKeys(data.studentCounts).some((key) => data.studentCounts[key].invalid())
     )) {
       return false;
@@ -127,7 +127,7 @@
       function () { return hasBeenSubmitted() && !howUsing(); }
     );
     const selectedBooks = ko.observable([]);
-    const maxBooksNoticeVisible = ko.computed(() => selectedBooks().length > 5);
+    const maxBooksNoticeVisible = ko.computed(() => selectedBooks().length >= 5);
     const minBooksNoticeVisible = ko.computed(() => hasBeenSubmitted() && selectedBooks().length < 1);
     const bookSelectorName = ko.computed(
       () => (

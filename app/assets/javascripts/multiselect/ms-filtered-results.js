@@ -13,7 +13,12 @@ msFilteredResultsSpec = (
 
         return Array.from(s.values()).filter((v) => typeof v !== 'undefined').sort()
       })
+      const prohibited = (selected) => this.atMax() && !selected;
 
+      this.chooseOnClick = (item, ...other) => {
+        return prohibited(item.selected()) ? null : this.onClick(item, ...other);
+      }
+      this.cursor = (selected) => prohibited(selected) ? 'not-allowed' : null;
       this.filteredResults = ko.pureComputed(function () {
         return results().filter(
           (opt) => opt.label.toLowerCase().includes(vm.filter().toLowerCase())
@@ -40,6 +45,10 @@ msFilteredResultsSpec = (
       })
     }
 
+    const style1 = `{
+      cursor: $parents[1].cursor($data.selected())
+    }`;
+
     return ({
       viewModel: VM,
       template: `
@@ -48,13 +57,17 @@ msFilteredResultsSpec = (
                 <!-- ko foreach: filteredGroups -->
                     <div class="group-heading" data-bind="text:name"></div>
                     <div class="results" data-bind="foreach: results">
-                        <div class="result" data-bind="text: $data.label, click: $parents[1].onClick, css: {selected: $data.selected}"></div>
+                        <div class="result"
+                          data-bind="text: $data.label, click: $parents[1].chooseOnClick, css: {selected: $data.selected}, style: ${style1}"
+                        ></div>
                     </div>
                 <!-- /ko -->
             <!-- /ko -->
             <!-- ko ifnot: groupedResults -->
                 <div class="results" data-bind="foreach: filteredResults">
-                    <div class="result" data-bind="text: $data.label, click: $parent.onClick, css: {selected: $data.selected}"></div>
+                    <div class="result"
+                      data-bind="text: $data.label, click: $parent.onClick, css: {selected: $data.selected}, style: $parent.style"
+                    ></div>
                 </div>
             <!-- /ko -->
         </div>
