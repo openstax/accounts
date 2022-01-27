@@ -98,7 +98,6 @@ module Newflow
           @total_steps = 4
           @first_name = unverified_user.first_name
           @email = unverified_user.email_addresses.first.value
-          # TODO: we might want to change this security log for a sentry error instead
           security_log(:educator_verify_email_failed, email: @email)
           render(:educator_email_verification_form)
         }
@@ -107,7 +106,7 @@ module Newflow
 
     def educator_sheerid_form
       @sheerid_url = generate_sheer_id_url(user: current_user)
-      security_log(:user_viewed_sheerid_form, user: current_user )
+      security_log(:user_viewed_sheerid_form, user: current_user)
     end
 
     # SheerID makes a POST request to this endpoint when it verifies an educator
@@ -198,7 +197,7 @@ module Newflow
 
     def store_sheerid_verification_for_user
       if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
-        current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)
+        current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param, sheer_id_webhook_received: true)
         security_log(:user_updated, message: "updated sheerid_verification_id to #{sheerid_provided_verification_id_param}", user: current_user)
       end
     end
