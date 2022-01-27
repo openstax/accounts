@@ -5,7 +5,6 @@ module Newflow
     class ProcessSheeridWebhookRequest
 
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
-      uses_routine UpsertSheeridVerification
       uses_routine SheeridRejectedEducator
 
       protected ###############
@@ -23,28 +22,37 @@ module Newflow
           fatal_error(code: :sheerid_api_call_failed)
         end
 
-        verification ||= run(UpsertSheeridVerification,
-                              verification_id: verification_id,
-                              details: details
-        ).outputs.verification
+        # grab the details from what SheerID sends back and add them to the verification object
+        verification = SheeridVerification.find_or_initialize_by(verification_id: verification_id)
+        verification.email = verification_details_from_sheerid.email
+        verification.current_step = verification_details_from_sheerid.current_step
+        verification.first_name = verification_details_from_sheerid.first_name
+        verification.last_name = verification_details_from_sheerid.last_name
+        verification.organization_name = verification_details_from_sheerid.organization_name
+        verification.save
 
         existing_user = EmailAddress.verified.find_by(value: verification.email)&.user
 
         if !existing_user.present?
           Sentry.capture_message("[ProcessSheeridWebhookRequest] No user found with verification id (#{verification_id}) "\
             "and email (#{verification.email})",
-           extra: { verification_id: verification_id, verification_details: verification_details_from_sheerid },
+           extra: { verification_id: verification_id, verification_details_from_sheer_id: verification_details_from_sheerid },
            user: { verification_id: verification_id }
           )
           return
         end
 
-        # Set the user's sheerid_verification_id only if they didn't already have one
-        # VerifyEducator always sets it and we don't want to overwrite the approved one
+        # Set the user's sheerid_verification_id only if they didn't already have one  we don't want to overwrite the approved one
         if verification_id.present? && existing_user.sheerid_verification_id.blank?
           existing_user.sheerid_verification_id = verification_id
           SecurityLog.create!(
             event_type: :user_updated_using_sheerid_data,
+            user: existing_user,
+            event_data: { verification: verification.inspect }
+          )
+        else
+          SecurityLog.create!(
+            event_type: :sheerid_conflicting_verification_id,
             user: existing_user,
             event_data: { verification: verification.inspect }
           )
@@ -88,7 +96,7 @@ module Newflow
           transfer_errors_from(existing_user, {type: :verbatim}, :fail_if_errors)
         end
 
-        if verification.rejected?
+        if verification.current_step == 'rejected'
           run(SheeridRejectedEducator, user: existing_user, verification_id: verification_id)
         elsif verification.present?
           SecurityLog.create!(

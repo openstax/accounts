@@ -116,7 +116,7 @@ module Newflow
       handle_with(
         EducatorSignup::SheeridWebhook,
         success: lambda {
-          security_log(:user_updated_using_sheerid_data, { data: @handler_result })
+          security_log(:sheerid_webhook_recieved, { data: @handler_result })
           render(status: :ok, plain: 'Success')
         },
         failure: lambda {

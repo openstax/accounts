@@ -84,6 +84,8 @@ class SecurityLog < ApplicationRecord
     user_profile_complete
     salesforce_error
     update_user_contact_info
+    sheerid_conflicting_verification_id
+    sheerid_webhook_recieved
   ]
 
   json_serialize :event_data, Hash
