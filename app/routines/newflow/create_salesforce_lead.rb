@@ -81,7 +81,7 @@ module Newflow
       outputs.user = user
 
       if lead.save
-        store_salesforce_lead_id(user, lead.id) && log_success(lead, user)
+        store_salesforce_lead_id(user, lead.id)
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
       else
         handle_lead_errors(lead, user)
@@ -135,16 +135,6 @@ module Newflow
 
       adoption_json['Books'] = books_json
       adoption_json.to_json
-    end
-
-    def log_success(lead, user)
-      Rails.logger.info("#{self.class.name}: pushed #{lead.id} for user #{user.id}")
-
-      SecurityLog.create!(
-        user: user,
-        event_type: :created_salesforce_lead,
-        event_data: { lead_id: lead.id }
-      )
     end
 
     def handle_lead_errors(lead, user)
