@@ -14,22 +14,27 @@ module Newflow
         status.set_job_name(self.class.name)
         status.set_job_args(verification_id: verification_id)
 
-        verification_details = SheeridAPI.get_verification_details(verification_id)
-        if !verification_details.success?
+        verification_details_from_sheerid = SheeridAPI.get_verification_details(verification_id)
+        if !verification_details_from_sheerid.success?
           Sentry.capture_message("[ProcessSheeridWebhookRequest] fetching verification details FAILED",
-            extra: { verification_id: verification_id, verification_details: verification_details },
+            extra: { verification_id: verification_id, verification_details: verification_details_from_sheerid },
             user: { verification_id: verification_id }
           )
           fatal_error(code: :sheerid_api_call_failed)
         end
 
-        verification = upsert_verification(verification_id, verification_details)
+        verification ||= run(UpsertSheeridVerification,
+                              verification_id: verification_id,
+                              details: details
+        ).outputs.verification
+
         existing_user = EmailAddress.verified.find_by(value: verification.email)&.user
 
         if !existing_user.present?
-          Rails.logger.debug(
-            "[ProcessSheeridWebhookRequest] No user found with verification id (#{verification_id}) "\
-            "and email (#{verification.email})"
+          Sentry.capture_message("[ProcessSheeridWebhookRequest] No user found with verification id (#{verification_id}) "\
+            "and email (#{verification.email})",
+           extra: { verification_id: verification_id, verification_details: verification_details_from_sheerid },
+           user: { verification_id: verification_id }
           )
           return
         end
@@ -47,7 +52,7 @@ module Newflow
 
 
         # Update the user account with the data returned from SheerID
-        if verification_details.relevant?
+        if verification_details_from_sheerid.relevant?
           existing_user.first_name = verification.first_name
           existing_user.last_name = verification.last_name
           existing_user.sheerid_reported_school = verification.organization_name
@@ -95,16 +100,6 @@ module Newflow
 
         outputs.verification = verification
       end
-
-      private #################
-
-      def upsert_verification(verification_id, details)
-        @verification ||= run(UpsertSheeridVerification,
-          verification_id: verification_id,
-          details: details
-        ).outputs.verification
-      end
-
     end
   end
 end
