@@ -165,10 +165,10 @@ check_schedules:
 # enable anomaly detection
 # note: with trend, time series are sent to https://trendapi.org
 # anomaly_checks: prophet / trend / r
-anomaly_checks: prophet
+# anomaly_checks: prophet
 
 # enable forecasting
 # note: with trend, time series are sent to https://trendapi.org
 # forecasting: prophet / trend
-forecasting: prophet
+# forecasting: prophet
 
