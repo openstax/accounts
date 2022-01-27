@@ -65,13 +65,15 @@ module Newflow
 
         outputs.user = user
 
-        unless user.is_educator_pending_cs_verification? || user.faculty_status == 'confirmed_faculty' || user.faculty_status == 'rejected_faculty'
-          # Can't find school wasn't selected and SheerId or manual verification didn't happen, don't create lead
+        unless (user.is_educator_pending_cs_verification? ||
+                user.faculty_status == 'rejected_faculty') && !user.sheerid_verification_id.blank?
+          # User is pending verification (lead created in CsVerificationRequest)
+          # or User used SheerID and we have not heard back from them (lead created in ProcessSheeridWebhookRequest)
+          # don't create lead right now
           return
         end
-        # create the lead if the user is verified, otherwise, it'll get created later
-        # either when rejected by sheer id, when manual CS verification is required,
-        # or if their account has been in a signup state for longer than 4 days
+
+        # Create the lead if the user is pending and not waiting on SheerID response
         create_salesforce_lead
 
       end

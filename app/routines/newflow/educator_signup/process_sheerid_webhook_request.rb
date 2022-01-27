@@ -5,7 +5,6 @@ module Newflow
     class ProcessSheeridWebhookRequest
 
       lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
-      uses_routine SheeridRejectedEducator
 
       protected ###############
 
@@ -44,7 +43,8 @@ module Newflow
 
         # Set the user's sheerid_verification_id only if they didn't already have one  we don't want to overwrite the approved one
         if verification_id.present? && existing_user.sheerid_verification_id.blank?
-          existing_user.sheerid_verification_id = verification_id
+          existing_user.update!(sheerid_verification_id: verification_id)
+
           SecurityLog.create!(
             event_type: :user_updated_using_sheerid_data,
             user: existing_user,
@@ -97,13 +97,23 @@ module Newflow
         end
 
         if verification.current_step == 'rejected'
-          run(SheeridRejectedEducator, user: existing_user, verification_id: verification_id)
+          if !user.rejected_faculty?
+            user.faculty_status = User::REJECTED_FACULTY
+            user.sheerid_verification_id = verification_id
+            user.save
+          end
         elsif verification.present?
           SecurityLog.create!(
             event_type: :user_updated_using_sheerid_data,
             user: existing_user,
             event_data: { verification: verification.inspect }
           ) if user_changed
+        end
+
+        # if we got the webhook back after the user submitted the profile, they didn't get a lead built yet
+        # We just make sure they don't have a lead or contact id yet
+        if existing_user.salesforce_lead_id.blank? && existing_user.salesforce_contact_id.blank?
+          CreateSalesforceLead.perform_later(user: existing_user)
         end
 
         outputs.verification = verification
