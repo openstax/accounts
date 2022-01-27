@@ -10,7 +10,7 @@ test:
 production:
   # name: application name in APM Web UI
   # - Default: the application names comes from the Rails or Sinatra class name
-  name: Accounts (<%= ENV['ENVIRONMENT_NAME'] %>)
+  name: Accounts (<%= ENV['ENV_NAME'] %>)
 
   # key: Your Organization key for Scout APM. Found on the settings screen.
   # - Default: none
@@ -19,7 +19,7 @@ production:
   # monitor: Enable Scout APM or not
   # - Default: false
   # - Valid Options: true, false
-  monitor: <%= ENV.fetch('SCOUT_MONITOR', false) %>
+  monitor: <%= ENV.fetch('SCOUT_MONITOR', true) %>
 
   # log_level: Verboseness of logs.
   # - Default: 'info'
