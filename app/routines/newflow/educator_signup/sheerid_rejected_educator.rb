@@ -18,6 +18,7 @@ module Newflow
         user.save
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
+        # we now know they are rejected from SheerID, so we can create the lead so CS can review them
         CreateSalesforceLead.perform_later(user: user)
       end
 

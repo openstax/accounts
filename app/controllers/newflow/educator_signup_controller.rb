@@ -42,7 +42,7 @@ module Newflow
         is_BRI_book: is_BRI_book_adopter?,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user.id)
-          security_log(:educator_began_signup, { user: @handler_result.outputs.user, user_state: @handler_result.outputs.user.attributes.delete_if { |k,v| v.nil? } })
+          security_log(:educator_began_signup, { user: @handler_result.outputs.user })
           clear_cache_BRI_marketing
           redirect_to(educator_email_verification_form_path)
         },
@@ -144,7 +144,7 @@ module Newflow
         user: current_user,
         success: lambda {
           user = @handler_result.outputs.user
-          security_log(:user_profile_complete, { user: user, user_state: user.attributes.delete_if { |k,v| v.nil? } })
+          security_log(:user_profile_complete, { user: user })
           clear_incomplete_educator
 
           if user.is_educator_pending_cs_verification?
@@ -163,7 +163,7 @@ module Newflow
 
     def educator_cs_verification_form
       @book_titles = book_data.titles
-      security_log(:user_viewed_signup_form, { form_name: action_name, user: current_user, user_state: current_user.attributes.delete_if { |k,v| v.nil? } })
+      security_log(:user_viewed_signup_form, { form_name: action_name, user: current_user })
     end
 
     def educator_pending_cs_verification
@@ -176,7 +176,7 @@ module Newflow
         EducatorSignup::CsVerificationRequest,
         user: current_user,
         success: lambda {
-          security_log(:requested_manual_cs_verification, { form_name: action_name, user: current_user, user_state: current_user.attributes.delete_if { |k,v| v.nil? } })
+          security_log(:requested_manual_cs_verification, { form_name: action_name, user: current_user })
           redirect_to(educator_pending_cs_verification_path)
         },
         failure: lambda {
