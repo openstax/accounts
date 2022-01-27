@@ -9,7 +9,16 @@ module Newflow
 
       lev_handler
 
+      uses_routine CreateEmailForUser, translations: {
+        outputs: {
+          map: { email: :school_issued_email },
+          scope: :school_issued_email
+        }
+      }
+
       paramify :signup do
+        attribute :school_name, type: String
+        attribute :school_issued_email, type: String
         attribute :is_school_not_supported_by_sheerid, type: String
         attribute :is_country_not_supported_by_sheerid, type: String
         attribute :school_name, type: String
@@ -31,10 +40,11 @@ module Newflow
 
       protected ###############
 
-      attr_reader :user
+      attr_reader :user, :email_address_value
 
       def setup
         @user = options[:user]
+        @email_address_value = signup_params.school_issued_email
       end
 
       def authorized?
@@ -56,20 +66,27 @@ module Newflow
           is_profile_complete: true,
           is_educator_pending_cs_verification: signup_params.is_school_not_supported_by_sheerid == 'true' || signup_params.is_country_not_supported_by_sheerid == 'true' || user.is_sheerid_unviable?
         )
-        transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
-        if user.is_sheerid_verified? && !user.confirmed_faculty?
-          user.update(faculty_status: User::CONFIRMED_FACULTY)
-          transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
+        if user.is_educator_pending_cs_verification?
+          # CS verification requests need to set the user to pending and mark when they requested
+          user.update(
+            requested_cs_verification_at: DateTime.now,
+            faculty_status: User::PENDING_FACULTY
+          )
         end
+
+        if !users_existing_email.present?
+          run(CreateEmailForUser, email: email_address_value, user: user, is_school_issued: true)
+        end
+
+        transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
         outputs.user = user
 
-        unless (user.is_educator_pending_cs_verification? ||
-                user.faculty_status == 'rejected_faculty') && !user.sheerid_verification_id.blank?
+        unless user.is_educator_pending_cs_verification? || !user.sheerid_verification_id.blank?
           # User is pending verification (lead created in CsVerificationRequest)
           # or User used SheerID and we have not heard back from them (lead created in ProcessSheeridWebhookRequest)
-          # don't create lead right now
+          # don't create lead when they finish their profile
           return
         end
 
@@ -101,9 +118,9 @@ module Newflow
       end
 
       def check_params
-        if (signup_params.is_school_not_supported_by_sheerid == 'true' ||
-          signup_params.is_country_not_supported_by_sheerid == 'true') &&
-           signup_params.school_name.blank?
+        if (signup_params.is_school_not_supported_by_sheerid == 'true' &&
+          signup_params.is_country_not_supported_by_sheerid == 'true') ||
+          signup_params.school_name.blank?
 
           param_error(:school_name, :school_name_must_be_entered)
         end
@@ -131,6 +148,14 @@ module Newflow
 
           param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
         end
+
+        if email_address_value.blank?
+          param_error(:school_issued_email, :school_issued_email_must_be_entered)
+        elsif email_address_value.present? && invalid_email?
+          param_error(:school_issued_email, :school_issued_email_is_invalid)
+        elsif email_address_value.present? && email_already_taken?
+          param_error(:school_issued_email, :school_issued_email_is_taken)
+        end
       end
 
       def books_used
@@ -139,6 +164,30 @@ module Newflow
 
       def books_of_interest
         signup_params.books_of_interest.reject{ |b| b.blank? }
+      end
+
+      def format_books_for_salesforce_string(books)
+        books.reject(&:empty?)&.join(';')
+      end
+
+      def invalid_email?
+        email = EmailAddress.new(value: email_address_value)
+
+        begin
+          email.mx_domain_validation
+          return email.errors.any?
+        rescue Mail::Field::IncompleteParseError
+          return true
+        end
+      end
+
+      def email_already_taken?
+        email = email_address_value
+        users_existing_email.none? && ContactInfo.verified.where(value: email).any?
+      end
+
+      def users_existing_email
+        @users_existing_email ||= user.contact_infos.where(value: email_address_value)
       end
 
       def param_error(field, error_key)

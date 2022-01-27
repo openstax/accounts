@@ -97,11 +97,9 @@ module Newflow
         end
 
         if verification.current_step == 'rejected'
-          if !user.rejected_faculty?
-            user.faculty_status = User::REJECTED_FACULTY
-            user.sheerid_verification_id = verification_id
-            user.save
-          end
+          user.update!(faculty_status: User::REJECTED_FACULTY, sheerid_verification_id: verification_id)
+        elsif verification.current_step == 'success'
+          user.update!(faculty_status: User::CONFIRMED_FACULTY, sheerid_verification_id: verification_id)
         elsif verification.present?
           SecurityLog.create!(
             event_type: :user_updated_using_sheerid_data,

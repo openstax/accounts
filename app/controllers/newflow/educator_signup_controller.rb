@@ -171,7 +171,7 @@ module Newflow
 
     def educator_cs_verification_request
       handle_with(
-        EducatorSignup::CsVerificationRequest,
+        EducatorSignup::CompleteProfile,
         user: current_user,
         success: lambda {
           security_log(:requested_manual_cs_verification, { form_name: action_name, user: current_user })
