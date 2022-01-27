@@ -2,7 +2,7 @@ module Newflow
   module EducatorSignup
     class CsVerificationRequest
       lev_handler
-      uses_routine UpsertSalesforceInfoForCsVerification
+      uses_routine CreateSalesforceLead
       uses_routine CreateEmailForUser, translations: {
         outputs: {
           map: { email: :school_issued_email },
