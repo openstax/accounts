@@ -18,7 +18,7 @@ module Newflow
 
       paramify :signup do
         attribute :school_name, type: String
-        attribute :school_issued_email, type: String
+        attribute :school_issued_email, type: String, required: false
         attribute :is_school_not_supported_by_sheerid, type: String
         attribute :is_country_not_supported_by_sheerid, type: String
         attribute :school_name, type: String
@@ -40,11 +40,10 @@ module Newflow
 
       protected ###############
 
-      attr_reader :user, :email_address_value
+      attr_reader :user
 
       def setup
         @user = options[:user]
-        @email_address_value = signup_params.school_issued_email
       end
 
       def authorized?
@@ -55,7 +54,9 @@ module Newflow
         check_params
         return if errors?
 
-        user.update(
+        @did_use_sheerid = !signup_params.is_school_not_supported_by_sheerid == 'true' || !signup_params.is_country_not_supported_by_sheerid == 'true' || !user.is_sheerid_unviable?
+
+        user.update!(
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
           using_openstax_how: signup_params.using_openstax_how,
@@ -64,33 +65,40 @@ module Newflow
           which_books: which_books,
           self_reported_school: signup_params.school_name,
           is_profile_complete: true,
-          is_educator_pending_cs_verification: signup_params.is_school_not_supported_by_sheerid == 'true' || signup_params.is_country_not_supported_by_sheerid == 'true' || user.is_sheerid_unviable?
+          is_educator_pending_cs_verification: !@did_use_sheerid
         )
 
-        if user.is_educator_pending_cs_verification?
-          # CS verification requests need to set the user to pending and mark when they requested
+        unless @did_use_sheerid
+          # user needs CS review to become confirmed - set it as such in accounts
+          # we have to do this before we check if they did use ShID.. otherwise it returns before outputting user
           user.update(
             requested_cs_verification_at: DateTime.now,
             faculty_status: User::PENDING_FACULTY
           )
         end
 
-        if !users_existing_email.present?
-          run(CreateEmailForUser, email: email_address_value, user: user, is_school_issued: true)
+        if !@did_use_sheerid && signup_params.school_issued_email.present?
+          # this user used the CS form and _should_ have provided us an email address - so let's add it, again, before output
+          run(CreateEmailForUser, email: signup_params.school_issued_email, user: user, is_school_issued: true) # TODO: what is the point of just setting this to true? How is this used?
         end
 
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
+        # here's that output we've been waiting for...
         outputs.user = user
 
-        unless user.is_educator_pending_cs_verification? || !user.sheerid_verification_id.blank?
-          # User is pending verification (lead created in CsVerificationRequest)
-          # or User used SheerID and we have not heard back from them (lead created in ProcessSheeridWebhookRequest)
-          # don't create lead when they finish their profile
+        if @did_use_sheerid
+          # User used SheerID - we create their lead in ProcessSheeridWebhookRequest, not here.. and might not be instant
           return
         end
 
-        # Create the lead if the user is pending and not waiting on SheerID response
+        # user needs CS review to become confirmed - set it as such in accounts
+        user.update(
+          requested_cs_verification_at: DateTime.now,
+          faculty_status: User::PENDING_FACULTY
+        )
+
+        # Now we create the lead for the user... because we returned above is they did... again ProcessSheeridWebhookRequest
         create_salesforce_lead
 
       end
@@ -115,6 +123,14 @@ module Newflow
 
       def format_books_for_salesforce_string(books)
         books.reject(&:empty?)&.join(';')
+      end
+
+      def books_used
+        signup_params.books_used.reject{ |b| b.blank? }
+      end
+
+      def books_of_interest
+        signup_params.books_of_interest.reject{ |b| b.blank? }
       end
 
       def check_params
@@ -149,25 +165,15 @@ module Newflow
           param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
         end
 
-        if email_address_value.blank?
-          param_error(:school_issued_email, :school_issued_email_must_be_entered)
-        elsif email_address_value.present? && invalid_email?
-          param_error(:school_issued_email, :school_issued_email_is_invalid)
-        elsif email_address_value.present? && email_already_taken?
-          param_error(:school_issued_email, :school_issued_email_is_taken)
+        if signup_params.school_issued_email.present?
+          if email_address_value.blank?
+            param_error(:school_issued_email, :school_issued_email_must_be_entered)
+          elsif email_address_value.present? && invalid_email?
+            param_error(:school_issued_email, :school_issued_email_is_invalid)
+          elsif email_address_value.present? && email_already_taken?
+            param_error(:school_issued_email, :school_issued_email_is_taken)
+          end
         end
-      end
-
-      def books_used
-        signup_params.books_used.reject{ |b| b.blank? }
-      end
-
-      def books_of_interest
-        signup_params.books_of_interest.reject{ |b| b.blank? }
-      end
-
-      def format_books_for_salesforce_string(books)
-        books.reject(&:empty?)&.join(';')
       end
 
       def invalid_email?
