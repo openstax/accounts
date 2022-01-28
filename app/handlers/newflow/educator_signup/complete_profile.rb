@@ -28,6 +28,7 @@ module Newflow
         attribute :num_students_per_semester_taught, type: Integer
         attribute :books_used, type: Object
         attribute :books_of_interest, type: Object
+        attribute :is_cs_form, type: Object
 
         validates(
           :educator_specific_role,
@@ -138,7 +139,6 @@ module Newflow
 
       def check_params
         role = signup_params.educator_specific_role.strip.downcase
-        puts(role)
         @did_use_sheerid = !signup_params.is_school_not_supported_by_sheerid == 'true' || !signup_params.is_country_not_supported_by_sheerid == 'true' || !user.is_sheerid_unviable?
 
 
