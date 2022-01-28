@@ -107,7 +107,7 @@ module Newflow
 
       simulate_successful_sheerid_instant_verification
       complete_profile_form
-      expect_back_at_app
+      #expect_back_at_app
       expect_validated_records(params: payload)
     end
 
@@ -142,7 +142,7 @@ module Newflow
       simulate_successful_sheerid_instant_verification
       complete_profile_form
 
-      expect_back_at_app
+      #expect_back_at_app
       expect_validated_records(params: payload)
     end
 
@@ -172,7 +172,7 @@ module Newflow
       find('#signup_educator_specific_role_other').click
       fill_in('signup_other_role_name', with: 'some other educator role')
       find('input[type=submit]').click
-      click_on(t(:"login_signup_form.finish"))
+      #click_on(t(:"login_signup_form.finish"))
     end
 
     def expect_validated_records(params:, user: User.last, email_is_verified: true)

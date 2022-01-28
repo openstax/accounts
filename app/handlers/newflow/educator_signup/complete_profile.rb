@@ -138,6 +138,7 @@ module Newflow
 
       def check_params
         role = signup_params.educator_specific_role.strip.downcase
+        puts(role)
         @did_use_sheerid = !signup_params.is_school_not_supported_by_sheerid == 'true' || !signup_params.is_country_not_supported_by_sheerid == 'true' || !user.is_sheerid_unviable?
 
 
@@ -146,7 +147,7 @@ module Newflow
           param_error(:school_name, :school_name_must_be_entered)
         end
 
-        if role == OTHER && signup_params.other_role_name.blank?
+        if role == OTHER && signup_params.other_role_name.nil?
           param_error(:other_role_name, :other_must_be_entered)
         end
 
