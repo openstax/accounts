@@ -21,6 +21,7 @@ module Newflow
         attribute :is_school_not_supported_by_sheerid, type: String
         attribute :is_country_not_supported_by_sheerid, type: String
         attribute :school_name, type: String
+        attribute :school_issued_email, type: String
         attribute :educator_specific_role, type: String
         attribute :other_role_name, type: String
         attribute :who_chooses_books, type: String
@@ -54,8 +55,10 @@ module Newflow
         check_params
         return if errors?
 
-        @did_use_sheerid = (!signup_params.is_school_not_supported_by_sheerid == 'true' ||
-                            !signup_params.is_country_not_supported_by_sheerid == 'true' ||
+        @did_use_sheerid = !((signup_params.is_school_not_supported_by_sheerid == 'true' ||
+                            signup_params.is_school_not_supported_by_sheerid == '') ||
+                           (signup_params.is_country_not_supported_by_sheerid == 'true' ||
+                            signup_params.is_country_not_supported_by_sheerid == '') ||
                             user.is_sheerid_unviable? || signup_params.is_cs_form?)
 
         user.update!(
@@ -70,7 +73,7 @@ module Newflow
           is_educator_pending_cs_verification: !@did_use_sheerid
         )
 
-        unless !signup_params.is_school_not_supported_by_sheerid == 'true' || !signup_params.is_country_not_supported_by_sheerid == 'true' || !user.is_sheerid_unviable?
+        if signup_params.is_cs_form?
           # user needs CS review to become confirmed - set it as such in accounts
           # we have to do this before we check if they did use ShID.. otherwise it returns before outputting user
           user.update(
@@ -79,8 +82,8 @@ module Newflow
           )
         end
 
-        if !@did_use_sheerid
-          if signup_params.school_issued_email.defined? && !signup_params.school_issued_email.blank?
+        if !@did_use_sheerid && signup_params.is_cs_form?
+          if !signup_params.school_issued_email.blank?
             # this user used the CS form and _should_ have provided us an email address - so let's add it, again, before output
             run(CreateEmailForUser, email: signup_params.school_issued_email, user: user, is_school_issued: true) # TODO: what is the point of just setting this to true? How is this used?
           end
