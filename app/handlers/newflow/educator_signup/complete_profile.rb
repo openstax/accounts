@@ -18,7 +18,6 @@ module Newflow
 
       paramify :signup do
         attribute :school_name, type: String
-        attribute :school_issued_email, type: String, required: false
         attribute :is_school_not_supported_by_sheerid, type: String
         attribute :is_country_not_supported_by_sheerid, type: String
         attribute :school_name, type: String
@@ -54,7 +53,9 @@ module Newflow
         check_params
         return if errors?
 
-        @did_use_sheerid = !signup_params.is_school_not_supported_by_sheerid == 'true' || !signup_params.is_country_not_supported_by_sheerid == 'true' || !user.is_sheerid_unviable?
+        @did_use_sheerid = (!signup_params.is_school_not_supported_by_sheerid == 'true' ||
+                            !signup_params.is_country_not_supported_by_sheerid == 'true' ||
+                            user.is_sheerid_unviable? || signup_params.is_cs_form?)
 
         user.update!(
           role: signup_params.educator_specific_role,
@@ -68,7 +69,7 @@ module Newflow
           is_educator_pending_cs_verification: !@did_use_sheerid
         )
 
-        unless @did_use_sheerid
+        unless !signup_params.is_school_not_supported_by_sheerid == 'true' || !signup_params.is_country_not_supported_by_sheerid == 'true' || !user.is_sheerid_unviable?
           # user needs CS review to become confirmed - set it as such in accounts
           # we have to do this before we check if they did use ShID.. otherwise it returns before outputting user
           user.update(
@@ -77,9 +78,11 @@ module Newflow
           )
         end
 
-        if !@did_use_sheerid && signup_params.school_issued_email.present?
-          # this user used the CS form and _should_ have provided us an email address - so let's add it, again, before output
-          run(CreateEmailForUser, email: signup_params.school_issued_email, user: user, is_school_issued: true) # TODO: what is the point of just setting this to true? How is this used?
+        if !@did_use_sheerid
+          if signup_params.school_issued_email.defined? && !signup_params.school_issued_email.blank?
+            # this user used the CS form and _should_ have provided us an email address - so let's add it, again, before output
+            run(CreateEmailForUser, email: signup_params.school_issued_email, user: user, is_school_issued: true) # TODO: what is the point of just setting this to true? How is this used?
+          end
         end
 
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
@@ -134,46 +137,41 @@ module Newflow
       end
 
       def check_params
-        if (signup_params.is_school_not_supported_by_sheerid == 'true' &&
-          signup_params.is_country_not_supported_by_sheerid == 'true') ||
-          signup_params.school_name.blank?
+        role = signup_params.educator_specific_role.strip.downcase
+        @did_use_sheerid = !signup_params.is_school_not_supported_by_sheerid == 'true' || !signup_params.is_country_not_supported_by_sheerid == 'true' || !user.is_sheerid_unviable?
 
+
+        if (!@did_use_sheerid) &&
+          signup_params.school_name.nil?
           param_error(:school_name, :school_name_must_be_entered)
         end
 
-        if signup_params.educator_specific_role.strip.downcase == OTHER &&
-           signup_params.other_role_name.blank?
-
+        if role == OTHER && signup_params.other_role_name.blank?
           param_error(:other_role_name, :other_must_be_entered)
         end
 
-        if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-           signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
-
+        if role  == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
           param_error(:books_used, :books_used_must_be_entered)
         end
 
-        if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-           signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
-
+        if role  == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
           param_error(:books_of_interest, :books_of_interest_must_be_entered)
         end
 
-        if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-          signup_params.num_students_per_semester_taught.blank?
-
+        if role  == INSTRUCTOR && signup_params.num_students_per_semester_taught.blank?
           param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
         end
 
-        if signup_params.school_issued_email.present?
-          if email_address_value.blank?
-            param_error(:school_issued_email, :school_issued_email_must_be_entered)
-          elsif email_address_value.present? && invalid_email?
-            param_error(:school_issued_email, :school_issued_email_is_invalid)
-          elsif email_address_value.present? && email_already_taken?
-            param_error(:school_issued_email, :school_issued_email_is_taken)
-          end
-        end
+        # if (!@did_use_sheerid || role != OTHER) && !signup_params.school_issued_email.blank?
+        #   user_typed_email = signup_params.school_issued_email
+        #   if user_typed_email.blank?
+        #     param_error(:school_issued_email, :school_issued_email_must_be_entered)
+        #   elsif user_typed_email.present? && invalid_email?
+        #     param_error(:school_issued_email, :school_issued_email_is_invalid)
+        #   elsif user_typed_email.present? && email_already_taken?
+        #     param_error(:school_issued_email, :school_issued_email_is_taken)
+        #   end
+        # end
       end
 
       def invalid_email?
