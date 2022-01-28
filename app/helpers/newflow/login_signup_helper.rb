@@ -28,6 +28,10 @@ module Newflow
       params[:school].present? || current_user&.is_sheerid_unviable? || current_user&.rejected_faculty?
     end
 
+    def is_cs_form?
+      request.original_fullpath.include? 'cs_form'
+    end
+
     def generate_sheer_id_url(user:)
       url = standard_parse_url(Settings::Db.store.sheer_id_base_url)
       url.query_values = url.query_values.merge(

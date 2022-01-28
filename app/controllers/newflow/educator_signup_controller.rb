@@ -133,7 +133,7 @@ module Newflow
 
     def educator_profile_form
       @book_titles = book_data.titles
-      security_log(:user_viewed_profile_form, user: current_user)
+      security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
     end
 
     def educator_complete_profile
@@ -159,30 +159,9 @@ module Newflow
       )
     end
 
-    def educator_cs_verification_form
-      @book_titles = book_data.titles
-      security_log(:user_viewed_signup_form, { form_name: action_name, user: current_user })
-    end
-
     def educator_pending_cs_verification
       security_log(:user_sent_to_cs_for_review, user: current_user)
       @email_address = current_user.email_addresses.last&.value
-    end
-
-    def educator_cs_verification_request
-      handle_with(
-        EducatorSignup::CompleteProfile,
-        user: current_user,
-        success: lambda {
-          security_log(:requested_manual_cs_verification, { form_name: action_name, user: current_user })
-          redirect_to(educator_pending_cs_verification_path)
-        },
-        failure: lambda {
-          @book_titles = book_data.titles
-          security_log(:educator_sign_up_failed, user: current_user, reason: "Error in #{action_name}: #{@handler_result&.errors&.full_messages}")
-          render :educator_cs_verification_form
-        }
-      )
     end
 
     private #################
