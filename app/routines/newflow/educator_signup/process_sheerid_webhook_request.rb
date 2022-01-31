@@ -13,6 +13,11 @@ module Newflow
         status.set_job_args(verification_id: verification_id)
 
         verification_details_from_sheerid = SheeridAPI.get_verification_details(verification_id)
+
+        # there are no details included with this step that are helpful a future
+        # TODO: might be to use this to update the user faculty state to PENDING_SHEERID or AWAITING_DOC_UPLOAD?
+        return if verification_details_from_sheerid.current_step == 'collectTeacherPersonalInfo'
+
         if !verification_details_from_sheerid.success?
           Sentry.capture_message("[ProcessSheeridWebhookRequest] fetching verification details FAILED",
             extra: { verification_id: verification_id, verification_details: verification_details_from_sheerid },
