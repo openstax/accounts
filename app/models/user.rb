@@ -334,10 +334,6 @@ class User < ApplicationRecord
     first_name.present? ? first_name : username
   end
 
-  def standard_name # TODO needs spec
-    formal_name.present? ? formal_name : casual_name
-  end
-
   def formal_name # TODO needs spec
     "#{title} #{last_name} #{suffix}".gsub(/\s+/,' ').strip if title.present? && last_name.present?
   end
