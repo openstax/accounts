@@ -136,8 +136,7 @@ module Newflow
         @did_use_sheerid = !signup_params.is_school_not_supported_by_sheerid == 'true' || !signup_params.is_country_not_supported_by_sheerid == 'true' || !user.is_sheerid_unviable?
 
 
-        if (!@did_use_sheerid) &&
-          signup_params.school_name.nil?
+        if (!@did_use_sheerid) && signup_params.school_name.nil?
           param_error(:school_name, :school_name_must_be_entered)
         end
 

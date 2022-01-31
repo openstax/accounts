@@ -3,8 +3,6 @@ class NewflowMailer < ApplicationMailer
 
   def create_password_email(user:, email:)
     @user = user
-    @casual_name = user.casual_name
-
     mail to: email, subject: 'Set up a password for your OpenStax account'
   end
 

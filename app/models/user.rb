@@ -47,7 +47,6 @@ class User < ApplicationRecord
   DEFAULT_FACULTY_STATUS = VALID_FACULTY_STATUSES[0]
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
   DEFAULT_SCHOOL_LOCATION = VALID_SCHOOL_LOCATIONS[0]
-  UNKNOWN_SCHOOL_NAME = 'unknown'
   STALE_VERIFICATION_PERIOD = 4.days
 
   enum(faculty_status: VALID_FACULTY_STATUSES)
@@ -172,8 +171,6 @@ class User < ApplicationRecord
       if sheerid_reported_school.present?
 
     return self_reported_school if self_reported_school.present?
-
-    UNKNOWN_SCHOOL_NAME
   end
 
   def most_accurate_school_city
