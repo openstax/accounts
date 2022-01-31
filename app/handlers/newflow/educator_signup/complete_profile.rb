@@ -55,11 +55,9 @@ module Newflow
         check_params
         return if errors?
 
-        @did_use_sheerid = !((signup_params.is_school_not_supported_by_sheerid == 'true' ||
-                            signup_params.is_school_not_supported_by_sheerid == '') ||
-                           (signup_params.is_country_not_supported_by_sheerid == 'true' ||
-                            signup_params.is_country_not_supported_by_sheerid == '') ||
-                            user.is_sheerid_unviable? || signup_params.is_cs_form?)
+        @did_use_sheerid = !(signup_params.is_school_not_supported_by_sheerid == 'true' ||
+                             signup_params.is_country_not_supported_by_sheerid == 'true' ||
+                             user.is_sheerid_unviable? || signup_params.is_cs_form?)
 
         user.update!(
           role: signup_params.educator_specific_role,

@@ -277,8 +277,8 @@
 
           </div>
 
-          <%= f.hidden_field :is_school_not_supported_by_sheerid, value: is_school_not_supported_by_sheerid? || current_incomplete_educator&.rejected_faculty? %>
-          <%= f.hidden_field :is_country_not_supported_by_sheerid, value: is_country_not_supported_by_sheerid? || current_incomplete_educator&.rejected_faculty? %>
+          <%= f.hidden_field :is_school_not_supported_by_sheerid, value: is_school_not_supported_by_sheerid? %>
+          <%= f.hidden_field :is_country_not_supported_by_sheerid, value: is_country_not_supported_by_sheerid? %>
           <%= f.hidden_field :is_cs_form, value: is_cs_form? %>
 
           <%=
