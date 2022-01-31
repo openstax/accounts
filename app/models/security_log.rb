@@ -92,6 +92,7 @@ class SecurityLog < ApplicationRecord
     sheerid_webhook_request_more_info
     fv_reject_by_sheerid
     fv_success_by_sheerid
+    sheerid_error
     unknown_sheerid_response
     email_added_to_user
   ]
