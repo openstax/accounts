@@ -14,8 +14,6 @@ module Newflow
       )
       transfer_errors_from(@email, { scope: :email }, :fail_if_errors)
 
-      SecurityLog.create!(event_type: :email_added_to_user, user: user, email: email&.downcase)
-
       NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
     end
 

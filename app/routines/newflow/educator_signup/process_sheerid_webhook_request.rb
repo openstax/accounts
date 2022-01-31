@@ -90,23 +90,24 @@ module Newflow
           user.school = school
         end
 
-        user_changed = user.changed?
-        if user_changed
-          user.save
-          transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
-        end
-
         if verification.current_step == 'rejected'
           user.update!(faculty_status: User::REJECTED_FACULTY, sheerid_verification_id: verification_id)
+          SecurityLog.create!(event_type: :fv_reject_by_sheerid, user: user, sheerid_verification_id: verification_id)
         elsif verification.current_step == 'success'
           user.update!(faculty_status: User::CONFIRMED_FACULTY, sheerid_verification_id: verification_id)
-          SecurityLog.create!(event_type: :faculty_verified_by_sheerid, user: user, sheerid_verification_id: verification_id)
-        elsif verification.present?
+          SecurityLog.create!(event_type: :fv_success_by_sheerid, user: user, sheerid_verification_id: verification_id)
+        elsif verification.current_step == 'collectTeacherPersonalInfo'
+          SecurityLog.create!(
+            event_type: :sheerid_webhook_request_more_info,
+            user: user,
+            event_data: { verification: verification_details_from_sheerid.inspect }
+          )
+        else
           SecurityLog.create!(
             event_type: :unknown_sheerid_response,
             user: user,
             event_data: { verification: verification_details_from_sheerid.inspect }
-          ) if user_changed
+          )
         end
 
         # if we got the webhook back after the user submitted the profile, they didn't get a lead built yet
