@@ -119,7 +119,8 @@ module Newflow
         if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank? && user.is_profile_complete
           CreateSalesforceLead.perform_later(user: user)
         end
-
+        
+        SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
         outputs.verification = verification
       end
     end
