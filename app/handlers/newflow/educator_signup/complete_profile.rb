@@ -73,6 +73,14 @@ module Newflow
           is_educator_pending_cs_verification: !@did_use_sheerid
         )
 
+        if signup_params.is_cs_form?
+          # user needs CS review to become confirmed - set it as such in accounts
+          user.update(
+            requested_cs_verification_at: DateTime.now,
+            faculty_status: User::PENDING_FACULTY
+          )
+        end
+
         if !@did_use_sheerid && signup_params.is_cs_form?
           if !signup_params.school_issued_email.blank?
             # this user used the CS form and _should_ have provided us an email address - so let's add it, again, before output
@@ -85,27 +93,19 @@ module Newflow
         # here's that output we've been waiting for...
         outputs.user = user
 
-        if @did_use_sheerid
+        if @did_use_sheerid && !user.sheer_id_webhook_received
           # User used SheerID - we create their lead in ProcessSheeridWebhookRequest, not here.. and might not be instant
           return
         end
-
-        # user needs CS review to become confirmed - set it as such in accounts
-        user.update(
-          requested_cs_verification_at: DateTime.now,
-          faculty_status: User::PENDING_FACULTY
-        )
+        # otherwise, we already heard from SheerID, so let's create the lead.
+        # We check in ProcessSheeridWebhookRequest to see if they completed their profile before creating lead
 
         # Now we create the lead for the user... because we returned above is they did... again ProcessSheeridWebhookRequest
-        create_salesforce_lead
+        CreateSalesforceLead.perform_later(user: user)
 
       end
 
       private #################
-
-      def create_salesforce_lead
-        CreateSalesforceLead.perform_later(user: user)
-      end
 
       def other_role_name
         signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil

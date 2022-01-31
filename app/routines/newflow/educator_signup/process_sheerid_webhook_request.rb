@@ -32,6 +32,10 @@ module Newflow
 
         user = EmailAddress.verified.find_by(value: verification.email)&.user
 
+        # update the security log and the user to say we got the webhook
+        SecurityLog.create!(event_type: :sheerid_webhook_received, user: user)
+        user.update!(sheer_id_webhook_received: true)
+
         if !user.present?
           Sentry.capture_message("[ProcessSheeridWebhookRequest] No user found with verification id (#{verification_id}) "\
             "and email (#{verification.email})",
