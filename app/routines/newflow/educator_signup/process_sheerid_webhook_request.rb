@@ -32,10 +32,6 @@ module Newflow
 
         user = EmailAddress.verified.find_by(value: verification.email)&.user
 
-        # update the security log and the user to say we got the webhook
-        SecurityLog.create!(event_type: :sheerid_webhook_received, user: user)
-        user.update!(sheer_id_webhook_received: true)
-
         if !user.present?
           Sentry.capture_message("[ProcessSheeridWebhookRequest] No user found with verification id (#{verification_id}) "\
             "and email (#{verification.email})",
@@ -69,6 +65,10 @@ module Newflow
           user.last_name = verification.last_name
           user.sheerid_reported_school = verification.organization_name
           user.faculty_status = verification.current_step_to_faculty_status
+          user.sheer_id_webhook_received = true
+
+          # update the security log and the user to say we got the webhook - we use this in lead processing
+          SecurityLog.create!(event_type: :sheerid_webhook_received, user: user)
 
           # Attempt to exactly match a school based on the sheerid_reported_school field
           school = School.find_by sheerid_school_name: user.sheerid_reported_school
@@ -96,10 +96,10 @@ module Newflow
 
         if verification.current_step == 'rejected'
           user.update!(faculty_status: User::REJECTED_FACULTY, sheerid_verification_id: verification_id)
-          SecurityLog.create!(event_type: :fv_reject_by_sheerid, user: user, sheerid_verification_id: verification_id)
+          SecurityLog.create!(event_type: :fv_reject_by_sheerid, user: user)
         elsif verification.current_step == 'success'
           user.update!(faculty_status: User::CONFIRMED_FACULTY, sheerid_verification_id: verification_id)
-          SecurityLog.create!(event_type: :fv_success_by_sheerid, user: user, sheerid_verification_id: verification_id)
+          SecurityLog.create!(event_type: :fv_success_by_sheerid, user: user)
         elsif verification.current_step == 'collectTeacherPersonalInfo'
           SecurityLog.create!(
             event_type: :sheerid_webhook_request_more_info,
@@ -119,7 +119,7 @@ module Newflow
         if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank? && user.is_profile_complete
           CreateSalesforceLead.perform_later(user: user)
         end
-        
+
         SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)
         outputs.verification = verification
       end
