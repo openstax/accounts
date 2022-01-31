@@ -73,8 +73,8 @@ module Newflow
                               "handler errors: #{errors}; last exception: #{last_exception}; " +
                               "exception backtrace: #{exception_backtrace}"
 
-              # This will print the exception to the logs and send devs an exception email
-              raise IllegalState, error_message
+              # Send the error to Sentry
+              Sentry.capture_message(error_message)
             end
           }
         )

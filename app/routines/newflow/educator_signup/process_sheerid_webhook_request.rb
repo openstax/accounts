@@ -48,13 +48,13 @@ module Newflow
           SecurityLog.create!(
             event_type: :user_updated_using_sheerid_data,
             user: user,
-            event_data: { verification: verification.inspect }
+            event_data: { verification_id: verification_id }
           )
         else
           SecurityLog.create!(
             event_type: :sheerid_conflicting_verification_id,
             user: user,
-            event_data: { verification: verification.inspect }
+            event_data: { verification_id: verification_id }
           )
         end
 
@@ -100,17 +100,18 @@ module Newflow
           user.update!(faculty_status: User::REJECTED_FACULTY, sheerid_verification_id: verification_id)
         elsif verification.current_step == 'success'
           user.update!(faculty_status: User::CONFIRMED_FACULTY, sheerid_verification_id: verification_id)
+          SecurityLog.create!(event_type: :faculty_verified_by_sheerid, user: user, sheerid_verification_id: verification_id)
         elsif verification.present?
           SecurityLog.create!(
-            event_type: :user_updated_using_sheerid_data,
+            event_type: :unknown_sheerid_response,
             user: user,
-            event_data: { verification: verification.inspect }
+            event_data: { verification: verification_details_from_sheerid.inspect }
           ) if user_changed
         end
 
         # if we got the webhook back after the user submitted the profile, they didn't get a lead built yet
         # We just make sure they don't have a lead or contact id yet
-        if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank?
+        if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank? && user.is_profile_complete
           CreateSalesforceLead.perform_later(user: user)
         end
 

@@ -73,15 +73,6 @@ module Newflow
           is_educator_pending_cs_verification: !@did_use_sheerid
         )
 
-        if signup_params.is_cs_form?
-          # user needs CS review to become confirmed - set it as such in accounts
-          # we have to do this before we check if they did use ShID.. otherwise it returns before outputting user
-          user.update(
-            requested_cs_verification_at: DateTime.now,
-            faculty_status: User::PENDING_FACULTY
-          )
-        end
-
         if !@did_use_sheerid && signup_params.is_cs_form?
           if !signup_params.school_issued_email.blank?
             # this user used the CS form and _should_ have provided us an email address - so let's add it, again, before output

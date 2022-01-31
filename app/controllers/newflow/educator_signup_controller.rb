@@ -114,10 +114,11 @@ module Newflow
       handle_with(
         EducatorSignup::SheeridWebhook,
         success: lambda {
-          security_log(:sheerid_webhook_recieved, { data: @handler_result })
+          security_log(:sheerid_webhook_received, { data: @handler_result })
           render(status: :ok, plain: 'Success')
         },
         failure: lambda {
+          security_log(:sheerid_webhook_failed, { data: @handler_result })
           Sentry.capture_message(
             'SheerID webhook FAILED',
             extra: {
