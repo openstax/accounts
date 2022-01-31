@@ -92,13 +92,6 @@ Rails.application.routes.draw do
     #   When you sign up with a social provider, you must confirm your info first
     get 'i/confirm_your_info', action: :confirm_your_info
     post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
-
-    # TODO: remove because we determined that this use case is unreachable
-    # When social login fails
-    # get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
-    # post 'send_password_setup_instructions',
-    #      action: :send_password_setup_instructions,
-    #      as: :send_password_setup_instructions
   end
 
   scope controller: 'legacy/sessions' do

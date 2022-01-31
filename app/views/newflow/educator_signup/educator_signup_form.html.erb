@@ -7,14 +7,6 @@
     # TODO: show them in a modal instead of new tab
     # link_to contract.title, term_path(contract), remote: true
   }
-
-  user_from_signed_params = session.fetch(:user_from_signed_params, {}).with_indifferent_access
-
-  prefill_values = {
-    first_name: user_from_signed_params[:first_name],
-    last_name: user_from_signed_params[:last_name],
-    email: user_from_signed_params.dig(:signed_external_data, :email)
-  }
 %>
 
 <%= render 'newflow/educator_signup/refresh_upon_going_back' %>
@@ -48,7 +40,6 @@
           %>
           <%= fh.text_field name: :first_name,
                             placeholder: I18n.t(:"login_signup_form.legal_first_name_label"),
-                            value: prefill_values[:first_name],
                             autofocus: true
           %>
         </div>
@@ -60,8 +51,7 @@
           %>
           <%=
             fh.text_field name: :last_name,
-                          placeholder: I18n.t(:"login_signup_form.legal_last_name_label"),
-                          value: prefill_values[:last_name]
+                          placeholder: I18n.t(:"login_signup_form.legal_last_name_label")
           %>
         </div>
 
@@ -85,7 +75,6 @@
             fh.text_field(
               name: :email,
               supplemental_class: 'myschool_email',
-              value: prefill_values[:email],
               placeholder: I18n.t(:"login_signup_form.school_issued_email_placeholder")
             )
           %>
