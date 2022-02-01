@@ -132,7 +132,6 @@ module Newflow
       end
 
       def check_params
-        puts(signup_params)
         role = signup_params.educator_specific_role.strip.downcase
 
         if !@did_use_sheerid && signup_params.school_name.nil?

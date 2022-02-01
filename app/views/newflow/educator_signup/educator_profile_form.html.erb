@@ -30,7 +30,8 @@
         <div class="content">
           <div class="questions">
 
-          <div class="form-group question school-name<%= should_show_school_name_field? ? ' school-name-visible' : '' %>">
+          <% if should_show_school_name_field? %>
+            <div class="form-group question school-name<%= should_show_school_name_field? ? ' school-name-visible' : '' %>">
               <div class="school-name">
                 <%=
                   label_tag(
@@ -51,7 +52,9 @@
                 %>
               </div>
             </div>
+            <% end %>
 
+            <% if should_show_school_issued_email_field? %>
             <div class="form-group question school-issued-email<%= should_show_school_issued_email_field? ? ' school-issued-email-visible' : '' %>">
               <div class="school-issued-email">
                 <%=
@@ -72,6 +75,7 @@
                 %>
               </div>
             </div>
+            <% end %>
 
             <div class="form-group question completed-role">
               <div class="radio-control-group">
