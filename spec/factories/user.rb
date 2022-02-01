@@ -6,6 +6,7 @@ FactoryBot.define do
     last_name  { Faker::Name.last_name  }
     uuid {Faker::Alphanumeric.alphanumeric(number: 10, min_alpha: 3, min_numeric: 3)}
     role { User::STUDENT_ROLE }
+    school { FactoryBot.build(:school) }
 
     is_profile_complete { true }
 
