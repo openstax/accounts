@@ -81,11 +81,14 @@ RSpec.describe Api::V1::UserRepresenter, type: :representer do
       ).to eq school.name
     end
 
-    it 'is there when self reported school set and private data included' do
+    it 'reports the official school from Salesforce and keeps the self reported school' do
       user.self_reported_school = 'Rice University'
       expect(
-        representer.to_hash(user_options: {include_private_data: true})['school_name']
+        representer.to_hash(user_options: {include_private_data: true})['self_reported_school']
       ).to eq 'Rice University'
+      expect(
+        representer.to_hash(user_options: {include_private_data: true})['school_name']
+      ).to eq user.school.name
     end
   end
 
