@@ -55,9 +55,10 @@ module Newflow
         check_params
         return if errors?
 
+        @is_on_cs_form = signup_params.is_cs_form?
         @did_use_sheerid = !(signup_params.is_school_not_supported_by_sheerid == 'true' ||
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
-                             user.is_sheerid_unviable? || signup_params.is_cs_form?)
+                             user.is_sheerid_unviable? || @is_on_cs_form)
 
         user.update!(
           role: signup_params.educator_specific_role,
@@ -71,7 +72,7 @@ module Newflow
           is_educator_pending_cs_verification: !@did_use_sheerid
         )
 
-        if signup_params.is_cs_form?
+        if @is_on_cs_form
           # user needs CS review to become confirmed - set it as such in accounts
           user.update(
             requested_cs_verification_at: DateTime.now,
@@ -79,17 +80,18 @@ module Newflow
           )
         end
 
-        if !@did_use_sheerid && signup_params.is_cs_form?
-          if !signup_params.school_issued_email.blank?
-            # this user used the CS form and _should_ have provided us an email address - so let's add it, again, before output
-            run(CreateEmailForUser, email: signup_params.school_issued_email, user: user, is_school_issued: true) # TODO: what is the point of just setting this to true? How is this used?
-          end
+        if (!@did_use_sheerid && @is_on_cs_form) && !signup_params.school_issued_email.blank?
+          @email_address_value = signup_params.school_issued_email
+          # this user used the CS form and _should_ have provided us an email address -
+          # so let's add it - validation happens before this in check_params
+          run(CreateEmailForUser, email: @email_address_value, user: user, is_school_issued: true)
         end
 
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
         # here's that output we've been waiting for...
         outputs.user = user
+        outputs.is_on_cs_form = @is_on_cs_form
 
         if @did_use_sheerid && !user.sheer_id_webhook_received
           # User used SheerID - we create their lead in ProcessSheeridWebhookRequest, not here.. and might not be instant
@@ -130,11 +132,10 @@ module Newflow
       end
 
       def check_params
+        puts(signup_params)
         role = signup_params.educator_specific_role.strip.downcase
-        @did_use_sheerid = !signup_params.is_school_not_supported_by_sheerid == 'true' || !signup_params.is_country_not_supported_by_sheerid == 'true' || !user.is_sheerid_unviable?
 
-
-        if (!@did_use_sheerid) && signup_params.school_name.nil?
+        if !@did_use_sheerid && signup_params.school_name.nil?
           param_error(:school_name, :school_name_must_be_entered)
         end
 
@@ -154,20 +155,20 @@ module Newflow
           param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
         end
 
-        # if (!@did_use_sheerid || role != OTHER) && !signup_params.school_issued_email.blank?
-        #   user_typed_email = signup_params.school_issued_email
-        #   if user_typed_email.blank?
-        #     param_error(:school_issued_email, :school_issued_email_must_be_entered)
-        #   elsif user_typed_email.present? && invalid_email?
-        #     param_error(:school_issued_email, :school_issued_email_is_invalid)
-        #   elsif user_typed_email.present? && email_already_taken?
-        #     param_error(:school_issued_email, :school_issued_email_is_taken)
-        #   end
-        # end
+        if @is_on_cs_form
+          # if they are on the CS form, we need school issued email address
+          if @email_address_value.blank?
+            param_error(:school_issued_email, :school_issued_email_must_be_entered)
+          elsif @email_address_value.present? && invalid_email?
+            param_error(:school_issued_email, :school_issued_email_is_invalid)
+          elsif @email_address_value.present? && email_already_taken?
+            param_error(:school_issued_email, :school_issued_email_is_taken)
+          end
+        end
       end
 
       def invalid_email?
-        email = EmailAddress.new(value: email_address_value)
+        email = EmailAddress.new(value: @email_address_value)
 
         begin
           email.mx_domain_validation
@@ -178,12 +179,11 @@ module Newflow
       end
 
       def email_already_taken?
-        email = email_address_value
-        users_existing_email.none? && ContactInfo.verified.where(value: email).any?
+        users_existing_email.none? && ContactInfo.verified.where(value: @email_address_value).any?
       end
 
       def users_existing_email
-        @users_existing_email ||= user.contact_infos.where(value: email_address_value)
+        @users_existing_email ||= user.contact_infos.where(value: @email_address_value)
       end
 
       def param_error(field, error_key)

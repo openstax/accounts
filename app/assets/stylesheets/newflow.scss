@@ -105,6 +105,14 @@ input.has-error {
         }
     }
 
+    .question.school-issued-email {
+      display: none;
+
+      &.school-issued-email-visible {
+        display: block;
+      }
+    }
+
     .custom-control-label {
         font-weight: lighter !important;
     }
@@ -124,26 +132,6 @@ input.has-error {
     .questions {
         margin-bottom: 25px;
     }
-}
-
-.cs-form-complete-profile {
-    .custom-control-label {
-        font-weight: lighter !important;
-    }
-
-    .other-specify {
-        margin-left: 2em;
-        display: none;
-    }
-
-    .question {
-        margin-top: 25px;
-    }
-
-    .questions {
-        margin-bottom: 25px;
-    }
-
 }
 
 // extend the multiselect just for the complete form for now

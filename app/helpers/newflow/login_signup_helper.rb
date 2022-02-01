@@ -25,7 +25,11 @@ module Newflow
     end
 
     def should_show_school_name_field?
-      params[:school].present? || current_user&.is_sheerid_unviable? || current_user&.rejected_faculty?
+      params[:school].present? || current_user&.is_sheerid_unviable? || current_user&.rejected_faculty? || is_cs_form?
+    end
+
+    def should_show_school_issued_email_field?
+      is_cs_form?
     end
 
     def is_cs_form?

@@ -52,32 +52,26 @@
               </div>
             </div>
 
-            <% if is_cs_form? %>
-              <div class="form-group question">
-                <div class="school-issued-email">
-                  <%=
-                    label_tag(
-                      :school_issued_email,
-                      I18n.t(:"educator_profile_form.school_issued_email"),
-                      class: 'field-label'
-                    )
-                  %>
-
-                  <div class="school-issued-email cs-form-mustdo-alert">
-                    <%= I18n.t(:"educator_profile_form.school_issued_email_must_be_entered") %>
-                  </div>
-
-                  <%=
-                    fh.text_field(
-                      name: :school_issued_email,
-                      placeholder: @email_address,
-                      autofocus: true
-                    )
-                  %>
+            <div class="form-group question school-issued-email<%= should_show_school_issued_email_field? ? ' school-issued-email-visible' : '' %>">
+              <div class="school-issued-email">
+                <%=
+                  label_tag(
+                    :school_issued_email,
+                    I18n.t(:"educator_profile_form.school_issued_email"),
+                    class: 'field-label'
+                  )
+                %>
+                <div class="school-issued-email newflow-mustdo-alert" style="display: none;">
+                  <%= I18n.t(:"educator_profile_form.school_issued_email_must_be_entered") %>
                 </div>
+                <%=
+                  fh.text_field(
+                    name: :school_issued_email,
+                    placeholder: @email_address
+                  )
+                %>
               </div>
-              <% end %>
-
+            </div>
 
             <div class="form-group question completed-role">
               <div class="radio-control-group">
