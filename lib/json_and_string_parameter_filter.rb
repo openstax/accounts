@@ -9,18 +9,18 @@ class JsonAndStringParameterFilter
   end
 
   def filter_data_by_key(data, key_regexp)
-    return unless data.keys.is_a?(Hash) or data.keys.is_a?(String)
-    data.keys.each do |key|
+    if data.is_a?(Hash)
+      data.keys.each do |key|
         if data[key].is_a?(Hash)
           filter_data_by_key(data[key], key_regexp)
         elsif data[key].is_a?(String)
           data[key] = '[FILTERED]' if key =~ key_regexp
         end
       end
+    end
   end
 
   def filter_data_by_value(data, value_filters)
-    return unless data.keys.is_a?(Hash) or data.keys.is_a?(String)
     data.keys.each do |key|
       if data[key].is_a?(Hash)
         filter_data_by_value(data[key], value_filters)
