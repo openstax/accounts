@@ -85,6 +85,7 @@ class SecurityLog < ApplicationRecord
     user_profile_complete
     salesforce_error
     update_user_contact_info
+    sheerid_verification_id_added_to_user
     sheerid_conflicting_verification_id
     sheerid_webhook_received
     sheerid_webhook_processed

@@ -51,7 +51,7 @@ module Newflow
           user.update!(sheerid_verification_id: verification_id)
 
           SecurityLog.create!(
-            event_type: :user_updated_using_sheerid_data,
+            event_type: :sheerid_verification_id_added_to_user,
             user: user,
             event_data: { verification_id: verification_id }
           )

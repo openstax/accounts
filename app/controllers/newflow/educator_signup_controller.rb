@@ -25,6 +25,7 @@ module Newflow
       ]
     )
     before_action(:store_if_sheerid_is_unviable_for_user, only: :educator_profile_form)
+    before_action(:store_sheerid_verification_for_user, only: :educator_profile_form)
     before_action(:exit_signup_if_steps_complete, only: %i[
         educator_sheerid_form
         educator_profile_form
@@ -191,6 +192,23 @@ module Newflow
 
     def book_data
       @book_data ||= FetchBookData.new
+    end
+
+    def store_sheerid_verification_for_user
+      if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
+        # create the verification object - this is updated later in ProcessSheeridWebhookRequest
+        SheeridVerification.find_or_initialize_by(verification_id: verification_id)
+
+        # update the user
+        current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)
+
+        # log it
+        SecurityLog.create!(
+          event_type: :sheerid_verification_id_added_to_user,
+          user: current_user,
+          event_data: { verification_id: sheerid_provided_verification_id_param }
+        )
+      end
     end
 
   end
