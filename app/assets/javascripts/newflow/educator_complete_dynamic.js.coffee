@@ -83,6 +83,7 @@ class NewflowUi.EducatorComplete
 
     # Hide all validations messages
     @please_fill_out_school.hide()
+    @please_fill_out_school_email.hide()
     @please_select_role.hide()
     @please_fill_out_total_num.hide()
 
@@ -147,7 +148,7 @@ class NewflowUi.EducatorComplete
       false
 
   checkSchoolEmailValid: () ->
-    return true if document.getElementsByClassName('school-issued-email-visibl')[0] == undefined
+    return true if document.getElementsByClassName('school-issued-email-visible')[0] == undefined
 
     if @school_email_input.val()
       @please_fill_out_school_email.hide()
