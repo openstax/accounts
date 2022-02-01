@@ -65,8 +65,8 @@ Rails.application.routes.draw do
     post 'i/signup/educator/complete_profile', action: :educator_complete_profile, as: :educator_complete_profile
     get 'i/signup/educator/pending_cs_verification', action: :educator_pending_cs_verification, as: :educator_pending_cs_verification
 
-    get 'i/signup/educator/cs_form', action: :educator_cs_verification_form, as: :educator_cs_verification_form
-    post 'i/signup/educator/cs_verification_request', action: :educator_cs_verification_request, as: :educator_cs_verification_request
+    get 'i/signup/educator/cs_form', action: :educator_profile_form, as: :educator_cs_verification_form
+    post 'i/signup/educator/cs_verification_request', action: :educator_complete_profile, as: :educator_cs_verification_request
   end
 
   scope controller: 'newflow/password_management' do
@@ -92,13 +92,6 @@ Rails.application.routes.draw do
     #   When you sign up with a social provider, you must confirm your info first
     get 'i/confirm_your_info', action: :confirm_your_info
     post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
-
-    # TODO: remove because we determined that this use case is unreachable
-    # When social login fails
-    # get 'i/social_login_failed', action: :social_login_failed, as: :newflow_social_login_failed
-    # post 'send_password_setup_instructions',
-    #      action: :send_password_setup_instructions,
-    #      as: :send_password_setup_instructions
   end
 
   scope controller: 'legacy/sessions' do

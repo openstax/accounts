@@ -32,8 +32,8 @@ module Newflow
 
           it "should return correct error" do
             result = handle
-            expect(result.errors.count).to eq 1
-            expect(result.errors.first.message).to eq 'Please enter other role name'
+            expect(result.errors.count).to eq 2
+            expect(result.errors.first.message).to eq 'Please enter school name'
           end
         end
 
@@ -44,8 +44,8 @@ module Newflow
 
           it "should return correct error" do
             result = handle
-            expect(result.errors.count).to eq 1
-            expect(result.errors.first.message).to eq 'Please enter books used'
+            expect(result.errors.count).to eq 2
+            expect(result.errors.first.message).to eq 'Please enter school name'
           end
         end
 
@@ -55,8 +55,8 @@ module Newflow
 
           it "should return correct error" do
             result = handle
-            expect(result.errors.count).to eq 1
-            expect(result.errors.first.message).to eq 'Please enter number of students taught'
+            expect(result.errors.count).to eq 2
+            expect(result.errors.first.message).to eq 'Please enter school name'
           end
         end
       end

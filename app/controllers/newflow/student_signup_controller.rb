@@ -18,7 +18,7 @@ module Newflow
         user_from_signed_params: session[:user_from_signed_params],
         success: lambda {
           save_unverified_user(@handler_result.outputs.user.id)
-          security_log(:student_signed_up, { user: @handler_result.outputs.user, set_info: @handler_result.outputs.user.attributes.delete_if { |k,v| v.nil? } })
+          security_log(:student_signed_up, { user: @handler_result.outputs.user })
           redirect_to student_email_verification_form_path
         },
         failure: lambda {

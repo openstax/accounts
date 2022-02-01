@@ -9,10 +9,19 @@ module Newflow
 
       lev_handler
 
+      uses_routine CreateEmailForUser, translations: {
+        outputs: {
+          map: { email: :school_issued_email },
+          scope: :school_issued_email
+        }
+      }
+
       paramify :signup do
+        attribute :school_name, type: String
         attribute :is_school_not_supported_by_sheerid, type: String
         attribute :is_country_not_supported_by_sheerid, type: String
         attribute :school_name, type: String
+        attribute :school_issued_email, type: String
         attribute :educator_specific_role, type: String
         attribute :other_role_name, type: String
         attribute :who_chooses_books, type: String
@@ -20,6 +29,7 @@ module Newflow
         attribute :num_students_per_semester_taught, type: Integer
         attribute :books_used, type: Object
         attribute :books_of_interest, type: Object
+        attribute :is_cs_form, type: Object
 
         validates(
           :educator_specific_role,
@@ -45,7 +55,12 @@ module Newflow
         check_params
         return if errors?
 
-        user.update(
+        @is_on_cs_form = signup_params.is_cs_form?
+        @did_use_sheerid = !(signup_params.is_school_not_supported_by_sheerid == 'true' ||
+                             signup_params.is_country_not_supported_by_sheerid == 'true' ||
+                             user.is_sheerid_unviable? || @is_on_cs_form)
+
+        user.update!(
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
           using_openstax_how: signup_params.using_openstax_how,
@@ -54,33 +69,43 @@ module Newflow
           which_books: which_books,
           self_reported_school: signup_params.school_name,
           is_profile_complete: true,
-          is_educator_pending_cs_verification: signup_params.is_school_not_supported_by_sheerid == 'true' || signup_params.is_country_not_supported_by_sheerid == 'true' || user.is_sheerid_unviable?
+          is_educator_pending_cs_verification: !@did_use_sheerid
         )
+
+        if @is_on_cs_form
+          # user needs CS review to become confirmed - set it as such in accounts
+          user.update(
+            requested_cs_verification_at: DateTime.now,
+            faculty_status: User::PENDING_FACULTY
+          )
+        end
+
+        if (!@did_use_sheerid && @is_on_cs_form) && !signup_params.school_issued_email.blank?
+          @email_address_value = signup_params.school_issued_email
+          # this user used the CS form and _should_ have provided us an email address -
+          # so let's add it - validation happens before this in check_params
+          run(CreateEmailForUser, email: @email_address_value, user: user, is_school_issued: true)
+        end
+
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
-        if user.is_sheerid_verified? && !user.confirmed_faculty?
-          user.update(faculty_status: User::CONFIRMED_FACULTY)
-          transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
-        end
-
+        # here's that output we've been waiting for...
         outputs.user = user
+        outputs.is_on_cs_form = @is_on_cs_form
 
-        unless user.is_educator_pending_cs_verification? || user.faculty_status == 'confirmed_faculty' || user.faculty_status == 'rejected_faculty'
-          # Can't find school wasn't selected and SheerId or manual verification didn't happen, don't create lead
+        if @did_use_sheerid && !user.sheer_id_webhook_received
+          # User used SheerID - we create their lead in ProcessSheeridWebhookRequest, not here.. and might not be instant
           return
         end
-        # create the lead if the user is verified, otherwise, it'll get created later
-        # either when rejected by sheer id, when manual CS verification is required,
-        # or if their account has been in a signup state for longer than 4 days
-        create_salesforce_lead
+        # otherwise, we already heard from SheerID, so let's create the lead.
+        # We check in ProcessSheeridWebhookRequest to see if they completed their profile before creating lead
+
+        # Now we create the lead for the user... because we returned above if they did... again ProcessSheeridWebhookRequest
+        CreateSalesforceLead.perform_later(user: user)
 
       end
 
       private #################
-
-      def create_salesforce_lead
-        CreateSalesforceLead.perform_later(user: user)
-      end
 
       def other_role_name
         signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil
@@ -98,45 +123,66 @@ module Newflow
         books.reject(&:empty?)&.join(';')
       end
 
-      def check_params
-        if (signup_params.is_school_not_supported_by_sheerid == 'true' ||
-          signup_params.is_country_not_supported_by_sheerid == 'true') &&
-           signup_params.school_name.blank?
-
-          param_error(:school_name, :school_name_must_be_entered)
-        end
-
-        if signup_params.educator_specific_role.strip.downcase == OTHER &&
-           signup_params.other_role_name.blank?
-
-          param_error(:other_role_name, :other_must_be_entered)
-        end
-
-        if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-           signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
-
-          param_error(:books_used, :books_used_must_be_entered)
-        end
-
-        if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-           signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
-
-          param_error(:books_of_interest, :books_of_interest_must_be_entered)
-        end
-
-        if signup_params.educator_specific_role.strip.downcase  == INSTRUCTOR &&
-          signup_params.num_students_per_semester_taught.blank?
-
-          param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
-        end
-      end
-
       def books_used
         signup_params.books_used.reject{ |b| b.blank? }
       end
 
       def books_of_interest
         signup_params.books_of_interest.reject{ |b| b.blank? }
+      end
+
+      def check_params
+        role = signup_params.educator_specific_role.strip.downcase
+
+        if !@did_use_sheerid && signup_params.school_name.nil?
+          param_error(:school_name, :school_name_must_be_entered)
+        end
+
+        if role == OTHER && signup_params.other_role_name.nil?
+          param_error(:other_role_name, :other_must_be_entered)
+        end
+
+        if role  == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
+          param_error(:books_used, :books_used_must_be_entered)
+        end
+
+        if role  == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
+          param_error(:books_of_interest, :books_of_interest_must_be_entered)
+        end
+
+        if role  == INSTRUCTOR && signup_params.num_students_per_semester_taught.blank?
+          param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
+        end
+
+        if @is_on_cs_form
+          # if they are on the CS form, we need school issued email address
+          if @email_address_value.blank?
+            param_error(:school_issued_email, :school_issued_email_must_be_entered)
+          elsif @email_address_value.present? && invalid_email?
+            param_error(:school_issued_email, :school_issued_email_is_invalid)
+          elsif @email_address_value.present? && email_already_taken?
+            param_error(:school_issued_email, :school_issued_email_is_taken)
+          end
+        end
+      end
+
+      def invalid_email?
+        email = EmailAddress.new(value: @email_address_value)
+
+        begin
+          email.mx_domain_validation
+          return email.errors.any?
+        rescue Mail::Field::IncompleteParseError
+          return true
+        end
+      end
+
+      def email_already_taken?
+        users_existing_email.none? && ContactInfo.verified.where(value: @email_address_value).any?
+      end
+
+      def users_existing_email
+        @users_existing_email ||= user.contact_infos.where(value: @email_address_value)
       end
 
       def param_error(field, error_key)

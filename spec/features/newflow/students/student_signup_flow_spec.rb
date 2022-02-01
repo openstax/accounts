@@ -205,68 +205,6 @@ module Newflow
       end
     end
 
-    context 'happy path with signed params and feature flag ON' do
-      before do
-        turn_on_student_feature_flag
-      end
-
-      background do
-        load 'db/seeds.rb'
-        create_default_application
-      end
-
-      let(:role) do
-        'student'
-      end
-
-      let(:payload) do
-        {
-          role:  role,
-          uuid: SecureRandom.uuid,
-          name:  'Tester McTesterson',
-          email: 'test@example.com',
-          school: 'Testing U'
-        }
-      end
-
-      let(:signed_params) do
-        { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
-      end
-
-      example 'uses the signed parameters' do
-        arrive_from_app(params: signed_params, do_expect: false)
-
-        expect(page).to have_field('signup_first_name', with: 'Tester')
-        expect(page).to have_field('signup_last_name', with: 'McTesterson')
-        expect(page).to have_field('signup_email', with: payload[:email])
-        # skip password since it's trusted # fill_in 'signup_password',	with: 'password'
-        submit_signup_form
-        screenshot!
-
-        expect(User.last.external_uuids.where(uuid: payload[:uuid]).exists?).to be(true)
-        expect(User.last.self_reported_school).to eq(payload[:school])
-
-        email = EmailAddress.find_by!(value: payload[:email])
-        fill_in('confirm_pin', with: email.confirmation_pin)
-
-        find('[type=submit]').click
-
-        find('[type=submit]').click
-        expect(page).to_not have_text(I18n.t(:"login_signup_form.youre_done", first_name: 'Tester'))
-
-        expect_back_at_app
-
-        expect_validated_records(params: payload)
-      end
-    end
-
-    def expect_validated_records(params:, user: User.last, email_is_verified: true)
-      expect(user.external_uuids.where(uuid: params[:uuid]).exists?).to be(true)
-      expect(user.email_addresses.count).to eq(1)
-      email = user.email_addresses.first
-      expect(email.verified).to be(email_is_verified)
-    end
-
     def create_tutor_application
       app = FactoryBot.create(:doorkeeper_application, skip_terms: true,
                           can_access_private_user_data: true,

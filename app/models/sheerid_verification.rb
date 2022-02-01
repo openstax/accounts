@@ -1,5 +1,4 @@
 class SheeridVerification < ApplicationRecord
-
   VERIFIED = 'success'
   REJECTED = 'rejected'
 

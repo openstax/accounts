@@ -47,6 +47,7 @@ class SecurityLog < ApplicationRecord
     authentication_transfer_failed
     login_not_found
     faculty_verified
+    faculty_verified_by_sheerid
     trusted_launch_removed
     student_signed_up
     student_sign_up_failed
@@ -84,6 +85,17 @@ class SecurityLog < ApplicationRecord
     user_profile_complete
     salesforce_error
     update_user_contact_info
+    sheerid_verification_id_added_to_user
+    sheerid_conflicting_verification_id
+    sheerid_webhook_received
+    sheerid_webhook_processed
+    sheerid_webhook_failed
+    sheerid_webhook_request_more_info
+    fv_reject_by_sheerid
+    fv_success_by_sheerid
+    sheerid_error
+    unknown_sheerid_response
+    email_added_to_user
   ]
 
   json_serialize :event_data, Hash

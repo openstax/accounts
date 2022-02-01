@@ -136,6 +136,9 @@ data_sources:
 # create audits
 audit: true
 
+# run queries async
+async: true
+
 # change the time zone
 time_zone: "Central Time (US & Canada)"
 

@@ -165,7 +165,7 @@ module ApplicationHelper
   end
 
   def is_real_production_site?
-    request.host == 'accounts.openstax.org'
+    request.host == 'accounts.openstax.org' || 'openstax.org'
   end
 
   def translate_error(code:, force: false)
@@ -254,35 +254,11 @@ module ApplicationHelper
     end
   end
 
-  def suggested_login_username
-    if !params[:username_or_email] &&
-       pre_auth_state.try!(:signed?) &&
-       LookupUsers.by_verified_email(pre_auth_state.signed_data['email'])
-
-      return pre_auth_state.signed_data['email']
-    end
-    params[:username_or_email]
-  end
-
-  def newflow_suggested_login_username
-    signed_email = session[:user_from_signed_params].try(:dig, 'signed_external_data', 'email')
-    if signed_email && LookupUsers.by_verified_email(signed_email)
-      return signed_email
-    end
-  end
-
   # When currrent user wants to change their password,
   # but hasn't logged in in a while, we ask them to re-authenticate.
   # So we use this function to pre-populate their email field in the login form.
   def current_users_resetting_password_email
     !current_user.is_anonymous? && EmailAddress.verified.where(user: current_user).first.try(:value)
-  end
-
-  def average_time_for_users_to_become_activated
-    query = "SELECT AVG(EXTRACT('EPOCH' FROM AGE(created_at, activated_at))) FROM users WHERE activated_at IS NOT NULL"
-    diff_in_seconds = ActiveRecord::Base.connection.execute(query)[0]['avg']
-    return 'unknown' unless diff_in_seconds.present?
-    distance_of_time_in_words(diff_in_seconds)
   end
 
 end

@@ -42,7 +42,7 @@ module Newflow
         is_BRI_book: is_BRI_book_adopter?,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user.id)
-          security_log(:educator_began_signup, { user: @handler_result.outputs.user, user_state: @handler_result.outputs.user.attributes.delete_if { |k,v| v.nil? } })
+          security_log(:educator_began_signup, { user: @handler_result.outputs.user })
           clear_cache_BRI_marketing
           redirect_to(educator_email_verification_form_path)
         },
@@ -98,7 +98,6 @@ module Newflow
           @total_steps = 4
           @first_name = unverified_user.first_name
           @email = unverified_user.email_addresses.first.value
-          # TODO: we might want to change this security log for a sentry error instead
           security_log(:educator_verify_email_failed, email: @email)
           render(:educator_email_verification_form)
         }
@@ -107,7 +106,7 @@ module Newflow
 
     def educator_sheerid_form
       @sheerid_url = generate_sheer_id_url(user: current_user)
-      security_log(:user_viewed_sheerid_form, user: current_user )
+      security_log(:user_viewed_sheerid_form, user: current_user)
     end
 
     # SheerID makes a POST request to this endpoint when it verifies an educator
@@ -116,10 +115,11 @@ module Newflow
       handle_with(
         EducatorSignup::SheeridWebhook,
         success: lambda {
-          security_log(:user_updated_using_sheerid_data, { data: @handler_result })
+          security_log(:sheerid_webhook_received, { data: @handler_result })
           render(status: :ok, plain: 'Success')
         },
         failure: lambda {
+          security_log(:sheerid_webhook_failed, { data: @handler_result })
           Sentry.capture_message(
             'SheerID webhook FAILED',
             extra: {
@@ -135,7 +135,7 @@ module Newflow
 
     def educator_profile_form
       @book_titles = book_data.titles
-      security_log(:user_viewed_profile_form, user: current_user)
+      security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
     end
 
     def educator_complete_profile
@@ -144,7 +144,7 @@ module Newflow
         user: current_user,
         success: lambda {
           user = @handler_result.outputs.user
-          security_log(:user_profile_complete, { user: user, user_state: user.attributes.delete_if { |k,v| v.nil? } })
+          security_log(:user_profile_complete, { user: user })
           clear_incomplete_educator
 
           if user.is_educator_pending_cs_verification?
@@ -156,35 +156,18 @@ module Newflow
         failure: lambda {
           @book_titles = book_data.titles
           security_log(:educator_sign_up_failed, user: current_user, reason: "Error in #{action_name}. Check Salesforce debug logs for details.")
-          render :educator_profile_form
+          if @handler_result.outputs.is_on_cs_form?
+            render :educator_cs_verification_form
+          else
+            render :educator_profile_form
+          end
         }
       )
-    end
-
-    def educator_cs_verification_form
-      @book_titles = book_data.titles
-      security_log(:user_viewed_signup_form, { form_name: action_name, user: current_user, user_state: current_user.attributes.delete_if { |k,v| v.nil? } })
     end
 
     def educator_pending_cs_verification
       security_log(:user_sent_to_cs_for_review, user: current_user)
       @email_address = current_user.email_addresses.last&.value
-    end
-
-    def educator_cs_verification_request
-      handle_with(
-        EducatorSignup::CsVerificationRequest,
-        user: current_user,
-        success: lambda {
-          security_log(:requested_manual_cs_verification, { form_name: action_name, user: current_user, user_state: current_user.attributes.delete_if { |k,v| v.nil? } })
-          redirect_to(educator_pending_cs_verification_path)
-        },
-        failure: lambda {
-          @book_titles = book_data.titles
-          security_log(:educator_sign_up_failed, user: current_user, reason: "Error in #{action_name}: #{@handler_result&.errors&.full_messages}")
-          render :educator_cs_verification_form
-        }
-      )
     end
 
     private #################
@@ -193,13 +176,6 @@ module Newflow
       if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
         current_user.update!(is_sheerid_unviable: true)
         security_log(:user_not_viable_for_sheerid, user: current_user)
-      end
-    end
-
-    def store_sheerid_verification_for_user
-      if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
-        current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)
-        security_log(:user_updated, message: "updated sheerid_verification_id to #{sheerid_provided_verification_id_param}", user: current_user)
       end
     end
 
@@ -220,6 +196,23 @@ module Newflow
 
     def book_data
       @book_data ||= FetchBookData.new
+    end
+
+    def store_sheerid_verification_for_user
+      if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
+        # create the verification object - this is updated later in ProcessSheeridWebhookRequest
+        SheeridVerification.find_or_initialize_by(verification_id: verification_id)
+
+        # update the user
+        current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)
+
+        # log it
+        SecurityLog.create!(
+          event_type: :sheerid_verification_id_added_to_user,
+          user: current_user,
+          event_data: { verification_id: sheerid_provided_verification_id_param }
+        )
+      end
     end
 
   end

@@ -18,7 +18,7 @@ class GetLoginInfo
 
     fatal_error(code: :no_users, offending_inputs: :username_or_email) if users.empty?
 
-    outputs.names = users.map(&:standard_name).uniq
+    outputs.names = users.map(&:formal_name).uniq
     outputs.user_ids = users.map(&:id)
 
     if users.many?
