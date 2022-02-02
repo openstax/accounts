@@ -40,6 +40,7 @@ class UpdateUserContactInfo
 
       user.salesforce_contact_id = sf_contact.id
 
+      old_fv_status = user.faculty_status
       user.faculty_status = case sf_contact.faculty_verified
                             when "confirmed_faculty"
                               :confirmed_faculty
@@ -50,8 +51,8 @@ class UpdateUserContactInfo
                             when NilClass
                               :no_faculty_info
                             else
-                              raise "Unknown faculty_verified field: '#{
-                                sf_contact.faculty_verified}'' on contact #{sf_contact.id}"
+                              Sentry.capture_message("Unknown faculty_verified field: '#{
+                                sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
                             end
 
       user.school_type = case sf_contact.school_type
@@ -93,16 +94,11 @@ class UpdateUserContactInfo
         user.school = school
       end
 
-      if user.faculty_status_changed? && user.confirmed_faculty? && !user.faculty_verification_email_sent
-        #let_sf_know_to_send_fac_ver_email = true
-        user.faculty_verification_email_sent = true
-
+      if user.faculty_status_changed?
         SecurityLog.create!(
           user: user,
-          application: nil,
-          remote_ip: nil,
-          event_type: :faculty_verified,
-          event_data: { user_id: user.id, salesforce_contact_id: sf_contact.id }
+          event_type: :salesforce_updated_faculty_status,
+          event_data: { user_id: user.id, salesforce_contact_id: sf_contact.id, old_status:old_fv_status, new_status: user.faculty_status }
         )
       end
 
@@ -112,12 +108,16 @@ class UpdateUserContactInfo
   end
 
   def salesforce_contacts
-    contact_days = Settings::Db.store.number_of_days_contacts_modified
+    contact_days = Settings::Db.store.number_of_days_contacts_modified ||= 1
     c_date = contact_days.to_i.day.ago.strftime("%Y-%m-%d")
-    contacts ||= OpenStax::Salesforce::Remote::Contact
-                   .select(
-                     :id, :email, :email_alt, :faculty_verified,
-                     :school_type, :adoption_status, :grant_tutor_access,
+    contacts ||= OpenStax::Salesforce::Remote::Contact.select(
+                     :id,
+                     :email,
+                     :email_alt,
+                     :faculty_verified,
+                     :school_type,
+                     :adoption_status,
+                     :grant_tutor_access,
                      :accounts_uuid
                    )
                    .where("Accounts_UUID__c != null")

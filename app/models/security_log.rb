@@ -83,6 +83,7 @@ class SecurityLog < ApplicationRecord
     user_sent_to_cs_for_review
     user_became_activated
     user_profile_complete
+    salesforce_updated_faculty_status
     salesforce_error
     update_user_contact_info
     sheerid_verification_id_added_to_user
