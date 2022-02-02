@@ -6,7 +6,8 @@ module Newflow
     protected ###############
 
     def exec(email:, user:, is_school_issued: nil)
-      @email = EmailAddress.create(value: email&.downcase, user_id: user.id, is_school_issued: is_school_issued)
+      @email = EmailAddress.find_or_create_by(value: email&.downcase, user_id: user.id)
+      @email.is_school_issued = is_school_issued
 
       @email.customize_value_error_message(
         error: :missing_mx_records,
@@ -14,7 +15,11 @@ module Newflow
       )
       transfer_errors_from(@email, { scope: :email }, :fail_if_errors)
 
-      NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
+      if @email.new_record? || !@email.verified?
+        NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
+      end
+
+      @email.save
     end
 
   end

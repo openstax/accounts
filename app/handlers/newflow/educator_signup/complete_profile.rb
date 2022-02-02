@@ -52,10 +52,15 @@ module Newflow
       end
 
       def handle
+        # let the controller know this is the cs form, so we can redirect properly on error
+        @is_on_cs_form = signup_params.is_cs_form?
+        outputs.is_on_cs_form = @is_on_cs_form
+
+        # validate the form
         check_params
         return if errors?
 
-        @is_on_cs_form = signup_params.is_cs_form?
+        # is this user coming from the sheerid flow? there are a few things we can check... 
         @did_use_sheerid = !(signup_params.is_school_not_supported_by_sheerid == 'true' ||
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
                              user.is_sheerid_unviable? || @is_on_cs_form)
@@ -82,16 +87,18 @@ module Newflow
 
         if (!@did_use_sheerid && @is_on_cs_form) && !signup_params.school_issued_email.blank?
           @email_address_value = signup_params.school_issued_email
-          # this user used the CS form and _should_ have provided us an email address -
-          # so let's add it - validation happens before this in check_params
-          run(CreateEmailForUser, email: @email_address_value, user: user, is_school_issued: true)
+          # check if they used the email email address during signup, we don't need to create again
+          unless user.email_addresses.include? @email_address_value
+            # this user used the CS form and _should_ have provided us an email address -
+            # so let's add it - validation happens before this in check_params
+            run(CreateEmailForUser, email: @email_address_value, user: user, is_school_issued: true)
+          end
         end
 
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
 
-        # here's that output we've been waiting for...
+        #output the user to the lev handler
         outputs.user = user
-        outputs.is_on_cs_form = @is_on_cs_form
 
         if @did_use_sheerid && !user.sheer_id_webhook_received
           # User used SheerID - we create their lead in ProcessSheeridWebhookRequest, not here.. and might not be instant
@@ -158,8 +165,6 @@ module Newflow
           # if they are on the CS form, we need school issued email address
           if @email_address_value.blank?
             param_error(:school_issued_email, :school_issued_email_must_be_entered)
-          elsif @email_address_value.present? && invalid_email?
-            param_error(:school_issued_email, :school_issued_email_is_invalid)
           elsif @email_address_value.present? && email_already_taken?
             param_error(:school_issued_email, :school_issued_email_is_taken)
           end
@@ -178,11 +183,7 @@ module Newflow
       end
 
       def email_already_taken?
-        users_existing_email.none? && ContactInfo.verified.where(value: @email_address_value).any?
-      end
-
-      def users_existing_email
-        @users_existing_email ||= user.contact_infos.where(value: @email_address_value)
+        user.contact_infos.where(value: @email_address_value).where.not(user=user).any?
       end
 
       def param_error(field, error_key)
