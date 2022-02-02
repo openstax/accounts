@@ -1,9 +1,7 @@
 module Newflow
   module EducatorSignupHelper
-    VERIFICATION_ID_URL_PARAM = :verificationid
-
     def sheerid_provided_verification_id_param
-      params[VERIFICATION_ID_URL_PARAM]
+      params[:verificationid]
     end
 
     def is_school_not_supported_by_sheerid?

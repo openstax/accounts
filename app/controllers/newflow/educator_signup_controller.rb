@@ -201,7 +201,7 @@ module Newflow
     def store_sheerid_verification_for_user
       if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
         # create the verification object - this is updated later in ProcessSheeridWebhookRequest
-        SheeridVerification.find_or_initialize_by(verification_id: verification_id)
+        SheeridVerification.find_or_initialize_by(verification_id: sheerid_provided_verification_id_param)
 
         # update the user
         current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)
