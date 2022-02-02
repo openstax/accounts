@@ -96,14 +96,6 @@ module Api::V1
                 description: "One of #{User.faculty_statuses.keys.map(&:to_s).inspect}"
              }
 
-    property :is_newflow,
-             type: String,
-             readable: true,
-             writeable: false,
-             schema_info: {
-                description: "User signed up after releasing Accounts 2.0 (aka. the new flow?)"
-             }
-
     property :needs_to_complete_educator_profile?,
              as: :needs_complete_edu_profile,
              type: String,
