@@ -463,41 +463,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#is_instructor_verification_stale?' do
-    context "when faculty status has been pending for #{User::STALE_VERIFICATION_PERIOD.inspect}" do
-      it 'returns true' do
-        Timecop.freeze(DateTime.now - User::STALE_VERIFICATION_PERIOD) do
-          FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY, activated_at: DateTime.now)
-        end
-
-        expect(User.last.is_instructor_verification_stale?).to be(true)
-      end
-    end
-
-    context "when faculty status has been pending for 3 days and 23 hours and 55 seconds" do
-      it 'returns false' do
-        Timecop.freeze(DateTime.now - 3.days - 23.hours - 55.seconds) do
-          FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY, activated_at: DateTime.now)
-        end
-
-        expect(User.last.is_instructor_verification_stale?).to be(false)
-      end
-    end
-
-    context "when faculty status has been pending for #{User::STALE_VERIFICATION_PERIOD.inspect}" do
-      context 'and pending cs verification' do
-        it 'returns true' do
-          Timecop.freeze(DateTime.now - User::STALE_VERIFICATION_PERIOD) do
-            FactoryBot.create(:user, faculty_status: User::PENDING_FACULTY, activated_at: DateTime.now)
-          end
-
-          User.last.update(is_educator_pending_cs_verification: true)
-          expect(User.last.is_instructor_verification_stale?).to be(false)
-        end
-      end
-    end
-  end
-
   describe '#best_email_address_for_salesforce' do
     let(:school_issued_email) { FactoryBot.create(:email_address, is_school_issued: true, verified: false) }
     let(:verified_email) { FactoryBot.create(:email_address, is_school_issued: false, verified: true) }
