@@ -155,9 +155,9 @@ module Newflow
         },
         failure: lambda {
           @book_titles = book_data.titles
-          security_log(:educator_sign_up_failed, user: current_user, reason: "Error in #{action_name}. Check Salesforce debug logs for details.")
-          if @handler_result.outputs.is_on_cs_form?
-            render :educator_cs_verification_form
+          security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
+          if @handler_result.outputs.is_on_cs_form
+            redirect_to(educator_cs_verification_form_url, alert: "Please check your input and try again. Email address and School Name are required fields.")
           else
             render :educator_profile_form
           end
@@ -201,7 +201,7 @@ module Newflow
     def store_sheerid_verification_for_user
       if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
         # create the verification object - this is updated later in ProcessSheeridWebhookRequest
-        SheeridVerification.find_or_initialize_by(verification_id: verification_id)
+        SheeridVerification.find_or_initialize_by(verification_id: sheerid_provided_verification_id_param)
 
         # update the user
         current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)
