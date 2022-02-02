@@ -48,7 +48,7 @@ module Newflow
       end
 
       def authorized?
-        user && !user.is_anonymous?
+        @user && !@user.is_anonymous?
       end
 
       def handle
@@ -65,7 +65,7 @@ module Newflow
                              signup_params.is_country_not_supported_by_sheerid == 'true' ||
                              user.is_sheerid_unviable? || @is_on_cs_form)
 
-        user.update!(
+        @user.update!(
           role: signup_params.educator_specific_role,
           other_role_name: other_role_name,
           using_openstax_how: signup_params.using_openstax_how,
@@ -79,7 +79,7 @@ module Newflow
 
         if @is_on_cs_form
           # user needs CS review to become confirmed - set it as such in accounts
-          user.update(
+          @user.update(
             requested_cs_verification_at: DateTime.now,
             faculty_status: User::PENDING_FACULTY
           )
@@ -87,18 +87,15 @@ module Newflow
 
         if @is_on_cs_form && !signup_params.school_issued_email.blank?
           @email_address_value = signup_params.school_issued_email
-          # check if they used the email email address during signup, we don't need to create again
-          unless user.email_addresses.include? @email_address_value
-            # this user used the CS form and _should_ have provided us an email address -
-            # so let's add it - validation happens before this in check_params
-            run(CreateEmailForUser, email: @email_address_value, user: user, is_school_issued: true)
-          end
+          # this user used the CS form and _should_ have provided us an email address -
+          # so let's add it - validation happens before this in check_params
+          run(CreateEmailForUser, email: @email_address_value, user: @user, is_school_issued: true)
         end
 
-        transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
+        transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
 
         #output the user to the lev handler
-        outputs.user = user
+        outputs.user = @user
 
         if @did_use_sheerid && !user.sheer_id_webhook_received
           # User used SheerID - we create their lead in ProcessSheeridWebhookRequest, not here.. and might not be instant
@@ -108,7 +105,7 @@ module Newflow
         # We check in ProcessSheeridWebhookRequest to see if they completed their profile before creating lead
 
         # Now we create the lead for the user... because we returned above if they did... again ProcessSheeridWebhookRequest
-        CreateSalesforceLead.perform_later(user: user)
+        CreateSalesforceLead.perform_later(user: @user)
 
       end
 
@@ -163,16 +160,14 @@ module Newflow
 
         if @is_on_cs_form
           # if they are on the CS form, we need school issued email address
-          if @email_address_value.blank?
+          if signup_params.school_issued_email.blank?
             param_error(:school_issued_email, :school_issued_email_must_be_entered)
-          elsif @email_address_value.present? && email_already_taken?
-            param_error(:school_issued_email, :school_issued_email_is_taken)
           end
         end
       end
 
       def invalid_email?
-        email = EmailAddress.new(value: @email_address_value)
+        email = EmailAddress.new(value: signup_params.school_issued_email)
 
         begin
           email.mx_domain_validation
@@ -180,10 +175,6 @@ module Newflow
         rescue Mail::Field::IncompleteParseError
           return true
         end
-      end
-
-      def email_already_taken?
-        user.contact_infos.where(value: @email_address_value).where.not(user=user).any?
       end
 
       def param_error(field, error_key)

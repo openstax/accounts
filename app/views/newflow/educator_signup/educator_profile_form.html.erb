@@ -67,7 +67,8 @@
                 <%=
                   fh.text_field(
                     name: :school_issued_email,
-                    placeholder: @email_address
+                    placeholder: nil,
+                    value: user.email_addresses.last&.value
                   )
                 %>
               </div>

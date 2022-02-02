@@ -18,5 +18,9 @@ module Newflow
       request.original_fullpath.include? 'cs_form'
     end
 
+    def user
+      current_user
+    end
+
   end
 end

@@ -155,8 +155,8 @@ module Newflow
         },
         failure: lambda {
           @book_titles = book_data.titles
-          security_log(:educator_sign_up_failed, user: current_user, reason: "Error in #{action_name}. Check Salesforce debug logs for details.")
-          if @handler_result.outputs.is_on_cs_form?
+          security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
+          if @handler_result.outputs.is_on_cs_form
             render :educator_cs_verification_form
           else
             render :educator_profile_form
