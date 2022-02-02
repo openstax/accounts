@@ -8,7 +8,6 @@ class NewflowUi.EducatorComplete
 
     # fields locators
     @school_name = @findOrLogNotFound(@form, '.school-name-visible')
-    @school_email = @findOrLogNotFound(@form, '.school-issued-email-visible')
 
     @completed_role = @findOrLogNotFound(@form, '.completed-role')
     @other_specify = @findOrLogNotFound(@form, '.other-specify')
@@ -22,7 +21,6 @@ class NewflowUi.EducatorComplete
 
     # input fields locators
     @school_name_input = @findOrLogNotFound(@school_name, 'input')
-    @school_email_input = @findOrLogNotFound(@school_email, 'input')
 
     @completed_role_radio = @findOrLogNotFound(@completed_role, "input")
     @other_input = @findOrLogNotFound(@other_specify, "input")
@@ -37,7 +35,6 @@ class NewflowUi.EducatorComplete
 
     # error messages locators
     @please_fill_out_school = @findOrLogNotFound(@form, '.school-name.newflow-mustdo-alert')
-    @please_fill_out_school_email = @findOrLogNotFound(@form, '.school-issued-email.newflow-mustdo-alert')
 
     @please_select_role = @findOrLogNotFound(@form, '.completed-role .role.newflow-mustdo-alert')
     @please_fill_out_other = @findOrLogNotFound(@form, '.other.newflow-mustdo-alert')
@@ -53,7 +50,6 @@ class NewflowUi.EducatorComplete
 
     # event listeners
     @school_name_input.on('input', @onSchoolNameChange)
-    @school_email_input.on('input', @onSchoolEmailChange)
 
     @completed_role_radio.change(@onRoleChange)
     @other_input.on('input', @onOtherChange)
@@ -83,7 +79,6 @@ class NewflowUi.EducatorComplete
 
     # Hide all validations messages
     @please_fill_out_school.hide()
-    @please_fill_out_school_email.hide()
     @please_select_role.hide()
     @please_fill_out_total_num.hide()
 
@@ -109,7 +104,6 @@ class NewflowUi.EducatorComplete
 
   onSubmit: (ev) ->
     school_name_valid = @checkSchoolNameValid()
-    school_email_valid = @checkSchoolEmailValid()
 
     role_valid = @checkRoleValid()
     other_valid = @checkOtherValid()
@@ -125,7 +119,6 @@ class NewflowUi.EducatorComplete
 
     if not (
         school_name_valid and
-        school_email_valid and
         role_valid and
         other_valid and
         chosen_valid and
@@ -145,16 +138,6 @@ class NewflowUi.EducatorComplete
       true
     else
       @please_fill_out_school.show()
-      false
-
-  checkSchoolEmailValid: () ->
-    return true if document.getElementsByClassName('school-issued-email-visible')[0] == undefined
-
-    if @school_email_input.val()
-      @please_fill_out_school_email.hide()
-      true
-    else
-      @please_fill_out_school_email.show()
       false
 
   checkRoleValid: () ->
@@ -245,12 +228,6 @@ class NewflowUi.EducatorComplete
     @please_fill_out_school.hide()
     @onRoleChange()
 
-  onSchoolEmailChange: ->
-    @please_fill_out_school_email.hide()
-
-    if @checkSchoolEmailValid()
-      @continue.prop('disabled', false)
-
   onRoleChange: ->
     @please_select_role.hide()
 
@@ -287,13 +264,13 @@ class NewflowUi.EducatorComplete
       @how_using.hide()
       @please_fill_out_other.hide()
 
-    if @checkSchoolNameValid() && @checkSchoolEmailValid()
+    if @checkSchoolNameValid()
       @continue.prop('disabled', false)
 
   onOtherChange: ->
     @please_fill_out_other.hide()
 
-    if @checkSchoolNameValid() && @checkSchoolEmailValid() && @checkOtherValid()
+    if @checkSchoolNameValid() && @checkOtherValid()
       @continue.prop('disabled', false)
 
   onHowChosenChange: ->

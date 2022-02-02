@@ -61,13 +61,10 @@
                     class: 'field-label'
                   )
                 %>
-                <div class="school-issued-email newflow-mustdo-alert">
-                  <%= I18n.t(:"educator_profile_form.school_issued_email_must_be_entered") %>
-                </div>
                 <%=
                   fh.text_field(
                     name: :school_issued_email,
-                    placeholder: nil,
+                    placeholder: I18n.t(:"educator_profile_form.school_issued_email"),
                     value: user.email_addresses.last&.value
                   )
                 %>
