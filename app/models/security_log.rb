@@ -102,6 +102,7 @@ class SecurityLog < ApplicationRecord
     starting_salesforce_lead_creation
     attempting_to_create_user_lead
     user_contact_id_updated_from_salesforce
+    attempted_to_add_school_not_cached_yet
   ]
 
   json_serialize :event_data, Hash

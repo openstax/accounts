@@ -23,8 +23,9 @@ class UpdateUserContactInfo
   end
 
   def call
-    info("Starting")
+    log("Starting sync with Salesforce")
     contacts = salesforce_contacts
+    log("#{contacts.count} contacts fetched from Salesforce")
     contacts_by_uuid = contacts_by_uuid_hash(contacts)
 
     users ||= User.where(uuid: contacts.map(&:accounts_uuid))
@@ -33,7 +34,12 @@ class UpdateUserContactInfo
     ).index_by(&:salesforce_id)
 
 
-    # loop through users
+    # loop through users - we keep some counts for logging out
+    users_updated = 0
+    users_fv_status_changed = 0
+    users_without_cached_school = 0
+    log("Updating #{users.count} users from Salesforce")
+
     users.each do |user|
       sf_contact = contacts_by_uuid[user.uuid]
       school = schools_by_salesforce_id[sf_contact.school_id]
@@ -95,12 +101,19 @@ class UpdateUserContactInfo
       user.is_b_r_i_user = sf_contact.b_r_i_marketing
 
       if school.nil? && !sf_school.nil?
-        warn("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
+        SecurityLog.create!(
+          user: user,
+          event_type: :attempted_to_add_school_not_cached_yet,
+          event_data: { school_id: sf_school.id }
+        )
+        users_without_cached_school += 1
+        log("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
       else
         user.school = school
       end
 
       if user.faculty_status_changed?
+        users_fv_status_changed += 1
         SecurityLog.create!(
           user: user,
           event_type: :salesforce_updated_faculty_status,
@@ -108,9 +121,11 @@ class UpdateUserContactInfo
         )
       end
 
-      user.save! if user.changed?
+      user.save! && users_updated += 1 if user.changed?
     end
-    info('Completed')
+    log("Completed updating #{users_updated} users.")
+    log("#{users_fv_status_changed} users had their faculty status updated.")
+    log("#{users_without_cached_school} users had no cached school in accounts. This should update on the next sync (after UpdateSchoolSalesforceInfo runs) or it is missing in Salesforce.")
   end
 
   def salesforce_contacts
@@ -140,7 +155,7 @@ class UpdateUserContactInfo
     contacts_by_uuid
   end
 
-  def info(message)
-    Rails.logger.info("UpdateUserContactInfo: " + message)
+  def log(message, level = :info)
+    Rails.logger.tagged(self.class.name) { Rails.logger.public_send level, message }
   end
 end
