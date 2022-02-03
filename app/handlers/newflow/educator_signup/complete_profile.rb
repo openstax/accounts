@@ -78,6 +78,10 @@ module Newflow
         )
 
         if @is_on_cs_form
+          SecurityLog.create!(
+            user: user,
+            event_type: :user_completed_cs_form
+          )
           # user needs CS review to become confirmed - set it as such in accounts
           @user.update(
             requested_cs_verification_at: DateTime.now,
@@ -97,8 +101,12 @@ module Newflow
         #output the user to the lev handler
         outputs.user = @user
 
-        if @did_use_sheerid && !user.sheer_id_webhook_received
-          # User used SheerID - we create their lead in ProcessSheeridWebhookRequest, not here.. and might not be instant
+        if !user.is_educator_pending_cs_verification && !user.sheer_id_webhook_received
+          # User used SheerID or needs CS verification - we create their lead in ProcessSheeridWebhookRequest, not here.. and might not be instant
+          SecurityLog.create!(
+            user: user,
+            event_type: :lead_creation_awaiting_sheerid_webhook,
+          )
           return
         end
         # otherwise, we already heard from SheerID, so let's create the lead.

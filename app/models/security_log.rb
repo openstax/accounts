@@ -72,6 +72,7 @@ class SecurityLog < ApplicationRecord
     educator_verify_email_failed
     user_viewed_signup_form
     user_viewed_sheerid_form
+    user_completed_cs_form
     user_updated_using_sheerid_data
     educator_verified_using_sheerid
     user_not_viable_for_sheerid
@@ -97,6 +98,9 @@ class SecurityLog < ApplicationRecord
     sheerid_error
     unknown_sheerid_response
     email_added_to_user
+    lead_creation_awaiting_cs_review
+    starting_salesforce_lead_creation
+    attempting_to_create_user_lead
   ]
 
   json_serialize :event_data, Hash
