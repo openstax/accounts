@@ -40,6 +40,12 @@ class UpdateUserContactInfo
 
       user.salesforce_contact_id = sf_contact.id
 
+      SecurityLog.create!(
+        user: user,
+        event_type: :user_contact_id_updated_from_salesforce,
+        event_data: { contact_id: sf_contact.id }
+      )
+
       old_fv_status = user.faculty_status
       user.faculty_status = case sf_contact.faculty_verified
                             when "confirmed_faculty"

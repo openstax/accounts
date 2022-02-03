@@ -101,6 +101,7 @@ class SecurityLog < ApplicationRecord
     lead_creation_awaiting_cs_review
     starting_salesforce_lead_creation
     attempting_to_create_user_lead
+    user_contact_id_updated_from_salesforce
   ]
 
   json_serialize :event_data, Hash
