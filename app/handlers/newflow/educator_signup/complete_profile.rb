@@ -87,13 +87,11 @@ module Newflow
             requested_cs_verification_at: DateTime.now,
             faculty_status: User::PENDING_FACULTY
           )
-        end
-
-        if @is_on_cs_form && !signup_params.school_issued_email.blank?
-          @email_address_value = signup_params.school_issued_email
-          # this user used the CS form and _should_ have provided us an email address -
-          # so let's add it - validation happens before this in check_params
-          run(CreateEmailForUser, email: @email_address_value, user: @user, is_school_issued: true)
+          unless signup_params.school_issued_email.blank?
+            # this user used the CS form and _should_ have provided us an email address -
+            # so let's add it - validation happens before this in check_params
+            run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
+          end
         end
 
         transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)

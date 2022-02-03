@@ -86,7 +86,7 @@ module Newflow
       SecurityLog.create!(
         user: user,
         event_type: :attempting_to_create_user_lead,
-        event_data: { lead_data: lead.inspect }
+        event_data: { lead_data: lead }
       )
 
       outputs.lead = lead
