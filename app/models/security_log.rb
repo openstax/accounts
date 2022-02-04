@@ -87,7 +87,8 @@ class SecurityLog < ApplicationRecord
     salesforce_updated_faculty_status
     salesforce_error
     update_user_contact_info
-    sheerid_verification_id_added_to_user
+    sheerid_verification_id_added_to_user_during_signup
+    sheerid_verification_id_added_to_user_from_webhook
     sheerid_conflicting_verification_id
     sheerid_webhook_received
     sheerid_webhook_processed
@@ -103,6 +104,7 @@ class SecurityLog < ApplicationRecord
     attempting_to_create_user_lead
     user_contact_id_updated_from_salesforce
     attempted_to_add_school_not_cached_yet
+    school_added_to_user_from_sheerid_webhook
   ]
 
   json_serialize :event_data, Hash

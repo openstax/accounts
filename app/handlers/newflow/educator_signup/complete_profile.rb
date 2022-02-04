@@ -100,7 +100,7 @@ module Newflow
         outputs.user = @user
 
         if !user.is_educator_pending_cs_verification && !user.sheer_id_webhook_received
-          # User used SheerID or needs CS verification - we create their lead in ProcessSheeridWebhookRequest, not here.. and might not be instant
+          # User used SheerID or needs CS verification - we create their lead in SheeridWebhook, not here.. and might not be instant
           SecurityLog.create!(
             user: user,
             event_type: :lead_creation_awaiting_sheerid_webhook,
@@ -108,9 +108,9 @@ module Newflow
           return
         end
         # otherwise, we already heard from SheerID, so let's create the lead.
-        # We check in ProcessSheeridWebhookRequest to see if they completed their profile before creating lead
+        # We check in SheeridWebhook to see if they completed their profile before creating lead
 
-        # Now we create the lead for the user... because we returned above if they did... again ProcessSheeridWebhookRequest
+        # Now we create the lead for the user... because we returned above if they did... again SheeridWebhook
         CreateSalesforceLead.perform_later(user: @user)
 
       end
