@@ -2,8 +2,7 @@ require 'rails_helper'
 
 RSpec.describe MarkContactInfoVerified, type: :routine do
   [
-    [ :email_address, :verified? ],
-    [ :pre_auth_state, :is_contact_info_verified? ]
+    [ :email_address, :verified? ]
   ].each do |klass, method|
     context klass.to_s do
       let(:instance) { FactoryBot.create klass }
