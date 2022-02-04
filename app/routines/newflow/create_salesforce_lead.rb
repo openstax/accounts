@@ -1,7 +1,7 @@
 module Newflow
   class CreateSalesforceLead
 
-    lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
+    lev_routine active_job_enqueue_options: { queue: :salesforce }
 
     LEAD_SOURCE =  'Account Creation'
     DEFAULT_REFERRING_APP_NAME = 'Accounts'

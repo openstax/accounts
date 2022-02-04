@@ -24,6 +24,7 @@ Delayed::Worker.default_queue_name = :default
 Delayed::Worker.queue_attributes = {
   educator_signup_queue: { priority: -10 },
   default:               { priority:   0 },
+  salesforce:            { priority:   5 },
   mailers:               { priority:  10 }
 }
 
@@ -59,6 +60,7 @@ module HandleFailedJobInstantly
   }
 
   def handle_failed_job(job, exception)
+    Sentry.capture_exception(exception)
     fail_proc = INSTANT_FAILURE_PROCS[exception.class.name]
     job.fail! if fail_proc.present? && fail_proc.call(exception) ||
                  exception.try(:instantly_fail_if_in_background_job?)
