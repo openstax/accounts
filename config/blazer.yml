@@ -6,7 +6,7 @@ data_sources:
 
     # statement timeout, in seconds
     # none by default
-    timeout: 15
+    # timeout: 15
 
     # caching settings
     # can greatly improve speed
@@ -98,7 +98,7 @@ data_sources:
 audit: true
 
 # run queries async
-async: true
+# async: true
 
 # change the time zone
 time_zone: "Central Time (US & Canada)"
