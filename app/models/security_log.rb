@@ -100,6 +100,7 @@ class SecurityLog < ApplicationRecord
     unknown_sheerid_response
     email_added_to_user
     lead_creation_awaiting_cs_review
+    lead_creation_awaiting_sheerid_webhook
     starting_salesforce_lead_creation
     attempting_to_create_user_lead
     user_contact_id_updated_from_salesforce
