@@ -10,6 +10,9 @@ module Newflow
       end
 
       def handle(verification_id)
+        unless verification_id
+          verification_id = params.fetch('verificationId')
+        end
         verification_details_from_sheerid = SheeridAPI.get_verification_details(verification_id)
 
         # there are no details included with this step that are helpful a future
