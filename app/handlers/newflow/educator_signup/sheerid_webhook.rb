@@ -9,7 +9,7 @@ module Newflow
         true
       end
 
-      def handle(verification_id)
+      def handle(verification_id=nil)
         unless verification_id
           verification_id = params.fetch('verificationId')
         end
