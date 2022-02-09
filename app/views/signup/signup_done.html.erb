@@ -1,0 +1,19 @@
+<% content_for :application_body do %>
+<%
+  header = I18n.t(:"login_signup_form.youre_done", first_name: @first_name)
+  image = image_tag('highlighting_and_note_taking.png', style: 'width: inherit;')
+  description = I18n.t(
+    :"login_signup_form.youre_done_description",
+    email_address: @email_address
+  ).html_safe
+%>
+
+<%=
+  render(
+    'signup/signup_done_template',
+    header: header,
+    description: description,
+    image: image
+  )
+%>
+<% end %>

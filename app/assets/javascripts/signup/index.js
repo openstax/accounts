@@ -1,11 +1,7 @@
 //= require ../vendor/underscore
 //= require ../vendor/mailcheck
-//= require ./namespace
-//= require ./type-selector
-//= require ./email-value
+//= require ./edu-email-validations
+//= require ./educator-profile
+//= require ./educator-complete-dynamic
+//= require ./phone-number
 //= require_self
-
-$(document).ready(function(){
-  $('form:first *:input[type!=hidden]:first').focus();
-  OX.Signup.TypeSelector.initialize();
-});
