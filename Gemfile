@@ -191,6 +191,10 @@ gem 'rspec-rails'
 
 gem 'blazer'
 
+# moving here for now
+gem 'byebug', require: false
+gem 'rspec-rails'
+
 group :development, :test do
   # Run specs in parallel
   gem 'parallel_tests'
@@ -201,10 +205,13 @@ group :development, :test do
   # See config/initializers/04-debugger.rb
   #
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', require: false
+  #gem 'byebug', require: false
   # Debug in VS Code
   gem 'ruby-debug-ide', require: false
   gem 'debase', require: false
+
+  # Use RSpec for tests
+  #gem 'rspec-rails'
 
   # Because `assigns` has been extracted from RSpec to a gem
   gem 'rails-controller-testing'
