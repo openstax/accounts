@@ -186,6 +186,9 @@ gem 'rack-cors'
 gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
 gem 'faye', '0.8.9'
 
+# Use RSpec for tests
+gem 'rspec-rails'
+
 gem 'blazer'
 
 group :development, :test do
@@ -202,9 +205,6 @@ group :development, :test do
   # Debug in VS Code
   gem 'ruby-debug-ide', require: false
   gem 'debase', require: false
-
-  # Use RSpec for tests
-  gem 'rspec-rails'
 
   # Because `assigns` has been extracted from RSpec to a gem
   gem 'rails-controller-testing'
