@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/gh/openstax/accounts/branch/main/graph/badge.svg?token=AL4prAnF2K)](https://codecov.io/gh/openstax/accounts)
 
 ![](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiUmNNNVBKRVpIOXBHOFVyNldNTnNrc0hQaTdrSUZGSGtOcnpLV1ZwL2FnMmVwY3l3RUp4OXpFOTNycEV0a2p4N29yampiZnVjN1MyYU5SM3VBMU8vWm9nPSIsIml2UGFyYW1ldGVyU3BlYyI6IldkemJaMFQxUW51Qnl2VGEiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main)
-![](https://img.shields.io/github/v/release/openstax/accounts?label=latest%20release)
+![](https://img.shields.io/github/v/tag/openstax/accounts?label=latest%20tag)
 
 OpenStax Accounts is a centralized User Account services provider for various OpenStax products, including:
 
