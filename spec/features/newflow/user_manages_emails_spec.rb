@@ -62,7 +62,7 @@ feature 'User manages emails', js: true do
     end
 
     scenario 'with empty value' do
-      click_link (I18n.t(:"legacy.users.edit.add_email_address"))
+      click_link(I18n.t(:"legacy.users.edit.add_email_address"))
       within(:css, '.email-entry.new') {
         find('input').set('')
         find('.glyphicon-ok').click
@@ -71,7 +71,7 @@ feature 'User manages emails', js: true do
     end
 
     scenario 'with invalid email format' do
-      click_link (I18n.t(:"legacy.users.edit.add_email_address"))
+      click_link(I18n.t(:"legacy.users.edit.add_email_address"))
       within(:css, '.email-entry.new') {
         find('input').set('user')
         find('.glyphicon-ok').click
@@ -84,7 +84,7 @@ feature 'User manages emails', js: true do
       # makes a real DNS/HTTP request
       EmailDomainMxValidator.strategy = EmailDomainMxValidator::DnsStrategy.new
 
-      click_link (I18n.t(:"legacy.users.edit.add_email_address"))
+      click_link(I18n.t(:"legacy.users.edit.add_email_address"))
       within(:css, '.email-entry.new') {
         find('input').set(email_address)
         find('.glyphicon-ok').click
@@ -98,7 +98,7 @@ feature 'User manages emails', js: true do
       # makes a real DNS/HTTP request
       EmailDomainMxValidator.strategy = EmailDomainMxValidator::DnsStrategy.new
 
-      click_link (I18n.t(:"legacy.users.edit.add_email_address"))
+      click_link(I18n.t(:"legacy.users.edit.add_email_address"))
       within(:css, '.email-entry.new') {
         find('input').set(email_address)
         find('.glyphicon-ok').click
@@ -107,7 +107,7 @@ feature 'User manages emails', js: true do
       }
       capture_email!(address: 'anyone@openstax.org')
       expect(page).to have_no_missing_translations
-      expect(page).to have_button(I18n.t(:".edit.resend_confirmation"))
+      expect(page).to have_button(I18n.t(:"legacy.users.edit.resend_confirmation"))
       expect(page).to have_content('anyone@openstax.org')
     end
 
