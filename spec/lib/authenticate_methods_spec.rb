@@ -21,7 +21,7 @@ RSpec.describe AuthenticateMethods, type: :lib do
   end
 
   context 'anonymous user' do
-    xit 'authenticate_user! redirects to the login page' do
+    it 'authenticate_user! redirects to the login page' do
       expect(controller).to receive(:store_url)
       expect(controller).to receive(:redirect_to)
       expect(main_app).to receive(:newflow_login_path)
@@ -39,7 +39,7 @@ RSpec.describe AuthenticateMethods, type: :lib do
   context 'signed in user' do
     before { controller.sign_in! user_1 }
 
-    xit 'authenticate_user! does nothing' do
+    it 'authenticate_user! does nothing' do
       expect(controller).not_to receive(:store_url)
       expect(controller).not_to receive(:redirect_to)
       expect(main_app).not_to receive(:newflow_login_path)
@@ -47,7 +47,7 @@ RSpec.describe AuthenticateMethods, type: :lib do
     end
 
     context 'normal user' do
-      xit 'authenticate_admin! returns 403 Forbidden' do
+      it 'authenticate_admin! returns 403 Forbidden' do
         expect(controller).to receive(:head).with(:forbidden)
         expect(controller).not_to receive(:store_url)
         expect(controller).not_to receive(:redirect_to)
@@ -59,7 +59,7 @@ RSpec.describe AuthenticateMethods, type: :lib do
     context 'admin user' do
       before { user_1.update_attribute :is_administrator, true }
 
-      xit 'authenticate_admin! does nothing' do
+      it 'authenticate_admin! does nothing' do
         expect(controller).not_to receive(:store_url)
         expect(controller).not_to receive(:redirect_to)
         expect(main_app).not_to receive(:newflow_login_path)
