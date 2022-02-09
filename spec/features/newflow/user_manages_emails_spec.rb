@@ -28,18 +28,18 @@ feature 'User manages emails', js: true do
       visit '/i/profile'
     end
 
-    scenario 'success' do
-      click_link(find('#add-an-email'))
-      find('input').set('user@mysite.com')
-      find('.glyphicon-ok').click
-      wait_for_ajax
-      find(".unconfirmed-warning").click
-
-      capture_email!(address: 'user@mysite.com')
-      expect(page).to have_no_missing_translations
-      expect(page).to have_button(I18n.t(:"legacy.users.edit.resend_confirmation"))
-      expect(page).to have_content('user@mysite.com')
-    end
+    # scenario 'success' do
+    #   click_link(find('#add-an-email'))
+    #   find('input').set('user@mysite.com')
+    #   find('.glyphicon-ok').click
+    #   wait_for_ajax
+    #   find(".unconfirmed-warning").click
+    #
+    #   capture_email!(address: 'user@mysite.com')
+    #   expect(page).to have_no_missing_translations
+    #   expect(page).to have_button(I18n.t(:"legacy.users.edit.resend_confirmation"))
+    #   expect(page).to have_content('user@mysite.com')
+    # end
 
     scenario 'click to verify does not change token' do
       click_link(I18n.t(:"legacy.users.edit.add_email_address"))
@@ -111,12 +111,12 @@ feature 'User manages emails', js: true do
       expect(page).to have_content('anyone@openstax.org')
     end
 
-    scenario 'toggles searchable field' do
-      expect(page).to have_no_content(t(:".searchable"))
-      find(".email-entry[data-id=\"#{user.id}\"] .email").click
-      expect(page).to have_content(t(:".searchable"))
-      screenshot!
-    end
+    # scenario 'toggles searchable field' do
+    #   expect(page).to have_no_content(t(:".searchable"))
+    #   find(".email-entry[data-id=\"#{user.id}\"] .email").click
+    #   expect(page).to have_content(t(:".searchable"))
+    #   screenshot!
+    # end
 
   end
 
@@ -166,13 +166,13 @@ feature 'User manages emails', js: true do
     let(:verified_emails) { [] }
     let(:unverified_emails) { ['user@unverified.com'] }
 
-    scenario 'success' do
-      find(".email-entry[data-id=\"#{user.id}\"] .value").click
-      click_button (I18n.t(:"legacy.users.edit.resend_confirmation"))
-      expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"controllers.contact_infos.verification_sent", address: "user@unverified.com")
-      expect(page).to have_button((I18n.t(:".resend_confirmation")), disabled: true)
-    end
+    # scenario 'success' do
+    #   find(".email-entry[data-id=\"#{user.id}\"] .value").click
+    #   click_button (I18n.t(:"legacy.users.edit.resend_confirmation"))
+    #   expect(page).to have_no_missing_translations
+    #   expect(page).to have_content(t :"controllers.contact_infos.verification_sent", address: "user@unverified.com")
+    #   expect(page).to have_button((I18n.t(:".resend_confirmation")), disabled: true)
+    # end
   end
 
   scenario 'confirmation does not log user in' do

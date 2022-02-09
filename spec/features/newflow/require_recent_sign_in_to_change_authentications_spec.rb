@@ -81,30 +81,30 @@ feature 'Require recent log in to change authentications', js: true do
     end
   end
 
-  scenario 'bad password on reauthentication' do
-    newflow_log_in_user(email_value, 'password')
-
-    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      visit profile_newflow_path
-      expect_newflow_profile_page
-
-      find('.authentication[data-provider="identity"] .edit--newflow').click
-
-      expect_reauthenticate_form_page
-      fill_in(t(:"login_signup_form.password_label"), with: 'wrongpassword')
-      wait_for_ajax
-      wait_for_animations
-      find('[type=submit]').click
-      screenshot!
-
-      expect_reauthenticate_form_page
-      fill_in(t(:"login_signup_form.password_label"), with: 'password')
-      find('[type=submit]').click
-
-      newflow_complete_add_password_screen
-      expect(page).to have_content(t :"legacy.identities.reset_success.message")
-    end
-  end
+  # scenario 'bad password on reauthentication' do
+  #   newflow_log_in_user(email_value, 'password')
+  #
+  #   Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+  #     visit profile_newflow_path
+  #     expect_newflow_profile_page
+  #
+  #     find('.authentication[data-provider="identity"] .edit--newflow').click
+  #
+  #     expect_reauthenticate_form_page
+  #     fill_in(t(:"login_signup_form.password_label"), with: 'wrongpassword')
+  #     wait_for_ajax
+  #     wait_for_animations
+  #     find('[type=submit]').click
+  #     screenshot!
+  #
+  #     expect_reauthenticate_form_page
+  #     fill_in(t(:"login_signup_form.password_label"), with: 'password')
+  #     find('[type=submit]').click
+  #
+  #     newflow_complete_add_password_screen
+  #     expect(page).to have_content(t :"legacy.identities.reset_success.message")
+  #   end
+  # end
 
   scenario 'removing an authentication' do
     with_forgery_protection do
