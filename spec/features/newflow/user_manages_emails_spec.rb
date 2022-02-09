@@ -98,7 +98,7 @@ feature 'User manages emails', js: true do
       # makes a real DNS/HTTP request
       EmailDomainMxValidator.strategy = EmailDomainMxValidator::DnsStrategy.new
 
-      click_link (I18n.t(:".add_email_address"))
+      click_link (I18n.t(:"legacy.users.edit.add_email_address"))
       within(:css, '.email-entry.new') {
         find('input').set(email_address)
         find('.glyphicon-ok').click

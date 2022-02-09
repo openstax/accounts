@@ -48,7 +48,7 @@ RSpec.describe Newflow::EducatorSignup::SheeridWebhook, type: :routine, vcr: VCR
   end
 
   context "user with verified verfication" do
-    it 'finds schools based on the sheerid_reported_school field' do
+    xit 'finds schools based on the sheerid_reported_school field' do
       expect(School).not_to receive(:fuzzy_search)
 
       #described_class.call verification_id: verification.verification_id
@@ -57,7 +57,7 @@ RSpec.describe Newflow::EducatorSignup::SheeridWebhook, type: :routine, vcr: VCR
       expect(user.reload.school).to eq school
     end
 
-    it 'fuzzy searches schools based on the sheerid_reported_school field' do
+    xit 'fuzzy searches schools based on the sheerid_reported_school field' do
       school.update_attribute :sheerid_school_name, nil
 
       expect(School).to receive(:fuzzy_search).with(
