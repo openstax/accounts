@@ -15,7 +15,6 @@ module Newflow
         StudentSignup::SignupForm,
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
-        user_from_signed_params: session[:user_from_signed_params],
         success: lambda {
           save_unverified_user(@handler_result.outputs.user.id)
           security_log(:student_signed_up, { user: @handler_result.outputs.user })

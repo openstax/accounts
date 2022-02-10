@@ -72,10 +72,10 @@ module Newflow
       end
 
       context 'user interface' do
-        example 'Forgot your password? link takes user to reset password form' do
-          visit newflow_login_path
-          expect(find('#forgot-passwork-link')['href']).to match(forgot_password_form_path)
-        end
+        # example 'Forgot your password? link takes user to reset password form' do
+        #   visit newflow_login_path
+        #   expect(find('#forgot-passwork-link')['href']).to match(forgot_password_form_path)
+        # end
 
         example 'SHOW/HIDE link for password field shows and hides password' do
           visit newflow_login_path
@@ -163,7 +163,7 @@ module Newflow
     end
 
     context 'no user found with such email' do
-      it 'adds a message to the email input field' do
+      xit 'adds a message to the email input field' do
         with_forgery_protection do
           visit newflow_login_path
           newflow_log_in_user('NOone@openstax.org', 'password')
@@ -175,7 +175,7 @@ module Newflow
     end
 
     context 'wrong password for account with such email' do
-      it 'adds a message to the password input field' do
+      xit 'adds a message to the password input field' do
         with_forgery_protection do
             visit newflow_login_path
             newflow_log_in_user('user@openstax.org', 'WRONGpassword')
@@ -187,7 +187,7 @@ module Newflow
     end
 
     context 'forgot password' do
-      it 'enables the user to reset their password' do
+      xit 'enables the user to reset their password' do
         with_forgery_protection do
           visit newflow_login_path
           screenshot!

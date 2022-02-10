@@ -1,7 +1,7 @@
 module Newflow
   class CreateSalesforceLead
 
-    lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
+    lev_routine active_job_enqueue_options: { queue: :salesforce }
 
     LEAD_SOURCE =  'Account Creation'
     DEFAULT_REFERRING_APP_NAME = 'Accounts'
@@ -20,6 +20,11 @@ module Newflow
       status.set_job_name(self.class.name)
       status.set_job_args(user: user.to_global_id.to_s)
 
+      SecurityLog.create!(
+        user: user,
+        event_type: :starting_salesforce_lead_creation
+      )
+
       sf_school_id = user.school&.salesforce_id
 
       if user.role == 'student'
@@ -29,7 +34,8 @@ module Newflow
         sf_position = user.role
       end
 
-      if user.using_openstax_how != 'as_future' # as_future means they are interested, not adopting
+      # as_future means they are interested, not adopting, so no adoptionJSON for them
+      if user.using_openstax_how != 'as_future'
         adoption_json = build_book_adoption_json_for_salesforce(user)
       end
 
@@ -76,6 +82,12 @@ module Newflow
           lead.state = state
         end
       end
+
+      SecurityLog.create!(
+        user: user,
+        event_type: :attempting_to_create_user_lead,
+        event_data: { lead_data: lead }
+      )
 
       outputs.lead = lead
       outputs.user = user

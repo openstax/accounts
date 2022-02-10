@@ -58,11 +58,9 @@ module Newflow
           )
         end
 
-        if options[:user_from_signed_params].present?
-          outputs.user = User.find_by!(id: options[:user_from_signed_params]['id'])
-        else
-          outputs.user = create_user
-        end
+
+        outputs.user = create_user
+
 
         run(::SetPassword,
           user: outputs.user,

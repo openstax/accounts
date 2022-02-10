@@ -72,6 +72,7 @@ class SecurityLog < ApplicationRecord
     educator_verify_email_failed
     user_viewed_signup_form
     user_viewed_sheerid_form
+    user_completed_cs_form
     user_updated_using_sheerid_data
     educator_verified_using_sheerid
     user_not_viable_for_sheerid
@@ -83,9 +84,11 @@ class SecurityLog < ApplicationRecord
     user_sent_to_cs_for_review
     user_became_activated
     user_profile_complete
+    salesforce_updated_faculty_status
     salesforce_error
     update_user_contact_info
-    sheerid_verification_id_added_to_user
+    sheerid_verification_id_added_to_user_during_signup
+    sheerid_verification_id_added_to_user_from_webhook
     sheerid_conflicting_verification_id
     sheerid_webhook_received
     sheerid_webhook_processed
@@ -96,6 +99,13 @@ class SecurityLog < ApplicationRecord
     sheerid_error
     unknown_sheerid_response
     email_added_to_user
+    lead_creation_awaiting_cs_review
+    lead_creation_awaiting_sheerid_webhook
+    starting_salesforce_lead_creation
+    attempting_to_create_user_lead
+    user_contact_id_updated_from_salesforce
+    attempted_to_add_school_not_cached_yet
+    school_added_to_user_from_sheerid_webhook
   ]
 
   json_serialize :event_data, Hash

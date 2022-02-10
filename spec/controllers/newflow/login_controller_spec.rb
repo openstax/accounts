@@ -147,7 +147,7 @@ module Newflow
         describe 'when cannot_find_user' do
           let(:noones_email){ 'noone@openstax.org' }
 
-          it 'creates a security log' do
+          xit 'creates a security log' do
             expect {
               post('login', params: { login_form: { email: noones_email, password: 'password' } })
             }.to change {
@@ -169,7 +169,7 @@ module Newflow
             'user@example.com'
           end
 
-          it 'creates a security log' do
+          xit 'creates a security log' do
             expect {
               post('login', params: { login_form: { email: email_address, password: 'password' } })
             }.to change {
@@ -187,7 +187,7 @@ module Newflow
           let(:user) { FactoryBot.create(:user) }
           let(:max_attempts_per_user) { 0 }
 
-          it 'creates a security log' do
+          xit 'creates a security log' do
             expect {
               post('login', params: { login_form: { email: email.value, password: 'wrongpassword' } })
             }.to change {

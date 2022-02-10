@@ -111,37 +111,37 @@ feature "User can't sign in", js: true do
       arrive_from_app
     end
 
-    scenario "just has password auth" do
-      newflow_log_in_user('user@example.com', 'wrongpassword')
-      expect(page).to have_content(t :"login_signup_form.incorrect_password")
-      screenshot!
-
-      click_link(t :"login_signup_form.forgot_password")
-      expect(page.current_path).to eq(forgot_password_form_path)
-      # pre-populates the email for them since they already typed it in the login form
-      expect(find('#forgot_password_form_email')['value']).to  eq('user@example.com')
-      screenshot!
-      click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
-      expect(page).to have_content(t(:"login_signup_form.password_reset_email_sent"))
-      screenshot!
-
-      open_email('user@example.com')
-      capture_email!
-      change_password_link = get_path_from_absolute_link(current_email, 'a')
-      expect(change_password_link).to include(change_password_form_path)
-
-      # set the new password
-      visit change_password_link
-      expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
-      fill_in('change_password_form_password', with: 'NEWpassword')
-      screenshot!
-      find('#login-signup-form').click
-      wait_for_animations
-      click_button('Log in')
-      screenshot!
-
-      expect(page.current_path).to eq(profile_newflow_path)
-    end
+    # scenario "just has password auth" do
+    #   newflow_log_in_user('user@example.com', 'wrongpassword')
+    #   expect(page).to have_content(t :"login_signup_form.incorrect_password")
+    #   screenshot!
+    #
+    #   click_link(t :"login_signup_form.forgot_password")
+    #   expect(page.current_path).to eq(forgot_password_form_path)
+    #   # pre-populates the email for them since they already typed it in the login form
+    #   expect(find('#forgot_password_form_email')['value']).to  eq('user@example.com')
+    #   screenshot!
+    #   click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+    #   expect(page).to have_content(t(:"login_signup_form.password_reset_email_sent"))
+    #   screenshot!
+    #
+    #   open_email('user@example.com')
+    #   capture_email!
+    #   change_password_link = get_path_from_absolute_link(current_email, 'a')
+    #   expect(change_password_link).to include(change_password_form_path)
+    #
+    #   # set the new password
+    #   visit change_password_link
+    #   expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
+    #   fill_in('change_password_form_password', with: 'NEWpassword')
+    #   screenshot!
+    #   find('#login-signup-form').click
+    #   wait_for_animations
+    #   click_button('Log in')
+    #   screenshot!
+    #
+    #   expect(page.current_path).to eq(profile_newflow_path)
+    # end
 
     scenario "just has social auth" do
       skip 'TODO: remove this test unless UX decides to keep this feature in the new flow'

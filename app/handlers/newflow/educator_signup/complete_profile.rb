@@ -78,18 +78,20 @@ module Newflow
         )
 
         if @is_on_cs_form
+          SecurityLog.create!(
+            user: user,
+            event_type: :user_completed_cs_form
+          )
           # user needs CS review to become confirmed - set it as such in accounts
           @user.update(
             requested_cs_verification_at: DateTime.now,
             faculty_status: User::PENDING_FACULTY
           )
-        end
-
-        if @is_on_cs_form && !signup_params.school_issued_email.blank?
-          @email_address_value = signup_params.school_issued_email
-          # this user used the CS form and _should_ have provided us an email address -
-          # so let's add it - validation happens before this in check_params
-          run(CreateEmailForUser, email: @email_address_value, user: @user, is_school_issued: true)
+          unless signup_params.school_issued_email.blank?
+            # this user used the CS form and _should_ have provided us an email address -
+            # so let's add it - validation happens before this in check_params
+            run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
+          end
         end
 
         transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
@@ -97,14 +99,18 @@ module Newflow
         #output the user to the lev handler
         outputs.user = @user
 
-        if @did_use_sheerid && !user.sheer_id_webhook_received
-          # User used SheerID - we create their lead in ProcessSheeridWebhookRequest, not here.. and might not be instant
+        if !user.is_educator_pending_cs_verification && !user.sheer_id_webhook_received
+          # User used SheerID or needs CS verification - we create their lead in SheeridWebhook, not here.. and might not be instant
+          SecurityLog.create!(
+            user: user,
+            event_type: :lead_creation_awaiting_sheerid_webhook,
+          )
           return
         end
         # otherwise, we already heard from SheerID, so let's create the lead.
-        # We check in ProcessSheeridWebhookRequest to see if they completed their profile before creating lead
+        # We check in SheeridWebhook to see if they completed their profile before creating lead
 
-        # Now we create the lead for the user... because we returned above if they did... again ProcessSheeridWebhookRequest
+        # Now we create the lead for the user... because we returned above if they did... again SheeridWebhook
         CreateSalesforceLead.perform_later(user: @user)
 
       end

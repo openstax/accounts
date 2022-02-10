@@ -97,6 +97,9 @@ module Newflow
         },
         failure: lambda {
           security_log(:help_request_failed, { params: request.query_parameters })
+          Sentry.capture_message("Request for help failed", extra: {
+            params: request.query_parameters
+          })
           render(status: 400)
         }
       )

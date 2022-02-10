@@ -38,7 +38,6 @@ module Newflow
         EducatorSignup::SignupForm,
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
-        user_from_signed_params: session[:user_from_signed_params],
         is_BRI_book: is_BRI_book_adopter?,
         success: lambda {
           save_unverified_user(@handler_result.outputs.user.id)
@@ -114,6 +113,7 @@ module Newflow
     def sheerid_webhook
       handle_with(
         EducatorSignup::SheeridWebhook,
+        verification_id: sheerid_provided_verification_id_param,
         success: lambda {
           security_log(:sheerid_webhook_received, { data: @handler_result })
           render(status: :ok, plain: 'Success')
@@ -121,12 +121,11 @@ module Newflow
         failure: lambda {
           security_log(:sheerid_webhook_failed, { data: @handler_result })
           Sentry.capture_message(
-            'SheerID webhook FAILED',
+            '[SheerID Webhook] Failed!',
             extra: {
-              verificationid: params['verificationId'],
+              verification_id: sheerid_provided_verification_id_param,
               reason: @handler_result.errors.first.code
-            },
-            user: { verificationid: params['verificationId'] }
+            }
           )
           render(status: :unprocessable_entity)
         }
@@ -200,7 +199,7 @@ module Newflow
 
     def store_sheerid_verification_for_user
       if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
-        # create the verification object - this is updated later in ProcessSheeridWebhookRequest
+        # create the verification object - this is verified later in SheeridWebhook
         SheeridVerification.find_or_initialize_by(verification_id: sheerid_provided_verification_id_param)
 
         # update the user
@@ -208,7 +207,7 @@ module Newflow
 
         # log it
         SecurityLog.create!(
-          event_type: :sheerid_verification_id_added_to_user,
+          event_type: :sheerid_verification_id_added_to_user_during_signup,
           user: current_user,
           event_data: { verification_id: sheerid_provided_verification_id_param }
         )
