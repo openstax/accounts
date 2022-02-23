@@ -49,7 +49,7 @@ module Newflow
           case code
           when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
             user = @handler_result.outputs.user
-            security_log(user, :sign_in_failed, { reason: code, email: email })
+            security_log(:sign_in_failed, { reason: code, email: email })
           end
 
           render :login_form
