@@ -18,6 +18,7 @@ Rails.application.config.assets.precompile += %w(
   application_body_api_docs.css
   intTelInput.css
   libphonenumber/utils.js
+  login_form.css
   syntax_highlight.css
   newflow.css
   newflow_colors.css

@@ -1,0 +1,471 @@
+@import "pattern-library/headers";
+
+#login-signup-form {
+    max-width: 75rem;
+    border-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 3rem;
+    padding-left: 1.4rem;
+    padding-right: 1.4rem;
+
+    .control-group {
+      margin: 0 1rem 0 0;
+      min-height: $form-element-height;
+
+      label {
+        line-height: 2rem;
+        margin-bottom: auto;
+      }
+    }
+
+    input {
+      border-radius: 0;
+      height: $form-element-height;
+    }
+
+    .join-as {
+        .blue-bar {
+            height: 1rem;
+            background-color: #007297;
+        }
+
+        .green-bar {
+            height: 1rem;
+            background-color: #0c9372;
+        }
+
+        @include width-up-to($phone-max) {
+            display: flex;
+            flex-direction: column;
+            margin-top: 1rem;
+
+            > div {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .join-as__role {
+                height: 15rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .join-as__description {
+                margin-top: 3rem;
+                margin-bottom: 3rem;
+                @include set-font(body-regular);
+            }
+        }
+
+        @include wider-than($phone-max) {
+            display: flex;
+
+            > div {
+                display: flex;
+                flex-direction: column;
+                width: 26.2rem;
+                margin-top: 3.5rem;
+
+                &:first-child {
+                    margin-right: 3rem;
+                }
+            }
+
+            .join-as__role {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+
+                height: 26rem;
+            }
+
+            .join-as__description {
+                margin-top: 3rem;
+                @include set-font(body-regular);
+            }
+        }
+
+        .join-as__role {
+            @include title-font(2.4rem);
+            text-align: center;
+            position: relative;
+            border: 0.1rem solid #d5d5d5;
+            border-bottom: 0;
+            box-sizing: border-box;
+        }
+
+        a {
+            color: unset;
+            text-decoration: none;
+            // bcus `box-sizing: border-box` on hover isn't doing the job:
+            border: 0.1rem solid #fff;
+
+            &:hover {
+                border: 0.1rem solid #0dc0dc;
+                box-shadow: 0 0 .4rem rgba(13, 192, 220, 0.4);
+            }
+        }
+
+        .join-as__role img {
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+        }
+    }
+
+    .tab-group {
+        border: 0;
+        display: flex;
+        justify-content: flex-start;
+        padding: 0;
+        width: auto;
+
+        .tab {
+            @include width-up-to($phone-max) {
+                width: 50%;
+            }
+
+            @include set-font(h4);
+            background-color: #f5f5f5;
+            border-bottom-color: #fff;
+            border-bottom-width: 0;
+            border: 0.1rem solid #d5d5d5;
+            color: unset;
+            display: flex;
+            justify-content: center;
+            padding: 1.2rem 0;
+            text-decoration: inherit;
+            width: 18rem;
+
+            &:first-child {
+                border-top-left-radius: 0.3rem;
+                border-right: 0;
+            }
+
+            &:nth-child(2) {
+                border-top-right-radius: 0.3rem;
+            }
+
+            &:last-child {
+                width: 10rem;
+            }
+
+            &.login.login--active, &.signup.signup--active {
+                background-color: #fff;
+                border-bottom-width: 0;
+            }
+        }
+
+        .tab.tab--placeholder {
+            @include width-up-to($phone-max) {
+                display: none;
+            }
+
+            cursor: default;
+            border: 0;
+            border-bottom: 0.1rem solid #d5d5d5;
+            background-color: #fff; // TODO: use a shared variable
+        }
+    }
+
+    .page-header {
+        border-left: 0.1rem solid #d5d5d5;
+        border-right: 0.1rem solid #d5d5d5;
+        text-align: center;
+
+        @include width-up-to($phone-max) {
+            @include set-font(h4);
+            line-height: 3rem;
+        }
+
+        @include wider-than($phone-max) {
+            @include set-font(h2);
+            margin: 0;
+        }
+    }
+
+    form {
+        @include width-up-to($phone-max) {
+            row-gap: 2rem;
+            padding-left: 1.4rem;
+            padding-right: 1.4rem;
+            padding-top: 2.2rem;
+        }
+
+        @include wider-than($phone-max) {
+            row-gap: 1rem;
+            padding-top: 3rem;
+        }
+
+        border-color: #d5d5d5;
+        border-style: solid;
+        border-width: 0.1rem;
+        border-top: 0;
+        border-bottom-left-radius: 0.3rem;
+        border-bottom-right-radius: 0.3rem;
+        display: grid;
+        font-size: 1.4rem;
+        row-gap: 1rem;
+
+        > .content {
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 55.5rem;
+            width: 100%;
+        }
+
+        .role-section {
+            max-width: 100%;
+
+            > div {
+                @include width-up-to($phone-max) {
+                    display: grid;
+                    grid-template-columns: 3.5rem 1fr;
+                    align-items: center;
+                }
+
+                @include wider-than($tablet-max) {
+                    display: inline;
+                }
+            }
+        }
+
+        .back-arrow {
+            display: inline-block;
+            color: unset;
+            font-size: 1.8rem;
+
+            @include width-up-to($phone-max) {
+                text-align: right;
+                margin-right: 1rem;
+            }
+        }
+
+        .role-button {
+            max-width: 55.5rem;
+            height: 5rem;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+
+            background-color: #f1f1f1;
+            color: #c1c1c1;
+
+            @include title-font(2.4rem);
+            text-align: center;
+
+            @include width-up-to($phone-max) {
+                @include title-font(1.8rem);
+                margin-right: 3.5rem;
+                height: 3.5rem;
+            }
+
+            @include width-between($phone-max, $tablet-max) {
+                width: 85%;
+                margin-left: 3.8rem;
+                border: none;
+            }
+
+            @include wider-than($tablet-max) {
+                width: 100%;
+                margin-left: 3.8rem;
+                border: none;
+            }
+        }
+
+        label {
+            font-weight: bold;
+            color: var(--greyish-brown);
+        }
+
+        .social-section {
+            @include wider-than($phone-max) {
+                > div {
+                    line-height: normal;
+                }
+
+                .social-buttons .btn {
+                    line-height: 2.8rem;
+                }
+            }
+        }
+
+        .role-section + .social-section {
+            @include wider-than($phone-max) {
+                > div {
+                    line-height: unset; // don't want `line-height: normal` in sign up form, desktop view
+                }
+            }
+        }
+
+        // placeholder text
+        [type=text], [type=email], [type=password] {
+            color: #424242;
+            font-weight: 300;
+        }
+
+        .checkboxes-section {
+            input[type=checkbox] {
+                width:  1.4rem;
+                height: 1.4rem;
+            }
+        }
+    }
+
+    // informational messages shown to users, for example on email confirmation screen
+    .info-message {
+        @include set-font(body-regular);
+    }
+
+    [type=submit] {
+        min-width: 17.2rem;
+    }
+
+    [type=checkbox] {
+        height: auto;
+    }
+
+    input[type=text]:disabled, input[readonly=readonly] {
+        color: #C1C1C1;
+        background-color: #f1f1f1;
+        cursor: not-allowed;
+    }
+
+    input[type=submit] {
+        &:disabled {
+            opacity: 0.85;
+        }
+
+        -webkit-appearance: none;
+        border-radius: 0;
+    }
+}
+
+// Improve vertical spacing
+
+#login-signup-form  {
+    .warning {
+        &.edu, &.mistype {
+            color: #c22032;
+            display: none;
+        }
+    }
+
+    input.int-country-code {
+        padding-left: 50px;
+    }
+
+    .page-header {
+        margin-bottom: 0;
+        padding-top: 2.85rem;
+    }
+
+    .content.control-group {
+        margin-top: 0;
+    }
+
+    @include width-up-to($phone-max) {
+        .form-divider + .content.control-group {
+            margin-top: 0.9rem;
+        }
+
+        .terms {
+            margin-top: 1rem;
+            display: flex;
+        }
+
+        .role-section {
+            margin-bottom: 0.8rem;
+        }
+
+        .login-page {
+            .page-header {
+                padding-top: 4.5rem;
+            }
+
+            form {
+                padding-top: 2rem;
+            }
+
+            .form-divider {
+                padding-top: 0.3rem;
+            }
+
+            [type="submit"] {
+                margin-top: 1rem;
+            }
+        }
+    }
+
+    @include wider-than($phone-max) {
+        form {
+            height: 80rem;
+            align-content: start;
+        }
+
+        .social-buttons {
+            margin-top: 0.9rem;
+        }
+
+        .content.control-group {
+            margin-bottom: 1rem;
+        }
+
+        .social-section {
+            margin-top: 3rem;
+        }
+
+        .role-section + .social-section {
+            margin-top: 0;
+        }
+
+        .page-header {
+            padding-top: 2rem;
+        }
+
+        .login-page {
+            .page-header {
+                padding-top: 8rem;
+            }
+
+            form {
+                padding-top: 2.2rem;
+            }
+
+            .form-divider {
+                padding-top: 0.3rem;
+            }
+        }
+
+        .welcome-page {
+            .page-header {
+                padding-top: 8rem;
+            }
+
+            form {
+                padding-top: 1.6rem;
+            }
+        }
+    }
+
+    .content.control-group.checkboxes-section {
+        margin-top: 0rem;
+    }
+
+    [type=submit] {
+        @include width-up-to($phone-max) {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        @include wider-than($phone-max) {
+            margin-bottom: 2rem;
+            margin-top: 1.2rem;
+        }
+    }
+}

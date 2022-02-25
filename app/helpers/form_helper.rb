@@ -111,7 +111,7 @@ module FormHelper
     end
 
     def get_errors_div(name:)
-      field_errors = @errors.present? ?
+      field_errors = @errors.any? ?
                        @errors.select{ |error| [error.offending_inputs].flatten.include?(name) } :
                        []
 

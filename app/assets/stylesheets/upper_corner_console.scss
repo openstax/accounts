@@ -1,0 +1,14 @@
+#upper-corner-console {
+  left: 0;
+  padding: 4px;
+  position: absolute;
+  top: 0;
+
+  a {
+    text-decoration: underline;
+  }
+
+  #clock.highlight {
+    color: rgba(255,255,255,0.5);
+  }
+}

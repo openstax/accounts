@@ -97,6 +97,11 @@ Now you can run:
 $ rails server
 ```
 
+(This may need to be)
+```sh
+$ bundle exec rails s
+```
+
 which will start Accounts up on port 2999. Visit http://localhost:2999.
 
 #### Running background jobs

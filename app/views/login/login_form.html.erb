@@ -1,7 +1,10 @@
 <%
-    email_prefill_value = current_users_resetting_password_email
-    email_prefill_value ||= nil # because otherwise it literally shows "false" in the form's input field
+    email_prefill_value = current_users_resetting_password_email || nil
 %>
+<% content_for :head do %>
+  <%= stylesheet_link_tag    "application" %>
+  <%= stylesheet_link_tag    "login_form" %>
+<% end %>
 
 <div id="login-signup-form">
     <div class="content">
