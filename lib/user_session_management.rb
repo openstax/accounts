@@ -97,25 +97,6 @@ module UserSessionManagement
     session.delete(:login)
   end
 
-  def save_pre_auth_state(pre_auth_state)
-    clear_login_state
-    # There may be an old signup state object around, check for that
-    clear_pre_auth_state if pre_auth_state&.id != session[:signup]
-    session[:signup] = pre_auth_state.id
-  end
-
-  def clear_pre_auth_state
-    pre_auth_state.try(:destroy)
-    @pre_auth_state = nil
-    session.delete(:signup)
-  end
-
-  def pre_auth_state
-    id = session[:signup]&.to_i
-    return unless id.present?
-    @pre_auth_state ||= PreAuthState.find_by(id: id)
-  end
-
   def signup_role
     pre_auth_state.try(:role)
   end
@@ -206,16 +187,16 @@ module UserSessionManagement
       session.delete(:login_failed_email)
     end
 
-    def save_incomplete_educator(user)
-      session[:current_incomplete_educator_uuid] = user.uuid
+    def save_incomplete_instructor(user)
+      session[:current_incomplete_instructor_uuid] = user.uuid
     end
 
     def current_incomplete_educator
-      return if session[:current_incomplete_educator_uuid].blank?
-      @current_incomplete_educator ||= User.find_by(uuid: session[:current_incomplete_educator_uuid])
+      return if session[:current_incomplete_instructor_uuid].blank?
+      @current_incomplete_instructor ||= User.find_by(uuid: session[:current_incomplete_instructor_uuid])
     end
 
-    def clear_incomplete_educator
+    def clear_incomplete_instructor
       session.delete(:current_incomplete_educator_uuid)
     end
 

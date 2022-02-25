@@ -1,4 +1,4 @@
-class LoginController < BaseController
+class LoginController < ApplicationController
 
   include LoginSignupHelper
 
@@ -13,7 +13,7 @@ class LoginController < BaseController
   before_action :redirect_to_signup_if_go_param_present, only: :login_form
   before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
-  def login
+  def login_form
     handle_with(
       LogInUser,
       success: lambda {
@@ -26,7 +26,7 @@ class LoginController < BaseController
           if user.student?
             redirect_to(student_email_verification_form_path)
           else
-            redirect_to(educator_email_verification_form_path)
+            redirect_to(instructor_email_verification_form_path)
           end
 
           return
@@ -48,7 +48,7 @@ class LoginController < BaseController
         case code
         when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
           user = @handler_result.outputs.user
-          security_log(:sign_in_failed, { reason: code, email: email })
+          security_log(user, :sign_in_failed, { reason: code, email: email })
         end
 
         render :login_form
@@ -67,7 +67,7 @@ class LoginController < BaseController
     if should_redirect_to_student_signup?
       redirect_to signup_student_path(request.query_parameters)
     elsif should_redirect_to_signup_welcome?
-      redirect_to newflow_signup_path(request.query_parameters)
+      redirect_to signup_path(request.query_parameters)
     end
   end
 

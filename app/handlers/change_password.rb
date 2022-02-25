@@ -1,4 +1,3 @@
-# Changes the user's password if they have one, otherwise creates a password (an `Identity`).
 class ChangePassword
   lev_handler
 

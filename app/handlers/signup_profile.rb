@@ -2,61 +2,118 @@ class SignupProfile
 
   lev_handler
 
-  def self.include_common_params_in(paramifier)
-    paramifier.instance_exec(&(proc {
-      # All children of this handler should know about all of
-      # these fields (because all may be used in this parent
-      # handler), but only some should always be required;
-      # some children will require specific ones in addition
+  uses_routine AgreeToTerms
+  uses_routine CreateEmailForUser
 
-      attribute :first_name, type: String
-      attribute :last_name, type: String
-      attribute :suffix, type: String
-      attribute :school, type: String
-      attribute :phone_number, type: String
-      attribute :subjects, type: Object
-      attribute :url, type: String
-      attribute :num_students, type: Integer
-      attribute :using_openstax, type: String
-      attribute :newsletter, type: boolean
-      attribute :contract_1_id, type: Integer
-      attribute :contract_2_id, type: Integer
-
-      # All children must require these fields:
-
-      validates :first_name, presence: true
-      validates :last_name, presence: true
-      validates :school, presence: true
-    }))
+  paramify :signup do
+    attribute :first_name, type: String
+    attribute :last_name, type: String
+    attribute :email, type: String
+    attribute :password, type: String
+    attribute :is_title_1_school, type: boolean
+    attribute :newsletter, type: boolean
+    attribute :terms_accepted, type: boolean
+    attribute :contract_1_id, type: Integer
+    attribute :contract_2_id, type: Integer
+    attribute :role, type: String
+    attribute :phone_number, type: String
+    attribute :country_code, type: String
   end
 
+  def required_params
+    @required_params ||= [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
+  end
+
+
   def authorized?
-    caller.is_needs_profile?
+    true
+    #caller.is_needs_profile?
   end
 
   def handle
-    # Set profile info on user and set to activated
+    validate_presence_of_required_params
+    return if errors?
 
-    caller.first_name           = profile_params.first_name
-    caller.last_name            = profile_params.last_name
-    caller.suffix               = profile_params.suffix      if !profile_params.suffix.blank?
-    caller.state                = 'activated'
-    caller.self_reported_school = profile_params.school
+    outputs.email = signup_params.email.squish!
 
-    caller.save
+    if LookupUsers.by_verified_email(signup_params.email.squish!).first
+      fatal_error(
+        code: :email_taken,
+        message: I18n.t(:"login_signup_form.email_address_taken"),
+        offending_inputs: :email
+      )
+    end
 
-    transfer_errors_from(caller, {type: :verbatim}, true)
+    outputs.user = create_user
+
+    run(::SetPassword,
+        user: outputs.user,
+        password: signup_params.password,
+        password_confirmation: signup_params.password
+    )
 
     # Agree to terms
     if options[:contracts_required]
-      run(AgreeToTerms, profile_params.contract_1_id, caller, no_error_if_already_signed: true)
-      run(AgreeToTerms, profile_params.contract_2_id, caller, no_error_if_already_signed: true)
+      run(AgreeToTerms, signup_params.contract_1_id, caller, no_error_if_already_signed: true)
+      run(AgreeToTerms, signup_params.contract_2_id, caller, no_error_if_already_signed: true)
+    end
+
+    if options[:is_BRI_book]
+      outputs.user.is_b_r_i_user = true
+      outputs.user.title_1_school = signup_params.is_title_1_school
+      outputs.user.save!
+    end
+
+    run(CreateEmailForUser, email: signup_params.email, user: outputs.user)
+
+    # caller.first_name           = profile_params.first_name
+    # caller.last_name            = profile_params.last_name
+    # caller.suffix               = profile_params.suffix      if !profile_params.suffix.blank?
+    # caller.state                = 'activated'
+    # caller.self_reported_school = profile_params.school
+    #
+    # caller.save
+    #
+    # transfer_errors_from(caller, {type: :verbatim}, true)
+
+  end
+
+  def validate_presence_of_required_params
+    signup_params.each do |param|
+      if signup_params.send(param).blank?
+        missing_param_error(param)
+      end
     end
   end
 
-  def push_lead
-    # disable by default, override in subclasses to enable
-    false
+  def missing_param_error(field)
+    code = "#{field}_is_blank".to_sym
+    message = I18n.t(:"login_signup_form.#{code}")
+    nonfatal_error(
+      code: code,
+      message: message,
+      offending_inputs: field
+    )
+  end
+
+  def create_user
+    role = :instructor
+    if request.original_url.to_s.include 'student'
+      role = :student
+    end
+
+    user = User.create(
+      state: 'unverified',
+      # TODO: get user role from the url.. since we have one for each
+      role: :student,
+      first_name: signup_params.first_name,
+      last_name: signup_params.last_name,
+      phone_number: signup_params.phone_number,
+      receive_newsletter: signup_params.newsletter,
+      source_application: options[:client_app]
+    )
+    transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
+    user
   end
 
 end

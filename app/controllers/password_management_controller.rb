@@ -1,11 +1,11 @@
-class PasswordManagementController < BaseController
+class PasswordManagementController < ApplicationController
   include LoginSignupHelper
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [
     :forgot_password_form, :send_reset_password_email, :reset_password_email_sent
   ]
 
-  before_action :newflow_authenticate_user!, only: [:create_password, :educator_sheerid_form]
+  before_action :authenticate_user!, only: [:create_password, :educator_sheerid_form]
 
   def forgot_password_form
     @email = login_failed_email
@@ -41,7 +41,7 @@ class PasswordManagementController < BaseController
       CreatePassword,
       success: lambda {
         security_log(:student_created_password, user: @handler_result.outputs.user)
-        redirect_to profile_newflow_url, notice: t(:"identities.add_success.message")
+        redirect_to profile_newflow_url, notice: t(:"legacy.identities.add_success.message")
       },
       failure: lambda {
         security_log(:student_create_password_failed, user: @handler_result.outputs.user)
@@ -65,7 +65,7 @@ class PasswordManagementController < BaseController
         ChangePassword,
         success: lambda {
           security_log :password_reset
-          redirect_to profile_newflow_url, notice: t(:"identities.reset_success.message")
+          redirect_to profile_newflow_url, notice: t(:"legacy.identities.reset_success.message")
         },
         failure: lambda {
           security_log :password_reset_failed

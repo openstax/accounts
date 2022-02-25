@@ -52,3 +52,4 @@ class SendResetPasswordEmail
     @logged_in_user ||= !caller.is_anonymous? && caller
   end
 end
+

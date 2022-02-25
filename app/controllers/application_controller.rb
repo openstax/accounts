@@ -1,15 +1,18 @@
 class ApplicationController < ActionController::Base
+  include ApplicationHelper
+
   layout 'application'
 
   before_action :authenticate_user!
   before_action :complete_signup_profile
   before_action :check_if_password_expired
+  before_action :set_active_banners
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
   def disable_fine_print
     request.options? ||
-    contracts_not_required ||
+      #contracts_not_required ||
     current_user.is_anonymous?
   end
 
@@ -38,6 +41,20 @@ class ApplicationController < ActionController::Base
   respond_to :html
 
   protected #################
+
+  def decorated_user
+    InstructorSignupFlowDecorator.new(current_user, action_name)
+  end
+
+  def restart_signup_if_missing_unverified_user
+    redirect_to signup_path unless unverified_user.present?
+  end
+
+  def set_active_banners
+    return unless request.get?
+
+    @banners ||= Banner.active
+  end
 
   def allow_iframe_access
     @iframe_parent = params[:parent]

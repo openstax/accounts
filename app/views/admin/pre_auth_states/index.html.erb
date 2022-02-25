@@ -24,7 +24,7 @@
   <h4 style="margin-top:20px">Records created within last <%= pluralize((params[:since] || 1).to_i, "day") %>, newest records first</h4>
   <hr>
 
-  <h5>New Flow Users</h5>
+  <h5>Unverified Users</h5>
 
 
   <% if @unverified_contacts.each do |unverified_contact| %>
@@ -37,7 +37,7 @@
         created at <b><%= unverified_contact.created_at %></b>
       </div>
       <div class="token">
-        <%= signup_verify_by_token_url(code: unverified_contact.confirmation_code) %>
+        <%= verify_email_by_code_url(code: unverified_contact.confirmation_code) %>
       </div>
 
     </div>

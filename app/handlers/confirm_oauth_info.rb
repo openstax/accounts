@@ -4,7 +4,7 @@ class ConfirmOauthInfo
 
   uses_routine CreateEmailForUser
   uses_routine AgreeToTerms
-  uses_routine StudentSignup::ActivateStudent
+  uses_routine ActivateUser
 
   paramify :signup do
     attribute :first_name
@@ -47,8 +47,12 @@ class ConfirmOauthInfo
     )
     transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
 
-    agree_to_terms(@user) if options[:contracts_required] && signup_params.terms_accepted
-    run(StudentSignup::ActivateStudent, @user)
+    if options[:contracts_required] && signup_params.terms_accepted
+      run(AgreeToTerms, signup_params.contract_1_id, user, no_error_if_already_signed: true)
+      run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
+    end
+
+    run(ActivateUser, @user, @user.role)
 
     outputs.user = @user
   end
@@ -74,10 +78,4 @@ class ConfirmOauthInfo
       offending_inputs: :email
     )
   end
-
-  def agree_to_terms(user)
-    run(AgreeToTerms, signup_params.contract_1_id, user, no_error_if_already_signed: true)
-    run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
-  end
-
 end

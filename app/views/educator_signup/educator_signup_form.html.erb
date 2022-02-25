@@ -9,7 +9,11 @@
   }
 %>
 
+<<<<<<< HEAD:app/views/educator_signup/educator_signup_form.html.erb
 <%= render 'educator_signup/refresh_upon_going_back' %>
+=======
+<%= render 'shared/refresh_upon_going_back' %>
+>>>>>>> ab4d9871 (refactor newflow to not exist):app/views/instructor_signup/instructor_signup_form.html.erb
 
 <div id="login-signup-form">
   <div class="content">
@@ -19,13 +23,17 @@
           header: (I18n.t(:"login_signup_form.signup_page_header")),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 4),
           classes: 'signup-page') do %>
-      <% lev_form_for :signup, url: educator_signup_post_path do |form| %>
-        <% fh = NewflowFormHelper::Newflow.new(f: form,
+      <% lev_form_for :signup, url: instructor_signup_post_path do |form| %>
+        <% fh = FormHelper::One.new(f: form,
                                                context: self,
                                                errors: @handler_result&.errors) %>
         <div class="content role-section">
           <div>
+<<<<<<< HEAD:app/views/educator_signup/educator_signup_form.html.erb
             <%= render partial: 'shared/back_arrow', locals: { path: newflow_signup_path } %>
+=======
+            <%= render partial: 'shared/back_arrow', locals: { path: signup_path } %>
+>>>>>>> ab4d9871 (refactor newflow to not exist):app/views/instructor_signup/instructor_signup_form.html.erb
             <div class="role-button"><%= I18n.t(:"login_signup_form.educator") %></div>
           </div>
         </div>
@@ -164,7 +172,7 @@
   </div>
 
   <% content_for :page_specific do %>
-    <%= javascript_include_tag 'newflow/educator_signup_email_validations' %>
+    <%= javascript_include_tag 'signup' %>
   <% end %>
 </div>
 

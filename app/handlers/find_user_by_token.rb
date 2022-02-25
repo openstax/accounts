@@ -29,3 +29,4 @@ class FindUserByToken
     !caller.is_anonymous?
   end
 end
+

@@ -30,7 +30,6 @@ class SessionsCreate
   uses_routine TransferAuthentications
   uses_routine TransferOmniauthData
   uses_routine ActivateUnclaimedUser
-  uses_routine TransferPreAuthState
 
   protected
 
@@ -46,7 +45,6 @@ class SessionsCreate
 
   def handle
     outputs[:status] = get_status
-    options[:user_state].clear_pre_auth_state # some of the flows will have a pre_auth_state
   end
 
   def get_status
@@ -59,8 +57,6 @@ class SessionsCreate
 
     if logging_in?
       handle_during_login
-    elsif signing_up?
-      handle_during_signup
     else
       fatal_error(code: :unknown_callback_state)
     end
@@ -69,17 +65,12 @@ class SessionsCreate
   def handle_during_login
     # The incoming authentication must match an existing user and match the
     # authentications corresponding to the username/email provided during login.
+    # TODO: https://openstax.slack.com/archives/C69BU01RC/p1644513034546309?thread_ts=1644511563.333019&cid=C69BU01RC
     options[:login_providers].deep_stringify_keys!
-    if (
-         authentication_user.nil? ||
-         options[:login_providers][authentication.provider].nil? ||
-         options[:login_providers][authentication.provider]['uid'] != authentication.uid
-       )
+    if authentication_user.nil? ||
+      options[:login_providers][authentication.provider].nil? ||
+      options[:login_providers][authentication.provider]['uid'] != authentication.uid
       return :mismatched_authentication
-    end
-
-    if pre_auth_state.present?
-      run(TransferPreAuthState, pre_auth_state: pre_auth_state, user: authentication_user)
     end
 
     sign_in!(authentication_user)
@@ -117,10 +108,6 @@ class SessionsCreate
       end
     end
 
-    run(TransferPreAuthState,
-        pre_auth_state: pre_auth_state,
-        user: receiving_user)
-
     run(TransferAuthentications, authentication, receiving_user)
     sign_in!(receiving_user)
     return status
@@ -150,9 +137,6 @@ class SessionsCreate
       run(TransferOmniauthData, @data, current_user) if authentication.provider != 'identity'
 
       :authentication_added
-    else
-      # If no resolution, fallback to one of the other flows
-      nil
     end
   end
 
@@ -222,14 +206,6 @@ class SessionsCreate
 
   def authentication_user
     @authentication_user ||= authentication.user
-  end
-
-  def signing_up?
-    pre_auth_state.present?
-  end
-
-  def pre_auth_state
-    options[:pre_auth_state]
   end
 
   def logging_in?

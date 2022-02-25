@@ -24,7 +24,7 @@ Ui = do () ->
       modalDialog.css('overflow', 'auto'); #set to overflow if no fit
     else
       modalDialog.css('margin-top', #center it if it does fit
-                      ((userScreenHeight / 2) - (modalHeight / 2)))
+        ((userScreenHeight / 2) - (modalHeight / 2)))
 
   checkCheckedButton: (targetSelector, sourceSelector) ->
     if $(sourceSelector).is(':checked')

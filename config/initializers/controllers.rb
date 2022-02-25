@@ -69,8 +69,8 @@ ActionController::Base.class_exec do
     user = respond_to?(:current_human_user) ? current_human_user : current_user
     api_call? ||
     user&.is_anonymous? ||
-    request.options? ||
-    contracts_not_required
+    request.options? #||
+    #contracts_not_required
   end
 
   def set_locale

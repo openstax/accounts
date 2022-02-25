@@ -1,4 +1,5 @@
-class SocialAuthController < BaseController
+
+class SocialAuthController < ApplicationController
   include LoginSignupHelper
 
   fine_print_skip :general_terms_of_use, :privacy_policy
@@ -46,7 +47,7 @@ class SocialAuthController < BaseController
           case code
           when :should_redirect_to_signup
             redirect_to(
-              login_path,
+              newflow_login_path,
               notice: I18n.t(
                 :"login_signup_form.should_social_signup",
                 sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
@@ -60,7 +61,7 @@ class SocialAuthController < BaseController
             redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
           when :mismatched_authentication
             security_log(:sign_in_failed, reason: "mismatched authentication")
-            redirect_to(login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
+            redirect_to(newflow_login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
           else
             oauth = request.env['omniauth.auth']
             errors = @handler_result.errors.inspect

@@ -1,6 +1,6 @@
 class CreatePassword
   lev_handler
-  uses_routine ::SetPassword
+  uses_routine SetPassword
 
   paramify :create_password_form do
     attribute :password
@@ -15,7 +15,7 @@ class CreatePassword
 
   def handle
     run(
-      ::SetPassword,
+      SetPassword,
       user: caller,
       password: create_password_form_params.password,
       password_confirmation: create_password_form_params.password
