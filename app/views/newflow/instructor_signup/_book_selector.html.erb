@@ -1,0 +1,15 @@
+<div class="form-group question" data-bind="visible: bookSelectorName">
+  <label class="field-label" data-bind="html: bookSelectorLabel"></label>
+  <div class="used mustdo-alert" data-bind="visible:minBooksNoticeVisible">
+    <%= I18n.t(:"educator_profile_form.select_option") %>
+  </div>
+  <div class="used-limit mustdo-alert" data-bind="visible:maxBooksNoticeVisible">
+    <%= I18n.t(:"educator_profile_form.select_option_limit_5") %>
+  </div>
+
+  <select multiple
+    data-bind="multiselect: selectedBooks, attr: {name: bookSelectorName}"
+  >
+    <%= grouped_options_for_select(@book_titles) %>
+  </select>
+</div>

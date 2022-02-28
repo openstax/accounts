@@ -13,7 +13,7 @@
     <div class="content">
         <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
-        <%= newflow_login_signup_card(
+        <%= login_signup_card(
                     header: (I18n.t(:"login_signup_form.signup_page_header")),
                     current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
                     classes: 'signup-page') do %>
@@ -174,5 +174,5 @@
 </div>
 
 <script type="text/javascript">
-    NewflowUi.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
+    Ui.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
 </script>

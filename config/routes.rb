@@ -30,7 +30,7 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'newflow/student_signup' do
-    get 'i/signup/student', action: :student_signup_form, as: :newflow_signup_student
+    get 'i/signup/student', action: :student_signup_form, as: :signup_student
     post 'i/signup/student', action: :student_signup, as: :newflow_signup_post
 
     get 'i/signup/student/email_verification_form', action: :student_email_verification_form, as: :student_email_verification_form
@@ -42,10 +42,10 @@ Rails.application.routes.draw do
     post 'i/signup/student/verify_email_by_pin', action: :student_verify_email_by_pin, as: :student_verify_pin
   end
 
-  scope controller: 'newflow/educator_signup' do
+  scope controller: 'newflow/instructor_signup' do
     # Step 1
-    get 'i/signup/educator', action: :educator_signup_form, as: :educator_signup
-    post 'i/signup/educator', action: :educator_signup, as: :educator_signup_post
+    get 'i/signup/educator', action: :instructor_signup_form, as: :instructor_signup
+    post 'i/signup/educator', action: :instructor_signup, as: :instructor_signup_post
     get 'i/signup/educator/change_signup_email_form', action: :educator_change_signup_email_form, as: :educator_change_signup_email_form
     post 'i/signup/educator/change_signup_email', action: :educator_change_signup_email, as: :educator_change_signup_email
 

@@ -1,0 +1,54 @@
+<div class="form-group question completed-role">
+  <%
+    educator_complete_roles = [
+      [ I18n.t(:'educator_profile_form.instructor'), 'instructor', false ],
+      [ I18n.t(:'educator_profile_form.administrator'), 'administrator', false ],
+      [ I18n.t(:'educator_profile_form.other'), 'other', false ]
+    ]
+  %>
+  <div class="radio-control-group">
+    <%=
+    label_tag(
+    :educator_specific_role,
+    I18n.t(:"educator_profile_form.describe_role"),
+    class: 'field-label'
+    )
+    %>
+
+    <div class="role mustdo-alert" data-bind="visible: roleNoticeVisible">
+      <%= I18n.t(:"educator_profile_form.select_option") %>
+    </div>
+
+    <% educator_complete_roles.each do |(role, id, selected)| %>
+    <label>
+      <% label_name = "educator_specific_role_#{id}".to_sym %>
+      <input type="radio"
+        value="<%= id %>"
+        id="signup_<%= label_name %>"
+        class="completed-role custom-control-input"
+        name="signup[educator_specific_role]"
+        data-bind="checked: role"
+      >
+      <%= label(label_name, role, class: 'custom-control-label') %>
+    </label>
+    <% end %>
+
+  </div>
+
+  <div class="other-specify" data-bind="visible: role() === 'other'">
+    <%= label_tag :other_role_name, I18n.t(:"educator_profile_form.other_please_specify"),
+    class: 'field-label'
+    %>
+    <div class="other mustdo-alert" data-bind="visible: otherNoticeVisible">
+      <%= I18n.t(:"educator_profile_form.fill_out") %>
+    </div>
+    <input
+      placeholder="Other (please specify)"
+      type="text"
+      class="form-control wide"
+      name="signup[other_role_name]"
+      id="signup_other_role_name"
+      data-bind="textInput: otherRole"
+    >
+  </div>
+</div>
