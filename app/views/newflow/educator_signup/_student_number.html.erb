@@ -8,7 +8,7 @@
     class: 'field-label'
     %>
     <div
-      class="total-num newflow-mustdo-alert"
+      class="total-num mustdo-alert"
       data-bind="visible: $parent.hasBeenSubmitted() && $parent.studentCounts[value].invalid"
     >
       <%= I18n.t(:"educator_profile_form.fill_out") %>
@@ -28,7 +28,7 @@
   class: 'field-label'
   %>
   <div
-    class="total-num newflow-mustdo-alert"
+    class="total-num mustdo-alert"
     data-bind="visible: hasBeenSubmitted() && studentCounts[0].invalid"
   >
     <%= I18n.t(:"educator_profile_form.fill_out") %>

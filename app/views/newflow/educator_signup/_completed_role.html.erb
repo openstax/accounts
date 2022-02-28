@@ -15,7 +15,7 @@
     )
     %>
 
-    <div class="role newflow-mustdo-alert" data-bind="visible: roleNoticeVisible">
+    <div class="role mustdo-alert" data-bind="visible: roleNoticeVisible">
       <%= I18n.t(:"educator_profile_form.select_option") %>
     </div>
 
@@ -39,7 +39,7 @@
     <%= label_tag :other_role_name, I18n.t(:"educator_profile_form.other_please_specify"),
     class: 'field-label'
     %>
-    <div class="other newflow-mustdo-alert" data-bind="visible: otherNoticeVisible">
+    <div class="other mustdo-alert" data-bind="visible: otherNoticeVisible">
       <%= I18n.t(:"educator_profile_form.fill_out") %>
     </div>
     <input

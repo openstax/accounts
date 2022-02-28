@@ -33,17 +33,7 @@
     color: var(--greyish-brown);
   }
 
-  #application-footer {
-    display: none;
-  }
-
-  #newflow-footer {
-      font-size: 10px;
-      text-align: center;
-      margin-top: 8rem;
-  }
-
-  #newflow-footer--copyright a {
+  #application-footer--copyright a {
     font-size: 10px;
     color: #000 !important;
   }
@@ -181,7 +171,7 @@
 
 <% end %>
 
-<%= render partial: 'layouts/newflow_footer' %>
+<%= render partial: 'layouts/application_footer' %>
 
 <%= content_for :javascript do %>
 <script type="text/javascript">

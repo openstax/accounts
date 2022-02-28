@@ -1,58 +1,50 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <script type="text/javascript">
-      window.OX = window.OX || {};
-      OX.I18n = <%= (t :javascript).to_json.html_safe %>;
-      OX.url_prefix = "<%= request.script_name %>";
-    </script>
+<head>
+  <script type="text/javascript">
+    window.OX = window.OX || {};
+    OX.I18n = <%= (t :javascript).to_json.html_safe %>;
+    OX.url_prefix = "<%= request.script_name %>";
+  </script>
 
-    <%= render partial: "layouts/google_tag_manager" %>
+  <%= render "layouts/google_tag_manager" %>
 
-    <% if @redirect_url %>
-      <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
-    <% end %>
+  <% if @redirect_url %>
+    <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
+  <% end %>
 
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-    <%= stylesheet_link_tag    "application" %>
+  <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
 
+  <%= yield :head if content_for?(:head) %>
 
-    <%= javascript_include_tag "application" %>
-    <%= csrf_meta_tags %>
-
-    <%= yield :head if content_for?(:head) %>
-
-    <% if !Rails.env.test? %>
+  <% if !Rails.env.test? %>
     <script src="https://cdn.optimizely.com/js/1345615444.js"></script>
-    <% end %>
+  <% end %>
 
-    <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  </head>
+</head>
 
-  <body class="<%= controller_name %> <%= action_name %>">
-    <%= render partial: "layouts/tag_manager_snippet" %>
-    <%= render partial: "layouts/application_js_hooks" %>
-    <%= render "shared/upper_corner_console" %>
-    <%= render partial: "layouts/application_header" %>
+<body class="<%= controller_name %> <%= action_name %>">
+  <%= render "layouts/tag_manager_snippet" %>
+  <%= render "shared/upper_corner_console" %>
+  <%= render "layouts/application_header" %>
 
-    <div id="application-container" class="container">
-
-      <%= render(partial: "layouts/attention") unless @hide_layout_errors %>
-
-      <%= render partial: "layouts/application_body" %>
-
-      <%= render partial: "layouts/application_footer" %>
-      <%= render partial: "layouts/google_analytics" %>
-
-    </div>
+  <div id="application-container" class="container">
+    <%= render "layouts/attention" unless @hide_layout_errors %>
+    <%= render "layouts/application_body" %>
+    <%= render "layouts/google_analytics" %>
+  </div>
 
   <%= yield :javascript %>
 
-  </body>
+</body>
 
 </html>

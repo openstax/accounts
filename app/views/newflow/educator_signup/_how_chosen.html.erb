@@ -8,7 +8,7 @@
       ]
     %>
     <%= label_tag :who_chooses_books, I18n.t(:"educator_profile_form.how_textbooks_chosen"), class: 'field-label' %>
-    <div class="chosen newflow-mustdo-alert" data-bind="visible: chosenNoticeVisible">
+    <div class="chosen mustdo-alert" data-bind="visible: chosenNoticeVisible">
       <%= I18n.t(:"educator_profile_form.select_option") %>
     </div>
     <% options.each do |(role, value, label_key)| %>
