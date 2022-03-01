@@ -5,6 +5,9 @@ namespace :cron do
     Rails.logger.info 'rake doorkeeper:cleanup'
     OpenStax::RescueFrom.this { Rake::Task['doorkeeper:cleanup'].invoke }
 
+    Rails.logger.info "UpdateAccountInformationInSalesforce.call"
+    OpenStax::RescueFrom.this { UpdateAccountInformationInSalesforce.call }
+
     Rails.logger.debug 'Finished daily cron'
   end
 end

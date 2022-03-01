@@ -44,13 +44,24 @@ class UpdateUserContactInfo
       sf_contact = contacts_by_uuid[user.uuid]
       school = schools_by_salesforce_id[sf_contact.school_id]
 
-      user.salesforce_contact_id = sf_contact.id
 
-      SecurityLog.create!(
-        user: user,
-        event_type: :user_contact_id_updated_from_salesforce,
-        event_data: { contact_id: sf_contact.id }
-      )
+      if user.salesforce_contact_id != sf_contact.id || user.salesforce_contact_id.blank?
+        user.salesforce_contact_id = sf_contact.id
+
+        SecurityLog.create!(
+          user: user,
+          event_type: :user_contact_id_updated_from_salesforce,
+          event_data: { contact_id: sf_contact.id }
+        )
+      else
+        warn("Updating a contact ID (#{sf_contact.id}) on an account (#{user.id}) which is different than what was previously linked.")
+
+        SecurityLog.create!(
+          user:       user,
+          event_type: :user_contact_id_changed_from_salesforce,
+          event_data: { contact_id: sf_contact.id }
+        )
+      end
 
       old_fv_status = user.faculty_status
       user.faculty_status = case sf_contact.faculty_verified

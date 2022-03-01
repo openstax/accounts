@@ -67,7 +67,8 @@ module Newflow
         sheerid_school_name: user.sheerid_reported_school,
         instant_verification: user.is_sheerid_verified,
         account_id: sf_school_id,
-        school_id: sf_school_id
+        school_id: sf_school_id,
+        signup_date: user.created_at
       )
 
       state = user.most_accurate_school_state
