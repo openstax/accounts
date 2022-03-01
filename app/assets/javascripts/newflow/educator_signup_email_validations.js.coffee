@@ -1,6 +1,6 @@
 IS_EDU = new RegExp('\.edu\s*$', 'i')
 
-class NewflowUi.SignupEmailValidations
+class Ui.SignupEmailValidations
 
   constructor: ->
     _.bindAll(@, 'onChange', 'onSubmit')

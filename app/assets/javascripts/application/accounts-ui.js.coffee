@@ -1,4 +1,5 @@
-NewflowUi = do () ->
+Ui = do () ->
+
   disableButton: (selector) ->
     $(selector).attr('disabled', 'disabled')
     $(selector).addClass('ui-state-disabled ui-button-disabled')
@@ -34,11 +35,7 @@ NewflowUi = do () ->
 
   enableOnChecked: (targetSelector, sourceSelector) ->
     $(document).ready =>
-
-      enable_disable_continue = () =>
-        this.checkCheckedButton(targetSelector, sourceSelector)
-
-      setTimeout(enable_disable_continue, 500)
+      @disableButton(targetSelector) if !$(sourceSelector).is(':checked')
 
       $(sourceSelector).on 'click', =>
         this.checkCheckedButton(targetSelector, sourceSelector)
@@ -65,5 +62,5 @@ NewflowUi = do () ->
         return '<span class="' + cls + '">' + match + '</span>'
     )
 
-
-this.NewflowUi = NewflowUi
+this.Accounts ?= {}
+this.Accounts.Ui = Ui

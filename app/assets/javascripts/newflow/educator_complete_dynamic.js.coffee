@@ -1,4 +1,4 @@
-class NewflowUi.EducatorComplete
+class Ui.EducatorComplete
 
   constructor: ->
     _.bindAll(@, 'onSchoolNameChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onTotalNumChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onSubmit')
