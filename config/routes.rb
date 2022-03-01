@@ -30,7 +30,7 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'newflow/student_signup' do
-    get 'i/signup/student', action: :student_signup_form, as: :newflow_signup_student
+    get 'i/signup/student', action: :student_signup_form, as: :signup_student
     post 'i/signup/student', action: :student_signup, as: :newflow_signup_post
 
     get 'i/signup/student/email_verification_form', action: :student_email_verification_form, as: :student_email_verification_form

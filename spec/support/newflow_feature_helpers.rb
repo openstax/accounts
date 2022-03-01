@@ -178,7 +178,7 @@ end
 
 def expect_student_sign_up_page
   expect(page).to have_no_missing_translations
-  expect(page.current_path).to eq(newflow_signup_student_path)
+  expect(page.current_path).to eq(signup_student_path)
 end
 
 def expect_educator_sign_up_page

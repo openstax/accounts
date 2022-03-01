@@ -55,7 +55,7 @@ module Newflow
       known_signup_role = session.fetch(:signup_role, nil)
 
       if known_signup_role && known_signup_role == 'student'
-        redirect_to(newflow_signup_student_path(request.query_parameters))
+        redirect_to(signup_student_path(request.query_parameters))
       elsif known_signup_role && known_signup_role == 'instructor'
         redirect_to(educator_signup_path(request.query_parameters))
       end

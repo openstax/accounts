@@ -222,7 +222,7 @@ module ApplicationHelper
   # NEW FLOW  #
    ###########
 
-  def newflow_login_signup_card(classes: "", header: "", banners: nil, current_step: nil, show_exit_icon: false, &block)
+  def login_signup_card(classes: "", header: "", banners: nil, current_step: nil, show_exit_icon: false, &block)
     @hide_layout_errors = true
 
     content_tag :div, class: "#{classes}" do
