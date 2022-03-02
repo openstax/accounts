@@ -1,7 +1,7 @@
 module Newflow
   class EducatorSignupController < SignupController
 
-    include EducatorSignupHelper
+    include InstructorSignupHelper
 
     skip_forgery_protection(only: :sheerid_webhook)
 
