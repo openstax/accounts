@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_11_122413) do
+ActiveRecord::Schema.define(version: 2022_02_01_174350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -409,6 +409,8 @@ ActiveRecord::Schema.define(version: 2021_11_11_122413) do
     t.string "first_name"
     t.string "last_name"
     t.string "organization_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_external_uuids", id: :serial, force: :cascade do |t|
@@ -427,7 +429,7 @@ ActiveRecord::Schema.define(version: 2021_11_11_122413) do
     t.string "first_name"
     t.string "last_name"
     t.string "title"
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "uuid", default: -> { "public.gen_random_uuid()" }, null: false
     t.string "suffix"
     t.string "state", default: "needs_profile", null: false
     t.string "salesforce_contact_id"
@@ -469,6 +471,7 @@ ActiveRecord::Schema.define(version: 2021_11_11_122413) do
     t.bigint "school_id"
     t.boolean "faculty_verification_email_sent"
     t.boolean "needs_sync"
+    t.boolean "sheer_id_webhook_received"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

@@ -34,6 +34,7 @@ module SheeridAPI
     end
 
     def relevant?
+      # TODO: is this really a good test of relevance?
       @email.present? && @organization_name.present?
     end
 

@@ -34,7 +34,6 @@ module LookupUsers
                .tap do |matches|
       return matches.map(&:user) if matches.any?
     end
-
     # Case-insensitive email search
     ContactInfo.verified
                .where('lower(value) = ?', email.downcase)

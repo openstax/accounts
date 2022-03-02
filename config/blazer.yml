@@ -19,122 +19,86 @@ data_sources:
       # zone_id: "SELECT id, name FROM zones ORDER BY name ASC"
       # period: ["day", "week", "month"]
       # status: {0: "Active", 1: "Archived"}
-      state: { 0: "Temporary",
-               1: "Social",
-               2: "Unclaimed",
-               3: "Needs Profile",
-               4: "Activated",
-               5: "Unverified" }
-      role: { 0: "Unknown",
-              1: "Student",
-              2: "Instructor",
-              3: "Administrator",
-              4: "Librarian",
-              5: "Designer",
-              6: "Other",
-              7: "Adjunct",
-              8: "Homeschool" }
-      faculty_status: { 0: "No Info",
-                        1: "Pending",
-                        2: "Confirmed",
-                        3: "Rejected" }
-      school_type: {
-                     0: "Unknown",
-                     1: "Other",
-                     2: "College",
-                     3: "High School",
-                     4: "K12",
-                     5: "Home School"
+      state: {
+        0: "Temporary",
+        1: "Social",
+        2: "Unclaimed",
+        3: "Needs Profile",
+        4: "Activated",
+        5: "Unverified"
       }
-      event_type: {0: "unknown",
-                   1: "sign_up_successful",
-                   2: "sign_up_failed",
-                   3: "sign_up_blocked",
-                   4: "sign_in_successful",
-                   5: "sign_in_failed",
-                   6: "sign_in_blocked",
-                   7: "help_requested",
-                   8: "help_request_failed",
-                   9: "help_request_blocked",
-                   10: "sign_out",
-                   11: "password_updated",
-                   12: "password_expired",
-                   13: "password_reset",
-                   14: "password_reset_failed",
-                   15: "password_reset_blocked",
-                   16: "user_updated",
-                   17: "user_claimed",
-                   18: "contact_info_created",
-                   19: "contact_info_updated",
-                   20: "contact_info_deleted",
-                   21: "contact_info_confirmation_resent",
-                   22: "contact_info_confirmed_by_code",
-                   23: "contact_info_confirmation_by_code_failed",
-                   24: "contact_info_confirmation_by_code_blocked",
-                   25: "contact_info_confirmed_by_pin",
-                   26: "contact_info_confirmation_by_pin_failed",
-                   27: "contact_info_confirmation_by_pin_blocked",
-                   28: "authentication_created",
-                   29: "authentication_transferred",
-                   30: "authentication_deleted",
-                   31: "application_created",
-                   32: "application_updated",
-                   33: "application_deleted",
-                   34: "admin_created",
-                   35: "admin_deleted",
-                   36: "user_updated_by_admin",
-                   37: "user_deleted_by_admin",
-                   38: "users_searched_by_admin",
-                   39: "admin_became_user",
-                   40: "contact_info_confirmed_by_admin",
-                   41: "authentication_transfer_failed",
-                   42: "login_not_found",
-                   43: "faculty_verified",
-                   44: "trusted_launch_removed",
-                   45: "student_signed_up",
-                   46: "student_sign_up_failed",
-                   47: "student_verified_email",
-                   48: "student_verify_email_failed",
-                   49: "reset_password_success",
-                   50: "reset_password_failed",
-                   51: "change_password_form_loaded",
-                   52: "change_password_form_not_loaded",
-                   53: "student_social_sign_up",
-                   54: "authenticated_with_social",
-                   55: "student_auth_with_social_failed",
-                   56: "student_social_auth_confirmation_success",
-                   57: "student_social_auth_confirmation_failed",
-                   58: "student_created_password",
-                   59: "student_create_password_failed",
-                   60: "email_already_in_use",
-                   61: "educator_signed_up",
-                   62: "educator_began_signup",
-                   63: "educator_sign_up_failed",
-                   64: "educator_verified_email",
-                   65: "educator_verify_email_failed",
-                   66: "user_viewed_signup_form",
-                   67: "user_viewed_sheerid_form",
-                   68: "user_updated_using_sheerid_data",
-                   69: "educator_verified_using_sheerid",
-                   70: "user_not_viable_for_sheerid",
-                   71: "user_viewed_profile_form",
-                   72: "educator_resumed_signup_flow",
-                   73: "created_salesforce_lead",
-                   74: "update_salesforce_lead",
-                   75: "requested_manual_cs_verification",
-                   76: "user_sent_to_cs_for_review",
-                   77: "user_became_activated",
-                   78: "user_profile_complete",
-                   79: "salesforce_error"}
+      role: {
+        0: "Unknown",
+        1: "Student",
+        2: "Instructor",
+        3: "Administrator",
+        4: "Librarian",
+        5: "Designer",
+        6: "Other",
+        7: "Adjunct",
+        8: "Homeschool"
+      }
+      faculty_status: {
+        0: "No Info",
+        1: "Pending",
+        2: "Confirmed",
+        3: "Rejected"
+      }
+      school_type: {
+        0: "Unknown",
+        1: "Other",
+        2: "College",
+        3: "High School",
+        4: "K12",
+        5: "Home School"
+      }
 
     linked_columns:
       user_id: "/admin/users/{value}/edit"
+      salesforce_contact_id: "https://openstax.lightning.force.com/lightning/r/Contact/{value}/view"
+      salesforce_lead_id: "https://openstax.lightning.force.com/lightning/r/Lead/{value}/view"
 
     smart_columns:
       user_id: "SELECT id, first_name last_name FROM users WHERE id IN {value}"
+      state: {
+        0: "Temporary",
+        1: "Social",
+        2: "Unclaimed",
+        3: "Needs Profile",
+        4: "Activated",
+        5: "Unverified"
+      }
+      role: {
+        0: "Unknown",
+        1: "Student",
+        2: "Instructor",
+        3: "Administrator",
+        4: "Librarian",
+        5: "Designer",
+        6: "Other",
+        7: "Adjunct",
+        8: "Homeschool"
+      }
+      faculty_status: {
+        0: "No Info",
+        1: "Pending",
+        2: "Confirmed",
+        3: "Rejected"
+      }
+      school_type: {
+        0: "Unknown",
+        1: "Other",
+        2: "College",
+        3: "High School",
+        4: "K12",
+        5: "Home School"
+      }
 
 # create audits
 audit: true
+
+# run queries async
+# async: true
 
 # change the time zone
 time_zone: "Central Time (US & Canada)"
@@ -165,10 +129,10 @@ check_schedules:
 # enable anomaly detection
 # note: with trend, time series are sent to https://trendapi.org
 # anomaly_checks: prophet / trend / r
-anomaly_checks: prophet
+# anomaly_checks: prophet
 
 # enable forecasting
 # note: with trend, time series are sent to https://trendapi.org
 # forecasting: prophet / trend
-forecasting: prophet
+# forecasting: prophet
 

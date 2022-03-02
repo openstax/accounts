@@ -3,7 +3,6 @@ OpenStax::Utilities.configure do |config|
     unless signed_in?
       # Due to the path_prefixer gem, main_app.login_path is wrong and thus authenticate_user!
       # redirects to the wrong URL here. Relative redirects are also broken.
-      store_url url: request_url_without_signed_params
       uri = Addressable::URI.parse(request.url)
       uri.path = uri.path.sub('/status', '/login')
       redirect_to uri.to_s

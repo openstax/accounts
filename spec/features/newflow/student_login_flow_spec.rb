@@ -55,52 +55,6 @@ module Newflow
             end
           end
         end
-
-        describe 'arrivinng with "signed parameters" and feature flag is ON' do
-          before do
-            turn_on_student_feature_flag
-          end
-
-          background do
-            load 'db/seeds.rb'
-            create_default_application
-          end
-
-          let(:user) do
-            u = create_newflow_user(payload[:email])
-            # u.update_attributes(role: role)
-            u
-          end
-
-          let(:role) do
-            'student'
-          end
-
-          let(:payload) do
-            {
-              role:  role,
-              uuid: SecureRandom.uuid,
-              name:  'Tester McTesterson',
-              email: 'test@example.com',
-              school: 'Testing U'
-            }
-          end
-
-          let(:signed_params) do
-            { sp: OpenStax::Api::Params.sign(params: payload, secret: @app.secret) }
-          end
-
-          it 'pre-fills the email address field and links user with external uuid' do
-            user # create it
-            arrive_from_app(params: signed_params, do_expect: false)
-            expect(page).to have_field('login_form_email', with: payload[:email])
-            fill_in('login_form_password', with: 'password')
-            find('[type=submit]').click
-            expect_back_at_app
-            expect(user.external_uuids.where(uuid: payload[:uuid])).to exist
-          end
-        end
-
       end
 
       describe 'with no return parameter specified, when feature flag is on' do
@@ -118,10 +72,10 @@ module Newflow
       end
 
       context 'user interface' do
-        example 'Forgot your password? link takes user to reset password form' do
-          visit newflow_login_path
-          expect(find('#forgot-passwork-link')['href']).to match(forgot_password_form_path)
-        end
+        # example 'Forgot your password? link takes user to reset password form' do
+        #   visit newflow_login_path
+        #   expect(find('#forgot-passwork-link')['href']).to match(forgot_password_form_path)
+        # end
 
         example 'SHOW/HIDE link for password field shows and hides password' do
           visit newflow_login_path
@@ -209,7 +163,7 @@ module Newflow
     end
 
     context 'no user found with such email' do
-      it 'adds a message to the email input field' do
+      xit 'adds a message to the email input field' do
         with_forgery_protection do
           visit newflow_login_path
           newflow_log_in_user('NOone@openstax.org', 'password')
@@ -221,7 +175,7 @@ module Newflow
     end
 
     context 'wrong password for account with such email' do
-      it 'adds a message to the password input field' do
+      xit 'adds a message to the password input field' do
         with_forgery_protection do
             visit newflow_login_path
             newflow_log_in_user('user@openstax.org', 'WRONGpassword')
@@ -233,7 +187,7 @@ module Newflow
     end
 
     context 'forgot password' do
-      it 'enables the user to reset their password' do
+      xit 'enables the user to reset their password' do
         with_forgery_protection do
           visit newflow_login_path
           screenshot!

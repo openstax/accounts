@@ -27,7 +27,11 @@ class User < ApplicationRecord
     NO_FACULTY_INFO = 'no_faculty_info',
     PENDING_FACULTY = 'pending_faculty',
     CONFIRMED_FACULTY = 'confirmed_faculty',
-    REJECTED_FACULTY = 'rejected_faculty'
+    REJECTED_FACULTY = 'rejected_faculty',
+    # TODO: need to implement below this line - requires thorough application code checking
+    PENDING_SHEERID = 'pending_sheerid',
+    REJECTED_BY_SHEERID = 'rejected_by_sheerid',
+    INCOMPLETE_SIGNUP = 'incomplete_signup'
   ].freeze
 
   VALID_USING_OPENSTAX_HOW = [:as_primary, :as_recommending, :as_future].freeze
@@ -47,8 +51,6 @@ class User < ApplicationRecord
   DEFAULT_FACULTY_STATUS = VALID_FACULTY_STATUSES[0]
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
   DEFAULT_SCHOOL_LOCATION = VALID_SCHOOL_LOCATIONS[0]
-  UNKNOWN_SCHOOL_NAME = 'unknown'
-  STALE_VERIFICATION_PERIOD = 4.days
 
   enum(faculty_status: VALID_FACULTY_STATUSES)
   enum(role: VALID_ROLES)
@@ -172,8 +174,6 @@ class User < ApplicationRecord
       if sheerid_reported_school.present?
 
     return self_reported_school if self_reported_school.present?
-
-    UNKNOWN_SCHOOL_NAME
   end
 
   def most_accurate_school_city
@@ -335,10 +335,6 @@ class User < ApplicationRecord
 
   def casual_name # TODO are we ok now that username not required?
     first_name.present? ? first_name : username
-  end
-
-  def standard_name # TODO needs spec
-    formal_name.present? ? formal_name : casual_name
   end
 
   def formal_name # TODO needs spec

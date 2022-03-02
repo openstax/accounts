@@ -117,16 +117,17 @@ class NewflowUi.EducatorComplete
     books_of_interest_valid = @checkBooksOfInterestValid()
     books_of_interest_valid_max = @checkBooksOfInterestValidMax()
 
-    if not (role_valid and
-            chosen_valid and
-            using_how_valid and
-            other_valid and
-            school_name_valid and
-            total_num_valid and
-            books_used_valid and
-            books_used_valid_max and
-            books_of_interest_valid_max and
-            books_of_interest_valid)
+    if not (
+        school_name_valid and
+        role_valid and
+        other_valid and
+        chosen_valid and
+        using_how_valid and
+        total_num_valid and
+        books_used_valid and
+        books_used_valid_max and
+        books_of_interest_valid_max and
+        books_of_interest_valid)
       ev.preventDefault()
 
   checkSchoolNameValid: () ->
@@ -263,9 +264,14 @@ class NewflowUi.EducatorComplete
       @how_using.hide()
       @please_fill_out_other.hide()
 
+    if @checkSchoolNameValid()
+      @continue.prop('disabled', false)
+
   onOtherChange: ->
     @please_fill_out_other.hide()
-    @continue.prop('disabled', false)
+
+    if @checkSchoolNameValid() && @checkOtherValid()
+      @continue.prop('disabled', false)
 
   onHowChosenChange: ->
     @please_select_chosen.hide()

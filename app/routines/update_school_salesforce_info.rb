@@ -23,7 +23,7 @@ class UpdateSchoolSalesforceInfo
   end
 
   def call
-    log 'Starting'
+    log('Starting UpdateSchoolSalesforceInfo')
 
     # Check if any Schools that have 0 users have been deleted from Salesforce and remove them
     School.where(
@@ -41,9 +41,11 @@ class UpdateSchoolSalesforceInfo
     end
 
     # Go through all SF Schools and cache their information, if it changed
+    schools_updated = 0
     last_id = nil
     loop do
       sf_schools = OpenStax::Salesforce::Remote::School.order(:Id).limit(BATCH_SIZE)
+
       sf_schools = sf_schools.where("Id > '#{last_id}'") unless last_id.nil?
       sf_schools = sf_schools.to_a
       last_id = sf_schools.last&.id
@@ -55,6 +57,7 @@ class UpdateSchoolSalesforceInfo
 
         schools = sf_schools.map do |sf_school|
           school = schools_by_sf_id[sf_school.id]
+          schools_updated += 1 if school.nil?
           school = School.new(salesforce_id: sf_school.id) if school.nil?
 
           SF_TO_DB_CACHE_COLUMNS_MAP.each do |sf_column, db_column|
@@ -76,6 +79,6 @@ class UpdateSchoolSalesforceInfo
       break if sf_schools.length < BATCH_SIZE
     end
 
-    log 'Finished'
+    log("Finished updating #{schools_updated} schools")
   end
 end

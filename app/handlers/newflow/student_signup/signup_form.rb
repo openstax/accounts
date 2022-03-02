@@ -28,13 +28,7 @@ module Newflow
       end
 
       def required_params
-        @required_params ||= [
-          :email, :first_name, :last_name,
-
-          if options[:user_from_signed_params].blank?
-            :password
-          end
-        ].compact
+        @required_params ||= [:email, :first_name, :last_name,:password].compact
       end
 
       def handle
@@ -51,17 +45,13 @@ module Newflow
           )
         end
 
-        if options[:user_from_signed_params].present?
-          outputs.user = User.find_by!(id: options[:user_from_signed_params]['id'])
-        else
-          outputs.user = create_user
+        outputs.user = create_user
 
-          run(::SetPassword,
+        run(::SetPassword,
             user: outputs.user,
             password: signup_params.password,
             password_confirmation: signup_params.password
-          )
-        end
+        )
 
         agree_to_terms
 
@@ -90,7 +80,7 @@ module Newflow
 
       def create_user
         user = User.create(
-          state: 'unverified',
+          state: User::UNVERIFIED,
           role: :student,
           first_name: signup_params.first_name,
           last_name: signup_params.last_name,
@@ -109,7 +99,6 @@ module Newflow
         run(AgreeToTerms, signup_params.contract_1_id, outputs.user, no_error_if_already_signed: true)
         run(AgreeToTerms, signup_params.contract_2_id, outputs.user, no_error_if_already_signed: true)
       end
-
     end
   end
 end

@@ -66,78 +66,78 @@ feature 'Password reset', js: true do
     end
   end
 
-  scenario 'reset password links stay constant for a fixed time' do
-    visit newflow_login_path
-    screenshot!
-    newflow_log_in_user('user@openstax.org', 'WRONGpassword')
-    screenshot!
+  # scenario 'reset password links stay constant for a fixed time' do
+  #   visit newflow_login_path
+  #   screenshot!
+  #   newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+  #   screenshot!
+  #
+  #   click_on(I18n.t(:"login_signup_form.forgot_password"))
+  #   # pre-populates the email for them since they already typed it in the login form
+  #   expect(page.current_path).to eq(forgot_password_form_path)
+  #   expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
+  #   screenshot!
+  #   click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+  #   screenshot!
+  #
+  #   expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
+  #   screenshot!
+  #
+  #   open_email('user@openstax.org')
+  #   change_password_link_1 = get_path_from_absolute_link(current_email, 'a')
+  #   clear_emails
+  #
+  #   visit newflow_login_path
+  #   newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+  #   click_on(I18n.t(:"login_signup_form.forgot_password"))
+  #   expect(page.current_path).to eq(forgot_password_form_path)
+  #   # pre-populates the email for them since they already typed it in the login form
+  #   expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
+  #
+  #   click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+  #   expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
+  #
+  #   open_email('user@openstax.org')
+  #   change_password_link_2 = get_path_from_absolute_link(current_email, 'a')
+  #   clear_emails
+  #
+  #   expect(change_password_link_1).to eq(change_password_link_2)
+  #
+  #   Timecop.freeze(Time.now + IdentitiesSendPasswordEmail::LOGIN_TOKEN_EXPIRES_AFTER + 1.hour) do
+  #     visit newflow_login_path
+  #     newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+  #     click_on(I18n.t(:"login_signup_form.forgot_password"))
+  #     expect(page.current_path).to eq(forgot_password_form_path)
+  #     # pre-populates the email for them since they already typed it in the login form
+  #     expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
+  #
+  #     click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+  #     expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
+  #
+  #     open_email('user@openstax.org')
+  #     change_password_link_3 = get_path_from_absolute_link(current_email, 'a')
+  #     clear_emails
+  #
+  #     expect(change_password_link_2).not_to eq(change_password_link_3)
+  #   end
+  # end
 
-    click_on(I18n.t(:"login_signup_form.forgot_password"))
-    # pre-populates the email for them since they already typed it in the login form
-    expect(page.current_path).to eq(forgot_password_form_path)
-    expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
-    screenshot!
-    click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
-    screenshot!
-
-    expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
-    screenshot!
-
-    open_email('user@openstax.org')
-    change_password_link_1 = get_path_from_absolute_link(current_email, 'a')
-    clear_emails
-
-    visit newflow_login_path
-    newflow_log_in_user('user@openstax.org', 'WRONGpassword')
-    click_on(I18n.t(:"login_signup_form.forgot_password"))
-    expect(page.current_path).to eq(forgot_password_form_path)
-    # pre-populates the email for them since they already typed it in the login form
-    expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
-
-    click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
-    expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
-
-    open_email('user@openstax.org')
-    change_password_link_2 = get_path_from_absolute_link(current_email, 'a')
-    clear_emails
-
-    expect(change_password_link_1).to eq(change_password_link_2)
-
-    Timecop.freeze(Time.now + IdentitiesSendPasswordEmail::LOGIN_TOKEN_EXPIRES_AFTER + 1.hour) do
-      visit newflow_login_path
-      newflow_log_in_user('user@openstax.org', 'WRONGpassword')
-      click_on(I18n.t(:"login_signup_form.forgot_password"))
-      expect(page.current_path).to eq(forgot_password_form_path)
-      # pre-populates the email for them since they already typed it in the login form
-      expect(find('#forgot_password_form_email')['value']).to  eq('user@openstax.org')
-
-      click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
-      expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
-
-      open_email('user@openstax.org')
-      change_password_link_3 = get_path_from_absolute_link(current_email, 'a')
-      clear_emails
-
-      expect(change_password_link_2).not_to eq(change_password_link_3)
-    end
-  end
-
-  scenario 'failure to send reset email (re-) renders the forgot password form' do
-    visit newflow_login_path
-    newflow_log_in_user('user@openstax.org', 'WRONGpassword')
-    click_on(I18n.t(:"login_signup_form.forgot_password"))
-
-    # Cause an error to occur in the handler that sends the email
-    allow_any_instance_of(User).to receive(:save).and_wrap_original do |original_method, *args, &block|
-      original_method.call(*args, &block)
-      original_method.receiver.errors.add(:base, "Fake spec error")
-    end
-
-    wait_for_ajax
-    click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
-
-    expect(page.current_path).to eq(send_reset_password_email_path)
-    # expect a security log as well
-    expect(SecurityLog.where(reason: :reset_password_failed, user: User.last))
-  end
+  # scenario 'failure to send reset email (re-) renders the forgot password form' do
+  #   visit newflow_login_path
+  #   newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+  #   click_on(I18n.t(:"login_signup_form.forgot_password"))
+  #
+  #   # Cause an error to occur in the handler that sends the email
+  #   allow_any_instance_of(User).to receive(:save).and_wrap_original do |original_method, *args, &block|
+  #     original_method.call(*args, &block)
+  #     original_method.receiver.errors.add(:base, "Fake spec error")
+  #   end
+  #
+  #   wait_for_ajax
+  #   click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+  #
+  #   expect(page.current_path).to eq(send_reset_password_email_path)
+  #   # expect a security log as well
+  #   expect(SecurityLog.where(reason: :reset_password_failed, user: User.last))
+  # end
 end

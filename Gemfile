@@ -45,7 +45,7 @@ gem 'coffee-rails', '5.0.0'
 
 # JavaScript asset compiler
 # 0.4.0 crashes during our build, fixed in 0.5.0 (upgrade when it's out)
-gem 'mini_racer', '< 0.4.0'
+gem 'mini_racer'
 
 # JavaScript asset compressor
 gem 'uglifier', '>= 1.3.0'
@@ -101,7 +101,7 @@ gem 'maruku'
 gem 'jbuilder'
 
 # Background job queueing
-gem 'delayed_job_active_record', '~> 4.1.3'
+gem 'delayed_job_active_record'
 
 # Run delayed_job workers with a control process in the foreground
 gem 'delayed_job_worker_pool'
@@ -143,7 +143,7 @@ gem 'will_paginate'
 gem 'chronic'
 
 # Salesforce
-gem 'openstax_salesforce', '6.1.0'
+gem 'openstax_salesforce', git: 'https://github.com/openstax/openstax_salesforce.git', ref: 'b250271c38a06ce2957d20919f028099f69cf752'
 
 # Allows 'ap' alternative to 'pp', used in a mailer
 gem 'awesome_print'
@@ -187,7 +187,6 @@ gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
 gem 'faye', '0.8.9'
 
 gem 'blazer'
-gem 'prophet-rb'
 
 group :development, :test do
   # Run specs in parallel

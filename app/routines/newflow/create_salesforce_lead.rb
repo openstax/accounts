@@ -1,7 +1,7 @@
 module Newflow
   class CreateSalesforceLead
 
-    lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
+    lev_routine active_job_enqueue_options: { queue: :salesforce }
 
     LEAD_SOURCE =  'Account Creation'
     DEFAULT_REFERRING_APP_NAME = 'Accounts'
@@ -20,6 +20,11 @@ module Newflow
       status.set_job_name(self.class.name)
       status.set_job_args(user: user.to_global_id.to_s)
 
+      SecurityLog.create!(
+        user: user,
+        event_type: :starting_salesforce_lead_creation
+      )
+
       sf_school_id = user.school&.salesforce_id
 
       if user.role == 'student'
@@ -29,7 +34,8 @@ module Newflow
         sf_position = user.role
       end
 
-      if user.using_openstax_how != 'as_future' # as_future means they are interested, not adopting
+      # as_future means they are interested, not adopting, so no adoptionJSON for them
+      if user.using_openstax_how != 'as_future'
         adoption_json = build_book_adoption_json_for_salesforce(user)
       end
 
@@ -77,11 +83,17 @@ module Newflow
         end
       end
 
+      SecurityLog.create!(
+        user: user,
+        event_type: :attempting_to_create_user_lead,
+        event_data: { lead_data: lead }
+      )
+
       outputs.lead = lead
       outputs.user = user
 
       if lead.save
-        store_salesforce_lead_id(user, lead.id) && log_success(lead, user)
+        store_salesforce_lead_id(user, lead.id)
         transfer_errors_from(user, {type: :verbatim}, :fail_if_errors)
       else
         handle_lead_errors(lead, user)
@@ -90,7 +102,7 @@ module Newflow
 
     def store_salesforce_lead_id(user, lead_id)
       fatal_error(code: :lead_id_is_blank, message: :lead_id_is_blank.to_s.titleize) if lead_id.blank?
-      return true if user.salesforce_lead_id.present?
+      fatal_error(code: :lead_id_is_already_set, message: :lead_id_is_already_set.to_s.titleize) if user.salesforce_lead_id.present?
 
       user.salesforce_lead_id = lead_id
 
@@ -135,16 +147,6 @@ module Newflow
 
       adoption_json['Books'] = books_json
       adoption_json.to_json
-    end
-
-    def log_success(lead, user)
-      Rails.logger.info("#{self.class.name}: pushed #{lead.id} for user #{user.id}")
-
-      SecurityLog.create!(
-        user: user,
-        event_type: :created_salesforce_lead,
-        event_data: { lead_id: lead.id }
-      )
     end
 
     def handle_lead_errors(lead, user)

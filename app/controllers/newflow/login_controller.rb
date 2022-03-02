@@ -17,7 +17,6 @@ module Newflow
     def login
       handle_with(
         LogInUser,
-        user_from_signed_params: session[:user_from_signed_params],
         success: lambda {
           clear_signup_state
           user = @handler_result.outputs.user
@@ -74,11 +73,11 @@ module Newflow
     end
 
     def should_redirect_to_student_signup?
-      params[:go]&.strip&.downcase == GO_TO_STUDENT_SIGNUP && Settings::FeatureFlags.student_feature_flag
+      params[:go]&.strip&.downcase == GO_TO_STUDENT_SIGNUP
     end
 
     def should_redirect_to_signup_welcome?
-      params[:go]&.strip&.downcase == GO_TO_SIGNUP && (Settings::FeatureFlags.any_newflow_feature_flags?)
+      params[:go]&.strip&.downcase == GO_TO_SIGNUP
     end
 
     # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.

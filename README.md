@@ -2,8 +2,10 @@
 
 [![Tests](https://github.com/openstax/accounts/workflows/Tests/badge.svg)](https://github.com/openstax/accounts/actions?query=workflow:Tests)
 [![Migrations](https://github.com/openstax/accounts/workflows/Migrations/badge.svg)](https://github.com/openstax/accounts/actions?query=workflow:Migrations)
-[![Code Climate](https://codeclimate.com/github/openstax/accounts.png)](https://codeclimate.com/github/openstax/accounts)
-[![Coverage Status](https://img.shields.io/codecov/c/github/openstax/accounts.svg)](https://codecov.io/gh/openstax/accounts)
+[![codecov](https://codecov.io/gh/openstax/accounts/branch/main/graph/badge.svg?token=AL4prAnF2K)](https://codecov.io/gh/openstax/accounts)
+
+![](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiUmNNNVBKRVpIOXBHOFVyNldNTnNrc0hQaTdrSUZGSGtOcnpLV1ZwL2FnMmVwY3l3RUp4OXpFOTNycEV0a2p4N29yampiZnVjN1MyYU5SM3VBMU8vWm9nPSIsIml2UGFyYW1ldGVyU3BlYyI6IldkemJaMFQxUW51Qnl2VGEiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main)
+![](https://img.shields.io/github/v/tag/openstax/accounts?label=latest%20tag)
 
 OpenStax Accounts is a centralized User Account services provider for various OpenStax products, including:
 
@@ -83,10 +85,10 @@ Just like with any Rails app, you need to create, migrate, and then seed the dat
 $ rake db:create db:setup
 ```
 
-Before starting the server, you'll need to create a  `secrets.yml` file based off of the example:
+Before starting the server, you'll need to create a  `.env` file based off of the example:
 
 ```sh
-$ cp config/secrets.yml.example config/secrets.yml
+$ cp .env.example .env
 ```
 
 Now you can run:
