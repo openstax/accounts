@@ -38,6 +38,9 @@ cucumber_rerun.txt
 # Ignore byebug history files
 .byebug_history
 
+# Ignore webdrivers lock file
+.webdrivers_update
+
 # Ignore Coverage reports
 coverage/*
 
