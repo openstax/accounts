@@ -1,5 +1,3 @@
-require 'net/http'
-
 module SetGdprData
 
   class GdprSessionData
@@ -38,16 +36,15 @@ module SetGdprData
     end
   end
 
-  def self.call(user:, session:, ip:)
+  def self.call(user:, headers:, session:, ip:)
     gdpr_data = GdprSessionData.new(session)
 
     if ip == gdpr_data.ip
       # No need to lookup the location, it is already available in the session
       status = gdpr_data.status
     else
-      country_code = country_code(ip: ip)
       status =
-        case country_code
+        case country_code(headers: headers)
         when nil
           :unknown
         when *GDPR_COUNTRY_CODES
@@ -62,32 +59,9 @@ module SetGdprData
     user.is_not_gdpr_location = :outside_gdpr == status
   end
 
-  def self.country_code(ip:)
-    uri = URI("https://pro.ip-api.com/json/#{ip}?key=#{Rails.application.secrets.ip_api_key}")
-
-    begin
-      Net::HTTP.start(uri.host, uri.port, use_ssl: true, read_timeout: LOOKUP_TIMEOUT) do |http|
-        response = Net::HTTP.get_response uri
-        body = JSON.parse(response.body)
-
-        if body["status"] == "success"
-          return body["countryCode"]
-        else
-          Sentry.capture_message("Failed IP address location lookup", extra: body)
-          return nil
-        end
-      end
-    rescue Net::ReadTimeout => ee
-      Sentry.capture_message("IP address location lookup timed out")
-      return nil
-    rescue => ee
-      # We don't want explosions here to trickle out and impact callers
-      Sentry.capture_exception(ee)
-      return nil
-    end
+  def self.country_code(headers:)
+    headers['CloudFront-Viewer-Country']
   end
-
-  LOOKUP_TIMEOUT = 2
 
   GDPR_COUNTRY_CODES = [
     'AT', # Austria
