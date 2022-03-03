@@ -14,16 +14,6 @@ GIT
       sass-rails
 
 GIT
-  remote: https://github.com/openstax/openstax_salesforce.git
-  revision: b250271c38a06ce2957d20919f028099f69cf752
-  ref: b250271c38a06ce2957d20919f028099f69cf752
-  specs:
-    openstax_salesforce (6.3.0)
-      openstax_active_force
-      rails (>= 5.0, < 7.0)
-      restforce
-
-GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: 8298c40ec38f132fc23ea946b2b20e855fe73a49
   ref: 8298c40ec38f132fc23ea946b2b20e855fe73a49
@@ -38,6 +28,14 @@ GIT
   ref: c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840
   specs:
     pattern-library (1.1.18)
+
+PATH
+  remote: /Users/michael/Development/openstax_salesforce
+  specs:
+    openstax_salesforce (7.4.0)
+      openstax_active_force
+      rails (>= 5.0, < 7.0)
+      restforce
 
 GEM
   remote: https://rubygems.org/
