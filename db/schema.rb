@@ -409,8 +409,8 @@ ActiveRecord::Schema.define(version: 2022_02_01_174350) do
     t.string "first_name"
     t.string "last_name"
     t.string "organization_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "user_external_uuids", id: :serial, force: :cascade do |t|
@@ -429,7 +429,7 @@ ActiveRecord::Schema.define(version: 2022_02_01_174350) do
     t.string "first_name"
     t.string "last_name"
     t.string "title"
-    t.uuid "uuid", default: -> { "public.gen_random_uuid()" }, null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "suffix"
     t.string "state", default: "needs_profile", null: false
     t.string "salesforce_contact_id"
