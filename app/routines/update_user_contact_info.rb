@@ -46,10 +46,13 @@ class UpdateUserContactInfo
 
       user.salesforce_contact_id = sf_contact.id
 
-      if user.salesforce_contact_id != sf_contact.id || user.salesforce_contact_id.blank?
+      if user.salesforce_contact_id.blank?
         user.salesforce_contact_id = sf_contact.id
-      else
+      elsif user.salesforce_contact_id != sf_contact.id
+        user.salesforce_contact_id = sf_contact.id
         warn("Updating a contact ID (#{sf_contact.id}) on an account (#{user.id}) which is different than what was previously linked.")
+      else
+        warn("Unable to update contact ID (#{sf_contact.id}) on an account (#{user.id}). Check user account security log for details.")
       end
 
       old_fv_status = user.faculty_status
