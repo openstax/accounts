@@ -32,7 +32,6 @@ RSpec.describe Admin::ImportUsers, type: :routine do
     expect(user_1.login_token_expires_at).to be_nil
     expect(user_1.role).to eq 'unknown_role'
     expect(user_1.signed_external_data).to be_nil
-    expect(user_1.support_identifier).to eq 'cs_5d1edbb0'
     expect(user_1.is_test).to be_nil
     expect(user_1.school_type).to eq 'unknown_school_type'
     expect(user_1.identity.password_digest).to(
@@ -78,7 +77,6 @@ RSpec.describe Admin::ImportUsers, type: :routine do
     expect(user_2.login_token_expires_at).to be_nil
     expect(user_2.role).to eq 'unknown_role'
     expect(user_2.signed_external_data).to be_nil
-    expect(user_2.support_identifier).to eq 'cs_6cf1cf5e'
     expect(user_2.is_test).to be_nil
     expect(user_2.school_type).to eq 'unknown_school_type'
     expect(user_2.identity.password_digest).to(
@@ -111,7 +109,6 @@ RSpec.describe Admin::ImportUsers, type: :routine do
     expect(user_3.login_token_expires_at).to be_nil
     expect(user_3.role).to eq 'unknown_role'
     expect(user_3.signed_external_data).to be_nil
-    expect(user_3.support_identifier).to eq 'cs_fa68f2a5'
     expect(user_3.is_test).to be_nil
     expect(user_3.school_type).to eq 'unknown_school_type'
     expect(user_3.identity).to be_nil
