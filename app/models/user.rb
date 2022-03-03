@@ -12,11 +12,15 @@ class User < ApplicationRecord
   ].freeze
 
   VALID_ROLES = [
-    UNKNOWN_ROLE = :unknown_role,
-    STUDENT_ROLE = :student,
-    INSTRUCTOR_ROLE = :instructor,
+    UNKNOWN_ROLE       = :unknown_role,
+    STUDENT_ROLE       = :student,
+    INSTRUCTOR_ROLE    = :instructor,
     ADMINISTRATOR_ROLE = :administrator,
-    OTHER_ROLE = :other
+    LIBRARIAN_ROLE     = :librarian,
+    DESIGNER_ROLE      = :designer,
+    OTHER_ROLE         = :other,
+    ADJUNCT_ROLE       = :adjunct,
+    HOMESCHOOL_ROLE    = :homeschool
   ].freeze
 
   VALID_FACULTY_STATUSES = [
