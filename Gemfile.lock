@@ -29,14 +29,6 @@ GIT
   specs:
     pattern-library (1.1.18)
 
-PATH
-  remote: /Users/michael/Development/openstax_salesforce
-  specs:
-    openstax_salesforce (7.4.0)
-      openstax_active_force
-      rails (>= 5.0, < 7.0)
-      restforce
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -66,10 +58,10 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.0.3)
-    active_attr (0.15.3)
-      actionpack (>= 3.0.2, < 7.0)
-      activemodel (>= 3.0.2, < 7.0)
-      activesupport (>= 3.0.2, < 7.0)
+    active_attr (0.15.4)
+      actionpack (>= 3.0.2, < 7.1)
+      activemodel (>= 3.0.2, < 7.1)
+      activesupport (>= 3.0.2, < 7.1)
     activejob (5.2.4.4)
       activesupport (= 5.2.4.4)
       globalid (>= 0.3.6)
@@ -316,7 +308,7 @@ GEM
     formatador (0.2.5)
     get_process_mem (0.2.7)
       ffi (~> 1.0)
-    globalid (0.5.2)
+    globalid (1.0.0)
       activesupport (>= 5.0)
     guard (2.14.0)
       formatador (>= 0.2.4)
@@ -338,7 +330,7 @@ GEM
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
     hashdiff (1.0.1)
-    hashie (4.1.0)
+    hashie (5.0.0)
     highline (2.0.2)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
@@ -370,7 +362,7 @@ GEM
       activesupport (>= 4.2)
       aes_key_wrap
       bindata
-    jwt (2.2.3)
+    jwt (2.3.0)
     keyword_search (1.5.0)
     knockoutjs-rails (3.5.0)
       railties (>= 3.1, < 6)
@@ -397,7 +389,7 @@ GEM
       activesupport (>= 4)
       railties (>= 4)
       request_store (~> 1.0)
-    loofah (2.12.0)
+    loofah (2.14.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lumberjack (1.0.10)
@@ -484,6 +476,10 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.2.0)
       rails (>= 3.1, < 7.0)
+    openstax_salesforce (7.4.1)
+      openstax_active_force
+      rails (>= 5.0, < 7.0)
+      restforce
     openstax_utilities (5.0.0)
       aws-sdk-autoscaling
       faraday
@@ -701,7 +697,7 @@ GEM
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
-    sprockets-rails (3.4.0)
+    sprockets-rails (3.4.2)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
@@ -710,7 +706,7 @@ GEM
     test_xml (0.1.8)
       diffy (~> 3.0)
       nokogiri (>= 1.3.2)
-    thor (1.1.0)
+    thor (1.2.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
     timecop (0.8.1)
@@ -825,7 +821,7 @@ DEPENDENCIES
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce!
+  openstax_salesforce
   openstax_utilities
   p3p
   parallel_tests
