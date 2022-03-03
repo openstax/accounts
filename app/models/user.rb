@@ -73,7 +73,7 @@ class User < ApplicationRecord
   before_validation(:strip_fields)
   before_validation(:remove_special_chars)
 
-  before_validation(:generate_uuid, on: :create)
+  before_validation(:generate_uuid, :generate_support_identifier, on: :create)
 
   validate(:ensure_names_continue_to_be_present)
   validate(
