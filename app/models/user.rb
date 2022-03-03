@@ -14,7 +14,9 @@ class User < ApplicationRecord
   VALID_ROLES = [
     UNKNOWN_ROLE = :unknown_role,
     STUDENT_ROLE = :student,
-    INSTRUCTOR_ROLE = :instructor
+    INSTRUCTOR_ROLE = :instructor,
+    ADMINISTRATOR_ROLE = :administrator,
+    OTHER_ROLE = :other
   ].freeze
 
   VALID_FACULTY_STATUSES = [
