@@ -115,7 +115,7 @@ class User < ApplicationRecord
 
   validates(:login_token, uniqueness: { allow_nil: true })
 
-  validates(:uuid, presence: true, uniqueness: true)
+  validates(:uuid, :support_identifier, presence: true, uniqueness: true)
 
   before_save(:add_unread_update)
 
@@ -146,7 +146,7 @@ class User < ApplicationRecord
 
   delegate_to_routine :destroy
 
-  attr_readonly :uuid
+  attr_readonly :uuid, :support_identifier
 
   attribute :is_not_gdpr_location, :boolean, default: nil
 
@@ -414,6 +414,10 @@ class User < ApplicationRecord
 
   def generate_uuid
     self.uuid ||= SecureRandom.uuid
+  end
+
+  def generate_support_identifier(length: 4)
+    self.support_identifier ||= "cs_#{SecureRandom.hex(length)}"
   end
 
   protected
