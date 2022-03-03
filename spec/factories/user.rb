@@ -4,7 +4,7 @@ FactoryBot.define do
     state { User::ACTIVATED } # otherwise the default from DB will be to 'temp'
     first_name { Faker::Name.first_name }
     last_name  { Faker::Name.last_name  }
-    uuid {Faker::Alphanumeric.alphanumeric(number: 10, min_alpha: 3, min_numeric: 3)}
+    uuid { Faker::Internet.uuid }
     role { User::STUDENT_ROLE }
     school { FactoryBot.build(:school) }
 

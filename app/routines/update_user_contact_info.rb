@@ -126,7 +126,7 @@ class UpdateUserContactInfo
   end
 
   def salesforce_contacts
-    contact_days = Settings::Db.store.number_of_days_contacts_modified ||= 1
+    contact_days = Settings::Db.store.number_of_days_contacts_modified
     c_date = contact_days.to_i.day.ago.strftime("%Y-%m-%d")
     contacts ||= OpenStax::Salesforce::Remote::Contact.select(
                      :id,
