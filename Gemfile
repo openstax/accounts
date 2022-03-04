@@ -35,10 +35,7 @@ gem 'lev', '~> 10.1.0'
 gem 'bootstrap-sass', '~> 3.4.1'
 
 # SCSS stylesheets
-gem 'sass-rails', '~> 5.0'
-
-# Compass stylesheets
-gem 'compass-rails', '~> 3.1.0'
+gem 'sassc-rails', '~> 2.1'
 
 # CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '5.0.0'
@@ -55,7 +52,7 @@ gem 'error_page_assets'
 gem 'render_anywhere', require: false
 
 # Password hashing
-gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1'
 
 # OAuth provider
 gem 'doorkeeper', '~> 5.1.0'
