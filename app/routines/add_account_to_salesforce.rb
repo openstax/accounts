@@ -14,7 +14,11 @@ class AddAccountToSalesforce
       sf_ox_account.signup_date = user.created_at.strftime("%Y-%m-%dT%H:%M:%S%z")
       sf_ox_account.account_environment = Rails.application.secrets.environment_name
 
-      Sentry.capture_message(sf_ox_account.errors) unless sf_ox_account.save!
+      if sf_ox_account.save!
+        user.salesforce_ox_account_id = sf_ox_account.id
+      else
+        Sentry.capture_message(sf_ox_account.errors) unless sf_ox_account.save!
+      end
   end
 
   def log(message, level = :info)

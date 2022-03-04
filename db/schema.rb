@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_03_200215) do
+ActiveRecord::Schema.define(version: 2022_03_04_145253) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -471,6 +471,7 @@ ActiveRecord::Schema.define(version: 2022_03_03_200215) do
     t.boolean "faculty_verification_email_sent"
     t.boolean "needs_sync"
     t.boolean "sheer_id_webhook_received"
+    t.string "salesforce_ox_account_id"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
@@ -478,6 +479,7 @@ ActiveRecord::Schema.define(version: 2022_03_03_200215) do
     t.index ["login_token"], name: "index_users_on_login_token", unique: true
     t.index ["role"], name: "index_users_on_role"
     t.index ["salesforce_contact_id"], name: "index_users_on_salesforce_contact_id"
+    t.index ["salesforce_ox_account_id"], name: "index_users_on_salesforce_ox_account_id"
     t.index ["school_id"], name: "index_users_on_school_id"
     t.index ["school_type"], name: "index_users_on_school_type"
     t.index ["source_application_id"], name: "index_users_on_source_application_id"
