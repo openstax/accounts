@@ -72,29 +72,18 @@
 
   function beforeSubmit(data) {
     data.hasBeenSubmitted(true);
-    console.info('Data and event:', {data, event});
-    console.info('School invalid?', data.schoolNameNoticeVisible());
-    console.info('Role invalid?', data.roleNoticeVisible());
     if (data.schoolNameNoticeVisible() || data.roleNoticeVisible()) {
       return false;
-    }
-    if (data.showChosenAndUsingSections()) {
-      console.info('Chosen invalid?', data.chosenNoticeVisible());
-      console.info('Using invalid?', data.usingNoticeVisible());
-      console.info('min/max books invalid?', data.minBooksNoticeVisible());
-      console.info('Selected books', Reflect.ownKeys(data.studentCounts));
-      console.info('Invalid student counts?', Reflect.ownKeys(data.studentCounts).map(
-        (key) => data.studentCounts[key].invalid()
-      ));
     }
     if (data.showChosenAndUsingSections() && (
       data.chosenNoticeVisible() || data.usingNoticeVisible() ||
       data.minBooksNoticeVisible() ||
-      Reflect.ownKeys(data.studentCounts).some((key) => data.studentCounts[key].invalid())
+      Reflect.ownKeys(data.studentCounts).some(
+        (key) => data.studentCounts[key] === 'object' && data.studentCounts[key].invalid()
+      )
     )) {
       return false;
     }
-    console.info('made it to the bottom');
     // return true to allow default action
     return true;
   }
@@ -115,7 +104,7 @@
     )
     const showChosenAndUsingSections = ko.computed(
       function () {
-        return ['instructor', 'administrator'].includes(role()) && schoolName();
+        return ['instructor', 'administrator'].includes(role());
       }
     );
     const howChosen = ko.observable();
