@@ -68,7 +68,7 @@ class Email
     @$el.hasClass('verified') and not @$el.siblings('.email-entry.verified').length
 
   confirmDelete: (ev) ->
-    new OX.ConfirmationPopover(
+    OX.showConfirmationPopover(
       title: ''
       message: OX.I18n.email.confirm_delete
       target: ev.target

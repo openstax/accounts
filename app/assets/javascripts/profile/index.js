@@ -1,8 +1,8 @@
 //= require bootstrap-editable
 //= require ../vendor/underscore
 //= require ./namespace
-//= require ../confirmation-popover
-//= require ../alert
+//= require ./confirmation-popover
+//= require ./alert
 //= require ./name
 //= require ./email
 //= require ./authentication
@@ -10,8 +10,7 @@
 
 
 $(document).ready(function(){
-  $.each(['Name','Email', 'Authentication'], function(i, obj){
-    if (OX.Profile[obj].initialize){ OX.Profile[obj].initialize(); }
-  });
+  OX.Profile.Email.initialize();
+  OX.Profile.Authentication.initialize();
   $('[data-toggle="tooltip"]').tooltip()
 });
