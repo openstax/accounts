@@ -85,8 +85,7 @@ module Newflow
 
       SecurityLog.create!(
         user: user,
-        event_type: :attempting_to_create_user_lead,
-        event_data: { lead_data: lead }
+        event_type: :attempting_to_create_user_lead
       )
 
       outputs.lead = lead
@@ -105,6 +104,7 @@ module Newflow
       fatal_error(code: :lead_id_is_already_set, message: :lead_id_is_already_set.to_s.titleize) if user.salesforce_lead_id.present?
 
       user.salesforce_lead_id = lead_id
+      AddAccountToSalesforce.perform_later(user.id)
 
       if user.save
         SecurityLog.create!(

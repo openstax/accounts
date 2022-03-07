@@ -48,9 +48,18 @@ class UpdateUserContactInfo
 
       if user.salesforce_contact_id.blank?
         user.salesforce_contact_id = sf_contact.id
+        SecurityLog.create!(
+          user:       user,
+          event_type: :user_contact_id_updated_from_salesforce,
+          event_data: { contact_id: sf_contact.id }
+        )
       elsif user.salesforce_contact_id != sf_contact.id
         user.salesforce_contact_id = sf_contact.id
-        warn("Updating a contact ID (#{sf_contact.id}) on an account (#{user.id}) which is different than what was previously linked.")
+        SecurityLog.create!(
+          user:       user,
+          event_type: :user_contact_id_updated_from_salesforce,
+          event_data: { contact_id: sf_contact.id }
+        )
       else
         warn("Unable to update contact ID (#{sf_contact.id}) on an account (#{user.id}). Check user account security log for details.")
       end
@@ -118,7 +127,11 @@ class UpdateUserContactInfo
         )
       end
 
-      user.save! && users_updated += 1 if user.changed?
+      if user.changed?
+        user.save!
+        users_updated += 1
+        AddAccountToSalesforceJob.perform_later(user.id)
+      end
     end
     log("Completed updating #{users_updated} users.")
     log("#{users_fv_status_changed} users had their faculty status updated.")
