@@ -1,9 +1,9 @@
-##= require_self
-##= require ./login
-
-window.OX ||= {}
-window.OX.Signin ||= {}
-
 $(document).ready( ->
-  klass.initialize() for name, klass of OX.Signin
+  card = $('.ox-card.login')
+
+  onHelpClick = (ev) =>
+    ev.preventDefault()
+    card.find('.login-help').slideToggle('fast')
+
+  card.find('a.trouble').click(onHelpClick) if card.length
 )
