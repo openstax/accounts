@@ -3,9 +3,6 @@ OX.Alert = {
     # Return a function that will display the alert inside the given element
     (options) -> OX.alert.display(_.extend(options, parentEl: element))
 
-  hideAll: ->
-    $('.ox-alert').each -> $(this).alert('close')
-
   display: (options) ->
     parent = $(options.parentEl or '#application-body')
     alert = parent.find('.alert')

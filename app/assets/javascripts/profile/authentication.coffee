@@ -11,7 +11,7 @@ class AuthenticationOption
     this.$el.find('.add--newflow').click(@addNewflow)
 
   confirmDelete: (ev) ->
-    new OX.ConfirmationPopover(
+    OX.showConfirmationPopover(
       title: ''
       message: OX.I18n.authentication.confirm_delete
       target: ev.target
@@ -20,7 +20,7 @@ class AuthenticationOption
     )
 
   confirmDeleteNewflow: (ev) ->
-    new OX.ConfirmationPopover(
+    OX.showConfirmationPopover(
       title: ''
       message: OX.I18n.authentication.confirm_delete
       target: ev.target
