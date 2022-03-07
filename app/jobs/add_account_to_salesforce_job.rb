@@ -16,5 +16,6 @@ class AddAccountToSalesforceJob < ApplicationJob
 
     sf_ox_account.save
     user.salesforce_ox_account_id = sf_ox_account.id
+    user.save!
   end
 end
