@@ -104,7 +104,7 @@ module Newflow
       fatal_error(code: :lead_id_is_already_set, message: :lead_id_is_already_set.to_s.titleize) if user.salesforce_lead_id.present?
 
       user.salesforce_lead_id = lead_id
-      AddAccountToSalesforce.perform_later(user.id)
+      AddAccountToSalesforceJob.perform_later(user.id)
 
       if user.save
         SecurityLog.create!(
