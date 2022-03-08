@@ -5,54 +5,12 @@
 
 <% content_for :head do %>
   <%= javascript_include_tag  "profile" %>
+  <%= stylesheet_link_tag "profile-nf" %>
 <% end %>
 
 <div id="temporary-logo-within-my-account">
-  <%= render(partial: 'layouts/main_menu') %>
+  <%= render 'layouts/main_menu' %>
 </div>
-
-<style>
-  body {
-    background: none;
-  }
-
-  #application-header {
-    display: none;
-  }
-
-  a, .editable-click, #enable-other-sign-in, a.sign-out, #add-an-email, .resend-confirmation input[type=submit] {
-    color: #027eb5 !important;
-  }
-
-  .ox-card {
-    background-color: #fff;
-    border: 0.1rem solid #d5d5d5;
-  }
-
-  #profile .ox-card .category {
-    color: var(--greyish-brown);
-  }
-
-  #application-footer--copyright a {
-    font-size: 10px;
-    color: #000 !important;
-  }
-
-  #footer-rice-logo-image {
-    max-height: 3.7rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .ox-card {
-    height: 90rem;
-  }
-
-  .btn-primary {
-    background-color: #f36b32;
-    border: 0;
-  }
-
-</style>
 
 <%= ox_card do %>
   <div class="profile-title">
@@ -152,48 +110,19 @@
 
   </div>
 
-  <div class="row other-sign-in">
-    <div class="col-sm-2 category">
-      <%= I18n.t(:"student_profile.other_sign_in_options_html").html_safe %>
-    </div>
-    <div class="col-sm-10 info providers">
-      <% other_available_providers.each do |provider| %>
-        <%=
-          newflow_way_to_login(
-            provider: provider,
-            has_authentication: false,
-            current_providers: current_providers
-          )
-        %>
-      <% end %>
-    </div>
-  </div>
+  <%= render partial: 'legacy/users/other-sign-in', locals: {
+    other_html: I18n.t(:"student_profile.other_sign_in_options_html"),
+    other_providers_block:
+      other_available_providers.map{ |provider|
+        newflow_way_to_login(
+          provider: provider,
+          has_authentication: false,
+          current_providers: current_providers
+        )
+      }
+  } %>
 
 <% end %>
 
-<%= render partial: 'layouts/application_footer' %>
-
-<%= content_for :javascript do %>
-<script type="text/javascript">
-
-$.fn.editable.defaults.mode = 'inline';
-$.fn.editable.defaults.send = "always";
-$.fn.editable.defaults.ajaxOptions = {type: "PUT"};
-$.fn.editable.defaults.url = "<%= profile_path %>";
-
-$('#username').editable({
-  success: function(response, newValue) {
-    $('#session-info .username').text(newValue);
-  }
-});
-
-OX.Profile.Name.editable($('#name'), {
-    title: "<%= current_user.title %>",
-    first_name: "<%= current_user.first_name %>",
-    last_name: "<%= current_user.last_name %>",
-    suffix: "<%= current_user.suffix %>"
-});
-
-
-</script>
-<% end # javscript content block %>
+<%= render 'layouts/application_footer' %>
+<%= render 'legacy/users/edit-js' %>
