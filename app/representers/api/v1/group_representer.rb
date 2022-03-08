@@ -2,7 +2,7 @@ module Api::V1
   class GroupRepresenter < Roar::Decorator
     include Roar::JSON
 
-    property :id, 
+    property :id,
              type: Integer,
              readable: true,
              writeable: false,
