@@ -20,10 +20,10 @@ module Dev
     end
 
     def handle
-      generate_params.count.times do 
+      generate_params.count.times do
         run(Dev::CreateUser, {ensure_no_errors: true})
       end
     end
 
-  end 
+  end
 end

@@ -330,7 +330,7 @@ module Oauth
             member_ids: user2.id.to_s + " uteq"
           }
         )
-        
+
         id = assigns(:application).id
         expect(id).not_to be_nil
         expect(response.body).to include "Member ids must be a space separated list of integers"
@@ -349,7 +349,7 @@ module Oauth
             member_ids: user2.id.to_s + "12345"
           }
         )
-        
+
         id = assigns(:application).id
         expect(id).not_to be_nil
         expect(response.body).to include "12345 is not a valid user id"

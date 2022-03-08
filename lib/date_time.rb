@@ -6,6 +6,6 @@ class DateTime
     if month < 7
       year = year - 1
     end
-    DateTime.parse(year.to_s + '-07-01')    
+    DateTime.parse(year.to_s + '-07-01')
   end
 end

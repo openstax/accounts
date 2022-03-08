@@ -2,7 +2,7 @@ module Api::V1
   class MessageRepresenter < Roar::Decorator
     include Roar::JSON
 
-    property :id, 
+    property :id,
              type: Integer,
              readable: true,
              writeable: false,
