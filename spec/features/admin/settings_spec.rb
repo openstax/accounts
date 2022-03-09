@@ -5,8 +5,7 @@ feature 'Admin settings page', js: true do
     before(:each) do
       create_admin_user
       visit '/'
-      complete_login_username_or_email_screen('admin')
-      complete_login_password_screen('password')
+      log_in('admin', 'password')
     end
 
     it 'is well formed' do
