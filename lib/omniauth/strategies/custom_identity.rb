@@ -140,14 +140,8 @@ module OmniAuth
             @identity = @handler_result.outputs[:identity]
             env['PATH_INFO'] = callback_path
             callback_phase
-          else
-            show_signup_password_form
           end
         end
-      end
-
-      def show_signup_password_form
-        Legacy::SignupController.action(:password).call(env)
       end
 
       def signup_path

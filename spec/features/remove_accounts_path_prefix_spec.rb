@@ -20,11 +20,6 @@ describe "Remove accounts path prefix" do
       expect_any_instance_of(StaticPagesController).to receive(:home)
       request.get("/accounts")
     end
-
-    it "should be start to sign up" do
-      expect_any_instance_of(Legacy::SignupController).to receive(:start)
-      request.get("/accounts/signup")
-    end
   end
 
   context "redirects work" do
