@@ -195,7 +195,7 @@ module Newflow
       end
     end
 
-    describe 'GET #educator_profile_form' do
+    describe 'GET #instructor_profile_form' do
       it 'renders'
     end
 

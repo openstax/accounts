@@ -48,7 +48,7 @@ class InstructorSignupFlowDecorator
     when current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
       educator_sheerid_form_path
     when current_step == 'login' && (user.sheerid_verification_id.present? || user.is_sheerid_unviable?)
-      educator_profile_form_path
+      instructor_profile_form_path
     when current_step == 'educator_sheerid_form'
       if user.confirmed_faculty? || user.rejected_faculty? || user.sheerid_verification_id.present?
       end
@@ -58,7 +58,7 @@ class InstructorSignupFlowDecorator
       if !user.student? && user.activated? && user.pending_faculty && user.sheerid_verification_id.blank?
         educator_sheerid_form_path
       elsif user.activated?
-        educator_profile_form_path
+        instructor_profile_form_path
       end
     else
       raise("Next step (#{current_step}) uncaught in #{self.class.name}")

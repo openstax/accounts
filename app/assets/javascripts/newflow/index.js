@@ -5,7 +5,7 @@
 //= require ../vendor/mailcheck
 //= require ../application/ui
 //= require ./instructor_signup_email_validations
-//= require ./educator_complete_dynamic
+//= require ./instructor_complete_dynamic
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils

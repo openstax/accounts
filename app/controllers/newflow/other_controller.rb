@@ -33,7 +33,7 @@ module Newflow
         redirect_to(educator_sheerid_form_path)
       elsif decorated_user.newflow_edu_incomplete_step_4?
         security_log(:educator_resumed_signup_flow, message: 'User needs to complete instructor profile. Redirecting.')
-        redirect_to(educator_profile_form_path)
+        redirect_to(instructor_profile_form_path)
       end
     end
 

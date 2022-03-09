@@ -61,11 +61,11 @@ Rails.application.routes.draw do
     post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     # Step 4
-    get 'i/signup/educator/profile_form', action: :educator_profile_form, as: :educator_profile_form
+    get 'i/signup/educator/profile_form', action: :instructor_profile_form, as: :instructor_profile_form
     post 'i/signup/educator/complete_profile', action: :educator_complete_profile, as: :educator_complete_profile
     get 'i/signup/educator/pending_cs_verification', action: :educator_pending_cs_verification, as: :educator_pending_cs_verification
 
-    get 'i/signup/educator/cs_form', action: :educator_profile_form, as: :educator_cs_verification_form
+    get 'i/signup/educator/cs_form', action: :instructor_profile_form, as: :educator_cs_verification_form
     post 'i/signup/educator/cs_verification_request', action: :educator_complete_profile, as: :educator_cs_verification_request
   end
 

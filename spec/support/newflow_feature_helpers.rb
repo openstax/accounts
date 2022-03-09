@@ -209,7 +209,7 @@ def expect_sheerid_iframe
     # expect(page).not_to have_text('Verification Limit Exceeded', exact: false)
     # click_on('Verify my instructor status')
     # click_on('Continue')
-    # expect(page.current_path).to eq(educator_profile_form_path)
+    # expect(page.current_path).to eq(instructor_profile_form_path)
 
     # find('#sid-teacher-school').click
     # <div class="sid-organization-list__item sid-organization-list__item--highlighted" id="downshift-0-item-0" role="option" aria-selected="true" style="position: absolute; top: 0px; left: 0px; width: auto; height: 42px;">Rice University (Houston, TX)</div>
@@ -223,8 +223,8 @@ def simulate_step_3_instant_verification(user, sheerid_verification_id)
 end
 
 def expect_educator_step_4_page
-  visit(educator_profile_form_path)
-  expect(page.current_path).to eq(educator_profile_form_path)
+  visit(instructor_profile_form_path)
+  expect(page.current_path).to eq(instructor_profile_form_path)
 end
 
 def select_educator_role(role)

@@ -17,18 +17,18 @@ module Newflow
     )
     before_action(:newflow_authenticate_user!, only: %i[
         educator_sheerid_form
-        educator_profile_form
+        instructor_profile_form
         educator_complete_profile
         educator_pending_cs_verification
         educator_cs_verification_form
         educator_cs_verification_request
       ]
     )
-    before_action(:store_if_sheerid_is_unviable_for_user, only: :educator_profile_form)
-    before_action(:store_sheerid_verification_for_user, only: :educator_profile_form)
+    before_action(:store_if_sheerid_is_unviable_for_user, only: :instructor_profile_form)
+    before_action(:store_sheerid_verification_for_user, only: :instructor_profile_form)
     before_action(:exit_signup_if_steps_complete, only: %i[
         educator_sheerid_form
-        educator_profile_form
+        instructor_profile_form
         educator_cs_verification_form
       ]
     )
@@ -132,7 +132,7 @@ module Newflow
       )
     end
 
-    def educator_profile_form
+    def instructor_profile_form
       @book_titles = book_data.titles
       security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
     end
@@ -158,7 +158,7 @@ module Newflow
           if @handler_result.outputs.is_on_cs_form
             redirect_to(educator_cs_verification_form_url, alert: "Please check your input and try again. Email address and School Name are required fields.")
           else
-            render :educator_profile_form
+            render :instructor_profile_form
           end
         }
       )
@@ -187,8 +187,8 @@ module Newflow
       when current_user.is_educator_pending_cs_verification && !current_user.pending_faculty?
         redirect_back(fallback_location: profile_newflow_path)
       when action_name == 'educator_sheerid_form' && current_user.step_3_complete?
-        redirect_to(educator_profile_form_path)
-      when action_name == 'educator_profile_form' && current_user.is_profile_complete?
+        redirect_to(instructor_profile_form_path)
+      when action_name == 'instructor_profile_form' && current_user.is_profile_complete?
         redirect_to(profile_newflow_path)
       end
     end

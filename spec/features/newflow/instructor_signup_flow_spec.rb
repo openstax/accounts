@@ -102,7 +102,7 @@ module Newflow
           # Step 4
           expect_educator_step_4_page
           find('#signup_educator_specific_role_other').click
-          fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
+          fill_in(I18n.t(:"instructor_profile_form.other_please_specify"), with: 'President')
           click_on('Continue')
           #expect(page.current_path).to eq(signup_done_path)
           #click_on('Finish')
@@ -150,11 +150,11 @@ module Newflow
 
       context 'step 4' do
         before do
-          visit(educator_profile_form_path)
+          visit(instructor_profile_form_path)
           expect_educator_step_4_page
           select_educator_role('instructor')
           find('#signup_who_chooses_books_instructor').click
-          fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
+          fill_in(I18n.t(:"instructor_profile_form.num_students_taught"), with: 30)
         end
 
         context 'label for books list' do
@@ -164,7 +164,7 @@ module Newflow
             end
 
             it 'shows "Books used"' do
-              expect(page).to have_text(I18n.t(:"educator_profile_form.books_used"))
+              expect(page).to have_text(I18n.t(:"instructor_profile_form.books_used"))
             end
           end
 
@@ -174,7 +174,7 @@ module Newflow
             end
 
             it 'shows "Books of interest"' do
-              expect(page).to have_text(I18n.t(:"educator_profile_form.books_of_interest"))
+              expect(page).to have_text(I18n.t(:"instructor_profile_form.books_of_interest"))
             end
           end
         end
@@ -241,8 +241,8 @@ module Newflow
         # Step 4
         expect_educator_step_4_page
         find('#signup_educator_specific_role_other').click
-        expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
-        fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
+        expect(page).to have_text(I18n.t(:"instructor_profile_form.other_please_specify"))
+        fill_in(I18n.t(:"instructor_profile_form.other_please_specify"), with: 'President')
         click_on('Continue')
         expect(page.current_path).to eq(signup_done_path)
         click_on('Finish')

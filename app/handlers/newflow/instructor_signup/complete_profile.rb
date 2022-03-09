@@ -184,7 +184,7 @@ module Newflow
       end
 
       def param_error(field, error_key)
-        message = I18n.t(:"educator_profile_form.#{error_key}")
+        message = I18n.t(:"instructor_profile_form.#{error_key}")
         nonfatal_error(
           code: field,
           message: message,

@@ -32,7 +32,7 @@ module Newflow
 
           it 'redirects to step 4 — complete profile form' do
             get(:profile_newflow)
-            expect(response).to redirect_to(educator_profile_form_path)
+            expect(response).to redirect_to(instructor_profile_form_path)
           end
         end
       end
