@@ -96,11 +96,13 @@ body, p, ol, ul, td, a {
 }
 
 #upper-corner-console {
+  background-color: ui-color(white);
+  color: white;
+  left: 0;
+  padding: 4px;
   position: absolute;
   top: 0;
-  left: 0;
-  color: white;
-  padding: 4px;
+  z-index: 1;
 
   a {
     text-decoration: underline;

@@ -5,8 +5,7 @@ feature 'Create banners', js: true do
     before(:each) do
       @admin_user = create_admin_user
       visit '/'
-      complete_login_username_or_email_screen('admin')
-      complete_login_password_screen('password')
+      log_in('admin', 'password')
     end
 
     it 'can visit the banners page' do
