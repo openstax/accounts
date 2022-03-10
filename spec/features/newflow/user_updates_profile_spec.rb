@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'User updates profile', js: true do
   before(:each) do
     mock_current_user(create_user('user'))
-    visit '/i/profile'
+    visit '/profile'
   end
 
   describe 'Updating name' do

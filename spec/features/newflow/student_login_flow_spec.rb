@@ -51,7 +51,7 @@ module Newflow
               screenshot!
               newflow_log_in_user('needs_profile_user@openstax.org', 'password')
               screenshot!
-              expect(page.current_path).to match(signup_profile_path)
+              expect(page.current_path).to match('/terms/pose')
             end
           end
         end

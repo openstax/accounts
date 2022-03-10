@@ -72,10 +72,6 @@ en:
               blank: Password can't be blank
             password_confirmation:
               blank: Password confirmation can't be blank
-        sessions_lookup_login/login_paramifier:
-          attributes:
-            username_or_email:
-              blank: Username or email can't be blank
         signup_password/signup_paramifier:
           attributes:
             password:
