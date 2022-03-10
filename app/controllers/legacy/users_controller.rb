@@ -2,16 +2,10 @@ module Legacy
   class UsersController < ApplicationController
     include LegacyHelper
 
-    before_action :redirect_to_newflow_if_enabled, only: [:edit]
-
     fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 
-    before_action :allow_iframe_access, only: [:edit, :update]
-    before_action :prevent_caching, only: [:edit, :update]
-
-    def edit
-      OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
-    end
+    before_action :allow_iframe_access, only: [:update]
+    before_action :prevent_caching, only: [:update]
 
     def update
       OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)

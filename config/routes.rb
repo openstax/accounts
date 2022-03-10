@@ -3,7 +3,17 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
-  match "i/signup/(*path)" => redirect{ |p| "signup/#{p[:path]}"}, via: :all
+  match 'i/signup/(*path)' => redirect{ |p| 'signup/#{p[:path]}'}, via: :all
+  get 'i/profile' => redirect('profile')
+  get 'i/exit_accounts' => redirect('exit_accounts')
+  match 'i/login' => redirect('login'), via: :all
+  get 'i/reauthenticate' => redirect('reauthenticate')
+  get 'i/check_your_email' => redirect('check_your_email')
+  get 'i/done' => redirect('done')
+  match 'i/verify_email_by_code/(*path)' => redirect{ |p| 'verify_email_by_code/#{p[:path]}'}, via: :get
+  get 'i/confirm_your_info' => redirect('confirm_your_info')
+  get 'i/forgot_password_form' => redirect('forgot_password_form')
+  post 'i/sheerid_webhook' => redirect('sheerid_webhook')
 
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
@@ -11,24 +21,24 @@ Rails.application.routes.draw do
 
   scope controller: 'newflow/other' do
     # Profile access
-    get 'i/profile', action: :profile_newflow, as: :profile_newflow
+    get 'profile', action: :profile_newflow, as: :profile_newflow
 
     # Exit accounts back to app they came from
-    get 'i/exit_accounts', action: :exit_accounts, as: :exit_accounts
+    get 'exit_accounts', action: :exit_accounts, as: :exit_accounts
   end
 
   scope controller: 'newflow/login' do
-    get 'i/login', action: :login_form, as: :newflow_login
-    post 'i/login', action: :login
-    get 'i/reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
+    get 'login', action: :login_form, as: :newflow_login
+    post 'login', action: :login
+    get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
     get 'i/signout', action: :logout, as: :newflow_logout
   end
 
   scope controller: 'newflow/signup' do
     get 'signup', action: :welcome, as: :newflow_signup
-    get 'i/done', action: :signup_done, as: :signup_done
-    get 'i/verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
-    get 'i/check_your_email', action: :check_your_email, as: :check_your_email
+    get 'done', action: :signup_done, as: :signup_done
+    get 'verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
+    get 'check_your_email', action: :check_your_email, as: :check_your_email
   end
 
   scope controller: 'newflow/student_signup' do
@@ -60,7 +70,7 @@ Rails.application.routes.draw do
 
     # Step 3
     get 'signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
-    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
+    post 'sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     # Step 4
     get 'signup/educator/profile_form', action: :instructor_profile_form, as: :instructor_profile_form
@@ -73,7 +83,7 @@ Rails.application.routes.draw do
 
   scope controller: 'newflow/password_management' do
     # Password management process (forgot,  change, or create password)
-    get 'i/forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
+    get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
     post 'i/send_reset_password_email',
       action: :send_reset_password_email,
       as: :send_reset_password_email
@@ -92,18 +102,12 @@ Rails.application.routes.draw do
     get 'i/auth/:provider/callback', action: :oauth_callback
     delete 'i/auth/:provider', action: :remove_auth_strategy
     #   When you sign up with a social provider, you must confirm your info first
-    get 'i/confirm_your_info', action: :confirm_your_info
+    get 'confirm_your_info', action: :confirm_your_info
     post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
   end
 
   scope controller: 'legacy/sessions' do
-    get 'login', action: :start, as: :login
-
-    post 'lookup_login'
-
     get 'authenticate'
-
-    get 'reauthenticate'
 
     get 'auth/:provider/callback', action: :create, as: :get_auth_callback
     post 'auth/:provider/callback', action: :create, as: :post_auth_callback
@@ -142,7 +146,6 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'legacy/users' do
-    get 'profile', action: :edit
     put 'profile', action: :update
   end
 
@@ -152,8 +155,7 @@ Rails.application.routes.draw do
     get 'verify_email'
     post 'verify_email'
 
-    get 'profile'
-    post 'profile'
+    get 'profile' => redirect('/profile')
 
     match 'instructor_access_pending', via: [:get, :post]
   end
@@ -290,7 +292,7 @@ Rails.application.routes.draw do
 
     resources :banners, except: :show
 
-    mount Blazer::Engine, at: "blazer", as: 'blazer_admin'
+    mount Blazer::Engine, at: 'blazer', as: 'blazer_admin'
 
     mount RailsSettingsUi::Engine, at: 'settings'
   end

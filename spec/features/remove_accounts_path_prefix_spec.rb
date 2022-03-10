@@ -25,7 +25,7 @@ describe "Remove accounts path prefix" do
   context "redirects work" do
     it "should redirect home page to login page with prefix" do
       response = request.get("/accounts")
-      expect(URI(response.location).path).to eq "/accounts/i/login"
+      expect(URI(response.location).path).to eq "/accounts/login"
     end
   end
 

@@ -124,7 +124,7 @@ feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
     scenario "cannot access user features" do
       visit non_admin_feature_url
 
-      expect(page).to have_current_path(login_path)
+      expect(page).to have_current_path(newflow_login_path)
     end
     scenario "can access visitor pages" do
       visit visitor_page_url

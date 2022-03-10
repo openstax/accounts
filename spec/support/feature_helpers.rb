@@ -450,8 +450,7 @@ def signin_as(username_or_email, password = 'password')
 end
 
 def log_in(username_or_email, password = 'password')
-  visit login_path
-  signin_as username_or_email, password
+  newflow_log_in_user(username_or_email, password)
 end
 
 def log_out

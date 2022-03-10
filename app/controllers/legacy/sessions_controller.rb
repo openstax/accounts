@@ -9,66 +9,24 @@ module Legacy
     include RateLimiting
     include LegacyHelper
 
-    before_action :redirect_to_newflow_if_enabled, only: [:start]
-
     skip_before_action :authenticate_user!,
-                      only: [:start, :lookup_login, :authenticate, :redirect_back,
+                      only: [:authenticate, :redirect_back,
                               :create, :failure, :destroy, :email_usernames]
 
     skip_before_action :check_if_password_expired,
-                      only: [:start, :lookup_login, :authenticate,
+                      only: [:authenticate,
                               :create, :failure, :destroy, :email_usernames]
 
     skip_before_action :complete_signup_profile, only: [:destroy]
 
-    before_action :save_new_params_in_session,
-      only: [:start],
-      unless: -> { Settings::FeatureFlags.any_newflow_feature_flags? }
-
     before_action :store_authorization_url_as_fallback,
-      only: [:start, :create],
+      only: [:create],
       unless: -> { Settings::FeatureFlags.any_newflow_feature_flags? }
-
-    before_action :maybe_skip_to_sign_up, only: [:start]
 
     before_action :allow_iframe_access, only: :reauthenticate
 
-    # If the user arrives to :start already logged in, this means they got linked to
-    # the login page somehow; attempt to redirect to the authorization url stored
-    # earlier
-    before_action :redirect_back, if: -> { signed_in? }, only: :start
-
     fine_print_skip :general_terms_of_use, :privacy_policy,
-                    only: [:start, :lookup_login, :authenticate, :create, :failure, :destroy, :email_usernames]
-
-    # Login form
-    def start
-      @banners = Banner.active
-    end
-
-    def lookup_login
-      # Most rate limiting happens in CustomIdentity; this separate check needs to be here
-      # here because bad username entries don't even make it all the way to CustomIdentity.
-
-      if too_many_log_in_attempts_by_ip?(ip: request.ip)
-        redirect_to root_url, alert: (I18n.t :"controllers.sessions.too_many_lookup_attempts")
-      else
-        handle_with(SessionsLookupLogin,
-                    success: lambda do
-                      set_login_state(username_or_email: @handler_result.outputs.username_or_email,
-                                      matching_user_ids: @handler_result.outputs.user_ids,
-                                      names: @handler_result.outputs.names,
-                                      providers: @handler_result.outputs.providers.to_hash)
-                      redirect_to :authenticate
-                    end,
-                    failure: lambda do
-                      security_log :login_not_found, tried: @handler_result.outputs.username_or_email
-                      set_login_state(username_or_email: @handler_result.outputs.username_or_email,
-                                      matching_user_ids: @handler_result.outputs.user_ids)
-                      render :start
-                    end)
-      end
-    end
+                    only: [:authenticate, :create, :failure, :destroy, :email_usernames]
 
     def reauthenticate
       handle_with(SessionsReauthenticate,

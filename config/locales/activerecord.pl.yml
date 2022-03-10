@@ -74,10 +74,6 @@ pl:
               blank: Wpisz hasło
             password_confirmation:
               blank: Wpisz hasło ponownie
-        sessions_lookup_login/login_paramifier:
-          attributes:
-            username_or_email:
-              blank: Wpisz adres e-mail lub nazwę użytkownika
         signup_password/signup_paramifier:
           attributes:
             password:
