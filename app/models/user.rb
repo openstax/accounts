@@ -12,15 +12,15 @@ class User < ApplicationRecord
   ].freeze
 
   VALID_ROLES = [
-    UNKNOWN_ROLE = :unknown_role,
-    STUDENT_ROLE = :student,
-    INSTRUCTOR_ROLE = :instructor,
+    UNKNOWN_ROLE       = :unknown_role,
+    STUDENT_ROLE       = :student,
+    INSTRUCTOR_ROLE    = :instructor,
     ADMINISTRATOR_ROLE = :administrator,
-    LIBRARIAN_ROLE = :librarian,
-    DESIGNER_ROLE = :designer,
-    OTHER_ROLE = :other,
-    ADJUNCT_ROLE = :adjunct,
-    HOMESCHOOL_ROLE = :homeschool
+    LIBRARIAN_ROLE     = :librarian,
+    DESIGNER_ROLE      = :designer,
+    OTHER_ROLE         = :other,
+    ADJUNCT_ROLE       = :adjunct,
+    HOMESCHOOL_ROLE    = :homeschool
   ].freeze
 
   VALID_FACULTY_STATUSES = [
@@ -79,10 +79,7 @@ class User < ApplicationRecord
   before_validation(:strip_fields)
   before_validation(:remove_special_chars)
 
-  before_validation(
-    :generate_uuid, :generate_support_identifier,
-    on: :create
-  )
+  before_validation(:generate_uuid, on: :create)
 
   validate(:ensure_names_continue_to_be_present)
   validate(
@@ -124,7 +121,7 @@ class User < ApplicationRecord
 
   validates(:login_token, uniqueness: { allow_nil: true })
 
-  validates(:uuid, :support_identifier, presence: true, uniqueness: true)
+  validates(:uuid, presence: true, uniqueness: true)
 
   before_save(:add_unread_update)
 
@@ -155,7 +152,7 @@ class User < ApplicationRecord
 
   delegate_to_routine :destroy
 
-  attr_readonly :uuid, :support_identifier
+  attr_readonly :uuid
 
   attribute :is_not_gdpr_location, :boolean, default: nil
 
@@ -423,10 +420,6 @@ class User < ApplicationRecord
 
   def generate_uuid
     self.uuid ||= SecureRandom.uuid
-  end
-
-  def generate_support_identifier(length: 4)
-    self.support_identifier ||= "cs_#{SecureRandom.hex(length)}"
   end
 
   protected

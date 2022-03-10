@@ -46,11 +46,21 @@ class UpdateUserContactInfo
 
       user.salesforce_contact_id = sf_contact.id
 
-      SecurityLog.create!(
-        user: user,
-        event_type: :user_contact_id_updated_from_salesforce,
-        event_data: { contact_id: sf_contact.id }
-      )
+      if user.salesforce_contact_id.blank?
+        user.salesforce_contact_id = sf_contact.id
+        SecurityLog.create!(
+          user:       user,
+          event_type: :user_contact_id_updated_from_salesforce,
+          event_data: { contact_id: sf_contact.id }
+        )
+      elsif user.salesforce_contact_id != sf_contact.id
+        user.salesforce_contact_id = sf_contact.id
+        SecurityLog.create!(
+          user:       user,
+          event_type: :user_contact_id_updated_from_salesforce,
+          event_data: { contact_id: sf_contact.id }
+        )
+      end
 
       old_fv_status = user.faculty_status
       user.faculty_status = case sf_contact.faculty_verified
@@ -101,13 +111,7 @@ class UpdateUserContactInfo
       user.is_b_r_i_user = sf_contact.b_r_i_marketing
 
       if school.nil? && !sf_school.nil?
-        SecurityLog.create!(
-          user: user,
-          event_type: :attempted_to_add_school_not_cached_yet,
-          event_data: { school_id: sf_school.id }
-        )
         users_without_cached_school += 1
-        log("User #{user.id} has a school that is in SF but not cached yet #{sf_school.id}")
       else
         user.school = school
       end
@@ -121,7 +125,11 @@ class UpdateUserContactInfo
         )
       end
 
-      user.save! && users_updated += 1 if user.changed?
+      if user.changed?
+        user.save!
+        users_updated += 1
+        AddAccountToSalesforceJob.perform_later(user.id)
+      end
     end
     log("Completed updating #{users_updated} users.")
     log("#{users_fv_status_changed} users had their faculty status updated.")
@@ -129,7 +137,7 @@ class UpdateUserContactInfo
   end
 
   def salesforce_contacts
-    contact_days = Settings::Db.store.number_of_days_contacts_modified ||= 1
+    contact_days = Settings::Db.store.number_of_days_contacts_modified
     c_date = contact_days.to_i.day.ago.strftime("%Y-%m-%d")
     contacts ||= OpenStax::Salesforce::Remote::Contact.select(
                      :id,

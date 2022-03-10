@@ -10,8 +10,7 @@ RSpec.describe User, type: :model do
   it { is_expected.to validate_presence_of(:role          ) }
   it { is_expected.to validate_presence_of(:school_type   ) }
 
-  it { is_expected.to validate_uniqueness_of(:uuid              ).case_insensitive }
-  it { is_expected.to validate_uniqueness_of(:support_identifier).case_insensitive }
+  it { is_expected.to validate_uniqueness_of(:uuid).case_insensitive }
 
   context 'when the user is activated' do
     let(:user) { User.new.tap {|u| u.state = 'activated'} }
@@ -133,27 +132,6 @@ RSpec.describe User, type: :model do
       user.uuid = new_uuid
       user.save
       expect(user.reload.uuid).to eq(old_uuid)
-    end
-  end
-
-  context 'support_identifier' do
-    it 'is generated when created' do
-      user = FactoryBot.create :user
-      expect(user.support_identifier).to start_with('cs')
-      expect(user.support_identifier.length).to eq(11)
-    end
-
-    it 'cannot be updated' do
-      user = FactoryBot.create :user
-      old_identifier = user.support_identifier
-      user.update_attributes(first_name: 'New')
-      expect(user.reload.first_name).to eq('New')
-      expect(user.support_identifier).to eq(old_identifier)
-
-      new_identifier = "cs_#{SecureRandom.hex(4)}"
-      user.support_identifier = new_identifier
-      user.save
-      expect(user.reload.support_identifier).to eq(old_identifier)
     end
   end
 

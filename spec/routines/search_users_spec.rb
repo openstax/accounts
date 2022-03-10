@@ -138,13 +138,6 @@ RSpec.describe SearchUsers, type: :routine do
     expect(outcome).to eq [user_3]
   end
 
-  it 'should not match by support_identifier' do
-    outcome = described_class.call(
-      "support_identifier:#{user_3.support_identifier}"
-    ).outputs.items.to_a
-    expect(outcome).to eq []
-  end
-
   context "sorting" do
 
     let!(:bob_brown) do

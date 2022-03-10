@@ -114,10 +114,6 @@
               <i>UUID:</i> <%= user.uuid %>
             </span>
 
-            <span class="support_identifier">
-              <i>Support Identifier:</i> <%= user.support_identifier || '(no support_identifier)' %>
-            </span>
-
             <% if user.self_reported_school.present? %>
               | <span class="school">
                 <i>Self-reported school:</i> <%= user.self_reported_school %>

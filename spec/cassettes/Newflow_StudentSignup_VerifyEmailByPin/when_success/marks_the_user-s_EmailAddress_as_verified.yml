@@ -5,8 +5,9 @@ http_interactions:
     uri: "<salesforce_instance_url>/services/data/v51.0/sobjects/Lead"
     body:
       encoding: UTF-8
-      string: '{"FirstName":"Elsie","LastName":"Larson","Company":"unknown","Country":"United
-        States","Email":"test@openstax.org","LeadSource":"Account Creation","Newsletter__c":true,"Newsletter_Opt_In__c":true,"Accounts_ID__c":1,"Accounts_UUID__c":"aad409c2-bdf6-4693-954f-d0edfe5fde11","Application_Source__c":"Accounts","Role__c":"student","BRI_Marketing__c":false,"Title_1_school__c":false}'
+      string: '{"FirstName":"Edgar","LastName":"Yost","Company":"Kohler, Bernhard
+        and Ortiz","City":"West Byronville","StateCode":"PA","Country":"United States","Email":"test@openstax.org","LeadSource":"Account
+        Creation","Newsletter__c":true,"Newsletter_Opt_In__c":true,"Accounts_ID__c":118,"Accounts_UUID__c":"57cbd350-27f8-4570-b906-b57917ba02f4","Application_Source__c":"Accounts","Role__c":"Student","BRI_Marketing__c":false,"Title_1_school__c":false,"Account_ID__c":"0010v0azUAAN95n","School__c":"0010v0azUAAN95n"}'
     headers:
       User-Agent:
       - Faraday v1.0.1
@@ -20,37 +21,32 @@ http_interactions:
       - "*/*"
   response:
     status:
-      code: 201
-      message: Created
+      code: 400
+      message: Bad Request
     headers:
       Date:
-      - Tue, 21 Sep 2021 19:39:04 GMT
+      - Mon, 07 Mar 2022 20:53:55 GMT
       Set-Cookie:
-      - BrowserId=lFV2lBsTEeyTRx8_0KSSdQ; domain=.salesforce.com; path=/; expires=Wed,
-        21-Sep-2022 19:39:04 GMT; Max-Age=31536000
-      - CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/; expires=Wed,
-        21-Sep-2022 19:39:04 GMT; Max-Age=31536000
-      - LSKey-c$CookieConsentPolicy=0:1; domain=openstax--dev.my.salesforce.com; path=/;
-        expires=Wed, 21-Sep-2022 19:39:04 GMT; Max-Age=31536000
+      - BrowserId=tCbgyZ5YEey3R80pmb8rSw; domain=.salesforce.com; path=/; expires=Tue,
+        07-Mar-2023 20:53:55 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; path=/; expires=Tue, 07-Mar-2023 20:53:55 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 07-Mar-2023 20:53:55
+        GMT; Max-Age=31536000
       Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
+      - max-age=63072000; includeSubDomains
       X-Robots-Tag:
       - none
       Cache-Control:
       - no-cache,must-revalidate,max-age=0,no-store,private
       Sforce-Limit-Info:
-      - api-usage=4115/5000000
-      Location:
-      - "/services/data/v51.0/sobjects/Lead/00Q4C000009lq51UAA"
+      - api-usage=8/5000000
       Content-Type:
       - application/json;charset=UTF-8
-      Vary:
-      - Accept-Encoding
       Transfer-Encoding:
       - chunked
     body:
-      encoding: ASCII-8BIT
-      string: '{"id":"00Q4C000009lq51UAA","success":true,"errors":[]}'
-    http_version: 
-  recorded_at: Tue, 21 Sep 2021 19:39:06 GMT
+      encoding: UTF-8
+      string: '[{"message":"Organization: id value of incorrect type: 0010v0azUAAN95n","errorCode":"MALFORMED_ID","fields":["School__c"]}]'
+    http_version:
+  recorded_at: Mon, 07 Mar 2022 21:03:51 GMT
 recorded_with: VCR 3.0.3

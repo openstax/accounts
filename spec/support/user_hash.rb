@@ -12,7 +12,6 @@ def user_matcher(user, include_private_data: false)
     title: user.title,
     suffix: user.suffix,
     uuid: user.uuid,
-    support_identifier: user.support_identifier,
     is_test: user.is_test?,
     is_administrator: user.is_administrator?,
     salesforce_contact_id: user.salesforce_contact_id,

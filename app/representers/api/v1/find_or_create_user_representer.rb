@@ -12,11 +12,6 @@ module Api::V1
              readable: true,
              writeable: false
 
-    property :support_identifier,
-             type: String,
-             readable: true,
-             writeable: false
-
     property :email,
              type: String,
              readable: false,

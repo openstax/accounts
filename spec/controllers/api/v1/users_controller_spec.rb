@@ -281,7 +281,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(response.code).to eq('201')
       new_user = User.order(:id).last
       expect(response.body_as_hash).to eq(
-        id: new_user.id, uuid: new_user.uuid, support_identifier: new_user.support_identifier
+        id: new_user.id, uuid: new_user.uuid
       )
     end
 
@@ -331,8 +331,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
           id: unclaimed_user.id,
-          uuid: unclaimed_user.uuid,
-          support_identifier: unclaimed_user.support_identifier
+          uuid: unclaimed_user.uuid
         )
       end
       it "does so for claimed users" do
@@ -341,7 +340,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                  body: { email: user_2.contact_infos.first.value }
         expect(response.code).to eq('201')
         expect(response.body_as_hash).to eq(
-          id: user_2.id, uuid: user_2.uuid, support_identifier: user_2.support_identifier
+          id: user_2.id, uuid: user_2.uuid
         )
       end
     end
