@@ -14,7 +14,7 @@ class AddAccountToSalesforceJob < ApplicationJob
     sf_ox_account.signup_date = user.created_at.strftime("%Y-%m-%dT%H:%M:%S%z")
     sf_ox_account.account_environment = Rails.application.secrets.environment_name
 
-    sf_ox_account.save
+    sf_ox_account.save!
     user.salesforce_ox_account_id = sf_ox_account.id
     user.save!
   end
