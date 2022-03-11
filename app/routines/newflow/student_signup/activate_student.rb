@@ -19,7 +19,6 @@ module Newflow
         if user.receive_newsletter?
           #TODO: make a prospect instead?
           CreateSalesforceLead.perform_later(user: user)
-          SecurityLog.create!(user: user, event_type: :created_salesforce_lead)
         end
         SecurityLog.create!(user: user, event_type: :user_became_activated)
       end

@@ -19,7 +19,7 @@ class SheeridVerification < ApplicationRecord
     when VERIFIED
       User.faculty_statuses[:confirmed_faculty]
     when REJECTED
-      User.faculty_statuses[:rejected_faculty]
+      User.faculty_statuses[:rejected_by_sheerid]
     else
       User.faculty_statuses[:pending_faculty]
     end
