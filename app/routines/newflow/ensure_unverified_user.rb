@@ -7,7 +7,7 @@ module Newflow
 
     def exec(user)
       if user.state == 'needs_profile'
-        user.update_attributes(state: 'unverified', is_newflow: true)
+        user.update_attributes(state: :unverified, faculty_status: :incomplete_signup )
         transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
 
         SecurityLog.create(
