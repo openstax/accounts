@@ -8,7 +8,7 @@ class AddAccountToSalesforceJob < ApplicationJob
     )
 
     sf_ox_account.account_uuid = user.uuid
-    sf_ox_account.account_role = user.role.capitalize,
+    sf_ox_account.account_role = user.role.titleize,
     sf_ox_account.salesforce_contact_id = user&.salesforce_contact_id,
     sf_ox_account.salesforce_lead_id = user&.salesforce_lead_id,
     sf_ox_account.signup_date = user.created_at.strftime("%Y-%m-%dT%H:%M:%S%z")
