@@ -140,7 +140,8 @@ module Newflow
         # if we got the webhook back after the user submitted the profile, they didn't get a lead built yet
         # We just make sure they don't have a lead or contact id yet
         if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank? && user.is_profile_complete
-          CreateSalesforceLeadJob.perform_later(user)
+          CreateSalesforceLeadJob.perform_later(user.id)
+          AddAccountToSalesforceJob.perform_later(user.id)
         end
 
         SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)

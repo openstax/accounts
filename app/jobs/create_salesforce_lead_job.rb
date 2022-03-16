@@ -12,7 +12,9 @@ class CreateSalesforceLeadJob < ApplicationJob
 
   private_constant(:ADOPTION_STATUS_FROM_USER)
 
-  def perform(user)
+  def perform(user_id)
+    user = User.find(user_id)
+
     SecurityLog.create!(
       user:       user,
       event_type: :starting_salesforce_lead_creation
@@ -81,39 +83,10 @@ class CreateSalesforceLeadJob < ApplicationJob
       event_type: :attempting_to_create_user_lead
     )
 
-    if lead.save
-      store_salesforce_lead_id(user, lead.id)
-      transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
-    else
-      handle_lead_errors(lead, user)
-    end
-  end
+    lead.save!
 
-  def store_salesforce_lead_id(user, lead_id)
-    fatal_error(code: :lead_id_is_blank, message: :lead_id_is_blank.to_s.titleize) if lead_id.blank?
-    fatal_error(code: :lead_id_is_already_set, message: :lead_id_is_already_set.to_s.titleize) if user.salesforce_lead_id.present?
-
-    user.salesforce_lead_id = lead_id
-    AddAccountToSalesforceJob.perform_later(user.id)
-
-    if user.save
-      SecurityLog.create!(
-        user:       user,
-        event_type: :created_salesforce_lead,
-        event_data: { lead_id: lead_id }
-      )
-      return true
-    else
-      SecurityLog.create!(
-        user:       user,
-        event_type: :educator_sign_up_failed,
-        event_data: {
-          message: 'saving the user\'s lead id FAILED',
-          lead_id: lead_id
-        }
-      )
-      return
-    end
+    user.salesforce_lead_id = lead.id
+    user.save!
   end
 
   def build_book_adoption_json_for_salesforce(user)
@@ -137,28 +110,4 @@ class CreateSalesforceLeadJob < ApplicationJob
     adoption_json['Books'] = books_json
     adoption_json.to_json
   end
-
-  def handle_lead_errors(lead, user)
-    SecurityLog.create!(
-      user:       user,
-      event_type: :salesforce_error,
-      event_data: {
-        message: 'Error creating Salesforce lead!',
-      }
-    )
-
-    message = "#{self.class.name} error creating SF lead! #{lead.inspect}; User: #{user.id}; Error: #{lead.errors.full_messages}"
-
-    SecurityLog.create!(
-      user:       user,
-      event_type: :salesforce_error,
-      event_data: {
-        message: message,
-      }
-    )
-
-    Rails.logger.warn(message)
-    fatal_error(code: :lead_error)
-  end
-
 end

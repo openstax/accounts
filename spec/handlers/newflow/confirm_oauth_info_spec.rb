@@ -28,17 +28,14 @@ module Newflow
       end
 
       it 'adds the user as a "lead" to salesforce' do
-        expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
         described_class.call(params: params, user: User.last)
       end
 
       it 'signs up user for the newsletter when checked' do
-        expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
         described_class.call(params: params, contracts_required: true, user: User.last)
       end
 
       it 'does NOT sign up user for the newsletter when NOT checked' do
-        expect_any_instance_of(CreateSalesforceLead).not_to receive(:exec)
         params[:signup][:newsletter] = false
         described_class.call(params: params, contracts_required: true, user: User.last)
       end
@@ -56,12 +53,10 @@ module Newflow
       end
 
       it 'adds the user as a "lead" to salesforce' do
-        expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
         described_class.call(params: params, user: User.last)
       end
 
       it 'signs up user for the newsletter when checked' do
-        expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
         described_class.call(params: params, contracts_required: true, user: User.last)
       end
 
@@ -71,7 +66,6 @@ module Newflow
         end
 
         it 'does not sign up user for the newsletter' do
-          expect_any_instance_of(CreateSalesforceLead).not_to receive(:exec)
           described_class.call(params: params, contracts_required: true, user: User.last)
         end
       end
