@@ -62,7 +62,7 @@ module Admin
     end
 
     def force_update_lead
-      Newflow::CreateSalesforceLead.call(user: get_user)
+      CreateSalesforceLeadJob.perform_later(get_user)
     end
 
     protected

@@ -10,7 +10,7 @@ namespace :accounts do
     users.each { |user|
       user.faculty_status = :incomplete_signup
       user.save!
-      Newflow::CreateSalesforceLead.perform_later(user: user)
+      CreateSalesforceLeadJob.perform_later(user)
     }
   end
 end
