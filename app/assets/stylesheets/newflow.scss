@@ -111,6 +111,10 @@ input.has-error {
       &.school-issued-email-visible {
         display: block;
       }
+
+      .other-specify {
+        margin-left: 2em;
+      }
     }
 
     .custom-control-label {
@@ -119,7 +123,6 @@ input.has-error {
 
     .other-specify {
         margin-left: 2em;
-        display: none;
     }
 
     .question {
@@ -131,15 +134,6 @@ input.has-error {
 
     .questions {
         margin-bottom: 25px;
-    }
-}
-
-// extend the multiselect just for the complete form for now
-.os-multiselect {
-    @extend %os-multiselect;
-
-    input[type=text] {
-        min-width: 100%;
     }
 }
 
@@ -263,8 +257,6 @@ input.has-error {
         color: #fff;
         font-weight: bold;
         background-color: #f36b32;
-
-
     }
 
     #return-button {

@@ -61,7 +61,7 @@ module Newflow
           select_educator_role('other')
           #byebug
           fill_in('Other (please specify)', with: 'President')
-          find('#signup_form_submit_button').click
+          find('[type="submit"]').click
           # not sure what's happening here - test is getting a 500, can't produce locally.. going to check it out on dev
           #expect(page.current_path).to eq(signup_done_path).or eq(educator_pending_cs_verification_path)
           #click_on('Finish')

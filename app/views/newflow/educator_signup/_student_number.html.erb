@@ -1,0 +1,41 @@
+<!--ko if: howUsing() === '<%= :as_primary %>' -->
+  <div class="form-group question total-num-students"
+    data-bind="foreach: selectedBooks"
+  >
+    <div data-bind="text: label" style="margin-top: 3rem"></div>
+    <%= label_tag :num_students_per_semester_taught,
+    I18n.t(:"educator_profile_form.num_students_this_book"),
+    class: 'field-label'
+    %>
+    <div
+      class="total-num newflow-mustdo-alert"
+      data-bind="visible: $parent.hasBeenSubmitted() && $parent.studentCounts[value].invalid"
+    >
+      <%= I18n.t(:"educator_profile_form.fill_out") %>
+    </div>
+    <input name="signup[<%= :num_students_per_semester_taught %>][]"
+      type="number" min="0" class="form-control wide"
+      placeholder="<%= I18n.t(:"educator_profile_form.num_students_taught") %>"
+      data-bind="value: $parent.studentCounts[value]"
+    >
+  </div>
+<!-- /ko -->
+<div class="form-group question total-num-students"
+  data-bind="if: howUsing() !== '<%= :as_primary %>'"
+>
+  <%= label_tag :num_students_per_semester_taught,
+  I18n.t(:"educator_profile_form.num_students_taught"),
+  class: 'field-label'
+  %>
+  <div
+    class="total-num newflow-mustdo-alert"
+    data-bind="visible: hasBeenSubmitted() && studentCounts[0].invalid"
+  >
+    <%= I18n.t(:"educator_profile_form.fill_out") %>
+  </div>
+  <input name="signup[<%= :num_students_per_semester_taught %>][]"
+    type="number" min="1" class="form-control wide"
+    placeholder="<%= I18n.t(:"educator_profile_form.num_students_taught") %>"
+    data-bind="value: studentCounts[0]"
+  >
+</div>

@@ -166,7 +166,6 @@ GEM
     childprocess (3.0.0)
     choice (0.2.0)
     chronic (0.10.2)
-    chunky_png (1.4.0)
     codecov (0.6.0)
       simplecov (>= 0.15, < 0.22)
     coderay (1.1.1)
@@ -177,22 +176,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    compass (1.0.3)
-      chunky_png (~> 1.2)
-      compass-core (~> 1.0.2)
-      compass-import-once (~> 1.0.5)
-      rb-fsevent (>= 0.9.3)
-      rb-inotify (>= 0.9)
-      sass (>= 3.3.13, < 3.5)
-    compass-core (1.0.3)
-      multi_json (~> 1.0)
-      sass (>= 3.3.0, < 3.5)
-    compass-import-once (1.0.5)
-      sass (>= 3.2, < 3.5)
-    compass-rails (3.1.0)
-      compass (~> 1.0.0)
-      sass-rails (< 5.1)
-      sprockets (< 4.0)
     concurrent-ruby (1.1.9)
     crack (0.4.5)
       rexml
@@ -664,6 +647,12 @@ GEM
     sassc (2.0.1)
       ffi (~> 1.9)
       rake
+    sassc-rails (2.1.2)
+      railties (>= 4.0.0)
+      sassc (>= 2.0)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     scout_apm (5.1.0)
       parser
     sd_notify (0.1.1)
@@ -761,7 +750,7 @@ DEPENDENCIES
   aws-sdk-cloudwatch
   aws-sdk-rails
   aws-sdk-rds
-  bcrypt (~> 3.1.7)
+  bcrypt (~> 3.1)
   blazer
   bootsnap
   bootstrap-sass (~> 3.4.1)
@@ -772,7 +761,6 @@ DEPENDENCIES
   chronic
   codecov
   coffee-rails (= 5.0.0)
-  compass-rails (~> 3.1.0)
   cookiejar!
   database_cleaner
   db-query-matchers
@@ -846,6 +834,7 @@ DEPENDENCIES
   rubocop-rspec
   ruby-debug-ide
   sass-rails (~> 5.0)
+  sassc-rails (~> 2.1)
   scout_apm
   sd_notify
   selenium-webdriver (>= 3.141.0)
@@ -866,4 +855,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   2.2.31
+   2.3.5

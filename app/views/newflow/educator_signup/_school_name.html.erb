@@ -1,0 +1,16 @@
+<div class="form-group question school-name<%= should_show_school_name_field? ? ' school-name-visible' : '' %>">
+  <div class="school-name">
+    <%= label_tag :school_name, I18n.t(:"educator_profile_form.school_name"),
+    class: 'field-label'
+    %>
+    <div class="school-name newflow-mustdo-alert" data-bind="visible: schoolNameNoticeVisible">
+      <%= I18n.t(:"educator_profile_form.school_name_must_be_entered") %>
+    </div>
+    <input
+      name="<%= :school_name %>"
+      placeholder="<%= I18n.t(:"educator_profile_form.school_name") %>"
+      autofocus
+      data-bind="textInput: schoolName"
+    >
+  </div>
+</div>
