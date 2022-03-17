@@ -52,7 +52,6 @@ class CreateSalesforceLeadJob < ApplicationJob
     lead.adoption_status = ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
     lead.adoption_json = adoption_json,
     lead.os_accounts_id = user.id,
-    lead.accounts_uuid = user.uuid,
     lead.school = user.most_accurate_school_name,
     lead.city = user.most_accurate_school_city,
     lead.country = user.most_accurate_school_country,
@@ -62,7 +61,6 @@ class CreateSalesforceLeadJob < ApplicationJob
     lead.newsletter = user.receive_newsletter?,
     lead.newsletter_opt_in = user.receive_newsletter?,
     lead.sheerid_school_name = user.sheerid_reported_school,
-    lead.instant_verification = user.is_sheerid_verified,
     lead.account_id = sf_school_id,
 
 
