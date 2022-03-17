@@ -99,18 +99,6 @@ module Newflow
         #output the user to the lev handler
         outputs.user = @user
 
-        if @did_use_sheerid && !user.sheer_id_webhook_received
-          # User used SheerID or needs CS verification - we create their lead in SheeridWebhook, not here.. and might not be instant
-          SecurityLog.create!(
-            user: user,
-            event_type: :lead_creation_awaiting_sheerid_webhook,
-          )
-          return
-        end
-        # otherwise, we already heard from SheerID, so let's create the lead.
-        # We check in SheeridWebhook to see if they completed their profile before creating lead
-
-        # Now we create the lead for the user... because we returned above if they did... again SheeridWebhook
         CreateSalesforceLeadJob.perform_later(@user.id)
         AddAccountToSalesforceJob.perform_later(@user.id)
 
