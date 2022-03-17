@@ -3,17 +3,13 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
-  match 'i/signup/(*path)' => redirect{ |p| 'signup/#{p[:path]}'}, via: :all
-  get 'i/profile' => redirect('profile')
-  get 'i/exit_accounts' => redirect('exit_accounts')
+  [
+    'profile', 'exit_accounts', 'reauthenticate', 'check_your_email', 'done',
+    'confirm_your_info', 'forgot_password_form', 'forgot_password_form', 'sheerid_webhook'
+  ].each { |n| get "i/#{n}" => redirect(n)}
+  match 'i/signup/(*path)' => redirect{ |p| "signup/#{p[:path]}"}, via: :all
   match 'i/login' => redirect('login'), via: :all
-  get 'i/reauthenticate' => redirect('reauthenticate')
-  get 'i/check_your_email' => redirect('check_your_email')
-  get 'i/done' => redirect('done')
-  match 'i/verify_email_by_code/(*path)' => redirect{ |p| 'verify_email_by_code/#{p[:path]}'}, via: :get
-  get 'i/confirm_your_info' => redirect('confirm_your_info')
-  get 'i/forgot_password_form' => redirect('forgot_password_form')
-  post 'i/sheerid_webhook' => redirect('sheerid_webhook')
+  match 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
 
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
