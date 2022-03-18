@@ -103,21 +103,10 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'legacy/sessions' do
-    get 'authenticate'
-
-    get 'auth/:provider/callback', action: :create, as: :get_auth_callback
-    post 'auth/:provider/callback', action: :create, as: :post_auth_callback
-
     get 'logout', action: :destroy
-
-    get 'redirect_back'
-
-    get :failure, path: 'auth/failure', as: :auth_failure
-    post 'email_usernames'
 
     # Maintain these deprecated routes for a while until client code learns to
     # use /login and /logout
-    get 'signin', action: :start
     get 'signout', action: :destroy
   end
 
