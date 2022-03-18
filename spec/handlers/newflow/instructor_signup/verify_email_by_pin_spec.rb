@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  module EducatorSignup
+  module InstructorSignup
     describe VerifyEmailByPin, type: :handler do
       context 'when success' do
         before { disable_sfdc_client }

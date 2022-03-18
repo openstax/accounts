@@ -1,5 +1,5 @@
 module Newflow
-  module EducatorSignup
+  module InstructorSignup
     class SignupForm
 
       USER_DEFAULT_STATE = :unverified

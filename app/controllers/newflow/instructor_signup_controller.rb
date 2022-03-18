@@ -1,12 +1,12 @@
 module Newflow
-  class EducatorSignupController < SignupController
+  class InstructorSignupController < SignupController
 
     include InstructorSignupHelper
 
     skip_forgery_protection(only: :sheerid_webhook)
 
     before_action(:prevent_caching, only: :sheerid_webhook)
-    before_action(:exit_newflow_signup_if_logged_in, only: :educator_signup_form)
+    before_action(:exit_newflow_signup_if_logged_in, only: :instructor_signup_form)
     before_action(:restart_signup_if_missing_unverified_user, only: %i[
         educator_change_signup_email_form
         educator_change_signup_email
@@ -33,9 +33,9 @@ module Newflow
       ]
     )
 
-    def educator_signup
+    def instructor_signup
       handle_with(
-        EducatorSignup::SignupForm,
+        InstructorSignup::SignupForm,
         contracts_required: !contracts_not_required,
         client_app: get_client_app,
         is_BRI_book: is_BRI_book_adopter?,
@@ -47,7 +47,7 @@ module Newflow
         },
         failure: lambda {
           security_log(:educator_sign_up_failed, { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
-          render :educator_signup_form
+          render :instructor_signup_form
         }
       )
     end
@@ -84,7 +84,7 @@ module Newflow
 
     def educator_verify_email_by_pin
       handle_with(
-        EducatorSignup::VerifyEmailByPin,
+        InstructorSignup::VerifyEmailByPin,
         email_address: unverified_user.email_addresses.first,
         success: lambda {
           @email = unverified_user.email_addresses.first.value
@@ -112,7 +112,7 @@ module Newflow
     # http://developer.sheerid.com/program-settings#webhooks
     def sheerid_webhook
       handle_with(
-        EducatorSignup::SheeridWebhook,
+        InstructorSignup::SheeridWebhook,
         verification_id: sheerid_provided_verification_id_param,
         success: lambda {
           security_log(:sheerid_webhook_received, { data: @handler_result })
@@ -139,7 +139,7 @@ module Newflow
 
     def educator_complete_profile
       handle_with(
-        EducatorSignup::CompleteProfile,
+        InstructorSignup::CompleteProfile,
         user: current_user,
         success: lambda {
           user = @handler_result.outputs.user

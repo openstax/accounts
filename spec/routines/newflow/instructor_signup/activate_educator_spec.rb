@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  module EducatorSignup
+  module InstructorSignup
     describe ActivateEducator, type: :routine  do
       context 'when success' do
         before do

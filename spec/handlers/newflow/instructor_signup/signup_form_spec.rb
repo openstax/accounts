@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  module EducatorSignup
+  module InstructorSignup
     describe SignupForm, type: :handler do
       before(:all) { load('db/seeds.rb') }
 

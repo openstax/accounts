@@ -22,7 +22,7 @@ Delayed::Worker.default_queue_name = :default
 
 # Default queue priorities
 Delayed::Worker.queue_attributes = {
-  educator_signup_queue: { priority: -10 },
+  instructor_signup_queue: { priority: -10 },
   default:               { priority:   0 },
   salesforce:            { priority:   5 },
   mailers:               { priority:  10 }

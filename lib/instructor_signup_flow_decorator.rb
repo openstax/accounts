@@ -1,4 +1,4 @@
-class EducatorSignupFlowDecorator
+class InstructorSignupFlowDecorator
 
   include Rails.application.routes.url_helpers
 
@@ -31,9 +31,9 @@ class EducatorSignupFlowDecorator
       !user.is_newflow? || (user.is_newflow? && user.is_profile_complete?)
     when 'educator_sheerid_form'
       (user.no_faculty_info? || user.pending_faculty?) && user.sheerid_verification_id.blank?
-    when 'educator_signup_form'
+    when 'instructor_signup_form'
       user.is_anonymous?
-    when 'educator_signup'
+    when 'instructor_signup'
       user.is_anonymous?
     when 'educator_email_verification_form'
       user.is_anonymous?
@@ -52,7 +52,7 @@ class EducatorSignupFlowDecorator
     when current_step == 'educator_sheerid_form'
       if user.confirmed_faculty? || user.rejected_faculty? || user.sheerid_verification_id.present?
       end
-    when current_step == 'educator_signup_form' && !user.is_anonymous?
+    when current_step == 'instructor_signup_form' && !user.is_anonymous?
         educator_email_verification_form_path
     when current_step == 'educator_email_verification_form' && user.activated?
       if !user.student? && user.activated? && user.pending_faculty && user.sheerid_verification_id.blank?

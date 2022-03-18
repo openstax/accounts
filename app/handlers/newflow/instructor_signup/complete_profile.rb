@@ -1,5 +1,5 @@
 module Newflow
-  module EducatorSignup
+  module InstructorSignup
     class CompleteProfile
 
       OTHER = 'other'

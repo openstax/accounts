@@ -183,7 +183,7 @@ end
 
 def expect_educator_sign_up_page
   expect(page).to have_no_missing_translations
-  expect(page.current_path).to eq(educator_signup_path)
+  expect(page.current_path).to eq(instructor_signup_path)
 end
 
 def external_public_url
@@ -219,7 +219,7 @@ def expect_sheerid_iframe
 end
 
 def simulate_step_3_instant_verification(user, sheerid_verification_id)
-  Newflow::EducatorSignup::VerifyEducator.call(user: user, verification_id: sheerid_verification_id)
+  Newflow::InstructorSignup::VerifyEducator.call(user: user, verification_id: sheerid_verification_id)
 end
 
 def expect_educator_step_4_page
