@@ -833,7 +833,6 @@ DEPENDENCIES
   rubocop (~> 0.76.0)
   rubocop-rspec
   ruby-debug-ide
-  sass-rails (~> 5.0)
   sassc-rails (~> 2.1)
   scout_apm
   sd_notify
