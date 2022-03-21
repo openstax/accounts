@@ -14,6 +14,6 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require ./jquery_extensions
-//= require ./ui
+//= require ./accounts-ui
 //= require ./remote-access-helpers
 //= require_self

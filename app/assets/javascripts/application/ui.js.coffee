@@ -1,5 +1,4 @@
 Ui = do () ->
-
   disableButton: (selector) ->
     $(selector).attr('disabled', 'disabled')
     $(selector).addClass('ui-state-disabled ui-button-disabled')
@@ -35,7 +34,11 @@ Ui = do () ->
 
   enableOnChecked: (targetSelector, sourceSelector) ->
     $(document).ready =>
-      @disableButton(targetSelector) if !$(sourceSelector).is(':checked')
+
+      enable_disable_continue = () =>
+        this.checkCheckedButton(targetSelector, sourceSelector)
+
+      setTimeout(enable_disable_continue, 500)
 
       $(sourceSelector).on 'click', =>
         this.checkCheckedButton(targetSelector, sourceSelector)
@@ -46,7 +49,7 @@ Ui = do () ->
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
     return json.replace(
-      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, 
+      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
       (match) ->
         cls = 'number'
         if (/^"/.test(match))
@@ -58,10 +61,9 @@ Ui = do () ->
           cls = 'boolean'
         else if (/null/.test(match))
           cls = 'null'
-        
+
         return '<span class="' + cls + '">' + match + '</span>'
-    )  
+    )
 
 
-(exports = this).Accounts ?= {}
-exports.Accounts.Ui = Ui
+this.Ui = Ui

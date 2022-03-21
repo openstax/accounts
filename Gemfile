@@ -269,8 +269,8 @@ group :test do
   # Run feature tests with Capybara + Selenium; choose which driver gems to use
   # based on test environment.
   gem 'capybara'
-  gem 'selenium-webdriver', '>= 3.141.0', require: false
-  gem 'webdrivers', '~> 4.0', require: false
+  gem 'selenium-webdriver', '~> 4.0', require: false
+  gem 'webdrivers', '~> 5.0', require: false
 
   # Testing emails
   gem 'capybara-email'

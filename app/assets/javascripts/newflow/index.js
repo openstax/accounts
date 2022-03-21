@@ -3,8 +3,8 @@
 //= require bootstrap
 //= require ../vendor/underscore
 //= require ../vendor/mailcheck
-//= require ./newflow_ui
-//= require ./educator_signup_email_validations
+//= require ../application/ui
+//= require ./instructor_signup_email_validations
 //= require ./educator_complete_dynamic
 //= require intlTelInput
 //= require multiselect

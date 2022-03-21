@@ -1,4 +1,4 @@
-## This file is loaded by accounts as part of it's standard JS build
+## This file is loaded by accounts as part of its standard JS build
 # it watches for page load and applies special handlers if
 # it detects it's loaded inside an iframe.
 

@@ -95,41 +95,6 @@ body, p, ol, ul, td, a {
   margin-bottom: 0;
 }
 
-#application-footer {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  height: $application_footer_height;
-  color:            $os_gray;
-  font-size:        10px;
-
-  line-height:      14px;
-
-  div {
-    text-align: center;
-    #footer-copyright {
-      margin: auto;
-    }
-
-    #footer-rice-logo-image {
-      margin-bottom: 12px;
-    }
-  }
-
-  a {
-    font-size:        10px;
-    text-decoration:  none;
-    color:            #e3e3ff;
-
-    &:hover {
-      color: $ost_hot_blue;
-    }
-  }
-
-}
-
 #upper-corner-console {
   position: absolute;
   top: 0;

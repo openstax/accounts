@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-        <%= render partial: "layouts/google_tag_manager" %>
+        <%= render "layouts/google_tag_manager" %>
 
         <% if @redirect_url %>
         <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
@@ -34,7 +34,7 @@
       <%= content_for :page_specific %>
     </head>
     <body>
-        <%= render partial: "layouts/tag_manager_snippet" %>
+        <%= render "layouts/tag_manager_snippet" %>
         <% if @banners.present? %>
             <% @banners.each do |banner| %>
                 <div class="banner">
@@ -44,25 +44,25 @@
         <% end %>
 
         <% if flash[:alert].present? %>
-            <div class="newflow-layout-alert">
+            <div class="layout-alert">
                 <%= flash[:alert] %>
             </div>
         <% end %>
 
         <% if flash[:notice].present? %>
-            <div class="newflow-layout-notice">
+            <div class="layout-notice">
                 <%= flash[:notice].html_safe %>
             </div>
         <% end %>
 
-        <%= render(partial: 'layouts/main_menu') %>
+        <%= render "layouts/main_menu" %>
 
         <div class="content">
             <%= yield %>
         </div>
 
-        <%= render partial: 'layouts/newflow_footer' %>
-        <%= render partial: "layouts/google_analytics" %>
+        <%= render "layouts/application_footer" %>
+        <%= render "layouts/google_analytics" %>
 
         <%= yield :javascript %>
     </body>

@@ -12,7 +12,7 @@ module Newflow
     protected #################
 
     def decorated_user
-      EducatorSignupFlowDecorator.new(current_user, action_name)
+      InstructorSignupFlowDecorator.new(current_user, action_name)
     end
 
     def restart_signup_if_missing_unverified_user

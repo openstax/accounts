@@ -66,7 +66,7 @@ module Newflow
 
     def redirect_to_signup_if_go_param_present
       if should_redirect_to_student_signup?
-        redirect_to newflow_signup_student_path(request.query_parameters)
+        redirect_to signup_student_path(request.query_parameters)
       elsif should_redirect_to_signup_welcome?
         redirect_to newflow_signup_path(request.query_parameters)
       end

@@ -30,7 +30,7 @@ body {
     color: #31708f;
 }
 
-.newflow-layout-alert {
+.layout-alert {
     background-color: #f2dede;
     padding: 1rem;
     padding-left: 2rem;
@@ -38,7 +38,7 @@ body {
     color: var(--input-error-message-color);
 }
 
-.newflow-layout-notice {
+.layout-notice {
     background-color: #d9edf7;
     color: #31708f;
     padding: 1rem;
@@ -46,7 +46,7 @@ body {
     border-bottom: 0.1rem solid #bce8f1;
 }
 
-.newflow-mustdo-alert {
+.mustdo-alert {
     color: var(--input-error-message-color);
 }
 
@@ -910,7 +910,10 @@ input.has-error {
     }
 }
 
-#newflow-footer {
+#application-footer {
+    font-size: 10px;
+    text-align: center;
+    margin-top: 8rem;
     text-align: center;
 
     #footer-rice-logo-image {
@@ -918,7 +921,7 @@ input.has-error {
         margin-bottom: 1.2rem;
     }
 
-    #newflow-footer--copyright {
+    #application-footer--copyright {
         font-size: 1rem;
 
         a {

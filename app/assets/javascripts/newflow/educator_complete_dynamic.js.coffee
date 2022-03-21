@@ -1,4 +1,4 @@
-class NewflowUi.EducatorComplete
+class Ui.EducatorComplete
 
   constructor: ->
     _.bindAll(@, 'onSchoolNameChange', 'onRoleChange', 'onOtherChange', 'onHowUsingChange', 'onHowChosenChange', 'onTotalNumChange', 'onBooksUsedChange', 'onBooksOfInterestChange', 'onSubmit')
@@ -34,19 +34,19 @@ class NewflowUi.EducatorComplete
     @books_of_interest_select = @findOrLogNotFound(@books_of_interest, "select")
 
     # error messages locators
-    @please_fill_out_school = @findOrLogNotFound(@form, '.school-name.newflow-mustdo-alert')
+    @please_fill_out_school = @findOrLogNotFound(@form, '.school-name.mustdo-alert')
 
-    @please_select_role = @findOrLogNotFound(@form, '.completed-role .role.newflow-mustdo-alert')
-    @please_fill_out_other = @findOrLogNotFound(@form, '.other.newflow-mustdo-alert')
+    @please_select_role = @findOrLogNotFound(@form, '.completed-role .role.mustdo-alert')
+    @please_fill_out_other = @findOrLogNotFound(@form, '.other.mustdo-alert')
 
-    @please_select_chosen = @findOrLogNotFound(@form, '.how-chosen .chosen.newflow-mustdo-alert')
-    @please_select_using = @findOrLogNotFound(@form, '.how-using .using.newflow-mustdo-alert')
-    @please_fill_out_total_num = @findOrLogNotFound(@form, '.total-num-students .total-num.newflow-mustdo-alert')
+    @please_select_chosen = @findOrLogNotFound(@form, '.how-chosen .chosen.mustdo-alert')
+    @please_select_using = @findOrLogNotFound(@form, '.how-using .using.mustdo-alert')
+    @please_fill_out_total_num = @findOrLogNotFound(@form, '.total-num-students .total-num.mustdo-alert')
 
-    @please_select_books_used = @findOrLogNotFound(@form, '.books-used .used.newflow-mustdo-alert')
-    @books_used_max = @findOrLogNotFound(@form, '.books-used .used-limit.newflow-mustdo-alert')
-    @please_select_books_of_interest = @findOrLogNotFound(@form, '.books-of-interest .books-of-interest.newflow-mustdo-alert')
-    @books_of_interest_max = @findOrLogNotFound(@form, '.books-of-interest .books-of-interest-limit.newflow-mustdo-alert')
+    @please_select_books_used = @findOrLogNotFound(@form, '.books-used .used.mustdo-alert')
+    @books_used_max = @findOrLogNotFound(@form, '.books-used .used-limit.mustdo-alert')
+    @please_select_books_of_interest = @findOrLogNotFound(@form, '.books-of-interest .books-of-interest.mustdo-alert')
+    @books_of_interest_max = @findOrLogNotFound(@form, '.books-of-interest .books-of-interest-limit.mustdo-alert')
 
     # event listeners
     @school_name_input.on('input', @onSchoolNameChange)
