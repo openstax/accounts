@@ -8,9 +8,9 @@ RSpec.describe Doorkeeper::AuthorizationsController, type: :controller do
       context 'user without a profile' do
         let(:user) { FactoryBot.create :user, state: :needs_profile }
 
-        it 'redirects to /signup/profile' do
+        it 'redirects to /profile' do
           post :create, params: { response_type: :code }
-          expect(response).to redirect_to signup_profile_url
+          expect(response).to redirect_to profile_url
         end
       end
 

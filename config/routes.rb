@@ -138,15 +138,8 @@ Rails.application.routes.draw do
     put 'profile', action: :update
   end
 
-  scope 'signup', controller: 'legacy/signup', as: 'signup' do
-    get '/', action: :start
-
-    get 'verify_email'
-    post 'verify_email'
-
-    get 'profile' => redirect('/profile')
-
-    match 'educator_access_pending', via: [:get, :post]
+  scope 'signup' do
+    get '/' => redirect('signup')
   end
 
   scope controller: 'legacy/identities', path: 'password', as: 'password' do
