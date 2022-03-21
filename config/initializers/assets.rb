@@ -22,5 +22,5 @@ Rails.application.config.assets.precompile += %w(
   newflow.css
   newflow_colors.css
   newflow.js
-  newflow/instructor_signup_email_validations.js
+  newflow/educator_signup_email_validations.js
 )

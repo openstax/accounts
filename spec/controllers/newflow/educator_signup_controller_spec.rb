@@ -1,24 +1,24 @@
 require 'rails_helper'
 
 module Newflow
-  RSpec.describe InstructorSignupController, type: :controller do
+  RSpec.describe EducatorSignupController, type: :controller do
     before { turn_on_educator_feature_flag }
 
-    describe 'GET #instructor_signup_form' do
+    describe 'GET #educator_signup_form' do
       it 'renders educator signup_form' do
-        get(:instructor_signup_form)
-        expect(response).to  render_template(:instructor_signup_form)
+        get(:educator_signup_form)
+        expect(response).to  render_template(:educator_signup_form)
       end
     end
 
-    describe 'POST #instructor_signup' do
+    describe 'POST #educator_signup' do
       before do
         load('db/seeds.rb') # create the FinePrint contracts
       end
 
-      it 'calls Handlers::InstructorSignup::SignupForm' do
-        expect_any_instance_of(InstructorSignup::SignupForm).to receive(:call).once.and_call_original
-        post(:instructor_signup)
+      it 'calls Handlers::EducatorSignup::SignupForm' do
+        expect_any_instance_of(EducatorSignup::SignupForm).to receive(:call).once.and_call_original
+        post(:educator_signup)
       end
 
       context 'success' do
@@ -41,19 +41,19 @@ module Newflow
 
         it 'saves unverified user in the session' do
           expect_any_instance_of(described_class).to receive(:save_unverified_user).and_call_original
-          post(:instructor_signup, params: params)
+          post(:educator_signup, params: params)
         end
 
         it 'creates a security log' do
           expect {
-            post(:instructor_signup, params: params)
+            post(:educator_signup, params: params)
           }.to change {
             SecurityLog.where(event_type: :sign_up_successful, user: User.last)
           }
         end
 
         it 'redirects to educator_email_verification_form_path' do
-          post(:instructor_signup, params: params)
+          post(:educator_signup, params: params)
           expect(response).to  redirect_to(educator_email_verification_form_path)
         end
       end
@@ -77,9 +77,9 @@ module Newflow
         end
 
         it 'renders instructor signup form with errors' do
-          post(:instructor_signup, params: params)
+          post(:educator_signup, params: params)
 
-          expect(response).to render_template(:instructor_signup_form)
+          expect(response).to render_template(:educator_signup_form)
           expect(assigns(:"handler_result").errors).to  be_present
         end
 
@@ -87,7 +87,7 @@ module Newflow
           EmailDomainMxValidator.strategy = EmailDomainMxValidator::FakeStrategy.new(expecting: false)
 
           expect {
-            post(:instructor_signup, params: params)
+            post(:educator_signup, params: params)
           }.to change {
             SecurityLog.educator_sign_up_failed.count
           }
@@ -168,7 +168,7 @@ module Newflow
     end
 
     describe 'POST #sheerid_webhook' do
-      let(:handler) { InstructorSignup::SheeridWebhook }
+      let(:handler) { EducatorSignup::SheeridWebhook }
 
       let(:params) do
         { 'verificationId': Faker::Alphanumeric.alphanumeric(number: 24) }

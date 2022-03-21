@@ -1,4 +1,4 @@
-<%= render 'newflow/instructor_signup/refresh_upon_going_back' %>
+<%= render 'newflow/educator_signup/refresh_upon_going_back' %>
 
 <div id="login-signup-form">
   <div class="content">
@@ -12,32 +12,25 @@
 
     <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
-    <%= login_signup_card(
+    <%= newflow_login_signup_card(
           header: (I18n.t(:"educator_profile_form.complete_page_header")),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 4, total_steps: 4),
           classes: 'signup-page completed-step') do %>
-    <% lev_form_for :signup, url: educator_complete_profile_path do |f| %>
-    <% fh = NewflowFormHelper::Newflow.new(
-      f: f,
-      context: self,
-      errors: @handler_result&.errors
-    )
-    %>
+      <% lev_form_for :signup, url: educator_complete_profile_path do |f| %>
+        <% fh = NewflowFormHelper::Newflow.new(f: f,
+                                               context: self,
+                                               errors: @handler_result&.errors) %>
+
         <div class="content required-fields-notice">
           <%= I18n.t(:"login_signup_form.all_fields_required") %>
         </div>
 
         <div class="content">
           <div class="questions">
-
-            <div class="form-group question school-name<%= should_show_school_name_field? ? ' school-name-visible' : '' %>">
+          <div class="form-group question school-name<%= should_show_school_name_field? ? ' school-name-visible' : '' %>">
               <div class="school-name">
-                <%=
-                  label_tag(
-                    :school_name,
-                    I18n.t(:"educator_profile_form.school_name"),
-                    class: 'field-label'
-                  )
+                <%= label_tag :school_name, I18n.t(:"educator_profile_form.school_name"),
+                              class: 'field-label'
                 %>
                 <div class="school-name mustdo-alert">
                   <%= I18n.t(:"educator_profile_form.school_name_must_be_entered") %>
@@ -47,25 +40,6 @@
                     name: :school_name,
                     placeholder: I18n.t(:"educator_profile_form.school_name"),
                     autofocus: true
-                  )
-                %>
-              </div>
-            </div>
-
-            <div class="form-group question school-issued-email<%= should_show_school_issued_email_field? ? ' school-issued-email-visible' : '' %>">
-              <div class="school-issued-email">
-                <%=
-                  label_tag(
-                    :school_issued_email,
-                    I18n.t(:"educator_profile_form.school_issued_email"),
-                    class: 'field-label'
-                  )
-                %>
-                <%=
-                  fh.text_field(
-                    name: :school_issued_email,
-                    placeholder: I18n.t(:"educator_profile_form.school_issued_email"),
-                    value: user.email_addresses.last&.value
                   )
                 %>
               </div>
@@ -269,9 +243,8 @@
 
           </div>
 
-          <%= f.hidden_field :is_school_not_supported_by_sheerid, value: is_school_not_supported_by_sheerid? %>
-          <%= f.hidden_field :is_country_not_supported_by_sheerid, value: is_country_not_supported_by_sheerid? %>
-          <%= f.hidden_field :is_cs_form, value: is_cs_form? %>
+          <%= f.hidden_field :is_school_not_supported_by_sheerid, value: is_school_not_supported_by_sheerid? || current_incomplete_educator&.rejected_faculty? %>
+          <%= f.hidden_field :is_country_not_supported_by_sheerid, value: is_country_not_supported_by_sheerid? || current_incomplete_educator&.rejected_faculty? %>
 
           <%=
             f.submit(
@@ -296,5 +269,5 @@
 <script type="text/javascript">
 
   //this needs to be done at bottom of the file so that the dom above is already constructed
-  new Ui.EducatorComplete();
+  new NewflowUi.EducatorComplete();
 </script>
