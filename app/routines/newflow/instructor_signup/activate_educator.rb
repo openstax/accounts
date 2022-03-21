@@ -1,10 +1,10 @@
 # Sets the passed-in user's `state` to `'activated'`
 # If the user is already `activated`, then it does nothing.
 module Newflow
-  module InstructorSignup
+  module EducatorSignup
     class ActivateEducator
 
-      lev_routine active_job_enqueue_options: { queue: :instructor_signup_queue }
+      lev_routine active_job_enqueue_options: { queue: :educator_signup_queue }
 
       protected ###############
 

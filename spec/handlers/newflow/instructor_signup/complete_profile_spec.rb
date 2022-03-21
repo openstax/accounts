@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 module Newflow
-  module InstructorSignup
+  module EducatorSignup
 
     describe CompleteProfile, type: :handler do
       let(:user) { create_user('user') }
@@ -9,7 +9,7 @@ module Newflow
       let(:books_used) { ['Algebra and Trigonometry', 'Physics'] }
       let(:num_students_per_semester_taught) { 10 }
       let(:educator_specific_role) { 'instructor' }
-      let(:using_openstax_how) { Newflow::InstructorSignup::CompleteProfile::AS_PRIMARY }
+      let(:using_openstax_how) { Newflow::EducatorSignup::CompleteProfile::AS_PRIMARY }
       let(:params) do
         {
           signup: {
@@ -28,7 +28,7 @@ module Newflow
 
       context 'with invalid params' do
         context 'other must be filled out' do
-          let(:educator_specific_role) { Newflow::InstructorSignup::CompleteProfile::OTHER }
+          let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::OTHER }
 
           it "should return correct error" do
             result = handle
@@ -38,8 +38,8 @@ module Newflow
         end
 
         context 'books used must be filled out' do
-          let(:educator_specific_role) { Newflow::InstructorSignup::CompleteProfile::INSTRUCTOR }
-          let(:using_openstax_how) { Newflow::InstructorSignup::CompleteProfile::AS_PRIMARY }
+          let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
+          let(:using_openstax_how) { Newflow::EducatorSignup::CompleteProfile::AS_PRIMARY }
           let(:books_used) { [] }
 
           it "should return correct error" do
@@ -50,7 +50,7 @@ module Newflow
         end
 
         context 'number of students taught must be filled out' do
-          let(:educator_specific_role) { Newflow::InstructorSignup::CompleteProfile::INSTRUCTOR }
+          let(:educator_specific_role) { Newflow::EducatorSignup::CompleteProfile::INSTRUCTOR }
           let(:num_students_per_semester_taught) { nil }
 
           it "should return correct error" do

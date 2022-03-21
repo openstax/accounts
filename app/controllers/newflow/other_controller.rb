@@ -2,7 +2,7 @@ module Newflow
   class OtherController < BaseController
 
     before_action :newflow_authenticate_user!, only: :profile_newflow
-    before_action :ensure_complete_instructor_signup, only: :profile_newflow
+    before_action :ensure_complete_educator_signup, only: :profile_newflow
     before_action :prevent_caching, only: :profile_newflow
 
     def profile_newflow
@@ -25,7 +25,7 @@ module Newflow
 
     private
 
-    def ensure_complete_instructor_signup
+    def ensure_complete_educator_signup
       return if current_user.student?
 
       if decorated_user.newflow_edu_incomplete_step_3?

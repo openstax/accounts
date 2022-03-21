@@ -1,5 +1,5 @@
 module Newflow
-  module InstructorSignup
+  module EducatorSignup
     class VerifyEmailByPin < Newflow::VerifyUserEmailByPin
       lev_handler
       uses_routine ActivateEducator
