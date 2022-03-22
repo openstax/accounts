@@ -10,7 +10,7 @@ class EducatorSignupFlowDecorator
   end
 
   def newflow_edu_incomplete_step_3?
-    if !user.is_newflow? || user.is_sheerid_unviable?
+    if user.is_sheerid_unviable?
       return false
     elsif user.sheerid_verification_id.blank? && user.pending_faculty? && !user.is_educator_pending_cs_verification
       return true
@@ -18,19 +18,17 @@ class EducatorSignupFlowDecorator
   end
 
   def newflow_edu_incomplete_step_4?
-    return false if !user.is_newflow?
-
     return true if !user.is_profile_complete?
   end
 
   def can_do?(action)
-    return false if shouldnt_proceed?
+    return false if user.student?
 
     case action
     when 'redirect_back_upon_login'
-      !user.is_newflow? || (user.is_newflow? && user.is_profile_complete?)
+      !user.is_profile_complete?
     when 'educator_sheerid_form'
-      (user.no_faculty_info? || user.pending_faculty?) && user.sheerid_verification_id.blank?
+      (user.no_faculty_info? || user.pending_faculty? || user.incomplete_signup?) && user.sheerid_verification_id.blank?
     when 'educator_signup_form'
       user.is_anonymous?
     when 'educator_signup'
@@ -64,11 +62,4 @@ class EducatorSignupFlowDecorator
       raise("Next step (#{current_step}) uncaught in #{self.class.name}")
     end
   end
-
-  private ###################
-
-  def shouldnt_proceed?
-    user.student? || !Settings::FeatureFlags.educator_feature_flag
-  end
-
 end
