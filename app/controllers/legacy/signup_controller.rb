@@ -3,8 +3,6 @@ module Legacy
 
     include LegacyHelper
 
-    PROFILE_TIMEOUT = 30.minutes
-
     before_action :redirect_to_newflow_if_enabled, only: [:start]
 
     skip_before_action :authenticate_user!,
@@ -22,93 +20,11 @@ module Legacy
 
     helper_method :signup_email, :instructor_has_selected_subject
 
-    def start
-      if request.post?
-        handle_with(SignupStart,
-                    existing_pre_auth_state: pre_auth_state,
-                    return_to: session[:return_to],
-                    session: self,
-                    success: lambda do
-                      save_pre_auth_state(@handler_result.outputs.pre_auth_state)
-                      redirect_to action: :verify_email
-                    end,
-                    failure: lambda do
-                      @role = params[:signup].try(:[],:role)
-                      @signup_email = params[:signup].try(:[],:email)
-                      render :start
-                    end)
-      else
-        @role = signup_role # select whatever value the role was previously set to
-      end
-    end
-
-    def verify_email
-      render and return if request.get?
-
-      handle_with(SignupVerifyEmail,
-                  pre_auth_state: pre_auth_state,
-                  session: self,
-                  success: lambda do
-                    redirect_to action: (pre_auth_state.signed_student? ? :profile : :password)
-                  end,
-                  failure: lambda do
-                    @handler_result.errors.each do | error |  # TODO move to view?
-                      error.message = I18n.t(:"legacy.signup.verify_email.#{error.code}", default: error.message)
-                    end
-                    render :verify_email
-                  end)
-    end
-
-    def verify_by_token
-      handle_with(SignupVerifyByToken,
-                  session: self,
-                  success: lambda do
-                    @handler_result.outputs.pre_auth_state.tap do |state|
-                      session[:return_to] ||= state.return_to
-                      save_pre_auth_state(state)
-                    end
-                    redirect_to action: (pre_auth_state.signed_student? ? :profile : :password)
-                  end,
-                  failure: lambda do
-                    # TODO spec this and set an error message
-                    redirect_to action: :start
-                  end)
-    end
-
+    def start; end
+    def verify_email; end
     def password; end
     def social; end
-
-    def profile
-      if request.post?
-        handler = case current_user.role
-        when "student"
-          SignupProfileStudent
-        when "instructor"
-          SignupProfileInstructor
-        else
-          SignupProfileOther
-        end
-
-        handle_with(handler,
-                    contracts_required: !contracts_not_required,
-                    client_app: get_client_app,
-                    success: lambda do
-                      clear_pre_auth_state
-                      if current_user.student? || current_user.created_from_signed_data?
-                        redirect_back
-                      else
-                        redirect_to action: :instructor_access_pending
-                      end
-                    end,
-                    failure: lambda do
-                      render :profile
-                    end)
-      else
-        params[:profile] = {
-          school: current_user.self_reported_school
-        }
-      end
-    end
+    def profile; end
 
     def instructor_access_pending
       redirect_back if request.post?
