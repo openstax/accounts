@@ -56,14 +56,14 @@ module Newflow
         @is_on_cs_form = signup_params.is_cs_form?
         outputs.is_on_cs_form = @is_on_cs_form
 
+        # is this user coming from the sheerid flow? there are a few things we can check...
+        @did_use_sheerid = !(signup_params.is_school_not_supported_by_sheerid == 'true' ||
+          signup_params.is_country_not_supported_by_sheerid == 'true' ||
+          user.is_sheerid_unviable? || @is_on_cs_form)
+
         # validate the form
         check_params
         return if errors?
-
-        # is this user coming from the sheerid flow? there are a few things we can check...
-        @did_use_sheerid = !(signup_params.is_school_not_supported_by_sheerid == 'true' ||
-                             signup_params.is_country_not_supported_by_sheerid == 'true' ||
-                             user.is_sheerid_unviable? || @is_on_cs_form)
 
         @user.update!(
           role: signup_params.educator_specific_role,
@@ -144,7 +144,7 @@ module Newflow
       def check_params
         role = signup_params.educator_specific_role.strip.downcase
 
-        if !@did_use_sheerid && signup_params.school_name.nil?
+        if signup_params.school_name && signup_params.school_name.nil?
           param_error(:school_name, :school_name_must_be_entered)
         end
 
