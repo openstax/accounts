@@ -92,8 +92,9 @@
     const schoolName = ko.observable('');
     const role = ko.observable();
     const hasBeenSubmitted = ko.observable(false);
+    const schoolNameIsVisible = <%= should_show_school_name_field? %>;
     const schoolNameNoticeVisible = ko.computed(
-      function () { return Boolean(role() && !schoolName()); }
+      function () { return Boolean(schoolNameIsVisible && role() && !schoolName()); }
     );
     const roleNoticeVisible = ko.computed(
       function () { return hasBeenSubmitted() && !role(); }
