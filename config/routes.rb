@@ -147,10 +147,7 @@ Rails.application.routes.draw do
     post 'reset'
 
     post 'send_reset'
-    get 'sent_reset'
-
     post 'send_add'
-    get 'sent_add'
 
     get 'add'
     post 'add'

@@ -4,10 +4,10 @@ module Legacy
     include RequireRecentSignin
 
     skip_before_action :authenticate_user!, :check_if_password_expired, :complete_signup_profile,
-                      only: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add]
+                      only: [:reset, :send_reset, :add, :send_add]
 
     fine_print_skip :general_terms_of_use, :privacy_policy,
-                    only: [:reset, :send_reset, :sent_reset, :add, :send_add, :sent_add,
+                    only: [:reset, :send_reset, :add, :send_add,
                           :reset_success, :add_success]
 
     before_action :allow_iframe_access
@@ -27,9 +27,6 @@ module Legacy
     def send_add
       send_password_email(kind: :add)
     end
-
-    def sent_reset; end
-    def sent_add; end
 
     def continue
       redirect_back
