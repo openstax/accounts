@@ -14,16 +14,6 @@ GIT
       sass-rails
 
 GIT
-  remote: https://github.com/openstax/openstax_salesforce.git
-  revision: f86e8a57af8e2c00cf091c77d3eabac827a8c1a6
-  ref: f86e8a57af8e2c00cf091c77d3eabac827a8c1a6
-  specs:
-    openstax_salesforce (7.4.3)
-      openstax_active_force
-      rails (>= 5.0, < 7.0)
-      restforce
-
-GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: 8298c40ec38f132fc23ea946b2b20e855fe73a49
   ref: 8298c40ec38f132fc23ea946b2b20e855fe73a49
@@ -652,7 +642,6 @@ GEM
       rubocop (>= 0.68.1)
     ruby-debug-ide (0.7.3)
       rake (>= 0.8.1)
-    ruby_dep (1.3.1)
     ruby-graphviz (1.2.5)
       rexml
     ruby-progressbar (1.11.0)
@@ -751,9 +740,9 @@ GEM
     yajl-ruby (1.4.1)
 
 PLATFORMS
-  x86_64-darwin-21
   ruby
   x86_64-darwin-20
+  x86_64-darwin-21
   x86_64-linux
 
 DEPENDENCIES
@@ -824,7 +813,7 @@ DEPENDENCIES
   openstax_healthcheck
   openstax_path_prefixer!
   openstax_rescue_from
-  openstax_salesforce!
+  openstax_salesforce
   openstax_utilities
   p3p
   parallel_tests
