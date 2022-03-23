@@ -157,7 +157,7 @@ feature "User can't sign in", js: true do
       # TODO somehow simulate oauth failure so we see error message
 
       click_link(t :"legacy.sessions.authenticate_options.add_password")
-      expect(page).to have_content(t(:"legacy.identities.send_add.we_sent_email", emails: 'user@example.com'))
+      expect(page).to have_content(t(:"identities.send_add.we_sent_email", emails: 'user@example.com'))
       screenshot!
 
       open_email('user@example.com')

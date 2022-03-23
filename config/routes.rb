@@ -142,7 +142,7 @@ Rails.application.routes.draw do
     get '/' => redirect('signup')
   end
 
-  scope controller: 'legacy/identities', path: 'password', as: 'password' do
+  scope controller: 'identities', path: 'password', as: 'password' do
     get 'reset'
     post 'reset'
 

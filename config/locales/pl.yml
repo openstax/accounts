@@ -451,6 +451,69 @@ pl:
         Zapoznałem/am się z przedstawionymi powyżej regulaminami i zgadzam
         się na zawarte w nich warunki.
 
+  identities:
+    set:
+      confirm_password: Powtórz hasło
+      password: Hasło
+      there_was_a_problem_with_password_link: >-
+        Niestety wystąpił problem z użytym przez Ciebie linkiem. Jeżeli problem
+        będzie się powtarzał, skontaktuj się z działem pomocy.
+      expired_password_link: Użyty przez ciebie link wygasł.
+      cancel: Anuluj
+    reset:
+      page_heading: Zmień hasło
+      submit: Ustaw hasło
+      submitting: Ustawianie hasła…
+      use_form_below_to_reset_password: >-
+        Aby zmienić swoje hasło, wypełnij poniższe pola.
+    add:
+      page_heading: Dodaj hasło
+      use_form_below_to_add_password: Aby dodać hasło, wypełnij poniższe pola.
+      submit: Dodaj hasło
+      submitting: Dodawanie hasła…
+    add_success:
+      page_heading: Sukces!
+      message: Hasło zostało dowiązane do Twojego konta.
+      continue: Przejdź dalej
+    reset_success:
+      page_heading: Sukces!
+      message: Hasło zostało zmienione.
+      continue: Przejdź dalej
+
+    send_reset:
+      page_heading: Sprawdź e-mail
+      we_sent_email:
+        one: >-
+          Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
+          aby zmienić hasło.
+        few: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby zmienić hasło.
+        many: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby zmienić hasło.
+        other: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby zmienić hasło.
+      close_this_window: Możesz teraz zamknąć okno.
+
+    send_add:
+      page_heading: Sprawdź e-maile
+      we_sent_email:
+        one: >-
+          Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
+          aby dodać nowe hasło.
+        few: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby dodać nowe hasło.
+        many: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby dodać nowe hasło.
+        other: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby dodać nowe hasło.
+      close_this_window: Możesz teraz zamknąć okno.
+
   legacy:
     users:
       edit:
@@ -470,69 +533,6 @@ pl:
         unconfirmed_warning: niepotwierdzony
         password: Hasło
         searchable: Pozwól innym wyszukać mnie po tym adresie e-mail
-
-    identities:
-      set:
-        confirm_password: Powtórz hasło
-        password: Hasło
-        there_was_a_problem_with_password_link: >-
-          Niestety wystąpił problem z użytym przez Ciebie linkiem. Jeżeli problem
-          będzie się powtarzał, skontaktuj się z działem pomocy.
-        expired_password_link: Użyty przez ciebie link wygasł.
-        cancel: Anuluj
-      reset:
-        page_heading: Zmień hasło
-        submit: Ustaw hasło
-        submitting: Ustawianie hasła…
-        use_form_below_to_reset_password: >-
-          Aby zmienić swoje hasło, wypełnij poniższe pola.
-      add:
-        page_heading: Dodaj hasło
-        use_form_below_to_add_password: Aby dodać hasło, wypełnij poniższe pola.
-        submit: Dodaj hasło
-        submitting: Dodawanie hasła…
-      add_success:
-        page_heading: Sukces!
-        message: Hasło zostało dowiązane do Twojego konta.
-        continue: Przejdź dalej
-      reset_success:
-        page_heading: Sukces!
-        message: Hasło zostało zmienione.
-        continue: Przejdź dalej
-
-      send_reset:
-        page_heading: Sprawdź e-mail
-        we_sent_email:
-          one: >-
-            Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
-            aby zmienić hasło.
-          few: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby zmienić hasło.
-          many: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby zmienić hasło.
-          other: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby zmienić hasło.
-        close_this_window: Możesz teraz zamknąć okno.
-
-      send_add:
-        page_heading: Sprawdź e-maile
-        we_sent_email:
-          one: >-
-            Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
-            aby dodać nowe hasło.
-          few: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby dodać nowe hasło.
-          many: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby dodać nowe hasło.
-          other: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby dodać nowe hasło.
-        close_this_window: Możesz teraz zamknąć okno.
 
     sessions:
       access_tutor: Zaloguj się lub zarejestruj, aby uzyskać dostęp do OpenStax Tutor

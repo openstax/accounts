@@ -102,7 +102,7 @@ feature 'Require recent log in to change authentications', js: true do
   #     find('[type=submit]').click
   #
   #     newflow_complete_add_password_screen
-  #     expect(page).to have_content(t :"legacy.identities.reset_success.message")
+  #     expect(page).to have_content(t :"identities.reset_success.message")
   #   end
   # end
 

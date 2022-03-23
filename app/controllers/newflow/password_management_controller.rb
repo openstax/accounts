@@ -42,7 +42,7 @@ module Newflow
         CreatePassword,
         success: lambda {
           security_log(:student_created_password, user: @handler_result.outputs.user)
-          redirect_to profile_newflow_url, notice: t(:"legacy.identities.add_success.message")
+          redirect_to profile_newflow_url, notice: t(:"identities.add_success.message")
         },
         failure: lambda {
           security_log(:student_create_password_failed, user: @handler_result.outputs.user)
@@ -66,7 +66,7 @@ module Newflow
           ChangePassword,
           success: lambda {
             security_log :password_reset
-            redirect_to profile_newflow_url, notice: t(:"legacy.identities.reset_success.message")
+            redirect_to profile_newflow_url, notice: t(:"identities.reset_success.message")
           },
           failure: lambda {
             security_log :password_reset_failed

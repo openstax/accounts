@@ -383,26 +383,26 @@ end
 
 def complete_reset_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in (t :"legacy.identities.set.password"), with: password
-  fill_in (t :"legacy.identities.set.confirm_password"), with: password
-  click_button (t :"legacy.identities.reset.submit")
-  expect(page).to have_content(t :"legacy.identities.reset_success.message")
+  fill_in (t :"identities.set.password"), with: password
+  fill_in (t :"identities.set.confirm_password"), with: password
+  click_button (t :"identities.reset.submit")
+  expect(page).to have_content(t :"identities.reset_success.message")
 end
 
 def complete_reset_password_success_screen
-  click_button (t :"legacy.identities.reset_success.continue")
+  click_button (t :"identities.reset_success.continue")
 end
 
 def complete_add_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in (t :"legacy.identities.set.password"), with: password
-  fill_in (t :"legacy.identities.set.confirm_password"), with: password
-  click_button (t :"legacy.identities.add.submit")
-  expect(page).to have_content(t :"legacy.identities.add_success.message")
+  fill_in (t :"identities.set.password"), with: password
+  fill_in (t :"identities.set.confirm_password"), with: password
+  click_button (t :"identities.add.submit")
+  expect(page).to have_content(t :"identities.add_success.message")
 end
 
 def complete_add_password_success_screen
-  click_button (t :"legacy.identities.add_success.continue")
+  click_button (t :"identities.add_success.continue")
 end
 
 def complete_terms_screens(without_privacy_policy: false)

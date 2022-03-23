@@ -502,6 +502,46 @@ en:
       have_read_terms_and_agree: >-
         I have read and agree to the terms listed above.
 
+  identities:
+    set:
+      confirm_password: Confirm Password
+      password: Password
+      there_was_a_problem_with_password_link: >-
+        Unfortunately, there was a problem with your password link. If you
+        continue to have problems, please contact Support.
+      expired_password_link: >-
+        The password link you used has expired.
+      cancel: Cancel
+    reset:
+      page_heading: Reset your password
+      use_form_below_to_reset_password: >-
+        Use the form below to reset your password.
+      submit: Reset Password
+      submitting: Resetting…
+    add:
+      page_heading: Add a password
+      use_form_below_to_add_password: >-
+        Use the form below to add a password to your account.
+      submit: Add Password
+      submitting: Adding…
+    add_success:
+      page_heading: Success!
+      message: Your password was added to your account.
+      continue: Continue
+    reset_success:
+      page_heading: Success!
+      message: Your password has been reset.
+      continue: Continue
+    send_reset:
+      page_heading: Check your email
+      we_sent_email: We sent an email to %{emails}. Click the link in that email to reset your password.
+      close_this_window: You can close this window.
+
+    send_add:
+      page_heading: Check your email
+      we_sent_email: We sent an email to %{emails}. Click the link in that email to add a password.
+      close_this_window: You can close this window.
+
   legacy:
     users:
       edit:
@@ -521,46 +561,6 @@ en:
         unconfirmed_warning: unconfirmed
         password: Password
         searchable: Let other users find me by this email.
-
-    identities:
-      set:
-        confirm_password: Confirm Password
-        password: Password
-        there_was_a_problem_with_password_link: >-
-          Unfortunately, there was a problem with your password link. If you
-          continue to have problems, please contact Support.
-        expired_password_link: >-
-          The password link you used has expired.
-        cancel: Cancel
-      reset:
-        page_heading: Reset your password
-        use_form_below_to_reset_password: >-
-          Use the form below to reset your password.
-        submit: Reset Password
-        submitting: Resetting…
-      add:
-        page_heading: Add a password
-        use_form_below_to_add_password: >-
-          Use the form below to add a password to your account.
-        submit: Add Password
-        submitting: Adding…
-      add_success:
-        page_heading: Success!
-        message: Your password was added to your account.
-        continue: Continue
-      reset_success:
-        page_heading: Success!
-        message: Your password has been reset.
-        continue: Continue
-      send_reset:
-        page_heading: Check your email
-        we_sent_email: We sent an email to %{emails}. Click the link in that email to reset your password.
-        close_this_window: You can close this window.
-
-      send_add:
-        page_heading: Check your email
-        we_sent_email: We sent an email to %{emails}. Click the link in that email to add a password.
-        close_this_window: You can close this window.
 
     sessions:
       access_tutor: Log in or sign up for an account to access OpenStax Tutor
