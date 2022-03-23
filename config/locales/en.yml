@@ -542,99 +542,98 @@ en:
       we_sent_email: We sent an email to %{emails}. Click the link in that email to add a password.
       close_this_window: You can close this window.
 
-  legacy:
-    users:
-      edit:
-        add_email_address: Add an email
-        email_addresses: Emails
-        enable_other_sign_in_options: Enable other login options
-        how_you_sign_in_html: How you<br class="wide"> log in
-        name: Name
-        other_sign_in_options_html: Other login<br class="wide"> options
-        page_heading: My Account
-        username: Username
-        sign_out: Log out
-        check_searchable_if_you_want_to_be_searchable: >-
-          Check the Searchable box if you want other OpenStax users to find you
-          using this email address.
-        resend_confirmation: 'Resend confirmation email'
-        unconfirmed_warning: unconfirmed
-        password: Password
-        searchable: Let other users find me by this email.
+  users:
+    edit:
+      add_email_address: Add an email
+      email_addresses: Emails
+      enable_other_sign_in_options: Enable other login options
+      how_you_sign_in_html: How you<br class="wide"> log in
+      name: Name
+      other_sign_in_options_html: Other login<br class="wide"> options
+      page_heading: My Account
+      username: Username
+      sign_out: Log out
+      check_searchable_if_you_want_to_be_searchable: >-
+        Check the Searchable box if you want other OpenStax users to find you
+        using this email address.
+      resend_confirmation: 'Resend confirmation email'
+      unconfirmed_warning: unconfirmed
+      password: Password
+      searchable: Let other users find me by this email.
 
-    sessions:
+  sessions:
+    access_tutor: Log in or sign up for an account to access OpenStax Tutor
+    help:
+      if_you_know_username_or_email:
+        # %{link}   an email hyperlink to info@openstax.org. Label of the link
+        #           is defined by the .contact_customer_support key.
+        content_html: >-
+          If you know your account's username or email address, please enter it
+          below and we'll send you an email about how to regain access to your
+          account. If you do not have this information, please %{link}.
+        contact_customer_support: contact Support
+      page_heading: Get help logging in
+      submit: Submit
+      submitting: Submitting…
+      username_or_email: Username or Email
+
+    start:
       access_tutor: Log in or sign up for an account to access OpenStax Tutor
-      help:
-        if_you_know_username_or_email:
-          # %{link}   an email hyperlink to info@openstax.org. Label of the link
-          #           is defined by the .contact_customer_support key.
-          content_html: >-
-            If you know your account's username or email address, please enter it
-            below and we'll send you an email about how to regain access to your
-            account. If you do not have this information, please %{link}.
-          contact_customer_support: contact Support
-        page_heading: Get help logging in
-        submit: Submit
-        submitting: Submitting…
-        username_or_email: Username or Email
+      cant_sign_in: Can’t log in?
+      logout_reminder_html: >-
+        If you're on a public computer, <b>be sure to sign out</b> when you're done!
+      openstax_wont_use_social_media_without_permission_html: >-
+        <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
+        network without your permission.
+      page_heading: Log in to your OpenStax account
+      page_sub_heading: Access all OpenStax tools and resources
+      sign_in: Log in
+      sign_up: Sign up here
+      no_account_q: Need an account?
+      used_this_method_last_time: >-
+        It looks like you used this the last time you signed in.
+      email: Email
+      email_placeholder: Email or username
+      username_placeholder: Username
+      next: Next
+      submitting: Continuing…
+      cannot_find_user: Cannot find user
+      unknown_username: We don’t recognize this username. Please try again or use your email address instead.
+      unknown_email: We don’t recognize this email. Please try again.
+      having_trouble: Trouble logging in?
+      help: Enter the email or username associated with your OpenStax account, and we will help you log in.
+      cant_remember_email: Don’t know how you signed up?
+      knowledge_base: Visit our knowledge base for help
+      multiple_users_missing_usernames:
+        content_html: >-
+          We found several accounts with this email and unfortunately we can't tell which to use.
+          Please %{help_link}.
+        help_link_text: contact our Support team for assistance
+      multiple_users:
+        # %{link}   a hyperlink that sends usernames to the email being used for log in.
+        #           The label is defined by the .click_here key.
+        content_html: >-
+          We found several accounts with this email. Please log in using your username.<br/>
+          Forgot your usernames? %{link}.
+        click_here: Click here and we’ll email them to you
+      sent_multiple_usernames: >-
+        Please check <strong>%{email}</strong> for an email listing your usernames, and use one to log in.
 
-      start:
-        access_tutor: Log in or sign up for an account to access OpenStax Tutor
-        cant_sign_in: Can’t log in?
-        logout_reminder_html: >-
-          If you're on a public computer, <b>be sure to sign out</b> when you're done!
-        openstax_wont_use_social_media_without_permission_html: >-
-          <i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social
-          network without your permission.
-        page_heading: Log in to your OpenStax account
-        page_sub_heading: Access all OpenStax tools and resources
-        sign_in: Log in
-        sign_up: Sign up here
-        no_account_q: Need an account?
-        used_this_method_last_time: >-
-          It looks like you used this the last time you signed in.
-        email: Email
-        email_placeholder: Email or username
-        username_placeholder: Username
-        next: Next
-        submitting: Continuing…
-        cannot_find_user: Cannot find user
-        unknown_username: We don’t recognize this username. Please try again or use your email address instead.
-        unknown_email: We don’t recognize this email. Please try again.
-        having_trouble: Trouble logging in?
-        help: Enter the email or username associated with your OpenStax account, and we will help you log in.
-        cant_remember_email: Don’t know how you signed up?
-        knowledge_base: Visit our knowledge base for help
-        multiple_users_missing_usernames:
-          content_html: >-
-            We found several accounts with this email and unfortunately we can't tell which to use.
-            Please %{help_link}.
-          help_link_text: contact our Support team for assistance
-        multiple_users:
-          # %{link}   a hyperlink that sends usernames to the email being used for log in.
-          #           The label is defined by the .click_here key.
-          content_html: >-
-            We found several accounts with this email. Please log in using your username.<br/>
-            Forgot your usernames? %{link}.
-          click_here: Click here and we’ll email them to you
-        sent_multiple_usernames: >-
-          Please check <strong>%{email}</strong> for an email listing your usernames, and use one to log in.
+    authenticate:
+      name_greeting: Hello, %{name}!
 
-      authenticate:
-        name_greeting: Hello, %{name}!
+    reauthenticate:
+      page_heading: Please log in again before continuing.
 
-      reauthenticate:
-        page_heading: Please log in again before continuing.
-
-      authenticate_options:
-        separator_or: or
-        sign_in_with_facebook: Log in with Facebook
-        sign_in_with_google: Log in with Google
-        sign_in_with_twitter: Log in with Twitter
-        login: Log in
-        submitting: Logging in…
-        password: Password
-        forgot_password: Can’t remember your password?
-        trouble_logging_in: Trouble logging in?
-        reset_password: Click here to reset it
-        add_password: Click here to add a password
+    authenticate_options:
+      separator_or: or
+      sign_in_with_facebook: Log in with Facebook
+      sign_in_with_google: Log in with Google
+      sign_in_with_twitter: Log in with Twitter
+      login: Log in
+      submitting: Logging in…
+      password: Password
+      forgot_password: Can’t remember your password?
+      trouble_logging_in: Trouble logging in?
+      reset_password: Click here to reset it
+      add_password: Click here to add a password

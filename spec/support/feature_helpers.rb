@@ -205,18 +205,18 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
 end
 
 def click_password_sign_up  # TODO remove, bad name
-  click_on (t :"legacy.sessions.start.sign_up")
+  click_on (t :"sessions.start.sign_up")
 end
 
 def click_sign_up
-  click_on (t :"legacy.sessions.start.sign_up")
+  click_on (t :"sessions.start.sign_up")
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"legacy.signup.start.page_heading")
 end
 
 def expect_sign_in_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"legacy.sessions.start.page_heading")
+  expect(page).to have_content(t :"sessions.start.page_heading")
 end
 
 def expect_sign_up_page
@@ -235,7 +235,7 @@ end
 
 def expect_profile_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"legacy.users.edit.page_heading")
+  expect(page).to have_content(t :"users.edit.page_heading")
   expect(page).to have_current_path profile_path
 end
 
@@ -271,16 +271,16 @@ def complete_login_username_or_email_screen(username_or_email)
   expect_sign_in_page
   expect(page).to have_no_missing_translations
   screenshot!
-  click_button (t :"legacy.sessions.start.next")
+  click_button (t :"sessions.start.next")
   expect(page).to have_no_missing_translations
 end
 
 def complete_login_password_screen(password)
-  expect(page).to have_content(t :"legacy.sessions.authenticate_options.forgot_password")
-  fill_in (t :"legacy.sessions.authenticate_options.password"), with: password
+  expect(page).to have_content(t :"sessions.authenticate_options.forgot_password")
+  fill_in (t :"sessions.authenticate_options.password"), with: password
   expect(page).to have_no_missing_translations
   screenshot!
-  click_button (t :"legacy.sessions.authenticate_options.login")
+  click_button (t :"sessions.authenticate_options.login")
   expect(page).to have_no_missing_translations
 end
 

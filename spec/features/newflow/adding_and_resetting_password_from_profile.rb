@@ -94,7 +94,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
 
     expect_newflow_profile_page
 
-    click_link (t :"legacy.users.edit.sign_out")
+    click_link (t :"users.edit.sign_out")
     visit '/'
     expect(page).to have_current_path newflow_login_path
 

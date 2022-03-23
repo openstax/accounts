@@ -106,7 +106,7 @@ Rails.application.routes.draw do
     post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
   end
 
-  scope controller: 'legacy/sessions' do
+  scope controller: 'sessions' do
     get 'logout', action: :destroy
 
     # Maintain these deprecated routes for a while until client code learns to
@@ -134,7 +134,7 @@ Rails.application.routes.draw do
     get 'notify_logout', as: 'iframe_after_logout'
   end
 
-  scope controller: 'legacy/users' do
+  scope controller: 'users' do
     put 'profile', action: :update
   end
 
