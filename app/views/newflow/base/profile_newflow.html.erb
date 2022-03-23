@@ -110,7 +110,7 @@
 
   </div>
 
-  <%= render partial: 'legacy/users/other-sign-in', locals: {
+  <%= render partial: 'newflow/base/other-sign-in', locals: {
     other_html: I18n.t(:"student_profile.other_sign_in_options_html"),
     other_providers_block:
       other_available_providers.map{ |provider|
@@ -125,4 +125,7 @@
 <% end %>
 
 <%= render 'layouts/application_footer' %>
-<%= render 'legacy/users/edit-js' %>
+<%= render partial: 'newflow/base/edit-js', locals: {
+  profile_path: :'/profile',
+  current_user: current_user
+} %>

@@ -3,75 +3,87 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
+  match 'i/signup/(*path)' => redirect{ |p| "signup/#{p[:path]}"}, via: :all
+  get 'i/profile' => redirect('profile')
+  get 'i/exit_accounts' => redirect('exit_accounts')
+  match 'i/login' => redirect('login'), via: :all
+  get 'i/reauthenticate' => redirect('reauthenticate')
+  get 'i/check_your_email' => redirect('check_your_email')
+  get 'i/done' => redirect('done')
+  match 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
+  get 'i/confirm_your_info' => redirect('confirm_your_info')
+  get 'i/forgot_password_form' => redirect('forgot_password_form')
+  post 'i/sheerid_webhook' => redirect('sheerid_webhook')
+
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
   scope controller: 'newflow/other' do
     # Profile access
-    get 'i/profile', action: :profile_newflow, as: :profile_newflow
+    get 'profile', action: :profile_newflow, as: :profile_newflow
 
     # Exit accounts back to app they came from
-    get 'i/exit_accounts', action: :exit_accounts, as: :exit_accounts
+    get 'exit_accounts', action: :exit_accounts, as: :exit_accounts
   end
 
   scope controller: 'newflow/login' do
-    get 'i/login', action: :login_form, as: :newflow_login
-    post 'i/login', action: :login
-    get 'i/reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
+    get 'login', action: :login_form, as: :newflow_login
+    post 'login', action: :login
+    get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
     get 'i/signout', action: :logout, as: :newflow_logout
   end
 
   scope controller: 'newflow/signup' do
-    get 'i/signup', action: :welcome, as: :newflow_signup
-    get 'i/done', action: :signup_done, as: :signup_done
-    get 'i/verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
-    get 'i/check_your_email', action: :check_your_email, as: :check_your_email
+    get 'signup', action: :welcome, as: :newflow_signup
+    get 'done', action: :signup_done, as: :signup_done
+    get 'verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
+    get 'check_your_email', action: :check_your_email, as: :check_your_email
   end
 
   scope controller: 'newflow/student_signup' do
-    get 'i/signup/student', action: :student_signup_form, as: :signup_student
-    post 'i/signup/student', action: :student_signup, as: :newflow_signup_post
+    get 'signup/student', action: :student_signup_form, as: :signup_student
+    post 'signup/student', action: :student_signup, as: :newflow_signup_post
 
-    get 'i/signup/student/email_verification_form', action: :student_email_verification_form, as: :student_email_verification_form
-    post 'i/signup/student/change_signup_email', action: :student_change_signup_email, as: :student_change_signup_email
-    get 'i/signup/student/email_verification_form_updated_email',
+    get 'signup/student/email_verification_form', action: :student_email_verification_form, as: :student_email_verification_form
+    post 'signup/student/change_signup_email', action: :student_change_signup_email, as: :student_change_signup_email
+    get 'signup/student/email_verification_form_updated_email',
       action: :student_email_verification_form_updated_email,
       as: :student_email_verification_form_updated_email
-    get 'i/signup/student/change_signup_email_form', action: :student_change_signup_email_form, as: :student_change_signup_email_form
-    post 'i/signup/student/verify_email_by_pin', action: :student_verify_email_by_pin, as: :student_verify_pin
+    get 'signup/student/change_signup_email_form', action: :student_change_signup_email_form, as: :student_change_signup_email_form
+    post 'signup/student/verify_email_by_pin', action: :student_verify_email_by_pin, as: :student_verify_pin
   end
 
   scope controller: 'newflow/educator_signup' do
     # Step 1
-    get 'i/signup/educator', action: :educator_signup_form, as: :educator_signup
-    post 'i/signup/educator', action: :educator_signup, as: :educator_signup_post
-    get 'i/signup/educator/change_signup_email_form', action: :educator_change_signup_email_form, as: :educator_change_signup_email_form
-    post 'i/signup/educator/change_signup_email', action: :educator_change_signup_email, as: :educator_change_signup_email
+    get 'signup/educator', action: :educator_signup_form, as: :educator_signup
+    post 'signup/educator', action: :educator_signup, as: :educator_signup_post
+    get 'signup/educator/change_signup_email_form', action: :educator_change_signup_email_form, as: :educator_change_signup_email_form
+    post 'signup/educator/change_signup_email', action: :educator_change_signup_email, as: :educator_change_signup_email
 
     # Step 2
-    get 'i/signup/educator/email_verification_form', action: :educator_email_verification_form, as: :educator_email_verification_form
-    get 'i/signup/educator/email_verification_form_updated_email',
+    get 'signup/educator/email_verification_form', action: :educator_email_verification_form, as: :educator_email_verification_form
+    get 'signup/educator/email_verification_form_updated_email',
       action: :educator_email_verification_form_updated_email,
       as: :educator_email_verification_form_updated_email
-    post 'i/signup/educator/verify_email_by_pin', action: :educator_verify_email_by_pin, as: :educator_verify_pin
+    post 'signup/educator/verify_email_by_pin', action: :educator_verify_email_by_pin, as: :educator_verify_pin
 
     # Step 3
-    get 'i/signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
-    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
+    get 'signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
+    post 'sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     # Step 4
-    get 'i/signup/educator/profile_form', action: :educator_profile_form, as: :educator_profile_form
-    post 'i/signup/educator/complete_profile', action: :educator_complete_profile, as: :educator_complete_profile
-    get 'i/signup/educator/pending_cs_verification', action: :educator_pending_cs_verification, as: :educator_pending_cs_verification
+    get 'signup/educator/profile_form', action: :educator_profile_form, as: :educator_profile_form
+    post 'signup/educator/complete_profile', action: :educator_complete_profile, as: :educator_complete_profile
+    get 'signup/educator/pending_cs_verification', action: :educator_pending_cs_verification, as: :educator_pending_cs_verification
 
-    get 'i/signup/educator/cs_form', action: :educator_profile_form, as: :educator_cs_verification_form
-    post 'i/signup/educator/cs_verification_request', action: :educator_complete_profile, as: :educator_cs_verification_request
+    get 'signup/educator/cs_form', action: :educator_profile_form, as: :educator_cs_verification_form
+    post 'signup/educator/cs_verification_request', action: :educator_complete_profile, as: :educator_cs_verification_request
   end
 
   scope controller: 'newflow/password_management' do
     # Password management process (forgot,  change, or create password)
-    get 'i/forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
+    get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
     post 'i/send_reset_password_email',
       action: :send_reset_password_email,
       as: :send_reset_password_email
@@ -90,32 +102,15 @@ Rails.application.routes.draw do
     get 'i/auth/:provider/callback', action: :oauth_callback
     delete 'i/auth/:provider', action: :remove_auth_strategy
     #   When you sign up with a social provider, you must confirm your info first
-    get 'i/confirm_your_info', action: :confirm_your_info
+    get 'confirm_your_info', action: :confirm_your_info
     post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
   end
 
   scope controller: 'legacy/sessions' do
-    get 'login', action: :start, as: :login
-
-    post 'lookup_login'
-
-    get 'authenticate'
-
-    get 'reauthenticate'
-
-    get 'auth/:provider/callback', action: :create, as: :get_auth_callback
-    post 'auth/:provider/callback', action: :create, as: :post_auth_callback
-
     get 'logout', action: :destroy
-
-    get 'redirect_back'
-
-    get :failure, path: 'auth/failure', as: :auth_failure
-    post 'email_usernames'
 
     # Maintain these deprecated routes for a while until client code learns to
     # use /login and /logout
-    get 'signin', action: :start
     get 'signout', action: :destroy
   end
 
@@ -133,13 +128,6 @@ Rails.application.routes.draw do
     get 'add/:provider', action: :add, as: :add_authentication
   end
 
-  scope controller: 'legacy/signup' do
-    # Don't know if this is the right action; putting a route in here
-    # so we have a name for it and can use a url helper for it (which
-    # will prefix the route appropriately, e.g. for Cloudfront)
-    post 'auth/:provider/signup', action: :start, as: :post_auth_signup
-  end
-
   # routes for access via an iframe
   scope 'remote', controller: 'remote' do
     get 'iframe'
@@ -147,25 +135,11 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'legacy/users' do
-    get 'profile', action: :edit
     put 'profile', action: :update
   end
 
-  scope 'signup', controller: 'legacy/signup', as: 'signup' do
-    get '/', action: :start
-    post '/', action: :start
-    get 'password'
-    get 'social'
-
-    get 'verify_email'
-    post 'verify_email'
-
-    get 'verify_by_token'
-
-    get 'profile'
-    post 'profile'
-
-    match 'instructor_access_pending', via: [:get, :post]
+  scope 'signup' do
+    get '/' => redirect('signup')
   end
 
   scope controller: 'legacy/identities', path: 'password', as: 'password' do
@@ -300,7 +274,7 @@ Rails.application.routes.draw do
 
     resources :banners, except: :show
 
-    mount Blazer::Engine, at: "blazer", as: 'blazer_admin'
+    mount Blazer::Engine, at: 'blazer', as: 'blazer_admin'
 
     mount RailsSettingsUi::Engine, at: 'settings'
   end
