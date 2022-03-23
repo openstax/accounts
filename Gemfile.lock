@@ -176,7 +176,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.9)
+    concurrent-ruby (1.1.10)
     crack (0.4.5)
       rexml
     crass (1.0.6)
@@ -372,7 +372,7 @@ GEM
       activesupport (>= 4)
       railties (>= 4)
       request_store (~> 1.0)
-    loofah (2.14.0)
+    loofah (2.15.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lumberjack (1.0.10)
@@ -459,7 +459,7 @@ GEM
       rails (>= 3.0)
     openstax_rescue_from (4.2.0)
       rails (>= 3.1, < 7.0)
-    openstax_salesforce (7.4.2)
+    openstax_salesforce (7.4.3)
       openstax_active_force
       rails (>= 5.0, < 7.0)
       restforce
@@ -582,7 +582,7 @@ GEM
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
-    restforce (5.2.3)
+    restforce (5.2.4)
       faraday (>= 0.9.0, < 1.9.0)
       faraday_middleware (>= 0.8.8, <= 2.0)
       hashie (>= 1.2.0, < 6.0)
