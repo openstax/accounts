@@ -26,7 +26,7 @@ class EducatorSignupFlowDecorator
 
     case action
     when 'redirect_back_upon_login'
-      !user.is_profile_complete?
+      user.is_profile_complete?
     when 'educator_sheerid_form'
       (user.no_faculty_info? || user.pending_faculty? || user.incomplete_signup?) && user.sheerid_verification_id.blank?
     when 'educator_signup_form'
