@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-  include LegacyHelper
-
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 
   before_action :allow_iframe_access, only: [:update]

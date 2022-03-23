@@ -90,7 +90,6 @@ feature "User can't sign in", js: true do
 
       arrive_from_app
       newflow_click_sign_up(role: 'student')
-      # complete_signup_email_screen "Student", "unverified@example.com", screenshot_after_role: true
       newflow_complete_student_signup_with_whatever
 
 
