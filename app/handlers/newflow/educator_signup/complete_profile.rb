@@ -85,13 +85,23 @@ module Newflow
           # user needs CS review to become confirmed - set it as such in accounts
           @user.update(
             requested_cs_verification_at: DateTime.now,
-            faculty_status: User::PENDING_FACULTY
+            faculty_status: :pending_faculty
           )
           unless signup_params.school_issued_email.blank?
             # this user used the CS form and _should_ have provided us an email address -
             # so let's add it - validation happens before this in check_params
             run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
           end
+        else
+          # If user did not need CS verification but still needs to be pending, set them to pending state
+          # This is everyone, unless SheerID sets it to something else in sheerid_webhook when we hear back from their webhook
+          # Otherwise, we can see who didn't fill out their profile with a faculty status of :incomplete_signup
+          @user.faculty_status = :pending_faculty
+          SecurityLog.create!(
+            user:       user,
+            event_type: :faculty_status_updated,
+            event_data: { old_status: "incomplete", new_status: "pending" }
+          )
         end
 
         transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)

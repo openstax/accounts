@@ -28,7 +28,6 @@ class User < ApplicationRecord
     PENDING_FACULTY = 'pending_faculty',
     CONFIRMED_FACULTY = 'confirmed_faculty',
     REJECTED_FACULTY = 'rejected_faculty',
-    # TODO: need to implement below this line - requires thorough application code checking
     PENDING_SHEERID = 'pending_sheerid',
     REJECTED_BY_SHEERID = 'rejected_by_sheerid',
     INCOMPLETE_SIGNUP = 'incomplete_signup'
@@ -48,9 +47,9 @@ class User < ApplicationRecord
   USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
   USERNAME_MIN_LENGTH = 3
   USERNAME_MAX_LENGTH = 50
-  DEFAULT_FACULTY_STATUS = VALID_FACULTY_STATUSES[0]
+  DEFAULT_FACULTY_STATUS = :incomplete_signup
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
-  DEFAULT_SCHOOL_LOCATION = VALID_SCHOOL_LOCATIONS[0]
+  DEFAULT_SCHOOL_LOCATION = :unknown_school_type
 
   enum(faculty_status: VALID_FACULTY_STATUSES)
   enum(role: VALID_ROLES)
@@ -196,7 +195,7 @@ class User < ApplicationRecord
   end
 
   def needs_to_complete_educator_profile?
-    (role != STUDENT_ROLE) && is_newflow && !is_profile_complete
+    (role != STUDENT_ROLE) && !is_profile_complete
   end
 
   def is_instructor_verification_stale?
@@ -307,6 +306,18 @@ class User < ApplicationRecord
     faculty_status == REJECTED_FACULTY
   end
 
+  def pending_sheerid?
+    faculty_status == PENDING_SHEERID
+  end
+
+  def rejected_by_sheerid?
+    faculty_status == REJECTED_BY_SHEERID
+  end
+
+  def incomplete_signup?
+    faculty_status == INCOMPLETE_SIGNUP
+  end
+
   def name
     full_name.present? ? full_name : username
   end
@@ -345,10 +356,6 @@ class User < ApplicationRecord
 
   def has_emails_but_none_verified?
     email_addresses.any? && email_addresses.none?(&:verified)
-  end
-
-  def created_from_signed_data?
-    signed_external_data.present?
   end
 
   ##########################
@@ -392,6 +399,7 @@ class User < ApplicationRecord
   def self.known_roles
     roles.except(:unknown_role).keys
   end
+
 
   def self.non_student_known_roles
     known_roles - ['student']

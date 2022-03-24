@@ -12,7 +12,6 @@ module Newflow
         return if user.activated?
 
         user.update!(state: User::ACTIVATED)
-        user.update!(faculty_status: User::INCOMPLETE_SIGNUP)
         SecurityLog.create!(user: user, event_type: :user_became_activated)
       end
 
