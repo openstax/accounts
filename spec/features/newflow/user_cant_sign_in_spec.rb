@@ -37,16 +37,16 @@ feature "User can't sign in", js: true do
       screenshot!
 
       # TODO
-      # click_link t(:"legacy.sessions.start.multiple_users.click_here")
+      # click_link t(:"sessions.start.multiple_users.click_here")
       # expect(page).to have_content(
       #   ActionView::Base.full_sanitizer.sanitize(
-      #     t(:"legacy.sessions.start.sent_multiple_usernames", email: email_address)
+      #     t(:"sessions.start.sent_multiple_usernames", email: email_address)
       #   )
       # )
 
       # screenshot!
 
-      # expect(page.first('input')["placeholder"]).to eq t(:"legacy.sessions.start.username_placeholder")
+      # expect(page.first('input')["placeholder"]).to eq t(:"sessions.start.username_placeholder")
       # expect(page.first('input').text).to be_blank
 
       # open_email(email_address)
@@ -74,10 +74,10 @@ feature "User can't sign in", js: true do
 
       # Can't be an exact email match to trigger this scenario
       newflow_log_in_user('useR@example.com', 'whatever')
-      expect(page).to have_content(t(:"legacy.sessions.start.multiple_users_missing_usernames.content_html").split('.')[0])
+      expect(page).to have_content(t(:"sessions.start.multiple_users_missing_usernames.content_html").split('.')[0])
 
       expect(page.all('a')
-                 .select{|link| link.text == t(:"legacy.sessions.start.multiple_users_missing_usernames.help_link_text")}
+                 .select{|link| link.text == t(:"sessions.start.multiple_users_missing_usernames.help_link_text")}
                  .first["href"]).to eq "mailto:info@openstax.org"
 
       screenshot!
@@ -90,7 +90,6 @@ feature "User can't sign in", js: true do
 
       arrive_from_app
       newflow_click_sign_up(role: 'student')
-      # complete_signup_email_screen "Student", "unverified@example.com", screenshot_after_role: true
       newflow_complete_student_signup_with_whatever
 
 
@@ -156,8 +155,8 @@ feature "User can't sign in", js: true do
 
       # TODO somehow simulate oauth failure so we see error message
 
-      click_link(t :"legacy.sessions.authenticate_options.add_password")
-      expect(page).to have_content(t(:"legacy.identities.send_add.we_sent_email", emails: 'user@example.com'))
+      click_link(t :"sessions.authenticate_options.add_password")
+      expect(page).to have_content(t(:"identities.send_add.we_sent_email", emails: 'user@example.com'))
       screenshot!
 
       open_email('user@example.com')

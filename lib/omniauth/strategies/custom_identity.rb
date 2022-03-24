@@ -92,15 +92,6 @@ module OmniAuth
         end
       end
 
-      def other_phase
-        if on_signup_path?
-          # Normal identity shows sign up form on GET, but we don't want that
-          request.post? ? handle_signup : raise(ActionController::RoutingError.new('Not Found'))
-        else
-          call_app!
-        end
-      end
-
       def verified_request?
         !protect_against_forgery? || request.get? || request.head? ||
         valid_authenticity_token?(session, form_authenticity_param) ||
@@ -117,37 +108,6 @@ module OmniAuth
         rq.flash = nil
         rq.session_options = { skip: true }
         rq.cookie_jar = NullSession::NullCookieJar.build(rq, {})
-      end
-
-      def handle_signup
-        unless verified_request?
-          Rails.logger.warn{ "Can't verify CSRF token authenticity" } \
-            if Rails.logger && log_warning_on_csrf_failure
-
-          handle_unverified_request
-          Legacy::SessionsController.action(:start).call(env)
-        else
-          @handler_result =
-            SignupPassword.handle(
-              params: request,
-              caller: current_user,
-              pre_auth_state: pre_auth_state
-            )
-
-          env['errors'] = @handler_result.errors
-
-          if @handler_result.errors.none?
-            @identity = @handler_result.outputs[:identity]
-            env['PATH_INFO'] = callback_path
-            callback_phase
-          else
-            show_signup_password_form
-          end
-        end
-      end
-
-      def show_signup_password_form
-        Legacy::SignupController.action(:password).call(env)
       end
 
       def signup_path

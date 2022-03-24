@@ -205,43 +205,22 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
 end
 
 def click_password_sign_up  # TODO remove, bad name
-  click_on (t :"legacy.sessions.start.sign_up")
-end
-
-def click_sign_up
-  click_on (t :"legacy.sessions.start.sign_up")
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"legacy.signup.start.page_heading")
+  click_on (t :"sessions.start.sign_up")
 end
 
 def expect_sign_in_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"legacy.sessions.start.page_heading")
-end
-
-def expect_sign_up_page
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"legacy.signup.start.page_heading")
+  expect(page).to have_content(t :"sessions.start.page_heading")
 end
 
 def expect_authenticate_page
   expect(page.body).to match(/Hello.*!/)
 end
 
-def expect_social_sign_up_page
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"legacy.signup.new_account.password_managed_by", manager: '')
-end
-
 def expect_profile_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"legacy.users.edit.page_heading")
+  expect(page).to have_content(t :"users.edit.page_heading")
   expect(page).to have_current_path profile_path
-end
-
-def agree_and_click_create
-  check 'signup_i_agree'
-  click_button (t :"legacy.signup.new_account.create_account")
 end
 
 def arrive_from_app(app: nil, params: {}, do_expect: true)
@@ -254,155 +233,46 @@ def expect_back_at_app(app: nil)
   expect(page.current_url).to match(app_callback_url(app: app || @app))
 end
 
-def expect_signup_verify_screen
-  expect(page).to have_content(t :"legacy.signup.verify_email.page_heading_pin")
-end
-
-def expect_signup_password_screen
-  expect(page).to have_content(t :"legacy.signup.password.page_heading")
-end
-
-def expect_signup_profile_screen
-  expect(page).to have_content(t :"legacy.signup.profile.page_heading")
-end
-
 def complete_login_username_or_email_screen(username_or_email)
   fill_in 'login_username_or_email', with: username_or_email
   expect_sign_in_page
   expect(page).to have_no_missing_translations
   screenshot!
-  click_button (t :"legacy.sessions.start.next")
+  click_button (t :"sessions.start.next")
   expect(page).to have_no_missing_translations
 end
 
 def complete_login_password_screen(password)
-  expect(page).to have_content(t :"legacy.sessions.authenticate_options.forgot_password")
-  fill_in (t :"legacy.sessions.authenticate_options.password"), with: password
+  expect(page).to have_content(t :"sessions.authenticate_options.forgot_password")
+  fill_in (t :"sessions.authenticate_options.password"), with: password
   expect(page).to have_no_missing_translations
   screenshot!
-  click_button (t :"legacy.sessions.authenticate_options.login")
+  click_button (t :"sessions.authenticate_options.login")
   expect(page).to have_no_missing_translations
-end
-
-def complete_signup_email_screen(role, email, options={})
-  options[:screenshot_after_role] ||= false
-  options[:only_one_next] ||= false
-
-  @signup_email = email
-  expect(page).to have_content(t :"legacy.signup.start.page_heading")
-  select role, from: "signup_role"
-  if options[:screenshot_after_role]
-    wait_for_animations
-    screenshot!
-  end
-  fill_in (t :"legacy.signup.start.email_placeholder"), with: email
-  expect(page).to have_no_missing_translations
-  click_button(t :"legacy.signup.start.next")
-
-  expecting_institutional_email_warning = !(email =~ /\.edu$/) && !role.match(/student/i)
-
-  click_button(t :"legacy.signup.start.next") unless !expecting_institutional_email_warning ||
-                                              options[:only_one_next]
-
-  if !(options[:only_one_next] && expecting_institutional_email_warning)
-    expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"legacy.signup.verify_email.page_heading_pin")
-  end
-end
-
-def complete_signup_verify_screen(pin: nil, pass: nil)
-  tries = 0
-  while (tries+=1) < 100 && (ss = PreAuthState.find_by(contact_info_value: @signup_email)).nil? do
-    sleep(0.1) # transaction from earlier step may not have committed
-  end
-  fail("unable to find email #{@signup_email}.  Did creation step fail silently?") if ss.nil?
-  if pin.nil?
-    raise "Must set either `pin` or `pass`" if pass.nil?
-    pin = ss.confirmation_pin
-    pin[0] = (9-pin[0].to_i).to_s if !pass
-  end
-  fill_in (t :"legacy.signup.verify_email.pin"), with: pin
-  expect(page).to have_no_missing_translations
-  click_button (t :"legacy.signup.verify_email.confirm")
-  expect(page).to have_no_missing_translations
-end
-
-def complete_signup_password_screen(password, confirmation=nil)
-  confirmation ||= password
-  fill_in 'signup_password', with: password
-  fill_in (t :"legacy.signup.password.password_confirmation"), with: confirmation
-
-  expect(page).to have_content(t :"legacy.signup.password.page_heading")
-  expect(page).to have_no_missing_translations
-  click_button (t :"legacy.signup.password.create_password")
-  expect(page).to have_no_missing_translations
-end
-
-def complete_signup_profile_screen(role:, first_name: "", last_name: "", suffix: nil,
-                                   phone_number: "", school: "", url: "", num_students: "",
-                                   using_openstax: "", newsletter: true, subjects: [], agree: true)
-
-  raise IllegalArgument unless [:student, :instructor, :other].include?(role)
-
-  fill_in (t :"legacy.signup.profile.first_name"), with: first_name
-  fill_in (t :"legacy.signup.profile.last_name"), with: last_name
-  fill_in (t :"legacy.signup.profile.suffix"), with: suffix if suffix.present?
-  fill_in (t :"legacy.signup.profile.phone_number"), with: phone_number if role != :student
-  fill_in (t :"legacy.signup.profile.school"), with: school
-  fill_in (t :"legacy.signup.profile.url"), with: url if role != :student
-  fill_in (t :"legacy.signup.profile.num_students"), with: num_students if role == :instructor
-  select using_openstax, from: "profile_using_openstax" \
-    if role == :instructor && !using_openstax.blank?
-  if role != :student
-    subjects.each { |subject| check subject }
-  end
-  expect(page).to have_content(t :"legacy.signup.profile.page_heading")
-  expect(page).to have_no_missing_translations
-
-  check 'profile_i_agree' if agree
-
-  click_button (t :"legacy.signup.profile.create_account")
-  expect(page).to have_no_missing_translations
-end
-
-def complete_signup_profile_screen_with_whatever(role: :instructor)
-  complete_signup_profile_screen(
-    role: role,
-    first_name: "Bob",
-    last_name: "Armstrong",
-    phone_number: "634-5789",
-    school: "Rice University",
-    url: "http://www.ece.rice.edu/boba",
-    num_students: 30,
-    subjects: ["Biology"],
-    using_openstax: "primary",
-    newsletter: true,
-    agree: true
-  )
 end
 
 def complete_reset_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in (t :"legacy.identities.set.password"), with: password
-  fill_in (t :"legacy.identities.set.confirm_password"), with: password
-  click_button (t :"legacy.identities.reset.submit")
-  expect(page).to have_content(t :"legacy.identities.reset_success.message")
+  fill_in (t :"identities.set.password"), with: password
+  fill_in (t :"identities.set.confirm_password"), with: password
+  click_button (t :"identities.reset.submit")
+  expect(page).to have_content(t :"identities.reset_success.message")
 end
 
 def complete_reset_password_success_screen
-  click_button (t :"legacy.identities.reset_success.continue")
+  click_button (t :"identities.reset_success.continue")
 end
 
 def complete_add_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in (t :"legacy.identities.set.password"), with: password
-  fill_in (t :"legacy.identities.set.confirm_password"), with: password
-  click_button (t :"legacy.identities.add.submit")
-  expect(page).to have_content(t :"legacy.identities.add_success.message")
+  fill_in (t :"identities.set.password"), with: password
+  fill_in (t :"identities.set.confirm_password"), with: password
+  click_button (t :"identities.add.submit")
+  expect(page).to have_content(t :"identities.add_success.message")
 end
 
 def complete_add_password_success_screen
-  click_button (t :"legacy.identities.add_success.continue")
+  click_button (t :"identities.add_success.continue")
 end
 
 def complete_terms_screens(without_privacy_policy: false)

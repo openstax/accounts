@@ -451,168 +451,167 @@ pl:
         Zapoznałem/am się z przedstawionymi powyżej regulaminami i zgadzam
         się na zawarte w nich warunki.
 
-  legacy:
-    users:
-      edit:
-        add_email_address: Dodaj nowy adres
-        email_addresses: Adresy e-mail
-        enable_other_sign_in_options: Włącz dodatkowe metody logowania
-        how_you_sign_in_html: Jak się<br class="wide"> logujesz
-        name: Imię
-        other_sign_in_options_html: Dodatkowe metody<br class="wide"> logowania
-        username: Nazwa użytkownika
-        page_heading: Twój profil
-        sign_out: Wyloguj się
-        check_searchable_if_you_want_to_be_searchable: >-
-          Zaznacz pole „Publiczny”, jeżeli chcesz, aby inni użytkownicy OpenStax
-          mogli Cię znaleźć używając tego adresu e-mail.
-        resend_confirmation: 'Wyślij ponownie e-mail potwierdzający'
-        unconfirmed_warning: niepotwierdzony
-        password: Hasło
-        searchable: Pozwól innym wyszukać mnie po tym adresie e-mail
+  identities:
+    set:
+      confirm_password: Powtórz hasło
+      password: Hasło
+      there_was_a_problem_with_password_link: >-
+        Niestety wystąpił problem z użytym przez Ciebie linkiem. Jeżeli problem
+        będzie się powtarzał, skontaktuj się z działem pomocy.
+      expired_password_link: Użyty przez ciebie link wygasł.
+      cancel: Anuluj
+    reset:
+      page_heading: Zmień hasło
+      submit: Ustaw hasło
+      submitting: Ustawianie hasła…
+      use_form_below_to_reset_password: >-
+        Aby zmienić swoje hasło, wypełnij poniższe pola.
+    add:
+      page_heading: Dodaj hasło
+      use_form_below_to_add_password: Aby dodać hasło, wypełnij poniższe pola.
+      submit: Dodaj hasło
+      submitting: Dodawanie hasła…
+    add_success:
+      page_heading: Sukces!
+      message: Hasło zostało dowiązane do Twojego konta.
+      continue: Przejdź dalej
+    reset_success:
+      page_heading: Sukces!
+      message: Hasło zostało zmienione.
+      continue: Przejdź dalej
 
-    identities:
-      set:
-        confirm_password: Powtórz hasło
-        password: Hasło
-        there_was_a_problem_with_password_link: >-
-          Niestety wystąpił problem z użytym przez Ciebie linkiem. Jeżeli problem
-          będzie się powtarzał, skontaktuj się z działem pomocy.
-        expired_password_link: Użyty przez ciebie link wygasł.
-        cancel: Anuluj
-      reset:
-        page_heading: Zmień hasło
-        submit: Ustaw hasło
-        submitting: Ustawianie hasła…
-        use_form_below_to_reset_password: >-
-          Aby zmienić swoje hasło, wypełnij poniższe pola.
-      add:
-        page_heading: Dodaj hasło
-        use_form_below_to_add_password: Aby dodać hasło, wypełnij poniższe pola.
-        submit: Dodaj hasło
-        submitting: Dodawanie hasła…
-      add_success:
-        page_heading: Sukces!
-        message: Hasło zostało dowiązane do Twojego konta.
-        continue: Przejdź dalej
-      reset_success:
-        page_heading: Sukces!
-        message: Hasło zostało zmienione.
-        continue: Przejdź dalej
+    send_reset:
+      page_heading: Sprawdź e-mail
+      we_sent_email:
+        one: >-
+          Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
+          aby zmienić hasło.
+        few: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby zmienić hasło.
+        many: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby zmienić hasło.
+        other: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby zmienić hasło.
+      close_this_window: Możesz teraz zamknąć okno.
 
-      send_reset:
-        page_heading: Sprawdź e-mail
-        we_sent_email:
-          one: >-
-            Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
-            aby zmienić hasło.
-          few: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby zmienić hasło.
-          many: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby zmienić hasło.
-          other: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby zmienić hasło.
-        close_this_window: Możesz teraz zamknąć okno.
+    send_add:
+      page_heading: Sprawdź e-maile
+      we_sent_email:
+        one: >-
+          Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
+          aby dodać nowe hasło.
+        few: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby dodać nowe hasło.
+        many: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby dodać nowe hasło.
+        other: >-
+          Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
+          wiadomości, aby dodać nowe hasło.
+      close_this_window: Możesz teraz zamknąć okno.
 
-      send_add:
-        page_heading: Sprawdź e-maile
-        we_sent_email:
-          one: >-
-            Wysłaliśmy wiadomość na adres %{emails}. Użyj linku w tej wiadomości,
-            aby dodać nowe hasło.
-          few: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby dodać nowe hasło.
-          many: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby dodać nowe hasło.
-          other: >-
-            Wysłaliśmy wiadomości na adresy %{emails}. Użyj linku z jednej z tych
-            wiadomości, aby dodać nowe hasło.
-        close_this_window: Możesz teraz zamknąć okno.
+  users:
+    edit:
+      add_email_address: Dodaj nowy adres
+      email_addresses: Adresy e-mail
+      enable_other_sign_in_options: Włącz dodatkowe metody logowania
+      how_you_sign_in_html: Jak się<br class="wide"> logujesz
+      name: Imię
+      other_sign_in_options_html: Dodatkowe metody<br class="wide"> logowania
+      username: Nazwa użytkownika
+      page_heading: Twój profil
+      sign_out: Wyloguj się
+      check_searchable_if_you_want_to_be_searchable: >-
+        Zaznacz pole „Publiczny”, jeżeli chcesz, aby inni użytkownicy OpenStax
+        mogli Cię znaleźć używając tego adresu e-mail.
+      resend_confirmation: 'Wyślij ponownie e-mail potwierdzający'
+      unconfirmed_warning: niepotwierdzony
+      password: Hasło
+      searchable: Pozwól innym wyszukać mnie po tym adresie e-mail
 
-    sessions:
+  sessions:
+    access_tutor: Zaloguj się lub zarejestruj, aby uzyskać dostęp do OpenStax Tutor
+    help:
+      if_you_know_username_or_email:
+        content_html: >-
+          Jeżeli pamiętasz swoją nazwę użytkownika lub adres e-mail,
+          wpisz go poniżej. Wyślemy Ci wiadomość e-mail z instrukcją, jak
+          możesz odzyskać dostęp do swojego konta. Jeżeli nie pamiętasz
+          nazwy ani adresu, %{link}.
+        contact_customer_support: skontaktuj się z działem pomocy
+      page_heading: Uzyskaj pomoc z logowaniem
+      submit: Wyślij
+      submitting: Wysyłanie…
+      username_or_email: Nazwa użytkownika albo adres e-mail
+
+    start:
       access_tutor: Zaloguj się lub zarejestruj, aby uzyskać dostęp do OpenStax Tutor
-      help:
-        if_you_know_username_or_email:
-          content_html: >-
-            Jeżeli pamiętasz swoją nazwę użytkownika lub adres e-mail,
-            wpisz go poniżej. Wyślemy Ci wiadomość e-mail z instrukcją, jak
-            możesz odzyskać dostęp do swojego konta. Jeżeli nie pamiętasz
-            nazwy ani adresu, %{link}.
-          contact_customer_support: skontaktuj się z działem pomocy
-        page_heading: Uzyskaj pomoc z logowaniem
-        submit: Wyślij
-        submitting: Wysyłanie…
-        username_or_email: Nazwa użytkownika albo adres e-mail
+      cant_sign_in: Nie możesz się zalogować?
+      logout_reminder_html: >-
+        Jeżeli używasz publicznego komputera, <b>pamiętaj, aby wylogować się</b>,
+        gdy skończysz!
+      openstax_wont_use_social_media_without_permission_html: >-
+        <i>Nie obawiaj się.</i> OpenStax <b>nie zamieści niczego</b> w
+        twoich kontach społecznościowych bez twojej zgody.
+      page_heading: Zaloguj się do OpenStax
+      page_sub_heading: >-
+        Zyskaj dostęp do wszystkich funkcji i zasobów OpenStax
+      sign_in: Zaloguj się
+      sign_up: Zarejestruj się
+      no_account_q: Nie masz konta?
+      used_this_method_last_time: Tej metody użyłeś/aś poprzednim razem.
+      email: Adres e-mail
+      email_placeholder: Adres e-mail lub nazwa użytkownika
+      username_placeholder: Nazwa użytkownika
+      next: Przejdź dalej
+      submitting: Sprawdzanie…
+      cannot_find_user: Nie znaleziono użytkownika
+      unknown_username: >-
+        Nie znaleziono użytkownika o takiej nazwie. Spróbuj ponownie albo użyj
+        adresu e-mail.
+      unknown_email: >-
+        Nie znaleziono użytkownika o takim adresie e-mail. Spróbuj ponownie.
+      having_trouble: Problemy z logowaniem?
+      help: >-
+        Podaj adres e-mail lub nazwę użytkownika powiązaną z Twoim kontem, a
+        pomożemy Ci się zalogować.
+      cant_remember_email: Nie pamiętasz, jak się rejestrowałeś/aś?
+      knowledge_base: Odwiedź nasze centrum pomocy
+      multiple_users_missing_usernames:
+        content_html: >-
+          Znaleźliśmy kilka kont przypisanych do tego adresu e-mail i nie
+          jesteśmy w stanie stwierdzić, którego powinniśmy użyć. %{help_link}.
+        help_link_text: Skontaktuj się z naszym działem pomocy
+      multiple_users:
+        content_html: >-
+          Znaleźliśmy kilka kont przypisanych do tego adresu e-mail. Zaloguj się
+          używając swojej nazwy użytkownika.
+          <br/>
+          Zapomniałeś/aś ją? %{link}.
+        click_here: Kliknij tu, a wyślemy ci ich listę.
+      sent_multiple_usernames: >-
+        Wysłaliśmy listę Twoich nazw użytkownika na adres <strong>%{email}</strong>.
+        Użyj jednej z nich, aby się zalogować.
 
-      start:
-        access_tutor: Zaloguj się lub zarejestruj, aby uzyskać dostęp do OpenStax Tutor
-        cant_sign_in: Nie możesz się zalogować?
-        logout_reminder_html: >-
-          Jeżeli używasz publicznego komputera, <b>pamiętaj, aby wylogować się</b>,
-          gdy skończysz!
-        openstax_wont_use_social_media_without_permission_html: >-
-          <i>Nie obawiaj się.</i> OpenStax <b>nie zamieści niczego</b> w
-          twoich kontach społecznościowych bez twojej zgody.
-        page_heading: Zaloguj się do OpenStax
-        page_sub_heading: >-
-          Zyskaj dostęp do wszystkich funkcji i zasobów OpenStax
-        sign_in: Zaloguj się
-        sign_up: Zarejestruj się
-        no_account_q: Nie masz konta?
-        used_this_method_last_time: Tej metody użyłeś/aś poprzednim razem.
-        email: Adres e-mail
-        email_placeholder: Adres e-mail lub nazwa użytkownika
-        username_placeholder: Nazwa użytkownika
-        next: Przejdź dalej
-        submitting: Sprawdzanie…
-        cannot_find_user: Nie znaleziono użytkownika
-        unknown_username: >-
-          Nie znaleziono użytkownika o takiej nazwie. Spróbuj ponownie albo użyj
-          adresu e-mail.
-        unknown_email: >-
-          Nie znaleziono użytkownika o takim adresie e-mail. Spróbuj ponownie.
-        having_trouble: Problemy z logowaniem?
-        help: >-
-          Podaj adres e-mail lub nazwę użytkownika powiązaną z Twoim kontem, a
-          pomożemy Ci się zalogować.
-        cant_remember_email: Nie pamiętasz, jak się rejestrowałeś/aś?
-        knowledge_base: Odwiedź nasze centrum pomocy
-        multiple_users_missing_usernames:
-          content_html: >-
-            Znaleźliśmy kilka kont przypisanych do tego adresu e-mail i nie
-            jesteśmy w stanie stwierdzić, którego powinniśmy użyć. %{help_link}.
-          help_link_text: Skontaktuj się z naszym działem pomocy
-        multiple_users:
-          content_html: >-
-            Znaleźliśmy kilka kont przypisanych do tego adresu e-mail. Zaloguj się
-            używając swojej nazwy użytkownika.
-            <br/>
-            Zapomniałeś/aś ją? %{link}.
-          click_here: Kliknij tu, a wyślemy ci ich listę.
-        sent_multiple_usernames: >-
-          Wysłaliśmy listę Twoich nazw użytkownika na adres <strong>%{email}</strong>.
-          Użyj jednej z nich, aby się zalogować.
+    authenticate:
+      name_greeting: Witaj, %{name}!
 
-      authenticate:
-        name_greeting: Witaj, %{name}!
+    reauthenticate:
+      page_heading: Zanim przejdziesz dalej, zaloguj się ponownie.
 
-      reauthenticate:
-        page_heading: Zanim przejdziesz dalej, zaloguj się ponownie.
-
-      authenticate_options:
-        separator_or: albo
-        sign_in_with_facebook: Zaloguj się przez Facebooka
-        sign_in_with_google: Zaloguj się przez Google
-        sign_in_with_twitter: Zaloguj się przez Twittera
-        login: Zaloguj
-        submitting: Logowanie…
-        password: Hasło
-        forgot_password: Zapomniałeś/aś hasła?
-        trouble_logging_in: Problemy z logowaniem?
-        reset_password: Zmień hasło
-        add_password: Dodaj hasło
+    authenticate_options:
+      separator_or: albo
+      sign_in_with_facebook: Zaloguj się przez Facebooka
+      sign_in_with_google: Zaloguj się przez Google
+      sign_in_with_twitter: Zaloguj się przez Twittera
+      login: Zaloguj
+      submitting: Logowanie…
+      password: Hasło
+      forgot_password: Zapomniałeś/aś hasła?
+      trouble_logging_in: Problemy z logowaniem?
+      reset_password: Zmień hasło
+      add_password: Dodaj hasło

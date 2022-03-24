@@ -93,7 +93,7 @@ end
 
 def expect_newflow_profile_page
   expect(page).to have_no_missing_translations
-  # expect(page).to have_content(t :"legacy.users.edit.page_heading")
+  # expect(page).to have_content(t :"users.edit.page_heading")
   expect(page).to have_current_path profile_newflow_path
 end
 

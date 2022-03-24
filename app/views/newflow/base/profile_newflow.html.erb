@@ -16,7 +16,7 @@
   <div class="profile-title">
     <%=
       link_to(
-        I18n.t(:"legacy.users.edit.sign_out"),
+        I18n.t(:"users.edit.sign_out"),
         newflow_logout_path,
         class: 'sign-out',
         data: {
@@ -32,7 +32,7 @@
 
   <div class="row name">
     <div class="col-sm-2 category">
-      <%= I18n.t(:"legacy.users.edit.name") %>
+      <%= I18n.t(:"users.edit.name") %>
     </div>
     <div class="col-sm-10 info">
       <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></a>
@@ -42,7 +42,7 @@
   <% if current_user.username.present? %>
   <div class="row">
     <div class="col-sm-2 category">
-      <%= I18n.t(:"legacy.users.edit.username") %>
+      <%= I18n.t(:"users.edit.username") %>
     </div>
     <div class="col-sm-10 info">
       <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
@@ -52,7 +52,7 @@
 
   <div class="row">
     <div class="col-sm-2 category">
-      <%= t(:"legacy.users.edit.email_addresses") %>
+      <%= t(:"users.edit.email_addresses") %>
     </div>
     <div id="email-template" style="display:none">
       <%= email_entry(value: "", id: "", is_verified: false, is_searchable: "") %>
@@ -63,7 +63,7 @@
       <% end %>
       <%=
         link_to(
-          I18n.t(:"legacy.users.edit.add_email_address"),
+          I18n.t(:"users.edit.add_email_address"),
           '#',
           id: 'add-an-email',
           data: {
