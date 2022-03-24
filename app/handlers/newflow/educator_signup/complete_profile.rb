@@ -123,9 +123,9 @@ module Newflow
       end
 
       def which_books
-        if books_used.present?
+        if signup_params.books_used != nil
           format_books_for_salesforce_string(signup_params.books_used)
-        elsif books_of_interest.present?
+        elsif signup_params.books_of_interest != nil
           format_books_for_salesforce_string(signup_params.books_of_interest)
         end
       end
