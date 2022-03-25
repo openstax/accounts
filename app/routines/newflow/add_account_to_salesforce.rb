@@ -21,8 +21,6 @@ module Newflow
       sf_ox_account.signup_date           = user.created_at.strftime("%Y-%m-%dT%H:%M:%S%z")
       sf_ox_account.account_environment   = Rails.application.secrets.environment_name
 
-
-      outputs.sf_ox_account = sf_ox_account
       outputs.user = user
 
       sf_ox_account.save!
