@@ -53,7 +53,6 @@ module Newflow
           title:                user.other_role_name,
           who_chooses_books:    user.who_chooses_books,
           subject:              user.which_books,
-          num_students:         user.how_many_students,
           adoption_status:      ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
           adoption_json:        adoption_json,
           os_accounts_id:       user.id,
