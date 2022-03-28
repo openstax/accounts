@@ -117,8 +117,6 @@ module Newflow
           )
           return
         end
-        # otherwise, we already heard from SheerID, so let's create the lead.
-        # We check in SheeridWebhook to see if they completed their profile before creating lead
 
         # Now we create the lead for the user... because we returned above if they did... again SheeridWebhook
         Newflow::AddAccountToSalesforce.perform_later(user_id: @user.id)
