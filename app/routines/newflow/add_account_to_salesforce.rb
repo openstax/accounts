@@ -12,9 +12,9 @@ module Newflow
 
       sf_ox_account = OpenStax::Salesforce::Remote::OpenStaxAccount.find_by(accounts_uuid: user.uuid.to_s)
       if sf_ox_account
-        sf_ox_account.accounts_uuid = user.role.titleize,
-        sf_ox_account.salesforce_contact_id = user&.salesforce_contact_id,
-        sf_ox_account.salesforce_lead_id = user&.salesforce_lead_id,
+        sf_ox_account.accounts_uuid = user.role.titleize
+        sf_ox_account.salesforce_contact_id = user&.salesforce_contact_id
+        sf_ox_account.salesforce_lead_id = user&.salesforce_lead_id
       else
         sf_ox_account = OpenStax::Salesforce::Remote::OpenStaxAccount.new(
           account_id: user.id,
