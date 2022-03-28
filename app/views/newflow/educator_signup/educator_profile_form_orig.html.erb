@@ -12,7 +12,7 @@
 
     <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
 
-    <%= newflow_login_signup_card(
+    <%= login_signup_card(
           header: (I18n.t(:"educator_profile_form.complete_page_header")),
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 4, total_steps: 4),
           classes: 'signup-page completed-step') do %>

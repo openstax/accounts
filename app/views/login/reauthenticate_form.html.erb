@@ -12,7 +12,7 @@
                     header: (I18n.t(:"login_signup_form.login_page_header")),
                     banners: @banners,
                     show_exit_icon: true) do %>
-            <% lev_form_for :login_form, url: newflow_login_path do |f| %>
+            <% lev_form_for :login_form, url: login_path do |f| %>
                 <% fh = NewflowFormHelper::Newflow.new(f: f, context: self, errors: @handler_result&.errors) %>
                     <div class="content social-section">
                         <div><%= I18n.t(:"login_signup_form.login_with") %></div>
@@ -20,26 +20,14 @@
                         <div class="social-buttons">
 
                             <div class="fb-share-button">
-                                <%=
-                                    link_to(
-                                        newflow_auth_path(:facebooknewflow, origin: :login_form),
-                                        class: 'facebook btn',
-                                        data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Facebook' }
-                                    ) do
-                                %>
+                                <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn' do %>
                                     <i class="social-icon fa fa-facebook"></i>
                                     <span>Facebook</span>
                                 <% end %>
                             </div>
 
                             <div class="google-share-button">
-                                <%=
-                                    link_to(
-                                        newflow_auth_path(:googlenewflow, origin: :login_form),
-                                        class: 'google btn',
-                                        data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Google' }
-                                    ) do
-                                %>
+                                <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn' do %>
                                     <i class="social-icon fa fa-google"></i>
                                     <span>Google</span>
                                 <% end %>
@@ -65,45 +53,46 @@
                         <%= fh.text_field name: :email,
                                     value: email_prefill_value,
                                     placeholder: I18n.t(:"login_signup_form.email_placeholder"),
-                                    autofocus: true
+                                    readonly: email_prefill_value.present?
                         %>
+
                     </div>
 
                     <div class="content control-group">
+                        <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
+                                class: 'field-label required'
+                        %>
                         <div id="password-field-container">
-                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
-                                    class: 'field-label required'
-                            %>
-                            <span id="password-show-hide-button">
-                                <span class="toggle-show-hide" data-ga_category='SHOW/HIDE password', data-ga_action='Click', data-ga_label='SHOW - Logon'>SHOW</span>
-                                <span class="toggle-show-hide" style="display: none">HIDE</span>
-                            </span>
                             <%= fh.text_field name: :password,
                                         type: :password,
-                                        placeholder: I18n.t(:"login_signup_form.password_label")
+                                        placeholder: I18n.t(:"login_signup_form.password_label"),
+                                        autofocus: true
                             %>
+                            <span id="password-show-hide-button">
+                                <span class="toggle-show-hide">SHOW</span>
+                                <span class="toggle-show-hide" style="display: none">HIDE</span>
+                            </span>
                         </div>
                     </div>
 
                     <div class="content">
                         <%= f.submit I18n.t(:"login_signup_form.continue_button"),
                                     disable_with: I18n.t(:"login_signup_form.continue_button"),
-                                    class: 'primary',
-                                    data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Email' }
+                                    class: 'primary'
                         %>
                     </div>
 
                     <div class="content">
+                        <%# This is one difference from the login form...
+                             #  POST request to send_reset_password_email_path
+                             #  instead of GET request to forgot_password_form_path
+                        %>
                         <%=
                             link_to(
                                 I18n.t(:"login_signup_form.forgot_password"),
-                                forgot_password_form_path,
+                                send_reset_password_email_path,
                                 id: 'forgot-password-link',
-                                data: {
-                                    ga_category: 'Login',
-                                    ga_action: 'Click',
-                                    ga_label: 'Password Reset'
-                                }
+                                method: :post
                             )
                         %>
                     </div>

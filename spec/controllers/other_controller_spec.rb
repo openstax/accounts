@@ -39,7 +39,7 @@ RSpec.describe OtherController, type: :controller do
     context 'while not logged in' do
       it 'redirects to login form' do
         get(:profile_newflow)
-        expect(response).to redirect_to newflow_login_path
+        expect(response).to redirect_to login_path
       end
     end
   end

@@ -24,14 +24,14 @@ RSpec.describe AuthenticateMethods, type: :lib do
     xit 'authenticate_user! redirects to the login page' do
       expect(controller).to receive(:store_url)
       expect(controller).to receive(:redirect_to)
-      expect(main_app).to receive(:newflow_login_path)
+      expect(main_app).to receive(:login_path)
       controller.authenticate_user!
     end
 
     xit 'authenticate_admin! redirects to the login page' do
       expect(controller).to receive(:store_url)
       expect(controller).to receive(:redirect_to)
-      expect(main_app).to receive(:newflow_login_path)
+      expect(main_app).to receive(:login_path)
       controller.authenticate_admin!
     end
   end
@@ -42,7 +42,7 @@ RSpec.describe AuthenticateMethods, type: :lib do
     xit 'authenticate_user! does nothing' do
       expect(controller).not_to receive(:store_url)
       expect(controller).not_to receive(:redirect_to)
-      expect(main_app).not_to receive(:newflow_login_path)
+      expect(main_app).not_to receive(:login_path)
       controller.authenticate_user!
     end
 
@@ -51,7 +51,7 @@ RSpec.describe AuthenticateMethods, type: :lib do
         expect(controller).to receive(:head).with(:forbidden)
         expect(controller).not_to receive(:store_url)
         expect(controller).not_to receive(:redirect_to)
-        expect(main_app).not_to receive(:newflow_login_path)
+        expect(main_app).not_to receive(:login_path)
         controller.authenticate_admin!
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe AuthenticateMethods, type: :lib do
       xit 'authenticate_admin! does nothing' do
         expect(controller).not_to receive(:store_url)
         expect(controller).not_to receive(:redirect_to)
-        expect(main_app).not_to receive(:newflow_login_path)
+        expect(main_app).not_to receive(:login_path)
         controller.authenticate_admin!
       end
     end
