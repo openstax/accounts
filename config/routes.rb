@@ -272,6 +272,7 @@ Rails.application.routes.draw do
     resources :banners, except: :show
 
     mount Blazer::Engine, at: 'blazer', as: 'blazer_admin'
+    match "/job_dashboard" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
 
     mount RailsSettingsUi::Engine, at: 'settings'
   end
