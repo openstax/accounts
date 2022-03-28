@@ -39,7 +39,7 @@ module Newflow
 
       lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
       if lead
-        warn("A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})")
+        Sentry.capture_message("A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})")
       else
         lead = OpenStax::Salesforce::Remote::Lead.new(
           first_name:           user.first_name,
@@ -117,20 +117,16 @@ module Newflow
     end
 
     def build_book_adoption_json_for_salesforce(user)
-      adoption_json = {}
-      books_json = []
       return nil unless user.which_books
 
-      books = user.which_books.split(';')
+      adoption_json = {}
+      books_json = []
 
-      if user.how_many_students.blank?
-        number_of_students = nil
-      else
-        number_of_students = user.how_many_students
-      end
+      books_array = user.which_books.split(';').to_a
+      student_number_array = user.how_many_students.tr('^0-9,', '').split(',')
 
-      books.each do |book|
-        book_keywords = { name: book, students: number_of_students }
+      books_array.each_with_index do |book, index|
+        book_keywords = { name: book, students: student_number_array[index]}
         books_json << book_keywords
       end
 
