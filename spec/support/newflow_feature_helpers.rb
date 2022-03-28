@@ -17,8 +17,8 @@ def create_newflow_user(email, password='password', terms_agreed=nil, confirmati
   return user
 end
 
-def newflow_log_in_user(username_or_email, password)
-  visit(newflow_login_path) unless page.current_url == newflow_login_url
+def log_in_user(username_or_email, password)
+  visit(login_path) unless page.current_url == login_url
   fill_in('login_form_email', with: username_or_email).native
   expect(page).to have_no_missing_translations
 

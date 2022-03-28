@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     get 'exit_accounts', action: :exit_accounts, as: :exit_accounts
   end
 
-  scope controller: 'newflow/login' do
+  scope controller: 'login' do
     get 'login', action: :login_form, as: :newflow_login
     post 'login', action: :login
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form

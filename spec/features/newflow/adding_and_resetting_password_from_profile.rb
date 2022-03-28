@@ -96,14 +96,14 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
 
     click_link (t :"users.edit.sign_out")
     visit '/'
-    expect(page).to have_current_path newflow_login_path
+    expect(page).to have_current_path login_path
 
     # try logging in with the old password
-    newflow_log_in_user('user', 'password')
+    log_in_user('user', 'password')
     expect(page).to have_content(t(:"login_signup_form.incorrect_password"))
 
     # try logging in with the new password
-    newflow_log_in_user('user', 'newpassword')
+    log_in_user('user', 'newpassword')
 
     expect_newflow_profile_page
     expect(page).to have_no_missing_translations
