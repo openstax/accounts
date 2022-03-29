@@ -19,7 +19,7 @@ FactoryBot.define do
         'Home School'
       ].sample
     end
-    location                { [ 'Domestic', 'Foreign' ].sample }
+    location                { %w[Domestic Foreign].sample }
     is_kip                  { [ true, false ].sample }
     is_child_of_kip         { [ true, false ].sample }
   end
