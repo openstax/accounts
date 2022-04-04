@@ -15,7 +15,7 @@ module Newflow
 
         it 'does NOT sign up user for the newsletter when NOT checked' do
           user.update(receive_newsletter: false)
-          expect_any_instance_of(Newflow::CreateSalesforceLead).not_to receive(:exec)
+          expect_any_instance_of(CreateSalesforceLead).not_to receive(:exec)
           described_class.call(user)
         end
 
@@ -23,7 +23,7 @@ module Newflow
           source_app = FactoryBot.create(:doorkeeper_application)
           user.update(source_application_id: source_app.id)
 
-          expect_any_instance_of(Newflow::CreateSalesforceLead).to receive(:exec)
+          expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
 
           described_class.call(user)
         end
