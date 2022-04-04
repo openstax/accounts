@@ -128,7 +128,7 @@ class UpdateUserContactInfo
       if user.changed?
         user.save!
         users_updated += 1
-        Newflow::AddAccountToSalesforce.perform_later(user_id: user.id)
+        AddAccountToSalesforce.perform_later(user_id: user.id)
       end
     end
     log("Completed updating #{users_updated} users.")
