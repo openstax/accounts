@@ -15,11 +15,6 @@ module Newflow
         end
         verification_details_from_sheerid = SheeridAPI.get_verification_details(verification_id)
 
-        # there are no details included with this step that are helpful a future
-        # TODO: might be to use this to update the user faculty state to PENDING_SHEERID or AWAITING_DOC_UPLOAD?
-        return if verification_details_from_sheerid.current_step == 'error'
-        return if verification_details_from_sheerid.current_step == 'collectTeacherPersonalInfo'
-
         if !verification_details_from_sheerid.success?
           Sentry.capture_message("[SheerID Webhook] fetching verification details FAILED",
                                  extra: { verification_id: verification_id, verification_details: verification_details_from_sheerid }
@@ -39,7 +34,7 @@ module Newflow
         user = EmailAddress.verified.find_by(value: verification.email)&.user
 
         if !user.present?
-          Sentry.capture_message("[SheerID Webhook] No user found with verification id (#{verification_id}) and email (#{verification.email})",
+          warn("[SheerID Webhook] No user found with verification id (#{verification_id}) and email (#{verification.email})",
                                  extra: { verification_id: verification_id, verification_details_from_sheer_id: verification_details_from_sheerid }
           )
           return
@@ -130,7 +125,7 @@ module Newflow
             user: user,
             event_data: { verification: verification_details_from_sheerid.inspect })
         else
-          user.update!(sheerid_verification_id: verification_id)
+          user.update!(faculty_status: User::REJECTED_BY_SHEERID, sheerid_verification_id: verification_id)
           SecurityLog.create!(
             event_type: :unknown_sheerid_response,
             user: user,

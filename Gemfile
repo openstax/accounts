@@ -183,7 +183,11 @@ gem 'rack-cors'
 gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
 gem 'faye', '0.8.9'
 
+# Business analytics
 gem 'blazer'
+
+# Delayed job dashboard
+gem "delayed_job_web"
 
 group :development, :test do
   # Run specs in parallel

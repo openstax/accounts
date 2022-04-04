@@ -103,9 +103,12 @@ class SecurityLog < ApplicationRecord
     lead_creation_awaiting_sheerid_webhook
     starting_salesforce_lead_creation
     attempting_to_create_user_lead
+    user_lead_id_updated_from_salesforce
     user_contact_id_updated_from_salesforce
     attempted_to_add_school_not_cached_yet
     school_added_to_user_from_sheerid_webhook
+    faculty_status_updated
+    account_created_or_synced_with_salesforce
   ]
 
   json_serialize :event_data, Hash

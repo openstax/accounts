@@ -32,19 +32,23 @@ end
 """
 # https://robots.thoughtbot.com/headless-feature-specs-with-chrome
 Capybara.register_driver :selenium_chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new args: [ 'lang=en' ]
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--lang=en')
 
-  Capybara::Selenium::Driver.new app, browser: :chrome, options: options
+  Capybara::Selenium::Driver.new app, browser: :chrome, capabilities: [options]
 end
 
 # no-sandbox and disable-gpu are required for Chrome to work with Travis
 Capybara.register_driver :selenium_chrome_headless do |app|
-  options = Selenium::WebDriver::Chrome::Options.new args: [
-    'no-sandbox', 'headless', 'disable-dev-shm-usage',
-    'disable-gpu', 'disable-extensions', 'disable-infobars'
-  ]
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--no-sandbox')
+  options.add_argument('--headless')
+  options.add_argument('--disable-dev-shm-usage')
+  options.add_argument('--disable-gpu')
+  options.add_argument('--disable-extensions')
+  options.add_argument('--disable-infobars')
 
-  Capybara::Selenium::Driver.new app, browser: :chrome, options: options
+  Capybara::Selenium::Driver.new app, browser: :chrome, capabilities: [options]
 end
 
 # The webdrivers gem uses selenium-webdriver.  Our docker approach needs selenium-webdriver
@@ -55,62 +59,37 @@ end
 CAPYBARA_PROTOCOL = DEV_PROTOCOL
 CAPYBARA_PORT = ENV.fetch('PORT', DEV_PORT)
 
-if in_docker?
-  require 'selenium-webdriver'
+require 'webdrivers/chromedriver'
 
-  Capybara.register_driver :selenium_chrome_headless_in_docker do |app|
-      chrome_capabilities = ::Selenium::WebDriver::Remote::Capabilities.chrome(
-        'goog:chromeOptions' => { 'args': %w[no-sandbox headless disable-gpu] }
-      )
+# Use a lockfile so we don't get errors due to downloading webdrivers multiple times concurrently
+File.open('.webdrivers_update', File::RDWR|File::CREAT, 0640) do |file|
+  file.flock File::LOCK_EX
+  update_time = Time.parse(file.read) rescue nil
+  current_time = Time.current
 
-      Capybara::Selenium::Driver.new(app,
-                                     browser: :remote,
-                                     url: ENV['HUB_URL'],
-                                     desired_capabilities: chrome_capabilities)
+  if update_time.nil? || current_time - update_time > 60
+    Webdrivers::Chromedriver.update
+
+    file.rewind
+    file.write current_time.iso8601
+    file.flush
+    file.truncate file.pos
   end
-
-  Capybara.javascript_driver = :selenium_chrome_headless_in_docker
-
-  # Normally the Capybara host is 'localhost', but within Docker it may not be.
-  CAPYBARA_HOST = IPSocket.getaddress(Socket.gethostname)
-
-  Capybara.asset_host = "#{CAPYBARA_PROTOCOL}://#{CAPYBARA_HOST}:#{CAPYBARA_PORT}"
-  Capybara.app_host = "#{CAPYBARA_PROTOCOL}://#{CAPYBARA_HOST}:#{CAPYBARA_PORT}"
-  Capybara.server_host = CAPYBARA_HOST
-  Capybara.server_port = CAPYBARA_PORT
-else
-  require 'webdrivers/chromedriver'
-
-  # Use a lockfile so we don't get errors due to downloading webdrivers multiple times concurrently
-  File.open('.webdrivers_update', File::RDWR|File::CREAT, 0640) do |file|
-    file.flock File::LOCK_EX
-    update_time = Time.parse(file.read) rescue nil
-    current_time = Time.current
-
-    if update_time.nil? || current_time - update_time > 60
-      Webdrivers::Chromedriver.update
-
-      file.rewind
-      file.write current_time.iso8601
-      file.flush
-      file.truncate file.pos
-    end
-  ensure
-    file.flock File::LOCK_UN
-  end
-
-  if EnvUtilities.load_boolean(name: 'HEADLESS', default: true)
-    # Run the feature specs in a full browser (note, this takes over your computer's focus)
-    Capybara.javascript_driver = :selenium_chrome_headless
-  else
-    Capybara.javascript_driver = :selenium_chrome
-  end
-
-  CAPYBARA_HOST = DEV_HOST
-  CAPYBARA_HOST_REGEX = /\A(.*\.)?#{Regexp.escape CAPYBARA_HOST.sub('*.', '').chomp('.*')}\z/
-
-  Capybara.asset_host = "#{CAPYBARA_PROTOCOL}://#{CAPYBARA_HOST}:#{CAPYBARA_PORT}"
+ensure
+  file.flock File::LOCK_UN
 end
+
+if EnvUtilities.load_boolean(name: 'HEADLESS', default: true)
+  # Run the feature specs in a full browser (note, this takes over your computer's focus)
+  Capybara.javascript_driver = :selenium_chrome_headless
+else
+  Capybara.javascript_driver = :selenium_chrome
+end
+
+CAPYBARA_HOST = DEV_HOST
+CAPYBARA_HOST_REGEX = /\A(.*\.)?#{Regexp.escape CAPYBARA_HOST.sub('*.', '').chomp('.*')}\z/
+
+Capybara.asset_host = "#{CAPYBARA_PROTOCOL}://#{CAPYBARA_HOST}:#{CAPYBARA_PORT}"
 
 Capybara.server = :puma, { Silent: true } # To clean up your test output
 

@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
-  match 'i/signup/(*path)' => redirect{ |p| "signup/#{p[:path]}"}, via: :all
+  match 'i/signup/(*path)' => redirect { |_,request| "signup/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
   get 'i/profile' => redirect('profile')
   get 'i/exit_accounts' => redirect('exit_accounts')
   match 'i/login' => redirect('login'), via: :all
@@ -272,6 +272,7 @@ Rails.application.routes.draw do
     resources :banners, except: :show
 
     mount Blazer::Engine, at: 'blazer', as: 'blazer_admin'
+    match "/job_dashboard" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
 
     mount RailsSettingsUi::Engine, at: 'settings'
   end
