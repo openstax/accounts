@@ -5,8 +5,8 @@ class VerifyEmailByCode
   uses_routine ConfirmByCode,
                translations: { outputs: { type: :verbatim },
                                inputs: { type: :verbatim } }
-  uses_routine Newflow::StudentSignup::ActivateStudent
-  uses_routine Newflow::EducatorSignup::ActivateEducator
+  uses_routine StudentSignup::ActivateStudent
+  uses_routine EducatorSignup::ActivateEducator
 
   def authorized?
     true
@@ -17,9 +17,9 @@ class VerifyEmailByCode
     user = outputs.contact_info.user
 
     if user.student?
-      run(Newflow::StudentSignup::ActivateStudent, user)
+      run(StudentSignup::ActivateStudent, user)
     else
-      run(Newflow::EducatorSignup::ActivateEducator, user: user)
+      run(EducatorSignup::ActivateEducator, user: user)
     end
 
     outputs.user = user
