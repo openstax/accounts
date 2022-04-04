@@ -119,7 +119,6 @@ module Newflow
         end
 
         # Now we create the lead for the user... because we returned above if they did... again SheeridWebhook
-        Newflow::AddAccountToSalesforce.perform_later(user_id: @user.id)
         Newflow::CreateSalesforceLead.perform_later(user_id: @user.id)
 
       end
