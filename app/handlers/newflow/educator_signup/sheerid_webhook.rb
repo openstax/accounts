@@ -34,7 +34,7 @@ module Newflow
         user = EmailAddress.verified.find_by(value: verification.email)&.user
 
         if !user.present?
-          warn("[SheerID Webhook] No user found with verification id (#{verification_id}) and email (#{verification.email})",
+          Sentry.capture_message("[SheerID Webhook] No user found with verification id (#{verification_id}) and email (#{verification.email})",
                                  extra: { verification_id: verification_id, verification_details_from_sheer_id: verification_details_from_sheerid }
           )
           return
