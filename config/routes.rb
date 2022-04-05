@@ -80,7 +80,7 @@ Rails.application.routes.draw do
     post 'signup/educator/cs_verification_request', action: :educator_complete_profile, as: :educator_cs_verification_request
   end
 
-  scope controller: 'newflow/password_management' do
+  scope controller: 'password_management' do
     # Password management process (forgot,  change, or create password)
     get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
     post 'i/send_reset_password_email',
@@ -95,7 +95,7 @@ Rails.application.routes.draw do
     post 'i/change_password', action: :change_password, as: :change_password
   end
 
-  scope controller: 'newflow/social_auth' do
+  scope controller: 'social_auth' do
     get 'i/auth/:provider', action: :oauth_callback, as: :newflow_auth
     post 'i/auth/:provider', action: :oauth_callback
     get 'i/auth/:provider/callback', action: :oauth_callback

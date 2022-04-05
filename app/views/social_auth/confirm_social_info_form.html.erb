@@ -11,7 +11,7 @@
 
 <div id="login-signup-form">
     <div class="content">
-        <%= render partial: 'newflow/tab_group', locals: { active_class: 'signup--active'} %>
+        <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active'} %>
 
         <%= login_signup_card(
                     classes: "signup-page",
@@ -29,7 +29,7 @@
 
                 <div class="content role-section">
                     <div>
-                        <%= render partial: 'newflow/back_arrow', locals: { path: newflow_signup_path } %>
+                        <%= render partial: 'shared/back_arrow', locals: { path: newflow_signup_path } %>
                         <div class="role-button"><%= I18n.t(:"login_signup_form.student") %></div>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                     </div>
 
                     <% if unverified_user&.student? && is_BRI_book_adopter? %>
-                        <%= render partial: 'newflow/is_title_1_school_checkbox' %>
+                        <%= render partial: 'shared/is_title_1_school_checkbox' %>
                     <% end %>
 
                     <div class="terms">
