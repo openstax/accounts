@@ -4,7 +4,6 @@
 //= require ../vendor/underscore
 //= require ../vendor/mailcheck
 //= require ../application/ui
-//= require ./educator_signup_email_validations
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils

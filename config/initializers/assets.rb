@@ -25,4 +25,5 @@ Rails.application.config.assets.precompile += %w(
   newflow/educator_signup_email_validations.js
   educator_signup_email_validations.js
   profile-nf.css
+  application/ko_extensions.js
 )

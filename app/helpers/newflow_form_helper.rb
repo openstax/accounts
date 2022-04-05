@@ -33,7 +33,9 @@ module NewflowFormHelper
                    readonly: false,
                    onkeyup: nil,
                    onkeydown: nil,
-                   numberonly: false)
+                   numberonly: false,
+                   data_bind: nil
+                 )
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -68,7 +70,8 @@ module NewflowFormHelper
                       autofocus: autofocus,
                       readonly: readonly,
                       onkeyup: onkeyup,
-                      onkeydown: onkeydown
+                      onkeydown: onkeydown,
+                      'data-bind': data_bind
         )
       end
       "#{input}\n#{errors_div}".html_safe

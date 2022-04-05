@@ -591,6 +591,12 @@ input.has-error {
             }
         }
 
+        .email-input-group.has-changed {
+          .errors {
+            display: none;
+          }
+        }
+
         // placeholder text
         [type=text], [type=email], [type=password] {
             color: #424242;
@@ -627,6 +633,7 @@ input.has-error {
     input[type=submit] {
         &:disabled {
             opacity: 0.85;
+            cursor: not-allowed;
         }
 
         -webkit-appearance: none;
@@ -640,7 +647,6 @@ input.has-error {
     .warning {
         &.edu, &.mistype {
             color: #c22032;
-            display: none;
         }
     }
 
