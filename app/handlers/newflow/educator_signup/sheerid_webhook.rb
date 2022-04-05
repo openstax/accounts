@@ -95,7 +95,7 @@ module Newflow
           SecurityLog.create!(
             event_type: :school_added_to_user_from_sheerid_webhook,
             user: user,
-            event_data: { school: school }
+            event_data: { school_name: school.name, school_salesforce_id: school.salesforce_id }
           )
         end
 
@@ -104,32 +104,32 @@ module Newflow
           SecurityLog.create!(
             event_type: :fv_reject_by_sheerid,
             user: user,
-            event_data: { verification_id: verification_id })
+            event_data: { status: "User Rejected By SheerID", verification_id: verification_id })
         elsif verification.current_step == 'success'
           user.update!(faculty_status: User::CONFIRMED_FACULTY, sheerid_verification_id: verification_id)
           SecurityLog.create!(
             event_type: :fv_success_by_sheerid,
             user: user,
-            event_data: { verification_id: verification_id })
+            event_data: { status: "User Faculty Verified by SheerID", verification_id: verification_id })
         elsif verification.current_step == 'collectTeacherPersonalInfo'
           user.update!(faculty_status: User::PENDING_SHEERID, sheerid_verification_id: verification_id)
           SecurityLog.create!(
             event_type: :sheerid_webhook_request_more_info,
             user: user,
-            event_data: { verification: verification_details_from_sheerid.inspect })
+            event_data: { status: "SheerID Requested More Information", verification: verification_details_from_sheerid.inspect })
         elsif verification.current_step == 'error'
           user.update!(faculty_status: User::REJECTED_BY_SHEERID, sheerid_verification_id: verification_id)
           user.update!(sheerid_verification_id: verification_id)
           SecurityLog.create!(
             event_type: :sheerid_error,
             user: user,
-            event_data: { verification: verification_details_from_sheerid.inspect })
+            event_data: { status: "Error from SheerID", verification: verification_details_from_sheerid.inspect })
         else
           user.update!(faculty_status: User::REJECTED_BY_SHEERID, sheerid_verification_id: verification_id)
           SecurityLog.create!(
             event_type: :unknown_sheerid_response,
             user: user,
-            event_data: { verification: verification_details_from_sheerid.inspect })
+            event_data: { status: "Unexpected Response from SheerID", verification: verification_details_from_sheerid.inspect })
         end
 
         # if we got the webhook back after the user submitted the profile, they didn't get a lead built yet
