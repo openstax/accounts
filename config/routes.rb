@@ -40,7 +40,7 @@ Rails.application.routes.draw do
     get 'check_your_email', action: :check_your_email, as: :check_your_email
   end
 
-  scope controller: 'newflow/student_signup' do
+  scope controller: 'student_signup' do
     get 'signup/student', action: :student_signup_form, as: :signup_student
     post 'signup/student', action: :student_signup, as: :newflow_signup_post
 
