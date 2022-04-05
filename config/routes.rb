@@ -33,7 +33,7 @@ Rails.application.routes.draw do
     get 'i/signout', action: :logout, as: :newflow_logout
   end
 
-  scope controller: 'newflow/signup' do
+  scope controller: 'signup' do
     get 'signup', action: :welcome, as: :newflow_signup
     get 'done', action: :signup_done, as: :signup_done
     get 'verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code

@@ -1,4 +1,4 @@
-class EducatorSignupController < Newflow::SignupController
+class EducatorSignupController < SignupController
 
   include InstructorSignupHelper
 
