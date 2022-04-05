@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   match 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
   get 'i/confirm_your_info' => redirect('confirm_your_info')
   get 'i/forgot_password_form' => redirect('forgot_password_form')
-  post 'i/sheerid_webhook' => redirect('sheerid_webhook')
+  post 'i/sheerid_webhook' => redirect { |_, request| "sheerid_webhook/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
 
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
