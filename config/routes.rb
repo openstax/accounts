@@ -33,14 +33,14 @@ Rails.application.routes.draw do
     get 'i/signout', action: :logout, as: :newflow_logout
   end
 
-  scope controller: 'newflow/signup' do
+  scope controller: 'signup' do
     get 'signup', action: :welcome, as: :newflow_signup
     get 'done', action: :signup_done, as: :signup_done
     get 'verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
     get 'check_your_email', action: :check_your_email, as: :check_your_email
   end
 
-  scope controller: 'newflow/student_signup' do
+  scope controller: 'student_signup' do
     get 'signup/student', action: :student_signup_form, as: :signup_student
     post 'signup/student', action: :student_signup, as: :newflow_signup_post
 
@@ -53,7 +53,7 @@ Rails.application.routes.draw do
     post 'signup/student/verify_email_by_pin', action: :student_verify_email_by_pin, as: :student_verify_pin
   end
 
-  scope controller: 'newflow/educator_signup' do
+  scope controller: 'educator_signup' do
     # Step 1
     get 'signup/educator', action: :educator_signup_form, as: :educator_signup
     post 'signup/educator', action: :educator_signup, as: :educator_signup_post
@@ -80,7 +80,7 @@ Rails.application.routes.draw do
     post 'signup/educator/cs_verification_request', action: :educator_complete_profile, as: :educator_cs_verification_request
   end
 
-  scope controller: 'newflow/password_management' do
+  scope controller: 'password_management' do
     # Password management process (forgot,  change, or create password)
     get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
     post 'i/send_reset_password_email',
@@ -95,7 +95,7 @@ Rails.application.routes.draw do
     post 'i/change_password', action: :change_password, as: :change_password
   end
 
-  scope controller: 'newflow/social_auth' do
+  scope controller: 'social_auth' do
     get 'i/auth/:provider', action: :oauth_callback, as: :newflow_auth
     post 'i/auth/:provider', action: :oauth_callback
     get 'i/auth/:provider/callback', action: :oauth_callback
