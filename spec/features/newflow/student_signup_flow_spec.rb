@@ -31,6 +31,7 @@ module Newflow
         fill_in 'signup_last_name',	with: 'Dimas'
         fill_in 'signup_email',	with: email
         fill_in 'signup_password',	with: password
+        check('signup_terms_accepted')
         submit_signup_form
         screenshot!
 

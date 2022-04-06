@@ -1,8 +1,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap
-//= require ../vendor/underscore
-//= require ../vendor/mailcheck
 //= require ../application/ui
 //= require intlTelInput
 //= require multiselect
