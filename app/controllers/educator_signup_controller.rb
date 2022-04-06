@@ -1,40 +1,43 @@
 class EducatorSignupController < SignupController
 
-  include InstructorSignupHelper
+  include EducatorSignupHelper
 
   skip_forgery_protection(only: :sheerid_webhook)
 
   before_action(:prevent_caching, only: :sheerid_webhook)
-  before_action(:exit_newflow_signup_if_logged_in, only: :educator_signup_form)
+  before_action(:exit_signup_if_logged_in, only: :instructor_signup_form)
   before_action(:restart_signup_if_missing_unverified_user, only: %i[
-      educator_change_signup_email_form
-      educator_change_signup_email
-      educator_email_verification_form
-      educator_email_verification_form_updated_email
-      educator_verify_email_by_pin
+      instructor_change_signup_email_form
+      instructor_change_signup_email
+      instructor_email_verification_form
+      instructor_email_verification_form_updated_email
+      instructor_verify_email_by_pin
     ]
   )
-  before_action(:newflow_authenticate_user!, only: %i[
-      educator_sheerid_form
-      educator_profile_form
-      educator_complete_profile
-      educator_pending_cs_verification
-      educator_cs_verification_form
-      educator_cs_verification_request
+  before_action(:authenticate_user!, only: %i[
+      instructor_sheerid_form
+      instructor_profile_form
+      instructor_complete_profile
+      instructor_pending_cs_verification
+      instructor_cs_verification_form
+      instructor_educator_cs_verification_request
     ]
   )
-  before_action(:store_if_sheerid_is_unviable_for_user, only: :educator_profile_form)
-  before_action(:store_sheerid_verification_for_user, only: :educator_profile_form)
+  before_action(:store_if_sheerid_is_unviable_for_user, only: :instructor_profile_form)
+  before_action(:store_sheerid_verification_for_user, only: :instructor_profile_form)
   before_action(:exit_signup_if_steps_complete, only: %i[
-      educator_sheerid_form
-      educator_profile_form
-      educator_cs_verification_form
+      instructor_sheerid_form
+      instructor_profile_form
     ]
   )
 
-  def educator_signup
+  def instructor_signup_form
+    render :educator_signup_form
+  end
+
+  def instructor_signup_form_post
     handle_with(
-      EducatorSignup::SignupForm,
+      SignupProfileInstructor,
       contracts_required: !contracts_not_required,
       client_app: get_client_app,
       is_BRI_book: is_BRI_book_adopter?,
@@ -83,7 +86,7 @@ class EducatorSignupController < SignupController
 
   def educator_verify_email_by_pin
     handle_with(
-      EducatorSignup::VerifyEmailByPin,
+      SignupVerifyEmail,
       email_address: unverified_user.email_addresses.first,
       success: lambda {
         @email = unverified_user.email_addresses.first.value
@@ -96,7 +99,7 @@ class EducatorSignupController < SignupController
         @total_steps = 4
         @first_name = unverified_user.first_name
         @email = unverified_user.email_addresses.first.value
-        security_log(:educator_verify_email_failed, email: @email)
+        security_log(:instructor_verify_email_failed, email: @email)
         render(:educator_email_verification_form)
       }
     )
@@ -111,7 +114,7 @@ class EducatorSignupController < SignupController
   # http://developer.sheerid.com/program-settings#webhooks
   def sheerid_webhook
     handle_with(
-      EducatorSignup::SheeridWebhook,
+      SheeridWebhook,
       verification_id: sheerid_provided_verification_id_param,
       success: lambda {
         security_log(:sheerid_webhook_received, { data: @handler_result })
@@ -138,7 +141,7 @@ class EducatorSignupController < SignupController
 
   def educator_complete_profile
     handle_with(
-      EducatorSignup::CompleteProfile,
+      SignupProfileEducatorFinal,
       user: current_user,
       success: lambda {
         user = @handler_result.outputs.user
@@ -178,17 +181,15 @@ class EducatorSignupController < SignupController
   end
 
   def exit_signup_if_steps_complete
-    return if !current_user.is_newflow?
-
     case true
     when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
       redirect_to(educator_pending_cs_verification_path)
     when current_user.is_educator_pending_cs_verification && !current_user.pending_faculty?
-      redirect_back(fallback_location: profile_newflow_path)
+      redirect_back(fallback_location: profile_path)
     when action_name == 'educator_sheerid_form' && current_user.step_3_complete?
       redirect_to(educator_profile_form_path)
     when action_name == 'educator_profile_form' && current_user.is_profile_complete?
-      redirect_to(profile_newflow_path)
+      redirect_to(profile_path)
     end
   end
 
