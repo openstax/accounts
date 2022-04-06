@@ -19,7 +19,7 @@ module Newflow
         SecurityLog.create!(
           user: user,
           event_type: :email_added_to_user,
-          event_data: { email: @email }
+          event_data: { email: @email.value, pin: @email.confirmation_pin  }
         )
         NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
       end
