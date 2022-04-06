@@ -5,6 +5,9 @@ namespace :cron do
     Rails.logger.info 'UpdateSchoolSalesforceInfo.call'
     OpenStax::RescueFrom.this { UpdateSchoolSalesforceInfo.call }
 
+    Rails.logger.info 'UpdateSchoolSalesforceInfo.call'
+    OpenStax::RescueFrom.this { SyncUserAccountsWithSalesforce.call }
+
     Rails.logger.debug 'Finished 10-to-half-hour cron'
   end
 end

@@ -90,7 +90,12 @@ module Newflow
         event_type: :attempting_to_create_user_lead
       )
 
-      lead.save!
+      unless lead.save!
+        SecurityLog.create!(
+          user: user,
+          event_type: :salesforce_error
+        )
+      end
 
       SecurityLog.create!(
         user:       user,
@@ -100,7 +105,6 @@ module Newflow
 
       user.salesforce_lead_id = lead.id
       if user.save!
-        Newflow::AddAccountToSalesforce.perform_later(user_id: @user.id)
         SecurityLog.create!(
           user:       user,
           event_type: :user_lead_id_updated_from_salesforce,

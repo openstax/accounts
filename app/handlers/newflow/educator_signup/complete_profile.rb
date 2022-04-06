@@ -96,12 +96,14 @@ module Newflow
           # If user did not need CS verification but still needs to be pending, set them to pending state
           # This is everyone, unless SheerID sets it to something else in sheerid_webhook when we hear back from their webhook
           # Otherwise, we can see who didn't fill out their profile with a faculty status of :incomplete_signup
-          @user.faculty_status = :pending_faculty
-          SecurityLog.create!(
-            user:       user,
-            event_type: :faculty_status_updated,
-            event_data: { old_status: "incomplete", new_status: "pending" }
-          )
+          if @user.faculty_status == :incomplete_signup && !@did_use_sheerid
+            @user.faculty_status = :pending_faculty
+            SecurityLog.create!(
+              user:       user,
+              event_type: :faculty_status_updated,
+              event_data: { old_status: "incomplete", new_status: "pending" }
+            )
+          end
         end
 
         transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)

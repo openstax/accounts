@@ -2,10 +2,6 @@ module ApplicationHelper
 
   include AlertHelper
 
-  def edu_newflow_activated?
-    Settings::FeatureFlags.educator_feature_flag
-  end
-
   def contact_us_link
     link_to(
       I18n.t(:"login_signup_form.contact_us"),
@@ -156,7 +152,7 @@ module ApplicationHelper
   end
 
   def is_real_production_site?
-    request.host == 'accounts.openstax.org' || 'openstax.org'
+    request.host == 'accounts.openstax.org'
   end
 
   def translate_error(code:, force: false)
@@ -167,7 +163,7 @@ module ApplicationHelper
     return if error.nil?
     return if error.message.present? && !force
 
-    # use a block for the error message so we avoid unnecesarry i18n translation
+    # use a block for the error message so we avoid unnecessary i18n translation
     error.message = yield
   end
 
@@ -245,7 +241,7 @@ module ApplicationHelper
     end
   end
 
-  # When currrent user wants to change their password,
+  # When current user wants to change their password,
   # but hasn't logged in in a while, we ask them to re-authenticate.
   # So we use this function to pre-populate their email field in the login form.
   def current_users_resetting_password_email
