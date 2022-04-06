@@ -44,8 +44,6 @@ class UpdateUserContactInfo
       sf_contact = contacts_by_uuid[user.uuid]
       school = schools_by_salesforce_id[sf_contact.school_id]
 
-      user.salesforce_contact_id = sf_contact.id
-
       if user.salesforce_contact_id.blank?
         user.salesforce_contact_id = sf_contact.id
         SecurityLog.create!(
