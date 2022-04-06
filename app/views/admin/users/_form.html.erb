@@ -110,11 +110,7 @@
       <% sf_id = @user.salesforce_lead_id %>
       <p class="form-control-static">
         <% if sf_id.nil? %>
-          <%= link_to 'Not Set. Force Push?', force_update_lead_admin_user_path(@user),
-                      remote: true, method: :post,
-                      class: 'btn btn-default',
-                      data: {confirm: "Are you sure you want to force sync this lead with Salesforce?"}
-          %>
+          Not Set
         <% else %>
           <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
           <% if instance_url.nil? %>
@@ -126,6 +122,27 @@
       </p>
     </div>
   </div>
+  <% end %>
+
+  <% unless @user.salesforce_ox_account_id.nil? %>
+    <div class="form-group">
+      <%= f.label :salesforce_ox_account_id, class: "col-sm-2 control-label" %>
+      <div class="col-sm-10">
+        <% sf_id = @user.salesforce_ox_account_id %>
+        <p class="form-control-static">
+          <% if sf_id.nil? %>
+            Not Set
+          <% else %>
+            <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+            <% if instance_url.nil? %>
+              <%= sf_id %>
+            <% else %>
+              <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
+            <% end %>
+          <% end %>
+        </p>
+      </div>
+    </div>
   <% end %>
 
   <div class="form-group">
