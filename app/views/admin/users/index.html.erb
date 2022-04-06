@@ -38,8 +38,9 @@
       <th>Faculty Status</th>
       <th>Role</th>
       <th>School Type</th>
-      <th>KIP?</th>
-      <th>Grant Tutor Access?</th>
+      <th>Lead</th>
+      <th>Contact</th>
+      <th>SF Account Link</th>
       <th></th>
     </tr>
     <% @handler_result.outputs[:items].each do |user| %>
@@ -52,11 +53,39 @@
         <td><%= link_to user.id, edit_admin_user_path(user), target: '_blank' %></td>
         <td><%= user.first_name || '---' %></td>
         <td><%= user.last_name || '---' %></td>
-        <td><%= user.faculty_status %></td>
+        <td><%= user.faculty_status.humanize %></td>
         <td><%= user.unknown_role? ? "Unknown" : user.role.capitalize %></td>
-        <td><%= user.school_type %></td>
-        <td><%= user.is_kip ? 'Yes' : 'No' %></td>
-        <td><%= user.grant_tutor_access ? 'Yes' : 'No' %></td>
+        <td><%= user.school_type.humanize %></td>
+        <td>
+          <% unless user.salesforce_lead_id.nil? %>
+            <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+            <% if instance_url.nil? %>
+              <%= user.salesforce_lead_id %>
+            <% else %>
+              <%= link_to user.salesforce_lead_id, instance_url + "/" + user.salesforce_lead_id, target: '_blank' %>
+            <% end %>
+          <% end %>
+        </td>
+        <td>
+          <% unless user.salesforce_contact_id.nil? %>
+            <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+            <% if instance_url.nil? %>
+              <%= user.salesforce_contact_id %>
+            <% else %>
+              <%= link_to user.salesforce_contact_id, instance_url + "/" + user.salesforce_contact_id, target: '_blank' %>
+            <% end %>
+          <% end %>
+        </td>
+        <td>
+          <% unless user.salesforce_ox_account_id.nil? %>
+            <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+            <% if instance_url.nil? %>
+              <%= user.salesforce_ox_account_id %>
+            <% else %>
+              <%= link_to user.salesforce_ox_account_id, instance_url + "/" + user.salesforce_ox_account_id, target: '_blank' %>
+            <% end %>
+          <% end %>
+        </td>
         <td>
           <%= link_to become_admin_user_path(user),
                       method: :post,
