@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
-  scope controller: 'newflow/other' do
+  scope controller: 'other' do
     # Profile access
     get 'profile', action: :profile_newflow, as: :profile_newflow
 
@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     get 'exit_accounts', action: :exit_accounts, as: :exit_accounts
   end
 
-  scope controller: 'newflow/login' do
+  scope controller: 'login' do
     get 'login', action: :login_form, as: :newflow_login
     post 'login', action: :login
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form

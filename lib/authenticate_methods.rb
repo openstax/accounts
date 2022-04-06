@@ -7,7 +7,7 @@ module AuthenticateMethods
       return
     else
       store_url(url: request.url)
-      redirect_to newflow_login_path(request.query_parameters)
+      redirect_to login_path(request.query_parameters)
     end
   end
 

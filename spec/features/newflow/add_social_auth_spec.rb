@@ -13,7 +13,7 @@ feature 'Add social auth', js: true do
 
     user = create_user('user')
     user.update(role: User::STUDENT_ROLE)
-    newflow_log_in_user('user', 'password')
+    log_in_user('user', 'password')
 
     expect_newflow_profile_page
 
@@ -35,7 +35,7 @@ feature 'Add social auth', js: true do
     user.update(role: User::STUDENT_ROLE)
     create_email_address_for(user, email_value)
 
-    newflow_log_in_user('user', 'password')
+    log_in_user('user', 'password')
 
     expect_newflow_profile_page
 
@@ -57,7 +57,7 @@ feature 'Add social auth', js: true do
 
     user = create_user 'user'
     user.update(role: User::STUDENT_ROLE)
-    newflow_log_in_user('user', 'password')
+    log_in_user('user', 'password')
 
     expect_newflow_profile_page
 

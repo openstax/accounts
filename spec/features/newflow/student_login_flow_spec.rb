@@ -14,9 +14,9 @@ module Newflow
         it 'sends the student back to the specified return URL' do
           with_forgery_protection do
             return_to = capybara_url(external_app_for_specs_path)
-            visit newflow_login_path(r: return_to)
+            visit login_path(r: return_to)
             screenshot!
-            newflow_log_in_user('user@openstax.org', 'password')
+            log_in_user('user@openstax.org', 'password')
             expect(page.current_url).to eq(return_to)
             screenshot!
           end
@@ -29,7 +29,7 @@ module Newflow
             with_forgery_protection do
               arrive_from_app
               screenshot!
-              newflow_log_in_user('user@openstax.org', 'password')
+              log_in_user('user@openstax.org', 'password')
               expect_back_at_app
               screenshot!
             end
@@ -49,7 +49,7 @@ module Newflow
             with_forgery_protection do
               arrive_from_app
               screenshot!
-              newflow_log_in_user('needs_profile_user@openstax.org', 'password')
+              log_in_user('needs_profile_user@openstax.org', 'password')
               screenshot!
               expect(page.current_path).to match('/terms/pose')
             end
@@ -64,8 +64,8 @@ module Newflow
 
         it 'sends the student to their profile' do
           with_forgery_protection do
-            visit newflow_login_path
-            newflow_log_in_user('user@openstax.org', 'password')
+            visit login_path
+            log_in_user('user@openstax.org', 'password')
             expect(page.current_url).to match(profile_newflow_path)
           end
         end
@@ -73,12 +73,12 @@ module Newflow
 
       context 'user interface' do
         # example 'Forgot your password? link takes user to reset password form' do
-        #   visit newflow_login_path
+        #   visit login_path
         #   expect(find('#forgot-passwork-link')['href']).to match(forgot_password_form_path)
         # end
 
         example 'SHOW/HIDE link for password field shows and hides password' do
-          visit newflow_login_path
+          visit login_path
           expect(find('#login_form_password')['type']).to eq('password')
           find('#password-show-hide-button').click
           expect(find('#login_form_password')['type']).to eq('text')
@@ -89,7 +89,7 @@ module Newflow
         example 'banners show up when there are any' do
           Banner.create(message: 'This is a banner.', expires_at: 1.day.from_now)
           Banner.create(message: 'This is another banner.', expires_at: 1.day.from_now)
-          visit newflow_login_path
+          visit login_path
           expect(page).to have_text('This is a banner.')
           expect(page).to have_text('This is another banner.')
           screenshot!
@@ -136,7 +136,7 @@ module Newflow
           context "when user arrived with `r`eturn param" do
             it 'takes user back to `r`eturn url' do
               with_forgery_protection do
-                visit(newflow_login_path(r: external_public_url))
+                visit(login_path(r: external_public_url))
                 find('#exit-icon a').click
                 wait_for_animations
                 wait_for_ajax
@@ -154,7 +154,7 @@ module Newflow
       let!(:identity) { FactoryBot.create(:identity, user: user, password: 'password') }
 
       it 'allows the student to log in and redirects them to the email verification form' do
-        visit(newflow_login_path)
+        visit(login_path)
         fill_in('login_form_email', with: email_address.value)
         fill_in('login_form_password', with: 'password')
         find('[type=submit]').click
@@ -165,9 +165,9 @@ module Newflow
     context 'no user found with such email' do
       xit 'adds a message to the email input field' do
         with_forgery_protection do
-          visit newflow_login_path
-          newflow_log_in_user('NOone@openstax.org', 'password')
-          expect(page.current_url).to match(newflow_login_path)
+          visit login_path
+          log_in_user('NOone@openstax.org', 'password')
+          expect(page.current_url).to match(login_path)
           field_text = find('#login_form_email + .errors.invalid-message').text
           expect(field_text).to  eq(I18n.t(:"login_signup_form.cannot_find_user"))
         end
@@ -177,9 +177,9 @@ module Newflow
     context 'wrong password for account with such email' do
       xit 'adds a message to the password input field' do
         with_forgery_protection do
-            visit newflow_login_path
-            newflow_log_in_user('user@openstax.org', 'WRONGpassword')
-            expect(page.current_url).to match(newflow_login_path)
+            visit login_path
+            log_in_user('user@openstax.org', 'WRONGpassword')
+            expect(page.current_url).to match(login_path)
             field_text = find('#login_form_password + .errors.invalid-message').text
             expect(field_text).to  eq(I18n.t(:"login_signup_form.incorrect_password"))
           end
@@ -189,9 +189,9 @@ module Newflow
     context 'forgot password' do
       xit 'enables the user to reset their password' do
         with_forgery_protection do
-          visit newflow_login_path
+          visit login_path
           screenshot!
-          newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+          log_in_user('user@openstax.org', 'WRONGpassword')
           screenshot!
 
           click_on(I18n.t(:"login_signup_form.forgot_password"))
@@ -223,7 +223,7 @@ module Newflow
           # user is subsequently able to log in with the new password
           click_on('Log out')
           screenshot!
-          newflow_log_in_user('user@openstax.org', 'NEWpassword')
+          log_in_user('user@openstax.org', 'NEWpassword')
           expect(page).to  have_content('My Account')
         end
       end

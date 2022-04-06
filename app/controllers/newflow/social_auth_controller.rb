@@ -47,7 +47,7 @@ module Newflow
             case code
             when :should_redirect_to_signup
               redirect_to(
-                newflow_login_path,
+                login_path,
                 notice: I18n.t(
                   :"login_signup_form.should_social_signup",
                   sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
@@ -61,7 +61,7 @@ module Newflow
               redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
             when :mismatched_authentication
               security_log(:sign_in_failed, reason: "mismatched authentication")
-              redirect_to(newflow_login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
+              redirect_to(login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
             else
               oauth = request.env['omniauth.auth']
               errors = @handler_result.errors.inspect
