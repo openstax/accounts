@@ -4,12 +4,12 @@ Rails.application.routes.draw do
   root to: 'static_pages#home'
 
   match 'i/signup/(*path)' => redirect { |_,request| "signup/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
-  get 'i/profile' => redirect('profile')
-  get 'i/exit_accounts' => redirect('exit_accounts')
-  match 'i/login' => redirect('login'), via: :all
-  get 'i/reauthenticate' => redirect('reauthenticate')
-  get 'i/check_your_email' => redirect('check_your_email')
-  get 'i/done' => redirect('done')
+  get 'i/profile/(*path)' => redirect { |_, request| "profile/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'i/exit_accounts/(*path)' => redirect { |_, request| "exit_accounts/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  match 'i/login/(*path)' => redirect { |_, request| "login/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
+  get 'i/reauthenticate/(*path)' => redirect { |_, request| "reauthenticate/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'i/check_your_email/(*path)' => redirect { |_, request| "check_your_email/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'i/done/(*path)' => redirect { |_, request| "done/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
   match 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
   get 'i/confirm_your_info' => redirect('confirm_your_info')
   get 'i/forgot_password_form' => redirect('forgot_password_form')
