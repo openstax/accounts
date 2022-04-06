@@ -133,7 +133,6 @@ module Newflow
     end
 
     def educator_profile_form
-      @book_titles = book_data.titles
       security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
     end
 
@@ -153,7 +152,6 @@ module Newflow
           end
         },
         failure: lambda {
-          @book_titles = book_data.titles
           security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
           if @handler_result.outputs.is_on_cs_form
             redirect_to(educator_cs_verification_form_url, alert: "Please check your input and try again. Email address and School Name are required fields.")
@@ -191,10 +189,6 @@ module Newflow
       when action_name == 'educator_profile_form' && current_user.is_profile_complete?
         redirect_to(profile_newflow_path)
       end
-    end
-
-    def book_data
-      @book_data ||= FetchBookData.new
     end
 
     def store_sheerid_verification_for_user

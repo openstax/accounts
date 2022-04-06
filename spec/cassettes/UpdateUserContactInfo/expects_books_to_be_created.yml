@@ -1,0 +1,54 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: "<salesforce_instance_url>/services/data/v51.0/query?q=SELECT%20Id,%20Email,%20Email_alt__c,%20FV_Status__c,%20School_Type__c,%20Adoption_Status__c,%20Grant_Tutor_Access__c,%20Accounts_UUID__c,%20Account.Id,%20Account.Name,%20Account.BillingCity,%20Account.BillingState,%20Account.BillingCountry,%20Account.Type,%20Account.School_Location__c,%20Account.SheerID_School_Name__c,%20Account.K_I_P__c,%20Account.child_of_kip__c,%20Account.Total_School_Enrollment__c%20FROM%20Contact%20WHERE%20(Accounts_UUID__c%20!=%20null)%20AND%20(LastModifiedDate%20%3E=%202022-03-28T00:00:00Z)"
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v1.0.1
+      Authorization:
+      - OAuth <salesforce_access_token>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 04 Apr 2022 20:48:15 GMT
+      Set-Cookie:
+      - BrowserId=jQfoLbRYEeysu4mTKTpLqw; domain=.salesforce.com; path=/; expires=Tue,
+        04-Apr-2023 20:48:15 GMT; Max-Age=31536000
+      - CookieConsentPolicy=0:1; path=/; expires=Tue, 04-Apr-2023 20:48:15 GMT; Max-Age=31536000
+      - LSKey-c$CookieConsentPolicy=0:1; path=/; expires=Tue, 04-Apr-2023 20:48:15
+        GMT; Max-Age=31536000
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Robots-Tag:
+      - none
+      Cache-Control:
+      - no-cache,must-revalidate,max-age=0,no-store,private
+      Sforce-Limit-Info:
+      - api-usage=420/5000000
+      Content-Type:
+      - application/json;charset=UTF-8
+      Vary:
+      - Accept-Encoding
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: '{"totalSize":0,"done":true,"records":[]}'
+    http_version:
+  recorded_at: Mon, 04 Apr 2022 20:48:15 GMT
+recorded_with: VCR 3.0.3
