@@ -44,8 +44,6 @@ class UpdateUserContactInfo
       sf_contact = contacts_by_uuid[user.uuid]
       school = schools_by_salesforce_id[sf_contact.school_id]
 
-      user.salesforce_contact_id = sf_contact.id
-
       if user.salesforce_contact_id.blank?
         user.salesforce_contact_id = sf_contact.id
         SecurityLog.create!(
@@ -128,7 +126,6 @@ class UpdateUserContactInfo
       if user.changed?
         user.save!
         users_updated += 1
-        AddAccountToSalesforce.perform_later(user_id: user.id)
       end
     end
     log("Completed updating #{users_updated} users.")
