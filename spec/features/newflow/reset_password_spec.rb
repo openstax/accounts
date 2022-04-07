@@ -18,7 +18,7 @@ feature 'Password reset', js: true do
     # shouldn't ask to reauthenticate when they forgot their password and are trying to reset it
     # issue: https://github.com/openstax/business-intel/issues/550
     login_token = generate_login_token_for_user(user)
-    newflow_log_in_user('user@openstax.org', 'password')
+    log_in_user('user@openstax.org', 'password')
     expect(page).to have_current_path(profile_newflow_path)
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
@@ -50,7 +50,7 @@ feature 'Password reset', js: true do
   end
 
   scenario "'Forgot password?' link from reauthenticate page sends email (bypassing Reset Password Form)" do
-    newflow_log_in_user('user@openstax.org', 'password')
+    log_in_user('user@openstax.org', 'password')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       find('[data-provider=identity] .edit--newflow').click
@@ -67,9 +67,9 @@ feature 'Password reset', js: true do
   end
 
   # scenario 'reset password links stay constant for a fixed time' do
-  #   visit newflow_login_path
+  #   visit login_path
   #   screenshot!
-  #   newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+  #   log_in_user('user@openstax.org', 'WRONGpassword')
   #   screenshot!
   #
   #   click_on(I18n.t(:"login_signup_form.forgot_password"))
@@ -87,8 +87,8 @@ feature 'Password reset', js: true do
   #   change_password_link_1 = get_path_from_absolute_link(current_email, 'a')
   #   clear_emails
   #
-  #   visit newflow_login_path
-  #   newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+  #   visit login_path
+  #   log_in_user('user@openstax.org', 'WRONGpassword')
   #   click_on(I18n.t(:"login_signup_form.forgot_password"))
   #   expect(page.current_path).to eq(forgot_password_form_path)
   #   # pre-populates the email for them since they already typed it in the login form
@@ -104,8 +104,8 @@ feature 'Password reset', js: true do
   #   expect(change_password_link_1).to eq(change_password_link_2)
   #
   #   Timecop.freeze(Time.now + IdentitiesSendPasswordEmail::LOGIN_TOKEN_EXPIRES_AFTER + 1.hour) do
-  #     visit newflow_login_path
-  #     newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+  #     visit login_path
+  #     log_in_user('user@openstax.org', 'WRONGpassword')
   #     click_on(I18n.t(:"login_signup_form.forgot_password"))
   #     expect(page.current_path).to eq(forgot_password_form_path)
   #     # pre-populates the email for them since they already typed it in the login form
@@ -123,8 +123,8 @@ feature 'Password reset', js: true do
   # end
 
   # scenario 'failure to send reset email (re-) renders the forgot password form' do
-  #   visit newflow_login_path
-  #   newflow_log_in_user('user@openstax.org', 'WRONGpassword')
+  #   visit login_path
+  #   log_in_user('user@openstax.org', 'WRONGpassword')
   #   click_on(I18n.t(:"login_signup_form.forgot_password"))
   #
   #   # Cause an error to occur in the handler that sends the email

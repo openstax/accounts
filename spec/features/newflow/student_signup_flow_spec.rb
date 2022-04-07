@@ -82,7 +82,7 @@ module Newflow
       let!(:password) { 'password' }
 
       it 'allows the student to log in and redirects them to the email verification form' do
-        visit(newflow_login_path)
+        visit(login_path)
         fill_in('login_form_email', with: email_address.value)
         fill_in('login_form_password', with: password)
         find('[type=submit]').click
@@ -91,9 +91,9 @@ module Newflow
 
       # TODO: this works - something with the selector, also the id on the element is misspelled
       xit 'allows the student to reset their password' do
-        visit(newflow_login_path)
+        visit(login_path)
         #byebug
-        newflow_log_in_user(email_address.value, 'WRONGpassword')
+        log_in_user(email_address.value, 'WRONGpassword')
         click_link_or_button(t :"login_signup_form.forgot_password")
         expect(page.current_path).to eq(forgot_password_form_path)
         expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
