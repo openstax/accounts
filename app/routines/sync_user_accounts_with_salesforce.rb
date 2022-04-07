@@ -24,8 +24,12 @@ class SyncUserAccountsWithSalesforce
         account_environment: Rails.application.secrets.environment_name
       )
 
+      begin
       sf_ox_account.save!
       user.salesforce_ox_account_id = sf_ox_account.id
+      rescue StandardError => se
+        Sentry.capture_exception se
+      end
 
       if user.save!
         SecurityLog.create!(
