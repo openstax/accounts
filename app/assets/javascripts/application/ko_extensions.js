@@ -1,7 +1,7 @@
 // From https://stackoverflow.com/a/21715390/392102
 ko.bindingHandlers.initValue = {
-    init: function(element, valueAccessor) {
-        var value = valueAccessor();
+    init(element, valueAccessor) {
+        const value = valueAccessor();
         if (!ko.isWriteableObservable(value)) {
             throw new Error('Knockout "initValue" binding expects an observable.');
         }
@@ -10,8 +10,8 @@ ko.bindingHandlers.initValue = {
 };
 
 ko.bindingHandlers.initChecked = {
-    init: function(element, valueAccessor) {
-        var value = valueAccessor();
+    init(element, valueAccessor) {
+        const value = valueAccessor();
         if (!ko.isWriteableObservable(value)) {
             throw new Error('Knockout "initChecked" binding expects an observable.');
         }
@@ -20,15 +20,59 @@ ko.bindingHandlers.initChecked = {
 };
 
 ko.bindingHandlers.valueWithInit = {
-    init: function(element, valueAccessor, allBindings, data, context) {
+    init(element, valueAccessor, allBindings, data, context) {
         ko.applyBindingsToNode(element, { initValue: valueAccessor() }, context);
         ko.applyBindingsToNode(element, { value: valueAccessor() }, context);
     }
 };
 
 ko.bindingHandlers.checkedWithInit = {
-    init: function(element, valueAccessor, allBindings, data, context) {
+    init(element, valueAccessor, allBindings, data, context) {
         ko.applyBindingsToNode(element, { initChecked: valueAccessor() }, context);
         ko.applyBindingsToNode(element, { checked: valueAccessor() }, context);
     }
 };
+
+ko.bindingHandlers.phoneNumber = {
+  init(element, valueAccessor) {
+    const value = valueAccessor();
+
+    value(
+      intlTelInput(element, {
+        formatOnInit: true,
+        preferredCountries: ['us', 'pl']
+      })
+    );
+  }
+}
+
+// Custom binding for partial _password_control_group
+// Controls toggling password visibility and the checkmark in the tooltip
+ko.bindingHandlers.passwordWithToolTip = {
+  init(element, valueAccessor) {
+    const minPasswordLength = valueAccessor();
+    const mode = ko.observable('password');
+    const showShow = ko.computed(() => mode() === 'password');
+    const pwval = ko.observable('');
+    const pwSuccess = ko.computed(() => pwval().length >= minPasswordLength);
+    const buttonEl = document.getElementById('password-show-hide-button');
+    const inputEl = element.querySelector('input');
+    const checkmarkEl = document.getElementById('password-requirements-checkmark');
+
+    function switchVisibility() {
+      mode(mode() === 'password' ? 'text' : 'password');
+    }
+
+    ko.applyBindingsToNode(inputEl, {
+      textInput: pwval,
+      attr: {type: mode}
+    });
+    ko.applyBindingsToNode(checkmarkEl, { css: {success: pwSuccess} } );
+    ko.applyBindingsToNode(buttonEl, {
+      click: switchVisibility,
+      css: {'show-show': showShow}
+    });
+
+    pwval.subscribe((v) => console.info("Password success?", pwSuccess()));
+  }
+}

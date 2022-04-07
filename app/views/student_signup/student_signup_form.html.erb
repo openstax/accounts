@@ -107,25 +107,7 @@
                     %>
                 </div>
 
-
-                <div class="content control-group">
-                    <div id="password-field-container">
-                        <div class="input-with-tooltip">
-                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
-                                                    class: 'field-label required'
-                            %>
-                            <%= render partial: 'shared/password_show_hide'  %>
-                            <%=
-                                form_helper.text_field(
-                                    name: :password,
-                                    type: :password,
-                                    placeholder: I18n.t(:"login_signup_form.password_label")
-                                )
-                            %>
-                            <%= render partial: 'shared/password_tooltip' %>
-                        </div>
-                    </div>
-                </div>
+                <%= render partial: 'shared/password_control_group', locals: { fh: form_helper } %>
 
                 <div class="content control-group checkboxes-section">
 
@@ -184,7 +166,7 @@
     const emailBlank = ko.computed(() => email().length === 0);
     const termsIsChecked = ko.observable(false);
     const canSubmit = ko.computed(() =>
-      ! emailBlank() && && termsIsChecked()
+      ! emailBlank() && termsIsChecked()
     );
 
     email.subscribe((v) => emailHasChanged(true));
@@ -193,7 +175,6 @@
       email,
       emailHasChanged,
       emailBlank,
-      emailInvalid,
       termsIsChecked,
       canSubmit
     };

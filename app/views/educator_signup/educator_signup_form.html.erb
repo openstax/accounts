@@ -63,10 +63,10 @@
                           supplemental_class: 'int-country-code form-control wide',
                            placeholder:  I18n.t(:'login_signup_form.phone_number_placeholder'),
                            onkeydown: 'javascript:backspacerDOWN(this,event);',
-                           onkeyup: 'javascript:backspacerUP(this,event);'
-
+                           onkeyup: 'javascript:backspacerUP(this,event);',
+                           data_bind: 'phoneNumber: telInput, value: phone'
           %>
-          <%= form.hidden_field :country_code%>
+          <%= form.hidden_field :country_code, 'data-bind': 'value: dialCode' %>
         </div>
 
         <div
@@ -90,22 +90,7 @@
 
         </div>
 
-        <div class="content control-group">
-          <div id="password-field-container">
-            <div class="input-with-tooltip">
-              <%= label_tag(:password, I18n.t(:"login_signup_form.password_label"), class: 'field-label') %>
-              <%= render(partial: 'shared/password_show_hide') %>
-              <%=
-                fh.text_field(
-                  name: :password,
-                  type: :password,
-                  placeholder: I18n.t(:"login_signup_form.password_label")
-                )
-              %>
-              <%= render partial: 'shared/password_tooltip' %>
-            </div>
-          </div>
-        </div>
+        <%= render partial: 'shared/password_control_group', locals: { fh: fh} %>
 
         <div class="content control-group checkboxes-section">
 
@@ -162,10 +147,14 @@
     <% end %>
   </div>
   <%= javascript_include_tag 'application/ko_extensions' %>
-
 </div>
 
 <script type="text/javascript">
+  // Add the data-bind to the form tag, since can't do that in markup
+  const formEl = document.querySelector('form');
+
+  formEl.setAttribute('data-bind', 'submit: beforeSubmit');
+
   const vm = function() {
     const email = ko.observable('');
     const emailHasChanged = ko.observable(false);
@@ -177,6 +166,15 @@
     const canSubmit = ko.computed(() =>
       ! emailBlank() && ! emailInvalid() && termsIsChecked()
     );
+    const telInput = ko.observable();
+    const phone = ko.observable('');
+    const dialCode = ko.computed(
+      () => phone() && telInput().getSelectedCountryData().dialCode
+    );
+    const beforeSubmit = () => {
+      telInput().telInput.value = telInput().getNumber();
+      return true;
+    };
 
     email.subscribe((v) => emailHasChanged(true));
 
@@ -186,7 +184,11 @@
       emailBlank,
       emailInvalid,
       termsIsChecked,
-      canSubmit
+      canSubmit,
+      telInput,
+      phone,
+      dialCode,
+      beforeSubmit
     };
   };
 
