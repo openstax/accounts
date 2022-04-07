@@ -63,26 +63,25 @@ class UpdateUserContactInfo
               event_data: { contact_id: sf_contact.id }
             )
           end
-
-      old_fv_status = user.faculty_status
-      user.faculty_status = case sf_contact.faculty_verified
-                              when "confirmed_faculty"
-                                :confirmed_faculty
-                              when "pending_faculty"
-                                :pending_faculty
-                              when "rejected_faculty"
-                                :rejected_faculty
-                              when "rejected_by_sheerid"
-                                :rejected_by_sheerid
-                              when "incomplete_signup"
-                                :incomplete_signup
-                              when NilClass
-                                :no_faculty_info
-                            else
-                              Sentry.capture_message("Unknown faculty_verified field: '#{
-                                sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
-                            end
-
+          
+          old_fv_status = user.faculty_status
+          user.faculty_status = case sf_contact.faculty_verified
+                                when "confirmed_faculty"
+                                  :confirmed_faculty
+                                when "pending_faculty"
+                                  :pending_faculty
+                                when "rejected_faculty"
+                                  :rejected_faculty
+                                when "rejected_by_sheer_id"
+                                  :rejected_by_sheer_id
+                                when "incomplete_signup"
+                                  :incomplete_signup
+                                when NilClass
+                                  :no_faculty_info
+                                else
+                                  Sentry.capture_message("Unknown faculty_verified field: '#{
+                                    sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
+                                end
 
           user.school_type = case sf_contact.school_type
                              when *COLLEGE_TYPES
@@ -108,7 +107,7 @@ class UpdateUserContactInfo
                                  else
                                    :unknown_school_location
                                  end
-          
+
           unless sf_contact.adoption_status.blank?
             user.using_openstax = ADOPTION_STATUSES[sf_contact.adoption_status]
           end
