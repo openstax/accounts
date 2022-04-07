@@ -1,15 +1,15 @@
 class UpdateSchoolSalesforceInfo
 
   SF_TO_DB_CACHE_COLUMNS_MAP = {
-    id: :salesforce_id,
-    name: :name,
-    city: :city,
-    state: :state,
-    country: :country,
-    type: :type,
-    school_location: :location,
-    is_kip: :is_kip,
-    is_child_of_kip: :is_child_of_kip,
+    id:                  :salesforce_id,
+    name:                :name,
+    city:                :city,
+    state:               :state,
+    country:             :country,
+    type:                :type,
+    school_location:     :location,
+    is_kip:              :is_kip,
+    is_child_of_kip:     :is_child_of_kip,
     sheerid_school_name: :sheerid_school_name
   }
 
@@ -61,8 +61,8 @@ class UpdateSchoolSalesforceInfo
 
       School.import(
         schools, validate: false, on_duplicate_key_update: {
-          conflict_target: [ :salesforce_id ], columns: SF_TO_DB_CACHE_COLUMNS_MAP.values
-        }
+        conflict_target: [:salesforce_id], columns: SF_TO_DB_CACHE_COLUMNS_MAP.values
+      }
       ) unless schools.empty?
     rescue StandardError => se
       Sentry.capture_exception se
