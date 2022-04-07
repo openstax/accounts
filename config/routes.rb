@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get 'i/reauthenticate/(*path)' => redirect { |_, request| "reauthenticate/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
   get 'i/check_your_email/(*path)' => redirect { |_, request| "check_your_email/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
   get 'i/done/(*path)' => redirect { |_, request| "done/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'i/signout/(*path)' => redirect { |_, request| "signout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
   match 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
   get 'i/confirm_your_info' => redirect('confirm_your_info')
   get 'i/forgot_password_form' => redirect('forgot_password_form')
@@ -30,7 +31,7 @@ Rails.application.routes.draw do
     get 'login', action: :login_form, as: :newflow_login
     post 'login', action: :login
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
-    get 'i/signout', action: :logout, as: :newflow_logout
+    get 'signout', action: :logout, as: :newflow_logout
   end
 
   scope controller: 'newflow/signup' do
