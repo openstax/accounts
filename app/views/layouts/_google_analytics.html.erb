@@ -64,7 +64,7 @@ var gaShowHide = function(buttonText){
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  if(window.location.href.indexOf('<%= login_path %>') > -1) {
+  if(window.location.href.indexOf('<%= newflow_login_path %>') > -1) {
     ga('send', {
       hitType: 'event',
       eventCategory: 'Login & Account Creation',

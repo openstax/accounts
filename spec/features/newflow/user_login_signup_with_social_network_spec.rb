@@ -5,7 +5,7 @@ feature 'User logs in or signs up with a social network', js: true do
     turn_on_student_feature_flag
     turn_on_educator_feature_flag
     load('db/seeds.rb')
-    allow_any_instance_of(CreateSalesforceLead).to receive(:exec)
+    allow_any_instance_of(Newflow::CreateSalesforceLead).to receive(:exec)
   end
 
   let(:email) { 'user@example.com' }
@@ -114,7 +114,7 @@ feature 'User logs in or signs up with a social network', js: true do
       describe 'happy path' do
         scenario 'youre successfully logged in' do
           simulate_login_signup_with_social(name: 'Elon Musk', email: email, uid: 'uid123') do
-              visit(login_path)
+              visit(newflow_login_path)
               click_on('Facebook')
               wait_for_ajax
               screenshot!
@@ -127,7 +127,7 @@ feature 'User logs in or signs up with a social network', js: true do
         describe 'rejects access to their email address' do
           scenario 'youre successfully logged in' do
             simulate_login_signup_with_social(name: 'Elon Musk', email: nil, uid: 'uid123') do
-              visit(login_path)
+              visit(newflow_login_path)
               click_on('Facebook')
               wait_for_ajax
               screenshot!
@@ -194,7 +194,7 @@ feature 'User logs in or signs up with a social network', js: true do
 
           scenario 'is successfully logged in' do
             simulate_login_signup_with_social(email: nil_email_value, uid: social_uid) do
-              visit(login_path)
+              visit(newflow_login_path)
               click_on('Facebook')
               wait_for_ajax
               screenshot!
@@ -211,7 +211,7 @@ feature 'User logs in or signs up with a social network', js: true do
 
           scenario 'is successfully logged in' do
             simulate_login_signup_with_social(email: email_address, uid: social_uid) do
-              visit(login_path)
+              visit(newflow_login_path)
               click_on('Facebook')
               wait_for_ajax
               screenshot!
@@ -226,7 +226,7 @@ feature 'User logs in or signs up with a social network', js: true do
 
   context 'when user wants to log in with a social network but there is no account found' do
     scenario 'the log in page re-renders with a blue banner and a message "[...] trying to sign up?"' do
-      visit(login_path)
+      visit(newflow_login_path)
 
       simulate_login_signup_with_social(name: 'Elon Musk', email: email) do
         click_on('Google')

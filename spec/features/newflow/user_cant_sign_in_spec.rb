@@ -12,14 +12,14 @@ feature "User can't sign in", js: true do
     end
 
     scenario "email unknown" do
-      log_in_user('noone@openstax.org', 'password')
+      newflow_log_in_user('noone@openstax.org', 'password')
       expect(page).to have_content(t :"login_signup_form.cannot_find_user")
       screenshot!
     end
 
     scenario "email blank" do
-      log_in_user('', 'password')
-      expect(page).to have_content(error_msg LogInUser, :email, :blank)
+      newflow_log_in_user('', 'password')
+      expect(page).to have_content(error_msg Newflow::LogInUser, :email, :blank)
       screenshot!
     end
 
@@ -31,7 +31,7 @@ feature "User can't sign in", js: true do
       email2 = create_email_address_for(user2, 'user-2@example.com')
       ContactInfo.where(id: email2.id).update_all(value: email1.value)
 
-      log_in_user(email_address, 'password')
+      newflow_log_in_user(email_address, 'password')
       expect(page).to have_content(t(:"login_signup_form.multiple_users"))
 
       screenshot!
@@ -73,7 +73,7 @@ feature "User can't sign in", js: true do
       user1.update_attribute(:username, nil)
 
       # Can't be an exact email match to trigger this scenario
-      log_in_user('useR@example.com', 'whatever')
+      newflow_log_in_user('useR@example.com', 'whatever')
       expect(page).to have_content(t(:"sessions.start.multiple_users_missing_usernames.content_html").split('.')[0])
 
       expect(page.all('a')
@@ -111,7 +111,7 @@ feature "User can't sign in", js: true do
     end
 
     # scenario "just has password auth" do
-    #   log_in_user('user@example.com', 'wrongpassword')
+    #   newflow_log_in_user('user@example.com', 'wrongpassword')
     #   expect(page).to have_content(t :"login_signup_form.incorrect_password")
     #   screenshot!
     #

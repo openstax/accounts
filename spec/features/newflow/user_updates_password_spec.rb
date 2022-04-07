@@ -7,7 +7,7 @@ feature 'User updates password on profile screen', js: true do
     @user = create_user('user')
     @user.update!(role: User::STUDENT_ROLE)
     visit '/'
-    log_in_user('user', 'password')
+    newflow_log_in_user('user', 'password')
   end
 
   scenario "adds one" do

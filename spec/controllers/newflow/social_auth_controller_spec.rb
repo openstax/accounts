@@ -70,7 +70,7 @@ module Newflow
 
           it 'redirects to login' do
             get(:oauth_callback, params: params)
-            expect(response).to redirect_to(login_path)
+            expect(response).to redirect_to(newflow_login_path)
           end
 
           it 'saves login failed email' do

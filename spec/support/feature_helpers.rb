@@ -288,7 +288,7 @@ def complete_terms_screens(without_privacy_policy: false)
 end
 
 def log_in(username_or_email, password = 'password')
-  log_in_user(username_or_email, password)
+  newflow_log_in_user(username_or_email, password)
 end
 
 def log_out
