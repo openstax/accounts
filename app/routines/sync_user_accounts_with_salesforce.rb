@@ -28,6 +28,9 @@ class SyncUserAccountsWithSalesforce
       begin
       sf_ox_account.save!
       user.salesforce_ox_account_id = sf_ox_account.id
+      # This means the lead was converted or deleted.. or is otherwise not available anymore
+      rescue Restforce::ErrorCode::InsufficientAccessOnCrossReferenceEntity
+        user.salesforce_ox_account_id = nil
       rescue StandardError => se
         Sentry.capture_exception se
       end
