@@ -83,7 +83,7 @@ module Newflow
             event_type: :user_completed_cs_form
           )
           # user needs CS review to become confirmed - set it as such in accounts
-          @user.update(
+          @user.update!(
             requested_cs_verification_at: DateTime.now,
             faculty_status: :pending_faculty
           )
@@ -95,13 +95,13 @@ module Newflow
         else
           # If user did not need CS verification but still needs to be pending, set them to pending state
           # This is everyone, unless SheerID sets it to something else in sheerid_webhook when we hear back from their webhook
-          # Otherwise, we can see who didn't fill out their profile with a faculty status of :incomplete_signup
-          if @user.faculty_status == :incomplete_signup && !@did_use_sheerid
-            @user.faculty_status = :pending_faculty
+          if !@did_use_sheerid
+            old_status = @user.faculty_status
+            @user.update!(faculty_status: :pending_faculty)
             SecurityLog.create!(
               user:       user,
               event_type: :faculty_status_updated,
-              event_data: { old_status: "incomplete", new_status: "pending" }
+              event_data: { old_status: old_status, new_status: "pending" }
             )
           end
         end
@@ -111,7 +111,7 @@ module Newflow
         #output the user to the lev handler
         outputs.user = @user
 
-        if !user.sheer_id_webhook_received && @did_use_sheerid
+        if @did_use_sheerid
           # User used SheerID or needs CS verification - we create their lead in SheeridWebhook, not here.. and might not be instant
           SecurityLog.create!(
             user: user,
