@@ -63,7 +63,7 @@ class UpdateUserContactInfo
               event_data: { contact_id: sf_contact.id }
             )
           end
-          
+
           old_fv_status = user.faculty_status
           user.faculty_status = case sf_contact.faculty_verified
                                 when "confirmed_faculty"

@@ -18,6 +18,7 @@ class SyncUserAccountsWithSalesforce
         account_id: user.id,
         account_uuid: user.uuid.to_s,
         account_role: user.role.titleize,
+        faculty_status: user.faculty_status,
         salesforce_contact_id: user&.salesforce_contact_id,
         salesforce_lead_id: user&.salesforce_lead_id,
         signup_date: user.created_at.strftime("%Y-%m-%dT%H:%M:%S%z"),
@@ -44,13 +45,16 @@ class SyncUserAccountsWithSalesforce
     users_to_update.each do |user|
       sf_ox_account = OpenStax::Salesforce::Remote::OpenStaxAccount.find(user.salesforce_ox_account_id)
 
-      # mostly for test environments - but we'll throw the error in Sentry for now to make sure nothing crazy is going on
+      # if the id of the account doesn't exist, we shouldn't hold on to it.. but we'll add a warning about it
       if sf_ox_account.nil?
-        Sentry.capture_message("Trying to sync a user account with Salesforce but the ID was not found: #{user.salesforce_ox_account_id}")
+        warn("Trying to sync a user account with Salesforce but the ID was not found: #{user.salesforce_ox_account_id}")
+        user.salesforce_ox_account_id = nil
+        user.save!
         next
       end
 
       sf_ox_account.account_role = user.role.titleize
+      sf_ox_account.faculty_status = user.faculty_status
       sf_ox_account.salesforce_contact_id = user&.salesforce_contact_id
       sf_ox_account.salesforce_lead_id = user&.salesforce_lead_id
       sf_ox_account.save!
