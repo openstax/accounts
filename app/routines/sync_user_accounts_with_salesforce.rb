@@ -31,6 +31,9 @@ class SyncUserAccountsWithSalesforce
       # This means the lead was converted or deleted.. or is otherwise not available anymore
       rescue Restforce::ErrorCode::InsufficientAccessOnCrossReferenceEntity
         user.salesforce_ox_account_id = nil
+      rescue Restforce::ErrorCode::DuplicateValue
+        user.salesforce_ox_account_id = sf_ox_account.id
+        Sentry.capture_message("Duplicate UUIDs detected. Hopefully this is a test environment! Updating to new ox_account_id (#{sf_ox_account.id})User uuid: #{user.uuid}")
       rescue StandardError => se
         Sentry.capture_exception se
       end
