@@ -15,7 +15,7 @@ class UpdateRejectedLeadsFromSalesforce
 
     begin
     rejected_leads.each do |reject_lead|
-      ProcessRejectedLeadJob.perform_later(reject_lead)
+      ProcessRejectedLeadJob.perform_later(reject_lead.accounts_uuid)
     end
   rescue StandardError => se
     Sentry.capture_exception se
