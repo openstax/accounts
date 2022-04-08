@@ -19,7 +19,7 @@ class SyncUserAccountsWithSalesforce
 
     users_to_update = User.where.not(salesforce_ox_account_id: nil)
     users_to_update.each do |user|
-      SyncUserAccountsWithSalesforce.perform_later(user.id)
+      SyncExistingAccountToSalesforceJob.perform_later(user.id)
     end
   end
 end
