@@ -35,12 +35,21 @@ class SyncUserAccountsWithSalesforce
         Sentry.capture_exception se
       end
 
+      begin
       if user.save!
         SecurityLog.create!(
           user:       user,
           event_type: :account_created_or_synced_with_salesforce,
           event_data: { sf_ox_account_id: sf_ox_account.id }
         )
+      end
+      rescue ActiveRecord::RecordInvalid => se
+        SecurityLog.create!(
+          user:       user,
+          event_type: :salesforce_error,
+          event_data: { sf_ox_account_id: sf_ox_account.id }
+        )
+        Sentry.capture_exception se
       end
     end
 
