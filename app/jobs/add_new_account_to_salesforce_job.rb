@@ -1,5 +1,5 @@
 class AddNewAccountToSalesforceJob < ApplicationJob
-  queue_as :salesforce_existing_accounts
+  queue_as :salesforce_accounts_sync
 
   def perform(user_id)
     user = User.find(user_id)

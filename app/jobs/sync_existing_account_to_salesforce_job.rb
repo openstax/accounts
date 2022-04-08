@@ -1,16 +1,17 @@
 class SyncExistingAccountToSalesforceJob < ApplicationJob
-  queue_as :salesforce_existing_accounts
+  queue_as :salesforce_accounts_sync
 
   def perform(user_id)
     user = User.find(user_id)
     sf_ox_account = OpenStax::Salesforce::Remote::OpenStaxAccount.find(user.salesforce_ox_account_id)
 
     # if the id of the account doesn't exist, we shouldn't hold on to it.. but we'll add a warning about it
+    # The account should get the sf_account link id back on the next sync
     if sf_ox_account.nil?
       warn("Trying to sync a user account with Salesforce but the ID was not found: #{user.salesforce_ox_account_id}")
       user.salesforce_ox_account_id = nil
       user.save!
-      next
+      return
     end
 
     sf_ox_account.account_role          = user.role.titleize
