@@ -73,7 +73,7 @@ class UpdateUserContactInfo
                                 when "rejected_faculty"
                                   :rejected_faculty
                                 when "rejected_by_sheerid"
-                                  :rejected_by_sheer_id
+                                  :rejected_by_sheerid
                                 when "incomplete_signup"
                                   :incomplete_signup
                                 when NilClass
