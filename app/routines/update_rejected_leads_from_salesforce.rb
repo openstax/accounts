@@ -15,9 +15,9 @@ class UpdateRejectedLeadsFromSalesforce
 
     begin
     rejected_leads.each do |reject_lead|
-      rejected_user = User.find_by(uuid: reject_lead.accounts_uuid)
+      rejected_user = User.find_by!(uuid: reject_lead.accounts_uuid)
 
-      if rejected_user&.salesforce_lead_id.blank?
+      if rejected_user.salesforce_lead_id.blank?
         rejected_user.salesforce_lead_id = reject_lead.id
         SecurityLog.create!(
           user: rejected_user,
