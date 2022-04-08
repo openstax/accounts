@@ -72,7 +72,5 @@ ko.bindingHandlers.passwordWithToolTip = {
       click: switchVisibility,
       css: {'show-show': showShow}
     });
-
-    pwval.subscribe((v) => console.info("Password success?", pwSuccess()));
   }
 }
