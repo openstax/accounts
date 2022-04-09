@@ -2,7 +2,7 @@ class ProcessRejectedLeadJob < ApplicationJob
   queue_as :salesforce_lead_sync
 
   def perform(lead_id, accounts_uuid)
-    return unless (rejected_user = User.find_by!(uuid: accounts_uuid))
+    return unless (rejected_user = User.find_by(uuid: accounts_uuid))
 
     if rejected_user.salesforce_lead_id.blank? || rejected_user.salesforce_lead_id != lead_id
       rejected_user.salesforce_lead_id = lead_id
