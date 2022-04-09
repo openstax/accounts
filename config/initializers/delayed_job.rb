@@ -56,7 +56,9 @@ module HandleFailedJobInstantly
     'OpenURI::HTTPError'  => ->(exception) do
       status = exception.message.to_i
       400 <= status && status < 500
-    end
+    end,
+    'Restforce::ErrorCode' => ALWAYS_FAIL,
+    'REQUEST_LIMIT_EXCEEDED' => ALWAYS_FAIL
   }
 
   def handle_failed_job(job, exception)
