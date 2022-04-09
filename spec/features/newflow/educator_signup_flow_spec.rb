@@ -118,7 +118,7 @@ module Newflow
       let!(:password) { 'password' }
 
       xit 'allows the educator to log in and redirects them to the email verification form' do
-        visit(newflow_login_path)
+        visit(login_path)
         fill_in('login_form_email', with: email_address.value)
         fill_in('login_form_password', with: password)
         find('[type=submit]').click
@@ -126,8 +126,8 @@ module Newflow
       end
 
       xit 'allows the educator to reset their password' do
-        visit(newflow_login_path)
-        newflow_log_in_user(email_address.value, 'WRONGpassword')
+        visit(login_path)
+        log_in_user(email_address.value, 'WRONGpassword')
         find('[id=forgot-password-link]').click
         #click_on(I18n.t(:"login_signup_form.forgot_password"))
         expect(page.current_path).to eq(forgot_password_form_path)
@@ -228,11 +228,11 @@ module Newflow
 
         # LOG OUT
         visit(signout_path)
-        expect(page).to have_current_path(newflow_login_path)
+        expect(page).to have_current_path(login_path)
 
         # LOG IN
         visit(login_path(return_param))
-        newflow_log_in_user(email_value, password)
+        log_in_user(email_value, password)
 
         # Step 3
         expect_sheerid_iframe
@@ -265,7 +265,7 @@ module Newflow
         )
 
         visit(login_path)
-        newflow_log_in_user(email_value, password)
+        log_in_user(email_value, password)
         visit faculty_access_apply_path(r: capybara_url(external_app_for_specs_path))
       end
 
