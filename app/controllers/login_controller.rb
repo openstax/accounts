@@ -20,6 +20,11 @@ class LoginController < BaseController
         clear_signup_state
         user = @handler_result.outputs.user
 
+        Sentry.configure_scope do |scope|
+          scope.set_tags(user_role: user.role.humanize)
+          scope.set_user(id: 1)
+        end
+
         if user.unverified?
           save_unverified_user(user.id)
 
@@ -58,6 +63,7 @@ class LoginController < BaseController
 
   def logout
     sign_out!
+    Sentry.set_user({})
     redirect_back(fallback_location: login_path)
   end
 
