@@ -60,7 +60,7 @@ Rails.application.routes.draw do
 
     # Step 3
     get 'signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
-    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
+    post 'sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     # Step 4
     get 'signup/educator/profile_form', action: :educator_profile_form, as: :educator_profile_form
@@ -112,11 +112,6 @@ Rails.application.routes.draw do
   #     that the current_url is the callback_path, using `OmniAuth::Strategy#on_callback_path?`
   #     So, admittedly, this route is deceiving.
   get '/auth/:provider', to: ->(_env) { [404, {}, ['Not Found']] }, as: :oauth
-
-  scope controller: 'legacy/authentications' do
-    delete 'auth/:provider', action: :destroy, as: :destroy_authentication
-    get 'add/:provider', action: :add, as: :add_authentication
-  end
 
   # routes for access via an iframe
   scope 'remote', controller: 'remote' do
@@ -251,8 +246,6 @@ Rails.application.routes.draw do
                                  controller: :contact_infos, action: :destroy
     post :verify_contact_info, path: '/contact_infos/:id/verify',
                                controller: :contact_infos, action: :verify
-
-    resources :pre_auth_states, only: [:index]
 
     resources :banners, except: :show
 
