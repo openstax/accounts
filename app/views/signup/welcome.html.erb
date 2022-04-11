@@ -32,7 +32,7 @@
                         </div>
 
                         <div>
-                            <%= link_to educator_signup_path, data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator' } do %>
+                            <%= link_to educator_signup_form_path, data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator' } do %>
                                 <div class="join-as__role educator">
                                     <span><%= I18n.t(:"login_signup_form.educator") %></span>
                                     <%= image_tag('educator-icon.svg') %>

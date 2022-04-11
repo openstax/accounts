@@ -8,7 +8,11 @@
   <td class="text-nowrap"><%= security_log_entry.created_at.in_time_zone('Central Time (US & Canada)').to_formatted_s(:db) %></td>
   <% if show_user %>
   <% user = security_log_entry.user
-     username = user.nil? ? (application.nil? ? 'Anonymous' : 'Application') : user.id %>
+     username = if user.nil?
+                  application.nil? ? 'Anonymous' : 'Application'
+                else
+                  user.id
+                end %>
   <td class="text-nowrap"><%= username %></td>
   <% end %>
   <td class="text-nowrap"><%= application.try(:name) || 'Accounts' %></td>

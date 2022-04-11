@@ -17,7 +17,7 @@
                     header: (I18n.t(:"login_signup_form.signup_page_header")),
                     current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 2),
                     classes: 'signup-page') do %>
-            <% lev_form_for :signup, url: newflow_signup_post_path do |form| %>
+            <% lev_form_for :signup, url: signup_post_path do |form| %>
                 <%
                     form_helper = NewflowFormHelper::Newflow.new(
                         f: form,
@@ -27,7 +27,7 @@
                 %>
                 <div class="content role-section">
                     <div>
-                        <%= render partial: 'shared/back_arrow', locals: { path: newflow_signup_path } %>
+                        <%= render partial: 'shared/back_arrow', locals: { path: signup_path } %>
                         <div class="role-button"><%= I18n.t(:"login_signup_form.student") %></div>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                     <div class="social-buttons">
 
                         <div class="fb-share-button">
-                            <%= link_to newflow_auth_path(:facebooknewflow),
+                            <%= link_to oauth_path(:facebooknewflow),
                                         class: 'facebook btn',
                                         :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3B-Facebook'} do %>
                                 <i class="social-icon fa fa-facebook"></i>
@@ -49,7 +49,7 @@
                         <div class="google-share-button">
                             <%=
                                 link_to(
-                                    newflow_auth_path(:googlenewflow),
+                                  oauth_path(:googlenewflow),
                                     class: 'google btn',
                                     data: {
                                         ga_category: 'Account Creation',

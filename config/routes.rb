@@ -18,22 +18,22 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'login' do
-    get 'login', action: :login_form, as: :newflow_login
+    get 'login', action: :login, as: :login
     post 'login', action: :login
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
-    get 'signout', action: :logout, as: :newflow_logout
+    get 'signout', action: :logout, as: :logout
   end
 
   scope controller: 'signup' do
-    get 'signup', action: :welcome, as: :newflow_signup
+    get 'signup', action: :welcome, as: :signup
     get 'done', action: :signup_done, as: :signup_done
     get 'verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
     get 'check_your_email', action: :check_your_email, as: :check_your_email
   end
 
   scope controller: 'student_signup' do
-    get 'signup/student', action: :student_signup_form, as: :signup_student
-    post 'signup/student', action: :student_signup, as: :newflow_signup_post
+    get 'signup/student', action: :student_signup, as: :signup_student
+    post 'signup/student', action: :student_signup, as: :signup_post
 
     get 'signup/student/email_verification_form', action: :student_email_verification_form, as: :student_email_verification_form
     post 'signup/student/change_signup_email', action: :student_change_signup_email, as: :student_change_signup_email
@@ -46,7 +46,7 @@ Rails.application.routes.draw do
 
   scope controller: 'educator_signup' do
     # Step 1
-    get 'signup/educator', action: :educator_signup_form, as: :educator_signup
+    get 'signup/educator', action: :educator_signup, as: :educator_signup_form
     post 'signup/educator', action: :educator_signup, as: :educator_signup_post
     get 'signup/educator/change_signup_email_form', action: :educator_change_signup_email_form, as: :educator_change_signup_email_form
     post 'signup/educator/change_signup_email', action: :educator_change_signup_email, as: :educator_change_signup_email
@@ -87,7 +87,7 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'social_auth' do
-    get 'auth/:provider', action: :oauth_callback, as: :newflow_auth
+    get 'auth/:provider', action: :oauth_callback, as: :social_auth
     post 'auth/:provider', action: :oauth_callback
     get 'auth/:provider/callback', action: :oauth_callback
     delete 'auth/:provider', action: :remove_auth_strategy

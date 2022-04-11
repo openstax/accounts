@@ -22,7 +22,7 @@
                             <div class="fb-share-button">
                                 <%=
                                     link_to(
-                                        newflow_auth_path(:facebooknewflow, origin: :login_form),
+                                        oauth_callback(:facebooknewflow, origin: :login_form),
                                         class: 'facebook btn',
                                         data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Facebook' }
                                     ) do
@@ -35,7 +35,7 @@
                             <div class="google-share-button">
                                 <%=
                                     link_to(
-                                        newflow_auth_path(:googlenewflow, origin: :login_form),
+                                        oauth_callback(:googlenewflow, origin: :login_form),
                                         class: 'google btn',
                                         data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Google' }
                                     ) do

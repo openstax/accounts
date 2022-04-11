@@ -20,14 +20,14 @@
                         <div class="social-buttons">
 
                             <div class="fb-share-button">
-                                <%= link_to newflow_auth_path(:facebooknewflow), class: 'facebook btn' do %>
+                                <%= link_to oauth_path(:facebooknewflow), class: 'facebook btn' do %>
                                     <i class="social-icon fa fa-facebook"></i>
                                     <span>Facebook</span>
                                 <% end %>
                             </div>
 
                             <div class="google-share-button">
-                                <%= link_to newflow_auth_path(:googlenewflow), class: 'google btn' do %>
+                                <%= link_to oauth_path(:googlenewflow), class: 'google btn' do %>
                                     <i class="social-icon fa fa-google"></i>
                                     <span>Google</span>
                                 <% end %>
