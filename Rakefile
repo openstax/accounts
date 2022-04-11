@@ -18,7 +18,7 @@ begin
     end
 
     desc 'Run the fast code examples first, then the slow code examples'
-    task speed: ['spec:fast', 'spec:slow']
+    task speed: %w[spec:fast spec:slow]
   end
 rescue LoadError
 end
