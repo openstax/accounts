@@ -12,9 +12,9 @@ module ProfileHelper
     icon_class, display_name =
       case provider
       when 'identity' then ['key', (I18n.t :"users.edit.password")]
-      when 'google_oauth2' then ['google', 'Google']
-      when 'facebooknewflow' then ['facebook', 'Facebook']
-      when 'googlenewflow' then ['google', 'Google']
+      when 'google_oauth2' then %w[google Google]
+      when 'facebooknewflow' then %w[facebook Facebook]
+      when 'googlenewflow' then %w[google Google]
       else [ provider, provider.capitalize ]
       end
 

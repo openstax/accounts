@@ -110,7 +110,7 @@ module EducatorSignup
       #output the user to the lev handler
       outputs.user = @user
 
-      if !user.sheer_id_webhook_received && @did_use_sheerid
+      if @did_use_sheerid
         # User used SheerID or needs CS verification - we create their lead in SheeridWebhook, not here.. and might not be instant
         SecurityLog.create!(
           user: user,
