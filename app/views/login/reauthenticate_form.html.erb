@@ -58,22 +58,7 @@
 
                     </div>
 
-                    <div class="content control-group">
-                        <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
-                                class: 'field-label required'
-                        %>
-                        <div id="password-field-container">
-                            <%= fh.text_field name: :password,
-                                        type: :password,
-                                        placeholder: I18n.t(:"login_signup_form.password_label"),
-                                        autofocus: true
-                            %>
-                            <span id="password-show-hide-button">
-                                <span class="toggle-show-hide">SHOW</span>
-                                <span class="toggle-show-hide" style="display: none">HIDE</span>
-                            </span>
-                        </div>
-                    </div>
+                    <%= render partial: 'shared/password_control_group', locals: { fh: fh } %>
 
                     <div class="content">
                         <%= f.submit I18n.t(:"login_signup_form.continue_button"),
@@ -99,4 +84,9 @@
             <% end  %>
         <% end  %>
     </div>
+    <%= javascript_include_tag 'application/ko_extensions' %>
 </div>
+<script>
+  // Necessary for password
+  ko.applyBindings({});
+</script>

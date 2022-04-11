@@ -100,30 +100,14 @@
                     <%=
                         form_helper.text_field(
                             name: :email,
-                            placeholder: I18n.t(:"login_signup_form.email_placeholder")
+                            type: :email,
+                            placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                            data_bind: "valueWithInit: email"
                         )
                     %>
                 </div>
 
-
-                <div class="content control-group">
-                    <div id="password-field-container">
-                        <div class="input-with-tooltip">
-                            <%= label_tag :password, I18n.t(:"login_signup_form.password_label"),
-                                                    class: 'field-label required'
-                            %>
-                            <%= render partial: 'shared/password_show_hide'  %>
-                            <%=
-                                form_helper.text_field(
-                                    name: :password,
-                                    type: :password,
-                                    placeholder: I18n.t(:"login_signup_form.password_label")
-                                )
-                            %>
-                            <%= render partial: 'shared/password_tooltip' %>
-                        </div>
-                    </div>
-                </div>
+                <%= render partial: 'shared/password_control_group', locals: { fh: form_helper } %>
 
                 <div class="content control-group checkboxes-section">
 
@@ -137,7 +121,7 @@
 
                     <div class="terms">
                         <label>
-                            <%= form.check_box :terms_accepted %>
+                            <%= form.check_box :terms_accepted, 'data-bind': 'checkedWithInit: termsIsChecked' %>
 
                             <span>
                                 <%= I18n.t(:"login_signup_form.agree_to_terms_of_use",
@@ -164,15 +148,37 @@
                                 ga_category: 'Account Creation',
                                 ga_action: 'Click',
                                 ga_label: '3A-Email'
-                            }
+                            },
+                            'data-bind': 'enable: canSubmit'
                         )
                     %>
                 </div>
             <% end %>
         <% end %>
     </div>
+    <%= javascript_include_tag 'application/ko_extensions' %>
 </div>
 
 <script type="text/javascript">
-    Ui.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
+  const vm = function() {
+    const email = ko.observable('');
+    const emailHasChanged = ko.observable(false);
+    const emailBlank = ko.computed(() => email().length === 0);
+    const termsIsChecked = ko.observable(false);
+    const canSubmit = ko.computed(() =>
+      ! emailBlank() && termsIsChecked()
+    );
+
+    email.subscribe((v) => emailHasChanged(true));
+
+    return {
+      email,
+      emailHasChanged,
+      emailBlank,
+      termsIsChecked,
+      canSubmit
+    };
+  };
+
+  ko.applyBindings(vm());
 </script>

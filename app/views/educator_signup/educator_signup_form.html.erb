@@ -63,51 +63,34 @@
                           supplemental_class: 'int-country-code form-control wide',
                            placeholder:  I18n.t(:'login_signup_form.phone_number_placeholder'),
                            onkeydown: 'javascript:backspacerDOWN(this,event);',
-                           onkeyup: 'javascript:backspacerUP(this,event);'
-
+                           onkeyup: 'javascript:backspacerUP(this,event);',
+                           data_bind: 'phoneNumber: telInput, value: phone'
           %>
-          <%= form.hidden_field :country_code%>
+          <%= form.hidden_field :country_code, 'data-bind': 'value: dialCode' %>
         </div>
 
-        <div class="content control-group email-input-group newflow">
+        <div
+          class="content control-group email-input-group newflow"
+          data-bind="css: {'has-error': emailInvalid, 'has-changed': emailHasChanged}"
+        >
           <%= label_tag :email, I18n.t(:"login_signup_form.school_issued_email_label"), class: 'field-label' %>
           <%=
             fh.text_field(
               name: :email,
               supplemental_class: 'myschool_email',
-              placeholder: I18n.t(:"login_signup_form.school_issued_email_placeholder")
+              placeholder: I18n.t(:"login_signup_form.school_issued_email_placeholder"),
+              data_bind: "valueWithInit: email"
             )
           %>
           <%# shows up only when faculty tries wants to use a non-edu email %>
           <br/>
-          <div class="warning edu">
+          <div class="warning edu" data-bind="visible: emailInvalid">
             <%= t 'login_signup_form.teacher_school_email_warning', button: (t :'login_signup_form.continue_button') %>
           </div>
 
-        <%# shows up only if we think that non-faculty might've mistyped their email address,
-                using mailcheck.js %>
-        <div class="warning mistype">
-          placeholder for mistype warning
         </div>
 
-        </div>
-
-        <div class="content control-group">
-          <div id="password-field-container">
-            <div class="input-with-tooltip">
-              <%= label_tag(:password, I18n.t(:"login_signup_form.password_label"), class: 'field-label') %>
-              <%= render(partial: 'shared/password_show_hide') %>
-              <%=
-                fh.text_field(
-                  name: :password,
-                  type: :password,
-                  placeholder: I18n.t(:"login_signup_form.password_label")
-                )
-              %>
-              <%= render partial: 'shared/password_tooltip' %>
-            </div>
-          </div>
-        </div>
+        <%= render partial: 'shared/password_control_group', locals: { fh: fh} %>
 
         <div class="content control-group checkboxes-section">
 
@@ -125,7 +108,7 @@
 
           <div class="terms">
             <label>
-              <%= form.check_box :terms_accepted %>
+              <%= form.check_box :terms_accepted, 'data-bind': 'checkedWithInit: termsIsChecked' %>
               <span>
                 <%=
                   I18n.t(
@@ -155,20 +138,59 @@
                 ga_category: 'Account Creation',
                 ga_action: 'Click',
                 ga_label: '3A-Email'
-              }
+              },
+              'data-bind': 'enable: canSubmit'
             )
           %>
         </div>
       <% end %>
     <% end %>
   </div>
-
-  <% content_for :page_specific do %>
-    <%= javascript_include_tag 'newflow/educator_signup_email_validations' %>
-  <% end %>
+  <%= javascript_include_tag 'application/ko_extensions' %>
 </div>
 
 <script type="text/javascript">
-  Ui.enableOnChecked('#signup_form_submit_button', '#signup_terms_accepted');
-  new Ui.SignupEmailValidations();
+  // Add the data-bind to the form tag, since can't do that in markup
+  const formEl = document.querySelector('form');
+
+  formEl.setAttribute('data-bind', 'submit: beforeSubmit');
+
+  const vm = function() {
+    const email = ko.observable('');
+    const emailHasChanged = ko.observable(false);
+    const emailBlank = ko.computed(() => email().length === 0);
+    const emailInvalid = ko.computed(() =>
+      ! emailBlank() && ! email().toLowerCase().endsWith('.edu')
+    );
+    const termsIsChecked = ko.observable(false);
+    const canSubmit = ko.computed(() =>
+      ! emailBlank() && ! emailInvalid() && termsIsChecked()
+    );
+    const telInput = ko.observable();
+    const phone = ko.observable('');
+    const dialCode = ko.computed(
+      () => phone() && telInput().getSelectedCountryData().dialCode
+    );
+    const beforeSubmit = () => {
+      telInput().telInput.value = telInput().getNumber();
+      return true;
+    };
+
+    email.subscribe((v) => emailHasChanged(true));
+
+    return {
+      email,
+      emailHasChanged,
+      emailBlank,
+      emailInvalid,
+      termsIsChecked,
+      canSubmit,
+      telInput,
+      phone,
+      dialCode,
+      beforeSubmit
+    };
+  };
+
+  ko.applyBindings(vm());
 </script>
