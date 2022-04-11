@@ -2,7 +2,7 @@ class LoginController < BaseController
 
   include LoginSignupHelper
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile_newflow
+  fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile
 
   before_action :cache_client_app, only: :login_form
   before_action :cache_alternate_signup_url, only: :login_form
@@ -37,7 +37,7 @@ class LoginController < BaseController
         sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
         if current_user.student? || decorated_user.can_do?('redirect_back_upon_login')
-          redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
+          redirect_back(fallback_location: profile_path) # back to `r`edirect parameter. See `before_action :save_redirect`.
         else
           redirect_to(decorated_user.next_step)
         end

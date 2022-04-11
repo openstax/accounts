@@ -9,6 +9,7 @@ Doorkeeper.configure do
     # lets us get to the authorization part of oauth, or when we skip the `:authenticate_user!`
     # before_action, which we don't normally do in the oauth flow where this matters
     authenticate_user!
+
     current_user
   end
 
@@ -59,7 +60,7 @@ Doorkeeper.configure do
   # Use a custom class for generating the access token.
   # See https://github.com/doorkeeper-gem/doorkeeper#custom-access-token-generator
   #
-  access_token_generator 'SsoCookie'
+  # access_token_generator '::Doorkeeper::JWT'
 
   # The controller Doorkeeper::ApplicationController inherits from.
   # Defaults to ActionController::Base.

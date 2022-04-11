@@ -20,7 +20,7 @@ RSpec.describe ProfileController, type: :controller do
           expect(response.status).to eq(200)
         end
 
-        it 'renders profile' do
+        it 'renders profile_newflow' do
           get(:profile)
           expect(response).to render_template(:profile)
         end
@@ -31,7 +31,7 @@ RSpec.describe ProfileController, type: :controller do
 
         it 'redirects to step 4 — complete profile form' do
           get(:profile)
-          expect(response).to redirect_to(profile_form_path)
+          expect(response).to redirect_to(educator_profile_form_path)
         end
       end
     end

@@ -7,6 +7,9 @@ class SignupController < BaseController
   before_action(:authenticate_user!, only: :signup_done)
   before_action(:skip_signup_done_for_tutor_users, only: :signup_done)
 
+  def welcome
+  end
+
   def verify_email_by_code
     handle_with(
       VerifyEmailByCode,
