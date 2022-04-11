@@ -5,7 +5,7 @@ class PasswordManagementController < BaseController
     :forgot_password_form, :send_reset_password_email, :reset_password_email_sent
   ]
 
-  before_action :newflow_authenticate_user!, only: [:create_password, :educator_sheerid_form]
+  before_action :authenticate_user!, only: [:create_password, :educator_sheerid_form]
 
   def forgot_password_form
     @email = login_failed_email

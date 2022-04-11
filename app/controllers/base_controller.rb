@@ -1,6 +1,7 @@
 class BaseController < ApplicationController
 
   include ApplicationHelper
+  include AuthenticateMethods
 
   layout 'newflow_layout'
 
@@ -15,7 +16,7 @@ class BaseController < ApplicationController
   end
 
   def restart_signup_if_missing_unverified_user
-    redirect_to newflow_signup_path unless unverified_user.present?
+    redirect_to signup_path unless unverified_user.present?
   end
 
   def set_active_banners

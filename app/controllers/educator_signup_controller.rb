@@ -1,6 +1,6 @@
 class EducatorSignupController < SignupController
 
-  include InstructorSignupHelper
+  include EducatorSignupHelper
 
   skip_forgery_protection(only: :sheerid_webhook)
 
@@ -14,7 +14,7 @@ class EducatorSignupController < SignupController
       educator_verify_email_by_pin
     ]
   )
-  before_action(:newflow_authenticate_user!, only: %i[
+  before_action(:authenticate_user!, only: %i[
       educator_sheerid_form
       educator_profile_form
       educator_complete_profile
@@ -178,8 +178,6 @@ class EducatorSignupController < SignupController
   end
 
   def exit_signup_if_steps_complete
-    return if !current_user.is_newflow?
-
     case true
     when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
       redirect_to(educator_pending_cs_verification_path)

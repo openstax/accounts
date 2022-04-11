@@ -1,4 +1,4 @@
-module InstructorSignupHelper
+module EducatorSignupHelper
   def sheerid_provided_verification_id_param
     params[:verificationid]
   end

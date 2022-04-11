@@ -4,7 +4,7 @@ class SignupController < BaseController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   before_action(:exit_newflow_signup_if_logged_in, only: :welcome)
-  before_action(:newflow_authenticate_user!, only: :signup_done)
+  before_action(:authenticate_user!, only: :signup_done)
   before_action(:skip_signup_done_for_tutor_users, only: :signup_done)
 
   def verify_email_by_code
