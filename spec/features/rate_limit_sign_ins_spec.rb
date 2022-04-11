@@ -122,30 +122,6 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
     end
   end
 
-  context 'with random usernames' do
-    # scenario 'getting their ip unblocked after 1 hour' do
-    #   with_forgery_protection do
-    #     create_user 'user'
-    #
-    #     max_attempts_per_ip.times do
-    #       enter_bad_username
-    #       expect(page).to have_content("We don’t recognize")
-    #     end
-    #
-    #     enter_bad_username
-    #     expect(page).to have_content(t :"controllers.sessions.too_many_lookup_attempts")
-    #
-    #     enter_good_username
-    #     expect(page).to have_content(t :"controllers.sessions.too_many_lookup_attempts")
-    #
-    #     Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
-    #       log_in_correctly_with_username
-    #       expect_newflow_profile_page
-    #     end
-    #   end
-    # end
-  end
-
   def log_in_good_username_bad_password
     log_in('user', SecureRandom.hex)
   end

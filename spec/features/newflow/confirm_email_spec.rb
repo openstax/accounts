@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 feature 'Confirm email address', js: true do
-  before do
-    turn_on_student_feature_flag
-  end
-
   background do
     user = create_user 'user'
     create_email_address_for user, 'user@example.com', '1111'

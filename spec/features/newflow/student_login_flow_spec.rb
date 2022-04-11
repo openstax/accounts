@@ -5,8 +5,6 @@ module Newflow
     before do
       load 'db/seeds.rb' # creates terms of use and privacy policy contracts
       create_newflow_user('user@openstax.org', 'password')
-
-      turn_on_student_feature_flag
     end
 
     context 'happy path' do

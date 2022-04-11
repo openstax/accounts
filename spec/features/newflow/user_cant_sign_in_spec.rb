@@ -2,9 +2,6 @@ require 'rails_helper'
 
 # If you use js: true you must sleep to wait for the emails to arrive
 feature "User can't sign in", js: true do
-  before do
-    turn_on_student_feature_flag
-  end
 
   context "problems finding log in user" do
     before(:each) do

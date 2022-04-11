@@ -17,8 +17,8 @@ module StudentSignup
       let(:params) do
         {
           signup: {
-            first_name: 'Bryan',
-            last_name: 'Dimas',
+            first_name: Faker::Name.first_name,
+            last_name: Faker::Name.last_name,
             email: email,
             password: Faker::Internet.password(min_length: 8),
             terms_accepted: true,
@@ -98,8 +98,8 @@ module StudentSignup
       let(:params) do
         {
           signup: {
-            first_name: 'Bryan',
-            last_name: 'Dimas',
+            first_name: Faker::Name.first_name,
+            last_name: Faker::Name.last_name,
             email: email,
             password: Faker::Internet.password(min_length: 8),
             terms_accepted: true,
@@ -156,8 +156,8 @@ module StudentSignup
       let(:params) do
         {
           signup: {
-            first_name: 'Bryan',
-            last_name: 'Dimas',
+            first_name: Faker::Name.first_name,
+            last_name: Faker::Name.last_name,
             email: 'user@baddomain.com',
             password: Faker::Internet.password(min_length: 8),
             terms_accepted: true,

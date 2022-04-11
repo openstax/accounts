@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 feature 'User claims an unclaimed account' do
-  before do
-    turn_on_student_feature_flag
-  end
 
   background { load 'db/seeds.rb' }
   let!(:app)   { create_default_application }
