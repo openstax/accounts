@@ -3,7 +3,6 @@ class SignupVerifyEmail
   lev_handler
 
   uses_routine ConfirmByPin
-  uses_routine SignupExternalStudent, translations: { outputs: { type: :verbatim } }
 
   paramify :pin do
     attribute :pin, type: String

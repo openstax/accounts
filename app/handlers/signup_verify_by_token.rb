@@ -5,7 +5,6 @@ class SignupVerifyByToken
   uses_routine ConfirmByCode,
                translations: { outputs: { map: { contact_info: :pre_auth_state } },
                                inputs: { type: :verbatim } }
-  uses_routine SignupExternalStudent, translations: { outputs: { type: :verbatim } }
 
   protected
 
