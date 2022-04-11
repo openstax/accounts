@@ -56,7 +56,7 @@ class EducatorSignupFlowDecorator
       if !user.student? && user.activated? && user.pending_faculty && user.sheerid_verification_id.blank?
         educator_sheerid_form_path
       elsif user.activated?
-        educator_profile_form_path
+        profile_path
       end
     else
       raise("Next step (#{current_step}) uncaught in #{self.class.name}")
