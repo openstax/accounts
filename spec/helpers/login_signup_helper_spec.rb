@@ -1,5 +1,6 @@
 require 'rails_helper'
 
+
 RSpec.describe LoginSignupHelper, type: :helper do
   describe "#extract_params" do
     context 'happy path' do
@@ -48,3 +49,4 @@ RSpec.describe LoginSignupHelper, type: :helper do
     end
   end
 end
+

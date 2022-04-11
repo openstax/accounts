@@ -69,50 +69,50 @@ RSpec.shared_examples 'sessions create shared examples' do
     #   end
     # end
 
-    # context "oauth response already linked to user by email address" do
-    #   let(:other_user_email) { FactoryBot.create(:email_address, verified: true)}
-    #
-    #   it "returns existing_user_signed_up_again status and transfers auth" do
-    #     expect do
-    #       result = handle(request: MockOmniauthRequest.new("facebook",
-    #                                                        "some_uid",
-    #                                                        {email: other_user_email.value}))
-    #       expect(result.outputs.status).to eq :existing_user_signed_up_again
-    #     end.to change{other_user_email.user.reload.authentications.count}.by 1
-    #   end
-    # end
+    context "oauth response already linked to user by email address" do
+      let(:other_user_email) { FactoryBot.create(:email_address, verified: true)}
 
-    # context "normal password sign up" do
-    #   let(:identity) { FactoryBot.create :identity }
-    #
-    #   it "adds authentication, logs in user, returns new_password_user" do
-    #     expect(identity.user.authentications).to be_empty
-    #     result = handle(request: MockOmniauthRequest.new("identity", identity.uid, {}))
-    #     expect(result.outputs.status).to eq :new_password_user
-    #     user = identity.user
-    #     expect(user.authentications).not_to be_empty
-    #     expect(user_state).to be_signed_in
-    #     expect(user.contact_infos.size).to eq 1
-    #     expect(user.contact_infos.first.value).to eq "bob@bob.com"
-    #     expect(user.contact_infos.first).to be_verified
-    #   end
-    # end
+      it "returns existing_user_signed_up_again status and transfers auth" do
+        expect do
+          result = handle(request: MockOmniauthRequest.new("facebook",
+                                                           "some_uid",
+                                                           {email: other_user_email.value}))
+          expect(result.outputs.status).to eq :existing_user_signed_up_again
+        end.to change{other_user_email.user.reload.authentications.count}.by 1
+      end
+    end
 
-    # context "normal social sign up" do
-    #
-    #   it "adds authentication, logs in user, returns new_social_user" do
-    #     result = handle(request: MockOmniauthRequest.new("facebook", "zuckerberg", {}))
-    #     expect(result.outputs.status).to eq :new_social_user
-    #     expect(user_state).to be_signed_in
-    #     user = user_state.current_user
-    #     authentication = user.authentications.reload.first
-    #     expect(authentication.provider).to eq "facebook"
-    #     expect(authentication.uid).to eq "zuckerberg"
-    #     expect(user.contact_infos.size).to eq 1
-    #     expect(user.contact_infos.first.value).to eq "bob@bob.com"
-    #     expect(user.contact_infos.first).to be_verified
-    #   end
-    # end
+    context "normal password sign up" do
+      let(:identity) { FactoryBot.create :identity }
+
+      it "adds authentication, logs in user, returns new_password_user" do
+        expect(identity.user.authentications).to be_empty
+        result = handle(request: MockOmniauthRequest.new("identity", identity.uid, {}))
+        expect(result.outputs.status).to eq :new_password_user
+        user = identity.user
+        expect(user.authentications).not_to be_empty
+        expect(user_state).to be_signed_in
+        expect(user.contact_infos.size).to eq 1
+        expect(user.contact_infos.first.value).to eq "bob@bob.com"
+        expect(user.contact_infos.first).to be_verified
+      end
+    end
+
+    context "normal social sign up" do
+
+      it "adds authentication, logs in user, returns new_social_user" do
+        result = handle(request: MockOmniauthRequest.new("facebook", "zuckerberg", {}))
+        expect(result.outputs.status).to eq :new_social_user
+        expect(user_state).to be_signed_in
+        user = user_state.current_user
+        authentication = user.authentications.reload.first
+        expect(authentication.provider).to eq "facebook"
+        expect(authentication.uid).to eq "zuckerberg"
+        expect(user.contact_infos.size).to eq 1
+        expect(user.contact_infos.first.value).to eq "bob@bob.com"
+        expect(user.contact_infos.first).to be_verified
+      end
+    end
   end
 
   def handle(**args)

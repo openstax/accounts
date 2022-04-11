@@ -1,7 +1,7 @@
 # Parses and then represents the response from authenticating with a social provider.
 class OmniauthData
 
-  VALID_PROVIDERS = %w[identity facebook google_oauth2]
+  VALID_PROVIDERS = %w[identity facebook twitter google_oauth2 facebooknewflow googlenewflow]
 
   def initialize(auth_data)
     @auth_data = auth_data
@@ -36,6 +36,7 @@ class OmniauthData
 
   def email
     # Facebook only returns verified emails
+    # Twitter returns no emails
     # Google can return unverified emails
     # However, the omniauth-google-oauth2 gem filters those out
     @info[:email]
