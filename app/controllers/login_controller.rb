@@ -2,16 +2,13 @@ class LoginController < BaseController
 
   include LoginSignupHelper
 
-  GO_TO_STUDENT_SIGNUP = 'student_signup'
-  GO_TO_SIGNUP = 'signup'
-
   fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile_newflow
 
-  before_action :cache_client_app, only: :login_form
-  before_action :known_signup_role_redirect, only: :login_form
-  before_action :cache_alternate_signup_url, only: :login_form
-  before_action :redirect_to_signup_if_go_param_present, only: :login_form
-  before_action :redirect_back, if: -> { signed_in? }, only: :login_form
+  before_action :cache_client_app, only: :login
+  before_action :known_signup_role_redirect, only: :login
+  before_action :cache_alternate_signup_url, only: :login
+  before_action :redirect_to_signup_if_go_param_present, only: :login
+  before_action :redirect_back, if: -> { signed_in? }, only: :login
 
   def login
     handle_with(
@@ -70,19 +67,11 @@ class LoginController < BaseController
   protected ###############
 
   def redirect_to_signup_if_go_param_present
-    if should_redirect_to_student_signup?
+    if params[:go]&.strip&.downcase == 'student_signup'
       redirect_to signup_student_path(request.query_parameters)
-    elsif should_redirect_to_signup_welcome?
-      redirect_to newflow_signup_path(request.query_parameters)
+    elsif params[:go]&.strip&.downcase == 'signup'
+      redirect_to signup_path(request.query_parameters)
     end
-  end
-
-  def should_redirect_to_student_signup?
-    params[:go]&.strip&.downcase == GO_TO_STUDENT_SIGNUP
-  end
-
-  def should_redirect_to_signup_welcome?
-    params[:go]&.strip&.downcase == GO_TO_SIGNUP
   end
 
   # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.

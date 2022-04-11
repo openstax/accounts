@@ -35,7 +35,7 @@ class SocialAuthController < BaseController
 
           sign_in!(user)
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
-          redirect_back(fallback_location: profile_newflow_path)
+          redirect_back(fallback_location: profile_path)
         },
         failure: lambda {
           @email = @handler_result.outputs.email
@@ -54,10 +54,10 @@ class SocialAuthController < BaseController
             )
           when :authentication_taken
             security_log(:authentication_transfer_failed, authentication_id: authentication.id)
-            redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
+            redirect_to(profile_path, alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
           when :email_already_in_use
             security_log(:email_already_in_use, email: @email, authentication_id: authentication.id)
-            redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
+            redirect_to(profile_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
           when :mismatched_authentication
             security_log(:sign_in_failed, reason: "mismatched authentication")
             redirect_to(login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
@@ -101,7 +101,7 @@ class SocialAuthController < BaseController
 
   def remove_auth_strategy
     if signed_in? && user_signin_is_too_old?
-      reauthenticate_user!(redirect_back_to: profile_newflow_path)
+      reauthenticate_user!(redirect_back_to: profile_path)
     else
       handle_with(
         AuthenticationsDelete,

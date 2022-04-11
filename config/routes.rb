@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  root to: 'static_pages#home'
+  root to: 'signup#welcome'
 
   match 'i/(*path)' => redirect { |_,request| "/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
 
@@ -9,11 +9,8 @@ Rails.application.routes.draw do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
-  scope controller: 'other' do
-    # Profile access
-    get 'profile', action: :profile_newflow, as: :profile_newflow
-
-    # Exit accounts back to app they came from
+  scope controller: 'profile' do
+    get 'profile', action: :profile, as: :profile
     get 'exit_accounts', action: :exit_accounts, as: :exit_accounts
   end
 

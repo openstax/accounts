@@ -6,7 +6,7 @@ def create_newflow_user(email, password='password', terms_agreed=nil, confirmati
 
   # return if User.find_by_username(username).present?
 
-  user = FactoryBot.create(:user, terms_agreed_option, role: role, is_newflow: true)
+  user = FactoryBot.create(:user, terms_agreed_option, role: role)
   FactoryBot.create(:email_address, user: user, value: email,
                     confirmation_code: confirmation_code,
                     verified: confirmation_code.nil?)
@@ -67,16 +67,8 @@ def strip_html(text)
   ActionView::Base.full_sanitizer.sanitize(text)
 end
 
-def turn_on_student_feature_flag
-  Settings::FeatureFlags.student_feature_flag = true
-end
-
-def turn_on_educator_feature_flag
-  Settings::FeatureFlags.educator_feature_flag = true
-end
-
 def newflow_click_sign_up(role:)
-  click_on (t :"login_signup_form.sign_up") unless page.current_path == newflow_signup_path
+  click_on (t :"login_signup_form.sign_up") unless page.current_path == signup_path
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"login_signup_form.welcome_page_header")
   find(".join-as__role.#{role}").click
@@ -94,7 +86,7 @@ end
 def expect_newflow_profile_page
   expect(page).to have_no_missing_translations
   # expect(page).to have_content(t :"users.edit.page_heading")
-  expect(page).to have_current_path profile_newflow_path
+  expect(page).to have_current_path profile_path
 end
 
 def newflow_expect_signup_verify_screen
@@ -102,7 +94,7 @@ def newflow_expect_signup_verify_screen
 end
 
 def newflow_expect_sign_up_page
-  expect(page.current_path).to eq(newflow_signup_path)
+  expect(page.current_path).to eq(signup_path)
   expect(page).to have_no_missing_translations
 end
 
