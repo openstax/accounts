@@ -3,7 +3,7 @@ class SignupController < BaseController
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  before_action(:exit_newflow_signup_if_logged_in, only: :welcome)
+  before_action(:exit_signup_if_logged_in, only: :signup)
   before_action(:authenticate_user!, only: :signup_done)
   before_action(:skip_signup_done_for_tutor_users, only: :signup_done)
 
@@ -24,7 +24,7 @@ class SignupController < BaseController
         end
       },
       failure: lambda {
-        redirect_to(newflow_signup_path)
+        redirect_to(signup_path)
       }
     )
   end
@@ -38,14 +38,14 @@ class SignupController < BaseController
   protected ###############
 
   def skip_signup_done_for_tutor_users
-    return if !current_user.is_tutor_user?
+    return unless current_user.is_tutor_user?
 
     redirect_back(fallback_location: signup_done_path)
   end
 
-  def exit_newflow_signup_if_logged_in
+  def exit_signup_if_logged_in
     if signed_in?
-      redirect_back(fallback_location: profile_newflow_path(request.query_parameters))
+      redirect_back(fallback_location: profile_path(request.query_parameters))
     end
   end
 end

@@ -1,11 +1,10 @@
-class OtherController < BaseController
+class ProfileController < BaseController
 
-  before_action :authenticate_user!, only: :profile_newflow
-  before_action :ensure_complete_educator_signup, only: :profile_newflow
-  before_action :prevent_caching, only: :profile_newflow
+  before_action :authenticate_user!, only: :profile
+  before_action :ensure_complete_educator_signup, only: :profile
+  before_action :prevent_caching, only: :profile
 
-  def profile_newflow
-    render layout: 'application'
+  def profile
   end
 
   def exit_accounts

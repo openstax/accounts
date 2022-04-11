@@ -5,7 +5,7 @@ class EducatorSignupController < SignupController
   skip_forgery_protection(only: :sheerid_webhook)
 
   before_action(:prevent_caching, only: :sheerid_webhook)
-  before_action(:exit_newflow_signup_if_logged_in, only: :educator_signup_form)
+  before_action(:exit_signup_if_logged_in, only: :educator_signup)
   before_action(:restart_signup_if_missing_unverified_user, only: %i[
       educator_change_signup_email_form
       educator_change_signup_email
@@ -182,11 +182,13 @@ class EducatorSignupController < SignupController
     when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
       redirect_to(educator_pending_cs_verification_path)
     when current_user.is_educator_pending_cs_verification && !current_user.pending_faculty?
-      redirect_back(fallback_location: profile_newflow_path)
+      redirect_back(fallback_location: profile_path)
     when action_name == 'educator_sheerid_form' && current_user.step_3_complete?
       redirect_to(educator_profile_form_path)
     when action_name == 'educator_profile_form' && current_user.is_profile_complete?
-      redirect_to(profile_newflow_path)
+      redirect_to(profile_path)
+    else
+      redirect_to(profile_path)
     end
   end
 
