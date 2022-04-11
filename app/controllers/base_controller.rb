@@ -1,6 +1,7 @@
 class BaseController < ApplicationController
 
   include ApplicationHelper
+  include AuthenticateMethods
 
   layout 'newflow_layout'
 
