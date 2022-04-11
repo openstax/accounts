@@ -17,7 +17,7 @@
     <%=
       link_to(
         I18n.t(:"users.edit.sign_out"),
-        newflow_logout_path,
+        logout_path,
         class: 'sign-out',
         data: {
           'ga-category': 'Logout',
@@ -93,7 +93,7 @@
     </div>
     <div class="col-sm-10 info providers">
       <% current_providers.each do |provider| %>
-        <%= newflow_way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
+        <%= way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
       <% end %>
     </div>
     <% if other_available_providers.any? %>
@@ -110,11 +110,11 @@
 
   </div>
 
-  <%= render partial: 'base/other-sign-in', locals: {
+  <%= render partial: 'other-sign-in', locals: {
     other_html: I18n.t(:"student_profile.other_sign_in_options_html"),
     other_providers_block:
       other_available_providers.map{ |provider|
-        newflow_way_to_login(
+        way_to_login(
           provider: provider,
           has_authentication: false,
           current_providers: current_providers
@@ -125,7 +125,7 @@
 <% end %>
 
 <%= render 'layouts/application_footer' %>
-<%= render partial: 'base/edit-js', locals: {
+<%= render partial: 'profile/edit-js', locals: {
   profile_path: :'/profile',
   current_user: current_user
 } %>

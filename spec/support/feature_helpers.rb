@@ -1,17 +1,18 @@
 require 'import_users'
 
-def create_user(username, password='password', terms_agreed=nil)
+def create_user(email, password = 'password', terms_agreed = nil, confirmation_code = nil, role = 'student')
   terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
                           :terms_agreed :
                           :terms_not_agreed
 
-  return if User.find_by_username(username).present?
-
-  user = FactoryBot.create :user, terms_agreed_option, username: username
-  identity = FactoryBot.create :identity, user: user, password: password
+  user = FactoryBot.create(:user, terms_agreed_option, role: role)
+  FactoryBot.create(:email_address, user: user, value: email,
+                    confirmation_code:    confirmation_code,
+                    verified:             confirmation_code.nil?)
+  identity       = FactoryBot.create :identity, user: user, password: password
   authentication = FactoryBot.create :authentication, user: user,
-                                                       provider: 'identity',
-                                                       uid: identity.uid
+                                     provider:              'identity',
+                                     uid:                   identity.uid
   return user
 end
 
@@ -303,40 +304,6 @@ def call_embedded_screenshots
   ensure
     @call_embedded_screenshots = original_value
   end
-end
-
-def complete_faculty_access_apply_screen(role: nil, first_name: nil, last_name: nil, suffix: nil,
-                                         email: "", phone_number: "", school: "", url: "",
-                                         num_students: "", using_openstax: "", newsletter: true,
-                                         subjects: [])
-
-  if role.present?
-    raise IllegalArgument unless [:instructor, :other].include?(role)
-    screenshot! if @call_embedded_screenshots
-    select role.to_s.capitalize, from: "apply_role"
-    wait_for_animations
-    wait_for_ajax
-  end
-
-  expect(page).to have_content(t :"faculty_access.apply.page_heading")
-  expect(page).to have_no_missing_translations
-
-  screenshot! if @call_embedded_screenshots
-
-  fill_in (t :"faculty_access.apply.first_name"), with: first_name if !first_name.nil?
-  fill_in (t :"faculty_access.apply.last_name"), with: last_name if !last_name.nil?
-  fill_in (t :"faculty_access.apply.suffix"), with: suffix if suffix.present?
-  fill_in (t :"faculty_access.apply.email_placeholder"), with: email
-  fill_in (t :"faculty_access.apply.phone_number"), with: phone_number
-  fill_in (t :"faculty_access.apply.school"), with: school
-  fill_in (t :"faculty_access.apply.url"), with: url if role != :student
-  fill_in (t :"faculty_access.apply.num_students"), with: num_students if role == :instructor
-  select using_openstax, from: "apply_using_openstax" if !using_openstax.blank? if role == :instructor
-
-  subjects.each { |subject| check subject }
-  page.check('apply[newsletter]') if newsletter
-  click_button (t :"faculty_access.apply.submit")
-  expect(page).to have_no_missing_translations
 end
 
 def mock_current_user(user)

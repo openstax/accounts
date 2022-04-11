@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe OtherController, type: :controller do
-  describe 'GET #profile_newflow' do
+RSpec.describe ProfileController, type: :controller do
+  describe 'GET #profile' do
     context 'when logged in' do
       before do
         user.update!(role: User::INSTRUCTOR_ROLE)
         mock_current_user(user)
       end
 
-      let(:user) { create_newflow_user('user@openstax.org') }
+      let(:user) { create_user('user@openstax.org') }
 
       context 'when profile is complete' do
         before do
@@ -16,13 +16,13 @@ RSpec.describe OtherController, type: :controller do
         end
 
           it 'renders 200 OK status' do
-          get(:profile_newflow)
+          get(:profile)
           expect(response.status).to eq(200)
         end
 
         it 'renders profile_newflow' do
-          get(:profile_newflow)
-          expect(response).to render_template(:profile_newflow)
+          get(:profile)
+          expect(response).to render_template(:profile)
         end
       end
 
@@ -30,7 +30,7 @@ RSpec.describe OtherController, type: :controller do
         before { user.update!(is_profile_complete: false) }
 
         it 'redirects to step 4 — complete profile form' do
-          get(:profile_newflow)
+          get(:profile)
           expect(response).to redirect_to(educator_profile_form_path)
         end
       end
@@ -38,7 +38,7 @@ RSpec.describe OtherController, type: :controller do
 
     context 'while not logged in' do
       it 'redirects to login form' do
-        get(:profile_newflow)
+        get(:profile)
         expect(response).to redirect_to login_path
       end
     end

@@ -20,7 +20,7 @@
           current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 4),
           classes: 'signup-page') do %>
       <% lev_form_for :signup, url: educator_signup_post_path do |form| %>
-        <% fh = NewflowFormHelper::Newflow.new(f: form,
+        <% fh = FormHelper::One.new(f: form,
                                                context: self,
                                                errors: @handler_result&.errors) %>
         <div class="content role-section">
