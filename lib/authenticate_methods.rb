@@ -6,7 +6,7 @@ module AuthenticateMethods
     return unless signed_in?
 
     store_url(url: request.url)
-    redirect_to login_path(request.query_parameters)
+    redirect_to main_app.login_path(request.query_parameters)
   end
 
   def is_admin?
@@ -17,7 +17,7 @@ module AuthenticateMethods
     return if current_user.is_administrator?
     return head(:forbidden) if signed_in?
     store_url
-    redirect_to login_path(params.permit(:client_id).to_h)
+    redirect_to main_app.login_path(params.permit(:client_id).to_h)
   end
 
   # Doorkeeper controllers define authenticate_admin!, so we need another name

@@ -213,7 +213,6 @@ end
 
 def expect_profile_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"users.edit.page_heading")
   expect(page).to have_current_path profile_path
 end
 

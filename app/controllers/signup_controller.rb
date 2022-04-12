@@ -1,3 +1,4 @@
+require 'byebug'
 class SignupController < BaseController
   include LoginSignupHelper
 
@@ -42,13 +43,12 @@ class SignupController < BaseController
 
   def skip_signup_done_for_tutor_users
     return unless current_user.is_tutor_user?
-
-    redirect_back(fallback_location: signup_done_path)
+    redirect_back
   end
 
   def exit_signup_if_logged_in
     if signed_in?
-      redirect_back(fallback_location: profile_path(request.query_parameters))
+      redirect_back
     end
   end
 end

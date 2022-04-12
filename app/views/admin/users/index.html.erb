@@ -149,6 +149,12 @@
               </span>
             <% end %>
 
+            <% if user.self_reported_school.present? %>
+              | <span class="school">
+                <i>Self-reported school:</i> <%= user.self_reported_school %>
+              </span>
+            <% end %>
+
             <% user.contact_infos.each do |contact_info| %>
               <div class="email">
                 <%= link_to contact_info.value, "mailto:#{contact_info.value}" %>
