@@ -32,23 +32,6 @@ feature 'Admin user pages', js: true do
           expect(page).to have_no_content("We had some unexpected")
         end
       end
-
-      context 'popup console' do
-        it 'searches users and does not explode' do
-          visit 'i/profile'
-          click_link 'Popup Console'
-          wait_for_ajax(10) # for some reason this is slow
-          click_link 'Users'
-          click_button 'Search'
-
-          expect(page).to have_no_content("We had some unexpected")
-
-          page.all(:css, '.expand').each(&:click)
-
-          expect(page).to have_content("#{@admin_user.full_name} Yes No Sign in as | Edit")
-          expect(page).to have_content("#{@sf_user.full_name} No No Sign in as | Edit")
-        end
-      end
     end
   end
 end
