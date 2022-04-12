@@ -31,13 +31,6 @@ def strip_html(text)
   ActionView::Base.full_sanitizer.sanitize(text)
 end
 
-def newflow_click_sign_up(role:)
-  click_on (t :"login_signup_form.sign_up") unless page.current_path == signup_path
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"login_signup_form.welcome_page_header")
-  find(".join-as__role.#{role}").click
-end
-
 def newflow_complete_add_password_screen(password=nil)
   password ||= 'Passw0rd!'
   fill_in(t(:"login_signup_form.password_label"), with: password)
@@ -47,19 +40,10 @@ def newflow_complete_add_password_screen(password=nil)
   expect(page).to have_content(t :"login_signup_form.profile_newflow_page_header")
 end
 
-def expect_newflow_profile_page
+def expect_profile_page
   expect(page).to have_no_missing_translations
   # expect(page).to have_content(t :"users.edit.page_heading")
   expect(page).to have_current_path profile_path
-end
-
-def newflow_expect_signup_verify_screen
-  expect(page.current_path).to eq(student_email_verification_form_path)
-end
-
-def newflow_expect_sign_up_page
-  expect(page.current_path).to eq(signup_path)
-  expect(page).to have_no_missing_translations
 end
 
 def submit_signup_form
@@ -116,11 +100,6 @@ def simulate_login_signup_with_social(options={})
   ensure
     OmniAuth.config.test_mode = false
   end
-end
-
-def expect_sign_up_welcome_tab
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"login_signup_form.welcome_page_header")
 end
 
 def external_public_url

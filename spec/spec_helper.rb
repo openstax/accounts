@@ -26,12 +26,12 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
-  config.use_transactional_fixtures = false
+  # config.use_transactional_fixtures = false
 
   # If true, the base class of anonymous controllers will be inferred
   # automatically. This will be the default behavior in future versions of
   # rspec-rails.
-  config.infer_base_class_for_anonymous_controllers = false
+  # config.infer_base_class_for_anonymous_controllers = false
 
   # rspec-rails 3 will no longer automatically infer an example group's spec type
   # from the file location. You can explicitly opt-in to the feature using this
@@ -44,7 +44,7 @@ RSpec.configure do |config|
   #     end
   # or set:
   #   config.infer_spec_type_from_file_location!
-  config.infer_spec_type_from_file_location!
+  # config.infer_spec_type_from_file_location!
 
   config.prepend_before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
@@ -119,7 +119,7 @@ RSpec.configure do |config|
   # order dependency and want to debug it, you can fix the order by providing
   # the seed, which is printed after each run.
   #     --seed 1234
-  config.order = :random
+  #config.order = :random
 
   # Seed global randomization in this process using the `--seed` CLI option.
   # Setting this allows you to use `--seed` to deterministically reproduce
@@ -252,7 +252,7 @@ end
 #
 # Second form expects a Lev handler with a paramify block named group, or
 # a symbol naming one.
-def error_msg model, *args
+def error_msg(model, *args)
   model_or_name = model
   if model.is_a? Symbol
     model = Object.const_get model.to_s.camelize
@@ -269,7 +269,7 @@ def error_msg model, *args
       group, field, error = args
     elsif args.length == 2 and model.paramify_classes.keys.length == 1
       field, error = args
-      group = model.paramify_classes.keys[0]
+      group        = model.paramify_classes.keys[0]
     end
 
     model = model.paramify_classes[group]
@@ -280,7 +280,7 @@ def error_msg model, *args
   else
     field, error, options = args
   end
-  options ||= {}
+  options       ||= {}
 
   instance = model.new
   if options.has_key? :value

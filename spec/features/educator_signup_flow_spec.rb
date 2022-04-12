@@ -1,14 +1,15 @@
 require 'rails_helper'
 
-RSpec.feature 'Educator signup flow', js: true do
+feature 'Educator signup flow', js: true do
 
   background { load 'db/seeds.rb' }
-
   let(:first_name) { Faker::Name.first_name  }
   let(:last_name) { Faker::Name.last_name  }
   let(:phone_number) { Faker::PhoneNumber.phone_number }
   let(:email_value) { Faker::Internet.unique.email(domain: '@rice.edu') }
   let(:password) { Faker::Internet.password(min_length: 8) }
+  let(:sheerid_iframe_page_title) { 'Verify your instructor status' }
+  let(:iframe_submit_button_text) { 'Verify my instructor status' }
   let(:external_app_url) { capybara_url(external_app_for_specs_path) }
   let(:return_param) { { r: external_app_for_specs_path } }
 
@@ -30,7 +31,7 @@ RSpec.feature 'Educator signup flow', js: true do
 
         # Step 2
         # sends an email address confirmation email
-        expect(page.current_path).to eq(verify_email_by_pin_form_path)
+        expect(page.current_path).to eq(educator_email_verification_form_path)
         open_email(email_value)
         capture_email!(address: email_value)
         expect(current_email).to be_truthy
@@ -49,60 +50,66 @@ RSpec.feature 'Educator signup flow', js: true do
 
         # Step 3
         expect_sheerid_iframe
+        EducatorSignup::VerifyEducator.call(user: User.last, verification_id: sheerid_verification.verification_id)
 
         # Step 4
-        visit(profile_form_path)
-        expect(page.current_path).to eq(profile_form_path)
-        find("#signup_educator_specific_role_other").click
-        #byebug
-        fill_in('Other (please specify)', with: 'President')
-        find('[type="submit"]').click
-        # not sure what's happening here - test is getting a 500, can't produce locally.. going to check it out on dev
-        #expect(page.current_path).to eq(signup_done_path).or eq(pending_cs_verification_path)
-        #click_on('Finish')
-        #expect(page.current_url).to eq(external_app_url)
-      end
-    end
-
-    context 'when clicking on link sent in an email to verify email address' do
-      it 'all works' do
-        visit(login_path(return_param))
-        click_on(I18n.t(:"login_signup_form.sign_up"))
-        expect(page.current_path).to eq(signup_path)
-        click_on(I18n.t(:"login_signup_form.educator"))
-
-        # Step 1
-        fill_in 'signup_first_name',	with: first_name
-        fill_in 'signup_last_name',	with: last_name
-        fill_in 'signup_phone_number', with: phone_number
-        fill_in 'signup_email',	with: email_value
-        fill_in 'signup_password',	with: password
-        submit_signup_form
-        screenshot!
-
-        # Step 2
-        # sends an email address confirmation email
-        expect(page.current_path).to eq(verify_email_by_pin_form_path)
-        open_email(email_value)
-        capture_email!(address: email_value)
-        expect(current_email).to be_truthy
-
-        # ... with a link
-        verify_email_url = get_path_from_absolute_link(current_email, 'a')
-        visit(verify_email_url)
-
-        # Step 3
-        expect_sheerid_iframe
-
-        # Step 4
-        visit(profile_form_path)
-        expect(page.current_path).to eq(profile_form_path)
+        visit(educator_profile_form_path)
+        expect(page.current_path).to eq(educator_profile_form_path)
         find('#signup_educator_specific_role_other').click
         fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
         click_on('Continue')
         #expect(page.current_path).to eq(signup_done_path)
         #click_on('Finish')
         #expect(page.current_url).to eq(external_app_url)
+      end
+    end
+
+    context 'when educator stops signup flow, logs out, after completing step 3' do
+      it 'redirects them to continue signup flow (step 4) after logging in'
+    end
+
+    context 'when legacy educator wants to request faculty verification' do
+      #TODO:
+      # skipping this spec, this entire feature spec is poorly written and should be refactored once
+      # all the newflow methods are fixed. Manually tested this expected redirect works. MV 8Jun22
+      pending("These routes no longer exist and are being redirected in routes.rb - evaluate if this is even still needed")
+      before(:each) do
+        educator.update(
+          role: User::INSTRUCTOR_ROLE,
+          first_name: first_name,
+          last_name: last_name
+        )
+
+        visit(login_path)
+        log_in_user(email_value, password)
+        visit("/faculty_access/apply?r=#{capybara_url(external_app_for_specs_path)}")
+      end
+
+      let!(:educator) { create_newflow_user(email_value, password) }
+      let(:email_value) { 'user@openstax.org' }
+      let(:password) { 'password' }
+
+      context 'with faculty status as no_faculty_info' do
+        xit 'sends them to step 3 SheerID iframe' do
+          expect_sheerid_iframe
+        end
+      end
+
+      context 'with faculty status as rejected' do
+        xit 'sends them to step 4 Educator Profile Form' do
+          visit(educator_profile_form_path)
+          expect(page.current_path).to eq(educator_profile_form_path)
+        end
+
+        it 'shows a school name field'
+
+        it 'shows a school-issued email field'
+      end
+    end
+
+    context 'when educators have been rejected by SheerID one or more times' do
+      context 'and have been in the pending faculty status step for more than 4 days' do
+        it 'will send them through the CS verification process (modified step 4)'
       end
     end
   end
@@ -118,7 +125,7 @@ RSpec.feature 'Educator signup flow', js: true do
       fill_in('login_form_email', with: email_address.value)
       fill_in('login_form_password', with: password)
       find('[type=submit]').click
-      expect(page.current_path).to match(verify_email_by_pin_form_path)
+      expect(page.current_path).to match(educator_email_verification_form_path)
     end
 
     xit 'allows the educator to reset their password' do
@@ -139,15 +146,14 @@ RSpec.feature 'Educator signup flow', js: true do
 
     let(:user) do
       FactoryBot.create(
-        :user, :terms_agreed, role: User::INSTRUCTOR_ROLE,
+        :user, role: User::INSTRUCTOR_ROLE,
         is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
       )
     end
 
     context 'step 4' do
       before do
-        visit(profile_form_path)
-        expect(page.current_path).to eq(profile_form_path)
+        visit(educator_profile_form_path)
         find("#signup_educator_specific_role_instructor").click
         find('#signup_who_chooses_books_instructor').click
         fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
@@ -200,7 +206,7 @@ RSpec.feature 'Educator signup flow', js: true do
 
       # Step 2
       # sends an email address confirmation email
-      expect(page.current_path).to eq(verify_email_by_pin_form_path)
+      expect(page.current_path).to eq(educator_email_verification_form_path)
       open_email(email_value)
       capture_email!(address: email_value)
       expect(current_email).to be_truthy
@@ -220,7 +226,7 @@ RSpec.feature 'Educator signup flow', js: true do
       wait_for_ajax
       wait_for_animations
       # ... sends you to the SheerID form
-      expect(page).to have_current_path(sheerid_form_path)
+      expect(page).to have_current_path(educator_sheerid_form_path)
 
       # LOG OUT
       visit(signout_path)
@@ -234,10 +240,8 @@ RSpec.feature 'Educator signup flow', js: true do
       expect_sheerid_iframe
       EducatorSignup::VerifyEducator.call(user: User.last, verification_id: sheerid_verification.verification_id)
 
-
       # Step 4
-      visit(profile_form_path)
-      expect(page.current_path).to eq(profile_form_path)
+      expect_educator_step_4_page
       find('#signup_educator_specific_role_other').click
       expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
       fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
@@ -253,10 +257,29 @@ RSpec.feature 'Educator signup flow', js: true do
     it 'redirects them to continue signup flow (step 4) after logging in'
   end
 
+    let!(:educator) { create_user(email_value, password) }
+    let(:email_value) { 'user@openstax.org' }
+    let(:password) { 'password' }
+
+    context 'with faculty status as no_faculty_info' do
+      it 'sends them to step 3 — SheerID iframe' do
+        expect_sheerid_iframe
+      end
+    end
+
+    context 'with faculty status as rejected' do
+      it 'sends them to step 4 — Educator Profile Form' do
+        expect_educator_step_4_page
+      end
+
+      it 'shows a school name field'
+
+      it 'shows a school-issued email field'
+    end
+  end
+
   context 'when educators have been rejected by SheerID one or more times' do
     context 'and have been in the pending faculty status step for more than 4 days' do
       it 'will send them through the CS verification process (modified step 4)'
     end
   end
-
-end
