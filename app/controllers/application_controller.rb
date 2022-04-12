@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
     return true if !Rails.env.production?
     is_admin?
   end
-  
+
   def return_url_specified_and_allowed?
     # This returns true if `save_redirect` actually saved the URL
     params[:r] && params[:r] == stored_url
