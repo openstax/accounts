@@ -7,7 +7,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   provider :custom_identity
 
   provider(
-    'facebook',
+    :facebook,
     secrets[:facebook_app_id],
     secrets[:facebook_app_secret],
     client_options: {

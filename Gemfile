@@ -55,13 +55,12 @@ gem 'render_anywhere', require: false
 gem 'bcrypt', '~> 3.1'
 
 # OAuth provider
-gem 'doorkeeper', '~> 5.1.0'
+gem 'doorkeeper'
 
 # OAuth clients
 gem 'omniauth'
 gem 'omniauth-identity'
 gem 'omniauth-facebook'
-gem 'omniauth-twitter'
 gem 'omniauth-google-oauth2'
 
 # Key-value store for caching
