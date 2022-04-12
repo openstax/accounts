@@ -34,6 +34,8 @@
       <%= content_for :page_specific %>
     </head>
     <body>
+        <%= render "shared/upper_corner_console" %>
+
         <%= render "layouts/tag_manager_snippet" %>
         <% if @banners.present? %>
             <% @banners.each do |banner| %>

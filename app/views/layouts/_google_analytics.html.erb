@@ -32,11 +32,11 @@ $('[data-ga-category]').on('click', function() {
 });
 
 window.addEventListener('beforeunload', (event) => {
-  if((window.location.href.indexOf('<%= newflow_signup_path %>') > -1) || (window.location.href.indexOf('<%= profile_newflow_path %>') > -1)) {
+  if((window.location.href.indexOf('<%= signup_path %>') > -1) || (window.location.href.indexOf('<%= profile_path %>') > -1)) {
     var category = 'Account Creation';
     var action = 'Click';
     var label = '5-Close Window';
-    if (window.location.href.indexOf("/i/profile") > -1){
+    if (window.location.href.indexOf("/profile") > -1){
       category = 'My Account'
       label = 'Close Window'
     }
@@ -52,7 +52,7 @@ window.addEventListener('beforeunload', (event) => {
 
 var gaShowHide = function(buttonText){
   var location = 'Login'
-  if(window.location.href.indexOf('<%= newflow_signup_path %>') > -1) {
+  if(window.location.href.indexOf('<%= signup_path %>') > -1) {
     location = 'Sign Up';
   }
   ga('send', {

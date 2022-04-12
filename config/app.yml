@@ -1,10 +1,5 @@
 # config/app.yml for rails-settings-cached
 
-# Subjects list generated from spreadsheet via IRB:
-# require 'active_support'; include ActiveSupport::Inflector
-# books = File.read('/tmp/books.txt').split("\n")
-# books.sort.each{|bt| (b,t)=bt.split("\t"); puts underscore(b.gsub(/([\W|\s]+)/, '_'))+":\n  title: #{t}\n  sf: #{b}\n" }; 1
-
 defaults: &defaults
   push_salesforce_lead_enabled: false
   user_info_error_emails_enabled: false

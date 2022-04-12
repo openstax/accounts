@@ -21,18 +21,18 @@ ActionController::Base.class_exec do
   prepend_before_action :set_device_id
   before_action :save_redirect
   before_action :set_locale
-  before_action :complete_signup_profile
+  #before_action :complete_signup_profile
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
   protected
 
-  def complete_signup_profile
-    return true if request.format != :html || request.options?
-    redirect_to '/profile' if current_user.is_needs_profile?
-    # TODO: uncomment this line after fixing openstax_path_prefixer
-    # redirect_to main_app.signup_profile_path if current_user.is_needs_profile?
-  end
+  # def complete_signup_profile
+  #   return true if request.format != :html || request.options?
+  #   redirect_to '/profile' if current_user.is_needs_profile?
+  #   # TODO: uncomment this line after fixing openstax_path_prefixer
+  #   # redirect_to main_app.signup_profile_path if current_user.is_needs_profile?
+  # end
 
   def security_log(event_type, event_data = {})
     user = event_data[:user]

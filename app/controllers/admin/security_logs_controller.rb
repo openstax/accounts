@@ -1,6 +1,5 @@
 module Admin
   class SecurityLogsController < BaseController
-    layout 'admin'
 
     def show
       search_params = params[:search] ? params[:search].permit!.to_h : {}

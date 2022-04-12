@@ -29,7 +29,7 @@ class SearchUsers
 
   protected
 
-  SORTABLE_FIELDS = ['first_name', 'last_name', 'id', 'role']
+  SORTABLE_FIELDS = %w[first_name last_name id role]
   SORT_ASCENDING = 'ASC'
   SORT_DESCENDING = 'DESC'
   MAX_MATCHING_USERS = 10
@@ -110,7 +110,7 @@ class SearchUsers
       # prefix).
 
       with.keyword :any do |terms|
-        next users_query if terms.blank?
+        next if terms.blank?
 
         sanitized_names = sanitize_strings(terms, append_wildcard: true, prepend_wildcard: options[:admin])
 

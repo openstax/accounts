@@ -5,9 +5,6 @@ namespace :cron do
     Rails.logger.debug 'Starting UpdateUserContactInfo'
     UpdateUserContactInfo.call
 
-    Rails.logger.debug 'Starting SyncUserAccountsWithSalesforce'
-    SyncUserAccountsWithSalesforce.call
-
     Rails.logger.debug 'Finished 5-past-half-hour cron'
   end
 end

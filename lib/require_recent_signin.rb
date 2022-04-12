@@ -1,6 +1,6 @@
 module RequireRecentSignin
 
-  REAUTHENTICATE_AFTER = 10.minutes
+  REAUTHENTICATE_AFTER = 1.hour
 
   def reauthenticate_user!(redirect_back_to: nil)
     if redirect_back_to.nil?
@@ -9,11 +9,8 @@ module RequireRecentSignin
       store_url(url: redirect_back_to)
     end
 
-    location = if Settings::FeatureFlags.any_newflow_feature_flags?
-        main_app.reauthenticate_form_path(request.query_parameters)
-      else
-        main_app.reauthenticate_path(params.permit(:client_id).to_h)
-      end
+    location = main_app.reauthenticate_form_path(request.query_parameters)
+
 
     respond_to do |format|
       format.json{ render json: { location: location } }

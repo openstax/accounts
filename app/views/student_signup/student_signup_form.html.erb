@@ -38,7 +38,7 @@
                     <div class="social-buttons">
 
                         <div class="fb-share-button">
-                            <%= link_to oauth_path(:facebooknewflow),
+                            <%= link_to oauth_path(:facebook),
                                         class: 'facebook btn',
                                         :data => {ga_category: 'Account Creation', ga_action: 'Click', ga_label: '3B-Facebook'} do %>
                                 <i class="social-icon fa fa-facebook"></i>
@@ -49,7 +49,7 @@
                         <div class="google-share-button">
                             <%=
                                 link_to(
-                                  oauth_path(:googlenewflow),
+                                  oauth_path(:google),
                                     class: 'google btn',
                                     data: {
                                         ga_category: 'Account Creation',

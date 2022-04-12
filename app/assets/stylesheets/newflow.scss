@@ -944,3 +944,15 @@ input.has-error {
         }
     }
 }
+
+#upper-corner-console {
+    right: 0;
+    padding: 14px;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+
+    a {
+        text-decoration: none;
+    }
+}

@@ -4,13 +4,12 @@
 module Admin
   class BaseController < ApplicationController
 
+    layout 'admin'
+
     include FakeExceptionHelper
 
     if Rails.env.development?
       skip_before_action :authenticate_user!
-      skip_before_action :complete_signup_profile
-
-      fine_print_skip :general_terms_of_use, :privacy_policy
     else
       before_action :authenticate_admin!
       before_action :log_out_inactive_admins
@@ -29,12 +28,6 @@ module Admin
           session[:last_admin_activity] = DateTime.now.to_s
         end
       end
-    end
-
-    def cron
-      Ost::Cron::execute_cron_jobs
-      flash[:notice] = "Ran cron tasks"
-      redirect_to admin_path
     end
 
     def raise_exception

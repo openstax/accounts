@@ -36,8 +36,8 @@ class LoginController < BaseController
 
         sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
-        if current_user.student? || decorated_user.can_do?('redirect_back_upon_login')
-          redirect_back(fallback_location: profile_path) # back to `r`edirect parameter. See `before_action :save_redirect`.
+        if current_user.student? || user.is_profile_complete?
+          redirect_back
         else
           redirect_to(decorated_user.next_step)
         end

@@ -14,7 +14,7 @@ RSpec.describe LoginController, type: :controller do
     describe 'success' do
       describe 'students' do
         before do
-          user = create_newflow_user('user@openstax.org', 'password')
+          user = create_user('user@openstax.org', 'password')
           user.update!(role: User::STUDENT_ROLE)
           expect_any_instance_of(LogInUser).to receive(:call).once.and_call_original
         end
@@ -63,7 +63,7 @@ RSpec.describe LoginController, type: :controller do
       end
 
       describe 'educators' do
-        let(:user) { create_newflow_user('user@openstax.org', 'password') }
+        let(:user) { create_user('user@openstax.org', 'password') }
 
         before do
           user.update!(role: User::INSTRUCTOR_ROLE)
@@ -128,40 +128,28 @@ RSpec.describe LoginController, type: :controller do
             post('login', params: params)
             expect(response).to have_http_status(:redirect)
           end
-
-          it 'creates a security log' do
-            skip 'todo – maybe'
-
-            expect {
-              post('login', params: params)
-            }.to change {
-              SecurityLog.where(event_type: :educator_resumed_signup_flow).count
-            }
-          end
         end
       end
     end
 
     describe 'failure' do
       describe 'when cannot_find_user' do
-        let(:noones_email){ 'noone@openstax.org' }
+        let(:bogus_email){ 'noone@openstax.org' }
 
         xit 'creates a security log' do
           expect {
-            post('login', params: { login_form: { email: noones_email, password: 'password' } })
+            post('login', params: { login_form: { email: bogus_email, password: 'password' } })
           }.to change {
-            SecurityLog.sign_in_failed.where(event_data: { reason: :cannot_find_user, email: noones_email}).count
+            SecurityLog.sign_in_failed.where(event_data: { reason: :cannot_find_user, email: bogus_email}).count
           }
         end
       end
 
       describe 'when multiple_users' do
         before do
-          user1 = create_user 'user1'
-          email1 = create_email_address_for(user1, email_address)
-          user2 = create_user 'user2'
-          email2 = create_email_address_for(user2, 'user-2@example.com')
-          ContactInfo.where(id: email2.id).update_all(value: email1.value)
+          user1 = create_user 'user@example.com'
+          user2 = create_user 'user-2@example.com'
+          ContactInfo.where(id: user1.id).update_all(value: user2.value)
         end
 
         let(:email_address) do

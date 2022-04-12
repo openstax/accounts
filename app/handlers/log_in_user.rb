@@ -1,5 +1,5 @@
 # Handles log in form submission.
-# Tries to find a user by email (or username for legacy reasons),
+# Tries to find a user by email,
 # then checks the password for the user.
 # If successful, outputs the user. Otherwise, fails and logs the error.
 class LogInUser
@@ -27,9 +27,7 @@ class LogInUser
   def handle
     outputs.email = login_form_params.email.squish!
 
-    # We should be searching by email
-    # but we'd like to continue to support users who only have a username.
-    users = LookupUsers.by_email_or_username(login_form_params.email.squish!)
+    users = LookupUsers.by_email(login_form_params.email.squish!)
 
     outputs.user = user = users.first
 

@@ -28,7 +28,7 @@ class IdentitiesController < ApplicationController
   end
 
   def continue
-    redirect_back
+    redirect_back(fallback_location: profile_path)
   end
 
   protected

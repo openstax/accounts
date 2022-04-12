@@ -146,43 +146,4 @@ class Api::V1::UsersController < Api::V1::ApiController
     standard_update(User.find(current_human_user.id))
   end
 
-  ###############################################################
-  # find_or_create
-  ###############################################################
-
-  api :POST, '/user/find-or-create', 'Finds or Creates a user account.'
-  description <<-EOS
-    Either finds or creates a new user. If a new user is created, its
-    state will be "unclaimed" meaning it is a place-holder account for
-    an user who has not yet completed the sign up process.
-
-    An email address or username must be supplied.
-
-    If the username or email is already in use, that existing user's ID
-    will be returned.
-
-    If an account is created with only an email and no username, it cannot be logged
-    into directly.  It will merged with the user's account when they complete the
-    standard sign up process using a matching email address.
-
-    If an account is created with a username and password, it may be signed into and used
-    immediately once the user agress to the Terms and Conditions.
-
-    #{json_schema(Api::V1::FindOrCreateUserRepresenter, include: [:readable, :writable])}
-  EOS
-  def find_or_create
-    OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user, User)
-    # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
-    # Substitue a Hashie::Mash to read the JSON encoded body
-    payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindOrCreateUserRepresenter)
-
-    payload.application = current_api_user.application
-    result = FindOrCreateUnclaimedUser.call(payload)
-    if result.errors.any?
-      render json: { errors: result.errors }, status: :conflict
-    else
-      respond_with result.outputs[:user], represent_with: Api::V1::FindOrCreateUserRepresenter, location: nil
-    end
-  end
-
 end

@@ -22,7 +22,6 @@ module EducatorSignup
 
     before(:each) do
       disable_sfdc_client
-      allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
     end
 
     context 'with invalid params' do

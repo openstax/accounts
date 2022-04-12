@@ -5,21 +5,9 @@
 
     <% if !Rails.env.production? %>
       Current user: <%= current_user.username %><br/>
-      <%= link_to "Popup Console", main_app.admin_path, remote: true %><br/>
-      <%= link_to "Full Console", main_app.admin_console_path %><br/>
+      <%= link_to "Admin Console", main_app.admin_console_path, class: 'btn' %><br/>
     <% elsif current_user.is_administrator? %>
-      <%= link_to "Popup Console", main_app.admin_path, remote: true %><br/>
-      <%= link_to "Full Console", main_app.admin_console_path %><br/>
-    <% end %>
-
-    <% clock_is_normally_enabled = @clock_enabled && signed_in? %>
-    <% clock_is_enabled = clock_is_normally_enabled || !Rails.env.production? %>
-
-    <% if clock_is_enabled %>
-      <span id="clock" class="<%= 'highlight' if !clock_is_normally_enabled %>">
-        <% time = Time.zone.now %>
-        <%= osu.standard_time(time) %><br/>(on last refresh)
-      </span>
+      <%= link_to "Admin Console", main_app.admin_console_path, class: 'btn' %><br/>
     <% end %>
 
   </div>
