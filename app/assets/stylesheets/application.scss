@@ -4,22 +4,22 @@
  */
 $font-path: '/accounts/fonts';
 @import "pattern-library/headers";
-@import "pattern-library/elements/menus";
-@import "pattern-library/layout";
-@import "pattern-library/fonts";
-@import "pattern-library/typography";
-@import "font-awesome";
-@import "intlTelInput";
 @import "common";
 @import "bootstrap-sprockets";
 @import "bootstrap";
 @import "ox-controls";
+@import "application_layout";
+@import "font-awesome";
 @import "bootstrap-social";
+@import "signinup";
 @import "profile";
+@import "signup";
+@import "social";
 @import "create_account";
 @import "misc";
 @import "pagination";
 @import "condensed";
+
 
 /* Set a max-width, maintaining responsiveness */
 
@@ -37,7 +37,6 @@ $font-path: '/accounts/fonts';
   padding-left: 50px;
   width: 200px;
   border-radius: 0;
-  color: white !important;
   > :first-child {
     padding-top: 4px;
     width: 40px;
@@ -61,25 +60,6 @@ $font-path: '/accounts/fonts';
 
   div.alert {
     padding: 0px 10px;
-  }
-}
-
-#upper-corner-console {
-  background-color: ui-color(white);
-  color: white;
-  left: 0;
-  padding: 4px;
-  position: absolute;
-  top: 0;
-  z-index: 1;
-
-  a {
-    text-decoration: underline;
-    color: white;
-  }
-
-  #clock.highlight {
-    color: rgba(255, 255, 255, 0.5);
   }
 }
 
