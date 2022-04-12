@@ -12,13 +12,14 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require bootstrap-sprockets
-//= require knockout
+//= require ./jquery_extensions
+//= require ./ko_extensions
+//= require bootstrap
+//= require ./ui
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils
-//= require ./accounts-ui
-//= require ./jquery_extensions
-//= require ./ko_extensions
-//= require ./ui
 //= require ./phone-number
+//= require ./remote-access-helpers
+//= require_self
+

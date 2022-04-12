@@ -3,32 +3,11 @@
  * License version 3 or later.  See the COPYRIGHT file for details.
  */
 $font-path: '/accounts/fonts';
+@import "pattern-library";
 @import "pattern-library/headers";
-@import "common";
-@import "bootstrap-sprockets";
-@import "bootstrap";
-@import "ox-controls";
-@import "application_layout";
 @import "font-awesome";
-@import "bootstrap-social";
-@import "signinup";
-@import "profile";
-@import "signup";
-@import "social";
-@import "create_account";
-@import "misc";
-@import "pagination";
-@import "condensed";
-
-
-/* Set a max-width, maintaining responsiveness */
-
-.container,
-.navbar-static-top .container,
-.navbar-fixed-top .container,
-.navbar-fixed-bottom .container {
-    max-width: $application_master_width;
-}
+@import "common_colors";
+@import "intlTelInput";
 
 .btn-social {
   margin: 15px auto;
@@ -95,3 +74,945 @@ $font-path: '/accounts/fonts';
     text-align: center;
     margin-top: 8rem;
 }
+
+
+html {
+  font-family: 'Neue Helvetica W01', sans-serif;
+}
+
+body {
+  @include width-up-to($phone-max) {
+    .content {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  @include set-font(body-regular);
+  background-color: #fff;
+  color: var(--greyish-brown);
+}
+
+.layout-alert {
+  background-color: #f2dede;
+  padding: 1rem;
+  padding-left: 2rem;
+  border-bottom: 0.1rem solid var(--input-error-border-color);
+  color: var(--input-error-message-color);
+}
+
+.layout-notice {
+  background-color: #d9edf7;
+  color: #31708f;
+  padding: 1rem;
+  padding-left: 2rem;
+  border-bottom: 0.1rem solid #bce8f1;
+}
+
+.mustdo-alert {
+  color: var(--input-error-message-color);
+}
+
+.cs-form-mustdo-alert {
+  color: var(--input-error-message-color);
+}
+
+.iti {
+  display: block !important;
+}
+
+// utility classes
+.hidden {
+  display: none !important;
+}
+
+.required-fields-notice {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: -20px;
+}
+
+.form-divider {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #424242;
+  display: grid;
+  grid-column-gap: 2rem;
+  grid-template-columns: 1fr auto 1fr;
+  justify-items: center;
+  text-align: center;
+
+  .line {
+    border-bottom: 0.1rem solid #d5d5d5;
+    width: 100%;
+    height: 0.1rem;
+    transform: translateY(1rem);
+  }
+
+  .the-content {
+    max-width: calc(100vw - 18rem);
+    text-align: center;
+  }
+}
+
+input.has-error {
+  @extend %has-error;
+}
+
+.completed-step {
+  .question.school-name {
+    display: none;
+
+    &.school-name-visible {
+      display: block;
+    }
+  }
+
+  .question.school-issued-email {
+    display: none;
+
+    &.school-issued-email-visible {
+      display: block;
+    }
+
+    .other-specify {
+      margin-left: 2em;
+    }
+  }
+
+  .custom-control-label {
+    font-weight: lighter !important;
+  }
+
+  .other-specify {
+    margin-left: 2em;
+  }
+
+  .question {
+    .how-using, .how-chosen, .total-num-students, .subjects-of-interest, .books-used {
+      display: none;
+    }
+
+    margin-top: 25px;
+  }
+
+  .questions {
+    margin-bottom: 25px;
+  }
+}
+
+form {
+  height: auto !important;
+}
+
+.block_radio_button_collection {
+  display: block;
+}
+
+// Add a star * to form fields that are required
+label.required::after {
+  content: " *";
+}
+
+// Show/hide password link
+#password-field-container {
+  position: relative;
+
+  #password-show-hide-button {
+    position: absolute;
+    top: 3.7rem;
+    right: 1.8rem;
+
+    color: #027EB5;
+    font-weight: bold;
+    cursor: pointer;
+
+    @include wider-than($phone-max) {
+      // more space to the right on desktop for users who use a password manager
+      right: 3.6rem;
+    }
+
+    &.show-show .hide {
+      display: none;
+    }
+
+    &:not(.show-show) .show {
+      display: none;
+    }
+  }
+}
+
+.main-menu {
+  box-shadow: none;
+  margin: 2rem 0 0 2rem;
+
+  @include wider-than($tablet-max + ($one-pixel-in-em * 90)) {
+    height: 2rem;
+  }
+
+  .logo-wrapper {
+    padding: 0;
+
+    @include width-up-to($phone-max) {
+      margin: auto;
+    }
+  }
+}
+
+.content form, form.content {
+  background-color: white;
+}
+
+.step-counter {
+  height: 3rem;
+  border-left: 0.1rem solid #d5d5d5;
+  border-right: 0.1rem solid #d5d5d5;
+  padding: 1.5rem 0 0 1.5rem;
+
+  @include wider-than($phone-max) {
+    padding: 2.9rem 0 0 2.9rem;
+  }
+
+  > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 9.4rem;
+    height: 100%;
+
+    background-color: #f5f5f5;
+    border-radius: 1.5rem;
+  }
+
+  span {
+    @include title-font(1.4rem);
+  }
+}
+
+#exit-icon {
+  border-left: 0.1rem solid #d5d5d5;
+  border-right: 0.1rem solid #d5d5d5;
+  padding: 1.5rem 0 0 1.5rem;
+
+  a {
+    float: right;
+    padding-right: 3rem;
+    padding-top: 1rem;
+    color: var(--greyish-brown);
+  }
+}
+
+input.has-error {
+  background-color: var(--input-error-background-color) !important;
+  border: thin solid var(--input-error-border-color) !important;
+}
+
+.invalid-message {
+  color: var(--input-error-message-color);
+}
+
+// per-page styles
+.login-unsuccessful-page {
+  a {
+    text-decoration: none;
+  }
+
+  #send-instructions-button {
+    padding: 0px 10.5rem;
+    border: 0;
+    color: #fff;
+    font-weight: bold;
+    background-color: #f36b32;
+  }
+
+  #return-button {
+    background-color: #fff;
+  }
+}
+
+.forgot-password-form {
+  .back-arrow-container {
+    position: relative;
+
+    .back-arrow {
+      position: absolute;
+      top: 10rem;
+
+      @include wider-than($phone-max) {
+        top: 14rem;
+      }
+    }
+  }
+}
+
+.educator-sheerid-form-page {
+  .step-counter {
+    position: relative;
+    z-index: 100;
+  }
+
+  iframe {
+    position: relative;
+    z-index: 0;
+    margin-top: -6.7rem;
+  }
+
+  form, iframe {
+    min-height: 100rem !important;
+  }
+
+  @include width-up-to($phone-max) {
+    form, iframe {
+      height: 117rem !important;
+      overflow-y: visible;
+    }
+  }
+
+  @include wider-than($phone-max) {
+    form, iframe {
+      height: 80rem !important;
+    }
+  }
+}
+
+// END per-page styles
+
+#login-signup-form {
+  max-width: 75rem;
+  border-top: 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 3rem;
+  padding-left: 1.4rem;
+  padding-right: 1.4rem;
+
+  .join-as {
+    .blue-bar {
+      height: 1rem;
+      background-color: #007297;
+    }
+
+    .green-bar {
+      height: 1rem;
+      background-color: #0c9372;
+    }
+
+    @include width-up-to($phone-max) {
+      display: flex;
+      flex-direction: column;
+      margin-top: 1rem;
+
+      > div {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .join-as__role {
+        height: 15rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .join-as__description {
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+        @include set-font(body-regular);
+      }
+    }
+
+    @include wider-than($phone-max) {
+      display: flex;
+
+      > div {
+        display: flex;
+        flex-direction: column;
+        width: 26.2rem;
+        margin-top: 3.5rem;
+
+        &:first-child {
+          margin-right: 3rem;
+        }
+      }
+
+      .join-as__role {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        height: 26rem;
+      }
+
+      .join-as__description {
+        margin-top: 3rem;
+        @include set-font(body-regular);
+      }
+    }
+
+    .join-as__role {
+      @include title-font(2.4rem);
+      text-align: center;
+      position: relative;
+      border: 0.1rem solid #d5d5d5;
+      border-bottom: 0;
+      box-sizing: border-box;
+    }
+
+    a {
+      color: unset;
+      text-decoration: none;
+      // bcus `box-sizing: border-box` on hover isn't doing the job:
+      border: 0.1rem solid #fff;
+
+      &:hover {
+        border: 0.1rem solid #0dc0dc;
+        box-shadow: 0 0 .4rem rgba(13, 192, 220, 0.4);
+      }
+    }
+
+    .join-as__role img {
+      position: absolute;
+      bottom: 0;
+      left: 2rem;
+    }
+  }
+
+  .tab-group {
+    padding: 0;
+
+    .tab {
+      @include width-up-to($phone-max) {
+        width: 50%;
+      }
+
+      width: 18rem;
+      padding: 1.2rem 0;
+
+      color: unset;
+      text-decoration: inherit;
+      background-color: #f5f5f5;
+      border-bottom-width: 0;
+      border-bottom-color: #fff;
+      border: 0.1rem solid #d5d5d5;
+      @include set-font(h4);
+
+      &:first-child {
+        border-top-left-radius: 0.3rem;
+        border-right: 0;
+      }
+
+      &:nth-child(2) {
+        border-top-right-radius: 0.3rem;
+      }
+
+      &:last-child {
+        width: 10rem;
+      }
+
+      &.login.login--active, &.signup.signup--active {
+        background-color: #fff;
+        border-bottom-width: 0;
+      }
+    }
+
+    .tab.tab--placeholder {
+      @include width-up-to($phone-max) {
+        display: none;
+      }
+
+      cursor: default;
+      border: 0;
+      border-bottom: 0.1rem solid #d5d5d5;
+      background-color: #fff; // TODO: use a shared variable
+    }
+  }
+
+  .page-header {
+    border-left: 0.1rem solid #d5d5d5;
+    border-right: 0.1rem solid #d5d5d5;
+    text-align: center;
+
+    @include width-up-to($phone-max) {
+      @include set-font(h4);
+      line-height: 3rem;
+    }
+
+    @include wider-than($phone-max) {
+      @include set-font(h2);
+      margin: 0;
+    }
+  }
+
+  form {
+    @include width-up-to($phone-max) {
+      row-gap: 2rem;
+      padding-left: 1.4rem;
+      padding-right: 1.4rem;
+      padding-top: 2.2rem;
+    }
+
+    @include wider-than($phone-max) {
+      row-gap: 1rem;
+      padding-top: 3rem;
+    }
+
+    border-color: #d5d5d5;
+    border-style: solid;
+    border-width: 0.1rem;
+    border-top: 0;
+    border-bottom-left-radius: 0.3rem;
+    border-bottom-right-radius: 0.3rem;
+
+    font-size: 1.4rem;
+
+    > .content {
+      max-width: 55.5rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .role-section {
+      max-width: 100%;
+
+      > div {
+        @include width-up-to($phone-max) {
+          display: grid;
+          grid-template-columns: 3.5rem 1fr;
+          align-items: center;
+        }
+
+        @include wider-than($tablet-max) {
+          display: inline;
+        }
+      }
+    }
+
+    .back-arrow {
+      display: inline-block;
+      color: unset;
+      font-size: 1.8rem;
+
+      @include width-up-to($phone-max) {
+        text-align: right;
+        margin-right: 1rem;
+      }
+    }
+
+    .role-button {
+      max-width: 55.5rem;
+      height: 5rem;
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+
+      background-color: #f1f1f1;
+      color: #c1c1c1;
+
+      @include title-font(2.4rem);
+      text-align: center;
+
+      @include width-up-to($phone-max) {
+        @include title-font(1.8rem);
+        margin-right: 3.5rem;
+        height: 3.5rem;
+      }
+
+      @include width-between($phone-max, $tablet-max) {
+        width: 85%;
+        margin-left: 3.8rem;
+        border: none;
+      }
+
+      @include wider-than($tablet-max) {
+        width: 100%;
+        margin-left: 3.8rem;
+        border: none;
+      }
+    }
+
+    label {
+      font-weight: bold;
+      color: var(--greyish-brown);
+    }
+
+    .social-section {
+      @include wider-than($phone-max) {
+        > div {
+          line-height: normal;
+        }
+
+        .social-buttons .btn {
+          line-height: 2.8rem;
+        }
+      }
+    }
+
+    .role-section + .social-section {
+      @include wider-than($phone-max) {
+        > div {
+          line-height: unset; // don't want `line-height: normal` in sign up form, desktop view
+        }
+      }
+    }
+
+    .email-input-group.has-changed {
+      .errors {
+        display: none;
+      }
+    }
+
+    // placeholder text
+    [type=text], [type=email], [type=password] {
+      color: #424242;
+      font-weight: 300;
+    }
+
+    .checkboxes-section {
+      input[type=checkbox] {
+        width: 1.4rem;
+        height: 1.4rem;
+      }
+    }
+  }
+
+  // informational messages shown to users, for example on email confirmation screen
+  .info-message {
+    @include set-font(body-regular);
+  }
+
+  [type=submit] {
+    min-width: 17.2rem;
+  }
+
+  [type=checkbox] {
+    height: auto;
+  }
+
+  input[type=text]:disabled, input[readonly=readonly] {
+    color: #C1C1C1;
+    background-color: #f1f1f1;
+    cursor: not-allowed;
+  }
+
+  input[type=submit] {
+    &:disabled {
+      opacity: 0.85;
+      cursor: not-allowed;
+    }
+
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+}
+
+// Improve vertical spacing
+
+#login-signup-form {
+  .warning {
+    &.edu, &.mistype {
+      color: #c22032;
+    }
+  }
+
+  input.int-country-code {
+    padding-left: 50px;
+  }
+
+  .page-header {
+    margin-bottom: 0;
+    padding-top: 2.85rem;
+  }
+
+  .content.control-group {
+    margin-top: 0;
+  }
+
+  @include width-up-to($phone-max) {
+    .form-divider + .content.control-group {
+      margin-top: 0.9rem;
+    }
+
+    .terms {
+      margin-top: 1rem;
+      display: flex;
+    }
+
+    .role-section {
+      margin-bottom: 0.8rem;
+    }
+
+    .login-page {
+      .page-header {
+        padding-top: 4.5rem;
+      }
+
+      form {
+        padding-top: 2rem;
+      }
+
+      .form-divider {
+        padding-top: 0.3rem;
+      }
+
+      [type="submit"] {
+        margin-top: 1rem;
+      }
+    }
+  }
+
+  @include wider-than($phone-max) {
+    form {
+      height: 80rem;
+      align-content: start;
+    }
+
+    .social-buttons {
+      margin-top: 0.9rem;
+    }
+
+    .content.control-group {
+      margin-bottom: 1rem;
+    }
+
+    .social-section {
+      margin-top: 3rem;
+    }
+
+    .role-section + .social-section {
+      margin-top: 0;
+    }
+
+    .page-header {
+      padding-top: 2rem;
+    }
+
+    .login-page {
+      .page-header {
+        padding-top: 8rem;
+      }
+
+      form {
+        padding-top: 2.2rem;
+      }
+
+      .form-divider {
+        padding-top: 0.3rem;
+      }
+    }
+
+    .welcome-page {
+      .page-header {
+        padding-top: 8rem;
+      }
+
+      form {
+        padding-top: 1.6rem;
+      }
+    }
+  }
+
+  .content.control-group.checkboxes-section {
+    margin-top: 0rem;
+  }
+
+  [type=submit] {
+    @include width-up-to($phone-max) {
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    @include wider-than($phone-max) {
+      margin-bottom: 2rem;
+      margin-top: 1.2rem;
+    }
+  }
+}
+
+.terms label > * {
+  font-weight: normal;
+  display: inline;
+}
+
+// Improve the look of Terms of Use section in very narrow views
+@include width-up-to(24em) {
+  .terms input {
+    float: left;
+  }
+
+  .terms span {
+    float: left;
+    height: auto;
+    width: auto;
+    max-width: 75%;
+    overflow: unset;
+    line-height: normal;
+  }
+}
+
+// Social buttons
+
+.social-buttons {
+  > div {
+    display: inline-block;
+  }
+
+  .fb-share-button {
+    margin-right: 0.6rem;
+  }
+
+  .fb-share-button a {
+    background-color: #3b5998;
+    color: white;
+
+    &:hover {
+      background-color: #314B80;
+    }
+  }
+
+  .google-share-button a {
+    color: #fff;
+    background-color: #dd4b39;
+
+    &:hover {
+      background-color: #C44333;
+    }
+  }
+
+  .btn {
+    text-align: left;
+
+    border: 0;
+    display: inline-block;
+    touch-action: manipulation;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+@include width-up-to($phone-max) {
+  .social-buttons {
+    .btn {
+      height: 3.5rem;
+      padding: 0;
+    }
+
+    a {
+      width: 100%;
+    }
+
+    > div {
+      width: 48%;
+      max-width: 13rem;
+      min-width: 12rem;
+    }
+
+    i.social-icon {
+      width: 3.3rem;
+      height: 3.5rem;
+      text-align: center;
+      padding-top: 0.8rem;
+    }
+  }
+}
+
+@include wider-than($phone-max) {
+  .social-buttons {
+    .btn {
+      width: 17.2rem;
+      padding: 1rem 0;
+    }
+
+    .social-icon {
+      padding-left: 2.5rem;
+      padding-right: 1.6rem;
+    }
+  }
+}
+
+// Tooltip on form inputs
+
+.tooltip {
+  padding-bottom: 2rem !important;
+}
+
+.input-with-tooltip {
+  @include input-with-tooltip();
+
+  input:focus {
+    @extend %active;
+  }
+
+  .tooltip {
+    @extend %tooltip;
+
+    max-width: 25rem;
+
+    @include width-up-to($phone-max) {
+      max-width: 100%;
+    }
+  }
+}
+
+.input-with-tooltip-on-hover {
+  @include input-with-tooltip();
+
+  input:hover {
+    @extend %active;
+  }
+
+  .tooltip {
+    @extend %tooltip;
+
+    max-width: 25rem;
+
+    @include width-up-to($phone-max) {
+      max-width: 100%;
+    }
+  }
+}
+
+#password-requirements-checkmark {
+  font-size: 2rem;
+  color: #c1c1c1;
+
+  &.success {
+    color: #63A524;
+  }
+}
+
+#application-footer {
+  font-size: 10px;
+  text-align: center;
+  margin-top: 8rem;
+  text-align: center;
+
+  #footer-rice-logo-image {
+    max-height: 3.7rem;
+    margin-bottom: 1.2rem;
+  }
+
+  #application-footer--copyright {
+    font-size: 1rem;
+
+    a {
+      color: #000;
+      text-decoration: none;
+    }
+  }
+}
+
+#upper-corner-console {
+  right: 0;
+  padding: 14px;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+
+  a {
+    text-decoration: none;
+  }
+}
+

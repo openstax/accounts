@@ -1,25 +1,30 @@
-class LoginController < BaseController
+class LoginController < ApplicationController
 
   include LoginSignupHelper
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile
+  fine_print_skip :general_terms_of_use, :privacy_policy
 
   before_action :cache_client_app, only: :login_form
   before_action :cache_alternate_signup_url, only: :login_form
   before_action :redirect_to_signup_if_go_param_present, only: :login_form
   before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
+  def login_form
+    clear_signup_state
+    render :login_form
+  end
 
-  def login
+  def login_post
     handle_with(
       LogInUser,
       success: lambda {
-        clear_signup_state
         user = @handler_result.outputs.user
 
-        Sentry.configure_scope do |scope|
-          scope.set_tags(user_role: user.role.humanize)
-          scope.set_user(uuid: user.uuid)
+        if Rails.env.production?
+          Sentry.configure_scope do |scope|
+            scope.set_tags(user_role: user.role.humanize)
+            scope.set_user(uuid: user.uuid)
+          end
         end
 
         if user.unverified?
@@ -37,7 +42,7 @@ class LoginController < BaseController
         sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
         if current_user.student? || user.is_profile_complete?
-          redirect_back
+          redirect_back(fallback_location: profile_path)
         else
           redirect_to(decorated_user.next_step)
         end
@@ -59,7 +64,7 @@ class LoginController < BaseController
 
   def logout
     sign_out!
-    Sentry.set_user({})
+    Sentry.set_user({}) if Rails.env.production?
     redirect_back(fallback_location: login_path)
   end
 

@@ -1,13 +1,13 @@
-@import "common";
+@import "common_colors";
 
 pre.code, pre.prettyprint {
-  outline: 1px solid #ccc; 
-  padding: 5px; 
-  margin: 5px; 
+  outline: 1px solid #ccc;
+  padding: 5px;
+  margin: 5px;
 
-  .string { color: $os_green; }
-  .number { color: $os_dark_orange; }
+  .string { color: rgb(118, 177, 67); }
+  .number { color: darken(#F47641, 10%); }
   .boolean { color: blue; }
   .null { color: purple; }
-  .key { color: $os_orange; }
+  .key { color: #F47641; }
 }

@@ -5,12 +5,8 @@
 
 <% content_for :head do %>
   <%= javascript_include_tag  "profile" %>
-  <%= stylesheet_link_tag "profile-nf" %>
+  <%= stylesheet_link_tag "profile" %>
 <% end %>
-
-<div id="temporary-logo-within-my-account">
-  <%= render 'layouts/main_menu' %>
-</div>
 
 <%= ox_card do %>
   <div class="profile-title">
@@ -77,25 +73,32 @@
     </div>
   </div>
 
+  <%
+    all_providers = OmniauthData::VALID_PROVIDERS
+    # The `all providers &` enforces a standard sort order
+    current_providers = all_providers & current_user.authentications.collect(&:provider)
+    other_available_providers = all_providers - current_providers
+  %>
+
   <div class="row enabled-providers">
     <div class="col-sm-2 category">
       <%= t(:"login_signup_form.how_you_log_in") %>
     </div>
     <div class="col-sm-10 info providers">
-      <% OmniauthData::VALID_PROVIDERS.each do |provider| %>
-        <%= way_to_login(provider: provider, has_authentication: true, current_providers: OmniauthData::VALID_PROVIDERS) %>
+      <% current_providers.each do |provider| %>
+        <%= way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
       <% end %>
     </div>
     <% if other_available_providers.any? %>
-    <div class="col-sm-offset-2 info col-sm-10">
-      <%=
-        link_to(
-          I18n.t(:"student_profile.enable_other_sign_in_options"),
-          nil,
-          id: 'enable-other-sign-in'
-        )
-      %>
-    </div>
+      <div class="col-sm-offset-2 info col-sm-10">
+        <%=
+          link_to(
+            I18n.t(:"student_profile.enable_other_sign_in_options"),
+            nil,
+            id: 'enable-other-sign-in'
+          )
+        %>
+      </div>
     <% end %>
 
   </div>
@@ -114,7 +117,6 @@
 
 <% end %>
 
-<%= render 'layouts/application_footer' %>
 <%= render partial: 'profile/edit-js', locals: {
   profile_path: :'/profile',
   current_user: current_user
