@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   layout 'application'
 
   before_action :authenticate_user!
+  before_action :complete_signup_profile
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
@@ -18,7 +19,7 @@ class ApplicationController < ActionController::Base
     return true if !Rails.env.production?
     is_admin?
   end
-
+  
   def return_url_specified_and_allowed?
     # This returns true if `save_redirect` actually saved the URL
     params[:r] && params[:r] == stored_url
