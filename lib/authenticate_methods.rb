@@ -3,7 +3,7 @@ require 'addressable/uri'
 module AuthenticateMethods
 
   def authenticate_user!
-    return unless signed_in?
+    return if signed_in?
 
     store_url(url: request.url)
     redirect_to main_app.login_path(request.query_parameters)
