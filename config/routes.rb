@@ -135,7 +135,6 @@ Rails.application.routes.draw do
 
   scope controller: :contact_infos do
     get 'confirm'
-    get 'confirm/unclaimed', action: :confirm_unclaimed
   end
 
   resources :terms, only: [:index, :show] do

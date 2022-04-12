@@ -2,8 +2,6 @@ class ContactInfosResendConfirmation
 
   lev_handler
 
-  uses_routine SendContactInfoConfirmation
-
   protected
 
   def setup
@@ -15,7 +13,6 @@ class ContactInfosResendConfirmation
   end
 
   def handle
-    run(SendContactInfoConfirmation, contact_info: @contact_info)
     outputs[:contact_info] = @contact_info
   end
 
