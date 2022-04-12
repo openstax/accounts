@@ -33,28 +33,6 @@ class IdentitiesController < ApplicationController
 
   protected
 
-  def send_password_email(kind:)
-    # Can be reached before logged in (can't remember password) or when logged
-    # in and asked to reauthenticate and can't remember password.
-
-    user = signed_in? ? current_user :
-                        User.find_by(id: get_login_state[:matching_user_ids].try(:first))
-
-    redirect_to(root_path, alert: I18n.t(:'controllers.lost_user')) && return if user.nil?
-
-    handle_with(IdentitiesSendPasswordEmail,
-                kind: kind,
-                user: user,
-                success: lambda do
-                  security_log :help_requested, user: user
-                  sign_out!
-                end,
-                failure: lambda do
-                  security_log :help_request_failed, user: user
-                  redirect_to authenticate_path
-                end)
-  end
-
   def set_password(kind:)
     if request.get?
       handle_with(LogInByToken,
