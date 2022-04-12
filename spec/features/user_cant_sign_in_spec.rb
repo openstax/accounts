@@ -21,9 +21,9 @@ feature "User can't sign in", js: true do
 
     scenario "multiple accounts match email" do
       email_address = 'user@example.com'
-      user1 = create_user 'user1'
+      user1 = create_user 'user1@example.com'
       email1 = create_email_address_for(user1, email_address)
-      user2 = create_user 'user2'
+      user2 = create_user 'user2@example.com'
       email2 = create_email_address_for(user2, 'user-2@example.com')
       ContactInfo.where(id: email2.id).update_all(value: email1.value)
 
@@ -59,11 +59,8 @@ feature "User can't sign in", js: true do
       # and also not have a username.  So the "you can't sign in with email you must use your
       # username" approach won't work for them.  We need to give them some other "contact support"
       # message.
-      email_address = 'user@example.com'
-      user1 = create_user 'user1'
-      email1 = create_email_address_for(user1, email_address)
-      user2 = create_user 'user2'
-      email2 = create_email_address_for(user2, 'temporary@email.com')
+      user1 = create_user 'user@example'
+      user2 = create_user 'temporary@email.com'
       ContactInfo.where(id: email2.id).update_all(value: 'UsEr@example.com')
       user2.update_attribute(:username, nil)
       user1.update_attribute(:username, nil)
@@ -98,7 +95,7 @@ feature "User can't sign in", js: true do
 
       with_omniauth_test_mode(uid: authentication.uid) do
         # Found link from back button or some other shenanigans
-        visit 'i/auth/googlenewflow'
+        visit 'auth/googlenewflow'
       end
 
       screenshot!
@@ -108,8 +105,7 @@ feature "User can't sign in", js: true do
 
   context "we find one user", js: true do
     before(:each) do
-      @user = create_user 'user'
-      @email = create_email_address_for @user, 'user@example.com'
+      @user = create_user 'user@example.com'
       arrive_from_app
     end
 
@@ -197,7 +193,7 @@ feature "User can't sign in", js: true do
     # Technically: same user, same provider, different `uid`.
 
     email_address = Faker::Internet.free_email
-    user = create_newflow_user(email_address)
+    user = create_user(email_address)
     authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
 
     arrive_from_app

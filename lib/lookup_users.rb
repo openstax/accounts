@@ -44,6 +44,16 @@ module LookupUsers
     return []
   end
 
+  def self.by_email(email)
+    # Case-insensitive email search
+    ContactInfo.where('lower(value) = ?', email.downcase)
+               .preload(:user)
+               .tap do |matches|
+      return matches.map(&:user) if matches.any?
+    end
+    return []
+  end
+
   def self.by_email_or_username(email_or_username)
     # Case-insensitive username search
     User.where('lower(username) = ?', email_or_username.downcase).tap do |matches|

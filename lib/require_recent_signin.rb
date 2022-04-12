@@ -1,6 +1,6 @@
 module RequireRecentSignin
 
-  REAUTHENTICATE_AFTER = 10.minutes
+  REAUTHENTICATE_AFTER = 1.hour
 
   def reauthenticate_user!(redirect_back_to: nil)
     if redirect_back_to.nil?

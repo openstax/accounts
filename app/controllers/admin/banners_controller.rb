@@ -1,6 +1,5 @@
 module Admin
-  class BannersController < Admin::BaseController
-    layout 'admin'
+  class BannersController < BaseController
     before_action :delete_expired_banners, only: [:index]
 
     def index

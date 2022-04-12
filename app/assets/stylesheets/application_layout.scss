@@ -96,21 +96,14 @@ body, p, ol, ul, td, a {
 }
 
 #upper-corner-console {
-  background-color: ui-color(white);
-  color: white;
-  left: 0;
+  right: 0;
   padding: 4px;
-  position: absolute;
+  margin: 15px;
   top: 0;
   z-index: 1;
 
   a {
     text-decoration: underline;
-    color: white;
-  }
-
-  #clock.highlight {
-    color: rgba(255,255,255,0.5);
   }
 }
 

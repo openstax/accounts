@@ -17,35 +17,7 @@
                     <div class="content social-section">
                         <div><%= I18n.t(:"login_signup_form.login_with") %></div>
 
-                        <div class="social-buttons">
-
-                            <div class="fb-share-button">
-                                <%=
-                                    link_to(
-                                      social_auth_path(:facebooknewflow, origin: :login_form),
-                                        class: 'facebook btn',
-                                        data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Facebook' }
-                                    ) do
-                                %>
-                                    <i class="social-icon fa fa-facebook"></i>
-                                    <span>Facebook</span>
-                                <% end %>
-                            </div>
-
-                            <div class="google-share-button">
-                                <%=
-                                    link_to(
-                                      social_auth_path(:googlenewflow, origin: :login_form),
-                                        class: 'google btn',
-                                        data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Google' }
-                                    ) do
-                                %>
-                                    <i class="social-icon fa fa-google"></i>
-                                    <span>Google</span>
-                                <% end %>
-                            </div>
-
-                        </div>
+                      <%= render partial: 'social_auth/social_buttons'%>
                     </div>
 
                     <%=

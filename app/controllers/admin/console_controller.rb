@@ -1,7 +1,5 @@
 module Admin
-  class ConsoleController < Admin::BaseController
-    layout 'admin'
-
+  class ConsoleController < BaseController
     def index; end
   end
 end

@@ -77,23 +77,13 @@
     </div>
   </div>
 
-  <%
-    all_providers = OmniauthData::VALID_PROVIDERS
-    oldflow_providers = %w(facebook google_oauth2)
-    newflow_providers = %w(facebooknewflow googlenewflow)
-
-    # The `all providers &` enforces a standard sort order
-    current_providers = all_providers & current_user.authentications.collect(&:provider) - oldflow_providers
-    other_available_providers = all_providers - current_providers - ['twitter', oldflow_providers].flatten
-  %>
-
   <div class="row enabled-providers">
     <div class="col-sm-2 category">
       <%= t(:"login_signup_form.how_you_log_in") %>
     </div>
     <div class="col-sm-10 info providers">
-      <% current_providers.each do |provider| %>
-        <%= way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
+      <% OmniauthData::VALID_PROVIDERS.each do |provider| %>
+        <%= way_to_login(provider: provider, has_authentication: true, current_providers: OmniauthData::VALID_PROVIDERS) %>
       <% end %>
     </div>
     <% if other_available_providers.any? %>
