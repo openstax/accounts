@@ -3,8 +3,8 @@ class SocialAuthController < BaseController
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  before_action :restart_signup_if_missing_unverified_user, only: [
-    :confirm_oauth_info, :confirm_social_info_form
+  before_action :restart_signup_if_missing_verified_user, only: [
+    :confirm_oauth_info, :confirm_oauth_info
   ]
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider

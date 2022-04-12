@@ -6,7 +6,7 @@ class EducatorSignupController < SignupController
 
   before_action(:prevent_caching, only: :sheerid_webhook)
   before_action(:exit_signup_if_logged_in, only: :educator_signup)
-  before_action(:restart_signup_if_missing_unverified_user, only: %i[
+  before_action(:restart_signup_if_missing_verified_user, only: %i[
       educator_change_signup_email_form
       educator_change_signup_email
       educator_email_verification_form

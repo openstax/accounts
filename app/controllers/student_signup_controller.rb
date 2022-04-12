@@ -1,6 +1,6 @@
 class StudentSignupController < SignupController
 
-  before_action(:restart_signup_if_missing_unverified_user, only: %i[
+  before_action(:restart_signup_if_missing_verified_user, only: %i[
       student_change_signup_email_form
       student_change_signup_email
       student_email_verification_form
