@@ -1,10 +1,9 @@
-require 'byebug'
 class SignupController < BaseController
   include LoginSignupHelper
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  before_action(:exit_signup_if_logged_in, only: :signup)
+  before_action(:exit_signup_if_logged_in, only: :welcome)
   before_action(:authenticate_user!, only: :signup_done)
   before_action(:skip_signup_done_for_tutor_users, only: :signup_done)
 

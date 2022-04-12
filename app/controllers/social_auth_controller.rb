@@ -3,10 +3,8 @@ class SocialAuthController < BaseController
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  skip_before_action :authenticate_user!, only: [ :oauth_callback, :confirm_oauth_info ]
-
-  before_action :restart_signup_if_missing_unverified_user, only: [
-    :confirm_oauth_info, :confirm_social_info_form
+  before_action :restart_signup_if_missing_verified_user, only: [
+    :confirm_oauth_info, :confirm_oauth_info
   ]
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
@@ -51,7 +49,7 @@ class SocialAuthController < BaseController
               login_path,
               notice: I18n.t(
                 :"login_signup_form.should_social_signup",
-                sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), signup_path)
+                sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
               )
             )
           when :authentication_taken
