@@ -37,12 +37,12 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
 
+            <li><%= link_to 'User Search', main_app.routes.url_helpers.admin_users_path %></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Users<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reports<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><%= link_to 'Search', main_app.routes.url_helpers.admin_users_path %></li>
-                <li><%= link_to 'Actions', main_app.routes.url_helpers.actions_admin_users_path %></li>
-                <li><%= link_to 'Reports', main_app.routes.url_helpers.admin_reports_path %></li>
+                <li><%= link_to 'User Counts', main_app.routes.url_helpers.admin_reports_path %></li>
+                <li><%= link_to 'Blazer', '/admin/blazer' %></li>
               </ul>
             </li>
 
@@ -50,14 +50,6 @@
             <li><%= link_to 'Security Log', main_app.routes.url_helpers.admin_security_log_path %></li>
             <li><%= link_to "OAuth Apps", main_app.routes.url_helpers.oauth_applications_path %></li>
             <li><%= link_to "API Docs", main_app.routes.url_helpers.apipie_apipie_path(:version => 'v1') %></li>
-
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Banners<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><%= link_to 'See active', main_app.routes.url_helpers.admin_banners_path %></li>
-                <li><%= link_to 'Create new', main_app.routes.url_helpers.new_admin_banner_path %></li>
-              </ul>
-            </li>
 
             <li><%= link_to 'Terms', main_app.routes.url_helpers.fine_print_path %></li>
 

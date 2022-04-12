@@ -27,7 +27,7 @@ class CreateEmailForUser
 
     email.customize_value_error_message(
       error: :missing_mx_records,
-      message: I18n.t(:"login_signup_form.invalid_email_provider", email: @email.value)
+      message: I18n.t(:"login_signup_form.invalid_email_provider", email: email)
     )
 
     email.save
@@ -44,9 +44,6 @@ class CreateEmailForUser
 
     outputs.email = email
 
-    # Ensure we get updated contact_infos if we try to use them
-    user.contact_infos.reset
-    user.email_addresses.reset
   end
 
 end
