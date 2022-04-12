@@ -1,263 +1,39 @@
-$font-path: '/accounts/fonts';
-@import "bootstrap-editable";
-@import "pattern-library/elements/menus";
-
-.main-menu {
-    box-shadow: none;
-    height: 2rem;
-    margin: 2rem 0 0 2rem;
-
-    .logo-wrapper {
-        padding: 0;
-
-         @include width-up-to($phone-max) {
-            margin: auto;
-        }
-    }
+body {
+  background: none;
 }
 
-#profile .ox-card {
-  .alert { margin: 10px; }
+#application-header {
+  display: none;
+}
 
-  .profile-title {
-    position: relative;
+a, .editable-click, #enable-other-sign-in, a.sign-out, #add-an-email, .resend-confirmation input[type=submit] {
+  color: #027eb5 !important;
+}
 
-    .sign-out {
-      position: absolute;
-      right: 0px;
-    }
-  }
+.ox-card {
+  background-color: #fff;
+  border: 0.1rem solid #d5d5d5;
+}
 
-  .col-sm-2 {
-    padding: 0;
-  }
+#profile .ox-card .category {
+  color: var(--greyish-brown);
+}
 
-  > .row {
-    margin-bottom: 40px;
-  }
+#application-footer--copyright a {
+  font-size: 10px;
+  color: #000 !important;
+}
 
-  .row.name {
-    margin-top: 20px;
-  }
+#footer-rice-logo-image {
+  max-height: 3.7rem;
+  margin-bottom: 1.2rem;
+}
 
-  .category {
-    text-align: right;
-    font-weight: bold;
-    color: lighten($os_gray, 30%);
+.ox-card {
+  height: 90rem;
+}
 
-    @media(max-width: 767px) {
-      text-align: left;
-      margin-bottom: 15px;
-      color: $os_gray;
-
-      br.wide {
-        display: none;
-      }
-    }
-  }
-
-  .info {
-    @media(max-width: 767px) {
-      margin-left: 15px;
-    }
-  }
-
-  .info .mod-holder {
-    width: 45px;
-    display: inline-block;
-    margin-left:15px;
-  }
-
-  .info .mod {
-    color: #aaa;
-    display: inline;
-    padding-right: 5px;
-  }
-
-  .mod {
-    color: gray;
-    cursor: pointer;
-    &:hover {
-      color: black;
-    }
-  }
-
-  .dim {
-    color: lighten(black, 60%);
-  }
-
-  .authentication {
-    margin-bottom: 6px;
-    .name {
-      width: 80px;
-      display: inline-block;
-    }
-    .fa-stack {
-      left: -3px;
-    }
-  }
-
-  .email-entry {
-    &:first-child {
-      .alert { margin-top: 0; }
-    }
-    .email,
-    .unconfirmed-warning .msg {
-      color: $os_link_color;
-      text-decoration: underline;
-      cursor: pointer;
-      &:hover {
-        text-decoration: none;
-      }
-    }
-    .unconfirmed-warning .msg { margin: 0 0.5rem; }
-    &.verified {
-      .unconfirmed-warning { display: none; }
-      .resend-confirmation { display: none; }
-    }
-    .alert {
-      margin-left: 0px;
-      margin-right: 0px;
-    }
-    margin-bottom: 8px;
-    position: relative;
-    .spinner {
-      position: absolute;
-      left: -20px;
-      top: 15px;
-    }
-    .controls {
-      display: none;
-      overflow: hidden;
-      margin-left: 20px;
-      margin-top: 4px;
-      font-size: 13px;
-      div {
-        margin-top: 4px;
-      }
-      .searchable-toggle {
-        label { font-weight: normal; }
-      }
-      input[type='checkbox'] {
-        margin-left: 6px;
-        margin-right: 4px;
-      }
-      .delete {
-        margin-left: 6px;
-        a {
-          font-size: 13px;
-          margin-left: 8px;
-        }
-      }
-    }
-    &.expanded {
-      .controls {
-        display: block;
-      }
-    }
-
-    .resend-confirmation {
-      margin-left: 7px;
-
-      form {
-        display: inline;
-        div { display: inline; }
-      }
-
-      input {
-        color: $os_link_color;
-        padding: 0;
-        font-size: 13px;
-        display: inline;
-        border: 0;
-        background: transparent;
-        height: 20px;
-        margin-left: 3px;
-      }
-
-      input[type=submit] {
-        line-height: unset;
-      }
-    }
-    &.new {
-      .editable-click { border-bottom: 0; }
-      .resend-confirmation, .unconfirmed-warning, .controls { display: none; }
-    }
-  }
-
-  #add-an-email {
-    margin-top: 10px;
-    display: block;
-  }
-
-
-  .editable-input {
-    > div:first-child {
-      input { margin-top: 0; }
-    }
-    > input:first-child{  margin-top: 0; }
-  }
-
-  .authentication {
-    .mod-holder {
-      > span { margin-left: 8px; }
-      .edit { display: none; }
-      .edit--newflow { display: none; }
-    }
-
-    &[data-provider=identity] {
-      &.editing {
-        display: flex !important; // override 'block' display set by $.show()
-        .mod-holder { display: none; }
-        @media(max-width: 450px) {
-          .icon{ display: none; }
-        }
-
-      }
-      .editable-input {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-      }
-      .form-group > div {
-        display: flex;
-        flex-direction: row;
-      }
-      .editable-buttons {
-        display: inline;
-      }
-
-      .mod-holder {
-        .edit   { display: inline; }
-        .edit--newflow   { display: inline; }
-      }
-    }
-  }
-
-  .enabled-providers {
-    .mod-holder .add { display: none; }
-    .mod-holder .add--newflow { display: none; }
-    .authentication {
-      &:only-child {
-        .mod-holder .delete { display: none; }
-        .mod-holder .delete--newflow { display: none; }
-      }
-    }
-  }
-
-  .other-sign-in {
-    .authentication {
-      .mod-holder {
-        .edit   { display: none; }
-        .edit--newflow   { display: none; }
-        .delete { display: none; }
-        .delete--newflow { display: none; }
-      }
-    }
-  }
-
-  .row.other-sign-in {
-    display: none;
-  }
-
+.btn-primary {
+  background-color: #f36b32;
+  border: 0;
 }

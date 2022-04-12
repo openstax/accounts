@@ -1,4 +1,4 @@
-class TermsController < BaseController
+class TermsController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   before_action :get_contract, only: [:show]

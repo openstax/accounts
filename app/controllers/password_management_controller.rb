@@ -1,4 +1,4 @@
-class PasswordManagementController < BaseController
+class PasswordManagementController < ApplicationController
   include LoginSignupHelper
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [

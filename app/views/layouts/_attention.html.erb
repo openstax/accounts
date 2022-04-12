@@ -4,3 +4,15 @@
   <%= alert_tag(errors[:alerts])   %>
   <%= notice_tag(errors[:notices]) %>
 </div>
+
+<% if flash[:alert].present? %>
+  <div class="layout-alert">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<% if flash[:notice].present? %>
+  <div class="layout-notice">
+    <%= flash[:notice].html_safe %>
+  </div>
+<% end %>

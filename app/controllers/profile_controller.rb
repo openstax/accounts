@@ -1,10 +1,11 @@
-class ProfileController < BaseController
+class ProfileController < ApplicationController
 
-  before_action :authenticate_user!, only: :profile
+  skip_before_action :authenticate_user!, only: :profile
   before_action :ensure_complete_educator_signup, only: :profile
   before_action :prevent_caching, only: :profile
 
   def profile
+    render layout: 'application'
   end
 
   def exit_accounts

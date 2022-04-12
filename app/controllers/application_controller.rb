@@ -1,13 +1,11 @@
 class ApplicationController < ActionController::Base
 
-  include AuthenticateMethods
+  include ApplicationHelper
 
   layout 'application'
 
-  before_action :authenticate_user!
-  before_action :complete_signup_profile
-
-  fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
+  before_action :authenticate_user!, only: :profile
+  before_action :ensure_complete_educator_signup, only: :profile
 
   def disable_fine_print
     request.options? ||
@@ -29,7 +27,27 @@ class ApplicationController < ActionController::Base
 
   respond_to :html
 
-  protected #################
+  protected
+
+  def decorated_user
+    EducatorSignupFlowDecorator.new(current_user, action_name)
+  end
+
+  def restart_signup_if_missing_verified_user
+    redirect_to signup_path unless unverified_user.present?
+  end
+
+  def ensure_complete_educator_signup
+    return if current_user.student?
+
+    if decorated_user.newflow_edu_incomplete_step_3?
+      security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification. Redirecting.')
+      redirect_to(educator_sheerid_form_path)
+    elsif decorated_user.newflow_edu_incomplete_step_4?
+      security_log(:educator_resumed_signup_flow, message: 'User needs to complete instructor profile. Redirecting.')
+      redirect_to(educator_profile_form_path)
+    end
+  end
 
   def allow_iframe_access
     @iframe_parent = params[:parent]

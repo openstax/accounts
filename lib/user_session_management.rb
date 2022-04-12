@@ -39,8 +39,6 @@ module UserSessionManagement
   end
 
   def sign_in!(user, security_log_data: {})
-    clear_login_state
-
     @current_user = user || AnonymousUser.instance
 
     if @current_user.is_anonymous?
@@ -69,7 +67,7 @@ module UserSessionManagement
   end
 
   def signed_in?
-    !current_user.is_anonymous?
+    !@current_user.is_anonymous?
   end
 
   def set_login_state(username_or_email: nil, matching_user_ids: nil, names: nil, providers: nil)
