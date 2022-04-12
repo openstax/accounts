@@ -19,7 +19,7 @@ class LoginController < BaseController
 
         Sentry.configure_scope do |scope|
           scope.set_tags(user_role: user.role.humanize)
-          scope.set_user(id: 1)
+          scope.set_user(uuid: user.uuid)
         end
 
         if user.unverified?
@@ -49,7 +49,6 @@ class LoginController < BaseController
         code = @handler_result.errors.first.code
         case code
         when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
-          user = @handler_result.outputs.user
           security_log(:sign_in_failed, { reason: code, email: email })
         end
 

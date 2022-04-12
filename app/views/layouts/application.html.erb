@@ -23,7 +23,7 @@
 
   <%= yield :head if content_for?(:head) %>
 
-  <% if !Rails.env.test? %>
+  <% if Rails.env.production? %>
     <script src="https://cdn.optimizely.com/js/1345615444.js"></script>
   <% end %>
 

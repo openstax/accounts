@@ -30,7 +30,6 @@ class SessionsCreate
   uses_routine TransferAuthentications
   uses_routine TransferOmniauthData
   uses_routine ActivateUnclaimedUser
-  uses_routine TransferPreAuthState
 
   protected
 
@@ -107,7 +106,6 @@ class SessionsCreate
         status = :new_password_user  # TODO can this merge with new_social_user?
       else
         receiving_user = User.new
-        run(TransferOmniauthData, @data, receiving_user)
         status = :new_social_user
       end
     end

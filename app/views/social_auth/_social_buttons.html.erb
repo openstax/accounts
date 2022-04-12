@@ -16,7 +16,7 @@
   <div class="google-share-button">
     <%=
       link_to(
-        social_auth_path(:google, origin: :login_form),
+        social_auth_path(:google_oauth2, origin: :login_form),
         class: 'google btn',
         data:  { ga_category: 'Login', ga_action: 'Click', ga_label: 'Google' }
       ) do

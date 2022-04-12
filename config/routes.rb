@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  root to: 'signup#welcome'
+  root to: 'static_pages#home'
 
   match 'i/(*path)' => redirect { |_,request| "/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
 

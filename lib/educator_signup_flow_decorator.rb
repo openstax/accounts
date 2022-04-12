@@ -10,31 +10,31 @@ class EducatorSignupFlowDecorator
   end
 
   def newflow_edu_incomplete_step_3?
-    if user.is_sheerid_unviable?
+    if @user.is_sheerid_unviable?
       false
-    elsif user.sheerid_verification_id.blank? && user.pending_faculty? && !user.is_educator_pending_cs_verification
+    elsif @user.sheerid_verification_id.blank? && @user.pending_faculty? && !@user.is_educator_pending_cs_verification
       true
     end
   end
 
   def newflow_edu_incomplete_step_4?
-    true unless user.is_profile_complete?
+    true unless @user.is_profile_complete?
   end
 
   def can_do?(action)
-    return false if user.student?
+    return false if @user.student?
 
     case action
     when 'redirect_back_upon_login'
-      user.is_profile_complete?
+      @user.is_profile_complete?
     when 'educator_sheerid_form'
-      (user.no_faculty_info? || user.pending_faculty? || user.incomplete_signup?) && user.sheerid_verification_id.blank?
+      (@user.no_faculty_info? || @user.pending_faculty? || @user.incomplete_signup?) && @user.sheerid_verification_id.blank?
     when 'educator_signup_form'
-      user.is_anonymous?
+      @user.is_anonymous?
     when 'educator_signup'
-      user.is_anonymous?
+      @user.is_anonymous?
     when 'educator_email_verification_form'
-      user.is_anonymous?
+      @user.is_anonymous?
     else
       true
     end

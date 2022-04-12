@@ -52,7 +52,16 @@ feature 'Require recent log in to change authentications', js: true do
         find('.authentication[data-provider="identity"] .edit--newflow').click
 
         expect(page.current_path).to eq(reauthenticate_form_path)
-        newflow_reauthenticate_user(email_value, 'password')
+
+        wait_for_animations
+        wait_for_ajax
+        expect(page.current_path).to eq(reauthenticate_form_path)
+        expect(find('#login_form_email').value).to eq(email_value)
+        fill_in('login_form_password', with: 'password')
+        screenshot!
+        find('[type=submit]').click
+        wait_for_animations
+
         screenshot!
         expect(page.current_path).to eq(change_password_form_path)
         fill_in('change_password_form_password', with: 'newpassword')
@@ -111,7 +120,7 @@ feature 'Require recent log in to change authentications', js: true do
       expect(page).to have_no_missing_translations
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
         visit '/profile'
-        expect_newflow_profile_page
+        expect_profile_page
         expect(page).to have_content('Twitter')
         screenshot!
 
@@ -120,8 +129,16 @@ feature 'Require recent log in to change authentications', js: true do
         click_button 'OK'
         screenshot!
 
-        newflow_reauthenticate_user(email_value, 'password')
-        expect_newflow_profile_page
+        wait_for_animations
+        wait_for_ajax
+        expect(page.current_path).to eq(reauthenticate_form_path)
+        expect(find('#login_form_email').value).to eq(email_value) # email should be pre-populated
+        fill_in('login_form_password', with: 'password')
+        screenshot!
+        find('[type=submit]').click
+        wait_for_animations
+
+        expect_profile_page
         screenshot!
 
         find('.authentication[data-provider="twitter"] .delete--newflow').click

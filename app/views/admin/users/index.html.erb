@@ -26,7 +26,7 @@
 
 <% if @handler_result %>
 
-<%= render partial: 'new_search_pagination' %>
+<%= render partial: 'search_pagination' %>
 
 <table id="search-results-list">
 
@@ -142,6 +142,12 @@
             <span class="uuid">
               <i>UUID:</i> <%= user.uuid %>
             </span>
+
+            <% if user.self_reported_school.present? %>
+              | <span class="school">
+                <i>Self-reported school:</i> <%= user.self_reported_school %>
+              </span>
+            <% end %>
 
             <% if user.self_reported_school.present? %>
               | <span class="school">
