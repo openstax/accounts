@@ -86,9 +86,16 @@ feature "User can't sign in", js: true do
       authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
 
       arrive_from_app
-      newflow_click_sign_up(role: 'student')
-      newflow_complete_student_signup_with_whatever
-
+      click_on (t :"login_signup_form.sign_up") unless page.current_path == signup_path
+      expect(page).to have_no_missing_translations
+      expect(page).to have_content(t :"login_signup_form.welcome_page_header")
+      find(".join-as__role.student").click
+      fill_in('signup_email', with: Faker::Internet.free_email) if email
+      fill_in('signup_password', with: Faker::Internet.password(min_length: 8)) if password
+      fill_in('signup_first_name', with: Faker::Name.first_name) if first_name
+      fill_in('signup_last_name', with: password) if Faker::Name.last_name
+      check('signup_newsletter') if newsletter
+      check('signup_terms_accepted')
 
       with_omniauth_test_mode(uid: authentication.uid) do
         # Found link from back button or some other shenanigans

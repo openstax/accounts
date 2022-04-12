@@ -2,8 +2,7 @@ require 'rails_helper'
 
 feature 'Confirm email address', js: true do
   background do
-    user = create_user 'user'
-    create_email_address_for user, 'user@example.com', '1111'
+    @user = create_user Faker::Internet.email
   end
 
   scenario 'successfully' do
@@ -32,7 +31,7 @@ feature 'Confirm email address', js: true do
   context 'when another user has the email' do
     scenario 'cannot create duplicate email' do
       expect {
-        create_email_address_for(create_user('other_user'), 'user@example.com', '989188')
+        create_email_address_for(create_user @user.email)
       }.to raise_error(ActiveRecord::RecordInvalid, /already been taken/)
     end
   end

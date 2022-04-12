@@ -53,9 +53,7 @@ feature 'Educator signup flow', js: true do
         expect_sheerid_iframe
 
         # Step 4
-        expect_educator_step_4_page
-        select_educator_role('other')
-        #byebug
+        find("#signup_educator_specific_role_other").click
         fill_in('Other (please specify)', with: 'President')
         find('[type="submit"]').click
         # not sure what's happening here - test is getting a 500, can't produce locally.. going to check it out on dev
@@ -69,7 +67,7 @@ feature 'Educator signup flow', js: true do
       it 'all works' do
         visit(login_path(return_param))
         click_on(I18n.t(:"login_signup_form.sign_up"))
-        expect(page.current_path).to eq(newflow_signup_path)
+        expect(page.current_path).to eq(signup_path)
         click_on(I18n.t(:"login_signup_form.educator"))
 
         # Step 1
@@ -139,7 +137,7 @@ feature 'Educator signup flow', js: true do
 
     let(:user) do
       FactoryBot.create(
-        :user, is_newflow: true, role: User::INSTRUCTOR_ROLE,
+        :user, role: User::INSTRUCTOR_ROLE,
         is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
       )
     end
@@ -147,8 +145,7 @@ feature 'Educator signup flow', js: true do
     context 'step 4' do
       before do
         visit(educator_profile_form_path)
-        expect_educator_step_4_page
-        select_educator_role('instructor')
+        find("#signup_educator_specific_role_instructor").click
         find('#signup_who_chooses_books_instructor').click
         fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
       end
@@ -232,7 +229,7 @@ feature 'Educator signup flow', js: true do
 
       # Step 3
       expect_sheerid_iframe
-      simulate_step_3_instant_verification(User.last, sheerid_verification.verification_id)
+      EducatorSignup::VerifyEducator.call(user: User.last, verification_id: sheerid_verification.verification_id)
 
       # Step 4
       expect_educator_step_4_page
@@ -251,7 +248,7 @@ feature 'Educator signup flow', js: true do
     it 'redirects them to continue signup flow (step 4) after logging in'
   end
 
-    let!(:educator) { create_newflow_user(email_value, password) }
+    let!(:educator) { create_user(email_value, password) }
     let(:email_value) { 'user@openstax.org' }
     let(:password) { 'password' }
 

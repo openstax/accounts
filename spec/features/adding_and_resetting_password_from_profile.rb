@@ -90,7 +90,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     find('[type=submit]').click
     expect(page).to have_content(t(:"identities.#{type}_success.message"))
 
-    expect_newflow_profile_page
+    expect_profile_page
 
     click_link (t :"users.edit.sign_out")
     visit '/'
@@ -103,7 +103,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     # try logging in with the new password
     log_in_user('user', 'newpassword')
 
-    expect_newflow_profile_page
+    expect_profile_page
     expect(page).to have_no_missing_translations
     expect(page).to have_content(@user.full_name)
   end
