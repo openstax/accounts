@@ -2,7 +2,7 @@ class IdentitiesController < ApplicationController
 
   include RequireRecentSignin
 
-  skip_before_action :authenticate_user!, :check_if_password_expired, :complete_signup_profile,
+  skip_before_action :authenticate_user!, :complete_signup_profile,
                     only: [:reset, :send_reset, :add, :send_add]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
@@ -19,13 +19,13 @@ class IdentitiesController < ApplicationController
     set_password(kind: :add)
   end
 
-  def send_reset
-    send_password_email(kind: :reset)
-  end
-
-  def send_add
-    send_password_email(kind: :add)
-  end
+  # def send_reset
+  #   send_password_email(kind: :reset)
+  # end
+  #
+  # def send_add
+  #   send_password_email(kind: :add)
+  # end
 
   def continue
     redirect_back(fallback_location: profile_path)
