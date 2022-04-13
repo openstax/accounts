@@ -1,6 +1,3 @@
-# Copyright 2011-2016 Rice University. Licensed under the Affero General Public
-# License version 3 or later.  See the COPYRIGHT file for details.
-
 module Admin
   class BaseController < ApplicationController
 
@@ -12,11 +9,13 @@ module Admin
       skip_before_action :authenticate_user!
     else
       before_action :authenticate_admin!
-      before_action :log_out_inactive_admins
+      if Rails.application.secrets.environment_name == 'production'
+        before_action :log_out_inactive_admins
+      end
     end
 
     def log_out_inactive_admins
-      if current_user.is_administrator? && is_real_production_site?
+      if current_user.is_administrator?
         if session[:last_admin_activity].nil?
           # logged in as a normal user and then someone made normal user an admin
           # otherwise, should never be nil for admins who log in as an admin

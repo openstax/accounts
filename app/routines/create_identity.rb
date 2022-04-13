@@ -1,6 +1,4 @@
 # Creates an identity with the supplied parameters.
-#
-#
 class CreateIdentity
 
   lev_routine
