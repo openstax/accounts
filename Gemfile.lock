@@ -1,10 +1,4 @@
 GIT
-  remote: https://github.com/MissionCapital/cookiejar.git
-  revision: 68eecc8415338c6e9d636c4f7e4d2e13547e20a2
-  specs:
-    cookiejar (0.3.2)
-
-GIT
   remote: https://github.com/openstax/intl-tel-input-rails.git
   revision: 3a63a495822d90bc9ca93e9541ef252fd7a0b50b
   branch: master
@@ -240,14 +234,6 @@ GEM
       dry-equalizer (~> 0.2)
       dry-logic (~> 0.4.2)
       dry-types (~> 0.13.1)
-    em-http-request (1.1.7)
-      addressable (>= 2.3.4)
-      cookiejar (!= 0.3.1)
-      em-socksify (>= 0.3)
-      eventmachine (>= 1.0.3)
-      http_parser.rb (>= 0.6.0)
-    em-socksify (0.3.2)
-      eventmachine (>= 1.0.0.beta.4)
     em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
@@ -259,31 +245,38 @@ GEM
       actionmailer (>= 4.0, < 7)
       activesupport (>= 4.0, < 7)
     execjs (2.8.1)
-    factory_bot (5.0.2)
-      activesupport (>= 4.2.0)
-    factory_bot_rails (5.0.2)
-      factory_bot (~> 5.0.2)
-      railties (>= 4.2.0)
+    factory_bot (6.2.1)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.2.0)
+      factory_bot (~> 6.2.0)
+      railties (>= 5.0.0)
     faker (2.8.1)
       i18n (>= 1.6, < 1.8)
     fakeredis (0.6.0)
       redis (~> 3.2)
-    faraday (1.0.1)
+    faraday (1.8.0)
+      faraday-em_http (~> 1.0)
+      faraday-em_synchrony (~> 1.0)
+      faraday-excon (~> 1.1)
+      faraday-httpclient (~> 1.0.1)
+      faraday-net_http (~> 1.0)
+      faraday-net_http_persistent (~> 1.1)
+      faraday-patron (~> 1.0)
+      faraday-rack (~> 1.0)
       multipart-post (>= 1.2, < 3)
+      ruby2_keywords (>= 0.0.4)
+    faraday-em_http (1.0.0)
+    faraday-em_synchrony (1.0.0)
+    faraday-excon (1.1.0)
     faraday-http-cache (2.2.0)
       faraday (>= 0.8)
+    faraday-httpclient (1.0.1)
+    faraday-net_http (1.0.1)
+    faraday-net_http_persistent (1.2.0)
+    faraday-patron (1.0.0)
+    faraday-rack (1.0.0)
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
-    faye (0.8.9)
-      cookiejar (>= 0.3.0)
-      em-http-request (>= 0.3.0)
-      eventmachine (>= 0.12.0)
-      faye-websocket (>= 0.4.0)
-      rack (>= 1.0.0)
-      yajl-ruby (>= 1.0.0)
-    faye-websocket (0.11.1)
-      eventmachine (>= 0.12.0)
-      websocket-driver (>= 0.5.1)
     ffi (1.15.4)
     fine_print (5.0.0)
       action_interceptor
@@ -517,10 +510,10 @@ GEM
       bundler (>= 1.3.0)
       railties (= 5.2.4.4)
       sprockets-rails (>= 2.0.0)
-    rails-controller-testing (1.0.4)
-      actionpack (>= 5.0.1.x)
-      actionview (>= 5.0.1.x)
-      activesupport (>= 5.0.1.x)
+    rails-controller-testing (1.0.5)
+      actionpack (>= 5.0.1.rc1)
+      actionview (>= 5.0.1.rc1)
+      activesupport (>= 5.0.1.rc1)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
@@ -677,8 +670,8 @@ GEM
       concurrent-ruby
       faraday
     shellany (0.0.1)
-    shoulda-matchers (3.1.3)
-      activesupport (>= 4.0.0)
+    shoulda-matchers (5.1.0)
+      activesupport (>= 5.2.0)
     simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -741,7 +734,6 @@ GEM
     will_paginate (3.3.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yajl-ruby (1.4.2)
 
 PLATFORMS
   ruby
@@ -768,7 +760,6 @@ DEPENDENCIES
   chronic
   codecov
   coffee-rails (= 5.0.0)
-  cookiejar!
   database_cleaner
   db-query-matchers
   debase
@@ -778,14 +769,13 @@ DEPENDENCIES
   delayed_job_worker_pool
   doorkeeper
   dotenv-rails
-  dry-validation (= 0.12.3)
+  dry-validation
   error_page_assets
   factory_bot_rails
   faker
   fakeredis
-  faraday (~> 1.0.0)
-  faraday_middleware (~> 1.0.0)
-  faye (= 0.8.9)
+  faraday
+  faraday_middleware
   fine_print
   font-awesome-rails
   guard-livereload (~> 2.5)
@@ -830,11 +820,11 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd
   rails-i18n
-  rails-settings-cached (= 0.7.2)
+  rails-settings-cached
   rails-settings-ui
   redis-rails
   render_anywhere
-  representable (~> 3.0.0)
+  representable
   rspec-instafail
   rspec-rails
   rubocop
@@ -846,7 +836,7 @@ DEPENDENCIES
   selenium-webdriver (~> 4.0)
   sentry-rails
   sentry-ruby
-  shoulda-matchers (~> 3.1)
+  shoulda-matchers
   smarter_csv
   spring
   spring-commands-rspec

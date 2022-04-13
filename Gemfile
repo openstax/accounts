@@ -41,7 +41,6 @@ gem 'sassc-rails', '~> 2.1'
 gem 'coffee-rails', '5.0.0'
 
 # JavaScript asset compiler
-# 0.4.0 crashes during our build, fixed in 0.5.0 (upgrade when it's out)
 gem 'mini_racer'
 
 # JavaScript asset compressor
@@ -106,7 +105,7 @@ gem 'delayed_job_worker_pool'
 gem 'delayed_job_heartbeat_plugin'
 
 # JSON Api builder
-gem 'representable', '~> 3.0.0'
+gem 'representable'
 
 # Keyword search
 gem 'keyword_search', '~> 1.5.0'
@@ -149,8 +148,8 @@ gem 'whenever', require: false
 # Admin toggles
 gem 'rails-settings-ui'
 
-gem 'rails-settings-cached', '0.7.2'
-gem 'dry-validation', '0.12.3'
+gem 'rails-settings-cached'
+gem 'dry-validation'
 
 gem 'scout_apm'
 
@@ -177,10 +176,6 @@ gem 'oj_mimic_json'
 
 # CORS for local testing/dev
 gem 'rack-cors'
-
-# Salesforce streaming API
-gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
-gem 'faye', '0.8.9'
 
 # Business analytics
 gem 'blazer'
@@ -239,9 +234,9 @@ group :development, :test do
   # Lint RSpec files
   gem 'rubocop-rspec'
 
-  gem 'faraday', '~> 1.0.0'
+  gem 'faraday'
 
-  gem 'faraday_middleware', '~> 1.0.0'
+  gem 'faraday_middleware'
 end
 
 group :development do
@@ -259,7 +254,7 @@ end
 
 group :test do
   # RSpec matchers for convenience
-  gem 'shoulda-matchers', '~> 3.1'
+  gem 'shoulda-matchers'
 
   # Test database cleanup gem with multiple strategies
   gem 'database_cleaner'
