@@ -1,4 +1,4 @@
-class NewflowMailer < ApplicationMailer
+class SignupPasswordMailer < ApplicationMailer
   include Rails.application.routes.url_helpers
 
   def create_password_email(user:, email:)
