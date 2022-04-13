@@ -24,8 +24,8 @@ gem 'puma_worker_killer'
 # Knockout for embedded widgets
 gem 'knockoutjs-rails'
 
-# Using this branch in pattern library due to multiselect (until it's merged to master)
-gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840'
+# The official OpenStax pattern lib
+gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'master'
 
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
