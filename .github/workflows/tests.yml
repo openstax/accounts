@@ -38,10 +38,8 @@ jobs:
           bundler-cache: true
       - name: Test
         run: |
-          gem install bundler
-          bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
-          bundle exec rspec ./spec --fail-fast
+          bundle exec rspec --fail-fast
       - uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
