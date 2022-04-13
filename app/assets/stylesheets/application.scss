@@ -3,9 +3,9 @@
  * License version 3 or later.  See the COPYRIGHT file for details.
  */
 $font-path: '/accounts/fonts';
-@import "pattern-library";
 @import "pattern-library/headers";
 @import "font-awesome";
+@import "bootstrap";
 @import "common_colors";
 @import "intlTelInput";
 @import './profile';

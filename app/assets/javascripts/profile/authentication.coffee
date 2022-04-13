@@ -79,7 +79,7 @@ OX.Profile.Authentication = {
     $('#enable-other-sign-in').click (e) ->
       e.preventDefault()
       $(this).hide()
-      $('.row.other-sign-in').slideToggle()
+      $('.other-sign-in').slideToggle()
 
 
 }
