@@ -146,7 +146,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       expect(response.body_as_hash).to match(user_matcher(user_2, include_private_data: true))
     end
 
-    it 'should include contact infos' do
+    xit 'should include contact infos' do
       unconfirmed_email = CreateEmailForUser.call("unconfirmed@example.com", user_1).outputs.email
 
       confirmed_email = CreateEmailForUser.call("confirmed@example.com", user_2, already_verified: true).outputs.email

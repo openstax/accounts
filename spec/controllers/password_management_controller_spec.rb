@@ -17,7 +17,7 @@ RSpec.describe PasswordManagementController, type: :controller do
   describe 'POST #send_reset_password_email' do
     context 'success' do
         before do
-          create_newflow_user('user@openstax.org')
+          create_user('user@openstax.org')
           expect_any_instance_of(SendResetPasswordEmail).to receive(:call).once.and_call_original
         end
 
@@ -89,7 +89,7 @@ RSpec.describe PasswordManagementController, type: :controller do
 
     context 'with a valid token' do
       before do
-        user = create_newflow_user('user@openstax.org')
+        user = create_user('user@openstax.org')
         @token = generate_login_token_for_user(user)
       end
 
@@ -115,7 +115,7 @@ RSpec.describe PasswordManagementController, type: :controller do
       end
 
       let(:user) do
-        create_newflow_user('user@openstax.org')
+        create_user('user@openstax.org')
       end
 
       it 'logs in the user found by token or whateva' do
@@ -171,7 +171,7 @@ RSpec.describe PasswordManagementController, type: :controller do
     end
 
     let(:user) do
-      create_newflow_user('user@openstax.org', 'password')
+      create_user('user@openstax.org', 'password')
     end
 
     context 'success' do

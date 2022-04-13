@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe LoginController, type: :controller do
-  before { turn_on_educator_feature_flag }
 
   describe 'GET #login_form' do
     example 'success' do

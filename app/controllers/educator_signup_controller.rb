@@ -5,10 +5,10 @@ class EducatorSignupController < SignupController
   skip_forgery_protection(only: :sheerid_webhook)
 
   before_action(:prevent_caching, only: :sheerid_webhook)
-  before_action(:exit_signup_if_logged_in, only: :educator_signup)
+  before_action(:exit_signup_if_logged_in, only: :signup_form)
   before_action(:restart_signup_if_missing_verified_user, only: %i[
       educator_change_signup_email_form
-      educator_change_signup_email
+      educator_change_signup_email_post
       educator_email_verification_form
       educator_email_verification_form_updated_email
       educator_verify_email_by_pin
@@ -23,8 +23,8 @@ class EducatorSignupController < SignupController
       educator_cs_verification_request
     ]
   )
-  before_action(:store_if_sheerid_is_unviable_for_user, only: :educator_profile_form)
-  before_action(:store_sheerid_verification_for_user, only: :educator_profile_form)
+  before_action(:store_if_sheerid_is_unviable_for_user, only: :signup_post)
+  before_action(:store_sheerid_verification_for_user, only: :signup_post)
   before_action(:exit_signup_if_steps_complete, only: %i[
       educator_sheerid_form
       educator_profile_form
@@ -32,7 +32,11 @@ class EducatorSignupController < SignupController
     ]
   )
 
-  def educator_signup
+  def signup_form
+      render :signup_form
+  end
+
+  def signup_post
     handle_with(
       EducatorSignup::SignupForm,
       contracts_required: !contracts_not_required,
@@ -46,42 +50,49 @@ class EducatorSignupController < SignupController
       },
       failure: lambda {
         security_log(:educator_sign_up_failed, { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
-        render :educator_signup_form
+        render :signup_form
       }
     )
   end
 
-  def educator_change_signup_email_form
+  def change_signup_email_form
     @email = unverified_user.email_addresses.first.value
     @total_steps = 4
+    render(:change_signup_email_form)
   end
 
-  def educator_change_signup_email
+  def change_signup_email_post
     handle_with(
       ChangeSignupEmail,
       user: unverified_user,
       success: lambda {
-        redirect_to(educator_email_verification_form_updated_email_path)
+        redirect_to(educator_change_signup_email_post_url)
       },
       failure: lambda {
         @email = unverified_user.email_addresses.first.value
-        render(:educator_change_signup_email_form)
+        render(:change_signup_email_form)
       }
     )
   end
 
-  def educator_email_verification_form
+  def email_verification_form
     @total_steps = 4
     @first_name = unverified_user.first_name
     @email = unverified_user.email_addresses.first.value
+    render(:email_verification_form)
   end
 
-  def educator_email_verification_form_updated_email
+  def email_verification_updated_email_form
     @total_steps = 4
     @email = unverified_user.email_addresses.first.value
+    render(:email_verification_updated_email_form)
   end
 
-  def educator_verify_email_by_pin
+  def verify_email_by_pin_form
+    render(:email_verification_form)
+  end
+
+  def verify_email_by_pin_post
     handle_with(
       EducatorSignup::VerifyEmailByPin,
       email_address: unverified_user.email_addresses.first,
@@ -97,12 +108,12 @@ class EducatorSignupController < SignupController
         @first_name = unverified_user.first_name
         @email = unverified_user.email_addresses.first.value
         security_log(:educator_verify_email_failed, email: @email)
-        render(:educator_email_verification_form)
+        render(:email_verification_form)
       }
     )
   end
 
-  def educator_sheerid_form
+  def sheerid_form
     @sheerid_url = generate_sheer_id_url(user: current_user)
     security_log(:user_viewed_sheerid_form, user: current_user)
   end
@@ -131,12 +142,12 @@ class EducatorSignupController < SignupController
     )
   end
 
-  def educator_profile_form
+  def profile_form
     @book_titles = book_data.titles
     security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
   end
 
-  def educator_complete_profile
+  def profile_form_post
     handle_with(
       EducatorSignup::CompleteProfile,
       user: current_user,
@@ -146,7 +157,7 @@ class EducatorSignupController < SignupController
         clear_incomplete_educator
 
         if user.is_educator_pending_cs_verification?
-          redirect_to(educator_pending_cs_verification_path)
+          redirect_to(educator_pending_cs_verification_form_path)
         else
           redirect_to(signup_done_path)
         end
@@ -154,18 +165,18 @@ class EducatorSignupController < SignupController
       failure: lambda {
         @book_titles = book_data.titles
         security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
-        if @handler_result.outputs.is_on_cs_form
-          redirect_to(educator_cs_verification_form_url, alert: "Please check your input and try again. Email address and School Name are required fields.")
-        else
-          render :educator_profile_form
-        end
+        render :profile_form
       }
     )
   end
 
-  def educator_pending_cs_verification
+  def pending_cs_verification_form
     security_log(:user_sent_to_cs_for_review, user: current_user)
     @email_address = current_user.email_addresses.last&.value
+    redirect_to(educator_profile_form_path)
+  end
+
+  def pending_cs_verification
   end
 
   private #################
@@ -181,14 +192,12 @@ class EducatorSignupController < SignupController
     case true
     when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
       redirect_to(educator_pending_cs_verification_path)
-    when current_user.is_educator_pending_cs_verification && !current_user.pending_faculty?
-      redirect_back(fallback_location: profile_path)
-    when action_name == 'educator_sheerid_form' && current_user.step_3_complete?
+    when action_name == 'sheerid_form' && current_user.step_3_complete?
       redirect_to(educator_profile_form_path)
-    when action_name == 'educator_profile_form' && current_user.is_profile_complete?
+    when action_name == 'profile_form' && current_user.is_profile_complete?
       redirect_to(profile_path)
     else
-      redirect_to(profile_path)
+      warn('unexpected step in educator_signup/exit_signup_if_steps_complete')
     end
   end
 

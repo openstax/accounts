@@ -43,29 +43,27 @@ Rails.application.routes.draw do
 
   scope controller: 'educator_signup' do
     # Step 1
-    get 'signup/educator', action: :educator_signup, as: :educator_signup_form
-    post 'signup/educator', action: :educator_signup, as: :educator_signup_post
-    get 'signup/educator/change_signup_email_form', action: :educator_change_signup_email_form, as: :educator_change_signup_email_form
-    post 'signup/educator/change_signup_email', action: :educator_change_signup_email, as: :educator_change_signup_email
+    get 'signup/educator', action: :signup_form, as: :educator_signup_form
+    post 'signup/educator', action: :signup_post, as: :educator_signup_post
+    get 'signup/educator/change_signup_email', action: :change_signup_email_form, as: :educator_change_signup_email_form
+    post 'signup/educator/change_signup_email', action: :change_signup_email_post, as: :educator_change_signup_email_post
 
     # Step 2
-    get 'signup/educator/email_verification_form', action: :educator_email_verification_form, as: :educator_email_verification_form
-    get 'signup/educator/email_verification_form_updated_email',
-      action: :educator_email_verification_form_updated_email,
-      as: :educator_email_verification_form_updated_email
-    post 'signup/educator/verify_email_by_pin', action: :educator_verify_email_by_pin, as: :educator_verify_pin
+    get 'signup/educator/email_verification_form', action: :email_verification_form, as: :educator_email_verification_form
+    get 'signup/educator/email_verification_form_updated_email', action: :email_verification_updated_email_form, as: :email_verification_updated_email_post
+    post 'signup/educator/verify_email_by_pin', action: :verify_email_by_pin_post, as: :educator_verify_pin_post
 
     # Step 3
-    get 'signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
-    post 'sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
+    get 'signup/educator/apply', action: :sheerid_form, as: :educator_sheerid_form
+    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     # Step 4
-    get 'signup/educator/profile_form', action: :educator_profile_form, as: :educator_profile_form
-    post 'signup/educator/complete_profile', action: :educator_complete_profile, as: :educator_complete_profile
-    get 'signup/educator/pending_cs_verification', action: :educator_pending_cs_verification, as: :educator_pending_cs_verification
+    get 'signup/educator/profile_form', action: :profile_form, as: :educator_profile_form
+    post 'signup/educator/complete_profile', action: :profile_form_post, as: :educator_complete_profile_post
+    get 'signup/educator/pending_cs_verification', action: :pending_cs_verification, as: :educator_pending_cs_verification_form
 
-    get 'signup/educator/cs_form', action: :educator_profile_form, as: :educator_cs_verification_form
-    post 'signup/educator/cs_verification_request', action: :educator_complete_profile, as: :educator_cs_verification_request
+    get 'signup/educator/cs_form', action: :pending_cs_verification_form, as: :educator_cs_verification_form
+    post 'signup/educator/cs_verification_request', action: :profile_form_post, as: :educator_cs_verification_post
   end
 
   scope controller: 'password_management' do
@@ -176,26 +174,26 @@ Rails.application.routes.draw do
       end
     end
 
-    # resources :application_groups, only: [] do
-    #   collection do
-    #     get 'updates'
-    #     put 'updated'
-    #   end
-    # end
+    resources :application_groups, only: [] do
+      collection do
+        get 'updates'
+        put 'updated'
+      end
+    end
 
-    # resources :groups, only: [:index, :show, :create, :update, :destroy] do
-    #   post '/members/:user_id', to: 'group_members#create'
-    #   delete '/members/:user_id', to: 'group_members#destroy'
-    #
-    #   post '/owners/:user_id', to: 'group_owners#create'
-    #   delete '/owners/:user_id', to: 'group_owners#destroy'
-    #
-    #   post '/nestings/:member_group_id', to: 'group_nestings#create'
-    #   delete '/nestings/:member_group_id', to: 'group_nestings#destroy'
-    # end
-    #
-    # resources :group_members, only: [:index], path: 'memberships'
-    # resources :group_owners, only: [:index], path: 'ownerships'
+    resources :groups, only: [:index, :show, :create, :update, :destroy] do
+      post '/members/:user_id', to: 'group_members#create'
+      delete '/members/:user_id', to: 'group_members#destroy'
+
+      post '/owners/:user_id', to: 'group_owners#create'
+      delete '/owners/:user_id', to: 'group_owners#destroy'
+
+      post '/nestings/:member_group_id', to: 'group_nestings#create'
+      delete '/nestings/:member_group_id', to: 'group_nestings#destroy'
+    end
+
+    resources :group_members, only: [:index], path: 'memberships'
+    resources :group_owners, only: [:index], path: 'ownerships'
 
     # resources :contact_infos, only: [] do
     #   member do

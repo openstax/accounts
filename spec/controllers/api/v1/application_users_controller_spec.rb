@@ -54,39 +54,6 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
     end
   end
 
-  context "find by username" do
-    it "returns a single result when username matches" do
-      api_get :find_by_username, untrusted_application_token, params: { username: 'foo_bb' }
-      expect(response.code).to eq('200')
-      expected_response = {
-        id: bob_brown.application_users.first.id,
-        user: user_matcher(bob_brown, include_private_data: false),
-        unread_updates: 0
-      }
-      expect(response.body_as_hash).to match(expected_response)
-    end
-
-    it "responds with http status not found when not found" do
-      api_get :find_by_username, untrusted_application_token, params: { username: 'foo' }
-      expect(response).to have_http_status :not_found
-    end
-
-    it "responds with http status forbidden when called by anonymous" do
-      api_get :find_by_username, nil, params: { username: 'foo' }
-      expect(response).to have_http_status :forbidden
-    end
-
-    it "only finds users belonging to the requesting application" do
-      # bob_brown is not a member of the "trusted_application"
-      expect(bob_brown.application_users.where(application_id: trusted_application.id)).to be_empty
-      # therefore no results will be returned
-      api_get :find_by_username, trusted_application_token, params: {
-        username: bob_brown.username
-      }
-      expect(response).to have_http_status :not_found
-    end
-  end
-
   context "index" do
 
     it "returns a single result well" do
