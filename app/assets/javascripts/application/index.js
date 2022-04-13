@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require ./jquery_extensions
+//= require knockout
 //= require ./ko_extensions
 //= require bootstrap
 //= require ./ui
@@ -21,5 +22,5 @@
 //= require libphonenumber/utils
 //= require ./phone-number
 //= require ./remote-access-helpers
+//= require profile
 //= require_self
-

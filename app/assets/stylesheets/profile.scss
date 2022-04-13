@@ -1,5 +1,6 @@
-@import "pattern-library";
 @import "pattern-library/headers";
+@import "bootstrap-editable";
+@import "pattern-library/elements/menus";
 
 #profile .ox-card {
   border: thin solid ui-color(form-border);
@@ -33,6 +34,15 @@
     }
   }
 
+  .form-inline {
+    padding: 0;
+
+    input:not([type="checkbox"]):not([type="radio"]) {
+      font-size: inherit;
+      height: 5rem;
+    }
+  }
+
   .category {
     text-align: right;
     font-weight: bold;
@@ -59,5 +69,28 @@
 
   .other-sign-in {
     display: none;
+  }
+
+  .btn-primary {
+    background-color: os-color(orange);
+    border: 0;
+  }
+
+  .mod {
+    color: os-color(gray);
+    cursor: pointer;
+    &:hover {
+      color: black;
+    }
+
+    &.edit--newflow,
+    &.delete--newflow {
+      display: none;
+    }
+  }
+
+  .authentication .name {
+    display: inline-block;
+    width: 12rem;
   }
 }
