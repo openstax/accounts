@@ -151,7 +151,7 @@ gem 'scout_apm'
 gem 'openstax_healthcheck'
 
 # Allow Accounts routes to be accessed under an /accounts prefix (for use in CloudFront)
-gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "8298c40ec38f132fc23ea946b2b20e855fe73a49"
+gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "4a18c627c0c8b73038f626cb92a152bf61e9dc72"
 
 # JWE library used by the SSO cookie
 gem 'json-jwt'
@@ -163,7 +163,7 @@ gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rai
 gem 'http_accept_language'
 
 # Fast JSON parsing
-gem 'oj', '~> 3.7.12'
+gem 'oj'
 
 # Replace JSON with Oj
 gem 'oj_mimic_json'
