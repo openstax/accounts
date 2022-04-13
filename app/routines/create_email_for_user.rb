@@ -39,7 +39,7 @@ class CreateEmailForUser
         event_type: :email_added_to_user,
         event_data: { email: email }
       )
-      NewflowMailer.signup_email_confirmation(email_address: email).deliver_later
+      SignupPasswordMailer.signup_email_confirmation(email_address: email).deliver_later
     end
 
     outputs.email = email
