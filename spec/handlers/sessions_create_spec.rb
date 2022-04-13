@@ -1,10 +1,7 @@
 # coding: utf-8
 require 'rails_helper'
-require_relative 'sessions_create_shared_examples'
 
 RSpec.describe SessionsCreate, type: :handler do
-
-  include_examples 'sessions create shared examples'
 
   context "logged in" do
     let(:current_user) { FactoryBot.create :user }
@@ -21,10 +18,6 @@ RSpec.describe SessionsCreate, type: :handler do
         result = handle(request: MockOmniauthRequest.new("facebook", "blahuid", {}))
         expect(result.outputs.status).to eq :no_action
       end
-    end
-
-    context "not adding new authentication" do
-      include_examples 'sessions create shared examples'
     end
 
     context "adding new authentication to account" do

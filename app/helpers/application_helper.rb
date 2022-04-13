@@ -1,7 +1,6 @@
 module ApplicationHelper
 
-  include AuthenticateMethods
-  include UserSessionManagement
+  include AlertHelper
 
   def contact_us_link
     link_to(
@@ -15,6 +14,10 @@ module ApplicationHelper
         'ga-label': 'Contact Us'
       }
     ).html_safe
+  end
+
+  def logo_url
+    Rails.application.secrets.openstax_url
   end
 
   def extract_params(url)
@@ -46,6 +49,27 @@ module ApplicationHelper
     "$('##{options[:alerts_html_id]}').html('#{ j(render options[:alerts_partial]) }').trigger('#{options[:trigger]}');".html_safe
   end
 
+  def alert_tag(messages)
+    attention_tag(messages, :alert)
+  end
+
+  def notice_tag(messages)
+    attention_tag(messages, :notice)
+  end
+
+  def attention_tag(messages, type)
+    return if messages.blank? || messages.empty?
+    messages = [messages].flatten
+
+    alert_class = type == :alert ? "alert-danger" : "alert-info"
+
+    content_tag :div, class: "alert #{alert_class}", role: "alert" do
+      messages.size == 1 ?
+       messages.first.html_safe :
+        ("<ul>"+messages.collect{|a| "<li>#{a}</li>"}.join("")+"</ul>").html_safe
+    end
+  end
+
   def page_heading(heading_text, options={})
     options[:take_out_site_name] = true if options[:take_out_site_name].nil?
     options[:sub_heading_text] ||= ""
@@ -68,8 +92,63 @@ module ApplicationHelper
 
   end
 
-  def is_real_production_site?
-    Rails.application.secrets.environment_name == 'production'
+  def collect_errors
+    alert_messages = []
+    handler_errors.each do |error|
+      alert_messages.push error.translate
+    end
+
+    (request.env['errors'] || []).each do |error|
+      alert_messages.push error.translate
+    end
+
+    alert_messages.push(flash[:alert]) if flash[:alert]
+
+    notice_messages = []
+    notice_messages.push(flash[:notice]) if flash[:notice]
+
+    alert_messages.collect{|msg|
+      msg.gsub("contact support", mail_to("info@openstax.org", "contact support"))
+        .html_safe
+    }
+    errors = {}
+    errors[:alerts] = alert_messages if alert_messages.any?
+    errors[:notices] = notice_messages if notice_messages.any?
+    errors
+  end
+
+  def standard_field(options={})
+    %i{type form name}.each{ |key| raise IllegalArgument, "Must specify a :#{key}" if !options[key] }
+
+    options[:options] ||= {}
+    hide = options[:options].delete(:hide)
+
+    options[:options][:class] = "#{options[:options][:class]} form-control".strip
+    options[:options][:style] = [options[:options][:style]].compact.join('; ')
+
+    content_tag :div, class: 'form-group', style: "#{'display: none' if hide}" do
+      output = []
+      if options[:label]
+        output << content_tag(:label, for: "#{options[:form].object_name}_#{options[:name]}") do
+                    options[:label]
+                  end
+      end
+      output <<
+        case options[:type]
+        when :text_field
+          options[:form].text_field(options[:name], options[:options])
+        when :password_field
+          options[:form].password_field(options[:name], options[:options])
+        when :hidden_field
+          options[:form].hidden_field(options[:name], options[:options])
+        when :email_field
+          options[:form].email_field(options[:name], options[:options])
+        else
+          raise IllegalArgument, "Unknown field type #{options[:type]}"
+        end
+
+      output.reduce(:+)
+    end
   end
 
   def translate_error(code:, force: false)
@@ -84,22 +163,29 @@ module ApplicationHelper
     error.message = yield
   end
 
-  def profile_card(classes: "", heading: "", &block)
+  def ox_card(classes: "", heading: "", banners: nil, &block)
     @hide_layout_errors = true
 
     content_tag :div, class: "ox-card #{classes}" do
 
       danger_alerts = if flash[:alert].present?
         content_tag :div, class: "top-level-alerts danger" do
-          flash[:alert]
+          alert_tag(flash[:alert])
         end
       end
 
       info_alerts = if flash[:notice].present?
         content_tag :div, class: "top-level-alerts info" do
-          flash[:notice]
+          notice_tag(flash[:notice])
         end
       end
+
+      banners ||= []
+      banners_divs = banners.map do |banner|
+        content_tag :div, class: "top-level-alerts info" do
+          notice_tag(banner.message)
+        end
+      end.join("\n")
 
       heading_div = if heading.present?
         content_tag(:h1, class: "title") { heading }
@@ -107,7 +193,7 @@ module ApplicationHelper
 
       body = capture(&block)
 
-      "#{danger_alerts}\n#{info_alerts}\n#{heading_div}\n#{body}".html_safe
+      "#{danger_alerts}\n#{info_alerts}\n#{banners_divs}\n#{heading_div}\n#{body}".html_safe
     end
   end
 
@@ -115,7 +201,11 @@ module ApplicationHelper
     (@errors || []) + (@handler_result.try(:errors) || [])
   end
 
-  def login_signup_card(classes: "", header: "", current_step: nil, show_exit_icon: false, &block)
+   ###########
+  # NEW FLOW  #
+   ###########
+
+  def login_signup_card(classes: "", header: "", banners: nil, current_step: nil, show_exit_icon: false, &block)
     @hide_layout_errors = true
 
     content_tag :div, class: "#{classes}" do
@@ -153,4 +243,5 @@ module ApplicationHelper
   def current_users_resetting_password_email
     !current_user.is_anonymous? && EmailAddress.verified.where(user: current_user).first.try(:value)
   end
+
 end
