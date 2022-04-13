@@ -34,18 +34,10 @@ jobs:
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.7.5
-      - uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-pr-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-pr-
       - name: Test
         run: |
-          gem install bundler
-          bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
-          bundle exec rspec ./spec --fail-fast
+          bundle exec rspec --fail-fast
       - uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
