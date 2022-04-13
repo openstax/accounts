@@ -29,7 +29,6 @@ class SessionsCreate
 
   uses_routine TransferAuthentications
   uses_routine TransferOmniauthData
-  uses_routine ActivateUnclaimedUser
 
   protected
 
@@ -155,8 +154,10 @@ class SessionsCreate
 
   def sign_in!(user)
     if user.is_unclaimed?
-      run(ActivateUnclaimedUser, user)
+      user.state = 'activated'
+      user.save
     end
+
     @user_state.sign_in!(user)
   end
 
