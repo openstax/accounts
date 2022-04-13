@@ -5,7 +5,6 @@
 
 <% content_for :head do %>
   <%= javascript_include_tag  "profile" %>
-  <%= stylesheet_link_tag "profile" %>
 <% end %>
 
 <%= ox_card do %>
@@ -26,34 +25,30 @@
     <h1 class="title"><%= t(:"login_signup_form.profile_newflow_page_header") %></h1>
   </div>
 
-  <div class="row name">
-    <div class="col-sm-2 category">
+  <div class="info-grid">
+    <div class="category">
       <%= I18n.t(:"users.edit.name") %>
     </div>
-    <div class="col-sm-10 info">
+    <div class="info">
       <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></a>
     </div>
-  </div>
 
-  <% if current_user.username.present? %>
-  <div class="row">
-    <div class="col-sm-2 category">
-      <%= I18n.t(:"users.edit.username") %>
-    </div>
-    <div class="col-sm-10 info">
-      <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
-    </div>
-  </div>
-  <% end %>
+    <% if current_user.username.present? %>
+      <div class="category">
+        <%= I18n.t(:"users.edit.username") %>
+      </div>
+      <div class="info">
+        <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
+      </div>
+    <% end %>
 
-  <div class="row">
-    <div class="col-sm-2 category">
+    <div class="category">
       <%= t(:"users.edit.email_addresses") %>
     </div>
     <div id="email-template" style="display:none">
       <%= email_entry(value: "", id: "", is_verified: false, is_searchable: "") %>
     </div>
-    <div class="col-sm-10 info">
+    <div class="info">
       <% current_user.email_addresses.order(:created_at).each do |email| %>
         <%= email_entry(value: email.value, id: email.id, is_verified: email.verified, is_searchable: email.is_searchable) %>
       <% end %>
@@ -71,49 +66,44 @@
         )
       %>
     </div>
-  </div>
 
-  <%
-    all_providers = OmniauthData::VALID_PROVIDERS
-    # The `all providers &` enforces a standard sort order
-    current_providers = all_providers & current_user.authentications.collect(&:provider)
-    other_available_providers = all_providers - current_providers
-  %>
+    <%
+      all_providers = OmniauthData::VALID_PROVIDERS
+      # The `all providers &` enforces a standard sort order
+      current_providers = all_providers & current_user.authentications.collect(&:provider)
+      other_available_providers = all_providers - current_providers
+    %>
 
-  <div class="row enabled-providers">
-    <div class="col-sm-2 category">
+    <div class="category">
       <%= t(:"login_signup_form.how_you_log_in") %>
     </div>
-    <div class="col-sm-10 info providers">
+    <div class="info providers">
       <% current_providers.each do |provider| %>
         <%= way_to_login(provider: provider, has_authentication: true, current_providers: current_providers) %>
       <% end %>
+      <% if other_available_providers.any? %>
+          <%=
+            link_to(
+              I18n.t(:"student_profile.enable_other_sign_in_options"),
+              nil,
+              id: 'enable-other-sign-in'
+            )
+          %>
+      <% end %>
     </div>
-    <% if other_available_providers.any? %>
-      <div class="col-sm-offset-2 info col-sm-10">
-        <%=
-          link_to(
-            I18n.t(:"student_profile.enable_other_sign_in_options"),
-            nil,
-            id: 'enable-other-sign-in'
+
+    <%= render partial: 'other-sign-in', locals: {
+      other_html: I18n.t(:"student_profile.other_sign_in_options_html"),
+      other_providers_block:
+        other_available_providers.map{ |provider|
+          way_to_login(
+            provider: provider,
+            has_authentication: false,
+            current_providers: current_providers
           )
-        %>
-      </div>
-    <% end %>
-
+        }
+    } %>
   </div>
-
-  <%= render partial: 'other-sign-in', locals: {
-    other_html: I18n.t(:"student_profile.other_sign_in_options_html"),
-    other_providers_block:
-      other_available_providers.map{ |provider|
-        way_to_login(
-          provider: provider,
-          has_authentication: false,
-          current_providers: current_providers
-        )
-      }
-  } %>
 
 <% end %>
 

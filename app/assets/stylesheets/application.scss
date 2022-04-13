@@ -8,6 +8,7 @@ $font-path: '/accounts/fonts';
 @import "font-awesome";
 @import "common_colors";
 @import "intlTelInput";
+@import './profile';
 
 .btn-social {
   margin: 15px auto;
@@ -1015,4 +1016,3 @@ input.has-error {
     text-decoration: none;
   }
 }
-

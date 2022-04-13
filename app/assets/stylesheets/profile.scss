@@ -1,39 +1,63 @@
-body {
-  background: none;
-}
+@import "pattern-library";
+@import "pattern-library/headers";
 
-#application-header {
-  display: none;
-}
+#profile .ox-card {
+  border: thin solid ui-color(form-border);
+  box-sizing: border-box;
+  margin: auto;
+  max-width: 57rem;
+  padding: 3rem 5rem 5rem;
 
-a, .editable-click, #enable-other-sign-in, a.sign-out, #add-an-email, .resend-confirmation input[type=submit] {
-  color: #027eb5 !important;
-}
+  h1 {
+    @include body-font(1.8rem);
 
-.ox-card {
-  background-color: #fff;
-  border: 0.1rem solid #d5d5d5;
-}
+    font-weight: bold;
+    text-align: center;
+  }
 
-#profile .ox-card .category {
-  color: var(--greyish-brown);
-}
+  .info-grid {
+    display: grid;
+    color: text-color(normal);
+    gap: 4rem 2rem;
+    grid-template-columns: auto 1fr;
+    margin-top: 4rem;
+    width: 100%;
+  }
 
-#application-footer--copyright a {
-  font-size: 10px;
-  color: #000 !important;
-}
+  .profile-title {
+    position: relative;
 
-#footer-rice-logo-image {
-  max-height: 3.7rem;
-  margin-bottom: 1.2rem;
-}
+    .sign-out {
+      position: absolute;
+      right: 0px;
+    }
+  }
 
-.ox-card {
-  height: 90rem;
-}
+  .category {
+    text-align: right;
+    font-weight: bold;
 
-.btn-primary {
-  background-color: #f36b32;
-  border: 0;
+    @media(max-width: 767px) {
+      text-align: left;
+      margin-bottom: 15px;
+
+      br.wide {
+        display: none;
+      }
+    }
+  }
+
+  .info {
+    @media(max-width: 767px) {
+      margin-left: 15px;
+    }
+
+    .email + .controls {
+      display: none;
+    }
+  }
+
+  .other-sign-in {
+    display: none;
+  }
 }
