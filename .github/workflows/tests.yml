@@ -1,8 +1,8 @@
 name: Tests
 env:
-  OXA_DB_USER: accounts
-  OXA_DB_PASS: accounts
-  OXA_TEST_DB: ci_test
+  OXA_DB_USER: ox_accounts
+  OXA_DB_PASS: ox_accounts
+  OXA_TEST_DB: ox_accounts_test
   RAILS_ENV: test
   HEADLESS: true
   SSHOTS: true
@@ -38,8 +38,10 @@ jobs:
           bundler-cache: true
       - name: Test
         run: |
+          gem install bundler:2.3.5
+          bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           bundle exec rspec --fail-fast
-      - uses: codecov/codecov-action@v2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+#      - uses: codecov/codecov-action@v2
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}
