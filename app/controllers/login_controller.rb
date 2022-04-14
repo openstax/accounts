@@ -41,10 +41,29 @@ class LoginController < ApplicationController
 
         sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
+        # TODO : this is not fun logic code.. find a better solution - but at least you don't have to hunt files for it
         if current_user.student? || user.is_profile_complete?
           redirect_back(fallback_location: profile_path)
         else
-          redirect_to(decorated_user.next_step)
+          if current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
+            redirect_to educator_sheerid_form_path
+          elsif current_step == 'login' && (user.sheerid_verification_id.present? || user.is_sheerid_unviable?)
+            redirect_to educator_profile_form_path
+          elsif current_step == 'educator_sheerid_form'
+            if user.confirmed_faculty? || user.rejected_faculty? || user.sheerid_verification_id.present?
+              redirect_to educator_profile_form_path
+            end
+          elsif current_step == 'educator_signup_form' && !user.is_anonymous?
+            redirect_to educator_email_verification_form_path
+          elsif current_step == 'educator_email_verification_form' && user.activated?
+            if !user.student? && user.activated? && user.pending_faculty && user.sheerid_verification_id.blank?
+              redirect_to educator_sheerid_form_path
+            elsif user.activated?
+              redirect_to profile_path
+            end
+          else
+            raise("Next step (#{current_step}) uncaught in #{self.class.name}")
+          end
         end
       },
       failure: lambda {

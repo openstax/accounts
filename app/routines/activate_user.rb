@@ -12,25 +12,18 @@ class ActivateUser
   end
 
   def exec(user)
-    return if user.state == :activated
+    return if user.activated?
 
-    user.update!(state: :activated)
+    user.update!(state: User::ACTIVATED)
 
     # create a lead for the user if they are a student and want the newsletter
     # otherwise, the lead gets created at the end of the instructor profile
-    if user.role == 'student'
-      SecurityLog.create!(user: user, event_type: :student_verified_email)
-      user.update!(faculty_status: :no_faculty_info)
-      if user.receive_newsletter?
-        CreateSalesforceLead.perform_later(user_id: user.id)
-      end
-    else
-      # instructor, so they should be on their way to getting verified, set to pending
-      SecurityLog.create!(user: user, event_type: :educator_verified_email)
-      user.update!(faculty_status: :pending_faculty)
+    if user.role == :student && user.receive_newsletter?
+      CreateSalesforceLead.perform_later(user_id: user.id)
     end
 
-    transfer_errors_from(user, { type: :verbatim })
+    SecurityLog.create!(user: user, event_type: :user_became_activated)
   end
 
 end
+

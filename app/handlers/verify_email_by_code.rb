@@ -12,18 +12,11 @@ class VerifyEmailByCode
   end
 
   def handle
-    result = ConfirmByCode.call(params[:code])
-    if result.errors.any?
-      fatal_error(
-        code: :invalid_confirmation_code,
-        offending_inputs: [:code],
-        message: I18n.t(:"contact_infos.confirm.verification_code_not_found")
-      )
-    end
+    run(ConfirmByCode, params[:code])
+    user = outputs.contact_info.user
 
-    outputs.contact_info = result.outputs.contact_info
-    outputs.user = outputs.contact_info.user
+    run(ActivateUser, user)
 
-    run(ActivateUser, outputs.user)
+    outputs.user = user
   end
 end

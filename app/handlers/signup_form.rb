@@ -1,7 +1,5 @@
 class SignupForm
 
-  include EducatorSignupHelper
-
   lev_handler
 
   uses_routine AgreeToTerms
@@ -28,67 +26,63 @@ class SignupForm
     attribute :country_code, type: String
   end
 
-  def required_params
-    if signup_params.role == 'instructor'
-      [:role, :email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
-    else
-      # student
-      [:role, :email, :first_name, :last_name, :password].compact
-    end
-  end
-
   def authorized?
     true
-    # caller.is_needs_profile?
+    #caller.is_needs_profile?
   end
 
   def handle
     validate_presence_of_required_params
     return if errors?
 
-    signup_email  = signup_params.email.squish!
+    # this gets changed from 'educator' (for the url) to 'instructor' on the signup_form
+    # will be student otherwise
+    @selected_signup_role = signup_params.role.to_sym
+    signup_email = signup_params.email.squish!
+
     outputs.email = signup_email
 
     if LookupUsers.by_verified_email(signup_email).first
       fatal_error(
         code:             :email_taken,
-        message:          I18n.t(:'login_signup_form.email_address_taken'),
+        message:          I18n.t(:"login_signup_form.email_address_taken"),
         offending_inputs: :email
       )
     end
 
-    user = User.create(
-      state: :unverified,
-      role: signup_params.role,
-      faculty_status: :incomplete_signup, # signify email is unverified for user
-      first_name: signup_params.first_name,
-      last_name: signup_params.last_name,
-      phone_number: signup_params.phone_number,
-      receive_newsletter: signup_params.newsletter,
-      source_application: options[:client_app]
-    )
-    outputs.user = user
+    new_user = create_user
 
-    run(SetPassword,
-        user: user,
-        password: signup_params.password)
+    run(::SetPassword,
+        user:                  new_user,
+        password:              signup_params.password,
+        password_confirmation: signup_params.password
+    )
 
     # Agree to terms
     if options[:contracts_required]
-      run(AgreeToTerms, signup_params.contract_1_id, user, no_error_if_already_signed: true)
-      run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
+      run(AgreeToTerms, signup_params.contract_1_id, new_user, no_error_if_already_signed: true)
+      run(AgreeToTerms, signup_params.contract_2_id, new_user, no_error_if_already_signed: true)
     end
 
-    if options[:is_bri_book]
-      user.update!(is_b_r_i_user: true, title_1_school: signup_params.is_title_1_school)
+    if options[:is_BRI_book]
+      new_user.update!(is_b_r_i_user: true, title_1_school: signup_params.is_title_1_school)
     end
 
-    run(CreateEmailForUser, email: signup_email, user: user)
+    run(CreateEmailForUser, signup_email, new_user)
+
+    outputs.user = new_user
   end
 
   private
 
   def validate_presence_of_required_params
+
+    if @selected_signup_role == 'instructor'
+      required_params ||= [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
+    else
+      required_params ||= [:email, :first_name, :last_name, :password].compact
+    end
+
     required_params.each do |param|
       if signup_params.send(param).blank?
         missing_param_error(param)
@@ -105,4 +99,29 @@ class SignupForm
       offending_inputs: field
     )
   end
+
+  def create_user
+    if @selected_signup_role == 'student'
+      role = :student
+      faculty_status = :no_faculty_info
+    else
+      role = :instructor
+      faculty_status = :incomplete_signup
+    end
+
+    user = User.create(
+      state: :unverified,
+      role: role,
+      faculty_status: faculty_status,
+      first_name: signup_params.first_name,
+      last_name: signup_params.last_name,
+      phone_number: signup_params.phone_number,
+      receive_newsletter: signup_params.newsletter,
+      source_application: options[:client_app]
+    )
+    transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
+    user.save!
+    user
+  end
+
 end

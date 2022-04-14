@@ -1,0 +1,19 @@
+<p>Welcome!</p>
+
+<% if @should_show_pin %>
+  <p>Enter your 6-digit PIN in your browser to confirm your email address:</p>
+
+  <p>Your PIN: <b><%= @confirmation_pin %></b></p>
+
+  <p>If you have any trouble using this PIN, you can also click the link below to confirm your email address:</p>
+<% else %>
+  <p>Click on the link below to confirm your email address:</p>
+<% end %>
+
+<p><%= link_to @confirmation_url, @confirmation_url %></p>
+
+<p>We sent this message because someone is trying to use '<%= @email_value %>' to create an OpenStax account. If this
+  wasn't you, please disregard this message.</p>
+
+
+<%= render :partial => 'shared/email_closing' %>

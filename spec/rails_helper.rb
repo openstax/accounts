@@ -22,11 +22,6 @@ Rails.application.load_tasks unless defined?(Rake::Task) && Rake::Task.task_defi
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
-# Fail on missing translation in a spec.
-I18n.exception_handler = lambda do |exception, locale, key, options|
-  raise "Missing translation for #{key} in locale #{locale} with options #{options}"
-end
-
 """
   Config for Capybara
 """

@@ -11,8 +11,7 @@ RSpec.describe ContactInfoAccessPolicy do
 
   context 'read, create, destroy, set_searchable, resend_confirmation' do
     it 'cannot be accessed by applications or unauthorized users' do
-      [:read, :create, :update,
-       :set_searchable, :resend_confirmation].each do |act|
+      [:read, :create, :update].each do |act|
         expect(OSU::AccessPolicy.action_allowed?(act, app,
                                                  contact_info)).to eq false
         expect(OSU::AccessPolicy.action_allowed?(act, anon,
@@ -27,8 +26,7 @@ RSpec.describe ContactInfoAccessPolicy do
     end
 
     it "can be accessed by the contact info's owner" do
-      [:read, :create, :destroy,
-       :set_searchable, :resend_confirmation].each do |act|
+      [:read, :create, :destroy].each do |act|
         expect(OSU::AccessPolicy.action_allowed?(act, contact_info.user,
                                                  contact_info)).to eq true
       end

@@ -7,8 +7,8 @@ RSpec.describe User, type: :model do
   it { is_expected.to have_many :security_logs }
 
   it { is_expected.to validate_presence_of(:faculty_status) }
-  it { is_expected.to validate_presence_of(:role          ) }
-  it { is_expected.to validate_presence_of(:school_type   ) }
+  it { is_expected.to validate_presence_of(:role) }
+  it { is_expected.to validate_presence_of(:school_type) }
 
   it { is_expected.to validate_uniqueness_of(:uuid).case_insensitive }
 
@@ -215,11 +215,6 @@ RSpec.describe User, type: :model do
     expect(user.name).to eq('Dr User One Second')
   end
 
-  it 'returns the first name as casual name' do
-    user = FactoryBot.create :user, first_name: 'Nikola', last_name: 'Tesla'
-    expect(user.casual_name).to eq('Nikola')
-  end
-
 
   context "state" do
     it "defaults to unverified" do
@@ -296,11 +291,11 @@ RSpec.describe User, type: :model do
 
     before(:each) do
       Timecop.freeze(3.minutes.ago)  {
-        @email_a = AddEmailToUser['a@a.com', user]
+        @email_a = CreateEmailForUser['a@a.com', user]
       }
-      Timecop.freeze(0.minutes.ago)  { AddEmailToUser['b@b.com', user, already_verified: true] }
-      Timecop.freeze(-1.minutes.ago) { @email_c = AddEmailToUser['c@c.com', user] }
-      Timecop.freeze(-3.minutes.ago) { AddEmailToUser['d@d.com', user, already_verified: true] }
+      Timecop.freeze(0.minutes.ago)  { CreateEmailForUser['b@b.com', user, already_verified: true] }
+      Timecop.freeze(-1.minutes.ago) { @email_c = CreateEmailForUser['c@c.com', user] }
+      Timecop.freeze(-3.minutes.ago) { CreateEmailForUser['d@d.com', user, already_verified: true] }
     end
 
     context 'with no manually entered emails' do

@@ -1,64 +1,354 @@
+inherit_from: .rubocop_todo.yml
+
 #######################################################
-## This is intended to be a living document                                  ##
-##                                                                                                       ##
-## If anyone feels that things are too strict:                                  ##
-##                                                                                                       ##
-## Ask "Is the code clearer with or without the rule?"                 ##
-## Then find the rule online and read the rational for it               ##
-## If you still belive that the code is easier to read,                     ##
-## Disable it below, ALONG WITH A COMMENT SAYING WHY  ##
+## This is intended to be a living document
+##
+## If anyone feels that things are too strict:
+##
+## Ask "Is the code clearer with or without the rule?"
+## Then find the rule online and read the rational for it
+## If you still belive that the code is easier to read,
+## Disable it below, ALONG WITH A COMMENT SAYING WHY
 #######################################################
+
+require:
+  - rubocop-packaging
+  - rubocop-performance
+  - rubocop-rails
 
 AllCops:
-  Exclude:
-    - config/**/*.rb
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+  TargetRubyVersion: 2.7
 
-# modern dev screens are large
-Metrics/LineLength:
-  Max: 100
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*.rb
 
 # Too short methods lead to extraction of single-use methods, which can make
 # the code easier to read (by naming things), but can also clutter the class
 Metrics/MethodLength:
   Max: 20
 
-# will probably be the default in ruby 3, so don't bother adding
-Style/FrozenStringLiteralComment:
+##############
+#  Lints     #
+##############
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+Lint/RaiseException:
+  Enabled: true
+Lint/StructNewOverride:
+  Enabled: true
+Lint/BinaryOperatorWithIdenticalOperands:
+  Enabled: true
+Lint/ConstantDefinitionInBlock:
+  Enabled: true
+Lint/DuplicateElsifCondition:
+  Enabled: true
+Lint/DuplicateRequire:
+  Enabled: true
+Lint/DuplicateRescueException:
+  Enabled: true
+Lint/EmptyConditionalBody:
+  Enabled: true
+Lint/EmptyFile:
+  Enabled: true
+Lint/FloatComparison:
+  Enabled: true
+Lint/HashCompareByIdentity:
+  Enabled: true
+Lint/IdentityComparison:
+  Enabled: true
+Lint/MissingSuper:
+  Enabled: true
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+Lint/OutOfRangeRegexpRef:
+  Enabled: true
+Lint/RedundantSafeNavigation:
+  Enabled: true
+Lint/SelfAssignment:
+  Enabled: true
+Lint/TopLevelReturnWithArgument:
+  Enabled: true
+Lint/TrailingCommaInAttributeDeclaration:
+  Enabled: true
+Lint/AmbiguousAssignment:
+  Enabled: true
+Lint/AmbiguousRange:
+  Enabled: true
+Lint/DeprecatedConstants:
+  Enabled: true
+Lint/DuplicateBranch:
+  Enabled: true
+Lint/DuplicateRegexpCharacterClassElement:
+  Enabled: true
+Lint/EmptyBlock:
+  Enabled: true
+Lint/EmptyClass:
+  Enabled: true
+Lint/EmptyInPattern:
+  Enabled: true
+Lint/LambdaWithoutLiteralBlock:
+  Enabled: true
+Lint/NoReturnInBeginEndBlocks:
+  Enabled: true
+Lint/NumberedParameterAssignment:
+  Enabled: true
+Lint/OrAssignmentToConstant:
+  Enabled: true
+Lint/RedundantDirGlobSort:
+  Enabled: true
+Lint/SymbolConversion:
+  Enabled: true
+Lint/ToEnumArguments:
+  Enabled: true
+Lint/TripleQuotes:
+  Enabled: true
+Lint/UnexpectedBlockArity:
+  Enabled: true
+Lint/UnmodifiedReduceAccumulator:
+  Enabled: true
+Lint/AmbiguousOperatorPrecedence: # new in 1.21
+  Enabled: true
+Lint/IncompatibleIoSelectWithFiberScheduler: # new in 1.21
+  Enabled: true
+Lint/RefinementImportMethods: # new in 1.27
+  Enabled: true
+Lint/RequireRelativeSelfPath: # new in 1.22
+  Enabled: true
+Lint/UselessRuby2Keywords: # new in 1.23
+  Enabled: true
+
+################
+#  Performance #
+################
+Performance/BlockGivenWithExplicitBlock:
+  Enabled: true
+Performance/CollectionLiteralInLoop:
+  Enabled: true
+Performance/ConstantRegexp:
+  Enabled: true
+Performance/MethodObjectAsBlock:
+  Enabled: true
+Performance/RedundantEqualityComparisonBlock:
+  Enabled: true
+Performance/RedundantSortBlock:
+  Enabled: true
+Performance/RedundantSplitRegexpArgument:
+  Enabled: true
+Performance/RedundantStringChars:
+  Enabled: true
+Performance/ReverseFirst:
+  Enabled: true
+Performance/SortReverse:
+  Enabled: true
+Performance/Squeeze:
+  Enabled: true
+Performance/StringInclude:
+  Enabled: true
+Performance/Sum:
+  Enabled: true
+Performance/AncestorsInclude:
+  Enabled: true
+Performance/BigDecimalWithNumericArgument:
+  Enabled: true
+Performance/ConcurrentMonotonicTime: # new in 1.12
+  Enabled: true
+Performance/MapCompact: # new in 1.11
+  Enabled: true
+Performance/StringIdentifierArgument: # new in 1.13
+  Enabled: true
+
+############
+#  Gemspec #
+############
+Gemspec/DateAssignment:
+  Enabled: true
+Gemspec/RequireMFA: # new in 1.23
   Enabled: false
 
-# don't need to require documenting everything
-Documentation:
-  Enabled: false
+############
+#  Layout  #
+############
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+# modern dev screens are large
+Layout/LineLength:
+  Max: 100
+  Exclude:
+    - spec/**/*.rb
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+Layout/BeginEndAlignment:
+  Enabled: true
+Layout/LineEndStringConcatenationIndentation:
+  Enabled: true
+Layout/SpaceBeforeBrackets:
+  Enabled: true
 
+############
+#  Naming  #
+############
+Naming/InclusiveLanguage:
+  Enabled: true
+
+############
+#  Style   #
+############
+Style/ExponentialNotation:
+  Enabled: true
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
+Style/IfUnlessModifier:
+  Enabled: false
+Style/SlicingWithRange:
+  Enabled: true
+Style/ArgumentsForwarding:
+  Enabled: true
+Style/CollectionCompact:
+  Enabled: true
+Style/DocumentDynamicEvalDefinition:
+  Enabled: true
+Style/EndlessMethod:
+  Enabled: true
+Style/HashConversion:
+  Enabled: true
+Style/HashExcept:
+  Enabled: true
+Style/IfWithBooleanLiteralBranches:
+  Enabled: true
+Style/InPatternThen:
+  Enabled: true
+Style/MultilineInPatternThen:
+  Enabled: true
+Style/NegatedIfElseCondition:
+  Enabled: true
+Style/NilLambda:
+  Enabled: true
+Style/QuotedSymbols:
+  Enabled: true
+Style/RedundantArgument:
+  Enabled: true
+Style/RedundantSelfAssignmentBranch:
+  Enabled: true
+Style/StringChars:
+  Enabled: true
+Style/SwapValues:
+  Enabled: true
+Style/DoubleNegation:
+  Enabled: false
+Style/Documentation:
+  Exclude:
+    - 'spec/**/*'
 # while %i and friends are nice, [] is universally known
 Style/SymbolArray:
   Enabled: false
-
 # this way the comment is explicitly linked to the line it's referring to
 Style/CommentedKeyword:
   Enabled: false
-
 # allow multiline {} if the return value is used, clearer then begin/end
 Style/BlockDelimiters:
   EnforcedStyle: semantic
 
-# Specs tend to be rather large blocks, but that's okay.
-Metrics/BlockLength:
-  ExcludedMethods: ['describe', 'context', 'feature']
-
-#################################
-# Linting rules specificallly for RSpec #
-#################################
-require: rubocop-rspec
-
-# It's common for params hashes to make test examples a bit long but still legible
-RSpec/ExampleLength:
-  Max: 13
-
-# Allow us to use `feature` instead of `describe` in feature specs
-Capybara/FeatureMethods:
-  Enabled: false
-
-# `expect_any_instance_of` is super useful for testing, although, easy to misuse
-RSpec/AnyInstance:
-  Enabled: false
+############
+#  Rails   #
+############
+Naming/BlockForwarding: # new in 1.24
+  Enabled: true
+Security/IoMethods: # new in 1.22
+  Enabled: true
+Style/FileRead: # new in 1.24
+  Enabled: true
+Style/FileWrite: # new in 1.24
+  Enabled: true
+Style/MapToHash: # new in 1.24
+  Enabled: true
+Style/NestedFileDirname: # new in 1.26
+  Enabled: true
+Style/NumberedParameters: # new in 1.22
+  Enabled: true
+Style/NumberedParametersLimit: # new in 1.22
+  Enabled: true
+Style/OpenStructUse: # new in 1.23
+  Enabled: true
+Style/RedundantInitialize: # new in 1.27
+  Enabled: true
+Style/SelectByRegexp: # new in 1.22
+  Enabled: true
+Rails/ActionControllerTestCase: # new in 2.14
+  Enabled: true
+Rails/ActiveRecordCallbacksOrder: # new in 2.7
+  Enabled: true
+Rails/AddColumnIndex: # new in 2.11
+  Enabled: true
+Rails/AfterCommitOverride: # new in 2.8
+  Enabled: true
+Rails/AttributeDefaultBlockValue: # new in 2.9
+  Enabled: true
+Rails/CompactBlank: # new in 2.13
+  Enabled: true
+Rails/DeprecatedActiveModelErrorsMethods: # new in 2.14
+  Enabled: true
+Rails/DuplicateAssociation: # new in 2.14
+  Enabled: true
+Rails/DuplicateScope: # new in 2.14
+  Enabled: true
+Rails/DurationArithmetic: # new in 2.13
+  Enabled: true
+Rails/EagerEvaluationLogMessage: # new in 2.11
+  Enabled: true
+Rails/ExpandedDateRange: # new in 2.11
+  Enabled: true
+Rails/FindById: # new in 2.7
+  Enabled: true
+Rails/I18nLazyLookup: # new in 2.14
+  Enabled: true
+Rails/I18nLocaleAssignment: # new in 2.11
+  Enabled: true
+Rails/I18nLocaleTexts: # new in 2.14
+  Enabled: true
+Rails/Inquiry: # new in 2.7
+  Enabled: true
+Rails/MailerName: # new in 2.7
+  Enabled: true
+Rails/MatchRoute: # new in 2.7
+  Enabled: true
+Rails/MigrationClassName: # new in 2.14
+  Enabled: true
+Rails/NegateInclude: # new in 2.7
+  Enabled: true
+Rails/Pluck: # new in 2.7
+  Enabled: true
+Rails/PluckInWhere: # new in 2.7
+  Enabled: true
+Rails/RedundantPresenceValidationOnBelongsTo: # new in 2.13
+  Enabled: true
+Rails/RedundantTravelBack: # new in 2.12
+  Enabled: true
+Rails/RenderInline: # new in 2.7
+  Enabled: true
+Rails/RenderPlainText: # new in 2.7
+  Enabled: true
+Rails/RootJoinChain: # new in 2.13
+  Enabled: true
+Rails/ShortI18n: # new in 2.7
+  Enabled: true
+Rails/SquishedSQLHeredocs: # new in 2.8
+  Enabled: true
+Rails/TimeZoneAssignment: # new in 2.10
+  Enabled: true
+Rails/TransactionExitStatement: # new in 2.14
+  Enabled: true
+Rails/UnusedIgnoredColumns: # new in 2.11
+  Enabled: true
+Rails/WhereEquals: # new in 2.9
+  Enabled: true
+Rails/WhereExists: # new in 2.7
+  Enabled: true
+Rails/WhereNot: # new in 2.8
+  Enabled: true
