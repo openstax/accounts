@@ -6,11 +6,34 @@
   ).html_safe
 %>
 
-<%=
-  render(
-    'signup/signup_done_template',
-    header: header,
-    description: description,
-    image: nil
-  )
-%>
+<div id="login-signup-form">
+  <div class="content">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active' } %>
+
+    <%= login_signup_card(
+          classes:        "signup-page",
+          header:         header,
+          show_exit_icon: true) do %>
+      <form action="<%= exit_accounts_path %>">
+        <div class="content control-group info-message">
+          <%= description %>
+          <br/>
+          <br/>
+
+          <%= image %>
+
+          <%=
+            button_tag(
+              t(:"login_signup_form.finish"),
+              data: {
+                'ga-category': 'Account Creation',
+                'ga-action':   'Click',
+                'ga-label':    '5-Finish'
+              }
+            )
+          %>
+        </div>
+      </form>
+    <% end %>
+  </div>
+</div>

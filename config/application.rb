@@ -23,6 +23,7 @@ module Accounts
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :en
     config.i18n.available_locales = %w(en pl)
+    config.i18n.fallbacks = [I18n.default_locale]
 
     config.accounts = ActiveSupport::OrderedOptions.new
     # configure how long a login token is valid for

@@ -29,7 +29,7 @@ ActionController::Base.class_exec do
 
   def complete_signup_profile
     return true if request.format != :html || request.options?
-    redirect_to main_app.signup_profile_path if current_user.is_needs_profile?
+    redirect_to main_app.profile_form_path if current_user.is_needs_profile?
   end
 
   def security_log(event_type, event_data = {})

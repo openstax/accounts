@@ -1,0 +1,41 @@
+<%
+  page_header = I18n.t(
+    :"login_signup_form.confirmation_page_header",
+    first_name: @first_name
+  )
+
+  current_step = I18n.t(
+    :"login_signup_form.step_counter",
+    current_step: 2,
+    total_steps:  2
+  )
+
+  form_description = I18n.t(
+    :"login_signup_form.student_email_verification_form_decription",
+    email:           @email,
+    edit_your_email: link_to(
+                       I18n.t(:"login_signup_form.edit_your_email"), student_change_signup_email_form_path
+
+                     )
+  ).html_safe
+
+  help_message = I18n.t(
+    :"login_signup_form.didnt_receive_email",
+    sign_up_with_different_email_link: link_to(
+                                         I18n.t(:"login_signup_form.sign_up_with_different_email"), student_change_signup_email_form_path
+                                       )
+  ).html_safe
+%>
+
+<%=
+  render(
+    partial: 'signup/email_verification_form_template',
+    locals: {
+      header: page_header,
+      form_description: form_description,
+      current_step: current_step,
+      help_message: help_message,
+      submit_to_path: verify_email_by_code_path
+    }
+  )
+%>

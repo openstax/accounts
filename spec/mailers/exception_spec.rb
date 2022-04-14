@@ -13,11 +13,5 @@ RSpec.describe 'ActionMailer::DeliveryJob error recovery' do
         OpenStax::RescueFrom.configuration.raise_exceptions = original
       end
     end
-
-    it "should rescue it, log it, send to sentry, not email it, not reraise it" do
-      expect do
-        DevMailer.inspect_object(object: "foo", subject: "bar").deliver_later
-      end.not_to raise_error
-    end
   end
 end

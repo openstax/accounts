@@ -3,11 +3,10 @@ class IdentitiesController < ApplicationController
   include RequireRecentSignin
 
   skip_before_action :authenticate_user!, :complete_signup_profile,
-                    only: [:reset, :send_reset, :add, :send_add]
+                    only: [:reset, :add]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:reset, :send_reset, :add, :send_add,
-                        :reset_success, :add_success]
+                  only: [:reset, :send_reset, :reset_success, :add_success]
 
   before_action :allow_iframe_access
 

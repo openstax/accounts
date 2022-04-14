@@ -1,4 +1,4 @@
-<%= render 'educator_signup/refresh_upon_going_back' %>
+<%= render 'shared/refresh_upon_going_back' %>
 
 <div id="login-signup-form">
     <div class="content">
@@ -6,8 +6,15 @@
 
         <%= login_signup_card(
                     classes: "signup-page",
-                    header: header,
-                    current_step: current_step) do %>
+                    header: I18n.t(
+                      :"login_signup_form.confirmation_page_header",
+                      first_name: @first_name
+                    ),
+                    current_step: I18n.t(
+                      :"login_signup_form.step_counter",
+                      current_step: 2,
+                      total_steps:  4
+                    )) do %>
             <% lev_form_for :confirm, url: submit_to_path do |form| %>
                 <%
                     form_helper = FormHelper::One.new(

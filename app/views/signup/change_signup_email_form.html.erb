@@ -1,0 +1,40 @@
+<div id="login-signup-form">
+  <div class="content">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active' } %>
+    <%= login_signup_card(
+          classes:      "signup-page",
+          header:       I18n.t(:"login_signup_form.change_signup_email_form_page_header"),
+          current_step: current_step) do %>
+      <% lev_form_for :change_signup_email, url: change_signup_email_post_path do |f| %>
+        <% fh = FormHelper::One.new(f:       f,
+                                    context: self,
+                                    errors:  @handler_result&.errors) %>
+        <div class="content control-group info-message">
+          <%= I18n.t(:"login_signup_form.change_signup_email_form_page_description") %>
+        </div>
+        <div class="content control-group">
+          <%=
+            label_tag(
+              :email,
+              I18n.t(:"login_signup_form.email_label"),
+              class: 'field-label required'
+            )
+          %>
+          <div class="input-with-tooltip">
+            <%=
+              fh.text_field(
+                name:        :email,
+                placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                autofocus:   true,
+                value:       @email
+              )
+            %>
+            <div class="tooltip">
+              <%= I18n.t(:"login_signup_form.change_signup_email_form_tooltip").html_safe %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

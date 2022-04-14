@@ -91,15 +91,6 @@ module Api::V1
                 description: "One of #{User.faculty_statuses.keys.map(&:to_s).inspect}"
              }
 
-    property :needs_to_complete_educator_profile?,
-             as: :needs_complete_edu_profile,
-             type: String,
-             readable: true,
-             writeable: false,
-             schema_info: {
-                description: "New flow faculty user needs to finish signing up?"
-             }
-
     property :role,
              as: :self_reported_role,
              if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },

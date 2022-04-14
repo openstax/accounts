@@ -4,7 +4,7 @@ class SocialAuthController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   before_action :restart_signup_if_missing_verified_user, only: [
-    :confirm_oauth_info, :confirm_oauth_info_form
+    :confirm_oauth_info_form, :confirm_oauth_info_post
   ]
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
@@ -86,15 +86,18 @@ class SocialAuthController < ApplicationController
                             "handler errors: #{errors}; last exception: #{last_exception}; " +
                             "exception backtrace: #{exception_backtrace}"
 
-            # Send the error to Sentry
-            Sentry.capture_message(error_message)
+            warn(error_message)
           end
         }
       )
     end
   end
 
-  def confirm_oauth_info
+  def confirm_oauth_info_form
+    render :confirm_social_info_form
+  end
+
+  def confirm_oauth_info_post
     handle_with(
       ConfirmOauthInfo,
       user: unverified_user,

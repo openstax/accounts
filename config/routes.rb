@@ -22,59 +22,46 @@ Rails.application.routes.draw do
   end
 
   scope controller: 'signup' do
+    # welcome! choose a role!
     get 'signup', action: :welcome, as: :signup
+
+    # step 1 - basic info about the user
+    get 'signup/start', action: :signup_form, as: :signup_form
+    post 'signup/start', action: :signup_post, as: :signup_post
+
+    # step 2 - verify email, allow changing if necessary
+    get 'signup/email_verification_form', action: :verify_email_by_pin_form, as: :verify_email_by_pin_form
+    post 'signup/email_verification_form', action: :verify_email_by_pin_post, as: :verify_email_by_pin_post
+    get 'signup/change_signup_email', action: :change_signup_email_form, as: :change_signup_email_form
+    post 'signup/change_signup_email', action: :change_signup_email_post, as: :change_signup_email_post
+
+    # signup complete!
     get 'done', action: :signup_done, as: :signup_done
+
+    # verification actions that are not part of signup per se
     get 'verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
     get 'check_your_email', action: :check_your_email, as: :check_your_email
   end
 
-  scope controller: 'student_signup' do
-    get 'signup/student', action: :student_signup, as: :signup_student
-    post 'signup/student', action: :student_signup, as: :signup_post
-
-    get 'signup/student/email_verification_form', action: :student_email_verification_form, as: :student_email_verification_form
-    post 'signup/student/change_signup_email', action: :student_change_signup_email, as: :student_change_signup_email
-    get 'signup/student/email_verification_form_updated_email',
-      action: :student_email_verification_form_updated_email,
-      as: :student_email_verification_form_updated_email
-    get 'signup/student/change_signup_email_form', action: :student_change_signup_email_form, as: :student_change_signup_email_form
-    post 'signup/student/verify_email_by_pin', action: :student_verify_email_by_pin, as: :student_verify_pin
-  end
-
   scope controller: 'educator_signup' do
-    # Step 1
-    get 'signup/educator', action: :signup_form, as: :educator_signup_form
-    post 'signup/educator', action: :signup_post, as: :educator_signup_post
-    get 'signup/educator/change_signup_email', action: :change_signup_email_form, as: :educator_change_signup_email_form
-    post 'signup/educator/change_signup_email', action: :change_signup_email_post, as: :educator_change_signup_email_post
-
-    # Step 2
-    get 'signup/educator/email_verification_form', action: :email_verification_form, as: :educator_email_verification_form
-    get 'signup/educator/email_verification_form_updated_email', action: :email_verification_updated_email_form, as: :email_verification_updated_email_post
-    post 'signup/educator/verify_email_by_pin', action: :verify_email_by_pin_post, as: :educator_verify_pin_post
-
     # Step 3
-    get 'signup/educator/apply', action: :sheerid_form, as: :educator_sheerid_form
+    get 'signup/educator/apply', action: :sheerid_form, as: :sheerid_form
     post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     # Step 4
-    get 'signup/educator/profile_form', action: :profile_form, as: :educator_profile_form
-    post 'signup/educator/complete_profile', action: :profile_form_post, as: :educator_complete_profile_post
-    get 'signup/educator/pending_cs_verification', action: :pending_cs_verification, as: :educator_pending_cs_verification_form
+    get 'signup/educator/profile_form', action: :profile_form, as: :profile_form
+    post 'signup/educator/complete_profile', action: :profile_form_post, as: :complete_profile_post
+    get 'signup/educator/pending_cs_verification', action: :pending_cs_verification, as: :pending_cs_verification_form
 
-    get 'signup/educator/cs_form', action: :pending_cs_verification_form, as: :educator_cs_verification_form
-    post 'signup/educator/cs_verification_request', action: :profile_form_post, as: :educator_cs_verification_post
+    get 'signup/educator/cs_form', action: :pending_cs_verification_form, as: :cs_verification_form
+    post 'signup/educator/cs_verification_request', action: :profile_form_post, as: :cs_verification_post
   end
 
   scope controller: 'password_management' do
     # Password management process (forgot,  change, or create password)
     get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
-    post 'send_reset_password_email',
-      action: :send_reset_password_email,
-      as: :send_reset_password_email
-    get 'reset_password_email_sent',
-          action: :reset_password_email_sent,
-          as: :reset_password_email_sent
+    post 'send_reset_password_email', action: :send_reset_password_email, as: :send_reset_password_email
+    get 'reset_password_email_sent', action: :reset_password_email_sent, as: :reset_password_email_sent
     get 'create_password_form', action: :create_password_form, as: :create_password_form
     post 'create_password', action: :create_password, as: :create_password
     get 'change_password_form', action: :change_password_form, as: :change_password_form

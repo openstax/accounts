@@ -15,12 +15,7 @@ class User < ApplicationRecord
     UNKNOWN_ROLE       = :unknown_role,
     STUDENT_ROLE       = :student,
     INSTRUCTOR_ROLE    = :instructor,
-    ADMINISTRATOR_ROLE = :administrator,
-    LIBRARIAN_ROLE     = :librarian,
-    DESIGNER_ROLE      = :designer,
     OTHER_ROLE         = :other,
-    ADJUNCT_ROLE       = :adjunct,
-    HOMESCHOOL_ROLE    = :homeschool
   ].freeze
 
   VALID_FACULTY_STATUSES = [
@@ -145,19 +140,9 @@ class User < ApplicationRecord
   has_many :oauth_applications, through: :member_groups
   has_many :security_logs
 
-  delegate_to_routine :destroy
-
   attr_readonly :uuid
 
   attribute :is_not_gdpr_location, :boolean, default: nil
-
-  def lead
-    OpenStax::Salesforce::Remote::Lead.find_by(uuid: uuid)
-  end
-
-  def contact
-    OpenStax::Salesforce::Remote::Contact.find_by(uuid: uuid)
-  end
 
   def most_accurate_school_name
     return school.name if school.present?
@@ -188,16 +173,6 @@ class User < ApplicationRecord
     email_addresses.school_issued.first&.value || \
     email_addresses.verified.first&.value || \
     email_addresses.first&.value
-  end
-
-  def needs_to_complete_educator_profile?
-    (role != STUDENT_ROLE) && !is_profile_complete
-  end
-
-  def is_instructor_verification_stale?
-    pending_faculty? && activated? && activated_at.present? && \
-    (activated_at <= STALE_VERIFICATION_PERIOD.ago) && \
-    !is_educator_pending_cs_verification
   end
 
   def is_tutor_user?
@@ -243,10 +218,6 @@ class User < ApplicationRecord
 
   def is_application?
     false
-  end
-
-  def step_3_complete?
-    sheerid_verification_id.present? || is_sheerid_unviable? || is_profile_complete?
   end
 
   # State helpers.
@@ -337,10 +308,6 @@ class User < ApplicationRecord
     full_name.present? ? full_name.split("\s").drop(1).join(' ') : nil
   end
 
-  def casual_name # TODO are we ok now that username not required?
-    first_name.present? ? first_name : username
-  end
-
   def formal_name # TODO needs spec
     "#{title} #{last_name} #{suffix}".gsub(/\s+/,' ').strip if title.present? && last_name.present?
   end
@@ -358,6 +325,7 @@ class User < ApplicationRecord
   # Access Control Helpers #
   ##########################
 
+  # TODO: Not sure these are being used anymore?
   def can_read?(resource)
     resource.can_be_read_by?(self)
   end
@@ -392,14 +360,15 @@ class User < ApplicationRecord
     !login_token_expires_at.nil? && login_token_expires_at <= DateTime.now
   end
 
-  def self.known_roles
-    roles.except(:unknown_role).keys
-  end
-
-
-  def self.non_student_known_roles
-    known_roles - ['student']
-  end
+  # TODO: useful.. but doesn't seem used
+  # def self.known_roles
+  #   roles.except(:unknown_role).keys
+  # end
+  #
+  #
+  # def self.non_student_known_roles
+  #   known_roles - ['student']
+  # end
 
   def guessed_preferred_confirmed_email
     # A heuristic for guessing the user's preferred confirmed email.  Assumes that
@@ -451,6 +420,7 @@ class User < ApplicationRecord
     end
   end
 
+  # TODO: check how many of these actually exist still
   # there are existing users without names
   # allow them to continue to function, but require a name to exist once it's set
   def ensure_names_continue_to_be_present
@@ -469,7 +439,7 @@ class User < ApplicationRecord
   end
 
   def save_activated_at_if_became_activated
-    if state_changed?(to: ACTIVATED)
+    if state_changed?(to: :activated)
       self.touch(:activated_at)
     end
   end
