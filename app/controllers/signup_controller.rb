@@ -37,7 +37,7 @@ class SignupController < ApplicationController
         save_unverified_user(@handler_result.outputs.user.id)
         security_log(:user_began_signup, { user: @handler_result.outputs.user })
         clear_cache_BRI_marketing
-        redirect_to verify_email_by_pin_form
+        redirect_to verify_email_by_pin_form_path
       },
       failure:              lambda {
         security_log(:user_signup_failed, { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
@@ -60,13 +60,19 @@ class SignupController < ApplicationController
         clear_signup_state
         user = @handler_result.outputs.user
         sign_in!(user)
-        security_log(:student_verified_email)
-        redirect_to signup_done_path
+        security_log(:user_verified_email)
+        if user.student?
+          security_log(:student_verified_email, { user: user, message: "Student verified email." })
+          redirect_to signup_done_path
+        else
+          security_log(:educator_verified_email, { user: user, message: "Educator verified email." })
+          redirect_to sheerid_form_path
+        end
       },
       failure:       lambda {
         @first_name = unverified_user.first_name
         @email      = unverified_user.email_addresses.first.value
-        security_log(:student_verify_email_failed, email: @email)
+        security_log(:user_verify_email_failed, email: @email)
         render :email_verification_form
       }
     )

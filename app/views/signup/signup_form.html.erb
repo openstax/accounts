@@ -16,38 +16,55 @@
     <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active' } %>
 
     <%= login_signup_card(
-          header:       (I18n.t(:"login_signup_form.signup_page_header")),
-          current_step: I18n.t(:"login_signup_form.step_counter", current_step: 1, total_steps: 4),
+          header:       (I18n.t(:'login_signup_form.signup_page_header')),
+          current_step: I18n.t(:'login_signup_form.step_counter', current_step: 1, total_steps: 4),
           classes:      'signup-page') do %>
       <% lev_form_for :signup, url: signup_post_path do |form| %>
-        <% fh = FormHelper::One.new(f:      form, context: self,
+        <% fh = FormHelper::One.new(f: form, context: self,
                                     errors: @handler_result&.errors) %>
 
           <div class="content role-section">
             <div>
               <%= render partial: 'shared/back_arrow', locals: { path: signup_form_path } %>
-              <div class="role-button"><%= I18n.t(:"login_signup_form.#{@selected_signup_role}") %></div>
+              <% if @selected_signup_role == 'student' %>
+                <div class="role-button"><%= I18n.t(:'login_signup_form.student') %></div>
+              <% else %>
+                <div class="role-button"><%= I18n.t(:'login_signup_form.educator') %></div>
+              <% end %>
             </div>
           </div>
 
+        <% if @selected_signup_role == 'student' %>
+          <%= render partial: 'social_auth/social_buttons' %>
+
+          <%=
+            render(
+              partial: 'shared/form_divider',
+              locals:  {
+                dividing_text: I18n.t(:"login_signup_form.or_sign_up_below")
+              }
+            )
+          %>
+        <% end %>
+
         <div class="content required-fields-notice">
-          <%= I18n.t(:"login_signup_form.all_fields_required") %>
+          <%= I18n.t(:'login_signup_form.all_fields_required') %>
         </div>
 
         <div class="content control-group">
-          <%= label_tag :first_name, I18n.t(:"login_signup_form.legal_first_name_label"),
-                        class: 'field-label'
+          <%= label_tag :first_name, I18n.t(:'login_signup_form.legal_first_name_label'),
+                        class: 'field-label required'
           %>
           <%= fh.text_field name:        :first_name,
-                            placeholder: I18n.t(:"login_signup_form.legal_first_name_label"),
+                            placeholder: I18n.t(:'login_signup_form.legal_first_name_label'),
                             autofocus:   true
           %>
         </div>
 
         <div class="content control-group">
           <%=
-            label_tag :last_name, I18n.t(:"login_signup_form.legal_last_name_label"),
-                      class: 'field-label'
+            label_tag :last_name, I18n.t(:'login_signup_form.legal_last_name_label'),
+                      class: 'field-label required'
           %>
           <%=
             fh.text_field name:        :last_name,
@@ -55,40 +72,55 @@
           %>
         </div>
 
-        <div class="content control-group">
-          <%= label_tag :phone_number, I18n.t(:"login_signup_form.phone_number_label"), class: 'field-label' %>
-          <%=
-            fh.text_field name:               :phone_number,
-                          type:               'tel',
-                          supplemental_class: 'int-country-code form-control wide',
-                          placeholder:        I18n.t(:'login_signup_form.phone_number_placeholder'),
-                          onkeydown:          'javascript:backspacerDOWN(this,event);',
-                          onkeyup:            'javascript:backspacerUP(this,event);',
-                          data_bind:          'phoneNumber: telInput, value: phone'
-          %>
-          <%= form.hidden_field :country_code, 'data-bind': 'value: dialCode' %>
-        </div>
+          <% if @selected_signup_role == 'educator' %>
+            <div class="content control-group">
+              <%= label_tag :phone_number, I18n.t(:'login_signup_form.phone_number_label'), class: 'field-label' %>
+              <%=
+                fh.text_field name:               :phone_number,
+                              type:               'tel',
+                              supplemental_class: 'int-country-code form-control wide',
+                              placeholder:        I18n.t(:'login_signup_form.phone_number_placeholder'),
+                              onkeydown:          'javascript:backspacerDOWN(this,event);',
+                              onkeyup:            'javascript:backspacerUP(this,event);',
+                              data_bind:          'phoneNumber: telInput, value: phone'
+              %>
+              <%= form.hidden_field :country_code, 'data-bind': 'value: dialCode' %>
+            </div>
 
-        <div
-          class="content control-group email-input-group newflow"
-          data-bind="css: {'has-error': emailInvalid, 'has-changed': emailHasChanged}"
-        >
-          <%= label_tag :email, I18n.t(:"login_signup_form.school_issued_email_label"), class: 'field-label' %>
-          <%=
-            fh.text_field(
-              name:               :email,
-              supplemental_class: 'myschool_email',
-              placeholder:        I18n.t(:"login_signup_form.school_issued_email_placeholder"),
-              data_bind:          "valueWithInit: email"
-            )
-          %>
-          <%# shows up only when faculty tries wants to use a non-edu email %>
-          <br/>
-          <div class="warning edu" data-bind="visible: emailInvalid">
-            <%= t 'login_signup_form.teacher_school_email_warning', button: (t :'login_signup_form.continue_button') %>
-          </div>
+            <div
+              class="content control-group email-input-group newflow"
+              data-bind="css: {'has-error': emailInvalid, 'has-changed': emailHasChanged}"
+            >
+              <%= label_tag :email, I18n.t(:'login_signup_form.school_issued_email_label'), class: 'field-label' %>
+              <%=
+                fh.text_field(
+                  name:               :email,
+                  supplemental_class: 'myschool_email',
+                  placeholder:        I18n.t(:'login_signup_form.school_issued_email_placeholder'),
+                  data_bind:          'valueWithInit: email'
+                )
+              %>
+              </div>
 
-        </div>
+              <div class="warning edu" data-bind="visible: emailInvalid">
+                <br/>
+                <%= t 'login_signup_form.teacher_school_email_warning', button: (t :'login_signup_form.continue_button') %>
+              </div>
+
+
+          <% else %>
+            <div class="content control-group">
+              <%= label_tag :email, I18n.t(:'login_signup_form.email_label'), class: 'field-label required' %>
+              <%=
+                fh.text_field(
+                  name:        :email,
+                  type:        :email,
+                  placeholder: I18n.t(:'login_signup_form.email_placeholder'),
+                  data_bind:   'valueWithInit: email'
+                )
+              %>
+            </div>
+          <% end %>
 
         <%= render partial: 'shared/password_control_group', locals: { fh: fh } %>
 
@@ -97,7 +129,7 @@
           <div class="terms">
             <label>
               <%= form.check_box :newsletter, checked: true %>
-              <span><%= I18n.t(:"login_signup_form.send_me_newsletter") %></span>
+              <span><%= I18n.t(:'login_signup_form.send_me_newsletter') %></span>
             </label>
             <br>
           </div>
@@ -112,7 +144,7 @@
               <span>
                 <%=
                   I18n.t(
-                    :"login_signup_form.agree_to_terms_of_use",
+                    :'login_signup_form.agree_to_terms_of_use',
                     terms_of_use:   contract_links.first,
                     privacy_policy: contract_links.second
                   ).html_safe
@@ -130,11 +162,11 @@
         <div class="content">
           <%=
             form.submit(
-              I18n.t(:"login_signup_form.continue_button"),
+              I18n.t(:'login_signup_form.continue_button'),
               id:          'signup_form_submit_button',
               class:       'primary',
               data:        {
-                disable_with: I18n.t(:"login_signup_form.continue_button"),
+                disable_with: I18n.t(:'login_signup_form.continue_button'),
                 ga_category:  'Account Creation',
                 ga_action:    'Click',
                 ga_label:     '3A-Email'

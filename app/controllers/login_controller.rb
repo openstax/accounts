@@ -46,18 +46,18 @@ class LoginController < ApplicationController
           redirect_back(fallback_location: profile_path)
         else
           if current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
-            redirect_to educator_sheerid_form_path
+            redirect_to sheerid_form_path
           elsif current_step == 'login' && (user.sheerid_verification_id.present? || user.is_sheerid_unviable?)
-            redirect_to educator_profile_form_path
+            redirect_to profile_path
           elsif current_step == 'educator_sheerid_form'
             if user.confirmed_faculty? || user.rejected_faculty? || user.sheerid_verification_id.present?
-              redirect_to educator_profile_form_path
+              redirect_to profile_path
             end
           elsif current_step == 'educator_signup_form' && !user.is_anonymous?
-            redirect_to educator_email_verification_form_path
+            redirect_to verify_email_by_code_path
           elsif current_step == 'educator_email_verification_form' && user.activated?
             if !user.student? && user.activated? && user.pending_faculty && user.sheerid_verification_id.blank?
-              redirect_to educator_sheerid_form_path
+              redirect_to sheerid_form_path
             elsif user.activated?
               redirect_to profile_path
             end

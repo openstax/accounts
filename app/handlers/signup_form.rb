@@ -101,12 +101,12 @@ class SignupForm
   end
 
   def create_user
-    if @selected_signup_role == 'student'
-      role = :student
-      faculty_status = :no_faculty_info
-    else
-      role = :instructor
+    if @selected_signup_role == 'instructor'
+      role           = :instructor
       faculty_status = :incomplete_signup
+    else
+      role           = :student
+      faculty_status = :no_faculty_info
     end
 
     user = User.create(
@@ -120,7 +120,6 @@ class SignupForm
       source_application: options[:client_app]
     )
     transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
-    user.save!
     user
   end
 

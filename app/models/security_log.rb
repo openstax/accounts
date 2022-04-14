@@ -111,6 +111,8 @@ class SecurityLog < ApplicationRecord
     account_created_or_synced_with_salesforce
     user_began_signup
     user_signup_failed
+    user_verified_email
+    user_verify_email_failed
   ]
 
 

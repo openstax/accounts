@@ -3,7 +3,6 @@ require "i18n"
 class User < ApplicationRecord
 
   VALID_STATES = [
-    TEMP = 'temp', # deprecated but still could exist for old accounts
     NEW_SOCIAL = 'new_social',
     UNCLAIMED = 'unclaimed',
     NEEDS_PROFILE = 'needs_profile', # has yet to fill out their user info
