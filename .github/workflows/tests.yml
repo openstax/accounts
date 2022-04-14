@@ -42,7 +42,7 @@ jobs:
           bundler-cache: true
       - name: Test
         run: |
-          gem install bundler:2.3.5
+          gem install bundler
           bundle install
           bundle exec rspec --fail-fast
       #      - uses: codecov/codecov-action@v2

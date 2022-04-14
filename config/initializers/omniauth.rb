@@ -4,7 +4,7 @@
 secrets = Rails.application.secrets
 
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :custom_identity
+  provider :identity
 
   provider(
     :facebook,
