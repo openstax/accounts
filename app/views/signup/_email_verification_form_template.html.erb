@@ -5,13 +5,13 @@
         <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active'} %>
 
         <%= login_signup_card(
-                    classes: "signup-page",
+                    classes: 'signup-page',
                     header: I18n.t(
-                      :"login_signup_form.confirmation_page_header",
+                      :'login_signup_form.confirmation_page_header',
                       first_name: @first_name
                     ),
                     current_step: I18n.t(
-                      :"login_signup_form.step_counter",
+                      :'login_signup_form.step_counter',
                       current_step: 2,
                       total_steps:  4
                     )) do %>
@@ -29,11 +29,11 @@
                 </div>
 
                 <div class="content control-group">
-                    <%= label_tag :pin, I18n.t(:"login_signup_form.pin_label"),
+                    <%= label_tag :pin, I18n.t(:'login_signup_form.pin_label'),
                                 class: 'field-label required'
                     %>
                     <%= form_helper.text_field name: :pin,
-                                placeholder: I18n.t(:"login_signup_form.pin_placeholder"),
+                                placeholder: I18n.t(:'login_signup_form.pin_placeholder'),
                                 autofocus: true
                     %>
                 </div>

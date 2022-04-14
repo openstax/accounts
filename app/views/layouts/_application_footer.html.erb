@@ -1,12 +1,12 @@
 <div class="content" id="application-footer">
     <div>
-        <%= link_to "http://www.rice.edu" do %>
-            <%= image_tag 'rice_logo.svg', id: "footer-rice-logo-image" %>
+        <%= link_to 'https://www.rice.edu' do %>
+            <%= image_tag 'rice_logo.svg', id: 'footer-rice-logo-image' %>
         <% end %>
     </div>
 
     <div id="application-footer--copyright">
         <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
-        <%= link_to (t :"layouts.application_footer.terms_of_use"), main_app.terms_path %>
+        <%= link_to (t :'layouts.application_footer.terms_of_use'), main_app.terms_path %>
     </div>
 </div>

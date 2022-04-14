@@ -34,7 +34,7 @@ class VerifyEmailByPin
   private #################
 
   def activate_user(claiming_user)
-    run(ActivateUser, user: claiming_user)
+    run(ActivateUser, claiming_user)
   end
 
 end

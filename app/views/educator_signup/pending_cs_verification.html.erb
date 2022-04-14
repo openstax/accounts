@@ -1,7 +1,7 @@
 <%
-  header = I18n.t(:"login_signup_form.educator_pending_cs_verification")
+  header = I18n.t(:'login_signup_form.educator_pending_cs_verification')
   description = I18n.t(
-    :"login_signup_form.educator_pending_cs_verification_description",
+    :'login_signup_form.educator_pending_cs_verification_description',
     email_address: @email_address
   ).html_safe
 %>
@@ -11,8 +11,8 @@
     <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active' } %>
 
     <%= login_signup_card(
-          classes:        "signup-page",
-          header:         header,
+          classes: 'signup-page',
+          header: header,
           show_exit_icon: true) do %>
       <form action="<%= exit_accounts_path %>">
         <div class="content control-group info-message">
@@ -20,11 +20,10 @@
           <br/>
           <br/>
 
-          <%= image %>
 
           <%=
             button_tag(
-              t(:"login_signup_form.finish"),
+              t(:'login_signup_form.finish'),
               data: {
                 'ga-category': 'Account Creation',
                 'ga-action':   'Click',

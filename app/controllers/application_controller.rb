@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   layout 'application'
 
   before_action :authenticate_user!, only: :profile
-  before_action :ensure_complete_educator_signup, only: :profile
 
   def disable_fine_print
     request.options? ||

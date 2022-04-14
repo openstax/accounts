@@ -181,13 +181,23 @@
   </div>
 
   <% if @user.other_role_name %>
+    <div class="form-group">
+      <%= f.label :other_role_name, class: "col-sm-2 control-label" %>
+      <div class="col-sm-10">
+        <% @user.other_role_name %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="form-group">
-    <%= f.label :other_role_name, class: "col-sm-2 control-label" %>
+    <%= f.label :state, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
-      <% @user.other_role_name %>
+      <p class="form-control-static">
+        <%= @user.state.humanize %>
+        <span class="help-block">The current state this user is in. Generally, activated once they confirm their email and unactivated if they have not.</span>
+      </p>
     </div>
   </div>
-  <% end %>
 
   <div class="form-group">
     <%= f.label :faculty_status, class: "col-sm-2 control-label" %>
