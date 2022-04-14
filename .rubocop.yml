@@ -28,7 +28,7 @@ Metrics/BlockLength:
 # Too short methods lead to extraction of single-use methods, which can make
 # the code easier to read (by naming things), but can also clutter the class
 Metrics/MethodLength:
-  Max: 20
+  Max: 50
 
 ##############
 #  Lints     #
@@ -244,7 +244,7 @@ Style/DoubleNegation:
   Enabled: false
 Style/Documentation:
   Exclude:
-    - 'spec/**/*'
+    - spec/**/*.rb
 # while %i and friends are nice, [] is universally known
 Style/SymbolArray:
   Enabled: false

@@ -2,18 +2,15 @@
 def log_in_user(username_or_email, password)
   visit(login_path) unless page.current_url == login_url
   fill_in('login_form_email', with: username_or_email).native
-  expect(page).to have_no_missing_translations
 
   fill_in('login_form_password', with: password)
-  expect(page).to have_no_missing_translations
   wait_for_animations
   wait_for_ajax
   screenshot!
-  click_button(I18n.t(:"login_signup_form.continue_button"))
+  click_button(I18n.t(:'login_signup_form.continue_button'))
   wait_for_animations
   wait_for_ajax
   screenshot!
-  expect(page).to have_no_missing_translations
 end
 
 def newflow_reauthenticate_user(email, password)
@@ -33,11 +30,11 @@ end
 
 def newflow_complete_add_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in(t(:"login_signup_form.password_label"), with: password)
+  fill_in(t(:'login_signup_form.password_label'), with: password)
   find('#login-signup-form').click
   wait_for_animations
   find('[type=submit]').click
-  expect(page).to have_content(t :"login_signup_form.profile_newflow_page_header")
+  expect(page).to have_content(t :'login_signup_form.profile_newflow_page_header')
 end
 
 def submit_signup_form
