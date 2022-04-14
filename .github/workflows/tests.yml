@@ -21,7 +21,26 @@ env:
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
-  tests:
+  linting:
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_WITH: lint
+      BUNDLE_WITHOUT: development:test
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby 2.7
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+
+      - name: Rubocop
+        run: bundle exec rubocop --format progress
+
+  build:
+    needs: [ linting ]
     timeout-minutes: 30
     runs-on: ubuntu-20.04
     name: build accounts
