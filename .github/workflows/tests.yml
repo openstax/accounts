@@ -41,7 +41,9 @@ jobs:
         with:
           bundler-cache: true
       - name: Test
-        run: bundle exec rspec
+        run: |
+          gem install bundler:2.3.5
+          bundle exec rspec
       #      - uses: codecov/codecov-action@v2
       #        with:
       #          token: ${{ env.CODECOV_TOKEN }}
