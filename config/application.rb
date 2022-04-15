@@ -24,15 +24,14 @@ module Accounts
     config.i18n.default_locale = :en
     config.i18n.available_locales = %w(en pl)
     config.i18n.fallbacks = [I18n.default_locale]
+    # Suppress a warning
+    #config.i18n.enforce_available_locales = true
 
     config.accounts = ActiveSupport::OrderedOptions.new
     # configure how long a login token is valid for
     config.accounts.default_login_token_expiration_period = 2.days
     # configure how long a password is valid for
     config.accounts.default_password_expiration_period = nil
-
-    # Suppress a warning
-    config.i18n.enforce_available_locales = true
 
     # Use the ExceptionsController to rescue routing/bad request exceptions
     # https://coderwall.com/p/w3ghqq/rails-3-2-error-handling-with-exceptions_app
@@ -57,7 +56,7 @@ module Accounts
     }
 
     def is_real_production?
-      secrets.environment_name == 'production'
+      secrets[:environment_name] == 'production'
     end
 
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
