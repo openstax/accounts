@@ -1,0 +1,153 @@
+.ox-card {
+  $input-height: 50px;
+  $input-border-color: darken($os_light_gray, 10%);
+
+  display: block;
+  margin: auto;
+  max-width: 570px;
+  background-color: $os_light_gray;
+  padding: 30px 50px 50px 50px;
+  font-size: 14px;
+
+  h1, h2, h3, .minor-heading {
+    font-family: $os_heading_font_family;
+    font-weight: 700;
+    color: $os_dark;
+  }
+
+  h1.title {
+    margin: 0 0 $os-section-spacing 0;
+    text-align: center;
+    font-size: 18px;
+  }
+
+  .minor-heading {
+    margin-top: $os-section-spacing;
+    margin-bottom: $os-section-spacing / 2;
+  }
+
+  h3 {
+    font-size: 16px;
+  }
+
+  h3 {
+    font-size: 15px;
+  }
+
+  .half-width {
+    width: 50%;
+    float: left;
+  }
+
+  .footer {
+    margin-top: $os-section-spacing;
+
+    .extra-info {
+      margin-top: $os-section-spacing * 0.5;
+    }
+  }
+
+  input {
+    color: $os_gray;
+    font-size: 16px;
+    border-radius: 0px;
+
+    &:not([type="checkbox"]):not([type="radio"]) {
+      height: $input-height;
+
+      &:not([type="submit"]) {
+        width: 100%;
+        padding-left: 5px;
+      }
+    }
+
+    &[type="text"],
+    &[type="password"] {
+      border: 1px solid $input-border-color;
+    }
+  }
+
+  select:not([multiple]) {
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50px' height='50px'><polyline fill='" + $input-border-color +"' points='46.139,15.518 25.166,36.49 4.193,15.519'/></svg>") right no-repeat;
+    background-position: right 1rem center;
+    background-size: 18px 18px;
+    background-color: white;
+    border-radius: 0px;
+    padding: 1rem 0.8rem;
+    font-size: 16px;
+    height: $input-height;
+    // don't dispaly the selection arrow since we're using a SVG icon for it
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border-color: $input-border;
+    color: $os_gray;
+
+    &::-ms-expand {
+      display: none;
+    }
+
+    &:active {
+      border: 1px solid #000;
+    }
+  }
+
+  input[type=submit],
+  .btn.cancel {
+    width: inherit;
+    padding: 0 20px;
+    line-height: $input-height;
+    display: inline-block;
+    margin-right: 1rem;
+  }
+
+  .is-invalid, .has-error {
+    input[type="text"],
+    input[type="password"],
+    select {
+      background-color: $state-danger-bg;
+      border: 1px solid darken($state-danger-border, 10%);
+
+      &:focus {
+        background-color: darken($state-danger-bg, 1%);
+        border: 1px solid darken($state-danger-border, 30%);
+      }
+    }
+  }
+
+  .alert {
+    margin: 10px 0;
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+  }
+
+  .warning {
+    color: $state-danger-text; // bs variable
+  }
+
+  a:not(.btn) {
+    color: $os_link_color;
+    text-decoration: underline;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+
+    & + .warning {
+      margin-top: 5px;
+    }
+  }
+
+  // elements that should be treated as a "section" and have extra spacing after them
+  // unless they are the last item or their followed by footer
+  select,
+  section,
+  .warning,
+  .form-group {
+    & + *:not(.footer):not(.alert):not(.warning):not(.errors) {
+      margin-top: $os-section-spacing;
+    }
+  }
+
+}

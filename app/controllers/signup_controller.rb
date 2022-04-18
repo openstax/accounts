@@ -19,8 +19,9 @@ class SignupController < ApplicationController
   end
 
   def signup_form
-    @selected_signup_role = params[:selected_signup_role]
-    if @selected_signup_role == 'educator' || @selected_signup_role == 'student'
+    @selected_signup_role = params[:role]
+    # make sure they are using one of the approved roles to signup
+    if %w[educator student].include? @selected_signup_role
       render :signup_form
     else
       head(:not_found)
@@ -60,11 +61,10 @@ class SignupController < ApplicationController
         clear_signup_state
         user = @handler_result.outputs.user
         sign_in!(user)
-        security_log(:user_verified_email)
-        if user.student?
+        if user.role == :student
           security_log(:student_verified_email, { user: user, message: "Student verified email." })
           redirect_to signup_done_path
-        else
+        elsif user.role == :instructor
           security_log(:educator_verified_email, { user: user, message: "Educator verified email." })
           redirect_to sheerid_form_path
         end

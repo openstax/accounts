@@ -11,7 +11,7 @@ module FakeExceptionHelper
     when 'unknown_action'
       raise AbstractController::ActionNotFound
     when 'missing_template'
-      raise ActionView::MissingTemplate.new(['a', 'b'], 'path', ['pre1', 'pre2'], 'partial', 'details')
+      raise ActionView::MissingTemplate.new(%w[a b], 'path', %w[pre1 pre2], 'partial', 'details')
     when 'not_yet_implemented'
       raise NotYetImplemented
     when 'illegal_argument'

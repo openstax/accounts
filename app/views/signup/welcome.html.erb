@@ -17,7 +17,7 @@
                     <div class="join-as">
 
                         <div>
-                            <%= link_to (get_alternate_signup_url || signup_form_path(selected_signup_role: 'student')), data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2A-Student' } do %>
+                            <%= link_to (get_alternate_signup_url || signup_form_path(role: 'student')), data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2A-Student' } do %>
                                 <div class="join-as__role student">
                                     <span><%= I18n.t(:"login_signup_form.student") %></span>
                                     <%= image_tag('student-icon.svg') %>
@@ -31,7 +31,7 @@
                         </div>
 
                         <div>
-                            <%= link_to signup_form_path(selected_signup_role: 'educator'), data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator' } do %>
+                            <%= link_to signup_form_path(role: 'educator'), data: { 'ga-category': 'Account Creation', 'ga-action': 'Click', 'ga-label': '2B-Educator' } do %>
                                 <div class="join-as__role educator">
                                     <span><%= I18n.t(:"login_signup_form.educator") %></span>
                                     <%= image_tag('educator-icon.svg') %>
