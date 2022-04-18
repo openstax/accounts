@@ -47,6 +47,7 @@ Rails.application.routes.draw do
     post 'signup/email_verification_form', action: :verify_email_by_pin_post, as: :verify_email_by_pin_post
     get 'signup/change_signup_email', action: :change_signup_email_form, as: :change_signup_email_form
     post 'signup/change_signup_email', action: :change_signup_email_post, as: :change_signup_email_post
+    get 'signup/email_updated', action: :change_signup_email_form_complete, as: :change_signup_email_form_complete
 
     # signup complete!
     get 'done', action: :signup_done, as: :signup_done

@@ -110,7 +110,7 @@ class SignupController < ApplicationController
       ChangeSignupEmail,
       user:    unverified_user,
       success: lambda {
-        redirect_to updated
+        redirect_to change_signup_email_form_complete
       },
       failure: lambda {
         @email = unverified_user.email_addresses.first.value
@@ -119,7 +119,8 @@ class SignupController < ApplicationController
     )
   end
 
-  def email_verification_form_updated
+  def change_signup_email_form_complete
+    render :email_verification_form_updated
   end
 
   def signup_done
