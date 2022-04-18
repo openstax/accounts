@@ -6,8 +6,7 @@ class AuthenticationOption
     _.bindAll(@, _.functions(@)...)
     this.$el = $(@el)
     this.$el.find('.delete').click(@confirmDelete)
-    if @getType() != 'identity'
-      this.$el.find('.add').click(@addSocial)
+    this.$el.find('.add').click(@doAdd)
 
   confirmDelete: (ev) ->
     OX.showConfirmationPopover(
@@ -15,17 +14,13 @@ class AuthenticationOption
       message: OX.I18n.authentication.confirm_delete
       target: ev.target
       placement: 'top'
-      onConfirm: @delete
+      onConfirm: @doDelete
     )
 
   getType: ->
     this.$el.data('provider')
 
-  addSocial: ->
-    # TODO: figure out a way for the BE to pass the url
-    window.location.href = "#{BASE_URL}/auth/#{@getType()}"
-
-  delete: ->
+  doDelete: ->
     $.ajax({type: "DELETE", url: "#{BASE_URL}/auth/#{@getType()}"})
       .success( @handleDelete )
       .error(OX.Alert.display)
@@ -45,6 +40,9 @@ class AuthenticationOption
       @$el.show()
     )
 
+  doAdd: ->
+    window.location.href = "#{BASE_URL}/auth/#{@getType()}"
+
   handleDelete: (response) ->
     if response.location?
       window.location.href = response.location
@@ -55,16 +53,16 @@ class Password extends AuthenticationOption
 
   constructor: (@el) ->
     super
-    this.$el.find('.add').click(@addPassword)
     this.$el.find('.edit').click(@editPassword)
+    this.$el.find('.add').click(@addPassword)
 
   # TODO we should just use normal links for edit and add, instead of these JS handlers
 
   editPassword: ->
-    window.location.href = "#{BASE_URL}/password/reset"
+    window.location.href = "#{BASE_URL}/change_password_form"
 
   addPassword: ->
-    window.location.href = "#{BASE_URL}/password/add"
+    window.location.href = "#{BASE_URL}/change_password_form"
 
 SPECIAL_TYPES =
   identity: Password

@@ -33,15 +33,6 @@
       <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></a>
     </div>
 
-    <% if current_user.username.present? %>
-      <div class="category">
-        <%= I18n.t(:"users.edit.username") %>
-      </div>
-      <div class="info">
-        <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
-      </div>
-    <% end %>
-
     <div class="category">
       <%= t(:"users.edit.email_addresses") %>
     </div>

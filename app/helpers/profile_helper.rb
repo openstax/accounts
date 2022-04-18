@@ -13,13 +13,11 @@ module ProfileHelper
       case provider
       when 'identity' then ['key', (I18n.t :"users.edit.password")]
       when 'google_oauth2' then %w[google Google]
-      when 'facebooknewflow' then %w[facebook Facebook]
-      when 'googlenewflow' then %w[google Google]
       else [ provider, provider.capitalize ]
       end
 
     icons = [
-      'glyphicon-pencil edit--newflow', 'glyphicon-trash delete--newflow', 'glyphicon-plus add--newflow',
+      'glyphicon-pencil edit', 'glyphicon-trash delete', 'glyphicon-plus add',
     ]
 
     snippet = <<-SNIPPET

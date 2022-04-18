@@ -1,9 +1,9 @@
 @import "pattern-library/headers";
-@import "bootstrap-editable";
+//@import "bootstrap-editable";
 @import "pattern-library/elements/menus";
 
 #profile .ox-card {
-  border: thin solid ui-color(form-border);
+  border: thin solid grey;
   box-sizing: border-box;
   margin: auto;
   max-width: 57rem;
@@ -18,7 +18,7 @@
 
   .info-grid {
     display: grid;
-    color: text-color(normal);
+    color: black;
     gap: 4rem 2rem;
     grid-template-columns: auto 1fr;
     margin-top: 4rem;
@@ -72,12 +72,12 @@
   }
 
   .btn-primary {
-    background-color: os-color(orange);
+    background-color: #F47641;;
     border: 0;
   }
 
   .mod {
-    color: os-color(gray);
+    color: gray;
     cursor: pointer;
     &:hover {
       color: black;

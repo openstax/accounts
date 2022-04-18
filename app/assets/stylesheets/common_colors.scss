@@ -16,3 +16,24 @@
   --input-error-border-color: #c22032;
   --input-error-message-color: #c22032;
 }
+
+$os_green: rgb(118, 177, 67); //#77AF42; //#76b143;
+$os_orange: #F47641; //#f37643;
+$os_gray: #5F6163; //#5e6062;
+$os_yellow: #F4D019; //#f5d10e;
+$os_blue: #233066; //#00246a;
+
+$os_dark_orange: darken($os_orange, 10%);
+$os_dark_gray: darken($os_gray, 20%);
+$os_light_gray: #f5f5f5;
+$os_dark: #424242;
+$os_link_color: #0DC0DC;
+$os_line_color: darken($os_light_gray, 10%);
+
+$ost_light_beige: #f7f3f1;
+$ost_hot_blue: #43bff9;
+$ost_account_gray: #9d9d9d;
+
+$application_background_color: white;
+
+$application_footer_background_color: #7d7d7d;
