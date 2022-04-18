@@ -6,9 +6,7 @@ class AuthenticationOption
     _.bindAll(@, _.functions(@)...)
     this.$el = $(@el)
     this.$el.find('.delete').click(@confirmDelete)
-    this.$el.find('.delete--newflow').click(@confirmDeleteNewflow)
-    this.$el.find('.add').click(@add)
-    this.$el.find('.add--newflow').click(@addNewflow)
+    this.$el.find('.add').click(@doAdd)
 
   confirmDelete: (ev) ->
     OX.showConfirmationPopover(
@@ -16,28 +14,14 @@ class AuthenticationOption
       message: OX.I18n.authentication.confirm_delete
       target: ev.target
       placement: 'top'
-      onConfirm: @delete
-    )
-
-  confirmDeleteNewflow: (ev) ->
-    OX.showConfirmationPopover(
-      title: ''
-      message: OX.I18n.authentication.confirm_delete
-      target: ev.target
-      placement: 'top'
-      onConfirm: @deleteNewflow
+      onConfirm: @doDelete
     )
 
   getType: ->
     this.$el.data('provider')
 
-  delete: ->
+  doDelete: ->
     $.ajax({type: "DELETE", url: "#{BASE_URL}/auth/#{@getType()}"})
-      .success( @handleDelete )
-      .error(OX.Alert.display)
-
-  deleteNewflow: ->
-    $.ajax({type: "DELETE", url: "#{BASE_URL}/i/auth/#{@getType()}"})
       .success( @handleDelete )
       .error(OX.Alert.display)
 
@@ -56,12 +40,8 @@ class AuthenticationOption
       @$el.show()
     )
 
-  add: ->
-    # TODO: figure out a way for the BE to pass the url
-    window.location.href = "#{BASE_URL}/add/#{@getType()}"
-
-  addNewflow: ->
-    window.location.href = "#{BASE_URL}/i/auth/#{@getType()}"
+  doAdd: ->
+    window.location.href = "#{BASE_URL}/auth/#{@getType()}"
 
   handleDelete: (response) ->
     if response.location?
@@ -74,22 +54,15 @@ class Password extends AuthenticationOption
   constructor: (@el) ->
     super
     this.$el.find('.edit').click(@editPassword)
-    this.$el.find('.edit--newflow').click(@editPasswordNewflow)
-    this.$el.find('.add--newflow').click(@addPasswordNewflow)
+    this.$el.find('.add').click(@addPassword)
 
   # TODO we should just use normal links for edit and add, instead of these JS handlers
 
   editPassword: ->
-    window.location.href = "#{BASE_URL}/password/reset"
+    window.location.href = "#{BASE_URL}/change_password_form"
 
-  editPasswordNewflow: ->
-    window.location.href = "#{BASE_URL}/i/change_password_form"
-
-  add: ->
-    window.location.href = "#{BASE_URL}/password/add"
-
-  addPasswordNewflow: ->
-    window.location.href = "#{BASE_URL}/i/change_password_form"
+  addPassword: ->
+    window.location.href = "#{BASE_URL}/change_password_form"
 
 SPECIAL_TYPES =
   identity: Password

@@ -1,4 +1,5 @@
 <%
+  @parent_col_id = "signup"
   contracts = [FinePrint.get_contract(:general_terms_of_use),
                FinePrint.get_contract(:privacy_policy)]
 
@@ -181,6 +182,7 @@
   <%= javascript_include_tag 'application/ko_extensions' %>
 </div>
 
+<% if @selected_signup_role == 'educator' %>
 <script type="text/javascript">
     // Add the data-bind to the form tag, since can't do that in markup
     const formEl = document.querySelector('form');
@@ -226,3 +228,38 @@
 
     ko.applyBindings(vm());
 </script>
+<% else %>
+  <script type="text/javascript">
+      // Add the data-bind to the form tag, since can't do that in markup
+      const formEl = document.querySelector('form');
+
+      formEl.setAttribute('data-bind', 'submit: beforeSubmit');
+
+      const vm = function () {
+          const email = ko.observable('');
+          const emailHasChanged = ko.observable(false);
+          const emailBlank = ko.computed(() => email().length === 0);
+          const termsIsChecked = ko.observable(false);
+          const canSubmit = ko.computed(() =>
+              !emailBlank() && termsIsChecked()
+          );
+
+          email.subscribe((v) => emailHasChanged(true));
+
+          const beforeSubmit = () => {
+              return true;
+          };
+
+          return {
+              email,
+              emailHasChanged,
+              emailBlank,
+              termsIsChecked,
+              canSubmit,
+              beforeSubmit
+          };
+      };
+
+      ko.applyBindings(vm());
+  </script>
+<% end %>
