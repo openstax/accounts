@@ -94,8 +94,8 @@ class EducatorSignupController < SignupController
 
   def exit_signup_if_steps_complete
     if current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
-      redirect_to(pending_cs_verification_path)
-    elsif action_name == 'sheerid_form' && (sheerid_verification_id.present? || is_sheerid_unviable? || is_profile_complete?)
+      redirect_to(pending_cs_verification)
+    elsif action_name == 'sheerid_form' && (current_user.sheerid_verification_id.present? || current_user.is_sheerid_unviable? || current_user.is_profile_complete?)
       redirect_to(sheerid_form_path)
     elsif action_name == 'profile_form' && current_user.is_profile_complete?
       redirect_to(profile_path)

@@ -155,7 +155,7 @@
 
             <%= form.hidden_field :contract_1_id, value: contracts.first.id %>
             <%= form.hidden_field :contract_2_id, value: contracts.second.id %>
-            <%= form.hidden_field :role, value: @selected_signup_role == 'educator' ? :instructor : :student %>
+            <%= form.hidden_field :role, value: @selected_signup_role %>
           </div>
 
         </div>

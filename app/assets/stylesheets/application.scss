@@ -6,9 +6,18 @@ $font-path: '/accounts/fonts';
 @import "pattern-library/headers";
 @import "font-awesome";
 @import "bootstrap";
-@import "common_colors";
+@import "bootstrap-sprockets";
+@import "common";
+@import "ox-controls";
 @import "intlTelInput";
 @import './profile';
+
+.container,
+.navbar-static-top .container,
+.navbar-fixed-top .container,
+.navbar-fixed-bottom .container {
+  max-width: 960px;
+}
 
 .btn-social {
   margin: 15px auto;

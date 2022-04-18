@@ -35,11 +35,7 @@ class SignupForm
     validate_presence_of_required_params
     return if errors?
 
-    # this gets changed from 'educator' (for the url) to 'instructor' on the signup_form
-    # will be student otherwise
-    @selected_signup_role = signup_params.role.to_sym
     signup_email = signup_params.email.squish!
-
     outputs.email = signup_email
 
     if LookupUsers.by_verified_email(signup_email).first
@@ -50,27 +46,43 @@ class SignupForm
       )
     end
 
-    new_user = create_user
+    if signup_params.role == 'educator'
+      role           = :instructor
+      faculty_status = :incomplete_signup
+    else
+      role           = :student
+      faculty_status = :no_faculty_info
+    end
+
+    user = User.create(
+      state:              :unverified,
+      role:               role,
+      faculty_status:     faculty_status,
+      first_name:         signup_params.first_name,
+      last_name:          signup_params.last_name,
+      phone_number:       signup_params.phone_number,
+      receive_newsletter: signup_params.newsletter,
+      source_application: options[:client_app]
+    )
+    outputs.user = user
 
     run(::SetPassword,
-        user:                  new_user,
-        password:              signup_params.password,
+        user: user,
+        password: signup_params.password,
         password_confirmation: signup_params.password
     )
 
     # Agree to terms
     if options[:contracts_required]
-      run(AgreeToTerms, signup_params.contract_1_id, new_user, no_error_if_already_signed: true)
-      run(AgreeToTerms, signup_params.contract_2_id, new_user, no_error_if_already_signed: true)
+      run(AgreeToTerms, signup_params.contract_1_id, user, no_error_if_already_signed: true)
+      run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
     end
 
     if options[:is_BRI_book]
-      new_user.update!(is_b_r_i_user: true, title_1_school: signup_params.is_title_1_school)
+      user.update!(is_b_r_i_user: true, title_1_school: signup_params.is_title_1_school)
     end
 
-    run(CreateEmailForUser, signup_email, new_user)
-
-    outputs.user = new_user
+    run(CreateEmailForUser, signup_email, user)
   end
 
   private
@@ -99,28 +111,4 @@ class SignupForm
       offending_inputs: field
     )
   end
-
-  def create_user
-    if @selected_signup_role == 'instructor'
-      role           = :instructor
-      faculty_status = :incomplete_signup
-    else
-      role           = :student
-      faculty_status = :no_faculty_info
-    end
-
-    user = User.create(
-      state: :unverified,
-      role: role,
-      faculty_status: faculty_status,
-      first_name: signup_params.first_name,
-      last_name: signup_params.last_name,
-      phone_number: signup_params.phone_number,
-      receive_newsletter: signup_params.newsletter,
-      source_application: options[:client_app]
-    )
-    transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
-    user
-  end
-
 end

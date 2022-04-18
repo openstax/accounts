@@ -24,6 +24,7 @@ class CreateSalesforceLead
 
     sf_school_id = user.school&.salesforce_id
 
+    sf_position = nil
     if user.role == 'student'
       sf_role = 'Student'
     else
@@ -32,6 +33,7 @@ class CreateSalesforceLead
     end
 
     # as_future means they are interested, not adopting, so no adoptionJSON for them
+    adoption_json = nil
     if user.using_openstax_how != 'as_future'
       adoption_json = build_book_adoption_json_for_salesforce(user)
     end
@@ -59,7 +61,7 @@ class CreateSalesforceLead
         school:               user.most_accurate_school_name,
         city:                 user.most_accurate_school_city,
         country:              user.most_accurate_school_country,
-        verification_status:  user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
+        verification_status:  user.faculty_status,
         b_r_i_marketing:      user.is_b_r_i_user?,
         title_1_school:       user.title_1_school?,
         newsletter:           user.receive_newsletter?,
@@ -96,6 +98,8 @@ class CreateSalesforceLead
       )
     end
 
+    outputs.lead = lead
+
     SecurityLog.create!(
       user:       user,
       event_type: :created_salesforce_lead,
@@ -115,7 +119,6 @@ class CreateSalesforceLead
       return
     end
 
-    outputs.lead = lead
     outputs.user = user
   end
 
