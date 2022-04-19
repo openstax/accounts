@@ -94,10 +94,14 @@ class SocialAuthController < ApplicationController
   end
 
   def confirm_oauth_info_form
+    redirect_to signup_path unless unverified_user.present?
+
     render :confirm_social_info_form
   end
 
   def confirm_oauth_info_post
+    redirect_to signup_path unless unverified_user.present?
+
     handle_with(
       ConfirmOauthInfo,
       user: unverified_user,
