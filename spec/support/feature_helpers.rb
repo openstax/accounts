@@ -25,7 +25,6 @@ def create_nonlocal_user(username, provider='facebook')
     case provider
     when 'facebook' then {info: {name: username}, provider: 'facebook'}  # FB dropped nickname
     when 'google' then {info: {nickname: username}, provider: 'google'}
-    when 'twitter' then {info: {nickname: username}, provider: 'twitter'}
     end
   data = OmniauthData.new(auth_data)
 
@@ -162,7 +161,7 @@ def with_omniauth_test_mode(options={})
       })
     end
 
-    [:facebook, :google_oauth2, :twitter, :googlenewflow, :facebooknewflow].each do |provider|
+    [:facebook, :google_oauth2, :googlenewflow, :facebooknewflow].each do |provider|
       OmniAuth.config.mock_auth[provider] = OmniAuth::AuthHash.new({
         uid: options[:uid],
         provider: provider.to_s,
@@ -180,7 +179,7 @@ def with_omniauth_failure_message(message)
   begin
     OmniAuth.config.test_mode = true
 
-    [:facebook, :google_oauth2, :twitter, :identity].each do |provider|
+    [:facebook, :google_oauth2, :identity].each do |provider|
       OmniAuth.config.mock_auth[provider] = message
     end
 
