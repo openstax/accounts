@@ -26,8 +26,6 @@ ActionController::Base.class_exec do
 
   protected
 
-  def complete_signup_profile
-    return true if request.format != :html || request.options?
   def security_log(event_type, event_data = {})
     user = event_data[:user]
 
