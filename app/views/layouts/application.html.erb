@@ -51,7 +51,9 @@
 
 
 <div id="application-container" class="content">
-  <%= render "layouts/application_body" %>
+  <div id="application-body">
+    <%= yield %>
+  </div>
 </div>
 
 <%= render "layouts/application_footer" %>
