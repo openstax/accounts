@@ -9,7 +9,7 @@ RSpec.describe PasswordManagementController, type: :controller do
 
     it 'assigns the email value from what is stored in the session' do
       session[:login_failed_email] = 'someone@openstax.org'
-      get('forgot_password_form')
+      get(:forgot_password_form)
       expect(assigns(:email)).to eq('someone@openstax.org')
     end
   end
@@ -26,7 +26,7 @@ RSpec.describe PasswordManagementController, type: :controller do
         end
 
         it 'assigns the email value from the handler\'s outputs' do
-          post('send_reset_password_email', params: params)
+          post(:send_reset_password_email, params: params)
           expect(assigns(:email)).to eq('user@openstax.org')
         end
 
@@ -36,14 +36,14 @@ RSpec.describe PasswordManagementController, type: :controller do
         end
 
         it 'renders reset_password_email_sent' do
-          post('send_reset_password_email', params: params)
-          expect(response).to render_template(:reset_password_email_sent)
+          post(:send_reset_password_email, params: params)
+          expect(response).to render_template(:reset_password_email)
         end
 
         it 'creates a Security Log' do
           mock_current_user(User.last)
           expect {
-            post('send_reset_password_email', params: params)
+            post(:send_reset_password_email, params: params)
           }.to change {
             SecurityLog.where(event_type: :password_reset, user: User.last).count
           }
@@ -57,14 +57,14 @@ RSpec.describe PasswordManagementController, type: :controller do
 
         it 'creates a Security Log' do
           expect {
-            post('send_reset_password_email', params: params)
+            post(:send_reset_password_email, params: params)
           }.to change {
             SecurityLog.where(event_type: :reset_password_failed).count
           }
         end
 
         it 'renders forgot password form' do
-          post('send_reset_password_email', params: params)
+          post(:send_reset_password_email, params: params)
           expect(response).to render_template(:forgot_password_form)
         end
     end
@@ -120,19 +120,19 @@ RSpec.describe PasswordManagementController, type: :controller do
 
       it 'logs in the user found by token or whateva' do
         some_other_user = FactoryBot.create(:user)
-        get('change_password_form', params: params)
+        get(:change_password_form, params: params)
         expect(controller.current_user.id).to eq(user.id)
         expect(controller.current_user.id).not_to eq(some_other_user.id)
       end
 
       it 'has a 200 status code' do
-        get('change_password_form', params: params)
+        get(:change_password_form, params: params)
         expect(response.status).to eq(200)
       end
 
       xit 'creates a security log' do
         expect {
-          get('change_password_form', params: params)
+          get(:change_password_form, params: params)
         }.to change {
           SecurityLog.where(event_type: :help_requested).count
         }
@@ -149,13 +149,13 @@ RSpec.describe PasswordManagementController, type: :controller do
       end
 
       it 'responds with 400 error' do
-        get('change_password_form', params: params)
+        get(:change_password_form, params: params)
         expect(response.code).to eq('400')
       end
 
       it 'creates a security log' do
         expect {
-          get('change_password_form', params: params)
+          get(:change_password_form, params: params)
         }.to change {
           SecurityLog.where(event_type: :help_request_failed).count
         }
@@ -196,7 +196,7 @@ RSpec.describe PasswordManagementController, type: :controller do
 
       it 'creates a security log' do
         expect {
-          post('change_password', params: params)
+          post(:change_password, params: params)
         }.to change {
           SecurityLog.where(event_type: :password_reset).count
         }
@@ -219,7 +219,7 @@ RSpec.describe PasswordManagementController, type: :controller do
 
       it 'creates a security log' do
         expect {
-          post('change_password', params: params)
+          post(:change_password, params: params)
         }.to change {
           SecurityLog.where(event_type: :password_reset_failed).count
         }

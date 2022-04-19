@@ -1,8 +1,6 @@
 # If a user with the given email address is found, OR if there is a logged in user,
 #  we send (to each of their verified email addresses)
 # an email to reset their password.
-
-#TODO:
 class SendResetPasswordEmail
   lev_handler
 
@@ -44,7 +42,7 @@ class SendResetPasswordEmail
     outputs.email ||= email_addresses.first
 
     email_addresses.each do |email_address|
-      SignInHelpMailer.reset_password_email(user: user, email_address: email_address).deliver_later
+      SignupPasswordMailer.reset_password_email(user: user, email_address: email_address).deliver_later
     end
   end
 
