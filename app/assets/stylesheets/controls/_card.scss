@@ -80,7 +80,7 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    border-color: $input-border;
+    border-color: $input-border-color;
     color: $os_gray;
 
     &::-ms-expand {
@@ -105,12 +105,12 @@
     input[type="text"],
     input[type="password"],
     select {
-      background-color: $state-danger-bg;
-      border: 1px solid darken($state-danger-border, 10%);
+      background-color: ui-color(error-bg);
+      border: 1px solid darken(ui-color(error-border), 10%);
 
       &:focus {
-        background-color: darken($state-danger-bg, 1%);
-        border: 1px solid darken($state-danger-border, 30%);
+        background-color: darken(ui-color(error-bg), 1%);
+        border: 1px solid darken(ui-color(error-border), 30%);
       }
     }
   }
@@ -123,7 +123,7 @@
   }
 
   .warning {
-    color: $state-danger-text; // bs variable
+    color: ui-color(error); // bs variable
   }
 
   a:not(.btn) {
