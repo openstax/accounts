@@ -113,6 +113,8 @@ class SecurityLog < ApplicationRecord
     user_signup_failed
     user_verified_email
     user_verify_email_failed
+    uesr_password_reset
+    user_password_reset_failed
   ]
 
 
