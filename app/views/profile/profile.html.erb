@@ -4,10 +4,11 @@
 %>
 
 <% content_for :head do %>
-  <%= javascript_include_tag  "profile" %>
+  <%= javascript_include_tag  'profile' %>
+  <%= stylesheet_link_tag 'profile' %>
 <% end %>
 
-<%= ox_card do %>
+<%= ox_card(classes: 'profile') do %>
   <div class="profile-title">
     <%=
       link_to(
