@@ -3,9 +3,8 @@
  * License version 3 or later.  See the COPYRIGHT file for details.
  */
 $font-path: '/accounts/fonts';
-@import "pattern-library/headers";
+@import "pattern-library";
 @import "font-awesome";
-@import "bootstrap";
 @import "bootstrap-sprockets";
 @import "common";
 @import "ox-controls";
@@ -512,12 +511,8 @@ input.has-error {
         border-right: 0;
       }
 
-      &:nth-child(2) {
-        border-top-right-radius: 0.3rem;
-      }
-
       &:last-child {
-        width: 10rem;
+        border-top-right-radius: 0.3rem;
       }
 
       &.login.login--active, &.signup.signup--active {
@@ -535,6 +530,7 @@ input.has-error {
       border: 0;
       border-bottom: 0.1rem solid #d5d5d5;
       background-color: #fff; // TODO: use a shared variable
+      width: 100%;
     }
   }
 

@@ -17,7 +17,6 @@ button {
   &.cancel,
   &.primary {
     @extend .btn;
-    text-transform: uppercase;
     border-radius: 0;
     padding-left: 2rem;
     padding-right: 2rem;

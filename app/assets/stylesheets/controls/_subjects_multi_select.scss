@@ -1,7 +1,7 @@
 .subjects {
 
   &.has-error {
-    border: 1px solid darken($state-danger-border, 10%);
+    border: 1px solid darken(ui-color(error-border), 10%);
   }
 
   .errors {
