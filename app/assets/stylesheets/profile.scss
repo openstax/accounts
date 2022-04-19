@@ -2,8 +2,9 @@
 //@import "bootstrap-editable";
 @import "pattern-library/elements/menus";
 
-#profile .ox-card {
-  border: thin solid grey;
+.profile.ox-card {
+  background-color: ui-color(white);
+  border: thin solid ui-color(form-border);
   box-sizing: border-box;
   margin: auto;
   max-width: 57rem;
@@ -18,11 +19,14 @@
 
   .info-grid {
     display: grid;
-    color: black;
     gap: 4rem 2rem;
     grid-template-columns: auto 1fr;
     margin-top: 4rem;
     width: 100%;
+
+    .fa-square {
+      color: ui-color(black);
+    }
   }
 
   .profile-title {
