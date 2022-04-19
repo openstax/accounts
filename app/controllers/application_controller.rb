@@ -28,10 +28,6 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def restart_signup_if_missing_verified_user
-    redirect_to signup_path unless unverified_user.present?
-  end
-
   def allow_iframe_access
     @iframe_parent = params[:parent]
 

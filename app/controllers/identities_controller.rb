@@ -2,8 +2,7 @@ class IdentitiesController < ApplicationController
 
   include RequireRecentSignin
 
-  skip_before_action :authenticate_user!, :complete_signup_profile,
-                    only: [:reset, :add]
+  skip_before_action :authenticate_user!, only: [:reset, :add]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:reset, :send_reset, :reset_success, :add_success]

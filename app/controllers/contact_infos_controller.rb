@@ -2,8 +2,6 @@ class ContactInfosController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [:confirm, :confirm_unclaimed, :resend_confirmation]
 
-  skip_before_action :complete_signup_profile, only: [:confirm_unclaimed]
-
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:create, :destroy, :set_searchable, :confirm,
                          :confirm_unclaimed, :resend_confirmation]

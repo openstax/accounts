@@ -38,14 +38,14 @@ module UserSessionManagement
     end
   end
 
-  def sign_in!(user, security_log_data: {})
+  def sign_in!(user, log: true, security_log_data: {})
     @current_user = user || AnonymousUser.instance
 
     if @current_user.is_anonymous?
       # Clear the SSO cookie
       sso_cookie_jar.delete
 
-      security_log(:sign_out, security_log_data)
+      security_log(:sign_out, security_log_data) if log
     else
       session[:last_admin_activity] = DateTime.now.to_s if @current_user.is_administrator?
 
@@ -53,7 +53,7 @@ module UserSessionManagement
       user_hash = Api::V1::UserRepresenter.new(@current_user).to_hash
       sso_cookie_jar.subject = user_hash
 
-      security_log :sign_in_successful, security_log_data
+      security_log(:sign_in_successful, security_log_data) if log
     end
 
     @current_user

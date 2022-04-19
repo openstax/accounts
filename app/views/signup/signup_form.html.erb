@@ -35,7 +35,7 @@
           <div class="content role-section">
             <div>
               <%= render partial: 'shared/back_arrow', locals: { path: signup_path } %>
-              <% if @selected_signup_role == 'student' %>
+              <% if selected_signup_role == :student %>
                 <div class="role-button"><%= I18n.t(:'login_signup_form.student') %></div>
               <% else %>
                 <div class="role-button"><%= I18n.t(:'login_signup_form.educator') %></div>
@@ -43,7 +43,7 @@
             </div>
           </div>
 
-        <% if @selected_signup_role == 'student' %>
+        <% if selected_signup_role == :student %>
           <%= render partial: 'social_auth/social_buttons' %>
 
           <%=
@@ -81,7 +81,7 @@
           %>
         </div>
 
-          <% if @selected_signup_role == 'educator' %>
+          <% if selected_signup_role == :instructor %>
             <div class="content control-group">
               <%= label_tag :phone_number, I18n.t(:'login_signup_form.phone_number_label'), class: 'field-label' %>
               <%=
