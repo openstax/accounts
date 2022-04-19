@@ -91,34 +91,35 @@ class CreateSalesforceLead
       event_type: :attempting_to_create_user_lead
     )
 
-    unless lead.save!
+    unless lead.save
       SecurityLog.create!(
         user: user,
         event_type: :salesforce_error
       )
-    end
+      #TODO: this needs a sentry error but we should still process the user
+    else
 
-    outputs.lead = lead
+      outputs.lead = lead
 
-    SecurityLog.create!(
-      user:       user,
-      event_type: :created_salesforce_lead,
-      event_data: { lead_id: lead.id }
-    )
-
-    user.salesforce_lead_id = lead.id
-    outputs.lead = lead
-    if user.save!
       SecurityLog.create!(
         user:       user,
-        event_type: :user_lead_id_updated_from_salesforce,
+        event_type: :created_salesforce_lead,
         event_data: { lead_id: lead.id }
       )
-      outputs.user = user
-      return true
-    else
-      transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
-      return
+
+      user.salesforce_lead_id = lead.id
+      if user.save!
+        SecurityLog.create!(
+          user:       user,
+          event_type: :user_lead_id_updated_from_salesforce,
+          event_data: { lead_id: lead.id }
+        )
+        outputs.user = user
+        return true
+      else
+        transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
+        return
+      end
     end
   end
 
