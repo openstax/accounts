@@ -10,8 +10,10 @@
   }
 
   if @selected_signup_role == 'student'
+    selected_signup_role = :student
     total_steps = 2
   else
+    selected_signup_role = :instructor
     total_steps = 4
   end
 %>
@@ -161,7 +163,7 @@
 
             <%= form.hidden_field :contract_1_id, value: contracts.first.id %>
             <%= form.hidden_field :contract_2_id, value: contracts.second.id %>
-            <%= form.hidden_field :role, value: @selected_signup_role %>
+            <%= form.hidden_field :role, value: selected_signup_role %>
           </div>
 
         </div>
