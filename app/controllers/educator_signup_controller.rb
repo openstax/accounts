@@ -14,12 +14,12 @@ class EducatorSignupController < SignupController
       cs_verification_request
     ]
   )
-  before_action(:exit_signup_if_steps_complete, only: %i[
-      sheerid_form
-      profile_form
-      cs_verification_form
-    ]
-  )
+  # before_action(:exit_signup_if_steps_complete, only: %i[
+  #     sheerid_form
+  #     profile_form
+  #     cs_verification_form
+  #   ]
+  # )
   before_action(:store_if_sheerid_is_unviable_for_user, only: :sheerid_form)
   before_action(:store_sheerid_verification_for_user, only: :sheerid_form)
 
@@ -84,25 +84,25 @@ class EducatorSignupController < SignupController
   def pending_cs_verification_form
     security_log(:user_sent_to_cs_for_review, user: current_user)
     @email_address = current_user.email_addresses.last&.value
-    redirect_to(profile_path)
   end
 
   def pending_cs_verification
+    render :pending_cs_verification
   end
 
   private #################
 
-  def exit_signup_if_steps_complete
-    if current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
-      redirect_to(pending_cs_verification)
-    elsif action_name == 'sheerid_form' && (current_user.sheerid_verification_id.present? || current_user.is_sheerid_unviable? || current_user.is_profile_complete?)
-      redirect_to(sheerid_form_path)
-    elsif action_name == 'profile_form' && current_user.is_profile_complete?
-      redirect_to(profile_path)
-    else
-      warn('unexpected step in educator_signup/exit_signup_if_steps_complete')
-    end
-  end
+  # def exit_signup_if_steps_complete
+  #   if current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
+  #     redirect_to(pending_cs_verification)
+  #   elsif action_name == 'sheerid_form' && (current_user.sheerid_verification_id.present? || current_user.is_sheerid_unviable? || current_user.is_profile_complete?)
+  #     redirect_to(sheerid_form_path)
+  #   elsif action_name == 'profile_form' && current_user.is_profile_complete?
+  #     redirect_to(profile_path)
+  #   else
+  #     warn('unexpected step in educator_signup/exit_signup_if_steps_complete')
+  #   end
+  # end
 
   def store_if_sheerid_is_unviable_for_user
     if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
