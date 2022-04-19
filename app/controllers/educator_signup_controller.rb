@@ -105,7 +105,7 @@ class EducatorSignupController < SignupController
   # end
 
   def store_if_sheerid_is_unviable_for_user
-    if is_school_not_supported_by_sheerid? || is_country_not_supported_by_sheerid?
+    if params[:school].present? || params[:country].present?
       current_user.update!(is_sheerid_unviable: true)
       security_log(:user_not_viable_for_sheerid, user: current_user)
     end

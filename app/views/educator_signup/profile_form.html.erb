@@ -28,8 +28,8 @@
 
       </div>
 
-      <%= f.hidden_field :is_school_not_supported_by_sheerid, value: is_school_not_supported_by_sheerid? || current_incomplete_educator&.rejected_faculty? %>
-      <%= f.hidden_field :is_country_not_supported_by_sheerid, value: is_country_not_supported_by_sheerid? || current_incomplete_educator&.rejected_faculty? %>
+      <%= f.hidden_field :is_school_not_supported_by_sheerid, value: params[:school].present? || current_incomplete_educator&.rejected_faculty? %>
+      <%= f.hidden_field :is_country_not_supported_by_sheerid, value: params[:country].present? || current_incomplete_educator&.rejected_faculty? %>
 
       <input type="submit" name="commit" value="Continue"
         class="primary"
