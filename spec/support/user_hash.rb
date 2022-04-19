@@ -8,7 +8,6 @@ def user_matcher(user, include_private_data: false)
     first_name: user.first_name,
     last_name: user.last_name,
     full_name: user.full_name,
-    needs_complete_edu_profile: false,
     title: user.title,
     suffix: user.suffix,
     uuid: user.uuid,
