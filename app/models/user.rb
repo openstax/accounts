@@ -3,6 +3,7 @@ require "i18n"
 class User < ApplicationRecord
 
   VALID_STATES = [
+    TEMP = 'temp',
     NEW_SOCIAL = 'new_social',
     UNCLAIMED = 'unclaimed',
     NEEDS_PROFILE = 'needs_profile', # has yet to fill out their user info
@@ -221,7 +222,7 @@ class User < ApplicationRecord
 
   # State helpers.
   #
-  # A User model begins life in the "temp" state, and can then be claimed by another user
+  # A User model begins life in the "unverified" state, and can then be claimed by another user
   # who originated from an OAuth login. Upon it being claimed it will be removed and it's
   # data merged with the claimant.
   #
