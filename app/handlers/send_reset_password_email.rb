@@ -42,7 +42,7 @@ class SendResetPasswordEmail
     outputs.email ||= email_addresses.first
 
     email_addresses.each do |email_address|
-      NewflowMailer.reset_password_email(user: user, email_address: email_address).deliver_later
+      SignupPasswordMailer.reset_password_email(user: user, email_address: email_address).deliver_later
     end
   end
 

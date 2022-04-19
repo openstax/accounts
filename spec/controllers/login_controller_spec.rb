@@ -14,7 +14,7 @@ RSpec.describe LoginController, type: :controller do
       describe 'students' do
         before do
           user = create_user('user@openstax.org', 'password')
-          user.update!(role: User::STUDENT_ROLE)
+          user.update!(role: :student)
           expect_any_instance_of(LogInUser).to receive(:call).once.and_call_original
         end
 
@@ -24,12 +24,12 @@ RSpec.describe LoginController, type: :controller do
 
         it 'logs in the user' do
           expect_any_instance_of(described_class).to receive(:sign_in!).once.and_call_original
-          post('login', params: params)
+          post(:login_post, params: params)
           expect(assigns(:current_user)).to eq(User.last)
         end
 
         it 'redirects on success' do
-          post('login', params: params)
+          post(:login_post, params: params)
           expect(response).to have_http_status(:redirect)
         end
 
@@ -37,24 +37,24 @@ RSpec.describe LoginController, type: :controller do
           path = Faker::Internet.slug
 
           # GET login_form with `?r=URL` stores the url to return to after login
-          get('login_form', params: { r: "https://openstax.org/#{path}" })
+          get(:login_form, params: { r: "https://openstax.org/#{path}" })
 
-          post('login', params: params)
+          post(:login_post, params: params)
           expect(response).to redirect_to("https://openstax.org/#{path}")
         end
 
         it 'checks `r`eturn parameter is whitelisted' do
           expect(Host).to receive(:trusted?).once.and_call_original
           # GET login_form with `?r=URL` may store a SAFE url to return to after login
-          get('login_form', params: { r: 'https://maliciousdomain.com' })
+          get(:login_form, params: { r: 'https://maliciousdomain.com' })
 
-          post('login', params: params)
+          post(:login_post, params: params)
           expect(response).not_to redirect_to('https://maliciousdomain.com')
         end
 
         it 'creates a security log' do
           expect {
-            post('login', params: params)
+            post(:login_post, params: params)
           }.to change {
             SecurityLog.where(event_type: :sign_in_successful).count
           }
@@ -65,7 +65,7 @@ RSpec.describe LoginController, type: :controller do
         let(:user) { create_user('user@openstax.org', 'password') }
 
         before do
-          user.update!(role: User::INSTRUCTOR_ROLE)
+          user.update!(role: :instructor)
         end
 
         let(:params) do
@@ -77,12 +77,12 @@ RSpec.describe LoginController, type: :controller do
 
           it 'logs in the user' do
             expect_any_instance_of(described_class).to receive(:sign_in!).once.and_call_original
-            post('login', params: params)
+            post(:login_post, params: params)
             expect(assigns(:current_user)).to eq(User.last)
           end
 
           it 'redirects on success' do
-            post('login', params: params)
+            post(:login_post, params: params)
             expect(response).to have_http_status(:redirect)
           end
 
@@ -90,9 +90,9 @@ RSpec.describe LoginController, type: :controller do
             path = Faker::Internet.slug
 
             # GET login_form with `?r=URL` stores the url to return to after login
-            get('login_form', params: { r: "https://openstax.org/#{path}" })
+            get(:login_form, params: { r: "https://openstax.org/#{path}" })
 
-            post('login', params: params)
+            post(:login_post, params: params)
             expect(response).to redirect_to("https://openstax.org/#{path}")
           end
 
@@ -101,13 +101,13 @@ RSpec.describe LoginController, type: :controller do
             # GET login_form with `?r=URL` may store a SAFE url to return to after login
             get('login_form', params: { r: 'https://maliciousdomain.com' })
 
-            post('login', params: params)
+            post(:login_post, params: params)
             expect(response).not_to redirect_to('https://maliciousdomain.com')
           end
 
           it 'creates a security log' do
             expect {
-              post('login', params: params)
+              post(:login_post, params: params)
             }.to change {
               SecurityLog.where(event_type: :sign_in_successful).count
             }
@@ -119,12 +119,12 @@ RSpec.describe LoginController, type: :controller do
 
           it 'saves incomplete educator in the session' do
             # expect_any_instance_of(described_class).to receive(:save_incomplete_educator).with(user).once.and_call_original
-            post('login', params: params)
+            post(:login_post, params: params)
             # expect(assigns(:current_incomplete_educator)).to eq(user)
           end
 
           it 'does a redirect' do
-            post('login', params: params)
+            post(:login_post, params: params)
             expect(response).to have_http_status(:redirect)
           end
         end
@@ -137,7 +137,7 @@ RSpec.describe LoginController, type: :controller do
 
         xit 'creates a security log' do
           expect {
-            post('login', params: { login_form: { email: bogus_email, password: 'password' } })
+            post(:login_post, params: { login_form: { email: bogus_email, password: 'password' } })
           }.to change {
             SecurityLog.sign_in_failed.where(event_data: { reason: :cannot_find_user, email: bogus_email}).count
           }
@@ -157,7 +157,7 @@ RSpec.describe LoginController, type: :controller do
 
         xit 'creates a security log' do
           expect {
-            post('login', params: { login_form: { email: email_address, password: 'password' } })
+            post(:login_post, params: { login_form: { email: email_address, password: 'password' } })
           }.to change {
             SecurityLog.where(event_type: :sign_in_failed).count
           }
@@ -175,7 +175,7 @@ RSpec.describe LoginController, type: :controller do
 
         xit 'creates a security log' do
           expect {
-            post('login', params: { login_form: { email: email.value, password: 'wrongpassword' } })
+            post(:login_post, params: { login_form: { email: email.value, password: 'wrongpassword' } })
           }.to change {
             SecurityLog.where(
               event_type: :sign_in_failed,
@@ -189,7 +189,7 @@ RSpec.describe LoginController, type: :controller do
       end
 
       it 'saves the email to the session' do
-        post('login', params: { login_form: { email: 'noone@openstax.org', password: 'wrongZpassword' } })
+        post(:login_post, params: { login_form: { email: 'noone@openstax.org', password: 'wrongZpassword' } })
         expect(session[:login_failed_email]).to  eq('noone@openstax.org')
       end
     end
