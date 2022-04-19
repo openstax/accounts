@@ -134,7 +134,7 @@ RSpec.describe PasswordManagementController, type: :controller do
         expect {
           get(:change_password_form, params: params)
         }.to change {
-          SecurityLog.where(event_type: :help_requested).count
+          SecurityLog.where(event_type: :user_password_reset).count
         }
       end
     end
@@ -157,7 +157,7 @@ RSpec.describe PasswordManagementController, type: :controller do
         expect {
           get(:change_password_form, params: params)
         }.to change {
-          SecurityLog.where(event_type: :help_request_failed).count
+          SecurityLog.where(event_type: :user_password_reset_failed).count
         }
       end
     end

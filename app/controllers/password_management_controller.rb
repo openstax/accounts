@@ -85,7 +85,7 @@ class PasswordManagementController < ApplicationController
           reauthenticate_user!(redirect_back_to: change_password_form_path) and return
         elsif (user = @handler_result.outputs.user)
           sign_in!(user, { security_log_data: { type: 'token' } })
-          security_log :help_requested, user: current_user
+          security_log :uesr_password_reset, user: current_user
         end
 
         if kind == :change && current_user.identity.present?
@@ -95,8 +95,8 @@ class PasswordManagementController < ApplicationController
         end
       },
       failure: lambda {
-        security_log(:help_request_failed, { params: request.query_parameters })
-        Sentry.capture_message("Request for help failed", extra: {
+        security_log(:user_password_reset_failed, { params: request.query_parameters })
+        Sentry.capture_message("Password reset failed", extra: {
           params: request.query_parameters
         })
         render(status: 400)
