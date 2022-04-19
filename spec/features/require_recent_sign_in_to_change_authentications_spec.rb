@@ -110,42 +110,4 @@ feature 'Require recent log in to change authentications', js: true do
   #     expect(page).to have_content(t :"identities.reset_success.message")
   #   end
   # end
-
-  scenario 'removing an authentication' do
-    with_forgery_protection do
-      FactoryBot.create :authentication, user: user, provider: 'twitter'
-
-      log_in_user(email_value, 'password')
-
-      expect(page).to have_no_missing_translations
-      Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-        visit '/profile'
-        expect_profile_page
-        expect(page).to have_content('Twitter')
-        screenshot!
-
-        find('.authentication[data-provider="twitter"] .delete--newflow').click
-        screenshot!
-        click_button 'OK'
-        screenshot!
-
-        wait_for_animations
-        wait_for_ajax
-        expect(page.current_path).to eq(reauthenticate_form_path)
-        expect(find('#login_form_email').value).to eq(email_value) # email should be pre-populated
-        fill_in('login_form_password', with: 'password')
-        screenshot!
-        find('[type=submit]').click
-        wait_for_animations
-
-        expect_profile_page
-        screenshot!
-
-        find('.authentication[data-provider="twitter"] .delete--newflow').click
-        click_button 'OK'
-        expect(page).to have_no_content('Twitter')
-        screenshot!
-      end
-    end
-  end
 end

@@ -607,7 +607,6 @@ pl:
       separator_or: albo
       sign_in_with_facebook: Zaloguj się przez Facebooka
       sign_in_with_google: Zaloguj się przez Google
-      sign_in_with_twitter: Zaloguj się przez Twittera
       login: Zaloguj
       submitting: Logowanie…
       password: Hasło

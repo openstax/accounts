@@ -36,7 +36,6 @@ class OmniauthData
 
   def email
     # Facebook only returns verified emails
-    # Twitter returns no emails
     # Google can return unverified emails
     # However, the omniauth-google-oauth2 gem filters those out
     @info[:email]

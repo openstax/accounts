@@ -18,7 +18,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
   context 'when the user has non-blank names' do
     let(:auth_hash) do
       OmniAuth::AuthHash.new(
-        provider: 'twitter', uid: '12345678', info: { first_name: 'User', last_name: 'One' }
+        provider: 'google', uid: '12345678', info: { first_name: 'User', last_name: 'One' }
       )
     end
 
@@ -114,56 +114,6 @@ RSpec.describe TransferOmniauthData, type: :routine do
                              .and not_change { user.contact_infos.first.verified }
           end
         end
-      end
-    end
-
-    context 'when the auth provider is twitter' do
-      let(:auth_hash) do
-        OmniAuth::AuthHash.new(provider: 'twitter', uid: '12345678').tap do |hash|
-          hash.extra = {
-            oauth_token: '12345678-abcdefg',
-            user_id: '12345678',
-            screen_name: 'user1',
-            raw_info: {
-              contributors_enabled: false,
-              created_at: 'Wed Nov 26 11:04:13 +0000 2013',
-              default_profile: false,
-              default_profile_image: false,
-              description: 'User one profile description text',
-              entities: { description: { urls: [] } },
-              url: { urls: [{ display_url: 'example.com', expanded_url: 'http://example.com', url: 'http://t.co/XYZ' }] },
-              id: 12345678,
-              id_str: '12345678',
-              lang: 'en',
-              location: 'Munich, Germany',
-              name: 'User N. One',
-              notifications: false,
-              profile_image_url: 'http://pbs.twimg.com/profile_images/12345678/me.jpg',
-              profile_image_url_https: 'https://pbs.twimg.com/profile_images/12345678/me.jpg',
-              screen_name: 'user1',
-            },
-          }
-
-          hash.info = {
-            description: 'User one profile description text',
-            image: 'http://pbs.twimg.com/profile_images/12345678/me.jpg',
-            location: 'Munich, Germany',
-            name: 'User N. One',
-            nickname: 'user1',
-            urls: {
-              Twitter: 'https://twitter.com/XYZ',
-              Website: 'http://example.com'
-            }
-          }
-        end
-      end
-
-      it 'stores user information' do
-        expect{ subject }.to  change     { user.new_record?          }.from(true).to(false)
-                         .and change     { user.first_name           }.to('User')
-                         .and change     { user.last_name            }.to('N. One')
-                         .and not_change { user.contact_infos.length }
-        expect(user.contact_infos).to be_empty
       end
     end
 
