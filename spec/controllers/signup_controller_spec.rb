@@ -62,7 +62,7 @@ RSpec.describe SignupController, type: :controller do
 
       it 'redirects to student_email_verification_form_path' do
         post(:signup_post, params: params)
-        expect(response).to redirect_to(verify_email_by_pin_post_path)
+        expect(response).to redirect_to(:verify_email_by_pin_form)
       end
     end
 
@@ -118,7 +118,7 @@ RSpec.describe SignupController, type: :controller do
 
       it 'redirects to email_verification_form_updated_email_path' do
         user = User.last
-        user.update_attribute('state', 'unverified')
+        user.update_attribute(:state, :unverified)
         session[:unverified_user_id] = user.id
         post(:change_signup_email_post, params: params)
         expect(response).to redirect_to(:change_signup_email_form_complete)
@@ -163,10 +163,12 @@ RSpec.describe SignupController, type: :controller do
       allow_any_instance_of(described_class).to receive(:unverified_user) { user }
       get(:verify_email_by_pin_form)
       expect(response.status).to eq(200)
-      expect(response).to render_template(:verify_email_by_pin)
+      expect(response).to render_template(:email_verification_form)
     end
 
     it 'redirects when there is no unverified_user present' do
+      user = nil
+      session[:unverified_user_id] = nil
       get(:verify_email_by_pin_form)
       expect(response.status).to eq(302)
     end

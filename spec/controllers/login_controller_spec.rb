@@ -115,7 +115,7 @@ RSpec.describe LoginController, type: :controller do
         end
 
         context 'when educator is NOT profile complete' do
-          before { user.update!(is_profile_complete: false) }
+          before { user.update!(faculty_status: :incomplete_signup) }
 
           it 'saves incomplete educator in the session' do
             # expect_any_instance_of(described_class).to receive(:save_incomplete_educator).with(user).once.and_call_original
