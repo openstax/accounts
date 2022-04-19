@@ -18,8 +18,11 @@ class ActivateUser
 
     # create a lead for the user if they are a student and want the newsletter
     # otherwise, the lead gets created at the end of the instructor profile
-    if user.role == :student && user.receive_newsletter?
-      CreateSalesforceLead.perform_later(user_id: user.id)
+    if user.role == :student
+      user.update!(faculty_status: :no_faculty_info)
+      if user.receive_newsletter?
+        CreateSalesforceLead.perform_later(user_id: user.id)
+      end
     end
 
     SecurityLog.create!(user: user, event_type: :user_became_activated)

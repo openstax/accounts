@@ -26,6 +26,15 @@ class SignupForm
     attribute :country_code, type: String
   end
 
+  def required_params
+    if signup_params.role == 'instructor'
+      required_params = [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
+    else # student
+      required_params = [:email, :first_name, :last_name, :password].compact
+    end
+    required_params
+  end
+
   def authorized?
     true
     #caller.is_needs_profile?
@@ -41,26 +50,18 @@ class SignupForm
     if LookupUsers.by_verified_email(signup_email).first
       fatal_error(
         code:             :email_taken,
-        message:          I18n.t(:"login_signup_form.email_address_taken"),
+        message:          I18n.t(:'login_signup_form.email_address_taken'),
         offending_inputs: :email
       )
     end
 
-    if signup_params.role == 'educator'
-      role           = :instructor
-      faculty_status = :incomplete_signup
-    else
-      role           = :student
-      faculty_status = :no_faculty_info
-    end
-
     user = User.create(
-      state:              :unverified,
-      role:               role,
-      faculty_status:     faculty_status,
-      first_name:         signup_params.first_name,
-      last_name:          signup_params.last_name,
-      phone_number:       signup_params.phone_number,
+      state: :unverified,
+      role: signup_params.role,
+      faculty_status: :incomplete_signup, # this will be updated after a student verifies their email or instructor completes profile
+      first_name: signup_params.first_name,
+      last_name: signup_params.last_name,
+      phone_number: signup_params.phone_number,
       receive_newsletter: signup_params.newsletter,
       source_application: options[:client_app]
     )
@@ -88,13 +89,6 @@ class SignupForm
   private
 
   def validate_presence_of_required_params
-
-    if @selected_signup_role == 'instructor'
-      required_params ||= [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
-    else
-      required_params ||= [:email, :first_name, :last_name, :password].compact
-    end
-
     required_params.each do |param|
       if signup_params.send(param).blank?
         missing_param_error(param)
