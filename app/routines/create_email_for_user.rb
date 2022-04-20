@@ -12,7 +12,7 @@ class CreateEmailForUser
 
     # If the email address already exists and is attached to the user, nothing to do
     email_address = user.email_addresses.find_by(value: email)
-    return if email_address.try!(:verified)
+    return if email_address&.verified
 
     # If it is a brand new email address, make it
     if email.nil?
@@ -27,7 +27,7 @@ class CreateEmailForUser
 
     email.customize_value_error_message(
       error: :missing_mx_records,
-      message: I18n.t(:"login_signup_form.invalid_email_provider", email: email)
+      message: I18n.t(:'login_signup_form.invalid_email_provider', email: email)
     )
 
     email.save

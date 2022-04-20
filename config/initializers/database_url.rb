@@ -28,8 +28,8 @@ module DatabaseUrl
 
   def self.config_to_url(config)
     query_values = {}
-    query_values[:sslmode] = config['sslmode'] unless config['sslmode'].blank?
-    query_values[:sslrootcert] = config['sslrootcert'] unless config['sslrootcert'].blank?
+    query_values[:sslmode] = config['sslmode'] if config['sslmode'].present?
+    query_values[:sslrootcert] = config['sslrootcert'] if config['sslrootcert'].present?
     query_values = nil if query_values.blank?
     Addressable::URI.new(
       scheme: config['adapter'],

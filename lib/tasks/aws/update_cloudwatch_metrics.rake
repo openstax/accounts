@@ -35,7 +35,7 @@ namespace :aws do
         namespace: 'DelayedJob',
         metric_data: queues.map do |queue|
           dimensions = default_dimensions
-          dimensions += [ { name: 'Queue', value: queue } ] unless queue.blank?
+          dimensions += [ { name: 'Queue', value: queue } ] if queue.present?
 
           min_effective_run_at = if queue.blank?
             min_effective_run_at_by_queue.values.compact.min

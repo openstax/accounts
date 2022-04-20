@@ -17,7 +17,8 @@ class PasswordManagementController < ApplicationController
       success: lambda {
         user = @handler_result.outputs.user
         @email = @handler_result.outputs.email
-        security_log(:password_reset, {user: user, email: @email, message: "Sent password reset email"})
+        security_log(:password_reset,
+{user: user, email: @email, message: "Sent password reset email"})
         clear_signup_state
         sign_out!
         render :reset_password_email_sent
@@ -41,7 +42,7 @@ class PasswordManagementController < ApplicationController
       CreatePassword,
       success: lambda {
         security_log(:student_created_password, user: @handler_result.outputs.user)
-        redirect_to profile_url, notice: t(:"identities.add_success.message")
+        redirect_to profile_url, notice: t(:'identities.add_success.message')
       },
       failure: lambda {
         security_log(:student_create_password_failed, user: @handler_result.outputs.user)
@@ -65,11 +66,11 @@ class PasswordManagementController < ApplicationController
         ChangePassword,
         success: lambda {
           security_log :password_reset
-          redirect_to profile_url, notice: t(:"identities.reset_success.message")
+          redirect_to profile_url, notice: t(:'identities.reset_success.message')
         },
         failure: lambda {
           security_log :password_reset_failed
-          render :change_password_form, status: 400
+          render :change_password_form, status: :bad_request
         }
       )
     end
@@ -99,7 +100,7 @@ class PasswordManagementController < ApplicationController
         Sentry.capture_message("Password reset failed", extra: {
           params: request.query_parameters
         })
-        render(status: 400)
+        render(status: :bad_request)
       }
     )
   end

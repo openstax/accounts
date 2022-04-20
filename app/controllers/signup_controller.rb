@@ -4,7 +4,8 @@ class SignupController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   before_action(:authenticate_user!, only: :signup_done)
-  before_action(:redirect_to_signup_if_no_user_session, except: %w[welcome signup_form signup_post verify_email_by_pin_form change_signup_email_post])
+  before_action(:redirect_to_signup_if_no_user_session,
+except: %w[welcome signup_form signup_post verify_email_by_pin_form change_signup_email_post])
 
   def welcome
     redirect_back(fallback_location: profile_path) if signed_in?
@@ -33,7 +34,8 @@ class SignupController < ApplicationController
         redirect_to verify_email_by_pin_form_path
       },
       failure:              lambda {
-        security_log(:user_signup_failed, { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
+        security_log(:user_signup_failed,
+{ reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
         render :signup_form
       }
     )
@@ -56,7 +58,8 @@ class SignupController < ApplicationController
           security_log(:student_verified_email, { user: user, message: "Student verified email." })
           redirect_to signup_done_path
         else # instructor
-          security_log(:educator_verified_email, { user: user, message: "Educator verified email." })
+          security_log(:educator_verified_email,
+{ user: user, message: "Educator verified email." })
           redirect_to sheerid_form_path
         end
       },

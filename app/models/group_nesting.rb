@@ -3,8 +3,8 @@ class GroupNesting < ApplicationRecord
   belongs_to :container_group, class_name: 'Group', inverse_of: :member_group_nestings
   belongs_to :member_group, class_name: 'Group', inverse_of: :container_group_nesting
 
-  validates_presence_of :container_group, :member_group
-  validates_uniqueness_of :member_group_id
+  validates :container_group, :member_group, presence: true
+  validates :member_group_id, uniqueness: true
   validate :no_loops, on: :create
 
   before_create :update_group_caches

@@ -198,12 +198,12 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
 end
 
 def click_password_sign_up  # TODO remove, bad name
-  click_on (t :"sessions.start.sign_up")
+  click_on (t :'sessions.start.sign_up')
 end
 
 def expect_sign_in_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"sessions.start.page_heading")
+  expect(page).to have_content(t :'sessions.start.page_heading')
 end
 
 def expect_authenticate_page
@@ -230,52 +230,52 @@ def complete_login_username_or_email_screen(username_or_email)
   expect_sign_in_page
   expect(page).to have_no_missing_translations
   screenshot!
-  click_button (t :"sessions.start.next")
+  click_button (t :'sessions.start.next')
   expect(page).to have_no_missing_translations
 end
 
 def complete_login_password_screen(password)
-  expect(page).to have_content(t :"sessions.authenticate_options.forgot_password")
-  fill_in (t :"sessions.authenticate_options.password"), with: password
+  expect(page).to have_content(t :'sessions.authenticate_options.forgot_password')
+  fill_in (t :'sessions.authenticate_options.password'), with: password
   expect(page).to have_no_missing_translations
   screenshot!
-  click_button (t :"sessions.authenticate_options.login")
+  click_button (t :'sessions.authenticate_options.login')
   expect(page).to have_no_missing_translations
 end
 
 def complete_reset_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in (t :"identities.set.password"), with: password
-  fill_in (t :"identities.set.confirm_password"), with: password
-  click_button (t :"identities.reset.submit")
-  expect(page).to have_content(t :"identities.reset_success.message")
+  fill_in (t :'identities.set.password'), with: password
+  fill_in (t :'identities.set.confirm_password'), with: password
+  click_button (t :'identities.reset.submit')
+  expect(page).to have_content(t :'identities.reset_success.message')
 end
 
 def complete_reset_password_success_screen
-  click_button (t :"identities.reset_success.continue")
+  click_button (t :'identities.reset_success.continue')
 end
 
 def complete_add_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in (t :"identities.set.password"), with: password
-  fill_in (t :"identities.set.confirm_password"), with: password
-  click_button (t :"identities.add.submit")
-  expect(page).to have_content(t :"identities.add_success.message")
+  fill_in (t :'identities.set.password'), with: password
+  fill_in (t :'identities.set.confirm_password'), with: password
+  click_button (t :'identities.add.submit')
+  expect(page).to have_content(t :'identities.add_success.message')
 end
 
 def complete_add_password_success_screen
-  click_button (t :"identities.add_success.continue")
+  click_button (t :'identities.add_success.continue')
 end
 
 def complete_terms_screens(without_privacy_policy: false)
 
   check 'agreement_i_agree'
   expect(page).to have_content('Terms of Use')
-  click_button (t :"terms.pose.agree")
+  click_button (t :'terms.pose.agree')
   unless without_privacy_policy
     expect(page).to have_content('Privacy Policy')
     check 'agreement_i_agree'
-    click_button (t :"terms.pose.agree")
+    click_button (t :'terms.pose.agree')
   end
 end
 

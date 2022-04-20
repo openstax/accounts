@@ -7,16 +7,18 @@ class ProfileController < ApplicationController
     return if current_user.student?
 
     if current_user.sheerid_verification_id.present? || current_user.is_sheerid_unviable? || current_user.is_profile_complete?
-      security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification. Redirecting.')
+      security_log(:educator_resumed_signup_flow,
+message: 'User needs to complete SheerID verification. Redirecting.')
       redirect_to sheerid_form_path
     elsif current_user.sheerid_verification_id.blank? && current_user.pending_faculty? && !current_user.is_educator_pending_cs_verification
-      security_log(:educator_resumed_signup_flow, message: 'User needs to complete instructor profile. Redirecting.')
+      security_log(:educator_resumed_signup_flow,
+message: 'User needs to complete instructor profile. Redirecting.')
       render :profile
     end
   end
 
   def exit_accounts
-    if (redirect_param = extract_params(request.referrer)[:r])
+    if (redirect_param = extract_params(request.referer)[:r])
       if Host.trusted?(redirect_param)
         redirect_to(redirect_param)
       else

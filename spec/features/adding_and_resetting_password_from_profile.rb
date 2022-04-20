@@ -18,7 +18,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     visit start_path(type: type)
     screenshot!
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"identities.set.there_was_a_problem_with_password_link")
+    expect(page).to have_content(t :'identities.set.there_was_a_problem_with_password_link')
     expect(page).to have_current_path start_path(type: type)
   end
 
@@ -26,7 +26,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     visit start_path(type: type, token: '1234')
     screenshot!
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"identities.set.there_was_a_problem_with_password_link")
+    expect(page).to have_content(t :'identities.set.there_was_a_problem_with_password_link')
     expect_page(type: type, token: '1234')
   end
 
@@ -35,7 +35,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     visit start_path(type: type, token: @login_token)
     screenshot!
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t :"identities.set.expired_password_link")
+    expect(page).to have_content(t :'identities.set.expired_password_link')
     expect_page(type: type)
   end
 
@@ -58,7 +58,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
   scenario 'password is too short' do
     visit start_path(type: type, token: @login_token)
     expect_page(type: type)
-    fill_in (t :"login_signup_form.password_label"), with: 'pass'
+    fill_in (t :'login_signup_form.password_label'), with: 'pass'
     find('#login-signup-form').click # to hide the password tooltip
     find('[type=submit]').click
     expect(page).to have_content(error_msg Identity, :password, :too_short, count: 8)
@@ -74,9 +74,9 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
 
       visit start_path(type: type, token: @login_token)
       expect_page(type: type)
-      fill_in (t :"login_signup_form.password_label"), with: 'password'
+      fill_in (t :'login_signup_form.password_label'), with: 'password'
       find('[type=submit]').click
-      expect(page).to have_content(I18n.t(:"login_signup_form.same_password_error"))
+      expect(page).to have_content(I18n.t(:'login_signup_form.same_password_error'))
       screenshot!
     end
   end
@@ -84,7 +84,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
   scenario 'successful' do
     visit start_path(type: type, token: @login_token)
     expect(page).to have_no_missing_translations
-    fill_in(t(:"login_signup_form.password_label"), with: 'newpassword')
+    fill_in(t(:'login_signup_form.password_label'), with: 'newpassword')
     find('#login-signup-form').click # to hide the password tooltip
     wait_for_animations
     find('[type=submit]').click
@@ -92,13 +92,13 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
 
     expect_profile_page
 
-    click_link (t :"users.edit.sign_out")
+    click_link (t :'users.edit.sign_out')
     visit '/'
     expect(page).to have_current_path login_path
 
     # try logging in with the old password
     log_in_user('user', 'password')
-    expect(page).to have_content(t(:"login_signup_form.incorrect_password"))
+    expect(page).to have_content(t(:'login_signup_form.incorrect_password'))
 
     # try logging in with the new password
     log_in_user('user', 'newpassword')

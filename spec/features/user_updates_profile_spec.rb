@@ -22,14 +22,14 @@ feature 'User updates profile', js: true do
     scenario 'blank first name' do
       fill_in 'first_name', with: ''
       find('.glyphicon-ok').click
-      expect(find('.editable-error-block').text).to include (t :"javascript.name.first_name_blank")
+      expect(find('.editable-error-block').text).to include (t :'javascript.name.first_name_blank')
       screenshot!
     end
 
     scenario 'blank last name' do
       fill_in 'last_name', with: ''
       find('.glyphicon-ok').click
-      expect(find('.editable-error-block').text).to include (t :"javascript.name.last_name_blank")
+      expect(find('.editable-error-block').text).to include (t :'javascript.name.last_name_blank')
       screenshot!
     end
 
@@ -37,14 +37,14 @@ feature 'User updates profile', js: true do
       fill_in 'first_name', with: ''
       fill_in 'last_name', with: ''
       find('.glyphicon-ok').click
-      expect(find('.editable-error-block').text).to include (t :"javascript.name.first_last_name_blank")
+      expect(find('.editable-error-block').text).to include (t :'javascript.name.first_last_name_blank')
       screenshot!
     end
 
     scenario 'name with spaces' do
       fill_in 'last_name', with: '  '
       find('.glyphicon-ok').click
-      expect(find('.editable-error-block').text).to include (t :"javascript.name.last_name_blank")
+      expect(find('.editable-error-block').text).to include (t :'javascript.name.last_name_blank')
       screenshot!
     end
 

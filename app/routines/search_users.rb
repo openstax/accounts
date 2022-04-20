@@ -101,9 +101,13 @@ class SearchUsers
       end
 
       with.keyword :email do |emails|
-        sanitized_emails = sanitize_strings(emails, append_wildcard: options[:admin], prepend_wildcard: options[:admin])
+        sanitized_emails = sanitize_strings(emails, append_wildcard: options[:admin],
+prepend_wildcard: options[:admin])
         users = users.joins(:contact_infos).where( contact_info_table[:value].matches_any(sanitized_emails) )
-        users = users.where(contact_infos: {type: 'EmailAddress', verified: true, is_searchable: true}) unless options[:admin]
+        unless options[:admin]
+          users = users.where(contact_infos: {type: 'EmailAddress', verified: true,
+is_searchable: true})
+        end
       end
 
       # Rerun the queries above for 'any' terms (which are ones without a
@@ -112,7 +116,8 @@ class SearchUsers
       with.keyword :any do |terms|
         next if terms.blank?
 
-        sanitized_names = sanitize_strings(terms, append_wildcard: true, prepend_wildcard: options[:admin])
+        sanitized_names = sanitize_strings(terms, append_wildcard: true,
+prepend_wildcard: options[:admin])
 
         if sanitized_names.length == 2 # looks like a "firstname lastname" search
           users = users.where(
@@ -122,8 +127,11 @@ class SearchUsers
               table[:last_name].matches(sanitized_names.last)
             )
           )
-        elsif sanitized_names.any? { |term| term.include?('@') } # we'll assume this means they are searching by an email address
-          sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin], prepend_wildcard: options[:admin])
+        elsif sanitized_names.any? { |term|
+ term.include?('@')
+              }               # we'll assume this means they are searching by an email address
+          sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin],
+prepend_wildcard: options[:admin])
 
           contact_infos_query = contact_info_table[:value].matches_any(sanitized_terms)
 

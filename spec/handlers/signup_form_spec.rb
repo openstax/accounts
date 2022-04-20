@@ -218,7 +218,7 @@ describe SignupForm, type: :handler do
     end
 
     example do
-      expect(handler_call.errors.first.message).to eq(I18n.t(:"login_signup_form.email_address_taken"))
+      expect(handler_call.errors.first.message).to eq(I18n.t(:'login_signup_form.email_address_taken'))
       expect(handler_call.errors).to have_offending_input(:email)
     end
   end

@@ -7,7 +7,7 @@ module Admin
     def exec(users:, filename: 'users.json')
       hash = users.map do |user|
         user.attributes.except('id').merge(
-          'identity' => user.identity.try!(:attributes).try!(:except, 'id', 'user_id'),
+          'identity' => user.identity&.attributes&.except('id', 'user_id'),
           'authentications' => user.authentications.map do |authentication|
             excluded_attributes = [ 'id', 'user_id' ]
             excluded_attributes << 'uid' if authentication.provider == 'identity'

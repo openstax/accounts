@@ -107,8 +107,8 @@ module Newflow
               scenario 'takes user back to the app' do
                 with_forgery_protection do
                   arrive_from_app(app: app)
-                  click_on(I18n.t(:"login_signup_form.sign_up"))
-                  click_on(I18n.t(:"login_signup_form.log_in"))
+                  click_on(I18n.t(:'login_signup_form.sign_up'))
+                  click_on(I18n.t(:'login_signup_form.log_in'))
                   find('#exit-icon a').click
                   wait_for_animations
                   wait_for_ajax
@@ -154,7 +154,7 @@ module Newflow
           log_in_user('NOone@openstax.org', 'password')
           expect(page.current_url).to match(login_path)
           field_text = find('#login_form_email + .errors.invalid-message').text
-          expect(field_text).to  eq(I18n.t(:"login_signup_form.cannot_find_user"))
+          expect(field_text).to  eq(I18n.t(:'login_signup_form.cannot_find_user'))
         end
       end
     end
@@ -166,7 +166,7 @@ module Newflow
             log_in_user('user@openstax.org', 'WRONGpassword')
             expect(page.current_url).to match(login_path)
             field_text = find('#login_form_password + .errors.invalid-message').text
-            expect(field_text).to  eq(I18n.t(:"login_signup_form.incorrect_password"))
+            expect(field_text).to  eq(I18n.t(:'login_signup_form.incorrect_password'))
           end
       end
     end
@@ -179,15 +179,15 @@ module Newflow
           log_in_user('user@openstax.org', 'WRONGpassword')
           screenshot!
 
-          click_on(I18n.t(:"login_signup_form.forgot_password"))
-          expect(page).to have_content(I18n.t(:"login_signup_form.reset_my_password_description"))
+          click_on(I18n.t(:'login_signup_form.forgot_password'))
+          expect(page).to have_content(I18n.t(:'login_signup_form.reset_my_password_description'))
           # pre-populates the email for them since they already typed it in the login form
           expect(find('#forgot_password_form_email')['value']).to eq('user@openstax.org')
           screenshot!
-          click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+          click_on(I18n.t(:'login_signup_form.reset_my_password_button'))
           screenshot!
 
-          expect(page).to have_content(I18n.t(:"login_signup_form.password_reset_email_sent"))
+          expect(page).to have_content(I18n.t(:'login_signup_form.password_reset_email_sent'))
           screenshot!
 
           open_email('user@openstax.org')
@@ -197,7 +197,7 @@ module Newflow
 
           # set the new password
           visit change_password_link
-          expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
+          expect(page).to have_content(I18n.t(:'login_signup_form.enter_new_password_description'))
           fill_in('change_password_form_password', with: 'NEWpassword')
           screenshot!
           find('#login-signup-form').click

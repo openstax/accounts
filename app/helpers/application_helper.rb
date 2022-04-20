@@ -4,7 +4,7 @@ module ApplicationHelper
 
   def contact_us_link
     link_to(
-      I18n.t(:"login_signup_form.contact_us"),
+      I18n.t(:'login_signup_form.contact_us'),
       salesforce_knowledge_base_url,
       target: '_blank',
       data: {
@@ -12,7 +12,7 @@ module ApplicationHelper
         'ga-category': 'Login',
         'ga-action': 'Click',
         'ga-label': 'Contact Us'
-      }
+      }, rel: 'noopener'
     ).html_safe
   end
 

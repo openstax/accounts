@@ -8,7 +8,7 @@ feature 'Password reset', js: true do
   end
 
   let!(:user) {
-    create_user('user@openstax.org', 'password')
+    create_newflow_user('user@openstax.org', 'password')
   }
 
   it_behaves_like 'adding and resetting password from profile', :reset
@@ -18,13 +18,13 @@ feature 'Password reset', js: true do
     # issue: https://github.com/openstax/business-intel/issues/550
     login_token = generate_login_token_for_user(user)
     log_in_user('user@openstax.org', 'password')
-    expect(page).to have_current_path(profile_path)
+    expect(page).to have_current_path(profile_newflow_path)
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      find('[data-provider=identity] .edit').click
-      expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
+      find('[data-provider=identity] .edit--newflow').click
+      expect(page).to have_content(I18n.t(:'login_signup_form.login_page_header'))
 
-      click_link(t(:"login_signup_form.forgot_password"))
+      click_link(t(:'login_signup_form.forgot_password'))
       wait_for_animations
       expect(page).to have_content(
         strip_html(
@@ -37,7 +37,7 @@ feature 'Password reset', js: true do
       visit password_reset_link
 
       expect(page).not_to(have_current_path(reauthenticate_form_path))
-      expect(page).to(have_current_path(password_reset_path(token: login_token)))
+      expect(page).to(have_current_path(change_password_form_path(token: login_token)))
     end
   end
 
@@ -52,9 +52,9 @@ feature 'Password reset', js: true do
     log_in_user('user@openstax.org', 'password')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      find('[data-provider=identity] .edit').click
-      expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
-      click_link(t(:"login_signup_form.forgot_password"))
+      find('[data-provider=identity] .edit--newflow').click
+      expect(page).to have_content(I18n.t(:'login_signup_form.login_page_header'))
+      click_link(t(:'login_signup_form.forgot_password'))
       expect(page).to have_content(
         strip_html(
           t(:'login_signup_form.password_reset_email_sent_description', email: 'user@openstax.org')

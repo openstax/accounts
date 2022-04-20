@@ -41,11 +41,11 @@ class LogInUser
           code: :multiple_users_missing_usernames,
           offending_inputs: :email,
           message: I18n.t(
-            :"sessions.start.multiple_users_missing_usernames.content_html",
+            :'sessions.start.multiple_users_missing_usernames.content_html',
             help_link: (
               mail_to(
                 "info@openstax.org",
-                I18n.t(:"sessions.start.multiple_users_missing_usernames.help_link_text")
+                I18n.t(:'sessions.start.multiple_users_missing_usernames.help_link_text')
               )
             )
           )

@@ -115,7 +115,7 @@ module UserSessionManagement
       # Just in case the url got encoded multiple times
       current_url, url = url, Addressable::URI.unencode(url) until url == current_url
 
-      if get_client_app.try!(:is_redirect_url?, url)
+      if get_client_app&.is_redirect_url?(url)
         url = Addressable::URI.parse(url)
         url.query_values = url&.query_values
         session[:alt_signup] = url.to_s
@@ -123,7 +123,7 @@ module UserSessionManagement
         session[:alt_signup] = nil
 
         message = "Alternate signup URL (#{url}) is not a redirect_uri " \
-                  "for client app #{get_client_app.try!(:uid)}"
+                  "for client app #{get_client_app&.uid}"
         Rails.logger.warn(message)
 
         raise message unless Rails.env.production?

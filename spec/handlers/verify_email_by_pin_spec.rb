@@ -80,4 +80,3 @@ describe VerifyEmailByPin, type: :handler do
     end
   end
 end
-

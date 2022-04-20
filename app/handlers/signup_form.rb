@@ -28,16 +28,15 @@ class SignupForm
 
   def required_params
     if signup_params.role == 'instructor'
-      required_params = [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
+      [:email, :first_name, :last_name, :password, :phone_number, :terms_accepted]
     else # student
-      required_params = [:email, :first_name, :last_name, :password].compact
+      [:email, :first_name, :last_name, :password].compact
     end
-    required_params
   end
 
   def authorized?
     true
-    #caller.is_needs_profile?
+    # caller.is_needs_profile?
   end
 
   def handle
@@ -70,8 +69,7 @@ class SignupForm
     run(::SetPassword,
         user: user,
         password: signup_params.password,
-        password_confirmation: signup_params.password
-    )
+        password_confirmation: signup_params.password)
 
     # Agree to terms
     if options[:contracts_required]

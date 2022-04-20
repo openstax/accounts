@@ -32,7 +32,7 @@ describe FindUserByToken, type: :handler do
     example 'because login token expired' do
       user = create_user('user@openstax.org')
       token = user.refresh_login_token
-      user.login_token_expires_at = 1.days.ago
+      user.login_token_expires_at = 1.day.ago
       user.save!
       params = { token: user.login_token }
       result = described_class.call(params: params, caller: AnonymousUser.instance)

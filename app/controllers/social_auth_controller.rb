@@ -56,19 +56,20 @@ class SocialAuthController < ApplicationController
 
           case code
           when :should_redirect_to_signup
-            redirect_to(login_path, notice: I18n.t(:"login_signup_form.should_social_signup",
-                sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), signup_path)
-              )
-            )
+            redirect_to(login_path, notice: I18n.t(:'login_signup_form.should_social_signup',
+                sign_up: view_context.link_to(I18n.t(:'login_signup_form.sign_up'), signup_path)))
           when :authentication_taken
             security_log(:authentication_transfer_failed, authentication_id: authentication.id)
-            redirect_to(profile_path, alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
+            redirect_to(profile_path,
+alert: I18n.t(:'controllers.sessions.sign_in_option_already_used'))
           when :email_already_in_use
             security_log(:email_already_in_use, email: @email, authentication_id: authentication.id)
-            redirect_to(profile_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
+            redirect_to(profile_path,
+alert: I18n.t(:'controllers.sessions.way_to_login_cannot_be_added'))
           when :mismatched_authentication
             security_log(:sign_in_failed, reason: "mismatched authentication")
-            redirect_to(login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
+            redirect_to(login_path,
+alert: I18n.t(:'controllers.sessions.mismatched_authentication'))
           else
             oauth = request.env['omniauth.auth']
             errors = @handler_result.errors.inspect
@@ -127,11 +128,12 @@ class SocialAuthController < ApplicationController
                       authentication_provider: authentication.provider,
                       authentication_uid: authentication.uid
           render status: :ok,
-                plain: (I18n.t :"controllers.authentications.authentication_removed",
+                plain: (I18n.t :'controllers.authentications.authentication_removed',
                               authentication: params[:provider].titleize)
         end,
         failure: lambda do
-          render status: 422, plain: @handler_result.errors.map(&:message).to_sentence
+          render status: :unprocessable_entity,
+plain: @handler_result.errors.map(&:message).to_sentence
         end
       )
     end

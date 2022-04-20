@@ -108,7 +108,7 @@ class UpdateUserContactInfo
                                    :unknown_school_location
                                  end
 
-          unless sf_contact.adoption_status.blank?
+          if sf_contact.adoption_status.present?
             user.using_openstax = ADOPTION_STATUSES[sf_contact.adoption_status]
           end
 
@@ -128,7 +128,8 @@ class UpdateUserContactInfo
             SecurityLog.create!(
               user: user,
               event_type: :salesforce_updated_faculty_status,
-              event_data: { user_id: user.id, salesforce_contact_id: sf_contact.id, old_status:old_fv_status, new_status: user.faculty_status }
+              event_data: { user_id: user.id, salesforce_contact_id: sf_contact.id,
+old_status:old_fv_status, new_status: user.faculty_status }
             )
           end
 

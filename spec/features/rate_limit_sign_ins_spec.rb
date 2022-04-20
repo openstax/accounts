@@ -19,20 +19,20 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         max_attempts_per_user.times do
           log_in_good_username_bad_password
-          expect(page).to have_content(t :"controllers.sessions.incorrect_password")
+          expect(page).to have_content(t :'controllers.sessions.incorrect_password')
         end
 
         log_in_good_username_bad_password
-        expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
-                                       reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
+        expect(page).to have_content(t :'controllers.sessions.too_many_login_attempts.content',
+                                       reset_password: (t :'controllers.sessions.too_many_login_attempts.reset_password'))
 
         log_in_correctly_with_username
-        expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
-                                       reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
+        expect(page).to have_content(t :'controllers.sessions.too_many_login_attempts.content',
+                                       reset_password: (t :'controllers.sessions.too_many_login_attempts.reset_password'))
 
         reset_password(password: '1234abcd')
 
-        click_link (t :"layouts.application_header.sign_out")
+        click_link (t :'layouts.application_header.sign_out')
 
         log_in_correctly_with_username(password: '1234abcd')
         # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
@@ -46,16 +46,16 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         max_attempts_per_user.times do
           log_in_good_username_bad_password
-          expect(page).to have_content(t :"controllers.sessions.incorrect_password")
+          expect(page).to have_content(t :'controllers.sessions.incorrect_password')
         end
 
         log_in_good_username_bad_password
-        expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
-                                       reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
+        expect(page).to have_content(t :'controllers.sessions.too_many_login_attempts.content',
+                                       reset_password: (t :'controllers.sessions.too_many_login_attempts.reset_password'))
 
         log_in_correctly_with_username
-        expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
-                                       reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
+        expect(page).to have_content(t :'controllers.sessions.too_many_login_attempts.content',
+                                       reset_password: (t :'controllers.sessions.too_many_login_attempts.reset_password'))
 
         Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
@@ -74,20 +74,20 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         max_attempts_per_user.times do
           log_in_good_email_bad_password
-          expect(page).to have_content(t :"controllers.sessions.incorrect_password")
+          expect(page).to have_content(t :'controllers.sessions.incorrect_password')
         end
 
         log_in_good_email_bad_password
-        expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
-                                       reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
+        expect(page).to have_content(t :'controllers.sessions.too_many_login_attempts.content',
+                                       reset_password: (t :'controllers.sessions.too_many_login_attempts.reset_password'))
 
         log_in_correctly_with_email
-        expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
-                                       reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
+        expect(page).to have_content(t :'controllers.sessions.too_many_login_attempts.content',
+                                       reset_password: (t :'controllers.sessions.too_many_login_attempts.reset_password'))
 
         reset_password(password: '1234abcd')
 
-        click_link (t :"layouts.application_header.sign_out")
+        click_link (t :'layouts.application_header.sign_out')
 
         log_in_correctly_with_email(password: '1234abcd')
         expect_newflow_profile_page
@@ -102,16 +102,16 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         max_attempts_per_user.times do
           log_in_good_email_bad_password
-          expect(page).to have_content(t :"controllers.sessions.incorrect_password")
+          expect(page).to have_content(t :'controllers.sessions.incorrect_password')
         end
 
         log_in_good_email_bad_password
-        expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
-                                       reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
+        expect(page).to have_content(t :'controllers.sessions.too_many_login_attempts.content',
+                                       reset_password: (t :'controllers.sessions.too_many_login_attempts.reset_password'))
 
         log_in_correctly_with_email
-        expect(page).to have_content(t :"controllers.sessions.too_many_login_attempts.content",
-                                       reset_password: (t :"controllers.sessions.too_many_login_attempts.reset_password"))
+        expect(page).to have_content(t :'controllers.sessions.too_many_login_attempts.content',
+                                       reset_password: (t :'controllers.sessions.too_many_login_attempts.reset_password'))
 
         Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_email

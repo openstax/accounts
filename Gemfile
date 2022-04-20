@@ -151,13 +151,15 @@ gem 'scout_apm'
 gem 'openstax_healthcheck'
 
 # Allow Accounts routes to be accessed under an /accounts prefix (for use in CloudFront)
-gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "4a18c627c0c8b73038f626cb92a152bf61e9dc72"
+gem "openstax_path_prefixer", github: "openstax/path_prefixer",
+ref: "4a18c627c0c8b73038f626cb92a152bf61e9dc72"
 
 # JWE library used by the SSO cookie
 gem 'json-jwt'
 
 # international country codes javascript plugin
-gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rails.git', branch: 'master'
+gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rails.git',
+branch: 'master'
 
 # internationalization based on the `HTTP_ACCEPT_LANGUAGE` header sent by browsers
 gem 'http_accept_language'

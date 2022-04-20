@@ -23,7 +23,7 @@ class Group < ApplicationRecord
 
   has_many :application_groups, dependent: :destroy, inverse_of: :group
 
-  validates_uniqueness_of :name, allow_nil: true
+  validates :name, uniqueness: { allow_nil: true }
 
   before_save :add_unread_update
 
