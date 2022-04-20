@@ -24,7 +24,7 @@ class ChangePassword
       fatal_error(
         code: :same_password,
         offending_inputs: :password,
-        message: I18n.t(:"login_signup_form.same_password_error")
+        message: I18n.t(:'login_signup_form.same_password_error')
       )
     end
 

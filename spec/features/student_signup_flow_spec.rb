@@ -46,7 +46,7 @@ module Newflow
         verify_email_url = get_path_from_absolute_link(current_email, 'a')
         visit verify_email_url
         # ... which sends you to "sign up done page"
-        expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+        expect(page).to have_text(t(:'login_signup_form.youre_done', first_name: 'Bryan'))
         screenshot!
 
         # can exit and go back to the app they came from
@@ -62,9 +62,9 @@ module Newflow
         screenshot!
         click_on('commit')
         # ... which sends you to "sign up done page"
-        expect(page).to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+        expect(page).to have_text(t(:'login_signup_form.youre_done', first_name: 'Bryan'))
         expect(page).to have_text(
-          strip_html(t(:"login_signup_form.youre_done_description", email_address: email))
+          strip_html(t(:'login_signup_form.youre_done_description', email_address: email))
         )
         screenshot!
 
@@ -94,11 +94,11 @@ module Newflow
         visit(login_path)
         #byebug
         log_in_user(email_address.value, 'WRONGpassword')
-        click_link_or_button(t :"login_signup_form.forgot_password")
+        click_link_or_button(t :'login_signup_form.forgot_password')
         expect(page.current_path).to eq(forgot_password_form_path)
         expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
         screenshot!
-        click_link_or_button(t :"login_signup_form.forgot_password")
+        click_link_or_button(t :'login_signup_form.forgot_password')
         screenshot!
       end
     end
@@ -126,7 +126,7 @@ module Newflow
         click_on('commit')
 
         # ... redirects you back to Tutor
-        expect(page).not_to have_text(t(:"login_signup_form.youre_done", first_name: 'Bryan'))
+        expect(page).not_to have_text(t(:'login_signup_form.youre_done', first_name: 'Bryan'))
         expect(page.current_path).to eq('/external_app_for_specs')
     end
 
@@ -145,7 +145,7 @@ module Newflow
         fill_in('confirm_pin', with: '123456') # wrong pin
         click_on('commit')
         screenshot!
-        expect(page).to have_text(t(:"login_signup_form.pin_not_correct"))
+        expect(page).to have_text(t(:'login_signup_form.pin_not_correct'))
       end
     end
 
@@ -171,7 +171,7 @@ module Newflow
         click_on('edit your email')
         screenshot!
         # page contains tooltip
-        expect(page).to have_text(t(:"login_signup_form.change_signup_email_form_tooltip"))
+        expect(page).to have_text(t(:'login_signup_form.change_signup_email_form_tooltip'))
 
         new_email = Faker::Internet::free_email
         fill_in('change_signup_email_email', with: new_email)
@@ -180,7 +180,7 @@ module Newflow
         wait_for_animations
         click_on('commit')
         screenshot!
-        expect(page).to have_text(t(:"login_signup_form.check_your_updated_email"))
+        expect(page).to have_text(t(:'login_signup_form.check_your_updated_email'))
 
         # a different pin is sent in the edited email
         open_email new_email

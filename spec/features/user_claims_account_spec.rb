@@ -33,7 +33,7 @@ feature 'User claims an unclaimed account' do
 
       expect(page).to have_no_missing_translations
       click_on t 'contact_infos.confirm_unclaimed.you_can_now_sign_in.add_password'
-      expect(page).to have_content(t :"identities.add.page_heading")
+      expect(page).to have_content(t :'identities.add.page_heading')
       complete_add_password_screen
 
       complete_add_password_success_screen
@@ -52,7 +52,7 @@ feature 'User claims an unclaimed account' do
 
       visit_invite_url
       click_on t 'contact_infos.confirm_unclaimed.you_can_now_sign_in.reset_password'
-      expect(page).to have_content(t :"identities.reset.page_heading")
+      expect(page).to have_content(t :'identities.reset.page_heading')
       complete_reset_password_screen
       complete_reset_password_success_screen
       complete_terms_screens

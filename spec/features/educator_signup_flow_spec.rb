@@ -18,8 +18,8 @@ feature 'Educator signup flow', js: true do
     context 'when entering PIN code to verify email address' do
       it 'all works' do
         visit(login_path(return_param))
-        click_on(I18n.t(:"login_signup_form.sign_up"))
-        click_on(I18n.t(:"login_signup_form.educator"))
+        click_on(I18n.t(:'login_signup_form.sign_up'))
+        click_on(I18n.t(:'login_signup_form.educator'))
 
         # Step 1
         fill_in 'signup_first_name',	with: first_name
@@ -43,10 +43,10 @@ feature 'Educator signup flow', js: true do
         fill_in('confirm_pin', with: correct_pin)
         wait_for_ajax
         wait_for_animations
-        click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
+        click_on(I18n.t(:'login_signup_form.confirm_my_account_button'))
         wait_for_ajax
         wait_for_animations
-        expect(page).to_not have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
+        expect(page).to_not have_content(I18n.t(:'login_signup_form.confirm_my_account_button'))
         expect(EmailAddress.verified.count).to eq(1)
 
         # Step 3
@@ -66,9 +66,9 @@ feature 'Educator signup flow', js: true do
     context 'when clicking on link sent in an email to verify email address' do
       it 'all works' do
         visit(login_path(return_param))
-        click_on(I18n.t(:"login_signup_form.sign_up"))
+        click_on(I18n.t(:'login_signup_form.sign_up'))
         expect(page.current_path).to eq(signup_path)
-        click_on(I18n.t(:"login_signup_form.educator"))
+        click_on(I18n.t(:'login_signup_form.educator'))
 
         # Step 1
         fill_in 'signup_first_name',	with: first_name
@@ -96,7 +96,7 @@ feature 'Educator signup flow', js: true do
         # Step 4
         expect_educator_step_4_page
         find('#signup_educator_specific_role_other').click
-        fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
+        fill_in(I18n.t(:'educator_profile_form.other_please_specify'), with: 'President')
         click_on('Continue')
         #expect(page.current_path).to eq(signup_done_path)
         #click_on('Finish')
@@ -127,7 +127,7 @@ feature 'Educator signup flow', js: true do
       expect(page.current_path).to eq(forgot_password_form_path)
       expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
       screenshot!
-      click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+      click_on(I18n.t(:'login_signup_form.reset_my_password_button'))
       screenshot!
     end
   end
@@ -147,7 +147,7 @@ feature 'Educator signup flow', js: true do
         visit(educator_profile_form_path)
         find("#signup_educator_specific_role_instructor").click
         find('#signup_who_chooses_books_instructor').click
-        fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
+        fill_in(I18n.t(:'educator_profile_form.num_students_taught'), with: 30)
       end
 
       context 'label for books list' do
@@ -157,7 +157,7 @@ feature 'Educator signup flow', js: true do
           end
 
           it 'shows "Books used"' do
-            expect(page).to have_text(I18n.t(:"educator_profile_form.books_used"))
+            expect(page).to have_text(I18n.t(:'educator_profile_form.books_used'))
           end
         end
 
@@ -167,7 +167,7 @@ feature 'Educator signup flow', js: true do
           end
 
           it 'shows "Books of interest"' do
-            expect(page).to have_text(I18n.t(:"educator_profile_form.books_of_interest"))
+            expect(page).to have_text(I18n.t(:'educator_profile_form.books_of_interest'))
           end
         end
       end
@@ -183,8 +183,8 @@ feature 'Educator signup flow', js: true do
       skip 'because it only fails in Travis but works locally and locally testing'
 
       visit(login_path(return_param))
-      click_on(I18n.t(:"login_signup_form.sign_up"))
-      click_on(I18n.t(:"login_signup_form.educator"))
+      click_on(I18n.t(:'login_signup_form.sign_up'))
+      click_on(I18n.t(:'login_signup_form.educator'))
 
       # Step 1
       fill_in 'signup_first_name',	with: first_name
@@ -207,9 +207,9 @@ feature 'Educator signup flow', js: true do
       wait_for_ajax
       wait_for_animations
       expect(page).to have_content(correct_pin)
-      expect(page).to have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
-      click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
-      expect(page).to_not have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
+      expect(page).to have_content(I18n.t(:'login_signup_form.confirm_my_account_button'))
+      click_on(I18n.t(:'login_signup_form.confirm_my_account_button'))
+      expect(page).to_not have_content(I18n.t(:'login_signup_form.confirm_my_account_button'))
       wait_for_ajax
       wait_for_animations
       expect(EmailAddress.verified.count).to eq(1)
@@ -234,8 +234,8 @@ feature 'Educator signup flow', js: true do
       # Step 4
       expect_educator_step_4_page
       find('#signup_educator_specific_role_other').click
-      expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
-      fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
+      expect(page).to have_text(I18n.t(:'educator_profile_form.other_please_specify'))
+      fill_in(I18n.t(:'educator_profile_form.other_please_specify'), with: 'President')
       click_on('Continue')
       expect(page.current_path).to eq(signup_done_path)
       click_on('Finish')

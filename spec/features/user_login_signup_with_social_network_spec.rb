@@ -17,7 +17,7 @@ feature 'User logs in or signs up with a social network', js: true do
           click_on('Facebook')
           wait_for_ajax
           screenshot!
-          expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
+          expect(page).to have_content(t(:'login_signup_form.confirm_your_info'))
           expect(page).to have_field('signup_first_name', with: 'Elon')
           expect(page).to have_field('signup_last_name', with: 'Musk')
           expect(page).to have_field('signup_email', with: email)
@@ -26,9 +26,9 @@ feature 'User logs in or signs up with a social network', js: true do
           screenshot!
           submit_signup_form
           screenshot!
-          expect(page).to have_content(t(:"login_signup_form.youre_done", first_name: 'Elon'))
+          expect(page).to have_content(t(:'login_signup_form.youre_done', first_name: 'Elon'))
           expect(page).to(
-            have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email)))
+            have_content(strip_html(t(:'login_signup_form.youre_done_description', email_address: email)))
           )
         end
       end
@@ -43,22 +43,22 @@ feature 'User logs in or signs up with a social network', js: true do
               wait_for_ajax
               wait_for_animations
               screenshot!
-              expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
+              expect(page).to have_content(t(:'login_signup_form.confirm_your_info'))
               expect(page).to have_field('signup_first_name', with: 'Elon')
               expect(page).to have_field('signup_last_name', with: 'Musk')
               expect(page).to have_field('signup_email', with: '')
               submit_signup_form
               screenshot!
 
-              expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
-              expect(page).to have_content(t(:"login_signup_form.email_is_blank"))
+              expect(page).to have_content(t(:'login_signup_form.confirm_your_info'))
+              expect(page).to have_content(t(:'login_signup_form.email_is_blank'))
 
               fill_in('signup_email',	with: email)
               submit_signup_form
               screenshot!
-              expect(page).to have_content(t(:"login_signup_form.youre_done", first_name: 'Elon'))
+              expect(page).to have_content(t(:'login_signup_form.youre_done', first_name: 'Elon'))
               expect(page).to(
-                have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email)))
+                have_content(strip_html(t(:'login_signup_form.youre_done_description', email_address: email)))
               )
             end
           end
@@ -75,20 +75,20 @@ feature 'User logs in or signs up with a social network', js: true do
               wait_for_ajax
               wait_for_animations
               screenshot!
-              expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
+              expect(page).to have_content(t(:'login_signup_form.confirm_your_info'))
               expect(page).to have_field('signup_first_name', with: 'Elon')
               expect(page).to have_field('signup_last_name', with: 'Musk')
               expect(page).to have_field('signup_email', with: '')
               submit_signup_form
               screenshot!
 
-              expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
-              expect(page).to have_content(t(:"login_signup_form.email_is_blank"))
+              expect(page).to have_content(t(:'login_signup_form.confirm_your_info'))
+              expect(page).to have_content(t(:'login_signup_form.email_is_blank'))
 
               fill_in('signup_email',	with: invalid_email)
               submit_signup_form
               screenshot!
-              expect(page).to have_content(t(:".activerecord.errors.models.email_address.attributes.value.invalid", value: invalid_email))
+              expect(page).to have_content(t(:'.activerecord.errors.models.email_address.attributes.value.invalid', value: invalid_email))
             end
           end
         end
@@ -154,7 +154,7 @@ feature 'User logs in or signs up with a social network', js: true do
           screenshot!
 
           expect(page).to(
-            have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email_value)))
+            have_content(strip_html(t(:'login_signup_form.youre_done_description', email_address: email_value)))
           )
           click_on('Finish')
           click_on('Log out')
@@ -231,8 +231,8 @@ feature 'User logs in or signs up with a social network', js: true do
         wait_for_ajax
         expect(page).to have_content(
           t(
-            :"login_signup_form.should_social_signup",
-            sign_up: t(:"login_signup_form.sign_up")
+            :'login_signup_form.should_social_signup',
+            sign_up: t(:'login_signup_form.sign_up')
           )
         )
         screenshot!

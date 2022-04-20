@@ -12,15 +12,15 @@ describe 'Terms', type: :feature, js: true do
 
     screenshot!
     expect(page).to have_content("Terms of Use")
-    expect(page).to have_content(t :"terms.pose.contract_acceptance_required")
+    expect(page).to have_content(t :'terms.pose.contract_acceptance_required')
     find(:css, '#agreement_i_agree').click
-    click_button (t :"terms.pose.agree")
+    click_button (t :'terms.pose.agree')
 
     screenshot!
     expect(page).to have_content("Privacy Policy")
-    expect(page).to have_content(t :"terms.pose.contract_acceptance_required")
+    expect(page).to have_content(t :'terms.pose.contract_acceptance_required')
     find(:css, '#agreement_i_agree').click
-    click_button (t :"terms.pose.agree")
+    click_button (t :'terms.pose.agree')
 
     expect_newflow_profile_page
   end

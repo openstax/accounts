@@ -76,7 +76,7 @@ class CreateSalesforceLead
       )
 
       state = user.most_accurate_school_state
-      unless state.blank?
+      if state.present?
         state = nil unless US_STATES.map(&:downcase).include? state.downcase
       end
       unless state.nil?
@@ -94,13 +94,7 @@ class CreateSalesforceLead
       event_type: :attempting_to_create_user_lead
     )
 
-    unless lead.save
-      SecurityLog.create!(
-        user: user,
-        event_type: :salesforce_error
-      )
-      #TODO: this needs a sentry error but we should still process the user
-    else
+    if lead.save
 
       outputs.lead = lead
 
@@ -125,6 +119,12 @@ class CreateSalesforceLead
 
       outputs.user = user
 
+    else
+      SecurityLog.create!(
+        user: user,
+        event_type: :salesforce_error
+      )
+      # TODO: this needs a sentry error but we should still process the user
     end
   end
 

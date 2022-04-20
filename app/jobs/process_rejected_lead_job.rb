@@ -19,7 +19,8 @@ class ProcessRejectedLeadJob < ApplicationJob
     SecurityLog.create!(
       user:       rejected_user,
       event_type: :salesforce_updated_faculty_status,
-      event_data: { user_id: rejected_user.id, salesforce_contact_id: lead_id, old_status: old_fv_status, new_status: rejected_user.faculty_status }
+      event_data: { user_id: rejected_user.id, salesforce_contact_id: lead_id,
+old_status: old_fv_status, new_status: rejected_user.faculty_status }
     )
 
     if rejected_user.changed?

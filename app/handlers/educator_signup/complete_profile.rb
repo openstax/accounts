@@ -86,10 +86,11 @@ module EducatorSignup
           requested_cs_verification_at: DateTime.now,
           faculty_status: :pending_faculty
         )
-        unless signup_params.school_issued_email.blank?
+        if signup_params.school_issued_email.present?
           # this user used the CS form and _should_ have provided us an email address -
           # so let's add it - validation happens before this in check_params
-          run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
+          run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user,
+is_school_issued: true)
         end
       else
         # If user did not need CS verification but still needs to be pending, set them to pending state

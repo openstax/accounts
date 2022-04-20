@@ -29,4 +29,3 @@ class ActivateUser
   end
 
 end
-

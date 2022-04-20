@@ -30,9 +30,7 @@ module EmailDomainMxValidator
   end
 
   class << self
-    def check(domain)
-      strategy.check(domain)
-    end
+    delegate :check, to: :strategy
 
     def strategy
       @strategy ||= DnsStrategy.new

@@ -27,4 +27,3 @@ describe ActivateUser, type: :routine  do
     end
   end
 end
-

@@ -12,8 +12,8 @@ module AlertHelper
 
   def javascript_not_enabled_alert
     { type:       :error,
-      intro:      (I18n.t :"helpers.alert.please_enable_javascript.intro"),
-      content:    (I18n.t :"helpers.alert.please_enable_javascript.content", site_name: SITE_NAME),
+      intro:      (I18n.t :'helpers.alert.please_enable_javascript.intro'),
+      content:    (I18n.t :'helpers.alert.please_enable_javascript.content', site_name: SITE_NAME),
       no_dismiss: true
     }
   end

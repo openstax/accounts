@@ -17,19 +17,19 @@ feature 'Require recent log in to change authentications', js: true do
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       expect(page).to have_no_content('Facebook')
       screenshot!
-      click_link (t :"users.edit.enable_other_sign_in_options")
+      click_link (t :'users.edit.enable_other_sign_in_options')
       wait_for_animations
       screenshot!
-      expect(page).to have_no_content(t :"users.edit.enable_other_sign_in_options")
-      expect(page).to have_content((t :"users.edit.other_sign_in_options_html")[0..7])
+      expect(page).to have_no_content(t :'users.edit.enable_other_sign_in_options')
+      expect(page).to have_content((t :'users.edit.other_sign_in_options_html')[0..7])
       expect(page).to have_content('Facebook')
 
       with_omniauth_test_mode(identity_user: user) do
         find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
         wait_for_ajax
-        expect(page).to have_content(t :"login_signup_form.login_page_header")
+        expect(page).to have_content(t :'login_signup_form.login_page_header')
         screenshot!
-        fill_in(t(:"login_signup_form.password_label"), with: 'password')
+        fill_in(t(:'login_signup_form.password_label'), with: 'password')
         find('[type=submit]').click
         expect(page.current_path).to eq(profile_newflow_path)
         expect(page).to have_content('Facebook')
@@ -76,7 +76,7 @@ feature 'Require recent log in to change authentications', js: true do
 
         # Don't have to reauthenticate since just did
         find('.authentication[data-provider="identity"] .edit--newflow').click
-        expect(page).to have_content(t(:"login_signup_form.enter_new_password_description"))
+        expect(page).to have_content(t(:'login_signup_form.enter_new_password_description'))
         fill_in('change_password_form_password', with: 'newpassword2')
         find('#login-signup-form').click
         wait_for_animations

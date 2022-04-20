@@ -25,7 +25,7 @@ module Accounts
     config.i18n.available_locales = %w(en pl)
     config.i18n.fallbacks = [I18n.default_locale]
     # Suppress a warning
-    #config.i18n.enforce_available_locales = true
+    # config.i18n.enforce_available_locales = true
 
     config.accounts = ActiveSupport::OrderedOptions.new
     # configure how long a login token is valid for
@@ -43,10 +43,10 @@ module Accounts
     redis_secrets = secrets[:redis]
 
     # Generate the Redis URL from the its components if unset
-    redis_secrets[:url] ||= "redis#{'s' unless redis_secrets[:password].blank?}://#{
-      ":#{redis_secrets[:password]}@" unless redis_secrets[:password].blank? }#{
-      redis_secrets[:host]}#{":#{redis_secrets[:port]}" unless redis_secrets[:port].blank?}/#{
-      "/#{redis_secrets[:db]}" unless redis_secrets[:db].blank?}"
+    redis_secrets[:url] ||= "redis#{'s' if redis_secrets[:password].present?}://#{
+      ":#{redis_secrets[:password]}@" if redis_secrets[:password].present? }#{
+      redis_secrets[:host]}#{":#{redis_secrets[:port]}" if redis_secrets[:port].present?}/#{
+      "/#{redis_secrets[:db]}" if redis_secrets[:db].present?}"
 
     config.cache_store = :redis_store, {
       url: redis_secrets[:url],

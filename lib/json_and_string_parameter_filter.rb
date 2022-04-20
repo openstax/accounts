@@ -45,7 +45,10 @@ class JsonAndStringParameterFilter
         utf8_encoded(param_value.gsub!(/^.*$/, '[FILTERED]'))
       else
         @value_filters.each do |value_filter|
-          utf8_encoded(param_value.gsub!(/^.*$/, '[FILTERED]')) if value_filter.call(utf8_encoded(param_value))
+          if value_filter.call(utf8_encoded(param_value))
+            utf8_encoded(param_value.gsub!(/^.*$/,
+'[FILTERED]'))
+          end
         end
       end
     elsif param_value.is_a?(Hash)

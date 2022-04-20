@@ -1,7 +1,7 @@
 class AssignNamesToUsersThatBypassedProfileCreation < ActiveRecord::Migration[5.2]
   def up
     User.joins(:application_users).where(state: :needs_profile).distinct.find_each do |user|
-      next unless user.username.blank?
+      next if user.username.present?
 
       email = user.email_addresses.verified.first
       username = if email.nil?

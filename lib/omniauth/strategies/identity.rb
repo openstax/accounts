@@ -51,7 +51,7 @@ module OmniAuth
 
       def too_many_login_attempts?
         too_many_log_in_attempts_by_ip?(ip: request.ip) ||
-        too_many_log_in_attempts_by_user?(user: locate_conditions[:user])
+          too_many_log_in_attempts_by_user?(user: locate_conditions[:user])
       end
 
       def fail_with_log!(reason)
@@ -73,9 +73,9 @@ module OmniAuth
         else
           reason = if locate_conditions.nil? || locate_conditions[:users_returned] == 0
             :cannot_find_user
-          elsif locate_conditions[:users_returned] > 1
+                   elsif locate_conditions[:users_returned] > 1
             :multiple_users
-          else
+                   else
             source = request.params.try(:[],'login').try(:[],'source')
 
             case source
@@ -86,7 +86,7 @@ module OmniAuth
             else
               raise IllegalArgument, "Unknown password error source: #{source || 'nil'}"
             end
-          end
+                   end
 
           fail_with_log!(reason)
         end
@@ -94,8 +94,8 @@ module OmniAuth
 
       def verified_request?
         !protect_against_forgery? || request.get? || request.head? ||
-        valid_authenticity_token?(session, form_authenticity_param) ||
-        valid_authenticity_token?(session, request.env['X_CSRF_TOKEN'])
+          valid_authenticity_token?(session, form_authenticity_param) ||
+          valid_authenticity_token?(session, request.env['X_CSRF_TOKEN'])
       end
 
       def form_authenticity_param

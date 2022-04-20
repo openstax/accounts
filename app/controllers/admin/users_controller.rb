@@ -36,7 +36,7 @@ module Admin
       security_log :admin_became_user, user_id: params[:id], username: @user.username
       sign_in!(@user)
       security_log :sign_in_successful, admin_user_id: admin.id, admin_username: admin.username
-      redirect_to request.referrer
+      redirect_to request.referer
     end
 
     def mark_users_updated

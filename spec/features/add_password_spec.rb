@@ -10,6 +10,6 @@ feature 'User adds password', js: true do
     @login_token = generate_login_token_for 'user'
     @user.identity.destroy
     visit change_password_form_path(token: @login_token)
-    expect(page).to have_content(t(:"login_signup_form.setup_your_new_password"))
+    expect(page).to have_content(t(:'login_signup_form.setup_your_new_password'))
   end
 end

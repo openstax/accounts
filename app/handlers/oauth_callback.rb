@@ -35,16 +35,18 @@ class OauthCallback
     outputs.email = oauth_data.email
   end
 
-  def handle # rubocop:disable Metrics/AbcSize
+  def handle
     if @logged_in_user
       handle_while_logged_in(@logged_in_user.id)
-    elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
+    elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider,
+uid: @oauth_uid))
       # User found with the given authentication. We will log them in.
       outputs.authentication.user
     elsif (existing_user = user_most_recently_used(users_matching_oauth_data))
       # No user found with the given authentication, but a user *was* found with the given email address.
       # We will add the authentication to their existing account and then log them in.
-      outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
+      outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider,
+uid: @oauth_uid)
       run(TransferAuthentications, outputs.authentication, existing_user)
     # TODO: what is this?
     elsif user_came_from&.to_sym == :login_form
@@ -68,24 +70,28 @@ class OauthCallback
     return false if oauth_data.email.blank?
 
     existing_email_owner_id = LookupUsers.by_verified_email_or_username(oauth_data.email).last&.id
-    existing_auth_uid       = Authentication.where(user_id: existing_email_owner_id, provider: @oauth_provider).pluck(:uid).first
-    incoming_auth_uid       = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).last&.uid
+    existing_auth_uid       = Authentication.where(user_id: existing_email_owner_id,
+provider: @oauth_provider).pluck(:uid).first
+    incoming_auth_uid       = Authentication.where(provider: @oauth_provider,
+uid: @oauth_uid).last&.uid
 
-    if existing_auth_uid != incoming_auth_uid
+    if existing_auth_uid == incoming_auth_uid
+      return false
+    else
       Sentry.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
       return true
-    else
-      return false
     end
   end
 
   def handle_while_logged_in(logged_in_user_id)
-    outputs.authentication = authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
+    outputs.authentication = authentication = Authentication.find_or_initialize_by(
+      provider: @oauth_provider, uid: @oauth_uid
+    )
 
     if authentication.user&.activated?
       fatal_error(
         code: :authentication_taken,
-        message: I18n.t(:"controllers.sessions.sign_in_option_already_used")
+        message: I18n.t(:'controllers.sessions.sign_in_option_already_used')
       )
     end
 
@@ -93,7 +99,7 @@ class OauthCallback
       fatal_error(
         code: :email_already_in_use,
         offending_inputs: :email,
-        message: I18n.t(:"login_signup_form.sign_in_option_already_used")
+        message: I18n.t(:'login_signup_form.sign_in_option_already_used')
       )
     end
 

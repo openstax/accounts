@@ -30,7 +30,7 @@ feature 'User updates password on profile screen', js: true do
     newflow_complete_add_password_screen
     screenshot!
     expect(page).to have_no_missing_translations
-    expect(page).to have_content(t(:"login_signup_form.how_you_log_in"))
+    expect(page).to have_content(t(:'login_signup_form.how_you_log_in'))
 
     find('#enable-other-sign-in').click
     expect(page).to have_css('[data-provider=facebooknewflow]')
@@ -42,7 +42,7 @@ feature 'User updates password on profile screen', js: true do
     newflow_complete_add_password_screen
     expect(page).to have_no_missing_translations
     expect(page).to have_content(
-      ActionView::Base.full_sanitizer.sanitize t(:"users.edit.how_you_sign_in_html")
+      ActionView::Base.full_sanitizer.sanitize t(:'users.edit.how_you_sign_in_html')
     )
     expect(page).to have_css('[data-provider=identity]')
   end

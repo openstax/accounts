@@ -7,12 +7,12 @@ class ConfirmByCode
 
   def exec(code)
     fatal_error(code: :no_contact_info_for_code,   # TODO move I18n to views
-                message: (I18n.t :"routines.confirm_by_code.unable_to_verify_address")) if code.nil?
+                message: (I18n.t :'routines.confirm_by_code.unable_to_verify_address')) if code.nil?
 
     contact_info = ContactInfo.find_by(confirmation_code: code)
 
     fatal_error(code: :no_contact_info_for_code,
-                message: (I18n.t :"routines.confirm_by_code.unable_to_verify_address")) if contact_info.nil?
+                message: (I18n.t :'routines.confirm_by_code.unable_to_verify_address')) if contact_info.nil?
 
     run(ConfirmContactInfo, contact_info)
 

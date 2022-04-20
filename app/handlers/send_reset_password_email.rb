@@ -22,14 +22,14 @@ class SendResetPasswordEmail
 
     fatal_error(code: :email_is_blank,
       offending_inputs: :email,
-      message: I18n.t(:"login_signup_form.email_is_blank")
+      message: I18n.t(:'login_signup_form.email_is_blank')
     ) unless outputs.email.present? || logged_in_user
 
     user = logged_in_user || LookupUsers.by_verified_email(outputs.email).first
 
     fatal_error(code: :cannot_find_user,
       offending_inputs: :email,
-      message: I18n.t(:"login_signup_form.cannot_find_user")
+      message: I18n.t(:'login_signup_form.cannot_find_user')
     ) unless user.present?
 
     outputs.user = user
@@ -42,7 +42,8 @@ class SendResetPasswordEmail
     outputs.email ||= email_addresses.first
 
     email_addresses.each do |email_address|
-      SignupPasswordMailer.reset_password_email(user: user, email_address: email_address).deliver_later
+      SignupPasswordMailer.reset_password_email(user: user,
+email_address: email_address).deliver_later
     end
   end
 

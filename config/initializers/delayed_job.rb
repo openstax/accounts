@@ -64,7 +64,7 @@ module HandleFailedJobInstantly
   def handle_failed_job(job, exception)
     Sentry.capture_exception(exception)
     fail_proc = INSTANT_FAILURE_PROCS[exception.class.name]
-    job.fail! if fail_proc.present? && fail_proc.call(exception) ||
+    job.fail! if (fail_proc.present? && fail_proc.call(exception)) ||
                  exception.try(:instantly_fail_if_in_background_job?)
 
                  super(job, exception)

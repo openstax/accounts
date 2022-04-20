@@ -42,7 +42,7 @@ feature 'User manages emails', js: true do
     # end
 
     scenario 'click to verify does not change token' do
-      click_link(I18n.t(:"users.edit.add_email_address"))
+      click_link(I18n.t(:'users.edit.add_email_address'))
       within(:css, '.email-entry.new') {
         find('input').set('user@mysite.com')
         find('.glyphicon-ok').click
@@ -54,15 +54,15 @@ feature 'User manages emails', js: true do
       expect(page).to have_no_missing_translations
       within all(".email-entry").last do
         find(".unconfirmed-warning").click
-        expect(page).to have_button(I18n.t(:"users.edit.resend_confirmation"))
-        click_button(I18n.t(:"users.edit.resend_confirmation"))
+        expect(page).to have_button(I18n.t(:'users.edit.resend_confirmation'))
+        click_button(I18n.t(:'users.edit.resend_confirmation'))
       end
       visit(original_link_path)
-      expect(page).to have_content(t :"contact_infos.confirm.page_heading.success")
+      expect(page).to have_content(t :'contact_infos.confirm.page_heading.success')
     end
 
     scenario 'with empty value' do
-      click_link(I18n.t(:"users.edit.add_email_address"))
+      click_link(I18n.t(:'users.edit.add_email_address'))
       within(:css, '.email-entry.new') {
         find('input').set('')
         find('.glyphicon-ok').click
@@ -71,7 +71,7 @@ feature 'User manages emails', js: true do
     end
 
     scenario 'with invalid email format' do
-      click_link(I18n.t(:"users.edit.add_email_address"))
+      click_link(I18n.t(:'users.edit.add_email_address'))
       within(:css, '.email-entry.new') {
         find('input').set('user')
         find('.glyphicon-ok').click
@@ -84,7 +84,7 @@ feature 'User manages emails', js: true do
       # makes a real DNS/HTTP request
       EmailDomainMxValidator.strategy = EmailDomainMxValidator::DnsStrategy.new
 
-      click_link(I18n.t(:"users.edit.add_email_address"))
+      click_link(I18n.t(:'users.edit.add_email_address'))
       within(:css, '.email-entry.new') {
         find('input').set(email_address)
         find('.glyphicon-ok').click
@@ -98,7 +98,7 @@ feature 'User manages emails', js: true do
       # makes a real DNS/HTTP request
       EmailDomainMxValidator.strategy = EmailDomainMxValidator::DnsStrategy.new
 
-      click_link(I18n.t(:"users.edit.add_email_address"))
+      click_link(I18n.t(:'users.edit.add_email_address'))
       within(:css, '.email-entry.new') {
         find('input').set(email_address)
         find('.glyphicon-ok').click
@@ -107,7 +107,7 @@ feature 'User manages emails', js: true do
       }
       capture_email!(address: 'anyone@openstax.org')
       expect(page).to have_no_missing_translations
-      expect(page).to have_button(I18n.t(:"users.edit.resend_confirmation"))
+      expect(page).to have_button(I18n.t(:'users.edit.resend_confirmation'))
       expect(page).to have_content('anyone@openstax.org')
     end
 
@@ -180,7 +180,7 @@ feature 'User manages emails', js: true do
     visit '/i/profile'
     expect_sign_in_page
     visit(confirm_path(code: 'atoken'))
-    expect(page).to have_content(t :"contact_infos.confirm.page_heading.success")
+    expect(page).to have_content(t :'contact_infos.confirm.page_heading.success')
     visit('/i/profile')
     expect_sign_in_page
   end

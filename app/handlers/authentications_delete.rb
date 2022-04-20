@@ -24,7 +24,7 @@ class AuthenticationsDelete
 
     outputs[:authentication] = @auth
     fatal_error(code: :cannot_delete_last_auth,
-                message: (I18n.t :"handlers.authentications_delete.cannot_delete_last_authentication")) \
+                message: (I18n.t :'handlers.authentications_delete.cannot_delete_last_authentication')) \
       unless @auth.destroyed?
   end
 end

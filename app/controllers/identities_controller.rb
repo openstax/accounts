@@ -50,7 +50,7 @@ class IdentitiesController < ApplicationController
                     end
                   end,
                   failure: -> {
-                    render status: 400
+                    render status: :bad_request
                   })
     elsif request.post?
       if current_user.is_anonymous?
@@ -66,7 +66,7 @@ class IdentitiesController < ApplicationController
                     end,
                     failure: lambda do
                       security_log :password_reset_failed
-                      render kind, status: 400
+                      render kind, status: :bad_request
                     end)
       end
     end

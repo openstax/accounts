@@ -34,7 +34,8 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}
   EOS
   # Using route helpers doesn't work in test or production, probably has to do with initialization order
-  example "#{api_example(url_base: 'https://accounts.openstax.org/api/application_users', url_end: '?q=username:bob%20name=Jones')}"
+  example "#{api_example(url_base: 'https://accounts.openstax.org/api/application_users',
+url_end: '?q=username:bob%20name=Jones')}"
   param :q, String, required: true, desc: <<-EOS
     The search query string, built up as a space-separated collection of
     search conditions on different fields. Each condition is formatted as
@@ -115,7 +116,8 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
 
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, application_user)
 
-    respond_with application_user, represent_with: Api::V1::ApplicationUserRepresenter, location: nil
+    respond_with application_user, represent_with: Api::V1::ApplicationUserRepresenter,
+location: nil
   end
 
   ###############################################################

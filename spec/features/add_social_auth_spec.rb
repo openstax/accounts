@@ -13,7 +13,7 @@ feature 'Add social auth', js: true do
 
     expect_newflow_profile_page
 
-    click_link (t :"users.edit.enable_other_sign_in_options")
+    click_link (t :'users.edit.enable_other_sign_in_options')
     wait_for_animations
     expect(page).to have_content('Facebook')
 
@@ -35,7 +35,7 @@ feature 'Add social auth', js: true do
 
     expect_profile_page
 
-    click_link (t :"users.edit.enable_other_sign_in_options")
+    click_link (t :'users.edit.enable_other_sign_in_options')
     wait_for_animations
     expect(page).to have_content('Facebook')
 
@@ -57,7 +57,7 @@ feature 'Add social auth', js: true do
 
     expect_profile_page
 
-    click_link (t :"users.edit.enable_other_sign_in_options")
+    click_link (t :'users.edit.enable_other_sign_in_options')
     wait_for_animations
     expect(page).to have_content('Facebook')
 

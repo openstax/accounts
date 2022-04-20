@@ -52,7 +52,7 @@ module I18n
     end
 
     if options.fetch :expand, true
-      list.map! {|key| I18n.translate key, options }
+      list.map! {|key| I18n.t key, options }
     end
 
     return Enumerators.get(locale).enumerate kind, list, options

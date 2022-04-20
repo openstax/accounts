@@ -70,7 +70,7 @@ class ConfirmOauthInfo
 
     fatal_error(
       code: :email_taken,
-      message: I18n.t(:"login_signup_form.email_address_taken"),
+      message: I18n.t(:'login_signup_form.email_address_taken'),
       offending_inputs: :email
     )
   end

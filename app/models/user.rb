@@ -81,7 +81,7 @@ class User < ApplicationRecord
     on: :update
   )
 
-  validates_presence_of(:faculty_status, :role, :school_type)
+  validates(:faculty_status, :role, :school_type, presence: true)
 
   validates(
     :state,
@@ -123,7 +123,7 @@ class User < ApplicationRecord
 
   belongs_to :school, optional: true, inverse_of: :users
 
-  belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
+  belongs_to :source_application, class_name: "Doorkeeper::Application"
 
   has_one :identity, dependent: :destroy, inverse_of: :user
 
@@ -286,12 +286,12 @@ class User < ApplicationRecord
   end
 
   def name
-    full_name.present? ? full_name : username
+    full_name.presence || username
   end
 
   def full_name
     guess = "#{title} #{first_name} #{last_name} #{suffix}".gsub(/\s+/,' ').strip
-    guess.blank? ? nil : guess
+    guess.presence
   end
 
   def full_name=(name)
@@ -388,7 +388,7 @@ class User < ApplicationRecord
           "created_at" ASC
         SQL
       )).first
-    end.try!(:value)
+    end&.value
   end
 
   def generate_uuid
@@ -434,7 +434,7 @@ class User < ApplicationRecord
       was = change[0]
       is = change[1]
 
-      errors.add(attr.to_sym, :blank) if !was.blank? && is.blank?
+      errors.add(attr.to_sym, :blank) if was.present? && is.blank?
     end
   end
 
