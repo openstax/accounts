@@ -3,10 +3,6 @@ class SocialAuthController < ApplicationController
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  before_action :restart_signup_if_missing_verified_user, only: [
-    :confirm_oauth_info_form, :confirm_oauth_info_post
-  ]
-
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
     if signed_in? && user_signin_is_too_old?
@@ -57,13 +53,11 @@ class SocialAuthController < ApplicationController
 
           code = @handler_result.errors.first.code
           authentication = @handler_result.outputs.authentication
+
           case code
           when :should_redirect_to_signup
-            redirect_to(
-              login_path,
-              notice: I18n.t(
-                :"login_signup_form.should_social_signup",
-                sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
+            redirect_to(login_path, notice: I18n.t(:"login_signup_form.should_social_signup",
+                sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), signup_path)
               )
             )
           when :authentication_taken

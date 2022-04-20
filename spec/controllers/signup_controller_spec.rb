@@ -120,6 +120,7 @@ RSpec.describe SignupController, type: :controller do
         user = User.last
         user.update_attribute(:state, :unverified)
         session[:unverified_user_id] = user.id
+
         post(:change_signup_email_post, params: params)
         expect(response).to redirect_to(:change_signup_email_form_complete)
       end

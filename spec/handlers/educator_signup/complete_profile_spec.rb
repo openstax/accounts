@@ -3,7 +3,8 @@ require 'rails_helper'
 module EducatorSignup
 
   describe CompleteProfile, type: :handler do
-    let(:user) { create_user('user') }
+    let(:email) { Faker::Internet.email }
+    let(:user) { create_user(email) }
     let(:handle) { described_class.handle( params: params, user: user) }
     let(:books_used) { ['Algebra and Trigonometry', 'Physics'] }
     let(:num_students_per_semester_taught) { 10 }
@@ -15,7 +16,7 @@ module EducatorSignup
           books_used: books_used,
           num_students_per_semester_taught: num_students_per_semester_taught,
           using_openstax_how: using_openstax_how,
-          educator_specific_role: educator_specific_role,
+          educator_specific_role: :instructor,
         }
       }
     end
@@ -26,7 +27,7 @@ module EducatorSignup
 
     context 'with invalid params' do
       context 'other must be filled out' do
-        let(:educator_specific_role) { EducatorSignup::CompleteProfile::OTHER }
+        let(:educator_specific_role) { :other }
 
         it "should return correct error" do
           result = handle
@@ -36,8 +37,8 @@ module EducatorSignup
       end
 
       context 'books used must be filled out' do
-        let(:educator_specific_role) { EducatorSignup::CompleteProfile::INSTRUCTOR }
-        let(:using_openstax_how) { EducatorSignup::CompleteProfile::AS_PRIMARY }
+        let(:educator_specific_role) { :instructor }
+        let(:using_openstax_how) { :as_primary }
         let(:books_used) { [] }
 
         it "should return correct error" do
@@ -48,7 +49,7 @@ module EducatorSignup
       end
 
       context 'number of students taught must be filled out' do
-        let(:educator_specific_role) { EducatorSignup::CompleteProfile::INSTRUCTOR }
+        let(:educator_specific_role) { :instructor }
         let(:num_students_per_semester_taught) { nil }
 
         it "should return correct error" do

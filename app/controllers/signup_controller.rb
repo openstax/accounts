@@ -4,6 +4,7 @@ class SignupController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   before_action(:authenticate_user!, only: :signup_done)
+  before_action(:redirect_to_signup_if_no_user_session, except: %w[welcome signup_form signup_post verify_email_by_pin_form change_signup_email_post])
 
   def welcome
     redirect_back(fallback_location: profile_path) if signed_in?
@@ -39,16 +40,12 @@ class SignupController < ApplicationController
   end
 
   def verify_email_by_pin_form
-    redirect_to signup_path unless unverified_user.present?
-
-    @first_name = unverified_user.first_name
-    @email = unverified_user.email_addresses.first.value
+    @first_name = @unverified_user.first_name
+    @email = @unverified_user.email_addresses.first.value
     render :email_verification_form
   end
 
   def verify_email_by_pin_post
-    redirect_to signup_path unless unverified_user.present?
-
     handle_with(
       VerifyEmailByPin,
       email_address: unverified_user.email_addresses.first,
@@ -72,9 +69,7 @@ class SignupController < ApplicationController
     )
   end
 
-  def verify_email_by_code
-    redirect_to signup_path unless unverified_user.present?
-
+  def verify_email_by_cod
     handle_with(
       VerifyEmailByCode,
       success: lambda {
@@ -97,15 +92,11 @@ class SignupController < ApplicationController
   end
 
   def change_signup_email_form
-    redirect_to signup_path unless unverified_user.present?
-
     @email = unverified_user.email_addresses.first.value
     render :change_signup_email_form
   end
 
   def change_signup_email_post
-    redirect_to signup_path unless unverified_user.present?
-
     handle_with(
       ChangeSignupEmail,
       user:    unverified_user,
@@ -120,8 +111,6 @@ class SignupController < ApplicationController
   end
 
   def change_signup_email_form_complete
-    redirect_to signup_path unless unverified_user.present?
-
     render :email_verification_form_updated
   end
 
@@ -131,6 +120,12 @@ class SignupController < ApplicationController
     security_log(:user_viewed_signup_form, form_name: action_name)
     @first_name = current_user.first_name
     @email_address = current_user.email_addresses.first&.value
+  end
+
+  private
+
+  def redirect_to_signup_if_no_user_session
+    redirect_to signup_path unless @unverified_user.present?
   end
 
 end

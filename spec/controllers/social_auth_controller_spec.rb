@@ -19,7 +19,7 @@ RSpec.describe SocialAuthController, type: :controller do
 
     context 'social login (login means user.state == activated) - success' do
       let(:user) do
-        create_newflow_user('user@openstax.org')
+        create_user('user@openstax.org')
       end
 
       let(:params) do
