@@ -183,6 +183,9 @@ GEM
     crass (1.0.6)
     css_parser (1.4.5)
       addressable
+    data_migrate (8.0.0)
+      activerecord (>= 5.0)
+      railties (>= 5.0)
     database_cleaner (1.8.5)
     db-query-matchers (0.6.0)
     declarative (0.0.20)
@@ -729,6 +732,7 @@ DEPENDENCIES
   chronic
   codecov
   coffee-rails (= 5.0.0)
+  data_migrate
   database_cleaner
   db-query-matchers
   delayed_job_active_record
