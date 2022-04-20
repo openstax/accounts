@@ -48,7 +48,7 @@ $os-section-spacing: 30px;
     }
   }
 
-  input {
+  input:not([type="submit"]) {
     color: os-color(gray);
     font-size: 16px;
     border-radius: 0px;
