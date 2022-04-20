@@ -62,8 +62,8 @@ feature "User can't sign in", js: true do
       user1 = create_user 'user@example'
       user2 = create_user 'temporary@email.com'
       ContactInfo.where(id: email2.id).update_all(value: 'UsEr@example.com')
-      user2.update_attribute(:username, nil)
-      user1.update_attribute(:username, nil)
+      user2.update_attributes(:username: nil)
+      user1.update_attributes(:username: nil)
 
       # Can't be an exact email match to trigger this scenario
       log_in_user('useR@example.com', 'whatever')

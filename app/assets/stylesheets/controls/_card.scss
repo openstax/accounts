@@ -124,7 +124,7 @@ $os-section-spacing: 30px;
   }
 
   .warning {
-    color: ui-color(error); // bs variable
+    color: text-color(error);
   }
 
   a:not(.btn) {

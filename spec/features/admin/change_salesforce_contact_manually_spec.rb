@@ -45,7 +45,7 @@ RSpec.feature "Change Salesforce contact manually", vcr: VCR_OPTS, :type => :fea
     @target_user.reload
     expect(@target_user.salesforce_contact_id).to eq "original"
   end
-
+  
   xit 'cannot be set if the ID is of malformed' do
     @target_user.update_attribute(:salesforce_contact_id, 'original')
     fill_in 'user_salesforce_contact_id', with: 'somethingwonky'

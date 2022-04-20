@@ -27,7 +27,7 @@ describe LookupUsers, type: :lib do
         @user1 = FactoryBot.create(:user, username: 'bob')
         @user2 = FactoryBot.create(:user, username: 'temp')
         # Used to be able to have case-insensitive dupes, but can't now, so skip validations
-        @user2.update_attribute(:username, 'BOB')
+        @user2.update_attributes(:username: 'BOB')
       }
 
       it 'finds an exact match' do
