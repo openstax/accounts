@@ -1,6 +1,4 @@
 @import "bootstrap";
-@import "common_colors";
-@import "admin_navbar";
 @import "font-awesome";
 
 .underlined-spaced-row {
@@ -9,17 +7,23 @@
   margin-bottom: 20px
 }
 
-nav.navbar.production {
-  border-bottom: 2px solid red;
-}
-
-
 body.admin {
   .user-search-help {
     float: right;
     margin-top: -16px;
     font-size: 10px;
     margin-bottom: 10px;
+  }
+
+  nav.navbar {
+    a {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    &.production {
+      border-bottom: 2px solid red;
+    }
   }
 }
 

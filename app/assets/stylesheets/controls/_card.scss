@@ -1,18 +1,19 @@
+$os-section-spacing: 30px;
+
 .ox-card {
   $input-height: 50px;
-  $input-border-color: darken($os_light_gray, 10%);
+  $input-border-color: ui-color(form-border);
 
   display: block;
   margin: auto;
   max-width: 570px;
-  background-color: $os_light_gray;
+  background-color: ui-color(page-bg);
   padding: 30px 50px 50px 50px;
   font-size: 14px;
 
   h1, h2, h3, .minor-heading {
-    font-family: $os_heading_font_family;
     font-weight: 700;
-    color: $os_dark;
+    color: text-color(normal);
   }
 
   h1.title {
@@ -48,7 +49,7 @@
   }
 
   input {
-    color: $os_gray;
+    color: os-color(gray);
     font-size: 16px;
     border-radius: 0px;
 
@@ -81,7 +82,7 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     border-color: $input-border-color;
-    color: $os_gray;
+    color: os-color(gray);
 
     &::-ms-expand {
       display: none;
@@ -127,7 +128,7 @@
   }
 
   a:not(.btn) {
-    color: $os_link_color;
+    color: text-color(link);
     text-decoration: underline;
   }
 
