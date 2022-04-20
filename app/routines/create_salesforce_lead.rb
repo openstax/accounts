@@ -13,6 +13,9 @@ class CreateSalesforceLead
   protected
 
   def exec(user_id:)
+    # this is controlled in the accounts admin UI
+    return unless Settings::Salesforce.push_leads_enabled
+
     user = User.find(user_id)
     status.set_job_name(self.class.name)
     status.set_job_args(user: user.to_global_id.to_s)
