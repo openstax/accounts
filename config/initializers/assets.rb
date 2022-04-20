@@ -15,7 +15,6 @@ Rails.application.config.assets.precompile += %w(
   admin.css
   intTelInput.css
   syntax_highlight.css
-  common_colors.css
   profile.css
   application_body_api_docs.css
   bootstrap-editable/loading.gif

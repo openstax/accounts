@@ -20,17 +20,16 @@ button {
     border-radius: 0;
     padding-left: 2rem;
     padding-right: 2rem;
-    border-color: darken($os_orange, 10%);
+    border-color: darken(os-color(orange), 10%);
     font-weight: 700;
-    font-family: $os_heading_font_family;
   }
 
   &.cancel {
-    @include ox-button($os_gray);
+    @include ox-button(os-color(gray));
   }
 
   &.primary {
-    @include ox-button($os_orange);
+    @include ox-button(os-color(orange));
   }
 
 }

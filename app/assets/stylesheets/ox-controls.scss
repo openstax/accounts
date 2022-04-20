@@ -22,7 +22,7 @@
   margin: $os-section-spacing 0;
 
   &:after {
-    border-top: 2px solid $os_line_color;
+    border-top: 2px solid ui-color(form-border);
     content: '';
     display: block;
     width: calc(50% - 20px);
@@ -32,7 +32,7 @@
   }
 
   &:before {
-    border-top: 2px solid $os_line_color;
+    border-top: 2px solid ui-color(form-border);
     content: '';
     display: block;
     width: calc(50% - 20px);

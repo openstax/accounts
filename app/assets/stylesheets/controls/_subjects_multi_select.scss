@@ -42,7 +42,7 @@
       height: 50px;
 
       & + .subject {
-        border-top: 1px solid $os_line_color;
+        border-top: 1px solid ui-color(form-border);
       }
 
       > * {

@@ -6,7 +6,6 @@ $font-path: '/accounts/fonts';
 @import "pattern-library";
 @import "font-awesome";
 @import "bootstrap-sprockets";
-@import "common";
 @import "ox-controls";
 @import "intlTelInput";
 @import "profile";
@@ -86,7 +85,7 @@ $font-path: '/accounts/fonts';
 
 
 html {
-  font-family: 'Neue Helvetica W01', sans-serif;
+  font-family: 'Neue Helvetica W01', 'HelveticaNeue', 'Helvetica Neue', Arial, sans-serif;
 }
 
 body {
@@ -99,15 +98,15 @@ body {
 
   @include set-font(body-regular);
   background-color: #fff;
-  color: var(--greyish-brown);
+  color: text-color(normal);
 }
 
 .layout-alert {
   background-color: #f2dede;
   padding: 1rem;
   padding-left: 2rem;
-  border-bottom: 0.1rem solid var(--input-error-border-color);
-  color: var(--input-error-message-color);
+  border-bottom: 0.1rem solid ui-color(error-border);
+  color: text-color(error);
 }
 
 .layout-notice {
@@ -119,11 +118,11 @@ body {
 }
 
 .mustdo-alert {
-  color: var(--input-error-message-color);
+  color: text-color(error);
 }
 
 .cs-form-mustdo-alert {
-  color: var(--input-error-message-color);
+  color: text-color(error);
 }
 
 .iti {
@@ -307,17 +306,17 @@ label.required::after {
     float: right;
     padding-right: 3rem;
     padding-top: 1rem;
-    color: var(--greyish-brown);
+    color: text-color(normal);
   }
 }
 
 input.has-error {
-  background-color: var(--input-error-background-color) !important;
-  border: thin solid var(--input-error-border-color) !important;
+  background-color: ui-color(error-bg) !important;
+  border: thin solid ui-color(error-border) !important;
 }
 
 .invalid-message {
-  color: var(--input-error-message-color);
+  color: text-color(error);
 }
 
 // per-page styles
@@ -641,7 +640,7 @@ input.has-error {
 
     label {
       font-weight: bold;
-      color: var(--greyish-brown);
+      color: text-color(normal);
     }
 
     .social-section {
