@@ -19,8 +19,6 @@ class OauthCallback
   )
   uses_routine(TransferOmniauthData)
 
-  LOGIN_FORM_IS_ORIGIN = :login_form
-
   include Rails.application.routes.url_helpers
 
   protected #########################
@@ -49,7 +47,7 @@ class OauthCallback
       outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
       run(TransferAuthentications, outputs.authentication, existing_user)
     # TODO: what is this?
-    elsif user_came_from&.to_sym == LOGIN_FORM_IS_ORIGIN
+    elsif user_came_from&.to_sym == :login_form
       # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
       fatal_error(code: :should_redirect_to_signup)
     else # sign up new student, then we will log them in.
@@ -61,7 +59,25 @@ class OauthCallback
     outputs.user = outputs.authentication.user
   end
 
-  private ###########################
+  private
+
+  # users can only have one login per social provider, so if user is trying to log in with
+  # the same provider but it has a different uid, then they might've gotten the social account hacked,
+  # so we want to prevent the hacker from logging in with the stolen social provider auth.
+  def mismatched_authentication?
+    return false if oauth_data.email.blank?
+
+    existing_email_owner_id = LookupUsers.by_verified_email_or_username(oauth_data.email).last&.id
+    existing_auth_uid       = Authentication.where(user_id: existing_email_owner_id, provider: @oauth_provider).pluck(:uid).first
+    incoming_auth_uid       = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).last&.uid
+
+    if existing_auth_uid != incoming_auth_uid
+      Sentry.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
+      return true
+    else
+      return false
+    end
+  end
 
   def handle_while_logged_in(logged_in_user_id)
     outputs.authentication = authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
