@@ -11,7 +11,7 @@ feature 'Admin user pages', js: true do
     context "with a user with salesforce contact ID set" do
       before(:each) do
         @sf_user = create_user 'sf_user'
-        @sf_user.update_attribute(:salesforce_contact_id, "booyah")
+        @sf_user.update_attributes(:salesforce_contact_id: "booyah")
       end
 
       context 'full console' do

@@ -72,7 +72,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it "returns a single result well with private data" do
-      trusted_application.update_attribute(:can_access_private_user_data, true)
+      trusted_application.update_attributes(:can_access_private_user_data: true)
       api_get :index, trusted_application_token, params: { q: 'first_name:bob last_name:Michaels' }
       expect(response.code).to eq('200')
 

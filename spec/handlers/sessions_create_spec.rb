@@ -104,8 +104,8 @@ RSpec.describe SessionsCreate, type: :handler do
         @user1 = FactoryBot.create :user, created_at: 1.year.ago
         @user2 = FactoryBot.create :user, created_at: 1.year.ago
 
-        @user1.update_attribute(:updated_at, 1.month.ago)
-        @user2.update_attribute(:updated_at, 1.year.ago)
+        @user1.update_attributes(:updated_at: 1.month.ago)
+        @user2.update_attributes(:updated_at: 1.year.ago)
 
         @user3 = FactoryBot.create :user
         Timecop.freeze(2.months.ago) do
