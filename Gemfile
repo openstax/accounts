@@ -226,6 +226,9 @@ group :development, :test do
 
   gem 'faraday'
   gem 'faraday_middleware'
+
+  # for writing data migrations
+  gem 'data_migrate'
 end
 
 group :development, :lint do
