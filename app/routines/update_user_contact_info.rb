@@ -23,6 +23,9 @@ class UpdateUserContactInfo
   end
 
   def call
+    # this is controlled in the accounts admin UI
+    return unless Settings::Salesforce.sync_contacts_to_salesforce_enabled
+
     log("Starting sync with Salesforce")
     contacts = salesforce_contacts
     log("#{contacts.count} contacts fetched from Salesforce")

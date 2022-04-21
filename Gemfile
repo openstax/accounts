@@ -147,7 +147,6 @@ gem 'whenever', require: false
 
 # Admin toggles
 gem 'rails-settings-ui'
-
 gem 'rails-settings-cached'
 gem 'dry-validation'
 
@@ -184,6 +183,9 @@ gem 'blazer'
 
 # Delayed job dashboard
 gem "delayed_job_web"
+
+# for writing data migrations
+gem 'data_migrate'
 
 group :development, :test do
   # Run specs in parallel
@@ -228,9 +230,6 @@ group :development, :test do
 
   gem 'faraday'
   gem 'faraday_middleware'
-
-  # for writing data migrations
-  gem 'data_migrate'
 end
 
 group :development, :lint do

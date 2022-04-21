@@ -3,6 +3,8 @@
 defaults: &defaults
   push_salesforce_lead_enabled: false
   user_info_error_emails_enabled: false
+  sync_accounts_to_salesforce_enabled: false
+  sync_contacts_to_salesforce_enabled: false
   send_google_analytics: false
   google_analytics_code: UA-73668038-2
   google_tag_manager_code: GTM-W6N7PB

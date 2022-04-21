@@ -3,11 +3,11 @@ module Settings
 
     class << self
 
-      def push_leads_enabled
+      def push_salesforce_lead_enabled
         Settings::Db.store.push_salesforce_lead_enabled
       end
 
-      def push_leads_enabled=(bool)
+      def push_salesforce_lead_enabled=(bool)
         Settings::Db.store.push_salesforce_lead_enabled = bool
       end
 
@@ -17,6 +17,22 @@ module Settings
 
       def user_info_error_emails_enabled=(bool)
         Settings::Db.store.user_info_error_emails_enabled=bool
+      end
+
+      def sync_accounts_to_salesforce_enabled
+        Settings::Db.store.sync_accounts_to_salesforce_enabled
+      end
+
+      def sync_accounts_to_salesforce_enabled=(bool)
+        Settings::Db.store.sync_accounts_to_salesforce_enabled = bool
+      end
+
+      def sync_contacts_to_salesforce_enabled
+        Settings::Db.store.sync_contacts_to_salesforce_enabled
+      end
+
+      def sync_contacts_to_salesforce_enabled=(bool)
+        Settings::Db.store.sync_contacts_to_salesforce_enabled = bool
       end
 
     end
