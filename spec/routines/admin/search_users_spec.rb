@@ -25,7 +25,7 @@ RSpec.describe Admin::SearchUsers, type: :routine do
 
   before(:each) do
     user_4.contact_infos.email_addresses.order(:value).first.update_attributes(
-      :value: 'jstoly292929@hotmail.com'
+      :value => 'jstoly292929@hotmail.com'
     )
   end
 

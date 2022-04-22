@@ -35,8 +35,8 @@ RSpec.describe SearchUsers, type: :routine do
   before(:each) do
     MarkContactInfoVerified.call(user_1.contact_infos.email_addresses.order(:value).first)
     MarkContactInfoVerified.call(user_4.contact_infos.email_addresses.order(:value).first)
-    user_4.contact_infos.email_addresses.order(:value).first.update_attributes(
-      :value: 'jstoly292929@hotmail.com'
+    user_4.contact_infos.email_addresses.order(:value).first.update(
+      value: 'jstoly292929@hotmail.com'
     )
     user_1.reload
   end
