@@ -14,7 +14,7 @@ class LoginController < ApplicationController
     render :login_form
   end
 
-  def login_post
+  def login_post # rubocop:disable Metrics/MethodLength
     handle_with(
       LogInUser,
       success: lambda {
@@ -35,21 +35,26 @@ class LoginController < ApplicationController
 
         sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
-        # TODO : this is not fun logic code.. find a better solution - but at least you don't have to hunt files for it
+        # TODO : this is not fun logic code.. find a better solution - but at least
+        # you don't have to hunt files for it
         if current_user.student? || user.is_profile_complete?
           redirect_back(fallback_location: profile_path)
-        elsif current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
+        elsif current_step == 'login' && !user.is_profile_complete &&
+              user.sheerid_verification_id.blank?
           redirect_to sheerid_form_path
-        elsif current_step == 'login' && (user.sheerid_verification_id.present? || user.is_sheerid_unviable?)
+        elsif current_step == 'login' && (user.sheerid_verification_id.present? ||
+              user.is_sheerid_unviable?)
             redirect_to profile_path
         elsif current_step == 'educator_sheerid_form'
-            if user.confirmed_faculty? || user.rejected_faculty? || user.sheerid_verification_id.present?
+            if user.confirmed_faculty? || user.rejected_faculty? ||
+               user.sheerid_verification_id.present?
               redirect_to profile_path
             end
         elsif current_step == 'educator_signup_form' && !user.is_anonymous?
             redirect_to verify_email_by_code_path
         elsif current_step == 'educator_email_verification_form' && user.activated?
-            if !user.student? && user.activated? && user.pending_faculty && user.sheerid_verification_id.blank?
+            if !user.student? && user.activated? && user.pending_faculty &&
+               user.sheerid_verification_id.blank?
               redirect_to sheerid_form_path
             elsif user.activated?
               redirect_to profile_path
@@ -91,7 +96,8 @@ class LoginController < ApplicationController
 
   # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.
   # -- Tutor uses this to send students who want to sign up, back to Tutor which
-  # has a message for students just letting them know how to sign up (they must receive an email invitation).
+  # has a message for students just letting them know how to sign up (they must
+  # receive an email invitation).
   def cache_alternate_signup_url
     set_alternate_signup_url(params[:signup_at])
   end

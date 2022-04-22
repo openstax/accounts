@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_user!, only: :profile
 
+  def profile; end
+
   def disable_fine_print
     request.options? ||
     contracts_not_required ||
