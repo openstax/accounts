@@ -8,16 +8,19 @@ module EducatorSignup
       true
     end
 
-    def handle(verification_id=nil)
+    def handle(verification_id=nil) # rubocop:disable Metrics/MethodLength
       unless verification_id
         verification_id = params.fetch('verificationId')
       end
       verification_details_from_sheerid = SheeridAPI.get_verification_details(verification_id)
 
       if !verification_details_from_sheerid.success?
-        Sentry.capture_message("[SheerID Webhook] fetching verification details FAILED",
-                               extra: { verification_id: verification_id,
-verification_details: verification_details_from_sheerid }
+        Sentry.capture_message(
+          "[SheerID Webhook] fetching verification details FAILED",
+          extra: {
+            verification_id: verification_id,
+            verification_details: verification_details_from_sheerid
+          }
         )
         fatal_error(code: :sheerid_api_call_failed)
       end
@@ -34,18 +37,25 @@ verification_details: verification_details_from_sheerid }
       user = EmailAddress.verified.find_by(value: verification.email)&.user
 
       if user.blank?
-        Sentry.capture_message("[SheerID Webhook] No user found with verification id (#{verification_id}) and email (#{verification.email})",
-                               extra: { verification_id: verification_id,
-verification_details_from_sheer_id: verification_details_from_sheerid }
+        Sentry.capture_message(
+          "[SheerID Webhook] No user found with verification id (#{verification_id}) "\
+          "and email (#{verification.email})",
+          extra: {
+            verification_id: verification_id,
+            verification_details_from_sheer_id: verification_details_from_sheerid
+          }
         )
         return
       end
 
-      # update the security log and the user to say we got the webhook - we use this in lead processing
+      # update the security log and the user to say we got the webhook - we use
+      # this in lead processing
       SecurityLog.create!(event_type: :sheerid_webhook_received, user: user)
 
-      # Set the user's sheerid_verification_id only if they didn't already have one  we don't want to overwrite the approved one
-      if verification_id.present? && user.sheerid_verification_id.blank? && user.sheerid_verification_id != verification_id
+      # Set the user's sheerid_verification_id only if they didn't already have
+      # one  we don't want to overwrite the approved one
+      if verification_id.present? && user.sheerid_verification_id.blank? &&
+         user.sheerid_verification_id != verification_id
         user.update!(sheerid_verification_id: verification_id)
 
         SecurityLog.create!(
@@ -142,9 +152,11 @@ sheerid_verification_id: verification_id)
 verification: verification_details_from_sheerid.inspect })
       end
 
-      # if we got the webhook back after the user submitted the profile, they didn't get a lead built yet
+      # if we got the webhook back after the user submitted the profile, they
+      # didn't get a lead built yet
       # We just make sure they don't have a lead or contact id yet
-      if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank? && user.is_profile_complete
+      if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank? &&
+         user.is_profile_complete
         CreateSalesforceLead.perform_later(user_id: user.id)
       end
 

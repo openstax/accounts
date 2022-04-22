@@ -43,14 +43,16 @@ uid: @oauth_uid))
       # User found with the given authentication. We will log them in.
       outputs.authentication.user
     elsif (existing_user = user_most_recently_used(users_matching_oauth_data))
-      # No user found with the given authentication, but a user *was* found with the given email address.
+      # No user found with the given authentication, but a user *was* found with
+      # the given email address.
       # We will add the authentication to their existing account and then log them in.
       outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider,
 uid: @oauth_uid)
       run(TransferAuthentications, outputs.authentication, existing_user)
     # TODO: what is this?
     elsif user_came_from&.to_sym == :login_form
-      # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
+      # The user is trying to sign up but they came from the login form,
+      # so redirect them to the sign up form
       fatal_error(code: :should_redirect_to_signup)
     else # sign up new student, then we will log them in.
       user = create_student_user_instance
@@ -63,9 +65,10 @@ uid: @oauth_uid)
 
   private
 
-  # users can only have one login per social provider, so if user is trying to log in with
-  # the same provider but it has a different uid, then they might've gotten the social account hacked,
-  # so we want to prevent the hacker from logging in with the stolen social provider auth.
+  # users can only have one login per social provider, so if user is trying to log
+  # in with the same provider but it has a different uid, then they might've
+  # gotten the social account hacked, so we want to prevent the hacker from
+  # logging in with the stolen social provider auth.
   def mismatched_authentication?
     return false if oauth_data.email.blank?
 

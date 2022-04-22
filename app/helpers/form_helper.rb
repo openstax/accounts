@@ -104,7 +104,7 @@ module FormHelper
       elsif except.present?
         true if [except].flatten.compact.include?(@limit_to)
       elsif only.present?
-        true if ![only].flatten.compact.include?(@limit_to)
+        true if [only].flatten.compact.exclude?(@limit_to)
       end
     end
 

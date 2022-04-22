@@ -57,7 +57,8 @@ class SignupForm
     user = User.create(
       state: :unverified,
       role: signup_params.role,
-      faculty_status: :incomplete_signup, # this will be updated after a student verifies their email or instructor completes profile
+      faculty_status: :incomplete_signup, # this will be updated after a student verifies
+      # their email or instructor completes profile
       first_name: signup_params.first_name,
       last_name: signup_params.last_name,
       phone_number: signup_params.phone_number,
