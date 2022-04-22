@@ -46,7 +46,7 @@ class ContactInfosController < ApplicationController
                                         contact_info_type: @contact_info.type,
                                         contact_info_value: @contact_info.value,
                                         contact_info_is_searchable: params[:is_searchable]
-    @contact_info.update_attributes(:is_searchable: params[:is_searchable])
+    @contact_info.update_attributes(is_searchable: params[:is_searchable])
 
     render json: {is_searchable: @contact_info.is_searchable}, status: :ok
   end
