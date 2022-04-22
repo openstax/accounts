@@ -5,7 +5,7 @@ class SignupController < ApplicationController
 
   before_action(:authenticate_user!, only: :signup_done)
   before_action(:redirect_to_signup_if_no_user_session,
-except: %w[welcome signup_form signup_post verify_email_by_pin_form change_signup_email_post])
+except: %w[welcome signup_form signup_post])
 
   def welcome
     redirect_back(fallback_location: profile_path) if signed_in?
@@ -128,7 +128,7 @@ except: %w[welcome signup_form signup_post verify_email_by_pin_form change_signu
   private
 
   def redirect_to_signup_if_no_user_session
-    redirect_to signup_path unless @unverified_user.present?
+    redirect_to signup_path unless unverified_user.present?
   end
 
 end
