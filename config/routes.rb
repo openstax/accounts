@@ -166,7 +166,7 @@ as: :reset_password_email_sent
 
     resources :application_users, only: [:index] do
       collection do
-        #get 'find/username/:username', action: 'find_by_username'
+        get 'find/uuid/:uuid', action: 'find_by_uuid'
         get 'updates'
         put 'updated'
       end

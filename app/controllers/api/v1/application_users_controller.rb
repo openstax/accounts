@@ -106,11 +106,11 @@ url_end: '?q=username:bob%20name=Jones')}"
   description <<-EOS
     #{json_schema(Api::V1::ApplicationUserRepresenter, include: :readable)}
   EOS
-  def find_by_username
+  def find_by_uuid
     raise SecurityTransgression if current_application.nil?
 
     application_user = ApplicationUser.preload(:user).joins(:user).where(
-      users: { username: params[:username] },
+      users: { uuid: params[:uuid] },
       application_id: current_application.id
     ).first!
 
