@@ -23,8 +23,11 @@ class AuthenticationsDelete
     transfer_errors_from(@auth, {type: :verbatim}, true)
 
     outputs[:authentication] = @auth
-    fatal_error(code: :cannot_delete_last_auth,
-                message: (I18n.t :'handlers.authentications_delete.cannot_delete_last_authentication')) \
-      unless @auth.destroyed?
+    fatal_error(
+      code: :cannot_delete_last_auth,
+      message: (
+        I18n.t :'handlers.authentications_delete.cannot_delete_last_authentication'
+      )
+    ) unless @auth.destroyed?
   end
 end

@@ -15,9 +15,11 @@
 # :returning_user               if the user is a returning user
 # :new_password_user            if the user just signed up as a password user
 # :new_social_user              if the user is signing up and just authenticated socially
-# :transferred_authentication   if the user signed up and we can find an existing user to add the auth to
+# :transferred_authentication   if the user signed up and we can find an existing
+#                               user to add the auth to
 # :authentication_added         if the user is adding an authentication from the profile page
-# :no_action                    if the user is adding an authentication from the profile page that is already linked to them
+# :no_action                    if the user is adding an authentication from the
+#                               profile page that is already linked to them
 #
 # TODO clean up this comment
 #

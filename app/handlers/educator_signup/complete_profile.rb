@@ -50,7 +50,7 @@ module EducatorSignup
       @user && !@user.is_anonymous?
     end
 
-    def handle
+    def handle # rubocop:disable Metrics/MethodLength
       # let the controller know this is the cs form, so we can redirect properly on error
       @is_on_cs_form = signup_params.is_cs_form?
       outputs.is_on_cs_form = @is_on_cs_form
@@ -93,9 +93,12 @@ module EducatorSignup
 is_school_issued: true)
         end
       else
-        # If user did not need CS verification but still needs to be pending, set them to pending state
-        # This is everyone, unless SheerID sets it to something else in sheerid_webhook when we hear back from their webhook
-        # Otherwise, we can see who didn't fill out their profile with a faculty status of :incomplete_signup
+        # If user did not need CS verification but still needs to be pending, set
+        # them to pending state
+        # This is everyone, unless SheerID sets it to something else in
+        # sheerid_webhook when we hear back from their webhook
+        # Otherwise, we can see who didn't fill out their profile with a faculty
+        # status of :incomplete_signup
         if @user.faculty_status == :incomplete_signup && !@did_use_sheerid
           @user.faculty_status = :pending_faculty
           SecurityLog.create!(
@@ -112,7 +115,8 @@ is_school_issued: true)
       outputs.user = @user
 
       if @did_use_sheerid
-        # User used SheerID or needs CS verification - we create their lead in SheeridWebhook, not here.. and might not be instant
+        # User used SheerID or needs CS verification - we create their lead in
+        # SheeridWebhook, not here.. and might not be instant
         SecurityLog.create!(
           user: user,
           event_type: :lead_creation_awaiting_sheerid_webhook,
@@ -120,7 +124,8 @@ is_school_issued: true)
         return
       end
 
-      # Now we create the lead for the user... because we returned above if they did... again SheeridWebhook
+      # Now we create the lead for the user... because we returned above
+      # if they did... again SheeridWebhook
       CreateSalesforceLead.perform_later(user_id: @user.id)
 
 
@@ -167,7 +172,8 @@ is_school_issued: true)
         param_error(:books_used, :books_used_must_be_entered)
       end
 
-      if role  == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
+      if role  == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY &&
+         books_of_interest.blank?
         param_error(:books_of_interest, :books_of_interest_must_be_entered)
       end
 

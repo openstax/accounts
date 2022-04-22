@@ -17,7 +17,8 @@ class UserAccessPolicy
     when :unclaimed
       # find-or-create accounts that are a stand-in for a person who's not yet signed up
       # only selected applications can access this via client credentials
-      Rails.env.development? || (requestor.is_application? && requestor.can_find_or_create_accounts?)
+      Rails.env.development? || (requestor.is_application? &&
+      requestor.can_find_or_create_accounts?)
     end
   end
 end
