@@ -521,6 +521,13 @@ en:
       unconfirmed_warning: unconfirmed
       password: Password
       searchable: Let other users find me by this email.
+    update:
+      success: 'User profile was successfully updated.'
+    mark_users_updated:
+      incremented: 'Incremented unread update count'
+    change_salesforce_contact:
+      removed: 'Removed the Salesforce Contact ID'
+      updated: 'Updated Salesforce Contact'
 
   sessions:
     access_tutor: Log in or sign up for an account to access OpenStax Tutor

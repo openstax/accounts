@@ -3,6 +3,7 @@ module Admin
     before_action :get_user, only: [:edit, :update, :destroy, :become]
 
     def index; end
+    def edit; end
 
     # Used by full console page
     def search
@@ -17,7 +18,7 @@ module Admin
                                                user_params: request.filtered_parameters['user']
 
           format.html { redirect_to edit_admin_user_path(@user),
-                        notice: 'User profile was successfully updated.' }
+                        notice: t('.success') }
         else
           format.html { render action: "edit" }
         end
@@ -40,8 +41,8 @@ module Admin
     end
 
     def mark_users_updated
-      ApplicationUser.update_all('unread_updates = unread_updates + 1')
-      redirect_to actions_admin_users_path, notice: 'Incremented unread update count'
+      ApplicationUser.update_all('unread_updates = unread_updates + 1') # rubocop:disable Rails/SkipsModelValidations
+      redirect_to actions_admin_users_path, notice: t('.incremented')
     end
 
     protected
@@ -73,7 +74,7 @@ module Admin
       end
 
       if new_id.downcase == "remove"
-        flash[:notice] = "Removed the Salesforce Contact ID"
+        flash[:notice] = t('.removed')
         @user.salesforce_contact_id = nil
         return @user.save
       end
@@ -83,7 +84,7 @@ module Admin
 
         if contact.present?
           # The contact really exists, so save its ID to the User
-          flash[:notice] = "Updated Salesforce Contact"
+          flash[:notice] = t('.updated')
           @user.salesforce_contact_id = new_id
           return @user.save
         end
