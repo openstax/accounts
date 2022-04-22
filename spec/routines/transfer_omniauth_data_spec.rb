@@ -103,7 +103,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
         end
 
         context 'when the existing email address is verified' do
-          before { user.contact_infos.first.update_attribute :verified, true }
+          before { user.contact_infos.first.update_attribute :verified, true } # rubocop:disable Rails/SkipsModelValidations
 
           it 'stores user information' do
             expect{ subject }.to  change     { user.first_name           }.to('User')
@@ -180,7 +180,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
         end
 
         context 'when the existing email address is verified' do
-          before { user.contact_infos.first.update_attribute :verified, true }
+          before { user.contact_infos.first.update_attribute :verified, true } # rubocop:disable Rails/SkipsModelValidations
 
           it 'stores user information' do
             expect{ subject }.to  change     { user.first_name           }.to('User')

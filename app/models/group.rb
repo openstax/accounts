@@ -80,7 +80,7 @@ class Group < ApplicationRecord
     gids = [id] + (Group.joins(:member_group_nestings)
                         .where(group_nestings: {member_group_id: id})
                         .first.try(:supertree_group_ids) || [])
-    update_column(:cached_supertree_group_ids, gids)
+    update_columns(:cached_supertree_group_ids => gids)
     self.cached_supertree_group_ids = gids
   end
 
@@ -92,7 +92,7 @@ class Group < ApplicationRecord
     gids = [id] + Group.joins(:container_group_nesting)
                        .where(group_nestings: {container_group_id: id})
                        .collect{|g| g.subtree_group_ids}.flatten
-    update_column(:cached_subtree_group_ids, gids)
+    update_columns(:cached_subtree_group_ids => gids)
     self.cached_subtree_group_ids = gids
   end
 

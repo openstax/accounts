@@ -90,7 +90,7 @@ module Newflow
 
             before do
               FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
-              app.update_column(:redirect_uri, external_public_url)
+              app.update_columns(:redirect_uri => external_public_url)
             end
 
             it 'takes user back to app' do
