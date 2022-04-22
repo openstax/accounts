@@ -142,10 +142,11 @@ module UserSessionManagement
   end
 
   def unverified_user
+    byebug
     id = session[:unverified_user_id]&.to_i
     return unless id.present?
 
-    @unverified_user ||= User.find_by(id: id)
+    unverified_user ||= User.find_by(id: id)
   end
 
   def clear_unverified_user
