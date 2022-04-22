@@ -28,6 +28,10 @@ module LoginSignupHelper
       current_user&.is_sheerid_unviable? || is_cs_form?
   end
 
+  def should_show_school_issued_email_field?
+    is_cs_form?
+  end
+
   def is_cs_form?
     request.original_fullpath.include? 'cs_form'
   end
@@ -40,9 +44,5 @@ module LoginSignupHelper
       email: user.email_addresses.first&.value
     )
     url.to_s
-  end
-
-  def book_data
-    Book.all.pluck(:official_name, :salesforce_name)
   end
 end

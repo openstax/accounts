@@ -1,6 +1,8 @@
 module ProfileHelper
 
-  def way_to_login(provider:, user_authentications: nil, has_authentication: nil, current_providers:)
+  def way_to_login(
+    provider:, user_authentications: nil, has_authentication: nil, current_providers:
+  )
     if has_authentication.nil?
       if user_authentications.nil?
         raise "At least one of user_authentications or has_authentication must be set"
@@ -31,7 +33,9 @@ module ProfileHelper
       </span>
     SNIPPET
 
+    # rubocop:disable Rails/OutputSafety
     "<div class='authentication' data-provider='#{provider}'>#{snippet}</div>".html_safe
+    # rubocop:enable Rails/OutputSafety
   end
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
@@ -62,7 +66,7 @@ module ProfileHelper
           <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
         </div>
       SNIPPET
-    ).html_safe
+    ).html_safe # rubocop:disable Rails/OutputSafety
   end
 
 end

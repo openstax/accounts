@@ -1,4 +1,8 @@
 module FormHelper
+  # rubocop:disable Rails/HelperInstanceVariable
+  # https://www.rubydoc.info/gems/rubocop-rails/RuboCop/Cop/Rails/HelperInstanceVariable
+  #   If it seems awkward to explicitly pass in each dependent variable, consider
+  #   moving the behaviour elsewhere, for example to a model, decorator or presenter.
   class One
     def initialize(f:, header: nil, limit_to: nil, context:, params: nil, errors: nil)
       @f        = f
@@ -74,10 +78,12 @@ module FormHelper
                         'data-bind': data_bind
         )
       end
-      "#{input}\n#{errors_div}".html_safe
+      "#{input}\n#{errors_div}".html_safe # rubocop:disable Rails/OutputSafety
     end
 
-    def select(name:, options:, except: nil, only: nil, autofocus: nil, multiple: false, custom_class: nil)
+    def select(
+      name:, options:, except: nil, only: nil, autofocus: nil, multiple: false, custom_class: nil
+    )
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -88,7 +94,8 @@ module FormHelper
       html_options[:class]     = custom_class if custom_class
 
       c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
-        "#{@f.select name, options, {}, html_options}#{errors_div}".html_safe
+        "#{@f.select name, options, {}, html_options}#{errors_div}"
+          .html_safe # rubocop:disable Rails/OutputSafety
       end
     end
 
@@ -122,10 +129,11 @@ module FormHelper
       c.content_tag(:div, class: "errors invalid-message") do
         # TODO: show multiple error messages per field when the pattern-library is fixed.
         error_divs = field_errors.map do |field_error|
-          field_error.translate.html_safe
+          field_error.translate.html_safe # rubocop:disable Rails/OutputSafety
         end
-        error_divs.join('<br>').html_safe
+        error_divs.join('<br>').html_safe # rubocop:disable Rails/OutputSafety
       end
     end
   end
+  # rubocop:enable Rails/HelperInstanceVariable
 end
