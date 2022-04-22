@@ -8,12 +8,12 @@ feature "Arriving with special params", js: true do
   context "go=signup" do
     scenario "arriving from app" do
       arrive_from_app(params: {go: "signup"}, do_expect: false)
-      expect(page).to have_content(t :'login_signup_form.welcome_page_header')
+      expect(page).to have_content(I18n.t :'login_signup_form.welcome_page_header')
     end
 
     scenario "straight to login" do
       visit 'login?go=signup'
-      expect(page).to have_content(t :'login_signup_form.welcome_page_header')
+      expect(page).to have_content(I18n.t :'login_signup_form.welcome_page_header')
     end
   end
 
@@ -22,7 +22,7 @@ feature "Arriving with special params", js: true do
       server = Capybara.current_session.server
       "http://#{server.host}:#{server.port}/copyright"
     end
-    let(:alt_signup_content) { t :'static_pages.copyright.page_heading' }
+    let(:alt_signup_content) { I18n.t :'static_pages.copyright.page_heading' }
 
     before(:each) do
       @app = create_default_application
@@ -32,15 +32,15 @@ feature "Arriving with special params", js: true do
     context 'student' do
       scenario 'arriving from app gets redirected to alternate signup url' do
         arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
-        click_link(t :'login_signup_form.sign_up')
-        click_link(t :'login_signup_form.student')
+        click_link(I18n.t :'login_signup_form.sign_up')
+        click_link(I18n.t :'login_signup_form.student')
         expect(page).to have_content(alt_signup_content)
       end
 
       scenario 'student straight to login gets redirected to alternate signup url' do
         visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
-        click_link(t :'login_signup_form.sign_up')
-        click_link(t :'login_signup_form.student')
+        click_link(I18n.t :'login_signup_form.sign_up')
+        click_link(I18n.t :'login_signup_form.student')
         expect(page).to have_content(alt_signup_content)
       end
     end
@@ -48,16 +48,16 @@ feature "Arriving with special params", js: true do
     context 'educator' do
       scenario 'arriving from app proceeds to signup form' do
         arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
-        click_link(t :'login_signup_form.sign_up')
-        click_link(t :'login_signup_form.educator')
-        expect(page.current_path).to eq(signup_path)
+        click_link(I18n.t :'login_signup_form.sign_up')
+        click_link(I18n.t :'login_signup_form.educator')
+        expect(page.current_path).to eq(signup_form_path)
       end
 
       scenario 'straight to login proceeds to signup form' do
-        visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
-        click_link(t :'login_signup_form.sign_up')
-        click_link(t :'login_signup_form.educator')
-        expect(page.current_path).to eq(signup_path)
+        visit "login?role=educator&signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
+        click_link(I18n.t :'login_signup_form.sign_up')
+        click_link(I18n.t :'login_signup_form.educator')
+        expect(page.current_path).to eq(signup_form_path)
       end
     end
   end
