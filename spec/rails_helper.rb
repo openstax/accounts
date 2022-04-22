@@ -59,7 +59,7 @@ require 'webdrivers/chromedriver'
 # Use a lockfile so we don't get errors due to downloading webdrivers multiple times concurrently
 File.open('.webdrivers_update', File::RDWR|File::CREAT, 0640) do |file|
   file.flock File::LOCK_EX
-  update_time = Time.parse(file.read) rescue nil
+  update_time = Time.zone.parse(file.read) rescue nil
   current_time = Time.current
 
   if update_time.nil? || current_time - update_time > 60

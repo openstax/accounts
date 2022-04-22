@@ -6,7 +6,7 @@ class RemoveOldAccessTokens < ActiveRecord::Migration[4.2]
       Rake::Task['doorkeeper:cleanup'].invoke
 
       Doorkeeper::AccessToken.where(
-        <<-SQL.strip_heredoc
+        <<-SQL.squish.strip_heredoc
           EXISTS (
             SELECT *
               FROM "oauth_access_tokens" "oat"

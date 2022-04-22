@@ -57,7 +57,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         expect(page).to have_content(t :'controllers.sessions.too_many_login_attempts.content',
                                        reset_password: (t :'controllers.sessions.too_many_login_attempts.reset_password'))
 
-        Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
+        Timecop.freeze(Time.zone.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
           expect_newflow_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
@@ -113,7 +113,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         expect(page).to have_content(t :'controllers.sessions.too_many_login_attempts.content',
                                        reset_password: (t :'controllers.sessions.too_many_login_attempts.reset_password'))
 
-        Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
+        Timecop.freeze(Time.zone.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_email
           expect_newflow_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')

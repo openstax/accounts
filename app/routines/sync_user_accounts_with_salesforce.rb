@@ -55,7 +55,7 @@ class SyncUserAccountsWithSalesforce
       sf_ox_account.salesforce_lead_id    = user&.salesforce_lead_id
     end
 
-      sf_ox_accounts.save!
+    sf_ox_accounts.save!
   end
 
   def salesforce_accounts

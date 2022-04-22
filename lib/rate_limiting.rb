@@ -7,7 +7,7 @@ module RateLimiting
   def too_many_log_in_attempts_by_ip?(attempt_period: LOGIN_ATTEMPTS_PERIOD,
                                       max_attempts: MAX_LOGIN_ATTEMPTS_PER_IP,
                                       ip:)
-    attempts_considered_since = Time.now - attempt_period
+    attempts_considered_since = Time.zone.now - attempt_period
 
     sign_in_failed_attempts =
       SecurityLog.sign_in_failed
@@ -27,7 +27,7 @@ module RateLimiting
   def too_many_log_in_attempts_by_user?(attempt_period: LOGIN_ATTEMPTS_PERIOD,
                                         max_attempts: MAX_LOGIN_ATTEMPTS_PER_USER,
                                         user:)
-    oldest_possible_attempts_considered_since = Time.now - attempt_period
+    oldest_possible_attempts_considered_since = Time.zone.now - attempt_period
 
     return false if user.nil?
 

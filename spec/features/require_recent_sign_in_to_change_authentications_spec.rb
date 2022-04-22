@@ -14,7 +14,7 @@ feature 'Require recent log in to change authentications', js: true do
 
     expect(page.current_path).to eq(profile_newflow_path)
 
-    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+    Timecop.freeze(Time.zone.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       expect(page).to have_no_content('Facebook')
       screenshot!
       click_link (t :'users.edit.enable_other_sign_in_options')
@@ -44,7 +44,7 @@ feature 'Require recent log in to change authentications', js: true do
       log_in_user(email_value, 'password')
       expect(page).to have_no_missing_translations
 
-      Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+      Timecop.freeze(Time.zone.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
         visit profile_newflow_path
         expect(page.current_path).to eq(profile_newflow_path)
 

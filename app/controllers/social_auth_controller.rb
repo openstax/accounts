@@ -22,7 +22,7 @@ class SocialAuthController < ApplicationController
             # legacy handling of the :needs_profile state
             # TODO: we could also just go change everyone from :needs_profile -> :incomplete_signup
             if user.state == 'needs_profile'
-              user.update_attributes(state: :unverified, faculty_status: :incomplete_signup)
+              user.update(state: :unverified, faculty_status: :incomplete_signup)
               save_unverified_user(user.id)
 
               SecurityLog.create(
@@ -89,13 +89,13 @@ alert: I18n.t(:'controllers.sessions.mismatched_authentication'))
   end
 
   def confirm_oauth_info_form
-    redirect_to signup_path unless unverified_user.present?
+    redirect_to signup_path if unverified_user.blank?
 
     render :confirm_social_info_form
   end
 
   def confirm_oauth_info_post
-    redirect_to signup_path unless unverified_user.present?
+    redirect_to signup_path if unverified_user.blank?
 
     handle_with(
       ConfirmOauthInfo,

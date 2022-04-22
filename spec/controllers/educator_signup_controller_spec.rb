@@ -16,8 +16,8 @@ RSpec.describe EducatorSignupController, type: :controller do
     end
 
     xit 'is processed by the lev handler' do
-      #byebug
-      #expect(handler).to receive(:handle)
+      # byebug
+      # expect(handler).to receive(:handle)
 
       post(:sheerid_webhook, params: params)
       expect(response).to have_http_status(:ok)

@@ -33,7 +33,7 @@ verification_details: verification_details_from_sheerid }
 
       user = EmailAddress.verified.find_by(value: verification.email)&.user
 
-      if !user.present?
+      if user.blank?
         Sentry.capture_message("[SheerID Webhook] No user found with verification id (#{verification_id}) and email (#{verification.email})",
                                extra: { verification_id: verification_id,
 verification_details_from_sheer_id: verification_details_from_sheerid }

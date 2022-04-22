@@ -20,7 +20,7 @@ feature 'Password reset', js: true do
     log_in_user('user@openstax.org', 'password')
     expect(page).to have_current_path(profile_newflow_path)
 
-    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+    Timecop.freeze(Time.zone.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       find('[data-provider=identity] .edit--newflow').click
       expect(page).to have_content(I18n.t(:'login_signup_form.login_page_header'))
 
@@ -51,7 +51,7 @@ feature 'Password reset', js: true do
   scenario "'Forgot password?' link from reauthenticate page sends email (bypassing Reset Password Form)" do
     log_in_user('user@openstax.org', 'password')
 
-    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+    Timecop.freeze(Time.zone.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       find('[data-provider=identity] .edit--newflow').click
       expect(page).to have_content(I18n.t(:'login_signup_form.login_page_header'))
       click_link(t(:'login_signup_form.forgot_password'))

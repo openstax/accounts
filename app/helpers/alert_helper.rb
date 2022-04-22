@@ -89,7 +89,7 @@ module AlertHelper
 
   VALID_ALERT_TYPES = [:error, :success, :info]
   def add_alert(alerts, args)
-    raise "alert :content must be given"                    unless args[:content].present?
+    raise "alert :content must be given"                    if args[:content].blank?
     raise "alert :type must be given"                       unless args[:type]
     raise "alert :type must be one of #{VALID_ALERT_TYPES}" unless VALID_ALERT_TYPES.include?(args[:type])
     alerts << args

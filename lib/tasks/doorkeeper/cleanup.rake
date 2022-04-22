@@ -4,7 +4,7 @@
 namespace :doorkeeper do
   desc 'Delete expired and revoked OAuth grants and tokens (default: >= 30 days ago).'
   task cleanup: :environment do
-    expired_sql = <<-SQL.strip_heredoc
+    expired_sql = <<-SQL.squish.strip_heredoc
       "revoked_at\" <= :delete_before
         OR "expires_in" * INTERVAL '1 second' + "created_at" <= :delete_before
     SQL

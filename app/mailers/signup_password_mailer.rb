@@ -29,6 +29,6 @@ class SignupPasswordMailer < ApplicationMailer
                     'Confirm your email address'
                   end
 
-    email_address.update_columns(:confirmation_sent_at => Time.now)
+    email_address.update_columns(confirmation_sent_at: Time.zone.now)
   end
 end

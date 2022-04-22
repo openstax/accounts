@@ -56,7 +56,7 @@ class LogInUser
     end
 
     identity = Identity.authenticate({ user_id: user&.id }, login_form_params.password)
-    failure(:incorrect_password, :password) unless identity.present?
+    failure(:incorrect_password, :password) if identity.blank?
   end
 
   private #################

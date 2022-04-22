@@ -4,7 +4,6 @@ class ContactInfo < ApplicationRecord
   before_create :set_confirmation_pin_code
   before_destroy :check_if_last_verified
 
-  validates :user, presence: true
   validates :type, presence: true
   validates :value,
             presence: true,

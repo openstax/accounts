@@ -14,7 +14,7 @@ RSpec.describe SecurityLog, type: :model do
     expect{security_log.update_attribute :event_type, :admin_created}.to(
       raise_error ActiveRecord::ReadOnlyRecord
     )
-    expect{security_log.update_attributes event_type: :admin_created}.to(
+    expect{security_log.update event_type: :admin_created}.to(
       raise_error ActiveRecord::ReadOnlyRecord
     )
   end

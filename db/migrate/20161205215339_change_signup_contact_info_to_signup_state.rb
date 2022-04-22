@@ -1,5 +1,5 @@
 class ChangeSignupContactInfoToSignupState < ActiveRecord::Migration[4.2]
-  class SignupState < ActiveRecord::Base
+  class SignupState < ApplicationRecord
   end
 
   def up

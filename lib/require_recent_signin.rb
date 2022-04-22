@@ -28,7 +28,7 @@ module RequireRecentSignin
     return true if last_signin_time.nil?
 
     if time.is_a?(ActiveSupport::Duration)
-      time = Time.now - time
+      time = Time.zone.now - time
     end
 
     last_signin_time <= time
