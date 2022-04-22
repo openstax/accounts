@@ -12,7 +12,7 @@ class CreateSalesforceLead
 
   protected
 
-  def exec(user_id:)
+  def exec(user_id:) # rubocop:disable Metrics/MethodLength
     # this is controlled in the accounts admin UI
     return unless Settings::Salesforce.push_salesforce_lead_enabled
 
@@ -43,7 +43,9 @@ class CreateSalesforceLead
 
     lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
     if lead
-      Sentry.capture_message("A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})")
+      Sentry.capture_message(
+        "A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})"
+      )
     else
       lead = OpenStax::Salesforce::Remote::Lead.new(
         first_name:           user.first_name,

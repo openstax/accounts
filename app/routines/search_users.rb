@@ -34,7 +34,7 @@ class SearchUsers
   SORT_DESCENDING = 'DESC'
   MAX_MATCHING_USERS = 10
 
-  def exec(query, options={})
+  def exec(query, options={}) # rubocop:disable Metrics/MethodLength
 
     users = User.all
     table = User.arel_table
@@ -91,7 +91,8 @@ class SearchUsers
           partial_uuid = uuid.to_s.chomp('-')
           next uuid if partial_uuid.include? '-' or partial_uuid.length != 8
 
-          partial_uuid + '-0000-0000-0000-000000000000'..partial_uuid + '-ffff-ffff-ffff-ffffffffffff'
+          partial_uuid + '-0000-0000-0000-000000000000'..partial_uuid +
+            '-ffff-ffff-ffff-ffffffffffff'
         end
         users = users.where(uuid: uuids_queries)
       end
@@ -103,7 +104,11 @@ class SearchUsers
       with.keyword :email do |emails|
         sanitized_emails = sanitize_strings(emails, append_wildcard: options[:admin],
 prepend_wildcard: options[:admin])
-        users = users.joins(:contact_infos).where( contact_info_table[:value].matches_any(sanitized_emails) )
+        users = users.joins(
+          :contact_infos
+        ).where(
+          contact_info_table[:value].matches_any(sanitized_emails)
+        )
         unless options[:admin]
           users = users.where(contact_infos: {type: 'EmailAddress', verified: true,
 is_searchable: true})
@@ -174,7 +179,7 @@ prepend_wildcard: options[:admin])
     # Toss out bad input, provide default direction
     order_bys = order_bys.map do |order_by|
       field, direction = order_by
-      next if !SORTABLE_FIELDS.include?(field)
+      next if SORTABLE_FIELDS.exclude?(field)
       direction ||= SORT_ASCENDING
       next if direction != SORT_ASCENDING && direction != SORT_DESCENDING
       [field, direction]

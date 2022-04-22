@@ -22,7 +22,7 @@ class UpdateUserContactInfo
     new.call
   end
 
-  def call
+  def call # rubocop:disable Metrics/MethodLength
     # this is controlled in the accounts admin UI
     return unless Settings::Salesforce.sync_contacts_to_salesforce_enabled
 
@@ -142,7 +142,9 @@ old_status:old_fv_status, new_status: user.faculty_status }
     end
     log("Completed updating #{users_updated} users.")
     log("#{users_fv_status_changed} users had their faculty status updated.")
-    log("#{users_without_cached_school} users had no cached school in accounts. This should update on the next sync (after UpdateSchoolSalesforceInfo runs) or it is missing in Salesforce.")
+    log("#{users_without_cached_school} users had no cached school in accounts. "\
+        "This should update on the next sync (after UpdateSchoolSalesforceInfo runs) "\
+        "or it is missing in Salesforce.")
   end
 
   def salesforce_contacts

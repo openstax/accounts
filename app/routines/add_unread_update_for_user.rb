@@ -11,8 +11,9 @@ class AddUnreadUpdateForUser
 
   def exec(user)
     return if user.nil?
-
+    # rubocop:disable Rails/SkipsModelValidations
     user.application_users.update_all('unread_updates = unread_updates + 1')
+    # rubocop:enable Rails/SkipsModelValidations
   end
 
 end

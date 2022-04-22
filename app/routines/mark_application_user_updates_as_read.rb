@@ -20,13 +20,17 @@ class MarkApplicationUserUpdatesAsRead
     cumulative_query = nil
 
     application_user_hashes.each do |hash|
-      query = (table[:user_id].eq(hash['user_id'])).and(table[:unread_updates].eq(hash['read_updates']))
+      query = (
+        table[:user_id].eq(hash['user_id'])
+      ).and(
+        table[:unread_updates].eq(hash['read_updates'])
+      )
       cumulative_query = cumulative_query.nil? ? query : cumulative_query.or(query)
     end
 
     app_users.where(
       cumulative_query
-    ).update_all("unread_updates = 0")
+    ).update_all("unread_updates = 0") # rubocop:disable Rails/SkipsModelValidations
   end
 
 end

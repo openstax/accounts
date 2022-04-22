@@ -41,7 +41,8 @@ class SyncUserAccountsWithSalesforce
     end
 
 
-    # Now, we update the information for existing users - need to be careful here, this can quickly go over API limits
+    # Now, we update the information for existing users - need to be careful here,
+    # this can quickly go over API limits
     # users_to_update = User.where.not(salesforce_ox_account_id: nil)
     sf_ox_accounts.each do |sf_ox_account|
       user = User.find_by(salesforce_ox_account_id: sf_ox_account.id)

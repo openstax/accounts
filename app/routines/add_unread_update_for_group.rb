@@ -11,8 +11,9 @@ class AddUnreadUpdateForGroup
 
   def exec(group)
     return if group.nil?
-
+    # rubocop:disable Rails/SkipsModelValidations
     group.application_groups.update_all('unread_updates = unread_updates + 1')
+    # rubocop:enable Rails/SkipsModelValidations
   end
 
 end

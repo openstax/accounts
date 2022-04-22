@@ -16,7 +16,7 @@ class MergeUnclaimedUsers
 
     unclaimed_contacts = EmailAddress.with_users
       .where(value: email.value)
-      .where('users.state = ?', User::UNCLAIMED)
+      .where(users: { state: User::UNCLAIMED })
       .where.not(id: email.id)
 
     unclaimed_contacts.each do | contact |
