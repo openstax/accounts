@@ -3,18 +3,22 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
 
   resource_description do
     api_versions "v1"
-    short_description 'Records which users interact with which applications, as well the users'' preferences for each app.'
+    short_description 'Records which users interact with which applications, as '\
+                      'well the users\' preferences for each app.'
     description <<-EOS
       All actions in this controller operate only on ApplicationUsers that
       belong to the current application, as determined from the Oauth token.
 
-      ApplicationUsers are automatically created when an app obtains an access token of any kind for a specific user.
-      They record which users have authorized (via Oauth) which OpenStax Accounts applications.
-      This information is used to filter search results and control application access to user information.
+      ApplicationUsers are automatically created when an app obtains an access
+      token of any kind for a specific user. They record which users have
+      authorized (via Oauth) which OpenStax Accounts applications. This
+      information is used to filter search results and control application
+      access to user information.
 
-      User preferences for each app that are used by Accounts are also recorded in ApplicationUser.
-      Current preferences include default_contact_info_id, the id of the user's default
-      contact info object to be used for each particular application.'
+      User preferences for each app that are used by Accounts are also recorded
+      in ApplicationUser. Current preferences include default_contact_info_id,
+      the id of the user's default contact info object to be used for each
+      particular application.'
     EOS
   end
 
@@ -33,7 +37,8 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
 
     #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}
   EOS
-  # Using route helpers doesn't work in test or production, probably has to do with initialization order
+  # Using route helpers doesn't work in test or production, probably has to do with
+  # initialization order
   example "#{api_example(url_base: 'https://accounts.openstax.org/api/application_users',
 url_end: '?q=username:bob%20name=Jones')}"
   param :q, String, required: true, desc: <<-EOS
@@ -124,7 +129,8 @@ location: nil
   # show
   ###############################################################
 
-#api :GET, '/application_user', 'Gets the ApplicationUser for the current user and current app.'
+#api :GET, '/application_user', 'Gets the ApplicationUser for the current user
+#  and current app.'
 #description <<-EOS
 #  Can only be called by an application using an access token for a user.
 #  Gets the ApplicationUser for the current user and current app.
@@ -139,7 +145,8 @@ location: nil
   # update
   ###############################################################
 
-#api :PUT, '/application_user', 'Updates the ApplicationUser for the current user and current app.'
+#api :PUT, '/application_user', 'Updates the ApplicationUser for the current
+#  user and current app.'
 #description <<-EOS
 #  Can only be called by an application using an access token for a user.
 #  Updates the ApplicationUser for the current user and current app.
@@ -154,7 +161,8 @@ location: nil
   # destroy
   ###############################################################
 
-#api :DELETE, '/application_user', 'Deletes the ApplicationUser for the current user and current app.'
+#api :DELETE, '/application_user', 'Deletes the ApplicationUser for the current
+#  user and current app.'
 #description <<-EOS
 #  Can only be called by an application using an access token for a user.
 #  Deletes the ApplicationUser for the current user and current app.
@@ -187,7 +195,10 @@ location: nil
     outputs = GetUpdatedApplicationUsers.call(current_application, params[:limit]).outputs
     respond_with outputs[:application_users],
                  represent_with: Api::V1::ApplicationUsersRepresenter,
-                 user_options: { include_private_data: current_application && current_application.can_access_private_user_data? },
+                 user_options: {
+                   include_private_data: current_application &&
+                                         current_application.can_access_private_user_data?
+                 },
                  location: nil
   end
 
@@ -202,19 +213,29 @@ location: nil
     Marks ApplicationUser updates as read for the current application.
     Useful for caching User information.
 
-    * `application_users` &ndash; Array containing info about the ApplicationUsers whose updates were read. The "id" and "read_updates" fields are mandatory. "read_updates" should contain the last value for "unread_updates" received by the app.
+    * `application_users` &ndash; Array containing info about the
+    * ApplicationUsers whose updates were read. The "id" and "read_updates"
+    * fields are mandatory. "read_updates" should contain the last value for
+    * "unread_updates" received by the app.
 
     Examples:
 
-    Assume your app called `updates` and got an ApplicationUser with id: 42 and unread_updates: 2
+    Assume your app called `updates` and got an ApplicationUser with id: 42 and
+    unread_updates: 2
 
-    `application_users = {id: 42, read_updates: 2}` &ndash; this is the correct call to `updated`, and marks the ApplicationUser updates as `read` by setting unread_updates to 0.
+    `application_users = {id: 42, read_updates: 2}` &ndash; this is the correct
+    call to `updated`, and marks the ApplicationUser updates as `read` by
+    setting unread_updates to 0.
 
-    Assume your app called `updates` and got an ApplicationUser with id: 13 and unread_updates: 1
+    Assume your app called `updates` and got an ApplicationUser with id: 13 and
+    unread_updates: 1
 
-    After you called the API and received your response, the user updated their profile in Accounts, setting unread_updates to 2.
+    After you called the API and received your response, the user updated their
+    profile in Accounts, setting unread_updates to 2.
 
-    `application_users = {id: 13, read_updates: 1}` &ndash; will not affect the record. The user will be sent again the next time you call `updates`, so you won't miss the updated information.
+    `application_users = {id: 13, read_updates: 1}` &ndash; will not affect the
+    record. The user will be sent again the next time you call `updates`, so you
+    won't miss the updated information.
   EOS
   def updated
     OSU::AccessPolicy.require_action_allowed!(:updated, current_api_user, ApplicationUser)

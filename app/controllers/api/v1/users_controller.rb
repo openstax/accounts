@@ -32,7 +32,8 @@ class Api::V1::UsersController < Api::V1::ApiController
 
     #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}
   EOS
-  # Using route helpers doesn't work in test or production, probably has to do with initialization order
+  # Using route helpers doesn't work in test or production, probably has to do
+  # with initialization order
   example "#{api_example(url_base: 'https://accounts.openstax.org/api/users',
 url_end: '?q=username:bob%20name=Jones')}"
   param :q, String, required: true, desc: <<-EOS
@@ -96,7 +97,9 @@ url_end: '?q=username:bob%20name=Jones')}"
     respond_with outputs, represent_with: Api::V1::UserSearchRepresenter,
                           location: nil,
                           user_options: {
-                            include_private_data: current_application.try(:can_access_private_user_data?)
+                            include_private_data: current_application.try(
+                              :can_access_private_user_data?
+                            )
                           }
   end
 

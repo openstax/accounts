@@ -23,6 +23,9 @@ class EducatorSignupController < SignupController
   before_action(:store_if_sheerid_is_unviable_for_user, only: :sheerid_form)
   before_action(:store_sheerid_verification_for_user, only: :sheerid_form)
 
+  def complete_profile; end
+  def cs_verification_form; end
+  def cs_verification_request; end
 
   def sheerid_form
     @sheerid_url = generate_sheer_id_url(user: current_user)
@@ -75,7 +78,9 @@ class EducatorSignupController < SignupController
       },
       failure: lambda {
         @book_titles = book_data.titles
-        security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
+        security_log(
+          :educator_sign_up_failed, user: current_user, reason: @handler_result.errors
+        )
         render :profile_form
       }
     )
@@ -110,9 +115,12 @@ class EducatorSignupController < SignupController
   end
 
   def store_sheerid_verification_for_user
-    if sheerid_provided_verification_id_param.present? && current_user.sheerid_verification_id.blank?
+    if sheerid_provided_verification_id_param.present? &&
+       current_user.sheerid_verification_id.blank?
       # create the verification object - this is verified later in SheeridWebhook
-      SheeridVerification.find_or_initialize_by(verification_id: sheerid_provided_verification_id_param)
+      SheeridVerification.find_or_initialize_by(
+        verification_id: sheerid_provided_verification_id_param
+      )
 
       # update the user
       current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)

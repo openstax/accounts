@@ -7,6 +7,8 @@ class PasswordManagementController < ApplicationController
 
   before_action :authenticate_user!, only: [:create_password, :educator_sheerid_form]
 
+  def educator_sheerid_form; end
+
   def forgot_password_form
     @email = login_failed_email
   end

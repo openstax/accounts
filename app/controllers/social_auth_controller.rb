@@ -4,7 +4,7 @@ class SocialAuthController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
-  def oauth_callback
+  def oauth_callback # rubocop:disable Metrics/MethodLength
     if signed_in? && user_signin_is_too_old?
       reauthenticate_user!
     else
@@ -40,7 +40,8 @@ class SocialAuthController < ApplicationController
             @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
             # must confirm their social info on signup
-            render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
+            # TODO: if possible, update the route/path to reflect that this page is being rendered
+            render :confirm_social_info_form and return
           end
 
           sign_in!(user)

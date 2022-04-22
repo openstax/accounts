@@ -136,7 +136,8 @@ module Oauth
     def add_application_owners
       member_ids = validated_member_ids
       return false if @application.errors.any?
-      return true if !current_user.is_administrator? && current_user.oauth_applications.include?(@application)
+      return true if !current_user.is_administrator? &&
+                     current_user.oauth_applications.include?(@application)
 
       @application.owner.update(member_ids: member_ids)
     end
