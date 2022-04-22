@@ -85,7 +85,7 @@ def create_application(skip_terms: false)
                  "http://#{host_and_port}#{external_app_for_specs_path}" :
                  external_app_for_specs_url
 
-  app.update_column(:redirect_uri, redirect_uri)
+  app.update_columns(:redirect_uri => redirect_uri)
 
   FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
   app
