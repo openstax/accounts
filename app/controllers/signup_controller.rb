@@ -26,11 +26,11 @@ except: %w[welcome signup_form signup_post])
       SignupForm,
       contracts_required:   !contracts_not_required,
       client_app:           get_client_app,
-      is_BRI_book:          is_BRI_book_adopter?,
+      is_bri_book:          is_bri_book_adopter?,
       success:              lambda {
         save_unverified_user(@handler_result.outputs.user.id)
         security_log(:user_began_signup, { user: @handler_result.outputs.user })
-        clear_cache_BRI_marketing
+        clear_cache_bri_marketing
         redirect_to verify_email_by_pin_form_path
       },
       failure:              lambda {

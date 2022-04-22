@@ -78,7 +78,7 @@ class SignupForm
       run(AgreeToTerms, signup_params.contract_2_id, user, no_error_if_already_signed: true)
     end
 
-    if options[:is_BRI_book]
+    if options[:is_bri_book]
       user.update!(is_b_r_i_user: true, title_1_school: signup_params.is_title_1_school)
     end
 

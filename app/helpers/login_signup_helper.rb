@@ -7,24 +7,25 @@ module LoginSignupHelper
     set_client_app(params[:client_id])
   end
 
-  def cache_BRI_marketing_if_present
-    params[BRI_BOOK_PARAM_NAME].present? ? cache_BRI_marketing : clear_cache_BRI_marketing
+  def cache_bri_marketing_if_present
+    params[BRI_BOOK_PARAM_NAME].present? ? cache_bri_marketing : clear_cache_bri_marketing
   end
 
-  def cache_BRI_marketing
+  def cache_bri_marketing
     session[BRI_BOOK_PARAM_NAME] = true
   end
 
-  def clear_cache_BRI_marketing
+  def clear_cache_bri_marketing
     session[BRI_BOOK_PARAM_NAME] = nil
   end
 
-  def is_BRI_book_adopter?
+  def is_bri_book_adopter?
     session[BRI_BOOK_PARAM_NAME] == true
   end
 
   def should_show_school_name_field?
-    params[:country].present? || params[:school].present? || current_user&.is_sheerid_unviable? || is_cs_form?
+    params[:country].present? || params[:school].present? ||
+      current_user&.is_sheerid_unviable? || is_cs_form?
   end
 
   def should_show_school_issued_email_field?

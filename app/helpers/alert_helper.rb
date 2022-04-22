@@ -89,9 +89,12 @@ module AlertHelper
 
   VALID_ALERT_TYPES = [:error, :success, :info]
   def add_alert(alerts, args)
-    raise "alert :content must be given"                    if args[:content].blank?
-    raise "alert :type must be given"                       unless args[:type]
-    raise "alert :type must be one of #{VALID_ALERT_TYPES}" unless VALID_ALERT_TYPES.include?(args[:type])
+    raise "alert :content must be given" if
+      args[:content].blank?
+    raise "alert :type must be given" unless
+      args[:type]
+    raise "alert :type must be one of #{VALID_ALERT_TYPES}" unless
+      VALID_ALERT_TYPES.include?(args[:type])
     alerts << args
   end
 
@@ -107,7 +110,7 @@ module AlertHelper
                else
                  raise "invalid alert :type (#{alert[:type]})"
                end
-    "class=\"#{classes.join(' ')}\"".html_safe
+    "class=\"#{classes.join(' ')}\"".html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def alert_data_attr(alert)
