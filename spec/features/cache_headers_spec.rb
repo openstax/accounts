@@ -14,17 +14,7 @@ describe "Cache-Control headers", :type => :request do
 
   let(:verified_emails) { ["one@verified.com"] }
   let(:unverified_emails) { [] }
-  let(:user) {
-    create_user('user').tap do |user|
-      verified_emails.each do |verified_email|
-        create_email_address_for(user, verified_email)
-      end
-
-      unverified_emails.each do |unverified_email|
-        create_email_address_for(user, unverified_email, SecureRandom.hex(32))
-      end
-    end
-  }
+  let(:user) { create_user('user@example.com') }
   # test cached stuff
   before(:each) do
     mock_current_user(user)
