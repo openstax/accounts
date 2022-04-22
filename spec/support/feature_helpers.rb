@@ -44,15 +44,15 @@ def create_email_address_for(user, email_address, confirmation_code=nil)
                      verified: confirmation_code.nil?)
 end
 
-def generate_login_token_for(username)
-  user = User.find_by_username(username)
+def generate_login_token_for(user)
+  user = User.find_by_uuid(user.uuid)
   user.refresh_login_token
   user.save!
   user.login_token
 end
 
-def generate_expired_login_token_for(username)
-  user = User.find_by_username(username)
+def generate_expired_login_token_for(user)
+  user = User.find_by_uuid(user.uuid)
   user.refresh_login_token
   user.login_token_expires_at = 1.year.ago
   user.save!
@@ -201,18 +201,12 @@ def click_password_sign_up  # TODO remove, bad name
   click_on (t :'sessions.start.sign_up')
 end
 
-def expect_sign_in_page
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :'sessions.start.page_heading')
-end
-
 def expect_authenticate_page
   expect(page.body).to match(/Hello.*!/)
 end
 
 def expect_profile_page
-  expect(page).to have_no_missing_translations
-  expect(page).to have_current_path profile_path
+  expect(page).to have_current_path :profile_path
 end
 
 def arrive_from_app(app: nil, params: {}, do_expect: true)
