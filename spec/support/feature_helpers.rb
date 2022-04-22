@@ -15,7 +15,7 @@ def create_user(username, password='password', terms_agreed=nil)
 end
 
 def create_admin_user
-  user = create_user 'admin'
+  user = create_user 'admin@openstax.org'
   user.update_attributes!(is_administrator: true)
   user
 end
