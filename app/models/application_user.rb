@@ -5,7 +5,6 @@ class ApplicationUser < ApplicationRecord
 
   belongs_to :default_contact_info, class_name: 'ContactInfo'
 
-  validates :user, :application, presence: true
   validates :user_id, uniqueness: { scope: :application_id }
   validate :contact_info_belongs_to_user
 

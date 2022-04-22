@@ -46,10 +46,10 @@ module Admin
 
     # Attempt to transform string representations of times into time ranges
     def self.sanitize_times(time_strings, now)
-      time_strings.map do |time_string|
+      time_strings.filter_map do |time_string|
         Chronic.parse(time_string, context: :past, ambiguous_time_range: :none, guess: false) \
           rescue nil
-      end.compact
+      end
     end
 
     protected
@@ -158,7 +158,7 @@ module Admin
           times_array.each do |times|
             time_strings = to_string_array(times_array)
 
-            now = Time.now
+            now = Time.zone.now
             beginning_of_hour = now.beginning_of_hour
             midnight = now.midnight
             sanitized_time_ranges = Admin::SearchSecurityLog.sanitize_times(time_strings, now)
@@ -189,7 +189,7 @@ module Admin
             sanitized_names = to_string_array(terms)
             sanitized_names_with_wildcards = sanitized_names.map{ |name| "%#{name}%" }
             sanitized_event_types = Admin::SearchSecurityLog.sanitize_event_types(sanitized_names)
-            now = Time.now
+            now = Time.zone.now
             beginning_of_hour = now.beginning_of_hour
             midnight = now.midnight
             sanitized_time_ranges = Admin::SearchSecurityLog.sanitize_times(sanitized_names, now)

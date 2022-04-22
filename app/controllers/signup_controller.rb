@@ -128,7 +128,7 @@ except: %w[welcome signup_form signup_post])
   private
 
   def redirect_to_signup_if_no_user_session
-    redirect_to signup_path unless unverified_user.present?
+    redirect_to signup_path if unverified_user.blank?
   end
 
 end

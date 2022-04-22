@@ -55,7 +55,7 @@ class UpdateSchoolSalesforceInfo
           salesforce_id: sf_schools.map(&:id)
         ).index_by(&:salesforce_id)
 
-        schools = sf_schools.map do |sf_school|
+        schools = sf_schools.filter_map do |sf_school|
           school          = schools_by_sf_id[sf_school.id]
           schools_updated += 1 if school.nil?
           school          = School.new(salesforce_id: sf_school.id) if school.nil?
@@ -65,7 +65,7 @@ class UpdateSchoolSalesforceInfo
           end
 
           school.changed? ? school : nil
-        end.compact
+        end
 
         School.import(
           schools, validate: false, on_duplicate_key_update: {

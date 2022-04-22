@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.json do
-        if current_user.update_attributes(user_params)
+        if current_user.update(user_params)
           security_log :user_updated, user_params: user_params
 
           render json: { full_name: current_user.full_name }, status: :ok

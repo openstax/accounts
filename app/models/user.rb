@@ -383,7 +383,7 @@ class User < ApplicationRecord
       manual_emails.any? ? manual_emails.max_by(&:created_at) : verified_emails.min_by(&:created_at)
     else
       email_addresses.verified.order(Arel.sql(
-        <<-SQL.strip_heredoc
+        <<-SQL.squish.strip_heredoc
           CASE WHEN "confirmation_sent_at" IS NULL THEN '-infinity' ELSE "created_at" END DESC,
           "created_at" ASC
         SQL

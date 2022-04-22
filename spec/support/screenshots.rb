@@ -3,7 +3,7 @@ if EnvUtilities.load_boolean(name: 'SSHOT', default: false)
   Capybara::Screenshot.autosave_on_failure = false
   Capybara::Screenshot.append_timestamp = false
   WINDOW_SIZE = [ 1234, 1234 ]
-  CURRENT_TIME = Time.now.strftime('%Y-%m-%d-%H-%M-%S')
+  CURRENT_TIME = Time.zone.now.strftime('%Y-%m-%d-%H-%M-%S')
 
   def screenshots_dir
     $screenshots_dir ||= Rails.root.join(

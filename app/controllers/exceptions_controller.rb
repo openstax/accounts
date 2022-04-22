@@ -1,4 +1,4 @@
-class ExceptionsController < ActionController::Base
+class ExceptionsController < ApplicationController
 
   def rescue_from
     # render 500 error page

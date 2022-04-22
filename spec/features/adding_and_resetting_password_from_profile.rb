@@ -53,7 +53,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
   scenario 'password is too short' do
     visit start_path(type: type, token: @login_token)
     expect_page(type: type)
-    fill_in (I18n.t(:'login_signup_form.password_label')), with: 'pass'
+    fill_in I18n.t(:'login_signup_form.password_label'), with: 'pass'
     find('#login-signup-form').click # to hide the password tooltip
     find('[type=submit]').click
     expect(page).to have_content(error_msg Identity, :password, :too_short, count: 8)

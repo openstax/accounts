@@ -30,7 +30,7 @@ class SendResetPasswordEmail
     fatal_error(code: :cannot_find_user,
       offending_inputs: :email,
       message: I18n.t(:'login_signup_form.cannot_find_user')
-    ) unless user.present?
+    ) if user.blank?
 
     outputs.user = user
 

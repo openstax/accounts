@@ -110,7 +110,7 @@ module Admin
       end
       user_params = params.require(:user).permit(:first_name, :last_name, :username)
 
-      @user.update_attributes(user_params)
+      @user.update(user_params)
     end
   end
 end

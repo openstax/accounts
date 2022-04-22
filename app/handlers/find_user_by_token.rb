@@ -13,11 +13,11 @@ class FindUserByToken
       return
     end
 
-    fatal_error(code: :token_blank) unless params[:token].present?
+    fatal_error(code: :token_blank) if params[:token].blank?
 
     user = User.find_by(login_token: params[:token])
 
-    fatal_error(code: :unknown_login_token) unless user.present?
+    fatal_error(code: :unknown_login_token) if user.blank?
     fatal_error(code: :expired_login_token) if user.login_token_expired?
 
     outputs.user = user

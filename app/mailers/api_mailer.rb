@@ -1,7 +1,7 @@
 # Copyright 2016 Rice University. Licensed under the Affero General Public
 # License version 3 or later.  See the COPYRIGHT file for details.
 
-class ApiMailer < ActionMailer::Base
+class ApiMailer < ApplicationMailer
   def mail(html_body, text_body, headers={})
     super(headers) do |format|
       format.html { render plain: html_body }
