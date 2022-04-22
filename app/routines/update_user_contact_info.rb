@@ -21,7 +21,7 @@ class UpdateUserContactInfo
   def self.call
     new.call
   end
-
+  
   def call
     # this is controlled in secrets.yml (or param store for non-dev/test envs)
     return unless Rails.application.secrets[:salesforce][:sync_contacts_enabled]
@@ -144,7 +144,9 @@ old_status:old_fv_status, new_status: user.faculty_status }
 
     log("Completed updating #{users_updated} users.")
     log("#{users_fv_status_changed} users had their faculty status updated.")
-    log("#{users_without_cached_school} users had no cached school in accounts. This should update on the next sync (after UpdateSchoolSalesforceInfo runs) or it is missing in Salesforce.")
+    log("#{users_without_cached_school} users had no cached school in accounts. "\
+        "This should update on the next sync (after UpdateSchoolSalesforceInfo runs) "\
+        "or it is missing in Salesforce.")
   end
 
   def salesforce_contacts

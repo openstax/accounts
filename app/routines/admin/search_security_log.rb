@@ -62,7 +62,7 @@ module Admin
       'id' => SecurityLog.arel_table[:id]
     }
 
-    def exec(params = {}, options = {})
+    def exec(params = {}, options = {}) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 
       sec_t = SecurityLog.arel_table
       user_t = User.arel_table
