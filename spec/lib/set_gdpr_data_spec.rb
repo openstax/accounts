@@ -52,7 +52,7 @@ describe SetGdprData, type: :lib, vcr: VCR_OPTS do
 
   describe "#call" do
     let(:ip) { }
-    let(:user) { OpenStruct.new(is_not_gdpr_location: nil) }
+    let(:user) do { 'is_not_gdpr_location' => nil } end
 
     context "data already cached" do
       context "cached IP matches called IP" do

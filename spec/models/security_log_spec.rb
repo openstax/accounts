@@ -11,7 +11,7 @@ RSpec.describe SecurityLog, type: :model do
   it 'cannot be updated' do
     expect{security_log.save}.to raise_error ActiveRecord::ReadOnlyRecord
     expect{security_log.save!}.to raise_error ActiveRecord::ReadOnlyRecord
-    expect{security_log.update_attribute :event_type, :admin_created}.to(
+    expect{security_log.update_attribute :event_type, :admin_created}.to( # rubocop:disable Rails/SkipsModelValidations
       raise_error ActiveRecord::ReadOnlyRecord
     )
     expect{security_log.update event_type: :admin_created}.to(

@@ -28,23 +28,23 @@ describe SignupForm, type: :handler do
     end
 
     it 'creates an (unverified) user with role = instructor' do
-      expect { handler_call }.to change { User.where(state: 'unverified', role: :instructor).count }
+      expect { handler_call }.to(change { User.where(state: 'unverified', role: :instructor).count })
     end
 
     it 'sets the new user\'s faculty status to pending_faculty' do
-      expect { handler_call }.to change { User.where(faculty_status: :incomplete_signup).count }
+      expect { handler_call }.to(change { User.where(faculty_status: :incomplete_signup).count })
     end
 
     it 'creates an authentication with provider = identity' do
-      expect { handler_call }.to change { Authentication.where(provider: 'identity').count }
+      expect { handler_call }.to(change { Authentication.where(provider: 'identity').count })
     end
 
     it 'creates an email address' do
-      expect { handler_call }.to change { EmailAddress.count }
+      expect { handler_call }.to(change { EmailAddress.count })
     end
 
     it 'creates a password (aka Identity)' do
-      expect { handler_call }.to change { Identity.count }
+      expect { handler_call }.to(change { Identity.count })
     end
 
     it 'adds the password to the user' do
@@ -83,9 +83,9 @@ describe SignupForm, type: :handler do
       it 'doesnt agrees to terms of use and privacy policy when contracts NOT required' do
         expect {
           described_class.call(params: params, contracts_required: false)
-        }.not_to change {
+        }.not_to(change {
           FinePrint::Signature.count
-        }
+        })
       end
     end
 
@@ -136,35 +136,35 @@ describe SignupForm, type: :handler do
     end
 
     it 'creates an (unverified) user with role = student' do
-      expect { handler_call }.to change { User.where(state: 'unverified', role: 'student').count }
+      expect { handler_call }.to(change { User.where(state: 'unverified', role: 'student').count })
     end
 
     it 'creates an identity' do
-      expect { handler_call }.to change { Identity.count }
+      expect { handler_call }.to(change { Identity.count })
     end
 
     it 'creates an authentication with provider = identity' do
-      expect { handler_call }.to change { Authentication.where(provider: 'identity').count }
+      expect { handler_call }.to(change { Authentication.where(provider: 'identity').count })
     end
 
     it 'agrees to terms of use and privacy policy when contracts_required' do
       expect {
         described_class.call(params: params, contracts_required: true)
-      }.to change {
+      }.to(change {
         FinePrint::Signature.count
-      }.by(2)
+      }.by(2))
     end
 
     it 'doesnt agrees to terms of use and privacy policy when contracts NOT required' do
       expect {
         described_class.call(params: params, contracts_required: false)
-      }.not_to change {
+      }.not_to(change {
         FinePrint::Signature.count
-      }
+      })
     end
 
     it 'creates an email address' do
-      expect { handler_call }.to change { EmailAddress.count }
+      expect { handler_call }.to(change { EmailAddress.count })
     end
 
     it 'sends a confirmation email' do

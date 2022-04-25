@@ -5,7 +5,7 @@ describe Identity do
     before :each do
       @bcrypt = FactoryBot.create :identity, password: 'password'
       @plone = FactoryBot.create :identity
-      @plone.update_attribute :password_digest, '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B'
+      @plone.update(password_digest: '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B')
     end
 
     it 'returns self if bcrypt password digest matches password' do
@@ -25,7 +25,7 @@ describe Identity do
     end
 
     it 'returns false if ssha password digest is invalid' do
-      @plone.update_attribute :password_digest, '{SSHA}%3D'
+      @plone.update(password_digest: '{SSHA}%3D')
       expect(@plone.authenticate 'password').to eq false
     end
   end

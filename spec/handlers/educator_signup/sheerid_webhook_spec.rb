@@ -59,7 +59,7 @@ RSpec.describe EducatorSignup::SheeridWebhook, type: :routine do
     end
 
     xit 'fuzzy searches schools based on the sheerid_reported_school field' do
-      school.update_attribute :sheerid_school_name, nil
+      school.update(sheerid_school_name: nil)
 
       expect(School).to receive(:fuzzy_search).with(
         school.name, school.city, school.state

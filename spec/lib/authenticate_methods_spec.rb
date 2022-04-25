@@ -57,7 +57,7 @@ RSpec.describe AuthenticateMethods, type: :lib do
     end
 
     context 'admin user' do
-      before { user_1.update_attribute :is_administrator, true }
+      before { user_1.update(is_administrator: true) }
 
       it 'authenticate_admin! does nothing' do
         expect(controller).not_to receive(:store_url)
