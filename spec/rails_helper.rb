@@ -54,26 +54,6 @@ end
 CAPYBARA_PROTOCOL = DEV_PROTOCOL
 CAPYBARA_PORT = ENV.fetch('PORT', DEV_PORT)
 
-require 'webdrivers/chromedriver'
-
-# Use a lockfile so we don't get errors due to downloading webdrivers multiple times concurrently
-File.open('.webdrivers_update', File::RDWR|File::CREAT, 0640) do |file|
-  file.flock File::LOCK_EX
-  update_time = Time.zone.parse(file.read) rescue nil
-  current_time = Time.current
-
-  if update_time.nil? || current_time - update_time > 60
-    Webdrivers::Chromedriver.update
-
-    file.rewind
-    file.write current_time.iso8601
-    file.flush
-    file.truncate file.pos
-  end
-ensure
-  file.flock File::LOCK_UN
-end
-
 if EnvUtilities.load_boolean(name: 'HEADLESS', default: true)
   # Run the feature specs in a full browser (note, this takes over your computer's focus)
   Capybara.javascript_driver = :selenium_chrome_headless

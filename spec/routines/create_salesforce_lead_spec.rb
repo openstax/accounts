@@ -10,7 +10,6 @@ RSpec.describe CreateSalesforceLead, type: :routine, vcr: VCR_OPTS do
     end
   end
 
-
   let!(:school) { FactoryBot.create :school,
                                     salesforce_id: '0010B000021QuAyQAK',
                                     name: 'Test University'

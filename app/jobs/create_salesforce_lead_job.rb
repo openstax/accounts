@@ -1,5 +1,5 @@
 class CreateSalesforceLeadJob < ApplicationJob
-  queue_as :salesforce_signup_lead_creation
+  queue_as :salesforce
 
   ADOPTION_STATUS_FROM_USER = {
     as_primary:      'Confirmed Adoption Won',
@@ -10,15 +10,15 @@ class CreateSalesforceLeadJob < ApplicationJob
   private_constant(:ADOPTION_STATUS_FROM_USER)
 
   def perform(user_id)
-    # this is controlled in secrets.yml (or param store for non-dev/test envs)
-    return unless Rails.application.secrets[:salesforce][:push_lead_enabled]
+    return unless Settings::Salesforce.push_salesforce_lead_enabled
 
     user = User.find(user_id)
+    status.set_job_name(self.class.name)
+    status.set_job_args(user: user.to_global_id.to_s)
 
     SecurityLog.create!(
       user:       user,
-      event_type: :starting_salesforce_lead_creation,
-      event_data: { user_data: user.inspect }
+      event_type: :starting_salesforce_lead_creation
     )
 
     sf_school_id = user.school&.salesforce_id
@@ -34,31 +34,32 @@ class CreateSalesforceLeadJob < ApplicationJob
     # as_future means they are interested, not adopting, so no adoptionJSON for them
     adoption_json = nil
     if user.using_openstax_how != 'as_future'
-      adoption_json = book_json_for_sf(user)
+      adoption_json = build_book_adoption_json_for_salesforce(user)
     end
 
     lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
     if lead
-      warn("A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})")
+      Sentry.capture_message(
+        "A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})"
+      )
     else
       lead = OpenStax::Salesforce::Remote::Lead.new(
-        first_name:          user.first_name,
-        last_name:           user.last_name,
-        phone:               user.phone_number,
-        email:               user.best_email_address_for_salesforce,
-        source:              'Account Creation',
+        first_name:           user.first_name,
+        last_name:            user.last_name,
+        phone:                user.phone_number,
+        email:                user.best_email_address_for_salesforce,
+        source:               'Account Creation',
         application_source:   'Accounts',
         role:                 sf_role,
         position:             sf_position,
         title:                user.other_role_name,
         who_chooses_books:    user.who_chooses_books,
-        subject:              user.which_books, # TODO: remove this once SF migrated to subject_interest
-        subject_interest:     user.which_books,
+        subject:              user.which_books,
         adoption_status:      ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
         adoption_json:        adoption_json,
         os_accounts_id:       user.id,
         accounts_uuid:        user.uuid,
-        school:               user.most_accurate_school_name || 'No reported school', # No reported school == student who requested newsletter
+        school:               user.most_accurate_school_name,
         city:                 user.most_accurate_school_city,
         country:              user.most_accurate_school_country,
         verification_status:  user.faculty_status,
@@ -73,8 +74,8 @@ class CreateSalesforceLeadJob < ApplicationJob
       )
 
       state = user.most_accurate_school_state
-      if state.present? && !(US_STATES.map(&:downcase).include? state.downcase)
-        state = nil
+      if state.present?
+        state = nil unless US_STATES.map(&:downcase).include? state.downcase
       end
       unless state.nil?
         # Figure out if the State is an abbreviation or the full name
@@ -85,10 +86,13 @@ class CreateSalesforceLeadJob < ApplicationJob
         end
       end
     end
-    # end
 
-    begin
-      lead.save!
+    SecurityLog.create!(
+      user:       user,
+      event_type: :attempting_to_create_user_lead
+    )
+
+    if lead.save
 
       SecurityLog.create!(
         user:       user,
@@ -97,35 +101,33 @@ class CreateSalesforceLeadJob < ApplicationJob
       )
 
       user.salesforce_lead_id = lead.id
-      begin
-        user.save!
+      if user.save!
         SecurityLog.create!(
           user:       user,
           event_type: :user_lead_id_updated_from_salesforce,
           event_data: { lead_id: lead.id }
         )
         return lead
-      rescue => e
+      else
         SecurityLog.create!(
           user:       user,
-          event_type: :user_update_failed_during_lead_creation
+          event_type: :salesforce_error
         )
-        Sentry.capture_exception(e)
         return
       end
-    rescue => e
+
+    else
       SecurityLog.create!(
         user:       user,
         event_type: :salesforce_error
       )
-      Sentry.capture_exception(e)
-      return
+      # TODO: this needs a sentry error but we should still process the user
     end
   end
 
   private
 
-  def book_json_for_sf(user)
+  def build_book_adoption_json_for_salesforce(user)
     return nil unless user.which_books
 
     adoption_json = {}

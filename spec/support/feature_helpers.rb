@@ -72,17 +72,10 @@ def simulate_login_signup_with_social(options = {})
 end
 
 def log_in_user(username_or_email, password = 'password')
-  visit(login_path) unless page.current_url == login_url
+  visit(:login)
   fill_in('login_form_email', with: username_or_email).native
-
   fill_in('login_form_password', with: password)
-  wait_for_animations
-  wait_for_ajax
-  screenshot!
-  click_button(I18n.t(:'login_signup_form.continue_button'))
-  wait_for_animations
-  wait_for_ajax
-  screenshot!
+  click_button 'Continue'
 end
 
 def create_email_address_for(user, email_address, confirmation_code=nil)

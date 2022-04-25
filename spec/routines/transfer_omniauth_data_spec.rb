@@ -53,7 +53,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
               timezone: 1,
               updated_time: '2013-07-28T18:22:46+0000',
               username: 'user1',
-              verifeid: 'true',
+              verified: 'true',
             },
           }
 

@@ -1,17 +1,17 @@
 require 'rails_helper'
 
-feature 'Admin user pages', js: true do
+feature 'Admin user pages' do
   context 'as an admin user' do
     before(:each) do
       @admin_user = create_admin_user
-      visit '/'
-      log_in('admin', 'password')
+      visit :login
+      log_in_user('admin@openstax.org', 'password')
     end
 
     context "with a user with salesforce contact ID set" do
       before(:each) do
-        @sf_user = create_user 'sf_user'
-        @sf_user.update_attributes(:salesforce_contact_id: "booyah")
+        @sf_user = create_user 'sf_user@openstax.org'
+        @sf_user.update_attributes(salesforce_contact_id: "booyah")
       end
 
       context 'full console' do
