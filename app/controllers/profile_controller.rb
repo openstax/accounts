@@ -6,17 +6,26 @@ class ProfileController < ApplicationController
   def profile
     return if current_user.student?
 
-    if current_user.sheerid_verification_id.present? &&
-       !(current_user.is_sheerid_unviable? || current_user.is_profile_complete?)
+    if current_user.incomplete_signup?
       security_log(:educator_resumed_signup_flow,
-message: 'User needs to complete SheerID verification. Redirecting.')
-      redirect_to sheerid_form_path
-    elsif !current_user.is_profile_complete? && current_user.pending_faculty? &&
+                   message: 'User has not verified email address. Redirecting.')
+      redirect_to(verify_email_by_pin_form_path) and return
+    end
+
+    unless current_user.is_sheerid_unviable? || current_user.is_profile_complete?
+      security_log(:educator_resumed_signup_flow,
+                   message: 'User needs to complete SheerID verification. Redirecting.')
+      redirect_to sheerid_form_path and return
+    end
+
+    if !current_user.is_profile_complete? && current_user.pending_faculty? &&
           !current_user.is_educator_pending_cs_verification
       security_log(:educator_resumed_signup_flow,
 message: 'User needs to complete instructor profile. Redirecting.')
-      render :profile
+      redirect_to :profile_form_path and return
     end
+
+    render :profile
   end
 
   def exit_accounts

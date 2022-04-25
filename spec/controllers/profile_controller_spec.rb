@@ -22,11 +22,11 @@ RSpec.describe ProfileController, type: :controller do
       end
 
       context 'when profile is not complete' do
-        before { user.update!(faculty_status: :incomplete_signup) }
+        before { user.update!(is_profile_complete: false) }
 
         it 'redirects to step 4 — complete profile form' do
           get(:profile)
-          expect(response).to redirect_to(sheerid_form_path)
+          expect(response).to redirect_to(:sheerid_form)
         end
       end
     end
