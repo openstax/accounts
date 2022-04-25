@@ -37,7 +37,7 @@ class EducatorSignupController < SignupController
   def sheerid_webhook
     handle_with(
       EducatorSignup::SheeridWebhook,
-      verification_id: sheerid_provided_verification_id_param,
+      verification_id: params[:verificationId],
       success: lambda {
         security_log(:sheerid_webhook_received, { data: @handler_result })
         render(status: :ok, plain: 'Success')
@@ -47,7 +47,7 @@ class EducatorSignupController < SignupController
         Sentry.capture_message(
           '[SheerID Webhook] Failed!',
           extra: {
-            verification_id: sheerid_provided_verification_id_param,
+            verification_id: params[:verificationId],
             reason: @handler_result.errors.first.code
           }
         )
@@ -115,21 +115,21 @@ class EducatorSignupController < SignupController
   end
 
   def store_sheerid_verification_for_user
-    if sheerid_provided_verification_id_param.present? &&
-       current_user.sheerid_verification_id.blank?
+    if params[:verificationId].present? &&
+      current_user.sheerid_verification_id.blank?
       # create the verification object - this is verified later in SheeridWebhook
       SheeridVerification.find_or_initialize_by(
-        verification_id: sheerid_provided_verification_id_param
-      )
+        verification_id: params[:verificationId])
+
 
       # update the user
-      current_user.update!(sheerid_verification_id: sheerid_provided_verification_id_param)
+      current_user.update!(sheerid_verification_id: params[:verificationId])
 
       # log it
       SecurityLog.create!(
         event_type: :sheerid_verification_id_added_to_user_during_signup,
         user:       current_user,
-        event_data: { verification_id: sheerid_provided_verification_id_param }
+        event_data: { verification_id: params[:verificationId] }
       )
     end
   end
@@ -137,5 +137,4 @@ class EducatorSignupController < SignupController
   def book_data
     @book_data ||= FetchBookData.new
   end
-
 end
