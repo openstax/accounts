@@ -7,7 +7,9 @@ class AddSupportIdentifierToUsers < ActiveRecord::Migration[4.2]
     add_index :users, :support_identifier, unique: true
 
     User.find_each do |user|
-      User.where(id: user.id).update_all(support_identifier: user.generate_support_identifier)
+      User
+        .where(id: user.id)
+        .update_all(support_identifier: user.generate_support_identifier) # rubocop:disable Rails/SkipsModelValidations
     end
 
     change_column_null :users, :support_identifier, false

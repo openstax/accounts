@@ -1,5 +1,5 @@
 class RemoveSupportIdentifier < ActiveRecord::Migration[5.2]
   def change
-    remove_column :users, :support_identifier
+    remove_column :users, :support_identifier, :citext
   end
 end

@@ -1,4 +1,5 @@
 class CreateDelayedJobs < ActiveRecord::Migration[4.2]
+  # rubocop:disable Layout/LineLength
   def self.up
     create_table :delayed_jobs, force: true do |table|
       table.integer :priority, default: 0, null: false # Allows some jobs to jump to the front of the queue
@@ -12,6 +13,7 @@ class CreateDelayedJobs < ActiveRecord::Migration[4.2]
       table.string :queue                              # The name of the queue this job is in
       table.timestamps null: true
     end
+    # rubocop:enable Layout/LineLength
 
     add_index :delayed_jobs, [:priority, :run_at], name: "delayed_jobs_priority"
   end
