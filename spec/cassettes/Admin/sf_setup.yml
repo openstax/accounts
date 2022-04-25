@@ -8,7 +8,7 @@ http_interactions:
       string: grant_type=password&client_id=<salesforce_consumer_key>&client_secret=<salesforce_consumer_secret>&username=<salesforce_username_url>&password=<salesforce_password_url><salesforce_security_token>
     headers:
       User-Agent:
-      - Faraday v1.0.1
+      - Faraday v1.8.0
       Content-Type:
       - application/x-www-form-urlencoded
       Accept-Encoding:

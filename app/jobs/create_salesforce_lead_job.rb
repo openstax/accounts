@@ -34,7 +34,7 @@ class CreateSalesforceLeadJob < ApplicationJob
     # as_future means they are interested, not adopting, so no adoptionJSON for them
     adoption_json = nil
     if user.using_openstax_how != 'as_future'
-      adoption_json = build_book_adoption_json_for_salesforce(user)
+      adoption_json = book_json_for_sf(user)
     end
 
     lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
@@ -127,7 +127,7 @@ class CreateSalesforceLeadJob < ApplicationJob
 
   private
 
-  def build_book_adoption_json_for_salesforce(user)
+  def book_json_for_sf(user)
     return nil unless user.which_books
 
     adoption_json = {}

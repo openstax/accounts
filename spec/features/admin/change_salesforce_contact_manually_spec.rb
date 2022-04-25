@@ -12,10 +12,9 @@ RSpec.feature "Change Salesforce contact manually", vcr: VCR_OPTS, :type => :fea
   end
 
   before(:each) do
-    @admin_user = FactoryBot.create(:user)
-    @admin_user.update_attributes!(is_administrator: true)
+    @admin_user = create_admin_user
     visit '/'
-    log_in 'admin'
+    log_in 'admin@openstax.org'
 
     @target_user = FactoryBot.create(:user)
 
