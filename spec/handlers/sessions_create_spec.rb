@@ -55,7 +55,7 @@ RSpec.describe SessionsCreate, type: :handler do
         before(:each) do
           SecurityLog.create! user: current_user, remote_ip: '127.0.0.1',
                               event_type: :sign_in_successful, event_data: {}
-          Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER)
+          Timecop.freeze(Time.zone.now + RequireRecentSignin::REAUTHENTICATE_AFTER)
         end
 
         it "returns :new_signin_required" do
@@ -104,8 +104,8 @@ RSpec.describe SessionsCreate, type: :handler do
         @user1 = FactoryBot.create :user, created_at: 1.year.ago
         @user2 = FactoryBot.create :user, created_at: 1.year.ago
 
-        @user1.update_attributes(updated_at: 1.month.ago)
-        @user2.update_attributes(updated_at: 1.year.ago)
+        @user1.update(updated_at: 1.month.ago)
+        @user2.update(updated_at: 1.year.ago)
 
         @user3 = FactoryBot.create :user
         Timecop.freeze(2.months.ago) do

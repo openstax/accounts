@@ -45,14 +45,14 @@ def create_email_address_for(user, email_address, confirmation_code=nil)
 end
 
 def generate_login_token_for(user)
-  user = User.find_by_uuid(user.uuid)
+  user = User.find_by(uuid: user.uuid)
   user.refresh_login_token
   user.save!
   user.login_token
 end
 
 def generate_expired_login_token_for(user)
-  user = User.find_by_uuid(user.uuid)
+  user = User.find_by(uuid: user.uuid)
   user.refresh_login_token
   user.login_token_expires_at = 1.year.ago
   user.save!
