@@ -19,11 +19,11 @@ class Group < ApplicationRecord
            foreign_key: :container_group_id, inverse_of: :container_group
   has_many :member_groups, through: :member_group_nestings
 
-  has_many :oauth_applications, as: :owner, class_name: 'Doorkeeper::Application'
+  has_many :oauth_applications, as: :owner, class_name: 'Doorkeeper::Application' # rubocop:disable Rails/HasManyOrHasOneDependent
 
   has_many :application_groups, dependent: :destroy, inverse_of: :group
 
-  validates :name, uniqueness: { allow_nil: true }
+  validates :name, uniqueness: { allow_nil: true } # rubocop:disable Rails/UniqueValidationWithoutIndex
 
   before_save :add_unread_update
 
@@ -80,7 +80,7 @@ class Group < ApplicationRecord
     gids = [id] + (Group.joins(:member_group_nestings)
                         .where(group_nestings: {member_group_id: id})
                         .first.try(:supertree_group_ids) || [])
-    update_columns(cached_supertree_group_ids: gids)
+    update_columns(cached_supertree_group_ids: gids) # rubocop:disable Rails/SkipsModelValidations
     self.cached_supertree_group_ids = gids
   end
 
@@ -92,7 +92,7 @@ class Group < ApplicationRecord
     gids = [id] + Group.joins(:container_group_nesting)
                        .where(group_nestings: {container_group_id: id})
                        .collect{|g| g.subtree_group_ids}.flatten
-    update_columns(cached_subtree_group_ids: gids)
+    update_columns(cached_subtree_group_ids: gids) # rubocop:disable Rails/SkipsModelValidations
     self.cached_subtree_group_ids = gids
   end
 

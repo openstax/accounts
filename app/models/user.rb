@@ -131,14 +131,14 @@ class User < ApplicationRecord
   has_many :application_users, dependent: :destroy, inverse_of: :user
   has_many :applications, through: :application_users
   has_many :contact_infos, dependent: :destroy, inverse_of: :user
-  has_many :email_addresses, inverse_of: :user
+  has_many :email_addresses, inverse_of: :user, dependent: :destroy
   has_many :external_uuids, class_name: 'UserExternalUuid', dependent: :destroy
   has_many :group_owners, dependent: :destroy, inverse_of: :user
   has_many :owned_groups, through: :group_owners, source: :group
   has_many :group_members, dependent: :destroy, inverse_of: :user
   has_many :member_groups, through: :group_members, source: :group
   has_many :oauth_applications, through: :member_groups
-  has_many :security_logs
+  has_many :security_logs, dependent: nil
 
   attr_readonly :uuid
 
@@ -440,7 +440,7 @@ class User < ApplicationRecord
 
   def save_activated_at_if_became_activated
     if state_changed?(to: :activated)
-      self.touch(:activated_at)
+      self.touch(:activated_at) # rubocop:disable Rails/SkipsModelValidations
     end
   end
 
