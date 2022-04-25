@@ -1,18 +1,15 @@
-class CreateSalesforceLead
-
-  lev_routine active_job_enqueue_options: { queue: :salesforce }
+class CreateSalesforceLeadJob < ApplicationJob
+  queue_as :salesforce
 
   ADOPTION_STATUS_FROM_USER = {
-    as_primary: 'Confirmed Adoption Won',
+    as_primary:      'Confirmed Adoption Won',
     as_recommending: 'Confirmed Will Recommend',
-    as_future: 'High Interest in Adopting'
+    as_future:       'High Interest in Adopting'
   }.with_indifferent_access.freeze
 
   private_constant(:ADOPTION_STATUS_FROM_USER)
 
-  protected
-
-  def exec(user_id:) # rubocop:disable Metrics/MethodLength
+  def perform(user_id)
     return unless Settings::Salesforce.push_salesforce_lead_enabled
 
     user = User.find(user_id)
@@ -20,7 +17,7 @@ class CreateSalesforceLead
     status.set_job_args(user: user.to_global_id.to_s)
 
     SecurityLog.create!(
-      user: user,
+      user:       user,
       event_type: :starting_salesforce_lead_creation
     )
 
@@ -30,7 +27,7 @@ class CreateSalesforceLead
     if user.role == 'student'
       sf_role = 'Student'
     else
-      sf_role = 'Instructor'
+      sf_role     = 'Instructor'
       sf_position = user.role
     end
 
@@ -91,13 +88,11 @@ class CreateSalesforceLead
     end
 
     SecurityLog.create!(
-      user: user,
+      user:       user,
       event_type: :attempting_to_create_user_lead
     )
 
     if lead.save
-
-      outputs.lead = lead
 
       SecurityLog.create!(
         user:       user,
@@ -112,34 +107,37 @@ class CreateSalesforceLead
           event_type: :user_lead_id_updated_from_salesforce,
           event_data: { lead_id: lead.id }
         )
-        return true
+        return lead
       else
-        transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
+        SecurityLog.create!(
+          user:       user,
+          event_type: :salesforce_error
+        )
         return
       end
 
-      outputs.user = user
-
     else
       SecurityLog.create!(
-        user: user,
+        user:       user,
         event_type: :salesforce_error
       )
       # TODO: this needs a sentry error but we should still process the user
     end
   end
 
+  private
+
   def build_book_adoption_json_for_salesforce(user)
     return nil unless user.which_books
 
     adoption_json = {}
-    books_json = []
+    books_json    = []
 
-    books_array = user.which_books.split(';').to_a
+    books_array          = user.which_books.split(';').to_a
     student_number_array = user.how_many_students.tr('^0-9,', '').split(',')
 
     books_array.each_with_index do |book, index|
-      book_keywords = { name: book, students: student_number_array[index]}
+      book_keywords = { name: book, students: student_number_array[index] }
       books_json << book_keywords
     end
 

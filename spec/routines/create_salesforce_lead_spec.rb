@@ -4,7 +4,7 @@ require 'vcr_helper'
 RSpec.describe CreateSalesforceLead, type: :routine, vcr: VCR_OPTS do
 
   before(:all) do
-    VCR.use_cassette('Newflow_CreateSalesforceLead/sf_setup', VCR_OPTS) do
+    VCR.use_cassette('CreateSalesforceLead/sf_setup', VCR_OPTS) do
       @proxy = SalesforceProxy.new
       @proxy.setup_cassette
     end
@@ -33,14 +33,13 @@ RSpec.describe CreateSalesforceLead, type: :routine, vcr: VCR_OPTS do
     end
   end
 
-  xit 'works on the happy path' do
+  it 'works on the happy path' do
     expect(Rails.logger).not_to receive(:warn)
 
-    lead = described_class[user: user]
-    expect(lead.errors).to be_empty
+    lead = CreateSalesforceLead.perform(user_id: user.id)
 
 
-    lead_from_sf = user.lead
+    lead_from_sf = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
     expect(lead_from_sf).not_to be_nil
     expect(lead_from_sf.application_source).to eq "Account Creation"
   end
