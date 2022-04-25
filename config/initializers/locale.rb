@@ -47,7 +47,7 @@ module I18n
   # :one  Enumeration lists a list of possible choices. Only one item may be
   #       chosen.
   def self.enumerate kind, list, options = {}
-    if not [:all, :any, :one].include? kind
+    if [:all, :any, :one].exclude?(kind)
       raise ArgumentError.new "kind must be one of: :all, :any or :one"
     end
 

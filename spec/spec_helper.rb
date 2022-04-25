@@ -46,7 +46,7 @@ RSpec.configure do |config|
 
   # Some tests might change I18n.locale.
   config.before(:each) do |config|
-    I18n.locale = :en
+    I18n.locale = :en # rubocop:disable Rails/I18nLocaleAssignment
   end
 
   # https://github.com/DatabaseCleaner/database_cleaner#rspec-with-capybara-example says:
