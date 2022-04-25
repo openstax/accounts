@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 feature 'Log out Admins after 30 minutes of non-admin activity', js: true do
-  #pending('Need to set environment_name to production for these to pass.')
+  # pending('Need to set environment_name to production for these to pass.')
   let!(:login_time) { DateTime.now }
 
   before(:each) do
     Rails.application.secrets.environment_name = 'production'
-    #allow_any_instance_of(ApplicationController).to receive(Rails.application.secrets.environment_name).and_return('production')
+    # allow_any_instance_of(ApplicationController).to receive(Rails.application.secrets.environment_name).and_return('production')
     Timecop.freeze(login_time)
   end
 

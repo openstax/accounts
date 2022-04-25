@@ -6,7 +6,7 @@ describe Authentication do
 
   context "when an authentication exists" do
     it "is returned by by_provider_and_uid" do
-      value = Authentication.find_by_provider_and_uid(authentication.provider, authentication.uid)
+      value = Authentication.find_by(provider: authentication.provider, uid: authentication.uid)
       expect(value).to eq authentication
     end
 
@@ -27,7 +27,7 @@ describe Authentication do
 
   context "when an authentication doesn't exist" do
     it "returns nil from by_provider_and_uid" do
-      expect(Authentication.find_by_provider_and_uid("foo", "bar")).to be_nil
+      expect(Authentication.find_by(provider: "foo", uid: "bar")).to be_nil
     end
 
     it "is created by by_provider_and_uid!" do

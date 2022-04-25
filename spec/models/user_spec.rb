@@ -29,7 +29,7 @@ RSpec.describe User, type: :model do
 
     context 'when the names start populated' do
       before(:each) {
-        user.update_attributes(first_name: "John", last_name: "Smith")
+        user.update(first_name: "John", last_name: "Smith")
       }
 
       it 'is invalid for the first name to become blank' do
@@ -124,7 +124,7 @@ RSpec.describe User, type: :model do
     it 'cannot be updated' do
       user = FactoryBot.create :user
       old_uuid = user.uuid
-      user.update_attributes(first_name: 'New')
+      user.update(first_name: 'New')
       expect(user.reload.first_name).to eq('New')
       expect(user.uuid).to eq(old_uuid)
 
@@ -264,13 +264,13 @@ RSpec.describe User, type: :model do
 
     it 'can be reset with an expiration' do
       user.refresh_login_token(expiration_period: 10.minutes)
-      expect(user.login_token_expires_at).to be > Time.now
+      expect(user.login_token_expires_at).to be > Time.zone.now
 
       expect(user.save).to be_truthy
-      Timecop.freeze(Time.now + 9.minutes) do
+      Timecop.freeze(9.minutes.from_now) do
         expect(user.login_token_expired?).to be_falsey
       end
-      Timecop.freeze(Time.now + 11.minutes) do
+      Timecop.freeze(11.minutes.from_now) do
         expect(user.login_token_expired?).to be_truthy
       end
     end
@@ -281,7 +281,7 @@ RSpec.describe User, type: :model do
 
       user2 = FactoryBot.create :user
       expect{
-        user2.update_attributes(login_token: user.login_token)
+        user2.update(login_token: user.login_token)
       }.to raise_error(ActiveRecord::RecordNotUnique)
     end
   end
@@ -294,7 +294,7 @@ RSpec.describe User, type: :model do
         @email_a = CreateEmailForUser['a@a.com', user]
       }
       Timecop.freeze(0.minutes.ago)  { CreateEmailForUser['b@b.com', user, already_verified: true] }
-      Timecop.freeze(-1.minutes.ago) { @email_c = CreateEmailForUser['c@c.com', user] }
+      Timecop.freeze(-1.minute.ago) { @email_c = CreateEmailForUser['c@c.com', user] }
       Timecop.freeze(-3.minutes.ago) { CreateEmailForUser['d@d.com', user, already_verified: true] }
     end
 
