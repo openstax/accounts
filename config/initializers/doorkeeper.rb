@@ -93,7 +93,8 @@ Doorkeeper.configure do
   # Provide support for an owner to be assigned to each registered application (disabled by default)
   # Optional parameter confirmation: true (default false) if you want to enforce ownership of
   # a registered application
-  # Note: you must also run the rails g doorkeeper:application_owner generator to provide the necessary support
+  # Note: you must also run the rails g doorkeeper:application_owner generator
+  # to provide the necessary support
   #
   enable_application_owner confirmation: true
 
@@ -107,7 +108,8 @@ Doorkeeper.configure do
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
   # falls back to the `:client_id` and `:client_secret` params from the `params` object.
-  # Check out https://github.com/doorkeeper-gem/doorkeeper/wiki/Changing-how-clients-are-authenticated
+  # Check out
+  #   https://github.com/doorkeeper-gem/doorkeeper/wiki/Changing-how-clients-are-authenticated
   # for more information on customization
   #
   # client_credentials :from_basic, :from_params
@@ -121,8 +123,10 @@ Doorkeeper.configure do
   # access_token_methods :from_bearer_authorization, :from_access_token_param, :from_bearer_param
 
   # Change the native redirect uri for client apps
-  # When clients register with the following redirect uri, they won't be redirected to any server and the authorization code will be displayed within the provider
-  # The value can be any string. Use nil to disable this feature. When disabled, clients must provide a valid URL
+  # When clients register with the following redirect uri, they won't be
+  # redirected to any server and the authorization code will be displayed within
+  # the provider The value can be any string. Use nil to disable this feature.
+  # When disabled, clients must provide a valid URL
   # (Similar behaviour: https://developers.google.com/accounts/docs/OAuth2InstalledApp#choosingredirecturi)
   #
   # native_redirect_uri 'urn:ietf:wg:oauth:2.0:oob'
