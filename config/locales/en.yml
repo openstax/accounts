@@ -1,62 +1,71 @@
 ---
 en:
-  contact_infos:
-    confirm:
-      email_already_in_use: The email address you are trying to confirm is in use by another OpenStax user.
-      page_heading:
-        error: We were unable to confirm your email address.
-        success: Thank you for confirming your email address.
-      verification_code_not_found: Sorry, we couldn't confirm your email using the confirmation code you provided. If you typed it in manually, please check for errors. If you're still having trouble, please visit your profile page to resend the verification email.
-      you_may_now_close_this_window: Your email address is now confirmed. You may close this window.
-    confirm_unclaimed:
-      page_heading: Invite Verification
-      please_sign_up:
-        content_html: Please %{link} for an account using email %{email} address in order to complete the process.
-        sign_up: sign up
-      thanks_for_validating: Thanks for validating your OpenStax invitation.
-      verification_code_not_found: Sorry, we couldn't find any pending invitations using the verification code you provided. If you typed it in manually, please check for errors. If you're still having trouble, you might ask whoever setup your account to try again.
-      you_can_now_sign_in:
-        add_password: set your password
-        content_html: Please %{link} before you can sign into your new account.
-        reset_password: reset your password
+  admin:
+    users:
+      change_salesforce_contact:
+        removed: 'Removed the Salesforce Contact ID'
+        updated: 'Zaktualizowany kontakt Salesforce'
+      mark_users_updated:
+        incremented: 'Incremented unread update count'
+      update:
+        success: 'User profile was successfully updated.'
   controllers:
     authentications:
       authentication_removed: "%{authentication} removed"
-    contact_infos:
-      already_verified: Your email address is already verified
-      verification_sent: A verification message has been sent to "%{address}"
-    identities:
-      cannot_reset_password_because_user_doesnt_have_one: You cannot reset your password because your account does not have a password.
-      password_changed: Password changed
-      password_expired: Your password has expired. Please enter a new password.
-      password_reset_successfully: Your password has been reset successfully! You are now signed in.
-    lost_user: Sorry, we lost you. Please try again.
     sessions:
-      accessing_instructions_emailed: Instructions for accessing your OpenStax account have been emailed to you.
-      incorrect_password: The password you provided is incorrect.
       mismatched_authentication: You logged in with a different third-party account than we expected. Please try again.
-      new_sign_in_option_added: Your new login option has been added!
-      no_account_for_username_or_email: We could not find your account using the information provided. Please try again.
-      same_provider_already_linked: You are logged in as %{user_name}. A different %{authentication} account is already linked to your OpenStax account. Only one %{authentication} account can be linked to your OpenStax account at a time.
-      several_accounts_for_one_email: We found multiple accounts for the information provided. Please try again.
       sign_in_option_already_used: That login option is already used by someone else. If that someone is you, remove it from your other account and try again.
-      start_failed: Please log in or create an account.
-      too_many_login_attempts:
-        content: You have made too many login attempts recently. Please %{reset_password} or try again later.
-        reset_password: reset your password
-      too_many_lookup_attempts: You have made too many login attempts recently. Please try again later.
-      trouble_with_provider: We are having difficulties communicating with the login provider you selected. Our technical team has been notified and we will get to work fixing this problem. In the meantime you can log in with a password if you have already set one up, or you can add one if you haven't. If you need help, please contact support.
       way_to_login_cannot_be_added: That way to log in cannot be added because it is associated to an email address that is already in use!
-    signup:
-      already_have_username_and_password: You already have a username and password on your account!
     terms:
       temporarily_unavailable: The terms are temporarily unavailable. Check back soon.
+  doorkeeper:
+    applications:
+      buttons:
+        authorize: 'Authorize'
+        cancel: 'Cancel'
+        edit: 'Edit'
+        submit: 'Submit'
+      form:
+        error: 'Error in form'
+      help:
+        native_redirect_uri: '#'
+        redirect_uri: '#'
+        scopes: 'Some help should go here'
+      index:
+        actions: '?? Actions'
+        callback_url: '#'
+        confidential: '?? Confidential'
+        confidentiality:
+          'no': 'no'
+          'yes': 'yes'
+        name: 'Name'
+        new: 'New'
+        title: 'Title'
+      show:
+        actions: '?? Actions'
+        application_id: '?? Application ID'
+        callback_urls: '#'
+        scopes: '?? Scopes'
+        secret: '?? Secret'
+        title: '?? Title'
+    authorizations:
+      error:
+        title: '?? Error title'
+    flash:
+      applications:
+        create:
+          notice: '?? Create notice'
+        destroy:
+          notice: '?? Destroy notice'
+        update:
+          notice: '?? Update notice'
   educator_profile_form:
     administrator: Administrator
     books_of_interest: Books of interest
     books_of_interest_must_be_entered: Please enter books of interest
     books_used: Books you've used in your courses
     books_used_must_be_entered: Please enter books used
+    books_using: Books you're currently using
     chosen_by_committee: A committee chooses the textbook
     chosen_by_coordinator: Course/district coordinator choose the textbook
     chosen_by_instructor: Instructors choose textbooks for their courses
@@ -88,99 +97,23 @@ en:
     any:
       apology_message_html: If you need help, please contact %{contact_info}.
       apology_message_long_html: If you need help, please contact %{contact_info} and reference error %{error_id}.
-    please_enable_javascript: Please enable JavaScript in your browser! Some site contet will not work properly without it.
-  faculty_access:
-    apply:
-      additional_information_heading: Additional information
-      adjunct: Adjunct Faculty
-      administrator: Administrator
-      designer: Instructional Designer
-      email: Your school email address
-      email_in_use: This email is already in use.
-      email_placeholder: me@myschool.edu
-      first_name: First name
-      homeschool: Homeschool Instructor
-      iama: I am a
-      instructions: To access faculty-only products, please provide the following information so that we can verify that you are faculty.
-      instructor: Instructor
-      instructor_use:
-        fully: Fully adopted and using it as the primary textbook
-        how: How are you using OpenStax?
-        interested: Interested in using OpenStax in the future
-        nope: Not using OpenStax
-        recommended: Recommending the book – my students buy a different book
-      keep_me_informed: Send me the OpenStax newsletter.
-      last_name: Last name
-      librarian: Librarian
-      name_heading: Name
-      num_students: Number of students per semester
-      other: Other
-      page_heading: Apply for instructor access
-      phone_number: Phone number
-      role_heading: Your faculty role
-      school: School name
-      submit: Apply
-      suffix: Suffix
-      teacher_school_email: This is the email address given to you by your school.
-      teacher_school_email_warning: Is this your school email address?  If yes, click %{button} below. If not, please enter your school email address.
-      titles_interested: Select at least one OpenStax titles that interest you
-      url: A web page that shows you are faculty
-      using_openstax: Already using OpenStax?
-    pending:
-      check_box: Send me an email when my instructor access is approved.
-      message: Your instructor access is pending. We will verify your instructor status within 3-4 business days. In the meantime, you can access all books and resources except those that require instructor verification.
-      ok: OK
-      page_heading: Your application has been submitted
   handlers:
     authentications_delete:
       cannot_delete_last_authentication: Cannot delete an activated user's last authentication
-    confirm_unclaimed_account:
-      unable_to_verify_address: Unable to confirm email address
-    identities_reset_password:
-      reset_link_expired: Reset password link has expired
-      reset_link_is_invalid: Reset password link is invalid
-    sessions_help:
-      did_not_find_account_for_username_or_email: We did not find an account with the username or email you provided.
-      found_account_but_it_has_no_emails: We found your account but can't send you an email because your account doesn't have any email addresses listed. Please contact Support for assistance.
-    signup_password:
-      you_must_agree_to_the_terms: You must agree to the terms to create your account.
-    signup_social:
-      you_must_agree_to_the_terms: You must agree to the terms to create your account.
-      you_must_provide_an_email_address: You must provide an email address to create your account.
     terms_agree:
       you_must_agree_to_the_terms: You must agree to the terms to continue. If you have questions, please contact Support.
+  helpers:
+    alert:
+      please_enable_javascript:
+        content: 'Please enable JavaScript in your browser'
+        intro: 'JavaScript is not enabled'
   identities:
-    add:
-      page_heading: Add a password
-      submit: Add Password
-      submitting: Adding…
-      use_form_below_to_add_password: Use the form below to add a password to your account.
     add_success:
-      continue: Continue
       message: Your password was added to your account.
-      page_heading: Success!
-    reset:
-      page_heading: Reset your password
-      submit: Reset Password
-      submitting: Resetting…
-      use_form_below_to_reset_password: Use the form below to reset your password.
     reset_success:
-      continue: Continue
       message: Your password has been reset.
-      page_heading: Success!
-    send_add:
-      close_this_window: You can close this window.
-      page_heading: Check your email
-      we_sent_email: We sent an email to %{emails}. Click the link in that email to add a password.
-    send_reset:
-      close_this_window: You can close this window.
-      page_heading: Check your email
-      we_sent_email: We sent an email to %{emails}. Click the link in that email to reset your password.
     set:
-      cancel: Cancel
-      confirm_password: Confirm Password
       expired_password_link: The password link you used has expired.
-      password: Password
       there_was_a_problem_with_password_link: Unfortunately, there was a problem with your password link. If you continue to have problems, please contact Support.
   javascript:
     alert:
@@ -204,12 +137,6 @@ en:
   layouts:
     application_footer:
       terms_of_use: Terms of Use
-    application_header:
-      sign_in: Log in
-      sign_out: Log out
-      welcome_html: Welcome, %{username}
-    attention:
-      please_enable_javascript: Please enable JavaScript.
   login_signup_form:
     agree_to_terms_of_use: I agree to the %{terms_of_use} and %{privacy_policy}
     all_fields_required: "* All fields are required"
@@ -315,98 +242,10 @@ en:
     find_or_create_unclaimed_user:
       must_provide_email_or_username: Must provide email or username
   sessions:
-    access_tutor: Log in or sign up for an account to access OpenStax Tutor
-    authenticate:
-      name_greeting: Hello, %{name}!
-    authenticate_options:
-      add_password: Click here to add a password
-      forgot_password: Can’t remember your password?
-      login: Log in
-      password: Password
-      reset_password: Click here to reset it
-      separator_or: or
-      sign_in_with_facebook: Log in with Facebook
-      sign_in_with_google: Log in with Google
-      submitting: Logging in…
-      trouble_logging_in: Trouble logging in?
-    help:
-      if_you_know_username_or_email:
-        contact_customer_support: contact Support
-        content_html: If you know your account's username or email address, please enter it below and we'll send you an email about how to regain access to your account. If you do not have this information, please %{link}.
-      page_heading: Get help logging in
-      submit: Submit
-      submitting: Submitting…
-      username_or_email: Username or Email
-    reauthenticate:
-      page_heading: Please log in again before continuing.
     start:
-      access_tutor: Log in or sign up for an account to access OpenStax Tutor
-      cannot_find_user: Cannot find user
-      cant_remember_email: Don’t know how you signed up?
-      cant_sign_in: Can’t log in?
-      email: Email
-      email_placeholder: Email or username
-      having_trouble: Trouble logging in?
-      help: Enter the email or username associated with your OpenStax account, and we will help you log in.
-      knowledge_base: Visit our knowledge base for help
-      logout_reminder_html: If you're on a public computer, <b>be sure to sign out</b> when you're done!
-      multiple_users:
-        click_here: Click here and we’ll email them to you
-        content_html: We found several accounts with this email. Please log in using your username.<br/> Forgot your usernames? %{link}.
       multiple_users_missing_usernames:
         content_html: We found several accounts with this email and unfortunately we can't tell which to use. Please %{help_link}.
         help_link_text: contact our Support team for assistance
-      next: Next
-      no_account_q: Need an account?
-      openstax_wont_use_social_media_without_permission_html: "<i>Don't worry.</i> OpenStax <b>won't post anything</b> to your social network without your permission."
-      page_heading: Log in to your OpenStax account
-      page_sub_heading: Access all OpenStax tools and resources
-      sent_multiple_usernames: Please check <strong>%{email}</strong> for an email listing your usernames, and use one to log in.
-      sign_in: Log in
-      sign_up: Sign up here
-      submitting: Continuing…
-      unknown_email: We don’t recognize this email. Please try again.
-      unknown_username: We don’t recognize this username. Please try again or use your email address instead.
-      used_this_method_last_time: It looks like you used this the last time you signed in.
-      username_placeholder: Username
-  settings:
-    attributes:
-      educator_feature_flag:
-        help_block: New educator flow activated?
-        name: New educator flow feature flag
-      google_analytics_code:
-        help_block: 'Example: UA-XXXXXXXX-X'
-        name: Google Analytics Code
-      google_tag_manager_code:
-        help_block: 'Example: GTM-XXXX'
-        name: Google Tag Manager Code
-      number_of_days_contacts_modified:
-        help_block: Retrieve contacts modified in the last X days in update_user_salesforce_info
-        name: Contacts modified in last x days
-      push_salesforce_lead_enabled:
-        help_block: If checked (and SF configured), new accounts will be pushed to SF as Leads
-        name: Push leads to Salesforce?
-      send_google_analytics:
-        help_block: If checked Google Analytics data will be sent.
-        name: Send Google Analytics data?
-      sheer_id_base_url:
-        help_block: ie. https://offers.sheerid.com/openstax/staging/teacher/?env=dev With the parameters that pre-populate the SheerID form, the full URL will look like ie. https://offers.sheerid.com/openstax/staging/teacher/?env=dev&first_name=Elon&last_name=Musk&email=ceo@spacex.com
-        name: SheerID base URL
-      student_feature_flag:
-        help_block: New student flow activated?
-        name: New student flow feature flag
-      subjects:
-        help_block: List of subjects that teachers choose from whe signing up
-        name: Subjects
-      sync_accounts_to_salesforce_enabled:
-        help_block: If checked (and SF configured), Accounts will sync user data with the OpenStax Account object in Salesforce
-        name: Sync account data with Salesforce?
-      sync_contacts_to_salesforce_enabled:
-        help_block: If checked (and SF configured), Accounts will sync user data with the Contact object in Salesforce
-        name: Sync contact data with Salesforce?
-      user_info_error_emails_enabled:
-        help_block: If checked (and SF configured), once-a-day user update error emails will go out
-        name: Enable user info update error emails?
   static_pages:
     copyright:
       content_copyright_notice_html: All content on this web site is either Copyright %{copyright_holder} or %{copyright_holder} has permission for use from the copyright holders.
@@ -426,25 +265,12 @@ en:
       contracts_changed_notice: There have been changes to the %{contract_title}. Please review them and then click the agreement button at the bottom of this page to continue.
       have_read_terms_and_agree: I have read and agree to the terms listed above.
   users:
-    change_salesforce_contact:
-      removed: Removed the Salesforce Contact ID
-      updated: Updated Salesforce Contact
     edit:
       add_email_address: Add an email
-      check_searchable_if_you_want_to_be_searchable: Check the Searchable box if you want other OpenStax users to find you using this email address.
       email_addresses: Emails
-      enable_other_sign_in_options: Enable other login options
-      how_you_sign_in_html: How you<br class="wide"> log in
       name: Name
-      other_sign_in_options_html: Other login<br class="wide"> options
-      page_heading: My Account
       password: Password
       resend_confirmation: Resend confirmation email
       searchable: Let other users find me by this email.
       sign_out: Log out
       unconfirmed_warning: unconfirmed
-      username: Username
-    mark_users_updated:
-      incremented: Incremented unread update count
-    update:
-      success: User profile was successfully updated.
