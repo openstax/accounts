@@ -49,7 +49,7 @@ DelayedJobWorkerPool::WorkerPool.class_exec do
 
     monitor_workers
 
-    exit
+    return
   ensure
     master_alive_write_pipe.close if master_alive_write_pipe
     master_alive_read_pipe.close if master_alive_read_pipe

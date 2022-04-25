@@ -28,7 +28,7 @@ Delayed::Heartbeat::WorkerHeartbeat.class_exec do
     # to mark the job as failed which will unlock it even though the clock
     # process has likely already unlocked it and another worker may have picked it up.
     Delayed::Heartbeat.configuration.on_worker_termination.call(@worker_model, e)
-    exit!(false)
+    exit!(false) # rubocop:disable Rails/Exit
   ensure
     @stop_reader.close
     @worker_model.delete
