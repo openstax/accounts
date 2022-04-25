@@ -25,7 +25,7 @@ feature "User can't sign in", js: true do
       email1 = create_email_address_for(user1, email_address)
       user2 = create_user 'user2@example.com'
       email2 = create_email_address_for(user2, email_address)
-      ContactInfo.where(value: email2.id).update_all(value: email1.value)
+      ContactInfo.where(value: email2.id).update_all(value: email1.value) # rubocop:disable Rails/SkipsModelValidations
 
       log_in_user(email_address)
       expect(page).to have_content(t(:'login_signup_form.multiple_users'))
@@ -41,7 +41,7 @@ feature "User can't sign in", js: true do
       user1 = create_user 'user@example'
       user2 = create_user 'temporary@email.com'
       email2 = create_email_address_for(user2, email_address)
-      ContactInfo.where(id: email2.id).update_all(value: 'UsEr@example.com')
+      ContactInfo.where(id: email2.id).update_all(value: 'UsEr@example.com') # rubocop:disable Rails/SkipsModelValidations
       user2.update(username: nil)
       user1.update(username: nil)
 

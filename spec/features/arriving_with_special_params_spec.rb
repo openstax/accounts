@@ -26,7 +26,7 @@ feature "Arriving with special params", js: true do
 
     before(:each) do
       @app = create_default_application
-      @app.update_attribute :redirect_uri, "#{@app.redirect_uri}\n#{alt_signup_url}"
+      @app.update_attribute :redirect_uri, "#{@app.redirect_uri}\n#{alt_signup_url}" # rubocop:disable Rails/SkipsModelValidations
     end
 
     context 'student' do

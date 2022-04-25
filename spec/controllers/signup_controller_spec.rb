@@ -55,9 +55,9 @@ RSpec.describe SignupController, type: :controller do
       it 'creates a security log' do
         expect {
           post(:signup_post, params: params)
-        }.to change {
+        }.to(change {
           SecurityLog.where(event_type: :sign_up_successful, user: User.last)
-        }
+        })
       end
 
       it 'redirects to student_email_verification_form_path' do
@@ -95,9 +95,9 @@ RSpec.describe SignupController, type: :controller do
 
         expect {
           post(:signup_post, params: params)
-        }.to change {
+        }.to(change {
           SecurityLog.user_signup_failed.count
-        }
+        })
       end
     end
   end

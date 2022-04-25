@@ -148,7 +148,7 @@ RSpec.describe LoginController, type: :controller do
         before do
           user1 = create_user 'user@example.com'
           user2 = create_user 'user-2@example.com'
-          ContactInfo.where(id: user1.id).update_all(value: user2.value)
+          ContactInfo.where(id: user1.id).update_all(value: user2.value) # rubocop:disable Rails/SkipsModelValidations
         end
 
         let(:email_address) do

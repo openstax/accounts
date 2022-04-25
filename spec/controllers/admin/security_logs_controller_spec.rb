@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Admin::SecurityLogsController, type: :controller do
-  let(:no_results) { OpenStruct.new(outputs: OpenStruct.new(items: SecurityLog.none)) }
+  let(:no_results) do { outputs: {items: SecurityLog.none} } end
   let(:admin) { FactoryBot.create :user, :admin, :terms_agreed }
 
   before(:each) do

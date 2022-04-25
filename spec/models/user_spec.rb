@@ -186,7 +186,7 @@ RSpec.describe User, type: :model do
     it 'does not interfere with updates if duplicated but not changed' do
       user_1 = FactoryBot.create :user, username: "MyUs3Rn4M3"
       user_2 = FactoryBot.create :user
-      user_2.update_column :username, user_1.username.upcase
+      user_2.update_column :username, user_1.username.upcase # rubocop:disable Rails/SkipsModelValidations
       expect(user_2.reload).to be_valid
       expect(user_2.errors).to be_empty
 
@@ -194,7 +194,7 @@ RSpec.describe User, type: :model do
       user_2.save!
 
       user_3 = FactoryBot.create :user
-      user_3.update_column :username, user_1.username.downcase
+      user_3.update_column :username, user_1.username.downcase # rubocop:disable Rails/SkipsModelValidations
       expect(user_3.reload).to be_valid
       expect(user_3.errors).to be_empty
 

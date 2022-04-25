@@ -45,7 +45,7 @@ RSpec.describe Delayed::Worker, type: :lib do
       let(:exception) { OAuth2::Error }
 
       it 'fails the job instantly if it is a 400 status' do
-        expect(job).to receive(:perform) { raise exception, OpenStruct.new(status: 404) }
+        expect(job).to receive(:perform) { raise exception, {status: 404} }
 
         expect(delayed_job.failed?).to eq false
         delayed_worker.run(delayed_job)
@@ -53,7 +53,7 @@ RSpec.describe Delayed::Worker, type: :lib do
       end
 
       it 'does not fail the job instantly if it is a 500 status' do
-        expect(job).to receive(:perform) { raise exception, OpenStruct.new(status: 504) }
+        expect(job).to receive(:perform) { raise exception, {status: 504} }
 
         expect(delayed_job.failed?).to eq false
         delayed_worker.run(delayed_job)
@@ -61,7 +61,7 @@ RSpec.describe Delayed::Worker, type: :lib do
       end
 
       it 'does not fail the job instantly if it is an unknown status' do
-        expect(job).to receive(:perform) { raise exception, OpenStruct.new(status: 0) }
+        expect(job).to receive(:perform) { raise exception, {status: 0} }
 
         expect(delayed_job.failed?).to eq false
         delayed_worker.run(delayed_job)
@@ -73,7 +73,7 @@ RSpec.describe Delayed::Worker, type: :lib do
       let(:exception) { OpenURI::HTTPError }
 
       it 'fails the job instantly if it is a 400 status' do
-        expect(job).to receive(:perform) { raise exception.new('404 Not Found', OpenStruct.new) }
+        expect(job).to receive(:perform) { raise exception.new('404 Not Found', {}) }
 
         expect(delayed_job.failed?).to eq false
         delayed_worker.run(delayed_job)
@@ -82,7 +82,7 @@ RSpec.describe Delayed::Worker, type: :lib do
 
       it 'does not fail the job instantly if it is a 500 status' do
         expect(job).to receive(:perform) {
-          raise exception.new('504 Gateway Timeout', OpenStruct.new)
+          raise exception.new('504 Gateway Timeout', {})
         }
 
         expect(delayed_job.failed?).to eq false
@@ -91,7 +91,7 @@ RSpec.describe Delayed::Worker, type: :lib do
       end
 
       it 'does not fail the job instantly if it is an unknown status' do
-        expect(job).to receive(:perform) { raise exception.new('', OpenStruct.new) }
+        expect(job).to receive(:perform) { raise exception.new('', {}) }
 
         expect(delayed_job.failed?).to eq false
         delayed_worker.run(delayed_job)

@@ -90,7 +90,7 @@ module Newflow
 
             before do
               FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
-              app.update_columns(redirect_uri: "#{capybara_url(external_app_for_specs_path)}/public")
+              app.update_columns(redirect_uri: "#{capybara_url(external_app_for_specs_path)}/public") # rubocop:disable Rails/SkipsModelValidations
             end
 
             it 'takes user back to app' do

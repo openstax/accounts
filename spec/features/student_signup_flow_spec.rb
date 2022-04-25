@@ -205,7 +205,7 @@ module Newflow
     # making HTTP calls against real external URLs like "example.com"
     server = Capybara.current_session.try(:server)
     redirect_uri = "http://#{server.host}:#{server.port}#{external_app_for_specs_path}"
-    app.update_columns(redirect_uri: redirect_uri)
+    app.update_columns(redirect_uri: redirect_uri) # rubocop:disable Rails/SkipsModelValidations
 
     FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
     app

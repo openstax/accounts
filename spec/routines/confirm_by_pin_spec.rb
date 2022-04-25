@@ -64,7 +64,9 @@ describe ConfirmByPin do
 
       CreateEmailForUser.call("bob-2@example.com", other_user)
       other_contact_info = other_user.contact_infos.last
-      ContactInfo.where(id: other_contact_info.id).update_all(value: 'bob@example.com')
+      ContactInfo
+        .where(id: other_contact_info.id)
+        .update_all(value: 'bob@example.com') # rubocop:disable Rails/SkipsModelValidations
 
       other_contact_info.reload
       expect(
