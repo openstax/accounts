@@ -9,12 +9,14 @@ null: false
 
     Doorkeeper::Application.reset_column_information
 
-    Doorkeeper::Application.where(trusted: true).update_all(
-      can_access_private_user_data: true,
-      can_find_or_create_accounts: true,
-      can_message_users: true,
-      can_skip_oauth_screen: true
-    )
+    Doorkeeper::Application
+      .where(trusted: true)
+      .update_all( # rubocop:disable Rails/SkipsModelValidations
+        can_access_private_user_data: true,
+        can_find_or_create_accounts: true,
+        can_message_users: true,
+        can_skip_oauth_screen: true
+      )
   end
 
   def down

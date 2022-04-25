@@ -1,6 +1,6 @@
 class CreateSalesforceUsers < ActiveRecord::Migration[4.2]
   def change
-    create_table :salesforce_users do |t|
+    create_table :salesforce_users do |t| # rubocop:disable Rails/CreateTableWithTimestamps
       t.string :name
       t.string :uid, null: false
       t.string :oauth_token, null: false

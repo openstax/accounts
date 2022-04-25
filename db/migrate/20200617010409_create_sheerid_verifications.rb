@@ -7,6 +7,8 @@ class CreateSheeridVerifications < ActiveRecord::Migration[5.2]
       t.string :first_name, null: false
       t.string :last_name, null: false
       t.string :organization_name, null: false
+
+      t.timestamps
     end
   end
 end

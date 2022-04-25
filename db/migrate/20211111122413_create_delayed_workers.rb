@@ -1,5 +1,6 @@
 class CreateDelayedWorkers < ActiveRecord::Migration[5.2]
 
+  # rubocop:disable Rails/CreateTableWithTimestamps
   def change
     create_table(:delayed_workers) do |t|
       t.string :name
@@ -9,5 +10,6 @@ class CreateDelayedWorkers < ActiveRecord::Migration[5.2]
       t.string :label
     end
   end
+  # rubocop:enable Rails/CreateTableWithTimestamps
 
 end
