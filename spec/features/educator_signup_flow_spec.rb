@@ -48,7 +48,17 @@ feature 'Educator signup flow', js: true do
         expect(EmailAddress.verified.count).to eq(1)
 
         # Step 3
-        expect_sheerid_iframe
+        within_frame do
+          expect(page).to have_text('Verify your instructor status')
+          expect(page.find('#sid-country')[:value]).to have_text('United States', exact: false)
+          expect(page.find('#sid-teacher-school')[:value]).to be_blank
+          expect(page.find('#sid-first-name')[:value]).to have_text(first_name)
+          expect(page.find('#sid-last-name')[:value]).to have_text(last_name)
+          expect(page.find('#sid-email')[:value]).to have_text(email_value)
+          expect(page).to have_text('Can\'t find your country in the list? Click here.')
+          expect(page).to have_text('Can\'t find your school in the list? Click here.')
+          expect(page).to have_text('Verify my instructor status')
+        end
 
         # Step 4
         find("#signup_educator_specific_role_other").click
@@ -89,10 +99,21 @@ feature 'Educator signup flow', js: true do
         visit(verify_email_url)
 
         # Step 3
-        expect_sheerid_iframe
+        within_frame do
+          expect(page).to have_text('Verify your instructor status')
+          expect(page.find('#sid-country')[:value]).to have_text('United States', exact: false)
+          expect(page.find('#sid-teacher-school')[:value]).to be_blank
+          expect(page.find('#sid-first-name')[:value]).to have_text(first_name)
+          expect(page.find('#sid-last-name')[:value]).to have_text(last_name)
+          expect(page.find('#sid-email')[:value]).to have_text(email_value)
+          expect(page).to have_text('Can\'t find your country in the list? Click here.')
+          expect(page).to have_text('Can\'t find your school in the list? Click here.')
+          expect(page).to have_text('Verify my instructor status')
+        end
 
         # Step 4
-        expect_educator_step_4_page
+        visit(profile_form_path)
+        expect(page.current_path).to eq(profile_form_path)
         find('#signup_educator_specific_role_other').click
         fill_in(I18n.t(:'educator_profile_form.other_please_specify'), with: 'President')
         click_on('Continue')
@@ -114,7 +135,7 @@ feature 'Educator signup flow', js: true do
       fill_in('login_form_email', with: email_address.value)
       fill_in('login_form_password', with: password)
       find('[type=submit]').click
-      expect(page.current_path).to match(educator_email_verification_form_path)
+      expect(page.current_path).to match(verify_email_by_pin_form_path)
     end
 
     xit 'allows the educator to reset their password' do
@@ -142,7 +163,7 @@ feature 'Educator signup flow', js: true do
 
     context 'step 4' do
       before do
-        visit(educator_profile_form_path)
+        visit(profile_form_path)
         find("#signup_educator_specific_role_instructor").click
         find('#signup_who_chooses_books_instructor').click
         fill_in(I18n.t(:'educator_profile_form.num_students_taught'), with: 30)
@@ -195,7 +216,7 @@ feature 'Educator signup flow', js: true do
 
       # Step 2
       # sends an email address confirmation email
-      expect(page.current_path).to eq(educator_email_verification_form_path)
+      expect(page.current_path).to eq(verify_email_by_pin_form_path)
       open_email(email_value)
       capture_email!(address: email_value)
       expect(current_email).to be_truthy
@@ -215,7 +236,7 @@ feature 'Educator signup flow', js: true do
       wait_for_ajax
       wait_for_animations
       # ... sends you to the SheerID form
-      expect(page).to have_current_path(educator_sheerid_form_path)
+      expect(page).to have_current_path(sheerid_form_path)
 
       # LOG OUT
       visit(signout_path)
@@ -226,11 +247,21 @@ feature 'Educator signup flow', js: true do
       log_in_user(email_value, password)
 
       # Step 3
-      expect_sheerid_iframe
-      EducatorSignup::VerifyEducator.call(user: User.last, verification_id: sheerid_verification.verification_id)
+      within_frame do
+        expect(page).to have_text('Verify your instructor status')
+        expect(page.find('#sid-country')[:value]).to have_text('United States', exact: false)
+        expect(page.find('#sid-teacher-school')[:value]).to be_blank
+        expect(page.find('#sid-first-name')[:value]).to have_text(first_name)
+        expect(page.find('#sid-last-name')[:value]).to have_text(last_name)
+        expect(page.find('#sid-email')[:value]).to have_text(email_value)
+        expect(page).to have_text('Can\'t find your country in the list? Click here.')
+        expect(page).to have_text('Can\'t find your school in the list? Click here.')
+        expect(page).to have_text('Verify my instructor status')
+      end
 
       # Step 4
-      expect_educator_step_4_page
+      visit(profile_form_path)
+      expect(page.current_path).to eq(profile_form_path)
       find('#signup_educator_specific_role_other').click
       expect(page).to have_text(I18n.t(:'educator_profile_form.other_please_specify'))
       fill_in(I18n.t(:'educator_profile_form.other_please_specify'), with: 'President')
@@ -251,14 +282,25 @@ feature 'Educator signup flow', js: true do
     let(:password) { 'password' }
 
     context 'with faculty status as no_faculty_info' do
-      it 'sends them to step 3 — SheerID iframe' do
-        expect_sheerid_iframe
+      it 'sends them to step 3 — SheerID iframe' do
+        within_frame do
+          expect(page).to have_text('Verify your instructor status')
+          expect(page.find('#sid-country')[:value]).to have_text('United States', exact: false)
+          expect(page.find('#sid-teacher-school')[:value]).to be_blank
+          expect(page.find('#sid-first-name')[:value]).to have_text(first_name)
+          expect(page.find('#sid-last-name')[:value]).to have_text(last_name)
+          expect(page.find('#sid-email')[:value]).to have_text(email_value)
+          expect(page).to have_text('Can\'t find your country in the list? Click here.')
+          expect(page).to have_text('Can\'t find your school in the list? Click here.')
+          expect(page).to have_text('Verify my instructor status')
+        end
       end
     end
 
     context 'with faculty status as rejected' do
-      it 'sends them to step 4 — Educator Profile Form' do
-        expect_educator_step_4_page
+      it 'sends them to step 4 — Educator Profile Form' do
+        visit(profile_form_path)
+        expect(page.current_path).to eq(profile_form_path)
       end
 
       it 'shows a school name field'

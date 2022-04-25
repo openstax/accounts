@@ -29,7 +29,12 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
   end
 
   scenario 'using a link with an expired code' do
-    @login_token = generate_expired_login_token_for_user(User.last)
+    user = User.last
+    user.refresh_login_token
+    user.login_token_expires_at = 1.year.ago
+    user.save!
+    @login_token = user.login_token
+
     visit start_path(type: type, token: @login_token)
     screenshot!
     expect(page).to have_content(I18n.t(:'identities.set.expired_password_link'))

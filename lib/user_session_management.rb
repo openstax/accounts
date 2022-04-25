@@ -149,7 +149,6 @@ module UserSessionManagement
   end
 
   def unverified_user
-    byebug
     id = session[:unverified_user_id]&.to_i
     return if id.blank?
 
