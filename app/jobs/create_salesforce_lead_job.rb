@@ -9,6 +9,7 @@ class CreateSalesforceLeadJob < ApplicationJob
 
   private_constant(:ADOPTION_STATUS_FROM_USER)
 
+  # rubocop:disable Metrics/MethodLength
   def perform(user_id)
     return unless Settings::Salesforce.push_salesforce_lead_enabled
 
@@ -124,6 +125,7 @@ class CreateSalesforceLeadJob < ApplicationJob
       # TODO: this needs a sentry error but we should still process the user
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 
