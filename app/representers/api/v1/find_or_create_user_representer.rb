@@ -80,7 +80,8 @@ module Api::V1
              writeable:   true,
              schema_info: {
                required:    false,
-               description: 'Full name to assign to newly created user, used for first and last name if they are missing'
+               description: 'Full name to assign to newly created user, used for '\
+                            'first and last name if they are missing'
              }
 
     property :salesforce_contact_id,

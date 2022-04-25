@@ -27,7 +27,9 @@ module Api::V1
              writeable: false,
              schema_info: {
                required: true,
-               description: "The number of updates the associated user has received since the application pulled updates from Accounts"
+               description:
+               "The number of updates the associated user has received since "\
+               "the application pulled updates from Accounts"
              }
 
     property :default_contact_info_id,

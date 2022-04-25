@@ -106,7 +106,8 @@ module Api::V1
              readable: true,
              writeable: false,
              schema_info: {
-                description: "The user's uncorroborated role, one of [#{User.roles.keys.map(&:to_s).join(', ')}]",
+                description: "The user's uncorroborated role, one of "\
+                             "[#{User.roles.keys.map(&:to_s).join(', ')}]",
                 required: true
              }
 

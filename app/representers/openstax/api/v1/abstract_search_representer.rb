@@ -19,7 +19,8 @@ module OpenStax
                  exec_context: :decorator,
                  schema_info: {
                    required: true,
-                   description: "The number of items matching the query; can be more than the number returned if paginating"
+                   description: "The number of items matching the query; can be "\
+                                "more than the number returned if paginating"
                  }
 
         collection :items,
@@ -27,7 +28,8 @@ module OpenStax
                    writeable: false,
                    schema_info: {
                      required: true,
-                     description: "The items matching the query or a subset thereof when paginating"
+                     description: "The items matching the query or a subset "\
+                                  "thereof when paginating"
                    }
 
         def total_count
