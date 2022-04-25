@@ -21,7 +21,7 @@ class UpdateUserContactInfo
   def self.call
     new.call
   end
-  
+
   def call
     # this is controlled in secrets.yml (or param store for non-dev/test envs)
     return unless Rails.application.secrets[:salesforce][:sync_contacts_enabled]

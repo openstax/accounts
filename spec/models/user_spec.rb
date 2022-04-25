@@ -281,7 +281,7 @@ RSpec.describe User, type: :model do
 
       user2 = FactoryBot.create :user
       expect{
-        user2.update_attributes(:login_token: user.login_token)
+        user2.update_attributes(login_token: user.login_token)
       }.to raise_error(ActiveRecord::RecordNotUnique)
     end
   end

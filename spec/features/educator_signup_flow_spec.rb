@@ -8,8 +8,6 @@ feature 'Educator signup flow', js: true do
   let(:phone_number) { Faker::PhoneNumber.phone_number }
   let(:email_value) { Faker::Internet.unique.email(domain: '@rice.edu') }
   let(:password) { Faker::Internet.password(min_length: 8) }
-  let(:sheerid_iframe_page_title) { 'Verify your instructor status' }
-  let(:iframe_submit_button_text) { 'Verify my instructor status' }
   let(:external_app_url) { capybara_url(external_app_for_specs_path) }
   let(:return_param) { { r: external_app_for_specs_path } }
 
@@ -31,7 +29,7 @@ feature 'Educator signup flow', js: true do
 
         # Step 2
         # sends an email address confirmation email
-        expect(page.current_path).to eq(educator_email_verification_form_path)
+        expect(page.current_path).to eq(verify_email_by_pin_form_path)
         open_email(email_value)
         capture_email!(address: email_value)
         expect(current_email).to be_truthy
