@@ -3,7 +3,8 @@ require 'net/http'
 # Service object for pulling in book data from the CMS
 class FetchBookData
   CMS_API_URL = Rails.application.secrets.cms_api_url
-  TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&fields=_,title,book_subjects,book_state,salesforce_abbreviation"
+  TITLES_URL = "#{CMS_API_URL}v2/pages/?type=books.Book&format=json&limit=250&"\
+               "fields=_,title,book_subjects,book_state,salesforce_abbreviation"
   TIMEOUT = 5
   CACHE_DURATION = 1.day
 

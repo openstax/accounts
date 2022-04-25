@@ -44,7 +44,9 @@ class MaxJsonLengthValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, value)
     if record[attribute].to_s.length > options[:with]
-      record.errors[attribute] << (options[:message] || "is too long")
+      # This may break in rails 7 per
+      # https://docs.rubocop.org/rubocop-rails/cops_rails.html#railsdeprecatedactivemodelerrorsmethods
+      record.errors[attribute] << (options[:message] || "is too long") # rubocop:disable Rails/DeprecatedActiveModelErrorsMethods
     end
   end
 

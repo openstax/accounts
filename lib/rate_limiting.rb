@@ -36,10 +36,11 @@ module RateLimiting
                                   oldest_possible_attempts_considered_since :
                                   [oldest_possible_attempts_considered_since, last_login_time].max
 
-    user_attempts = SecurityLog.sign_in_failed
-                               .where(user: user)
-                               .where(SecurityLog.arel_table[:created_at].gt(attempts_considered_since))
-                               .count
+    user_attempts = SecurityLog
+                    .sign_in_failed
+                    .where(user: user)
+                    .where(SecurityLog.arel_table[:created_at].gt(attempts_considered_since))
+                    .count
 
     user_attempts >= max_attempts
   end

@@ -71,7 +71,7 @@ module OmniAuth
         if identity.present?
           super
         else
-          reason = if locate_conditions.nil? || locate_conditions[:users_returned] == 0
+          reason = if locate_conditions.nil? || locate_conditions[:users_returned].zero?
             :cannot_find_user
                    elsif locate_conditions[:users_returned] > 1
             :multiple_users
@@ -108,6 +108,7 @@ module OmniAuth
         rq.flash = nil
         rq.session_options = { skip: true }
         rq.cookie_jar = NullSession::NullCookieJar.build(rq, {})
+        rq
       end
 
       def signup_path
@@ -126,7 +127,7 @@ module OmniAuth
       end
 
       def locate_conditions
-        @conditions ||= instance_exec(request, &options.locate_conditions).to_hash
+        @locate_conditions ||= instance_exec(request, &options.locate_conditions).to_hash
       end
 
       def model
