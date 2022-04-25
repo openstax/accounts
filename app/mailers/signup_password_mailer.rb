@@ -1,6 +1,8 @@
 class SignupPasswordMailer < ApplicationMailer
   include Rails.application.routes.url_helpers
 
+  # Technical debt - I don't know how - Roy
+  # rubocop:disable Rails/I18nLocaleTexts
   def create_password_email(user:, email:)
     @user = user
     mail to: email, subject: 'Set up a password for your OpenStax account'
@@ -14,6 +16,7 @@ class SignupPasswordMailer < ApplicationMailer
     mail to: "\"#{user.full_name}\" <#{email_address}>",
          subject: "Reset your OpenStax password"
   end
+  # rubocop:disable Rails/I18nLocaleTexts
 
   def signup_email_confirmation(email_address:)
     @should_show_pin = ConfirmByPin.sequential_failure_for(email_address).attempts_remaining?
@@ -28,7 +31,8 @@ class SignupPasswordMailer < ApplicationMailer
                   else
                     'Confirm your email address'
                   end
-
+    # rubocop:disable Rails/SkipsModelVlaidations
     email_address.update_columns(confirmation_sent_at: Time.zone.now)
+    # rubocop:enable Rails/SkipsModelVlaidations
   end
 end

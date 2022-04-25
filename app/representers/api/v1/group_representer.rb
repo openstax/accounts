@@ -57,7 +57,8 @@ module Api::V1
              writeable: false,
              schema_info: {
                items: "integer",
-               description: "The ID's of all groups that should be updated if this group is changed; For caching purposes"
+               description: "The ID's of all groups that should be updated if "\
+                            "this group is changed; For caching purposes"
              }
 
     property :subtree_group_ids,
@@ -66,7 +67,8 @@ module Api::V1
              writeable: false,
              schema_info: {
                items: "integer",
-               description: "The ID's of all groups nested in this group's subtree, including this one; For caching purposes"
+               description: "The ID's of all groups nested in this group's subtree, "\
+                            "including this one; For caching purposes"
              }
 
     property :subtree_member_ids,
@@ -75,7 +77,8 @@ module Api::V1
              writeable: false,
              schema_info: {
                items: "integer",
-               description: "The ID's of all members of groups nested in this group's subtree, including this one; For membership checking purposes"
+               description: "The ID's of all members of groups nested in this group's "\
+                            "subtree, including this one; For membership checking purposes"
              }
 
   end
