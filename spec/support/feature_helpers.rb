@@ -85,17 +85,6 @@ def log_in_user(username_or_email, password = 'password')
   screenshot!
 end
 
-def reauthenticate_user(email, password)
-  wait_for_animations
-  wait_for_ajax
-  expect(page.current_path).to eq(reauthenticate_form_path)
-  expect(find('#login_form_email').value).to eq(email) # email should be pre-populated
-  fill_in('login_form_password', with: password)
-  screenshot!
-  find('[type=submit]').click
-  wait_for_animations
-end
-
 def create_email_address_for(user, email_address, confirmation_code=nil)
   FactoryBot.create(:email_address, user: user, value: email_address,
                      confirmation_code: confirmation_code,
@@ -115,11 +104,6 @@ def generate_expired_login_token_for(user)
   user.login_token_expires_at = 1.year.ago
   user.save!
   user.login_token
-end
-
-def link_in_last_email
-  mail = ActionMailer::Base.deliveries.last
-  /http:\/\/[^\/]*(\/[^\s]*)/.match(mail.body.encoded)[1]
 end
 
 def create_application(skip_terms: false)
@@ -168,13 +152,6 @@ def allow_forgery_protection
   allow(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
 end
 
-def mock_bad_csrf_token
-  original_rr_params = Rack::Request.instance_method(:params)
-  allow_any_instance_of(Rack::Request).to receive(:params) do |request|
-    original_rr_params.bind(request).call.merge('authenticity_token' => 'Invalid!')
-  end
-end
-
 def visit_authorize_uri(app: @app, params: {})
   visit "/oauth/authorize?redirect_uri=#{app.redirect_uri}&" \
                          "response_type=code&" \
@@ -182,8 +159,8 @@ def visit_authorize_uri(app: @app, params: {})
                          "#{'&' + params.to_query if params.any?}"
 end
 
-def app_callback_url(app: nil)
-  /^#{(app || @app).redirect_uri}\?code=.+$/
+def expect_back_at_app(app: nil)
+  expect(page.current_url).to match(/^#{(app || @app).redirect_uri}\?code=.+$/)
 end
 
 def with_error_pages
@@ -227,36 +204,6 @@ def with_omniauth_test_mode(options={})
   end
 end
 
-def with_omniauth_failure_message(message)
-  begin
-    OmniAuth.config.test_mode = true
-
-    [:facebook, :google, :identity].each do |provider|
-      OmniAuth.config.mock_auth[provider] = message
-    end
-
-    yield
-  ensure
-    OmniAuth.config.test_mode = false
-  end
-
-end
-
-def make_new_contract_version(contract = FinePrint::Contract.first)
-  new_contract_version = contract.new_version
-  raise "New contract version didn't save" unless new_contract_version.save
-  new_contract_version.publish
-  raise "New contract version didn't publish" unless new_contract_version.version == 2
-end
-
-def click_password_sign_up  # TODO remove, bad name
-  click_on (I18n.t :'sessions.start.sign_up')
-end
-
-def expect_authenticate_page
-  expect(page.body).to match(/Hello.*!/)
-end
-
 def expect_profile_page
   expect(page).to have_current_path :profile_path
 end
@@ -265,31 +212,6 @@ def arrive_from_app(app: nil, params: {}, do_expect: true)
   create_default_application unless app.present? || @app.present?
   visit_authorize_uri(app: app || @app, params: params)
   expect(page.current_url).to match(:login_path) if do_expect
-end
-
-def expect_back_at_app(app: nil)
-  expect(page.current_url).to match(app_callback_url(app: app || @app))
-end
-
-def complete_login_username_or_email_screen(username_or_email)
-  fill_in 'login_username_or_email', with: username_or_email
-  screenshot!
-  click_button (I18n.t :'sessions.start.next')
-end
-
-def complete_login_password_screen(password)
-  expect(page).to have_content(t :'sessions.authenticate_options.forgot_password')
-  fill_in (I18n.t :'sessions.authenticate_options.password'), with: password
-  screenshot!
-  click_button (I18n.t :'sessions.authenticate_options.login')
-end
-
-def complete_reset_password_screen(password=nil)
-  password ||= 'Passw0rd!'
-  fill_in (I18n.t :'identities.set.password'), with: password
-  fill_in (I18n.t :'identities.set.confirm_password'), with: password
-  click_button (I18n.t :'identities.reset.submit')
-  expect(page).to have_content(I18n.t :'identities.reset_success.message')
 end
 
 def complete_add_password_screen(password = nil)
@@ -375,22 +297,22 @@ def expect_security_log(*args)
                                                 .and_call_original
 end
 
-module Capybara
-  class Session
-    alias_method :original_visit, :visit
-    def visit(visit_uri)
-      # Note that the feature specs aren't yet modified to pass in a cloudfront simulation
-      # world.  Particularly, expectations on paths are hardcoded without the /accounts
-      # prefix and would need to be modified or taught how to expect during a cloudfront
-      # simulation
-
-      if ENV['SIMULATE_CLOUDFRONT'] == 'true'
-        uri = URI(visit_uri)
-        uri.path = "/#{OpenStax::PathPrefixer.configuration.prefix}#{uri.path}"
-        visit_uri = uri.to_s
-      end
-
-      original_visit(visit_uri)
-    end
-  end
-end
+# module Capybara
+#   class Session
+#     alias_method :original_visit, :visit
+#     def visit(visit_uri)
+#       # Note that the feature specs aren't yet modified to pass in a cloudfront simulation
+#       # world.  Particularly, expectations on paths are hardcoded without the /accounts
+#       # prefix and would need to be modified or taught how to expect during a cloudfront
+#       # simulation
+#
+#       if ENV['SIMULATE_CLOUDFRONT'] == 'true'
+#         uri = URI(visit_uri)
+#         uri.path = "/#{OpenStax::PathPrefixer.configuration.prefix}#{uri.path}"
+#         visit_uri = uri.to_s
+#       end
+#
+#       original_visit(visit_uri)
+#     end
+#   end
+# end

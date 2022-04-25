@@ -115,7 +115,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.zone.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_email
-          expect_newflow_profile_page
+          expect_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
@@ -131,8 +131,10 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
   end
 
   def enter_bad_username
-    visit '/i/login'
-    complete_login_username_or_email_screen SecureRandom.hex
+    visit '/login'
+    fill_in 'login_username_or_email', with: 'user@example.com'
+    screenshot!
+    click_button (I18n.t :'sessions.start.next')
   end
 
   def enter_good_username
