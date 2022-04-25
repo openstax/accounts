@@ -87,7 +87,7 @@ RSpec.describe SignupController, type: :controller do
         post(:signup_post, params: params)
 
         expect(response).to render_template(:signup_form)
-        expect(assigns(:"handler_result").errors).to be_present
+        expect(assigns(:handler_result).errors).to be_present
       end
 
       it 'creates a security log' do
@@ -118,7 +118,7 @@ RSpec.describe SignupController, type: :controller do
 
       it 'redirects to email_verification_form_updated_email_path' do
         user = User.last
-        user.update_attributes(state: :unverified)
+        user.update(state: :unverified)
         session[:unverified_user_id] = user.id
 
         post(:change_signup_email_post, params: params)
@@ -135,7 +135,7 @@ RSpec.describe SignupController, type: :controller do
 
       it 'renders student_change_signup_email_form' do
         user = User.last
-        user.update_attributes(state: 'unverified')
+        user.update(state: 'unverified')
         session[:unverified_user_id] = user.id
 
         post(:change_signup_email_post, params: params)
@@ -150,8 +150,8 @@ RSpec.describe SignupController, type: :controller do
       expect(response).to redirect_to signup_path
 
       user = create_user('user@openstax.org')
-      user.update_attributes(state: 'unverified')
-      user.update_attribute()
+      user.update(state: 'unverified')
+      user.update_attribute
       session[:unverified_user_id] = user.id
 
       get(:verify_email_by_pin_form)

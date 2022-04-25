@@ -116,7 +116,7 @@ class EducatorSignupController < SignupController
 
   def store_sheerid_verification_for_user
     if params[:verificationId].present? &&
-      current_user.sheerid_verification_id.blank?
+       current_user.sheerid_verification_id.blank?
       # create the verification object - this is verified later in SheeridWebhook
       SheeridVerification.find_or_initialize_by(
         verification_id: params[:verificationId])
