@@ -90,7 +90,7 @@ module Newflow
 
             before do
               FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
-              app.update_columns(redirect_uri: external_public_url)
+              app.update_columns(redirect_uri: capybara_url(external_app_for_specs_path) + '/public')
             end
 
             it 'takes user back to app' do
@@ -99,7 +99,7 @@ module Newflow
                 find('#exit-icon a').click
                 wait_for_animations
                 wait_for_ajax
-                expect(page.current_url).to match(external_public_url)
+                expect(page.current_url).to match(capybara_url(external_app_for_specs_path) + '/public')
               end
             end
 
@@ -112,7 +112,7 @@ module Newflow
                   find('#exit-icon a').click
                   wait_for_animations
                   wait_for_ajax
-                  expect(page.current_url).to match(external_public_url)
+                  expect(page.current_url).to match(capybara_url(external_app_for_specs_path) + '/public')
                 end
               end
             end
@@ -121,11 +121,11 @@ module Newflow
           context "when user arrived with `r`eturn param" do
             it 'takes user back to `r`eturn url' do
               with_forgery_protection do
-                visit(login_path(r: external_public_url))
+                visit(login_path(r: capybara_url(external_app_for_specs_path) + '/public'))
                 find('#exit-icon a').click
                 wait_for_animations
                 wait_for_ajax
-                expect(page.current_url).to match(external_public_url)
+                expect(page.current_url).to match(capybara_url(external_app_for_specs_path) + '/public')
               end
             end
           end

@@ -90,7 +90,9 @@ RSpec.describe PasswordManagementController, type: :controller do
     context 'with a valid token' do
       before do
         user = create_user('user@openstax.org')
-        @token = generate_login_token_for_user(user)
+        user.refresh_login_token
+        user.save!
+        @token = user.login_token
       end
 
       it 'renders create_password_form with status 200' do
