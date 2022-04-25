@@ -19,7 +19,7 @@ class ProfileController < ApplicationController
     end
 
     if !current_user.is_profile_complete? && current_user.pending_faculty? &&
-          !current_user.is_educator_pending_cs_verification
+       !current_user.is_educator_pending_cs_verification
       security_log(:educator_resumed_signup_flow,
 message: 'User needs to complete instructor profile. Redirecting.')
       redirect_to :profile_form_path and return

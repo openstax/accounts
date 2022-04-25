@@ -9,7 +9,7 @@ feature "User can't sign in", js: true do
 
     scenario "email unknown" do
       log_in_user('noone@openstax.org')
-      expect(page).to have_content(t :"login_signup_form.cannot_find_user")
+      expect(page).to have_content(t :'login_signup_form.cannot_find_user')
       screenshot!
     end
 
@@ -28,7 +28,7 @@ feature "User can't sign in", js: true do
       ContactInfo.where(value: email2.id).update_all(value: email1.value)
 
       log_in_user(email_address)
-      expect(page).to have_content(t(:"login_signup_form.multiple_users"))
+      expect(page).to have_content(t(:'login_signup_form.multiple_users'))
 
       screenshot!
     end
@@ -42,15 +42,15 @@ feature "User can't sign in", js: true do
       user2 = create_user 'temporary@email.com'
       email2 = create_email_address_for(user2, email_address)
       ContactInfo.where(id: email2.id).update_all(value: 'UsEr@example.com')
-      user2.update_attributes(username: nil)
-      user1.update_attributes(username: nil)
+      user2.update(username: nil)
+      user1.update(username: nil)
 
       # Can't be an exact email match to trigger this scenario
       log_in_user('useR@example.com', 'whatever')
-      expect(page).to have_content(t(:"sessions.start.multiple_users_missing_usernames.content_html").split('.')[0])
+      expect(page).to have_content(t(:'sessions.start.multiple_users_missing_usernames.content_html').split('.')[0])
 
       expect(page.all('a')
-                 .select{|link| link.text == t(:"sessions.start.multiple_users_missing_usernames.help_link_text")}
+                 .select{|link| link.text == t(:'sessions.start.multiple_users_missing_usernames.help_link_text')}
                  .first["href"]).to eq "mailto:info@openstax.org"
 
       screenshot!
@@ -62,9 +62,9 @@ feature "User can't sign in", js: true do
       authentication = FactoryBot.create :authentication, provider: 'google', user: user
 
       arrive_from_app
-      click_on (t :"login_signup_form.sign_up") unless page.current_path == signup_path
+      click_on (t :'login_signup_form.sign_up') unless page.current_path == signup_path
       expect(page).to have_no_missing_translations
-      expect(page).to have_content(t :"login_signup_form.welcome_page_header")
+      expect(page).to have_content(t :'login_signup_form.welcome_page_header')
       find(".join-as__role.student").click
       fill_in('signup_email', with: Faker::Internet.free_email) if email
       fill_in('signup_password', with: Faker::Internet.password(min_length: 8)) if password
@@ -114,6 +114,6 @@ feature "User can't sign in", js: true do
     end
 
     screenshot!
-    expect(page).to have_content(t(:"controllers.sessions.mismatched_authentication"))
+    expect(page).to have_content(t(:'controllers.sessions.mismatched_authentication'))
   end
 end
