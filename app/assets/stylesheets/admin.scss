@@ -25,6 +25,10 @@ body.admin {
       border-bottom: 2px solid red;
     }
   }
+
+  .text-nowrap {
+    white-space: nowrap;
+  }
 }
 
 #search-results-list {
