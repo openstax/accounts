@@ -1,5 +1,5 @@
 class CreateSalesforceLeadJob < ApplicationJob
-  queue_as :salesforce_leads
+  queue_as :salesforce_signup_lead_creation
 
   ADOPTION_STATUS_FROM_USER = {
     as_primary:      'Confirmed Adoption Won',
@@ -14,8 +14,6 @@ class CreateSalesforceLeadJob < ApplicationJob
     return unless Settings::Salesforce.push_salesforce_lead_enabled
 
     user = User.find(user_id)
-    status.set_job_name(self.class.name)
-    status.set_job_args(user: user.to_global_id.to_s)
 
     SecurityLog.create!(
       user:       user,

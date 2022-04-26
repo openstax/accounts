@@ -42,7 +42,10 @@ data_sources:
         0: "No Info",
         1: "Pending",
         2: "Confirmed",
-        3: "Rejected"
+        3: "Rejected",
+        4: "Pending SheerID",
+        5: "Rejected by SheerID",
+        6: "Incomplete Signup"
       }
       school_type: {
         0: "Unknown",
@@ -83,7 +86,10 @@ data_sources:
         0: "No Info",
         1: "Pending",
         2: "Confirmed",
-        3: "Rejected"
+        3: "Rejected",
+        4: "Pending SheerID",
+        5: "Rejected by SheerID",
+        6: "Incomplete Signup"
       }
       school_type: {
         0: "Unknown",
@@ -110,7 +116,7 @@ user_class: User
 user_method: current_user
 
 # method name for the display name
-# user_name: name
+user_name: full_name
 
 # custom before_action to use for auth
 before_action_method: check_if_admin
@@ -125,14 +131,3 @@ check_schedules:
   - "1 day"
   - "1 hour"
   - "5 minutes"
-
-# enable anomaly detection
-# note: with trend, time series are sent to https://trendapi.org
-# anomaly_checks: prophet / trend / r
-# anomaly_checks: prophet
-
-# enable forecasting
-# note: with trend, time series are sent to https://trendapi.org
-# forecasting: prophet / trend
-# forecasting: prophet
-

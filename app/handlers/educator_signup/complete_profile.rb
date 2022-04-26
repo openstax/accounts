@@ -1,11 +1,6 @@
 module EducatorSignup
   class CompleteProfile
 
-    OTHER = 'other'
-    AS_PRIMARY = 'as_primary'
-    INSTRUCTOR = 'instructor'
-    AS_FUTURE = 'as_future'
-
     lev_handler
 
     uses_routine CreateEmailForUser, translations: {
@@ -126,7 +121,7 @@ is_school_issued: true)
 
       # Now we create the lead for the user... because we returned above
       # if they did... again SheeridWebhook
-      CreateSalesforceLeadJob.perform_later(user_id: @user.id)
+      CreateSalesforceLeadJob.perform_later(@user.id)
 
 
     end
@@ -134,7 +129,7 @@ is_school_issued: true)
     private #################
 
     def other_role_name
-      signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil
+      signup_params.educator_specific_role == 'other' ? signup_params.other_role_name.strip : nil
     end
 
     def which_books
@@ -160,24 +155,24 @@ is_school_issued: true)
     def check_params
       role = signup_params.educator_specific_role.strip.downcase
 
-      if signup_params.school_name && signup_params.school_name.nil?
+      if signup_params.school_name&.nil?
         param_error(:school_name, :school_name_must_be_entered)
       end
 
-      if role == OTHER && signup_params.other_role_name.nil?
+      if role == 'other' && signup_params.other_role_name.nil?
         param_error(:other_role_name, :other_must_be_entered)
       end
 
-      if role  == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
+      if role  == :instructor && signup_params.using_openstax_how == :as_primary && books_used.blank?
         param_error(:books_used, :books_used_must_be_entered)
       end
 
-      if role  == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY &&
+      if role  == :instructor && signup_params.using_openstax_how != :as_primary &&
          books_of_interest.blank?
         param_error(:books_of_interest, :books_of_interest_must_be_entered)
       end
 
-      if role  == INSTRUCTOR && signup_params.num_students_per_semester_taught.blank?
+      if role  == :instructor && signup_params.num_students_per_semester_taught.blank?
         param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
       end
 
