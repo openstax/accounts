@@ -157,7 +157,7 @@ verification: verification_details_from_sheerid.inspect })
       # We just make sure they don't have a lead or contact id yet
       if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank? &&
          user.is_profile_complete
-        CreateSalesforceLead.perform_later(user_id: user.id)
+        CreateSalesforceLeadJob.perform_later(user_id: user.id)
       end
 
       SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)

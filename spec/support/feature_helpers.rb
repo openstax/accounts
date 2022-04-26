@@ -1,17 +1,15 @@
-def create_user(username, password='password', terms_agreed=nil)
-  terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
-                          :terms_agreed :
-                          :terms_not_agreed
+def create_user(email, password = 'password', terms_agreed = nil, confirmation_code = nil, role = 'student')
+  terms_agreed_option = (terms_agreed.nil? || terms_agreed) ? :terms_agreed : :terms_not_agreed
 
   user = FactoryBot.create(:user, terms_agreed_option, role: role)
   FactoryBot.create(:email_address, user: user, value: email,
                     confirmation_code:    confirmation_code,
                     verified:             confirmation_code.nil?)
-  identity       = FactoryBot.create :identity, user: user, password: password
-  authentication = FactoryBot.create :authentication, user: user,
-                                     provider:              'identity',
-                                     uid:                   identity.uid
-  return user
+
+  identity = FactoryBot.create :identity, user: user, password: password
+  FactoryBot.create :authentication, user: user, provider: 'identity', uid: identity.uid
+
+  user
 end
 
 def create_admin_user

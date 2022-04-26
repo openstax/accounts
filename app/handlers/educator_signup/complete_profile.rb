@@ -126,7 +126,7 @@ is_school_issued: true)
 
       # Now we create the lead for the user... because we returned above
       # if they did... again SheeridWebhook
-      CreateSalesforceLead.perform_later(user_id: @user.id)
+      CreateSalesforceLeadJob.perform_later(user_id: @user.id)
 
 
     end

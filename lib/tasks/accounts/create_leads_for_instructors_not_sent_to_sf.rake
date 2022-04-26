@@ -12,7 +12,7 @@ namespace :accounts do
             )
             .or(User.where.not(sheerid_verification_id: nil))
     users.each { |user|
-      CreateSalesforceLead.perform_later(user_id: user.id)
+      CreateSalesforceLeadJob.perform_later(user_id: user.id)
     }
   end
 end

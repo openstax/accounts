@@ -10,7 +10,7 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
   # We need these validations because
   # omniauth-identity does not provide them by default
   # The password is hashed (BCrypt) before being saved in the database
-  validates :password, presence: true, length: { minimum: MIN_PASSWORD_LENGTH, maximum: 50 }
+  validates :password, presence: true, length: { minimum: 8, maximum: 50 }
   validates :user_id, uniqueness: true # rubocop:disable Rails/UniqueValidationWithoutIndex
 
   # Support for legacy CNX passwords
