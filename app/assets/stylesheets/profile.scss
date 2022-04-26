@@ -89,6 +89,10 @@
   .mod {
     color: gray;
     cursor: pointer;
+    display: inline-block;
+    min-width: 1.2rem;
+    min-height: 1.2rem;
+
     &:hover {
       color: black;
     }

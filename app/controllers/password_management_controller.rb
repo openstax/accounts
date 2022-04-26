@@ -88,7 +88,7 @@ class PasswordManagementController < ApplicationController
           reauthenticate_user!(redirect_back_to: change_password_form_path) and return
         elsif (user = @handler_result.outputs.user)
           sign_in!(user, { security_log_data: { type: 'token' } })
-          security_log :uesr_password_reset, user: current_user
+          security_log :user_password_reset, user: current_user
         end
 
         if kind == :change && current_user.identity.present?
