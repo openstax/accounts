@@ -802,7 +802,6 @@ DEPENDENCIES
   sassc-rails (~> 2.1)
   scout_apm
   sd_notify
-  selenium-webdriver
   sentry-rails
   sentry-ruby
   shoulda-matchers
