@@ -14,7 +14,7 @@ module SessionsHelper
     list = []
 
     list.push(:facebook)          if providers.include?('facebook')
-    list.push(:google)            if providers.include?('google_oauth2')
+    list.push(:google)            if providers.include?('google')
     list.push(:simple_password)   if providers.include?('identity')
 
     return I18n.enumerate kind, list, scope: scope

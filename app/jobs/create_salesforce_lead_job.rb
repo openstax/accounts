@@ -1,5 +1,5 @@
 class CreateSalesforceLeadJob < ApplicationJob
-  queue_as :salesforce
+  queue_as :salesforce_leads
 
   ADOPTION_STATUS_FROM_USER = {
     as_primary:      'Confirmed Adoption Won',
@@ -40,9 +40,7 @@ class CreateSalesforceLeadJob < ApplicationJob
 
     lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
     if lead
-      Sentry.capture_message(
-        "A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})"
-      )
+      warn("A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})")
     else
       lead = OpenStax::Salesforce::Remote::Lead.new(
         first_name:           user.first_name,
@@ -88,11 +86,6 @@ class CreateSalesforceLeadJob < ApplicationJob
       end
     end
 
-    SecurityLog.create!(
-      user:       user,
-      event_type: :attempting_to_create_user_lead
-    )
-
     if lead.save
 
       SecurityLog.create!(
@@ -112,8 +105,9 @@ class CreateSalesforceLeadJob < ApplicationJob
       else
         SecurityLog.create!(
           user:       user,
-          event_type: :salesforce_error
+          event_type: :user_update_failed_during_lead_creation
         )
+        # TODO: Sentry this once we know it won't blow everything up
         return
       end
 
