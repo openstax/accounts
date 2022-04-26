@@ -21,7 +21,7 @@ class ActivateUser
     if user.role == :student
       user.update!(faculty_status: :no_faculty_info)
       if user.receive_newsletter?
-        CreateSalesforceLeadJob.perform_later(user_id: user.id)
+        CreateSalesforceLeadJob.perform_later(user.id)
       end
     end
 

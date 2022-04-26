@@ -42,8 +42,8 @@ except: %w[welcome signup_form signup_post])
   end
 
   def verify_email_by_pin_form
-    @first_name = @unverified_user.first_name
-    @email = @unverified_user.email_addresses.first.value
+    @first_name = unverified_user.first_name
+    @email = unverified_user.email_addresses.first.value
     render :email_verification_form
   end
 

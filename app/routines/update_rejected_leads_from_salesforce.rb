@@ -11,8 +11,8 @@ class UpdateRejectedLeadsFromSalesforce
       :id,
       :accounts_uuid
     ).where("Accounts_UUID__c != null")
-                                                       .where("FV_Status__c = 'rejected_faculty'")
-                                                       .where("Status = 'Unqualified'")
+     .where("FV_Status__c = 'rejected_faculty'")
+     .where("Status = 'Unqualified'")
 
     begin
     rejected_leads.each do |reject_lead|

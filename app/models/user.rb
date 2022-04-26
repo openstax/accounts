@@ -444,4 +444,10 @@ class User < ApplicationRecord
     end
   end
 
+  def update_salesforce_if_user_changed
+    if faculty_status_changed? || salesforce_lead_id_changed? || salesforce_contact_id_changed?
+      SyncAccountWithSalesforceJob.perform_later(id)
+    end
+  end
+
 end
