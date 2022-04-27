@@ -2,118 +2,85 @@
 // Online transpilers did not work correctly.
 
 (function() {
-  var AuthenticationOption, BASE_URL, Password, SPECIAL_TYPES,
-    slice = [].slice,
-    extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+  const BASE_URL = OX.url_prefix.toString();
 
-  BASE_URL = "" + OX.url_prefix;
+  function activateAuthenticationButtons(el) {
+    const $el = $(el);
 
-  AuthenticationOption = (function() {
-    function AuthenticationOption(el1) {
-      this.el = el1;
-      _.bindAll.apply(_, [this].concat(slice.call(_.functions(this))));
-      this.$el = $(this.el);
-      this.$el.find('.delete').click(this.confirmDelete);
-      this.$el.find('.add').click(this.doAdd);
+    function moveToDisabledSection() {
+      return $el.hide(
+        'fast',
+        function() {
+          $('.other-sign-in .providers').append($el);
+          $el.show();
+        }
+      );
     }
 
-    AuthenticationOption.prototype.confirmDelete = function(ev) {
+    function getType() {
+      return $el.data('provider');
+    }
+
+    function handleDelete() {
+      if (response.location != null) {
+        window.location.href = response.location;
+      } else {
+        moveToDisabledSection();
+      }
+    }
+
+    function doDelete() {
+      $.ajax({
+        type: "DELETE",
+        url: BASE_URL + "/auth/" + (getType())
+      }).success(handleDelete).error(OX.Alert.display);
+    }
+
+    function confirmDelete({target}) {
       return OX.showConfirmationPopover({
         title: '',
         message: OX.I18n.authentication.confirm_delete,
-        target: ev.target,
+        target: target,
         placement: 'top',
-        onConfirm: this.doDelete
+        onConfirm: doDelete
       });
-    };
-
-    AuthenticationOption.prototype.getType = function() {
-      return this.$el.data('provider');
-    };
-
-    AuthenticationOption.prototype.doDelete = function() {
-      return $.ajax({
-        type: "DELETE",
-        url: BASE_URL + "/auth/" + (this.getType())
-      }).success(this.handleDelete).error(OX.Alert.display);
-    };
-
-    AuthenticationOption.prototype.isEnabled = function() {
-      return this.$el.closest('.enabled-providers').length !== 0;
-    };
-
-    AuthenticationOption.prototype.moveToEnabledSection = function() {
-      return this.$el.hide('fast', (function(_this) {
-        return function() {
-          $('.enabled-providers .providers').append(_this.$el);
-          return _this.$el.show();
-        };
-      })(this));
-    };
-
-    AuthenticationOption.prototype.moveToDisabledSection = function() {
-      return this.$el.hide('fast', (function(_this) {
-        return function() {
-          $('.other-sign-in .providers').append(_this.$el);
-          return _this.$el.show();
-        };
-      })(this));
-    };
-
-    AuthenticationOption.prototype.doAdd = function() {
-      return window.location.href = BASE_URL + "/auth/" + (this.getType());
-    };
-
-    AuthenticationOption.prototype.handleDelete = function(response) {
-      if (response.location != null) {
-        return window.location.href = response.location;
-      } else {
-        return this.moveToDisabledSection();
-      }
-    };
-
-    return AuthenticationOption;
-
-  })();
-
-  Password = (function(superClass) {
-    extend(Password, superClass);
-
-    function Password(el1) {
-      this.el = el1;
-      Password.__super__.constructor.apply(this, arguments);
-      this.$el.find('.edit').click(this.editPassword);
-      this.$el.find('.add').click(this.addPassword);
     }
 
-    Password.prototype.editPassword = function() {
-      return window.location.href = BASE_URL + "/change_password_form";
-    };
+    function doAdd() {
+      window.location.href = BASE_URL + "/auth/" + (getType());
+    }
 
-    Password.prototype.addPassword = function() {
-      return window.location.href = BASE_URL + "/change_password_form";
-    };
+    $el.find('.delete').click(confirmDelete);
+    $el.find('.add').click(doAdd);
+  }
 
-    return Password;
+  function activatePasswordButtons(el) {
+    const $el = $(el);
 
-  })(AuthenticationOption);
+    function editPassword() {
+      window.location.href = BASE_URL + "/change_password_form";
+    }
 
-  SPECIAL_TYPES = {
-    identity: Password
-  };
+    const addPassword = editPassword;
+
+    $el.find('.edit').click(editPassword);
+    $el.find('.add').click(addPassword);
+  }
+
+  PASSWORD_PROVIDER = 'identity';
 
   OX.Profile.Authentication = {
-    initialize: function() {
+    initialize() {
       $('.authentication').each(function(i, el) {
-        var klass;
-        klass = SPECIAL_TYPES[$(el).data('provider')] || AuthenticationOption;
-        return new klass(el);
+        const activator = $(el).data('provider') === PASSWORD_PROVIDER ?
+          activatePasswordButtons : activateAuthenticationButtons;
+
+        activator(el);
       });
-      return $('#enable-other-sign-in').click(function(e) {
+      $('#enable-other-sign-in').click(function(e) {
         e.preventDefault();
         $(this).hide();
-        return $('.other-sign-in').slideToggle();
+        $('.other-sign-in').slideToggle();
       });
     }
   };
