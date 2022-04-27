@@ -37,6 +37,5 @@ class SyncAccountWithSalesforceJob < ApplicationJob
       warn("Problem creating or syncing user account with Salesforce ID:#{user.id}")
       return
     end
-
   end
 end
