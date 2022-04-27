@@ -71,8 +71,8 @@ class CreateSalesforceLeadJob < ApplicationJob
       )
 
       state = user.most_accurate_school_state
-      if state.present?
-        state = nil unless US_STATES.map(&:downcase).include? state.downcase
+      if state.present? && !(US_STATES.map(&:downcase).include? state.downcase)
+        state = nil
       end
       unless state.nil?
         # Figure out if the State is an abbreviation or the full name

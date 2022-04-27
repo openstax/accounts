@@ -22,8 +22,8 @@ RSpec.describe CreateSalesforceLeadJob, type: :job, vcr: VCR_OPTS do
 
   it 'queues the job' do
     expect { job }.to have_enqueued_job(described_class)
-                        .with(user_id)
-                        .on_queue("salesforce_leads")
+      .with(user_id)
+      .on_queue("salesforce_leads")
   end
 
   it 'does not create two leads for the same user', perform_enqueued: true do
@@ -34,8 +34,8 @@ RSpec.describe CreateSalesforceLeadJob, type: :job, vcr: VCR_OPTS do
 
   it 'populate the salesforce lead id for the user', perform_enqueued: true do
     described_class.perform_now(user_id: user_id)
-    #byebug
-    #expect(user.salesforce_lead_id).to_not be_nil
+    # byebug
+    # expect(user.salesforce_lead_id).to_not be_nil
   end
 
   after do
