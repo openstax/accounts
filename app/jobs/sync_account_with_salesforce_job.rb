@@ -2,7 +2,8 @@ class SyncAccountWithSalesforceJob < ApplicationJob
   queue_as :salesforce_accounts_sync
 
   def perform(user_id)
-    return unless Settings::Salesforce.sync_accounts_to_salesforce_enabled
+    # this is controlled in secrets.yml (or param store for non-dev/test envs)
+    return unless Rails.application.secrets[:salesforce][:sync_accounts_enabled]
 
     user = User.find(user_id)
 

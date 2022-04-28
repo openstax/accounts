@@ -41,9 +41,17 @@ jobs:
       - run: git checkout HEAD^
 
       # Install ruby
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/setup-ruby@v1
         with:
-          bundler-cache: true
+          ruby-version: 2.7
+
+      # Retrieve gem cache for merge commit parent
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-parent-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-parent-
 
       # Install gems, create data to be migrated and revert to PR merge commit
       - name: Create data to be migrated
@@ -58,9 +66,13 @@ jobs:
           bundle exec rails runner '3.times { FactoryBot.create :user }'
           git checkout --force -
 
-      - uses: ruby/setup-ruby@v1
+      # Retrieve gem cache for PR merge commit
+      - uses: actions/cache@v2
         with:
-          bundler-cache: true
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-pr-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-pr-
 
       # Migrate the data
       - name: Migrate

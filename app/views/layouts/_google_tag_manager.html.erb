@@ -1,4 +1,4 @@
-<% if Rails.env.production? and Rails.application.secrets[:send_google_analytics] == true and !Rails.application.secrets[:google_tag_manager_code].blank?  %>
+<% if Rails.env.production? and Rails.application.secrets[:send_google_analytics] == true %>
 <script>
   //Code from Google
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

@@ -31,20 +31,23 @@ gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', r
 # - introduces two new concepts: Routines and Handlers
 gem 'lev', '~> 10.1.0'
 
-# Bootstrap front-end framework
-gem 'bootstrap-sass', '~> 3.4.1'
+# Keep sprockets below v4, major changes break things
+gem 'sprockets', '~> 3.0'
 
-# SCSS stylesheets
-gem 'sassc-rails', '~> 2.1'
+# Bootstrap front-end framework
+gem 'jquery-rails'
+gem 'bootstrap-sass', '~> 3.4.1'
+gem 'sassc-rails', '>= 2.1.0'
+gem 'bootstrap-editable-rails'
 
 # CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '5.0.0'
+gem 'coffee-rails'
 
 # JavaScript asset compiler
 gem 'mini_racer'
 
 # JavaScript asset compressor
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'
 
 # Nicely-styled static error pages
 gem 'error_page_assets'
@@ -80,9 +83,6 @@ gem "sentry-rails"
 
 # Background job status store
 gem 'jobba'
-
-# jQuery library
-gem 'jquery-rails'
 
 # Upserts
 gem 'activerecord-import'

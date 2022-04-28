@@ -1,3 +1,5 @@
+@import "pattern-library";
+
 @mixin ox-button($bg_color, $fg_color: white) {
   transition: background-color 0.2s ease;
   background-color: $bg_color;

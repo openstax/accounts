@@ -11,7 +11,8 @@ class CreateSalesforceLeadJob < ApplicationJob
 
   # rubocop:disable Metrics/MethodLength
   def perform(user_id)
-    return unless Settings::Salesforce.push_salesforce_lead_enabled
+    # this is controlled in secrets.yml (or param store for non-dev/test envs)
+    return unless Rails.application.secrets[:salesforce][:push_lead_enabled]
 
     user = User.find(user_id)
 

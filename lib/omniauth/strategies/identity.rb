@@ -9,7 +9,7 @@ module OmniAuth
     #   `/auth/identity/signup`
     #
     #
-    class CustomIdentity
+    class Identity
 
       NullSession = ActionController::RequestForgeryProtection::ProtectionMethods::NullSession
 
@@ -35,7 +35,7 @@ module OmniAuth
 
       option :fields, [:username, :first_name, :last_name]
       option(:locate_conditions, lambda do |req|
-        users = LookupUsers.by_verified_email_or_username(
+        users = LookupUsers.by_verified_email(
           req.params['login'].try(:[], 'username_or_email')
         )
         users_returned = users.size

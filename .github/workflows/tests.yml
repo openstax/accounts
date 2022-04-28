@@ -3,10 +3,7 @@ name: Tests
 on:
   pull_request:
   push:
-    branches:
-      - main
-  schedule:
-    - cron: '0 0 * * 0' # weekly
+    branches: main
 
 env:
   OXA_DB_USER: ox_accounts
@@ -14,8 +11,6 @@ env:
   OXA_TEST_DB: ox_accounts_test
   RAILS_ENV: test
   HEADLESS: true
-  SSHOTS: true
-  CI: true
   GIT_COMMIT_SHA: ${{ github.sha }}
   GIT_BRANCH: ${{ github.ref }}
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -39,7 +34,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
-          bundler-cache: true
+          ruby-version: 2.7
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-pr-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-pr-
       - name: Test
         run: |
           gem install bundler

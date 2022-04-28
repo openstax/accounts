@@ -5,8 +5,10 @@ class SetPassword
 
   protected
 
-  def exec(user:, password:, password_confirmation: nil,
-           expiration_period: Identity::DEFAULT_PASSWORD_EXPIRATION_PERIOD)
+  def exec(user:,
+           password:,
+           password_confirmation:,
+           expiration_period: nil)
 
     identity = user.identity || user.build_identity
 
@@ -16,8 +18,9 @@ class SetPassword
     fatal_error(code: :password_cannot_be_blank) if password.blank?
 
     identity.password = password
-    identity.password_confirmation = password_confirmation || password
-    identity.password_expires_at = expiration_period.nil? ? nil : DateTime.now + expiration_period
+    identity.password_confirmation = password_confirmation
+    identity.password_expires_at = \
+      expiration_period.nil? ? nil : DateTime.now + expiration_period
 
     identity.save
 
