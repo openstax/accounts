@@ -74,8 +74,61 @@
       margin-left: 15px;
     }
 
-    .email + .controls {
-      display: none;
+    .email-entry {
+
+      .controls {
+        font-size: 1.3rem;
+        overflow: hidden;
+        margin-left: 20px;
+        margin-top: 4px;
+        font-size: 13px;
+        padding-bottom: 1rem;
+
+        > .resend-confirmation,
+        > .delete,
+        > .searchable-toggle label {
+          align-items: center;
+          display: grid;
+          grid-template-columns: 2rem 1fr;
+          justify-content: left;
+
+          input {
+            font-size: inherit;
+            height: 2rem;
+            margin: 0;
+          }
+        }
+      }
+
+      .resend-confirmation {
+
+        input {
+          padding: 0;
+          background: transparent;
+          border: 0;
+
+          &[type="submit"] {
+            box-shadow: none;
+            color: text-color(link);
+            font-weight: normal;
+            line-height: unset;
+            text-align: left;
+          }
+        }
+
+        form {
+          display: inline;
+          padding: 0;
+        }
+      }
+
+      &.new .unconfirmed-warning {
+        display: none;
+      }
+
+      &:not(.expanded) .controls {
+        display: none
+      }
     }
   }
 

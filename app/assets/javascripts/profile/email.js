@@ -5,7 +5,6 @@
 // Online transpilers made nicer code, but it wasn't correct.
 (function() {
   const BASE_URL = `${OX.url_prefix}/contact_infos`;
-  const slice = [].slice;
 
   class Email {
 
@@ -86,7 +85,7 @@
     }
 
     confirmDelete(ev) {
-      return OX.showConfirmationPopover({
+      OX.showConfirmationPopover({
         title: '',
         message: OX.I18n.email.confirm_delete,
         target: ev.target,
