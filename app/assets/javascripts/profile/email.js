@@ -123,6 +123,7 @@
     onAddEmail() {
       let email = $('#email-template').children().clone().addClass('new');
       const input = $(email).insertBefore(this.addEmail).find('.email .value');
+
       this.addEmail.hide();
       input.editable({
         url: BASE_URL,

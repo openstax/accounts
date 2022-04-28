@@ -44,7 +44,7 @@ ko.bindingHandlers.phoneNumber = {
       })
     );
   }
-}
+};
 
 // Custom binding for partial _password_control_group
 // Controls toggling password visibility and the checkmark in the tooltip
@@ -73,4 +73,14 @@ ko.bindingHandlers.passwordWithToolTip = {
       css: {'show-show': showShow}
     });
   }
-}
+};
+
+ko.bindingHandlers.editable = {
+  init (element, valueAccessor, _ab, _d, context) {
+    const {defaults, ...editableArgs} = ko.unwrap(valueAccessor());
+
+    Object.assign($.fn.editable.defaults, defaults);
+
+    $(element).editable(editableArgs);
+  }
+};
