@@ -23,15 +23,20 @@
     };
 
     Name.defaults = $.extend({}, $.fn.editabletypes.abstractinput.defaults, {
-      tpl: function() {
-        return "<div><input type=\"text\" name=\"title\" class=\"form-control input-sm\" placeholder=\"" + OX.I18n.name.title + "\"></div>\n<div><input type=\"text\" name=\"first_name\" class=\"form-control input-sm\" placeholder=\"" + OX.I18n.name.first_name + "\"></div>\n<div><input type=\"text\" name=\"last_name\" class=\"form-control input-sm\" placeholder=\"" + OX.I18n.name.last_name + "\"></div>\n<div><input type=\"text\" name=\"suffix\" class=\"form-control input-sm\" placeholder=\"" + OX.I18n.name.suffix + "\"></div>";
-      },
-      inputclass: ''
-    });
+      tpl() {
+        return `\
+<div><input type="text" name="title" class="form-control input-sm" placeholder="${OX.I18n.name.title}"></div>
+<div><input type="text" name="first_name" class="form-control input-sm" placeholder="${OX.I18n.name.first_name}"></div>
+<div><input type="text" name="last_name" class="form-control input-sm" placeholder="${OX.I18n.name.last_name}"></div>
+<div><input type="text" name="suffix" class="form-control input-sm" placeholder="${OX.I18n.name.suffix}"></div>\
+`; },
+        inputclass: ''
+      }
+    );
 
     function Name(options) {
-      var defaults;
-      defaults = OX.Profile.Name.defaults;
+      let defaults = OX.Profile.Name.defaults;
+
       defaults = $.extend(defaults, {
         tpl: defaults.tpl()
       });
@@ -47,30 +52,31 @@
   $.fn.editableutils.inherit(OX.Profile.Name, $.fn.editabletypes.abstractinput);
 
   $.extend(OX.Profile.Name.prototype, {
-    render: function() {
-      return this.$input = this.$tpl.find('input');
+    render() {
+      this.$input = this.$tpl.find('input');
     },
-    value2html: function() {},
-    value2str: function(value) {
-      var k, str;
-      str = '';
+
+    value2html() {},
+
+    value2str(value) {
+      let str = '';
       if (value) {
-        for (k in value) {
+        for (let k in value) {
           str = str + k + ':' + value[k] + ';';
         }
       }
       return str;
     },
-    value2input: function(value) {
-      if (!value) {
-        return;
-      }
+
+    value2input(value) {
+      if (!value) { return; }
       this.$input.filter('[name="title"]').val(value.title);
       this.$input.filter('[name="first_name"]').val(value.first_name);
       this.$input.filter('[name="last_name"]').val(value.last_name);
-      return this.$input.filter('[name="suffix"]').val(value.suffix);
+      this.$input.filter('[name="suffix"]').val(value.suffix);
     },
-    input2value: function() {
+
+    input2value() {
       return {
         title: this.$input.filter('[name="title"]').val(),
         first_name: this.$input.filter('[name="first_name"]').val(),
@@ -78,14 +84,14 @@
         suffix: this.$input.filter('[name="suffix"]').val()
       };
     },
-    activate: function() {
-      return this.$input.filter('[name="first_name"]').focus();
+
+    activate() {
+      this.$input.filter('[name="first_name"]').focus();
     },
-    autosubmit: function() {
-      return this.$input.keydown(function(e) {
-        if (e.which === 13) {
-          return $(this).closest('form').submit();
-        }
+
+    autosubmit() {
+      this.$input.keydown(function(e) {
+        if (e.which === 13) { $(this).closest('form').submit(); }
       });
     }
   });

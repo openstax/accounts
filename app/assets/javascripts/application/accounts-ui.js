@@ -5,14 +5,14 @@ window.Accounts.Ui = (
     disableButton(selector) {
       $(selector).attr('disabled', 'disabled');
       $(selector).addClass('ui-state-disabled ui-button-disabled');
-      return $(selector).attr('aria-disabled', true);
+      $(selector).attr('aria-disabled', true);
     },
 
     enableButton(selector) {
       $(selector).removeAttr('disabled');
       $(selector).removeAttr('aria-disabled');
       $(selector).removeClass('ui-state-disabled ui-button-disabled');
-      return $(selector).button();
+      $(selector).button();
     },
 
     renderAndOpenDialog(html_id, content, modal_options) {
@@ -27,18 +27,18 @@ window.Accounts.Ui = (
       const userScreenHeight = window.outerHeight;
 
       if (modalHeight > userScreenHeight) {
-        return modalDialog.css('overflow', 'auto'); //set to overflow if no fit
+        modalDialog.css('overflow', 'auto'); //set to overflow if no fit
       } else {
-        return modalDialog.css('margin-top', //center it if it does fit
+        modalDialog.css('margin-top', //center it if it does fit
                         ((userScreenHeight / 2) - (modalHeight / 2)));
       }
     },
 
     checkCheckedButton(targetSelector, sourceSelector) {
       if ($(sourceSelector).is(':checked')) {
-        return this.enableButton(targetSelector);
+        this.enableButton(targetSelector);
       } else {
-        return this.disableButton(targetSelector);
+        this.disableButton(targetSelector);
       }
     },
 
@@ -46,16 +46,14 @@ window.Accounts.Ui = (
       return $(document).ready(() => {
         if (!$(sourceSelector).is(':checked')) { this.disableButton(targetSelector); }
 
-        return $(sourceSelector).on('click', () => {
-          return this.checkCheckedButton(targetSelector, sourceSelector);
+        $(sourceSelector).on('click', () => {
+          this.checkCheckedButton(targetSelector, sourceSelector);
         });
       });
     },
 
     syntaxHighlight(code) {
-      let json = typeof code === !'string' ? JSON.stringify(code, undefined, 2) : code;
-
-      json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const json = _.escape(typeof code === !'string' ? JSON.stringify(code, undefined, 2) : code);
 
       return json.replace(
         /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
