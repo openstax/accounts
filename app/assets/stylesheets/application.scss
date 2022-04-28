@@ -1,14 +1,10 @@
-/*
- * Copyright 2011-2016 Rice University. Licensed under the Affero General Public
- * License version 3 or later.  See the COPYRIGHT file for details.
- */
 $font-path: '/accounts/fonts';
 @import "pattern-library";
-@import "font-awesome";
-@import "bootstrap";
-@import "bootstrap-sprockets";
+@import 'font-awesome.css';
+@import "bootstrap-sprockets.scss";
+@import "bootstrap.scss";
 @import "ox-controls";
-@import "intlTelInput";
+@import "intlTelInput.css";
 @import "profile";
 
 .container,

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe LogInUser, type: :handler do
-  let!(:user) { create_newflow_user 'user@openstax.org', 'password' }
+  let!(:user) { create_user 'user@openstax.org' }
   let(:request) {
     # ip address needed for generating a security log
     Hashie::Mash.new(ip: Faker::Internet.ip_v4_address)

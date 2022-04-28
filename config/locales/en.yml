@@ -9,38 +9,6 @@ en:
         incremented: 'Incremented unread update count'
       update:
         success: 'User profile was successfully updated.'
-  settings:
-    attributes:
-      push_salesforce_lead_enabled:
-        name: 'Push leads to Salesforce?'
-        help_block: 'If checked (and SF configured), new accounts will be pushed to SF as Leads'
-      sync_accounts_to_salesforce_enabled:
-        name: 'Sync Accounts with Salesforce?'
-        help_block: 'Pushes changes to OpenStax Account object in Salesforce when faculty status, or any salesforce id changes.'
-      sync_contacts_to_salesforce_enabled:
-        name: 'Sync contacts with Salesforce?'
-        help_block: 'Controls if the cron contact sync should run on the 5/35 of the hour.'
-      user_info_error_emails_enabled:
-        name: 'Enable user info update error emails?'
-        help_block: 'If checked (and SF configured), once-a-day user update error emails will go out'
-      send_google_analytics:
-        name: 'Send Google Analytics data?'
-        help_block: 'If checked Google Analytics data will be sent.'
-      google_analytics_code:
-        name: 'Google Analytics Code'
-        help_block: 'Example: UA-XXXXXXXX-X'
-      google_tag_manager_code:
-        name: 'Google Tag Manager Code'
-        help_block: 'Example: GTM-XXXX'
-      sheer_id_base_url:
-        name: SheerID base URL
-        help_block: >-
-          ie. https://offers.sheerid.com/openstax/staging/teacher/?env=dev
-          With the parameters that pre-populate the SheerID form, the full URL will look like
-          ie. https://offers.sheerid.com/openstax/staging/teacher/?env=dev&first_name=Elon&last_name=Musk&email=ceo@spacex.com
-      number_of_days_contacts_modified:
-        name: Contacts modified in last x days
-        help_block: Retrieve contacts modified in the last X days in update_user_salesforce_info
   controllers:
     authentications:
       authentication_removed: "%{authentication} removed"

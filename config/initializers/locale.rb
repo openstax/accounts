@@ -2,18 +2,18 @@ module I18n
   module Enumerators
     # A fallback enumerator which just returns all elements separated by ','
     module Simple
-      def self.enumerate kind, list, options = {}
+      def self.enumerate(kind, list, options = {})
         return list.join ', '
       end
     end
 
     @@enumerators = {}
 
-    def self.get language
+    def self.get(language)
       return @@enumerators[language] || Simple
     end
 
-    def self.define language, mod
+    def self.define(language, mod)
       @@enumerators[language] = mod
     end
   end
@@ -46,13 +46,13 @@ module I18n
   #       be chosen.
   # :one  Enumeration lists a list of possible choices. Only one item may be
   #       chosen.
-  def self.enumerate kind, list, options = {}
+  def self.enumerate(kind, list, options = {})
     if [:all, :any, :one].exclude?(kind)
       raise ArgumentError.new "kind must be one of: :all, :any or :one"
     end
 
     if options.fetch :expand, true
-      list.map! {|key| I18n.t key, options }
+      list.map! { |key| I18n.t key, options }
     end
 
     return Enumerators.get(locale).enumerate kind, list, options
@@ -71,7 +71,7 @@ module I18n
   #
   # The enumerate method is passed a list of already expanded items; it should
   # not attempt to expand them.
-  def self.define_enumerator language, &block
+  def self.define_enumerator(language, &block)
     enumerator = Module.new
     enumerator.instance_eval &block
     Enumerators.define language, enumerator

@@ -208,7 +208,7 @@ as: :reset_password_email_sent
   mount FinePrint::Engine => '/admin/fine_print'
   mount OpenStax::Utilities::Engine => :status
 
-  namespace 'admin' do
+  namespace :admin do
     get '/', to: 'base#index'
     get '/console', to: 'console#index'
 
@@ -233,8 +233,6 @@ as: :reset_password_email_sent
 
     mount Blazer::Engine, at: 'blazer', as: 'blazer_admin'
     match "/job_dashboard" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
-
-    mount RailsSettingsUi::Engine, at: 'settings'
   end
 
   # namespace 'dev' do

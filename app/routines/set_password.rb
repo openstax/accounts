@@ -8,7 +8,7 @@ class SetPassword
   def exec(user:,
            password:,
            password_confirmation:,
-           expiration_period: Identity::DEFAULT_PASSWORD_EXPIRATION_PERIOD)
+           expiration_period: nil)
 
     identity = user.identity || user.build_identity
 

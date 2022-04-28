@@ -23,8 +23,8 @@ class UpdateUserContactInfo
   end
 
   def call # rubocop:disable Metrics/MethodLength
-    # this is controlled in the accounts admin UI
-    return unless Settings::Salesforce.sync_contacts_to_salesforce_enabled
+    # this is controlled in secrets.yml (or param store for non-dev/test envs)
+    return unless Rails.application.secrets[:salesforce][:sync_contacts_enabled]
 
     log("Starting sync with Salesforce")
     contacts = salesforce_contacts
