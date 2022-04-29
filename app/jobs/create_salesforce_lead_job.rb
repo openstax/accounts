@@ -39,7 +39,8 @@ class CreateSalesforceLeadJob < ApplicationJob
 
     lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
     if lead
-      warn("A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})")
+      warn("A lead should only be created once per user. "\
+           "(UUID: #{user.uuid} / Lead ID: #{lead.id})")
     else
       lead = OpenStax::Salesforce::Remote::Lead.new(
         first_name:           user.first_name,
