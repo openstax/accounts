@@ -1,8 +1,6 @@
 require 'rails_helper'
 require 'vcr_helper'
 
-include ActiveJob::TestHelper
-
 RSpec.describe CreateSalesforceLeadJob, type: :job, vcr: VCR_OPTS do
 
   before(:all) do
@@ -14,7 +12,14 @@ RSpec.describe CreateSalesforceLeadJob, type: :job, vcr: VCR_OPTS do
     end
   end
 
-  let(:user) { create_user(email: 'accounts@example.com', role: :instructor, password: Faker::Internet.password, confirmation_code: 1111) }
+  let(:user) {
+    create_user(
+      email: 'accounts@example.com',
+      role: :instructor,
+      password: Faker::Internet.password,
+      confirmation_code: 1111
+    )
+  }
 
   let(:user_id) { user.id }
 

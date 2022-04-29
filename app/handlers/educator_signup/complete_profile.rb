@@ -163,7 +163,9 @@ is_school_issued: true)
         param_error(:other_role_name, :other_must_be_entered)
       end
 
-      if role  == :instructor && signup_params.using_openstax_how == :as_primary && books_used.blank?
+      if role  == :instructor &&
+         signup_params.using_openstax_how == :as_primary &&
+         books_used.blank?
         param_error(:books_used, :books_used_must_be_entered)
       end
 

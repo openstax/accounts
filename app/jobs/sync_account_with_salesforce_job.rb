@@ -8,7 +8,8 @@ class SyncAccountWithSalesforceJob < ApplicationJob
     user = User.find(user_id)
 
     if user.salesforce_ox_account_id
-      sf_ox_account                       = OpenStax::Salesforce::Remote::OpenStaxAccount.find(salesforce_ox_account_id)
+      sf_ox_account =
+        OpenStax::Salesforce::Remote::OpenStaxAccount.find(salesforce_ox_account_id)
       sf_ox_account.role                  = user.role.titleize
       sf_ox_account.salesforce_contact_id = user&.salesforce_contact_id
       sf_ox_account.salesforce_lead_id    = user&.salesforce_lead_id
