@@ -3,5 +3,6 @@ class ApplicationGroup < ApplicationRecord
                            inverse_of: :application_groups
   belongs_to :group, inverse_of: :application_groups
 
-  validates :group_id, uniqueness: { scope: :application_id }
+  validates_presence_of :group, :application
+  validates_uniqueness_of :group_id, scope: :application_id
 end

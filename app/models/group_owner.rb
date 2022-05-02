@@ -4,7 +4,8 @@ class GroupOwner < ApplicationRecord
   belongs_to :group, inverse_of: :group_owners
   belongs_to :user, inverse_of: :group_owners
 
-  validates :user_id, uniqueness: { scope: :group_id }
+  validates_presence_of :group, :user
+  validates_uniqueness_of :user_id, scope: :group_id
 
   before_create :add_unread_update
   before_destroy :add_unread_update
