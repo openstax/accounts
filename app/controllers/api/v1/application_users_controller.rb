@@ -1,5 +1,5 @@
 class Api::V1::ApplicationUsersController < Api::V1::ApiController
-  before_action :get_app_user, only: [:show, :update, :destroy]
+  before_action :set_app_user, only: [:show, :update, :destroy]
 
   resource_description do
     api_versions "v1"
@@ -250,8 +250,7 @@ location: nil
 
   protected
 
-  def get_app_user
-    raise SecurityTransgression
+  def set_app_user
     @app_user = current_human_user.application_users.where(
       application_id: current_application.id
     ).first
