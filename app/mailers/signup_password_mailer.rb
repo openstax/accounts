@@ -35,4 +35,17 @@ class SignupPasswordMailer < ApplicationMailer
     email_address.update_columns(confirmation_sent_at: Time.zone.now)
     # rubocop:enable Rails/SkipsModelValidations
   end
+
+  def instructions(email_address:, send_pin: false)
+    @email_address = email_address
+    @show_pin      = send_pin &&
+      ConfirmByPin.sequential_failure_for(@email_address).attempts_remaining?
+
+    mail to:      "\"#{email_address.user.full_name}\" <#{email_address.value}>",
+         subject: @show_pin ?
+                    "Use PIN #{@email_address.confirmation_pin} to confirm your email address" :
+                    "Confirm your email address"
+
+    email_address.update_column(:confirmation_sent_at, Time.zone.now)
+  end
 end

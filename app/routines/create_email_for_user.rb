@@ -44,6 +44,9 @@ class CreateEmailForUser
 
     outputs.email = email
 
+    user.contact_infos.reset
+    user.email_addresses.reset
+
   end
 
 end
