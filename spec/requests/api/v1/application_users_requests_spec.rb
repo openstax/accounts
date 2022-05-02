@@ -8,9 +8,7 @@ RSpec.describe 'Api::V1::ApplicationUsers multiple requests',
   let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
   let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, :trusted }
   let!(:user_2)       do
-    FactoryBot.create :user_with_emails,
-                       first_name: 'Bob',
-                       last_name: 'Michaels'
+    create_user 'user2@openstax.org'
   end
 
   let!(:user_2_token) do
