@@ -6,22 +6,21 @@ class ChangeNewflowSocialToFacebookGoogle < ActiveRecord::Migration[5.2]
     # this cleans them up to match the new oauth provider names
     Authentication
       .where(provider: 'googlenewflow')
-      .update_all(# rubocop:disable Rails/SkipsModelValidations
+      .update_all( # rubocop:disable Rails/SkipsModelValidations
         provider: 'gooogle'
       )
 
     Authentication
       .where(provider: 'google_oauth2')
-      .update_all(# rubocop:disable Rails/SkipsModelValidations
+      .update_all( # rubocop:disable Rails/SkipsModelValidations
         provider: 'gooogle'
       )
 
     Authentication
       .where(provider: 'facebooknewflow')
-      .update_all(# rubocop:disable Rails/SkipsModelValidations
+      .update_all( # rubocop:disable Rails/SkipsModelValidations
         provider: 'facebook'
       )
-
   end
 
   def down
