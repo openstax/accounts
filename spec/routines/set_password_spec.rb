@@ -43,27 +43,6 @@ describe SetPassword do
     end
   end
 
-  context 'password expiration' do
-    let!(:identity) { FactoryBot.create :identity }
-
-    it 'is set when password is changed' do
-      expect(identity.password_expires_at).to be_nil
-
-      stub_const('Identity::DEFAULT_PASSWORD_EXPIRATION_PERIOD', 1.year)
-      one_year_later = DateTime.now + 1.year
-
-      call(user, '1234567890', '1234567890')
-
-      identity.reload
-
-      expect(identity.password_expires_at).to be_within(1.hour).of(one_year_later)
-      expect(identity.password_expired?).to eq false
-
-      allow(DateTime).to receive(:now).and_return(one_year_later + 1.day)
-      expect(identity.password_expired?).to eq true
-    end
-  end
-
   def call(user, password, confirmation)
     described_class.call(user: user, password: password, password_confirmation: confirmation)
   end
