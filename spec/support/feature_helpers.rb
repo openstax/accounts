@@ -2,6 +2,7 @@ def create_user(email, password = 'password', terms_agreed = nil, confirmation_c
   terms_agreed_option = (terms_agreed.nil? || terms_agreed) ? :terms_agreed : :terms_not_agreed
 
   user = FactoryBot.create(:user, terms_agreed_option, role: role)
+
   FactoryBot.create(:email_address, user: user, value: email,
                     confirmation_code:    confirmation_code,
                     verified:             confirmation_code.nil?)
