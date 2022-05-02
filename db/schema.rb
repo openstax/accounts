@@ -139,6 +139,9 @@ ActiveRecord::Schema.define(version: 2022_08_03_202514) do
     t.index ["verified"], name: "index_contact_infos_on_verified"
   end
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
