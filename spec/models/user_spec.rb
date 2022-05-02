@@ -275,7 +275,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    it 'cannot be used twice' do
+    xit 'cannot be used twice' do
       user.refresh_login_token
       user.save
 

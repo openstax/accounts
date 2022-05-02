@@ -352,7 +352,7 @@ ActiveRecord::Schema.define(version: 2022_05_02_161104) do
     t.string "title"
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "suffix"
-    t.string "state", default: "incomplete_signup", null: false
+    t.string "state", default: "needs_profile", null: false
     t.string "salesforce_contact_id"
     t.integer "faculty_status", default: 0, null: false
     t.string "self_reported_school"
