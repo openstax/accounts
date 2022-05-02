@@ -1,5 +1,5 @@
 class DropSettings < ActiveRecord::Migration[5.2]
-  def change
+  def up
     if table_exists?(:settings)
       drop_table(:settings) do |t|
         t.string  :var,        null: false
@@ -7,5 +7,9 @@ class DropSettings < ActiveRecord::Migration[5.2]
         t.timestamps
       end
     end
+  end
+
+  def down
+    raise ActiveRecord::IrreversibleMigration
   end
 end
