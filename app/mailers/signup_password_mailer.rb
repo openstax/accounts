@@ -41,13 +41,15 @@ class SignupPasswordMailer < ApplicationMailer
     @show_pin      = send_pin &&
                      ConfirmByPin.sequential_failure_for(@email_address).attempts_remaining?
 
-    mail to:      "\"#{email_address.user.full_name}\" <#{email_address.value}>",
+    mail to: "\"#{email_address.user.full_name}\" <#{email_address.value}>",
          subject: if @show_pin
-  "Use PIN #{@email_address.confirmation_pin} to confirm your email address"
+                    "Use PIN #{@email_address.confirmation_pin} to confirm your email address"
                   else
-  "Confirm your email address"
+                    "Confirm your email address"
                   end
 
-    email_address.update_column(:confirmation_sent_at, Time.zone.now)
+    # rubocop:disable Rails/SkipsModelValidations
+    email_address.update_columns(confirmation_sent_at: Time.zone.now)
+    # rubocop:enable Rails/SkipsModelValidations
   end
 end
