@@ -17,7 +17,6 @@
 //= require ./ko_extensions
 //= require bootstrap
 //= require ./accounts-ui
-//= require ./ui
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils
