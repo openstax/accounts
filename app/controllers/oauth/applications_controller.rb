@@ -2,6 +2,8 @@ module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
     include AuthenticateMethods
 
+    layout 'admin'
+
     before_action :set_user
     before_action :authenticate_admin_or_oauth_application_owner!
 
