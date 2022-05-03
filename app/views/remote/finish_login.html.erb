@@ -5,11 +5,11 @@
     <script>
       // we're called in two different ways, either in a popup from social login
       // or inside an iframe from normal username/password flow
-      var target = window.opener ? window.opener.parent : window.parent;
-      target.OxAccount.Host.loginComplete('<%=raw @return_to_url %>');
-      if (window.opener){
-         window.close();
-      }
+      // var target = window.opener ? window.opener.parent : window.parent;
+      // target.OxAccount.Host.loginComplete('<%=raw @return_to_url %>');
+      // if (window.opener){
+      //    window.close();
+      // }
     </script>
   </head>
   <body></body>
