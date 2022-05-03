@@ -48,6 +48,7 @@ class ConfirmOauthInfo
     transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
 
     agree_to_terms(@user) if options[:contracts_required] && signup_params.terms_accepted
+
     run(ActivateUser, @user)
 
     outputs.user = @user

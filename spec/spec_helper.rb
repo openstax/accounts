@@ -43,9 +43,15 @@ RSpec.configure do |config|
   config.before(:all) do
     load('db/seeds.rb')
   end
+  
+  config.before(:each) do
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.start
+    load('db/seeds.rb')
+  end
 
   # Some tests might change I18n.locale.
-  config.before(:each) do |config|
+  config.before(:each) do
     I18n.locale = :en # rubocop:disable Rails/I18nLocaleAssignment
   end
 

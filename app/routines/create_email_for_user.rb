@@ -2,7 +2,7 @@ class CreateEmailForUser
 
   lev_routine express_output: :email
 
-  protected ###############
+  protected
 
   def exec(email, user, options = {})
     return if email.blank?

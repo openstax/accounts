@@ -94,8 +94,6 @@ gem 'smarter_csv'
 gem 'apipie-rails'
 gem 'maruku'
 
-gem 'jbuilder'
-
 # Background job queueing
 gem 'delayed_job_active_record'
 

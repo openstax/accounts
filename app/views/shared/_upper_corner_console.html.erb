@@ -4,7 +4,7 @@
   <div id="upper-corner-console">
 
     <% if !Rails.env.production? %>
-      Current user: <%= current_user.username %><br/>
+      Current user: <%= current_user.full_name %><br/>
       <%= link_to "Admin Console", main_app.admin_console_path, class: 'btn' %><br/>
     <% elsif current_user.is_administrator? %>
       <%= link_to "Admin Console", main_app.admin_console_path, class: 'btn' %><br/>
