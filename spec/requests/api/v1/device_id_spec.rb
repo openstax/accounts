@@ -4,9 +4,7 @@ RSpec.describe 'device ID tracking',
                type: :request, api: true, version: :v1 do
 
   let!(:user) do
-    FactoryBot.create :user_with_emails,
-                       first_name: 'Bob',
-                       last_name: 'Michaels'
+    create_user 'user@example.com'
   end
 
   let!(:user_token) do
@@ -17,7 +15,8 @@ RSpec.describe 'device ID tracking',
 
   context "not logged in" do
     it "sets the device ID cookie" do
-      api_get "/api/user"
+      log_in_user(user.emails.first)
+      get '/api/user/'
       expect(response.cookies["oxdid"]).to match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
     end
 

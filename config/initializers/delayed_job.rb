@@ -22,10 +22,10 @@ Delayed::Worker.default_queue_name = :default
 
 # Default queue priorities
 Delayed::Worker.queue_attributes = {
-  educator_signup_queue: { priority: -10 },
-  default:               { priority:   0 },
-  salesforce:            { priority:   5 },
-  mailers:               { priority:  10 }
+  default:                         { priority: 0 },
+  salesforce_accounts_sync:        { priority: 5 },
+  salesforce_signup_lead_creation: { priority: 10 },
+  mailers:                         { priority: 15 }
 }
 
 # Allows us to use this gem in tests instead of setting the ActiveJob adapter to :inline

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_02_161104) do
+ActiveRecord::Schema.define(version: 2022_05_02_215806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -352,7 +352,7 @@ ActiveRecord::Schema.define(version: 2022_05_02_161104) do
     t.string "title"
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "suffix"
-    t.string "state", default: "needs_profile", null: false
+    t.string "state", default: "unverified", null: false
     t.string "salesforce_contact_id"
     t.integer "faculty_status", default: 0, null: false
     t.string "self_reported_school"

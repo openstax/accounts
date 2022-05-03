@@ -6,6 +6,8 @@ Rails.application.routes.draw do
  "/#{request.params[:path]}?#{request.params.except('path').to_query}"
                        }, via: :all
 
+  match 'signout' => redirect { :logout }, via: :get
+
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
@@ -19,7 +21,7 @@ Rails.application.routes.draw do
     get 'login', action: :login_form, as: :login
     post 'login', action: :login_post
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
-    get 'signout', action: :logout, as: :logout
+    get 'logout', action: :logout, as: :logout
   end
 
   scope controller: 'signup' do
@@ -85,26 +87,11 @@ as: :reset_password_email_sent
     get 'auth/:provider/callback', action: :oauth_callback
     delete 'auth/:provider', action: :remove_auth_strategy
     #   When you sign up with a social provider, you must confirm your info first
-    get 'confirm_your_info', action: :confirm_your_info
-    post 'confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
-  end
-
-  scope controller: 'sessions' do
-    get 'logout', action: :destroy
-
-    # Maintain these deprecated routes for a while until client code learns to
-    # use /login and /logout
-    get 'signout', action: :destroy
+    get 'confirm_your_info', action: :confirm_your_info_form
+    post 'confirm_oauth_info', action: :confirm_oauth_info_post, as: :confirm_oauth_info
   end
 
   mount OpenStax::Api::Engine, at: '/'
-
-  # Create a named path for links like `/auth/facebook` so that the path prefixer gem
-  #     will appropriately prefix the path. https://stackoverflow.com/a/40125738/1664216
-  # The actual request, however, is handled by the omniauth middleware when it detects
-  #     that the current_url is the callback_path, using `OmniAuth::Strategy#on_callback_path?`
-  #     So, admittedly, this route is deceiving.
-  get '/auth/:provider', to: ->(_env) { [404, {}, ['Not Found']] }, as: :oauth
 
   # routes for access via an iframe
   scope 'remote', controller: 'remote' do
@@ -160,9 +147,7 @@ as: :reset_password_email_sent
   api :v1, default: true do
     resources :users, only: [:index]
 
-    resource :user, only: [:show, :update] do
-      post '/find-or-create', action: 'find_or_create'
-    end
+    resource :user, only: [:show, :update]
 
     resources :application_users, only: [:index] do
       collection do
@@ -199,8 +184,6 @@ as: :reset_password_email_sent
     #     delete 'destroy'
     #   end
     # end
-
-    get 'raise_exception/:type', to: 'dev#raise_exception' unless Rails.env.production?
   end
 
   use_doorkeeper { controllers applications: 'oauth/applications' }
@@ -234,12 +217,6 @@ as: :reset_password_email_sent
     mount Blazer::Engine, at: 'blazer', as: 'blazer_admin'
     match "/job_dashboard" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
   end
-
-  # namespace 'dev' do
-  #   resources :users, only: [:create] do
-  #     post 'generate', on: :collection
-  #   end
-  # end
 
   if Rails.env.test?
     get '/external_app_for_specs' => 'external_app_for_specs#index'

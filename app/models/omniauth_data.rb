@@ -1,7 +1,7 @@
 # Parses and then represents the response from authenticating with a social provider.
 class OmniauthData
 
-  VALID_PROVIDERS = %w[identity facebook google]
+  VALID_PROVIDERS = %w[identity facebook google_oauth2]
 
   def initialize(auth_data)
     @auth_data = auth_data

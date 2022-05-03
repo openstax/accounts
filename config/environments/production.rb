@@ -95,7 +95,7 @@ Rails.application.configure do
   config.log_tags = [ :remote_ip ]
   config.lograge.custom_options = lambda do |event|
     params = event.payload[:params].reject do |k|
-      ['controller', 'action', 'format'].include? k
+      %w[controller action format].include? k
     end
     { "params" => params }
   end

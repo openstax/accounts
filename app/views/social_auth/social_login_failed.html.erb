@@ -5,7 +5,7 @@
         <%= login_signup_card(
                     classes: "login-page login-unsuccessful-page",
                     header: I18n.t(:"login_signup_form.login_unsuccessful", email: @email)) do %>
-            <% lev_form_for :send_instructions, url: send_password_setup_instructions_path do |f| %>
+            <% lev_form_for :send_instructions, url: password_add_path do |f| %>
                 <div class="content info-message">
                     <div>
                       <%= I18n.t(:"login_signup_form.login_unsuccessful_description",

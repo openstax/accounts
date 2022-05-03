@@ -18,23 +18,6 @@ class SocialAuthController < ApplicationController
           # Not activated means signup.
           # Only students can sign up with a social network.
           if user.student? && !user.activated?
-
-            # legacy handling of the :needs_profile state
-            # TODO: we could also just go change everyone from :needs_profile -> :incomplete_signup
-            if user.state == 'needs_profile'
-              user.update(state: :unverified, faculty_status: :incomplete_signup)
-              save_unverified_user(user.id)
-
-              SecurityLog.create(
-                event_type: :user_updated,
-                user:       user,
-                event_data: {
-                  state_was:        'needs_profile',
-                  state_changed_to: 'incomplete_signup'
-                }
-              )
-            end
-
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email

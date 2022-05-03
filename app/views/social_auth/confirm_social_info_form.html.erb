@@ -16,8 +16,7 @@
         <%= login_signup_card(
                     classes: "signup-page",
                     header: I18n.t(:"login_signup_form.confirm_your_info"),
-                    current_step: I18n.t(:'login_signup_form.step_counter', current_step: 1, total_steps: 2),
-                    banners: @banners) do %>
+                    current_step: I18n.t(:'login_signup_form.step_counter', current_step: 1, total_steps: 2)) do %>
             <% lev_form_for :signup, url: confirm_oauth_info_path do |form| %>
                 <%
                     form_helper = FormHelper::One.new(

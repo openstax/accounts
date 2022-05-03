@@ -5,7 +5,7 @@ class ChangeNeedsProfileInstructorsToIncompleteSignup < ActiveRecord::Migration[
     User
       .where(state: :needs_profile, faculty_status: :confirmed_faculty)
       .update_all( # rubocop:disable Rails/SkipsModelValidations
-        state: :activated, faculty_status: :incomplete_signup
+        state: :unactivated, faculty_status: :incomplete_signup
       )
   end
 
