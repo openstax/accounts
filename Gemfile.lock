@@ -9,11 +9,10 @@ GIT
 
 GIT
   remote: https://github.com/openstax/path_prefixer.git
-  revision: 4a18c627c0c8b73038f626cb92a152bf61e9dc72
-  ref: 4a18c627c0c8b73038f626cb92a152bf61e9dc72
+  revision: 0ed5cdba6be65dbf1d07fd7580e2311a2f42cdfd
+  ref: 0ed5cdba6be65dbf1d07fd7580e2311a2f42cdfd
   specs:
     openstax_path_prefixer (0.0.1)
-      addressable
       rails (>= 3.0)
 
 GIT
@@ -420,6 +419,9 @@ GEM
     omniauth-oauth2 (1.7.2)
       oauth2 (~> 1.4)
       omniauth (>= 1.9, < 3)
+    omniauth-rails_csrf_protection (1.0.1)
+      actionpack (>= 4.2)
+      omniauth (~> 2.0)
     openstax_active_force (1.1.0)
       active_attr
       rails (>= 5.0, < 7.0)
@@ -772,6 +774,7 @@ DEPENDENCIES
   omniauth-facebook
   omniauth-google-oauth2
   omniauth-identity
+  omniauth-rails_csrf_protection
   openstax_api
   openstax_healthcheck
   openstax_path_prefixer!

@@ -27,7 +27,7 @@ Rails.application.config.to_prepare do
   end
 
   Doorkeeper::AccessToken.class_exec do
-    before_create :create_application_user
+    before_commit :create_application_user
 
     def create_application_user
       return unless application_id && resource_owner_id

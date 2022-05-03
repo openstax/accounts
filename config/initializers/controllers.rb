@@ -22,7 +22,7 @@ ActionController::Base.class_exec do
   before_action :save_redirect
   before_action :set_locale
 
-  fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
+  #fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
   protected
 

@@ -60,6 +60,7 @@ gem 'bcrypt'
 gem 'doorkeeper'
 
 # OAuth clients
+gem 'omniauth-rails_csrf_protection'
 gem 'omniauth'
 gem 'omniauth-identity'
 gem 'omniauth-facebook'
@@ -152,7 +153,7 @@ gem 'openstax_healthcheck'
 
 # Allow Accounts routes to be accessed under an /accounts prefix (for use in CloudFront)
 gem "openstax_path_prefixer", github: "openstax/path_prefixer",
-ref: "4a18c627c0c8b73038f626cb92a152bf61e9dc72"
+ref: "0ed5cdba6be65dbf1d07fd7580e2311a2f42cdfd"
 
 # JWE library used by the SSO cookie
 gem 'json-jwt'

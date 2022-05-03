@@ -2,6 +2,7 @@ class Identity < OmniAuth::Identity::Models::ActiveRecord
 
   belongs_to :user, inverse_of: :identity
 
+  auth_key :user_id
   # We need these validations because
   # omniauth-identity does not provide them by default
   # The password is hashed (BCrypt) before being saved in the database

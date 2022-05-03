@@ -40,7 +40,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
   # Using route helpers doesn't work in test or production, probably has to do with
   # initialization order
   example "#{api_example(url_base: 'https://accounts.openstax.org/api/application_users',
-url_end: '?q=username:bob%20name=Jones')}"
+url_end: '?q=name=Jones')}"
   param :q, String, required: true, desc: <<-EOS
     The search query string, built up as a space-separated collection of
     search conditions on different fields. Each condition is formatted as
@@ -106,7 +106,7 @@ url_end: '?q=username:bob%20name=Jones')}"
   # find_by_username
   ###############################################################
 
-  api :GET, '/application_users/find/username/:username',
+  api :GET, '/application_users/find/uuid/:uuid',
       'Gets a single ApplicationUser with the specified username.'
   description <<-EOS
     #{json_schema(Api::V1::ApplicationUserRepresenter, include: :readable)}
@@ -196,8 +196,7 @@ location: nil
     respond_with outputs[:application_users],
                  represent_with: Api::V1::ApplicationUsersRepresenter,
                  user_options: {
-                   include_private_data: current_application &&
-                                         current_application.can_access_private_user_data?
+                   include_private_data: current_application&.can_access_private_user_data?
                  },
                  location: nil
   end
@@ -245,7 +244,7 @@ location: nil
       ActiveSupport::JSON.decode(request.body.string)
     ).errors
 
-    head (errors.any? ? :internal_server_error : :no_content)
+    head(errors.any? ? :internal_server_error : :no_content)
   end
 
   protected
