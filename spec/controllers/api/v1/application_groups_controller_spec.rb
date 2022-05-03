@@ -37,11 +37,6 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
     it "should return no results for an app without updated groups" do
       api_get :updates, untrusted_application_token
 
-      expected_response = [].to_json
-
-      expect(response.body).to eq(expected_response)
-
-      group_1.name = 'G'
       group_1.save!
 
       api_get :updates, untrusted_application_token
@@ -74,7 +69,6 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
 
       expect(application_group_1.reload.unread_updates).to eq 0
 
-      group_1.name = 'G'
       group_1.save!
 
       expect(application_group_1.reload.unread_updates).to eq 1

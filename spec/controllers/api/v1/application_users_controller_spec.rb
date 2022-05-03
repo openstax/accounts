@@ -21,10 +21,7 @@ RSpec.describe Api::V1::ApplicationUsersController, type: :controller, api: true
   end
   let!(:billy_users) do
     (0..45).to_a.map do |ii|
-      user = FactoryBot.create :user,
-                                first_name: "Billy#{ii.to_s.rjust(2, '0')}",
-                                last_name: "Fred_#{(45-ii).to_s.rjust(2,'0')}",
-                                username: "billy_#{ii.to_s.rjust(2, '0')}"
+      user = create_user "openstax_#{ii.to_s.rjust(2, '0')}@example.org"
       FactoryBot.create :application_user, user: user,
                                             application: untrusted_application,
                                             unread_updates: 0

@@ -54,12 +54,11 @@ except: %w[welcome signup_form signup_post])
       success:       lambda {
         user = @handler_result.outputs.user
         sign_in!(user, log: false)
-        if user.role == :student
-          security_log(:student_verified_email, { user: user, message: "Student verified email." })
+        if user.role == 'student'
+          security_log(:student_verified_email, { user: user, email_address: user.email_addresses.first })
           redirect_to signup_done_path
-        else # instructor
-          security_log(:educator_verified_email,
-{ user: user, message: "Educator verified email." })
+        else # instructor/educator
+          security_log(:educator_verified_email, { user: user, email_address: user.email_addresses.first })
           redirect_to sheerid_form_path
         end
       },

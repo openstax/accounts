@@ -45,13 +45,13 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    # Get rid of possibly-shared config setting cache values between test and dev or any leftover
-    # cached values from other test runs. This is 15 seconds faster than `Rails.cache.clear`
-    Rails.cache.delete_matched("rails_settings_cached/*")
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.start
+    load('db/seeds.rb')
   end
 
   # Some tests might change I18n.locale.
-  config.before(:each) do |config|
+  config.before(:each) do
     I18n.locale = :en # rubocop:disable Rails/I18nLocaleAssignment
   end
 
