@@ -10,6 +10,8 @@ Rails.application.config.assets.precompile += %w(
   profile.js
   remote-access.js
   libphonenumber/utils.js
+  application/accounts-ui.js
+  application/jquery_extensions.js
   application/ko_extensions.js
   application/phones-number.js
   admin.css
