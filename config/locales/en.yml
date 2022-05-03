@@ -13,11 +13,11 @@ en:
     authentications:
       authentication_removed: "%{authentication} removed"
     sessions:
-      mismatched_authentication: You logged in with a different third-party account than we expected. Please try again.
-      sign_in_option_already_used: That login option is already used by someone else. If that someone is you, remove it from your other account and try again.
-      way_to_login_cannot_be_added: That way to log in cannot be added because it is associated to an email address that is already in use!
+      mismatched_authentication: "You logged in with a different third-party account than we expected. Please try again."
+      sign_in_option_already_used: "That login option is already used by someone else. If that someone is you, remove it from your other account and try again."
+      way_to_login_cannot_be_added: "That way to log in cannot be added because it is associated to an email address that is already in use!"
     terms:
-      temporarily_unavailable: The terms are temporarily unavailable. Check back soon.
+      temporarily_unavailable: "The terms are temporarily unavailable. Check back soon."
   doorkeeper:
     applications:
       buttons:
@@ -26,39 +26,40 @@ en:
         edit: 'Edit'
         submit: 'Submit'
       form:
-        error: 'Error in form'
+        error: 'Whoops! Check your form for possible errors'
       help:
-        native_redirect_uri: '#'
-        redirect_uri: '#'
-        scopes: 'Some help should go here'
+        confidential: 'Application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.'
+        redirect_uri: 'Use one line per URI'
+        native_redirect_uri: 'Use %{native_redirect_uri} if you want to add localhost URIs for development purposes'
+        scopes: 'Separate scopes with spaces. Leave blank to use the default scopes.'
       index:
-        actions: '?? Actions'
-        callback_url: '#'
-        confidential: '?? Confidential'
+        actions: 'Actions'
+        callback_url: 'Callback URL'
+        confidential: 'Confidential?'
         confidentiality:
-          'no': 'no'
-          'yes': 'yes'
+          'no': 'No'
+          'yes': 'Yes'
         name: 'Name'
-        new: 'New'
-        title: 'Title'
+        new: 'New Application'
+        title: 'Your Applications'
       show:
-        actions: '?? Actions'
-        application_id: '?? Application ID'
-        callback_urls: '#'
-        scopes: '?? Scopes'
-        secret: '?? Secret'
-        title: '?? Title'
+        actions: 'Actions'
+        application_id: 'Application UID'
+        callback_urls: 'Callback URLs'
+        scopes: 'Scopes'
+        secret: 'Secret'
+        title: 'Application: %{name}'
     authorizations:
       error:
-        title: '?? Error title'
+        title: 'An error has occurred'
     flash:
       applications:
         create:
-          notice: '?? Create notice'
+          notice: 'Application created.'
         destroy:
-          notice: '?? Destroy notice'
+          notice: 'Application deleted.'
         update:
-          notice: '?? Update notice'
+          notice: 'Application updated.'
   educator_profile_form:
     administrator: Administrator
     books_of_interest: Books of interest
@@ -136,7 +137,7 @@ en:
       title: Title
   layouts:
     application_footer:
-      terms_of_use: Terms of Use
+      terms_of_use: 'Terms of Use'
   login_signup_form:
     agree_to_terms_of_use: I agree to the %{terms_of_use} and %{privacy_policy}
     all_fields_required: "* All fields are required"

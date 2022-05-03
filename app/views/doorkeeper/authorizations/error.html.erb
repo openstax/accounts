@@ -1,5 +1,7 @@
-<%= ox_card(heading: t('doorkeeper.authorizations.error.title')) do %>
+<div class="border-bottom mb-4">
+  <h1><%= t('doorkeeper.authorizations.error.title') %></h1>
+</div>
 
-  <p><%= @pre_auth.error_response.body[:error_description] %></p>
-
-<% end %>
+<main role="main">
+  <pre><%= @pre_auth.error_response.body[:error_description] %></pre>
+</main>
