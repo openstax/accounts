@@ -4,14 +4,14 @@
 
   function generateTemplate() {
     return `\
-<div><input type="text" name="title" class="form-control input-sm" placeholder="${OX.I18n.name.title}"></div>
-<div><input type="text" name="first_name" class="form-control input-sm" placeholder="${OX.I18n.name.first_name}"></div>
-<div><input type="text" name="last_name" class="form-control input-sm" placeholder="${OX.I18n.name.last_name}"></div>
-<div><input type="text" name="suffix" class="form-control input-sm" placeholder="${OX.I18n.name.suffix}"></div>\
+<div><input type="text" name="title" class="form-control input-sm" placeholder="${Accounts.I18n.name.title}"></div>
+<div><input type="text" name="first_name" class="form-control input-sm" placeholder="${Accounts.I18n.name.first_name}"></div>
+<div><input type="text" name="last_name" class="form-control input-sm" placeholder="${Accounts.I18n.name.last_name}"></div>
+<div><input type="text" name="suffix" class="form-control input-sm" placeholder="${Accounts.I18n.name.suffix}"></div>\
 `;
   }
 
-  OX.Profile.Name = class extends $.fn.editabletypes.abstractinput {
+  Accounts.Profile.Name = class extends $.fn.editabletypes.abstractinput {
     static defaults = {
       ...$.fn.editabletypes.abstractinput.defaults,
       inputClass: '',
@@ -22,7 +22,7 @@
 
     constructor(options) {
       super();
-      this.init('profile_name', options, OX.Profile.Name.defaults);
+      this.init('profile_name', options, Accounts.Profile.Name.defaults);
     }
 
     render() {
@@ -69,6 +69,6 @@
     }
   }
 
-  $.fn.editabletypes.profile_name = OX.Profile.Name;
+  $.fn.editabletypes.profile_name = Accounts.Profile.Name;
 
 }).call(this);
