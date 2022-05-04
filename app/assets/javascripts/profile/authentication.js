@@ -67,12 +67,10 @@
     $el.find('.add').click(addPassword);
   }
 
-  PASSWORD_PROVIDER = 'identity';
-
-  Accounts.Profile.Authentication = {
+  Accounts.Authentication = {
     initialize() {
       $('.authentication').each(function(i, el) {
-        const activator = $(el).data('provider') === PASSWORD_PROVIDER ?
+        const activator = $(el).data('provider') === 'identity' ?
           activatePasswordButtons : activateAuthenticationButtons;
 
         activator(el);

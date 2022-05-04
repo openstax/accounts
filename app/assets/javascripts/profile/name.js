@@ -11,7 +11,7 @@
 `;
   }
 
-  Accounts.Profile.Name = class extends $.fn.editabletypes.abstractinput {
+  Accounts.Name = class extends $.fn.editabletypes.abstractinput {
     static defaults = {
       ...$.fn.editabletypes.abstractinput.defaults,
       inputClass: '',
@@ -22,7 +22,7 @@
 
     constructor(options) {
       super();
-      this.init('profile_name', options, Accounts.Profile.Name.defaults);
+      this.init('profile_name', options, Accounts.Name.defaults);
     }
 
     render() {
@@ -69,6 +69,6 @@
     }
   }
 
-  $.fn.editabletypes.profile_name = Accounts.Profile.Name;
+  $.fn.editabletypes.profile_name = Accounts.Name;
 
 }).call(this);

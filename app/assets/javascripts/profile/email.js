@@ -87,7 +87,7 @@
     confirmDelete(ev) {
       Accounts.showConfirmationPopover({
         title: '',
-        message: OX.I18n.email.confirm_delete,
+        message: Accounts.I18n.email.confirm_delete,
         target: ev.target,
         placement: 'top',
         onConfirm: this.delete
@@ -106,7 +106,7 @@
     }
   }
 
-  Accounts.Profile.Email = {
+  Accounts.Email = {
 
     initialize() {
       $('.email-entry').each(function(indx, el) {
