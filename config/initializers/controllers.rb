@@ -16,7 +16,7 @@ ActionController::Base.class_exec do
   include ContractsNotRequired
   helper_method :contracts_not_required
 
-  helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
+  helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement, AuthenticateMethods
 
   before_action :set_device_id
   before_action :save_redirect

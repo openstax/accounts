@@ -7,10 +7,10 @@
 //= require ./authentication
 //= require_self
 
+window.Accounts ||= {};
+
 $(document).ready(function(){
-  window.Accounts ||= {};
-  window.Accounts.Profile ||= {};
-  Accounts.Profile.Email.initialize();
-  Accounts.Profile.Authentication.initialize();
+  Accounts.Email.initialize();
+  Accounts.Authentication.initialize();
   $('[data-toggle="tooltip"]').tooltip()
 });

@@ -5,9 +5,7 @@ module Admin
 
     include FakeExceptionHelper
 
-    if Rails.env.development?
-      skip_before_action :authenticate_user!
-    else
+    unless Rails.env.development?
       before_action :admin_authentication!
       if Rails.application.secrets.environment_name == 'production'
         before_action :log_out_inactive_admins
@@ -32,6 +30,5 @@ module Admin
     def raise_exception
       raise_fake_exception(params[:type])
     end
-
   end
 end

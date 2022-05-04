@@ -1,8 +1,6 @@
 class SocialAuthController < ApplicationController
   include LoginSignupHelper
 
-  fine_print_skip :general_terms_of_use, :privacy_policy
-
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback # rubocop:disable Metrics/MethodLength
     if signed_in? && user_signin_is_too_old?

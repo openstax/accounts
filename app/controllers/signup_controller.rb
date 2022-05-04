@@ -1,11 +1,8 @@
 class SignupController < ApplicationController
   include LoginSignupHelper
 
-  fine_print_skip :general_terms_of_use, :privacy_policy
-
   before_action(:authenticate_user!, only: :signup_done)
-  before_action(:redirect_to_signup_if_no_user_session,
-except: %w[welcome signup_form signup_post])
+  before_action(:redirect_to_signup_if_no_user_session, except: %w[welcome signup_form signup_post])
 
   def welcome
     redirect_back(fallback_location: profile_path) if signed_in?

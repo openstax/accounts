@@ -1,7 +1,6 @@
 module ApplicationHelper
 
   include AlertHelper
-  include AuthenticateMethods
 
   # rubocop:disable Rails/OutputSafety, Rails/HelperInstanceVariable
   def contact_us_link
