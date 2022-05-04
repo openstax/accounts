@@ -5,9 +5,8 @@
 //= require ./name
 //= require ./email
 //= require ./authentication
+//= require ./namespaces
 //= require_self
-
-window.Accounts ||= {};
 
 $(document).ready(function(){
   Accounts.Email.initialize();

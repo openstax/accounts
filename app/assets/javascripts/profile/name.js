@@ -12,17 +12,16 @@
   }
 
   Accounts.Name = class extends $.fn.editabletypes.abstractinput {
-    static defaults = {
-      ...$.fn.editabletypes.abstractinput.defaults,
-      inputClass: '',
-      get tpl() {
-        return generateTemplate();
-      }
-    };
 
     constructor(options) {
       super();
-      this.init('profile_name', options, Accounts.Name.defaults);
+      this.init('profile_name', options, {
+        ...$.fn.editabletypes.abstractinput.defaults,
+        inputClass: '',
+        get tpl() {
+          return generateTemplate();
+        }
+      });
     }
 
     render() {
