@@ -2,8 +2,6 @@ class LoginController < ApplicationController
 
   include LoginSignupHelper
 
-  fine_print_skip :general_terms_of_use, :privacy_policy
-
   before_action :cache_client_app, only: :login_form
   before_action :known_signup_role_redirect, only: :login_form
   before_action :cache_alternate_signup_url, only: :login_form

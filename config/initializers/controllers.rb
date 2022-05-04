@@ -22,7 +22,7 @@ ActionController::Base.class_exec do
   before_action :save_redirect
   before_action :set_locale
 
-  #fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
+  fine_print_skip :general_terms_of_use, :privacy_policy
 
   protected
 
@@ -57,19 +57,12 @@ ActionController::Base.class_exec do
     store_url(url: url)
   end
 
-  def disable_fine_print
-    user = respond_to?(:current_human_user) ? current_human_user : current_user
-    api_call? ||
-    user&.is_anonymous? ||
-    request.options? ||
-    contracts_not_required
-  end
-
   def set_locale
     I18n.locale = http_accept_language.compatible_language_from(I18n.available_locales)
   end
 
   def set_device_id
+    get_device_id if get_device_id.present?
     cookies.delete(:oxdid) if device_id_invalid?
 
     cookies[:oxdid] ||= {

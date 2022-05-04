@@ -1,7 +1,3 @@
-# References:
-#   https://gist.github.com/stefanobernardi/3769177
-require 'ostruct'
-
 class SessionsController < ApplicationController
 
   include RequireRecentSignin
@@ -11,27 +7,17 @@ class SessionsController < ApplicationController
                      only: [:start, :lookup_login, :authenticate, :redirect_back,
                             :create, :failure, :destroy]
 
-  before_action :save_new_params_in_session,
-                only:   [:start]
+  before_action :save_new_params_in_session, only:   [:start]
 
-  before_action :store_authorization_url_as_fallback,
-                only:   [:start, :create]
+  before_action :store_authorization_url_as_fallback, only: :create
 
   before_action :maybe_skip_to_sign_up, only: [:start]
-
-  before_action :allow_iframe_access, only: :reauthenticate
 
   # If the user arrives to :start already logged in, this means they got linked to
   # the login page somehow; attempt to redirect to the authorization url stored
   # earlier
   before_action :redirect_back, if: -> { signed_in? }, only: :start
 
-  fine_print_skip :general_terms_of_use, :privacy_policy,
-                  only: [:start, :lookup_login, :authenticate, :create, :failure, :destroy]
-
-  # Login form
-  def start
-  end
 
   def lookup_login
     # Most rate limiting happens in CustomIdentity; this separate check needs to be here
@@ -52,7 +38,7 @@ class SessionsController < ApplicationController
                     security_log :login_not_found, tried: @handler_result.outputs.username_or_email
                     set_login_state(username_or_email: @handler_result.outputs.username_or_email,
                                     matching_user_ids: @handler_result.outputs.user_ids)
-                    render :start
+                    redirect_to :login_path and return
                   end)
     end
   end
@@ -99,7 +85,7 @@ class SessionsController < ApplicationController
             redirect_to action: :redirect_back
           when :new_social_user
             security_log :sign_in_successful, authentication_id: authentication.id
-            redirect_to signup_profile_path
+            redirect_to confirm_oauth_info_path
           when :authentication_added
             security_log :authentication_created,
                          authentication_id:       authentication.id,
@@ -120,7 +106,7 @@ class SessionsController < ApplicationController
                                       authentication: authentication.display_name)
           when :mismatched_authentication
             security_log :sign_in_failed, reason: "mismatched authentication"
-            redirect_to authenticate_path,
+            redirect_to login_path,
                         alert: I18n.t(:"controllers.sessions.mismatched_authentication")
           when :email_already_in_use
             redirect_to profile_path,
@@ -223,36 +209,34 @@ class SessionsController < ApplicationController
     case params[:message]
       when 'cannot_find_user'
         flash[:alert] = I18n.t :"controllers.sessions.no_account_for_username_or_email"
-        render :'login/login_form'
+        redirect_to :login_form_path and return
       when 'multiple_users'
         flash[:alert] = I18n.t :"controllers.sessions.several_accounts_for_one_email"
-        render :start
+        redirect_to :login_form_path and return
       when 'bad_authenticate_password'
         field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
-        render :authenticate
+        redirect_to :login_form_path and return
       when 'bad_reauthenticate_password'
         field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
         reauthenticate # load state needed for render
-        render :reauthenticate
+        render :'login/reauthenticate_form'
       when 'too_many_login_attempts'
         flash[:alert] = I18n.t :"controllers.sessions.too_many_login_attempts.content",
                                reset_password: "<a href=\"#{password_send_reset_path}\">#{
                                  I18n.t :"controllers.sessions.too_many_login_attempts.reset_password"
                                }</a>".html_safe
-        render :authenticate
+        redirect_to :login_form_path and return
       when 'invalid_credentials'
         flash[:alert] = I18n.t :"controllers.sessions.trouble_with_provider"
 
-        render :authenticate
+        redirect_to :login_form_path and return
       else
         flash[:alert] = params[:message]
-        render :start
+        render :'signup/welcome'
     end
   end
 
-  end
-
-  private #################
+  private
 
   def save_new_params_in_session
     set_client_app(params[:client_id])
