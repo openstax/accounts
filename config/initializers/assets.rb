@@ -9,6 +9,7 @@ Rails.application.config.assets.precompile += %w(
   admin.js
   admin.css
   profile.css
+  profile.js
   libphonenumber/utils.js
   jquery_extensions.js
   ko_extensions.js
