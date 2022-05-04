@@ -8,19 +8,14 @@ Rails.application.config.assets.version = '1.1'
 Rails.application.config.assets.precompile += %w(
   admin.js
   profile.js
-  remote-access.js
+  profile.css
   libphonenumber/utils.js
-  application/accounts-ui.js
-  application/jquery_extensions.js
-  application/ko_extensions.js
-  application/phones-number.js
-  admin.css
+  jquery_extensions.js
+  ko_extensions.js
+  phones-number.js
   intTelInput.css
   syntax_highlight.css
-  profile.css
   application_body_api_docs.css
-  bootstrap-editable/loading.gif
-  bootstrap-editable/clear.png
   pattern-library
   pattern-library/headers
 )

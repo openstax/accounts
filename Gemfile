@@ -34,20 +34,27 @@ gem 'lev', '~> 10.1.0'
 # Keep sprockets below v4, major changes break things
 gem 'sprockets', '~> 3.0'
 
+# Automatically ajaxify links
+gem 'turbolinks'
+
 # Bootstrap front-end framework
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'bootstrap-sass', '~> 3.4.1'
 gem 'sassc-rails', '>= 2.1.0'
 gem 'bootstrap-editable-rails'
 
 # CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails'
+gem 'coffee-rails', '~> 4.2.2'
 
 # JavaScript asset compiler
 gem 'mini_racer'
 
 # JavaScript asset compressor
-gem 'uglifier'
+gem 'uglifier', '>= 1.3.0'
+
+# Bundle JS assets with webpack?
+# gem 'webpacker'
 
 # Nicely-styled static error pages
 gem 'error_page_assets'
