@@ -4,10 +4,6 @@ class IdentitiesController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [:reset, :add]
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:reset]
-
-  before_action :allow_iframe_access
-
   def reset
     set_password(kind: :reset)
   end

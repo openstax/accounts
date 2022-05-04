@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 
-  before_action :allow_iframe_access, only: [:update]
   before_action :prevent_caching, only: [:update]
 
   def update

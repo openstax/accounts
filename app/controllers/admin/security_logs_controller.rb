@@ -1,6 +1,5 @@
 module Admin
   class SecurityLogsController < BaseController
-
     def show
       search_params = params[:search] ? params[:search].permit!.to_h : {}
       items = SearchSecurityLog.call(search_params).outputs.items || SecurityLog.none
