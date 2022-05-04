@@ -99,7 +99,6 @@
         }
     } %>
   </div>
-
 <% end %>
 
 <script>
@@ -123,11 +122,11 @@
     },
     validate: function(attrs) {
       if (!attrs.first_name && !attrs.last_name) {
-        return OX.I18n.name.first_last_name_blank;
+        return Accounts.I18n.name.first_last_name_blank;
       } else if (!attrs.first_name) {
-        return OX.I18n.name.first_name_blank;
+        return Accounts.I18n.name.first_name_blank;
       } else if (!attrs.last_name) {
-        return OX.I18n.name.last_name_blank;
+        return Accounts.I18n.name.last_name_blank;
       }
     }
   };
