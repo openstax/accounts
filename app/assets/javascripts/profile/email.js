@@ -4,7 +4,7 @@
 // Converted by pulling from the browser after transpilation.
 // Online transpilers made nicer code, but it wasn't correct.
 (function() {
-  const BASE_URL = `${OX.url_prefix}/contact_infos`;
+  const BASE_URL = `${Accounts.url_prefix}/contact_infos`;
 
   class Email {
 
@@ -46,10 +46,10 @@
       ev.target.disabled = true;
       return $.ajax({type: "PUT", url: this.url('resend_confirmation')})
         .success( resp => {
-          OX.Alert.display({message: resp.message, type: 'success', parentEl: this.$el});
+          Accounts.Alert.display({message: resp.message, type: 'success', parentEl: this.$el});
         })
         .error( e => {
-          OX.Alert.display(_.extend(e, {parentEl: this.$el}));
+          Accounts.Alert.display(_.extend(e, {parentEl: this.$el}));
           ev.target.disabled = false;
         });
     }
@@ -63,7 +63,7 @@
         .success( resp => this.set(resp) )
         .error( e => {
           ev.target.checked = !ev.target.checked;
-          OX.Alert.display(_.extend(e, {parentEl: this.$el}));
+          Accounts.Alert.display(_.extend(e, {parentEl: this.$el}));
         }).complete( () => {
           ev.target.disabled = false;
           this.toggleSpinner(false);
@@ -85,7 +85,7 @@
     }
 
     confirmDelete(ev) {
-      OX.showConfirmationPopover({
+      Accounts.showConfirmationPopover({
         title: '',
         message: OX.I18n.email.confirm_delete,
         target: ev.target,
@@ -99,14 +99,14 @@
       $.ajax({type: "DELETE", url: this.url()})
         .success( () => {
           this.$el.remove();
-          OX.Profile.Email.onDeleteEmail(this);
+          Accounts.Profile.Email.onDeleteEmail(this);
         })
-        .error(OX.Alert.displayInsideElement(this.$el))
+        .error(Accounts.Alert.displayInsideElement(this.$el))
         .complete(this.toggleSpinner);
     }
   }
 
-  OX.Profile.Email = {
+  Accounts.Profile.Email = {
 
     initialize() {
       $('.email-entry').each(function(indx, el) {

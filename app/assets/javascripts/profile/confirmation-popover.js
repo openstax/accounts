@@ -11,7 +11,7 @@
     `
   };
 
-  OX.showConfirmationPopover = function(optionArgs) {
+  Accounts.showConfirmationPopover = function(optionArgs) {
     const options = _.defaults({}, optionArgs, {
       html: true,
       placement: 'right',

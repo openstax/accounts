@@ -1,7 +1,7 @@
-OX.Alert = {
+Accounts.Alert = {
   displayInsideElement(element) {
     // Return a function that will display the alert inside the given element
-    return options => OX.alert.display(_.extend(options, {parentEl: element}));
+    return options => Accounts.alert.display(_.extend(options, {parentEl: element}));
   },
 
   display(options) {
@@ -15,7 +15,7 @@ OX.Alert = {
 <div class="ox-alert fade in alert alert-${type} alert-dismissible" role="alert">
   <span class="glyphicon glyphicon-${icon}" aria-hidden="true"></span>
   <span class="msg"></span>
-  <button type="button" class="close" data-dismiss="alert" aria-label="${OX.I18n.alert.close}">
+  <button type="button" class="close" data-dismiss="alert" aria-label="${Accounts.I18n.alert.close}">
     &times;
  </button>
 </div>\

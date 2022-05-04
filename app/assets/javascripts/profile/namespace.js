@@ -1,3 +1,3 @@
 // setup some namespaces
-window.OX ||= {};
-window.OX.Profile ||= {};
+window.Accounts ||= {};
+window.Accounts.Profile ||= {};

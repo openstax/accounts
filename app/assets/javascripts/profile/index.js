@@ -10,7 +10,7 @@
 
 
 $(document).ready(function(){
-  OX.Profile.Email.initialize();
-  OX.Profile.Authentication.initialize();
+  Accounts.Profile.Email.initialize();
+  Accounts.Profile.Authentication.initialize();
   $('[data-toggle="tooltip"]').tooltip()
 });

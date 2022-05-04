@@ -2,7 +2,7 @@
 // Online transpilers did not work correctly.
 
 (function() {
-  const BASE_URL = OX.url_prefix.toString();
+  const BASE_URL = Accounts.url_prefix.toString();
 
   function activateAuthenticationButtons(el) {
     const $el = $(el);
@@ -37,9 +37,9 @@
     }
 
     function confirmDelete({target}) {
-      return OX.showConfirmationPopover({
+      return Accounts.showConfirmationPopover({
         title: '',
-        message: OX.I18n.authentication.confirm_delete,
+        message: Accounts.I18n.authentication.confirm_delete,
         target: target,
         placement: 'top',
         onConfirm: doDelete
@@ -69,7 +69,7 @@
 
   PASSWORD_PROVIDER = 'identity';
 
-  OX.Profile.Authentication = {
+  Accounts.Profile.Authentication = {
     initialize() {
       $('.authentication').each(function(i, el) {
         const activator = $(el).data('provider') === PASSWORD_PROVIDER ?
