@@ -1,14 +1,13 @@
 <%
-  @parent_col_id = "profile"
   @using_os = current_user.using_openstax
 %>
 
-<% content_for :head do %>
+<% content_for :page_specific do %>
   <%= javascript_include_tag 'profile' %>
   <%= stylesheet_link_tag 'profile' %>
 <% end %>
 
-<%= ox_card(classes: 'profile') do %>
+<%= profile_card do %>
   <div class="profile-title">
     <%=
       link_to(
