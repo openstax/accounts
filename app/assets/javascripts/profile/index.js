@@ -1,5 +1,4 @@
 //= require bootstrap-editable
-//= require font-awesome
 //= require ../vendor/underscore
 //= require ./namespace
 //= require ./confirmation-popover
