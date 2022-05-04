@@ -5,7 +5,6 @@
 //= require ./name
 //= require ./email
 //= require ./authentication
-//= require ./namespaces
 //= require_self
 
 $(document).ready(function(){
