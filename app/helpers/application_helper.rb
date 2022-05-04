@@ -52,10 +52,10 @@ module ApplicationHelper
     end
   end
 
-  def ox_card(classes: "", heading: "", &block)
+  def profile_card(classes: "", heading: "", &block)
     @hide_layout_errors = true
 
-    content_tag :div, class: "ox-card #{classes}" do
+    content_tag :div, class: "profile #{classes}" do
 
       danger_alerts = if flash[:alert].present?
         content_tag :div, class: "top-level-alerts danger" do
@@ -69,13 +69,13 @@ module ApplicationHelper
         end
       end
 
-      heading_div = if heading.present?
-        content_tag(:h1, class: "title") { heading }
-      end
+      header = if header.present?
+                 content_tag(:header, class: "page-header") { header }
+               end
 
       body = capture(&block)
 
-      "#{danger_alerts}\n#{info_alerts}\n#{heading_div}\n#{body}".html_safe
+      "#{danger_alerts}\n#{info_alerts}\n#{header}\n#{body}".html_safe
     end
   end
 
