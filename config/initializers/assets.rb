@@ -8,7 +8,6 @@ Rails.application.config.assets.version = '1.1'
 Rails.application.config.assets.precompile += %w(
   admin.js
   admin.css
-  profile.js
   profile.css
   libphonenumber/utils.js
   jquery_extensions.js
