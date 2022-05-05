@@ -1,8 +1,9 @@
 class ApplicationController < ActionController::Base
 
-  include ApplicationHelper
-
   layout 'application'
+
+  before_action :authenticate_user!
+  fine_print_skip :general_terms_of_use, :privacy_policy
 
   def check_if_admin
     # used in blazer.yml to check if user is authorized for Blazer

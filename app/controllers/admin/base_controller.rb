@@ -1,15 +1,17 @@
 module Admin
   class BaseController < ApplicationController
 
-    layout 'admin'
-
     include FakeExceptionHelper
 
-    unless Rails.env.development?
-      before_action :admin_authentication!
-      if Rails.application.secrets.environment_name == 'production'
-        before_action :log_out_inactive_admins
-      end
+    layout 'admin'
+
+    if Rails.env.development?
+      skip_before_action :authenticate_user!
+
+      fine_print_skip :general_terms_of_use, :privacy_policy
+    else
+      before_action :authenticate_admin!
+      before_action :log_out_inactive_admins
     end
 
     def log_out_inactive_admins

@@ -7,7 +7,7 @@ ActionController::Base.class_exec do
   # so adding these methods to ActionController::Base directly here should work
   include UserSessionManagement
   include ApplicationHelper
-  include OSU::OsuHelper
+  include OpenStax::Utilities::OsuHelper
   include HttpAcceptLanguage::AutoLocale
   include RequireRecentSignin
 
@@ -16,13 +16,13 @@ ActionController::Base.class_exec do
   include ContractsNotRequired
   helper_method :contracts_not_required
 
-  helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement, AuthenticateMethods
+  helper OpenStax::Utilities::OsuHelper, ApplicationHelper, UserSessionManagement
 
-  before_action :set_device_id
+  prepend_before_action :set_device_id
   before_action :save_redirect
   before_action :set_locale
 
-  fine_print_skip :general_terms_of_use, :privacy_policy
+  fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
   protected
 
@@ -57,12 +57,19 @@ ActionController::Base.class_exec do
     store_url(url: url)
   end
 
+  def disable_fine_print
+    user = respond_to?(:current_human_user) ? current_human_user : current_user
+    api_call? ||
+      user&.is_anonymous? ||
+      request.options? ||
+      contracts_not_required
+  end
+
   def set_locale
     I18n.locale = http_accept_language.compatible_language_from(I18n.available_locales)
   end
 
   def set_device_id
-    get_device_id.presence
     cookies.delete(:oxdid) if device_id_invalid?
 
     cookies[:oxdid] ||= {
