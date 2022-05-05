@@ -21,7 +21,7 @@
 
 # Ignore public precompiled assets
 /public/assets
-/public/accounts/assets
+/public/accounts/
 
 # Ignore precompiled static error pages
 /public/404.html
