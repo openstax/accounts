@@ -16,7 +16,7 @@ FinePrint.configure do |config|
   config.authenticate_manager_proc = lambda { |user|
     Rails.env.development? ||
       user.is_administrator? ||
-      raise(ActionController::RoutingError, 'Not Found')
+      head(:forbidden)
   }
 
   # This proc is called before FinePrint determines if contracts need to be

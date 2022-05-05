@@ -102,11 +102,11 @@ class SignupController < ApplicationController
       ChangeSignupEmail,
       user:    unverified_user,
       success: lambda {
-        redirect_to change_signup_email_form_complete
+        redirect_to change_signup_email_form_complete_path and return
       },
       failure: lambda {
         @email = unverified_user.email_addresses.first.value
-        render :change_signup_email_form
+        render :change_signup_email_form and return
       }
     )
   end
@@ -116,11 +116,13 @@ class SignupController < ApplicationController
   end
 
   def signup_done
-    redirect_back if current_user.is_tutor_user?
+    redirect_back(fallback_location: :signup_done) if current_user.is_tutor_user?
 
     security_log(:user_viewed_signup_form, form_name: action_name)
     @first_name = current_user.first_name
     @email_address = current_user.email_addresses.first&.value
+
+    render :signup_done
   end
 
   private

@@ -1,14 +1,3 @@
-# Defaults:
-# Delayed::Worker.destroy_failed_jobs = true
-# Delayed::Worker.sleep_delay = 5
-# Delayed::Worker.max_attempts = 25
-# Delayed::Worker.max_run_time = 4.hours
-# Delayed::Worker.read_ahead = 5
-# Delayed::Worker.default_queue_name = nil
-# Delayed::Worker.delay_jobs = true
-# Delayed::Worker.raise_signal_exceptions = false
-# Delayed::Worker.logger = Rails.logger
-
 # Keep failed jobs for later inspection
 Delayed::Worker.destroy_failed_jobs = false
 

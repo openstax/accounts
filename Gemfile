@@ -83,6 +83,7 @@ gem 'openstax_utilities'
 gem 'openstax_api'
 
 # Notify developers of Exceptions in production
+gem 'exception_notification'
 gem 'openstax_rescue_from'
 
 # Sentry integration
@@ -117,7 +118,7 @@ gem 'representable'
 gem 'keyword_search', '~> 1.5.0'
 
 # ToS/PP management
-gem 'fine_print'
+gem 'fine_print', '~> 5.0.0'
 
 # Send users back to the correct page after login
 gem 'action_interceptor'

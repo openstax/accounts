@@ -39,6 +39,8 @@ module UserSessionManagement
   end
 
   def sign_in!(user, log: true, security_log_data: {})
+    clear_login_state
+
     @current_user = user || AnonymousUser.instance
 
     if @current_user.is_anonymous?
@@ -85,8 +87,8 @@ module UserSessionManagement
     {
       username_or_email: session[:login].try(:[], 'u'),
       matching_user_ids: session[:login].try(:[], 'm'),
-      names:             session[:login].try(:[], 'n'),
-      providers:         session[:login].try(:[], 'p')
+      names: session[:login].try(:[], 'n'),
+      providers: session[:login].try(:[], 'p')
     }
   end
 
@@ -135,8 +137,6 @@ module UserSessionManagement
     session[:alt_signup]
   end
 
-  # New flow below
-
   def save_unverified_user(user_id)
     session[:unverified_user_id] = user_id
   end
@@ -145,7 +145,7 @@ module UserSessionManagement
     id = session[:unverified_user_id]&.to_i
     return if id.blank?
 
-    unverified_user ||= User.find_by(id: id)
+    @unverified_user ||= User.find_by(id: id, state: 'unverified')
   end
 
   def clear_unverified_user

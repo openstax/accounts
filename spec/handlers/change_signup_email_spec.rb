@@ -34,7 +34,7 @@ RSpec.describe ChangeSignupEmail, type: :handler do
     end
 
     it 'sends an email to the new email address' do
-      expect_any_instance_of(ConfirmationMailer).to(
+      expect_any_instance_of(SignupPasswordMailer).to(
         receive(:signup_email_confirmation).once.and_call_original
       )
       described_class.call(params: params, user: user)
@@ -57,3 +57,4 @@ RSpec.describe ChangeSignupEmail, type: :handler do
     end
   end
 end
+

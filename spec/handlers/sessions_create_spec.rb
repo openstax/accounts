@@ -5,7 +5,7 @@ RSpec.describe SessionsCreate, type: :handler do
 
   context "logged in" do
     let(:current_user) { FactoryBot.create :user }
-    before(:each) { user_state.sign_in!(current_user) }
+    before(:each) { @user_state.sign_in!(current_user) }
 
     context "authentication already on current user" do
       before do

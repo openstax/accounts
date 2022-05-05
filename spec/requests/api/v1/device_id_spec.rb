@@ -13,10 +13,9 @@ RSpec.describe 'device ID tracking',
                        resource_owner_id: user.id
   end
 
-  context "not logged in" do
+  context "logged in" do
     it "sets the device ID cookie" do
-      log_in_user(user.emails.first)
-      get '/api/user/'
+      api_get "/api/user", user_token
       expect(response.cookies["oxdid"]).to match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
     end
 
@@ -28,13 +27,6 @@ RSpec.describe 'device ID tracking',
 
     it "gets fixed if messed up" do
       cookies["oxdid"] = "foo"
-      api_get "/api/user"
-      expect(response.cookies["oxdid"]).to match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
-    end
-  end
-
-  context "logged in" do
-    it "sets the device ID cookie" do
       api_get "/api/user", user_token
       expect(response.cookies["oxdid"]).to match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
     end

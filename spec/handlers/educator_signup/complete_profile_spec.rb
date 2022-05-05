@@ -9,7 +9,7 @@ module EducatorSignup
     let(:books_used) { ['Algebra and Trigonometry', 'Physics'] }
     let(:num_students_per_semester_taught) { 10 }
     let(:educator_specific_role) { 'instructor' }
-    let(:using_openstax_how) { EducatorSignup::CompleteProfile::AS_PRIMARY }
+    let(:using_openstax_how) { :as_primary }
     let(:params) do
       {
         signup: {
