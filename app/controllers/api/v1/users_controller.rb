@@ -121,7 +121,7 @@ url_end: '?q=username:bob%20name=Jones')}"
     SetGdprData.call(user: current_human_user,
                      headers: request.headers,
                      session: session,
-                     ip: ENV['IP_ADDRESS_FOR_GDPR'] || request.ip)
+                     ip: ENV.fetch('IP_ADDRESS_FOR_GDPR', nil) || request.ip)
 
     respond_with current_human_user,
                  represent_with: Api::V1::UserRepresenter,

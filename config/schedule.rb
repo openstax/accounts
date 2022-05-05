@@ -1,4 +1,4 @@
-bundle_command = ENV['BUNDLE_COMMAND'] || 'bundle exec'
+bundle_command = ENV.fetch('BUNDLE_COMMAND') || 'bundle exec'
 
 set :bundle_command, bundle_command
 set :runner_command, "#{bundle_command} rails runner"

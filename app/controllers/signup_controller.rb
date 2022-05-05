@@ -52,10 +52,12 @@ class SignupController < ApplicationController
         user = @handler_result.outputs.user
         sign_in!(user, log: false)
         if user.role == 'student'
-          security_log(:student_verified_email, { user: user, email_address: user.email_addresses.first })
+          security_log(:student_verified_email,
+{ user: user, email_address: user.email_addresses.first })
           redirect_to signup_done_path
         else # instructor/educator
-          security_log(:educator_verified_email, { user: user, email_address: user.email_addresses.first })
+          security_log(:educator_verified_email,
+{ user: user, email_address: user.email_addresses.first })
           redirect_to sheerid_form_path
         end
       },

@@ -22,7 +22,7 @@ class UpdateUserContactInfo
     new.call
   end
 
-  def call # rubocop:disable Metrics/MethodLength
+  def call
     # this is controlled in secrets.yml (or param store for non-dev/test envs)
     return unless Rails.application.secrets[:salesforce][:sync_contacts_enabled]
 

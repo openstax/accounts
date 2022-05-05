@@ -78,7 +78,7 @@ module FormHelper
                         'data-bind': data_bind
         )
       end
-      "#{input}\n#{errors_div}".html_safe # rubocop:disable Rails/OutputSafety
+      "#{input}\n#{errors_div}".html_safe
     end
 
     def select(
@@ -95,7 +95,7 @@ module FormHelper
 
       c.content_tag :div, class: "form-group #{'has-error' if errors_div.present?}" do
         "#{@f.select name, options, {}, html_options}#{errors_div}"
-          .html_safe # rubocop:disable Rails/OutputSafety
+          .html_safe
       end
     end
 
@@ -129,9 +129,9 @@ module FormHelper
       c.content_tag(:div, class: "errors invalid-message") do
         # TODO: show multiple error messages per field when the pattern-library is fixed.
         error_divs = field_errors.map do |field_error|
-          field_error.translate.html_safe # rubocop:disable Rails/OutputSafety
+          field_error.translate.html_safe
         end
-        error_divs.join('<br>').html_safe # rubocop:disable Rails/OutputSafety
+        error_divs.join('<br>').html_safe
       end
     end
   end

@@ -28,7 +28,7 @@ Metrics/BlockLength:
 # Too short methods lead to extraction of single-use methods, which can make
 # the code easier to read (by naming things), but can also clutter the class
 Metrics/MethodLength:
-  Max: 50
+  Max: 120
 
 ##############
 #  Lints     #
@@ -80,7 +80,7 @@ Lint/AmbiguousRange:
 Lint/DeprecatedConstants:
   Enabled: true
 Lint/DuplicateBranch:
-  Enabled: true
+  Enabled: false
 Lint/DuplicateRegexpCharacterClassElement:
   Enabled: true
 Lint/EmptyBlock:
@@ -126,7 +126,7 @@ Lint/UselessRuby2Keywords: # new in 1.23
 Performance/BlockGivenWithExplicitBlock:
   Enabled: true
 Performance/CollectionLiteralInLoop:
-  Enabled: true
+  Enabled: false
 Performance/ConstantRegexp:
   Enabled: true
 Performance/MethodObjectAsBlock:
@@ -175,7 +175,7 @@ Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
 # modern dev screens are large
 Layout/LineLength:
-  Max: 100
+  Max: 120
   Exclude:
     - spec/**/*.rb
 Layout/SpaceAroundMethodCallOperator:
@@ -254,6 +254,16 @@ Style/CommentedKeyword:
 # allow multiline {} if the return value is used, clearer then begin/end
 Style/BlockDelimiters:
   EnforcedStyle: semantic
+Style/FetchEnvVar: # new in 1.28
+  Enabled: true
+Style/ObjectThen: # new in 1.28
+  Enabled: true
+
+############
+#  Security   #
+############
+Security/CompoundHash: # new in 1.28
+  Enabled: true
 
 ############
 #  Rails   #
@@ -353,4 +363,10 @@ Rails/WhereExists: # new in 2.7
 Rails/WhereNot: # new in 2.8
   Enabled: true
 Rails/Validation:
+  Enabled: false
+Rails/OutputSafety:
+  Enabled: false
+Rails/ReversibleMigration:
+  Enabled: false
+Rails/LexicallyScopedActionFilter:
   Enabled: false

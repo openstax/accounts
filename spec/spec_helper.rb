@@ -302,9 +302,9 @@ def options(*args)
 end
 
 def in_travis?
-  ENV['CI']
+  ENV.fetch('CI')
 end
 
 def in_docker?
-  ENV['HUB_URL'].present?
+  ENV.fetch('HUB_URL').present?
 end

@@ -20,7 +20,7 @@ SimpleCov.at_exit do
   # Wait for everyone else to finish
   ParallelTests.wait_for_other_processes_to_finish
 
-  if ENV['CI'] == 'true'
+  if ENV.fetch('CI', nil) == 'true'
     # Send merged result to codecov only if on CI (will generate HTML report by default locally)
     SimpleCov.formatter = SimpleCov::Formatter::Codecov
   end

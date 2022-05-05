@@ -110,7 +110,7 @@ module AlertHelper
                else
                  raise "invalid alert :type (#{alert[:type]})"
                end
-    "class=\"#{classes.join(' ')}\"".html_safe # rubocop:disable Rails/OutputSafety
+    "class=\"#{classes.join(' ')}\"".html_safe
   end
 
   def alert_data_attr(alert)

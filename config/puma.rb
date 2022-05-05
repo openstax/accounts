@@ -51,9 +51,9 @@ end
 max_threads = ENV.fetch('RAILS_MAX_THREADS', 5).to_i
 threads ENV.fetch('RAILS_MIN_THREADS', max_threads).to_i, max_threads
 
-if ENV['SOCKET']
+if ENV.fetch('SOCKET')
   # Specifies the `socket` to which Puma will bind to receive requests.
-  bind ENV['SOCKET']
+  bind ENV.fetch('SOCKET')
 else
   # Specifies the `port` that Puma will listen on to receive requests; default is DEV_PORT (2999).
   port ENV.fetch('PORT', DEV_PORT)

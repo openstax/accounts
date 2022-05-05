@@ -8,7 +8,7 @@ OpenStax::RescueFrom.configure do |config|
                                                       default: Rails.env.development?)
 
   config.app_name = 'Accounts'
-  config.contact_name = exception_secrets[:contact_name]&.html_safe # rubocop:disable Rails/OutputSafety
+  config.contact_name = exception_secrets[:contact_name]&.html_safe
 
   # Notify devs using sentry
   config.notify_proc = ->(proxy, controller) do

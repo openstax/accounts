@@ -2,7 +2,7 @@ class SocialAuthController < ApplicationController
   include LoginSignupHelper
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
-  def oauth_callback # rubocop:disable Metrics/MethodLength
+  def oauth_callback
     if signed_in? && user_signin_is_too_old?
       reauthenticate_user!
     else

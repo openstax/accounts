@@ -54,12 +54,12 @@ end
 CAPYBARA_PROTOCOL = DEV_PROTOCOL
 CAPYBARA_PORT = ENV.fetch('PORT', DEV_PORT)
 
-if EnvUtilities.load_boolean(name: 'HEADLESS', default: true)
+Capybara.javascript_driver = if EnvUtilities.load_boolean(name: 'HEADLESS', default: true)
   # Run the feature specs in a full browser (note, this takes over your computer's focus)
-  Capybara.javascript_driver = :selenium_chrome_headless
-else
-  Capybara.javascript_driver = :selenium_chrome
-end
+  :selenium_chrome_headless
+                             else
+  :selenium_chrome
+                             end
 
 CAPYBARA_HOST = DEV_HOST
 CAPYBARA_HOST_REGEX = /\A(.*\.)?#{Regexp.escape CAPYBARA_HOST.sub('*.', '').chomp('.*')}\z/

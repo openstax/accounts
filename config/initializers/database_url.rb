@@ -14,7 +14,7 @@ module DatabaseUrl
 
   def self.env
     return Rails.env if rails_loaded?
-    ENV['RAILS_ENV'] || ENV['RACK_ENV']
+    ENV.fetch('RAILS_ENV', nil) || ENV.fetch('RACK_ENV', nil)
   end
 
   def self.config_file

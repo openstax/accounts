@@ -6,7 +6,7 @@ Rails.application.routes.draw do
  "/#{request.params[:path]}?#{request.params.except('path').to_query}"
                        }, via: :all
 
-  match 'signout' => redirect { :logout }, via: :get
+  get 'signout' => redirect { :logout }
 
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
