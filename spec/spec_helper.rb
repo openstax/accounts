@@ -43,7 +43,7 @@ RSpec.configure do |config|
   config.before(:all) do
     load('db/seeds.rb')
   end
-  
+
   config.before(:each) do
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.start
@@ -302,5 +302,5 @@ def options(*args)
 end
 
 def in_docker?
-  ENV['HUB_URL'].present?
+  ENV.fetch('HUB_URL').present?
 end

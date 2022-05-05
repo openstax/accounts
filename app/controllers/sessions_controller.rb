@@ -4,27 +4,17 @@ class SessionsController < ApplicationController
   include RateLimiting
 
   skip_before_action :authenticate_user!,
-                     only: [:start, :lookup_login, :authenticate, :redirect_back,
+                     only: [:lookup_login, :authenticate, :redirect_back,
                             :create, :failure, :destroy]
 
-  before_action :save_new_params_in_session, only:   [:start]
-
   before_action :store_authorization_url_as_fallback, only: :create
-
-  before_action :maybe_skip_to_sign_up, only: [:start]
-
-  # If the user arrives to :start already logged in, this means they got linked to
-  # the login page somehow; attempt to redirect to the authorization url stored
-  # earlier
-  before_action :redirect_back, if: -> { signed_in? }, only: :start
-
 
   def lookup_login
     # Most rate limiting happens in CustomIdentity; this separate check needs to be here
     # here because bad username entries don't even make it all the way to CustomIdentity.
 
     if too_many_log_in_attempts_by_ip?(ip: request.ip)
-      redirect_to root_url, alert: (I18n.t :"controllers.sessions.too_many_lookup_attempts")
+      redirect_to root_url, alert: (I18n.t :'controllers.sessions.too_many_lookup_attempts')
     else
       handle_with(SessionsLookupLogin,
                   success: lambda do
@@ -62,71 +52,67 @@ class SessionsController < ApplicationController
       SessionsCreate,
       user_state:      self,
       login_providers: get_login_state[:providers],
-      success:         -> do
+      success:         lambda do
         authentication = @handler_result.outputs[:authentication]
         status         = @handler_result.outputs[:status]
 
         case status
-          when :new_signin_required
-            reauthenticate_user! # TODO maybe replace with static "session has expired" b/c hard to recover
-          when :returning_user
-            security_log :sign_in_successful, authentication_id: authentication.id
-            redirect_to action: :redirect_back
-          when :new_password_user
-            security_log :sign_up_successful, authentication_id: authentication.id
-            security_log :sign_in_successful, authentication_id: authentication.id
-            redirect_to action: :redirect_back
-          when :existing_user_signed_up_again
-            # TODO security_log that user signed up again and we merged
-            security_log :sign_in_successful, authentication_id: authentication.id
-            redirect_to action: :redirect_back
-          when :no_action
-            security_log :sign_in_successful, authentication_id: authentication.id
-            redirect_to action: :redirect_back
-          when :new_social_user
-            security_log :sign_in_successful, authentication_id: authentication.id
-            redirect_to confirm_oauth_info_path
-          when :authentication_added
-            security_log :authentication_created,
-                         authentication_id:       authentication.id,
-                         authentication_provider: authentication.provider,
-                         authentication_uid:      authentication.uid
-            security_log :sign_in_successful, authentication_id: authentication.id
-            redirect_to profile_path,
-                        notice: I18n.t(:"controllers.sessions.new_sign_in_option_added")
-          when :authentication_taken
-            security_log :authentication_transfer_failed, authentication_id: authentication.id
-            redirect_to profile_path,
-                        alert: I18n.t(:"controllers.sessions.sign_in_option_already_used")
-          when :same_provider
-            security_log :authentication_transfer_failed, authentication_id: authentication.id
-            redirect_to profile_path,
-                        alert: I18n.t(:"controllers.sessions.same_provider_already_linked",
-                                      user_name:      current_user.name,
-                                      authentication: authentication.display_name)
-          when :mismatched_authentication
-            security_log :sign_in_failed, reason: "mismatched authentication"
-            redirect_to login_path,
-                        alert: I18n.t(:"controllers.sessions.mismatched_authentication")
-          when :email_already_in_use
-            redirect_to profile_path,
-                        alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added")
-          else
+        when :new_signin_required
+          # TODO: maybe replace with static "session has expired" b/c hard to recover
+          reauthenticate_user!
+        when :returning_user
+          security_log :sign_in_successful, authentication_id: authentication.id
+          redirect_to action: :redirect_back
+        when :new_password_user
+          security_log :sign_up_successful, authentication_id: authentication.id
+          security_log :sign_in_successful, authentication_id: authentication.id
+          redirect_to action: :redirect_back
+        when :existing_user_signed_up_again || :no_action
+          security_log :sign_in_successful, authentication_id: authentication.id
+          redirect_to action: :redirect_back
+        when :new_social_user
+          security_log :sign_in_successful, authentication_id: authentication.id
+          redirect_to confirm_oauth_info_path
+        when :authentication_added
+          security_log :authentication_created,
+                       authentication_id:       authentication.id,
+                       authentication_provider: authentication.provider,
+                       authentication_uid:      authentication.uid
+          security_log :sign_in_successful, authentication_id: authentication.id
+          redirect_to profile_path, notice: I18n.t(:'controllers.sessions.new_sign_in_option_added')
+        when :authentication_taken
+          security_log :authentication_transfer_failed, authentication_id: authentication.id
+          redirect_to profile_path,
+alert: I18n.t(:'controllers.sessions.sign_in_option_already_used')
+        when :same_provider
+          security_log :authentication_transfer_failed, authentication_id: authentication.id
+          redirect_to profile_path,
+                      alert: I18n.t(:'controllers.sessions.same_provider_already_linked',
+                                    user_name:      current_user.name,
+                                    authentication: authentication.display_name)
+        when :mismatched_authentication
+          security_log :sign_in_failed, reason: "mismatched authentication"
+          redirect_to login_path,
+                      alert: I18n.t(:'controllers.sessions.mismatched_authentication')
+        when :email_already_in_use
+          redirect_to profile_path,
+alert: I18n.t(:'controllers.sessions.way_to_login_cannot_be_added')
+        else
             oauth               = request.env['omniauth.auth']
             errors              = @handler_result.errors.inspect
             last_exception      = $!.inspect
             exception_backtrace = $@.inspect
 
-            error_message = "[SessionsCreate] IllegalState on success: " +
-              "OAuth data: #{oauth}; status: #{status}; " +
-              "errors: #{errors}; last exception: #{last_exception}; " +
-              "exception backtrace: #{exception_backtrace}"
+            error_message = "[SessionsCreate] IllegalState on success: " \
+                            "OAuth data: #{oauth}; status: #{status}; " \
+                            "errors: #{errors}; last exception: #{last_exception}; " \
+                            "exception backtrace: #{exception_backtrace}"
 
             # This will print the exception to the logs and send devs an exception email
             raise IllegalState, error_message
         end
       end,
-      failure:         -> do
+      failure:         lambda do
         errors    = @handler_result.errors
         lost_user = errors.any? do |error|
           [:unknown_callback_state, :invalid_omniauth_data].include? error.code
@@ -138,7 +124,7 @@ class SessionsController < ApplicationController
             oauth  = request.env['omniauth.auth']
             errors = @handler_result.errors.inspect
 
-            "[SessionsCreate] Lost User on failure: " +
+            "[SessionsCreate] Lost User on failure: " \
               "OAuth data: #{oauth}; status: #{status}; errors: #{errors}"
           end
 
@@ -149,10 +135,10 @@ class SessionsController < ApplicationController
           last_exception      = $!.inspect
           exception_backtrace = $@.inspect
 
-          error_message = "[SessionsCreate] IllegalState on failure: " +
-            "OAuth data: #{oauth}; status: #{status}; " +
-            "errors: #{errors}; last exception: #{last_exception}; " +
-            "exception backtrace: #{exception_backtrace}"
+          error_message = "[SessionsCreate] IllegalState on failure: " \
+                          "OAuth data: #{oauth}; status: #{status}; " \
+                          "errors: #{errors}; last exception: #{last_exception}; " \
+                          "exception backtrace: #{exception_backtrace}"
 
           # This will print the exception to the logs and send devs an exception email
           raise IllegalState, error_message
@@ -187,50 +173,48 @@ class SessionsController < ApplicationController
                 else
                   "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
                 end
-              rescue # in case the referer is bad (see #179)
+      rescue StandardError # in case the referer is bad (see #179)
                 root_url
-              end
+      end
 
       redirect_to url
     end
   end
 
-  def redirect_back
-    super # defined in action_interceptor gem
-  end
-
   # OAuth failure (e.g. wrong password)
   def failure
     if params[:message] == 'csrf_detected'
-      redirect_to logout_path, alert: 'CSRF Error!'
+      redirect_to logout_path
       return
     end
 
     case params[:message]
-      when 'cannot_find_user'
-        flash[:alert] = I18n.t :"controllers.sessions.no_account_for_username_or_email"
+    when 'cannot_find_user'
+        flash[:alert] = I18n.t :'controllers.sessions.no_account_for_username_or_email'
         redirect_to :login_form_path and return
-      when 'multiple_users'
-        flash[:alert] = I18n.t :"controllers.sessions.several_accounts_for_one_email"
+    when 'multiple_users'
+        flash[:alert] = I18n.t :'controllers.sessions.several_accounts_for_one_email'
         redirect_to :login_form_path and return
-      when 'bad_authenticate_password'
-        field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
+    when 'bad_authenticate_password'
+        field_error!(on: [:login, :password], code: :bad_password,
+message: :'controllers.sessions.incorrect_password')
         redirect_to :login_form_path and return
-      when 'bad_reauthenticate_password'
-        field_error!(on: [:login, :password], code: :bad_password, message: :"controllers.sessions.incorrect_password")
+    when 'bad_reauthenticate_password'
+        field_error!(on: [:login, :password], code: :bad_password,
+message: :'controllers.sessions.incorrect_password')
         reauthenticate # load state needed for render
         render :'login/reauthenticate_form'
-      when 'too_many_login_attempts'
-        flash[:alert] = I18n.t :"controllers.sessions.too_many_login_attempts.content",
+    when 'too_many_login_attempts'
+        flash[:alert] = I18n.t :'controllers.sessions.too_many_login_attempts.content',
                                reset_password: "<a href=\"#{password_send_reset_path}\">#{
-                                 I18n.t :"controllers.sessions.too_many_login_attempts.reset_password"
+                                 I18n.t :'controllers.sessions.too_many_login_attempts.reset_password'
                                }</a>".html_safe
         redirect_to :login_form_path and return
-      when 'invalid_credentials'
-        flash[:alert] = I18n.t :"controllers.sessions.trouble_with_provider"
+    when 'invalid_credentials'
+        flash[:alert] = I18n.t :'controllers.sessions.trouble_with_provider'
 
         redirect_to :login_form_path and return
-      else
+    else
         flash[:alert] = params[:message]
         render :'signup/welcome'
     end
@@ -245,7 +229,7 @@ class SessionsController < ApplicationController
   end
 
   def maybe_skip_to_sign_up
-    if %w{signup student_signup}.include?(params[:go])
+    if %w[signup student_signup].include?(params[:go])
       redirect_to signup_path(role: 'student')
     end
   end
@@ -273,4 +257,3 @@ class SessionsController < ApplicationController
     @errors.add(false, offending_inputs: on, code: code, message: message)
   end
 end
-

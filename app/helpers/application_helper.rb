@@ -2,7 +2,7 @@ module ApplicationHelper
 
   include AlertHelper
 
-  # rubocop:disable Rails/OutputSafety, Rails/HelperInstanceVariable
+  # rubocop:disable Rails/HelperInstanceVariable
   def contact_us_link
     link_to(
       I18n.t(:'login_signup_form.contact_us'),
@@ -111,7 +111,7 @@ module ApplicationHelper
       "#{step_counter}\n#{exit_icon}\n#{header}\n#{body}".html_safe # disa
     end
   end
-  # rubocop:enable Rails/OutputSafety, Rails/HelperInstanceVariable
+  # rubocop:enable Rails/HelperInstanceVariable
 
   # When current user wants to change their password,
   # but hasn't logged in in a while, we ask them to re-authenticate.

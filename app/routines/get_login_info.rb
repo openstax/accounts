@@ -45,15 +45,15 @@ class GetLoginInfo
 
       hash[provider][:login_hint] =
         case provider
-          when 'google_oauth2'
+        when 'google_oauth2'
             # the google login hint is an email; only leak this info if the user
             # already provided it as the way they are logging in or if we have a
             # user object in hand (reauthenticating)
-            user.present? || authentication.login_hint == username_or_email ?
-              authentication.login_hint :
-              authentication.uid
-          else
-            nil
+            if user.present? || authentication.login_hint == username_or_email
+  authentication.login_hint
+            else
+  authentication.uid
+            end
         end
     end
   end

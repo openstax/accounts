@@ -12,7 +12,7 @@ class LoginController < ApplicationController
     render :login_form
   end
 
-  def login_post # rubocop:disable Metrics/MethodLength
+  def login_post
     handle_with(
       LogInUser,
       success: lambda {

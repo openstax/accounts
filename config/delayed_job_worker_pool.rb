@@ -8,8 +8,8 @@ SdNotify.mainpid Process.pid
 preload_app
 
 worker_group do |group|
-  group.workers = Integer(ENV['NUM_WORKERS'] || Etc.nprocessors)
-  group.queues = (ENV['QUEUES'] || ENV['QUEUE'] || '').split(',')
+  group.workers = Integer(ENV.fetch('NUM_WORKERS', nil) || Etc.nprocessors)
+  group.queues = (ENV.fetch('QUEUES', nil) || ENV.fetch('QUEUE', nil) || '').split(',')
 end
 
 # Monkeypatches
@@ -30,7 +30,7 @@ DelayedJobWorkerPool::WorkerPool.class_exec do
     fork_workers
 
     if SdNotify.watchdog?
-      watchdog_thread_sleep_interval = Integer(ENV['WATCHDOG_USEC']) / 2000000
+      watchdog_thread_sleep_interval = Integer(ENV.fetch('WATCHDOG_USEC', nil)) / 2000000
       log "Starting watchdog thread with sleep interval #{watchdog_thread_sleep_interval} seconds"
 
       # Start the watchdog thread with high priority
@@ -40,7 +40,7 @@ DelayedJobWorkerPool::WorkerPool.class_exec do
 
           SdNotify.watchdog
         end
-      end.priority = Integer(ENV['WATCHDOG_PRIORITY'] || 100)
+      end.priority = Integer(ENV.fetch('WATCHDOG_PRIORITY', nil) || 100)
     end
 
     # Notify systemd of our PID and that we have finished booting up

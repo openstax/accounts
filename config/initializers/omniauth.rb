@@ -11,7 +11,7 @@ end
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :identity,
            model: Identity,
-           fields: %i[user_id, password]
+           fields: %i[user_id password]
 end
 
 Rails.application.config.middleware.use OmniAuth::Builder do

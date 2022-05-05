@@ -62,7 +62,7 @@ ActionController::Base.class_exec do
   end
 
   def set_device_id
-    get_device_id if get_device_id.present?
+    get_device_id.presence
     cookies.delete(:oxdid) if device_id_invalid?
 
     cookies[:oxdid] ||= {

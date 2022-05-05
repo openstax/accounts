@@ -5,7 +5,7 @@ class NotNullUuid < ActiveRecord::Migration[4.2]
     User.where(uuid: nil)
         .update_all('"uuid" = gen_random_uuid()') # rubocop:disable Rails/SkipsModelValidations
 
-    change_column( # rubocop:disable Rails/ReversibleMigration
+    change_column(
       :users, :uuid, :uuid,
       using: 'uuid::uuid',
       default: 'gen_random_uuid()',

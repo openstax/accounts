@@ -13,8 +13,8 @@ FinePrint.configure do |config|
   # This proc is called when a user tries to access FinePrint's controllers.
   # Should raise and exception, render or redirect unless the user is a manager
   # or admin.
-  config.authenticate_manager_proc = lambda { |user| !user.nil? && \
-                                                     user.is_administrator? || \
+  config.authenticate_manager_proc = lambda { |user| (!user.nil? && \
+                                                     user.is_administrator?) || \
                                                      head(:forbidden) }
 
   # This proc is called before FinePrint determines if contracts need to be

@@ -35,7 +35,7 @@ RSpec.describe CreateSalesforceLeadJob, type: :job, vcr: VCR_OPTS do
   it 'does not create two leads for the same user', perform_enqueued: true do
     user.update!(state: :activated)
     described_class.perform_now(user_id)
-    #expect(described_class.perform_now(user_id)).to respond_to?(Rails.logger.warn)
+    # expect(described_class.perform_now(user_id)).to respond_to?(Rails.logger.warn)
   end
 
   it 'populate the salesforce lead id for the user', perform_enqueued: true do
