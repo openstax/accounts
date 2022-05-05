@@ -26,7 +26,7 @@ class CreateSalesforceLeadJob < ApplicationJob
     if user.role == 'student'
       sf_role = 'Student'
     else
-      sf_role     = 'Instructor'
+      sf_role = 'Instructor'
       sf_position = user.role
     end
 

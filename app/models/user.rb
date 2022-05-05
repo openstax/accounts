@@ -361,14 +361,14 @@ class User < ApplicationRecord
   end
 
   # TODO: useful.. but doesn't seem used
-  # def self.known_roles
-  #   roles.except(:unknown_role).keys
-  # end
-  #
-  #
-  # def self.non_student_known_roles
-  #   known_roles - ['student']
-  # end
+  def self.known_roles
+    roles.except(:unknown_role).keys
+  end
+
+
+  def self.non_student_known_roles
+    known_roles - ['student']
+  end
 
   def guessed_preferred_confirmed_email
     # A heuristic for guessing the user's preferred confirmed email.  Assumes that

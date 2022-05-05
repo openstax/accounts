@@ -26,6 +26,8 @@ class ActivateUser
     end
 
     SecurityLog.create!(user: user, event_type: :user_became_activated)
+
+    transfer_errors_from(user, { type: :verbatim })
   end
 
 end

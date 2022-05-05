@@ -11,7 +11,8 @@ class Authentication < ApplicationRecord
 
   def display_name
     case provider
-    when 'identity' then 'Password'
+      when 'identity' then 'Password'
+      when 'google_oauth2' then 'Google'
     else provider.capitalize
     end
   end
