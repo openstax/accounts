@@ -48,7 +48,7 @@ describe OmniauthData do
   context 'when auth provider is google' do
     it 'stores user information' do
       user = FactoryBot.create :user
-      auth_hash = OmniAuth::AuthHash.new provider: 'google', uid: '12345678901234567890'
+      auth_hash = OmniAuth::AuthHash.new provider: 'google_oauth2', uid: '12345678901234567890'
       auth_hash.extra = {
         id_token: 'SoMeLoNgRaNdOmStRiNg',
         raw_info: {
@@ -75,7 +75,7 @@ describe OmniauthData do
       }
       data = OmniauthData.new(auth_hash)
 
-      expect(data.provider).to eq 'google'
+      expect(data.provider).to eq 'google_oauth2'
       expect(data.uid).to eq '12345678901234567890'
       expect(data.name).to eq 'User N. One'
       expect(data.nickname).to eq 'User N. One'

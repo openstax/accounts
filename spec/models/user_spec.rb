@@ -218,8 +218,8 @@ RSpec.describe User, type: :model do
 
   context "state" do
     it "defaults to needs_profile" do
-      expect(User.new.state ).to eq("needs_profile")
-      expect(User.new.is_needs_profile? ).to be_truthy
+      expect(User.new.state ).to eq("unverified")
+      expect(User.new.unverified? ).to be_truthy
     end
 
     it "can be set to active" do

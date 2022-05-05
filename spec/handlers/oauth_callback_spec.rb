@@ -9,7 +9,7 @@ RSpec.describe OauthCallback, type: :handler do
     }
 
     let(:user) {
-      create_newflow_user(email)
+      create_user(email)
     }
 
     let(:auth) {
@@ -31,7 +31,7 @@ RSpec.describe OauthCallback, type: :handler do
 
   context 'when no authentication found, but verified user found' do
     before do
-      create_newflow_user(email)
+      create_user(email)
     end
 
     let(:oauth_user_info) {
@@ -94,7 +94,7 @@ RSpec.describe OauthCallback, type: :handler do
 
   context 'when no authentication found and the response from social provider does not include email' do
     before do
-      create_newflow_user(email)
+      create_user(email)
     end
 
     let(:oauth_user_info) {
@@ -155,7 +155,7 @@ RSpec.describe OauthCallback, type: :handler do
     end
 
     let(:request) do
-      MockOmniauthRequest.new 'googlenewflow', Faker::Internet.uuid, oauth_user_info
+      MockOmniauthRequest.new 'google_oauth2', Faker::Internet.uuid, oauth_user_info
     end
 
     subject(:user_authentications) { user.authentications }

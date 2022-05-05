@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe SendResetPasswordEmail, type: :handler do
   let(:user) do
-    create_newflow_user('user@openstax.org', 'password')
+    create_user('user@openstax.org', 'password')
   end
 
   let(:params) do
@@ -15,7 +15,7 @@ describe SendResetPasswordEmail, type: :handler do
 
   context 'when user is passed-in' do
     it 'sends a password reset email' do
-      expect_any_instance_of(NewflowMailer).to receive(:reset_password_email).and_call_original
+      expect_any_instance_of(SignupPasswordMailer).to receive(:reset_password_email).and_call_original
       described_class.call(params: {}, caller: user)
     end
   end
@@ -23,7 +23,7 @@ describe SendResetPasswordEmail, type: :handler do
   context 'when email param is passed-in, no user' do
     it 'updates the password for the user found by email address' do
       user # create it
-      expect_any_instance_of(NewflowMailer).to receive(:reset_password_email).and_call_original
+      expect_any_instance_of(SignupPasswordMailer).to receive(:reset_password_email).and_call_original
       described_class.call(params: params, caller: AnonymousUser.instance)
     end
   end

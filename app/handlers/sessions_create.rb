@@ -112,7 +112,7 @@ class SessionsCreate
 
     run(TransferAuthentications, authentication, receiving_user)
     sign_in!(receiving_user)
-    return status
+    status
   end
 
   def handle_while_logged_in

@@ -5,9 +5,9 @@ module Admin
 
     layout 'admin'
 
-    if Rails.env.development?
-      skip_before_action :authenticate_user!
+    before_action :check_if_admin
 
+    if Rails.env.development?
       fine_print_skip :general_terms_of_use, :privacy_policy
     else
       before_action :authenticate_admin!
@@ -15,7 +15,7 @@ module Admin
     end
 
     def log_out_inactive_admins
-      if current_user.is_administrator?
+      if current_user.is_administrator? && Rails.application.secrets.environment_name == 'production'
         if session[:last_admin_activity].nil?
           # logged in as a normal user and then someone made normal user an admin
           # otherwise, should never be nil for admins who log in as an admin

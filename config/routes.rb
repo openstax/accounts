@@ -93,12 +93,6 @@ as: :reset_password_email_sent
 
   mount OpenStax::Api::Engine, at: '/'
 
-  # routes for access via an iframe
-  scope 'remote', controller: 'remote' do
-    get 'iframe'
-    get 'notify_logout', as: 'iframe_after_logout'
-  end
-
   scope controller: 'users' do
     put 'profile', action: :update
   end
@@ -147,11 +141,13 @@ as: :reset_password_email_sent
   api :v1, default: true do
     resources :users, only: [:index]
 
-    resource :user, only: [:show, :update]
+    resource :user, only: [:show, :update] do
+      post '/find-or-create', action: 'find_or_create'
+    end
 
     resources :application_users, only: [:index] do
       collection do
-        get 'find/uuid/:uuid', action: 'find_by_uuid'
+        get 'find/username/:username', action: 'find_by_username'
         get 'updates'
         put 'updated'
       end

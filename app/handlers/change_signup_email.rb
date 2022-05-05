@@ -35,6 +35,6 @@ class ChangeSignupEmail
   private ###################
 
   def send_confirmation_email
-    NewflowMailer.signup_email_confirmation(email_address: @email_address).deliver_later
+    SignupPasswordMailer.signup_email_confirmation(email_address: @email_address).deliver_later
   end
 end
