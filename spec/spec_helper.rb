@@ -79,13 +79,6 @@ RSpec.configure do |config|
     ActiveJob::Base.queue_adapter.perform_enqueued_at_jobs = @old_perform_enqueued_at_jobs
   end
 
-  # These two settings work together to allow you to limit a spec run
-  # to individual examples or groups you care about by tagging them with
-  # `:focus` metadata. When nothing is tagged with `:focus`, all examples
-  # get run.
-  #config.filter_run :focus
-  config.run_all_when_everything_filtered = true
-
   # Allows RSpec to persist some state between runs in order to support
   # the `--only-failures` and `--next-failure` CLI options. We recommend
   # you configure your source control system to ignore this file.
@@ -302,5 +295,5 @@ def options(*args)
 end
 
 def in_docker?
-  ENV.fetch('HUB_URL').present?
+  ENV.fetch('HUB_URL', false)
 end

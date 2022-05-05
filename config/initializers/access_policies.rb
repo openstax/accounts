@@ -1,7 +1,6 @@
 require_relative 'doorkeeper'
 
-OSU::AccessPolicy.register(Doorkeeper::Application,
-                           Doorkeeper::ApplicationAccessPolicy)
+# Accounts users and groups
 OSU::AccessPolicy.register(User, UserAccessPolicy)
 OSU::AccessPolicy.register(AnonymousUser, UserAccessPolicy)
 OSU::AccessPolicy.register(Identity, IdentityAccessPolicy)
@@ -14,3 +13,6 @@ OSU::AccessPolicy.register(GroupMember, GroupMemberAccessPolicy)
 OSU::AccessPolicy.register(GroupOwner, GroupOwnerAccessPolicy)
 OSU::AccessPolicy.register(GroupNesting, GroupNestingAccessPolicy)
 OSU::AccessPolicy.register(ApplicationGroup, ApplicationGroupAccessPolicy)
+
+# Doorkeeper
+OSU::AccessPolicy.register(Doorkeeper::Application, Doorkeeper::ApplicationAccessPolicy)

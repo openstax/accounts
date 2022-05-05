@@ -51,7 +51,7 @@ end
 max_threads = ENV.fetch('RAILS_MAX_THREADS', 5).to_i
 threads ENV.fetch('RAILS_MIN_THREADS', max_threads).to_i, max_threads
 
-if ENV.fetch('SOCKET')
+if ENV.fetch('SOCKET', nil)
   # Specifies the `socket` to which Puma will bind to receive requests.
   bind ENV.fetch('SOCKET')
 else
