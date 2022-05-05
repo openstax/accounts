@@ -6,13 +6,11 @@ ActiveRecord::Base.class_exec do
                              exclude_foreign_keys: false,
                              transform_arrays_into_sets: false)
     attrs = attributes
-    attrs = attrs.slice(*slice) unless slice.blank?
-    attrs = attrs.except(*except) unless except.blank?
+    attrs = attrs.slice(*slice) if slice.present?
+    attrs = attrs.except(*except) if except.present?
 
     if exclude_foreign_keys
-      foreign_keys = self.class.reflect_on_all_associations(:belongs_to).map do |ar|
-        ar.foreign_key
-      end
+      foreign_keys = self.class.reflect_on_all_associations(:belongs_to).map(&:foreign_key)
       attrs        = attrs.except(*foreign_keys)
     end
 
