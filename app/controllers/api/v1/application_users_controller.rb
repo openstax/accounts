@@ -1,5 +1,5 @@
 class Api::V1::ApplicationUsersController < Api::V1::ApiController
-  before_action :set_app_user, only: [:show, :update, :destroy]
+  # before_action :set_app_user, only: [:show, :update, :destroy]
 
   resource_description do
     api_versions "v1"
@@ -106,16 +106,16 @@ url_end: '?q=name=Jones')}"
   # find_by_username
   ###############################################################
 
-  api :GET, '/application_users/find/uuid/:uuid',
+  api :GET, '/application_users/find/username/:username',
       'Gets a single ApplicationUser with the specified username.'
   description <<-EOS
     #{json_schema(Api::V1::ApplicationUserRepresenter, include: :readable)}
   EOS
-  def find_by_uuid
+  def find_by_username
     raise SecurityTransgression if current_application.nil?
 
     application_user = ApplicationUser.preload(:user).joins(:user).where(
-      users: { uuid: params[:uuid] },
+      users: { username: params[:username] },
       application_id: current_application.id
     ).first!
 
@@ -129,47 +129,47 @@ location: nil
   # show
   ###############################################################
 
-  api :GET, '/application_user', 'Gets the ApplicationUser for the current user
- and current app.'
-  description <<-EOS
- Can only be called by an application using an access token for a user.
- Gets the ApplicationUser for the current user and current app.
-
- #{json_schema(Api::V1::ApplicationUserRepresenter, include: :readable)}
-  EOS
-  def show
-   standard_read(ApplicationUser, app_user.id)
-  end
+ #  api :GET, '/application_user', 'Gets the ApplicationUser for the current user
+ # and current app.'
+ #  description <<-EOS
+ # Can only be called by an application using an access token for a user.
+ # Gets the ApplicationUser for the current user and current app.
+ #
+ # #{json_schema(Api::V1::ApplicationUserRepresenter, include: :readable)}
+ #  EOS
+ #  def show
+ #   standard_read(ApplicationUser, app_user.id)
+ #  end
 
   ###############################################################
   # update
   ###############################################################
 
-  api :PUT, '/application_user', 'Updates the ApplicationUser for the current
- user and current app.'
-  description <<-EOS
- Can only be called by an application using an access token for a user.
- Updates the ApplicationUser for the current user and current app.
-
- #{json_schema(Api::V1::ApplicationUserRepresenter, include: [:writeable])}
-  EOS
-  def update
-   standard_update(ApplicationUser, app_user.id)
-  end
+ #  api :PUT, '/application_user', 'Updates the ApplicationUser for the current
+ # user and current app.'
+ #  description <<-EOS
+ # Can only be called by an application using an access token for a user.
+ # Updates the ApplicationUser for the current user and current app.
+ #
+ # #{json_schema(Api::V1::ApplicationUserRepresenter, include: [:writeable])}
+ #  EOS
+ #  def update
+ #   standard_update(ApplicationUser, app_user.id)
+ #  end
 
   ###############################################################
   # destroy
   ###############################################################
 
-  api :DELETE, '/application_user', 'Deletes the ApplicationUser for the current
- user and current app.'
-  description <<-EOS
- Can only be called by an application using an access token for a user.
- Deletes the ApplicationUser for the current user and current app.
-  EOS
-  def destroy
-   standard_destroy(ApplicationUser, app_user.id)
-  end
+ #  api :DELETE, '/application_user', 'Deletes the ApplicationUser for the current
+ # user and current app.'
+ #  description <<-EOS
+ # Can only be called by an application using an access token for a user.
+ # Deletes the ApplicationUser for the current user and current app.
+ #  EOS
+ #  def destroy
+ #   standard_destroy(ApplicationUser, app_user.id)
+ #  end
 
   ###############################################################
   # updates
