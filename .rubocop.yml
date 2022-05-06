@@ -28,7 +28,7 @@ Metrics/BlockLength:
 # Too short methods lead to extraction of single-use methods, which can make
 # the code easier to read (by naming things), but can also clutter the class
 Metrics/MethodLength:
-  Max: 120
+  Max: 130
 
 ##############
 #  Lints     #
@@ -370,3 +370,6 @@ Rails/ReversibleMigration:
   Enabled: false
 Rails/LexicallyScopedActionFilter:
   Enabled: false
+Rails/ApplicationMailer:
+  Enabled: false
+
