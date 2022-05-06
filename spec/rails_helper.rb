@@ -94,6 +94,7 @@ RSpec.configure do |config|
 
   config.prepend_before(:all) do
     metadata                 = self.class.metadata
+    # rubocop
     DatabaseCleaner.strategy = metadata[:js] || metadata[:truncation] ? :truncation : :transaction
     DatabaseCleaner.start
   end

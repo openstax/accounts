@@ -130,7 +130,8 @@ feature 'User manages emails', js: true do
     end
 
     context 'when there are two emails' do
-      let(:verified_emails) { %w[one@verified.com two@verified.com]
+      let(:verified_emails) {
+        %w[one@verified.com two@verified.com]
       }
 
       scenario 'one of the emails can be deleted' do

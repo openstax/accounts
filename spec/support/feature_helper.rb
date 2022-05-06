@@ -1,6 +1,6 @@
 module FeatureHelper
   def create_user(email, password = 'password', terms_agreed = nil, confirmation_code = nil, role = 'student')
-    terms_agreed_option = (terms_agreed.nil? || terms_agreed) ? :terms_agreed : :terms_not_agreed
+    terms_agreed_option = terms_agreed.nil? || terms_agreed ? :terms_agreed : :terms_not_agreed
 
     user = FactoryBot.create(:user, terms_agreed_option, role: role)
 
@@ -96,14 +96,14 @@ module FeatureHelper
   def capybara_url(path)
     server = Capybara.current_session.try(:server)
     raise "no capybara server" if server.nil?
-    "http://#{server.host}:#{server.port}/#{path.starts_with?('/') ? path[1..-1] : path}"
+    "http://#{server.host}:#{server.port}/#{path.starts_with?('/') ? path[1..] : path}"
   end
 
   # to make sure that the plumbing is all working for forgery protection
   def with_forgery_protection
       allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
       yield if block_given?
-    ensure
+  ensure
       allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_call_original
   end
 
@@ -116,7 +116,7 @@ module FeatureHelper
     visit "/oauth/authorize?redirect_uri=#{app.redirect_uri}&" \
           "response_type=code&" \
           "client_id=#{app.uid}" \
-          "#{'&' + params.to_query if params.any?}"
+          "#{"&#{params.to_query}" if params.any?}"
   end
 
   def expect_back_at_app(app: nil)
@@ -233,6 +233,6 @@ module FeatureHelper
   def expect_security_log(*args)
     expect_any_instance_of(ActionController::Base).to receive(:security_log)
                                                   .with(*args)
-                                                  .and_call_original
+      .and_call_original
   end
 end
