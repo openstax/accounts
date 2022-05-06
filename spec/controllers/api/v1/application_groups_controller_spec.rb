@@ -95,7 +95,7 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
       expect(application_group_1.reload.unread_updates).to eq 2
 
       expected_response = [{
-                             id:             application_group_1.id,
+        id:             application_group_1.id,
                              group:          {
                                id:                  group_1.id,
                                name:                'G',
@@ -108,7 +108,7 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
                                subtree_member_ids:  []
                              },
                              unread_updates: 2
-                           }].to_json
+      }].to_json
 
       expect(response.body).to eq(expected_response)
 
@@ -132,7 +132,7 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
       application_group_2 = ApplicationGroup.last
 
       expected_response = [{
-                             id:             application_group_1.id,
+        id:             application_group_1.id,
                              group:          {
                                id:                  group_1.id,
                                name:                'G',
@@ -140,28 +140,28 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
                                owners:              [],
                                members:             [],
                                nestings:            [
-                                                      {
-                                                        container_group_id: group_1.id,
-                                                        member_group_id:    group_2.id
-                                                      }
-                                                    ],
+                                 {
+                                   container_group_id: group_1.id,
+                                   member_group_id:    group_2.id
+                                 }
+                               ],
                                supertree_group_ids: [group_1.id],
                                subtree_group_ids:   [group_1.id, group_2.id],
                                subtree_member_ids:  []
                              },
                              unread_updates: 3
-                           },
+      },
                            {
                              id:                application_group_2.id,
                              group:             {
                                id:                  group_2.id,
                                is_public:           false,
                                owners:              [
-                                                      {
-                                                        group_id: group_2.id,
-                                                        user:     user_matcher(user_1)
-                                                      }
-                                                    ],
+                                 {
+                                   group_id: group_2.id,
+                                   user:     user_matcher(user_1)
+                                 }
+                               ],
                                members:             [],
                                nestings:            [],
                                supertree_group_ids: [group_2.id, group_1.id],
@@ -209,21 +209,21 @@ RSpec.describe Api::V1::ApplicationGroupsController, type: :controller, api: tru
       expect(application_group_1.reload.unread_updates).to eq 4
 
       api_put :updated, untrusted_application_token, body: [
-                                                             { group_id: group_1.id, read_updates: 2 }].to_json
+        { group_id: group_1.id, read_updates: 2 }].to_json
 
       expect(response.status).to eq(204)
 
       expect(application_group_1.reload.unread_updates).to eq 4
 
       api_put :updated, untrusted_application_token, body: [
-                                                             { group_id: group_1.id, read_updates: 1 }].to_json
+        { group_id: group_1.id, read_updates: 1 }].to_json
 
       expect(response.status).to eq(204)
 
       expect(application_group_1.reload.unread_updates).to eq 4
 
       api_put :updated, untrusted_application_token, body: [
-                                                             { group_id: group_1.id, read_updates: 4 }].to_json
+        { group_id: group_1.id, read_updates: 4 }].to_json
 
       expect(response.status).to eq(204)
 

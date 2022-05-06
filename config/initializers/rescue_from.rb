@@ -1,14 +1,12 @@
 require 'openstax_rescue_from'
 
 OpenStax::RescueFrom.configure do |config|
-  config.raise_exceptions = ![false, 'false'].include?(ENV['RAISE_EXCEPTIONS']) ||
-                              Rails.application.config.consider_all_requests_local
-  config.raise_background_exceptions = ![false, 'false'].include?(
-    ENV['RAISE_BACKGROUND_EXCEPTIONS']
-  )
+  config.raise_exceptions = [false, 'false'].exclude?(ENV.fetch('RAISE_EXCEPTIONS', nil)) ||
+                            Rails.application.config.consider_all_requests_local
+  config.raise_background_exceptions = [false, 'false'].exclude?(ENV.fetch('RAISE_BACKGROUND_EXCEPTIONS', nil))
 
-  config.app_name = ENV['APP_NAME']
-  config.contact_name = ENV['EXCEPTION_CONTACT_NAME']
+  config.app_name = ENV.fetch('APP_NAME', nil)
+  config.contact_name = ENV.fetch('EXCEPTION_CONTACT_NAME', nil)
 
   config.notify_proc = ->(proxy, controller) do
     ExceptionNotifier.notify_exception(
@@ -23,7 +21,7 @@ OpenStax::RescueFrom.configure do |config|
         dns_name: resolve_ip(controller.request.remote_ip),
         extras: proxy.extras
       },
-      sections: %w(data request session environment backtrace)
+      sections: %w[data request session environment backtrace]
     )
   end
   config.notify_background_proc = ->(proxy) do
@@ -37,15 +35,15 @@ OpenStax::RescueFrom.configure do |config|
         cause: proxy.cause,
         extras: proxy.extras
       },
-      sections: %w(data environment backtrace)
+      sections: %w[data environment backtrace]
     )
   end
   config.notify_rack_middleware = ExceptionNotification::Rack
   config.notify_rack_middleware_options = {
     email: {
-      email_prefix: "[#{config.app_name}] (#{ENV['APP_ENV']}) ",
-      sender_address: ENV['EXCEPTION_SENDER'],
-      exception_recipients: ENV['EXCEPTION_RECIPIENTS']
+      email_prefix: "[#{config.app_name}] (#{ENV.fetch('APP_ENV', nil)}) ",
+      sender_address: ENV.fetch('EXCEPTION_SENDER', nil),
+      exception_recipients: ENV.fetch('EXCEPTION_RECIPIENTS', nil)
     }
   }
   # URL generation errors are caused by bad routes, for example, and should not be ignored

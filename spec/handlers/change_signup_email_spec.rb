@@ -57,4 +57,3 @@ RSpec.describe ChangeSignupEmail, type: :handler do
     end
   end
 end
-
