@@ -10,13 +10,11 @@ feature "User can't sign in", js: true do
     scenario "email unknown" do
       log_in_user('noone@openstax.org')
       expect(page).to have_content(t :'login_signup_form.cannot_find_user')
-      screenshot!
     end
 
     scenario "email blank" do
       log_in_user('', 'password')
       expect(page).to have_content(error_msg LogInUser, :email, :blank)
-      screenshot!
     end
 
     scenario "multiple accounts match email" do
@@ -29,31 +27,6 @@ feature "User can't sign in", js: true do
 
       log_in_user(email_address)
       expect(page).to have_content(t(:'login_signup_form.multiple_users'))
-
-      screenshot!
-    end
-
-    scenario "multiple accounts match email but no usernames" do
-      # For a brief window in 2017 users could sign up with jimbo@gmail.com and Jimbo@gmail.com
-      # and also not have a username.  So the "you can't sign in with email you must use your
-      # username" approach won't work for them.  We need to give them some other "contact support"
-      # message.
-      user1 = create_user 'user@example'
-      user2 = create_user 'temporary@email.com'
-      email2 = create_email_address_for(user2, email_address)
-      ContactInfo.where(id: email2.id).update_all(value: 'UsEr@example.com') # rubocop:disable Rails/SkipsModelValidations
-      user2.update(username: nil)
-      user1.update(username: nil)
-
-      # Can't be an exact email match to trigger this scenario
-      log_in_user('useR@example.com', 'whatever')
-      expect(page).to have_content(t(:'sessions.start.multiple_users_missing_usernames.content_html').split('.')[0])
-
-      expect(page.all('a')
-                 .select{|link| link.text == t(:'sessions.start.multiple_users_missing_usernames.help_link_text')}
-                 .first["href"]).to eq "mailto:info@openstax.org"
-
-      screenshot!
     end
 
     scenario "user tries to sign up with used oauth email" do
@@ -62,15 +35,14 @@ feature "User can't sign in", js: true do
       authentication = FactoryBot.create :authentication, provider: 'google', user: user
 
       arrive_from_app
-      click_on (t :'login_signup_form.sign_up') unless page.current_path == signup_path
-      expect(page).to have_no_missing_translations
+      click_on(t :'login_signup_form.sign_up') unless page.current_path == signup_path
       expect(page).to have_content(t :'login_signup_form.welcome_page_header')
       find(".join-as__role.student").click
-      fill_in('signup_email', with: Faker::Internet.free_email) if email
-      fill_in('signup_password', with: Faker::Internet.password(min_length: 8)) if password
-      fill_in('signup_first_name', with: Faker::Name.first_name) if first_name
-      fill_in('signup_last_name', with: password) if Faker::Name.last_name
-      check('signup_newsletter') if newsletter
+      fill_in('signup_email', with: user.emails.first)
+      fill_in('signup_password', with: 'password')
+      fill_in('signup_first_name', with: user.first_name)
+      fill_in('signup_last_name', with: user.last_name)
+      check('signup_newsletter', with: Faker::Boolean.boolean)
       check('signup_terms_accepted')
 
       with_omniauth_test_mode(uid: authentication.uid) do
@@ -78,7 +50,6 @@ feature "User can't sign in", js: true do
         visit 'auth/google'
       end
 
-      screenshot!
       expect(page).to have_content('External application loaded successfully.')
     end
   end
@@ -113,7 +84,6 @@ feature "User can't sign in", js: true do
       find('.google.btn').click
     end
 
-    screenshot!
     expect(page).to have_content(t(:'controllers.sessions.mismatched_authentication'))
   end
 end

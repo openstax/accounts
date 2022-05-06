@@ -25,7 +25,7 @@ feature "Arriving with special params", js: true do
     let(:alt_signup_content) { I18n.t :'static_pages.copyright.page_heading' }
 
     before(:each) do
-      @app = create_default_application
+      @app = create_application
       @app.update_attribute :redirect_uri, "#{@app.redirect_uri}\n#{alt_signup_url}" # rubocop:disable Rails/SkipsModelValidations
     end
 

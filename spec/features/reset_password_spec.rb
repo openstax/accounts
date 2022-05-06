@@ -3,10 +3,6 @@ require 'rails_helper'
 require_relative './adding_and_resetting_password_from_profile'
 
 feature 'Password reset', js: true do
-  before do
-    user.update!(role: :student)
-  end
-
   let!(:user) {
     create_user('user@openstax.org')
   }

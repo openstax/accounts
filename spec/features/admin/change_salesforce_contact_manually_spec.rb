@@ -14,7 +14,7 @@ RSpec.feature "Change Salesforce contact manually", vcr: VCR_OPTS, :type => :fea
   before(:each) do
     @admin_user = create_admin_user
     visit '/'
-    log_in 'admin@openstax.org'
+    mock_current_user(@admin_user)
 
     @target_user = FactoryBot.create(:user)
 

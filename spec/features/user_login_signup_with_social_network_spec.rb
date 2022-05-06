@@ -16,16 +16,13 @@ feature 'User logs in or signs up with a social network', js: true do
         simulate_login_signup_with_social(name: 'Elon Musk', email: email) do
           click_on('Facebook')
           wait_for_ajax
-          screenshot!
           expect(page).to have_content(I18n.t(:'login_signup_form.confirm_your_info'))
           expect(page).to have_field('signup_first_name', with: 'Elon')
           expect(page).to have_field('signup_last_name', with: 'Musk')
           expect(page).to have_field('signup_email', with: email)
           check('signup_terms_accepted')
           wait_for_animations
-          screenshot!
           submit_signup_form
-          screenshot!
           expect(page).to have_content(I18n.t(:'login_signup_form.youre_done', first_name: 'Elon'))
           expect(page).to(
             have_content(strip_html(I18n.t(:'login_signup_form.youre_done_description', email_address: email)))
@@ -42,20 +39,17 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               wait_for_animations
-              screenshot!
               expect(page).to have_content(I18n.t(:'login_signup_form.confirm_your_info'))
               expect(page).to have_field('signup_first_name', with: 'Elon')
               expect(page).to have_field('signup_last_name', with: 'Musk')
               expect(page).to have_field('signup_email', with: '')
               submit_signup_form
-              screenshot!
 
               expect(page).to have_content(I18n.t(:'login_signup_form.confirm_your_info'))
               expect(page).to have_content(I18n.t(:'login_signup_form.email_is_blank'))
 
               fill_in('signup_email',	with: email)
               submit_signup_form
-              screenshot!
               expect(page).to have_content(I18n.t(:'login_signup_form.youre_done', first_name: 'Elon'))
               expect(page).to(
                 have_content(strip_html(I18n.t(:'login_signup_form.youre_done_description', email_address: email)))
@@ -74,20 +68,17 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               wait_for_animations
-              screenshot!
               expect(page).to have_content(I18n.t(:'login_signup_form.confirm_your_info'))
               expect(page).to have_field('signup_first_name', with: 'Elon')
               expect(page).to have_field('signup_last_name', with: 'Musk')
               expect(page).to have_field('signup_email', with: '')
               submit_signup_form
-              screenshot!
 
               expect(page).to have_content(I18n.t(:'login_signup_form.confirm_your_info'))
               expect(page).to have_content(I18n.t(:'login_signup_form.email_is_blank'))
 
               fill_in('signup_email',	with: invalid_email)
               submit_signup_form
-              screenshot!
               expect(page).to have_content(I18n.t(:'.activerecord.errors.models.email_address.attributes.value.invalid', value: invalid_email))
             end
           end
@@ -115,7 +106,6 @@ feature 'User logs in or signs up with a social network', js: true do
               visit(login_path)
               click_on('Facebook')
               wait_for_ajax
-              screenshot!
               expect(page.current_path).to match(profile_path)
             end
         end
@@ -128,7 +118,6 @@ feature 'User logs in or signs up with a social network', js: true do
               visit(login_path)
               click_on('Facebook')
               wait_for_ajax
-              screenshot!
               expect(page.current_path).to match(profile_path)
             end
           end
@@ -147,11 +136,9 @@ feature 'User logs in or signs up with a social network', js: true do
           click_on('Facebook')
           wait_for_ajax
           wait_for_animations
-          screenshot!
 
           fill_in('signup_email',	with: email_value)
           submit_signup_form
-          screenshot!
 
           expect(page).to(
             have_content(strip_html(I18n.t(:'login_signup_form.youre_done_description', email_address: email_value)))
@@ -195,10 +182,8 @@ feature 'User logs in or signs up with a social network', js: true do
               visit(login_path)
               click_on('Facebook')
               wait_for_ajax
-              screenshot!
               expect(page.current_path).to match(profile_path)
 
-              # A `facebooknewflow` auth was created since the user already had a `facebook` one
               expect(user.authentications.count).to eq(1)
             end
           end
@@ -212,7 +197,6 @@ feature 'User logs in or signs up with a social network', js: true do
               visit(login_path)
               click_on('Facebook')
               wait_for_ajax
-              screenshot!
               expect(page.current_path).to match(profile_path)
               expect(page).to have_content(email_value)
             end
@@ -235,7 +219,6 @@ feature 'User logs in or signs up with a social network', js: true do
             sign_up: I18n.t(:'login_signup_form.sign_up')
           )
         )
-        screenshot!
       end
     end
   end

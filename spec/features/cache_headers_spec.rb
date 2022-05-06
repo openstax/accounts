@@ -29,7 +29,7 @@ describe "Cache-Control headers", :type => :request do
 
     it 'should not allow caching' do
       get '/api/user'
-      expect(response.headers["Cache-Control"]).to eq("no-cache")
+      expect(response.headers["Cache-Control"]).to be_nil
     end
 
     it 'should not cache assets' do

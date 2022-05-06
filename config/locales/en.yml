@@ -275,3 +275,5 @@ en:
       searchable: Let other users find me by this email.
       sign_out: Log out
       unconfirmed_warning: unconfirmed
+      enable_other_sign_in_options: Enable other login options
+      other_sign_in_options_html: Other login<br class="wide"> options

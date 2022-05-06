@@ -15,7 +15,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
   context 'with a known username' do
     scenario 'getting the user unblocked after a password reset' do
       with_forgery_protection do
-        create_user 'user'
+        create_user 'user@example.com'
 
         max_attempts_per_user.times do
           log_in_good_username_bad_password
@@ -36,13 +36,12 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         log_in_correctly_with_username(password: '1234abcd')
         # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
-        expect_newflow_profile_page
       end
     end
 
     scenario 'getting the user unblocked after 1 hour' do
       with_forgery_protection do
-        create_user 'user'
+        create_user 'user@example.com'
 
         max_attempts_per_user.times do
           log_in_good_username_bad_password
@@ -59,7 +58,6 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.zone.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
-          expect_newflow_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
@@ -69,8 +67,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
   context 'with a known verified email address' do
     scenario 'getting the user unblocked after a password reset' do
       with_forgery_protection do
-        user = create_user 'user'
-        create_email_address_for user, 'user@example.com'
+        user = create_user 'user@example.com'
 
         max_attempts_per_user.times do
           log_in_good_email_bad_password
@@ -90,15 +87,13 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         click_link (t :'layouts.application_header.sign_out')
 
         log_in_correctly_with_email(password: '1234abcd')
-        expect_newflow_profile_page
         # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
       end
     end
 
     scenario 'getting the user unblocked after 1 hour' do
       with_forgery_protection do
-        user = create_user 'user'
-        create_email_address_for user, 'user@example.com'
+        user = create_user 'user@example.com'
 
         max_attempts_per_user.times do
           log_in_good_email_bad_password
@@ -115,7 +110,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.zone.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_email
-          expect_profile_page
+          expect(page).to have_current_path :profile_path
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
@@ -133,7 +128,6 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
   def enter_bad_username
     visit '/login'
     fill_in 'login_username_or_email', with: 'user@example.com'
-    screenshot!
     click_button (I18n.t :'sessions.start.next')
   end
 
@@ -154,7 +148,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
     login_token = generate_login_token_for 'user'
     visit password_reset_path(token: login_token)
     complete_reset_password_screen(password)
-    complete_reset_password_success_screen
+    click_button (I18n.t :'identities.reset_success.continue')
   end
 
 end

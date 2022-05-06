@@ -8,7 +8,7 @@ module EducatorSignup
       true
     end
 
-    def handle(verification_id=nil) # rubocop:disable Metrics/MethodLength
+    def handle(verification_id=nil)
       unless verification_id
         verification_id = params.fetch('verificationId')
       end

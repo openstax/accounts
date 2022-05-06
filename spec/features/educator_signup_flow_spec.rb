@@ -25,7 +25,6 @@ feature 'Educator signup flow', js: true do
         fill_in 'signup_email',	with: email_value
         fill_in 'signup_password',	with: password
         submit_signup_form
-        screenshot!
 
         # Step 2
         # sends an email address confirmation email
@@ -89,7 +88,6 @@ feature 'Educator signup flow', js: true do
         fill_in 'signup_email',	with: email_value
         fill_in 'signup_password',	with: password
         submit_signup_form
-        screenshot!
 
         # Step 2
         # sends an email address confirmation email
@@ -198,9 +196,7 @@ feature 'Educator signup flow', js: true do
       #click_on(I18n.t(:"login_signup_form.forgot_password"))
       expect(page.current_path).to eq(forgot_password_form_path)
       expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
-      screenshot!
       click_on(I18n.t(:'login_signup_form.reset_my_password_button'))
-      screenshot!
     end
   end
 
@@ -217,7 +213,7 @@ feature 'Educator signup flow', js: true do
     context 'step 4' do
       before do
         visit(profile_form_path)
-        find("#signup_educator_specific_role_instructor").click
+        click_on(I18n.t(:'login_signup_form.educator'))
         find('#signup_who_chooses_books_instructor').click
         fill_in(I18n.t(:'educator_profile_form.num_students_taught'), with: 30)
       end
@@ -265,7 +261,6 @@ feature 'Educator signup flow', js: true do
       fill_in 'signup_email',	with: email_value
       fill_in 'signup_password',	with: password
       submit_signup_form
-      screenshot!
 
       # Step 2
       # sends an email address confirmation email
