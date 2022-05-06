@@ -119,6 +119,10 @@ Lint/RequireRelativeSelfPath: # new in 1.22
   Enabled: true
 Lint/UselessRuby2Keywords: # new in 1.23
   Enabled: true
+Lint/Void:
+  Enabled: false
+Lint/RequireParentheses:
+  Enabled: false
 
 ################
 #  Performance #
@@ -175,7 +179,7 @@ Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
 # modern dev screens are large
 Layout/LineLength:
-  Max: 120
+  Max: 130
   Exclude:
     - spec/**/*.rb
 Layout/SpaceAroundMethodCallOperator:
@@ -372,4 +376,3 @@ Rails/LexicallyScopedActionFilter:
   Enabled: false
 Rails/ApplicationMailer:
   Enabled: false
-

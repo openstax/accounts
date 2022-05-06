@@ -143,7 +143,6 @@ RSpec.describe 'Api::V1::ApplicationUsers multiple requests',
 
     it "should not let a user call it through an app" do
       api_get updates_endpoint, user_2_token
-      #byebug
       expect(response).to have_http_status :forbidden
       api_put updated_endpoint, user_2_token
       expect(response).to have_http_status :forbidden
