@@ -3,9 +3,6 @@ secrets = Rails.application.secrets
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
-  # Forgery Protection with Origin Check
-  config.action_controller.forgery_protection_origin_check = true
-
   # Code is not reloaded between requests
   config.cache_classes = true
 
@@ -38,6 +35,9 @@ Rails.application.configure do
   # Set to :debug to see everything in the log.
   config.log_level = :info
 
+  # Prepend all log lines with the following tags.
+  config.log_tags = [:request_id, :remote_ip]
+
   config.action_mailer.delivery_method = :ses
   config.action_mailer.default_url_options = { protocol: 'https', host: secrets[:email_host] }
 
@@ -53,6 +53,21 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  redis_secrets = secrets[:redis]
+
+  # Generate the Redis URL from the its components if unset
+  redis_secrets[:url] ||= "redis#{'s' if redis_secrets[:password].present?}://#{
+    ":#{redis_secrets[:password]}@" if redis_secrets[:password].present? }#{
+    redis_secrets[:host]}#{":#{redis_secrets[:port]}" if redis_secrets[:port].present?}/#{
+    "/#{redis_secrets[:db]}" if redis_secrets[:db].present?}"
+
+  config.cache_store = :redis_store, {
+    url:        redis_secrets[:url],
+    namespace:  redis_secrets[:namespaces][:cache],
+    expires_in: 90.minutes,
+    compress:   true
+  }
 
   # Lograge configuration (one-line logs in production)
   config.lograge.enabled = true

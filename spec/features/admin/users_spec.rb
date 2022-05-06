@@ -5,7 +5,7 @@ feature 'Admin user pages' do
     before(:each) do
       @admin_user = create_admin_user
       visit :login
-      log_in_user('admin@openstax.org', 'password')
+      mock_current_user(@admin_user)
     end
 
     context "with a user with salesforce contact ID set" do

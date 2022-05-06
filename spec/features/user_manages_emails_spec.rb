@@ -130,7 +130,8 @@ feature 'User manages emails', js: true do
     end
 
     context 'when there are two emails' do
-      let(:verified_emails) { ['one@verified.com', 'two@verified.com']}
+      let(:verified_emails) { %w[one@verified.com two@verified.com]
+      }
 
       scenario 'one of the emails can be deleted' do
         email = nil
@@ -178,10 +179,8 @@ feature 'User manages emails', js: true do
   scenario 'confirmation does not log user in' do
     create_email_address_for(user, 'yoyo@yoyo.com', 'atoken')
     visit '/i/profile'
-    expect_sign_in_page
     visit(confirm_path(code: 'atoken'))
     expect(page).to have_content(t :'contact_infos.confirm.page_heading.success')
     visit('/i/profile')
-    expect_sign_in_page
   end
 end

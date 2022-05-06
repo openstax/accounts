@@ -52,7 +52,7 @@ as: :change_signup_email_form_complete
     get 'check_your_email', action: :check_your_email, as: :check_your_email
   end
 
-  scope controller: 'educator_signup' do
+  scope controller: :educator_signup do
     # Step 3
     get 'signup/educator/apply', action: :sheerid_form, as: :sheerid_form
     post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
@@ -68,7 +68,7 @@ as: :cs_verification
 as: :cs_verification_post
   end
 
-  scope controller: 'password_management' do
+  scope controller: :password_management do
     # Password management process (forgot,  change, or create password)
     get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
     post 'send_reset_password_email', action: :send_reset_password_email,
@@ -81,7 +81,7 @@ as: :reset_password_email_sent
     post 'change_password', action: :change_password, as: :change_password
   end
 
-  scope controller: 'social_auth' do
+  scope controller: :social_auth do
     get 'auth/:provider', action: :oauth_callback, as: :social_auth
     post 'auth/:provider', action: :oauth_callback
     get 'auth/:provider/callback', action: :oauth_callback
@@ -93,11 +93,11 @@ as: :reset_password_email_sent
 
   mount OpenStax::Api::Engine, at: '/'
 
-  scope controller: 'users' do
+  scope controller: :users do
     put 'profile', action: :update
   end
 
-  scope controller: 'identities', path: 'password', as: 'password' do
+  scope controller: :identities, path: 'password', as: 'password' do
     get 'reset'
     post 'reset'
 
@@ -120,7 +120,7 @@ as: :reset_password_email_sent
     end
   end
 
-  scope controller: 'contact_infos' do
+  scope controller: :contact_infos do
     get 'confirm'
   end
 
@@ -131,7 +131,7 @@ as: :reset_password_email_sent
     end
   end
 
-  scope controller: 'static_pages' do
+  scope controller: :static_pages do
     get 'copyright'
     get 'api'
   end
@@ -190,9 +190,6 @@ as: :reset_password_email_sent
   namespace :admin do
     get '/', to: 'base#index'
     get '/console', to: 'console#index'
-
-    put 'cron',                         to: 'base#cron'
-    get 'raise_exception/:type',        to: 'base#raise_exception', as: 'raise_exception'
 
     resources :users, only: [:index, :update, :edit] do
       post 'become', on: :member

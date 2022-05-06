@@ -34,9 +34,7 @@ class ContactInfo < ApplicationRecord
     becomes(type.constantize)
   end
 
-  def add_unread_update
-    user.add_unread_update
-  end
+  delegate :add_unread_update, to: :user
 
   def init_confirmation_pin!
     self.confirmation_pin ||= TokenMaker.contact_info_confirmation_pin

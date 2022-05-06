@@ -5,12 +5,12 @@ feature 'Admin oauth app create and edit', js: true do
     before(:each) do
       @admin_user = create_admin_user
       visit '/'
-      log_in('admin', 'password')
+      mock_current_user(@admin_user)
     end
 
     it 'can create and edit applications' do
       visit '/oauth/applications'
-      click_link 'New Application'
+      click_link_or_button 'New Application'
       fill_in 'Name', with: 'Test'
       fill_in 'Redirect URI', with: 'urn:ietf:wg:oauth:2.0:oob'
       fill_in 'Email subject prefix', with: '[Test]'
