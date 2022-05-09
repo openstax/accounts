@@ -6,7 +6,7 @@ class ProfileController < ApplicationController
   def profile
     return if current_user.student?
 
-    if current_user.incomplete_signup? && !current_user.is_profile_complete?
+    if current_user.incomplete_signup?
       security_log(:educator_resumed_signup_flow,
                    message: 'User has not verified email address. Redirecting.')
       redirect_to(verify_email_by_pin_form_path) and return
