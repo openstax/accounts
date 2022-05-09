@@ -7,7 +7,7 @@ ActionController::Base.class_exec do
   # so adding these methods to ActionController::Base directly here should work
   include UserSessionManagement
   include ApplicationHelper
-  include OpenStax::Utilities::OsuHelper
+  include OSU::OsuHelper
   include HttpAcceptLanguage::AutoLocale
   include RequireRecentSignin
 
@@ -16,7 +16,7 @@ ActionController::Base.class_exec do
   include ContractsNotRequired
   helper_method :contracts_not_required
 
-  helper OpenStax::Utilities::OsuHelper, ApplicationHelper, UserSessionManagement
+  helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
   prepend_before_action :set_device_id
   before_action :save_redirect
@@ -51,9 +51,7 @@ ActionController::Base.class_exec do
     return true if request.format != :html || request.options?
 
     url = params[:r]
-
     return true if url.blank? || !Host.trusted?(url)
-
     store_url(url: url)
   end
 

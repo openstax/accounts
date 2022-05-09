@@ -145,7 +145,7 @@ module UserSessionManagement
     id = session[:unverified_user_id]&.to_i
     return if id.blank?
 
-    @unverified_user ||= User.find_by(id: id, state: 'unverified')
+    @unverified_user ||= User.find_by(id: id)
   end
 
   def clear_unverified_user

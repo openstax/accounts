@@ -23,6 +23,8 @@ class ActivateUser
       if user.receive_newsletter?
         CreateSalesforceLeadJob.perform_later(user.id)
       end
+    else # instructor, so they should be on their way to getting verified, set to pending
+      user.update!(faculty_status: :pending_faculty)
     end
 
     SecurityLog.create!(user: user, event_type: :user_became_activated)

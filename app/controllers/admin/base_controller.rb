@@ -5,9 +5,8 @@ module Admin
 
     layout 'admin'
 
-    before_action :check_if_admin
-
     if Rails.env.development?
+      skip_before_action :authenticate_user!
       fine_print_skip :general_terms_of_use, :privacy_policy
     else
       before_action :authenticate_admin!

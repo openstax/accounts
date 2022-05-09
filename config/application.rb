@@ -15,6 +15,10 @@ module Accounts
     config.i18n.available_locales = %w(en pl)
     config.i18n.fallbacks = [I18n.default_locale]
 
+    # Use the ExceptionsController to rescue routing/bad request exceptions
+    # https://coderwall.com/p/w3ghqq/rails-3-2-error-handling-with-exceptions_app
+    config.exceptions_app = ->(env) { ExceptionsController.action(:rescue_from).call(env) }
+
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
 

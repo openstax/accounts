@@ -156,15 +156,6 @@ is_school_issued: true)
         param_error(:other_role_name, :other_must_be_entered)
       end
 
-      if role  == 'instructor' && signup_params.using_openstax_how != :as_primary &&
-         books_of_interest.blank?
-        param_error(:books_of_interest, :books_of_interest_must_be_entered)
-      end
-
-      if role  == 'instructor' && signup_params.num_students_per_semester_taught.blank?
-        param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
-      end
-
       if @is_on_cs_form
         # if they are on the CS form, we need school issued email address
         if signup_params.school_issued_email.blank?
