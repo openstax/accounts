@@ -9,12 +9,11 @@ RSpec.describe ContactInfosController, type: :controller do
   context 'POST create' do
     it 'creates a new ContactInfo' do
       controller.sign_in! user
-      expect { 
+      expect {
         post('create',
           params: {
             contact_info: contact_info.attributes
-          }
-        )
+          })
       }.to(
         change{ContactInfo.count}.by(1)
       )
@@ -44,7 +43,8 @@ RSpec.describe ContactInfosController, type: :controller do
       contact_info.save!
       controller.sign_in! user
       expect { delete(:destroy, params: { id: contact_info.id }) }.to(
-        change{ContactInfo.count}.by(-1))
+        change{ContactInfo.count}.by(-1)
+      )
       expect(response.status).to eq 200
     end
   end
@@ -63,29 +63,29 @@ RSpec.describe ContactInfosController, type: :controller do
       expect(response.code).to eq('400')
 
       expect(response.body).to have_no_missing_translations
-      expect(response.body).to have_content(t :"contact_infos.confirm.verification_code_not_found")
-      expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
+      expect(response.body).to have_content(t :'contact_infos.confirm.verification_code_not_found')
+      expect(EmailAddress.find_by(value: @email.value).verified).to be_falsey
     end
 
     # TODO: let's get this on dev and see the 500 - I can't reproduce
     xit "returns error if code doesn't match" do
       get(:confirm, params: { code: 'abcd' })
-      #byebug
+      # byebug
       expect(response.code).to eq('400')
       expect(response.body).to have_no_missing_translations
-      expect(response.body).to have_content(t :"contact_infos.confirm.verification_code_not_found")
-      expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
+      expect(response.body).to have_content(t :'contact_infos.confirm.verification_code_not_found')
+      expect(EmailAddress.find_by(value: @email.value).verified).to be_falsey
     end
 
     it "returns success if code matches" do
       get(:confirm, params: { code: @email.confirmation_code })
       expect(response).to be_successful
       expect(response.body).to have_no_missing_translations
-      expect(response.body).to have_content(t :"contact_infos.confirm.page_heading.success")
+      expect(response.body).to have_content(t :'contact_infos.confirm.page_heading.success')
       expect(response.body).to(
-        have_content(t :"contact_infos.confirm.you_may_now_close_this_window")
+        have_content(t :'contact_infos.confirm.you_may_now_close_this_window')
       )
-      expect(EmailAddress.find_by_value(@email.value).verified).to be_truthy
+      expect(EmailAddress.find_by(value: @email.value).verified).to be_truthy
     end
   end
 
@@ -95,8 +95,7 @@ RSpec.describe ContactInfosController, type: :controller do
 
     let(:email) do
       FactoryBot.create(:email_address, user: user,
-        confirmation_code: '1234', verified: false, value: 'user@example.com'
-      )
+        confirmation_code: '1234', verified: false, value: 'user@example.com')
     end
 
     it "returns error if no code given" do
@@ -109,9 +108,9 @@ RSpec.describe ContactInfosController, type: :controller do
       expect(response).to be_successful
       expect(response.body).to have_no_missing_translations
       expect(response.body).to(
-        have_content(t :"contact_infos.confirm_unclaimed.thanks_for_validating")
+        have_content(t :'contact_infos.confirm_unclaimed.thanks_for_validating')
       )
-      expect(EmailAddress.find_by_value(email.value).verified).to be_truthy
+      expect(EmailAddress.find_by(value: email.value).verified).to be_truthy
     end
   end
 
@@ -134,7 +133,7 @@ RSpec.describe ContactInfosController, type: :controller do
         ConfirmContactInfo.call(contact_info)
         put(:resend_confirmation, params: { id: contact_info.id })
         expect(response).to have_http_status :success
-        expect(response.body).to include(I18n.t :"controllers.contact_infos.already_verified")
+        expect(response.body).to include(I18n.t :'controllers.contact_infos.already_verified')
       end
 
       it 'sends the confirmation if all good' do
@@ -144,7 +143,7 @@ RSpec.describe ContactInfosController, type: :controller do
         put(:resend_confirmation, params: { id: contact_info.id })
         expect(response).to have_http_status :success
         expect(response.body_as_hash[:message]).to include(
-          I18n.t :"controllers.contact_infos.verification_sent", address: contact_info.value
+          I18n.t :'controllers.contact_infos.verification_sent', address: contact_info.value
         )
       end
     end
