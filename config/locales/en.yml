@@ -3,63 +3,63 @@ en:
   admin:
     users:
       change_salesforce_contact:
-        removed: 'Removed the Salesforce Contact ID'
-        updated: 'Zaktualizowany kontakt Salesforce'
+        removed: Removed the Salesforce Contact ID
+        updated: Zaktualizowany kontakt Salesforce
       mark_users_updated:
-        incremented: 'Incremented unread update count'
+        incremented: Incremented unread update count
       update:
-        success: 'User profile was successfully updated.'
+        success: User profile was successfully updated.
   controllers:
     authentications:
       authentication_removed: "%{authentication} removed"
     sessions:
-      mismatched_authentication: "You logged in with a different third-party account than we expected. Please try again."
-      sign_in_option_already_used: "That login option is already used by someone else. If that someone is you, remove it from your other account and try again."
-      way_to_login_cannot_be_added: "That way to log in cannot be added because it is associated to an email address that is already in use!"
+      mismatched_authentication: You logged in with a different third-party account than we expected. Please try again.
+      sign_in_option_already_used: That login option is already used by someone else. If that someone is you, remove it from your other account and try again.
+      way_to_login_cannot_be_added: That way to log in cannot be added because it is associated to an email address that is already in use!
     terms:
-      temporarily_unavailable: "The terms are temporarily unavailable. Check back soon."
+      temporarily_unavailable: The terms are temporarily unavailable. Check back soon.
   doorkeeper:
     applications:
       buttons:
-        authorize: 'Authorize'
-        cancel: 'Cancel'
-        edit: 'Edit'
-        submit: 'Submit'
+        authorize: Authorize
+        cancel: Cancel
+        edit: Edit
+        submit: Submit
       form:
-        error: 'Whoops! Check your form for possible errors'
+        error: Whoops! Check your form for possible errors
       help:
-        confidential: 'Application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.'
-        redirect_uri: 'Use one line per URI'
-        native_redirect_uri: 'Use %{native_redirect_uri} if you want to add localhost URIs for development purposes'
-        scopes: 'Separate scopes with spaces. Leave blank to use the default scopes.'
+        confidential: Application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential.
+        native_redirect_uri: Use %{native_redirect_uri} if you want to add localhost URIs for development purposes
+        redirect_uri: Use one line per URI
+        scopes: Separate scopes with spaces. Leave blank to use the default scopes.
       index:
-        actions: 'Actions'
-        callback_url: 'Callback URL'
-        confidential: 'Confidential?'
+        actions: Actions
+        callback_url: Callback URL
+        confidential: Confidential?
         confidentiality:
           'no': 'No'
           'yes': 'Yes'
-        name: 'Name'
-        new: 'New Application'
-        title: 'Your Applications'
+        name: Name
+        new: New Application
+        title: Your Applications
       show:
-        actions: 'Actions'
-        application_id: 'Application UID'
-        callback_urls: 'Callback URLs'
-        scopes: 'Scopes'
-        secret: 'Secret'
+        actions: Actions
+        application_id: Application UID
+        callback_urls: Callback URLs
+        scopes: Scopes
+        secret: Secret
         title: 'Application: %{name}'
     authorizations:
       error:
-        title: 'An error has occurred'
+        title: An error has occurred
     flash:
       applications:
         create:
-          notice: 'Application created.'
+          notice: Application created.
         destroy:
-          notice: 'Application deleted.'
+          notice: Application deleted.
         update:
-          notice: 'Application updated.'
+          notice: Application updated.
   educator_profile_form:
     administrator: Administrator
     books_of_interest: Books of interest
@@ -106,8 +106,8 @@ en:
   helpers:
     alert:
       please_enable_javascript:
-        content: 'Please enable JavaScript in your browser'
-        intro: 'JavaScript is not enabled'
+        content: Please enable JavaScript in your browser
+        intro: JavaScript is not enabled
   identities:
     add_success:
       message: Your password was added to your account.
@@ -137,7 +137,7 @@ en:
       title: Title
   layouts:
     application_footer:
-      terms_of_use: 'Terms of Use'
+      terms_of_use: Terms of Use
   login_signup_form:
     agree_to_terms_of_use: I agree to the %{terms_of_use} and %{privacy_policy}
     all_fields_required: "* All fields are required"
@@ -269,11 +269,11 @@ en:
     edit:
       add_email_address: Add an email
       email_addresses: Emails
+      enable_other_sign_in_options: Enable other login options
       name: Name
+      other_sign_in_options_html: Other login<br class="wide"> options
       password: Password
       resend_confirmation: Resend confirmation email
       searchable: Let other users find me by this email.
       sign_out: Log out
       unconfirmed_warning: unconfirmed
-      enable_other_sign_in_options: Enable other login options
-      other_sign_in_options_html: Other login<br class="wide"> options

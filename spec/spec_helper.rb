@@ -56,6 +56,7 @@ RSpec.configure do |config|
     # Enable only the newer, non-monkey-patching expect syntax.
     # For more details, see:
     #   - http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
     expectations.syntax = :expect
   end
 
@@ -78,7 +79,70 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = '.rspec_last_failures'
 end
 
+"" "
+  Rspec matcher definitions
+" ""
 RSpec::Matchers.define_negated_matcher :not_change, :change
+
+RSpec::Matchers.define :have_routine_error do |error_code|
+  include RSpec::Matchers::Composable
+
+  match do |actual|
+    actual.errors.any? { |error| error.code == error_code }
+  end
+
+  failure_message do |actual|
+    "expected that #{actual} would have error :#{error_code.to_s}"
+  end
+end
+
+RSpec::Matchers.define :have_api_error_code do |error_code|
+  include RSpec::Matchers::Composable
+
+  match do |actual|
+    actual.body_as_hash[:errors].any? { |error| error[:code] == error_code }
+  end
+
+  failure_message do |actual|
+    "expected that response would have error '#{error_code.to_s}' but had #{actual.body_as_hash[:errors].map { |error| error[:code] }}"
+  end
+end
+
+RSpec::Matchers.define :have_api_error_status do |error_status|
+  include RSpec::Matchers::Composable
+
+  match do |actual|
+    actual.body_as_hash[:status] == error_status.to_i
+  end
+
+  failure_message do |actual|
+    "expected that response would have status '#{
+      error_status}' but had #{actual.body_as_hash[:status]}"
+  end
+end
+
+RSpec::Matchers.define :have_error do |field, message|
+  include RSpec::Matchers::Composable
+
+  match do |actual|
+    actual.errors.types.include? field and actual.errors.types[field].include? message
+  end
+
+  failure_message do |actual|
+    if actual.errors[field].empty?
+      "expected #{actual.model_name} to have errors on #{field}, but it had none"
+    else
+      msg = error_msg actual.class, field, message
+      "expected #{actual.errors[field]} to include #{msg.inspect}"
+    end
+  end
+
+  failure_message_when_negated do |actual|
+    msg = error_msg actual.class, field, message
+    "expected #{actual.errors[field]} not to include #{msg.inspect}"
+  end
+end
+
 
 "" "
   Custom helper methods
@@ -114,7 +178,7 @@ def error_msg(model, *args)
       group, field, error = args
     elsif args.length == 2 and model.paramify_classes.keys.length == 1
       field, error = args
-      group        = model.paramify_classes.keys[0]
+      group = model.paramify_classes.keys[0]
     end
     model = model.paramify_classes[group]
     if model.nil?
@@ -123,8 +187,8 @@ def error_msg(model, *args)
   else
     field, error, options = args
   end
-  options           ||= {}
-  instance          = model.new
+  options ||= {}
+  instance = model.new
   if options.has_key? :value
     instance[field] = options[:value]
   end
