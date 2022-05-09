@@ -4,6 +4,8 @@ on:
   pull_request:
   push:
     branches: main
+  schedule:
+    - cron: '0 0 * * 0' # weekly
 
 env:
   OXA_DB_USER: ox_accounts
@@ -35,17 +37,20 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
+      - run: echo "OS_VERSION=`lsb_release -sr`" >> $GITHUB_ENV
       - uses: actions/cache@v2
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-pr-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-gems-pr-
+            ${{ runner.os }}-${{ env.OS_VERSION }}-gems-pr-
       - name: Test
         run: |
           gem install bundler
-          bundle install
-          bundle exec rspec
-      #      - uses: codecov/codecov-action@v2
-      #        with:
-      #          token: ${{ env.CODECOV_TOKEN }}
+          bundle config path vendor/bundle
+          bundle install --jobs 4 --retry 3
+          bundle exec rake parallel:create parallel:load_schema parallel:seed --trace
+          bundle exec parallel_rspec ./spec
+      - uses: codecov/codecov-action@v2
+        with:
+          token: ${{ env.CODECOV_TOKEN }}

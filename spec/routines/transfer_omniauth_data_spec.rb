@@ -5,7 +5,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
   let(:user)      { FactoryBot.build :user }
   let(:auth_data) { OmniauthData.new auth_hash }
 
-  subject         { described_class.call(auth_data, user) }
+  subject { described_class.call(auth_data, user) }
 
   context 'when auth provider is identity' do
     let(:auth_hash) { OmniAuth::AuthHash.new provider: 'identity', uid: '12345' }
