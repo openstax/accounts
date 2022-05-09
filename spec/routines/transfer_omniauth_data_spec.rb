@@ -18,7 +18,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
   context 'when the user has non-blank names' do
     let(:auth_hash) do
       OmniAuth::AuthHash.new(
-        provider: 'google', uid: '12345678', info: { first_name: 'User', last_name: 'One' }
+        provider: 'google_oauth2', uid: '12345678', info: { first_name: 'User', last_name: 'One' }
       )
     end
 
@@ -119,7 +119,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
 
     context 'when auth provider is google' do
       let(:auth_hash) do
-        OmniAuth::AuthHash.new(provider: 'google', uid: '12345678901234567890').tap do |hash|
+        OmniAuth::AuthHash.new(provider: 'google_oauth2', uid: '12345678901234567890').tap do |hash|
           hash.extra = {
             id_token: 'SoMeLoNgRaNdOmStRiNg',
             raw_info: {
