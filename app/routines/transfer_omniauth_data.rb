@@ -1,5 +1,4 @@
-# Transfers `first_name` and `last_name` from PreAuthState to the user.
-# Also runs `AddEmailToUser` routine.
+# runs `AddEmailToUser` routine.
 class TransferOmniauthData
 
   lev_routine

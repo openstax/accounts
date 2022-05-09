@@ -104,7 +104,7 @@ RSpec::Matchers.define :have_api_error_code do |error_code|
   end
 
   failure_message do |actual|
-    "expected that response would have error '#{error_code.to_s}' but had #{actual.body_as_hash[:errors].map { |error| error[:code] }}"
+    "expected that response would have error '#{error_code.to_s}' but had #{actual.body_as_hash[:errors].pluck(:code)}"
   end
 end
 
@@ -209,7 +209,7 @@ def options(*args)
 end
 
 def in_travis?
-  ENV['CI']
+  ENV.fetch('CI', nil)
 end
 
 def in_docker?

@@ -35,14 +35,14 @@ RSpec.describe ContactInfo, type: :model do
     let(:user2) { FactoryBot.create :user }
 
     let!(:email1) do
-      FactoryBot.build :email_address, user: user1, verified: true, value: 'my1@email.com'
+      FactoryBot.build :email_address, user: user1, verified: true, value: 'my1@example.com'
     end
     let!(:email2) do
-      FactoryBot.build :email_address, user: user2, verified: true, value: 'my2@email.com'
+      FactoryBot.build :email_address, user: user2, verified: true, value: 'my2@example.com'
     end
 
     it 'does not allow removing the last verified email address' do
-      email2.value = 'email2@test.com'
+      email2.value = 'email2@example.com'
       email2.user = email1.user
       email2.save!
       email1.save!
