@@ -273,11 +273,11 @@ pl:
     edit:
       add_email_address: Dodaj nowy adres
       email_addresses: Adresy e-mail
+      enable_other_sign_in_options: Zezwól na inne opcje logowania
       name: Imię
+      other_sign_in_options_html: Dodatkowe metody<br class="wide"> logowania
       password: Hasło
       resend_confirmation: Wyślij ponownie e-mail potwierdzający
       searchable: Pozwól innym wyszukać mnie po tym adresie e-mail
       sign_out: Wyloguj się
       unconfirmed_warning: niepotwierdzony
-      enable_other_sign_in_options: Zezwól na inne opcje logowania
-      other_sign_in_options_html: Dodatkowe metody<br class="wide"> logowania

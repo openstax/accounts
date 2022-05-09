@@ -24,12 +24,12 @@ class EmailAddress < ContactInfo
 
     if self.class.is_domain_mx?(self.domain) # makes a DNS/HTTP request
       EmailDomain.first_or_create(value: self.domain, has_mx: true) # store the result
-      return true
+      true
     else
       # essentially blacklist it
       EmailDomain.first_or_create(value: self.domain, has_mx: false)
       errors.add(:value, :missing_mx_records)
-      return false
+      false
     end
   end
 
@@ -46,7 +46,7 @@ class EmailAddress < ContactInfo
 
     has_mx = -> (val) { EmailDomain.where(value: val, has_mx: true).any? }
     has_no_mx = -> (val) { EmailDomain.where(value: val, has_mx: false).any? }
-    return has_mx.call(self.domain) && !has_no_mx.call(self.domain)
+    has_mx.call(self.domain) && !has_no_mx.call(self.domain)
   end
 
   def domain
