@@ -232,11 +232,11 @@ RSpec.describe User, type: :model do
     it "relays it's value to helper methods" do
       user = FactoryBot.create(:user)
       user.state = User::TEMP
-      expect(user.temporary?).to    be_truthy
+      expect(user.temporary?).to be_truthy
       expect(user.activated?).to be_falsey
       user.state = User::ACTIVATED
       expect(user.activated?).to be_truthy
-      expect(user.temporary?).to    be_falsey
+      expect(user.temporary?).to be_falsey
     end
 
     it "disallows invalid values" do
@@ -291,11 +291,11 @@ RSpec.describe User, type: :model do
 
     before(:each) do
       Timecop.freeze(3.minutes.ago)  {
-        @email_a = CreateEmailForUser['a@a.com', user]
+        @email_a = CreateEmailForUser['a@example.com', user]
       }
-      Timecop.freeze(0.minutes.ago)  { CreateEmailForUser['b@b.com', user, already_verified: true] }
-      Timecop.freeze(-1.minute.ago) { @email_c = CreateEmailForUser['c@c.com', user] }
-      Timecop.freeze(-3.minutes.ago) { CreateEmailForUser['d@d.com', user, already_verified: true] }
+      Timecop.freeze(0.minutes.ago)  { CreateEmailForUser['b@example.com', user, already_verified: true] }
+      Timecop.freeze(-1.minute.ago) { @email_c = CreateEmailForUser['c@example.com', user] }
+      Timecop.freeze(-3.minutes.ago) { CreateEmailForUser['d@example.com', user, already_verified: true] }
     end
 
     context 'with no manually entered emails' do
@@ -306,7 +306,7 @@ RSpec.describe User, type: :model do
         end
 
         it 'chooses earliest auto confirmed email' do
-          expect(user.guessed_preferred_confirmed_email).to eq 'b@b.com'
+          expect(user.guessed_preferred_confirmed_email).to eq 'b@example.com'
         end
       end
 
@@ -317,7 +317,7 @@ RSpec.describe User, type: :model do
         end
 
         it 'chooses earliest auto confirmed email' do
-          expect(user.guessed_preferred_confirmed_email).to eq 'b@b.com'
+          expect(user.guessed_preferred_confirmed_email).to eq 'b@example.com'
         end
       end
 
@@ -328,7 +328,7 @@ RSpec.describe User, type: :model do
         end
 
         it 'chooses earliest auto confirmed email' do
-          expect(user.guessed_preferred_confirmed_email).to eq 'b@b.com'
+          expect(user.guessed_preferred_confirmed_email).to eq 'b@example.com'
         end
       end
     end
@@ -346,7 +346,7 @@ RSpec.describe User, type: :model do
         end
 
         it 'chooses latest manually entered email' do
-          expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
+          expect(user.guessed_preferred_confirmed_email).to eq 'c@example.com'
         end
       end
 
@@ -357,7 +357,7 @@ RSpec.describe User, type: :model do
         end
 
         it 'chooses latest manually entered email' do
-          expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
+          expect(user.guessed_preferred_confirmed_email).to eq 'c@example.com'
         end
       end
 
@@ -368,7 +368,7 @@ RSpec.describe User, type: :model do
         end
 
         it 'chooses latest manually entered email' do
-          expect(user.guessed_preferred_confirmed_email).to eq 'c@c.com'
+          expect(user.guessed_preferred_confirmed_email).to eq 'c@example.com'
         end
       end
     end
