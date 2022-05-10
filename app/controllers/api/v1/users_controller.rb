@@ -114,7 +114,7 @@ url_end: '?q=username:bob%20name=Jones')}"
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}
   EOS
   def show
-    return head(:no_content) if current_api_user.is_anonymous? || current_human_user.is_anonymous?
+    return head(:no_content) if current_human_user.is_anonymous?
     ScoutHelper.ignore!(0.999)
 
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, current_human_user)
