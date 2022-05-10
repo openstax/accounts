@@ -7,15 +7,15 @@
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
   <script type="text/javascript">
-      window.Accounts = window.Accounts || {};
-      Accounts.I18n = <%= (t :javascript).to_json.html_safe %>;
-      Accounts.url_prefix = "<%= request.script_name %>";
+    window.Accounts = window.Accounts || {};
+    Accounts.I18n = <%= (t :javascript).to_json.html_safe %>;
+    Accounts.url_prefix = "<%= request.script_name %>";
   </script>
 
   <%= render "layouts/google_tag_manager" %>
 
   <% if @redirect_url %>
-    <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
+  <meta http-equiv='refresh' content='<%= @redirect_delay -%>;url=<%= @redirect_url -%>'>
   <% end %>
 
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -27,7 +27,7 @@
   <%= csrf_meta_tags %>
 
   <% if Rails.env.production? %>
-    <script src="https://cdn.optimizely.com/js/1345615444.js"></script>
+  <script src="https://cdn.optimizely.com/js/1345615444.js"></script>
   <% end %>
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -42,23 +42,23 @@
   <%= content_for :page_specific %>
 </head>
 <body class="<%= controller_name %> <%= action_name %>">
-<%= render "layouts/tag_manager_snippet" %>
-<%= render "shared/upper_corner_console" %>
-<%= render "layouts/application_header" %>
+  <%= render "layouts/tag_manager_snippet" %>
+  <%= render "shared/upper_corner_console" %>
+  <%= render "layouts/application_header" %>
 
-<%= render "layouts/attention" unless @hide_layout_errors %>
-<%= render "layouts/main_menu" %>
+  <div id="application-container" class="container">
+    <%= render "layouts/attention" unless @hide_layout_errors %>
+    <%= render "layouts/main_menu" %>
 
 
-<div id="application-container" class="content">
-  <div id="application-body">
-    <%= yield %>
+    <div id="application-body">
+      <%= yield %>
+    </div>
+
+    <%= render "layouts/application_footer" %>
+    <%= render "layouts/google_analytics" %>
   </div>
-</div>
 
-<%= render "layouts/application_footer" %>
-<%= render "layouts/google_analytics" %>
-
-<%= yield :javascript %>
+  <%= yield :javascript %>
 </body>
 </html>
