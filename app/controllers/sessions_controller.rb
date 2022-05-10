@@ -147,36 +147,6 @@ alert: I18n.t(:'controllers.sessions.way_to_login_cannot_be_added')
     )
   end
 
-  # Destroy session (logout)
-  def destroy
-    sign_out!
-
-    # Now figure out where we should redirect the user...
-
-    if return_url_specified_and_allowed?
-      redirect_back(fallback_location: login_path)
-    else
-      session[ActionInterceptor.config.default_key] = nil
-
-      # Compute a default redirect based on the referrer's scheme, host, and port.
-      # Add the request's query onto this URL (a way for the logging-out app to
-      # communicate state back to itself).
-      url ||= begin
-                referrer_uri = URI(request.referer)
-                request_uri  = URI(request.url)
-                if referrer_uri.host == request_uri.host
-                  "#{root_url}?#{request_uri.query}"
-                else
-                  "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
-                end
-      rescue StandardError # in case the referer is bad (see #179)
-                root_url
-      end
-
-      redirect_to url
-    end
-  end
-
   # OAuth failure (e.g. wrong password)
   def failure
     if params[:message] == 'csrf_detected'

@@ -39,22 +39,18 @@ class LoginController < ApplicationController
         # you don't have to hunt files for it
         if current_user.student? || user.is_profile_complete?
           redirect_back(fallback_location: profile_path)
-        elsif current_step == 'login' && !user.is_profile_complete &&
-              user.sheerid_verification_id.blank?
+        elsif current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
           redirect_to sheerid_form_path
-        elsif current_step == 'login' && (user.sheerid_verification_id.present? ||
-              user.is_sheerid_unviable?)
+        elsif current_step == 'login' && (user.sheerid_verification_id.present? || user.is_sheerid_unviable?)
             redirect_to profile_path
         elsif current_step == 'educator_sheerid_form'
-            if user.confirmed_faculty? || user.rejected_faculty? ||
-               user.sheerid_verification_id.present?
+            if user.confirmed_faculty? || user.rejected_faculty? || user.sheerid_verification_id.present?
               redirect_to profile_path
             end
         elsif current_step == 'educator_signup_form' && !user.is_anonymous?
             redirect_to verify_email_by_code_path
         elsif current_step == 'educator_email_verification_form' && user.activated?
-            if !user.student? && user.activated? && user.pending_faculty &&
-               user.sheerid_verification_id.blank?
+            if !user.student? && user.activated? && user.pending_faculty && user.sheerid_verification_id.blank?
               redirect_to sheerid_form_path
             elsif user.activated?
               redirect_to profile_path
@@ -81,7 +77,31 @@ class LoginController < ApplicationController
   def logout
     sign_out!
     Sentry.set_user({}) if Rails.env.production?
-    redirect_back(fallback_location: login_path)
+
+    # Now figure out where we should redirect the user...
+
+    if return_url_specified_and_allowed?
+      redirect_back(fallback_location: login_path)
+    else
+      session[ActionInterceptor.config.default_key] = nil
+
+      # Compute a default redirect based on the referrer's scheme, host, and port.
+      # Add the request's query onto this URL (a way for the logging-out app to
+      # communicate state back to itself).
+      url ||= begin
+                referrer_uri = URI(request.referer)
+                request_uri  = URI(request.url)
+                if referrer_uri.host == request_uri.host
+                  "#{root_url}?#{request_uri.query}"
+                else
+                  "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
+                end
+      rescue StandardError # in case the referer is bad (see #179)
+                root_url
+              end
+
+      redirect_to url
+    end
   end
 
   protected ###############
