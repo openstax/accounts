@@ -5,16 +5,32 @@
 
 .profile {
   background-color: ui-color(white);
-  border: thin solid ui-color(form-border);
   box-sizing: border-box;
   margin: auto;
-  max-width: 57rem;
-  padding: 3rem 5rem 5rem;
+  max-width: $content-max;
+  padding: 1rem 5rem 5rem;
+
+  .main-menu {
+      box-shadow: none;
+      height: 3rem;
+      margin: 0;
+  }
+
+  #application-body {
+    margin: auto;
+    max-width: 57rem;
+
+    .profile {
+      border: thin solid ui-color(form-border);
+      padding: 3rem 5rem 10rem;
+    }
+  }
 
   h1 {
     @include body-font(1.8rem);
 
     font-weight: bold;
+    margin: 0;
     text-align: center;
   }
 
@@ -140,6 +156,11 @@
   .btn-primary {
     background-color: #F47641;;
     border: 0;
+  }
+
+  .mod-holder {
+    display: inline-flex;
+    gap: 1rem;
   }
 
   .mod {
