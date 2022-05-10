@@ -148,7 +148,7 @@ old_status:old_fv_status, new_status: user.faculty_status }
   end
 
   def salesforce_contacts
-    contact_days = Settings::Db.store.number_of_days_contacts_modified
+    contact_days = Rails.application.secrets[:salesforce][:number_of_days_contacts_modified] || 7
     c_date = contact_days.to_i.day.ago.strftime("%Y-%m-%d")
     contacts ||= OpenStax::Salesforce::Remote::Contact.select(
                      :id,

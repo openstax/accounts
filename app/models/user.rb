@@ -220,6 +220,10 @@ class User < ApplicationRecord
     false
   end
 
+  def is_student?
+    role == :student
+  end
+
   # State helpers.
   #
   # A User model begins life in the "unverified" state, and can then be claimed by another user
@@ -447,6 +451,12 @@ class User < ApplicationRecord
   def update_salesforce_if_user_changed
     if faculty_status_changed? || salesforce_lead_id_changed? || salesforce_contact_id_changed?
       SyncAccountWithSalesforceJob.perform_later(id)
+    end
+  end
+
+  def change_faculty_status_if_changed_to_student
+    if role_changed?(to: :student)
+      self.faculty_status = :no_faculty_info
     end
   end
 
