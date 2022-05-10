@@ -10,7 +10,6 @@ module ContractsNotRequired
         get_client_app.try(:uid)
       ) ||
       all_user_apps_skip_terms?
-    true
   end
 
   private
