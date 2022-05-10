@@ -40,6 +40,12 @@ module ApplicationHelper
     attention_tag(messages, :notice)
   end
 
+  def field_error!(on:, code:, message:)
+    @errors ||= Lev::Errors.new
+    message = I18n.t(message) if message.is_a?(Symbol)
+    @errors.add(false, offending_inputs: on, code: code, message: message)
+  end
+
   def attention_tag(messages, type)
     return if messages.blank? || messages.empty?
     messages = [messages].flatten

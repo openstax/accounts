@@ -69,11 +69,8 @@ class ConfirmOauthInfo
       extra: { user_id: user_id }
     )
 
-    fatal_error(
-      code: :email_taken,
-      message: I18n.t(:'login_signup_form.email_address_taken'),
-      offending_inputs: :email
-    )
+    field_error!(on: [:confirm_oauth_info, :email], code: :email_taken,
+                 message: :'login_signup_form.email_address_taken')
   end
 
   def agree_to_terms(user)

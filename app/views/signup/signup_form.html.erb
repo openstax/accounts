@@ -5,8 +5,6 @@
 
   contract_links = contracts.collect { |contract|
     link_to(contract.title, term_path(contract), target: '_blank')
-    # TODO: show them in a modal instead of new tab
-    # link_to contract.title, term_path(contract), remote: true
   }
 
   if @selected_signup_role == 'student'
@@ -26,7 +24,7 @@
 
     <%= login_signup_card(
           header:       (I18n.t(:'login_signup_form.signup_page_header')),
-          current_step: I18n.t(:'login_signup_form.step_counter', current_step: 1, total_steps: total_steps),
+          current_step: I18n.t(:'login_signup_form.step_counter', current_step: 1, total_steps: @total_steps),
           classes:      'signup-page') do %>
       <% lev_form_for :signup, url: signup_post_path do |form| %>
         <% fh = FormHelper::One.new(f: form, context: self,

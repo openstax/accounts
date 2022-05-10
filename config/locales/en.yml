@@ -160,7 +160,6 @@ en:
     edit_it_here: Edit it here
     edit_your_email: edit your email
     educator: Educator
-    educator_email_verification_form_decription: An email has been sent to <b>%{email}</b>. Please enter the PIN you received below. Once your email has been confirmed, you will need to complete the remaining steps to verify your instructor status.
     educator_email_verification_help_msg: See a typo in your email address? %{edit_it_here}. Didn't receive a message? %{contact_us_link}.
     educator_pending_cs_verification: We're processing your request
     educator_pending_cs_verification_description: You instructor access is pending. We will verify your instructor status withing 3-4 business days. Updates on your verification status will be sent to <b>%{email_address}</b>. In the meantime, you can access all books and resources except those that require instructor verification.
@@ -230,7 +229,7 @@ en:
     signup_with: 'Sign up with:'
     step_counter: Step %{current_step} of %{total_steps}
     student: Student
-    student_email_verification_form_decription: An email has been sent to <b>%{email}</b>. Please enter the PIN you received below. You can also %{edit_your_email}
+    email_verification_form_decription: An email has been sent to <b>%{email}</b>. Please enter the PIN you received below. You can also %{edit_your_email}
     teacher_school_email_warning: Is this your school email address?  If yes, click %{button} below. If not, please enter your school email address.
     terms_accepted_is_blank: You must agree to the terms to create your account
     too_many_login_attempts: You have made too many login attempts recently. Please reset your password or try again later.

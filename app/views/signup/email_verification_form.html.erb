@@ -1,36 +1,26 @@
-<%
-  page_header = I18n.t(
-    :'login_signup_form.confirmation_page_header',
-    first_name: @first_name
-  )
-  current_step = I18n.t(
-    :'login_signup_form.step_counter',
-    current_step: 2,
-    total_steps:  4 # TODO: 4 for instructors, 2 for students
-  )
-  form_description = I18n.t(
-    :'login_signup_form.educator_email_verification_form_decription',
-    email: @email
-  ).html_safe
-  edit_it_here_link = link_to(
-    I18n.t(:'login_signup_form.edit_it_here'), change_signup_email_form_path
-  )
-  help_message = I18n.t(
-    :'login_signup_form.educator_email_verification_help_msg',
-    edit_it_here:    edit_it_here_link,
-    contact_us_link: contact_us_link
-  ).html_safe
-%>
-
 <%=
   render(
     partial: 'signup/email_verification_form_template',
-    locals:  {
-      header:           page_header,
-      current_step:     current_step,
-      form_description: form_description,
-      help_message:     help_message,
-      submit_to_path:   verify_email_by_pin_post_path
+    locals: {
+      header: I18n.t(
+        :"login_signup_form.confirmation_page_header",
+        first_name: @first_name
+      ),
+      form_description: I18n.t(
+        :"login_signup_form.email_verification_form_decription",
+        email:           @email,
+        edit_your_email: link_to(I18n.t(:"login_signup_form.edit_your_email"), change_signup_email_form_path)).html_safe,
+      current_step: I18n.t(
+        :"login_signup_form.step_counter",
+        current_step: 2,
+        total_steps:  @total_steps
+      ),
+      help_message: I18n.t(
+        :"login_signup_form.didnt_receive_email",
+        sign_up_with_different_email_link: link_to(
+                                             I18n.t(:"login_signup_form.sign_up_with_different_email"), change_signup_email_form_path
+                                           )).html_safe,
+      submit_to_path: :verify_email_by_pin_post_path
     }
   )
 %>

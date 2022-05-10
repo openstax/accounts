@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::Base
 
+  include AuthenticateMethods
+
   layout 'application'
 
   before_action :authenticate_user!
