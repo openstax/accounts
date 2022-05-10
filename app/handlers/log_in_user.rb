@@ -27,7 +27,7 @@ class LogInUser
   def handle
     outputs.email = login_form_params.email.squish!
 
-    users = LookupUsers.by_email(login_form_params.email.squish!)
+    users = LookupUsers.by_email_or_username(login_form_params.email.squish!)
 
     outputs.user = user = users.first
 
