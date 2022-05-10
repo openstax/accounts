@@ -70,13 +70,7 @@ alert: I18n.t(:'controllers.sessions.mismatched_authentication'))
     end
   end
 
-  def confirm_oauth_info_form
-    redirect_to signup_path if unverified_user.blank?
-
-    render :confirm_social_info_form
-  end
-
-  def confirm_oauth_info_post
+  def confirm_oauth_info
     redirect_to signup_path if unverified_user.blank?
 
     handle_with(
@@ -92,7 +86,7 @@ alert: I18n.t(:'controllers.sessions.mismatched_authentication'))
       },
       failure: lambda {
         security_log(:student_social_auth_confirmation_failed)
-        render :confirm_social_info_form
+        render :confirm_oauth_info_form
       }
     )
   end

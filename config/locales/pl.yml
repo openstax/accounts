@@ -159,7 +159,6 @@ pl:
     edit_it_here: Edytuj go tutaj
     edit_your_email: edytować adres email.
     educator: Nauczyciel
-    educator_email_verification_form_decription: E-mail został wysłany do <b>% {email} </b>. Wprowadź poniżej otrzymany kod PIN. Po potwierdzeniu adresu e-mail musisz dokończyć pozostałe kroki weryfikacji statusu instruktora.
     educator_email_verification_help_msg: Widzisz literówkę w swoim adresie e-mail? %{edit_it_here}. Wiadomość nie dotarła? %{contact_us_link}.
     educator_pending_cs_verification: Przetwarzamy Twoją prośbę
     educator_pending_cs_verification_description: |-
@@ -234,7 +233,7 @@ pl:
     signup_with: 'Zarejestruj się przez:'
     step_counter: Krok %{current_step} z %{total_steps}
     student: Student
-    student_email_verification_form_decription: E-mail został wysłany do <b>%{email} </b>. Wprowadź poniżej otrzymany kod PIN. Możesz także %{edit_your_email}
+    email_verification_form_decription: E-mail został wysłany do <b>%{email} </b>. Wprowadź poniżej otrzymany kod PIN. Możesz także %{edit_your_email}
     teacher_school_email_warning: Czy to na pewno Twój szkolny adres-email? Jeżeli tak, wciśnij %{button} poniżej. Jeżeli nie, wpisz adres e-mail przyznany Ci przez Twoją szkołę.
     terms_accepted_is_blank: Aby założyć konto, musisz zaakceptować warunki użytkowania.
     too_many_login_attempts: Limit nieudanych prób logowania na Twoje konto został przekroczony. Zmień hasło albo spróbuj ponownie później.

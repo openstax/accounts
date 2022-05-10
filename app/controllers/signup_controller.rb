@@ -2,7 +2,8 @@ class SignupController < ApplicationController
   include LoginSignupHelper
 
   before_action(:authenticate_user!, only: :signup_done)
-  before_action(:redirect_to_signup_if_no_user_session, except: %w[welcome signup_form signup_post])
+  before_action(:check_unverified_user, except: %w[welcome signup_form signup_post])
+  before_action(:total_steps, except: [:welcome])
 
   def welcome
     redirect_back(fallback_location: profile_path) if signed_in?
@@ -52,25 +53,23 @@ class SignupController < ApplicationController
         user = @handler_result.outputs.user
         sign_in!(user, log: false)
         if user.role == 'student'
-          security_log(:student_verified_email,
-{ user: user, email_address: user.email_addresses.first })
+          security_log(:student_verified_email, { user: user, email_address: unverified_user.email_addresses.first })
           redirect_to signup_done_path
         else # instructor/educator
-          security_log(:educator_verified_email,
-{ user: user, email_address: user.email_addresses.first })
+          security_log(:educator_verified_email, { user: user, email_address: unverified_user.email_addresses.first })
           redirect_to sheerid_form_path
         end
       },
       failure:       lambda {
         @first_name = unverified_user.first_name
-        @email      = unverified_user.email_addresses.first.value
+        @email = unverified_user.email_addresses.first.value
         security_log(:user_verify_email_failed, email: @email)
         render :email_verification_form
       }
     )
   end
 
-  def verify_email_by_cod
+  def verify_email_by_code
     handle_with(
       VerifyEmailByCode,
       success: lambda {
@@ -102,17 +101,13 @@ class SignupController < ApplicationController
       ChangeSignupEmail,
       user:    unverified_user,
       success: lambda {
-        redirect_to change_signup_email_form_complete_path and return
+        redirect_to verify_email_by_pin_form_path and return
       },
       failure: lambda {
         @email = unverified_user.email_addresses.first.value
         render :change_signup_email_form and return
       }
     )
-  end
-
-  def change_signup_email_form_complete
-    render :email_verification_form_updated
   end
 
   def signup_done
@@ -127,8 +122,16 @@ class SignupController < ApplicationController
 
   private
 
-  def redirect_to_signup_if_no_user_session
+  def check_unverified_user
     redirect_to signup_path if unverified_user.blank?
+  end
+
+  def total_steps
+    @total_steps ||= if params[:role]
+                       params[:role] == 'student' ? 2 : 4
+                     elsif !current_user.is_anonymous?
+                      current_user&.role == 'student' ? 2 : 4
+                     end
   end
 
 end

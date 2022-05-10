@@ -6,7 +6,8 @@ Rails.application.routes.draw do
  "/#{request.params[:path]}?#{request.params.except('path').to_query}"
                        }, via: :all
 
-  get 'signout' => redirect { :logout }
+  get 'signout' => redirect { :exit_accounts }
+  get 'logout' => redirect { :exit_accounts }
 
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
@@ -21,7 +22,6 @@ Rails.application.routes.draw do
     get 'login', action: :login_form, as: :login
     post 'login', action: :login_post
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
-    get 'logout', action: :logout, as: :logout
   end
 
   scope controller: 'signup' do
@@ -41,8 +41,6 @@ as: :verify_email_by_pin_post
 as: :change_signup_email_form
     post 'signup/change_signup_email', action: :change_signup_email_post,
 as: :change_signup_email_post
-    get 'signup/email_updated', action: :change_signup_email_form_complete,
-as: :change_signup_email_form_complete
 
     # signup complete!
     get 'done', action: :signup_done, as: :signup_done
@@ -87,8 +85,8 @@ as: :reset_password_email_sent
     get 'auth/:provider/callback', action: :oauth_callback
     delete 'auth/:provider', action: :remove_auth_strategy
     #   When you sign up with a social provider, you must confirm your info first
-    get 'confirm_your_info', action: :confirm_your_info_form
-    post 'confirm_oauth_info', action: :confirm_oauth_info_post, as: :confirm_oauth_info
+    get 'confirm_oauth_info', action: :confirm_oauth_info
+    post 'confirm_oauth_info', action: :confirm_oauth_info
   end
 
   mount OpenStax::Api::Engine, at: '/'

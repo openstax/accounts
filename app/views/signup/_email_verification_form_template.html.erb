@@ -13,9 +13,9 @@
                     current_step: I18n.t(
                       :'login_signup_form.step_counter',
                       current_step: 2,
-                      total_steps:  4
+                      total_steps:  @total_steps
                     )) do %>
-            <% lev_form_for :confirm, url: submit_to_path do |form| %>
+            <% lev_form_for :confirm, url: verify_email_by_pin_post_url do |form| %>
                 <%
                     form_helper = FormHelper::One.new(
                         f: form,

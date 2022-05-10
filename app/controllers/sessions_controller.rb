@@ -154,12 +154,8 @@ alert: I18n.t(:'controllers.sessions.way_to_login_cannot_be_added')
     # Now figure out where we should redirect the user...
 
     if return_url_specified_and_allowed?
-      redirect_back
+      redirect_back(fallback_location: login_path)
     else
-      if params[:parent]
-        url = iframe_after_logout_url(parent: params[:parent])
-      end
-
       session[ActionInterceptor.config.default_key] = nil
 
       # Compute a default redirect based on the referrer's scheme, host, and port.
@@ -249,11 +245,5 @@ message: :'controllers.sessions.incorrect_password')
                                                 response_type: 'code')
 
     store_fallback(url: authorization_url) unless authorization_url.nil?
-  end
-
-  def field_error!(on:, code:, message:)
-    @errors ||= Lev::Errors.new
-    message = I18n.t(message) if message.is_a?(Symbol)
-    @errors.add(false, offending_inputs: on, code: code, message: message)
   end
 end

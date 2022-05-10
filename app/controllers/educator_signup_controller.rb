@@ -95,7 +95,23 @@ class EducatorSignupController < SignupController
     render :pending_cs_verification
   end
 
-  private #################
+  protected
+
+  def book_data
+    @book_data ||= FetchBookData.new
+  end
+
+  def generate_sheer_id_url(user)
+    url              = standard_parse_url(Rails.application.secrets[:sheer_id_base_url])
+    url.query_values = url.query_values.merge(
+      first_name: user.first_name,
+      last_name:  user.last_name,
+      email:      user.email_addresses.first&.value
+    )
+    url.to_s
+  end
+
+  private
 
   def exit_signup_if_steps_complete
     if @current_user.is_profile_complete?
@@ -132,19 +148,5 @@ class EducatorSignupController < SignupController
         event_data: { verification_id: params[:verificationId] }
       )
     end
-  end
-
-  def book_data
-    @book_data ||= FetchBookData.new
-  end
-
-  def generate_sheer_id_url(user)
-    url              = standard_parse_url(Rails.application.secrets[:sheer_id_base_url])
-    url.query_values = url.query_values.merge(
-      first_name: user.first_name,
-      last_name:  user.last_name,
-      email:      user.email_addresses.first&.value
-    )
-    url.to_s
   end
 end
