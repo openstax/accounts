@@ -2,7 +2,7 @@ class LoginController < ApplicationController
 
   include LoginSignupHelper
 
-  skip_before_action :authenticate_user!, only: :login_form
+  skip_before_action :authenticate_user!
 
   before_action :cache_client_app, only: :login_form
   before_action :known_signup_role_redirect, only: :login_form
