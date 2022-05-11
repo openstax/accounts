@@ -40,7 +40,6 @@
       <th>School Type</th>
       <th>Lead</th>
       <th>Contact</th>
-      <th>SF Account</th>
       <th>Test</th>
       <th>Admin</th>
       <th><span class="fa fa-user-secret"></span></th>
@@ -75,16 +74,6 @@
               <%= user.salesforce_contact_id %>
             <% else %>
               <%= link_to user.salesforce_contact_id, instance_url + "/" + user.salesforce_contact_id, target: '_blank' %>
-            <% end %>
-          <% end %>
-        </td>
-        <td>
-          <% unless user.salesforce_ox_account_id.nil? %>
-            <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
-            <% if instance_url.nil? %>
-              <%= user.salesforce_ox_account_id %>
-            <% else %>
-              <%= link_to user.salesforce_ox_account_id, instance_url + "/" + user.salesforce_ox_account_id, target: '_blank' %>
             <% end %>
           <% end %>
         </td>
