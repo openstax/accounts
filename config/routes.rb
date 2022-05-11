@@ -3,8 +3,12 @@ Rails.application.routes.draw do
   root to: 'static_pages#home'
 
   match 'i/(*path)' => redirect { |_,request|
- "/#{request.params[:path]}?#{request.params.except('path').to_query}"
-                       }, via: :all
+    "/#{request.params[:path]}?#{request.params.except('path').to_query}"
+  }, via: :all
+
+  match 'accounts/i/(*path)' => redirect { |_, request|
+    "/#{request.params[:path]}?#{request.params.except('path').to_query}"
+  }, via: :all
 
   get 'signout' => redirect { :logout_path }
 
