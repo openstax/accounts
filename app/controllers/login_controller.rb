@@ -6,7 +6,7 @@ class LoginController < ApplicationController
 
   before_action :cache_client_app, only: :login_form
   before_action :cache_alternate_signup_url, only: :login_form
-  before_action :redirect_to_signup_if_go_param_present, only: :login_form
+  before_action :student_signup_redirect, only: :login_form
   before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
   def login_form
@@ -29,35 +29,27 @@ class LoginController < ApplicationController
 
         if user.unverified?
           save_unverified_user(user.id)
-          redirect_to(verify_email_by_pin_form_path)
-          return
+          security_log(:educator_resumed_signup_flow, message: 'User has not verified email address.')
+          redirect_to verify_email_by_pin_form_path and return
         end
 
         sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
-
-        # TODO : this is not fun logic code.. find a better solution - but at least
-        # you don't have to hunt files for it
-        if current_user.student? || user.is_profile_complete?
+        # byebug
+        if @current_user.student? || (@current_user.is_profile_complete? && @current_user.confirmed_faculty?)
           redirect_back(fallback_location: profile_path)
-        elsif current_step == 'login' && !user.is_profile_complete && user.sheerid_verification_id.blank?
-          redirect_to sheerid_form_path
-        elsif current_step == 'login' && (user.sheerid_verification_id.present? || user.is_sheerid_unviable?)
-            redirect_to profile_path
-        elsif current_step == 'educator_sheerid_form'
-            if user.confirmed_faculty? || user.rejected_faculty? || user.sheerid_verification_id.present?
-              redirect_to profile_path
-            end
-        elsif current_step == 'educator_signup_form' && !user.is_anonymous?
-            redirect_to verify_email_by_code_path
-        elsif current_step == 'educator_email_verification_form' && user.activated?
-            if !user.student? && user.activated? && user.pending_faculty && user.sheerid_verification_id.blank?
-              redirect_to sheerid_form_path
-            elsif user.activated?
-              redirect_to profile_path
-            end
-        else
-            raise("Next step (#{current_step}) uncaught in #{self.class.name}")
         end
+
+        unless @current_user.is_sheerid_unviable? || @current_user.is_profile_complete?
+          security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification.')
+          redirect_to sheerid_form_path and return
+        end
+
+        if @current_user.instructor? && (@current_user.is_needs_profile? || !@current_user.is_profile_complete?)
+          security_log(:educator_resumed_signup_flow, message: 'User has not verified email address.')
+          redirect_to profile_form_path and return
+        end
+
+        redirect_to profile_path
       },
       failure: lambda {
         email = @handler_result.outputs.email
@@ -98,19 +90,20 @@ class LoginController < ApplicationController
                 end
       rescue StandardError # in case the referer is bad (see #179)
                 root_url
-              end
+      end
 
       redirect_to url
     end
   end
 
-  protected ###############
+  protected
 
-  def redirect_to_signup_if_go_param_present
+  def student_signup_redirect
     if params[:go]&.strip&.downcase == 'student_signup'
-      redirect_to signup_student_path(request.query_parameters)
+      request.query_parameters[:role] = 'student'
+      redirect_to signup_form_path(request.query_parameters)
     elsif params[:go]&.strip&.downcase == 'signup'
-      redirect_to signup_path(request.query_parameters)
+      redirect_to signup_form_path(request.query_parameters)
     end
   end
 

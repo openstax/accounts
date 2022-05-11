@@ -4,13 +4,13 @@
 
     <%= login_signup_card(
           classes:        "signup-page",
-          header: I18n.t(:"login_signup_form.youre_done", first_name: @first_name),
+          header: I18n.t(:"login_signup_form.youre_done", first_name: current_user.first_name),
           show_exit_icon: true) do %>
       <form action="<%= exit_accounts_path %>">
         <div class="content control-group info-message">
           <%= I18n.t(
                 :"login_signup_form.youre_done_description",
-                email_address: @email_address
+                email_address: current_user.email_addresses.first&.value
               ).html_safe %>
           <br/>
           <br/>

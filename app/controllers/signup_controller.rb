@@ -2,7 +2,6 @@ class SignupController < ApplicationController
   include LoginSignupHelper
 
   before_action(:authenticate_user!, only: :signup_done)
-  before_action(:check_unverified_user, except: %w[welcome signup_form signup_post])
   before_action(:total_steps, except: [:welcome])
 
   def welcome
@@ -40,8 +39,6 @@ class SignupController < ApplicationController
   end
 
   def verify_email_by_pin_form
-    @first_name = unverified_user.first_name
-    @email = unverified_user.email_addresses.first.value
     render :email_verification_form
   end
 
@@ -51,19 +48,20 @@ class SignupController < ApplicationController
       email_address: unverified_user.email_addresses.first,
       success:       lambda {
         user = @handler_result.outputs.user
-        sign_in!(user, log: false)
-        if user.role == 'student'
-          security_log(:student_verified_email, { user: user, email_address: unverified_user.email_addresses.first })
+        sign_in!(user)
+        security_log(:contact_info_confirmed_by_pin,
+                     { user: user, email_address: unverified_user.email_addresses.first.value })
+
+        if user.student?
           redirect_to signup_done_path
         else # instructor/educator
-          security_log(:educator_verified_email, { user: user, email_address: unverified_user.email_addresses.first })
           redirect_to sheerid_form_path
         end
       },
       failure:       lambda {
         @first_name = unverified_user.first_name
         @email = unverified_user.email_addresses.first.value
-        security_log(:user_verify_email_failed, email: @email)
+        security_log(:contact_info_confirmation_by_pin_failed, email: @email)
         render :email_verification_form
       }
     )
@@ -76,12 +74,11 @@ class SignupController < ApplicationController
         clear_signup_state
         user = @handler_result.outputs.user
         sign_in!(user)
+        security_log(:contact_info_confirmed_by_code, { user: user, email_address: user.email_addresses.first.value })
 
         if user.student?
-          security_log(:student_verified_email, {user: user, message: "Student verified email."})
           redirect_to signup_done_path
-        else
-          security_log(:educator_verified_email, {user: user, message: "Educator verified email."})
+        else # instructor/educator
           redirect_to sheerid_form_path
         end
       },
@@ -111,20 +108,11 @@ class SignupController < ApplicationController
   end
 
   def signup_done
+    security_log(:sign_up_successful, form_name: action_name)
     redirect_back(fallback_location: :signup_done) if current_user.is_tutor_user?
-
-    security_log(:user_viewed_signup_form, form_name: action_name)
-    @first_name = current_user.first_name
-    @email_address = current_user.email_addresses.first&.value
-
-    render :signup_done
   end
 
   private
-
-  def check_unverified_user
-    redirect_to signup_path if unverified_user.blank?
-  end
 
   def total_steps
     @total_steps ||= if params[:role]
@@ -133,5 +121,4 @@ class SignupController < ApplicationController
                       current_user&.role == 'student' ? 2 : 4
                      end
   end
-
 end

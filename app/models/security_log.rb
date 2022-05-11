@@ -116,7 +116,9 @@ optional: true
     user_verify_email_failed: 109,
     user_password_reset: 110,
     user_password_reset_failed: 111,
-    user_update_failed_during_lead_creation: 112
+    user_update_failed_during_lead_creation: 112,
+    create_password: 113,
+    create_password_failed: 114
   }
 
 
