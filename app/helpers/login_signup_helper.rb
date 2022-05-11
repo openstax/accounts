@@ -40,15 +40,4 @@ module LoginSignupHelper
   def standard_parse_url(url)
     Addressable::URI.parse(url)
   end
-
-  def known_signup_role_redirect
-    known_signup_role = session.fetch(:signup_role, nil)
-
-    if known_signup_role && known_signup_role == 'student'
-      redirect_to(signup_path(request.query_parameters, role: 'student'))
-    elsif known_signup_role && known_signup_role == 'instructor'
-      redirect_to(signup_path(request.query_parameters, role: 'educator'))
-    end
-  end
-
 end

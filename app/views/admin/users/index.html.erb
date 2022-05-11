@@ -33,15 +33,17 @@
     <tr>
       <th class="expand"></th>
       <th>ID</th>
-      <th>First Name</th>
-      <th>Last Name</th>
+      <th>Name</th>
+      <th>State</th>
       <th>Faculty Status</th>
       <th>Role</th>
       <th>School Type</th>
       <th>Lead</th>
       <th>Contact</th>
-      <th>SF Account Link</th>
-      <th></th>
+      <th>SF Account</th>
+      <th>Test</th>
+      <th>Admin</th>
+      <th><span class="fa fa-user-secret"></span></th>
     </tr>
     <% @handler_result.outputs[:items].each do |user| %>
       <% zebra = cycle('odd', 'even') %>
@@ -51,8 +53,8 @@
             <i class="fa fa-plus" aria-hidden="false"></i></a>
         </td>
         <td><%= link_to user.id, edit_admin_user_path(user), target: '_blank' %></td>
-        <td><%= user.first_name || '---' %></td>
-        <td><%= user.last_name || '---' %></td>
+        <td><%= user.full_name || '---' %></td>
+        <td><%= user.state.humanize %></td>
         <td><%= user.faculty_status.humanize %></td>
         <td><%= user.unknown_role? ? "Unknown" : user.role.capitalize %></td>
         <td><%= user.school_type.humanize %></td>
@@ -87,6 +89,16 @@
           <% end %>
         </td>
         <td>
+          <% if user.is_test? %>
+            <span class="fa fa-check"></span>
+          <% end %>
+        </td>
+        <td>
+          <% if user.is_administrator? %>
+            <span class="fa fa-check"></span>
+          <% end %>
+        </td>
+        <td>
           <%= link_to become_admin_user_path(user),
                       method: :post,
                       data: {confirm: "Log in as user #{user.id}, #{user.full_name || '(no name)'}?"} do %>
@@ -104,64 +116,17 @@
               <span class="updated"><i>Updated:</i> <%= user.updated_at.in_time_zone('Central Time (US & Canada)') %></span>
             </div>
 
-            <span class="full-name"><%= user.full_name || '(no name)' %></span> |
-
-            <% if user.is_administrator %>
-              <span class="admin">Administrator</span> |
-            <% end %>
-
-            <% if user.is_test? %>
-              <span class="test">Test User</span> |
-            <% end %>
-
-            <% sf_id = user.salesforce_contact_id %>
-
-            <% if sf_id.present? %>
-              <span class="sf">
-                <i>Salesforce:</i>
-
-                <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
-                <% if instance_url.nil? %>
-                  <%= sf_id %>
-                <% else %>
-                  <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
-                <% end %>
-              </span> |
-            <% end %>
-
             <% security_log_params = { query: "user_id:#{user.id}" } %>
 
             <span class="security_log">
               <%= link_to "Security Log", admin_security_log_path(search: security_log_params), target: '_blank' %>
-            </span> |
+            </span>
 
-            <span class="state">
-              <i>State:</i> <%= user.state %>
-            </span> |
+            <br>
 
             <span class="uuid">
               <i>UUID:</i> <%= user.uuid %>
             </span>
-
-            <% if user.self_reported_school.present? %>
-              | <span class="school">
-                <i>Self-reported school:</i> <%= user.self_reported_school %>
-              </span>
-            <% end %>
-
-            <% if user.self_reported_school.present? %>
-              | <span class="school">
-                <i>Self-reported school:</i> <%= user.self_reported_school %>
-              </span>
-            <% end %>
-
-            <% user.contact_infos.each do |contact_info| %>
-              <div class="email">
-                <%= link_to contact_info.value, "mailto:#{contact_info.value}" %>
-                (<%= contact_info.verified ? "confirmed" : "NOT confirmed" %>)
-              </div>
-            <% end %>
-
           </div>
         </td>
         <td></td>

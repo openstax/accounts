@@ -76,11 +76,7 @@ class User < ApplicationRecord
   before_validation(:generate_uuid, on: :create)
 
   validate(:ensure_names_continue_to_be_present)
-  validate(
-    :save_activated_at_if_became_activated,
-    on: :update
-  )
-
+  validate(:save_activated_at_if_became_activated, on: :update)
   validates(:faculty_status, :role, :school_type, presence: true)
 
   validates(

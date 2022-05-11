@@ -14,12 +14,6 @@ class EducatorSignupController < SignupController
       cs_verification_request
     ]
   )
-  before_action(:exit_signup_if_steps_complete, only: %i[
-      sheerid_form
-      profile_form
-      cs_verification_form
-    ]
-  )
   before_action(:store_if_sheerid_is_unviable_for_user, only: :sheerid_form)
   before_action(:store_sheerid_verification_for_user, only: :sheerid_form)
 
@@ -113,16 +107,6 @@ class EducatorSignupController < SignupController
 
   private
 
-  def exit_signup_if_steps_complete
-    if @current_user.is_profile_complete?
-      redirect_to(profile_path)
-    end
-
-    if @current_user.is_educator_pending_cs_verification && @current_user.pending_faculty?
-      redirect_to(pending_cs_verification)
-    end
-  end
-
   def store_if_sheerid_is_unviable_for_user
     if params[:school].present? || params[:country].present?
       @current_user.update!(is_sheerid_unviable: true)
@@ -131,12 +115,10 @@ class EducatorSignupController < SignupController
   end
 
   def store_sheerid_verification_for_user
-    if params[:verificationId].present? &&
-      @current_user.sheerid_verification_id.blank?
+    if params[:verificationId].present? && @current_user.sheerid_verification_id.blank?
       # create the verification object - this is verified later in SheeridWebhook
       SheeridVerification.find_or_initialize_by(
         verification_id: params[:verificationId])
-
 
       # update the user
       @current_user.update!(sheerid_verification_id: params[:verificationId])
