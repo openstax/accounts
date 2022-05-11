@@ -6,6 +6,10 @@ Rails.application.routes.draw do
     "/#{request.params[:path]}?#{request.params.except('path').to_query}"
   }, via: :all
 
+  match 'accounts/i/(*path)' => redirect { |_, request|
+    "/#{request.params[:path]}?#{request.params.except('path').to_query}"
+  }, via: :all
+
   get 'signout' => redirect { :logout_path }
 
   direct :salesforce_knowledge_base do
