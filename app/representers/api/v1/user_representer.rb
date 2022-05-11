@@ -56,6 +56,16 @@ module Api::V1
              readable: true,
              writeable: false
 
+    property :renewal_eligible,
+             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
+             as: :is_renewal_eligible,
+             type: :boolean,
+             readable: true,
+             writable: false,
+             schema_info: {
+               description: "If true, user eligible for renewal"
+             }
+
     property :is_test?,
              as: :is_test,
              type: :boolean,

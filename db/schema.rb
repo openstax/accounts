@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_02_215806) do
+ActiveRecord::Schema.define(version: 2022_05_11_185320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -129,6 +129,9 @@ ActiveRecord::Schema.define(version: 2022_05_02_215806) do
     t.index ["user_id"], name: "index_contact_infos_on_user_id"
     t.index ["value", "user_id", "type"], name: "index_contact_infos_on_value_user_id_type", unique: true
     t.index ["verified"], name: "index_contact_infos_on_verified"
+  end
+
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
@@ -387,6 +390,7 @@ ActiveRecord::Schema.define(version: 2022_05_02_215806) do
     t.bigint "school_id"
     t.boolean "sheer_id_webhook_received"
     t.string "salesforce_ox_account_id"
+    t.boolean "renewal_eligible"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"

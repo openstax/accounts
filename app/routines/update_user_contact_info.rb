@@ -115,6 +115,7 @@ class UpdateUserContactInfo
           user.is_kip = sf_school&.is_kip || sf_school&.is_child_of_kip
           user.grant_tutor_access = sf_contact.grant_tutor_access
           user.is_b_r_i_user = sf_contact.b_r_i_marketing
+          user.renewal_eligible = sf_contact.renewal_eligible
 
           if school.nil? && !sf_school.nil?
             users_without_cached_school += 1

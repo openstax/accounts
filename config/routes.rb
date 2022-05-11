@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     post 'login', action: :login_post
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
     get 'logout', action: :logout, as: :logout
-    get 'signout', action: :logout
+    get 'signout', action: :logout # TODO: let's get people moved to /logout
   end
 
   scope controller: 'signup' do
