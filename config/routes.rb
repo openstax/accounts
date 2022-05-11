@@ -10,8 +10,6 @@ Rails.application.routes.draw do
     "/#{request.params[:path]}?#{request.params.except('path').to_query}"
   }, via: :all
 
-  get 'signout' => redirect { :logout }
-
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
@@ -26,6 +24,7 @@ Rails.application.routes.draw do
     post 'login', action: :login_post
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
     get 'logout', action: :logout, as: :logout
+    get 'signout', action: :logout
   end
 
   scope controller: 'signup' do
