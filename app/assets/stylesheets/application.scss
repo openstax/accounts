@@ -187,7 +187,7 @@ input.has-error {
   }
 
   .custom-control-label {
-    font-weight: lighter !important;
+    font-weight: normal !important;
   }
 
   .other-specify {
@@ -712,6 +712,18 @@ input.has-error {
 
     -webkit-appearance: none;
     border-radius: 0;
+  }
+
+  .radio-control-group > div:not(:first-child) {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    > * {
+      color: inherit;
+      margin: 0;
+    }
   }
 }
 
