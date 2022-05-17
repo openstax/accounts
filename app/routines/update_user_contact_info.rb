@@ -159,7 +159,8 @@ old_status:old_fv_status, new_status: user.faculty_status }
                      :school_type,
                      :adoption_status,
                      :grant_tutor_access,
-                     :accounts_uuid
+                     :accounts_uuid,
+                     :renewal_eligible
                    )
                    .where("Accounts_UUID__c != null")
                    .where("LastModifiedDate >= #{DateTime.strptime(c_date,"%Y-%m-%d").utc.iso8601}")

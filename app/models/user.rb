@@ -139,6 +139,7 @@ class User < ApplicationRecord
   attr_readonly :uuid
 
   attribute :is_not_gdpr_location, :boolean, default: nil
+  attribute :renewal_eligible, :boolean, default: nil
 
   def most_accurate_school_name
     return school.name if school.present?
@@ -402,6 +403,7 @@ class User < ApplicationRecord
     self.is_administrator = true if User.count == 0
   end
 
+  # TODO: there must be a better way to do the following two methods
   def strip_fields
     title.try(:strip!)
     first_name.try(:strip!)

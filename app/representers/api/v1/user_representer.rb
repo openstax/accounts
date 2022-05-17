@@ -57,8 +57,6 @@ module Api::V1
              writeable: false
 
     property :renewal_eligible,
-             if: ->(user_options:, **) { user_options.try(:fetch, :include_private_data, false) },
-             as: :is_renewal_eligible,
              type: :boolean,
              readable: true,
              writable: false,
