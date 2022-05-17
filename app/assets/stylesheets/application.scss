@@ -1017,4 +1017,19 @@ input.has-error {
   a {
     text-decoration: none;
   }
+
+  .non-production {
+    border: thin solid ui-color(form-border);
+    border-radius: 0.3rem;
+    padding: 0 1rem 1rem;
+
+    legend {
+      border: 0;
+      display: inline;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin: 0 0.5rem;
+      width: auto;
+    }
+  }
 }
