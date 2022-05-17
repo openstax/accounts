@@ -1,15 +1,18 @@
 <%# A way to turn off the corner console during development %>
 <% unless Rails.application.secrets[:disable_corner_console] %>
 
-  <div id="upper-corner-console">
+<div id="upper-corner-console">
 
-    <% if !Rails.env.production? %>
-      Current user: <%= current_user.full_name %><br/>
-      <%= link_to "Admin Console", main_app.admin_console_path, class: 'btn' %><br/>
-    <% elsif current_user.is_administrator? %>
-      <%= link_to "Admin Console", main_app.admin_console_path, class: 'btn' %><br/>
-    <% end %>
+  <% if !Rails.env.production? %>
+  <fieldset class="non-production">
+    <legend>Non-production</legend>
+    Current user: <%= current_user.full_name %><br/>
+    <%= link_to "Admin Console", main_app.admin_console_path, class: 'btn' %><br/>
+  </fieldset>
+  <% elsif current_user.is_administrator? %>
+  <%= link_to "Admin Console", main_app.admin_console_path, class: 'btn' %><br/>
+  <% end %>
 
-  </div>
+</div>
 
 <% end %>
