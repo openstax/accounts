@@ -688,6 +688,10 @@ input.has-error {
 
   [type=submit] {
     min-width: 17.2rem;
+
+    &.primary {
+      @extend %primary;
+    }
   }
 
   [type=checkbox] {
