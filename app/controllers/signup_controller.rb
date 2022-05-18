@@ -58,10 +58,8 @@ class SignupController < ApplicationController
           redirect_to sheerid_form_path
         end
       },
-      failure:       lambda {
-        @first_name = unverified_user.first_name
-        @email = unverified_user.email_addresses.first.value
-        security_log(:contact_info_confirmation_by_pin_failed, email: @email)
+      failure: lambda {
+        security_log(:contact_info_confirmation_by_pin_failed, email: unverified_user.email_addresses.first)
         render :email_verification_form
       }
     )
