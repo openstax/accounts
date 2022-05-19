@@ -96,7 +96,7 @@ class EducatorSignupController < SignupController
   end
 
   def generate_sheer_id_url(user)
-    url              = standard_parse_url(Rails.application.secrets[:sheer_id_base_url])
+    url = standard_parse_url(Rails.application.secrets[:sheer_id_base_url])
     url.query_values = url.query_values.merge(
       first_name: user.first_name,
       last_name:  user.last_name,
