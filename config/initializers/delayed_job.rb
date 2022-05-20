@@ -11,6 +11,7 @@ Delayed::Worker.default_queue_name = :default
 
 # Default queue priorities
 Delayed::Worker.queue_attributes = {
+  salesforce_rejected_leads:       { priority: -5 },
   default:                         { priority: 0 },
   salesforce_accounts_sync:        { priority: 5 },
   salesforce_signup_lead_creation: { priority: 10 },
