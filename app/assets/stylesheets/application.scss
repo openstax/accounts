@@ -94,7 +94,6 @@ body {
     }
   }
 
-  @include set-font(body-regular);
   background-color: #fff;
   color: text-color(normal);
 }
@@ -250,14 +249,15 @@ label.required::after {
 
 .main-menu {
   box-shadow: none;
-  margin: 2rem 0 0 2rem;
+  margin: 4rem 0 0 4rem;
 
   @include wider-than($tablet-max + ($one-pixel-in-em * 90)) {
-    height: 2rem;
+    height: 6rem;
   }
 
   .logo-wrapper {
     padding: 0;
+    margin: 4rem 0;
 
     @include width-up-to($phone-max) {
       margin: auto;
@@ -612,7 +612,7 @@ input.has-error {
       padding-right: 0;
 
       background-color: #f1f1f1;
-      color: #c1c1c1;
+      color: #787878;
 
       @include title-font(2.4rem);
       text-align: center;
@@ -669,8 +669,8 @@ input.has-error {
 
     // placeholder text
     [type=text], [type=email], [type=password] {
-      color: #424242;
-      font-weight: 300;
+      color: #8c8a8a;
+      height: 4.5rem;
     }
 
     .checkboxes-section {
@@ -790,6 +790,7 @@ input.has-error {
 
     .social-buttons {
       margin-top: 0.9rem;
+      text-align: center;
     }
 
     .content.control-group {

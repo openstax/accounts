@@ -192,8 +192,8 @@ en:
     login_with: 'Log in with:'
     min_characters: "%{number} characters minimum"
     multiple_users: We found several accounts with this email
-    or_login_below: OR LOG IN BELOW
-    or_sign_up_below: OR SIGN UP BELOW
+    or_login_below: LOG IN
+    or_sign_up_below: SIGN UP
     password_is_blank: Password can't be blank
     password_label: Password
     password_requirements: Password requirements

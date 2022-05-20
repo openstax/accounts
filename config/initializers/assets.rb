@@ -19,4 +19,7 @@ Rails.application.config.assets.precompile += %w(
   application_body_api_docs.css
   pattern-library
   pattern-library/headers
+  font-awesome
+  bootstrap
+  bootstrap-sprockets
 )
