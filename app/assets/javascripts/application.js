@@ -19,5 +19,5 @@
 //= require multiselect
 //= require libphonenumber/utils
 //= require ./phone-number
-//= require_self
 //= require ./ui
+//= require_self
