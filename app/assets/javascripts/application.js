@@ -18,6 +18,7 @@
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils
+//= require profile
 //= require ./phone-number
 //= require ./ui
 //= require_self
