@@ -6,10 +6,6 @@ Rails.application.routes.draw do
     "/#{request.params[:path]}?#{request.params.except('path').to_query}"
   }, via: :all
 
-  match 'accounts/i/(*path)' => redirect { |_, request|
-    "accounts/#{request.params[:path]}?#{request.params.except('path').to_query}"
-  }, via: :all
-
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
@@ -56,7 +52,7 @@ as: :change_signup_email_post
   scope controller: :educator_signup do
     # Step 3
     get 'signup/educator/apply', action: :sheerid_form, as: :sheerid_form
-    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
+    post 'sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     # Step 4
     get 'signup/educator/profile_form', action: :profile_form, as: :profile_form
