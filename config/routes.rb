@@ -2,19 +2,29 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
+
   match 'i/(*path)' => redirect { |_,request|
     "/#{request.params[:path]}?#{request.params.except('path').to_query}"
   }, via: :all
 
+  ###################
+  #  FAQs/Support   #
+  ###################
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
+  ########################
+  #  Logged-in Profile   #
+  ########################
   scope controller: 'profile' do
     get 'profile', action: :profile, as: :profile
     get 'exit_accounts', action: :exit_accounts, as: :exit_accounts
   end
 
+  ###################
+  #  Login/out      #
+  ###################
   scope controller: 'login' do
     get 'login', action: :login_form, as: :login
     post 'login', action: :login_post
@@ -23,6 +33,9 @@ Rails.application.routes.draw do
     get 'signout', action: :logout # TODO: let's get people moved to /logout
   end
 
+  ###################
+  #  Shared Signup  #
+  ###################
   scope controller: 'signup' do
     # welcome! choose a role!
     get 'signup', action: :welcome, as: :signup
@@ -32,14 +45,10 @@ Rails.application.routes.draw do
     post 'signup/start', action: :signup_post, as: :signup_post
 
     # step 2 - verify email, allow changing if necessary
-    get 'signup/email_verification_form', action: :verify_email_by_pin_form,
-as: :verify_email_by_pin_form
-    post 'signup/email_verification_form', action: :verify_email_by_pin_post,
-as: :verify_email_by_pin_post
-    get 'signup/change_signup_email', action: :change_signup_email_form,
-as: :change_signup_email_form
-    post 'signup/change_signup_email', action: :change_signup_email_post,
-as: :change_signup_email_post
+    get 'signup/email_verification_form', action: :verify_email_by_pin_form, as: :verify_email_by_pin_form
+    post 'signup/email_verification_form', action: :verify_email_by_pin_post, as: :verify_email_by_pin_post
+    get 'signup/change_signup_email', action: :change_signup_email_form, as: :change_signup_email_form
+    post 'signup/change_signup_email', action: :change_signup_email_post, as: :change_signup_email_post
 
     # signup complete!
     get 'done', action: :signup_done, as: :signup_done
@@ -49,6 +58,9 @@ as: :change_signup_email_post
     get 'check_your_email', action: :check_your_email, as: :check_your_email
   end
 
+  #########################
+  #  Edu-extended Signup  #
+  #########################
   scope controller: :educator_signup do
     # Step 3
     get 'signup/educator/apply', action: :sheerid_form, as: :sheerid_form
@@ -57,21 +69,20 @@ as: :change_signup_email_post
     # Step 4
     get 'signup/educator/profile_form', action: :profile_form, as: :profile_form
     post 'signup/educator/complete_profile', action: :profile_form_post, as: :complete_profile_post
-    get 'signup/educator/pending_cs_verification', action: :pending_cs_verification,
-as: :cs_verification
+    get 'signup/educator/pending_cs_verification', action: :pending_cs_verification, as: :cs_verification
 
     get 'signup/educator/cs_form', action: :pending_cs_verification_form, as: :cs_verification_form
-    post 'signup/educator/cs_verification_request', action: :profile_form_post,
-as: :cs_verification_post
+    post 'signup/educator/cs_verification_request', action: :profile_form_post, as: :cs_verification_post
   end
 
+  #########################
+  #  Password Management  #
+  #########################
   scope controller: :password_management do
     # Password management process (forgot,  change, or create password)
     get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
-    post 'send_reset_password_email', action: :send_reset_password_email,
-as: :send_reset_password_email
-    get 'reset_password_email_sent', action: :reset_password_email_sent,
-as: :reset_password_email_sent
+    post 'send_reset_password_email', action: :send_reset_password_email, as: :send_reset_password_email
+    get 'reset_password_email_sent', action: :reset_password_email_sent, as: :reset_password_email_sent
     get 'create_password_form', action: :create_password_form, as: :create_password_form
     post 'create_password', action: :create_password, as: :create_password
     get 'change_password_form', action: :change_password_form, as: :change_password_form
@@ -87,8 +98,6 @@ as: :reset_password_email_sent
     get 'confirm_oauth_info', action: :confirm_oauth_info
     post 'confirm_oauth_info', action: :confirm_oauth_info
   end
-
-  mount OpenStax::Api::Engine, at: '/'
 
   scope controller: :users do
     put 'profile', action: :update
@@ -133,6 +142,11 @@ as: :reset_password_email_sent
     get 'api'
   end
 
+  ###################
+  #  Accounts API   #
+  ###################
+  mount OpenStax::Api::Engine, at: '/'
+
   apipie
 
   api :v1, default: true do
@@ -170,25 +184,32 @@ as: :reset_password_email_sent
 
     resources :group_members, only: [:index], path: 'memberships'
     resources :group_owners, only: [:index], path: 'ownerships'
-
-    # resources :contact_infos, only: [] do
-    #   member do
-    #     put 'verify'
-    #     delete 'destroy'
-    #   end
-    # end
   end
 
-  use_doorkeeper { controllers applications: 'oauth/applications' }
+  ######################
+  #  Doorkeeper/OAuth  #
+  ######################
+  use_doorkeeper do
+    controllers applications: 'oauth/applications'
+  end
 
+  ##########################
+  #  External Admin Utils  #
+  ##########################
   mount FinePrint::Engine => '/admin/fine_print'
+  mount Blazer::Engine, at: '/admin/blazer', as: 'blazer_admin'
   mount OpenStax::Utilities::Engine => :status
 
+  match "/admin/job_dashboard" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
+
+  ######################
+  #  Accounts Admin    #
+  ######################
   namespace :admin do
     get '/', to: 'base#index'
     get '/console', to: 'console#index'
 
-    resources :users, only: [:index, :update, :edit] do
+    resources :users, path: '/accounts/users', only: [:index, :update, :edit] do
       post 'become', on: :member
       get 'search', on: :collection
       get 'actions', on: :collection
@@ -203,11 +224,11 @@ as: :reset_password_email_sent
                                  controller: :contact_infos, action: :destroy
     post :verify_contact_info, path: '/contact_infos/:id/verify',
                                controller: :contact_infos, action: :verify
-
-    mount Blazer::Engine, at: 'blazer', as: 'blazer_admin'
-    match "/job_dashboard" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
   end
 
+  ######################
+  #  Test Routes       #
+  ######################
   if Rails.env.test?
     get '/external_app_for_specs' => 'external_app_for_specs#index'
     get '/external_app_for_specs/public' => 'external_app_for_specs#public'
