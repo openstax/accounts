@@ -10,5 +10,5 @@
 $(document).ready(function(){
   Accounts.Email.initialize();
   Accounts.Authentication.initialize();
-  $('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip();
 });

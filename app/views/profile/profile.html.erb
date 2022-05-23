@@ -30,7 +30,7 @@
       <%= I18n.t(:"users.edit.name") %>
     </div>
     <div class="info">
-      <a href="#" id="name" class="editable" data-type="profile_name" data-bind="editable: nameArgs">
+      <a href="#" id="name" data-type="profile_name" data-bind="editable: nameArgs">
         <%= current_user.full_name %>
       </a>
     </div>
@@ -55,8 +55,7 @@
             'ga-action': 'Click',
             'ga-label': 'Add Email Address',
             'using-openstax': @using_os
-          },
-          'data-bind': 'click: () => console.info("tada")'
+          }
         )
       %>
     </div>
