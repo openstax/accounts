@@ -8,7 +8,7 @@ class FindUserByToken
   end
 
   def handle
-    if already_logged_in?
+    unless caller.is_anonymous?
       outputs.user = caller
       return
     end
@@ -21,11 +21,5 @@ class FindUserByToken
     fatal_error(code: :expired_login_token) if user.login_token_expired?
 
     outputs.user = user
-  end
-
-  private #################
-
-  def already_logged_in?
-    !caller.is_anonymous?
   end
 end

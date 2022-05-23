@@ -76,7 +76,10 @@ class User < ApplicationRecord
   before_validation(:generate_uuid, on: :create)
 
   validate(:ensure_names_continue_to_be_present)
+
   validate(:save_activated_at_if_became_activated, on: :update)
+  validate(:change_faculty_status_if_changed_to_student, on: :update)
+  validate(:update_salesforce_if_user_changed, on: :update)
   validates(:faculty_status, :role, :school_type, presence: true)
 
   validates(
