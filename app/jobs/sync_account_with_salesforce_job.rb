@@ -15,7 +15,7 @@ class SyncAccountWithSalesforceJob < ApplicationJob
       sf_ox_account.salesforce_lead_id    = user&.salesforce_lead_id
     else
       sf_ox_account = OpenStax::Salesforce::Remote::OpenStaxAccount.new(
-        account_id:            user.id,
+        account_id:            user_id,
         account_uuid:          user.uuid.to_s,
         account_role:          user.role.titleize,
         salesforce_contact_id: user&.salesforce_contact_id,
