@@ -15,7 +15,12 @@ class User < ApplicationRecord
     UNKNOWN_ROLE       = :unknown_role,
     STUDENT_ROLE       = :student,
     INSTRUCTOR_ROLE    = :instructor,
+    ADMINISTRATOR_ROLE = :administrator,
+    LIBRARIAN_ROLE     = :librarian,
+    DESIGNER_ROLE      = :designer,
     OTHER_ROLE         = :other,
+    ADJUNCT_ROLE       = :adjunct,
+    HOMESCHOOL_ROLE    = :homeschool
   ].freeze
 
   VALID_FACULTY_STATUSES = [
@@ -218,10 +223,6 @@ class User < ApplicationRecord
 
   def is_application?
     false
-  end
-
-  def is_student?
-    role == :student
   end
 
   # State helpers.
