@@ -81,6 +81,9 @@ ko.bindingHandlers.editable = {
 
     Object.assign($.fn.editable.defaults, defaults);
 
+    console.info('EditableArgs', editableArgs);
+    console.info('Element is', element);
+    console.info('Defaults:', defaults);
     $(element).editable(editableArgs);
   }
 };
