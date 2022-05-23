@@ -18,16 +18,16 @@ class ActivateUser
 
     # create a lead for the user if they are a student and want the newsletter
     # otherwise, the lead gets created at the end of the instructor profile
-    if user.is_student?
+    if user.role == 'student'
+      SecurityLog.create!(user: user, event_type: :student_verified_email)
       user.update!(faculty_status: :no_faculty_info)
       if user.receive_newsletter?
         CreateSalesforceLeadJob.perform_later(user.id)
       end
     else # instructor, so they should be on their way to getting verified, set to pending
+      SecurityLog.create!(user: user, event_type: :educator_verified_email)
       user.update!(faculty_status: :pending_faculty)
     end
-
-    SecurityLog.create!(user: user, event_type: :user_became_activated)
 
     transfer_errors_from(user, { type: :verbatim })
   end
