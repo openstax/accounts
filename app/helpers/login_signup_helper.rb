@@ -35,14 +35,4 @@ module LoginSignupHelper
   def is_cs_form?
     request.original_fullpath.include? 'cs_form'
   end
-
-  def generate_sheer_id_url(user:)
-    url = Addressable::URI.parse(Rails.application.secrets.sheerid_base_url)
-    url.query_values = url.query_values.merge(
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: user.email_addresses.first&.value
-    )
-    url.to_s
-  end
 end
