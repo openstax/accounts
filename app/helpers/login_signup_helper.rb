@@ -35,9 +35,4 @@ module LoginSignupHelper
   def is_cs_form?
     request.original_fullpath.include? 'cs_form'
   end
-
-  # Standardize how we parse URLs
-  def standard_parse_url(url)
-    Addressable::URI.parse(url)
-  end
 end
