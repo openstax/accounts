@@ -36,15 +36,23 @@ module EducatorSignup
 
       user = EmailAddress.verified.find_by(value: verification.email)&.user
 
+      # we check here and only report to Sentry on prod - webhooks are not reliable on test environments
+      # If the user can't be found, it's likely because they are from another environment
+      # TODO: make this work better for testing on different envs
       if user.blank?
-        Sentry.capture_message(
-          "[SheerID Webhook] No user found with verification id (#{verification_id}) "\
-          "and email (#{verification.email})",
-          extra: {
-            verification_id: verification_id,
-            verification_details_from_sheer_id: verification_details_from_sheerid
-          }
-        )
+        if Rails.application.secrets.environment_name == 'production'
+          Sentry.capture_message(
+            "[SheerID Webhook] No user found with verification id (#{verification_id}) "\
+            "and email (#{verification.email})",
+            extra: {
+              verification_id: verification_id,
+              verification_details_from_sheer_id: verification_details_from_sheerid
+            }
+          )
+        else
+          warn("[SheerID] No user found with verification id (#{verification_id}) and email (#{verification.email})")
+        end
+
         return
       end
 
@@ -111,45 +119,36 @@ module EducatorSignup
       end
 
       if verification.current_step == 'rejected'
-        user.update!(faculty_status: User::REJECTED_BY_SHEERID,
-sheerid_verification_id: verification_id)
+        user.update!(faculty_status: User::REJECTED_BY_SHEERID, sheerid_verification_id: verification_id)
         SecurityLog.create!(
           event_type: :fv_reject_by_sheerid,
           user: user,
           event_data: { status: "User Rejected By SheerID", verification_id: verification_id })
       elsif verification.current_step == 'success'
-        user.update!(faculty_status: User::CONFIRMED_FACULTY,
-sheerid_verification_id: verification_id)
+        user.update!(faculty_status: User::CONFIRMED_FACULTY, sheerid_verification_id: verification_id)
         SecurityLog.create!(
           event_type: :fv_success_by_sheerid,
           user: user,
-          event_data: { status: "User Faculty Verified by SheerID",
-verification_id: verification_id })
+          event_data: { status: "User Faculty Verified by SheerID", verification_id: verification_id })
       elsif verification.current_step == 'collectTeacherPersonalInfo'
-        user.update!(faculty_status: User::PENDING_SHEERID,
-sheerid_verification_id: verification_id)
+        user.update!(faculty_status: User::PENDING_SHEERID, sheerid_verification_id: verification_id)
         SecurityLog.create!(
           event_type: :sheerid_webhook_request_more_info,
           user: user,
-          event_data: { status: "SheerID Requested More Information",
-verification: verification_details_from_sheerid.inspect })
+          event_data: { status: "SheerID Requested More Information", verification: verification_details_from_sheerid.inspect })
       elsif verification.current_step == 'error'
-        user.update!(faculty_status: User::REJECTED_BY_SHEERID,
-sheerid_verification_id: verification_id)
+        user.update!(faculty_status: User::REJECTED_BY_SHEERID, sheerid_verification_id: verification_id)
         user.update!(sheerid_verification_id: verification_id)
         SecurityLog.create!(
           event_type: :sheerid_error,
           user: user,
-          event_data: { status: "Error from SheerID",
-verification: verification_details_from_sheerid.inspect })
+          event_data: { status: "Error from SheerID", verification: verification_details_from_sheerid.inspect })
       else
-        user.update!(faculty_status: User::REJECTED_BY_SHEERID,
-sheerid_verification_id: verification_id)
+        user.update!(faculty_status: User::REJECTED_BY_SHEERID, sheerid_verification_id: verification_id)
         SecurityLog.create!(
           event_type: :unknown_sheerid_response,
           user: user,
-          event_data: { status: "Unexpected Response from SheerID",
-verification: verification_details_from_sheerid.inspect })
+          event_data: { status: "Unexpected Response from SheerID", verification: verification_details_from_sheerid.inspect })
       end
 
       # if we got the webhook back after the user submitted the profile, they

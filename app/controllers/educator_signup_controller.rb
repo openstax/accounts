@@ -38,13 +38,15 @@ class EducatorSignupController < SignupController
       },
       failure: lambda {
         security_log(:sheerid_webhook_failed, { data: @handler_result })
-        Sentry.capture_message(
-          '[SheerID Webhook] Failed!',
-          extra: {
-            verification_id: params[:verificationId],
-            reason: @handler_result.errors.first.code
-          }
-        )
+        if Rails.application.secrets.environment_name == 'production'
+          Sentry.capture_message(
+            '[SheerID Webhook] Failed!',
+            extra: {
+              verification_id: params[:verificationId],
+              reason: @handler_result.errors.first.code
+            }
+          )
+        end
         render(status: :unprocessable_entity)
       }
     )

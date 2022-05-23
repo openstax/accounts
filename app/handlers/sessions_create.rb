@@ -56,10 +56,8 @@ class SessionsCreate
       return status unless status.nil?
     end
 
-    if logging_in?
+    if options[:login_providers].present?
       handle_during_login
-    elsif signing_up?
-      handle_during_signup
     else
       fatal_error(code: :unknown_callback_state)
     end
