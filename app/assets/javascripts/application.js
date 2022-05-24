@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require ./jquery_extensions
 //= require bootstrap-sprockets
 //= require knockout
 //= require ./ko_extensions
