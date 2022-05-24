@@ -121,8 +121,8 @@ class User < ApplicationRecord
 
   before_save(:add_unread_update)
 
-  after_save(:change_faculty_status_if_changed_to_student)
-  after_save(:update_salesforce_if_user_changed)
+  after_save(:change_faculty_status_if_changed_to_student, on: :update)
+  after_save(:update_salesforce_if_user_changed, on: :update)
 
   before_create(:make_first_user_an_admin)
 
