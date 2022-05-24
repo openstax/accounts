@@ -1,0 +1,45 @@
+
+Changes made to disable name editing (because it wasn't working)
+
+--- This was the name link ---
+<a href="#" id="name" data-type="profile_name" data-bind="editable: nameArgs">
+  <%= current_user.full_name %>
+</a>
+
+--- These tags were before the closing <% end %>
+  <%= javascript_include_tag 'jquery_extensions' %>
+  <%= javascript_include_tag 'ko_extensions' %>
+
+--- This was the code at the bottom
+<script>
+  const defaults = {
+    mode: 'inline',
+    send: 'always',
+    ajaxOptions: {type: 'PUT'},
+    url: "<%= profile_path %>"
+  };
+  const editableAttributes = {
+    title: "<%= current_user.title %>",
+    first_name: "<%= current_user.first_name %>",
+    last_name: "<%= current_user.last_name %>",
+    suffix: "<%= current_user.suffix %>"
+  };
+  const nameArgs = {
+    defaults,
+    value: editableAttributes,
+    success: function(response) {
+      return $(this).html(response.full_name);
+    },
+    validate: function(attrs) {
+      if (!attrs.first_name && !attrs.last_name) {
+        return Accounts.I18n.name.first_last_name_blank;
+      } else if (!attrs.first_name) {
+        return Accounts.I18n.name.first_name_blank;
+      } else if (!attrs.last_name) {
+        return Accounts.I18n.name.last_name_blank;
+      }
+    }
+  };
+
+  ko.applyBindings({nameArgs});
+</script>
