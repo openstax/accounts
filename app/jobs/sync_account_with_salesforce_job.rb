@@ -39,7 +39,7 @@ class SyncAccountWithSalesforceJob < ApplicationJob
         event_data: { sf_ox_account_id: sf_ox_account.id }
       )
       return true
-    rescue => e
+    rescue => e # rubocop:disable Style/RescueStandardError
       Sentry.capture_exception(e)
       return
     end
