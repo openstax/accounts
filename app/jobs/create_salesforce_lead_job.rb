@@ -17,7 +17,8 @@ class CreateSalesforceLeadJob < ApplicationJob
 
     SecurityLog.create!(
       user:       user,
-      event_type: :starting_salesforce_lead_creation
+      event_type: :starting_salesforce_lead_creation,
+      event_data: { user_data: user.inspect }
     )
 
     sf_school_id = user.school&.salesforce_id
