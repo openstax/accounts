@@ -53,7 +53,8 @@ class CreateSalesforceLeadJob < ApplicationJob
         position:             sf_position,
         title:                user.other_role_name,
         who_chooses_books:    user.who_chooses_books,
-        subject:              user.which_books,
+        subject:              user.which_books, # TODO: remove this once SF migrated to subject_interest
+        subject_interest:     user.which_books,
         adoption_status:      ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
         adoption_json:        adoption_json,
         os_accounts_id:       user.id,

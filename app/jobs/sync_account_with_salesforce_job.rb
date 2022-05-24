@@ -13,6 +13,7 @@ class SyncAccountWithSalesforceJob < ApplicationJob
       sf_ox_account.account_role = user.role.titleize
       sf_ox_account.faculty_status = user.faculty_status
       sf_ox_account.salesforce_contact_id = user.salesforce_contact_id
+      # to handle not trying to update a lead id that has been converted
       sf_ox_account.salesforce_lead_id = user.salesforce_lead_id if sf_ox_account.salesforce_lead_id.blank?
     else
       sf_ox_account = OpenStax::Salesforce::Remote::OpenStaxAccount.new(
