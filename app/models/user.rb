@@ -83,6 +83,8 @@ class User < ApplicationRecord
   validate(:ensure_names_continue_to_be_present)
 
   validate(:save_activated_at_if_became_activated, on: :update)
+  validate(:change_faculty_status_if_changed_to_student, on: :update)
+  validate(:update_salesforce_if_user_changed, on: :update)
   validates(:faculty_status, :role, :school_type, presence: true)
 
   validates(
@@ -122,10 +124,6 @@ class User < ApplicationRecord
   before_save(:add_unread_update)
 
   before_create(:make_first_user_an_admin)
-
-  after_save(:change_faculty_status_if_changed_to_student, on: :update)
-  after_save(:update_salesforce_if_user_changed, on: :update)
-
 
   belongs_to :school, optional: true, inverse_of: :users
 
