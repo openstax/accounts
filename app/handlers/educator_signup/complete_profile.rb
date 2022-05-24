@@ -21,6 +21,7 @@ module EducatorSignup
       attribute :who_chooses_books, type: String
       attribute :using_openstax_how, type: String
       attribute :num_students_per_semester_taught, type: Object
+      attribute :books_used, type: Object
       attribute :books_of_interest, type: Object
       attribute :is_cs_form, type: Object
 
@@ -132,7 +133,9 @@ is_school_issued: true)
     end
 
     def which_books
-      if signup_params.books_of_interest != nil
+      if signup_params.books_used != nil
+        format_books_for_salesforce_string(signup_params.books_used)
+      elsif signup_params.books_of_interest != nil
         format_books_for_salesforce_string(signup_params.books_of_interest)
       end
     end
@@ -141,8 +144,12 @@ is_school_issued: true)
       books.reject(&:empty?)&.join(';')
     end
 
+    def books_used
+      signup_params.books_used&.reject { |b| b.blank? }
+    end
+
     def books_of_interest
-      signup_params.books_of_interest&.reject{ |b| b.blank? }
+      signup_params.books_of_interest&.reject { |b| b.blank? }
     end
 
     def check_params

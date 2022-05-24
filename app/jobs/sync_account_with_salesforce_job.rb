@@ -9,17 +9,19 @@ class SyncAccountWithSalesforceJob < ApplicationJob
 
     if user.salesforce_ox_account_id
       sf_ox_account =
-        OpenStax::Salesforce::Remote::OpenStaxAccount.find(salesforce_ox_account_id)
-      sf_ox_account.role                  = user.role.titleize
-      sf_ox_account.salesforce_contact_id = user&.salesforce_contact_id
-      sf_ox_account.salesforce_lead_id    = user&.salesforce_lead_id
+        OpenStax::Salesforce::Remote::OpenStaxAccount.find(user.salesforce_ox_account_id)
+      sf_ox_account.account_role = user.role.titleize
+      sf_ox_account.faculty_status = user.faculty_status
+      sf_ox_account.salesforce_contact_id = user.salesforce_contact_id
+      sf_ox_account.salesforce_lead_id = user.salesforce_lead_id
     else
       sf_ox_account = OpenStax::Salesforce::Remote::OpenStaxAccount.new(
         account_id:            user_id,
         account_uuid:          user.uuid.to_s,
         account_role:          user.role.titleize,
-        salesforce_contact_id: user&.salesforce_contact_id,
-        salesforce_lead_id:    user&.salesforce_lead_id,
+        faculty_status:        user.faculty_status,
+        salesforce_contact_id: user.salesforce_contact_id,
+        salesforce_lead_id:    user.salesforce_lead_id,
         signup_date:           user.created_at.strftime("%Y-%m-%dT%H:%M:%S%z"),
         account_environment:   Rails.application.secrets.environment_name
       )

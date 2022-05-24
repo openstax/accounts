@@ -20,8 +20,10 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params[:value].is_a?(String) ? \
-      {params[:name] => params[:value]} : \
-      params.require(:value).permit(:title, :first_name, :last_name, :suffix).to_h
+    user_params = {}
+    params[:value].each do |value|
+      user_params.store(params[:name],value) if value.is_a?(String)
+    end
+    user_params
   end
 end
