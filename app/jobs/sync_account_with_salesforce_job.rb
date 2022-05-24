@@ -13,7 +13,7 @@ class SyncAccountWithSalesforceJob < ApplicationJob
       sf_ox_account.account_role = user.role.titleize
       sf_ox_account.faculty_status = user.faculty_status
       sf_ox_account.salesforce_contact_id = user.salesforce_contact_id
-      sf_ox_account.salesforce_lead_id = user.salesforce_lead_id
+      sf_ox_account.salesforce_lead_id = user.salesforce_lead_id if sf_ox_account.salesforce_lead_id.blank?
     else
       sf_ox_account = OpenStax::Salesforce::Remote::OpenStaxAccount.new(
         account_id:            user_id,
@@ -30,15 +30,16 @@ class SyncAccountWithSalesforceJob < ApplicationJob
     sf_ox_account.save!
     user.salesforce_ox_account_id = sf_ox_account.id
 
-    if user.save!
+    begin
+      user.save!
       SecurityLog.create!(
         user:       user,
         event_type: :account_created_or_synced_with_salesforce,
         event_data: { sf_ox_account_id: sf_ox_account.id }
       )
       return true
-    else
-      warn("Problem creating or syncing user account with Salesforce ID:#{user.id}")
+    rescue => e
+      Sentry.capture_exception(e)
       return
     end
   end
