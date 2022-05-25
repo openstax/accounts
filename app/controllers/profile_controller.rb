@@ -3,7 +3,9 @@ class ProfileController < ApplicationController
   before_action :authenticate_user!, only: :profile
   before_action :prevent_caching, only: :profile
 
-  def profile; end
+  def profile
+    user_signup_complete_check
+  end
 
   def exit_accounts
     if (redirect_param = extract_params(request.referer)[:r])
