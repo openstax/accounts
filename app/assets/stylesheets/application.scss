@@ -667,10 +667,14 @@ input.has-error {
       }
     }
 
-    // placeholder text
-    [type=text], [type=email], [type=password] {
-      color: #8c8a8a;
-      height: 4.5rem;
+    [type=text],
+    [type=email],
+    [type=password] {
+        height: 4.5rem;
+
+        &::placeholder {
+            color: #8c8a8a;
+        }
     }
 
     .checkboxes-section {
@@ -714,16 +718,25 @@ input.has-error {
     border-radius: 0;
   }
 
-  .radio-control-group > div:not(:first-child) {
-    align-items: center;
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+  .radio-control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
 
-    > * {
-      color: inherit;
-      margin: 0;
-    }
+      > label {
+          margin: 0;
+      }
+
+      > div {
+          align-items: center;
+          display: flex;
+          gap: 1rem;
+
+          label,
+          input {
+              margin: 0;
+          }
+      }
   }
 }
 
