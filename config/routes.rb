@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
 
   get 'i/(*path)' => redirect { |_,request|
-    "/#{request.params[:path]}?#{request.params.except('path').to_query}"
+      "/accounts/#{request.params[:path]}?#{request.params.except('path').to_query}"
   }
 
   ###################
