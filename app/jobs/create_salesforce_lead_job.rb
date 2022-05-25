@@ -87,37 +87,39 @@ class CreateSalesforceLeadJob < ApplicationJob
       end
     end
 
-    if lead.save
+    begin
+    lead.save!
 
+    SecurityLog.create!(
+      user:       user,
+      event_type: :created_salesforce_lead,
+      event_data: { lead_id: lead.id }
+    )
+
+    user.salesforce_lead_id = lead.id
+    begin
+      user.save!
       SecurityLog.create!(
         user:       user,
-        event_type: :created_salesforce_lead,
+        event_type: :user_lead_id_updated_from_salesforce,
         event_data: { lead_id: lead.id }
       )
+      return lead
+    rescue => e
+      SecurityLog.create!(
+        user:       user,
+        event_type: :user_update_failed_during_lead_creation
+      )
+      Sentry.capture_exception(e)
+      return
+    end
 
-      user.salesforce_lead_id = lead.id
-      if user.save!
-        SecurityLog.create!(
-          user:       user,
-          event_type: :user_lead_id_updated_from_salesforce,
-          event_data: { lead_id: lead.id }
-        )
-        return lead
-      else
-        SecurityLog.create!(
-          user:       user,
-          event_type: :user_update_failed_during_lead_creation
-        )
-        # TODO: Sentry this once we know it won't blow everything up
-        return
-      end
-
-    else
+    rescue => e
       SecurityLog.create!(
         user:       user,
         event_type: :salesforce_error
       )
-      # TODO: this needs a sentry error but we should still process the user
+      Sentry.capture_exception(e)
     end
   end
 
