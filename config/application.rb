@@ -18,10 +18,6 @@ module Accounts
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
 
-    def is_real_production?
-      secrets[:environment_name] == 'production'
-    end
-
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
     config.active_record.belongs_to_required_by_default = false
     config.autoload_paths += %W(#{config.root}/lib)
