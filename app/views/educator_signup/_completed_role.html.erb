@@ -20,7 +20,7 @@
     </div>
 
     <% educator_complete_roles.each do |(role, id, selected)| %>
-    <label>
+    <div>
       <% label_name = "educator_specific_role_#{id}".to_sym %>
       <input type="radio"
         value="<%= id %>"
@@ -30,7 +30,7 @@
         data-bind="checked: role"
       >
       <%= label(label_name, role, class: 'custom-control-label') %>
-    </label>
+    </div>
     <% end %>
 
   </div>
