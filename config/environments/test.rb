@@ -21,7 +21,6 @@ Rails.application.configure do
   # Show full error reports and disable caching
   config.consider_all_requests_local = true
   config.action_controller.perform_caching = false
-  config.cache_store = :memory_store
 
   # Raise exceptions instead of rendering exception templates
   config.action_dispatch.show_exceptions = true
@@ -38,20 +37,8 @@ Rails.application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 
-  # Store uploaded files on the local file system in a temporary directory.
-  config.active_storage.service = :test
-
-  # Print deprecation notices to the stderr.
-  config.active_support.deprecation = :stderr
-
-  # Raise exceptions for disallowed deprecations.
-  config.active_support.disallowed_deprecation = :raise
-
-  # Tell Active Support which deprecation messages to disallow.
-  config.active_support.disallowed_deprecation_warnings = []
-
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  # config.active_support.test_order = :random
+  config.active_support.test_order = :random
 end
