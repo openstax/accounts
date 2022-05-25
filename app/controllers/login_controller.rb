@@ -33,21 +33,9 @@ class LoginController < ApplicationController
           redirect_to verify_email_by_pin_form_path and return
         end
 
-        sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
-        # byebug
-        if @current_user.student? || (@current_user.is_profile_complete? && @current_user.confirmed_faculty?)
-          redirect_back(fallback_location: profile_path) and return
-        end
+        sign_in!(user, security_log_data: { 'email': @handler_result.outputs.email })
 
-        if @current_user.instructor? && !(@current_user.is_sheerid_unviable? || @current_user.is_profile_complete?)
-          security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification.')
-          redirect_to sheerid_form_path and return
-        end
-
-        if @current_user.instructor? && (@current_user.is_needs_profile? || !@current_user.is_profile_complete?)
-          security_log(:educator_resumed_signup_flow, message: 'User has not verified email address.')
-          redirect_to profile_form_path and return
-        end
+        user_signup_complete_check
 
         redirect_to profile_path
       },
