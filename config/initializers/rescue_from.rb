@@ -1,12 +1,20 @@
 require 'openstax_rescue_from'
 
-OpenStax::RescueFrom.configure do |config|
-  config.raise_exceptions = [false, 'false'].exclude?(ENV.fetch('RAISE_EXCEPTIONS', nil)) ||
-                            Rails.application.config.consider_all_requests_local
-  config.raise_background_exceptions = [false, 'false'].exclude?(ENV.fetch('RAISE_BACKGROUND_EXCEPTIONS', nil))
+rescue_from_settings = Rails.application.secrets[:rescue_from]
+exception_secrets = Rails.application.secrets[:exception]
 
-  config.app_name = ENV.fetch('APP_NAME', nil)
-  config.contact_name = ENV.fetch('EXCEPTION_CONTACT_NAME', nil)
+OpenStax::RescueFrom.configure do |config|
+  config.raise_exceptions = [false, 'false'].exclude?(
+    rescue_from_settings[:raise_background_exceptions] ||
+      Rails.application.config.consider_all_requests_local
+  )
+
+  config.raise_background_exceptions = [false, 'false'].exclude?(
+    rescue_from_settings[:raise_background_exceptions]
+  )
+
+  config.app_name = Rails.application.secrets.app_name
+  config.contact_name = exception_secrets[:contact_name]
 
   config.notify_proc = ->(proxy, controller) do
     ExceptionNotifier.notify_exception(
@@ -41,9 +49,9 @@ OpenStax::RescueFrom.configure do |config|
   config.notify_rack_middleware = ExceptionNotification::Rack
   config.notify_rack_middleware_options = {
     email: {
-      email_prefix: "[#{config.app_name}] (#{ENV.fetch('APP_ENV', nil)}) ",
-      sender_address: ENV.fetch('EXCEPTION_SENDER', nil),
-      exception_recipients: ENV.fetch('EXCEPTION_RECIPIENTS', nil)
+      email_prefix: "[#{config.app_name}] (#{Rails.application.secrets.environment_name}) ",
+      sender_address: exception_secrets[:sender],
+      exception_recipients: exception_secrets[:recipients]
     }
   }
   # URL generation errors are caused by bad routes, for example, and should not be ignored
