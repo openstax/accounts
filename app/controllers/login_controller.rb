@@ -37,7 +37,7 @@ class LoginController < ApplicationController
 
         user_signup_complete_check
 
-        redirect_to profile_path
+        redirect_to profile_path and return
       },
       failure: lambda {
         email = @handler_result.outputs.email
