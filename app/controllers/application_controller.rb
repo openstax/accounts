@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
     end
 
     if @current_user.instructor? && (@current_user.is_needs_profile? || !@current_user.is_profile_complete?)
-      security_log(:educator_resumed_signup_flow, message: 'User has not verified email address.')
+      security_log(:educator_resumed_signup_flow, message: 'User has not completed profile.')
       redirect_to profile_form_path and return
     end
   end
