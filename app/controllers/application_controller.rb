@@ -19,10 +19,6 @@ class ApplicationController < ActionController::Base
   end
 
   def user_signup_complete_check
-    if @current_user.student? || (@current_user.is_profile_complete? && @current_user.confirmed_faculty?)
-      redirect_back(fallback_location: profile_path) and return
-    end
-
     if @current_user.instructor? && !(@current_user.is_sheerid_unviable? || @current_user.is_profile_complete?)
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification.')
       redirect_to sheerid_form_path and return
