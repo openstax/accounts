@@ -36,5 +36,9 @@ module Accounts
       # include all helpers from your application
       Doorkeeper::ApplicationController.helper Accounts::Application.helpers
     end
+
+    def is_real_production?
+      Rails.application.secrets.environment_name == 'production'
+    end
   end
 end

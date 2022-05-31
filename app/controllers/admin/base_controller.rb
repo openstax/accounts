@@ -14,7 +14,7 @@ module Admin
     end
 
     def log_out_inactive_admins
-      if current_user.is_administrator? && Rails.application.secrets.environment_name == 'production'
+      if current_user.is_administrator? && is_real_production?
         if session[:last_admin_activity].nil?
           # logged in as a normal user and then someone made normal user an admin
           # otherwise, should never be nil for admins who log in as an admin

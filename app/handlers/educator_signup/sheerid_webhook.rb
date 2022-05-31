@@ -40,7 +40,7 @@ module EducatorSignup
       # If the user can't be found, it's likely because they are from another environment
       # TODO: make this work better for testing on different envs
       if user.blank?
-        if Rails.application.secrets.environment_name == 'production'
+        if is_real_production?
           Sentry.capture_message(
             "[SheerID Webhook] No user found with verification id (#{verification_id}) "\
             "and email (#{verification.email})",

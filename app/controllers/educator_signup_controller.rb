@@ -34,7 +34,7 @@ class EducatorSignupController < SignupController
       },
       failure: lambda {
         security_log(:sheerid_webhook_failed, { data: @handler_result })
-        if Rails.application.secrets.environment_name == 'production'
+        if is_real_production?
           Sentry.capture_message(
             '[SheerID Webhook] Failed!',
             extra: {
