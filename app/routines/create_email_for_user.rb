@@ -17,15 +17,7 @@ class CreateEmailForUser
     return if user.email_addresses.find_by(value: email.value).nil? ||
               user.email_addresses.find_by(value: email.value).verified?
 
-    email = EmailAddress.find_or_create_by(value: email, user_id: user.id)
-    email.is_school_issued = options[:is_school_issued]
-
-    # If it is a brand new email address, make it
-    if email.nil?
-      email = EmailAddress.new(value: email)
-      email.user = user
-      email.is_school_issued = options[:is_school_issued]
-    end
+    email = EmailAddress.find_or_create_by(value: email, user_id: user.id, is_school_issued: options[:is_school_issued])
 
     # This is either a new email address (unverified) or an existing email address
     # that is unverified, so verified should be false unless already verified
