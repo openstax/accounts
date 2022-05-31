@@ -4,8 +4,7 @@ class SessionsController < ApplicationController
   include RateLimiting
 
   skip_before_action :authenticate_user!,
-                     only: [:lookup_login, :authenticate, :redirect_back,
-                            :create, :failure, :destroy]
+                     only: %i[lookup_login authenticate create failure]
 
   before_action :store_authorization_url_as_fallback, only: :create
 
@@ -82,8 +81,7 @@ class SessionsController < ApplicationController
           redirect_to profile_path, notice: I18n.t(:'controllers.sessions.new_sign_in_option_added')
         when :authentication_taken
           security_log :authentication_transfer_failed, authentication_id: authentication.id
-          redirect_to profile_path,
-alert: I18n.t(:'controllers.sessions.sign_in_option_already_used')
+          redirect_to profile_path, alert: I18n.t(:'controllers.sessions.sign_in_option_already_used')
         when :same_provider
           security_log :authentication_transfer_failed, authentication_id: authentication.id
           redirect_to profile_path,
@@ -92,11 +90,9 @@ alert: I18n.t(:'controllers.sessions.sign_in_option_already_used')
                                     authentication: authentication.display_name)
         when :mismatched_authentication
           security_log :sign_in_failed, reason: "mismatched authentication"
-          redirect_to login_path,
-                      alert: I18n.t(:'controllers.sessions.mismatched_authentication')
+          redirect_to login_path, alert: I18n.t(:'controllers.sessions.mismatched_authentication')
         when :email_already_in_use
-          redirect_to profile_path,
-alert: I18n.t(:'controllers.sessions.way_to_login_cannot_be_added')
+          redirect_to profile_path, alert: I18n.t(:'controllers.sessions.way_to_login_cannot_be_added')
         else
             oauth               = request.env['omniauth.auth']
             errors              = @handler_result.errors.inspect
@@ -124,8 +120,7 @@ alert: I18n.t(:'controllers.sessions.way_to_login_cannot_be_added')
             oauth  = request.env['omniauth.auth']
             errors = @handler_result.errors.inspect
 
-            "[SessionsCreate] Lost User on failure: " \
-              "OAuth data: #{oauth}; status: #{status}; errors: #{errors}"
+            "[SessionsCreate] Lost User on failure: OAuth data: #{oauth}; status: #{status}; errors: #{errors}"
           end
 
           redirect_to root_path, alert: I18n.t(:'controllers.lost_user')

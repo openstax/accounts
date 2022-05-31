@@ -1,7 +1,11 @@
 class PasswordManagementController < ApplicationController
   include LoginSignupHelper
 
-  before_action :authenticate_user!, only: [:create_password]
+  skip_before_action :authenticate_user!, only: %i[forgot_password_form
+                                                   send_reset_password_email
+                                                   create_password_form
+                                                   change_password_form
+                                                   change_password]
 
   def forgot_password_form
     @email = login_failed_email

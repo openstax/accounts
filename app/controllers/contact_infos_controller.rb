@@ -1,6 +1,6 @@
 class ContactInfosController < ApplicationController
 
-  skip_before_action :authenticate_user!, only: [:confirm, :confirm_unclaimed, :resend_confirmation]
+  skip_before_action :authenticate_user!, only: :confirm
 
   before_action :get_contact_info, only: [:destroy, :set_searchable]
 

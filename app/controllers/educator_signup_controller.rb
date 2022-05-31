@@ -5,15 +5,7 @@ class EducatorSignupController < SignupController
   skip_forgery_protection(only: :sheerid_webhook)
 
   before_action(:prevent_caching, only: :sheerid_webhook)
-  before_action(:authenticate_user!, only: %i[
-      sheerid_form
-      profile_form
-      complete_profile
-      pending_cs_verification
-      cs_verification_form
-      cs_verification_request
-    ]
-  )
+  skip_before_action(:authenticate_user!, only: :sheerid_webhook)
   before_action(:store_if_sheerid_is_unviable_for_user, only: :sheerid_form)
   before_action(:store_sheerid_verification_for_user, only: :sheerid_form)
 

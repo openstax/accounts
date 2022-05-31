@@ -1,6 +1,6 @@
 class ProfileController < ApplicationController
 
-  before_action :authenticate_user!, only: :profile
+  skip_before_action :authenticate_user!, only: :exit_accounts
   before_action :prevent_caching, only: :profile
   before_action :redirect_instructors_needing_to_complete_signup, only: :profile
   before_action :redirect_back_if_allowed, only: :profile

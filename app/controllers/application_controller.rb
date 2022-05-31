@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def redirect_instructors_needing_to_complete_signup
-    return unless current_user.is_instructor?
+    return unless current_user.instructor?
 
     unless current_user.is_sheerid_unviable? || current_user.is_profile_complete?
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification.')
