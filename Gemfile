@@ -45,7 +45,7 @@ gem 'sassc-rails', '>= 2.1.0'
 gem 'bootstrap-editable-rails'
 
 # CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.2.2'
+gem 'coffee-rails', '5.0.0'
 
 # JavaScript asset compiler
 gem 'mini_racer'
