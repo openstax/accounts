@@ -1,7 +1,5 @@
 class ApplicationController < ActionController::Base
 
-  include AuthenticateMethods
-
   layout 'application'
 
   before_action :authenticate_user!
@@ -19,13 +17,21 @@ class ApplicationController < ActionController::Base
     params[:r] && params[:r] == stored_url
   end
 
-  def user_signup_complete_check
-    if @current_user.instructor? && !(@current_user.is_sheerid_unviable? || @current_user.is_profile_complete?)
+  include Lev::HandleWith
+
+  respond_to :html
+
+  protected
+
+  def redirect_instructors_needing_to_complete_signup
+    return unless current_user.is_instructor?
+
+    unless current_user.is_sheerid_unviable? || current_user.is_profile_complete?
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification.')
       redirect_to sheerid_form_path and return
     end
 
-    if @current_user.instructor? && (@current_user.is_needs_profile? || !@current_user.is_profile_complete?)
+    if current_user.is_needs_profile? || !current_user.is_profile_complete?
       security_log(:educator_resumed_signup_flow, message: 'User has not completed profile.')
       redirect_to profile_form_path and return
     end
@@ -37,8 +43,4 @@ class ApplicationController < ActionController::Base
       redirect_to redirect_param
     end
   end
-
-  include Lev::HandleWith
-
-  respond_to :html
 end
