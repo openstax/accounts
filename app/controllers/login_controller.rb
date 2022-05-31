@@ -35,7 +35,7 @@ class LoginController < ApplicationController
 
         sign_in!(user, security_log_data: { 'email': @handler_result.outputs.email })
 
-        user_signup_complete_check
+        redirect_instructors_needing_to_complete_signup
 
         redirect_back(fallback_location: profile_path) and return
       },

@@ -2,7 +2,7 @@ class ProfileController < ApplicationController
 
   before_action :authenticate_user!, only: :profile
   before_action :prevent_caching, only: :profile
-  before_action :user_signup_complete_check, only: :profile
+  before_action :redirect_instructors_needing_to_complete_signup, only: :profile
   before_action :redirect_back_if_allowed, only: :profile
 
   def exit_accounts

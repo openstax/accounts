@@ -21,8 +21,7 @@ class Api::V1::UsersController < Api::V1::ApiController
   # index
   ###############################################################
 
-  api :GET, '/users',
-            'Returns a set of Users matching query terms'
+  api :GET, '/users', 'Returns a set of Users matching query terms'
   description <<-EOS
     Accepts a query string along with options and returns a JSON representation
     of the matching Users. The maximum number of results is limited to
@@ -34,8 +33,7 @@ class Api::V1::UsersController < Api::V1::ApiController
   EOS
   # Using route helpers doesn't work in test or production, probably has to do
   # with initialization order
-  example "#{api_example(url_base: 'https://accounts.openstax.org/api/users',
-url_end: '?q=username:bob%20name=Jones')}"
+  example "#{api_example(url_base: 'https://accounts.openstax.org/api/users', url_end: '?q=username:bob%20name=Jones')}"
   param :q, String, required: true, desc: <<-EOS
     The search query string, built up as a space-separated collection of
     search conditions on different fields.  Each condition is formatted as
@@ -114,7 +112,6 @@ url_end: '?q=username:bob%20name=Jones')}"
     #{json_schema(Api::V1::UserRepresenter, include: :readable)}
   EOS
   def show
-    return head(:forbidden) if current_human_user.is_anonymous?
     ScoutHelper.ignore!(0.999)
 
     OSU::AccessPolicy.require_action_allowed!(:read, current_api_user, current_human_user)
@@ -167,14 +164,14 @@ url_end: '?q=username:bob%20name=Jones')}"
     into directly.  It will merged with the user's account when they complete the
     standard sign up process using a matching email address.
     If an account is created with a username and password, it may be signed into and used
-    immediately once the user agress to the Terms and Conditions.
+    immediately once the user agrees to the Terms and Conditions.
     #{json_schema(Api::V1::FindOrCreateUserRepresenter, include: [:readable, :writable])}
   EOS
 
   def find_or_create
     OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user, User)
     # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
-    # Substitue a Hashie::Mash to read the JSON encoded body
+    # Substitute a Hashie::Mash to read the JSON encoded body
     payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindOrCreateUserRepresenter)
 
     payload.application = current_api_user.application
@@ -182,8 +179,7 @@ url_end: '?q=username:bob%20name=Jones')}"
     if result.errors.any?
       render json: { errors: result.errors }, status: :conflict
     else
-      respond_with result.outputs[:user], represent_with: Api::V1::FindOrCreateUserRepresenter,
-location: nil
+      respond_with result.outputs[:user], represent_with: Api::V1::FindOrCreateUserRepresenter, location: nil
     end
   end
 
