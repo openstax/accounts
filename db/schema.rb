@@ -348,7 +348,7 @@ ActiveRecord::Schema.define(version: 2022_08_03_202514) do
     t.string "uuid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["uuid"], name: "index_user_external_uuids_on_uuid"
+    t.index ["uuid"], name: "index_user_external_uuids_on_uuid", unique: true
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
