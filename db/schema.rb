@@ -135,6 +135,7 @@ ActiveRecord::Schema.define(version: 2022_08_03_202514) do
     t.index ["confirmation_pin"], name: "index_contact_infos_on_confirmation_pin"
     t.index ["is_school_issued"], name: "index_contact_infos_on_is_school_issued"
     t.index ["user_id"], name: "index_contact_infos_on_user_id"
+    t.index ["value", "type"], name: "index_contact_infos_on_value_and_type", unique: true
     t.index ["value", "user_id", "type"], name: "index_contact_infos_on_value_user_id_type", unique: true
     t.index ["verified"], name: "index_contact_infos_on_verified"
   end

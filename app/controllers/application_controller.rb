@@ -33,10 +33,8 @@ class ApplicationController < ActionController::Base
 
   def redirect_back_if_allowed
     redirect_param = params[:r]
-    if redirect_param
-      if Host.trusted?(redirect_param)
-        redirect_to redirect_param
-      end
+    if redirect_param && Host.trusted?(redirect_param)
+      redirect_to redirect_param
     end
   end
 

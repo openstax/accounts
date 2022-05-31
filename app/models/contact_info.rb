@@ -5,15 +5,13 @@ class ContactInfo < ApplicationRecord
   before_destroy :check_if_last_verified
 
   validates :type, presence: true
-  validates :value, # rubocop: disable Rails/UniqueValidationWithoutIndex
+  validates :value,
             presence: true,
             uniqueness: { scope: :type, case_sensitive: false }
 
   belongs_to :user, inverse_of: :contact_infos
 
-  # rubocop: disable Rails/HasManyOrHasOneDependent, Rails/InverseOf
-  has_many :application_users, foreign_key: :default_contact_info_id
-  # rubocop: enable Rails/HasManyOrHasOneDependent, Rails/InverseOf
+  has_many :application_users, foreign_key: :default_contact_info_id, inverse_of: :application_users
 
   scope :email_addresses, -> { where(type: 'EmailAddress') }
 

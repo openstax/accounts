@@ -105,8 +105,7 @@ class CreateSalesforceLeadJob < ApplicationJob
           event_data: { lead_id: lead.id }
         )
         return lead
-
-      rescue => e
+      rescue => e # rubocop: disable Style/RescueStandardError
         SecurityLog.create!(
           user:       user,
           event_type: :user_update_failed_during_lead_creation
@@ -114,8 +113,7 @@ class CreateSalesforceLeadJob < ApplicationJob
         Sentry.capture_exception(e)
         return
       end
-
-    rescue => e
+    rescue => e # rubocop: disable Style/RescueStandardError
       SecurityLog.create!(
         user:       user,
         event_type: :salesforce_error

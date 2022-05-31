@@ -17,7 +17,7 @@ class School < ApplicationRecord
   # 'North Carolina' <-> 'NC' == 'South Carolina' <-> 'SC' == 0.9411765
   MAX_STATE_MATCH_DISTANCE = 0.95
 
-  has_many :users, inverse_of: :school, dependent: nil
+  has_many :users, inverse_of: :school
 
   def self.fuzzy_search(name, city = nil, state = nil)
     name_expression = sanitize_sql(["? <-> name", name])

@@ -19,7 +19,7 @@ class Group < ApplicationRecord
            foreign_key: :container_group_id, inverse_of: :container_group
   has_many :member_groups, through: :member_group_nestings
 
-  has_many :oauth_applications, as: :owner, class_name: 'Doorkeeper::Application' # rubocop:disable Rails/HasManyOrHasOneDependent
+  has_many :oauth_applications, as: :owner, class_name: 'Doorkeeper::Application'
 
   has_many :application_groups, dependent: :destroy, inverse_of: :group
 
