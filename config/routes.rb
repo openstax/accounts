@@ -272,8 +272,6 @@ Rails.application.routes.draw do
 
     mount Blazer::Engine, at: 'blazer', as: 'blazer_admin'
     match "/job_dashboard" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
-
-    mount RailsSettingsUi::Engine, at: 'settings'
   end
 
   namespace 'dev' do
