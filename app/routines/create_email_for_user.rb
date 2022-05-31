@@ -7,23 +7,29 @@ class CreateEmailForUser
   def exec(email, user, options = {})
     return if email.blank?
 
-    email = EmailAddress.find_or_create_by(value: email&.downcase, user_id: user.id)
-    email.is_school_issued = options[:is_school_issued] || false
+    email = email&.downcase
 
-    # If the email address already exists and is attached to the user, nothing to do
-    email_address = user.email_addresses.find_by(value: email)
-    return if email_address&.verified
+    # initialize options we expect
+    options[:is_school_issued] ||= false
+    options[:already_verified] ||= false
+
+    # If the email address already exists or is verified and is attached to the user, nothing to do
+    return if user.email_addresses.find_by(value: email.value).nil? ||
+              user.email_addresses.find_by(value: email.value).verified?
+
+    email = EmailAddress.find_or_create_by(value: email, user_id: user.id)
+    email.is_school_issued = options[:is_school_issued]
 
     # If it is a brand new email address, make it
     if email.nil?
       email = EmailAddress.new(value: email)
       email.user = user
-      email.is_school_issued = options[:is_school_issued] || false
+      email.is_school_issued = options[:is_school_issued]
     end
 
     # This is either a new email address (unverified) or an existing email address
     # that is unverified, so verified should be false unless already verified
-    email.verified = options[:already_verified] || false
+    email.verified = options[:already_verified]
 
     email.customize_value_error_message(
       error: :missing_mx_records,
