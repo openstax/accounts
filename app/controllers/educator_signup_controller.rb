@@ -17,10 +17,6 @@ class EducatorSignupController < SignupController
   before_action(:store_if_sheerid_is_unviable_for_user, only: :sheerid_form)
   before_action(:store_sheerid_verification_for_user, only: :sheerid_form)
 
-  def complete_profile; end
-  def cs_verification_form; end
-  def cs_verification_request; end
-
   def sheerid_form
     @sheerid_url = generate_sheer_id_url(@current_user)
     security_log(:user_viewed_sheerid_form, user: @current_user)

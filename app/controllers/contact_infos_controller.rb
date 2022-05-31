@@ -67,9 +67,6 @@ class ContactInfosController < ApplicationController
                 end)
   end
 
-  def confirm_unclaimed; end
-  def resend_confirmation; end
-
   protected
 
   def get_contact_info
