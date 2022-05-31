@@ -12,10 +12,20 @@ module Admin
     end
 
     def update
+      was_administrator = @user.is_administrator
+
       respond_to do |format|
         if change_user_password && add_email_to_user && change_salesforce_contact && update_user
           security_log :user_updated_by_admin, user_id: params[:id], username: @user.username,
                                                user_params: request.filtered_parameters['user']
+
+          security_log :admin_created, user_id: params[:id], username: @user.username \
+            if @user.is_administrator && !was_administrator
+          security_log :admin_deleted, user_id: params[:id], username: @user.username \
+            if !@user.is_administrator && was_administrator
+
+          security_log :trusted_launch_removed, user_id: params[:id], username: @user.username \
+            if params[:user][:keep_external_uuids] == '0'
 
           format.html { redirect_to edit_admin_user_path(@user),
                         notice: t('.success') }
