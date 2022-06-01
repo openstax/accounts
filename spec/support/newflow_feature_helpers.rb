@@ -6,7 +6,7 @@ def create_newflow_user(email, password='password', terms_agreed=nil, confirmati
 
   # return if User.find_by_username(username).present?
 
-  user = FactoryBot.create(:user, terms_agreed_option, role: role, is_newflow: true)
+  user = FactoryBot.create(:user, terms_agreed_option, role: role)
   FactoryBot.create(:email_address, user: user, value: email,
                     confirmation_code: confirmation_code,
                     verified: confirmation_code.nil?)
@@ -65,14 +65,6 @@ end
 
 def strip_html(text)
   ActionView::Base.full_sanitizer.sanitize(text)
-end
-
-def turn_on_student_feature_flag
-  Settings::FeatureFlags.student_feature_flag = true
-end
-
-def turn_on_educator_feature_flag
-  Settings::FeatureFlags.educator_feature_flag = true
 end
 
 def newflow_click_sign_up(role:)

@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 feature 'Require recent log in to change authentications', js: true do
-  before do
-    turn_on_student_feature_flag
-  end
-
   let!(:user) do
     user = create_newflow_user(email_value)
     user.update(role: User::STUDENT_ROLE)

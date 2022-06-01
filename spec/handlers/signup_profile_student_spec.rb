@@ -5,7 +5,6 @@ RSpec.describe SignupProfileStudent, type: :handler do
   before(:each) do
     load 'db/seeds.rb'
     disable_sfdc_client
-    allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
   end
 
   context "when the user has arrived well-formed" do

@@ -2,8 +2,6 @@ require 'rails_helper'
 
 feature 'User logs in or signs up with a social network', js: true do
   before do
-    turn_on_student_feature_flag
-    turn_on_educator_feature_flag
     load('db/seeds.rb')
     allow_any_instance_of(CreateSalesforceLead).to receive(:exec)
   end

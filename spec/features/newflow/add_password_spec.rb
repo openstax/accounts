@@ -3,10 +3,6 @@ require 'rails_helper'
 require_relative './adding_and_resetting_password_from_profile'
 
 feature 'User adds password', js: true do
-  before do
-    turn_on_student_feature_flag
-  end
-
   it_behaves_like 'adding and resetting password from profile', :add
 
   scenario 'without identity – form to create password is rendered' do

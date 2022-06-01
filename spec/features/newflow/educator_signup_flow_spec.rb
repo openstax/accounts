@@ -6,7 +6,6 @@ module Newflow
   feature 'Educator signup flow', js: true do
 
     background { load 'db/seeds.rb' }
-    before(:each) { turn_on_educator_feature_flag }
 
     let(:first_name) { Faker::Name.first_name  }
     let(:last_name) { Faker::Name.last_name  }
@@ -143,7 +142,7 @@ module Newflow
 
       let(:user) do
         FactoryBot.create(
-          :user, is_newflow: true, role: User::INSTRUCTOR_ROLE,
+          :user, role: User::INSTRUCTOR_ROLE,
           is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
         )
       end
@@ -258,7 +257,6 @@ module Newflow
     context 'when legacy educator wants to request faculty verification' do
       before(:each) do
         educator.update(
-          is_newflow: false,
           role: User::INSTRUCTOR_ROLE,
           first_name: first_name,
           last_name: last_name

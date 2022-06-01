@@ -5,7 +5,6 @@ module Newflow
   feature 'Student signup flow', js: true, vcr: VCR_OPTS do
      before do
       load 'db/seeds.rb'
-      turn_on_student_feature_flag
     end
 
     before(:all) do
