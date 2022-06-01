@@ -1,0 +1,114 @@
+<% content_for :head do %>
+  <%= javascript_include_tag  "faculty_access" %>
+<% end %>
+
+
+<%
+  request_roles = {
+    initial: t('.iama'),
+    instructor: t('.instructor'),
+    adjunct: t('.adjunct'),
+    administrator: t('.administrator'),
+    librarian: t('.librarian'),
+    designer: t('.designer'),
+    other: t('.other')
+  }
+
+  translate_error(code: :email_in_use) do
+    t(:'.email_in_use')
+  end
+%>
+
+
+<%= ox_card(heading: (t :'.page_heading')) do %>
+
+  <%= lev_form_for :apply, url: faculty_access_apply_path, html: {class: 'full-width'} do |f| %>
+
+    <% fh = FormHelper::One.new(f: f,
+                                limit_to: :any,
+                                context: self,
+                                params: params,
+                                errors: @handler_result.try(:errors),
+                                error_field_classes: "alert alert-danger") %>
+
+    <p><%= t :".instructions" %></p>
+
+    <h3><%= t :".role_heading" %></h3>
+
+    <%= fh.select name: :role,
+                  options: options_for_select(
+                    request_roles.invert.to_a,
+                    selected:  fh.get_params_value(:role) || 'initial',
+                    disabled: "initial",
+                    hidden: "initial"),
+                  autofocus: true %>
+
+    <div id="role-dependent-fields">
+
+      <h3><%= t :".name_heading" %></h3>
+
+      <%= fh.text_field name: :first_name,
+                        value: fh.get_params_value(:first_name) || current_user.first_name,
+                        autofocus: true %>
+      <%= fh.text_field name: :last_name,
+                        value: fh.get_params_value(:last_name) || current_user.last_name %>
+      <%= fh.text_field name: :suffix %>
+
+      <div class="email-input-group">
+        <h3><%= t '.email' %></h3>
+        <p><%= t '.teacher_school_email' %></p>
+
+        <%= fh.text_field name: :email, value: nil, label: :'.email_placeholder' %>
+        <p class="warning edu">
+          <%= t '.teacher_school_email_warning', button: (t :'.next').downcase %>
+        </p>
+      </div>
+
+      <h3><%= t '.additional_information_heading' %></h3>
+
+      <%= fh.text_field name: :phone_number %>
+      <%= fh.text_field name: :school %>
+      <%= fh.text_field name: :num_students, only: [:instructor, :adjunct] %>
+      <%= fh.text_field name: :url %>
+
+      <%= fh.select name: :using_openstax,
+                    only: [:instructor, :adjunct],
+                    options: options_for_select(
+                      [
+                        [t('.instructor_use.how'), ""],
+                        [t('.instructor_use.fully'), 'Confirmed Adoption Won'],
+                        [t('.instructor_use.recommended'), 'Confirmed Will Recommend'],
+                        [t('.instructor_use.interested'), 'High Interest in Adopting'],
+                        [t('.instructor_use.nope'), 'Not using']
+                      ],
+                      selected: fh.get_params_value(:using_openstax) || "",
+                      disabled: "",
+                      hidden: "") %>
+
+      <h3><%= t('.titles_interested') %></h3>
+
+      <div class="subjects clearfix">
+        <% Settings::Subjects.each(sorted: true) do | key, info | %>
+            <div class="subject">
+              <%= f.check_box("subjects[#{key}]", checked: instructor_has_selected_subject(key)) %>
+              <%= f.label "subjects[#{key}]", info['title'] %>
+            </div>
+          <% end %>
+      </div>
+
+      <div class="newsletter">
+        <div class="checkbox">
+          <label>
+            <%= f.check_box :newsletter, checked: true %>
+            <%= t :".keep_me_informed" %>
+          </label>
+        </div>
+      </div>
+
+      <%= f.submit (t :".submit"), id: "submit", class: 'primary' %>
+
+    </div>
+
+  <% end %>
+
+<% end %>
