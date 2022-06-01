@@ -11,18 +11,6 @@ class ArchiveTempUsers
       unless app_users.empty?
     exclude_user_ids += app_users
 
-    received_messages = temp_users.select(:id).joins(:received_messages) \
-                                  .uniq.collect(&:id)
-    $stderr.puts("These temp users have received messages: #{received_messages.inspect}") \
-      unless received_messages.empty?
-    exclude_user_ids += received_messages
-
-    sent_messages = temp_users.select(:id).joins(:sent_messages) \
-                              .uniq.collect(&:id)
-    $stderr.puts("These temp users have sent messages: #{sent_messages.inspect}") \
-      unless sent_messages.empty?
-    exclude_user_ids += sent_messages
-
     group_owners = temp_users.select(:id).joins(:group_owners) \
                              .uniq.collect(&:id)
     $stderr.puts("These temp users are group owners: #{group_owners.inspect}") \

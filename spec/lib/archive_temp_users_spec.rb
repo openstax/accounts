@@ -18,14 +18,6 @@ describe ArchiveTempUsers do
     user
   }
 
-  let!(:user_with_messages) {
-    user = FactoryBot.create(:temp_user)
-    FactoryBot.create(:message, user: user)
-    email = FactoryBot.create(:email_address, user: user)
-    FactoryBot.create(:message_recipient, contact_info: email)
-    user
-  }
-
   let!(:user_with_groups) {
     user = FactoryBot.create(:temp_user)
     FactoryBot.create(:group_member, user: user)
@@ -59,16 +51,6 @@ describe ArchiveTempUsers do
       expect{ ArchiveTempUsers.run }.to output(/are linked to an application/).to_stderr
     end
     expect(User.exists?(user_with_app.id)).to be true
-  end
-
-  it 'warns if temp users have messages' do
-    user_with_messages
-    capture_output do
-      expect{ ArchiveTempUsers.run }.to(
-        output(/have received messages.*\n.*have sent messages/).to_stderr
-      )
-    end
-    expect(user_with_messages.reload.email_addresses).to_not be_empty
   end
 
   it 'warns if temp users have groups' do
