@@ -131,7 +131,6 @@ class User < ApplicationRecord
   belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
 
   has_one :identity, dependent: :destroy, inverse_of: :user
-  has_one :pre_auth_state
 
   has_many :authentications, dependent: :destroy, inverse_of: :user
   has_many :application_users, dependent: :destroy, inverse_of: :user

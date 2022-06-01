@@ -58,7 +58,7 @@
         <h3><%= t '.email' %></h3>
         <p><%= t '.teacher_school_email' %></p>
 
-        <%= fh.text_field name: :email, value: signup_email, label: :'.email_placeholder' %>
+        <%= fh.text_field name: :email, value: nil, label: :'.email_placeholder' %>
         <p class="warning edu">
           <%= t '.teacher_school_email_warning', button: (t :'.next').downcase %>
         </p>

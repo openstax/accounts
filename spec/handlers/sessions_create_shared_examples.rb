@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.shared_examples 'sessions create shared examples' do
   let(:user_state) { MockUserState.new }
   let(:login_providers) { nil }
-  let(:pre_auth_state) { nil }
 
   context "logging in" do
     context "no user linked to oauth response" do
@@ -60,11 +59,6 @@ RSpec.shared_examples 'sessions create shared examples' do
   context "signing up" do
     context "oauth response already directly linked to a user" do
       let(:authentication) { FactoryBot.create(:authentication, provider: 'google_oauth2') }
-      let(:pre_auth_state) do
-        FactoryBot.create(
-          :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
-        )
-      end
 
       it "returns existing_user_signed_up_again status and transfers email" do
         result = handle(
@@ -77,11 +71,6 @@ RSpec.shared_examples 'sessions create shared examples' do
 
     context "oauth response already linked to user by email address" do
       let(:other_user_email) { FactoryBot.create(:email_address, verified: true)}
-      let(:pre_auth_state) do
-        FactoryBot.create(
-          :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
-        )
-      end
 
       it "returns existing_user_signed_up_again status and transfers auth" do
         expect do
@@ -89,18 +78,12 @@ RSpec.shared_examples 'sessions create shared examples' do
                                                            "some_uid",
                                                            {email: other_user_email.value}))
           expect(result.outputs.status).to eq :existing_user_signed_up_again
-          expect(PreAuthState.count).to eq 0
         end.to change{other_user_email.user.reload.authentications.count}.by 1
       end
     end
 
     context "normal password sign up" do
       let(:identity) { FactoryBot.create :identity }
-      let(:pre_auth_state) do
-        FactoryBot.create(
-          :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
-        )
-      end
 
       it "adds authentication, logs in user, returns new_password_user" do
         expect(identity.user.authentications).to be_empty
@@ -112,16 +95,10 @@ RSpec.shared_examples 'sessions create shared examples' do
         expect(user.contact_infos.size).to eq 1
         expect(user.contact_infos.first.value).to eq "bob@bob.com"
         expect(user.contact_infos.first).to be_verified
-        expect(pre_auth_state).to be_destroyed
       end
     end
 
     context "normal social sign up" do
-      let(:pre_auth_state) do
-        FactoryBot.create(
-          :pre_auth_state, :contact_info_verified, contact_info_value: "bob@bob.com"
-        )
-      end
 
       it "adds authentication, logs in user, returns new_social_user" do
         result = handle(request: MockOmniauthRequest.new("facebook", "zuckerberg", {}))
@@ -134,7 +111,6 @@ RSpec.shared_examples 'sessions create shared examples' do
         expect(user.contact_infos.size).to eq 1
         expect(user.contact_infos.first.value).to eq "bob@bob.com"
         expect(user.contact_infos.first).to be_verified
-        expect(pre_auth_state).to be_destroyed
       end
     end
   end
@@ -142,7 +118,6 @@ RSpec.shared_examples 'sessions create shared examples' do
   def handle(**args)
     described_class.handle(user_state: user_state,
                            login_providers: login_providers,
-                           pre_auth_state: pre_auth_state,
                            **args)
   end
 
