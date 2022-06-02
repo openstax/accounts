@@ -58,7 +58,7 @@ class SessionsCreate
     if logging_in?
       handle_during_login
     elsif signing_in?
-      handle_during_signin
+      handle_during_signup
     else
       fatal_error(code: :unknown_callback_state)
     end
@@ -111,7 +111,7 @@ class SessionsCreate
 
     run(TransferAuthentications, authentication, receiving_user)
     sign_in!(receiving_user)
-    return status
+    status
   end
 
   def handle_while_logged_in
