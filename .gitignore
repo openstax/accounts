@@ -20,7 +20,14 @@
 /tmp
 
 # Ignore public precompiled assets
-/public
+/public/assets
+/public/accounts
+
+# Ignore precompiled static error pages
+/public/404.html
+/public/422.html
+/public/500.html
+/public/503.html
 
 # Ignore yaml_db database files
 /db/data.yml*
