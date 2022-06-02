@@ -18,6 +18,25 @@ module Accounts
     # Use delayed_job for background jobs
     config.active_job.queue_adapter = :delayed_job
 
+    redis_secrets = secrets[:redis]
+
+    # Generate the Redis URL from the its components if unset
+    redis_secrets[:url] ||= "redis#{'s' unless redis_secrets[:password].blank?}://#{
+      ":#{redis_secrets[:password]}@" unless redis_secrets[:password].blank? }#{
+      redis_secrets[:host]}#{":#{redis_secrets[:port]}" unless redis_secrets[:port].blank?}/#{
+      "/#{redis_secrets[:db]}" unless redis_secrets[:db].blank?}"
+
+    config.cache_store = :redis_store, {
+      url: redis_secrets[:url],
+      namespace: redis_secrets[:namespaces][:cache],
+      expires_in: 90.minutes,
+      compress: true,
+    }
+
+    def is_real_production?
+      secrets.environment_name == 'production'
+    end
+
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
     config.active_record.belongs_to_required_by_default = false
     config.autoload_paths += %W(#{config.root}/lib)
@@ -35,10 +54,6 @@ module Accounts
       Doorkeeper::ApplicationController.helper ApplicationHelper
       # include all helpers from your application
       Doorkeeper::ApplicationController.helper Accounts::Application.helpers
-    end
-
-    def is_real_production?
-      Rails.application.secrets.environment_name == 'production'
     end
   end
 end
