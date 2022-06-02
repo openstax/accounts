@@ -57,7 +57,7 @@ class SessionsCreate
 
     if logging_in?
       handle_during_login
-    elsif signing_in?
+    elsif signing_up?
       handle_during_signup
     else
       fatal_error(code: :unknown_callback_state)
@@ -212,8 +212,8 @@ class SessionsCreate
     @authentication_user ||= authentication.user
   end
 
-  def signing_in?
-    buybug
+  def signing_up?
+    nil
   end
 
   def logging_in?
