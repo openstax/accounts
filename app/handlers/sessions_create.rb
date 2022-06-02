@@ -58,6 +58,8 @@ class SessionsCreate
 
     if options[:login_providers].present?
       handle_during_login
+    elsif signing_in?
+      handle_during_signin
     else
       fatal_error(code: :unknown_callback_state)
     end
@@ -75,6 +77,42 @@ class SessionsCreate
 
     sign_in!(authentication_user)
     return :returning_user
+  end
+
+  def handle_during_signup
+    # Before we proceed with the normal sign up flow, we need to check if the
+    # incoming authentication is connected to an existing user (to prevent creating
+    # a duplicate account).  We can detect this in two ways: if the authentication
+    # is already in use by an existing user OR if the authentication's email is
+    # in use by an existing user or users.  If there are multiple potential existing
+    # users, choose the most recently used (anything to avoid making yet another
+    # duplicate).
+
+    existing_user = authentication_user || user_most_recently_used(users_matching_oauth_data)
+
+    if existing_user.present?
+      # Want to transfer the SCI and authentication to this existing user and sign that user in
+      receiving_user = existing_user
+      status         = :existing_user_signed_up_again
+    else
+      # This is the normal signup flow.  For password signups, we need to find
+      # the existing user; for social, we need to make a new one.  Then we attach
+      # the authentication.
+
+      if authentication.provider == 'identity'
+        identity       = Identity.find(authentication.uid)
+        receiving_user = identity.user
+        status         = :new_password_user # TODO can this merge with new_social_user?
+      else
+        receiving_user = User.new
+        run(TransferOmniauthData, @data, receiving_user)
+        status = :new_social_user
+      end
+    end
+
+    run(TransferAuthentications, authentication, receiving_user)
+    sign_in!(receiving_user)
+    return status
   end
 
   def handle_while_logged_in
@@ -175,6 +213,10 @@ class SessionsCreate
 
   def authentication_user
     @authentication_user ||= authentication.user
+  end
+
+  def signing_in?
+    buybug
   end
 
   def logging_in?
