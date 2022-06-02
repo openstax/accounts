@@ -151,14 +151,6 @@ en:
             password_confirmation:
               confirmation: Password confirmation doesn't match password
 
-        pre_auth_state:
-          attributes:
-            contact_info_value:
-              # This is a virtual field corresponding to EmailAddress#value.
-              # To avoid redefining messages for that field we include them from
-              # activerecord.errors.models.email_address.attributes.value
-              <<: *email_addres_validations
-
         user:
           attributes:
             username:
