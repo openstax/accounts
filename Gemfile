@@ -190,9 +190,6 @@ group :development, :test do
   #
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', require: false
-  # Debug in VS Code
-  gem 'ruby-debug-ide', require: false
-  gem 'debase', require: false
 
   # Use RSpec for tests
   gem 'rspec-rails'
