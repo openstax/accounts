@@ -59,7 +59,7 @@ class CreateSalesforceLeadJob < ApplicationJob
         adoption_json:        adoption_json,
         os_accounts_id:       user.id,
         accounts_uuid:        user.uuid,
-        school:               user.most_accurate_school_name,
+        school:               user.most_accurate_school_name || 'No reported school', # No reported school == student who requested newsletter
         city:                 user.most_accurate_school_city,
         country:              user.most_accurate_school_country,
         verification_status:  user.faculty_status,
