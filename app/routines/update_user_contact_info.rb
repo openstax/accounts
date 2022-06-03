@@ -108,7 +108,7 @@ class UpdateUserContactInfo
                                  else
                                    :unknown_school_location
                                  end
-          
+
           if sf_contact.adoption_status.present?
             user.using_openstax = ADOPTION_STATUSES[sf_contact.adoption_status]
           end
