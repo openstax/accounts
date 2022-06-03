@@ -127,7 +127,6 @@ ActiveRecord::Schema.define(version: 2022_06_01_160740) do
     t.index ["confirmation_pin"], name: "index_contact_infos_on_confirmation_pin"
     t.index ["is_school_issued"], name: "index_contact_infos_on_is_school_issued"
     t.index ["user_id"], name: "index_contact_infos_on_user_id"
-    t.index ["value", "type"], name: "index_contact_infos_on_value_and_type", unique: true
     t.index ["value", "user_id", "type"], name: "index_contact_infos_on_value_user_id_type", unique: true
     t.index ["verified"], name: "index_contact_infos_on_verified"
   end
@@ -342,7 +341,7 @@ ActiveRecord::Schema.define(version: 2022_06_01_160740) do
     t.string "uuid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["uuid"], name: "index_user_external_uuids_on_uuid", unique: true
+    t.index ["uuid"], name: "index_user_external_uuids_on_uuid"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
