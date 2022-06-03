@@ -83,6 +83,7 @@ class UpdateUserContactInfo
                                     sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
                                 end
 
+
           user.school_type = case sf_contact.school_type
                              when *COLLEGE_TYPES
                                :college
@@ -107,7 +108,7 @@ class UpdateUserContactInfo
                                  else
                                    :unknown_school_location
                                  end
-
+          
           if sf_contact.adoption_status.present?
             user.using_openstax = ADOPTION_STATUSES[sf_contact.adoption_status]
           end
