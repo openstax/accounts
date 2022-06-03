@@ -80,15 +80,6 @@ module Newflow
           expect(find('#login_form_password')['type']).to eq('password')
         end
 
-        example 'banners show up when there are any' do
-          Banner.create(message: 'This is a banner.', expires_at: 1.day.from_now)
-          Banner.create(message: 'This is another banner.', expires_at: 1.day.from_now)
-          visit login_path
-          expect(page).to have_text('This is a banner.')
-          expect(page).to have_text('This is another banner.')
-          screenshot!
-        end
-
         context 'when user clicks X icon' do
           context "when user arrived from oauth app" do
             let(:app) do
