@@ -151,6 +151,7 @@ class User < ApplicationRecord
   attribute :is_not_gdpr_location, :boolean, default: nil
   attribute :renewal_eligible, :boolean, default: nil
 
+
   def most_accurate_school_name
     return school.name if school.present?
 
