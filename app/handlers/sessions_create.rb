@@ -216,7 +216,7 @@ class SessionsCreate
   end
 
   def signing_up?
-    nil
+    Sentry.capture_message("User caught in session_create signup flow #{current_user.id}")
   end
 
   def logging_in?
