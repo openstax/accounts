@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'vcr_helper'
 
-RSpec.describe "Change Salesforce contact manually", vcr: VCR_OPTS do
+RSpec.feature "Change Salesforce contact manually", vcr: VCR_OPTS, :type => :feature, js: true do
   before(:all) do
     VCR.use_cassette('Change_Salesforce_contact_manually/sf_setup', VCR_OPTS) do
       @proxy = SalesforceProxy.new
@@ -10,8 +10,8 @@ RSpec.describe "Change Salesforce contact manually", vcr: VCR_OPTS do
   end
 
   before(:each) do
-    pending('fixing the VCR cassette for this to log in using newflow')
-    @admin_user = create_admin_user
+    @admin_user = FactoryBot.create(:user)
+    @admin_user.update_attributes!(is_administrator: true)
     visit '/'
     log_in 'admin'
 
