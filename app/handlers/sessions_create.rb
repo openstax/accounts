@@ -217,6 +217,7 @@ class SessionsCreate
 
   def signing_up?
     Sentry.capture_message("User caught in session_create signup flow #{current_user.id}")
+    return
   end
 
   def logging_in?
