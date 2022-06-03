@@ -23,10 +23,14 @@ class UpdateUserContactInfo
   end
 
   def call
+    # this is controlled in secrets.yml (or param store for non-dev/test envs)
+    return unless Rails.application.secrets[:salesforce][:sync_contacts_enabled]
+
     log("Starting sync with Salesforce")
     contacts = salesforce_contacts
     log("#{contacts.count} contacts fetched from Salesforce")
     contacts_by_uuid = contacts_by_uuid_hash(contacts)
+
 
     users ||= User.where(uuid: contacts.map(&:accounts_uuid))
     schools_by_salesforce_id = School.select(:id, :salesforce_id).where(
@@ -62,14 +66,18 @@ class UpdateUserContactInfo
 
       old_fv_status = user.faculty_status
       user.faculty_status = case sf_contact.faculty_verified
-                            when "confirmed_faculty"
-                              :confirmed_faculty
-                            when "pending_faculty"
-                              :pending_faculty
-                            when "rejected_faculty"
-                              :rejected_faculty
-                            when NilClass
-                              :no_faculty_info
+                              when "confirmed_faculty"
+                                :confirmed_faculty
+                              when "pending_faculty"
+                                :pending_faculty
+                              when "rejected_faculty"
+                                :rejected_faculty
+                              when "rejected_by_sheerid"
+                                :rejected_by_sheerid
+                              when "incomplete_signup"
+                                :incomplete_signup
+                              when NilClass
+                                :no_faculty_info
                             else
                               Sentry.capture_message("Unknown faculty_verified field: '#{
                                 sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
@@ -107,6 +115,7 @@ class UpdateUserContactInfo
       user.is_kip = sf_school&.is_kip || sf_school&.is_child_of_kip
       user.grant_tutor_access = sf_contact.grant_tutor_access
       user.is_b_r_i_user = sf_contact.b_r_i_marketing
+      user.renewal_eligible = sf_contact.renewal_eligible
 
       if school.nil? && !sf_school.nil?
         users_without_cached_school += 1
@@ -128,23 +137,25 @@ class UpdateUserContactInfo
         users_updated += 1
       end
     end
+
     log("Completed updating #{users_updated} users.")
     log("#{users_fv_status_changed} users had their faculty status updated.")
     log("#{users_without_cached_school} users had no cached school in accounts. This should update on the next sync (after UpdateSchoolSalesforceInfo runs) or it is missing in Salesforce.")
   end
 
   def salesforce_contacts
-    contact_days = Settings::Db.store.number_of_days_contacts_modified
+    contact_days = Rails.application.secrets[:salesforce][:number_of_days_contacts_modified] || 7
     c_date = contact_days.to_i.day.ago.strftime("%Y-%m-%d")
     contacts ||= OpenStax::Salesforce::Remote::Contact.select(
-                     :id,
-                     :email,
-                     :email_alt,
-                     :faculty_verified,
-                     :school_type,
-                     :adoption_status,
-                     :grant_tutor_access,
-                     :accounts_uuid
+                    :id,
+                    :email,
+                    :email_alt,
+                    :faculty_verified,
+                    :school_type,
+                    :adoption_status,
+                    :grant_tutor_access,
+                    :accounts_uuid,
+                    :renewal_eligible
                    )
                    .where("Accounts_UUID__c != null")
                    .where("LastModifiedDate >= #{DateTime.strptime(c_date,"%Y-%m-%d").utc.iso8601}")
