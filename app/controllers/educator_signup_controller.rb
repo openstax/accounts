@@ -178,8 +178,6 @@ class EducatorSignupController < SignupController
   end
 
   def exit_signup_if_steps_complete
-    return if !current_user.is_newflow?
-
     case true
     when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
       redirect_to(educator_pending_cs_verification_path)
