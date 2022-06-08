@@ -3,7 +3,7 @@ require 'vcr_helper'
 
 RSpec.feature "Change Salesforce contact manually", vcr: VCR_OPTS, :type => :feature, js: true do
   before(:all) do
-    VCR.use_cassette('Change_Salesforce_contact_manually/sf_setup', VCR_OPTS) do
+    VCR.use_cassette('Admin/sf_setup', VCR_OPTS) do
       @proxy = SalesforceProxy.new
       @proxy.setup_cassette
     end
