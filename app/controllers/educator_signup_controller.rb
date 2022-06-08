@@ -81,6 +81,19 @@ class EducatorSignupController < SignupController
 
   protected
 
+  def exit_signup_if_steps_complete
+    case true
+    when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
+      redirect_to(educator_pending_cs_verification_path)
+    when current_user.is_educator_pending_cs_verification && !current_user.pending_faculty?
+      redirect_back(fallback_location: profile_newflow_path)
+    when action_name == 'educator_sheerid_form' && current_user.step_3_complete?
+      redirect_to(educator_profile_form_path)
+    when action_name == 'educator_profile_form' && current_user.is_profile_complete?
+      redirect_to(profile_newflow_path)
+    end
+  end
+
   def book_data
     @book_data ||= FetchBookData.new
   end
