@@ -263,6 +263,7 @@ group :test do
   # Fake in-memory Redis for testing
   gem 'fakeredis', require: 'fakeredis/rspec'
 
+  # for debugging Capybara with save_and_open_page
   gem 'launchy'
 
   gem 'capybara-screenshot', require: false
