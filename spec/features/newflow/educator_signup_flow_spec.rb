@@ -12,8 +12,6 @@ module Newflow
     let(:phone_number) { Faker::PhoneNumber.phone_number }
     let(:email_value) { Faker::Internet.unique.email(domain: '@rice.edu') }
     let(:password) { Faker::Internet.password(min_length: 8) }
-    let(:sheerid_iframe_page_title) { 'Verify your instructor status' }
-    let(:iframe_submit_button_text) { 'Verify my instructor status' }
     let(:external_app_url) { capybara_url(external_app_for_specs_path) }
     let(:return_param) { { r: external_app_for_specs_path } }
 
@@ -56,8 +54,9 @@ module Newflow
           expect_sheerid_iframe
 
           # Step 4
-          expect_educator_step_4_page
-          select_educator_role('other')
+          visit(educator_profile_form_path)
+          expect(page.current_path).to eq(educator_profile_form_path)
+          find("#signup_educator_specific_role_other").click
           #byebug
           fill_in('Other (please specify)', with: 'President')
           find('[type="submit"]').click
@@ -99,7 +98,8 @@ module Newflow
           expect_sheerid_iframe
 
           # Step 4
-          expect_educator_step_4_page
+          visit(educator_profile_form_path)
+          expect(page.current_path).to eq(educator_profile_form_path)
           find('#signup_educator_specific_role_other').click
           fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
           click_on('Continue')
@@ -150,8 +150,9 @@ module Newflow
       context 'step 4' do
         before do
           visit(educator_profile_form_path)
-          expect_educator_step_4_page
-          select_educator_role('instructor')
+          visit(educator_profile_form_path)
+          expect(page.current_path).to eq(educator_profile_form_path)
+          find("#signup_educator_specific_role_instructor").click
           find('#signup_who_chooses_books_instructor').click
           fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
         end
@@ -235,10 +236,12 @@ module Newflow
 
         # Step 3
         expect_sheerid_iframe
-        simulate_step_3_instant_verification(User.last, sheerid_verification.verification_id)
+        EducatorSignup::VerifyEducator.call(user: User.last, verification_id: sheerid_verification.verification_id)
+
 
         # Step 4
-        expect_educator_step_4_page
+        visit(educator_profile_form_path)
+        expect(page.current_path).to eq(educator_profile_form_path)
         find('#signup_educator_specific_role_other').click
         expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
         fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
@@ -272,14 +275,15 @@ module Newflow
       let(:password) { 'password' }
 
       context 'with faculty status as no_faculty_info' do
-        it 'sends them to step 3 — SheerID iframe' do
+        it 'sends them to step 3 SheerID iframe' do
           expect_sheerid_iframe
         end
       end
 
       context 'with faculty status as rejected' do
-        it 'sends them to step 4 — Educator Profile Form' do
-          expect_educator_step_4_page
+        it 'sends them to step 4 Educator Profile Form' do
+          visit(educator_profile_form_path)
+          expect(page.current_path).to eq(educator_profile_form_path)
         end
 
         it 'shows a school name field'

@@ -86,7 +86,11 @@ feature "User can't sign in", js: true do
 
       arrive_from_app
       newflow_click_sign_up(role: 'student')
-      newflow_complete_student_signup_with_whatever
+      fill_in('signup_email', with: Faker::Internet.free_email)
+      fill_in('signup_password', with: Faker::Internet.password(min_length: 8))
+      fill_in('signup_first_name', with: Faker::Name.first_name)
+      fill_in('signup_last_name', with: Faker::Name.last_name)
+      check('signup_terms_accepted')
 
 
       with_omniauth_test_mode(uid: authentication.uid) do
