@@ -5,7 +5,7 @@ env:
   OXA_TEST_DB: ci_test
   RAILS_ENV: test
   HEADLESS: true
-  SCREENSHOTS: true
+  SSHOTS: true
   CI: true
 
 on:
