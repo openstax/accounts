@@ -45,24 +45,6 @@ def newflow_reauthenticate_user(email, password)
   wait_for_animations
 end
 
-def complete_student_signup_form(email: nil, password: nil, first_name: nil, last_name: nil, newsletter: false)
-  fill_in('signup_email', with: email) if email
-  fill_in('signup_password', with: password) if password
-  fill_in('signup_first_name', with: password) if first_name
-  fill_in('signup_last_name', with: password) if last_name
-  check('signup_newsletter') if newsletter
-  check('signup_terms_accepted')
-end
-
-def newflow_complete_student_signup_with_whatever
-  complete_student_signup_form(
-    email: Faker::Internet.free_email,
-    password: Faker::Internet.password(min_length: 8),
-    first_name: Faker::Name.first_name,
-    last_name: Faker::Name.last_name,
-  )
-end
-
 def strip_html(text)
   ActionView::Base.full_sanitizer.sanitize(text)
 end
@@ -85,17 +67,7 @@ end
 
 def expect_newflow_profile_page
   expect(page).to have_no_missing_translations
-  # expect(page).to have_content(t :"users.edit.page_heading")
   expect(page).to have_current_path profile_newflow_path
-end
-
-def newflow_expect_signup_verify_screen
-  expect(page.current_path).to eq(student_email_verification_form_path)
-end
-
-def newflow_expect_sign_up_page
-  expect(page.current_path).to eq(newflow_signup_path)
-  expect(page).to have_no_missing_translations
 end
 
 def submit_signup_form
@@ -119,10 +91,6 @@ def generate_expired_login_token_for_user(user)
   user.login_token_expires_at = 1.year.ago
   user.save!
   user.login_token
-end
-
-def expect_reauthenticate_form_page
-  expect(page).to have_content(t :"login_signup_form.login_page_header")
 end
 
 # Call this method with a block to test login/signup with a social network
@@ -158,24 +126,9 @@ def simulate_login_signup_with_social(options={})
   end
 end
 
-def expect_login_form_page
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"login_signup_form.login_page_header")
-end
-
 def expect_sign_up_welcome_tab
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"login_signup_form.welcome_page_header")
-end
-
-def expect_student_sign_up_page
-  expect(page).to have_no_missing_translations
-  expect(page.current_path).to eq(signup_student_path)
-end
-
-def expect_educator_sign_up_page
-  expect(page).to have_no_missing_translations
-  expect(page.current_path).to eq(educator_signup_path)
 end
 
 def external_public_url
@@ -184,7 +137,7 @@ end
 
 def expect_sheerid_iframe
   within_frame do
-    expect(page).to have_text(sheerid_iframe_page_title)
+    expect(page).to have_text('Verify your instructor status')
     expect(page.find('#sid-country')[:value]).to have_text('United States', exact: false)
     expect(page.find('#sid-teacher-school')[:value]).to be_blank
     expect(page.find('#sid-first-name')[:value]).to have_text(first_name)
@@ -192,33 +145,7 @@ def expect_sheerid_iframe
     expect(page.find('#sid-email')[:value]).to have_text(email_value)
     expect(page).to have_text('Can\'t find your country in the list? Click here.')
     expect(page).to have_text('Can\'t find your school in the list? Click here.')
-    expect(page).to have_text(iframe_submit_button_text)
-
-    # fill_in('First name', with: 'APPROVED')
-    # fill_in('School name', with: 'Rice University')
-    # find('#downshift-0-item-0').click
-    # expect(page).to have_text('Rice University (Houston, TX)')
-    # expect(page).not_to have_text('Verification Limit Exceeded', exact: false)
-    # click_on('Verify my instructor status')
-    # click_on('Continue')
-    # expect(page.current_path).to eq(educator_profile_form_path)
-
-    # find('#sid-teacher-school').click
-    # <div class="sid-organization-list__item sid-organization-list__item--highlighted" id="downshift-0-item-0" role="option" aria-selected="true" style="position: absolute; top: 0px; left: 0px; width: auto; height: 42px;">Rice University (Houston, TX)</div>
-    # downshift-0-item-0
-    # screenshot!
+    expect(page).to have_text('Verify my instructor status')
+    screenshot!
   end
-end
-
-def simulate_step_3_instant_verification(user, sheerid_verification_id)
-  EducatorSignup::VerifyEducator.call(user: user, verification_id: sheerid_verification_id)
-end
-
-def expect_educator_step_4_page
-  visit(educator_profile_form_path)
-  expect(page.current_path).to eq(educator_profile_form_path)
-end
-
-def select_educator_role(role)
-  find("#signup_educator_specific_role_#{role}").click
 end

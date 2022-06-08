@@ -25,8 +25,9 @@ feature 'Require recent log in to change authentications', js: true do
       with_omniauth_test_mode(identity_user: user) do
         find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
         wait_for_ajax
-        expect(page).to have_content(t :'login_signup_form.login_page_header')
-        fill_in(t(:'login_signup_form.password_label'), with: 'password')
+        expect(page).to have_content(t :"login_signup_form.login_page_header")
+        screenshot!
+        fill_in(t(:"login_signup_form.password_label"), with: 'password')
         find('[type=submit]').click
         expect(page.current_path).to eq(profile_newflow_path)
         expect(page).to have_content('Facebook')
