@@ -1,27 +1,25 @@
 name: Tests
+env:
+  OXA_DB_USER: accounts
+  OXA_DB_PASS: accounts
+  OXA_TEST_DB: ci_test
+  RAILS_ENV: test
+  HEADLESS: true
+  SCREENSHOTS: true
+  CI: true
 
 on:
   pull_request:
   push:
-    branches: main
+    branches:
+      - main
   schedule:
     - cron: '0 0 * * 0' # weekly
 
-env:
-  OXA_DB_USER: ox_accounts
-  OXA_DB_PASS: ox_accounts
-  OXA_TEST_DB: ox_accounts_test
-  RAILS_ENV: test
-  HEADLESS: true
-  GIT_COMMIT_SHA: ${{ github.sha }}
-  GIT_BRANCH: ${{ github.ref }}
-  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
 jobs:
-  build:
+  tests:
     timeout-minutes: 30
     runs-on: ubuntu-20.04
-    name: build accounts
     services:
       postgres:
         image: postgres:11
@@ -32,25 +30,19 @@ jobs:
           POSTGRES_USER: ${{ env.OXA_DB_USER }}
           POSTGRES_DB: ${{ env.OXA_TEST_DB }}
           POSTGRES_PASSWORD: ${{ env.OXA_DB_PASS }}
+
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
-      - run: echo "OS_VERSION=`lsb_release -sr`" >> $GITHUB_ENV
-      - uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-pr-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ env.OS_VERSION }}-gems-pr-
+          bundler-cache: true
       - name: Test
         run: |
           gem install bundler
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           bundle exec rake parallel:create parallel:load_schema parallel:seed --trace
-          bundle exec parallel_rspec ./spec
+          bundle exec rspec ./spec
       - uses: codecov/codecov-action@v2
         with:
-          token: ${{ env.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
