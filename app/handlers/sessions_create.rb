@@ -30,7 +30,6 @@ class SessionsCreate
   uses_routine TransferAuthentications
   uses_routine TransferOmniauthData
   uses_routine ActivateUnclaimedUser
-  uses_routine TransferPreAuthState
 
   protected
 
@@ -46,7 +45,6 @@ class SessionsCreate
 
   def handle
     outputs[:status] = get_status
-    options[:user_state].clear_pre_auth_state # some of the flows will have a pre_auth_state
   end
 
   def get_status
@@ -70,16 +68,10 @@ class SessionsCreate
     # The incoming authentication must match an existing user and match the
     # authentications corresponding to the username/email provided during login.
     options[:login_providers].deep_stringify_keys!
-    if (
-         authentication_user.nil? ||
-         options[:login_providers][authentication.provider].nil? ||
-         options[:login_providers][authentication.provider]['uid'] != authentication.uid
-       )
+    if authentication_user.nil? ||
+      options[:login_providers][authentication.provider].nil? ||
+      options[:login_providers][authentication.provider]['uid'] != authentication.uid
       return :mismatched_authentication
-    end
-
-    if pre_auth_state.present?
-      run(TransferPreAuthState, pre_auth_state: pre_auth_state, user: authentication_user)
     end
 
     sign_in!(authentication_user)
@@ -100,16 +92,16 @@ class SessionsCreate
     if existing_user.present?
       # Want to transfer the SCI and authentication to this existing user and sign that user in
       receiving_user = existing_user
-      status = :existing_user_signed_up_again
+      status         = :existing_user_signed_up_again
     else
       # This is the normal signup flow.  For password signups, we need to find
       # the existing user; for social, we need to make a new one.  Then we attach
       # the authentication.
 
       if authentication.provider == 'identity'
-        identity = Identity.find(authentication.uid)
+        identity       = Identity.find(authentication.uid)
         receiving_user = identity.user
-        status = :new_password_user  # TODO can this merge with new_social_user?
+        status         = :new_password_user # TODO can this merge with new_social_user?
       else
         receiving_user = User.new
         run(TransferOmniauthData, @data, receiving_user)
@@ -117,13 +109,9 @@ class SessionsCreate
       end
     end
 
-    run(TransferPreAuthState,
-        pre_auth_state: pre_auth_state,
-        user: receiving_user)
-
     run(TransferAuthentications, authentication, receiving_user)
     sign_in!(receiving_user)
-    return status
+    status
   end
 
   def handle_while_logged_in
@@ -225,11 +213,8 @@ class SessionsCreate
   end
 
   def signing_up?
-    pre_auth_state.present?
-  end
-
-  def pre_auth_state
-    options[:pre_auth_state]
+    Sentry.capture_message("User caught in session_create signup flow #{current_user.id}")
+    return
   end
 
   def logging_in?

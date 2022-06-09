@@ -5,8 +5,6 @@ module Newflow
     before do
       load 'db/seeds.rb' # creates terms of use and privacy policy contracts
       create_newflow_user('user@openstax.org', 'password')
-
-      turn_on_student_feature_flag
     end
 
     context 'happy path' do
@@ -58,10 +56,6 @@ module Newflow
       end
 
       describe 'with no return parameter specified, when feature flag is on' do
-        before do
-          turn_on_student_feature_flag
-        end
-
         it 'sends the student to their profile' do
           with_forgery_protection do
             visit login_path
@@ -84,15 +78,6 @@ module Newflow
           expect(find('#login_form_password')['type']).to eq('text')
           find('#password-show-hide-button').click
           expect(find('#login_form_password')['type']).to eq('password')
-        end
-
-        example 'banners show up when there are any' do
-          Banner.create(message: 'This is a banner.', expires_at: 1.day.from_now)
-          Banner.create(message: 'This is another banner.', expires_at: 1.day.from_now)
-          visit login_path
-          expect(page).to have_text('This is a banner.')
-          expect(page).to have_text('This is another banner.')
-          screenshot!
         end
 
         context 'when user clicks X icon' do

@@ -35,14 +35,6 @@
     </head>
     <body>
         <%= render "layouts/tag_manager_snippet" %>
-        <% if @banners.present? %>
-            <% @banners.each do |banner| %>
-                <div class="banner">
-                    <%= banner.message %>
-                </div>
-            <% end %>
-        <% end %>
-
         <% if flash[:alert].present? %>
             <div class="layout-alert">
                 <%= flash[:alert] %>

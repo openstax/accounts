@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_04_145253) do
+ActiveRecord::Schema.define(version: 2022_06_01_160740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -52,14 +52,6 @@ ActiveRecord::Schema.define(version: 2022_03_04_145253) do
     t.string "login_hint"
     t.index ["uid", "provider"], name: "index_authentications_on_uid_scoped", unique: true
     t.index ["user_id", "provider"], name: "index_authentications_on_user_id_scoped", unique: true
-  end
-
-  create_table "banners", id: :serial, force: :cascade do |t|
-    t.string "message", null: false
-    t.datetime "expires_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["expires_at"], name: "index_banners_on_expires_at"
   end
 
   create_table "blazer_audits", force: :cascade do |t|
@@ -236,41 +228,6 @@ ActiveRecord::Schema.define(version: 2022_03_04_145253) do
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
 
-  create_table "message_bodies", id: :serial, force: :cascade do |t|
-    t.integer "message_id", null: false
-    t.text "html", default: "", null: false
-    t.text "text", default: "", null: false
-    t.string "short_text", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["message_id"], name: "index_message_bodies_on_message_id", unique: true
-  end
-
-  create_table "message_recipients", id: :serial, force: :cascade do |t|
-    t.integer "message_id", null: false
-    t.integer "contact_info_id"
-    t.integer "user_id"
-    t.string "recipient_type", null: false
-    t.boolean "read", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["contact_info_id", "message_id"], name: "index_message_recipients_on_contact_info_id_and_message_id", unique: true
-    t.index ["message_id", "user_id"], name: "index_message_recipients_on_message_id_and_user_id", unique: true
-    t.index ["user_id", "read"], name: "index_message_recipients_on_user_id_and_read"
-  end
-
-  create_table "messages", id: :serial, force: :cascade do |t|
-    t.integer "application_id", null: false
-    t.integer "user_id"
-    t.boolean "send_externally_now", default: false, null: false
-    t.text "subject", null: false
-    t.string "subject_prefix", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["application_id", "user_id"], name: "index_messages_on_application_id_and_user_id"
-    t.index ["user_id"], name: "index_messages_on_user_id"
-  end
-
   create_table "oauth_access_grants", id: :serial, force: :cascade do |t|
     t.integer "resource_owner_id", null: false
     t.integer "application_id", null: false
@@ -322,33 +279,9 @@ ActiveRecord::Schema.define(version: 2022_03_04_145253) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
-  create_table "pre_auth_states", id: :serial, force: :cascade do |t|
-    t.integer "contact_info_kind", default: 0
-    t.string "contact_info_value"
-    t.boolean "is_contact_info_verified", default: false
-    t.string "confirmation_code"
-    t.string "confirmation_pin"
-    t.datetime "confirmation_sent_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "role", null: false
-    t.text "return_to"
-    t.jsonb "signed_data"
-    t.boolean "is_partial_info_allowed", default: false, null: false
-    t.index ["contact_info_kind"], name: "index_pre_auth_states_on_contact_info_kind"
-  end
-
   create_table "push_topics", force: :cascade do |t|
     t.string "topic_salesforce_id"
     t.string "topic_name"
-  end
-
-  create_table "salesforce_streaming_replays", force: :cascade do |t|
-    t.bigint "push_topics_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "replay_id"
-    t.index ["push_topics_id"], name: "index_salesforce_streaming_replays_on_push_topics_id"
   end
 
   create_table "schools", force: :cascade do |t|
@@ -392,16 +325,6 @@ ActiveRecord::Schema.define(version: 2022_03_04_145253) do
     t.index ["kind", "reference"], name: "index_sequential_failures_on_kind_and_reference", unique: true
   end
 
-  create_table "settings", id: :serial, force: :cascade do |t|
-    t.string "var", null: false
-    t.text "value"
-    t.integer "thing_id"
-    t.string "thing_type", limit: 30
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true
-  end
-
   create_table "sheerid_verifications", force: :cascade do |t|
     t.string "verification_id", null: false
     t.string "email"
@@ -431,7 +354,7 @@ ActiveRecord::Schema.define(version: 2022_03_04_145253) do
     t.string "title"
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "suffix"
-    t.string "state", default: "needs_profile", null: false
+    t.string "state", default: "unverified", null: false
     t.string "salesforce_contact_id"
     t.integer "faculty_status", default: 0, null: false
     t.string "self_reported_school"
@@ -445,7 +368,6 @@ ActiveRecord::Schema.define(version: 2022_03_04_145253) do
     t.boolean "receive_newsletter"
     t.bigint "source_application_id"
     t.datetime "activated_at"
-    t.boolean "is_newflow", default: false, null: false
     t.string "phone_number"
     t.boolean "is_kip", comment: "is the User-s school a Key Institutional Partner?"
     t.string "country_code"
@@ -468,10 +390,9 @@ ActiveRecord::Schema.define(version: 2022_03_04_145253) do
     t.boolean "is_b_r_i_user"
     t.boolean "title_1_school"
     t.bigint "school_id"
-    t.boolean "faculty_verification_email_sent"
-    t.boolean "needs_sync"
     t.boolean "sheer_id_webhook_received"
     t.string "salesforce_ox_account_id"
+    t.boolean "renewal_eligible"
     t.index "lower((first_name)::text)", name: "index_users_on_first_name"
     t.index "lower((last_name)::text)", name: "index_users_on_last_name"
     t.index "lower((username)::text)", name: "index_users_on_username_case_insensitive"
@@ -489,7 +410,6 @@ ActiveRecord::Schema.define(version: 2022_03_04_145253) do
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "salesforce_streaming_replays", "push_topics", column: "push_topics_id"
   add_foreign_key "users", "oauth_applications", column: "source_application_id"
   add_foreign_key "users", "schools"
 end

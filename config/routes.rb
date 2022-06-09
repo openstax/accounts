@@ -14,6 +14,10 @@ Rails.application.routes.draw do
   get 'i/confirm_your_info' => redirect('confirm_your_info')
   get 'i/forgot_password_form' => redirect('forgot_password_form')
 
+  # routes to old faculty access controller, redirect them to the sheerid form or pending cs paths
+  get 'faculty_access/apply/' => redirect('signup/educator/apply')
+  get 'faculty_access/pending/' => redirect('signup/educator/pending_cs_verification')
+
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
@@ -169,11 +173,6 @@ Rails.application.routes.draw do
     get 'confirm/unclaimed', action: :confirm_unclaimed
   end
 
-  namespace 'faculty_access' do
-    match 'apply', via: [:get, :post]
-    match 'pending', via: [:get, :post]
-  end
-
   resources :terms, only: [:index, :show] do
     collection do
       get 'pose'
@@ -272,8 +271,6 @@ Rails.application.routes.draw do
 
     mount Blazer::Engine, at: 'blazer', as: 'blazer_admin'
     match "/job_dashboard" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
-
-    mount RailsSettingsUi::Engine, at: 'settings'
   end
 
   namespace 'dev' do

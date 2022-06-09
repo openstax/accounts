@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 # Rails framework
-gem 'rails', '5.2.4.4'
+gem 'rails', '~> 5.2.5'
 gem 'rails-i18n', '~> 5'
 
 # Reduces boot times through caching; required in config/boot.rb
@@ -147,12 +147,6 @@ gem 'awesome_print'
 
 gem 'whenever', require: false
 
-# Admin toggles
-gem 'rails-settings-ui'
-
-gem 'rails-settings-cached', '0.7.2'
-gem 'dry-validation', '0.12.3'
-
 gem 'scout_apm'
 
 # Respond to ELB healthchecks in /ping and /ping/
@@ -179,10 +173,6 @@ gem 'oj_mimic_json'
 # CORS for local testing/dev
 gem 'rack-cors'
 
-# Salesforce streaming API
-gem 'cookiejar', git: 'https://github.com/MissionCapital/cookiejar.git'
-gem 'faye', '0.8.9'
-
 # Business analytics
 gem 'blazer'
 
@@ -200,9 +190,6 @@ group :development, :test do
   #
   # Call 'debugger' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', require: false
-  # Debug in VS Code
-  gem 'ruby-debug-ide', require: false
-  gem 'debase', require: false
 
   # Use RSpec for tests
   gem 'rspec-rails'
@@ -253,12 +240,6 @@ group :development do
   gem 'web-console', '~> 3.7'
 
   gem 'i18n-tasks'
-
-  # Generate Entity-Relationship Diagrams for Rails applications
-  gem 'rails-erd'
-
-  # "RailsPanel" — Chrome/Firefox extension for Rails development
-  gem 'meta_request'
 end
 
 group :test do
@@ -282,6 +263,7 @@ group :test do
   # Fake in-memory Redis for testing
   gem 'fakeredis', require: 'fakeredis/rspec'
 
+  # for debugging Capybara with save_and_open_page
   gem 'launchy'
 
   gem 'capybara-screenshot', require: false

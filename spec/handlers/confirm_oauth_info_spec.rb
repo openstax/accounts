@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe ConfirmOauthInfo, type: :handler do
   before do
     disable_sfdc_client
-    allow(Settings::Salesforce).to receive(:push_leads_enabled) { true }
   end
 
   let(:params) do

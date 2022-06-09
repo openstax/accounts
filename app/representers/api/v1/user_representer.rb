@@ -56,6 +56,14 @@ module Api::V1
              readable: true,
              writeable: false
 
+    property :renewal_eligible,
+             type:        :boolean,
+             readable:    true,
+             writable:    false,
+             schema_info: {
+               description: "If true, user eligible for opportunity renewal"
+             }
+
     property :is_test?,
              as: :is_test,
              type: :boolean,
@@ -89,15 +97,6 @@ module Api::V1
              writeable: false,
              schema_info: {
                 description: "One of #{User.faculty_statuses.keys.map(&:to_s).inspect}"
-             }
-
-    property :needs_to_complete_educator_profile?,
-             as: :needs_complete_edu_profile,
-             type: String,
-             readable: true,
-             writeable: false,
-             schema_info: {
-                description: "New flow faculty user needs to finish signing up?"
              }
 
     property :role,

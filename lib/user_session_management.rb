@@ -62,7 +62,6 @@ module UserSessionManagement
   end
 
   def sign_out!(options={})
-    clear_pre_auth_state
     clear_signup_state
     clear_incomplete_educator
 
@@ -97,33 +96,6 @@ module UserSessionManagement
     session.delete(:login)
   end
 
-  def save_pre_auth_state(pre_auth_state)
-    clear_login_state
-    # There may be an old signup state object around, check for that
-    clear_pre_auth_state if pre_auth_state&.id != session[:signup]
-    session[:signup] = pre_auth_state.id
-  end
-
-  def clear_pre_auth_state
-    pre_auth_state.try(:destroy)
-    @pre_auth_state = nil
-    session.delete(:signup)
-  end
-
-  def pre_auth_state
-    id = session[:signup]&.to_i
-    return unless id.present?
-    @pre_auth_state ||= PreAuthState.find_by(id: id)
-  end
-
-  def signup_role
-    pre_auth_state.try(:role)
-  end
-
-  def signup_email
-    pre_auth_state.try(:contact_info_value)
-  end
-
   def set_client_app(client_id)
     @client_app = client_id.nil? ?
                     nil :
@@ -135,13 +107,6 @@ module UserSessionManagement
     @client_app ||= session[:client_app].nil? ?
                       nil :
                       Doorkeeper::Application.find_by(id: session[:client_app])
-  end
-
-  # called when user arrived at app with go == 'student_signup'
-  # note we're also clearning the session[:signup_role], that's important
-  # so the session var doesn't stick around if user later comes from a different origin
-  def set_student_signup_role(is_student)
-    session[:signup_role] = is_student ? 'student' : nil
   end
 
   def set_alternate_signup_url(url)

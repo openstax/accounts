@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 feature 'Add social auth', js: true do
-  before do
-    turn_on_student_feature_flag
-  end
-
   let(:email_value){ 'user@example.com' }
 
   scenario "email collides with a different existing user's verified email" do

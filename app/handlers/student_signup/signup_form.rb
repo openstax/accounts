@@ -85,8 +85,7 @@ module StudentSignup
         last_name: signup_params.last_name,
         phone_number: signup_params.phone_number,
         receive_newsletter: signup_params.newsletter,
-        source_application: options[:client_app],
-        is_newflow: true
+        source_application: options[:client_app]
       )
       transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
       user

@@ -131,16 +131,12 @@ class User < ApplicationRecord
   belongs_to :source_application, class_name: "Doorkeeper::Application", foreign_key: "source_application_id"
 
   has_one :identity, dependent: :destroy, inverse_of: :user
-  has_one :pre_auth_state
 
   has_many :authentications, dependent: :destroy, inverse_of: :user
   has_many :application_users, dependent: :destroy, inverse_of: :user
   has_many :applications, through: :application_users
   has_many :contact_infos, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, inverse_of: :user
-  has_many :message_recipients, inverse_of: :user, dependent: :destroy
-  has_many :received_messages, through: :message_recipients, source: :message
-  has_many :sent_messages, class_name: 'Message'
   has_many :external_uuids, class_name: 'UserExternalUuid', dependent: :destroy
   has_many :group_owners, dependent: :destroy, inverse_of: :user
   has_many :owned_groups, through: :group_owners, source: :group
@@ -154,14 +150,6 @@ class User < ApplicationRecord
   attr_readonly :uuid
 
   attribute :is_not_gdpr_location, :boolean, default: nil
-
-  def lead
-    OpenStax::Salesforce::Remote::Lead.find_by(uuid: uuid)
-  end
-
-  def contact
-    OpenStax::Salesforce::Remote::Contact.find_by(uuid: uuid)
-  end
 
   def most_accurate_school_name
     return school.name if school.present?

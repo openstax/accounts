@@ -3,8 +3,6 @@ require 'rails_helper'
 feature "Arriving with special params", js: true do
   before do
     load 'db/seeds.rb'
-    turn_on_student_feature_flag
-    turn_on_educator_feature_flag
   end
 
   context "go=signup" do

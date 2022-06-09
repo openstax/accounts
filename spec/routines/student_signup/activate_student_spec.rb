@@ -5,7 +5,6 @@ module StudentSignup
     context 'when success' do
       before do
         disable_sfdc_client
-        allow(Settings::Salesforce).to receive(:push_leads_enabled).and_return(true)
       end
 
       let(:user) do

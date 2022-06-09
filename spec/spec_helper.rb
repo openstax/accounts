@@ -65,12 +65,6 @@ RSpec.configure do |config|
     load('db/seeds.rb')
   end
 
-  config.before(:each) do
-    # Get rid of possibly-shared config setting cache values between test and dev or any leftover
-    # cached values from other test runs. This is 15 seconds faster than `Rails.cache.clear`
-    Rails.cache.delete_matched("rails_settings_cached/*")
-  end
-
   # Some tests might change I18n.locale.
   config.before(:each) do |config|
     I18n.locale = :en
@@ -307,10 +301,6 @@ def options(*args)
   integration_session.__send__(:process, :options, *args).tap do
     copy_session_variables!
   end
-end
-
-def in_travis?
-  ENV['CI']
 end
 
 def in_docker?

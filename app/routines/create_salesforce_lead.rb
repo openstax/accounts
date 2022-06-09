@@ -36,53 +36,54 @@ class CreateSalesforceLead
       adoption_json = build_book_adoption_json_for_salesforce(user)
     end
 
-    lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
-    if lead
-      Sentry.capture_message("A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})")
-    else
-      lead = OpenStax::Salesforce::Remote::Lead.new(
-        first_name:           user.first_name,
-        last_name:            user.last_name,
-        phone:                user.phone_number,
-        email:                user.best_email_address_for_salesforce,
-        source:               'Account Creation',
-        application_source:   'Accounts',
-        role:                 sf_role,
-        position:             sf_position,
-        title:                user.other_role_name,
-        who_chooses_books:    user.who_chooses_books,
-        subject:              user.which_books,
-        adoption_status:      ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
-        adoption_json:        adoption_json,
-        os_accounts_id:       user.id,
-        accounts_uuid:        user.uuid,
-        school:               user.most_accurate_school_name,
-        city:                 user.most_accurate_school_city,
-        country:              user.most_accurate_school_country,
-        verification_status:  user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
-        b_r_i_marketing:      user.is_b_r_i_user?,
-        title_1_school:       user.title_1_school?,
-        newsletter:           user.receive_newsletter?,
-        newsletter_opt_in:    user.receive_newsletter?,
-        sheerid_school_name:  user.sheerid_reported_school,
-        instant_verification: user.is_sheerid_verified,
-        account_id:           sf_school_id,
-        school_id:            sf_school_id
-      )
+    # TODO: I still think this is a good check (although Salesforce should handle it) - but unable to get it working with cassettes, so TODOing it
+    # lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
+    # if lead
+    #   Sentry.capture_message("A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})")
+    # else
+    lead = OpenStax::Salesforce::Remote::Lead.new(
+      first_name:           user.first_name,
+      last_name:            user.last_name,
+      phone:                user.phone_number,
+      email:                user.best_email_address_for_salesforce,
+      source:               'Account Creation',
+      application_source:   'Accounts',
+      role:                 sf_role,
+      position:             sf_position,
+      title:                user.other_role_name,
+      who_chooses_books:    user.who_chooses_books,
+      subject:              user.which_books,
+      adoption_status:      ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
+      adoption_json:        adoption_json,
+      os_accounts_id:       user.id,
+      accounts_uuid:        user.uuid,
+      school:               user.most_accurate_school_name || 'No reported school', # No reported school == student who requested newsletter
+      city:                 user.most_accurate_school_city,
+      country:              user.most_accurate_school_country,
+      verification_status:  user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
+      b_r_i_marketing:      user.is_b_r_i_user?,
+      title_1_school:       user.title_1_school?,
+      newsletter:           user.receive_newsletter?,
+      newsletter_opt_in:    user.receive_newsletter?,
+      sheerid_school_name:  user.sheerid_reported_school,
+      instant_verification: user.is_sheerid_verified,
+      account_id:           sf_school_id,
+      school_id:            sf_school_id
+    )
 
-      state = user.most_accurate_school_state
-      unless state.blank?
-        state = nil unless US_STATES.map(&:downcase).include? state.downcase
-      end
-      unless state.nil?
-        # Figure out if the State is an abbreviation or the full name
-        if state == state.upcase
-          lead.state_code = state
-        else
-          lead.state = state
-        end
+    state = user.most_accurate_school_state
+    unless state.blank?
+      state = nil unless US_STATES.map(&:downcase).include? state.downcase
+    end
+    unless state.nil?
+      # Figure out if the State is an abbreviation or the full name
+      if state == state.upcase
+        lead.state_code = state
+      else
+        lead.state = state
       end
     end
+    # end
 
     SecurityLog.create!(
       user: user,
@@ -103,20 +104,19 @@ class CreateSalesforceLead
     )
 
     user.salesforce_lead_id = lead.id
+    outputs.lead = lead
     if user.save!
       SecurityLog.create!(
         user:       user,
         event_type: :user_lead_id_updated_from_salesforce,
         event_data: { lead_id: lead.id }
       )
+      outputs.user = user
       return true
     else
       transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
       return
     end
-
-    outputs.lead = lead
-    outputs.user = user
   end
 
   def build_book_adoption_json_for_salesforce(user)

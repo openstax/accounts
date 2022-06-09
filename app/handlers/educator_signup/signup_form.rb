@@ -4,8 +4,7 @@ module EducatorSignup
     USER_DEFAULT_STATE = :unverified
     USER_FACULTY_STATUS = User::PENDING_FACULTY
     USER_ROLE = :instructor
-    USER_IS_NEWFLOW = true
-    private_constant(:USER_DEFAULT_STATE, :USER_FACULTY_STATUS, :USER_ROLE, :USER_IS_NEWFLOW)
+    private_constant(:USER_DEFAULT_STATE, :USER_FACULTY_STATUS, :USER_ROLE)
 
     lev_handler
 
@@ -82,7 +81,6 @@ module EducatorSignup
 
     def create_user
       user = User.create(
-        is_newflow: USER_IS_NEWFLOW,
         state: USER_DEFAULT_STATE,
         role: USER_ROLE,
         faculty_status: USER_FACULTY_STATUS,

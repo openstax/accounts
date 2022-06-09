@@ -178,7 +178,7 @@ class OauthCallback
   end
 
   def create_student_user_instance
-    user = User.new(state: 'unverified', role: User::STUDENT_ROLE, is_newflow: true)
+    user = User.new(state: 'unverified', role: User::STUDENT_ROLE)
     user.full_name = oauth_data.name
 
     transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
