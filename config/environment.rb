@@ -18,7 +18,6 @@ require 'omniauth/strategies/custom_identity'
 require "omniauth/strategies/facebooknewflow"
 require "omniauth/strategies/googlenewflow"
 require 'email_address_validations'
-require 'subjects_utils'
 require 'host'
 require 'sso_cookie_jar'
 require 'set_gdpr_data'
