@@ -58,6 +58,10 @@ jobs:
           bundle exec rails runner '3.times { FactoryBot.create :user }'
           git checkout --force -
 
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
       # Migrate the data
       - name: Migrate
         env:
