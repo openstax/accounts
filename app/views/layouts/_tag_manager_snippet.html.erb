@@ -1,4 +1,4 @@
-<% if Rails.env.production? and Rails.application.secrets[:send_google_analytics] == true %>
+<% if Rails.env.production? and Rails.application.secrets[:send_google_analytics] == true and !Rails.application.secrets[:google_tag_manager_code].blank?  %>
 <noscript>
   //Code from Google
   <iframe src="https://www.googletagmanager.com/ns.html?id=<%= Rails.application.secrets[:google_tag_manager_code] %>"
