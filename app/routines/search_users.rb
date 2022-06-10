@@ -5,7 +5,7 @@
 #
 #   "name:John" --> returns Users with first or last starting with "John"
 #
-# Query terms can be combined, e.g. "first_name:michael last_name: harrison"
+# Query terms can be combined, e.g. "first_name:bob last_name: smith"
 #
 # By default, the query will return an empty result set if the number of
 # results exceeds MAX_MATCHING_USERS
@@ -29,7 +29,7 @@ class SearchUsers
 
   protected
 
-  SORTABLE_FIELDS = ['first_name', 'last_name', 'id', 'role']
+  SORTABLE_FIELDS = %w[first_name last_name id role]
   SORT_ASCENDING = 'ASC'
   SORT_DESCENDING = 'DESC'
   MAX_MATCHING_USERS = 10
@@ -161,12 +161,12 @@ class SearchUsers
     # Ordering
 
     # Parse the input
-    order_bys = (options[:order_by] || 'last_name').split(',').map{ |ob| ob.strip.split(' ') }
+    order_bys = (options[:order_by] || 'id').split(',').map{ |ob| ob.strip.split(' ') }
 
     # Toss out bad input, provide default direction
     order_bys = order_bys.map do |order_by|
       field, direction = order_by
-      next if !SORTABLE_FIELDS.include?(field)
+      next unless SORTABLE_FIELDS.include?(field)
       direction ||= SORT_ASCENDING
       next if direction != SORT_ASCENDING && direction != SORT_DESCENDING
       [field, direction]
@@ -174,8 +174,8 @@ class SearchUsers
 
     order_bys.compact!
 
-    # Use a default sort if none provided
-    order_bys = [['last_name', SORT_ASCENDING]] if order_bys.empty?
+    # Use a default sort if none provided - descending id, so the newest come up first
+    order_bys = [['last_name', SORT_DESCENDING]] if order_bys.empty?
 
     # Convert to query style
     order_bys = order_bys.map{|order_by| "#{order_by[0]} #{order_by[1]}"}
