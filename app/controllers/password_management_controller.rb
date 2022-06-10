@@ -1,11 +1,11 @@
-class PasswordManagementController < BaseController
+class PasswordManagementController < ApplicationController
   include LoginSignupHelper
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [
     :forgot_password_form, :send_reset_password_email, :reset_password_email_sent
   ]
 
-  before_action :newflow_authenticate_user!, only: [:create_password, :educator_sheerid_form]
+  before_action :authenticate_user!, only: [:create_password]
 
   def forgot_password_form
     @email = login_failed_email
