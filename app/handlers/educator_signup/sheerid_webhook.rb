@@ -15,8 +15,12 @@ module EducatorSignup
       verification_details_from_sheerid = SheeridAPI.get_verification_details(verification_id)
 
       if !verification_details_from_sheerid.success?
-        Sentry.capture_message("[SheerID Webhook] fetching verification details FAILED",
-                               extra: { verification_id: verification_id, verification_details: verification_details_from_sheerid }
+        Sentry.capture_message(
+          "[SheerID Webhook] fetching verification details FAILED",
+          extra: {
+            verification_id:      verification_id,
+            verification_details: verification_details_from_sheerid
+          }
         )
         fatal_error(code: :sheerid_api_call_failed)
       end
@@ -32,10 +36,23 @@ module EducatorSignup
 
       user = EmailAddress.verified.find_by(value: verification.email)&.user
 
-      if !user.present?
-        Sentry.capture_message("[SheerID Webhook] No user found with verification id (#{verification_id}) and email (#{verification.email})",
-                               extra: { verification_id: verification_id, verification_details_from_sheer_id: verification_details_from_sheerid }
-        )
+      # we check here and only report to Sentry on prod - webhooks are not reliable on test environments
+      # If the user can't be found, it's likely because they are from another environment
+      # TODO: make this work better for testing on different envs
+      if user.blank?
+        if is_real_production?
+          Sentry.capture_message(
+            "[SheerID Webhook] No user found with verification id (#{verification_id}) "\
+            "and email (#{verification.email})",
+            extra: {
+              verification_id:                    verification_id,
+              verification_details_from_sheer_id: verification_details_from_sheerid
+            }
+          )
+        else
+          warn("[SheerID] No user found with verification id (#{verification_id}) and email (#{verification.email})")
+        end
+
         return
       end
 
@@ -134,7 +151,7 @@ module EducatorSignup
       # if we got the webhook back after the user submitted the profile, they didn't get a lead built yet
       # We just make sure they don't have a lead or contact id yet
       if user.salesforce_lead_id.blank? && user.salesforce_contact_id.blank? && user.is_profile_complete
-        CreateSalesforceLead.perform_later(user_id: user.id)
+        CreateSalesforceLead.perform_later(user.id)
       end
 
       SecurityLog.create!(user: user, event_type: :sheerid_webhook_processed)

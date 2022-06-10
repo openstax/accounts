@@ -1,11 +1,6 @@
 module EducatorSignup
   class CompleteProfile
 
-    OTHER = 'other'
-    AS_PRIMARY = 'as_primary'
-    INSTRUCTOR = 'instructor'
-    AS_FUTURE = 'as_future'
-
     lev_handler
 
     uses_routine CreateEmailForUser, translations: {
@@ -56,9 +51,9 @@ module EducatorSignup
       outputs.is_on_cs_form = @is_on_cs_form
 
       # is this user coming from the sheerid flow? there are a few things we can check...
-      @did_use_sheerid = !(signup_params.is_school_not_supported_by_sheerid == 'true' ||
-        signup_params.is_country_not_supported_by_sheerid == 'true' ||
-        user.is_sheerid_unviable? || @is_on_cs_form)
+      @did_use_sheerid = !(signup_params.is_school_not_supported_by_sheerid&.empty? ||
+        signup_params.is_country_not_supported_by_sheerid&.empty? ||
+        !user.is_sheerid_unviable? || !@is_on_cs_form)
 
       # validate the form
       check_params
@@ -89,7 +84,7 @@ module EducatorSignup
         unless signup_params.school_issued_email.blank?
           # this user used the CS form and _should_ have provided us an email address -
           # so let's add it - validation happens before this in check_params
-          run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
+          run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user)
         end
       else
         # If user did not need CS verification but still needs to be pending, set them to pending state
@@ -110,7 +105,7 @@ module EducatorSignup
       #output the user to the lev handler
       outputs.user = @user
 
-      if !user.sheer_id_webhook_received && @did_use_sheerid
+      if @did_use_sheerid
         # User used SheerID or needs CS verification - we create their lead in SheeridWebhook, not here.. and might not be instant
         SecurityLog.create!(
           user: user,
@@ -120,14 +115,14 @@ module EducatorSignup
       end
 
       # Now we create the lead for the user... because we returned above if they did... again SheeridWebhook
-      CreateSalesforceLead.perform_later(user_id: @user.id)
+      CreateSalesforceLead.perform_later(@user.id)
 
     end
 
     private #################
 
     def other_role_name
-      signup_params.educator_specific_role == OTHER ? signup_params.other_role_name.strip : nil
+      signup_params.educator_specific_role == 'other' ? signup_params.other_role_name.strip : nil
     end
 
     def which_books
@@ -143,34 +138,22 @@ module EducatorSignup
     end
 
     def books_used
-      signup_params.books_used.reject{ |b| b.blank? }
+      signup_params.books_used&.reject{ |b| b.blank? }
     end
 
     def books_of_interest
-      signup_params.books_of_interest.reject{ |b| b.blank? }
+      signup_params.books_of_interest&.reject{ |b| b.blank? }
     end
 
     def check_params
       role = signup_params.educator_specific_role.strip.downcase
 
-      if signup_params.school_name && signup_params.school_name.nil?
+      if signup_params.school_name&.nil?
         param_error(:school_name, :school_name_must_be_entered)
       end
 
-      if role == OTHER && signup_params.other_role_name.nil?
+      if role == 'other' && signup_params.other_role_name.nil?
         param_error(:other_role_name, :other_must_be_entered)
-      end
-
-      if role  == INSTRUCTOR && signup_params.using_openstax_how == AS_PRIMARY && books_used.blank?
-        param_error(:books_used, :books_used_must_be_entered)
-      end
-
-      if role  == INSTRUCTOR && signup_params.using_openstax_how != AS_PRIMARY && books_of_interest.blank?
-        param_error(:books_of_interest, :books_of_interest_must_be_entered)
-      end
-
-      if role  == INSTRUCTOR && signup_params.num_students_per_semester_taught.blank?
-        param_error(:num_students_per_semester_taught, :num_students_must_be_entered)
       end
 
       if @is_on_cs_form
