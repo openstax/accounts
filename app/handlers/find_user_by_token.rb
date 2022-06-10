@@ -8,7 +8,7 @@ class FindUserByToken
   end
 
   def handle
-    if already_logged_in?
+    unless caller.is_anonymous?
       outputs.user = caller
       return
     end

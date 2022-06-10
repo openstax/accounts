@@ -19,8 +19,6 @@ class OauthCallback
   )
   uses_routine(TransferOmniauthData)
 
-  LOGIN_FORM_IS_ORIGIN = :login_form
-
   include Rails.application.routes.url_helpers
 
   protected #########################
@@ -39,7 +37,7 @@ class OauthCallback
 
   def handle # rubocop:disable Metrics/AbcSize
     if @logged_in_user
-      newflow_handle_while_logged_in(@logged_in_user.id)
+      handle_while_logged_in(@logged_in_user.id)
     elsif mismatched_authentication?
       fatal_error(code: :mismatched_authentication)
     elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
@@ -50,14 +48,7 @@ class OauthCallback
       # We will add the authentication to their existing account and then log them in.
       outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
       run(TransferAuthentications, outputs.authentication, existing_user)
-    elsif (old_flow_user = find_old_flow_user(provider: @oauth_provider, uid: @oauth_uid))
-      # create a corresponding new flow Authentication
-      outputs.authentication = create_newflow_auth_for_user(
-        user: old_flow_user,
-        provider: @oauth_provider,
-        uid: @oauth_uid
-      )
-    elsif user_came_from&.to_sym == LOGIN_FORM_IS_ORIGIN
+    elsif user_came_from&.to_sym == :login_form
       # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
       fatal_error(code: :should_redirect_to_signup)
     else # sign up new student, then we will log them in.
@@ -69,7 +60,7 @@ class OauthCallback
     outputs.user = outputs.authentication.user
   end
 
-  private ###########################
+  private
 
   # users can only have one login per social provider, so if user is trying to log in with
   # the same provider but it has a different uid, then they might've gotten the social account hacked,
@@ -81,15 +72,15 @@ class OauthCallback
     existing_auth_uid = Authentication.where(user_id: existing_email_owner_id, provider: @oauth_provider).pluck(:uid).first
     incoming_auth_uid = Authentication.where(provider: @oauth_provider, uid: @oauth_uid).last&.uid
 
-    if existing_auth_uid != incoming_auth_uid
-      Sentry.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
-      return true
+    if existing_auth_uid == incoming_auth_uid
+      false
     else
-      return false
+      Sentry.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
+      true
     end
   end
 
-  def newflow_handle_while_logged_in(logged_in_user_id)
+  def handle_while_logged_in(logged_in_user_id)
     outputs.authentication = authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
 
     if authentication.user&.activated?
@@ -141,44 +132,12 @@ class OauthCallback
     return users.sort_by{ |uu| [uu.updated_at, uu.created_at] }.last
   end
 
-  def find_old_flow_user(provider:, uid:)
-    providers_mapping = {
-      'facebooknewflow': 'facebook',
-      'googlenewflow': 'google'
-    }.with_indifferent_access
-
-    corresponding_provider = providers_mapping.fetch(provider, nil)
-    return unless corresponding_provider
-
-    Authentication.find_by(provider: corresponding_provider, uid: uid)&.user
-  end
-
-  # Create a corresponding new flow Authentication for old flow Authentication owner
-  def create_newflow_auth_for_user(user:, provider:, uid:)
-    authentication = Authentication.new(provider: provider, uid: uid)
-
-    run(TransferAuthentications, authentication, user)
-
-    SecurityLog.create!(
-      event_type: :authentication_transferred,
-      user: user,
-      remote_ip: request.remote_ip,
-      event_data: {
-        authentication_id: authentication.id,
-        authentication_provider: authentication.provider,
-        authentication_uid: authentication.uid
-      }
-    )
-
-    authentication
-  end
-
   def oauth_data
     @oauth_data ||= parse_oauth_data(oauth_response)
   end
 
   def create_student_user_instance
-    user = User.new(state: 'unverified', role: User::STUDENT_ROLE)
+    user = User.new(state: :unverified, role: :student)
     user.full_name = oauth_data.name
 
     transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
