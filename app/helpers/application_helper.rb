@@ -12,7 +12,7 @@ module ApplicationHelper
         'ga-category': 'Login',
         'ga-action': 'Click',
         'ga-label': 'Contact Us'
-      }
+      }, rel: 'noopener'
     ).html_safe
   end
 
@@ -31,30 +31,18 @@ module ApplicationHelper
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
   end
 
-  def unless_errors(options={}, &block)
-    errors = @handler_result.errors.each do |error|
-      add_local_error_alert now: true, content: error.translate
-    end
-
-   @handler_result.errors.any? ?
-     js_refresh_alerts(options) :
-     js_refresh_alerts(options) + capture(&block).html_safe
-  end
-
-  def js_refresh_alerts(options={})
-    options[:alerts_html_id] ||= 'local-alerts'
-    options[:alerts_partial] ||= 'shared/local_alerts'
-    options[:trigger] ||= 'alerts-updated'
-
-    "$('##{options[:alerts_html_id]}').html('#{ j(render options[:alerts_partial]) }').trigger('#{options[:trigger]}');".html_safe
-  end
-
   def alert_tag(messages)
     attention_tag(messages, :alert)
   end
 
   def notice_tag(messages)
     attention_tag(messages, :notice)
+  end
+
+  def field_error!(on:, code:, message:)
+    @errors ||= Lev::Errors.new
+    message = I18n.t(message) if message.is_a?(Symbol)
+    @errors.add(false, offending_inputs: on, code: code, message: message)
   end
 
   def attention_tag(messages, type)
@@ -67,6 +55,31 @@ module ApplicationHelper
       messages.size == 1 ?
        messages.first.html_safe :
         ("<ul>"+messages.collect{|a| "<li>#{a}</li>"}.join("")+"</ul>").html_safe
+    end
+  end
+
+  def profile_card(classes: "", heading: "", &block)
+    @hide_layout_errors = true
+
+    content_tag :div, class: "profile #{classes}" do
+      danger_alerts = if flash[:alert].present?
+                        content_tag :div, class: "top-level-alerts danger" do
+                          alert_tag(flash[:alert])
+                        end
+                      end
+      info_alerts   = if flash[:notice].present?
+                        content_tag :div, class: "top-level-alerts info" do
+                          notice_tag(flash[:notice])
+                        end
+                      end
+
+      heading = if header.present?
+                 content_tag(:heading, class: "page-heading") { heading }
+               end
+
+      body = capture(&block)
+
+      "#{danger_alerts}\n#{info_alerts}\n#{header}\n#{body}".html_safe
     end
   end
 
@@ -205,7 +218,7 @@ module ApplicationHelper
   # NEW FLOW  #
    ###########
 
-  def login_signup_card(classes: "", header: "", banners: nil, current_step: nil, show_exit_icon: false, &block)
+  def login_signup_card(classes: "", header: "", current_step: nil, show_exit_icon: false, &block)
     @hide_layout_errors = true
 
     content_tag :div, class: "#{classes}" do
