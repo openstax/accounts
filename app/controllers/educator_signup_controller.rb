@@ -85,7 +85,7 @@ class EducatorSignupController < SignupController
       },
       failure: lambda {
         @book_titles = book_data.titles
-        security_log(:educator_sign_up_failed, user: @current_user, reason: @handler_result.errors)
+        security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
         render :profile_form
       }
     )
@@ -96,7 +96,7 @@ class EducatorSignupController < SignupController
     @email_address = current_user.email_addresses.last&.value
   end
 
-  private
+  protected
 
   def generate_sheer_id_url(user)
     url = Addressable::URI.parse(Rails.application.secrets[:sheer_id_base_url])
@@ -109,13 +109,6 @@ class EducatorSignupController < SignupController
       url.to_s
     else
       Sentry.capture_message('Unable to generate SheerID URL for user.')
-    end
-  end
-
-  def store_if_sheerid_is_unviable_for_user
-    if params[:school].present? || params[:country].present?
-      @current_user.update!(is_sheerid_unviable: true)
-      security_log(:user_not_viable_for_sheerid, user: @current_user)
     end
   end
 
@@ -136,19 +129,26 @@ class EducatorSignupController < SignupController
     @book_data ||= FetchBookData.new
   end
 
+  def store_if_sheerid_is_unviable_for_user
+    if params[:school].present? || params[:country].present?
+      current_user.update!(is_sheerid_unviable: true)
+      security_log(:user_not_viable_for_sheerid, user: current_user)
+    end
+  end
+
   def store_sheerid_verification_for_user
-    if params[:verificationId].present? && @current_user.sheerid_verification_id.blank?
+    if params[:verificationId].present? && current_user.sheerid_verification_id.blank?
       # create the verification object - this is verified later in SheeridWebhook
       SheeridVerification.find_or_initialize_by(
         verification_id: params[:verificationId])
 
       # update the user
-      @current_user.update!(sheerid_verification_id: params[:verificationId])
+      current_user.update!(sheerid_verification_id: params[:verificationId])
 
       # log it
       SecurityLog.create!(
         event_type: :sheerid_verification_id_added_to_user_during_signup,
-        user:       @current_user,
+        user: current_user,
         event_data: { verification_id: params[:verificationId] }
       )
     end
