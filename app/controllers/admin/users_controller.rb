@@ -1,14 +1,6 @@
 module Admin
   class UsersController < BaseController
-    layout 'admin', except: :js_search
-
     before_action :get_user, only: [:edit, :update, :destroy, :become]
-
-    # Used by dialog
-    def js_search
-      security_log :users_searched_by_admin, search: params[:search]
-      handle_with(UsersSearch, complete: lambda { render 'search' })
-    end
 
     def index; end
 
@@ -61,10 +53,6 @@ module Admin
       redirect_to actions_admin_users_path, notice: 'Incremented unread update count'
     end
 
-    def force_update_lead
-      CreateSalesforceLead.call(user: get_user)
-    end
-
     protected
 
     def get_user
@@ -72,7 +60,7 @@ module Admin
     end
 
     def add_email_to_user
-      result = AddEmailToUser.call(params[:user][:email_address], @user)
+      result = CreateEmailForUser.call(params[:user][:email_address], @user)
       return true unless result.errors.any?
       flash[:alert] = "Failed to add new email address: #{result.errors.collect(&:translate)}"
     end

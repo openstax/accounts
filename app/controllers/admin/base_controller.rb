@@ -6,9 +6,10 @@ module Admin
 
     include FakeExceptionHelper
 
+    layout 'admin'
+
     if Rails.env.development?
       skip_before_action :authenticate_user!
-      skip_before_action :complete_signup_profile
 
       fine_print_skip :general_terms_of_use, :privacy_policy
     else
@@ -17,7 +18,7 @@ module Admin
     end
 
     def log_out_inactive_admins
-      if current_user.is_administrator? && is_real_production_site?
+      if current_user.is_administrator? && is_real_production?
         if session[:last_admin_activity].nil?
           # logged in as a normal user and then someone made normal user an admin
           # otherwise, should never be nil for admins who log in as an admin
@@ -29,12 +30,6 @@ module Admin
           session[:last_admin_activity] = DateTime.now.to_s
         end
       end
-    end
-
-    def cron
-      Ost::Cron::execute_cron_jobs
-      flash[:notice] = "Ran cron tasks"
-      redirect_to admin_path
     end
 
     def raise_exception
