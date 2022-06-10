@@ -1,5 +1,3 @@
-require 'import_users'
-
 def create_user(username, password='password', terms_agreed=nil)
   terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
                           :terms_agreed :
@@ -13,11 +11,6 @@ def create_user(username, password='password', terms_agreed=nil)
                                                        provider: 'identity',
                                                        uid: identity.uid
   return user
-end
-
-def imported_user username
-  ImportUsers.new('some.csv', nil).create_user(
-    username, '{SSHA}RmBlDXdkdJaQkDsr790+eKaY9xHQdPVNwD/B', 'Dr', 'Full', 'Name', 'user@example.com')
 end
 
 def create_admin_user
