@@ -1,9 +1,12 @@
 class ProfileController < ApplicationController
 
   skip_before_action :authenticate_user!, only: :exit_accounts
-  before_action :prevent_caching, only: :profile
-  before_action :redirect_instructors_needing_to_complete_signup, only: :profile
-  before_action :redirect_back_if_allowed, only: :profile
+
+  def profile
+    prevent_caching
+    redirect_instructors_needing_to_complete_signup
+    redirect_back_if_allowed
+  end
 
   def exit_accounts
     if (redirect_param = extract_params(request.referer)[:r])

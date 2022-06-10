@@ -1,6 +1,6 @@
 class EducatorSignupController < SignupController
 
-  include InstructorSignupHelper
+  include EducatorSignupHelper
 
   skip_forgery_protection(only: :sheerid_webhook)
 
@@ -14,7 +14,7 @@ class EducatorSignupController < SignupController
       educator_verify_email_by_pin
     ]
   )
-  before_action(:newflow_authenticate_user!, only: %i[
+  before_action(:authenticate_user!, only: %i[
       educator_sheerid_form
       educator_profile_form
       educator_complete_profile
