@@ -1,0 +1,21 @@
+class ProfileController < ApplicationController
+
+  skip_before_action :authenticate_user!, only: :exit_accounts
+  before_action :prevent_caching, only: :profile
+  before_action :redirect_instructors_needing_to_complete_signup, only: :profile
+  before_action :redirect_back_if_allowed, only: :profile
+
+  def exit_accounts
+    if (redirect_param = extract_params(request.referer)[:r])
+      if Host.trusted?(redirect_param)
+        redirect_to(redirect_param)
+      else
+        raise Lev::SecurityTransgression
+      end
+    elsif !signed_in? && (redirect_uri = extract_params(stored_url)[:redirect_uri])
+      redirect_to(redirect_uri)
+    else
+      redirect_back(fallback_location: :login_path)
+    end
+  end
+end

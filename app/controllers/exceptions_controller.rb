@@ -1,5 +1,7 @@
 class ExceptionsController < ActionController::Base
 
+  layout 'application'
+
   def rescue_from
     # render 500 error page
     @exception = request.env["action_dispatch.exception"]

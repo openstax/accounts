@@ -1,10 +1,8 @@
 class UsersController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 
-  before_action :allow_iframe_access, only: [:update]
-  before_action :prevent_caching, only: [:update]
-
   def update
+    allow_iframe_access
     OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
 
     respond_to do |format|
@@ -23,8 +21,10 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params[:value].is_a?(String) ? \
-      {params[:name] => params[:value]} : \
-      params.require(:value).permit(:title, :first_name, :last_name, :suffix).to_h
+    user_params = {}
+    params[:value].each do |value|
+      user_params.store(params[:name], value) if value.is_a?(String)
+    end
+    user_params
   end
 end

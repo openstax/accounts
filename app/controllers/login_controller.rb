@@ -1,43 +1,44 @@
-class LoginController < BaseController
+class LoginController < ApplicationController
 
   include LoginSignupHelper
-
-  GO_TO_STUDENT_SIGNUP = 'student_signup'
-  GO_TO_SIGNUP = 'signup'
 
   fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile_newflow
 
   before_action :cache_client_app, only: :login_form
   before_action :cache_alternate_signup_url, only: :login_form
-  before_action :redirect_to_signup_if_go_param_present, only: :login_form
+  before_action :student_signup_redirect, only: :login_form
   before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
-  def login
+  def login_form
+    clear_signup_state
+    render :login_form
+  end
+
+  def login_post
     handle_with(
       LogInUser,
       success: lambda {
-        clear_signup_state
         user = @handler_result.outputs.user
+
+        # TODO: probably move this to auth_methods
+        if Rails.env.production?
+          Sentry.configure_scope do |scope|
+            scope.set_tags(user_role: user.role.humanize)
+            scope.set_user(uuid: user.uuid)
+          end
+        end
 
         if user.unverified?
           save_unverified_user(user.id)
-
-          if user.student?
-            redirect_to(student_email_verification_form_path)
-          else
-            redirect_to(educator_email_verification_form_path)
-          end
-
-          return
+          # TODO: probably need this log to be for all users
+          security_log(:educator_resumed_signup_flow, message: 'User has not verified email address.')
+          redirect_to verify_email_by_pin_form_path and return
         end
 
-        sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
+        sign_in!(user, security_log_data: { 'email': @handler_result.outputs.email })
 
-        if current_user.student? || decorated_user.can_do?('redirect_back_upon_login')
-          redirect_back # back to `r`edirect parameter. See `before_action :save_redirect`.
-        else
-          redirect_to(decorated_user.next_step)
-        end
+        redirect_instructors_needing_to_complete_signup
+        redirect_back(fallback_location: profile_path)
       },
       failure: lambda {
         email = @handler_result.outputs.email
@@ -57,25 +58,41 @@ class LoginController < BaseController
 
   def logout
     sign_out!
-    redirect_back(fallback_location: login_path)
+    Sentry.set_user({}) if Rails.env.production?
+
+    # Now figure out where we should redirect the user...
+
+    if return_url_specified_and_allowed?
+      redirect_back(fallback_location: login_path)
+    else
+      session[ActionInterceptor.config.default_key] = nil
+
+      # Compute a default redirect based on the referrer's scheme, host, and port.
+      # Add the request's query onto this URL (a way for the logging-out app to
+      # communicate state back to itself).
+      url ||= begin
+                referrer_uri = URI(request.referer)
+                request_uri  = URI(request.url)
+                if referrer_uri.host == request_uri.host
+                  "#{root_url}?#{request_uri.query}"
+                else
+                  "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
+                end
+              rescue StandardError # in case the referer is bad (see #179)
+                root_url
+              end
+    end
   end
 
   protected ###############
 
-  def redirect_to_signup_if_go_param_present
-    if should_redirect_to_student_signup?
-      redirect_to signup_student_path(request.query_parameters)
-    elsif should_redirect_to_signup_welcome?
-      redirect_to newflow_signup_path(request.query_parameters)
+  def student_signup_redirect
+    if params[:go]&.strip&.downcase == 'student_signup'
+      request.query_parameters[:role] = 'student'
+      redirect_to signup_form_path(request.query_parameters)
+    elsif params[:go]&.strip&.downcase == 'signup'
+      redirect_to signup_form_path(request.query_parameters)
     end
-  end
-
-  def should_redirect_to_student_signup?
-    params[:go]&.strip&.downcase == GO_TO_STUDENT_SIGNUP
-  end
-
-  def should_redirect_to_signup_welcome?
-    params[:go]&.strip&.downcase == GO_TO_SIGNUP
   end
 
   # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.

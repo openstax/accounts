@@ -2,8 +2,7 @@ class IdentitiesController < ApplicationController
 
   include RequireRecentSignin
 
-  skip_before_action :authenticate_user!, :check_if_password_expired, :complete_signup_profile,
-                    only: [:reset, :send_reset, :add, :send_add]
+  skip_before_action :authenticate_user!, only: [:reset, :add]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
                   only: [:reset, :send_reset, :add, :send_add,
@@ -19,49 +18,18 @@ class IdentitiesController < ApplicationController
     set_password(kind: :add)
   end
 
-  def send_reset
-    send_password_email(kind: :reset)
-  end
-
-  def send_add
-    send_password_email(kind: :add)
-  end
-
   def continue
     redirect_back
   end
 
   protected
 
-  def send_password_email(kind:)
-    # Can be reached before logged in (can't remember password) or when logged
-    # in and asked to reauthenticate and can't remember password.
-
-    user = signed_in? ? current_user :
-                        User.find_by(id: get_login_state[:matching_user_ids].try(:first))
-
-    redirect_to(root_path, alert: I18n.t(:'controllers.lost_user')) && return if user.nil?
-
-    handle_with(IdentitiesSendPasswordEmail,
-                kind: kind,
-                user: user,
-                success: lambda do
-                  security_log :help_requested, user: user
-                  sign_out!
-                end,
-                failure: lambda do
-                  security_log :help_request_failed, user: user
-                  redirect_to authenticate_path
-                end)
-  end
-
   def set_password(kind:)
     if request.get?
       handle_with(LogInByToken,
                   user_state: self,
                   success: lambda do
-                    # This reauthenticate check is only relevant if user was already
-                    # logged in before making this request.
+                    # This reauthenticate check is only relevant if user was already logged in before making this request.
                     if user_signin_is_too_old?
                       reauthenticate_user!
                     else
@@ -74,7 +42,7 @@ class IdentitiesController < ApplicationController
                     end
                   end,
                   failure: -> {
-                    render status: 400
+                    render status: :bad_request
                   })
     elsif request.post?
       if current_user.is_anonymous?
