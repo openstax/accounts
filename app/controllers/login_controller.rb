@@ -1,7 +1,5 @@
 class LoginController < ApplicationController
 
-  include LoginSignupHelper
-
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   def login_form
@@ -10,8 +8,6 @@ class LoginController < ApplicationController
     student_signup_redirect
     cache_client_app
     redirect_back(fallback_location: profile_path) if signed_in?
-
-    render :login_form
   end
 
   def login_post
@@ -78,7 +74,8 @@ class LoginController < ApplicationController
                 else
                   "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
                 end
-              rescue StandardError # in case the referer is bad (see #179)
+              rescue StandardError => se # in case the referer is bad (see #179)
+                Sentry.capture_exception(se)
                 root_url
               end
     end
