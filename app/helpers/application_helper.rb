@@ -151,10 +151,6 @@ module ApplicationHelper
     end
   end
 
-  def is_real_production_site?
-    request.host == 'accounts.openstax.org'
-  end
-
   def translate_error(code:, force: false)
     return unless @handler_result.try(:errors)
 

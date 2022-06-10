@@ -53,7 +53,7 @@ class EducatorSignupController < SignupController
           Sentry.capture_message(
             '[SheerID Webhook] Failed!',
             extra: {
-              verification_id: sheerid_provided_verification_id_param,
+              verification_id: params[:verificationid],
               reason: @handler_result.errors.first.code
             }
           )

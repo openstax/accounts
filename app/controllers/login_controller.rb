@@ -4,13 +4,13 @@ class LoginController < ApplicationController
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  before_action :cache_client_app, only: :login_form
-  before_action :cache_alternate_signup_url, only: :login_form
-  before_action :student_signup_redirect, only: :login_form
-  before_action :redirect_back, if: -> { signed_in? }, only: :login_form
-
   def login_form
     clear_signup_state
+    cache_alternate_signup_url
+    student_signup_redirect
+    cache_client_app
+    redirect_back(fallback_location: profile_path) if signed_in?
+
     render :login_form
   end
 
@@ -100,5 +100,9 @@ class LoginController < ApplicationController
   # has a message for students just letting them know how to sign up (they must receive an email invitation).
   def cache_alternate_signup_url
     set_alternate_signup_url(params[:signup_at])
+  end
+
+  def cache_client_app
+    set_client_app(params[:client_id])
   end
 end
