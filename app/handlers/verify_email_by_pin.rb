@@ -2,6 +2,15 @@
 # and then marks the owner of the email address as 'activated'.
 class VerifyUserEmailByPin
 
+  lev_handler
+  uses_routine ConfirmByPin
+  uses_routine ActivateUser
+
+  paramify :confirm do
+    attribute :pin, type: String
+    validates :pin, presence: true
+  end
+
   def handle
     result = ConfirmByPin.call(contact_info: options[:email_address], pin: confirm_params.pin)
     if result.errors.any?
@@ -17,8 +26,16 @@ class VerifyUserEmailByPin
     outputs.user = claiming_user
   end
 
+  protected
+
+  def authorized?
+    true
+  end
+
+  private
+
   def activate_user(claiming_user)
-    raise('Must implement')
+    run(ActivateUser, claiming_user)
   end
 
 end
