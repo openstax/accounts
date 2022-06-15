@@ -8,7 +8,7 @@ Doorkeeper.configure do
     # normally only be called when the user is already signed in, which is ok because that's what
     # lets us get to the authorization part of oauth, or when we skip the `:authenticate_user!`
     # before_action, which we don't normally do in the oauth flow where this matters
-    newflow_authenticate_user!
+    authenticate_user!
 
     current_user
   end
@@ -101,7 +101,7 @@ Doorkeeper.configure do
   # For more information go to
   # https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes
   #
-  # default_scopes  :public
+  default_scopes  :public
   # optional_scopes :write, :update
 
   # Change the way client credentials are retrieved from the request object.

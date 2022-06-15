@@ -3,12 +3,12 @@
 
 <% content_for :javascript do %>
   <script type="text/javascript">
-    $('.verify-email').bind('ajax:complete', function(evt, xhr, status) {
-      $(this).replaceWith(xhr.responseText);
-    });</script>
+      $('.verify-email').bind('ajax:complete', function (evt, xhr, status) {
+          $(this).replaceWith(xhr.responseText);
+      });</script>
 <% end %>
 
-<%= form_for [:admin, @user], html: {id: 'admin-user-form', class: 'form-horizontal'} do |f| %>
+<%= form_for [:admin, @user], html: { id: 'admin-user-form', class: 'form-horizontal' } do |f| %>
   <%= render "shared/error_messages", :target => @user %>
 
   <div class="form-group">
@@ -16,11 +16,11 @@
     <div class="col-sm-10">
       <p class="form-control-static">
         <%= @user.name %>
-          <%= link_to become_admin_user_path(@user),
-                      method: :post,
-                      data: {confirm: "Log in as user #{@user.id}, #{@user.full_name || '(no name)'}?"} do %>
-            <i class="fa fa-key" aria-hidden="false"></i>
-          <% end %>
+        <%= link_to become_admin_user_path(@user),
+                    method: :post,
+                    data:   { confirm: "Log in as user #{@user.id}, #{@user.full_name || '(no name)'}?" } do %>
+          <i class="fa fa-key" aria-hidden="false"></i>
+        <% end %>
       </p>
     </div>
   </div>
@@ -37,33 +37,33 @@
   <div class="form-group">
     <%= f.label :email_addresses, class: "col-sm-2 control-label" %>
     <ul class="col-sm-10 form-control-static">
-    <% @user.email_addresses.each do |email| %>
-    <li style="margin-left: 20px;">
+      <% @user.email_addresses.each do |email| %>
+        <li style="margin-left: 20px;">
 
-      <%= link_to raw('<i class="fa fa-trash" aria-hidden="false"></i>'),
-          admin_delete_contact_info_path(email),
-          method: :delete,
-          data: {confirm: "Are you sure you want to delete \"#{email.value}\" ?"}
+          <%= link_to raw('<i class="fa fa-trash" aria-hidden="false"></i>'),
+                      admin_delete_contact_info_path(email),
+                      method: :delete,
+                      data:   { confirm: "Are you sure you want to delete \"#{email.value}\" ?" }
           %>
-      <%= email.value %>
-      <% if email.verified %>
-        (Confirmed)
-      <% else %>
-        <br>
-        Confirmation PIN: <%= email.confirmation_pin %>
-        <br>
-        Confirmation URL: <%= verify_email_by_code_url(email.confirmation_code) %>
-        <br>
-        OR
-        <br>
-        <%= link_to 'Mark this email address as confirmed', admin_verify_contact_info_path(email),
-                    remote: true, method: :post,
-                    class: 'btn btn-default btn-xs verify-email',
-                    data: {confirm: "Are you sure you want to mark \"#{email.value}\" as confirmed? (You are saying you absolutely know this email address belongs to this user)"}
-        %>
+          <%= email.value %>
+          <% if email.verified %>
+            (Confirmed)
+          <% else %>
+            <br>
+            Confirmation PIN: <%= email.confirmation_pin %>
+            <br>
+            Confirmation URL: <%= verify_email_by_code_url(email.confirmation_code) %>
+            <br>
+            OR
+            <br>
+            <%= link_to 'Mark this email address as confirmed', admin_verify_contact_info_path(email),
+                        remote: true, method: :post,
+                        class:  'btn btn-default btn-xs verify-email',
+                        data:   { confirm: "Are you sure you want to mark \"#{email.value}\" as confirmed? (You are saying you absolutely know this email address belongs to this user)" }
+            %>
+          <% end %>
+        </li>
       <% end %>
-      </li>
-    <% end %>
     </ul>
   </div>
 
@@ -93,35 +93,35 @@
   </div>
 
   <% if @user.sheerid_reported_school %>
-  <div class="form-group">
-    <%= f.label :sheerid_reported_school, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <p class="form-control-static">
-        <%= @user.sheerid_reported_school %>
-      </p>
+    <div class="form-group">
+      <%= f.label :sheerid_reported_school, class: "col-sm-2 control-label" %>
+      <div class="col-sm-10">
+        <p class="form-control-static">
+          <%= @user.sheerid_reported_school %>
+        </p>
+      </div>
     </div>
-  </div>
   <% end %>
 
   <% if @user.salesforce_contact_id.nil? %>
-  <div class="form-group">
-    <%= f.label :salesforce_lead, class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <% sf_id = @user.salesforce_lead_id %>
-      <p class="form-control-static">
-        <% if sf_id.nil? %>
-          Not Set
-        <% else %>
-          <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
-          <% if instance_url.nil? %>
-            <%= sf_id %>
+    <div class="form-group">
+      <%= f.label :salesforce_lead, class: "col-sm-2 control-label" %>
+      <div class="col-sm-10">
+        <% sf_id = @user.salesforce_lead_id %>
+        <p class="form-control-static">
+          <% if sf_id.nil? %>
+            Not Set
           <% else %>
-            <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
+            <% instance_url = ActiveForce.sfdc_client.instance_url rescue nil %>
+            <% if instance_url.nil? %>
+              <%= sf_id %>
+            <% else %>
+              <%= link_to sf_id, instance_url + "/" + sf_id, target: '_blank' %>
+            <% end %>
           <% end %>
-        <% end %>
-      </p>
+        </p>
+      </div>
     </div>
-  </div>
   <% end %>
 
   <% unless @user.salesforce_ox_account_id.nil? %>
@@ -175,26 +175,36 @@
   <div class="form-group">
     <%= f.label :role, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
-      <% roles = User.roles.keys.sort.map{ |key| [key.humanize, key] } %>
-      <%= f.select :role, roles, {:selected => @user.role}, {class: "form-control"} %>
+      <% roles = User.roles.keys.sort.map { |key| [key.humanize, key] } %>
+      <%= f.select :role, roles, { :selected => @user.role }, { class: "form-control" } %>
     </div>
   </div>
 
   <% if @user.other_role_name %>
+    <div class="form-group">
+      <%= f.label :other_role_name, class: "col-sm-2 control-label" %>
+      <div class="col-sm-10">
+        <% @user.other_role_name %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="form-group">
-    <%= f.label :other_role_name, class: "col-sm-2 control-label" %>
+    <%= f.label :state, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
-      <% @user.other_role_name %>
+      <p class="form-control-static">
+        <%= @user.state.humanize %>
+        <span class="help-block">The current state this user is in. Generally, activated once they confirm their email and unactivated if they have not.</span>
+      </p>
     </div>
   </div>
-  <% end %>
 
   <div class="form-group">
     <%= f.label :faculty_status, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
       <% if sf_id.nil? %>
-        <% faculty_statuses = User.faculty_statuses.keys.map{ |key| [key.humanize, key] } %>
-        <%= f.select :faculty_status, faculty_statuses, {}, {class: "form-control"} %>
+        <% faculty_statuses = User.faculty_statuses.keys.map { |key| [key.humanize, key] } %>
+        <%= f.select :faculty_status, faculty_statuses, {}, { class: "form-control" } %>
       <% else %>
         <p class="form-control-static">
           <%= @user.faculty_status.humanize %>
@@ -227,8 +237,8 @@
     <%= f.label :school_type, class: "col-sm-2 control-label" %>
     <div class="col-sm-10">
       <% if sf_id.nil? %>
-        <% school_types = User.school_types.keys.map{ |key| [key.humanize, key] } %>
-        <%= f.select :school_type, school_types, {}, {class: "form-control"} %>
+        <% school_types = User.school_types.keys.map { |key| [key.humanize, key] } %>
+        <%= f.select :school_type, school_types, {}, { class: "form-control" } %>
       <% else %>
         <p class="form-control-static">
           <%= @user.school_type.humanize %>
@@ -250,26 +260,26 @@
   <div class="form-group">
     <%= f.label :apps, class: "col-sm-2 control-label" %>
     <ul class="col-sm-10 form-control-static">
-    <% @user.application_users.includes(:application).each do |app_user| %>
-      <li style="margin-left: 20px;">
-        <% app_name = app_user.application.name %>
-        <%= app_name %>
-        <% if app_name == "OpenStax Tutor" %>
-          <% url = begin
-               a_url = app_user.application.redirect_uri.split.first
-               uri = URI.parse(a_url)
-               uri.path = "/admin/users/info"
-               uri.query = "openstax_uid=#{@user.id}"
-               uri.to_s
-             rescue Exception => e
-               nil
-             end %>
-          <% if url.present? %>
-            [ <%= link_to('User info on Tutor', url) %> ]
+      <% @user.application_users.includes(:application).each do |app_user| %>
+        <li style="margin-left: 20px;">
+          <% app_name = app_user.application.name %>
+          <%= app_name %>
+          <% if app_name == "OpenStax Tutor" %>
+            <% url = begin
+                       a_url     = app_user.application.redirect_uri.split.first
+                       uri       = URI.parse(a_url)
+                       uri.path  = "/admin/users/info"
+                       uri.query = "openstax_uid=#{@user.id}"
+                       uri.to_s
+                     rescue Exception => e
+                       nil
+                     end %>
+            <% if url.present? %>
+              [ <%= link_to('User info on Tutor', url) %> ]
+            <% end %>
           <% end %>
-        <% end %>
-      </li>
-    <% end %>
+        </li>
+      <% end %>
     </ul>
   </div>
 
@@ -337,15 +347,16 @@
   </div>
 
   <% if @user.external_uuids.any? %>
-  <div class="form-group">
-    <%= f.label :trusted_launch_user, 'External authentications?', class: "col-sm-2 control-label" %>
-    <div class="col-sm-10">
-      <div class="checkbox">
-        <%= f.check_box :keep_external_uuids, checked: true, style: 'margin-left: 0px'  %>
-        <i style="margin-left: 1rem">(Unchecking will remove all links between this account and external systems such as LMS)</i>
+    <div class="form-group">
+      <%= f.label :trusted_launch_user, 'External authentications?', class: "col-sm-2 control-label" %>
+      <div class="col-sm-10">
+        <div class="checkbox">
+          <%= f.check_box :keep_external_uuids, checked: true, style: 'margin-left: 0px' %>
+          <i style="margin-left: 1rem">(Unchecking will remove all links between this account and external systems such
+            as LMS)</i>
+        </div>
       </div>
     </div>
-  </div>
   <% end %>
 
   <div class="form-group">

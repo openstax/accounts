@@ -17,7 +17,9 @@
     <%= render "layouts/application_header" %>
 
     <div id="application-container" class="container">
-      <%= render "layouts/application_body" %>
+      <div id="application-body">
+        <%= yield %>
+      </div>
 
       <div id="application-footer" class="row">
         <div class="col-sm-12">
