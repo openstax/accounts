@@ -31,14 +31,25 @@ gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', r
 # - introduces two new concepts: Routines and Handlers
 gem 'lev', '~> 10.1.0'
 
-# Bootstrap front-end framework
-gem 'bootstrap-sass', '~> 3.4.1'
+# Keep sprockets below v4, major changes break things
+gem 'sprockets', '~> 3.0'
 
-# SCSS stylesheets
-gem 'sassc-rails', '~> 2.1'
+# Automatically ajaxify links
+gem 'turbolinks'
+
+# Bootstrap front-end framework
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
+gem 'bootstrap-sass', '~> 3.4.1'
+gem 'sassc-rails', '>= 2.1.0'
+gem 'bootstrap-editable-rails'
+gem 'font-awesome-rails'
 
 # CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '5.0.0'
+
+# Apply CSS stylesheets to emails
+gem 'premailer-rails'
 
 # JavaScript asset compiler
 # 0.4.0 crashes during our build, fixed in 0.5.0 (upgrade when it's out)
@@ -58,6 +69,7 @@ gem 'bcrypt', '~> 3.1'
 gem 'doorkeeper', '~> 5.1.0'
 
 # OAuth clients
+gem 'omniauth-rails_csrf_protection'
 gem 'omniauth'
 gem 'omniauth-identity'
 gem 'omniauth-facebook'
@@ -83,18 +95,13 @@ gem "sentry-rails"
 # Background job status store
 gem 'jobba'
 
-# jQuery library
-gem 'jquery-rails'
-
 # Upserts
 gem 'activerecord-import'
-
 gem 'smarter_csv'
 
 # API documentation
 gem 'apipie-rails'
 gem 'maruku'
-
 gem 'jbuilder'
 
 # Background job queueing
@@ -127,12 +134,6 @@ gem 'sd_notify', require: false
 # Add P3P headers for IE
 gem 'p3p'
 
-# Font-Awesome for the asset pipeline
-gem 'font-awesome-rails'
-
-# Apply CSS stylesheets to emails
-gem 'premailer-rails'
-
 # Pagination
 gem 'will_paginate'
 
@@ -153,7 +154,7 @@ gem 'scout_apm'
 gem 'openstax_healthcheck'
 
 # Allow Accounts routes to be accessed under an /accounts prefix (for use in CloudFront)
-gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "8298c40ec38f132fc23ea946b2b20e855fe73a49"
+gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "0ed5cdba6be65dbf1d07fd7580e2311a2f42cdfd"
 
 # JWE library used by the SSO cookie
 gem 'json-jwt'
