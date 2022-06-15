@@ -24,7 +24,7 @@ namespace :accounts do
           auth.user_id = user.id
           auth.save!
         end
-        AddEmailToUser['admin@openstax.org', user, {already_verified: true}]
+        CreateEmailForUser['admin@openstax.org', user, {already_verified: true}]
       rescue Exception => e
         puts e
         raise ActiveRecord::Rollback

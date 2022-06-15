@@ -13,7 +13,7 @@ class ProcessRejectedLeadJob < ApplicationJob
       )
     end
 
-    old_fv_status                = rejected_user.faculty_status
+    old_fv_status = rejected_user.faculty_status
     rejected_user.faculty_status = :rejected_faculty
 
     SecurityLog.create!(

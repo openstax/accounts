@@ -39,27 +39,26 @@ class CreateSalesforceLeadJob < ApplicationJob
 
     lead = OpenStax::Salesforce::Remote::Lead.find_by(accounts_uuid: user.uuid)
     if lead
-      warn("A lead should only be created once per user. "\
-           "(UUID: #{user.uuid} / Lead ID: #{lead.id})")
+      warn("A lead should only be created once per user. (UUID: #{user.uuid} / Lead ID: #{lead.id})")
     else
       lead = OpenStax::Salesforce::Remote::Lead.new(
-        first_name:         user.first_name,
-        last_name:          user.last_name,
-        phone:              user.phone_number,
-        email:              user.best_email_address_for_salesforce,
-        source:             'Account Creation',
-        application_source: 'Accounts',
-        role:               sf_role,
-        position:           sf_position,
-        title:              user.other_role_name,
-        who_chooses_books:  user.who_chooses_books,
-        subject:            user.which_books, # TODO: remove this once SF migrated to subject_interest
-        subject_interest: user.which_books,
-        adoption_status:  ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
-        adoption_json:    adoption_json,
-        os_accounts_id:   user.id,
-        accounts_uuid:    user.uuid,
-        school:           user.most_accurate_school_name || 'No reported school', # No reported school == student who requested newsletter
+        first_name:          user.first_name,
+        last_name:           user.last_name,
+        phone:               user.phone_number,
+        email:               user.best_email_address_for_salesforce,
+        source:              'Account Creation',
+        application_source:   'Accounts',
+        role:                 sf_role,
+        position:             sf_position,
+        title:                user.other_role_name,
+        who_chooses_books:    user.who_chooses_books,
+        subject:              user.which_books, # TODO: remove this once SF migrated to subject_interest
+        subject_interest:     user.which_books,
+        adoption_status:      ADOPTION_STATUS_FROM_USER[user.using_openstax_how],
+        adoption_json:        adoption_json,
+        os_accounts_id:       user.id,
+        accounts_uuid:        user.uuid,
+        school:               user.most_accurate_school_name || 'No reported school', # No reported school == student who requested newsletter
         city:                 user.most_accurate_school_city,
         country:              user.most_accurate_school_country,
         verification_status:  user.faculty_status,
@@ -106,7 +105,7 @@ class CreateSalesforceLeadJob < ApplicationJob
           event_data: { lead_id: lead.id }
         )
         return lead
-      rescue => e # rubocop: disable Style/RescueStandardError
+      rescue => e
         SecurityLog.create!(
           user:       user,
           event_type: :user_update_failed_during_lead_creation
@@ -114,7 +113,7 @@ class CreateSalesforceLeadJob < ApplicationJob
         Sentry.capture_exception(e)
         return
       end
-    rescue => e # rubocop: disable Style/RescueStandardError
+    rescue => e
       SecurityLog.create!(
         user:       user,
         event_type: :salesforce_error
