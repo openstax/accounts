@@ -1,6 +1,4 @@
 @import "bootstrap";
-@import "common_colors";
-@import "admin_navbar";
 @import "font-awesome";
 
 .underlined-spaced-row {
@@ -9,17 +7,27 @@
   margin-bottom: 20px
 }
 
-nav.navbar.production {
-  border-bottom: 2px solid red;
-}
-
-
 body.admin {
   .user-search-help {
     float: right;
     margin-top: -16px;
     font-size: 10px;
     margin-bottom: 10px;
+  }
+
+  nav.navbar {
+    a {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+
+    &.production {
+      border-bottom: 2px solid red;
+    }
+  }
+
+  .text-nowrap {
+    white-space: nowrap;
   }
 }
 
@@ -29,6 +37,7 @@ body.admin {
   td {
     padding: 3px;
   }
+
   th {
     // background-color: #ddd;
     padding-bottom: 5px;
@@ -53,6 +62,7 @@ body.admin {
     &.details {
       display: none;
       font-size: 12px;
+
       td {
         padding-top: 5px;
         padding-bottom: 10px;
@@ -85,41 +95,20 @@ body.admin {
   clear: both;
   margin: 20px 0;
   color: #aaa;
+
   .count {
     float: right;
   }
+
   .pages {
     float: right;
+
     .btn {
       color: #aaa;
+
       &.hover {
         color: black;
       }
     }
   }
-}
-
-#pre_auth_states {
-  .searches {
-    float: right;
-    margin-bottom: 10px;
-  }
-
-  .desc {
-    clear: both;
-  }
-
-  .entry {
-    border: 1px solid #ddd;
-    background-color: #eee;
-    margin: 10px 0px;
-    padding: 8px;
-
-    .token {
-      font-size: 9px;
-    }
-  }
-
-
-
 }

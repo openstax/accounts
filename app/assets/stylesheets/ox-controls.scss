@@ -6,16 +6,23 @@
   @include flexbox;
   @include flex-direction(row);
   @include align-items(baseline);
-  .glyphicon { margin-right: 0.5rem; }
-  .msg{ @include flex(1); }
+
+  .glyphicon {
+    margin-right: 0.5rem;
+  }
+
+  .msg {
+    @include flex(1);
+  }
 }
 
 .ox-separator-line {
   text-align: center;
   position: relative;
   margin: $os-section-spacing 0;
+
   &:after {
-    border-top: 2px solid $os_line_color;
+    border-top: 2px solid ui-color(form-border);
     content: '';
     display: block;
     width: calc(50% - 20px);
@@ -23,8 +30,9 @@
     position: absolute;
     top: 50%;
   }
+
   &:before {
-    border-top: 2px solid $os_line_color;
+    border-top: 2px solid ui-color(form-border);
     content: '';
     display: block;
     width: calc(50% - 20px);
