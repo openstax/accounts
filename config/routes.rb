@@ -71,7 +71,7 @@ Rails.application.routes.draw do
     # Step 4
     get 'signup/educator/profile_form', action: :profile_form, as: :profile_form
     post 'signup/educator/complete_profile', action: :profile_form_post, as: :complete_profile_post
-    get 'signup/educator/pending_cs_verification', action: :pending_cs_verification, as: :pending_cs_verification
+    get 'signup/educator/pending_cs_verification', action: :pending_cs_verification, as: :cs_verification
 
     get 'signup/educator/cs_form', action: :pending_cs_verification_form, as: :cs_verification_form
     post 'signup/educator/cs_verification_request', action: :profile_form_post, as: :cs_verification_post
@@ -211,8 +211,8 @@ Rails.application.routes.draw do
   #  Accounts Admin    #
   ######################
   namespace :admin do
-    get '/', to: 'console#index', as: 'admin_console'
-
+    get '/', to: 'base#index'
+    get '/console', to: 'console#index'
     resources :users, path: 'users', only: [:index, :update, :edit] do
       post 'become', on: :member
       get 'search', on: :collection
