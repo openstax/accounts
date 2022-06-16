@@ -17,13 +17,11 @@
 
       <title>OpenStax Accounts</title>
       <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
-      <%= stylesheet_link_tag 'newflow' %>
-      <%= javascript_include_tag 'newflow' %>
       <%= csrf_meta_tags %>
 
       <%= yield :head if content_for?(:head) %>
 
-      <% if is_real_production? %>
+      <% if Rails.application.secrets.environment_name == 'production' %>
           <script src="https://cdn.optimizely.com/js/1345615444.js"></script>
       <% end %>
 
@@ -38,6 +36,18 @@
     </head>
     <body class="<%= controller_name %> <%= action_name %>">
       <%= render "layouts/application_header" %>
+
+        <% if flash[:alert].present? %>
+          <div class="layout-alert">
+            <%= flash[:alert] %>
+          </div>
+        <% end %>
+
+        <% if flash[:notice].present? %>
+          <div class="layout-notice">
+            <%= flash[:notice].html_safe %>
+          </div>
+        <% end %>
 
       <%= render "layouts/application_body" %>
 
