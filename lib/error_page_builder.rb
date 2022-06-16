@@ -1,7 +1,5 @@
-require 'render_anywhere'
-
 class ErrorPageBuilder
-  include RenderAnywhere
+  include ApplicationController::RenderAnywhere
 
   attr_reader :view, :message, :code
 
@@ -12,7 +10,7 @@ class ErrorPageBuilder
   end
 
   def build
-    render template: 'errors/static',
+    ApplicationController.render template: 'errors/static',
            layout: 'static_error',
            locals: { view: view, message: message, code: code }
   end
