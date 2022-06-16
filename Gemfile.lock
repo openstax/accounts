@@ -369,7 +369,6 @@ GEM
     notiffany (0.1.0)
       nenv (~> 0.1)
       shellany (~> 0.0)
-    oauth (0.5.6)
     oauth2 (1.4.4)
       faraday (>= 0.8, < 2.0)
       jwt (>= 1.0, < 3.0)
@@ -390,18 +389,12 @@ GEM
     omniauth-identity (1.1.1)
       bcrypt-ruby (~> 3.0)
       omniauth (~> 1.0)
-    omniauth-oauth (1.1.0)
-      oauth
-      omniauth (~> 1.0)
     omniauth-oauth2 (1.6.0)
       oauth2 (~> 1.1)
       omniauth (~> 1.9)
     omniauth-rails_csrf_protection (0.1.2)
       actionpack (>= 4.2)
       omniauth (>= 1.3.1)
-    omniauth-twitter (1.4.0)
-      omniauth-oauth (~> 1.1)
-      rack
     openstax_active_force (1.1.0)
       active_attr
       rails (>= 5.0, < 7.0)
@@ -763,7 +756,6 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-identity
   omniauth-rails_csrf_protection
-  omniauth-twitter
   openstax_api
   openstax_healthcheck
   openstax_path_prefixer!
