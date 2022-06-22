@@ -1,6 +1,4 @@
 class ErrorPageBuilder
-  include ApplicationController::RenderAnywhere
-
   attr_reader :view, :message, :code
 
   def initialize(view:, message:, code:)
