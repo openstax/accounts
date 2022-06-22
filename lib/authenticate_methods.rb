@@ -3,16 +3,14 @@ require 'addressable/uri'
 module AuthenticateMethods
 
   def authenticate_user!
-    if signed_in?
-      return
-    else
+    unless signed_in?
       store_url(url: request.url)
-      redirect_to login_path(request.query_parameters)
+      redirect_to main_app.login_path(request.query_parameters)
     end
   end
 
   def is_admin?
-    return head(:forbidden) unless current_user && current_user.is_administrator?
+    head(:forbidden) unless current_user&.is_administrator?
   end
 
   def authenticate_admin!
