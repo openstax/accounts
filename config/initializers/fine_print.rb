@@ -36,7 +36,7 @@ FinePrint.configure do |config|
   # checks all others for contracts to be signed.
   # Default: lambda { |user| !user.nil? || head(:unauthorized) }
   config.authenticate_user_proc = lambda { |user|
-    !user.nil? && !user.is_anonymous?
+    (!user.nil? && !user.is_anonymous?) || redirect_to(main_app.login_path)
   }
 
   # Controller Configuration

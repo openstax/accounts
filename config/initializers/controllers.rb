@@ -1,7 +1,7 @@
 ActionController::Base.class_exec do
   # We need some of the methods added here in all controllers
   # For example, `current_user` is used in the layout so it needs to exist everywhere
-  # OpenStax Accounts's controllers all inherit from ApplicationController,
+  # OpenStax Account's controllers all inherit from ApplicationController,
   # but gem controllers like FinePrint's and Blazer's do not, so adding them there wouldn't work
   # However, all controllers inherit from ActionController::Base,
   # so adding these methods to ActionController::Base directly here should work
@@ -30,20 +30,20 @@ ActionController::Base.class_exec do
     user = event_data[:user]
 
     if respond_to?(:current_api_user)
-      api_user = current_api_user
-      user ||= api_user.human_user
+      api_user    = current_api_user
+      user        ||= api_user.human_user
       application = api_user.application
     else
-      user ||= current_user
+      user        ||= current_user
       application = nil
     end
 
     SecurityLog.create!(
-      user: user.try(:is_anonymous?) ? nil : user,
+      user:        user.try(:is_anonymous?) ? nil : user,
       application: application,
-      remote_ip: request.remote_ip,
-      event_type: event_type,
-      event_data: event_data.except!(:user)
+      remote_ip:   request.remote_ip,
+      event_type:  event_type,
+      event_data:  event_data.except!(:user)
     )
   end
 
@@ -51,18 +51,16 @@ ActionController::Base.class_exec do
     return true if request.format != :html || request.options?
 
     url = params[:r]
-
     return true if url.blank? || !Host.trusted?(url)
-
     store_url(url: url)
   end
 
   def disable_fine_print
     user = respond_to?(:current_human_user) ? current_human_user : current_user
     api_call? ||
-    user&.is_anonymous? ||
-    request.options? ||
-    contracts_not_required
+      user&.is_anonymous? ||
+      request.options? ||
+      contracts_not_required
   end
 
   def set_locale
@@ -73,10 +71,10 @@ ActionController::Base.class_exec do
     cookies.delete(:oxdid) if device_id_invalid?
 
     cookies[:oxdid] ||= {
-      value: SecureRandom.uuid,
+      value:   SecureRandom.uuid,
       expires: 20.years.from_now,
-      domain: :all,
-      secure: Rails.env.production?
+      domain:  :all,
+      secure:  Rails.env.production?
     }
   end
 

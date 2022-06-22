@@ -24,6 +24,7 @@ module Accounts
     # config.i18n.default_locale = :de
     config.i18n.default_locale = :en
     config.i18n.available_locales = %w(en pl)
+    config.i18n.fallbacks = [I18n.default_locale]
 
     config.accounts = ActiveSupport::OrderedOptions.new
     # configure how long a login token is valid for
@@ -63,5 +64,20 @@ module Accounts
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#new-framework-defaults
     config.active_record.belongs_to_required_by_default = false
     config.autoload_paths += %W(#{config.root}/lib)
+
+    # Use specific layouts for different DoorKeeper activities
+    config.to_prepare do
+      # Only Applications list
+      Doorkeeper::ApplicationsController.layout "admin"
+      # Only Authorization endpoint
+      Doorkeeper::AuthorizationsController.layout "application"
+      # Only Authorized Applications
+      Doorkeeper::AuthorizedApplicationsController.layout "application"
+      # Include ApplicationHelpers from this app to use with Doorkeeper
+      # include only the ApplicationHelper module
+      Doorkeeper::ApplicationController.helper ApplicationHelper
+      # include all helpers from your application
+      Doorkeeper::ApplicationController.helper Accounts::Application.helpers
+    end
   end
 end
