@@ -81,10 +81,9 @@ class User < ApplicationRecord
   before_validation(:generate_uuid, on: :create)
 
   validate(:ensure_names_continue_to_be_present)
-  validate(
-    :save_activated_at_if_became_activated,
-    on: :update
-  )
+  validate(:save_activated_at_if_became_activated, on: :update)
+  validate(:update_salesforce_if_user_changed, on: :update)
+  validate(:change_faculty_status_if_changed_to_student, on: :update)
 
   validates_presence_of(:faculty_status, :role, :school_type)
 
@@ -182,16 +181,6 @@ class User < ApplicationRecord
     email_addresses.first&.value
   end
 
-  def needs_to_complete_educator_profile?
-    (role != STUDENT_ROLE) && !is_profile_complete
-  end
-
-  def is_instructor_verification_stale?
-    pending_faculty? && activated? && activated_at.present? && \
-    (activated_at <= STALE_VERIFICATION_PERIOD.ago) && \
-    !is_educator_pending_cs_verification
-  end
-
   def is_tutor_user?
     source_application&.name&.downcase&.include?('tutor')
   end
@@ -237,13 +226,9 @@ class User < ApplicationRecord
     false
   end
 
-  def step_3_complete?
-    sheerid_verification_id.present? || is_sheerid_unviable? || is_profile_complete?
-  end
-
   # State helpers.
   #
-  # A User model begins life in the "temp" state, and can then be claimed by another user
+  # A User model begins life in the "unverified" state, and can then be claimed by another user
   # who originated from an OAuth login. Upon it being claimed it will be removed and it's
   # data merged with the claimant.
   #
@@ -307,12 +292,12 @@ class User < ApplicationRecord
   end
 
   def name
-    full_name.present? ? full_name : username
+    full_name.presence || username
   end
 
   def full_name
     guess = "#{title} #{first_name} #{last_name} #{suffix}".gsub(/\s+/,' ').strip
-    guess.blank? ? nil : guess
+    guess.presence
   end
 
   def full_name=(name)
@@ -329,11 +314,11 @@ class User < ApplicationRecord
     full_name.present? ? full_name.split("\s").drop(1).join(' ') : nil
   end
 
-  def casual_name # TODO are we ok now that username not required?
-    first_name.present? ? first_name : username
+  def casual_name
+    first_name.presence || username
   end
 
-  def formal_name # TODO needs spec
+  def formal_name
     "#{title} #{last_name} #{suffix}".gsub(/\s+/,' ').strip if title.present? && last_name.present?
   end
 
@@ -461,9 +446,20 @@ class User < ApplicationRecord
   end
 
   def save_activated_at_if_became_activated
-    if state_changed?(to: ACTIVATED)
+    if state_changed?(to: :activated)
       self.touch(:activated_at)
     end
   end
 
+  def update_salesforce_if_user_changed
+    if (faculty_status_changed? || salesforce_lead_id_changed? || salesforce_contact_id_changed?) && role != 'student'
+      SyncAccountWithSalesforceJob.perform_later(id)
+    end
+  end
+
+  def change_faculty_status_if_changed_to_student
+    if role_changed?(to: :student)
+      self.faculty_status = :no_faculty_info
+    end
+  end
 end
