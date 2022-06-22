@@ -4,8 +4,6 @@
 # we just need to identify users by their `uid`.
 class OauthCallback
 
-  include LoginSignupHelper
-
   lev_handler
 
   uses_routine(

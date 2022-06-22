@@ -1,5 +1,4 @@
 class SocialAuthController < ApplicationController
-  include LoginSignupHelper
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
