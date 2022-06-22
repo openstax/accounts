@@ -1,4 +1,5 @@
 class SignupController < ApplicationController
+
   before_action(:authenticate_user!, only: :signup_done)
   before_action(:total_steps, except: [:welcome])
 
@@ -25,6 +26,7 @@ class SignupController < ApplicationController
       success:            lambda {
         save_unverified_user(@handler_result.outputs.user.id)
         security_log(:user_began_signup, { user: @handler_result.outputs.user })
+        clear_cache_bri_marketing
         redirect_to verify_email_by_pin_form_path
       },
       failure:            lambda {

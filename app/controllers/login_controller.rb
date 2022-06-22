@@ -1,13 +1,15 @@
 class LoginController < ApplicationController
 
-  fine_print_skip :general_terms_of_use, :privacy_policy
+  skip_before_action :authenticate_user!
+
+  before_action :cache_client_app, only: :login_form
+  before_action :cache_alternate_signup_url, only: :login_form
+  before_action :student_signup_redirect, only: :login_form
+  before_action :redirect_back, if: -> { signed_in? }, only: :login_form
 
   def login_form
     clear_signup_state
-    cache_alternate_signup_url
-    student_signup_redirect
-    cache_client_app
-    redirect_back(fallback_location: profile_path) if signed_in?
+    render :login_form
   end
 
   def login_post
@@ -16,7 +18,6 @@ class LoginController < ApplicationController
       success: lambda {
         user = @handler_result.outputs.user
 
-        # TODO: probably move this to auth_methods
         if Rails.env.production?
           Sentry.configure_scope do |scope|
             scope.set_tags(user_role: user.role.humanize)
@@ -26,7 +27,6 @@ class LoginController < ApplicationController
 
         if user.unverified?
           save_unverified_user(user.id)
-          # TODO: probably need this log to be for all users
           security_log(:educator_resumed_signup_flow, message: 'User has not verified email address.')
           redirect_to verify_email_by_pin_form_path and return
         end
@@ -34,7 +34,8 @@ class LoginController < ApplicationController
         sign_in!(user, security_log_data: { 'email': @handler_result.outputs.email })
 
         redirect_instructors_needing_to_complete_signup
-        redirect_back(fallback_location: profile_path)
+
+        redirect_back(fallback_location: profile_path) and return
       },
       failure: lambda {
         email = @handler_result.outputs.email
@@ -42,9 +43,8 @@ class LoginController < ApplicationController
 
         code = @handler_result.errors.first.code
         case code
-        when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
-          user = @handler_result.outputs.user
-          security_log(:sign_in_failed, { reason: code, email: email })
+          when :cannot_find_user, :multiple_users, :incorrect_password, :too_many_login_attempts
+            security_log(:sign_in_failed, { reason: code, email: email })
         end
 
         render :login_form
@@ -74,14 +74,15 @@ class LoginController < ApplicationController
                 else
                   "#{referrer_uri.scheme}://#{referrer_uri.host}:#{referrer_uri.port}/?#{request_uri.query}"
                 end
-              rescue StandardError => se # in case the referer is bad (see #179)
-                Sentry.capture_exception(se)
+              rescue StandardError # in case the referer is bad (see #179)
                 root_url
               end
+
+      redirect_to url
     end
   end
 
-  protected ###############
+  protected
 
   def student_signup_redirect
     if params[:go]&.strip&.downcase == 'student_signup'
@@ -94,12 +95,9 @@ class LoginController < ApplicationController
 
   # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.
   # -- Tutor uses this to send students who want to sign up, back to Tutor which
-  # has a message for students just letting them know how to sign up (they must receive an email invitation).
+  # has a message for students just letting them know how to sign up (they must
+  # receive an email invitation).
   def cache_alternate_signup_url
     set_alternate_signup_url(params[:signup_at])
-  end
-
-  def cache_client_app
-    set_client_app(params[:client_id])
   end
 end

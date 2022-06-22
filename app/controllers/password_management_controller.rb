@@ -1,10 +1,9 @@
 class PasswordManagementController < ApplicationController
-
-  fine_print_skip :general_terms_of_use, :privacy_policy, only: [
-    :forgot_password_form, :send_reset_password_email, :reset_password_email_sent
-  ]
-
-  before_action :authenticate_user!, only: [:create_password]
+  skip_before_action :authenticate_user!, only: %i[forgot_password_form
+                                                   send_reset_password_email
+                                                   create_password_form
+                                                   change_password_form
+                                                   change_password]
 
   def forgot_password_form
     @email = login_failed_email
@@ -14,18 +13,18 @@ class PasswordManagementController < ApplicationController
     handle_with(
       SendResetPasswordEmail,
       success: lambda {
-        user = @handler_result.outputs.user
+        user   = @handler_result.outputs.user
         @email = @handler_result.outputs.email
-        security_log(:password_reset, {user: user, email: @email, message: "Sent password reset email"})
+        security_log(:password_reset, { user: user, email: @email, message: "Sent password reset email" })
         clear_signup_state
         sign_out!
         render :reset_password_email_sent
       },
       failure: lambda {
-        user = @handler_result.outputs.user
+        user   = @handler_result.outputs.user
         @email = @handler_result.outputs.email
-        code = @handler_result.errors.first.code
-        security_log(:reset_password_failed, {user: user, email: @email, reason: code})
+        code   = @handler_result.errors.first.code
+        security_log(:password_reset_failed, { user: user, email: @email, reason: code })
         render :forgot_password_form
       }
     )
@@ -39,11 +38,11 @@ class PasswordManagementController < ApplicationController
     handle_with(
       CreatePassword,
       success: lambda {
-        security_log(:student_created_password, user: @handler_result.outputs.user)
-        redirect_to profile_newflow_url, notice: t(:"identities.add_success.message")
+        security_log(:create_password, user: @handler_result.outputs.user)
+        redirect_to profile_url, notice: t(:'identities.add_success.message')
       },
       failure: lambda {
-        security_log(:student_create_password_failed, user: @handler_result.outputs.user)
+        security_log(:create_password_failed, user: @handler_result.outputs.user)
         render :create_password_form
       }
     )
@@ -54,21 +53,18 @@ class PasswordManagementController < ApplicationController
   end
 
   def change_password
-    if signed_in? && user_signin_is_too_old?
-      # This check again here in case a long time elapsed between the GET and the POST
-      reauthenticate_user!
-    elsif current_user.is_anonymous?
+    if current_user.is_anonymous?
       raise Lev::SecurityTransgression
     else
       handle_with(
         ChangePassword,
         success: lambda {
           security_log :password_reset
-          redirect_to profile_newflow_url, notice: t(:"identities.reset_success.message")
+          redirect_to profile_url, notice: t(:'identities.reset_success.message')
         },
         failure: lambda {
           security_log :password_reset_failed
-          render :change_password_form, status: 400
+          render :change_password_form, status: :bad_request
         }
       )
     end
@@ -84,7 +80,7 @@ class PasswordManagementController < ApplicationController
           reauthenticate_user!(redirect_back_to: change_password_form_path) and return
         elsif (user = @handler_result.outputs.user)
           sign_in!(user, { security_log_data: { type: 'token' } })
-          security_log :help_requested, user: current_user
+          security_log :password_reset, user: current_user
         end
 
         if kind == :change && current_user.identity.present?
@@ -94,11 +90,11 @@ class PasswordManagementController < ApplicationController
         end
       },
       failure: lambda {
-        security_log(:help_request_failed, { params: request.query_parameters })
-        Sentry.capture_message("Request for help failed", extra: {
+        security_log(:password_reset_failed, { params: request.query_parameters })
+        Sentry.capture_message("Password reset failed", extra: {
           params: request.query_parameters
         })
-        render(status: 400)
+        render(status: :bad_request)
       }
     )
   end
