@@ -19,11 +19,11 @@ class TransferOmniauthData
     # TODO write a spec that proves that usernames are not set by this routine.
 
     if user.first_name.blank?
-      user.first_name = data.first_name.present? ? data.first_name : guessed_first_name(data.name)
+      user.first_name = data.first_name.presence || guessed_first_name(data.name)
     end
 
     if user.last_name.blank?
-      user.last_name = data.last_name.present?  ? data.last_name  : guessed_last_name(data.name)
+      user.last_name = data.last_name.presence || guessed_last_name(data.name)
     end
 
     user.save
