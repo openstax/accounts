@@ -6,10 +6,10 @@
     <% if !Rails.env.production? %>
       <fieldset class="non-production">
         <legend>Non-production</legend>
-        <%= link_to "Admin Console", main_app.admin_console_path, class: 'btn' %><br/>
+        <%= link_to "Admin Console", admin_admin_console_path, class: 'btn' %><br/>
       </fieldset>
     <% elsif current_user.is_administrator? %>
-      <%= link_to "Admin Console", main_app.admin_console_path, class: 'btn' %><br/>
+      <%= link_to "Admin Console", admin_admin_console_path, class: 'btn' %><br/>
     <% end %>
 
   </div>
