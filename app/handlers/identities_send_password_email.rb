@@ -20,7 +20,7 @@ class IdentitiesSendPasswordEmail
     email_addresses = user.email_addresses.verified.map(&:value)
 
     email_addresses.each do |email_address|
-      SignInHelpMailer.send(
+      SignupPasswordMailer.send(
         mailer_method,
         user: user,
         email_address: email_address

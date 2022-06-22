@@ -18,9 +18,7 @@
 # :transferred_authentication   if the user signed up and we can find an existing user to add the auth to
 # :authentication_added         if the user is adding an authentication from the profile page
 # :no_action                    if the user is adding an authentication from the profile page that is already linked to them
-#
-# TODO clean up this comment
-#
+
 class SessionsCreate
 
   include RequireRecentSignin
@@ -29,7 +27,6 @@ class SessionsCreate
 
   uses_routine TransferAuthentications
   uses_routine TransferOmniauthData
-  uses_routine ActivateUnclaimedUser
 
   protected
 
@@ -75,7 +72,7 @@ class SessionsCreate
     end
 
     sign_in!(authentication_user)
-    return :returning_user
+    :returning_user
   end
 
   def handle_during_signup
@@ -156,8 +153,10 @@ class SessionsCreate
 
   def sign_in!(user)
     if user.is_unclaimed?
-      run(ActivateUnclaimedUser, user)
+      user.state = 'activated'
+      user.save
     end
+
     @user_state.sign_in!(user)
   end
 
@@ -185,10 +184,10 @@ class SessionsCreate
                                     .try(&:user_id)
 
     if user_id_by_sign_in.present?
-      return users.select{|uu| uu.id == user_id_by_sign_in}.first
+      return users.select { |uu| uu.id == user_id_by_sign_in }.first
     end
 
-    return users.sort_by{|uu| [uu.updated_at, uu.created_at]}.last
+    return users.sort_by { |uu| [uu.updated_at, uu.created_at] }.last
   end
 
   def authentication

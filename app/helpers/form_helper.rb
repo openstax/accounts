@@ -82,7 +82,7 @@ module FormHelper
 
       errors_div = get_errors_div(name: name)
 
-      html_options             = { data: data(only: only, except: except) }
+      html_options = { data: data(only: only, except: except) }
       html_options[:autofocus] = autofocus if !autofocus.nil?
       html_options[:multiple]  = multiple
       html_options[:class]     = custom_class if custom_class

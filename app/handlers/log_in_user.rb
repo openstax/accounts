@@ -5,7 +5,6 @@
 class LogInUser
 
   include RateLimiting
-  include LoginSignupHelper
   include ActionView::Helpers::UrlHelper
 
   lev_handler

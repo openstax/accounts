@@ -22,10 +22,4 @@ class FindUserByToken
 
     outputs.user = user
   end
-
-  private #################
-
-  def already_logged_in?
-    !caller.is_anonymous?
-  end
 end

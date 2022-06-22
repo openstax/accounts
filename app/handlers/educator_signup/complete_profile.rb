@@ -5,7 +5,7 @@ module EducatorSignup
 
     uses_routine CreateEmailForUser, translations: {
       outputs: {
-        map: { email: :school_issued_email },
+        map:   { email: :school_issued_email },
         scope: :school_issued_email
       }
     }
@@ -47,7 +47,7 @@ module EducatorSignup
 
     def handle
       # let the controller know this is the cs form, so we can redirect properly on error
-      @is_on_cs_form = signup_params.is_cs_form?
+      @is_on_cs_form        = signup_params.is_cs_form?
       outputs.is_on_cs_form = @is_on_cs_form
 
       # is this user coming from the sheerid flow? there are a few things we can check...
@@ -60,36 +60,40 @@ module EducatorSignup
       return if errors?
 
       @user.update!(
-        role: signup_params.educator_specific_role,
-        other_role_name: other_role_name,
-        using_openstax_how: signup_params.using_openstax_how,
-        who_chooses_books: signup_params.who_chooses_books,
-        how_many_students: signup_params.num_students_per_semester_taught,
-        which_books: which_books,
-        self_reported_school: signup_params.school_name,
-        is_profile_complete: true,
+        role:                                signup_params.educator_specific_role,
+        other_role_name:                     other_role_name,
+        using_openstax_how:                  signup_params.using_openstax_how,
+        who_chooses_books:                   signup_params.who_chooses_books,
+        how_many_students:                   signup_params.num_students_per_semester_taught,
+        which_books:                         which_books,
+        self_reported_school:                signup_params.school_name,
+        is_profile_complete:                 true,
         is_educator_pending_cs_verification: !@did_use_sheerid
       )
 
       if @is_on_cs_form
         SecurityLog.create!(
-          user: user,
+          user:       user,
           event_type: :user_completed_cs_form
         )
         # user needs CS review to become confirmed - set it as such in accounts
         @user.update(
           requested_cs_verification_at: DateTime.now,
-          faculty_status: :pending_faculty
+          faculty_status:               :pending_faculty
         )
-        unless signup_params.school_issued_email.blank?
+        if signup_params.school_issued_email.present?
           # this user used the CS form and _should_ have provided us an email address -
           # so let's add it - validation happens before this in check_params
-          run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user)
+          run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user,
+              is_school_issued:          true)
         end
       else
-        # If user did not need CS verification but still needs to be pending, set them to pending state
-        # This is everyone, unless SheerID sets it to something else in sheerid_webhook when we hear back from their webhook
-        # Otherwise, we can see who didn't fill out their profile with a faculty status of :incomplete_signup
+        # If user did not need CS verification but still needs to be pending, set
+        # them to pending state
+        # This is everyone, unless SheerID sets it to something else in
+        # sheerid_webhook when we hear back from their webhook
+        # Otherwise, we can see who didn't fill out their profile with a faculty
+        # status of :incomplete_signup
         if @user.faculty_status == :incomplete_signup && !@did_use_sheerid
           @user.faculty_status = :pending_faculty
           SecurityLog.create!(
@@ -100,22 +104,24 @@ module EducatorSignup
         end
       end
 
-      transfer_errors_from(@user, {type: :verbatim}, :fail_if_errors)
+      transfer_errors_from(@user, { type: :verbatim }, :fail_if_errors)
 
       #output the user to the lev handler
       outputs.user = @user
 
       if @did_use_sheerid
-        # User used SheerID or needs CS verification - we create their lead in SheeridWebhook, not here.. and might not be instant
+        # User used SheerID or needs CS verification - we create their lead in
+        # SheeridWebhook, not here.. and might not be instant
         SecurityLog.create!(
-          user: user,
+          user:       user,
           event_type: :lead_creation_awaiting_sheerid_webhook,
         )
         return
       end
 
-      # Now we create the lead for the user... because we returned above if they did... again SheeridWebhook
-      CreateSalesforceLead.perform_later(@user.id)
+      # Now we create the lead for the user... because we returned above
+      # if they did... again SheeridWebhook
+      CreateSalesforceLeadJob.perform_later(@user.id)
 
     end
 
@@ -138,11 +144,11 @@ module EducatorSignup
     end
 
     def books_used
-      signup_params.books_used&.reject{ |b| b.blank? }
+      signup_params.books_used&.reject { |b| b.blank? }
     end
 
     def books_of_interest
-      signup_params.books_of_interest&.reject{ |b| b.blank? }
+      signup_params.books_of_interest&.reject { |b| b.blank? }
     end
 
     def check_params
@@ -178,8 +184,8 @@ module EducatorSignup
     def param_error(field, error_key)
       message = I18n.t(:"educator_profile_form.#{error_key}")
       nonfatal_error(
-        code: field,
-        message: message,
+        code:             field,
+        message:          message,
         offending_inputs: field
       )
     end
