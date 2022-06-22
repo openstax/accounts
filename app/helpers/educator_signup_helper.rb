@@ -3,11 +3,6 @@ module EducatorSignupHelper
     request.original_fullpath.include? 'cs_form'
   end
 
-  #TODO: why?
-  def user
-    current_user
-  end
-
   def is_BRI_book_adopter?
     session[:bri_book] == true
   end
