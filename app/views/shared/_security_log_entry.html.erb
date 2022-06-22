@@ -7,12 +7,18 @@
 <tr>
   <td class="text-nowrap"><%= security_log_entry.created_at.in_time_zone('Central Time (US & Canada)').to_formatted_s(:db) %></td>
   <% if show_user %>
-  <% user = security_log_entry.user
-     username = user.nil? ? (application.nil? ? 'Anonymous' : 'Application') : user.id %>
-  <td class="text-nowrap"><%= username %></td>
+    <% user = security_log_entry.user
+       username = if user.nil?
+                    application.nil? ? 'Anonymous' : 'Application'
+                  else
+                    user.id
+                  end %>
+    <td class="text-nowrap"><%= username %></td>
   <% end %>
   <td class="text-nowrap"><%= application.try(:name) || 'Accounts' %></td>
   <td class="text-nowrap"><%= security_log_entry.remote_ip %></td>
   <td class="text-nowrap"><%= security_log_entry.event_type.to_s.humanize %></td>
-  <td><pre><%= raw JSON.pretty_generate(security_log_entry.event_data).gsub(" ","&nbsp;") %></pre></td>
+  <td>
+    <pre><%= raw JSON.pretty_generate(security_log_entry.event_data).gsub(" ", "&nbsp;") %></pre>
+  </td>
 </tr>

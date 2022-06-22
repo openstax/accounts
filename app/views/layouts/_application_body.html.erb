@@ -1,4 +1,6 @@
-<div class="content">
-  <%= yield :page_heading %>
-  <%= content_for?(:application_body) ? content_for(:application_body) : yield %>
+<div id="application-body" class="row">
+  <div <%= "id=#{@parent_col_id}" if @parent_col_id %> class="col-xs-12">
+    <%= yield :page_heading %>
+    <%= content_for?(:application_body) ? content_for(:application_body) : yield %>
+  </div>
 </div>

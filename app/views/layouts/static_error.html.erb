@@ -3,38 +3,38 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+<head>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-    <%= yield :stylesheet_tag %>
+  <%= yield :stylesheet_tag %>
 
-    <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  </head>
+  <title><%= @page_title + ' - ' if !@page_title.nil? %><%= PAGE_TITLE_SUFFIX %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
 
-  <body class="error">
-    <%= render "layouts/application_header" %>
+<body class="error">
+<%= render "layouts/application_header" %>
 
-    <div id="application-container" class="container">
-      <div id="application-body">
-        <%= yield %>
+<div id="application-container" class="container">
+  <div id="application-body">
+    <%= yield %>
+  </div>
+
+  <div id="application-footer" class="row">
+    <div class="col-sm-12">
+      <div id="footer-rice-logo">
+        <%= link_to "http://www.rice.edu" do %>
+          <%= yield :rice_logo %>
+        <% end %>
       </div>
 
-      <div id="application-footer" class="row">
-        <div class="col-sm-12">
-          <div id="footer-rice-logo">
-            <%= link_to "http://www.rice.edu" do %>
-              <%= yield :rice_logo %>
-            <% end %>
-          </div>
-
-          <div id="footer-copyright">
-            <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
-            <%= link_to 'Terms of Use', main_app.terms_path %>
-          </div>
-        </div>
+      <div id="footer-copyright">
+        <%= link_to OpenStax::Utilities::Text.copyright('2013', COPYRIGHT_HOLDER), main_app.copyright_path %> |
+        <%= link_to 'Terms of Use', main_app.terms_path %>
       </div>
     </div>
-  </body>
+  </div>
+</div>
+</body>
 </html>
