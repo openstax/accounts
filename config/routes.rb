@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   # routes to old faculty access controller, redirect them to the sheerid form or pending cs paths
   get 'faculty_access/apply/' => redirect('signup/educator/apply')
   get 'faculty_access/pending/' => redirect('signup/educator/pending_cs_verification')
-  get 'signout' => redirect { :logout }
 
   ###################
   #  FAQs/Support   #
