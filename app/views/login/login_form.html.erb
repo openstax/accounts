@@ -13,7 +13,7 @@
       <% lev_form_for :login_form, url: login_path do |f| %>
         <% fh = FormHelper::One.new(f: f, context: self, errors: @handler_result&.errors) %>
         <div class="content social-section">
-          <%= render partial: 'social_auth/social_buttons' %>
+          <%= render partial: 'social_auth/social_auth_buttons' %>
         </div>
 
         <%=

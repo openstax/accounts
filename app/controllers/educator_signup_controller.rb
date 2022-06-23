@@ -1,6 +1,6 @@
 class EducatorSignupController < SignupController
 
-  include EducatorSignupHelper
+  include LoginSignupHelper
 
   skip_forgery_protection(only: :sheerid_webhook)
   skip_before_action(:authenticate_user!, only: :sheerid_webhook)

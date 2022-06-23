@@ -109,6 +109,7 @@ class SecurityLog < ApplicationRecord
     school_added_to_user_from_sheerid_webhook
     faculty_status_updated
     account_created_or_synced_with_salesforce
+    user_began_signup
   ]
 
   json_serialize :event_data, Hash

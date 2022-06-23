@@ -1,5 +1,7 @@
 class SignupController < ApplicationController
 
+  include LoginSignupHelper
+
   before_action(:authenticate_user!, only: :signup_done)
   before_action(:total_steps, except: [:welcome])
 

@@ -1,5 +1,7 @@
 class LoginController < ApplicationController
 
+  include LoginSignupHelper
+
   skip_before_action :authenticate_user!
 
   before_action :cache_client_app, only: :login_form
