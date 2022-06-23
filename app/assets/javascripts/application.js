@@ -15,5 +15,4 @@
 //= require bootstrap
 //= require ./jquery_extensions
 //= require ./ui
-//= require ./remote-access-helpers
 //= require_self
