@@ -218,7 +218,6 @@ GEM
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
     errbase (0.2.1)
-    error_page_assets (0.4)
     erubi (1.10.0)
     eventmachine (1.2.0.1)
     exception_notification (4.4.3)
@@ -350,11 +349,11 @@ GEM
     mini_portile2 (2.8.0)
     mini_racer (0.6.2)
       libv8-node (~> 16.10.0.0)
-    minitest (5.16.0)
+    minitest (5.16.1)
     msgpack (1.5.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
-    multipart-post (2.1.1)
+    multipart-post (2.2.3)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     nenv (0.3.0)
@@ -721,7 +720,6 @@ DEPENDENCIES
   delayed_job_worker_pool
   doorkeeper (~> 5.1.0)
   dotenv-rails
-  error_page_assets
   factory_bot_rails
   faker
   fakeredis

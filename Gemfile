@@ -58,9 +58,6 @@ gem 'mini_racer'
 # JavaScript asset compressor
 gem 'uglifier', '>= 1.3.0'
 
-# Nicely-styled static error pages
-gem 'error_page_assets'
-
 # Password hashing
 gem 'bcrypt', '~> 3.1'
 
