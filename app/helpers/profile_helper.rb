@@ -1,25 +1,25 @@
 module ProfileHelper
 
-  def way_to_login(provider:, user_authentications: nil, has_authentication: nil, current_providers:)
+  def way_to_login(
+    provider:, user_authentications: nil, has_authentication: nil, current_providers:
+  )
     if has_authentication.nil?
       if user_authentications.nil?
         raise "At least one of user_authentications or has_authentication must be set"
       end
 
-      has_authentication = user_authentications.any?{|auth| auth.provider == provider}
+      has_authentication = user_authentications.any? { |auth| auth.provider == provider }
     end
 
     icon_class, display_name =
       case provider
-      when 'identity' then ['key', (I18n.t :"users.edit.password")]
-      when 'google_oauth2' then ['google', 'Google']
-      when 'facebooknewflow' then ['facebook', 'Facebook']
-      when 'googlenewflow' then ['google', 'Google']
-      else [ provider, provider.capitalize ]
+        when 'identity' then ['key', (I18n.t :'users.edit.password')]
+        when 'google_oauth2' then %w[google Google]
+        else [provider, provider.capitalize]
       end
 
     icons = [
-      'glyphicon-pencil edit--newflow', 'glyphicon-trash delete--newflow', 'glyphicon-plus add--newflow',
+      'glyphicon-pencil edit', 'glyphicon-trash delete', 'glyphicon-plus add',
     ]
 
     snippet = <<-SNIPPET
@@ -29,7 +29,7 @@ module ProfileHelper
       </span>
       <span class="name">#{display_name}</span>
       <span class="mod-holder">
-      #{icons.map{|icon| "<span class='glyphicon #{icon} mod'></span>"}.join}
+      #{icons.map { |icon| "<span class='glyphicon #{icon} mod'></span>" }.join}
       </span>
     SNIPPET
 
@@ -37,10 +37,10 @@ module ProfileHelper
   end
 
   def email_entry(value:, id:, is_verified:, is_searchable:)
-    verify_link = is_verified ? '' : ""
+    verify_link      = is_verified ? '' : ""
     unconfirmed_link = is_verified ? '' : <<-EOV
       <span class='unconfirmed-warning'>[<span class='msg editable-click'>
-        #{I18n.t(:"users.edit.unconfirmed_warning")}
+        #{I18n.t(:'users.edit.unconfirmed_warning')}
       </span>]</span>
     EOV
 
@@ -52,13 +52,13 @@ module ProfileHelper
           <div class="controls">
             <div class='resend-confirmation'>
               <i class='fa fa-envelope-o'></i>
-              #{button_to((I18n.t :"users.edit.resend_confirmation"), resend_confirmation_contact_info_path(id: id), method: :put )}
+              #{button_to((I18n.t :'users.edit.resend_confirmation'), resend_confirmation_contact_info_path(id: id), method: :put)}
             </div>
             <div class="delete">
               <span class="glyphicon glyphicon-trash"></span><a href="#">Delete</a>
             </div>
             <div class="searchable-toggle">
-              <label><input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :"users.edit.searchable"}</label>
+              <label><input type="checkbox" class='searchable' #{'checked="IS_SEARCHABLE"' if is_searchable}> #{I18n.t :'users.edit.searchable'}</label>
             </div>
           </div>
           <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
