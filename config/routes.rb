@@ -13,11 +13,13 @@ Rails.application.routes.draw do
   match 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
   get 'i/confirm_your_info' => redirect('confirm_your_info')
   get 'i/forgot_password_form' => redirect('forgot_password_form')
+  get 'i/logout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'i/signout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'signout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
 
   # routes to old faculty access controller, redirect them to the sheerid form or pending cs paths
   get 'faculty_access/apply/' => redirect('signup/educator/apply')
   get 'faculty_access/pending/' => redirect('signup/educator/pending_cs_verification')
-  get 'signout' => redirect { :logout }
 
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
@@ -35,7 +37,7 @@ Rails.application.routes.draw do
     get 'login', action: :login_form, as: :newflow_login
     post 'login', action: :login
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
-    get 'i/signout', action: :logout, as: :newflow_logout
+    get 'logout', action: :logout, as: :newflow_logout
   end
 
   scope controller: 'signup' do
