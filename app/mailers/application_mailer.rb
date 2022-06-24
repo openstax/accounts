@@ -2,7 +2,6 @@
 # License version 3 or later.  See the COPYRIGHT file for details.
 
 class ApplicationMailer < ActionMailer::Base
-  helper :application, :sessions
 
   default from: 'noreply@openstax.org'
 

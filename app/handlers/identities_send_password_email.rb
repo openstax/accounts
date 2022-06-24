@@ -1,3 +1,4 @@
+#TODO: Not used?
 class IdentitiesSendPasswordEmail
 
   LOGIN_TOKEN_EXPIRES_AFTER = 2.days
