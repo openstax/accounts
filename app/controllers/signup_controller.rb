@@ -23,17 +23,16 @@ class SignupController < ApplicationController
     handle_with(
       SignupForm,
       contracts_required: !contracts_not_required,
-      client_app:         get_client_app,
-      is_bri_book:        is_bri_book_adopter?,
-      success:            lambda {
+      client_app: get_client_app,
+      is_bri_book: is_bri_book_adopter?,
+      success: lambda {
         save_unverified_user(@handler_result.outputs.user.id)
         security_log(:user_began_signup, { user: @handler_result.outputs.user })
         clear_cache_bri_marketing
         redirect_to verify_email_by_pin_form_path
       },
-      failure:            lambda {
-        security_log(:user_signup_failed,
-                     { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
+      failure: lambda {
+        security_log(:user_signup_failed, { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
         render :signup_form
       }
     )

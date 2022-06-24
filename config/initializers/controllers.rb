@@ -30,20 +30,20 @@ ActionController::Base.class_exec do
     user = event_data[:user]
 
     if respond_to?(:current_api_user)
-      api_user    = current_api_user
-      user        ||= api_user.human_user
+      api_user = current_api_user
+      user ||= api_user.human_user
       application = api_user.application
     else
-      user        ||= current_user
+      user ||= current_user
       application = nil
     end
 
     SecurityLog.create!(
-      user:        user.try(:is_anonymous?) ? nil : user,
+      user: user.try(:is_anonymous?) ? nil : user,
       application: application,
-      remote_ip:   request.remote_ip,
-      event_type:  event_type,
-      event_data:  event_data.except!(:user)
+      remote_ip: request.remote_ip,
+      event_type: event_type,
+      event_data: event_data.except!(:user)
     )
   end
 

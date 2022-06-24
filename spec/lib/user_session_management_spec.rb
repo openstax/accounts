@@ -47,21 +47,6 @@ RSpec.describe UserSessionManagement, type: :lib do
       )
     end
 
-    it 'get_login_state returns the login info stored in the session' do
-      expect(controller).not_to receive(:clear_login_state).and_call_original
-      session.merge!(
-        { login: { 'u' => 'username', 'm' => [1], 'n' => ['User'], 'p' => ['identity'] } }
-      )
-      expect(controller.get_login_state).to eq(
-        {
-          username_or_email: 'username',
-          matching_user_ids: [1],
-          names: ['User'],
-          providers: ['identity']
-        }
-      )
-    end
-
     it 'clear_login_state removes the login info stored in the session' do
       session.merge!(
         { login: { 'u' => 'username', 'm' => [1], 'n' => ['User'], 'p' => ['identity'] } }
@@ -177,18 +162,6 @@ RSpec.describe UserSessionManagement, type: :lib do
         matching_user_ids: [1],
         names: ['User'],
         providers: ['identity']
-      )
-    end
-
-    it 'get_login_state calls clear_login_state and returns the login info stored in the session' do
-      expect(controller).to receive(:clear_login_state).and_call_original
-      session = { login: { 'u' => 'username', 'm' => [1], 'n' => ['User'], 'p' => ['identity'] } }
-      allow(controller).to receive(:session).and_return(session)
-      expect(controller.get_login_state).to eq(
-        username_or_email: nil,
-        matching_user_ids: nil,
-        names: nil,
-        providers: nil
       )
     end
 

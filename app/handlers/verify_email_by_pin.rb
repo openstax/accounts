@@ -1,6 +1,6 @@
 # Marks an `EmailAddress` as `verified` if it matches the passed-in `EmailAddress`'s pin
 # and then marks the owner of the email address as 'activated'.
-class VerifyUserEmailByPin
+class VerifyEmailByPin
 
   lev_handler
   uses_routine ConfirmByPin

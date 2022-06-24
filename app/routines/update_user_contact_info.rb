@@ -161,11 +161,10 @@ class UpdateUserContactInfo
       :grant_tutor_access,
       :accounts_uuid,
       :renewal_eligible
-    )
-                                                          .where("Accounts_UUID__c != null")
-                                                          .where("LastModifiedDate >= #{DateTime.strptime(c_date, "%Y-%m-%d").utc.iso8601}")
-                                                          .includes(:school)
-                                                          .to_a
+    ).where("Accounts_UUID__c != null")
+     .where("LastModifiedDate >= #{DateTime.strptime(c_date, "%Y-%m-%d").utc.iso8601}")
+     .includes(:school)
+     .to_a
   end
 
   def contacts_by_uuid_hash(contacts)

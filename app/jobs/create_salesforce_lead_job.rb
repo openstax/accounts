@@ -1,4 +1,4 @@
-class CreateSalesforceLeadJob < ApplicationJob
+class CreateSalesforceLead < ApplicationJob
   queue_as :salesforce_signup_lead_creation
 
   ADOPTION_STATUS_FROM_USER = {

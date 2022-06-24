@@ -1,5 +1,7 @@
 class ProfileController < ApplicationController
 
+  include ProfileHelper
+
   skip_before_action :authenticate_user!, only: :exit_accounts
 
   def profile

@@ -80,7 +80,6 @@ class User < ApplicationRecord
 
   before_validation(:generate_uuid, on: :create)
 
-  validate(:ensure_names_continue_to_be_present)
   validate(:save_activated_at_if_became_activated, on: :update)
   validate(:update_salesforce_if_user_changed, on: :update)
   validate(:change_faculty_status_if_changed_to_student, on: :update)
@@ -144,11 +143,10 @@ class User < ApplicationRecord
   has_many :oauth_applications, through: :member_groups
   has_many :security_logs
 
-  delegate_to_routine :destroy
-
   attr_readonly :uuid
 
   attribute :is_not_gdpr_location, :boolean, default: nil
+  attribute :renewal_eligible, :boolean, default: nil
 
   def most_accurate_school_name
     return school.name if school.present?
@@ -193,21 +191,6 @@ class User < ApplicationRecord
 
   def self.create_random_username(base:, num_digits_in_suffix:)
     "#{base}#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
-  end
-
-  def self.cleanup_unverified_users
-    by_unverified.older_than_one_year.destroy_all
-  end
-
-  def sheerid_supported?
-    {
-      '1'   => 'United States & Canada',
-      '27'  => 'South Africa',
-      '44'  => 'United Kingdom',
-      '61'  => 'Australia',
-      '64'  => 'New Zealand',
-      '353' => 'Ireland',
-    }.key?(country_code&.strip)
   end
 
   def is_test?
@@ -306,14 +289,6 @@ class User < ApplicationRecord
     self.last_name = names.length > 1 ? names[1..-1].join(' ') : ''
   end
 
-  def guessed_first_name
-    full_name.present? ? full_name.split("\s")[0] : nil
-  end
-
-  def guessed_last_name
-    full_name.present? ? full_name.split("\s").drop(1).join(' ') : nil
-  end
-
   def casual_name
     first_name.presence || username
   end
@@ -325,10 +300,6 @@ class User < ApplicationRecord
   def add_unread_update
     # Returns false if the update fails (aborting the save transaction)
     AddUnreadUpdateForUser.call(self).errors.none?
-  end
-
-  def has_emails_but_none_verified?
-    email_addresses.any? && email_addresses.none?(&:verified)
   end
 
   ##########################
@@ -367,15 +338,6 @@ class User < ApplicationRecord
 
   def login_token_expired?
     !login_token_expires_at.nil? && login_token_expires_at <= DateTime.now
-  end
-
-  def self.known_roles
-    roles.except(:unknown_role).keys
-  end
-
-
-  def self.non_student_known_roles
-    known_roles - ['student']
   end
 
   def guessed_preferred_confirmed_email
@@ -428,23 +390,6 @@ class User < ApplicationRecord
     end
   end
 
-  # there are existing users without names
-  # allow them to continue to function, but require a name to exist once it's set
-  def ensure_names_continue_to_be_present
-    return true if is_needs_profile?
-
-    %w{first_name last_name}.each do |attr|
-      change = changes[attr]
-
-      next if change.nil? # no change, so no problem
-
-      was = change[0]
-      is = change[1]
-
-      errors.add(attr.to_sym, :blank) if !was.blank? && is.blank?
-    end
-  end
-
   def save_activated_at_if_became_activated
     if state_changed?(to: :activated)
       self.touch(:activated_at)
@@ -453,7 +398,7 @@ class User < ApplicationRecord
 
   def update_salesforce_if_user_changed
     if (faculty_status_changed? || salesforce_lead_id_changed? || salesforce_contact_id_changed?) && role != 'student'
-      SyncAccountWithSalesforceJob.perform_later(id)
+      SyncAccountWithSalesforce.perform_later(self.id)
     end
   end
 

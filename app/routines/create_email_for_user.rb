@@ -13,10 +13,6 @@ class CreateEmailForUser
     options[:is_school_issued] ||= false
     options[:already_verified] ||= false
 
-    # If the email address already exists or is verified and is attached to the user, nothing to do
-    return if user.email_addresses.find_by(value: email.value).nil? ||
-      user.email_addresses.find_by(value: email.value).verified?
-
     email = EmailAddress.find_or_create_by(value: email, user_id: user.id, is_school_issued: options[:is_school_issued])
 
     # This is either a new email address (unverified) or an existing email address

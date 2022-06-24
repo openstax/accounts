@@ -1,4 +1,4 @@
-class SyncAccountWithSalesforceJob < ApplicationJob
+class SyncAccountWithSalesforce < ApplicationJob
   queue_as :salesforce_accounts_sync
 
   def perform(user_id)
