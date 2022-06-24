@@ -80,6 +80,7 @@ class User < ApplicationRecord
 
   before_validation(:generate_uuid, on: :create)
 
+  validate(:ensure_names_continue_to_be_present)
   validate(:save_activated_at_if_became_activated, on: :update)
   validate(:update_salesforce_if_user_changed, on: :update)
   validate(:change_faculty_status_if_changed_to_student, on: :update)
@@ -390,8 +391,26 @@ class User < ApplicationRecord
     end
   end
 
+  # TODO: there are no users on production without first/last names - evaluate if we still need this
+  # there are existing users without names
+  # allow them to continue to function, but require a name to exist once it's set
+  def ensure_names_continue_to_be_present
+    return true if is_needs_profile?
+
+    %w{first_name last_name}.each do |attr|
+      change = changes[attr]
+
+      next if change.nil? # no change, so no problem
+
+      was = change[0]
+      is  = change[1]
+
+      errors.add(attr.to_sym, :blank) if !was.blank? && is.blank?
+    end
+  end
+
   def save_activated_at_if_became_activated
-    if state_changed?(to: :activated)
+    if state_changed?(to: 'activated')
       self.touch(:activated_at)
     end
   end
