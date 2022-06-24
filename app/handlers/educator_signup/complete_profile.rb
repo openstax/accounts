@@ -73,19 +73,18 @@ module EducatorSignup
 
       if @is_on_cs_form
         SecurityLog.create!(
-          user:       user,
+          user: @user,
           event_type: :user_completed_cs_form
         )
         # user needs CS review to become confirmed - set it as such in accounts
         @user.update(
           requested_cs_verification_at: DateTime.now,
-          faculty_status:               :pending_faculty
+          faculty_status: :pending_faculty
         )
         if signup_params.school_issued_email.present?
           # this user used the CS form and _should_ have provided us an email address -
           # so let's add it - validation happens before this in check_params
-          run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user,
-              is_school_issued:          true)
+          run(CreateEmailForUser, email: signup_params.school_issued_email, user: @user, is_school_issued: true)
         end
       else
         # If user did not need CS verification but still needs to be pending, set
@@ -97,7 +96,7 @@ module EducatorSignup
         if @user.faculty_status == :incomplete_signup && !@did_use_sheerid
           @user.faculty_status = :pending_faculty
           SecurityLog.create!(
-            user:       user,
+            user: @user,
             event_type: :faculty_status_updated,
             event_data: { old_status: "incomplete", new_status: "pending" }
           )
@@ -113,7 +112,7 @@ module EducatorSignup
         # User used SheerID or needs CS verification - we create their lead in
         # SheeridWebhook, not here.. and might not be instant
         SecurityLog.create!(
-          user:       user,
+          user: @user,
           event_type: :lead_creation_awaiting_sheerid_webhook,
         )
         return

@@ -1,4 +1,4 @@
-class ProcessRejectedLead < ApplicationJob
+class ProcessRejectedLeadJob < ApplicationJob
   queue_as :salesforce_rejected_leads
 
   def perform(lead_id, accounts_uuid)

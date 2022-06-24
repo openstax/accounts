@@ -398,7 +398,7 @@ class User < ApplicationRecord
 
   def update_salesforce_if_user_changed
     if (faculty_status_changed? || salesforce_lead_id_changed? || salesforce_contact_id_changed?) && role != 'student'
-      SyncAccountWithSalesforce.perform_later(self.id)
+      SyncAccountWithSalesforceJob.perform_later(self.id)
     end
   end
 

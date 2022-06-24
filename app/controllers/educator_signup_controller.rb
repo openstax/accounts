@@ -96,7 +96,7 @@ class EducatorSignupController < SignupController
   end
 
   def generate_sheer_id_url(user)
-    url = Addressable::URI.parse(Rails.application.secrets[:sheer_id_base_url])
+    url = Addressable::URI.parse(Rails.application.secrets[:sheerid_base_url])
     if url.present?
       url.query_values = url.query_values.merge(
         first_name: user.first_name,
