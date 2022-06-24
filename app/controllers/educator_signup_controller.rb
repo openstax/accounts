@@ -17,7 +17,7 @@ class EducatorSignupController < SignupController
     store_if_sheerid_is_unviable_for_user
     store_sheerid_verification_for_user
     handle_with(
-      EducatorSignup::SheeridWebhook,
+      SheerIdWebhook,
       verification_id: params[:verificationId],
       success:         lambda {
         security_log(:sheerid_webhook_received, { data: @handler_result })
@@ -46,7 +46,7 @@ class EducatorSignupController < SignupController
 
   def profile_form_post
     handle_with(
-      EducatorSignup::CompleteProfile,
+      CompleteEducatorProfile,
       user:    @current_user,
       success: lambda {
         user = @handler_result.outputs.user
@@ -84,7 +84,7 @@ class EducatorSignupController < SignupController
         redirect_to(pending_cs_verification_path) and return
       when current_user.is_educator_pending_cs_verification && !current_user.pending_faculty?
         redirect_back(fallback_location: profile_path) and return
-      when action_name == 'educator_sheerid_form' && current_user.step_3_complete?
+      when action_name == 'educator_sheerid_form' && (sheerid_verification_id.present? || is_sheerid_unviable? || !is_profile_complete?)
         redirect_to(profile_form_path) and return
       when action_name == 'educator_profile_form' && current_user.is_profile_complete?
         redirect_to(profile_path) and return

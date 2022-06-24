@@ -1,8 +1,7 @@
 require 'rails_helper'
 require 'vcr_helper'
 
-#RSpec.describe EducatorSignup::SheeridWebhook, type: :routine, vcr: VCR_OPTS do
-RSpec.describe EducatorSignup::SheeridWebhook, type: :routine do
+RSpec.describe EducatorSignup::SheeridWebhook, type: :routine, vcr: VCR_OPTS do
   let(:email_address)           { FactoryBot.create :email_address, :verified }
   let(:user)                    { email_address.user }
   let!(:school)                 {
@@ -30,12 +29,12 @@ RSpec.describe EducatorSignup::SheeridWebhook, type: :routine do
     )
   end
 
-  # before(:all) do
-  #   VCR.use_cassette('SheeridWebhook/sf_setup', VCR_OPTS) do
-  #     @proxy = SalesforceProxy.new
-  #     @proxy.setup_cassette
-  #   end
-  # end
+  before(:all) do
+    VCR.use_cassette('SheeridWebhook/sf_setup', VCR_OPTS) do
+      @proxy = SalesforceProxy.new
+      @proxy.setup_cassette
+    end
+  end
 
   before do
     num_calls = verification.verified? ? :twice : :once
@@ -49,25 +48,22 @@ RSpec.describe EducatorSignup::SheeridWebhook, type: :routine do
   end
 
   context "user with verified verfication" do
-    xit 'finds schools based on the sheerid_reported_school field' do
+    it 'finds schools based on the sheerid_reported_school field' do
       expect(School).not_to receive(:fuzzy_search)
 
-      #described_class.call verification_id: verification.verification_id
-      expect_any_instance_of(described_class).to receive(:exec).with(sheerid_provided_verification_id_param: verification.verification_id)
+      described_class.call verification_id: verification.verification_id
 
       expect(user.reload.school).to eq school
     end
 
-    xit 'fuzzy searches schools based on the sheerid_reported_school field' do
+    it 'fuzzy searches schools based on the sheerid_reported_school field' do
       school.update_attribute :sheerid_school_name, nil
 
       expect(School).to receive(:fuzzy_search).with(
         school.name, school.city, school.state
       ).and_call_original
 
-      expect_any_instance_of(described_class).to receive(:exec).with(sheerid_provided_verification_id_param: verification.verification_id)
-
-      #described_class.call verification_id: verification.verification_id
+      described_class.call verification_id: verification.verification_id
 
       expect(user.reload.school).to eq school
     end
