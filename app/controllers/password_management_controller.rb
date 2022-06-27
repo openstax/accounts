@@ -59,11 +59,11 @@ class PasswordManagementController < ApplicationController
       handle_with(
         ChangePassword,
         success: lambda {
-          security_log :password_reset
+          security_log(:password_reset, user: @handler_result.outputs.user)
           redirect_to profile_url, notice: t(:'identities.reset_success.message')
         },
         failure: lambda {
-          security_log :password_reset_failed
+          security_log(:password_reset_failed, user: @handler_result.outputs.user)
           render :change_password_form, status: :bad_request
         }
       )
