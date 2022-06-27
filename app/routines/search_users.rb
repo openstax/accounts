@@ -29,7 +29,7 @@ class SearchUsers
 
   protected
 
-  SORTABLE_FIELDS    = %w[id role]
+  SORTABLE_FIELDS    = ['first_name', 'last_name', 'id', 'role']
   SORT_ASCENDING     = 'ASC'
   SORT_DESCENDING    = 'DESC'
   MAX_MATCHING_USERS = 10
@@ -91,8 +91,7 @@ class SearchUsers
           partial_uuid = uuid.to_s.chomp('-')
           next uuid if partial_uuid.include? '-' or partial_uuid.length != 8
 
-          partial_uuid + '-0000-0000-0000-000000000000'..partial_uuid +
-            '-ffff-ffff-ffff-ffffffffffff'
+          partial_uuid + '-0000-0000-0000-000000000000'..partial_uuid + '-ffff-ffff-ffff-ffffffffffff'
         end
         users         = users.where(uuid: uuids_queries)
       end
@@ -102,26 +101,18 @@ class SearchUsers
       end
 
       with.keyword :email do |emails|
-        sanitized_emails = sanitize_strings(emails, append_wildcard: options[:admin],
-                                            prepend_wildcard:        options[:admin])
-        users            = users.joins(
-          :contact_infos
-        ).where(
-          contact_info_table[:value].matches_any(sanitized_emails)
-        )
-        unless options[:admin]
-          users = users.where(contact_infos: { type:          'EmailAddress', verified: true,
-                                               is_searchable: true })
-        end
+        sanitized_emails = sanitize_strings(emails, append_wildcard: options[:admin], prepend_wildcard: options[:admin])
+        users            = users.joins(:contact_infos).where(contact_info_table[:value].matches_any(sanitized_emails))
+        users            = users.where(contact_infos: { type: 'EmailAddress', verified: true, is_searchable: true }) unless options[:admin]
       end
 
-      # Rerun the queries above for 'any' terms (which are ones without a prefix).
+      # Rerun the queries above for 'any' terms (which are ones without a
+      # prefix).
 
       with.keyword :any do |terms|
-        next if terms.blank?
+        next users_query if terms.blank?
 
-        sanitized_names = sanitize_strings(terms, append_wildcard: true,
-                                           prepend_wildcard:       options[:admin])
+        sanitized_names = sanitize_strings(terms, append_wildcard: true, prepend_wildcard: options[:admin])
 
         if sanitized_names.length == 2 # looks like a "firstname lastname" search
           users = users.where(
@@ -131,11 +122,8 @@ class SearchUsers
               table[:last_name].matches(sanitized_names.last)
             )
           )
-        elsif sanitized_names.any? { |term|
-          term.include?('@')
-        } # we'll assume this means they are searching by an email address
-          sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin],
-                                             prepend_wildcard:       options[:admin])
+        elsif sanitized_names.any? { |term| term.include?('@') } # we'll assume this means they are searching by an email address
+          sanitized_terms = sanitize_strings(terms, append_wildcard: options[:admin], prepend_wildcard: options[:admin])
 
           contact_infos_query = contact_info_table[:value].matches_any(sanitized_terms)
 
@@ -174,12 +162,12 @@ class SearchUsers
     # Ordering
 
     # Parse the input
-    order_bys = (options[:order_by] || 'id').split(',').map { |ob| ob.strip.split(' ') }
+    order_bys = (options[:order_by] || 'last_name').split(',').map { |ob| ob.strip.split(' ') }
 
     # Toss out bad input, provide default direction
     order_bys = order_bys.map do |order_by|
       field, direction = order_by
-      next if SORTABLE_FIELDS.exclude?(field)
+      next if !SORTABLE_FIELDS.include?(field)
       direction ||= SORT_ASCENDING
       next if direction != SORT_ASCENDING && direction != SORT_DESCENDING
       [field, direction]
@@ -214,6 +202,7 @@ class SearchUsers
     outputs[:total_count] = users.count
 
     # Return no results if maximum number of results is exceeded
+
     outputs[:items] = (outputs[:total_count] > MAX_MATCHING_USERS) ? User.none : users
 
   end
