@@ -1,34 +1,33 @@
-def create_user(username, password='password', terms_agreed=nil)
-  terms_agreed_option = (terms_agreed.nil? || terms_agreed) ?
-                          :terms_agreed :
-                          :terms_not_agreed
+def create_user(email, password = 'password', terms_agreed = nil, confirmation_code = nil, role = 'student')
+  terms_agreed_option = terms_agreed.nil? || terms_agreed ? :terms_agreed : :terms_not_agreed
 
-  return if User.find_by_username(username).present?
+  user ||= FactoryBot.create(:user, terms_agreed_option, role: role)
 
-  user = FactoryBot.create :user, terms_agreed_option, username: username
+  FactoryBot.create(:email_address, user: user, value: email,
+                    confirmation_code:    confirmation_code,
+                    verified:             confirmation_code.nil?)
+
   identity = FactoryBot.create :identity, user: user, password: password
-  authentication = FactoryBot.create :authentication, user: user,
-                                                       provider: 'identity',
-                                                       uid: identity.uid
-  return user
-end
+  FactoryBot.create :authentication, user: user, provider: 'identity', uid: identity.uid
 
-def create_admin_user
-  user = create_user 'admin'
-  user.update_attributes!(is_administrator: true)
   user
 end
 
-def create_nonlocal_user(username, provider='facebook')
+def create_admin_user
+  user ||= create_user 'admin@openstax.org'
+  user.update!(is_administrator: true)
+  user
+end
+
+def create_nonlocal_user(username, provider = 'facebook')
   auth_data =
     case provider
-    when 'facebook' then {info: {name: username}, provider: 'facebook'}  # FB dropped nickname
-    when 'google' then {info: {nickname: username}, provider: 'google'}
-    when 'twitter' then {info: {nickname: username}, provider: 'twitter'}
+      when 'facebook' then { info: { name: username }, provider: 'facebook' } # FB dropped nickname
+      when 'google' then { info: { nickname: username }, provider: 'google' }
     end
-  data = OmniauthData.new(auth_data)
+  data      = OmniauthData.new(auth_data)
 
-  user = FactoryBot.create(:user)
+  user   = FactoryBot.create(:user)
   result = TransferOmniauthData.call(data, user)
   raise "create_nonlocal_user for #{username} failed" if result.errors.any?
   user.save!
@@ -38,77 +37,73 @@ def create_nonlocal_user(username, provider='facebook')
   user
 end
 
-def create_email_address_for(user, email_address, confirmation_code=nil)
+def login_admin
+  login(:admin)
+end
+
+def login(user)
+  @current_user = user
+end
+
+def current_user
+  User.find(request.session[:user])
+end
+
+def log_in_user(username_or_email, password = 'password')
+  visit(:login_path)
+  fill_in('login_form[email]', with: username_or_email).native
+  fill_in('login_form[password]', with: password)
+  click_button 'Continue'
+end
+
+def create_email_address_for(user, email_address, confirmation_code = nil)
   FactoryBot.create(:email_address, user: user, value: email_address,
-                     confirmation_code: confirmation_code,
-                     verified: confirmation_code.nil?)
+                    confirmation_code:    confirmation_code,
+                    verified:             confirmation_code.nil?)
 end
 
-def generate_login_token_for(username)
-  user = User.find_by_username(username)
+def generate_login_token_for(user)
+  user = User.find_by(uuid: user.uuid)
   user.refresh_login_token
   user.save!
   user.login_token
-end
-
-def generate_expired_login_token_for(username)
-  user = User.find_by_username(username)
-  user.refresh_login_token
-  user.login_token_expires_at = 1.year.ago
-  user.save!
-  user.login_token
-end
-
-def link_in_last_email
-  mail = ActionMailer::Base.deliveries.last
-  /http:\/\/[^\/]*(\/[^\s]*)/.match(mail.body.encoded)[1]
 end
 
 def create_application(skip_terms: false)
   app = FactoryBot.create(:doorkeeper_application, skip_terms: skip_terms,
-                          can_access_private_user_data: true,
-                          can_skip_oauth_screen: true)
+                          can_access_private_user_data:        true,
+                          can_skip_oauth_screen:               true)
 
   # We want to provide a local "external" redirect uri so our specs aren't actually
   # making HTTP calls against real external URLs like "example.com"
 
-  host_and_port =
-    if in_docker?
-      # We set these explicitly
-      [Capybara.server_host, Capybara.server_port].compact.join(":")
-    else
-      server = Capybara.current_session.try(:server)
-      server.present? ? "#{server.host}:#{server.port}" : nil
-    end
+  server        = Capybara.current_session.try(:server)
+  host_and_port = server.present? ? "#{server.host}:#{server.port}" : nil
 
-  redirect_uri = host_and_port.present? ?
-                 "http://#{host_and_port}#{external_app_for_specs_path}" :
-                 external_app_for_specs_url
+  redirect_uri = if host_and_port.present?
+                   "http://#{host_and_port}#{external_app_for_specs_path}"
+                 else
+                   external_app_for_specs_url
+                 end
 
-  app.update_column(:redirect_uri, redirect_uri)
+  app.update_columns(redirect_uri: redirect_uri) # rubocop:disable Rails/SkipsModelValidations
 
   FactoryBot.create(:doorkeeper_access_token, application: app, resource_owner_id: nil)
-  app
-end
-
-def create_default_application
-  @app = create_application
+  @app = app
 end
 
 def capybara_url(path)
   server = Capybara.current_session.try(:server)
   raise "no capybara server" if server.nil?
-  "http://#{server.host}:#{server.port}/#{path.starts_with?('/') ? path[1..-1] : path}"
+  "http://#{server.host}:#{server.port}/#{path.starts_with?('/') ? path[1..] : path}"
 end
 
 # to make sure that the plumbing is all working for forgery protection
 def with_forgery_protection
-  begin
-    allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
-    yield if block_given?
-  ensure
-    allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_call_original
-  end
+  allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
+  yield if block_given?
+ensure
+  allow_any_instance_of(ActionController::Base).to receive(:allow_forgery_protection).and_call_original
 end
 
 def allow_forgery_protection
@@ -116,37 +111,57 @@ def allow_forgery_protection
   allow(ActionController::Base).to receive(:allow_forgery_protection).and_return(true)
 end
 
-def mock_bad_csrf_token
-  original_rr_params = Rack::Request.instance_method(:params)
-  allow_any_instance_of(Rack::Request).to receive(:params) do |request|
-    original_rr_params.bind(request).call.merge('authenticity_token' => 'Invalid!')
-  end
-end
-
 def visit_authorize_uri(app: @app, params: {})
   visit "/oauth/authorize?redirect_uri=#{app.redirect_uri}&" \
-                         "response_type=code&" \
-                         "client_id=#{app.uid}" \
-                         "#{'&' + params.to_query if params.any?}"
+        "response_type=code&" \
+        "client_id=#{app.uid}" \
+        "#{"&#{params.to_query}" if params.any?}"
 end
 
-def app_callback_url(app: nil)
-  /^#{(app || @app).redirect_uri}\?code=.+$/
+def expect_back_at_app(app: nil)
+  expect(page.current_url).to match(/^#{(app || @app).redirect_uri}\?code=.+$/)
 end
 
-def with_error_pages
+# TODO: the two methods below are nearly identical
+# Call this method with a block to test login/signup with a social network
+def simulate_login_signup_with_social(options = {})
+  options[:name]     ||= Faker::Name.name
+  options[:nickname] ||= Faker::Internet.username
+  options[:uid]      ||= Faker::Internet.uuid
+
   begin
-    Rails.application.config.consider_all_requests_local = false
-    yield if block_given?
+    OmniAuth.config.test_mode = true
+
+    if options[:identity_user].present?
+      identity_uid = options[:identity_user].identity.id.to_s
+
+      OmniAuth.config.mock_auth[:identity] =
+        OmniAuth::AuthHash.new({
+                                 uid:      identity_uid,
+                                 provider: 'identity',
+                                 info:     {}
+                               })
+    end
+
+    [:google, :facebook].each do |provider|
+      OmniAuth.config.mock_auth[provider] =
+        OmniAuth::AuthHash.new({
+                                 uid:      options[:uid],
+                                 provider: provider.to_s,
+                                 info:     { name: options[:name], nickname: options[:nickname], email: options[:email] }
+                               })
+    end
+
+    yield
   ensure
-    Rails.application.config.consider_all_requests_local = true
+    OmniAuth.config.test_mode = false
   end
 end
 
 # Call this method with a block to test social signins
-def with_omniauth_test_mode(options={})
+def with_omniauth_test_mode(options = {})
   options[:nickname] ||= 'jimbo'
-  options[:uid] ||= '1337'
+  options[:uid]      ||= '1337'
 
   begin
     OmniAuth.config.test_mode = true
@@ -155,181 +170,43 @@ def with_omniauth_test_mode(options={})
       identity_uid = options[:identity_user].identity.id.to_s
 
       OmniAuth.config.mock_auth[:identity] = OmniAuth::AuthHash.new({
-        uid: identity_uid,
-        provider: 'identity',
-        info: {}
-      })
+                                                                      uid:      identity_uid,
+                                                                      provider: 'identity',
+                                                                      info:     {}
+                                                                    })
     end
 
-    [:facebook, :google_oauth2, :twitter, :googlenewflow, :facebooknewflow].each do |provider|
+    [:facebook, :google].each do |provider|
       OmniAuth.config.mock_auth[provider] = OmniAuth::AuthHash.new({
-        uid: options[:uid],
-        provider: provider.to_s,
-        info: { nickname: options[:nickname], email: options[:email] }
-      })
+                                                                     uid:      options[:uid],
+                                                                     provider: provider.to_s,
+                                                                     info:     { nickname: options[:nickname], email: options[:email] }
+                                                                   })
     end
 
     yield
   ensure
     OmniAuth.config.test_mode = false
   end
-end
-
-def with_omniauth_failure_message(message)
-  begin
-    OmniAuth.config.test_mode = true
-
-    [:facebook, :google_oauth2, :twitter, :identity].each do |provider|
-      OmniAuth.config.mock_auth[provider] = message
-    end
-
-    yield
-  ensure
-    OmniAuth.config.test_mode = false
-  end
-
-end
-
-def make_new_contract_version(contract = FinePrint::Contract.first)
-  new_contract_version = contract.new_version
-  raise "New contract version didn't save" unless new_contract_version.save
-  new_contract_version.publish
-  raise "New contract version didn't publish" unless new_contract_version.version == 2
-end
-
-def click_password_sign_up  # TODO remove, bad name
-  click_on (t :"sessions.start.sign_up")
-end
-
-def expect_sign_in_page
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"sessions.start.page_heading")
-end
-
-def expect_authenticate_page
-  expect(page.body).to match(/Hello.*!/)
-end
-
-def expect_profile_page
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"users.edit.page_heading")
-  expect(page).to have_current_path profile_path
 end
 
 def arrive_from_app(app: nil, params: {}, do_expect: true)
-  create_default_application unless app.present? || @app.present?
+  create_application unless app.present? || @app.present?
   visit_authorize_uri(app: app || @app, params: params)
-  expect_sign_in_page if do_expect
+  expect(page.current_url).to match(:login_path) if do_expect
 end
 
-def expect_back_at_app(app: nil)
-  expect(page.current_url).to match(app_callback_url(app: app || @app))
-end
-
-def complete_login_username_or_email_screen(username_or_email)
-  fill_in 'login_username_or_email', with: username_or_email
-  expect_sign_in_page
-  expect(page).to have_no_missing_translations
-  screenshot!
-  click_button (t :"sessions.start.next")
-  expect(page).to have_no_missing_translations
-end
-
-def complete_login_password_screen(password)
-  expect(page).to have_content(t :"sessions.authenticate_options.forgot_password")
-  fill_in (t :"sessions.authenticate_options.password"), with: password
-  expect(page).to have_no_missing_translations
-  screenshot!
-  click_button (t :"sessions.authenticate_options.login")
-  expect(page).to have_no_missing_translations
-end
-
-def complete_reset_password_screen(password=nil)
-  password ||= 'Passw0rd!'
-  fill_in (t :"identities.set.password"), with: password
-  fill_in (t :"identities.set.confirm_password"), with: password
-  click_button (t :"identities.reset.submit")
-  expect(page).to have_content(t :"identities.reset_success.message")
-end
-
-def complete_reset_password_success_screen
-  click_button (t :"identities.reset_success.continue")
-end
-
-def complete_add_password_screen(password=nil)
-  password ||= 'Passw0rd!'
-  fill_in (t :"identities.set.password"), with: password
-  fill_in (t :"identities.set.confirm_password"), with: password
-  click_button (t :"identities.add.submit")
-  expect(page).to have_content(t :"identities.add_success.message")
-end
-
-def complete_add_password_success_screen
-  click_button (t :"identities.add_success.continue")
-end
-
-def complete_terms_screens(without_privacy_policy: false)
-
-  check 'agreement_i_agree'
-  expect(page).to have_content('Terms of Use')
-  click_button (t :"terms.pose.agree")
-  unless without_privacy_policy
-    expect(page).to have_content('Privacy Policy')
-    check 'agreement_i_agree'
-    click_button (t :"terms.pose.agree")
-  end
+def submit_signup_form
+  check('signup_terms_accepted')
+  wait_for_ajax
+  wait_for_animations
+  find('[type=submit]').click
+  wait_for_ajax
+  wait_for_animations
 end
 
 def log_in(username_or_email, password = 'password')
   log_in_user(username_or_email, password)
-end
-
-def log_out
-  visit '/logout'
-end
-
-def call_embedded_screenshots
-  begin
-    original_value = @call_embedded_screenshots
-    @call_embedded_screenshots = true
-    yield
-  ensure
-    @call_embedded_screenshots = original_value
-  end
-end
-
-def complete_faculty_access_apply_screen(role: nil, first_name: nil, last_name: nil, suffix: nil,
-                                         email: "", phone_number: "", school: "", url: "",
-                                         num_students: "", using_openstax: "", newsletter: true,
-                                         subjects: [])
-
-  if role.present?
-    raise IllegalArgument unless [:instructor, :other].include?(role)
-    screenshot! if @call_embedded_screenshots
-    select role.to_s.capitalize, from: "apply_role"
-    wait_for_animations
-    wait_for_ajax
-  end
-
-  expect(page).to have_content(t :"faculty_access.apply.page_heading")
-  expect(page).to have_no_missing_translations
-
-  screenshot! if @call_embedded_screenshots
-
-  fill_in (t :"faculty_access.apply.first_name"), with: first_name if !first_name.nil?
-  fill_in (t :"faculty_access.apply.last_name"), with: last_name if !last_name.nil?
-  fill_in (t :"faculty_access.apply.suffix"), with: suffix if suffix.present?
-  fill_in (t :"faculty_access.apply.email_placeholder"), with: email
-  fill_in (t :"faculty_access.apply.phone_number"), with: phone_number
-  fill_in (t :"faculty_access.apply.school"), with: school
-  fill_in (t :"faculty_access.apply.url"), with: url if role != :student
-  fill_in (t :"faculty_access.apply.num_students"), with: num_students if role == :instructor
-  select using_openstax, from: "apply_using_openstax" if !using_openstax.blank? if role == :instructor
-
-  subjects.each { |subject| check subject }
-  page.check('apply[newsletter]') if newsletter
-  click_button (t :"faculty_access.apply.submit")
-  expect(page).to have_no_missing_translations
 end
 
 def mock_current_user(user)
@@ -348,28 +225,12 @@ def get_path_from_absolute_link(node, xpath)
   "#{uri.path}?#{uri.query}"
 end
 
-def expect_security_log(*args)
-  expect_any_instance_of(ActionController::Base).to receive(:security_log)
-                                                .with(*args)
-                                                .and_call_original
+def strip_html(text)
+  ActionView::Base.full_sanitizer.sanitize(text)
 end
 
-module Capybara
-  class Session
-    alias_method :original_visit, :visit
-    def visit(visit_uri)
-      # Note that the feature specs aren't yet modified to pass in a cloudfront simulation
-      # world.  Particularly, expectations on paths are hardcoded without the /accounts
-      # prefix and would need to be modified or taught how to expect during a cloudfront
-      # simulation
-
-      if ENV['SIMULATE_CLOUDFRONT'] == 'true'
-        uri = URI(visit_uri)
-        uri.path = "/#{OpenStax::PathPrefixer.configuration.prefix}#{uri.path}"
-        visit_uri = uri.to_s
-      end
-
-      original_visit(visit_uri)
-    end
-  end
+def expect_security_log(*args)
+  expect_any_instance_of(ActionController::Base).to receive(:security_log)
+                                                      .with(*args)
+                                                      .and_call_original
 end
