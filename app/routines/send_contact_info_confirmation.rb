@@ -14,8 +14,7 @@ class SendContactInfoConfirmation
 
     case contact_info.type
       when 'EmailAddress'
-        SignupPasswordMailer.instructions(email_address: contact_info,
-                                          send_pin:      send_pin).deliver_later
+        SignupPasswordMailer.signup_email_confirmation(email_address: contact_info).deliver_later
       else
         fatal_error(code: :not_yet_implemented, data: contact_info)
     end

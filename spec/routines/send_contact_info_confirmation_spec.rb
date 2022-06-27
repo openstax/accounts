@@ -7,7 +7,7 @@ describe SendContactInfoConfirmation do
     it 'does not send confirmation email' do
       email.verified = true
       email.save!
-      expect_any_instance_of(ConfirmationMailer).not_to receive(:instructions)
+      expect_any_instance_of(SignupPasswordMailer).not_to receive(:instructions)
 
       result = SendContactInfoConfirmation.call(contact_info: email)
       expect(result.errors).not_to be_present
@@ -18,7 +18,7 @@ describe SendContactInfoConfirmation do
 
   context 'when email address is not verified' do
     it 'sends a confirmation email' do
-      expect_any_instance_of(ConfirmationMailer).to receive(:instructions).and_call_original
+      expect_any_instance_of(SignupPasswordMailer).to receive(:signup_email_confirmation).and_call_original
       now = Time.parse('2014-02-24 10:00')
       allow(Time).to receive(:now).and_return(now)
 
@@ -35,14 +35,14 @@ describe SendContactInfoConfirmation do
          SendContactInfoConfirmation.call(contact_info: email)
        end.to change { ActionMailer::Base.deliveries.count }.by(1)
        delivery = ActionMailer::Base.deliveries.last
-       expect(delivery.body.encoded).to include("confirm?code=#{email.confirmation_code}")
+       expect(delivery.body.encoded).to include("verify_email_by_code/#{email.confirmation_code}")
     end
 
     context 'something goes wrong' do
       it 'does not send an email and sets errors' do
         email.value = '' # cause a failure during save
         result = SendContactInfoConfirmation.call(contact_info: email, send_pin: nil)
-        expect_any_instance_of(ConfirmationMailer).to_not receive(:instructions)
+        expect_any_instance_of(SignupPasswordMailer).to_not receive(:signup_email_confirmation)
         expect(result.errors).to be_present
       end
     end
