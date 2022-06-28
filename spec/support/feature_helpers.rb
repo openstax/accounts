@@ -206,6 +206,17 @@ def submit_signup_form
   wait_for_animations
 end
 
+def reauthenticate_user(email, password)
+  wait_for_animations
+  wait_for_ajax
+  expect(page.current_path).to eq(reauthenticate_form_path)
+  expect(find('#login_form_email').value).to eq(email) # email should be pre-populated
+  fill_in('login_form_password', with: password)
+  screenshot!
+  find('[type=submit]').click
+  wait_for_animations
+end
+
 def log_in(username_or_email, password = 'password')
   log_in_user(username_or_email, password)
 end

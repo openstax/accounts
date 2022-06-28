@@ -1,4 +1,4 @@
-<%= ox_card(heading: @contract.title) do %>
+<%= login_signup_card(header: @contract.title) do %>
 
   <% if FinePrint.signed_any_version_of_contract?(current_user, @contract) %>
     <p><%= t :".contracts_changed_notice", contract_title: @contract.title %></p>
@@ -25,6 +25,6 @@
 
 <% content_for :javascript do %>
   <script type="text/javascript">
-    Accounts.Ui.enableOnChecked('#agreement_submit', '#agreement_i_agree');
+    Ui.enableOnChecked('#agreement_submit', '#agreement_i_agree');
   </script>
 <% end %>
