@@ -65,9 +65,9 @@ def newflow_complete_add_password_screen(password=nil)
   expect(page).to have_content(t :"login_signup_form.profile_newflow_page_header")
 end
 
-def expect_newflow_profile_page
+def expect_profile_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_current_path profile_newflow_path
+  expect(page).to have_current_path profile_path
 end
 
 def submit_signup_form
