@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe EducatorSignupController, type: :controller do
 
   describe 'POST #sheerid_webhook' do
-    let(:handler) { SheerIdWebhook }
+    let(:handler) { SheeridWebhook }
 
     let(:user) { create_user Faker::Internet.email }
 

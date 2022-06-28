@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'vcr_helper'
 
-RSpec.describe EducatorSignup::SheeridWebhook, type: :routine, vcr: VCR_OPTS do
+RSpec.describe SheeridWebhook, type: :routine, vcr: VCR_OPTS do
   let(:email_address)           { FactoryBot.create :email_address, :verified }
   let(:user)                    { email_address.user }
   let!(:school)                 {

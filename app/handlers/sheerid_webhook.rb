@@ -1,4 +1,4 @@
-class SheerIdWebhook
+class SheeridWebhook
   lev_handler
 
   protected ###############
@@ -9,7 +9,7 @@ class SheerIdWebhook
 
   def handle(verification_id = nil)
     unless verification_id
-      verification_id = params.fetch('verificationId')
+      verification_id = params.fetch('verificationid')
     end
     verification_details_from_sheerid = SheeridAPI.get_verification_details(verification_id)
 

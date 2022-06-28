@@ -17,8 +17,8 @@ class EducatorSignupController < SignupController
     store_if_sheerid_is_unviable_for_user
     store_sheerid_verification_for_user
     handle_with(
-      SheerIdWebhook,
-      verification_id: params[:verificationId],
+      SheeridWebhook,
+      verification_id: params[:verificationdd],
       success:         lambda {
         security_log(:sheerid_webhook_received, { data: @handler_result })
         render(status: :ok, plain: 'Success')
@@ -29,7 +29,7 @@ class EducatorSignupController < SignupController
           Sentry.capture_message(
             '[SheerID Webhook] Failed!',
             extra: {
-              verification_id: params[:verificationId],
+              verification_id: params[:verificationid],
               reason:          @handler_result.errors.first.code
             }
           )
