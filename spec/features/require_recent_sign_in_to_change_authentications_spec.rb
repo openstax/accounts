@@ -50,7 +50,7 @@ feature 'Require recent log in to change authentications', js: true do
         find('.authentication[data-provider="identity"] .edit').click
 
         expect(page.current_path).to eq(reauthenticate_form_path)
-        newflow_reauthenticate_user(email_value, 'password')
+        reauthenticate_user(email_value, 'password')
         screenshot!
         expect(page.current_path).to eq(change_password_form_path)
         fill_in('change_password_form_password', with: 'newpassword')
@@ -93,7 +93,7 @@ feature 'Require recent log in to change authentications', js: true do
         click_button 'OK'
         screenshot!
 
-        newflow_reauthenticate_user(email_value)
+        reauthenticate_user(email_value)
         expect(page).to have_current_path profile_path
         screenshot!
 
