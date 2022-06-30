@@ -281,7 +281,7 @@ class User < ApplicationRecord
 
   def full_name
     guess = "#{title} #{first_name} #{last_name} #{suffix}".gsub(/\s+/,' ').strip
-    guess.presence
+    guess.presence || nil
   end
 
   def full_name=(name)

@@ -16,7 +16,7 @@
         <div class="content social-section">
           <div><%= I18n.t(:"login_signup_form.login_with") %></div>
 
-          <%= render partial: 'social_auth/social_buttons' %>
+          <%= render partial: 'social_auth/social_auth_buttons' %>
         </div>
 
         <%=
@@ -67,7 +67,7 @@
       <% end %>
     <% end %>
   </div>
-  <%= javascript_include_tag 'application/ko_extensions' %>
+  <%= javascript_include_tag 'ko_extensions' %>
 </div>
 <script>
     // Necessary for password

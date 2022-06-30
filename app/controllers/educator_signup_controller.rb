@@ -54,7 +54,7 @@ class EducatorSignupController < SignupController
         clear_incomplete_educator
 
         if user.is_educator_pending_cs_verification?
-          redirect_to(pending_cs_verification_path) and return
+          render :pending_cs_verification and return
         else
           redirect_to(signup_done_path) and return
         end
