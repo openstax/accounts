@@ -8,16 +8,16 @@ class SocialAuthController < ApplicationController
       handle_with(
         OauthCallback,
         logged_in_user: signed_in? && current_user,
-        success:        lambda {
+        success: lambda {
           authentication = @handler_result.outputs.authentication
-          user           = @handler_result.outputs.user
+          user = @handler_result.outputs.user
 
           # Not activated means signup.
           # Only students can sign up with a social network.
           if user.student? && !user.activated?
             @first_name = user.first_name
             @last_name  = user.last_name
-            @email      = @handler_result.outputs.email
+            @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
             # must confirm their social info on signup
             # TODO: if possible, update the route/path to reflect that this page is being rendered
@@ -28,11 +28,11 @@ class SocialAuthController < ApplicationController
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back(fallback_location: profile_path)
         },
-        failure:        lambda {
+        failure: lambda {
           @email = @handler_result.outputs.email
           save_login_failed_email(@email)
 
-          code           = @handler_result.errors.first.code
+          code = @handler_result.errors.first.code
           authentication = @handler_result.outputs.authentication
 
           case code
@@ -41,20 +41,17 @@ class SocialAuthController < ApplicationController
                                                      sign_up: view_context.link_to(I18n.t(:'login_signup_form.sign_up'), signup_path)))
             when :authentication_taken
               security_log(:authentication_transfer_failed, authentication_id: authentication.id)
-              redirect_to(profile_path,
-                          alert: I18n.t(:'controllers.sessions.sign_in_option_already_used'))
+              redirect_to(profile_path, alert: I18n.t(:'controllers.sessions.sign_in_option_already_used'))
             when :email_already_in_use
               security_log(:email_already_in_use, email: @email, authentication_id: authentication.id)
-              redirect_to(profile_path,
-                          alert: I18n.t(:'controllers.sessions.way_to_login_cannot_be_added'))
+              redirect_to(profile_path, alert: I18n.t(:'controllers.sessions.way_to_login_cannot_be_added'))
             when :mismatched_authentication
               security_log(:sign_in_failed, reason: "mismatched authentication")
-              redirect_to(login_path,
-                          alert: I18n.t(:'controllers.sessions.mismatched_authentication'))
+              redirect_to(login_path, alert: I18n.t(:'controllers.sessions.mismatched_authentication'))
             else
-              oauth               = request.env['omniauth.auth']
-              errors              = @handler_result.errors.inspect
-              last_exception      = $!.inspect
+              oauth = request.env['omniauth.auth']
+              errors = @handler_result.errors.inspect
+              last_exception = $!.inspect
               exception_backtrace = $@.inspect
 
               error_message = "[SocialAuthController#oauth_callback] IllegalState on failure: " +
@@ -74,16 +71,16 @@ class SocialAuthController < ApplicationController
 
     handle_with(
       ConfirmOauthInfo,
-      user:               unverified_user,
+      user: unverified_user,
       contracts_required: !contracts_not_required,
-      client_app:         get_client_app,
-      success:            lambda {
+      client_app: get_client_app,
+      success: lambda {
         clear_signup_state
         sign_in!(@handler_result.outputs.user)
         security_log(:student_social_auth_confirmation_success)
         redirect_to signup_done_path
       },
-      failure:            lambda {
+      failure: lambda {
         security_log(:student_social_auth_confirmation_failed)
         render :confirm_oauth_info_form
       }

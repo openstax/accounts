@@ -2,9 +2,8 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
   let(:type) { parameter }
 
   before(:each) do
-    @user = create_user 'user'
-    @user.update!(role: User.roles[User::STUDENT_ROLE])
-    @login_token = generate_login_token_for 'user'
+    @user = create_user('user@openstax.org', 'password')
+    @login_token = generate_login_token_for @user
 
     if :add == type
       identity_authentication = @user.authentications.first
