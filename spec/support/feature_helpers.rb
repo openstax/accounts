@@ -206,6 +206,15 @@ def submit_signup_form
   wait_for_animations
 end
 
+def complete_add_password_screen(password = nil)
+  password ||= 'Passw0rd!'
+  fill_in(t(:"login_signup_form.password_label"), with: password)
+  find('#login-signup-form').click
+  wait_for_animations
+  find('[type=submit]').click
+  expect(page).to have_content(t :"login_signup_form.profile_newflow_page_header")
+end
+
 def reauthenticate_user(email, password)
   wait_for_animations
   wait_for_ajax
@@ -260,4 +269,8 @@ def expect_security_log(*args)
   expect_any_instance_of(ActionController::Base).to receive(:security_log)
                                                       .with(*args)
                                                       .and_call_original
+end
+
+def external_public_url
+  capybara_url(external_app_for_specs_path) + '/public'
 end

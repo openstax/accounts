@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe SendResetPasswordEmail, type: :handler do
   let(:user) do
-    create_newflow_user('user@openstax.org', 'password')
+    create_user('user@openstax.org', 'password')
   end
 
   let(:params) do
