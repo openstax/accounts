@@ -2,10 +2,9 @@ require 'rails_helper'
 
 feature 'User updates password on profile screen', js: true do
   before(:each) do
-    @user = create_user('user')
-    @user.update!(role: User::STUDENT_ROLE)
+    @user = create_user('user@example.com')
     visit '/'
-    log_in_user('user', 'password')
+    log_in_user('user@example.com', 'password')
   end
 
   scenario "adds one" do
@@ -24,7 +23,7 @@ feature 'User updates password on profile screen', js: true do
 
     screenshot!
     wait_for_animations # wait for slide-down effect
-    find('[data-provider=identity] .add--newflow').click
+    find('[data-provider=identity] .add').click
 
     screenshot!
     newflow_complete_add_password_screen
@@ -33,12 +32,12 @@ feature 'User updates password on profile screen', js: true do
     expect(page).to have_content(t(:"login_signup_form.how_you_log_in"))
 
     find('#enable-other-sign-in').click
-    expect(page).to have_css('[data-provider=facebooknewflow]')
+    expect(page).to have_css('[data-provider=facebook]')
     expect(page).to have_css('[data-provider=identity]')
   end
 
   scenario "changes existing" do
-    find('[data-provider=identity] .edit--newflow').click
+    find('[data-provider=identity] .edit').click
     newflow_complete_add_password_screen
     expect(page).to have_no_missing_translations
     expect(page).to have_content(
@@ -48,12 +47,12 @@ feature 'User updates password on profile screen', js: true do
   end
 
   scenario "deletes password" do
-    FactoryBot.create :authentication, user: @user, provider: 'facebooknewflow'
-    visit profile_newflow_path
+    FactoryBot.create :authentication, user: @user, provider: 'facebook'
+    visit profile_path
     expect(@user.reload.identity).to be_present
     expect(@user.authentications.reload.count).to eq 2
     expect(page).to have_css('[data-provider=identity]')
-    find('[data-provider=identity] .delete--newflow').click
+    find('[data-provider=identity] .delete').click
     find('.confirm-dialog-btn-confirm').click
     expect(page).to have_no_css('[data-provider=identity]')
     expect(@user.reload.identity).to be_nil

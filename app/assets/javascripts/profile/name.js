@@ -17,18 +17,12 @@
             super();
             this.init('profile_name', options, {
                 ...$.fn.editabletypes.abstractinput.defaults,
-                inputClass: '',
-                get tpl() {
-                    return generateTemplate();
-                }
+                inputClass: ''
             });
         }
 
         render() {
             this.$input = this.$tpl.find('input');
-        }
-
-        value2html() {
         }
 
         value2str(value) {

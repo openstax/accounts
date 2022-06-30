@@ -12,7 +12,10 @@ feature 'Password reset', js: true do
   scenario 'while still logged in–user is not stuck in a loop' do
     # shouldn't ask to reauthenticate when they forgot their password and are trying to reset it
     # issue: https://github.com/openstax/business-intel/issues/550
-    login_token = generate_login_token_for_user(user)
+    user.refresh_login_token
+    user.save!
+    login_token = user.login_token
+
     log_in_user('user@openstax.org', 'password')
     expect(page).to have_current_path(profile_path)
 

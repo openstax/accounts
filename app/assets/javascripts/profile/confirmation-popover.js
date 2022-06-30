@@ -16,7 +16,7 @@
             html: true,
             placement: 'right',
             message: ''
-        }, OX.I18n.confirmation_popover);
+        });
 
         options.content = $(generateContent(options));
 

@@ -99,7 +99,7 @@
             $.ajax({type: "DELETE", url: this.url()})
                 .success(() => {
                     this.$el.remove();
-                    Accounts.Profile.Email.onDeleteEmail(this);
+                    Accounts.Email.onDeleteEmail(this);
                 })
                 .error(Accounts.Alert.displayInsideElement(this.$el))
                 .complete(this.toggleSpinner);

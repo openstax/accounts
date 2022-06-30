@@ -9,6 +9,7 @@
 
 $(document).ready(function () {
     Accounts.Email.initialize();
+    //Accounts.Name.initialize();
     Accounts.Authentication.initialize();
     $('[data-toggle="tooltip"]').tooltip();
 });

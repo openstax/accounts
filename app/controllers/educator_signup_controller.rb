@@ -6,8 +6,8 @@ class EducatorSignupController < SignupController
   skip_before_action(:authenticate_user!, only: :sheerid_webhook)
 
   def sheerid_form
-    @sheerid_url = generate_sheer_id_url(@current_user)
-    security_log(:user_viewed_sheerid_form, user: @current_user)
+    @sheerid_url = generate_sheer_id_url(current_user)
+    security_log(:user_viewed_sheerid_form, user: current_user)
   end
 
   # SheerID makes a POST request to this endpoint when it verifies an educator
@@ -18,7 +18,7 @@ class EducatorSignupController < SignupController
     store_sheerid_verification_for_user
     handle_with(
       SheeridWebhook,
-      verification_id: params[:verificationdd],
+      verification_id: params[:verificationId],
       success:         lambda {
         security_log(:sheerid_webhook_received, { data: @handler_result })
         render(status: :ok, plain: 'Success')
@@ -29,7 +29,7 @@ class EducatorSignupController < SignupController
           Sentry.capture_message(
             '[SheerID Webhook] Failed!',
             extra: {
-              verification_id: params[:verificationid],
+              verification_id: params[:verificationId],
               reason:          @handler_result.errors.first.code
             }
           )
@@ -41,13 +41,13 @@ class EducatorSignupController < SignupController
 
   def profile_form
     @book_titles = book_data.titles
-    security_log(:user_viewed_profile_form, form_name: action_name, user: @current_user)
+    security_log(:user_viewed_profile_form, form_name: action_name, user: current_user)
   end
 
   def profile_form_post
     handle_with(
       CompleteEducatorProfile,
-      user:    @current_user,
+      user:    current_user,
       success: lambda {
         user = @handler_result.outputs.user
         security_log(:user_profile_complete, { user: user })
@@ -61,28 +61,24 @@ class EducatorSignupController < SignupController
       },
       failure: lambda {
         @book_titles = book_data.titles
-        security_log(:educator_sign_up_failed, user: @current_user, reason: @handler_result.errors)
+        security_log(:educator_sign_up_failed, user: current_user, reason: @handler_result.errors)
         render :profile_form
       }
     )
   end
 
   def pending_cs_verification_form
-    security_log(:user_sent_to_cs_for_review, user: @current_user)
-    @email_address = @current_user.email_addresses.last&.value
-  end
-
-  def pending_cs_verification
-    render :pending_cs_verification
+    security_log(:user_sent_to_cs_for_review, user: current_user)
+    @email_address = current_user.email_addresses.last&.value
   end
 
   protected
 
   def exit_signup_if_steps_complete
     case true
-      when current_user.is_educator_pending_cs_verification && current_user.pending_faculty?
+      when current_user.is_educator_pending_cs_verification? && current_user.pending_faculty?
         redirect_to(pending_cs_verification_path) and return
-      when current_user.is_educator_pending_cs_verification && !current_user.pending_faculty?
+      when current_user.is_educator_pending_cs_verification? && !current_user.pending_faculty?
         redirect_back(fallback_location: profile_path) and return
       when action_name == 'educator_sheerid_form' && (sheerid_verification_id.present? || is_sheerid_unviable? || !is_profile_complete?)
         redirect_to(profile_form_path) and return
@@ -113,24 +109,24 @@ class EducatorSignupController < SignupController
 
   def store_if_sheerid_is_unviable_for_user
     if params[:school].present? || params[:country].present?
-      @current_user.update!(is_sheerid_unviable: true)
-      security_log(:user_not_viable_for_sheerid, user: @current_user)
+      current_user.update!(is_sheerid_unviable: true)
+      security_log(:user_not_viable_for_sheerid, user: current_user)
     end
   end
 
   def store_sheerid_verification_for_user
-    if params[:verificationId].present? && @current_user.sheerid_verification_id.blank?
+    if params[:verificationId].present? && current_user.sheerid_verification_id.blank?
       # create the verification object - this is verified later in SheeridWebhook
       SheeridVerification.find_or_initialize_by(
         verification_id: params[:verificationId])
 
       # update the user
-      @current_user.update!(sheerid_verification_id: params[:verificationId])
+      current_user.update!(sheerid_verification_id: params[:verificationId])
 
       # log it
       SecurityLog.create!(
         event_type: :sheerid_verification_id_added_to_user_during_signup,
-        user:       @current_user,
+        user:       current_user,
         event_data: { verification_id: params[:verificationId] }
       )
     end

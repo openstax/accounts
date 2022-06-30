@@ -22,7 +22,7 @@ describe 'Terms', type: :feature, js: true do
     find(:css, '#agreement_i_agree').click
     click_button (t :"terms.pose.agree")
 
-    expect_newflow_profile_page
+    expect(page).to have_current_path profile_path
   end
 
 end

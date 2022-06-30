@@ -11,11 +11,35 @@
     }
   });
 
-  OX.Profile.Name.editable($('#name'), {
-      title: "<%= current_user.title %>",
-      first_name: "<%= current_user.first_name %>",
-      last_name: "<%= current_user.last_name %>",
-      suffix: "<%= current_user.suffix %>"
-  });
+  const defaults = {
+    mode: 'inline',
+    send: 'always',
+    ajaxOptions: {type: 'PUT'},
+    url: "<%= profile_path %>"
+  };
+  const editableAttributes = {
+    title: "<%= current_user.title %>",
+    first_name: "<%= current_user.first_name %>",
+    last_name: "<%= current_user.last_name %>",
+    suffix: "<%= current_user.suffix %>"
+  };
+  const nameArgs = {
+    defaults,
+    value: editableAttributes,
+    success: function(response) {
+    return $(this).html(response.full_name);
+    },
+    validate: function(attrs) {
+      if (!attrs.first_name && !attrs.last_name) {
+        return Accounts.I18n.name.first_last_name_blank;
+      } else if (!attrs.first_name) {
+        return Accounts.I18n.name.first_name_blank;
+      } else if (!attrs.last_name) {
+        return Accounts.I18n.name.last_name_blank;
+      }
+    }
+  };
+
+  ko.applyBindings({nameArgs});
 </script>
 <% end %>

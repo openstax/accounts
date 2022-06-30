@@ -29,9 +29,9 @@
     <div class="category">
       <%= I18n.t(:"users.edit.name") %>
     </div>
-    <div class="info">
+    <a href="#" id="name" data-type="profile_name" data-bind="editable: nameArgs">
       <%= current_user.full_name %>
-    </div>
+    </a>
 
     <div class="category">
       <%= t(:"users.edit.email_addresses") %>
@@ -95,4 +95,6 @@
                   }
     } %>
   </div>
+
+  <%= javascript_include_tag 'jquery_extensions' %>
 <% end %>

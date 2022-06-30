@@ -30,7 +30,12 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
   end
 
   scenario 'using a link with an expired code' do
-    @login_token = generate_expired_login_token_for_user(User.last)
+    user = User.last
+    user.refresh_login_token
+    user.login_token_expires_at = 1.year.ago
+    user.save!
+    @login_token = user.login_token
+
     visit start_path(type: type, token: @login_token)
     screenshot!
     expect(page).to have_no_missing_translations
@@ -89,40 +94,37 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
     find('[type=submit]').click
     expect(page).to have_content(t(:"identities.#{type}_success.message"))
 
-    expect_newflow_profile_page
+    expect(page).to have_current_path profile_path
 
     click_link (t :"users.edit.sign_out")
     visit '/'
     expect(page).to have_current_path login_path
 
     # try logging in with the old password
-    log_in_user('user', 'password')
+    log_in_user('user@example.com', 'password')
     expect(page).to have_content(t(:"login_signup_form.incorrect_password"))
 
     # try logging in with the new password
-    log_in_user('user', 'newpassword')
+    log_in_user('user@example.com', 'newpassword')
 
-    expect_newflow_profile_page
-    expect(page).to have_no_missing_translations
+    expect(page).to have_current_path profile_path
     expect(page).to have_content(@user.full_name)
   end
 
   def expect_reset_password_page(code = @login_token)
-    expect(page).to have_current_path forgot_password_form_path(token: code)
-    expect(page).to have_no_missing_translations
+    expect(page).to have_current_path forgot_password_form(token: code)
   end
 
   def expect_page(type:, token: @login_token)
     expect(page).to have_current_path start_path(type: type, token: token)
-    expect(page).to have_no_missing_translations
   end
 
   def start_path(type:, token: nil)
     case type
     when :reset
-      token.present? ? change_password_form_path(token: token) : change_password_form_path
+      token.present? ? change_password_form(token: token) : change_password_form
     when :add
-      token.present? ? create_password_form_path(token: token) : create_password_form_path
+      token.present? ? create_password_form(token: token) : create_password_form
     end
   end
 end

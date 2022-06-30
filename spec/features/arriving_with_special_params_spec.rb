@@ -8,12 +8,12 @@ feature "Arriving with special params", js: true do
   context "go=signup" do
     scenario "arriving from app" do
       arrive_from_app(params: {go: "signup"}, do_expect: false)
-      expect_sign_up_welcome_tab
+      expect(page).to have_content(t :"login_signup_form.welcome_page_header")
     end
 
     scenario "straight to login" do
       visit 'login?go=signup'
-      expect_sign_up_welcome_tab
+      expect(page).to have_content(t :"login_signup_form.welcome_page_header")
     end
   end
 
