@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :user do
     username { SecureRandom.hex(3) }
-    state { User::ACTIVATED } # otherwise the default from DB will be to 'temp'
+    state { :activated }
     first_name { Faker::Name.first_name }
     last_name  { Faker::Name.last_name  }
     uuid { Faker::Internet.uuid }
@@ -36,11 +36,6 @@ FactoryBot.define do
       transient do
         emails_count { 2 }
       end
-
-      # Leaving this here to show how to do :create instead of :build
-      # after(:create) do |user, evaluator|
-      #   FactoryBot.create_list(:email_address, evaluator.emails_count, user: user)
-      # end
 
       after(:build) do |user, evaluator|
         evaluator.emails_count.times do

@@ -10,7 +10,7 @@ class TransferOmniauthData
 
   def exec(data, user)
     # This routine is not called for identity, so error out
-    raise Unexpected if data.provider == 'identity'
+    return if data.provider == 'identity'
 
     # Usernames are deprecated, so do NOT set a username based on the data.
     # Setting a username would cause it to be visible on profile pages without

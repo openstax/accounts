@@ -7,14 +7,6 @@ RSpec.describe TransferOmniauthData, type: :routine do
 
   subject         { described_class.call(auth_data, user) }
 
-  context 'when auth provider is identity' do
-    let(:auth_hash) { OmniAuth::AuthHash.new provider: 'identity', uid: '12345' }
-
-    it 'raises error because we should not get here' do
-      expect { subject }.to raise_error(Unexpected)
-    end
-  end
-
   context 'when the user has non-blank names' do
     let(:auth_hash) do
       OmniAuth::AuthHash.new(
@@ -23,8 +15,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
     end
 
     it 'persists the user but does not update their names' do
-      expect { subject }.to  change     { user.new_record? }.from(true).to(false)
-                        .and not_change { user.first_name  }
+      expect { subject }.to not_change { user.first_name  }
                         .and not_change { user.last_name   }
     end
   end
