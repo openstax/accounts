@@ -7,8 +7,8 @@ describe 'Terms', type: :feature, js: true do
   end
 
   scenario 'agrees to terms when signatures not present' do
-    create_user('user','password', false)
-    log_in('user','password')
+    create_user('user@openstax.org')
+    log_in('user@openstax.org')
 
     screenshot!
     expect(page).to have_content("Terms of Use")

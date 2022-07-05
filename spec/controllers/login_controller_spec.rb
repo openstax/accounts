@@ -118,9 +118,9 @@ RSpec.describe LoginController, type: :controller do
           before { user.update!(faculty_status: :incomplete_signup) }
 
           it 'saves incomplete educator in the session' do
-            # expect_any_instance_of(described_class).to receive(:save_incomplete_educator).with(user).once.and_call_original
+            expect_any_instance_of(described_class).to receive(:save_incomplete_educator).with(user).once.and_call_original
             post(:login_post, params: params)
-            # expect(assigns(:current_incomplete_educator)).to eq(user)
+            expect(assigns(:current_incomplete_educator)).to eq(user)
           end
 
           it 'does a redirect' do
@@ -128,69 +128,6 @@ RSpec.describe LoginController, type: :controller do
             expect(response).to have_http_status(:redirect)
           end
         end
-      end
-    end
-
-    describe 'failure' do
-      describe 'when cannot_find_user' do
-        let(:bogus_email) { 'noone@openstax.org' }
-
-        xit 'creates a security log' do
-          expect {
-            post(:login_post, params: { login_form: { email: bogus_email, password: 'password' } })
-          }.to change {
-            SecurityLog.sign_in_failed.where(event_data: { reason: :cannot_find_user, email: bogus_email }).count
-          }
-        end
-      end
-
-      describe 'when multiple_users' do
-        before do
-          user1 = create_user 'user@example.com'
-          user2 = create_user 'user-2@example.com'
-          ContactInfo.where(id: user1.id).update_all(value: user2.value) # rubocop:disable Rails/SkipsModelValidations
-        end
-
-        let(:email_address) do
-          'user@example.com'
-        end
-
-        xit 'creates a security log' do
-          expect {
-            post(:login_post, params: { login_form: { email: email_address, password: 'password' } })
-          }.to change {
-            SecurityLog.where(event_type: :sign_in_failed).count
-          }
-        end
-      end
-
-      describe 'when too_many_login_attempts' do
-        before do
-          stub_const 'RateLimiting::MAX_LOGIN_ATTEMPTS_PER_USER', max_attempts_per_user
-        end
-
-        let(:email) { FactoryBot.create(:email_address, user: user, verified: true) }
-        let(:user) { FactoryBot.create(:user) }
-        let(:max_attempts_per_user) { 0 }
-
-        xit 'creates a security log' do
-          expect {
-            post(:login_post, params: { login_form: { email: email.value, password: 'wrongpassword' } })
-          }.to change {
-            SecurityLog.where(
-              event_type: :sign_in_failed,
-              event_data: {
-                reason: :too_many_login_attempts,
-                email:  email.value
-              }
-            ).count
-          }
-        end
-      end
-
-      xit 'saves the email to the session' do
-        post(:login_post, params: { login_form: { email: 'noone@openstax.org', password: 'wrongZpassword' } })
-        expect(session[:login_failed_email]).to eq('noone@openstax.org')
       end
     end
   end

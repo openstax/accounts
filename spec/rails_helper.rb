@@ -92,6 +92,7 @@ CAPYBARA_HOST_REGEX = /\A(.*\.)?#{Regexp.escape CAPYBARA_HOST.sub('*.', '').chom
 Capybara.asset_host = "#{CAPYBARA_PROTOCOL}://#{CAPYBARA_HOST}:#{CAPYBARA_PORT}"
 
 Capybara.server = :puma, { Silent: true } # To clean up your test output
+Capybara.raise_server_errors = false
 
 # Normalize whitespaces
 Capybara.default_normalize_ws = true

@@ -128,7 +128,7 @@ class OauthCallback
     return nil if users.empty?
     return users.first if users.one?
 
-    these_user_ids     = SecurityLog.arel_table[:user_id].in(users.map(&:id))
+    these_user_ids = SecurityLog.arel_table[:user_id].in(users.map(&:id))
     user_id_by_sign_in = SecurityLog.sign_in_successful.where(these_user_ids).first&.user_id
 
     if user_id_by_sign_in.present?
@@ -143,7 +143,7 @@ class OauthCallback
   end
 
   def create_student_user_instance
-    user           = User.new(state: 'unverified', role: :student)
+    user = User.new(state: 'unverified', role: :student)
     user.full_name = oauth_data.name
 
     transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)

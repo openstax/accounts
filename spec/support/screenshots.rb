@@ -1,6 +1,6 @@
 if EnvUtilities.load_boolean(name: 'SSHOT', default: false)
   require 'capybara-screenshot/rspec'
-  Capybara::Screenshot.autosave_on_failure = false
+  Capybara::Screenshot.autosave_on_failure = true
   Capybara::Screenshot.append_timestamp = false
   WINDOW_SIZE = [ 1234, 1234 ]
   CURRENT_TIME = Time.now.strftime('%Y-%m-%d-%H-%M-%S')

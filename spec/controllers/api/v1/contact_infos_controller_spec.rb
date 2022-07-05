@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::ContactInfosController, type: :controller, api: true, version: :v1 do
 
-  let!(:untrusted_application)     { FactoryBot.create :doorkeeper_application }
+  let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
 
   let!(:right_user) { FactoryBot.create :user }
   let!(:wrong_user) { FactoryBot.create :user }
@@ -15,7 +15,7 @@ RSpec.describe Api::V1::ContactInfosController, type: :controller, api: true, ve
                                                   resource_owner_id: wrong_user.id }
 
   let!(:contact_info) {
-    AddEmailToUser.call("bob@example.com", right_user)
+    CreateEmailForUser.call("bob@example.com", right_user)
     right_user.contact_infos.first
   }
 

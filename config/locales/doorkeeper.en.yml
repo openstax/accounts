@@ -84,6 +84,9 @@ en:
     pre_authorization:
       status: 'Pre-authorization'
 
+    scopes:
+      public: 'Public'
+
     errors:
       messages:
         # Common error messages

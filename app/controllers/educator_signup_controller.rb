@@ -19,11 +19,11 @@ class EducatorSignupController < SignupController
     handle_with(
       SheeridWebhook,
       verification_id: params[:verificationId],
-      success:         lambda {
+      success: lambda {
         security_log(:sheerid_webhook_received, { data: @handler_result })
         render(status: :ok, plain: 'Success')
       },
-      failure:         lambda {
+      failure: lambda {
         security_log(:sheerid_webhook_failed, { data: @handler_result })
         if is_real_production?
           Sentry.capture_message(
@@ -47,7 +47,7 @@ class EducatorSignupController < SignupController
   def profile_form_post
     handle_with(
       CompleteEducatorProfile,
-      user:    current_user,
+      user: current_user,
       success: lambda {
         user = @handler_result.outputs.user
         security_log(:user_profile_complete, { user: user })

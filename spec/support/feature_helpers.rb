@@ -1,14 +1,19 @@
 def create_user(email, password = 'password', terms_agreed = nil, confirmation_code = nil, role = 'student')
   terms_agreed_option = terms_agreed.nil? || terms_agreed ? :terms_agreed : :terms_not_agreed
 
-  user ||= FactoryBot.create(:user, terms_agreed_option, role: role)
+  email_address ||= EmailAddress.find_by(value: email)
+  if email_address ||= EmailAddress.find_by(value: email)
+    user ||= email_address.user
+  else
+    user ||= FactoryBot.create(:user, terms_agreed_option, role: role)
 
-  FactoryBot.create(:email_address, user: user, value: email,
-                    confirmation_code:    confirmation_code,
-                    verified:             confirmation_code.nil?)
+    FactoryBot.create(:email_address, user: user, value: email,
+                      confirmation_code:    confirmation_code,
+                      verified:             confirmation_code.nil?)
 
-  identity = FactoryBot.create :identity, user: user, password: password
-  FactoryBot.create :authentication, user: user, provider: 'identity', uid: identity.uid
+    identity = FactoryBot.create :identity, user: user, password: password
+    FactoryBot.create :authentication, user: user, provider: 'identity', uid: identity.uid
+  end
 
   user
 end

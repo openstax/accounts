@@ -11,14 +11,6 @@ RSpec.describe EducatorSignupController, type: :controller do
       { 'verificationId': Faker::Alphanumeric.alphanumeric(number: 24) }
     end
 
-    xit 'is processed by the lev handler' do
-      # byebug
-      # expect(handler).to receive(:handle)
-
-      post(:sheerid_webhook, params: params)
-      expect(response).to have_http_status(:ok)
-    end
-
     describe 'must be externally available' do
       before(:each) do
         allow(handler).to receive(:handle).and_return(true)

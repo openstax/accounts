@@ -2,7 +2,7 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
   let(:type) { parameter }
 
   before(:each) do
-    @user = create_user('user@openstax.org', 'password')
+    @user = create_user('user@openstax.org')
     @login_token = generate_login_token_for @user
 
     if :add == type
@@ -122,9 +122,9 @@ RSpec.shared_examples 'adding and resetting password from profile' do |parameter
   def start_path(type:, token: nil)
     case type
     when :reset
-      token.present? ? change_password_form(token: token) : change_password_form
+      token.present? ? change_password_form_path(token: token) : change_password_form_path
     when :add
-      token.present? ? create_password_form(token: token) : create_password_form
+      token.present? ? create_password_form_path(token: token) : create_password_form_path
     end
   end
 end

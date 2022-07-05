@@ -20,7 +20,7 @@ feature 'Password reset', js: true do
     expect(page).to have_current_path(profile_path)
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      find('[data-provider=identity] .edit--newflow').click
+      find('[data-provider=identity] .edit').click
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
 
       click_link(t(:"login_signup_form.forgot_password"))
@@ -41,9 +41,9 @@ feature 'Password reset', js: true do
   end
 
   scenario 'with identity gets redirected to reset password' do
-    @user = create_user Faker::Internet.email
-    @login_token = generate_login_token_for @user
-    visit password_add_path(token: @login_token)
+    user = create_user Faker::Internet.email
+    login_token = generate_login_token_for user
+    visit password_add_path(token: login_token)
     expect(page).to have_current_path password_reset_path
   end
 
@@ -51,7 +51,7 @@ feature 'Password reset', js: true do
     log_in_user('user@openstax.org', 'password')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      find('[data-provider=identity] .edit--newflow').click
+      find('[data-provider=identity] .edit').click
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
       click_link(t(:"login_signup_form.forgot_password"))
       expect(page).to have_content(
