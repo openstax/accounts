@@ -3,7 +3,6 @@ require 'rails_helper'
 feature 'User logs in or signs up with a social network', js: true do
   before do
     load('db/seeds.rb')
-    allow_any_instance_of(CreateSalesforceLead).to receive(:exec)
   end
 
   let(:email) { 'user@example.com' }
@@ -11,7 +10,7 @@ feature 'User logs in or signs up with a social network', js: true do
   context 'students' do
     context 'when user signs up with a social network' do
       scenario 'happy path' do
-        visit(signup_student_path)
+        visit(signup_path)
 
         simulate_login_signup_with_social(name: 'Elon Musk', email: email) do
           click_on('Facebook')
@@ -36,7 +35,7 @@ feature 'User logs in or signs up with a social network', js: true do
       context 'user denies us access to their email address, has to enter it manually' do
         describe 'success' do
           example do
-            visit(signup_student_path)
+            visit(signup_path)
 
             simulate_login_signup_with_social(name: 'Elon Musk', email: nil) do
               click_on('Facebook')
@@ -68,7 +67,7 @@ feature 'User logs in or signs up with a social network', js: true do
           subject(:invalid_email) { 'someinvalidemail' }
 
           scenario 'the form shows a friendly error message' do
-            visit(signup_student_path)
+            visit(signup_path)
 
             simulate_login_signup_with_social(name: 'Elon Musk', email: nil) do
               click_on('Facebook')
@@ -105,7 +104,7 @@ feature 'User logs in or signs up with a social network', js: true do
       end
 
       before do
-        FactoryBot.create(:authentication, provider: :facebooknewflow, user: user, uid: 'uid123')
+        FactoryBot.create(:authentication, provider: :facebook, user: user, uid: 'uid123')
         FactoryBot.create(:email_address, user: user, value: email, verified: true)
       end
 
@@ -116,7 +115,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page.current_path).to match(profile_path)
             end
         end
       end
@@ -129,7 +128,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page.current_path).to match(profile_path)
             end
           end
         end
@@ -141,7 +140,7 @@ feature 'User logs in or signs up with a social network', js: true do
       let(:nil_email_value) { nil }
 
       before do
-        visit(signup_student_path)
+        visit(signup_path)
 
         simulate_login_signup_with_social(name: 'Elon Musk', email: nil_email_value) do
           click_on('Facebook')
@@ -164,7 +163,7 @@ feature 'User logs in or signs up with a social network', js: true do
       scenario 'user can subsequently log in' do
         simulate_login_signup_with_social(name: 'Elon Musk', email: nil_email_value) do
           click_on('Facebook')
-          expect(page.current_path).to match(profile_newflow_path)
+          expect(page.current_path).to match(profile_path)
           expect(page).to have_content(email_value)
         end
       end
@@ -196,7 +195,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page.current_path).to match(profile_path)
 
               # A `facebooknewflow` auth was created since the user already had a `facebook` one
               expect(user.authentications.count).to eq(2)
@@ -213,7 +212,7 @@ feature 'User logs in or signs up with a social network', js: true do
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page.current_path).to match(profile_path)
               expect(page).to have_content(email_value)
             end
           end

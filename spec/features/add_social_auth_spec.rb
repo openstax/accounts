@@ -9,17 +9,17 @@ feature 'Add social auth', js: true do
     user.update(role: :student)
     log_in_user(email_value, 'password')
 
-    expect_profile_page
+    expect(page.current_path).to match(profile_path)
 
     click_link (t :"users.edit.enable_other_sign_in_options")
     wait_for_animations
     expect(page).to have_content('Facebook')
 
     with_omniauth_test_mode(email: email_value) do
-      find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
+      find('.authentication[data-provider="facebook"] .add').click
       wait_for_ajax
       screenshot!
-      expect_profile_page
+      expect(page.current_path).to match(profile_path)
       expect(page).to have_content("already in use")
     end
   end
@@ -30,16 +30,16 @@ feature 'Add social auth', js: true do
 
     log_in_user(email_value, 'password')
 
-    expect_profile_page
+    expect(page.current_path).to match(profile_path)
 
     click_link (t :"users.edit.enable_other_sign_in_options")
     wait_for_animations
     expect(page).to have_content('Facebook')
 
     with_omniauth_test_mode(email: email_value) do
-      find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
+      find('.authentication[data-provider="facebook"] .add').click
       wait_for_ajax
-      expect_profile_page
+      expect(page.current_path).to match(profile_path)
       expect(page).to have_no_content("already in use")
       expect(page).to have_content('Facebook')
     end
@@ -52,17 +52,17 @@ feature 'Add social auth', js: true do
     user.update(role: :student)
     log_in_user(email_value, 'password')
 
-    expect_profile_page
+    expect(page.current_path).to match(profile_path)
 
     click_link (t :"users.edit.enable_other_sign_in_options")
     wait_for_animations
     expect(page).to have_content('Facebook')
 
     with_omniauth_test_mode(email: email_value) do
-      find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
+      find('.authentication[data-provider="facebook"] .add').click
       wait_for_ajax
       screenshot!
-      expect_profile_page
+      expect(page.current_path).to match(profile_path)
       expect(page).to have_content('Facebook')
     end
   end
