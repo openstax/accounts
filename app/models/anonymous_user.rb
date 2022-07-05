@@ -147,4 +147,8 @@ class AnonymousUser
   def school_location=(type)
     raise AnonymousUserIsImmutableError, "Cannot set school location on the AnonymousUser."
   end
+
+  def sheerid_verification_id
+    raise AnonymousUserIsImmutableError, "Cannot set sheerid verification id on the AnonymousUser."
+  end
 end
