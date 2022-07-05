@@ -1,7 +1,7 @@
 require 'openstax_rescue_from'
 
 rescue_from_settings = Rails.application.secrets[:rescue_from]
-exception_secrets    = Rails.application.secrets[:exception]
+exception_secrets = Rails.application.secrets[:exception]
 
 OpenStax::RescueFrom.configure do |config|
   config.raise_exceptions = [false, 'false'].exclude?(
@@ -13,10 +13,10 @@ OpenStax::RescueFrom.configure do |config|
     rescue_from_settings[:raise_background_exceptions]
   )
 
-  config.app_name     = Rails.application.secrets.app_name
+  config.app_name = Rails.application.secrets.app_name
   config.contact_name = exception_secrets[:contact_name]
 
-  config.notify_proc                    = ->(proxy, controller) do
+  config.notify_proc = ->(proxy, controller) do
     ExceptionNotifier.notify_exception(
       proxy.exception,
       env:      controller.request.env,
@@ -32,7 +32,7 @@ OpenStax::RescueFrom.configure do |config|
       sections: %w[data request session environment backtrace]
     )
   end
-  config.notify_background_proc         = ->(proxy) do
+  config.notify_background_proc = ->(proxy) do
     ExceptionNotifier.notify_exception(
       proxy.exception,
       data:     {
@@ -46,7 +46,7 @@ OpenStax::RescueFrom.configure do |config|
       sections: %w[data environment backtrace]
     )
   end
-  config.notify_rack_middleware         = ExceptionNotification::Rack
+  config.notify_rack_middleware = ExceptionNotification::Rack
   config.notify_rack_middleware_options = {
     email: {
       email_prefix:         "[#{config.app_name}] (#{Rails.application.secrets.environment_name}) ",
@@ -57,7 +57,7 @@ OpenStax::RescueFrom.configure do |config|
   # URL generation errors are caused by bad routes, for example, and should not be ignored
   ExceptionNotifier.ignored_exceptions.delete("ActionController::UrlGenerationError")
 
-  config.notify_proc            = ->(proxy, controller) do
+  config.notify_proc = ->(proxy, controller) do
     extra = {
       error_id:                proxy.error_id,
       class:                   proxy.name,
@@ -83,7 +83,7 @@ OpenStax::RescueFrom.configure do |config|
     Sentry.capture_exception(proxy.exception, extra: extra)
   end
 
-  config.html_error_template_path        = 'errors/any'
+  config.html_error_template_path = 'errors/any'
   config.html_error_template_layout_name = 'error'
 end
 
