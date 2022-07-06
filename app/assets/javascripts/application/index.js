@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap
+//= require bootstrap-editable
 //= require ./jquery_extensions
 //= require ./accounts-ui
 //= require ./remote-access-helpers

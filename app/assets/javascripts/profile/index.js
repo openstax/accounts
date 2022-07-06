@@ -1,4 +1,3 @@
-//= require bootstrap-editable
 //= require ../vendor/underscore
 //= require ./namespace
 //= require ./confirmation-popover
