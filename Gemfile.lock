@@ -207,7 +207,7 @@ GEM
     delayed_job_worker_pool (0.3.0)
       delayed_job (>= 3.0, < 4.2)
     diff-lcs (1.4.4)
-    diffy (3.4.0)
+    diffy (3.4.2)
     docile (1.4.0)
     doorkeeper (5.1.2)
       railties (>= 5)
