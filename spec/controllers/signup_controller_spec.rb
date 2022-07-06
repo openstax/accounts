@@ -122,7 +122,7 @@ RSpec.describe SignupController, type: :controller do
         session[:unverified_user_id] = user.id
 
         post(:change_signup_email_post, params: params)
-        expect(response).to redirect_to(:change_signup_email_form_complete)
+        expect(response).to render_template(:verify_email_by_pin_form_path)
       end
     end
 
@@ -147,7 +147,7 @@ RSpec.describe SignupController, type: :controller do
   describe 'GET #student_email_verification_form' do
     it 'renders email_verification_form unless missing unverified_user' do
       get(:verify_email_by_pin_form)
-      expect(response).to redirect_to signup_path
+      expect(response).to render_template(:email_verification_form)
 
       user = create_user('user@openstax.org')
       user.update(state: 'unverified')
@@ -169,7 +169,7 @@ RSpec.describe SignupController, type: :controller do
     end
 
     it 'redirects when there is no unverified_user present' do
-      user                         = nil
+      user = nil
       session[:unverified_user_id] = nil
       get(:verify_email_by_pin_form)
       expect(response.status).to eq(302)
@@ -183,7 +183,6 @@ RSpec.describe SignupController, type: :controller do
     end
 
     it 'renders' do
-      pending('This is working but not in the tests.')
       get(:signup_done)
       expect(response).to render_template(:signup_done)
     end

@@ -109,7 +109,7 @@ class SignupController < ApplicationController
 
   def signup_done
     security_log(:sign_up_successful, form_name: action_name)
-    redirect_back(fallback_location: :signup_done) if current_user.is_tutor_user?
+    redirect_back if current_user.is_tutor_user?
   end
 
   private

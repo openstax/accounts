@@ -20,16 +20,6 @@ RSpec.describe SheeridAPI, type: :lib, vcr: VCR_OPTS do
         expect(response.relevant?).to be(false)
       end
     end
-
-    context 'when collectTeacherPersonalInfo' do
-      subject(:response) { described_class.get_verification_details(verification_id) }
-      let(:verification_id) { '5ef42cfaeddfdd1bd961c088' }
-
-      # TODO: add this to the new faculty states - this is relevant, it means the user was asked for documents
-      xit 'is not a relevant response' do
-        expect(response.relevant?).to be(false)
-      end
-    end
   end
 
   describe SheeridAPI::Response do

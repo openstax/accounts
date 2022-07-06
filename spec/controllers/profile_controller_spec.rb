@@ -15,7 +15,7 @@ RSpec.describe ProfileController, type: :controller do
           user.update!(is_profile_complete: true)
         end
 
-        xit 'renders profile' do
+        it 'renders profile' do
           get(:profile)
           expect(response).to render_template(:profile)
         end

@@ -112,26 +112,6 @@ feature 'Educator signup flow', js: true do
     let!(:email_address) { FactoryBot.create(:email_address, user: user, verified: false) }
     let!(:identity) { FactoryBot.create(:identity, user: user, password: password) }
     let!(:password) { 'password' }
-
-    xit 'allows the educator to log in and redirects them to the email verification form' do
-      visit(login_path)
-      fill_in('login_form_email', with: email_address.value)
-      fill_in('login_form_password', with: password)
-      find('[type=submit]').click
-      expect(page.current_path).to match(verify_email_by_pin_form_path)
-    end
-
-    xit 'allows the educator to reset their password' do
-      visit(login_path)
-      log_in_user(email_address.value, 'WRONGpassword')
-      find('[id=forgot-password-link]').click
-      #click_on(I18n.t(:"login_signup_form.forgot_password"))
-      expect(page.current_path).to eq(forgot_password_form_path)
-      expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
-      screenshot!
-      click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
-      screenshot!
-    end
   end
 
   context 'user interface' do

@@ -110,6 +110,7 @@ class SecurityLog < ApplicationRecord
     faculty_status_updated
     account_created_or_synced_with_salesforce
     user_began_signup
+    user_signup_failed
   ]
 
   json_serialize :event_data, Hash
