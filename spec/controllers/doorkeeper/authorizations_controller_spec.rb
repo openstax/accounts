@@ -10,7 +10,7 @@ RSpec.describe Doorkeeper::AuthorizationsController, type: :controller do
 
         it 'redirects to /profile' do
           post :create, params: { response_type: :code }
-          expect(response).to redirect_to profile_url
+          expect(response).to redirect_to profile_newflow_url
         end
       end
 
