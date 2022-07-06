@@ -34,6 +34,9 @@ gem 'lev', '~> 10.1.0'
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.4.1'
 
+# Bootstrap editable fields
+gem 'bootstrap-editable-rails'
+
 # SCSS stylesheets
 gem 'sassc-rails', '~> 2.1'
 

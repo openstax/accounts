@@ -145,6 +145,9 @@ GEM
       safely_block (>= 0.1.1)
     bootsnap (1.12.0)
       msgpack (~> 1.2)
+    bootstrap-editable-rails (0.0.9)
+      railties (>= 3.1)
+      sass-rails
     bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
       sassc (>= 2.0.0)
@@ -703,6 +706,7 @@ DEPENDENCIES
   bcrypt (~> 3.1)
   blazer
   bootsnap
+  bootstrap-editable-rails
   bootstrap-sass (~> 3.4.1)
   byebug
   capybara
