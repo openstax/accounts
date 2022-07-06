@@ -3,9 +3,19 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
-  get 'i/(*path)' => redirect { |_, request|
-    "/accounts/#{request.params[:path]}?#{request.params.except('path').to_query}"
-  }
+  match 'i/signup/(*path)' => redirect { |_,request| "signup/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
+  get 'i/profile/(*path)' => redirect { |_, request| "profile/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'i/exit_accounts/(*path)' => redirect { |_, request| "exit_accounts/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  match 'i/login/(*path)' => redirect { |_, request| "login/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
+  get 'i/reauthenticate/(*path)' => redirect { |_, request| "reauthenticate/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'i/check_your_email/(*path)' => redirect { |_, request| "check_your_email/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'i/done/(*path)' => redirect { |_, request| "done/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  match 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
+  get 'i/confirm_your_info' => redirect('confirm_your_info')
+  get 'i/forgot_password_form' => redirect('forgot_password_form')
+  get 'i/logout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'i/signout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'signout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
 
   # routes to old faculty access controller, redirect them to the sheerid form or pending cs paths
   get 'faculty_access/apply/' => redirect('signup/educator/apply')
@@ -81,26 +91,26 @@ Rails.application.routes.draw do
   scope controller: 'password_management' do
     # Password management process (forgot,  change, or create password)
     get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
-    post 'send_reset_password_email',
+    post 'i/send_reset_password_email',
       action: :send_reset_password_email,
       as: :send_reset_password_email
-    get 'reset_password_email_sent',
+    get 'i/reset_password_email_sent',
           action: :reset_password_email_sent,
           as: :reset_password_email_sent
-    get 'create_password_form', action: :create_password_form, as: :create_password_form
-    post 'create_password', action: :create_password, as: :create_password
-    get 'change_password_form', action: :change_password_form, as: :change_password_form
-    post 'change_password', action: :change_password, as: :change_password
+    get 'i/create_password_form', action: :create_password_form, as: :create_password_form
+    post 'i/create_password', action: :create_password, as: :create_password
+    get 'i/change_password_form', action: :change_password_form, as: :change_password_form
+    post 'i/change_password', action: :change_password, as: :change_password
   end
 
   scope controller: 'social_auth' do
-    get 'auth/:provider', action: :oauth_callback, as: :newflow_auth
-    post 'auth/:provider', action: :oauth_callback
-    get 'auth/:provider/callback', action: :oauth_callback
-    delete 'auth/:provider', action: :remove_auth_strategy
+    get 'i/auth/:provider', action: :oauth_callback, as: :newflow_auth
+    post 'i/auth/:provider', action: :oauth_callback
+    get 'i/auth/:provider/callback', action: :oauth_callback
+    delete 'i/auth/:provider', action: :remove_auth_strategy
     #   When you sign up with a social provider, you must confirm your info first
     get 'confirm_your_info', action: :confirm_your_info
-    post 'confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
+    post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
   end
 
   scope controller: 'sessions' do
