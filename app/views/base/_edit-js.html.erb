@@ -3,7 +3,7 @@
   $.fn.editable.defaults.mode = 'inline';
   $.fn.editable.defaults.send = "always";
   $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
-  $.fn.editable.defaults.url = "<%= profile_path %>";
+  $.fn.editable.defaults.url = "<%= profile_newflow_path %>";
 
   $('#username').editable({
     success: function(response, newValue) {
