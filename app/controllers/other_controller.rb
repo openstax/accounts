@@ -1,8 +1,10 @@
 class OtherController < BaseController
 
+  fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
+
   before_action :newflow_authenticate_user!, only: :profile_newflow
   before_action :ensure_complete_educator_signup, only: :profile_newflow
-  before_action :prevent_caching, only: :profile_newflow
+  before_action :prevent_caching
 
   def profile_newflow
     render layout: 'application'
@@ -22,7 +24,29 @@ class OtherController < BaseController
     end
   end
 
+  def update
+    OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
+
+    respond_to do |format|
+      format.json do
+        if current_user.update_attributes(user_params)
+          security_log :user_updated, user_params: user_params
+
+          render json: { full_name: current_user.full_name }, status: :ok
+        else
+          render json: current_user.errors.full_messages.first, status: :unprocessable_entity
+        end
+      end
+    end
+  end
+
   private
+
+  def user_params
+    params[:value].is_a?(String) ? \
+      { params[:name] => params[:value] } : \
+      params.require(:value).permit(:title, :first_name, :last_name, :suffix).to_h
+  end
 
   def ensure_complete_educator_signup
     return if current_user.student?
