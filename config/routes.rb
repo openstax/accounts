@@ -17,8 +17,12 @@ Rails.application.routes.draw do
   #  Logged-in Profile   #
   ########################
   scope controller: 'profile' do
-    get 'profile', action: :profile, as: :profile
-    get 'exit_accounts', action: :exit_accounts, as: :exit_accounts
+    # Profile access
+    get 'profile'
+    put 'profile', action: :update
+
+    # Exit accounts back to app they came from
+    get 'exit_accounts'
   end
 
   ###################
