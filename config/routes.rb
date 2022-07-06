@@ -3,14 +3,14 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
-  match 'i/signup/(*path)' => redirect { |_,request| "signup/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
+  get 'i/signup/(*path)' => redirect { |_,request| "signup/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
   get 'i/profile/(*path)' => redirect { |_, request| "profile/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
   get 'i/exit_accounts/(*path)' => redirect { |_, request| "exit_accounts/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  match 'i/login/(*path)' => redirect { |_, request| "login/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
+  get 'i/login/(*path)' => redirect { |_, request| "login/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
   get 'i/reauthenticate/(*path)' => redirect { |_, request| "reauthenticate/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
   get 'i/check_your_email/(*path)' => redirect { |_, request| "check_your_email/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
   get 'i/done/(*path)' => redirect { |_, request| "done/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  match 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
+  get 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
   get 'i/confirm_your_info' => redirect('confirm_your_info')
   get 'i/forgot_password_form' => redirect('forgot_password_form')
   get 'i/logout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
@@ -28,7 +28,7 @@ Rails.application.routes.draw do
   scope controller: 'other' do
     # Profile access
     get 'profile', action: :profile_newflow, as: :profile_newflow
-    put 'profile', action: :update
+    put 'profile', action: :update, as: :update_profile
 
     # Exit accounts back to app they came from
     get 'exit_accounts', action: :exit_accounts, as: :exit_accounts
