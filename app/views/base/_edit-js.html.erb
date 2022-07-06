@@ -1,8 +1,8 @@
 <%= content_for :javascript do %>
 <script type="text/javascript">
   $.fn.editable.defaults.mode = 'inline';
-  $.fn.editable.defaults.send = "always";
-  $.fn.editable.defaults.ajaxOptions = {type: "PUT"};
+  $.fn.editable.defaults.send = 'always';
+  $.fn.editable.defaults.ajaxOptions = { type: 'put', dataType: 'json' };
   $.fn.editable.defaults.url = "<%= update_profile_path %>";
 
   $('#username').editable({
