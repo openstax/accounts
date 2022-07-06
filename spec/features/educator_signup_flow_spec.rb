@@ -108,131 +108,55 @@ feature 'Educator signup flow', js: true do
   end
 
   context 'when educator has not verified their only email address' do
-    let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: User::INSTRUCTOR_ROLE) }
+    let!(:user) { FactoryBot.create(:user, state: :unverified, role: :instructor) }
     let!(:email_address) { FactoryBot.create(:email_address, user: user, verified: false) }
-    let!(:identity) { FactoryBot.create(:identity, user: user, password: password) }
-    let!(:password) { 'password' }
+    let!(:identity) { FactoryBot.create(:identity, user: user) }
   end
 
   context 'user interface' do
-    before { mock_current_user(user) }
+    before { mock_current_user(create_user(email_address)) }
 
     let(:user) do
       FactoryBot.create(
-        :user, role: User::INSTRUCTOR_ROLE,
-        is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
+        :user, role: :instructor, is_profile_complete: false, sheerid_verification_id: Faker::Alphanumeric.alphanumeric
       )
     end
 
-    context 'step 4' do
-      before do
-        visit(profile_form_path)
-        visit(profile_form_path)
-        expect(page.current_path).to eq(profile_form_path)
-        find("#signup_educator_specific_role_instructor").click
-        find('#signup_who_chooses_books_instructor').click
-        fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
-      end
-
-      context 'label for books list' do
-        context 'when already using openstax book(s)' do
-          before do
-            find('#signup_using_openstax_how_as_primary').click
-          end
-
-          it 'shows "Books used"' do
-            expect(page).to have_text(I18n.t(:"educator_profile_form.books_used"))
-          end
-        end
-
-        context 'when NOT yet using openstax book(s)' do
-          before do
-            find('#signup_using_openstax_how_as_recommending').click
-          end
-
-          it 'shows "Books of interest"' do
-            expect(page).to have_text(I18n.t(:"educator_profile_form.books_of_interest"))
-          end
-        end
-      end
-    end
-  end
-
-  context 'when educator stops signup flow, logs out, after completing step 2' do
-    let(:sheerid_verification) do
-      FactoryBot.create(:sheerid_verification, email: email_value)
-    end
-
-    it 'redirects them to continue signup flow (step 3) after logging in' do
-      skip 'because it only fails in Travis but works locally and locally testing'
-
-      visit(login_path(return_param))
-      click_on(I18n.t(:"login_signup_form.sign_up"))
-      click_on(I18n.t(:"login_signup_form.educator"))
-
-      # Step 1
-      fill_in 'signup_first_name',	with: first_name
-      fill_in 'signup_last_name',	with: last_name
-      fill_in 'signup_phone_number', with: phone_number
-      fill_in 'signup_email',	with: email_value
-      fill_in 'signup_password',	with: password
-      submit_signup_form
-      screenshot!
-
-      # Step 2
-      # sends an email address confirmation email
-      expect(page.current_path).to eq(verify_email_by_pin_form_path)
-      open_email(email_value)
-      capture_email!(address: email_value)
-      expect(current_email).to be_truthy
-      # ... with the correct PIN
-      correct_pin = EmailAddress.find_by!(value: email_value).confirmation_pin
-      fill_in('confirm_pin', with: correct_pin)
-      wait_for_ajax
-      wait_for_animations
-      expect(page).to have_content(correct_pin)
-      expect(page).to have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
-      click_on(I18n.t(:"login_signup_form.confirm_my_account_button"))
-      expect(page).to_not have_content(I18n.t(:"login_signup_form.confirm_my_account_button"))
-      wait_for_ajax
-      wait_for_animations
-      expect(EmailAddress.verified.count).to eq(1)
-
-      wait_for_ajax
-      wait_for_animations
-      # ... sends you to the SheerID form
-      expect(page).to have_current_path(sheerid_form_path)
-
-      # LOG OUT
-      visit(logout_path)
-      expect(page).to have_current_path(login_path)
-
-      # LOG IN
-      visit(login_path(return_param))
-      log_in_user(email_value, password)
-
-      # Step 3
-      expect_sheerid_iframe
-
-      # Step 4
-      visit(profile_form_path)
-      expect(page.current_path).to eq(profile_form_path)
-      find('#signup_educator_specific_role_other').click
-      expect(page).to have_text(I18n.t(:"educator_profile_form.other_please_specify"))
-      fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
-      click_on('Continue')
-      expect(page.current_path).to eq(signup_done_path)
-      click_on('Finish')
-      wait_for_ajax
-      expect(page.current_url).to eq(external_app_url)
-    end
+    # TODO: This was a change as part of another PR, go back and update to new fields
+    # context 'step 4' do
+    #   before do
+    #     visit(profile_form_path)
+    #     expect(page.current_path).to eq(profile_form_path)
+    #     find("#signup_educator_specific_role_instructor").click
+    #     find('#signup_who_chooses_books_instructor').click
+    #     fill_in(I18n.t(:"educator_profile_form.num_students_taught"), with: 30)
+    #   end
+    #
+    #   context 'label for books list' do
+    #     context 'when already using openstax book(s)' do
+    #       before do
+    #         find('#signup_using_openstax_how_as_primary').click
+    #       end
+    #
+    #       it 'shows "Books used"' do
+    #         expect(page).to have_text(I18n.t(:"educator_profile_form.books_used"))
+    #       end
+    #     end
+    #
+    #     context 'when NOT yet using openstax book(s)' do
+    #       before do
+    #         find('#signup_using_openstax_how_as_recommending').click
+    #       end
+    #
+    #       it 'shows "Books of interest"' do
+    #         expect(page).to have_text(I18n.t(:"educator_profile_form.books_of_interest"))
+    #       end
+    #     end
+    #   end
+    # end
   end
 
   context 'when legacy educator wants to request faculty verification' do
-    #TODO:
-    # skipping this spec, this entire feature spec is poorly written and should be refactored once
-    # all the newflow methods are fixed. Manually tested this expected redirect works. MV 8Jun22
-    pending("These routes no longer exist and are being redirected in routes.rb - evaluate if this is even still needed")
     before(:each) do
       educator.update(
         role: User::INSTRUCTOR_ROLE,
@@ -250,13 +174,13 @@ feature 'Educator signup flow', js: true do
     let(:password) { 'password' }
 
     context 'with faculty status as no_faculty_info' do
-      xit 'sends them to step 3 SheerID iframe' do
+      it 'sends them to step 3 SheerID iframe' do
         expect_sheerid_iframe
       end
     end
 
     context 'with faculty status as rejected' do
-      xit 'sends them to step 4 Educator Profile Form' do
+      it 'sends them to step 4 Educator Profile Form' do
         visit(profile_form_path)
         expect(page.current_path).to eq(profile_form_path)
       end

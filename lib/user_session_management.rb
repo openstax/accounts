@@ -11,9 +11,7 @@ module UserSessionManagement
     elsif request.respond_to?(:cookie_jar)
       request.cookie_jar
     else
-      ActionDispatch::Cookies::CookieJar.build(
-        ActionDispatch::Request.new(Rails.application.env_config), request.cookies
-      )
+      ActionDispatch::Cookies::CookieJar.build(ActionDispatch::Request.new(Rails.application.env_config), request.cookies)
     end
   end
 
