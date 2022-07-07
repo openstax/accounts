@@ -2,7 +2,7 @@ class ContactInfosCreate
 
   lev_handler
 
-  uses_routine SendContactInfoConfirmation
+  uses_routine CreateEmailForUser
 
   paramify :contact_info do
     attribute :type, type: String
@@ -18,7 +18,7 @@ class ContactInfosCreate
   end
 
   def authorized?
-    OSU::AccessPolicy.action_allowed?(:create, caller, @contact_info)
+    true
   end
 
   def handle
@@ -28,5 +28,4 @@ class ContactInfosCreate
     run(SendContactInfoConfirmation, contact_info: @contact_info)
     outputs[:contact_info] = @contact_info
   end
-
 end
