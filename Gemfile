@@ -32,16 +32,16 @@ gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', r
 gem 'lev', '~> 10.1.0'
 
 # Bootstrap front-end framework
-gem 'bootstrap-sass', '~> 3.4.1'
+gem 'bootstrap-sass'
 
 # Bootstrap editable fields
 gem 'bootstrap-editable-rails'
 
 # SCSS stylesheets
-gem 'sassc-rails', '~> 2.1'
+gem 'sassc-rails'
 
 # CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '5.0.0'
+gem 'coffee-rails'
 
 # JavaScript asset compiler
 # 0.4.0 crashes during our build, fixed in 0.5.0 (upgrade when it's out)
