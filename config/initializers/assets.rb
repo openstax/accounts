@@ -19,4 +19,6 @@ Rails.application.config.assets.precompile += %w(
   newflow.js
   application/ko_extensions.js
   bootstrap-editable-rails.js
+  bootstrap-social.css
+  pagination.css
 )
