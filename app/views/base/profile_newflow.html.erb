@@ -42,10 +42,10 @@
   <% if current_user.username.present? %>
   <div class="row">
     <div class="col-sm-2 category">
-      <%= I18n.t(:"users.edit.username") %>
+      <%= I18n.t(:"users.edit.name") %>
     </div>
     <div class="col-sm-10 info">
-      <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
+      <a href="#" id="profile_name" class="editable" data-name="profile_name" data-type="text"><%= current_user.full_name %></a>
     </div>
   </div>
   <% end %>
@@ -126,6 +126,6 @@
 
 <%= render 'layouts/application_footer' %>
 <%= render partial: 'base/edit-js', locals: {
-  profile_path: :'/profile',
+  profile_path: profile_newflow_path,
   current_user: current_user
 } %>

@@ -43,9 +43,12 @@ class OtherController < BaseController
   private
 
   def user_params
-    params[:value].is_a?(String) ? \
-      { params[:name] => params[:value] } : \
-      params.require(:value).permit(:title, :first_name, :last_name, :suffix).to_h
+    if params[:username]
+      { 'username' => params[:value] }
+    elsif params[:profile_name]
+      name_split = params[:profile_name].split(' ')
+      { 'first_name': name_split[0...-1].join(' '), 'last_name': name_split[-1] }
+    end
   end
 
   def ensure_complete_educator_signup

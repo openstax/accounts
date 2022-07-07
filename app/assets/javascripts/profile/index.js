@@ -2,7 +2,6 @@
 //= require ./namespace
 //= require ./confirmation-popover
 //= require ./alert
-//= require ./name
 //= require ./email
 //= require ./authentication
 //= require_self
