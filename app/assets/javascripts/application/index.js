@@ -17,7 +17,11 @@
 //= require bootstrap-editable-rails
 //= require knockout
 //= require knockout.mapping
+//= require intlTelInput
+//= require multiselect
+//= require libphonenumber/utils
 //= require ./accounts-ui
 //= require ./jquery_extensions
 //= require ./ko_extensions
 //= require ./ui
+//= require ./phone-number
