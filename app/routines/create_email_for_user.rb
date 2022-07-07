@@ -2,7 +2,7 @@ class CreateEmailForUser
 
   lev_routine
 
-  protected ###############
+  protected
 
   def exec(email:, user:, is_school_issued: nil)
     @email = EmailAddress.find_or_create_by(value: email&.downcase, user_id: user.id)

@@ -17,4 +17,7 @@
 //= require bootstrap-editable-rails
 //= require knockout
 //= require knockout.mapping
-//= require_tree .
+//= require ./accounts-ui
+//= require ./jquery_extensions
+//= require ./ko_extensions
+//= require ./ui

@@ -12,11 +12,6 @@ $google_color: #dd4b39;
   &.dim { color: lighten($google_color, 30%) }
 }
 
-.twitter-bkg {
-  color: $twitter_color;
-  &.dim { color: lighten($twitter_color, 20%) }
-}
-
 .identity-bkg {
   color: black;
   &.dim { color: lighten(black, 60%) }

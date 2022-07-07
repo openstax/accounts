@@ -1,9 +1,10 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap
+//= require bootstrap-editable
+//= require bootstrap-editable-rails
 //= require ../application/ui
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils
 //= require ./phone-number
-//= require_self
