@@ -14,7 +14,7 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require bootstrap-editable
-//= require bootstrap-editable-rails
-//= require knockout
-//= require knockout.mapping
-//= require_tree .
+//= require ./jquery_extensions
+//= require ./accounts-ui
+//= require ./remote-access-helpers
+//= require_self

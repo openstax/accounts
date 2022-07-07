@@ -83,8 +83,8 @@ GEM
       rails (>= 4.1)
     arel (9.0.0)
     ast (2.4.2)
-    autoprefixer-rails (10.4.7.0)
-      execjs (~> 2)
+    autoprefixer-rails (9.6.0)
+      execjs
     awesome_print (1.8.0)
     aws-eventstream (1.2.0)
     aws-partitions (1.533.0)
@@ -241,7 +241,7 @@ GEM
       faraday (>= 0.8)
     faraday_middleware (1.0.0)
       faraday (~> 1.0)
-    ffi (1.15.5)
+    ffi (1.15.4)
     fine_print (5.0.0)
       action_interceptor
       jquery-rails
@@ -310,8 +310,8 @@ GEM
       bindata
     jwt (2.3.0)
     keyword_search (1.5.0)
-    knockoutjs-rails (3.5.1.1)
-      railties (>= 3.1)
+    knockoutjs-rails (3.5.0)
+      railties (>= 3.1, < 6)
     launchy (2.5.0)
       addressable (~> 2.7)
     lev (10.1.0)
@@ -349,8 +349,8 @@ GEM
     mini_portile2 (2.8.0)
     mini_racer (0.6.2)
       libv8-node (~> 16.10.0.0)
-    minitest (5.16.2)
-    msgpack (1.5.3)
+    minitest (5.15.0)
+    msgpack (1.5.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
@@ -455,13 +455,13 @@ GEM
       get_process_mem (~> 0.2)
       puma (>= 2.7)
     racc (1.6.0)
-    rack (2.2.4)
+    rack (2.2.3.1)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-protection (2.2.0)
       rack
-    rack-test (2.0.2)
-      rack (>= 1.3)
+    rack-test (1.1.0)
+      rack (>= 1.0, < 3)
     rails (5.2.8)
       actioncable (= 5.2.8)
       actionmailer (= 5.2.8)
@@ -482,7 +482,7 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.4.3)
+    rails-html-sanitizer (1.4.2)
       loofah (~> 2.3)
     rails-i18n (5.1.3)
       i18n (>= 0.7, < 2)
@@ -589,8 +589,9 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    sassc (2.4.0)
+    sassc (2.0.1)
       ffi (~> 1.9)
+      rake
     sassc-rails (2.1.2)
       railties (>= 4.0.0)
       sassc (>= 2.0)
@@ -706,14 +707,14 @@ DEPENDENCIES
   blazer
   bootsnap
   bootstrap-editable-rails
-  bootstrap-sass
+  bootstrap-sass (~> 3.4.1)
   byebug
   capybara
   capybara-email
   capybara-screenshot
   chronic
   codecov
-  coffee-rails
+  coffee-rails (= 5.0.0)
   database_cleaner
   db-query-matchers
   delayed_job_active_record
@@ -778,7 +779,7 @@ DEPENDENCIES
   rspec-rails
   rubocop (~> 0.76.0)
   rubocop-rspec
-  sassc-rails
+  sassc-rails (~> 2.1)
   scout_apm
   sd_notify
   selenium-webdriver (~> 4.0)
