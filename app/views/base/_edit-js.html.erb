@@ -1,15 +1,16 @@
 <%= content_for :javascript do %>
 <script type="text/javascript">
-  $.fn.editable.defaults.mode = 'inline';
-  $.fn.editable.defaults.send = 'always';
-  $.fn.editable.defaults.ajaxOptions = { type: 'put', dataType: 'json' };
-  $.fn.editable.defaults.url = "<%= update_profile_path %>";
+    $(document).ready(function () {
+      $.fn.editable.defaults.mode = 'inline';
+      $.fn.editable.defaults.send = 'always';
+      $.fn.editable.defaults.ajaxOptions = { type: 'put', dataType: 'json' };
+      $.fn.editable.defaults.url = "<%= profile_path %>";
 
-  $('#username').editable({
-    success: function(response, newValue) {
-      $('#session-info .username').text(newValue);
-    }
-  });
+      $('#username').editable({
+        success: function(response, newValue) {
+          $('#session-info #username').text(newValue);
+        }
+      });
 
   OX.Profile.Name.editable($('#profile_name'), {
       title: "<%= current_user.title %>",

@@ -24,21 +24,13 @@ gem 'puma_worker_killer'
 # Knockout for embedded widgets
 gem 'knockoutjs-rails'
 
-# Using this branch in pattern library due to multiselect (until it's merged to master)
-gem 'pattern-library', git: 'https://github.com/openstax/pattern-library.git', ref: 'c3dd0b2c8ed987f9089b7da302fb02d2fc4cd840'
-
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
 gem 'lev', '~> 10.1.0'
 
 # Bootstrap front-end framework
 gem 'bootstrap-sass', '~> 3.4.1'
-
-# Bootstrap editable fields
-gem 'bootstrap-editable-rails'
-
-# SCSS stylesheets
-gem 'sassc-rails', '~> 2.1'
+gem 'sassc-rails', '>= 2.1.0'
 
 # CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '5.0.0'
@@ -61,7 +53,7 @@ gem 'bcrypt', '~> 3.1'
 gem 'doorkeeper', '~> 5.1.0'
 
 # OAuth clients
-gem 'omniauth'
+gem 'omniauth', '1.9.1'
 gem 'omniauth-identity'
 gem 'omniauth-facebook'
 gem 'omniauth-twitter'
@@ -116,7 +108,7 @@ gem 'representable', '~> 3.0.0'
 gem 'keyword_search', '~> 1.5.0'
 
 # ToS/PP management
-gem 'fine_print'
+gem 'fine_print', '5.0.0'
 
 # Send users back to the correct page after login
 gem 'action_interceptor'

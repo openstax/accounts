@@ -68,13 +68,8 @@ body, p, ol, ul, td, a {
   @include flex-direction(row);
   @include justify-content(space-between);
   @include align-items(center);
-  max-width: $container-desktop;
 
   margin: auto;
-  @media (max-width: $screen-sm-max) {
-    // calculate the width of content inside a row (what the footer uses)
-    max-width: $screen-sm-min - ($padding-large-vertical * 2);
-  }
 
   #session-info {
     @include flexbox;
@@ -83,11 +78,6 @@ body, p, ol, ul, td, a {
     @include justify-content(flex-end);
     @include align-items(flex-end);
     text-align: right;
-    @media(min-width: $container-sm) {
-      @include justify-content(space-between);
-      @include flex-direction(row);
-      span:last-child { margin-left: 30px; }
-    }
   }
 }
 
