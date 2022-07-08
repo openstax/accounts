@@ -16,7 +16,7 @@
         <%= javascript_include_tag 'application' %>
         <%= csrf_meta_tags %>
 
-        <% if Rails.env.production? %>
+        <% if is_real_production_site? %>
             <script src="https://cdn.optimizely.com/js/1345615444.js"></script>
         <% end %>
 
