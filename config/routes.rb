@@ -3,19 +3,19 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
-  get 'i/signup/(*path)' => redirect { |_,request| "signup/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/profile/(*path)' => redirect { |_, request| "profile/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/exit_accounts/(*path)' => redirect { |_, request| "exit_accounts/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/login/(*path)' => redirect { |_, request| "login/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/reauthenticate/(*path)' => redirect { |_, request| "reauthenticate/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/check_your_email/(*path)' => redirect { |_, request| "check_your_email/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/done/(*path)' => redirect { |_, request| "done/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
+  get 'i/signup/(*path)' => redirect { |_,request| "signup/#{request.params[:path]}?#{request.params.except('path').to_query}" }
+  get 'i/profile/(*path)' => redirect { |_, request| "profile/#{request.params[:path]}?#{request.params.except('path').to_query}" }
+  get 'i/exit_accounts/(*path)' => redirect { |_, request| "exit_accounts/#{request.params[:path]}?#{request.params.except('path').to_query}" }
+  get 'i/login/(*path)' => redirect { |_, request| "login/#{request.params[:path]}?#{request.params.except('path').to_query}" }
+  get 'i/reauthenticate/(*path)' => redirect { |_, request| "reauthenticate/#{request.params[:path]}?#{request.params.except('path').to_query}" }
+  get 'i/check_your_email/(*path)' => redirect { |_, request| "check_your_email/#{request.params[:path]}?#{request.params.except('path').to_query}" }
+  get 'i/done/(*path)' => redirect { |_, request| "done/#{request.params[:path]}?#{request.params.except('path').to_query}" }
+  get 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}
   get 'i/confirm_your_info' => redirect('confirm_your_info')
   get 'i/forgot_password_form' => redirect('forgot_password_form')
-  get 'i/logout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/signout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'signout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
+  get 'i/logout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }
+  get 'i/signout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }
+  get 'signout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }
 
   # routes to old faculty access controller, redirect them to the sheerid form or pending cs paths
   get 'faculty_access/apply/' => redirect('signup/educator/apply')
