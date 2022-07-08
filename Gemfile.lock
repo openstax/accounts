@@ -1,13 +1,4 @@
 GIT
-  remote: https://github.com/openstax/intl-tel-input-rails.git
-  revision: 3a63a495822d90bc9ca93e9541ef252fd7a0b50b
-  branch: master
-  specs:
-    intl-tel-input-rails (12.3.0)
-      railties (>= 3.1)
-      sass-rails
-
-GIT
   remote: https://github.com/openstax/path_prefixer.git
   revision: 8298c40ec38f132fc23ea946b2b20e855fe73a49
   ref: 8298c40ec38f132fc23ea946b2b20e855fe73a49
@@ -311,8 +302,6 @@ GEM
       bindata
     jwt (2.4.1)
     keyword_search (1.5.0)
-    knockoutjs-rails (3.5.1.1)
-      railties (>= 3.1)
     launchy (2.5.0)
       addressable (~> 2.7)
     lev (10.1.0)
@@ -580,8 +569,6 @@ GEM
     rubyzip (2.3.2)
     safely_block (0.3.0)
       errbase (>= 0.1.1)
-    sass-rails (6.0.0)
-      sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -724,13 +711,11 @@ DEPENDENCIES
   guard-rspec
   http_accept_language
   i18n-tasks
-  intl-tel-input-rails!
   jbuilder
   jobba
   jquery-rails
   json-jwt
   keyword_search (~> 1.5.0)
-  knockoutjs-rails
   launchy
   lev (~> 10.1.0)
   listen

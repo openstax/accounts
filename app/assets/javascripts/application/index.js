@@ -13,7 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap-sprockets
-//= require knockout
+//= require knockout.js
 //= require intlTelInput
 //= require multiselect
 //= require libphonenumber/utils
