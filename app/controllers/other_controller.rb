@@ -29,8 +29,8 @@ class OtherController < BaseController
 
     respond_to do |format|
       format.json do
-        if current_user.update_attributes(user_params)
-          security_log :user_updated, user_params: user_params
+        if current_user.update_attributes(user_params.to_h)
+          security_log :user_updated, user_params: user_params.to_h
 
           render json: { full_name: current_user.full_name }, status: :ok
         else
@@ -43,10 +43,10 @@ class OtherController < BaseController
   private
 
   def user_params
-    if params[:username]
+    if params[:name] == 'username' # updating the username
       { 'username' => params[:value] }
-    elsif params[:profile_name]
-      name_split = params[:profile_name].split(' ')
+    elsif params[:name] == 'profile_name' # updating the name
+      name_split = params[:value].split(' ')
       { 'first_name': name_split[0...-1].join(' '), 'last_name': name_split[-1] }
     end
   end

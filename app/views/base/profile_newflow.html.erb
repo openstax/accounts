@@ -35,20 +35,20 @@
       <%= I18n.t(:"users.edit.name") %>
     </div>
     <div class="col-sm-10 info">
-      <a href="#" id="name" class="editable" data-type="profile_name"><%= current_user.full_name %></a>
-    </div>
-  </div>
-
-  <% if current_user.username.present? %>
-  <div class="row">
-    <div class="col-sm-2 category">
-      <%= I18n.t(:"users.edit.name") %>
-    </div>
-    <div class="col-sm-10 info">
       <a href="#" id="profile_name" class="editable" data-name="profile_name" data-type="text"><%= current_user.full_name %></a>
     </div>
   </div>
-  <% end %>
+
+
+  <div class="row">
+    <div class="col-sm-2 category">
+      <%= I18n.t(:"users.edit.username") %>
+    </div>
+    <div class="col-sm-10 info">
+      <a href="#" id="username" class="editable" data-name="username" data-type="text"><%= current_user.username %></a>
+    </div>
+  </div>
+
 
   <div class="row">
     <div class="col-sm-2 category">
@@ -128,9 +128,9 @@
           icon_class, display_name =
             case provider
               when 'identity' then ['key', (I18n.t :"users.edit.password")]
-              when 'google_oauth2' then ['google', 'Google']
-              when 'facebooknewflow' then ['facebook', 'Facebook']
-              when 'googlenewflow' then ['google', 'Google']
+              when 'google_oauth2' then %w[google Google]
+              when 'facebooknewflow' then %w[facebook Facebook]
+              when 'googlenewflow' then %w[google Google]
               else [provider, provider.capitalize]
             end
 
@@ -171,9 +171,9 @@
           icon_class, display_name =
             case provider
               when 'identity' then ['key', (I18n.t :"users.edit.password")]
-              when 'google_oauth2' then ['google', 'Google']
-              when 'facebooknewflow' then ['facebook', 'Facebook']
-              when 'googlenewflow' then ['google', 'Google']
+              when 'google_oauth2' then %w[google Google]
+              when 'facebooknewflow' then %w[facebook Facebook]
+              when 'googlenewflow' then %w[google Google]
               else [provider, provider.capitalize]
             end
 

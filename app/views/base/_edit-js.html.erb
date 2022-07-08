@@ -1,20 +1,22 @@
 <%= content_for :javascript do %>
 <script type="text/javascript">
-  $.fn.editable.defaults.mode = 'inline';
-  $.fn.editable.defaults.send = 'always';
-  $.fn.editable.defaults.ajaxOptions = { type: 'put', dataType: 'json' };
-  $.fn.editable.defaults.url = "<%= update_profile_path %>";
+    $(document).ready(function () {
+      $.fn.editable.defaults.mode = 'inline';
+      $.fn.editable.defaults.send = 'always';
+      $.fn.editable.defaults.ajaxOptions = { type: 'put', dataType: 'json' };
+      $.fn.editable.defaults.url = "<%= profile_path %>";
 
-  $('#username').editable({
-    success: function(response, newValue) {
-      $('#session-info .username').text(newValue);
-    }
-  });
+      $('#username').editable({
+        success: function(response, newValue) {
+          $('#session-info #username').text(newValue);
+        }
+      });
 
-  $('#profile_name').editable({
-      success: function (response, newValue) {
-          $('#session-info .name').text(newValue);
-      }
-  });
+      $('#profile_name').editable({
+          success: function (response, newValue) {
+              $('#session-info #profile_name').text(newValue);
+          }
+      });
+    });
 </script>
 <% end %>

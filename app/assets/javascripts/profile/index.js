@@ -1,4 +1,5 @@
-//= require ../vendor/underscore
+//= require underscore.js
+//= require x-editable-bootstrap.js
 //= require ./namespace
 //= require ./confirmation-popover
 //= require ./alert
@@ -10,5 +11,4 @@
 $(document).ready(function(){
   OX.Profile.Email.initialize();
   OX.Profile.Authentication.initialize();
-  $('[data-toggle="tooltip"]').tooltip()
 });

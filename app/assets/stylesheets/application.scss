@@ -4,12 +4,15 @@
  */
 $font-path: '/accounts/fonts';
 @import "pattern-library/headers";
+@import "pattern-library/elements/menus";
+@import "pattern-library/layout";
+@import "pattern-library/fonts";
+@import "pattern-library/typography";
 @import "common";
 @import "bootstrap-sprockets";
 @import "bootstrap";
 @import "ox-controls";
 @import "application_layout";
-@import "font-awesome";
 @import "bootstrap-social";
 @import "profile";
 @import "social";
@@ -17,7 +20,6 @@ $font-path: '/accounts/fonts';
 @import "misc";
 @import "pagination";
 @import "condensed";
-
 
 /* Set a max-width, maintaining responsiveness */
 

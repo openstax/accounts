@@ -8,7 +8,7 @@ feature 'User updates profile', js: true do
 
   describe 'Updating name' do
     before(:each) do
-      find('#name').click
+      find('#profile_name').click
     end
 
     scenario 'first name' do

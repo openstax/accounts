@@ -1,9 +1,6 @@
-$font-path: '/accounts/fonts';
-@import "pattern-library";
 @import "pattern-library/headers";
-@import "font-awesome";
+@import "pattern-library/typography";
 @import "newflow_colors";
-@import "intlTelInput";
 
 html {
     font-family: 'Neue Helvetica W01', sans-serif;

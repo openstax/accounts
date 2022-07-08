@@ -1,0 +1,33 @@
+// Menus
+//
+// Markup: ./markup/main-menu.html
+//
+// Styleguide: Menus.Main menu
+
+.main-menu {
+    @extend %main-menu;
+
+    .logo-wrapper {
+        @extend %logo-wrapper;
+    }
+
+    .logo {
+        @extend %logo;
+
+        .logo-color {
+            @extend %logo-color;
+        }
+    }
+
+    .nav-menu {
+        @extend %nav-menu;
+
+        .nav-menu-item {
+            @extend %nav-menu-item;
+        }
+
+        .dropdown-menu {
+            @extend %dropdown-menu;
+        }
+    }
+}

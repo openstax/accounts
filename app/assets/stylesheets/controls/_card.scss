@@ -1,3 +1,5 @@
+@import "common";
+
 .ox-card {
   $input-height: 50px;
   $input-border-color: darken($os_light_gray, 10%);
@@ -66,7 +68,7 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance:none;
-    border-color: $input-border;
+    border-color: $input-border-color;
     color: $os_gray;
     &::-ms-expand {
       display: none;

@@ -1,9 +1,12 @@
 $font-path: '/accounts/fonts';
-@import "bootstrap-editable";
 @import "pattern-library/elements/menus";
+@import "pattern-library/layout";
+@import "pattern-library/fonts";
+@import "pattern-library/typography";
+@import "common";
 
 .main-menu {
-    box-shadow: none;
+
     height: 2rem;
     margin: 2rem 0 0 2rem;
 
@@ -65,7 +68,7 @@ $font-path: '/accounts/fonts';
   .info .mod-holder {
     width: 45px;
     display: inline-block;
-    margin-left:15px;
+    margin-left:25px;
   }
 
   .info .mod {

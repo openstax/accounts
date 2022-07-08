@@ -1,0 +1,33 @@
+// Confirmation boxes
+//
+// Markup: ./markup/messages-confirmation-box.html
+//
+// Styleguide: Messages.Confirmation boxes
+
+.message-box {
+    @include message-box();
+
+    &.error {
+        @extend %error;
+    }
+}
+
+// Modal dialogs
+//
+// Font-awesome icons should be used, but are not available to this demo page.
+// Modals should additionally have
+// ```
+// position: fixed;
+// left: 50%;
+// top: 50%;
+// transform: translate(-50%, -50%);
+// z-index: _some high number_;
+// ```
+//
+// Markup: ./messages-modal-dialog.html
+//
+// Styleguide: Messages.Modal dialogs
+
+.modal {
+    @include modal();
+}

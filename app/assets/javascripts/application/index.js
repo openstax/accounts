@@ -12,9 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require bootstrap
-//= require bootstrap-editable
-//= require bootstrap-editable-rails
+//= require bootstrap-sprockets
 //= require knockout
 //= require knockout.mapping
 //= require intlTelInput

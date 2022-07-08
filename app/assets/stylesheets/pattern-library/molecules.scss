@@ -1,0 +1,388 @@
+$form-border-width: 0.1rem;
+
+@mixin form-border() {
+    border: $form-border-width solid ui-color(form-border);
+}
+
+@mixin button-basic() {
+    @include center();
+    @include set-font(body-regular);
+
+    // Large button is the default
+    border-radius: 0.5rem;
+    box-shadow: 0 0.2rem 0.4rem rgba(ui-color(black), 0.2);
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    height: $form-element-height;
+    margin: 0;
+    padding: 0 (2 * $normal-margin);
+    text-decoration: none;
+    user-select: none;
+    white-space: nowrap; // Because height is set, no room for wrapped text
+    width: auto;
+
+    &.small {
+        @include set-font(helper-label);
+        height: 3rem;
+        padding: 0 2rem;
+    }
+
+    &.medium {
+        height: 4rem;
+    }
+
+    &.wide {
+        padding: 0;
+        width: calc(100% - #{$tight-margin});
+    }
+
+    &.disabled {
+        opacity: 0.4;
+    }
+}
+
+@mixin button-type-specific($type: default) {
+    @if ($type == default) {
+        @include form-border();
+
+        color: text-color(normal);
+        font-weight: normal;
+    }
+    @else {
+        @include light-on-dark();
+
+        border: 0;
+        color: text-color(white);
+        font-weight: bold;
+    }
+
+    background-color: ui-color($type);
+
+    &:hover,
+    &:focus {
+        background-color: ui-color(#{$type}-hover);
+    }
+
+    &:active {
+        background-color: ui-color(#{$type}-active);
+    }
+}
+
+@mixin button() {
+    @include button-basic();
+    @include button-type-specific(default);
+
+    &%primary {
+        @include button-type-specific(primary);
+    }
+
+    &%secondary {
+        @include button-type-specific(secondary);
+    }
+}
+
+%button {
+    @include button();
+}
+
+@mixin button-bar() {
+    @include form-border();
+
+    align-items: baseline;
+    border-radius: 0.2rem;
+    display: inline-flex;
+    height: $form-element-height;
+    padding: 0;
+
+    > * {
+        @include button();
+
+        background-color: ui-color(white);
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        color: text-color(button-bar);
+        font-family: inherit;
+        height: 100%;
+        margin: 0;
+        max-height: 100%;
+        white-space: nowrap;
+
+        &:focus {
+            z-index: 1;
+        }
+
+        &:not(:last-child) {
+            border-right: thin solid ui-color(form-border);
+        }
+
+        &:hover {
+            background-color: ui-color(form-bg);
+        }
+    }
+}
+
+@mixin button-bar-selected() {
+    background-color: ui-color(default-hover);
+    color: text-color(normal);
+}
+
+%button-bar {
+    @include button-bar();
+
+    > %selected {
+        @include button-bar-selected();
+    }
+}
+
+
+
+@mixin non-button-input() {
+    @include set-font(body-regular);
+    @include form-border();
+    background-color: ui-color(white);
+    box-sizing: border-box;
+    color: text-color(normal);
+    flex: 0 0 100%;
+    padding: 0 $normal-margin;
+    width: 100%;
+
+    &:focus {
+        border: thin solid os-color(light-blue);
+        box-shadow: 0 0 0.4rem 0 rgba(os-color(light-blue), 0.5);
+        outline: none;
+    }
+
+    &::placeholder {
+        color: text-color(helper);
+    }
+
+    // Marking invalid items can be delayed
+    &:not(.delay-validation):invalid,
+    &:not(.delay-validation)%has-error {
+        background-color: ui-color(error-bg);
+        border: thin solid ui-color(error-border);
+        color: text-color(error);
+
+        ~ %invalid-message {
+            @include set-font(helper-label);
+            color: text-color(error);
+            display: block;
+        }
+    }
+
+    ~ %invalid-message {
+        display: none;
+        pointer-events: none;
+    }
+}
+
+%non-button-input {
+    @include non-button-input();
+}
+
+@mixin input-with-tooltip() {
+    position: relative;
+
+    %tooltip {
+        display: none;
+    }
+
+    $tooltip-size: 1.5rem;
+    $tooltip-diagonal: $tooltip-size * 0.707;
+    %active ~ %tooltip {
+        background-color: ui-color(white);
+        border: thin solid ui-color(form-border);
+        border-radius: 0.2rem;
+        display: unset;
+        padding: 1rem 2rem;
+        position: absolute;
+        z-index: 1;
+
+        @include width-up-to($tablet-max) {
+            left: 0;
+            bottom: calc(100% + 0.5rem);
+            transform: translateY(#{$tooltip-size - 0.5rem});
+        }
+
+        @include wider-than($tablet-max) {
+            left: 0;
+            top: calc(50% + 2rem); // taking label into account
+            transform: translate(calc(-100% - #{$tooltip-size + 0.5rem}), -50%);
+        }
+
+        &::before {
+            background-color: inherit;
+            border-bottom: inherit;
+            border-right: inherit;
+            box-shadow: inherit;
+            content: "";
+            height: $tooltip-size;
+            position: absolute;
+            transform-origin: center;
+            width: $tooltip-size;
+
+            @include width-up-to($tablet-max) {
+                left: calc(50% - #{$tooltip-diagonal});
+                bottom: #{-$tooltip-size * 1.07};
+                transform: rotate(45deg) translateY(-63%);
+            }
+
+            @include wider-than($tablet-max) {
+                right: #{-$tooltip-size * 1.07};
+                top: calc(50% - #{$tooltip-diagonal});
+                transform: rotate(-45deg) translateY(-63%);
+            }
+        }
+    }
+}
+
+@mixin tab-group() {
+    border: 0;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0;
+    width: auto;
+
+    %tab {
+        align-items: baseline;
+        border-bottom: 0.4rem solid transparent;
+        cursor: pointer;
+        display: inline-flex;
+        justify-content: center;
+        margin-bottom: 0;
+        padding: 3rem $normal-margin 0.3rem;
+
+        @include wider-than($tablet-max) {
+            padding: 5rem 4rem 0.3rem;
+        }
+
+        &%active,
+        &:hover {
+            border-bottom: 0.4rem solid os-color(green);
+        }
+    }
+}
+
+@mixin tab-baseline() {
+    background-color: ui-color(form-border);
+    border: 0;
+    display: block;
+    height: 0.1rem;
+    margin: 0;
+    width: 100%;
+}
+
+%tab-group {
+    @include tab-group();
+}
+%tab-baseline {
+    @include tab-baseline();
+}
+
+%control-group {
+    display: block;
+    min-height: $form-element-height;
+    margin: 0;
+    position: relative;
+    width: 100%;
+
+    %field-label,
+    %invalid-message {
+        width: 100%;
+    }
+
+    %invalid-message {
+        bottom: 0;
+        margin-bottom: -2rem; // should be line height of text
+        position: relative;
+        transform: none;
+    }
+}
+
+%radio-control-group {
+    break-inside: avoid;
+
+    > label {
+        align-items: center;
+        display: flex;
+        [type="radio"],
+        [type="checkbox"] {
+            margin: 0.5rem 1rem 1rem 0;
+        }
+    }
+}
+
+@mixin link() {
+    align-items: baseline;
+    color: text-color(link);
+    text-decoration: underline;
+
+    &:hover,
+    &:active {
+        color: text-color(link-hover);
+    }
+}
+
+@mixin message-box() {
+    align-items: center;
+    background-color: ui-color(success-bg);
+    border: thin solid ui-color(success-border);
+    color: ui-color(success-fg);
+    display: flex;
+    height: $form-element-height;
+    margin: $normal-margin 0;
+    padding: 0 $normal-margin;
+    width: 100%;
+
+    &%error {
+        background-color: ui-color(error-bg);
+        border-color: ui-color(error-border);
+        color: ui-color(error-fg);
+    }
+}
+
+%message-box {
+    @include message-box();
+}
+
+@mixin modal() {
+    border: thin solid ui-color(form-border);
+    box-shadow: 0 1rem 2rem 0 rgba(ui-color(black), 0.2);
+    display: block;
+    flex-basis: 100%;
+    max-width: 54rem;
+    z-index: 2;
+
+    .heading {
+        @extend %text-h4;
+        background-color: ui-color(default);
+        margin-bottom: $normal-margin;
+        min-height: 1.5rem; // 7.5 - 6 for padding
+        padding: (2 * $normal-margin);
+
+        .close-icon {
+            font-size: 2.2rem;
+            float: right;
+        }
+
+        ~ * {
+            padding: $normal-margin (2 * $normal-margin);
+            margin: 0;
+        }
+    }
+
+    &.error > .heading {
+        background-color: ui-color(error-bg);
+        color: ui-color(error-fg);
+
+        .error-icon {
+            margin-right: 1rem;
+        }
+    }
+}
+
+%modal {
+    @include modal();
+}
