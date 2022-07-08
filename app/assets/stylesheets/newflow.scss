@@ -69,13 +69,15 @@ body {
     grid-column-gap: 2rem;
     grid-template-columns: 1fr auto 1fr;
     justify-items: center;
+    position: relative;
     text-align: center;
 
     .line {
         border-bottom: 0.1rem solid #d5d5d5;
         width: 100%;
         height: 0.1rem;
-        transform: translateY(1rem);
+        position: relative;
+        top: 50%;
     }
 
     .the-content {
@@ -195,7 +197,7 @@ label.required::after {
     height: 3rem;
     border-left: 0.1rem solid #d5d5d5;
     border-right: 0.1rem solid #d5d5d5;
-    padding: 1.5rem 0 0 1.5rem;
+    padding: 1rem 0 0 1.5rem;
 
     @include wider-than($phone-max) {
         padding: 2.9rem 0 0 2.9rem;
@@ -412,7 +414,9 @@ input.has-error {
     }
 
     .tab-group {
-        padding: 0;
+        display: flex;
+        justify-content: flex-start;
+        width: auto;
 
         .tab {
             @include width-up-to($phone-max) {
@@ -420,9 +424,11 @@ input.has-error {
             }
 
             width: 18rem;
-            padding: 1.2rem 0;
+            padding: 1.2rem 2rem;
 
             color: unset;
+            display: flex;
+            justify-content: center;
             text-decoration: inherit;
             background-color: #f5f5f5;
             border-bottom-width: 0;
@@ -465,6 +471,7 @@ input.has-error {
         border-left: 0.1rem solid #d5d5d5;
         border-right: 0.1rem solid #d5d5d5;
         text-align: center;
+        border-bottom: 0;
 
         @include width-up-to($phone-max) {
             @include set-font(h4);
@@ -496,17 +503,23 @@ input.has-error {
         border-top: 0;
         border-bottom-left-radius: 0.3rem;
         border-bottom-right-radius: 0.3rem;
+        display: grid;
+        grid-auto-flow: row;
+        grid-template-columns: 100%;
+        gap: 1rem;
 
         font-size: 1.4rem;
 
         > .content {
             max-width: 55.5rem;
-            margin-left: auto;
-            margin-right: auto;
+            width: 100%;
+            margin: 0 auto;
         }
 
         .role-section {
+            margin: auto;
             max-width: 100%;
+            padding-left: 2.5rem;
 
             > div {
                 @include width-up-to($phone-max) {
@@ -571,6 +584,26 @@ input.has-error {
             color: var(--greyish-brown);
         }
 
+        input {
+            @include set-font(body-regular);
+            min-height: 5rem;
+        }
+
+        .terms label {
+            align-items: baseline;
+            display: flex;
+            gap: 0.5rem;
+
+            input {
+                min-height: inherit;
+            }
+
+            > * {
+                font-weight: normal;
+                display: inline;
+            }
+        }
+
         .social-section {
             @include wider-than($phone-max) {
                 > div {
@@ -599,8 +632,10 @@ input.has-error {
 
         // placeholder text
         [type=text], [type=email], [type=password] {
-            color: #424242;
-            font-weight: 300;
+            &::placeholder {
+                color: #424242;
+                opacity: 0.5;
+            }
         }
 
         .checkboxes-section {
@@ -669,7 +704,6 @@ input.has-error {
         }
 
         .terms {
-            margin-top: 1rem;
             display: flex;
         }
 
@@ -700,6 +734,7 @@ input.has-error {
         form {
             height: 80rem;
             align-content: start;
+            padding-bottom: 4rem;
         }
 
         .social-buttons {
@@ -747,10 +782,6 @@ input.has-error {
         }
     }
 
-    .content.control-group.checkboxes-section {
-        margin-top: 0rem;
-    }
-
     [type=submit] {
         @include width-up-to($phone-max) {
             margin-top: 2rem;
@@ -762,11 +793,6 @@ input.has-error {
             margin-top: 1.2rem;
         }
     }
-}
-
-.terms label > * {
-    font-weight: normal;
-    display: inline;
 }
 
 // Improve the look of Terms of Use section in very narrow views

@@ -83,7 +83,6 @@
             )
           %>
           <%# shows up only when faculty tries wants to use a non-edu email %>
-          <br/>
           <div class="warning edu" data-bind="visible: emailInvalid">
             <%= t 'login_signup_form.teacher_school_email_warning', button: (t :'login_signup_form.continue_button') %>
           </div>
@@ -99,7 +98,6 @@
               <%= form.check_box :newsletter, checked: true %>
               <span><%= I18n.t(:"login_signup_form.send_me_newsletter") %></span>
             </label>
-            <br>
           </div>
 
           <% if is_BRI_book_adopter? %>

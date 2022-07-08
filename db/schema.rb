@@ -279,11 +279,6 @@ ActiveRecord::Schema.define(version: 2022_06_01_160740) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
-  create_table "push_topics", force: :cascade do |t|
-    t.string "topic_salesforce_id"
-    t.string "topic_name"
-  end
-
   create_table "schools", force: :cascade do |t|
     t.string "salesforce_id", null: false
     t.string "name", null: false
