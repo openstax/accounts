@@ -32,6 +32,6 @@ feature 'User updates profile', js: true do
   #     expect(find('.editable-error-block').text).to include(t :"javascript.name.last_name_blank")
   #     screenshot!
   #   end
-
-  end
+  #
+  # end
 end
