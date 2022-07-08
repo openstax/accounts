@@ -31,6 +31,9 @@
 # Ignore
 /vendor/bundle
 
+# in case you want to test production asset building
+/public/accounts
+
 # Ignore yaml_db database files
 /db/data.yml*
 
@@ -63,3 +66,6 @@ brakeman.html
 dump.rdb
 
 .idea
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
