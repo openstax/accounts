@@ -87,27 +87,11 @@
     margin-right: 1rem;
   }
 
-  .is-invalid, .has-error {
-    input[type="text"],
-    input[type="password"],
-    select {
-      background-color: $state-danger-bg;
-      border: 1px solid darken($state-danger-border, 10%);
-      &:focus {
-        background-color: darken($state-danger-bg, 1%);
-        border: 1px solid darken($state-danger-border, 30%);
-      }
-    }
-  }
-
   .alert {
     margin: 10px 0;
     background-color: transparent;
     border: 0;
     padding: 0;
-  }
-  .warning {
-    color: $state-danger-text; // bs variable
   }
 
   a:not(.btn) {

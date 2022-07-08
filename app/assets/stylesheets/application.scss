@@ -3,6 +3,7 @@
  * License version 3 or later.  See the COPYRIGHT file for details.
  */
 $font-path: '/accounts/fonts';
+$font-path: '/fonts';
 @import "pattern-library/headers";
 @import "pattern-library/elements/menus";
 @import "pattern-library/layout";
@@ -12,7 +13,6 @@ $font-path: '/accounts/fonts';
 @import "bootstrap-sprockets";
 @import "bootstrap";
 @import "ox-controls";
-@import "application_layout";
 @import "bootstrap-social";
 @import "profile";
 @import "social";
@@ -60,6 +60,25 @@ $font-path: '/accounts/fonts';
 
   div.alert {
     padding: 0px 10px;
+  }
+}
+
+#upper-corner-console {
+  background-color: ui-color(white);
+  color: white;
+  left: 0;
+  padding: 4px;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+
+  a {
+    text-decoration: underline;
+    color: white;
+  }
+
+  #clock.highlight {
+    color: rgba(255, 255, 255, 0.5);
   }
 }
 

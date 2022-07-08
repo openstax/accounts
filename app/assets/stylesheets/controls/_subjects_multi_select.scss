@@ -1,10 +1,6 @@
 @import "common";
 
 .subjects {
-
-    &.has-error {
-      border: 1px solid darken($state-danger-border, 10%);
-    }
     .errors { margin-left: 1rem; }
     .scroll-pane {
       @extend .clearfix !optional;
