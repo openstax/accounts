@@ -3,12 +3,12 @@
  * License version 3 or later.  See the COPYRIGHT file for details.
  */
 $font-path: '/accounts/fonts';
-$font-path: '/fonts';
 @import "pattern-library/headers";
 @import "pattern-library/elements/menus";
 @import "pattern-library/layout";
 @import "pattern-library/fonts";
 @import "pattern-library/typography";
+@import "font-awesome";
 @import "intlTelInput";
 @import "common";
 @import "bootstrap-sprockets";
