@@ -34,6 +34,9 @@
 # in case you want to test production asset building
 /public/accounts
 
+# ignore compiled ruby code
+/vendor/ruby
+
 # Ignore yaml_db database files
 /db/data.yml*
 
