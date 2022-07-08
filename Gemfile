@@ -21,9 +21,6 @@ gem 'puma'
 # Prevent server memory from growing until OOM
 gem 'puma_worker_killer'
 
-# Knockout for embedded widgets
-gem 'knockoutjs-rails'
-
 # Lev framework
 # - introduces two new concepts: Routines and Handlers
 gem 'lev', '~> 10.1.0'
@@ -152,9 +149,6 @@ gem "openstax_path_prefixer", github: "openstax/path_prefixer", ref: "8298c40ec3
 
 # JWE library used by the SSO cookie
 gem 'json-jwt'
-
-# international country codes javascript plugin
-gem 'intl-tel-input-rails', git: 'https://github.com/openstax/intl-tel-input-rails.git', branch: 'master'
 
 # internationalization based on the `HTTP_ACCEPT_LANGUAGE` header sent by browsers
 gem 'http_accept_language'

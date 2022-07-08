@@ -7,7 +7,6 @@
 //= link admin.js
 //= link profile.js
 //= link application_body_api_docs.css
-//= link libphonenumber/utils.js
 //= link syntax_highlight.css
 //= link newflow.css
 //= link newflow_colors.css
@@ -19,3 +18,6 @@
 //= link underscore.js
 //= link x-editable-bootstrap.js
 //= link x-editable-bootstrap.css
+//= link knockout.js
+//= link intlTelInput.js
+//= link libphonenumber/utils.js
