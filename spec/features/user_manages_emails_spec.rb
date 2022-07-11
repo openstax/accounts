@@ -28,25 +28,6 @@ feature 'User manages emails', js: true do
       visit '/profile'
     end
 
-    scenario 'click to verify does not change token' do
-      click_link(I18n.t(:"users.edit.add_email_address"))
-      within(:css, '.email-entry.new') {
-        find('input').set('user@mysite.com')
-        find('.glyphicon-ok').click
-      }
-      wait_for_ajax
-      open_email('user@mysite.com')
-      original_link_path = get_path_from_absolute_link(current_email, 'a')
-
-      within all(".email-entry").last do
-        find(".unconfirmed-warning").click
-        expect(page).to have_button(I18n.t(:"users.edit.resend_confirmation"))
-        click_button(I18n.t(:"users.edit.resend_confirmation"))
-      end
-      visit(original_link_path)
-      expect(page).to have_content(t :"contact_infos.confirm.page_heading.success")
-    end
-
     scenario 'with empty value' do
       click_link(I18n.t(:"users.edit.add_email_address"))
       within(:css, '.email-entry.new') {
