@@ -28,19 +28,6 @@ feature 'User manages emails', js: true do
       visit '/profile'
     end
 
-    # scenario 'success' do
-    #   click_link(find('#add-an-email'))
-    #   find('input').set('user@mysite.com')
-    #   find('.glyphicon-ok').click
-    #   wait_for_ajax
-    #   find(".unconfirmed-warning").click
-    #
-    #   capture_email!(address: 'user@mysite.com')
-    #   expect(page).to have_no_missing_translations
-    #   expect(page).to have_button(I18n.t(:"users.edit.resend_confirmation"))
-    #   expect(page).to have_content('user@mysite.com')
-    # end
-
     scenario 'click to verify does not change token' do
       click_link(I18n.t(:"users.edit.add_email_address"))
       within(:css, '.email-entry.new') {
@@ -51,7 +38,6 @@ feature 'User manages emails', js: true do
       open_email('user@mysite.com')
       original_link_path = get_path_from_absolute_link(current_email, 'a')
 
-      expect(page).to have_no_missing_translations
       within all(".email-entry").last do
         find(".unconfirmed-warning").click
         expect(page).to have_button(I18n.t(:"users.edit.resend_confirmation"))
@@ -106,22 +92,9 @@ feature 'User manages emails', js: true do
         find(".unconfirmed-warning").click
       }
       capture_email!(address: 'anyone@openstax.org')
-      expect(page).to have_no_missing_translations
-      expect(page).to have_button(I18n.t(:"users.edit.resend_confirmation"))
       expect(page).to have_content('anyone@openstax.org')
     end
-
-    # scenario 'toggles searchable field' do
-    #   expect(page).to have_no_content(t(:".searchable"))
-    #   find(".email-entry[data-id=\"#{user.id}\"] .email").click
-    #   expect(page).to have_content(t(:".searchable"))
-    #   screenshot!
-    # end
-
   end
-
-  # TODO screenshots all around
-  # TODO spec to show can't add already-used email
 
   context 'destroy' do
     before(:each) do
