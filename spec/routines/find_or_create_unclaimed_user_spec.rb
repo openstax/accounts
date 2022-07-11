@@ -35,7 +35,7 @@ describe FindOrCreateUnclaimedUser do
               first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, already_verified: false
             ).outputs.user
             email = ActionMailer::Base.deliveries.last
-            expect(email.subject).to match('You have been invited to join OpenStax')
+            expect(email.subject).to include('[OpenStax] Use PIN')
           end.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
 
