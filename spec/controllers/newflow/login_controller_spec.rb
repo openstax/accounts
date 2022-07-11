@@ -118,24 +118,12 @@ module Newflow
             before { user.update!(is_profile_complete: false) }
 
             it 'saves incomplete educator in the session' do
-              # expect_any_instance_of(described_class).to receive(:save_incomplete_educator).with(user).once.and_call_original
               post('login', params: params)
-              # expect(assigns(:current_incomplete_educator)).to eq(user)
             end
 
             it 'does a redirect' do
               post('login', params: params)
               expect(response).to have_http_status(:redirect)
-            end
-
-            it 'creates a security log' do
-              skip 'todo – maybe'
-
-              expect {
-                post('login', params: params)
-              }.to change {
-                SecurityLog.where(event_type: :educator_resumed_signup_flow).count
-              }
             end
           end
         end
@@ -145,7 +133,7 @@ module Newflow
         describe 'when cannot_find_user' do
           let(:noones_email){ 'noone@openstax.org' }
 
-          xit 'creates a security log' do
+          it 'creates a security log' do
             expect {
               post('login', params: { login_form: { email: noones_email, password: 'password' } })
             }.to change {
@@ -167,7 +155,7 @@ module Newflow
             'user@example.com'
           end
 
-          xit 'creates a security log' do
+          it 'creates a security log' do
             expect {
               post('login', params: { login_form: { email: email_address, password: 'password' } })
             }.to change {
@@ -185,7 +173,7 @@ module Newflow
           let(:user) { FactoryBot.create(:user) }
           let(:max_attempts_per_user) { 0 }
 
-          xit 'creates a security log' do
+          it 'creates a security log' do
             expect {
               post('login', params: { login_form: { email: email.value, password: 'wrongpassword' } })
             }.to change {

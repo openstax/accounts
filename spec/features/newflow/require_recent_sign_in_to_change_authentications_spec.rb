@@ -25,7 +25,7 @@ feature 'Require recent log in to change authentications', js: true do
       expect(page).to have_content('Facebook')
 
       with_omniauth_test_mode(identity_user: user) do
-        find('.authentication[data-provider="facebooknewflow"] .add--newflow').click
+        find('.authentication[data-provider="facebook"] .add').click
         wait_for_ajax
         expect(page).to have_content(t :"login_signup_form.login_page_header")
         screenshot!
@@ -49,7 +49,7 @@ feature 'Require recent log in to change authentications', js: true do
         expect(page.current_path).to eq(profile_newflow_path)
 
         screenshot!
-        find('.authentication[data-provider="identity"] .edit--newflow').click
+        find('.authentication[data-provider="identity"] .edit').click
 
         expect(page.current_path).to eq(reauthenticate_form_path)
         newflow_reauthenticate_user(email_value, 'password')
@@ -66,7 +66,7 @@ feature 'Require recent log in to change authentications', js: true do
         screenshot!
 
         # Don't have to reauthenticate since just did
-        find('.authentication[data-provider="identity"] .edit--newflow').click
+        find('.authentication[data-provider="identity"] .edit').click
         expect(page).to have_content(t(:"login_signup_form.enter_new_password_description"))
         fill_in('change_password_form_password', with: 'newpassword2')
         find('#login-signup-form').click
@@ -77,34 +77,9 @@ feature 'Require recent log in to change authentications', js: true do
     end
   end
 
-  # scenario 'bad password on reauthentication' do
-  #   log_in_user(email_value, 'password')
-  #
-  #   Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-  #     visit profile_newflow_path
-  #     expect_newflow_profile_page
-  #
-  #     find('.authentication[data-provider="identity"] .edit--newflow').click
-  #
-  #     expect_reauthenticate_form_page
-  #     fill_in(t(:"login_signup_form.password_label"), with: 'wrongpassword')
-  #     wait_for_ajax
-  #     wait_for_animations
-  #     find('[type=submit]').click
-  #     screenshot!
-  #
-  #     expect_reauthenticate_form_page
-  #     fill_in(t(:"login_signup_form.password_label"), with: 'password')
-  #     find('[type=submit]').click
-  #
-  #     newflow_complete_add_password_screen
-  #     expect(page).to have_content(t :"identities.reset_success.message")
-  #   end
-  # end
-
   scenario 'removing an authentication' do
     with_forgery_protection do
-      FactoryBot.create :authentication, user: user, provider: 'twitter'
+      FactoryBot.create :authentication, user: user, provider: 'facebook'
 
       log_in_user(email_value, 'password')
 
@@ -112,10 +87,10 @@ feature 'Require recent log in to change authentications', js: true do
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
         visit '/profile'
         expect_newflow_profile_page
-        expect(page).to have_content('Twitter')
+        expect(page).to have_content('Facebook')
         screenshot!
 
-        find('.authentication[data-provider="twitter"] .delete--newflow').click
+        find('.authentication[data-provider="facebook"] .delete').click
         screenshot!
         click_button 'OK'
         screenshot!
@@ -124,9 +99,9 @@ feature 'Require recent log in to change authentications', js: true do
         expect_newflow_profile_page
         screenshot!
 
-        find('.authentication[data-provider="twitter"] .delete--newflow').click
+        find('.authentication[data-provider="facebook"] .delete').click
         click_button 'OK'
-        expect(page).to have_no_content('Twitter')
+        expect(page).to have_no_content('Facebook')
         screenshot!
       end
     end

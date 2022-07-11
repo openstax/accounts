@@ -4,7 +4,7 @@ RSpec.describe OtherController, type: :controller do
   describe 'GET #profile_newflow' do
     context 'when logged in' do
       before do
-        user.update!(role: User::INSTRUCTOR_ROLE)
+        user.update!(role: :instructor)
         mock_current_user(user)
       end
 
