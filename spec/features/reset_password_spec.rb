@@ -13,7 +13,7 @@ feature 'Password reset', js: true do
 
   it_behaves_like 'adding and resetting password from profile', :reset
 
-  scenario 'while still logged in – user is not stuck in a loop' do
+  scenario 'while still logged in – user is not stuck in a loop' do
     # shouldn't ask to reauthenticate when they forgot their password and are trying to reset it
     # issue: https://github.com/openstax/business-intel/issues/550
     login_token = generate_login_token_for_user(user)

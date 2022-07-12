@@ -5,7 +5,7 @@ secrets = Rails.application.secrets
 
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :custom_identity
-  
+
   provider(
     'facebook',
     secrets[:facebook_app_id],

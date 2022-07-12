@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe OtherController, :type => :routing do
+RSpec.describe ProfileController, :type => :routing do
   describe "routing" do
 
     it "routes to #update" do
