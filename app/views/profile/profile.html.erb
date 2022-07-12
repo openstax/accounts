@@ -1,0 +1,213 @@
+<%
+  @parent_col_id = "profile"
+  @using_os = current_user.using_openstax
+%>
+
+<% content_for :page_specific do %>
+  <%= javascript_include_tag  "profile" %>
+  <%= stylesheet_link_tag "profile" %>
+<% end %>
+
+<div id="profile-logo">
+  <%= render 'layouts/main_menu' %>
+</div>
+
+<%= ox_card do %>
+    <div class="profile-title">
+      <%=
+        link_to(
+          I18n.t(:"users.edit.sign_out"),
+          newflow_logout_path,
+          class: 'sign-out',
+          data: {
+            'ga-category': 'Logout',
+            'ga-action': 'Click',
+            'ga-label': 'Logout',
+            'using-openstax': @using_os
+          }
+        )
+      %>
+      <h1 class="title">
+        <%= t(:"login_signup_form.profile_newflow_page_header") %>
+      </h1>
+    </div>
+
+    <div class="row name">
+      <div class="col-sm-2 category">
+        <%= I18n.t(:"users.edit.name") %>
+      </div>
+      <div class="col-sm-10 info">
+        <a href="#" id="profile_name" class="editable" data-name="profile_name" data-type="text">
+          <%= current_user.full_name %>
+        </a>
+      </div>
+    </div>
+
+
+  <% if current_user.username.present? %>
+  <div class="row">
+      <div class="col-sm-2 category">
+        <%= I18n.t(:"users.edit.username") %>
+      </div>
+      <div class="col-sm-10 info">
+        <a href="#" id="username" class="editable" data-name="username" data-type="text">
+          <%= current_user.username %>
+        </a>
+      </div>
+    </div>
+    <% end %>
+
+
+    <div class="row">
+      <div class="col-sm-2 category">
+        <%= t(:"users.edit.email_addresses") %>
+      </div>
+      <div id="email-template" style="display:none">
+        <div class="email-entry" data-id="">
+          <span class="email editable-click">
+            <span class="value"></span>
+          </span>
+
+          <span class='unconfirmed-warning'>
+            [<span class='msg editable-click'><%= I18n.t(:"users.edit.unconfirmed_warning") %></span>]
+          </span>
+
+          <div class="controls">
+            <div class="searchable-toggle">
+              <label>
+                <input type="checkbox" class='searchable'>
+              </label>
+            </div>
+          </div>
+          <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
+        </div>
+      </div>
+
+      <div class="col-sm-10 info">
+        <% current_user.email_addresses.order(:created_at).each do |email| %>
+          <div class="email-entry <%= 'verified' if email.verified %>" data-id="<%= email.id %>">
+            <span class="email editable-click"><span class="value"><%= email.value %></span></span>
+
+            <span class='unconfirmed-warning'>[<span class='msg editable-click'><%= I18n.t(:"users.edit.unconfirmed_warning") %></span>]</span>
+
+            <div class="controls">
+              <div class='resend-confirmation'>
+                <i class='fa fa-envelope-o'></i>
+                <%= button_to((I18n.t :"users.edit.resend_confirmation"), resend_confirmation_contact_info_path(id: email.id), method: :put ) %>
+              </div>
+              <div class="delete">
+                <span class="glyphicon glyphicon-trash"></span><a href="#">Delete</a>
+              </div>
+              <div class="searchable-toggle">
+                <label>
+                  <input type="checkbox" class='searchable' <%= 'checked="IS_SEARCHABLE"' if email.is_searchable %>>
+                  <%= I18n.t :"users.edit.searchable" %>
+                </label>
+              </div>
+            </div>
+            <i class="spinner fa fa-spinner fa-spin fa-lg" style="display:none"></i>
+          </div>
+
+        <% end %>
+
+        <%=
+          link_to(
+            I18n.t(:"users.edit.add_email_address"),
+            '#',
+            id: 'add-an-email',
+            data: {
+              'ga-category': 'My Account',
+              'ga-action': 'Click',
+              'ga-label': 'Add Email Address',
+              'using-openstax': @using_os
+            }
+          )
+        %>
+
+      </div>
+    </div>
+
+    <%
+      all_providers = OmniauthData::VALID_PROVIDERS
+      social_providers = %w(facebook google_oauth2)
+
+      # The `all providers &` enforces a standard sort order
+      current_providers = all_providers & current_user.authentications.collect(&:provider) - social_providers
+      other_available_providers = all_providers - current_providers
+    %>
+
+    <div class="row enabled-providers">
+      <div class="col-sm-2 category">
+        <%= t(:"login_signup_form.how_you_log_in") %>
+      </div>
+      <div class="col-sm-10 info providers">
+        <% current_providers.each do |provider| %>
+
+          <%
+            icon_class, display_name =
+              case provider
+                when 'identity' then ['key', (I18n.t :"users.edit.password")]
+                when 'google_oauth2' then %w[google Google]
+                else [provider, provider.capitalize]
+              end
+
+            icons = [
+              'glyphicon-pencil edit', 'glyphicon-trash delete', 'glyphicon-plus add',
+            ]
+          %>
+
+          <span class="icon fa-stack fa-lg">
+            <i class="fa fa-square fa-stack-2x <%= provider %>-bkg"></i>
+            <i class="fa fa-<%= icon_class %> fa-stack-1x fa-inverse"></i>
+          </span>
+          <span class="name"><%= display_name %></span>
+          <span class="mod-holder"><%= icons.map{|icon| "<span class='glyphicon #{icon} mod'></span>"}.join.html_safe %></span>
+        <% end %>
+      </div>
+      <% if other_available_providers.any? %>
+      <div class="col-sm-offset-2 info col-sm-10">
+        <%=
+          link_to(
+            I18n.t(:"student_profile.enable_other_sign_in_options"),
+            nil,
+            id: 'enable-other-sign-in'
+          )
+        %>
+      </div>
+      <% end %>
+
+    </div>
+
+    <div class="row other-sign-in">
+      <div class="col-sm-2 category">
+        <%= I18n.t(:"student_profile.other_sign_in_options_html").html_safe %>
+      </div>
+      <div class="col-sm-10 info providers">
+        <% other_available_providers.each do |provider| %>
+          <%
+            icon_class, display_name =
+              case provider
+                when 'identity' then ['key', (I18n.t :"users.edit.password")]
+                when 'google_oauth2' then %w[google Google]
+                else [provider, provider.capitalize]
+              end
+          %>
+
+          <span class="icon fa-stack fa-lg">
+            <i class="fa fa-square fa-stack-2x <%= provider %>-bkg"></i>
+            <i class="fa fa-<%= icon_class %> fa-stack-1x fa-inverse"></i>
+          </span>
+          <span class="name"><%= display_name %></span>
+          <span class="mod-holder"><span class='glyphicon glyphicon-plus add mod'></span></span>
+          <br>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>
+
+<%= render partial: 'profile/edit-js', locals: {
+  profile_path: profile_path,
+  current_user: current_user
+} %>
