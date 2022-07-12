@@ -26,7 +26,7 @@ RSpec.describe SheeridAPI, type: :lib, vcr: VCR_OPTS do
       let(:verification_id) { '5ef42cfaeddfdd1bd961c088' }
 
       # TODO: add this to the new faculty states - this is relevant, it means the user was asked for documents
-      xit 'is not a relevant response' do
+      it 'is not a relevant response' do
         expect(response.relevant?).to be(false)
       end
     end

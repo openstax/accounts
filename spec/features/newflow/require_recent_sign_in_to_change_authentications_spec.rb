@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Require recent log in to change authentications', js: true do
   let!(:user) do
     user = create_newflow_user(email_value)
-    user.update(role: User::STUDENT_ROLE)
+    user.update(role: :student)
     user
   end
   let(:email_value) { 'user@example.com' }
@@ -12,7 +12,7 @@ feature 'Require recent log in to change authentications', js: true do
     visit '/'
     log_in_user(email_value, 'password')
 
-    expect(page.current_path).to eq(profile_newflow_path)
+    expect(page.current_path).to eq(profile_path)
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       expect(page).to have_no_content('Facebook')
@@ -31,7 +31,7 @@ feature 'Require recent log in to change authentications', js: true do
         screenshot!
         fill_in(t(:"login_signup_form.password_label"), with: 'password')
         find('[type=submit]').click
-        expect(page.current_path).to eq(profile_newflow_path)
+        expect(page.current_path).to eq(profile_path)
         expect(page).to have_content('Facebook')
         screenshot!
       end
@@ -45,8 +45,8 @@ feature 'Require recent log in to change authentications', js: true do
       expect(page).to have_no_missing_translations
 
       Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-        visit profile_newflow_path
-        expect(page.current_path).to eq(profile_newflow_path)
+        visit profile_path
+        expect(page.current_path).to eq(profile_path)
 
         screenshot!
         find('.authentication[data-provider="identity"] .edit').click

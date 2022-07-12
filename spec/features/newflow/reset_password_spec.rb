@@ -13,15 +13,15 @@ feature 'Password reset', js: true do
 
   it_behaves_like 'adding and resetting password from profile', :reset
 
-  scenario 'while still logged in – user is not stuck in a loop' do
+  scenario 'while still logged in – user is not stuck in a loop' do
     # shouldn't ask to reauthenticate when they forgot their password and are trying to reset it
     # issue: https://github.com/openstax/business-intel/issues/550
     login_token = generate_login_token_for_user(user)
     log_in_user('user@openstax.org', 'password')
-    expect(page).to have_current_path(profile_newflow_path)
+    expect(page).to have_current_path(profile_path)
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      find('[data-provider=identity] .edit--newflow').click
+      find('[data-provider=identity] .edit').click
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
 
       click_link(t(:"login_signup_form.forgot_password"))
@@ -52,7 +52,7 @@ feature 'Password reset', js: true do
     log_in_user('user@openstax.org', 'password')
 
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
-      find('[data-provider=identity] .edit--newflow').click
+      find('[data-provider=identity] .edit').click
       expect(page).to have_content(I18n.t(:"login_signup_form.login_page_header"))
       click_link(t(:"login_signup_form.forgot_password"))
       expect(page).to have_content(
