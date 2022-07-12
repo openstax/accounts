@@ -101,8 +101,4 @@ RSpec.describe SocialAuthController, type: :controller do
       end
     end
   end
-
-  describe 'GET #confirm_oauth_info' do
-    it ''
-  end
 end
