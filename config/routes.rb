@@ -134,6 +134,7 @@ Rails.application.routes.draw do
     member do
       put 'set_searchable'
       put 'resend_confirmation'
+      put 'confirm_by_pin'
     end
   end
 
@@ -227,6 +228,7 @@ Rails.application.routes.draw do
   namespace :admin do
     get '/', to: 'base#index'
     get '/console', to: 'console#index'
+    
     resources :users, path: 'users', only: [:index, :update, :edit] do
       post 'become', on: :member
       get 'search', on: :collection
