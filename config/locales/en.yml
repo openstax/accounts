@@ -252,7 +252,7 @@ en:
       title: Title
   layouts:
     application_footer:
-      terms_of_use: Terms of Use
+      terms_of_use: Terms of Use
     application_header:
       sign_in: Log in
       sign_out: Log out
