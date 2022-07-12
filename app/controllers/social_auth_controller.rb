@@ -3,15 +3,10 @@ class SocialAuthController < BaseController
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 
-  before_action :restart_signup_if_missing_unverified_user, only: [
-    :confirm_oauth_info, :confirm_social_info_form
-  ]
+  before_action :restart_signup_if_missing_unverified_user, only: [:confirm_oauth_info, :confirm_social_info_form]
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
-    if signed_in? && user_signin_is_too_old?
-      reauthenticate_user!
-    else
       handle_with(
         OauthCallback,
         logged_in_user: signed_in? && current_user,
@@ -77,7 +72,9 @@ class SocialAuthController < BaseController
           end
         }
       )
-    end
+  end
+
+  def confirm_oauth_info_form
   end
 
   def confirm_oauth_info
@@ -122,7 +119,7 @@ class SocialAuthController < BaseController
     end
   end
 
-  private #################
+  private
 
   def ensure_unverified_user(user)
     EnsureUnverifiedUser.call(user).outputs.user

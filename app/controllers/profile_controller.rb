@@ -1,27 +1,12 @@
-class OtherController < BaseController
+class ProfileController < BaseController
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 
-  before_action :newflow_authenticate_user!, only: :profile_newflow
-  before_action :ensure_complete_educator_signup, only: :profile_newflow
+  before_action :newflow_authenticate_user!, only: :profile
+  before_action :ensure_complete_educator_signup, only: :profile
   before_action :prevent_caching
 
-  def profile_newflow
-    render layout: 'application'
-  end
-
-  def exit_accounts
-    if (redirect_param = extract_params(request.referrer)[:r])
-      if Host.trusted?(redirect_param)
-        redirect_to(redirect_param)
-      else
-        raise Lev::SecurityTransgression
-      end
-    elsif !signed_in? && (redirect_uri = extract_params(stored_url)[:redirect_uri])
-      redirect_to(redirect_uri)
-    else
-      redirect_back # defined in the `action_interceptor` gem
-    end
+  def profile
   end
 
   def update

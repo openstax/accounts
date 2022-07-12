@@ -6,6 +6,7 @@ class TermsController < ApplicationController
   before_action :get_contract, only: [:show]
 
   def index
+    render layout: 'newflow_layout'
     @contracts = [FinePrint.get_contract(:general_terms_of_use),
                   FinePrint.get_contract(:privacy_policy)].compact
     if @contracts.length != 2

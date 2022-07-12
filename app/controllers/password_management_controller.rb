@@ -75,7 +75,7 @@ class PasswordManagementController < BaseController
     end
   end
 
-  private #################
+  private
 
   def create_or_change_password_form(kind:)
     handle_with(
