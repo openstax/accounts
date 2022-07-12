@@ -17,8 +17,8 @@ class TermsAgree
   end
 
   def handle
-    if !agreement_params.i_agree
-      fatal_error(code: :did_not_agree,
+    unless agreement_params.i_agree
+      fatal_error(code:    :did_not_agree,
                   message: (I18n.t :"handlers.terms_agree.you_must_agree_to_the_terms"))
     end
 
