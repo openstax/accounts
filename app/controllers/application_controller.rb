@@ -1,6 +1,4 @@
 class ApplicationController < ActionController::Base
-  layout 'application'
-
   before_action :authenticate_user!
   before_action :complete_signup_profile
   before_action :check_if_password_expired

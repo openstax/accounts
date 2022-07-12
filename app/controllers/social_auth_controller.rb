@@ -11,9 +11,6 @@ class SocialAuthController < BaseController
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
-    if signed_in? && user_signin_is_too_old?
-      reauthenticate_user!
-    else
       handle_with(
         OauthCallback,
         logged_in_user: signed_in? && current_user,
@@ -79,7 +76,9 @@ class SocialAuthController < BaseController
           end
         }
       )
-    end
+  end
+
+  def confirm_oauth_info_form
   end
 
   def confirm_oauth_info
@@ -124,7 +123,7 @@ class SocialAuthController < BaseController
     end
   end
 
-  private #################
+  private
 
   def ensure_unverified_user(user)
     EnsureUnverifiedUser.call(user).outputs.user

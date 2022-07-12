@@ -2,9 +2,6 @@ class LoginController < BaseController
 
   include LoginSignupHelper
 
-  GO_TO_STUDENT_SIGNUP = 'student_signup'
-  GO_TO_SIGNUP = 'signup'
-
   fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile
 
   skip_before_action :authenticate_user!
@@ -32,7 +29,7 @@ class LoginController < BaseController
         sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
         if current_user.student? || decorated_user.can_do?('redirect_back_upon_login')
-          redirect_back(fallback_location: profile_newflow_path)
+          redirect_back(fallback_location: profile_path)
         else
           redirect_to(decorated_user.next_step)
         end
@@ -58,7 +55,21 @@ class LoginController < BaseController
     redirect_back(fallback_location: login_path)
   end
 
-  protected ###############
+  def exit_accounts
+    if (redirect_param = extract_params(request.referrer)[:r])
+      if Host.trusted?(redirect_param)
+        redirect_to(redirect_param)
+      else
+        raise Lev::SecurityTransgression
+      end
+    elsif !signed_in? && (redirect_uri = extract_params(stored_url)[:redirect_uri])
+      redirect_to(redirect_uri)
+    else
+      redirect_back(fallback_location: profile_path)
+    end
+  end
+
+  protected
 
   def redirect_to_signup_if_go_param_present
     if should_redirect_to_student_signup?
@@ -69,11 +80,11 @@ class LoginController < BaseController
   end
 
   def should_redirect_to_student_signup?
-    params[:go]&.strip&.downcase == GO_TO_STUDENT_SIGNUP
+    params[:go]&.strip&.downcase == 'student_signup'
   end
 
   def should_redirect_to_signup_welcome?
-    params[:go]&.strip&.downcase == GO_TO_SIGNUP
+    params[:go]&.strip&.downcase == 'signup'
   end
 
   # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.
