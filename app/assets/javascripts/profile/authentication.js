@@ -1,8 +1,9 @@
 (function () {
-    var AuthenticationOption, BASE_URL, Password, SPECIAL_TYPES,
+    let hasProp = {}.hasOwnProperty;
+    let AuthenticationOption, BASE_URL, Password, SPECIAL_TYPES,
         slice = [].slice,
         extend = function (child, parent) {
-            for (var key in parent) {
+            for (const key in parent) {
                 if (hasProp.call(parent, key)) child[key] = parent[key];
             }
 
@@ -14,8 +15,7 @@
             child.prototype = new ctor();
             child.__super__ = parent.prototype;
             return child;
-        },
-        hasProp = {}.hasOwnProperty;
+        };
 
     BASE_URL = "" + OX.url_prefix;
 
@@ -45,7 +45,7 @@
         AuthenticationOption.prototype["delete"] = function () {
             return $.ajax({
                 type: "DELETE",
-                url: BASE_URL + "/i/auth/" + (this.getType())
+                url: BASE_URL + "/auth/" + (this.getType())
             }).success(this.handleDelete).error(OX.Alert.display);
         };
 
@@ -72,7 +72,7 @@
         };
 
         AuthenticationOption.prototype.add = function () {
-            return window.location.href = BASE_URL + "/i/auth/" + (this.getType());
+            return window.location.href = BASE_URL + "/auth/" + (this.getType());
         };
 
         AuthenticationOption.prototype.handleDelete = function (response) {
@@ -93,16 +93,16 @@
         function Password(el1) {
             this.el = el1;
             Password.__super__.constructor.apply(this, arguments);
-            this.$el.find('.edit').click(this.editPassword);
-            this.$el.find('.add').click(this.addPassword);
+            this.el.find('.edit').click(this.editPassword);
+            this.el.find('.add').click(this.addPassword);
         }
 
         Password.prototype.editPassword = function () {
-            return window.location.href = BASE_URL + "/i/change_password_form";
+            return window.location.href = BASE_URL + "/change_password_form";
         };
 
         Password.prototype.addPassword = function () {
-            return window.location.href = BASE_URL + "/i/change_password_form";
+            return window.location.href = BASE_URL + "/change_password_form";
         };
 
         return Password;
@@ -116,7 +116,7 @@
     OX.Profile.Authentication = {
         initialize: function () {
             $('.authentication').each(function (i, el) {
-                var klass;
+                let klass;
                 klass = SPECIAL_TYPES[$(el).data('provider')] || AuthenticationOption;
                 return new klass(el);
             });

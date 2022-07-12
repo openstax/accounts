@@ -8,7 +8,7 @@
       };
     },
     display: function(options) {
-      var alert, icon, parent, type;
+      let alert, icon, parent, type;
       parent = $(options.parentEl || '#application-body');
       alert = parent.find('.alert');
       icon = options.icon || 'exclamation-sign';
