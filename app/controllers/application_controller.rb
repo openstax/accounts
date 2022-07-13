@@ -11,11 +11,6 @@ class ApplicationController < ActionController::Base
     current_user.is_anonymous?
   end
 
-  def check_if_admin
-    return true if !Rails.env.production?
-    is_admin?
-  end
-
   def check_if_password_expired
     return true if request.format != :html || request.options?
 
