@@ -1,7 +1,0 @@
-<p>Your email address, <b><%= @email_address %></b>, is used on more than one OpenStax account.</p>
-
-<p>Because we don't know which account to use when you log in with your email address, you'll need to log in with one of your usernames.</p>
-
-<p>Your usernames are: <%= @usernames.map{|un| "<b>#{un}</b>"}.to_sentence.html_safe %>.</p>
-
-<%= render :partial => 'shared/email_closing' %>
