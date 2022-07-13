@@ -1,5 +1,9 @@
 module Oauth
   class ApplicationsController < Doorkeeper::ApplicationsController
+    include AuthenticateMethods
+
+    layout 'admin'
+
     before_action :set_user
     before_action :authenticate_admin_or_oauth_application_owner!
 
@@ -142,21 +146,21 @@ module Oauth
     end
 
     def validated_member_ids
-      return [] if !params[:member_ids].present?
+      return [] unless params[:member_ids].present?
 
-      if !params[:member_ids].match(SPACE_SEPARATED_NUMBERS_REGEX)
+      unless params[:member_ids].match(SPACE_SEPARATED_NUMBERS_REGEX)
         @application.errors.add(:owner, 'Member Ids must be a space separated list of integers')
         return false
       end
 
       member_ids = params[:member_ids].split.map(&:to_i)
       member_ids.each do |member_id|
-        if !User.where(id: member_id).exists?
+        unless User.where(id: member_id).exists?
           @application.errors.add(:owner, "#{member_id} is not a valid user id")
           return false
         end
       end
-      return member_ids
+      member_ids
     end
 
     def set_current_member_ids

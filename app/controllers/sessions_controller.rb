@@ -1,18 +1,16 @@
-class LoginController < BaseController
+class SessionsController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:new, :create]
+  before_action :cache_client_app, :cache_alternate_signup_url, :redirect_to_signup_if_go_param_present,
+                only: :new
 
-  include LoginSignupHelper
-
-  fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile_newflow
-
-  before_action :cache_client_app, only: :login_form
-  before_action :cache_alternate_signup_url, only: :login_form
-  before_action :redirect_to_signup_if_go_param_present, only: :login_form
-  before_action :redirect_back, if: -> { signed_in? }, only: :login_form
-
-  def login_form
+  def welcome
+    flash.keep # keep notices and errors through to the redirects below
+    signed_in? ? redirect_to(:profile_path) : authenticate_user!
   end
 
-  def login
+  def new; end
+
+  def create
     handle_with(
       LogInUser,
       success: lambda {
@@ -50,7 +48,7 @@ class LoginController < BaseController
           security_log(:sign_in_failed, { reason: code, email: email })
         end
 
-        render :login_form
+        render :login
       }
     )
   end
@@ -60,36 +58,16 @@ class LoginController < BaseController
     redirect_back(fallback_location: login_path)
   end
 
-  def exit_accounts
-    if (redirect_param = extract_params(request.referrer)[:r])
-      if Host.trusted?(redirect_param)
-        redirect_to(redirect_param)
-      else
-        raise Lev::SecurityTransgression
-      end
-    elsif !signed_in? && (redirect_uri = extract_params(stored_url)[:redirect_uri])
-      redirect_to(redirect_uri)
-    else
-      redirect_back(fallback_location: profile_path)
-    end
-  end
+  def reauthenticate; end
 
   protected
 
   def redirect_to_signup_if_go_param_present
-    if should_redirect_to_student_signup?
+    if params[:go]&.strip&.downcase == 'student_signup'
       redirect_to signup_student_path(request.query_parameters)
-    elsif should_redirect_to_signup_welcome?
+    elsif params[:go]&.strip&.downcase == 'signup'
       redirect_to newflow_signup_path(request.query_parameters)
     end
-  end
-
-  def should_redirect_to_student_signup?
-    params[:go]&.strip&.downcase == 'student_signup'
-  end
-
-  def should_redirect_to_signup_welcome?
-    params[:go]&.strip&.downcase == 'signup'
   end
 
   # Save (in the session) or clear the URL that the "Sign up" button in the FE points to.

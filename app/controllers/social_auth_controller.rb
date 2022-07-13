@@ -1,6 +1,4 @@
-class SocialAuthController < BaseController
-  include LoginSignupHelper
-
+class SocialAuthController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   before_action :restart_signup_if_missing_unverified_user, only: [:confirm_oauth_info, :confirm_social_info_form]
@@ -30,7 +28,7 @@ class SocialAuthController < BaseController
 
           sign_in!(user)
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
-          redirect_back(fallback_location: profile_newflow_path)
+          redirect_back(fallback_location: profile_path)
         },
         failure: lambda {
           @email = @handler_result.outputs.email
@@ -41,7 +39,7 @@ class SocialAuthController < BaseController
           case code
           when :should_redirect_to_signup
             redirect_to(
-              login_path,
+              :login_path,
               notice: I18n.t(
                 :"login_signup_form.should_social_signup",
                 sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), newflow_signup_path)
@@ -49,13 +47,13 @@ class SocialAuthController < BaseController
             )
           when :authentication_taken
             security_log(:authentication_transfer_failed, authentication_id: authentication.id)
-            redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
+            redirect_to(:profile_path, alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
           when :email_already_in_use
             security_log(:email_already_in_use, email: @email, authentication_id: authentication.id)
-            redirect_to(profile_newflow_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
+            redirect_to(:profile_path, alert: I18n.t(:"controllers.sessions.way_to_login_cannot_be_added"))
           when :mismatched_authentication
             security_log(:sign_in_failed, reason: "mismatched authentication")
-            redirect_to(login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
+            redirect_to(:login_path, alert: I18n.t(:"controllers.sessions.mismatched_authentication"))
           else
             oauth = request.env['omniauth.auth']
             errors = @handler_result.errors.inspect
@@ -87,7 +85,7 @@ class SocialAuthController < BaseController
         clear_signup_state
         sign_in!(@handler_result.outputs.user)
         security_log(:student_social_auth_confirmation_success)
-        redirect_to signup_done_path
+        redirect_to :signup_done_path
       },
       failure: lambda {
         security_log(:student_social_auth_confirmation_failed)
@@ -98,7 +96,7 @@ class SocialAuthController < BaseController
 
   def remove_auth_strategy
     if signed_in? && user_signin_is_too_old?
-      reauthenticate_user!(redirect_back_to: profile_newflow_path)
+      reauthenticate_user!(redirect_back_to: :profile_path)
     else
       handle_with(
         AuthenticationsDelete,
@@ -108,8 +106,7 @@ class SocialAuthController < BaseController
                       authentication_id: authentication.id,
                       authentication_provider: authentication.provider,
                       authentication_uid: authentication.uid
-          render status: :ok,
-                plain: (I18n.t :"controllers.authentications.authentication_removed",
+          render status: :ok, plain: (I18n.t :"controllers.authentications.authentication_removed",
                               authentication: params[:provider].titleize)
         end,
         failure: lambda do

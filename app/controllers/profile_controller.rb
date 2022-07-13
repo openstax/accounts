@@ -1,4 +1,4 @@
-class ProfileController < BaseController
+class ProfileController < ApplicationController
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 

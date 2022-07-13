@@ -1,11 +1,33 @@
-class SignupController < BaseController
-  include LoginSignupHelper
+class SignupController < ApplicationController
+  include SignupHelper
 
-  fine_print_skip :general_terms_of_use, :privacy_policy
+  before_action(:authenticate_user!, only: :signup_done)
+  before_action(:total_steps, except: [:welcome])
 
-  before_action(:exit_newflow_signup_if_logged_in, only: :welcome)
-  before_action(:newflow_authenticate_user!, only: :signup_done)
-  before_action(:skip_signup_done_for_tutor_users, only: :signup_done)
+  def new
+    @selected_signup_role = params[:role]
+    # make sure they are using one of the supported roles to signup
+    return head(:not_found) unless %w[educator student].include? @selected_signup_role
+  end
+
+  def create
+    handle_with(
+      SignupForm,
+      contracts_required: !contracts_not_required,
+      client_app: get_client_app,
+      is_bri_book: session[:bri_book] == true,
+      success: lambda {
+        save_unverified_user(@handler_result.outputs.user.id)
+        security_log(:user_began_signup, { user: @handler_result.outputs.user })
+        clear_cache_bri_marketing
+        redirect_to :verify_email_by_pin_form_path
+      },
+      failure:            lambda {
+        security_log(:user_signup_failed, { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
+        render :signup_form
+      }
+    )
+  end
 
   def verify_email_by_code
     handle_with(
@@ -24,28 +46,38 @@ class SignupController < BaseController
         end
       },
       failure: lambda {
-        redirect_to(newflow_signup_path)
+        redirect_to(signup_path)
       }
     )
   end
 
   def signup_done
+    authenticate_user!
+    skip_signup_done_for_tutor_users
     security_log(:user_viewed_signup_form, form_name: action_name)
     @first_name = current_user.first_name
     @email_address = current_user.email_addresses.first&.value
   end
 
-  protected ###############
+  protected
+
+  def total_steps
+    @total_steps ||= if params[:role]
+       params[:role] == 'student' ? 2 : 4
+     elsif !current_user.is_anonymous?
+       current_user&.role == 'student' ? 2 : 4
+     end
+  end
 
   def skip_signup_done_for_tutor_users
-    return if !current_user.is_tutor_user?
+    return unless current_user.is_tutor_user?
 
     redirect_back(fallback_location: signup_done_path)
   end
 
   def exit_newflow_signup_if_logged_in
     if signed_in?
-      redirect_back(fallback_location: profile_newflow_path(request.query_parameters))
+      redirect_back(fallback_location: profile_path(request.query_parameters))
     end
   end
 end
