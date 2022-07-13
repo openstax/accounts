@@ -126,7 +126,7 @@ class SignupController < BaseController
       }
     )
   end
-  
+
   def change_signup_email_form
     @email = unverified_user.email_addresses.first.value
     render :change_signup_email_form

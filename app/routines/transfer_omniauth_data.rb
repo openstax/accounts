@@ -4,7 +4,7 @@ class TransferOmniauthData
 
   lev_routine
 
-  uses_routine AddEmailToUser
+  uses_routine CreateEmailForUser
 
   protected
 
@@ -29,7 +29,7 @@ class TransferOmniauthData
     user.save
     transfer_errors_from(user, {type: :verbatim}, true)
 
-    run(AddEmailToUser, data.email, user, already_verified: true)
+    run(CreateEmailForUser, data.email, user, already_verified: true)
   end
 
   def guessed_first_name(full_name)

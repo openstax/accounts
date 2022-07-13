@@ -12,7 +12,7 @@ class FindOrCreateUser
 
   uses_routine CreateUser, translations: { outputs: { type: :verbatim } }
   uses_routine FindOrCreateApplicationUser
-  uses_routine AddEmailToUser
+  uses_routine CreateEmailForUser
   uses_routine CreateIdentity
 
   protected

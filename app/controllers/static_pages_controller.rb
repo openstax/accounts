@@ -10,5 +10,5 @@ class StaticPagesController < ApplicationController
 
   def copyright
   end
-  
+
 end
