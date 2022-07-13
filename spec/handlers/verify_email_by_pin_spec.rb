@@ -82,7 +82,7 @@ RSpec.describe VerifyEmailByPin, type: :handler do
         expect(email.verified).to be(false)
         described_class.call(params: params, email_address: email)
         expect(email.verified).to be(true)
-      end
+      en
     end
   end
 end

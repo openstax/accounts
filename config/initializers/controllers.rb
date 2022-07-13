@@ -1,7 +1,7 @@
 ActionController::Base.class_exec do
   # We need some of the methods added here in all controllers
   # For example, `current_user` is used in the layout so it needs to exist everywhere
-  # OpenStax Accounts's controllers all inherit from ApplicationController,
+  # OpenStax Account's controllers all inherit from ApplicationController,
   # but gem controllers like FinePrint's and Blazer's do not, so adding them there wouldn't work
   # However, all controllers inherit from ActionController::Base,
   # so adding these methods to ActionController::Base directly here should work
@@ -18,7 +18,7 @@ ActionController::Base.class_exec do
 
   helper OSU::OsuHelper, ApplicationHelper, UserSessionManagement
 
-  prepend_before_action :set_device_id
+  before_action :set_device_id
   before_action :save_redirect
   before_action :set_locale
   before_action :complete_signup_profile
@@ -26,13 +26,6 @@ ActionController::Base.class_exec do
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
   protected
-
-  def complete_signup_profile
-    return true if request.format != :html || request.options?
-    redirect_to '/profile' if current_user.is_needs_profile?
-    # TODO: uncomment this line after fixing openstax_path_prefixer
-    # redirect_to main_app.signup_profile_path if current_user.is_needs_profile?
-  end
 
   def security_log(event_type, event_data = {})
     user = event_data[:user]
@@ -59,7 +52,6 @@ ActionController::Base.class_exec do
     return true if request.format != :html || request.options?
 
     url = params[:r]
-
     return true if url.blank? || !Host.trusted?(url)
 
     store_url(url: url)

@@ -409,38 +409,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#sheerid_supported?' do
-    context 'is sheer supported' do
-      subject(:user) do
-        FactoryBot.create(:user, country_code: '1')
-      end
-
-      it 'returns sheer supported' do
-        expect(user.sheerid_supported?).to be_truthy
-      end
-    end
-
-    context 'is not sheer supported' do
-      subject(:user) do
-        FactoryBot.create(:user, country_code: '111')
-      end
-
-      it 'returns not sheer supported' do
-        expect(user.sheerid_supported?).to be_falsey
-      end
-    end
-
-    context 'country code not set' do
-      subject(:user) do
-        FactoryBot.create(:user, country_code: nil)
-      end
-
-      it 'returns not sheer supported' do
-        expect(user.sheerid_supported?).to be_falsey
-      end
-    end
-  end
-
   describe '#best_email_address_for_salesforce' do
     let(:school_issued_email) { FactoryBot.create(:email_address, is_school_issued: true, verified: false) }
     let(:verified_email) { FactoryBot.create(:email_address, is_school_issued: false, verified: true) }

@@ -10,8 +10,8 @@ describe ContactInfosResendConfirmation, type: :handler do
       cc = contact_info.confirmation_code
 
       expect(contact_info.confirmation_code).not_to be_blank
-      expect_any_instance_of(ConfirmationMailer).to(
-        receive(:instructions).with(email_address: contact_info, send_pin: false)
+      expect_any_instance_of(NewflowMailer).to(
+        receive(:signup_email_confirmation).with(email_address: contact_info)
       )
 
         ContactInfosResendConfirmation.call(caller: user,

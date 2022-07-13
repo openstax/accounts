@@ -41,37 +41,4 @@ RSpec.describe ConfirmOauthInfo, type: :handler do
       described_class.call(params: params, contracts_required: true, user: User.last)
     end
   end
-
-  context 'when user has NO email address' do
-    before do
-      FactoryBot.create(:user, state: 'unverified')
-    end
-
-    xit 'creates an email address for the user' do
-      expect {
-        described_class.call(params: params, user: User.last)
-      }.to(change(EmailAddress, :count))
-    end
-
-    it 'adds the user as a "lead" to salesforce' do
-      expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
-      described_class.call(params: params, user: User.last)
-    end
-
-    it 'signs up user for the newsletter when checked' do
-      expect_any_instance_of(CreateSalesforceLead).to receive(:exec)
-      described_class.call(params: params, contracts_required: true, user: User.last)
-    end
-
-    context 'when newsletter is not checked' do
-      before do
-        params[:signup][:newsletter] = false
-      end
-
-      it 'does not sign up user for the newsletter' do
-        expect_any_instance_of(CreateSalesforceLead).not_to receive(:exec)
-        described_class.call(params: params, contracts_required: true, user: User.last)
-      end
-    end
-  end
 end

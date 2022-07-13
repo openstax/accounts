@@ -6,7 +6,7 @@ describe VerifyEmailByCode, type: :handler, vcr: VCR_OPTS do
 
   let(:params) { { code: email.confirmation_code } }
   let(:email) { FactoryBot.create(:email_address, user: user) }
-  let(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: role) }
+  let(:user) { FactoryBot.create(:user, state: 'unverified', role: role) }
 
   before(:all) do
     VCR.use_cassette('VerifyEmailByCode/sf_setup', VCR_OPTS) do
@@ -15,8 +15,8 @@ describe VerifyEmailByCode, type: :handler, vcr: VCR_OPTS do
     end
   end
 
-    context 'when student' do
-      let(:role) { User.roles[:student] }
+  context 'when student' do
+    let(:role) { 'student' }
 
       it 'verifies the email address found by the given code' do
         expect(email.verified).to be(false)
@@ -36,28 +36,28 @@ describe VerifyEmailByCode, type: :handler, vcr: VCR_OPTS do
         result = handler_call
         expect(result.outputs.user).to eq(user)
       end
+  end
+
+  context 'when instructor' do
+    let(:role) { 'instructor' }
+
+    it 'verifies the email address found by the given code' do
+      expect(email.verified).to be(false)
+      handler_call
+      email.reload
+      expect(email.verified).to be(true)
     end
 
-    context 'when instructor' do
-      let(:role) { User.roles[:instructor] }
+    it 'activates the user' do
+      expect_any_instance_of(ActivateUser).to receive(:exec).and_call_original
+      handler_call
+      user.reload
+      expect(user.state).to eq('activated')
+    end
 
-      it 'verifies the email address found by the given code' do
-        allow_any_instance_of(ActivateUser).to receive(:exec).with(user)
-        expect(email.verified).to be(false)
-        handler_call
-        email.reload
-        expect(email.verified).to be(true)
-      end
-
-      it 'calls EducatorSignup::ActivateEducator' do
-        expect_any_instance_of(ActivateUser).to receive(:exec).with(user)
-        handler_call
-      end
-
-      it 'outputs the user' do
-        allow_any_instance_of(ActivateUser).to receive(:exec).with(user)
-        outputs = handler_call.outputs
-        expect(outputs.user).to eq(user)
-      end
+    it 'outputs the user' do
+      results = handler_call
+      expect(results.outputs.user).to eq(user)
     end
   end
+end
