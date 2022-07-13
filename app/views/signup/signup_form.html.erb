@@ -1,0 +1,271 @@
+<%
+  @parent_col_id = "signup"
+  contracts = [FinePrint.get_contract(:general_terms_of_use),
+               FinePrint.get_contract(:privacy_policy)]
+
+  contract_links = contracts.collect { |contract|
+    link_to(contract.title, term_path(contract), target: '_blank')
+  }
+
+  if @selected_signup_role == 'student'
+    selected_signup_role = :student
+    total_steps          = 2
+  else
+    selected_signup_role = :instructor
+    total_steps          = 4
+  end
+%>
+
+<%= render 'shared/refresh_upon_going_back' %>
+
+<div id="login-signup-form">
+  <div class="content">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'signup--active' } %>
+
+    <%= login_signup_card(
+          header:       (I18n.t(:'login_signup_form.signup_page_header')),
+          current_step: I18n.t(:'login_signup_form.step_counter', current_step: 1, total_steps: @total_steps),
+          classes:      'signup-page') do %>
+      <% lev_form_for :signup, url: signup_post_path do |form| %>
+        <% fh = FormHelper::One.new(f:      form, context: self,
+                                    errors: @handler_result&.errors) %>
+
+        <div class="content role-section">
+          <div>
+            <%= render partial: 'shared/back_arrow', locals: { path: signup_path } %>
+            <% if selected_signup_role == :student %>
+              <div class="role-button"><%= I18n.t(:'login_signup_form.student') %></div>
+            <% else %>
+              <div class="role-button"><%= I18n.t(:'login_signup_form.educator') %></div>
+            <% end %>
+          </div>
+        </div>
+
+        <% if selected_signup_role == :student %>
+          <%= render partial: 'social_auth/social_auth_buttons' %>
+
+          <%=
+            render(
+              partial: 'shared/form_divider',
+              locals:  {
+                dividing_text: I18n.t(:"login_signup_form.or_sign_up_below")
+              }
+            )
+          %>
+        <% end %>
+
+        <div class="content required-fields-notice">
+          <%= I18n.t(:'login_signup_form.all_fields_required') %>
+        </div>
+
+        <div class="content control-group">
+          <%= label_tag :first_name, I18n.t(:'login_signup_form.legal_first_name_label'),
+                        class: 'field-label required'
+          %>
+          <%= fh.text_field name:        :first_name,
+                            placeholder: I18n.t(:'login_signup_form.legal_first_name_label'),
+                            autofocus:   true
+          %>
+        </div>
+
+        <div class="content control-group">
+          <%=
+            label_tag :last_name, I18n.t(:'login_signup_form.legal_last_name_label'),
+                      class: 'field-label required'
+          %>
+          <%=
+            fh.text_field name:        :last_name,
+                          placeholder: I18n.t(:"login_signup_form.legal_last_name_label")
+          %>
+        </div>
+
+        <% if selected_signup_role == :instructor %>
+          <div class="content control-group">
+            <%= label_tag :phone_number, I18n.t(:'login_signup_form.phone_number_label'), class: 'field-label' %>
+            <%=
+              fh.text_field name:               :phone_number,
+                            type:               'tel',
+                            supplemental_class: 'int-country-code form-control wide',
+                            placeholder:        I18n.t(:'login_signup_form.phone_number_placeholder'),
+                            onkeydown:          'javascript:backspacerDOWN(this,event);',
+                            onkeyup:            'javascript:backspacerUP(this,event);',
+                            data_bind:          'phoneNumber: telInput, value: phone'
+            %>
+            <%= form.hidden_field :country_code, 'data-bind': 'value: dialCode' %>
+          </div>
+
+          <div
+            class="content control-group email-input-group newflow"
+            data-bind="css: {'has-error': emailInvalid, 'has-changed': emailHasChanged}"
+          >
+            <%= label_tag :email, I18n.t(:'login_signup_form.school_issued_email_label'), class: 'field-label' %>
+            <%=
+              fh.text_field(
+                name:               :email,
+                supplemental_class: 'myschool_email',
+                placeholder:        I18n.t(:'login_signup_form.school_issued_email_placeholder'),
+                data_bind:          'valueWithInit: email'
+              )
+            %>
+          </div>
+
+          <div class="warning edu" data-bind="visible: emailInvalid">
+            <br/>
+            <%= t 'login_signup_form.teacher_school_email_warning', button: (t :'login_signup_form.continue_button') %>
+          </div>
+
+
+        <% else %>
+          <div class="content control-group">
+            <%= label_tag :email, I18n.t(:'login_signup_form.email_label'), class: 'field-label required' %>
+            <%=
+              fh.text_field(
+                name:        :email,
+                type:        :email,
+                placeholder: I18n.t(:'login_signup_form.email_placeholder'),
+                data_bind:   'valueWithInit: email'
+              )
+            %>
+          </div>
+        <% end %>
+
+        <%= render partial: 'shared/password_control_group', locals: { fh: fh } %>
+
+        <div class="content control-group checkboxes-section">
+
+          <div class="terms">
+            <label>
+              <%= form.check_box :newsletter, checked: true %>
+              <span><%= I18n.t(:'login_signup_form.send_me_newsletter') %></span>
+            </label>
+            <br>
+          </div>
+
+          <% if is_bri_book_adopter? %>
+            <%= render partial: 'shared/is_title_1_school_checkbox' %>
+          <% end %>
+
+          <div class="terms">
+            <label>
+              <%= form.check_box :terms_accepted, 'data-bind': 'checkedWithInit: termsIsChecked' %>
+              <span>
+                <%=
+                  I18n.t(
+                    :'login_signup_form.agree_to_terms_of_use',
+                    terms_of_use:   contract_links.first,
+                    privacy_policy: contract_links.second
+                  ).html_safe
+                %>
+              </span>
+            </label>
+
+            <%= form.hidden_field :contract_1_id, value: contracts.first.id %>
+            <%= form.hidden_field :contract_2_id, value: contracts.second.id %>
+            <%= form.hidden_field :role, value: selected_signup_role %>
+          </div>
+
+        </div>
+
+        <div class="content">
+          <%=
+            form.submit(
+              I18n.t(:'login_signup_form.continue_button'),
+              id:          'signup_form_submit_button',
+              class:       'primary',
+              data:        {
+                disable_with: I18n.t(:'login_signup_form.continue_button'),
+                ga_category:  'Account Creation',
+                ga_action:    'Click',
+                ga_label:     '3A-Email'
+              },
+              'data-bind': 'enable: canSubmit'
+            )
+          %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  <%= javascript_include_tag 'ko_extensions' %>
+</div>
+
+<% if @selected_signup_role == 'educator' %>
+  <script type="text/javascript">
+      // Add the data-bind to the form tag, since can't do that in markup
+      const formEl = document.querySelector('form');
+
+      formEl.setAttribute('data-bind', 'submit: beforeSubmit');
+
+      const vm = function () {
+          const email = ko.observable('');
+          const emailHasChanged = ko.observable(false);
+          const emailBlank = ko.computed(() => email().length === 0);
+          const emailInvalid = ko.computed(() =>
+              !emailBlank() && !email().toLowerCase().endsWith('.edu')
+          );
+          const termsIsChecked = ko.observable(false);
+          const canSubmit = ko.computed(() =>
+              !emailBlank() && !emailInvalid() && termsIsChecked()
+          );
+          const telInput = ko.observable();
+          const phone = ko.observable('');
+          const dialCode = ko.computed(
+              () => phone() && telInput().getSelectedCountryData().dialCode
+          );
+          const beforeSubmit = () => {
+              telInput().telInput.value = telInput().getNumber();
+              return true;
+          };
+
+          email.subscribe((v) => emailHasChanged(true));
+
+          return {
+              email,
+              emailHasChanged,
+              emailBlank,
+              emailInvalid,
+              termsIsChecked,
+              canSubmit,
+              telInput,
+              phone,
+              dialCode,
+              beforeSubmit
+          };
+      };
+
+      ko.applyBindings(vm());
+  </script>
+<% else %>
+  <script type="text/javascript">
+      // Add the data-bind to the form tag, since can't do that in markup
+      const formEl = document.querySelector('form');
+
+      formEl.setAttribute('data-bind', 'submit: beforeSubmit');
+
+      const vm = function () {
+          const email = ko.observable('');
+          const emailHasChanged = ko.observable(false);
+          const emailBlank = ko.computed(() => email().length === 0);
+          const termsIsChecked = ko.observable(false);
+          const canSubmit = ko.computed(() =>
+              !emailBlank() && termsIsChecked()
+          );
+
+          email.subscribe((v) => emailHasChanged(true));
+
+          const beforeSubmit = () => {
+              return true;
+          };
+
+          return {
+              email,
+              emailHasChanged,
+              emailBlank,
+              termsIsChecked,
+              canSubmit,
+              beforeSubmit
+          };
+      };
+
+      ko.applyBindings(vm());
+  </script>
+<% end %>

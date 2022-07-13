@@ -1,3 +1,9 @@
-<%= page_heading 'API' %>
-
-<%= link_to "API v1 Documentation", apipie_apipie_path(:version => 'v1') %>
+<%= profile_card(classes: "api", heading: "OpenStax Accounts API") do %>
+  <div class="layout-alert full">
+    Authorized access only
+  </div>
+  <br>
+  <p>The OpenStax API allows applications to programmatically interface with user account information and data.</p>
+  <p>You'll find the documentation on how to use the API by following the link below.</p>
+  <p><%= link_to "API v1 Documentation", api_path(:version => 'v1') %></p>
+<% end %>
