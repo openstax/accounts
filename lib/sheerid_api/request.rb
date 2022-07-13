@@ -24,7 +24,7 @@ module SheeridAPI
 
     def call_api
       http_response = Faraday.send(@http_method, @url, @request_body, HEADERS)
-      return Response.new(parse_body(http_response.body))
+      Response.new(parse_body(http_response.body))
     rescue Net::ReadTimeout => ee
       message = 'SheeridAPI: timeout'
       Sentry.capture_message(message)

@@ -132,49 +132,6 @@ pl:
       apology_message_html: Jeśli potrzebujesz pomocy, skontaktuj się z %{contact_info}.
       apology_message_long_html: 'Jeśli potrzebujesz pomocy, skontaktuj się z %{contact_info} podając rodzaj błędu: %{error_id}.'
     please_enable_javascript: Włącz obsługę JavaScript w przeglądarce. Część treści wymaga jej do poprawnego działania.
-  faculty_access:
-    apply:
-      additional_information_heading: Informacje dodatkowe
-      adjunct: Adiunkt wydziału
-      administrator: Administratorem
-      designer: Twórcą zasobów dydaktycznych
-      email: Twój szkolny adres e-mail
-      email_in_use: Ten adres e-mail jest już w użyciu.
-      email_placeholder: ja@mojaszkoła.edu.pl
-      first_name: Imię
-      homeschool: Homeschool Instructor
-      iama: Jestem
-      instructions: Aby uzyskać dostęp do zastrzeżonych materiałów, wypełnij poniższy formularz. Te dane pozwolą nam potwierdzić, że jesteś nauczycielem.
-      instructor: Nauczycielem
-      instructor_use:
-        fully: Używam OpenStax jako mojego głównego podręcznika.
-        how: W jaki sposób korzystasz z OpenStax?
-        interested: Jestem zainteresowany/a używaniem podręcznika OpenStax.
-        nope: Nie używam OpenStax.
-        recommended: Polecam podręcznik OpenStax, ale moi uczniowie kupują inny.
-      keep_me_informed: Proszę o wysyłanie do mnie informacji o nowych podręcznikach, zasobach i związanych z nimi kwestiach.
-      last_name: Nazwisko
-      librarian: Archiwistą
-      name_heading: Dane kontaktowe
-      next: Next
-      num_students: Liczba uczniów w semestrze
-      other: Inne
-      page_heading: Wniosek o status nauczyciela
-      phone_number: Numer telefonu
-      role_heading: Twoja funkcja
-      school: Szkoła
-      submit: Wyślij
-      suffix: Dopisek
-      teacher_school_email: Adres e-mail przyznany Ci przez Twoją szkołę.
-      teacher_school_email_warning: Czy to na pewno jest Twój szkolny adres e-mail? Jeżeli tak, wciśnij %{button} poniżej. Jeżeli nie, wpisz swój szkolny adres e-mail.
-      titles_interested: Zaznacz wszystkie interesujące Cię podręczniki OpenStax
-      url: Strona Twojej szkoły, która potwierdza, że jesteś nauczycielem
-      using_openstax: Używasz już OpenStax?
-    pending:
-      check_box: Proszę o e-mail z powiadomieniem o przyznaniu dostępu.
-      message: Zarejestrowałeś/aś się jako nauczyciel. Otrzymasz dostęp do zastrzeżonych materiałów, gdy potwierdzimy Twój status, co nie powinno zając dłużej niż 3-4 dni robocze. W międzyczasie możesz już zapoznać się ze wszystkimi podręcznikami i zasobami, które nie są zastrzeżone dla nauczycieli.
-      ok: OK
-      page_heading: Twój wniosek został wysłany
   handlers:
     authentications_delete:
       cannot_delete_last_authentication: Nie można usunąć. Musi pozostać przynajmniej jedna aktywna metoda logowania.
@@ -213,6 +170,9 @@ pl:
       submit: Ustaw hasło
       submitting: Ustawianie hasła…
       use_form_below_to_reset_password: Aby zmienić swoje hasło, wypełnij poniższe pola.
+      email_sent: Wysłaliśmy e-mail do zmiany hasła
+      email_sent_description: Wysłaliśmy instrukcję do zmiany hasła na <b>%{email}</b>.
+      email_sent_help: Nadal nie możesz się zalogować? %{contact_us_link}.
     reset_success:
       continue: Przejdź dalej
       message: Hasło zostało zmienione.
@@ -332,9 +292,6 @@ pl:
     password_is_blank: Wpisz hasło
     password_label: Hasło
     password_requirements: Wymagania dotyczące hasła
-    password_reset_email_sent: Wysłaliśmy e-mail do zmiany hasła
-    password_reset_email_sent_description: Wysłaliśmy instrukcję do zmiany hasła na <b>%{email}</b>.
-    password_reset_email_sent_help: Nadal nie możesz się zalogować? %{contact_us_link}.
     phone_number_is_blank: Numer telefonu nie może być pusty
     phone_number_label: Numer telefonu
     phone_number_placeholder: "+1(555)555-5555"

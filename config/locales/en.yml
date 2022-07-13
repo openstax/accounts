@@ -132,49 +132,6 @@ en:
       apology_message_html: If you need help, please contact %{contact_info}.
       apology_message_long_html: If you need help, please contact %{contact_info} and reference error %{error_id}.
     please_enable_javascript: Please enable JavaScript in your browser! Some site contet will not work properly without it.
-  faculty_access:
-    apply:
-      additional_information_heading: Additional information
-      adjunct: Adjunct Faculty
-      administrator: Administrator
-      designer: Instructional Designer
-      email: Your school email address
-      email_in_use: This email is already in use.
-      email_placeholder: me@myschool.edu
-      first_name: First name
-      homeschool: Homeschool Instructor
-      iama: I am a
-      instructions: To access faculty-only products, please provide the following information so that we can verify that you are faculty.
-      instructor: Instructor
-      instructor_use:
-        fully: Fully adopted and using it as the primary textbook
-        how: How are you using OpenStax?
-        interested: Interested in using OpenStax in the future
-        nope: Not using OpenStax
-        recommended: Recommending the book – my students buy a different book
-      keep_me_informed: Send me the OpenStax newsletter.
-      last_name: Last name
-      librarian: Librarian
-      name_heading: Name
-      next: Next
-      num_students: Number of students per semester
-      other: Other
-      page_heading: Apply for instructor access
-      phone_number: Phone number
-      role_heading: Your faculty role
-      school: School name
-      submit: Apply
-      suffix: Suffix
-      teacher_school_email: This is the email address given to you by your school.
-      teacher_school_email_warning: Is this your school email address?  If yes, click %{button} below. If not, please enter your school email address.
-      titles_interested: Select at least one OpenStax titles that interest you
-      url: A web page that shows you are faculty
-      using_openstax: Already using OpenStax?
-    pending:
-      check_box: Send me an email when my instructor access is approved.
-      message: Your instructor access is pending. We will verify your instructor status within 3-4 business days. In the meantime, you can access all books and resources except those that require instructor verification.
-      ok: OK
-      page_heading: Your application has been submitted
   handlers:
     authentications_delete:
       cannot_delete_last_authentication: Cannot delete an activated user's last authentication
@@ -213,6 +170,9 @@ en:
       submit: Reset Password
       submitting: Resetting…
       use_form_below_to_reset_password: Use the form below to reset your password.
+      email_sent: Password reset email sent
+      email_sent_description: Password reset instructions successfully sent to <b>%{email}</b>.
+      email_sent_help: Still having trouble logging in? %{contact_us_link}.
     reset_success:
       continue: Continue
       message: Your password has been reset.
@@ -254,8 +214,8 @@ en:
     application_footer:
       terms_of_use: Terms of Use
     application_header:
-      sign_in: Log in
-      sign_out: Log out
+      log_in: Log in
+      log_out: Log out
       welcome_html: Welcome, %{username}
     attention:
       please_enable_javascript: Please enable JavaScript.
@@ -319,9 +279,6 @@ en:
     password_is_blank: Password can't be blank
     password_label: Password
     password_requirements: Password requirements
-    password_reset_email_sent: Password reset email sent
-    password_reset_email_sent_description: Password reset instructions successfully sent to <b>%{email}</b>.
-    password_reset_email_sent_help: Still having trouble logging in? %{contact_us_link}.
     phone_number_is_blank: Phone number can't be blank
     phone_number_label: Phone number
     phone_number_placeholder: "(555)555-5555"
