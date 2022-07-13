@@ -4,7 +4,7 @@ class CreateEmailForUser
 
   protected
 
-  def exec(email_address_text, user, is_school_issued: nil)
+  def exec(email_address_text, user, is_school_issued: false, already_verified: false)
     return if email_address_text.blank?
 
     @email = user.email_addresses.find_by(value: email_address_text.downcase)
