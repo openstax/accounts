@@ -4,7 +4,7 @@
 # we just need to identify users by their `uid`.
 class OauthCallback
 
-  include LoginSignupHelper
+  include SignupHelper
 
   lev_handler
 

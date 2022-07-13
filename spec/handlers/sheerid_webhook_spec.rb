@@ -1,8 +1,7 @@
 require 'rails_helper'
 require 'vcr_helper'
 
-#RSpec.describe EducatorSignup::SheeridWebhook, type: :routine, vcr: VCR_OPTS do
-RSpec.describe EducatorSignup::SheeridWebhook, type: :routine do
+RSpec.describe SheeridWebhook, type: :routine do
   let(:email_address)           { FactoryBot.create :email_address, :verified }
   let(:user)                    { email_address.user }
   let!(:school)                 {
@@ -29,13 +28,6 @@ RSpec.describe EducatorSignup::SheeridWebhook, type: :routine do
       }
     )
   end
-
-  # before(:all) do
-  #   VCR.use_cassette('SheeridWebhook/sf_setup', VCR_OPTS) do
-  #     @proxy = SalesforceProxy.new
-  #     @proxy.setup_cassette
-  #   end
-  # end
 
   before do
     num_calls = verification.verified? ? :twice : :once

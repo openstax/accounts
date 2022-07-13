@@ -119,7 +119,7 @@ class EducatorProfile
 
     # Now we create the lead for the user... because we returned above
     # if they did... again SheeridWebhook
-    CreateSalesforceLeadJob.perform_later(@user.id)
+    CreateSalesforceLead.perform_later(@user.id)
 
   end
 

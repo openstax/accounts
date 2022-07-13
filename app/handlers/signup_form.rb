@@ -55,21 +55,21 @@ class SignupForm
       )
     end
 
-    user         = User.create(
-      state:          :unverified,
-      role:           signup_params.role,
+    user = User.create(
+      state: :unverified,
+      role: signup_params.role,
       faculty_status: :incomplete_signup, # signify email is unverified for user
-      first_name:         signup_params.first_name,
-      last_name:          signup_params.last_name,
-      phone_number:       signup_params.phone_number,
+      first_name: signup_params.first_name,
+      last_name: signup_params.last_name,
+      phone_number: signup_params.phone_number,
       receive_newsletter: signup_params.newsletter,
       source_application: options[:client_app]
     )
     outputs.user = user
 
     run(::SetPassword,
-        user:                  user,
-        password:              signup_params.password,
+        user: user,
+        password: signup_params.password,
         password_confirmation: signup_params.password)
 
     # Agree to terms

@@ -11,6 +11,10 @@ class VerifyEmailByPin
     validates :pin, presence: true
   end
 
+  def authorized?
+    true
+  end
+
   def handle
     result = ConfirmByPin.call(contact_info: options[:email_address], pin: confirm_params.pin)
     if result.errors.any?

@@ -12,7 +12,7 @@ class CreateSalesforceLead
 
   protected
 
-  def exec(user_id:)
+  def exec(user_id)
     user = User.find(user_id)
     status.set_job_name(self.class.name)
     status.set_job_args(user: user.to_global_id.to_s)
@@ -127,7 +127,7 @@ class CreateSalesforceLead
     books_json = []
 
     books_array = user.which_books.split(';').to_a
-    student_number_array = user.how_many_students.tr('^0-9,', '').split(',')
+    student_number_array = user.how_many_students.split('^0-9,', '').split(',')
 
     books_array.each_with_index do |book, index|
       book_keywords = { name: book, students: student_number_array[index]}
