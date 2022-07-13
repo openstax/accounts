@@ -1,5 +1,5 @@
 class StaticPagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:api, :copyright, :home]
+  skip_before_action :authenticate_user!
 
   skip_before_action :complete_signup_profile, only: [:api, :copyright]
 
@@ -10,10 +10,5 @@ class StaticPagesController < ApplicationController
 
   def copyright
   end
-
-  def home
-    flash.keep # keep notices and errors through to the redirects below
-
-    signed_in? ? redirect_to(profile_path) : authenticate_user!
-  end
+  
 end

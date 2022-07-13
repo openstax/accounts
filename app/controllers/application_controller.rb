@@ -30,21 +30,18 @@ class ApplicationController < ActionController::Base
 
   respond_to :html
 
-  protected #################
+  protected
 
-  def allow_iframe_access
-    @iframe_parent = params[:parent]
+  def complete_signup_profile
+    return true if request.format != :html || request.options?
+    redirect_to '/profile' if current_user.is_needs_profile?
+  end
 
-    if @iframe_parent.blank?
-      response.headers.except! 'X-Frame-Options'
-      return true
-    end
+  def decorated_user
+    EducatorSignupFlowDecorator.new(current_user, action_name)
+  end
 
-    if Host.trusted? @iframe_parent
-      response.headers.except! 'X-Frame-Options'
-    else
-      raise SecurityTransgression.new("#{@iframe_parent} is not allowed to iframe content")
-    end
-    true
+  def restart_signup_if_missing_unverified_user
+    redirect_to signup_path unless unverified_user.present?
   end
 end

@@ -1,6 +1,4 @@
-class SocialAuthController < BaseController
-  include LoginSignupHelper
-
+class SocialAuthController < ApplicationController
   fine_print_skip :general_terms_of_use, :privacy_policy
 
   skip_before_action :authenticate_user!, only: [ :oauth_callback, :confirm_oauth_info ]
@@ -45,7 +43,7 @@ class SocialAuthController < BaseController
           case code
           when :should_redirect_to_signup
             redirect_to(
-              login_path,
+              :login_path,
               notice: I18n.t(
                 :"login_signup_form.should_social_signup",
                 sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), signup_path)
@@ -91,7 +89,7 @@ class SocialAuthController < BaseController
         clear_signup_state
         sign_in!(@handler_result.outputs.user)
         security_log(:student_social_auth_confirmation_success)
-        redirect_to signup_done_path
+        redirect_to :signup_done_path
       },
       failure: lambda {
         security_log(:student_social_auth_confirmation_failed)
@@ -112,8 +110,7 @@ class SocialAuthController < BaseController
                       authentication_id: authentication.id,
                       authentication_provider: authentication.provider,
                       authentication_uid: authentication.uid
-          render status: :ok,
-                plain: (I18n.t :"controllers.authentications.authentication_removed",
+          render status: :ok, plain: (I18n.t :"controllers.authentications.authentication_removed",
                               authentication: params[:provider].titleize)
         end,
         failure: lambda do

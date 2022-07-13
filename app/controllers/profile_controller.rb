@@ -1,4 +1,4 @@
-class ProfileController < BaseController
+class ProfileController < ApplicationController
 
   skip_before_action :authenticate_user!, only: :exit_accounts
   before_action :ensure_complete_educator_signup, only: :profile

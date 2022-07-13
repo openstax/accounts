@@ -80,6 +80,31 @@ class SignupController < BaseController
     )
   end
 
+  def new
+    @selected_signup_role = params[:role]
+    # make sure they are using one of the supported roles to signup
+    return head(:not_found) unless %w[educator student].include? @selected_signup_role
+  end
+
+  def create
+    handle_with(
+      SignupForm,
+      contracts_required: !contracts_not_required,
+      client_app: get_client_app,
+      is_bri_book: session[:bri_book] == true,
+      success: lambda {
+        save_unverified_user(@handler_result.outputs.user.id)
+        security_log(:user_began_signup, { user: @handler_result.outputs.user })
+        clear_cache_bri_marketing
+        redirect_to :verify_email_by_pin_form_path
+      },
+      failure:            lambda {
+        security_log(:user_signup_failed, { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
+        render :signup_form
+      }
+    )
+  end
+
   def verify_email_by_code
     handle_with(
       VerifyEmailByCode,
@@ -101,7 +126,7 @@ class SignupController < BaseController
       }
     )
   end
-
+  
   def change_signup_email_form
     @email = unverified_user.email_addresses.first.value
     render :change_signup_email_form
