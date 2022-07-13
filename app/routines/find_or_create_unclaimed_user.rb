@@ -12,7 +12,7 @@ class FindOrCreateUnclaimedUser
 
   uses_routine CreateUser, translations: { outputs: { type: :verbatim } }
   uses_routine FindOrCreateApplicationUser
-  uses_routine AddEmailToUser
+  uses_routine CreateEmailForUser
   uses_routine CreateIdentity
 
   protected
@@ -43,7 +43,7 @@ class FindOrCreateUnclaimedUser
 
     # routine is smart and gracefully handles case of missing options[:email]
     options[:already_verified] = true if options[:already_verified].nil?
-    run(AddEmailToUser, options[:email], user, already_verified: options[:already_verified])
+    run(CreateEmailForUser, options[:email], user, already_verified: options[:already_verified])
 
     if options[:application]
       FindOrCreateApplicationUser[options[:application].id, user.id]
