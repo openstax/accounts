@@ -4,7 +4,7 @@ class CreateEmailForUser
 
   protected
 
-  def exec(email_address_text, user, is_school_issued: nil)
+  def exec(email_address_text, user, is_school_issued: false, already_verified: false)
     return if email_address_text.blank?
 
 
@@ -16,11 +16,11 @@ class CreateEmailForUser
       email_address.user = user
     end
 
-    email_address.is_school_issued = options[:is_school_issued] || false
+    email_address.is_school_issued = is_school_issued
 
     # This is either a new email address (unverified) or an existing email address
     # that is unverified, so verified should be false unless already verified
-    email_address.verified = options[:already_verified] || false
+    email_address.verified = already_verified
 
     email_address.customize_value_error_message(
       error:   :missing_mx_records,
@@ -36,7 +36,7 @@ class CreateEmailForUser
         event_type: :email_added_to_user,
         event_data: { email: email_address_text }
       )
-      NewflowMailer.signup_email_confirmation(email_address: email_address_text).deliver_later
+      NewflowMailer.signup_email_confirmation(email_address: email_address).deliver_later
     end
 
     outputs.email = email_address
