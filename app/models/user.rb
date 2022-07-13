@@ -150,6 +150,7 @@ class User < ApplicationRecord
   attr_readonly :uuid
 
   attribute :is_not_gdpr_location, :boolean, default: nil
+  attribute :renewal_eligible, :boolean, default: nil
 
   def most_accurate_school_name
     return school.name if school.present?
@@ -182,16 +183,6 @@ class User < ApplicationRecord
     email_addresses.first&.value
   end
 
-  def needs_to_complete_educator_profile?
-    (role != STUDENT_ROLE) && !is_profile_complete
-  end
-
-  def is_instructor_verification_stale?
-    pending_faculty? && activated? && activated_at.present? && \
-    (activated_at <= STALE_VERIFICATION_PERIOD.ago) && \
-    !is_educator_pending_cs_verification
-  end
-
   def is_tutor_user?
     source_application&.name&.downcase&.include?('tutor')
   end
@@ -210,17 +201,6 @@ class User < ApplicationRecord
     by_unverified.older_than_one_year.destroy_all
   end
 
-  def sheerid_supported?
-    {
-      '1'   => 'United States & Canada',
-      '27'  => 'South Africa',
-      '44'  => 'United Kingdom',
-      '61'  => 'Australia',
-      '64'  => 'New Zealand',
-      '353' => 'Ireland',
-    }.key?(country_code&.strip)
-  end
-
   def is_test?
     !!is_test
   end
@@ -236,14 +216,9 @@ class User < ApplicationRecord
   def is_application?
     false
   end
-
-  def step_3_complete?
-    sheerid_verification_id.present? || is_sheerid_unviable? || is_profile_complete?
-  end
-
   # State helpers.
   #
-  # A User model begins life in the "temp" state, and can then be claimed by another user
+  # A User model begins life in the "unverified" state, and can then be claimed by another user
   # who originated from an OAuth login. Upon it being claimed it will be removed and it's
   # data merged with the claimant.
   #
@@ -307,12 +282,12 @@ class User < ApplicationRecord
   end
 
   def name
-    full_name.present? ? full_name : username
+    full_name.presence || username
   end
 
   def full_name
     guess = "#{title} #{first_name} #{last_name} #{suffix}".gsub(/\s+/,' ').strip
-    guess.blank? ? nil : guess
+    guess.presence || nil
   end
 
   def full_name=(name)
@@ -321,16 +296,8 @@ class User < ApplicationRecord
     self.last_name = names.length > 1 ? names[1..-1].join(' ') : ''
   end
 
-  def guessed_first_name
-    full_name.present? ? full_name.split("\s")[0] : nil
-  end
-
-  def guessed_last_name
-    full_name.present? ? full_name.split("\s").drop(1).join(' ') : nil
-  end
-
   def casual_name # TODO are we ok now that username not required?
-    first_name.present? ? first_name : username
+    first_name.presence || username
   end
 
   def formal_name # TODO needs spec
@@ -340,10 +307,6 @@ class User < ApplicationRecord
   def add_unread_update
     # Returns false if the update fails (aborting the save transaction)
     AddUnreadUpdateForUser.call(self).errors.none?
-  end
-
-  def has_emails_but_none_verified?
-    email_addresses.any? && email_addresses.none?(&:verified)
   end
 
   ##########################
@@ -461,7 +424,7 @@ class User < ApplicationRecord
   end
 
   def save_activated_at_if_became_activated
-    if state_changed?(to: ACTIVATED)
+    if state_changed?(to: 'activated')
       self.touch(:activated_at)
     end
   end

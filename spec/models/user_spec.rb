@@ -296,11 +296,11 @@ RSpec.describe User, type: :model do
 
     before(:each) do
       Timecop.freeze(3.minutes.ago)  {
-        @email_a = AddEmailToUser['a@a.com', user]
+        @email_a = CreateEmailForUser['a@a.com', user]
       }
-      Timecop.freeze(0.minutes.ago)  { AddEmailToUser['b@b.com', user, already_verified: true] }
-      Timecop.freeze(-1.minutes.ago) { @email_c = AddEmailToUser['c@c.com', user] }
-      Timecop.freeze(-3.minutes.ago) { AddEmailToUser['d@d.com', user, already_verified: true] }
+      Timecop.freeze(0.minutes.ago)  { CreateEmailForUser['b@b.com', user, already_verified: true] }
+      Timecop.freeze(-1.minutes.ago) { @email_c = CreateEmailForUser['c@c.com', user] }
+      Timecop.freeze(-3.minutes.ago) { CreateEmailForUser['d@d.com', user, already_verified: true] }
     end
 
     context 'with no manually entered emails' do
@@ -485,16 +485,5 @@ RSpec.describe User, type: :model do
         expect(user.is_tutor_user?).to be_falsey
       end
     end
-
-    context 'country code not set' do
-      subject(:user) do
-        FactoryBot.create(:user, country_code: nil)
-      end
-
-      it 'returns not sheer supported' do
-        expect(user.sheerid_supported?).to be_falsey
-      end
-    end
   end
-
 end
