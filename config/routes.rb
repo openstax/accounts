@@ -1,10 +1,16 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  root to: 'static_pages#home'
+  root to: 'sessions#welcome'
+
+  mount OpenStax::Api::Engine, at: '/'
 
   # routes to old faculty access controller, redirect them to the sheerid form or pending cs paths
   get 'faculty_access/apply/' => redirect('signup/educator/apply')
   get 'faculty_access/pending/' => redirect('signup/educator/pending_cs_verification')
+  get 'exit_accounts' => redirect('logout')
+  scope 'signup' do
+    get '/' => redirect('signup')
+  end
 
   ###################
   #  FAQs/Support   #
@@ -130,6 +136,25 @@ Rails.application.routes.draw do
     get 'continue'
   end
 
+  scope controller: :social_auth do
+    get 'auth/:provider', action: :oauth_callback, as: :social_auth
+    post 'auth/:provider', action: :oauth_callback
+    get 'auth/:provider/callback', action: :oauth_callback
+    delete 'auth/:provider', action: :remove_auth_strategy
+    #   When you sign up with a social provider, you must confirm your info first
+    get 'confirm_oauth_info', action: :confirm_oauth_info
+    post 'confirm_oauth_info', action: :confirm_oauth_info
+  end
+
+  # Create a named path for links like `/auth/facebook` so that the path prefixer gem
+  #     will appropriately prefix the path. https://stackoverflow.com/a/40125738/1664216
+  # The actual request, however, is handled by the omniauth middleware when it detects
+  #     that the current_url is the callback_path, using `OmniAuth::Strategy#on_callback_path?`
+  #     So, admittedly, this route is deceiving.
+  get '/auth/:provider', to: ->(_env) { [404, {}, ['Not Found']] }, as: :oauth
+
+
+
   resources :contact_infos, only: [:create, :destroy] do
     member do
       put 'set_searchable'
@@ -236,13 +261,10 @@ Rails.application.routes.draw do
       put 'mark_users_updated', on: :collection
     end
 
-    resource :reports, only: [:show]
-
     resource :security_log, only: [:show]
 
     delete :delete_contact_info, path: '/contact_infos/:id/verify', controller: :contact_infos, action: :destroy
     post :verify_contact_info, path: '/contact_infos/:id/verify', controller: :contact_infos, action: :verify
-
   end
 
   ######################
