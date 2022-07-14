@@ -2,11 +2,10 @@ class ProfileController < ApplicationController
 
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:update]
 
-  before_action :newflow_authenticate_user!, only: :profile
-  before_action :ensure_complete_educator_signup, only: :profile
-  before_action :prevent_caching
+  before_action :prevent_caching, :authenticate_user!
 
   def profile
+    redirect_instructors_needing_to_complete_signup
   end
 
   def update
@@ -36,15 +35,15 @@ class ProfileController < ApplicationController
     end
   end
 
-  def ensure_complete_educator_signup
+  def redirect_instructors_needing_to_complete_signup
     return if current_user.student?
 
-    if decorated_user.newflow_edu_incomplete_step_3?
+    if current_user.sheerid_verification_id.blank? && current_user.pending_faculty? && !current_user.is_educator_pending_cs_verification
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification. Redirecting.')
-      redirect_to(educator_sheerid_form_path)
-    elsif decorated_user.newflow_edu_incomplete_step_4?
+      redirect_to(sheerid_form_path) and return
+    elsif !current_user.is_profile_complete?
       security_log(:educator_resumed_signup_flow, message: 'User needs to complete instructor profile. Redirecting.')
-      redirect_to(educator_profile_form_path)
+      redirect_to(profile_form_path) and return
     end
   end
 

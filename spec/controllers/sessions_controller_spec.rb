@@ -37,8 +37,6 @@ RSpec.describe SessionsController, type: :controller do
           # GET login_form with `?r=URL` may store a SAFE url to return to after login
           get(:login_form, params: { r: 'https://maliciousdomain.com' })
 
-          byebug
-
           post(:login_post, params: params)
           expect(response).not_to redirect_to('https://maliciousdomain.com')
         end

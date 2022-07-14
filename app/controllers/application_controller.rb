@@ -35,6 +35,6 @@ class ApplicationController < ActionController::Base
   end
 
   def restart_signup_if_missing_unverified_user
-    redirect_to signup_path and nil unless unverified_user.present?
+    redirect_to signup_path unless unverified_user.present?
   end
 end

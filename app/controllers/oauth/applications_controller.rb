@@ -50,7 +50,7 @@ module Oauth
             :notice, scope: %i[doorkeeper flash applications create]
           )
           respond_to do |format|
-            format.html { redirect_to oauth_application_url(@application) }
+            format.html { redirect_to main_app.oauth_application_url(@application) }
             format.json { render json: @application }
           end
         else

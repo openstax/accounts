@@ -5,8 +5,6 @@ class IdentitiesController < ApplicationController
   skip_before_action :authenticate_user!, :check_if_password_expired, :complete_signup_profile, only: [:reset, :add]
   fine_print_skip :general_terms_of_use, :privacy_policy, only: [:reset, :add]
 
-  before_action :allow_iframe_access
-
   def reset
     set_password(kind: :reset)
   end
@@ -16,7 +14,7 @@ class IdentitiesController < ApplicationController
   end
 
   def continue
-    redirect_back(fallback_location: profile_newflow_path)
+    redirect_back
   end
 
   protected
@@ -49,7 +47,7 @@ class IdentitiesController < ApplicationController
         # This check again here in case a long time elapsed between the GET and the POST
         reauthenticate_user_if_signin_is_too_old!
       else
-        handle_with(IdentitiesSetPassword,
+        handle_with(SetPassword,
                     success: lambda do
                       security_log :password_reset
                       redirect_to action: "#{kind}_success".to_sym

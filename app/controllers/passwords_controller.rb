@@ -30,7 +30,7 @@ class PasswordsController < ApplicationController
   def sent_add; end
 
   def continue
-    redirect_back(fallback_location: :profile_path)
+    redirect_back(fallback_location: profile_path)
   end
 
   protected
@@ -78,7 +78,7 @@ class PasswordsController < ApplicationController
         # This check again here in case a long time elapsed between the GET and the POST
         reauthenticate_user_if_signin_is_too_old!
       else
-        handle_with(IdentitiesSetPassword,
+        handle_with(SetPassword,
                     success: lambda do
                       security_log :password_reset
                       redirect_to action: "#{kind}_success".to_sym

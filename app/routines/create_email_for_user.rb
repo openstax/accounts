@@ -1,6 +1,6 @@
 class CreateEmailForUser
 
-  lev_routine express_output: :email
+  lev_routine express_output: [:email, :contact_infos]
 
   protected
 
@@ -39,7 +39,10 @@ class CreateEmailForUser
       NewflowMailer.signup_email_confirmation(email_address: email_address).deliver_later
     end
 
+    contact_info = ContactInfo.find_or_create_by(value: email_address_text, type: 'EmailAddress')
+
     outputs.email = email_address
+    outputs.contact_info = contact_info
 
     user.contact_infos.reset
     user.email_addresses.reset
