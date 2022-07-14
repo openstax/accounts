@@ -1,18 +1,10 @@
 module Admin
   class UsersController < BaseController
-    layout 'admin', except: :js_search
 
     before_action :get_user, only: [:edit, :update, :destroy, :become]
 
-    # Used by dialog
-    def js_search
-      security_log :users_searched_by_admin, search: params[:search]
-      handle_with(UsersSearch, complete: lambda { render 'search' })
-    end
-
     def index; end
 
-    # Used by full console page
     def search
       security_log :users_searched_by_admin, search: params[:search]
       handle_with(UsersSearch, complete: lambda { render 'index' })
@@ -34,8 +26,7 @@ module Admin
           security_log :trusted_launch_removed, user_id: params[:id], username: @user.username \
             if params[:user][:keep_external_uuids] == '0'
 
-          format.html { redirect_to edit_admin_user_path(@user),
-                        notice: 'User profile was successfully updated.' }
+          format.html { redirect_to edit_admin_user_path(@user), notice: 'User profile was successfully updated.' }
         else
           format.html { render action: "edit" }
         end
@@ -72,7 +63,7 @@ module Admin
     end
 
     def add_email_to_user
-      result = AddEmailToUser.call(params[:user][:email_address], @user)
+      result = CreateEmailForUser.call(params[:user][:email_address], @user)
       return true unless result.errors.any?
       flash[:alert] = "Failed to add new email address: #{result.errors.collect(&:translate)}"
     end

@@ -173,7 +173,7 @@ class Api::V1::UsersController < Api::V1::ApiController
   def find_or_create
     OSU::AccessPolicy.require_action_allowed!(:unclaimed, current_api_user, User)
     # OpenStax::Api#standard_(update|create) require an ActiveRecord model, which we don't have
-    # Substitue a Hashie::Mash to read the JSON encoded body
+    # Substitute a Hashie::Mash to read the JSON encoded body
     payload = consume!(Hashie::Mash.new, represent_with: Api::V1::FindOrCreateUserRepresenter)
 
     payload.application = current_api_user.application
