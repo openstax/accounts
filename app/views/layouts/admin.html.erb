@@ -7,8 +7,8 @@
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
   <title>OpenStax Accounts : Administration</title>
-  <%= stylesheet_link_tag 'admin', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'admin', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'admin', media: 'all' %>
+  <%= javascript_include_tag 'admin' %>
   <%= csrf_meta_tags %>
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -41,7 +41,6 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Monitoring<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><%= link_to 'User Counts', main_app.routes.url_helpers.admin_reports_path %></li>
             <li><%= link_to 'Blazer', '/admin/blazer' %></li>
             <li><%= link_to 'Background Queue Monitor', '/admin/job_dashboard' %></li>
           </ul>

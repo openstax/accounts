@@ -1,0 +1,67 @@
+<div id="login-signup-form">
+  <div class="content">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'login--active' } %>
+
+    <%= login_signup_card(
+          classes:        "login-page",
+          header:         (I18n.t(:"login_signup_form.login_page_header")),
+          show_exit_icon: true) do %>
+      <% lev_form_for :login_form, url: login_path do |f| %>
+        <% fh = FormHelper::One.new(f: f, context: self, errors: @handler_result&.errors) %>
+        <div class="content social-section">
+          <%= render partial: 'social_auth/social_auth_buttons' %>
+        </div>
+
+        <%=
+          render(
+            partial: 'shared/form_divider',
+            locals:  {
+              dividing_text: I18n.t(:"login_signup_form.or_login_below")
+            }
+          )
+        %>
+
+        <div class="content control-group">
+          <%= label_tag :email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
+          <%# input type is text instead of email bc we also support usernames %>
+          <%= fh.text_field name: :email,
+                            value: current_users_resetting_password_email ? current_users_resetting_password_email : nil,
+                            placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+                            autofocus:   true,
+                            autocomplete: 'username'
+          %>
+        </div>
+
+        <%= render partial: 'passwords/password_control_group', locals: { fh: fh } %>
+
+        <div class="content">
+          <%= f.submit I18n.t(:"login_signup_form.continue_button"),
+                       disable_with: I18n.t(:"login_signup_form.continue_button"),
+                       class: 'primary',
+                       data: { ga_category: 'Login', ga_action: 'Click', ga_label: 'Email' }
+          %>
+        </div>
+
+        <div class="content">
+          <%=
+            link_to(
+              I18n.t(:"login_signup_form.forgot_password"),
+              password_reset_path,
+              id:   'forgot-password-link',
+              data: {
+                ga_category: 'Login',
+                ga_action:   'Click',
+                ga_label:    'Password Reset'
+              }
+            )
+          %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  <%= javascript_include_tag 'application/ko_extensions' %>
+</div>
+<script>
+    // Necessary for password
+    ko.applyBindings({});
+</script>

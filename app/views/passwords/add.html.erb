@@ -1,0 +1,94 @@
+<%
+  @min_passw_length ||= Identity::MIN_PASSWORD_LENGTH
+  password_input_tag = 'password-input-tag'
+
+  error_codes = @handler_result.errors.map(&:code)
+
+  big_time_error_message =
+    case error_codes.first
+      when :token_blank, :unknown_login_token
+        t :"identities.set.there_was_a_problem_with_password_link"
+      when :expired_login_token
+        t :"identities.set.expired_password_link"
+    end
+
+  if big_time_error_message %>
+  <p><%= big_time_error_message %></p>
+<% else %>
+  <div id="login-signup-form">
+    <div class="content">
+      <%= render partial: 'shared/tab_group', locals: { active_class: 'login--active' } %>
+
+      <%= login_signup_card(
+            classes: "login-page",
+            header:  I18n.t(:"login_signup_form.setup_your_new_password")) do %>
+        <% lev_form_for :create_password_form, url: password_send_reset_path do |f| %>
+          <% fh = FormHelper::One.new(f:       f,
+                                                 context: self,
+                                                 errors:  @handler_result&.errors) %>
+
+          <div class="content control-group info-message">
+            <%=
+              I18n.t(
+                :"login_signup_form.setup_your_new_password_description",
+                email: @email
+              ).html_safe
+            %>
+          </div>
+
+          <div class="content control-group">
+            <div id="password-field-container">
+              <div class="input-with-tooltip">
+                <%= label_tag :password, I18n.t(:"identities.set.password"),
+                              class: 'field-label required'
+                %>
+                <span id="password-show-hide-button">
+                                    <span class="toggle-show-hide">SHOW</span>
+                                    <span class="toggle-show-hide" style="display: none">HIDE</span>
+                                </span>
+                <%=
+                  fh.text_field(
+                    name:        :password,
+                    type:        :password,
+                    placeholder: I18n.t(:"identities.set.password"),
+                    autocomplete: 'password'
+                  )
+                %>
+                <div class="tooltip">
+                  <h4>Password requirements</h4>
+                  <div>
+                    <i id="password-requirements-checkmark" class="fa fa-check-circle">
+                    </i>
+                    <%= @min_passw_length&.to_s %> characters minimum
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <br/>
+
+          <div class="content">
+            <%= f.submit I18n.t(:"login_signup_form.log_in"),
+                         disable_with: I18n.t(:"login_signup_form.log_in"),
+                         class:        'primary' %>
+          </div>
+
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+    var pwd_input = document.getElementsByClassName("<%= password_input_tag %>")[0];
+    var pwd_checkmark = document.getElementById('password-requirements-checkmark');
+
+    pwd_input.oninput = function (event) {
+        if (pwd_input.value.length >= <%= @min_passw_length %>) {
+            pwd_checkmark.classList.add("success");
+        } else {
+            pwd_checkmark.classList.remove("success");
+        }
+    }
+</script>

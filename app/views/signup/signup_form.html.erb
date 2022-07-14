@@ -26,13 +26,13 @@
           header:       (I18n.t(:'login_signup_form.signup_page_header')),
           current_step: I18n.t(:'login_signup_form.step_counter', current_step: 1, total_steps: @total_steps),
           classes:      'signup-page') do %>
-      <% lev_form_for :signup, url: signup_post_path do |form| %>
+      <% lev_form_for :signup, url: signup_form_path do |form| %>
         <% fh = FormHelper::One.new(f:      form, context: self,
                                     errors: @handler_result&.errors) %>
 
         <div class="content role-section">
           <div>
-            <%= render partial: 'shared/back_arrow', locals: { path: signup_path } %>
+            <%= render partial: 'shared/back_arrow', locals: { path: signup_form_path } %>
             <% if selected_signup_role == :student %>
               <div class="role-button"><%= I18n.t(:'login_signup_form.student') %></div>
             <% else %>
@@ -129,7 +129,7 @@
           </div>
         <% end %>
 
-        <%= render partial: 'shared/password_control_group', locals: { fh: fh } %>
+        <%= render partial: 'passwords/password_control_group', locals: { fh: fh } %>
 
         <div class="content control-group checkboxes-section">
 
@@ -141,7 +141,7 @@
             <br>
           </div>
 
-          <% if is_bri_book_adopter? %>
+          <% if is_BRI_book_adopter? %>
             <%= render partial: 'shared/is_title_1_school_checkbox' %>
           <% end %>
 
@@ -185,7 +185,7 @@
       <% end %>
     <% end %>
   </div>
-  <%= javascript_include_tag 'ko_extensions' %>
+  <%= javascript_include_tag 'application/ko_extensions' %>
 </div>
 
 <% if @selected_signup_role == 'educator' %>
