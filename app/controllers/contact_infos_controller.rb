@@ -1,7 +1,6 @@
 class ContactInfosController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [:confirm, :confirm_unclaimed, :resend_confirmation]
-
   skip_before_action :complete_signup_profile, only: [:confirm_unclaimed]
 
   fine_print_skip :general_terms_of_use, :privacy_policy,
@@ -81,7 +80,7 @@ class ContactInfosController < ApplicationController
 
                   if @handler_result.errors.any?
                     contact_info_event_type = :contact_info_confirmation_by_code_failed
-                    render :bad_request
+                    head(:bad_request)
                   else
                     contact_info_event_type = :contact_info_confirmed_by_code
                     sign_in!(contact_info.user)
