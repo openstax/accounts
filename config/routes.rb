@@ -1,16 +1,11 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  root to: 'sessions#welcome'
-
-  mount OpenStax::Api::Engine, at: '/'
+  root to: 'sessions#login_form'
 
   # routes to old faculty access controller, redirect them to the sheerid form or pending cs paths
   get 'faculty_access/apply/' => redirect('signup/educator/apply')
   get 'faculty_access/pending/' => redirect('signup/educator/pending_cs_verification')
   get 'exit_accounts' => redirect('logout')
-  scope 'signup' do
-    get '/' => redirect('signup')
-  end
 
   ###################
   #  FAQs/Support   #
@@ -159,13 +154,11 @@ Rails.application.routes.draw do
     member do
       put 'set_searchable'
       put 'resend_confirmation'
-      put 'confirm_by_pin'
     end
   end
 
   scope controller: :contact_infos do
     get 'confirm'
-    get 'confirm/unclaimed', action: :confirm_unclaimed
   end
 
   resources :terms, only: [:index, :show] do
