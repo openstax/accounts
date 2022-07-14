@@ -1,9 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  root to: 'sessions#welcome'
-
-  mount OpenStax::Api::Engine, at: '/'
+  root to: 'sessions#login_form'
 
   get 'i/(*path)' => redirect { |_, request|
     "/accounts/#{request.params[:path]}?#{request.params.except('path').to_query}"
@@ -13,27 +11,25 @@ Rails.application.routes.draw do
   get 'faculty_access/apply/' => redirect('signup/educator/apply')
   get 'faculty_access/pending/' => redirect('signup/educator/pending_cs_verification')
   get 'exit_accounts' => redirect('logout')
-  scope 'signup' do
-    get '/' => redirect('signup')
-  end
 
   direct :salesforce_knowledge_base do
     'https://openstax.secure.force.com/help/articles/FAQ/Can-t-log-in-to-your-OpenStax-account'
   end
 
-  scope controller: 'profile' do
-    get 'profile', action: :view, as: :profile
+  scope controller: :profile do
+    get 'profile', action: :profile, as: :profile
     put 'profile', action: :update, as: :update_profile
   end
 
-  scope controller: 'sessions' do
+  scope controller: :sessions do
     get 'login', action: :login_form, as: :login
     post 'login', action: :login_post
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
     get 'logout', action: :logout, as: :logout
+    get 'exit_accounts', action: :exit_accounts
   end
 
-  scope controller: 'signup' do
+  scope controller: :signup do
     # welcome! choose a role!
     get 'signup', action: :welcome, as: :signup
 
@@ -62,25 +58,14 @@ Rails.application.routes.draw do
 
     # Step 4
     get 'signup/educator/profile_form', action: :profile_form, as: :profile_form
-    post 'signup/educator/complete_profile', action: :profile_form_post, as: :complete_profile_post
-    get 'signup/educator/pending_cs_verification', action: :pending_cs_verification, as: :cs_verification
+    post 'signup/educator/complete_profile', action: :profile_post, as: :profile_post
+    get 'signup/educator/pending_cs_verification', action: :pending_cs_verification_form, as: :cs_verification
 
     get 'signup/educator/cs_form', action: :pending_cs_verification_form, as: :cs_verification_form
-    post 'signup/educator/cs_verification_request', action: :profile_form_post, as: :cs_verification_post
+    post 'signup/educator/cs_verification_request', action: :pending_cs_verification_post, as: :cs_verification_post
   end
 
-  scope controller: :passwords do
-    # Password management process (forgot,  change, or create password)
-    get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
-    post 'send_reset_password_email', action: :send_reset_password_email, as: :send_reset_password_email
-    get 'reset_password_email_sent', action: :reset_password_email_sent, as: :reset_password_email_sent
-    get 'create_password_form', action: :create_password_form, as: :create_password_form
-    post 'create_password', action: :create_password, as: :create_password
-    get 'change_password_form', action: :change_password_form, as: :change_password_form
-    post 'change_password', action: :change_password, as: :change_password
-  end
-
-  scope controller: 'passwords', path: 'password', as: 'password' do
+  scope controller: :passwords, path: 'password', as: 'password' do
     get 'reset'
     post 'reset'
 
@@ -119,13 +104,11 @@ Rails.application.routes.draw do
     member do
       put 'set_searchable'
       put 'resend_confirmation'
-      put 'confirm_by_pin'
     end
   end
 
   scope controller: 'contact_infos' do
     get 'confirm'
-    get 'confirm/unclaimed', action: :confirm_unclaimed
   end
 
   resources :terms, only: [:index, :show] do
@@ -139,6 +122,8 @@ Rails.application.routes.draw do
     get 'copyright'
     get 'api'
   end
+
+  mount OpenStax::Api::Engine, at: '/'
 
   apipie
 
