@@ -81,7 +81,7 @@ Rails.application.routes.draw do
   #########################
   #  Password Management  #
   #########################
-  scope controller: :password_management do
+  scope controller: :passwords do
     # Password management process (forgot,  change, or create password)
     get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
     post 'send_reset_password_email', action: :send_reset_password_email, as: :send_reset_password_email
