@@ -48,46 +48,6 @@ RSpec.describe ContactInfosController, type: :controller do
     end
   end
 
-  context "GET confirm" do
-    render_views
-
-    before :each do
-      @email = FactoryBot.create(
-        :email_address, confirmation_code: '1234', verified: false, value: 'user@example.com'
-      )
-    end
-
-    it "returns error if no code given" do
-      get(:confirm)
-      expect(response.code).to eq('400')
-
-      expect(response.body).to have_no_missing_translations
-      expect(response.body).to have_content(t :"contact_infos.confirm.verification_code_not_found")
-      expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
-    end
-
-    # TODO: let's get this on dev and see the 500 - I can't reproduce
-    xit "returns error if code doesn't match" do
-      get(:confirm, params: { code: 'abcd' })
-      #byebug
-      expect(response.code).to eq('400')
-      expect(response.body).to have_no_missing_translations
-      expect(response.body).to have_content(t :"contact_infos.confirm.verification_code_not_found")
-      expect(EmailAddress.find_by_value(@email.value).verified).to be_falsey
-    end
-
-    it "returns success if code matches" do
-      get(:confirm, params: { code: @email.confirmation_code })
-      expect(response).to be_successful
-      expect(response.body).to have_no_missing_translations
-      expect(response.body).to have_content(t :"contact_infos.confirm.page_heading.success")
-      expect(response.body).to(
-        have_content(t :"contact_infos.confirm.you_may_now_close_this_window")
-      )
-      expect(EmailAddress.find_by_value(@email.value).verified).to be_truthy
-    end
-  end
-
   context "GET confirm/unclaimed" do
     render_views
     let(:user)  { FactoryBot.create :user_with_emails, state: 'unclaimed', emails_count: 1 }
@@ -101,16 +61,6 @@ RSpec.describe ContactInfosController, type: :controller do
     it "returns error if no code given" do
       get(:confirm_unclaimed)
       expect(response.code).to eq('400')
-    end
-
-    it "returns success if code matches" do
-      get(:confirm_unclaimed, params: { code: email.confirmation_code })
-      expect(response).to be_successful
-      expect(response.body).to have_no_missing_translations
-      expect(response.body).to(
-        have_content(t :"contact_infos.confirm_unclaimed.thanks_for_validating")
-      )
-      expect(EmailAddress.find_by_value(email.value).verified).to be_truthy
     end
   end
 
