@@ -130,6 +130,7 @@
         <% end %>
 
         <%= render partial: 'passwords/password_control_group', locals: { fh: fh } %>
+        
         <div class="content control-group checkboxes-section">
 
           <div class="terms">
@@ -140,7 +141,7 @@
             <br>
           </div>
 
-          <% if is_bri_book_adopter? %>
+          <% if is_BRI_book_adopter? %>
             <%= render partial: 'shared/is_title_1_school_checkbox' %>
           <% end %>
 
