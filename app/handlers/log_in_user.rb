@@ -17,7 +17,7 @@ class LogInUser
     validates :password, presence: true
   end
 
-  protected ###############
+  protected
 
   def authorized?
     true

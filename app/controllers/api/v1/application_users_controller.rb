@@ -27,7 +27,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     Accepts a query string along with options and returns a JSON representation
     of the matching ApplicationUsers.
     Some User data may be filtered out depending on the
-    caller's status and priviledges in the system.
+    caller's status and privileges in the system.
     The schema for the returned JSON result is shown below.
 
     #{json_schema(Api::V1::UserSearchRepresenter, include: :readable)}
@@ -141,7 +141,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
     outputs = GetUpdatedApplicationUsers.call(current_application, params[:limit]).outputs
     respond_with outputs[:application_users],
                  represent_with: Api::V1::ApplicationUsersRepresenter,
-                 user_options: { include_private_data: current_application && current_application.can_access_private_user_data? },
+                 user_options: { include_private_data: current_application&.can_access_private_user_data? },
                  location: nil
   end
 

@@ -80,27 +80,65 @@ class SignupController < BaseController
     )
   end
 
-  def new
-    @selected_signup_role = params[:role]
-    # make sure they are using one of the supported roles to signup
-    return head(:not_found) unless %w[educator student].include? @selected_signup_role
+  def welcome
+    redirect_back(fallback_location: profile_path) if signed_in?
   end
 
-  def create
+  def signup_form
+    @selected_signup_role = params[:role]
+    @errors = params[:errors]
+    # make sure they are using one of the approved roles to signup
+    if %w[educator student].include? @selected_signup_role
+      render :signup_form
+    else
+      head(:not_found)
+    end
+  end
+
+  def signup_post
     handle_with(
       SignupForm,
       contracts_required: !contracts_not_required,
       client_app: get_client_app,
-      is_bri_book: session[:bri_book] == true,
+      is_bri_book: is_BRI_book_adopter?,
       success: lambda {
         save_unverified_user(@handler_result.outputs.user.id)
-        security_log(:user_began_signup, { user: @handler_result.outputs.user })
-        clear_cache_bri_marketing
-        redirect_to :verify_email_by_pin_form_path
+        security_log(:user_viewed_signup_form, { user: @handler_result.outputs.user })
+        clear_cache_BRI_marketing
+        redirect_to verify_email_by_pin_form_path and return
       },
-      failure:            lambda {
-        security_log(:user_signup_failed, { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
-        render :signup_form
+      failure: lambda {
+        security_log(:sign_up_failed,
+                     { reason: @handler_result.errors.map(&:code), email: @handler_result.outputs.email })
+        render :signup_form and return
+      }
+    )
+  end
+
+  def verify_email_by_pin_form
+    render :email_verification_form
+  end
+
+  def verify_email_by_pin_post
+    handle_with(
+      VerifyEmailByPin,
+      email_address: unverified_user.email_addresses.first,
+      success: lambda {
+        user = @handler_result.outputs.user
+        sign_in!(user)
+        security_log(:contact_info_confirmed_by_pin,
+                     { user: user, email_address: unverified_user.email_addresses.first.value })
+
+        if user.student?
+          redirect_to signup_done_path
+        else
+          # instructor/educator
+          redirect_to sheerid_form_path
+        end
+      },
+      failure: lambda {
+        security_log(:contact_info_confirmation_by_pin_failed, email: unverified_user.email_addresses.first)
+        render :email_verification_form
       }
     )
   end

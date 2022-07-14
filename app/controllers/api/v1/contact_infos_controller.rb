@@ -36,7 +36,7 @@ class Api::V1::ContactInfosController < Api::V1::ApiController
                                                       contact_info_value: @contact_info.value
 
       payload = consume!(Hashie::Mash.new, represent_with: Api::V1::ResendConfirmationRepresenter)
-      SendContactInfoConfirmation.call(contact_info: @contact_info, send_pin: payload.send_pin)
+      SendContactInfoConfirmation.call(contact_info: @contact_info)
       head :no_content
     end
   end

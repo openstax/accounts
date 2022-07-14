@@ -5,6 +5,7 @@ class ProfileController < ApplicationController
   before_action :prevent_caching, only: :profile
 
   def profile
+    redirect_instructors_needing_to_complete_signup
   end
 
   def update
@@ -34,7 +35,7 @@ class ProfileController < ApplicationController
     end
   end
 
-  def ensure_complete_educator_signup
+  def redirect_instructors_needing_to_complete_signup
     return if current_user.student?
 
     if decorated_user.edu_incomplete_step_3?

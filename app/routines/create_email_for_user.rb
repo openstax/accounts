@@ -1,6 +1,6 @@
 class CreateEmailForUser
 
-  lev_routine express_output: :email
+  lev_routine express_output: [:email, :contact_infos]
 
   protected
 
@@ -37,7 +37,7 @@ class CreateEmailForUser
       )
       ConfirmationMailer.signup_email_confirmation(email_address: @email).deliver_later
     end
-
+    
     outputs.email = @email
 
     user.contact_infos.reset

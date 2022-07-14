@@ -48,7 +48,7 @@ class SendResetPasswordEmail
     end
   end
 
-  private #################
+  private
 
   def logged_in_user
     @logged_in_user ||= !caller.is_anonymous? && caller

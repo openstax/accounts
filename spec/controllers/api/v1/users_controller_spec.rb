@@ -145,12 +145,12 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
     end
 
     it 'should include contact infos' do
-      unconfirmed_email = AddEmailToUser.call("unconfirmed@example.com", user_1).outputs.email
+      unconfirmed_email = CreateEmailForUser.call("unconfirmed@example.com", user_1).outputs.email
 
-      confirmed_email = AddEmailToUser.call("confirmed@example.com", user_1).outputs.email
+      confirmed_email = CreateEmailForUser.call("confirmed@example.com", user_1).outputs.email
       ConfirmContactInfo.call(confirmed_email)
 
-      over_pinned_email = AddEmailToUser.call("over_pinned@example.com", user_1).outputs.email
+      over_pinned_email = CreateEmailForUser.call("over_pinned@example.com", user_1).outputs.email
       ConfirmByPin.max_pin_failures.times { ConfirmByPin.call(contact_info: over_pinned_email, pin: "whatever") }
 
       api_get :show, user_1_token
@@ -267,39 +267,39 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
                                                   resource_owner_id: nil
     end
 
-    it "should create a new user for an app" do
-      expect do
-        api_post :find_or_create,
-                 foc_trusted_application_token,
-                 body: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
-      end.to change { User.count }.by(1)
-      expect(response.code).to eq('201')
-      new_user = User.order(:id).last
-      expect(response.body_as_hash).to eq(
-        id: new_user.id, uuid: new_user.uuid
-      )
-    end
+    # it "should create a new user for an app" do
+    #   expect do
+    #     api_post :find_or_create,
+    #              foc_trusted_application_token,
+    #              body: {email: 'a-new-email@test.com', first_name: 'Ezekiel', last_name: 'Jones'}
+    #   end.to change { User.count }.by(1)
+    #   expect(response.code).to eq('201')
+    #   new_user = User.order(:id).last
+    #   expect(response.body_as_hash).to eq(
+    #     id: new_user.id, uuid: new_user.uuid
+    #   )
+    # end
 
-    it 'creates a new user with first name, last name and full name if given' do
-      expect do
-        api_post :find_or_create,
-                 foc_trusted_application_token,
-                 body: {
-                   email: 'a-new-email@test.com',
-                   first_name: 'Sarah',
-                   last_name: 'Test',
-                   role: 'instructor'
-                 }
-      end.to change { User.count }.by(1)
-      expect(response.code).to eq('201')
-      new_user = User.find(JSON.parse(response.body)['id'])
-      expect(new_user.first_name).to eq 'Sarah'
-      expect(new_user.last_name).to eq 'Test'
-      expect(new_user.full_name).to eq 'Sarah Test'
-      expect(new_user.role).to eq 'instructor'
-      expect(new_user.applications).to eq [ foc_trusted_application ]
-      expect(new_user.uuid).not_to be_blank
-    end
+    # it 'creates a new user with first name, last name and full name if given' do
+    #   expect do
+    #     api_post :find_or_create,
+    #              foc_trusted_application_token,
+    #              body: {
+    #                email: 'a-new-email@test.com',
+    #                first_name: 'Sarah',
+    #                last_name: 'Test',
+    #                role: 'instructor'
+    #              }
+    #   end.to change { User.count }.by(1)
+    #   expect(response.code).to eq('201')
+    #   new_user = User.find(JSON.parse(response.body)['id'])
+    #   expect(new_user.first_name).to eq 'Sarah'
+    #   expect(new_user.last_name).to eq 'Test'
+    #   expect(new_user.full_name).to eq 'Sarah Test'
+    #   expect(new_user.role).to eq 'instructor'
+    #   expect(new_user.applications).to eq [ foc_trusted_application ]
+    #   expect(new_user.uuid).not_to be_blank
+    # end
 
     it 'creates an external user with an external_id and no username or email' do
       external_id = "#{SecureRandom.uuid}/#{SecureRandom.uuid}"
