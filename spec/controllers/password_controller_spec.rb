@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-RSpec.describe PasswordManagementController, type: :controller do
+RSpec.describe PasswordsController, type: :controller do
   describe 'GET #forgot_password_form' do
     it 'has a 200 status code' do
-      get('forgot_password_form')
+      get('reset')
       expect(response.status).to eq(200)
     end
 
     it 'assigns the email value from what is stored in the session' do
       session[:login_failed_email] = 'someone@openstax.org'
-      get('forgot_password_form')
+      get('reset')
       expect(assigns(:email)).to eq('someone@openstax.org')
     end
   end
@@ -26,24 +26,24 @@ RSpec.describe PasswordManagementController, type: :controller do
         end
 
         it 'assigns the email value from the handler\'s outputs' do
-          post('send_reset_password_email', params: params)
+          post('send_reset', params: params)
           expect(assigns(:email)).to eq('user@openstax.org')
         end
 
         it 'calls sign_out!' do
           expect_any_instance_of(described_class).to receive(:sign_out!).once
-          post('send_reset_password_email', params: params)
+          post('password_send_reset', params: params)
         end
 
         it 'renders reset_password_email_sent' do
-          post('send_reset_password_email', params: params)
+          post('send_reset', params: params)
           expect(response).to render_template(:reset_password_email_sent)
         end
 
         it 'creates a Security Log' do
           mock_current_user(User.last)
           expect {
-            post('send_reset_password_email', params: params)
+            post('send_reset', params: params)
           }.to change {
             SecurityLog.where(event_type: :password_reset, user: User.last).count
           }
@@ -101,10 +101,6 @@ RSpec.describe PasswordManagementController, type: :controller do
     end
   end
 
-  describe 'POST #create_password' do
-    it 'creates a password for logged in user'
-  end
-
   describe 'GET #change_password_form' do
     context 'success - when valid token' do
       let(:params) do
@@ -130,7 +126,7 @@ RSpec.describe PasswordManagementController, type: :controller do
         expect(response.status).to eq(200)
       end
 
-      xit 'creates a security log' do
+      it 'creates a security log' do
         expect {
           get('change_password_form', params: params)
         }.to change {
@@ -189,14 +185,14 @@ RSpec.describe PasswordManagementController, type: :controller do
 
       it 'sets the new password for the user' do
         expect(User.last.identity.authenticate(new_password)).to be_falsey
-        post(:change_password, params: params)
+        post(:change_password_form, params: params)
         expect(response.status).to eq(302)
         expect(User.last.identity.authenticate(new_password)).to be_truthy
       end
 
       it 'creates a security log' do
         expect {
-          post('change_password', params: params)
+          post('change_password_form', params: params)
         }.to change {
           SecurityLog.where(event_type: :password_reset).count
         }
@@ -219,7 +215,7 @@ RSpec.describe PasswordManagementController, type: :controller do
 
       it 'creates a security log' do
         expect {
-          post('change_password', params: params)
+          post('change_password_form', params: params)
         }.to change {
           SecurityLog.where(event_type: :password_reset_failed).count
         }

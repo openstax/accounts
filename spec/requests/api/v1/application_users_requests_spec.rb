@@ -2,8 +2,7 @@ require 'rails_helper'
 
 # Moved multiple request specs here from the controller spec
 
-RSpec.describe 'Api::V1::ApplicationUsers multiple requests',
-               type: :request, api: true, version: :v1 do
+RSpec.describe 'Api::V1::ApplicationUsers multiple requests', type: :request, api: true, version: :v1 do
 
   let!(:untrusted_application) { FactoryBot.create :doorkeeper_application }
   let!(:trusted_application)   { FactoryBot.create :doorkeeper_application, :trusted }

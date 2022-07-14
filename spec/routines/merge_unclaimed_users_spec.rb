@@ -5,12 +5,12 @@ describe MergeUnclaimedUsers do
   context 'given an unclaimed account' do
     let!(:unclaimed_user) do
       u = FactoryBot.create :user, state: 'unclaimed'
-      AddEmailToUser.call('unclaimeduser@example.com', u)
+      CreateEmailForUser.call('unclaimeduser@example.com', u)
       u
     end
     let!(:matching_user) do
       u = FactoryBot.create(:user)
-      AddEmailToUser.call('matched@example.com', u)
+      CreateEmailForUser.call('matched@example.com', u)
       u
     end
     let(:matching_email) do
