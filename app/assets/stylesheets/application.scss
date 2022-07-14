@@ -16,7 +16,6 @@ $font-path: '/accounts/fonts';
 @import "ox-controls";
 @import "bootstrap-social";
 @import "profile";
-@import "social";
 @import "create_account";
 @import "misc";
 @import "pagination";
@@ -38,6 +37,7 @@ $font-path: '/accounts/fonts';
   padding-left: 50px;
   width: 200px;
   border-radius: 0;
+  color: white !important;
   > :first-child {
     padding-top: 4px;
     width: 40px;
