@@ -54,6 +54,7 @@ module UserSessionManagement
       # Set the SSO cookie
       user_hash = Api::V1::UserRepresenter.new(@current_user).to_hash
       sso_cookie_jar.subject = user_hash
+      Sentry.set_user(user_hash)
 
       security_log :sign_in_successful, security_log_data
     end
@@ -64,6 +65,7 @@ module UserSessionManagement
   def sign_out!(options={})
     clear_signup_state
     clear_incomplete_educator
+    Sentry.set_user(nil)
 
     sign_in!(AnonymousUser.instance, options)
   end
