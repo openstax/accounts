@@ -8,7 +8,7 @@ Doorkeeper.configure do
     # normally only be called when the user is already signed in, which is ok because that's what
     # lets us get to the authorization part of oauth, or when we skip the `:authenticate_user!`
     # before_action, which we don't normally do in the oauth flow where this matters
-    newflow_authenticate_user!
+    authenticate_user!
 
     current_user
   end
