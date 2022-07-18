@@ -37,7 +37,7 @@ class CreateEmailForUser
       )
       ConfirmationMailer.signup_email_confirmation(email_address: @email).deliver_later
     end
-    
+
     outputs.email = @email
 
     user.contact_infos.reset

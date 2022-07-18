@@ -6,7 +6,7 @@
           classes:        "login-page",
           header:         (I18n.t(:"login_signup_form.login_page_header")),
           show_exit_icon: true) do %>
-      <% lev_form_for :login_form, url: login_path do |f| %>
+      <% lev_form_for :login_form, url: login_post_path do |f| %>
         <% fh = FormHelper::One.new(f: f, context: self, errors: @handler_result&.errors) %>
         <div class="content social-section">
           <%= render partial: 'social_auth/social_auth_buttons' %>

@@ -51,6 +51,24 @@ class ContactInfosController < ApplicationController
     render json: {is_searchable: @contact_info.is_searchable}, status: :ok
   end
 
+  def confirm
+    handle_with(ConfirmByCode,
+              complete: lambda do
+                contact_info = @handler_result.outputs.contact_info
+                if @handler_result.errors.any?
+                  event_type = :contact_info_confirmation_by_code_failed
+                  status     = 400
+                else
+                  event_type = :contact_info_confirmed_by_code
+                  status     = 200
+                end
+                security_log event_type, contact_info_id: contact_info.try(:id),
+                             contact_info_type:           contact_info.try(:type),
+                             contact_info_value:          contact_info.try(:value)
+                render :confirm, status: status
+              end)
+end
+
   protected
 
   def get_contact_info
