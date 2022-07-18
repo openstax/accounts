@@ -41,6 +41,7 @@ class CreateEmailForUser
     outputs.email = @email
 
     user.email_addresses.reset
+    user.contact_infos.reset
   end
 
 end

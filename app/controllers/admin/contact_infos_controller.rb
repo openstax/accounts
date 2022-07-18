@@ -3,12 +3,12 @@ module Admin
 
     def verify
       contact_info = ContactInfo.find(params[:id])
-      result = MarkContactInfoVerified.call(contact_info)
+      result = contact_info.verified = true
       if result.errors.any?
-        return render plain: '(Unable to confirm)'
+        render plain: '(Unable to confirm)'
       else
         security_log :contact_info_confirmed_by_admin, contact_info_id: params[:id]
-        return render plain: '(Confirmed)'
+        render plain: '(Confirmed)'
       end
     end
 

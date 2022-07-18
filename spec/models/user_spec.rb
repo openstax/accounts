@@ -7,8 +7,8 @@ RSpec.describe User, type: :model do
   it { is_expected.to have_many :security_logs }
 
   it { is_expected.to validate_presence_of(:faculty_status) }
-  it { is_expected.to validate_presence_of(:role          ) }
-  it { is_expected.to validate_presence_of(:school_type   ) }
+  it { is_expected.to validate_presence_of(:role) }
+  it { is_expected.to validate_presence_of(:school_type) }
 
   it { is_expected.to validate_uniqueness_of(:uuid).case_insensitive }
 
@@ -379,30 +379,14 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '.cleanup_unverified_users' do
-    before do
-      FactoryBot.create(:user, created_at: 10.years.ago, state: User::ACTIVATED)
-      @older_unverified_user = FactoryBot.create(:user, created_at: 10.years.ago, state: User::UNVERIFIED)
-      FactoryBot.create(:user, created_at: 1.month.ago, state: User::ACTIVATED)
-      FactoryBot.create(:user, created_at: 1.month.ago, state: User::UNVERIFIED)
-    end
-
-    it 'removes the unverified users older than a year' do
-      expect(User.count).to eq 4
-      described_class.cleanup_unverified_users
-      expect(User.count).to eq 3
-      expect(User.find_by(id: @older_unverified_user.id)).to be_nil
-    end
-  end
-
   describe 'activated_at gets updated when user changes state to activated' do
     let(:user) do
-      FactoryBot.create(:user, state: User::UNVERIFIED)
+      FactoryBot.create(:user, state: 'unverified')
     end
 
     example do
       expect(user.activated_at).to be_nil
-      user.state = User::ACTIVATED
+      user.state = 'activated'
       user.save
       user.reload
       expect(user.activated_at).not_to be_nil

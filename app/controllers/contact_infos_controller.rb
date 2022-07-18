@@ -13,7 +13,8 @@ class ContactInfosController < ApplicationController
         contact_info = @handler_result.outputs.contact_info
         security_log :email_added_to_user, contact_info_id: contact_info.id,
                                             contact_info_type: contact_info.type,
-                                            contact_info_value: contact_info.value
+                                            contact_info_value: contact_info.value,
+                                            email_value: email
         render json: {
           contact_info: {
             id: contact_info.id,
@@ -52,7 +53,7 @@ class ContactInfosController < ApplicationController
   end
 
   def confirm
-    handle_with(ConfirmByCode,
+    handle_with(VerifyEmailByCode,
               complete: lambda do
                 contact_info = @handler_result.outputs.contact_info
                 if @handler_result.errors.any?

@@ -9,8 +9,6 @@ class ProfileController < ApplicationController
   end
 
   def update
-    OSU::AccessPolicy.require_action_allowed!(:update, current_user, current_user)
-
     respond_to do |format|
       format.json do
         if current_user.update_attributes(user_params.to_h)

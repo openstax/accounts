@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.17.3
+      - Faraday v1.0.1
       Authorization:
       - Bearer <sheerid_api_secret>
       Accept:
@@ -23,29 +23,34 @@ http_interactions:
       message: Not Found
     headers:
       Date:
-      - Tue, 30 Jun 2020 18:36:46 GMT
+      - Mon, 18 Jul 2022 19:59:22 GMT
       Content-Type:
       - application/json
-      Transfer-Encoding:
-      - chunked
+      Content-Length:
+      - '80'
       Connection:
       - keep-alive
       Set-Cookie:
-      - AWSALB=N8i7zSHpH3Tp9GA6Vo1EOonDBsKvnzbPKeiHAhiIaK7U5DRrITdilxuANsruur6rldd8J0XcMRNjYsvjO0A/rm1LAaJPhCjTmhy7pEVp21B/9AUkdPgDrssjYdKp;
-        Expires=Tue, 07 Jul 2020 18:36:46 GMT; Path=/
-      - AWSALBCORS=N8i7zSHpH3Tp9GA6Vo1EOonDBsKvnzbPKeiHAhiIaK7U5DRrITdilxuANsruur6rldd8J0XcMRNjYsvjO0A/rm1LAaJPhCjTmhy7pEVp21B/9AUkdPgDrssjYdKp;
-        Expires=Tue, 07 Jul 2020 18:36:46 GMT; Path=/; SameSite=None; Secure
+      - AWSALB=eOW8ABm12yYEht5b+16gRI9cEU88DmGUQ679BoMPoNDECOd4dlCOAElMRDgKbCNrFZMsdWeP6a+GZA0Mzp2ptM73KXTbcBJVtT06ryikWbvkTZDWT7kQWn+BV0G2;
+        Expires=Mon, 25 Jul 2022 19:59:22 GMT; Path=/
+      - AWSALBCORS=eOW8ABm12yYEht5b+16gRI9cEU88DmGUQ679BoMPoNDECOd4dlCOAElMRDgKbCNrFZMsdWeP6a+GZA0Mzp2ptM73KXTbcBJVtT06ryikWbvkTZDWT7kQWn+BV0G2;
+        Expires=Mon, 25 Jul 2022 19:59:22 GMT; Path=/; SameSite=None; Secure
+      - JSESSIONID=Y5msVbNQG_Mu5tzyriIeGiLGG-L8lBhkIvFKtmyM.core-platform-sheerid-77f7645567-6xd7n;
+        path=/rest/v2; secure; HttpOnly; SameSite=None
       Server:
-      - Apache-Coyote/1.1
+      - Apache/2.4.37 (centos)
       Access-Control-Allow-Origin:
       - "*"
+      Access-Control-Allow-Headers:
+      - Content-Type,Cookie
       Access-Control-Allow-Methods:
       - GET, POST, DELETE, PUT
-      Access-Control-Allow-Headers:
-      - Content-Type, Cookie
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains; preload
+      Referrer-Policy:
+      - no-referrer-when-downgrade
     body:
       encoding: UTF-8
-      string: '{"systemErrorMessage":"No verification found with id ''gibberish''"}'
-    http_version: 
-  recorded_at: Tue, 30 Jun 2020 18:36:46 GMT
-recorded_with: VCR 3.0.3
+      string: '{"systemErrorMessage":"No verification found with id ''gibberish''","errorIds":[]}'
+  recorded_at: Mon, 18 Jul 2022 19:59:22 GMT
+recorded_with: VCR 6.1.0

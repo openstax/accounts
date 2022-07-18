@@ -14,5 +14,4 @@ class ApplicationUserAccessPolicy
       return false
     end
   end
-
 end

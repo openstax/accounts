@@ -18,10 +18,10 @@ class ConfirmUnclaimedAccount
     outputs[:email_address] = contact_info.value
     if contact_info.user.identity.present?
       outputs[:can_log_in] = true
-      run(ActivateUnclaimedUser, contact_info.user)
+      run(ActivateUnclaimedUser, email_address.user)
     end
-    run(MarkContactInfoVerified, contact_info)
-    outputs[:contact_info] = contact_info
+    run(ConfirmEmailAddress, email_address.value)
+    outputs[:email_address] = email_address
   end
 
 end

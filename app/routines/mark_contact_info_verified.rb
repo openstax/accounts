@@ -8,8 +8,6 @@ class MarkContactInfoVerified
     case contact_info
     when ContactInfo
       contact_info.verified = true
-    when PreAuthState
-      contact_info.is_contact_info_verified = true
     else
       raise ArgumentError, "Invalid contact_info class: #{contact_info.class.name}", caller
     end
