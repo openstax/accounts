@@ -21,7 +21,7 @@ module SignupHelper
   end
 
   def sheerid_provided_verification_id_param
-    params[:verificationid]
+    params[:verificationId]
   end
 
   def is_school_not_supported_by_sheerid?

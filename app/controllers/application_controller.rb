@@ -13,6 +13,12 @@ class ApplicationController < ActionController::Base
     current_user.is_anonymous?
   end
 
+  include Lev::HandleWith
+
+  respond_to :html
+
+  protected
+
   def check_if_password_expired
     return true if request.format != :html || request.options?
 
@@ -21,16 +27,5 @@ class ApplicationController < ActionController::Base
 
     flash[:alert] = I18n.t(:"controllers.identities.password_expired")
     redirect_to(password_reset_path)
-  end
-
-  include Lev::HandleWith
-
-  respond_to :html
-
-  protected
-
-  def complete_signup_profile
-    return true if request.format != :html || request.options?
-    redirect_to profile_path if current_user.is_needs_profile?
   end
 end

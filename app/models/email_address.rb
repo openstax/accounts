@@ -46,7 +46,7 @@ class EmailAddress < ContactInfo
 
     has_mx = -> (val) { EmailDomain.where(value: val, has_mx: true).any? }
     has_no_mx = -> (val) { EmailDomain.where(value: val, has_mx: false).any? }
-    return has_mx.call(self.domain) && !has_no_mx.call(self.domain)
+    has_mx.call(self.domain) && !has_no_mx.call(self.domain)
   end
 
   def domain

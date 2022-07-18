@@ -1,6 +1,6 @@
 class CreateEmailForUser
 
-  lev_routine express_output: [:email, :contact_infos]
+  lev_routine
 
   protected
 
@@ -40,7 +40,6 @@ class CreateEmailForUser
 
     outputs.email = @email
 
-    user.contact_infos.reset
     user.email_addresses.reset
   end
 

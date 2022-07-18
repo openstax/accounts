@@ -63,7 +63,7 @@ class CreateSalesforceLead
       school:               user.most_accurate_school_name || 'No reported school', # No reported school == student who requested newsletter
       city:                 user.most_accurate_school_city,
       country:              user.most_accurate_school_country,
-      verification_status:  user.faculty_status == User::NO_FACULTY_INFO ? nil : user.faculty_status,
+      verification_status:  user.faculty_status == 'no_faculty_info' ? nil : user.faculty_status,
       b_r_i_marketing:      user.is_b_r_i_user?,
       title_1_school:       user.title_1_school?,
       newsletter:           user.receive_newsletter?,
@@ -115,10 +115,9 @@ class CreateSalesforceLead
         event_data: { lead_id: lead.id }
       )
       outputs.user = user
-      return true
+      true
     else
       transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
-      return
     end
   end
 
@@ -129,7 +128,7 @@ class CreateSalesforceLead
     books_json = []
 
     books_array = user.which_books.split(';').to_a
-    student_number_array = user.how_many_students.split('^0-9,', '').split(',')
+    student_number_array = user.how_many_students.split('^0-9,', '').split(',').to_i
 
     books_array.each_with_index do |book, index|
       book_keywords = { name: book, students: student_number_array[index]}
