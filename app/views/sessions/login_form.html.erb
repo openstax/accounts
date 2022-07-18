@@ -25,7 +25,7 @@
           <%= label_tag :email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
           <%# input type is text instead of email bc we also support usernames %>
           <%= fh.text_field name: :email,
-                            value: current_users_resetting_password_email ? current_users_resetting_password_email : nil,
+                            value: nil,
                             placeholder: I18n.t(:"login_signup_form.email_placeholder"),
                             autofocus:   true,
                             autocomplete: 'username'

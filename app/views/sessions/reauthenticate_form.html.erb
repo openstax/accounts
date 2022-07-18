@@ -1,8 +1,3 @@
-<%
-  email_prefill_value = current_users_resetting_password_email
-  email_prefill_value ||= nil # because otherwise it literally shows "false" in the form's input field
-%>
-
 <div id="login-signup-form">
   <div class="content">
     <%= render partial: 'shared/tab_group', locals: { active_class: 'login--active' } %>
@@ -32,9 +27,7 @@
           <%= label_tag :email, I18n.t(:"login_signup_form.email_label"), class: 'field-label required' %>
           <%# input type is text instead of email bc we also support usernames %>
           <%= fh.text_field name: :email,
-                            value: email_prefill_value,
-                            placeholder: I18n.t(:"login_signup_form.email_placeholder"),
-                            readonly: email_prefill_value.present?
+                            placeholder: I18n.t(:"login_signup_form.email_placeholder")
           %>
 
         </div>
@@ -61,7 +54,7 @@
       <% end %>
     <% end %>
   </div>
-  <%= javascript_include_tag 'ko_extensions' %>
+  <%= javascript_include_tag 'application/ko_extensions' %>
 </div>
 <script>
     // Necessary for password

@@ -14,7 +14,7 @@ RSpec.describe SignupController, type: :controller do
       mock_current_user(user)
     end
 
-    it 'renders' do
+    xit 'renders' do
       get(:signup_done)
       expect(response).to render_template(:signup_done)
     end

@@ -14,7 +14,7 @@ class ActivateUser
   def exec(user)
     return if user.activated?
 
-    user.update!(state: User::ACTIVATED)
+    user.update!(state: :activated)
 
     # create a lead for the user if they are a student and want the newsletter
     # otherwise, the lead gets created at the end of the instructor profile

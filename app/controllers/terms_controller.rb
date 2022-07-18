@@ -1,5 +1,5 @@
 class TermsController < ApplicationController
-  skip_before_action :authenticate_user!, :complete_signup_profile, only: [:index, :show]
+  skip_before_action :authenticate_user!, only: [:index, :show]
 
   fine_print_skip :general_terms_of_use, :privacy_policy
 

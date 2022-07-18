@@ -65,13 +65,13 @@ body.admin {
   }
 
   .btn {
-    border: 0px solid transparent;
+    border: 0 solid transparent;
   }
 
   .user-search-item {
     border: 1px solid #ccc;
     margin-bottom: 10px;
-    padding: 0px;
+    padding: 0;
   }
 
   .created i, .updated i {
@@ -81,7 +81,7 @@ body.admin {
 
 }
 
-#new-search-results-pagination {
+#search-results-pagination {
   clear: both;
   margin: 20px 0;
   color: #aaa;
@@ -97,29 +97,4 @@ body.admin {
       }
     }
   }
-}
-
-#pre_auth_states {
-  .searches {
-    float: right;
-    margin-bottom: 10px;
-  }
-
-  .desc {
-    clear: both;
-  }
-
-  .entry {
-    border: 1px solid #ddd;
-    background-color: #eee;
-    margin: 10px 0px;
-    padding: 8px;
-
-    .token {
-      font-size: 9px;
-    }
-  }
-
-
-
 }

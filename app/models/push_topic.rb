@@ -1,2 +1,0 @@
-class PushTopic < ApplicationRecord
-end

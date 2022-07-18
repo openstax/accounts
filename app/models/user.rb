@@ -44,9 +44,6 @@ class User < ApplicationRecord
     :home_school
   ].freeze
 
-  USERNAME_VALID_REGEX = /\A[A-Za-z\d_]+\z/
-  USERNAME_MIN_LENGTH = 3
-  USERNAME_MAX_LENGTH = 50
   DEFAULT_FACULTY_STATUS = :incomplete_signup
   DEFAULT_SCHOOL_TYPE = :unknown_school_type
   DEFAULT_SCHOOL_LOCATION = :unknown_school_type
@@ -99,12 +96,12 @@ class User < ApplicationRecord
   validates(
     :username,
     length: {
-      minimum: USERNAME_MIN_LENGTH,
-      maximum: USERNAME_MAX_LENGTH,
+      minimum: 3,
+      maximum: 50,
       allow_blank: true
     },
     format: {
-      with: USERNAME_VALID_REGEX,
+      with: /\A[A-Za-z\d_]+\z/,
       allow_blank: true
     }
   )
@@ -138,11 +135,7 @@ class User < ApplicationRecord
   has_many :contact_infos, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, inverse_of: :user
   has_many :external_uuids, class_name: 'UserExternalUuid', dependent: :destroy
-  has_many :group_owners, dependent: :destroy, inverse_of: :user
-  has_many :owned_groups, through: :group_owners, source: :group
-  has_many :group_members, dependent: :destroy, inverse_of: :user
-  has_many :member_groups, through: :group_members, source: :group
-  has_many :oauth_applications, through: :member_groups
+  has_many :oauth_applications
   has_many :security_logs
 
   delegate_to_routine :destroy
@@ -163,13 +156,11 @@ class User < ApplicationRecord
 
   def most_accurate_school_city
     return school.city if school.present?
-
     SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[2] if sheerid_reported_school.present?
   end
 
   def most_accurate_school_state
     return school.state if school.present?
-
     SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[3] if sheerid_reported_school.present?
   end
 
@@ -230,55 +221,55 @@ class User < ApplicationRecord
   #
   # Once a User model is cleared for use, the state is set to "activated"
   def activated?
-    state == ACTIVATED
+    state == 'activated'
   end
 
   def unverified?
-     state == UNVERIFIED
+     state == 'unverified'
   end
 
   def temporary?
-    state == TEMP
+    state == 'temp'
   end
 
   def is_unclaimed?
-    state == UNCLAIMED
+    state == 'unclaimed'
   end
 
   def is_new_social?
-    state == NEW_SOCIAL
+    state == 'new_social'
   end
 
   def is_needs_profile?
-    state == NEEDS_PROFILE
+    state == 'needs_profile'
   end
 
   def no_faculty_info?
-    faculty_status == NO_FACULTY_INFO
+    faculty_status == 'no_faculty_info'
   end
 
   def pending_faculty?
-    faculty_status == PENDING_FACULTY
+    faculty_status == 'pending_faculty'
   end
 
   def confirmed_faculty?
-    faculty_status == CONFIRMED_FACULTY
+    faculty_status == 'confirmed_faculty'
   end
 
   def rejected_faculty?
-    faculty_status == REJECTED_FACULTY
+    faculty_status == 'rejected_faculty'
   end
 
   def pending_sheerid?
-    faculty_status == PENDING_SHEERID
+    faculty_status == 'pending_sheerid'
   end
 
   def rejected_by_sheerid?
-    faculty_status == REJECTED_BY_SHEERID
+    faculty_status == 'rejected_by_sheerid'
   end
 
   def incomplete_signup?
-    faculty_status == INCOMPLETE_SIGNUP
+    faculty_status == 'incomplete_signup'
   end
 
   def name
@@ -296,11 +287,11 @@ class User < ApplicationRecord
     self.last_name = names.length > 1 ? names[1..-1].join(' ') : ''
   end
 
-  def casual_name # TODO are we ok now that username not required?
+  def casual_name
     first_name.presence || username
   end
 
-  def formal_name # TODO needs spec
+  def formal_name
     "#{title} #{last_name} #{suffix}".gsub(/\s+/,' ').strip if title.present? && last_name.present?
   end
 

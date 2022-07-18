@@ -46,7 +46,7 @@ class EducatorProfile
 
   def handle
     # let the controller know this is the cs form, so we can redirect properly on error
-    @is_on_cs_form        = signup_params.is_cs_form?
+    @is_on_cs_form = signup_params.is_cs_form?
     outputs.is_on_cs_form = @is_on_cs_form
 
     # is this user coming from the sheerid flow? there are a few things we can check...
