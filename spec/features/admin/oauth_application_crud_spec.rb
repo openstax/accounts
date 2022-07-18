@@ -10,7 +10,7 @@ feature 'Admin oauth app create and edit', js: true do
 
     it 'can create and edit applications' do
       visit '/oauth/applications'
-      click_link 'New Application'
+      click_link 'New'
       fill_in 'Name', with: 'Test'
       fill_in 'Redirect URI', with: 'urn:ietf:wg:oauth:2.0:oob'
       fill_in 'Email subject prefix', with: '[Test]'
@@ -18,7 +18,6 @@ feature 'Admin oauth app create and edit', js: true do
       fill_in 'Email from address', with: 'blah@example.com'
       click_button 'Submit'
 
-      expect(page).to have_content("Application: Test")
       expect(page).to have_content("Tutor Signup")
 
       click_link 'Edit'

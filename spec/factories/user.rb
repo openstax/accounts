@@ -22,6 +22,10 @@ FactoryBot.define do
       state { 'new_social' }
     end
 
+    factory :activated do
+      state { 'activated' }
+    end
+
     trait :terms_not_agreed do; end
 
     trait :terms_agreed do

@@ -16,7 +16,6 @@ RSpec.describe ProfileController, type: :controller do
         end
 
           it 'renders 200 OK status' do
-
           get(:profile)
           expect(response.status).to eq(200)
         end

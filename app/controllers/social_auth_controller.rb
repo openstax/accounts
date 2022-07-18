@@ -48,7 +48,7 @@ class SocialAuthController < ApplicationController
                 :"login_signup_form.should_social_signup",
                 sign_up: view_context.link_to(I18n.t(:"login_signup_form.sign_up"), signup_path)
               )
-            )
+            ) and return
           when :authentication_taken
             security_log(:authentication_transfer_failed, authentication_id: authentication.id)
             redirect_to(profile_path, alert: I18n.t(:"controllers.sessions.sign_in_option_already_used"))
