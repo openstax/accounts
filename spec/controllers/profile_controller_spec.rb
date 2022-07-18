@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ProfileController, type: :controller do
-  describe 'GET #profile_newflow' do
+  describe 'GET #profile' do
     context 'when logged in' do
       before do
         user.update!(role: :instructor)
@@ -16,12 +16,12 @@ RSpec.describe ProfileController, type: :controller do
         end
 
           it 'renders 200 OK status' do
-          get(:profile_newflow)
+          get(:profile)
           expect(response.status).to eq(200)
         end
 
         it 'renders profile_newflow' do
-          get(:profile_newflow)
+          get(:profile)
           expect(response).to render_template(:profile_newflow)
         end
       end
@@ -30,7 +30,7 @@ RSpec.describe ProfileController, type: :controller do
         before { user.update!(is_profile_complete: false) }
 
         it 'redirects to step 4 — complete profile form' do
-          get(:profile_newflow)
+          get(:profile)
           expect(response).to redirect_to(educator_profile_form_path)
         end
       end
@@ -38,7 +38,7 @@ RSpec.describe ProfileController, type: :controller do
 
     context 'while not logged in' do
       it 'redirects to login form' do
-        get(:profile_newflow)
+        get(:profile)
         expect(response).to redirect_to login_path
       end
     end

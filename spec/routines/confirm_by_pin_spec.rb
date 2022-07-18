@@ -4,7 +4,7 @@ describe ConfirmByPin do
   let!(:user) { FactoryBot.create :user }
 
   let!(:contact_info) {
-    AddEmailToUser.call("bob@example.com", user)
+    CreateEmailForUser.call("bob@example.com", user)
     user.contact_infos.first
   }
 
@@ -62,7 +62,7 @@ describe ConfirmByPin do
     it 'fails by code after other contact info with same value is confirmed' do
       other_user = FactoryBot.create(:user)
 
-      AddEmailToUser.call("bob-2@example.com", other_user)
+      CreateEmailForUser.call("bob-2@example.com", other_user)
       other_contact_info = other_user.contact_infos.last
       ContactInfo.where(id: other_contact_info.id).update_all(value: 'bob@example.com')
 
