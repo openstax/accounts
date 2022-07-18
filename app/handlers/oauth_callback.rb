@@ -19,8 +19,6 @@ class OauthCallback
   )
   uses_routine(TransferOmniauthData)
 
-  LOGIN_FORM_IS_ORIGIN = :login_form
-
   include Rails.application.routes.url_helpers
 
   protected #########################
@@ -57,7 +55,7 @@ class OauthCallback
         provider: @oauth_provider,
         uid: @oauth_uid
       )
-    elsif user_came_from&.to_sym == LOGIN_FORM_IS_ORIGIN
+    elsif user_came_from&.to_sym == :login_form
       # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
       fatal_error(code: :should_redirect_to_signup)
     else # sign up new student, then we will log them in.
@@ -83,9 +81,9 @@ class OauthCallback
 
     if existing_auth_uid != incoming_auth_uid
       Sentry.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
-      return true
+      true
     else
-      return false
+      false
     end
   end
 

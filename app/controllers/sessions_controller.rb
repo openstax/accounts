@@ -1,40 +1,49 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:new, :create]
-  before_action :cache_client_app, :cache_alternate_signup_url, :redirect_to_signup_if_go_param_present,
-                only: :new
+  skip_before_action :authenticate_user!, only: [:login_form, :login_post]
 
-  def welcome
-    flash.keep # keep notices and errors through to the redirects below
-    signed_in? ? redirect_to(:profile_path) : authenticate_user!
+  def login_form
+    clear_signup_state
+    cache_client_app
+    cache_alternate_signup_url
+    student_signup_redirect
   end
 
-  def new; end
-
-  def create
+  def login_post
     handle_with(
       LogInUser,
       success: lambda {
-        clear_signup_state
         user = @handler_result.outputs.user
 
         if user.unverified?
           save_unverified_user(user.id)
-
-          if user.student?
-            redirect_to(student_email_verification_form_path)
-          else
-            redirect_to(educator_email_verification_form_path)
-          end
-
-          return
+          redirect_to verify_email_by_pin_form_path and return
         end
 
         sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
-        if current_user.student? || decorated_user.can_do?('redirect_back_upon_login')
+        if current_user.student? || current_user.is_profile_complete?
           redirect_back(fallback_location: profile_path)
         else
-          redirect_to(decorated_user.next_step)
+          # moved from educator_signup_flow_decorator, slated for refactoring because this is confusing
+          if @current_step == 'login' && !current_user.is_profile_complete && current_user.sheerid_verification_id.blank?
+            redirect_to(sheerid_form_path) and return
+          elsif @current_step == 'login' && (current_user.sheerid_verification_id.present? || current_user.is_sheerid_unviable?)
+            redirect_to(profile_form_path) and return
+          elsif @current_step == 'educator_sheerid_form'
+            if current_user.confirmed_faculty? || current_user.rejected_faculty? || current_user.sheerid_verification_id.present?
+              #TODO: what is this?
+            end
+          elsif @current_step == 'educator_signup_form' && !current_user.is_anonymous?
+            redirect_to(verify_email_by_pin_form_path) and return
+          elsif @current_step == 'educator_email_verification_form' && @user.activated?
+            if !current_user.student? && current_user.activated? && current_user.pending_faculty && current_user.sheerid_verification_id.blank?
+              redirect_to(sheerid_form_path) and return
+            elsif current_user.activated?
+              redirect_to(profile_form_path) and return
+            end
+          else
+            raise("Next step (#{@current_step}) uncaught in #{self.class.name}")
+          end
         end
       },
       failure: lambda {
@@ -48,25 +57,42 @@ class SessionsController < ApplicationController
           security_log(:sign_in_failed, { reason: code, email: email })
         end
 
-        render :login
+        render :login_form and return
       }
     )
   end
+
+  def reauthenticate_form; end
+
+  def reauthenticate_post; end # TODO: post to login_post?
 
   def logout
     sign_out!
     redirect_back(fallback_location: login_path)
   end
 
-  def reauthenticate; end
+  def exit_accounts
+    if (redirect_param = extract_params(request.referrer)[:r])
+      if Host.trusted?(redirect_param)
+        redirect_to(redirect_param)
+      else
+        raise Lev::SecurityTransgression
+      end
+    elsif !signed_in? && (redirect_uri = extract_params(stored_url)[:redirect_uri])
+      redirect_to(redirect_uri)
+    else
+      redirect_back # defined in the `action_interceptor` gem
+    end
+  end
 
   protected
 
-  def redirect_to_signup_if_go_param_present
+  def student_signup_redirect
     if params[:go]&.strip&.downcase == 'student_signup'
-      redirect_to signup_student_path(request.query_parameters)
+      request.query_parameters[:role] = 'student'
+      redirect_to signup_form_path(request.query_parameters)
     elsif params[:go]&.strip&.downcase == 'signup'
-      redirect_to newflow_signup_path(request.query_parameters)
+      redirect_to signup_form_path(request.query_parameters)
     end
   end
 

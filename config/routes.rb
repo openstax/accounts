@@ -23,7 +23,7 @@ Rails.application.routes.draw do
 
   scope controller: :sessions do
     get 'login', action: :login_form, as: :login
-    post 'login', action: :login_post
+    post 'login', action: :login_post, as: :login_post
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
     get 'logout', action: :logout, as: :logout
     get 'exit_accounts', action: :exit_accounts

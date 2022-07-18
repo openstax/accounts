@@ -3,15 +3,6 @@ class SignupController < ApplicationController
 
   before_action(:authenticate_user!, only: :signup_done)
   before_action(:total_steps, except: [:welcome])
-  before_action(:restart_signup_if_missing_unverified_user, only: %i[
-      verify_email_by_pin_form
-      verify_email_by_pin_post
-      verify_email_by_code
-      change_signup_email_form
-      change_signup_email_post
-      check_your_email
-    ]
-  )
 
   def welcome
     redirect_back(fallback_location: profile_path) if signed_in?

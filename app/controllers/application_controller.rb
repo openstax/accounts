@@ -33,8 +33,4 @@ class ApplicationController < ActionController::Base
     return true if request.format != :html || request.options?
     redirect_to profile_path if current_user.is_needs_profile?
   end
-
-  def restart_signup_if_missing_unverified_user
-    redirect_to signup_path unless unverified_user.present?
-  end
 end
