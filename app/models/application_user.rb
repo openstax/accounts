@@ -1,8 +1,6 @@
 class ApplicationUser < ApplicationRecord
-  belongs_to :application, class_name: 'Doorkeeper::Application',
-                           inverse_of: :application_users
+  belongs_to :application, class_name: 'Doorkeeper::Application', inverse_of: :application_users
   belongs_to :user, inverse_of: :application_users
-
   belongs_to :default_contact_info, class_name: 'ContactInfo'
 
   validates_presence_of :user, :application

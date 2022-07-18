@@ -12,7 +12,7 @@ class ActivateUser
   end
 
   def exec(user)
-    return if user.activated?
+    return if user.state == :activated
 
     user.update!(state: :activated)
 

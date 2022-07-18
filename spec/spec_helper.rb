@@ -23,6 +23,27 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
+  # If you're not using ActiveRecord, or you'd prefer not to run each of your
+  # examples within a transaction, remove the following line or assign false
+  # instead of true.
+  config.use_transactional_fixtures = false
+
+  # If true, the base class of anonymous controllers will be inferred
+  # automatically. This will be the default behavior in future versions of
+  # rspec-rails.
+  config.infer_base_class_for_anonymous_controllers = false
+
+  # rspec-rails 3 will no longer automatically infer an example group's spec type
+  # from the file location. You can explicitly opt-in to the feature using this
+  # config option.
+  # To explicitly tag specs without using automatic inference, set the `:type`
+  # metadata manually:
+  #
+  #     describe ThingsController, type: :controller do
+  #       # Equivalent to being in spec/controllers
+  #     end
+  # or set:
+  #   config.infer_spec_type_from_file_location!
   config.infer_spec_type_from_file_location!
 
   config.prepend_before(:suite) do
@@ -45,7 +66,7 @@ RSpec.configure do |config|
   end
 
   # Some tests might change I18n.locale.
-  config.before(:each) do
+  config.before(:each) do |config|
     I18n.locale = :en
   end
 
@@ -60,6 +81,13 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
   end
 
+  # These two settings work together to allow you to limit a spec run
+  # to individual examples or groups you care about by tagging them with
+  # `:focus` metadata. When nothing is tagged with `:focus`, all examples
+  # get run.
+  #config.filter_run :focus
+  config.run_all_when_everything_filtered = true
+
   # Allows RSpec to persist some state between runs in order to support
   # the `--only-failures` and `--next-failure` CLI options. We recommend
   # you configure your source control system to ignore this file.
@@ -70,7 +98,7 @@ RSpec.configure do |config|
   #   - http://rspec.info/blog/2012/06/rspecs-new-expectation-syntax/
   #   - http://www.teaisaweso.me/blog/2013/05/27/rspecs-new-message-expectation-syntax/
   #   - http://rspec.info/blog/2014/05/notable-changes-in-rspec-3/#zero-monkey-patching-mode
-  config.disable_monkey_patching!
+  #config.disable_monkey_patching!
 
   # Many RSpec users commonly either run the entire suite or an individual
   # file, and it's useful to allow more verbose output when running an

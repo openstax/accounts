@@ -221,55 +221,55 @@ class User < ApplicationRecord
   #
   # Once a User model is cleared for use, the state is set to "activated"
   def activated?
-    state == 'activated'
+    state == ACTIVATED
   end
 
   def unverified?
-     state == 'unverified'
+     state == UNVERIFIED
   end
 
   def temporary?
-    state == 'temp'
+    state == TEMP
   end
 
   def is_unclaimed?
-    state == 'unclaimed'
+    state == UNCLAIMED
   end
 
   def is_new_social?
-    state == 'new_social'
+    state == NEW_SOCIAL
   end
 
   def is_needs_profile?
-    state == 'needs_profile'
+    state == NEEDS_PROFILE
   end
 
   def no_faculty_info?
-    faculty_status == 'no_faculty_info'
+    faculty_status == NO_FACULTY_INFO
   end
 
   def pending_faculty?
-    faculty_status == 'pending_faculty'
+    faculty_status == PENDING_FACULTY
   end
 
   def confirmed_faculty?
-    faculty_status == 'confirmed_faculty'
+    faculty_status == CONFIRMED_FACULTY
   end
 
   def rejected_faculty?
-    faculty_status == 'rejected_faculty'
+    faculty_status == REJECTED_FACULTY
   end
 
   def pending_sheerid?
-    faculty_status == 'pending_sheerid'
+    faculty_status == PENDING_SHEERID
   end
 
   def rejected_by_sheerid?
-    faculty_status == 'rejected_by_sheerid'
+    faculty_status == REJECTED_BY_SHEERID
   end
 
   def incomplete_signup?
-    faculty_status == 'incomplete_signup'
+    faculty_status == INCOMPLETE_SIGNUP
   end
 
   def name

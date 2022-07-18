@@ -18,5 +18,6 @@ class VerifyEmailByCode
     run(ActivateUser, user)
 
     outputs.user = user
+    outputs.contact_info = outputs.contact_info
   end
 end

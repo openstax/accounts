@@ -18,7 +18,7 @@ RSpec.describe TransferOmniauthData, type: :routine do
   context 'when the user has non-blank names' do
     let(:auth_hash) do
       OmniAuth::AuthHash.new(
-        provider: 'twitter', uid: '12345678', info: { first_name: 'User', last_name: 'One' }
+        provider: 'facebook', uid: '12345678', info: { first_name: 'User', last_name: 'One' }
       )
     end
 

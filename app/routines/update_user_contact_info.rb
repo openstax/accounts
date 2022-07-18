@@ -79,8 +79,7 @@ class UpdateUserContactInfo
                               when NilClass
                                 :no_faculty_info
                             else
-                              Sentry.capture_message("Unknown faculty_verified field: '#{
-                                sf_contact.faculty_verified}'' on contact #{sf_contact.id}")
+                              Sentry.capture_message("Unknown faculty_verified field: #{sf_contact.faculty_verified} on contact #{sf_contact.id}")
                             end
 
       user.school_type = case sf_contact.school_type

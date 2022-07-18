@@ -29,18 +29,11 @@ describe MergeUnclaimedUsers do
 
 
     it "moves associations to new account" do
-      group = FactoryBot.create(:group)
-      group.add_member unclaimed_user
-      group.add_owner  unclaimed_user
-
       application = FactoryBot.create :doorkeeper_application
       application_user = FactoryBot.create :application_user,
                                             application: application, user: unclaimed_user
 
       MergeUnclaimedUsers.call(matching_email)
-      expect(matching_user.member_groups).to include(group)
-      expect(matching_user.owned_groups).to  include(group)
-
       expect(matching_user.application_users).to include(application_user)
     end
 

@@ -1,4 +1,4 @@
-class ConfirmByPin
+ class ConfirmByPin
   lev_routine
 
   uses_routine ConfirmContactInfo

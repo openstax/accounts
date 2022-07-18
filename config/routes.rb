@@ -164,7 +164,7 @@ Rails.application.routes.draw do
     resources :group_owners, only: [:index], path: 'ownerships'
   end
 
-  use_doorkeeper { controllers applications: 'oauth/applications' }
+  use_doorkeeper
 
   mount FinePrint::Engine => 'admin/fine_print'
   mount Blazer::Engine, at: 'admin/blazer', as: 'blazer_admin'

@@ -11,17 +11,13 @@ class SocialAuthController < ApplicationController
           user = @handler_result.outputs.user
 
           if user.student? && !user.activated?
-            # Not activated means signup.
-            # Only students can sign up with a social network.
-            unverified_user = ensure_unverified_user(user)
-
             save_unverified_user(unverified_user.id)
             @first_name = user.first_name
             @last_name = user.last_name
             @email = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
             # must confirm their social info on signup
-            render :confirm_social_info_form and return # TODO: if possible, update the route/path to reflect that this page is being rendered
+            render :confirm_social_info_form and return
           end
 
           sign_in!(user)

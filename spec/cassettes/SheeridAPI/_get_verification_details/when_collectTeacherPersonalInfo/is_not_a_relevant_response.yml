@@ -8,7 +8,7 @@ http_interactions:
       string: ''
     headers:
       User-Agent:
-      - Faraday v0.17.3
+      - Faraday v1.0.1
       Authorization:
       - Bearer <sheerid_api_secret>
       Accept:
@@ -23,29 +23,35 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 30 Jun 2020 18:36:45 GMT
+      - Mon, 18 Jul 2022 19:59:23 GMT
       Content-Type:
       - application/json
-      Transfer-Encoding:
-      - chunked
+      Content-Length:
+      - '726'
       Connection:
       - keep-alive
       Set-Cookie:
-      - AWSALB=K8L/m/RBB6t7DS2xXlqS0PfH0LlQyCktKfIZHpWfDbIJAVp4gKhAOs7Tqq750Q0P9FdE34JYb1cIdt9UEfKoD+yOBuJH8ov+ssKISyKXDOdE9jI/xZnJbXoclPL3;
-        Expires=Tue, 07 Jul 2020 18:36:45 GMT; Path=/
-      - AWSALBCORS=K8L/m/RBB6t7DS2xXlqS0PfH0LlQyCktKfIZHpWfDbIJAVp4gKhAOs7Tqq750Q0P9FdE34JYb1cIdt9UEfKoD+yOBuJH8ov+ssKISyKXDOdE9jI/xZnJbXoclPL3;
-        Expires=Tue, 07 Jul 2020 18:36:45 GMT; Path=/; SameSite=None; Secure
+      - AWSALB=dbKj/fSqNJCEaE3qFwRMSMxE9zY1Ui+zUBKiGSfMkokW0EhA6w1oD/dRbAdXaAxUXb/JA9uQlQ0FwMe1Y/JoIEk3PlCauw5XjysrPwFgtXEE9RpFaM0l7OLQBQqN;
+        Expires=Mon, 25 Jul 2022 19:59:23 GMT; Path=/
+      - AWSALBCORS=dbKj/fSqNJCEaE3qFwRMSMxE9zY1Ui+zUBKiGSfMkokW0EhA6w1oD/dRbAdXaAxUXb/JA9uQlQ0FwMe1Y/JoIEk3PlCauw5XjysrPwFgtXEE9RpFaM0l7OLQBQqN;
+        Expires=Mon, 25 Jul 2022 19:59:23 GMT; Path=/; SameSite=None; Secure
+      - JSESSIONID=02ak0WX_pf_S8Duxa3-xB_vJVGjP3bGEZleN5kfB.core-platform-sheerid-bf4b58f79-755z9;
+        path=/rest/v2; secure; HttpOnly; SameSite=None
       Server:
-      - Apache-Coyote/1.1
+      - Apache/2.4.37 (centos)
       Access-Control-Allow-Origin:
       - "*"
+      Access-Control-Allow-Headers:
+      - Content-Type,Cookie
       Access-Control-Allow-Methods:
       - GET, POST, DELETE, PUT
-      Access-Control-Allow-Headers:
-      - Content-Type, Cookie
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains; preload
+      Referrer-Policy:
+      - no-referrer-when-downgrade
     body:
       encoding: UTF-8
-      string: '{"programId":"5e150b86ce2a5a1d94874660","trackingId":null,"created":1593060602978,"updated":1593060611778,"lastResponse":{"verificationId":"5ef42cfaeddfdd1bd961c088","currentStep":"collectTeacherPersonalInfo","errorIds":[],"segment":"teacher","subSegment":null,"locale":"en-US","rewardCode":"EXAMPLE-CODE"},"personInfo":null,"docUploadRejectionCount":0,"docUploadRejectionReasons":[]}'
-    http_version:
-  recorded_at: Tue, 30 Jun 2020 18:36:45 GMT
-recorded_with: VCR 3.0.3
+      string: '{"programId":"5e150b86ce2a5a1d94874660","trackingId":null,"personId":"6293fa079a977557091ef8a5","socialId":null,"created":1593060602978,"updated":1593060611778,"lastResponse":{"verificationId":"5ef42cfaeddfdd1bd961c088","currentStep":"success","errorIds":[],"segment":"teacher","subSegment":null,"locale":"en-US","country":"US","rewardCode":"EXAMPLE-CODE","redirectUrl":"?verificationId=5ef42cfaeddfdd1bd961c088","rewardData":{"rewardCode":"EXAMPLE-CODE"}},"personInfo":null,"docUploadRejectionCount":0,"docUploadRejectionReasons":[],"confirmedSegments":[{"segment":"teacher","subSegment":null,"organization":{"id":2681,"name":"Rice
+        University","idExtended":null,"source":null},"active":true,"startDate":null,"endDate":null}]}'
+  recorded_at: Mon, 18 Jul 2022 19:59:23 GMT
+recorded_with: VCR 6.1.0

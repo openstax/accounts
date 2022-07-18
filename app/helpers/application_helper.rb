@@ -112,11 +112,4 @@ module ApplicationHelper
       "#{step_counter}\n#{exit_icon}\n#{header}\n#{body}".html_safe
     end
   end
-
-  # When current user wants to change their password,
-  # but hasn't logged in in a while, we ask them to re-authenticate.
-  # So we use this function to pre-populate their email field in the login form.
-  def current_users_resetting_password_email
-    !current_user.is_anonymous? && EmailAddress.verified.where(user: current_user).first.try(:value)
-  end
 end

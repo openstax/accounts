@@ -23,7 +23,7 @@ RSpec.describe CreateSalesforceLead, type: :routine, vcr: VCR_OPTS do
   }
 
   it 'works on the happy path' do
-    lead = described_class.call(user_id: user1.id)
+    lead = described_class.call(user1.id)
     expect(Rails.logger).not_to receive(:warn)
     expect(lead.errors).to be_empty
   end

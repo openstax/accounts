@@ -7,7 +7,7 @@ class CreateEmailForUser
   def exec(email_address_text, user, is_school_issued: false, already_verified: false)
     return if email_address_text.blank?
 
-    @email = EmailAddress.find_or_create_by(value: email&.downcase, user_id: user.id)
+    @email = EmailAddress.find_or_create_by(value: email_address_text&.downcase, user_id: user.id)
     @email.is_school_issued = is_school_issued
 
     # This is either a new email address (unverified) or an existing email address
@@ -31,11 +31,14 @@ class CreateEmailForUser
       NewflowMailer.signup_email_confirmation(email_address: @email).deliver_later
     end
 
+    ContactInfo.find_or_create_by(value: email_address_text, type: 'EmailAddress', user: user)
+
 
     outputs.email = @email
     @email.save
 
     user.email_addresses.reset
+    user.contact_infos.reset
   end
 
 end
