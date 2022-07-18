@@ -20,7 +20,6 @@ feature 'Add social auth', js: true do
     with_omniauth_test_mode(email: email_value) do
       find('.authentication[data-provider="facebook"] .add').click
       wait_for_ajax
-      screenshot!
       expect_profile_page
       expect(page).to have_content("already in use")
     end
@@ -28,7 +27,6 @@ feature 'Add social auth', js: true do
 
   scenario "email collides with the current user's verified email" do
     user = create_user 'user'
-    user.update(role: User::STUDENT_ROLE)
     create_email_address_for(user, email_value)
 
     log_in_user('user', 'password')
@@ -52,7 +50,6 @@ feature 'Add social auth', js: true do
     create_email_address_for(create_user('other_user'), email_value, 'token')
 
     user = create_user 'user'
-    user.update(role: User::STUDENT_ROLE)
     log_in_user('user', 'password')
 
     expect_profile_page
@@ -64,7 +61,6 @@ feature 'Add social auth', js: true do
     with_omniauth_test_mode(email: email_value) do
       find('.authentication[data-provider="facebook"] .add').click
       wait_for_ajax
-      screenshot!
       expect_profile_page
       expect(page).to have_content('Facebook')
     end

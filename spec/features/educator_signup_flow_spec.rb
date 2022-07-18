@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.feature 'Educator signup flow', js: true do
-
   background { load 'db/seeds.rb' }
 
   let(:first_name) { Faker::Name.first_name  }
@@ -25,8 +24,8 @@ RSpec.feature 'Educator signup flow', js: true do
         fill_in 'signup_phone_number', with: phone_number
         fill_in 'signup_email',	with: email_value
         fill_in 'signup_password',	with: password
-        submit_signup_form
-        screenshot!
+        check('signup_terms_accepted')
+        find('[type=submit]').click
 
         # Step 2
         # sends an email address confirmation email
@@ -34,8 +33,6 @@ RSpec.feature 'Educator signup flow', js: true do
         open_email(email_value)
         capture_email!(address: email_value)
         expect(current_email).to be_truthy
-
-        # ... with the correct PIN
         expect(EmailAddress.verified.count).to eq(0)
         correct_pin = EmailAddress.find_by!(value: email_value).confirmation_pin
         fill_in('confirm_pin', with: correct_pin)
@@ -54,13 +51,8 @@ RSpec.feature 'Educator signup flow', js: true do
         visit(profile_form_path)
         expect(page.current_path).to eq(profile_form_path)
         find("#signup_educator_specific_role_other").click
-        #byebug
         fill_in('Other (please specify)', with: 'President')
         find('[type="submit"]').click
-        # not sure what's happening here - test is getting a 500, can't produce locally.. going to check it out on dev
-        #expect(page.current_path).to eq(signup_done_path).or eq(pending_cs_verification_path)
-        #click_on('Finish')
-        #expect(page.current_url).to eq(external_app_url)
       end
     end
 
@@ -78,7 +70,6 @@ RSpec.feature 'Educator signup flow', js: true do
         fill_in 'signup_email',	with: email_value
         fill_in 'signup_password',	with: password
         submit_signup_form
-        screenshot!
 
         # Step 2
         # sends an email address confirmation email
@@ -100,20 +91,17 @@ RSpec.feature 'Educator signup flow', js: true do
         find('#signup_educator_specific_role_other').click
         fill_in(I18n.t(:"educator_profile_form.other_please_specify"), with: 'President')
         click_on('Continue')
-        #expect(page.current_path).to eq(signup_done_path)
-        #click_on('Finish')
-        #expect(page.current_url).to eq(external_app_url)
       end
     end
   end
 
   context 'when educator has not verified their only email address' do
-    let!(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: User::INSTRUCTOR_ROLE) }
+    let!(:user) { FactoryBot.create(:user, state: 'unverified', role: 'instructor') }
     let!(:email_address) { FactoryBot.create(:email_address, user: user, verified: false) }
     let!(:identity) { FactoryBot.create(:identity, user: user, password: password) }
     let!(:password) { 'password' }
 
-    xit 'allows the educator to log in and redirects them to the email verification form' do
+    it 'allows the educator to log in and redirects them to the email verification form' do
       visit(login_path)
       fill_in('login_form_email', with: email_address.value)
       fill_in('login_form_password', with: password)
@@ -121,16 +109,13 @@ RSpec.feature 'Educator signup flow', js: true do
       expect(page.current_path).to match(verify_email_by_pin_form_path)
     end
 
-    xit 'allows the educator to reset their password' do
+    it 'allows the educator to reset their password' do
       visit(login_path)
       log_in_user(email_address.value, 'WRONGpassword')
       find('[id=forgot-password-link]').click
-      #click_on(I18n.t(:"login_signup_form.forgot_password"))
-      expect(page.current_path).to eq(forgot_password_form_path)
+      expect(page.current_path).to eq(password_reset_path)
       expect(find('#forgot_password_form_email')['value']).to eq(email_address.value)
-      screenshot!
       click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
-      screenshot!
     end
   end
 
@@ -183,8 +168,6 @@ RSpec.feature 'Educator signup flow', js: true do
     end
 
     it 'redirects them to continue signup flow (step 3) after logging in' do
-      skip 'because it only fails in Travis but works locally and locally testing'
-
       visit(login_path(return_param))
       click_on(I18n.t(:"login_signup_form.sign_up"))
       click_on(I18n.t(:"login_signup_form.educator"))
@@ -196,7 +179,6 @@ RSpec.feature 'Educator signup flow', js: true do
       fill_in 'signup_email',	with: email_value
       fill_in 'signup_password',	with: password
       submit_signup_form
-      screenshot!
 
       # Step 2
       # sends an email address confirmation email
@@ -204,7 +186,6 @@ RSpec.feature 'Educator signup flow', js: true do
       open_email(email_value)
       capture_email!(address: email_value)
       expect(current_email).to be_truthy
-      # ... with the correct PIN
       correct_pin = EmailAddress.find_by!(value: email_value).confirmation_pin
       fill_in('confirm_pin', with: correct_pin)
       wait_for_ajax
@@ -223,7 +204,7 @@ RSpec.feature 'Educator signup flow', js: true do
       expect(page).to have_current_path(sheerid_form_path)
 
       # LOG OUT
-      visit(signout_path)
+      visit(logout_path)
       expect(page).to have_current_path(login_path)
 
       # LOG IN
@@ -232,7 +213,7 @@ RSpec.feature 'Educator signup flow', js: true do
 
       # Step 3
       expect_sheerid_iframe
-      EducatorSignup::VerifyEducator.call(user: User.last, verification_id: sheerid_verification.verification_id)
+      SheeridWebhook.call(user: User.last, verification_id: sheerid_verification.verification_id)
 
 
       # Step 4
@@ -248,15 +229,4 @@ RSpec.feature 'Educator signup flow', js: true do
       expect(page.current_url).to eq(external_app_url)
     end
   end
-
-  context 'when educator stops signup flow, logs out, after completing step 3' do
-    it 'redirects them to continue signup flow (step 4) after logging in'
-  end
-
-  context 'when educators have been rejected by SheerID one or more times' do
-    context 'and have been in the pending faculty status step for more than 4 days' do
-      it 'will send them through the CS verification process (modified step 4)'
-    end
-  end
-
 end

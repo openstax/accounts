@@ -1,7 +1,7 @@
  class ConfirmByPin
   lev_routine
 
-  uses_routine ConfirmContactInfo
+  uses_routine VerifyEmailByPin
 
   def self.sequential_failure_for(contact_info)
     SequentialFailure.confirm_by_pin.find_or_initialize_by(reference: contact_info.value).tap do |sf|
@@ -24,7 +24,7 @@
       fatal_error(code: :no_pin_confirmation_attempts_remaining)
     else
       if contact_info.confirmation_pin == pin
-        run(ConfirmContactInfo, contact_info)
+        run(VerifyEmailByPin, contact_info)
         sequential_failure.reset!
       else
         after_transaction do

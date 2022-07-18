@@ -16,7 +16,7 @@ class VerifyEmailByPin
   end
 
   def handle
-    result = ConfirmByPin.call(contact_info: options[:email_address], pin: confirm_params.pin)
+    result = ConfirmByPin.call(contact_info: options[:email_address])
     if result.errors.any?
       fatal_error(
         code: :invalid_confirmation_pin,

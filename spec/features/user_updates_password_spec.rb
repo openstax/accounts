@@ -3,7 +3,6 @@ require 'rails_helper'
 feature 'User updates password on profile screen', js: true do
   before(:each) do
     @user = create_user('user')
-    @user.update!(role: User::STUDENT_ROLE)
     visit '/'
     log_in_user('user', 'password')
   end
@@ -15,22 +14,21 @@ feature 'User updates password on profile screen', js: true do
     @user.identity.destroy
     @user.authentications.reload
     @user.reload.identity
-    visit '/profile'
+    visit profile_path
 
-    screenshot!
     expect(page).not_to have_css('[data-provider=identity]')
     find('#enable-other-sign-in').click
     expect(page).to have_css('[data-provider=identity]')
 
-    screenshot!
     wait_for_animations # wait for slide-down effect
     find('[data-provider=identity] .add').click
 
-    screenshot!
-    complete_add_password_screen
-    screenshot!
-    click_button 'Continue'
-    expect(page).to have_no_missing_translations
+    fill_in(t(:"login_signup_form.password_label"), with: 'Passw0rd!')
+    find('#login-signup-form').click
+    wait_for_animations
+    find('[type=submit]').click
+    expect(page).to have_content(t :"login_signup_form.profile_newflow_page_header")
+
     expect(page).to have_content(t(:"login_signup_form.how_you_log_in"))
 
     find('#enable-other-sign-in').click

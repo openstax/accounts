@@ -80,11 +80,12 @@ feature 'User manages emails', js: true do
   context 'destroy' do
     before(:each) do
       mock_current_user(user)
-      visit '/profile'
+      visit profile_path
     end
 
     context 'when there are two emails' do
-      let(:verified_emails) { ['one@verified.com', 'two@verified.com']}
+      let(:verified_emails) { %w[one@verified.com two@verified.com]
+      }
 
       scenario 'one of the emails can be deleted' do
         email = nil
@@ -114,28 +115,27 @@ feature 'User manages emails', js: true do
   context 'resend_confirmation' do
     before(:each) do
       mock_current_user(user)
-      visit '/profile'
+      visit profile_path
     end
 
     let(:verified_emails) { [] }
     let(:unverified_emails) { ['user@unverified.com'] }
 
-    # scenario 'success' do
-    #   find(".email-entry[data-id=\"#{user.id}\"] .value").click
-    #   click_button (I18n.t(:"users.edit.resend_confirmation"))
-    #   expect(page).to have_no_missing_translations
-    #   expect(page).to have_content(t :"controllers.contact_infos.verification_sent", address: "user@unverified.com")
-    #   expect(page).to have_button((I18n.t(:".resend_confirmation")), disabled: true)
-    # end
+    scenario 'success' do
+      find(".email-entry[data-id=\"#{user.id}\"] .value").click
+      click_button (I18n.t(:"users.edit.resend_confirmation"))
+      expect(page).to have_content(t :"controllers.contact_infos.verification_sent", address: "user@unverified.com")
+      expect(page).to have_button((I18n.t(:".resend_confirmation")), disabled: true)
+    end
   end
 
   scenario 'confirmation does not log user in' do
     create_email_address_for(user, 'yoyo@yoyo.com', 'atoken')
-    visit '/profile'
+    visit profile_path
     expect_sign_in_page
     visit(confirm_path(code: 'atoken'))
     expect(page).to have_content(t :"contact_infos.confirm.page_heading.success")
-    visit('/profile')
+    visit(profile_path)
     expect_sign_in_page
   end
 end
