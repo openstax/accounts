@@ -24,8 +24,6 @@ class SessionsController < ApplicationController
 
         sign_in!(user, security_log_data: {'email': @handler_result.outputs.email})
 
-        byebug
-
         if current_user.student? || current_user.is_profile_complete?
           redirect_back
         else

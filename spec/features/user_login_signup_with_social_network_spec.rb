@@ -7,26 +7,28 @@ feature 'User logs in or signs up with a social network', js: true do
   end
 
   let(:email) { 'user@example.com' }
+  let(:first_name) { Faker::Name.first_name }
+  let(:last_name) { Faker::Name.last_name }
+  let(:full_name) { first_name + ' ' + last_name}
 
   context 'students' do
     context 'when user signs up with a social network' do
       scenario 'happy path' do
-        visit(signup_student_path)
+        visit('/signup?role=student')
 
-        simulate_login_signup_with_social(name: 'Elon Musk', email: email) do
+        simulate_login_signup_with_social(name: full_name, email: email) do
           click_on('Facebook')
-          wait_for_ajax
-          screenshot!
+
           expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
-          expect(page).to have_field('signup_first_name', with: 'Elon')
-          expect(page).to have_field('signup_last_name', with: 'Musk')
+          expect(page).to have_field('signup_first_name', with: first_name)
+          expect(page).to have_field('signup_last_name', with: last_name)
           expect(page).to have_field('signup_email', with: email)
           check('signup_terms_accepted')
           wait_for_animations
-          screenshot!
+
           submit_signup_form
-          screenshot!
-          expect(page).to have_content(t(:"login_signup_form.youre_done", first_name: 'Elon'))
+
+          expect(page).to have_content(t(:"login_signup_form.youre_done", first_name: first_name))
           expect(page).to(
             have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email)))
           )
@@ -36,16 +38,16 @@ feature 'User logs in or signs up with a social network', js: true do
       context 'user denies us access to their email address, has to enter it manually' do
         describe 'success' do
           example do
-            visit(signup_student_path)
+            visit('/signup?role=student')
 
-            simulate_login_signup_with_social(name: 'Elon Musk', email: nil) do
+            simulate_login_signup_with_social(name: full_name, email: nil) do
               click_on('Facebook')
               wait_for_ajax
               wait_for_animations
               screenshot!
               expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
-              expect(page).to have_field('signup_first_name', with: 'Elon')
-              expect(page).to have_field('signup_last_name', with: 'Musk')
+              expect(page).to have_field('signup_first_name', with: first_name)
+              expect(page).to have_field('signup_last_name', with: last_name)
               expect(page).to have_field('signup_email', with: '')
               submit_signup_form
               screenshot!
@@ -56,7 +58,7 @@ feature 'User logs in or signs up with a social network', js: true do
               fill_in('signup_email',	with: email)
               submit_signup_form
               screenshot!
-              expect(page).to have_content(t(:"login_signup_form.youre_done", first_name: 'Elon'))
+              expect(page).to have_content(t(:"login_signup_form.youre_done", first_name: first_name))
               expect(page).to(
                 have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email)))
               )
@@ -68,16 +70,16 @@ feature 'User logs in or signs up with a social network', js: true do
           subject(:invalid_email) { 'someinvalidemail' }
 
           scenario 'the form shows a friendly error message' do
-            visit(signup_student_path)
+            visit('/signup?role=student')
 
-            simulate_login_signup_with_social(name: 'Elon Musk', email: nil) do
+            simulate_login_signup_with_social(name: full_name, email: nil) do
               click_on('Facebook')
               wait_for_ajax
               wait_for_animations
               screenshot!
               expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
-              expect(page).to have_field('signup_first_name', with: 'Elon')
-              expect(page).to have_field('signup_last_name', with: 'Musk')
+              expect(page).to have_field('signup_first_name', with: first_name)
+              expect(page).to have_field('signup_last_name', with: last_name)
               expect(page).to have_field('signup_email', with: '')
               submit_signup_form
               screenshot!
@@ -105,31 +107,30 @@ feature 'User logs in or signs up with a social network', js: true do
       end
 
       before do
-        FactoryBot.create(:authentication, provider: :facebooknewflow, user: user, uid: 'uid123')
+        FactoryBot.create(:authentication, provider: :facebook, user: user, uid: 'uid123')
         FactoryBot.create(:email_address, user: user, value: email, verified: true)
       end
 
       describe 'happy path' do
-        scenario 'youre successfully logged in' do
-          simulate_login_signup_with_social(name: 'Elon Musk', email: email, uid: 'uid123') do
-              visit(login_path)
+        scenario 'successfully logged in' do
+          simulate_login_signup_with_social(name: full_name, email: email, uid: 'uid123') do
+              visit(profile_path)
               click_on('Facebook')
               wait_for_ajax
-              screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page.current_path).to match(profile_path)
             end
         end
       end
 
       context 'when user removes OpenStax from the list of Facebook apps' do
         describe 'rejects access to their email address' do
-          scenario 'youre successfully logged in' do
-            simulate_login_signup_with_social(name: 'Elon Musk', email: nil, uid: 'uid123') do
-              visit(login_path)
+          scenario 'successfully logged in' do
+            simulate_login_signup_with_social(name: full_name, email: nil, uid: 'uid123') do
+              visit(profile_path)
               click_on('Facebook')
               wait_for_ajax
               screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page.current_path).to match(profile_path)
             end
           end
         end
@@ -141,17 +142,14 @@ feature 'User logs in or signs up with a social network', js: true do
       let(:nil_email_value) { nil }
 
       before do
-        visit(signup_student_path)
+        visit('/signup?role=student')
 
-        simulate_login_signup_with_social(name: 'Elon Musk', email: nil_email_value) do
+        simulate_login_signup_with_social(name: full_name, email: nil_email_value) do
           click_on('Facebook')
-          wait_for_ajax
-          wait_for_animations
-          screenshot!
 
           fill_in('signup_email',	with: email_value)
-          submit_signup_form
-          screenshot!
+          check('signup_terms_accepted')
+          find('[type=submit]').click
 
           expect(page).to(
             have_content(strip_html(t(:"login_signup_form.youre_done_description", email_address: email_value)))
@@ -162,9 +160,9 @@ feature 'User logs in or signs up with a social network', js: true do
       end
 
       scenario 'user can subsequently log in' do
-        simulate_login_signup_with_social(name: 'Elon Musk', email: nil_email_value) do
+        simulate_login_signup_with_social(name: full_name, email: nil_email_value) do
           click_on('Facebook')
-          expect(page.current_path).to match(profile_newflow_path)
+          expect(page.current_path).to match(profile_path)
           expect(page).to have_content(email_value)
         end
       end
@@ -194,12 +192,9 @@ feature 'User logs in or signs up with a social network', js: true do
             simulate_login_signup_with_social(email: nil_email_value, uid: social_uid) do
               visit(login_path)
               click_on('Facebook')
-              wait_for_ajax
-              screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page.current_path).to match(profile_path)
 
-              # A `facebooknewflow` auth was created since the user already had a `facebook` one
-              expect(user.authentications.count).to eq(2)
+              expect(user.authentications.count).to eq(1)
             end
           end
         end
@@ -211,9 +206,7 @@ feature 'User logs in or signs up with a social network', js: true do
             simulate_login_signup_with_social(email: email_address, uid: social_uid) do
               visit(login_path)
               click_on('Facebook')
-              wait_for_ajax
-              screenshot!
-              expect(page.current_path).to match(profile_newflow_path)
+              expect(page.current_path).to match(profile_path)
               expect(page).to have_content(email_value)
             end
           end
@@ -226,7 +219,7 @@ feature 'User logs in or signs up with a social network', js: true do
     scenario 'the log in page re-renders with a blue banner and a message "[...] trying to sign up?"' do
       visit(login_path)
 
-      simulate_login_signup_with_social(name: 'Elon Musk', email: email) do
+      simulate_login_signup_with_social(name: full_name, email: email) do
         click_on('Google')
         wait_for_ajax
         expect(page).to have_content(
@@ -235,7 +228,6 @@ feature 'User logs in or signs up with a social network', js: true do
             sign_up: t(:"login_signup_form.sign_up")
           )
         )
-        screenshot!
       end
     end
   end

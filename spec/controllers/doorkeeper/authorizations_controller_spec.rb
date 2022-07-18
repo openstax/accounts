@@ -6,7 +6,7 @@ RSpec.describe Doorkeeper::AuthorizationsController, type: :controller do
   context '#create' do
     context 'when a student uses social auth' do
       context 'user without a profile' do
-        let(:user) { FactoryBot.create :user, state: :needs_profile }
+        let(:user) { FactoryBot.create :user, :terms_agreed, state: :needs_profile }
 
         it 'redirects to /profile' do
           post :create, params: { response_type: :code }

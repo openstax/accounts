@@ -8,12 +8,12 @@ feature "Arriving with special params", js: true do
   context "go=signup" do
     scenario "arriving from app" do
       arrive_from_app(params: {go: "signup"}, do_expect: false)
-      expect_sign_up_welcome_tab
+      expect(page).to have_content(t :"login_signup_form.welcome_page_header")
     end
 
     scenario "straight to login" do
       visit 'login?go=signup'
-      expect_sign_up_welcome_tab
+      expect(page).to have_content(t :"login_signup_form.welcome_page_header")
     end
   end
 
@@ -38,7 +38,7 @@ feature "Arriving with special params", js: true do
       end
 
       scenario 'student straight to login gets redirected to alternate signup url' do
-        visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
+        visit "login?role=instructor&signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
         click_link(t :"login_signup_form.sign_up")
         click_link(t :"login_signup_form.student")
         expect(page).to have_content(alt_signup_content)
@@ -50,14 +50,14 @@ feature "Arriving with special params", js: true do
         arrive_from_app(params: {signup_at: alt_signup_url}, do_expect: false)
         click_link(t :"login_signup_form.sign_up")
         click_link(t :"login_signup_form.educator")
-        expect(page.current_path).to eq(educator_signup_path)
+        expect(page.current_path).to eq(signup_path)
       end
 
       scenario 'straight to login proceeds to signup form' do
-        visit "login?signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
+        visit "login?role=instructor&signup_at=#{alt_signup_url}&client_id=#{@app.uid}"
         click_link(t :"login_signup_form.sign_up")
         click_link(t :"login_signup_form.educator")
-        expect(page.current_path).to eq(educator_signup_path)
+        expect(page.current_path).to eq(signup_path)
       end
     end
   end

@@ -49,13 +49,6 @@ def strip_html(text)
   ActionView::Base.full_sanitizer.sanitize(text)
 end
 
-def newflow_click_sign_up(role:)
-  click_on (t :"login_signup_form.sign_up") unless page.current_path == newflow_signup_path
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"login_signup_form.welcome_page_header")
-  find(".join-as__role.#{role}").click
-end
-
 def newflow_complete_add_password_screen(password=nil)
   password ||= 'Passw0rd!'
   fill_in(t(:"login_signup_form.password_label"), with: password)
@@ -72,12 +65,7 @@ end
 
 def submit_signup_form
   check('signup_terms_accepted')
-  wait_for_ajax
-  wait_for_animations
-  screenshot!
   find('[type=submit]').click
-  wait_for_ajax
-  wait_for_animations
 end
 
 def generate_login_token_for_user(user)
@@ -112,7 +100,7 @@ def simulate_login_signup_with_social(options={})
       })
     end
 
-    [:googlenewflow, :facebooknewflow].each do |provider|
+    [:google_oauth2, :facebook].each do |provider|
       OmniAuth.config.mock_auth[provider] = OmniAuth::AuthHash.new({
         uid: options[:uid],
         provider: provider.to_s,
@@ -124,11 +112,6 @@ def simulate_login_signup_with_social(options={})
   ensure
     OmniAuth.config.test_mode = false
   end
-end
-
-def expect_sign_up_welcome_tab
-  expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"login_signup_form.welcome_page_header")
 end
 
 def external_public_url

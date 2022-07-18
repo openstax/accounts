@@ -179,7 +179,7 @@ def with_omniauth_failure_message(message)
   begin
     OmniAuth.config.test_mode = true
 
-    [:facebook, :google_oauth2, :twitter, :identity].each do |provider|
+    [:facebook, :google_oauth2, :identity].each do |provider|
       OmniAuth.config.mock_auth[provider] = message
     end
 
@@ -212,7 +212,6 @@ end
 
 def expect_profile_page
   expect(page).to have_no_missing_translations
-  expect(page).to have_content(t :"users.edit.page_heading")
   expect(page).to have_current_path profile_path
 end
 
