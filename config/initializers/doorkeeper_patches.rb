@@ -35,4 +35,8 @@ Rails.application.config.to_prepare do
       original_create
     end
   end
+
+  Doorkeeper::ApplicationsController.class_exec do
+    layout 'application'
+  end
 end
