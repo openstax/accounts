@@ -20,7 +20,6 @@ ActionController::Base.class_exec do
 
   before_action :set_device_id
   before_action :save_redirect
-  before_action :set_locale
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 
@@ -62,10 +61,6 @@ ActionController::Base.class_exec do
     user&.is_anonymous? ||
     request.options? ||
     contracts_not_required
-  end
-
-  def set_locale
-    I18n.locale = http_accept_language.compatible_language_from(I18n.available_locales)
   end
 
   def set_device_id

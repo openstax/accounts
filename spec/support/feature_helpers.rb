@@ -204,10 +204,6 @@ def make_new_contract_version(contract = FinePrint::Contract.first)
   raise "New contract version didn't publish" unless new_contract_version.version == 2
 end
 
-def click_password_sign_up  # TODO remove, bad name
-  click_on (t :"sessions.start.sign_up")
-end
-
 def expect_sign_in_page
   expect(page).to have_no_missing_translations
   expect(page).to have_content(t :"sessions.start.page_heading")

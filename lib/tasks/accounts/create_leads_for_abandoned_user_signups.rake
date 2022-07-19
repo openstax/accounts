@@ -10,7 +10,7 @@ namespace :accounts do
     users.each { |user|
       user.faculty_status = :incomplete_signup
       user.save!
-      CreateSalesforceLead.perform_later(user_id: user.id)
+      CreateSalesforceLead.perform_later(user.id)
     }
   end
 end

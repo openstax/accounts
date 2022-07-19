@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   include SignupHelper
 
   before_action :authenticate_user!
-  before_action :check_if_password_expired
+  #before_action :check_if_password_expired
 
   fine_print_require :general_terms_of_use, :privacy_policy, unless: :disable_fine_print
 

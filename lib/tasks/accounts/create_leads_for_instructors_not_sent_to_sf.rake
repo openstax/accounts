@@ -6,7 +6,7 @@ namespace :accounts do
     # get all the instructors that don't have lead or contact ids
     users = User.where(salesforce_contact_id: nil, salesforce_lead_id: nil, role: :instructor, state: :activated, faculty_status: :confirmed_faculty).or(User.where.not(sheerid_verification_id: nil))
     users.each { |user|
-      CreateSalesforceLead.perform_later(user_id: user.id)
+      CreateSalesforceLead.perform_later(user.id)
     }
   end
 end

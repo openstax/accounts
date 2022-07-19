@@ -5,7 +5,15 @@ class ProfileController < ApplicationController
   before_action :prevent_caching, only: :profile
 
   def profile
-    # redirect_instructors_needing_to_complete_signup
+    return if current_user.student?
+
+    if current_user.sheerid_verification_id.blank? && current_user.pending_faculty? && !current_user.is_educator_pending_cs_verification
+      security_log(:educator_resumed_signup_flow, message: 'User needs to complete SheerID verification. Redirecting.')
+      redirect_to(sheerid_form_path) and return
+    elsif !current_user.is_profile_complete?
+      security_log(:educator_resumed_signup_flow, message: 'User needs to complete instructor profile. Redirecting.')
+      redirect_to(profile_form_path) and return
+    end
   end
 
   def update
