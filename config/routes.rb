@@ -3,20 +3,6 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root to: 'static_pages#home'
 
-  match 'i/signup/(*path)' => redirect { |_,request| "signup/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
-  get 'i/profile/(*path)' => redirect { |_, request| "profile/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/exit_accounts/(*path)' => redirect { |_, request| "exit_accounts/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  match 'i/login/(*path)' => redirect { |_, request| "login/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :all
-  get 'i/reauthenticate/(*path)' => redirect { |_, request| "reauthenticate/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/check_your_email/(*path)' => redirect { |_, request| "check_your_email/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/done/(*path)' => redirect { |_, request| "done/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  match 'i/verify_email_by_code/(*path)' => redirect{ |p| "verify_email_by_code/#{p[:path]}"}, via: :get
-  get 'i/confirm_your_info' => redirect('confirm_your_info')
-  get 'i/forgot_password_form' => redirect('forgot_password_form')
-  get 'i/logout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'i/signout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-  get 'signout/(*path)' => redirect { |_, request| "logout/#{request.params[:path]}?#{request.params.except('path').to_query}" }, via: :get
-
   # routes to old faculty access controller, redirect them to the sheerid form or pending cs paths
   get 'faculty_access/apply/' => redirect('signup/educator/apply')
   get 'faculty_access/pending/' => redirect('signup/educator/pending_cs_verification')
@@ -27,29 +13,29 @@ Rails.application.routes.draw do
 
   scope controller: 'other' do
     # Profile access
-    get 'profile', action: :profile_newflow, as: :profile_newflow
+    get 'profile'
 
     # Exit accounts back to app they came from
-    get 'exit_accounts', action: :exit_accounts, as: :exit_accounts
+    get 'exit_accounts'
   end
 
   scope controller: 'login' do
-    get 'login', action: :login_form, as: :newflow_login
+    get 'login', action: :login_form, as: :login
     post 'login', action: :login
     get 'reauthenticate', action: :reauthenticate_form, as: :reauthenticate_form
-    get 'logout', action: :logout, as: :newflow_logout
+    get 'logout'
   end
 
   scope controller: 'signup' do
-    get 'signup', action: :welcome, as: :newflow_signup
+    get 'signup', action: :welcome
     get 'done', action: :signup_done, as: :signup_done
     get 'verify_email_by_code/:code', action: :verify_email_by_code, as: :verify_email_by_code
-    get 'check_your_email', action: :check_your_email, as: :check_your_email
+    get 'check_your_email'
   end
 
   scope controller: 'student_signup' do
     get 'signup/student', action: :student_signup_form, as: :signup_student
-    post 'signup/student', action: :student_signup, as: :newflow_signup_post
+    post 'signup/student', action: :student_signup, as: :signup_post
 
     get 'signup/student/email_verification_form', action: :student_email_verification_form, as: :student_email_verification_form
     post 'signup/student/change_signup_email', action: :student_change_signup_email, as: :student_change_signup_email
@@ -76,7 +62,7 @@ Rails.application.routes.draw do
 
     # Step 3
     get 'signup/educator/apply', action: :educator_sheerid_form, as: :educator_sheerid_form
-    post 'i/sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
+    post 'sheerid/webhook', action: :sheerid_webhook, as: :sheerid_webhook
 
     # Step 4
     get 'signup/educator/profile_form', action: :educator_profile_form, as: :educator_profile_form
@@ -89,27 +75,23 @@ Rails.application.routes.draw do
 
   scope controller: 'password_management' do
     # Password management process (forgot,  change, or create password)
-    get 'forgot_password_form', action: :forgot_password_form, as: :forgot_password_form
-    post 'i/send_reset_password_email',
-      action: :send_reset_password_email,
-      as: :send_reset_password_email
-    get 'i/reset_password_email_sent',
-          action: :reset_password_email_sent,
-          as: :reset_password_email_sent
-    get 'i/create_password_form', action: :create_password_form, as: :create_password_form
-    post 'i/create_password', action: :create_password, as: :create_password
-    get 'i/change_password_form', action: :change_password_form, as: :change_password_form
-    post 'i/change_password', action: :change_password, as: :change_password
+    get 'forgot_password_form'
+    post 'send_reset_password_email'
+    get 'reset_password_email_sent'
+    get 'create_password_form'
+    post 'create_password'
+    get 'change_password_form'
+    post 'change_password'
   end
 
   scope controller: 'social_auth' do
-    get 'i/auth/:provider', action: :oauth_callback, as: :newflow_auth
-    post 'i/auth/:provider', action: :oauth_callback
-    get 'i/auth/:provider/callback', action: :oauth_callback
-    delete 'i/auth/:provider', action: :remove_auth_strategy
+    get 'auth/:provider', action: :oauth_callback
+    post 'auth/:provider', action: :oauth_callback
+    get 'auth/:provider/callback', action: :oauth_callback
+    delete 'auth/:provider', action: :remove_auth_strategy
     #   When you sign up with a social provider, you must confirm your info first
-    get 'confirm_your_info', action: :confirm_your_info
-    post 'i/confirm_oauth_info', action: :confirm_oauth_info, as: :confirm_oauth_info
+    get 'confirm_your_info'
+    post 'confirm_oauth_info'
   end
 
   scope controller: 'sessions' do
@@ -127,7 +109,7 @@ Rails.application.routes.draw do
   # The actual request, however, is handled by the omniauth middleware when it detects
   #     that the current_url is the callback_path, using `OmniAuth::Strategy#on_callback_path?`
   #     So, admittedly, this route is deceiving.
-  get '/auth/:provider', to: ->(_env) { [404, {}, ['Not Found']] }, as: :oauth
+  get '/auth/:provider', to: ->(_env) { [404, {}, ['Not Found']] }, as: :auth
 
   scope controller: 'legacy/authentications' do
     delete 'auth/:provider', action: :destroy, as: :destroy_authentication

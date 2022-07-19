@@ -36,7 +36,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         log_in_correctly_with_username(password: '1234abcd')
         # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
-        expect_newflow_profile_page
+        expect_profile_page
       end
     end
 
@@ -59,7 +59,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_username
-          expect_newflow_profile_page
+          expect_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
@@ -90,7 +90,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
         click_link (t :"layouts.application_header.sign_out")
 
         log_in_correctly_with_email(password: '1234abcd')
-        expect_newflow_profile_page
+        expect_profile_page
         # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
       end
     end
@@ -115,7 +115,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
 
         Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
           log_in_correctly_with_email
-          expect_newflow_profile_page
+          expect_profile_page
           # expect(page).to have_content(t :"layouts.application_header.welcome_html", username: 'user')
         end
       end
@@ -140,7 +140,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
     #
     #     Timecop.freeze(Time.now + RateLimiting::LOGIN_ATTEMPTS_PERIOD) do
     #       log_in_correctly_with_username
-    #       expect_newflow_profile_page
+    #       expect_profile_page
     #     end
     #   end
     # end
@@ -155,7 +155,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
   end
 
   def enter_bad_username
-    visit '/i/login'
+    visit '/login'
     complete_login_username_or_email_screen SecureRandom.hex
   end
 

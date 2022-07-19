@@ -202,7 +202,6 @@ $font-path: '/accounts/fonts';
     .mod-holder {
       > span { margin-left: 8px; }
       .edit { display: none; }
-      .edit--newflow { display: none; }
     }
 
     &[data-provider=identity] {
@@ -229,18 +228,15 @@ $font-path: '/accounts/fonts';
 
       .mod-holder {
         .edit   { display: inline; }
-        .edit--newflow   { display: inline; }
       }
     }
   }
 
   .enabled-providers {
     .mod-holder .add { display: none; }
-    .mod-holder .add--newflow { display: none; }
     .authentication {
       &:only-child {
         .mod-holder .delete { display: none; }
-        .mod-holder .delete--newflow { display: none; }
       }
     }
   }
@@ -249,9 +245,7 @@ $font-path: '/accounts/fonts';
     .authentication {
       .mod-holder {
         .edit   { display: none; }
-        .edit--newflow   { display: none; }
         .delete { display: none; }
-        .delete--newflow { display: none; }
       }
     }
   }
