@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-describe 'Terms', type: :feature, js: true do
-
+RSpec.describe 'Terms', type: :feature, js: true do
   before(:each) do
     load 'db/seeds.rb'
   end
@@ -22,5 +21,4 @@ describe 'Terms', type: :feature, js: true do
 
     expect_profile_page
   end
-
 end

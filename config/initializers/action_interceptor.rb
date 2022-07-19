@@ -14,7 +14,7 @@ ActionInterceptor.configure do |config|
   # If no stored url is found, or if the stored url would cause a self redirect,
   # controller methods will use (redirect to) this url instead.
   # Default: nil (root_url)
-  config.default_url = nil
+  config.default_url = '/profile'
 
   # default_key
   # Type: Symbol
