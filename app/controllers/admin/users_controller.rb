@@ -6,6 +6,8 @@ module Admin
 
     def index; end
 
+    def edit; end
+
     def search
       security_log :users_searched_by_admin, search: params[:search]
       handle_with(UsersSearch, complete: lambda { render 'index' })

@@ -3,7 +3,7 @@ require "i18n"
 class User < ApplicationRecord
 
   VALID_STATES = [
-    TEMP = 'temp', # deprecated but still could exist for old accounts
+    TEMP = 'temp',
     NEW_SOCIAL = 'new_social',
     UNCLAIMED = 'unclaimed',
     NEEDS_PROFILE = 'needs_profile', # has yet to fill out their user info
@@ -79,10 +79,13 @@ class User < ApplicationRecord
   before_validation(:generate_uuid, on: :create)
 
   validate(:ensure_names_continue_to_be_present)
-  validate(
-    :save_activated_at_if_became_activated,
-    on: :update
-  )
+
+  validate(:save_activated_at_if_became_activated, on: :update)
+  # to be activated when we move Salesforce routing
+  #validate(:update_salesforce_if_user_changed, on: :update)
+  validate(:change_faculty_status_if_changed_to_student, on: :update)
+
+  validates(:faculty_status, :role, :school_type, presence: true)
 
   validates_presence_of(:faculty_status, :role, :school_type)
 
@@ -152,7 +155,7 @@ class User < ApplicationRecord
     return SheeridAPI::SHEERID_REGEX.match(sheerid_reported_school)[1] \
       if sheerid_reported_school.present?
 
-    return self_reported_school if self_reported_school.present?
+    self_reported_school if self_reported_school.present?
   end
 
   def most_accurate_school_city
@@ -189,10 +192,6 @@ class User < ApplicationRecord
     "#{base}#{rand(10**num_digits_in_suffix).to_s.rjust(num_digits_in_suffix,'0')}"
   end
 
-  def self.cleanup_unverified_users
-    by_unverified.older_than_one_year.destroy_all
-  end
-
   def is_test?
     !!is_test
   end
@@ -208,6 +207,8 @@ class User < ApplicationRecord
   def is_application?
     false
   end
+
+
   # State helpers.
   #
   # A User model begins life in the "unverified" state, and can then be claimed by another user
@@ -290,10 +291,6 @@ class User < ApplicationRecord
     names = name.strip.split(/\s+/)
     self.first_name = names.first
     self.last_name = names.length > 1 ? names[1..-1].join(' ') : ''
-  end
-
-  def casual_name
-    first_name.presence || username
   end
 
   def formal_name
@@ -422,6 +419,18 @@ class User < ApplicationRecord
   def save_activated_at_if_became_activated
     if state_changed?(to: 'activated')
       self.touch(:activated_at)
+    end
+  end
+
+  # def update_salesforce_if_user_changed
+  #   if (faculty_status_changed? || salesforce_lead_id_changed? || salesforce_contact_id_changed?) && role != 'student'
+  #     SyncAccountWithSalesforceJob.perform_later(id)
+  #   end
+  # end
+
+  def change_faculty_status_if_changed_to_student
+    if role_changed?(to: :student)
+      self.faculty_status = :no_faculty_info
     end
   end
 

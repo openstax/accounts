@@ -2,7 +2,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
 
   resource_description do
     api_versions "v1"
-    short_description 'Records which users interact with which applications, as well the users'' preferences for each app.'
+    short_description 'Records which users interact with which applications, as well the users preferences for each app.'
     description <<-EOS
       All actions in this controller operate only on ApplicationUsers that
       belong to the current application, as determined from the Oauth token.
@@ -116,6 +116,7 @@ class Api::V1::ApplicationUsersController < Api::V1::ApiController
 
     respond_with application_user, represent_with: Api::V1::ApplicationUserRepresenter, location: nil
   end
+
 
   ###############################################################
   # updates

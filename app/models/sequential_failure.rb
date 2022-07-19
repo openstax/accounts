@@ -1,5 +1,5 @@
 class SequentialFailure < ApplicationRecord
-  enum kind: [:confirm_by_pin]
+  enum kind: { confirm_by_pin: 0 }
 
   validates :reference, presence: true,
                         uniqueness: {scope: :kind}

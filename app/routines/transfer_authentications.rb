@@ -7,7 +7,7 @@ class TransferAuthentications
   lev_routine
   uses_routine DestroyUser
 
-  protected #################
+  protected
 
   def exec(authentications, newer_user)
     authentications = [authentications] if !(authentications.is_a?(Array))

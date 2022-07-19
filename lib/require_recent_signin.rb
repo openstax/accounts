@@ -22,7 +22,7 @@ module RequireRecentSignin
   end
 
   def last_login_is_older_than?(time)
-    return true if !signed_in?
+    return true unless signed_in?
 
     last_signin_time = SecurityLog.sign_in_successful.where(user: current_user).maximum(:created_at)
     return true if last_signin_time.nil?

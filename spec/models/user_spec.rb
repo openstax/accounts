@@ -215,12 +215,6 @@ RSpec.describe User, type: :model do
     expect(user.name).to eq('Dr User One Second')
   end
 
-  it 'returns the first name as casual name' do
-    user = FactoryBot.create :user, first_name: 'Nikola', last_name: 'Tesla'
-    expect(user.casual_name).to eq('Nikola')
-  end
-
-
   context "state" do
     it "defaults to unverified" do
       expect(User.new.state ).to eq("unverified")

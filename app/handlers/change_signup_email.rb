@@ -6,7 +6,7 @@ class ChangeSignupEmail
     validates :email, presence: true
   end
 
-  protected #################
+  protected
 
   def authorized?
     true

@@ -23,7 +23,7 @@ class TransferOmniauthData
     end
 
     if user.last_name.blank?
-      user.last_name = data.last_name.present?  ? data.last_name  : guessed_last_name(data.name)
+      user.last_name = data.last_name.present?  ? data.last_name  : user.guessed_first_name(data.name)
     end
 
     user.save

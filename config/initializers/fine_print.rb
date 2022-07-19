@@ -4,7 +4,7 @@ FinePrint.configure do |config|
 
   # Layout to be used for FinePrint's controllers
   # Default: 'application'
-  config.layout = 'admin'
+  config.layout = 'application'
 
   # Array of custom helpers for FinePrint's controllers
   config.helpers = []

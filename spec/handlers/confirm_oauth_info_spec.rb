@@ -5,11 +5,14 @@ RSpec.describe ConfirmOauthInfo, type: :handler do
     disable_sfdc_client
   end
 
+  let(:first_name) { Faker::Name.first_name }
+  let(:last_name) { Faker::Name.last_name }
+
   let(:params) do
     {
       signup: {
-        first_name: 'Bryan',
-        last_name: 'Dimas',
+        first_name: first_name,
+        last_name: last_name,
         email: Faker::Internet.free_email,
         newsletter: '1',
         terms_accepted: '1',

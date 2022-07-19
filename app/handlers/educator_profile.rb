@@ -59,14 +59,14 @@ class EducatorProfile
     return if errors?
 
     @user.update!(
-      role:                                signup_params.educator_specific_role,
-      other_role_name:                     other_role_name,
-      using_openstax_how:                  signup_params.using_openstax_how,
-      who_chooses_books:                   signup_params.who_chooses_books,
-      how_many_students:                   signup_params.num_students_per_semester_taught,
-      which_books:                         which_books,
-      self_reported_school:                signup_params.school_name,
-      is_profile_complete:                 true,
+      role: signup_params.educator_specific_role,
+      other_role_name: other_role_name,
+      using_openstax_how: signup_params.using_openstax_how,
+      who_chooses_books: signup_params.who_chooses_books,
+      how_many_students: signup_params.num_students_per_semester_taught,
+      which_books: which_books,
+      self_reported_school: signup_params.school_name,
+      is_profile_complete: true,
       is_educator_pending_cs_verification: !@did_use_sheerid
     )
 
@@ -97,7 +97,7 @@ class EducatorProfile
         SecurityLog.create!(
           user:       @user,
           event_type: :faculty_status_updated,
-          event_data: { old_status: "incomplete", new_status: "pending" }
+          event_data: { old_status: "incomplete_signup", new_status: "pending_faculty" }
         )
       end
     end

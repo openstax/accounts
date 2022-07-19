@@ -10,9 +10,7 @@ class FindOrCreateUser
 
   lev_routine
 
-  uses_routine CreateUser, translations: { outputs: { type: :verbatim } }
   uses_routine FindOrCreateApplicationUser
-  uses_routine CreateEmailForUser
   uses_routine CreateIdentity
 
   protected
@@ -62,10 +60,10 @@ class FindOrCreateUser
 
     if options[:password].present?
       identity = run(CreateIdentity, {
-                       user_id: user.id,
-                       password: options[:password],
-                       password_confirmation: options[:password]
-                     }).outputs.identity
+        user_id:               user.id,
+        password:              options[:password],
+        password_confirmation: options[:password]
+      }).outputs.identity
       # set the identity's password as expired, as soon as the user logs in
       # they'll be prompted to reset it
       identity.password_expires_at = DateTime.now
@@ -78,5 +76,4 @@ class FindOrCreateUser
 
     user
   end
-
 end

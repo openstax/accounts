@@ -12,7 +12,7 @@ class DestroyUser
 
     fatal_error(code: :cannot_destroy_activated_user, data: user) if user.activated?
 
-    user.destroy_original
+    user.destroy!
   end
 
 end

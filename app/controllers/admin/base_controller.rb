@@ -1,14 +1,9 @@
-# Copyright 2011-2016 Rice University. Licensed under the Affero General Public
-# License version 3 or later.  See the COPYRIGHT file for details.
-
 module Admin
   class BaseController < ApplicationController
-
-    include FakeExceptionHelper
+    layout 'admin'
 
     if Rails.env.development?
       skip_before_action :authenticate_user!
-
       fine_print_skip :general_terms_of_use, :privacy_policy
     else
       before_action :authenticate_admin!
@@ -26,16 +21,5 @@ module Admin
         end
       end
     end
-
-    def cron
-      Ost::Cron::execute_cron_jobs
-      flash[:notice] = "Ran cron tasks"
-      redirect_to admin_path
-    end
-
-    def raise_exception
-      raise_fake_exception(params[:type])
-    end
-
   end
 end

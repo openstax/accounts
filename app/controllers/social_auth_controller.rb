@@ -1,5 +1,5 @@
 class SocialAuthController < ApplicationController
-  fine_print_skip :general_terms_of_use, :privacy_policy
+  include LoginSignupHelper
 
   skip_before_action :authenticate_user!, only: [ :oauth_callback, :confirm_oauth_info ]
 
@@ -9,18 +9,22 @@ class SocialAuthController < ApplicationController
 
   # Log in (or sign up and then log in) a user using a social (OAuth) provider
   def oauth_callback
+    if signed_in? && user_signin_is_too_old?
+      reauthenticate_user!
+    else
       handle_with(
         OauthCallback,
         logged_in_user: signed_in? && current_user,
-        success: lambda {
+        success:        lambda {
           authentication = @handler_result.outputs.authentication
-          user = @handler_result.outputs.user
+          user           = @handler_result.outputs.user
 
+          # Not activated means signup.
+          # Only students can sign up with a social network.
           if user.student? && !user.activated?
-            save_unverified_user(unverified_user.id)
             @first_name = user.first_name
-            @last_name = user.last_name
-            @email = @handler_result.outputs.email
+            @last_name  = user.last_name
+            @email      = @handler_result.outputs.email
             security_log(:student_social_sign_up, user: user, authentication_id: authentication.id)
             # must confirm their social info on signup
             render :confirm_social_info_form and return
@@ -30,12 +34,13 @@ class SocialAuthController < ApplicationController
           security_log(:authenticated_with_social, user: user, authentication_id: authentication.id)
           redirect_back(fallback_location: profile_path)
         },
-        failure: lambda {
+        failure:        lambda {
           @email = @handler_result.outputs.email
           save_login_failed_email(@email)
 
-          code = @handler_result.errors.first.code
+          code           = @handler_result.errors.first.code
           authentication = @handler_result.outputs.authentication
+
           case code
           when :should_redirect_to_signup
             redirect_to(
@@ -60,34 +65,33 @@ class SocialAuthController < ApplicationController
             last_exception = $!.inspect
             exception_backtrace = $@.inspect
 
-            error_message = "[SocialAuthController#oauth_callback] IllegalState on failure: " +
-                            "OAuth data: #{oauth}; error code: #{code}; " +
-                            "handler errors: #{errors}; last exception: #{last_exception}; " +
-                            "exception backtrace: #{exception_backtrace}"
+              error_message = "[SocialAuthController#oauth_callback] IllegalState on failure: " +
+                "OAuth data: #{oauth}; error code: #{code}; " +
+                "handler errors: #{errors}; last exception: #{last_exception}; " +
+                "exception backtrace: #{exception_backtrace}"
 
-            # Send the error to Sentry
-            Sentry.capture_message(error_message)
+              warn(error_message)
           end
         }
       )
-  end
-
-  def confirm_oauth_info_form
+    end
   end
 
   def confirm_oauth_info
+    redirect_to signup_path if unverified_user.blank?
+
     handle_with(
       ConfirmOauthInfo,
-      user: unverified_user,
+      user:               unverified_user,
       contracts_required: !contracts_not_required,
-      client_app: get_client_app,
-      success: lambda {
+      client_app:         get_client_app,
+      success:            lambda {
         clear_signup_state
         sign_in!(@handler_result.outputs.user)
         security_log(:student_social_auth_confirmation_success)
-        redirect_to :signup_done_path
+        redirect_to signup_done_path and return
       },
-      failure: lambda {
+      failure:            lambda {
         security_log(:student_social_auth_confirmation_failed)
         render :confirm_social_info_form
       }
@@ -103,22 +107,18 @@ class SocialAuthController < ApplicationController
         success: lambda do
           authentication = @handler_result.outputs.authentication
           security_log :authentication_deleted,
-                      authentication_id: authentication.id,
-                      authentication_provider: authentication.provider,
-                      authentication_uid: authentication.uid
-          render status: :ok, plain: (I18n.t :"controllers.authentications.authentication_removed",
-                              authentication: params[:provider].titleize)
+                       authentication_id:       authentication.id,
+                       authentication_provider: authentication.provider,
+                       authentication_uid:      authentication.uid
+          render status: :ok,
+                 plain:  (I18n.t :'controllers.authentications.authentication_removed',
+                                 authentication: params[:provider].titleize)
         end,
         failure: lambda do
-          render status: 422, plain: @handler_result.errors.map(&:message).to_sentence
+          render status: :unprocessable_entity,
+                 plain:  @handler_result.errors.map(&:message).to_sentence
         end
       )
     end
-  end
-
-  private
-
-  def ensure_unverified_user(user)
-    EnsureUnverifiedUser.call(user).outputs.user
   end
 end
