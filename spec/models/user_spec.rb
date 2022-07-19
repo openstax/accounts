@@ -340,8 +340,8 @@ RSpec.describe User, type: :model do
 
     context 'with some manually entered emails' do
       before do
-        ConfirmContactInfo[@email_a]
-        ConfirmContactInfo[@email_c]
+        MarkContactInfoVerified[@email_a]
+        MarkContactInfoVerified[@email_c]
       end
 
       context 'with the user\'s email_addresses and contact_infos not yet loaded' do

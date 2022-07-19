@@ -150,7 +150,7 @@ RSpec.describe Api::V1::UsersController, type: :controller, api: true, version: 
       unconfirmed_email = CreateEmailForUser.call("unconfirmed@example.com", user_1).outputs.email
 
       confirmed_email = CreateEmailForUser.call("confirmed@example.com", user_1).outputs.email
-      ConfirmContactInfo.call(confirmed_email)
+      MarkContactInfoVerified.call(confirmed_email)
 
       over_pinned_email = CreateEmailForUser.call("over_pinned@example.com", user_1).outputs.email
       ConfirmByPin.max_pin_failures.times { ConfirmByPin.call(contact_info: over_pinned_email, pin: "whatever") }
