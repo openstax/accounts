@@ -88,7 +88,7 @@ Rails.application.routes.draw do
     get 'auth/:provider', action: :oauth_callback
     post 'auth/:provider', action: :oauth_callback
     get 'auth/:provider/callback', action: :oauth_callback
-    delete 'auth/:provider', action: :remove_auth_strategy
+    delete 'auth/:provider', action: :remove_auth_strategy, as: :destroy_authentication
     #   When you sign up with a social provider, you must confirm your info first
     get 'confirm_your_info'
     post 'confirm_oauth_info'
@@ -110,11 +110,6 @@ Rails.application.routes.draw do
   #     that the current_url is the callback_path, using `OmniAuth::Strategy#on_callback_path?`
   #     So, admittedly, this route is deceiving.
   get '/auth/:provider', to: ->(_env) { [404, {}, ['Not Found']] }, as: :auth
-
-  scope controller: 'legacy/authentications' do
-    delete 'auth/:provider', action: :destroy, as: :destroy_authentication
-    get 'add/:provider', action: :add, as: :add_authentication
-  end
 
   # routes for access via an iframe
   scope 'remote', controller: 'remote' do

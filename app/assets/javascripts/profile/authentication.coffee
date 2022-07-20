@@ -42,7 +42,7 @@ class AuthenticationOption
 
   add: ->
     # TODO: figure out a way for the BE to pass the url
-    window.location.href = "#{BASE_URL}/add/#{@getType()}"
+    window.location.href = "#{BASE_URL}/auth/#{@getType()}"
 
   handleDelete: (response) ->
     if response.location?
