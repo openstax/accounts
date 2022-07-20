@@ -253,8 +253,8 @@ end
 
 def complete_reset_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in (t :"identities.set.password"), with: password
-  fill_in (t :"identities.set.confirm_password"), with: password
+  fill_in 'set_password_password', with: password
+  fill_in 'set_password_password_confirmation', with: password
   click_button (t :"identities.reset.submit")
   expect(page).to have_content(t :"identities.reset_success.message")
 end
@@ -265,11 +265,10 @@ end
 
 def complete_add_password_screen(password=nil)
   password ||= 'Passw0rd!'
-  fill_in(t(:"login_signup_form.password_label"), with: password)
-  find('#login-signup-form').click
-  wait_for_animations
-  find('[type=submit]').click
-  expect(page).to have_content(t :"login_signup_form.profile_page_header")
+  fill_in 'set_password_password', with: password
+  fill_in 'set_password_password_confirmation', with: password
+  click_button (t :"identities.add.submit")
+  expect(page).to have_content(t :"identities.add_success.message")
 end
 
 def complete_add_password_success_screen

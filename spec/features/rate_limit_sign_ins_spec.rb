@@ -4,8 +4,7 @@ feature 'User gets blocked after multiple failed sign in attempts', js: true do
   let(:max_attempts_per_user) { 2 }
   let(:max_attempts_per_ip)   { max_attempts_per_user + 3 }
 
-  puts '*** There is no user visible output from rate limiting'
-  return
+  skip '*** There is no user visible output from rate limiting'
 
   background do
     stub_const 'RateLimiting::MAX_LOGIN_ATTEMPTS_PER_USER', max_attempts_per_user
