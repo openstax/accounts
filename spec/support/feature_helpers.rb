@@ -252,10 +252,12 @@ def complete_login_password_screen(password)
 end
 
 def complete_reset_password_screen(password=nil)
+  expect(page.current_path).to eq(password_reset_path)
   password ||= 'Passw0rd!'
   fill_in 'set_password_password', with: password
   fill_in 'set_password_password_confirmation', with: password
   click_button (t :"identities.reset.submit")
+  expect(page.current_path).to eq(password_reset_success_path)
   expect(page).to have_content(t :"identities.reset_success.message")
 end
 
@@ -264,10 +266,12 @@ def complete_reset_password_success_screen
 end
 
 def complete_add_password_screen(password=nil)
+  expect(page.current_path).to eq(password_add_path)
   password ||= 'Passw0rd!'
   fill_in 'set_password_password', with: password
   fill_in 'set_password_password_confirmation', with: password
   click_button (t :"identities.add.submit")
+  expect(page.current_path).to eq(password_add_success_path)
   expect(page).to have_content(t :"identities.add_success.message")
 end
 

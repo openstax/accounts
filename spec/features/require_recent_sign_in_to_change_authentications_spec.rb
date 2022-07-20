@@ -54,25 +54,17 @@ feature 'Require recent log in to change authentications', js: true do
         expect(page.current_path).to eq(reauthenticate_form_path)
         reauthenticate_user(email_value, 'password')
         screenshot!
-        expect(page.current_path).to eq(change_password_form_path)
-        fill_in('change_password_form_password', with: 'newpassword')
-        screenshot!
-        find('#login-signup-form').click
-        wait_for_animations
-        find('[type=submit]').click
+        complete_reset_password_screen 'newpassword'
         screenshot!
 
+        click_button 'Continue'
         expect_profile_page
         screenshot!
 
         # Don't have to reauthenticate since just did
         find('.authentication[data-provider="identity"] .edit').click
-        expect(page).to have_content(t(:"login_signup_form.enter_new_password_description"))
-        fill_in('change_password_form_password', with: 'newpassword2')
-        find('#login-signup-form').click
-        wait_for_animations
-        find('[type=submit]').click
-        expect_profile_page
+        complete_reset_password_screen 'newpassword2'
+        click_button 'Continue'
       end
     end
   end
