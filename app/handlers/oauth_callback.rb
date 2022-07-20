@@ -74,9 +74,9 @@ class OauthCallback
 
     if existing_auth_uid != incoming_auth_uid
       Sentry.capture_message('mismatched authentication', extra: { oauth_response: oauth_response })
-      return true
+      true
     else
-      return false
+      false
     end
   end
 
@@ -132,18 +132,6 @@ class OauthCallback
     return users.sort_by{ |uu| [uu.updated_at, uu.created_at] }.last
   end
 
-  def find_old_flow_user(provider:, uid:)
-    providers_mapping = {
-      'facebooknewflow': 'facebook',
-      'googlenewflow': 'google'
-    }.with_indifferent_access
-
-    corresponding_provider = providers_mapping.fetch(provider, nil)
-    return unless corresponding_provider
-
-    Authentication.find_by(provider: corresponding_provider, uid: uid)&.user
-  end
-
   # Create a corresponding new flow Authentication for old flow Authentication owner
   def create_auth_for_user(user:, provider:, uid:)
     authentication = Authentication.new(provider: provider, uid: uid)
@@ -169,7 +157,7 @@ class OauthCallback
   end
 
   def create_student_user_instance
-    user = User.new(state: 'unverified', role: User::STUDENT_ROLE)
+    user = User.new(state: 'unverified', role: 'student')
     user.full_name = oauth_data.name
 
     transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
