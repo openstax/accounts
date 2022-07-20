@@ -15,8 +15,6 @@ require 'fetch_book_data'
 require 'sheerid_api'
 require 'rate_limiting'
 require 'omniauth/strategies/custom_identity'
-require "omniauth/strategies/facebook"
-require "omniauth/strategies/google_oauth2"
 require 'email_address_validations'
 require 'host'
 require 'sso_cookie_jar'
