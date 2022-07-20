@@ -3,19 +3,19 @@ require 'rails_helper'
 feature 'User updates password on profile screen', js: true do
   before(:each) do
     @user = create_user('user')
-    @user.update!(role: User::STUDENT_ROLE)
-    visit '/'
+    @user.update!(role: 'student')
     log_in_user('user', 'password')
   end
 
   scenario "adds one" do
+    pending("Pending spec until we get the views and controllers refactored")
     # Get rid of password (have to add another auth first so things don't freak out)
     FactoryBot.create :authentication, user: @user, provider: 'facebook'
     @user.authentications.where(provider: 'identity').destroy_all
     @user.identity.destroy
     @user.authentications.reload
     @user.reload.identity
-    visit '/profile'
+    visit profile_path
 
     screenshot!
     expect(page).not_to have_css('[data-provider=identity]')
@@ -27,18 +27,23 @@ feature 'User updates password on profile screen', js: true do
     find('[data-provider=identity] .add').click
 
     screenshot!
-    complete_add_password_screen
+
+    fill_in('login_form[password]', with: 'Passw0rd!')
+    find('[type=submit]').click
+    wait_for_animations
+
     screenshot!
     click_button 'Continue'
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t(:"login_signup_form.how_you_log_in"))
 
     find('#enable-other-sign-in').click
-    expect(page).to have_css('[data-provider=facebooknewflow]')
+    expect(page).to have_css('[data-provider=facebook]')
     expect(page).to have_css('[data-provider=identity]')
   end
 
   scenario "changes existing" do
+    pending("Pending spec until we get the views and controllers refactored")
     find('[data-provider=identity] .edit').click
     complete_reset_password_screen
     click_button 'Continue'
@@ -50,7 +55,7 @@ feature 'User updates password on profile screen', js: true do
   end
 
   scenario "deletes password" do
-    FactoryBot.create :authentication, user: @user, provider: 'facebooknewflow'
+    FactoryBot.create :authentication, user: @user, provider: 'facebook'
     visit profile_path
     expect(@user.reload.identity).to be_present
     expect(@user.authentications.reload.count).to eq 2
