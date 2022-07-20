@@ -110,7 +110,7 @@ Rails.application.routes.draw do
   #     that the current_url is the callback_path, using `OmniAuth::Strategy#on_callback_path?`
   #     So, admittedly, this route is deceiving.
   get '/auth/:provider', to: ->(_env) { [404, {}, ['Not Found']] }, as: :auth
-  
+
   # routes for access via an iframe
   scope 'remote', controller: 'remote' do
     get 'iframe'

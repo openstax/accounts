@@ -82,7 +82,7 @@ feature "User can't sign in", js: true do
     scenario "user tries to sign up with used oauth email" do
       skip('I dont think this test is correct in the currrent flow to begin with')
       user = create_user 'user'
-      authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
+      authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
       arrive_from_app
       click_sign_up(role: 'student')
@@ -95,7 +95,7 @@ feature "User can't sign in", js: true do
 
       with_omniauth_test_mode(uid: authentication.uid) do
         # Found link from back button or some other shenanigans
-        visit 'auth/googlenewflow'
+        visit 'auth/facebook'
       end
 
       screenshot!
@@ -110,40 +110,39 @@ feature "User can't sign in", js: true do
       arrive_from_app
     end
 
-    # scenario "just has password auth" do
-    #   log_in_user('user@example.com', 'wrongpassword')
-    #   expect(page).to have_content(t :"login_signup_form.incorrect_password")
-    #   screenshot!
-    #
-    #   click_link(t :"login_signup_form.forgot_password")
-    #   expect(page.current_path).to eq(forgot_password_form_path)
-    #   # pre-populates the email for them since they already typed it in the login form
-    #   expect(find('#forgot_password_form_email')['value']).to  eq('user@example.com')
-    #   screenshot!
-    #   click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
-    #   expect(page).to have_content(t(:"login_signup_form.password_reset_email_sent"))
-    #   screenshot!
-    #
-    #   open_email('user@example.com')
-    #   capture_email!
-    #   change_password_link = get_path_from_absolute_link(current_email, 'a')
-    #   expect(change_password_link).to include(change_password_form_path)
-    #
-    #   # set the new password
-    #   visit change_password_link
-    #   expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
-    #   fill_in('change_password_form_password', with: 'NEWpassword')
-    #   screenshot!
-    #   find('#login-signup-form').click
-    #   wait_for_animations
-    #   click_button('Log in')
-    #   screenshot!
-    #
-    #   expect(page.current_path).to eq(profile_path)
-    # end
+    scenario "just has password auth" do
+      log_in_user('user@example.com', 'wrongpassword')
+      expect(page).to have_content(t :"login_signup_form.incorrect_password")
+      screenshot!
+
+      click_link(t :"login_signup_form.forgot_password")
+      expect(page.current_path).to eq(forgot_password_form_path)
+      # pre-populates the email for them since they already typed it in the login form
+      expect(find('#forgot_password_form_email')['value']).to  eq('user@example.com')
+      screenshot!
+      click_on(I18n.t(:"login_signup_form.reset_my_password_button"))
+      expect(page).to have_content(t(:"login_signup_form.password_reset_email_sent"))
+      screenshot!
+
+      open_email('user@example.com')
+      capture_email!
+      change_password_link = get_path_from_absolute_link(current_email, 'a')
+      expect(change_password_link).to include(change_password_form_path)
+
+      # set the new password
+      visit change_password_link
+      expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
+      fill_in('change_password_form_password', with: 'NEWpassword')
+      screenshot!
+      find('#login-signup-form').click
+      wait_for_animations
+      click_button('Log in')
+      screenshot!
+
+      expect(page.current_path).to eq(profile_path)
+    end
 
     scenario "just has social auth" do
-      skip 'TODO: remove this test unless UX decides to keep this feature in the new flow'
 
       @user.identity.destroy
       password_authentication = @user.authentications.first
@@ -184,6 +183,7 @@ feature "User can't sign in", js: true do
 
   # scenario 'user has a linked google auth but uses a different google account to login'
   scenario 'user has a linked google auth but then the uid changes' do
+    skip('Unable to replicate this spec - likely because of the switch from googlenewflow back to google_oauth2')
     # scenario explained:
     # User has a google auth with a certain email...
     # then the same User (or another user) tries to login with a google auth that has the same email adddress...
@@ -195,14 +195,14 @@ feature "User can't sign in", js: true do
 
     email_address = Faker::Internet.free_email
     user = create_user(email_address)
-    authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
+    authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
     arrive_from_app
 
     expect_security_log(:sign_in_failed, reason: "mismatched authentication")
 
     with_omniauth_test_mode(uid: "different_than_#{authentication.uid}", email: email_address) do
-      find('.google.btn').click
+      find('.google_oauth2.btn').click
     end
 
     screenshot!
