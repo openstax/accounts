@@ -19,8 +19,6 @@ class OauthCallback
   )
   uses_routine(TransferOmniauthData)
 
-  LOGIN_FORM_IS_ORIGIN = :login_form
-
   include Rails.application.routes.url_helpers
 
   protected #########################
@@ -50,14 +48,7 @@ class OauthCallback
       # We will add the authentication to their existing account and then log them in.
       outputs.authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
       run(TransferAuthentications, outputs.authentication, existing_user)
-    elsif (old_flow_user = find_old_flow_user(provider: @oauth_provider, uid: @oauth_uid))
-      # create a corresponding new flow Authentication
-      outputs.authentication = create_auth_for_user(
-        user: old_flow_user,
-        provider: @oauth_provider,
-        uid: @oauth_uid
-      )
-    elsif user_came_from&.to_sym == LOGIN_FORM_IS_ORIGIN
+    elsif user_came_from&.to_sym == :login_form
       # The user is trying to sign up but they came from the login form, so redirect them to the sign up form
       fatal_error(code: :should_redirect_to_signup)
     else # sign up new student, then we will log them in.

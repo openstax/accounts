@@ -79,12 +79,11 @@
 
   <%
     all_providers = OmniauthData::VALID_PROVIDERS
-    oldflow_providers = %w(facebook google_oauth2)
-    newflow_providers = %w(facebooknewflow googlenewflow)
+    social_providers = %w(facebook google_oauth2)
 
     # The `all providers &` enforces a standard sort order
-    current_providers = all_providers & current_user.authentications.collect(&:provider) - oldflow_providers
-    other_available_providers = all_providers - current_providers - ['twitter', oldflow_providers].flatten
+    current_providers = all_providers & current_user.authentications.collect(&:provider) - social_providers
+    other_available_providers = all_providers - current_providers - ['twitter', social_providers].flatten
   %>
 
   <div class="row enabled-providers">
