@@ -29,6 +29,7 @@ feature 'User updates password on profile screen', js: true do
     screenshot!
     complete_add_password_screen
     screenshot!
+    click_button 'Continue'
     expect(page).to have_no_missing_translations
     expect(page).to have_content(t(:"login_signup_form.how_you_log_in"))
 
@@ -39,7 +40,8 @@ feature 'User updates password on profile screen', js: true do
 
   scenario "changes existing" do
     find('[data-provider=identity] .edit').click
-    complete_add_password_screen
+    complete_reset_password_screen
+    click_button 'Continue'
     expect(page).to have_no_missing_translations
     expect(page).to have_content(
       ActionView::Base.full_sanitizer.sanitize t(:"users.edit.how_you_sign_in_html")

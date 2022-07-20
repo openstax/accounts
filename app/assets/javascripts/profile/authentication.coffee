@@ -6,7 +6,7 @@ class AuthenticationOption
     _.bindAll(@, _.functions(@)...)
     this.$el = $(@el)
     this.$el.find('.delete').click(@confirmDelete)
-    this.$el.find('.add').click(@add)
+    this.$el.find('[data-provider]:not([data-provider="identity"])').find('.add').click(@addSocial)
 
   confirmDelete: (ev) ->
     OX.showConfirmationPopover(
@@ -19,6 +19,10 @@ class AuthenticationOption
 
   getType: ->
     this.$el.data('provider')
+
+  addSocial: ->
+    # TODO: figure out a way for the BE to pass the url
+    window.location.href = "#{BASE_URL}/auth/#{@getType()}"
 
   delete: ->
     $.ajax({type: "DELETE", url: "#{BASE_URL}/auth/#{@getType()}"})
@@ -39,10 +43,6 @@ class AuthenticationOption
       $('.other-sign-in .providers').append(@$el)
       @$el.show()
     )
-
-  add: ->
-    # TODO: figure out a way for the BE to pass the url
-    window.location.href = "#{BASE_URL}/auth/#{@getType()}"
 
   handleDelete: (response) ->
     if response.location?
