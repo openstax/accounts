@@ -24,7 +24,8 @@ module FormHelper
     end
 
     def text_field(name:,
-                   placeholder:,
+                   placeholder: nil,
+                   label: nil,
                    value: nil,
                    type: nil,
                    autofocus: false,
@@ -37,6 +38,9 @@ module FormHelper
                    numberonly: false,
                    data_bind: nil
                  )
+      raise ArgumentError, 'You must provide either placeholder or label' \
+        if placeholder.nil? && label.nil?
+
       return if excluded?(except: except, only: only)
 
       errors_div = get_errors_div(name: name)
@@ -47,6 +51,8 @@ module FormHelper
       end
 
       if numberonly
+        placeholder ||= c.t(label || ".#{name}")
+
         input = (
         @f.number_field name,
                       placeholder: placeholder,
