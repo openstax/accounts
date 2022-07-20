@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Add social auth', js: true do
-  let(:email_value){ 'user@example.com' }
+  let(:email_value) { 'user@example.com' }
 
   scenario "email collides with a different existing user's verified email" do
     other_user = create_user('other_user')

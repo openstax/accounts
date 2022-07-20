@@ -6,7 +6,8 @@ class AuthenticationOption
     _.bindAll(@, _.functions(@)...)
     this.$el = $(@el)
     this.$el.find('.delete').click(@confirmDelete)
-    this.$el.find('[data-provider]:not([data-provider="identity"])').find('.add').click(@addSocial)
+    if @getType() != 'identity'
+      this.$el.find('.add').click(@addSocial)
 
   confirmDelete: (ev) ->
     OX.showConfirmationPopover(
