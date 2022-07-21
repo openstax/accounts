@@ -1,6 +1,6 @@
 module ProfileHelper
 
-  def newflow_way_to_login(provider:, user_authentications: nil, has_authentication: nil, current_providers:)
+  def way_to_login(provider:, user_authentications: nil, has_authentication: nil, current_providers:)
     if has_authentication.nil?
       if user_authentications.nil?
         raise "At least one of user_authentications or has_authentication must be set"
@@ -19,7 +19,7 @@ module ProfileHelper
       end
 
     icons = [
-      'glyphicon-pencil edit--newflow', 'glyphicon-trash delete--newflow', 'glyphicon-plus add--newflow',
+      'glyphicon-pencil edit', 'glyphicon-trash delete', 'glyphicon-plus add',
     ]
 
     snippet = <<-SNIPPET

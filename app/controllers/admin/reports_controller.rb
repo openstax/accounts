@@ -1,5 +1,5 @@
 module Admin
-  class ReportsController < BaseController
+  class ReportsController < Admin::BaseController
     layout 'admin'
 
     def show; end

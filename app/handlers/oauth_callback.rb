@@ -39,7 +39,7 @@ class OauthCallback
 
   def handle # rubocop:disable Metrics/AbcSize
     if @logged_in_user
-      newflow_handle_while_logged_in(@logged_in_user.id)
+      handle_while_logged_in(@logged_in_user.id)
     elsif mismatched_authentication?
       fatal_error(code: :mismatched_authentication)
     elsif (outputs.authentication = Authentication.find_by(provider: @oauth_provider, uid: @oauth_uid))
@@ -52,7 +52,7 @@ class OauthCallback
       run(TransferAuthentications, outputs.authentication, existing_user)
     elsif (old_flow_user = find_old_flow_user(provider: @oauth_provider, uid: @oauth_uid))
       # create a corresponding new flow Authentication
-      outputs.authentication = create_newflow_auth_for_user(
+      outputs.authentication = create_auth_for_user(
         user: old_flow_user,
         provider: @oauth_provider,
         uid: @oauth_uid
@@ -89,7 +89,7 @@ class OauthCallback
     end
   end
 
-  def newflow_handle_while_logged_in(logged_in_user_id)
+  def handle_while_logged_in(logged_in_user_id)
     outputs.authentication = authentication = Authentication.find_or_initialize_by(provider: @oauth_provider, uid: @oauth_uid)
 
     if authentication.user&.activated?
@@ -154,7 +154,7 @@ class OauthCallback
   end
 
   # Create a corresponding new flow Authentication for old flow Authentication owner
-  def create_newflow_auth_for_user(user:, provider:, uid:)
+  def create_auth_for_user(user:, provider:, uid:)
     authentication = Authentication.new(provider: provider, uid: uid)
 
     run(TransferAuthentications, authentication, user)
