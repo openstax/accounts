@@ -179,6 +179,9 @@ gem 'blazer'
 # Delayed job dashboard
 gem "delayed_job_web"
 
+# Data migrations
+gem 'data_migrate'
+
 group :development, :test do
   # Run specs in parallel
   gem 'parallel_tests'

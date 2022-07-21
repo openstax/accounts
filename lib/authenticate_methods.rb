@@ -9,10 +9,6 @@ module AuthenticateMethods
     redirect_to main_app.login_path(request.query_parameters)
   end
 
-  def is_admin?
-    return head(:forbidden) unless current_user && current_user.is_administrator?
-  end
-
   def authenticate_admin!
     return if current_user.is_administrator?
     return head(:forbidden) if signed_in?

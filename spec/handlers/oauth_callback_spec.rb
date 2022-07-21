@@ -119,7 +119,7 @@ RSpec.describe OauthCallback, type: :handler do
       subject(:the_new_user) { process_request.outputs.user }
 
       it 'has its state set to UNVERIFIED' do
-        expect(the_new_user.state).to eq(User::UNVERIFIED)
+        expect(the_new_user.state).to eq('unverified')
       end
     end
 
@@ -155,7 +155,7 @@ RSpec.describe OauthCallback, type: :handler do
     end
 
     let(:request) do
-      MockOmniauthRequest.new 'googlenewflow', Faker::Internet.uuid, oauth_user_info
+      MockOmniauthRequest.new 'google_oauth2', Faker::Internet.uuid, oauth_user_info
     end
 
     subject(:user_authentications) { user.authentications }

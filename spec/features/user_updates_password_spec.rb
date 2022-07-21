@@ -34,7 +34,7 @@ feature 'User updates password on profile screen', js: true do
     expect(page).to have_content(t(:"login_signup_form.how_you_log_in"))
 
     find('#enable-other-sign-in').click
-    expect(page).to have_css('[data-provider=facebooknewflow]')
+    expect(page).to have_css('[data-provider=facebook]')
     expect(page).to have_css('[data-provider=identity]')
   end
 
@@ -44,13 +44,13 @@ feature 'User updates password on profile screen', js: true do
     click_button 'Continue'
     expect(page).to have_no_missing_translations
     expect(page).to have_content(
-      ActionView::Base.full_sanitizer.sanitize t(:"users.edit.how_you_sign_in_html")
-    )
+                      ActionView::Base.full_sanitizer.sanitize t(:"users.edit.how_you_sign_in_html")
+                    )
     expect(page).to have_css('[data-provider=identity]')
   end
 
   scenario "deletes password" do
-    FactoryBot.create :authentication, user: @user, provider: 'facebooknewflow'
+    FactoryBot.create :authentication, user: @user, provider: 'facebook'
     visit profile_path
     expect(@user.reload.identity).to be_present
     expect(@user.authentications.reload.count).to eq 2
