@@ -17,8 +17,8 @@ RSpec.describe CreateSalesforceLead, type: :routine, vcr: VCR_OPTS do
   }
 
   let!(:user1) { FactoryBot.create :user,
-                                   role: User::INSTRUCTOR_ROLE,
-                                   faculty_status: User::PENDING_FACULTY,
+                                   role: 'instructor',
+                                   faculty_status: 'confirmed_faculty',
                                    school: school
   }
 

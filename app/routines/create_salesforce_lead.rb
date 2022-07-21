@@ -13,6 +13,7 @@ class CreateSalesforceLead
   protected
 
   def exec(user_id:)
+    return unless Rails.application.secrets.push_lead_enabled
     user = User.find(user_id)
     status.set_job_name(self.class.name)
     status.set_job_args(user: user.to_global_id.to_s)

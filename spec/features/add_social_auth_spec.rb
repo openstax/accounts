@@ -8,7 +8,7 @@ feature 'Add social auth', js: true do
     create_email_address_for(other_user, email_value)
 
     user = create_user('user')
-    user.update(role: User::STUDENT_ROLE)
+    user.update(role: 'student')
     log_in_user('user', 'password')
 
     expect_profile_page
@@ -18,7 +18,7 @@ feature 'Add social auth', js: true do
     expect(page).to have_content('Facebook')
 
     with_omniauth_test_mode(email: email_value) do
-      find('.authentication[data-provider="facebooknewflow"] .add').click
+      find('.authentication[data-provider="facebook"] .add').click
       wait_for_ajax
       screenshot!
       expect_profile_page
@@ -40,7 +40,7 @@ feature 'Add social auth', js: true do
     expect(page).to have_content('Facebook')
 
     with_omniauth_test_mode(email: email_value) do
-      find('.authentication[data-provider="facebooknewflow"] .add').click
+      find('.authentication[data-provider="facebook"] .add').click
       wait_for_ajax
       expect_profile_page
       expect(page).to have_no_content("already in use")
@@ -62,7 +62,7 @@ feature 'Add social auth', js: true do
     expect(page).to have_content('Facebook')
 
     with_omniauth_test_mode(email: email_value) do
-      find('.authentication[data-provider="facebooknewflow"] .add').click
+      find('.authentication[data-provider="facebook"] .add').click
       wait_for_ajax
       screenshot!
       expect_profile_page

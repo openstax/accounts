@@ -53,7 +53,7 @@ feature 'User logs in or signs up with a social network', js: true do
               expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
               expect(page).to have_content(t(:"login_signup_form.email_is_blank"))
 
-              fill_in('signup_email',	with: email)
+              fill_in('signup_email', with: email)
               submit_signup_form
               screenshot!
               expect(page).to have_content(t(:"login_signup_form.youre_done", first_name: 'Elon'))
@@ -85,7 +85,7 @@ feature 'User logs in or signs up with a social network', js: true do
               expect(page).to have_content(t(:"login_signup_form.confirm_your_info"))
               expect(page).to have_content(t(:"login_signup_form.email_is_blank"))
 
-              fill_in('signup_email',	with: invalid_email)
+              fill_in('signup_email', with: invalid_email)
               submit_signup_form
               screenshot!
               expect(page).to have_content(t(:".activerecord.errors.models.email_address.attributes.value.invalid", value: invalid_email))
@@ -105,19 +105,19 @@ feature 'User logs in or signs up with a social network', js: true do
       end
 
       before do
-        FactoryBot.create(:authentication, provider: :facebooknewflow, user: user, uid: 'uid123')
+        FactoryBot.create(:authentication, provider: :facebook, user: user, uid: 'uid123')
         FactoryBot.create(:email_address, user: user, value: email, verified: true)
       end
 
       describe 'happy path' do
         scenario 'youre successfully logged in' do
           simulate_login_signup_with_social(name: 'Elon Musk', email: email, uid: 'uid123') do
-              visit(login_path)
-              click_on('Facebook')
-              wait_for_ajax
-              screenshot!
-              expect(page.current_path).to match(profile_path)
-            end
+            visit(login_path)
+            click_on('Facebook')
+            wait_for_ajax
+            screenshot!
+            expect(page.current_path).to match(profile_path)
+          end
         end
       end
 
@@ -149,7 +149,7 @@ feature 'User logs in or signs up with a social network', js: true do
           wait_for_animations
           screenshot!
 
-          fill_in('signup_email',	with: email_value)
+          fill_in('signup_email', with: email_value)
           submit_signup_form
           screenshot!
 
@@ -197,9 +197,6 @@ feature 'User logs in or signs up with a social network', js: true do
               wait_for_ajax
               screenshot!
               expect(page.current_path).to match(profile_path)
-
-              # A `facebooknewflow` auth was created since the user already had a `facebook` one
-              expect(user.authentications.count).to eq(2)
             end
           end
         end
@@ -230,11 +227,11 @@ feature 'User logs in or signs up with a social network', js: true do
         click_on('Google')
         wait_for_ajax
         expect(page).to have_content(
-          t(
-            :"login_signup_form.should_social_signup",
-            sign_up: t(:"login_signup_form.sign_up")
-          )
-        )
+                          t(
+                            :"login_signup_form.should_social_signup",
+                            sign_up: t(:"login_signup_form.sign_up")
+                          )
+                        )
         screenshot!
       end
     end

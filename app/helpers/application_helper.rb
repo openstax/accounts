@@ -152,7 +152,7 @@ module ApplicationHelper
   end
 
   def is_real_production_site?
-    request.host == 'accounts.openstax.org'
+    Rails.application.secrets.environment_name == 'production'
   end
 
   def translate_error(code:, force: false)
