@@ -80,7 +80,6 @@ feature "User can't sign in", js: true do
     end
 
     scenario "user tries to sign up with used oauth email" do
-      skip('I dont think this test is correct in the currrent flow to begin with')
       user = create_user 'user'
       authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
