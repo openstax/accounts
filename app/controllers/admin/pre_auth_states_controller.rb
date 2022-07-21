@@ -1,5 +1,5 @@
 module Admin
-  class PreAuthStatesController < BaseController
+  class PreAuthStatesController < Admin::BaseController
     layout 'admin'
 
     def index

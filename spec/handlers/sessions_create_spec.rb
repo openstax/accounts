@@ -65,6 +65,10 @@ RSpec.describe SessionsCreate, type: :handler do
           Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER)
         end
 
+        after(:each) do
+          Timecop.return
+        end
+
         it "returns :new_signin_required" do
           result = handle(
             request: MockOmniauthRequest.new("google_oauth2", "uid", {}, 'add' => 'true')
