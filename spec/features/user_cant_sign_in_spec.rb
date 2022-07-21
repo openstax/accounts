@@ -87,7 +87,6 @@ feature "User can't sign in", js: true do
 
 
       visit(signup_student_path)
-      #byebug
       fill_in('signup[email]', with: Faker::Internet.free_email)
       fill_in('signup[password]', with: Faker::Internet.password(min_length: 8))
       fill_in('signup[first_name]', with: Faker::Name.first_name)
@@ -145,6 +144,7 @@ feature "User can't sign in", js: true do
     end
 
     scenario "just has social auth" do
+      pending("Verify this when refactoring views")
       @user.identity.destroy
       password_authentication = @user.authentications.first
       FactoryBot.create :authentication, provider: 'google_oauth2', user: @user
@@ -153,11 +153,13 @@ feature "User can't sign in", js: true do
       complete_login_username_or_email_screen('user@example.com')
       screenshot!
 
-      # TODO somehow simulate oauth failure so we see error message
+      with_omniauth_test_mode(uid: authentication.uid, email: user.email_addresses.first) do
+        click_on('Google')
+      end
 
-      click_link(t :"sessions.authenticate_options.add_password")
-      expect(page).to have_content(t(:"identities.send_add.we_sent_email", emails: 'user@example.com'))
-      screenshot!
+      click_button(t :"identities.add.submit")
+      expect(page.current_path).to eq(password_add_success_path)
+      expect(page).to have_content(t :"identities.add_success.message")
 
       open_email('user@example.com')
       expect(current_email).to have_content("Click here to add")
@@ -167,14 +169,14 @@ feature "User can't sign in", js: true do
       visit password_add_path
       screenshot!
 
-      expect(@user.reload.identity).to be_nil
+      expect(user.reload.identity).to be_nil
 
       complete_add_password_screen
       screenshot!
       complete_add_password_success_screen
 
-      expect(@user.reload.identity).not_to be_nil
-      expect(@user.authentications.reload.map(&:provider)).to contain_exactly(
+      expect(user.reload.identity).not_to be_nil
+      expect(user.authentications.reload.map(&:provider)).to contain_exactly(
         "google_oauth2", "identity"
       )
 
