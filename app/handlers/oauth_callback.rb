@@ -158,7 +158,7 @@ class OauthCallback
 
   def create_student_user_instance
     user = User.new(state: 'unverified', role: 'student')
-    user.full_name = oauth_data.name
+    user.full_name = oauth_data.name unless oauth_data.name.nil?
 
     transfer_errors_from(user, { type: :verbatim }, :fail_if_errors)
     user
