@@ -2,6 +2,8 @@ require 'rails_helper'
 
 # If you use js: true you must sleep to wait for the emails to arrive
 feature "User can't sign in", js: true do
+  background { load 'db/seeds.rb' }
+
   context "problems finding log in user" do
     before(:each) do
       visit '/'
@@ -80,16 +82,16 @@ feature "User can't sign in", js: true do
     end
 
     scenario "user tries to sign up with used oauth email" do
-      pending('Pending until views can be refactored')
       user = create_user 'user'
       authentication = FactoryBot.create :authentication, provider: 'google_oauth2', user: user
 
-      arrive_from_app
-      click_sign_up(role: 'student')
-      fill_in('signup_email', with: Faker::Internet.free_email)
-      fill_in('signup_password', with: Faker::Internet.password(min_length: 8))
-      fill_in('signup_first_name', with: Faker::Name.first_name)
-      fill_in('signup_last_name', with: Faker::Name.last_name)
+
+      visit(signup_student_path)
+      #byebug
+      fill_in('signup[email]', with: Faker::Internet.free_email)
+      fill_in('signup[password]', with: Faker::Internet.password(min_length: 8))
+      fill_in('signup[first_name]', with: Faker::Name.first_name)
+      fill_in('signup[last_name]', with: Faker::Name.last_name)
       check('signup_terms_accepted')
 
 
@@ -99,7 +101,7 @@ feature "User can't sign in", js: true do
       end
 
       screenshot!
-      expect(page).to have_content('External application loaded successfully.')
+      expect(page).to have_content('Confirm your information')
     end
   end
 
@@ -143,8 +145,6 @@ feature "User can't sign in", js: true do
     end
 
     scenario "just has social auth" do
-      pending('Pending until views can be refactored')
-
       @user.identity.destroy
       password_authentication = @user.authentications.first
       FactoryBot.create :authentication, provider: 'google_oauth2', user: @user
@@ -184,7 +184,6 @@ feature "User can't sign in", js: true do
 
   # scenario 'user has a linked google auth but uses a different google account to login'
   scenario 'user has a linked google auth but then the uid changes' do
-    pending('Pending until views can be refactored')
     # scenario explained:
     # User has a google auth with a certain email...
     # then the same User (or another user) tries to login with a google auth that has the same email adddress...
@@ -203,7 +202,7 @@ feature "User can't sign in", js: true do
     expect_security_log(:sign_in_failed, reason: "mismatched authentication")
 
     with_omniauth_test_mode(uid: "different_than_#{authentication.uid}", email: email_address) do
-      find('.google_oauth2.btn').click
+      click_on('Google')
     end
 
     screenshot!

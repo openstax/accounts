@@ -13,7 +13,7 @@ feature 'User logs in or signs up with a social network', js: true do
       scenario 'happy path' do
         visit(signup_student_path)
 
-        with_omniauth_test_mode(email: email) do
+        simulate_login_signup_with_social(name: 'Elon Musk', email: email) do
           click_on('Facebook')
           wait_for_ajax
           screenshot!
@@ -38,7 +38,7 @@ feature 'User logs in or signs up with a social network', js: true do
           example do
             visit(signup_student_path)
 
-            with_omniauth_test_mode(email: nil) do
+            simulate_login_signup_with_social(name: 'Elon Musk', email: nil) do
               click_on('Facebook')
               wait_for_ajax
               wait_for_animations
@@ -70,7 +70,7 @@ feature 'User logs in or signs up with a social network', js: true do
           scenario 'the form shows a friendly error message' do
             visit(signup_student_path)
 
-            with_omniauth_test_mode(email: email) do
+            simulate_login_signup_with_social(name: 'Elon Musk', email: nil) do
               click_on('Facebook')
               wait_for_ajax
               wait_for_animations
@@ -111,7 +111,7 @@ feature 'User logs in or signs up with a social network', js: true do
 
       describe 'happy path' do
         scenario 'youre successfully logged in' do
-          with_omniauth_test_mode(email: email, uid: 'uid123') do
+          simulate_login_signup_with_social(name: 'Elon Musk', email: email, uid: 'uid123') do
             visit(login_path)
             click_on('Facebook')
             wait_for_ajax
@@ -124,7 +124,7 @@ feature 'User logs in or signs up with a social network', js: true do
       context 'when user removes OpenStax from the list of Facebook apps' do
         describe 'rejects access to their email address' do
           scenario 'youre successfully logged in' do
-            with_omniauth_test_mode(email: nil, uid: 'uid123') do
+            simulate_login_signup_with_social(name: 'Elon Musk', email: nil, uid: 'uid123') do
               visit(login_path)
               click_on('Facebook')
               wait_for_ajax
@@ -143,7 +143,7 @@ feature 'User logs in or signs up with a social network', js: true do
       before do
         visit(signup_student_path)
 
-        with_omniauth_test_mode(email: email) do
+        simulate_login_signup_with_social(name: 'Elon Musk', email: nil_email_value) do
           click_on('Facebook')
           wait_for_ajax
           wait_for_animations
@@ -162,7 +162,7 @@ feature 'User logs in or signs up with a social network', js: true do
       end
 
       scenario 'user can subsequently log in' do
-        with_omniauth_test_mode(email: nil_email_value) do
+        simulate_login_signup_with_social(name: 'Elon Musk', email: nil_email_value) do
           click_on('Facebook')
           expect(page.current_path).to match(profile_path)
           expect(page).to have_content(email_value)
@@ -191,7 +191,7 @@ feature 'User logs in or signs up with a social network', js: true do
           let(:nil_email_value) { nil }
 
           scenario 'is successfully logged in' do
-            with_omniauth_test_mode(email: nil_email_value, uid: social_uid) do
+            simulate_login_signup_with_social(email: nil_email_value, uid: social_uid) do
               visit(login_path)
               click_on('Facebook')
               wait_for_ajax
@@ -205,7 +205,7 @@ feature 'User logs in or signs up with a social network', js: true do
           let(:email_address) { email_value }
 
           scenario 'is successfully logged in' do
-            with_omniauth_test_mode(email: email_address, uid: social_uid) do
+            simulate_login_signup_with_social(email: email_address, uid: social_uid) do
               visit(login_path)
               click_on('Facebook')
               wait_for_ajax
@@ -223,7 +223,7 @@ feature 'User logs in or signs up with a social network', js: true do
     scenario 'the log in page re-renders with a blue banner and a message "[...] trying to sign up?"' do
       visit(login_path)
 
-      with_omniauth_test_mode(name: 'Elon Musk', email: email) do
+      simulate_login_signup_with_social(name: 'Elon Musk', email: email) do
         click_on('Google')
         wait_for_ajax
         expect(page).to have_content(

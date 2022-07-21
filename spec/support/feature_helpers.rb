@@ -233,11 +233,11 @@ def expect_back_at_app(app: nil)
 end
 
 def complete_login_username_or_email_screen(username_or_email)
-  fill_in 'login_username_or_email', with: username_or_email
+  fill_in('login_form_email', with: username_or_email).native
   expect_sign_in_page
   expect(page).to have_no_missing_translations
   screenshot!
-  click_button (t :"sessions.start.next")
+  click_button(I18n.t(:"login_signup_form.continue_button"))
   expect(page).to have_no_missing_translations
 end
 
