@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Require recent log in to change authentications', js: true do
   let!(:user) do
     user = create_user(email_value)
-    user.update(role: User::STUDENT_ROLE)
+    user.update(role: 'student')
     user
   end
   let(:email_value) { 'user@example.com' }
@@ -17,7 +17,7 @@ feature 'Require recent log in to change authentications', js: true do
     Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
       expect(page).to have_no_content('Facebook')
       screenshot!
-      click_link (t :"users.edit.enable_other_sign_in_options")
+      click_link(t :"users.edit.enable_other_sign_in_options")
       wait_for_animations
       screenshot!
       expect(page).to have_no_content(t :"users.edit.enable_other_sign_in_options")
