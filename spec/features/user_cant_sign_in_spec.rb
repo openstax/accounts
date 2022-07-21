@@ -85,7 +85,7 @@ feature "User can't sign in", js: true do
       authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
 
       arrive_from_app
-      newflow_click_sign_up(role: 'student')
+      click_sign_up(role: 'student')
       fill_in('signup_email', with: Faker::Internet.free_email)
       fill_in('signup_password', with: Faker::Internet.password(min_length: 8))
       fill_in('signup_first_name', with: Faker::Name.first_name)
@@ -95,7 +95,7 @@ feature "User can't sign in", js: true do
 
       with_omniauth_test_mode(uid: authentication.uid) do
         # Found link from back button or some other shenanigans
-        visit 'i/auth/googlenewflow'
+        visit 'auth/googlenewflow'
       end
 
       screenshot!
@@ -139,7 +139,7 @@ feature "User can't sign in", js: true do
     #   click_button('Log in')
     #   screenshot!
     #
-    #   expect(page.current_path).to eq(profile_newflow_path)
+    #   expect(page.current_path).to eq(profile_path)
     # end
 
     scenario "just has social auth" do
@@ -194,7 +194,7 @@ feature "User can't sign in", js: true do
     # Technically: same user, same provider, different `uid`.
 
     email_address = Faker::Internet.free_email
-    user = create_newflow_user(email_address)
+    user = create_user(email_address)
     authentication = FactoryBot.create :authentication, provider: 'googlenewflow', user: user
 
     arrive_from_app

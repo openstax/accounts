@@ -28,8 +28,7 @@
                                 limit_to: :any,
                                 context: self,
                                 params: params,
-                                errors: @handler_result.try(:errors),
-                                error_field_classes: "alert alert-danger") %>
+                                errors: @handler_result.try(:errors)) %>
 
     <p><%= t :".instructions" %></p>
 

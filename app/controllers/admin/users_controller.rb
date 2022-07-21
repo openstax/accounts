@@ -1,5 +1,5 @@
 module Admin
-  class UsersController < BaseController
+  class UsersController < Admin::BaseController
     layout 'admin', except: :js_search
 
     before_action :get_user, only: [:edit, :update, :destroy, :become]

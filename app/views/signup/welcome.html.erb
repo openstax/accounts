@@ -8,7 +8,7 @@
                     banners: @banners) do %>
             <% lev_form_for :login, url: '' do |form| %>
                 <%
-                    fh = NewflowFormHelper::Newflow.new(
+                    fh = FormHelper::One.new(
                         f: form,
                         context: self,
                         errors: @handler_result&.errors

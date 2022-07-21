@@ -67,7 +67,7 @@ module StudentSignup
       end
 
       it 'sends a confirmation email' do
-        expect_any_instance_of(NewflowMailer).to(
+        expect_any_instance_of(ConfirmationMailer).to(
           receive(:signup_email_confirmation).with(
             hash_including({ email_address: an_instance_of(EmailAddress) })
           )
@@ -88,7 +88,7 @@ module StudentSignup
 
     context 'when failure because a user with the given email address already exists' do
       before do
-        create_newflow_user(email)
+        create_user(email)
       end
 
       let(:email) do

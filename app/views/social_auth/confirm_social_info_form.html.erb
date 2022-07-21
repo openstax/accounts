@@ -20,7 +20,7 @@
                     banners: @banners) do %>
             <% lev_form_for :signup, url: confirm_oauth_info_path do |form| %>
                 <%
-                    form_helper = NewflowFormHelper::Newflow.new(
+                    form_helper = FormHelper::One.new(
                     f: form,
                     context: self,
                     errors: @handler_result&.errors
@@ -29,7 +29,7 @@
 
                 <div class="content role-section">
                     <div>
-                        <%= render partial: 'shared/back_arrow', locals: { path: newflow_signup_path } %>
+                        <%= render partial: 'shared/back_arrow', locals: { path: signup_path } %>
                         <div class="role-button"><%= I18n.t(:"login_signup_form.student") %></div>
                     </div>
                 </div>

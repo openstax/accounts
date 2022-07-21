@@ -8,7 +8,7 @@
                     current_step: current_step,
                     banners: @banners) do %>
             <% lev_form_for :change_signup_email, url: submit_to_path do |f| %>
-                <% fh = NewflowFormHelper::Newflow.new(f: f,
+                <% fh = FormHelper::One.new(f: f,
                                             context: self,
                                             errors: @handler_result&.errors) %>
 

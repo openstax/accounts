@@ -9,7 +9,7 @@ class EducatorSignupFlowDecorator
     @current_step = current_step
   end
 
-  def newflow_edu_incomplete_step_3?
+  def edu_incomplete_step_3?
     if user.is_sheerid_unviable?
       return false
     elsif user.sheerid_verification_id.blank? && user.pending_faculty? && !user.is_educator_pending_cs_verification
@@ -17,7 +17,7 @@ class EducatorSignupFlowDecorator
     end
   end
 
-  def newflow_edu_incomplete_step_4?
+  def edu_incomplete_step_4?
     return true if !user.is_profile_complete?
   end
 

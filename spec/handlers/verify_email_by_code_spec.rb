@@ -9,7 +9,7 @@ describe VerifyEmailByCode, type: :handler, vcr: VCR_OPTS do
   let(:user) { FactoryBot.create(:user, state: User::UNVERIFIED, role: role) }
 
   before(:all) do
-    VCR.use_cassette('Newflow_VerifyEmailByCode/sf_setup', VCR_OPTS) do
+    VCR.use_cassette('VerifyEmailByCode/sf_setup', VCR_OPTS) do
       @proxy = SalesforceProxy.new
       @proxy.setup_cassette
     end

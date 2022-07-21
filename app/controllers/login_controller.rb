@@ -5,7 +5,7 @@ class LoginController < BaseController
   GO_TO_STUDENT_SIGNUP = 'student_signup'
   GO_TO_SIGNUP = 'signup'
 
-  fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile_newflow
+  fine_print_skip :general_terms_of_use, :privacy_policy, except: :profile
 
   before_action :cache_client_app, only: :login_form
   before_action :cache_alternate_signup_url, only: :login_form
@@ -66,7 +66,7 @@ class LoginController < BaseController
     if should_redirect_to_student_signup?
       redirect_to signup_student_path(request.query_parameters)
     elsif should_redirect_to_signup_welcome?
-      redirect_to newflow_signup_path(request.query_parameters)
+      redirect_to signup_path(request.query_parameters)
     end
   end
 
