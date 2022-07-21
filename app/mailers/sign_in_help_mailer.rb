@@ -1,6 +1,4 @@
 class SignInHelpMailer < ApplicationMailer
-  include Rails.application.routes.url_helpers
-
   def multiple_accounts(email_address:, usernames:)
     @email_address = email_address
     @usernames = usernames

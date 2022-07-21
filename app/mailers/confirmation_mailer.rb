@@ -1,6 +1,4 @@
 class ConfirmationMailer < ApplicationMailer
-  include Rails.application.routes.url_helpers
-
   def instructions(email_address:, send_pin: false)
     @email_address = email_address
     @show_pin = send_pin &&
