@@ -188,7 +188,7 @@ class SessionsCreate
       return users.select{|uu| uu.id == user_id_by_sign_in}.first
     end
 
-    return users.sort_by{|uu| [uu.updated_at, uu.created_at]}.last
+    users.sort_by{|uu| [uu.updated_at, uu.created_at]}.last
   end
 
   def authentication
