@@ -69,6 +69,29 @@ feature 'Require recent log in to change authentications', js: true do
     end
   end
 
+  scenario 'bad password on reauthentication' do
+    log_in_user(email_value, 'password')
+
+    Timecop.freeze(Time.now + RequireRecentSignin::REAUTHENTICATE_AFTER) do
+      visit profile_path
+      expect_profile_page
+
+      find('.authentication[data-provider="identity"] .edit').click
+
+      fill_in(t(:"login_signup_form.password_label"), with: 'wrongpassword')
+      wait_for_ajax
+      wait_for_animations
+      find('[type=submit]').click
+      screenshot!
+
+      fill_in(t(:"login_signup_form.password_label"), with: 'password')
+      find('[type=submit]').click
+
+      complete_reset_password_screen
+      expect(page).to have_content(t :"identities.reset_success.message")
+    end
+  end
+
   scenario 'removing an authentication' do
     with_forgery_protection do
       FactoryBot.create :authentication, user: user, provider: 'facebook'
