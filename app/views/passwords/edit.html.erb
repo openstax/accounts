@@ -1,0 +1,46 @@
+<%
+    error_codes = @handler_result.errors.map(&:code)
+
+  big_time_error_message =
+    case error_codes.first
+    when :token_blank, :unknown_login_token
+      t :"identities.set.there_was_a_problem_with_password_link"
+    when :expired_login_token
+      t :"identities.set.expired_password_link"
+    end
+
+ if big_time_error_message %>
+  <p><%= big_time_error_message %></p>
+<% else %>
+    <div id="login-signup-form">
+        <div class="content">
+            <%= render partial: 'shared/tab_group', locals: { active_class: 'login--active'} %>
+
+            <%= login_signup_card(
+                        classes: "login-page",
+                        header: I18n.t(:"login_signup_form.enter_new_password")) do %>
+                <% lev_form_for :change_password_form, url: change_password_path do |f| %>
+                    <% fh = NewflowFormHelper::Newflow.new(f: f,
+                                                context: self,
+                                                errors: @handler_result&.errors) %>
+                    <div class="content control-group info-message">
+                        <%= I18n.t(:"login_signup_form.enter_new_password_description").html_safe %>
+                    </div>
+
+                    <%= render partial: 'passwords/password_control_group', locals: { fh: fh} %>
+
+                    <br />
+
+                    <div class="content">
+                        <% f.hidden_field :token, value: params[:token] %>
+                        <%= f.submit I18n.t(:"login_signup_form.log_in"),
+                                            disable_with: I18n.t(:"login_signup_form.log_in"),
+                                            class: 'primary' %>
+                    </div>
+
+                <% end %>
+            <% end %>
+        </div>
+    </div>
+    <%= javascript_include_tag 'application/ko_extensions' %>
+<% end %>

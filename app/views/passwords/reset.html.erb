@@ -1,0 +1,73 @@
+<div id="login-signup-form" class="forgot-password-form">
+  <div class="content back-arrow-container">
+    <%= render partial: 'shared/tab_group', locals: { active_class: 'login--active' } %>
+
+    <%= login_signup_card(
+          classes: "login-page",
+          header:  I18n.t(:"login_signup_form.reset_my_password")) do %>
+      <% lev_form_for :forgot_password_form, url: password_send_reset_path do |form| %>
+        <%
+          form_helper = FormHelper::One.new(
+            f:       form,
+            context: self,
+            errors:  @handler_result&.errors
+          )
+        %>
+
+        <%= render partial: 'shared/back_arrow', locals: { path: login_path } %>
+
+        <div class="content control-group info-message">
+          <%= I18n.t(:"login_signup_form.reset_my_password_description") %>
+        </div>
+
+        <div class="content control-group">
+          <%=
+            label_tag(
+              :email,
+              I18n.t(:"login_signup_form.email_label"),
+              class: 'field-label'
+            )
+          %>
+          <%=
+            form_helper.text_field(
+              name:        :email,
+              placeholder: I18n.t(:"login_signup_form.email_placeholder"),
+              autofocus:   true,
+              value:       @email
+            )
+          %>
+        </div>
+
+        <div class="content control-group" style="margin-top: 0">
+          <%=
+            I18n.t(
+              :"login_signup_form.cant_remember_email",
+              contact_us_link: link_to(
+                                 I18n.t(:"login_signup_form.contact_us"),
+                                 salesforce_knowledge_base_url,
+                                 target: '_blank',
+                                 data:   { ga_category: 'Login', ga_action: 'Click', ga_label: 'Contact Us' }
+                               )
+            ).html_safe
+          %>
+        </div>
+
+        <div class="content">
+          <%=
+            form.submit(
+              I18n.t(:"login_signup_form.reset_my_password_button"),
+              class: 'primary',
+              data:  {
+                disable_with: I18n.t(:"login_signup_form.reset_my_password_button"),
+                ga_category:  'Login',
+                ga_action:    'Click',
+                ga_label:     'Password Reset'
+              }
+            )
+          %>
+        </div>
+
+      <% end %>
+    <% end %>
+  </div>
+</div>

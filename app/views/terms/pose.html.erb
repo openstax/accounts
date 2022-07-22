@@ -1,4 +1,4 @@
-<%= ox_card(heading: @contract.title) do %>
+<%= profile_card(heading: @contract.title) do %>
 
   <% if FinePrint.signed_any_version_of_contract?(current_user, @contract) %>
     <p><%= t :".contracts_changed_notice", contract_title: @contract.title %></p>
