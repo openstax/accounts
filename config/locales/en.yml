@@ -158,12 +158,12 @@ en:
     should_social_signup: There is no record of this account. Are you trying to %{sign_up}?
     is_title_1_school: My school is designated as a Title-1 campus
 
-    student_email_verification_form_decription: >-
+    student_email_verification_form_description: >-
       An email has been sent to <b>%{email}</b>.
       Please enter the PIN you received below.
       You can also %{edit_your_email}
 
-    educator_email_verification_form_decription: >-
+    educator_email_verification_form_description: >-
       An email has been sent to <b>%{email}</b>.
       Please enter the PIN you received below.
       Once your email has been confirmed, you will need to complete
