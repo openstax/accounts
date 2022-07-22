@@ -8,13 +8,6 @@ Rails.application.config.to_prepare do
                                  inverse_of: :application
     has_many :users, through: :application_users
 
-    has_many :application_groups, foreign_key: :application_id,
-                                  dependent: :destroy,
-                                  inverse_of: :application
-    has_many :groups, through: :application_groups
-
-    has_many :messages, inverse_of: :application
-
     has_many :security_logs, inverse_of: :application
 
     def is_redirect_url?(url)
