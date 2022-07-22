@@ -142,9 +142,9 @@ module Oauth
     end
 
     def validated_member_ids
-      return [] if !params[:member_ids].present?
+      return [] unless params[:member_ids].present?
 
-      if !params[:member_ids].match(SPACE_SEPARATED_NUMBERS_REGEX)
+      unless params[:member_ids].match(SPACE_SEPARATED_NUMBERS_REGEX)
         @application.errors.add(:owner, 'Member Ids must be a space separated list of integers')
         return false
       end
@@ -156,7 +156,7 @@ module Oauth
           return false
         end
       end
-      return member_ids
+      member_ids
     end
 
     def set_current_member_ids
