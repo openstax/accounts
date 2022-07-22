@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_21_233931) do
+ActiveRecord::Schema.define(version: 2022_07_22_071810) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -232,11 +232,6 @@ ActiveRecord::Schema.define(version: 2022_07_21_233931) do
     t.boolean "can_skip_oauth_screen", default: false, null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
-  end
-
-  create_table "push_topics", force: :cascade do |t|
-    t.string "topic_salesforce_id"
-    t.string "topic_name"
   end
 
   create_table "schools", force: :cascade do |t|
