@@ -132,15 +132,11 @@ feature "User can't sign in", js: true do
 
       # set the new password
       visit change_password_link
-      expect(page).to have_content(I18n.t(:"login_signup_form.enter_new_password_description"))
-      fill_in('change_password_form_password', with: 'NEWpassword')
-      screenshot!
-      find('#login-signup-form').click
-      wait_for_animations
-      click_button('Log in')
-      screenshot!
+      expect(page).to have_content(I18n.t(:"identities.reset.use_form_below_to_reset_password"))
+      complete_reset_password_screen('NEWpassword')
+      complete_reset_password_success_screen
 
-      expect(page.current_path).to eq(profile_path)
+      expect_back_at_app
     end
 
     scenario "just has social auth" do
